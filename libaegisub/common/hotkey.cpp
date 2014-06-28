@@ -44,13 +44,13 @@ void Hotkey::ComboInsert(Combo const& combo) {
 	cmd_map.insert(make_pair(combo.CmdName(), combo));
 }
 
-Hotkey::Hotkey(agi::fs::path const& file, std::pair<const char *, size_t> default_config)
+Hotkey::Hotkey(fs::path const& file, std::pair<const char *, size_t> default_config)
 : config_file(file)
 {
 	LOG_D("hotkey/init") << "Generating hotkeys.";
 
-	const json::Object object(agi::json_util::file(config_file, default_config));
-	for (auto const& hotkey_context : object)
+	auto root = json_util::file(config_file, default_config);
+	for (auto const& hotkey_context : static_cast<json::Object const&>(root))
 		BuildHotkey(hotkey_context.first, hotkey_context.second);
 }
 
@@ -58,19 +58,26 @@ void Hotkey::BuildHotkey(std::string const& context, json::Object const& hotkeys
 	for (auto const& command : hotkeys) {
 		const json::Array& command_hotkeys = command.second;
 
-		for (auto const& hotkey : command_hotkeys) {
+		for (json::Object const& hotkey : command_hotkeys) {
 			std::vector<std::string> keys;
 
-			try {
-				const json::Array& arr_mod = hotkey["modifiers"];
-				keys.reserve(arr_mod.size() + 1);
-				copy(arr_mod.begin(), arr_mod.end(), back_inserter(keys));
-				keys.push_back(hotkey["key"]);
-			}
-			catch (json::Exception const& e) {
-				LOG_E("agi/hotkey/load") << "Failed loading hotkey for command '" << command.first << "': " << e.what();
+			auto it = hotkey.find("modifiers");
+			if (it == end(hotkey)) {
+				LOG_E("agi/hotkey/load") << "Hotkey for command '" << command.first << "' is missing modifiers";
+				continue;
 			}
 
+			json::Array const& arr_mod = it->second;
+			keys.reserve(arr_mod.size() + 1);
+			copy(arr_mod.begin(), arr_mod.end(), back_inserter(keys));
+
+			it = hotkey.find("key");
+			if (it == end(hotkey)) {
+				LOG_E("agi/hotkey/load") << "Hotkey for command '" << command.first << "' is missing the key";
+				continue;
+			}
+
+			keys.push_back(it->second);
 			ComboInsert(Combo(context, command.first, keys));
 		}
 	}
@@ -157,12 +164,13 @@ void Hotkey::Flush() {
 			modifiers.insert(modifiers.end(), combo.Get().begin(), combo.Get().end() - 1);
 		}
 
-		json::Array& combo_array = root[combo.Context()][combo.CmdName()];
+		json::Object& context = root[combo.Context()];
+		json::Array& combo_array = context[combo.CmdName()];
 		combo_array.push_back(std::move(hotkey));
 	}
 
 	io::Save file(config_file);
-	agi::JsonWriter::Write(root, file.Get());
+	JsonWriter::Write(root, file.Get());
 }
 
 void Hotkey::SetHotkeyMap(HotkeyMap const& new_map) {

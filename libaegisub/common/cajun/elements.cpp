@@ -12,80 +12,59 @@ Author: Terry Caton
 #include <utility>
 
 namespace {
-	using namespace json;
+using namespace json;
 
-	class CastVisitorBase : public Visitor, public ConstVisitor {
-		void Visit(Array&) { }
-		void Visit(Object&) { }
-		void Visit(Integer&) { }
-		void Visit(Double&) { }
-		void Visit(String&) { }
-		void Visit(Boolean&) { }
-		void Visit(Null&) { is_null = true; }
-		void Visit(Array const&) { }
-		void Visit(Object const&) { }
-		void Visit(Integer) { }
-		void Visit(Double) { }
-		void Visit(String const&) { }
-		void Visit(Boolean) { }
-		void Visit(Null const&) { is_null = true; }
-	public:
-		bool is_null = false;
-	};
+class CastVisitorBase : public Visitor {
+	void Visit(Array&) override { }
+	void Visit(Object&) override { }
+	void Visit(Integer&) override { }
+	void Visit(Double&) override { }
+	void Visit(String&) override { }
+	void Visit(Boolean&) override { }
+	void Visit(Null&) override { is_null = true; }
+public:
+	bool is_null = false;
+};
 
-	template<class T>
-	struct CastVisitor final : public CastVisitorBase {
-		T *element = nullptr;
-		void Visit(T& ele) { element = &ele; }
-	};
+template<typename T>
+struct CastVisitor final : public CastVisitorBase {
+	T *element = nullptr;
+	void Visit(T& ele) override { element = &ele; }
+};
 }
 
-namespace json
-{
-
-/////////////////////////
-// UnknownElement members
-class UnknownElement::Imp
-{
+namespace json {
+class UnknownElement::Imp {
 public:
-   virtual ~Imp() {}
-   virtual Imp* Clone() const = 0;
-
-   virtual bool Compare(const Imp& imp) const = 0;
-
-   virtual void Accept(ConstVisitor& visitor) const = 0;
-   virtual void Accept(Visitor& visitor) = 0;
+	virtual ~Imp() {}
+	virtual void Accept(ConstVisitor& visitor) const = 0;
+	virtual void Accept(Visitor& visitor) = 0;
 };
+}
 
+namespace {
 template <typename ElementTypeT>
-class UnknownElement::Imp_T final : public UnknownElement::Imp
-{
+class Imp_T final : public UnknownElement::Imp {
+	ElementTypeT m_Element;
+
 public:
-   Imp_T(const ElementTypeT& element) : m_Element(element) { }
-   Imp* Clone() const { return new Imp_T<ElementTypeT>(*this); }
+	Imp_T(ElementTypeT element) : m_Element(std::move(element)) { }
 
-   void Accept(ConstVisitor& visitor) const { visitor.Visit(m_Element); }
-   void Accept(Visitor& visitor)            { visitor.Visit(m_Element); }
-
-   bool Compare(const Imp& imp) const
-   {
-      CastVisitor<const ElementTypeT> castVisitor;
-      imp.Accept(castVisitor);
-      return castVisitor.element && m_Element == *castVisitor.element;
-   }
-
-private:
-   ElementTypeT m_Element;
+	void Accept(ConstVisitor& visitor) const { visitor.Visit(m_Element); }
+	void Accept(Visitor& visitor)            { visitor.Visit(m_Element); }
 };
+}
 
-UnknownElement::UnknownElement() :                              m_pImp(new Imp_T<Null>(Null())) {}
-UnknownElement::UnknownElement(const UnknownElement& unknown) : m_pImp(unknown.m_pImp->Clone()) {}
-UnknownElement::UnknownElement(int number) :                    m_pImp(new Imp_T<Integer>(number)) {}
-UnknownElement::UnknownElement(const char *string) :            m_pImp(new Imp_T<String>(string)) {}
+namespace json {
+UnknownElement::UnknownElement()                         : m_pImp(new Imp_T<Null>(Null())) {}
+UnknownElement::UnknownElement(UnknownElement&& unknown) : m_pImp(std::move(unknown.m_pImp)) {}
+UnknownElement::UnknownElement(int number)               : m_pImp(new Imp_T<Integer>(number)) {}
+UnknownElement::UnknownElement(const char *string)       : m_pImp(new Imp_T<String>(string)) {}
+
 UnknownElement::~UnknownElement() { }
 
 #define DEFINE_UE_TYPE(Type) \
-	UnknownElement::UnknownElement(Type const& val) : m_pImp(new Imp_T<Type>(val)) { } \
+	UnknownElement::UnknownElement(Type val) : m_pImp(new Imp_T<Type>(std::move(val))) { } \
 	UnknownElement::operator Type const&() const { return CastTo<Type>(); } \
 	UnknownElement::operator Type&() { return CastTo<Type>(); }
 
@@ -97,40 +76,22 @@ DEFINE_UE_TYPE(Boolean)
 DEFINE_UE_TYPE(String)
 DEFINE_UE_TYPE(Null)
 
-UnknownElement& UnknownElement::operator =(const UnknownElement& unknown)
-{
-   m_pImp.reset(unknown.m_pImp->Clone());
+UnknownElement& UnknownElement::operator=(UnknownElement&& unknown) {
+   m_pImp = std::move(unknown.m_pImp);
    return *this;
 }
 
-UnknownElement& UnknownElement::operator[](const std::string& key)
-{
-   return CastTo<Object>()[key];
-}
-
-const UnknownElement& UnknownElement::operator[] (const std::string& key) const
-{
-   // throws if we aren't an object
-   Object const& obj = CastTo<Object>();
-   Object::const_iterator it = obj.find(key);
-   if (it == obj.end())
-      throw Exception("Object member not found: " + key);
-   return it->second;
-}
-
 template <typename ElementTypeT>
-ElementTypeT const& UnknownElement::CastTo() const
-{
-   CastVisitor<const ElementTypeT> castVisitor;
-   Accept(castVisitor);
+ElementTypeT const& UnknownElement::CastTo() const {
+   CastVisitor<ElementTypeT> castVisitor;
+   const_cast<UnknownElement *>(this)->Accept(castVisitor);
    if (!castVisitor.element)
       throw Exception("Bad cast");
    return *castVisitor.element;
 }
 
 template <typename ElementTypeT>
-ElementTypeT& UnknownElement::CastTo()
-{
+ElementTypeT& UnknownElement::CastTo() {
    CastVisitor<ElementTypeT> castVisitor;
    Accept(castVisitor);
 
@@ -148,10 +109,4 @@ ElementTypeT& UnknownElement::CastTo()
 
 void UnknownElement::Accept(ConstVisitor& visitor) const { m_pImp->Accept(visitor); }
 void UnknownElement::Accept(Visitor& visitor)            { m_pImp->Accept(visitor); }
-
-bool UnknownElement::operator == (const UnknownElement& element) const
-{
-   return m_pImp->Compare(*element.m_pImp);
 }
-
-} // end namespace

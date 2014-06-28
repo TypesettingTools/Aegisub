@@ -68,7 +68,7 @@ class DialogShiftTimes final : public wxDialog {
 	wxRadioBox *time_fields;
 	wxListBox *history_box;
 
-	void SaveHistory(json::Array const& shifted_blocks);
+	void SaveHistory(json::Array shifted_blocks);
 	void LoadHistory();
 	void Process(wxCommandEvent&);
 	int Shift(int initial_time, int shift, bool by_time, agi::vfr::Time type);
@@ -103,19 +103,20 @@ static wxString get_history_string(json::Object &obj) {
 		time_field == 1 ? _("s")   :
 		                  _("e")   ;
 
-	json::Array const& sel = obj["selection"];
+	json::Array& sel = obj["selection"];
 	wxString lines;
 
 	int64_t sel_mode = obj["mode"];
 	if (sel_mode == 0)
 		lines = _("all");
 	else if (sel_mode == 2)
-		lines = fmt_tl("from %d onward", (int64_t)sel.front()["start"]);
+		lines = fmt_tl("from %d onward", (int64_t)static_cast<json::Object&>(sel.front())["start"]);
 	else {
 		lines += _("sel ");
 		for (auto it = sel.begin(); it != sel.end(); ++it) {
-			int beg = (int64_t)(*it)["start"];
-			int end = (int64_t)(*it)["end"];
+			json::Object& range = *it;
+			int beg = (int64_t)range["start"];
+			int end = (int64_t)range["end"];
 			if (beg == end)
 				lines += std::to_wstring(beg);
 			else
@@ -306,7 +307,7 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 	time_fields->SetSelection((int64_t)obj["fields"]);
 }
 
-void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
+void DialogShiftTimes::SaveHistory(json::Array shifted_blocks) {
 	json::Object new_entry;
 	new_entry["filename"] = context->subsController->Filename().filename().string();
 	new_entry["is by time"] = shift_by_time->GetValue();
@@ -314,9 +315,9 @@ void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 	new_entry["amount"] = from_wx(shift_by_time->GetValue() ? shift_time->GetValue() : shift_frames->GetValue());
 	new_entry["fields"] = time_fields->GetSelection();
 	new_entry["mode"] = selection_mode->GetSelection();
-	new_entry["selection"] = shifted_blocks;
+	new_entry["selection"] = std::move(shifted_blocks);
 
-	history.insert(history.begin(), new_entry);
+	history.insert(history.begin(), std::move(new_entry));
 	if (history.size() > 50)
 		history.resize(50);
 
@@ -335,7 +336,7 @@ void DialogShiftTimes::LoadHistory() {
 	try {
 		json::UnknownElement root;
 		json::Reader::Read(root, *agi::io::Open(history_filename));
-		history = root;
+		history = std::move(static_cast<json::Array&>(root));
 
 		for (auto& history_entry : history)
 			history_box->Append(get_history_string(history_entry));
@@ -386,7 +387,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 				json::Object block;
 				block["start"] = block_start;
 				block["end"] = line.Row;
-				shifted_blocks.push_back(block);
+				shifted_blocks.push_back(std::move(block));
 				block_start = 0;
 			}
 			if (mode == 1) continue;
@@ -407,10 +408,10 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 		json::Object block;
 		block["start"] = block_start;
 		block["end"] = context->ass->Events.back().Row + 1;
-		shifted_blocks.push_back(block);
+		shifted_blocks.push_back(std::move(block));
 	}
 
-	SaveHistory(shifted_blocks);
+	SaveHistory(std::move(shifted_blocks));
 	Close();
 }
 

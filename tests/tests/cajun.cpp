@@ -25,78 +25,9 @@
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/cajun/visitor.h>
 
-class lagi_cajun : public libagi {
+class lagi_cajun : public libagi { };
 
-protected:
-    // place holder for future code placement
-};
-
-TEST_F(lagi_cajun, Compare) {
-	json::UnknownElement Integer1 = 0;
-	json::UnknownElement Integer2 = 1;
-	json::UnknownElement String1 = "1";
-	json::UnknownElement String2 = "2";
-	json::UnknownElement Boolean1 = false;
-	json::UnknownElement Boolean2 = true;
-	json::UnknownElement Array1 = json::Array();
-	json::UnknownElement Array2 = json::Array();
-	json::UnknownElement Object1 = json::Object();
-	json::UnknownElement Object2 = json::Object();
-	json::UnknownElement Null = json::Null();
-
-	static_cast<json::Array&>(Array2).push_back(1);
-	Object2["a"] = "b";
-
-	// Test that things are equal to themselves and mixed comparisons are not errors
-	EXPECT_EQ(Integer1, Integer1);
-	EXPECT_NE(Integer1, Integer2);
-	EXPECT_NE(Integer1, String1);
-	EXPECT_NE(Integer1, Boolean1);
-	EXPECT_NE(Integer1, Array1);
-	EXPECT_NE(Integer1, Object1);
-	EXPECT_NE(Integer1, Null);
-
-	EXPECT_EQ(String1, String1);
-	EXPECT_NE(String1, Integer2);
-	EXPECT_NE(String1, String2);
-	EXPECT_NE(String1, Boolean1);
-	EXPECT_NE(String1, Array1);
-	EXPECT_NE(String1, Object1);
-	EXPECT_NE(String1, Null);
-
-	EXPECT_EQ(Boolean1, Boolean1);
-	EXPECT_NE(Boolean1, Integer2);
-	EXPECT_NE(Boolean1, String1);
-	EXPECT_NE(Boolean1, Boolean2);
-	EXPECT_NE(Boolean1, Array1);
-	EXPECT_NE(Boolean1, Object1);
-	EXPECT_NE(Boolean1, Null);
-
-	EXPECT_EQ(Array1, Array1);
-	EXPECT_NE(Array1, Integer2);
-	EXPECT_NE(Array1, String1);
-	EXPECT_NE(Array1, Boolean1);
-	EXPECT_NE(Array1, Array2);
-	EXPECT_NE(Array1, Object1);
-	EXPECT_NE(Array1, Null);
-
-	EXPECT_EQ(Object1, Object1);
-	EXPECT_NE(Object1, Integer2);
-	EXPECT_NE(Object1, String1);
-	EXPECT_NE(Object1, Boolean1);
-	EXPECT_NE(Object1, Array2);
-	EXPECT_NE(Object1, Object2);
-	EXPECT_NE(Object1, Null);
-
-	EXPECT_EQ(Null, Null);
-	EXPECT_NE(Null, Integer2);
-	EXPECT_NE(Null, String1);
-	EXPECT_NE(Null, Boolean1);
-	EXPECT_NE(Null, Array2);
-	EXPECT_NE(Null, Object2);
-}
-
-TEST_F(lagi_cajun, CastNonConst) {
+TEST(lagi_cajun, CastNonConst) {
 	json::UnknownElement Integer = 0;
 	json::UnknownElement Double = 0.0;
 	json::UnknownElement String = "1";
@@ -119,7 +50,7 @@ TEST_F(lagi_cajun, CastNonConst) {
 	EXPECT_NO_THROW(static_cast<json::Object const&>(Object));
 }
 
-TEST_F(lagi_cajun, CastConst) {
+TEST(lagi_cajun, CastConst) {
 	const json::UnknownElement Integer = 10;
 	const json::UnknownElement Double = 10.0;
 	const json::UnknownElement String = "1";
@@ -151,21 +82,7 @@ TEST_F(lagi_cajun, CastConst) {
 	EXPECT_TRUE(static_cast<json::Object const&>(Object).empty());
 }
 
-TEST_F(lagi_cajun, UnknownIsIndexable) {
-	json::Object obj;
-	obj["Integer"] = 1;
-	json::UnknownElement unk_obj = obj;
-
-	EXPECT_NO_THROW(unk_obj["Integer"]);
-	EXPECT_EQ(1, (json::Integer)unk_obj["Integer"]);
-	EXPECT_NO_THROW(unk_obj["Nonexistent Key"]);
-
-	json::UnknownElement const& const_unk_obj = obj;
-	EXPECT_NO_THROW(const_unk_obj["Integer"]);
-	EXPECT_THROW(const_unk_obj["Another nonexistent Key"], json::Exception);
-}
-
-TEST_F(lagi_cajun, ObjectStoreInteger) {
+TEST(lagi_cajun, ObjectStoreInteger) {
 	json::Object obj;
 	obj["Integer"] = 1;
 	EXPECT_EQ(1, static_cast<json::Integer>(obj["Integer"]));
@@ -177,7 +94,7 @@ TEST_F(lagi_cajun, ObjectStoreInteger) {
 	EXPECT_THROW(static_cast<json::Object const&>(obj["Integer"]), json::Exception);
 }
 
-TEST_F(lagi_cajun, ObjectStoreDouble) {
+TEST(lagi_cajun, ObjectStoreDouble) {
 	json::Object obj;
 	obj["Double"] = 1.0;
 	EXPECT_EQ(1.0, static_cast<json::Double>(obj["Double"]));
@@ -189,7 +106,7 @@ TEST_F(lagi_cajun, ObjectStoreDouble) {
 	EXPECT_THROW(static_cast<json::Object const&>(obj["Double"]), json::Exception);
 }
 
-TEST_F(lagi_cajun, ObjectStoreString) {
+TEST(lagi_cajun, ObjectStoreString) {
 	json::Object obj;
 	obj["String"] = "test";
 	EXPECT_STREQ("test", static_cast<std::string>(obj["String"]).c_str());
@@ -201,7 +118,7 @@ TEST_F(lagi_cajun, ObjectStoreString) {
 	EXPECT_THROW(static_cast<json::Object const&>(obj["String"]), json::Exception);
 }
 
-TEST_F(lagi_cajun, ObjectStoreBoolean) {
+TEST(lagi_cajun, ObjectStoreBoolean) {
 	json::Object obj;
 	obj["Boolean"] = true;
 	EXPECT_TRUE(static_cast<json::Boolean>(obj["Boolean"]));
@@ -213,7 +130,7 @@ TEST_F(lagi_cajun, ObjectStoreBoolean) {
 	EXPECT_THROW(static_cast<json::Object const&>(obj["Boolean"]), json::Exception);
 }
 
-TEST_F(lagi_cajun, ObjectStoreNull) {
+TEST(lagi_cajun, ObjectStoreNull) {
 	json::Object obj;
 	obj["Null"] = json::Null();
 
@@ -241,41 +158,27 @@ TEST_F(lagi_cajun, ObjectStoreNull) {
 	EXPECT_THROW(static_cast<json::Null>(obj["Null"]), json::Exception);
 }
 
-TEST_F(lagi_cajun, ObjectCreateArray) {
+TEST(lagi_cajun, ObjectCreateArray) {
 	json::Object obj;
 	obj["Inside"] = "";
 	json::Array array;
-	array.push_back(obj);
+	array.push_back(std::move(obj));
 
-	EXPECT_STREQ("", static_cast<std::string>(array[0]["Inside"]).c_str());
+	EXPECT_STREQ("", static_cast<std::string>(static_cast<json::Object&>(array[0])["Inside"]).c_str());
 }
 
-TEST_F(lagi_cajun, ObjectEquality) {
-	json::Object obj;
-	obj["Inside"] = "";
-	json::Array array;
-	array.push_back(obj);
-	obj["Array"] = array;
-	json::Object obj_dupe = obj;
-
-	EXPECT_TRUE(obj_dupe == obj);
-
-	obj_dupe["NotEqual"] = array;
-	EXPECT_FALSE(obj_dupe == obj);
-}
-
-TEST_F(lagi_cajun, Read) {
-	json::UnknownElement obj;
+TEST(lagi_cajun, Read) {
+	json::UnknownElement root;
 	std::istringstream doc("{\"String\" : \"This is a test\", \"Boolean\" : false, \"Null\" : null }");
-	EXPECT_NO_THROW(json::Reader::Read(obj, doc));
+	EXPECT_NO_THROW(json::Reader::Read(root, doc));
+	json::Object& obj = root;
 	EXPECT_NO_THROW(obj["String"]);
 	EXPECT_STREQ("This is a test", static_cast<std::string>(obj["String"]).c_str());
 	EXPECT_FALSE(static_cast<json::Boolean>(obj["Boolean"]));
 	EXPECT_NO_THROW(static_cast<json::Null>(obj["Null"]));
 }
 
-
-TEST_F(lagi_cajun, Write) {
+TEST(lagi_cajun, Write) {
 	json::Object obj;
 	obj["Boolean"] = true;
 	obj["String"] = "This \"is\" \\a \t test";
@@ -305,7 +208,7 @@ TEST_F(lagi_cajun, Write) {
 	EXPECT_STREQ("null", stream.str().c_str());
 }
 
-TEST_F(lagi_cajun, ReaderParserErrors) {
+TEST(lagi_cajun, ReaderParserErrors) {
 	json::UnknownElement ue;
 
 	std::istringstream missing_comma("[1 2]");
@@ -333,7 +236,7 @@ TEST_F(lagi_cajun, ReaderParserErrors) {
 	EXPECT_NO_THROW(json::Reader::Read(ue, unique_keys));
 }
 
-TEST_F(lagi_cajun, ReaderScanErrors) {
+TEST(lagi_cajun, ReaderScanErrors) {
 	json::UnknownElement ue;
 
 	std::istringstream doc("[true, false, thiswontwork]");
@@ -359,23 +262,23 @@ std::string roundtrip_test(const char *in) {
 	return oss.str();
 }
 
-TEST_F(lagi_cajun, round_double_roundtrips) {
+TEST(lagi_cajun, round_double_roundtrips) {
 	EXPECT_STREQ("1.0", roundtrip_test("1.0").c_str());
 }
 
-TEST_F(lagi_cajun, representable_double_roundtrips) {
+TEST(lagi_cajun, representable_double_roundtrips) {
 	EXPECT_STREQ("1.5", roundtrip_test("1.5").c_str());
 }
 
-TEST_F(lagi_cajun, int_roundtrips) {
+TEST(lagi_cajun, int_roundtrips) {
 	EXPECT_STREQ("1", roundtrip_test("1").c_str());
 }
 
-TEST_F(lagi_cajun, bool_roundtrips) {
+TEST(lagi_cajun, bool_roundtrips) {
 	EXPECT_STREQ("true", roundtrip_test("true").c_str());
 	EXPECT_STREQ("false", roundtrip_test("false").c_str());
 }
 
-TEST_F(lagi_cajun, null_roundtrips) {
+TEST(lagi_cajun, null_roundtrips) {
 	EXPECT_STREQ("null", roundtrip_test("null").c_str());
 }

@@ -288,7 +288,7 @@ UnknownElement Reader::ParseObject(Reader::TokenStream& tokenStream) {
 
 	MatchExpectedToken(Token::TOKEN_OBJECT_END, tokenStream);
 
-	return object;
+	return std::move(object);
 }
 
 UnknownElement Reader::ParseArray(Reader::TokenStream& tokenStream) {
@@ -296,8 +296,7 @@ UnknownElement Reader::ParseArray(Reader::TokenStream& tokenStream) {
 
 	Array array;
 
-	while (!tokenStream.EOS() && tokenStream.Peek().nType != Token::TOKEN_ARRAY_END)
-	{
+	while (!tokenStream.EOS() && tokenStream.Peek().nType != Token::TOKEN_ARRAY_END) {
 		array.push_back(Parse(tokenStream));
 
 		if (!tokenStream.EOS() && tokenStream.Peek().nType != Token::TOKEN_ARRAY_END)
@@ -306,7 +305,7 @@ UnknownElement Reader::ParseArray(Reader::TokenStream& tokenStream) {
 
 	MatchExpectedToken(Token::TOKEN_ARRAY_END, tokenStream);
 
-	return array;
+	return std::move(array);
 }
 
 UnknownElement Reader::ParseString(Reader::TokenStream& tokenStream) {

@@ -38,8 +38,8 @@ MRUManager::MRUManager(agi::fs::path const& config, std::pair<const char *, size
 {
 	LOG_D("agi/mru") << "Loading MRU List";
 
-	json::Object root(json_util::file(config, default_config));
-	for (auto const& it : root)
+	auto root = json_util::file(config, default_config);
+	for (auto const& it : static_cast<json::Object const&>(root))
 		Load(it.first, it.second);
 }
 
@@ -76,8 +76,7 @@ const MRUManager::MRUListMap* MRUManager::Get(std::string const& key) {
 }
 
 agi::fs::path const& MRUManager::GetEntry(std::string const& key, const size_t entry) {
-	const MRUManager::MRUListMap *const map = Get(key);
-
+	const auto map = Get(key);
 	if (entry >= map->size())
 		throw MRUErrorIndexOutOfRange("Requested element index is out of range.");
 

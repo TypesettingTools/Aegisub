@@ -22,6 +22,20 @@
 #include <fstream>
 
 static const char default_opt[] = "{\"Valid\" : \"This is valid\"}";
+static const char all_types[] = R"raw({
+	"Integer" : 0,
+	"Double" : 0.1,
+	"String" : "",
+	"Color" : "rgb(0, 0, 0)",
+	"Boolean" : false,
+	"Array" : {
+		"Integer" : [{ "int" : 0 }, {"int" : 0}],
+		"Double" : [{ "double" : 0.1 }, {"double" : 0.1}],
+		"String" : [{ "string" : "" }, {"string" : ""}],
+		"Color" : [{ "color" : "rgb(0,0,0)" }, {"color" : "rgb(0,0,0)"}],
+		"Boolean" : [{ "bool" : false }, {"bool" : false}]
+	}
+})raw";
 
 class lagi_option : public libagi {
 protected:
@@ -76,30 +90,14 @@ TEST_F(lagi_option, existent_but_invalid_file_uses_default) {
 	EXPECT_THROW(opt.Get("Null"), agi::Exception);
 }
 
-TEST_F(lagi_option, load_several_config_files) {
-	agi::Options opt("", default_opt, agi::Options::FLUSH_SKIP);
-	{ std::ifstream f("data/options/string.json");  EXPECT_NO_THROW(opt.ConfigNext(f)); }
-	{ std::ifstream f("data/options/integer.json"); EXPECT_NO_THROW(opt.ConfigNext(f)); }
-	{ std::ifstream f("data/options/double.json");  EXPECT_NO_THROW(opt.ConfigNext(f)); }
-	{ std::ifstream f("data/options/bool.json");    EXPECT_NO_THROW(opt.ConfigNext(f)); }
-
-	EXPECT_NO_THROW(opt.Get("String")->GetString());
-	EXPECT_NO_THROW(opt.Get("Integer")->GetInt());
-	EXPECT_NO_THROW(opt.Get("Double")->GetDouble());
-	EXPECT_NO_THROW(opt.Get("Bool")->GetBool());
-}
-
 TEST_F(lagi_option, arrays) {
-	agi::Options opt("", default_opt, agi::Options::FLUSH_SKIP);
-	{ std::ifstream f("data/options/array_string.json");  EXPECT_NO_THROW(opt.ConfigNext(f)); }
-	{ std::ifstream f("data/options/array_integer.json"); EXPECT_NO_THROW(opt.ConfigNext(f)); }
-	{ std::ifstream f("data/options/array_double.json");  EXPECT_NO_THROW(opt.ConfigNext(f)); }
-	{ std::ifstream f("data/options/array_bool.json");    EXPECT_NO_THROW(opt.ConfigNext(f)); }
+	agi::Options opt("", all_types, agi::Options::FLUSH_SKIP);
 
-	EXPECT_NO_THROW(opt.Get("String")->GetListString());
-	EXPECT_NO_THROW(opt.Get("Integer")->GetListInt());
-	EXPECT_NO_THROW(opt.Get("Double")->GetListDouble());
-	EXPECT_NO_THROW(opt.Get("Bool")->GetListBool());
+	EXPECT_NO_THROW(opt.Get("Array/String")->GetListString());
+	EXPECT_NO_THROW(opt.Get("Array/Integer")->GetListInt());
+	EXPECT_NO_THROW(opt.Get("Array/Double")->GetListDouble());
+	EXPECT_NO_THROW(opt.Get("Array/Boolean")->GetListBool());
+	EXPECT_NO_THROW(opt.Get("Array/Color")->GetListColor());
 }
 
 TEST_F(lagi_option, bad_default_throws_and_null_is_rejected) {
@@ -107,7 +105,7 @@ TEST_F(lagi_option, bad_default_throws_and_null_is_rejected) {
 }
 
 TEST_F(lagi_option, nested_options) {
-	const char conf[] = "{ \"a\" : { \"b\" : { \"c\" : { \"c\" : \"value\" } } } }";
+	const char conf[] = R"raw({ "a" : { "b" : { "c" : { "c" : "value" } } } })raw";
 	ASSERT_NO_THROW(agi::Options("", conf, agi::Options::FLUSH_SKIP));
 	agi::Options opt("", conf, agi::Options::FLUSH_SKIP);
 	ASSERT_NO_THROW(opt.Get("a/b/c/c"));
@@ -134,28 +132,22 @@ TEST_F(lagi_option, flush_roundtrip) {
 	agi::fs::Remove("data/options/tmp");
 
 	{
-		agi::Options opt("data/options/tmp", "{}");
-		{ std::ifstream f("data/options/all_types.json"); EXPECT_NO_THROW(opt.ConfigNext(f)); }
+		agi::Options opt("data/options/tmp", all_types);
 		EXPECT_NO_THROW(opt.Get("Integer")->SetInt(1));
 		EXPECT_NO_THROW(opt.Get("Double")->SetDouble(1.1));
 		EXPECT_NO_THROW(opt.Get("String")->SetString("hello"));
 		EXPECT_NO_THROW(opt.Get("Color")->SetColor(agi::Color("rgb(255,255,255)")));
 		EXPECT_NO_THROW(opt.Get("Boolean")->SetBool(true));
 
-		std::vector<int64_t> int_arr; int_arr.push_back(1);
-		EXPECT_NO_THROW(opt.Get("Array/Integer")->SetListInt(int_arr));
-		std::vector<double> double_arr; double_arr.push_back(1.1);
-		EXPECT_NO_THROW(opt.Get("Array/Double")->SetListDouble(double_arr));
-		std::vector<std::string> str_arr; str_arr.push_back("hello");
-		EXPECT_NO_THROW(opt.Get("Array/String")->SetListString(str_arr));
-		std::vector<agi::Color> clr_arr; clr_arr.push_back(agi::Color("rgb(255,255,255)"));
-		EXPECT_NO_THROW(opt.Get("Array/Color")->SetListColor(clr_arr));
-		std::vector<bool> bool_arr; bool_arr.push_back(true);
-		EXPECT_NO_THROW(opt.Get("Array/Boolean")->SetListBool(bool_arr));
+		EXPECT_NO_THROW(opt.Get("Array/Integer")->SetListInt({1}));
+		EXPECT_NO_THROW(opt.Get("Array/Double")->SetListDouble({1.1}));
+		EXPECT_NO_THROW(opt.Get("Array/String")->SetListString({"hello"}));
+		EXPECT_NO_THROW(opt.Get("Array/Color")->SetListColor({agi::Color("rgb(255,255,255)")}));
+		EXPECT_NO_THROW(opt.Get("Array/Boolean")->SetListBool({true}));
 	}
 
 	{
-		agi::Options opt("data/options/tmp", "{}");
+		agi::Options opt("data/options/tmp", all_types);
 		ASSERT_NO_THROW(opt.ConfigUser());
 
 		EXPECT_EQ(1, opt.Get("Integer")->GetInt());
@@ -187,10 +179,6 @@ TEST_F(lagi_option, mixed_valid_and_invalid_in_user_conf_loads_all_valid) {
 	EXPECT_EQ(true, opt.Get("3")->GetBool());
 }
 
-TEST_F(lagi_option, empty_array_works) {
-	EXPECT_NO_THROW(agi::Options("", "{ \"arr\" : [] }", agi::Options::FLUSH_SKIP));
-}
-
 TEST_F(lagi_option, empty_object_works) {
 	EXPECT_NO_THROW(agi::Options("", "{ \"obj\" : {} }", agi::Options::FLUSH_SKIP));
 }
@@ -214,60 +202,6 @@ TEST_F(lagi_option, int_vs_double) {
 struct empty_arr_options : public agi::Options {
 	empty_arr_options() : agi::Options("", "{ \"arr\" : [] }", agi::Options::FLUSH_SKIP) { }
 };
-
-TEST_F(lagi_option, empty_array_decays_to_first_used_type) {
-	ASSERT_NO_THROW(empty_arr_options());
-
-	{
-		empty_arr_options opt;
-		EXPECT_NO_THROW(opt.Get("arr")->GetListBool());
-
-		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::InternalError);
-	}
-
-	{
-		empty_arr_options opt;
-		EXPECT_NO_THROW(opt.Get("arr")->GetListColor());
-
-		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::InternalError);
-	}
-
-	{
-		empty_arr_options opt;
-		EXPECT_NO_THROW(opt.Get("arr")->GetListDouble());
-
-		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::InternalError);
-	}
-
-	{
-		empty_arr_options opt;
-		EXPECT_NO_THROW(opt.Get("arr")->GetListInt());
-
-		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListString(), agi::InternalError);
-	}
-
-	{
-		empty_arr_options opt;
-		EXPECT_NO_THROW(opt.Get("arr")->GetListString());
-
-		EXPECT_THROW(opt.Get("arr")->GetListBool(),   agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListColor(),  agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListDouble(), agi::InternalError);
-		EXPECT_THROW(opt.Get("arr")->GetListInt(),    agi::InternalError);
-	}
-}
 
 #define CHECK_TYPE(str, type) \
 	do { \

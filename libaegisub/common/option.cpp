@@ -77,7 +77,7 @@ class ConfigVisitor final : public json::ConstVisitor {
 	void Visit(const json::Object& object) {
 		auto old_name = name;
 		for (auto const& obj : object) {
-			name = old_name + (name.empty() ? "" : "/") + obj.first;
+			name = old_name + (old_name.empty() ? "" : "/") + obj.first;
 			obj.second.Accept(*this);
 		}
 		name = old_name;
@@ -144,15 +144,15 @@ public:
 /// @param[out] obj  Parent object
 /// @param[in] path  Path option should be stored in.
 /// @param[in] value Value to write.
-void put_option(json::Object &obj, const std::string &path, const json::UnknownElement &value) {
+void put_option(json::Object &obj, const std::string &path, json::UnknownElement value) {
 	std::string::size_type pos = path.find('/');
 	// Not having a '/' denotes it is a leaf.
 	if (pos == std::string::npos) {
 		assert(obj.find(path) == obj.end());
-		obj[path] = value;
+		obj[path] = std::move(value);
 	}
 	else
-		put_option(obj[path.substr(0, pos)], path.substr(pos + 1), value);
+		put_option(obj[path.substr(0, pos)], path.substr(pos + 1), std::move(value));
 }
 
 template<class T>
@@ -163,7 +163,7 @@ void put_array(json::Object &obj, const std::string &path, const char *element_k
 		static_cast<json::Object&>(array.back())[element_key] = (json::UnknownElement)elem;
 	}
 
-	put_option(obj, path, array);
+	put_option(obj, path, std::move(array));
 }
 
 struct option_name_cmp {

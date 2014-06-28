@@ -56,20 +56,20 @@ public:
 class UnknownElement {
 public:
    UnknownElement();
-   UnknownElement(const UnknownElement& unknown);
-   UnknownElement(const Object& object);
-   UnknownElement(const Array& array);
-   UnknownElement(double const& number);
+   UnknownElement(UnknownElement&& unknown);
+   UnknownElement(Object object);
+   UnknownElement(Array array);
+   UnknownElement(double number);
    UnknownElement(int number);
-   UnknownElement(int64_t const& number);
-   UnknownElement(bool const& boolean);
+   UnknownElement(int64_t number);
+   UnknownElement(bool boolean);
    UnknownElement(const char *string);
-   UnknownElement(const String& string);
-   UnknownElement(const Null& null);
+   UnknownElement(String string);
+   UnknownElement(Null null);
 
    ~UnknownElement();
 
-   UnknownElement& operator = (const UnknownElement& unknown);
+   UnknownElement& operator=(UnknownElement&& unknown);
 
    // implicit cast to actual element type. throws on failure
    operator Object const&() const;
@@ -87,27 +87,14 @@ public:
    operator String&();
    operator Null&();
 
-   // provides quick access to children when real element type is object
-   UnknownElement& operator[] (const std::string& key);
-   const UnknownElement& operator[] (const std::string& key) const;
-   template<int N>
-   UnknownElement& operator[] (const char(&key)[N]) { return operator[](std::string(key)); }
-   template<int N>
-   const UnknownElement& operator[] (const char(&key)[N]) const { return operator[](std::string(key)); }
-
    // implements visitor pattern
    void Accept(ConstVisitor& visitor) const;
    void Accept(Visitor& visitor);
 
-   // tests equality. first checks type, then value if possible
-   bool operator ==(const UnknownElement& element) const;
-   bool operator !=(const UnknownElement& element) const { return !(*this == element); }
-
-private:
    class Imp;
 
-   template <typename ElementTypeT>
-   class Imp_T;
+private:
+   UnknownElement(UnknownElement const& unknown) = delete;
 
    template <typename ElementTypeT>
    ElementTypeT const& CastTo() const;
@@ -121,8 +108,6 @@ private:
 /////////////////////////////////////////////////////////////////////////////////
 // Null - doesn't do much of anything but satisfy the JSON spec. It is the default
 //  element type of UnknownElement
-struct Null {
-   bool operator == (const Null&) const { return true; }
-};
+struct Null { };
 
 } // end namespace
