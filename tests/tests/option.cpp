@@ -120,6 +120,16 @@ TEST_F(lagi_option, heterogeneous_arrays_rejected) {
 	EXPECT_THROW(agi::Options("", "{ \"key\" : [ { \"bool\" : true }, { \"double\" : 1.0 } ] }", agi::Options::FLUSH_SKIP), agi::Exception);
 }
 
+TEST_F(lagi_option, set_works) {
+	agi::Options opt("", all_types, agi::Options::FLUSH_SKIP);
+
+	ASSERT_NO_THROW(opt.Get("Integer")->SetInt(1000));
+	EXPECT_EQ(1000, opt.Get("Integer")->GetInt());
+
+	ASSERT_NO_THROW(opt.Get("String")->SetString("Hello"));
+	EXPECT_EQ("Hello", opt.Get("String")->GetString());
+}
+
 TEST_F(lagi_option, flush_roundtrip) {
 	agi::fs::Remove("data/options/tmp");
 

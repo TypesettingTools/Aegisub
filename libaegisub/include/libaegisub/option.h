@@ -22,6 +22,7 @@
 #include <iosfwd>
 #include <map>
 #include <memory>
+#include <vector>
 
 #include <libaegisub/fs_fwd.h>
 
@@ -33,8 +34,6 @@ namespace json {
 namespace agi {
 class OptionValue;
 
-using OptionValueMap = std::map<std::string, std::unique_ptr<OptionValue>>;
-
 class Options {
 public:
 	/// Options class settings.
@@ -44,8 +43,7 @@ public:
 	};
 
 private:
-	/// Internal OptionValueMap
-	OptionValueMap values;
+	std::vector<std::unique_ptr<OptionValue>> values;
 
 	/// User config (file that will be written to disk)
 	const agi::fs::path config_file;
@@ -74,14 +72,15 @@ public:
 	/// @brief Get an option by name.
 	/// @param name Option to get.
 	/// Get an option value object by name throw an internal exception if the option is not found.
-	OptionValue* Get(const std::string &name);
+	OptionValue *Get(const char *name);
+	OptionValue *Get(std::string const& name) { return Get(name.c_str()); }
 
 	/// @brief Next configuration file to load.
 	/// @param[in] src Stream to load from.
 	/// Load next config which will supersede any values from previous configs
 	/// can be called as many times as required, but only after ConfigDefault() and
 	/// before ConfigUser()
-	void ConfigNext(std::istream &stream);
+	void ConfigNext(std::istream &stream) { LoadConfig(stream); }
 
 	/// @brief Set user config file.
 	/// Set the user configuration file and read options from it, closes all

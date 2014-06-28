@@ -32,9 +32,6 @@
     <ClInclude Include="$(SrcDir)common\charset_6937.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)common\option_visit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -233,9 +230,6 @@
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\option.cpp">
-      <Filter>Source Files\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)common\option_visit.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\thesaurus.cpp">

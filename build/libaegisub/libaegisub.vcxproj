@@ -56,7 +56,6 @@
   <!-- Source files -->
   <ItemGroup>
     <ClInclude Include="$(SrcDir)common\charset_6937.h" />
-    <ClInclude Include="$(SrcDir)common\option_visit.h" />
     <ClInclude Include="$(SrcDir)common\parser.h" />
     <ClInclude Include="$(SrcDir)config.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\access.h" />
@@ -141,7 +140,6 @@
     <ClCompile Include="$(SrcDir)common\log.cpp" />
     <ClCompile Include="$(SrcDir)common\mru.cpp" />
     <ClCompile Include="$(SrcDir)common\option.cpp" />
-    <ClCompile Include="$(SrcDir)common\option_visit.cpp" />
     <ClCompile Include="$(SrcDir)common\parser.cpp" />
     <ClCompile Include="$(SrcDir)common\path.cpp" />
     <ClCompile Include="$(SrcDir)common\thesaurus.cpp" />

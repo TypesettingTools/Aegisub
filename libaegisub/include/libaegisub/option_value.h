@@ -90,7 +90,7 @@ protected:
 public:
 	virtual ~OptionValue() = default;
 
-	std::string GetName() const { return name; }
+	std::string const& GetName() const { return name; }
 	virtual OptionType GetType() const = 0;
 	virtual bool IsDefault() const = 0;
 	virtual void Reset() = 0;
