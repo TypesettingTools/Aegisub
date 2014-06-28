@@ -162,7 +162,7 @@ void Hotkey::Flush() {
 	}
 
 	io::Save file(config_file);
-	json::Writer::Write(root, file.Get());
+	agi::JsonWriter::Write(root, file.Get());
 }
 
 void Hotkey::SetHotkeyMap(HotkeyMap const& new_map) {

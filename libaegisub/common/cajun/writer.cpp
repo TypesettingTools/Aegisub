@@ -1,125 +1,100 @@
-/**********************************************
-
-License: BSD
-Project Webpage: http://cajun-jsonapi.sourceforge.net/
-Author: Terry Caton
-
-***********************************************/
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
 #include "libaegisub/cajun/writer.h"
 
 #include <cmath>
 #include <iomanip>
 
-/*
-
-TODO:
-* better documentation
-* unicode character encoding
-
-*/
-
-namespace json {
-
-Writer::Writer(std::ostream& ostr) : m_ostr(ostr) { }
-
-void Writer::Write(Array const& array) {
-	if (array.empty())
-		m_ostr << "[]";
-	else {
-		m_ostr << '[' << std::endl;
-		++tab_depth;
-
-		Array::const_iterator it(array.begin()), itend(array.end());
-		while (it != itend) {
-			m_ostr << std::string(tab_depth, '\t');
-
-			Write(*it);
-
-			if (++it != itend)
-				m_ostr << ',';
-			m_ostr << std::endl;
-		}
-
-		--tab_depth;
-		m_ostr << std::string(tab_depth, '\t') << ']';
+namespace agi {
+void JsonWriter::Visit(json::Array const& array) {
+	if (array.empty()) {
+		ostr << "[]";
+		return;
 	}
+
+	indent += '\t';
+	ostr << "[\n";
+
+	bool first = true;
+	for (auto const& entry : array) {
+		if (!first) ostr << ",\n";
+		first = false;
+
+		ostr << indent;
+		Visit(entry);
+	}
+
+	indent.pop_back();
+	ostr << '\n' << indent << ']';
 }
 
-void Writer::Write(Object const& object) {
-	if (object.empty())
-		m_ostr << "{}";
-	else {
-		m_ostr << '{' << std::endl;
-		++tab_depth;
-
-		Object::const_iterator it(object.begin()), itend(object.end());
-		while (it != itend) {
-			m_ostr << std::string(tab_depth, '\t');
-			Write(it->first);
-			m_ostr << " : ";
-			Write(it->second);
-
-			if (++it != itend)
-				m_ostr << ',';
-			m_ostr << std::endl;
-		}
-
-		--tab_depth;
-		m_ostr << std::string(tab_depth, '\t') << '}';
+void JsonWriter::Visit(json::Object const& object) {
+	if (object.empty()) {
+		ostr << "{}";
+		return;
 	}
+
+	indent += '\t';
+	ostr << "{\n";
+
+	bool first = true;
+	for (auto const& entry : object) {
+		if (!first) ostr << ",\n";
+		first = false;
+
+		ostr << indent;
+		Visit(entry.first);
+		ostr << " : ";
+		Visit(entry.second);
+	}
+
+	indent.pop_back();
+	ostr << '\n' << indent << '}';
 }
 
-void Writer::Write(Double const& numberElement) {
-	m_ostr << std::setprecision(20) << numberElement;
+void JsonWriter::Visit(double d) {
+	ostr << std::setprecision(20) << d;
 
 	double unused;
-	if (!std::modf(numberElement, &unused))
-		m_ostr << ".0";
+	if (!std::modf(d, &unused))
+		ostr << ".0";
 }
 
-void Writer::Write(Integer const& numberElement) {
-	m_ostr << numberElement;
-}
+void JsonWriter::Visit(std::string const& str) {
+	ostr << '"';
 
-void Writer::Write(Boolean const& booleanElement) {
-	m_ostr << (booleanElement ? "true" : "false");
-}
-
-void Writer::Write(String const& stringElement) {
-	m_ostr << '"';
-
-	std::string::const_iterator it(stringElement.begin()), itend(stringElement.end());
-	for (; it != itend; ++it) {
-		switch (*it) {
-			case '"':  m_ostr << "\\\""; break;
-			case '\\': m_ostr << "\\\\"; break;
-			case '\b': m_ostr << "\\b";  break;
-			case '\f': m_ostr << "\\f";  break;
-			case '\n': m_ostr << "\\n";  break;
-			case '\r': m_ostr << "\\r";  break;
-			case '\t': m_ostr << "\\t";  break;
-			default:   m_ostr << *it;    break;
+	for (auto c : str) {
+		switch (c) {
+			case '"':  ostr << "\\\""; break;
+			case '\\': ostr << "\\\\"; break;
+			case '\b': ostr << "\\b";  break;
+			case '\f': ostr << "\\f";  break;
+			case '\n': ostr << "\\n";  break;
+			case '\r': ostr << "\\r";  break;
+			case '\t': ostr << "\\t";  break;
+			default:   ostr << c;      break;
 		}
 	}
 
-	m_ostr << '"';
+	ostr << '"';
 }
 
-void Writer::Write(Null const&) {
-	m_ostr << "null";
+void JsonWriter::Visit(int64_t i) { ostr << i; }
+void JsonWriter::Visit(bool b) { ostr << (b ? "true" : "false"); }
+void JsonWriter::Visit(json::Null const&) { ostr << "null"; }
+void JsonWriter::Visit(json::UnknownElement const& unknown) { unknown.Accept(*this); }
 }
-
-void Writer::Write(UnknownElement const& unknown) {
-	unknown.Accept(*this);
-}
-
-void Writer::Visit(Array const& array)     { Write(array);   }
-void Writer::Visit(Object const& object)   { Write(object);  }
-void Writer::Visit(Integer const& integer) { Write(integer); }
-void Writer::Visit(Double const& dbl)      { Write(dbl);     }
-void Writer::Visit(String const& string)   { Write(string);  }
-void Writer::Visit(Boolean const& boolean) { Write(boolean); }
-void Writer::Visit(Null const& null)       { Write(null);    }
-
-} // end namespace

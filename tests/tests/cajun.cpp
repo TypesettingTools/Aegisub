@@ -281,27 +281,27 @@ TEST_F(lagi_cajun, Write) {
 	obj["String"] = "This \"is\" \\a \t test";
 
 	std::stringstream stream;
-	EXPECT_NO_THROW(json::Writer::Write(obj, stream));
+	EXPECT_NO_THROW(agi::JsonWriter::Write(obj, stream));
 	EXPECT_STREQ("{\n\t\"Boolean\" : true,\n\t\"String\" : \"This \\\"is\\\" \\\\a \\t test\"\n}", stream.str().c_str());
 
 	stream.str("");
-	EXPECT_NO_THROW(json::Writer::Write(json::Array(), stream));
+	EXPECT_NO_THROW(agi::JsonWriter::Write(json::Array(), stream));
 	EXPECT_STREQ("[]", stream.str().c_str());
 
 	stream.str("");
-	EXPECT_NO_THROW(json::Writer::Write(json::Object(), stream));
+	EXPECT_NO_THROW(agi::JsonWriter::Write(json::Object(), stream));
 	EXPECT_STREQ("{}", stream.str().c_str());
 
 	stream.str("");
-	EXPECT_NO_THROW(json::Writer::Write(true, stream));
+	EXPECT_NO_THROW(agi::JsonWriter::Write(true, stream));
 	EXPECT_STREQ("true", stream.str().c_str());
 
 	stream.str("");
-	EXPECT_NO_THROW(json::Writer::Write(false, stream));
+	EXPECT_NO_THROW(agi::JsonWriter::Write(false, stream));
 	EXPECT_STREQ("false", stream.str().c_str());
 
 	stream.str("");
-	EXPECT_NO_THROW(json::Writer::Write(json::Null(), stream));
+	EXPECT_NO_THROW(agi::JsonWriter::Write(json::Null(), stream));
 	EXPECT_STREQ("null", stream.str().c_str());
 }
 
@@ -355,7 +355,7 @@ std::string roundtrip_test(const char *in) {
 	json::Reader::Read(ele, iss);
 
 	std::stringstream oss;
-	json::Writer::Write(ele, oss);
+	agi::JsonWriter::Write(ele, oss);
 	return oss.str();
 }
 

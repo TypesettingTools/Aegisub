@@ -30,10 +30,10 @@ struct ConstVisitor {
 
 	virtual void Visit(const Array& array) = 0;
 	virtual void Visit(const Object& object) = 0;
-	virtual void Visit(const Integer& number) = 0;
-	virtual void Visit(const Double& number) = 0;
+	virtual void Visit(int64_t number) = 0;
+	virtual void Visit(double number) = 0;
 	virtual void Visit(const String& string) = 0;
-	virtual void Visit(const Boolean& boolean) = 0;
+	virtual void Visit(bool boolean) = 0;
 	virtual void Visit(const Null& null) = 0;
 };
 

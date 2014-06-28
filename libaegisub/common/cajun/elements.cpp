@@ -24,10 +24,10 @@ namespace {
 		void Visit(Null&) { is_null = true; }
 		void Visit(Array const&) { }
 		void Visit(Object const&) { }
-		void Visit(Integer const&) { }
-		void Visit(Double const&) { }
+		void Visit(Integer) { }
+		void Visit(Double) { }
 		void Visit(String const&) { }
-		void Visit(Boolean const&) { }
+		void Visit(Boolean) { }
 		void Visit(Null const&) { is_null = true; }
 	public:
 		bool is_null = false;

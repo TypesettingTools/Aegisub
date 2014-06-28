@@ -113,7 +113,7 @@ void JsonEmitter::log(SinkMessage const& sm) {
 	entry["func"]     = sm.func;
 	entry["line"]     = sm.line;
 	entry["message"]  = sm.message;
-	json::Writer::Write(entry, *fp);
+	agi::JsonWriter::Write(entry, *fp);
 	fp->flush();
 }
 

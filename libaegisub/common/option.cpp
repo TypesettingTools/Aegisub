@@ -106,11 +106,11 @@ class ConfigVisitor final : public json::ConstVisitor {
 			Error("Array type not handled");
 	}
 
-	void Visit(const json::Integer& number) {
+	void Visit(int64_t number) {
 		values.push_back(agi::make_unique<OptionValueInt>(name, number));
 	}
 
-	void Visit(const json::Double& number) {
+	void Visit(double number) {
 		values.push_back(agi::make_unique<OptionValueDouble>(name, number));
 	}
 
@@ -127,7 +127,7 @@ class ConfigVisitor final : public json::ConstVisitor {
 		}
 	}
 
-	void Visit(const json::Boolean& boolean) {
+	void Visit(bool boolean) {
 		values.push_back(agi::make_unique<OptionValueBool>(name, boolean));
 	}
 
@@ -316,7 +316,7 @@ void Options::Flush() const {
 		}
 	}
 
-	json::Writer::Write(obj_out, io::Save(config_file).Get());
+	agi::JsonWriter::Write(obj_out, io::Save(config_file).Get());
 }
 
 } // namespace agi

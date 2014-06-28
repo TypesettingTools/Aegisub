@@ -321,7 +321,7 @@ void DialogShiftTimes::SaveHistory(json::Array const& shifted_blocks) {
 		history.resize(50);
 
 	try {
-		json::Writer::Write(history, agi::io::Save(history_filename).Get());
+		agi::JsonWriter::Write(history, agi::io::Save(history_filename).Get());
 	}
 	catch (agi::fs::FileSystemError const& e) {
 		LOG_E("dialog_shift_times/save_history") << "Cannot save shift times history: " << e.GetMessage();
@@ -333,9 +333,8 @@ void DialogShiftTimes::LoadHistory() {
 	history_box->Freeze();
 
 	try {
-		std::unique_ptr<std::istream> file(agi::io::Open(history_filename));
 		json::UnknownElement root;
-		json::Reader::Read(root, *file);
+		json::Reader::Read(root, *agi::io::Open(history_filename));
 		history = root;
 
 		for (auto& history_entry : history)

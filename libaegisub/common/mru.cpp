@@ -89,11 +89,11 @@ void MRUManager::Flush() {
 
 	for (auto const& mru_map : mru) {
 		json::Array &array = out[mru_map.first];
-		transform(begin(mru_map.second), end(mru_map.second),
-			back_inserter(array), [](agi::fs::path const& p) { return p.string(); });
+		for (auto const& p : mru_map.second)
+			array.push_back(p.string());
 	}
 
-	json::Writer::Write(out, io::Save(config_name).Get());
+	agi::JsonWriter::Write(out, io::Save(config_name).Get());
 }
 
 void MRUManager::Prune(std::string const& key, MRUListMap& map) const {

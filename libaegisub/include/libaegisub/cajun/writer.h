@@ -1,54 +1,47 @@
-/**********************************************
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
+//
+// Permission to use, copy, modify, and distribute this software for any
+// purpose with or without fee is hereby granted, provided that the above
+// copyright notice and this permission notice appear in all copies.
+//
+// THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+// WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+// ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+// WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+// ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+// OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
-License: BSD
-Project Webpage: http://cajun-jsonapi.sourceforge.net/
-Author: Terry Caton
-
-***********************************************/
-
-#pragma once
-
-#include "elements.h"
 #include "visitor.h"
 
 #include <ostream>
+#include <string>
 
-namespace json {
+namespace agi {
 
-class Writer final : private ConstVisitor {
-	Writer(std::ostream& ostr);
-	void Write(const Object& object);
-	void Write(const Array& array);
-	void Write(const String& string);
-	void Write(const Integer& number);
-	void Write(const Double& number);
-	void Write(const Boolean& boolean);
-	void Write(const Null& null);
-	void Write(const UnknownElement& unknown);
+class JsonWriter final : json::ConstVisitor {
+	std::ostream &ostr;
+	std::string indent;
 
-	void Visit(const Array& array) override;
-	void Visit(const Object& object) override;
-	void Visit(const Integer& number) override;
-	void Visit(const Double& number) override;
-	void Visit(const String& string) override;
-	void Visit(const Boolean& boolean) override;
-	void Visit(const Null& null) override;
+	JsonWriter(std::ostream &ostr) : ostr(ostr) { }
 
-	std::ostream& m_ostr;
-	int tab_depth = 0;
+	void Visit(json::Array const& array) override;
+	void Visit(bool boolean) override;
+	void Visit(double number) override;
+	void Visit(int64_t number) override;
+	void Visit(json::Null const& null) override;
+	void Visit(json::Object const& object) override;
+	void Visit(std::string const& string) override;
+	void Visit(json::UnknownElement const& unknown);
 
 public:
-	template <typename ElementTypeT>
-	static void Write(const ElementTypeT& element, std::ostream& ostr) {
-		Writer writer(ostr);
-		writer.Write(element);
-		ostr.flush(); // all done
+	template <typename T>
+	static void Write(T const& value, std::ostream& ostr) {
+		JsonWriter(ostr).Visit(value);
+		ostr.flush();
 	}
 };
 
-inline std::ostream& operator <<(std::ostream& ostr, UnknownElement const& elementRoot) {
-    Writer::Write(elementRoot, ostr);
-    return ostr;
 }
-
-} // End namespace
