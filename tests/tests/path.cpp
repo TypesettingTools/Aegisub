@@ -108,7 +108,6 @@ TEST(lagi_path, valid_token_names) {
 	EXPECT_NO_THROW(p.SetToken("?data", ""));
 	EXPECT_NO_THROW(p.SetToken("?temp", ""));
 	EXPECT_NO_THROW(p.SetToken("?dictionary", ""));
-	EXPECT_NO_THROW(p.SetToken("?docs", ""));
 	EXPECT_NO_THROW(p.SetToken("?audio", ""));
 	EXPECT_NO_THROW(p.SetToken("?script", ""));
 	EXPECT_NO_THROW(p.SetToken("?video", ""));
@@ -125,7 +124,10 @@ TEST(lagi_path, valid_token_names) {
 
 TEST(lagi_path, platform_paths_have_values_and_exist) {
 	Path p;
+#ifndef __APPLE__
+	// Isn't set on OS X due to the app not being in a bundle
 	TEST_PLATFORM_PATH_TOKEN("?data");
+#endif
 	TEST_PLATFORM_PATH_TOKEN("?user");
 	TEST_PLATFORM_PATH_TOKEN("?local");
 	TEST_PLATFORM_PATH_TOKEN("?temp");
