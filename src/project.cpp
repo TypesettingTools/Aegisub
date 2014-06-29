@@ -505,9 +505,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 			subs.clear();
 	}
 
-	if (!video.empty()) {
-		DoLoadVideo(video);
-
+	if (!video.empty() && DoLoadVideo(video)) {
 		double dar = video_provider->GetDAR();
 		if (dar > 0)
 			context->videoController->SetAspectRatio(dar);
