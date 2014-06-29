@@ -84,9 +84,7 @@ FontConfigFontFileLister::FontConfigFontFileLister(FontCollectorStatusCallback c
 FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(std::string const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) {
 	CollectionResult ret;
 
-	std::string family(facename);
-	if (family[0] == '@')
-		family.erase(0, 1);
+	std::string family = facename[0] == '@' ? facename.substr(1) : facename;
 	boost::to_lower(family);
 
 	int weight = bold == 0 ? 80 :
