@@ -20,6 +20,9 @@
 
 #include "visual_tool_rotatez.h"
 
+#include "include/aegisub/context.h"
+#include "selection_controller.h"
+
 #include <libaegisub/format.h>
 
 #include <cmath>
@@ -113,7 +116,15 @@ void VisualToolRotateZ::UpdateHold() {
 }
 
 void VisualToolRotateZ::UpdateDrag(Feature *feature) {
-	SetOverride(active_line, "\\org", ToScriptCoords(feature->pos).PStr());
+	auto org = GetLineOrigin(active_line);
+	if (!org) org = GetLinePosition(active_line);
+	auto d = ToScriptCoords(feature->pos) - org;
+
+	for (auto line : c->selectionController->GetSelectedSet()) {
+		org = GetLineOrigin(line);
+		if (!org) org = GetLinePosition(line);
+		SetOverride(line, "\\org", (d + org).PStr());
+	}
 }
 
 void VisualToolRotateZ::DoRefresh() {
