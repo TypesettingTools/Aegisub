@@ -108,7 +108,7 @@
     Name="AegisubUseDSound"
     Category="Features"
     DisplayName="DirectSound"
-    Description="Enable the DirectSound-based audio player. This requires the DirectX SDK."
+    Description="Enable the DirectSound-based audio player"
     />
 
   <BoolProperty
@@ -162,14 +162,6 @@
     Category="Paths"
     DisplayName="External CSRI library name"
     Description="Name of external CSRI library, for when not using the CSRI helper library"
-    />
-
-  <StringProperty
-    Subtype="folder"
-    Name="DirectXSDKPath"
-    Category="Paths"
-    DisplayName="DirectX SDK root path"
-    Description="Location of DirectX SDK installation for DirectSound support. This is usually auto-detected."
     />
 
   <StringProperty

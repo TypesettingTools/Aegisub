@@ -45,7 +45,6 @@
     <AegisubUseOpenAl>false</AegisubUseOpenAl>
     <AegisubUseUpdateChecker>true</AegisubUseUpdateChecker>
     <CsriLibraryName>vsfilter.lib</CsriLibraryName>
-    <DirectXSDKPath>$(DXSDK_DIR)</DirectXSDKPath>
     <StartupLog>false</StartupLog>
     <UpdateCheckerServer>updates.aegisub.org</UpdateCheckerServer>
     <UpdateCheckerURL>/trunk</UpdateCheckerURL>

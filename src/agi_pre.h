@@ -48,9 +48,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-// Ensure we get a consistent SDK with VS2012 + Win8 SDK
-#define _USING_V110_SDK71_ 1
-
 #ifndef _WIN32
 #include "../acconf.h"
 #endif

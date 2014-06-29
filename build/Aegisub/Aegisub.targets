@@ -105,29 +105,14 @@
   </ItemDefinitionGroup>
 
   <!-- DirectSound support -->
-  <PropertyGroup>
-    <DirectXSDKDir Condition="'$(DirectXSDKDir)'==''">$(DXSDK_DIR)</DirectXSDKDir>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(AegisubUseDSound)'=='true'">
     <ClCompile>
       <PreprocessorDefinitions>WITH_DIRECTSOUND;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(DXSDK_DIR)\Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">$(DirectXSDKDir)\Lib\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'">$(DirectXSDKDir)\Lib\x64\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>dsound.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <Target Name="AegisubCheckDirectXSDK" BeforeTargets="PrepareForBuild" >
-    <Error
-      Condition="'$(DirectXSDKDir)'=='' or !Exists('$(DirectXSDKDir)\Include\dsound.h')"
-      Text="DirectX SDK not found, check that the DXSDK_DIR environment is set. If you do not want to use DirectSound set the AegisubUseDSound property to false in a user config."
-      />
-  </Target>
-  <ItemGroup Condition="'$(AegisubUseDSound)'=='true'">
-    <AegisubCheckDirectXSDK Include="dsound" />
-  </ItemGroup>
 
   <!-- Special builds -->
   <ItemDefinitionGroup>
