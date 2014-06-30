@@ -283,7 +283,7 @@ AssTime ReadSRTTime(std::string const& ts)
 	size_t ci = 0;
 	int ms_chars = 0;
 
-	for (; ci < ts.size(); ++ci)
+	for (bool milliseconds = false; ci < ts.size() && !milliseconds; ++ci)
 	{
 		switch (ts[ci])
 		{
@@ -298,13 +298,13 @@ AssTime ReadSRTTime(std::string const& ts)
 			break;
 		case ',':
 			ci++;
-			goto milliseconds;
+			milliseconds = true;
+			break;
 		default:
 			ci = ts.size();
 		}
 	}
 
-milliseconds:
 	for (; ci < ts.size(); ++ci)
 	{
 		if (!isdigit(ts[ci])) break;
