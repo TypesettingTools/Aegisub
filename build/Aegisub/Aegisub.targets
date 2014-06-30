@@ -125,7 +125,6 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>
-        __STDC_FORMAT_MACROS;
         NOMINMAX;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
