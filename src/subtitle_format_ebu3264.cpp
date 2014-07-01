@@ -164,27 +164,15 @@ namespace
 			PositionBottom = 0
 		};
 
-		int group_number; ///< always 0 for compat
+		int group_number = 0; ///< always 0 for compat
 		/// subtitle number is assigned when generating blocks
-		CumulativeStatus cumulative_status; ///< always NotCumulative for compat
-		int time_in;       ///< frame number
-		int time_out;      ///< frame number
-		bool comment_flag; ///< always false for compat
-		JustificationCode justification_code; ///< never Unchanged presentation for compat
-		VerticalPosition vertical_position;   ///< translated to row on tti conversion
+		CumulativeStatus cumulative_status = NotCumulative; ///< always NotCumulative for compat
+		int time_in = 0;       ///< frame number
+		int time_out = 0;      ///< frame number
+		bool comment_flag = false; ///< always false for compat
+		JustificationCode justification_code = JustifyCentre; ///< never Unchanged presentation for compat
+		VerticalPosition vertical_position = PositionBottom;   ///< translated to row on tti conversion
 		std::vector<EbuTextRow> text_rows;    ///< text split into rows, still unicode
-
-		EbuSubtitle()
-		: group_number(0)
-		, cumulative_status(NotCumulative)
-		, time_in(0)
-		, time_out(0)
-		, comment_flag(false)
-		, justification_code(JustifyCentre)
-		, vertical_position(PositionBottom)
-		, text_rows()
-		{
-		}
 
 		void SplitLines(int max_width, int split_type)
 		{
@@ -626,13 +614,6 @@ namespace
 Ebu3264SubtitleFormat::Ebu3264SubtitleFormat()
 : SubtitleFormat("EBU subtitling data exchange format (EBU tech 3264, 1991)")
 {
-}
-
-std::vector<std::string> Ebu3264SubtitleFormat::GetWriteWildcards() const
-{
-	std::vector<std::string> formats;
-	formats.push_back("stl");
-	return formats;
 }
 
 void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const&) const
