@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-06-27 11:18-0700\n"
+"POT-Creation-Date: 2014-07-01 10:53-0700\n"
 "PO-Revision-Date: 2005-2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,95 +59,95 @@ msgstr ""
 msgid "sel "
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:132 ../src/command/time.cpp:153
+#: ../src/dialog_shift_times.cpp:133 ../src/command/time.cpp:153
 msgid "Shift Times"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:141
+#: ../src/dialog_shift_times.cpp:142
 msgid "&Time: "
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:142
+#: ../src/dialog_shift_times.cpp:143
 msgid "Shift by time"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:145
+#: ../src/dialog_shift_times.cpp:146
 msgid "&Frames: "
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:146
+#: ../src/dialog_shift_times.cpp:147
 msgid "Shift by frames"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:150
+#: ../src/dialog_shift_times.cpp:151
 msgid "Enter time in h:mm:ss.cs notation"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:153
+#: ../src/dialog_shift_times.cpp:154
 msgid "Enter number of frames to shift by"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:155
+#: ../src/dialog_shift_times.cpp:156
 msgid "For&ward"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:156
+#: ../src/dialog_shift_times.cpp:157
 msgid ""
 "Shifts subs forward, making them appear later. Use if they are appearing too "
 "soon."
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:158
+#: ../src/dialog_shift_times.cpp:159
 msgid "&Backward"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:159
+#: ../src/dialog_shift_times.cpp:160
 msgid ""
 "Shifts subs backward, making them appear earlier. Use if they are appearing "
 "too late."
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:161
+#: ../src/dialog_shift_times.cpp:162
 msgid "&All rows"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:161 ../src/dialog_search_replace.cpp:88
+#: ../src/dialog_shift_times.cpp:162 ../src/dialog_search_replace.cpp:88
 msgid "Selected &rows"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:161
+#: ../src/dialog_shift_times.cpp:162
 msgid "Selection &onward"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:162
+#: ../src/dialog_shift_times.cpp:163
 msgid "Affect"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:164
+#: ../src/dialog_shift_times.cpp:165
 msgid "Start a&nd End times"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:164
+#: ../src/dialog_shift_times.cpp:165
 msgid "&Start times only"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:164
+#: ../src/dialog_shift_times.cpp:165
 msgid "&End times only"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:165
+#: ../src/dialog_shift_times.cpp:166
 msgid "Times"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:169
+#: ../src/dialog_shift_times.cpp:170
 msgid "&Clear"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:200
+#: ../src/dialog_shift_times.cpp:201
 msgid "Shift by"
 msgstr ""
 
-#: ../src/dialog_shift_times.cpp:209
+#: ../src/dialog_shift_times.cpp:210
 msgid "Load from history"
 msgstr ""
 
@@ -294,7 +294,7 @@ msgid "Decoder:"
 msgstr ""
 
 #: ../src/dialog_video_details.cpp:65 ../src/preferences.cpp:165
-#: ../src/preferences.cpp:414
+#: ../src/preferences.cpp:417
 msgid "Video"
 msgstr ""
 
@@ -607,15 +607,15 @@ msgstr ""
 msgid "Sort styles alphabetically"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:575
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:578
 msgid "&New"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:576
+#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:579
 msgid "&Edit"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:205 ../src/preferences.cpp:577
+#: ../src/dialog_style_manager.cpp:205 ../src/preferences.cpp:580
 #: ../src/dialog_attachments.cpp:79
 msgid "&Delete"
 msgstr ""
@@ -1647,7 +1647,7 @@ msgid "revert line"
 msgstr ""
 
 #: ../src/command/edit.cpp:1207 ../src/command/edit.cpp:1208
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:389
 msgid "Clear"
 msgstr ""
 
@@ -2506,7 +2506,7 @@ msgid "&Automation..."
 msgstr ""
 
 #: ../src/command/automation.cpp:75 ../src/command/automation.cpp:87
-#: ../src/preferences.cpp:311
+#: ../src/preferences.cpp:314
 msgid "Automation"
 msgstr ""
 
@@ -3383,7 +3383,7 @@ msgid "Invalid destination."
 msgstr ""
 
 #: ../src/dialog_fonts_collector.cpp:301 ../src/dialog_fonts_collector.cpp:306
-#: ../src/dialog_fonts_collector.cpp:311 ../src/preferences.cpp:255
+#: ../src/dialog_fonts_collector.cpp:311 ../src/preferences.cpp:257
 #: ../src/dialog_kara_timing_copy.cpp:574
 #: ../src/dialog_kara_timing_copy.cpp:576
 #: ../src/dialog_kara_timing_copy.cpp:626
@@ -3460,7 +3460,7 @@ msgid "Resulting duration: %s"
 msgstr ""
 
 #: ../src/preferences.cpp:61 ../src/preferences.cpp:63
-#: ../src/preferences.cpp:313 ../src/preferences.cpp:338
+#: ../src/preferences.cpp:316 ../src/preferences.cpp:341
 msgid "General"
 msgstr ""
 
@@ -3548,7 +3548,7 @@ msgstr ""
 msgid "Plain text import"
 msgstr ""
 
-#: ../src/preferences.cpp:125 ../src/preferences.cpp:351
+#: ../src/preferences.cpp:125 ../src/preferences.cpp:354
 msgid "Audio"
 msgstr ""
 
@@ -3812,368 +3812,380 @@ msgstr ""
 msgid "Background"
 msgstr ""
 
-#: ../src/preferences.cpp:250 ../src/preferences.cpp:323
+#: ../src/preferences.cpp:250 ../src/preferences.cpp:326
 msgid "Normal"
 msgstr ""
 
 #: ../src/preferences.cpp:251
-msgid "Brackets"
+msgid "Comments"
 msgstr ""
 
 #: ../src/preferences.cpp:252
-msgid "Slashes and Parentheses"
+msgid "Drawings"
 msgstr ""
 
 #: ../src/preferences.cpp:253
-msgid "Tags"
+msgid "Brackets"
 msgstr ""
 
 #: ../src/preferences.cpp:254
-msgid "Parameters"
+msgid "Slashes and Parentheses"
+msgstr ""
+
+#: ../src/preferences.cpp:255
+msgid "Tags"
 msgstr ""
 
 #: ../src/preferences.cpp:256
-msgid "Error Background"
-msgstr ""
-
-#: ../src/preferences.cpp:257
-msgid "Line Break"
+msgid "Parameters"
 msgstr ""
 
 #: ../src/preferences.cpp:258
+msgid "Error Background"
+msgstr ""
+
+#: ../src/preferences.cpp:259
+msgid "Line Break"
+msgstr ""
+
+#: ../src/preferences.cpp:260
 msgid "Karaoke templates"
 msgstr ""
 
-#: ../src/preferences.cpp:264
-msgid "Audio Color Schemes"
-msgstr ""
-
-#: ../src/preferences.cpp:266 ../src/preferences.cpp:367
-msgid "Spectrum"
+#: ../src/preferences.cpp:261
+msgid "Karaoke variables"
 msgstr ""
 
 #: ../src/preferences.cpp:267
-msgid "Waveform"
+msgid "Audio Color Schemes"
 msgstr ""
 
-#: ../src/preferences.cpp:269
-msgid "Subtitle Grid"
+#: ../src/preferences.cpp:269 ../src/preferences.cpp:370
+msgid "Spectrum"
 msgstr ""
 
 #: ../src/preferences.cpp:270
-msgid "Standard foreground"
-msgstr ""
-
-#: ../src/preferences.cpp:271
-msgid "Standard background"
+msgid "Waveform"
 msgstr ""
 
 #: ../src/preferences.cpp:272
-msgid "Selection foreground"
+msgid "Subtitle Grid"
 msgstr ""
 
 #: ../src/preferences.cpp:273
-msgid "Selection background"
+msgid "Standard foreground"
 msgstr ""
 
 #: ../src/preferences.cpp:274
-msgid "Collision foreground"
+msgid "Standard background"
 msgstr ""
 
 #: ../src/preferences.cpp:275
-msgid "In frame background"
+msgid "Selection foreground"
 msgstr ""
 
 #: ../src/preferences.cpp:276
-msgid "Comment background"
+msgid "Selection background"
 msgstr ""
 
 #: ../src/preferences.cpp:277
-msgid "Selected comment background"
+msgid "Collision foreground"
 msgstr ""
 
 #: ../src/preferences.cpp:278
-msgid "Header background"
+msgid "In frame background"
 msgstr ""
 
 #: ../src/preferences.cpp:279
-msgid "Left Column"
+msgid "Comment background"
 msgstr ""
 
 #: ../src/preferences.cpp:280
-msgid "Active Line Border"
+msgid "Selected comment background"
 msgstr ""
 
 #: ../src/preferences.cpp:281
-msgid "Lines"
+msgid "Header background"
 msgstr ""
 
 #: ../src/preferences.cpp:282
+msgid "Left Column"
+msgstr ""
+
+#: ../src/preferences.cpp:283
+msgid "Active Line Border"
+msgstr ""
+
+#: ../src/preferences.cpp:284
+msgid "Lines"
+msgstr ""
+
+#: ../src/preferences.cpp:285
 msgid "CPS Error"
 msgstr ""
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:294
 msgid "Backup"
 msgstr ""
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:296
 msgid "Automatic Save"
 msgstr ""
 
-#: ../src/preferences.cpp:294 ../src/preferences.cpp:302
+#: ../src/preferences.cpp:297 ../src/preferences.cpp:305
 msgid "Enable"
 msgstr ""
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:300
 msgid "Interval in seconds"
 msgstr ""
 
-#: ../src/preferences.cpp:298 ../src/preferences.cpp:304
-#: ../src/preferences.cpp:365
+#: ../src/preferences.cpp:301 ../src/preferences.cpp:307
+#: ../src/preferences.cpp:368
 msgid "Path"
 msgstr ""
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:302
 msgid "Autosave after every change"
 msgstr ""
 
-#: ../src/preferences.cpp:301
+#: ../src/preferences.cpp:304
 msgid "Automatic Backup"
 msgstr ""
 
-#: ../src/preferences.cpp:315
+#: ../src/preferences.cpp:318
 msgid "Base path"
 msgstr ""
 
-#: ../src/preferences.cpp:316
+#: ../src/preferences.cpp:319
 msgid "Include path"
 msgstr ""
 
-#: ../src/preferences.cpp:317
+#: ../src/preferences.cpp:320
 msgid "Auto-load path"
 msgstr ""
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:322
 msgid "0: Fatal"
 msgstr ""
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:322
 msgid "1: Error"
 msgstr ""
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:322
 msgid "2: Warning"
 msgstr ""
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:322
 msgid "3: Hint"
 msgstr ""
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:322
 msgid "4: Debug"
 msgstr ""
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:322
 msgid "5: Trace"
 msgstr ""
 
-#: ../src/preferences.cpp:321
+#: ../src/preferences.cpp:324
 msgid "Trace level"
 msgstr ""
 
-#: ../src/preferences.cpp:323
+#: ../src/preferences.cpp:326
 msgid "Below Normal (recommended)"
 msgstr ""
 
-#: ../src/preferences.cpp:323
+#: ../src/preferences.cpp:326
 msgid "Lowest"
 msgstr ""
 
-#: ../src/preferences.cpp:325
+#: ../src/preferences.cpp:328
 msgid "Thread priority"
 msgstr ""
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:330
 msgid "No scripts"
 msgstr ""
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:330
 msgid "Subtitle-local scripts"
 msgstr ""
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:330
 msgid "Global autoload scripts"
 msgstr ""
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:330
 msgid "All scripts"
 msgstr ""
 
-#: ../src/preferences.cpp:329
+#: ../src/preferences.cpp:332
 msgid "Autoreload on Export"
 msgstr ""
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:339
 msgid "Advanced"
 msgstr ""
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:343
 msgid ""
 "Changing these settings might result in bugs and/or crashes.  Do not touch "
 "these unless you know what you're doing."
 msgstr ""
 
-#: ../src/preferences.cpp:353 ../src/preferences.cpp:416
+#: ../src/preferences.cpp:356 ../src/preferences.cpp:419
 msgid "Expert"
 msgstr ""
 
-#: ../src/preferences.cpp:356
+#: ../src/preferences.cpp:359
 msgid "Audio provider"
 msgstr ""
 
-#: ../src/preferences.cpp:359
+#: ../src/preferences.cpp:362
 msgid "Audio player"
 msgstr ""
 
-#: ../src/preferences.cpp:361
+#: ../src/preferences.cpp:364
 msgid "Cache"
 msgstr ""
 
-#: ../src/preferences.cpp:362
+#: ../src/preferences.cpp:365
 msgid "None (NOT RECOMMENDED)"
 msgstr ""
 
-#: ../src/preferences.cpp:362
+#: ../src/preferences.cpp:365
 msgid "RAM"
 msgstr ""
 
-#: ../src/preferences.cpp:362
+#: ../src/preferences.cpp:365
 msgid "Hard Disk"
 msgstr ""
 
-#: ../src/preferences.cpp:364
+#: ../src/preferences.cpp:367
 msgid "Cache type"
 msgstr ""
 
-#: ../src/preferences.cpp:369
+#: ../src/preferences.cpp:372
 msgid "Regular quality"
 msgstr ""
 
-#: ../src/preferences.cpp:369
+#: ../src/preferences.cpp:372
 msgid "Better quality"
 msgstr ""
 
-#: ../src/preferences.cpp:369
+#: ../src/preferences.cpp:372
 msgid "High quality"
 msgstr ""
 
-#: ../src/preferences.cpp:369
+#: ../src/preferences.cpp:372
 msgid "Insane quality"
 msgstr ""
 
-#: ../src/preferences.cpp:371
+#: ../src/preferences.cpp:374
 msgid "Quality"
 msgstr ""
 
-#: ../src/preferences.cpp:373
+#: ../src/preferences.cpp:376
 msgid "Cache memory max (MB)"
 msgstr ""
 
-#: ../src/preferences.cpp:379
+#: ../src/preferences.cpp:382
 msgid "Avisynth down-mixer"
 msgstr ""
 
-#: ../src/preferences.cpp:380
+#: ../src/preferences.cpp:383
 msgid "Force sample rate"
 msgstr ""
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:389
 msgid "Ignore"
 msgstr ""
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:389
 msgid "Stop"
 msgstr ""
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:389
 msgid "Abort"
 msgstr ""
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:391
 msgid "Audio indexing error handling mode"
 msgstr ""
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:393
 msgid "Always index all audio tracks"
 msgstr ""
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:398
 msgid "Portaudio device"
 msgstr ""
 
-#: ../src/preferences.cpp:400
+#: ../src/preferences.cpp:403
 msgid "OSS Device"
 msgstr ""
 
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:408
 msgid "Buffer latency"
 msgstr ""
 
-#: ../src/preferences.cpp:406
+#: ../src/preferences.cpp:409
 msgid "Buffer length"
 msgstr ""
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:422
 msgid "Video provider"
 msgstr ""
 
-#: ../src/preferences.cpp:422
+#: ../src/preferences.cpp:425
 msgid "Subtitles provider"
 msgstr ""
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:428
 msgid "Force BT.601"
 msgstr ""
 
-#: ../src/preferences.cpp:429
+#: ../src/preferences.cpp:432
 msgid "Allow pre-2.56a Avisynth"
 msgstr ""
 
-#: ../src/preferences.cpp:431
+#: ../src/preferences.cpp:434
 msgid "Avisynth memory limit"
 msgstr ""
 
-#: ../src/preferences.cpp:439
+#: ../src/preferences.cpp:442
 msgid "Debug log verbosity"
 msgstr ""
 
-#: ../src/preferences.cpp:441
+#: ../src/preferences.cpp:444
 msgid "Decoding threads"
 msgstr ""
 
-#: ../src/preferences.cpp:442
+#: ../src/preferences.cpp:445
 msgid "Enable unsafe seeking"
 msgstr ""
 
-#: ../src/preferences.cpp:571
+#: ../src/preferences.cpp:574
 msgid "Hotkeys"
 msgstr ""
 
-#: ../src/preferences.cpp:669
+#: ../src/preferences.cpp:672
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
 msgstr ""
 
-#: ../src/preferences.cpp:669
+#: ../src/preferences.cpp:672
 msgid "Restore defaults?"
 msgstr ""
 
-#: ../src/preferences.cpp:687
+#: ../src/preferences.cpp:690
 msgid "Preferences"
 msgstr ""
 
-#: ../src/preferences.cpp:715
+#: ../src/preferences.cpp:718
 msgid "&Restore Defaults"
 msgstr ""
 
