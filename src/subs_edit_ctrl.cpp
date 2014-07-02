@@ -37,6 +37,7 @@
 #include "include/aegisub/context.h"
 #include "include/aegisub/spellchecker.h"
 #include "selection_controller.h"
+#include "text_selection_controller.h"
 #include "thesaurus.h"
 #include "utils.h"
 
@@ -310,10 +311,18 @@ void SubsTextEditCtrl::SetTextTo(std::string const& text) {
 	auto old_pos = agi::CharacterCount(line_text.begin(), line_text.begin() + insertion_point, 0);
 	line_text.clear();
 
-	SetSelection(0, 0);
-	SetTextRaw(text.c_str());
-	auto pos = agi::IndexOfCharacter(text, old_pos);
-	SetSelection(pos, pos);
+	if (context) {
+		context->textSelectionController->SetSelection(0, 0);
+		SetTextRaw(text.c_str());
+		auto pos = agi::IndexOfCharacter(text, old_pos);
+		context->textSelectionController->SetSelection(pos, pos);
+	}
+	else {
+		SetSelection(0, 0);
+		SetTextRaw(text.c_str());
+		auto pos = agi::IndexOfCharacter(text, old_pos);
+		SetSelection(pos, pos);
+	}
 
 	SetEvtHandlerEnabled(true);
 	Thaw();
