@@ -16,8 +16,8 @@
 
 #include <libaegisub/color.h>
 
-#include "main.h"
-#include "util.h"
+#include <main.h>
+#include <util.h>
 
 class lagi_color : public libagi {
 };

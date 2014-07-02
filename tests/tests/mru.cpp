@@ -15,7 +15,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/mru.h>
 
-#include "main.h"
+#include <main.h>
 
 static const char default_mru[] = "{\"Valid\" : []}";
 

@@ -14,8 +14,8 @@
 
 #include <libaegisub/ass/dialogue_parser.h>
 
-#include "main.h"
-#include "util.h"
+#include <main.h>
+#include <util.h>
 
 class lagi_dialogue_lexer : public libagi {
 };

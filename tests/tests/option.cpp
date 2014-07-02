@@ -16,8 +16,8 @@
 #include <libaegisub/option.h>
 #include <libaegisub/option_value.h>
 
-#include "main.h"
-#include "util.h"
+#include <main.h>
+#include <util.h>
 
 #include <fstream>
 

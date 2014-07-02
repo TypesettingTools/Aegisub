@@ -22,8 +22,8 @@
 #include <fstream>
 #include <iterator>
 
-#include "main.h"
-#include "util.h"
+#include <main.h>
+#include <util.h>
 
 using namespace agi::keyframe;
 using namespace util;

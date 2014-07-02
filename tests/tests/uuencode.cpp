@@ -16,7 +16,7 @@
 
 #include <libaegisub/ass/uuencode.h>
 
-#include "main.h"
+#include <main.h>
 
 #include <boost/algorithm/string/replace.hpp>
 

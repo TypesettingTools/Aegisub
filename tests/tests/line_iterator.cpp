@@ -20,8 +20,8 @@
 #include <string>
 #include <vector>
 
-#include "main.h"
-#include "util.h"
+#include <main.h>
+#include <util.h>
 
 using agi::line_iterator;
 

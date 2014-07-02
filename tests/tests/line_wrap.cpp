@@ -14,8 +14,8 @@
 
 #include <libaegisub/line_wrap.h>
 
-#include "main.h"
-#include "util.h"
+#include <main.h>
+#include <util.h>
 
 using namespace agi;
 using namespace util;

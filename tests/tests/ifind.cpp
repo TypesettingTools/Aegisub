@@ -16,7 +16,7 @@
 
 #include <libaegisub/util.h>
 
-#include "main.h"
+#include <main.h>
 
 #define IFIND(haystack, needle) \
 	std::pair<size_t, size_t> pos; \

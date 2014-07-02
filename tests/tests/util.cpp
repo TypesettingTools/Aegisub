@@ -16,7 +16,7 @@
 
 #include <libaegisub/util.h>
 
-#include "main.h"
+#include <main.h>
 
 class lagi_util : public libagi { };
 

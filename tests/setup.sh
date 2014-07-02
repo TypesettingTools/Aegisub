@@ -1,5 +1,8 @@
-chmod 777 data/*
-chmod -R 777 data/
+d=$(dirname $0)/
+if test -d data; then
+	chmod 777 data/*
+	chmod -R 777 data/
+fi
 
 rm -rf data
 mkdir -p data
@@ -28,7 +31,7 @@ printf %s '1234567890' > data/ten_bytes
 touch data/touch_mod_time
 
 mkdir data/options
-cp options/* data/options
+cp $d/options/* data/options
 
 mkdir data/dir_iterator
 touch data/dir_iterator/1.a
@@ -39,7 +42,7 @@ touch data/dir_iterator/2.b
 mkdir data/vfr
 mkdir data/vfr/in
 mkdir data/vfr/out
-cp vfr/* data/vfr/in/
+cp $d/vfr/* data/vfr/in/
 
 mkdir data/keyframe
-cp keyframe/* data/keyframe
+cp $d/keyframe/* data/keyframe

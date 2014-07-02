@@ -15,7 +15,7 @@
 #include <stdint.h>
 #include <libaegisub/charset_conv.h>
 
-#include "main.h"
+#include <main.h>
 
 using namespace agi::charset;
 

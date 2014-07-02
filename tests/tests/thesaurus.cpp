@@ -15,8 +15,8 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/thesaurus.h>
 
-#include "main.h"
-#include "util.h"
+#include <main.h>
+#include <util.h>
 
 #include <fstream>
 

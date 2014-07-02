@@ -16,7 +16,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 
-#include "main.h"
+#include <main.h>
 
 #include <boost/filesystem.hpp>
 

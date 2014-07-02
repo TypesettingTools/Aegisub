@@ -15,7 +15,7 @@
 #include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/spellchecker.h>
 
-#include "main.h"
+#include <main.h>
 
 class MockSpellChecker : public agi::SpellChecker {
 	void AddWord(std::string const&) override { }

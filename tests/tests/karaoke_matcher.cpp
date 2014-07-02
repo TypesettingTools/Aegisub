@@ -14,8 +14,8 @@
 
 #include <libaegisub/karaoke_matcher.h>
 
-#include "main.h"
-#include "util.h"
+#include <main.h>
+#include <util.h>
 
 class lagi_karaoke_matcher : public libagi { };
 

@@ -21,8 +21,8 @@
 #include <fstream>
 #include <iterator>
 
-#include "main.h"
-#include "util.h"
+#include <main.h>
+#include <util.h>
 
 using namespace agi::vfr;
 using namespace util;

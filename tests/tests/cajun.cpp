@@ -18,7 +18,7 @@
 /// @brief Cajun/Json tests.
 /// @ingroup cajun
 
-#include "main.h"
+#include <main.h>
 
 #include <libaegisub/cajun/reader.h>
 #include <libaegisub/cajun/writer.h>
