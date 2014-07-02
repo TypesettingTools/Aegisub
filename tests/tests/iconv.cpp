@@ -12,10 +12,12 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <stdint.h>
 #include <libaegisub/charset_conv.h>
 
 #include <main.h>
+
+#include <cstdint>
+#include <iconv.h>
 
 using namespace agi::charset;
 
@@ -54,6 +56,7 @@ TEST(lagi_iconv, StrLen4) {
 	}
 }
 
+#ifdef _LIBICONV_VERSION
 TEST(lagi_iconv, Fallbacks) {
 	IconvWrapper nofallback("UTF-8", "Shift-JIS", false);
 	IconvWrapper fallback("UTF-8", "Shift-JIS", true);
@@ -86,6 +89,7 @@ TEST(lagi_iconv, BadInput) {
 	IconvWrapper utf8("UTF-8", "UTF-16LE");
 	EXPECT_THROW(utf8.Convert("\xE2\xFF"), BadInput);
 }
+#endif
 
 TEST(lagi_iconv, Conversions) {
 	IconvWrapper utf16le("UTF-16LE", "UTF-8", false);
