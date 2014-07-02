@@ -28,12 +28,12 @@
 class lagi_cajun : public libagi { };
 
 TEST(lagi_cajun, CastNonConst) {
-	json::UnknownElement Integer = 0;
-	json::UnknownElement Double = 0.0;
-	json::UnknownElement String = "1";
-	json::UnknownElement Boolean = false;
-	json::UnknownElement Array = json::Array();
-	json::UnknownElement Object = json::Object();
+	auto Integer = json::UnknownElement{0};
+	auto Double  = json::UnknownElement{0.0};
+	auto String  = json::UnknownElement{"1"};
+	auto Boolean = json::UnknownElement{false};
+	auto Array   = json::UnknownElement{json::Array{}};
+	auto Object  = json::UnknownElement{json::Object{}};
 
 	EXPECT_NO_THROW(static_cast<json::Integer&>(Integer));
 	EXPECT_NO_THROW(static_cast<json::Double&>(Double));
@@ -51,12 +51,12 @@ TEST(lagi_cajun, CastNonConst) {
 }
 
 TEST(lagi_cajun, CastConst) {
-	const json::UnknownElement Integer = 10;
-	const json::UnknownElement Double = 10.0;
-	const json::UnknownElement String = "1";
-	const json::UnknownElement Boolean = false;
-	const json::UnknownElement Array = json::Array();
-	const json::UnknownElement Object = json::Object();
+	const auto Integer = json::UnknownElement{10};
+	const auto Double  = json::UnknownElement{10.0};
+	const auto String  = json::UnknownElement{"1"};
+	const auto Boolean = json::UnknownElement{false};
+	const auto Array   = json::UnknownElement{json::Array{}};
+	const auto Object  = json::UnknownElement{json::Object{}};
 
 	/* these shouldn't compile
 	EXPECT_NO_THROW(static_cast<json::Integer&>(Integer));
