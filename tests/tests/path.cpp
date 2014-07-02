@@ -119,13 +119,12 @@ TEST(lagi_path, valid_token_names) {
 		ASSERT_NO_THROW(d = p.Decode(tok)); \
 		ASSERT_FALSE(d.empty()); \
 		ASSERT_STRNE(tok, d.string().c_str()); \
-		EXPECT_TRUE(agi::fs::DirectoryExists(d)); \
 	} while (false)
 
-TEST(lagi_path, platform_paths_have_values_and_exist) {
+TEST(lagi_path, platform_paths_have_values) {
 	Path p;
 #ifndef __APPLE__
-	// Isn't set on OS X due to the app not being in a bundle
+	// Uses the bundle path so it isn't set when not running in a bundle
 	TEST_PLATFORM_PATH_TOKEN("?data");
 #endif
 	TEST_PLATFORM_PATH_TOKEN("?user");
