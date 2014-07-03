@@ -171,3 +171,10 @@ TEST(lagi_path, make_relative_on_dummy_url) {
 	EXPECT_UNCHANGED("dummy-audio:silence?sr=44100&bd=16&ch=1&ln=396900000", MakeRelative);
 	EXPECT_UNCHANGED("?dummy:23.976000:40000:1280:720:47:163:254:", MakeRelative);
 }
+
+TEST(lagi_path, encode) {
+	Path p;
+	p.SetToken("?user", "/a/b/c");
+	p.SetToken("?local", "/a/b/c/d");
+	EXPECT_EQ("?local/e", p.Encode("/a/b/c/d/e"));
+}
