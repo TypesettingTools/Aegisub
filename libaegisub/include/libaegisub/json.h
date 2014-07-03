@@ -26,11 +26,6 @@ namespace agi { namespace json_util {
 /// @return json::UnknownElement
 json::UnknownElement parse(std::istream &stream);
 
-/// Parse a JSON file.
-/// @param file Path JSON to file
-/// @return json::UnknownElement
-json::UnknownElement file(agi::fs::path const& file);
-
 /// Parse a json stream, with default handler.
 /// @param file Path to JSON file.
 /// @param Default config file to load incase of nonexistent file
