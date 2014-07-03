@@ -28,7 +28,7 @@ echo '{"Valid" : ["Entry One", "Entry Two"]}' > data/mru_ok.json
 echo '{"Invalid" : [1, 3]}' > data/mru_invalid.json
 
 printf %s '1234567890' > data/ten_bytes
-touch data/touch_mod_time
+touch -r $0 data/touch_mod_time
 
 mkdir data/options
 cp $d/options/* data/options
