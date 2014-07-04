@@ -18,113 +18,107 @@
 
 #include "libaegisub/ass/dialogue_parser.h"
 
-namespace {
-	struct proto_lit {
-		const char *name;
-		bool has_parens;
-		const char *args;
-	};
+#include <algorithm>
 
-	proto_lit calltip_protos[] = {
-		{ "move", true, "X1\0Y1\0X2\0Y2\0" },
-		{ "move", true, "X1\0Y1\0X2\0Y2\0Start Time\0End Time\0" },
-		{ "fn", false, "Font Name\0" },
-		{ "bord", false, "Width\0" },
-		{ "xbord", false, "Width\0" },
-		{ "ybord", false, "Width\0" },
-		{ "shad", false, "Depth\0" },
-		{ "xshad", false, "Depth\0" },
-		{ "yshad", false, "Depth\0" },
-		{ "be", false, "Strength\0" },
-		{ "blur", false, "Strength\0" },
-		{ "fscx", false, "Scale\0" },
-		{ "fscy", false, "Scale\0" },
-		{ "fsp", false, "Spacing\0" },
-		{ "fs", false, "Font Size\0" },
-		{ "fe", false, "Encoding\0" },
-		{ "frx", false, "Angle\0" },
-		{ "fry", false, "Angle\0" },
-		{ "frz", false, "Angle\0" },
-		{ "fr", false, "Angle\0" },
-		{ "pbo", false, "Offset\0" },
-		{ "clip", true, "Command\0" },
-		{ "clip", true, "Scale\0Command\0" },
-		{ "clip", true, "X1\0Y1\0X2\0Y2\0" },
-		{ "iclip", true, "Command\0" },
-		{ "iclip", true, "Scale\0Command\0" },
-		{ "iclip", true, "X1\0Y1\0X2\0Y2\0" },
-		{ "t", true, "Acceleration\0Tags\0" },
-		{ "t", true, "Start Time\0End Time\0Tags\0" },
-		{ "t", true, "Start Time\0End Time\0Acceleration\0Tags\0" },
-		{ "pos", true, "X\0Y\0" },
-		{ "p", false, "Exponent\0" },
-		{ "org", true, "X\0Y\0" },
-		{ "fade", true, "Start Alpha\0Middle Alpha\0End Alpha\0Start In\0End In\0Start Out\0End Out\0" },
-		{ "fad", true, "Start Time\0End Time\0" },
-		{ "c", false, "Colour\0" },
-		{ "1c", false, "Colour\0" },
-		{ "2c", false, "Colour\0" },
-		{ "3c", false, "Colour\0" },
-		{ "4c", false, "Colour\0" },
-		{ "alpha", false, "Alpha\0" },
-		{ "1a", false, "Alpha\0" },
-		{ "2a", false, "Alpha\0" },
-		{ "3a", false, "Alpha\0" },
-		{ "4a", false, "Alpha\0" },
-		{ "an", false, "Alignment\0" },
-		{ "a", false, "Alignment\0" },
-		{ "b", false, "Weight\0" },
-		{ "i", false, "1/0\0" },
-		{ "u", false, "1/0\0" },
-		{ "s", false, "1/0\0" },
-		{ "kf", false, "Duration\0" },
-		{ "ko", false, "Duration\0" },
-		{ "k", false, "Duration\0" },
-		{ "K", false, "Duration\0" },
-		{ "q", false, "Wrap Style\0" },
-		{ "r", false, "Style\0" },
-		{ "fax", false, "Factor\0" },
-		{ "fay", false, "Factor\0" }
-	};
+namespace {
+struct proto_lit {
+	const char *name;
+	const char *args;
+};
+
+// NOTE: duplicate tag names sorted by number of arguments
+const proto_lit proto_1[] = {
+	{"K", "\\KDuration"},
+	{"a", "\\aAlignment"},
+	{"b", "\\bWeight"},
+	{"c", "\\cColour"},
+	{"i", "\\i1/0"},
+	{"k", "\\kDuration"},
+	{"p", "\\pExponent"},
+	{"q", "\\qWrap Style"},
+	{"r", "\\rStyle"},
+	{"s", "\\s1/0"},
+	{"t", "\\t(Acceleration,Tags)"},
+	{"t", "\\t(Start Time,End Time,Tags)"},
+	{"t", "\\t(Start Time,End Time,Acceleration,Tags)"},
+	{"u", "\\u1/0"},
+	{nullptr, nullptr}
+};
+
+const proto_lit proto_2[] = {
+	{"1a", "\\1aAlpha"},
+	{"1c", "\\1cColour"},
+	{"2a", "\\2aAlpha"},
+	{"2c", "\\2cColour"},
+	{"3a", "\\3aAlpha"},
+	{"3c", "\\3cColour"},
+	{"4a", "\\4aAlpha"},
+	{"4c", "\\4cColour"},
+	{"an", "\\anAlignment"},
+	{"be", "\\beStrength"},
+	{"fe", "\\feEncoding"},
+	{"fn", "\\fnFont Name"},
+	{"fr", "\\frAngle"},
+	{"fs", "\\fsFont Size"},
+	{"kf", "\\kfDuration"},
+	{"ko", "\\koDuration"},
+	{nullptr, nullptr}
+};
+
+const proto_lit proto_3[] = {
+	{"fax", "\\faxFactor"},
+	{"fay", "\\fayFactor"},
+	{"frx", "\\frxAngle"},
+	{"fry", "\\fryAngle"},
+	{"frz", "\\frzAngle"},
+	{"fsp", "\\fspSpacing"},
+	{"org", "\\org(X,Y)"},
+	{"pbo", "\\pboOffset"},
+	{"pos", "\\pos(X,Y)"},
+	{nullptr, nullptr}
+};
+
+const proto_lit proto_4[] = {
+	{"blur", "\\blurStrength"},
+	{"bord", "\\bordWidth"},
+	{"clip", "\\clip(Command)"},
+	{"clip", "\\clip(Scale,Command)"},
+	{"clip", "\\clip(X1,Y1,X2,Y2)"},
+	{"fad", "\\fad(Start Time,End Time)"},
+	{"fade", "\\fade(Start Alpha,Middle Alpha,End Alpha,Start In,End In,Start Out,End Out)"},
+	{"fscx", "\\fscxScale"},
+	{"fscy", "\\fscyScale"},
+	{"move", "\\move(X1,Y1,X2,Y2)"},
+	{"move", "\\move(X1,Y1,X2,Y2,Start Time,End Time)"},
+	{"shad", "\\shadDepth"},
+	{nullptr, nullptr}
+};
+
+const proto_lit proto_5[] = {
+	{"alpha", "\\alphaAlpha"},
+	{"iclip", "\\iclip(Command)"},
+	{"iclip", "\\iclip(Scale,Command)"},
+	{"iclip", "\\iclip(X1,Y1,X2,Y2)"},
+	{"xbord", "\\xbordWidth"},
+	{"xshad", "\\xshadDepth"},
+	{"ybord", "\\ybordWidth"},
+	{"yshad", "\\yshadDepth"},
+	{nullptr, nullptr}
+};
+
+const proto_lit *all_protos[] = {proto_1, proto_2, proto_3, proto_4, proto_5};
 }
 
 namespace agi {
-CalltipProvider::CalltipProvider() {
-	for (auto proto : calltip_protos) {
-		CalltipProto p;
-		std::string tag_name = proto.name;
-		p.text = '\\' + tag_name;
-		if (proto.has_parens)
-			p.text += '(';
-
-		for (const char *arg = proto.args; *arg; ) {
-			size_t start = p.text.size();
-			p.text += arg;
-			size_t end = p.text.size();
-			if (proto.has_parens)
-				p.text += ',';
-
-			arg += end - start + 1;
-			p.args.emplace_back(start, end);
-		}
-
-		// replace trailing comma
-		if (proto.has_parens)
-			p.text.back() = ')';
-
-		protos.insert(make_pair(tag_name, p));
-	}
-}
-
-Calltip CalltipProvider::GetCalltip(std::vector<ass::DialogueToken> const& tokens, std::string const& text, size_t pos) {
+Calltip GetCalltip(std::vector<ass::DialogueToken> const& tokens, std::string const& text, size_t pos) {
 	namespace dt = ass::DialogueTokenType;
 
-	Calltip ret = { "", 0, 0, 0 };
+	Calltip ret = { nullptr, 0, 0, 0 };
 
 	size_t idx = 0;
 	size_t tag_name_idx = 0;
 	size_t commas = 0;
-	for (; idx < tokens.size() && pos >= tokens[idx].length; ++idx) {
+	for (; idx < tokens.size() && pos > 0; ++idx) {
 		switch (tokens[idx].type) {
 			case dt::COMMENT:
 			case dt::OVR_END:
@@ -139,7 +133,7 @@ Calltip CalltipProvider::GetCalltip(std::vector<ass::DialogueToken> const& token
 				break;
 			default: break;
 		}
-		pos -= tokens[idx].length;
+		pos -= std::min(pos, tokens[idx].length);
 	}
 
 	// Either didn't hit a tag or the override block ended before reaching the
@@ -147,17 +141,32 @@ Calltip CalltipProvider::GetCalltip(std::vector<ass::DialogueToken> const& token
 	if (tag_name_idx == 0)
 		return ret;
 
-	// Find the prototype for this tag
 	size_t tag_name_start = 0;
 	for (size_t i = 0; i < tag_name_idx; ++i)
 		tag_name_start += tokens[i].length;
-	auto it = protos.equal_range(text.substr(tag_name_start, tokens[tag_name_idx].length));
+	size_t tag_name_length = tokens[tag_name_idx].length;
+
+	// No tags exist with length over five
+	if (tag_name_length > 5)
+		return ret;
+
+	auto valid = [&](const proto_lit *it) {
+		return it->name && strncmp(it->name, &text[tag_name_start], tag_name_length) == 0;
+	};
+
+	// Find the prototype for this tag
+	auto proto = all_protos[tag_name_length - 1];
+	while (proto->name && strncmp(proto->name, &text[tag_name_start], tag_name_length) < 0)
+		++proto;
+
+	if (!valid(proto))
+		return ret;
 
 	// If there's multiple overloads, check how many total arguments we have
 	// and pick the one with the least args >= current arg count
-	if (distance(it.first, it.second) > 1) {
+	if (valid(proto + 1)) {
 		size_t args = commas + 1;
-		for (size_t i = idx; i < tokens.size(); ++i) {
+		for (size_t i = idx + 1; i < tokens.size(); ++i) {
 			int type = tokens[i].type;
 			if (type == dt::ARG_SEP)
 				++args;
@@ -165,18 +174,40 @@ Calltip CalltipProvider::GetCalltip(std::vector<ass::DialogueToken> const& token
 				break;
 		}
 
-		while (it.first != it.second && args > it.first->second.args.size())
-			++it.first;
+		auto arg_count = [](const proto_lit *it) -> size_t {
+			size_t count = 1;
+			for (const char *s = it->args; *s; ++s) {
+				if (*s == ',') ++count;
+			}
+			return count;
+		};
+
+		while (valid(proto + 1) && args > arg_count(proto))
+			++proto;
 	}
 
-	// Unknown tag or too many arguments
-	if (it.first == it.second || it.first->second.args.size() <= commas)
-		return ret;
+	ret.highlight_start = tag_name_length + 1;
+	if (proto->args[ret.highlight_start] != '(')
+		ret.highlight_end = strlen(proto->args);
+	else {
+		auto start = proto->args + tag_name_length + 2; // One for slash, one for open paren
+		for (; commas > 0; --commas) {
+			start = strchr(start, ',');
+			if (!start) return ret; // No calltip if there's too many args
+			++start;
+		}
 
-	ret.text = it.first->second.text;
-	ret.highlight_start = it.first->second.args[commas].first;
-	ret.highlight_end = it.first->second.args[commas].second;
+		ret.highlight_start = std::distance(proto->args, start);
+		const char *end = strchr(start, ',');
+		if (end)
+			ret.highlight_end = std::distance(start, end) + ret.highlight_start;
+		else
+			ret.highlight_end = strlen(proto->args) - 1; // -1 for close paren
+	}
+
+	ret.text = proto->args;
 	ret.tag_position = tag_name_start;
+
 	return ret;
 }
 }

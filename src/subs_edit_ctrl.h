@@ -34,7 +34,6 @@
 
 class Thesaurus;
 namespace agi {
-	class CalltipProvider;
 	class SpellChecker;
 	struct Context;
 	namespace ass { struct DialogueToken; }
@@ -48,8 +47,6 @@ class SubsTextEditCtrl final : public wxStyledTextCtrl {
 
 	/// Backend thesaurus to use
 	std::unique_ptr<Thesaurus> thesaurus;
-
-	std::unique_ptr<agi::CalltipProvider> calltip_provider;
 
 	/// Project context, for splitting lines
 	agi::Context *context;

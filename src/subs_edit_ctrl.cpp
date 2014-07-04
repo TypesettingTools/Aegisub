@@ -281,18 +281,15 @@ void SubsTextEditCtrl::UpdateCallTip() {
 	if (pos == cursor_pos) return;
 	cursor_pos = pos;
 
-	if (!calltip_provider)
-		calltip_provider = agi::make_unique<agi::CalltipProvider>();
+	agi::Calltip new_calltip = agi::GetCalltip(tokenized_line, line_text, pos);
 
-	agi::Calltip new_calltip = calltip_provider->GetCalltip(tokenized_line, line_text, pos);
-
-	if (new_calltip.text.empty()) {
+	if (!new_calltip.text) {
 		CallTipCancel();
 		return;
 	}
 
 	if (!CallTipActive() || calltip_position != new_calltip.tag_position || calltip_text != new_calltip.text)
-		CallTipShow(new_calltip.tag_position, to_wx(new_calltip.text));
+		CallTipShow(new_calltip.tag_position, wxString::FromUTF8Unchecked(new_calltip.text));
 
 	calltip_position = new_calltip.tag_position;
 	calltip_text = new_calltip.text;

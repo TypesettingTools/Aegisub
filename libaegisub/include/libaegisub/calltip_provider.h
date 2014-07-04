@@ -14,31 +14,19 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <map>
 #include <string>
 #include <vector>
 
 namespace agi {
-	namespace ass { struct DialogueToken; }
+namespace ass { struct DialogueToken; }
 
-	struct Calltip {
-		std::string text;       ///< Text of the calltip
-		size_t highlight_start; ///< Start index of the current parameter in text
-		size_t highlight_end;   ///< End index of the current parameter in text
-		size_t tag_position;    ///< Start index of the tag in the input line
-	};
+struct Calltip {
+	const char *text;       ///< Text of the calltip
+	size_t highlight_start; ///< Start index of the current parameter in text
+	size_t highlight_end;   ///< End index of the current parameter in text
+	size_t tag_position;    ///< Start index of the tag in the input line
+};
 
-	class CalltipProvider {
-		struct CalltipProto {
-			std::string text;
-			std::vector<std::pair<size_t, size_t>> args;
-		};
-		std::multimap<std::string, CalltipProto> protos;
-
-	public:
-		CalltipProvider();
-
-		/// Get the calltip to show for the given cursor position in the text
-		Calltip GetCalltip(std::vector<ass::DialogueToken> const& tokens, std::string const& text, size_t pos);
-	};
+/// Get the calltip to show for the given cursor position in the text
+Calltip GetCalltip(std::vector<ass::DialogueToken> const& tokens, std::string const& text, size_t pos);
 }
