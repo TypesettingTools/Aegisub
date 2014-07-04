@@ -14,23 +14,16 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file path.h
-/// @brief Common paths.
-/// @ingroup libaegisub
-
 #include <libaegisub/fs_fwd.h>
 
+#include <array>
 #include <boost/filesystem/path.hpp>
-#include <map>
 
 namespace agi {
 /// Class for handling everything path-related in Aegisub
 class Path {
 	/// Token -> Path map
-	std::map<std::string, fs::path> tokens;
-
-	/// Path -> Token map
-	std::map<fs::path, std::string> paths;
+	std::array<fs::path, 8> paths;
 
 	/// Platform-specific code to fill in the default paths, called in the constructor
 	void FillPlatformSpecificPaths();
@@ -74,7 +67,7 @@ public:
 	/// @param token_name A single word token beginning with '?'
 	/// @param token_value An absolute path to a directory or file
 	/// @throws InternalError if `token` is not a valid token name
-	void SetToken(std::string const& token_name, fs::path const& token_value);
+	void SetToken(const char *token_name, fs::path const& token_value);
 };
 
 }
