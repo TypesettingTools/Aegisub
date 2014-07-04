@@ -13,13 +13,16 @@ install:
   - sudo luarocks install busted > /dev/null
 
   - git submodule --quiet init
-  - git submodule --quiet update vendor/boost vendor/googletest
+  - git submodule --quiet update vendor/googletest
 
-  - cd vendor/boost
-  - git submodule --quiet update --init --recursive
+  - cd vendor
+  - rm -rf boost
+  - wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2/download
+  - tar xjf download
+  - mv boost_1_55_0 boost
+  - cd boost
   - ./bootstrap.sh
-  - ./b2 headers > /dev/null
-  - ./b2 -layout=system threading=multi cxxflags=-std=c++11 link=shared variant=release --without-python --without-iostreams --without-serialization --without-graph --without-log --without-math --without-signals --without-test --without-wave --without-mpi --without-program_options --without-graph_parallel --without-context --without-coroutine --without-random --without-timer --without-date_time
+  - ./b2 -j3 -layout=system threading=multi cxxflags=-std=c++11 link=shared variant=release --without-python --without-iostreams --without-serialization --without-graph --without-log --without-math --without-signals --without-test --without-wave --without-mpi --without-program_options --without-graph_parallel --without-context --without-coroutine --without-random --without-timer --without-date_time
   - cd ../..
 script:
   - export CPATH=$(pwd)/vendor/boost
