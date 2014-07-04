@@ -18,6 +18,9 @@
 #include <libaegisub/lua/script_reader.h>
 #include <libaegisub/lua/utils.h>
 
+#include <libaegisub/dispatch.h>
+#include <libaegisub/log.h>
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -37,6 +40,9 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "usage: aegisub-lua <script> [args]\n");
 		return 1;
 	}
+
+	agi::dispatch::Init([](agi::dispatch::Thunk f) { });
+	agi::log::log = new agi::log::LogSink;
 
 	// Init lua state
 	lua_State *L = lua_open();

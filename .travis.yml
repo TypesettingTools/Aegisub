@@ -12,6 +12,7 @@ install:
   - sudo apt-get install -y -qq libasound2-dev libfftw3-dev libhunspell-dev yasm libfribidi-dev libass-dev libffms2-dev libwxgtk3.0-dev libicu-dev luarocks
   - sudo luarocks install busted 1.10.0 > /dev/null
   - sudo luarocks install moonscript > /dev/null
+  - sudo luarocks install uuid > /dev/null
 
   - git submodule --quiet init
   - git submodule --quiet update vendor/googletest
