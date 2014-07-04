@@ -29,7 +29,7 @@ script:
   - autoreconf -if
   - ./configure BOOST_LDFLAGS="-L$(pwd)/vendor/boost/stage/lib" || cat config.log
   - make -j3 all test
-  - coveralls --exclude vendor --exclude tests
+  - coveralls --exclude vendor --exclude tests --exclude src --exclude build --exclude tools
 notifications:
   email:
     - on_success: change
