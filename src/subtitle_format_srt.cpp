@@ -297,7 +297,6 @@ AssTime ReadSRTTime(std::string const& ts)
 			s = 0;
 			break;
 		case ',':
-			ci++;
 			milliseconds = true;
 			break;
 		default:
