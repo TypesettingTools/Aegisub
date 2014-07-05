@@ -14,19 +14,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file font_file_lister.h
-/// @see font_file_lister.cpp
-/// @ingroup font_collector
-///
-
-#pragma once
-
 #include <libaegisub/fs_fwd.h>
+#include <libaegisub/scoped_ptr.h>
 
 #include <boost/filesystem/path.hpp>
 #include <functional>
 #include <map>
-#include <set>
 #include <string>
 #include <vector>
 
@@ -37,18 +30,33 @@ class AssFile;
 
 typedef std::function<void (wxString, int)> FontCollectorStatusCallback;
 
-/// @class FontFileLister
-/// @brief Font lister interface
-class FontFileLister {
+struct CollectionResult {
+	/// Characters which could not be found in any font files
+	wxString missing;
+	/// Paths to the file(s) containing the requested font
+	std::vector<agi::fs::path> paths;
+	bool fake_bold = false;
+	bool fake_italic = false;
+};
+
+typedef struct _FcConfig FcConfig;
+typedef struct _FcFontSet FcFontSet;
+
+/// @class FontConfigFontFileLister
+/// @brief fontconfig powered font lister
+class FontConfigFontFileLister {
+	agi::scoped_holder<FcConfig*> config;
+
+	/// @brief Case-insensitive match ASS/SSA font family against full name. (also known as "name for humans")
+	/// @param family font fullname
+	/// @param bold weight attribute
+	/// @param italic italic attribute
+	/// @return font set
+	FcFontSet *MatchFullname(const char *family, int weight, int slant);
 public:
-	struct CollectionResult {
-		/// Characters which could not be found in any font files
-		wxString missing;
-		/// Paths to the file(s) containing the requested font
-		std::vector<agi::fs::path> paths;
-		bool fake_bold = false;
-		bool fake_italic = false;
-	};
+	/// Constructor
+	/// @param cb Callback for status logging
+	FontConfigFontFileLister(FontCollectorStatusCallback &cb);
 
 	/// @brief Get the path to the font with the given styles
 	/// @param facename Name of font face
@@ -56,7 +64,7 @@ public:
 	/// @param italic Italic?
 	/// @param characters Characters in this style
 	/// @return Path to the matching font file(s), or empty if not found
-	virtual CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) = 0;
+	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters);
 };
 
 /// @class FontCollector
@@ -72,22 +80,22 @@ class FontCollector {
 
 	/// Data about where each style is used
 	struct UsageData {
-		std::set<wxUniChar> chars;    ///< Characters used in this style which glyphs will be needed for
-		std::set<int> lines;          ///< Lines on which this style is used via overrides
-		std::set<std::string> styles; ///< ASS styles which use this style
+		std::vector<int> chars;          ///< Characters used in this style which glyphs will be needed for
+		std::vector<int> lines;          ///< Lines on which this style is used via overrides
+		std::vector<std::string> styles; ///< ASS styles which use this style
 	};
 
 	/// Message callback provider by caller
 	FontCollectorStatusCallback status_callback;
-	/// The actual lister to use to get font paths
-	FontFileLister &lister;
+
+	FontConfigFontFileLister lister;
 
 	/// The set of all glyphs used in the file
 	std::map<StyleInfo, UsageData> used_styles;
 	/// Style name -> ASS style definition
 	std::map<std::string, StyleInfo> styles;
 	/// Paths to found required font files
-	std::set<agi::fs::path> results;
+	std::vector<agi::fs::path> results;
 	/// Number of fonts which could not be found
 	int missing = 0;
 	/// Number of fonts which were found, but did not contain all used glyphs
@@ -106,7 +114,7 @@ public:
 	/// Constructor
 	/// @param status_callback Function to pass status updates to
 	/// @param lister The actual font file lister
-	FontCollector(FontCollectorStatusCallback status_callback, FontFileLister &lister);
+	FontCollector(FontCollectorStatusCallback status_callback);
 
 	/// @brief Get a list of the locations of all font files used in the file
 	/// @param file Lines in the subtitle file to check

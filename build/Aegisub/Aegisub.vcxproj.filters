@@ -225,9 +225,6 @@
     <ClInclude Include="$(SrcDir)font_file_lister.h">
       <Filter>Features\Font collector</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)font_file_lister_fontconfig.h">
-      <Filter>Features\Font collector</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)dialog_detached_video.h">
       <Filter>Video\UI</Filter>
     </ClInclude>

@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file font_file_lister.cpp
-/// @brief Base-class for font collector implementations
-/// @ingroup font_collector
-///
-
 #include "font_file_lister.h"
 
 #include "ass_dialogue.h"
@@ -36,31 +31,31 @@
 #include <wx/intl.h>
 
 namespace {
-	wxString format_missing(wxString const& str) {
-		wxString printable;
-		wxString unprintable;
-		for (wxUniChar c : str) {
-			if (!u_isUWhiteSpace(c.GetValue()))
-				printable += c;
-			else {
-				unprintable += fmt_wx("\n - U+%04X ", c.GetValue());
-				UErrorCode ec;
-				char buf[1024];
-				auto len = u_charName(c.GetValue(), U_EXTENDED_CHAR_NAME, buf, sizeof buf, &ec);
-				if (len != 0 && U_SUCCESS(ec))
-					unprintable += to_wx(buf);
-				if (c.GetValue() == 0xA0)
-					unprintable += " (\\h)";
-			}
+wxString format_missing(wxString const& str) {
+	wxString printable;
+	wxString unprintable;
+	for (wxUniChar c : str) {
+		if (!u_isUWhiteSpace(c.GetValue()))
+			printable += c;
+		else {
+			unprintable += fmt_wx("\n - U+%04X ", c.GetValue());
+			UErrorCode ec;
+			char buf[1024];
+			auto len = u_charName(c.GetValue(), U_EXTENDED_CHAR_NAME, buf, sizeof buf, &ec);
+			if (len != 0 && U_SUCCESS(ec))
+				unprintable += to_wx(buf);
+			if (c.GetValue() == 0xA0)
+				unprintable += " (\\h)";
 		}
-
-		return printable + unprintable;
 	}
+
+	return printable + unprintable;
+}
 }
 
-FontCollector::FontCollector(FontCollectorStatusCallback status_callback, FontFileLister &lister)
+FontCollector::FontCollector(FontCollectorStatusCallback status_callback)
 : status_callback(std::move(status_callback))
-, lister(lister)
+, lister(this->status_callback)
 {
 }
 
@@ -80,50 +75,66 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 	bool overriden = false;
 
 	for (auto& block : line->ParseTags()) {
-		if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride *>(block.get())) {
+		if (auto ovr = dynamic_cast<AssDialogueBlockOverride *>(block.get())) {
 			for (auto const& tag : ovr->Tags) {
-				std::string const& name = tag.Name;
-
-				if (name == "\\r") {
+				if (tag.Name == "\\r") {
 					style = styles[tag.Params[0].Get(line->Style.get())];
 					overriden = false;
 				}
-				else if (name == "\\b") {
+				else if (tag.Name == "\\b") {
 					style.bold = tag.Params[0].Get(initial.bold);
 					overriden = true;
 				}
-				else if (name == "\\i") {
+				else if (tag.Name == "\\i") {
 					style.italic = tag.Params[0].Get(initial.italic);
 					overriden = true;
 				}
-				else if (name == "\\fn") {
+				else if (tag.Name == "\\fn") {
 					style.facename = tag.Params[0].Get(initial.facename);
 					overriden = true;
 				}
 			}
 		}
-		else if (AssDialogueBlockPlain *txt = dynamic_cast<AssDialogueBlockPlain *>(block.get())) {
-			wxString text(to_wx(txt->GetText()));
+		else if (auto txt = dynamic_cast<AssDialogueBlockPlain *>(block.get())) {
+			auto text = txt->GetText();
 
 			if (text.empty())
 				continue;
 
-			if (overriden)
-				used_styles[style].lines.insert(index);
-			std::set<wxUniChar>& chars = used_styles[style].chars;
-			for (auto it = text.begin(); it != text.end(); ++it) {
-				wxUniChar cur = *it;
-				if (cur == L'\\' && it + 1 != text.end()) {
-					wxUniChar next = *++it;
-					if (next == 'N' || next == 'n')
-						continue;
-					if (next == 'h')
-						cur = 0xA0;
-					else
-						--it;
-				}
-				chars.insert(cur);
+			auto& usage = used_styles[style];
+
+			if (overriden) {
+				auto& lines = usage.lines;
+				if (lines.empty() || lines.back() != index)
+					lines.push_back(index);
 			}
+
+			auto& chars = usage.chars;
+			auto size = static_cast<int>(text.size());
+			for (int i = 0; i < size; ) {
+				if (text[i] == '\\' && i + 1 < size) {
+					char next = text[++i];
+					if (next == 'N' || next == 'n') {
+						++i;
+						continue;
+					}
+					if (next == 'h') {
+						++i;
+						chars.push_back(0xA0);
+						continue;
+					}
+
+					chars.push_back('\\');
+					continue;
+				}
+
+				UChar32 c;
+				U8_NEXT(&text[0], i, size, c);
+				chars.push_back(c);
+			}
+
+			sort(begin(chars), end(chars));
+			chars.erase(unique(chars.begin(), chars.end()), chars.end());
 		}
 		// Do nothing with drawing and comment blocks
 	}
@@ -132,7 +143,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 	if (style.second.chars.empty()) return;
 
-	FontFileLister::CollectionResult res = lister.GetFontPaths(style.first.facename, style.first.bold, style.first.italic, style.second.chars);
+	auto res = lister.GetFontPaths(style.first.facename, style.first.bold, style.first.italic, style.second.chars);
 
 	if (res.paths.empty()) {
 		status_callback(fmt_tl("Could not find font '%s'\n", style.first.facename), 2);
@@ -141,8 +152,11 @@ void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 	}
 	else {
 		for (auto& elem : res.paths) {
-			if (results.insert(elem).second)
-				status_callback(fmt_tl("Found '%s' at '%s'\n", style.first.facename, elem.make_preferred()), 0);
+			elem.make_preferred();
+			if (std::find(begin(results), end(results), elem) == end(results)) {
+				status_callback(fmt_tl("Found '%s' at '%s'\n", style.first.facename, elem), 0);
+				results.push_back(elem);
+			}
 		}
 
 		if (res.fake_bold)
@@ -190,7 +204,7 @@ std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
 		info.facename = style.font;
 		info.bold     = style.bold;
 		info.italic   = style.italic;
-		used_styles[info].styles.insert(style.name);
+		used_styles[info].styles.push_back(style.name);
 	}
 
 	int index = 0;

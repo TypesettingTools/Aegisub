@@ -14,12 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file font_file_lister_fontconfig.cpp
-/// @brief Font Config-based font collector
-/// @ingroup font_collector
-///
-
-#include "font_file_lister_fontconfig.h"
+#include "font_file_lister.h"
 
 #include <libaegisub/log.h>
 
@@ -74,14 +69,14 @@ void find_font(FcFontSet *src, FcFontSet *dst, std::string const& family) {
 
 }
 
-FontConfigFontFileLister::FontConfigFontFileLister(FontCollectorStatusCallback cb)
+FontConfigFontFileLister::FontConfigFontFileLister(FontCollectorStatusCallback &cb)
 : config(init_fontconfig(), FcConfigDestroy)
 {
 	cb(_("Updating font cache\n"), 0);
 	FcConfigBuildFonts(config);
 }
 
-FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(std::string const& facename, int bold, bool italic, std::set<wxUniChar> const& characters) {
+CollectionResult FontConfigFontFileLister::GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters) {
 	CollectionResult ret;
 
 	std::string family = facename[0] == '@' ? facename.substr(1) : facename;
@@ -124,7 +119,7 @@ FontFileLister::CollectionResult FontConfigFontFileLister::GetFontPaths(std::str
 
 	FcCharSet *charset;
 	if (FcPatternGetCharSet(match, FC_CHARSET, 0, &charset) == FcResultMatch) {
-		for (wxUniChar chr : characters) {
+		for (int chr : characters) {
 			if (!FcCharSetHasChar(charset, chr))
 				ret.missing += chr;
 		}

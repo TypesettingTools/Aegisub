@@ -157,7 +157,6 @@
     <ClInclude Include="$(SrcDir)ffmpegsource_common.h" />
     <ClInclude Include="$(SrcDir)fft.h" />
     <ClInclude Include="$(SrcDir)font_file_lister.h" />
-    <ClInclude Include="$(SrcDir)font_file_lister_fontconfig.h" />
     <ClInclude Include="$(SrcDir)frame_main.h" />
     <ClInclude Include="$(SrcDir)gl_text.h" />
     <ClInclude Include="$(SrcDir)gl_wrap.h" />

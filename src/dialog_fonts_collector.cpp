@@ -15,7 +15,6 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "font_file_lister.h"
-#include "font_file_lister_fontconfig.h"
 
 #include "compat.h"
 #include "dialog_manager.h"
@@ -91,8 +90,7 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 			collector->AddPendingEvent(event);
 		};
 
-		FontConfigFontFileLister lister(AppendText);
-		auto paths = FontCollector(AppendText, lister).GetFontPaths(subs);
+		auto paths = FontCollector(AppendText).GetFontPaths(subs);
 		if (paths.empty()) {
 			collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));
 			return;
