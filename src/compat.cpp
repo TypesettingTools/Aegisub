@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-wxArrayString lagi_MRU_wxAS(std::string const& list) {
+wxArrayString lagi_MRU_wxAS(const char *list) {
 	auto const& vec = *config::mru->Get(list);
 	wxArrayString ret;
 	ret.reserve(vec.size());

@@ -84,7 +84,7 @@ public:
 	}
 
 	void Update() {
-		const auto mru = config::mru->Get(type);
+		const auto mru = config::mru->Get(type.c_str());
 
 		Resize(mru->size());
 

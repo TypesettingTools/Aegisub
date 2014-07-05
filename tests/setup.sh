@@ -23,9 +23,9 @@ chmod 000 data/dir_access_denied
 mkdir data/dir_read_only
 chmod 444 data/dir_read_only
 
-echo '{"Valid" : ["Entry One", "Entry Two"]}' > data/mru_ok.json
+echo '{"Video" : ["Entry One", "Entry Two"]}' > data/mru_ok.json
 
-echo '{"Invalid" : [1, 3]}' > data/mru_invalid.json
+echo '{"Video" : [1, 3]}' > data/mru_invalid.json
 
 printf %s '1234567890' > data/ten_bytes
 touch -r $0 data/touch_mod_time

@@ -20,9 +20,9 @@ icacls data\dir_access_denied /deny %USERNAME%:F
 mkdir data\dir_read_only
 icacls data\dir_read_only /deny %USERNAME%:W
 
-echo {"Valid" : ["Entry One", "Entry Two"]} > data/mru_ok.json
+echo {"Video" : ["Entry One", "Entry Two"]} > data/mru_ok.json
 
-echo {"Invalid" : [1, 3]} > data/mru_invalid.json
+echo {"Video" : [1, 3]} > data/mru_invalid.json
 
 echo '1234567890' > data\ten_bytes
 echo '' > data\touch_mod_time
