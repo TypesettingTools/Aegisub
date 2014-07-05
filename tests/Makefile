@@ -29,8 +29,9 @@ endif
 $(d)data: $(d)setup.sh
 	cd $(TOP)tests; ./setup.sh
 
+gtest_filter ?= *
 test-libaegisub: $(d)run $(d)data
-	cd $(TOP)tests; ./run
+	cd $(TOP)tests; ./run --gtest_filter="$(gtest_filter)"
 
 test: $(subst $(GTEST_FILE).cc,test-libaegisub,$(wildcard $(GTEST_FILE).cc))
 
