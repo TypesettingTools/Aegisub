@@ -20,12 +20,6 @@ TODO:
 */
 
 namespace json {
-
-std::istream& operator >> (std::istream& istr, UnknownElement& elementRoot) {
-	Reader::Read(elementRoot, istr);
-	return istr;
-}
-
 /// Wrapper around istream to keep track of document/line offsets
 class Reader::InputStream {
 	std::istream& m_iStr;
@@ -104,44 +98,41 @@ void Reader::Scan(Tokens& tokens, InputStream& inputStream) {
 		Token token;
 		token.locBegin = inputStream.GetLocation();
 
-		// gives us null-terminated string
-		std::string sChar;
-		sChar.push_back(inputStream.Peek());
-
-		switch (sChar[0]) {
+		char c = inputStream.Peek();
+		switch (c) {
 			case '{':
-				token.sValue = sChar[0];
-				MatchExpectedString(sChar, inputStream);
+				token.sValue = c;
+				inputStream.Get();
 				token.nType = Token::TOKEN_OBJECT_BEGIN;
 				break;
 
 			case '}':
-				token.sValue = sChar[0];
-				MatchExpectedString(sChar, inputStream);
+				token.sValue = c;
+				inputStream.Get();
 				token.nType = Token::TOKEN_OBJECT_END;
 				break;
 
 			case '[':
-				token.sValue = sChar[0];
-				MatchExpectedString(sChar, inputStream);
+				token.sValue = c;
+				inputStream.Get();
 				token.nType = Token::TOKEN_ARRAY_BEGIN;
 				break;
 
 			case ']':
-				token.sValue = sChar[0];
-				MatchExpectedString(sChar, inputStream);
+				token.sValue = c;
+				inputStream.Get();
 				token.nType = Token::TOKEN_ARRAY_END;
 				break;
 
 			case ',':
-				token.sValue = sChar[0];
-				MatchExpectedString(sChar, inputStream);
+				token.sValue = c;
+				inputStream.Get();
 				token.nType = Token::TOKEN_NEXT_ELEMENT;
 				break;
 
 			case ':':
-				token.sValue = sChar[0];
-				MatchExpectedString(sChar, inputStream);
+				token.sValue = c;
+				inputStream.Get();
 				token.nType = Token::TOKEN_MEMBER_ASSIGN;
 				break;
 
@@ -183,8 +174,11 @@ void Reader::Scan(Tokens& tokens, InputStream& inputStream) {
 				token.nType = Token::TOKEN_NULL;
 				break;
 
+			case 0:
+				return;
+
 			default:
-				throw ScanException("Unexpected character in stream: " + sChar, inputStream.GetLocation());
+				throw ScanException(std::string("Unexpected character in stream: ") + c, inputStream.GetLocation());
 		}
 
 		token.locEnd = inputStream.GetLocation();
@@ -198,13 +192,9 @@ void Reader::EatWhiteSpace(InputStream& inputStream) {
 }
 
 void Reader::MatchExpectedString(std::string const& sExpected, InputStream& inputStream) {
-	std::string::const_iterator it(sExpected.begin()), itEnd(sExpected.end());
-	for ( ; it != itEnd; ++it) {
-		if (inputStream.EOS() ||       // did we reach the end before finding what we're looking for...
-			inputStream.Get() != *it)  // ...or did we find something different?
-		{
+	for (char c : sExpected) {
+		if (inputStream.EOS() || inputStream.Get() != c)
 			throw ScanException("Expected string: " + sExpected, inputStream.GetLocation());
-		}
 	}
 }
 
