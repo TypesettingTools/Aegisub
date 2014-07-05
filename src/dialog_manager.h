@@ -18,7 +18,7 @@
 
 #include <libaegisub/exception.h>
 
-#include <map>
+#include <vector>
 #include <typeinfo>
 #include <wx/dialog.h>
 
@@ -30,17 +30,9 @@ namespace agi { struct Context; }
 /// created, so that commands can be send to the appropriate places and so that
 /// the same dialog can't be opened twice at once.
 class DialogManager {
-	/// Comparer for pointers to std::type_info
-	struct type_info_lt {
-		bool operator()(const std::type_info *lft, const std::type_info *rgt) const {
-			return !!lft->before(*rgt);
-		}
-	};
-
-	typedef std::map<const std::type_info *, wxDialog *, type_info_lt> DialogMap;
-
+	using dialog_pair = std::pair<const std::type_info *, wxDialog *>;
 	/// Dialogs which currently exist
-	DialogMap created_dialogs;
+	std::vector<dialog_pair> created_dialogs;
 
 	/// Close handler which deletes and unregisters closed modeless dialogs
 	template<typename Event>
@@ -58,28 +50,36 @@ class DialogManager {
 		}
 	}
 
+	template<typename T>
+	std::vector<dialog_pair>::iterator Find() {
+		for (auto it = begin(created_dialogs); it != end(created_dialogs); ++it) {
+			if (*it->first == typeid(T))
+				return it;
+		}
+		return end(created_dialogs);
+	}
+
 public:
 	/// Show a modeless dialog of the given type, creating it if needed
 	/// @tparam DialogType Type of dialog to show
 	template<class DialogType>
 	void Show(agi::Context *c) {
-		auto it = created_dialogs.find(&typeid(DialogType));
-
-		if (it != created_dialogs.end()) {
-			it->second->Show();
-			it->second->SetFocus();
-		}
-		else {
-			try {
-				wxDialog *d = new DialogType(c);
-				created_dialogs[&typeid(DialogType)] = d;
-				d->Bind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose<wxCloseEvent>, this);
-				d->Bind(wxEVT_BUTTON, &DialogManager::OnClose<wxCommandEvent>, this, wxID_CANCEL);
-				d->Show();
-				SetFloatOnParent(d);
+		for (auto const& diag : created_dialogs) {
+			if (*diag.first == typeid(DialogType)) {
+				diag.second->Show();
+				diag.second->SetFocus();
 			}
-			catch (agi::UserCancelException const&) { }
 		}
+
+		try {
+			wxDialog *d = new DialogType(c);
+			created_dialogs.emplace_back(&typeid(DialogType), d);
+			d->Bind(wxEVT_CLOSE_WINDOW, &DialogManager::OnClose<wxCloseEvent>, this);
+			d->Bind(wxEVT_BUTTON, &DialogManager::OnClose<wxCommandEvent>, this, wxID_CANCEL);
+			d->Show();
+			SetFloatOnParent(d);
+		}
+		catch (agi::UserCancelException const&) { }
 	}
 
 	/// Show a modal dialog of the given type, creating it if needed
@@ -87,15 +87,15 @@ public:
 	template<class DialogType>
 	void ShowModal(agi::Context *c) {
 		DialogType diag(c);
-		created_dialogs[&typeid(DialogType)] = &diag;
+		created_dialogs.emplace_back(&typeid(DialogType), &diag);
 		try {
 			diag.ShowModal();
 		}
 		catch (...) {
-			created_dialogs.erase(&typeid(DialogType));
+			created_dialogs.erase(Find<DialogType>());
 			throw;
 		}
-		created_dialogs.erase(&typeid(DialogType));
+		created_dialogs.erase(Find<DialogType>());
 	}
 
 	/// Get the dialog of the given type
@@ -103,7 +103,7 @@ public:
 	/// @return A pointer to a DialogType or nullptr if no dialog of the given type has been created
 	template<class DialogType>
 	DialogType *Get() const {
-		auto it = created_dialogs.find(&typeid(DialogType));
+		auto it = const_cast<DialogManager *>(this)->Find<DialogType>();
 		return it != created_dialogs.end() ? static_cast<DialogType*>(it->second) : nullptr;
 	}
 
@@ -113,6 +113,5 @@ public:
 			it.second->Unbind(wxEVT_BUTTON, &DialogManager::OnClose<wxCommandEvent>, this, wxID_CANCEL);
 			it.second->Destroy();
 		}
-		created_dialogs.clear();
 	}
 };
