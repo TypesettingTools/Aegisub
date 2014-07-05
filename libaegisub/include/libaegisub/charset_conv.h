@@ -120,7 +120,7 @@ template<class T>
 T const& GetEncodingsList() {
 	static T name_list;
 	if (name_list.empty()) {
-#		define ADD(pretty, real) if (IsConversionSupported(real, "utf-8")) name_list.push_back(pretty)
+#		define ADD(pretty, real) if (IsConversionSupported(real, "utf-8")) name_list.push_back(pretty);
 #		include <libaegisub/charsets.def>
 #		undef ADD
 	}

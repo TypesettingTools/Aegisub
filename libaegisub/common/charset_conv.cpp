@@ -20,7 +20,7 @@
 #include <cstdint>
 
 #include <cassert>
-#include <map>
+#include <boost/range/algorithm.hpp>
 
 #include <libaegisub/charset_conv.h>
 #include <iconv.h>
@@ -44,28 +44,33 @@ static const size_t iconv_failed = (size_t)-1;
 
 namespace {
 	using namespace agi::charset;
-	struct ltstr {
-		bool operator()(const char* s1, const char* s2) const {
-			return strcmp(s1, s2) < 0;
-		}
-	};
 
 	Converter *get_converter(bool subst, const char *src, const char *dst);
 
 /// @brief Map a user-friendly encoding name to the real encoding name
-	const char *get_real_encoding_name(const char* name) {
-		static std::map<const char*, const char*, ltstr> pretty_names;
-
-		if (pretty_names.empty()) {
-#			define ADD(pretty, real) pretty_names[pretty] = real
+	const char *get_real_encoding_name(const char *name) {
+        struct pair { const char *pretty; const char *real; };
+        static pair pretty_names[] = {
+#			define ADD(pretty, real) pair{pretty, real},
 #			include <libaegisub/charsets.def>
 #			undef ADD
-		}
+        };
 
-		auto real = pretty_names.find(name);
-		if (real != pretty_names.end())
-			return real->second;
-		return name;
+        static bool init = false;
+        if (!init) {
+            init = true;
+            boost::sort(pretty_names, [](pair a, pair b) {
+                return strcmp(a.pretty, b.pretty) < 0;
+            });
+        }
+
+        auto enc = boost::lower_bound(pretty_names, name, [](pair a, const char *b) {
+			return strcmp(a.pretty, b) < 0;
+        });
+
+        if (enc != std::end(pretty_names) && strcmp(enc->pretty, name) == 0)
+            return enc->real;
+        return name;
 	}
 
 	size_t get_bom_size(Iconv& cd) {
