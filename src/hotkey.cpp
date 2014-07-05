@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file hotkey.cpp
-/// @brief Hotkey handler
-/// @ingroup hotkey menu event window
-
 #include <libaegisub/hotkey.h>
 
 #include "include/aegisub/hotkey.h"
@@ -33,42 +29,40 @@
 #include <wx/msgdlg.h>
 
 namespace {
-	const char *added_hotkeys_7035[][5] = {
-		{ "audio/play/line", "Audio", "R", nullptr, nullptr },
-		{ nullptr }
+	const char *added_hotkeys_7035[][3] = {
+		{"audio/play/line", "Audio", "R"},
+		{nullptr}
 	};
 
-	const char *added_hotkeys_7070[][5] = {
-		{ "edit/color/primary", "Subtitle Edit Box", "Alt", "1", nullptr },
-		{ "edit/color/secondary", "Subtitle Edit Box", "Alt", "2", nullptr },
-		{ "edit/color/outline", "Subtitle Edit Box", "Alt", "3", nullptr },
-		{ "edit/color/shadow", "Subtitle Edit Box", "Alt", "4", nullptr },
-		{ nullptr }
+	const char *added_hotkeys_7070[][3] = {
+		{"edit/color/primary", "Subtitle Edit Box", "Alt-1"},
+		{"edit/color/secondary", "Subtitle Edit Box", "Alt-2"},
+		{"edit/color/outline", "Subtitle Edit Box", "Alt-3"},
+		{"edit/color/shadow", "Subtitle Edit Box", "Alt-4"},
+		{nullptr}
 	};
 
-	const char *added_hotkeys_shift_back[][5] = {
-		{ "edit/line/duplicate/shift_back", "Default", "Ctrl", "Shift", "D" },
-		{ nullptr }
+	const char *added_hotkeys_shift_back[][3] = {
+		{"edit/line/duplicate/shift_back", "Default", "Ctrl-Shift-D"},
+		{nullptr}
 	};
 
-	void migrate_hotkeys(const char *added[][5]) {
-		agi::hotkey::Hotkey::HotkeyMap hk_map = hotkey::inst->GetHotkeyMap();
+	void migrate_hotkeys(const char *added[][3]) {
+		auto hk_map = hotkey::inst->GetHotkeyMap();
+		bool changed = false;
 
 		for (size_t i = 0; added[i] && added[i][0]; ++i) {
-			std::vector<std::string> keys;
-			for (size_t j = 2; j < 5; ++j) {
-				if (added[i][j])
-					keys.emplace_back(added[i][j]);
-			}
-			agi::hotkey::Combo combo(added[i][1], added[i][0], keys);
+			agi::hotkey::Combo combo(added[i][1], added[i][0], added[i][2]);
 
 			if (hotkey::inst->HasHotkey(combo.Context(), combo.Str()))
 				continue;
 
-			hk_map.insert(make_pair(std::string(added[i][0]), combo));
+			hk_map.insert(make_pair(std::string(added[i][0]), std::move(combo)));
+			changed = true;
 		}
 
-		hotkey::inst->SetHotkeyMap(hk_map);
+		if (changed)
+			hotkey::inst->SetHotkeyMap(std::move(hk_map));
 	}
 }
 
@@ -100,18 +94,18 @@ void init() {
 	if (boost::find(migrations, "duplicate -> split") == end(migrations)) {
 		auto hk_map = hotkey::inst->GetHotkeyMap();
 		for (auto const& hotkey : boost::make_iterator_range(hk_map.equal_range("edit/line/duplicate/shift"))) {
-			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/before", hotkey.second.Get());
+			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/before", hotkey.second.Str());
 			hk_map.insert({combo.CmdName(), combo});
 		}
 		for (auto const& hotkey : boost::make_iterator_range(hk_map.equal_range("edit/line/duplicate/shift_back"))) {
-			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/after", hotkey.second.Get());
+			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/after", hotkey.second.Str());
 			hk_map.insert({combo.CmdName(), combo});
 		}
 
 		hk_map.erase("edit/line/duplicate/shift");
 		hk_map.erase("edit/line/duplicate/shift_back");
 
-		hotkey::inst->SetHotkeyMap(hk_map);
+		hotkey::inst->SetHotkeyMap(std::move(hk_map));
 		migrations.emplace_back("duplicate -> split");
 	}
 
@@ -122,20 +116,95 @@ void clear() {
 	delete inst;
 }
 
-static std::vector<std::string> keycode_names;
-
-static void init_keycode_names();
-
-static std::string const& keycode_name(int code) {
-	if (keycode_names.empty())
-		init_keycode_names();
-
-	if (static_cast<size_t>(code) > keycode_names.size()) {
-		static std::string str;
-		return str;
+static const char *keycode_name(int code) {
+	switch (code) {
+	case WXK_BACK:            return "Backspace";
+	case WXK_TAB:             return "Tab";
+	case WXK_RETURN:          return "Enter";
+	case WXK_ESCAPE:          return "Escape";
+	case WXK_SPACE:           return "Space";
+	case WXK_DELETE:          return "Delete";
+	case WXK_SHIFT:           return "Shift";
+	case WXK_ALT:             return "Alt";
+	case WXK_CONTROL:         return "Control";
+	case WXK_PAUSE:           return "Pause";
+	case WXK_END:             return "End";
+	case WXK_HOME:            return "Home";
+	case WXK_LEFT:            return "Left";
+	case WXK_UP:              return "Up";
+	case WXK_RIGHT:           return "Right";
+	case WXK_DOWN:            return "Down";
+	case WXK_PRINT:           return "Print";
+	case WXK_INSERT:          return "Insert";
+	case WXK_NUMPAD0:         return "KP_0";
+	case WXK_NUMPAD1:         return "KP_1";
+	case WXK_NUMPAD2:         return "KP_2";
+	case WXK_NUMPAD3:         return "KP_3";
+	case WXK_NUMPAD4:         return "KP_4";
+	case WXK_NUMPAD5:         return "KP_5";
+	case WXK_NUMPAD6:         return "KP_6";
+	case WXK_NUMPAD7:         return "KP_7";
+	case WXK_NUMPAD8:         return "KP_8";
+	case WXK_NUMPAD9:         return "KP_9";
+	case WXK_MULTIPLY:        return "Asterisk";
+	case WXK_ADD:             return "Plus";
+	case WXK_SUBTRACT:        return "Hyphen";
+	case WXK_DECIMAL:         return "Period";
+	case WXK_DIVIDE:          return "Slash";
+	case WXK_F1:              return "F1";
+	case WXK_F2:              return "F2";
+	case WXK_F3:              return "F3";
+	case WXK_F4:              return "F4";
+	case WXK_F5:              return "F5";
+	case WXK_F6:              return "F6";
+	case WXK_F7:              return "F7";
+	case WXK_F8:              return "F8";
+	case WXK_F9:              return "F9";
+	case WXK_F10:             return "F10";
+	case WXK_F11:             return "F11";
+	case WXK_F12:             return "F12";
+	case WXK_F13:             return "F13";
+	case WXK_F14:             return "F14";
+	case WXK_F15:             return "F15";
+	case WXK_F16:             return "F16";
+	case WXK_F17:             return "F17";
+	case WXK_F18:             return "F18";
+	case WXK_F19:             return "F19";
+	case WXK_F20:             return "F20";
+	case WXK_F21:             return "F21";
+	case WXK_F22:             return "F22";
+	case WXK_F23:             return "F23";
+	case WXK_F24:             return "F24";
+	case WXK_NUMLOCK:         return "Num_Lock";
+	case WXK_SCROLL:          return "Scroll_Lock";
+	case WXK_PAGEUP:          return "PageUp";
+	case WXK_PAGEDOWN:        return "PageDown";
+	case WXK_NUMPAD_SPACE:    return "KP_Space";
+	case WXK_NUMPAD_TAB:      return "KP_Tab";
+	case WXK_NUMPAD_ENTER:    return "KP_Enter";
+	case WXK_NUMPAD_F1:       return "KP_F1";
+	case WXK_NUMPAD_F2:       return "KP_F2";
+	case WXK_NUMPAD_F3:       return "KP_F3";
+	case WXK_NUMPAD_F4:       return "KP_F4";
+	case WXK_NUMPAD_HOME:     return "KP_Home";
+	case WXK_NUMPAD_LEFT:     return "KP_Left";
+	case WXK_NUMPAD_UP:       return "KP_Up";
+	case WXK_NUMPAD_RIGHT:    return "KP_Right";
+	case WXK_NUMPAD_DOWN:     return "KP_Down";
+	case WXK_NUMPAD_PAGEUP:   return "KP_PageUp";
+	case WXK_NUMPAD_PAGEDOWN: return "KP_PageDown";
+	case WXK_NUMPAD_END:      return "KP_End";
+	case WXK_NUMPAD_BEGIN:    return "KP_Begin";
+	case WXK_NUMPAD_INSERT:   return "KP_insert";
+	case WXK_NUMPAD_DELETE:   return "KP_Delete";
+	case WXK_NUMPAD_EQUAL:    return "KP_Equal";
+	case WXK_NUMPAD_MULTIPLY: return "KP_Multiply";
+	case WXK_NUMPAD_ADD:      return "KP_Add";
+	case WXK_NUMPAD_SUBTRACT: return "KP_Subtract";
+	case WXK_NUMPAD_DECIMAL:  return "KP_Decimal";
+	case WXK_NUMPAD_DIVIDE:   return "KP_Divide";
+	default: return "";
 	}
-
-	return keycode_names[code];
 }
 
 std::string keypress_to_str(int key_code, int modifier) {
@@ -146,7 +215,10 @@ std::string keypress_to_str(int key_code, int modifier) {
 		if ((modifier & wxMOD_SHIFT) != 0) combo.append("Shift-");
 	}
 
-	combo += keycode_name(key_code);
+	if (key_code < 127)
+		combo += (char)key_code;
+	else
+		combo += keycode_name(key_code);
 
 	return combo;
 }
@@ -184,104 +256,6 @@ std::vector<std::string> get_hotkey_strs(std::string const& context, std::string
 
 std::string get_hotkey_str_first(std::string const& context, std::string const& command) {
 	return inst->GetHotkey(context, command);
-}
-
-static inline void set_kc(std::vector<std::string> &vec, int code, std::string const& str) {
-	if (static_cast<size_t>(code) >= vec.size()) vec.resize(code * 2, "");
-	vec[code] = str;
-}
-
-static void init_keycode_names() {
-	char str[] = { 0, 0 };
-	for (char i = 33; i < 127; ++i) {
-		str[0] = i;
-		set_kc(keycode_names, i, str);
-	}
-	set_kc(keycode_names, WXK_BACK, "Backspace");
-	set_kc(keycode_names, WXK_TAB, "Tab");
-	set_kc(keycode_names, WXK_RETURN, "Enter");
-	set_kc(keycode_names, WXK_ESCAPE, "Escape");
-	set_kc(keycode_names, WXK_SPACE, "Space");
-	set_kc(keycode_names, WXK_DELETE, "Delete");
-	set_kc(keycode_names, WXK_SHIFT, "Shift");
-	set_kc(keycode_names, WXK_ALT, "Alt");
-	set_kc(keycode_names, WXK_CONTROL, "Control");
-	set_kc(keycode_names, WXK_PAUSE, "Pause");
-	set_kc(keycode_names, WXK_END, "End");
-	set_kc(keycode_names, WXK_HOME, "Home");
-	set_kc(keycode_names, WXK_LEFT, "Left");
-	set_kc(keycode_names, WXK_UP, "Up");
-	set_kc(keycode_names, WXK_RIGHT, "Right");
-	set_kc(keycode_names, WXK_DOWN, "Down");
-	set_kc(keycode_names, WXK_PRINT, "Print");
-	set_kc(keycode_names, WXK_INSERT, "Insert");
-	set_kc(keycode_names, WXK_NUMPAD0, "KP_0");
-	set_kc(keycode_names, WXK_NUMPAD1, "KP_1");
-	set_kc(keycode_names, WXK_NUMPAD2, "KP_2");
-	set_kc(keycode_names, WXK_NUMPAD3, "KP_3");
-	set_kc(keycode_names, WXK_NUMPAD4, "KP_4");
-	set_kc(keycode_names, WXK_NUMPAD5, "KP_5");
-	set_kc(keycode_names, WXK_NUMPAD6, "KP_6");
-	set_kc(keycode_names, WXK_NUMPAD7, "KP_7");
-	set_kc(keycode_names, WXK_NUMPAD8, "KP_8");
-	set_kc(keycode_names, WXK_NUMPAD9, "KP_9");
-	set_kc(keycode_names, WXK_MULTIPLY, "Asterisk");
-	set_kc(keycode_names, WXK_ADD, "Plus");
-	set_kc(keycode_names, WXK_SUBTRACT, "Hyphen");
-	set_kc(keycode_names, WXK_DECIMAL, "Period");
-	set_kc(keycode_names, WXK_DIVIDE, "Slash");
-	set_kc(keycode_names, WXK_F1, "F1");
-	set_kc(keycode_names, WXK_F2, "F2");
-	set_kc(keycode_names, WXK_F3, "F3");
-	set_kc(keycode_names, WXK_F4, "F4");
-	set_kc(keycode_names, WXK_F5, "F5");
-	set_kc(keycode_names, WXK_F6, "F6");
-	set_kc(keycode_names, WXK_F7, "F7");
-	set_kc(keycode_names, WXK_F8, "F8");
-	set_kc(keycode_names, WXK_F9, "F9");
-	set_kc(keycode_names, WXK_F10, "F10");
-	set_kc(keycode_names, WXK_F11, "F11");
-	set_kc(keycode_names, WXK_F12, "F12");
-	set_kc(keycode_names, WXK_F13, "F13");
-	set_kc(keycode_names, WXK_F14, "F14");
-	set_kc(keycode_names, WXK_F15, "F15");
-	set_kc(keycode_names, WXK_F16, "F16");
-	set_kc(keycode_names, WXK_F17, "F17");
-	set_kc(keycode_names, WXK_F18, "F18");
-	set_kc(keycode_names, WXK_F19, "F19");
-	set_kc(keycode_names, WXK_F20, "F20");
-	set_kc(keycode_names, WXK_F21, "F21");
-	set_kc(keycode_names, WXK_F22, "F22");
-	set_kc(keycode_names, WXK_F23, "F23");
-	set_kc(keycode_names, WXK_F24, "F24");
-	set_kc(keycode_names, WXK_NUMLOCK, "Num_Lock");
-	set_kc(keycode_names, WXK_SCROLL, "Scroll_Lock");
-	set_kc(keycode_names, WXK_PAGEUP, "PageUp");
-	set_kc(keycode_names, WXK_PAGEDOWN, "PageDown");
-	set_kc(keycode_names, WXK_NUMPAD_SPACE, "KP_Space");
-	set_kc(keycode_names, WXK_NUMPAD_TAB, "KP_Tab");
-	set_kc(keycode_names, WXK_NUMPAD_ENTER, "KP_Enter");
-	set_kc(keycode_names, WXK_NUMPAD_F1, "KP_F1");
-	set_kc(keycode_names, WXK_NUMPAD_F2, "KP_F2");
-	set_kc(keycode_names, WXK_NUMPAD_F3, "KP_F3");
-	set_kc(keycode_names, WXK_NUMPAD_F4, "KP_F4");
-	set_kc(keycode_names, WXK_NUMPAD_HOME, "KP_Home");
-	set_kc(keycode_names, WXK_NUMPAD_LEFT, "KP_Left");
-	set_kc(keycode_names, WXK_NUMPAD_UP, "KP_Up");
-	set_kc(keycode_names, WXK_NUMPAD_RIGHT, "KP_Right");
-	set_kc(keycode_names, WXK_NUMPAD_DOWN, "KP_Down");
-	set_kc(keycode_names, WXK_NUMPAD_PAGEUP, "KP_PageUp");
-	set_kc(keycode_names, WXK_NUMPAD_PAGEDOWN, "KP_PageDown");
-	set_kc(keycode_names, WXK_NUMPAD_END, "KP_End");
-	set_kc(keycode_names, WXK_NUMPAD_BEGIN, "KP_Begin");
-	set_kc(keycode_names, WXK_NUMPAD_INSERT, "KP_insert");
-	set_kc(keycode_names, WXK_NUMPAD_DELETE, "KP_Delete");
-	set_kc(keycode_names, WXK_NUMPAD_EQUAL, "KP_Equal");
-	set_kc(keycode_names, WXK_NUMPAD_MULTIPLY, "KP_Multiply");
-	set_kc(keycode_names, WXK_NUMPAD_ADD, "KP_Add");
-	set_kc(keycode_names, WXK_NUMPAD_SUBTRACT, "KP_Subtract");
-	set_kc(keycode_names, WXK_NUMPAD_DECIMAL, "KP_Decimal");
-	set_kc(keycode_names, WXK_NUMPAD_DIVIDE, "KP_Divide");
 }
 
 } // namespace hotkey

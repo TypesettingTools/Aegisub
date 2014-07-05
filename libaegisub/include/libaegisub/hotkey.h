@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file hotkey.h
-/// @brief Hotkey handler
-/// @ingroup hotkey menu event window
-
 #include <boost/filesystem/path.hpp>
 #include <map>
 #include <string>
@@ -36,38 +32,30 @@ namespace agi {
 /// A Combo represents a linear sequence of characters set in an std::vector.
 /// This makes up a single combination, or "Hotkey".
 class Combo {
-	std::vector<std::string> key_map;
+	std::string keys;
 	std::string cmd_name;
 	std::string context;
 public:
 	/// Constructor
 	/// @param ctx Context
 	/// @param cmd Command name
-	Combo(std::string ctx, std::string cmd, std::vector<std::string> keys)
-	: key_map(std::move(keys))
+	Combo(std::string ctx, std::string cmd, std::string keys)
+	: keys(std::move(keys))
 	, cmd_name(std::move(cmd))
 	, context(std::move(ctx))
 	{
 	}
 
 	/// String representation of the Combo
-	std::string Str() const;
-
-	/// String suitable for usage in a menu.
-	std::string StrMenu() const;
-
-	/// Get the literal combo map.
-	/// @return ComboMap (std::vector) of linear key sequence.
-	const std::vector<std::string>& Get() const { return key_map; }
+	std::string Str() const { return keys; }
 
 	/// Command name triggered by the combination.
 	/// @return Command name
-	const std::string& CmdName() const { return cmd_name; }
+	std::string const& CmdName() const { return cmd_name; }
 
 	/// Context this Combo is triggered in.
-	const std::string& Context() const { return context; }
+	std::string const& Context() const { return context; }
 };
-
 
 /// @class Hotkey
 /// Holds the map of Combo instances and handles searching for matching key sequences.
@@ -76,21 +64,19 @@ public:
 	/// Map to hold Combo instances
 	typedef std::multimap<std::string, Combo> HotkeyMap;
 private:
-	HotkeyMap str_map;               ///< String representation -> Combo
-	HotkeyMap cmd_map;               ///< Command name -> Combo
-	const agi::fs::path config_file; ///< Default user config location.
+	HotkeyMap cmd_map;                  ///< Command name -> Combo
+	std::vector<const Combo *> str_map; ///< Sorted by string representation
+	const agi::fs::path config_file;    ///< Default user config location.
 
 	/// Build hotkey map.
 	/// @param context Context being parsed.
 	/// @param object  json::Object holding items for context being parsed.
 	void BuildHotkey(std::string const& context, const json::Object& object);
 
-	/// Insert Combo into HotkeyMap instance.
-	/// @param combo Combo to insert.
-	void ComboInsert(Combo const& combo);
-
 	/// Write active Hotkey configuration to disk.
 	void Flush();
+
+	void UpdateStrMap();
 
 	/// Announce that the loaded hotkeys have been changed
 	agi::signal::Signal<> HotkeysChanged;
@@ -129,7 +115,7 @@ public:
 	HotkeyMap const& GetHotkeyMap() const { return cmd_map; }
 
 	/// Replace the loaded hotkeys with a new set
-	void SetHotkeyMap(HotkeyMap const& new_map);
+	void SetHotkeyMap(HotkeyMap new_map);
 
 	DEFINE_SIGNAL_ADDERS(HotkeysChanged, AddHotkeyChangeListener)
 };

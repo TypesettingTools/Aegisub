@@ -17,15 +17,13 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/hotkey.h>
 
-#include <cstdarg>
-
 using namespace agi::hotkey;
 
-static const char simple_valid[] = "{"
-	"\"Always\":{\"cmd1\":[{\"modifiers\":[\"Ctrl\"], \"key\":\"C\"}]},"
-	"\"Default\":{\"cmd1\":[{\"modifiers\":[\"Alt\"], \"key\":\"C\"}], \"cmd2\":[{\"modifiers\":[\"Ctrl\"], \"key\":\"C\"}]},"
-	"\"Other\":{\"cmd1\":[{\"modifiers\":[\"Shift\"], \"key\":\"C\"}], \"cmd3\":[{\"modifiers\":[], \"key\":\"Q\"}]}"
-"}";
+static const char simple_valid[] = R"raw({
+	"Always":{"cmd1":[{"modifiers":["Ctrl"], "key":"C"}]},
+	"Default":{"cmd1":[{"modifiers":["Alt"], "key":"C"}], "cmd2":[{"modifiers":["Ctrl"], "key":"C"}]},
+	"Other":{"cmd1":[{"modifiers":["Shift"], "key":"C"}], "cmd3":[{"modifiers":[], "key":"Q"}]}
+})raw";
 
 TEST(lagi_hotkey, simple_valid_default) {
 	EXPECT_NO_THROW(Hotkey("", simple_valid));
@@ -137,20 +135,18 @@ TEST(lagi_hotkey, get_hotkeys) {
 	EXPECT_EQ(0, h.GetHotkeys("Nonexistent", "cmd4").size());
 }
 
+TEST(lagi_hotkey, has_hotkey) {
+	Hotkey h("", simple_valid);
+	EXPECT_TRUE(h.HasHotkey("Always", "Ctrl-C"));
+	EXPECT_FALSE(h.HasHotkey("Always", "Alt-C"));
+}
+
 TEST(lagi_hotkey, get_hotkeys_dedups) {
 	Hotkey h("", "{\"Always\":{\"cmd1\":[{\"modifiers\":[\"Ctrl\"], \"key\":\"C\"}]},\"Default\":{\"cmd1\":[{\"modifiers\":[\"Ctrl\"], \"key\":\"C\"}]}}");
 	EXPECT_EQ(1, h.GetHotkeys("Always", "cmd1").size());
 }
 
-static void insert_combo(Hotkey::HotkeyMap &hm, const char *ctx, const char *cmd, int N, ...) {
-	std::vector<std::string> keys(N);
-
-	va_list argp;
-	va_start(argp, N);
-	for (int i = 0; i < N; ++i)
-		keys[i] = va_arg(argp, const char *);
-	va_end(argp);
-
+static void insert_combo(Hotkey::HotkeyMap &hm, const char *ctx, const char *cmd, const char *keys) {
 	hm.insert(make_pair(std::string(cmd), Combo(ctx, cmd, keys)));
 }
 
@@ -162,8 +158,8 @@ TEST(lagi_hotkey, set_hotkey_map) {
 		Hotkey::HotkeyMap hm = h.GetHotkeyMap();
 		EXPECT_EQ(0, hm.size());
 
-		insert_combo(hm, "Always", "cmd1", 1, "C");
-		insert_combo(hm, "Default", "cmd2", 2, "Shift", "C");
+		insert_combo(hm, "Always", "cmd1", "C");
+		insert_combo(hm, "Default", "cmd2", "Shift-C");
 
 		bool listener_called = false;
 		h.AddHotkeyChangeListener([&] { listener_called = true; });
@@ -189,8 +185,7 @@ TEST(lagi_hotkey, combo_stuff) {
 	ASSERT_EQ(1, std::distance(it, end));
 
 	Combo c = it->second;
-	EXPECT_STREQ("Ctrl-C", c.StrMenu().c_str());
+	EXPECT_STREQ("Ctrl-C", c.Str().c_str());
 	EXPECT_STREQ("cmd2", c.CmdName().c_str());
 	EXPECT_STREQ("Default", c.Context().c_str());
-	EXPECT_EQ(2, c.Get().size());
 }

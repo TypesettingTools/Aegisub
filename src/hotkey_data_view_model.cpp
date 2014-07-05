@@ -24,7 +24,6 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/hotkey.h>
 #include <libaegisub/make_unique.h>
-#include <libaegisub/split.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -111,11 +110,7 @@ public:
 
 	bool SetValue(wxVariant const& variant, unsigned int col) override {
 		if (col == 0) {
-			std::vector<std::string> keys;
-			auto str = from_wx(variant.GetString());
-			for (auto tok : agi::Split(str, '-'))
-				keys.emplace_back(begin(tok), end(tok));
-			combo = Combo(combo.Context(), combo.CmdName(), keys);
+			combo = Combo(combo.Context(), combo.CmdName(), from_wx(variant.GetString()));
 			cmd_str = combo.Str();
 			return true;
 		}
@@ -123,7 +118,7 @@ public:
 			wxDataViewIconText text;
 			text << variant;
 			cmd_name = from_wx(text.GetText());
-			combo = Combo(combo.Context(), cmd_name, combo.Get());
+			combo = Combo(combo.Context(), cmd_name, combo.Str());
 			return true;
 		}
 		return false;
@@ -307,7 +302,7 @@ wxDataViewItem HotkeyDataViewModel::New(wxDataViewItem item) {
 	HotkeyModelCategory *ctx = static_cast<HotkeyModelCategory*>(item.GetID());
 	wxVariant name;
 	ctx->GetValue(name, 0);
-	return ctx->AddChild(Combo(from_wx(name.GetString()), "", std::vector<std::string>()));
+	return ctx->AddChild(Combo(from_wx(name.GetString()), "", ""));
 }
 
 void HotkeyDataViewModel::Delete(wxDataViewItem const& item) {
