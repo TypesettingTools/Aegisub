@@ -49,11 +49,76 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/regex.hpp>
-#include <map>
 
 DEFINE_EXCEPTION(SRTParseError, SubtitleFormatParseError);
 
 namespace {
+enum class TagType {
+	UNKNOWN,
+	BOLD_OPEN,
+	BOLD_CLOSE,
+	ITALICS_OPEN,
+	ITALICS_CLOSE,
+	UNDERLINE_OPEN,
+	UNDERLINE_CLOSE,
+	STRIKEOUT_OPEN,
+	STRIKEOUT_CLOSE,
+	FONT_OPEN,
+	FONT_CLOSE
+};
+
+TagType type_from_name(std::string const& tag) {
+	switch (tag.size()) {
+		case 1:
+			switch (tag[0]) {
+				case 'b': return TagType::BOLD_OPEN;
+				case 'i': return TagType::ITALICS_OPEN;
+				case 'u': return TagType::UNDERLINE_OPEN;
+				case 's': return TagType::STRIKEOUT_OPEN;
+				default: return TagType::UNKNOWN;
+			}
+		case 2:
+			if (tag[0] != '/') return TagType::UNKNOWN;
+			switch (tag[1]) {
+				case 'b': return TagType::BOLD_CLOSE;
+				case 'i': return TagType::ITALICS_CLOSE;
+				case 'u': return TagType::UNDERLINE_CLOSE;
+				case 's': return TagType::STRIKEOUT_CLOSE;
+				default: return TagType::UNKNOWN;
+			}
+		default:
+			if (tag == "font") return TagType::FONT_OPEN;
+			if (tag == "/font") return TagType::FONT_CLOSE;
+			return TagType::UNKNOWN;
+	}
+}
+
+struct ToggleTag {
+	char tag;
+	int level = 0;
+
+	ToggleTag(char tag) : tag(tag) { }
+
+	void Open(std::string& out) {
+		if (level == 0) {
+			out += "{\\";
+			out += tag;
+			out += "1}";
+		}
+		++level;
+	}
+
+	void Close(std::string& out) {
+		if (level == 1) {
+			out += "{\\";
+			out += tag;
+			out += '}';
+		}
+		if (level > 0)
+			--level;
+	}
+};
+
 class SrtTagParser {
 	struct FontAttribs {
 		std::string face;
@@ -61,24 +126,9 @@ class SrtTagParser {
 		std::string color;
 	};
 
-	enum TagType {
-		// leave 0 unused so indexing an unknown tag in the map won't clash
-		TAG_BOLD_OPEN = 1,
-		TAG_BOLD_CLOSE,
-		TAG_ITALICS_OPEN,
-		TAG_ITALICS_CLOSE,
-		TAG_UNDERLINE_OPEN,
-		TAG_UNDERLINE_CLOSE,
-		TAG_STRIKEOUT_OPEN,
-		TAG_STRIKEOUT_CLOSE,
-		TAG_FONT_OPEN,
-		TAG_FONT_CLOSE
-	};
-
 	const boost::regex tag_matcher;
 	const boost::regex attrib_matcher;
 	const boost::regex is_quoted;
-	std::map<std::string, TagType> tag_name_cases;
 
 public:
 	SrtTagParser()
@@ -86,24 +136,14 @@ public:
 	, attrib_matcher(R"(^[[:space:]]+(face|size|color)=('[^']*'|"[^"]*"|[^[:space:]]+))", boost::regex::icase)
 	, is_quoted(R"(^(['"]).*\1$)")
 	{
-		tag_name_cases["b"]  = TAG_BOLD_OPEN;
-		tag_name_cases["/b"] = TAG_BOLD_CLOSE;
-		tag_name_cases["i"]  = TAG_ITALICS_OPEN;
-		tag_name_cases["/i"] = TAG_ITALICS_CLOSE;
-		tag_name_cases["u"]  = TAG_UNDERLINE_OPEN;
-		tag_name_cases["/u"] = TAG_UNDERLINE_CLOSE;
-		tag_name_cases["s"]  = TAG_STRIKEOUT_OPEN;
-		tag_name_cases["/s"] = TAG_STRIKEOUT_CLOSE;
-		tag_name_cases["font"] = TAG_FONT_OPEN;
-		tag_name_cases["/font"] = TAG_FONT_CLOSE;
 	}
 
 	std::string ToAss(std::string srt)
 	{
-		int bold_level = 0;
-		int italics_level = 0;
-		int underline_level = 0;
-		int strikeout_level = 0;
+		ToggleTag bold('b');
+		ToggleTag italic('i');
+		ToggleTag underline('u');
+		ToggleTag strikeout('s');
 		std::vector<FontAttribs> font_stack;
 
 		std::string ass; // result to be built
@@ -130,53 +170,17 @@ public:
 			srt = post_text;
 
 			boost::to_lower(tag_name);
-			switch (tag_name_cases[tag_name])
+			switch (type_from_name(tag_name))
 			{
-			case TAG_BOLD_OPEN:
-				if (bold_level == 0)
-					ass.append("{\\b1}");
-				bold_level++;
-				break;
-			case TAG_BOLD_CLOSE:
-				if (bold_level == 1)
-					ass.append("{\\b}");
-				if (bold_level > 0)
-					bold_level--;
-				break;
-			case TAG_ITALICS_OPEN:
-				if (italics_level == 0)
-					ass.append("{\\i1}");
-				italics_level++;
-				break;
-			case TAG_ITALICS_CLOSE:
-				if (italics_level == 1)
-					ass.append("{\\i}");
-				if (italics_level > 0)
-					italics_level--;
-				break;
-			case TAG_UNDERLINE_OPEN:
-				if (underline_level == 0)
-					ass.append("{\\u1}");
-				underline_level++;
-				break;
-			case TAG_UNDERLINE_CLOSE:
-				if (underline_level == 1)
-					ass.append("{\\u}");
-				if (underline_level > 0)
-					underline_level--;
-				break;
-			case TAG_STRIKEOUT_OPEN:
-				if (strikeout_level == 0)
-					ass.append("{\\s1}");
-				strikeout_level++;
-				break;
-			case TAG_STRIKEOUT_CLOSE:
-				if (strikeout_level == 1)
-					ass.append("{\\s}");
-				if (strikeout_level > 0)
-					strikeout_level--;
-				break;
-			case TAG_FONT_OPEN:
+			case TagType::BOLD_OPEN:       bold.Open(ass);       break;
+			case TagType::BOLD_CLOSE:      bold.Close(ass);      break;
+			case TagType::ITALICS_OPEN:    italic.Open(ass);     break;
+			case TagType::ITALICS_CLOSE:   italic.Close(ass);    break;
+			case TagType::UNDERLINE_OPEN:  underline.Open(ass);  break;
+			case TagType::UNDERLINE_CLOSE: underline.Close(ass); break;
+			case TagType::STRIKEOUT_OPEN:  strikeout.Open(ass);  break;
+			case TagType::STRIKEOUT_CLOSE: strikeout.Close(ass); break;
+			case TagType::FONT_OPEN:
 				{
 					// new attributes to fill in
 					FontAttribs new_attribs;
@@ -222,7 +226,7 @@ public:
 					font_stack.push_back(new_attribs);
 				}
 				break;
-			case TAG_FONT_CLOSE:
+			case TagType::FONT_CLOSE:
 				{
 					// this requires a font stack entry
 					if (font_stack.empty())
@@ -273,50 +277,6 @@ public:
 	}
 };
 
-AssTime ReadSRTTime(std::string const& ts)
-{
-	// For the sake of your sanity, please do not read this function.
-
-	int d, h, m, s, ms;
-	d = h = m = s = ms = 0;
-
-	size_t ci = 0;
-	int ms_chars = 0;
-
-	for (bool milliseconds = false; ci < ts.size() && !milliseconds; ++ci)
-	{
-		switch (ts[ci])
-		{
-		case '0': case '1': case '2': case '3': case '4': case '5': case '6': case '7': case '8': case '9':
-			s = s * 10 + (ts[ci] - '0');
-			break;
-		case ':':
-			d = h;
-			h = m;
-			m = s;
-			s = 0;
-			break;
-		case ',':
-			milliseconds = true;
-			break;
-		default:
-			ci = ts.size();
-		}
-	}
-
-	for (; ci < ts.size(); ++ci)
-	{
-		if (!isdigit(ts[ci])) break;
-
-		ms = ms * 10 + (ts[ci] - '0');
-		ms_chars++;
-	}
-
-	ms *= pow(10, 3 - ms_chars);
-
-	return ms + 1000*(s + 60*(m + 60*(h + d*24)));
-}
-
 std::string WriteSRTTime(AssTime const& ts)
 {
 	return agi::format("%02d:%02d:%02d,%03d", ts.GetTimeHours(), ts.GetTimeMinutes(), ts.GetTimeSeconds(), ts.GetTimeMiliseconds());
@@ -337,12 +297,12 @@ std::vector<std::string> SRTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-enum ParseState {
-	STATE_INITIAL,
-	STATE_TIMESTAMP,
-	STATE_FIRST_LINE_OF_BODY,
-	STATE_REST_OF_BODY,
-	STATE_LAST_WAS_BLANK
+enum class ParseState {
+	INITIAL,
+	TIMESTAMP,
+	FIRST_LINE_OF_BODY,
+	REST_OF_BODY,
+	LAST_WAS_BLANK
 };
 
 void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
@@ -358,7 +318,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 
 	SrtTagParser tag_parser;
 
-	ParseState state = STATE_INITIAL;
+	ParseState state = ParseState::INITIAL;
 	int line_num = 0;
 	int linebreak_debt = 0;
 	AssDialogue *line = nullptr;
@@ -370,12 +330,12 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 
 		boost::smatch timestamp_match;
 		switch (state) {
-			case STATE_INITIAL:
+			case ParseState::INITIAL:
 				// ignore leading blank lines
 				if (text_line.empty()) break;
 				if (all(text_line, boost::is_digit())) {
 					// found the line number, throw it away and hope for timestamps
-					state = STATE_TIMESTAMP;
+					state = ParseState::TIMESTAMP;
 					break;
 				}
 				if (regex_search(text_line, timestamp_match, timestamp_regex))
@@ -383,7 +343,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 
 				throw SRTParseError(agi::format("Parsing SRT: Expected subtitle index at line %d", line_num));
 
-			case STATE_TIMESTAMP:
+			case ParseState::TIMESTAMP:
 				if (!regex_search(text_line, timestamp_match, timestamp_regex))
 					throw SRTParseError(agi::format("Parsing SRT: Expected timestamp pair at line %d", line_num));
 found_timestamps:
@@ -395,32 +355,32 @@ found_timestamps:
 
 				// create new subtitle
 				line = new AssDialogue;
-				line->Start = ReadSRTTime(timestamp_match.str(1));
-				line->End = ReadSRTTime(timestamp_match.str(2));
+				line->Start = timestamp_match.str(1);
+				line->End = timestamp_match.str(2);
 				// store pointer to subtitle, we'll continue working on it
 				target->Events.push_back(*line);
 				// next we're reading the text
-				state = STATE_FIRST_LINE_OF_BODY;
+				state = ParseState::FIRST_LINE_OF_BODY;
 				break;
 
-			case STATE_FIRST_LINE_OF_BODY:
+			case ParseState::FIRST_LINE_OF_BODY:
 				if (text_line.empty()) {
 					// that's not very interesting... blank subtitle?
-					state = STATE_LAST_WAS_BLANK;
+					state = ParseState::LAST_WAS_BLANK;
 					// no previous line that needs a line break after
 					linebreak_debt = 0;
 					break;
 				}
 				text.append(text_line);
-				state = STATE_REST_OF_BODY;
+				state = ParseState::REST_OF_BODY;
 				break;
 
-			case STATE_REST_OF_BODY:
+			case ParseState::REST_OF_BODY:
 				if (text_line.empty()) {
 					// Might be either the gap between two subtitles or just a
 					// blank line in the middle of a subtitle, so defer adding
 					// the line break until we check what's on the next line
-					state = STATE_LAST_WAS_BLANK;
+					state = ParseState::LAST_WAS_BLANK;
 					linebreak_debt = 1;
 					break;
 				}
@@ -428,13 +388,13 @@ found_timestamps:
 				text.append(text_line);
 				break;
 
-			case STATE_LAST_WAS_BLANK:
+			case ParseState::LAST_WAS_BLANK:
 				++linebreak_debt;
 				if (text_line.empty()) break;
 				if (all(text_line, boost::is_digit())) {
 					// Hopefully it's the start of a new subtitle, and the
 					// previous blank line(s) were the gap between subtitles
-					state = STATE_TIMESTAMP;
+					state = ParseState::TIMESTAMP;
 					break;
 				}
 				if (regex_search(text_line, timestamp_match, timestamp_regex))
@@ -445,12 +405,12 @@ found_timestamps:
 				while (linebreak_debt-- > 0)
 					text.append("\\N");
 				text.append(text_line);
-				state = STATE_REST_OF_BODY;
+				state = ParseState::REST_OF_BODY;
 				break;
 		}
 	}
 
-	if (state == 1 || state == 2)
+	if (state == ParseState::TIMESTAMP || state == ParseState::FIRST_LINE_OF_BODY)
 		throw SRTParseError("Parsing SRT: Incomplete file");
 
 	if (line) // an unfinalized line
@@ -483,8 +443,6 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 }
 
 bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
-	std::string supported_tags[] = { "\\b", "\\i", "\\s", "\\u" };
-
 	if (!file->Attachments.empty())
 		return false;
 
@@ -497,7 +455,9 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 		for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 			// Verify that all overrides used are supported
 			for (auto const& tag : ovr->Tags) {
-				if (!std::binary_search(supported_tags, std::end(supported_tags), tag.Name))
+				if (tag.Name.size() != 2)
+					return false;
+				if (!strchr("bisu", tag.Name[1]))
 					return false;
 			}
 		}
@@ -507,27 +467,30 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 }
 
 std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
-	std::string final;
-	std::map<char, bool> tag_states;
-	tag_states['i'] = false;
-	tag_states['b'] = false;
-	tag_states['u'] = false;
-	tag_states['s'] = false;
+	struct tag_state { char tag; bool value; };
+	tag_state tag_states[] = {
+		{'b', false},
+		{'i', false},
+		{'s', false},
+		{'u', false}
+	};
 
+	std::string final;
 	for (auto& block : diag->ParseTags()) {
 		if (AssDialogueBlockOverride* ovr = dynamic_cast<AssDialogueBlockOverride*>(block.get())) {
 			// Iterate through overrides
 			for (auto const& tag : ovr->Tags) {
-				if (tag.IsValid() && tag.Name.size() == 2) {
-					auto it = tag_states.find(tag.Name[1]);
-					if (it != tag_states.end()) {
-						bool temp = tag.Params[0].Get(false);
-						if (temp && !it->second)
-							final += agi::format("<%c>", it->first);
-						if (!temp && it->second)
-							final += agi::format("</%c>", it->first);
-						it->second = temp;
-					}
+				if (!tag.IsValid() || tag.Name.size() != 2)
+					continue;
+				for (auto& state : tag_states) {
+					if (state.tag != tag.Name[1]) continue;
+
+					bool temp = tag.Params[0].Get(false);
+					if (temp && !state.value)
+						final += agi::format("<%c>", state.tag);
+					if (!temp && state.value)
+						final += agi::format("</%c>", state.tag);
+					state.value = temp;
 				}
 			}
 		}
@@ -538,9 +501,9 @@ std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 
 	// Ensure all tags are closed
 	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
-	for (auto it : tag_states) {
-		if (it.second)
-			final += agi::format("</%c>", it.first);
+	for (auto state : tag_states) {
+		if (state.value)
+			final += agi::format("</%c>", state.tag);
 	}
 
 	return final;
