@@ -15,9 +15,6 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <string>
-#include <vector>
-
-#include <stdarg.h>
 
 namespace util {
 bool compare(std::string const& file1, std::string const& file2);

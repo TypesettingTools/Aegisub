@@ -12,7 +12,6 @@ run_OBJ := \
 	$(subst .cpp,.o,$(wildcard $(d)tests/*.cpp)) \
 	$(d)support/main.o \
 	$(d)support/util.o \
-	$(d)support/util_unix.o \
 	$(TOP)lib/libaegisub.a \
 	$(TOP)lib/libuniversalchardet.a \
 	$(GTEST_FILE).o
