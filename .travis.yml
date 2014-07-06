@@ -34,7 +34,7 @@ script:
   - autoreconf -if
   - ./configure BOOST_LDFLAGS="-L$(pwd)/vendor/boost/stage/lib" --enable-debug || cat config.log
   - make -j3 all test
-  - coveralls --exclude vendor --exclude src --exclude build --exclude tools --exclude libaegisub/windows
+  - coveralls --exclude vendor --exclude src --exclude build --exclude tools --exclude libaegisub/windows > /dev/null
 notifications:
   email:
     - on_success: change
