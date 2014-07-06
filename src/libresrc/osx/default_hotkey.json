@@ -1,740 +1,366 @@
 {
 	"Always" : {
+		"audio/commit" : [
+			"KP_Enter"
+		],
 		"audio/play/selection" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_5"
-			}
+			"KP_5"
+		],
+		"audio/play/selection/after" : [
+			"KP_3"
+		],
+		"audio/play/selection/before" : [
+			"KP_1"
 		],
 		"audio/stop" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_8"
-			}
+			"KP_8"
+		],
+		"time/length/decrease" : [
+			"KP_7"
+		],
+		"time/length/increase" : [
+			"KP_9"
+		],
+		"time/next" : [
+			"KP_2"
+		],
+		"time/prev" : [
+			"KP_0"
 		],
 		"time/start/decrease" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_4"
-			}
+			"KP_4"
 		],
 		"time/start/increase" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_6"
-			}
-		],
-		"time/length/decrease" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_7"
-			}
-		],
-		"time/length/increase" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_9"
-			}
-		],
-		"audio/play/selection/before" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_1"
-			}
-		],
-		"audio/play/selection/after" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_3"
-			}
-		],
-		"time/prev" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_0"
-			}
-		],
-		"time/next" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_2"
-			}
-		],
-		"audio/commit" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_Enter"
-			}
+			"KP_6"
 		]
 	},
-
-
-	"Default" : {
-		"app/exit" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Q"
-			}
-		],
-		"app/toggle/toolbar" : [
-			{
-				"modifiers" : [ "Ctrl", "Alt" ],
-				"key" : "T"
-			}
-		],
-		"edit/line/copy" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "C"
-			}
-		],
-		"edit/line/cut" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "X"
-			}
-		],
-		"edit/find_replace" : [
-			{
-				"modifiers" : [ "Ctrl", "Alt" ],
-				"key" : "F"
-			}
-		],
-		"edit/line/delete" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Backspace"
-			}
-		],
-		"edit/line/duplicate/shift" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "D"
-			}
-		],
-		"edit/line/duplicate/shift_back" : [
-			{
-				"modifiers" : [ "Ctrl", "Shift" ],
-				"key" : "D"
-			}
-		],
-		"edit/line/paste" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "V"
-			}
-		],
-		"edit/line/paste/over" : [
-			{
-				"modifiers" : [ "Ctrl", "Shift" ],
-				"key" : "V"
-			}
-		],
-		"edit/redo" : [
-			{
-				"modifiers" : [ "Ctrl", "Shift" ],
-				"key" : "Z"
-			}
-		],
-		"edit/undo" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Z"
-			}
-		],
-		"grid/line/next" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_2"
-			}
-		],
-		"grid/line/prev" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_8"
-			}
-		],
-		"grid/move/down" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "Down"
-			}
-		],
-		"grid/move/up" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "Up"
-			}
-		],
-		"help/contents" : [
-			{
-				"modifiers" : [],
-				"key" : "F1"
-			}
-		],
-		"subtitle/find" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "F"
-			}
-		],
-		"subtitle/find/next" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "G"
-			}
-		],
-		"subtitle/new" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "N"
-			}
-		],
-		"subtitle/open" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "O"
-			}
-		],
-		"subtitle/save" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "S"
-			},
-			{
-				"modifiers" : [],
-				"key" : "F2"
-			}
-		],
-		"subtitle/save/as" : [
-			{
-				"modifiers" : [ "Ctrl", "Shift" ],
-				"key" : "S"
-			}
-		],
-		"subtitle/spellcheck" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : ":"
-			},
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : ";"
-			}
-		],
-		"time/frame/current" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "6"
-			}
-		],
-		"time/shift" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "I"
-			}
-		],
-		"time/snap/end_video" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "4"
-			}
-		],
-		"time/snap/scene" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "5"
-			}
-		],
-		"time/snap/start_video" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "3"
-			}
-		],
-		"video/focus_seek" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Space"
-			}
-		],
-		"video/frame/next" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_6"
-			}
-		],
-		"video/play" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "P"
-			}
-		],
-		"video/frame/prev" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_4"
-			}
-		],
-		"video/jump" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "J"
-			}
-		],
-		"video/jump/end" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "2"
-			}
-		],
-		"video/jump/start" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "1"
-			}
-		],
-		"video/zoom/in" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_Add"
-			}
-		],
-		"video/zoom/out" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_Subtract"
-			}
-		]
-	},
-
 	"Audio" : {
-		"audio/play/line" : [
-			{
-				"modifiers" : [],
-				"key" : "R"
-			}
-		],
-		"audio/play/selection" : [
-			{
-				"modifiers" : [],
-				"key" : "Space"
-			},
-			{
-				"modifiers" : [],
-				"key" : "S"
-			}
-		],
-		"audio/play/selection/after" : [
-			{
-				"modifiers" : [],
-				"key" : "W"
-			}
-		],
-		"audio/play/selection/before" : [
-			{
-				"modifiers" : [],
-				"key" : "Q"
-			}
-		],
-		"audio/play/toggle" : [
-			{
-				"modifiers" : [],
-				"key" : "B"
-			}
-		],
-		"audio/play/selection/begin" : [
-			{
-				"modifiers" : [],
-				"key" : "E"
-			}
-		],
-		"audio/play/selection/end" : [
-			{
-				"modifiers" : [],
-				"key" : "D"
-			}
-		],
-		"audio/play/to_end" : [
-			{
-				"modifiers" : [],
-				"key" : "T"
-			}
-		],
-		"audio/scroll/left" : [
-			{
-				"modifiers" : [],
-				"key" : "A"
-			}
-		],
-		"audio/scroll/right" : [
-			{
-				"modifiers" : [],
-				"key" : "F"
-			}
-		],
-		"audio/stop" : [
-			{
-				"modifiers" : [],
-				"key" : "H"
-			}
+		"app/toggle/global_hotkeys" : [
+			"Ctrl-KP_Multiply"
 		],
 		"audio/commit" : [
-			{
-				"modifiers" : [],
-				"key" : "Enter"
-			},
-			{
-				"modifiers" : [],
-				"key" : "G"
-			}
+			"Enter",
+			"G"
 		],
 		"audio/commit/default" : [
-			{
-				"modifiers" : [ "Shift" ],
-				"key" : "G"
-			}
+			"Shift-G"
+		],
+		"audio/play/line" : [
+			"R"
+		],
+		"audio/play/selection" : [
+			"S",
+			"Space"
+		],
+		"audio/play/selection/after" : [
+			"W"
+		],
+		"audio/play/selection/before" : [
+			"Q"
+		],
+		"audio/play/selection/begin" : [
+			"E"
+		],
+		"audio/play/selection/end" : [
+			"D"
+		],
+		"audio/play/to_end" : [
+			"T"
+		],
+		"audio/play/toggle" : [
+			"B"
+		],
+		"audio/scroll/left" : [
+			"A"
+		],
+		"audio/scroll/right" : [
+			"F"
+		],
+		"audio/stop" : [
+			"H"
 		],
 		"time/lead/in" : [
-			{
-				"modifiers" : [],
-				"key" : "C"
-			}
+			"C"
 		],
 		"time/lead/out" : [
-			{
-				"modifiers" : [],
-				"key" : "V"
-			}
+			"V"
 		],
 		"time/length/decrease" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_Subtract"
-			}
+			"KP_Subtract"
 		],
 		"time/length/decrease/shift" : [
-			{
-				"modifiers" : [ "Shift" ],
-				"key" : "KP_Subtract"
-			}
+			"Shift-KP_Subtract"
 		],
 		"time/length/increase" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_Add"
-			}
+			"KP_Add"
 		],
 		"time/length/increase/shift" : [
-			{
-				"modifiers" : [ "Shift" ],
-				"key" : "KP_Add"
-			}
+			"Shift-KP_Add"
 		],
 		"time/next" : [
-			{
-				"modifiers" : [],
-				"key" : "X"
-			},
-			{
-				"modifiers" : [],
-				"key" : "Right"
-			}
+			"Right",
+			"X"
 		],
 		"time/prev" : [
-			{
-				"modifiers" : [],
-				"key" : "Z"
-			},
-			{
-				"modifiers" : [],
-				"key" : "Left"
-			}
-		],
-		"app/toggle/global_hotkeys" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "KP_Multiply"
-			}
+			"Left",
+			"Z"
 		]
 	},
-
-	"Video" : {
-		"video/frame/next" : [
-			{
-				"modifiers" : [],
-				"key" : "Right"
-			}
+	"Default" : {
+		"app/exit" : [
+			"Ctrl-Q"
 		],
-		"video/frame/next/boundary" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Right"
-			}
+		"app/toggle/toolbar" : [
+			"Ctrl-Alt-T"
 		],
-		"video/frame/next/keyframe" : [
-			{
-				"modifiers" : [ "Shift" ],
-				"key" : "Right"
-			}
+		"edit/find_replace" : [
+			"Ctrl-Alt-F"
 		],
-		"video/frame/next/large" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "Right"
-			}
+		"edit/line/copy" : [
+			"Ctrl-C"
 		],
-		"video/frame/prev" : [
-			{
-				"modifiers" : [],
-				"key" : "Left"
-			}
+		"edit/line/cut" : [
+			"Ctrl-X"
 		],
-		"video/frame/prev/boundary" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Left"
-			}
+		"edit/line/delete" : [
+			"Ctrl-Backspace"
 		],
-		"video/frame/prev/keyframe" : [
-			{
-				"modifiers" : [ "Shift" ],
-				"key" : "Left"
-			}
+		"edit/line/duplicate/shift" : [
+			"Ctrl-D"
 		],
-		"video/frame/prev/large" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "Left"
-			}
+		"edit/line/duplicate/shift_back" : [
+			"Ctrl-Shift-D"
 		],
-		"video/tool/cross" : [
-			{
-				"modifiers" : [],
-				"key" : "A"
-			}
+		"edit/line/paste" : [
+			"Ctrl-V"
 		],
-		"video/tool/drag" : [
-			{
-				"modifiers" : [],
-				"key" : "S"
-			}
+		"edit/line/paste/over" : [
+			"Ctrl-Shift-V"
 		],
-		"video/tool/clip" : [
-			{
-				"modifiers" : [],
-				"key" : "H"
-			}
+		"edit/redo" : [
+			"Ctrl-Shift-Z"
 		],
-		"video/tool/rotate/xy" : [
-			{
-				"modifiers" : [],
-				"key" : "F"
-			}
-		],
-		"video/tool/rotate/z" : [
-			{
-				"modifiers" : [],
-				"key" : "D"
-			}
-		],
-		"video/tool/scale" : [
-			{
-				"modifiers" : [],
-				"key" : "G"
-			}
-		],
-		"video/tool/vector_clip" : [
-			{
-				"modifiers" : [],
-				"key" : "J"
-			}
-		]
-	},
-
-	"Subtitle Grid" : {
-		"subtitle/select/all" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "A"
-			}
-		],
-		"video/frame/next" : [
-			{
-				"modifiers" : [],
-				"key" : "Right"
-			}
-		],
-		"video/frame/next/boundary" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Right"
-			}
-		],
-		"video/frame/next/keyframe" : [
-			{
-				"modifiers" : [ "Shift" ],
-				"key" : "Right"
-			}
-		],
-		"video/frame/next/large" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "Right"
-			}
-		],
-		"video/frame/prev" : [
-			{
-				"modifiers" : [],
-				"key" : "Left"
-			}
-		],
-		"video/frame/prev/boundary" : [
-			{
-				"modifiers" : [ "Ctrl" ],
-				"key" : "Left"
-			}
-		],
-		"video/frame/prev/keyframe" : [
-			{
-				"modifiers" : [ "Shift" ],
-				"key" : "Left"
-			}
-		],
-		"video/frame/prev/large" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "Left"
-			}
-		]
-	},
-
-	"Subtitle Edit Box" : {
-		"grid/line/next/create" : [
-			{
-				"modifiers" : [],
-				"key" : "KP_Enter"
-			},
-			{
-				"modifiers" : [],
-				"key" : "Enter"
-			}
-		],
-		"edit/color/primary" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "1"
-			}
-		],
-		"edit/color/secondary" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "2"
-			}
-		],
-		"edit/color/outline" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "3"
-			}
-		],
-		"edit/color/shadow" : [
-			{
-				"modifiers" : [ "Alt" ],
-				"key" : "4"
-			}
-		]
-	},
-
-	"Styling Assistant" : {
-		"audio/play/selection" : [
-			{
-				"modifiers" : [],
-				"key" : "End"
-			}
-		],
-		"tool/styling_assistant/commit" : [
-			{
-				"modifiers" : [],
-				"key" : "Enter"
-			},
-			{
-				"modifiers" : [],
-				"key" : "KP_Enter"
-			}
+		"edit/undo" : [
+			"Ctrl-Z"
 		],
 		"grid/line/next" : [
-			{
-				"modifiers" : [],
-				"key" : "PageDown"
-			}
+			"Ctrl-KP_2"
 		],
 		"grid/line/prev" : [
-			{
-				"modifiers" : [],
-				"key" : "PageUp"
-			}
+			"Ctrl-KP_8"
 		],
-		"tool/styling_assistant/preview" : [
-			{
-				"modifiers" : [],
-				"key" : "F8"
-			}
+		"grid/move/down" : [
+			"Alt-Down"
 		],
-		"video/play/line" : [
-			{
-				"modifiers" : [],
-				"key" : "Home"
-			}
+		"grid/move/up" : [
+			"Alt-Up"
+		],
+		"help/contents" : [
+			"F1"
+		],
+		"subtitle/find" : [
+			"Ctrl-F"
+		],
+		"subtitle/find/next" : [
+			"Ctrl-G"
+		],
+		"subtitle/new" : [
+			"Ctrl-N"
+		],
+		"subtitle/open" : [
+			"Ctrl-O"
+		],
+		"subtitle/save" : [
+			"Ctrl-S",
+			"F2"
+		],
+		"subtitle/save/as" : [
+			"Ctrl-Shift-S"
+		],
+		"subtitle/spellcheck" : [
+			"Ctrl-:",
+			"Ctrl-;"
+		],
+		"time/frame/current" : [
+			"Ctrl-6"
+		],
+		"time/shift" : [
+			"Ctrl-I"
+		],
+		"time/snap/end_video" : [
+			"Ctrl-4"
+		],
+		"time/snap/scene" : [
+			"Ctrl-5"
+		],
+		"time/snap/start_video" : [
+			"Ctrl-3"
+		],
+		"video/focus_seek" : [
+			"Ctrl-Space"
+		],
+		"video/frame/next" : [
+			"Ctrl-KP_6"
+		],
+		"video/frame/prev" : [
+			"Ctrl-KP_4"
+		],
+		"video/jump" : [
+			"Ctrl-J"
+		],
+		"video/jump/end" : [
+			"Ctrl-2"
+		],
+		"video/jump/start" : [
+			"Ctrl-1"
+		],
+		"video/play" : [
+			"Ctrl-P"
+		],
+		"video/zoom/in" : [
+			"Ctrl-KP_Add"
+		],
+		"video/zoom/out" : [
+			"Ctrl-KP_Subtract"
 		]
 	},
-
-	"Translation Assistant" : {
+	"Styling Assistant" : {
 		"audio/play/selection" : [
-			{
-				"modifiers" : [],
-				"key" : "End"
-			}
+			"End"
 		],
-		"tool/translation_assistant/prev" : [
-			{
-				"modifiers" : [],
-				"key" : "PageUp"
-			}
+		"grid/line/next" : [
+			"PageDown"
 		],
-		"tool/translation_assistant/commit" : [
-			{
-				"modifiers" : [],
-				"key" : "Enter"
-			},
-			{
-				"modifiers" : [],
-				"key" : "KP_Enter"
-			}
+		"grid/line/prev" : [
+			"PageUp"
 		],
-		"tool/translation_assistant/insert_original" : [
-			{
-				"modifiers" : [],
-				"key" : "Insert"
-			}
+		"tool/styling_assistant/commit" : [
+			"Enter",
+			"KP_Enter"
 		],
-		"tool/translation_assistant/next" : [
-			{
-				"modifiers" : [],
-				"key" : "PageDown"
-			}
-		],
-		"tool/translation_assistant/preview" : [
-			{
-				"modifiers" : [],
-				"key" : "F8"
-			}
+		"tool/styling_assistant/preview" : [
+			"F8"
 		],
 		"video/play/line" : [
-			{
-				"modifiers" : [],
-				"key" : "Home"
-			}
+			"Home"
+		]
+	},
+	"Subtitle Edit Box" : {
+		"edit/color/outline" : [
+			"Alt-3"
+		],
+		"edit/color/primary" : [
+			"Alt-1"
+		],
+		"edit/color/secondary" : [
+			"Alt-2"
+		],
+		"edit/color/shadow" : [
+			"Alt-4"
+		],
+		"grid/line/next/create" : [
+			"Enter",
+			"KP_Enter"
+		]
+	},
+	"Subtitle Grid" : {
+		"subtitle/select/all" : [
+			"Ctrl-A"
+		],
+		"video/frame/next" : [
+			"Right"
+		],
+		"video/frame/next/boundary" : [
+			"Ctrl-Right"
+		],
+		"video/frame/next/keyframe" : [
+			"Shift-Right"
+		],
+		"video/frame/next/large" : [
+			"Alt-Right"
+		],
+		"video/frame/prev" : [
+			"Left"
+		],
+		"video/frame/prev/boundary" : [
+			"Ctrl-Left"
+		],
+		"video/frame/prev/keyframe" : [
+			"Shift-Left"
+		],
+		"video/frame/prev/large" : [
+			"Alt-Left"
+		]
+	},
+	"Translation Assistant" : {
+		"audio/play/selection" : [
+			"End"
+		],
+		"tool/translation_assistant/commit" : [
+			"Enter",
+			"KP_Enter"
+		],
+		"tool/translation_assistant/insert_original" : [
+			"Insert"
+		],
+		"tool/translation_assistant/next" : [
+			"PageDown"
+		],
+		"tool/translation_assistant/prev" : [
+			"PageUp"
+		],
+		"tool/translation_assistant/preview" : [
+			"F8"
+		],
+		"video/play/line" : [
+			"Home"
+		]
+	},
+	"Video" : {
+		"video/frame/next" : [
+			"Right"
+		],
+		"video/frame/next/boundary" : [
+			"Ctrl-Right"
+		],
+		"video/frame/next/keyframe" : [
+			"Shift-Right"
+		],
+		"video/frame/next/large" : [
+			"Alt-Right"
+		],
+		"video/frame/prev" : [
+			"Left"
+		],
+		"video/frame/prev/boundary" : [
+			"Ctrl-Left"
+		],
+		"video/frame/prev/keyframe" : [
+			"Shift-Left"
+		],
+		"video/frame/prev/large" : [
+			"Alt-Left"
+		],
+		"video/tool/clip" : [
+			"H"
+		],
+		"video/tool/cross" : [
+			"A"
+		],
+		"video/tool/drag" : [
+			"S"
+		],
+		"video/tool/rotate/xy" : [
+			"F"
+		],
+		"video/tool/rotate/z" : [
+			"D"
+		],
+		"video/tool/scale" : [
+			"G"
+		],
+		"video/tool/vector_clip" : [
+			"J"
 		]
 	}
 }

@@ -25,8 +25,15 @@ static const char simple_valid[] = R"raw({
 	"Other":{"cmd1":[{"modifiers":["Shift"], "key":"C"}], "cmd3":[{"modifiers":[], "key":"Q"}]}
 })raw";
 
+static const char simple_valid_new[] = R"raw({
+	"Always":{"cmd1":["Ctrl-C"]},
+	"Default":{"cmd1":["Alt-C"], "cmd2":["Ctrl-C"]},
+	"Other":{"cmd1":["Shift-C"], "cmd3":["Q"]}
+})raw";
+
 TEST(lagi_hotkey, simple_valid_default) {
 	EXPECT_NO_THROW(Hotkey("", simple_valid));
+	EXPECT_NO_THROW(Hotkey("", simple_valid_new));
 }
 
 TEST(lagi_hotkey, empty_default) {

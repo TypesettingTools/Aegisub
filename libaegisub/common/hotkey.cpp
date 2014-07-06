@@ -18,7 +18,6 @@
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
-#include "libaegisub/split.h"
 
 #include <algorithm>
 #include <boost/range/algorithm/equal_range.hpp>
@@ -39,6 +38,48 @@ struct combo_cmp {
 		return a < b->Str();
 	}
 };
+
+struct hotkey_visitor : json::ConstVisitor {
+	std::string const& context;
+	std::string const& command;
+	Hotkey::HotkeyMap& map;
+
+	hotkey_visitor(std::string const& context, std::string const& command, Hotkey::HotkeyMap& map)
+	: context(context), command(command), map(map) { }
+
+	void Visit(std::string const& string) override {
+		map.insert(make_pair(command, Combo(context, command, string)));
+	}
+
+	void Visit(json::Object const& hotkey) override {
+		auto mod_it = hotkey.find("modifiers");
+		if (mod_it == end(hotkey)) {
+			LOG_E("agi/hotkey/load") << "Hotkey for command '" << command << "' is missing modifiers";
+			return;
+		}
+		auto key_it = hotkey.find("key");
+		if (key_it == end(hotkey)) {
+			LOG_E("agi/hotkey/load") << "Hotkey for command '" << command << "' is missing the key";
+			return;
+		}
+
+		std::string key_str;
+		json::Array const& arr_mod = mod_it->second;
+		for (std::string const& mod : arr_mod) {
+			key_str += mod;
+			key_str += '-';
+		}
+		key_str += static_cast<std::string const&>(key_it->second);
+
+		map.insert(make_pair(command, Combo(context, command, std::move(key_str))));
+	}
+
+	void Visit(const json::Array& array) override { }
+	void Visit(int64_t number) override { }
+	void Visit(double number) override { }
+	void Visit(bool boolean) override { }
+	void Visit(const json::Null& null) override { }
+};
 }
 
 Hotkey::Hotkey(fs::path const& file, std::pair<const char *, size_t> default_config)
@@ -56,28 +97,9 @@ void Hotkey::BuildHotkey(std::string const& context, json::Object const& hotkeys
 	for (auto const& command : hotkeys) {
 		json::Array const& command_hotkeys = command.second;
 
-		for (json::Object const& hotkey : command_hotkeys) {
-			auto mod_it = hotkey.find("modifiers");
-			if (mod_it == end(hotkey)) {
-				LOG_E("agi/hotkey/load") << "Hotkey for command '" << command.first << "' is missing modifiers";
-				continue;
-			}
-			auto key_it = hotkey.find("key");
-			if (key_it == end(hotkey)) {
-				LOG_E("agi/hotkey/load") << "Hotkey for command '" << command.first << "' is missing the key";
-				continue;
-			}
-
-			std::string key_str;
-			json::Array const& arr_mod = mod_it->second;
-			for (std::string const& mod : arr_mod) {
-				key_str += mod;
-				key_str += '-';
-			}
-			key_str += static_cast<std::string const&>(key_it->second);
-
-			cmd_map.insert(make_pair(command.first, Combo(context, command.first, std::move(key_str))));
-		}
+		hotkey_visitor visitor{context, command.first, cmd_map};
+		for (auto const& hotkey : command_hotkeys)
+			hotkey.Accept(visitor);
 	}
 }
 
@@ -153,21 +175,12 @@ void Hotkey::Flush() {
 	json::Object root;
 
 	for (auto const& combo : str_map) {
-		auto keys = combo->Str();
+		auto const& keys = combo->Str();
 		if (keys.empty()) continue;
-
-		json::Object hotkey;
-		json::Array& modifiers = hotkey["modifiers"];
-		for (auto tok : agi::Split(keys, '-')) {
-			if (end(tok) == end(keys))
-				hotkey.insert(make_pair("key", agi::str(tok)));
-			else
-				modifiers.push_back(agi::str(tok));
-		}
 
 		json::Object& context = root[combo->Context()];
 		json::Array& combo_array = context[combo->CmdName()];
-		combo_array.push_back(std::move(hotkey));
+		combo_array.push_back(keys);
 	}
 
 	io::Save file(config_file);

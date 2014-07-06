@@ -47,7 +47,7 @@ public:
 	}
 
 	/// String representation of the Combo
-	std::string Str() const { return keys; }
+	std::string const& Str() const { return keys; }
 
 	/// Command name triggered by the combination.
 	/// @return Command name
