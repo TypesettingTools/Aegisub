@@ -32,7 +32,6 @@
 #include "command.h"
 
 #include "../ass_dialogue.h"
-#include "../ass_time.h"
 #include "../async_video_provider.h"
 #include "../compat.h"
 #include "../dialog_detached_video.h"
@@ -51,6 +50,7 @@
 #include "../video_display.h"
 #include "../video_frame.h"
 
+#include <libaegisub/ass/time.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>

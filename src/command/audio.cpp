@@ -200,7 +200,7 @@ struct audio_save_clip final : public Command {
 		auto filename = SaveFileSelector(_("Save audio clip"), "", "", "wav", "", c->parent);
 		if (filename.empty()) return;
 
-		AssTime start = INT_MAX, end = 0;
+		agi::Time start = INT_MAX, end = 0;
 		for (auto line : sel) {
 			start = std::min(start, line->Start);
 			end = std::max(end, line->End);

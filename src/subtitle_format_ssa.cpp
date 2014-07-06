@@ -84,7 +84,7 @@ void SsaSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	for (auto const& line : src->Events)
 		file.WriteLineToFile(agi::format("%s: Marked=0,%s,%s,%s,%s,%d,%d,%d,%s,%s"
 			, (line.Comment ? "Comment" : "Dialogue")
-			, line.Start.GetAssFormated(), line.End.GetAssFormated()
+			, line.Start.GetAssFormatted(), line.End.GetAssFormatted()
 			, replace_commas(line.Style), replace_commas(line.Actor)
 			, line.Margin[0], line.Margin[1], line.Margin[2]
 			, replace_commas(line.Effect)

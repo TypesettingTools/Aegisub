@@ -28,7 +28,6 @@ src_OBJ := \
 	$(d)ass_parser.o \
 	$(d)ass_style.o \
 	$(d)ass_style_storage.o \
-	$(d)ass_time.o \
 	$(d)async_video_provider.o \
 	$(d)audio_box.o \
 	$(d)audio_colorscheme.o \

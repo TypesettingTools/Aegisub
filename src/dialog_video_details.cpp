@@ -27,12 +27,13 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "ass_time.h"
 #include "async_video_provider.h"
 #include "compat.h"
 #include "format.h"
 #include "include/aegisub/context.h"
 #include "project.h"
+
+#include <libaegisub/ass/time.h>
 
 #include <boost/rational.hpp>
 #include <wx/dialog.h>
@@ -59,7 +60,7 @@ void ShowVideoDetailsDialog(agi::Context *c) {
 	make_field(_("FPS:"), fmt_wx("%.3f", fps.FPS()));
 	make_field(_("Resolution:"), fmt_wx("%dx%d (%d:%d)", width, height, ar.numerator(), ar.denominator()));
 	make_field(_("Length:"), fmt_plural(framecount, "1 frame", "%d frames (%s)",
-		framecount, AssTime(fps.TimeAtFrame(framecount - 1)).GetAssFormated(true)));
+		framecount, agi::Time(fps.TimeAtFrame(framecount - 1)).GetAssFormatted(true)));
 	make_field(_("Decoder:"), to_wx(provider->GetDecoderName()));
 
 	auto video_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Video"));

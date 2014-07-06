@@ -27,23 +27,17 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file timeedit_ctrl.h
-/// @see timeedit_ctrl.cpp
-/// @ingroup custom_control
-///
+#include <libaegisub/ass/time.h>
+#include <libaegisub/signal.h>
 
 #include <wx/textctrl.h>
-
-#include "ass_time.h"
-
-#include <libaegisub/signal.h>
 
 namespace agi {
 	class OptionValue;
 	struct Context;
 }
 
-/// @brief A text edit control for editing AssTime objects
+/// @brief A text edit control for editing agi::Time objects
 ///
 /// This control constrains values to valid times, and can display the time
 /// being edited as either a h:mm:ss.cc formatted time, or a frame number
@@ -51,7 +45,7 @@ class TimeEdit final : public wxTextCtrl {
 	bool byFrame = false; ///< Is the time displayed as a frame number?
 	agi::Context *c; ///< Project context
 	bool isEnd;      ///< Should the time be treated as an end time for time <-> frame conversions?
-	AssTime time;    ///< The time, which may be displayed as either a frame number or time
+	agi::Time time;  ///< The time, which may be displayed as either a frame number or time
 	bool insert;     ///< If true, disable overwriting behavior in time mode
 
 	agi::signal::Connection insert_opt;
@@ -78,10 +72,10 @@ class TimeEdit final : public wxTextCtrl {
 #endif
 
 public:
-	/// Get the current time as an AssTime object
-	AssTime GetTime() const { return time; }
+	/// Get the current time as an agi::Time object
+	agi::Time GetTime() const { return time; }
 	/// Set the time
-	void SetTime(AssTime time);
+	void SetTime(agi::Time time);
 
 	/// Get the current time as a frame number, or 0 if timecodes are unavailable
 	int GetFrame() const;

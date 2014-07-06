@@ -38,6 +38,7 @@
 #include "ass_file.h"
 #include "text_file_writer.h"
 
+#include <libaegisub/ass/smpte.h>
 #include <libaegisub/format.h>
 
 EncoreSubtitleFormat::EncoreSubtitleFormat()
@@ -64,7 +65,7 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& fi
 
 	// Encore wants ; for NTSC and : for PAL
 	// The manual suggests no other frame rates are supported
-	SmpteFormatter ft(fps, fps.NeedsDropFrames() ? ";" : ":");
+	agi::SmpteFormatter ft(fps, fps.NeedsDropFrames() ? ";" : ":");
 
 	// Write lines
 	int i = 0;

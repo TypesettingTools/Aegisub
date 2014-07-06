@@ -23,7 +23,6 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
-#include "ass_time.h"
 #include "include/aegisub/context.h"
 #include "selection_controller.h"
 #include "video_controller.h"
@@ -32,6 +31,7 @@
 #include "visual_tool_drag.h"
 #include "visual_tool_vector_clip.h"
 
+#include <libaegisub/ass/time.h>
 #include <libaegisub/format.h>
 #include <libaegisub/of_type_adaptor.h>
 

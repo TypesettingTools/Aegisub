@@ -29,7 +29,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_time.h"
 #include "async_video_provider.h"
 #include "compat.h"
 #include "format.h"
@@ -42,6 +41,7 @@
 #include "utils.h"
 
 #include <libaegisub/address_of_adaptor.h>
+#include <libaegisub/ass/time.h>
 
 #include <algorithm>
 #include <boost/range/adaptor/filtered.hpp>

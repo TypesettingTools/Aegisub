@@ -36,9 +36,10 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_time.h"
 #include "compat.h"
 #include "options.h"
+
+#include <libaegisub/ass/time.h>
 
 #include <wx/xml/xml.h>
 
@@ -102,7 +103,7 @@ void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename
 AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const {
 	// Get time
 	wxString sampleTime = node->GetAttribute("sampleTime", "00:00:00.000");
-	AssTime time(from_wx(sampleTime));
+	agi::Time time(from_wx(sampleTime));
 
 	// Set end time of last line
 	if (prev)
@@ -233,7 +234,7 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, const AssDialogue *prev, con
 	// If it doesn't start at the end of previous, add blank
 	if (prev && prev->End != line->Start) {
 		wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
-		node->AddAttribute("sampleTime", to_wx("0" + prev->End.GetAssFormated(true)));
+		node->AddAttribute("sampleTime", to_wx("0" + prev->End.GetAssFormatted(true)));
 		node->AddAttribute("xml:space", "preserve");
 		root->AddChild(node);
 		node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", ""));
@@ -241,7 +242,7 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, const AssDialogue *prev, con
 
 	// Generate and insert node
 	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
-	node->AddAttribute("sampleTime", to_wx("0" + line->Start.GetAssFormated(true)));
+	node->AddAttribute("sampleTime", to_wx("0" + line->Start.GetAssFormatted(true)));
 	node->AddAttribute("xml:space", "preserve");
 	root->AddChild(node);
 	node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", to_wx(line->Text)));
@@ -256,7 +257,7 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 	ConvertNewlines(file, "\r\n");
 
 	// Find last line
-	AssTime lastTime;
+	agi::Time lastTime;
 	if (!file.Events.empty())
 		lastTime = file.Events.back().End;
 

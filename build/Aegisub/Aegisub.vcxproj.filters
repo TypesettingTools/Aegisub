@@ -150,9 +150,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(SrcDir)ass_time.h">
-      <Filter>ASS</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)ass_dialogue.h">
       <Filter>ASS</Filter>
     </ClInclude>
@@ -576,9 +573,6 @@
       <Filter>ASS</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass_style_storage.cpp">
-      <Filter>ASS</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)ass_time.cpp">
       <Filter>ASS</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)audio_provider_ram.cpp">

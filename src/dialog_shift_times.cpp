@@ -16,7 +16,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_time.h"
 #include "compat.h"
 #include "dialog_manager.h"
 #include "format.h"
@@ -29,6 +28,7 @@
 #include "subs_controller.h"
 #include "timeedit_ctrl.h"
 
+#include <libaegisub/ass/time.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
@@ -286,7 +286,7 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 
 	json::Object& obj = history[entry];
 	if (obj["is by time"]) {
-		shift_time->SetTime(AssTime((std::string)obj["amount"]));
+		shift_time->SetTime(agi::Time((std::string)obj["amount"]));
 		shift_by_time->SetValue(true);
 		OnByTime(evt);
 	}

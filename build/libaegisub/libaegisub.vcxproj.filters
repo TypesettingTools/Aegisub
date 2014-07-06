@@ -125,6 +125,12 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\ass\dialogue_parser.h">
       <Filter>ASS</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\ass\smpte.h">
+      <Filter>ASS</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\ass\time.h">
+      <Filter>ASS</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)common\parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -263,6 +269,9 @@
       <Filter>cajun</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass\dialogue_parser.cpp">
+      <Filter>ASS</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)ass\time.cpp">
       <Filter>ASS</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\color.cpp">

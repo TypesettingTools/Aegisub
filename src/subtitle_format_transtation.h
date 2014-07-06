@@ -27,18 +27,13 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file subtitle_format_transtation.h
-/// @see subtitle_format_transtation.cpp
-/// @ingroup subtitle_io
-///
-
 #include "subtitle_format.h"
 
 class AssDialogue;
-class SmpteFormatter;
+namespace agi { class SmpteFormatter; }
 
 class TranStationSubtitleFormat final : public SubtitleFormat {
-	std::string ConvertLine(AssFile *file, const AssDialogue *line, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const;
+	std::string ConvertLine(AssFile *file, const AssDialogue *line, agi::vfr::Framerate const& fps, agi::SmpteFormatter const& ft, int nextl_start) const;
 
 public:
 	TranStationSubtitleFormat();

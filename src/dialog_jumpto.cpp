@@ -27,7 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "ass_time.h"
 #include "async_video_provider.h"
 #include "format.h"
 #include "include/aegisub/context.h"
@@ -36,6 +35,8 @@
 #include "timeedit_ctrl.h"
 #include "validators.h"
 #include "video_controller.h"
+
+#include <libaegisub/ass/time.h>
 
 #include <wx/dialog.h>
 #include <wx/sizer.h>
@@ -74,7 +75,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 
 	JumpFrame = new wxTextCtrl(&d,-1,"",wxDefaultPosition,wxSize(-1,-1),wxTE_PROCESS_ENTER, IntValidator((int)jumpframe));
 	JumpFrame->SetMaxLength(std::to_string(c->project->VideoProvider()->GetFrameCount() - 1).size());
-	JumpTime = new TimeEdit(&d, -1, c, AssTime(c->videoController->TimeAtFrame(jumpframe)).GetAssFormated(), wxSize(-1,-1));
+	JumpTime = new TimeEdit(&d, -1, c, agi::Time(c->videoController->TimeAtFrame(jumpframe)).GetAssFormatted(), wxSize(-1,-1));
 
 	auto TimesSizer = new wxGridSizer(2, 5, 5);
 

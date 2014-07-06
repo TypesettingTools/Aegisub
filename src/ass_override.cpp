@@ -28,16 +28,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_override.cpp
-/// @brief Parse and modify ASSA style overrides
-/// @ingroup subs_storage
-///
-
 #include "ass_dialogue.h"
 
 #include "utils.h"
 
 #include <libaegisub/color.h>
+#include <libaegisub/exception.h>
 #include <libaegisub/format.h>
 #include <libaegisub/make_unique.h>
 

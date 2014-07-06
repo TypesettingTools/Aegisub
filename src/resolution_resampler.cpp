@@ -21,6 +21,7 @@
 #include "ass_style.h"
 #include "utils.h"
 
+#include <libaegisub/exception.h>
 #include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/split.h>
 #include <libaegisub/util.h>

@@ -44,6 +44,7 @@
 
 #include <libaegisub/background_runner.h>
 #include <libaegisub/dispatch.h>
+#include <libaegisub/exception.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>

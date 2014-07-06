@@ -115,7 +115,7 @@ void VideoBox::UpdateTimeBoxes() {
 	int time = context->videoController->TimeAtFrame(frame, agi::vfr::EXACT);
 
 	// Set the text box for frame number and time
-	VideoPosition->SetValue(fmt_wx("%s - %d", AssTime(time).GetAssFormated(true), frame));
+	VideoPosition->SetValue(fmt_wx("%s - %d", agi::Time(time).GetAssFormatted(true), frame));
 	if (boost::binary_search(context->project->Keyframes(), frame)) {
 		// Set the background color to indicate this is a keyframe
 		VideoPosition->SetBackgroundColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selection")->GetColor()));

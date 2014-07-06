@@ -27,14 +27,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_dialogue.h
-/// @see ass_dialogue.cpp
-/// @ingroup subs_storage
-///
-
 #include "ass_entry.h"
 #include "ass_override.h"
-#include "ass_time.h"
+
+#include <libaegisub/ass/time.h>
 
 #include <array>
 #include <boost/flyweight.hpp>
@@ -135,9 +131,9 @@ struct AssDialogueBase {
 	/// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical)
 	std::array<int, 3> Margin = {{0, 0, 0}};
 	/// Starting time
-	AssTime Start = 0;
+	agi::Time Start = 0;
 	/// Ending time
-	AssTime End = 5000;
+	agi::Time End = 5000;
 	/// Style name
 	boost::flyweight<std::string> Style{ "Default" };
 	/// Actor name

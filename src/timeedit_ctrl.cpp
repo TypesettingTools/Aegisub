@@ -34,15 +34,15 @@
 
 #include "timeedit_ctrl.h"
 
-#include <functional>
-
-#include "ass_time.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "project.h"
 #include "utils.h"
 
+#include <libaegisub/ass/time.h>
+
+#include <functional>
 #include <wx/menu.h>
 #include <wx/valtext.h>
 
@@ -67,7 +67,7 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::
 	SetValidator(val);
 
 	// Other stuff
-	if (value.empty()) SetValue(to_wx(time.GetAssFormated()));
+	if (value.empty()) SetValue(to_wx(time.GetAssFormatted()));
 
 	Bind(wxEVT_MENU, std::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
 	Bind(wxEVT_MENU, std::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
@@ -78,7 +78,7 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::
 	Bind(wxEVT_KILL_FOCUS, &TimeEdit::OnFocusLost, this);
 }
 
-void TimeEdit::SetTime(AssTime new_time) {
+void TimeEdit::SetTime(agi::Time new_time) {
 	if (time != new_time) {
 		time = new_time;
 		UpdateText();
@@ -115,7 +115,7 @@ void TimeEdit::UpdateText() {
 	if (byFrame)
 		ChangeValue(std::to_wstring(c->project->Timecodes().FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
 	else
-		ChangeValue(to_wx(time.GetAssFormated()));
+		ChangeValue(to_wx(time.GetAssFormatted()));
 }
 
 void TimeEdit::OnKeyDown(wxKeyEvent &event) {
@@ -190,7 +190,7 @@ void TimeEdit::OnChar(wxKeyEvent &event) {
 	// Overwrite the digit
 	text[start] = (char)key;
 	time = text;
-	SetValue(to_wx(time.GetAssFormated()));
+	SetValue(to_wx(time.GetAssFormatted()));
 	SetInsertionPoint(start + 1);
 }
 
@@ -229,8 +229,8 @@ void TimeEdit::PasteTime() {
 	std::string text(GetClipboard());
 	if (text.empty()) return;
 
-	AssTime tempTime(text);
-	if (tempTime.GetAssFormated() == text) {
+	agi::Time tempTime(text);
+	if (tempTime.GetAssFormatted() == text) {
 		SetTime(tempTime);
 		SetSelection(0, GetValue().size());
 

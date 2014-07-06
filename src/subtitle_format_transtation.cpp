@@ -27,19 +27,15 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file subtitle_format_transtation.cpp
-/// @brief Reading/writing Transtation-compatible subtitles
-/// @ingroup subtitle_io
-///
-
 #include "subtitle_format_transtation.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
-#include "ass_time.h"
 #include "text_file_writer.h"
 
+#include <libaegisub/ass/smpte.h>
+#include <libaegisub/ass/time.h>
 #include <libaegisub/format.h>
 
 TranStationSubtitleFormat::TranStationSubtitleFormat()
@@ -52,7 +48,7 @@ std::vector<std::string> TranStationSubtitleFormat::GetWriteWildcards() const {
 }
 
 void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, std::string const& encoding) const {
-	agi::vfr::Framerate fps = AskForFPS(false, true, vfps);
+	auto fps = AskForFPS(false, true, vfps);
 	if (!fps.IsLoaded()) return;
 
 	// Convert to TranStation
@@ -64,7 +60,7 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path cons
 	StripTags(copy);
 	ConvertNewlines(copy, "\r\n");
 
-	SmpteFormatter ft(fps);
+	agi::SmpteFormatter ft(fps);
 	TextFileWriter file(filename, encoding);
 	const AssDialogue *prev = nullptr;
 	for (auto const& cur : copy.Events) {
@@ -84,7 +80,7 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path cons
 	file.WriteLineToFile("SUB[");
 }
 
-std::string TranStationSubtitleFormat::ConvertLine(AssFile *file, const AssDialogue *current, agi::vfr::Framerate const& fps, SmpteFormatter const& ft, int nextl_start) const {
+std::string TranStationSubtitleFormat::ConvertLine(AssFile *file, const AssDialogue *current, agi::vfr::Framerate const& fps, agi::SmpteFormatter const& ft, int nextl_start) const {
 	int valign = 0;
 	const char *halign = " "; // default is centered
 	const char *type = "N"; // no special style
@@ -101,7 +97,7 @@ std::string TranStationSubtitleFormat::ConvertLine(AssFile *file, const AssDialo
 	if (current->Text.get().find("\\i1") != std::string::npos) type = "I";
 
 	// Write header
-	AssTime end = current->End;
+	agi::Time end = current->End;
 
 	// Subtract one frame if the end time of the current line is equal to the
 	// start of next one, since the end timestamp is inclusive and the lines

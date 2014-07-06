@@ -50,6 +50,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/vfr.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/join.hpp>

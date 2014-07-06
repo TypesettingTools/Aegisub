@@ -36,14 +36,15 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "ass_time.h"
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 
+#include <libaegisub/ass/time.h>
 #include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/util.h>
+#include <libaegisub/vfr.h>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/lexical_cast.hpp>

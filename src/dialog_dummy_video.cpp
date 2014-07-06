@@ -14,7 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "ass_time.h"
 #include "colour_button.h"
 #include "format.h"
 #include "help_button.h"
@@ -23,6 +22,7 @@
 #include "validators.h"
 #include "video_provider_dummy.h"
 
+#include <libaegisub/ass/time.h>
 #include <libaegisub/color.h>
 
 #include <wx/checkbox.h>
@@ -161,7 +161,7 @@ void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &e) {
 }
 
 void DialogDummyVideo::UpdateLengthDisplay() {
-	length_display->SetLabel(fmt_tl("Resulting duration: %s", AssTime(length / fps * 1000).GetAssFormated(true)));
+	length_display->SetLabel(fmt_tl("Resulting duration: %s", agi::Time(length / fps * 1000).GetAssFormatted(true)));
 }
 }
 

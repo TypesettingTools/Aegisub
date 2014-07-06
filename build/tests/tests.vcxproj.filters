@@ -65,6 +65,9 @@
     <ClCompile Include="$(SrcDir)tests\syntax_highlight.cpp">
       <Filter>Tests</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)tests\time.cpp">
+      <Filter>Tests</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)tests\thesaurus.cpp">
       <Filter>Tests</Filter>
     </ClCompile>

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,14 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_time.cpp
-/// @brief Class for managing timestamps in subtitles
-/// @ingroup subs_storage
-///
-
-#include "ass_time.h"
-
-#include "utils.h"
+#include <libaegisub/ass/time.h>
+#include <libaegisub/ass/smpte.h>
 
 #include <libaegisub/format.h>
 #include <libaegisub/util.h>
@@ -31,9 +25,10 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 
-AssTime::AssTime(int time) : time(mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
+namespace agi {
+Time::Time(int time) : time(util::mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
 
-AssTime::AssTime(std::string const& text) {
+Time::Time(std::string const& text) {
 	int after_decimal = -1;
 	int current = 0;
 	for (char c : text | boost::adaptors::filtered(boost::is_any_of(",.0123456789:"))) {
@@ -61,10 +56,10 @@ AssTime::AssTime(std::string const& text) {
 		time = (time * 60 + current) * 1000;
 
 	// Limit to the valid range
-	time = mid(0, time, 10 * 60 * 60 * 1000 - 1);
+	time = util::mid(0, time, 10 * 60 * 60 * 1000 - 1);
 }
 
-std::string AssTime::GetAssFormated(bool msPrecision) const {
+std::string Time::GetAssFormatted(bool msPrecision) const {
 	std::string ret(10 + msPrecision, ':');
 	ret[0] = '0' + GetTimeHours();
 	ret[2] = '0' + (time % (60 * 60 * 1000)) / (60 * 1000 * 10);
@@ -79,33 +74,34 @@ std::string AssTime::GetAssFormated(bool msPrecision) const {
 	return ret;
 }
 
-int AssTime::GetTimeHours() const { return time / 3600000; }
-int AssTime::GetTimeMinutes() const { return (time % 3600000) / 60000; }
-int AssTime::GetTimeSeconds() const { return (time % 60000) / 1000; }
-int AssTime::GetTimeMiliseconds() const { return (time % 1000); }
-int AssTime::GetTimeCentiseconds() const { return (time % 1000) / 10; }
+int Time::GetTimeHours() const { return time / 3600000; }
+int Time::GetTimeMinutes() const { return (time % 3600000) / 60000; }
+int Time::GetTimeSeconds() const { return (time % 60000) / 1000; }
+int Time::GetTimeMiliseconds() const { return (time % 1000); }
+int Time::GetTimeCentiseconds() const { return (time % 1000) / 10; }
 
-SmpteFormatter::SmpteFormatter(agi::vfr::Framerate fps, std::string sep)
+SmpteFormatter::SmpteFormatter(vfr::Framerate fps, std::string sep)
 : fps(std::move(fps))
 , sep(std::move(sep))
 {
 }
 
-std::string SmpteFormatter::ToSMPTE(AssTime time) const {
+std::string SmpteFormatter::ToSMPTE(Time time) const {
 	int h=0, m=0, s=0, f=0;
 	fps.SmpteAtTime(time, &h, &m, &s, &f);
-	return agi::format("%02d%s%02d%s%02d%c%02d", h, sep, m, sep, s, sep, f);
+	return format("%02d%s%02d%s%02d%s%02d", h, sep, m, sep, s, sep, f);
 }
 
-AssTime SmpteFormatter::FromSMPTE(std::string const& str) const {
+Time SmpteFormatter::FromSMPTE(std::string const& str) const {
 	std::vector<std::string> toks;
 	boost::split(toks, str, boost::is_any_of(sep));
 	if (toks.size() != 4) return 0;
 
 	int h, m, s, f;
-	agi::util::try_parse(toks[0], &h);
-	agi::util::try_parse(toks[1], &m);
-	agi::util::try_parse(toks[2], &s);
-	agi::util::try_parse(toks[3], &f);
+	util::try_parse(toks[0], &h);
+	util::try_parse(toks[1], &m);
+	util::try_parse(toks[2], &s);
+	util::try_parse(toks[3], &f);
 	return fps.TimeAtSmpte(h, m, s, f);
+}
 }

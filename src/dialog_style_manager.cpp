@@ -46,10 +46,11 @@
 #include "subtitle_format.h"
 
 #include <libaegisub/fs.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 #include <libaegisub/signal.h>
 #include <libaegisub/split.h>
-#include <libaegisub/make_unique.h>
+#include <libaegisub/vfr.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/trim.hpp>

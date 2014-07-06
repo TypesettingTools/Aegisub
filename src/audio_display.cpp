@@ -30,7 +30,6 @@
 
 #include "audio_display.h"
 
-#include "ass_time.h"
 #include "audio_controller.h"
 #include "audio_renderer.h"
 #include "audio_renderer_spectrum.h"
@@ -46,6 +45,7 @@
 #include "utils.h"
 #include "video_controller.h"
 
+#include <libaegisub/ass/time.h>
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
@@ -977,8 +977,8 @@ void AudioDisplay::SetTrackCursor(int new_pos, bool show_time)
 
 	if (show_time)
 	{
-		AssTime new_label_time = TimeFromAbsoluteX(track_cursor_pos);
-		track_cursor_label = to_wx(new_label_time.GetAssFormated());
+		agi::Time new_label_time = TimeFromAbsoluteX(track_cursor_pos);
+		track_cursor_label = to_wx(new_label_time.GetAssFormatted());
 		track_cursor_label_rect.x += new_pos - old_pos;
 		RefreshRect(track_cursor_label_rect, false);
 	}

@@ -131,7 +131,7 @@ struct GridColumnStartTime final : GridColumnTime {
 	wxString Value(const AssDialogue *d, const agi::Context *c) const override {
 		if (by_frame)
 			return std::to_wstring(c->videoController->FrameAtTime(d->Start, agi::vfr::START));
-		return to_wx(d->Start.GetAssFormated());
+		return to_wx(d->Start.GetAssFormatted());
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
@@ -149,7 +149,7 @@ struct GridColumnEndTime final : GridColumnTime {
 	wxString Value(const AssDialogue *d, const agi::Context *c) const override {
 		if (by_frame)
 			return std::to_wstring(c->videoController->FrameAtTime(d->End, agi::vfr::END));
-		return to_wx(d->End.GetAssFormated());
+		return to_wx(d->End.GetAssFormatted());
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {

@@ -1,4 +1,4 @@
-// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,24 +14,18 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_time.h
-/// @see ass_time.cpp
-/// @ingroup subs_storage
-///
-
 #pragma once
 
 #include <string>
 
-#include <libaegisub/vfr.h>
-
-class AssTime {
+namespace agi {
+class Time {
 	/// Time in milliseconds
 	int time = 0;
 
 public:
-	AssTime(int ms = 0);
-	AssTime(std::string const& text);
+	Time(int ms = 0);
+	Time(std::string const& text);
 
 	/// Get millisecond, rounded to centisecond precision
 	operator int() const { return time / 10 * 10; }
@@ -44,22 +38,6 @@ public:
 
 	/// Return the time as a string
 	/// @param ms Use milliseconds precision, for non-ASS formats
-	std::string GetAssFormated(bool ms=false) const;
+	std::string GetAssFormatted(bool ms=false) const;
 };
-
-/// @class SmpteFormatter
-/// @brief Convert times to and from SMPTE timecodes
-class SmpteFormatter {
-	/// Frame rate to use
-	agi::vfr::Framerate fps;
-	/// Separator character
-	std::string sep;
-
-public:
-	SmpteFormatter(agi::vfr::Framerate fps, std::string sep=":");
-
-	/// Convert an AssTime to a SMPTE timecode
-	std::string ToSMPTE(AssTime time) const;
-	/// Convert a SMPTE timecode to an AssTime
-	AssTime FromSMPTE(std::string const& str) const;
-};
+}

@@ -117,7 +117,6 @@
     <ClInclude Include="$(SrcDir)ass_parser.h" />
     <ClInclude Include="$(SrcDir)ass_style.h" />
     <ClInclude Include="$(SrcDir)ass_style_storage.h" />
-    <ClInclude Include="$(SrcDir)ass_time.h" />
     <ClInclude Include="$(SrcDir)audio_box.h" />
     <ClInclude Include="$(SrcDir)audio_colorscheme.h" />
     <ClInclude Include="$(SrcDir)audio_controller.h" />
@@ -257,7 +256,6 @@
     <ClCompile Include="$(SrcDir)ass_parser.cpp" />
     <ClCompile Include="$(SrcDir)ass_style.cpp" />
     <ClCompile Include="$(SrcDir)ass_style_storage.cpp" />
-    <ClCompile Include="$(SrcDir)ass_time.cpp" />
     <ClCompile Include="$(SrcDir)async_video_provider.cpp" />
     <ClCompile Include="$(SrcDir)audio_box.cpp" />
     <ClCompile Include="$(SrcDir)audio_colorscheme.cpp" />

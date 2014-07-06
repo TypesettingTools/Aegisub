@@ -36,12 +36,12 @@
 
 #include "ass_file.h"
 #include "ass_parser.h"
-#include "ass_time.h"
 #include "compat.h"
 #include "dialog_progress.h"
 #include "MatroskaParser.h"
 #include "options.h"
 
+#include <libaegisub/ass/time.h>
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/format.h>
 #include <libaegisub/scoped_ptr.h>
@@ -130,8 +130,8 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 		// Get start and end times
 		int64_t timecodeScaleLow = 1000000;
-		AssTime subStart = startTime / timecodeScaleLow;
-		AssTime subEnd = endTime / timecodeScaleLow;
+		agi::Time subStart = startTime / timecodeScaleLow;
+		agi::Time subEnd = endTime / timecodeScaleLow;
 
 		using str_range = boost::iterator_range<const char *>;
 
@@ -146,15 +146,15 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 				boost::lexical_cast<int>(str_range(readBuf, first)),
 				agi::format("Dialogue: %d,%s,%s,%s"
 					, boost::lexical_cast<int>(str_range(first + 1, second))
-					, subStart.GetAssFormated()
-					, subEnd.GetAssFormated()
+					, subStart.GetAssFormatted()
+					, subEnd.GetAssFormatted()
 					, str_range(second + 1, readBufEnd)));
 		}
 		// Process SRT
 		else {
 			auto line = agi::format("Dialogue: 0,%s,%s,Default,,0,0,0,,%s"
-				, subStart.GetAssFormated()
-				, subEnd.GetAssFormated()
+				, subStart.GetAssFormatted()
+				, subEnd.GetAssFormatted()
 				, str_range(readBuf, readBufEnd));
 			boost::replace_all(line, "\r\n", "\\N");
 			boost::replace_all(line, "\r", "\\N");

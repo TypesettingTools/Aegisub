@@ -40,9 +40,9 @@
 
 namespace agi { namespace vfr { class Framerate; } }
 namespace agi { struct Context; }
+namespace agi { class Time; }
 class AssDialogue;
 class AssStyle;
-class AssTime;
 class SubsTextEditCtrl;
 class TimeEdit;
 class wxButton;
@@ -126,7 +126,7 @@ class SubsEditBox final : public wxPanel {
 	/// The start and end times of the selected lines without changes made to
 	/// avoid negative durations, so that they can be restored if future changes
 	/// eliminate the negative durations
-	boost::container::map<AssDialogue *, std::pair<AssTime, AssTime>> initial_times;
+	boost::container::map<AssDialogue *, std::pair<agi::Time, agi::Time>> initial_times;
 
 	// Constructor helpers
 	wxTextCtrl *MakeMarginCtrl(wxString const& tooltip, int margin, wxString const& commit_msg);

@@ -23,6 +23,7 @@
 #include "selection_controller.h"
 #include "text_selection_controller.h"
 
+#include <libaegisub/exception.h>
 #include <libaegisub/util.h>
 
 #include <boost/locale/conversion.hpp>

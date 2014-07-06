@@ -168,8 +168,8 @@ std::string AssDialogue::GetEntryData() const {
 	str.reserve(51 + Style.get().size() + Actor.get().size() + Effect.get().size() + Text.get().size());
 
 	append_int(str, Layer);
-	append_str(str, Start.GetAssFormated());
-	append_str(str, End.GetAssFormated());
+	append_str(str, Start.GetAssFormatted());
+	append_str(str, End.GetAssFormatted());
 	append_unsafe_str(str, Style);
 	append_unsafe_str(str, Actor);
 	for (auto margin : Margin)

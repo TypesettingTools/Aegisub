@@ -57,6 +57,7 @@
     <ClCompile Include="$(SrcDir)tests\signals.cpp" />
     <ClCompile Include="$(SrcDir)tests\syntax_highlight.cpp" />
     <ClCompile Include="$(SrcDir)tests\thesaurus.cpp" />
+    <ClCompile Include="$(SrcDir)tests\time.cpp" />
     <ClCompile Include="$(SrcDir)tests\util.cpp" />
     <ClCompile Include="$(SrcDir)tests\uuencode.cpp" />
     <ClCompile Include="$(SrcDir)tests\vfr.cpp" />
