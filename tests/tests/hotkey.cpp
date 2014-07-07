@@ -17,6 +17,8 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/hotkey.h>
 
+#include <fstream>
+
 using namespace agi::hotkey;
 
 static const char simple_valid[] = R"raw({
@@ -195,4 +197,23 @@ TEST(lagi_hotkey, combo_stuff) {
 	EXPECT_STREQ("Ctrl-C", c.Str().c_str());
 	EXPECT_STREQ("cmd2", c.CmdName().c_str());
 	EXPECT_STREQ("Default", c.Context().c_str());
+}
+
+TEST(lagi_hotkey,  old_format_is_backed_up_before_migrating) {
+	{
+		std::ofstream tmp("data/hotkey_tmp");
+		tmp.write(simple_valid, sizeof(simple_valid));
+	}
+
+	{
+		Hotkey h("data/hotkey_tmp", "{}");
+		h.SetHotkeyMap(h.GetHotkeyMap());
+	}
+	{
+		std::ifstream tmp("data/hotkey_tmp.3_1");
+		ASSERT_TRUE(tmp.good());
+		char buff[sizeof(simple_valid)];
+		tmp.read(buff, sizeof(buff));
+		ASSERT_TRUE(memcmp(buff, simple_valid, sizeof(buff)) == 0);
+	}
 }

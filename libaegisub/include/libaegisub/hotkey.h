@@ -67,6 +67,7 @@ private:
 	HotkeyMap cmd_map;                  ///< Command name -> Combo
 	std::vector<const Combo *> str_map; ///< Sorted by string representation
 	const agi::fs::path config_file;    ///< Default user config location.
+	bool backup_config_file = false;
 
 	/// Build hotkey map.
 	/// @param context Context being parsed.

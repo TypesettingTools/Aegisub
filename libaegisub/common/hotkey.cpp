@@ -15,6 +15,7 @@
 #include "libaegisub/hotkey.h"
 
 #include "libaegisub/cajun/writer.h"
+#include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/json.h"
 #include "libaegisub/log.h"
@@ -43,6 +44,7 @@ struct hotkey_visitor : json::ConstVisitor {
 	std::string const& context;
 	std::string const& command;
 	Hotkey::HotkeyMap& map;
+	bool needs_backup = false;
 
 	hotkey_visitor(std::string const& context, std::string const& command, Hotkey::HotkeyMap& map)
 	: context(context), command(command), map(map) { }
@@ -72,6 +74,7 @@ struct hotkey_visitor : json::ConstVisitor {
 		key_str += static_cast<std::string const&>(key_it->second);
 
 		map.insert(make_pair(command, Combo(context, command, std::move(key_str))));
+		needs_backup = true;
 	}
 
 	void Visit(const json::Array& array) override { }
@@ -100,6 +103,7 @@ void Hotkey::BuildHotkey(std::string const& context, json::Object const& hotkeys
 		hotkey_visitor visitor{context, command.first, cmd_map};
 		for (auto const& hotkey : command_hotkeys)
 			hotkey.Accept(visitor);
+		backup_config_file |= visitor.needs_backup;
 	}
 }
 
@@ -182,6 +186,9 @@ void Hotkey::Flush() {
 		json::Array& combo_array = context[combo->CmdName()];
 		combo_array.push_back(keys);
 	}
+
+	if (backup_config_file && fs::FileExists(config_file) && !fs::FileExists(config_file.string() + ".3_1"))
+		fs::Copy(config_file, config_file.string() + ".3_1");
 
 	io::Save file(config_file);
 	JsonWriter::Write(root, file.Get());
