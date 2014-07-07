@@ -41,7 +41,6 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -156,10 +155,12 @@ void append_str(std::string &out, std::string const& str) {
 }
 
 void append_unsafe_str(std::string &out, std::string const& str) {
-	if (str.find(',') == str.npos)
-		out += str;
-	else
-		out += boost::replace_all_copy(str, ",", ";");
+	for (auto c : str) {
+		if (c == ',')
+			out += ';';
+		else
+			out += c;
+	}
 	out += ',';
 }
 
@@ -177,19 +178,17 @@ std::string AssDialogue::GetEntryData() const {
 	append_unsafe_str(str, Effect);
 
 	if (ExtradataIds.get().size() > 0) {
-		str += "{";
+		str += '{';
 		for (auto id : ExtradataIds.get()) {
-			str += "=";
+			str += '=';
 			boost::spirit::karma::generate(back_inserter(str), boost::spirit::karma::int_, id);
 		}
-		str += "}";
+		str += '}';
 	}
 
-	str += Text.get();
-
-	if (str.find('\n') != str.npos || str.find('\r') != str.npos) {
-		boost::replace_all(str, "\n", "");
-		boost::replace_all(str, "\r", "");
+	for (auto c : Text.get()) {
+		if (c != '\n' && c != '\r')
+			str += c;
 	}
 
 	return str;
