@@ -139,18 +139,17 @@ namespace agi { namespace lua {
 
 		lua_settable(L, -3);
 
-		luaL_loadstring(L, "return require('moonscript').loadstring");
-		if (lua_pcall(L, 0, 1, 0)) {
-			lua_remove(L, -2); // remove package.path table
-			return false; // leave error message
-		}
-		lua_setfield(L, LUA_REGISTRYINDEX, "moonscript");
-
 		// Replace the default lua module loader with our unicode compatible one
 		lua_getfield(L, -1, "loaders");
 		push_value(L, exception_wrapper<module_loader>);
 		lua_rawseti(L, -2, 2);
-		lua_pop(L, 2);
+		lua_pop(L, 2); // loaders, package
+
+		luaL_loadstring(L, "return require('moonscript').loadstring");
+		if (lua_pcall(L, 0, 1, 0)) {
+			return false; // leave error message
+		}
+		lua_setfield(L, LUA_REGISTRYINDEX, "moonscript");
 
 		return true;
 	}
