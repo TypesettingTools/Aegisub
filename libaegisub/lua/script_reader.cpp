@@ -123,19 +123,20 @@ namespace agi { namespace lua {
 		// set the module load path to include_path
 		lua_getglobal(L, "package");
 		push_value(L, "path");
-#ifdef _WIN32
-		// No point in checking any of the default locations on Windows since
-		// there won't be anything there
-		push_value(L, "");
-#else
-		push_value(L, "path");
-		lua_gettable(L, -3);
-#endif
 
+		push_value(L, "");
 		for (auto const& path : include_path) {
-			lua_pushfstring(L, ";%s/?.lua;%s/?/init.lua", path.string().c_str(), path.string().c_str());
+			lua_pushfstring(L, "%s/?.lua;%s/?/init.lua;", path.string().c_str(), path.string().c_str());
 			lua_concat(L, 2);
 		}
+
+#ifndef _WIN32
+		// No point in checking any of the default locations on Windows since
+		// there won't be anything there
+		push_value(L, "path");
+		lua_gettable(L, -4);
+		lua_concat(L, 2);
+#endif
 
 		lua_settable(L, -3);
 
