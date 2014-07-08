@@ -208,8 +208,8 @@ struct audio_save_clip final : public Command {
 
 		auto provider = c->project->AudioProvider();
 
-		auto start_sample = (start * provider->GetSampleRate() + 999) / 1000;
-		auto end_sample = (end * provider->GetSampleRate() + 999) / 1000;
+		auto start_sample = ((int64_t)start * provider->GetSampleRate() + 999) / 1000;
+		auto end_sample = ((int64_t)end * provider->GetSampleRate() + 999) / 1000;
 		if (start_sample >= provider->GetNumSamples() || start_sample >= end_sample) return;
 
 		size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();
