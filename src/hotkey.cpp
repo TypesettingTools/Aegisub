@@ -215,7 +215,7 @@ std::string keypress_to_str(int key_code, int modifier) {
 		if ((modifier & wxMOD_SHIFT) != 0) combo.append("Shift-");
 	}
 
-	if (key_code < 127)
+	if (key_code > 32 && key_code < 127)
 		combo += (char)key_code;
 	else
 		combo += keycode_name(key_code);
