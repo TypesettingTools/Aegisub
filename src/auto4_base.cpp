@@ -86,7 +86,7 @@ namespace Automation4 {
 		lf.lfClipPrecision = CLIP_DEFAULT_PRECIS;
 		lf.lfQuality = ANTIALIASED_QUALITY;
 		lf.lfPitchAndFamily = DEFAULT_PITCH|FF_DONTCARE;
-		wcsncpy(lf.lfFaceName, agi::charset::ConvertW(style->font).c_str(), 32);
+		wcsncpy(lf.lfFaceName, agi::charset::ConvertW(style->font).c_str(), 31);
 
 		HFONT thefont = CreateFontIndirect(&lf);
 		if (!thefont) return false;
