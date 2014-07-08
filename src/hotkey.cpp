@@ -223,7 +223,7 @@ std::string keypress_to_str(int key_code, int modifier) {
 	return combo;
 }
 
-bool check(std::string const& context, agi::Context *c, int key_code, int modifier) {
+static bool check(std::string const& context, agi::Context *c, int key_code, int modifier) {
 	std::string combo = keypress_to_str(key_code, modifier);
 	if (combo.empty()) return false;
 
@@ -237,7 +237,7 @@ bool check(std::string const& context, agi::Context *c, int key_code, int modifi
 
 bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt) {
 	try {
-		if (!hotkey::check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
+		if (!check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
 			evt.Skip();
 			return false;
 		}

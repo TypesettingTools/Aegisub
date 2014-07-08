@@ -69,13 +69,16 @@ namespace ec = boost::system::errc;
 #undef CreateDirectory
 
 namespace agi { namespace fs {
+namespace {
+	WRAP_BFS(file_size, SizeImpl)
+	WRAP_BFS(space, Space)
+}
+
 	WRAP_BFS_IGNORE_ERROR(exists, Exists)
 	WRAP_BFS_IGNORE_ERROR(is_regular_file, FileExists)
 	WRAP_BFS_IGNORE_ERROR(is_directory, DirectoryExists)
-	WRAP_BFS(file_size, SizeImpl)
 	WRAP_BFS(last_write_time, ModifiedTime)
 	WRAP_BFS(create_directories, CreateDirectory)
-	WRAP_BFS(space, Space)
 	WRAP_BFS(remove, Remove)
 	WRAP_BFS(canonical, Canonicalize)
 

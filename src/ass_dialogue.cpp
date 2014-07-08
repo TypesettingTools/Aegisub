@@ -144,17 +144,17 @@ void AssDialogue::Parse(std::string const& raw) {
 	Text = text;
 }
 
-void append_int(std::string &str, int v) {
+static void append_int(std::string &str, int v) {
 	boost::spirit::karma::generate(back_inserter(str), boost::spirit::karma::int_, v);
 	str += ',';
 }
 
-void append_str(std::string &out, std::string const& str) {
+static void append_str(std::string &out, std::string const& str) {
 	out += str;
 	out += ',';
 }
 
-void append_unsafe_str(std::string &out, std::string const& str) {
+static void append_unsafe_str(std::string &out, std::string const& str) {
 	for (auto c : str) {
 		if (c == ',')
 			out += ';';

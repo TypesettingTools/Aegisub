@@ -56,6 +56,7 @@
 #include <wx/stattext.h>
 #include <wx/treebook.h>
 
+namespace {
 /// General preferences page
 void General(wxTreebook *book, Preferences *parent) {
 	auto p = new OptionPage(book, parent, _("General"));
@@ -634,6 +635,7 @@ void Interface_Hotkeys::OnUpdateFilter(wxCommandEvent&) {
 		for (auto const& context : contexts)
 			dvc->Expand(context);
 	}
+}
 }
 
 void Preferences::SetOption(std::unique_ptr<agi::OptionValue> new_value) {
