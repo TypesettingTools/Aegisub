@@ -1,5 +1,5 @@
 ifneq (yes, $(INCLUDING_CHILD_MAKEFILES))
-COMMANDS := all install clean distclean test depclean osx-bundle osx-dmg test-automation
+COMMANDS := all install clean distclean test depclean osx-bundle osx-dmg test-automation test-libaegisub
 .PHONY: $(COMMANDS)
 .DEFAULT_GOAL := all
 

@@ -38,8 +38,8 @@
 #ifndef WITH_FFTW3
 #include "fft.h"
 #endif
-#include "include/aegisub/audio_provider.h"
 
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>

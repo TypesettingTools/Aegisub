@@ -135,7 +135,7 @@ TEST(lagi_iconv, wchar_tSupport) {
 }
 
 TEST(lagi_iconv, Roundtrip) {
-    for (auto const& name : GetEncodingsList<std::vector<std::string>>()) {
+	for (auto const& name : GetEncodingsList<std::vector<std::string>>()) {
 		ASSERT_NO_THROW(IconvWrapper("utf-8", name.c_str()));
 		ASSERT_NO_THROW(IconvWrapper(name.c_str(), "utf-8"));
 		EXPECT_EQ(

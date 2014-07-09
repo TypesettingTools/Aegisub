@@ -19,13 +19,13 @@
 #include "preferences.h"
 
 #include "ass_style_storage.h"
+#include "audio_provider_factory.h"
 #include "audio_renderer_waveform.h"
 #include "command/command.h"
 #include "compat.h"
 #include "help_button.h"
 #include "hotkey_data_view_model.h"
 #include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
 #include "include/aegisub/hotkey.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "libresrc/libresrc.h"
@@ -356,7 +356,7 @@ void Advanced_Audio(wxTreebook *book, Preferences *parent) {
 
 	auto expert = p->PageSizer(_("Expert"));
 
-	wxArrayString ap_choice = to_wx(AudioProviderFactory::GetClasses());
+	wxArrayString ap_choice = to_wx(GetAudioProviderNames());
 	p->OptionChoice(expert, _("Audio provider"), ap_choice, "Audio/Provider");
 
 	wxArrayString apl_choice = to_wx(AudioPlayerFactory::GetClasses());

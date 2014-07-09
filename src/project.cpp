@@ -20,13 +20,13 @@
 #include "ass_file.h"
 #include "async_video_provider.h"
 #include "audio_controller.h"
+#include "audio_provider_factory.h"
 #include "base_grid.h"
 #include "charset_detect.h"
 #include "compat.h"
 #include "dialog_progress.h"
 #include "dialogs.h"
 #include "format.h"
-#include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"
@@ -37,6 +37,7 @@
 #include "video_controller.h"
 #include "video_display.h"
 
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/format_path.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/keyframe.h>
@@ -243,7 +244,7 @@ void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 
 	try {
 		try {
-			audio_provider = AudioProviderFactory::GetProvider(path, progress);
+			audio_provider = GetAudioProvider(path, progress);
 		}
 		catch (agi::UserCancelException const&) { return; }
 		catch (...) {
@@ -254,7 +255,7 @@ void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 	catch (agi::fs::FileNotFound const& e) {
 		return ShowError(_("The audio file was not found: ") + to_wx(e.GetMessage()));
 	}
-	catch (agi::AudioDataNotFoundError const& e) {
+	catch (agi::AudioDataNotFound const& e) {
 		if (quiet) {
 			LOG_D("video/open/audio") << "File " << video_file << " has no audio data: " << e.GetMessage();
 			return;
@@ -262,7 +263,7 @@ void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 		else
 			return ShowError(_("None of the available audio providers recognised the selected file as containing audio data.\n\nThe following providers were tried:\n") + to_wx(e.GetMessage()));
 	}
-	catch (agi::AudioProviderOpenError const& e) {
+	catch (agi::AudioProviderError const& e) {
 		return ShowError(_("None of the available audio providers have a codec available to handle the selected file.\n\nThe following providers were tried:\n") + to_wx(e.GetMessage()));
 	}
 	catch (agi::Exception const& e) {

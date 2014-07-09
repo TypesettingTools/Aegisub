@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,57 +14,55 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_provider_convert.cpp
-/// @brief Intermediate sample format-converting audio provider
-/// @ingroup audio_input
-///
-
-#include "include/aegisub/audio_provider.h"
-
-#include "audio_controller.h"
+#include "libaegisub/audio/provider.h"
 
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
 #include <limits>
 
+using namespace agi;
+
 /// Anything integral -> 16 bit signed machine-endian audio converter
+namespace {
 template<class Target>
 class BitdepthConvertAudioProvider final : public AudioProviderWrapper {
 	int src_bytes_per_sample;
 public:
 	BitdepthConvertAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		if (bytes_per_sample > 8)
-			throw agi::AudioProviderOpenError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported");
+			throw AudioProviderError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported");
 
 		src_bytes_per_sample = bytes_per_sample;
 		bytes_per_sample = sizeof(Target);
 	}
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
-		std::vector<char> src_buf(count * src_bytes_per_sample * channels);
-		source->GetAudio(&src_buf[0], start, count);
+		std::vector<uint8_t> src_buf(count * src_bytes_per_sample * channels);
+		source->GetAudio(src_buf.data(), start, count);
 
 		int16_t *dest = reinterpret_cast<int16_t*>(buf);
 
 		for (int64_t i = 0; i < count * channels; ++i) {
 			int64_t sample = 0;
-			char *sample_ptr = (char*)&sample;
-			char *src = &src_buf[i * src_bytes_per_sample];
 
 			// 8 bits per sample is assumed to be unsigned with a bias of 127,
 			// while everything else is assumed to be signed with zero bias
 			if (src_bytes_per_sample == 1)
-				*sample_ptr = static_cast<uint8_t>(*src) - 127;
-			else
-				memcpy(sample_ptr, src, src_bytes_per_sample);
+				sample = src_buf[i] - 127;
+			else {
+				for (int j = 0; j < src_bytes_per_sample; ++j) {
+					sample <<= 8;
+					sample += src_buf[i * src_bytes_per_sample + j];
+				}
+			}
 
 			if (static_cast<size_t>(src_bytes_per_sample) > sizeof(Target))
 				sample >>= (src_bytes_per_sample - sizeof(Target)) * 8;
 			else if (static_cast<size_t>(src_bytes_per_sample) < sizeof(Target))
 				sample <<= (sizeof(Target) - src_bytes_per_sample ) * 8;
 
-			dest[i] = (Target)sample;
+			dest[i] = static_cast<Target>(sample);
 		}
 	}
 };
@@ -82,7 +80,7 @@ public:
 		std::vector<Source> src_buf(count * channels);
 		source->GetAudio(&src_buf[0], start, count);
 
-		Target *dest = reinterpret_cast<Target*>(buf);
+		auto dest = reinterpret_cast<Target*>(buf);
 
 		for (size_t i = 0; i < static_cast<size_t>(count * channels); ++i) {
 			Source expanded;
@@ -107,9 +105,9 @@ class DownmixAudioProvider final : public AudioProviderWrapper {
 public:
 	DownmixAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		if (bytes_per_sample != 2)
-			throw agi::InternalError("DownmixAudioProvider requires 16-bit input");
+			throw InternalError("DownmixAudioProvider requires 16-bit input");
 		if (channels == 1)
-			throw agi::InternalError("DownmixAudioProvider requires multi-channel input");
+			throw InternalError("DownmixAudioProvider requires multi-channel input");
 		src_channels = channels;
 		channels = 1;
 	}
@@ -137,9 +135,9 @@ class SampleDoublingAudioProvider final : public AudioProviderWrapper {
 public:
 	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		if (source->GetBytesPerSample() != 2)
-			throw agi::InternalError("UpsampleAudioProvider requires 16-bit input");
+			throw InternalError("UpsampleAudioProvider requires 16-bit input");
 		if (source->GetChannels() != 1)
-			throw agi::InternalError("UpsampleAudioProvider requires mono input");
+			throw InternalError("UpsampleAudioProvider requires mono input");
 
 		sample_rate *= 2;
 		num_samples *= 2;
@@ -149,11 +147,11 @@ public:
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		if (count == 0) return;
 
-		int not_end = start + count < num_samples;
+		bool not_end = start + count < num_samples;
 		int64_t src_count = count / 2;
 		source->GetAudio(buf, start / 2, src_count + not_end);
 
-		int16_t *buf16 = reinterpret_cast<int16_t*>(buf);
+		auto buf16 = reinterpret_cast<int16_t*>(buf);
 
 		if (!not_end) {
 			// We weren't able to request a sample past the end so just
@@ -171,7 +169,9 @@ public:
 		}
 	}
 };
+}
 
+namespace agi {
 std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider> provider) {
 	// Ensure 16-bit audio with proper endianness
 	if (provider->AreSamplesFloat()) {
@@ -199,4 +199,5 @@ std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioP
 	}
 
 	return provider;
+}
 }

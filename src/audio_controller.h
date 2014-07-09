@@ -36,10 +36,10 @@
 #include <wx/timer.h>
 
 class AudioPlayer;
-class AudioProvider;
 class AudioTimingController;
-namespace agi { struct Context; }
 class TimeRange;
+namespace agi { class AudioProvider; }
+namespace agi { struct Context; }
 
 /// @class AudioController
 /// @brief Manage playback of an open audio stream
@@ -84,10 +84,10 @@ class AudioController final : public wxEvtHandler {
 	wxTimer playback_timer;
 
 	/// The audio provider
-	AudioProvider *provider = nullptr;
+	agi::AudioProvider *provider = nullptr;
 	agi::signal::Connection provider_connection;
 
-	void OnAudioProvider(AudioProvider *new_provider);
+	void OnAudioProvider(agi::AudioProvider *new_provider);
 
 	/// Event handler for the playback timer
 	void OnPlaybackTimer(wxTimerEvent &event);
@@ -189,29 +189,3 @@ public:
 	DEFINE_SIGNAL_ADDERS(AnnounceTimingControllerChanged, AddTimingControllerListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceAudioPlayerOpened,       AddAudioPlayerOpenListener)
 };
-
-namespace agi {
-	/// Base class for all audio-related errors
-	DEFINE_EXCEPTION(AudioError, Exception);
-
-	/// Opening the audio failed for any reason
-	DEFINE_EXCEPTION(AudioOpenError, AudioError);
-
-	/// There are no audio providers available to open audio files
-	DEFINE_EXCEPTION(NoAudioProvidersError, AudioOpenError);
-
-	/// The file exists, but no providers could find any audio tracks in it
-	DEFINE_EXCEPTION(AudioDataNotFoundError, AudioOpenError);
-
-	/// There are audio tracks, but no provider could actually read them
-	DEFINE_EXCEPTION(AudioProviderOpenError, AudioOpenError);
-
-	/// The audio cache failed to initialize
-	DEFINE_EXCEPTION(AudioCacheOpenError, AudioOpenError);
-
-	/// There are no audio players available
-	DEFINE_EXCEPTION(NoAudioPlayersError, AudioOpenError);
-
-	/// The audio player failed to initialize
-	DEFINE_EXCEPTION(AudioPlayerOpenError, AudioOpenError);
-}

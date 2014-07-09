@@ -37,7 +37,6 @@
 #include "../audio_controller.h"
 #include "../audio_karaoke.h"
 #include "../audio_timing.h"
-#include "../include/aegisub/audio_provider.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
@@ -46,6 +45,7 @@
 #include "../utils.h"
 #include "../video_controller.h"
 
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/make_unique.h>
 #include <libaegisub/io.h>
 
@@ -159,29 +159,6 @@ struct audio_view_waveform final : public Command {
 	}
 };
 
-class writer {
-	agi::io::Save outfile;
-	std::ostream& out;
-
-public:
-	writer(agi::fs::path const& filename) : outfile(filename, true), out(outfile.Get()) { }
-
-	template<int N>
-	void write(const char(&str)[N]) {
-		out.write(str, N - 1);
-	}
-
-	void write(std::vector<char> const& data) {
-		out.write(data.data(), data.size());
-	}
-
-	template<typename Dest, typename Src>
-	void write(Src v) {
-		auto converted = static_cast<Dest>(v);
-		out.write(reinterpret_cast<char *>(&converted), sizeof(Dest));
-	}
-};
-
 struct audio_save_clip final : public Command {
 	CMD_NAME("audio/save/clip")
 	STR_MENU("Create audio clip")
@@ -206,39 +183,7 @@ struct audio_save_clip final : public Command {
 			end = std::max(end, line->End);
 		}
 
-		auto provider = c->project->AudioProvider();
-
-		auto start_sample = ((int64_t)start * provider->GetSampleRate() + 999) / 1000;
-		auto end_sample = ((int64_t)end * provider->GetSampleRate() + 999) / 1000;
-		if (start_sample >= provider->GetNumSamples() || start_sample >= end_sample) return;
-
-		size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();
-		size_t bufsize = (end_sample - start_sample) * bytes_per_sample;
-
-		writer out{filename};
-		out.write("RIFF");
-		out.write<int32_t>(bufsize + 36);
-
-		out.write("WAVEfmt ");
-		out.write<int32_t>(16); // Size of chunk
-		out.write<int16_t>(1);  // compression format (PCM)
-		out.write<int16_t>(provider->GetChannels());
-		out.write<int32_t>(provider->GetSampleRate());
-		out.write<int32_t>(provider->GetSampleRate() * provider->GetChannels() * provider->GetBytesPerSample());
-		out.write<int16_t>(provider->GetChannels() * provider->GetBytesPerSample());
-		out.write<int16_t>(provider->GetBytesPerSample() * 8);
-
-		out.write("data");
-		out.write<int32_t>(bufsize);
-
-		// samples per read
-		size_t spr = 65536 / bytes_per_sample;
-		std::vector<char> buf(bufsize);
-		for (int64_t i = start_sample; i < end_sample; i += spr) {
-			buf.resize(std::min<size_t>(spr, end_sample - i) * bytes_per_sample);
-			provider->GetAudio(&buf[0], i, buf.size());
-			out.write(buf);
-		}
+		agi::SaveAudioClip(c->project->AudioProvider(), filename, start, end);
 	}
 };
 

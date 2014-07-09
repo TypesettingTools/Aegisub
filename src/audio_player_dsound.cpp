@@ -36,10 +36,10 @@
 #include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"
-#include "include/aegisub/audio_provider.h"
 #include "frame_main.h"
 #include "utils.h"
 
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
@@ -81,7 +81,7 @@ class DirectSoundPlayer final : public AudioPlayer {
 	DirectSoundPlayerThread *thread = nullptr;
 
 public:
-	DirectSoundPlayer(AudioProvider *provider, wxWindow *parent);
+	DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *parent);
 	~DirectSoundPlayer();
 
 	void Play(int64_t start,int64_t count);
@@ -96,13 +96,13 @@ public:
 	void SetVolume(double vol) { volume = vol; }
 };
 
-DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider, wxWindow *parent)
+DirectSoundPlayer::DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *parent)
 : AudioPlayer(provider)
 {
 	// Initialize the DirectSound object
 	HRESULT res;
 	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback,&directSound,nullptr); // TODO: support selecting audio device
-	if (FAILED(res)) throw agi::AudioPlayerOpenError("Failed initializing DirectSound");
+	if (FAILED(res)) throw AudioPlayerOpenError("Failed initializing DirectSound");
 
 	// Set DirectSound parameters
 	directSound->SetCooperativeLevel((HWND)parent->GetHandle(),DSSCL_PRIORITY);
@@ -133,11 +133,11 @@ DirectSoundPlayer::DirectSoundPlayer(AudioProvider *provider, wxWindow *parent)
 	// Create the buffer
 	IDirectSoundBuffer *buf;
 	res = directSound->CreateSoundBuffer(&desc,&buf,nullptr);
-	if (res != DS_OK) throw agi::AudioPlayerOpenError("Failed creating DirectSound buffer");
+	if (res != DS_OK) throw AudioPlayerOpenError("Failed creating DirectSound buffer");
 
 	// Copy interface to buffer
 	res = buf->QueryInterface(IID_IDirectSoundBuffer8,(LPVOID*) &buffer);
-	if (res != S_OK) throw agi::AudioPlayerOpenError("Failed casting interface to IDirectSoundBuffer8");
+	if (res != S_OK) throw AudioPlayerOpenError("Failed casting interface to IDirectSoundBuffer8");
 
 	// Set data
 	offset = 0;
@@ -367,7 +367,7 @@ void DirectSoundPlayerThread::Stop() {
 }
 }
 
-std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *provider, wxWindow *parent) {
+std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(agi::AudioProvider *provider, wxWindow *parent) {
 	return agi::make_unique<DirectSoundPlayer>(provider, parent);
 }
 

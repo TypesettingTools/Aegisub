@@ -37,14 +37,12 @@
 
 #include "audio_controller.h"
 #include "compat.h"
-#include "include/aegisub/audio_provider.h"
 #include "options.h"
 #include "utils.h"
 
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
-
-DEFINE_EXCEPTION(PortAudioError, agi::AudioPlayerOpenError);
 
 // Uncomment to enable extremely spammy debug logging
 //#define PORTAUDIO_DEBUG
@@ -66,11 +64,11 @@ static const PaHostApiTypeId pa_host_api_priority[] = {
 };
 static const size_t pa_host_api_priority_count = sizeof(pa_host_api_priority) / sizeof(pa_host_api_priority[0]);
 
-PortAudioPlayer::PortAudioPlayer(AudioProvider *provider) : AudioPlayer(provider) {
+PortAudioPlayer::PortAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(provider) {
 	PaError err = Pa_Initialize();
 
 	if (err != paNoError)
-		throw PortAudioError(std::string("Failed opening PortAudio: ") + Pa_GetErrorText(err));
+		throw AudioPlayerOpenError(std::string("Failed opening PortAudio: ") + Pa_GetErrorText(err));
 
 	// Build a list of host API-specific devices we can use
 	// Some host APIs may not support all audio formats, so build a priority
@@ -83,7 +81,7 @@ PortAudioPlayer::PortAudioPlayer(AudioProvider *provider) : AudioPlayer(provider
 	GatherDevices(Pa_GetDefaultHostApi());
 
 	if (devices.empty())
-		throw PortAudioError("No PortAudio output devices found");
+		throw AudioPlayerOpenError("No PortAudio output devices found");
 
 	if (provider)
 		OpenStream();
@@ -168,7 +166,7 @@ void PortAudioPlayer::OpenStream() {
 		}
 	}
 
-	throw PortAudioError("Failed initializing PortAudio stream: " + error);
+	throw AudioPlayerOpenError("Failed initializing PortAudio stream: " + error);
 }
 
 void PortAudioPlayer::paStreamFinishedCallback(void *) {
@@ -270,7 +268,7 @@ wxArrayString PortAudioPlayer::GetOutputDevices() {
 		for (auto it = player.devices.begin(); it != player.devices.end(); ++it)
 			list.push_back(to_wx(it->first));
 	}
-	catch (PortAudioError const&) {
+	catch (AudioPlayerOpenError const&) {
 		// No output devices, just return the list with only Default
 	}
 
@@ -281,7 +279,7 @@ bool PortAudioPlayer::IsPlaying() {
 	return !!Pa_IsStreamActive(stream);
 }
 
-std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(AudioProvider *provider, wxWindow *) {
+std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(agi::AudioProvider *provider, wxWindow *) {
 	return agi::make_unique<PortAudioPlayer>(provider);
 }
 

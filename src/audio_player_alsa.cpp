@@ -36,11 +36,11 @@
 #include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"
-#include "include/aegisub/audio_provider.h"
 #include "compat.h"
 #include "frame_main.h"
 #include "options.h"
 
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
@@ -102,7 +102,7 @@ class AlsaPlayer final : public AudioPlayer {
 	}
 
 public:
-	AlsaPlayer(AudioProvider *provider);
+	AlsaPlayer(agi::AudioProvider *provider);
 	~AlsaPlayer();
 
 	void Play(int64_t start, int64_t count) override;
@@ -289,13 +289,13 @@ do_setup:
 	}
 }
 
-AlsaPlayer::AlsaPlayer(AudioProvider *provider) try
+AlsaPlayer::AlsaPlayer(agi::AudioProvider *provider) try
 : AudioPlayer(provider)
 , thread(&AlsaPlayer::PlaybackThread, this)
 {
 }
 catch (std::system_error const&) {
-	throw agi::AudioPlayerOpenError("AlsaPlayer: Creating the playback thread failed");
+	throw AudioPlayerOpenError("AlsaPlayer: Creating the playback thread failed");
 }
 
 AlsaPlayer::~AlsaPlayer()
@@ -347,7 +347,7 @@ int64_t AlsaPlayer::GetCurrentPosition()
 }
 }
 
-std::unique_ptr<AudioPlayer> CreateAlsaPlayer(AudioProvider *provider, wxWindow *)
+std::unique_ptr<AudioPlayer> CreateAlsaPlayer(agi::AudioProvider *provider, wxWindow *)
 {
 	return agi::make_unique<AlsaPlayer>(provider);
 }

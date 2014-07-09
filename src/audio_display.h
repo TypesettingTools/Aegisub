@@ -40,12 +40,12 @@
 #include <wx/timer.h>
 #include <wx/window.h>
 
+namespace agi { class AudioProvider; }
 namespace agi { struct Context; }
 
 class AudioController;
 class AudioRenderer;
 class AudioRendererBitmapProvider;
-class AudioProvider;
 class TimeRange;
 
 // Helper classes used in implementation of the audio display
@@ -107,7 +107,7 @@ class AudioDisplay: public wxWindow {
 	/// The controller managing us
 	AudioController *controller = nullptr;
 
-	AudioProvider *provider = nullptr;
+	agi::AudioProvider *provider = nullptr;
 
 	/// Scrollbar helper object
 	std::unique_ptr<AudioDisplayScrollbar> scrollbar;
@@ -230,7 +230,7 @@ class AudioDisplay: public wxWindow {
 
 	int GetDuration() const;
 
-	void OnAudioOpen(AudioProvider *provider);
+	void OnAudioOpen(agi::AudioProvider *provider);
 	void OnPlaybackPosition(int ms_position);
 	void OnSelectionChanged();
 	void OnStyleRangesChanged();

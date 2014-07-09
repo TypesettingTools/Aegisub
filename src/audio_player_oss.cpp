@@ -35,10 +35,10 @@
 
 #include "audio_controller.h"
 #include "compat.h"
-#include "include/aegisub/audio_provider.h"
 #include "options.h"
 #include "utils.h"
 
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
@@ -54,7 +54,6 @@
 #endif
 
 namespace {
-DEFINE_EXCEPTION(OSSError, agi::AudioPlayerOpenError);
 class OSSPlayerThread;
 
 class OSSPlayer final : public AudioPlayer {
@@ -90,7 +89,7 @@ class OSSPlayer final : public AudioPlayer {
     void OpenStream();
 
 public:
-    OSSPlayer(AudioProvider *provider)
+    OSSPlayer(agi::AudioProvider *provider)
     : AudioPlayer(provider)
     {
         OpenStream();
@@ -153,7 +152,7 @@ void OSSPlayer::OpenStream()
     wxString device = to_wx(OPT_GET("Player/Audio/OSS/Device")->GetString());
     dspdev = ::open(device.utf8_str(), O_WRONLY, 0);
     if (dspdev < 0) {
-        throw OSSError("OSS player: opening device failed");
+        throw AudioPlayerOpenError("OSS player: opening device failed");
     }
 
     // Use a reasonable buffer policy for low latency (OSS4)
@@ -165,7 +164,7 @@ void OSSPlayer::OpenStream()
     // Set number of channels
     int channels = provider->GetChannels();
     if (ioctl(dspdev, SNDCTL_DSP_CHANNELS, &channels) < 0) {
-        throw OSSError("OSS player: setting channels failed");
+        throw AudioPlayerOpenError("OSS player: setting channels failed");
     }
 
     // Set sample format
@@ -178,17 +177,17 @@ void OSSPlayer::OpenStream()
             sample_format = AFMT_S16_LE;
             break;
         default:
-            throw OSSError("OSS player: can only handle 8 and 16 bit sound");
+            throw AudioPlayerOpenError("OSS player: can only handle 8 and 16 bit sound");
     }
 
     if (ioctl(dspdev, SNDCTL_DSP_SETFMT, &sample_format) < 0) {
-        throw OSSError("OSS player: setting sample format failed");
+        throw AudioPlayerOpenError("OSS player: setting sample format failed");
     }
 
     // Set sample rate
     rate = provider->GetSampleRate();
     if (ioctl(dspdev, SNDCTL_DSP_SPEED, &rate) < 0) {
-        throw OSSError("OSS player: setting samplerate failed");
+        throw AudioPlayerOpenError("OSS player: setting samplerate failed");
     }
 }
 
@@ -280,7 +279,7 @@ int64_t OSSPlayer::GetCurrentPosition()
 }
 }
 
-std::unique_ptr<AudioPlayer> CreateOSSPlayer(AudioProvider *provider, wxWindow *) {
+std::unique_ptr<AudioPlayer> CreateOSSPlayer(agi::AudioProvider *provider, wxWindow *) {
     return agi::make_unique<OSSPlayer>(provider);
 }
 

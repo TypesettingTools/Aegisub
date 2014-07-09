@@ -31,10 +31,11 @@
 
 #include "audio_timing.h"
 #include "include/aegisub/audio_player.h"
-#include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "project.h"
+
+#include <libaegisub/audio/provider.h>
 
 #include <algorithm>
 
@@ -102,12 +103,13 @@ void AudioController::OnAudioPlayerChanged()
 	}
 	catch (...)
 	{
+		/// @todo This really shouldn't be just swallowing all audio player open errors
 		context->project->CloseAudio();
 	}
 	AnnounceAudioPlayerOpened();
 }
 
-void AudioController::OnAudioProvider(AudioProvider *new_provider)
+void AudioController::OnAudioProvider(agi::AudioProvider *new_provider)
 {
 	provider = new_provider;
 	Stop();

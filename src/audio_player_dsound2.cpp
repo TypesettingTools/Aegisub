@@ -36,11 +36,11 @@
 #include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"
-#include "include/aegisub/audio_provider.h"
 #include "frame_main.h"
 #include "options.h"
 #include "utils.h"
 
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
@@ -74,7 +74,7 @@ class DirectSoundPlayer2 final : public AudioPlayer {
 
 public:
 	/// @brief Constructor
-	DirectSoundPlayer2(AudioProvider *provider, wxWindow *parent);
+	DirectSoundPlayer2(agi::AudioProvider *provider, wxWindow *parent);
 	/// @brief Destructor
 	~DirectSoundPlayer2();
 
@@ -236,14 +236,14 @@ class DirectSoundPlayer2Thread {
 	DWORD last_playback_restart;
 
 	/// Audio provider to take sample data from
-	AudioProvider *provider;
+	agi::AudioProvider *provider;
 
 public:
 	/// @brief Constructor, creates and starts playback thread
 	/// @param provider       Audio provider to take sample data from
 	/// @param WantedLatency Desired length in milliseconds to write ahead of the playback cursor
 	/// @param BufferLength  Multiplier for WantedLatency to get total buffer length
-	DirectSoundPlayer2Thread(AudioProvider *provider, int WantedLatency, int BufferLength, wxWindow *parent);
+	DirectSoundPlayer2Thread(agi::AudioProvider *provider, int WantedLatency, int BufferLength, wxWindow *parent);
 	/// @brief Destructor, waits for thread to have died
 	~DirectSoundPlayer2Thread();
 
@@ -660,7 +660,7 @@ void DirectSoundPlayer2Thread::CheckError()
 	}
 }
 
-DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int WantedLatency, int BufferLength, wxWindow *parent)
+DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(agi::AudioProvider *provider, int WantedLatency, int BufferLength, wxWindow *parent)
 : parent((HWND)parent->GetHandle())
 , event_start_playback  (CreateEvent(0, FALSE, FALSE, 0))
 , event_stop_playback   (CreateEvent(0, FALSE, FALSE, 0))
@@ -677,7 +677,7 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 	thread_handle = (HANDLE)_beginthreadex(0, 0, ThreadProc, this, 0, 0);
 
 	if (!thread_handle)
-		throw agi::AudioPlayerOpenError("Failed creating playback thread in DirectSoundPlayer2. This is bad.");
+		throw AudioPlayerOpenError("Failed creating playback thread in DirectSoundPlayer2. This is bad.");
 
 	HANDLE running_or_error[] = { thread_running, error_happened };
 	switch (WaitForMultipleObjects(2, running_or_error, FALSE, INFINITE))
@@ -688,10 +688,10 @@ DirectSoundPlayer2Thread::DirectSoundPlayer2Thread(AudioProvider *provider, int 
 
 	case WAIT_OBJECT_0 + 1:
 		// error happened, we fail
-		throw agi::AudioPlayerOpenError(error_message);
+		throw AudioPlayerOpenError(error_message);
 
 	default:
-		throw agi::AudioPlayerOpenError("Failed wait for thread start or thread error in DirectSoundPlayer2. This is bad.");
+		throw AudioPlayerOpenError("Failed wait for thread start or thread error in DirectSoundPlayer2. This is bad.");
 	}
 }
 
@@ -800,7 +800,7 @@ bool DirectSoundPlayer2Thread::IsDead()
 	}
 }
 
-DirectSoundPlayer2::DirectSoundPlayer2(AudioProvider *provider, wxWindow *parent)
+DirectSoundPlayer2::DirectSoundPlayer2(agi::AudioProvider *provider, wxWindow *parent)
 : AudioPlayer(provider)
 {
 	// The buffer will hold BufferLength times WantedLatency milliseconds of audio
@@ -820,7 +820,7 @@ DirectSoundPlayer2::DirectSoundPlayer2(AudioProvider *provider, wxWindow *parent
 	catch (const char *msg)
 	{
 		LOG_E("audio/player/dsound") << msg;
-		throw agi::AudioPlayerOpenError(msg);
+		throw AudioPlayerOpenError(msg);
 	}
 }
 
@@ -929,7 +929,7 @@ void DirectSoundPlayer2::SetVolume(double vol)
 }
 }
 
-std::unique_ptr<AudioPlayer> CreateDirectSound2Player(AudioProvider *provider, wxWindow *parent) {
+std::unique_ptr<AudioPlayer> CreateDirectSound2Player(agi::AudioProvider *provider, wxWindow *parent) {
 	return agi::make_unique<DirectSoundPlayer2>(provider, parent);
 }
 

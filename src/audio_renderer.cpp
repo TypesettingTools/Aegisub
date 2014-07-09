@@ -33,8 +33,7 @@
 
 #include "audio_renderer.h"
 
-#include "include/aegisub/audio_provider.h"
-
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
@@ -120,7 +119,7 @@ void AudioRenderer::SetRenderer(AudioRendererBitmapProvider *_renderer)
 	}
 }
 
-void AudioRenderer::SetAudioProvider(AudioProvider *_provider)
+void AudioRenderer::SetAudioProvider(agi::AudioProvider *_provider)
 {
 	if (compare_and_set(provider, _provider))
 	{
@@ -224,7 +223,7 @@ void AudioRenderer::Invalidate()
 	needs_age = false;
 }
 
-void AudioRendererBitmapProvider::SetProvider(AudioProvider *_provider)
+void AudioRendererBitmapProvider::SetProvider(agi::AudioProvider *_provider)
 {
 	if (compare_and_set(provider, _provider))
 		OnSetProvider();

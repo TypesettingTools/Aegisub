@@ -36,9 +36,9 @@
 #include "include/aegisub/audio_player.h"
 
 #include "audio_controller.h"
-#include "include/aegisub/audio_provider.h"
 #include "utils.h"
 
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
@@ -60,8 +60,6 @@
 #ifdef _MSC_VER
 #pragma comment(lib, "openal32.lib")
 #endif
-
-DEFINE_EXCEPTION(OpenALException, agi::AudioPlayerOpenError);
 
 namespace {
 class OpenALPlayer final : public AudioPlayer, wxTimer {
@@ -108,7 +106,7 @@ protected:
 	void Notify() override;
 
 public:
-	OpenALPlayer(AudioProvider *provider);
+	OpenALPlayer(agi::AudioProvider *provider);
 	~OpenALPlayer();
 
 	void Play(int64_t start,int64_t count) override;
@@ -122,7 +120,7 @@ public:
 	void SetVolume(double vol) override { volume = vol; }
 };
 
-OpenALPlayer::OpenALPlayer(AudioProvider *provider)
+OpenALPlayer::OpenALPlayer(agi::AudioProvider *provider)
 : AudioPlayer(provider)
 , samplerate(provider->GetSampleRate())
 , bpf(provider->GetChannels() * provider->GetBytesPerSample())
@@ -130,25 +128,25 @@ OpenALPlayer::OpenALPlayer(AudioProvider *provider)
 	try {
 		// Open device
 		device = alcOpenDevice(nullptr);
-		if (!device) throw OpenALException("Failed opening default OpenAL device");
+		if (!device) throw AudioPlayerOpenError("Failed opening default OpenAL device");
 
 		// Create context
 		context = alcCreateContext(device, nullptr);
-		if (!context) throw OpenALException("Failed creating OpenAL context");
-		if (!alcMakeContextCurrent(context)) throw OpenALException("Failed selecting OpenAL context");
+		if (!context) throw AudioPlayerOpenError("Failed creating OpenAL context");
+		if (!alcMakeContextCurrent(context)) throw AudioPlayerOpenError("Failed selecting OpenAL context");
 
 		// Clear error code
 		alGetError();
 
 		// Generate buffers
 		alGenBuffers(num_buffers, buffers);
-		if (alGetError() != AL_NO_ERROR) throw OpenALException("Error generating OpenAL buffers");
+		if (alGetError() != AL_NO_ERROR) throw AudioPlayerOpenError("Error generating OpenAL buffers");
 
 		// Generate source
 		alGenSources(1, &source);
 		if (alGetError() != AL_NO_ERROR) {
 			alDeleteBuffers(num_buffers, buffers);
-			throw OpenALException("Error generating OpenAL source");
+			throw AudioPlayerOpenError("Error generating OpenAL source");
 		}
 	}
 	catch (...)
@@ -284,7 +282,7 @@ int64_t OpenALPlayer::GetCurrentPosition()
 }
 }
 
-std::unique_ptr<AudioPlayer> CreateOpenALPlayer(AudioProvider *provider, wxWindow *)
+std::unique_ptr<AudioPlayer> CreateOpenALPlayer(agi::AudioProvider *provider, wxWindow *)
 {
 	return agi::make_unique<OpenALPlayer>(provider);
 }

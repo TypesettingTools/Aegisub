@@ -37,10 +37,10 @@
 #include "audio_rendering_style.h"
 #include "block_cache.h"
 
-class AudioProvider;
-class AudioRendererBitmapProvider;
 class AudioRenderer;
+class AudioRendererBitmapProvider;
 class wxDC;
+namespace agi { class AudioProvider; }
 
 /// @class AudioRendererBitmapCacheBitmapFactory
 /// @brief Produces wxBitmap objects for DataBlockCache storage for the audio renderer
@@ -102,7 +102,7 @@ class AudioRenderer {
 	AudioRendererBitmapProvider *renderer = nullptr;
 
 	/// Audio provider to use as source
-	AudioProvider *provider = nullptr;
+	agi::AudioProvider *provider = nullptr;
 
 	/// @brief Make sure bitmap index i is in cache
 	/// @param i     Index of bitmap to get into cache
@@ -191,7 +191,7 @@ public:
 	/// Changing audio provider invalidates all cached bitmaps.
 	///
 	/// If a renderer is set, this will also set the audio provider for the renderer.
-	void SetAudioProvider(AudioProvider *provider);
+	void SetAudioProvider(agi::AudioProvider *provider);
 
 	/// @brief Render audio to a device context
 	/// @param dc       The device context to draw to
@@ -223,7 +223,7 @@ public:
 class AudioRendererBitmapProvider {
 protected:
 	/// Audio provider to use for rendering
-	AudioProvider *provider;
+	agi::AudioProvider *provider;
 	/// Horizontal zoom in milliseconds per pixel
 	double pixel_ms;
 	/// Vertical zoom/amplitude scale factor
@@ -271,7 +271,7 @@ public:
 
 	/// @brief Change audio provider
 	/// @param provider Audio provider to change to
-	void SetProvider(AudioProvider *provider);
+	void SetProvider(agi::AudioProvider *provider);
 
 	/// @brief Change horizontal zoom
 	/// @param pixel_ms Milliseconds per pixel to zoom to

@@ -40,23 +40,18 @@
 
 #include <boost/range/iterator_range.hpp>
 
-AudioPlayer::AudioPlayer(AudioProvider *provider)
-: provider(provider)
-{
-}
-
-std::unique_ptr<AudioPlayer> CreateAlsaPlayer(AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreateDirectSound2Player(AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreateOpenALPlayer(AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreateOSSPlayer(AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateAlsaPlayer(agi::AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(agi::AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateDirectSound2Player(agi::AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateOpenALPlayer(agi::AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(agi::AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(agi::AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateOSSPlayer(agi::AudioProvider *providers, wxWindow *window);
 
 namespace {
 	struct factory {
 		const char *name;
-		std::unique_ptr<AudioPlayer> (*create)(AudioProvider *, wxWindow *window);
+		std::unique_ptr<AudioPlayer> (*create)(agi::AudioProvider *, wxWindow *window);
 		bool hidden;
 	};
 
@@ -87,9 +82,9 @@ std::vector<std::string> AudioPlayerFactory::GetClasses() {
 	return ::GetClasses(boost::make_iterator_range(std::begin(factories), std::end(factories)));
 }
 
-std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *provider, wxWindow *window) {
+std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(agi::AudioProvider *provider, wxWindow *window) {
 	if (std::begin(factories) == std::end(factories))
-		throw agi::NoAudioPlayersError("No audio players are available.");
+		throw AudioPlayerOpenError("No audio players are available.");
 
 	auto preferred = OPT_GET("Audio/Player")->GetString();
 	auto sorted = GetSorted(boost::make_iterator_range(std::begin(factories), std::end(factories)), preferred);
@@ -99,9 +94,9 @@ std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(AudioProvider *p
 		try {
 			return factory->create(provider, window);
 		}
-		catch (agi::AudioPlayerOpenError const& err) {
+		catch (AudioPlayerOpenError const& err) {
 			error += std::string(factory->name) + " factory: " + err.GetMessage() + "\n";
 		}
 	}
-	throw agi::AudioPlayerOpenError(error);
+	throw AudioPlayerOpenError(error);
 }

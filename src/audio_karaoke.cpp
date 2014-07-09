@@ -120,7 +120,7 @@ void AudioKaraoke::OnFileChanged(int type, std::set<const AssDialogue *> const& 
 	}
 }
 
-void AudioKaraoke::OnAudioOpened(AudioProvider *provider) {
+void AudioKaraoke::OnAudioOpened(agi::AudioProvider *provider) {
 	if (provider)
 		SetEnabled(enabled);
 	else

@@ -1,4 +1,4 @@
-// Copyright (c) 2012, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -11,20 +11,17 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
-/// @file audio_provider_lock.cpp
-/// @brief An audio provider adapter for un-threadsafe audio providers
-/// @ingroup audio_input
-
-#include "include/aegisub/audio_provider.h"
+#include "libaegisub/audio/provider.h"
 
 #include <libaegisub/make_unique.h>
 
-#include <memory>
 #include <mutex>
 
 namespace {
-class LockAudioProvider final : public AudioProviderWrapper {
+class LockAudioProvider final : public agi::AudioProviderWrapper {
 	mutable std::mutex mutex;
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
@@ -40,6 +37,8 @@ public:
 };
 }
 
+namespace agi {
 std::unique_ptr<AudioProvider> CreateLockAudioProvider(std::unique_ptr<AudioProvider> src) {
 	return agi::make_unique<LockAudioProvider>(std::move(src));
+}
 }

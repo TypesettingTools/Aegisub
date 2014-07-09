@@ -26,8 +26,8 @@
 
 class AssDialogue;
 class AssKaraoke;
-class AudioProvider;
 class wxButton;
+namespace agi { class AudioProvider; }
 namespace agi { struct Context; }
 
 /// @class AudioKaraoke
@@ -141,7 +141,7 @@ class AudioKaraoke final : public wxWindow {
 	void OnMouse(wxMouseEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);
-	void OnAudioOpened(AudioProvider *provider);
+	void OnAudioOpened(agi::AudioProvider *provider);
 	void OnScrollTimer(wxTimerEvent &event);
 
 public:

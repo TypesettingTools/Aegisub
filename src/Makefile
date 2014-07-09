@@ -36,13 +36,7 @@ src_OBJ := \
 	$(d)audio_karaoke.o \
 	$(d)audio_marker.o \
 	$(d)audio_player.o \
-	$(d)audio_provider.o \
-	$(d)audio_provider_convert.o \
-	$(d)audio_provider_dummy.o \
-	$(d)audio_provider_hd.o \
-	$(d)audio_provider_lock.o \
-	$(d)audio_provider_pcm.o \
-	$(d)audio_provider_ram.o \
+	$(d)audio_provider_factory.o \
 	$(d)audio_renderer.o \
 	$(d)audio_renderer_spectrum.o \
 	$(d)audio_renderer_waveform.o \
@@ -190,7 +184,7 @@ endif
 #####################
 $(d)MatroskaParser.o_FLAGS              := -Wno-sometimes-uninitialized
 $(d)audio_player.o_FLAGS                := $(CFLAGS_ALSA) $(CFLAGS_PORTAUDIO) $(CFLAGS_LIBPULSE) $(CFLAGS_OPENAL)
-$(d)audio_provider.o_FLAGS              := $(CFLAGS_FFMS2)
+$(d)audio_provider_factory.o_FLAGS      := $(CFLAGS_FFMS2)
 $(d)auto4_base.o_FLAGS                  := $(CFLAGS_FREETYPE)
 $(d)charset_detect.o_FLAGS              := -D_X86_
 $(d)font_file_lister_fontconfig.o_FLAGS := $(CFLAGS_FONTCONFIG)

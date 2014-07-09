@@ -14,10 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "include/aegisub/audio_provider.h"
-
-#include "audio_controller.h"
-#include "options.h"
+#include "libaegisub/audio/provider.h"
 
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/format.h>
@@ -27,11 +24,14 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/interprocess/detail/os_thread_functions.hpp>
+#include <ctime>
 #include <thread>
 
 namespace {
+using namespace agi;
+
 class HDAudioProvider final : public AudioProviderWrapper {
-	std::unique_ptr<agi::temp_file_mapping> file;
+	mutable temp_file_mapping file;
 	std::atomic<bool> cancelled = {false};
 	std::thread decoder;
 
@@ -45,35 +45,31 @@ class HDAudioProvider final : public AudioProviderWrapper {
 		if (count > 0) {
 			start *= bytes_per_sample;
 			count *= bytes_per_sample;
-			memcpy(buf, file->read(start, count), count);
+			memcpy(buf, file.read(start, count), count);
 		}
 	}
 
+	fs::path CacheFilename(fs::path const& dir) {
+		// Check free space
+		if ((uint64_t)num_samples * bytes_per_sample > fs::FreeSpace(dir))
+			throw AudioProviderError("Not enough free disk space in " + dir.string() + " to cache the audio");
+
+		return format("audio-%lld-%lld", time(nullptr),
+		              boost::interprocess::ipcdetail::get_current_process_id());
+	}
+
 public:
-	HDAudioProvider(std::unique_ptr<AudioProvider> src)
+	HDAudioProvider(std::unique_ptr<AudioProvider> src, agi::fs::path const& dir)
 	: AudioProviderWrapper(std::move(src))
+	, file(dir / CacheFilename(dir), num_samples * bytes_per_sample)
 	{
 		decoded_samples = 0;
-
-		auto path = OPT_GET("Audio/Cache/HD/Location")->GetString();
-		if (path == "default")
-			path = "?temp";
-		auto cache_dir = config::path->MakeAbsolute(config::path->Decode(path), "?temp");
-
-		// Check free space
-		if ((uint64_t)num_samples * bytes_per_sample > agi::fs::FreeSpace(cache_dir))
-			throw agi::AudioCacheOpenError("Not enough free disk space in " + cache_dir.string() + " to cache the audio");
-
-		auto filename = agi::format("audio-%lld-%lld", time(nullptr),
-			boost::interprocess::ipcdetail::get_current_process_id());
-
-		file = agi::make_unique<agi::temp_file_mapping>(cache_dir / filename, num_samples * bytes_per_sample);
 		decoder = std::thread([&] {
 			int64_t block = 65536;
 			for (int64_t i = 0; i < num_samples; i += block) {
 				if (cancelled) break;
 				block = std::min(block, num_samples - i);
-				source->GetAudio(file->write(i * bytes_per_sample, block * bytes_per_sample), i, block);
+				source->GetAudio(file.write(i * bytes_per_sample, block * bytes_per_sample), i, block);
 				decoded_samples += block;
 			}
 		});
@@ -86,6 +82,8 @@ public:
 };
 }
 
-std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> src) {
-	return agi::make_unique<HDAudioProvider>(std::move(src));
+namespace agi {
+std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> src, agi::fs::path const& dir) {
+	return make_unique<HDAudioProvider>(std::move(src), dir);
+}
 }

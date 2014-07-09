@@ -33,7 +33,7 @@
 ///
 
 #ifdef WITH_AVISYNTH
-#include "include/aegisub/audio_provider.h"
+#include <libaegisub/audio/provider.h>
 
 #include "avisynth.h"
 #include "avisynth_wrap.h"
@@ -50,7 +50,7 @@
 #include <mutex>
 
 namespace {
-class AvisynthAudioProvider final : public AudioProvider {
+class AvisynthAudioProvider final : public agi::AudioProvider {
 	AviSynthWrapper avs_wrapper;
 	PClip clip;
 

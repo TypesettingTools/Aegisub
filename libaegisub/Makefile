@@ -4,6 +4,7 @@ aegisub_OBJ := \
 	$(d)common/parser.o \
 	$(d)ass/dialogue_parser.o \
 	$(d)ass/time.o \
+	$(subst .cpp,.o,$(wildcard $(d)audio/*.cpp)) \
 	$(subst .cpp,.o,$(wildcard $(d)common/cajun/*.cpp)) \
 	$(subst .cpp,.o,$(wildcard $(d)lua/modules/*.cpp)) \
 	$(subst .c,.o,$(wildcard $(d)lua/modules/*.c)) \

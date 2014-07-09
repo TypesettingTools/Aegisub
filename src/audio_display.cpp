@@ -37,7 +37,6 @@
 #include "audio_timing.h"
 #include "compat.h"
 #include "format.h"
-#include "include/aegisub/audio_provider.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "options.h"
@@ -46,6 +45,7 @@
 #include "video_controller.h"
 
 #include <libaegisub/ass/time.h>
+#include <libaegisub/audio/provider.h>
 #include <libaegisub/make_unique.h>
 
 #include <algorithm>
@@ -1171,7 +1171,7 @@ int AudioDisplay::GetDuration() const
 	return (provider->GetNumSamples() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
 }
 
-void AudioDisplay::OnAudioOpen(AudioProvider *provider)
+void AudioDisplay::OnAudioOpen(agi::AudioProvider *provider)
 {
 	this->provider = provider;
 

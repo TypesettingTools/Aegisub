@@ -34,20 +34,22 @@
 
 #pragma once
 
+#include <libaegisub/exception.h>
+
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 
-class AudioProvider;
+namespace agi { class AudioProvider; }
 class wxWindow;
 
 class AudioPlayer {
 protected:
-	AudioProvider *provider;
+	agi::AudioProvider *provider;
 
 public:
-	AudioPlayer(AudioProvider *provider);
+	AudioPlayer(agi::AudioProvider *provider) : provider(provider) { }
 	virtual ~AudioPlayer() = default;
 
 	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
@@ -63,5 +65,7 @@ public:
 
 struct AudioPlayerFactory {
 	static std::vector<std::string> GetClasses();
-	static std::unique_ptr<AudioPlayer> GetAudioPlayer(AudioProvider *provider, wxWindow *window);
+	static std::unique_ptr<AudioPlayer> GetAudioPlayer(agi::AudioProvider *provider, wxWindow *window);
 };
+
+DEFINE_EXCEPTION(AudioPlayerOpenError, agi::Exception);

@@ -34,8 +34,8 @@
 class AegisubApp;
 class AsyncVideoProvider;
 class AudioBox;
-class AudioProvider;
 class VideoBox;
+namespace agi { class AudioProvider; }
 namespace agi { struct Context; class OptionValue; }
 
 class FrameMain : public wxFrame {
@@ -63,7 +63,7 @@ class FrameMain : public wxFrame {
 	void OnStatusClear(wxTimerEvent &event);
 	void OnCloseWindow (wxCloseEvent &event);
 
-	void OnAudioOpen(AudioProvider *provider);
+	void OnAudioOpen(agi::AudioProvider *provider);
 	void OnVideoOpen(AsyncVideoProvider *provider);
 	void OnVideoDetach(agi::OptionValue const& opt);
 	void OnSubtitlesOpen();

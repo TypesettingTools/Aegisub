@@ -30,8 +30,9 @@
 #include "audio_renderer_waveform.h"
 
 #include "audio_colorscheme.h"
-#include "include/aegisub/audio_provider.h"
 #include "options.h"
+
+#include <libaegisub/audio/provider.h>
 
 #include <algorithm>
 #include <wx/dcmemory.h>
