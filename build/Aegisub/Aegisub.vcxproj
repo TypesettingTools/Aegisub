@@ -124,6 +124,7 @@
     <ClInclude Include="$(SrcDir)audio_karaoke.h" />
     <ClInclude Include="$(SrcDir)audio_marker.h" />
     <ClInclude Include="$(SrcDir)audio_player_portaudio.h" />
+    <ClInclude Include="$(SrcDir)audio_provider_factory.h" />
     <ClInclude Include="$(SrcDir)audio_renderer.h" />
     <ClInclude Include="$(SrcDir)audio_renderer_spectrum.h" />
     <ClInclude Include="$(SrcDir)audio_renderer_waveform.h" />
@@ -163,7 +164,6 @@
     <ClInclude Include="$(SrcDir)help_button.h" />
     <ClInclude Include="$(SrcDir)hotkey_data_view_model.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\audio_player.h" />
-    <ClInclude Include="$(SrcDir)include\aegisub\audio_provider.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\context.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\hotkey.h" />
     <ClInclude Include="$(SrcDir)include\aegisub\menu.h" />
@@ -271,15 +271,9 @@
     <ClCompile Include="$(SrcDir)audio_player_oss.cpp" />
     <ClCompile Include="$(SrcDir)audio_player_portaudio.cpp" />
     <ClCompile Include="$(SrcDir)audio_player_pulse.cpp" />
-    <ClCompile Include="$(SrcDir)audio_provider.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_avs.cpp" />
-    <ClCompile Include="$(SrcDir)audio_provider_convert.cpp" />
-    <ClCompile Include="$(SrcDir)audio_provider_dummy.cpp" />
+    <ClCompile Include="$(SrcDir)audio_provider_factory.cpp" />
     <ClCompile Include="$(SrcDir)audio_provider_ffmpegsource.cpp" />
-    <ClCompile Include="$(SrcDir)audio_provider_hd.cpp" />
-    <ClCompile Include="$(SrcDir)audio_provider_lock.cpp" />
-    <ClCompile Include="$(SrcDir)audio_provider_pcm.cpp" />
-    <ClCompile Include="$(SrcDir)audio_provider_ram.cpp" />
     <ClCompile Include="$(SrcDir)audio_renderer.cpp" />
     <ClCompile Include="$(SrcDir)audio_renderer_spectrum.cpp" />
     <ClCompile Include="$(SrcDir)audio_renderer_waveform.cpp" />

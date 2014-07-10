@@ -91,6 +91,6 @@ void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 
 namespace agi {
 std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> src) {
-	return make_unique<RAMAudioProvider>(std::move(src));
+	return agi::make_unique<RAMAudioProvider>(std::move(src));
 }
 }

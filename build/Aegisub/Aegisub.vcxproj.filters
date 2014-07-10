@@ -417,7 +417,7 @@
     <ClInclude Include="$(SrcDir)include\aegisub\audio_player.h">
       <Filter>Audio\Players</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)include\aegisub\audio_provider.h">
+    <ClInclude Include="$(SrcDir)audio_provider_factory.h">
       <Filter>Audio\Providers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)include\aegisub\context.h">
@@ -575,28 +575,13 @@
     <ClCompile Include="$(SrcDir)ass_style_storage.cpp">
       <Filter>ASS</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)audio_provider_ram.cpp">
-      <Filter>Audio\Providers</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)audio_provider.cpp">
+    <ClCompile Include="$(SrcDir)audio_provider_factory.cpp">
       <Filter>Audio\Providers</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)audio_provider_avs.cpp">
       <Filter>Audio\Providers</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)audio_provider_convert.cpp">
-      <Filter>Audio\Providers</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)audio_provider_dummy.cpp">
-      <Filter>Audio\Providers</Filter>
-    </ClCompile>
     <ClCompile Include="$(SrcDir)audio_provider_ffmpegsource.cpp">
-      <Filter>Audio\Providers</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)audio_provider_hd.cpp">
-      <Filter>Audio\Providers</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)audio_provider_pcm.cpp">
       <Filter>Audio\Providers</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)audio_box.cpp">

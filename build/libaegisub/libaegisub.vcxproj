@@ -64,6 +64,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\ass\smpte.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\ass\time.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\ass\uuencode.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\audio\provider.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\background_runner.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\elements.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\cajun\reader.h" />
@@ -121,6 +122,13 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass\dialogue_parser.cpp" />
     <ClCompile Include="$(SrcDir)ass\time.cpp" />
+    <ClCompile Include="$(SrcDir)audio\provider.cpp" />
+    <ClCompile Include="$(SrcDir)audio\provider_convert.cpp" />
+    <ClCompile Include="$(SrcDir)audio\provider_dummy.cpp" />
+    <ClCompile Include="$(SrcDir)audio\provider_hd.cpp" />
+    <ClCompile Include="$(SrcDir)audio\provider_lock.cpp" />
+    <ClCompile Include="$(SrcDir)audio\provider_pcm.cpp" />
+    <ClCompile Include="$(SrcDir)audio\provider_ram.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\elements.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\reader.cpp" />
     <ClCompile Include="$(SrcDir)common\cajun\writer.cpp" />

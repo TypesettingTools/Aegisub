@@ -12,9 +12,6 @@
     <Filter Include="Source Files\Common">
       <UniqueIdentifier>{4084442f-51e9-4c31-8d5a-c825e076c012}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Windows">
-      <UniqueIdentifier>{5af331b5-ea1f-493f-abf9-f5912e2350df}</UniqueIdentifier>
-    </Filter>
     <Filter Include="cajun">
       <UniqueIdentifier>{1d2e187a-1681-4c30-8912-a4b5a5d0ab9d}</UniqueIdentifier>
     </Filter>
@@ -26,6 +23,12 @@
     </Filter>
     <Filter Include="Lua\Modules">
       <UniqueIdentifier>{2cf3ad94-e8a9-4a89-b47e-29523d90fd08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{fce4f3aa-dc34-44fe-9a6a-99b0914e3436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Windows">
+      <UniqueIdentifier>{5af331b5-ea1f-493f-abf9-f5912e2350df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +206,9 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\ycbcr_conv.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\audio\provider.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)windows\lagi_pre.cpp">
@@ -339,6 +345,27 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\ycbcr_conv.cpp">
       <Filter>Source Files\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)audio\provider.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)audio\provider_convert.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)audio\provider_dummy.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)audio\provider_hd.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)audio\provider_lock.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)audio\provider_pcm.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)audio\provider_ram.cpp">
+      <Filter>Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -84,6 +84,6 @@ public:
 
 namespace agi {
 std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> src, agi::fs::path const& dir) {
-	return make_unique<HDAudioProvider>(std::move(src), dir);
+	return agi::make_unique<HDAudioProvider>(std::move(src), dir);
 }
 }
