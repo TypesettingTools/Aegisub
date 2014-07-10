@@ -46,7 +46,12 @@ int main(int argc, char **argv) {
 
 	// Init lua state
 	lua_State *L = lua_open();
-	agi::lua::preload_modules(L);
+	if (!L) {
+		fprintf(stderr, "Failed to create Lua state\n");
+		return 1;
+	}
+
+	preload_modules(L);
 	Install(L, {"include"});
 
 	// Build arg table for scripts

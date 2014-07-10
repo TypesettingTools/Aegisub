@@ -401,6 +401,7 @@ namespace {
 
 		// create lua environment
 		L = lua_open();
+		if (!L) return;
 
 		bool loaded = false;
 		BOOST_SCOPE_EXIT_ALL(&) { if (!loaded) Destroy(); };
