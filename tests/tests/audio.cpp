@@ -236,6 +236,35 @@ TEST(lagi_audio, sample_doubling) {
 	}
 }
 
+TEST(lagi_audio, stereo_downmix) {
+	struct AudioProvider : agi::AudioProvider {
+		AudioProvider() {
+			channels = 2;
+			num_samples = 90 * 480000;
+			decoded_samples = num_samples;
+			sample_rate = 480000;
+			bytes_per_sample = 2;
+			float_samples = false;
+		}
+
+		void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+			auto out = static_cast<int16_t *>(buf);
+			for (int64_t end = start + count; start < end; ++start) {
+				*out++ = (int16_t)(start * 2);
+				*out++ = 0;
+			}
+		}
+	};
+
+	auto provider = agi::CreateConvertAudioProvider(agi::make_unique<AudioProvider>());
+	EXPECT_EQ(1, provider->GetChannels());
+
+	int16_t samples[100];
+	provider->GetAudio(samples, 0, 100);
+	for (int i = 0; i < 100; ++i)
+		EXPECT_EQ(i, samples[i]);
+}
+
 TEST(lagi_audio, pcm_simple) {
 	auto path = agi::Path().Decode("?temp/pcm_simple");
 	{
