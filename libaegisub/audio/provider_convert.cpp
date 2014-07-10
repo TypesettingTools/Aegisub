@@ -140,25 +140,27 @@ public:
 	}
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
-		bool not_end = start + count < num_samples;
-		int64_t src_count = count / 2;
-		source->GetAudio(buf, start / 2, src_count + not_end);
+		int16_t *src, *dst = static_cast<int16_t *>(buf);
 
-		auto buf16 = reinterpret_cast<int16_t*>(buf);
-
-		if (!not_end) {
-			// We weren't able to request a sample past the end so just
-			// duplicate the last sample
-			buf16[src_count] = buf16[src_count + 1];
+		// We need to always get at least two samples to be able to interpolate
+		int16_t srcbuf[2];
+		if (count == 1) {
+			source->GetAudio(srcbuf, start / 2, 2);
+			src = srcbuf;
+		}
+		else {
+			source->GetAudio(buf, start / 2, (start + count) / 2 - start / 2 + 1);
+			src = dst;
 		}
 
-		if (count % 2)
-			buf16[count - 1] = buf16[src_count];
-
 		// walking backwards so that the conversion can be done in place
-		for (int64_t i = src_count - 1; i >= 0; --i) {
-			buf16[i * 2] = buf16[i];
-			buf16[i * 2 + 1] = (int16_t)(((int32_t)buf16[i] + buf16[i + 1]) / 2);
+		for (; count > 0; --count) {
+			auto src_index = (start + count - 1) / 2 - start / 2;
+			auto i = count - 1;
+			if ((start + i) & 1)
+				dst[i] = (int16_t)(((int32_t)src[src_index] + src[src_index + 1]) / 2);
+			else
+				dst[i] = src[src_index];
 		}
 	}
 };

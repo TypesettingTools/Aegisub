@@ -200,6 +200,42 @@ TEST(lagi_audio, convert_32bit) {
 	EXPECT_EQ(SHRT_MAX, sample);
 }
 
+TEST(lagi_audio, sample_doubling) {
+	struct AudioProvider : agi::AudioProvider {
+		AudioProvider() {
+			channels = 1;
+			num_samples = 90 * 20000;
+			decoded_samples = num_samples;
+			sample_rate = 20000;
+			bytes_per_sample = 2;
+			float_samples = false;
+		}
+
+		void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+			auto out = static_cast<int16_t *>(buf);
+			for (int64_t end = start + count; start < end; ++start)
+				*out++ = (int16_t)(start * 2);
+		}
+	};
+
+	auto provider = agi::CreateConvertAudioProvider(agi::make_unique<AudioProvider>());
+	EXPECT_EQ(40000, provider->GetSampleRate());
+
+	int16_t samples[6];
+	for (int k = 0; k < 6; ++k) {
+		SCOPED_TRACE(k);
+		for (int i = k; i < 6; ++i) {
+			SCOPED_TRACE(i);
+			memset(samples, 0, sizeof(samples));
+			provider->GetAudio(samples, k, i - k);
+			for (int j = 0; j < i - k; ++j)
+				EXPECT_EQ(j + k, samples[j]);
+			for (int j = i - k; j < 6 - k; ++j)
+				EXPECT_EQ(0, samples[j]);
+		}
+	}
+}
+
 TEST(lagi_audio, pcm_simple) {
 	auto path = agi::Path().Decode("?temp/pcm_simple");
 	{
