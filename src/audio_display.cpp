@@ -882,7 +882,7 @@ void AudioDisplay::PaintLabels(wxDC &dc, TimeRange updtime)
 	wxDCFontChanger fc(dc);
 	wxFont font = dc.GetFont();
 	font.SetWeight(wxFONTWEIGHT_BOLD);
-	dc.SetFont(font);
+	fc.Set(font);
 	dc.SetTextForeground(*wxWHITE);
 	for (auto const& label : labels)
 	{
@@ -917,7 +917,7 @@ void AudioDisplay::PaintTrackCursor(wxDC &dc) {
 	if (!face_name.empty())
 		font.SetFaceName(face_name);
 	font.SetWeight(wxFONTWEIGHT_BOLD);
-	dc.SetFont(font);
+	fc.Set(font);
 
 	wxSize label_size(dc.GetTextExtent(track_cursor_label));
 	wxPoint label_pos(track_cursor_pos - scroll_left - label_size.x/2, audio_top + 2);
