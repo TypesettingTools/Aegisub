@@ -41,7 +41,7 @@ public:
 		std::vector<uint8_t> src_buf(count * src_bytes_per_sample * channels);
 		source->GetAudio(src_buf.data(), start, count);
 
-		int16_t *dest = reinterpret_cast<int16_t*>(buf);
+		auto dest = static_cast<int16_t*>(buf);
 
 		for (int64_t i = 0; i < count * channels; ++i) {
 			int64_t sample = 0;
@@ -49,18 +49,18 @@ public:
 			// 8 bits per sample is assumed to be unsigned with a bias of 127,
 			// while everything else is assumed to be signed with zero bias
 			if (src_bytes_per_sample == 1)
-				sample = src_buf[i] - 127;
+				sample = src_buf[i] - 128;
 			else {
-				for (int j = 0; j < src_bytes_per_sample; ++j) {
+				for (int j = src_bytes_per_sample; j > 0; --j) {
 					sample <<= 8;
-					sample += src_buf[i * src_bytes_per_sample + j];
+					sample += src_buf[i * src_bytes_per_sample + j - 1];
 				}
 			}
 
 			if (static_cast<size_t>(src_bytes_per_sample) > sizeof(Target))
-				sample >>= (src_bytes_per_sample - sizeof(Target)) * 8;
+				sample /= 1 << (src_bytes_per_sample - sizeof(Target)) * 8;
 			else if (static_cast<size_t>(src_bytes_per_sample) < sizeof(Target))
-				sample <<= (sizeof(Target) - src_bytes_per_sample ) * 8;
+				sample *=  1 << (sizeof(Target) - src_bytes_per_sample ) * 8;
 
 			dest[i] = static_cast<Target>(sample);
 		}
