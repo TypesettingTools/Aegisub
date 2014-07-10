@@ -265,6 +265,46 @@ TEST(lagi_audio, stereo_downmix) {
 		EXPECT_EQ(i, samples[i]);
 }
 
+template<typename Float>
+struct FloatAudioProvider : agi::AudioProvider {
+	FloatAudioProvider() {
+		channels = 1;
+		num_samples = 90 * 480000;
+		decoded_samples = num_samples;
+		sample_rate = 480000;
+		bytes_per_sample = sizeof(Float);
+		float_samples = true;
+	}
+
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+		auto out = static_cast<Float *>(buf);
+		for (int64_t end = start + count; start < end; ++start) {
+			auto shifted = start + SHRT_MIN;
+			*out++ = (Float)(1.0 * shifted / (shifted < 0 ? -SHRT_MIN : SHRT_MAX));
+		}
+	}
+};
+
+TEST(lagi_audio, float_conversion) {
+	auto provider = agi::CreateConvertAudioProvider(agi::make_unique<FloatAudioProvider<float>>());
+	EXPECT_FALSE(provider->AreSamplesFloat());
+
+	int16_t samples[1 << 16];
+	provider->GetAudio(samples, 0, 1 << 16);
+	for (int i = 0; i < (1 << 16); ++i)
+		ASSERT_EQ(i + SHRT_MIN, samples[i]);
+}
+
+TEST(lagi_audio, double_conversion) {
+	auto provider = agi::CreateConvertAudioProvider(agi::make_unique<FloatAudioProvider<double>>());
+	EXPECT_FALSE(provider->AreSamplesFloat());
+
+	int16_t samples[1 << 16];
+	provider->GetAudio(samples, 0, 1 << 16);
+	for (int i = 0; i < (1 << 16); ++i)
+		ASSERT_EQ(i + SHRT_MIN, samples[i]);
+}
+
 TEST(lagi_audio, pcm_simple) {
 	auto path = agi::Path().Decode("?temp/pcm_simple");
 	{

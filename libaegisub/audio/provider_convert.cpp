@@ -93,12 +93,9 @@ public:
 			else
 				expanded = static_cast<Target>(src_buf[i] * std::numeric_limits<Target>::max());
 
-			if (expanded < std::numeric_limits<Target>::min())
-				dest[i] = std::numeric_limits<Target>::min();
-			else if (expanded > std::numeric_limits<Target>::max())
-				dest[i] = std::numeric_limits<Target>::max();
-			else
-				dest[i] = static_cast<Target>(expanded);
+			dest[i] = expanded < std::numeric_limits<Target>::min() ? std::numeric_limits<Target>::min() :
+			          expanded > std::numeric_limits<Target>::max() ? std::numeric_limits<Target>::max() :
+			                                                          static_cast<Target>(expanded);
 		}
 	}
 };
