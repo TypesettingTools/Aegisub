@@ -43,10 +43,9 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 
 	// Read the list of words and file offsets for those words
 	for (auto const& line : line_iterator<std::string>(idx, encoding_name)) {
-		std::vector<std::string> chunks;
-		boost::split(chunks, line, [](char c) { return c == '|'; });
-		if (chunks.size() == 2)
-			offsets[chunks[0]] = static_cast<size_t>(atoi(chunks[1].c_str()));
+		auto pos = line.find('|');
+		if (pos != line.npos && line.find('|', pos + 1) == line.npos)
+			offsets[line.substr(0, pos)] = static_cast<size_t>(atoi(line.c_str() + pos + 1));
 	}
 }
 
