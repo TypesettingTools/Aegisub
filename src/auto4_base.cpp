@@ -70,12 +70,12 @@ namespace Automation4 {
 
 #ifdef WIN32
 		// This is almost copypasta from TextSub
-		HDC thedc = CreateCompatibleDC(0);
-		if (!thedc) return false;
-		SetMapMode(thedc, MM_TEXT);
+		auto dc = CreateCompatibleDC(nullptr);
+		if (!dc) return false;
 
-		LOGFONTW lf;
-		ZeroMemory(&lf, sizeof(lf));
+		SetMapMode(dc, MM_TEXT);
+
+		LOGFONTW lf = {0};
 		lf.lfHeight = (LONG)fontsize;
 		lf.lfWeight = style->bold ? FW_BOLD : FW_NORMAL;
 		lf.lfItalic = style->italic;
@@ -88,33 +88,36 @@ namespace Automation4 {
 		lf.lfPitchAndFamily = DEFAULT_PITCH|FF_DONTCARE;
 		wcsncpy(lf.lfFaceName, agi::charset::ConvertW(style->font).c_str(), 31);
 
-		HFONT thefont = CreateFontIndirect(&lf);
-		if (!thefont) return false;
-		SelectObject(thedc, thefont);
+		auto font = CreateFontIndirect(&lf);
+		if (!font) return false;
+
+		auto old_font = SelectObject(dc, font);
 
 		std::wstring wtext(agi::charset::ConvertW(text));
-		SIZE sz;
 		if (spacing != 0 ) {
 			width = 0;
 			for (auto c : wtext) {
-				GetTextExtentPoint32(thedc, &c, 1, &sz);
+				SIZE sz;
+				GetTextExtentPoint32(dc, &c, 1, &sz);
 				width += sz.cx + spacing;
 				height = sz.cy;
 			}
 		}
 		else {
-			GetTextExtentPoint32(thedc, &wtext[0], (int)wtext.size(), &sz);
+			SIZE sz;
+			GetTextExtentPoint32(dc, &wtext[0], (int)wtext.size(), &sz);
 			width = sz.cx;
 			height = sz.cy;
 		}
 
 		TEXTMETRIC tm;
-		GetTextMetrics(thedc, &tm);
+		GetTextMetrics(dc, &tm);
 		descent = tm.tmDescent;
-		extlead= tm.tmExternalLeading;
+		extlead = tm.tmExternalLeading;
 
-		DeleteObject(thedc);
-		DeleteObject(thefont);
+		SelectObject(dc, old_font);
+		DeleteObject(font);
+		DeleteObject(dc);
 
 #else // not WIN32
 		wxMemoryDC thedc;
