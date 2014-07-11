@@ -39,6 +39,9 @@ class Thesaurus {
 	agi::signal::Connection dict_path_listener;
 	/// Thesaurus path change handler
 	void OnPathChanged();
+
+	bool *cancel_load = nullptr;
+
 public:
 	/// A pair of a word and synonyms for that word
 	typedef std::pair<std::string, std::vector<std::string>> Entry;
