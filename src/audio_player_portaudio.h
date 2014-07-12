@@ -95,7 +95,7 @@ class PortAudioPlayer final : public AudioPlayer {
 
 public:
 	/// @brief Constructor
-	PortAudioPlayer(AudioProvider *provider);
+	PortAudioPlayer(agi::AudioProvider *provider);
 
 	/// @brief Destructor
 	~PortAudioPlayer();
