@@ -31,7 +31,7 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 
 	auto buffer = static_cast<int16_t *>(buf);
 	for (size_t i = 0; i < (size_t)count; ++i)
-		buffer[i] = util::mid<int>(-0x8000, buffer[i] * volume + 0.5, 0x7FFF);
+		buffer[i] = util::mid(-0x8000, static_cast<int>(buffer[i] * volume + 0.5), 0x7FFF);
 }
 
 void AudioProvider::ZeroFill(void *buf, int64_t count) const {

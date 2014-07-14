@@ -39,7 +39,10 @@ public:
 		bytes_per_sample = sizeof(Target);
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+	void FillBuffer(void *buf, int64_t start, int64_t count64) const override {
+		auto count = static_cast<size_t>(count64);
+		assert(count == count64);
+
 		src_buf.resize(count * src_bytes_per_sample * channels);
 		source->GetAudio(src_buf.data(), start, count);
 
@@ -60,9 +63,9 @@ public:
 			}
 
 			if (static_cast<size_t>(src_bytes_per_sample) > sizeof(Target))
-				sample /= 1 << (src_bytes_per_sample - sizeof(Target)) * 8;
+				sample /= 1LL << (src_bytes_per_sample - sizeof(Target)) * 8;
 			else if (static_cast<size_t>(src_bytes_per_sample) < sizeof(Target))
-				sample *=  1 << (sizeof(Target) - src_bytes_per_sample ) * 8;
+				sample *=  1LL << (sizeof(Target) - src_bytes_per_sample ) * 8;
 
 			dest[i] = static_cast<Target>(sample);
 		}
@@ -80,7 +83,10 @@ public:
 		float_samples = false;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+	void FillBuffer(void *buf, int64_t start, int64_t count64) const override {
+		auto count = static_cast<size_t>(count64);
+		assert(count == count64);
+
 		src_buf.resize(count * channels);
 		source->GetAudio(&src_buf[0], start, count);
 
@@ -111,7 +117,10 @@ public:
 		channels = 1;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+	void FillBuffer(void *buf, int64_t start, int64_t count64) const override {
+		auto count = static_cast<size_t>(count64);
+		assert(count == count64);
+
 		src_buf.resize(count * src_channels);
 		source->GetAudio(&src_buf[0], start, count);
 

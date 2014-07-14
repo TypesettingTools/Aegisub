@@ -52,11 +52,11 @@ class DummyAudioProvider final : public AudioProvider {
 		if (noise) {
 			std::default_random_engine e;
 			std::uniform_int_distribution<int16_t> uniform_dist(-5000, 5000);
-			for (size_t i = 0; i < count; ++i)
+			for (int64_t i = 0; i < count; ++i)
 				static_cast<short *>(buf)[i] = uniform_dist(e);
 		}
 		else
-			memset(buf, 0, count * bytes_per_sample);
+			memset(buf, 0, static_cast<size_t>(count) * bytes_per_sample);
 	}
 
 public:
