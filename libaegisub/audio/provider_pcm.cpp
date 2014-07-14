@@ -20,6 +20,7 @@
 #include "libaegisub/fs.h"
 #include "libaegisub/make_unique.h"
 
+#include <array>
 #include <vector>
 
 namespace {
