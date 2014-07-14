@@ -206,10 +206,12 @@ namespace parser {
 
 namespace ass {
 	std::vector<DialogueToken> TokenizeDialogueBody(std::string const& str, bool karaoke_templater) {
-		dialogue_tokens<lex::lexertl::actor_lexer<>> tokenizer(karaoke_templater);
+		static const dialogue_tokens<lex::lexertl::actor_lexer<>> kt(true);
+		static const dialogue_tokens<lex::lexertl::actor_lexer<>> not_kt(false);
+		auto const& tokenizer = karaoke_templater ? kt : not_kt;
 
-		char const* first = str.c_str();
-		char const* last = first + str.size();
+		char const *first = str.c_str();
+		char const *last = first + str.size();
 		std::vector<DialogueToken> data;
 		auto it = tokenizer.begin(first, last), end = tokenizer.end();
 
