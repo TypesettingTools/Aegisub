@@ -47,7 +47,7 @@ AssFixStylesFilter::AssFixStylesFilter()
 {
 }
 
-void AssFixStylesFilter::ProcessSubs(AssFile *subs, wxWindow *) {
+void AssFixStylesFilter::ProcessSubs(AssFile *subs) {
 	auto styles = subs->GetStyles();
 	for (auto& str : styles) boost::to_lower(str);
 	sort(begin(styles), end(styles));

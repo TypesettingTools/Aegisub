@@ -65,7 +65,7 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, doub
 				single_frame = SUBS_FILE_ALREADY_LOADED;
 			}
 			else {
-				AssFixStylesFilter().ProcessSubs(subs.get(), nullptr);
+				AssFixStylesFilter::ProcessSubs(subs.get());
 				single_frame = frame_number;
 				subs_provider->LoadSubtitles(subs.get(), time);
 			}
