@@ -38,9 +38,11 @@ using namespace agi::vfr;
 /// @param timecodes List of timecodes to check
 void validate_timecodes(std::vector<int> const& timecodes) {
 	if (timecodes.size() <= 1)
-		throw TooFewTimecodes("Must have at least two timecodes to do anything useful");
+		throw InvalidFramerate("Must have at least two timecodes to do anything useful");
 	if (!is_sorted(timecodes.begin(), timecodes.end()))
-		throw UnorderedTimecodes("Timecodes are out of order");
+		throw InvalidFramerate("Timecodes are out of order");
+	if (timecodes.front() == timecodes.back())
+		throw InvalidFramerate("Timecodes are all identical");
 }
 
 /// @brief Shift timecodes so that frame 0 starts at time 0
@@ -71,15 +73,15 @@ TimecodeRange v1_parse_line(std::string const& str) {
 	if (ss.fail() || comma1 != ',' || comma2 != ',' || !ss.eof())
 		throw MalformedLine(str);
 	if (range.start < 0 || range.end < 0)
-		throw UnorderedTimecodes("Cannot specify frame rate for negative frames.");
+		throw InvalidFramerate("Cannot specify frame rate for negative frames.");
 	if (range.end < range.start)
-		throw UnorderedTimecodes("End frame must be greater than or equal to start frame");
+		throw InvalidFramerate("End frame must be greater than or equal to start frame");
 	if (range.fps <= 0.)
-		throw BadFPS("FPS must be greater than zero");
+		throw InvalidFramerate("FPS must be greater than zero");
 	if (range.fps > 1000.)
 		// This is our limitation, not mkvmerge's
 		// mkvmerge uses nanoseconds internally
-		throw BadFPS("FPS must be at most 1000");
+		throw InvalidFramerate("FPS must be at most 1000");
 	return range;
 }
 
@@ -91,8 +93,8 @@ TimecodeRange v1_parse_line(std::string const& str) {
 /// @return Assumed fps times one million
 int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<int> &timecodes, int64_t &last) {
 	double fps = atof(line.substr(7).c_str());
-	if (fps <= 0.) throw BadFPS("Assumed FPS must be greater than zero");
-	if (fps > 1000.) throw BadFPS("Assumed FPS must not be greater than 1000");
+	if (fps <= 0.) throw InvalidFramerate("Assumed FPS must be greater than zero");
+	if (fps > 1000.) throw InvalidFramerate("Assumed FPS must not be greater than 1000");
 
 	std::vector<TimecodeRange> ranges;
 	for (auto const& line : file) {
@@ -111,7 +113,7 @@ int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<
 		if (frame > range.start) {
 			// mkvmerge allows overlapping timecode ranges, but does completely
 			// broken things with them
-			throw UnorderedTimecodes("Override ranges must not overlap");
+			throw InvalidFramerate("Override ranges must not overlap");
 		}
 		for (; frame < range.start; ++frame) {
 			timecodes.push_back(int(time + .5));
@@ -133,8 +135,8 @@ Framerate::Framerate(double fps)
 : denominator(default_denominator)
 , numerator(int64_t(fps * denominator))
 {
-	if (fps < 0.) throw BadFPS("FPS must be greater than zero");
-	if (fps > 1000.) throw BadFPS("FPS must not be greater than 1000");
+	if (fps < 0.) throw InvalidFramerate("FPS must be greater than zero");
+	if (fps > 1000.) throw InvalidFramerate("FPS must not be greater than 1000");
 	timecodes.push_back(0);
 }
 
@@ -144,8 +146,8 @@ Framerate::Framerate(int64_t numerator, int64_t denominator, bool drop)
 , drop(drop && numerator % denominator != 0)
 {
 	if (numerator <= 0 || denominator <= 0)
-		throw BadFPS("Numerator and denominator must both be greater than zero");
-	if (numerator / denominator > 1000) throw BadFPS("FPS must not be greater than 1000");
+		throw InvalidFramerate("Numerator and denominator must both be greater than zero");
+	if (numerator / denominator > 1000) throw InvalidFramerate("FPS must not be greater than 1000");
 	timecodes.push_back(0);
 }
 

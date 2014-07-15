@@ -41,15 +41,11 @@ enum Time {
 
 DEFINE_EXCEPTION(Error, Exception);
 /// FPS specified is not a valid frame rate
-DEFINE_EXCEPTION(BadFPS, Error);
+DEFINE_EXCEPTION(InvalidFramerate, Error);
 /// Unknown timecode file format
 DEFINE_EXCEPTION(UnknownFormat, Error);
 /// Invalid line encountered in a timecode file
 DEFINE_EXCEPTION(MalformedLine, Error);
-/// Timecode file or vector has too few timecodes to be usable
-DEFINE_EXCEPTION(TooFewTimecodes, Error);
-/// Timecode file or vector has timecodes that are not monotonically increasing
-DEFINE_EXCEPTION(UnorderedTimecodes, Error);
 
 /// @class Framerate
 /// @brief Class for managing everything related to converting frames to times

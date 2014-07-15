@@ -43,14 +43,15 @@ TEST(lagi_vfr, constructors_good) {
 }
 
 TEST(lagi_vfr, constructors_bad_cfr) {
-	EXPECT_THROW(Framerate(-1.), BadFPS);
-	EXPECT_THROW(Framerate(1000.1), BadFPS);
+	EXPECT_THROW(Framerate(-1.), InvalidFramerate);
+	EXPECT_THROW(Framerate(1000.1), InvalidFramerate);
 }
 
 TEST(lagi_vfr, constructors_bad_timecodes) {
-	EXPECT_THROW(Framerate(std::initializer_list<int>{}), TooFewTimecodes);
-	EXPECT_THROW(Framerate({ 0 }), TooFewTimecodes);
-	EXPECT_THROW(Framerate({ 10, 0 }), UnorderedTimecodes);
+	EXPECT_THROW(Framerate(std::initializer_list<int>{}), InvalidFramerate);
+	EXPECT_THROW(Framerate({0}), InvalidFramerate);
+	EXPECT_THROW(Framerate({10, 0}), InvalidFramerate);
+	EXPECT_THROW(Framerate({0, 0}), InvalidFramerate);
 }
 
 TEST(lagi_vfr, constructors_bad_v1) {
@@ -58,18 +59,18 @@ TEST(lagi_vfr, constructors_bad_v1) {
 	EXPECT_THROW(Framerate("data/vfr/in/v1_too_few_parts.txt"), MalformedLine);
 	EXPECT_THROW(Framerate("data/vfr/in/v1_too_many_parts.txt"), MalformedLine);
 	EXPECT_THROW(Framerate("data/vfr/in/v1_float_frame_number.txt"), MalformedLine);
-	EXPECT_THROW(Framerate("data/vfr/in/v1_start_end_overlap.txt"), UnorderedTimecodes);
-	EXPECT_THROW(Framerate("data/vfr/in/v1_fully_contained.txt"), UnorderedTimecodes);
-	EXPECT_THROW(Framerate("data/vfr/in/v1_assume_over_1000.txt"), BadFPS);
-	EXPECT_THROW(Framerate("data/vfr/in/v1_override_over_1000.txt"), BadFPS);
-	EXPECT_THROW(Framerate("data/vfr/in/v1_override_zero.txt"), BadFPS);
-	EXPECT_THROW(Framerate("data/vfr/in/v1_negative_start_of_range.txt"), UnorderedTimecodes);
-	EXPECT_THROW(Framerate("data/vfr/in/v1_end_less_than_start.txt"), UnorderedTimecodes);
+	EXPECT_THROW(Framerate("data/vfr/in/v1_start_end_overlap.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate("data/vfr/in/v1_fully_contained.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate("data/vfr/in/v1_assume_over_1000.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate("data/vfr/in/v1_override_over_1000.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate("data/vfr/in/v1_override_zero.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate("data/vfr/in/v1_negative_start_of_range.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate("data/vfr/in/v1_end_less_than_start.txt"), InvalidFramerate);
 }
 
 TEST(lagi_vfr, constructors_bad_v2) {
-	EXPECT_THROW(Framerate("data/vfr/in/v2_empty.txt"), TooFewTimecodes);
-	EXPECT_THROW(Framerate("data/vfr/in/v2_out_of_order.txt"), UnorderedTimecodes);
+	EXPECT_THROW(Framerate("data/vfr/in/v2_empty.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate("data/vfr/in/v2_out_of_order.txt"), InvalidFramerate);
 
 	EXPECT_THROW(Framerate("data/vfr/in/empty.txt"), UnknownFormat);
 }
