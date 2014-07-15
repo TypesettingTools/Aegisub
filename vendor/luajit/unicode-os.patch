@@ -1,0 +1,28 @@
+diff --git c/vendor/luajit/src/lib_os.c w/vendor/luajit/src/lib_os.c
+index f62e8c8..08eeb15 100644
+--- c/vendor/luajit/src/lib_os.c
++++ w/vendor/luajit/src/lib_os.c
+@@ -29,6 +29,23 @@
+ 
+ /* ------------------------------------------------------------------------ */
+ 
++#if LJ_TARGET_WINDOWS
++#define WIN32_LEAN_AND_MEAN
++#include <windows.h>
++
++static wchar_t *widen_static(const char *narrow, int idx)
++{
++  __declspec(thread) static wchar_t buffer[2][MAX_PATH];
++  return MultiByteToWideChar(CP_UTF8, 0, narrow, -1, buffer[idx], MAX_PATH) ? buffer[idx] : L"";
++}
++
++#define remove(x) _wremove(widen_static(x, 0))
++#define system(x) _wsystem(widen_static(x, 0))
++#define rename(x, y) _wrename(widen_static(x, 0), widen_static(y, 1))
++#endif
++
++/* ------------------------------------------------------------------------ */
++
+ #define LJLIB_MODULE_os
+ 
+ LJLIB_CF(os_execute)
