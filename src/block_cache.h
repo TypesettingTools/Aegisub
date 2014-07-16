@@ -127,6 +127,9 @@ class DataBlockCache {
 	/// Bitmask to extract the inside-macroblock index for a block by bitwise and
 	size_t macroblock_index_mask;
 
+	/// Current size of the cache in bytes
+	size_t size = 0;
+
 	/// Factory object for blocks
 	BlockFactoryT factory;
 
@@ -137,19 +140,23 @@ class DataBlockCache {
 		if (mb.blocks.empty())
 			return;
 
-		mb.blocks.clear();
+		auto& ba = mb.blocks;
+		size += (ba.size() - std::count(ba.begin(), ba.end(), nullptr)) * factory.GetBlockSize();
+
+		ba.clear();
 		age.erase(mb.position);
 	}
 
 public:
 #ifdef _MSC_VER
-		DataBlockCache(DataBlockCache&& rgt)
-		: data(std::move(rgt.data))
-		, age(std::move(rgt.age))
-		, macroblock_size(rgt.macroblock_size)
-		, macroblock_index_mask(rgt.macroblock_index_mask)
-		, factory(std::move(rgt.factory))
-		{ }
+	DataBlockCache(DataBlockCache&& rgt)
+	: data(std::move(rgt.data))
+	, age(std::move(rgt.age))
+	, macroblock_size(rgt.macroblock_size)
+	, macroblock_index_mask(rgt.macroblock_index_mask)
+	, size(rgt.size)
+	, factory(std::move(rgt.factory))
+	{ }
 #endif
 
 	/// @brief Constructor
@@ -181,8 +188,8 @@ public:
 		macroblock_index_mask = ~(((~0) >> MacroblockExponent) << MacroblockExponent);
 
 		data.resize((block_count + macroblock_size - 1) >> MacroblockExponent);
+		size = 0;
 	}
-
 
 	/// @brief Clean up the cache
 	/// @param max_size Target maximum size of the cache in bytes
@@ -201,23 +208,14 @@ public:
 			data.clear();
 			data.resize(block_count);
 			age.clear();
+			size = 0;
 			return;
 		}
 
-		// Sum up data size until we hit the max
-		size_t cur_size = 0;
-		size_t block_size = factory.GetBlockSize();
-		auto it = age.begin();
-		for (; it != age.end() && cur_size < max_size; ++it)
-		{
-			auto& ba = (*it)->blocks;
-			cur_size += (ba.size() - std::count(ba.begin(), ba.end(), nullptr)) * block_size;
-		}
-		// Hit max, clear all remaining blocks
-		for (; it != age.end(); )
+		// Remove old entries until we're under the max size
+		for (auto it = age.rbegin(); size > max_size && it != age.rend(); )
 			KillMacroBlock(**it++);
 	}
-
 
 	/// @brief Obtain a data block from the cache
 	/// @param      i       Index of the block to retrieve
@@ -232,13 +230,15 @@ public:
 
 		MacroBlock &mb = data[mbi];
 
-		if (mb.blocks.empty())
-			mb.blocks.resize(macroblock_size);
-		else
-			age.erase(mb.position);
-
 		// Move this macroblock to the front of the age list
-		age.push_front(&mb);
+		if (mb.blocks.empty())
+		{
+			mb.blocks.resize(macroblock_size);
+			age.push_front(&mb);
+		}
+		else if (mb.position != begin(age))
+			age.splice(begin(age), age, mb.position);
+
 		mb.position = age.begin();
 
 		size_t block_index = i & macroblock_index_mask;
@@ -251,6 +251,7 @@ public:
 			mb.blocks[block_index] = factory.ProduceBlock(i);
 			b = mb.blocks[block_index].get();
 			assert(b != nullptr);
+			size += factory.GetBlockSize();
 
 			if (created) *created = true;
 		}
