@@ -54,10 +54,6 @@ struct AudioSpectrumCacheBlockFactory {
 	/// Pointer back to the owning spectrum renderer
 	AudioSpectrumRenderer *spectrum;
 
-	/// @brief Constructor
-	/// @param s The owning spectrum renderer
-	AudioSpectrumCacheBlockFactory(AudioSpectrumRenderer *s) : spectrum(s) { }
-
 	/// @brief Allocate and fill a data block
 	/// @param i Index of the block to produce data for
 	/// @return Newly allocated and filled block
@@ -83,8 +79,7 @@ class AudioSpectrumCache
 : public DataBlockCache<float, 10, AudioSpectrumCacheBlockFactory> {
 public:
 	AudioSpectrumCache(size_t block_count, AudioSpectrumRenderer *renderer)
-	: DataBlockCache<float, 10, AudioSpectrumCacheBlockFactory>(
-			block_count, AudioSpectrumCacheBlockFactory(renderer))
+	: DataBlockCache(block_count, AudioSpectrumCacheBlockFactory{renderer})
 	{
 	}
 };
