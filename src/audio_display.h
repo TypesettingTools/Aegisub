@@ -32,7 +32,6 @@
 
 #include <chrono>
 #include <cstdint>
-#include <map>
 #include <memory>
 
 #include <wx/gdicmn.h>
@@ -175,7 +174,7 @@ class AudioDisplay: public wxWindow {
 	void RemoveTrackCursor();
 
 	/// Previous style ranges for optimizing redraw when ranges change
-	std::map<int, int> style_ranges;
+	std::vector<std::pair<int, int>> style_ranges;
 
 	/// @brief Reload all rendering settings from Options and reset caches
 	///
