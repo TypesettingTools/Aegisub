@@ -37,55 +37,12 @@
 #include <list>
 #include <vector>
 
-/// @class BasicDataBlockFactory
-/// @brief Simple factory for allocating blocks for DataBlockCache
-/// @tparam BlockT Type of blocks to produce
-///
-/// This is the default block factory class used by DataBlockCache if another isn't specified.
-/// It allocates blocks on the heap using operator new and the default constructor, and does
-/// nothing special to initialise the blocks.
-///
-/// Custom block factories could use a large internally pre-allocated buffer to create the
-/// requested blocks in to avoid the default allocator.
-template <typename BlockT>
-struct BasicDataBlockFactory {
-	typedef std::unique_ptr<BlockT> BlockType;
-
-	/// @brief Allocates a block and returns it
-	/// @param i Index of the block to allocate
-	/// @return A pointer to the allocated block
-	///
-	/// This default implementation does not use the i parameter. Custom implementations
-	/// of block factories should use i to determine what data to fill into the block.
-	std::unique_ptr<BlockT> ProduceBlock(size_t i)
-	{
-		(void)i;
-		return std::unique_ptr<BlockT>(new BlockT);
-	}
-
-	/// @brief Retrieve the amount of memory consumed by a single block
-	/// @return Number of bytes consumed by a block
-	///
-	/// All blocks must consume the same amount of memory. The size of a block
-	/// is used to manage and limit the size of the cache.
-	size_t GetBlockSize() const
-	{
-		return sizeof(BlockT);
-	}
-};
-
-
-
 /// @class DataBlockCache
 /// @brief Cache for blocks of data in a stream or similar
 /// @tparam BlockT             Type of blocks to store
 /// @tparam MacroblockExponent Controls the number of blocks per macroblock, for tuning memory usage
 /// @tparam BlockFactoryT      Type of block factory, see BasicDataBlockFactory class for detail on these
-template <
-	typename BlockT,
-	int MacroblockExponent = 6,
-	typename BlockFactoryT = BasicDataBlockFactory<BlockT>
->
+template <typename BlockT, int MacroblockExponent, typename BlockFactoryT>
 class DataBlockCache {
 	/// Type of an array of blocks
 	typedef std::vector<typename BlockFactoryT::BlockType> BlockArray;
@@ -259,23 +216,5 @@ public:
 			if (created) *created = false;
 
 		return b;
-	}
-
-
-	/// @brief Speculatively add blocks not present to the cache
-	/// @param forward  Assume forwards linear access is plausible
-	/// @param backward Assume backwards linear access is plausible
-	/// @return Number of blocks added to the cache
-	///
-	/// Assuming forwards and/or backwards linear access causes the macroblock access data to be
-	/// used for speculating in macroblocks that may be accessed soon, and also allocate block
-	/// in macroblocks that may otherwise not have been accessed recently.
-	///
-	/// @todo Implement this.
-	size_t Speculate(bool forward, bool backward)
-	{
-		(void)forward;
-		(void)backward;
-		return 0;
 	}
 };
