@@ -165,10 +165,11 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 	queue->Async([=]{
 		LOG_D("utils/clean_cache") << "cleaning " << directory/file_type;
 		uint64_t total_size = 0;
-		std::multimap<int64_t, agi::fs::path> cachefiles;
+		using cache_item = std::pair<int64_t, agi::fs::path>;
+		std::vector<cache_item> cachefiles;
 		for (auto const& file : agi::fs::DirectoryIterator(directory, file_type)) {
 			agi::fs::path path = directory/file;
-			cachefiles.insert({agi::fs::ModifiedTime(path), path});
+			cachefiles.push_back({agi::fs::ModifiedTime(path), path});
 			total_size += agi::fs::Size(path);
 		}
 
@@ -177,6 +178,10 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 				, max_size, total_size, max_files, cachefiles.size());
 			return;
 		}
+
+		sort(begin(cachefiles), end(cachefiles), [](cache_item const& a, cache_item const& b) {
+			return a.first < b.first;
+		});
 
 		int deleted = 0;
 		for (auto const& i : cachefiles) {
