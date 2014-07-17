@@ -178,7 +178,7 @@ void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 
 	fftw_execute(dft_plan);
 
-	float scale_factor = 9 / sqrt(2 * (float)(2<<derivation_size));
+	double scale_factor = 9 / sqrt(2 << (derivation_size + 1));
 
 	fftw_complex *o = dft_output;
 	for (size_t si = 1<<derivation_size; si > 0; --si)
@@ -253,7 +253,7 @@ void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 			{
 				assert(px >= imgdata);
 				assert(px < imgdata + imgheight*stride);
-				float ideal = (float)(y+1.)/imgheight * (maxband-minband) + minband;
+				auto ideal = (double)(y+1.)/imgheight * (maxband-minband) + minband;
 				float sample1 = power[(int)floor(ideal)+minband];
 				float sample2 = power[(int)ceil(ideal)+minband];
 				float frac = ideal - floor(ideal);

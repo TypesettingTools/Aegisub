@@ -282,13 +282,13 @@ void VideoDisplay::PositionVideo() {
 		double videoAr = arType == AspectRatio::Default ? double(vidW) / vidH : con->videoController->GetAspectRatioValue();
 
 		// Window is wider than video, blackbox left/right
-		if (displayAr - videoAr > 0.01f) {
+		if (displayAr - videoAr > 0.01) {
 			int delta = viewport_width - videoAr * viewport_height;
 			viewport_left = delta / 2;
 			viewport_width -= delta;
 		}
 		// Video is wider than window, blackbox top/bottom
-		else if (videoAr - displayAr > 0.01f) {
+		else if (videoAr - displayAr > 0.01) {
 			int delta = viewport_height - viewport_width / videoAr;
 			viewport_top = viewport_bottom = delta / 2;
 			viewport_height -= delta;

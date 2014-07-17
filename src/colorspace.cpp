@@ -92,8 +92,8 @@ void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigne
 	l = L / 255.f;
 
 	float temp2;
-	if (l < .5) {
-		temp2 = l * (1. + s);
+	if (l < .5f) {
+		temp2 = l * (1.f + s);
 	} else {
 		temp2 = l + s - l*s;
 	}
@@ -257,7 +257,7 @@ void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigne
 		h = 0;
 		s = 0;
 	} else {
-		if (l < 0.5) {
+		if (l < .5f) {
 			s = (maxrgb - minrgb) / (maxrgb + minrgb);
 		} else {
 			s = (maxrgb - minrgb) / (2.f - maxrgb - minrgb);

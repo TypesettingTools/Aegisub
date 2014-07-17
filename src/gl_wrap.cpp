@@ -131,12 +131,12 @@ void OpenGLWrapper::DrawRectangle(Vector2D p1, Vector2D p2) const {
 	buf.Set(3, Vector2D(p1, p2));
 
 	// Fill
-	if (fill_a != 0.0) {
+	if (fill_a != 0.f) {
 		SetModeFill();
 		buf.Draw(GL_QUADS, false);
 	}
 	// Outline
-	if (line_a != 0.0) {
+	if (line_a != 0.f) {
 		SetModeLine();
 		buf.Draw(GL_LINE_LOOP);
 	}
@@ -149,12 +149,12 @@ void OpenGLWrapper::DrawTriangle(Vector2D p1, Vector2D p2, Vector2D p3) const {
 	buf.Set(2, p3);
 
 	// Fill
-	if (fill_a != 0.0) {
+	if (fill_a != 0.f) {
 		SetModeFill();
 		buf.Draw(GL_TRIANGLES, false);
 	}
 	// Outline
-	if (line_a != 0.0) {
+	if (line_a != 0.f) {
 		SetModeLine();
 		buf.Draw(GL_LINE_LOOP);
 	}
@@ -183,7 +183,7 @@ void OpenGLWrapper::DrawRing(Vector2D center, float r1, float r2, float ar, floa
 	Vector2D scale_inner = Vector2D(ar, 1) * r1;
 	Vector2D scale_outer = Vector2D(ar, 1) * r2;
 
-	if (fill_a != 0.0) {
+	if (fill_a != 0.f) {
 		SetModeFill();
 
 		// Annulus
@@ -210,7 +210,7 @@ void OpenGLWrapper::DrawRing(Vector2D center, float r1, float r2, float ar, floa
 		cur_angle = arc_start;
 	}
 
-	if (line_a == 0.0) return;
+	if (line_a == 0.f) return;
 
 	// Outer
 	steps++;

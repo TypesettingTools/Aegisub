@@ -58,7 +58,7 @@ AudioColorScheme::AudioColorScheme(int prec, std::string const& scheme_name, int
 
 	for (size_t i = 0; i <= factor; ++i)
 	{
-		float t = (float)i / factor;
+		auto t = (double)i / factor;
 		hsl_to_rgb(
 			mid<int>(0, h_base + t * h_scale, 255),
 			mid<int>(0, s_base + t * s_scale, 255),
