@@ -47,18 +47,13 @@ AC_SUBST(build_darwin)
 # Configurable variables
 ########################
 # Name of aegisub binary.
-# On OS X everything goes in an app bundle so no point in versioning the executable
-AS_IF([test x$build_darwin = xyes],
-      [AEGISUB_COMMAND="aegisub"],
-      [AEGISUB_COMMAND="aegisub-3.1"])
+# This is tagged with the version on release branches.
+AEGISUB_COMMAND="aegisub"
 AC_SUBST(AEGISUB_COMMAND)
 AC_DEFINE_UNQUOTED([AEGISUB_COMMAND], ["${AEGISUB_COMMAND}"], [Name of the Aegisub executable])
 
 # Name of gettext catalog.
-# On OS X everything goes in an app bundle so no point in versioning the executable
-AS_IF([test x$build_darwin = xyes],
-      [AEGISUB_CATALOG="aegisub"],
-      [AEGISUB_CATALOG="aegisub-31"])
+AEGISUB_CATALOG="aegisub"
 AC_SUBST(AEGISUB_CATALOG)
 AC_DEFINE_UNQUOTED([AEGISUB_CATALOG], ["${AEGISUB_CATALOG}"], [Name of the Aegisub gettext catalog])
 
