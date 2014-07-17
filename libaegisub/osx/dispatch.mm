@@ -17,19 +17,71 @@
 #include "libaegisub/dispatch.h"
 
 #include <dispatch/dispatch.h>
+#include <mutex>
 
 namespace {
-std::function<void (agi::dispatch::Thunk)> invoke_main;
+using namespace agi::dispatch;
+std::function<void (Thunk)> invoke_main;
 
-struct GCDQueue : agi::dispatch::Queue {
-    dispatch_queue_t queue;
-    GCDQueue(dispatch_queue_t queue) : queue(queue) { }
-    void DoInvoke(agi::dispatch::Thunk) override final { }
+struct OSXQueue : Queue {
+    virtual void DoSync(Thunk thunk)=0;
 };
 
-struct OwningQueue final : GCDQueue {
-    using GCDQueue::GCDQueue;
-    ~OwningQueue() { dispatch_release(queue); }
+struct MainQueue final : OSXQueue {
+    void DoInvoke(Thunk thunk) override { invoke_main(thunk); }
+
+    void DoSync(Thunk thunk) {
+        std::mutex m;
+        std::condition_variable cv;
+        std::unique_lock<std::mutex> l(m);
+        std::exception_ptr e;
+        bool done = false;
+        invoke_main([&]{
+            std::unique_lock<std::mutex> l(m);
+            try {
+                thunk();
+            }
+            catch (...) {
+                e = std::current_exception();
+            }
+            done = true;
+            cv.notify_all();
+        });
+        cv.wait(l, [&]{ return done; });
+        if (e) std::rethrow_exception(e);
+    }
+};
+
+struct GCDQueue final : OSXQueue {
+    dispatch_queue_t queue;
+    GCDQueue(dispatch_queue_t queue) : queue(queue) { }
+    ~GCDQueue() { dispatch_release(queue); }
+
+    void DoInvoke(Thunk thunk) override {
+        dispatch_async(queue, ^{
+            try {
+                thunk();
+            }
+            catch (...) {
+                auto e = std::current_exception();
+                invoke_main([=] { std::rethrow_exception(e); });
+            }
+        });
+    }
+
+    void DoSync(Thunk thunk) override {
+        std::exception_ptr e;
+        std::exception_ptr *e_ptr = &e;
+        dispatch_sync(queue, ^{
+            try {
+                thunk();
+            }
+            catch (...) {
+                *e_ptr = std::current_exception();
+            }
+        });
+        if (e) std::rethrow_exception(e);
+    }
 };
 }
 
@@ -38,34 +90,11 @@ void Init(std::function<void (Thunk)> invoke_main) {
     ::invoke_main = std::move(invoke_main);
 }
 
-void Queue::Async(Thunk thunk) {
-    dispatch_async(static_cast<GCDQueue *>(this)->queue, ^{
-        try {
-            thunk();
-        }
-        catch (...) {
-            auto e = std::current_exception();
-            invoke_main([=] { std::rethrow_exception(e); });
-        }
-    });
-}
-
-void Queue::Sync(Thunk thunk) {
-    std::exception_ptr e;
-    std::exception_ptr *e_ptr = &e;
-    dispatch_sync(static_cast<GCDQueue *>(this)->queue, ^{
-        try {
-            thunk();
-        }
-        catch (...) {
-            *e_ptr = std::current_exception();
-        }
-    });
-    if (e) std::rethrow_exception(e);
-}
+void Queue::Async(Thunk thunk) { DoInvoke(std::move(thunk)); }
+void Queue::Sync(Thunk thunk) { static_cast<OSXQueue *>(this)->DoSync(std::move(thunk)); }
 
 Queue& Main() {
-    static GCDQueue q(dispatch_get_main_queue());
+    static MainQueue q;
     return q;
 }
 
@@ -75,7 +104,7 @@ Queue& Background() {
 }
 
 std::unique_ptr<Queue> Create() {
-    return std::unique_ptr<Queue>(new OwningQueue(dispatch_queue_create("Aegisub worker queue",
-                                                                        DISPATCH_QUEUE_SERIAL)));
+    return std::unique_ptr<Queue>(new GCDQueue(dispatch_queue_create("Aegisub worker queue",
+                                                                     DISPATCH_QUEUE_SERIAL)));
 }
 } }
