@@ -21,6 +21,7 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
 
+#include <boost/locale/generator.hpp>
 #include <cstdio>
 #include <cstdlib>
 
@@ -47,6 +48,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	std::locale::global(boost::locale::generator().generate(""));
 	agi::dispatch::Init([](agi::dispatch::Thunk f) { });
 	agi::log::log = new agi::log::LogSink;
 

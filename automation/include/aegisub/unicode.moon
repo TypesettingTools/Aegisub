@@ -29,6 +29,26 @@
 -- http://www.ietf.org/rfc/rfc2279.txt
 
 impl = require 'aegisub.__unicode_impl'
+ffi = require 'ffi'
+ffi.cdef[[
+  void free(void *ptr);
+]]
+
+transfer_string = (cdata) ->
+  return nil if cdata == nil
+  str = ffi.string cdata
+  ffi.C.free cdata
+  str
+
+conv_func = (f) ->
+  err = ffi.new 'char *[1]'
+  (str) ->
+    err[0] = nil
+    result = f str, err
+    errmsg = transfer_string err[0]
+    if errmsg
+      error errmsg, 2
+    transfer_string result
 
 local unicode
 unicode =
@@ -86,8 +106,8 @@ unicode =
       res = res*64 + s\byte(i) - 128
     res
 
-  to_upper_case: impl.to_upper_case
-  to_lower_case: impl.to_lower_case
-  to_fold_case: impl.to_fold_case
+  to_upper_case: conv_func impl.to_upper_case
+  to_lower_case: conv_func impl.to_lower_case
+  to_fold_case: conv_func impl.to_fold_case
 
 return unicode

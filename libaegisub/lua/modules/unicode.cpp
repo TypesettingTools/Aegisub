@@ -14,33 +14,45 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "libaegisub/lua/utils.h"
+#include <libaegisub/type_name.h>
 
 #include <boost/locale/conversion.hpp>
+#include <lua.hpp>
 
 namespace {
-using namespace agi::lua;
-
-int unicode_upper(lua_State *L) {
-	push_value(L, boost::locale::to_upper(check_string(L, 1)));
-	return 1;
+template<typename T>
+void push_ffi_function(lua_State *L, const char *name, T *func) {
+	lua_pushvalue(L, -2); // push cast function
+	lua_pushstring(L, agi::type_name<T*>::name().c_str());
+	// This cast isn't legal, but LuaJIT internally requires that it work
+	lua_pushlightuserdata(L, (void *)func);
+	lua_call(L, 2, 1);
+	lua_setfield(L, -2, name);
 }
 
-int unicode_lower(lua_State *L) {
-	push_value(L, boost::locale::to_lower(check_string(L, 1)));
-	return 1;
-}
-
-int unicode_fold(lua_State *L) {
-	push_value(L, boost::locale::fold_case(check_string(L, 1)));
-	return 1;
+template<std::string (*func)(const char *, std::locale const&)>
+char *wrap(const char *str, char **err) {
+	try {
+		return strdup(func(str, std::locale()).c_str());
+	} catch (std::exception const& e) {
+		*err = strdup(e.what());
+		return nullptr;
+	}
 }
 }
 
 extern "C" int luaopen_unicode_impl(lua_State *L) {
+	lua_getglobal(L, "require");
+	lua_pushstring(L, "ffi");
+	lua_call(L, 1, 1);
+	lua_getfield(L, -1, "cast");
+	lua_remove(L, -2); // ffi table
+
 	lua_createtable(L, 0, 3);
-	set_field<unicode_upper>(L, "to_upper_case");
-	set_field<unicode_lower>(L, "to_lower_case");
-	set_field<unicode_fold>(L, "to_fold_case");
+	push_ffi_function(L, "to_upper_case", wrap<boost::locale::to_upper<char>>);
+	push_ffi_function(L, "to_lower_case", wrap<boost::locale::to_lower<char>>);
+	push_ffi_function(L, "to_fold_case", wrap<boost::locale::fold_case<char>>);
+
+	lua_remove(L, -2); // ffi.cast function
 	return 1;
 }
