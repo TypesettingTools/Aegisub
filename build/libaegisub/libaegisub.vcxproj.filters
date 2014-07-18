@@ -80,6 +80,9 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\thesaurus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\type_name.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
