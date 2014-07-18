@@ -21,7 +21,7 @@
 extern "C" int luaopen_luabins(lua_State *L);
 extern "C" int luaopen_re_impl(lua_State *L);
 extern "C" int luaopen_unicode_impl(lua_State *L);
-extern "C" int luaopen_lfs(lua_State *L);
+extern "C" int luaopen_lfs_impl(lua_State *L);
 extern "C" int luaopen_lpeg(lua_State *L);
 
 namespace agi { namespace lua {
@@ -35,7 +35,7 @@ void preload_modules(lua_State *L) {
 
 	set_field(L, "aegisub.__re_impl", luaopen_re_impl);
 	set_field(L, "aegisub.__unicode_impl", luaopen_unicode_impl);
-	set_field(L, "lfs", luaopen_lfs);
+	set_field(L, "aegisub.__lfs_impl", luaopen_lfs_impl);
 	set_field(L, "lpeg", luaopen_lpeg);
 	set_field(L, "luabins", luaopen_luabins);
 

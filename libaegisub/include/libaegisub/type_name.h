@@ -21,15 +21,19 @@ namespace agi {
 // Currently supports primitives, pointers, references, const, and function pointers
 template<typename T> struct type_name;
 
-#define AGI_TYPE_NAME_PRIMITIVE(type) \
+#define AGI_DEFINE_TYPE_NAME(type) \
 	template<> struct type_name<type> { static const char *name() { return #type; }}
 
-AGI_TYPE_NAME_PRIMITIVE(bool);
-AGI_TYPE_NAME_PRIMITIVE(char);
-AGI_TYPE_NAME_PRIMITIVE(double);
-AGI_TYPE_NAME_PRIMITIVE(float);
-AGI_TYPE_NAME_PRIMITIVE(int);
-AGI_TYPE_NAME_PRIMITIVE(void);
+AGI_DEFINE_TYPE_NAME(bool);
+AGI_DEFINE_TYPE_NAME(char);
+AGI_DEFINE_TYPE_NAME(double);
+AGI_DEFINE_TYPE_NAME(float);
+AGI_DEFINE_TYPE_NAME(int);
+AGI_DEFINE_TYPE_NAME(long long);
+AGI_DEFINE_TYPE_NAME(long);
+AGI_DEFINE_TYPE_NAME(size_t);
+AGI_DEFINE_TYPE_NAME(unsigned long long);
+AGI_DEFINE_TYPE_NAME(void);
 
 #undef AGI_TYPE_NAME_PRIMITIVE
 

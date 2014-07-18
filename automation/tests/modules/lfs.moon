@@ -12,7 +12,7 @@
 -- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-lfs = require 'lfs'
+lfs = require 'aegisub.lfs'
 uuid = require 'uuid'
 
 uuid.randomseed os.time()

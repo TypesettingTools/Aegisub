@@ -30,25 +30,16 @@
 
 impl = require 'aegisub.__unicode_impl'
 ffi = require 'ffi'
-ffi.cdef[[
-  void free(void *ptr);
-]]
+ffi_util = require 'aegisub.ffi'
 
-transfer_string = (cdata) ->
-  return nil if cdata == nil
-  str = ffi.string cdata
-  ffi.C.free cdata
-  str
-
-conv_func = (f) ->
-  err = ffi.new 'char *[1]'
-  (str) ->
-    err[0] = nil
-    result = f str, err
-    errmsg = transfer_string err[0]
-    if errmsg
-      error errmsg, 2
-    transfer_string result
+err_buff = ffi.new 'char *[1]'
+conv_func = (f) -> (str) ->
+  err_buff[0] = nil
+  result = f str, err_buff
+  errmsg = ffi_util.string err_buff[0]
+  if errmsg
+    error errmsg, 2
+  ffi_util.string result
 
 local unicode
 unicode =
