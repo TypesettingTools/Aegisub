@@ -203,6 +203,9 @@
     <ClInclude Include="$(SrcDir)lua\modules\lpeg.h">
       <Filter>Lua\Modules</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)include\libaegisub\lua\ffi.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\lua\modules.h">
       <Filter>Lua</Filter>
     </ClInclude>

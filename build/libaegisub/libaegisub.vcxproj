@@ -93,6 +93,7 @@
     <ClInclude Include="$(SrcDir)include\libaegisub\line_iterator.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\line_wrap.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\log.h" />
+    <ClInclude Include="$(SrcDir)include\libaegisub\lua\ffi.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\lua\modules.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\lua\script_reader.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\lua\utils.h" />

@@ -15,11 +15,10 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "libaegisub/fs.h"
-#include "libaegisub/type_name.h"
+#include "libaegisub/lua/ffi.h"
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
-#include <lua.hpp>
 
 using namespace agi::fs;
 namespace bfs = boost::filesystem;
@@ -121,45 +120,21 @@ time_t get_mtime(const char *path, char **err) {
 uintmax_t get_size(const char *path, char **err) {
 	return wrap(err, [=] { return Size(path); });
 }
-
-template<typename T>
-void push_ffi_function(lua_State *L, const char *name, T *func) {
-	lua_pushvalue(L, -2); // push cast function
-	lua_pushstring(L, agi::type_name<T*>::name().c_str());
-	// This cast isn't legal, but LuaJIT internally requires that it work
-	lua_pushlightuserdata(L, (void *)func);
-	lua_call(L, 2, 1);
-	lua_setfield(L, -2, name);
-}
 }
 
 extern "C" int luaopen_lfs_impl(lua_State *L) {
-	lua_getglobal(L, "require");
-	lua_pushstring(L, "ffi");
-	lua_call(L, 1, 1);
-
-	lua_getfield(L, -1, "cdef");
-	lua_pushstring(L, "typedef struct DirectoryIterator DirectoryIterator;");
-	lua_call(L, 1, 0);
-
-	lua_getfield(L, -1, "cast");
-	lua_remove(L, -2); // ffi table
-
-	lua_createtable(L, 0, 12);
-	push_ffi_function(L, "chdir", lfs_chdir);
-	push_ffi_function(L, "currentdir", currentdir);
-	push_ffi_function(L, "mkdir", mkdir);
-	push_ffi_function(L, "rmdir", lfs_rmdir);
-	push_ffi_function(L, "touch", touch);
-	push_ffi_function(L, "get_mtime", get_mtime);
-	push_ffi_function(L, "get_mode", get_mode);
-	push_ffi_function(L, "get_size", get_size);
-
-	push_ffi_function(L, "dir_new", dir_new);
-	push_ffi_function(L, "dir_free", dir_free);
-	push_ffi_function(L, "dir_next", dir_next);
-	push_ffi_function(L, "dir_close", dir_close);
-
-	lua_remove(L, -2); // ffi.cast function
+	agi::lua::register_lib_table(L, {"DirectoryIterator"},
+		"chdir", lfs_chdir,
+		"currentdir", currentdir,
+		"mkdir", mkdir,
+		"rmdir", lfs_rmdir,
+		"touch", touch,
+		"get_mtime", get_mtime,
+		"get_mode", get_mode,
+		"get_size", get_size,
+		"dir_new", dir_new,
+		"dir_free", dir_free,
+		"dir_next", dir_next,
+		"dir_close", dir_close);
 	return 1;
 }
