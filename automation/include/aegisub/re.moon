@@ -17,32 +17,79 @@ next   = next
 select = select
 type   = type
 
--- Get the boost::regex binding
+bit = require 'bit'
+ffi = require 'ffi'
+ffi_util = require 'aegisub.ffi'
+
+ffi.cdef[[
+  typedef struct agi_re_flag {
+    const char *name;
+    int value;
+  } agi_re_flag;
+]]
+regex_flag = ffi.typeof 'agi_re_flag'
+
+-- Get the boost::eegex binding
 regex = require 'aegisub.__re_impl'
+
+-- Wrappers to convert returned values from C types to Lua types
+search = (re, str, start) ->
+  return unless start <= str\len()
+  res = regex.search re, str, str\len(), start
+  return unless res != nil
+  first, last = res[0], res[1]
+  ffi.C.free res
+  first, last
+
+replace = (re, replacement, str, max_count) ->
+  ffi_util.string regex.replace re, replacement, str, str\len(), max_count
+
+match = (re, str, start) ->
+  assert start <= str\len()
+  m = regex.match re, str, str\len(), start
+  return unless m != nil
+  ffi.gc m, regex.match_free
+
+get_match = (m, idx) ->
+  res = regex.get_match m, idx
+  return unless res != nil
+  res[0], res[1] -- Result buffer is owned by match so no need to free
+
+err_buff = ffi.new 'char *[1]'
+compile = (pattern, flags) ->
+  err_buff[0] = nil
+  re = regex.compile pattern, flags, err_buff
+  if err_buff[0] != nil
+    return ffi.string err_buff[0]
+  ffi.gc re, regex.regex_free
 
 -- Return the first n elements from ...
 select_first = (n, a, ...) ->
   if n == 0 then return
   a, select_first n - 1, ...
 
+-- Bitwise-or together regex flags passed as arguments to a function
+process_flags = (...) ->
+  flags = 0
+  for i = 1, select '#', ...
+    v = select i, ...
+    if not ffi.istype regex_flag, v
+      error 'Flags must follow all non-flag arguments', 3
+    flags = bit.bor flags, v.value
+  flags
+
 -- Extract the flags from ..., bitwise OR them together, and move them to the
 -- front of ...
 unpack_args = (...) ->
-  userdata_start = nil
+  flags_start = nil
   for i = 1, select '#', ...
     v = select i, ...
-    if type(v) == 'userdata'
-      userdata_start = i
+    if ffi.istype regex_flag, v
+      flags_start = i
       break
 
-  return 0, ... unless userdata_start
-
-  flags = regex.process_flags select userdata_start, ...
-  if type(flags) == 'string'
-    error(flags, 3)
-
-  flags, select_first userdata_start - 1, ...
-
+  return 0, ... unless flags_start
+  process_flags(select flags_start, ...), select_first flags_start - 1, ...
 
 -- Typecheck a variable and throw an error if it fails
 check_arg = (arg, expected_type, argn, func_name, level) ->
@@ -108,20 +155,19 @@ class RegEx
 
   new: (@_regex, @_level) =>
 
-  start = 1
   gsplit: (str, skip_empty, max_split) =>
     @_check_self!
     check_arg str, 'string', 2, 'gsplit', @_level
     if not max_split or max_split <= 0 then max_split = str\len()
 
-    start = 1
+    start = 0
     prev = 1
     do_split = () ->
       if not str or str\len() == 0 then return
 
       local first, last
       if max_split > 0
-        first, last = regex.search @_regex, str, start
+        first, last = search @_regex, str, start
 
       if not first or first > str\len()
         ret = str\sub prev, str\len()
@@ -131,7 +177,7 @@ class RegEx
       ret = str\sub prev, first - 1
       prev = last + 1
 
-      start = 1 + if start >= last then start else last
+      start = if start >= last then start + 1 else last
 
       if skip_empty and ret\len() == 0
         do_split()
@@ -150,12 +196,12 @@ class RegEx
     @_check_self!
     check_arg str, 'string', 2, 'gfind', @_level
 
-    start = 1
+    start = 0
     ->
-      first, last = regex.search(@_regex, str, start)
+      first, last = search(@_regex, str, start)
       return unless first
 
-      start = if last >= start then last + 1 else start + 1
+      start = if last > start then last else start + 1
       str\sub(first, last), first, last
 
   find: (str) =>
@@ -176,7 +222,7 @@ class RegEx
     if type(repl) == 'function'
        do_replace_fun @, repl, str, max_count
     elseif type(repl) == 'string'
-      regex.replace @_regex, repl, str, max_count
+      replace @_regex, repl, str, max_count
     else
       error "Argument 2 to sub should be a string or function, is '#{type(repl)}' (#{repl})", @_level
 
@@ -185,11 +231,11 @@ class RegEx
     check_arg str, 'string', 2, 'gmatch', @_level
     start = if start then start - 1 else 0
 
-    match = regex.match @_regex, str, start
-    i = 1
+    m = match @_regex, str, start
+    i = 0
     ->
-      return unless match
-      first, last = regex.get_match match, i
+      return unless m
+      first, last = get_match m, i
       return unless first
       i += 1
 
@@ -213,7 +259,7 @@ real_compile = (pattern, level, flags, stored_level) ->
   if pattern == ''
     error 'Regular expression must not be empty', level + 1
 
-  re = regex.compile pattern, flags
+  re = compile pattern, flags
   if type(re) == 'string'
     error regex, level + 1
 
@@ -225,25 +271,31 @@ invoke = (str, pattern, fn, flags, ...) ->
   compiled_regex[fn](compiled_regex, str, ...)
 
 -- Generate a static version of a method with arg type checking
-gen_wrapper = (impl_name) ->
-  (str, pattern, ...) ->
-    check_arg str, 'string', 1, impl_name, 2
-    check_arg pattern, 'string', 2, impl_name, 2
-    invoke str, pattern, impl_name, unpack_args ...
+gen_wrapper = (impl_name) -> (str, pattern, ...) ->
+  check_arg str, 'string', 1, impl_name, 2
+  check_arg pattern, 'string', 2, impl_name, 2
+  invoke str, pattern, impl_name, unpack_args ...
 
 -- And now at last the actual public API
-re = regex.init_flags(re)
+do
+  re = {
+    compile: (pattern, ...) ->
+      check_arg pattern, 'string', 1, 'compile', 2
+      real_compile pattern, 2, process_flags(...), 2
 
-re.compile = (pattern, ...) ->
-  check_arg pattern, 'string', 1, 'compile', 2
-  real_compile pattern, 2, regex.process_flags(...), 2
+    split:  gen_wrapper 'split'
+    gsplit: gen_wrapper 'gsplit'
+    find:   gen_wrapper 'find'
+    gfind:  gen_wrapper 'gfind'
+    match:  gen_wrapper 'match'
+    gmatch: gen_wrapper 'gmatch'
+    sub:    gen_wrapper 'sub'
+  }
 
-re.split  = gen_wrapper 'split'
-re.gsplit = gen_wrapper 'gsplit'
-re.find   = gen_wrapper 'find'
-re.gfind  = gen_wrapper 'gfind'
-re.match  = gen_wrapper 'match'
-re.gmatch = gen_wrapper 'gmatch'
-re.sub    = gen_wrapper 'sub'
+  i = 0
+  flags = regex.get_flags()
+  while flags[i].name != nil
+    re[ffi.string flags[i].name] = flags[i]
+    i += 1
 
-re
+  re
