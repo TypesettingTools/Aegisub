@@ -68,13 +68,12 @@ namespace agi {
 
 		/// @brief Run a function on a background thread
 		/// @param task Function to run
-		/// @param priority Thread priority or -1 for default
 		/// @throws agi::UserCancelException on cancel
 		///
 		/// Blocks the calling thread until the task completes or is canceled.
 		/// Progress updates sent to the progress sink passed to the task should
 		/// be displayed to the user in some way, along with some way for the
 		/// user to cancel the task.
-		virtual void Run(std::function<void(ProgressSink *)> task, int priority=-1)=0;
+		virtual void Run(std::function<void(ProgressSink *)> task)=0;
 	};
 }

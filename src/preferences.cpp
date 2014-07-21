@@ -324,10 +324,6 @@ void Automation(wxTreebook *book, Preferences *parent) {
 	wxArrayString tl_choice(6, tl_arr);
 	p->OptionChoice(general, _("Trace level"), tl_choice, "Automation/Trace Level");
 
-	const wxString tp_arr[3] = { _("Normal"), _("Below Normal (recommended)"), _("Lowest") };
-	wxArrayString tp_choice(3, tp_arr);
-	p->OptionChoice(general, _("Thread priority"), tp_choice, "Automation/Thread Priority");
-
 	const wxString ar_arr[4] = { _("No scripts"), _("Subtitle-local scripts"), _("Global autoload scripts"), _("All scripts") };
 	wxArrayString ar_choice(4, ar_arr);
 	p->OptionChoice(general, _("Autoreload on Export"), ar_choice, "Automation/Autoreload Mode");

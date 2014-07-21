@@ -143,7 +143,7 @@ DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxS
 	Bind(wxEVT_TIMER, [=](wxTimerEvent&) { gauge->Pulse(); });
 }
 
-void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task, int priority) {
+void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task) {
 	DialogProgressSink ps(this);
 	this->ps = &ps;
 

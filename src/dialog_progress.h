@@ -64,5 +64,5 @@ public:
 	DialogProgress(wxWindow *parent, wxString const& title="", wxString const& message="");
 
 	/// BackgroundWorker implementation
-	void Run(std::function<void(agi::ProgressSink *)> task, int priority=-1) override;
+	void Run(std::function<void(agi::ProgressSink *)> task) override;
 };
