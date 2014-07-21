@@ -33,6 +33,12 @@ void check(lua_State *L, int status) {
 		exit(status);
 	}
 }
+
+int close_and_exit(lua_State *L) {
+	int status = lua_tointeger(L, 1);
+	lua_close(L);
+	exit(status);
+}
 }
 
 int main(int argc, char **argv) {
@@ -53,6 +59,13 @@ int main(int argc, char **argv) {
 
 	preload_modules(L);
 	Install(L, {"include"});
+
+	// Patch os.exit to close the lua state first since busted calls it when
+	// it's done
+	lua_getglobal(L, "os");
+	lua_pushcfunction(L, close_and_exit);
+	lua_setfield(L, -2, "exit");
+	lua_pop(L, 1);
 
 	// Build arg table for scripts
 	lua_createtable(L, argc - 1, 0);
@@ -76,5 +89,6 @@ int main(int argc, char **argv) {
 
 	int base = lua_gettop(L) - argc + 1;
 	check(L, lua_pcall(L, argc - 2, LUA_MULTRET, base));
+	lua_close(L);
 }
 
