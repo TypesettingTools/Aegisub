@@ -94,7 +94,6 @@
 
 	"Automation" : {
 		"Autoreload Mode" : 1,
-		"Thread Priority" : 1,
 		"Trace Level" : 3
 	},
 

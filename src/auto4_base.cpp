@@ -239,16 +239,10 @@ namespace Automation4 {
 
 	void BackgroundScriptRunner::Run(std::function<void (ProgressSink*)> task)
 	{
-		int prio = OPT_GET("Automation/Thread Priority")->GetInt();
-		if (prio == 0) prio = 50; // normal
-		else if (prio == 1) prio = 30; // below normal
-		else if (prio == 2) prio = 10; // lowest
-		else prio = 50; // fallback normal
-
 		impl->Run([&](agi::ProgressSink *ps) {
 			ProgressSink aps(ps, this);
 			task(&aps);
-		}, prio);
+		});
 	}
 
 	wxWindow *BackgroundScriptRunner::GetParentWindow() const
