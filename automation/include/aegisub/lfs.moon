@@ -15,6 +15,8 @@
 -- Aegisub Project http://www.aegisub.org/
 
 impl = require 'aegisub.__lfs_impl'
+
+check = require 'aegisub.argcheck'
 ffi = require 'ffi'
 ffi_util = require 'aegisub.ffi'
 
@@ -29,7 +31,7 @@ number_ret = (f) -> (...) ->
   res, err = f ...
   tonumber(res), err
 
-attributes = (path, field) ->
+attributes = check'string ?string' (path, field) ->
   switch field
     when 'mode'
       res, err = impl.get_mode path
@@ -62,7 +64,7 @@ class dir_iter
     if err then error err, 2
     ffi_util.string str
 
-dir = (path) ->
+dir = check'string' (path) ->
   obj, err = impl.dir_new path
   if err
     error 2, err
@@ -71,10 +73,10 @@ dir = (path) ->
 
 return {
   :attributes
-  chdir: number_ret impl.chdir
-  currentdir: string_ret impl.currentdir
+  chdir: check'string' number_ret impl.chdir
+  currentdir: check'' string_ret impl.currentdir
   :dir
-  mkdir: number_ret impl.mkdir
-  rmdir: number_ret impl.rmdir
-  touch: number_ret impl.touch
+  mkdir: check'string' number_ret impl.mkdir
+  rmdir: check'string'number_ret impl.rmdir
+  touch: check'string'number_ret impl.touch
 }

@@ -29,11 +29,13 @@
 -- http://www.ietf.org/rfc/rfc2279.txt
 
 impl = require 'aegisub.__unicode_impl'
+
+check = require 'aegisub.argcheck'
 ffi = require 'ffi'
 ffi_util = require 'aegisub.ffi'
 
 err_buff = ffi.new 'char *[1]'
-conv_func = (f) -> (str) ->
+conv_func = (f) -> check'string' (str) ->
   err_buff[0] = nil
   result = f str, err_buff
   errmsg = ffi_util.string err_buff[0]
@@ -44,7 +46,7 @@ conv_func = (f) -> (str) ->
 local unicode
 unicode =
   -- Return the number of bytes occupied by the character starting at the i'th byte in s
-  charwidth: (s, i) ->
+  charwidth: check'string ?number' (s, i) ->
     b = s\byte i or 1
     -- FIXME, something in karaskel results in this case, shouldn't happen
     -- What would "proper" behaviour be? Zero? Or just explode?
@@ -55,7 +57,7 @@ unicode =
     else                4
 
   -- Returns an iterator function for iterating over the characters in s
-  chars: (s) ->
+  chars: check'string' (s) ->
     curchar, i = 0, 1
     ->
       return if i > s\len()
@@ -67,13 +69,13 @@ unicode =
 
   -- Returns the number of characters in s
   -- Runs in O(s:len()) time!
-  len: (s) ->
+  len: check'string' (s) ->
     n = 0
     n += 1 for c in unicode.chars s
     n
 
   -- Get codepoint of first char in s
-  codepoint: (s) ->
+  codepoint: check'string' (s) ->
     -- Basic case, ASCII
     b = s\byte 1
     return b if b < 128

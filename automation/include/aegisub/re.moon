@@ -20,6 +20,7 @@ type   = type
 bit = require 'bit'
 ffi = require 'ffi'
 ffi_util = require 'aegisub.ffi'
+check = require 'aegisub.argcheck'
 
 ffi.cdef[[
   typedef struct agi_re_flag {
@@ -91,12 +92,6 @@ unpack_args = (...) ->
   return 0, ... unless flags_start
   process_flags(select flags_start, ...), select_first flags_start - 1, ...
 
--- Typecheck a variable and throw an error if it fails
-check_arg = (arg, expected_type, argn, func_name, level) ->
-  if type(arg) != expected_type
-    error "Argument #{argn} to #{func_name} should be a '#{expected_type}', is '#{type(arg)}' (#{arg})",
-      level + 1
-
 -- Replace a match with the value returned from func when passed the match
 replace_match = (match, func, str, last, acc) ->
   -- Copy everything between the last match and this match
@@ -155,9 +150,7 @@ class RegEx
 
   new: (@_regex, @_level) =>
 
-  gsplit: (str, skip_empty, max_split) =>
-    @_check_self!
-    check_arg str, 'string', 2, 'gsplit', @_level
+  gsplit: check'RegEx string ?boolean ?number' (str, skip_empty, max_split) =>
     if not max_split or max_split <= 0 then max_split = str\len()
 
     start = 0
@@ -187,15 +180,10 @@ class RegEx
 
     do_split
 
-  split: (str, skip_empty, max_split) =>
-    @_check_self!
-    check_arg str, 'string', 2, 'split', @_level
+  split: check'RegEx string ?boolean ?number' (str, skip_empty, max_split) =>
     [v for v in @gsplit str, skip_empty, max_split]
 
-  gfind: (str) =>
-    @_check_self!
-    check_arg str, 'string', 2, 'gfind', @_level
-
+  gfind: check'RegEx string' (str) =>
     start = 0
     ->
       first, last = search(@_regex, str, start)
@@ -204,31 +192,19 @@ class RegEx
       start = if last > start then last else start + 1
       str\sub(first, last), first, last
 
-  find: (str) =>
-    @_check_self!
-    check_arg str, 'string', 2, 'find', @_level
-
+  find: check'RegEx string' (str) =>
     ret = [str: s, first: f, last: l for s, f, l in @gfind(str)]
     next(ret) and ret
 
-  sub: (str, repl, max_count) =>
-    @_check_self!
-    check_arg str, 'string', 2, 'sub', @_level
-    if max_count != nil
-      check_arg max_count, 'number', 4, 'sub', @_level
-
+  sub: check'RegEx string string|function ?number' (str, repl, max_count) =>
     max_count = str\len() + 1 if not max_count or max_count == 0
 
     if type(repl) == 'function'
        do_replace_fun @, repl, str, max_count
     elseif type(repl) == 'string'
       replace @_regex, repl, str, max_count
-    else
-      error "Argument 2 to sub should be a string or function, is '#{type(repl)}' (#{repl})", @_level
 
-  gmatch: (str, start) =>
-    @_check_self!
-    check_arg str, 'string', 2, 'gmatch', @_level
+  gmatch: check'RegEx string ?number' (str, start) =>
     start = if start then start - 1 else 0
 
     m = match @_regex, str, start
@@ -245,10 +221,7 @@ class RegEx
         last: last + start
       }
 
-  match: (str, start) =>
-    @_check_self!
-    check_arg(str, 'string', 2, 'match', @_level)
-
+  match: check'RegEx string ?number' (str, start) =>
     ret = [v for v in @gmatch str, start]
     -- Return nil rather than a empty table so that if re.match(...) works
     return nil if next(ret) == nil
@@ -271,16 +244,13 @@ invoke = (str, pattern, fn, flags, ...) ->
   compiled_regex[fn](compiled_regex, str, ...)
 
 -- Generate a static version of a method with arg type checking
-gen_wrapper = (impl_name) -> (str, pattern, ...) ->
-  check_arg str, 'string', 1, impl_name, 2
-  check_arg pattern, 'string', 2, impl_name, 2
+gen_wrapper = (impl_name) -> check'string string ...' (str, pattern, ...) ->
   invoke str, pattern, impl_name, unpack_args ...
 
 -- And now at last the actual public API
 do
   re = {
-    compile: (pattern, ...) ->
-      check_arg pattern, 'string', 1, 'compile', 2
+    compile: check'string ...' (pattern, ...) ->
       real_compile pattern, 2, process_flags(...), 2
 
     split:  gen_wrapper 'split'

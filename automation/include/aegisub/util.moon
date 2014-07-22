@@ -20,14 +20,16 @@ sformat  = string.format
 tonumber = tonumber
 type     = type
 
+check = require 'aegisub.argcheck'
+
 local *
 
 -- Make a shallow copy of a table
-copy = (tbl) -> {k, v for k, v in pairs tbl}
+copy = check'table' (tbl) -> {k, v for k, v in pairs tbl}
 
 -- Make a deep copy of a table
 -- Retains equality of table references inside the copy and handles self-referencing structures
-deep_copy = (tbl) ->
+deep_copy = check'table' (tbl) ->
   seen = {}
   copy = (val) ->
     return val if type(val) != 'table'
@@ -44,7 +46,7 @@ ass_alpha = (a) -> sformat "&H%02X&", a
 ass_style_color = (r, g, b, a) -> sformat "&H%02X%02X%02X%02X", a, b, g, r
 
 -- Extract colour components of an ASS colour
-extract_color = (s) ->
+extract_color = check'string' (s) ->
   local a, b, g, r
 
   -- Try a style first
@@ -68,10 +70,10 @@ extract_color = (s) ->
     return tonumber(r, 16), tonumber(g, 16) or 0, tonumber(b, 16) or 0, tonumber(a, 16) or 0
 
 -- Create an alpha override code from a style definition colour code
-alpha_from_style = (scolor) -> ass_alpha select 4, extract_color scolor
+alpha_from_style = check'string' (scolor) -> ass_alpha select 4, extract_color scolor
 
 -- Create an colour override code from a style definition colour code
-color_from_style = (scolor) ->
+color_from_style = check'string' (scolor) ->
   r, g, b = extract_color scolor
   ass_color r or 0, g or 0, b or 0
 
