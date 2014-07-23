@@ -78,7 +78,7 @@ void SubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
 		buffer.push_back('\n');
 	};
 
-	push_header("[Script Info]\n");
+	push_header("\xEF\xBB\xBF[Script Info]\n");
 	for (auto const& line : subs->Info)
 		push_line(line.GetEntryData());
 
