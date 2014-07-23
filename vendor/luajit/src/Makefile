@@ -290,7 +290,7 @@ ifeq (Windows,$(TARGET_SYS))
 else
 ifeq (Darwin,$(TARGET_SYS))
   ifeq (,$(MACOSX_DEPLOYMENT_TARGET))
-    export MACOSX_DEPLOYMENT_TARGET=10.7
+    export MACOSX_DEPLOYMENT_TARGET=10.4
   endif
   TARGET_STRIP+= -x
   TARGET_AR+= 2>/dev/null
