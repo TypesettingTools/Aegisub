@@ -2029,7 +2029,7 @@ msgstr "De toepassing afsluiten"
 
 #: ../src/command/app.cpp:182
 msgid "&Language..."
-msgstr "Taal..."
+msgstr "Taal... (Language)"
 
 #: ../src/command/app.cpp:183
 msgid "Language"

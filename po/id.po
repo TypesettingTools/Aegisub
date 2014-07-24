@@ -2246,7 +2246,7 @@ msgstr "Keluar dari aplikasi"
 
 #: ../src/command/app.cpp:157
 msgid "&Language..."
-msgstr "&Bahasa..."
+msgstr "&Bahasa... (Language)"
 
 #: ../src/command/app.cpp:158
 msgid "Language"

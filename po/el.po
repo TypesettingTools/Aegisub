@@ -2273,7 +2273,7 @@ msgstr "Έξοδος από την εφαρμογή"
 
 #: ../src/command/app.cpp:160
 msgid "&Language..."
-msgstr "&Γλώσσα..."
+msgstr "&Γλώσσα... (Language)"
 
 #: ../src/command/app.cpp:161
 msgid "Language"

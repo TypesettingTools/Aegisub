@@ -2247,7 +2247,7 @@ msgstr "Fecha o programa"
 
 #: ../src/command/app.cpp:160
 msgid "&Language..."
-msgstr "&Idioma..."
+msgstr "&Idioma... (Language)"
 
 #: ../src/command/app.cpp:161
 msgid "Language"

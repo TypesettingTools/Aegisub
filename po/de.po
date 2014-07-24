@@ -1137,7 +1137,7 @@ msgstr "Beendet Aegisub"
 
 #: ../src/command/app.cpp:180
 msgid "&Language..."
-msgstr "&Sprache..."
+msgstr "&Sprache... (Language)"
 
 #: ../src/command/app.cpp:181
 msgid "Language"
