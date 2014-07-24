@@ -1996,7 +1996,7 @@ msgstr "Izađite iz programa."
 
 #: ../src/command/app.cpp:182
 msgid "&Language..."
-msgstr "&Jezik…"
+msgstr "&Jezik… (Language)"
 
 #: ../src/command/app.cpp:183
 msgid "Language"

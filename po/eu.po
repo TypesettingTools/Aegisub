@@ -2253,7 +2253,7 @@ msgstr "Irten aplikaziotik"
 
 #: ../src/command/app.cpp:157
 msgid "&Language..."
-msgstr "&Hizkuntza..."
+msgstr "&Hizkuntza... (Language)"
 
 #: ../src/command/app.cpp:158
 msgid "Language"

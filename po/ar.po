@@ -2107,7 +2107,7 @@ msgstr "ينهي التطبيق"
 
 #: ../src/command/app.cpp:182
 msgid "&Language..."
-msgstr "الل&غة..."
+msgstr "الل&غة... (Language)"
 
 #: ../src/command/app.cpp:183
 msgid "Language"

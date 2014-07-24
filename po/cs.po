@@ -2050,7 +2050,7 @@ msgstr "Ukončí aplikaci"
 
 #: ../src/command/app.cpp:182
 msgid "&Language..."
-msgstr "Jazyk..."
+msgstr "Jazyk... (Language)"
 
 #: ../src/command/app.cpp:183
 msgid "Language"

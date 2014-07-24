@@ -2000,7 +2000,7 @@ msgstr "Выход из приложения"
 
 #: ../src/command/app.cpp:182
 msgid "&Language..."
-msgstr "&Язык"
+msgstr "&Язык (Language)"
 
 #: ../src/command/app.cpp:183
 msgid "Language"

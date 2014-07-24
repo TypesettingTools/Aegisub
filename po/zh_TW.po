@@ -2196,7 +2196,7 @@ msgstr "退出程式"
 
 #: ../src/command/app.cpp:157
 msgid "&Language..."
-msgstr "語言(&L)…"
+msgstr "語言(&L)… (Language)"
 
 #: ../src/command/app.cpp:158
 msgid "Language"

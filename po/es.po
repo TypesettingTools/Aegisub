@@ -2316,7 +2316,7 @@ msgstr "Cierra la aplicación"
 
 #: ../src/command/app.cpp:159
 msgid "&Language..."
-msgstr "&Idioma..."
+msgstr "&Idioma... (Language)"
 
 #: ../src/command/app.cpp:160
 msgid "Language"

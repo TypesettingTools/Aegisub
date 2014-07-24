@@ -2015,7 +2015,7 @@ msgstr "Quitter l'application"
 
 #: ../src/command/app.cpp:182
 msgid "&Language..."
-msgstr "&Langue..."
+msgstr "&Langue... (Language)"
 
 #: ../src/command/app.cpp:183
 msgid "Language"

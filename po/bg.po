@@ -2289,7 +2289,7 @@ msgstr "Изход от приложението"
 
 #: ../src/command/app.cpp:159
 msgid "&Language..."
-msgstr "&Езици"
+msgstr "&Езици (Language)"
 
 #: ../src/command/app.cpp:160
 msgid "Language"
