@@ -175,7 +175,7 @@ namespace Automation4 {
 				luaL_where(L, 1);
 				lua_insert(L, 1);
 				lua_concat(L, 2);
-				lua_error(L);
+				throw error_tag{};
 			}
 		}
 
