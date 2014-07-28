@@ -51,6 +51,7 @@
 #include "utils.h"
 
 #include <libaegisub/format.h>
+#include <libaegisub/lua/ffi.h>
 #include <libaegisub/lua/modules.h>
 #include <libaegisub/lua/script_reader.h>
 #include <libaegisub/lua/utils.h>
@@ -118,20 +119,16 @@ namespace {
 		return 1;
 	}
 
-	int clipboard_get(lua_State *L)
+	const char *clipboard_get()
 	{
 		std::string data = GetClipboard();
 		if (data.empty())
-			lua_pushnil(L);
-		else
-			push_value(L, data);
-		return 1;
+			return nullptr;
+		return strdup(data.c_str());
 	}
 
-	int clipboard_set(lua_State *L)
+	bool clipboard_set(const char *str)
 	{
-		std::string str(check_string(L, 1));
-
 		bool succeeded = false;
 
 #if wxUSE_OLE
@@ -142,20 +139,17 @@ namespace {
 		wxClipboard &cb = *wxTheClipboard;
 #endif
 		if (cb.Open()) {
-			succeeded = cb.SetData(new wxTextDataObject(to_wx(str)));
+			succeeded = cb.SetData(new wxTextDataObject(wxString::FromUTF8(str)));
 			cb.Close();
 			cb.Flush();
 		}
 
-		lua_pushboolean(L, succeeded);
-		return 1;
+		return succeeded;
 	}
 
 	int clipboard_init(lua_State *L)
 	{
-		lua_createtable(L, 0, 2);
-		set_field<clipboard_get>(L, "get");
-		set_field<clipboard_set>(L, "set");
+		agi::lua::register_lib_table(L, {}, "get", clipboard_get, "set", clipboard_set);
 		return 1;
 	}
 
