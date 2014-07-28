@@ -23,6 +23,7 @@
       <PreprocessorDefinitions>
         NOMINMAX;
         _WIN32_WINNT=0x0501;
+        _CRT_NONSTDC_NO_DEPRECATE;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
