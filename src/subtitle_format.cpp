@@ -44,6 +44,7 @@
 #include "subtitle_format_microdvd.h"
 #include "subtitle_format_mkv.h"
 #include "subtitle_format_srt.h"
+#include "subtitle_format_ssa.h"
 #include "subtitle_format_transtation.h"
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_txt.h"
@@ -267,6 +268,7 @@ void SubtitleFormat::LoadFormats() {
 		formats.emplace_back(agi::make_unique<MKVSubtitleFormat>());
 		formats.emplace_back(agi::make_unique<MicroDVDSubtitleFormat>());
 		formats.emplace_back(agi::make_unique<SRTSubtitleFormat>());
+		formats.emplace_back(agi::make_unique<SsaSubtitleFormat>());
 		formats.emplace_back(agi::make_unique<TTXTSubtitleFormat>());
 		formats.emplace_back(agi::make_unique<TXTSubtitleFormat>());
 		formats.emplace_back(agi::make_unique<TranStationSubtitleFormat>());
