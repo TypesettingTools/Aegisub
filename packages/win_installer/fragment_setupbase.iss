@@ -90,6 +90,7 @@ Name: "pt_PT"; MessagesFile: "compiler:Languages\Portuguese.isl"
 Name: "ru"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "sr_RS"; MessagesFile: "compiler:Languages\SerbianCyrillic.isl"
 Name: "sr_RS_latin"; MessagesFile: "compiler:Languages\SerbianLatin.isl"
+Name: "uk_UA"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 Name: "zh_CN"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
 Name: "zh_TW"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
 
