@@ -16,11 +16,17 @@
 
 #include <libaegisub/fs.h>
 
-#include <boost/exception/detail/attribute_noreturn.hpp>
 #include <lua.hpp>
 #include <string>
 #include <vector>
 #include <type_traits>
+
+#include <boost/config.hpp>
+
+#ifndef BOOST_NORETURN
+#include <boost/exception/detail/attribute_noreturn.hpp>
+#define BOOST_NORETURN BOOST_ATTRIBUTE_NORETURN
+#endif
 
 namespace agi { namespace lua {
 // Exception type for errors where the error details are on the lua stack
@@ -28,9 +34,9 @@ struct error_tag {};
 
 // Below are functionally equivalent to the luaL_ functions, but using a C++
 // exception for stack unwinding
-int BOOST_ATTRIBUTE_NORETURN error(lua_State *L, const char *fmt, ...);
-int BOOST_ATTRIBUTE_NORETURN argerror(lua_State *L, int narg, const char *extramsg);
-int BOOST_ATTRIBUTE_NORETURN typerror(lua_State *L, int narg, const char *tname);
+int BOOST_NORETURN error(lua_State *L, const char *fmt, ...);
+int BOOST_NORETURN argerror(lua_State *L, int narg, const char *extramsg);
+int BOOST_NORETURN typerror(lua_State *L, int narg, const char *tname);
 void argcheck(lua_State *L, bool cond, int narg, const char *msg);
 
 inline void push_value(lua_State *L, bool value) { lua_pushboolean(L, value); }
