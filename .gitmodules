@@ -4,7 +4,7 @@
 	ignore = dirty
 [submodule "wxWidgets"]
 	path = vendor/wxWidgets
-	url = git://github.com/wxWidgets/wxWidgets.git
+	url = git://github.com/Aegisub/wxWidgets.git
 	ignore = dirty
 [submodule "googletest"]
 	path = vendor/googletest
