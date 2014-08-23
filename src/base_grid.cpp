@@ -54,39 +54,6 @@
 #include <wx/scrolbar.h>
 #include <wx/sizer.h>
 
-namespace {
-#ifdef __WXMSW__
-class PaintDC : public wxBufferedDC {
-	wxPaintDC dc;
-
-public:
-	PaintDC(wxWindow *window) : dc(window) {
-		dc.SetLayoutDirection(wxLayout_LeftToRight);
-		Init(&dc, window->GetClientSize(), 0);
-		if (window->GetLayoutDirection() == wxLayout_RightToLeft) {
-			SetLayoutDirection(wxLayout_RightToLeft);
-			SetLogicalOrigin(GetSize().GetWidth(), 0);
-		}
-	}
-
-	~PaintDC() {
-		SetLayoutDirection(wxLayout_LeftToRight);
-		SetLogicalOrigin(0, 0);
-		UnMask();
-	}
-
-	void Clear() {
-		auto origin = GetLogicalOrigin();
-		SetLogicalOrigin(0, 0);
-		wxBufferedDC::Clear();
-		SetLogicalOrigin(origin.x, origin.y);
-	}
-};
-#else
-typedef wxAutoBufferedPaintDC PaintDC;
-#endif
-}
-
 enum {
 	GRID_SCROLLBAR = 1730,
 	MENU_SHOW_COL = 1250 // Needs 15 IDs after this
@@ -319,7 +286,7 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 	GetClientSize(&w,&h);
 	w -= scrollBar->GetSize().GetWidth();
 
-	PaintDC dc(this);
+	wxAutoBufferedPaintDC dc(this);
 	dc.SetFont(font);
 
 	dc.SetBackground(row_colors.Default);
