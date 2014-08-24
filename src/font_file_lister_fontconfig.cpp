@@ -16,6 +16,7 @@
 
 #include "font_file_lister.h"
 
+#include <libaegisub/charset_conv_win.h>
 #include <libaegisub/log.h>
 
 #ifdef __APPLE__
@@ -112,6 +113,38 @@ CollectionResult FontConfigFontFileLister::GetFontPaths(std::string const& facen
 		return ret;
 
 	auto match = matches->fonts[0];
+
+#ifdef _WIN32
+	wxMemoryDC dc;
+	// Use EnumFontFamiliesEx to verify the match, as fontconfig sometimes gives
+	// us some incorrect matches along with the correct one
+	for (FcPattern *pat : boost::make_iterator_range(&matches->fonts[0], &matches->fonts[matches->nfont])) {
+		FcChar8 *fullname;
+		if (FcPatternGetString(pat, FC_FULLNAME, 0, &fullname) != FcResultMatch)
+			continue;
+
+		LOGFONT lf = {0};
+		lf.lfCharSet = DEFAULT_CHARSET;
+		wcsncpy(lf.lfFaceName, agi::charset::ConvertW((const char *)fullname).c_str(), 31);
+
+		auto cb = [&](const LOGFONT *lf) {
+			auto face = agi::charset::ConvertW(lf->lfFaceName);
+			boost::to_lower(face);
+			return face == family;
+		};
+
+		using type = decltype(cb);
+		bool found = !EnumFontFamiliesEx(dc.GetHDC(), &lf,
+			[](const LOGFONT *lf, const TEXTMETRIC *, DWORD, LPARAM lParam) -> int {
+				return !(*reinterpret_cast<type*>(lParam))(lf);
+			}, (LPARAM)&cb, 0);
+
+		if (found) {
+			match = pat;
+			break;
+		}
+	}
+#endif
 
 	FcChar8 *file;
 	if(FcPatternGetString(match, FC_FILE, 0, &file) != FcResultMatch)
