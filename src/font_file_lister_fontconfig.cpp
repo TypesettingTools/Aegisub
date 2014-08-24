@@ -41,6 +41,17 @@ FcConfig *init_fontconfig() {
 	return FcInitLoadConfig();
 }
 
+bool pattern_matches(FcPattern *pat, const char *field, std::string const& name) {
+	FcChar8 *str;
+	for (int i = 0; FcPatternGetString(pat, field, i, &str) == FcResultMatch; ++i) {
+		std::string sstr((char *)str);
+		boost::to_lower(sstr);
+		if (sstr == name)
+			return true;
+	}
+	return false;
+}
+
 void find_font(FcFontSet *src, FcFontSet *dst, std::string const& family) {
 	if (!src) return;
 
@@ -48,22 +59,8 @@ void find_font(FcFontSet *src, FcFontSet *dst, std::string const& family) {
 		int val;
 		if (FcPatternGetBool(pat, FC_OUTLINE, 0, &val) != FcResultMatch || val != FcTrue) continue;
 
-		FcChar8 *str;
-		for (int i = 0; FcPatternGetString(pat, FC_FULLNAME, i, &str) == FcResultMatch; ++i) {
-			if (boost::to_lower_copy(std::string((char *)str)) == family) {
-				FcFontSetAdd(dst, FcPatternDuplicate(pat));
-				goto skip_family;
-			}
-		}
-
-		for (int i = 0; FcPatternGetString(pat, FC_FAMILY, i, &str) == FcResultMatch; ++i) {
-			if (boost::to_lower_copy(std::string((char *)str)) == family) {
-				FcFontSetAdd(dst, FcPatternDuplicate(pat));
-				break;
-			}
-		}
-
-		skip_family:;
+		if (pattern_matches(pat, FC_FULLNAME, family) || pattern_matches(pat, FC_FAMILY, family))
+			FcFontSetAdd(dst, FcPatternDuplicate(pat));
 	}
 }
 
@@ -109,9 +106,12 @@ CollectionResult FontConfigFontFileLister::GetFontPaths(std::string const& facen
 	// Get the best match from fontconfig
 	FcResult result;
 	FcFontSet *sets[] = { (FcFontSet*)fset };
-	agi::scoped_holder<FcPattern*> match(FcFontSetMatch(config, sets, 1, pat, &result), FcPatternDestroy);
-	if (!match)
+
+	agi::scoped_holder<FcFontSet*> matches(FcFontSetSort(config, sets, 1, pat, false, nullptr, &result), FcFontSetDestroy);
+	if (matches->nfont == 0)
 		return ret;
+
+	auto match = matches->fonts[0];
 
 	FcChar8 *file;
 	if(FcPatternGetString(match, FC_FILE, 0, &file) != FcResultMatch)
