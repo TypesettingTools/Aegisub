@@ -229,8 +229,13 @@ void AssFile::Sort(EntryList<AssDialogue> &lst, CompFunc comp, std::set<AssDialo
 	}
 }
 
-
 uint32_t AssFile::AddExtradata(std::string const& key, std::string const& value) {
+	for (auto const& data : Extradata) {
+		// perform brute-force deduplication by simple key and value comparison
+		if (key == data.second.first && value == data.second.second) {
+			return data.first;
+		}
+	}
 	// next_extradata_id must not exist
 	assert(Extradata.find(next_extradata_id) == Extradata.end());
 	Extradata[next_extradata_id] = {key, value};
