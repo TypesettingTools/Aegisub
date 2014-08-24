@@ -344,6 +344,9 @@ void DialogShiftTimes::LoadHistory() {
 	catch (agi::fs::FileSystemError const& e) {
 		LOG_D("dialog_shift_times/load_history") << "Cannot load shift times history: " << e.GetMessage();
 	}
+	catch (json::Exception const& e) {
+		LOG_D("dialog_shift_times/load_history") << "Cannot load shift times history: " << e.what();
+	}
 	catch (...) {
 		history_box->Thaw();
 		throw;
