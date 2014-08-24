@@ -178,12 +178,6 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, std::strin
 
 	SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
 
-	// Make sure the file has at least one style and one dialogue line
-	if (temp.Styles.empty())
-		temp.Styles.push_back(*new AssStyle);
-	if (temp.Events.empty())
-		temp.Events.push_back(*new AssDialogue);
-
 	context->ass->swap(temp);
 	auto props = context->ass->Properties;
 
@@ -327,6 +321,12 @@ void SubsController::OnCommit(AssFileCommit c) {
 
 		undo_stack.pop_back();
 	}
+
+	// Make sure the file has at least one style and one dialogue line
+	if (context->ass->Styles.empty())
+		context->ass->Styles.push_back(*new AssStyle);
+	if (context->ass->Events.empty())
+		context->ass->Events.push_back(*new AssDialogue);
 
 	redo_stack.clear();
 
