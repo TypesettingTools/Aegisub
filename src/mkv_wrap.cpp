@@ -237,10 +237,10 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 			parser.AddLine(cur);
 	}
 	// Load default if it's SRT
-	else {
+	else
 		target->LoadDefault(false, OPT_GET("Subtitle Format/SRT/Default Style Catalog")->GetString());
-		parser.AddLine("[Events]");
-	}
+
+	parser.AddLine("[Events]");
 
 	// Read timecode scale
 	auto segInfo = mkv_GetFileInfo(file);
