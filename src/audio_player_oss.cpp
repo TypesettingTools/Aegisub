@@ -63,7 +63,7 @@ class OSSPlayer final : public AudioPlayer {
     unsigned int rate = 0;
 
     /// Worker thread that does the actual writing
-    OSSPlayerThread *thread = nullptr;
+    std::unique_ptr<OSSPlayerThread> thread;
 
     /// Is the player currently playing?
     volatile bool playing = false;
@@ -198,7 +198,7 @@ void OSSPlayer::Play(int64_t start, int64_t count)
     start_frame = cur_frame = start;
     end_frame = start + count;
 
-    thread = new OSSPlayerThread(this);
+    thread = agi::make_unique<OSSPlayerThread>(this);
     thread->Create();
     thread->Run();
 
@@ -215,7 +215,7 @@ void OSSPlayer::Stop()
             thread->Delete();
         }
         thread->Wait();
-        delete thread;
+        thread.reset();
     }
 
     // errors can be ignored here

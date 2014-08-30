@@ -39,7 +39,7 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 	std::string unused_entry_count;
 	getline(idx, unused_entry_count);
 
-	conv.reset(new charset::IconvWrapper(encoding_name.c_str(), "utf-8"));
+	conv = make_unique<charset::IconvWrapper>(encoding_name.c_str(), "utf-8");
 
 	// Read the list of words and file offsets for those words
 	for (auto const& line : line_iterator<std::string>(idx, encoding_name)) {

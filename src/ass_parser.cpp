@@ -95,7 +95,7 @@ public:
 };
 
 AssParser::AssParser(AssFile *target, int version)
-: property_handler(new HeaderToProperty)
+: property_handler(agi::make_unique<HeaderToProperty>())
 , target(target)
 , version(version)
 , state(&AssParser::ParseScriptInfoLine)
