@@ -64,26 +64,26 @@ std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
 	auto buff_end = buff + len;
 
 	std::string temp;
-	auto read_line = [&] () -> std::string const& {
+	auto read_line = [&] (std::string& temp) -> std::string * {
 		auto start = buff;
 		auto end = std::find(buff, buff_end, '\n');
 		buff = end < buff_end ? end + 1 : buff_end;
 		if (end > start && end[-1] == '\r') --end;
 		temp.clear();
 		conv->Convert(start, end - start, temp);
-		return temp;
+		return &temp;
 	};
 
 	// First line is the word and meaning count
 	std::vector<std::string> header;
-	boost::split(header, read_line(), [](char c) { return c == '|'; });
+	boost::split(header, *read_line(temp), [](char c) { return c == '|'; });
 	if (header.size() != 2) return out;
 	int meanings = atoi(header[1].c_str());
 
 	out.reserve(meanings);
 	for (int i = 0; i < meanings; ++i) {
 		std::vector<std::string> line;
-		boost::split(line, read_line(), [](char c) { return c == '|'; });
+		boost::split(line, *read_line(temp), [](char c) { return c == '|'; });
 
 		if (line.size() < 2)
 			continue;

@@ -194,8 +194,8 @@ double VideoController::GetARFromType(AspectRatio type) const {
 		case AspectRatio::Fullscreen: return 4.0/3.0;
 		case AspectRatio::Widescreen: return 16.0/9.0;
 		case AspectRatio::Cinematic:  return 2.35;
+        default: throw agi::InternalError("Bad AR type");
 	}
-	throw agi::InternalError("Bad AR type");
 }
 
 void VideoController::SetAspectRatio(double value) {
