@@ -122,8 +122,8 @@ struct Writer {
 			file.WriteLineToFile(key + std::to_string(n));
 	}
 
-	void WriteExtradata(AegisubExtradataMap const& extradata) {
-		if (extradata.size() == 0)
+	void WriteExtradata(std::vector<ExtradataEntry> const& extradata) {
+		if (extradata.empty())
 			return;
 
 		group = AssEntryGroup::EXTRADATA;
@@ -131,16 +131,16 @@ struct Writer {
 		file.WriteLineToFile("[Aegisub Extradata]");
 		for (auto const& edi : extradata) {
 			std::string line = "Data: ";
-			line += std::to_string(edi.first);
+			line += std::to_string(edi.id);
 			line += ",";
-			line += inline_string_encode(edi.second.first);
+			line += inline_string_encode(edi.key);
 			line += ",";
-			std::string encoded_data = inline_string_encode(edi.second.second);
-			if (4*edi.second.second.size() < 3*encoded_data.size()) {
+			std::string encoded_data = inline_string_encode(edi.value);
+			if (4*edi.value.size() < 3*encoded_data.size()) {
 				// the inline_string encoding grew the data by more than uuencoding would
 				// so base64 encode it instead
 				line += "u"; // marker for uuencoding
-				line += agi::ass::UUEncode(edi.second.second, false);
+				line += agi::ass::UUEncode(edi.value, false);
 			} else {
 				line += "e"; // marker for inline_string encoding (escaping)
 				line += encoded_data;

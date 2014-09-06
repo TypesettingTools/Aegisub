@@ -33,6 +33,7 @@
 #include <libaegisub/signal.h>
 
 #include <boost/intrusive/list.hpp>
+#include <map>
 #include <set>
 #include <vector>
 
@@ -45,7 +46,11 @@ class wxString;
 template<typename T>
 using EntryList = typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>, boost::intrusive::base_hook<AssEntryListHook>>::type;
 
-using AegisubExtradataMap = std::map<uint32_t, std::pair<std::string, std::string>>;
+struct ExtradataEntry {
+	uint32_t id;
+	std::string key;
+	std::string value;
+};
 
 struct AssFileCommit {
 	wxString const& message;
@@ -83,7 +88,7 @@ public:
 	EntryList<AssStyle> Styles;
 	EntryList<AssDialogue> Events;
 	std::vector<AssAttachment> Attachments;
-	AegisubExtradataMap Extradata;
+	std::vector<ExtradataEntry> Extradata;
 	ProjectProperties Properties;
 
 	uint32_t next_extradata_id = 0;
@@ -127,7 +132,7 @@ public:
 	/// @return ID of the created entry
 	uint32_t AddExtradata(std::string const& key, std::string const& value);
 	/// Fetch all extradata entries from a list of IDs
-	std::map<std::string, std::string> GetExtradata(std::vector<uint32_t> const& id_list) const;
+	std::vector<ExtradataEntry> GetExtradata(std::vector<uint32_t> const& id_list) const;
 	/// Remove unreferenced extradata entries
 	void CleanExtradata();
 
@@ -199,4 +204,3 @@ public:
 	/// @param limit If non-empty, only lines in this set are sorted
 	static void Sort(EntryList<AssDialogue>& lst, CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
 };
-

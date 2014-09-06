@@ -28,6 +28,8 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem/path.hpp>
 #include <cassert>
+#include <unordered_map>
+#include <unordered_set>
 
 AssFile::AssFile() { }
 
@@ -232,58 +234,79 @@ void AssFile::Sort(EntryList<AssDialogue> &lst, CompFunc comp, std::set<AssDialo
 uint32_t AssFile::AddExtradata(std::string const& key, std::string const& value) {
 	for (auto const& data : Extradata) {
 		// perform brute-force deduplication by simple key and value comparison
-		if (key == data.second.first && value == data.second.second) {
-			return data.first;
+		if (key == data.key && value == data.value) {
+			return data.id;
 		}
 	}
-	// next_extradata_id must not exist
-	assert(Extradata.find(next_extradata_id) == Extradata.end());
-	Extradata[next_extradata_id] = {key, value};
+	Extradata.push_back(ExtradataEntry{next_extradata_id, key, value});
 	return next_extradata_id++; // return old value, then post-increment
 }
 
-std::map<std::string, std::string> AssFile::GetExtradata(std::vector<uint32_t> const& id_list) const {
-	// If multiple IDs have the same key name, the last ID wins
-	std::map<std::string, std::string> result;
-	for (auto id : id_list) {
-		auto it = Extradata.find(id);
-		if (it != Extradata.end())
-			result[it->second.first] = it->second.second;
+namespace {
+struct extradata_id_cmp {
+	bool operator()(ExtradataEntry const& e, uint32_t id) {
+		return e.id < id;
 	}
+	bool operator()(uint32_t id, ExtradataEntry const& e) {
+		return id < e.id;
+	}
+};
+
+template<typename ExtradataType, typename Func>
+void enumerate_extradata(ExtradataType&& extradata, std::vector<uint32_t> const& id_list, Func&& f) {
+	auto begin = extradata.begin(), end = extradata.end();
+	for (auto id : id_list) {
+		auto it = lower_bound(begin, end, id, extradata_id_cmp{});
+		if (it != end) {
+			f(*it);
+			begin = it;
+		}
+	}
+}
+
+template<typename K, typename V>
+using reference_map = std::unordered_map<std::reference_wrapper<const K>, V, std::hash<K>, std::equal_to<K>>;
+}
+
+std::vector<ExtradataEntry> AssFile::GetExtradata(std::vector<uint32_t> const& id_list) const {
+	std::vector<ExtradataEntry> result;
+	enumerate_extradata(Extradata, id_list, [&](ExtradataEntry const& e) {
+		result.push_back(e);
+	});
 	return result;
 }
 
 void AssFile::CleanExtradata() {
-	// Collect all IDs existing in the database
-	// Then remove all IDs found to be in use from this list
-	// Remaining is then all garbage IDs
-	std::vector<uint32_t> ids;
-	for (auto& it : Extradata)
-		ids.push_back(it.first);
-	if (ids.empty()) return;
+	if (Extradata.empty()) return;
 
-	// For each line, find which IDs it actually uses and remove them from the unused-list
+	std::unordered_set<uint32_t> ids_used;
 	for (auto& line : Events) {
+		if (line.ExtradataIds.get().empty()) continue;
+
 		// Find the ID for each unique key in the line
-		std::map<std::string, uint32_t> key_ids;
-		for (auto id : line.ExtradataIds.get()) {
-			auto ed_it = Extradata.find(id);
-			if (ed_it == Extradata.end())
-				continue;
-			key_ids[ed_it->second.first] = id;
+		reference_map<std::string, uint32_t> keys_used;
+		enumerate_extradata(Extradata, line.ExtradataIds.get(), [&](ExtradataEntry const& e) {
+			keys_used[e.key] = e.id;
+		});
+
+		for (auto const& used : keys_used)
+			ids_used.insert(used.second);
+
+		// If any keys were duplicated or missing, update the id list
+		if (keys_used.size() != line.ExtradataIds.get().size()) {
+			std::vector<uint32_t> ids;
+			ids.reserve(keys_used.size());
+			for (auto const& used : keys_used)
+				ids.push_back(used.second);
+			std::sort(begin(ids), end(ids));
+			line.ExtradataIds = std::move(ids);
 		}
-		// Update the line's ID list to only contain the actual ID for any duplicate keys
-		// Also mark found IDs as used in the cleaning list
-		std::vector<uint32_t> new_ids;
-		for (auto& keyid : key_ids) {
-			new_ids.push_back(keyid.second);
-			ids.erase(remove(begin(ids), end(ids), keyid.second), end(ids));
-		}
-		line.ExtradataIds = new_ids;
 	}
 
-	// The ids list should contain only unused IDs now
-	for (auto id : ids) {
-		Extradata.erase(id);
+	if (ids_used.size() != Extradata.size()) {
+		// Erase all no-longer-used extradata entries
+		Extradata.erase(std::remove_if(begin(Extradata), end(Extradata), [&](ExtradataEntry const& e) {
+			return !ids_used.count(e.id);
+		}), end(Extradata));
 	}
 }

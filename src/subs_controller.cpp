@@ -57,7 +57,7 @@ struct SubsController::UndoInfo {
 	std::vector<AssStyle> styles;
 	std::vector<AssDialogueBase> events;
 	std::vector<AssAttachment> attachments;
-	AegisubExtradataMap extradata;
+	std::vector<ExtradataEntry> extradata;
 
 	mutable std::vector<int> selection;
 	int active_line_id = 0;

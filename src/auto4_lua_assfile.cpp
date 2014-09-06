@@ -179,8 +179,8 @@ namespace Automation4 {
 			// create extradata table
 			lua_newtable(L);
 			for (auto const& ed : ass->GetExtradata(dia->ExtradataIds)) {
-				push_value(L, ed.first);
-				push_value(L, ed.second);
+				push_value(L, ed.key);
+				push_value(L, ed.value);
 				lua_settable(L, -3);
 			}
 			lua_setfield(L, -2, "extra");
@@ -309,7 +309,8 @@ namespace Automation4 {
 					get_string_or_default(L, -2),
 					get_string_or_default(L, -1)));
 			});
-			dia->ExtradataIds = new_ids;
+			std::sort(begin(new_ids), end(new_ids));
+			dia->ExtradataIds = std::move(new_ids);
 		}
 		else {
 			error(L, "Found line with unknown class: %s", lclass.c_str());
