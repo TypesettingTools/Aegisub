@@ -106,6 +106,15 @@ public:
 	/// @param forceEncoding Encoding to use or empty string for default
 	virtual void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding="") const { }
 
+	/// Export a subtitle file
+	///
+	/// This is used when saving via Export As..., for subtitle formats which
+	/// want to distinguish between exporting a final version of a script and
+	/// saving a project.
+	virtual void ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding="") const {
+		WriteFile(src, filename, fps, encoding);
+	}
+
 	/// Get the wildcards for a save or load dialog
 	/// @param mode 0: load 1: save
 	static std::string GetWildcards(int mode);

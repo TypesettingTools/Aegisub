@@ -28,4 +28,7 @@ public:
 
 	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
 	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
+
+	// Does not write [Aegisub Project Garbage] and [Aegisub Extradata] sections when exporting
+	void ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
 };
