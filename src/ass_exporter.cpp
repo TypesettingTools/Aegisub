@@ -91,7 +91,7 @@ void AssExporter::Export(agi::fs::path const& filename, std::string const& chars
 	if (!writer)
 		throw agi::InvalidInputException("Unknown file type.");
 
-	writer->WriteFile(&subs, filename, c->project->Timecodes(), charset);
+	writer->ExportFile(&subs, filename, c->project->Timecodes(), charset);
 }
 
 wxSizer *AssExporter::GetSettingsSizer(std::string const& name) {

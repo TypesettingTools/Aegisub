@@ -160,3 +160,11 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	writer.Write(src->Events);
 	writer.WriteExtradata(src->Extradata);
 }
+
+void AssSubtitleFormat::ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
+	Writer writer(filename, encoding);
+	writer.Write(src->Info);
+	writer.Write(src->Styles);
+	writer.Write(src->Attachments);
+	writer.Write(src->Events);
+}
