@@ -170,6 +170,11 @@ describe 'split', ->
     assert.is.equal 'b', res[2]
     assert.is.equal 'c', res[3]
 
+  it 'should return an empty table when given only empty segments', ->
+    res = re.split ',,,', ',', true
+    assert.is.not.nil res
+    assert.is.equal 0, #res
+
   it 'should be able to split on word boundaries', ->
     res = re.split 'aa bb cc', '\\b', true
     assert.is.not.nil res

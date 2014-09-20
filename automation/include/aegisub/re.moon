@@ -165,7 +165,7 @@ class RegEx
       if not first or first > str\len()
         ret = str\sub prev, str\len()
         str = nil
-        return ret
+        return if skip_empty and ret\len() == 0 then nil else ret
 
       ret = str\sub prev, first - 1
       prev = last + 1
