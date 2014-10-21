@@ -329,6 +329,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 		boost::trim(text_line);
 
 		boost::smatch timestamp_match;
+		bool found_timestamps = false;
 		switch (state) {
 			case ParseState::INITIAL:
 				// ignore leading blank lines
@@ -338,29 +339,18 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 					state = ParseState::TIMESTAMP;
 					break;
 				}
-				if (regex_search(text_line, timestamp_match, timestamp_regex))
-					goto found_timestamps;
+				if (regex_search(text_line, timestamp_match, timestamp_regex)) {
+					found_timestamps = true;
+					break;
+				}
 
 				throw SRTParseError(agi::format("Parsing SRT: Expected subtitle index at line %d", line_num));
 
 			case ParseState::TIMESTAMP:
 				if (!regex_search(text_line, timestamp_match, timestamp_regex))
 					throw SRTParseError(agi::format("Parsing SRT: Expected timestamp pair at line %d", line_num));
-found_timestamps:
-				if (line) {
-					// finalize active line
-					line->Text = tag_parser.ToAss(text);
-					text.clear();
-				}
 
-				// create new subtitle
-				line = new AssDialogue;
-				line->Start = timestamp_match.str(1);
-				line->End = timestamp_match.str(2);
-				// store pointer to subtitle, we'll continue working on it
-				target->Events.push_back(*line);
-				// next we're reading the text
-				state = ParseState::FIRST_LINE_OF_BODY;
+				found_timestamps = true;
 				break;
 
 			case ParseState::FIRST_LINE_OF_BODY:
@@ -397,8 +387,10 @@ found_timestamps:
 					state = ParseState::TIMESTAMP;
 					break;
 				}
-				if (regex_search(text_line, timestamp_match, timestamp_regex))
-					goto found_timestamps;
+				if (regex_search(text_line, timestamp_match, timestamp_regex)) {
+					found_timestamps = true;
+					break;
+				}
 
 				// assume it's a continuation of the subtitle text
 				// resolve our line break debt and append the line text
@@ -407,6 +399,22 @@ found_timestamps:
 				text.append(text_line);
 				state = ParseState::REST_OF_BODY;
 				break;
+		}
+		if (found_timestamps) {
+			if (line) {
+				// finalize active line
+				line->Text = tag_parser.ToAss(text);
+				text.clear();
+			}
+
+			// create new subtitle
+			line = new AssDialogue;
+			line->Start = timestamp_match.str(1);
+			line->End = timestamp_match.str(2);
+			// store pointer to subtitle, we'll continue working on it
+			target->Events.push_back(*line);
+			// next we're reading the text
+			state = ParseState::FIRST_LINE_OF_BODY;
 		}
 	}
 
