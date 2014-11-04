@@ -46,7 +46,7 @@ Thesaurus::~Thesaurus() {
 }
 
 std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string word) {
-	if (!impl.get()) return {};
+	if (!impl) return {};
 	boost::to_lower(word);
 	return impl->Lookup(word);
 }

@@ -139,7 +139,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 
 	// List of supported spellchecker languages
 	{
-		if (!spellchecker.get()) {
+		if (!spellchecker) {
 			wxMessageBox("No spellchecker available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
 			throw agi::UserCancelException("No spellchecker available");
 		}

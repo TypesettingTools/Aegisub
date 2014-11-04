@@ -53,7 +53,7 @@ Thesaurus::~Thesaurus() { }
 
 std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
 	std::vector<Entry> out;
-	if (!dat.get()) return out;
+	if (!dat) return out;
 
 	auto it = offsets.find(word);
 	if (it == offsets.end()) return out;

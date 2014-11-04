@@ -109,7 +109,7 @@ template<> agi::Color AssOverrideParameter::Get<agi::Color>() const {
 }
 
 template<> AssDialogueBlockOverride *AssOverrideParameter::Get<AssDialogueBlockOverride*>() const {
-	if (!block.get()) {
+	if (!block) {
 		block = agi::make_unique<AssDialogueBlockOverride>(Get<std::string>());
 		block->ParseTags();
 	}

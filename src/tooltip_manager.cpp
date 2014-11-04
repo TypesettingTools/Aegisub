@@ -61,7 +61,7 @@ void ToolTipManager::Bind(wxWindow *window, wxString tooltip, const char *contex
 }
 
 void ToolTipBinding::Update() {
-	if (!window.get()) return;
+	if (!window) return;
 
 	std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(context, command);
 

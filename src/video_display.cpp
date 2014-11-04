@@ -368,7 +368,7 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 }
 
 void VideoDisplay::OnContextMenu(wxContextMenuEvent&) {
-	if (!context_menu.get()) context_menu = menu::GetMenu("video_context", con);
+	if (!context_menu) context_menu = menu::GetMenu("video_context", con);
 	SetCursor(wxNullCursor);
 	menu::OpenPopupMenu(context_menu.get(), this);
 }
