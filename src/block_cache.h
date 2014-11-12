@@ -98,7 +98,7 @@ class DataBlockCache {
 			return;
 
 		auto& ba = mb.blocks;
-		size += (ba.size() - std::count(ba.begin(), ba.end(), nullptr)) * factory.GetBlockSize();
+		size -= (ba.size() - std::count(ba.begin(), ba.end(), nullptr)) * factory.GetBlockSize();
 
 		ba.clear();
 		age.erase(mb.position);
