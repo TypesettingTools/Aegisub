@@ -158,9 +158,9 @@ bool Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding, P
 	return true;
 }
 
-void Project::LoadSubtitles(agi::fs::path path, std::string encoding) {
+void Project::LoadSubtitles(agi::fs::path path, std::string encoding, bool load_linked) {
 	ProjectProperties properties;
-	if (DoLoadSubtitles(path, encoding, properties))
+	if (DoLoadSubtitles(path, encoding, properties) && load_linked)
 		LoadUnloadFiles(properties);
 }
 

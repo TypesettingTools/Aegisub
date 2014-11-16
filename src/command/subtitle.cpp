@@ -286,7 +286,7 @@ struct subtitle_open_video final : public Command {
 
 	void operator()(agi::Context *c) override {
 		if (c->subsController->TryToClose() == wxCANCEL) return;
-		c->subsController->Load(c->project->VideoName(), "binary");
+		c->project->LoadSubtitles(c->project->VideoName(), "binary", false);
 	}
 
 	bool Validate(const agi::Context *c) override {
