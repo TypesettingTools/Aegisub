@@ -69,7 +69,7 @@ public:
 	Project(agi::Context *context);
 	~Project();
 
-	void LoadSubtitles(agi::fs::path path, std::string encoding="");
+	void LoadSubtitles(agi::fs::path path, std::string encoding="", bool load_linked=true);
 	void CloseSubtitles();
 	bool CanLoadSubtitlesFromVideo() const { return video_has_subtitles; }
 
