@@ -109,8 +109,10 @@ static wxString get_history_string(json::Object &obj) {
 	int64_t sel_mode = obj["mode"];
 	if (sel_mode == 0)
 		lines = _("all");
-	else if (sel_mode == 2)
-		lines = fmt_tl("from %d onward", (int64_t)static_cast<json::Object&>(sel.front())["start"]);
+	else if (sel_mode == 2) {
+		if (!sel.empty())
+			lines = fmt_tl("from %d onward", (int64_t)static_cast<json::Object&>(sel.front())["start"]);
+	}
 	else {
 		lines += _("sel ");
 		for (auto it = sel.begin(); it != sel.end(); ++it) {
