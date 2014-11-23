@@ -129,13 +129,13 @@ struct AssDialogueBase {
 	/// Layer number
 	int Layer = 0;
 	/// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical)
-	std::array<int, 3> Margin = {{0, 0, 0}};
+	std::array<int, 3> Margin = std::array<int, 3>{{ 0, 0, 0 }};
 	/// Starting time
 	agi::Time Start = 0;
 	/// Ending time
 	agi::Time End = 5000;
 	/// Style name
-	boost::flyweight<std::string> Style{ "Default" };
+	boost::flyweight<std::string> Style = boost::flyweight<std::string>("Default");
 	/// Actor name
 	boost::flyweight<std::string> Actor;
 	/// Effect name
