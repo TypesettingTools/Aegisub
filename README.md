@@ -12,7 +12,7 @@ Support is available on [the forums](http://forum.aegisub.org) or [on IRC](irc:/
 
 Prerequisites:
 
-1. Visual Studio 2013 Update 2 or older (Express edition is good enough; Update 3 is not supported) or the Windows 8.1 SDK (command line builds only).
+1. Visual Studio 2013 (Express edition is good enough) or the Windows 8.1 SDK (command line builds only).
 2. A recent DirectX SDK
 4. [Yasm](http://yasm.tortall.net/) installed to somewhere on your path.
 
