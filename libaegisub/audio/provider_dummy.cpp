@@ -50,7 +50,7 @@ class DummyAudioProvider final : public AudioProvider {
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		if (noise) {
-			std::default_random_engine e;
+			std::default_random_engine e(int32_t(start >> 32) ^ int32_t(start));
 			std::uniform_int_distribution<int16_t> uniform_dist(-5000, 5000);
 			for (int64_t i = 0; i < count; ++i)
 				static_cast<short *>(buf)[i] = uniform_dist(e);
