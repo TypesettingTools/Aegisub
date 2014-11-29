@@ -87,6 +87,7 @@
 #define wxUSE_PROPGRID 0
 #define wxUSE_STC 1
 #define wxUSE_GRAPHICS_CONTEXT 1
+#define wxUSE_GRAPHICS_GDIPLUS 1
 #define wxUSE_CONTROLS 1
 #define wxUSE_POPUPWIN 1
 #define wxUSE_TIPWINDOW 0
@@ -253,4 +254,6 @@
 #define wxUSE_RICHTOOLTIP 0
 #define wxUSE_COMPILER_TLS 2
 #define wxUSE_PREFERENCES_EDITOR 0
+#define wxUSE_STD_CONTAINERS_COMPATIBLY 0
+#define wxUSE_TASKBARBUTTON 0
 #endif
