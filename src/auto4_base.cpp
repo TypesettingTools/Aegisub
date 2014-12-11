@@ -360,11 +360,13 @@ namespace Automation4 {
 
 	void LocalScriptManager::Reload()
 	{
+		bool was_empty = scripts.empty();
 		scripts.clear();
 
 		auto const& local_scripts = context->ass->Properties.automation_scripts;
 		if (local_scripts.empty()) {
-			ScriptsChanged();
+			if (!was_empty)
+				ScriptsChanged();
 			return;
 		}
 
