@@ -26,9 +26,6 @@ namespace agi {
 	/// Character set conversion and detection.
 	namespace charset {
 
-DEFINE_EXCEPTION(CharsetError, agi::Exception);
-DEFINE_EXCEPTION(UnknownCharset, CharsetError);
-
 /// List of detected encodings.
 typedef std::vector<std::pair<float, std::string>> CharsetListDetected;
 

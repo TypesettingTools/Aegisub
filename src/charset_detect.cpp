@@ -49,13 +49,7 @@
 namespace CharSetDetect {
 
 std::string GetEncoding(agi::fs::path const& filename) {
-	agi::charset::CharsetListDetected list;
-
-	try {
-		list = agi::charset::DetectAll(filename);
-	} catch (const agi::charset::UnknownCharset&) {
-		// will be set to the full list of charsets below
-	}
+	auto list = agi::charset::DetectAll(filename);
 
 	if (list.size() == 1) {
 		auto charset = list.begin();

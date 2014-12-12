@@ -98,11 +98,8 @@ public:
 				break;
 
 			default:
-				throw UnknownCharset("Unknown character set.");
+				return;
 			}
-
-			if (list.empty() && (mInputState == eHighbyte))
-				throw UnknownCharset("Unknown character set.");
 
 			typedef std::pair<float, std::string> const& result;
 			sort(begin(list), end(list), [](result lft, result rgt) { return lft.first > rgt.first; });

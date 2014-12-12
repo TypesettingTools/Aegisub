@@ -124,14 +124,14 @@ struct COMInitialization {
 	}
 
 	/// @brief Initialise the COM library as single-threaded apartment if isn't already inited by us
-	void Init()
+	bool Init()
 	{
 		if (!inited)
 		{
-			if (FAILED(CoInitialize(nullptr)))
-				throw std::exception();
-			inited = true;
+			if (SUCCEEDED(CoInitialize(nullptr)))
+				inited = true;
 		}
+		return inited;
 	}
 };
 
@@ -302,8 +302,7 @@ unsigned int __stdcall DirectSoundPlayer2Thread::ThreadProc(void *parameter)
 void DirectSoundPlayer2Thread::Run()
 {
 	COMInitialization COM_library;
-	try	{ COM_library.Init(); }
-	catch (std::exception e)
+	if (!COM_library.Init())
 		REPORT_ERROR("Could not initialise COM")
 
 	// Create DirectSound object
