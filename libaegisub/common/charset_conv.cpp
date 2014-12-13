@@ -321,17 +321,11 @@ void IconvWrapper::Convert(const char *src, size_t srcLen, std::string &dest) {
 
 	if (res == iconv_failed) {
 		switch (errno) {
+			case EILSEQ:
 			case EINVAL:
 				throw BadInput(
 					"One or more characters in the input string were not valid "
 					"characters in the given input encoding");
-			case EILSEQ:
-				throw BadOutput(
-					"One or more characters could not be converted to the "
-					"selected target encoding and the version of iconv "
-					"Aegisub was built with does not have useful fallbacks. "
-					"For best results, please build Aegisub using a recent "
-					"version of GNU iconv.");
 			default:
 				throw ConversionFailure("An unknown conversion failure occurred");
 		}
@@ -352,16 +346,10 @@ size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, 
 					"Destination buffer was not large enough to fit converted "
 					"string.");
 			case EINVAL:
+			case EILSEQ:
 				throw BadInput(
 					"One or more characters in the input string were not valid "
 					"characters in the given input encoding");
-			case EILSEQ:
-				throw BadOutput(
-					"One or more characters could not be converted to the "
-					"selected target encoding and the version of iconv "
-					"Aegisub was built with does not have useful fallbacks. "
-					"For best results, please build Aegisub using a recent "
-					"version of GNU iconv.");
 			default:
 				throw ConversionFailure("An unknown conversion failure occurred");
 		}
@@ -394,18 +382,12 @@ size_t IconvWrapper::RequiredBufferSize(const char* src, size_t srcLen) {
 	if (res == iconv_failed) {
 		switch (errno) {
 			case EINVAL:
+			case EILSEQ:
 				throw BadInput(
 					"One or more characters in the input string were not valid "
 					"characters in the given input encoding");
-			case EILSEQ:
-				throw BadOutput(
-					"One or more characters could not be converted to the "
-					"selected target encoding and the version of iconv "
-					"Aegisub was built with does not have useful fallbacks. "
-					"For best results, please build Aegisub using a recent "
-					"version of GNU iconv.");
 			default:
-				throw ConversionFailure("An unknown conversion failure occured");
+				throw ConversionFailure("An unknown conversion failure occurred");
 		}
 	}
 	return charsWritten;
