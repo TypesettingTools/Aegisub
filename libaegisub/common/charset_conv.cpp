@@ -49,28 +49,28 @@ namespace {
 
 /// @brief Map a user-friendly encoding name to the real encoding name
 	const char *get_real_encoding_name(const char *name) {
-        struct pair { const char *pretty; const char *real; };
-        static pair pretty_names[] = {
+		struct pair { const char *pretty; const char *real; };
+		static pair pretty_names[] = {
 #			define ADD(pretty, real) pair{pretty, real},
 #			include <libaegisub/charsets.def>
 #			undef ADD
-        };
+		};
 
-        static bool init = false;
-        if (!init) {
-            init = true;
-            boost::sort(pretty_names, [](pair a, pair b) {
-                return strcmp(a.pretty, b.pretty) < 0;
-            });
-        }
+		static bool init = false;
+		if (!init) {
+			init = true;
+			boost::sort(pretty_names, [](pair a, pair b) {
+				return strcmp(a.pretty, b.pretty) < 0;
+			});
+		}
 
-        auto enc = boost::lower_bound(pretty_names, name, [](pair a, const char *b) {
+		auto enc = boost::lower_bound(pretty_names, name, [](pair a, const char *b) {
 			return strcmp(a.pretty, b) < 0;
-        });
+		});
 
-        if (enc != std::end(pretty_names) && strcmp(enc->pretty, name) == 0)
-            return enc->real;
-        return name;
+		if (enc != std::end(pretty_names) && strcmp(enc->pretty, name) == 0)
+			return enc->real;
+		return name;
 	}
 
 	size_t get_bom_size(Iconv& cd) {
