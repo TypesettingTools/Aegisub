@@ -816,19 +816,20 @@ void AudioDisplay::OnPaint(wxPaintEvent&)
 		timeline->Paint(dc);
 }
 
-void AudioDisplay::PaintAudio(wxDC &dc, TimeRange updtime, wxRect updrect)
+void AudioDisplay::PaintAudio(wxDC &dc, const TimeRange updtime, const wxRect updrect)
 {
 	auto pt = begin(style_ranges), pe = end(style_ranges);
 	while (pt != pe && pt + 1 != pe && (pt + 1)->first < updtime.begin()) ++pt;
 
 	while (pt != pe && pt->first < updtime.end())
 	{
-		auto range_style = static_cast<AudioRenderingStyle>(pt->second);
-		int range_x1 = std::max(updrect.x, RelativeXFromTime(pt->first));
-		int range_x2 = (++pt == pe) ? updrect.x + updrect.width : RelativeXFromTime(pt->first);
+		const auto range_style = static_cast<AudioRenderingStyle>(pt->second);
+		const int range_x1 = std::max(updrect.x, RelativeXFromTime(pt->first));
+		const int range_x2 = (++pt == pe) ? updrect.x + updrect.width : RelativeXFromTime(pt->first);
 
 		if (range_x2 > range_x1)
-			audio_renderer->Render(dc, wxPoint(range_x1, audio_top), range_x1 + scroll_left, range_x2 - range_x1, range_style);
+			audio_renderer->Render(dc, wxPoint(range_x1, audio_top),
+				range_x1 + scroll_left, range_x2 - range_x1, range_style);
 	}
 }
 
