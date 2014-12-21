@@ -825,7 +825,9 @@ void AudioDisplay::PaintAudio(wxDC &dc, const TimeRange updtime, const wxRect up
 	{
 		const auto range_style = static_cast<AudioRenderingStyle>(pt->second);
 		const int range_x1 = std::max(updrect.x, RelativeXFromTime(pt->first));
-		const int range_x2 = (++pt == pe) ? updrect.x + updrect.width : RelativeXFromTime(pt->first);
+		int range_x2 = updrect.x + updrect.width;
+		if (++pt != pe)
+			range_x2 = std::min(range_x2, RelativeXFromTime(pt->first));
 
 		if (range_x2 > range_x1)
 			audio_renderer->Render(dc, wxPoint(range_x1, audio_top),
