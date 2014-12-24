@@ -104,6 +104,7 @@ namespace Automation4 {
 		int IterNext(lua_State *L);
 
 		int LuaParseKaraokeData(lua_State *L);
+		int LuaGetScriptResolution(lua_State *L);
 
 		void LuaSetUndoPoint(lua_State *L);
 

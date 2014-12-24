@@ -352,6 +352,8 @@ namespace Automation4 {
 					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectInsert, false>, 1);
 				else if (strcmp(idx, "append") == 0)
 					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectAppend, false>, 1);
+				else if (strcmp(idx, "script_resolution") == 0)
+					lua_pushcclosure(L, closure_wrapper<&LuaAssFile::LuaGetScriptResolution>, 1);
 				else {
 					// idiot
 					lua_pop(L, 1);
@@ -646,6 +648,15 @@ namespace Automation4 {
 		}
 
 		return 1;
+	}
+
+	int LuaAssFile::LuaGetScriptResolution(lua_State *L)
+	{
+		int w, h;
+		ass->GetResolution(w, h);
+		push_value(L, w);
+		push_value(L, h);
+		return 2;
 	}
 
 	void LuaAssFile::LuaSetUndoPoint(lua_State *L)
