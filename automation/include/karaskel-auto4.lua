@@ -52,9 +52,8 @@ function karaskel.collect_head(subs, generate_furigana)
 	end
 	
 	-- First pass: collect all existing styles and get resolution info
-	for i = 1, #subs do
+	for _, l in ipairs(subs) do
 		if aegisub.progress.is_cancelled() then error("User cancelled") end
-		local l = subs[i]
 		
 		if l.class == "style" then
 			if not first_style_line then first_style_line = i end
@@ -80,6 +79,8 @@ function karaskel.collect_head(subs, generate_furigana)
 			-- Also look for script resolution
 			local k = l.key:lower()
 			meta[k] = l.value
+		else
+			break
 		end
 	end
 	
