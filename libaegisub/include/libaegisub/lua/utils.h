@@ -136,6 +136,25 @@ T& get(lua_State *L, int idx, const char *mt) {
 	return *static_cast<T *>(check_udata(L, idx, mt));
 }
 
+#ifdef _DEBUG
+struct LuaStackcheck {
+	lua_State *L;
+	int startstack;
+
+	void check_stack(int additional);
+	void dump();
+
+	LuaStackcheck(lua_State *L) : L(L), startstack(lua_gettop(L)) { }
+	~LuaStackcheck() { check_stack(0); }
+};
+#else
+struct LuaStackcheck {
+	void check_stack(int) { }
+	void dump() { }
+	LuaStackcheck(lua_State*) { }
+};
+#endif
+
 struct LuaForEachBreak {};
 
 template<typename Func>
@@ -161,24 +180,5 @@ void lua_for_each(lua_State *L, Func&& func) {
 /// Lua error handler which adds the stack trace to the error message, with
 /// moonscript line rewriting support
 int add_stack_trace(lua_State *L);
-
-#ifdef _DEBUG
-struct LuaStackcheck {
-	lua_State *L;
-	int startstack;
-
-	void check_stack(int additional);
-	void dump();
-
-	LuaStackcheck(lua_State *L) : L(L), startstack(lua_gettop(L)) { }
-	~LuaStackcheck() { check_stack(0); }
-};
-#else
-struct LuaStackcheck {
-	void check_stack(int) { }
-	void dump() { }
-	LuaStackcheck(lua_State*) { }
-};
-#endif
 
 } }
