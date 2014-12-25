@@ -60,10 +60,12 @@ struct validate_video_loaded : public Command {
 struct validate_adjoinable : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 	bool Validate(const agi::Context *c) override {
-		auto sel = c->selectionController->GetSortedSelection();
-		if (sel.empty()) return false;
+		size_t sel_size = c->selectionController->GetSelectedSet().size();
+		if (sel_size == 0) return false;
+		if (sel_size == 1 || sel_size == c->ass->Events.size()) return true;
 
-		for (size_t i = 1; i < sel.size(); ++i) {
+		auto sel = c->selectionController->GetSortedSelection();
+		for (size_t i = 1; i < sel_size; ++i) {
 			if (sel[i]->Row != sel[i - 1]->Row + 1)
 				return false;
 		}
