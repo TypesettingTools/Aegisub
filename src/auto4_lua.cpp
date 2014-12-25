@@ -803,6 +803,8 @@ namespace {
 				AssDialogue *new_active = c->selectionController->GetActiveLine();
 				if (active_line && (active_idx > 0 || !sel.count(new_active)))
 					new_active = active_line;
+				if (sel.empty())
+					sel.insert(new_active);
 				c->selectionController->SetSelectionAndActive(std::move(sel), new_active);
 			}
 			else {
