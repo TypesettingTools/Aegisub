@@ -140,16 +140,20 @@ struct LuaForEachBreak {};
 
 template<typename Func>
 void lua_for_each(lua_State *L, Func&& func) {
-	lua_pushnil(L); // initial key
-	while (lua_next(L, -2)) {
-		try {
-			func();
+	{
+		LuaStackcheck stackcheck(L);
+		lua_pushnil(L); // initial key
+		while (lua_next(L, -2)) {
+			try {
+				func();
+			}
+			catch (LuaForEachBreak) {
+				lua_pop(L, 2); // pop value and key
+				break;
+			}
+			lua_pop(L, 1); // pop value, leave key
 		}
-		catch (LuaForEachBreak) {
-			lua_pop(L, 1);
-			break;
-		}
-		lua_pop(L, 1); // pop value, leave key
+		stackcheck.check_stack(0);
 	}
 	lua_pop(L, 1); // pop table
 }
