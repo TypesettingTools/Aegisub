@@ -94,6 +94,7 @@ class formatter : formatter_state<Char> {
 	boost::io::basic_ios_all_saver<Char> saver;
 
 	bool parse_next();
+	Char next_format();
 
 public:
 	formatter(std::basic_ostream<Char>& out, const Char *fmt)
@@ -115,68 +116,41 @@ public:
 			this->read_precision = false;
 			return;
 		}
-		this->pending = false;
 
-		if (this->width < 0) {
-			this->out.fill(' ');
-			this->out.setf(std::ios::left, std::ios::adjustfield);
-			this->width = -this->width;
-		}
-		this->out.width(this->width);
-		this->out.precision(this->precision < 0 ? 6 : this->precision);
-
-		Char c = *this->fmt_cur ? this->fmt_cur[0] : 's';
-		if (c >= 'A' && c <= 'Z') {
-			this->out.setf(std::ios::uppercase);
-			c += 'a' - 'A';
-		}
+		Char c = next_format();
 
 		switch (c) {
 		case 'c':
-			this->out.setf(std::ios::dec, std::ios::basefield);
 			this->out << runtime_cast<Char>(value);
 			break;
 		case 'd': case 'i':
-			this->out.setf(std::ios::dec, std::ios::basefield);
 			this->out << runtime_cast<intmax_t>(value);
 			break;
 		case 'o':
-			this->out.setf(std::ios::oct, std::ios::basefield);
 			this->out << runtime_cast<intmax_t>(value);
 			break;
 		case 'x':
-			this->out.setf(std::ios::hex, std::ios::basefield);
 			this->out << runtime_cast<intmax_t>(value);
 			break;
 		case 'u':
-			this->out.setf(std::ios::dec, std::ios::basefield);
 			this->out << runtime_cast<uintmax_t>(value);
 			break;
 		case 'e':
-			this->out.setf(std::ios::scientific, std::ios::floatfield);
-			this->out.setf(std::ios::dec, std::ios::basefield);
 			this->out << runtime_cast<double>(value);
 			break;
 		case 'f':
-			this->out.setf(std::ios::fixed, std::ios::floatfield);
 			this->out << runtime_cast<double>(value);
 			break;
 		case 'g':
-			this->out.setf(std::ios::dec, std::ios::basefield);
-			this->out.flags(this->out.flags() & ~std::ios::floatfield);
 			this->out << runtime_cast<double>(value);
 			break;
 		case 'p':
-			this->out.setf(std::ios::hex, std::ios::basefield);
 			this->out << runtime_cast<const void *>(value);
 			break;
 		default: // s and other
-			this->out.setf(std::ios::boolalpha);
 			writer<Char, typename std::decay<T>::type>::write(this->out, this->precision, value);
 			break;
 		}
-
-		this->fmt = *this->fmt_cur ? this->fmt_cur + 1 : this->fmt_cur;
 	}
 };
 

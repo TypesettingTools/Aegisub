@@ -41,7 +41,6 @@
 #include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
-#include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/filesystem/path.hpp>
@@ -107,7 +106,7 @@ std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& fil
 
 	std::vector<std::string> toks;
 	auto const& fields = filename.string().substr(7);
-	boost::split(toks, fields, boost::is_any_of(":"));
+	boost::split(toks, fields, [](char c) { return c == ':'; });
 	if (toks.size() != 8)
 		throw VideoOpenError("Too few fields in dummy video parameter list");
 

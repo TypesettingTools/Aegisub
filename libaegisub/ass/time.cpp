@@ -21,9 +21,7 @@
 #include <libaegisub/util.h>
 
 #include <algorithm>
-#include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/range/adaptor/filtered.hpp>
 
 namespace agi {
 Time::Time(int time) : time(util::mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
@@ -31,7 +29,7 @@ Time::Time(int time) : time(util::mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
 Time::Time(std::string const& text) {
 	int after_decimal = -1;
 	int current = 0;
-	for (char c : text | boost::adaptors::filtered(boost::is_any_of(",.0123456789:"))) {
+	for (char c : text) {
 		if (c == ':') {
 			time = time * 60 + current;
 			current = 0;
@@ -41,6 +39,8 @@ Time::Time(std::string const& text) {
 			current = 0;
 			after_decimal = 100;
 		}
+		else if (c < '0' || c > '9')
+			continue;
 		else if (after_decimal < 0) {
 			current *= 10;
 			current += c - '0';
@@ -80,21 +80,21 @@ int Time::GetTimeSeconds() const { return (time % 60000) / 1000; }
 int Time::GetTimeMiliseconds() const { return (time % 1000); }
 int Time::GetTimeCentiseconds() const { return (time % 1000) / 10; }
 
-SmpteFormatter::SmpteFormatter(vfr::Framerate fps, std::string sep)
+SmpteFormatter::SmpteFormatter(vfr::Framerate fps, char sep)
 : fps(std::move(fps))
-, sep(std::move(sep))
+, sep(sep)
 {
 }
 
 std::string SmpteFormatter::ToSMPTE(Time time) const {
 	int h=0, m=0, s=0, f=0;
 	fps.SmpteAtTime(time, &h, &m, &s, &f);
-	return format("%02d%s%02d%s%02d%s%02d", h, sep, m, sep, s, sep, f);
+	return format("%02d%c%02d%c%02d%c%02d", h, sep, m, sep, s, sep, f);
 }
 
 Time SmpteFormatter::FromSMPTE(std::string const& str) const {
 	std::vector<std::string> toks;
-	boost::split(toks, str, boost::is_any_of(sep));
+	boost::split(toks, str, [=](char c) { return c == sep; });
 	if (toks.size() != 4) return 0;
 
 	int h, m, s, f;

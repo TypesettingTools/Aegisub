@@ -129,7 +129,7 @@ void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
 				else {
 					std::string& otext = syl.ovr_tags[syl.text.size()];
 					// Merge adjacent override tags
-					boost::trim_right_if(text, boost::is_any_of("}"));
+					boost::trim_right_if(text, [](char c) { return c == '}'; });
 					if (!in_tag)
 						otext += "{";
 

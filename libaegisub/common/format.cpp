@@ -229,6 +229,63 @@ bool formatter<Char>::parse_next() {
 }
 
 template<typename Char>
+Char formatter<Char>::next_format() {
+	this->pending = false;
+
+	if (this->width < 0) {
+		this->out.fill(' ');
+		this->out.setf(std::ios::left, std::ios::adjustfield);
+		this->width = -this->width;
+	}
+	this->out.width(this->width);
+	this->out.precision(this->precision < 0 ? 6 : this->precision);
+
+	Char c = *this->fmt_cur ? this->fmt_cur[0] : 's';
+	if (c >= 'A' && c <= 'Z') {
+		this->out.setf(std::ios::uppercase);
+		c += 'a' - 'A';
+	}
+
+	switch (c) {
+		case 'c':
+			this->out.setf(std::ios::dec, std::ios::basefield);
+			break;
+		case 'd': case 'i':
+			this->out.setf(std::ios::dec, std::ios::basefield);
+			break;
+		case 'o':
+			this->out.setf(std::ios::oct, std::ios::basefield);
+			break;
+		case 'x':
+			this->out.setf(std::ios::hex, std::ios::basefield);
+			break;
+		case 'u':
+			this->out.setf(std::ios::dec, std::ios::basefield);
+			break;
+		case 'e':
+			this->out.setf(std::ios::scientific, std::ios::floatfield);
+			this->out.setf(std::ios::dec, std::ios::basefield);
+			break;
+		case 'f':
+			this->out.setf(std::ios::fixed, std::ios::floatfield);
+			break;
+		case 'g':
+			this->out.setf(std::ios::dec, std::ios::basefield);
+			this->out.flags(this->out.flags() & ~std::ios::floatfield);
+			break;
+		case 'p':
+			this->out.setf(std::ios::hex, std::ios::basefield);
+			break;
+		default: // s and other
+			this->out.setf(std::ios::boolalpha);
+			break;
+	}
+
+	this->fmt = *this->fmt_cur ? this->fmt_cur + 1 : this->fmt_cur;
+	return c;
+}
+
+template<typename Char>
 formatter<Char>::~formatter() {
 	// Write remaining formatting string
 	for (std::streamsize len = 0; ; ++len) {

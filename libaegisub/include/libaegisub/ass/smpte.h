@@ -27,10 +27,10 @@ class SmpteFormatter {
 	/// Frame rate to use
 	vfr::Framerate fps;
 	/// Separator character
-	std::string sep;
+	char sep;
 
 public:
-	SmpteFormatter(vfr::Framerate fps, std::string sep=":");
+	SmpteFormatter(vfr::Framerate fps, char sep=':');
 
 	/// Convert an Time to a SMPTE timecode
 	std::string ToSMPTE(Time time) const;

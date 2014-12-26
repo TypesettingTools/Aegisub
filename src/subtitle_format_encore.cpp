@@ -65,7 +65,7 @@ void EncoreSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& fi
 
 	// Encore wants ; for NTSC and : for PAL
 	// The manual suggests no other frame rates are supported
-	agi::SmpteFormatter ft(fps, fps.NeedsDropFrames() ? ";" : ":");
+	agi::SmpteFormatter ft(fps, fps.NeedsDropFrames() ? ';' : ':');
 
 	// Write lines
 	int i = 0;
