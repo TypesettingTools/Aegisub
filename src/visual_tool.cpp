@@ -534,7 +534,8 @@ void VisualToolBase::SetOverride(AssDialogue* line, std::string const& tag, std:
 	auto blocks = line->ParseTags();
 	AssDialogueBlock *block = blocks.front().get();
 
-	if (AssDialogueBlockOverride *ovr = dynamic_cast<AssDialogueBlockOverride*>(block)) {
+	if (block->GetType() == AssBlockType::OVERRIDE) {
+		auto ovr = static_cast<AssDialogueBlockOverride*>(block);
 		// Remove old of same
 		for (size_t i = 0; i < ovr->Tags.size(); i++) {
 			std::string const& name = ovr->Tags[i].Name;

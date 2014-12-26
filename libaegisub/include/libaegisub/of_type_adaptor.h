@@ -30,19 +30,19 @@ namespace agi {
 			typedef Type *result_type;
 
 			template<class InType> Type *operator()(InType &ptr) const {
-				return dynamic_cast<Type *>(&ptr);
+				return typeid(ptr) == typeid(Type) ? static_cast<Type*>(&ptr) : nullptr;
 			}
 
 			template<class InType> Type *operator()(std::unique_ptr<InType>& ptr) const {
-				return dynamic_cast<Type *>(ptr.get());
+				return (*this)(*ptr);
 			}
 
 			template<class InType> Type *operator()(std::unique_ptr<InType> const& ptr) const {
-				return dynamic_cast<Type *>(ptr.get());
+				return (*this)(*ptr);
 			}
 
 			template<class InType> Type *operator()(InType *ptr) const {
-				return dynamic_cast<Type *>(ptr);
+				return (*this)(*ptr);
 			}
 		};
 

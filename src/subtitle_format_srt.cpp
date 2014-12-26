@@ -485,9 +485,9 @@ std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 
 	std::string final;
 	for (auto& block : diag->ParseTags()) {
-		if (AssDialogueBlockOverride* ovr = dynamic_cast<AssDialogueBlockOverride*>(block.get())) {
-			// Iterate through overrides
-			for (auto const& tag : ovr->Tags) {
+		switch (block->GetType()) {
+		case AssBlockType::OVERRIDE:
+			for (auto const& tag : static_cast<AssDialogueBlockOverride&>(*block).Tags) {
 				if (!tag.IsValid() || tag.Name.size() != 2)
 					continue;
 				for (auto& state : tag_states) {
@@ -501,10 +501,14 @@ std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 					state.value = temp;
 				}
 			}
+			break;
+		case AssBlockType::PLAIN:
+			final += block->GetText();
+			break;
+		case AssBlockType::DRAWING:
+		case AssBlockType::COMMENT:
+			break;
 		}
-		// Plain text
-		else if (AssDialogueBlockPlain *plain = dynamic_cast<AssDialogueBlockPlain*>(block.get()))
-			final += plain->GetText();
 	}
 
 	// Ensure all tags are closed

@@ -75,8 +75,9 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 	bool overriden = false;
 
 	for (auto& block : line->ParseTags()) {
-		if (auto ovr = dynamic_cast<AssDialogueBlockOverride *>(block.get())) {
-			for (auto const& tag : ovr->Tags) {
+		switch (block->GetType()) {
+		case AssBlockType::OVERRIDE:
+			for (auto const& tag : static_cast<AssDialogueBlockOverride&>(*block).Tags) {
 				if (tag.Name == "\\r") {
 					style = styles[tag.Params[0].Get(line->Style.get())];
 					overriden = false;
@@ -94,9 +95,9 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 					overriden = true;
 				}
 			}
-		}
-		else if (auto txt = dynamic_cast<AssDialogueBlockPlain *>(block.get())) {
-			auto text = txt->GetText();
+			break;
+		case AssBlockType::PLAIN: {
+			auto text = block->GetText();
 
 			if (text.empty())
 				continue;
@@ -135,8 +136,12 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 
 			sort(begin(chars), end(chars));
 			chars.erase(unique(chars.begin(), chars.end()), chars.end());
+			break;
 		}
-		// Do nothing with drawing and comment blocks
+		case AssBlockType::DRAWING:
+		case AssBlockType::COMMENT:
+			break;
+		}
 	}
 }
 
