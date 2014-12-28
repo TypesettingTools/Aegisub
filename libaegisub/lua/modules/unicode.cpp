@@ -22,7 +22,7 @@ namespace {
 template<std::string (*func)(const char *, std::locale const&)>
 char *wrap(const char *str, char **err) {
 	try {
-		return strdup(func(str, std::locale()).c_str());
+		return agi::lua::strndup(func(str, std::locale()));
 	} catch (std::exception const& e) {
 		*err = strdup(e.what());
 		return nullptr;

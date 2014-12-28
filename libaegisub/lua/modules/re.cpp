@@ -92,7 +92,7 @@ char *regex_replace(u32regex& re, const char *replacement, const char *str, size
 	}
 
 	ret += suffix;
-	return strdup(ret.c_str());
+	return agi::lua::strndup(ret);
 }
 
 u32regex *regex_compile(const char *pattern, int flags, char **err) {

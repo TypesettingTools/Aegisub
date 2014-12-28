@@ -21,6 +21,7 @@
 #include <boost/filesystem/path.hpp>
 
 using namespace agi::fs;
+using namespace agi::lua;
 namespace bfs = boost::filesystem;
 
 namespace agi {
@@ -38,7 +39,7 @@ auto wrap(char **err, Func f) -> decltype(f()) {
 		return 0;
 	}
 	catch (agi::Exception const& e) {
-		*err = strdup(e.GetMessage().c_str());
+		*err = strndup(e.GetMessage());
 		return 0;
 	}
 }
@@ -57,7 +58,7 @@ bool lfs_chdir(const char *dir, char **err) {
 
 char *currentdir(char **err) {
 	return wrap(err, []{
-		return strdup(bfs::current_path().string().c_str());
+		return strndup(bfs::current_path().string());
 	});
 }
 
@@ -76,7 +77,7 @@ bool touch(const char *path, char **err) {
 char *dir_next(DirectoryIterator &it, char **err) {
 	if (it == end(it)) return nullptr;
 	return wrap(err, [&]{
-		auto str = strdup((*it).c_str());
+		auto str = strndup(*it);
 		++it;
 		return str;
 	});

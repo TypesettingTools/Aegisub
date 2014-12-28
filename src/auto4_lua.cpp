@@ -124,7 +124,7 @@ namespace {
 		std::string data = GetClipboard();
 		if (data.empty())
 			return nullptr;
-		return strdup(data.c_str());
+		return strndup(data);
 	}
 
 	bool clipboard_set(const char *str)
