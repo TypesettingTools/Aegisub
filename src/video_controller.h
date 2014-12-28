@@ -104,7 +104,7 @@ class VideoController final : public wxEvtHandler {
 	void OnVideoError(VideoProviderErrorEvent const& err);
 	void OnSubtitlesError(SubtitlesProviderErrorEvent const& err);
 
-	void OnSubtitlesCommit(int type, std::set<const AssDialogue *> const& changed);
+	void OnSubtitlesCommit(int type, const AssDialogue *changed);
 	void OnNewVideoProvider(AsyncVideoProvider *provider);
 	void OnActiveLineChanged(AssDialogue *line);
 

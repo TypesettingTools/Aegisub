@@ -80,7 +80,7 @@ struct ProjectProperties {
 
 class AssFile {
 	/// A set of changes has been committed to the file (AssFile::COMMITType)
-	agi::signal::Signal<int, std::set<const AssDialogue*> const&> AnnounceCommit;
+	agi::signal::Signal<int, const AssDialogue*> AnnounceCommit;
 	agi::signal::Signal<AssFileCommit> PushState;
 public:
 	/// The lines in the file

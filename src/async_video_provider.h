@@ -92,7 +92,7 @@ public:
 	///
 	/// This function only supports changes to existing lines, and not
 	/// insertions or deletions.
-	void UpdateSubtitles(const AssFile *subs, std::set<const AssDialogue *> const& changes) throw();
+	void UpdateSubtitles(const AssFile *subs, const AssDialogue *changes) throw();
 
 	/// @brief Queue a request for a frame
 	/// @brief frame Frame number

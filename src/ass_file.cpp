@@ -177,11 +177,7 @@ int AssFile::Commit(wxString const& desc, int type, int amend_id, AssDialogue *s
 
 	PushState({desc, &amend_id, single_line});
 
-	std::set<const AssDialogue*> changed_lines;
-	if (single_line)
-		changed_lines.insert(single_line);
-
-	AnnounceCommit(type, changed_lines);
+	AnnounceCommit(type, single_line);
 
 	return amend_id;
 }

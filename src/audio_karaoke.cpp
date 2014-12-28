@@ -113,8 +113,8 @@ void AudioKaraoke::OnActiveLineChanged(AssDialogue *new_line) {
 	}
 }
 
-void AudioKaraoke::OnFileChanged(int type, std::set<const AssDialogue *> const& changed) {
-	if (enabled && (type & AssFile::COMMIT_DIAG_FULL) && (changed.empty() || changed.count(active_line))) {
+void AudioKaraoke::OnFileChanged(int type, const AssDialogue *changed) {
+	if (enabled && (type & AssFile::COMMIT_DIAG_FULL) && (!changed || changed == active_line)) {
 		LoadFromLine();
 		split_area->Refresh(false);
 	}

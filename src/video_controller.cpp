@@ -65,7 +65,7 @@ void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 	color_matrix = provider ? provider->GetColorSpace() : "";
 }
 
-void VideoController::OnSubtitlesCommit(int type, std::set<const AssDialogue *> const& changed) {
+void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 	if (!provider) return;
 
 	if ((type & AssFile::COMMIT_SCRIPTINFO) || type == AssFile::COMMIT_NEW) {
@@ -76,10 +76,10 @@ void VideoController::OnSubtitlesCommit(int type, std::set<const AssDialogue *> 
 		}
 	}
 
-	if (changed.empty())
+	if (!changed)
 		provider->LoadSubtitles(context->ass.get());
 	else
-		provider->UpdateSubtitles(context->ass.get(), changed);
+		provider->UpdateSubtitles(context->ass.get(), {changed});
 }
 
 void VideoController::OnActiveLineChanged(AssDialogue *line) {

@@ -137,7 +137,7 @@ class AudioKaraoke final : public wxWindow {
 	void OnActiveLineChanged(AssDialogue *new_line);
 	void OnContextMenu(wxContextMenuEvent&);
 	void OnEnableButton(wxCommandEvent &evt);
-	void OnFileChanged(int type, std::set<const AssDialogue *> const& changed);
+	void OnFileChanged(int type, const AssDialogue *changed);
 	void OnMouse(wxMouseEvent &event);
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);

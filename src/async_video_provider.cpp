@@ -115,24 +115,19 @@ void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
 	});
 }
 
-void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, std::set<const AssDialogue*> const& changes) throw() {
+void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, const AssDialogue *changed) throw() {
 	uint_fast32_t req_version = ++version;
 
-	// Copy just the lines which were changed, then replace the lines at the
-	// same indices in the worker's copy of the file with the new entries
-	std::vector<AssDialogue *> changed;
-	for (auto d : changes)
-		changed.push_back(new AssDialogue(*d));
-
+	// Copy just the line which were changed, then replace the line at the
+	// same index in the worker's copy of the file with the new entry
+	auto copy = new AssDialogue(*changed);
 	worker->Async([=]{
 		int i = 0;
 		auto it = subs->Events.begin();
-		for (auto& update : changed) {
-			std::advance(it, update->Row - i);
-			i = update->Row;
-			subs->Events.insert(it, *update);
-			delete &*it--;
-		}
+		std::advance(it, copy->Row - i);
+		i = copy->Row;
+		subs->Events.insert(it, *copy);
+		delete &*it--;
 
 		single_frame = NEW_SUBS_FILE;
 		ProcAsync(req_version, true);
