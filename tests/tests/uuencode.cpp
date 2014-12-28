@@ -24,31 +24,34 @@ using namespace agi::ass;
 
 TEST(lagi_uuencode, short_blobs) {
 	std::vector<char> data;
+	auto encode = [&] { return UUEncode(&data[0], &data.back() + 1); };
 
 	data.push_back(120);
-	EXPECT_STREQ("?!", UUEncode(data).c_str());
+	EXPECT_STREQ("?!", encode().c_str());
 	data.push_back(121);
-	EXPECT_STREQ("?(E", UUEncode(data).c_str());
+	EXPECT_STREQ("?(E", encode().c_str());
 	data.push_back(122);
-	EXPECT_STREQ("?(F[", UUEncode(data).c_str());
+	EXPECT_STREQ("?(F[", encode().c_str());
 }
 
 TEST(lagi_uuencode, short_strings) {
 	std::vector<char> data;
+	auto decode = [](const char *str) { return UUDecode(str, str + strlen(str)); };
 
 	data.push_back(120);
-	EXPECT_EQ(data, UUDecode("?!"));
+	EXPECT_EQ(data, decode("?!"));
 	data.push_back(121);
-	EXPECT_EQ(data, UUDecode("?(E"));
+	EXPECT_EQ(data, decode("?(E"));
 	data.push_back(122);
-	EXPECT_EQ(data, UUDecode("?(F["));
+	EXPECT_EQ(data, decode("?(F["));
 }
 
 TEST(lagi_uuencode, random_blobs_roundtrip) {
 	std::vector<char> data;
 
 	for (size_t len = 0; len < 200; ++len) {
-		EXPECT_EQ(data, UUDecode(UUEncode(data)));
+		auto encoded = UUEncode(data.data(), data.data() + data.size());
+		EXPECT_EQ(data, UUDecode(encoded.data(), encoded.data() + encoded.size()));
 		data.push_back(rand());
 	}
 }

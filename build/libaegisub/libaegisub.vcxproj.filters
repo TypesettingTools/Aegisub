@@ -238,6 +238,9 @@
     <ClCompile Include="$(SrcDir)windows\log_win.cpp">
       <Filter>Source Files\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)common\line_iterator.cpp">
+      <Filter>Source Files\Common</Filter>
+    </ClCompile>
     <ClCompile Include="$(SrcDir)common\log.cpp">
       <Filter>Source Files\Common</Filter>
     </ClCompile>
@@ -284,6 +287,9 @@
       <Filter>ASS</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass\time.cpp">
+      <Filter>ASS</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)ass\uuencode.cpp">
       <Filter>ASS</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)common\color.cpp">

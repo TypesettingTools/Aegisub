@@ -21,7 +21,6 @@
 #include <libaegisub/io.h>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/range/iterator_range.hpp>
 
 AssAttachment::AssAttachment(AssAttachment const& rgt)
 : entry_data(rgt.entry_data)
@@ -49,7 +48,7 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 	agi::read_file_mapping file(name);
 	auto buff = file.read();
 	entry_data = (group == AssEntryGroup::FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
-	entry_data = entry_data.get() + agi::ass::UUEncode(boost::make_iterator_range(buff, buff + file.size()));
+	entry_data = entry_data.get() + agi::ass::UUEncode(buff, buff + file.size());
 }
 
 size_t AssAttachment::GetSize() const {
@@ -59,7 +58,7 @@ size_t AssAttachment::GetSize() const {
 
 void AssAttachment::Extract(agi::fs::path const& filename) const {
 	auto header_end = entry_data.get().find('\n');
-	auto decoded = agi::ass::UUDecode(boost::make_iterator_range(entry_data.get().begin() + header_end + 1, entry_data.get().end()));
+	auto decoded = agi::ass::UUDecode(entry_data.get().c_str() + header_end + 1, &entry_data.get().back() + 1);
 	agi::io::Save(filename, true).Get().write(&decoded[0], decoded.size());
 }
 

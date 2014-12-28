@@ -20,19 +20,17 @@
 #include <lua.hpp>
 
 namespace agi { namespace lua {
+void do_register_lib_function(lua_State *L, const char *name, const char *type_name, void *func);
+void do_register_lib_table(lua_State *L, std::initializer_list<const char *> types);
+
 static void register_lib_functions(lua_State *) {
 	// Base case of recursion; nothing to do
 }
 
 template<typename Func, typename... Rest>
 void register_lib_functions(lua_State *L, const char *name, Func *func, Rest... rest) {
-	lua_pushvalue(L, -2); // push cast function
-	lua_pushstring(L, type_name<Func*>::name().c_str());
 	// This cast isn't legal, but LuaJIT internally requires that it work, so we can rely on it too
-	lua_pushlightuserdata(L, (void *)func);
-	lua_call(L, 2, 1);
-	lua_setfield(L, -2, name);
-
+	do_register_lib_function(L, name, type_name<Func*>::name().c_str(), (void *)func);
 	register_lib_functions(L, rest...);
 }
 
@@ -40,20 +38,7 @@ template<typename... Args>
 void register_lib_table(lua_State *L, std::initializer_list<const char *> types, Args... functions) {
 	static_assert((sizeof...(functions) & 1) == 0, "Functions must be alternating names and function pointers");
 
-	lua_getglobal(L, "require");
-	lua_pushstring(L, "ffi");
-	lua_call(L, 1, 1);
-
-	// Register all passed type with the ffi
-	for (auto type : types) {
-		lua_getfield(L, -1, "cdef");
-		lua_pushfstring(L, "typedef struct %s %s;", type, type);
-		lua_call(L, 1, 0);
-	}
-
-	lua_getfield(L, -1, "cast");
-	lua_remove(L, -2); // ffi table
-
+	do_register_lib_table(L, types); // leaves ffi.cast on the stack
 	lua_createtable(L, 0, sizeof...(functions) / 2);
 	register_lib_functions(L, functions...);
 	lua_remove(L, -2); // ffi.cast function

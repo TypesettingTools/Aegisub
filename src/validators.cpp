@@ -168,6 +168,22 @@ bool DoubleSpinValidator::TransferFromWindow() {
 	return true;
 }
 
+int EnumBinderBase::Get() {
+	if (auto rb = dynamic_cast<wxRadioBox*>(GetWindow()))
+		return rb->GetSelection();
+	if (auto rb = dynamic_cast<wxComboBox*>(GetWindow()))
+		return rb->GetSelection();
+	throw agi::InternalError("Control type not supported by EnumBinder");
+}
+
+void EnumBinderBase::Set(int value) {
+	if (auto rb = dynamic_cast<wxRadioBox*>(GetWindow()))
+		rb->SetSelection(value);
+	else if (auto rb = dynamic_cast<wxComboBox*>(GetWindow()))
+		rb->SetSelection(value);
+	throw agi::InternalError("Control type not supported by EnumBinder");
+}
+
 bool StringBinder::TransferFromWindow() {
 	wxWindow *window = GetWindow();
 	if (wxTextCtrl *ctrl = dynamic_cast<wxTextCtrl*>(window))

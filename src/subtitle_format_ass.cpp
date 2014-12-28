@@ -140,7 +140,7 @@ struct Writer {
 				// the inline_string encoding grew the data by more than uuencoding would
 				// so base64 encode it instead
 				line += "u"; // marker for uuencoding
-				line += agi::ass::UUEncode(edi.value, false);
+				line += agi::ass::UUEncode(edi.value.c_str(), edi.value.c_str() + edi.value.size(), false);
 			} else {
 				line += "e"; // marker for inline_string encoding (escaping)
 				line += encoded_data;

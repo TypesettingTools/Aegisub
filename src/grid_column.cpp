@@ -215,35 +215,40 @@ struct GridColumnActor final : GridColumn {
 	}
 };
 
-template<int Index>
 struct GridColumnMargin : GridColumn {
+	int index;
+	GridColumnMargin(int index) : index(index) { }
+
 	bool Centered() const override { return true; }
 
 	wxString Value(const AssDialogue *d, const agi::Context *) const override {
-		return d->Margin[Index] ? wxString(std::to_wstring(d->Margin[Index])) : wxString();
+		return d->Margin[index] ? wxString(std::to_wstring(d->Margin[index])) : wxString();
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		int max = 0;
 		for (AssDialogue const& line : c->ass->Events) {
-			if (line.Margin[Index] > max)
-				max = line.Margin[Index];
+			if (line.Margin[index] > max)
+				max = line.Margin[index];
 		}
 		return max == 0 ? 0 : helper(std::to_wstring(max));
 	}
 };
 
-struct GridColumnMarginLeft final : GridColumnMargin<0> {
+struct GridColumnMarginLeft final : GridColumnMargin {
+	GridColumnMarginLeft() : GridColumnMargin(0) { }
 	COLUMN_HEADER(_("Left"))
 	COLUMN_DESCRIPTION(_("Left Margin"))
 };
 
-struct GridColumnMarginRight final : GridColumnMargin<1> {
+struct GridColumnMarginRight final : GridColumnMargin {
+	GridColumnMarginRight() : GridColumnMargin(1) { }
 	COLUMN_HEADER(_("Right"))
 	COLUMN_DESCRIPTION(_("Right Margin"))
 };
 
-struct GridColumnMarginVert final : GridColumnMargin<2> {
+struct GridColumnMarginVert final : GridColumnMargin {
+	GridColumnMarginVert() : GridColumnMargin(2) { }
 	COLUMN_HEADER(_("Vert"))
 	COLUMN_DESCRIPTION(_("Vertical Margin"))
 };

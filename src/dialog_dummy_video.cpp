@@ -143,12 +143,16 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	});
 }
 
-template<typename T>
-void DialogDummyVideo::AddCtrl(wxString const& label, T *ctrl) {
+static void add_label(wxWindow *parent, wxSizer *sizer, wxString const& label) {
 	if (!label)
 		sizer->AddStretchSpacer();
 	else
-		sizer->Add(new wxStaticText(&d, -1, label), wxSizerFlags().Center().Left());
+		sizer->Add(new wxStaticText(parent, -1, label), wxSizerFlags().Center().Left());
+}
+
+template<typename T>
+void DialogDummyVideo::AddCtrl(wxString const& label, T *ctrl) {
+	add_label(&d, sizer, label);
 	sizer->Add(ctrl, wxSizerFlags().Expand().Center().Left());
 }
 

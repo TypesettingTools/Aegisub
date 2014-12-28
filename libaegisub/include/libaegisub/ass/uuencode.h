@@ -14,79 +14,13 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <algorithm>
 #include <string>
 #include <vector>
 
-// Despite being called uuencoding by ass_specs.doc, the format is actually
-// somewhat different from real uuencoding.  Each 3-byte chunk is split into 4
-// 6-bit pieces, then 33 is added to each piece. Lines are wrapped after 80
-// characters, and files with non-multiple-of-three lengths are padded with
-// zero.
-
 namespace agi { namespace ass {
-
 /// Encode a blob of data, using ASS's nonstandard variant
-template<typename RandomAccessRange>
-std::string UUEncode(RandomAccessRange const& data, bool insert_linebreaks=true) {
-	using std::begin;
-	using std::end;
-
-	size_t size = std::distance(begin(data), end(data));
-	std::string ret;
-	ret.reserve((size * 4 + 2) / 3 + size / 80 * 2);
-
-	size_t written = 0;
-	for (size_t pos = 0; pos < size; pos += 3) {
-		unsigned char src[3] = { '\0', '\0', '\0' };
-		memcpy(src, &data[pos], std::min<size_t>(3u, size - pos));
-
-		unsigned char dst[4] = {
-			static_cast<unsigned char>(src[0] >> 2),
-			static_cast<unsigned char>(((src[0] & 0x3) << 4) | ((src[1] & 0xF0) >> 4)),
-			static_cast<unsigned char>(((src[1] & 0xF) << 2) | ((src[2] & 0xC0) >> 6)),
-			static_cast<unsigned char>(src[2] & 0x3F)
-		};
-
-		for (size_t i = 0; i < std::min<size_t>(size - pos + 1, 4u); ++i) {
-			ret += dst[i] + 33;
-
-			if (insert_linebreaks && ++written == 80 && pos + 3 < size) {
-				written = 0;
-				ret += "\r\n";
-			}
-		}
-	}
-
-	return ret;
-}
+std::string UUEncode(const char *begin, const char *end, bool insert_linebreaks=true);
 
 /// Decode an ASS uuencoded string
-template<typename String>
-std::vector<char> UUDecode(String const& str) {
-	std::vector<char> ret;
-	size_t len = std::end(str) - std::begin(str);
-	ret.reserve(len * 3 / 4);
-
-	for (size_t pos = 0; pos + 1 < len; ) {
-		size_t bytes = 0;
-		unsigned char src[4] = { '\0', '\0', '\0', '\0' };
-		for (size_t i = 0; i < 4 && pos < len; ++pos) {
-			char c = str[pos];
-			if (c && c != '\n' && c != '\r') {
-				src[i++] = c - 33;
-				++bytes;
-			}
-		}
-
-		if (bytes > 1)
-			ret.push_back((src[0] << 2) | (src[1] >> 4));
-		if (bytes > 2)
-			ret.push_back(((src[1] & 0xF) << 4) | (src[2] >> 2));
-		if (bytes > 3)
-			ret.push_back(((src[2] & 0x3) << 6) | (src[3]));
-	}
-
-	return ret;
-}
+std::vector<char> UUDecode(const char *begin, const char *end);
 } }

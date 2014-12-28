@@ -125,6 +125,7 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass\dialogue_parser.cpp" />
     <ClCompile Include="$(SrcDir)ass\time.cpp" />
+    <ClCompile Include="$(SrcDir)ass\uuencode.cpp" />
     <ClCompile Include="$(SrcDir)audio\provider.cpp" />
     <ClCompile Include="$(SrcDir)audio\provider_convert.cpp" />
     <ClCompile Include="$(SrcDir)audio\provider_dummy.cpp" />
@@ -151,6 +152,7 @@
     <ClCompile Include="$(SrcDir)common\kana_table.cpp" />
     <ClCompile Include="$(SrcDir)common\karaoke_matcher.cpp" />
     <ClCompile Include="$(SrcDir)common\keyframe.cpp" />
+    <ClCompile Include="$(SrcDir)common\line_iterator.cpp" />
     <ClCompile Include="$(SrcDir)common\log.cpp" />
     <ClCompile Include="$(SrcDir)common\mru.cpp" />
     <ClCompile Include="$(SrcDir)common\option.cpp" />

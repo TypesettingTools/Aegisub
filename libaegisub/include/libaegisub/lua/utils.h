@@ -77,10 +77,7 @@ void push_value(lua_State *L, std::vector<T> const& value) {
 	}
 }
 
-/// Wrap a function which may throw exceptions and make it trigger lua errors
-/// whenever it throws
-template<int (*func)(lua_State *L)>
-int exception_wrapper(lua_State *L) {
+inline int exception_wrapper(lua_State *L, int (*func)(lua_State *L)) {
 	try {
 		return func(L);
 	}
@@ -99,6 +96,13 @@ int exception_wrapper(lua_State *L) {
 	catch (...) {
 		std::terminate();
 	}
+}
+
+/// Wrap a function which may throw exceptions and make it trigger lua errors
+/// whenever it throws
+template<int (*func)(lua_State *L)>
+int exception_wrapper(lua_State *L) {
+	return exception_wrapper(L, func);
 }
 
 template<typename T>

@@ -110,6 +110,7 @@ class SubsEditBox final : public wxPanel {
 	/// @brief Commits the current edit box contents
 	/// @param desc Undo description to use
 	void CommitText(wxString const& desc);
+	void Commit(wxString const& desc, int type, bool amend, AssDialogue *line);
 
 	/// Last commit ID for undo coalescing
 	int commit_id = -1;

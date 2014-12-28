@@ -71,36 +71,33 @@ public:
 	DoubleSpinValidator(double *value) : value(value) { }
 };
 
+class EnumBinderBase : public wxValidator {
+	bool Validate(wxWindow *) override { return true; }
+
+protected:
+	int Get();
+	void Set(int value);
+};
+
 template<typename T>
-class EnumBinder final : public wxValidator {
+class EnumBinder final : public EnumBinderBase {
 	T *value;
 
 	wxObject *Clone() const override { return new EnumBinder<T>(value); }
-	bool Validate(wxWindow *) override { return true; }
 
 	bool TransferFromWindow() override {
-		if (auto rb = dynamic_cast<wxRadioBox*>(GetWindow()))
-			*value = static_cast<T>(rb->GetSelection());
-		else if (auto rb = dynamic_cast<wxComboBox*>(GetWindow()))
-			*value = static_cast<T>(rb->GetSelection());
-		else
-			throw agi::InternalError("Control type not supported by EnumBinder");
+		*value = static_cast<T>(Get());
 		return true;
 	}
 
 	bool TransferToWindow() override {
-		if (auto rb = dynamic_cast<wxRadioBox*>(GetWindow()))
-			rb->SetSelection(static_cast<int>(*value));
-		else if (auto cb = dynamic_cast<wxComboBox*>(GetWindow()))
-			cb->SetSelection(static_cast<int>(*value));
-		else
-			throw agi::InternalError("Control type not supported by EnumBinder");
+		Set(static_cast<int>(*value));
 		return true;
 	}
 
 public:
 	explicit EnumBinder(T *value) : value(value) { }
-	EnumBinder(EnumBinder const& rhs) : wxValidator(rhs), value(rhs.value) { }
+	EnumBinder(EnumBinder const& rhs) : EnumBinderBase(rhs), value(rhs.value) { }
 };
 
 template<typename T>

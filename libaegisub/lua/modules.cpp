@@ -16,6 +16,7 @@
 
 #include "libaegisub/lua/modules.h"
 
+#include "libaegisub/lua/ffi.h"
 #include "libaegisub/lua/utils.h"
 
 extern "C" int luaopen_luabins(lua_State *L);
@@ -40,5 +41,33 @@ void preload_modules(lua_State *L) {
 	set_field(L, "luabins", luaopen_luabins);
 
 	lua_pop(L, 2);
+
+	register_lib_functions(L); // silence an unused static function warning
+}
+
+void do_register_lib_function(lua_State *L, const char *name, const char *type_name, void *func) {
+	lua_pushvalue(L, -2); // push cast function
+	lua_pushstring(L, type_name);
+	lua_pushlightuserdata(L, func);
+	lua_call(L, 2, 1);
+	lua_setfield(L, -2, name);
+}
+
+void do_register_lib_table(lua_State *L, std::initializer_list<const char *> types) {
+	lua_getglobal(L, "require");
+	lua_pushstring(L, "ffi");
+	lua_call(L, 1, 1);
+
+	// Register all passed type with the ffi
+	for (auto type : types) {
+		lua_getfield(L, -1, "cdef");
+		lua_pushfstring(L, "typedef struct %s %s;", type, type);
+		lua_call(L, 1, 0);
+	}
+
+	lua_getfield(L, -1, "cast");
+	lua_remove(L, -2); // ffi table
+
+	// leaves ffi.cast on the stack
 }
 } }

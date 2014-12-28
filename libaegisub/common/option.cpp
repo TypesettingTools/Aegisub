@@ -61,15 +61,8 @@ class ConfigVisitor final : public json::ConstVisitor {
 	void ReadArray(json::Array const& src, std::string const& array_type) {
 		typename OptionValueType::value_type arr;
 		arr.reserve(src.size());
-
-		for (json::Object const& obj : src) {
-			if (obj.size() != 1)
-				return Error("Invalid array member");
-			if (obj.begin()->first != array_type)
-				return Error("Attempt to insert value into array of wrong type");
-
+		for (json::Object const& obj : src)
 			arr.push_back((typename OptionValueType::value_type::value_type)(obj.begin()->second));
-		}
 
 		values.push_back(agi::make_unique<OptionValueType>(name, std::move(arr)));
 	}
@@ -92,6 +85,13 @@ class ConfigVisitor final : public json::ConstVisitor {
 			return Error("Invalid array member");
 
 		auto const& array_type = front.begin()->first;
+		for (json::Object const& obj : array) {
+			if (obj.size() != 1)
+				return Error("Invalid array member");
+			if (obj.begin()->first != array_type)
+				return Error("Attempt to insert value into array of wrong type");
+		}
+
 		if (array_type == "string")
 			ReadArray<OptionValueListString>(array, array_type);
 		else if (array_type == "int")
@@ -158,11 +158,9 @@ void put_option(json::Object &obj, const std::string &path, json::UnknownElement
 template<class T>
 void put_array(json::Object &obj, const std::string &path, const char *element_key, std::vector<T> const& value) {
 	json::Array array;
-	for (T const& elem : value) {
-		array.push_back(json::Object());
-		static_cast<json::Object&>(array.back())[element_key] = (json::UnknownElement)elem;
-	}
-
+	array.resize(value.size());
+	for (size_t i = 0, size = value.size(); i < size; ++i)
+		static_cast<json::Object&>(array[i])[element_key] = (json::UnknownElement)value[i];
 	put_option(obj, path, std::move(array));
 }
 

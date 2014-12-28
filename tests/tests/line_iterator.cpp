@@ -12,6 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+#include <libaegisub/charset_conv.h>
 #include <libaegisub/line_iterator.h>
 
 #include <main.h>

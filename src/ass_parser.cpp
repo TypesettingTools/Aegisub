@@ -210,7 +210,7 @@ void AssParser::ParseExtradataLine(std::string const &data) {
 			value = inline_string_decode(value);
 		} else if (valuetype == "u") {
 			// ass uuencoded
-			auto valuedata = agi::ass::UUDecode(value);
+			auto valuedata = agi::ass::UUDecode(value.c_str(), value.c_str() + value.size());
 			value = std::string(valuedata.begin(), valuedata.end());
 		} else {
 			// unknown, error?

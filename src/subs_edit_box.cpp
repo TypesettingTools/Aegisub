@@ -443,18 +443,21 @@ void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 	}
 }
 
-template<class setter>
-void SubsEditBox::SetSelectedRows(setter set, wxString const& desc, int type, bool amend) {
-	auto const& sel = c->selectionController->GetSelectedSet();
-	for_each(sel.begin(), sel.end(), set);
-
+void SubsEditBox::Commit(wxString const& desc, int type, bool amend, AssDialogue *line) {
 	file_changed_slot.Block();
-	commit_id = c->ass->Commit(desc, type, (amend && desc == last_commit_type) ? commit_id : -1, sel.size() == 1 ? *sel.begin() : nullptr);
+	commit_id = c->ass->Commit(desc, type, (amend && desc == last_commit_type) ? commit_id : -1, line);
 	file_changed_slot.Unblock();
 	last_commit_type = desc;
 	last_time_commit_type = -1;
 	initial_times.clear();
 	undo_timer.Start(30000, wxTIMER_ONE_SHOT);
+}
+
+template<class setter>
+void SubsEditBox::SetSelectedRows(setter set, wxString const& desc, int type, bool amend) {
+	auto const& sel = c->selectionController->GetSelectedSet();
+	for_each(sel.begin(), sel.end(), set);
+	Commit(desc, type, amend, sel.size() == 1 ? *sel.begin() : nullptr);
 }
 
 template<class T>

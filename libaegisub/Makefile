@@ -4,6 +4,7 @@ aegisub_OBJ := \
 	$(d)common/parser.o \
 	$(d)ass/dialogue_parser.o \
 	$(d)ass/time.o \
+	$(d)ass/uuencode.o \
 	$(subst .cpp,.o,$(wildcard $(d)audio/*.cpp)) \
 	$(subst .cpp,.o,$(wildcard $(d)common/cajun/*.cpp)) \
 	$(subst .cpp,.o,$(wildcard $(d)lua/modules/*.cpp)) \
@@ -25,6 +26,7 @@ aegisub_OBJ := \
 	$(d)common/kana_table.o \
 	$(d)common/karaoke_matcher.o \
 	$(d)common/keyframe.o \
+	$(d)common/line_iterator.o \
 	$(d)common/log.o \
 	$(d)common/mru.o \
 	$(d)common/option.o \

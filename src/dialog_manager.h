@@ -38,7 +38,10 @@ class DialogManager {
 	template<typename Event>
 	void OnClose(Event &evt) {
 		evt.Skip();
-		auto dialog = static_cast<wxWindow *>(evt.GetEventObject());
+		Destroy(static_cast<wxWindow *>(evt.GetEventObject()));
+	}
+
+	void Destroy(wxWindow *dialog) {
 		while (!dialog->IsTopLevel()) dialog = dialog->GetParent();
 		dialog->Destroy();
 
@@ -50,10 +53,9 @@ class DialogManager {
 		}
 	}
 
-	template<typename T>
-	std::vector<dialog_pair>::iterator Find() {
+	std::vector<dialog_pair>::iterator Find(std::type_info const& type) {
 		for (auto it = begin(created_dialogs); it != end(created_dialogs); ++it) {
-			if (*it->first == typeid(T))
+			if (*it->first == type)
 				return it;
 		}
 		return end(created_dialogs);
@@ -92,10 +94,10 @@ public:
 			diag.ShowModal();
 		}
 		catch (...) {
-			created_dialogs.erase(Find<DialogType>());
+			created_dialogs.erase(Find(typeid(DialogType)));
 			throw;
 		}
-		created_dialogs.erase(Find<DialogType>());
+		created_dialogs.erase(Find(typeid(DialogType)));
 	}
 
 	/// Get the dialog of the given type
@@ -103,7 +105,7 @@ public:
 	/// @return A pointer to a DialogType or nullptr if no dialog of the given type has been created
 	template<class DialogType>
 	DialogType *Get() const {
-		auto it = const_cast<DialogManager *>(this)->Find<DialogType>();
+		auto it = const_cast<DialogManager *>(this)->Find(typeid(DialogType));
 		return it != created_dialogs.end() ? static_cast<DialogType*>(it->second) : nullptr;
 	}
 

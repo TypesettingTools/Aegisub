@@ -94,6 +94,23 @@ struct validate_sel_multiple : public Command {
 	}
 };
 
+template<typename String>
+AssDialogue *get_dialogue(String data) {
+	boost::trim(data);
+	try {
+		// Try to interpret the line as an ASS line
+		return new AssDialogue(data);
+	}
+	catch (...) {
+		// Line didn't parse correctly, assume it's plain text that
+		// should be pasted in the Text field only
+		auto d = new AssDialogue;
+		d->End = 0;
+		d->Text = data;
+		return d;
+	}
+}
+
 template<typename Paster>
 void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 	std::string data = GetClipboard();
@@ -104,21 +121,7 @@ void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 
 	boost::char_separator<char> sep("\r\n");
 	for (auto curdata : boost::tokenizer<boost::char_separator<char>>(data, sep)) {
-		boost::trim(curdata);
-		AssDialogue *curdiag;
-		try {
-			// Try to interpret the line as an ASS line
-			curdiag = new AssDialogue(curdata);
-		}
-		catch (...) {
-			// Line didn't parse correctly, assume it's plain text that
-			// should be pasted in the Text field only
-			curdiag = new AssDialogue;
-			curdiag->End = 0;
-			curdiag->Text = curdata;
-		}
-
-		AssDialogue *inserted = paste_line(curdiag);
+		AssDialogue *inserted = paste_line(get_dialogue(curdata));
 		if (!inserted)
 			break;
 
@@ -167,14 +170,21 @@ struct parsed_line {
 	parsed_line(parsed_line&& r) = default;
 #endif
 
-	template<typename T>
-	T get_value(int blockn, T initial, std::string const& tag_name, std::string alt = "") const {
+	const AssOverrideTag *find_tag(int blockn, std::string const& tag_name, std::string const& alt) const {
 		for (auto ovr : blocks | sliced(0, blockn + 1) | reversed | agi::of_type<AssDialogueBlockOverride>()) {
 			for (auto const& tag : ovr->Tags | reversed) {
 				if (tag.Name == tag_name || tag.Name == alt)
-					return tag.Params[0].template Get<T>(initial);
+					return &tag;
 			}
 		}
+		return nullptr;
+	}
+
+	template<typename T>
+	T get_value(int blockn, T initial, std::string const& tag_name, std::string const& alt = "") const {
+		auto tag = find_tag(blockn, tag_name, alt);
+		if (tag)
+			return tag->Params[0].template Get<T>(initial);
 		return initial;
 	}
 
@@ -1076,18 +1086,22 @@ struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 	}
 };
 
-template<typename Func>
-void split_lines(agi::Context *c, Func&& set_time) {
+void split_lines(agi::Context *c, AssDialogue *&n1, AssDialogue *&n2) {
 	int pos = c->textSelectionController->GetSelectionStart();
 
-	AssDialogue *n1 = c->selectionController->GetActiveLine();
-	auto n2 = new AssDialogue(*n1);
+	n1 = c->selectionController->GetActiveLine();
+	n2 = new AssDialogue(*n1);
 	c->ass->Events.insert(++c->ass->iterator_to(*n1), *n2);
 
 	std::string orig = n1->Text;
 	n1->Text = boost::trim_right_copy(orig.substr(0, pos));
 	n2->Text = boost::trim_left_copy(orig.substr(pos));
+}
 
+template<typename Func>
+void split_lines(agi::Context *c, Func&& set_time) {
+	AssDialogue *n1, *n2;
+	split_lines(c, n1, n2);
 	set_time(n1, n2);
 
 	c->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
