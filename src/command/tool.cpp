@@ -263,7 +263,6 @@ struct tool_translation_assistant_prev final : public tool_translation_assistant
 		c->dialog->Get<DialogTranslation>()->PrevBlock();
 	}
 };
-}
 
 struct tool_translation_assistant_insert final : public tool_translation_assistant_validator {
 	CMD_NAME("tool/translation_assistant/insert_original")
@@ -275,6 +274,7 @@ struct tool_translation_assistant_insert final : public tool_translation_assista
 		c->dialog->Get<DialogTranslation>()->InsertOriginal();
 	}
 };
+}
 
 namespace cmd {
 	void init_tool() {
