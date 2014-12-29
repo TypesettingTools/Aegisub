@@ -50,6 +50,8 @@ AssStyle::AssStyle() {
 	UpdateData();
 }
 
+AssEntryGroup AssStyle::Group() const { return AssEntryGroup::STYLE; }
+
 namespace {
 class parser {
 	boost::split_iterator<agi::StringRange::const_iterator> pos;
