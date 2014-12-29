@@ -93,9 +93,6 @@ namespace agi {
 		Exception(std::string msg) : message(std::move(msg)) { }
 
 	public:
-		/// @brief Destructor
-		virtual ~Exception() { }
-
 		/// @brief Get the outer exception error message
 		/// @return Error message
 		std::string const& GetMessage() const { return message; }
