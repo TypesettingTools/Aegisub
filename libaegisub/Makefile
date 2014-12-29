@@ -30,6 +30,7 @@ aegisub_OBJ := \
 	$(d)common/log.o \
 	$(d)common/mru.o \
 	$(d)common/option.o \
+	$(d)common/option_value.o \
 	$(d)common/path.o \
 	$(d)common/thesaurus.o \
 	$(d)common/util.o \

@@ -156,6 +156,7 @@
     <ClCompile Include="$(SrcDir)common\log.cpp" />
     <ClCompile Include="$(SrcDir)common\mru.cpp" />
     <ClCompile Include="$(SrcDir)common\option.cpp" />
+    <ClCompile Include="$(SrcDir)common\option_value.cpp" />
     <ClCompile Include="$(SrcDir)common\parser.cpp" />
     <ClCompile Include="$(SrcDir)common\path.cpp" />
     <ClCompile Include="$(SrcDir)common\thesaurus.cpp" />

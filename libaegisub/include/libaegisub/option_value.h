@@ -48,25 +48,8 @@ class OptionValue {
 	agi::signal::Signal<OptionValue const&> ValueChanged;
 	std::string name;
 
-	std::string TypeToString(OptionType type) const {
-		switch (type) {
-			case OptionType::String:     return "String";
-			case OptionType::Int:        return "Integer";
-			case OptionType::Double:     return "Double";
-			case OptionType::Color:      return "Color";
-			case OptionType::Bool:       return "Bool";
-			case OptionType::ListString: return "List of Strings";
-			case OptionType::ListInt:    return "List of Integers";
-			case OptionType::ListDouble: return "List of Doubles";
-			case OptionType::ListColor:  return "List of Colors";
-			case OptionType::ListBool:   return "List of Bools";
-		}
-		throw agi::InternalError("Invalid option type");
-	}
-
-	InternalError TypeError(OptionType type) const {
-		return InternalError("Invalid type for option " + name + ": expected " + TypeToString(type) + ", got " + TypeToString(GetType()));
-	}
+	std::string TypeToString(OptionType type) const;
+	InternalError TypeError(OptionType type) const;
 
 	template<typename T>
 	T *As(OptionType type) {
@@ -138,7 +121,7 @@ public:
 		OptionType GetType() const { return OptionType::type_name; }                  \
 		void Reset() { value = value_default; NotifyChanged(); }                      \
 		bool IsDefault() const { return value == value_default; }                     \
-		void Set(const OptionValue *new_val) { SetValue(new_val->Get##type_name()); } \
+		void Set(const OptionValue *nv);                                              \
 	};
 
 CONFIG_OPTIONVALUE(String, std::string)
@@ -162,7 +145,7 @@ CONFIG_OPTIONVALUE(Bool, bool)
 		OptionType GetType() const { return OptionType::List##type_name; }                \
 		void Reset() { array = array_default; NotifyChanged(); }                          \
 		bool IsDefault() const { return array == array_default; }                         \
-		void Set(const OptionValue *nv) { SetValue(nv->GetList##type_name()); }           \
+		void Set(const OptionValue *nv);                                                  \
 	};
 
 CONFIG_OPTIONVALUE_LIST(String, std::string)
