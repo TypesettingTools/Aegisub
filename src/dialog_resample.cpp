@@ -233,7 +233,7 @@ void DialogResample::UpdateButtons() {
 
 	auto source_ar = double(source_x->GetValue()) / source_y->GetValue();
 	auto dest_ar = double(dest_x->GetValue()) / dest_y->GetValue();
-	bool ar_changed = abs(source_ar - dest_ar) / dest_ar > .01;
+	bool ar_changed = std::abs(source_ar - dest_ar) / dest_ar > .01;
 
 	ar_mode->Enable(ar_changed);
 

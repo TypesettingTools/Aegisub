@@ -229,7 +229,7 @@ void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 	bool border_horizontally = new_ar > old_ar;
 	// Don't convert aspect ratio if it's very close to correct
 	// (for reference, 848x480 <-> 1280x720 is .006)
-	if (abs(old_ar - new_ar) / new_ar > .01) {
+	if (std::abs(old_ar - new_ar) / new_ar > .01) {
 		switch (settings.ar_mode) {
 		case ResampleARMode::RemoveBorder:
 			border_horizontally = !border_horizontally;
@@ -247,7 +247,7 @@ void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 				double(settings.source_x + settings.margin[LEFT] + settings.margin[RIGHT]) /
 				double(settings.source_y + settings.margin[TOP] + settings.margin[BOTTOM]);
 
-			if (abs(old_ar - new_ar) / new_ar > .01)
+			if (std::abs(old_ar - new_ar) / new_ar > .01)
 				horizontal_stretch = new_ar / old_ar;
 			break;
 		}

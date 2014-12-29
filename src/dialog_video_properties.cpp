@@ -119,7 +119,7 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 
 	auto sar = double(sx) / sy;
 	auto var = double(vx) / vy;
-	bool ar_changed = abs(sar - var) / var > .01;
+	bool ar_changed = std::abs(sar - var) / var > .01;
 
 	switch (OPT_GET("Video/Script Resolution Mismatch")->GetInt()) {
 	case MISMATCH_IGNORE: default:

@@ -92,7 +92,7 @@ void VisualToolScale::UpdateHold() {
 	if (shift_down)
 		delta = delta.SingleAxis();
 	if (alt_down) {
-		if (abs(delta.X()) > abs(delta.Y()))
+		if (std::abs(delta.X()) > std::abs(delta.Y()))
 			delta = Vector2D(delta.X(), delta.X() * (initial_scale.Y() / initial_scale.X()));
 		else
 			delta = Vector2D(delta.Y() * (initial_scale.X() / initial_scale.Y()), delta.Y());
