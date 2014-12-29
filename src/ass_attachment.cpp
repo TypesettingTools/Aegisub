@@ -22,6 +22,8 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 
+AssEntryGroup AssAttachment::Group() const { return group; }
+
 AssAttachment::AssAttachment(AssAttachment const& rgt)
 : entry_data(rgt.entry_data)
 , filename(rgt.filename)
