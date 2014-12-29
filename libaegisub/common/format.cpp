@@ -27,6 +27,11 @@
 #define WCHAR_T_ENC "utf-32le"
 #endif
 
+template class boost::interprocess::basic_vectorstream<std::string>;
+template class boost::interprocess::basic_vectorstream<std::wstring>;
+template class boost::interprocess::basic_vectorbuf<std::string>;
+template class boost::interprocess::basic_vectorbuf<std::wstring>;
+
 namespace {
 template<typename Char>
 int actual_len(int max_len, const Char *value) {

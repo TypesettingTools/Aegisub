@@ -22,6 +22,11 @@
 
 class wxString;
 
+extern template class boost::interprocess::basic_vectorstream<std::string>;
+extern template class boost::interprocess::basic_vectorstream<std::wstring>;
+extern template class boost::interprocess::basic_vectorbuf<std::string>;
+extern template class boost::interprocess::basic_vectorbuf<std::wstring>;
+
 namespace agi { namespace format_detail {
 // A static cast which throws at runtime if the cast is invalid rather than
 // failing to compile, as with format strings we don't know what type to cast
