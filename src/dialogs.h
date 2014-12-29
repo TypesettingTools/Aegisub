@@ -56,20 +56,21 @@ int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const&
 
 std::string CreateDummyVideo(wxWindow *parent);
 
+bool ShowPasteOverDialog(wxWindow *parent);
+bool ShowPlainTextImportDialog();
 void ShowAboutDialog(wxWindow *parent);
 void ShowAttachmentsDialog(wxWindow *parent, AssFile *file);
-void ShowSelectLinesDialog(agi::Context *c);
+void ShowAutomationDialog(agi::Context *c);
 void ShowExportDialog(agi::Context *c);
-void ShowPropertiesDialog(agi::Context *c);
 void ShowFontsCollectorDialog(agi::Context *c);
-bool ShowPlainTextImportDialog();
+void ShowJumpToDialog(agi::Context *c);
 void ShowKanjiTimerDialog(agi::Context *c);
-bool ShowPasteOverDialog(wxWindow *parent);
-void ShowSpellcheckerDialog(agi::Context *c);
+void ShowLogWindow(agi::Context *c);
+void ShowPreferences(wxWindow *parent);
+void ShowPropertiesDialog(agi::Context *c);
+void ShowSelectLinesDialog(agi::Context *c);
 void ShowShiftTimesDialog(agi::Context *c);
+void ShowSpellcheckerDialog(agi::Context *c);
 void ShowStyleManagerDialog(agi::Context *c);
 void ShowTimingProcessorDialog(agi::Context *c);
-void ShowJumpToDialog(agi::Context *c);
 void ShowVideoDetailsDialog(agi::Context *c);
-void ShowLogWindow(agi::Context *c);
-void ShowAutomationDialog(agi::Context *c);

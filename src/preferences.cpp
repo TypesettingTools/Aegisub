@@ -733,3 +733,7 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Options"), wxID_HELP);
 	defaultButton->Bind(wxEVT_BUTTON, &Preferences::OnResetDefault, this);
 }
+
+void ShowPreferences(wxWindow *parent) {
+	while (Preferences(parent).ShowModal() < 0);
+}

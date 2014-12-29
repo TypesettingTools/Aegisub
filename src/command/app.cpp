@@ -46,7 +46,6 @@
 #include "../main.h"
 #include "../options.h"
 #include "../project.h"
-#include "../preferences.h"
 #include "../utils.h"
 
 namespace {
@@ -209,7 +208,7 @@ struct app_options final : public Command {
 
 	void operator()(agi::Context *c) override {
 		try {
-			while (Preferences(c->parent).ShowModal() < 0);
+			ShowPreferences(c->parent);
 		} catch (agi::Exception& e) {
 			LOG_E("config/init") << "Caught exception: " << e.GetMessage();
 		}
