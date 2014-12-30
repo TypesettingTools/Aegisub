@@ -250,7 +250,7 @@ wxString FontFace(std::string opt_prefix) {
 	return to_wx(value);
 }
 
-agi::fs::path FileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, int flags, wxWindow *parent) {
+static agi::fs::path FileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, int flags, wxWindow *parent) {
 	wxString path;
 	if (!option_name.empty())
 		path = to_wx(OPT_GET(option_name)->GetString());
