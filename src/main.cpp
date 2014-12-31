@@ -405,15 +405,6 @@ void AegisubApp::OnFatalException() {
 #define SHOW_EXCEPTION(str) \
 	wxMessageBox(fmt_tl("An unexpected error has occurred. Please save your work and restart Aegisub.\n\nError Message: %s", str), \
 				"Exception in event handler", wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP)
-void AegisubApp::HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const {
-	try {
-		wxApp::HandleEvent(handler, func, event);
-	}
-	catch (...) {
-		const_cast<AegisubApp *>(this)->OnExceptionInMainLoop();
-	}
-}
-
 bool AegisubApp::OnExceptionInMainLoop() {
 	try {
 		throw;

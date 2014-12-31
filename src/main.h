@@ -56,10 +56,6 @@ class AegisubApp : public wxApp {
 	/// @param msg  Message
 	void OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg) override;
 
-	// This function wraps all event handler calls anywhere in the application and is
-	// our ticket to catch exceptions happening in event handlers.
-	void HandleEvent(wxEvtHandler *handler, wxEventFunction func, wxEvent& event) const override;
-
 	FrameMain *frame = nullptr;
 public:
 	AegisubApp();
