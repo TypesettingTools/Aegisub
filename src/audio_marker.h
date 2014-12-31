@@ -39,6 +39,8 @@ namespace agi {
 /// @class AudioMarker
 /// @brief A marker on the audio display
 class AudioMarker {
+protected:
+	~AudioMarker()=default;
 public:
 	/// Describe which directions a marker has feet in
 	enum FeetStyle {
@@ -68,10 +70,9 @@ class AudioMarkerProvider {
 protected:
 	/// One or more of the markers provided by this object have changed
 	agi::signal::Signal<> AnnounceMarkerMoved;
-public:
-	/// Virtual destructor, does nothing
-	virtual ~AudioMarkerProvider() = default;
 
+	~AudioMarkerProvider() = default;
+public:
 	/// @brief Return markers in a time range
 	virtual void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const = 0;
 
@@ -84,6 +85,8 @@ class AudioLabelProvider {
 protected:
 	/// One or more of the labels provided by this object have changed
 	agi::signal::Signal<> AnnounceLabelChanged;
+
+	~AudioLabelProvider() = default;
 public:
 	/// A label for a range of time on the audio display
 	struct AudioLabel {
@@ -92,9 +95,6 @@ public:
 		/// Range which this label applies to
 		TimeRange range;
 	};
-
-	/// Virtual destructor, does nothing
-	virtual ~AudioLabelProvider() = default;
 
 	/// @brief Get labels in a time range
 	/// @param range Range of times to get labels for
