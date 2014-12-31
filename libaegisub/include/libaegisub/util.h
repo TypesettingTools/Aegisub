@@ -21,7 +21,10 @@ struct tm;
 namespace agi {
 	namespace util {
 	/// Clamp `b` to the range [`a`,`c`]
-	template<typename T> inline T mid(T a, T b, T c) { return std::max(a, std::min(b, c)); }
+	template<typename T>
+	static inline T mid(T a, T b, T c) {
+		return std::max(a, std::min(b, c));
+	}
 
 	bool try_parse(std::string const& str, double *out);
 	bool try_parse(std::string const& str, int *out);

@@ -24,9 +24,9 @@ enum Type {
 
 void Check(fs::path const& file, acs::Type);
 
-inline void CheckFileRead(fs::path const& file) { Check(file, acs::FileRead); }
-inline void CheckFileWrite(fs::path const& file) { Check(file, acs::FileWrite); }
+static inline void CheckFileRead(fs::path const& file) { Check(file, acs::FileRead); }
+static inline void CheckFileWrite(fs::path const& file) { Check(file, acs::FileWrite); }
 
-inline void CheckDirRead(fs::path const& dir) { Check(dir, acs::DirRead); }
-inline void CheckDirWrite(fs::path const& dir) { Check(dir, acs::DirWrite); }
+static inline void CheckDirRead(fs::path const& dir) { Check(dir, acs::DirRead); }
+static inline void CheckDirWrite(fs::path const& dir) { Check(dir, acs::DirWrite); }
 } }

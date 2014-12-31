@@ -166,8 +166,8 @@ namespace agi {
 			template<typename T> void GetAll(T& cont);
 		};
 
-		inline DirectoryIterator& begin(DirectoryIterator &it) { return it; }
-		inline DirectoryIterator end(DirectoryIterator &) { return DirectoryIterator(); }
+		static inline DirectoryIterator& begin(DirectoryIterator &it) { return it; }
+		static inline DirectoryIterator end(DirectoryIterator &) { return DirectoryIterator(); }
 
 		template<typename T>
 		inline void DirectoryIterator::GetAll(T& cont) {

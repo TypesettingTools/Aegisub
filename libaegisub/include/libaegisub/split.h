@@ -25,7 +25,7 @@ namespace agi {
 		return boost::make_split_iterator(str, boost::token_finder([=](Char c) { return c == delim; }));
 	}
 
-	inline std::string str(StringRange const& r) {
+	static inline std::string str(StringRange const& r) {
 		return std::string(r.begin(), r.end());
 	}
 }
