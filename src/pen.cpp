@@ -39,3 +39,5 @@ Pen::Pen(const char *colour_opt, int width, wxPenStyle style)
 , colour_con(OPT_SUB(colour_opt, &Pen::OnColourChanged, this))
 {
 }
+
+Pen::~Pen() { }

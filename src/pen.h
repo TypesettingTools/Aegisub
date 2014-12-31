@@ -46,4 +46,6 @@ public:
 
 	/// Implicit conversion to wxPen
 	operator wxPen const&() const { return impl; }
+
+	~Pen();
 };
