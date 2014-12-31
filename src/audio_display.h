@@ -52,38 +52,8 @@ namespace {
 	class AudioDisplayScrollbar;
 	class AudioDisplayTimeline;
 }
+class AudioDisplayInteractionObject;
 class AudioMarkerInteractionObject;
-
-/// @class AudioDisplayInteractionObject
-/// @brief Interface for objects on the audio display that can respond to mouse events
-class AudioDisplayInteractionObject {
-public:
-	/// @brief The user is interacting with the object using the mouse
-	/// @param event Mouse event data
-	/// @return True to take mouse capture, false to release mouse capture
-	///
-	/// Assuming no object has the mouse capture, the audio display uses other methods
-	/// in the object implementing this interface to determine whether a mouse event
-	/// should go to the object. If the mouse event goes to the object, this method
-	/// is called.
-	///
-	/// If this method returns true, the audio display takes the mouse capture and
-	/// stores a pointer to the AudioDisplayInteractionObject interface for the object
-	/// and redirects the next mouse event to that object.
-	///
-	/// If the object that has the mouse capture returns false from this method, the
-	/// capture is released and regular processing is done for the next event.
-	///
-	/// If the object does not have mouse capture and returns false from this method,
-	/// no capture is taken or released and regular processing is done for the next
-	/// mouse event.
-	virtual bool OnMouseEvent(wxMouseEvent &event) = 0;
-
-	/// @brief Destructor
-	///
-	/// Empty virtual destructor for the cases that need it.
-	virtual ~AudioDisplayInteractionObject() = default;
-};
 
 /// @class AudioDisplay
 /// @brief Primary view/UI for interaction with audio timing
