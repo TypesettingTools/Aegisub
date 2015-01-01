@@ -217,6 +217,11 @@ CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
 AC_CHECK_HEADERS([boost/spirit/home/phoenix/version.hpp])
 CPPFLAGS=$cppflags_bak
 
+AC_DEFINE(BOOST_SYSTEM_NO_DEPRECATED, 1,
+          [Disable deprecated parts of boost.system])
+AC_DEFINE(BOOST_MULTI_INDEX_DISABLE_SERIALIZATION, 1,
+          [Disable boost.serialization support for boost.multi_index])
+
 PKG_CHECK_MODULES(ICU_UC, icu-uc >= icu_required_version)
 PKG_CHECK_MODULES(ICU_I18N, icu-i18n >= icu_required_version)
 
