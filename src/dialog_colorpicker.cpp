@@ -34,6 +34,7 @@
 #include "options.h"
 #include "persist_location.h"
 #include "utils.h"
+#include "value_event.h"
 
 #include <libaegisub/scoped_ptr.h>
 #include <libaegisub/make_unique.h>
@@ -236,7 +237,7 @@ public:
 #define STATIC_BORDER_FLAG wxSIMPLE_BORDER
 #endif
 
-wxDEFINE_EVENT(EVT_RECENT_SELECT, wxThreadEvent);
+wxDEFINE_EVENT(EVT_RECENT_SELECT, ValueEvent<agi::Color>);
 
 /// @class ColorPickerRecent
 /// @brief A grid of recently used colors which can be selected by clicking on them
@@ -255,11 +256,8 @@ class ColorPickerRecent final : public wxStaticBitmap {
 		if (cx < 0 || cx > cols || cy < 0 || cy > rows) return;
 		int i = cols*cy + cx;
 
-		if (i >= 0 && i < (int)colors.size()) {
-			wxThreadEvent evnt(EVT_RECENT_SELECT, GetId());
-			evnt.SetPayload(colors[i]);
-			AddPendingEvent(evnt);
-		}
+		if (i >= 0 && i < (int)colors.size())
+			AddPendingEvent(ValueEvent<agi::Color>(EVT_RECENT_SELECT, GetId(), colors[i]));
 	}
 
 	void UpdateBitmap() {
@@ -331,7 +329,7 @@ public:
 	}
 };
 
-wxDEFINE_EVENT(EVT_DROPPER_SELECT, wxThreadEvent);
+wxDEFINE_EVENT(EVT_DROPPER_SELECT, ValueEvent<agi::Color>);
 
 class ColorPickerScreenDropper final : public wxControl {
 	wxBitmap capture;
@@ -349,8 +347,7 @@ class ColorPickerScreenDropper final : public wxControl {
 			agi::Color color(pdi.Red(), pdi.Green(), pdi.Blue(), 0);
 
 			wxThreadEvent evnt(EVT_DROPPER_SELECT, GetId());
-			evnt.SetPayload(color);
-			AddPendingEvent(evnt);
+			AddPendingEvent(ValueEvent<agi::Color>(EVT_DROPPER_SELECT, GetId(), color));
 		}
 	}
 
@@ -500,7 +497,7 @@ class DialogColorPicker final : public wxDialog {
 	void OnSpectrumChange(wxCommandEvent &evt);
 	void OnSliderChange(wxCommandEvent &evt);
 	void OnAlphaSliderChange(wxCommandEvent &evt);
-	void OnRecentSelect(wxThreadEvent &evt); // also handles dropper pick
+	void OnRecentSelect(ValueEvent<agi::Color>& evt); // also handles dropper pick
 	void OnDropperMouse(wxMouseEvent &evt);
 	void OnMouse(wxMouseEvent &evt);
 	void OnCaptureLost(wxMouseCaptureLostEvent&);
@@ -1045,8 +1042,8 @@ void DialogColorPicker::OnAlphaSliderChange(wxCommandEvent &) {
 	callback(cur_color);
 }
 
-void DialogColorPicker::OnRecentSelect(wxThreadEvent &evt) {
-	agi::Color new_color = evt.GetPayload<agi::Color>();
+void DialogColorPicker::OnRecentSelect(ValueEvent<agi::Color> &evt) {
+	agi::Color new_color = evt.Get();
 	new_color.a = cur_color.a;
 	SetColor(new_color);
 }

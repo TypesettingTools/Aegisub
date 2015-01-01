@@ -45,7 +45,8 @@ class wxSpinCtrl;
 class wxTextCtrl;
 class wxThreadEvent;
 class wxWindow;
-namespace agi { struct Context; }
+namespace agi { struct Context; struct Color; }
+template<typename T> class ValueEvent;
 
 class DialogStyleEditor final : public wxDialog {
 	agi::Context *c;
@@ -90,14 +91,14 @@ class DialogStyleEditor final : public wxDialog {
 	void OnCommandPreviewUpdate(wxCommandEvent &event);
 
 	void OnPreviewTextChange(wxCommandEvent &event);
-	void OnPreviewColourChange(wxThreadEvent &event);
+	void OnPreviewColourChange(ValueEvent<agi::Color> &event);
 
 	/// @brief Maybe apply changes and maybe close the dialog
 	/// @param apply Should changes be applied?
 	/// @param close Should the dialog be closed?
 	void Apply(bool apply,bool close);
 	/// @brief Sets color for one of the four color buttons
-	void OnSetColor(wxThreadEvent& evt);
+	void OnSetColor(ValueEvent<agi::Color>& evt);
 
 public:
 	DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, std::string const& new_name, wxArrayString const& font_list);

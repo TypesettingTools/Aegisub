@@ -24,6 +24,7 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "utils.h"
+#include "value_event.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/format_path.h>
@@ -63,7 +64,7 @@ class DialogFontsCollector final : public wxDialog {
 	void OnRadio(wxCommandEvent &e);
 
 	/// Append text to log message from worker thread
-	void OnAddText(wxThreadEvent &event);
+	void OnAddText(ValueEvent<std::pair<int, wxString>>& event);
 	/// Collection complete notification from the worker thread to reenable buttons
 	void OnCollectionComplete(wxThreadEvent &);
 
@@ -79,15 +80,14 @@ enum FcMode {
 	SymlinkToFolder = 4
 };
 
-wxDEFINE_EVENT(EVT_ADD_TEXT, wxThreadEvent);
+using color_str_pair = std::pair<int, wxString>;
+wxDEFINE_EVENT(EVT_ADD_TEXT, ValueEvent<color_str_pair>);
 wxDEFINE_EVENT(EVT_COLLECTION_DONE, wxThreadEvent);
 
 void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMode oper, wxEvtHandler *collector) {
 	agi::dispatch::Background().Async([=]{
 		auto AppendText = [&](wxString text, int colour) {
-			wxThreadEvent event(EVT_ADD_TEXT);
-			event.SetPayload(std::make_pair(colour, text));
-			collector->AddPendingEvent(event);
+			collector->AddPendingEvent(ValueEvent<color_str_pair>(EVT_ADD_TEXT, -1, {colour, text.Clone()}));
 		};
 
 		auto paths = FontCollector(AppendText).GetFontPaths(subs);
@@ -378,8 +378,8 @@ void DialogFontsCollector::OnRadio(wxCommandEvent &) {
 	}
 }
 
-void DialogFontsCollector::OnAddText(wxThreadEvent &event) {
-	std::pair<int, wxString> str = event.GetPayload<std::pair<int, wxString>>();
+void DialogFontsCollector::OnAddText(ValueEvent<color_str_pair> &event) {
+	auto const& str = event.Get();
 	collection_log->SetReadOnly(false);
 	int pos = collection_log->GetLength();
 	auto const& utf8 = str.second.utf8_str();

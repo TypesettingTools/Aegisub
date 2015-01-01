@@ -18,9 +18,11 @@
 
 #include <libaegisub/color.h>
 
+#include "value_event.h"
+
 /// Emitted by ColourButton when the user picks a new color, with the chosen
 /// color set to the event payload
-wxDECLARE_EVENT(EVT_COLOR, wxThreadEvent);
+AGI_DECLARE_EVENT(EVT_COLOR, agi::Color);
 
 /// A button which displays a currently-selected color and lets the user pick
 /// a new color when clicked

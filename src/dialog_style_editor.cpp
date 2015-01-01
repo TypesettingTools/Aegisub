@@ -32,13 +32,14 @@
 /// @ingroup style_editor
 ///
 
+#include "dialog_style_editor.h"
+
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "ass_style_storage.h"
 #include "colour_button.h"
 #include "compat.h"
-#include "dialog_style_editor.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -487,7 +488,7 @@ void DialogStyleEditor::UpdateWorkStyle() {
 	work->strikeout = BoxStrikeout->IsChecked();
 }
 
-void DialogStyleEditor::OnSetColor(wxThreadEvent&) {
+void DialogStyleEditor::OnSetColor(ValueEvent<agi::Color>&) {
 	TransferDataFromWindow();
 	SubsPreview->SetStyle(*work);
 }
@@ -503,9 +504,9 @@ void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 	event.Skip();
 }
 
-void DialogStyleEditor::OnPreviewColourChange(wxThreadEvent &evt) {
-	SubsPreview->SetColour(evt.GetPayload<agi::Color>());
-	OPT_SET("Colour/Style Editor/Background/Preview")->SetColor(evt.GetPayload<agi::Color>());
+void DialogStyleEditor::OnPreviewColourChange(ValueEvent<agi::Color> &evt) {
+	SubsPreview->SetColour(evt.Get());
+	OPT_SET("Colour/Style Editor/Background/Preview")->SetColor(evt.Get());
 }
 
 void DialogStyleEditor::OnCommandPreviewUpdate(wxCommandEvent &event) {

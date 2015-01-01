@@ -53,6 +53,7 @@
 #include "subs_controller.h"
 #include "subtitles_provider_libass.h"
 #include "utils.h"
+#include "value_event.h"
 #include "version.h"
 
 #include <libaegisub/dispatch.h>
@@ -99,7 +100,9 @@ AegisubApp::AegisubApp() {
 	wxSetEnv("UBUNTU_MENUPROXY", "0");
 }
 
-wxDEFINE_EVENT(EVT_CALL_THUNK, wxThreadEvent);
+namespace {
+wxDEFINE_EVENT(EVT_CALL_THUNK, ValueEvent<agi::dispatch::Thunk>);
+}
 
 /// Message displayed when an exception has occurred.
 static wxString exception_message = "Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.";
@@ -146,14 +149,13 @@ bool AegisubApp::OnInit() {
 
 	// Pointless `this` capture required due to http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51494
 	agi::dispatch::Init([this](agi::dispatch::Thunk f) {
-		auto evt = new wxThreadEvent(EVT_CALL_THUNK);
-		evt->SetPayload(f);
+		auto evt = new ValueEvent<agi::dispatch::Thunk>(EVT_CALL_THUNK, -1, std::move(f));
 		wxTheApp->QueueEvent(evt);
 	});
 
-	wxTheApp->Bind(EVT_CALL_THUNK, [this](wxThreadEvent &evt) {
+	wxTheApp->Bind(EVT_CALL_THUNK, [this](ValueEvent<agi::dispatch::Thunk>& evt) {
 		try {
-			evt.GetPayload<std::function<void()>>()();
+			evt.Get()();
 		}
 		catch (...) {
 			OnExceptionInMainLoop();

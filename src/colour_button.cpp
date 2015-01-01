@@ -20,7 +20,7 @@
 
 #include <boost/gil/gil_all.hpp>
 
-wxDEFINE_EVENT(EVT_COLOR, wxThreadEvent);
+AGI_DEFINE_EVENT(EVT_COLOR, agi::Color);
 
 ColourButton::ColourButton(wxWindow *parent, wxSize const& size, bool alpha, agi::Color col, wxValidator const& validator)
 : wxButton(parent, -1, "", wxDefaultPosition, wxSize(size.GetWidth() + 6, size.GetHeight() + 6), 0, validator)
@@ -33,9 +33,8 @@ ColourButton::ColourButton(wxWindow *parent, wxSize const& size, bool alpha, agi
 			colour = new_color;
 			UpdateBitmap();
 
-			wxThreadEvent evt(EVT_COLOR, GetId());
+			ValueEvent<agi::Color> evt(EVT_COLOR, GetId(), colour);
 			evt.SetEventObject(this);
-			evt.SetPayload(colour);
 			AddPendingEvent(evt);
 		});
 	});
@@ -43,7 +42,8 @@ ColourButton::ColourButton(wxWindow *parent, wxSize const& size, bool alpha, agi
 
 void ColourButton::UpdateBitmap() {
 	using namespace boost::gil;
-	fill_pixels(interleaved_view(bmp.GetWidth(), bmp.GetHeight(), (bgr8_pixel_t*)bmp.GetData(), 3 * bmp.GetWidth()),
+	fill_pixels(interleaved_view(bmp.GetWidth(), bmp.GetHeight(),
+		(bgr8_pixel_t*)bmp.GetData(), 3 * bmp.GetWidth()),
 		bgr8_pixel_t(colour.r, colour.g, colour.b));
 	SetBitmapLabel(bmp);
 }
