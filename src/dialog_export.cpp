@@ -186,7 +186,7 @@ DialogExport::~DialogExport() {
 void DialogExport::OnProcess(wxCommandEvent &) {
 	if (!d.TransferDataFromWindow()) return;
 
-	auto filename = SaveFileSelector(_("Export subtitles file"), "", "", "", to_wx(SubtitleFormat::GetWildcards(1)), &d);
+	auto filename = SaveFileSelector(_("Export subtitles file"), "", "", "", SubtitleFormat::GetWildcards(1), &d);
 	if (filename.empty()) return;
 
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {

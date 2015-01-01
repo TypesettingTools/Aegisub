@@ -69,7 +69,7 @@ void IntValidator::OnChar(wxKeyEvent& event) {
 	auto ctrl = static_cast<wxTextCtrl *>(GetWindow());
 	auto str = new_value(ctrl, chr);
 	int parsed;
-	if (allow_negative && str == '-')
+	if (allow_negative && str == "-")
 		event.Skip();
 	else if (agi::util::try_parse(str, &parsed) && (allow_negative || parsed >= 0))
 		event.Skip();
@@ -121,7 +121,7 @@ void DoubleValidator::OnChar(wxKeyEvent& event) {
 
 	double parsed;
 	bool can_parse = agi::util::try_parse(str, &parsed);
-	if ((min < 0 && str == '-') || str == '.')
+	if ((min < 0 && str == "-") || str == ".")
 		event.Skip();
 	else if (can_parse && parsed >= min && parsed <= max)
 		event.Skip();

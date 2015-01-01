@@ -31,6 +31,7 @@
 
 #include "command.h"
 
+#include "../compat.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
@@ -71,7 +72,9 @@ struct keyframe_open final : public Command {
 		auto filename = OpenFileSelector(
 			_("Open keyframes file"),
 			"Path/Last/Keyframes", "" ,".txt",
-			_("All Supported Formats") + " (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|" + _("All Files") + " (*.*)|*.*",
+			from_wx(_("All Supported Formats") +
+				" (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|" +
+				_("All Files") + " (*.*)|*.*"),
 			c->parent);
 
 		if (!filename.empty())

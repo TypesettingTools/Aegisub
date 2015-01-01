@@ -250,21 +250,21 @@ wxString FontFace(std::string opt_prefix) {
 	return to_wx(value);
 }
 
-static agi::fs::path FileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, int flags, wxWindow *parent) {
+static agi::fs::path FileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, int flags, wxWindow *parent) {
 	wxString path;
 	if (!option_name.empty())
 		path = to_wx(OPT_GET(option_name)->GetString());
-	agi::fs::path filename = wxFileSelector(message, path, to_wx(default_filename), to_wx(default_extension), wildcard, flags, parent).wx_str();
+	agi::fs::path filename = wxFileSelector(message, path, to_wx(default_filename), to_wx(default_extension), to_wx(wildcard), flags, parent).wx_str();
 	if (!filename.empty() && !option_name.empty())
 		OPT_SET(option_name)->SetString(filename.parent_path().string());
 	return filename;
 }
 
-agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, wxWindow *parent) {
+agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent) {
 	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST, parent);
 }
 
-agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, wxString const& wildcard, wxWindow *parent) {
+agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent) {
 	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT, parent);
 }
 

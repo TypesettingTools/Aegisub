@@ -123,7 +123,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	res_sizer->Add(ResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
 	res_sizer->Add(FromVideo, 1, 0, 0);
 
-	YCbCrMatrix = new wxComboBox(&d, -1, c->ass->GetScriptInfo("YCbCr Matrix"),
+	YCbCrMatrix = new wxComboBox(&d, -1, to_wx(c->ass->GetScriptInfo("YCbCr Matrix")),
 		 wxDefaultPosition, wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
 
 	auto matrix_sizer = new wxBoxSizer(wxHORIZONTAL);

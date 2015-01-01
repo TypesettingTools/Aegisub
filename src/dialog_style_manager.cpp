@@ -430,7 +430,7 @@ void DialogStyleManager::LoadCatalog() {
 	// Get saved style catalogs
 	auto catalogs = AssStyleStorage::GetCatalogs();
 	for (auto const& c : catalogs)
-		CatalogList->Append(c);
+		CatalogList->Append(to_wx(c));
 
 	// Create a default storage if there are none
 	if (CatalogList->IsListEmpty()) {

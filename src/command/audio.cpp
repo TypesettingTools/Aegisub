@@ -37,6 +37,7 @@
 #include "../audio_controller.h"
 #include "../audio_karaoke.h"
 #include "../audio_timing.h"
+#include "../compat.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../options.h"
@@ -79,9 +80,9 @@ struct audio_open final : public Command {
 	STR_HELP("Open an audio file")
 
 	void operator()(agi::Context *c) override {
-		wxString str = _("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.w64;*.wav;*.wma|"
+		auto str = from_wx(_("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.w64;*.wav;*.wma|"
 					+ _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts|"
-					+ _("All Files") + " (*.*)|*.*";
+					+ _("All Files") + " (*.*)|*.*");
 		auto filename = OpenFileSelector(_("Open Audio File"), "Path/Last/Audio", "", "", str, c->parent);
 		if (!filename.empty())
 			c->project->LoadAudio(filename);

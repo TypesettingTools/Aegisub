@@ -112,8 +112,9 @@ std::string AegisubLocale::PickLanguage() {
 			style);
 	if (dialog.ShowModal() == wxID_OK) {
 		int picked = dialog.GetSelection();
-		if (langs[picked] != active_language)
-			return from_wx(langs[picked]);
+		auto new_lang = from_wx(langs[picked]);
+		if (new_lang != active_language)
+			return new_lang;
 	}
 
 	return "";

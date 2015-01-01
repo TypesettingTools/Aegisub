@@ -126,7 +126,7 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& commit_ms
 	diag.GetPaths(paths);
 
 	for (auto const& fn : paths)
-		ass->InsertAttachment(agi::fs::path(fn));
+		ass->InsertAttachment(agi::fs::path(fn.wx_str()));
 
 	ass->Commit(commit_msg, AssFile::COMMIT_ATTACHMENT);
 

@@ -461,8 +461,8 @@ namespace Automation4 {
 		auto dialog = static_cast<wxDialog *>(parent);
 		auto bs = new wxStdDialogButtonSizer;
 
-		auto make_button = [&](wxWindowID id, int button_pushed, wxString const& text) -> wxButton *{
-			auto button = new wxButton(window, id, text);
+		auto make_button = [&](wxWindowID id, int button_pushed, std::string const& text) -> wxButton *{
+			auto button = new wxButton(window, id, to_wx(text));
 			button->Bind(wxEVT_BUTTON, [=](wxCommandEvent &evt) {
 				this->button_pushed = button_pushed;
 				dialog->TransferDataFromWindow();

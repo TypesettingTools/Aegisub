@@ -231,7 +231,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 	diag.GetPaths(fnames);
 
 	for (auto const& fname : fnames) {
-		agi::fs::path fnpath(fname);
+		agi::fs::path fnpath(fname.wx_str());
 		OPT_SET("Path/Last/Automation")->SetString(fnpath.parent_path().string());
 
 		if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {

@@ -446,5 +446,5 @@ int AegisubApp::OnRun() {
 
 void AegisubApp::MacOpenFile(const wxString &filename) {
 	if (frame && !filename.empty())
-		frame->context->project->LoadSubtitles(agi::fs::path(filename));
+		frame->context->project->LoadSubtitles(agi::fs::path(filename.wx_str()));
 }
