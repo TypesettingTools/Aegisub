@@ -3,7 +3,7 @@ include $(dir $(lastword $(MAKEFILE_LIST)))../header.mk
 PROGRAM += $(d)src
 
 src_CPPFLAGS := -I$(d) -I.. -I$(d)include -I$(TOP)libaegisub/include -I$(TOP)build \
-	$(CFLAGS_PTHREAD) $(CFLAGS_FFTW3) $(CFLAGS_ICU)
+	$(CFLAGS_PTHREAD) $(CFLAGS_FFTW3) $(CFLAGS_ICU) $(CPPFLAGS_BOOST)
 src_CXXFLAGS := $(CXXFLAGS_WX)
 src_LIBS := $(LIBS_GL) $(LIBS_PTHREAD) $(LIBS_WX) $(LIBS_FREETYPE) \
 	$(LIBS_LIBASS) $(LIBS_FONTCONFIG) $(LIBS_FFTW3)  $(LIBS_BOOST) $(LIBS_ICU)
