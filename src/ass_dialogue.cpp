@@ -123,22 +123,24 @@ void AssDialogue::Parse(std::string const& raw) {
 
 	std::string text{tkn.next_tok().begin(), str.end()};
 
-	static const boost::regex extradata_test("^\\{(=\\d+)+\\}");
-	boost::match_results<std::string::iterator> rematch;
-	if (boost::regex_search(text.begin(), text.end(), rematch, extradata_test)) {
-		std::string extradata_str = rematch.str(0);
-		text = rematch.suffix().str();
+	if (text.size() > 1 && text[0] == '{' && text[1] == '=') {
+		static const boost::regex extradata_test("^\\{(=\\d+)+\\}");
+		boost::match_results<std::string::iterator> rematch;
+		if (boost::regex_search(text.begin(), text.end(), rematch, extradata_test)) {
+			std::string extradata_str = rematch.str(0);
+			text = rematch.suffix().str();
 
-		static const boost::regex idmatcher("=(\\d+)");
-		auto start = extradata_str.begin();
-		auto end = extradata_str.end();
-		std::vector<uint32_t> ids;
-		while (boost::regex_search(start, end, rematch, idmatcher)) {
-			auto id = boost::lexical_cast<uint32_t>(rematch.str(1));
-			ids.push_back(id);
-			start = rematch.suffix().first;
+			static const boost::regex idmatcher("=(\\d+)");
+			auto start = extradata_str.begin();
+			auto end = extradata_str.end();
+			std::vector<uint32_t> ids;
+			while (boost::regex_search(start, end, rematch, idmatcher)) {
+				auto id = boost::lexical_cast<uint32_t>(rematch.str(1));
+				ids.push_back(id);
+				start = rematch.suffix().first;
+			}
+			ExtradataIds = ids;
 		}
-		ExtradataIds = ids;
 	}
 
 	Text = text;
