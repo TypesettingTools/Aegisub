@@ -41,7 +41,7 @@ TEST(lagi_split, does_not_copy_input) {
 	}
 
 	auto rng = agi::Split(str, 'e');
-	EXPECT_EQ(str.begin(), rng->begin());
-	EXPECT_EQ(str.end(), std::next(rng)->end());
+	EXPECT_EQ(str.begin(), begin(*rng));
+	EXPECT_EQ(str.end(), end(*std::next(rng)));
 }
 

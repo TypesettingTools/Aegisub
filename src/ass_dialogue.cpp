@@ -73,7 +73,7 @@ AssDialogue::~AssDialogue () { }
 
 class tokenizer {
 	agi::StringRange str;
-	boost::split_iterator<agi::StringRange::const_iterator> pos;
+	agi::split_iterator<agi::StringRange::const_iterator> pos;
 
 public:
 	tokenizer(agi::StringRange const& str) : str(str) , pos(agi::Split(str, ',')) { }
