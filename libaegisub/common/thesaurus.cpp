@@ -22,8 +22,8 @@
 #include "libaegisub/file_mapping.h"
 #include "libaegisub/line_iterator.h"
 #include "libaegisub/make_unique.h"
+#include "libaegisub/split.h"
 
-#include <boost/algorithm/string/split.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 
 namespace agi {
@@ -76,15 +76,14 @@ std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
 
 	// First line is the word and meaning count
 	std::vector<std::string> header;
-	boost::split(header, *read_line(temp), [](char c) { return c == '|'; });
+	agi::Split(header, *read_line(temp), '|');
 	if (header.size() != 2) return out;
 	int meanings = atoi(header[1].c_str());
 
 	out.reserve(meanings);
+	std::vector<std::string> line;
 	for (int i = 0; i < meanings; ++i) {
-		std::vector<std::string> line;
-		boost::split(line, *read_line(temp), [](char c) { return c == '|'; });
-
+		agi::Split(line, *read_line(temp), '|');
 		if (line.size() < 2)
 			continue;
 

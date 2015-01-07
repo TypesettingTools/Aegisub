@@ -91,12 +91,19 @@ namespace agi {
 		return split_iterator<Iterator>();
 	}
 
+	static inline std::string str(StringRange const& r) {
+		return std::string(r.begin(), r.end());
+	}
+
 	template<typename Str, typename Char>
 	split_iterator<typename Str::const_iterator> Split(Str const& str, Char delim) {
 		return split_iterator<typename Str::const_iterator>(begin(str), end(str), delim);
 	}
 
-	static inline std::string str(StringRange const& r) {
-		return std::string(r.begin(), r.end());
+	template<typename Cont, typename Str, typename Char>
+	void Split(Cont& out, Str const& str, Char delim) {
+		out.clear();
+		for (auto const& tok : Split(str, delim))
+			out.emplace_back(begin(tok), end(tok));
 	}
 }

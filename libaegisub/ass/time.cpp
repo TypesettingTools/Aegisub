@@ -18,10 +18,10 @@
 #include <libaegisub/ass/smpte.h>
 
 #include <libaegisub/format.h>
+#include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
-#include <boost/algorithm/string/split.hpp>
 
 namespace agi {
 Time::Time(int time) : time(util::mid(0, time, 10 * 60 * 60 * 1000 - 1)) { }
@@ -94,7 +94,7 @@ std::string SmpteFormatter::ToSMPTE(Time time) const {
 
 Time SmpteFormatter::FromSMPTE(std::string const& str) const {
 	std::vector<std::string> toks;
-	boost::split(toks, str, [=](char c) { return c == sep; });
+	Split(toks, str, sep);
 	if (toks.size() != 4) return 0;
 
 	int h, m, s, f;

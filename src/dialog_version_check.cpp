@@ -43,9 +43,9 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/scoped_ptr.h>
+#include <libaegisub/split.h>
 
 #include <ctime>
-#include <boost/algorithm/string/split.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <functional>
 #include <mutex>
@@ -321,7 +321,7 @@ void DoCheck(bool interactive) {
 		if (line.empty()) continue;
 
 		std::vector<std::string> parsed;
-		boost::split(parsed, line, [](char c) { return c == '|'; });
+		agi::Split(parsed, line, '|');
 		if (parsed.size() != 6) continue;
 
 		if (atoi(parsed[1].c_str()) <= GetSVNRevision())
