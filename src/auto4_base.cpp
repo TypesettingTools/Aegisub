@@ -43,10 +43,10 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/split.h>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/tokenizer.hpp>
 #include <future>
 
 #include <wx/dcmemory.h>
@@ -262,9 +262,8 @@ namespace Automation4 {
 		include_path.emplace_back(filename.parent_path());
 
 		std::string include_paths = OPT_GET("Path/Automation/Include")->GetString();
-		boost::char_separator<char> sep("|");
-		for (auto const& tok : boost::tokenizer<boost::char_separator<char>>(include_paths, sep)) {
-			auto path = config::path->Decode(tok);
+		for (auto tok : agi::Split(include_paths, '|')) {
+			auto path = config::path->Decode(agi::str(tok));
 			if (path.is_absolute() && agi::fs::DirectoryExists(path))
 				include_path.emplace_back(std::move(path));
 		}
@@ -323,9 +322,8 @@ namespace Automation4 {
 
 		std::vector<std::future<std::unique_ptr<Script>>> script_futures;
 
-		boost::char_separator<char> sep("|");
-		for (auto const& tok : boost::tokenizer<boost::char_separator<char>>(path, sep)) {
-			auto dirname = config::path->Decode(tok);
+		for (auto tok : agi::Split(path, '|')) {
+			auto dirname = config::path->Decode(agi::str(tok));
 			if (!agi::fs::DirectoryExists(dirname)) continue;
 
 			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*"))
@@ -372,11 +370,11 @@ namespace Automation4 {
 
 		auto autobasefn(OPT_GET("Path/Automation/Base")->GetString());
 
-		boost::char_separator<char> sep("|");
-		for (auto const& cur : boost::tokenizer<boost::char_separator<char>>(local_scripts, sep)) {
-			auto trimmed = boost::trim_copy(cur);
-			char first_char = trimmed[0];
-			trimmed.erase(0, 1);
+		for (auto tok : agi::Split(local_scripts, '|')) {
+			tok = boost::trim_copy(tok);
+			if (boost::size(tok) == 0) continue;
+			char first_char = tok[0];
+			std::string trimmed(begin(tok) + 1, end(tok));
 
 			agi::fs::path basepath;
 			if (first_char == '~') {

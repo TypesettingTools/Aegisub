@@ -42,11 +42,11 @@
 #include <libaegisub/log.h>
 #include <libaegisub/lua/utils.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/split.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm.hpp>
-#include <boost/tokenizer.hpp>
 #include <cfloat>
 #include <unordered_map>
 
@@ -533,13 +533,12 @@ namespace Automation4 {
 	}
 
 	void LuaDialog::Unserialise(const std::string &serialised) {
-		boost::char_separator<char> psep("|"), csep(":");
-		for (auto const& cur : boost::tokenizer<boost::char_separator<char>>(serialised, psep)) {
-			size_t pos = cur.find(':');
-			if (pos == std::string::npos) continue;
+		for (auto tok : agi::Split(serialised, '|')) {
+			auto pos = std::find(begin(tok), end(tok), ':');
+			if (pos == end(tok)) continue;
 
-			std::string name = inline_string_decode(cur.substr(0, pos));
-			std::string value = cur.substr(pos + 1);
+			std::string name = inline_string_decode(std::string(begin(tok), pos));
+			std::string value(pos + 1, end(tok));
 
 			// Hand value to all controls matching name
 			for (auto& control : controls) {

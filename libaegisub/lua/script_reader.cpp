@@ -19,9 +19,9 @@
 #include "libaegisub/file_mapping.h"
 #include "libaegisub/log.h"
 #include "libaegisub/lua/utils.h"
+#include "libaegisub/split.h"
 
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/tokenizer.hpp>
 #include <lauxlib.h>
 
 namespace agi { namespace lua {
@@ -83,9 +83,9 @@ namespace agi { namespace lua {
 		std::string package_paths(check_string(L, -1));
 		lua_pop(L, 2);
 
-		boost::char_separator<char> sep(";");
-		for (auto filename : boost::tokenizer<boost::char_separator<char>>(package_paths, sep)) {
-			boost::replace_all(filename, "?", module);
+		for (auto tok : agi::Split(package_paths, ';')) {
+			std::string filename;
+			boost::replace_all_copy(std::back_inserter(filename), tok, "?", module);
 
 			// If there's a .moon file at that path, load it instead of the
 			// .lua file

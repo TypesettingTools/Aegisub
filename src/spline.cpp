@@ -36,9 +36,9 @@
 
 #include "visual_tool.h"
 
+#include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
-#include <boost/tokenizer.hpp>
 #include <limits>
 
 Spline::Spline(const VisualToolBase &tl)
@@ -109,10 +109,9 @@ void Spline::DecodeFromAss(std::string const& str) {
 	Vector2D pt{0, 0};
 
 	// Tokenize the string
-	boost::char_separator<char> sep(" ");
-	for (auto const& token : boost::tokenizer<boost::char_separator<char>>(str, sep)) {
+	for (auto token : agi::Split(str, ' ')) {
 		double n;
-		if (agi::util::try_parse(token, &n)) {
+		if (agi::util::try_parse(agi::str(token), &n)) {
 			stack.push_back(n);
 
 			// Move
