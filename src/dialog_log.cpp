@@ -70,8 +70,9 @@ public:
 			sm.line,
 			sm.message);
 #else
-		auto log = fmt_wx("%c %-6ld <%-25s> [%s:%s:%d]  %s\n",
+		auto log = fmt_wx("%c %-6ld.%09ld <%-25s> [%s:%s:%d]  %s\n",
 			agi::log::Severity_ID[sm.severity],
+			(sm.time / 1000000000),
 			(sm.time % 1000000000),
 			sm.section,
 			sm.file,
