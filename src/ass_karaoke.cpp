@@ -39,11 +39,11 @@ std::string AssKaraoke::Syllable::GetText(bool k_tag) const {
 	return ret;
 }
 
-AssKaraoke::AssKaraoke(AssDialogue *line, bool auto_split, bool normalize) {
+AssKaraoke::AssKaraoke(const AssDialogue *line, bool auto_split, bool normalize) {
 	if (line) SetLine(line, auto_split, normalize);
 }
 
-void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
+void AssKaraoke::SetLine(const AssDialogue *line, bool auto_split, bool normalize) {
 	syls.clear();
 	Syllable syl;
 	syl.start_time = line->Start;
@@ -87,7 +87,7 @@ void AssKaraoke::SetLine(AssDialogue *line, bool auto_split, bool normalize) {
 	AnnounceSyllablesChanged();
 }
 
-void AssKaraoke::ParseSyllables(AssDialogue *line, Syllable &syl) {
+void AssKaraoke::ParseSyllables(const AssDialogue *line, Syllable &syl) {
 	for (auto& block : line->ParseTags()) {
 		std::string text = block->GetText();
 

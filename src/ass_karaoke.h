@@ -46,17 +46,17 @@ private:
 	bool no_announce = false;
 
 	agi::signal::Signal<> AnnounceSyllablesChanged;
-	void ParseSyllables(AssDialogue *line, Syllable &syl);
+	void ParseSyllables(const AssDialogue *line, Syllable &syl);
 
 public:
 	/// Constructor
 	/// @param line Initial line
 	/// @param auto_split Should the line automatically be split on spaces if there are no k tags?
 	/// @param normalize Should the total duration of the syllables be forced to equal the line duration?
-	AssKaraoke(AssDialogue *line = nullptr, bool auto_split = false, bool normalize = true);
+	AssKaraoke(const AssDialogue *line = nullptr, bool auto_split = false, bool normalize = true);
 
 	/// Parse a dialogue line
-	void SetLine(AssDialogue *line, bool auto_split = false, bool normalize = true);
+	void SetLine(const AssDialogue *line, bool auto_split = false, bool normalize = true);
 
 	/// Add a split before character pos in syllable syl_idx
 	void AddSplit(size_t syl_idx, size_t pos);
