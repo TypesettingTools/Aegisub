@@ -181,7 +181,8 @@ void EnumBinderBase::Set(int value) {
 		rb->SetSelection(value);
 	else if (auto rb = dynamic_cast<wxComboBox*>(GetWindow()))
 		rb->SetSelection(value);
-	throw agi::InternalError("Control type not supported by EnumBinder");
+	else
+		throw agi::InternalError("Control type not supported by EnumBinder");
 }
 
 bool StringBinder::TransferFromWindow() {
