@@ -125,8 +125,8 @@ namespace {
 	}
 
 	template<typename T, typename U>
-	T check_cast(U value) {
-		return typeid(T) == typeid(value) ? static_cast<T>(value) : nullptr;
+	const T *check_cast_constptr(const U *value) {
+		return typeid(const T) == typeid(*value) ? static_cast<const T *>(value) : nullptr;
 	}
 }
 
@@ -155,13 +155,13 @@ namespace Automation4 {
 
 		set_field(L, "section", e->GroupHeader());
 
-		if (auto info = check_cast<const AssInfo*>(e)) {
+		if (auto info = check_cast_constptr<AssInfo>(e)) {
 			set_field(L, "raw", info->GetEntryData());
 			set_field(L, "key", info->Key());
 			set_field(L, "value", info->Value());
 			set_field(L, "class", "info");
 		}
-		else if (auto dia = check_cast<const AssDialogue*>(e)) {
+		else if (auto dia = check_cast_constptr<AssDialogue>(e)) {
 			set_field(L, "raw", dia->GetEntryData());
 			set_field(L, "comment", dia->Comment);
 
@@ -192,7 +192,7 @@ namespace Automation4 {
 
 			set_field(L, "class", "dialogue");
 		}
-		else if (auto sty = check_cast<const AssStyle*>(e)) {
+		else if (auto sty = check_cast_constptr<AssStyle>(e)) {
 			set_field(L, "raw", sty->GetEntryData());
 			set_field(L, "name", sty->name);
 
@@ -623,7 +623,7 @@ namespace Automation4 {
 	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
 	{
 		auto e = LuaToAssEntry(L, ass);
-		auto dia = check_cast<AssDialogue*>(e.get());
+		auto dia = check_cast_constptr<AssDialogue>(e.get());
 		argcheck(L, !!dia, 1, "Subtitle line must be a dialogue line");
 
 		int idx = 0;
