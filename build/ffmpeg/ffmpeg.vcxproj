@@ -54,33 +54,69 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InputRelativeSourceDir>$(FfmpegSrcDir)</InputRelativeSourceDir>
     </ClCompile>
+    <Yasm>
+      <InputRelativeSourceDir>$(FfmpegSrcDir)\</InputRelativeSourceDir>
+    </Yasm>
   </ItemDefinitionGroup>
 
   <PropertyGroup>
     <BuildCompileTargets>
-      YasmAssemble;
+      _YasmAssemble;
       $(BuildCompileTargets)
     </BuildCompileTargets>
   </PropertyGroup>
   <Target
+    Name="_YasmAssemble"
+    DependsOnTargets="ComputeYasmRelativeObjectDir;YasmCreateOutputDir;YasmAssemble"
+    />
+  <!-- See standard-outdirs.props for explanation of the logic here -->
+  <Target
+    Name="ComputeYasmRelativeObjectDir"
+    BeforeTargets="YasmAssemble"
+    Inputs="@(Yasm)"
+    Outputs="%(InputRelativeSourceDir)|%(RelativeDir)"
+    >
+    <PropertyGroup>
+      <InputRelativeDir>%(Yasm.RelativeDir)</InputRelativeDir>
+      <InputRelativeDir Condition="'%(Yasm.InputRelativeSourceDir)' != ''">$(InputRelativeDir.Replace("%(Yasm.InputRelativeSourceDir)",""))</InputRelativeDir>
+      <InputRelativeSourceDir>%(Yasm.InputRelativeSourceDir)</InputRelativeSourceDir>
+      <InputRelativeSourceDir Condition="!HasTrailingSlash('$(InputRelativeSourceDir)')">$(InputRelativeSourceDir)\</InputRelativeSourceDir>
+      <InputRelativeDir>$(InputRelativeDir.Replace("$(InputRelativeSourceDir)",""))</InputRelativeDir>
+    </PropertyGroup>
+    <ItemGroup>
+      <Yasm>
+        <OutputDir>$(AegisubObjectDir)$(InputRelativeDir)</OutputDir>
+      </Yasm>
+    </ItemGroup>
+  </Target>
+  <Target
+    Name="YasmCreateOutputDir"
+    Inputs="@(Yasm)"
+    Outputs="%(Yasm.OutputDir)"
+    >
+    <MakeDir
+      Directories="%(Yasm.OutputDir)"
+      />
+  </Target>
+  <Target
     Name="YasmAssemble"
     Inputs="@(Yasm)"
-    Outputs="$(AegisubObjectDir)\%(Yasm.Directory)%(Yasm.Filename).obj"
+    Outputs="%(Yasm.OutputDir)%(Yasm.Filename).obj"
     >
     <PropertyGroup>
       <YasmInclude>-I. -I$(MSBuildThisFileDirectory) -I$(FfmpegSrcDir) -I%(Yasm.RootDir)%(Yasm.Directory)</YasmInclude>
-      <YasmOutName>@(Yasm -> '%(Directory)%(Filename)').obj</YasmOutName>
+      <YasmOutName>@(Yasm -> '%(OutputDir)%(Filename)').obj</YasmOutName>
       <YasmConfig Condition="'$(Platform)'=='Win32'">-m x86 -DPREFIX -Pconfig-x86.asm</YasmConfig>
       <YasmConfig Condition="'$(Platform)'=='x64'">-m amd64 -Pconfig-x64.asm</YasmConfig>
     </PropertyGroup>
     <Exec
-      Command="echo %(Yasm.Identity) &amp;&amp; yasm -f win32 $(YasmConfig) $(YasmInclude) -o $(YasmOutName) %(Yasm.FullPath)"
+      Command="echo $(InputRelativeDir)%(Yasm.Filename)%(Yasm.Extension) &amp;&amp; yasm -f win32 $(YasmConfig) $(YasmInclude) -o $(YasmOutName) %(Yasm.FullPath)"
       WorkingDirectory="$(AegisubObjectDir)"
       />
     <ItemGroup>
-      <Link   Include="$(AegisubObjectDir)$(YasmOutName)" />
-      <Lib    Include="$(AegisubObjectDir)$(YasmOutName)" />
-      <ImpLib Include="$(AegisubObjectDir)$(YasmOutName)" />
+      <Link   Include="$(YasmOutName)" />
+      <Lib    Include="$(YasmOutName)" />
+      <ImpLib Include="$(YasmOutName)" />
     </ItemGroup>
   </Target>
 
