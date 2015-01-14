@@ -55,9 +55,14 @@
     </ClCompile>
   </ItemDefinitionGroup>
 
+  <PropertyGroup>
+    <BuildCompileTargets>
+      YasmAssemble;
+      $(BuildCompileTargets)
+    </BuildCompileTargets>
+  </PropertyGroup>
   <Target
-    Name="Assemble"
-    BeforeTargets="ClCompile"
+    Name="YasmAssemble"
     Inputs="@(Yasm)"
     Outputs="$(AegisubObjectDir)\%(Yasm.Directory)%(Yasm.Filename).obj"
     >
