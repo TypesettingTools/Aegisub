@@ -63,7 +63,7 @@
     >
     <PropertyGroup>
       <YasmInclude>-I. -I$(MSBuildThisFileDirectory) -I$(FfmpegSrcDir) -I%(Yasm.RootDir)%(Yasm.Directory)</YasmInclude>
-      <YasmOutName>@(Yasm -> '%(RelativeDir)%(Filename)').obj</YasmOutName>
+      <YasmOutName>@(Yasm -> '%(Directory)%(Filename)').obj</YasmOutName>
       <YasmConfig Condition="'$(Platform)'=='Win32'">-m x86 -DPREFIX -Pconfig-x86.asm</YasmConfig>
       <YasmConfig Condition="'$(Platform)'=='x64'">-m amd64 -Pconfig-x64.asm</YasmConfig>
     </PropertyGroup>
