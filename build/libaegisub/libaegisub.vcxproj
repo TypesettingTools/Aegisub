@@ -29,6 +29,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>lagi_pre.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>lagi_pre.h</ForcedIncludeFiles>
+      <InputRelativeSourceDir>$(SrcDir)</InputRelativeSourceDir>
     </ClCompile>
   </ItemDefinitionGroup>
 

@@ -15,7 +15,7 @@
 	</PropertyGroup>
 	<ItemDefinitionGroup>
 		<ClCompile>
-			<ObjectFileName>$(IntDir)/%(Directory)</ObjectFileName>
+			<InputRelativeSourceDir></InputRelativeSourceDir>
 		</ClCompile>
 		<Link>
 			<OutputFile>$(AegisubBinaryDir)$(TargetName)$(TargetExt)</OutputFile>
@@ -26,4 +26,47 @@
 			<OutputFile>$(AegisubLibraryDir)$(ProjectName).lib</OutputFile>
 		</Lib>
 	</ItemDefinitionGroup>
+  
+	<!-- Magic pseudo-target that makes object filenames relative to a given directory
+		
+		First define its relation to the system build targets: It must run as part of the
+		"compile inputs" section, but before all the system things. The system things here
+		include testing whether multiple inputs might have identical outputs, which will
+		produce a warning which we don't want.
+		
+		Then define the target, make it depend on all ClCompile items, and have a fake
+		output that can never be a valid filename (due to pipe character). Instead have
+		the output name depend on the two variables involved in how the ObjectFileName
+		is determined: The specified InputRelativeSourceDir, and the actual RelativeDir
+		for the items.
+		This will cause MSBuild to batch the items as appropriate.
+		
+		To use this feature, add a InputRelativeSourceDir metadata to ClCompile for
+		a project.
+	-->
+	<PropertyGroup>
+		<ComputeCompileInputsTargets>
+			ComputeClRelativeObjectFileName;
+			$(ComputeCompileInputsTargets)
+		</ComputeCompileInputsTargets>
+	</PropertyGroup>
+	<Target
+		Name="ComputeClRelativeObjectFileName"
+		Inputs="@(ClCompile)"
+		Outputs="%(InputRelativeSourceDir)|%(RelativeDir)"
+		>
+		<PropertyGroup>
+			<InputRelativeDir>%(ClCompile.RelativeDir)</InputRelativeDir>
+			<InputRelativeDir Condition="!HasTrailingSlash('$(InputRelativeDir)')">$(InputRelativeDir)\</InputRelativeDir>
+			<InputRelativeSourceDir>%(ClCompile.InputRelativeSourceDir)</InputRelativeSourceDir>
+			<InputRelativeSourceDir Condition="!HasTrailingSlash('$(InputRelativeSourceDir)')">$(InputRelativeSourceDir)\</InputRelativeSourceDir>
+			<InputRelativeDir>$(InputRelativeDir.Replace("$(InputRelativeSourceDir)",""))</InputRelativeDir>
+		</PropertyGroup>
+		<!-- <Exec Command="echo ClCompile output for @(ClCompile -> '%(Filename)%(Extension)') to $(IntDir)$(InputRelativeDir)" /> -->
+		<ItemGroup>
+			<ClCompile Condition="'%(ClCompile.InputRelativeSourceDir)' != ''">
+				<ObjectFileName>$(IntDir)$(InputRelativeDir)</ObjectFileName>
+			</ClCompile>
+		</ItemGroup>
+	</Target>
 </Project>

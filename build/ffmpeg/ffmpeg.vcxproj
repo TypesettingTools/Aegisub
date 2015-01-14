@@ -52,6 +52,7 @@
       <BasicRuntimeChecks     Condition="'$(Configuration)'=='Debug'">Default</BasicRuntimeChecks>
       <FunctionLevelLinking   Condition="'$(Configuration)'=='Debug'">true</FunctionLevelLinking>
       <WholeProgramOptimization>false</WholeProgramOptimization>
+      <InputRelativeSourceDir>$(FfmpegSrcDir)</InputRelativeSourceDir>
     </ClCompile>
   </ItemDefinitionGroup>
 

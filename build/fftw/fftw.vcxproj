@@ -39,6 +39,7 @@
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <OpenMPSupport>true</OpenMPSupport>
       <StructMemberAlignment>Default</StructMemberAlignment>
+      <InputRelativeSourceDir>$(FftwSrcDir)</InputRelativeSourceDir>
     </ClCompile>
   </ItemDefinitionGroup>
 
