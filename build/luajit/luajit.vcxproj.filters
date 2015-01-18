@@ -19,209 +19,174 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)src\ljamalg.c" />
-    <ClCompile Include="$(SrcDir)src\lib_aux.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_base.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_bit.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_debug.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_ffi.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_init.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_io.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_jit.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_math.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_os.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_package.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_string.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_table.c">
-      <Filter>Standard library</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_alloc.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_api.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_asm.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_bc.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_bcread.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_bcwrite.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_carith.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ccall.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ccallback.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_cconv.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_cdata.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_char.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_clib.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_cparse.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_crecord.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ctype.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_debug.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_dispatch.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_err.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ffrecord.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_func.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_gc.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_gdbjit.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ir.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_lex.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_lib.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_load.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_mcode.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_meta.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_obj.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_dce.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_fold.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_loop.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_mem.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_narrow.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_sink.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_split.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_parse.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_record.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_snap.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_state.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_str.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_strscan.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_tab.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_trace.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_udata.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_vmevent.c">
-      <Filter>Core</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_vmmath.c">
-      <Filter>Core</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="$(SrcDir)include\lauxlib.h">
+    <LuajitVMSource Include="$(SrcDir)src\lj_alloc.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_api.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_asm.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_bc.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_bcread.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_bcwrite.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_carith.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_ccall.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_ccallback.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_cconv.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_cdata.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_char.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_clib.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_cparse.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_crecord.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_ctype.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_debug.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_dispatch.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_err.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_ffrecord.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_func.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_gc.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_gdbjit.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_ir.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_lex.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_lib.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_load.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_mcode.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_meta.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_obj.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_dce.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_fold.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_loop.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_mem.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_narrow.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_sink.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_split.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_parse.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_record.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_snap.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_state.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_str.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_strscan.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_tab.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_trace.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_udata.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_vmevent.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+    <LuajitVMSource Include="$(SrcDir)src\lj_vmmath.c">
+      <Filter>Core</Filter>
+    </LuajitVMSource>
+  </ItemGroup>
+  <ItemGroup>
+    <InstallHeader Include="$(SrcDir)include\lauxlib.h">
       <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)include\lua.h">
+    </InstallHeader>
+    <InstallHeader Include="$(SrcDir)include\lua.h">
       <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)include\lua.hpp">
+    </InstallHeader>
+    <InstallHeader Include="$(SrcDir)include\lua.hpp">
       <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)include\luaconf.h">
+    </InstallHeader>
+    <InstallHeader Include="$(SrcDir)include\luaconf.h">
       <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)include\luajit.h">
+    </InstallHeader>
+    <InstallHeader Include="$(SrcDir)include\luajit.h">
       <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)include\lualib.h">
+    </InstallHeader>
+    <InstallHeader Include="$(SrcDir)include\lualib.h">
       <Filter>Headers</Filter>
-    </ClInclude>
+    </InstallHeader>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="$(SrcDir)src\lj_alloc.h">
       <Filter>Internal headers</Filter>
     </ClInclude>
@@ -244,9 +209,6 @@
       <Filter>Internal headers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)src\lj_bc.h">
-      <Filter>Internal headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)src\lj_bcdef.h">
       <Filter>Internal headers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)src\lj_bcdump.h">
@@ -312,13 +274,7 @@
     <ClInclude Include="$(SrcDir)src\lj_ff.h">
       <Filter>Internal headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)src\lj_ffdef.h">
-      <Filter>Internal headers</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)src\lj_ffrecord.h">
-      <Filter>Internal headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)src\lj_folddef.h">
       <Filter>Internal headers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)src\lj_frame.h">
@@ -351,9 +307,6 @@
     <ClInclude Include="$(SrcDir)src\lj_lib.h">
       <Filter>Internal headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)src\lj_libdef.h">
-      <Filter>Internal headers</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)src\lj_mcode.h">
       <Filter>Internal headers</Filter>
     </ClInclude>
@@ -364,9 +317,6 @@
       <Filter>Internal headers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)src\lj_parse.h">
-      <Filter>Internal headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)src\lj_recdef.h">
       <Filter>Internal headers</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)src\lj_record.h">
@@ -417,6 +367,47 @@
     <ClInclude Include="$(SrcDir)src\lj_vmevent.h">
       <Filter>Internal headers</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <LuajitLibSource Include="$(SrcDir)src\lib_aux.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_base.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_bit.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_debug.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_ffi.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_init.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_io.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_jit.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_math.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_os.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_package.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_string.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
+    <LuajitLibSource Include="$(SrcDir)src\lib_table.c">
+      <Filter>Standard library</Filter>
+    </LuajitLibSource>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(SrcDir)src\jit\bc.lua">

@@ -32,222 +32,125 @@
   <!-- BuildVM stuff -->
   <PropertyGroup>
     <BuildVMCommand>$(AegisubBinaryDir)luajit-buildvm$(AegisubPlatformSuffix)</BuildVMCommand>
-    <AllLib>lib_base.c lib_math.c lib_bit.c lib_string.c lib_table.c lib_io.c lib_os.c lib_package.c lib_debug.c lib_jit.c lib_ffi.c</AllLib>
+    <BuildCompileTargets>
+      BuildVM;
+      ComputeLibDefNames;
+      BuildLibDefs;
+      $(BuildCompileTargets)
+    </BuildCompileTargets>
   </PropertyGroup>
-
   <Target
-    Name="BuildVM" BeforeTargets="ClCompile" DependsOnTargets="PrepareForBuild"
-    Inputs="$(SrcDir)src\lib_base.c;$(SrcDir)src\lib_math.c;$(SrcDir)src\lib_bit.c;$(SrcDir)src\lib_string.c;$(SrcDir)src\lib_table.c;$(SrcDir)src\lib_io.c;$(SrcDir)src\lib_os.c;$(SrcDir)src\lib_package.c;$(SrcDir)src\lib_debug.c;$(SrcDir)src\lib_jit.c;$(SrcDir)src\lib_ffi.c;$(SrcDir)src\lj_opt_fold.c"
-    Outputs="$(AegisubObjectDir)lj_bcdef.h;$(AegisubObjectDir)lj_vm.obj"
+    Name="BuildVM"
+    Inputs="$(SrcDir)src\host\buildvm.c;$(SrcDir)src\lj_opt_fold.c"
+    Outputs="$(AegisubObjectDir)lj_vm.obj;$(AegisubObjectDir)lj_folddef.h"
     >
+    <Message Text="luajit-buildvm peobj" Importance="High" />
     <Exec Command="$(BuildVMCommand) -m peobj -o lj_vm.obj" WorkingDirectory="$(AegisubObjectDir)" />
-    <Exec Command="$(BuildVMCommand) -m bcdef -o $(AegisubObjectDir)lj_bcdef.h $(AllLib)" WorkingDirectory="$(SrcDir)src" />
-    <Exec Command="$(BuildVMCommand) -m ffdef -o $(AegisubObjectDir)lj_ffdef.h $(AllLib)" WorkingDirectory="$(SrcDir)src" />
-    <Exec Command="$(BuildVMCommand) -m libdef -o $(AegisubObjectDir)lj_libdef.h $(AllLib)" WorkingDirectory="$(SrcDir)src" />
-    <Exec Command="$(BuildVMCommand) -m recdef -o $(AegisubObjectDir)lj_recdef.h $(AllLib)" WorkingDirectory="$(SrcDir)src" />
+    <Message Text="luajit-buildvm folddef" Importance="High" />
     <Exec Command="$(BuildVMCommand) -m folddef -o $(AegisubObjectDir)lj_folddef.h lj_opt_fold.c" WorkingDirectory="$(SrcDir)src" />
+    <ItemGroup>
+      <Lib Include="$(AegisubObjectDir)lj_vm.obj" />
+    </ItemGroup>
+  </Target>
+  <Target Name="ComputeLibDefNames">
+    <!-- To avoid having any top-level itemgroups not naming real files -->
+    <ItemGroup>
+      <LuajitLibDefname Include="bcdef;ffdef;libdef;recdef" />
+    </ItemGroup>
+  </Target>
+  <Target
+    Name="BuildLibDefs"
+    Inputs="@(LuajitLibSource)"
+    Outputs="@(LuajitLibDefname -> '$(AegisubObjectDir)lj_%(Identity).h')"
+    >
+    <Message Text="luajit-buildvm %(LuajitLibDefname.Identity)" Importance="High" Condition="'%(LuajitLibDefname.Identity)' != ''" />
+    <Exec
+      Command="$(BuildVMCommand) -m %(LuajitLibDefname.Identity) -o $(AegisubObjectDir)lj_%(LuajitLibDefname.Identity).h @(LuajitLibSource->'%(filename)%(extension)',' ')"
+      WorkingDirectory="$(SrcDir)src\"
+      Condition="'%(LuajitLibDefname.Identity)' != ''"
+      />
   </Target>
 
   <!-- Source files -->
   <ItemGroup>
-    <InstallHeader Include="$(SrcDir)\include\*.h" />
-    <InstallHeader Include="$(SrcDir)\include\lua.hpp" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_base.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_math.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_bit.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_string.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_table.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_io.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_os.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_package.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_debug.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_jit.c" />
+    <LuajitLibSource Include="$(SrcDir)src\lib_ffi.c" />
   </ItemGroup>
 
   <ItemGroup>
     <ClCompile Include="$(SrcDir)src\ljamalg.c" />
-    <ClCompile Include="$(SrcDir)src\lib_aux.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_base.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_bit.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_debug.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_ffi.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_init.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_io.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_jit.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_math.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_os.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_package.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_string.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lib_table.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_alloc.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_api.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_asm.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_bc.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_bcread.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_bcwrite.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_carith.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ccall.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ccallback.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_cconv.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_cdata.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_char.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_clib.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_cparse.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_crecord.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ctype.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_debug.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_dispatch.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_err.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ffrecord.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_func.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_gc.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_gdbjit.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_ir.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_lex.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_lib.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_load.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_mcode.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_meta.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_obj.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_dce.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_fold.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_loop.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_mem.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_narrow.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_sink.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_opt_split.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_parse.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_record.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_snap.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_state.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_str.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_strscan.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_tab.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_trace.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_udata.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_vmevent.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)src\lj_vmmath.c">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <LuajitVMSource Include="$(SrcDir)src\lj_alloc.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_api.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_asm.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_bc.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_bcread.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_bcwrite.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_carith.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_ccall.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_ccallback.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_cconv.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_cdata.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_char.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_clib.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_cparse.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_crecord.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_ctype.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_debug.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_dispatch.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_err.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_ffrecord.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_func.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_gc.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_gdbjit.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_ir.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_lex.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_lib.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_load.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_mcode.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_meta.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_obj.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_dce.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_fold.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_loop.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_mem.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_narrow.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_sink.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_opt_split.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_parse.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_record.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_snap.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_state.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_str.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_strscan.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_tab.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_trace.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_udata.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_vmevent.c" />
+    <LuajitVMSource Include="$(SrcDir)src\lj_vmmath.c" />
   </ItemGroup>
 
   <ItemGroup>
-    <ClInclude Include="$(SrcDir)include\lauxlib.h" />
-    <ClInclude Include="$(SrcDir)include\lua.h" />
-    <ClInclude Include="$(SrcDir)include\lua.hpp" />
-    <ClInclude Include="$(SrcDir)include\luaconf.h" />
-    <ClInclude Include="$(SrcDir)include\luajit.h" />
-    <ClInclude Include="$(SrcDir)include\lualib.h" />
+    <InstallHeader Include="$(SrcDir)include\lauxlib.h" />
+    <InstallHeader Include="$(SrcDir)include\lua.h" />
+    <InstallHeader Include="$(SrcDir)include\lua.hpp" />
+    <InstallHeader Include="$(SrcDir)include\luaconf.h" />
+    <InstallHeader Include="$(SrcDir)include\luajit.h" />
+    <InstallHeader Include="$(SrcDir)include\lualib.h" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ClInclude Include="$(SrcDir)src\lj_alloc.h" />
     <ClInclude Include="$(SrcDir)src\lj_arch.h" />
     <ClInclude Include="$(SrcDir)src\lj_asm.h" />
@@ -256,7 +159,6 @@
     <ClInclude Include="$(SrcDir)src\lj_asm_ppc.h" />
     <ClInclude Include="$(SrcDir)src\lj_asm_x86.h" />
     <ClInclude Include="$(SrcDir)src\lj_bc.h" />
-    <ClInclude Include="$(SrcDir)src\lj_bcdef.h" />
     <ClInclude Include="$(SrcDir)src\lj_bcdump.h" />
     <ClInclude Include="$(SrcDir)src\lj_carith.h" />
     <ClInclude Include="$(SrcDir)src\lj_ccall.h" />
@@ -278,9 +180,7 @@
     <ClInclude Include="$(SrcDir)src\lj_err.h" />
     <ClInclude Include="$(SrcDir)src\lj_errmsg.h" />
     <ClInclude Include="$(SrcDir)src\lj_ff.h" />
-    <ClInclude Include="$(SrcDir)src\lj_ffdef.h" />
     <ClInclude Include="$(SrcDir)src\lj_ffrecord.h" />
-    <ClInclude Include="$(SrcDir)src\lj_folddef.h" />
     <ClInclude Include="$(SrcDir)src\lj_frame.h" />
     <ClInclude Include="$(SrcDir)src\lj_func.h" />
     <ClInclude Include="$(SrcDir)src\lj_gc.h" />
@@ -291,12 +191,10 @@
     <ClInclude Include="$(SrcDir)src\lj_jit.h" />
     <ClInclude Include="$(SrcDir)src\lj_lex.h" />
     <ClInclude Include="$(SrcDir)src\lj_lib.h" />
-    <ClInclude Include="$(SrcDir)src\lj_libdef.h" />
     <ClInclude Include="$(SrcDir)src\lj_mcode.h" />
     <ClInclude Include="$(SrcDir)src\lj_meta.h" />
     <ClInclude Include="$(SrcDir)src\lj_obj.h" />
     <ClInclude Include="$(SrcDir)src\lj_parse.h" />
-    <ClInclude Include="$(SrcDir)src\lj_recdef.h" />
     <ClInclude Include="$(SrcDir)src\lj_record.h" />
     <ClInclude Include="$(SrcDir)src\lj_snap.h" />
     <ClInclude Include="$(SrcDir)src\lj_state.h" />
@@ -313,10 +211,6 @@
     <ClInclude Include="$(SrcDir)src\lj_udata.h" />
     <ClInclude Include="$(SrcDir)src\lj_vm.h" />
     <ClInclude Include="$(SrcDir)src\lj_vmevent.h" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Lib Include="$(AegisubObjectDir)lj_vm.obj" />
   </ItemGroup>
 
   <ItemGroup>
