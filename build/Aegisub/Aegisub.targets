@@ -29,7 +29,7 @@
 
   Aegisub Project http://www.aegisub.org/
 -->
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <!-- Build credit text -->
   <ItemDefinitionGroup Condition="'$(AegisubBuildCredit)'==''">
