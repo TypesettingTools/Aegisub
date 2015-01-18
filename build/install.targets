@@ -1,27 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <ItemDefinitionGroup>
+    <InstallHeader>
+      <Destination></Destination>
+    </InstallHeader>
+  </ItemDefinitionGroup>
+  
+  <Target
+    Name="ComputeHeaderOutputs"
+    Inputs="@(InstallHeader)"
+    Outputs="@(InstallHeader->'%(HeaderRoot)|%(RelativeDir)')"
+    BeforeTargets="InstallHeaders"
+    >
+    <CalculateOutputDir
+      Items="@(InstallHeader)"
+      SourceDir="%(HeaderRoot)"
+      DestinationDir="$(AegisubSourceBase)include"
+      >
+      <Output ItemName="_InstallHeader" TaskParameter="Outputs" />
+    </CalculateOutputDir>
+  </Target>
+  
   <Target
     Name="InstallHeaders"
     BeforeTargets="ClCompile"
-    Inputs="@(InstallHeader)"
-    Outputs="@(InstallHeader->Replace($(HeaderRoot), $(AegisubSourceBase)include))"
+    Inputs="@(_InstallHeader)"
+    Outputs="@(_InstallHeader->'%(OutputDir)%(Destination)%(Filename)%(Extension)')"
     >
+    <Error
+      Condition="'%(_InstallHeader.OutputDir)' == ''"
+      Text="OutputDir for _InstallHeader item is blank, problem during ComputeHeaderOutputs target?"
+      />
     <Copy
-      SourceFiles="@(InstallHeader)"
-      DestinationFiles="@(InstallHeader->Replace($(HeaderRoot), $(AegisubSourceBase)include))"
+      SourceFiles="@(_InstallHeader)"
+      DestinationFiles="@(_InstallHeader->'%(OutputDir)%(Destination)%(Filename)%(Extension)')"
       SkipUnchangedFiles="true"
       />
   </Target>
-  <Target
-    Name="InstallHeadersTo"
-    BeforeTargets="ClCompile"
-    Inputs="@(InstallHeaderTo)"
-    Outputs="@(InstallHeaderTo -> '$(AegisubSourceBase)include\%(Destination)%(Filename)%(Extension)')"
-    >
-    <Copy
-      SourceFiles="@(InstallHeaderTo)"
-      DestinationFiles="@(InstallHeaderTo -> '$(AegisubSourceBase)include\%(Destination)%(Filename)%(Extension)')"
-      SkipUnchangedFiles="true"
-      />
-  </Target>
+  
 </Project>

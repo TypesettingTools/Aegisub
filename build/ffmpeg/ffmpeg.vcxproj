@@ -11,9 +11,6 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
-  <PropertyGroup>
-    <HeaderRoot>$(FfmpegSrcDir)</HeaderRoot>
-  </PropertyGroup>
 
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
@@ -54,6 +51,9 @@
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <InputRelativeSourceDir>$(FfmpegSrcDir)</InputRelativeSourceDir>
     </ClCompile>
+    <InstallHeader>
+      <HeaderRoot>$(FfmpegSrcDir)</HeaderRoot>
+    </InstallHeader>
     <Yasm>
       <InputRelativeSourceDir>$(FfmpegSrcDir)\</InputRelativeSourceDir>
     </Yasm>
@@ -1073,9 +1073,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InstallHeaderTo Include="$(MSBuildThisFileDirectory)\libavutil\avconfig.h">
-      <Destination>libavutil\</Destination>
-    </InstallHeaderTo>
+    <InstallHeader Include="$(MSBuildThisFileDirectory)\libavutil\avconfig.h">
+      <HeaderRoot>$(MSBuildThisFileDirectory)</HeaderRoot>
+    </InstallHeader>
 
     <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\audiodsp.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\avcodec.h" />

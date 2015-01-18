@@ -16,7 +16,6 @@
 
   <PropertyGroup>
     <Ffms2PreprocessorHaalisource Condition="'$(Ffms2UseAtl)'!='0'">HAALISOURCE;</Ffms2PreprocessorHaalisource>
-    <HeaderRoot>$(FfmsSrcDir)\include</HeaderRoot>
   </PropertyGroup>
 
   <!-- Project specific configuration -->
@@ -42,6 +41,9 @@
     <Link>
       <AdditionalLibraryDirectories>$(AegisubLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <InstallHeader>
+      <HeaderRoot>$(FfmsSrcDir)\include</HeaderRoot>
+    </InstallHeader>
   </ItemDefinitionGroup>
 
   <!-- Source files -->

@@ -9,7 +9,6 @@
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
     <SrcDir>..\..\vendor\wxWidgets\src\png\</SrcDir>
-    <HeaderRoot>$(SrcDir)</HeaderRoot>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
@@ -21,6 +20,12 @@
       <Project>{10f22a5a-dd9e-44a1-ba2e-2a9a7c78b0ee}</Project>
     </ProjectReference>
   </ItemGroup>
+  
+  <ItemDefinitionGroup>
+    <InstallHeader>
+      <HeaderRoot>$(SrcDir)</HeaderRoot>
+    </InstallHeader>
+  </ItemDefinitionGroup>
 
   <!-- Source files -->
   <ItemGroup>

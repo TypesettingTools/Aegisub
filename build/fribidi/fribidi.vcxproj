@@ -54,8 +54,11 @@
     <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-run.c" />
     <ClCompile Include="$(FribidiSrcDir)\lib\fribidi-shape.c" />
     <ClCompile Include="$(FribidiSrcDir)\lib\fribidi.c" />
-    <InstallHeaderTo Include="$(FribidiSrcDir)\lib\*.h;$(MSBuildThisFileDirectory)fribidi-config.h">
-      <Destination>fribidi\</Destination>
-    </InstallHeaderTo>
+    <InstallHeader Include="$(FribidiSrcDir)\lib\*.h">
+      <HeaderRoot>$(FribidiSrcDir)\lib</HeaderRoot>
+    </InstallHeader>
+    <InstallHeader Include="$(MSBuildThisFileDirectory)fribidi-config.h">
+      <HeaderRoot>$(MSBuildThisFileDirectory)</HeaderRoot>
+    </InstallHeader>
   </ItemGroup>
 </Project>

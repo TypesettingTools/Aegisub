@@ -77,6 +77,14 @@
 
   <!-- Source files -->
   <ItemGroup>
+    <InstallHeader Include="$(IcuSrcDir)\i18n\unicode\*.h">
+      <HeaderRoot>$(IcuSrcDir)\i18n</HeaderRoot>
+    </InstallHeader>
+    <InstallHeader Include="$(IcuSrcDir)\common\unicode\*.h">
+      <HeaderRoot>$(IcuSrcDir)\common</HeaderRoot>
+    </InstallHeader>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="$(AegisubObjectDir)\$(IcuDt).c" />
     <ClCompile Include="$(IcuSrcDir)\common\ubidi.c" />
     <ClCompile Include="$(IcuSrcDir)\common\ubidi_props.c" />
@@ -364,9 +372,6 @@
     <ClInclude Include="$(IcuSrcDir)\common\uvectr32.h" />
     <ClInclude Include="$(IcuSrcDir)\common\uvectr64.h" />
     <ClInclude Include="$(IcuSrcDir)\common\wintz.h" />
-    <InstallHeaderTo Include="$(IcuSrcDir)\common\unicode\*.h">
-      <Destination>unicode\</Destination>
-    </InstallHeaderTo>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(IcuSrcDir)\i18n\filteredbrk.cpp" />
@@ -689,9 +694,6 @@
     <ClInclude Include="$(IcuSrcDir)\i18n\uspoof_conf.h" />
     <ClInclude Include="$(IcuSrcDir)\i18n\uspoof_impl.h" />
     <ClInclude Include="$(IcuSrcDir)\i18n\uspoof_wsconf.h" />
-    <InstallHeaderTo Include="$(IcuSrcDir)\i18n\unicode\*.h">
-      <Destination>unicode\</Destination>
-    </InstallHeaderTo>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\luajit-minilua\luajit-minilua.vcxproj">

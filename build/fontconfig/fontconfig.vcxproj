@@ -15,9 +15,6 @@
   </ImportGroup>
 
   <!-- Project specific configuration -->
-  <PropertyGroup>
-    <HeaderRoot>$(FontconfigSrcDir)</HeaderRoot>
-  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>
@@ -30,6 +27,9 @@
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
     </ClCompile>
+    <InstallHeader>
+      <HeaderRoot>$(FontconfigSrcDir)</HeaderRoot>
+    </InstallHeader>
   </ItemDefinitionGroup>
 
   <!-- Project References -->

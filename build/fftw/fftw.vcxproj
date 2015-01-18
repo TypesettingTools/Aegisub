@@ -15,9 +15,6 @@
   </ImportGroup>
 
   <!-- Project specific configuration -->
-  <PropertyGroup>
-    <HeaderRoot>$(FftwSrcDir)\api</HeaderRoot>
-  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>
@@ -41,6 +38,9 @@
       <StructMemberAlignment>Default</StructMemberAlignment>
       <InputRelativeSourceDir>$(FftwSrcDir)</InputRelativeSourceDir>
     </ClCompile>
+    <InstallHeader>
+      <HeaderRoot>$(FftwSrcDir)\api</HeaderRoot>
+    </InstallHeader>
   </ItemDefinitionGroup>
 
   <!-- Source files -->

@@ -5,5 +5,31 @@
   </PropertyGroup>
 
   <UsingTask TaskName="GitVersion" AssemblyFile="$(AegisubBinaryDir)BuildTasks.dll" />
+
+  <UsingTask TaskName="CalculateOutputDir" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" >
+    <ParameterGroup>
+      <Items ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <SourceDir Required="true" />
+      <DestinationDir Required="true" />
+      <Outputs ParameterType="Microsoft.Build.Framework.ITaskItem[]" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        Outputs = new TaskItem[Items.Length];
+        char[] backslash = new char[] {'\\'};
+        var srcdir = SourceDir.Replace('/', '\\').TrimEnd(backslash) + "\\";
+        var dstdir = DestinationDir.Replace('/', '\\').TrimEnd(backslash) + "\\";
+        int i = 0;
+        foreach (var item in Items) {
+          var itemDir = item.GetMetadata("RelativeDir"); // the dir specified in the item Include= attribute
+          var outputDir = itemDir.Replace(srcdir, dstdir).Replace('/', '\\').TrimEnd(backslash) + "\\";
+          var output = new TaskItem(item);
+          ((ITaskItem2)output).SetMetadataValueLiteral("OutputDir", outputDir);
+          Outputs[i] = output;
+          i++;
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
 </Project>
 

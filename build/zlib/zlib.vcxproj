@@ -20,8 +20,12 @@
 
   <!-- Source files -->
   <ItemGroup>
-    <InstallHeaderTo Include="$(ZlibSrcDir)\zlib.h" />
-    <InstallHeaderTo Include="$(MSBuildThisFileDirectory)\zconf.h" />
+    <InstallHeader Include="$(ZlibSrcDir)\zlib.h">
+      <HeaderRoot>$(ZlibSrcDir)</HeaderRoot>
+    </InstallHeader>
+    <InstallHeader Include="$(MSBuildThisFileDirectory)\zconf.h">
+      <HeaderRoot>$(MSBuildThisFileDirectory)</HeaderRoot>
+    </InstallHeader>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(ZlibSrcDir)\adler32.c" />

@@ -15,9 +15,6 @@
   </ImportGroup>
 
   <!-- Project specific configuration -->
-  <PropertyGroup>
-    <HeaderRoot>$(Freetype2SrcDir)\include</HeaderRoot>
-  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(Freetype2SrcDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -29,6 +26,9 @@
     <ResourceCompile>
       <Culture>0x0409</Culture>
     </ResourceCompile>
+    <InstallHeader>
+      <HeaderRoot>$(Freetype2SrcDir)\include</HeaderRoot>
+    </InstallHeader>
   </ItemDefinitionGroup>
 
   <!-- Source files -->

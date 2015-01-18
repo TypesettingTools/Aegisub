@@ -9,7 +9,6 @@
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
     <SrcDir>..\..\vendor\wxWidgets\</SrcDir>
-    <HeaderRoot>$(SrcDir)include</HeaderRoot>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
@@ -23,6 +22,9 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>wx/wxprec.h</PrecompiledHeaderFile>
     </ClCompile>
+    <InstallHeader>
+      <HeaderRoot>$(SrcDir)include</HeaderRoot>
+    </InstallHeader>
   </ItemDefinitionGroup>
 
   <Target Name="InstallSetup"

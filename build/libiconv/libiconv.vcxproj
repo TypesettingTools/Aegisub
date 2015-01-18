@@ -15,15 +15,15 @@
   </ImportGroup>
 
   <!-- Project specific configuration -->
-  <PropertyGroup>
-    <HeaderRoot>$(SrcDir)\include</HeaderRoot>
-  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SrcDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <CompileAs>CompileAsC</CompileAs>
     </ClCompile>
+    <InstallHeader>
+      <HeaderRoot>$(SrcDir)include</HeaderRoot>
+    </InstallHeader>
   </ItemDefinitionGroup>
 
   <!-- Source files -->

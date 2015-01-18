@@ -9,7 +9,6 @@
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
     <SrcDir>..\..\vendor\wxWidgets\src\expat\lib</SrcDir>
-    <HeaderRoot>$(SrcDir)</HeaderRoot>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
@@ -20,6 +19,9 @@
     <ClCompile>
       <PreprocessorDefinitions>COMPILED_FROM_DSP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <InstallHeader>
+      <HeaderRoot>$(SrcDir)</HeaderRoot>
+    </InstallHeader>
   </ItemDefinitionGroup>
 
   <!-- Source files -->

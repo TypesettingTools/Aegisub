@@ -10,7 +10,6 @@
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
     <SrcDir>..\..\vendor\csri\</SrcDir>
-    <HeaderRoot>$(SrcDir)include</HeaderRoot>
   </PropertyGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
@@ -22,6 +21,9 @@
       <PreprocessorDefinitions>CSRI_NO_EXPORT;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SrcDir)include\;$(SrcDir)lib\;$(SrcDir)lib\win32\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <InstallHeader>
+      <HeaderRoot>$(SrcDir)include</HeaderRoot>
+    </InstallHeader>
   </ItemDefinitionGroup>
 
   <!-- Source files -->
