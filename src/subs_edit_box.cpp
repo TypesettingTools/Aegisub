@@ -40,6 +40,7 @@
 #include "command/command.h"
 #include "compat.h"
 #include "dialog_style_editor.h"
+#include "flyweight_hash.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
 #include "initial_line_state.h"
@@ -68,15 +69,6 @@
 #include <wx/settings.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
-
-namespace std {
-	template <typename T>
-	struct hash<boost::flyweight<T>> {
-		size_t operator()(boost::flyweight<T> const& ss) const {
-			return hash<const void*>()(&ss.get());
-		}
-	};
-}
 
 namespace {
 

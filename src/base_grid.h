@@ -30,6 +30,7 @@
 #include <libaegisub/signal.h>
 
 #include <memory>
+#include <string>
 #include <vector>
 #include <wx/window.h>
 
@@ -39,6 +40,7 @@ namespace agi {
 }
 class AssDialogue;
 class GridColumn;
+class WidthHelper;
 
 class BaseGrid final : public wxWindow {
 	std::vector<agi::signal::Connection> connections;
@@ -57,7 +59,7 @@ class BaseGrid final : public wxWindow {
 
 	int active_row = -1;
 
-	size_t prev_unique_string_widths = 0;
+	std::unique_ptr<WidthHelper> width_helper;
 
 	/// Rows which are visible on the current video frame
 	std::vector<int> visible_rows;

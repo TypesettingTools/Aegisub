@@ -14,7 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <boost/flyweight.hpp>
+#include "flyweight_hash.h"
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -25,19 +26,21 @@ class wxDC;
 class wxString;
 namespace agi { struct Context; }
 
-namespace std {
-	template <typename T>
-	struct hash<boost::flyweight<T>> {
-		size_t operator()(boost::flyweight<T> const& ss) const {
-			return hash<const void*>()(&ss.get());
-		}
+class WidthHelper {
+	struct Entry {
+		int width;
+		int age;
 	};
-}
-
-struct WidthHelper {
-	wxDC &dc;
-	std::unordered_map<boost::flyweight<std::string>, int> widths;
+	int age = 0;
+	wxDC *dc = nullptr;
+	std::unordered_map<boost::flyweight<std::string>, Entry> widths;
+#ifdef _WIN32
 	wxString scratch;
+#endif
+
+public:
+	void SetDC(wxDC *dc) { this->dc = dc; }
+	void Age();
 
 	int operator()(boost::flyweight<std::string> const& str);
 	int operator()(std::string const& str);

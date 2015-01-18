@@ -156,6 +156,7 @@
     <ClInclude Include="$(SrcDir)factory_manager.h" />
     <ClInclude Include="$(SrcDir)ffmpegsource_common.h" />
     <ClInclude Include="$(SrcDir)fft.h" />
+    <ClInclude Include="$(SrcDir)flyweight_hash.h" />
     <ClInclude Include="$(SrcDir)font_file_lister.h" />
     <ClInclude Include="$(SrcDir)frame_main.h" />
     <ClInclude Include="$(SrcDir)gl_text.h" />

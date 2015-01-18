@@ -45,6 +45,7 @@
 #include "subs_controller.h"
 #include "video_controller.h"
 
+#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
@@ -598,15 +599,17 @@ void BaseGrid::SetColumnWidths() {
 	text_refresh_rects.clear();
 	int x = 0;
 
-	WidthHelper helper{dc, std::unordered_map<boost::flyweight<std::string>, int>{}};
-	helper.widths.reserve(prev_unique_string_widths);
+	if (!width_helper)
+		width_helper = agi::make_unique<WidthHelper>();
+	width_helper->SetDC(&dc);
+
 	for (auto const& column : columns) {
-		column->UpdateWidth(context, helper);
+		column->UpdateWidth(context, *width_helper);
 		if (column->Width() && column->RefreshOnTextChange())
 			text_refresh_rects.emplace_back(x, 0, column->Width(), h);
 		x += column->Width();
 	}
-	prev_unique_string_widths = helper.widths.size();
+	width_helper->Age();
 }
 
 AssDialogue *BaseGrid::GetDialogue(int n) const {

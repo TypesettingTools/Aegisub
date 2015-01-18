@@ -549,6 +549,9 @@
     <ClInclude Include="$(SrcDir)dialogs.h">
       <Filter>Features</Filter>
     </ClInclude>
+    <ClInclude Include="$(SrcDir)flyweight_hash.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)ass_dialogue.cpp">
@@ -1039,9 +1042,6 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)ass_parser.cpp">
       <Filter>ASS</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)audio_provider_lock.cpp">
-      <Filter>Audio\Providers</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)command\keyframe.cpp">
       <Filter>Commands</Filter>
