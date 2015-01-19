@@ -35,9 +35,6 @@
     <ClInclude Include="$(SrcDir)common\charset_6937.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)include\libaegisub\access.h">
       <Filter>Header Files</Filter>
     </ClInclude>

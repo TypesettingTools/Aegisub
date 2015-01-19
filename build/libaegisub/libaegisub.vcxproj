@@ -59,7 +59,6 @@
   <ItemGroup>
     <ClInclude Include="$(SrcDir)common\charset_6937.h" />
     <ClInclude Include="$(SrcDir)common\parser.h" />
-    <ClInclude Include="$(SrcDir)config.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\access.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\address_of_adaptor.h" />
     <ClInclude Include="$(SrcDir)include\libaegisub\ass\dialogue_parser.h" />
