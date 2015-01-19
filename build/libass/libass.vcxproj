@@ -53,12 +53,9 @@
     <ClInclude Include="$(LibassSrcDir)\libass\ass_shaper.h" />
     <ClInclude Include="$(LibassSrcDir)\libass\ass_types.h" />
     <ClInclude Include="$(LibassSrcDir)\libass\ass_utils.h" />
-    <ClInclude Include="$(LibassSrcDir)\win32\config.h" />
-    <ClInclude Include="$(LibassSrcDir)\win32\headers\enca.h" />
-    <ClInclude Include="$(LibassSrcDir)\win32\headers\inttypes.h" />
-    <ClInclude Include="$(LibassSrcDir)\win32\headers\stdint.h" />
-    <ClInclude Include="$(LibassSrcDir)\win32\headers\strings.h" />
-    <ClInclude Include="$(LibassSrcDir)\win32\headers\unistd.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)config.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)strings.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)unistd.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(LibassSrcDir)\libass\ass.c" />
