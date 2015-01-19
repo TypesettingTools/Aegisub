@@ -11,6 +11,9 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
+  <ImportGroup Label="Targets">
+    <Import Project="$(MSBuildThisFileDirectory)..\yasm.targets" />
+  </ImportGroup>
 
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
@@ -56,69 +59,11 @@
     </InstallHeader>
     <Yasm>
       <InputRelativeSourceDir>$(FfmpegSrcDir)\</InputRelativeSourceDir>
+      <Include>%(Include) -I$(MSBuildThisFileDirectory) -I$(MSBuildThisFileDirectory)$(FfmpegSrcDir)</Include>
+      <Config Condition="'$(Platform)'=='Win32'">%(Config) -DPREFIX -Pconfig-x86.asm</Config>
+      <Config Condition="'$(Platform)'=='x64'">%(Config) -Pconfig-x64.asm</Config>
     </Yasm>
   </ItemDefinitionGroup>
-
-  <PropertyGroup>
-    <BuildCompileTargets>
-      _YasmAssemble;
-      $(BuildCompileTargets)
-    </BuildCompileTargets>
-  </PropertyGroup>
-  <Target
-    Name="_YasmAssemble"
-    DependsOnTargets="ComputeYasmRelativeObjectDir;YasmCreateOutputDir;YasmAssemble"
-    />
-  <!-- See standard-outdirs.props for explanation of the logic here -->
-  <Target
-    Name="ComputeYasmRelativeObjectDir"
-    BeforeTargets="YasmAssemble"
-    Inputs="@(Yasm)"
-    Outputs="%(InputRelativeSourceDir)|%(RelativeDir)"
-    >
-    <PropertyGroup>
-      <InputRelativeDir>%(Yasm.RelativeDir)</InputRelativeDir>
-      <InputRelativeDir Condition="'%(Yasm.InputRelativeSourceDir)' != ''">$(InputRelativeDir.Replace("%(Yasm.InputRelativeSourceDir)",""))</InputRelativeDir>
-      <InputRelativeSourceDir>%(Yasm.InputRelativeSourceDir)</InputRelativeSourceDir>
-      <InputRelativeSourceDir Condition="!HasTrailingSlash('$(InputRelativeSourceDir)')">$(InputRelativeSourceDir)\</InputRelativeSourceDir>
-      <InputRelativeDir>$(InputRelativeDir.Replace("$(InputRelativeSourceDir)",""))</InputRelativeDir>
-    </PropertyGroup>
-    <ItemGroup>
-      <Yasm>
-        <OutputDir>$(AegisubObjectDir)$(InputRelativeDir)</OutputDir>
-      </Yasm>
-    </ItemGroup>
-  </Target>
-  <Target
-    Name="YasmCreateOutputDir"
-    Inputs="@(Yasm)"
-    Outputs="%(Yasm.OutputDir)"
-    >
-    <MakeDir
-      Directories="%(Yasm.OutputDir)"
-      />
-  </Target>
-  <Target
-    Name="YasmAssemble"
-    Inputs="@(Yasm)"
-    Outputs="%(Yasm.OutputDir)%(Yasm.Filename).obj"
-    >
-    <PropertyGroup>
-      <YasmInclude>-I. -I$(MSBuildThisFileDirectory) -I$(FfmpegSrcDir) -I%(Yasm.RootDir)%(Yasm.Directory)</YasmInclude>
-      <YasmOutName>@(Yasm -> '%(OutputDir)%(Filename)').obj</YasmOutName>
-      <YasmConfig Condition="'$(Platform)'=='Win32'">-m x86 -DPREFIX -Pconfig-x86.asm</YasmConfig>
-      <YasmConfig Condition="'$(Platform)'=='x64'">-m amd64 -Pconfig-x64.asm</YasmConfig>
-    </PropertyGroup>
-    <Exec
-      Command="echo $(InputRelativeDir)%(Yasm.Filename)%(Yasm.Extension) &amp;&amp; yasm -f win32 $(YasmConfig) $(YasmInclude) -o $(YasmOutName) %(Yasm.FullPath)"
-      WorkingDirectory="$(AegisubObjectDir)"
-      />
-    <ItemGroup>
-      <Link   Include="$(YasmOutName)" />
-      <Lib    Include="$(YasmOutName)" />
-      <ImpLib Include="$(YasmOutName)" />
-    </ItemGroup>
-  </Target>
 
   <!-- Project References -->
   <ItemGroup>
