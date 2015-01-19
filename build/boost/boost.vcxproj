@@ -117,7 +117,6 @@
     <ClInclude Include="$(BoostPath)\libs\locale\src\util\numeric.hpp" />
     <ClInclude Include="$(BoostPath)\libs\locale\src\util\timezone.hpp" />
     <ClInclude Include="$(BoostPath)\libs\regex\src\internals.hpp" />
-    <ClInclude Include="$(BoostPath)\libs\system\src\local_free_on_destruction.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(BoostPath)\libs\locale\src\encoding\iconv_codepage.ipp" />
