@@ -3,16 +3,49 @@
   <ItemGroup>
     <Filter Include="Source Files">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat</Extensions>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Assembly Files">
+      <UniqueIdentifier>{56793734-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>asm</Extensions>
+    </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(LibassSrcDir)\libass\x86\x86inc.h">
+      <Filter>Assembly Files</Filter>
+    </None>
+    <Yasm Include="$(LibassSrcDir)\libass\x86\be_blur.asm">
+      <Filter>Assembly Files</Filter>
+    </Yasm>
+    <Yasm Include="$(LibassSrcDir)\libass\x86\blend_bitmaps.asm">
+      <Filter>Assembly Files</Filter>
+    </Yasm>
+    <Yasm Include="$(LibassSrcDir)\libass\x86\cpuid.asm">
+      <Filter>Assembly Files</Filter>
+    </Yasm>
+    <Yasm Include="$(LibassSrcDir)\libass\x86\rasterizer.asm">
+      <Filter>Assembly Files</Filter>
+    </Yasm>
+    <ClInclude Include="$(LibassSrcDir)\libass\x86\be_blur.h">
+      <Filter>Assembly Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\x86\blend_bitmaps.h">
+      <Filter>Assembly Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\x86\cpuid.h">
+      <Filter>Assembly Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\x86\rasterizer.h">
+      <Filter>Assembly Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(LibassSrcDir)\libass\ass.h">
