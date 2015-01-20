@@ -306,16 +306,19 @@ namespace Automation4 {
 
 			lua_getfield(L, -1, "extra");
 			auto type = lua_type(L, -1);
-			if (type != LUA_TNIL && type != LUA_TTABLE)
+			if (type == LUA_TTABLE) {
+				lua_for_each(L, [&] {
+					if (lua_type(L, -2) != LUA_TSTRING) return;
+					new_ids.push_back(ass->AddExtradata(
+						get_string_or_default(L, -2),
+						get_string_or_default(L, -1)));
+				});
+				std::sort(begin(new_ids), end(new_ids));
+				dia->ExtradataIds = std::move(new_ids);
+			}
+			else if (type != LUA_TNIL) {
 				error(L, "dialogue extradata must be a table");
-			lua_for_each(L, [&] {
-				if (lua_type(L, -2) != LUA_TSTRING) return;
-				new_ids.push_back(ass->AddExtradata(
-					get_string_or_default(L, -2),
-					get_string_or_default(L, -1)));
-			});
-			std::sort(begin(new_ids), end(new_ids));
-			dia->ExtradataIds = std::move(new_ids);
+			}
 		}
 		else {
 			error(L, "Found line with unknown class: %s", lclass.c_str());
