@@ -15,6 +15,8 @@
 #define FRIBIDI_CHARSETS 0
 #define FRIBIDI_USE_GLIB 0
 #define FRIBIDI_SIZEOF_INT 4
+#define HAVE_STDLIB_H 1
+#define USE_SIMPLE_MALLOC 1
 
 #define HAVE_STRINGIZE 1
 #endif
