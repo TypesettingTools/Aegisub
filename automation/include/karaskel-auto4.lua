@@ -52,11 +52,13 @@ function karaskel.collect_head(subs, generate_furigana)
 	end
 	
 	-- First pass: collect all existing styles and get resolution info
-	for _, l in ipairs(subs) do
+	for i, l in ipairs(subs) do
 		if aegisub.progress.is_cancelled() then error("User cancelled") end
 		
 		if l.class == "style" then
-			if not first_style_line then first_style_line = i end
+			if not first_style_line then
+				first_style_line = i
+			end
 			-- Store styles into the style table
 			styles.n = styles.n + 1
 			styles[styles.n] = l
@@ -65,7 +67,7 @@ function karaskel.collect_head(subs, generate_furigana)
 			
 			-- And also generate furigana styles if wanted
 			if generate_furigana and not l.name:match("furigana") then
-				aegisub.debug.out(5, "Creating furigana style for style: " .. l.name .. "\n")
+				aegisub.debug.out(5, "Creating furigana style for style: %s\n", l.name)
 				local fs = table.copy(l)
 				fs.fontsize = l.fontsize * karaskel.furigana_scale
 				fs.outline = l.outline * karaskel.furigana_scale
@@ -82,6 +84,10 @@ function karaskel.collect_head(subs, generate_furigana)
 		else
 			break
 		end
+	end
+	
+	if first_style_line == nil then
+		error("Karaskel error: No styles were found in the file, bug?!")
 	end
 	
 	-- Second pass: insert all toinsert styles that don't already exist
