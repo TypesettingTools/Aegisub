@@ -39,6 +39,7 @@
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/algorithm_ext/push_back.hpp>
+#include <boost/locale/collator.hpp>
 #include <vector>
 #include <wx/frame.h>
 #include <wx/menu.h>
@@ -395,6 +396,47 @@ class AutomationMenu final : public wxMenu {
 	agi::signal::Connection local_slot;
 	std::vector<wxMenuItem *> all_items;
 
+	struct WorkItem {
+		std::string displayname;
+		cmd::Command *command;
+		std::vector<WorkItem> subitems;
+
+		WorkItem(std::string const &displayname, cmd::Command *command = nullptr)
+		: displayname(displayname), command(command) { }
+
+		WorkItem *FindOrMakeSubitem(std::string const &name) {
+			auto sub = std::find_if(subitems.begin(), subitems.end(), [&](WorkItem const &item) { return item.displayname == name; });
+			if (sub != subitems.end()) return &*sub;
+			
+			subitems.emplace_back(name);
+			return &subitems.back();
+		}
+
+		void Sort() {
+			if (command) return;
+			for (auto &sub : subitems)
+				sub.Sort();
+			auto comp = boost::locale::comparator<std::string::value_type>();
+			std::sort(subitems.begin(), subitems.end(), [&](WorkItem const &a, WorkItem const &b){
+				return comp(a.displayname, b.displayname);
+			});
+		}
+
+		void GenerateMenu(wxMenu *parent, AutomationMenu *am) {
+			for (auto item : subitems) {
+				if (item.command) {
+					am->cm->AddCommand(item.command, parent, item.displayname);
+					am->all_items.push_back(parent->GetMenuItems().back());
+				}
+				else {
+					auto submenu = new wxMenu;
+					parent->AppendSubMenu(submenu, to_wx(item.displayname));
+					item.GenerateMenu(submenu, am);
+				}
+			}
+		}
+	};
+
 	void Regenerate() {
 		for (auto item : all_items)
 			cm->Remove(item);
@@ -411,30 +453,23 @@ class AutomationMenu final : public wxMenu {
 			return;
 		}
 
-		std::map<std::string, wxMenu *> submenus;
-
+		WorkItem top("");
 		for (auto macro : macros) {
 			const auto name = from_wx(macro->StrMenu(c));
-			wxMenu *parent = this;
+			WorkItem *parent = &top;
 			for (auto section : agi::Split(name, wxS('/'))) {
-				if (section.end() == name.end()) {
-					cm->AddCommand(macro, parent, wxString::FromUTF8Unchecked(&*section.begin(), section.size()));
-					all_items.push_back(parent->GetMenuItems().back());
-					break;
-				}
+				std::string sectionname(section.begin(), section.end());
 
-				std::string prefix(name.begin(), section.end());
-				auto it = submenus.find(prefix);
-				if (it != submenus.end())
-					parent = it->second;
+				if (section.end() == name.end()) {
+					parent->subitems.emplace_back(sectionname, macro);
+				}
 				else {
-					auto menu = new wxMenu;
-					parent->AppendSubMenu(menu, wxString::FromUTF8Unchecked(&*section.begin(), section.size()));
-					submenus[prefix] = menu;
-					parent = menu;
+					parent = parent->FindOrMakeSubitem(sectionname);
 				}
 			}
 		}
+		top.Sort();
+		top.GenerateMenu(this, this);
 	}
 public:
 	AutomationMenu(agi::Context *c, CommandManager *cm)
