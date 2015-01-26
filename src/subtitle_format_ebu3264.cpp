@@ -527,8 +527,17 @@ namespace
 	}
 
 #ifdef _MSC_VER
-#define snprintf _snprintf
+#define vsnprintf _vsnprintf
 #endif
+	void fieldprintf(char *field, size_t fieldlen, const char *format, ...)
+	{
+		char buf[16];
+		va_list ap;
+		va_start(ap, format);
+		vsnprintf(buf, fieldlen, format, ap);
+		va_end(ap);
+		memcpy(field, buf, fieldlen);
+	}
 
 	BlockGSI create_header(AssFile const& copy, EbuExportSettings const& export_settings)
 	{
@@ -577,15 +586,15 @@ namespace
 			memcpy(gsi.rd, buf, 6);
 			memcpy(gsi.rn, "00", 2);
 			memcpy(gsi.tng, "001", 3);
-			snprintf(gsi.mnc, 2, "%02u", (unsigned int)export_settings.max_line_length);
+			fieldprintf(gsi.mnc, 2, "%02u", (unsigned int)export_settings.max_line_length);
 			memcpy(gsi.mnr, "99", 2);
 			gsi.tcs = '1';
 			EbuTimecode tcofs = export_settings.timecode_offset;
-			snprintf(gsi.tcp, 8, "%02u%02u%02u%02u", (unsigned int)tcofs.h, (unsigned int)tcofs.m, (unsigned int)tcofs.s, (unsigned int)tcofs.s);
+			fieldprintf(gsi.tcp, 8, "%02u%02u%02u%02u", (unsigned int)tcofs.h, (unsigned int)tcofs.m, (unsigned int)tcofs.s, (unsigned int)tcofs.s);
 		}
 		gsi.tnd = '1';
 		gsi.dsn = '1';
-		memcpy(gsi.co, "NTZ", 3); // neutral zone!
+		memcpy(gsi.co, "XXX", 3);
 		gsi_encoder.Convert(scriptinfo_editing.c_str(), scriptinfo_editing.size(), gsi.en, 32);
 		if (export_settings.text_encoding == EbuExportSettings::utf8)
 			strncpy(gsi.uda, "This file was exported by Aegisub using non-standard UTF-8 encoding for the subtitle blocks. The TTI.TF field contains UTF-8-encoded text interspersed with the standard formatting codes, which are not encoded. GSI.CCT is set to 'U8' to signify this.", sizeof(gsi.uda));
@@ -627,9 +636,9 @@ void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& f
 	BlockGSI gsi = create_header(copy, export_settings);
 
 	BlockTTI &block0 = tti.front();
-	snprintf(gsi.tcf, 8, "%02u%02u%02u%02u", (unsigned int)block0.tci.h, (unsigned int)block0.tci.m, (unsigned int)block0.tci.s, (unsigned int)block0.tci.f);
-	snprintf(gsi.tnb, 5, "%5u", (unsigned int)tti.size());
-	snprintf(gsi.tns, 5, "%5u", (unsigned int)subs_list.size());
+	fieldprintf(gsi.tcf, 8, "%02u%02u%02u%02u", (unsigned int)block0.tci.h, (unsigned int)block0.tci.m, (unsigned int)block0.tci.s, (unsigned int)block0.tci.f);
+	fieldprintf(gsi.tnb, 5, "%5u", (unsigned int)tti.size());
+	fieldprintf(gsi.tns, 5, "%5u", (unsigned int)subs_list.size());
 
 	// write file
 	agi::io::Save f(filename, true);
