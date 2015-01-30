@@ -26,6 +26,7 @@
         $(SrcDir)support;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
+      <InputRelativeSourceDir>$(SrcDir)</InputRelativeSourceDir>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(AegisubLibraryDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
