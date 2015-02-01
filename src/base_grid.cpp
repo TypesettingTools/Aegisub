@@ -599,12 +599,14 @@ void BaseGrid::SetColumnWidths() {
 	int x = 0;
 
 	WidthHelper helper{dc, std::unordered_map<boost::flyweight<std::string>, int>{}};
+	helper.widths.reserve(prev_unique_string_widths);
 	for (auto const& column : columns) {
 		column->UpdateWidth(context, helper);
 		if (column->Width() && column->RefreshOnTextChange())
 			text_refresh_rects.emplace_back(x, 0, column->Width(), h);
 		x += column->Width();
 	}
+	prev_unique_string_widths = helper.widths.size();
 }
 
 AssDialogue *BaseGrid::GetDialogue(int n) const {

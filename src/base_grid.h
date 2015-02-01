@@ -57,6 +57,8 @@ class BaseGrid final : public wxWindow {
 
 	int active_row = -1;
 
+	size_t prev_unique_string_widths = 0;
+
 	/// Rows which are visible on the current video frame
 	std::vector<int> visible_rows;
 
