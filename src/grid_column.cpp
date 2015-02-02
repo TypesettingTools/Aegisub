@@ -31,7 +31,17 @@ int WidthHelper::operator()(boost::flyweight<std::string> const& str) {
 	if (str.get().empty()) return 0;
 	auto it = widths.find(str);
 	if (it != end(widths)) return it->second;
+
+#ifdef _WIN32
+	wxMBConvUTF8 conv;
+	size_t len = conv.ToWChar(nullptr, 0, str.get().c_str(), str.get().size());
+	scratch.resize(len);
+	conv.ToWChar(const_cast<wchar_t *>(scratch.wx_str()), len, str.get().c_str(), str.get().size());
+	int width = dc.GetTextExtent(scratch).GetWidth();
+#else
 	int width = dc.GetTextExtent(to_wx(str)).GetWidth();
+#endif
+
 	widths[str] = width;
 	return width;
 }

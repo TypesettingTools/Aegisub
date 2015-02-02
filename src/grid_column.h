@@ -37,6 +37,7 @@ namespace std {
 struct WidthHelper {
 	wxDC &dc;
 	std::unordered_map<boost::flyweight<std::string>, int> widths;
+	wxString scratch;
 
 	int operator()(boost::flyweight<std::string> const& str);
 	int operator()(std::string const& str);
