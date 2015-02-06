@@ -34,14 +34,16 @@ auto wrap(char **err, Func f) -> decltype(f()) {
 	try {
 		return f();
 	}
-	catch (bfs::filesystem_error const& e) {
+	catch (std::exception const& e) {
 		*err = strdup(e.what());
-		return 0;
 	}
 	catch (agi::Exception const& e) {
 		*err = strndup(e.GetMessage());
-		return 0;
 	}
+	catch (...) {
+		*err = strdup("Unknown error");
+	}
+	return 0;
 }
 
 template<typename Ret>
