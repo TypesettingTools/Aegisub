@@ -108,7 +108,9 @@ class LibassSubtitlesProvider final : public SubtitlesProvider {
 		if (shared->ready)
 			return shared->renderer;
 
-		auto block = [&]{
+		auto block = [&] {
+			if (shared->ready)
+				return;
 			br->Run([=](agi::ProgressSink *ps) {
 				ps->SetTitle(from_wx(_("Updating font index")));
 				ps->SetMessage(from_wx(_("This may take several minutes")));
@@ -136,6 +138,17 @@ public:
 	}
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
+
+	void Reinitialize() override {
+		// No need to reinit if we're not even done with the initial init
+		if (!shared->ready)
+			return;
+
+		ass_renderer_done(shared->renderer);
+		shared->renderer = ass_renderer_init(library);
+		ass_set_font_scale(shared->renderer, 1.);
+		ass_set_fonts(shared->renderer, nullptr, "Sans", 1, CONFIG_PATH, true);
+	}
 };
 
 LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br)
@@ -143,7 +156,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br)
 , shared(std::make_shared<cache_thread_shared>())
 {
 	auto state = shared;
-	cache_queue->Async([state]{
+	cache_queue->Async([state] {
 		auto ass_renderer = ass_renderer_init(library);
 		if (ass_renderer) {
 			ass_set_font_scale(ass_renderer, 1.);
@@ -215,7 +228,7 @@ void CacheFonts() {
 	ass_set_message_cb(library, msg_callback, nullptr);
 
 	// Initialize a renderer to force fontconfig to update its cache
-	cache_queue->Async([]{
+	cache_queue->Async([] {
 		auto ass_renderer = ass_renderer_init(library);
 		ass_set_fonts(ass_renderer, nullptr, "Sans", 1, CONFIG_PATH, true);
 		ass_renderer_done(ass_renderer);

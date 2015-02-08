@@ -74,6 +74,9 @@ SubtitlesPreview::~SubtitlesPreview() {
 }
 
 void SubtitlesPreview::SetStyle(AssStyle const& new_style) {
+	if (provider && style->font != new_style.font)
+		provider->Reinitialize();
+
 	*style = new_style;
 	style->name = "Default";
 	style->alignment = 5;

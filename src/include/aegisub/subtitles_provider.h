@@ -49,6 +49,7 @@ public:
 	virtual ~SubtitlesProvider() = default;
 	void LoadSubtitles(AssFile *subs, int time = -1);
 	virtual void DrawSubtitles(VideoFrame &dst, double time)=0;
+	virtual void Reinitialize() { }
 };
 
 namespace agi { class BackgroundRunner; }
