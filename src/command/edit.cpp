@@ -1052,7 +1052,7 @@ struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 		Selection new_sel;
 		AssKaraoke kara;
 
-		bool did_split = false;
+		std::vector<std::unique_ptr<AssDialogue>> to_delete;
 		for (auto line : sel) {
 			kara.SetLine(line);
 
@@ -1071,11 +1071,11 @@ struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 				new_sel.insert(new_line);
 			}
 
-			delete line;
-			did_split = true;
+			c->ass->Events.erase(c->ass->iterator_to(*line));
+			to_delete.emplace_back(line);
 		}
 
-		if (!did_split) return;
+		if (to_delete.empty()) return;
 
 		c->ass->Commit(_("splitting"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
 
