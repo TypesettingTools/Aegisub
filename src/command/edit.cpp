@@ -1081,7 +1081,7 @@ struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 
 		AssDialogue *new_active = c->selectionController->GetActiveLine();
 		if (!new_sel.count(c->selectionController->GetActiveLine()))
-			new_active = *sel.begin();
+			new_active = *new_sel.begin();
 		c->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
 	}
 };
