@@ -63,21 +63,21 @@ TEST(lagi_iconv, Fallbacks) {
 	IconvWrapper noneneeded("UTF-8", "UTF-16LE", false);
 
 	// Shift-JIS does not have a backslash
-	EXPECT_THROW(nofallback.Convert("\\"), BadOutput);
+	EXPECT_THROW(nofallback.Convert("\\"), BadInput);
 	ASSERT_NO_THROW(fallback.Convert("\\"));
 	EXPECT_EQ("\\", fallback.Convert("\\"));
 	EXPECT_NO_THROW(noneneeded.Convert("\\"));
 
 	// BOM into non-unicode
 	char bom[] = "\xEF\xBB\xBF";
-	EXPECT_THROW(nofallback.Convert(bom), BadOutput);
+	EXPECT_THROW(nofallback.Convert(bom), BadInput);
 	ASSERT_NO_THROW(fallback.Convert(bom));
 	EXPECT_EQ("", fallback.Convert(bom));
 	EXPECT_NO_THROW(noneneeded.Convert(bom));
 
 	// A snowman (U+2603)
 	char snowman[] = "\xE2\x98\x83";
-	EXPECT_THROW(nofallback.Convert(snowman), BadOutput);
+	EXPECT_THROW(nofallback.Convert(snowman), BadInput);
 	EXPECT_NO_THROW(noneneeded.Convert(snowman));
 	ASSERT_NO_THROW(fallback.Convert(snowman));
 	EXPECT_EQ("?", fallback.Convert(snowman));
@@ -176,5 +176,5 @@ TEST(lagi_iconv, Iso6937) {
 	// codepoint not in ISO-6937-2
 	EXPECT_NO_THROW(ret = subst.Convert("\xCB\x97"));
 	EXPECT_STREQ("?", ret.c_str());
-	EXPECT_THROW(no_subst.Convert("\xCB\x97"), agi::charset::BadOutput);
+	EXPECT_THROW(no_subst.Convert("\xCB\x97"), BadInput);
 }
