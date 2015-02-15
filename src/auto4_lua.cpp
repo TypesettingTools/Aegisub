@@ -465,15 +465,19 @@ namespace {
 		}
 		stackcheck.check_stack(1);
 
+		// Insert our error handler under the user's script
+		lua_pushcclosure(L, add_stack_trace, 0);
+		lua_insert(L, -2);
+
 		// and execute it
 		// this is where features are registered
-		// don't thread this, as there's no point in it and it seems to break on wx 2.8.3, for some reason
-		if (lua_pcall(L, 0, 0, 0)) {
+		if (lua_pcall(L, 0, 0, -2)) {
 			// error occurred, assumed to be on top of Lua stack
 			description = agi::format("Error initialising Lua script \"%s\":\n\n%s", GetPrettyFilename().string(), get_string_or_default(L, -1));
-			lua_pop(L, 1);
+			lua_pop(L, 2); // error + error handler
 			return;
 		}
+		lua_pop(L, 1); // error handler
 		stackcheck.check_stack(0);
 
 		lua_getglobal(L, "version");
