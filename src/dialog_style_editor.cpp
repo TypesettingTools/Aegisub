@@ -208,7 +208,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	OutlineType = new wxCheckBox(this, -1, _("&Opaque box"));
 	auto ScaleX = num_text_ctrl(&work->scalex, 0.0, 10000.0, 1.0);
 	auto ScaleY = num_text_ctrl(&work->scaley, 0.0, 10000.0, 1.0);
-	auto Angle = num_text_ctrl(&work->angle, -180.0, 180.0, 1.0);
+	auto Angle = num_text_ctrl(&work->angle, -360.0, 360.0, 1.0);
 	auto Spacing = num_text_ctrl(&work->spacing, 0.0, 1000.0, 0.1);
 	Encoding = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, encodingStrings, wxCB_READONLY);
 
