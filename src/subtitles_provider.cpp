@@ -17,6 +17,7 @@
 #include "include/aegisub/subtitles_provider.h"
 
 #include "ass_dialogue.h"
+#include "ass_attachment.h"
 #include "ass_file.h"
 #include "ass_info.h"
 #include "ass_style.h"
@@ -85,6 +86,17 @@ void SubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
 	push_header("[V4+ Styles]\n");
 	for (auto const& line : subs->Styles)
 		push_line(line.GetEntryData());
+
+	if (!subs->Attachments.empty()) {
+		// TODO: some scripts may have a lot of attachments, 
+		// so ideally we'd want to write only those actually used on the requested video frame,
+		// but this would require some pre-parsing of the attached font files with FreeType,
+		// which isn't probably trivial.
+		push_header("[Fonts]\n");
+		for (auto const& attachment : subs->Attachments)
+			if (attachment.Group() == AssEntryGroup::FONT)
+				push_line(attachment.GetEntryData());
+	}
 
 	push_header("[Events]\n");
 	for (auto const& line : subs->Events) {
