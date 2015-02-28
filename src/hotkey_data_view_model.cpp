@@ -129,12 +129,14 @@ public:
 class HotkeyModelCategory final : public HotkeyModelItem {
 	std::list<HotkeyModelCombo> children;
 	wxDataViewModel *model;
-	wxString name;
+	std::string name;
+	wxString translated_name;
 	wxDataViewItemArray visible_items;
 public:
-	HotkeyModelCategory(wxDataViewModel *model, wxString const& name)
+	HotkeyModelCategory(wxDataViewModel *model, std::string const& name)
 	: model(model)
-	, name(wxGetTranslation(name))
+	, name(name)
+	, translated_name(wxGetTranslation(to_wx(name)))
 	{
 	}
 
@@ -189,14 +191,16 @@ public:
 			model->ItemsDeleted(wxDataViewItem(this), removed);
 	}
 
+	std::string const& GetName() const { return name; }
+
 	wxDataViewItem GetParent() const override { return wxDataViewItem(nullptr); }
 	bool IsContainer() const override { return true; }
 	bool SetValue(wxVariant const&, unsigned int) override { return false; }
 	void GetValue(wxVariant &variant, unsigned int col) const override {
 		if (col == 1)
-			variant << wxDataViewIconText(name);
+			variant << wxDataViewIconText(translated_name);
 		else
-			variant = name;
+			variant = translated_name;
 	}
 
 	unsigned int GetChildren(wxDataViewItemArray &out) const override {
@@ -214,13 +218,13 @@ public:
 		std::map<std::string, HotkeyModelCategory*> cat_map;
 
 		for (auto const& category : hk_map) {
-			std::string cat_name = category.second.Context();
+			std::string const& cat_name = category.second.Context();
 			HotkeyModelCategory *cat;
 			auto cat_it = cat_map.find(cat_name);
 			if (cat_it != cat_map.end())
 				cat = cat_it->second;
 			else {
-				categories.emplace_back(model, to_wx(cat_name));
+				categories.emplace_back(model, cat_name);
 				cat = cat_map[cat_name] = &categories.back();
 			}
 
@@ -300,9 +304,7 @@ wxDataViewItem HotkeyDataViewModel::New(wxDataViewItem item) {
 		item = GetParent(item);
 
 	HotkeyModelCategory *ctx = static_cast<HotkeyModelCategory*>(item.GetID());
-	wxVariant name;
-	ctx->GetValue(name, 0);
-	return ctx->AddChild(Combo(from_wx(name.GetString()), "", ""));
+	return ctx->AddChild(Combo(ctx->GetName(), "", ""));
 }
 
 void HotkeyDataViewModel::Delete(wxDataViewItem const& item) {
