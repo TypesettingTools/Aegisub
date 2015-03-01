@@ -845,6 +845,9 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 	std::vector<int> inactive_markers;
 	inactive_markers.reserve(inactive_lines.size() * 2 + selected_lines.size() * 2 + 2 - active.size());
 
+	// Add a marker to the set to check for snaps if it's in the right time
+	// range, isn't at the same place as a marker already in the set, and isn't
+	// one of the markers being moved
 	auto add_inactive = [&](const DialogueTimingMarker *m, bool check)
 	{
 		if (!marker_range.contains(*m)) return;
@@ -853,13 +856,18 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 		inactive_markers.push_back(*m);
 	};
 
+	bool moving_entire_selection = clicked_ms != INT_MIN;
 	for (auto const& line : inactive_lines)
 	{
-		add_inactive(line.GetLeftMarker(), false);
-		add_inactive(line.GetRightMarker(), false);
+		// If we're alt-dragging the entire selection, there can't be any
+		// markers from inactive lines in the active set, so no need to check
+		// for them
+		add_inactive(line.GetLeftMarker(), !moving_entire_selection);
+		add_inactive(line.GetRightMarker(), !moving_entire_selection);
 	}
 
-	if (active.size() != selected_lines.size() * 2 + 2)
+	// And similarly, there can't be any inactive markers from selected lines
+	if (!moving_entire_selection)
 	{
 		for (auto const& line : selected_lines)
 		{
@@ -870,16 +878,12 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 		add_inactive(active_line.GetRightMarker(), true);
 	}
 
-	int snap_distance = 0;
-	bool has_snapped = false;
+	int snap_distance = INT_MAX;
 	auto check = [&](int marker, int pos)
 	{
 		auto dist = marker - pos;
-		if (!has_snapped)
+		if (tabs(dist) < tabs(snap_distance))
 			snap_distance = dist;
-		else if (tabs(dist) < tabs(snap_distance))
-			snap_distance = dist;
-		has_snapped = true;
 	};
 
 	int prev = -1;
@@ -908,7 +912,7 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 		}
 	}
 
-	if (!has_snapped || tabs(snap_distance) > snap_range)
+	if (tabs(snap_distance) > snap_range)
 		return 0;
 
 	for (auto m : active)
