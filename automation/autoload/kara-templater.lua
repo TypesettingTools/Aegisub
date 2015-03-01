@@ -115,7 +115,7 @@ function parse_code(meta, styles, line, templates, mods)
 			aegisub.debug.out(3, "Unknown modifier in code template: %s\nIn template code line: %s\nEffect field: %s\n\n", m, line.text, line.effect)
 		end
 	end
-	
+
 	if not inserted then
 		aegisub.debug.out(5, "Found implicit run-once code line: %s\n", line.text)
 		table.insert(templates.once, template)
@@ -145,7 +145,7 @@ function parse_template(meta, styles, line, templates, mods)
 		noblank = false
 	}
 	local inserted = false
-	
+
 	local rest = mods
 	while rest ~= "" do
 		local m, t = string.headtail(rest)
@@ -239,7 +239,7 @@ function parse_template(meta, styles, line, templates, mods)
 			aegisub.debug.out(3, "Unknown modifier in template: %s\nIn template line: %s\nEffect field: %s\n\n", m, line.text, line.effect)
 		end
 	end
-	
+
 	if not inserted then
 		table.insert(templates.syl, template)
 	end
@@ -299,9 +299,9 @@ function apply_templates(meta, styles, subs, templates)
 		_G = _G
 	}
 	tenv.tenv = tenv
-	
+
 	-- Define helper functions in tenv
-	
+
 	tenv.retime = function(mode, addstart, addend)
 		local line, syl = tenv.line, tenv.syl
 		local newstart, newend = line.start_time, line.end_time
@@ -346,20 +346,20 @@ function apply_templates(meta, styles, subs, templates)
 		line.duration = newend - newstart
 		return ""
 	end
-	
+
 	tenv.fxgroup = {}
-	
+
 	tenv.relayer = function(layer)
 		tenv.line.layer = layer
 		return ""
 	end
-	
+
 	tenv.restyle = function(style)
 		tenv.line.style = style
 		tenv.line.styleref = styles[style]
 		return ""
 	end
-	
+
 	tenv.maxloop = function(newmaxj)
 		tenv.maxj = newmaxj
 		return ""
@@ -370,7 +370,7 @@ function apply_templates(meta, styles, subs, templates)
 		tenv.maxj = newmaxj
 		return ""
 	end
-	
+
 	tenv.recall = {}
 	setmetatable(tenv.recall, {
 		decorators = {},
@@ -416,13 +416,13 @@ function apply_templates(meta, styles, subs, templates)
 		end
 		return value
 	end
-	
+
 	-- run all run-once code snippets
 	for k, t in pairs(templates.once) do
 		assert(t.code, "WTF, a 'once' template without code?")
 		run_code_template(t, tenv)
 	end
-	
+
 	-- start processing lines
 	local i, n = 0, #subs
 	while i < n do
@@ -438,7 +438,7 @@ function apply_templates(meta, styles, subs, templates)
 				l.comment = true
 				l.effect = "karaoke"
 				subs[i] = l
-			end			
+			end
 		end
 	end
 end
@@ -499,7 +499,7 @@ end
 function apply_line(meta, styles, subs, line, templates, tenv)
 	-- Tell whether any templates were applied to this line, needed to know whether the original line should be removed from input
 	local applied_templates = false
-	
+
 	-- General variable replacement context
 	local varctx = {
 		layer = line.layer,
@@ -527,7 +527,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		lx = math.floor(line.x+0.5),
 		ly = math.floor(line.y+0.5)
 	}
-	
+
 	tenv.orgline = line
 	tenv.line = nil
 	tenv.syl = nil
@@ -537,7 +537,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 	aegisub.debug.out(5, "Running line templates\n")
 	for t in matching_templates(templates.line, line, tenv) do
 		if aegisub.progress.is_cancelled() then break end
-		
+
 		-- Set varctx for per-line variables
 		varctx["start"] = varctx.lstart
 		varctx["end"] = varctx.lend
@@ -555,7 +555,7 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		varctx.height = varctx.lheight
 		varctx.x = varctx.lx
 		varctx.y = varctx.ly
-		
+
 		for j, maxj in template_loop(tenv, t.loops) do
 			if t.code then
 				aegisub.debug.out(5, "Code template, %s\n", t.code)
@@ -605,29 +605,29 @@ function apply_line(meta, styles, subs, line, templates, tenv)
 		end
 	end
 	aegisub.debug.out(5, "Done running line templates\n\n")
-	
+
 	-- Loop over syllables
 	for i = 0, line.kara.n do
 		if aegisub.progress.is_cancelled() then break end
 		local syl = line.kara[i]
-		
+
 		aegisub.debug.out(5, "Applying templates to syllable: %s\n", syl.text)
 		if apply_syllable_templates(syl, line, templates.syl, tenv, varctx, subs) then
 			applied_templates = true
 		end
 	end
-	
+
 	-- Loop over furigana
 	for i = 1, line.furi.n do
 		if aegisub.progress.is_cancelled() then break end
 		local furi = line.furi[i]
-		
+
 		aegisub.debug.out(5, "Applying templates to furigana: %s\n", furi.text)
 		if apply_syllable_templates(furi, line, templates.furi, tenv, varctx, subs) then
 			applied_templates = true
 		end
 	end
-	
+
 	return applied_templates
 end
 
@@ -650,7 +650,7 @@ end
 function run_text_template(template, tenv, varctx)
 	local res = template
 	aegisub.debug.out(5, "Running text template '%s'\n", res)
-	
+
 	-- Replace the variables in the string (this is probably faster than using a custom function, but doesn't provide error reporting)
 	if varctx then
 		aegisub.debug.out(5, "Has varctx, replacing variables\n")
@@ -669,7 +669,7 @@ function run_text_template(template, tenv, varctx)
 		res = string.gsub(res, "$([%a_]+)", var_replacer)
 		aegisub.debug.out(5, "Done replacing variables, new template string is '%s'\n", res)
 	end
-	
+
 	-- Function for evaluating expressions
 	local function expression_evaluator(expression)
 		f, err = loadstring(string.format("return (%s)", expression))
@@ -691,24 +691,24 @@ function run_text_template(template, tenv, varctx)
 	aegisub.debug.out(5, "Now evaluating expressions\n")
 	res = string.gsub(res , "!(.-)!", expression_evaluator)
 	aegisub.debug.out(5, "After evaluation: %s\nDone handling template\n\n", res)
-	
+
 	return res
 end
 
 function apply_syllable_templates(syl, line, templates, tenv, varctx, subs)
 	local applied = 0
-	
+
 	-- Loop over all templates matching the line style
 	for t in matching_templates(templates, line, tenv) do
 		if aegisub.progress.is_cancelled() then break end
-		
+
 		tenv.syl = syl
 		tenv.basesyl = syl
 		set_ctx_syl(varctx, line, syl)
-		
+
 		applied = applied + apply_one_syllable_template(syl, line, t, tenv, varctx, subs, false, false)
 	end
-	
+
 	return applied > 0
 end
 
@@ -716,7 +716,7 @@ function is_syl_blank(syl)
 	if syl.duration <= 0 then
 		return true
 	end
-	
+
 	-- try to remove common spacing characters
 	local t = syl.text_stripped
 	if t:len() <= 0 then return true end
@@ -729,26 +729,26 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 	if aegisub.progress.is_cancelled() then return 0 end
 	local t = template
 	local applied = 0
-	
+
 	aegisub.debug.out(5, "Applying template to one syllable with text: %s\n", syl.text)
-	
+
 	-- Check for right inline_fx
 	if t.fx and t.fx ~= syl.inline_fx then
 		aegisub.debug.out(5, "Syllable has wrong inline-fx (wanted '%s', got '%s'), skipping.\n", t.fx, syl.inline_fx)
 		return 0
 	end
-	
+
 	if t.noblank and is_syl_blank(syl) then
 		aegisub.debug.out(5, "Syllable is blank, skipping.\n")
 		return 0
 	end
-	
+
 	-- Recurse to per-char if required
 	if not skip_perchar and t.perchar then
 		aegisub.debug.out(5, "Doing per-character effects...\n")
 		local charsyl = table.copy(syl)
 		tenv.syl = charsyl
-		
+
 		local left, width = syl.left, 0
 		for c in unicode.chars(syl.text_stripped) do
 			charsyl.text = c
@@ -762,29 +762,29 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 			charsyl.prespacewidth, charsyl.postspacewidth = 0, 0 -- whatever...
 			left = left + width
 			set_ctx_syl(varctx, line, charsyl)
-			
+
 			applied = applied + apply_one_syllable_template(charsyl, line, t, tenv, varctx, subs, true, false)
 		end
-	
+
 		return applied
 	end
-	
+
 	-- Recurse to multi-hl if required
 	if not skip_multi and t.multi then
 		aegisub.debug.out(5, "Doing multi-highlight effects...\n")
 		local hlsyl = table.copy(syl)
 		tenv.syl = hlsyl
-		
+
 		for hl = 1, syl.highlights.n do
 			local hldata = syl.highlights[hl]
 			hlsyl.start_time = hldata.start_time
 			hlsyl.end_time = hldata.end_time
 			hlsyl.duration = hldata.duration
 			set_ctx_syl(varctx, line, hlsyl)
-			
+
 			applied = applied + apply_one_syllable_template(hlsyl, line, t, tenv, varctx, subs, true, true)
 		end
-	
+
 		return applied
 	end
 
@@ -813,7 +813,7 @@ function apply_one_syllable_template(syl, line, template, tenv, varctx, subs, sk
 			applied = applied + 1
 		end
 	end
-	
+
 	return applied
 end
 
@@ -822,10 +822,10 @@ end
 function filter_apply_templates(subs, config)
 	aegisub.progress.task("Collecting header data...")
 	local meta, styles = karaskel.collect_head(subs, true)
-	
+
 	aegisub.progress.task("Parsing templates...")
 	local templates = parse_templates(meta, styles, subs)
-	
+
 	aegisub.progress.task("Applying templates...")
 	apply_templates(meta, styles, subs, templates)
 end
