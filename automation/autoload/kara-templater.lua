@@ -635,6 +635,7 @@ function run_code_template(template, tenv)
 	local f, err = loadstring(template.code, "template code")
 	if not f then
 		aegisub.debug.out(2, "Failed to parse Lua code: %s\nCode that failed to parse: %s\n\n", err, template.code)
+		aegisub.cancel()
 	else
 		local pcall = pcall
 		setfenv(f, tenv)
@@ -642,6 +643,7 @@ function run_code_template(template, tenv)
 			local res, err = pcall(f)
 			if not res then
 				aegisub.debug.out(2, "Runtime error in template code: %s\nCode producing error: %s\n\n", err, template.code)
+				aegisub.cancel()
 			end
 		end
 	end
@@ -675,7 +677,7 @@ function run_text_template(template, tenv, varctx)
 		f, err = loadstring(string.format("return (%s)", expression))
 		if (err) ~= nil then
 			aegisub.debug.out(2, "Error parsing expression: %s\nExpression producing error: %s\nTemplate with expression: %s\n\n", err, expression, template)
-			return "!" .. expression .. "!"
+			aegisub.cancel()
 		else
 			setfenv(f, tenv)
 			local res, val = pcall(f)
@@ -683,7 +685,7 @@ function run_text_template(template, tenv, varctx)
 				return val
 			else
 				aegisub.debug.out(2, "Runtime error in template expression: %s\nExpression producing error: %s\nTemplate with expression: %s\n\n", val, expression, template)
-				return "!" .. expression .. "!"
+				aegisub.cancel()
 			end
 		end
 	end
