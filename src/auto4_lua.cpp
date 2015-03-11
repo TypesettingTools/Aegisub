@@ -763,85 +763,86 @@ namespace {
 
 		try {
 			LuaThreadedCall(L, 3, 2, from_wx(StrDisplay(c)), c->parent, true);
-
-			auto lines = subsobj->ProcessingComplete(StrDisplay(c));
-
-			AssDialogue *active_line = nullptr;
-			int active_idx = original_active;
-
-			// Check for a new active row
-			if (lua_isnumber(L, -1)) {
-				active_idx = lua_tointeger(L, -1);
-				if (active_idx < 1 || active_idx > (int)lines.size()) {
-					wxLogError("Active row %d is out of bounds (must be 1-%u)", active_idx, lines.size());
-					active_idx = original_active;
-				}
-			}
-
-			stackcheck.check_stack(2);
-			lua_pop(L, 1);
-
-			// top of stack will be selected lines array, if any was returned
-			if (lua_istable(L, -1)) {
-				std::set<AssDialogue*> sel;
-				lua_for_each(L, [&] {
-					if (lua_isnumber(L, -1)) {
-						int cur = lua_tointeger(L, -1);
-						if (cur < 1 || cur > (int)lines.size()) {
-							wxLogError("Selected row %d is out of bounds (must be 1-%u)", cur, lines.size());
-							throw LuaForEachBreak();
-						}
-
-						if (typeid(*lines[cur - 1]) != typeid(AssDialogue)) {
-							wxLogError("Selected row %d is not a dialogue line", cur);
-							throw LuaForEachBreak();
-						}
-
-						auto diag = static_cast<AssDialogue*>(lines[cur - 1]);
-						sel.insert(diag);
-						if (!active_line || active_idx == cur)
-							active_line = diag;
-					}
-				});
-
-				AssDialogue *new_active = c->selectionController->GetActiveLine();
-				if (active_line && (active_idx > 0 || !sel.count(new_active)))
-					new_active = active_line;
-				if (sel.empty())
-					sel.insert(new_active);
-				c->selectionController->SetSelectionAndActive(std::move(sel), new_active);
-			}
-			else {
-				lua_pop(L, 1);
-
-				Selection new_sel;
-				AssDialogue *new_active = nullptr;
-
-				int prev = original_offset;
-				auto it = c->ass->Events.begin();
-				for (int row : original_sel) {
-					while (row > prev && it != c->ass->Events.end()) {
-						++prev;
-						++it;
-					}
-					if (it == c->ass->Events.end()) break;
-					new_sel.insert(&*it);
-					if (row == original_active)
-						new_active = &*it;
-				}
-
-				if (new_sel.empty() && !c->ass->Events.empty())
-					new_sel.insert(&c->ass->Events.front());
-				if (!new_sel.count(new_active))
-					new_active = *new_sel.begin();
-				c->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
-			}
-
-			stackcheck.check_stack(0);
 		}
 		catch (agi::UserCancelException const&) {
 			subsobj->Cancel();
+			stackcheck.check_stack(0);
+			return;
 		}
+
+		auto lines = subsobj->ProcessingComplete(StrDisplay(c));
+
+		AssDialogue *active_line = nullptr;
+		int active_idx = original_active;
+
+		// Check for a new active row
+		if (lua_isnumber(L, -1)) {
+			active_idx = lua_tointeger(L, -1);
+			if (active_idx < 1 || active_idx > (int)lines.size()) {
+				wxLogError("Active row %d is out of bounds (must be 1-%u)", active_idx, lines.size());
+				active_idx = original_active;
+			}
+		}
+
+		stackcheck.check_stack(2);
+		lua_pop(L, 1);
+
+		// top of stack will be selected lines array, if any was returned
+		if (lua_istable(L, -1)) {
+			std::set<AssDialogue*> sel;
+			lua_for_each(L, [&] {
+				if (!lua_isnumber(L, -1))
+					return;
+				int cur = lua_tointeger(L, -1);
+				if (cur < 1 || cur > (int)lines.size()) {
+					wxLogError("Selected row %d is out of bounds (must be 1-%u)", cur, lines.size());
+					throw LuaForEachBreak();
+				}
+
+				if (typeid(*lines[cur - 1]) != typeid(AssDialogue)) {
+					wxLogError("Selected row %d is not a dialogue line", cur);
+					throw LuaForEachBreak();
+				}
+
+				auto diag = static_cast<AssDialogue*>(lines[cur - 1]);
+				sel.insert(diag);
+				if (!active_line || active_idx == cur)
+					active_line = diag;
+			});
+
+			AssDialogue *new_active = c->selectionController->GetActiveLine();
+			if (active_line && (active_idx > 0 || !sel.count(new_active)))
+				new_active = active_line;
+			if (sel.empty())
+				sel.insert(new_active);
+			c->selectionController->SetSelectionAndActive(std::move(sel), new_active);
+		}
+		else {
+			lua_pop(L, 1);
+
+			Selection new_sel;
+			AssDialogue *new_active = nullptr;
+
+			int prev = original_offset;
+			auto it = c->ass->Events.begin();
+			for (int row : original_sel) {
+				while (row > prev && it != c->ass->Events.end()) {
+					++prev;
+					++it;
+				}
+				if (it == c->ass->Events.end()) break;
+				new_sel.insert(&*it);
+				if (row == original_active)
+					new_active = &*it;
+			}
+
+			if (new_sel.empty() && !c->ass->Events.empty())
+				new_sel.insert(&c->ass->Events.front());
+			if (!new_sel.count(new_active))
+				new_active = *new_sel.begin();
+			c->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
+		}
+
 		stackcheck.check_stack(0);
 	}
 
