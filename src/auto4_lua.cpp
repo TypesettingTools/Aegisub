@@ -713,20 +713,24 @@ namespace {
 
 		set_context(L, c);
 
+		// Error handler goes under the function to call
+		lua_pushcclosure(L, add_stack_trace, 0);
+
 		GetFeatureFunction("validate");
 		auto subsobj = new LuaAssFile(L, c->ass.get());
 
 		push_value(L, selected_rows(c));
 		if (auto active_line = c->selectionController->GetActiveLine())
 			push_value(L, active_line->Row + c->ass->Info.size() + c->ass->Styles.size() + 1);
+		else
+			lua_pushnil(L);
 
-		int err = lua_pcall(L, 3, 2, 0);
-
+		int err = lua_pcall(L, 3, 2, -5 /* three args, function, error handler */);
 		subsobj->ProcessingComplete();
 
 		if (err) {
 			wxLogWarning("Runtime error in Lua macro validation function:\n%s", get_wxstring(L, -1));
-			lua_pop(L, 1);
+			lua_pop(L, 2);
 			return false;
 		}
 
@@ -738,7 +742,7 @@ namespace {
 			cmd_type |= cmd::COMMAND_DYNAMIC_HELP;
 		}
 
-		lua_pop(L, 2);
+		lua_pop(L, 3); // two return values and error handler
 
 		return result;
 	}
