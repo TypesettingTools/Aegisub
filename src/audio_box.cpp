@@ -89,7 +89,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 
 	auto link_btn = new ToggleBitmap(panel, context, "audio/opt/vertical_link", 16, "Audio", wxSize(20, -1));
 	link_btn->SetMaxSize(wxDefaultSize);
-	VertVolArea->Add(link_btn, 0, wxRIGHT | wxALIGN_CENTER | wxEXPAND, 0);
+	VertVolArea->Add(link_btn, 0, wxRIGHT | wxEXPAND, 0);
 	OPT_SUB("Audio/Link", &AudioBox::OnVerticalLink, this);
 
 	// Top sizer

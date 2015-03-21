@@ -129,9 +129,9 @@ DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxS
 	title->SetFont(title_font);
 
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(title, wxSizerFlags().Expand().Center());
+	sizer->Add(title, wxSizerFlags().Expand());
 	sizer->Add(gauge, wxSizerFlags(1).Expand().Border());
-	sizer->Add(text, wxSizerFlags().Expand().Center());
+	sizer->Add(text, wxSizerFlags().Expand());
 	sizer->Add(cancel_button, wxSizerFlags().Center().Border());
 	sizer->Add(log_output, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	sizer->Hide(log_output);

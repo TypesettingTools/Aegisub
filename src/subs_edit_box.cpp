@@ -272,7 +272,7 @@ void SubsEditBox::MakeButton(const char *cmd_name) {
 	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon(16));
 	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
-	middle_right_sizer->Add(btn, wxSizerFlags().Center().Expand());
+	middle_right_sizer->Add(btn, wxSizerFlags().Expand());
 	btn->Bind(wxEVT_BUTTON, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
 }
 
@@ -298,7 +298,7 @@ wxRadioButton *SubsEditBox::MakeRadio(wxString const& text, bool start, wxString
 	wxRadioButton *ctrl = new wxRadioButton(this, -1, text, wxDefaultPosition, wxDefaultSize, start ? wxRB_GROUP : 0);
 	ctrl->SetToolTip(tooltip);
 	Bind(wxEVT_RADIOBUTTON, &SubsEditBox::OnFrameTimeRadio, this, ctrl->GetId());
-	middle_right_sizer->Add(ctrl, wxSizerFlags().Center().Expand().Border(wxRIGHT));
+	middle_right_sizer->Add(ctrl, wxSizerFlags().Expand().Border(wxRIGHT));
 	return ctrl;
 }
 
