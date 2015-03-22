@@ -855,7 +855,7 @@ struct edit_line_paste final : public Command {
 	bool Validate(const agi::Context *) override {
 		bool can_paste = false;
 		if (wxTheClipboard->Open()) {
-			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
+			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT) || wxTheClipboard->IsSupported(wxDF_UNICODETEXT);
 			wxTheClipboard->Close();
 		}
 		return can_paste;
@@ -886,7 +886,7 @@ struct edit_line_paste_over final : public Command {
 	bool Validate(const agi::Context *c) override {
 		bool can_paste = !c->selectionController->GetSelectedSet().empty();
 		if (can_paste && wxTheClipboard->Open()) {
-			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT);
+			can_paste = wxTheClipboard->IsSupported(wxDF_TEXT) || wxTheClipboard->IsSupported(wxDF_UNICODETEXT);
 			wxTheClipboard->Close();
 		}
 		return can_paste;

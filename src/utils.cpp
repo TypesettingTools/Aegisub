@@ -126,7 +126,7 @@ std::string GetClipboard() {
 	wxString data;
 	wxClipboard *cb = wxClipboard::Get();
 	if (cb->Open()) {
-		if (cb->IsSupported(wxDF_TEXT)) {
+		if (cb->IsSupported(wxDF_TEXT) || cb->IsSupported(wxDF_UNICODETEXT)) {
 			wxTextDataObject raw_data;
 			cb->GetData(raw_data);
 			data = raw_data.GetText();
