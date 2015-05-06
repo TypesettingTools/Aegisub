@@ -325,8 +325,10 @@ void SubsController::OnCommit(AssFileCommit c) {
 	// Make sure the file has at least one style and one dialogue line
 	if (context->ass->Styles.empty())
 		context->ass->Styles.push_back(*new AssStyle);
-	if (context->ass->Events.empty())
+	if (context->ass->Events.empty()) {
 		context->ass->Events.push_back(*new AssDialogue);
+		context->ass->Events.back().Row = 0;
+	}
 
 	redo_stack.clear();
 
