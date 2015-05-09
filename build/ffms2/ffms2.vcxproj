@@ -14,10 +14,6 @@
     <Import Project="$(MSBuildThisFileDirectory)..\aegisub.props" />
   </ImportGroup>
 
-  <PropertyGroup>
-    <Ffms2PreprocessorHaalisource Condition="'$(Ffms2UseAtl)'!='0'">HAALISOURCE;</Ffms2PreprocessorHaalisource>
-  </PropertyGroup>
-
   <!-- Project specific configuration -->
   <ItemDefinitionGroup>
     <ClCompile>
@@ -28,7 +24,6 @@
       <PreprocessorDefinitions>
         WITH_AVRESAMPLE;
         FFMS_EXPORTS;
-        $(Ffms2PreprocessorHaalisource)
         _CRT_SECURE_NO_WARNINGS;
         _CRT_NONSTDC_NO_DEPRECATE;
         _SCL_SECURE_NO_WARNINGS;
@@ -61,23 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(FfmsSrcDir)\src\core\audiosource.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\codectype.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\ffms.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\filehandle.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\haaliaudio.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\haalicommon.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\haaliindexer.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\haalivideo.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\indexing.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\lavfaudio.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\lavfindexer.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\lavfvideo.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaaudio.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaindexer.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaparser.c" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskareader.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskavideo.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\numthreads.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\track.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\utils.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\videosource.cpp" />
@@ -93,15 +77,8 @@
     <ClInclude Include="$(FfmsSrcDir)\src\avisynth\avsutils.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\avisynth\ffswscale.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\audiosource.h" />
-    <ClInclude Include="$(FfmsSrcDir)\src\core\codectype.h" />
-    <ClInclude Include="$(FfmsSrcDir)\src\core\coparser.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\filehandle.h" />
-    <ClInclude Include="$(FfmsSrcDir)\src\core\guids.h" />
-    <ClInclude Include="$(FfmsSrcDir)\src\core\haalicommon.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\indexing.h" />
-    <ClInclude Include="$(FfmsSrcDir)\src\core\matroskaparser.h" />
-    <ClInclude Include="$(FfmsSrcDir)\src\core\matroskareader.h" />
-    <ClInclude Include="$(FfmsSrcDir)\src\core\numthreads.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\track.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\utils.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\videosource.h" />

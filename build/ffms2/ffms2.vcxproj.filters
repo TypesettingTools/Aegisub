@@ -27,17 +27,8 @@
     <ClCompile Include="$(FfmsSrcDir)\src\core\audiosource.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\haaliaudio.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\lavfaudio.cpp">
       <Filter>Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaaudio.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\haaliindexer.cpp">
-      <Filter>Indexing</Filter>
     </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\indexing.cpp">
       <Filter>Indexing</Filter>
@@ -45,16 +36,7 @@
     <ClCompile Include="$(FfmsSrcDir)\src\core\lavfindexer.cpp">
       <Filter>Indexing</Filter>
     </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaindexer.cpp">
-      <Filter>Indexing</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\haalivideo.cpp">
-      <Filter>Video</Filter>
-    </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\lavfvideo.cpp">
-      <Filter>Video</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskavideo.cpp">
       <Filter>Video</Filter>
     </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\videosource.cpp">
@@ -62,15 +44,6 @@
     </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\ffms.cpp">
       <Filter>API</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\codectype.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\matroskaparser.c">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\numthreads.cpp">
-      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\utils.cpp">
       <Filter>Utils</Filter>
@@ -105,9 +78,6 @@
     <ClCompile Include="$(FfmsSrcDir)\src\core\filehandle.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\haalicommon.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\zipfile.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -128,22 +98,7 @@
     <ClInclude Include="$(FfmsSrcDir)\include\ffms.h">
       <Filter>API</Filter>
     </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\core\coparser.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\core\codectype.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\include\ffmscompat.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\core\guids.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\core\matroskaparser.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\core\numthreads.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\src\core\utils.h">
@@ -173,13 +128,7 @@
     <ClInclude Include="$(FfmsSrcDir)\src\vapoursynth\VapourSynth.h">
       <Filter>VapourSynth</Filter>
     </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\core\matroskareader.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\src\core\filehandle.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\core\haalicommon.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\src\core\zipfile.h">
