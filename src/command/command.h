@@ -28,11 +28,11 @@
 
 namespace agi { struct Context; }
 
-#define CMD_NAME(a) const char* name() const { return a; }
-#define STR_MENU(a) wxString StrMenu(const agi::Context *) const { return _(a); }
-#define STR_DISP(a) wxString StrDisplay(const agi::Context *) const { return _(a); }
-#define STR_HELP(a) wxString StrHelp() const { return _(a); }
-#define CMD_TYPE(a) int Type() const { using namespace cmd; return a; }
+#define CMD_NAME(a) const char* name() const override { return a; }
+#define STR_MENU(a) wxString StrMenu(const agi::Context *) const override { return _(a); }
+#define STR_DISP(a) wxString StrDisplay(const agi::Context *) const override { return _(a); }
+#define STR_HELP(a) wxString StrHelp() const override { return _(a); }
+#define CMD_TYPE(a) int Type() const override { using namespace cmd; return a; }
 
 #define CMD_ICON(icon) wxBitmap Icon(int size, wxLayoutDirection dir = wxLayout_LeftToRight) const override { \
 	if (size == 64) return GETIMAGEDIR(icon##_64, dir); \
@@ -43,12 +43,12 @@ namespace agi { struct Context; }
 }
 
 #define COMMAND_GROUP(cname, cmdname, menu, disp, help) \
-struct cname final : public Command {                         \
+struct cname final : public Command {                   \
 	CMD_NAME(cmdname)                                   \
 	STR_MENU(menu)                                      \
 	STR_DISP(disp)                                      \
 	STR_HELP(help)                                      \
-	void operator()(agi::Context *) { }                 \
+	void operator()(agi::Context *) override { }        \
 }
 
 /// Commands

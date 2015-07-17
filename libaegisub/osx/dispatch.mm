@@ -30,7 +30,7 @@ struct OSXQueue : Queue {
 struct MainQueue final : OSXQueue {
     void DoInvoke(Thunk thunk) override { invoke_main(thunk); }
 
-    void DoSync(Thunk thunk) {
+    void DoSync(Thunk thunk) override {
         std::mutex m;
         std::condition_variable cv;
         std::unique_lock<std::mutex> l(m);

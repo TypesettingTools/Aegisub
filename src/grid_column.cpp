@@ -320,7 +320,7 @@ public:
 		return helper(wxS("999"));
 	}
 
-	void Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *) const {
+	void Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *) const override {
 		int cps = CPS(d);
 		if (cps < 0 || cps > 100) return;
 

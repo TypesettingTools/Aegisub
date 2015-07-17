@@ -168,9 +168,6 @@ private:
 	/// @param feature The current feature to process; not necessarily the one clicked on
 	virtual void UpdateDrag(FeatureType *feature) { }
 
-	/// @brief Draw stuff
-	virtual void Draw()=0;
-
 protected:
 	std::set<FeatureType *> sel_features; ///< Currently selected visual features
 
