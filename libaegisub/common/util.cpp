@@ -61,7 +61,7 @@ void parse_blocks(std::vector<std::pair<size_t, size_t>>& blocks, std::string co
 		if (c == '{' && ovr_start == bad_pos)
 			ovr_start = i;
 		else if (c == '}' && ovr_start != bad_pos) {
-			blocks.emplace_back(ovr_start, i);
+			blocks.emplace_back(ovr_start, i + 1);
 			ovr_start = bad_pos;
 		}
 		++i;
@@ -152,10 +152,10 @@ std::string tagless_find_helper::strip_tags(std::string const& str, size_t s) {
 
 	size_t last = s;
 	for (auto const& block : blocks) {
-		if (block.second < s) continue;
+		if (block.second <= s) continue;
 		if (block.first > last)
 			out.append(str.begin() + last, str.begin() + block.first);
-		last = block.second + 1;
+		last = block.second;
 	}
 
 	if (last < str.size())
@@ -178,7 +178,7 @@ void tagless_find_helper::map_range(size_t &s, size_t &e) {
 		// < should only happen if the cursor was within an override block
 		// when the user started a search
 		if (block.first <= s) {
-			size_t len = block.second - std::max(block.first, s) + 1;
+			size_t len = block.second - std::max(block.first, start);
 			s += len;
 			e += len;
 			continue;
@@ -190,7 +190,7 @@ void tagless_find_helper::map_range(size_t &s, size_t &e) {
 
 		// Extend the match to include blocks within the match
 		// Note that blocks cannot be partially within the match
-		e += block.second - block.first + 1;
+		e += block.second - block.first;
 	}
 }
 } // namespace util

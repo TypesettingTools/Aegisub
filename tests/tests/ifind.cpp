@@ -73,3 +73,46 @@ TEST(lagi_ifind, correct_index_with_shrunk_character_before_match) {
 	// U+FB00 turns into "ff", which is one byte shorter in UTF-8
 	EXPECT_IFIND(" \xEF\xAC\x80 a ", "a", 5, 6);
 }
+
+TEST(lagi_skip_tags, tag_stripping) {
+	agi::util::tagless_find_helper helper;
+
+	EXPECT_EQ("", helper.strip_tags("", 0));
+	EXPECT_EQ("", helper.strip_tags("{}", 0));
+	EXPECT_EQ("abc", helper.strip_tags("{}abc", 0));
+	EXPECT_EQ("abc", helper.strip_tags("a{}bc", 0));
+	EXPECT_EQ("abc", helper.strip_tags("abc{}", 0));
+	EXPECT_EQ("abc", helper.strip_tags("{}a{}bc{}", 0));
+
+	EXPECT_EQ("abc", helper.strip_tags("{}abc", 1));
+	EXPECT_EQ("abc", helper.strip_tags("{}abc", 2));
+	EXPECT_EQ("bc", helper.strip_tags("{}abc", 3));
+	EXPECT_EQ("c", helper.strip_tags("{}abc", 4));
+}
+
+static void test_range_map(const char *str, size_t start, size_t& s, size_t& e) {
+	agi::util::tagless_find_helper helper;
+	helper.strip_tags(str, start);
+	helper.map_range(s, e);
+}
+
+#define EXPECT_RANGE(str, start, match_start, match_end, result_start, result_end) \
+	do { \
+		size_t s = match_start, e = match_end; \
+		test_range_map(str, start, s, e); \
+		EXPECT_EQ(result_start, s); \
+		EXPECT_EQ(result_end, e); \
+	} while (0)
+
+TEST(lagi_skip_tags, range_mapping) {
+	EXPECT_RANGE("", 0, 0, 0, 0, 0);
+	EXPECT_RANGE("a", 0, 0, 1, 0, 1);
+	EXPECT_RANGE("{}a", 0, 0, 1, 2, 3);
+	EXPECT_RANGE("{cc}ab", 0, 1, 2, 5, 6);
+	EXPECT_RANGE("{cc}ab{cc}b", 0, 1, 2, 5, 6);
+	EXPECT_RANGE("{cc}ab{cc}b", 0, 1, 3, 5, 11);
+
+	EXPECT_RANGE("{cc}ab{cc}b", 3, 1, 3, 5, 11);
+	EXPECT_RANGE("{cc}ab{cc}b", 4, 1, 3, 5, 11);
+	EXPECT_RANGE("{cc}ab{cc}b", 5, 0, 2, 5, 11);
+}
