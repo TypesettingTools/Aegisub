@@ -15,11 +15,11 @@
 #include <algorithm>
 #include <boost/range/irange.hpp>
 #include <string>
+#include <vector>
 
 struct tm;
 
-namespace agi {
-	namespace util {
+namespace agi { namespace util {
 	/// Clamp `b` to the range [`a`,`c`]
 	template<typename T>
 	static inline T mid(T a, T b, T c) {
@@ -45,6 +45,20 @@ namespace agi {
 	/// based on the unfolded length.
 	std::pair<size_t, size_t> ifind(std::string const& haystack, std::string const& needle);
 
+	class tagless_find_helper {
+		std::vector<std::pair<size_t, size_t>> blocks;
+		size_t start = 0;
+
+	public:
+		/// Strip ASS override tags at or after `start` in `str`, and initialize
+		/// state for mapping ranges back to the input string
+		std::string strip_tags(std::string const& str, size_t start);
+
+		/// Convert a range in the string returned by `strip_tags()` to a range
+		/// int the string last passed to `strip_tags()`
+		void map_range(size_t& start, size_t& end);
+	};
+
 	/// Set the name of the calling thread in the Visual Studio debugger
 	/// @param name New name for the thread
 	void SetThreadName(const char *name);
@@ -66,6 +80,4 @@ namespace agi {
 	auto range(Integer end) -> decltype(boost::irange<Integer>(0, end)) {
 		return boost::irange<Integer>(0, end);
 	}
-
-	} // namespace util
-} // namespace agi
+} } // namespace agi::util

@@ -52,7 +52,23 @@ std::pair<size_t, size_t> find_range(std::string const& haystack, std::string co
 	return {match_start, match_start + needle.size()};
 }
 
+void parse_blocks(std::vector<std::pair<size_t, size_t>>& blocks, std::string const& str) {
+	blocks.clear();
+
+	size_t ovr_start = bad_pos;
+	size_t i = 0;
+	for (auto const& c : str) {
+		if (c == '{' && ovr_start == bad_pos)
+			ovr_start = i;
+		else if (c == '}' && ovr_start != bad_pos) {
+			blocks.emplace_back(ovr_start, i);
+			ovr_start = bad_pos;
+		}
+		++i;
+	}
 }
+
+} // anonymous namespace
 
 namespace agi { namespace util {
 
@@ -129,7 +145,55 @@ std::pair<size_t, size_t> ifind(std::string const& haystack, std::string const& 
 	return ret;
 }
 
+std::string tagless_find_helper::strip_tags(std::string const& str, size_t s) {
+	parse_blocks(blocks, str);
+
+	std::string out;
+
+	size_t last = s;
+	for (auto const& block : blocks) {
+		if (block.second < s) continue;
+		if (block.first > last)
+			out.append(str.begin() + last, str.begin() + block.first);
+		last = block.second + 1;
+	}
+
+	if (last < str.size())
+		out.append(str.begin() + last, str.end());
+
+	start = s;
+	return out;
 }
+
+void tagless_find_helper::map_range(size_t &s, size_t &e) {
+	s += start;
+	e += start;
+
+	// Shift the start and end of the match to be relative to the unstripped
+	// match
+	for (auto const& block : blocks) {
+		// Any blocks before start are irrelevant as they're included in `start`
+		if (block.second < s) continue;
+		// Skip over blocks at the very beginning of the match
+		// < should only happen if the cursor was within an override block
+		// when the user started a search
+		if (block.first <= s) {
+			size_t len = block.second - std::max(block.first, s) + 1;
+			s += len;
+			e += len;
+			continue;
+		}
+
+		assert(block.first > s);
+		// Blocks after the match are irrelevant
+		if (block.first >= e) break;
+
+		// Extend the match to include blocks within the match
+		// Note that blocks cannot be partially within the match
+		e += block.second - block.first + 1;
+	}
+}
+} // namespace util
 
 #ifndef __APPLE__
 namespace osx {
@@ -137,4 +201,4 @@ AppNapDisabler::AppNapDisabler(std::string reason) { }
 AppNapDisabler::~AppNapDisabler() { }
 }
 #endif
-}
+} // namespace agi

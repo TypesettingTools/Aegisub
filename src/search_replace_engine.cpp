@@ -73,76 +73,17 @@ public:
 
 class skip_tags_accessor {
 	boost::flyweight<std::string> AssDialogueBase::*field;
-	std::vector<std::pair<size_t, size_t>> blocks;
-	size_t start = 0;
-
-	void parse_str(std::string const& str) {
-		blocks.clear();
-
-		size_t ovr_start = bad_pos;
-		size_t i = 0;
-		for (auto const& c : str) {
-			if (c == '{' && ovr_start == bad_pos)
-				ovr_start = i;
-			else if (c == '}' && ovr_start != bad_pos) {
-				blocks.emplace_back(ovr_start, i);
-				ovr_start = bad_pos;
-			}
-			++i;
-		}
-	}
+	agi::util::tagless_find_helper helper;
 
 public:
 	skip_tags_accessor(SearchReplaceSettings::Field f) : field(get_dialogue_field(f)) { }
 
 	std::string get(const AssDialogue *d, size_t s) {
-		auto const& str = get_normalized(d, field);
-		parse_str(str);
-
-		std::string out;
-
-		size_t last = s;
-		for (auto const& block : blocks) {
-			if (block.second < s) continue;
-			if (block.first > last)
-				out.append(str.begin() + last, str.begin() + block.first);
-			last = block.second + 1;
-		}
-
-		if (last < str.size())
-			out.append(str.begin() + last, str.end());
-
-		start = s;
-		return out;
+		return helper.strip_tags(get_normalized(d, field), s);
 	}
 
 	MatchState make_match_state(size_t s, size_t e, boost::u32regex *r = nullptr) {
-		s += start;
-		e += start;
-
-		// Shift the start and end of the match to be relative to the unstripped
-		// match
-		for (auto const& block : blocks) {
-			// Any blocks before start are irrelevant as they're included in `start`
-			if (block.second < s) continue;
-			// Skip over blocks at the very beginning of the match
-			// < should only happen if the cursor was within an override block
-			// when the user started a search
-			if (block.first <= s) {
-				size_t len = block.second - std::max(block.first, s) + 1;
-				s += len;
-				e += len;
-				continue;
-			}
-
-			assert(block.first > s);
-			// Blocks after the match are irrelevant
-			if (block.first >= e) break;
-
-			// Extend the match to include blocks within the match
-			// Note that blocks cannot be partially within the match
-			e += block.second - block.first + 1;
-		}
+		helper.map_range(s, e);
 		return {r, s, e};
 	}
 };
