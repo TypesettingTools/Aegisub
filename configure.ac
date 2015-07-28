@@ -125,8 +125,10 @@ AC_SUBST([BUILD_DATE])
 ###################################################
 # Check for pthreads and setup variables / compiler
 ###################################################
-ACX_PTHREAD([], [AC_MSG_FAILURE([You must have working pthreads.])])
-CC="$PTHREAD_CC"
+AS_IF([test x$build_darwin != xyes], [
+  ACX_PTHREAD([], [AC_MSG_FAILURE([You must have working pthreads.])])
+  CC="$PTHREAD_CC"
+])
 
 ######################
 # Check compiler flags
@@ -188,12 +190,16 @@ AC_ARG_ENABLE(sanity-checks,
 ### Required Dependencies
 #########################
 
-AC_PATH_XTRA
-AS_IF([test x$no_x = xyes && test x$build_darwin != xyes],
-      [AC_MSG_FAILURE([You must have a working copy of X installed.])])
+AS_IF([test x$build_darwin != xyes], [
+  AC_PATH_XTRA
+  AS_IF([test x$no_x = xyes],
+        [AC_MSG_FAILURE([You must have a working copy of X installed.])])
 
-AX_CHECK_GL
-AS_IF([test x$no_gl = xyes], [AC_MSG_FAILURE([Aegisub requires GL support.])])
+  AX_CHECK_GL
+  AS_IF([test x$no_gl = xyes], [AC_MSG_FAILURE([Aegisub requires GL support.])])
+], [
+  AC_CHECK_HEADERS([OpenGL/gl.h])
+])
 AC_SUBST(GL_CFLAGS)
 AC_SUBST(GL_LIBS)
 
