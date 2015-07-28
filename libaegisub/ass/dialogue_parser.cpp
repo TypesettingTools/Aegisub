@@ -93,9 +93,9 @@ public:
 class WordSplitter {
 	std::string const& text;
 	std::vector<DialogueToken> &tokens;
-	size_t pos;
+	size_t pos = 0;
 
-	void SwitchTo(size_t &i, int type, int len) {
+	void SwitchTo(size_t &i, int type, size_t len) {
 		auto old = tokens[i];
 		tokens[i].type = type;
 		tokens[i].length = len;
@@ -110,7 +110,7 @@ class WordSplitter {
 		using namespace boost::locale::boundary;
 		ssegment_index map(word, text.begin() + pos, text.begin() + pos + tokens[i].length);
 		for (auto const& segment : map) {
-			int len = distance(begin(segment), end(segment));
+			auto len = static_cast<size_t>(distance(begin(segment), end(segment)));
 			if (segment.rule() & word_letters)
 				SwitchTo(i, dt::WORD, len);
 			else
@@ -122,7 +122,6 @@ public:
 	WordSplitter(std::string const& text, std::vector<DialogueToken> &tokens)
 	: text(text)
 	, tokens(tokens)
-	, pos(0)
 	{ }
 
 	void SplitWords() {
