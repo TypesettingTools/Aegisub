@@ -216,4 +216,6 @@ TEST(lagi_hotkey,  old_format_is_backed_up_before_migrating) {
 		tmp.read(buff, sizeof(buff));
 		ASSERT_TRUE(memcmp(buff, simple_valid, sizeof(buff)) == 0);
 	}
+
+	agi::fs::Remove("data/hotkey_tmp.3_1");
 }

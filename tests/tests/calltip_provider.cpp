@@ -68,10 +68,11 @@ TEST(lagi_calltip, overloads) {
 }
 
 TEST(lagi_calltip, too_many_args) {
-	expect_tip("{\\pos(100,100,100)}hello", 2, bad_tip);
+	expect_tip("{\\pos(100,100,100)}hello", 15, bad_tip);
+	expect_tip("{\\pos(100,100,100)}hello", 3, Calltip{"\\pos(X,Y)", 5, 6, 2});
 }
 
 TEST(lagi_calltip, unknown_tag) {
-	expect_tip("{\\foo(100,100,100)}hello", 2, bad_tip);
-	expect_tip("{\\toolong(100,100,100)}hello", 2, bad_tip);
+	expect_tip("{\\foo(100,100,100)}hello", 3, bad_tip);
+	expect_tip("{\\toolong(100,100,100)}hello", 3, bad_tip);
 }

@@ -58,6 +58,10 @@ TEST(lagi_time, comma_decimal) {
 	EXPECT_STREQ("1:23:45.67", Time("1:23:45,67").GetAssFormatted().c_str());
 }
 
+TEST(lagi_time, extra_garbage_is_ignored) {
+	EXPECT_STREQ("1:23:45.67", Time("1a:b2c3d:e4f5g.!6&7").GetAssFormatted().c_str());
+}
+
 TEST(lagi_time, component_getters) {
 	Time t("1:23:45.67");
 	EXPECT_EQ(1, t.GetTimeHours());

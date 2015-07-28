@@ -94,6 +94,7 @@ TEST(lagi_format, length_modifiers) {
 TEST(lagi_format, precision_width) {
 	EXPECT_EQ("05", agi::format("%02X", 5));
 	EXPECT_EQ("       -10", agi::format("%10d", -10));
+	EXPECT_EQ("-10       ", agi::format("%-10d", -10));
 	EXPECT_EQ("0010", agi::format("%04d", 10));
 	EXPECT_EQ(" 1234.1235", agi::format("%10.4f", 1234.1234567890));
 	EXPECT_EQ("10", agi::format("%.f", 10.1));

@@ -184,7 +184,7 @@ struct audio_save_clip final : public Command {
 			end = std::max(end, line->End);
 		}
 
-		agi::SaveAudioClip(c->project->AudioProvider(), filename, start, end);
+		agi::SaveAudioClip(*c->project->AudioProvider(), filename, start, end);
 	}
 };
 

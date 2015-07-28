@@ -91,5 +91,5 @@ std::unique_ptr<AudioProvider> CreateLockAudioProvider(std::unique_ptr<AudioProv
 std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> source_provider, fs::path const& dir);
 std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> source_provider);
 
-void SaveAudioClip(AudioProvider *provider, fs::path const& path, int start_time, int end_time);
+void SaveAudioClip(AudioProvider const& provider, fs::path const& path, int start_time, int end_time);
 }

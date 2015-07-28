@@ -36,8 +36,8 @@ void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, 
 
 void AudioProvider::ZeroFill(void *buf, int64_t count) const {
 	if (bytes_per_sample == 1)
-		// 8 bit formats are usually unsigned with bias 127
-		memset(buf, 127, count * channels);
+		// 8 bit formats are usually unsigned with bias 128
+		memset(buf, 128, count * channels);
 	else // While everything else is signed
 		memset(buf, 0, count * bytes_per_sample * channels);
 }
@@ -100,13 +100,13 @@ public:
 };
 }
 
-void SaveAudioClip(AudioProvider *provider, fs::path const& path, int start_time, int end_time) {
-	auto start_sample = ((int64_t)start_time * provider->GetSampleRate() + 999) / 1000;
-	auto end_sample = ((int64_t)end_time * provider->GetSampleRate() + 999) / 1000;
-	if (start_sample >= provider->GetNumSamples() || start_sample >= end_sample) return;
+void SaveAudioClip(AudioProvider const& provider, fs::path const& path, int start_time, int end_time) {
+	const auto max_samples = provider.GetNumSamples();
+	const auto start_sample = std::min(max_samples, ((int64_t)start_time * provider.GetSampleRate() + 999) / 1000);
+	const auto end_sample = util::mid(start_sample, ((int64_t)end_time * provider.GetSampleRate() + 999) / 1000, max_samples);
 
-	size_t bytes_per_sample = provider->GetBytesPerSample() * provider->GetChannels();
-	size_t bufsize = (end_sample - start_sample) * bytes_per_sample;
+	const size_t bytes_per_sample = provider.GetBytesPerSample() * provider.GetChannels();
+	const size_t bufsize = (end_sample - start_sample) * bytes_per_sample;
 
 	writer out{path};
 	out.write("RIFF");
@@ -115,11 +115,11 @@ void SaveAudioClip(AudioProvider *provider, fs::path const& path, int start_time
 	out.write("WAVEfmt ");
 	out.write<int32_t>(16); // Size of chunk
 	out.write<int16_t>(1);  // compression format (PCM)
-	out.write<int16_t>(provider->GetChannels());
-	out.write<int32_t>(provider->GetSampleRate());
-	out.write<int32_t>(provider->GetSampleRate() * provider->GetChannels() * provider->GetBytesPerSample());
-	out.write<int16_t>(provider->GetChannels() * provider->GetBytesPerSample());
-	out.write<int16_t>(provider->GetBytesPerSample() * 8);
+	out.write<int16_t>(provider.GetChannels());
+	out.write<int32_t>(provider.GetSampleRate());
+	out.write<int32_t>(provider.GetSampleRate() * provider.GetChannels() * provider.GetBytesPerSample());
+	out.write<int16_t>(provider.GetChannels() * provider.GetBytesPerSample());
+	out.write<int16_t>(provider.GetBytesPerSample() * 8);
 
 	out.write("data");
 	out.write<int32_t>(bufsize);
@@ -130,7 +130,7 @@ void SaveAudioClip(AudioProvider *provider, fs::path const& path, int start_time
 	for (int64_t i = start_sample; i < end_sample; i += spr) {
 		spr = std::min<size_t>(spr, end_sample - i);
 		buf.resize(spr * bytes_per_sample);
-		provider->GetAudio(&buf[0], i, spr);
+		provider.GetAudio(&buf[0], i, spr);
 		out.write(buf);
 	}
 }

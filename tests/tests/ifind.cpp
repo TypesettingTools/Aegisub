@@ -39,6 +39,7 @@
 TEST(lagi_ifind, basic_match) {
 	EXPECT_IFIND(" a ", "a", 1, 2);
 	EXPECT_IFIND(" a ", "A", 1, 2);
+	EXPECT_IFIND(" A ", "a", 1, 2);
 	EXPECT_NO_MATCH(" a ", "b");
 }
 

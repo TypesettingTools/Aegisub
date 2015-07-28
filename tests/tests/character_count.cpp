@@ -51,6 +51,10 @@ TEST(lagi_character_count, ignore_blocks_and_punctuation) {
 	EXPECT_EQ(5, agi::CharacterCount("{asdf}hello.", agi::IGNORE_PUNCTUATION | agi::IGNORE_BLOCKS));
 }
 
+TEST(lagi_character_count, ignore_blocks_unclosed) {
+	EXPECT_EQ(6, agi::CharacterCount("{hello", agi::IGNORE_BLOCKS));
+}
+
 TEST(lagi_character_count, line_length) {
 	EXPECT_EQ(5, agi::MaxLineLength("hello", agi::IGNORE_NONE));
 	EXPECT_EQ(5, agi::MaxLineLength("hello\\Nasdf", agi::IGNORE_NONE));

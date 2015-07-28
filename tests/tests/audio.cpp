@@ -87,6 +87,20 @@ TEST(lagi_audio, before_sample_zero) {
 		ASSERT_EQ(i - 8, buff[i]);
 }
 
+TEST(lagi_audio, before_sample_zero_8bit) {
+	TestAudioProvider<uint8_t> provider;
+	provider.bias = 128;
+
+	uint8_t buff[16];
+	memset(buff, sizeof(buff), 1);
+	provider.GetAudio(buff, -8, 16);
+
+	for (int i = 0; i < 8; ++i)
+		ASSERT_EQ(128, buff[i]);
+	for (int i = 8; i < 16; ++i)
+		ASSERT_EQ(128 + i - 8, buff[i]);
+}
+
 TEST(lagi_audio, after_end) {
 	TestAudioProvider<> provider(1);
 
@@ -105,7 +119,7 @@ TEST(lagi_audio, save_audio_clip) {
 	agi::fs::Remove(path);
 
 	auto provider = agi::CreateDummyAudioProvider("dummy-audio:noise?", nullptr);
-	agi::SaveAudioClip(provider.get(), path, 60 * 60 * 1000, (60 * 60 + 10) * 1000);
+	agi::SaveAudioClip(*provider, path, 60 * 60 * 1000, (60 * 60 + 10) * 1000);
 
 	{
 		bfs::ifstream s(path);
@@ -113,6 +127,45 @@ TEST(lagi_audio, save_audio_clip) {
 		s.seekg(0, std::ios::end);
 		// 10 seconds of 44.1 kHz samples per second of 16-bit mono, plus 44 bytes of header
 		EXPECT_EQ(10 * 44100 * 2 + 44, s.tellg());
+	}
+	agi::fs::Remove(path);
+}
+
+TEST(lagi_audio, save_audio_clip_out_of_audio_range) {
+	const auto path = agi::Path().Decode("?temp/save_clip");
+	agi::fs::Remove(path);
+
+	const auto provider = agi::CreateDummyAudioProvider("dummy-audio:noise?", nullptr);
+	const auto end_time = 150 * 60 * 1000;
+
+	// Start time after end of clip: empty file
+	agi::SaveAudioClip(*provider, path, end_time, end_time + 1);
+	{
+		bfs::ifstream s(path);
+		ASSERT_TRUE(s.good());
+		s.seekg(0, std::ios::end);
+		EXPECT_EQ(44, s.tellg());
+	}
+	agi::fs::Remove(path);
+
+	// Start time >= end time: empty file
+	agi::SaveAudioClip(*provider, path, end_time - 1, end_time - 1);
+	{
+		bfs::ifstream s(path);
+		ASSERT_TRUE(s.good());
+		s.seekg(0, std::ios::end);
+		EXPECT_EQ(44, s.tellg());
+	}
+	agi::fs::Remove(path);
+
+	// Start time during clip, end time after end of clip: save only the part that exists
+	agi::SaveAudioClip(*provider, path, end_time - 1000, end_time + 1000);
+	{
+		bfs::ifstream s(path);
+		ASSERT_TRUE(s.good());
+		s.seekg(0, std::ios::end);
+		// 1 second of 44.1 kHz samples per second of 16-bit mono, plus 44 bytes of header
+		EXPECT_EQ(44100 * 2 + 44, s.tellg());
 	}
 	agi::fs::Remove(path);
 }
@@ -309,7 +362,7 @@ TEST(lagi_audio, pcm_simple) {
 	auto path = agi::Path().Decode("?temp/pcm_simple");
 	{
 		TestAudioProvider<> provider;
-		agi::SaveAudioClip(&provider, path, 0, 1000);
+		agi::SaveAudioClip(provider, path, 0, 1000);
 	}
 
 	auto provider = agi::CreatePCMAudioProvider(path, nullptr);
@@ -333,7 +386,7 @@ TEST(lagi_audio, pcm_truncated) {
 	auto path = agi::Path().Decode("?temp/pcm_truncated");
 	{
 		TestAudioProvider<> provider;
-		agi::SaveAudioClip(&provider, path, 0, 1000);
+		agi::SaveAudioClip(provider, path, 0, 1000);
 	}
 
 	char file[1000];

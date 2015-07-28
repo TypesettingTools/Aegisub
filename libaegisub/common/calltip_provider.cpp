@@ -193,7 +193,7 @@ Calltip GetCalltip(std::vector<ass::DialogueToken> const& tokens, std::string co
 		auto start = proto->args + tag_name_length + 2; // One for slash, one for open paren
 		for (; commas > 0; --commas) {
 			start = strchr(start, ',');
-			if (!start) return ret; // No calltip if there's too many args
+			if (!start) return ret; // No calltip if we're after the last arg
 			++start;
 		}
 

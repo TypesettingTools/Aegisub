@@ -43,6 +43,13 @@ TEST(lagi_color, hex) {
 	EXPECT_EQ("#102030", agi::Color(16, 32, 48).GetHexFormatted());
 }
 
+TEST(lagi_color, hex_rgba) {
+	EXPECT_EQ("#00000000", agi::Color(0, 0, 0, 0).GetHexFormatted(true));
+	EXPECT_EQ("#FFFFFFFF", agi::Color(255, 255, 255, 255).GetHexFormatted(true));
+	EXPECT_EQ("#FF007F20", agi::Color(255, 0, 127, 32).GetHexFormatted(true));
+	EXPECT_EQ("#10203040", agi::Color(16, 32, 48, 64).GetHexFormatted(true));
+}
+
 TEST(lagi_color, rgb) {
 	EXPECT_EQ(agi::Color(0, 0, 0), agi::Color("rgb(0, 0, 0)"));
 	EXPECT_EQ(agi::Color(255, 255, 255), agi::Color("rgb(255, 255, 255)"));
