@@ -171,14 +171,6 @@ Framerate::Framerate(std::initializer_list<int> timecodes)
 	SetFromTimecodes();
 }
 
-void Framerate::swap(Framerate &right) throw() {
-	using std::swap;
-	swap(numerator, right.numerator);
-	swap(denominator, right.denominator);
-	swap(last, right.last);
-	swap(timecodes, right.timecodes);
-}
-
 Framerate::Framerate(fs::path const& filename)
 : denominator(default_denominator)
 {

@@ -76,6 +76,14 @@ class Framerate {
 	/// Set FPS properties from the timecodes vector
 	void SetFromTimecodes();
 public:
+	Framerate(Framerate const&) = default;
+	Framerate& operator=(Framerate const&) = default;
+
+#ifndef _MSC_VER
+	Framerate(Framerate&&) = default;
+	Framerate& operator=(Framerate&&) = default;
+#endif
+
 	/// @brief VFR from timecodes file
 	/// @param filename File with v1 or v2 timecodes
 	///
@@ -99,9 +107,6 @@ public:
 	/// @param timecodes Vector of frame start times in milliseconds
 	Framerate(std::vector<int> timecodes);
 	Framerate(std::initializer_list<int> timecodes);
-
-	/// Helper function for the std::swap specialization
-	void swap(Framerate &right) throw();
 
 	/// @brief Get the frame visible at a given time
 	/// @param ms Time in milliseconds
