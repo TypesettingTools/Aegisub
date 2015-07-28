@@ -3,12 +3,14 @@ AC_DEFUN([AC_AGI_COMPILE],[
   aegisub_save_CPPFLAGS="$CPPFLAGS"
   CPPFLAGS="$CPPFLAGS $3"
   LIBS="$LIBS $4"
-      AC_CACHE_CHECK(
-        [whether $1 works], [agi_cv_with_$2],
-        [AC_RUN_IFELSE([AC_LANG_SOURCE([$5])],
-                       [eval agi_cv_with_$2="yes"],
-                       [eval agi_cv_with_$2="no"],
-                       [AS_IF([test $? -ne 0], [eval agi_cv_with_$2="no"], [eval agi_cv_with_$2="yes"])])])
+  AC_LANG_PUSH(C++)
+  AC_CACHE_CHECK(
+    [whether $1 works], [agi_cv_with_$2],
+    [AC_RUN_IFELSE([AC_LANG_SOURCE([$5])],
+                   [eval agi_cv_with_$2="yes"],
+                   [eval agi_cv_with_$2="no"],
+                   [AS_IF([test $? -ne 0], [eval agi_cv_with_$2="no"], [eval agi_cv_with_$2="yes"])])])
+  AC_LANG_POP(C++)
   CPPFLAGS="$aegisub_save_CPPFLAGS"
   LIBS="$aegisub_save_LIBS"
 ])
