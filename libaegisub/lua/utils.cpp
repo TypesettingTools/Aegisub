@@ -213,6 +213,27 @@ void argcheck(lua_State *L, bool cond, int narg, const char *msg) {
 	if (!cond) argerror(L, narg, msg);
 }
 
+int exception_wrapper(lua_State *L, int (*func)(lua_State *L)) {
+	try {
+		return func(L);
+	}
+	catch (agi::Exception const& e) {
+		push_value(L, e.GetMessage());
+		return lua_error(L);
+	}
+	catch (std::exception const& e) {
+		push_value(L, e.what());
+		return lua_error(L);
+	}
+	catch (error_tag) {
+		// Error message is already on the stack
+		return lua_error(L);
+	}
+	catch (...) {
+		std::terminate();
+	}
+}
+
 #ifdef _DEBUG
 void LuaStackcheck::check_stack(int additional) {
 	int top = lua_gettop(L);

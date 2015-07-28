@@ -134,7 +134,6 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 	/// each frame header can be found
 	std::vector<uint64_t> seek_table;
 
-	void CheckFileFormat();
 	void ParseFileHeader(const std::vector<std::string>& tags);
 	Y4M_FrameFlags ParseFrameHeader(const std::vector<std::string>& tags);
 	std::vector<std::string> ReadHeader(uint64_t &startpos);
@@ -162,7 +161,10 @@ public:
 YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 : file(filename)
 {
-	CheckFileFormat();
+	if (file.size() < 10)
+		throw VideoNotSupported("File is not a YUV4MPEG file (too small)");
+	if (strncmp("YUV4MPEG2 ", file.read(0, 10), 10))
+		throw VideoNotSupported("File is not a YUV4MPEG file (bad magic)");
 
 	uint64_t pos = 0;
 	ParseFileHeader(ReadHeader(pos));
@@ -185,10 +187,8 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 	case Y4M_PIXFMT_420MPEG2:
 	case Y4M_PIXFMT_420PALDV:
 		chroma_sz	= (w * h) >> 2; break;
-	case Y4M_PIXFMT_422:
-		chroma_sz	= (w * h) >> 1; break;
-		/// @todo add support for more pixel formats
 	default:
+		/// @todo add support for more pixel formats
 		throw VideoOpenError("Unsupported pixel format");
 	}
 	frame_sz	= luma_sz + chroma_sz*2;
@@ -196,16 +196,6 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 	num_frames = IndexFile(pos);
 	if (num_frames <= 0 || seek_table.empty())
 		throw VideoOpenError("Unable to determine file length");
-}
-
-/// @brief Checks if the file is an YUV4MPEG file or not
-/// Note that it reports the error by throwing an exception,
-/// not by returning a false value.
-void YUV4MPEGVideoProvider::CheckFileFormat() {
-	if (file.size() < 10)
-		throw VideoNotSupported("CheckFileFormat: File is not a YUV4MPEG file (too small)");
-	if (strncmp("YUV4MPEG2 ", file.read(0, 10), 10))
-		throw VideoNotSupported("CheckFileFormat: File is not a YUV4MPEG file (bad magic)");
 }
 
 /// @brief Read a frame or file header at a given file position
@@ -266,22 +256,23 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags
 		char type = tags[i][0];
 		std::string tag = tags[i].substr(1);
 
+		const char *err = nullptr;
 		if (type == 'W') {
 			if (!agi::util::try_parse(tag, &t_w))
-				throw VideoOpenError("ParseFileHeader: invalid width");
+				err = "invalid width";
 		}
 		else if (type == 'H') {
 			if (!agi::util::try_parse(tag, &t_h))
-				throw VideoOpenError("ParseFileHeader: invalid height");
+				err = "invalid height";
 		}
 		else if (type == 'F') {
 			size_t pos = tag.find(':');
 			if (pos == tag.npos)
-				throw VideoOpenError("ParseFileHeader: invalid framerate");
+				err = "invalid framerate";
 
 			if (!agi::util::try_parse(tag.substr(0, pos), &t_fps_num) ||
 				!agi::util::try_parse(tag.substr(pos + 1), &t_fps_den))
-				throw VideoOpenError("ParseFileHeader: invalid framerate");
+				err = "invalid framerate";
 		}
 		else if (type == 'C') {
 			// technically this should probably be case sensitive,
@@ -297,7 +288,7 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags
 			else if (tag == "444alpha")	t_pixfmt = Y4M_PIXFMT_444ALPHA;
 			else if (tag == "mono")		t_pixfmt = Y4M_PIXFMT_MONO;
 			else
-				throw VideoOpenError("ParseFileHeader: invalid or unknown colorspace");
+				err = "invalid or unknown colorspace";
 		}
 		else if (type == 'I') {
 			boost::to_lower(tag);
@@ -307,10 +298,13 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags
 			else if (tag == "m")	t_imode = Y4M_ILACE_MIXED;
 			else if (tag == "?")	t_imode = Y4M_ILACE_UNKNOWN;
 			else
-				throw VideoOpenError("ParseFileHeader: invalid or unknown interlacing mode");
+				err = "invalid or unknown interlacing mode";
 		}
 		else
 			LOG_D("provider/video/yuv4mpeg") << "Unparsed tag: " << tags[i];
+
+		if (err)
+			throw VideoOpenError(err);
 	}
 
 	// The point of all this is to allow multiple YUV4MPEG2 headers in a single file
@@ -318,16 +312,19 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags
 	// header flags. The spec doesn't explicitly say you have to allow this,
 	// but the "reference implementation" (mjpegtools) does, so I'm doing it too.
 	if (inited) {
+		const char *err = nullptr;
 		if (t_w > 0 && t_w != w)
-			throw VideoOpenError("ParseFileHeader: illegal width change");
+			err = "illegal width change";
 		if (t_h > 0 && t_h != h)
-			throw VideoOpenError("ParseFileHeader: illegal height change");
+			err = "illegal height change";
 		if ((t_fps_num > 0 && t_fps_den > 0) && (t_fps_num != fps_rat.num || t_fps_den != fps_rat.den))
-			throw VideoOpenError("ParseFileHeader: illegal framerate change");
+			err = "illegal framerate change";
 		if (t_pixfmt != Y4M_PIXFMT_NONE && t_pixfmt != pixfmt)
-			throw VideoOpenError("ParseFileHeader: illegal colorspace change");
+			err = "illegal colorspace change";
 		if (t_imode != Y4M_ILACE_NOTSET && t_imode != imode)
-			throw VideoOpenError("ParseFileHeader: illegal interlacing mode change");
+			err = "illegal interlacing mode change";
+		if (err)
+			throw VideoOpenError(err);
 	}
 	else {
 		w = t_w;
@@ -346,12 +343,11 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags
 /// @return	The flags set, as a binary mask
 ///	This function is currently unimplemented (it will always return Y4M_FFLAG_NONE).
 YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(const std::vector<std::string>& tags) {
-	if (tags.front() != "FRAME")
-		throw VideoOpenError("ParseFrameHeader: malformed frame header (bad magic)");
+	if (tags.front() == "FRAME")
+		return Y4M_FFLAG_NONE;
 
 	/// @todo implement parsing of frame flags
-
-	return Y4M_FFLAG_NONE;
+	throw VideoOpenError("ParseFrameHeader: malformed frame header (bad magic)");
 }
 
 /// @brief Indexes the file
@@ -395,15 +391,6 @@ void YUV4MPEGVideoProvider::GetFrame(int n, VideoFrame &frame) {
 	n = mid(0, n, num_frames - 1);
 
 	int uv_width = w / 2;
-	switch (pixfmt) {
-		case Y4M_PIXFMT_420JPEG:
-		case Y4M_PIXFMT_420MPEG2:
-		case Y4M_PIXFMT_420PALDV:
-			break;
-		/// @todo add support for more pixel formats
-		default:
-			throw VideoNotSupported("YUV4MPEG video provider: GetFrame: Unsupported source colorspace");
-	}
 
 	auto src_y = reinterpret_cast<const unsigned char *>(file.read(seek_table[n], luma_sz + chroma_sz * 2));
 	auto src_u = src_y + luma_sz;

@@ -35,13 +35,20 @@
 #include "utils.h"
 #include "video_frame.h"
 
+namespace {
+template<typename Exception>
+BOOST_NOINLINE void throw_error(GLenum err, const char *msg) {
+	LOG_E("video/out/gl") << msg << " failed with error code " << err;
+	throw Exception(msg, err);
+}
+}
+
 #define DO_CHECK_ERROR(cmd, Exception, msg) \
 	do { \
 		cmd; \
-		if (GLenum err = glGetError()) { \
-			LOG_E("video/out/gl") << msg << " failed with error code " << err; \
-			throw Exception(msg, err); \
-		} \
+		GLenum err = glGetError(); \
+		if (BOOST_UNLIKELY(err)) \
+			throw_error<Exception>(err, msg); \
 	} while(0);
 #define CHECK_INIT_ERROR(cmd) DO_CHECK_ERROR(cmd, VideoOutInitException, #cmd)
 #define CHECK_ERROR(cmd) DO_CHECK_ERROR(cmd, VideoOutRenderException, #cmd)

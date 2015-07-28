@@ -77,27 +77,7 @@ void push_value(lua_State *L, std::vector<T> const& value) {
 	}
 }
 
-inline int exception_wrapper(lua_State *L, int (*func)(lua_State *L)) {
-	try {
-		return func(L);
-	}
-	catch (agi::Exception const& e) {
-		push_value(L, e.GetMessage());
-		return lua_error(L);
-	}
-	catch (std::exception const& e) {
-		push_value(L, e.what());
-		return lua_error(L);
-	}
-	catch (error_tag) {
-		// Error message is already on the stack
-		return lua_error(L);
-	}
-	catch (...) {
-		std::terminate();
-	}
-}
-
+int exception_wrapper(lua_State *L, int (*func)(lua_State *L));
 /// Wrap a function which may throw exceptions and make it trigger lua errors
 /// whenever it throws
 template<int (*func)(lua_State *L)>
