@@ -145,7 +145,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	SetIcon(GETICON(style_toolbutton_16));
 
 	auto add_with_label = [&](wxSizer *sizer, wxString const& label, wxWindow *ctrl) {
-		sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Right().Border(wxLEFT | wxRIGHT));
+		sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Border(wxLEFT | wxRIGHT));
 		sizer->Add(ctrl, wxSizerFlags(1).Left().Expand());
 	};
 
@@ -318,8 +318,8 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	wxSizer *MiscBoxBottom = new wxBoxSizer(wxHORIZONTAL);
 	add_with_label(MiscBoxBottom, _("Encoding:"), Encoding);
 
-	MiscBox->Add(MiscBoxTop, wxSizerFlags().Expand().Center());
-	MiscBox->Add(MiscBoxBottom, wxSizerFlags().Expand().Center().Border(wxTOP));
+	MiscBox->Add(MiscBoxTop, wxSizerFlags().Expand());
+	MiscBox->Add(MiscBoxBottom, wxSizerFlags().Expand().Border(wxTOP));
 
 	// Preview
 	auto previewButton = new ColourButton(this, wxSize(45, 16), false, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
@@ -361,7 +361,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	// General Layout
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(ControlSizer, 1, wxALL | wxALIGN_CENTER | wxEXPAND, 5);
+	MainSizer->Add(ControlSizer, 1, wxALL | wxEXPAND, 5);
 	MainSizer->Add(ButtonSizer, 0, wxBOTTOM | wxEXPAND, 5);
 
 	SetSizerAndFit(MainSizer);

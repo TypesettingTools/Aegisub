@@ -275,7 +275,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	CatalogList = new wxComboBox(this,-1, "", wxDefaultPosition, wxSize(-1,-1), 0, nullptr, wxCB_READONLY);
 	wxButton *CatalogNew = new wxButton(this, -1, _("New"));
 	CatalogDelete = new wxButton(this, -1, _("Delete"));
-	CatalogBox->Add(CatalogList,1,wxEXPAND | wxRIGHT | wxALIGN_RIGHT,5);
+	CatalogBox->Add(CatalogList,1,wxEXPAND | wxRIGHT,5);
 	CatalogBox->Add(CatalogNew,0,wxRIGHT,5);
 	CatalogBox->Add(CatalogDelete,0,0,0);
 

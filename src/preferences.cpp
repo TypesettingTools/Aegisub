@@ -599,9 +599,9 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	wxSizer *buttons = new wxBoxSizer(wxHORIZONTAL);
 	buttons->Add(quick_search, wxSizerFlags().Border());
 	buttons->AddStretchSpacer(1);
-	buttons->Add(new_button, wxSizerFlags().Border().Right());
-	buttons->Add(edit_button, wxSizerFlags().Border().Right());
-	buttons->Add(delete_button, wxSizerFlags().Border().Right());
+	buttons->Add(new_button, wxSizerFlags().Border());
+	buttons->Add(edit_button, wxSizerFlags().Border());
+	buttons->Add(delete_button, wxSizerFlags().Border());
 
 	sizer->Add(buttons, wxSizerFlags().Expand());
 	sizer->Add(dvc, wxSizerFlags(1).Expand().Border(wxLEFT | wxRIGHT));
