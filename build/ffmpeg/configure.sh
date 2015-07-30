@@ -9,6 +9,8 @@ fi
   --disable-avfilter \
   --disable-avresample \
   --disable-bzlib \
+  --disable-d3d11va \
+  --disable-dxva2 \
   --disable-decoder=atrac3p,indeo2,indeo3,indeo4,indeo5,twinvq \
   --disable-devices \
   --disable-doc \
