@@ -164,11 +164,7 @@ struct parsed_line {
 	std::vector<std::unique_ptr<AssDialogueBlock>> blocks;
 
 	parsed_line(AssDialogue *line) : line(line), blocks(line->ParseTags()) { }
-#ifdef _MSC_VER
-	parsed_line(parsed_line&& r) : line(r.line), blocks(std::move(r.blocks)) { }
-#else
 	parsed_line(parsed_line&& r) = default;
-#endif
 
 	const AssOverrideTag *find_tag(int blockn, std::string const& tag_name, std::string const& alt) const {
 		for (auto ovr : blocks | sliced(0, blockn + 1) | reversed | agi::of_type<AssDialogueBlockOverride>()) {

@@ -16,6 +16,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>
+        $(WindowsSDK_IncludePath);
         $(SrcDir);
         $(SrcDir)include;
         %(AdditionalIncludeDirectories)

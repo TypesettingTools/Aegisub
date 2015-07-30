@@ -38,7 +38,7 @@ class Save {
 
 public:
 	Save(fs::path const& file, bool binary = false);
-	~Save();
+	~Save() noexcept(false);
 	std::ostream& Get() { return *fp; }
 };
 

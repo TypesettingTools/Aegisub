@@ -21,6 +21,7 @@
       <AdditionalIncludeDirectories>$(SrcDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>wx/wxprec.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/Zm150 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <InstallHeader>
       <HeaderRoot>$(SrcDir)include</HeaderRoot>

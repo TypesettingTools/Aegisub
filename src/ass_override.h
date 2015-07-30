@@ -69,13 +69,8 @@ class AssOverrideParameter {
 
 public:
 	AssOverrideParameter(VariableDataType type, AssParameterClass classification);
-#ifdef _MSC_VER
-	AssOverrideParameter(AssOverrideParameter&&);
-	AssOverrideParameter& operator=(AssOverrideParameter&&);
-#else
 	AssOverrideParameter(AssOverrideParameter&&) = default;
 	AssOverrideParameter& operator=(AssOverrideParameter&&) = default;
-#endif
 	~AssOverrideParameter();
 
 	/// Type of parameter
@@ -98,13 +93,8 @@ class AssOverrideTag {
 public:
 	AssOverrideTag() = default;
 	AssOverrideTag(std::string const& text);
-#ifdef _MSC_VER
-	AssOverrideTag(AssOverrideTag&&);
-	AssOverrideTag& operator=(AssOverrideTag&&);
-#else
 	AssOverrideTag(AssOverrideTag&&) = default;
 	AssOverrideTag& operator=(AssOverrideTag&&) = default;
-#endif
 
 	std::string Name;
 	std::vector<AssOverrideParameter> Params;

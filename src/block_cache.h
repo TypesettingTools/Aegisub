@@ -54,16 +54,6 @@ class DataBlockCache {
 
 		/// The blocks contained in the macroblock
 		BlockArray blocks;
-
-#ifdef _MSC_VER
-		MacroBlock() = default;
-		MacroBlock(MacroBlock&& rgt) : position(rgt.position), blocks(std::move(rgt.blocks)) { }
-		MacroBlock& operator=(MacroBlock&& rgt) {
-			position = rgt.position;
-			blocks = std::move(rgt.blocks);
-			return *this;
-		}
-#endif
 	};
 
 	/// Type of an array of macro blocks
@@ -105,17 +95,6 @@ class DataBlockCache {
 	}
 
 public:
-#ifdef _MSC_VER
-	DataBlockCache(DataBlockCache&& rgt)
-	: data(std::move(rgt.data))
-	, age(std::move(rgt.age))
-	, macroblock_size(rgt.macroblock_size)
-	, macroblock_index_mask(rgt.macroblock_index_mask)
-	, size(rgt.size)
-	, factory(std::move(rgt.factory))
-	{ }
-#endif
-
 	/// @brief Constructor
 	/// @param block_count Total number of blocks the cache will manage
 	/// @param factory     Factory object to use for producing blocks

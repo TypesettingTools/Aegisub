@@ -12,9 +12,9 @@ Support is available on [the forums](http://forum.aegisub.org) or [on IRC](irc:/
 
 Prerequisites:
 
-1. Visual Studio 2013 (Express edition is good enough) or the Windows 8.1 SDK (command line builds only).
-2. A recent DirectX SDK
-4. [Yasm](http://yasm.tortall.net/) installed to somewhere on your path.
+1. Visual Studio 2015 (the freee Community edition is good enough)
+2. The June 2010 DirectX SDK (the final release before DirectSound was dropped)
+3. [Yasm](http://yasm.tortall.net/) installed to somewhere on your path.
 
 There are a few optional dependencies:
 

@@ -526,9 +526,6 @@ namespace
 		return tti;
 	}
 
-#ifdef _MSC_VER
-#define vsnprintf _vsnprintf
-#endif
 	void fieldprintf(char *field, size_t fieldlen, const char *format, ...)
 	{
 		char buf[16];

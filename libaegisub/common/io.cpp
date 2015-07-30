@@ -56,7 +56,7 @@ Save::Save(fs::path const& file, bool binary)
 	}
 }
 
-Save::~Save() {
+Save::~Save() noexcept(false) {
 	fp.reset(); // Need to close before rename on Windows to unlock the file
 	for (int i = 0; i < 10; ++i) {
 		try {

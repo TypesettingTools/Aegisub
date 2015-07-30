@@ -52,27 +52,7 @@ AssOverrideParameter::AssOverrideParameter(VariableDataType type, AssParameterCl
 {
 }
 
-#ifdef _MSC_VER
-AssOverrideParameter::AssOverrideParameter(AssOverrideParameter&& o)
-: value(std::move(o.value))
-, block(std::move(o.block))
-, type(o.type)
-, classification(o.classification)
-, omitted(o.omitted)
-{
-}
-
-AssOverrideParameter& AssOverrideParameter::operator=(AssOverrideParameter&& rhs) {
-	value = std::move(rhs.value);
-	block = std::move(rhs.block);
-	type = rhs.type;
-	classification = rhs.classification;
-	return *this;
-}
-#endif
-
-AssOverrideParameter::~AssOverrideParameter() {
-}
+AssOverrideParameter::~AssOverrideParameter() = default;
 
 template<> std::string AssOverrideParameter::Get<std::string>() const {
 	if (omitted) throw agi::InternalError("AssOverrideParameter::Get() called on omitted parameter");
@@ -453,22 +433,6 @@ void AssDialogueBlockOverride::ProcessParameters(ProcessParametersCallback callb
 AssOverrideTag::AssOverrideTag(std::string const& text) {
 	SetText(text);
 }
-
-#ifdef _MSC_VER
-AssOverrideTag::AssOverrideTag(AssOverrideTag&& rhs)
-: valid(rhs.valid)
-, Name(std::move(rhs.Name))
-, Params(std::move(rhs.Params))
-{
-}
-
-AssOverrideTag& AssOverrideTag::operator=(AssOverrideTag&& rhs) {
-	valid = rhs.valid;
-	Name = std::move(rhs.Name);
-	Params = std::move(rhs.Params);
-	return *this;
-}
-#endif
 
 void AssOverrideTag::Clear() {
 	Params.clear();

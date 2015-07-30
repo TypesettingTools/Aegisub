@@ -43,14 +43,10 @@ public:
 
 	line_iterator_base() = default;
 	line_iterator_base(line_iterator_base const&) = default;
-#ifndef _MSC_VER
 	line_iterator_base(line_iterator_base&&) = default;
-#endif
 
 	line_iterator_base& operator=(line_iterator_base const&) = default;
-#ifndef _MSC_VER
 	line_iterator_base& operator=(line_iterator_base&&) = default;
-#endif
 
 	bool operator==(line_iterator_base const& rgt) const { return stream == rgt.stream; }
 	bool operator!=(line_iterator_base const& rgt) const { return !operator==(rgt); }
