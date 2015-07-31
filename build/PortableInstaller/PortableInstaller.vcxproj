@@ -124,10 +124,12 @@
     <RarContents Include="$(AegisubSourceBase)bin\devil.dll" Condition="'$(AegisubUseAvisynth)' == 'true'" />
     <RarContents Include="$(AegisubSourceBase)bin\ffms2_$(AegisubPlatformSuffix).dll" Condition="'$(AegisubUseFfms)' == 'true'" />
     <RarContents Include="$(AegisubSourceBase)packages\win_installer\portable\config.json" />
-    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC120.CRT\msvcp120.dll" />
-    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC120.CRT\msvcr120.dll" />
-    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC120.MFC\mfc120u.dll" />
-    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC120.MFC\mfcm120u.dll" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC140.CRT\msvcp140.dll" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC140.CRT\concrt140.dll" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC140.CRT\vccorlib140.dll" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC140.CRT\vcruntime140.dll" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC140.MFC\mfc140u.dll" />
+    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC140.MFC\mfcm140u.dll" />
     <RarContents Include="$(AegisubSourceBase)bin\dictionaries\en_US.aff">
       <OutputPath>dictionaries\</OutputPath>
     </RarContents>
