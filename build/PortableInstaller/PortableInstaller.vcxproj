@@ -74,7 +74,16 @@
     <RarContents Include="$(AegisubSourceBase)automation\demos\raytracer.lua">
       <OutputPath>automation\demos\</OutputPath>
     </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\aegisub\argcheck.moon">
+      <OutputPath>automation\include\aegisub\</OutputPath>
+    </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\include\aegisub\clipboard.lua">
+      <OutputPath>automation\include\aegisub\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\aegisub\ffi.moon">
+      <OutputPath>automation\include\aegisub\</OutputPath>
+    </RarContents>
+    <RarContents Include="$(AegisubSourceBase)automation\include\aegisub\lfs.moon">
       <OutputPath>automation\include\aegisub\</OutputPath>
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)automation\include\aegisub\re.moon">
