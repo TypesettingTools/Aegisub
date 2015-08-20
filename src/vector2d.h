@@ -28,7 +28,6 @@
 class Vector2D {
 	float x, y;
 
-	typedef float Vector2D::*unspecified_bool_type;
 public:
 	float X() const { return x; }
 	float Y() const { return y; }
@@ -42,7 +41,7 @@ public:
 
 	bool operator ==(const Vector2D r) const { return x == r.x && y == r.y; }
 	bool operator !=(const Vector2D r) const { return x != r.x || y != r.y; }
-	operator unspecified_bool_type() const;
+	explicit operator bool() const;
 
 	Vector2D operator -() const { return Vector2D(-x, -y); }
 	Vector2D operator +(const Vector2D r) const { return Vector2D(x + r.x, y + r.y); }
