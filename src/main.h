@@ -48,12 +48,6 @@ class AegisubApp : public wxApp {
 	void OnFatalException() override;
 	bool OnExceptionInMainLoop() override;
 
-	/// @brief Handle wx assertions and redirect to the logging system.
-	/// @param file File name
-	/// @param line Line number
-	/// @param func Function name
-	/// @param cond Condition
-	/// @param msg  Message
 	void OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg) override;
 
 	FrameMain *frame = nullptr;
@@ -62,7 +56,11 @@ public:
 	AegisubLocale locale;
 
 	// Apple events
-	void MacOpenFile(const wxString &filename);
+	void MacOpenFile(const wxString &filename)
+#ifdef __APPLE__
+		override
+#endif
+	;
 };
 
 wxDECLARE_APP(AegisubApp);
