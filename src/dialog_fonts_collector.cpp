@@ -50,6 +50,7 @@
 namespace {
 class DialogFontsCollector final : public wxDialog {
 	AssFile *subs;
+	agi::Path &path;
 
 	wxStyledTextCtrl *collection_log;
 	wxButton *close_btn;
@@ -215,6 +216,7 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 : wxDialog(c->parent, -1, _("Fonts Collector"))
 , subs(c->ass.get())
+, path(*c->path)
 {
 	SetIcon(GETICON(font_collector_button_16));
 
@@ -230,13 +232,13 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	collection_mode = new wxRadioBox(this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, countof(modes), modes, 1);
 	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), 4));
 
-	if (config::path->Decode("?script") == "?script")
+	if (c->path->Decode("?script") == "?script")
 		collection_mode->Enable(2, false);
 
 	wxStaticBoxSizer *destination_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));
 
 	dest_label = new wxStaticText(this, -1, " ");
-	dest_ctrl = new wxTextCtrl(this, -1, config::path->Decode(OPT_GET("Path/Fonts Collector Destination")->GetString()).wstring());
+	dest_ctrl = new wxTextCtrl(this, -1, c->path->Decode(OPT_GET("Path/Fonts Collector Destination")->GetString()).wstring());
 	dest_browse_button = new wxButton(this, -1, _("&Browse..."));
 
 	wxSizer *dest_browse_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -292,7 +294,7 @@ void DialogFontsCollector::OnStart(wxCommandEvent &) {
 	int action = collection_mode->GetSelection();
 	OPT_SET("Tool/Fonts Collector/Action")->SetInt(action);
 	if (action != CheckFontsOnly) {
-		dest = config::path->Decode(action == CopyToScriptFolder ? "?script/" : from_wx(dest_ctrl->GetValue()));
+		dest = path.Decode(action == CopyToScriptFolder ? "?script/" : from_wx(dest_ctrl->GetValue()));
 
 		if (action != CopyToZip) {
 			if (agi::fs::FileExists(dest))
@@ -397,7 +399,7 @@ void DialogFontsCollector::OnCollectionComplete(wxThreadEvent &) {
 	start_btn->Enable();
 	close_btn->Enable();
 	collection_mode->Enable();
-	if (config::path->Decode("?script") == "?script")
+	if (path.Decode("?script") == "?script")
 		collection_mode->Enable(2, false);
 
 	wxCommandEvent evt;

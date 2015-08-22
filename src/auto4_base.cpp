@@ -417,8 +417,8 @@ namespace Automation4 {
 				scripts_string += "|";
 
 			auto scriptfn(script->GetFilename().string());
-			auto autobase_rel = config::path->MakeRelative(scriptfn, autobasefn);
-			auto assfile_rel = config::path->MakeRelative(scriptfn, "?script");
+			auto autobase_rel = context->path->MakeRelative(scriptfn, autobasefn);
+			auto assfile_rel = context->path->MakeRelative(scriptfn, "?script");
 
 			if (autobase_rel.string().size() <= scriptfn.size() && autobase_rel.string().size() <= assfile_rel.string().size()) {
 				scriptfn = "$" + autobase_rel.generic_string();

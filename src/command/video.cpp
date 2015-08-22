@@ -471,7 +471,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 			option = "?script";
 		}
 		// Find out where the ?specifier points to
-		basepath = config::path->Decode(option);
+		basepath = c->path->Decode(option);
 		// If where ever that is isn't defined, we can't save there
 		if ((basepath == "\\") || (basepath == "/")) {
 			// So save to the current user's home dir instead
@@ -480,7 +480,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 	}
 	// Actual fixed (possibly relative) path, decode it
 	else
-		basepath = config::path->MakeAbsolute(option, "?user/");
+		basepath = c->path->MakeAbsolute(option, "?user/");
 
 	basepath /= is_dummy ? "dummy" : videoname.stem();
 

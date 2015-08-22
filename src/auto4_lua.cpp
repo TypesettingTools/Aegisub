@@ -197,8 +197,7 @@ namespace {
 
 	int get_keyframes(lua_State *L)
 	{
-		const agi::Context *c = get_context(L);
-		if (c)
+		if (const agi::Context *c = get_context(L))
 			push_value(L, c->project->Keyframes());
 		else
 			lua_pushnil(L);
@@ -209,7 +208,10 @@ namespace {
 	{
 		std::string path = check_string(L, 1);
 		lua_pop(L, 1);
-		push_value(L, config::path->Decode(path));
+		if (const agi::Context *c = get_context(L))
+			push_value(L, c->path->Decode(path));
+		else
+			push_value(L, config::path->Decode(path));
 		return 1;
 	}
 
@@ -272,10 +274,10 @@ namespace {
 			PUSH_FIELD(ar_mode);
 			PUSH_FIELD(video_position);
 #undef PUSH_FIELD
-			set_field(L, "audio_file", config::path->MakeAbsolute(c->ass->Properties.audio_file, "?script"));
-			set_field(L, "video_file", config::path->MakeAbsolute(c->ass->Properties.video_file, "?script"));
-			set_field(L, "timecodes_file", config::path->MakeAbsolute(c->ass->Properties.timecodes_file, "?script"));
-			set_field(L, "keyframes_file", config::path->MakeAbsolute(c->ass->Properties.keyframes_file, "?script"));
+			set_field(L, "audio_file", c->path->MakeAbsolute(c->ass->Properties.audio_file, "?script"));
+			set_field(L, "video_file", c->path->MakeAbsolute(c->ass->Properties.video_file, "?script"));
+			set_field(L, "timecodes_file", c->path->MakeAbsolute(c->ass->Properties.timecodes_file, "?script"));
+			set_field(L, "keyframes_file", c->path->MakeAbsolute(c->ass->Properties.keyframes_file, "?script"));
 		}
 		return 1;
 	}

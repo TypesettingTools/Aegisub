@@ -65,10 +65,10 @@ Project::Project(agi::Context *c) : context(c) {
 Project::~Project() { }
 
 void Project::UpdateRelativePaths() {
-	context->ass->Properties.audio_file     = config::path->MakeRelative(audio_file, "?script").generic_string();
-	context->ass->Properties.video_file     = config::path->MakeRelative(video_file, "?script").generic_string();
-	context->ass->Properties.timecodes_file = config::path->MakeRelative(timecodes_file, "?script").generic_string();
-	context->ass->Properties.keyframes_file = config::path->MakeRelative(keyframes_file, "?script").generic_string();
+	context->ass->Properties.audio_file     = context->path->MakeRelative(audio_file, "?script").generic_string();
+	context->ass->Properties.video_file     = context->path->MakeRelative(video_file, "?script").generic_string();
+	context->ass->Properties.timecodes_file = context->path->MakeRelative(timecodes_file, "?script").generic_string();
+	context->ass->Properties.keyframes_file = context->path->MakeRelative(keyframes_file, "?script").generic_string();
 }
 
 void Project::ReloadAudio() {
@@ -94,7 +94,7 @@ void Project::ShowError(std::string const& message) {
 void Project::SetPath(agi::fs::path& var, const char *token, const char *mru, agi::fs::path const& value) {
 	var = value;
 	if (*token)
-		config::path->SetToken(token, value);
+		context->path->SetToken(token, value);
 	if (*mru)
 		config::mru->Add(mru, value);
 	UpdateRelativePaths();
@@ -166,7 +166,7 @@ void Project::LoadSubtitles(agi::fs::path path, std::string encoding, bool load_
 
 void Project::CloseSubtitles() {
 	context->subsController->Close();
-	config::path->SetToken("?script", "");
+	context->path->SetToken("?script", "");
 	LoadUnloadFiles(context->ass->Properties);
 	auto line = &*context->ass->Events.begin();
 	context->selectionController->SetSelectionAndActive({line}, line);
@@ -176,10 +176,10 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 	auto load_linked = OPT_GET("App/Auto/Load Linked Files")->GetInt();
 	if (!load_linked) return;
 
-	auto audio     = config::path->MakeAbsolute(properties.audio_file, "?script");
-	auto video     = config::path->MakeAbsolute(properties.video_file, "?script");
-	auto timecodes = config::path->MakeAbsolute(properties.timecodes_file, "?script");
-	auto keyframes = config::path->MakeAbsolute(properties.keyframes_file, "?script");
+	auto audio     = context->path->MakeAbsolute(properties.audio_file, "?script");
+	auto video     = context->path->MakeAbsolute(properties.video_file, "?script");
+	auto timecodes = context->path->MakeAbsolute(properties.timecodes_file, "?script");
+	auto keyframes = context->path->MakeAbsolute(properties.keyframes_file, "?script");
 
 	if (video == video_file && audio == audio_file && keyframes == keyframes_file && timecodes == timecodes_file)
 		return;
@@ -244,7 +244,7 @@ void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 
 	try {
 		try {
-			audio_provider = GetAudioProvider(path, progress);
+			audio_provider = GetAudioProvider(path, *context->path, progress);
 		}
 		catch (agi::UserCancelException const&) { return; }
 		catch (...) {

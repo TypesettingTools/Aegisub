@@ -55,7 +55,9 @@ std::vector<std::string> GetAudioProviderNames() {
 	return ::GetClasses(boost::make_iterator_range(std::begin(providers), std::end(providers)));
 }
 
-std::unique_ptr<AudioProvider> GetAudioProvider(fs::path const& filename, BackgroundRunner *br) {
+std::unique_ptr<agi::AudioProvider> GetAudioProvider(fs::path const& filename,
+                                                     Path const& path_helper,
+                                                     BackgroundRunner *br) {
 	auto preferred = OPT_GET("Audio/Provider")->GetString();
 	auto sorted = GetSorted(boost::make_iterator_range(std::begin(providers), std::end(providers)), preferred);
 
@@ -118,7 +120,7 @@ std::unique_ptr<AudioProvider> GetAudioProvider(fs::path const& filename, Backgr
 		auto path = OPT_GET("Audio/Cache/HD/Location")->GetString();
 		if (path == "default")
 			path = "?temp";
-		auto cache_dir = config::path->MakeAbsolute(config::path->Decode(path), "?temp");
+		auto cache_dir = path_helper.MakeAbsolute(path_helper.Decode(path), "?temp");
 		return CreateHDAudioProvider(std::move(provider), cache_dir);
 	}
 

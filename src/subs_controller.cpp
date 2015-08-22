@@ -188,7 +188,7 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, std::strin
 		if (path_str.empty())
 			path = filename.parent_path();
 		else
-			path = config::path->Decode(path_str);
+			path = context->path->Decode(path_str);
 		agi::fs::CreateDirectory(path);
 		agi::fs::Copy(filename, path/(filename.stem().string() + ".ORIGINAL" + filename.extension().string()));
 	}
@@ -209,7 +209,7 @@ void SubsController::Save(agi::fs::path const& filename, std::string const& enco
 		// Have to set this now for the sake of things that want to save paths
 		// relative to the script in the header
 		this->filename = filename;
-		config::path->SetToken("?script", filename.parent_path());
+		context->path->SetToken("?script", filename.parent_path());
 
 		context->ass->CleanExtradata();
 		writer->WriteFile(context->ass.get(), filename, 0, encoding);
@@ -256,7 +256,7 @@ void SubsController::AutoSave() {
 	if (commit_id == autosaved_commit_id)
 		return;
 
-	auto directory = config::path->Decode(OPT_GET("Path/Auto/Save")->GetString());
+	auto directory = context->path->Decode(OPT_GET("Path/Auto/Save")->GetString());
 	if (directory.empty())
 		directory = filename.parent_path();
 
@@ -302,7 +302,7 @@ bool SubsController::CanSave() const {
 
 void SubsController::SetFileName(agi::fs::path const& path) {
 	filename = path;
-	config::path->SetToken("?script", path.parent_path());
+	context->path->SetToken("?script", path.parent_path());
 	config::mru->Add("Subtitle", path);
 	OPT_SET("Path/Last/Subtitles")->SetString(filename.parent_path().string());
 }

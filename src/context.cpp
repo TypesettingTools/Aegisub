@@ -21,6 +21,7 @@
 #include "auto4_base.h"
 #include "dialog_manager.h"
 #include "initial_line_state.h"
+#include "options.h"
 #include "project.h"
 #include "search_replace_engine.h"
 #include "selection_controller.h"
@@ -29,6 +30,7 @@
 #include "video_controller.h"
 
 #include <libaegisub/make_unique.h>
+#include <libaegisub/path.h>
 
 namespace agi {
 Context::Context()
@@ -43,9 +45,10 @@ Context::Context()
 , initialLineState(make_unique<InitialLineState>(this))
 , search(make_unique<SearchReplaceEngine>(this))
 , dialog(make_unique<DialogManager>())
+, path(make_unique<Path>(*config::path))
 {
 	subsController->SetSelectionController(selectionController.get());
 }
 
-Context::~Context() {}
+Context::~Context() = default;
 }
