@@ -161,8 +161,6 @@ FrameMain::FrameMain()
 }
 
 FrameMain::~FrameMain () {
-	wxGetApp().frame = nullptr;
-
 	context->project->CloseAudio();
 	context->project->CloseVideo();
 

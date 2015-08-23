@@ -293,8 +293,7 @@ bool AegisubApp::OnInit() {
 
 		// Open main frame
 		StartupLog("Create main window");
-		frame = new FrameMain;
-		SetTopWindow(frame);
+		NewProjectContext();
 
 		// Version checker
 		StartupLog("Possibly perform automatic updates check");
@@ -318,11 +317,7 @@ bool AegisubApp::OnInit() {
 
 		// Get parameter subs
 		StartupLog("Parse command line");
-		std::vector<agi::fs::path> files;
-		for (int i = 1; i < argc; ++i)
-			files.push_back(from_wx(argv[i]));
-		if (!files.empty())
-			frame->context->project->LoadList(files);
+		OpenFiles(argv.GetArguments());
 	}
 	catch (agi::Exception const& e) {
 		wxMessageBox(to_wx(e.GetMessage()), "Fatal error while initializing");
@@ -347,8 +342,9 @@ bool AegisubApp::OnInit() {
 }
 
 int AegisubApp::OnExit() {
-	if (frame)
+	for (auto frame : frames)
 		delete frame;
+	frames.clear();
 
 	if (wxTheClipboard->Open()) {
 		wxTheClipboard->Flush();
@@ -371,10 +367,27 @@ int AegisubApp::OnExit() {
 	return wxApp::OnExit();
 }
 
-static void UnhandledExeception(bool stackWalk, agi::Context *c) {
+agi::Context& AegisubApp::NewProjectContext() {
+	auto frame = new FrameMain;
+	frame->Bind(wxEVT_DESTROY, [=](wxWindowDestroyEvent&) {
+		frames.erase(remove(begin(frames), end(frames), frame), end(frames));
+		if (frames.empty()) {
+			ExitMainLoop();
+		}
+	});
+	frames.push_back(frame);
+	return *frame->context;
+}
+
+void AegisubApp::UnhandledException(bool stackWalk) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
-	if (c && c->ass && c->subsController) {
-		auto path = config::path->Decode("?user/recovered");
+	bool any = false;
+	agi::fs::path path;
+	for (auto& frame : frames) {
+		auto c = frame->context.get();
+		if (!c || !c->ass || !c->subsController) continue;
+
+		path = config::path->Decode("?user/recovered");
 		agi::fs::CreateDirectory(path);
 
 		auto filename = c->subsController->Filename().stem();
@@ -382,26 +395,28 @@ static void UnhandledExeception(bool stackWalk, agi::Context *c) {
 		path /= filename;
 		c->subsController->Save(path);
 
-		if (stackWalk)
-			crash_writer::Write();
+		any = true;
+	}
 
+	if (stackWalk)
+		crash_writer::Write();
+
+	if (any) {
 		// Inform user of crash.
 		wxMessageBox(agi::wxformat(exception_message, path), _("Program error"), wxOK | wxICON_ERROR | wxCENTER, nullptr);
 	}
 	else if (LastStartupState) {
-		if (stackWalk)
-			crash_writer::Write();
 		wxMessageBox(fmt_wx("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR | wxCENTER);
 	}
 #endif
 }
 
 void AegisubApp::OnUnhandledException() {
-	UnhandledExeception(false, frame ? frame->context.get() : nullptr);
+	UnhandledException(false);
 }
 
 void AegisubApp::OnFatalException() {
-	UnhandledExeception(true, frame ? frame->context.get() : nullptr);
+	UnhandledException(true);
 }
 
 #define SHOW_EXCEPTION(str) \
@@ -429,7 +444,6 @@ int AegisubApp::OnRun() {
 	std::string error;
 
 	try {
-		if (m_exitOnFrameDelete == Later) m_exitOnFrameDelete = Yes;
 		return MainLoop();
 	}
 	catch (const std::exception &e) { error = std::string("std::exception: ") + e.what(); }
@@ -446,7 +460,14 @@ int AegisubApp::OnRun() {
 	return 1;
 }
 
-void AegisubApp::MacOpenFile(const wxString &filename) {
-	if (frame && !filename.empty())
-		frame->context->project->LoadSubtitles(agi::fs::path(filename.wx_str()));
+void AegisubApp::MacOpenFiles(wxArrayString const& filenames) {
+	OpenFiles(filenames);
+}
+
+void AegisubApp::OpenFiles(wxArrayStringsAdapter filenames) {
+	std::vector<agi::fs::path> files;
+	for (int i = 1; i < argc; ++i)
+		files.push_back(from_wx(argv[i]));
+	if (!files.empty())
+		frames[0]->context->project->LoadList(files);
 }
