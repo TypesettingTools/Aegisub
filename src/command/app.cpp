@@ -194,8 +194,8 @@ struct app_new_window final : public Command {
 	STR_DISP("New Window")
 	STR_HELP("Open a new application window")
 
-	void operator()(agi::Context *c) override {
-		RestartAegisub();
+	void operator()(agi::Context *) override {
+		wxGetApp().NewProjectContext();
 	}
 };
 
