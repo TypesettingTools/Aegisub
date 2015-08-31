@@ -145,8 +145,8 @@ struct app_exit final : public Command {
 	STR_DISP("Exit")
 	STR_HELP("Exit the application")
 
-	void operator()(agi::Context *c) override {
-		c->frame->Close();
+	void operator()(agi::Context *) override {
+		wxGetApp().CloseAll();
 	}
 };
 

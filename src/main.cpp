@@ -379,6 +379,13 @@ agi::Context& AegisubApp::NewProjectContext() {
 	return *frame->context;
 }
 
+void AegisubApp::CloseAll() {
+	for (auto frame : frames) {
+		if (!frame->Close())
+			break;
+	}
+}
+
 void AegisubApp::UnhandledException(bool stackWalk) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
 	bool any = false;
