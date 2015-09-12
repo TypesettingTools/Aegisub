@@ -1,13 +1,12 @@
 /*
 ** OS library.
-** Copyright (C) 2005-2014 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2015 Mike Pall. See Copyright Notice in luajit.h
 **
 ** Major portions taken verbatim or adapted from the Lua interpreter.
 ** Copyright (C) 1994-2008 Lua.org, PUC-Rio. See Copyright Notice in lua.h
 */
 
 #include <errno.h>
-#include <locale.h>
 #include <time.h>
 
 #define lib_os_c
@@ -27,21 +26,8 @@
 #include <stdio.h>
 #endif
 
-/* ------------------------------------------------------------------------ */
-
-#if LJ_TARGET_WINDOWS
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-static wchar_t *widen_static(const char *narrow, int idx)
-{
-  __declspec(thread) static wchar_t buffer[2][MAX_PATH];
-  return MultiByteToWideChar(CP_UTF8, 0, narrow, -1, buffer[idx], MAX_PATH) ? buffer[idx] : L"";
-}
-
-#define remove(x) _wremove(widen_static(x, 0))
-#define system(x) _wsystem(widen_static(x, 0))
-#define rename(x, y) _wrename(widen_static(x, 0), widen_static(y, 1))
+#if !LJ_TARGET_PSVITA
+#include <locale.h>
 #endif
 
 /* ------------------------------------------------------------------------ */
@@ -87,7 +73,7 @@ LJLIB_CF(os_rename)
 
 LJLIB_CF(os_tmpname)
 {
-#if LJ_TARGET_PS3 || LJ_TARGET_PS4
+#if LJ_TARGET_PS3 || LJ_TARGET_PS4 || LJ_TARGET_PSVITA
   lj_err_caller(L, LJ_ERR_OSUNIQF);
   return 0;
 #else
@@ -271,6 +257,9 @@ LJLIB_CF(os_difftime)
 
 LJLIB_CF(os_setlocale)
 {
+#if LJ_TARGET_PSVITA
+  lua_pushliteral(L, "C");
+#else
   GCstr *s = lj_lib_optstr(L, 1);
   const char *str = s ? strdata(s) : NULL;
   int opt = lj_lib_checkopt(L, 2, 6,
@@ -282,6 +271,7 @@ LJLIB_CF(os_setlocale)
   else if (opt == 4) opt = LC_MONETARY;
   else if (opt == 6) opt = LC_ALL;
   lua_pushstring(L, setlocale(opt, str));
+#endif
   return 1;
 }
 

@@ -7,12 +7,12 @@
 # Also works with MinGW and Cygwin on Windows.
 # Please check msvcbuild.bat for building with MSVC on Windows.
 #
-# Copyright (C) 2005-2014 Mike Pall. See Copyright Notice in luajit.h
+# Copyright (C) 2005-2015 Mike Pall. See Copyright Notice in luajit.h
 ##############################################################################
 
 MAJVER=  2
 MINVER=  0
-RELVER=  3
+RELVER=  4
 ABIVER=  5.1
 NODOTABIVER= 51
 
@@ -55,11 +55,11 @@ CCOPT_ppc=
 CCOPT_ppcspe=
 CCOPT_mips=
 #
-CCDEBUG=-g
+CCDEBUG=
 # Uncomment the next line to generate debug information:
 #CCDEBUG= -g
 #
-CCWARN= -Wall -Wno-unused-function
+CCWARN= -Wall
 # Uncomment the next line to enable more warnings:
 #CCWARN+= -Wextra -Wdeclaration-after-statement -Wredundant-decls -Wshadow -Wpointer-arith
 #
@@ -72,10 +72,10 @@ CCWARN= -Wall -Wno-unused-function
 # as dynamic mode.
 #
 # Mixed mode creates a static + dynamic library and a statically linked luajit.
-# BUILDMODE= mixed
+BUILDMODE= mixed
 #
 # Static mode creates a static library and a statically linked luajit.
-BUILDMODE= static
+#BUILDMODE= static
 #
 # Dynamic mode creates a dynamic library and a dynamically linked luajit.
 # Note: this executable will only run when the library is installed!
@@ -88,7 +88,7 @@ BUILDMODE= static
 ##############################################################################
 # Enable/disable these features as needed, but make sure you force a full
 # recompile with "make clean", followed by "make".
-XCFLAGS=-Igen
+XCFLAGS=
 #
 # Permanently disable the FFI extension to reduce the size of the LuaJIT
 # executable. But please consider that the FFI library is compiled-in,
@@ -100,7 +100,7 @@ XCFLAGS=-Igen
 # enabled by default. Some other features that *might* break some existing
 # code (e.g. __pairs or os.execute() return values) can be enabled here.
 # Note: this does not provide full compatibility with Lua 5.2 at this time.
-XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
+#XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
 #
 # Disable the JIT compiler, i.e. turn LuaJIT into a pure interpreter.
 #XCFLAGS+= -DLUAJIT_DISABLE_JIT
@@ -122,8 +122,10 @@ XCFLAGS+= -DLUAJIT_ENABLE_LUA52COMPAT
 #
 # Use the system provided memory allocator (realloc) instead of the
 # bundled memory allocator. This is slower, but sometimes helpful for
-# debugging. It's helpful for Valgrind's memcheck tool, too. This option
-# cannot be enabled on x64, since the built-in allocator is mandatory.
+# debugging. This option cannot be enabled on x64, since realloc usually
+# doesn't return addresses in the right address range.
+# OTOH this option is mandatory for Valgrind's memcheck tool on x64 and
+# the only way to get useful results from it for all other architectures.
 #XCFLAGS+= -DLUAJIT_USE_SYSMALLOC
 #
 # This define is required to run LuaJIT under Valgrind. The Valgrind
@@ -188,9 +190,9 @@ TARGET_LD= $(CROSS)$(CC)
 TARGET_AR= $(CROSS)ar rcus
 TARGET_STRIP= $(CROSS)strip
 
-TARGET_LIBPATH= ${CURDIR}
+TARGET_LIBPATH= $(or $(PREFIX),/usr/local)/$(or $(MULTILIB),lib)
 TARGET_SONAME= libluajit-$(ABIVER).so.$(MAJVER)
-TARGET_DYLIBNAME= libluajit-aegisub.so
+TARGET_DYLIBNAME= libluajit-$(ABIVER).$(MAJVER).dylib
 TARGET_DYLIBPATH= $(TARGET_LIBPATH)/$(TARGET_DYLIBNAME)
 TARGET_DLLNAME= lua$(NODOTABIVER).dll
 TARGET_XSHLDFLAGS= -shared -fPIC -Wl,-soname,$(TARGET_SONAME)
@@ -288,15 +290,15 @@ ifeq (Windows,$(TARGET_SYS))
   TARGET_XSHLDFLAGS= -shared
   TARGET_DYNXLDOPTS=
 else
+ifeq (,$(shell $(TARGET_CC) -o /dev/null -c -x c /dev/null -fno-stack-protector 2>/dev/null || echo 1))
+  TARGET_XCFLAGS+= -fno-stack-protector
+endif
 ifeq (Darwin,$(TARGET_SYS))
   ifeq (,$(MACOSX_DEPLOYMENT_TARGET))
     export MACOSX_DEPLOYMENT_TARGET=10.4
   endif
   TARGET_STRIP+= -x
   TARGET_AR+= 2>/dev/null
-  ifeq (,$(shell $(TARGET_CC) -o /dev/null -c -x c /dev/null -fno-stack-protector 2>/dev/null || echo 1))
-    TARGET_XCFLAGS+= -fno-stack-protector
-  endif
   TARGET_XSHLDFLAGS= -dynamiclib -single_module -undefined dynamic_lookup -fPIC
   TARGET_DYNXLDOPTS=
   TARGET_XSHLDFLAGS+= -install_name $(TARGET_DYLIBPATH) -compatibility_version $(MAJVER).$(MINVER) -current_version $(MAJVER).$(MINVER).$(RELVER)
@@ -308,14 +310,10 @@ else
 ifeq (iOS,$(TARGET_SYS))
   TARGET_STRIP+= -x
   TARGET_AR+= 2>/dev/null
-  TARGET_XCFLAGS+= -fno-stack-protector
   TARGET_XSHLDFLAGS= -dynamiclib -single_module -undefined dynamic_lookup -fPIC
   TARGET_DYNXLDOPTS=
   TARGET_XSHLDFLAGS+= -install_name $(TARGET_DYLIBPATH) -compatibility_version $(MAJVER).$(MINVER) -current_version $(MAJVER).$(MINVER).$(RELVER)
 else
-  ifneq (,$(findstring stack-protector,$(shell $(TARGET_CC) -dumpspecs)))
-    TARGET_XCFLAGS+= -fno-stack-protector
-  endif
   ifneq (SunOS,$(TARGET_SYS))
     ifneq (PS3,$(TARGET_SYS))
       TARGET_XLDFLAGS+= -Wl,-E
@@ -475,12 +473,12 @@ LIB_VMDEFP= $(LIB_VMDEF)
 
 LUAJIT_O= luajit.o
 LUAJIT_A= libluajit.a
-LUAJIT_SO= libluajit-aegisub.so
+LUAJIT_SO= libluajit.so
 LUAJIT_T= luajit
 
 ALL_T= $(LUAJIT_T) $(LUAJIT_A) $(LUAJIT_SO) $(HOST_T)
-ALL_HDRGEN= gen/lj_bcdef.h gen/lj_ffdef.h gen/lj_libdef.h gen/lj_recdef.h gen/lj_folddef.h \
-	    gen/buildvm_arch.h
+ALL_HDRGEN= lj_bcdef.h lj_ffdef.h lj_libdef.h lj_recdef.h lj_folddef.h \
+	    host/buildvm_arch.h
 ALL_GEN= $(LJVM_S) $(ALL_HDRGEN) $(LIB_VMDEFP)
 WIN_RM= *.obj *.lib *.exp *.dll *.exe *.manifest *.pdb *.ilk
 ALL_RM= $(ALL_T) $(ALL_GEN) *.o host/*.o $(WIN_RM)
@@ -494,11 +492,25 @@ TARGET_O= $(LUAJIT_A)
 TARGET_T= $(LUAJIT_T) $(LUAJIT_SO)
 TARGET_DEP= $(LIB_VMDEF) $(LUAJIT_SO)
 
+ifeq (Windows,$(TARGET_SYS))
+  TARGET_DYNCC= $(STATIC_CC)
+  LJVM_MODE= peobj
+  LJVM_BOUT= $(LJVM_O)
+  LUAJIT_T= luajit.exe
+  ifeq (cygwin,$(HOST_MSYS))
+    LUAJIT_SO= cyg$(TARGET_DLLNAME)
+  else
+    LUAJIT_SO= $(TARGET_DLLNAME)
+  endif
+  # Mixed mode is not supported on Windows. And static mode doesn't work well.
+  # C modules cannot be loaded, because they bind to lua51.dll.
+  ifneq (static,$(BUILDMODE))
+    BUILDMODE= dynamic
+    TARGET_XCFLAGS+= -DLUA_BUILD_AS_DLL
+  endif
+endif
 ifeq (Darwin,$(TARGET_SYS))
   LJVM_MODE= machasm
-  # -dead_strip breaks LuaJIT, but we really want it for everything else, so we
-  # have to dynamically link it
-  BUILDMODE= dynamic
 endif
 ifeq (iOS,$(TARGET_SYS))
   LJVM_MODE= machasm
@@ -557,6 +569,7 @@ E= @echo
 default all:	$(TARGET_T)
 
 amalg:
+	@grep "^[+|]" ljamalg.c
 	$(MAKE) all "LJCORE_O=ljamalg.o"
 
 clean:
@@ -586,10 +599,7 @@ $(MINILUA_T): $(MINILUA_O)
 	$(E) "HOSTLINK  $@"
 	$(Q)$(HOST_CC) $(HOST_ALDFLAGS) -o $@ $(MINILUA_O) $(MINILUA_LIBS) $(HOST_ALIBS)
 
-gen:
-	mkdir -p gen
-
-gen/buildvm_arch.h: $(DASM_DASC) $(DASM_DEP) gen
+host/buildvm_arch.h: $(DASM_DASC) $(DASM_DEP)
 	$(E) "DYNASM    $@"
 	$(Q)$(DASM) $(DASM_FLAGS) -o $@ $(DASM_DASC)
 
@@ -603,19 +613,19 @@ $(LJVM_BOUT): $(BUILDVM_T)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m $(LJVM_MODE) -o $@
 
-gen/lj_bcdef.h: $(BUILDVM_T) $(LJLIB_C)
+lj_bcdef.h: $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m bcdef -o $@ $(LJLIB_C)
 
-gen/lj_ffdef.h: $(BUILDVM_T) $(LJLIB_C)
+lj_ffdef.h: $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m ffdef -o $@ $(LJLIB_C)
 
-gen/lj_libdef.h: $(BUILDVM_T) $(LJLIB_C)
+lj_libdef.h: $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m libdef -o $@ $(LJLIB_C)
 
-gen/lj_recdef.h: $(BUILDVM_T) $(LJLIB_C)
+lj_recdef.h: $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m recdef -o $@ $(LJLIB_C)
 
@@ -623,7 +633,7 @@ $(LIB_VMDEF): $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m vmdef -o $(LIB_VMDEFP) $(LJLIB_C)
 
-gen/lj_folddef.h: $(BUILDVM_T) lj_opt_fold.c
+lj_folddef.h: $(BUILDVM_T) lj_opt_fold.c
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m folddef -o $@ lj_opt_fold.c
 
