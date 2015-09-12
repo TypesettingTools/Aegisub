@@ -1,7 +1,7 @@
-diff --git c/vendor/luajit/src/lib_io.c w/vendor/luajit/src/lib_io.c
-index 04f0f73..b59d34b 100644
---- c/vendor/luajit/src/lib_io.c
-+++ w/vendor/luajit/src/lib_io.c
+diff --git a/vendor/luajit/src/lib_io.c b/vendor/luajit/src/lib_io.c
+index 037aa28..8923e70 100644
+--- a/vendor/luajit/src/lib_io.c
++++ b/vendor/luajit/src/lib_io.c
 @@ -24,6 +24,16 @@
  #include "lj_ff.h"
  #include "lj_lib.h"
