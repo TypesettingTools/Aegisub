@@ -19,7 +19,7 @@ aegisub-lua_LIBS := $(LIBS_WX) $(LIBS_BOOST) $(LIBS_ICU)
 PROGRAM += $(d)aegisub-lua
 
 test-automation: $(PROGRAM)
-	cd $(TOP)automation; LUA=./aegisub-lua busted -p 'moon' tests/modules
+	eval `luarocks path`; cd $(TOP)automation; LUA=./aegisub-lua busted -p 'moon' tests/modules
 
 test: test-automation
 
