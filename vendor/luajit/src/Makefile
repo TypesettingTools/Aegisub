@@ -88,7 +88,7 @@ BUILDMODE= static
 ##############################################################################
 # Enable/disable these features as needed, but make sure you force a full
 # recompile with "make clean", followed by "make".
-XCFLAGS=
+XCFLAGS=-Igen
 #
 # Permanently disable the FFI extension to reduce the size of the LuaJIT
 # executable. But please consider that the FFI library is compiled-in,
@@ -479,8 +479,8 @@ LUAJIT_SO= libluajit-aegisub.so
 LUAJIT_T= luajit
 
 ALL_T= $(LUAJIT_T) $(LUAJIT_A) $(LUAJIT_SO) $(HOST_T)
-ALL_HDRGEN= lj_bcdef.h lj_ffdef.h lj_libdef.h lj_recdef.h lj_folddef.h \
-	    host/buildvm_arch.h
+ALL_HDRGEN= gen/lj_bcdef.h gen/lj_ffdef.h gen/lj_libdef.h gen/lj_recdef.h gen/lj_folddef.h \
+	    gen/buildvm_arch.h
 ALL_GEN= $(LJVM_S) $(ALL_HDRGEN) $(LIB_VMDEFP)
 WIN_RM= *.obj *.lib *.exp *.dll *.exe *.manifest *.pdb *.ilk
 ALL_RM= $(ALL_T) $(ALL_GEN) *.o host/*.o $(WIN_RM)
@@ -513,6 +513,9 @@ ifeq (Windows,$(TARGET_SYS))
 endif
 ifeq (Darwin,$(TARGET_SYS))
   LJVM_MODE= machasm
+  # -dead_strip breaks LuaJIT, but we really want it for everything else, so we
+  # have to dynamically link it
+  BUILDMODE= dynamic
 endif
 ifeq (iOS,$(TARGET_SYS))
   LJVM_MODE= machasm
@@ -574,7 +577,6 @@ endif
 default all:	$(TARGET_T)
 
 amalg:
-	@grep "^[+|]" ljamalg.c
 	$(MAKE) all "LJCORE_O=ljamalg.o"
 
 clean:
@@ -604,7 +606,10 @@ $(MINILUA_T): $(MINILUA_O)
 	$(E) "HOSTLINK  $@"
 	$(Q)$(HOST_CC) $(HOST_ALDFLAGS) -o $@ $(MINILUA_O) $(MINILUA_LIBS) $(HOST_ALIBS)
 
-host/buildvm_arch.h: $(DASM_DASC) $(DASM_DEP)
+gen:
+	mkdir -p gen
+
+gen/buildvm_arch.h: $(DASM_DASC) $(DASM_DEP) gen
 	$(E) "DYNASM    $@"
 	$(Q)$(DASM) $(DASM_FLAGS) -o $@ $(DASM_DASC)
 
@@ -618,19 +623,19 @@ $(LJVM_BOUT): $(BUILDVM_T)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m $(LJVM_MODE) -o $@
 
-lj_bcdef.h: $(BUILDVM_T) $(LJLIB_C)
+gen/lj_bcdef.h: $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m bcdef -o $@ $(LJLIB_C)
 
-lj_ffdef.h: $(BUILDVM_T) $(LJLIB_C)
+gen/lj_ffdef.h: $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m ffdef -o $@ $(LJLIB_C)
 
-lj_libdef.h: $(BUILDVM_T) $(LJLIB_C)
+gen/lj_libdef.h: $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m libdef -o $@ $(LJLIB_C)
 
-lj_recdef.h: $(BUILDVM_T) $(LJLIB_C)
+gen/lj_recdef.h: $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m recdef -o $@ $(LJLIB_C)
 
@@ -638,7 +643,7 @@ $(LIB_VMDEF): $(BUILDVM_T) $(LJLIB_C)
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m vmdef -o $(LIB_VMDEFP) $(LJLIB_C)
 
-lj_folddef.h: $(BUILDVM_T) lj_opt_fold.c
+gen/lj_folddef.h: $(BUILDVM_T) lj_opt_fold.c
 	$(E) "BUILDVM   $@"
 	$(Q)$(BUILDVM_X) -m folddef -o $@ lj_opt_fold.c
 
