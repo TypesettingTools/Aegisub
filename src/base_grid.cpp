@@ -571,6 +571,7 @@ void BaseGrid::AdjustScrollbar() {
 	scrollBar->SetSize(clientSize.GetWidth() - scrollbarSize.GetWidth(), 0, scrollbarSize.GetWidth(), clientSize.GetHeight());
 
 	if (GetRows() <= 1) {
+		yPos = 0;
 		scrollBar->Enable(false);
 		scrollBar->Thaw();
 		return;
