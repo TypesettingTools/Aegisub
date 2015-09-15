@@ -22,14 +22,8 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 
+// Out-of-line to anchor vtable
 AssEntryGroup AssAttachment::Group() const { return group; }
-
-AssAttachment::AssAttachment(AssAttachment const& rgt)
-: entry_data(rgt.entry_data)
-, filename(rgt.filename)
-, group(rgt.group)
-{
-}
 
 AssAttachment::AssAttachment(std::string const& header, AssEntryGroup group)
 : entry_data(header + "\r\n")

@@ -48,7 +48,7 @@ public:
 	std::string const& GetEntryData() const { return entry_data; }
 	AssEntryGroup Group() const override;
 
-	AssAttachment(AssAttachment const& rgt);
+	AssAttachment(AssAttachment const& rgt) = default;
 	AssAttachment(std::string const& header, AssEntryGroup group);
 	AssAttachment(agi::fs::path const& name, AssEntryGroup group);
 };
