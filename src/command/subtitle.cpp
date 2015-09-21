@@ -36,6 +36,7 @@
 #include "../compat.h"
 #include "../dialog_search_replace.h"
 #include "../dialogs.h"
+#include "../frame_main.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 #include "../main.h"
@@ -249,6 +250,18 @@ struct subtitle_new final : public Command {
 	}
 };
 
+struct subtitle_close final : public Command {
+	CMD_NAME("subtitle/close")
+	CMD_ICON(new_toolbutton)
+	STR_MENU("Close")
+	STR_DISP("Close")
+	STR_HELP("Close")
+
+	void operator()(agi::Context *c) override {
+		c->frame->Close();
+	}
+};
+
 struct subtitle_open final : public Command {
 	CMD_NAME("subtitle/open")
 	CMD_ICON(open_toolbutton)
@@ -447,6 +460,7 @@ namespace cmd {
 		reg(agi::make_unique<subtitle_insert_before>());
 		reg(agi::make_unique<subtitle_insert_before_videotime>());
 		reg(agi::make_unique<subtitle_new>());
+		reg(agi::make_unique<subtitle_close>());
 		reg(agi::make_unique<subtitle_open>());
 		reg(agi::make_unique<subtitle_open_autosave>());
 		reg(agi::make_unique<subtitle_open_charset>());

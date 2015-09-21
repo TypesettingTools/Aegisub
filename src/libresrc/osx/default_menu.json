@@ -45,6 +45,8 @@
         { "command" : "subtitle/open/video" },
         { "command" : "subtitle/open/autosave" },
         { "recent" : "Subtitle" },
+        {},
+        { "command" : "subtitle/close" },
         { "command" : "subtitle/save" },
         { "command" : "subtitle/save/as" },
         { "command" : "tool/export", "text" : "&Export As..." },
@@ -53,7 +55,6 @@
         { "command" : "subtitle/attachment" },
         { "command" : "tool/font_collector" },
         {},
-        { "command" : "app/new_window" },
         { "command" : "app/exit", "special" : "exit" }
     ],
     "main/edit" : [

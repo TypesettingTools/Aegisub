@@ -167,6 +167,9 @@
 		"subtitle/new" : [
 			"Ctrl-N"
 		],
+		"subtitle/close" : [
+			"Ctrl-W"
+		],
 		"subtitle/open" : [
 			"Ctrl-O"
 		],
