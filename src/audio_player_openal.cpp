@@ -101,7 +101,6 @@ class OpenALPlayer final : public AudioPlayer, wxTimer {
 	/// Fill count OpenAL buffers
 	void FillBuffers(ALsizei count);
 
-protected:
 	/// wxTimer override to periodically fill available buffers
 	void Notify() override;
 
@@ -164,6 +163,7 @@ OpenALPlayer::~OpenALPlayer()
 {
 	Stop();
 
+	alcMakeContextCurrent(context);
 	alDeleteSources(1, &source);
 	alDeleteBuffers(num_buffers, buffers);
 	alcDestroyContext(context);
@@ -172,6 +172,7 @@ OpenALPlayer::~OpenALPlayer()
 
 void OpenALPlayer::Play(int64_t start, int64_t count)
 {
+	alcMakeContextCurrent(context);
 	if (playing) {
 		// Quick reset
 		playing = false;
@@ -210,6 +211,7 @@ void OpenALPlayer::Stop()
 	end_frame = 0;
 
 	// Then drop the playback
+	alcMakeContextCurrent(context);
 	alSourceStop(source);
 	alSourcei(source, AL_BUFFER, 0);
 }
@@ -238,6 +240,7 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 
 void OpenALPlayer::Notify()
 {
+	alcMakeContextCurrent(context);
 	ALsizei newplayed;
 	alGetSourcei(source, AL_BUFFERS_PROCESSED, &newplayed);
 
