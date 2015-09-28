@@ -310,8 +310,6 @@ void SubsController::SetFileName(agi::fs::path const& path) {
 void SubsController::OnCommit(AssFileCommit c) {
 	if (c.message.empty() && !undo_stack.empty()) return;
 
-	static int next_commit_id = 1;
-
 	commit_id = next_commit_id++;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change

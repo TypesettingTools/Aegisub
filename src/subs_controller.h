@@ -48,6 +48,10 @@ class SubsController {
 	int saved_commit_id = 0;
 	/// Last autosaved version of this file
 	int autosaved_commit_id = 0;
+	/// Version to use for the next commit
+	/// Needed to handle Save -> Undo -> Edit, which would result in the file
+	/// being marked unmodified if we reused commit IDs
+	int next_commit_id = 1;
 
 	/// Timer for triggering autosaves
 	wxTimer autosave_timer;
