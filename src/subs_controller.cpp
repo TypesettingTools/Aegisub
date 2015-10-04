@@ -313,7 +313,7 @@ void SubsController::OnCommit(AssFileCommit c) {
 	commit_id = next_commit_id++;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change
-	if (commit_id == *c.commit_id+1 && redo_stack.empty() && saved_commit_id+1 != commit_id && autosaved_commit_id+1 != commit_id) {
+	if (commit_id == *c.commit_id+1 && redo_stack.empty() && saved_commit_id+1 != commit_id) {
 		// If only one line changed just modify it instead of copying the file
 		if (c.single_line && c.single_line->Group() == AssEntryGroup::DIALOGUE) {
 			for (auto& diag : undo_stack.back().events) {
