@@ -126,6 +126,7 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 }
 
 VideoDisplay::~VideoDisplay () {
+	Unload();
 	con->videoController->Unbind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 }
 
@@ -435,8 +436,11 @@ Vector2D VideoDisplay::GetMousePosition() const {
 }
 
 void VideoDisplay::Unload() {
-	glContext.reset();
+	if (glContext) {
+		SetCurrent(*glContext);
+	}
 	videoOut.reset();
 	tool.reset();
+	glContext.reset();
 	pending_frame.reset();
 }
