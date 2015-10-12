@@ -26,6 +26,10 @@
       <ForcedIncludeFiles>agi_pre.h</ForcedIncludeFiles>
       <AdditionalOptions>/Zm150 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories Condition="'$(Platform)'=='Win32'">$(DXSDK_DIR)\Lib\x86</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories Condition="'$(Platform)'=='x64'">$(DXSDK_DIR)\Lib\x64</AdditionalLibraryDirectories>
+    </Link>
   </ItemDefinitionGroup>
 
   <!-- Update git_version.h -->
