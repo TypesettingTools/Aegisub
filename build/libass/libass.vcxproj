@@ -52,6 +52,7 @@
       <ExcludeFromBuild Condition="'$(Platform)'!='x64'">true</ExcludeFromBuild>
     </Yasm>
     <Yasm Include="$(LibassSrcDir)\libass\x86\blend_bitmaps.asm" />
+    <Yasm Include="$(LibassSrcDir)\libass\x86\blur.asm" />
     <Yasm Include="$(LibassSrcDir)\libass\x86\cpuid.asm" />
     <Yasm Include="$(LibassSrcDir)\libass\x86\rasterizer.asm" />
     <None Include="$(LibassSrcDir)\libass\x86\x86inc.asm" />
@@ -81,15 +82,20 @@
   <ItemGroup>
     <ClCompile Include="$(LibassSrcDir)\libass\ass.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_bitmap.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_blur.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_cache.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_drawing.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_font.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_fontconfig.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_fontselect.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_library.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_parse.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_rasterizer.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_rasterizer_c.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_render.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_render_api.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_shaper.c" />
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_string.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_strtod.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_utils.c" />
   </ItemGroup>

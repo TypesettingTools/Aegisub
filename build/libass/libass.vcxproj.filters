@@ -28,6 +28,9 @@
     <Yasm Include="$(LibassSrcDir)\libass\x86\blend_bitmaps.asm">
       <Filter>Assembly Files</Filter>
     </Yasm>
+    <Yasm Include="$(LibassSrcDir)\libass\x86\blur.asm">
+      <Filter>Assembly Files</Filter>
+    </Yasm>
     <Yasm Include="$(LibassSrcDir)\libass\x86\cpuid.asm">
       <Filter>Assembly Files</Filter>
     </Yasm>
@@ -113,6 +116,9 @@
     <ClCompile Include="$(LibassSrcDir)\libass\ass_bitmap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_blur.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_cache.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -125,10 +131,19 @@
     <ClCompile Include="$(LibassSrcDir)\libass\ass_fontconfig.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_fontselect.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_library.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_parse.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_rasterizer.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_rasterizer_c.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_render.c">
@@ -138,6 +153,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_shaper.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_string.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_strtod.c">
