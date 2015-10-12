@@ -1041,6 +1041,9 @@
     <InstallHeader Include="$(MSBuildThisFileDirectory)\libavutil\avconfig.h">
       <HeaderRoot>$(MSBuildThisFileDirectory)</HeaderRoot>
     </InstallHeader>
+    <InstallHeader Include="$(MSBuildThisFileDirectory)\libavutil\ffversion.h">
+      <HeaderRoot>$(MSBuildThisFileDirectory)</HeaderRoot>
+    </InstallHeader>
 
     <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\avcodec.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavcodec\avfft.h" />
@@ -1068,7 +1071,6 @@
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\audio_fifo.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\audioconvert.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\avassert.h" />
-    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\avconfig.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\avstring.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\avutil.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\base64.h" />
@@ -1087,7 +1089,6 @@
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\downmix_info.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\error.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\eval.h" />
-    <InstallHeader Include="$(FfmpegSrcDir)\libavutil\ffversion.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\fifo.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\file.h" />
     <InstallHeader Include="$(FfmpegSrcDir)\libavutil\frame.h" />
