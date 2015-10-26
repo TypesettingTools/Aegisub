@@ -69,9 +69,6 @@
     <ClInclude Include="$(LibassSrcDir)\libass\ass_font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(LibassSrcDir)\libass\ass_fontconfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(LibassSrcDir)\libass\ass_library.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -126,9 +123,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_font.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(LibassSrcDir)\libass\ass_fontconfig.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_fontselect.c">

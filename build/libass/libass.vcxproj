@@ -64,7 +64,6 @@
     <ClInclude Include="$(LibassSrcDir)\libass\ass_cache_template.h" />
     <ClInclude Include="$(LibassSrcDir)\libass\ass_drawing.h" />
     <ClInclude Include="$(LibassSrcDir)\libass\ass_font.h" />
-    <ClInclude Include="$(LibassSrcDir)\libass\ass_fontconfig.h" />
     <ClInclude Include="$(LibassSrcDir)\libass\ass_library.h" />
     <ClInclude Include="$(LibassSrcDir)\libass\ass_parse.h" />
     <ClInclude Include="$(LibassSrcDir)\libass\ass_render.h" />
@@ -86,7 +85,6 @@
     <ClCompile Include="$(LibassSrcDir)\libass\ass_cache.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_drawing.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_font.c" />
-    <ClCompile Include="$(LibassSrcDir)\libass\ass_fontconfig.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_fontselect.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_library.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_parse.c" />
@@ -102,9 +100,6 @@
 
   <!-- Project References -->
   <ItemGroup>
-    <ProjectReference Include="..\fontconfig\fontconfig.vcxproj">
-      <Project>{ad56899e-961b-47b7-bd0f-14d0da50d141}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\freetype2\freetype.vcxproj">
       <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
     </ProjectReference>
