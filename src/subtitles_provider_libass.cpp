@@ -34,10 +34,6 @@
 
 #include "subtitles_provider_libass.h"
 
-#include "ass_info.h"
-#include "ass_dialogue.h"
-#include "ass_file.h"
-#include "ass_style.h"
 #include "compat.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
