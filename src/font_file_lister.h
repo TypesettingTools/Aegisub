@@ -63,7 +63,25 @@ public:
 };
 
 using FontFileLister = GdiFontFileLister;
+
+#elif defined(__APPLE__)
+
+struct CoreTextFontFileLister {
+	CoreTextFontFileLister(FontCollectorStatusCallback &) {}
+
+	/// @brief Get the path to the font with the given styles
+	/// @param facename Name of font face
+	/// @param bold ASS font weight
+	/// @param italic Italic?
+	/// @param characters Characters in this style
+	/// @return Path to the matching font file(s), or empty if not found
+	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters);
+};
+
+using FontFileLister = CoreTextFontFileLister;
+
 #else
+
 typedef struct _FcConfig FcConfig;
 typedef struct _FcFontSet FcFontSet;
 

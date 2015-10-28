@@ -59,7 +59,6 @@ src_OBJ := \
 	$(d)export_framerate.o \
 	$(d)fft.o \
 	$(d)font_file_lister.o \
-	$(d)font_file_lister_fontconfig.o \
 	$(d)frame_main.o \
 	$(d)gl_text.o \
 	$(d)gl_wrap.o \
@@ -119,7 +118,10 @@ src_OBJ := \
 	$(TOP)lib/libuniversalchardet.a \
 
 ifeq (yes, $(BUILD_DARWIN))
+src_OBJ += $(d)font_file_lister_coretext.o
 src_OBJ += $(subst .mm,.o,$(wildcard $(d)osx/*.mm))
+else
+src_OBJ += $(d)font_file_lister_fontconfig.o
 endif
 
 ###############
