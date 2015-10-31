@@ -3,3 +3,4 @@
 
 #define CONFIG_ASM 1
 #define CONFIG_RASTERIZER 1
+#define CONFIG_DIRECTWRITE 1

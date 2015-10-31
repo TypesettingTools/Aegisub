@@ -96,6 +96,7 @@
     <ClCompile Include="$(LibassSrcDir)\libass\ass_string.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_strtod.c" />
     <ClCompile Include="$(LibassSrcDir)\libass\ass_utils.c" />
+    <ClCompile Include="..\..\src\libass_gdi_fontselect.cpp" />
   </ItemGroup>
 
   <!-- Project References -->
