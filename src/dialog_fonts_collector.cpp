@@ -231,7 +231,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 #endif
 	};
 	collection_mode = new wxRadioBox(this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, countof(modes), modes, 1);
-	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), 4));
+	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), countof(modes)));
 
 	if (c->path->Decode("?script") == "?script")
 		collection_mode->Enable(2, false);
