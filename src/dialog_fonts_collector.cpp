@@ -78,6 +78,8 @@ class DialogFontsCollector final : public wxDialog {
 	/// Collection complete notification from the worker thread to reenable buttons
 	void OnCollectionComplete(wxThreadEvent &);
 
+	void UpdateControls();
+
 public:
 	DialogFontsCollector(agi::Context *c);
 };
@@ -230,8 +232,10 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 		,_("Symlink fonts to folder")
 #endif
 	};
+
+	mode = static_cast<FcMode>(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), countof(modes)));
 	collection_mode = new wxRadioBox(this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, countof(modes), modes, 1);
-	collection_mode->SetSelection(mid<int>(0, OPT_GET("Tool/Fonts Collector/Action")->GetInt(), countof(modes)));
+	collection_mode->SetSelection(static_cast<int>(mode));
 
 	if (c->path->Decode("?script") == "?script")
 		collection_mode->Enable(2, false);
@@ -275,8 +279,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	CenterOnParent();
 
 	// Update the browse button and label
-	wxCommandEvent evt;
-	OnRadio(evt);
+	UpdateControls();
 
 	start_btn->Bind(wxEVT_BUTTON, &DialogFontsCollector::OnStart, this);
 	dest_browse_button->Bind(wxEVT_BUTTON, &DialogFontsCollector::OnBrowse, this);
@@ -347,6 +350,10 @@ void DialogFontsCollector::OnBrowse(wxCommandEvent &) {
 void DialogFontsCollector::OnRadio(wxCommandEvent &evt) {
 	OPT_SET("Tool/Fonts Collector/Action")->SetInt(evt.GetInt());
 	mode = static_cast<FcMode>(evt.GetInt());
+	UpdateControls();
+}
+
+void DialogFontsCollector::UpdateControls() {
 	wxString dst = dest_ctrl->GetValue();
 
 	if (mode == FcMode::CheckFontsOnly || mode == FcMode::CopyToScriptFolder) {
