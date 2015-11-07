@@ -120,6 +120,7 @@ src_OBJ := \
 ifeq (yes, $(BUILD_DARWIN))
 src_OBJ += $(d)font_file_lister_coretext.o
 src_OBJ += $(subst .mm,.o,$(wildcard $(d)osx/*.mm))
+$(d)font_file_lister_coretext.o_FLAGS := -fobjc-arc
 else
 src_OBJ += $(d)font_file_lister_fontconfig.o
 endif
