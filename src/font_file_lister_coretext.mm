@@ -45,7 +45,7 @@ void process_font(CollectionResult& ret, NSFontDescriptor *font, int bold, bool 
 		}
 	}
 
-	ret.paths.push_back(url.absoluteString.UTF8String);
+	ret.paths.push_back(url.fileSystemRepresentation);
 }
 }
 
