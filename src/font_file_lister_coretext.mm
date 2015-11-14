@@ -90,5 +90,8 @@ CollectionResult CoreTextFontFileLister::GetFontPaths(std::string const& facenam
 		}
 	}
 
+	sort(begin(ret.paths), end(ret.paths));
+	ret.paths.erase(unique(begin(ret.paths), end(ret.paths)), end(ret.paths));
+
 	return ret;
 }
