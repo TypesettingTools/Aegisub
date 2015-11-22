@@ -65,14 +65,16 @@ protected:
 	PCMAudioProvider(fs::path const& filename) : file(filename) { }
 
 	template<typename T, typename UInt>
-	const T *Read(UInt *data_left) {
+	T Read(UInt *data_left) {
 		if (*data_left < sizeof(T)) throw file_ended();
 		if (file.size() - file_pos < sizeof(T)) throw file_ended();
 
 		auto data = file.read(file_pos, sizeof(T));
 		file_pos += sizeof(T);
 		*data_left -= sizeof(T);
-		return reinterpret_cast<const T *>(data);
+		T ret;
+		memcpy(&ret, data, sizeof(T));
+		return ret;
 	}
 
 	std::vector<IndexPoint> index_points;
@@ -153,17 +155,17 @@ public:
 
 		try {
 			auto data_left = std::numeric_limits<DataSize>::max();
-			if (*Read<ChunkId>(&data_left) != Impl::riff_id())
+			if (Read<ChunkId>(&data_left) != Impl::riff_id())
 				throw AudioDataNotFound("File is not a RIFF file");
 
-			data_left = Impl::data_size(*Read<DataSize>(&data_left));
+			data_left = Impl::data_size(Read<DataSize>(&data_left));
 
-			if (*Read<ChunkId>(&data_left) != Impl::wave_id())
+			if (Read<ChunkId>(&data_left) != Impl::wave_id())
 				throw AudioDataNotFound("File is not a RIFF WAV file");
 
 			while (data_left) {
-				auto chunk_fcc = *Read<ChunkId>(&data_left);
-				auto chunk_size = Impl::chunk_size(*Read<DataSize>(&data_left));
+				auto chunk_fcc = Read<ChunkId>(&data_left);
+				auto chunk_size = Impl::chunk_size(Read<DataSize>(&data_left));
 
 				data_left -= chunk_size;
 
@@ -171,15 +173,15 @@ public:
 					if (channels || sample_rate || bytes_per_sample)
 						throw AudioProviderError("Multiple 'fmt ' chunks not supported");
 
-					auto compression = *Read<uint16_t>(&chunk_size);
+					auto compression = Read<uint16_t>(&chunk_size);
 					if (compression != 1)
 						throw AudioProviderError("File is not uncompressed PCM");
 
-					channels = *Read<uint16_t>(&chunk_size);
-					sample_rate = *Read<uint32_t>(&chunk_size);
+					channels = Read<uint16_t>(&chunk_size);
+					sample_rate = Read<uint32_t>(&chunk_size);
 					Read<uint32_t>(&chunk_size); // Average bytes per sample; meaningless
 					Read<uint16_t>(&chunk_size); // Block align
-					bytes_per_sample = (*Read<uint16_t>(&chunk_size) + 7) / 8;
+					bytes_per_sample = (Read<uint16_t>(&chunk_size) + 7) / 8;
 				}
 				else if (chunk_fcc == Impl::data_id()) {
 					if (!channels || !sample_rate || !bytes_per_sample)
