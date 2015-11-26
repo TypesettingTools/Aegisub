@@ -119,9 +119,8 @@ public:
 		if (data.size() > 0)
 			Age(0);
 
-		macroblock_size = 1 << MacroblockExponent;
-
-		macroblock_index_mask = ~(((~0) >> MacroblockExponent) << MacroblockExponent);
+		macroblock_size = 1UL << MacroblockExponent;
+		macroblock_index_mask = macroblock_size - 1;
 
 		data.resize((block_count + macroblock_size - 1) >> MacroblockExponent);
 		size = 0;
