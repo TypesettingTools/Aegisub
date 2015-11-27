@@ -591,7 +591,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	spectop_sizer->Add(new wxStaticText(this, -1, _("Spectrum mode:")), 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxRIGHT, 5);
 	spectop_sizer->Add(colorspace_choice, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT);
 	spectop_sizer->Add(5, 5, 1, wxEXPAND);
-	spectop_sizer->Add(preview_box, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_RIGHT);
+	spectop_sizer->Add(preview_box, 0, wxALIGN_CENTER_VERTICAL);
 
 	wxSizer *spectrum_sizer = new wxFlexGridSizer(3, 5, 5);
 	spectrum_sizer->Add(spectop_sizer, wxEXPAND);
@@ -637,13 +637,13 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	wxStdDialogButtonSizer *button_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 
 	wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
-	input_sizer->Add(rgb_box, 0, wxALIGN_CENTER|wxEXPAND);
+	input_sizer->Add(rgb_box, 0, wxEXPAND);
 	input_sizer->AddSpacer(5);
-	input_sizer->Add(hsx_sizer, 0, wxALIGN_CENTER|wxEXPAND);
+	input_sizer->Add(hsx_sizer, 0, wxEXPAND);
 	input_sizer->AddStretchSpacer(1);
-	input_sizer->Add(picker_sizer, 0, wxALIGN_CENTER|wxEXPAND);
+	input_sizer->Add(picker_sizer, 0, wxEXPAND);
 	input_sizer->AddStretchSpacer(2);
-	input_sizer->Add(button_sizer, 0, wxALIGN_RIGHT|wxALIGN_BOTTOM);
+	input_sizer->Add(button_sizer, 0, wxALIGN_RIGHT);
 
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
 	main_sizer->Add(spectrum_box, 1, wxALL | wxEXPAND, 5);
