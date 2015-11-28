@@ -844,7 +844,7 @@ void DialogColorPicker::UpdateSpectrumDisplay() {
 		case 0: case 1: case 2:
 			slider->SetBackground(&rgb_slider[i]);
 			slider->SetXY(0, rgb_input[i]->GetValue());
-			spectrum->SetXY(rgb_input[2 - (i == 2)]->GetValue(), rgb_input[1 == 0]->GetValue());
+			spectrum->SetXY(rgb_input[2 - (i == 2)]->GetValue(), rgb_input[i == 0]->GetValue());
 			break;
 		case 3:
 			slider->SetBackground(&hsl_slider);
