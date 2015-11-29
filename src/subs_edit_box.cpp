@@ -296,6 +296,7 @@ wxComboBox *SubsEditBox::MakeComboBox(wxString const& initial_text, int style, v
 
 wxRadioButton *SubsEditBox::MakeRadio(wxString const& text, bool start, wxString const& tooltip) {
 	wxRadioButton *ctrl = new wxRadioButton(this, -1, text, wxDefaultPosition, wxDefaultSize, start ? wxRB_GROUP : 0);
+	ctrl->SetValue(start);
 	ctrl->SetToolTip(tooltip);
 	Bind(wxEVT_RADIOBUTTON, &SubsEditBox::OnFrameTimeRadio, this, ctrl->GetId());
 	middle_right_sizer->Add(ctrl, wxSizerFlags().Expand().Border(wxRIGHT));
