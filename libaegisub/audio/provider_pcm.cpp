@@ -167,7 +167,7 @@ public:
 				auto chunk_fcc = Read<ChunkId>(&data_left);
 				auto chunk_size = Impl::chunk_size(Read<DataSize>(&data_left));
 
-				data_left -= chunk_size;
+				data_left -= std::min(chunk_size, data_left);
 
 				if (chunk_fcc == Impl::fmt_id()) {
 					if (channels || sample_rate || bytes_per_sample)
