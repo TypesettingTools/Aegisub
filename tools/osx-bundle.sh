@@ -26,9 +26,6 @@ mkdir -v "${PKG_DIR}"
 mkdir -v "${PKG_DIR}/Contents"
 mkdir -v "${PKG_DIR}/Contents/MacOS"
 mkdir -v "${PKG_DIR}/Contents/Resources"
-mkdir -v "${PKG_DIR}/Contents/Resources/etc"
-mkdir -v "${PKG_DIR}/Contents/Resources/etc/fonts"
-mkdir -v "${PKG_DIR}/Contents/Resources/etc/fonts/conf.d"
 mkdir -v "${PKG_DIR}/Contents/SharedSupport"
 mkdir -v "${PKG_DIR}/Contents/SharedSupport/dictionaries"
 
@@ -45,9 +42,6 @@ find po -name *.po | sed 's/.*\/\(.*\)\.po/        <string>\1<\/string>/; s/RS/Y
 
 find ${SKEL_DIR} -type f -not -regex ".*.svn.*"
 cp ${SKEL_DIR}/Contents/Resources/*.icns "${PKG_DIR}/Contents/Resources"
-cp ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.dtd "${PKG_DIR}/Contents/Resources/etc/fonts"
-cat ${SKEL_DIR}/Contents/Resources/etc/fonts/fonts.conf | sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Resources/etc/fonts/fonts.conf"
-cp ${FONTCONFIG_CONF_DIR}/conf.d/*.conf "${PKG_DIR}/Contents/Resources/etc/fonts/conf.d"
 cat ${SKEL_DIR}/Contents/Info.plist | sed -f tools/osx-bundle.sed > "${PKG_DIR}/Contents/Info.plist"
 
 rm languages
