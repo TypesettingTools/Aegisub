@@ -40,8 +40,10 @@
 #endif
 
 [Files]
-DestDir: {tmp}; Source: src\vcredist_{#SUFFIX}.exe; Flags: nocompression deleteafterinstall
-
-[Run]
-Filename: {tmp}\vcredist_{#SUFFIX}.exe; StatusMsg: {cm:InstallRuntime}; Parameters: "/q"
+Source: src\redist\{#SUFFIX}\Microsoft.VC140.CRT\msvcp140.dll; DestDir: {app}; Flags: ignoreversion
+Source: src\redist\{#SUFFIX}\Microsoft.VC140.CRT\concrt140.dll; DestDir: {app}; Flags: ignoreversion
+Source: src\redist\{#SUFFIX}\Microsoft.VC140.CRT\vccorlib140.dll; DestDir: {app}; Flags: ignoreversion
+Source: src\redist\{#SUFFIX}\Microsoft.VC140.CRT\vcruntime140.dll; DestDir: {app}; Flags: ignoreversion
+Source: src\redist\{#SUFFIX}\Microsoft.VC140.MFC\mfc140u.dll; DestDir: {app}; Flags: ignoreversion
+Source: src\redist\{#SUFFIX}\Microsoft.VC140.MFC\mfcm140u.dll; DestDir: {app}; Flags: ignoreversion
 
