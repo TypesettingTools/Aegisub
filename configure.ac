@@ -204,11 +204,14 @@ AC_SUBST(GL_CFLAGS)
 AC_SUBST(GL_LIBS)
 
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= freetype_required_version)
-PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version)
-PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version)
 
-FONTCONFIG_CONF_DIR=$($PKG_CONFIG --variable=confdir fontconfig)
-AC_SUBST(FONTCONFIG_CONF_DIR)
+AS_IF([test x$build_darwin != xyes], [
+  PKG_CHECK_MODULES(FONTCONFIG, fontconfig >= fontconfig_required_version)
+  FONTCONFIG_CONF_DIR=$($PKG_CONFIG --variable=confdir fontconfig)
+  AC_SUBST(FONTCONFIG_CONF_DIR)
+])
+
+PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version)
 
 AX_BOOST_BASE([boost_required_version])
 AX_BOOST_LIB(chrono,     BOOST_CHRONO_LIB,     [chrono.hpp], [boost::chrono::system_clock::time_point time])
