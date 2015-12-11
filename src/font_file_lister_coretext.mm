@@ -23,8 +23,8 @@ namespace {
 struct FontMatch {
 	NSURL *url;
 	NSCharacterSet *codepoints;
-	double weight;
-	double width;
+	int weight;
+	int width;
 	bool italic;
 };
 
@@ -34,84 +34,57 @@ void process_descriptor(NSFontDescriptor *font, std::vector<FontMatch>& out) {
 	if (!url)
 		return;
 
-	NSDictionary *attributes = [font objectForKey:NSFontTraitsAttribute];
-	double weight = [attributes[NSFontWeightTrait] doubleValue];
-	double width = [attributes[NSFontWidthTrait] doubleValue];
-	bool italic = [attributes[NSFontSlantTrait] doubleValue] > 0.03;
+	NSFont *nsfont = [NSFont fontWithDescriptor:font size:10];
+	auto traits = CTFontGetSymbolicTraits((__bridge CTFontRef)nsfont);
+	bool italic = !!(traits & kCTFontItalicTrait);
 
 	// CoreText sometimes reports a slant of zero (or a very small slant)
 	// despite the macStyle field indicating that the font is italic, so
 	// double check by reading that field from the ttf
-	if (!italic) @autoreleasepool {
-		NSFont *nsfont = [NSFont fontWithDescriptor:font size:10];
+	if (!italic) {
 		auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)nsfont, kCTFontTableHead, 0);
 		if (data.length > 45) {
 			italic = static_cast<const char *>(data.bytes)[45] & 2;
 		}
 	}
 
+	auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)nsfont, kCTFontTableOS2, 0);
+	if (data.length < 6)
+		return;
+
+	auto bytes = static_cast<const uint8_t *>(data.bytes);
+	int weight = (bytes[4] << 8) + bytes[5];
+	int width = (bytes[6] << 8) + bytes[7];
+
 	out.push_back({url, [font objectForKey:NSFontCharacterSetAttribute], weight, width, italic});
 }
 
-void select_best(CollectionResult& ret, std::vector<FontMatch>& options, double bold,
+void select_best(CollectionResult& ret, std::vector<FontMatch>& options, int bold,
 	             bool italic, std::vector<int> const& characters) {
 	if (options.empty())
 		return;
 
 	// Prioritize fonts with the width closest to normal
 	sort(begin(options), end(options), [](FontMatch const& lft, FontMatch const& rgt) {
-		return std::abs(lft.width) < std::abs(rgt.width);
+		return std::abs(lft.width - 100) < std::abs(rgt.width - 100);
 	});
 
 	const FontMatch *match = nullptr;
 
-	auto check_weight = [&](FontMatch const& m) {
-		if (m.weight < bold)
-			return false;
-		if (match && m.weight >= match->weight)
-			return false;
-		return true;
-	};
-	auto check_slant = [&](FontMatch const& m) {
-		return (italic && m.italic) || (!italic && !m.italic);
-	};
-
-	// First look for the best valid match
 	for (auto const& m : options) {
-		if (check_slant(m) && check_weight(m))
+		if (italic == m.italic && (!match || std::abs(match->weight - bold + 1) > std::abs(m.weight - bold + 1)))
 			match = &m;
 	}
 
 	if (!match) {
-		// Either none are italic, or none are heavy enough
-		// Just pick the heaviest one (italic if applicable)
-		for (auto const& m : options) {
-			if (!check_slant(m) || (match && m.weight >= match->weight))
-				continue;
-			match = &m;
-			ret.fake_bold = bold > 0;
-		}
-	}
-
-	if (!match) {
-		// We want italic but there is none, or we want regular and there is
-		// only italic. Don't complain about fake italic in the latter case.
 		ret.fake_italic = italic;
 		for (auto const& m : options) {
-			if (check_weight(m))
+			if (!match || std::abs(match->weight - bold + 1) > std::abs(m.weight - bold + 1))
 				match = &m;
 		}
 	}
 
-	if (!match) {
-		// No correct weight match even in non-italic, so just pick the heaviest
-		ret.fake_bold = bold > 0;
-		for (auto const& m : options) {
-			if (match && m.weight >= match->weight)
-				continue;
-			match = &m;
-		}
-	}
+	ret.fake_bold = bold > 400 && match->weight < bold;
 
 	auto& best = *match;
 	ret.paths.push_back(best.url.fileSystemRepresentation);
@@ -128,23 +101,10 @@ CollectionResult CoreTextFontFileLister::GetFontPaths(std::string const& facenam
                                                       std::vector<int> const& characters) {
 	CollectionResult ret;
 
-	double desired_weight;
 	if (bold == 0)
-		desired_weight = 0;
+		bold = 400;
 	else if (bold == 1)
-		desired_weight = 0.4;
-	else if (bold < 400)
-		desired_weight = -0.4;
-	else if (bold < 500)
-		desired_weight = 0;
-	else if (bold < 600)
-		desired_weight = 0.23;
-	else if (bold < 700)
-		desired_weight = 0.3;
-	else if (bold < 800)
-		desired_weight = 0.4;
-	else
-		desired_weight = 0.62;
+		bold = 700;
 
 	std::vector<FontMatch> fonts;
 	@autoreleasepool {
@@ -160,7 +120,7 @@ CollectionResult CoreTextFontFileLister::GetFontPaths(std::string const& facenam
 		for (NSFontDescriptor *desc in font_collection.matchingDescriptors) {
 			process_descriptor(desc, fonts);
 		}
-		select_best(ret, fonts, desired_weight, italic, characters);
+		select_best(ret, fonts, bold, italic, characters);
 	}
 
 	return ret;
