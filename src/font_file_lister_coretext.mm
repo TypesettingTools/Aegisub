@@ -35,6 +35,9 @@ void process_descriptor(NSFontDescriptor *font, std::vector<FontMatch>& out) {
 		return;
 
 	NSFont *nsfont = [NSFont fontWithDescriptor:font size:10];
+	int weight = 400;
+	int width = 5;
+
 	auto traits = CTFontGetSymbolicTraits((__bridge CTFontRef)nsfont);
 	bool italic = !!(traits & kCTFontItalicTrait);
 
@@ -49,12 +52,11 @@ void process_descriptor(NSFontDescriptor *font, std::vector<FontMatch>& out) {
 	}
 
 	auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)nsfont, kCTFontTableOS2, 0);
-	if (data.length < 6)
-		return;
-
-	auto bytes = static_cast<const uint8_t *>(data.bytes);
-	int weight = (bytes[4] << 8) + bytes[5];
-	int width = (bytes[6] << 8) + bytes[7];
+	if (data.length > 7) {
+		auto bytes = static_cast<const uint8_t *>(data.bytes);
+		weight = (bytes[4] << 8) + bytes[5];
+		width = (bytes[6] << 8) + bytes[7];
+	}
 
 	out.push_back({url, [font objectForKey:NSFontCharacterSetAttribute], weight, width, italic});
 }
