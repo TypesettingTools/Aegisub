@@ -21,80 +21,49 @@
 
 namespace {
 struct FontMatch {
-	NSURL *url;
-	NSCharacterSet *codepoints;
-	int weight;
-	int width;
-	bool italic;
-};
-
-void process_descriptor(NSFontDescriptor *font, std::vector<FontMatch>& out) {
-	// For whatever reason there is no NSFontURLAttribute
-	NSURL *url = [font objectForKey:(__bridge NSString *)kCTFontURLAttribute];
-	if (!url)
-		return;
-
-	NSFont *nsfont = [NSFont fontWithDescriptor:font size:10];
+	NSURL *url = nil;
+	NSCharacterSet *codepoints = nil;
 	int weight = 400;
 	int width = 5;
+	bool italic = false;
+	bool family_match = false;
+};
 
-	auto traits = CTFontGetSymbolicTraits((__bridge CTFontRef)nsfont);
-	bool italic = !!(traits & kCTFontItalicTrait);
+FontMatch process_descriptor(NSFontDescriptor *desc, NSString *name) {
+	FontMatch ret;
 
-	// CoreText sometimes reports a slant of zero (or a very small slant)
-	// despite the macStyle field indicating that the font is italic, so
-	// double check by reading that field from the ttf
-	if (!italic) {
-		auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)nsfont, kCTFontTableHead, 0);
+	// For whatever reason there is no NSFontURLAttribute
+	ret.url = [desc objectForKey:(__bridge NSString *)kCTFontURLAttribute];
+	if (!ret.url)
+		return ret;
+
+	NSFont *font = [NSFont fontWithDescriptor:desc size:10];
+
+	// Ask CoreText if the font is italic, but if it says no double-check
+	// by reading the macStyle field of the 'head' table as CT doesn't honor
+	// that
+	auto traits = CTFontGetSymbolicTraits((__bridge CTFontRef)font);
+	ret.italic = !!(traits & kCTFontItalicTrait);
+	if (!ret.italic) {
+		auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)font, kCTFontTableHead, 0);
 		if (data.length > 45) {
-			italic = static_cast<const char *>(data.bytes)[45] & 2;
+			ret.italic = static_cast<const char *>(data.bytes)[45] & 2;
 		}
 	}
 
-	auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)nsfont, kCTFontTableOS2, 0);
+	// Get the weight from the OS/2 table because the weights reported by CT
+	// are often uncorrelated with the OS/2 weight, which is what GDI uses
+	auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)font, kCTFontTableOS2, 0);
 	if (data.length > 7) {
 		auto bytes = static_cast<const uint8_t *>(data.bytes);
-		weight = (bytes[4] << 8) + bytes[5];
-		width = (bytes[6] << 8) + bytes[7];
+		// These values are big-endian in the file, so byteswap them
+		ret.weight = (bytes[4] << 8) + bytes[5];
+		ret.width = (bytes[6] << 8) + bytes[7];
 	}
 
-	out.push_back({url, [font objectForKey:NSFontCharacterSetAttribute], weight, width, italic});
-}
-
-void select_best(CollectionResult& ret, std::vector<FontMatch>& options, int bold,
-	             bool italic, std::vector<int> const& characters) {
-	if (options.empty())
-		return;
-
-	// Prioritize fonts with the width closest to normal
-	sort(begin(options), end(options), [](FontMatch const& lft, FontMatch const& rgt) {
-		return std::abs(lft.width - 100) < std::abs(rgt.width - 100);
-	});
-
-	const FontMatch *match = nullptr;
-
-	for (auto const& m : options) {
-		if (italic == m.italic && (!match || std::abs(match->weight - bold + 1) > std::abs(m.weight - bold + 1)))
-			match = &m;
-	}
-
-	if (!match) {
-		ret.fake_italic = italic;
-		for (auto const& m : options) {
-			if (!match || std::abs(match->weight - bold + 1) > std::abs(m.weight - bold + 1))
-				match = &m;
-		}
-	}
-
-	ret.fake_bold = bold > 400 && match->weight < bold;
-
-	auto& best = *match;
-	ret.paths.push_back(best.url.fileSystemRepresentation);
-	for (int chr : characters) {
-		if (![best.codepoints longCharacterIsMember:chr]) {
-			ret.missing += chr;
-		}
-	}
+	ret.family_match = [font.familyName isEqualToString:name];
+	ret.codepoints = [desc objectForKey:NSFontCharacterSetAttribute];
+	return ret;
 }
 }
 
@@ -108,7 +77,38 @@ CollectionResult CoreTextFontFileLister::GetFontPaths(std::string const& facenam
 	else if (bold == 1)
 		bold = 700;
 
-	std::vector<FontMatch> fonts;
+	FontMatch best;
+	bool have_match = false;
+
+	auto match_is_better = [&](FontMatch const& m) {
+		// Prioritize family name matches over postscript name matches
+		if (m.family_match != best.family_match) {
+			return m.family_match > best.family_match;
+		}
+
+		if (m.italic != best.italic) {
+			return (m.italic != italic) < (best.italic != italic);
+		}
+		if (m.weight != best.weight) {
+			// + 1 to bias in favor of lighter fonts when they're equal distances
+			// from the correct weight
+			return std::abs(m.weight - bold + 1) < std::abs(best.weight - bold + 1);
+		}
+		// Pick closest to "medium" weight
+		return std::abs(m.width - 5) < std::abs(best.width - 5);
+
+	};
+	auto compare_match = [&](FontMatch match) {
+		if (!match.url)
+			return;
+		if (!have_match) {
+			best = match;
+			have_match = true;
+		}
+		else if (match_is_better(match))
+			best = match;
+	};
+
 	@autoreleasepool {
 		NSString *name = @(facename.c_str() + (facename[0] == '@'));
 
@@ -118,11 +118,25 @@ CollectionResult CoreTextFontFileLister::GetFontPaths(std::string const& facenam
 			[NSFontDescriptor fontDescriptorWithFontAttributes:@{NSFontNameAttribute: name}]
 		];
 
-		auto font_collection = [NSFontCollection fontCollectionWithDescriptors:attrs];
-		for (NSFontDescriptor *desc in font_collection.matchingDescriptors) {
-			process_descriptor(desc, fonts);
+		auto collection = [NSFontCollection fontCollectionWithDescriptors:attrs];
+		if (NSArray *matching = collection.matchingDescriptors) {
+			for (NSFontDescriptor *desc in matching) {
+				compare_match(process_descriptor(desc, name));
+			}
 		}
-		select_best(ret, fonts, bold, italic, characters);
+
+		if (!have_match)
+			return ret;
+
+		ret.fake_italic = italic && !best.italic;
+		ret.fake_bold = bold > 400 && best.weight < bold;
+
+		ret.paths.push_back(best.url.fileSystemRepresentation);
+		for (int chr : characters) {
+			if (![best.codepoints longCharacterIsMember:chr]) {
+				ret.missing += chr;
+			}
+		}
 	}
 
 	return ret;
