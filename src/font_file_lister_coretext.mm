@@ -65,6 +65,14 @@ FontMatch process_descriptor(NSFontDescriptor *desc, NSString *name) {
 	ret.codepoints = [desc objectForKey:NSFontCharacterSetAttribute];
 	return ret;
 }
+
+int weight_penalty(int desired, int actual) {
+	int d = desired - actual;
+	// If the font is too light but can be emboldened, reduce the penalty
+	if (d > 150 && actual <= 550)
+		d = d * 2 / 5;
+	return std::abs(d);
+}
 }
 
 CollectionResult CoreTextFontFileLister::GetFontPaths(std::string const& facename,
@@ -86,14 +94,14 @@ CollectionResult CoreTextFontFileLister::GetFontPaths(std::string const& facenam
 			return m.family_match > best.family_match;
 		}
 
+		// GDI prefers to match weight over matching italic when it has to choose
+		if (m.weight != best.weight) {
+			return weight_penalty(bold, m.weight) < weight_penalty(bold, best.weight);
+		}
 		if (m.italic != best.italic) {
 			return (m.italic != italic) < (best.italic != italic);
 		}
-		if (m.weight != best.weight) {
-			// + 1 to bias in favor of lighter fonts when they're equal distances
-			// from the correct weight
-			return std::abs(m.weight - bold + 1) < std::abs(best.weight - bold + 1);
-		}
+
 		// Pick closest to "medium" weight
 		return std::abs(m.width - 5) < std::abs(best.width - 5);
 
