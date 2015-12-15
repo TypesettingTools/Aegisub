@@ -51,18 +51,59 @@ FontMatch process_descriptor(NSFontDescriptor *desc, NSString *name) {
 		}
 	}
 
+	auto get_16 = [](const uint8_t *bytes, ptrdiff_t offset) -> uint16_t {
+		return (bytes[offset] << 8) + bytes[offset + 1];
+	};
+
 	// Get the weight from the OS/2 table because the weights reported by CT
 	// are often uncorrelated with the OS/2 weight, which is what GDI uses
 	auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)font, kCTFontTableOS2, 0);
 	if (data.length > 7) {
 		auto bytes = static_cast<const uint8_t *>(data.bytes);
-		// These values are big-endian in the file, so byteswap them
-		ret.weight = (bytes[4] << 8) + bytes[5];
-		ret.width = (bytes[6] << 8) + bytes[7];
+		ret.weight = get_16(bytes, 4);
+		ret.width = get_16(bytes, 6);
 	}
 
 	ret.family_match = [font.familyName isEqualToString:name];
 	ret.codepoints = [desc objectForKey:NSFontCharacterSetAttribute];
+
+	// Some fonts have different family names for OS X and Windows, with all of
+	// the styles in a single family on OS X, but only bold/italic variants in
+	// the main family with different families for the other variants on Windows.
+	// For VSFilter compatiblity we want to match based on the Windows name.
+	if (ret.family_match) {
+		auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)font, kCTFontTableName, 0);
+		auto bytes = static_cast<const uint8_t *>(data.bytes);
+		uint16_t count = get_16(bytes, 2);
+		auto strings = bytes + get_16(bytes, 4);
+
+		for (uint16_t i = 0; i < count; ++i) {
+			auto name_record = bytes + 6 + i * 12;
+			auto platform_id = get_16(name_record, 0);
+			auto encoding_id = get_16(name_record, 2);
+			auto name_id = get_16(name_record, 6);
+			auto length = get_16(name_record, 8);
+			auto offset = get_16(name_record, 10);
+
+			if (name_id != 1) // font family
+				continue;
+			if (platform_id != 3 || encoding_id != 1) // only look at MS Unicode
+				continue;
+
+			NSString *msFamily = [[NSString alloc] initWithBytesNoCopy:(void *)(strings + offset)
+			                                                    length:length
+			                                                  encoding:NSUTF16BigEndianStringEncoding
+			                                              freeWhenDone:NO];
+			auto range = [msFamily rangeOfString:font.familyName];
+			// If it's not even a prefix then it's probably for a different language
+			if (range.location != 0)
+				continue;
+
+			ret.family_match = range.length == msFamily.length;
+			break;
+		}
+	}
+
 	return ret;
 }
 
