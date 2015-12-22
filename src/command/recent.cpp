@@ -80,7 +80,7 @@ struct recent_subtitle_entry : public Command {
 		wxGetApp().NewProjectContext().project->LoadSubtitles(config::mru->GetEntry("Subtitle", id));
 #else
 		if (c->subsController->TryToClose() == wxCANCEL) return;
-		c->project->LoadSubtitles();
+		c->project->LoadSubtitles(config::mru->GetEntry("Subtitle", id));
 #endif
 	}
 };

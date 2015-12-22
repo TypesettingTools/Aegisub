@@ -244,7 +244,7 @@ struct subtitle_new final : public Command {
 #ifdef __APPLE__
 		wxGetApp().NewProjectContext();
 #else
-		if (is_okay_to_reuse_existing_window(c))
+		if (is_okay_to_close_subtitles(c))
 			c->project->CloseSubtitles();
 #endif
 	}
