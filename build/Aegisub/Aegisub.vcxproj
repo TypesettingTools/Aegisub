@@ -353,7 +353,7 @@
     </ClCompile>
     <ClCompile Include="$(SrcDir)fft.cpp" />
     <ClCompile Include="$(SrcDir)font_file_lister.cpp" />
-    <ClCompile Include="$(SrcDir)font_file_lister_fontconfig.cpp" />
+    <ClCompile Include="$(SrcDir)font_file_lister_gdi.cpp" />
     <ClCompile Include="$(SrcDir)frame_main.cpp" />
     <ClCompile Include="$(SrcDir)gl_text.cpp" />
     <ClCompile Include="$(SrcDir)gl_wrap.cpp" />

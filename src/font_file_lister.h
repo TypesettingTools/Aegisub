@@ -22,6 +22,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include <wx/string.h>
 
@@ -39,6 +40,30 @@ struct CollectionResult {
 	bool fake_italic = false;
 };
 
+#ifdef _WIN32
+class GdiFontFileLister {
+	std::unordered_map<std::string, agi::fs::path> index;
+	agi::scoped_holder<HDC> dc;
+	std::string buffer;
+
+	bool ProcessLogFont(LOGFONTW const& expected, LOGFONTW const& actual, std::vector<int> const& characters);
+
+public:
+	/// Constructor
+	/// @param cb Callback for status logging
+	GdiFontFileLister(FontCollectorStatusCallback &cb);
+
+	/// @brief Get the path to the font with the given styles
+	/// @param facename Name of font face
+	/// @param bold ASS font weight
+	/// @param italic Italic?
+	/// @param characters Characters in this style
+	/// @return Path to the matching font file(s), or empty if not found
+	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters);
+};
+
+using FontFileLister = GdiFontFileLister;
+#else
 typedef struct _FcConfig FcConfig;
 typedef struct _FcFontSet FcFontSet;
 
@@ -67,6 +92,9 @@ public:
 	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters);
 };
 
+using FontFileLister = FontConfigFontFileLister;
+#endif
+
 /// @class FontCollector
 /// @brief Class which collects the paths to all fonts used in a script
 class FontCollector {
@@ -88,7 +116,7 @@ class FontCollector {
 	/// Message callback provider by caller
 	FontCollectorStatusCallback status_callback;
 
-	FontConfigFontFileLister lister;
+	FontFileLister lister;
 
 	/// The set of all glyphs used in the file
 	std::map<StyleInfo, UsageData> used_styles;

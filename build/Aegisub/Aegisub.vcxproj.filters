@@ -767,7 +767,7 @@
     <ClCompile Include="$(SrcDir)dialog_style_manager.cpp">
       <Filter>Features\Style editor</Filter>
     </ClCompile>
-    <ClCompile Include="$(SrcDir)font_file_lister_fontconfig.cpp">
+    <ClCompile Include="$(SrcDir)font_file_lister_gdi.cpp">
       <Filter>Features\Font collector</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)dialog_fonts_collector.cpp">
