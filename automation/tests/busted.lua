@@ -19,4 +19,8 @@ package.loaded['socket'] = {
   end
 }
 
+package.loaded['term'] = {
+  isatty = function() return true end
+}
+
 require 'busted.runner'({ batch = true, standalone = false })
