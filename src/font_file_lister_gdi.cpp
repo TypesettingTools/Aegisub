@@ -109,57 +109,84 @@ CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, in
 	LOGFONTW lf{};
 	lf.lfCharSet = DEFAULT_CHARSET;
 	wcsncpy(lf.lfFaceName, agi::charset::ConvertW(facename).c_str(), LF_FACESIZE);
-	lf.lfItalic = italic;
+	lf.lfItalic = italic ? -1 : 0;
 	lf.lfWeight = bold == 0 ? 400 :
 	              bold == 1 ? 700 :
 	                          bold;
 
-	auto cb = [&](LOGFONTW const& actual) {
-		auto hfont = CreateFontIndirectW(&actual);
-		SelectObject(dc, hfont);
-		BOOST_SCOPE_EXIT_ALL(=) {
-			SelectObject(dc, nullptr);
-			DeleteObject(hfont);
+	// Gather all of the styles for the given family name
+	std::vector<LOGFONTW> matches;
+	using type = decltype(matches);
+	EnumFontFamiliesEx(dc, &lf, [](const LOGFONT *lf, const TEXTMETRIC *, DWORD, LPARAM lParam) -> int {
+		reinterpret_cast<type*>(lParam)->push_back(*lf);
+		return 1;
+	}, (LPARAM)&matches, 0);
+
+	if (matches.empty())
+		return ret;
+
+	// If the user asked for a non-regular style, verify that it actually exists
+	if (italic || bold) {
+		bool has_bold = false;
+		bool has_italic = false;
+		bool has_bold_italic = false;
+
+		auto is_italic = [&](LOGFONTW const& lf) {
+			return !italic || lf.lfItalic;
+		};
+		auto is_bold = [&](LOGFONTW const& lf) {
+			return !bold
+				|| (bold == 1 && lf.lfWeight >= 700)
+				|| (bold > 1 && lf.lfWeight > bold);
 		};
 
-		get_font_data(buffer, dc);
-
-		auto it = index.find(buffer);
-		if (it == end(index))
-			return false; // could instead write to a temp dir
-
-		ret.paths.push_back(it->second);
-		if (actual.lfWeight < lf.lfWeight)
-			ret.fake_bold = true;
-		if (actual.lfItalic < lf.lfItalic)
-			ret.fake_italic = true;
-
-		// Convert the characters to a utf-16 string
-		std::wstring utf16characters;
-		utf16characters.reserve(characters.size());
-		for (int chr : characters) {
-			// GetGlyphIndices does not support surrogate pairs, so only check BMP characters
-			if (chr < std::numeric_limits<wchar_t>::max())
-				utf16characters.push_back(static_cast<wchar_t>(chr));
+		for (auto const& match : matches) {
+			has_bold = has_bold || is_bold(match);
+			has_italic = has_italic || is_italic(match);
+			has_bold_italic = has_bold_italic || (is_bold(match) && is_italic(match));
 		}
 
-		std::unique_ptr<WORD[]> indices(new WORD[utf16characters.size()]);
-		GetGlyphIndicesW(dc, utf16characters.data(), utf16characters.size(),
-		                 indices.get(), GGI_MARK_NONEXISTING_GLYPHS);
+		ret.fake_italic = !has_italic;
+		ret.fake_bold = (italic && has_italic ? !has_bold_italic : !has_bold);
+	}
 
-		for (size_t i = 0; i < utf16characters.size(); ++i) {
-			if (indices[i] == 0xFFFF)
-				ret.missing += utf16characters[i];
-		}
+	// Use the family name supplied by EnumFontFamiliesEx as it may be a localized version
+	memcpy(lf.lfFaceName, matches[0].lfFaceName, LF_FACESIZE);
 
-		return true;
+	// Open the font and get the data for it to look up in the index
+	auto hfont = CreateFontIndirectW(&lf);
+	SelectObject(dc, hfont);
+	BOOST_SCOPE_EXIT_ALL(=) {
+		SelectObject(dc, nullptr);
+		DeleteObject(hfont);
 	};
 
-	using type = decltype(cb);
-	bool found = !EnumFontFamiliesEx(dc, &lf,
-		[](const LOGFONT *lf, const TEXTMETRIC *, DWORD, LPARAM lParam) -> int {
-			return !(*reinterpret_cast<type*>(lParam))(*lf);
-		}, (LPARAM)&cb, 0);
+	get_font_data(buffer, dc);
+
+	auto it = index.find(buffer);
+	if (it == end(index))
+		return ret; // could instead write to a temp dir
+
+	ret.paths.push_back(it->second);
+
+	// Convert the characters to a utf-16 string
+	std::wstring utf16characters;
+	utf16characters.reserve(characters.size());
+	for (int chr : characters) {
+		// GetGlyphIndices does not support surrogate pairs, so only check BMP characters
+		if (chr < std::numeric_limits<wchar_t>::max())
+			utf16characters.push_back(static_cast<wchar_t>(chr));
+	}
+
+	// Check the glyph coverage of the matched font
+	std::unique_ptr<WORD[]> indices(new WORD[utf16characters.size()]);
+	GetGlyphIndicesW(dc, utf16characters.data(), utf16characters.size(),
+	                 indices.get(), GGI_MARK_NONEXISTING_GLYPHS);
+
+	for (size_t i = 0; i < utf16characters.size(); ++i) {
+		if (indices[i] == 0xFFFF)
+			ret.missing += utf16characters[i];
+	}
 
 	return ret;
 }
