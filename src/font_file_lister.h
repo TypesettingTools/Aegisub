@@ -42,7 +42,7 @@ struct CollectionResult {
 
 #ifdef _WIN32
 class GdiFontFileLister {
-	std::unordered_map<std::string, agi::fs::path> index;
+	std::unordered_multimap<std::string, agi::fs::path> index;
 	agi::scoped_holder<HDC> dc;
 	std::string buffer;
 

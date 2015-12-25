@@ -57,23 +57,18 @@ std::vector<agi::fs::path> get_installed_fonts() {
 	return files;
 }
 
-std::string read_file(agi::fs::path const& path) {
-	std::string data;
-	auto stream = agi::io::Open(path, true);
-	stream->seekg(0, std::ios::end);
-	data.resize(stream->tellg());
-	stream->seekg(0, std::ios::beg);
-	stream->read(&data[0], data.size());
-	return data;
-}
-
-using font_index = std::unordered_map<std::string, agi::fs::path>;
+using font_index = std::unordered_multimap<std::string, agi::fs::path>;
 
 font_index index_fonts() {
 	font_index hash_to_path;
 	auto fonts = get_installed_fonts();
 	for (auto const& path : fonts) {
-		hash_to_path[read_file(path)] = path;
+		auto stream = agi::io::Open(path, true);
+		std::string data(1024, '\0');
+		stream->read(&data[0], data.size());
+		data.resize(stream->tellg());
+
+		hash_to_path.emplace(std::move(data), path);
 	}
 	return hash_to_path;
 }
@@ -163,11 +158,26 @@ CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, in
 
 	get_font_data(buffer, dc);
 
-	auto it = index.find(buffer);
-	if (it == end(index))
+	auto range = index.equal_range(buffer.substr(0, 1024));
+	if (range.first == range.second)
 		return ret; // could instead write to a temp dir
 
-	ret.paths.push_back(it->second);
+	// Compare the full files for each of the fonts with the same prefix
+	std::unique_ptr<char[]> file_buffer(new char[buffer.size()]);
+	for (auto it = range.first; it != range.second; ++it) {
+		auto stream = agi::io::Open(it->second, true);
+		stream->read(&file_buffer[0], buffer.size());
+		if ((size_t)stream->tellg() != buffer.size())
+			continue;
+		if (memcmp(&file_buffer[0], &buffer[0], buffer.size()) == 0) {
+			ret.paths.push_back(it->second);
+			break;
+		}
+	}
+
+	// No fonts actually matched
+	if (ret.paths.empty())
+		return ret;
 
 	// Convert the characters to a utf-16 string
 	std::wstring utf16characters;
