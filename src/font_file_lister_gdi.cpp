@@ -25,6 +25,38 @@
 #include <boost/scope_exit.hpp>
 
 namespace {
+uint32_t murmur3(const char *data, uint32_t len) {
+	static const uint32_t c1 = 0xcc9e2d51;
+	static const uint32_t c2 = 0x1b873593;
+	static const uint32_t r1 = 15;
+	static const uint32_t r2 = 13;
+	static const uint32_t m = 5;
+	static const uint32_t n = 0xe6546b64;
+
+	uint32_t hash = 0;
+
+	const int nblocks = len / 4;
+	auto blocks = reinterpret_cast<const uint32_t *>(data);
+	for (uint32_t i = 0; i * 4 < len; ++i) {
+		uint32_t k = blocks[i];
+		k *= c1;
+		k = _rotl(k, r1);
+		k *= c2;
+
+		hash ^= k;
+		hash = _rotl(hash, r2) * m + n;
+	}
+
+	hash ^= len;
+	hash ^= hash >> 16;
+	hash *= 0x85ebca6b;
+	hash ^= hash >> 13;
+	hash *= 0xc2b2ae35;
+	hash ^= hash >> 16;
+
+	return hash;
+}
+
 std::vector<agi::fs::path> get_installed_fonts() {
 	static const auto fonts_key_name = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
 
@@ -57,18 +89,17 @@ std::vector<agi::fs::path> get_installed_fonts() {
 	return files;
 }
 
-using font_index = std::unordered_multimap<std::string, agi::fs::path>;
+using font_index = std::unordered_multimap<uint32_t, agi::fs::path>;
 
 font_index index_fonts() {
 	font_index hash_to_path;
 	auto fonts = get_installed_fonts();
+	std::unique_ptr<char[]> buffer(new char[1024]);
 	for (auto const& path : fonts) {
 		auto stream = agi::io::Open(path, true);
-		std::string data(1024, '\0');
-		stream->read(&data[0], data.size());
-		data.resize(stream->tellg());
-
-		hash_to_path.emplace(std::move(data), path);
+		stream->read(&buffer[0], 1024);
+		auto hash = murmur3(&buffer[0], stream->tellg());
+		hash_to_path.emplace(hash, path);
 	}
 	return hash_to_path;
 }
@@ -158,7 +189,7 @@ CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, in
 
 	get_font_data(buffer, dc);
 
-	auto range = index.equal_range(buffer.substr(0, 1024));
+	auto range = index.equal_range(murmur3(buffer.c_str(), std::min(buffer.size(), 1024U)));
 	if (range.first == range.second)
 		return ret; // could instead write to a temp dir
 
