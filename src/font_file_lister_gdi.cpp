@@ -189,7 +189,7 @@ CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, in
 
 	get_font_data(buffer, dc);
 
-	auto range = index.equal_range(murmur3(buffer.c_str(), std::min(buffer.size(), 1024U)));
+	auto range = index.equal_range(murmur3(buffer.c_str(), std::min<size_t>(buffer.size(), 1024U)));
 	if (range.first == range.second)
 		return ret; // could instead write to a temp dir
 
