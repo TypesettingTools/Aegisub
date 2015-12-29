@@ -55,7 +55,6 @@
     <FftwSrcDir>..\..\vendor\fftw</FftwSrcDir>
     <Freetype2SrcDir>..\..\vendor\freetype2</Freetype2SrcDir>
     <FribidiSrcDir>..\..\vendor\fribidi</FribidiSrcDir>
-    <FontconfigSrcDir>..\..\vendor\fontconfig</FontconfigSrcDir>
     <GtestSrcDir>..\..\vendor\googletest</GtestSrcDir>
     <IcuSrcDir>..\..\vendor\icu\source</IcuSrcDir>
     <LibassSrcDir>..\..\vendor\libass</LibassSrcDir>

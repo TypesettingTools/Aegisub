@@ -54,9 +54,6 @@
     <ProjectReference Include="..\freetype2\freetype.vcxproj" Condition="Exists('$(Freetype2SrcDir)')">
       <Project>{78b079bd-9fc7-4b9e-b4a6-96da0f00248b}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\fontconfig\fontconfig.vcxproj" Condition="Exists('$(FontconfigSrcDir)')">
-      <Project>{ad56899e-961b-47b7-bd0f-14d0da50d141}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\fribidi\fribidi.vcxproj">
       <Project>{fb8e8d19-a4d6-4181-943c-282075f49b41}</Project>
     </ProjectReference>

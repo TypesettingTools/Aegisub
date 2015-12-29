@@ -52,11 +52,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "freetype", "build\freetype2
 		{914A5B35-66B2-4293-BB6C-D93DA9BC68C6} = {914A5B35-66B2-4293-BB6C-D93DA9BC68C6}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fontconfig", "build\fontconfig\fontconfig.vcxproj", "{AD56899E-961B-47B7-BD0F-14D0DA50D141}"
-	ProjectSection(ProjectDependencies) = postProject
-		{78B079BD-9FC7-4B9E-B4A6-96DA0F00248B} = {78B079BD-9FC7-4B9E-B4A6-96DA0F00248B}
-	EndProjectSection
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fribidi", "build\fribidi\fribidi.vcxproj", "{FB8E8D19-A4D6-4181-943C-282075F49B41}"
 	ProjectSection(ProjectDependencies) = postProject
 		{914A5B35-66B2-4293-BB6C-D93DA9BC68C6} = {914A5B35-66B2-4293-BB6C-D93DA9BC68C6}
