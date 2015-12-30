@@ -53,11 +53,6 @@
 #include <wx/intl.h>
 #include <wx/thread.h>
 
-#ifdef __APPLE__
-#include <sys/param.h>
-#include <libaegisub/util_osx.h>
-#endif
-
 extern "C" {
 #include <ass/ass.h>
 }
@@ -80,12 +75,6 @@ void msg_callback(int level, const char *fmt, va_list args, void *) {
 	else // verbose
 		LOG_D("subtitle/provider/libass") << buf;
 }
-
-#ifdef __APPLE__
-#define CONFIG_PATH (agi::util::GetBundleResourcesDirectory() + "/etc/fonts/fonts.conf").c_str()
-#else
-#define CONFIG_PATH nullptr
-#endif
 
 // Stuff used on the cache thread, owned by a shared_ptr in case the provider
 // gets deleted before the cache finishing updating
@@ -146,7 +135,7 @@ public:
 		ass_renderer_done(shared->renderer);
 		shared->renderer = ass_renderer_init(library);
 		ass_set_font_scale(shared->renderer, 1.);
-		ass_set_fonts(shared->renderer, nullptr, "Sans", 1, CONFIG_PATH, true);
+		ass_set_fonts(shared->renderer, nullptr, "Sans", 1, nullptr, true);
 	}
 };
 
@@ -159,7 +148,7 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br)
 		auto ass_renderer = ass_renderer_init(library);
 		if (ass_renderer) {
 			ass_set_font_scale(ass_renderer, 1.);
-			ass_set_fonts(ass_renderer, nullptr, "Sans", 1, CONFIG_PATH, true);
+			ass_set_fonts(ass_renderer, nullptr, "Sans", 1, nullptr, true);
 		}
 		state->renderer = ass_renderer;
 		state->ready = true;
@@ -229,7 +218,7 @@ void CacheFonts() {
 	// Initialize a renderer to force fontconfig to update its cache
 	cache_queue->Async([] {
 		auto ass_renderer = ass_renderer_init(library);
-		ass_set_fonts(ass_renderer, nullptr, "Sans", 1, CONFIG_PATH, true);
+		ass_set_fonts(ass_renderer, nullptr, "Sans", 1, nullptr, true);
 		ass_renderer_done(ass_renderer);
 	});
 }
