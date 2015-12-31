@@ -64,6 +64,10 @@ FontMatch process_descriptor(NSFontDescriptor *desc, NSString *name) {
 		ret.width = get_16(bytes, 6);
 	}
 
+	// Some font designers appear to be under the impression that weights are 1-10
+	if (ret.weight < 10)
+		ret.weight *= 100;
+
 	ret.family_match = [font.familyName isEqualToString:name];
 	ret.codepoints = [desc objectForKey:NSFontCharacterSetAttribute];
 
