@@ -25,6 +25,7 @@ struct FontMatch {
 	NSCharacterSet *codepoints = nil;
 	int weight = 400;
 	int width = 5;
+	bool bold = false;
 	bool italic = false;
 	bool family_match = false;
 };
@@ -44,6 +45,7 @@ FontMatch process_descriptor(NSFontDescriptor *desc, NSString *name) {
 	// that
 	auto traits = CTFontGetSymbolicTraits((__bridge CTFontRef)font);
 	ret.italic = !!(traits & kCTFontItalicTrait);
+	ret.bold = !!(traits & kCTFontBoldTrait);
 	if (!ret.italic) {
 		auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)font, kCTFontTableHead, 0);
 		if (data.length > 45) {
@@ -142,6 +144,9 @@ CollectionResult CoreTextFontFileLister::GetFontPaths(std::string const& facenam
 		// GDI prefers to match weight over matching italic when it has to choose
 		if (m.weight != best.weight) {
 			return weight_penalty(bold, m.weight) < weight_penalty(bold, best.weight);
+		}
+		else if (m.bold != best.bold) {
+			return m.bold == bold > 550;
 		}
 		if (m.italic != best.italic) {
 			return (m.italic != italic) < (best.italic != italic);
