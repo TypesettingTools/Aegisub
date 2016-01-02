@@ -369,7 +369,12 @@ int AegisubApp::OnExit() {
 
 agi::Context& AegisubApp::NewProjectContext() {
 	auto frame = new FrameMain;
-	frame->Bind(wxEVT_DESTROY, [=](wxWindowDestroyEvent&) {
+	frame->Bind(wxEVT_DESTROY, [=](wxWindowDestroyEvent& evt) {
+		if (evt.GetWindow() != frame) {
+			evt.Skip();
+			return;
+		}
+
 		frames.erase(remove(begin(frames), end(frames), frame), end(frames));
 		if (frames.empty()) {
 			ExitMainLoop();
