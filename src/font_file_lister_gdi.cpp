@@ -16,6 +16,8 @@
 
 #include "font_file_lister.h"
 
+#include "compat.h"
+
 #include <libaegisub/charset_conv_win.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
@@ -91,15 +93,20 @@ std::vector<agi::fs::path> get_installed_fonts() {
 
 using font_index = std::unordered_multimap<uint32_t, agi::fs::path>;
 
-font_index index_fonts() {
+font_index index_fonts(FontCollectorStatusCallback &cb) {
 	font_index hash_to_path;
 	auto fonts = get_installed_fonts();
 	std::unique_ptr<char[]> buffer(new char[1024]);
 	for (auto const& path : fonts) {
-		auto stream = agi::io::Open(path, true);
-		stream->read(&buffer[0], 1024);
-		auto hash = murmur3(&buffer[0], stream->tellg());
-		hash_to_path.emplace(hash, path);
+		try {
+			auto stream = agi::io::Open(path, true);
+			stream->read(&buffer[0], 1024);
+			auto hash = murmur3(&buffer[0], stream->tellg());
+			hash_to_path.emplace(hash, path);
+		}
+		catch (agi::Exception const& e) {
+			cb(to_wx(e.GetMessage() + "\n"), 3);
+		}
 	}
 	return hash_to_path;
 }
@@ -126,7 +133,7 @@ GdiFontFileLister::GdiFontFileLister(FontCollectorStatusCallback &cb)
 : dc(CreateCompatibleDC(nullptr), [](HDC dc) { DeleteDC(dc); })
 {
 	cb(_("Updating font cache\n"), 0);
-	index = index_fonts();
+	index = index_fonts(cb);
 }
 
 CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters) {
