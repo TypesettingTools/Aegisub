@@ -317,7 +317,8 @@ bool AegisubApp::OnInit() {
 
 		// Get parameter subs
 		StartupLog("Parse command line");
-		OpenFiles(argv.GetArguments());
+		auto const& args = argv.GetArguments();
+		OpenFiles(wxArrayStringsAdapter(args.size() - 1, &args[1]));
 	}
 	catch (agi::Exception const& e) {
 		wxMessageBox(to_wx(e.GetMessage()), "Fatal error while initializing");
@@ -478,8 +479,8 @@ void AegisubApp::MacOpenFiles(wxArrayString const& filenames) {
 
 void AegisubApp::OpenFiles(wxArrayStringsAdapter filenames) {
 	std::vector<agi::fs::path> files;
-	for (int i = 1; i < argc; ++i)
-		files.push_back(from_wx(argv[i]));
+	for (int i = 0; i < filenames.GetCount(); ++i)
+		files.push_back(from_wx(filenames[i]));
 	if (!files.empty())
 		frames[0]->context->project->LoadList(files);
 }
