@@ -44,7 +44,7 @@ out_cpp:write('#include "libresrc.h"\n')
 for line in manifest:lines() do
   if line:find('.') then
     local file = try_open(path..line, 'rb')
-    local id = line:gsub('^.*/', ''):gsub('\.[a-z]+$', '')
+    local id = line:gsub('^.*/', ''):gsub('%.[a-z]+$', '')
     out_cpp:write("const unsigned char " .. id .. "[] = {")
 
     local len = 0
