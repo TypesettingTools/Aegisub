@@ -13,9 +13,6 @@
     <Filter Include="CSRI">
       <UniqueIdentifier>{61b13b0c-d018-48c6-8629-b44b83aa0dc8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Runtime">
-      <UniqueIdentifier>{0461dadd-a953-4fee-8240-bf3eb1d3a240}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Automation\Tests">
       <UniqueIdentifier>{8880eb0c-4bf7-424d-9a79-73c20c2dd169}</UniqueIdentifier>
     </Filter>
@@ -102,18 +99,6 @@
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)bin\aegisub$(AegisubPlatformSuffix).exe" />
     <RarContents Include="$(AegisubSourceBase)packages\win_installer\portable\config.json" />
-    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfc110u.dll">
-      <Filter>Runtime</Filter>
-    </RarContents>
-    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfcm110u.dll">
-      <Filter>Runtime</Filter>
-    </RarContents>
-    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.CRT\msvcp110.dll">
-      <Filter>Runtime</Filter>
-    </RarContents>
-    <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.CRT\msvcr110.dll">
-      <Filter>Runtime</Filter>
-    </RarContents>
     <RarContents Include="$(AegisubSourceBase)bin\csri\xy-vsfilter-aegisub$(PlatformArchitecture).dll">
       <Filter>CSRI</Filter>
     </RarContents>

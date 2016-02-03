@@ -50,7 +50,6 @@ ArchitecturesAllowed=x64
 
 #include "fragment_mainprogram.iss"
 #include "fragment_associations.iss"
-#include "fragment_runtimes.iss"
 #ifdef ARCH64
 #include "fragment_codecs_64.iss"
 #else
