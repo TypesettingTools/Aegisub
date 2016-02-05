@@ -131,7 +131,6 @@
       <OutputPath>csri\</OutputPath>
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)bin\devil.dll" Condition="'$(AegisubUseAvisynth)' == 'true'" />
-    <RarContents Include="$(AegisubSourceBase)bin\ffms2_$(AegisubPlatformSuffix).dll" Condition="'$(AegisubUseFfms)' == 'true'" />
     <RarContents Include="$(AegisubSourceBase)packages\win_installer\portable\config.json" />
     <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC140.CRT\msvcp140.dll" />
     <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC140.CRT\concrt140.dll" />

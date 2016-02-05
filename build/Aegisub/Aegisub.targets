@@ -79,7 +79,7 @@
   <!-- FFmpegSource support -->
   <ItemDefinitionGroup Condition="'$(AegisubUseFfms)'=='true'">
     <ClCompile>
-      <PreprocessorDefinitions>WITH_FFMS2;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WITH_FFMS2;FFMS_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
 

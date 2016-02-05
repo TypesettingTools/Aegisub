@@ -101,7 +101,6 @@
       <Filter>Automation\Include</Filter>
     </RarContents>
     <RarContents Include="$(AegisubSourceBase)bin\aegisub$(AegisubPlatformSuffix).exe" />
-    <RarContents Include="$(AegisubSourceBase)bin\ffms2_$(AegisubPlatformSuffix).dll" />
     <RarContents Include="$(AegisubSourceBase)packages\win_installer\portable\config.json" />
     <RarContents Include="$(VCInstallDir)redist\$(PlatformName)\Microsoft.VC110.MFC\mfc110u.dll">
       <Filter>Runtime</Filter>
