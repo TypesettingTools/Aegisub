@@ -115,7 +115,6 @@ src_OBJ := \
 	$(TOP)lib/libaegisub.a \
 	$(TOP)lib/libluabins.a \
 	$(TOP)lib/libresrc.a \
-	$(TOP)lib/libuniversalchardet.a \
 
 ifeq (yes, $(BUILD_DARWIN))
 src_OBJ += $(d)font_file_lister_coretext.o
@@ -180,6 +179,10 @@ ifeq (yes, $(HAVE_HUNSPELL))
 $(d)spellchecker_hunspell.o_FLAGS := $(CFLAGS_HUNSPELL)
 src_LIBS += $(LIBS_HUNSPELL)
 src_OBJ += $(d)spellchecker_hunspell.o
+endif
+
+ifeq (yes, $(HAVE_UCHARDET))
+src_LIBS += $(LIBS_UCHARDET)
 endif
 
 #####################

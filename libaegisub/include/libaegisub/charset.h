@@ -16,23 +16,13 @@
 /// @brief Character set detection and manipulation utilities.
 /// @ingroup libaegisub
 
-#include <libaegisub/exception.h>
 #include <libaegisub/fs_fwd.h>
 
 #include <string>
-#include <vector>
 
 namespace agi {
 	/// Character set conversion and detection.
 	namespace charset {
-
-/// List of detected encodings.
-typedef std::vector<std::pair<float, std::string>> CharsetListDetected;
-
-/// @brief Return a complete list of detected character sets ordered by precedence.
-/// @param file File to check
-/// @return List of possible charsets sorted by probability
-CharsetListDetected DetectAll(agi::fs::path const& file);
 
 /// @brief Returns the character set with the highest confidence
 /// @param file File to check

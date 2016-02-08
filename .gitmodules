@@ -41,3 +41,7 @@
 	path = vendor/fftw
 	url = https://github.com/Aegisub/fftw3.git
 	ignore = dirty
+[submodule "uchardet"]
+	path = vendor/uchardet
+	url = https://github.com/BYVoid/uchardet
+	ignore = dirty

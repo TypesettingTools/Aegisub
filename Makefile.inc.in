@@ -2,12 +2,13 @@
 # AEGISUB FEATURE SUPPORT
 #########################
 HAVE_ALSA       = @with_alsa@
+HAVE_FFMS2      = @with_ffms2@
 HAVE_HUNSPELL   = @with_hunspell@
+HAVE_LIBPULSE   = @with_libpulse@
 HAVE_OPENAL     = @with_openal@
 HAVE_OSS        = @with_oss@
 HAVE_PORTAUDIO  = @with_portaudio@
-HAVE_FFMS2      = @with_ffms2@
-HAVE_LIBPULSE   = @with_libpulse@
+HAVE_UCHARDET   = @with_uchardet@
 
 ##############
 # BUILD OUTPUT
@@ -83,7 +84,7 @@ CFLAGS_OPENAL      = @OPENAL_CFLAGS@
 CFLAGS_OSS         = @OSS_CFLAGS@
 CFLAGS_PORTAUDIO   = @PORTAUDIO_CFLAGS@
 CFLAGS_PTHREAD     = @PTHREAD_CFLAGS@
-CFLAGS_UCHARDET    = -I$(TOP)vendor/universalchardet
+CFLAGS_UCHARDET    = @UCHARDET_CFLAGS@
 
 LIBS_ALSA          = @ALSA_LIBS@
 LIBS_FFMS2         = @FFMS2_LIBS@
@@ -100,6 +101,7 @@ LIBS_LUA           = $(TOP)vendor/luajit/src/libluajit.a
 LIBS_OPENAL        = @OPENAL_LIBS@
 LIBS_PORTAUDIO     = @PORTAUDIO_LIBS@
 LIBS_PTHREAD       = @PTHREAD_LIBS@
+LIBS_UCHARDET      = @UCHARDET_LIBS@
 
 ifeq (yes, $(BUILD_DARWIN))
 LIBS_LUA           = $(TOP)vendor/luajit/src/libluajit-aegisub.so

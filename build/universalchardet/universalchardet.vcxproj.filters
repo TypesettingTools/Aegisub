@@ -15,45 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="$(SrcDir)Big5Freq.tab">
-      <Filter>Frequency tables</Filter>
-    </None>
-    <None Include="$(SrcDir)JISFreq.tab">
-      <Filter>Frequency tables</Filter>
-    </None>
-    <None Include="$(SrcDir)EUCKRFreq.tab">
-      <Filter>Frequency tables</Filter>
-    </None>
-    <None Include="$(SrcDir)EUCTWFreq.tab">
-      <Filter>Frequency tables</Filter>
-    </None>
-    <None Include="$(SrcDir)GB2312Freq.tab">
-      <Filter>Frequency tables</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="$(SrcDir)CharDistribution.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)JpCntx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)LangBulgarianModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)LangCyrillicModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)LangGreekModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)LangHebrewModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)LangHungarianModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="$(SrcDir)LangThaiModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(SrcDir)nsBig5Prober.cpp">
@@ -107,6 +72,45 @@
     <ClCompile Include="$(SrcDir)nsUTF8Prober.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangArabicModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangBulgarianModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangEsperantoModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangFrenchModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangGermanModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangGreekModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangHebrewModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangHungarianModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangRussianModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangSpanishModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangThaiModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)LangModels/LangTurkishModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(SrcDir)uchardet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(SrcDir)CharDistribution.h">
@@ -125,9 +129,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)nscore.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(SrcDir)nsError.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(SrcDir)nsEscCharsetProber.h">
@@ -172,20 +173,26 @@
     <ClInclude Include="$(SrcDir)nsUTF8Prober.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)prcpucfg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(SrcDir)prmem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)protypes.h">
+    <ClInclude Include="$(SrcDir)uchardet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)prtypes.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="$(SrcDir)Big5Freq.tab">
+      <Filter>Frequency tables</Filter>
     </ClInclude>
-    <ClInclude Include="$(SrcDir)xpcom-config.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="$(SrcDir)EUCKRFreq.tab">
+      <Filter>Frequency tables</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)EUCTWFreq.tab">
+      <Filter>Frequency tables</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)GB2312Freq.tab">
+      <Filter>Frequency tables</Filter>
+    </ClInclude>
+    <ClInclude Include="$(SrcDir)JISFreq.tab">
+      <Filter>Frequency tables</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -9,7 +9,7 @@ before_install:
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8 --slave /usr/bin/gcov gcov /usr/bin/gcov-4.8
   - sudo pip install cpp-coveralls
 install:
-  - sudo apt-get install -y -qq libasound2-dev libfftw3-dev libhunspell-dev yasm libfribidi-dev libass-dev libffms2-dev libwxgtk3.0-dev libicu-dev luarocks
+  - sudo apt-get install -y -qq libasound2-dev libfftw3-dev libhunspell-dev yasm libfribidi-dev libass-dev libffms2-dev libwxgtk3.0-dev libicu-dev luarocks libuchardet-dev
   - sudo luarocks install busted > /dev/null
   - sudo luarocks install moonscript > /dev/null
   - sudo luarocks install uuid > /dev/null

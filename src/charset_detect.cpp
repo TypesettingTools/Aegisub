@@ -38,9 +38,6 @@
 
 #include <libaegisub/charset.h>
 #include <libaegisub/charset_conv.h>
-#include <libaegisub/log.h>
-
-#include <boost/filesystem/path.hpp>
 
 #include <wx/arrstr.h>
 #include <wx/choicdlg.h>
@@ -49,35 +46,17 @@
 namespace CharSetDetect {
 
 std::string GetEncoding(agi::fs::path const& filename) {
-	auto list = agi::charset::DetectAll(filename);
+	auto encoding = agi::charset::Detect(filename);
+	if (!encoding.empty())
+		return encoding;
 
-	if (list.size() == 1) {
-		auto charset = list.begin();
-		LOG_I("charset/file") << filename << " (" << charset->second << ")";
-		return charset->second;
-	}
-
-	wxArrayString choices;
-	std::string log_choice;
-
-	for (auto const& charset : list) {
-		choices.push_back(to_wx(charset.second));
-		log_choice.append(" " + charset.second);
-	}
-
-	LOG_I("charset/file") << filename << " (" << log_choice << ")";
-
-	if (choices.empty())
-		choices = agi::charset::GetEncodingsList<wxArrayString>();
-
+	auto choices = agi::charset::GetEncodingsList<wxArrayString>();
 	int choice = wxGetSingleChoiceIndex(
 		_("Aegisub could not narrow down the character set to a single one.\nPlease pick one below:"),
 		_("Choose character set"),
 		choices);
 	if (choice == -1) throw agi::UserCancelException("Cancelled encoding selection");
-	if (list.empty())
-		return agi::charset::GetEncodingsList<std::vector<std::string>>()[choice];
-	return list[choice].second;
+	return from_wx(choices[choice]);
 }
 
 }

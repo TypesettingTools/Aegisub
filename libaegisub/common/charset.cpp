@@ -19,104 +19,56 @@
 #include "libaegisub/charset.h"
 
 #include "libaegisub/file_mapping.h"
+#include "libaegisub/scoped_ptr.h"
 
-#include <string>
-
-#ifndef _WIN32
-#define _X86_ 1
+#ifdef WITH_UCHARDET
+#include <uchardet/uchardet.h>
 #endif
 
-#include "../../vendor/universalchardet/nscore.h"
-#include "../../vendor/universalchardet/nsUniversalDetector.h"
-#include "../../vendor/universalchardet/nsCharSetProber.h"
-
-namespace {
-using namespace agi::charset;
-
-class UCDetect final : public nsUniversalDetector {
-	/// List of detected character sets
-	CharsetListDetected list;
-
-	void Report(const char*) override {}
-
-public:
-	/// @brief Detect character set of a file using UniversalCharDetect
-	/// @param file File to check
-	UCDetect(agi::fs::path const& file)
-	: nsUniversalDetector(NS_FILTER_ALL)
-	{
-		{
-			agi::read_file_mapping fp(file);
-
-			// If it's over 100 MB it's either binary or big enough that we won't
-			// be able to do anything useful with it anyway
-			if (fp.size() > 100 * 1024 * 1024) {
-				list.emplace_back(1.f, "binary");
-				return;
-			}
-
-			uint64_t binaryish = 0;
-			for (uint64_t offset = 0; !mDone && offset < fp.size(); ) {
-				auto read = std::min<uint64_t>(4096, fp.size() - offset);
-				auto buf = fp.read(offset, read);
-				HandleData(buf, (PRUint32)read);
-				offset += read;
-
-				// A dumb heuristic to detect binary files
-				if (!mDone) {
-					for (size_t i = 0; i < read; ++i) {
-						if ((unsigned char)buf[i] < 32 && (buf[i] != '\r' && buf[i] != '\n' && buf[i] != '\t'))
-							++binaryish;
-					}
-
-					if (binaryish > offset / 8) {
-						list.emplace_back(1.f, "binary");
-						return;
-					}
-				}
-			}
-		}
-
-		DataEnd();
-
-		if (mDetectedCharset)
-			list.emplace_back(1.f, mDetectedCharset);
-		else {
-			switch (mInputState) {
-			case eHighbyte:
-				for (auto& elem : mCharSetProbers) {
-					if (!elem) continue;
-
-					float conf = elem->GetConfidence();
-					if (conf > 0.01f)
-						list.emplace_back(conf, elem->GetCharSetName());
-				}
-				break;
-
-			case ePureAscii:
-				list.emplace_back(1.f, "US-ASCII");
-				break;
-
-			default:
-				return;
-			}
-
-			typedef std::pair<float, std::string> const& result;
-			sort(begin(list), end(list), [](result lft, result rgt) { return lft.first > rgt.first; });
-		}
-	}
-
-	/// @brief Detect character set of a file using UniversalCharDet
-	CharsetListDetected List() const { return list; }
-};
-}
-
 namespace agi { namespace charset {
-	std::string Detect(agi::fs::path const& file) {
-		return DetectAll(file).front().second;
+std::string Detect(agi::fs::path const& file) {
+	agi::read_file_mapping fp(file);
+
+	// If it's over 100 MB it's either binary or big enough that we won't
+	// be able to do anything useful with it anyway
+	if (fp.size() > 100 * 1024 * 1024)
+		return "binary";
+
+	uint64_t binaryish = 0;
+
+#ifdef WITH_UCHARDET
+	agi::scoped_holder<uchardet_t> ud(uchardet_new(), uchardet_delete);
+	for (uint64_t offset = 0; offset < fp.size(); ) {
+		auto read = std::min<uint64_t>(4096, fp.size() - offset);
+		auto buf = fp.read(offset, read);
+		uchardet_handle_data(ud, buf, read);
+		uchardet_data_end(ud);
+		if (*uchardet_get_charset(ud))
+			return uchardet_get_charset(ud);
+
+		offset += read;
+
+		// A dumb heuristic to detect binary files
+		for (size_t i = 0; i < read; ++i) {
+			if ((unsigned char)buf[i] < 32 && (buf[i] != '\r' && buf[i] != '\n' && buf[i] != '\t'))
+				++binaryish;
+		}
+
+		if (binaryish > offset / 8)
+			return "binary";
+	}
+	return uchardet_get_charset(ud);
+#else
+	auto read = std::min<uint64_t>(4096, fp.size());
+	auto buf = fp.read(0, read);
+	for (size_t i = 0; i < read; ++i) {
+		if ((unsigned char)buf[i] < 32 && (buf[i] != '\r' && buf[i] != '\n' && buf[i] != '\t'))
+			++binaryish;
 	}
 
-	CharsetListDetected DetectAll(agi::fs::path const& file) {
-		return UCDetect(file).List();
-	}
+	if (binaryish > read / 8)
+		return "binary";
+	return "utf-8";
+#endif
+}
 } }

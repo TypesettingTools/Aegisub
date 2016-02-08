@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7B56955D-5162-4698-AA5B-47484EDC8783}</ProjectGuid>
@@ -8,7 +8,7 @@
   <!-- Aegisub project configuration -->
   <PropertyGroup Label="AegisubConfiguration">
     <AegisubProjectType>lib</AegisubProjectType>
-    <SrcDir>..\..\vendor\universalchardet\</SrcDir>
+    <SrcDir>..\..\vendor\uchardet\src\</SrcDir>
   </PropertyGroup>
 
   <ImportGroup Label="PropertySheets">
@@ -18,26 +18,37 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <ExceptionHandling>false</ExceptionHandling>
+      <PreprocessorDefinitions>
+        _CRT_NONSTDC_NO_DEPRECATE;
+        %(PreprocessorDefinitions)
+      </PreprocessorDefinitions>
     </ClCompile>
+    <InstallHeader>
+      <HeaderRoot>$(SrcDir)</HeaderRoot>
+      <Destination>uchardet\</Destination>
+    </InstallHeader>
   </ItemDefinitionGroup>
 
   <!-- Source files -->
   <ItemGroup>
-    <None Include="$(SrcDir)Big5Freq.tab" />
-    <None Include="$(SrcDir)EUCKRFreq.tab" />
-    <None Include="$(SrcDir)EUCTWFreq.tab" />
-    <None Include="$(SrcDir)GB2312Freq.tab" />
-    <None Include="$(SrcDir)JISFreq.tab" />
+    <InstallHeader Include="$(SrcDir)uchardet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)CharDistribution.cpp" />
     <ClCompile Include="$(SrcDir)JpCntx.cpp" />
-    <ClCompile Include="$(SrcDir)LangBulgarianModel.cpp" />
-    <ClCompile Include="$(SrcDir)LangCyrillicModel.cpp" />
-    <ClCompile Include="$(SrcDir)LangGreekModel.cpp" />
-    <ClCompile Include="$(SrcDir)LangHebrewModel.cpp" />
-    <ClCompile Include="$(SrcDir)LangHungarianModel.cpp" />
-    <ClCompile Include="$(SrcDir)LangThaiModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangArabicModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangBulgarianModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangEsperantoModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangFrenchModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangGermanModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangGreekModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangHebrewModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangHungarianModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangRussianModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangSpanishModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangThaiModel.cpp" />
+    <ClCompile Include="$(SrcDir)LangModels/LangTurkishModel.cpp" />
     <ClCompile Include="$(SrcDir)nsBig5Prober.cpp" />
     <ClCompile Include="$(SrcDir)nsCharSetProber.cpp" />
     <ClCompile Include="$(SrcDir)nsEscCharsetProber.cpp" />
@@ -55,15 +66,20 @@
     <ClCompile Include="$(SrcDir)nsSJISProber.cpp" />
     <ClCompile Include="$(SrcDir)nsUniversalDetector.cpp" />
     <ClCompile Include="$(SrcDir)nsUTF8Prober.cpp" />
+    <ClCompile Include="$(SrcDir)uchardet.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(SrcDir)Big5Freq.tab" />
+    <ClInclude Include="$(SrcDir)EUCKRFreq.tab" />
+    <ClInclude Include="$(SrcDir)EUCTWFreq.tab" />
+    <ClInclude Include="$(SrcDir)GB2312Freq.tab" />
+    <ClInclude Include="$(SrcDir)JISFreq.tab" />
     <ClInclude Include="$(SrcDir)CharDistribution.h" />
     <ClInclude Include="$(SrcDir)JpCntx.h" />
     <ClInclude Include="$(SrcDir)nsBig5Prober.h" />
     <ClInclude Include="$(SrcDir)nsCharSetProber.h" />
     <ClInclude Include="$(SrcDir)nsCodingStateMachine.h" />
     <ClInclude Include="$(SrcDir)nscore.h" />
-    <ClInclude Include="$(SrcDir)nsError.h" />
     <ClInclude Include="$(SrcDir)nsEscCharsetProber.h" />
     <ClInclude Include="$(SrcDir)nsEUCJPProber.h" />
     <ClInclude Include="$(SrcDir)nsEUCKRProber.h" />
@@ -78,10 +94,7 @@
     <ClInclude Include="$(SrcDir)nsSJISProber.h" />
     <ClInclude Include="$(SrcDir)nsUniversalDetector.h" />
     <ClInclude Include="$(SrcDir)nsUTF8Prober.h" />
-    <ClInclude Include="$(SrcDir)prcpucfg.h" />
     <ClInclude Include="$(SrcDir)prmem.h" />
-    <ClInclude Include="$(SrcDir)protypes.h" />
-    <ClInclude Include="$(SrcDir)prtypes.h" />
-    <ClInclude Include="$(SrcDir)xpcom-config.h" />
+    <ClInclude Include="$(SrcDir)uchardet.h" />
   </ItemGroup>
 </Project>

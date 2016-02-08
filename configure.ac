@@ -38,9 +38,6 @@ AS_CASE([$host],
         [*-*-darwin*], [build_darwin="yes"],
         [*-*-linux*],  [build_linux="yes"])
 
-# Used for universalchardet.
-AC_AGI_MDCPUCFG($host)
-
 AC_SUBST(build_darwin)
 
 ########################
@@ -384,6 +381,7 @@ AGI_OPT_PKG(ffms2, [build without ffms2 A/V provider [auto]], [Enable FFMS2 supp
 
 AGI_OPT_PKG(fftw3, [build without fftw support [auto]], [Enable fftw support])
 AGI_OPT_PKG(hunspell, [build without hunspell spell-checking [auto]], [Enable Hunspell support])
+AGI_OPT_PKG(uchardet, [build without automatic character set detection [auto]], [Enable uchardet support])
 
 ######################################################
 # Debugging support
@@ -571,6 +569,7 @@ Audio Players
   PulseAudio:            $with_libpulse $libpulse_disabled
 
 Misc Packages
+  uchardet:              $with_uchardet $uchardet_disabled
   Hunspell:              $with_hunspell $hunspell_disabled
   FFTW3:                 $with_fftw3 $fftw3_disabled
 ])
