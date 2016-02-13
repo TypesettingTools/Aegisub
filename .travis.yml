@@ -1,15 +1,37 @@
+sudo: required
+dist: trusty
 language: cpp
+
 git:
   submodules: false
-before_install:
-  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-  - sudo add-apt-repository -y ppa:vslavik/poedit
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq g++-4.8
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 60 --slave /usr/bin/g++ g++ /usr/bin/g++-4.8 --slave /usr/bin/gcov gcov /usr/bin/gcov-4.8
-  - sudo pip install cpp-coveralls
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - libasound2-dev
+    - libfftw3-dev
+    - libhunspell-dev
+    - yasm
+    - libfribidi-dev
+    - libass-dev
+    - libicu-dev
+    - luarocks
+    - g++-5
+
+matrix:
+  include:
+    - compiler: gcc
+    - compiler: gcc
+      before_install:
+        - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5 --slave /usr/bin/gcov gcov /usr/bin/gcov-5
+
 install:
-  - sudo apt-get install -y -qq libasound2-dev libfftw3-dev libhunspell-dev yasm libfribidi-dev libass-dev libffms2-dev libwxgtk3.0-dev libicu-dev luarocks libuchardet-dev
+  # Can't install these via the apt addon due to the whitelist
+  - sudo apt-get install -y -qq libffms2-dev libwxgtk3.0-dev libuchardet-dev
+
+  - sudo pip install cpp-coveralls
   - sudo luarocks install busted > /dev/null
   - sudo luarocks install moonscript > /dev/null
   - sudo luarocks install uuid > /dev/null
@@ -26,6 +48,7 @@ install:
   - ./bootstrap.sh
   - ./b2 -j3 -layout=system threading=multi cxxflags=-std=c++11 link=shared variant=release --without-python --without-iostreams --without-serialization --without-graph --without-log --without-math --without-signals --without-test --without-wave --without-mpi --without-program_options --without-graph_parallel --without-context --without-coroutine --without-random --without-timer --without-date_time
   - cd ../..
+
 script:
   - export CPATH=$(pwd)/vendor/boost
   - export LD_LIBRARY_PATH=$(pwd)/vendor/boost/stage/lib:$LD_LIBRARY_PATH
@@ -35,8 +58,9 @@ script:
   - ./configure BOOST_LDFLAGS="-L$(pwd)/vendor/boost/stage/lib" --enable-debug || cat config.log
   - make -j3 all test
   - coveralls --exclude vendor --exclude src --exclude build --exclude tools --exclude libaegisub/windows > /dev/null
+
 notifications:
   email:
-    - on_success: change
-    - on_failure: change
+  - on_success: change
+  - on_failure: change
 
