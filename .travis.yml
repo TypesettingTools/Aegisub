@@ -23,7 +23,9 @@ addons:
 matrix:
   include:
     - compiler: gcc
+      env: BOOST_VERSION=55
     - compiler: gcc
+      env: BOOST_VERSION=60
       before_install:
         - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5 --slave /usr/bin/gcov gcov /usr/bin/gcov-5
 
@@ -41,9 +43,9 @@ install:
 
   - cd vendor
   - rm -rf boost
-  - wget http://sourceforge.net/projects/boost/files/boost/1.55.0/boost_1_55_0.tar.bz2/download
+  - wget http://sourceforge.net/projects/boost/files/boost/1.${BOOST_VERSION}.0/boost_1_${BOOST_VERSION}_0.tar.bz2/download
   - tar xjf download
-  - mv boost_1_55_0 boost
+  - mv boost_1_${BOOST_VERSION}_0 boost
   - cd boost
   - ./bootstrap.sh
   - ./b2 -j3 -layout=system threading=multi cxxflags=-std=c++11 link=shared variant=release --without-python --without-iostreams --without-serialization --without-graph --without-log --without-math --without-signals --without-test --without-wave --without-mpi --without-program_options --without-graph_parallel --without-context --without-coroutine --without-random --without-timer --without-date_time
