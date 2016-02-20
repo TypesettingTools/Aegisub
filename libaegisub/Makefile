@@ -44,7 +44,7 @@ aegisub_OBJ += $(d)common/dispatch.o
 endif
 
 aegisub_PCH := $(d)lagi_pre.h
-aegisub_CPPFLAGS := -I$(d)include -I$(TOP) $(CPPFLAGS_BOOST) $(CFLAGS_LUA)
+aegisub_CPPFLAGS := -I$(d)include -I$(TOP) $(CPPFLAGS_BOOST) $(CFLAGS_LUA) $(CFLAGS_PTHREAD)
 
 $(d)common/charset.o_FLAGS := $(CFLAGS_UCHARDET)
 $(d)common/charset_conv.o_FLAGS := $(CFLAGS_ICONV)
