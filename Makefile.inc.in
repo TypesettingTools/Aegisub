@@ -135,4 +135,5 @@ BIN_MKDIR    = mkdir
 BIN_MKDIR_P  = mkdir -p
 BIN_ECHO     = echo
 BIN_TOUCH    = touch
+BIN_LUA      = @LUA@
 BIN_WX_CONFIG = @WX_CONFIG_PATH@

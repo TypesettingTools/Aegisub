@@ -396,6 +396,7 @@ AS_IF([test x$with_system_luajit = xno], [],
        with_system_luajit="no"])])
 
 # Check if it's compiled in Lua 5.2 mode
+# This check can be skipped by manually setting agi_cv_luajit_is_52
 AS_IF([test x$with_system_luajit != xno], [
   aegisub_save_LIBS="$LIBS"
   aegisub_save_CPPFLAGS="$CPPFLAGS"
@@ -427,6 +428,14 @@ AS_IF([test x$with_system_luajit != xno], [
 AS_IF([test $with_system_luajit = no],
       [AC_SUBST([LUAJIT_CFLAGS], ['-I$(TOP)vendor/luajit/include'])
        AC_SUBST([LUAJIT_LIBS], ['$(TOP)vendor/luajit/src/libluajit.a'])])
+
+# We also need a Lua binary to run part of the build system
+# Which version doesn't matter as the scripts are portable between them
+AC_CHECK_PROGS([LUA], [lua luajit lua5.3 lua-5.3 lua5.2 lua-5.2 lua5.1 lua-5.1])
+
+# If the user doesn't have an installed copy of Lua, just use the one built
+# as part of building LuaJIT
+AS_IF([test -z $LUA], [LUA="$srcdir/vendor/luajit/src/host/minilua"])
 
 ######################################################
 # Debugging support

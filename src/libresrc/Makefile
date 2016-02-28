@@ -10,7 +10,7 @@ resrc_OBJ := \
 
 $(resrc_OBJ): $(d)default_config.h $(d)bitmap.h $(d)default_config.cpp $(d)bitmap.cpp
 
-RESPACK := cd $(TOP)src/libresrc; $(TOP)vendor/luajit/src/host/minilua $(TOP)tools/respack.lua
+RESPACK := cd $(TOP)src/libresrc; $(BIN_LUA) $(TOP)tools/respack.lua
 
 $(d)bitmap.cpp: $(d)bitmap.h
 $(d)default_config.cpp: $(d)default_config.h

@@ -12,6 +12,6 @@ repack-thes-dict_CPPFLAGS := -I$(TOP) -I$(TOP)libaegisub/include $(CFLAGS_ICU)
 
 PROGRAM += $(d)repack-thes-dict
 
-$(TOP)tools/respack.lua: $(TOP)vendor/luajit/src/host/minilua
+$(TOP)tools/respack.lua: $(shell command -v "$(BIN_LUA)")
 
 include $(TOP)Makefile.target

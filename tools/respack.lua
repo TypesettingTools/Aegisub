@@ -1,4 +1,4 @@
-#!../vendor/luajit/src/host/minilua
+#!/usr/bin/env luajit
 -- Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
 --
 -- Permission to use, copy, modify, and distribute this software for any
