@@ -396,7 +396,7 @@ namespace {
 		name = GetPrettyFilename().string();
 
 		// create lua environment
-		L = lua_open();
+		L = luaL_newstate();
 		if (!L) {
 			description = "Could not initialize Lua state";
 			return;

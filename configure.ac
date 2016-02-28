@@ -383,6 +383,51 @@ AGI_OPT_PKG(fftw3, [build without fftw support [auto]], [Enable fftw support])
 AGI_OPT_PKG(hunspell, [build without hunspell spell-checking [auto]], [Enable Hunspell support])
 AGI_OPT_PKG(uchardet, [build without automatic character set detection [auto]], [Enable uchardet support])
 
+########
+# LuaJIT
+########
+system_luajit="bundled"
+AC_ARG_WITH(system-luajit, AS_HELP_STRING([--without-system-luajit], [Use built-in LuaJIT [auto]]))
+# Check if it's available at all
+AS_IF([test x$with_system_luajit = xno], [],
+      [PKG_CHECK_MODULES(LUAJIT, luajit >= 2.0.0, [], [
+       AS_IF([test x$with_system_luajit = xyes],
+             [AC_MSG_FAILURE([--with-sytem-luajit was specified, but luajit could not be found])])
+       with_system_luajit="no"])])
+
+# Check if it's compiled in Lua 5.2 mode
+AS_IF([test x$with_system_luajit != xno], [
+  aegisub_save_LIBS="$LIBS"
+  aegisub_save_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS $LUAJIT_CFLAGS"
+  LIBS="$LIBS $LUAJIT_LIBS"
+  AC_CACHE_CHECK(
+    [whether LuaJIT is compiled in 5.2 mode], [agi_cv_luajit_is_52],
+    [AC_RUN_IFELSE([AC_LANG_PROGRAM(
+     [[#include <lauxlib.h>]],
+     [[lua_State *L = luaL_newstate();
+       if (!L) return 1;
+       // This is valid in lua 5.2, but a syntax error in 5.1
+       const char testprogram[] = "function foo() while true do break return end end";
+       return luaL_loadstring(L, testprogram) == LUA_ERRSYNTAX;
+     ]])], [agi_cv_luajit_is_52="yes"], [agi_cv_luajit_is_52="no"])])
+  CPPFLAGS="$aegisub_save_CPPFLAGS"
+  LIBS="$aegisub_save_LIBS"
+
+  if test $agi_cv_luajit_is_52 != yes; then
+    AS_IF([test x$with_system_luajit = xyes],
+          [AC_MSG_FAILURE([LuaJIT must be compiled in Lua 5.2 mode])])
+    with_system_luajit="no"
+  else
+    with_system_luajit="yes"
+    system_luajit="system"
+  fi
+])
+
+AS_IF([test $with_system_luajit = no],
+      [AC_SUBST([LUAJIT_CFLAGS], ['-I$(TOP)vendor/luajit/include'])
+       AC_SUBST([LUAJIT_LIBS], ['$(TOP)vendor/luajit/src/libluajit.a'])])
+
 ######################################################
 # Debugging support
 ######################################################
@@ -572,4 +617,5 @@ Misc Packages
   uchardet:              $with_uchardet $uchardet_disabled
   Hunspell:              $with_hunspell $hunspell_disabled
   FFTW3:                 $with_fftw3 $fftw3_disabled
+  LuaJIT:                $system_luajit
 ])
