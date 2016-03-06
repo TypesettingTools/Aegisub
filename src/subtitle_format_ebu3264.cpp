@@ -284,17 +284,17 @@ namespace
 								text_rows.emplace_back();
 								cur_row = &text_rows.back();
 								cur_row->emplace_back("", underline, italic, true);
+
+								start = i + 2;
 							}
 							else // if (substr == " " || substr == "\\n")
 							{
 								cur_row->back().text.append(" ");
 								cur_row->emplace_back("", underline, italic, true);
-							}
 
-							if (text[i] == '\\')
-								start = ++i + 1;
-							else
-								start = i;
+								start = i + 1 + (text[i] == '\\');
+							}
+							++i;
 						}
 
 						// add the remaining text
