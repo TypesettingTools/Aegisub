@@ -74,10 +74,13 @@
     <ClCompile Include="$(SrcDir)\src\ContractionState.cxx" />
     <ClCompile Include="$(SrcDir)\src\Decoration.cxx" />
     <ClCompile Include="$(SrcDir)\src\Document.cxx" />
+    <ClCompile Include="$(SrcDir)\src\EditModel.cxx" />
+    <ClCompile Include="$(SrcDir)\src\EditView.cxx" />
     <ClCompile Include="$(SrcDir)\src\Editor.cxx" />
     <ClCompile Include="$(SrcDir)\src\Indicator.cxx" />
     <ClCompile Include="$(SrcDir)\src\KeyMap.cxx" />
     <ClCompile Include="$(SrcDir)\src\LineMarker.cxx" />
+    <ClCompile Include="$(SrcDir)\src\MarginView.cxx" />
     <ClCompile Include="$(SrcDir)\src\PerLine.cxx" />
     <ClCompile Include="$(SrcDir)\src\PositionCache.cxx" />
     <ClCompile Include="$(SrcDir)\src\RESearch.cxx" />

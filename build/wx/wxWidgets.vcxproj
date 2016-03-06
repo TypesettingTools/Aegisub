@@ -369,6 +369,7 @@
     <ClCompile Include="$(SrcDir)src\msw\stattext.cpp" />
     <ClCompile Include="$(SrcDir)src\msw\statusbar.cpp" />
     <ClCompile Include="$(SrcDir)src\msw\stdpaths.cpp" />
+    <ClCompile Include="$(SrcDir)src\msw\systhemectrl.cpp" />
     <ClCompile Include="$(SrcDir)src\msw\textctrl.cpp" />
     <ClCompile Include="$(SrcDir)src\msw\textentry.cpp" />
     <ClCompile Include="$(SrcDir)src\msw\textmeasure.cpp" />

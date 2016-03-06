@@ -98,7 +98,7 @@
 #define wxUSE_CHECKBOX 1
 #define wxUSE_CHECKLISTBOX 1
 #define wxUSE_CHOICE 1
-#define wxUSE_COLLPANE 1
+#define wxUSE_COLLPANE 0
 #define wxUSE_COLOURPICKERCTRL 1
 #define wxUSE_COMBOBOX 1
 #define wxUSE_DATAVIEWCTRL 1
@@ -258,4 +258,5 @@
 #define wxUSE_TASKBARBUTTON 0
 #define wxUSE_ADDREMOVECTRL 0
 #define wxUSE_ACTIVITYINDICATOR 0
+#define wxUSE_WINRT 0
 #endif
