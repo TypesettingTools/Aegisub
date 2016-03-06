@@ -44,8 +44,8 @@ Context::Context()
 , audioController(make_unique<AudioController>(this))
 , initialLineState(make_unique<InitialLineState>(this))
 , search(make_unique<SearchReplaceEngine>(this))
-, dialog(make_unique<DialogManager>())
 , path(make_unique<Path>(*config::path))
+, dialog(make_unique<DialogManager>())
 {
 	subsController->SetSelectionController(selectionController.get());
 }
