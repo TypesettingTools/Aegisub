@@ -169,7 +169,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	}
 
 	{
-		wxSizerFlags button_flags = wxSizerFlags().Expand().Bottom().Border(wxBOTTOM, 5);
+		wxSizerFlags button_flags = wxSizerFlags().Expand().Border(wxBOTTOM, 5);
 
 		auto make_checkbox = [&](wxString const& text, const char *opt) {
 			auto checkbox = new wxCheckBox(this, -1, text);
