@@ -47,6 +47,11 @@ namespace {
 		{nullptr}
 	};
 
+	const char *added_hotkeys_minimize[][3] = {
+		{"app/minimize", "Default", "Ctrl-M"},
+		{nullptr}
+	};
+
 	void migrate_hotkeys(const char *added[][3]) {
 		auto hk_map = hotkey::inst->GetHotkeyMap();
 		bool changed = false;
@@ -108,6 +113,13 @@ void init() {
 		hotkey::inst->SetHotkeyMap(std::move(hk_map));
 		migrations.emplace_back("duplicate -> split");
 	}
+
+#ifdef __WXMAC__
+	if (boost::find(migrations, "app/minimize") == end(migrations)) {
+		migrate_hotkeys(added_hotkeys_minimize);
+		migrations.emplace_back("app/minimize");
+	}
+#endif
 
 	OPT_SET("App/Hotkey Migrations")->SetListString(std::move(migrations));
 }

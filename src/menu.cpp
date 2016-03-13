@@ -27,6 +27,7 @@
 #include "format.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
+#include "utils.h"
 
 #include <libaegisub/cajun/reader.h>
 #include <libaegisub/hotkey.h>
@@ -170,6 +171,10 @@ public:
 	{
 	}
 
+	void SetContext(agi::Context *c) {
+		context = c;
+	}
+
 	int AddCommand(cmd::Command *co, wxMenu *parent, std::string const& text = "") {
 		return AddCommand(co, parent, text.empty() ? co->StrMenu(context) : _(to_wx(text)));
 	}
@@ -229,6 +234,8 @@ public:
 	}
 
 	void OnMenuOpen(wxMenuEvent &) {
+		if (!context)
+			return;
 		for (auto const& item : dynamic_items) UpdateItem(item);
 		for (auto item : mru) item->Update();
 	}
@@ -237,7 +244,7 @@ public:
 		// This also gets clicks on unrelated things such as the toolbar, so
 		// the window ID ranges really need to be unique
 		size_t id = static_cast<size_t>(evt.GetId() - MENU_ID_BASE);
-		if (id < items.size())
+		if (id < items.size() && context)
 			cmd::call(items[id], context);
 
 #ifdef __WXMAC__
@@ -335,6 +342,11 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 
 	std::string submenu, recent, command, text, special;
 	read_entry(ele, "special", &special);
+
+#ifdef __WXMAC__
+	if (special == "window")
+		osx::make_windows_menu(parent);
+#endif
 
 	if (read_entry(ele, "submenu", &submenu) && read_entry(ele, "text", &text)) {
 		wxString tl_text = _(to_wx(text));
@@ -487,6 +499,21 @@ public:
 
 namespace menu {
 	void GetMenuBar(std::string const& name, wxFrame *window, agi::Context *c) {
+#ifdef __WXMAC__
+		auto bind_events = [&](CommandMenuBar *menu) {
+			window->Bind(wxEVT_ACTIVATE, [=](wxActivateEvent&) { menu->cm.SetContext(c); });
+			window->Bind(wxEVT_DESTROY, [=](wxWindowDestroyEvent&) {
+				if (!osx::activate_top_window_other_than(window))
+					menu->cm.SetContext(nullptr);
+			});
+		};
+
+		if (wxMenuBar *menu = wxMenuBar::MacGetCommonMenuBar()) {
+			bind_events(static_cast<CommandMenuBar *>(menu));
+			return;
+		}
+#endif
+
 		auto menu = agi::make_unique<CommandMenuBar>(c);
 		for (auto const& item : get_menu(name)) {
 			std::string submenu, disp;
@@ -502,9 +529,15 @@ namespace menu {
 			}
 		}
 
-		window->Bind(wxEVT_MENU_OPEN, &CommandManager::OnMenuOpen, &menu->cm);
-		window->Bind(wxEVT_MENU, &CommandManager::OnMenuClick, &menu->cm);
+		menu->Bind(wxEVT_MENU_OPEN, &CommandManager::OnMenuOpen, &menu->cm);
+		menu->Bind(wxEVT_MENU, &CommandManager::OnMenuClick, &menu->cm);
+
+#ifdef __WXMAC__
+		bind_events(menu.get());
+		wxMenuBar::MacSetCommonMenuBar(menu.get());
+#else
 		window->SetMenuBar(menu.get());
+#endif
 
 		menu.release();
 	}

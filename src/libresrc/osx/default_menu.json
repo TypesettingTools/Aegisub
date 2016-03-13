@@ -36,6 +36,7 @@
         { "submenu" : "main/video",    "text" : "&Video" },
         { "submenu" : "main/audio",    "text" : "&Audio" },
         { "special" : "automation",    "text" : "A&utomation" },
+        { "submenu" : "main/window",   "text" : "Window" },
         { "submenu" : "main/help",     "text" : "&Help", "special" : "help" }
     ],
     "main/file" : [
@@ -199,6 +200,14 @@
         { "command" : "grid/tags/hide" },
         {},
         { "command" : "app/toggle/toolbar" }
+    ],
+    "main/window" : [
+        { "command" : "app/minimize" },
+        { "command" : "app/maximize" },
+        {},
+        { "command" : "app/bring_to_front" },
+        {},
+        { "special" : "window" }
     ],
     "main/help" : [
         { "command" : "help/contents" },

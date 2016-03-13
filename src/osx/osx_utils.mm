@@ -66,3 +66,25 @@ void RestartAegisub() {
         [NSTask launchedTaskWithLaunchPath:helperPath
                                  arguments:@[NSBundle.mainBundle.executablePath]];
 }
+
+namespace osx {
+void make_windows_menu(wxMenu* wxmenu) {
+	NSApp.windowsMenu = wxmenu->GetHMenu();
+}
+
+bool activate_top_window_other_than(wxFrame *wx) {
+	NSWindow *w = wx->GetWXWindow();
+	for (NSNumber *windowNumber in [NSWindow windowNumbersWithOptions:0]) {
+		NSWindow *window = [NSApp windowWithWindowNumber:windowNumber.integerValue];
+		if (window && window.canBecomeMainWindow && window != w) {
+			[window makeMainWindow];
+			return true;
+		}
+	}
+	return false;
+}
+
+void bring_to_front() {
+	[NSApp arrangeInFront:nil];
+}
+}

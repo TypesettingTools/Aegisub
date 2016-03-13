@@ -107,6 +107,9 @@
 		]
 	},
 	"Default" : {
+		"app/minimize" : [
+			"Ctrl-M"
+		],
 		"app/exit" : [
 			"Ctrl-Q"
 		],
