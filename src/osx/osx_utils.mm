@@ -19,7 +19,8 @@
 /// @ingroup utils
 ///
 
-#include <wx/window.h>
+#include <wx/frame.h>
+#include <wx/menu.h>
 #include <wx/osx/core/cfstring.h>
 
 #import <AppKit/AppKit.h>
