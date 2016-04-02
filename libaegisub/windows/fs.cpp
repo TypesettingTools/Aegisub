@@ -30,13 +30,19 @@ namespace bfs = boost::filesystem;
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
-#include <versionhelpers.h>
 
 #undef CreateDirectory
 
 namespace {
 	FINDEX_INFO_LEVELS find_info_level() {
-		return IsWindows7OrGreater() ? FindExInfoBasic : FindExInfoStandard;
+		OSVERSIONINFO osvi = {};
+		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+		GetVersionEx(&osvi);
+
+		if (osvi.dwMajorVersion > 6 || (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1))
+			return FindExInfoBasic;
+		else
+			return FindExInfoStandard;
 	}
 }
 
