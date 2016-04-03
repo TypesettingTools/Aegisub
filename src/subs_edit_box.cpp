@@ -317,8 +317,10 @@ void SubsEditBox::OnCommit(int type) {
 	}
 
 	if (type == AssFile::COMMIT_NEW) {
-		PopulateList(effect_box, &AssDialogue::Effect);
-		PopulateList(actor_box, &AssDialogue::Actor);
+		// Without this pointless variable vc++ 2015 passes null to PopulateList
+		auto vs14_u2_workaround = &AssDialogue::Effect;
+		PopulateList(effect_box, vs14_u2_workaround);
+		PopulateList(actor_box, vs14_u2_workaround = &AssDialogue::Actor);
 		return;
 	}
 	else if (type & AssFile::COMMIT_STYLES)
