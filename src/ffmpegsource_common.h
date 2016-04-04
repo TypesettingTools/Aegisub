@@ -51,7 +51,6 @@ namespace agi { class BackgroundRunner; }
 /// @brief Base class for FFMS2 source providers; contains common functions etc
 class FFmpegSourceProvider {
 	friend class FFmpegSourceCacheCleaner;
-	agi::scoped_holder<bool> COMInited; ///< COM initialization state
 	agi::BackgroundRunner *br;
 
 public:

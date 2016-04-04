@@ -50,29 +50,9 @@
 #include <wx/intl.h>
 #include <wx/choicdlg.h>
 
-#ifdef _WIN32
-#include <objbase.h>
-
-static void deinit_com(bool) {
-	CoUninitialize();
-}
-#else
-static void deinit_com(bool) { }
-#endif
-
 FFmpegSourceProvider::FFmpegSourceProvider(agi::BackgroundRunner *br)
-: COMInited(false, deinit_com)
-, br(br)
+: br(br)
 {
-#ifdef _WIN32
-	HRESULT res = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-	if (SUCCEEDED(res))
-		COMInited = true;
-	else if (res != RPC_E_CHANGED_MODE)
-		throw agi::EnvironmentError("COM initialization failure");
-#endif
-
-	// initialize ffmpegsource
 	FFMS_Init(0, 1);
 }
 
