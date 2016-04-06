@@ -91,18 +91,20 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	}
 
 	std::map<int, std::string> TrackList = GetTracksOfType(Indexer, FFMS_TYPE_AUDIO);
-	if (TrackList.empty())
-		throw agi::AudioDataNotFound("no audio tracks found");
 
 	// initialize the track number to an invalid value so we can detect later on
 	// whether the user actually had to choose a track or not
 	int TrackNumber = -1;
 	if (TrackList.size() > 1) {
-		TrackNumber = AskForTrackSelection(TrackList, FFMS_TYPE_AUDIO);
-		// if it's still -1 here, user pressed cancel
-		if (TrackNumber == -1)
+		auto Selection = AskForTrackSelection(TrackList, FFMS_TYPE_AUDIO);
+		if (Selection == TrackSelection::None)
 			throw agi::UserCancelException("audio loading canceled by user");
+		TrackNumber = static_cast<int>(Selection);
 	}
+	else if (TrackList.size() == 1)
+		TrackNumber = TrackList.begin()->first;
+	else
+		throw agi::AudioDataNotFound("no audio tracks found");
 
 	// generate a name for the cache file
 	agi::fs::path CacheName = GetCacheFilename(filename);
@@ -114,24 +116,13 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	if (Index && FFMS_IndexBelongsToFile(Index, filename.string().c_str(), &ErrInfo))
 		Index = nullptr;
 
-	// index valid but track number still not set?
 	if (Index) {
-		// track number not set? just grab the first track
-		if (TrackNumber < 0)
-			TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, &ErrInfo);
-		if (TrackNumber < 0)
-			throw agi::AudioDataNotFound(std::string("Couldn't find any audio tracks: ") + ErrInfo.Buffer);
-
-		// index is valid and track number is now set,
-		// but do we have indexing info for the desired audio track?
+		// we already have an index, but the desired track may not have been
+		// indexed, and if it wasn't we need to reindex
 		FFMS_Track *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
 		if (FFMS_GetNumFrames(TempTrackData) <= 0)
 			Index = nullptr;
 	}
-	// no valid index exists and the file only has one audio track, index it
-	else if (TrackNumber < 0)
-		TrackNumber = FFMS_TRACKMASK_ALL;
-	// else: do nothing (keep track mask as it is)
 
 	// reindex if the error handling mode has changed
 	FFMS_IndexErrorHandling ErrorHandling = GetErrorHandlingMode();
@@ -142,17 +133,10 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 
 	// moment of truth
 	if (!Index) {
-		int TrackMask;
-		if (OPT_GET("Provider/FFmpegSource/Index All Tracks")->GetBool() || TrackNumber == FFMS_TRACKMASK_ALL)
-			TrackMask = FFMS_TRACKMASK_ALL;
-		else
-			TrackMask = (1 << TrackNumber);
-
+		TrackSelection TrackMask = static_cast<TrackSelection>(TrackNumber);
+		if (OPT_GET("Provider/FFmpegSource/Index All Tracks")->GetBool())
+			TrackMask = TrackSelection::All;
 		Index = DoIndexing(Indexer, CacheName, TrackMask, ErrorHandling);
-
-		// if tracknumber still isn't set we need to set it now
-		if (TrackNumber == FFMS_TRACKMASK_ALL)
-			TrackNumber = FFMS_GetFirstTrackOfType(Index, FFMS_TYPE_AUDIO, &ErrInfo);
 	}
 	else
 		FFMS_CancelIndexing(Indexer);

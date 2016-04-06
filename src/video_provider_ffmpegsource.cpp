@@ -149,14 +149,12 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 	if (TrackList.size() <= 0)
 		throw VideoNotSupported("no video tracks found");
 
-	// initialize the track number to an invalid value so we can detect later on
-	// whether the user actually had to choose a track or not
 	int TrackNumber = -1;
 	if (TrackList.size() > 1) {
-		TrackNumber = AskForTrackSelection(TrackList, FFMS_TYPE_VIDEO);
-		// if it's still -1 here, user pressed cancel
-		if (TrackNumber == -1)
+		auto Selection = AskForTrackSelection(TrackList, FFMS_TYPE_VIDEO);
+		if (Selection == TrackSelection::None)
 			throw agi::UserCancelException("video loading cancelled by user");
+		TrackNumber = static_cast<int>(Selection);
 	}
 
 	// generate a name for the cache file
@@ -180,9 +178,9 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 
 	// moment of truth
 	if (!Index) {
-		int TrackMask = FFMS_TRACKMASK_NONE;
+		auto TrackMask = TrackSelection::None;
 		if (OPT_GET("Provider/FFmpegSource/Index All Tracks")->GetBool() || OPT_GET("Video/Open Audio")->GetBool())
-			TrackMask = FFMS_TRACKMASK_ALL;
+			TrackMask = TrackSelection::All;
 		Index = DoIndexing(Indexer, CacheName, TrackMask, GetErrorHandlingMode());
 	}
 	else {

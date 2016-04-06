@@ -60,7 +60,10 @@ FFmpegSourceProvider::FFmpegSourceProvider(agi::BackgroundRunner *br)
 /// @param Indexer		A pointer to the indexer object representing the file to be indexed
 /// @param CacheName    The filename of the output index file
 /// @param Trackmask    A binary mask of the track numbers to index
-FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, agi::fs::path const& CacheName, int Trackmask, FFMS_IndexErrorHandling IndexEH) {
+FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer,
+	                                         agi::fs::path const& CacheName,
+	                                         TrackSelection Track,
+	                                         FFMS_IndexErrorHandling IndexEH) {
 	char FFMSErrMsg[1024];
 	FFMS_ErrorInfo ErrInfo;
 	ErrInfo.Buffer		= FFMSErrMsg;
@@ -78,8 +81,22 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer, agi::fs::pat
 			ps->SetProgress(Current, Total);
 			return ps->IsCancelled();
 		};
-		Index = FFMS_DoIndexing(Indexer, Trackmask, FFMS_TRACKMASK_NONE,
+#if FFMS_VERSION >= ((2 << 24) | (21 << 16) | (0 << 8) | 0)
+		if (Track == TrackSelection::All)
+			FFMS_TrackTypeIndexSettings(Indexer, FFMS_TYPE_AUDIO, 1, 0);
+		else if (Track != TrackSelection::None)
+			FFMS_TrackIndexSettings(Indexer, static_cast<int>(Track), 1, 0);
+		FFMS_SetProgressCallback(Indexer, callback, ps);
+		Index = FFMS_DoIndexing2(Indexer, IndexEH, &ErrInfo);
+#else
+		int Trackmask = 0;
+		if (Track == TrackSelection::All)
+			Trackmask = std::numeric_limits<int>::max();
+		else if (Track != TrackSelection::None)
+			Trackmask = 1 << static_cast<int>(Track);
+		Index = FFMS_DoIndexing(Indexer, Trackmask, 0,
 			nullptr, nullptr, IndexEH, callback, ps, &ErrInfo);
+#endif
 	});
 
 	if (Index == nullptr)
@@ -99,21 +116,24 @@ std::map<int, std::string> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *I
 	std::map<int,std::string> TrackList;
 	int NumTracks = FFMS_GetNumTracksI(Indexer);
 
+	// older versions of ffms2 can't index audio tracks past 31
+#if FFMS_VERSION < ((2 << 24) | (21 << 16) | (0 << 8) | 0)
+	if (Type == FFMS_TYPE_AUDIO)
+		NumTracks = std::min(NumTracks, std::numeric_limits<int>::digits);
+#endif
+
 	for (int i=0; i<NumTracks; i++) {
 		if (FFMS_GetTrackTypeI(Indexer, i) == Type) {
-			const char *CodecName = FFMS_GetCodecNameI(Indexer, i);
-			if (CodecName)
-				TrackList.insert(std::pair<int,std::string>(i, CodecName));
+			if (auto CodecName = FFMS_GetCodecNameI(Indexer, i))
+				TrackList[i] = CodecName;
 		}
 	}
 	return TrackList;
 }
 
-/// @brief Ask user for which track he wants to load
-/// @param TrackList	A std::map with the track numbers as keys and codec names as values
-/// @param Type			The track type to ask about
-/// @return				Returns the track number chosen (an integer >= 0) on success, or a negative integer if the user cancelled.
-int FFmpegSourceProvider::AskForTrackSelection(const std::map<int, std::string> &TrackList, FFMS_TrackType Type) {
+FFmpegSourceProvider::TrackSelection
+FFmpegSourceProvider::AskForTrackSelection(const std::map<int, std::string> &TrackList,
+                                           FFMS_TrackType Type) {
 	std::vector<int> TrackNumbers;
 	wxArrayString Choices;
 
@@ -128,8 +148,8 @@ int FFmpegSourceProvider::AskForTrackSelection(const std::map<int, std::string> 
 		Choices);
 
 	if (Choice < 0)
-		return Choice;
-	return TrackNumbers[Choice];
+		return TrackSelection::None;
+	return static_cast<TrackSelection>(TrackNumbers[Choice]);
 }
 
 /// @brief Set ffms2 log level according to setting in config.dat
