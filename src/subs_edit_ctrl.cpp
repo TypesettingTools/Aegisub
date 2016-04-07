@@ -270,8 +270,19 @@ void SubsTextEditCtrl::UpdateStyle() {
 
 	if (line_text.empty()) return;
 
-	for (auto const& style_range : agi::ass::SyntaxHighlight(line_text, tokenized_line, spellchecker.get()))
-		SetStyling(style_range.length, style_range.type);
+	SetIndicatorCurrent(0);
+	size_t pos = 0;
+	for (auto const& style_range : agi::ass::SyntaxHighlight(line_text, tokenized_line, spellchecker.get())) {
+		if (style_range.type == agi::ass::SyntaxStyle::SPELLING) {
+			SetStyling(style_range.length, agi::ass::SyntaxStyle::NORMAL);
+			IndicatorFillRange(pos, style_range.length);
+		}
+		else {
+			SetStyling(style_range.length, style_range.type);
+			IndicatorClearRange(pos, style_range.length);
+		}
+		pos += style_range.length;
+	}
 }
 
 void SubsTextEditCtrl::UpdateCallTip() {
