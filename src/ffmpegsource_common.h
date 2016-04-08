@@ -51,6 +51,9 @@ class FFmpegSourceProvider {
 public:
 	FFmpegSourceProvider(agi::BackgroundRunner *br);
 
+	// X11 is wonderful
+#undef None
+
 	enum class TrackSelection : int {
 		None = -1,
 		All = -2
