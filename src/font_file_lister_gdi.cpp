@@ -25,6 +25,8 @@
 
 #include <ShlObj.h>
 #include <boost/scope_exit.hpp>
+#include <unicode/utf16.h>
+#include <Usp10.h>
 
 namespace {
 uint32_t murmur3(const char *data, uint32_t len) {
@@ -221,20 +223,52 @@ CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, in
 	std::wstring utf16characters;
 	utf16characters.reserve(characters.size());
 	for (int chr : characters) {
-		// GetGlyphIndices does not support surrogate pairs, so only check BMP characters
-		if (chr < std::numeric_limits<wchar_t>::max())
+		if (U16_LENGTH(chr) == 1)
 			utf16characters.push_back(static_cast<wchar_t>(chr));
+		else {
+			utf16characters.push_back(U16_LEAD(chr));
+			utf16characters.push_back(U16_TRAIL(chr));
+		}
 	}
 
-	// Check the glyph coverage of the matched font
+	SCRIPT_CACHE cache = nullptr;
 	std::unique_ptr<WORD[]> indices(new WORD[utf16characters.size()]);
-	GetGlyphIndicesW(dc, utf16characters.data(), utf16characters.size(),
-	                 indices.get(), GGI_MARK_NONEXISTING_GLYPHS);
 
-	for (size_t i = 0; i < utf16characters.size(); ++i) {
-		if (indices[i] == 0xFFFF)
-			ret.missing += utf16characters[i];
+	// First try to check glyph coverage with Uniscribe, since it
+	// handles non-BMP unicode characters
+	auto hr = ScriptGetCMap(dc, &cache, utf16characters.data(),
+		utf16characters.size(), 0, indices.get());
+
+	// Uniscribe doesn't like some types of fonts, so fall back to GDI
+	if (hr == E_HANDLE) {
+		GetGlyphIndicesW(dc, utf16characters.data(), utf16characters.size(),
+			indices.get(), GGI_MARK_NONEXISTING_GLYPHS);
+		for (size_t i = 0; i < utf16characters.size(); ++i) {
+			if (U16_IS_SURROGATE(utf16characters[i]))
+				continue;
+			if (indices[i] == SHRT_MAX)
+				ret.missing += utf16characters[i];
+		}
 	}
+	else if (hr == S_FALSE) {
+		for (size_t i = 0; i < utf16characters.size(); ++i) {
+			// Uniscribe doesn't report glyph indexes for non-BMP characters,
+			// so we have to call ScriptGetCMap on each individual pair to
+			// determine if it's the missing one
+			if (U16_IS_LEAD(utf16characters[i])) {
+				hr = ScriptGetCMap(dc, &cache, &utf16characters[i], 2, 0, &indices[i]);
+				if (hr == S_FALSE) {
+					ret.missing += utf16characters[i];
+					ret.missing += utf16characters[i + 1];
+				}
+				++i;
+			}
+			else if (indices[i] == 0) {
+				ret.missing += utf16characters[i];
+			}
+		}
+	}
+	ScriptFreeCache(&cache);
 
 	return ret;
 }
