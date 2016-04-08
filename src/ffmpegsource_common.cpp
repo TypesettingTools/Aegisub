@@ -50,6 +50,20 @@
 #include <wx/intl.h>
 #include <wx/choicdlg.h>
 
+#if FFMS_VERSION < ((2 << 24) | (22 << 16) | (0 << 8) | 0)
+enum {
+	FFMS_LOG_QUIET = -8,
+	FFMS_LOG_PANIC = 0,
+	FFMS_LOG_FATAL = 8,
+	FFMS_LOG_ERROR = 16,
+	FFMS_LOG_WARNING = 24,
+	FFMS_LOG_INFO = 32,
+	FFMS_LOG_VERBOSE = 40,
+	FFMS_LOG_DEBUG = 48,
+	FFMS_LOG_TRACE = 56
+};
+#endif
+
 FFmpegSourceProvider::FFmpegSourceProvider(agi::BackgroundRunner *br)
 : br(br)
 {
