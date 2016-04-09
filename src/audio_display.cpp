@@ -997,8 +997,8 @@ void AudioDisplay::SetTrackCursor(int new_pos, bool show_time)
 	int old_pos = track_cursor_pos;
 	track_cursor_pos = new_pos;
 
-	RefreshRect(wxRect(old_pos - scroll_left - 0, audio_top, 1, audio_height), false);
-	RefreshRect(wxRect(new_pos - scroll_left - 0, audio_top, 1, audio_height), false);
+	RefreshRect(wxRect(old_pos - scroll_left - 1, audio_top, 2, audio_height - 1), false);
+	RefreshRect(wxRect(new_pos - scroll_left - 1, audio_top, 2, audio_height - 1), false);
 
 	// Make sure the old label gets cleared away
 	RefreshRect(track_cursor_label_rect, false);
