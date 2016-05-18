@@ -531,7 +531,7 @@ namespace
 		char buf[16];
 		va_list ap;
 		va_start(ap, format);
-		vsnprintf(buf, fieldlen, format, ap);
+		vsnprintf(buf, sizeof(buf), format, ap);
 		va_end(ap);
 		memcpy(field, buf, fieldlen);
 	}
