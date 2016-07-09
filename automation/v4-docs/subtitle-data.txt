@@ -254,7 +254,7 @@ An append operation does not move the cursor.
 
 Parsing karaoke data
 
-Tihs function uses the Aegisub SSA parser to split a string into karaoke
+This function uses the Aegisub SSA parser to split a string into karaoke
 syllables with additional calculated information added.
 
 function aegisub.parse_karaoke_data(text)
