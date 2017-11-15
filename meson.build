@@ -10,8 +10,6 @@ b_static = get_option('static')
 
 conf = configuration_data()
 conf.set_quoted('P_DATA', dataroot)
-conf.set_quoted('AEGISUB_CATALOG', 'aegisub')
-conf.set_quoted('AEGISUB_COMMAND', 'aegisub')
 if get_option('build_credit') != ''
     conf.set_quoted('BUILD_CREDIT', get_option('build_credit'))
 endif
@@ -143,5 +141,7 @@ deps += dep_gl
 
 acconf = configure_file(output : 'acconf.h', configuration : conf)
 
+subdir('automation')
 subdir('libaegisub')
+subdir('packages')
 subdir('src')
