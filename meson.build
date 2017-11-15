@@ -105,16 +105,13 @@ else
     message('System luajit not found; using built-in luajit')
 endif
 
-lua_names = ['lua', 'luajit', 'lua5.3', 'lua5.2', 'lua-5.2', 'lua5.1', 'lua-5.1']
 if not deps.contains(luajit)
     luajit_sp = subproject('luajit')
     luajit_inc = luajit_sp.get_variable('incdir')
     deps += luajit_sp.get_variable('luajit_dep')
-    lua_names += luajit_sp.get_variable('minilua').full_path()
 else
     luajit_inc = include_directories(luajit.get_pkgconfig_variable('includedir'))
 endif
-lua = find_program(lua_names, native : true)
 subdir('vendor/luabins/src')
 
 deps += dependency('wxWidgets', version : '>=3.0.0',
