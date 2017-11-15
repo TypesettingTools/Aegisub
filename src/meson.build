@@ -199,4 +199,5 @@ aegisub = executable('aegisub', aegisub_src, version_h, acconf,
                      link_with : [libresrc, libluabins, libaegisub],
                      include_directories : [libaegisub_inc, libresrc_inc, version_inc],
                      cpp_pch : 'include/agi_pre.h',
+                     install : true,
                      dependencies : deps)
