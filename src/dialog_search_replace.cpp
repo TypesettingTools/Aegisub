@@ -188,4 +188,5 @@ void DialogSearchReplace::Show(agi::Context *context, bool replace) {
 	diag->find_edit->SetFocus();
 	diag->find_edit->SelectAll();
 	diag->wxDialog::Show();
+	diag->Raise();
 }
