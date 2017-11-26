@@ -104,6 +104,9 @@ class OpenALPlayer final : public AudioPlayer, wxTimer {
 	/// wxTimer override to periodically fill available buffers
 	void Notify() override;
 
+	void InitContext();
+	void TeardownContext();
+
 public:
 	OpenALPlayer(agi::AudioProvider *provider);
 	~OpenALPlayer();
@@ -124,11 +127,24 @@ OpenALPlayer::OpenALPlayer(agi::AudioProvider *provider)
 , samplerate(provider->GetSampleRate())
 , bpf(provider->GetChannels() * provider->GetBytesPerSample())
 {
-	try {
-		// Open device
-		device = alcOpenDevice(nullptr);
-		if (!device) throw AudioPlayerOpenError("Failed opening default OpenAL device");
+	device = alcOpenDevice(nullptr);
+	if (!device) throw AudioPlayerOpenError("Failed opening default OpenAL device");
 
+	// Determine buffer length
+	decode_buffer.resize(samplerate * bpf / num_buffers / 2); // buffers for half a second of audio
+}
+
+OpenALPlayer::~OpenALPlayer()
+{
+	Stop();
+	alcCloseDevice(device);
+}
+
+void OpenALPlayer::InitContext()
+{
+	if (context) return;
+
+	try {
 		// Create context
 		context = alcCreateContext(device, nullptr);
 		if (!context) throw AudioPlayerOpenError("Failed creating OpenAL context");
@@ -151,27 +167,25 @@ OpenALPlayer::OpenALPlayer(agi::AudioProvider *provider)
 	catch (...)
 	{
 		alcDestroyContext(context);
-		alcCloseDevice(device);
+		context = nullptr;
 		throw;
 	}
-
-	// Determine buffer length
-	decode_buffer.resize(samplerate * bpf / num_buffers / 2); // buffers for half a second of audio
 }
 
-OpenALPlayer::~OpenALPlayer()
+void OpenALPlayer::TeardownContext()
 {
-	Stop();
-
+	if (!context) return;
 	alcMakeContextCurrent(context);
 	alDeleteSources(1, &source);
 	alDeleteBuffers(num_buffers, buffers);
+	alcMakeContextCurrent(nullptr);
 	alcDestroyContext(context);
-	alcCloseDevice(device);
+	context = nullptr;
 }
 
 void OpenALPlayer::Play(int64_t start, int64_t count)
 {
+	InitContext();
 	alcMakeContextCurrent(context);
 	if (playing) {
 		// Quick reset
@@ -201,6 +215,7 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 
 void OpenALPlayer::Stop()
 {
+	TeardownContext();
 	if (!playing) return;
 
 	// Reset data
@@ -214,10 +229,12 @@ void OpenALPlayer::Stop()
 	alcMakeContextCurrent(context);
 	alSourceStop(source);
 	alSourcei(source, AL_BUFFER, 0);
+	alcMakeContextCurrent(nullptr);
 }
 
 void OpenALPlayer::FillBuffers(ALsizei count)
 {
+	InitContext();
 	// Do the actual filling/queueing
 	for (count = mid(1, count, buffers_free); count > 0; --count) {
 		ALsizei fill_len = mid<ALsizei>(0, decode_buffer.size() / bpf, end_frame - cur_frame);
@@ -240,6 +257,7 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 
 void OpenALPlayer::Notify()
 {
+	InitContext();
 	alcMakeContextCurrent(context);
 	ALsizei newplayed;
 	alGetSourcei(source, AL_BUFFERS_PROCESSED, &newplayed);
