@@ -211,12 +211,12 @@ AS_IF([test x$build_darwin != xyes], [
 PKG_CHECK_MODULES(LIBASS, libass >= libass_required_version)
 
 AX_BOOST_BASE([boost_required_version])
-AX_BOOST_LIB(chrono,     BOOST_CHRONO_LIB,     [chrono.hpp], [boost::chrono::system_clock::time_point time])
-AX_BOOST_LIB(filesystem, BOOST_FILESYSTEM_LIB, [filesystem/path.hpp], [boost::filesystem::path("data.txt")])
-AX_BOOST_LIB(locale,     BOOST_LOCALE_LIB,     [locale.hpp], [boost::locale::generator{}])
-AX_BOOST_LIB(regex,      BOOST_REGEX_LIB,      [regex.hpp], [boost::regex{}])
-AX_BOOST_LIB(system,     BOOST_SYSTEM_LIB,     [system/error_code.hpp], [boost::system::system_category])
-AX_BOOST_LIB(thread,     BOOST_THREAD_LIB,     [thread/thread.hpp], [boost::thread_group{}])
+AX_BOOST_CHRONO
+AX_BOOST_FILESYSTEM
+AX_BOOST_LOCALE
+AX_BOOST_REGEX
+AX_BOOST_SYSTEM
+AX_BOOST_THREAD
 
 cppflags_bak="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
