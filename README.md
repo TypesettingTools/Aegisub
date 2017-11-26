@@ -45,12 +45,37 @@ Nothing older than Xcode 5 has been tested recently, but it is likely that some 
 
 For personal usage, you can use homebrew to install almost all of Aegisub's dependencies:
 
-	brew install boost --c++11 --with-icu
-	brew install autoconf ffmpeg fontconfig freetype2 fftw3 fribidi libass wxmac
+	brew install boost --c++11 --with-icu4c
+	brew install autoconf ffmpeg fontconfig freetype2 ffms2 fftw3 fribidi libass
+	brew install --devel --with-gc64 luajit
 
-[ffms2](http://github.com/FFMS/ffms2) currently does not have a homebrew formula, but with ffmpeg installed should be a simple `./configure && make && make install` to install.
+wxWidgets is located in vendor/wxWidgets, and can be built like so:
 
-Once the dependencies are installed, build Aegisub with `autoreconf && ./configure && make && make osx-bundle`.
+	CPPFLAGS="$CPPFLAGS -D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=1" \
+	./configure --disable-aboutdlg --disable-animatectrl --disable-aui --disable-any \
+	--disable-bannerwindow --disable-base64 --disable-calendar --disable-caret \
+	--disable-cmdline --disable-colourpicker --disable-compat28 --disable-config \
+	--disable-constraints --disable-datepick --disable-dctransform --disable-debureport \
+	--disable-dialupman --disable-docview --disable-filehistory --disable-finddlg \
+	--disable-fs_archive --disable-fs_inet --disable-fs_zip --disable-fsvolume \
+	--disable-fswatcher --disable-gif --disable-help --disable-html --disable-ipc \
+	--disable-joystick --disable-jpeg --disable-largefile --disable-markup --disable-mdi \
+	--disable-mediactrl --disable-metafiles --disable-miniframe --disable-notifmsg \
+	--disable-numberdlg --disable-pcx --disable-pnm --disable-postscript \
+	--disable-prefseditor --disable-printarch --disable-progressdlg --disable-propgrid \
+	--disable-protocol --disable-protocols --disable-rearrangectrl --disable-ribbon \
+	--disable-richtext --disable-richtooltip --disable-snglinst --disable-sockets \
+	--disable-sockets --disable-sound --disable-splash --disable-splines \
+	--disable-std_iostreams --disable-svg --disable-tarstream --disable-tiff \
+	--disable-tipdlg --disable-tipwindow --disable-url --disable-webkit --disable-webview \
+	--disable-wizarddlg --disable-xrc \
+	--enable-geometry --enable-imaglist --enable-listctrl --enable-stc --with-cocoa \
+	--with-libpng=yes --with-macosx-version-min=10.9 \
+	--with-opengl \
+	--without-libjpeg --without-libtiff --without-regex \
+	&& make
+
+Once the dependencies are installed, build Aegisub with `autoreconf && ./configure --with-wxdir=/path/to/Aegisub/vendor/wxWidgets && make && make osx-bundle`.
 `autoreconf` should be skipped if you are building from a source tarball rather than `git`.
 
 ## License
