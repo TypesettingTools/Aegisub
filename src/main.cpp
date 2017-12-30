@@ -480,7 +480,7 @@ void AegisubApp::MacOpenFiles(wxArrayString const& filenames) {
 
 void AegisubApp::OpenFiles(wxArrayStringsAdapter filenames) {
 	std::vector<agi::fs::path> files;
-	for (int i = 0; i < filenames.GetCount(); ++i)
+	for (size_t i = 0; i < filenames.GetCount(); ++i)
 		files.push_back(from_wx(filenames[i]));
 	if (!files.empty())
 		frames[0]->context->project->LoadList(files);
