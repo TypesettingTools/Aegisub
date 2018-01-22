@@ -15,5 +15,5 @@ foreach s : ['16x16.png', '22x22.png', '24x24.png', '32x32.png',
     dir = s.split('.')[0]
     ext = s.split('.')[1]
     install_data(join_paths('desktop', dir, 'aegisub.' + ext),
-                 install_dir : join_paths(get_option('datadir'), 'icons', 'hicolor', dir))
+                 install_dir : join_paths(get_option('datadir'), 'icons', 'hicolor', dir, 'apps'))
 endforeach
