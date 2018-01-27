@@ -46,7 +46,7 @@ Nothing older than Xcode 5 has been tested recently, but it is likely that some 
 For personal usage, you can use homebrew to install almost all of Aegisub's dependencies:
 
 	brew install boost --c++11 --with-icu4c
-	brew install autoconf ffmpeg fontconfig freetype2 ffms2 fftw3 fribidi libass
+	brew install autoconf ffmpeg freetype2 ffms2 fftw3 fribidi libass
 	brew install --devel --with-gc64 luajit
 
 wxWidgets is located in vendor/wxWidgets, and can be built like so:
