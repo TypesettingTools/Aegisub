@@ -75,18 +75,6 @@ struct help_contents final : public Command {
 	}
 };
 
-struct help_forums final : public Command {
-	CMD_NAME("help/forums")
-	CMD_ICON(forums_button)
-	STR_MENU("&Forums")
-	STR_DISP("Forums")
-	STR_HELP("Visit Aegisub's forums")
-
-	void operator()(agi::Context *) override {
-		wxLaunchDefaultBrowser("http://forum.aegisub.org/", wxBROWSER_NEW_WINDOW);
-	}
-};
-
 struct help_irc final : public Command {
 	CMD_NAME("help/irc")
 	CMD_ICON(irc_button)
@@ -128,7 +116,6 @@ namespace cmd {
 	void init_help() {
 		reg(agi::make_unique<help_bugs>());
 		reg(agi::make_unique<help_contents>());
-		reg(agi::make_unique<help_forums>());
 		reg(agi::make_unique<help_irc>());
 		reg(agi::make_unique<help_video>());
 		reg(agi::make_unique<help_website>());
