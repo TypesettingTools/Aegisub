@@ -270,9 +270,9 @@ agi::fs::path SaveFileSelector(wxString const& message, std::string const& optio
 }
 
 wxString LocalizedLanguageName(wxString const& lang) {
-	Locale iculoc(lang.c_str());
+	icu::Locale iculoc(lang.c_str());
 	if (!iculoc.isBogus()) {
-		UnicodeString ustr;
+		icu::UnicodeString ustr;
 		iculoc.getDisplayName(iculoc, ustr);
 #ifdef _MSC_VER
 		return wxString(ustr.getBuffer());
