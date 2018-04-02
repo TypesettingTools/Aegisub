@@ -32,9 +32,8 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-#ifndef ARCH
-#define ARCH 32
-#endif
+#define ARCH64
+#define ARCH 64
 
 #include "fragment_setupbase.iss"
 #include "fragment_strings.iss"
@@ -59,6 +58,7 @@ ArchitecturesAllowed=x64
 #include "fragment_translations.iss"
 #include "fragment_spelling.iss"
 #include "fragment_assdraw.iss"
+#include "fragment_runtimes.iss"
 
 
 [Code]

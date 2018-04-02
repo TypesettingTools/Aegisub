@@ -34,6 +34,10 @@
 
 
 [Files]
+; avisynth
+DestDir: {app}; Source: vendor\AvisynthPlus64\devil.dll; Flags: ignoreversion; Components: main
+DestDir: {app}; Source: vendor\AvisynthPlus64\avisynth.dll; Flags: ignoreversion; Components: main
+DestDir: {app}; Source: vendor\AvisynthPlus64\DirectShowSource.dll; Flags: ignoreversion; Components: main
 ; vsfilter
-DestDir: {app}\csri; Source: ..\..\bin\csri\xy-vsfilter-aegisub64.dll; Flags: ignoreversion
+DestDir: {app}\csri; Source: vendor\xy-vsfilter\xy-vsfilter-aegisub64.dll; Flags: ignoreversion; Components: main
 

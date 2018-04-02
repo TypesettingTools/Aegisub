@@ -35,9 +35,9 @@
 
 [Files]
 ; ASSDraw3
-Source: src\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion
-Source: src\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion
+Source: vendor\ASSDraw\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion; Components: assdraw
+Source: vendor\ASSDraw\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw
 
 [Icons]
-Name: {commonprograms}\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Flags: createonlyiffileexists; Comment: Create vector drawings for ASS-format subtitles
+Name: {commonprograms}\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Flags: createonlyiffileexists; Comment: Create vector drawings for ASS-format subtitles; Components: assdraw
 

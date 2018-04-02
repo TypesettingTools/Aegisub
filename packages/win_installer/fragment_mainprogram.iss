@@ -32,19 +32,31 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
+[Components]
+Name: "main"; Description: "Main Files"; Types: full compact custom; Flags: fixed
+Name: "macros"; Description: "Automation Scripts"; Types: full
+Name: "macros\bundled"; Description: "Bundled macros"; Types: full
+Name: "macros\demos"; Description: "Example macros/Demos"; Types: full
+Name: "macros\modules"; Description: "Modules"; Types: full
+Name: "macros\modules\depctrl"; Description: "DependencyControl"; Types: full
+Name: "macros\modules\yutils"; Description: "YUtils"; Types: full
+Name: "macros\modules\luajson"; Description: "LuaJSON"; Types: full
+Name: "dictionaries"; Description: "Spellcheck Dictionaries"; Types: full
+Name: "dictionaries\en_US"; Description: "English (US)"; Types: full
+Name: "translations"; Description: "Aegisub Translations"; Types: full
+Name: "assdraw"; Description: "ASSDraw 3"; Types: full
+
 [Tasks]
 Name: "startmenuicon"; Description: "{cm:StartMenuIcon}"; GroupDescription: "{cm:AdditionalIcons}"
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 Name: "checkforupdates"; Description: "{cm:CheckForUpdates}"; GroupDescription: "{cm:UpdatesGroup}"
 
 [Files]
 ; main
-DestDir: {app}; Source: ..\..\bin\aegisub{#ARCH}.exe; Flags: ignoreversion
-DestDir: {app}; Source: license.txt; Flags: ignoreversion; Tasks: ; Languages: 
+DestDir: {app}; Source: ..\..\bin\aegisub{#ARCH}.exe; Flags: ignoreversion; Components: main
+DestDir: {app}; Source: license.txt; Flags: ignoreversion; Components: main
 
 [Icons]
 Name: {commonprograms}\Aegisub; Filename: {app}\aegisub{#ARCH}.exe; WorkingDir: {app}; IconIndex: 0; Tasks: startmenuicon; Comment: Create and edit subtitle files
-Name: {userappdata}\Microsoft\Internet Explorer\Quick Launch\Aegisub; Filename: {app}\aegisub{#ARCH}.exe; WorkingDir: {app}; IconIndex: 0; Tasks: quicklaunchicon; Comment: Create and edit subtitle files
 
 [Registry]
 ; Register in App Paths so the user can conveniently enter 'aegisub' in their Run box
@@ -53,3 +65,7 @@ Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\aegisub
 
 [Run]
 Filename: {app}\aegisub{#ARCH}.exe; Description: {cm:LaunchProgram,Aegisub}; Flags: nowait postinstall skipifsilent
+
+[InstallDelete]
+Type: files; Name: "{app}\ffms2_64.dll"
+Type: files; Name: "{app}\ffms2_32.dll"
