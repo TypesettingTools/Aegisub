@@ -17,6 +17,7 @@
 #include "visual_tool_vector_clip.h"
 
 #include "ass_dialogue.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
@@ -92,8 +93,14 @@ void VisualToolVectorClip::Draw() {
 	assert(!start.empty());
 	assert(!count.empty());
 
-	gl.SetLineColour(colour[3], .5f, 2);
-	gl.SetFillColour(wxColour(0, 0, 0), 0.5f);
+	// Load colors from options
+	wxColour line_color = to_wx(line_color_primary_opt->GetColor());
+	wxColour highlight_color_primary = to_wx(highlight_color_primary_opt->GetColor());
+	wxColour highlight_color_secondary = to_wx(highlight_color_secondary_opt->GetColor());
+	float shaded_alpha = static_cast<float>(shaded_area_alpha_opt->GetDouble());
+
+	gl.SetLineColour(line_color, .5f, 2);
+	gl.SetFillColour(*wxBLACK, shaded_alpha);
 
 	// draw the shade over clipped out areas and line showing the clip
 	gl.DrawMultiPolygon(points, start, count, video_pos, video_res, !inverse);
@@ -117,13 +124,13 @@ void VisualToolVectorClip::Draw() {
 	if ((mode == 3 || mode == 4) && !active_feature && points.size() > 2) {
 		auto highlighted_points = spline.GetPointList(highlighted_curve);
 		if (!highlighted_points.empty()) {
-			gl.SetLineColour(colour[2], 1.f, 2);
+			gl.SetLineColour(highlight_color_secondary, 1.f, 2);
 			gl.DrawLineStrip(2, highlighted_points);
 		}
 	}
 
 	// Draw lines connecting the bicubic features
-	gl.SetLineColour(colour[3], 0.9f, 1);
+	gl.SetLineColour(line_color, 0.9f, 1);
 	for (auto const& curve : spline) {
 		if (curve.type == SplineCurve::BICUBIC) {
 			gl.DrawDashedLine(curve.p1, curve.p2, 6);
@@ -133,19 +140,19 @@ void VisualToolVectorClip::Draw() {
 
 	// Draw features
 	for (auto& feature : features) {
-		int color = 3;
+		wxColour feature_color = line_color;
 		if (&feature == active_feature)
-			color = 1;
+			feature_color = highlight_color_primary;
 		else if (sel_features.count(&feature))
-			color = 2;
-		gl.SetFillColour(colour[color], .6f);
+			feature_color = highlight_color_secondary;
+		gl.SetFillColour(feature_color, .6f);
 
 		if (feature.type == DRAG_SMALL_SQUARE) {
-			gl.SetLineColour(colour[3], .5f, 1);
+			gl.SetLineColour(line_color, .5f, 1);
 			gl.DrawRectangle(feature.pos - 3, feature.pos + 3);
 		}
 		else {
-			gl.SetLineColour(colour[color], .5f, 1);
+			gl.SetLineColour(feature_color, .5f, 1);
 			gl.DrawCircle(feature.pos, 2.f);
 		}
 	}

@@ -23,7 +23,9 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
+#include "options.h"
 #include "selection_controller.h"
 #include "video_controller.h"
 #include "video_display.h"
@@ -37,17 +39,15 @@
 
 #include <algorithm>
 
-const wxColour VisualToolBase::colour[] = {
-	wxColour(106,32,19),
-	wxColour(255,169,40),
-	wxColour(255,253,185),
-	wxColour(187,0,0)
-};
-
 VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
 : c(context)
 , parent(parent)
 , frame_number(c->videoController->GetFrameN())
+, highlight_color_primary_opt(OPT_GET("Colour/Visual Tools/Highlight Primary"))
+, highlight_color_secondary_opt(OPT_GET("Colour/Visual Tools/Highlight Secondary"))
+, line_color_primary_opt(OPT_GET("Colour/Visual Tools/Lines Primary"))
+, line_color_secondary_opt(OPT_GET("Colour/Visual Tools/Lines Secondary"))
+, shaded_area_alpha_opt(OPT_GET("Colour/Visual Tools/Shaded Area Alpha"))
 , file_changed_connection(c->ass->AddCommitListener(&VisualToolBase::OnCommit, this))
 {
 	int script_w, script_h;
@@ -273,14 +273,18 @@ void VisualTool<FeatureType>::OnMouseEvent(wxMouseEvent &event) {
 
 template<class FeatureType>
 void VisualTool<FeatureType>::DrawAllFeatures() {
-	gl.SetLineColour(colour[0], 1.0f, 1);
+	wxColour grid_color = to_wx(line_color_secondary_opt->GetColor());
+	gl.SetLineColour(grid_color, 1.0f, 1);
+	wxColour base_fill = to_wx(line_color_primary_opt->GetColor());
+	wxColour active_fill = to_wx(highlight_color_secondary_opt->GetColor());
+	wxColour alt_fill = to_wx(line_color_primary_opt->GetColor());
 	for (auto& feature : features) {
-		int fill = 1;
+		wxColour fill = base_fill;
 		if (&feature == active_feature)
-			fill = 2;
+			fill = active_fill;
 		else if (sel_features.count(&feature))
-			fill = 3;
-		gl.SetFillColour(colour[fill], 0.3f);
+			fill = alt_fill;
+		gl.SetFillColour(fill, 0.3f);
 		feature.Draw(gl);
 	}
 }
