@@ -20,7 +20,9 @@
 
 #include "visual_tool_rotatez.h"
 
+#include "compat.h"
 #include "include/aegisub/context.h"
+#include "options.h"
 #include "selection_controller.h"
 
 #include <libaegisub/format.h>
@@ -44,6 +46,11 @@ void VisualToolRotateZ::Draw() {
 
 	DrawAllFeatures();
 
+	// Load colors from options
+	wxColour line_color_primary = to_wx(line_color_primary_opt->GetColor());
+	wxColour line_color_secondary = to_wx(line_color_secondary_opt->GetColor());
+	wxColour highlight_color = to_wx(highlight_color_primary_opt->GetColor());
+
 	float radius = (pos - org->pos).Len();
 	float oRadius = radius;
 	if (radius < 50)
@@ -55,8 +62,8 @@ void VisualToolRotateZ::Draw() {
 	gl.SetScale(scale);
 
 	// Draw the circle
-	gl.SetLineColour(colour[0]);
-	gl.SetFillColour(colour[1], 0.3f);
+	gl.SetLineColour(line_color_secondary);
+	gl.SetFillColour(highlight_color, 0.3f);
 	gl.DrawRing(Vector2D(0, 0), radius + 4, radius - 4);
 
 	// Draw markers around circle
@@ -70,7 +77,7 @@ void VisualToolRotateZ::Draw() {
 
 	// Draw the baseline through the origin showing current rotation
 	Vector2D angle_vec(Vector2D::FromAngle(angle * deg2rad));
-	gl.SetLineColour(colour[3], 1, 2);
+	gl.SetLineColour(line_color_primary, 1, 2);
 	gl.DrawLine(angle_vec * -radius, angle_vec * radius);
 
 	if (org->pos != pos) {
@@ -84,8 +91,8 @@ void VisualToolRotateZ::Draw() {
 	}
 
 	// Draw the fake features on the ring
-	gl.SetLineColour(colour[0], 1.f, 1);
-	gl.SetFillColour(colour[1], 0.3f);
+	gl.SetLineColour(line_color_secondary, 1.f, 1);
+	gl.SetFillColour(highlight_color, 0.3f);
 	gl.DrawCircle(angle_vec * radius, 4);
 	gl.DrawCircle(angle_vec * -radius, 4);
 
@@ -94,7 +101,7 @@ void VisualToolRotateZ::Draw() {
 
 	// Draw line to mouse if it isn't over the origin feature
 	if (mouse_pos && (mouse_pos - org->pos).SquareLen() > 100) {
-		gl.SetLineColour(colour[0]);
+		gl.SetLineColour(line_color_secondary);
 		gl.DrawLine(org->pos, mouse_pos);
 	}
 }

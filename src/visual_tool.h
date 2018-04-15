@@ -22,6 +22,7 @@
 
 #include "gl_wrap.h"
 #include "vector2d.h"
+#include "options.h"
 
 #include <libaegisub/owning_intrusive_list.h>
 #include <libaegisub/signal.h>
@@ -85,8 +86,6 @@ protected:
 	/// Called when the user double-clicks
 	virtual void OnDoubleClick() { }
 
-	static const wxColour colour[4];
-
 	agi::Context *c;
 	VideoDisplay *parent;
 
@@ -105,6 +104,12 @@ protected:
 	Vector2D script_res; ///< Script resolution
 	Vector2D video_pos; ///< Top-left corner of the video in the display area
 	Vector2D video_res; ///< Video resolution
+
+	const agi::OptionValue *highlight_color_primary_opt;
+	const agi::OptionValue *highlight_color_secondary_opt;
+	const agi::OptionValue *line_color_primary_opt;
+	const agi::OptionValue *line_color_secondary_opt;
+	const agi::OptionValue *shaded_area_alpha_opt;
 
 	agi::signal::Connection file_changed_connection;
 	int commit_id = -1; ///< Last used commit id for coalescing

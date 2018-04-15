@@ -266,6 +266,13 @@
 		},
 		"Video Dummy" : {
 			"Last Colour" : "rgb(47, 163, 254)"
+		},
+		"Visual Tools" : {
+			"Highlight Primary" : "rgb(255, 169, 40)",
+			"Highlight Secondary" : "rgb(255, 253, 185)",
+			"Lines Primary" : "rgb(187, 0, 0)",
+			"Lines Secondary" : "rgb(106, 32, 19)",
+			"Shaded Area Alpha" : 0.5
 		}
 	},
 

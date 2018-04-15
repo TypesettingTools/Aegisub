@@ -20,6 +20,9 @@
 
 #include "visual_tool_scale.h"
 
+#include "compat.h"
+#include "options.h"
+
 #include <wx/colour.h>
 
 VisualToolScale::VisualToolScale(VideoDisplay *parent, agi::Context *context)
@@ -34,6 +37,11 @@ void VisualToolScale::Draw() {
 	static const int base_len = 160;
 	// The width of the y scale guide/height of the x scale guide
 	static const int guide_size = 10;
+
+	// Load colors from options
+	wxColour line_color_primary = to_wx(line_color_primary_opt->GetColor());
+	wxColour line_color_secondary = to_wx(line_color_secondary_opt->GetColor());
+	wxColour highlight_color = to_wx(highlight_color_primary_opt->GetColor());
 
 	// Ensure that the scaling UI is comfortably visible on screen
 	Vector2D base_point = pos
@@ -54,13 +62,13 @@ void VisualToolScale::Draw() {
 	Vector2D y_p2(scale_half_length.X(), minor_dim_offset);
 
 	// Current scale amount lines
-	gl.SetLineColour(colour[3], 1.f, 2);
+	gl.SetLineColour(line_color_primary, 1.f, 2);
 	gl.DrawLine(x_p1, x_p2);
 	gl.DrawLine(y_p1, y_p2);
 
 	// Fake features at the end of the lines
-	gl.SetLineColour(colour[0], 1.f, 1);
-	gl.SetFillColour(colour[1], 0.3f);
+	gl.SetLineColour(line_color_secondary, 1.f, 1);
+	gl.SetFillColour(highlight_color, 0.3f);
 	gl.DrawCircle(x_p1, 4);
 	gl.DrawCircle(x_p2, 4);
 	gl.DrawCircle(y_p1, 4);
@@ -68,12 +76,12 @@ void VisualToolScale::Draw() {
 
 	// Draw the guides
 	int half_len = base_len / 2;
-	gl.SetLineColour(colour[0], 1.f, 1);
+	gl.SetLineColour(line_color_secondary, 1.f, 1);
 	gl.DrawRectangle(Vector2D(half_len, -half_len), Vector2D(half_len + guide_size, half_len));
 	gl.DrawRectangle(Vector2D(-half_len, half_len), Vector2D(half_len, half_len + guide_size));
 
 	// Draw the feet
-	gl.SetLineColour(colour[0], 1.f, 2);
+	gl.SetLineColour(line_color_secondary, 1.f, 2);
 	gl.DrawLine(Vector2D(half_len + guide_size, -half_len), Vector2D(half_len + guide_size + guide_size / 2, -half_len));
 	gl.DrawLine(Vector2D(half_len + guide_size, half_len), Vector2D(half_len + guide_size + guide_size / 2, half_len));
 	gl.DrawLine(Vector2D(-half_len, half_len + guide_size), Vector2D(-half_len, half_len + guide_size + guide_size / 2));

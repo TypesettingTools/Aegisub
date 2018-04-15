@@ -288,6 +288,16 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 	p->OptionAdd(grid, _("Lines"), "Colour/Subtitle Grid/Lines");
 	p->OptionAdd(grid, _("CPS Error"), "Colour/Subtitle Grid/CPS Error");
 
+	auto visual_tools = p->PageSizer(_("Visual Typesetting Tools"));
+	p->OptionAdd(visual_tools, _("Primary Lines"), "Colour/Visual Tools/Lines Primary");
+	p->OptionAdd(visual_tools, _("Secondary Lines"), "Colour/Visual Tools/Lines Secondary");
+	p->OptionAdd(visual_tools, _("Primary Highlight"), "Colour/Visual Tools/Highlight Primary");
+	p->OptionAdd(visual_tools, _("Secondary Highlight"), "Colour/Visual Tools/Highlight Secondary");
+
+	// Separate sizer to prevent the colors in the visual tools section from getting resized
+	auto visual_tools_alpha = p->PageSizer(_("Visual Typesetting Tools Alpha"));
+	p->OptionAdd(visual_tools_alpha, _("Shaded Area"), "Colour/Visual Tools/Shaded Area Alpha", 0, 1, 0.1);
+
 	p->sizer = main_sizer;
 
 	p->SetSizerAndFit(p->sizer);

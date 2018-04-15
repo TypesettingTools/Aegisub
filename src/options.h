@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <libaegisub/mru.h>
 #include <libaegisub/option.h>
 #include <libaegisub/option_value.h>

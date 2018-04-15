@@ -20,7 +20,9 @@
 
 #include "visual_tool_rotatexy.h"
 
+#include "compat.h"
 #include "include/aegisub/context.h"
+#include "options.h"
 #include "selection_controller.h"
 
 #include <libaegisub/format.h>
@@ -41,17 +43,21 @@ void VisualToolRotateXY::Draw() {
 
 	DrawAllFeatures();
 
+	// Load colors from options
+	wxColour line_color_primary = to_wx(line_color_primary_opt->GetColor());
+	wxColour line_color_secondary = to_wx(line_color_secondary_opt->GetColor());
+
 	// Transform grid
 	gl.SetOrigin(org->pos);
 	gl.SetRotation(angle_x, angle_y, angle_z);
 	gl.SetShear(fax, fay);
 
 	// Draw grid
-	gl.SetLineColour(colour[0], 0.5f, 2);
+	gl.SetLineColour(line_color_secondary, 0.5f, 2);
 	gl.SetModeLine();
-	float r = colour[0].Red() / 255.f;
-	float g = colour[0].Green() / 255.f;
-	float b = colour[0].Blue() / 255.f;
+	float r = line_color_secondary.Red() / 255.f;
+	float g = line_color_secondary.Green() / 255.f;
+	float b = line_color_secondary.Blue() / 255.f;
 
 	// Number of lines on each side of each axis
 	static const int radius = 15;
@@ -103,7 +109,7 @@ void VisualToolRotateXY::Draw() {
 	gl.DrawLines(2, points, 4, colors);
 
 	// Draw vectors
-	gl.SetLineColour(colour[3], 1.f, 2);
+	gl.SetLineColour(line_color_primary, 1.f, 2);
 	float vectors[] = {
 		0.f, 0.f, 0.f,
 		50.f, 0.f, 0.f,

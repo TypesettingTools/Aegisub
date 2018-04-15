@@ -21,7 +21,9 @@
 #include "visual_tool_clip.h"
 
 #include "ass_dialogue.h"
+#include "compat.h"
 #include "include/aegisub/context.h"
+#include "options.h"
 #include "selection_controller.h"
 
 #include <libaegisub/format.h>
@@ -66,14 +68,18 @@ void VisualToolClip::Draw() {
 
 	DrawAllFeatures();
 
+	// Load colors from options
+	wxColour line_color = to_wx(line_color_primary_opt->GetColor());
+	float shaded_alpha = static_cast<float>(shaded_area_alpha_opt->GetDouble());
+
 	// Draw rectangle
-	gl.SetLineColour(colour[3], 1.0f, 2);
-	gl.SetFillColour(colour[3], 0.0f);
+	gl.SetLineColour(line_color, 1.0f, 2);
+	gl.SetFillColour(line_color, 0.0f);
 	gl.DrawRectangle(cur_1, cur_2);
 
 	// Draw outside area
-	gl.SetLineColour(colour[3], 0.0f);
-	gl.SetFillColour(*wxBLACK, 0.5f);
+	gl.SetLineColour(line_color, 0.0f);
+	gl.SetFillColour(*wxBLACK, shaded_alpha);
 	if (inverse) {
 		gl.DrawRectangle(cur_1, cur_2);
 	}
