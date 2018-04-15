@@ -55,7 +55,7 @@
 OPTION_UPDATER(StringUpdater, wxCommandEvent, OptionValueString, from_wx(evt.GetString()));
 OPTION_UPDATER(IntUpdater, wxSpinEvent, OptionValueInt, evt.GetInt());
 OPTION_UPDATER(IntCBUpdater, wxCommandEvent, OptionValueInt, evt.GetInt());
-OPTION_UPDATER(DoubleUpdater, wxSpinEvent, OptionValueDouble, evt.GetInt());
+OPTION_UPDATER(DoubleUpdater, wxSpinDoubleEvent, OptionValueDouble, evt.GetValue());
 OPTION_UPDATER(BoolUpdater, wxCommandEvent, OptionValueBool, !!evt.GetInt());
 OPTION_UPDATER(ColourUpdater, ValueEvent<agi::Color>, OptionValueColor, evt.Get());
 
@@ -132,7 +132,7 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 
 		case agi::OptionType::Double: {
 			auto scd = new wxSpinCtrlDouble(this, -1, std::to_wstring(opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
-			scd->Bind(wxEVT_SPINCTRL, DoubleUpdater(opt_name, parent));
+			scd->Bind(wxEVT_SPINCTRLDOUBLE, DoubleUpdater(opt_name, parent));
 			Add(flex, name, scd);
 			return scd;
 		}
