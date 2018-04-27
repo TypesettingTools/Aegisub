@@ -672,7 +672,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 		// after the selected block
 		do {
 			auto old_diag = &*start;
-			auto  new_diag = new AssDialogue(*old_diag);
+			auto new_diag = new AssDialogue(*old_diag);
 
 			c->ass->Events.insert(insert_pos, *new_diag);
 			new_sel.insert(new_diag);
@@ -697,8 +697,8 @@ static void duplicate_lines(agi::Context *c, int shift) {
 					new_diag->Start = c->videoController->TimeAtFrame(cur_frame, agi::vfr::START);
 				}
 				else {
-					old_diag->Start = c->videoController->TimeAtFrame(cur_frame + 1, agi::vfr::START);
-					new_diag->End = c->videoController->TimeAtFrame(cur_frame, agi::vfr::END);
+					old_diag->End = c->videoController->TimeAtFrame(cur_frame, agi::vfr::END);
+					new_diag->Start = c->videoController->TimeAtFrame(cur_frame + 1, agi::vfr::START);
 				}
 
 				/// @todo also split \t and \move?
