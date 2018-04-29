@@ -32,12 +32,10 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-
 [Files]
-; ASSDraw3
-Source: vendor\ASSDraw\ASSDraw3.exe; DestDir: {app}; Flags: ignoreversion; Components: assdraw
-Source: vendor\ASSDraw\ASSDraw3.chm; DestDir: {app}; Flags: ignoreversion; Components: assdraw
-
-[Icons]
-Name: {commonprograms}\ASSDraw3; Filename: {app}\ASSDraw3.exe; WorkingDir: {app}; IconIndex: 0; Flags: createonlyiffileexists; Comment: Create vector drawings for ASS-format subtitles; Components: assdraw
-
+; Avisynth
+DestDir: {app}; Source: vendor\AvisynthPlus64\devil.dll; Flags: ignoreversion; Components: main
+DestDir: {app}; Source: vendor\AvisynthPlus64\avisynth.dll; Flags: ignoreversion; Components: main
+DestDir: {app}; Source: vendor\AvisynthPlus64\DirectShowSource.dll; Flags: ignoreversion; Components: main
+; VSFilter
+DestDir: {app}\csri; Source: vendor\xy-vsfilter\xy-vsfilter-aegisub64.dll; Flags: ignoreversion; Components: main

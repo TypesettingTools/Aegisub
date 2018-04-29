@@ -33,21 +33,15 @@
 ;
 
 ; This file implements checking for and installing runtime libraries for Aegisub
-#ifdef ARCH64
-#define SUFFIX "x64"
-#else
-#define SUFFIX "x86"
-#endif
 
 [Files]
-DestDir: {tmp}; Source: src\vcredist_{#SUFFIX}.exe; Flags: nocompression deleteafterinstall
-;Source: src\redist\{#SUFFIX}\Microsoft.VC140.CRT\msvcp140.dll; DestDir: {app}; Flags: ignoreversion
-;Source: src\redist\{#SUFFIX}\Microsoft.VC140.CRT\concrt140.dll; DestDir: {app}; Flags: ignoreversion
-;Source: src\redist\{#SUFFIX}\Microsoft.VC140.CRT\vccorlib140.dll; DestDir: {app}; Flags: ignoreversion
-;Source: src\redist\{#SUFFIX}\Microsoft.VC140.CRT\vcruntime140.dll; DestDir: {app}; Flags: ignoreversion
-;Source: src\redist\{#SUFFIX}\Microsoft.VC140.MFC\mfc140u.dll; DestDir: {app}; Flags: ignoreversion
-;Source: src\redist\{#SUFFIX}\Microsoft.VC140.MFC\mfcm140u.dll; DestDir: {app}; Flags: ignoreversion
-
+DestDir: {tmp}; Source: src\vcredist_{#ARCH}.exe; Flags: nocompression deleteafterinstall
+;Source: src\redist\{#ARCH}\Microsoft.VC140.CRT\msvcp140.dll; DestDir: {app}; Flags: ignoreversion
+;Source: src\redist\{#ARCH}\Microsoft.VC140.CRT\concrt140.dll; DestDir: {app}; Flags: ignoreversion
+;Source: src\redist\{#ARCH}\Microsoft.VC140.CRT\vccorlib140.dll; DestDir: {app}; Flags: ignoreversion
+;Source: src\redist\{#ARCH}\Microsoft.VC140.CRT\vcruntime140.dll; DestDir: {app}; Flags: ignoreversion
+;Source: src\redist\{#ARCH}\Microsoft.VC140.MFC\mfc140u.dll; DestDir: {app}; Flags: ignoreversion
+;Source: src\redist\{#ARCH}\Microsoft.VC140.MFC\mfcm140u.dll; DestDir: {app}; Flags: ignoreversion
 
 [Run]
-Filename: {tmp}\vcredist_{#SUFFIX}.exe; StatusMsg: {cm:InstallRuntime}; Parameters: "/install /quiet /norestart"
+Filename: {tmp}\vcredist_{#ARCH}.exe; StatusMsg: {cm:InstallRuntime}; Parameters: "/install /quiet /norestart"

@@ -40,8 +40,8 @@ AppVerName=Aegisub {#BUILD_GIT_VERSION_STRING}
 AppVersion={#INSTALLER_VERSION}
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
-AppSupportURL=http://forum.aegisub.org/
-AppCopyright=© 2005-2018 The Aegisub Team
+AppSupportURL=https://github.com/TypesettingTools/Aegisub/issues
+AppCopyright=2005-2018 The Aegisub Team
 VersionInfoVersion={#INSTALLER_VERSION}
 DefaultGroupName=Aegisub
 AllowNoIcons=true
@@ -107,4 +107,3 @@ DestDir: {tmp}; Flags: dontcopy; Source: old_filelist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_dirlist.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_locales.txt
 DestDir: {tmp}; Flags: dontcopy; Source: old_shortcutlist.txt
-

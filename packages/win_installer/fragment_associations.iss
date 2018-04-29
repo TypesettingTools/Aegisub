@@ -32,7 +32,6 @@
 ; Contact: mailto:nielsm@indvikleren.dk
 ;
 
-
 [Files]
 DestDir: {commontemplates}; Source: template.ass; DestName: Aegisub.ass
 
@@ -195,4 +194,3 @@ Root: HKLM; Subkey: "SOFTWARE\Classes\.m4a\OpenWithProgids"; ValueType: string; 
 Root: HKLM; Subkey: "SOFTWARE\Classes\.wav\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Audio.1"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "SOFTWARE\Classes\.ogg\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Media.1"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "SOFTWARE\Classes\.avs\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Video.1"; Flags: uninsdeletevalue
-

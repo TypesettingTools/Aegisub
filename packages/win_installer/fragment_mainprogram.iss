@@ -37,14 +37,15 @@ Name: "main"; Description: "Main Files"; Types: full compact custom; Flags: fixe
 Name: "macros"; Description: "Automation Scripts"; Types: full
 Name: "macros\bundled"; Description: "Bundled macros"; Types: full
 Name: "macros\demos"; Description: "Example macros/Demos"; Types: full
+#ifdef DEPCTRL
 Name: "macros\modules"; Description: "Modules"; Types: full
 Name: "macros\modules\depctrl"; Description: "DependencyControl"; Types: full
 Name: "macros\modules\yutils"; Description: "YUtils"; Types: full
 Name: "macros\modules\luajson"; Description: "LuaJSON"; Types: full
+#endif
 Name: "dictionaries"; Description: "Spellcheck Dictionaries"; Types: full
 Name: "dictionaries\en_US"; Description: "English (US)"; Types: full
 Name: "translations"; Description: "Aegisub Translations"; Types: full
-Name: "assdraw"; Description: "ASSDraw 3"; Types: full
 
 [Tasks]
 Name: "startmenuicon"; Description: "{cm:StartMenuIcon}"; GroupDescription: "{cm:AdditionalIcons}"
