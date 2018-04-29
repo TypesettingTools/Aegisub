@@ -36,7 +36,7 @@ icu::BreakIterator& get_break_iterator(const char *ptr, size_t len) {
 	static std::once_flag token;
 	std::call_once(token, [&] {
 		UErrorCode status = U_ZERO_ERROR;
-		bi.reset(BreakIterator::createCharacterInstance(Locale::getDefault(), status));
+		bi.reset(icu::BreakIterator::createCharacterInstance(icu::Locale::getDefault(), status));
 		if (U_FAILURE(status)) throw agi::InternalError("Failed to create character iterator");
 	});
 
@@ -58,7 +58,7 @@ size_t count_in_range(Iterator begin, Iterator end, int mask) {
 
 	size_t count = 0;
 	auto pos = character_bi.first();
-	for (auto end = character_bi.next(); end != BreakIterator::DONE; pos = end, end = character_bi.next()) {
+	for (auto end = character_bi.next(); end != icu::BreakIterator::DONE; pos = end, end = character_bi.next()) {
 		if (!mask)
 			++count;
 		else {
@@ -143,7 +143,7 @@ size_t IndexOfCharacter(std::string const& str, size_t n) {
 	auto& bi = get_break_iterator(&str[0], str.size());
 
 	for (auto pos = bi.first(), end = bi.next(); ; --n, pos = end, end = bi.next()) {
-		if (end == BreakIterator::DONE)
+		if (end == icu::BreakIterator::DONE)
 			return str.size();
 		if (n == 0)
 			return pos;

@@ -45,9 +45,12 @@ Nothing older than Xcode 5 has been tested recently, but it is likely that some 
 
 For personal usage, you can use homebrew to install almost all of Aegisub's dependencies:
 
-	brew install boost --c++11 --with-icu4c
-	brew install autoconf ffmpeg freetype ffms2 fftw fribidi libass
+	brew install autoconf ffmpeg freetype gettext ffms2 fftw fribidi libass m4
 	brew install --devel --with-gc64 luajit
+	brew install --HEAD icu4c
+	brew link --force icu4c
+	brew link --force gettext
+	brew install --HEAD --c++11 --with-icu4c boost
 
 wxWidgets is located in vendor/wxWidgets, and can be built like so:
 
@@ -55,7 +58,7 @@ wxWidgets is located in vendor/wxWidgets, and can be built like so:
 	./configure --disable-aboutdlg --disable-animatectrl --disable-aui --disable-any \
 	--disable-bannerwindow --disable-base64 --disable-calendar --disable-caret \
 	--disable-cmdline --disable-colourpicker --disable-compat28 --disable-config \
-	--disable-constraints --disable-datepick --disable-dctransform --disable-debureport \
+	--disable-constraints --disable-datepick --disable-dctransform --disable-debugreport \
 	--disable-dialupman --disable-docview --disable-filehistory --disable-finddlg \
 	--disable-fs_archive --disable-fs_inet --disable-fs_zip --disable-fsvolume \
 	--disable-fswatcher --disable-gif --disable-help --disable-html --disable-ipc \
