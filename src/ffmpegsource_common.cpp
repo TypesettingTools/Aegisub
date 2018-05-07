@@ -67,7 +67,7 @@ enum {
 FFmpegSourceProvider::FFmpegSourceProvider(agi::BackgroundRunner *br)
 : br(br)
 {
-	FFMS_Init(0, 1);
+	FFMS_Init(0, 0);
 }
 
 /// @brief Does indexing of a source file
