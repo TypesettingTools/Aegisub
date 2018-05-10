@@ -391,8 +391,12 @@ void Project::LoadKeyframes(agi::fs::path path) {
 		ShowError(e.GetMessage());
 		config::mru->Remove("Keyframes", path);
 	}
-	catch (agi::keyframe::Error const& e) {
+	catch (agi::keyframe::KeyframeFormatParseError const& e) {
 		ShowError("Failed to parse keyframes file: " + e.GetMessage());
+		config::mru->Remove("Keyframes", path);
+	}
+	catch (agi::keyframe::UnknownKeyframeFormatError const& e) {
+		ShowError("Keyframes file in unknown format: " + e.GetMessage());
 		config::mru->Remove("Keyframes", path);
 	}
 }
