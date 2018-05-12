@@ -1,6 +1,6 @@
 /*
 ** OS library.
-** Copyright (C) 2005-2015 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2017 Mike Pall. See Copyright Notice in luajit.h
 **
 ** Major portions taken verbatim or adapted from the Lua interpreter.
 ** Copyright (C) 1994-2008 Lua.org, PUC-Rio. See Copyright Notice in lua.h
@@ -32,28 +32,11 @@
 
 /* ------------------------------------------------------------------------ */
 
-#if LJ_TARGET_WINDOWS
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-static wchar_t *widen_static(const char *narrow, int idx)
-{
-  __declspec(thread) static wchar_t buffer[2][MAX_PATH];
-  return MultiByteToWideChar(CP_UTF8, 0, narrow, -1, buffer[idx], MAX_PATH) ? buffer[idx] : L"";
-}
-
-#define remove(x) _wremove(widen_static(x, 0))
-#define system(x) _wsystem(widen_static(x, 0))
-#define rename(x, y) _wrename(widen_static(x, 0), widen_static(y, 1))
-#endif
-
-/* ------------------------------------------------------------------------ */
-
 #define LJLIB_MODULE_os
 
 LJLIB_CF(os_execute)
 {
-#if LJ_TARGET_CONSOLE
+#if LJ_NO_SYSTEM
 #if LJ_52
   errno = ENOSYS;
   return luaL_fileresult(L, 0, NULL);

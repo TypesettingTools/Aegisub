@@ -1,6 +1,6 @@
 /*
 ** I/O library.
-** Copyright (C) 2005-2015 Mike Pall. See Copyright Notice in luajit.h
+** Copyright (C) 2005-2017 Mike Pall. See Copyright Notice in luajit.h
 **
 ** Major portions taken verbatim or adapted from the Lua interpreter.
 ** Copyright (C) 1994-2011 Lua.org, PUC-Rio. See Copyright Notice in lua.h
@@ -23,16 +23,6 @@
 #include "lj_state.h"
 #include "lj_ff.h"
 #include "lj_lib.h"
-
-#if LJ_TARGET_WINDOWS
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
-static int widen(const char *in, wchar_t *out)
-{
-  return MultiByteToWideChar(CP_UTF8, 0, in, -1, out, MAX_PATH);
-}
-#endif
 
 /* Userdata payload for I/O file. */
 typedef struct IOFileUD {
@@ -92,15 +82,7 @@ static IOFileUD *io_file_open(lua_State *L, const char *mode)
 {
   const char *fname = strdata(lj_lib_checkstr(L, 1));
   IOFileUD *iof = io_file_new(L);
-#if LJ_TARGET_WINDOWS
-  wchar_t wfname[MAX_PATH];
-  wchar_t wmode[MAX_PATH];
-  if (!widen(fname, wfname) || !widen(mode, wmode))
-    luaL_argerror(L, 1, lj_str_pushf(L, "%s: failed to convert path to utf-16", fname));
-  iof->fp = _wfopen(wfname, wmode);
-#else
   iof->fp = fopen(fname, mode);
-#endif
   if (iof->fp == NULL)
     luaL_argerror(L, 1, lj_str_pushf(L, "%s: %s", fname, strerror(errno)));
   return iof;
@@ -296,6 +278,15 @@ static int io_file_iter(lua_State *L)
   return n;
 }
 
+static int io_file_lines(lua_State *L)
+{
+  int n = (int)(L->top - L->base);
+  if (n > LJ_MAX_UPVAL)
+    lj_err_caller(L, LJ_ERR_UNPACK);
+  lua_pushcclosure(L, io_file_iter, n);
+  return 1;
+}
+
 /* -- I/O file methods ---------------------------------------------------- */
 
 #define LJLIB_MODULE_io_method
@@ -379,8 +370,7 @@ LJLIB_CF(io_method_setvbuf)
 LJLIB_CF(io_method_lines)
 {
   io_tofile(L);
-  lua_pushcclosure(L, io_file_iter, (int)(L->top - L->base));
-  return 1;
+  return io_file_lines(L);
 }
 
 LJLIB_CF(io_method___gc)
@@ -417,14 +407,7 @@ LJLIB_CF(io_open)
   GCstr *s = lj_lib_optstr(L, 2);
   const char *mode = s ? strdata(s) : "r";
   IOFileUD *iof = io_file_new(L);
-#if LJ_TARGET_WINDOWS
-  wchar_t wfname[MAX_PATH];
-  wchar_t wmode[MAX_PATH];
-  if (widen(fname, wfname) && widen(mode, wmode))
-    iof->fp = _wfopen(wfname, wmode);
-#else
   iof->fp = fopen(fname, mode);
-#endif
   return iof->fp != NULL ? 1 : luaL_fileresult(L, 0, fname);
 }
 
@@ -440,10 +423,7 @@ LJLIB_CF(io_popen)
   fflush(NULL);
   iof->fp = popen(fname, mode);
 #else
-  wchar_t wfname[MAX_PATH];
-  wchar_t wmode[MAX_PATH];
-  if (widen(fname, wfname) && widen(mode, wmode))
-    iof->fp = _wpopen(wfname, wmode);
+  iof->fp = _popen(fname, mode);
 #endif
   return iof->fp != NULL ? 1 : luaL_fileresult(L, 0, fname);
 #else
@@ -520,8 +500,7 @@ LJLIB_CF(io_lines)
   } else {  /* io.lines() iterates over stdin. */
     setudataV(L, L->base, IOSTDF_UD(L, GCROOT_IO_INPUT));
   }
-  lua_pushcclosure(L, io_file_iter, (int)(L->top - L->base));
-  return 1;
+  return io_file_lines(L);
 }
 
 LJLIB_CF(io_type)
