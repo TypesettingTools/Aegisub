@@ -1,5 +1,5 @@
 diff --git a/vendor/luajit/src/lib_os.c b/vendor/luajit/src/lib_os.c
-index bb5a141..a2ed170 100644
+index 8c96b86c7..05b324950 100644
 --- a/vendor/luajit/src/lib_os.c
 +++ b/vendor/luajit/src/lib_os.c
 @@ -32,6 +32,23 @@
