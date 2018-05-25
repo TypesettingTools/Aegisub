@@ -240,7 +240,7 @@ void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	{
 		// Derived audio data
 		size_t block_index = (size_t)(ax * pixel_ms * provider->GetSampleRate() / 1000) >> derivation_dist;
-		float *power = cache->Get(block_index);
+		float *power = &cache->Get(block_index);
 
 		// Prepare bitmap writing
 		unsigned char *px = imgdata + (imgheight-1) * stride + (ax - start) * 3;
