@@ -54,7 +54,7 @@
     </InstallHeader>
     <Yasm>
       <InputRelativeSourceDir>$(FfmpegSrcDir)\</InputRelativeSourceDir>
-      <Include>%(Include) -I$(MSBuildThisFileDirectory) -I$(MSBuildThisFileDirectory)$(FfmpegSrcDir)</Include>
+      <Include>%(Include) -I$(MSBuildThisFileDirectory) -I$(FfmpegSrcDir)</Include>
       <Config Condition="'$(Platform)'=='Win32'">%(Config) -DPREFIX -Pconfig-x86.asm</Config>
       <Config Condition="'$(Platform)'=='x64'">%(Config) -Pconfig-x64.asm</Config>
     </Yasm>
