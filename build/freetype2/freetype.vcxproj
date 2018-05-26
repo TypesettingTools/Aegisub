@@ -55,7 +55,7 @@
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftsynth.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\fttype1.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftwinfnt.c" />
-    <ClCompile Include="$(Freetype2SrcDir)\src\base\ftxf86.c" />
+    <ClCompile Include="$(Freetype2SrcDir)\src\base\ftfntfmt.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\bdf\bdf.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\cache\ftcache.c" />
     <ClCompile Include="$(Freetype2SrcDir)\src\cff\cff.c" />

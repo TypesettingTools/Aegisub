@@ -71,7 +71,7 @@
     <ClCompile Include="$(Freetype2SrcDir)\src\base\ftwinfnt.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="$(Freetype2SrcDir)\src\base\ftxf86.c">
+    <ClCompile Include="$(Freetype2SrcDir)\src\base\ftfntfmt..c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(Freetype2SrcDir)\src\bdf\bdf.c">
