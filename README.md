@@ -45,12 +45,11 @@ Nothing older than Xcode 5 has been tested recently, but it is likely that some 
 
 For personal usage, you can use homebrew to install almost all of Aegisub's dependencies:
 
-	brew install autoconf ffmpeg freetype gettext ffms2 fftw fribidi libass m4
+	brew install autoconf automake ffmpeg ffms2 fftw freetype fribidi gettext icu4c libass m4 pkg-config
 	brew install --devel --with-gc64 luajit
-	brew install --HEAD icu4c
 	brew link --force icu4c
 	brew link --force gettext
-	brew install --HEAD --c++11 --with-icu4c boost
+	brew install --with-icu4c boost
 
 wxWidgets is located in vendor/wxWidgets, and can be built like so:
 
