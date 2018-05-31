@@ -109,6 +109,8 @@ public:
 		SetBlockCount(block_count);
 	}
 
+	DataBlockCache(DataBlockCache&&) = default;
+	DataBlockCache& operator=(DataBlockCache&&) = default;
 
 	/// @brief Change the number of blocks in cache
 	/// @param block_count New number of blocks to hold
@@ -158,12 +160,12 @@ public:
 	/// @return A pointer to the block in cache
 	///
 	/// It is legal to pass 0 (null) for created, in this case nothing is returned in it.
-	BlockT *Get(size_t i, bool *created = nullptr)
+	BlockT& Get(size_t i, bool *created = nullptr)
 	{
 		size_t mbi = i >> MacroblockExponent;
 		assert(mbi < data.size());
 
-		MacroBlock &mb = data[mbi];
+		auto &mb = data[mbi];
 
 		// Move this macroblock to the front of the age list
 		if (mb.blocks.empty())
@@ -193,6 +195,6 @@ public:
 		else
 			if (created) *created = false;
 
-		return b;
+		return *b;
 	}
 };

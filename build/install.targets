@@ -10,7 +10,7 @@
   <Target
     Name="ComputeHeaderOutputs"
     Inputs="@(InstallHeader)"
-    Outputs="@(InstallHeader->'%(HeaderRoot)|%(RelativeDir)')"
+    Outputs="@(InstallHeader->'%(HeaderRoot)\%(RelativeDir)')"
     BeforeTargets="InstallHeaders"
     >
     <CalculateOutputDir

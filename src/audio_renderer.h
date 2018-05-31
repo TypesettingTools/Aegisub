@@ -111,7 +111,7 @@ class AudioRenderer {
 	///
 	/// Will attempt retrieving the requested bitmap from the cache, creating it
 	/// if the cache doesn't have it.
-	const wxBitmap *GetCachedBitmap(int i, AudioRenderingStyle style);
+	wxBitmap const& GetCachedBitmap(int i, AudioRenderingStyle style);
 
 	/// @brief Update the block count in the bitmap caches
 	///

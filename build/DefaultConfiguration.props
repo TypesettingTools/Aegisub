@@ -49,16 +49,17 @@
     <UpdateCheckerServer>updates.aegisub.org</UpdateCheckerServer>
     <UpdateCheckerURL>/trunk</UpdateCheckerURL>
 
-    <BoostPath>..\..\vendor\boost</BoostPath>
-    <FfmsSrcDir>..\..\vendor\ffms2</FfmsSrcDir>
-    <FfmpegSrcDir>..\..\vendor\ffmpeg</FfmpegSrcDir>
-    <FftwSrcDir>..\..\vendor\fftw</FftwSrcDir>
-    <Freetype2SrcDir>..\..\vendor\freetype2</Freetype2SrcDir>
-    <FribidiSrcDir>..\..\vendor\fribidi</FribidiSrcDir>
-    <GtestSrcDir>..\..\vendor\googletest</GtestSrcDir>
-    <IcuSrcDir>..\..\vendor\icu\source</IcuSrcDir>
-    <LibassSrcDir>..\..\vendor\libass</LibassSrcDir>
-    <WxSrcDir>..\..\vendor\wxWidgets</WxSrcDir>
-    <ZlibSrcDir>..\..\vendor\wxWidgets\src\zlib</ZlibSrcDir>
+    <VendorRoot>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\vendor))</VendorRoot>
+    <BoostPath>$(VendorRoot)\boost</BoostPath>
+    <FfmsSrcDir>$(VendorRoot)\ffms2</FfmsSrcDir>
+    <FfmpegSrcDir>$(VendorRoot)\ffmpeg</FfmpegSrcDir>
+    <FftwSrcDir>$(VendorRoot)\fftw</FftwSrcDir>
+    <Freetype2SrcDir>$(VendorRoot)\freetype2</Freetype2SrcDir>
+    <FribidiSrcDir>$(VendorRoot)\fribidi</FribidiSrcDir>
+    <GtestSrcDir>$(VendorRoot)\googletest</GtestSrcDir>
+    <IcuSrcDir>$(VendorRoot)\icu\source</IcuSrcDir>
+    <LibassSrcDir>$(VendorRoot)\libass</LibassSrcDir>
+    <WxSrcDir>$(VendorRoot)\wxWidgets</WxSrcDir>
+    <ZlibSrcDir>$(VendorRoot)\wxWidgets\src\zlib</ZlibSrcDir>
   </PropertyGroup>
 </Project>

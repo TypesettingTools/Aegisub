@@ -33,19 +33,6 @@ namespace bfs = boost::filesystem;
 
 #undef CreateDirectory
 
-namespace {
-	FINDEX_INFO_LEVELS find_info_level() {
-		OSVERSIONINFO osvi = {};
-		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-		GetVersionEx(&osvi);
-
-		if (osvi.dwMajorVersion > 6 || (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1))
-			return FindExInfoBasic;
-		else
-			return FindExInfoStandard;
-	}
-}
-
 namespace agi { namespace fs {
 std::string ShortName(path const& p) {
 	std::wstring out(MAX_PATH + 1, 0);
@@ -98,7 +85,7 @@ DirectoryIterator::DirectoryIterator(path const& p, std::string const& filter)
 : privdata(new PrivData)
 {
 	WIN32_FIND_DATA data;
-	privdata->h = FindFirstFileEx((p/(filter.empty() ? "*.*" : filter)).c_str(), find_info_level(), &data, FindExSearchNameMatch, nullptr, 0);
+	privdata->h = FindFirstFileEx((p/(filter.empty() ? "*.*" : filter)).c_str(), FindExInfoBasic, &data, FindExSearchNameMatch, nullptr, 0);
 	if (privdata->h == INVALID_HANDLE_VALUE) {
 		privdata.reset();
 		return;
