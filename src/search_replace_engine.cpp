@@ -253,7 +253,7 @@ bool SearchReplaceEngine::ReplaceAll() {
 			if (MatchState ms = matches(&diag, 0)) {
 				auto& diag_field = diag.*get_dialogue_field(settings.field);
 				std::string const& text = diag_field.get();
-				count += distance(
+				count += std::distance(
 					boost::u32regex_iterator<std::string::const_iterator>(begin(text), end(text), *ms.re),
 					boost::u32regex_iterator<std::string::const_iterator>());
 				diag_field = u32regex_replace(text, *ms.re, settings.replace_with);
