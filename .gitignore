@@ -5,6 +5,7 @@
 *.bz2
 *.cache
 *.dep
+*.db
 *.dll
 *.dmg
 *.exe
@@ -92,3 +93,4 @@ vendor/luajit/src/lj_recdef.h
 vendor/luajit/src/luajit
 
 .nuget
+.vs
