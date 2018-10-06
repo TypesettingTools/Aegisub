@@ -23,7 +23,7 @@
       <AdditionalIncludeDirectories>
         $(LibassSrcDir)\libass;
         $(MSBuildThisFileDirectory);
-        $(AegisubSourceBase)\include\fribidi;
+        $(FribidiSrcDir)\fribidi;
         %(AdditionalIncludeDirectories)
       </AdditionalIncludeDirectories>
       <PreprocessorDefinitions>
