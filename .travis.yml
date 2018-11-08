@@ -33,7 +33,7 @@ install:
   # Can't install these via the apt addon due to the whitelist
   - sudo apt-get install -y -qq libffms2-dev libwxgtk3.0-dev libuchardet-dev
 
-  - sudo pip install cpp-coveralls
+  - sudo pip install -U cpp-coveralls
   - sudo luarocks install busted > /dev/null
   - sudo luarocks install moonscript > /dev/null
   - sudo luarocks install uuid > /dev/null
@@ -49,6 +49,7 @@ install:
   - cd boost
   - ./bootstrap.sh
   - ./b2 -j3 -layout=system threading=multi cxxflags=-std=c++11 link=shared variant=release --without-python --without-iostreams --without-serialization --without-graph --without-log --without-math --without-signals --without-test --without-wave --without-mpi --without-program_options --without-graph_parallel --without-context --without-coroutine --without-random --without-timer --without-date_time
+  - sudo ./b2 -layout=system threading=multi cxxflags=-std=c++11 link=shared variant=release --without-python --without-iostreams --without-serialization --without-graph --without-log --without-math --without-signals --without-test --without-wave --without-mpi --without-program_options --without-graph_parallel --without-context --without-coroutine --without-random --without-timer --without-date_time install
   - cd ../..
 
 script:
