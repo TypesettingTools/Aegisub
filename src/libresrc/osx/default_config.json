@@ -552,6 +552,10 @@
 				}
 			},
 			"Only Selection" : false,
+			"Lead" : {
+				"IN" : 100,
+				"OUT" : 350
+			},
 			"Threshold" : {
 				"Adjacent Gap" : 300,
 				"Adjacent Overlap" : 50,
