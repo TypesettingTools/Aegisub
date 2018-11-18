@@ -144,8 +144,8 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	d.SetIcon(GETICON(timing_processor_toolbutton_16));
 
 	// Read options
-	leadIn = OPT_GET("Audio/Lead/IN")->GetInt();
-	leadOut = OPT_GET("Audio/Lead/OUT")->GetInt();
+	leadIn = OPT_GET("Tool/Timing Post Processor/Lead/IN")->GetInt();
+	leadOut = OPT_GET("Tool/Timing Post Processor/Lead/OUT")->GetInt();
 	beforeStart = OPT_GET("Tool/Timing Post Processor/Threshold/Key Start Before")->GetInt();
 	beforeEnd = OPT_GET("Tool/Timing Post Processor/Threshold/Key End Before")->GetInt();
 	afterStart = OPT_GET("Tool/Timing Post Processor/Threshold/Key Start After")->GetInt();
@@ -305,8 +305,8 @@ void DialogTimingProcessor::UpdateControls() {
 void DialogTimingProcessor::OnApply(wxCommandEvent &) {
 	d.TransferDataFromWindow();
 	// Save settings
-	OPT_SET("Audio/Lead/IN")->SetInt(leadIn);
-	OPT_SET("Audio/Lead/OUT")->SetInt(leadOut);
+	OPT_SET("Tool/Timing Post Processor/Lead/IN")->SetInt(leadIn);
+	OPT_SET("Tool/Timing Post Processor/Lead/OUT")->SetInt(leadOut);
 	OPT_SET("Tool/Timing Post Processor/Threshold/Key Start Before")->SetInt(beforeStart);
 	OPT_SET("Tool/Timing Post Processor/Threshold/Key Start After")->SetInt(afterStart);
 	OPT_SET("Tool/Timing Post Processor/Threshold/Key End Before")->SetInt(beforeEnd);
