@@ -27,17 +27,8 @@
     <ClCompile Include="$(FfmsSrcDir)\src\core\audiosource.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\lavfaudio.cpp">
-      <Filter>Audio</Filter>
-    </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\indexing.cpp">
       <Filter>Indexing</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\lavfindexer.cpp">
-      <Filter>Indexing</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\lavfvideo.cpp">
-      <Filter>Video</Filter>
     </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\videosource.cpp">
       <Filter>Video</Filter>
@@ -46,9 +37,6 @@
       <Filter>API</Filter>
     </ClCompile>
     <ClCompile Include="$(FfmsSrcDir)\src\core\utils.cpp">
-      <Filter>Utils</Filter>
-    </ClCompile>
-    <ClCompile Include="$(FfmsSrcDir)\src\core\wave64writer.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
     <None Include="$(FfmsSrcDir)\src\avisynth\avisynth.cpp">
@@ -102,9 +90,6 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\src\core\utils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="$(FfmsSrcDir)\src\core\wave64writer.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="$(FfmsSrcDir)\src\avisynth\avisynth.h">

@@ -1,6 +1,6 @@
 platform='Win32'
 suffix='x86'
-if [[ $LIB =~ amd64 ]]; then
+if [[ $LIB =~ x64 ]]; then
   platform='x64'
   suffix='x64'
 fi
@@ -18,7 +18,6 @@ fi
   --disable-ffmpeg \
   --disable-ffplay \
   --disable-ffprobe \
-  --disable-ffserver \
   --disable-filters \
   --disable-hwaccels \
   --disable-muxers \
@@ -29,6 +28,9 @@ fi
   --enable-gpl \
   --enable-runtime-cpudetect \
   --enable-static \
+  --enable-small \
+  --enable-x86asm \
+  --x86asmexe=yasm \
   --enable-zlib \
   --extra-cflags=-D_SYSCRT \
   --extra-cflags=-I../../include \

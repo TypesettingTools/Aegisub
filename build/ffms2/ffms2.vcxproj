@@ -60,14 +60,10 @@
     <ClCompile Include="$(FfmsSrcDir)\src\core\ffms.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\filehandle.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\indexing.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\lavfaudio.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\lavfindexer.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\lavfvideo.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\track.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\utils.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\videosource.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\videoutils.cpp" />
-    <ClCompile Include="$(FfmsSrcDir)\src\core\wave64writer.cpp" />
     <ClCompile Include="$(FfmsSrcDir)\src\core\zipfile.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -84,7 +80,6 @@
     <ClInclude Include="$(FfmsSrcDir)\src\core\utils.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\videosource.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\videoutils.h" />
-    <ClInclude Include="$(FfmsSrcDir)\src\core\wave64writer.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\core\zipfile.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\vapoursynth\VapourSynth.h" />
     <ClInclude Include="$(FfmsSrcDir)\src\vapoursynth\vapoursource.h" />
