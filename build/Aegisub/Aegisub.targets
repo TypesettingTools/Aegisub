@@ -126,6 +126,7 @@
     <ClCompile>
       <PreprocessorDefinitions>
         NOMINMAX;
+        _WIN32_WINNT=0x0602;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>
       <AdditionalIncludeDirectories>
