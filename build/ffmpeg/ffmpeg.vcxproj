@@ -32,7 +32,7 @@
         _LARGEFILE_SOURCE;
         _SYSCRT;
         _USE_MATH_DEFINES;
-        _WIN32_WINNT=0x0502;
+        _WIN32_WINNT=0x0602;
         inline=__inline;
         %(PreprocessorDefinitions)
       </PreprocessorDefinitions>

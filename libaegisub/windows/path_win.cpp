@@ -25,10 +25,10 @@
 
 #include <boost/filesystem.hpp>
 
-namespace {
 #include <Shlobj.h>
 #include <Shellapi.h>
 
+namespace {
 agi::fs::path WinGetFolderPath(int folder) {
 	wchar_t path[MAX_PATH+1] = {0};
 	if (FAILED(SHGetFolderPathW(0, folder, 0, 0, path)))
