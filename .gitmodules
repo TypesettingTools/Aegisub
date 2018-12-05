@@ -38,5 +38,5 @@
 	ignore = dirty
 [submodule "uchardet"]
 	path = vendor/uchardet
-	url = https://github.com/BYVoid/uchardet
+	url = https://gitlab.freedesktop.org/uchardet/uchardet.git
 	ignore = dirty
