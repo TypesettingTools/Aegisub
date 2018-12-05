@@ -1,6 +1,6 @@
 platform='Win32'
 suffix='x86'
-if [[ $LIB =~ amd64 ]]; then
+if [[ $LIB =~ x64 ]]; then
   platform='x64'
   suffix='x64'
 fi
@@ -18,7 +18,6 @@ fi
   --disable-ffmpeg \
   --disable-ffplay \
   --disable-ffprobe \
-  --disable-ffserver \
   --disable-filters \
   --disable-hwaccels \
   --disable-muxers \
@@ -29,6 +28,9 @@ fi
   --enable-gpl \
   --enable-runtime-cpudetect \
   --enable-static \
+  --enable-small \
+  --enable-x86asm \
+  --x86asmexe=yasm \
   --enable-zlib \
   --extra-cflags=-D_SYSCRT \
   --extra-cflags=-I../../include \
@@ -38,5 +40,15 @@ fi
   --extra-ldflags=-LIBPATH:../../lib/$platform/Release \
   --toolchain=msvc
 
-mv config.h ../../build/ffmpeg/config-$suffix.h
 mv config.asm ../../build/ffmpeg/config-$suffix.asm
+mv config.h ../../build/ffmpeg/config-$suffix.h
+mv libavcodec/bsf_list.c ../../build/ffmpeg/libavcodec/bsf_list.c
+mv libavcodec/codec_list.c ../../build/ffmpeg/libavcodec/codec_list.c
+mv libavcodec/parser_list.c ../../build/ffmpeg/libavcodec/parser_list.c
+mv libavdevice/indev_list.c ../../build/ffmpeg/libavdevice/indev_list.c
+mv libavdevice/outdev_list.c ../../build/ffmpeg/libavdevice/outdev_list.c
+mv libavformat/demuxer_list.c ../../build/ffmpeg/libavformat/demuxer_list.c
+mv libavformat/muxer_list.c ../../build/ffmpeg/libavformat/muxer_list.c
+mv libavformat/protocol_list.c ../../build/ffmpeg/libavformat/protocol_list.c
+mv libavutil/avconfig.h ../../build/ffmpeg/libavutil/avconfig.h
+mv libavutil/ffversion.h ../../build/ffmpeg/libavutil/ffversion.h

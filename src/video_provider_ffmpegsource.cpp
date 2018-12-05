@@ -44,6 +44,23 @@
 #include <libaegisub/make_unique.h>
 
 namespace {
+typedef enum AGI_ColorSpaces {
+	AGI_CS_RGB = 0,
+	AGI_CS_BT709 = 1,
+	AGI_CS_UNSPECIFIED = 2,
+	AGI_CS_FCC = 4,
+	AGI_CS_BT470BG = 5,
+	AGI_CS_SMPTE170M = 6,
+	AGI_CS_SMPTE240M = 7,
+	AGI_CS_YCOCG = 8,
+	AGI_CS_BT2020_NCL = 9,
+	AGI_CS_BT2020_CL = 10,
+	AGI_CS_SMPTE2085 = 11,
+	AGI_CS_CHROMATICITY_DERIVED_NCL = 12,
+	AGI_CS_CHROMATICITY_DERIVED_CL = 13,
+	AGI_CS_ICTCP = 14
+} AGI_ColorSpaces;
+
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
 class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvider {
@@ -78,7 +95,7 @@ public:
 		if (matrix == RealColorSpace)
 			FFMS_SetInputFormatV(VideoSource, CS, CR, FFMS_GetPixFmt(""), nullptr);
 		else if (matrix == "TV.601")
-			FFMS_SetInputFormatV(VideoSource, FFMS_CS_BT470BG, CR, FFMS_GetPixFmt(""), nullptr);
+			FFMS_SetInputFormatV(VideoSource, AGI_CS_BT470BG, CR, FFMS_GetPixFmt(""), nullptr);
 		else
 			return;
 		ColorSpace = matrix;
@@ -103,16 +120,16 @@ std::string colormatrix_description(int cs, int cr) {
 	std::string str = cr == FFMS_CR_JPEG ? "PC" : "TV";
 
 	switch (cs) {
-		case FFMS_CS_RGB:
+		case AGI_CS_RGB:
 			return "None";
-		case FFMS_CS_BT709:
+		case AGI_CS_BT709:
 			return str + ".709";
-		case FFMS_CS_FCC:
+		case AGI_CS_FCC:
 			return str + ".FCC";
-		case FFMS_CS_BT470BG:
-		case FFMS_CS_SMPTE170M:
+		case AGI_CS_BT470BG:
+		case AGI_CS_SMPTE170M:
 			return str + ".601";
-		case FFMS_CS_SMPTE240M:
+		case AGI_CS_SMPTE240M:
 			return str + ".240M";
 		default:
 			throw VideoOpenError("Unknown video color space");
@@ -206,8 +223,10 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 
 	// set thread count
 	int Threads = OPT_GET("Provider/Video/FFmpegSource/Decoding Threads")->GetInt();
+#if FFMS_VERSION < ((2 << 24) | (30 << 16) | (0 << 8) | 0)
 	if (FFMS_GetVersion() < ((2 << 24) | (17 << 16) | (2 << 8) | 1) && FFMS_GetSourceType(Index) == FFMS_SOURCE_LAVF)
 		Threads = 1;
+#endif
 
 	// set seekmode
 	// TODO: give this its own option?
@@ -238,13 +257,13 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 	int VideoCS = CS = TempFrame->ColorSpace;
 	CR = TempFrame->ColorRange;
 
-	if (CS == FFMS_CS_UNSPECIFIED)
-		CS = Width > 1024 || Height >= 600 ? FFMS_CS_BT709 : FFMS_CS_BT470BG;
+	if (CS == AGI_CS_UNSPECIFIED)
+		CS = Width > 1024 || Height >= 600 ? AGI_CS_BT709 : AGI_CS_BT470BG;
 	RealColorSpace = ColorSpace = colormatrix_description(CS, CR);
 
 #if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (1 << 8) | 0)
-	if (CS != FFMS_CS_RGB && CS != FFMS_CS_BT470BG && ColorSpace != colormatrix && colormatrix == "TV.601") {
-		CS = FFMS_CS_BT470BG;
+	if (CS != AGI_CS_RGB && CS != AGI_CS_BT470BG && ColorSpace != colormatrix && colormatrix == "TV.601") {
+		CS = AGI_CS_BT470BG;
 		ColorSpace = colormatrix_description(CS, CR);
 	}
 
