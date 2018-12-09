@@ -39,7 +39,7 @@ search = (re, str, start) ->
   res = regex.search re, str, str\len(), start
   return unless res != nil
   first, last = res[0], res[1]
-  ffi.C.free res
+  ffi.gc(res, ffi.C.free)
   first, last
 
 replace = (re, replacement, str, max_count) ->
