@@ -100,6 +100,7 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer,
 			FFMS_TrackTypeIndexSettings(Indexer, FFMS_TYPE_AUDIO, 1, 0);
 		else if (Track != TrackSelection::None)
 			FFMS_TrackIndexSettings(Indexer, static_cast<int>(Track), 1, 0);
+		FFMS_TrackTypeIndexSettings(Indexer, FFMS_TYPE_VIDEO, 1, 0);
 		FFMS_SetProgressCallback(Indexer, callback, ps);
 		Index = FFMS_DoIndexing2(Indexer, IndexEH, &ErrInfo);
 #else
