@@ -144,7 +144,7 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	// update access time of index file so it won't get cleaned away
 	agi::fs::Touch(CacheName);
 
-	AudioSource = FFMS_CreateAudioSource(filename.string().c_str(), TrackNumber, Index, -1, &ErrInfo);
+	AudioSource = FFMS_CreateAudioSource(filename.string().c_str(), TrackNumber, Index, FFMS_DELAY_FIRST_VIDEO_TRACK, &ErrInfo);
 	if (!AudioSource)
 		throw agi::AudioProviderError(std::string("Failed to open audio track: ") + ErrInfo.Buffer);
 
