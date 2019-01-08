@@ -13,10 +13,6 @@
       <UniqueIdentifier>{56793734-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>asm</Extensions>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Yasm Include="$(LibassSrcDir)\libass\x86\be_blur.asm">
@@ -31,24 +27,21 @@
     <Yasm Include="$(LibassSrcDir)\libass\x86\cpuid.asm">
       <Filter>Assembly Files</Filter>
     </Yasm>
-    <Yasm Include="$(LibassSrcDir)\libass\x86\rasterizer.asm">
-      <Filter>Assembly Files</Filter>
-    </Yasm>
-    <ClInclude Include="$(LibassSrcDir)\libass\x86\be_blur.h">
-      <Filter>Assembly Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(LibassSrcDir)\libass\x86\blend_bitmaps.h">
-      <Filter>Assembly Files</Filter>
-    </ClInclude>
     <ClInclude Include="$(LibassSrcDir)\libass\x86\cpuid.h">
       <Filter>Assembly Files</Filter>
     </ClInclude>
-    <ClInclude Include="$(LibassSrcDir)\libass\x86\rasterizer.h">
+    <Yasm Include="$(LibassSrcDir)\libass\x86\gaussian.asm">
       <Filter>Assembly Files</Filter>
-    </ClInclude>
-    <None Include="$(LibassSrcDir)\libass\x86\x86inc.asm">
+    </Yasm>
+    <Yasm Include="$(LibassSrcDir)\libass\x86\rasterizer.asm">
       <Filter>Assembly Files</Filter>
-    </None>
+    </Yasm>
+    <Yasm Include="$(LibassSrcDir)\libass\x86\utils.asm">
+      <Filter>Assembly Files</Filter>
+    </Yasm>
+    <Yasm Include="$(LibassSrcDir)\libass\x86\x86inc.asm">
+      <Filter>Assembly Files</Filter>
+    </Yasm>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(LibassSrcDir)\libass\ass.h">
@@ -63,16 +56,34 @@
     <ClInclude Include="$(LibassSrcDir)\libass\ass_cache_template.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_compat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_directwrite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(LibassSrcDir)\libass\ass_drawing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(LibassSrcDir)\libass\ass_font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_fontselect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_func_template.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(LibassSrcDir)\libass\ass_library.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_outline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(LibassSrcDir)\libass\ass_parse.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_rasterizer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(LibassSrcDir)\libass\ass_render.h">
@@ -81,19 +92,22 @@
     <ClInclude Include="$(LibassSrcDir)\libass\ass_shaper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\ass_string.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(LibassSrcDir)\libass\ass_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(LibassSrcDir)\libass\ass_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="$(LibassSrcDir)\libass\dwrite_c.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)strings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)unistd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,6 +124,9 @@
     <ClCompile Include="$(LibassSrcDir)\libass\ass_cache.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_directwrite.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_drawing.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -120,6 +137,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_library.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="$(LibassSrcDir)\libass\ass_outline.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="$(LibassSrcDir)\libass\ass_parse.c">

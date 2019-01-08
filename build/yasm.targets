@@ -58,7 +58,7 @@
     >
     <ItemGroup>
       <_Yasm>
-        <Include>%(Include) -I%(RootDir)%(Directory)</Include>
+        <Include>%(Include) -I%(RootDir)%(Directory)..\</Include>
         <OutputDir Condition="'%(OutputDir)' == '.\'"></OutputDir>
         <RelativeOutputDir>%(OutputDir)</RelativeOutputDir>
         <OutputDir>$(AegisubObjectDir)%(OutputDir)</OutputDir>
