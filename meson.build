@@ -19,7 +19,7 @@ deps = []
 
 if host_machine.system() == 'darwin'
     add_languages('objc')
-else
+elif host_machine.system() != 'windows'
     deps += dependency('fontconfig', static: b_static)
 endif
 
