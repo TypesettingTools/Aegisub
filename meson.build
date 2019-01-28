@@ -1,5 +1,5 @@
 project('Aegisub', ['c', 'cpp'], license : 'BSD-3-Clause',
-        meson_version : '>=0.41.0',
+        meson_version : '>=0.47.0',
         default_options : ['cpp_std=c++11', 'b_lto=true'])
 
 subdir('build')
