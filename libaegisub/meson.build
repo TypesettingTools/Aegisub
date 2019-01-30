@@ -83,6 +83,6 @@ libaegisub_cpp_pch = ['lagi_pre.h']
 libaegisub_inc = include_directories('include')
 
 libaegisub = static_library('aegisub', libaegisub_src, acconf,
-                            include_directories : libaegisub_inc,
-                            cpp_pch : 'include/lagi_pre.h',
-                            dependencies : deps)
+                            include_directories: libaegisub_inc,
+                            cpp_pch: 'include/lagi_pre.h',
+                            dependencies: deps)
