@@ -1,6 +1,6 @@
 minilua = executable('minilua', 'minilua.c',
-                     dependencies : system_deps_native,
-                     native : true)
+                     dependencies: system_deps_native,
+                     native: true)
 
 if host_machine.cpu_family() == 'x86_64'
     dynasm_arch = 'x86'
@@ -25,8 +25,8 @@ if host_machine.cpu_family() == 'x86'
     checkdefs += ['__SSE2__', '1', ['-D', 'SSE']]
 endif
 
-foreach def : checkdefs
-    if cc.get_define(def[0], prefix : hpre) == def[1]
+foreach def: checkdefs
+    if cc.get_define(def[0], prefix: hpre) == def[1]
         dasm += def[2]
     endif
 endforeach
@@ -40,11 +40,11 @@ buildvm_src = files(
 )
 
 buildvm_arch = custom_target('buildvm_arch.h',
-                             command : dasm + ['-o', '@OUTPUT@', '@INPUT@'],
-                             input : dynasm_dasc,
-                             output : 'buildvm_arch.h')
+                             command: dasm + ['-o', '@OUTPUT@', '@INPUT@'],
+                             input: dynasm_dasc,
+                             output: 'buildvm_arch.h')
 
 buildvm = executable('buildvm', buildvm_src, buildvm_arch,
-                     dependencies : system_deps_native,
-                     include_directories : src_inc,
-                     native : true)
+                     dependencies: system_deps_native,
+                     include_directories: src_inc,
+                     native: true)
