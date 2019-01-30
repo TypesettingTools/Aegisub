@@ -1,10 +1,10 @@
 project('Aegisub', ['c', 'cpp'], license: 'BSD-3-Clause',
-        meson_version: '>=0.47.0',
+        meson_version: '>=0.49.0',
         default_options: ['cpp_std=c++11', 'b_lto=true'])
 
 subdir('build')
 
-dataroot = join_paths(get_option('prefix'), get_option('datadir'), 'aegisub')
+dataroot = get_option('prefix') / get_option('datadir') / 'aegisub'
 add_project_arguments('-DP_DATA="@0@"'.format(dataroot), language: 'cpp')
 b_static = get_option('static')
 
