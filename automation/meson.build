@@ -1,4 +1,4 @@
-automation_dir = join_paths(get_option('datadir'), 'aegisub', 'automation')
+automation_dir = get_option('datadir') / 'aegisub' / 'automation'
 
 install_data(
     'autoload/cleantags-autoload.lua',
@@ -8,13 +8,13 @@ install_data(
     'autoload/macro-2-mkfullwitdh.lua',
     'autoload/select-overlaps.moon',
     'autoload/strip-tags.lua',
-    install_dir: join_paths(automation_dir, 'autoload'))
+    install_dir: automation_dir / 'autoload')
 
 install_data(
     'demos/future-windy-blur.lua',
     'demos/raytracer.lua',
     'demos/raytracer-test1.ass',
-    install_dir: join_paths(automation_dir, 'demos'))
+    install_dir: automation_dir / 'demos')
 
 install_data(
     'include/cleantags.lua',
@@ -27,7 +27,7 @@ install_data(
     'include/unicode.lua',
     'include/utils-auto4.lua',
     'include/utils.lua',
-    install_dir: join_paths(automation_dir, 'include'))
+    install_dir: automation_dir / 'include')
 
 install_data(
     'include/aegisub/argcheck.moon',
@@ -37,4 +37,4 @@ install_data(
     'include/aegisub/re.moon',
     'include/aegisub/unicode.moon',
     'include/aegisub/util.moon',
-    install_dir: join_paths(automation_dir, 'include', 'aegisub'))
+    install_dir: automation_dir / 'include' / 'aegisub')
