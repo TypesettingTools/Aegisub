@@ -189,15 +189,15 @@ opt_src = [
     ['Hunspell', 'spellchecker_hunspell.cpp'],
 ]
 
-foreach opt : opt_src
+foreach opt: opt_src
     if dep_avail.contains(opt[0])
         aegisub_src += opt[1]
     endif
 endforeach
 
 aegisub = executable('aegisub', aegisub_src, version_h, acconf,
-                     link_with : [libresrc, libluabins, libaegisub],
-                     include_directories : [libaegisub_inc, libresrc_inc, version_inc],
-                     cpp_pch : 'include/agi_pre.h',
-                     install : true,
-                     dependencies : deps)
+                     link_with: [libresrc, libluabins, libaegisub],
+                     include_directories: [libaegisub_inc, libresrc_inc, version_inc],
+                     cpp_pch: 'include/agi_pre.h',
+                     install: true,
+                     dependencies: deps)
