@@ -31,4 +31,4 @@ langs = [
     'zh_TW',
 ]
 
-i18n.gettext('aegisub', languages : langs)
+i18n.gettext('aegisub', languages: langs)
