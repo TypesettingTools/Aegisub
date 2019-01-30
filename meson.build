@@ -2,7 +2,17 @@ project('Aegisub', ['c', 'cpp'], license: 'BSD-3-Clause',
         meson_version: '>=0.49.0',
         default_options: ['cpp_std=c++11', 'b_lto=true'])
 
-subdir('build')
+if host_machine.system() == 'windows'
+    version_sh = find_program('version.ps1')
+else
+    version_sh = find_program('version.sh')
+endif
+version_inc = include_directories('.')
+version_h = custom_target('git_version.h',
+                          command: [version_sh, meson.source_root()],
+                          build_by_default: true,
+                          build_always_stale: true, # has internal check whether target file will be refreshed
+                          output: ['git_version.h', 'git_version.xml'])
 
 dataroot = get_option('prefix') / get_option('datadir') / 'aegisub'
 add_project_arguments('-DP_DATA="@0@"'.format(dataroot), language: 'cpp')
