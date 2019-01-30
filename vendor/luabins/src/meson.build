@@ -8,4 +8,4 @@ luabins_src = files(
     'write.c',
 )
 
-libluabins = static_library('luabins', luabins_src, include_directories : luajit_inc)
+libluabins = static_library('luabins', luabins_src, include_directories: luajit_inc)

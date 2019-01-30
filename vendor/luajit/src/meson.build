@@ -77,19 +77,19 @@ hdrgen = [
 ]
 
 genheaders = []
-foreach h : hdrgen
+foreach h: hdrgen
     genheaders += custom_target(h,
-                                command : [buildvm, '-m', h, '-o', '@OUTPUT@', ljlib_src],
-                                output : 'lj_@0@.h'.format(h))
+                                command: [buildvm, '-m', h, '-o', '@OUTPUT@', ljlib_src],
+                                output: 'lj_@0@.h'.format(h))
 endforeach
 
 genheaders += custom_target('folddef',
-                            command : [buildvm, '-m', 'folddef', '-o', '@OUTPUT@', files('lj_opt_fold.c')],
-                            output : 'lj_folddef.h')
+                            command: [buildvm, '-m', 'folddef', '-o', '@OUTPUT@', files('lj_opt_fold.c')],
+                            output: 'lj_folddef.h')
 
 ljvm = custom_target(ljvm_bout,
-                     command : [buildvm, '-m', ljvm_mode, '-o', '@OUTPUT@'],
-                     output : ljvm_bout)
+                     command: [buildvm, '-m', ljvm_mode, '-o', '@OUTPUT@'],
+                     output: ljvm_bout)
 
 luajit_lib = static_library('luajit', ljlib_src, ljcore_src, genheaders, ljvm,
-                            dependencies : system_deps)
+                            dependencies: system_deps)
