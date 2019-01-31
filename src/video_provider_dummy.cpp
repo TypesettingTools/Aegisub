@@ -45,7 +45,11 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem/path.hpp>
 #include <libaegisub/format.h>
+#if (BOOST_VERSION / 100000) <= 1 && ((BOOST_VERSION / 100) % 1000) <= 67
 #include <boost/gil/gil_all.hpp>
+#else
+#include <boost/gil.hpp>
+#endif
 
 DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern)
 : framecount(frames)
