@@ -16,7 +16,11 @@
 
 #include "video_frame.h"
 
+#if (BOOST_VERSION / 100000) <= 1 && ((BOOST_VERSION / 100) % 1000) <= 67
 #include <boost/gil/gil_all.hpp>
+#else
+#include <boost/gil.hpp>
+#endif
 #include <wx/image.h>
 
 namespace {
