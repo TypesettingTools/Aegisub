@@ -8,24 +8,13 @@ else
                                       output: 'aegisub.desktop.template',
                                       configuration: c_pkg)
 
-    # TODO: switch this to gettext from intltool
-    #       requires modifying the autotools chain and a recent-ish gettext
-    #       https://wiki.gnome.org/MigratingFromIntltoolToGettext
-    #
-    # i18n = import('i18n')
-    # i18n.merge_file(input: desktop_template,
-    #                 output: 'aegisub.desktop',
-    #                 type: 'desktop',
-    #                 po_dir: '../po',
-    #                 install: true,
-    #                 install_dir: join_paths(get_option('datadir'), 'applications'))
-    intltool_merge = find_program('intltool-merge')
-    desktop = custom_target('aegisub.desktop',
-                            input: desktop_template,
-                            output: 'aegisub.desktop',
-                            command: [intltool_merge, '--desktop-style', '--quiet', '../po', '@INPUT@', '@OUTPUT@'],
-                            install: true,
-                            install_dir: get_option('datadir') / 'applications')
+    i18n = import('i18n')
+    i18n.merge_file(input: desktop_template,
+                    output: 'aegisub.desktop',
+                    type: 'desktop',
+                    po_dir: '../po',
+                    install: true,
+                    install_dir: join_paths(get_option('datadir'), 'applications'))
 endif
 
 aegisub_logos = ['16x16.png', '22x22.png', '24x24.png', '32x32.png', '48x48.png', '64x64.png', 'scalable.svg']
