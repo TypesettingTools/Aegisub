@@ -16,7 +16,6 @@ version_h = custom_target('git_version.h',
 
 dataroot = get_option('prefix') / get_option('datadir') / 'aegisub'
 add_project_arguments('-DP_DATA="@0@"'.format(dataroot), language: 'cpp')
-b_static = get_option('static')
 
 conf = configuration_data()
 conf.set_quoted('P_DATA', dataroot)
@@ -30,7 +29,7 @@ deps = []
 if host_machine.system() == 'darwin'
     add_languages('objc')
 elif host_machine.system() != 'windows'
-    deps += dependency('fontconfig', static: b_static)
+    deps += dependency('fontconfig')
 endif
 
 cxx = meson.get_compiler('cpp')
@@ -39,13 +38,16 @@ deps += cc.find_library('m', required: false)
 deps += cc.find_library('dl', required: false)
 deps += cc.find_library('iconv', required: false)
 
-deps += dependency('libass', version: '>=0.9.7', static: b_static)
-deps += dependency('boost', version: '>=1.50.0', static: b_static,
+deps += dependency('libass', version: '>=0.9.7')
+deps += dependency('boost', version: '>=1.50.0',
                    modules: ['chrono', 'filesystem', 'locale', 'regex',
                              'system', 'thread'])
-deps += dependency('icu-uc', version: '>=4.8.1.1', static: b_static)
-deps += dependency('icu-i18n', version: '>=4.8.1.1', static: b_static)
-deps += dependency('zlib', static: b_static)
+deps += dependency('zlib')
+
+icu_uc_dep = dependency('icu-uc', version: '>=4.8.1.1')
+deps += icu_uc_dep
+icu_i18n_dep = dependency('icu-i18n', version: '>=4.8.1.1')
+deps += icu_i18n_dep
 
 dep_avail = []
 foreach dep: [
@@ -62,7 +64,7 @@ foreach dep: [
     ['uchardet', '', 'uchardet'],
 ]
     d = dependency(dep[0], version: dep[1] != '' ? dep[1]: '>=0',
-                   required: false, static: b_static)
+                   required: false)
 
     optname = 'enable_@0@'.format(dep[0].split('-')[0])
     if d.found() and get_option(optname) != 'disabled'
