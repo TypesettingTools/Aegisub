@@ -1,5 +1,3 @@
-option('static', type: 'boolean', value: false, description: 'Build statically linked executable')
-
 option('enable_alsa', type: 'feature', description: 'ALSA audio output')
 option('enable_openal', type: 'feature', description: 'OpenAL audio output')
 option('enable_libpulse', type: 'feature', description: 'PulseAudio audio output')
