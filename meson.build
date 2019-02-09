@@ -67,11 +67,11 @@ foreach dep: [
                    required: false)
 
     optname = 'enable_@0@'.format(dep[0].split('-')[0])
-    if d.found() and get_option(optname) != 'disabled'
+    if d.found() and not get_option(optname).disabled()
         deps += d
         conf.set('WITH_@0@'.format(dep[0].split('-')[0].to_upper()), '1')
         dep_avail += dep[2]
-    elif get_option(optname) == 'enabled'
+    elif get_option(optname).enabled()
         error('@0@ enabled but not found'.format(dep[2]))
     endif
 endforeach
