@@ -1,14 +1,14 @@
-option('enable_alsa', type: 'feature', description: 'ALSA audio output')
-option('enable_openal', type: 'feature', description: 'OpenAL audio output')
-option('enable_libpulse', type: 'feature', description: 'PulseAudio audio output')
-option('enable_portaudio', type: 'feature', description: 'PortAudio audio output')
+option('alsa', type: 'feature', description: 'ALSA audio output')
+option('openal', type: 'feature', description: 'OpenAL audio output')
+option('libpulse', type: 'feature', description: 'PulseAudio audio output')
+option('portaudio', type: 'feature', description: 'PortAudio audio output')
 option('default_audio_output', type: 'combo', choices: ['auto', 'ALSA', 'OpenAL', 'PulseAudio', 'PortAudio'], description: 'Default audio output')
 
-option('enable_ffms2', type: 'feature', description: 'FFMS2 video source')
+option('ffms2', type: 'feature', description: 'FFMS2 video source')
 
-option('enable_fftw3', type: 'feature', description: 'FFTW3 support')
-option('enable_hunspell', type: 'feature', description: 'Hunspell spell checker')
-option('enable_uchardet', type: 'feature', description: 'uchardet character encoding detection')
+option('fftw3', type: 'feature', description: 'FFTW3 support')
+option('hunspell', type: 'feature', description: 'Hunspell spell checker')
+option('uchardet', type: 'feature', description: 'uchardet character encoding detection')
 
 option('system_luajit', type: 'boolean', value: false, description: 'Force using system luajit')
 
