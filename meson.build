@@ -3,9 +3,9 @@ project('Aegisub', ['c', 'cpp'], license: 'BSD-3-Clause',
         default_options: ['cpp_std=c++11', 'b_lto=true'])
 
 if host_machine.system() == 'windows'
-    version_sh = find_program('version.ps1')
+    version_sh = find_program('tools/version.ps1')
 else
-    version_sh = find_program('version.sh')
+    version_sh = find_program('tools/version.sh')
 endif
 version_inc = include_directories('.')
 version_h = custom_target('git_version.h',
