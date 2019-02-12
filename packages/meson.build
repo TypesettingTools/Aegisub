@@ -10,10 +10,11 @@ else
                    install_dir: get_option('datadir') / 'applications')
 endif
 
-foreach s: ['16x16.png', '22x22.png', '24x24.png', '32x32.png',
-             '48x48.png', '64x64.png', 'scalable.svg']
+aegisub_logos = ['16x16.png', '22x22.png', '24x24.png', '32x32.png', '48x48.png', '64x64.png', 'scalable.svg']
+
+foreach s: aegisub_logos
     dir = s.split('.')[0]
     ext = s.split('.')[1]
-    install_data('desktop' / dir / 'aegisub.' + ext),
+    install_data('desktop' / dir / 'aegisub.' + ext, 
                  install_dir: get_option('datadir') / 'icons' / 'hicolor' / dir / 'apps')
 endforeach
