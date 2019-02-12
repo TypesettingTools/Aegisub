@@ -1,6 +1,6 @@
 project('Aegisub', ['c', 'cpp'], license: 'BSD-3-Clause',
         meson_version: '>=0.49.0',
-        default_options: ['cpp_std=c++11', 'b_lto=true'])
+        default_options: ['cpp_std=c++14', 'b_lto=true'])
 
 if host_machine.system() == 'windows'
     version_sh = find_program('tools/version.ps1')
