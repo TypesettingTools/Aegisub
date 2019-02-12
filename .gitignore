@@ -95,3 +95,12 @@ vendor/luajit/src/luajit
 
 .nuget
 .vs
+
+# Meson
+subprojects/freetype*
+subprojects/fribidi
+subprojects/harfbuzz
+subprojects/libass
+subprojects/libpng*
+subprojects/packagecache
+subprojects/zlib*
