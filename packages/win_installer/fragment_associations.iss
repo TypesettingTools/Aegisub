@@ -59,6 +59,7 @@ Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedT
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".mp3"; ValueData: ""; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".mp4"; ValueData: ""; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".aac"; ValueData: ""; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".eac3"; ValueData: ""; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".m4a"; ValueData: ""; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".wav"; ValueData: ""; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".ogg"; ValueData: ""; Flags: uninsdeletekey
@@ -190,6 +191,7 @@ Root: HKLM; Subkey: "SOFTWARE\Classes\.avi\OpenWithProgids"; ValueType: string; 
 Root: HKLM; Subkey: "SOFTWARE\Classes\.mp3\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Audio.1"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "SOFTWARE\Classes\.mp4\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Media.1"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "SOFTWARE\Classes\.aac\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Audio.1"; Flags: uninsdeletevalue
+Root: HKLM; Subkey: "SOFTWARE\Classes\.eac3\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Audio.1"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "SOFTWARE\Classes\.m4a\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Audio.1"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "SOFTWARE\Classes\.wav\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Audio.1"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "SOFTWARE\Classes\.ogg\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Media.1"; Flags: uninsdeletevalue
