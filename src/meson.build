@@ -181,6 +181,8 @@ opt_src = [
     ['PulseAudio', 'audio_player_pulse.cpp'],
     ['OpenAL', 'audio_player_openal.cpp'],
     ['OSS', 'audio_player_oss.cpp'],
+    ['DirectSound', ['audio_player_dsound.cpp',
+                     'audio_player_dsound2.cpp']],
 
     ['FFMS2', ['audio_provider_ffmpegsource.cpp',
                'video_provider_ffmpegsource.cpp',
