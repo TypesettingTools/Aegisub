@@ -36,7 +36,13 @@ cxx = meson.get_compiler('cpp')
 cc = meson.get_compiler('c')
 deps += cc.find_library('m', required: false)
 deps += cc.find_library('dl', required: false)
-deps += cc.find_library('iconv', required: false)
+iconv_dep = cc.find_library('iconv', required: false)
+if not iconv_dep.found() and host_machine.system() == 'windows'
+    iconv_sp = subproject('iconv') # this really needs to be replaced with a proper port
+    deps_inc += iconv_sp.get_variable('iconv_incs')
+    iconv_dep = iconv_sp.get_variable('libiconv_dep')
+endif
+deps += iconv_dep
 
 deps += dependency('libass', version: '>=0.9.7')
 deps += dependency('boost', version: '>=1.50.0',
