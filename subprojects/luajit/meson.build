@@ -7,25 +7,22 @@ system_deps = [
     cc.find_library('m', required: false)
 ]
 
-system_deps_native = [
-    cc.find_library('dl', required: false, native: true),
-    cc.find_library('m', required: false, native: true)
-]
-
 add_project_arguments('-DLUAJIT_ENABLE_LUA52COMPAT', language: 'c')
 if host_machine.system() == 'linux'
-    add_project_arguments('-DLUAJIT_USE_LINUX', language: 'c')
+    add_project_arguments('-DLUAJIT_OS=LUAJIT_OS_LINUX', language: 'c')
     readline_dep = cc.find_library('readline')
     ljvm_mode = 'elfasm'
     ljvm_bout = 'lj_vm.s'
 elif host_machine.system() == 'darwin'
-    add_project_arguments(['-DLUAJIT_USE_MACOSX'], language: 'c')
+    add_project_arguments(['-DLUAJIT_OS=LUAJIT_OS_OSX'], language: 'c')
     readline_dep = cc.find_library('readline')
     ljvm_mode = 'machasm'
     ljvm_bout = 'lj_vm.s'
 elif host_machine.system() == 'windows'
-    add_project_arguments('-DLUAJIT_USE_WINDOWS', '-DWIN',
-                          '-malign-double', language: 'c')
+    add_project_arguments('-DLUAJIT_OS=LUAJIT_OS_WINDOWS', language: 'c')
+    if cc.get_id() != 'msvc'
+        add_project_arguments('-malign-double', language: 'c')
+    endif
     readline_dep = []
     ljvm_mode = 'peobj'
     ljvm_bout = 'lj_vm.o'
