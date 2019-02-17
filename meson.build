@@ -82,6 +82,21 @@ foreach dep: [
     endif
 endforeach
 
+if host_machine.system() == 'windows' and not get_option('directsound').disabled()
+    dsound_dep = cc.find_library('dsound', required: get_option('directsound'))
+    winmm_dep = cc.find_library('winmm', required: get_option('directsound'))
+    ole32_dep = cc.find_library('ole32', required: get_option('directsound'))
+    have_dsound_h = cc.has_header('dsound.h')
+    if not have_dsound_h and get_option('directsound').enabled()
+        error('DirectSound enabled but dsound.h not found')
+    endif
+    if dsound_dep.found() and winmm_dep.found() and ole32_dep.found() and have_dsound_h
+        deps += [dsound_dep, winmm_dep, ole32_dep]
+        conf.set('WITH_DIRECTSOUND', '1')
+        dep_avail += 'DirectSound'
+    endif
+endif
+
 # TODO: OSS
 
 def_audio = get_option('default_audio_output')
