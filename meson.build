@@ -17,6 +17,10 @@ version_h = custom_target('git_version.h',
 dataroot = get_option('prefix') / get_option('datadir') / 'aegisub'
 add_project_arguments('-DP_DATA="@0@"'.format(dataroot), language: 'cpp')
 
+if host_machine.system() == 'windows'
+    add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0602', language: 'cpp')
+endif
+
 conf = configuration_data()
 conf.set_quoted('P_DATA', dataroot)
 if get_option('build_credit') != ''
