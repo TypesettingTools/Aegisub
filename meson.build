@@ -29,6 +29,7 @@ endif
 conf.set('WITH_UPDATE_CHECKER', get_option('enable_update_checker'))
 
 deps = []
+deps_inc = []
 
 if host_machine.system() == 'darwin'
     add_languages('objc')

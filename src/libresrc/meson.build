@@ -25,4 +25,4 @@ endif
 
 
 libresrc_inc = include_directories('.')
-libresrc = static_library('resrc', 'libresrc.cpp', resrc, dependencies: deps)
+libresrc = static_library('resrc', 'libresrc.cpp', resrc, include_directories: deps_inc, dependencies: deps)
