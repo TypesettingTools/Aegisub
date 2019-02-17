@@ -1,5 +1,5 @@
 minilua = executable('minilua', 'minilua.c',
-                     dependencies: system_deps_native,
+                     dependencies: system_deps,
                      native: true)
 
 if host_machine.cpu_family() == 'x86_64'
@@ -45,6 +45,6 @@ buildvm_arch = custom_target('buildvm_arch.h',
                              output: 'buildvm_arch.h')
 
 buildvm = executable('buildvm', buildvm_src, buildvm_arch,
-                     dependencies: system_deps_native,
+                     dependencies: system_deps,
                      include_directories: src_inc,
                      native: true)
