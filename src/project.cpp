@@ -416,6 +416,8 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		".avi",
 		".avs",
 		".d2v",
+		".h264",
+		".hevc",
 		".m2ts",
 		".m4v",
 		".mkv",
@@ -453,6 +455,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		".mka",
 		".mp3",
 		".ogg",
+		".opus",
 		".w64",
 		".wav",
 		".wma"
