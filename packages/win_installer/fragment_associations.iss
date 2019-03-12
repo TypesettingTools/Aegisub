@@ -67,6 +67,8 @@ Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedT
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".opus"; ValueData: ""; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".h264"; ValueData: ""; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".hevc"; ValueData: ""; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".eac3"; ValueData: ""; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SOFTWARE\Classes\Applications\aegisub{#ARCH}.exe\SupportedTypes"; ValueType: string; ValueName: ".webm"; ValueData: ""; Flags: uninsdeletekey
 ; Class for general subtitle formats
 Root: HKLM; Subkey: "SOFTWARE\Classes\Aegisub.Subtitle.1"; ValueType: string; ValueName: ""; ValueData: "Aegisub subtitle file"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "SOFTWARE\Classes\Aegisub.Subtitle.1"; ValueType: dword; ValueName: "EditFlags"; ValueData: $af0; Flags: uninsdeletekey
@@ -201,3 +203,5 @@ Root: HKLM; Subkey: "SOFTWARE\Classes\.avs\OpenWithProgids"; ValueType: string; 
 Root: HKLM; Subkey: "SOFTWARE\Classes\.opus\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Audio.1"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "SOFTWARE\Classes\.h264\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Video.1"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "SOFTWARE\Classes\.hevc\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Video.1"; Flags: uninsdeletevalue
+Root: HKLM; Subkey: "SOFTWARE\Classes\.eac3\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Audio.1"; Flags: uninsdeletevalue
+Root: HKLM; Subkey: "SOFTWARE\Classes\.webm\OpenWithProgids"; ValueType: string; ValueName: "Aegisub.Media.1"; Flags: uninsdeletevalue
