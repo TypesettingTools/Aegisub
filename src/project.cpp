@@ -450,6 +450,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		".ac3",
 		".ape",
 		".dts",
+		".eac3",
 		".flac",
 		".m4a",
 		".mka",
