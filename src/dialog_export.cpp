@@ -125,7 +125,7 @@ DialogExport::DialogExport(agi::Context *c)
 	wxButton *btn_none = new wxButton(&d, -1, _("Select &None"), wxDefaultPosition, wxSize(80, -1));
 
 	btn_up->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
-	btn_down->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
+	btn_down->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection(), 1); });
 	btn_all->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { SetAll(true); });
 	btn_none->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { SetAll(false); });
 
