@@ -114,7 +114,7 @@ void AudioSpectrumRenderer::RecreateCache()
 
 	if (provider)
 	{
-		size_t block_count = (size_t)((provider->GetNumSamples() + (size_t)(1<<derivation_dist) - 1) >> derivation_dist);
+		size_t block_count = (size_t)((provider->GetNumSamples() + ((size_t)1<<derivation_dist) - 1) >> derivation_dist);
 		cache = agi::make_unique<AudioSpectrumCache>(block_count, this);
 
 #ifdef WITH_FFTW3
@@ -181,7 +181,7 @@ void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 	double scale_factor = 9 / sqrt(2 << (derivation_size + 1));
 
 	fftw_complex *o = dft_output;
-	for (size_t si = 1<<derivation_size; si > 0; --si)
+	for (size_t si = (size_t)1<<derivation_size; si > 0; --si)
 	{
 		*block++ = log10( sqrt(o[0][0] * o[0][0] + o[0][1] * o[0][1]) * scale_factor + 1 );
 		o++;

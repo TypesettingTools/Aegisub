@@ -37,7 +37,7 @@
 
 AudioColorScheme::AudioColorScheme(int prec, std::string const& scheme_name, int audio_rendering_style)
 : palette((3<<prec) + 3)
-, factor(1<<prec)
+, factor((size_t)1<<prec)
 {
 	std::string opt_base = "Colour/Schemes/" + scheme_name + "/";
 	switch (static_cast<AudioRenderingStyle>(audio_rendering_style))
