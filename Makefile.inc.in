@@ -104,7 +104,7 @@ LIBS_PTHREAD       = @PTHREAD_CFLAGS@ @PTHREAD_LIBS@
 LIBS_UCHARDET      = @UCHARDET_LIBS@
 
 ifeq (yes, $(BUILD_DARWIN))
-LIBS_LUA           = $(TOP)vendor/luajit/src/libluajit-aegisub.so
+LIBS_LUA           = $(TOP)vendor/luajit/src/libluajit.a
 endif
 
 FONTCONFIG_CONF_DIR = @FONTCONFIG_CONF_DIR@
