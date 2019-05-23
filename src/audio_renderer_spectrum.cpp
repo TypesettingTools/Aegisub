@@ -170,7 +170,7 @@ void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 	assert(cache);
 	assert(block);
 
-	int64_t first_sample = ((int64_t)block_index) << derivation_dist;
+	int64_t first_sample = (((int64_t)block_index) << derivation_dist) - ((int64_t)1 << derivation_size);
 	provider->GetAudio(&audio_scratch[0], first_sample, 2 << derivation_size);
 
 #ifdef WITH_FFTW3
