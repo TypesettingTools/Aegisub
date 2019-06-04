@@ -72,9 +72,11 @@ static ResolutionShortcut resolutions[] = {
 	{"704x396 (SD widescreen)", 704, 396},
 	{"640x352 (SD widescreen MOD16)", 640, 352},
 	{"704x400 (SD widescreen MOD16)", 704, 400},
+	{"1024x576 (SuperPAL widescreen)", 1024, 576},
 	{"1280x720 (HD 720p)", 1280, 720},
-	{"1920x1080 (HD 1080p)", 1920, 1080},
-	{"1024x576 (SuperPAL widescreen)", 1024, 576}
+	{"1920x1080 (FHD 1080p)", 1920, 1080},
+	{"2560x1440 (QHD 1440p)", 2560, 1440},
+	{"3840x2160 (4K UHD 2160p)", 3840, 2160},
 };
 
 wxSpinCtrl *spin_ctrl(wxWindow *parent, int min, int max, int *value) {
