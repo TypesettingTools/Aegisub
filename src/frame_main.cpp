@@ -240,8 +240,6 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	TopSizer->Show(videoBox, showVideo, true);
 	ToolsSizer->Show(audioBox, showAudio, true);
 
-	MainSizer->CalcMin();
-	MainSizer->RecalcSizes();
 	MainSizer->Layout();
 	Layout();
 
