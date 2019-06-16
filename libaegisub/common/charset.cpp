@@ -34,6 +34,15 @@ std::string Detect(agi::fs::path const& file) {
 	if (fp.size() > 100 * 1024 * 1024)
 		return "binary";
 
+
+	// FIXME: Dirty hack for Matroska. These 4 bytes are the magic
+	// number of EBML which is used by mkv and webm
+	if (fp.size() >= 4) {
+		const char* buf = fp.read(0, 4);
+		if (!strncmp(buf, "\x1a\x45\xdf\xa3", 4))
+			return "binary";
+	}
+
 	uint64_t binaryish = 0;
 
 #ifdef WITH_UCHARDET
