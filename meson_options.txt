@@ -13,7 +13,7 @@ option('uchardet', type: 'feature', description: 'uchardet character encoding de
 
 option('system_luajit', type: 'boolean', value: false, description: 'Force using system luajit')
 
-option('build_credit', type: 'string', value: '', description: 'Build credit shown in program title')
+option('credit', type: 'string', value: '', description: 'Build credit shown in program title')
 
 option('enable_update_checker', type: 'boolean', value: false, description: 'Enable the update checker')
 option('update_server', type: 'string', value: 'updates.aegisub.org', description: 'Server to use for the update checker')
