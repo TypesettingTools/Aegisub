@@ -50,9 +50,7 @@ ArchitecturesAllowed=x64
 #include "fragment_automation.iss"
 #include "fragment_translations.iss"
 #include "fragment_spelling.iss"
-#ifdef DEPCTRL
 #include "fragment_runtimes.iss"
-#endif
 
 [Code]
 #include "fragment_shell_code.iss"
