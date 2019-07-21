@@ -23,8 +23,8 @@ endif
 
 conf = configuration_data()
 conf.set_quoted('P_DATA', dataroot)
-if get_option('build_credit') != ''
-    conf.set_quoted('BUILD_CREDIT', get_option('build_credit'))
+if get_option('credit') != ''
+    conf.set_quoted('BUILD_CREDIT', get_option('credit'))
 endif
 conf.set('WITH_UPDATE_CHECKER', get_option('enable_update_checker'))
 
