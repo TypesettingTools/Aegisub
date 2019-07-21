@@ -63,7 +63,6 @@ else
             'windows/access.cpp',
             'windows/charset_conv_win.cpp',
             'windows/fs.cpp',
-            'windows/lagi_pre.cpp',
             'windows/log_win.cpp',
             'windows/path_win.cpp',
             'windows/util_win.cpp',
@@ -79,10 +78,14 @@ else
     endif
 endif
 
-libaegisub_cpp_pch = ['lagi_pre.h']
+libaegisub_cpp_pch = ['include/lagi_pre.h']
+if cxx.get_id() == 'msvc'
+    libaegisub_cpp_pch += 'include/lagi_pre.cpp'
+endif
+
 libaegisub_inc = include_directories('include')
 
 libaegisub = static_library('aegisub', libaegisub_src, acconf,
-                            include_directories: libaegisub_inc,
-                            cpp_pch: 'include/lagi_pre.h',
+                            include_directories: [libaegisub_inc, deps_inc],
+                            cpp_pch: libaegisub_cpp_pch,
                             dependencies: deps)
