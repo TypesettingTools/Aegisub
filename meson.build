@@ -49,15 +49,35 @@ if not iconv_dep.found() and host_machine.system() == 'windows'
 endif
 deps += iconv_dep
 
-deps += dependency('libass', version: '>=0.9.7')
+deps += dependency('libass', version: '>=0.9.7',
+                   fallback: ['libass', 'libass_dep'])
 deps += dependency('boost', version: '>=1.50.0',
                    modules: ['chrono', 'filesystem', 'locale', 'regex',
                              'system', 'thread'])
-deps += dependency('zlib')
+deps += dependency('zlib', fallback: ['zlib', 'zlib_dep'])
 
-icu_uc_dep = dependency('icu-uc', version: '>=4.8.1.1')
+# TODO: overhaul all this to properly handle windows vs non-windows
+wx_dep = dependency('wxWidgets', version: '>=3.0.0', required: false,
+                    modules: ['std', 'stc', 'gl'])
+if not wx_dep.found()
+    deps_inc += include_directories(get_option('wx_path') / 'include' / 'msvc', get_option('wx_path') / 'include')
+    add_project_arguments('-DUNICODE', '-D_UNICODE', language: 'cpp')
+    add_project_arguments('-DwxMSVC_VERSION_AUTO', '-DWXUSINGDLL', language: 'cpp')
+endif
+deps += wx_dep
+
+icu_uc_dep = dependency('icu-uc', version: '>=4.8.1.1', required: false)
+icu_i18n_dep = dependency('icu-i18n', version: '>=4.8.1.1', required: false)
+if not (icu_uc_dep.found() and icu_i18n_dep.found())
+    deps_inc += include_directories(get_option('icu_path') / 'include')
+endif
+if not icu_uc_dep.found() # check for non-empty, only work with windows, etc
+    icu_uc_dep = cxx.find_library('icuuc', dirs: get_option('icu_path') / 'lib64')
+endif
 deps += icu_uc_dep
-icu_i18n_dep = dependency('icu-i18n', version: '>=4.8.1.1')
+if not icu_i18n_dep.found()
+    icu_i18n_dep = cxx.find_library('icuin', dirs: get_option('icu_path') / 'lib64')
+endif
 deps += icu_i18n_dep
 
 dep_avail = []
@@ -68,11 +88,11 @@ foreach dep: [
     ['portaudio-2.0', '', 'PortAudio'],
     ['openal', '>=0.0.8', 'OpenAL'],
     # video
-    ['ffms2', '', 'FFMS2'],
+    ['ffms2', '', 'FFMS2'], # needs a proper port
     # other
     ['fftw3', '', 'FFTW3'],
-    ['hunspell', '', 'Hunspell'],
-    ['uchardet', '', 'uchardet'],
+    ['hunspell', '', 'Hunspell'], # needs a proper port
+    ['uchardet', '', 'uchardet'], # needs a proper port
 ]
     d = dependency(dep[0], version: dep[1] != '' ? dep[1]: '>=0',
                    required: false)
@@ -152,9 +172,6 @@ else
 endif
 subdir('vendor/luabins/src')
 
-deps += dependency('wxWidgets', version: '>=3.0.0',
-                   modules: ['std', 'stc', 'gl'])
-
 dep_gl = dependency('gl', required: false)
 if not dep_gl.found()
     if host_machine.system() == 'windows'
@@ -173,6 +190,8 @@ if not dep_gl.found()
 endif
 
 deps += dep_gl
+
+# sort out csri
 
 acconf = configure_file(output: 'acconf.h', configuration: conf)
 
