@@ -280,8 +280,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 			split_area->Refresh(false);
 			scroll_timer.Start(50);
 			split_area->CaptureMouse();
-			wxTimerEvent evt;
-			OnScrollTimer(evt);
+			OnScrollTimer();
 		}
 		return;
 	}
@@ -317,7 +316,7 @@ void AudioKaraoke::OnMouse(wxMouseEvent &event) {
 	split_area->Refresh(false);
 }
 
-void AudioKaraoke::OnScrollTimer(wxTimerEvent &) {
+void AudioKaraoke::OnScrollTimer() {
 	scroll_x += scroll_dir * char_width * 3;
 
 	int max_scroll = rendered_line.GetWidth() + 20 - split_area->GetClientSize().GetWidth();
@@ -327,6 +326,10 @@ void AudioKaraoke::OnScrollTimer(wxTimerEvent &) {
 	}
 
 	split_area->Refresh(false);
+}
+
+void AudioKaraoke::OnScrollTimer(wxTimerEvent&) {
+	OnScrollTimer();
 }
 
 void AudioKaraoke::LoadFromLine() {

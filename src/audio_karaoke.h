@@ -142,7 +142,8 @@ class AudioKaraoke final : public wxWindow {
 	void OnPaint(wxPaintEvent &event);
 	void OnSize(wxSizeEvent &event);
 	void OnAudioOpened(agi::AudioProvider *provider);
-	void OnScrollTimer(wxTimerEvent &event);
+	void OnScrollTimer();
+	void OnScrollTimer(wxTimerEvent& event);
 
 public:
 	/// Constructor
