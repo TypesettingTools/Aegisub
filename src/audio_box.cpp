@@ -129,10 +129,9 @@ END_EVENT_TABLE()
 void AudioBox::OnMouseWheel(wxMouseEvent &evt) {
 	if (!ForwardMouseWheelEvent(audioDisplay, evt))
 		return;
-
 	bool zoom = evt.CmdDown() != OPT_GET("Audio/Wheel Default to Zoom")->GetBool();
 	if (!zoom) {
-		int amount = -evt.GetWheelRotation() * GetClientSize().GetWidth() / (evt.GetWheelDelta() * 3);
+		int amount = -evt.GetWheelRotation();
 		// If the user did a horizontal scroll the amount should be inverted
 		// for it to be natural.
 		if (evt.GetWheelAxis() == 1) amount = -amount;
