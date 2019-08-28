@@ -1,8 +1,8 @@
 srcdir="$1"
 
 # If no git repo try to read from the existing git_version.h, for building from tarballs
+version_h_path="${srcdir}/git_version.h"
 if ! test -d "${srcdir}/.git"; then
-  version_h_path="${srcdir}/build/git_version.h"
   if test -f "${version_h_path}"; then
     while read line; do
       set -- $line
@@ -52,9 +52,6 @@ new_version_h="\
 #define INSTALLER_VERSION \"${installer_version}\"
 #define RESOURCE_BASE_VERSION ${resource_version}"
 
-# may not exist yet for out of tree builds
-mkdir -p build
-version_h_path="build/git_version.h"
 
 # Write it only if it's changed to avoid spurious rebuilds
 # This bizzare comparison method is due to that newlines in shell variables are very exciting
@@ -68,7 +65,7 @@ export BUILD_GIT_VERSION_NUMBER="${git_revision}"
 export BUILD_GIT_VERSION_STRING="${git_version_str}"
 export VERSION_SOURCE="from git"
 
-cat << EOF > build/git_version.xml
+cat << EOF > "${srcdir}/git_version.xml"
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
