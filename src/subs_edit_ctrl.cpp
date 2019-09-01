@@ -56,6 +56,10 @@
 #include <wx/menu.h>
 #include <wx/settings.h>
 
+// Maximum number of languages (locales)
+// It should be above 100 (at least 242) and probably not more than 1000
+#define LANGS_MAX 1000
+
 /// Event ids
 enum {
 	EDIT_MENU_SPLIT_PRESERVE = 1400,
@@ -73,7 +77,7 @@ enum {
 	EDIT_MENU_THESAURUS_SUGS,
 	EDIT_MENU_DIC_LANGUAGE = 1600,
 	EDIT_MENU_DIC_LANGS,
-	EDIT_MENU_THES_LANGUAGE = 1700,
+	EDIT_MENU_THES_LANGUAGE = EDIT_MENU_DIC_LANGUAGE + LANGS_MAX,
 	EDIT_MENU_THES_LANGS
 };
 
@@ -178,7 +182,7 @@ BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
 	EVT_MENU_RANGE(EDIT_MENU_SUGGESTIONS,EDIT_MENU_THESAURUS-1,SubsTextEditCtrl::OnUseSuggestion)
 	EVT_MENU_RANGE(EDIT_MENU_THESAURUS_SUGS,EDIT_MENU_DIC_LANGUAGE-1,SubsTextEditCtrl::OnUseSuggestion)
 	EVT_MENU_RANGE(EDIT_MENU_DIC_LANGS,EDIT_MENU_THES_LANGUAGE-1,SubsTextEditCtrl::OnSetDicLanguage)
-	EVT_MENU_RANGE(EDIT_MENU_THES_LANGS,EDIT_MENU_THES_LANGS+100,SubsTextEditCtrl::OnSetThesLanguage)
+	EVT_MENU_RANGE(EDIT_MENU_THES_LANGS,EDIT_MENU_THES_LANGS+LANGS_MAX,SubsTextEditCtrl::OnSetThesLanguage)
 END_EVENT_TABLE()
 
 void SubsTextEditCtrl::OnLoseFocus(wxFocusEvent &event) {
