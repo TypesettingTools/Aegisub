@@ -31,5 +31,5 @@ public:
 	InitialLineState(agi::Context *c);
 
 	std::string const& GetInitialText() const { return initial_text; }
-	DEFINE_SIGNAL_ADDERS(InitialStateChanged, AddChangeListener);
+	DEFINE_SIGNAL_ADDERS(InitialStateChanged, AddChangeListener)
 };

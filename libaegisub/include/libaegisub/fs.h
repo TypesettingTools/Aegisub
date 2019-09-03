@@ -53,7 +53,7 @@ namespace agi {
 		DEFINE_FS_EXCEPTION(FileNotFound, FileNotAccessible, "File not found: ");
 
 		/// An error of some unknown type has occured
-		DEFINE_EXCEPTION(FileSystemUnknownError, FileSystemError);;
+		DEFINE_EXCEPTION(FileSystemUnknownError, FileSystemError);
 
 		/// The path exists, but isn't a file
 		DEFINE_FS_EXCEPTION(NotAFile, FileNotAccessible, "Path is not a file (and should be): ");
