@@ -415,8 +415,7 @@ void DialogFontsCollector::OnCollectionComplete(wxThreadEvent &) {
 	if (path.Decode("?script") == "?script")
 		collection_mode->Enable(2, false);
 
-	wxCommandEvent evt;
-	OnRadio(evt);
+	UpdateControls();
 }
 }
 
