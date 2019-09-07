@@ -46,7 +46,11 @@
 #include <libaegisub/util.h>
 
 #include <atomic>
+#if BOOST_VERSION >= 106900
+#include <boost/gil.hpp>
+#else
 #include <boost/gil/gil_all.hpp>
+#endif
 #include <memory>
 #include <mutex>
 
