@@ -366,15 +366,16 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 	currentWord = line_text.substr(currentWordPos.first, currentWordPos.second);
 
 	wxMenu menu;
-	if (spellchecker)
+	if (spellchecker) {
 		AddSpellCheckerEntries(menu);
 
-	// Append language list
-	menu.Append(-1,_("Spell checker language"), GetLanguagesMenu(
-		EDIT_MENU_DIC_LANGS,
-		to_wx(OPT_GET("Tool/Spell Checker/Language")->GetString()),
-		to_wx(spellchecker->GetLanguageList())));
-	menu.AppendSeparator();
+		// Append language list
+		menu.Append(-1, _("Spell checker language"), GetLanguagesMenu(
+			EDIT_MENU_DIC_LANGS,
+			to_wx(OPT_GET("Tool/Spell Checker/Language")->GetString()),
+			to_wx(spellchecker->GetLanguageList())));
+		menu.AppendSeparator();
+	}
 
 	AddThesaurusEntries(menu);
 
