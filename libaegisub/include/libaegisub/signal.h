@@ -100,6 +100,7 @@ namespace detail {
 		SignalBase& operator=(SignalBase const&) = delete;
 	protected:
 		SignalBase() = default;
+		virtual ~SignalBase() {};
 		/// @brief Notify a slot that it has been disconnected
 		/// @param tok Token to disconnect
 		///
