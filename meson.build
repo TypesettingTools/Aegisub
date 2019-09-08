@@ -1,6 +1,8 @@
-project('Aegisub', ['c', 'cpp'], license: 'BSD-3-Clause',
+project('Aegisub', ['c', 'cpp'],
+        license: 'BSD-3-Clause',
         meson_version: '>=0.49.0',
-        default_options: ['cpp_std=c++14', 'b_lto=true'])
+        default_options: ['c_std=c11', 'cpp_std=c++11', 'b_lto=true'],
+        version: '3.2.2')
 
 if host_machine.system() == 'windows'
     version_sh = find_program('tools/version.ps1')
@@ -32,7 +34,10 @@ deps = []
 deps_inc = []
 
 if host_machine.system() == 'darwin'
-    add_languages('objc')
+    add_languages('objc', 'objcpp')
+    add_project_arguments('-DGL_SILENCE_DEPRECATION', language: 'cpp')
+    # meson does not currently support objcpp_std
+    add_project_arguments('-std=c++11', language: 'objcpp')
 elif host_machine.system() != 'windows'
     deps += dependency('fontconfig')
 endif
@@ -56,22 +61,30 @@ deps += dependency('boost', version: '>=1.50.0',
                              'system', 'thread'])
 deps += dependency('zlib', fallback: ['zlib', 'zlib_dep'])
 
-# TODO: overhaul all this to properly handle windows vs non-windows
-wx_dep = dependency('wxWidgets', version: '>=3.0.0', required: false,
+wx_dep = dependency('wxWidgets', version: '>=3.0.0',
+                    required: cxx.get_id() != 'msvc',
                     modules: ['std', 'stc', 'gl'])
-if not wx_dep.found()
-    deps_inc += include_directories(get_option('wx_path') / 'include' / 'msvc', get_option('wx_path') / 'include')
-    add_project_arguments('-DUNICODE', '-D_UNICODE', language: 'cpp')
-    add_project_arguments('-DwxMSVC_VERSION_AUTO', '-DWXUSINGDLL', language: 'cpp')
+if not wx_dep.found() # this will only be hit with msvc
+    if get_option('wx_path') != ''
+        deps_inc += include_directories(get_option('wx_path') / 'include' / 'msvc', get_option('wx_path') / 'include')
+        add_project_arguments('-DUNICODE', '-D_UNICODE', language: 'cpp')
+        add_project_arguments('-DwxMSVC_VERSION_AUTO', '-DWXUSINGDLL', language: 'cpp')
+    else
+        error('wxWidgets not found and no wx_path defined.')
+    endif
 endif
 deps += wx_dep
 
-icu_uc_dep = dependency('icu-uc', version: '>=4.8.1.1', required: false)
-icu_i18n_dep = dependency('icu-i18n', version: '>=4.8.1.1', required: false)
+icu_uc_dep = dependency('icu-uc', version: '>=4.8.1.1', required: cxx.get_id() != 'msvc')
+icu_i18n_dep = dependency('icu-i18n', version: '>=4.8.1.1', required: cxx.get_id() != 'msvc')
 if not (icu_uc_dep.found() and icu_i18n_dep.found())
-    deps_inc += include_directories(get_option('icu_path') / 'include')
+    if get_option('icu_path') != ''
+        deps_inc += include_directories(get_option('icu_path') / 'include')
+    else
+        error('ICU not found and no icu_path defined.')
+    endif
 endif
-if not icu_uc_dep.found() # check for non-empty, only work with windows, etc
+if not icu_uc_dep.found()
     icu_uc_dep = cxx.find_library('icuuc', dirs: get_option('icu_path') / 'lib64')
 endif
 deps += icu_uc_dep
@@ -120,6 +133,11 @@ if host_machine.system() == 'windows' and not get_option('directsound').disabled
         conf.set('WITH_DIRECTSOUND', '1')
         dep_avail += 'DirectSound'
     endif
+endif
+
+if host_machine.system() == 'darwin'
+    frameworks_dep = dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation'])
+    deps += frameworks_dep
 endif
 
 # TODO: OSS
@@ -191,7 +209,7 @@ endif
 
 deps += dep_gl
 
-# sort out csri
+# TODO: csri
 
 acconf = configure_file(output: 'acconf.h', configuration: conf)
 
