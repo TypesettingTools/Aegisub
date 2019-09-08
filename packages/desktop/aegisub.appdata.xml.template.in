@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>aegisub.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>BSD-3-Clause AND MIT AND MPL-1.1</project_license>
+  <_name>Aegisub</_name>
+  <_summary>A free, cross-platform open source tool for creating and modifying subtitles</_summary>
+  <description>
+    <_p>Aegisub is a free, cross-platform open source tool for creating and modifying subtitles. Aegisub makes it quick and easy to time subtitles to audio, and features many powerful tools for styling them, including a built-in real-time video preview.</_p>
+    <_p>Aegisub was originally created as a tool to make typesetting, particularly in anime fansubs, a less painful experience. At the time of the start of the project, many other programs that supported the Advanced Substation Alpha format lacked (and in many cases, still lack; development on several competing programs have since been dropped for various reasons completely unrelated to Aegisub) many vital functions, or were too buggy and/or unreliable to be really useful.</_p>
+    <_p>Since then, Aegisub has grown into a fully fledged, highly customizable subtitle editor. It features a lot of convenient tools to help you with timing, typesetting, editing and translating subtitles, as well as a powerful scripting environment called Automation (originally mostly intended for creating karaoke effects, Automation can now be used much else, including creating macros and various other convenient tools).</_p>
+    <_p>Some highlights of Aegisub:</_p>
+    <ul>
+      <_li>Simple and intuitive yet powerful interface for editing subtitles</_li>
+      <_li>Support for many formats and character sets</_li>
+      <_li>Powerful video mode</_li>
+      <_li>Visual typesetting tools</_li>
+      <_li>Intuitive and customizable audio timing mode</_li>
+      <_li>Fully scriptable through the Automation module</_li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">aegisub.desktop</launchable>
+  <kudos>
+    <kudo>HiDpiIcon</kudo>
+    <kudo>HighContrast</kudo>
+    <kudo>UserDocs</kudo>
+  </kudos>
+  <screenshots>
+    <screenshot type="default">
+      <_caption>Typesetting</_caption>
+      <image>http://static.aegisub.org/img/screenshots/unix/typesetting-efc51b7a.png</image>
+    </screenshot>
+    <screenshot>
+      <_caption>Audio video</_caption>
+      <image>http://static.aegisub.org/img/screenshots/unix/audio-video-f1f81fc2.png</image>
+    </screenshot>
+    <screenshot>
+      <_caption>Audio timing</_caption>
+      <image>http://static.aegisub.org/img/screenshots/unix/audio-timing-1d8fce7e.png</image>
+    </screenshot>
+  </screenshots>
+  <developer_name>Aegisub Group</developer_name>
+  <url type="bugtracker">https://github.com/Aegisub/Aegisub/issues</url>
+  <url type="faq">http://docs.aegisub.org/manual/FAQ</url>
+  <url type="help">http://docs.aegisub.org</url>
+  <url type="homepage">http://www.aegisub.org</url>
+  <url type="translate">https://sites.google.com/site/rockytdrontransifex/aegisub</url>
+  <content_rating type="oars-1.0">
+    <content_attribute id="social-info">mild</content_attribute>
+  </content_rating>
+  <translation type="gettext">aegisub</translation>
+  <provides>
+    <binary>aegisub</binary>
+  </provides>
+  <releases>
+    <release version="3.2.2" date="2014-12-08"/>
+  </releases>
+</component>
