@@ -54,6 +54,13 @@ AEGISUB_CATALOG="aegisub"
 AC_SUBST(AEGISUB_CATALOG)
 AC_DEFINE_UNQUOTED([AEGISUB_CATALOG], ["${AEGISUB_CATALOG}"], [Name of the Aegisub gettext catalog])
 
+# Handle location of appdata files: https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#spec-component-location
+AC_ARG_WITH(appdata-dir,
+            AS_HELP_STRING([--with-appdata-dir=PATH],[appdata file locations [PREFIX/share/metainfo]]))
+
+P_APPDATA=${with_appdata_dir:-$datarootdir/metainfo}
+AC_SUBST(P_APPDATA)
+
 # Handle location of desktop files: http://freedesktop.org/wiki/Specifications/desktop-entry-spec
 AC_ARG_WITH(desktop-dir,
             AS_HELP_STRING([--with-desktop-dir=PATH],[desktop file locations [PREFIX/share/applications]]))
@@ -564,6 +571,7 @@ DEFAULT_PLAYER_AUDIO=${DEFAULT_PLAYER_AUDIO:-NONE}
 # Files that need substitution.
 AC_CONFIG_FILES([
 packages/desktop/aegisub.desktop.template
+packages/desktop/aegisub.appdata.xml.template
 src/libresrc/default_config_platform.json
 tools/osx-bundle.sed
 Makefile.inc

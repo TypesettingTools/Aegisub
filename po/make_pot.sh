@@ -46,6 +46,10 @@ do
     | maybe_append
 done
 
+for i in 'name' 'summary' 'p' 'li' 'caption'; do
+  xmlstarlet sel -t -v "//_$i" ../packages/desktop/aegisub.appdata.xml.template.in | jq -R .
+done | nl -v0 -w1 -s'|' | sed -re 's/^/aegisub.appdata.xml|/' | maybe_append
+
 grep '^_[A-Za-z0-9]*=.*' ../packages/win_installer/fragment_strings.iss.in | while read line
 do
   echo "$line" \

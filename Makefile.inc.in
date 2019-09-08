@@ -54,6 +54,7 @@ P_BINDIR      = @bindir@
 P_DATAROOT    = @datarootdir@
 P_LOCALE      = @localedir@
 
+P_APPDATA     = @P_APPDATA@
 P_DESKTOP     = @P_DESKTOP@
 P_ICON        = @P_ICON@
 P_DATA        = $(P_DATAROOT)/aegisub/
