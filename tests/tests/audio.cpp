@@ -30,7 +30,7 @@ TEST(lagi_audio, dummy_blank) {
 	auto provider = agi::CreateDummyAudioProvider("dummy-audio:", nullptr);
 
 	char buff[1024];
-	memset(buff, sizeof(buff), 1);
+	memset(buff, 1, sizeof(buff));
 	provider->GetAudio(buff, 12356, 512);
 	for (size_t i = 0; i < sizeof(buff); ++i) ASSERT_EQ(0, buff[i]);
 }
@@ -39,7 +39,7 @@ TEST(lagi_audio, dummy_noise) {
 	auto provider = agi::CreateDummyAudioProvider("dummy-audio:noise?", nullptr);
 
 	char buff[1024];
-	memset(buff, sizeof(buff), 0);
+	memset(buff, 0, sizeof(buff));
 	provider->GetAudio(buff, 12356, 512);
 	for (size_t i = 0; i < sizeof(buff); ++i) {
 		if (buff[i] != 0)
@@ -78,7 +78,7 @@ TEST(lagi_audio, before_sample_zero) {
 	TestAudioProvider<> provider;
 
 	uint16_t buff[16];
-	memset(buff, sizeof(buff), 1);
+	memset(buff, 1, sizeof(buff));
 	provider.GetAudio(buff, -8, 16);
 
 	for (int i = 0; i < 8; ++i)
@@ -92,7 +92,7 @@ TEST(lagi_audio, before_sample_zero_8bit) {
 	provider.bias = 128;
 
 	uint8_t buff[16];
-	memset(buff, sizeof(buff), 1);
+	memset(buff, 1, sizeof(buff));
 	provider.GetAudio(buff, -8, 16);
 
 	for (int i = 0; i < 8; ++i)
@@ -105,7 +105,7 @@ TEST(lagi_audio, after_end) {
 	TestAudioProvider<> provider(1);
 
 	uint16_t buff[16];
-	memset(buff, sizeof(buff), 1);
+	memset(buff, 1, sizeof(buff));
 	provider.GetAudio(buff, provider.GetNumSamples() - 8, 16);
 
 	for (int i = 0; i < 8; ++i)
