@@ -173,7 +173,7 @@ void tagless_find_helper::map_range(size_t &s, size_t &e) {
 	// match
 	for (auto const& block : blocks) {
 		// Any blocks before start are irrelevant as they're included in `start`
-		if (block.second < s) continue;
+		if (block.second <= start) continue;
 		// Skip over blocks at the very beginning of the match
 		// < should only happen if the cursor was within an override block
 		// when the user started a search

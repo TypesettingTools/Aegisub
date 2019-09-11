@@ -84,6 +84,8 @@ TEST(lagi_skip_tags, tag_stripping) {
 	EXPECT_EQ("abc", helper.strip_tags("a{}bc", 0));
 	EXPECT_EQ("abc", helper.strip_tags("abc{}", 0));
 	EXPECT_EQ("abc", helper.strip_tags("{}a{}bc{}", 0));
+	EXPECT_EQ("rmofmat", helper.strip_tags("{\\i1}rmofmat{\\i}", 0));
+	EXPECT_EQ("rm of mat", helper.strip_tags("{\\i1}rm of mat{\\i}", 0));
 
 	EXPECT_EQ("abc", helper.strip_tags("{}abc", 1));
 	EXPECT_EQ("abc", helper.strip_tags("{}abc", 2));
@@ -112,6 +114,8 @@ TEST(lagi_skip_tags, range_mapping) {
 	EXPECT_RANGE("{cc}ab", 0, 1, 2, 5, 6);
 	EXPECT_RANGE("{cc}ab{cc}b", 0, 1, 2, 5, 6);
 	EXPECT_RANGE("{cc}ab{cc}b", 0, 1, 3, 5, 11);
+	EXPECT_RANGE("{\\i1}rmofmat{\\i}", 0, 4, 7, 9, 12);
+	EXPECT_RANGE("{\\i1}rm of mat{\\i}", 0, 6, 9, 11, 14);
 
 	EXPECT_RANGE("{cc}ab{cc}b", 3, 1, 3, 5, 11);
 	EXPECT_RANGE("{cc}ab{cc}b", 4, 1, 3, 5, 11);
