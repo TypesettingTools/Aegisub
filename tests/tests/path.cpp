@@ -172,9 +172,18 @@ TEST(lagi_path, make_relative_on_dummy_url) {
 	EXPECT_UNCHANGED("?dummy:23.976000:40000:1280:720:47:163:254:", MakeRelative);
 }
 
+#ifdef _WIN32
+TEST(lagi_path, encode) {
+	Path p;
+	p.SetToken("?user", "C:\\a\\b\\c");
+	p.SetToken("?local", "C:\\a\\b\\c\\d");
+	EXPECT_EQ("?local\\e", p.Encode("C:\\a\\b\\c\\d\\e"));
+}
+#else
 TEST(lagi_path, encode) {
 	Path p;
 	p.SetToken("?user", "/a/b/c");
 	p.SetToken("?local", "/a/b/c/d");
 	EXPECT_EQ("?local/e", p.Encode("/a/b/c/d/e"));
 }
+#endif
