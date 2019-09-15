@@ -91,6 +91,14 @@ DialogProperties::DialogProperties(agi::Context *c)
 {
 	d.SetIcon(GETICON(properties_toolbutton_16));
 
+	// Button sizer
+	// Create buttons first. See:
+	//  https://github.com/wangqr/Aegisub/issues/6
+	//  https://trac.wxwidgets.org/ticket/18472#comment:9
+	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
+	d.Bind(wxEVT_BUTTON, &DialogProperties::OnOK, this, wxID_OK);
+	d.Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Properties"), wxID_HELP);
+
 	// Script details crap
 	wxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Script"));
 	auto TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
@@ -155,11 +163,6 @@ DialogProperties::DialogProperties(agi::Context *c)
 	optionsGrid->Add(ScaleBorder,1,wxEXPAND,0);
 	optionsGrid->AddGrowableCol(1,1);
 	optionsBox->Add(optionsGrid,1,wxEXPAND,0);
-
-	// Button sizer
-	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
-	d.Bind(wxEVT_BUTTON, &DialogProperties::OnOK, this, wxID_OK);
-	d.Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Properties"), wxID_HELP);
 
 	// MainSizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
