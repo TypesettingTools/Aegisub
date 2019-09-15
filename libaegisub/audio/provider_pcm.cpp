@@ -56,6 +56,7 @@ class PCMAudioProvider : public AudioProvider {
 			start += read_count;
 			pos += ip.num_samples;
 		}
+		ZeroFill(write_buf, count);
 	}
 
 protected:
@@ -67,7 +68,7 @@ protected:
 	template<typename T, typename UInt>
 	T Read(UInt *data_left) {
 		if (*data_left < sizeof(T)) throw file_ended();
-		if (file.size() - file_pos < sizeof(T)) throw file_ended();
+		if (file_pos > file.size() || file.size() - file_pos < sizeof(T)) throw file_ended();
 
 		auto data = file.read(file_pos, sizeof(T));
 		file_pos += sizeof(T);
@@ -89,7 +90,7 @@ struct FourCC {
 	bool operator==(const char *cmp) const { return !(*this != cmp); }
 };
 
-// Overview of RIFF WAV: <http://www.sonicspot.com/guide/wavefiles.html>
+// Overview of RIFF WAV: https://docs.microsoft.com/en-us/previous-versions/windows/hardware/design/dn653308(v=vs.85)
 struct RiffWav {
 	using DataSize = uint32_t;
 	using ChunkId = FourCC;
@@ -97,7 +98,7 @@ struct RiffWav {
 	static const char *riff_id() { return "RIFF"; }
 	static const char *wave_id() { return "WAVE"; }
 	static const char *fmt_id()  { return "fmt "; }
-	static const char *data_id() { return "data "; }
+	static const char *data_id() { return "data"; }
 
 	static const int alignment = 1;
 
@@ -127,7 +128,7 @@ static const GUID w64Guiddata = {{
 	0x64, 0x61, 0x74, 0x61, 0xF3, 0xAC, 0xD3, 0x11, 0x8C, 0xD1, 0x00, 0xC0, 0x4F, 0x8E, 0xDB, 0x8A
 }};
 
-// http://www.vcs.de/fileadmin/user_upload/MBS/PDF/Whitepaper/Informations_about_Sony_Wave64.pdf
+// http://www.ambisonia.com/Members/mleese/sony_wave64.pdf/sony_wave64.pdf
 struct Wave64 {
 	using DataSize = uint64_t;
 	using ChunkId = GUID;
@@ -140,7 +141,7 @@ struct Wave64 {
 	static const uint64_t alignment = 7ULL;
 
 	// Wave 64 includes the size of the header in the chunk sizes
-	static uint64_t data_size(uint64_t size) { return size - 16; }
+	static uint64_t data_size(uint64_t size) { return size - 24; }
 	static uint64_t chunk_size(uint64_t size) { return size - 24; }
 };
 
@@ -164,9 +165,11 @@ public:
 				throw AudioDataNotFound("File is not a RIFF WAV file");
 
 			while (data_left) {
+
 				auto chunk_fcc = Read<ChunkId>(&data_left);
 				auto chunk_size = Impl::chunk_size(Read<DataSize>(&data_left));
 
+				uint64_t chunk_end = file_pos + chunk_size;
 				data_left -= std::min(chunk_size, data_left);
 
 				if (chunk_fcc == Impl::fmt_id()) {
@@ -186,14 +189,16 @@ public:
 				else if (chunk_fcc == Impl::data_id()) {
 					if (!channels || !sample_rate || !bytes_per_sample)
 						throw AudioProviderError("Found 'data' chunk without format being set.");
-					index_points.emplace_back(IndexPoint{file_pos, chunk_size / bytes_per_sample / channels});
 					num_samples += chunk_size / bytes_per_sample / channels;
+					uint64_t chunk_decoded_samples = std::min<uint64_t>(chunk_size, file.size() - file_pos) / bytes_per_sample / channels;
+					decoded_samples += chunk_decoded_samples;
+					index_points.emplace_back(IndexPoint{file_pos, chunk_decoded_samples });
 				}
 				// There's a bunch of other chunk types. They're all dumb.
 
 				// blocks are aligned and the padding bytes are not included in
 				// the size of the chunk
-				file_pos += (chunk_size + Impl::alignment) & ~Impl::alignment;
+				file_pos = (chunk_end + Impl::alignment) & ~Impl::alignment;
 			}
 
 		}
@@ -202,7 +207,8 @@ public:
 				throw AudioDataNotFound("File ended before reaching format chunk");
 			// Truncated files are fine otherwise
 		}
-		decoded_samples = num_samples;
+		if (decoded_samples == 0)
+			throw AudioDataNotFound("No audio sample can be decoded");
 	}
 };
 }

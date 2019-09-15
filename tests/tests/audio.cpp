@@ -417,7 +417,7 @@ TEST(lagi_audio, pcm_truncated) {
 }
 
 #define RIFF "RIFF\0\0\0\x60WAVE"
-#define FMT_VALID "fmt \20\0\0\0\1\0\1\0\20\0\0\0\0\0\0\0\0\0\20\0"
+#define FMT_VALID "fmt \x10\0\0\0\1\0\1\0\x10\0\0\0\x20\0\0\0\2\0\x10\0"
 #define DATA_VALID "data\1\0\0\0\0\0"
 #define WRITE(str) do { bfs::ofstream s(path, std::ios_base::binary); s.write(str, sizeof(str) - 1); } while (false)
 
@@ -438,7 +438,7 @@ TEST(lagi_audio, pcm_incomplete) {
 	ASSERT_THROW(agi::CreatePCMAudioProvider(path, nullptr), agi::AudioDataNotFound);
 
 	// Incomplete files
-	auto valid_file = RIFF FMT_VALID DATA_VALID;
+	const char valid_file[] = RIFF FMT_VALID DATA_VALID;
 
 	// -1 for nul term, -3 so that longest file is still invalid
 	for (size_t i = 0; i < sizeof(valid_file) - 4; ++i) {
