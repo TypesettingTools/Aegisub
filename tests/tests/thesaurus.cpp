@@ -26,13 +26,14 @@ protected:
 	std::string dat_path;
 
 	void SetUp() override {
-		using std::endl;
+		// Use '\n' on all platforms, as we are mapping the file to memory as binary data, and readline can only handle '\n'
+		const char endl = '\n';
 
 		idx_path = "data/thes.idx";
 		dat_path = "data/thes.dat";
 
-		std::ofstream idx(idx_path.c_str());
-		std::ofstream dat(dat_path.c_str());
+		std::ofstream idx(idx_path.c_str(), std::ios_base::binary);
+		std::ofstream dat(dat_path.c_str(), std::ios_base::binary);
 
 		idx << "UTF-8" << endl;
 		dat << "UTF-8" << endl;
