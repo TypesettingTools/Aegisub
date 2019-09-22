@@ -103,9 +103,17 @@ public:
 	}
 
 	int GetFrameCount() const override             { return VideoInfo->NumFrames; }
+
+#if FFMS_VERSION >= ((2 << 24) | (24 << 16) | (0 << 8) | 0)
+	int GetWidth() const override  { return (VideoInfo->Rotation % 180 == 90 || VideoInfo->Rotation % 180 == -90) ? Height : Width; }
+	int GetHeight() const override { return (VideoInfo->Rotation % 180 == 90 || VideoInfo->Rotation % 180 == -90) ? Width : Height; }
+	double GetDAR() const override { return (VideoInfo->Rotation % 180 == 90 || VideoInfo->Rotation % 180 == -90) ? 1 / DAR : DAR; }
+#else
 	int GetWidth() const override                  { return Width; }
 	int GetHeight() const override                 { return Height; }
 	double GetDAR() const override                 { return DAR; }
+#endif
+
 	agi::vfr::Framerate GetFPS() const override    { return Timecodes; }
 	std::string GetColorSpace() const override     { return ColorSpace; }
 	std::string GetRealColorSpace() const override { return RealColorSpace; }
@@ -318,6 +326,54 @@ void FFmpegSourceVideoProvider::GetFrame(int n, VideoFrame &out) {
 	out.width = Width;
 	out.height = Height;
 	out.pitch = frame->Linesize[0];
+#if FFMS_VERSION >= ((2 << 24) | (31 << 16) | (0 << 8) | 0)
+	// Handle flip
+	if (VideoInfo->Flip > 0)
+		for (int x = 0; x < Height; ++x)
+			for (int y = 0; y < Width / 2; ++y)
+				for (int ch = 0; ch < 4; ++ch)
+					std::swap(out.data[frame->Linesize[0] * x + 4 * y + ch], out.data[frame->Linesize[0] * x + 4 * (Width - 1 - y) + ch]);
+
+	else if (VideoInfo->Flip < 0)
+		for (int x = 0; x < Height / 2; ++x)
+			for (int y = 0; y < Width; ++y)
+				for (int ch = 0; ch < 4; ++ch)
+					std::swap(out.data[frame->Linesize[0] * x + 4 * y + ch], out.data[frame->Linesize[0] * (Height - 1 - x) + 4 * y + ch]);
+#endif
+#if FFMS_VERSION >= ((2 << 24) | (24 << 16) | (0 << 8) | 0)
+	// Handle rotation
+	if (VideoInfo->Rotation % 360 == 180 || VideoInfo->Rotation % 360 == -180) {
+		std::vector<unsigned char> data(std::move(out.data));
+		out.data.resize(Width * Height * 4);
+		for (int x = 0; x < Height; ++x)
+			for (int y = 0; y < Width; ++y)
+				for (int ch = 0; ch < 4; ++ch)
+					out.data[4 * (Width * x + y) + ch] = data[frame->Linesize[0] * (Height - 1 - x) + 4 * (Width - 1 - y) + ch];
+		out.pitch = 4 * Width;
+	}
+	else if (VideoInfo->Rotation % 180 == 90 || VideoInfo->Rotation % 360 == -270) {
+		std::vector<unsigned char> data(std::move(out.data));
+		out.data.resize(Width * Height * 4);
+		for (int x = 0; x < Width; ++x)
+			for (int y = 0; y < Height; ++y)
+				for (int ch = 0; ch < 4; ++ch)
+					out.data[4 * (Height * x + y) + ch] = data[frame->Linesize[0] * y + 4 * (Width - 1 - x) + ch];
+		out.width = Height;
+		out.height = Width;
+		out.pitch = 4 * Height;
+	}
+	else if (VideoInfo->Rotation % 180 == 270 || VideoInfo->Rotation % 360 == -90) {
+		std::vector<unsigned char> data(std::move(out.data));
+		out.data.resize(Width * Height * 4);
+		for (int x = 0; x < Width; ++x)
+			for (int y = 0; y < Height; ++y)
+				for (int ch = 0; ch < 4; ++ch)
+					out.data[4 * (Height * x + y) + ch] = data[frame->Linesize[0] * (Height - 1 - y) + 4 * x + ch];
+		out.width = Height;
+		out.height = Width;
+		out.pitch = 4 * Height;
+	}
+#endif
 }
 }
 
