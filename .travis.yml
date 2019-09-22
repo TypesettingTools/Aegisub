@@ -10,15 +10,16 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
+    - autopoint
+    - g++-5
     - libasound2-dev
-    - libfftw3-dev
-    - libhunspell-dev
-    - yasm
-    - libfribidi-dev
     - libass-dev
+    - libfftw3-dev
+    - libfribidi-dev
+    - libhunspell-dev
     - libicu-dev
     - luarocks
-    - g++-5
+    - yasm
 
 matrix:
   include:
