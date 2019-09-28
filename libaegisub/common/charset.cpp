@@ -59,9 +59,6 @@ std::string Detect(agi::fs::path const& file) {
 		auto read = std::min<uint64_t>(4096, fp.size() - offset);
 		auto buf = fp.read(offset, read);
 		uchardet_handle_data(ud, buf, read);
-		uchardet_data_end(ud);
-		if (*uchardet_get_charset(ud))
-			return uchardet_get_charset(ud);
 
 		offset += read;
 
@@ -74,6 +71,7 @@ std::string Detect(agi::fs::path const& file) {
 		if (binaryish > offset / 8)
 			return "binary";
 	}
+	uchardet_data_end(ud);
 	return uchardet_get_charset(ud);
 #else
 	auto read = std::min<uint64_t>(4096, fp.size());
