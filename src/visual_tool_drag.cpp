@@ -71,7 +71,7 @@ void VisualToolDrag::UpdateToggleButtons() {
 
 	if (to_move == button_is_move) return;
 
-	toolbar->SetToolNormalBitmap(toolbar->GetToolByPos(0)->GetId(),
+	toolbar->SetToolNormalBitmap(toolbar->GetToolByPos(1)->GetId(),
 		to_move ? ICON(visual_move_conv_move) : ICON(visual_move_conv_pos));
 	button_is_move = to_move;
 }
