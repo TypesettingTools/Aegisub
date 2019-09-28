@@ -416,7 +416,6 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 	toolBar->Show(false);
 	toolBar->ClearTools();
 	toolBar->AddSeparator();
-	toolBar->Realize();
 	tool->SetToolbar(toolBar);
 
 	// Update size as the new typesetting tool may have changed the subtoolbar size
