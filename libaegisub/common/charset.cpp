@@ -29,19 +29,27 @@ namespace agi { namespace charset {
 std::string Detect(agi::fs::path const& file) {
 	agi::read_file_mapping fp(file);
 
+	// First check for known magic bytes which identify the file type
+	if (fp.size() >= 4) {
+		const char* header = fp.read(0, 4);
+		if (!strncmp(header, "\xef\xbb\xbf", 3))
+			return "utf-8";
+		if (!strncmp(header, "\x00\x00\xfe\xff", 4))
+			return "utf-32be";
+		if (!strncmp(header, "\xff\xfe\x00\x00", 4))
+			return "utf-32le";
+		if (!strncmp(header, "\xfe\xff", 2))
+			return "utf-16be";
+		if (!strncmp(header, "\xff\xfe", 2))
+			return "utf-16le";
+		if (!strncmp(header, "\x1a\x45\xdf\xa3", 4))
+			return "binary"; // Actually EBML/Matroska
+	}
+
 	// If it's over 100 MB it's either binary or big enough that we won't
 	// be able to do anything useful with it anyway
 	if (fp.size() > 100 * 1024 * 1024)
 		return "binary";
-
-
-	// FIXME: Dirty hack for Matroska. These 4 bytes are the magic
-	// number of EBML which is used by mkv and webm
-	if (fp.size() >= 4) {
-		const char* buf = fp.read(0, 4);
-		if (!strncmp(buf, "\x1a\x45\xdf\xa3", 4))
-			return "binary";
-	}
 
 	uint64_t binaryish = 0;
 
