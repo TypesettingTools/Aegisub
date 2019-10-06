@@ -58,24 +58,25 @@ if host_machine.system() == 'darwin'
     ]
 else
     libaegisub_src += 'common/dispatch.cpp'
-    if host_machine.system() == 'windows'
-        libaegisub_src += [
-            'windows/access.cpp',
-            'windows/charset_conv_win.cpp',
-            'windows/fs.cpp',
-            'windows/log_win.cpp',
-            'windows/path_win.cpp',
-            'windows/util_win.cpp',
-        ]
-    else
-        libaegisub_src += [
-            'unix/access.cpp',
-            'unix/fs.cpp',
-            'unix/log.cpp',
-            'unix/path.cpp',
-            'unix/util.cpp',
-        ]
-    endif
+endif
+
+if host_machine.system() == 'windows'
+    libaegisub_src += [
+        'windows/access.cpp',
+        'windows/charset_conv_win.cpp',
+        'windows/fs.cpp',
+        'windows/log_win.cpp',
+        'windows/path_win.cpp',
+        'windows/util_win.cpp',
+    ]
+else
+    libaegisub_src += [
+        'unix/access.cpp',
+        'unix/fs.cpp',
+        'unix/log.cpp',
+        'unix/path.cpp',
+        'unix/util.cpp',
+    ]
 endif
 
 libaegisub_cpp_pch = ['include/lagi_pre.h']
