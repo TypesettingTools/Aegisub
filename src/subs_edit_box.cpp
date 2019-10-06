@@ -45,8 +45,9 @@
 #include "include/aegisub/hotkey.h"
 #include "initial_line_state.h"
 #include "options.h"
-#include "project.h"
 #include "placeholder_ctrl.h"
+#include "project.h"
+#include "retina_helper.h"
 #include "selection_controller.h"
 #include "subs_edit_ctrl.h"
 #include "text_selection_controller.h"
@@ -56,6 +57,7 @@
 #include "validators.h"
 
 #include <libaegisub/character_count.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <functional>
@@ -105,6 +107,7 @@ const auto AssDialogue_Effect = &AssDialogue::Effect;
 SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 : wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxRAISED_BORDER, "SubsEditBox")
 , c(context)
+, retina_helper(agi::make_unique<RetinaHelper>(parent))
 , undo_timer(GetEventHandler())
 {
 	using std::bind;
@@ -273,7 +276,7 @@ TimeEdit *SubsEditBox::MakeTimeCtrl(wxString const& tooltip, TimeField field) {
 
 void SubsEditBox::MakeButton(const char *cmd_name) {
 	cmd::Command *command = cmd::get(cmd_name);
-	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon(16));
+	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon(16, retina_helper->GetScaleFactor()));
 	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
 	middle_right_sizer->Add(btn, wxSizerFlags().Expand());

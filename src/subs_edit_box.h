@@ -43,6 +43,7 @@ namespace agi { struct Context; }
 namespace agi { class Time; }
 class AssDialogue;
 class AssStyle;
+class RetinaHelper;
 class SubsTextEditCtrl;
 class TimeEdit;
 class wxButton;
@@ -102,6 +103,8 @@ class SubsEditBox final : public wxPanel {
 	wxSizer *middle_right_sizer;
 	wxSizer *middle_left_sizer;
 	wxSizer *bottom_sizer;
+
+	std::unique_ptr<RetinaHelper> retina_helper;
 
 	void SetControlsState(bool state);
 	/// @brief Update times of selected lines

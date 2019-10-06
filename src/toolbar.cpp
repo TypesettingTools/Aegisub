@@ -68,6 +68,9 @@ namespace {
 		/// Listener for icon size change signal
 		agi::signal::Connection icon_size_slot;
 
+		/// Listener for scale factor change signal
+		agi::signal::Connection scale_factor_slot;
+
 		/// Listener for hotkey change signal
 		agi::signal::Connection hotkeys_changed_slot;
 
@@ -139,7 +142,7 @@ namespace {
 					flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 					wxITEM_NORMAL;
 
-				wxBitmap const& bitmap = command->Icon(icon_size, GetLayoutDirection());
+				wxBitmap const& bitmap = command->Icon(icon_size, retina_helper.GetScaleFactor(), GetLayoutDirection());
 				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), bitmap, GetTooltip(command), kind);
 
 				commands.push_back(command);
@@ -173,6 +176,9 @@ namespace {
 		, retina_helper(parent)
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
+		, scale_factor_slot(retina_helper.AddScaleFactorListener([=](double scale) {
+			RegenerateToolbar();
+		}))
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
 		{
 			Populate();
@@ -189,9 +195,8 @@ namespace {
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
 #else
-		, icon_size(32 * retina_helper.GetScaleFactor())
+		, icon_size(32)
 		, icon_size_slot(retina_helper.AddScaleFactorListener([=](double scale) {
-			icon_size = 32 * retina_helper.GetScaleFactor();
 			RegenerateToolbar();
 		}))
 #endif
