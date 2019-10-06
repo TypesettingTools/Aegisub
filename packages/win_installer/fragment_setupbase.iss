@@ -34,6 +34,8 @@
 
 #include "../../build/git_version.h"
 
+#define CURRENT_YEAR GetDateTimeString('yyyy', '', '');
+
 [Setup]
 AppName=Aegisub
 AppVerName=Aegisub {#BUILD_GIT_VERSION_STRING}
@@ -41,7 +43,7 @@ AppVersion={#INSTALLER_VERSION}
 AppPublisher=Aegisub Team
 AppPublisherURL=http://www.aegisub.org/
 AppSupportURL=https://github.com/TypesettingTools/Aegisub/issues
-AppCopyright=2005-2018 The Aegisub Team
+AppCopyright=2005-{#CURRENT_YEAR} The Aegisub Team
 VersionInfoVersion={#INSTALLER_VERSION}
 DefaultGroupName=Aegisub
 AllowNoIcons=true
