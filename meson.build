@@ -1,7 +1,8 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.50.0',
-        default_options: ['c_std=c11', 'cpp_std=c++11', 'b_lto=true'],
+        # c_std=c11 should be here but it breaks Linux builds for some reason, needs investigation
+        default_options: ['cpp_std=c++11', 'b_lto=true'],
         version: '3.2.2')
 
 if host_machine.system() == 'windows'
