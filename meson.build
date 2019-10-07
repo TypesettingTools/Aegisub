@@ -1,6 +1,6 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.49.0',
+        meson_version: '>=0.50.0',
         default_options: ['c_std=c11', 'cpp_std=c++11', 'b_lto=true'],
         version: '3.2.2')
 
@@ -16,7 +16,19 @@ version_h = custom_target('git_version.h',
                           build_always_stale: true, # has internal check whether target file will be refreshed
                           output: ['git_version.h', 'git_version.xml'])
 
-dataroot = get_option('prefix') / get_option('datadir') / 'aegisub'
+if host_machine.system() == 'darwin' and get_option('build_osx_bundle')
+    prefix = meson.current_build_dir() / 'Aegisub.app' / 'Contents'
+    bindir = prefix / 'MacOS'
+    datadir = prefix / 'SharedSupport'
+    localedir = prefix / 'Resources'
+else
+    prefix = get_option('prefix')
+    bindir = prefix / get_option('bindir')
+    datadir = prefix / get_option('datadir')
+    localedir = prefix / get_option('localedir')
+endif
+docdir = prefix / 'doc'
+dataroot = datadir / 'aegisub'
 add_project_arguments('-DP_DATA="@0@"'.format(dataroot), language: 'cpp')
 
 if host_machine.system() == 'windows'

@@ -207,4 +207,5 @@ aegisub = executable('aegisub', aegisub_src, version_h, acconf,
                      include_directories: [libaegisub_inc, libresrc_inc, version_inc, deps_inc],
                      cpp_pch: aegisub_cpp_pch,
                      install: true,
+                     install_dir: bindir,
                      dependencies: deps)
