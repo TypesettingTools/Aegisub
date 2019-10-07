@@ -8,6 +8,8 @@ packages/win_installer/vendor
 tests/*.json
 tools/osx-bundle.sed
 
+.DS_Store
+
 # Meson
 subprojects/freetype*
 subprojects/fribidi
