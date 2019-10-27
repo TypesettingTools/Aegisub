@@ -33,12 +33,14 @@ conf.set('WITH_UPDATE_CHECKER', get_option('enable_update_checker'))
 deps = []
 deps_inc = []
 
+conf.set('WITH_FONTCONFIG', '0')
 if host_machine.system() == 'darwin'
     add_languages('objc', 'objcpp')
     add_project_arguments('-DGL_SILENCE_DEPRECATION', language: 'cpp')
     # meson does not currently support objcpp_std
     add_project_arguments('-std=c++11', language: 'objcpp')
 elif host_machine.system() != 'windows'
+    conf.set('WITH_FONTCONFIG', '1')
     deps += dependency('fontconfig')
 endif
 
