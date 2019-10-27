@@ -58,9 +58,14 @@ deps += iconv_dep
 
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
+
 deps += dependency('boost', version: '>=1.50.0',
                    modules: ['chrono', 'filesystem', 'locale', 'regex',
                              'system', 'thread'])
+if host_machine.system() == 'windows'
+    conf.set('BOOST_USE_WINDOWS_H', '1')
+endif
+
 deps += dependency('zlib', fallback: ['zlib', 'zlib_dep'])
 
 wx_dep = dependency('wxWidgets', version: '>=3.0.0',
