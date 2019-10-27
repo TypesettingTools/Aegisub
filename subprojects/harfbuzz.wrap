@@ -1,5 +1,4 @@
 [wrap-git]
 directory = harfbuzz
-# Change this URL once upstreamed!
-url = https://github.com/tp-m/harfbuzz.git
-revision = meson-rebased
+url = https://github.com/harfbuzz/harfbuzz
+revision = master
