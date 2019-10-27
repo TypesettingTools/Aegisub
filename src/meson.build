@@ -171,7 +171,7 @@ if host_machine.system() == 'darwin'
         'osx/retina_helper.mm',
         'osx/scintilla_ime.mm',
     ]
-else
+elif conf.get('WITH_FONTCONFIG') == '1'
     aegisub_src += 'font_file_lister_fontconfig.cpp'
 endif
 
