@@ -198,13 +198,12 @@ foreach opt: opt_src
 endforeach
 
 aegisub_cpp_pch = ['include/agi_pre.h']
-if cxx.get_id() == 'msvc'
-    aegisub_cpp_pch += 'include/agi_pre.cpp'
-endif
+aegisub_c_pch = ['include/agi_pre_c.h']
 
 aegisub = executable('aegisub', aegisub_src, version_h, acconf,
                      link_with: [libresrc, libluabins, libaegisub],
                      include_directories: [libaegisub_inc, libresrc_inc, version_inc, deps_inc],
                      cpp_pch: aegisub_cpp_pch,
+                     c_pch: aegisub_c_pch,
                      install: true,
                      dependencies: deps)

@@ -48,9 +48,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#ifndef _WIN32
 #include "../../acconf.h"
-#endif
 
 #define WIN32_LEAN_AND_MEAN
 
