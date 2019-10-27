@@ -14,6 +14,6 @@ iconv_incs = include_directories(
     'libiconv'
 )
 
-libiconv = library('iconv', iconv_src, include_directories: iconv_incs)
+libiconv = static_library('iconv', iconv_src, include_directories: iconv_incs)
 libiconv_dep = declare_dependency(link_with: libiconv,
                                   include_directories: iconv_incs)
