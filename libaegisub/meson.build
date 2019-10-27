@@ -79,13 +79,12 @@ else
 endif
 
 libaegisub_cpp_pch = ['include/lagi_pre.h']
-if cxx.get_id() == 'msvc'
-    libaegisub_cpp_pch += 'include/lagi_pre.cpp'
-endif
+libaegisub_c_pch = ['include/lagi_pre_c.h']
 
 libaegisub_inc = include_directories('include')
 
 libaegisub = static_library('aegisub', libaegisub_src, acconf,
                             include_directories: [libaegisub_inc, deps_inc],
                             cpp_pch: libaegisub_cpp_pch,
+                            c_pch: libaegisub_c_pch,
                             dependencies: deps)
