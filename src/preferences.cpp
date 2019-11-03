@@ -387,8 +387,8 @@ void Advanced_Audio(wxTreebook *book, Preferences *parent) {
 
 #ifdef WITH_AVISYNTH
 	auto avisynth = p->PageSizer("Avisynth");
-	const wxString adm_arr[3] = { "ConvertToMono", "GetLeftChannel", "GetRightChannel" };
-	wxArrayString adm_choice(3, adm_arr);
+	const wxString adm_arr[4] = { "None", "ConvertToMono", "GetLeftChannel", "GetRightChannel" };
+	wxArrayString adm_choice(4, adm_arr);
 	p->OptionChoice(avisynth, _("Avisynth down-mixer"), adm_choice, "Audio/Downmixer");
 	p->OptionAdd(avisynth, _("Force sample rate"), "Provider/Audio/AVS/Sample Rate");
 #endif
