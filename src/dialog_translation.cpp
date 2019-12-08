@@ -246,7 +246,7 @@ void DialogTranslation::UpdateDisplay() {
 			int initial_pos = original_text->GetLength();
 			original_text->AppendTextRaw(block->GetText().c_str());
 			if (i == cur_block) {
-				original_text->StartStyling(initial_pos, 31);
+				original_text->StartStyling(initial_pos, 0);
 				original_text->SetStyling(block->GetText().size(), 1);
 			}
 		}
