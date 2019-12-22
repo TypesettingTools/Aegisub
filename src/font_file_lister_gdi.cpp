@@ -28,7 +28,7 @@
 #include <unicode/utf16.h>
 #include <Usp10.h>
 
-static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir, std::vector<agi::fs::path> files) {\
+static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir, std::vector<agi::fs::path> &files) {
 	static const auto fonts_key_name = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
 	
 	HKEY key;
