@@ -66,6 +66,7 @@ std::vector<agi::fs::path> get_installed_fonts() {
 
 	std::vector<agi::fs::path> files;
 
+	// System fonts
 	HKEY key;
 	auto ret = RegOpenKeyExW(HKEY_LOCAL_MACHINE, fonts_key_name, 0, KEY_QUERY_VALUE, &key);
 	if (ret != ERROR_SUCCESS) return files;
@@ -87,6 +88,25 @@ std::vector<agi::fs::path> get_installed_fonts() {
 		agi::fs::path font_path(font_filename);
 		if (!agi::fs::FileExists(font_path))
 			font_path = font_dir / font_path;
+		files.push_back(font_path);
+	}
+
+	// User fonts
+	ret = RegOpenKeyExW(HKEY_CURRENT_USER, fonts_key_name, 0, KEY_QUERY_VALUE, &key);
+	if (ret != ERROR_SUCCESS) return files;
+	BOOST_SCOPE_EXIT_ALL(=) { RegCloseKey(key); };
+
+	for (DWORD i = 0;; ++i) {
+		wchar_t font_name[SHRT_MAX], font_filename[MAX_PATH];
+		DWORD name_len = sizeof(font_name);
+		DWORD data_len = sizeof(font_filename);
+
+		ret = RegEnumValueW(key, i, font_name, &name_len, NULL, NULL, reinterpret_cast<BYTE*>(font_filename), &data_len);
+		if (ret == ERROR_NO_MORE_ITEMS) break;
+		if (ret != ERROR_SUCCESS) continue;
+
+		agi::fs::path font_path(font_filename);
+		// User font paths in the registry seem to be absolute where system fonts aren't.
 		files.push_back(font_path);
 	}
 
