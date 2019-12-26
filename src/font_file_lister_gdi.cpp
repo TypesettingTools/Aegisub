@@ -36,13 +36,24 @@ static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir, std::vector<a
 	if (ret != ERROR_SUCCESS) return;
 	BOOST_SCOPE_EXIT_ALL(=) { RegCloseKey(key); };
 
+	DWORD name_buf_size = SHRT_MAX;
+	DWORD data_buf_size = MAX_PATH;
+
+	auto font_name = new wchar_t[name_buf_size];
+	auto font_filename = new wchar_t[data_buf_size];
+
 	for (DWORD i = 0;; ++i) {
-		wchar_t font_name[SHRT_MAX], font_filename[MAX_PATH];
-		DWORD name_len = sizeof(font_name);
-		DWORD data_len = sizeof(font_filename);
+retry:
+		DWORD name_len = name_buf_size;
+		DWORD data_len = data_buf_size;
 
 		ret = RegEnumValueW(key, i, font_name, &name_len, NULL, NULL, reinterpret_cast<BYTE*>(font_filename), &data_len);
-		// TODO: on ERROR_MORE_DATA, reallocate font_filename based on data_len and try again
+		if (ret == ERROR_MORE_DATA) {
+			data_buf_size = data_len;
+			delete font_filename;
+			font_filename = new wchar_t[data_buf_size];
+			goto retry;
+		}
 		if (ret == ERROR_NO_MORE_ITEMS) break;
 		if (ret != ERROR_SUCCESS) continue;
 
@@ -53,6 +64,9 @@ static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir, std::vector<a
 		if (agi::fs::FileExists(font_path)) // The path might simply be invalid
 			files.push_back(font_path);
 	}
+
+	delete font_name;
+	delete font_filename;
 }
 
 namespace {
