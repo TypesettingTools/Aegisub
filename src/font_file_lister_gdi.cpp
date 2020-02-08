@@ -28,6 +28,47 @@
 #include <unicode/utf16.h>
 #include <Usp10.h>
 
+static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir, std::vector<agi::fs::path> &files) {
+	static const auto fonts_key_name = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
+	
+	HKEY key;
+	auto ret = RegOpenKeyExW(hkey, fonts_key_name, 0, KEY_QUERY_VALUE, &key);
+	if (ret != ERROR_SUCCESS) return;
+	BOOST_SCOPE_EXIT_ALL(=) { RegCloseKey(key); };
+
+	DWORD name_buf_size = SHRT_MAX;
+	DWORD data_buf_size = MAX_PATH;
+
+	auto font_name = new wchar_t[name_buf_size];
+	auto font_filename = new wchar_t[data_buf_size];
+
+	for (DWORD i = 0;; ++i) {
+retry:
+		DWORD name_len = name_buf_size;
+		DWORD data_len = data_buf_size;
+
+		ret = RegEnumValueW(key, i, font_name, &name_len, NULL, NULL, reinterpret_cast<BYTE*>(font_filename), &data_len);
+		if (ret == ERROR_MORE_DATA) {
+			data_buf_size = data_len;
+			delete font_filename;
+			font_filename = new wchar_t[data_buf_size];
+			goto retry;
+		}
+		if (ret == ERROR_NO_MORE_ITEMS) break;
+		if (ret != ERROR_SUCCESS) continue;
+
+		agi::fs::path font_path(font_filename);
+		if (!agi::fs::FileExists(font_path))
+			// Doesn't make a ton of sense to do this with user fonts, but they seem to be stored as full paths anyway
+			font_path = font_dir / font_path;
+		if (agi::fs::FileExists(font_path)) // The path might simply be invalid
+			files.push_back(font_path);
+	}
+
+	delete font_name;
+	delete font_filename;
+}
+
 namespace {
 uint32_t murmur3(const char *data, uint32_t len) {
 	static const uint32_t c1 = 0xcc9e2d51;
@@ -62,33 +103,17 @@ uint32_t murmur3(const char *data, uint32_t len) {
 }
 
 std::vector<agi::fs::path> get_installed_fonts() {
-	static const auto fonts_key_name = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
-
 	std::vector<agi::fs::path> files;
-
-	HKEY key;
-	auto ret = RegOpenKeyExW(HKEY_LOCAL_MACHINE, fonts_key_name, 0, KEY_QUERY_VALUE, &key);
-	if (ret != ERROR_SUCCESS) return files;
-	BOOST_SCOPE_EXIT_ALL(=) { RegCloseKey(key); };
 
 	wchar_t fdir[MAX_PATH];
 	SHGetFolderPathW(NULL, CSIDL_FONTS, NULL, 0, fdir);
 	agi::fs::path font_dir(fdir);
 
-	for (DWORD i = 0;; ++i) {
-		wchar_t font_name[SHRT_MAX], font_filename[MAX_PATH];
-		DWORD name_len = sizeof(font_name);
-		DWORD data_len = sizeof(font_filename);
+	// System fonts
+	read_fonts_from_key(HKEY_LOCAL_MACHINE, font_dir, files);
 
-		ret = RegEnumValueW(key, i, font_name, &name_len, NULL, NULL, reinterpret_cast<BYTE *>(font_filename), &data_len);
-		if (ret == ERROR_NO_MORE_ITEMS) break;
-		if (ret != ERROR_SUCCESS) continue;
-
-		agi::fs::path font_path(font_filename);
-		if (!agi::fs::FileExists(font_path))
-			font_path = font_dir / font_path;
-		files.push_back(font_path);
-	}
+	// User fonts
+	read_fonts_from_key(HKEY_CURRENT_USER, font_dir, files);
 
 	return files;
 }
