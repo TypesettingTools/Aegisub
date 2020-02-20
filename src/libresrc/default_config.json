@@ -64,6 +64,12 @@
 		"Lock Scroll on Cursor" : false,
 		"Medusa Timing Hotkeys" : false,
 		"Next Line on Commit" : true,
+		"Play Selection Duration" : {
+			"After" : 500,
+			"Before" : 500,
+			"Begin" : 500,
+			"End" : 500
+		},
 		"Player" : "",
 		"Plays When Stepping Video" : false,
 		"Provider" : "ffmpegsource",

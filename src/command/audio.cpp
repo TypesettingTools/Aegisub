@@ -49,6 +49,7 @@
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/make_unique.h>
 #include <libaegisub/io.h>
+#include <format.h>
 
 namespace {
 	using cmd::Command;
@@ -265,58 +266,101 @@ struct audio_stop final : public Command {
 struct audio_play_before final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/before")
 	CMD_ICON(button_playfivehbefore)
-	STR_MENU("Play 500 ms before selection")
+	/*STR_MENU("Play 500 ms before selection")
 	STR_DISP("Play 500 ms before selection")
-	STR_HELP("Play 500 ms before selection")
+	STR_HELP("Play 500 ms before selection")*/
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME | COMMAND_DYNAMIC_HELP)
+	
+	wxString StrMenu(const agi::Context* c) const override {
+		return fmt_tl("Play %d ms before selection", OPT_GET("Audio/Play Selection Duration/Before")->GetInt());
+	}
+	wxString StrDisplay(const agi::Context* c) const override {
+		return fmt_tl("Play %d ms before selection", OPT_GET("Audio/Play Selection Duration/Before")->GetInt());
+	}
+	wxString StrHelp() const override {
+		return fmt_tl("Play %d ms before selection", OPT_GET("Audio/Play Selection Duration/Before")->GetInt());
+	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		int begin = c->audioController->GetPrimaryPlaybackRange().begin();
-		c->audioController->PlayRange(TimeRange(begin - 500, begin));
+		c->audioController->PlayRange(TimeRange(begin - OPT_GET("Audio/Play Selection Duration/Before")->GetInt(), begin));
 	}
 };
 
 struct audio_play_after final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/after")
 	CMD_ICON(button_playfivehafter)
-	STR_MENU("Play 500 ms after selection")
-	STR_DISP("Play 500 ms after selection")
-	STR_HELP("Play 500 ms after selection")
+	//STR_MENU("Play 500 ms after selection")
+	//STR_DISP("Play 500 ms after selection")
+	//STR_HELP("Play 500 ms after selection")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME | COMMAND_DYNAMIC_HELP)
+
+	wxString StrMenu(const agi::Context* c) const override {
+		return fmt_tl("Play %d ms after selection", OPT_GET("Audio/Play Selection Duration/After")->GetInt());
+	}
+	wxString StrDisplay(const agi::Context* c) const override {
+		return fmt_tl("Play %d ms after selection", OPT_GET("Audio/Play Selection Duration/Before")->GetInt());
+	}
+	wxString StrHelp() const override {
+		return fmt_tl("Play %d ms after selection", OPT_GET("Audio/Play Selection Duration/After")->GetInt());
+	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		int end = c->audioController->GetPrimaryPlaybackRange().end();
-		c->audioController->PlayRange(TimeRange(end, end + 500));
+		c->audioController->PlayRange(TimeRange(end, end + OPT_GET("Audio/Play Selection Duration/After")->GetInt()));
 	}
 };
 
 struct audio_play_end final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/end")
 	CMD_ICON(button_playlastfiveh)
-	STR_MENU("Play last 500 ms of selection")
-	STR_DISP("Play last 500 ms of selection")
-	STR_HELP("Play last 500 ms of selection")
+	//STR_MENU("Play last 500 ms of selection")
+	//STR_DISP("Play last 500 ms of selection")
+	//STR_HELP("Play last 500 ms of selection")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME | COMMAND_DYNAMIC_HELP)
+
+	wxString StrMenu(const agi::Context* c) const override {
+		return fmt_tl("Play last %d ms of selection", OPT_GET("Audio/Play Selection Duration/End")->GetInt());
+	}
+	wxString StrDisplay(const agi::Context* c) const override {
+		return fmt_tl("Play last %d ms of selection", OPT_GET("Audio/Play Selection Duration/End")->GetInt());
+	}
+	wxString StrHelp() const override {
+		return fmt_tl("Play last %d ms of selection", OPT_GET("Audio/Play Selection Duration/End")->GetInt());
+	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		TimeRange times(c->audioController->GetPrimaryPlaybackRange());
-		c->audioController->PlayToEndOfPrimary(times.end() - std::min(500, times.length()));
+		c->audioController->PlayToEndOfPrimary(times.end() - std::min((int)OPT_GET("Audio/Play Selection Duration/End")->GetInt(), times.length()));
 	}
 };
 
 struct audio_play_begin final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/begin")
 	CMD_ICON(button_playfirstfiveh)
-	STR_MENU("Play first 500 ms of selection")
-	STR_DISP("Play first 500 ms of selection")
-	STR_HELP("Play first 500 ms of selection")
+	//STR_MENU("Play first 500 ms of selection")
+	//STR_DISP("Play first 500 ms of selection")
+	//STR_HELP("Play first 500 ms of selection")
+
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME | COMMAND_DYNAMIC_HELP)
+
+	wxString StrMenu(const agi::Context* c) const override {
+		return fmt_tl("Play first %d ms of selection", OPT_GET("Audio/Play Selection Duration/Begin")->GetInt());
+	}
+	wxString StrDisplay(const agi::Context* c) const override {
+		return fmt_tl("Play first %d ms of selection", OPT_GET("Audio/Play Selection Duration/Begin")->GetInt());
+	}
+	wxString StrHelp() const override {
+		return fmt_tl("Play first %d ms of selection", OPT_GET("Audio/Play Selection Duration/Begin")->GetInt());
+	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		TimeRange times(c->audioController->GetPrimaryPlaybackRange());
-		c->audioController->PlayRange(TimeRange(
-			times.begin(),
-			times.begin() + std::min(500, times.length())));
+		c->audioController->PlayRange(TimeRange(times.begin(), times.begin() + std::min((int)OPT_GET("Audio/Play Selection Duration/Begin")->GetInt(), times.length())));
 	}
 };
 
