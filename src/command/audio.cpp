@@ -266,9 +266,6 @@ struct audio_stop final : public Command {
 struct audio_play_before final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/before")
 	CMD_ICON(button_playfivehbefore)
-	/*STR_MENU("Play 500 ms before selection")
-	STR_DISP("Play 500 ms before selection")
-	STR_HELP("Play 500 ms before selection")*/
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME | COMMAND_DYNAMIC_HELP)
 	
 	wxString StrMenu(const agi::Context* c) const override {
@@ -291,9 +288,6 @@ struct audio_play_before final : public validate_audio_open {
 struct audio_play_after final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/after")
 	CMD_ICON(button_playfivehafter)
-	//STR_MENU("Play 500 ms after selection")
-	//STR_DISP("Play 500 ms after selection")
-	//STR_HELP("Play 500 ms after selection")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME | COMMAND_DYNAMIC_HELP)
 
 	wxString StrMenu(const agi::Context* c) const override {
@@ -316,9 +310,6 @@ struct audio_play_after final : public validate_audio_open {
 struct audio_play_end final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/end")
 	CMD_ICON(button_playlastfiveh)
-	//STR_MENU("Play last 500 ms of selection")
-	//STR_DISP("Play last 500 ms of selection")
-	//STR_HELP("Play last 500 ms of selection")
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME | COMMAND_DYNAMIC_HELP)
 
 	wxString StrMenu(const agi::Context* c) const override {
@@ -341,10 +332,6 @@ struct audio_play_end final : public validate_audio_open {
 struct audio_play_begin final : public validate_audio_open {
 	CMD_NAME("audio/play/selection/begin")
 	CMD_ICON(button_playfirstfiveh)
-	//STR_MENU("Play first 500 ms of selection")
-	//STR_DISP("Play first 500 ms of selection")
-	//STR_HELP("Play first 500 ms of selection")
-
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME | COMMAND_DYNAMIC_HELP)
 
 	wxString StrMenu(const agi::Context* c) const override {
