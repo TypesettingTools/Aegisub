@@ -335,7 +335,7 @@
 			}
 		},
 		"Avisynth" : {
-			"Memory Max" : 128
+			"Memory Max" : 1024
 		},
 		"FFmpegSource" : {
 			"Cache" : {
