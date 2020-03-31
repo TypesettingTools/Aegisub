@@ -61,7 +61,8 @@ deps += dependency('libass', version: '>=0.9.7',
 
 deps += dependency('boost', version: '>=1.50.0',
                    modules: ['chrono', 'filesystem', 'locale', 'regex',
-                             'system', 'thread'])
+                             'system', 'thread'],
+                   static: get_option('default_library') == 'static')
 if host_machine.system() == 'windows'
     conf.set('BOOST_USE_WINDOWS_H', '1')
 endif
