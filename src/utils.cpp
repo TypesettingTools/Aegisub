@@ -275,7 +275,7 @@ wxString LocalizedLanguageName(wxString const& lang) {
 		icu::UnicodeString ustr;
 		iculoc.getDisplayName(iculoc, ustr);
 #ifdef _MSC_VER
-		return wxString(ustr.getBuffer());
+		return wxString((const wchar_t*)ustr.getBuffer());
 #else
 		std::string utf8;
 		ustr.toUTF8String(utf8);
