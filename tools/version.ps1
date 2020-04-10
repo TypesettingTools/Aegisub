@@ -1,20 +1,32 @@
 #!/usr/bin/env powershell
+
+param (
+  [Parameter(Position = 0, Mandatory = $false)]
+  [string]$BuildRoot = $null
+)
+
 $lastSvnRevision = 6962
 $lastSvnHash = '16cd907fe7482cb54a7374cd28b8501f138116be'
 $defineNumberMatch = [regex] '^#define\s+(\w+)\s+(\d+)$'
 $defineStringMatch = [regex] "^#define\s+(\w+)\s+[`"']?(.+?)[`"']?$"
 $semVerMatch = [regex] 'v?(\d+)\.(\d+).(\d+)(?:-(\w+))?'
 
-
 $repositoryRootPath = Join-Path $PSScriptRoot .. | Resolve-Path
 if (!(git -C $repositoryRootPath rev-parse --is-inside-work-tree 2>$null)) {
   throw "$repositoryRootPath is not a git repository"
 }
 
-$gitVersionHeaderPath = Join-Path $repositoryRootPath 'src' | Join-Path -ChildPath 'include' | Join-Path -ChildPath 'aegisub' `
-  | Join-Path -ChildPath 'git_version.h'
-$gitVersionXmlPath = Join-Path $repositoryRootPath 'packages' | Join-Path -ChildPath 'win_installer' `
-  | Join-Path -ChildPath 'git_version.xml'
+if ($BuildRoot -eq $null -or $BuildRoot.Trim() -eq "")  {
+  $BuildRoot = $repositoryRootPath
+}
+
+# support legacy in-tree builds
+if ([System.IO.Path]::GetFullPath([System.IO.Path]::Combine((pwd).Path, $BuildRoot)) -eq
+  [System.IO.Path]::GetFullPath([System.IO.Path]::Combine((pwd).Path, $repositoryRootPath))) {
+    $BuildRoot = Join-Path $repositoryRootPath 'build'
+  }
+$gitVersionHeaderPath = Join-Path $BuildRoot 'git_version.h'
+$gitVersionXmlPath = Join-Path $repositoryRootPath 'build' | Join-Path -ChildPath 'git_version.xml'
 
 $version = @{}
 if (Test-Path $gitVersionHeaderPath) {
