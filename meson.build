@@ -1,8 +1,10 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.49.0',
+        meson_version: '>=0.51.0',
         default_options: ['c_std=c11', 'cpp_std=c++11', 'b_lto=true'],
         version: '3.2.2')
+
+cmake = import('cmake')
 
 if host_machine.system() == 'windows'
     version_sh = find_program('tools/version.ps1')
@@ -72,16 +74,33 @@ deps += dependency('zlib', fallback: ['zlib', 'zlib_dep'])
 wx_dep = dependency('wxWidgets', version: '>=3.0.0',
                     required: cxx.get_id() != 'msvc',
                     modules: ['std', 'stc', 'gl'])
-if not wx_dep.found() # this will only be hit with msvc
+
+if wx_dep.found()
+    deps += wx_dep
+else # this will only be hit with msvc
     if get_option('wx_path') != ''
         deps_inc += include_directories(get_option('wx_path') / 'include' / 'msvc', get_option('wx_path') / 'include')
         add_project_arguments('-DUNICODE', '-D_UNICODE', language: 'cpp')
         add_project_arguments('-DwxMSVC_VERSION_AUTO', '-DWXUSINGDLL', language: 'cpp')
     else
-        error('wxWidgets not found and no wx_path defined.')
+        buildShared = 'ON'
+        if get_option('default_library') == 'static'
+            buildShared = 'OFF'
+        endif
+
+        wx = cmake.subproject('wxWidgets', cmake_options: ['-DwxBUILD_INSTALL=OFF',
+                                                           '-DwxBUILD_PRECOMP=OFF', # breaks project generation w/ meson
+                                                           '-DwxBUILD_SHARED=@0@'.format(buildShared),
+                                                           '-DwxBUILD_MONOLITHIC=ON'])
+        deps += [
+            wx.dependency('mono'),
+            wx.dependency('wxzlib'),
+            wx.dependency('wxpng'),
+            wx.dependency('wxexpat'),
+            wx.dependency('wxscintilla')
+        ]
     endif
 endif
-deps += wx_dep
 
 icu_uc_dep = dependency('icu-uc', version: '>=4.8.1.1', required: cxx.get_id() != 'msvc')
 icu_i18n_dep = dependency('icu-i18n', version: '>=4.8.1.1', required: cxx.get_id() != 'msvc')
