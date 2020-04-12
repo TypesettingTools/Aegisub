@@ -89,9 +89,9 @@ else # this will only be hit with msvc
         endif
 
         wx = cmake.subproject('wxWidgets', cmake_options: ['-DwxBUILD_INSTALL=OFF',
-                                                           '-DwxBUILD_PRECOMP=OFF', # breaks project generation w/ meson
+                                                           '-DwxBUILD_PRECOMP=OFF', # otherwise breaks project generation w/ meson
                                                            '-DwxBUILD_SHARED=@0@'.format(buildShared),
-                                                           '-DwxBUILD_MONOLITHIC=ON'])
+                                                           '-DwxBUILD_MONOLITHIC=ON']) # otherwise breaks project generation w/ meson
         deps += [
             wx.dependency('mono'),
             wx.dependency('wxzlib'),
@@ -99,6 +99,19 @@ else # this will only be hit with msvc
             wx.dependency('wxexpat'),
             wx.dependency('wxscintilla')
         ]
+
+        if host_machine.system() == 'windows'
+            if cc.has_header('rpc.h')
+                deps += cc.find_library('rpcrt4', required: true)
+            else
+                error('Missing Windows SDK RPC Library (rpc.h / rpcrt4.lib)')
+            endif
+            if cc.has_header('commctrl.h')
+                deps += cc.find_library('comctl32', required: true)
+            else
+                error('Missing Windows SDK Common Controls Library (commctrl.h / comctl32.lib)')
+            endif
+        endif
     endif
 endif
 
@@ -155,8 +168,10 @@ if host_machine.system() == 'windows' and not get_option('directsound').disabled
     if not have_dsound_h and get_option('directsound').enabled()
         error('DirectSound enabled but dsound.h not found')
     endif
-    if dsound_dep.found() and winmm_dep.found() and ole32_dep.found() and have_dsound_h
-        deps += [dsound_dep, winmm_dep, ole32_dep]
+
+    dxguid_dep = cc.find_library('dxguid', required: true)
+    if dsound_dep.found() and winmm_dep.found() and ole32_dep.found() and dxguid_dep.found() and have_dsound_h
+        deps += [dsound_dep, winmm_dep, ole32_dep, dxguid_dep]
         conf.set('WITH_DIRECTSOUND', '1')
         dep_avail += 'DirectSound'
     endif

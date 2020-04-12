@@ -171,6 +171,20 @@ if host_machine.system() == 'darwin'
         'osx/retina_helper.mm',
         'osx/scintilla_ime.mm',
     ]
+elif host_machine.system() == 'windows'
+    aegisub_src += [
+        'font_file_lister_gdi.cpp'
+    ]
+    if cc.has_header('wingdi.h')
+        deps += cc.find_library('gdi32', required: true)
+    else
+        error('Missing Windows SDK GDI Library (wingdi.h / gdi32.lib)')
+    endif
+        if cc.has_header('usp10.h')
+        deps += cc.find_library('usp10', required: true)
+    else
+        error('Missing Windows SDK Uniscribe Library (usp10.h / usp10.lib)')
+    endif
 elif conf.get('WITH_FONTCONFIG') == '1'
     aegisub_src += 'font_file_lister_fontconfig.cpp'
 endif
