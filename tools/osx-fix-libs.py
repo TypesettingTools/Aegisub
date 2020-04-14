@@ -105,8 +105,14 @@ if __name__ == '__main__':
         else:
             print("%s -> @executable_path/%s" % (lib, libbase))
 
+        targetlib = targetdir + '/' + libbase
+        orig_permission = os.stat(targetlib).st_mode
+        if not(orig_permission & stat.S_IWUSR):
+            os.chmod(targetlib, orig_permission | stat.S_IWUSR)
         subprocess.run(in_tool_cmdline + ['-id', '@executable_path/' + libbase,
-                                          targetdir + '/' + libbase])
+                                          targetlib])
+        if not(orig_permission & stat.S_IWUSR):
+            os.chmod(targetlib, orig_permission)
 
     if badlist:
         print()
