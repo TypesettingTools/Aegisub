@@ -10,6 +10,7 @@ import subprocess
 is_bad_lib = re.compile(r'(/usr/local|/opt)').match
 is_sys_lib = re.compile(r'(/usr|/System)').match
 otool_libname_extract = re.compile(r'\s+(/.*?)[(\s:]').search
+otool_loader_path_extract = re.compile(r'\s+@loader_path/(.*?)[(\s:]').search
 goodlist = []
 badlist = []
 link_map = {}
@@ -28,9 +29,14 @@ def collectlibs(lib, masterlist, targetdir):
 
     for l in liblist:
         lr = otool_libname_extract(l)
-        if not lr:
-            continue
-        l = lr.group(1)
+        if lr:
+            l = lr.group(1)
+        else:
+            lr = otool_loader_path_extract(l)
+            if lr:
+                l = os.path.join(os.path.dirname(lib), lr.group(1))
+            else:
+                continue
         if is_bad_lib(l) and l not in badlist:
             badlist.append(l)
         if ((not is_sys_lib(l)) or is_bad_lib(l)) and l not in masterlist:
