@@ -155,6 +155,7 @@ class SubsEditBox final : public wxPanel {
 	void OnEffectChange(wxCommandEvent &);
 	void OnSize(wxSizeEvent &event);
 	void OnSplit(wxCommandEvent&);
+	void DoOnSplit(bool show_original);
 
 	void SetPlaceholderCtrl(wxControl *ctrl, wxString const& value);
 
