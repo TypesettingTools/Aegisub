@@ -91,7 +91,6 @@ class DataBlockCache {
 		size -= (ba.size() - std::count(ba.begin(), ba.end(), nullptr)) * factory.GetBlockSize();
 
 		ba.clear();
-		age.erase(mb.position);
 	}
 
 public:
@@ -150,8 +149,16 @@ public:
 		}
 
 		// Remove old entries until we're under the max size
-		for (auto it = age.rbegin(); size > max_size && it != age.rend(); it++)
+		auto it = age.end();
+		while (size > max_size) {
+			if (it == age.begin())
+				break;
+			it--;
 			KillMacroBlock(**it);
+		}
+
+		while (it != age.end())
+			it = age.erase(it);
 	}
 
 	/// @brief Obtain a data block from the cache
