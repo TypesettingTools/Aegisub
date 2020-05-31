@@ -51,7 +51,7 @@ class DialogSelection final : public wxDialog {
 	wxRadioBox *dialogue_field; ///< Which dialogue field to look at
 	wxRadioBox *match_mode;
 
-	void Process(wxCommandEvent&);
+	void Process(wxCommandEvent& event);
 
 	/// Dialogue/Comment check handler to ensure at least one is always checked
 	/// @param chk The checkbox to check if both are clear
@@ -150,7 +150,7 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 		main_sizer->Add(selection_change_type = new wxRadioBox(this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, 4, actions, 1), main_flags);
 	}
 
-	main_sizer->Add(CreateButtonSizer(wxOK | wxCANCEL | wxHELP), main_flags);
+	main_sizer->Add(CreateButtonSizer(wxOK | wxCANCEL | wxAPPLY | wxHELP), main_flags);
 
 	SetSizerAndFit(main_sizer);
 	CenterOnParent();
@@ -165,6 +165,7 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 	match_mode->SetSelection(OPT_GET("Tool/Select Lines/Mode")->GetInt());
 
 	Bind(wxEVT_BUTTON, &DialogSelection::Process, this, wxID_OK);
+	Bind(wxEVT_BUTTON, &DialogSelection::Process, this, wxID_APPLY);
 	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Select Lines"), wxID_HELP);
 	apply_to_comments->Bind(wxEVT_CHECKBOX, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_dialogue));
 	apply_to_dialogue->Bind(wxEVT_CHECKBOX, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_comments));
@@ -181,7 +182,7 @@ DialogSelection::~DialogSelection() {
 	OPT_SET("Tool/Select Lines/Match/Comment")->SetBool(apply_to_comments->IsChecked());
 }
 
-void DialogSelection::Process(wxCommandEvent&) {
+void DialogSelection::Process(wxCommandEvent& event) {
 	std::set<AssDialogue*> matches;
 
 	try {
@@ -192,7 +193,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 			dialogue_field->GetSelection(), con->ass.get());
 	}
 	catch (agi::Exception const&) {
-		Close();
+		if (event.GetId() == wxID_OK) Close();
 		return;
 	}
 
@@ -242,7 +243,7 @@ void DialogSelection::Process(wxCommandEvent&) {
 		new_active = *new_sel.begin();
 	con->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
 
-	Close();
+	if (event.GetId() == wxID_OK) Close();
 }
 
 void DialogSelection::OnDialogueCheckbox(wxCheckBox *chk) {
