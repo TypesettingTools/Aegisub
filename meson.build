@@ -134,19 +134,28 @@ deps += dependency('icu-i18n', version: '>=4.8.1.1')
 dep_avail = []
 foreach dep: [
     # audio, in order of precedence
-    ['libpulse', '', 'PulseAudio'],
-    ['alsa', '', 'ALSA'],
-    ['portaudio-2.0', '', 'PortAudio'],
-    ['openal', '>=0.0.8', 'OpenAL'],
+    ['libpulse', '', 'PulseAudio', []],
+    ['alsa', '', 'ALSA', []],
+    ['portaudio-2.0', '', 'PortAudio', []],
+    ['openal', '>=0.0.8', 'OpenAL', []],
     # video
-    ['ffms2', '', 'FFMS2'],
+    ['ffms2', '', 'FFMS2', ['ffms2', 'ffms2_dep']],
     # other
-    ['fftw3', '', 'FFTW3'],
-    ['hunspell', '', 'Hunspell'], # needs a proper port
-    ['uchardet', '', 'uchardet'], # needs a proper port
+    ['fftw3', '', 'FFTW3', []],
+    ['hunspell', '', 'Hunspell', []], # needs a proper port
+    ['uchardet', '', 'uchardet', []], # needs a proper port
 ]
-    d = dependency(dep[0], version: dep[1] != '' ? dep[1]: '>=0',
-                   required: false)
+    dep_version = dep[1] != '' ? dep[1] : '>=0'
+    # [provide] section is ignored if required is false;
+    # must provided define fallback explicitly
+    # (with meson 0.56 you can do allow_fallback: true):
+    #d = dependency(dep[0], version: dep_version,
+    #               required: false, allow_fallback: true)
+    if dep[3].length() > 0
+        d = dependency(dep[0], version: dep_version, fallback: dep[3])
+    else
+        d = dependency(dep[0], version: dep_version, required: false)
+    endif
 
     optname = dep[0].split('-')[0]
     if d.found() and not get_option(optname).disabled()
