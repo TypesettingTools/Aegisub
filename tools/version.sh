@@ -1,7 +1,8 @@
-srcdir="$1"
+builddir="$1"
+srcdir="$2"
 
 # If no git repo try to read from the existing git_version.h, for building from tarballs
-version_h_path="${srcdir}/git_version.h"
+version_h_path="${builddir}/git_version.h"
 if ! test -d "${srcdir}/.git"; then
   if test -f "${version_h_path}"; then
     while read line; do
@@ -65,7 +66,7 @@ export BUILD_GIT_VERSION_NUMBER="${git_revision}"
 export BUILD_GIT_VERSION_STRING="${git_version_str}"
 export VERSION_SOURCE="from git"
 
-cat << EOF > "${srcdir}/git_version.xml"
+cat << EOF > "${builddir}/git_version.xml"
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
