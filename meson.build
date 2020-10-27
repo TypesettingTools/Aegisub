@@ -115,23 +115,8 @@ else # this will only be hit with msvc
     endif
 endif
 
-icu_uc_dep = dependency('icu-uc', version: '>=4.8.1.1', required: cxx.get_id() != 'msvc')
-icu_i18n_dep = dependency('icu-i18n', version: '>=4.8.1.1', required: cxx.get_id() != 'msvc')
-if not (icu_uc_dep.found() and icu_i18n_dep.found())
-    if get_option('icu_path') != ''
-        deps_inc += include_directories(get_option('icu_path') / 'include')
-    else
-        error('ICU not found and no icu_path defined.')
-    endif
-endif
-if not icu_uc_dep.found()
-    icu_uc_dep = cxx.find_library('icuuc', dirs: get_option('icu_path') / 'lib64')
-endif
-deps += icu_uc_dep
-if not icu_i18n_dep.found()
-    icu_i18n_dep = cxx.find_library('icuin', dirs: get_option('icu_path') / 'lib64')
-endif
-deps += icu_i18n_dep
+deps += dependency('icu-uc', version: '>=4.8.1.1')
+deps += dependency('icu-i18n', version: '>=4.8.1.1')
 
 dep_avail = []
 foreach dep: [
