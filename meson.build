@@ -61,10 +61,23 @@ deps += iconv_dep
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
-deps += dependency('boost', version: '>=1.50.0',
-                   modules: ['chrono', 'filesystem', 'locale', 'regex',
-                             'system', 'thread'],
-                   static: get_option('default_library') == 'static')
+boost_modules = ['chrono', 'filesystem', 'thread', 'locale', 'regex']
+if not get_option('local_boost')
+    boost_dep = dependency('boost', version: '>=1.50.0',
+                            modules: boost_modules,
+                            required: cxx.get_id() != 'msvc',
+                            static: get_option('default_library') == 'static')
+endif
+
+if get_option('local_boost') or not boost_dep.found()
+    boost_dep = []
+    boost = subproject('boost')
+    foreach module: boost_modules
+        boost_dep += boost.get_variable('boost_' + module + '_dep')
+    endforeach
+endif
+
+deps += boost_dep
 if host_machine.system() == 'windows'
     conf.set('BOOST_USE_WINDOWS_H', '1')
 endif
