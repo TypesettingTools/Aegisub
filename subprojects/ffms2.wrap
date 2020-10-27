@@ -1,0 +1,9 @@
+[wrap-file]
+directory = ffms2-2.40
+source_url = https://github.com/FFMS/ffms2/archive/2.40.tar.gz
+source_filename = 2.40.tar.gz
+source_hash = 82e95662946f3d6e1b529eadbd72bed196adfbc41368b2d50493efce6e716320
+patch_directory = ffms2
+
+[provide]
+ffms2 = ffms2_dep
