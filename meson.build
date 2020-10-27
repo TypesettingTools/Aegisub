@@ -1,6 +1,6 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.51.0',
+        meson_version: '>=0.55.0',
         default_options: ['c_std=c11', 'cpp_std=c++11', 'b_lto=true'],
         version: '3.2.2')
 
@@ -69,7 +69,7 @@ if host_machine.system() == 'windows'
     conf.set('BOOST_USE_WINDOWS_H', '1')
 endif
 
-deps += dependency('zlib', fallback: ['zlib', 'zlib_dep'])
+deps += dependency('zlib')
 
 wx_dep = dependency('wxWidgets', version: '>=3.0.0',
                     required: cxx.get_id() != 'msvc',
