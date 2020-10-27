@@ -12,6 +12,7 @@ option('hunspell', type: 'feature', description: 'Hunspell spell checker')
 option('uchardet', type: 'feature', description: 'uchardet character encoding detection')
 
 option('system_luajit', type: 'boolean', value: false, description: 'Force using system luajit')
+option('local_boost', type: 'boolean', value: false, description: 'Force using locally compiled Boost')
 
 option('icu_path', type: 'string', value: '', description: 'Path to ICU libraries on Windows')
 option('wx_path', type: 'string', value: '', description: 'Path to wxWidgets libraries on Windows')
