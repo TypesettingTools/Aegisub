@@ -1,0 +1,11 @@
+[wrap-file]
+directory = icu
+source_url = https://github.com/unicode-org/icu/releases/download/release-67-1/icu4c-67_1-src.tgz
+source_filename = icu4c-67_1-src.tgz
+source_hash = 94a80cd6f251a53bd2a997f6f1b5ac6653fe791dfab66e1eb0227740fb86d5dc
+patch_directory = icu
+
+[provide]
+icu-uc = icuuc_dep
+icu-io = icuio_dep
+icu-i18n = icui18n_dep
