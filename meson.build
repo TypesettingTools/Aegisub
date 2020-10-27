@@ -139,7 +139,7 @@ foreach dep: [
     ['portaudio-2.0', '', 'PortAudio'],
     ['openal', '>=0.0.8', 'OpenAL'],
     # video
-    ['ffms2', '', 'FFMS2'], # needs a proper port
+    ['ffms2', '', 'FFMS2'],
     # other
     ['fftw3', '', 'FFTW3'],
     ['hunspell', '', 'Hunspell'], # needs a proper port
