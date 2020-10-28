@@ -2,7 +2,9 @@
 
 param (
   [Parameter(Position = 0, Mandatory = $false)]
-  [string]$BuildRoot = $null
+  [string]$BuildRoot = $null,
+  [Parameter(Position = 1, Mandatory = $false)]
+  [string]$SourceRoot = $null
 )
 
 $lastSvnRevision = 6962
