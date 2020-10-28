@@ -103,10 +103,11 @@ else # this will only be hit with msvc
                                                            '-DwxBUILD_SHARED=@0@'.format(buildShared),
                                                            '-DwxBUILD_MONOLITHIC=ON']) # otherwise breaks project generation w/ meson
         deps += [
-            wx.dependency('mono'),
+            wx.dependency('wxmono'),
             wx.dependency('wxzlib'),
             wx.dependency('wxpng'),
             wx.dependency('wxexpat'),
+            wx.dependency('wxregex'),
             wx.dependency('wxscintilla')
         ]
 
