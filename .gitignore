@@ -54,10 +54,14 @@ vendor/luajit/src/lj_libdef.h
 vendor/luajit/src/lj_recdef.h
 vendor/luajit/src/luajit
 
+# IDE-specific
 .nuget
 .vs
+.kdev4/
+*.kdev4
 
 # Meson
+builddir/
 subprojects/freetype*
 subprojects/fribidi
 subprojects/harfbuzz
@@ -65,3 +69,8 @@ subprojects/libass
 subprojects/libpng*
 subprojects/packagecache
 subprojects/zlib*
+subprojects/libass
+subprojects/icu
+subprojects/ffmpeg
+subprojects/ffms2*
+subprojects/boost*
