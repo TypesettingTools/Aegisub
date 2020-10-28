@@ -61,7 +61,7 @@ vendor/luajit/src/luajit
 *.kdev4
 
 # Meson
-builddir/
+build*/
 subprojects/freetype*
 subprojects/fribidi
 subprojects/harfbuzz
