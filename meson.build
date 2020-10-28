@@ -7,6 +7,14 @@ project('Aegisub', ['c', 'cpp'],
 cmake = import('cmake')
 
 if host_machine.system() == 'windows'
+    sys_nasm = find_program('nasm', required: false)
+    if not sys_nasm.found()
+        nasm = subproject('nasm').get_variable('nasm')
+        meson.override_find_program('nasm', nasm)
+    endif
+endif
+
+if host_machine.system() == 'windows'
     version_sh = find_program('tools/version.ps1')
 else
     version_sh = find_program('tools/version.sh')
