@@ -25,7 +25,6 @@ else
         ['LJ_ARCH_BITS', '64', ['-D', 'P64']],
         ['LJ_HASJIT', '1', ['-D', 'JIT']],
         ['LJ_HASFFI', '1', ['-D', 'FFI']],
-        ['LJ_DUALNUM', '1', ['-D', 'DUALNUM']],
     ]
 
     if host_machine.cpu_family() == 'x86'
