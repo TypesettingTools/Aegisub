@@ -107,41 +107,35 @@ wx_dep = dependency('wxWidgets', version: '>=3.0.0',
 
 if wx_dep.found()
     deps += wx_dep
-else # this will only be hit with msvc
-    if get_option('wx_path') != ''
-        deps_inc += include_directories(get_option('wx_path') / 'include' / 'msvc', get_option('wx_path') / 'include')
-        add_project_arguments('-DUNICODE', '-D_UNICODE', language: 'cpp')
-        add_project_arguments('-DwxMSVC_VERSION_AUTO', '-DWXUSINGDLL', language: 'cpp')
-    else
-        buildShared = 'ON'
-        if get_option('default_library') == 'static'
-            buildShared = 'OFF'
+else
+    build_shared = 'ON'
+    if get_option('default_library') == 'static'
+        build_shared = 'OFF'
+    endif
+
+    wx = cmake.subproject('wxWidgets', cmake_options: ['-DwxBUILD_INSTALL=OFF',
+                                                       '-DwxBUILD_PRECOMP=OFF', # otherwise breaks project generation w/ meson
+                                                       '-DwxBUILD_SHARED=@0@'.format(build_shared),
+                                                       '-DwxBUILD_MONOLITHIC=ON']) # otherwise breaks project generation w/ meson
+    deps += [
+        wx.dependency('wxmono'),
+        wx.dependency('wxzlib'),
+        wx.dependency('wxpng'),
+        wx.dependency('wxexpat'),
+        wx.dependency('wxregex'),
+        wx.dependency('wxscintilla')
+    ]
+
+    if host_machine.system() == 'windows'
+        if cc.has_header('rpc.h')
+            deps += cc.find_library('rpcrt4', required: true)
+        else
+            error('Missing Windows SDK RPC Library (rpc.h / rpcrt4.lib)')
         endif
-
-        wx = cmake.subproject('wxWidgets', cmake_options: ['-DwxBUILD_INSTALL=OFF',
-                                                           '-DwxBUILD_PRECOMP=OFF', # otherwise breaks project generation w/ meson
-                                                           '-DwxBUILD_SHARED=@0@'.format(buildShared),
-                                                           '-DwxBUILD_MONOLITHIC=ON']) # otherwise breaks project generation w/ meson
-        deps += [
-            wx.dependency('wxmono'),
-            wx.dependency('wxzlib'),
-            wx.dependency('wxpng'),
-            wx.dependency('wxexpat'),
-            wx.dependency('wxregex'),
-            wx.dependency('wxscintilla')
-        ]
-
-        if host_machine.system() == 'windows'
-            if cc.has_header('rpc.h')
-                deps += cc.find_library('rpcrt4', required: true)
-            else
-                error('Missing Windows SDK RPC Library (rpc.h / rpcrt4.lib)')
-            endif
-            if cc.has_header('commctrl.h')
-                deps += cc.find_library('comctl32', required: true)
-            else
-                error('Missing Windows SDK Common Controls Library (commctrl.h / comctl32.lib)')
-            endif
+        if cc.has_header('commctrl.h')
+            deps += cc.find_library('comctl32', required: true)
+        else
+            error('Missing Windows SDK Common Controls Library (commctrl.h / comctl32.lib)')
         endif
     endif
 endif
