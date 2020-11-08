@@ -243,7 +243,7 @@ if not deps.contains(luajit)
 else
     luajit_inc = include_directories(luajit.get_pkgconfig_variable('includedir'))
 endif
-subdir('vendor/luabins/src')
+subdir('subprojects/luabins/src')
 
 dep_gl = dependency('gl', required: false)
 if not dep_gl.found()
@@ -256,6 +256,9 @@ if not dep_gl.found()
     if not cc.has_header('GL/gl.h')
         dep_gl = dependency('', required: false)
     endif
+endif
+if host_machine.system() == 'darwin'
+    conf.set('HAVE_OPENGL_GL_H', 1)
 endif
 
 if not dep_gl.found()
