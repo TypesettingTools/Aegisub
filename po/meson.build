@@ -1,2 +1,4 @@
 i18n = import('i18n')
-i18n.gettext('aegisub')
+# This is currently busted on OSX
+i18n.gettext('aegisub',
+	         install_dir: localedir)
