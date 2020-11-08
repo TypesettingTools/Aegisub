@@ -102,7 +102,7 @@ endif
 deps += dependency('zlib')
 
 wx_dep = dependency('wxWidgets', version: '>=3.0.0',
-                    required: cxx.get_id() != 'msvc',
+                    required: false,
                     modules: ['std', 'stc', 'gl'])
 
 if wx_dep.found()
