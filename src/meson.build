@@ -220,5 +220,6 @@ aegisub = executable('aegisub', aegisub_src, version_h, acconf,
                      cpp_pch: aegisub_cpp_pch,
                      c_pch: aegisub_c_pch,
                      install: true,
+                     install_dir: bindir,
                      dependencies: deps,
                      gui_app: true)
