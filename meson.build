@@ -82,7 +82,7 @@ boost_modules = ['chrono', 'filesystem', 'thread', 'locale', 'regex']
 if not get_option('local_boost')
     boost_dep = dependency('boost', version: '>=1.50.0',
                             modules: boost_modules,
-                            required: cxx.get_id() != 'msvc',
+                            required: false,
                             static: get_option('default_library') == 'static')
 endif
 
