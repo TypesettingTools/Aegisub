@@ -1,10 +1,4 @@
-[wrap-file]
-directory = freetype-2.9.1
-
-source_url = https://download.savannah.gnu.org/releases/freetype/freetype-2.9.1.tar.gz
-source_filename = freetype-2.9.1.tar.gz
-source_hash = ec391504e55498adceb30baceebd147a6e963f636eb617424bcfc47a169898ce
-
-patch_url = https://wrapdb.mesonbuild.com/v1/projects/freetype2/2.9.1/1/get_zip
-patch_filename = freetype2-2.9.1-1-wrap.zip
-patch_hash = 06222607775e707c6d7b8d21ffdb04c7672f676a18c5ebb9880545130ab0407b
+[wrap-git]
+directory = freetype2
+url = https://git.savannah.gnu.org/git/freetype/freetype2.git
+revision = master
