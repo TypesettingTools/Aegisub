@@ -81,7 +81,7 @@ deps += dependency('libass', version: '>=0.9.7',
 boost_modules = ['chrono', 'filesystem', 'thread', 'locale', 'regex']
 if not get_option('local_boost')
     boost_dep = dependency('boost', version: '>=1.50.0',
-                            modules: boost_modules,
+                            modules: boost_modules + ['system'],
                             required: false,
                             static: get_option('default_library') == 'static')
 endif
