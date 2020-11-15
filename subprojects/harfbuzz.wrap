@@ -2,3 +2,6 @@
 directory = harfbuzz
 url = https://github.com/harfbuzz/harfbuzz
 revision = master
+
+[provide]
+harfbuzz = libharfbuzz_dep
