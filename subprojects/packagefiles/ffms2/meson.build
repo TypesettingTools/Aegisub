@@ -3,11 +3,11 @@ project('ffms2', 'cpp', version: '2.40.0')
 deps = []
 
 deps += dependency('zlib')
-deps += dependency('libavformat')
-deps += dependency('libavcodec')
-deps += dependency('libswscale')
-deps += dependency('libavutil')
-deps += dependency('libswresample')
+deps += dependency('libavformat', default_options: ['tests=disabled'])
+deps += dependency('libavcodec', default_options: ['tests=disabled'])
+deps += dependency('libswscale', default_options: ['tests=disabled'])
+deps += dependency('libavutil', default_options: ['tests=disabled'])
+deps += dependency('libswresample', default_options: ['tests=disabled'])
 
 args = ['-D_FILE_OFFSET_BITNS=64', '-DFFMS_EXPORTS', '-D__STDC_CONSTANT_MACROS']
 usage_args = []
