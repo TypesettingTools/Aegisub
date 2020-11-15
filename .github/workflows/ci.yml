@@ -61,7 +61,8 @@ jobs:
 
       - name: Configure (Windows)
         if: matrix.config.os == 'windows-latest'
-        run: meson build -Db_vscrt=mdd -Ddefault_library=static -Dfreetype2:zlib=system --force-fallback-for=zlib
+        # -Dfreetype2:png=enabled is a workaround for https://savannah.nongnu.org/bugs/?59458
+        run: meson build -Db_vscrt=mdd -Ddefault_library=static -Dfreetype2:zlib=system --force-fallback-for=zlib -Dfreetype2:png=enabled
 
       - name: Configure (Linux)
         if: matrix.config.os == 'ubuntu-latest'
