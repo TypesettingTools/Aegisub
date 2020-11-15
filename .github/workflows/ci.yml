@@ -14,11 +14,11 @@ jobs:
     strategy:
       matrix:
         config:
-          #- {
-          #  name: Windows MSVC,
-          #  os: windows-latest,
-          #  msvc: true
-          #}
+          - {
+            name: Windows MSVC,
+            os: windows-latest,
+            msvc: true
+          }
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
