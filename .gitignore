@@ -2,7 +2,6 @@
 
 packages/desktop/aegisub.desktop
 packages/desktop/aegisub.desktop.template
-packages/win_installer/vendor
 src/libresrc/bitmap.cpp
 src/libresrc/bitmap.h
 src/libresrc/default_config.cpp
@@ -26,15 +25,21 @@ tools/repack-thes-dict.dSYM
 
 # Meson
 build*/
-subprojects/freetype*
-subprojects/fribidi
-subprojects/harfbuzz
-subprojects/libass
-subprojects/libpng*
-subprojects/packagecache
-subprojects/zlib*
-subprojects/libass
-subprojects/icu
+subprojects/boost*/
+subprojects/cairo*
 subprojects/ffmpeg
-subprojects/ffms2*
-subprojects/boost*
+subprojects/ffms2-*
+subprojects/fontconfig*
+subprojects/freetype2
+subprojects/fribidi
+subprojects/glib*
+subprojects/harfbuzz
+subprojects/icu
+subprojects/libass
+subprojects/libffi*
+subprojects/libpng-*
+subprojects/nasm-*
+subprojects/packagecache
+subprojects/proxy-libintl*
+subprojects/wxWidgets
+subprojects/zlib-*

@@ -1,5 +1,5 @@
 project('iconv', 'c', license: 'LGPL',
-        meson_version: '>=0.49.0')
+        meson_version: '>=0.54.0')
 
 iconv_src = [
     'libcharset/localcharset.c',
