@@ -1,0 +1,71 @@
+name: Meson CI
+
+on:
+  push:
+    branches: [ meson-vs2019 ]
+  pull_request:
+    branches: [ meson-vs2019 ]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+
+    strategy:
+      matrix:
+        config:
+          #- {
+          #  name: Windows MSVC,
+          #  os: windows-latest,
+          #  msvc: true
+          #}
+          #- {
+          #  name: Windows MinGW,
+          #  os: windows-latest,
+          #  msvc: false
+          #}
+          - {
+            name: "Ubuntu",
+            os: ubuntu-latest
+          }
+          #- {
+          #  name: "macOS",
+          #  os: macos-latest
+          #}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Setup Meson
+        run: |
+          python -m pip install --upgrade pip
+          pip install meson
+
+      - name: Setup MSVC
+        if: matrix.config.os == 'windows-latest' && matrix.config.msvc == true
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install dependencies (Windows)
+        if: matrix.config.os == 'windows-latest'
+        run: choco install ninja
+
+      - name: Install dependencies (Linux)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: sudo apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev
+
+      - name: Configure (Windows)
+        if: matrix.config.os == 'windows-latest'
+        run: meson build -Db_vscrt=mdd -Ddefault_library=static
+
+      - name: Configure (Linux)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: meson build
+
+      - name: Build
+        run: meson compile -C build
