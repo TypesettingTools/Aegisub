@@ -45,6 +45,10 @@ if host_machine.system() == 'windows'
     add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0602', language: 'cpp')
 endif
 
+if get_option('debug')
+    add_project_arguments('-D_DEBUG', language: 'cpp')
+endif
+
 conf = configuration_data()
 conf.set_quoted('P_DATA', dataroot)
 if get_option('credit') != ''
