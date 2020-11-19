@@ -10,8 +10,7 @@ if ! test -d "${srcdir}/.git"; then
       export $2=$(echo $3 | sed 's/"//g')
     done < "${version_h_path}"
     if test x$BUILD_GIT_VERSION_NUMBER != x -a x$BUILD_GIT_VERSION_STRING != x; then
-      export VERSION_SOURCE="from cached git_version.h"
-      return 0
+      exit 0
     else
       echo "invalid git_version.h"
       exit 2
@@ -61,17 +60,3 @@ in
   "${new_version_h}");;
   *) echo "${new_version_h}" > "${version_h_path}"
 esac
-
-export BUILD_GIT_VERSION_NUMBER="${git_revision}"
-export BUILD_GIT_VERSION_STRING="${git_version_str}"
-export VERSION_SOURCE="from git"
-
-cat << EOF > "${builddir}/git_version.xml"
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <GitVersionNumber>${git_revision}</GitVersionNumber>
-    <GitVersionString>${git_version_str}</GitVersionString>
-  </PropertyGroup>
-</Project>
-EOF

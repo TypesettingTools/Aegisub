@@ -28,7 +28,6 @@ if ([System.IO.Path]::GetFullPath([System.IO.Path]::Combine((pwd).Path, $BuildRo
     $BuildRoot = Join-Path $repositoryRootPath 'build'
   }
 $gitVersionHeaderPath = Join-Path $BuildRoot 'git_version.h'
-$gitVersionXmlPath = Join-Path $BuildRoot 'git_version.xml'
 
 $version = @{}
 if (Test-Path $gitVersionHeaderPath) {
@@ -49,6 +48,10 @@ $gitBranch = git -C $repositoryRootPath symbolic-ref --short HEAD 2>$null
 $gitHash = git -C $repositoryRootPath rev-parse --short HEAD 2>$null
 $gitVersionString = $gitRevision, $gitBranch, $gitHash -join '-'
 $exactGitTag = git -C $repositoryRootPath describe --exact-match --tags 2>$null
+
+if ($gitVersionString -eq $version['BUILD_GIT_VERSION_STRING']) {
+  exit 0
+}
 
 if ($exactGitTag -match $semVerMatch) {
   $version['TAGGED_RELEASE'] = $true
@@ -84,17 +87,3 @@ $version.GetEnumerator() | %{
   }
   "#define $($_.Key) $($fmtValue)"
 } | Out-File -FilePath $gitVersionHeaderPath -Encoding utf8
-
-$gitVersionXml = [xml]@'
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <GitVersionNumber></GitVersionNumber>
-    <GitVersionString></GitVersionString>
-  </PropertyGroup>
-</Project>
-'@
-
-$gitVersionXml.Project.PropertyGroup.GitVersionNumber = $gitRevision.ToString()
-$gitVersionXml.Project.PropertyGroup.GitVersionString = $gitVersionString
-$gitVersionXml.Save($gitVersionXmlPath)
