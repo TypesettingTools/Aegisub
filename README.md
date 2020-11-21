@@ -2,9 +2,9 @@
 
 For binaries and general information [see the homepage](http://www.aegisub.org).
 
-The bug tracker can be found at http://devel.aegisub.org.
+The bug tracker can be found at https://github.com/TypesettingTools/Aegisub/issues.
 
-Support is available on [the forums](http://forum.aegisub.org) or [on IRC](irc://irc.rizon.net/aegisub).
+Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](irc://irc.rizon.net/aegisub).
 
 ## Building Aegisub
 
@@ -12,9 +12,10 @@ Support is available on [the forums](http://forum.aegisub.org) or [on IRC](irc:/
 
 Prerequisites:
 
-1. Visual Studio 2015 (the free Community edition is good enough)
+1. Visual Studio (Community edition of any recent version is fine)
 2. The June 2010 DirectX SDK (the final release before DirectSound was dropped)
-3. [Yasm](http://yasm.tortall.net/) installed to somewhere on your path.
+3. Python 3
+4. Meson
 
 There are a few optional dependencies:
 
@@ -26,22 +27,19 @@ All other dependencies are either stored in the repository or are included as su
 
 Building:
 
-1. Clone Aegisub's repository recursively to fetch it and all submodules: `git clone --recursive git@github.com:Aegisub/Aegisub.git` This will take quite a while and requires about 2.5 GB of disk space.
-2. Open Aegisub.sln
-3. Build the BuildTasks project.
-4. Build the entire solution.
+1. Clone Aegisub's repository: `git clone https://github.com/TypesettingTools/Aegisub.git`
+2. From the Visual Studio "x64 Native Tools Command Prompt", generate the build directory: `meson build -Ddefault_library=static -Dfreetype2:zlib=system -Dfreetype2:png=enabled -Dfreetype2:default_library=static`
+3. Build with `cd build` and `meson compile`
 
-You should now have a `bin` directory in your Aegisub directory which contains `aegisub32d.exe`, along with a pile of other files.
+You should now have a binary at `src/aegisub.exe`.
 
-The Aegisub installer includes some files not built as part of Aegisub (such as Avisynth and VSFilter), so for a fully functional copy of Aegisub you now need to copy all of the files from an installed copy of Aegisub into your `bin` directory (and don't overwrite any of the files already there).
-You'll also either need to copy the `automation` directory into the `bin` directory, or edit your automation search paths to include the `automation` directory in the source tree.
+Installer:
 
-After building the solution once, you'll want to switch to the Debug-MinDep configuration, which skips checking if the dependencies are out of date, as that takes a while.
+You can generate the installer with `ninja win-installer` after a successful build. This assumes you have InnoSetup present on your `PATH` and a working internet connection.
 
 ### OS X
 
 A vaguely recent version of Xcode and the corresponding command-line tools are required.
-Nothing older than Xcode 5 has been tested recently, but it is likely that some later versions of Xcode 4 are good enough.
 
 For personal usage, you can use homebrew to install almost all of Aegisub's dependencies:
 
