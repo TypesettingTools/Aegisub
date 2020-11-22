@@ -240,8 +240,12 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	TopSizer->Show(videoBox, showVideo, true);
 	ToolsSizer->Show(audioBox, showAudio, true);
 
-	MainSizer->CalcMin();
+	auto min_size = MainSizer->CalcMin();
+#if wxVERSION_NUMBER >= 3103
+	MainSizer->RepositionChildren(min_size);
+#else
 	MainSizer->RecalcSizes();
+#endif
 	MainSizer->Layout();
 	Layout();
 
