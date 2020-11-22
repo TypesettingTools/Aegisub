@@ -116,11 +116,16 @@ else
     if get_option('default_library') == 'static'
         build_shared = 'OFF'
     endif
+    build_type = 'Release'
+    if get_option('buildtype') == 'debug'
+        build_type = 'Debug'
+    endif
 
     wx = cmake.subproject('wxWidgets', cmake_options: ['-DwxBUILD_INSTALL=OFF',
                                                        '-DwxBUILD_PRECOMP=OFF', # otherwise breaks project generation w/ meson
                                                        '-DwxBUILD_SHARED=@0@'.format(build_shared),
                                                        '-DwxUSE_WEBVIEW=OFF', # breaks build on linux
+                                                       '-DCMAKE_BUILD_TYPE=@0@'.format(build_type),
                                                        '-DwxBUILD_MONOLITHIC=ON']) # otherwise breaks project generation w/ meson
     deps += [
         wx.dependency('wxmono'),
