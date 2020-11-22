@@ -70,3 +70,11 @@ jobs:
 
       - name: Build
         run: meson compile -C build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: matrix.config.os == 'windows-latest'
+        with:
+          name: ${{ matrix.config.name }}
+          path: |
+            build/Aegisub-*.exe
