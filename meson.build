@@ -120,17 +120,21 @@ else
     wx = cmake.subproject('wxWidgets', cmake_options: ['-DwxBUILD_INSTALL=OFF',
                                                        '-DwxBUILD_PRECOMP=OFF', # otherwise breaks project generation w/ meson
                                                        '-DwxBUILD_SHARED=@0@'.format(build_shared),
+                                                       '-DwxUSE_WEBVIEW=OFF', # breaks build on linux
                                                        '-DwxBUILD_MONOLITHIC=ON']) # otherwise breaks project generation w/ meson
     deps += [
         wx.dependency('wxmono'),
-        wx.dependency('wxzlib'),
-        wx.dependency('wxpng'),
-        wx.dependency('wxexpat'),
         wx.dependency('wxregex'),
         wx.dependency('wxscintilla')
     ]
 
     if host_machine.system() == 'windows'
+        deps += [
+            wx.dependency('wxzlib'),
+            wx.dependency('wxpng'),
+            wx.dependency('wxexpat')
+        ]
+
         if cc.has_header('rpc.h')
             deps += cc.find_library('rpcrt4', required: true)
         else
