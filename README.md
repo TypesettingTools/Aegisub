@@ -16,12 +16,16 @@ Prerequisites:
 2. The June 2010 DirectX SDK (the final release before DirectSound was dropped)
 3. Python 3
 4. Meson
+5. CMake
+6. Powershell execution policy set to Unrestricted
 
-There are a few optional dependencies:
+There are a few optional dependencies that must be installed and on your PATH:
 
 1. msgfmt, to build the translations
 2. WinRAR, to build the portable installer
 3. InnoSetup, to build the regular installer
+4. 7zip, to build the regular installer
+5. Moonscript, to build the regular installer
 
 All other dependencies are either stored in the repository or are included as submodules.
 
@@ -35,7 +39,7 @@ You should now have a binary at `src/aegisub.exe`.
 
 Installer:
 
-You can generate the installer with `ninja win-installer` after a successful build. This assumes you have InnoSetup present on your `PATH` and a working internet connection.
+You can generate the installer with `ninja win-installer` after a successful build. This assumes a working internet connection and installation of the optional dependencies.
 
 ### OS X
 
