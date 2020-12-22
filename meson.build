@@ -192,6 +192,10 @@ foreach dep: [
     endif
 endforeach
 
+if host_machine.system() == 'windows' and get_option('avisynth').enabled()
+    conf.set('WITH_AVISYNTH', 1) # bundled separately with installer
+endif
+
 if host_machine.system() == 'windows' and not get_option('directsound').disabled()
     dsound_dep = cc.find_library('dsound', required: get_option('directsound'))
     winmm_dep = cc.find_library('winmm', required: get_option('directsound'))
