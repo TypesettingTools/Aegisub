@@ -33,7 +33,6 @@ aegisub_src = files(
     'auto4_lua_assfile.cpp',
     'auto4_lua_dialog.cpp',
     'auto4_lua_progresssink.cpp',
-    'avisynth_wrap.cpp',
     'base_grid.cpp',
     'charset_detect.cpp',
     'colorspace.cpp',
@@ -173,8 +172,12 @@ if host_machine.system() == 'darwin'
     ]
 elif host_machine.system() == 'windows'
     aegisub_src += [
-        'font_file_lister_gdi.cpp'
+        'avisynth_wrap.cpp',
+        'font_file_lister_gdi.cpp',
+        'libass_gdi_fontselect.cpp',
+        'video_provider_avs.cpp',
     ]
+
     if cc.has_header('wingdi.h')
         deps += cc.find_library('gdi32', required: true)
     else
