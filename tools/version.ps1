@@ -63,7 +63,7 @@ if ($exactGitTag -match $semVerMatch) {
     if ($tag -match $semVerMatch) {#
       $version['TAGGED_RELEASE'] = $false
       $version['RESOURCE_BASE_VERSION'] = $Matches[1..3] + $gitRevision
-      $version['INSTALLER_VERSION'] = ($Matches[1..3] -join '.') + "-" + $gitBranch
+      $version['INSTALLER_VERSION'] = ($Matches[1..3] -join '.')
       break;
     }
   }

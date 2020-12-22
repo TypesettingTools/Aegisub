@@ -1,6 +1,9 @@
 conf_pkg = configuration_data()
 
 if host_machine.system() == 'windows'
+    installer_setup = find_program(meson.source_root() / 'tools/win-installer-setup.ps1', )
+    run_target('win-installer',
+               command: [installer_setup, meson.build_root(), meson.source_root()])
 elif host_machine.system() == 'darwin'
     # temporary hack until version.sh generates this properly
     run_command('cp', meson.source_root() / 'tools' / 'osx-bundle.sed', meson.build_root())
