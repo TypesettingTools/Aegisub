@@ -62,7 +62,7 @@ if ($exactGitTag -match $semVerMatch) {
     $tag = git -C $repositoryRootPath describe --exact-match --tags $rev 2>$null
     if ($tag -match $semVerMatch) {#
       $version['TAGGED_RELEASE'] = $false
-      $version['RESOURCE_BASE_VERSION'] = $Matches[1..3] + $gitRevision
+      $version['RESOURCE_BASE_VERSION'] = $Matches[1..3]
       $version['INSTALLER_VERSION'] = ($Matches[1..3] -join '.')
       break;
     }
@@ -85,5 +85,5 @@ $version.GetEnumerator() | %{
       {"`"$($value.ToString())`""}
     }
   }
-  "#define $($_.Key) $($fmtValue)"
+  "`n#define $($_.Key) $($fmtValue)"
 } | Out-File -FilePath $gitVersionHeaderPath -Encoding utf8

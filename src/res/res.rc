@@ -23,22 +23,8 @@ eyedropper_cursor CURSOR "../bitmaps/windows/eyedropper.cur"
 #define wxUSE_NO_MANIFEST 1
 #include "wx/msw/wx.rc"
 
-#include "../../build/git_version.h"
+#include "git_version.h"
 #include <Winver.h>
-
-#ifdef _DEBUG
-    #ifdef _WIN64
-        #define AGI_RC_FILENAME "aegisub64d"
-    #else
-        #define AGI_RC_FILENAME "aegisub32d"
-    #endif
-#else
-    #ifdef _WIN64
-        #define AGI_RC_FILENAME "aegisub64"
-    #else
-        #define AGI_RC_FILENAME "aegisub32"
-    #endif
-#endif
 
 #ifdef _DEBUG
     #define AGI_RC_FLAG_DEBUG VS_FF_DEBUG
@@ -68,8 +54,8 @@ BEGIN
             VALUE "CompanyName",      "Aegisub"
             VALUE "FileDescription",  "Aegisub subtitle editor"
             VALUE "FileVersion",      BUILD_GIT_VERSION_STRING
-            VALUE "InternalName",     AGI_RC_FILENAME
-            VALUE "OriginalFilename", AGI_RC_FILENAME ".exe"
+            VALUE "InternalName",     "aegisub"
+            VALUE "OriginalFilename", "aegisub.exe"
             VALUE "ProductName",      "Aegisub"
             VALUE "ProductVersion",   BUILD_GIT_VERSION_STRING
         END
