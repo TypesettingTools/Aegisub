@@ -54,7 +54,7 @@ jobs:
       - name: Install dependencies (Windows)
         if: matrix.config.os == 'windows-latest'
         run: |
-          choco install ninja
+          choco install ninja innosetup
           $url = "https://github.com/leafo/moonscript/releases/download/win32-v0.5.0/moonscript-187bac54ee5a7450013e9c38e005a0e671b76f45.zip"
           mkdir moonscript
           Invoke-WebRequest -Uri $url -OutFile ".\moonscript\moonscript.zip"
@@ -80,7 +80,7 @@ jobs:
 
       - name: Generate Windows installer
         if: matrix.config.os == 'windows-latest'
-        run: ninja win-installer
+        run: meson compile win-installer -C build
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
