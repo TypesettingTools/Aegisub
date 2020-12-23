@@ -5,7 +5,7 @@
 
 [Setup]
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
-DefaultDirName={pf}\Aegisub
+DefaultDirName={commonpf}\Aegisub
 PrivilegesRequired=poweruser
 ArchitecturesInstallIn64BitMode=x64
 ArchitecturesAllowed=x64
@@ -41,7 +41,7 @@ begin
 
   if CurStep = ssPostInstall then
   begin
-    if IsTaskSelected('checkforupdates') then
+    if WizardIsTaskSelected('checkforupdates') then
       Updates := 'true'
     else
       Updates := 'false';
