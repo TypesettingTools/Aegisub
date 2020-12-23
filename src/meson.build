@@ -188,6 +188,33 @@ elif host_machine.system() == 'windows'
     else
         error('Missing Windows SDK Uniscribe Library (usp10.h / usp10.lib)')
     endif
+
+    res_inc = include_directories('bitmaps/windows')
+    res_dep_files = files(
+        'bitmaps/windows/icon.ico',
+        'bitmaps/windows/eyedropper.cur',
+    )
+    windows = import('windows')
+    if wx_dep.type_name() != 'not-found' # system wx
+        raw_wx_windres_args = wx_dep.get_variable(configtool: 'rescomp').split()
+        wx_windres_args = []
+        foreach arg: raw_wx_windres_args
+            if arg != 'windres'
+                wx_windres_args += arg
+            endif
+        endforeach
+        aegisub_src += windows.compile_resources('res/res.rc',
+                                                 args: wx_windres_args,
+                                                 depend_files: res_dep_files,
+                                                 depends: version_h,
+                                                 include_directories: [res_inc, version_inc])
+    else # subproject
+        wx_inc = wx.include_directories('wxmono')
+        aegisub_src += windows.compile_resources('res/res.rc',
+                                                 depend_files: res_dep_files,
+                                                 depends: version_h,
+                                                 include_directories: [res_inc, version_inc, wx_inc])
+    endif
 elif conf.get('WITH_FONTCONFIG') == '1'
     aegisub_src += 'font_file_lister_fontconfig.cpp'
 endif
