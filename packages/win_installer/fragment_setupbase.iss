@@ -28,6 +28,7 @@ UsePreviousGroup=yes
 UsePreviousSetupType=no
 UsePreviousAppDir=yes
 UsePreviousTasks=no
+UsedUserAreasWarning=no
 UninstallDisplayIcon={app}\aegisub{#ARCH}.exe
 ; Default to a large welcome bitmap, suitable for large fonts
 ; The normal fonts version is selected by code below
