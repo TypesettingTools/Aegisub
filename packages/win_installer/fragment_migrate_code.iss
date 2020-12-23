@@ -31,7 +31,7 @@ end;
 function InitializeSetupMigration: Boolean;
 begin
   LegacyStartMenuFolder := 'Aegisub';
-  LegacyInstallFolder := ExpandConstant('{pf}\Aegisub');
+  LegacyInstallFolder := ExpandConstant('{commonpf32}\Aegisub');
   LegacyVersionNumber := '1.x';
 
   try
