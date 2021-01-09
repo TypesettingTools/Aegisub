@@ -1,6 +1,6 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.55.0',
+        meson_version: '>=0.56.1',
         default_options: ['cpp_std=c++11', 'b_lto=true', 'buildtype=debugoptimized'],
         version: '3.2.2')
 
@@ -64,7 +64,7 @@ conf.set('WITH_FONTCONFIG', '0')
 if host_machine.system() == 'darwin'
     add_languages('objc', 'objcpp')
     add_project_arguments('-DGL_SILENCE_DEPRECATION', language: 'cpp')
-    # meson does not currently support objcpp_std
+    # meson neither supports objcpp_std nor inherits cpp_std https://github.com/mesonbuild/meson/issues/5495
     add_project_arguments('-std=c++11', language: 'objcpp')
 elif host_machine.system() != 'windows'
     conf.set('WITH_FONTCONFIG', '1')
@@ -106,7 +106,11 @@ endif
 
 deps += dependency('zlib')
 
-wx_dep = dependency('wxWidgets', version: '>=3.0.0',
+wx_minver = '>=3.0.0'
+if host_machine.system() == 'darwin'
+    wx_minver = '>=3.1.0'
+endif
+wx_dep = dependency('wxWidgets', version: wx_minver,
                     required: false,
                     modules: ['std', 'stc', 'gl'])
 
@@ -134,11 +138,16 @@ else
         wx.dependency('wxscintilla')
     ]
 
+    if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
+        deps += [
+            wx.dependency('wxpng'),
+        ]
+    endif
+
     if host_machine.system() == 'windows'
         deps += [
             wx.dependency('wxzlib'),
-            wx.dependency('wxpng'),
-            wx.dependency('wxexpat')
+            wx.dependency('wxexpat'),
         ]
 
         if cc.has_header('rpc.h')
@@ -215,7 +224,7 @@ if host_machine.system() == 'windows' and not get_option('directsound').disabled
 endif
 
 if host_machine.system() == 'darwin'
-    frameworks_dep = dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation'])
+    frameworks_dep = dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon'])
     deps += frameworks_dep
 endif
 
