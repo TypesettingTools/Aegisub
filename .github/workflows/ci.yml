@@ -74,8 +74,7 @@ jobs:
 
       - name: Configure (Windows)
         if: matrix.config.os == 'windows-latest'
-        # -Dfreetype2:png=enabled is a workaround for https://savannah.nongnu.org/bugs/?59458
-        run: meson build -Ddefault_library=static --force-fallback-for=zlib,harfbuzz -Dfreetype2:zlib=system -Dfreetype2:png=enabled -Dfreetype2:default_library=static -Dbuildtype=release
+        run: meson build -Ddefault_library=static --force-fallback-for=zlib,harfbuzz -Dbuildtype=release
 
       - name: Configure (MacOS)
         if: matrix.config.os == 'macos-latest'
