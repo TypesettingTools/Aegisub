@@ -28,10 +28,10 @@ jobs:
             name: "Ubuntu",
             os: ubuntu-latest
           }
-          #- {
-          #  name: "macOS",
-          #  os: macos-latest
-          #}
+          - {
+            name: "macOS",
+            os: macos-latest
+          }
 
     steps:
       - uses: actions/checkout@v2
@@ -62,6 +62,12 @@ jobs:
           7z e moonscript.zip
           Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
+      - name: Install dependencies (MacOS)
+        if: matrix.config.os == 'macos-latest'
+        run: |
+          brew install luarocks nasm ninja
+          luarocks install moonscript --dev
+
       - name: Install dependencies (Linux)
         if: matrix.config.os == 'ubuntu-latest'
         run: sudo apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev
@@ -70,6 +76,10 @@ jobs:
         if: matrix.config.os == 'windows-latest'
         # -Dfreetype2:png=enabled is a workaround for https://savannah.nongnu.org/bugs/?59458
         run: meson build -Ddefault_library=static --force-fallback-for=zlib,harfbuzz -Dfreetype2:zlib=system -Dfreetype2:png=enabled -Dfreetype2:default_library=static -Dbuildtype=release
+
+      - name: Configure (MacOS)
+        if: matrix.config.os == 'macos-latest'
+        run: meson build -Ddefault_library=static
 
       - name: Configure (Linux)
         if: matrix.config.os == 'ubuntu-latest'
