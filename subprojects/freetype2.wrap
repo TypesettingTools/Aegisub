@@ -5,3 +5,4 @@ revision = master
 
 [provide]
 freetype = freetype2_dep
+freetype2 = freetype2_dep
