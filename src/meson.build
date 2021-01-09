@@ -168,7 +168,6 @@ if host_machine.system() == 'darwin'
         'font_file_lister_coretext.mm',
         'osx/osx_utils.mm',
         'osx/retina_helper.mm',
-        'osx/scintilla_ime.mm',
     ]
 elif host_machine.system() == 'windows'
     aegisub_src += [

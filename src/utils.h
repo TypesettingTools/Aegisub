@@ -106,13 +106,4 @@ namespace osx {
 	bool activate_top_window_other_than(wxFrame *wx);
 	// Bring all windows to the front, maintaining relative z-order
 	void bring_to_front();
-
-namespace ime {
-	/// Inject the IME helper into the given wxSTC
-	void inject(wxStyledTextCtrl *ctrl);
-	/// Invalidate any pending text from the IME
-	void invalidate(wxStyledTextCtrl *ctrl);
-	/// Give the IME a chance to process a key event and return whether it did
-	bool process_key_event(wxStyledTextCtrl *ctrl, wxKeyEvent &);
-}
 }
