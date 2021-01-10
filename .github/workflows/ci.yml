@@ -15,9 +15,11 @@ jobs:
       matrix:
         config:
           - {
-            name: Windows MSVC,
+            name: Windows MSVC Release,
             os: windows-latest,
-            msvc: true
+            msvc: true,
+            buildtype: release,
+            args: -Ddefault_library=static --force-fallback-for=zlib,harfbuzz
           }
           #- {
           #  name: Windows MinGW,
@@ -25,12 +27,28 @@ jobs:
           #  msvc: false
           #}
           - {
-            name: "Ubuntu",
-            os: ubuntu-latest
+            name: Ubuntu Debug,
+            os: ubuntu-latest,
+            buildtype: debugoptimized,
+            args: ""
           }
           - {
-            name: "macOS",
-            os: macos-latest
+            name: Ubuntu Release,
+            os: ubuntu-latest,
+            buildtype: release,
+            args: ""
+          }
+          - {
+            name: macOS Debug,
+            os: macos-latest,
+            buildtype: debugoptimized,
+            args: -Ddefault_library=static
+          }
+          - {
+            name: macOS Release,
+            os: macos-latest,
+            buildtype: release,
+            args: -Ddefault_library=static
           }
 
     steps:
@@ -75,17 +93,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev
 
-      - name: Configure (Windows)
-        if: matrix.config.os == 'windows-latest'
-        run: meson build -Ddefault_library=static --force-fallback-for=zlib,harfbuzz -Dbuildtype=release
-
-      - name: Configure (MacOS)
-        if: matrix.config.os == 'macos-latest'
-        run: meson build -Ddefault_library=static
-
-      - name: Configure (Linux)
-        if: matrix.config.os == 'ubuntu-latest'
-        run: meson build
+      - name: Configure
+        run: meson build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }}
 
       - name: Build
         run: meson compile -C build
