@@ -45,43 +45,16 @@ You can generate the installer with `ninja win-installer` after a successful bui
 
 A vaguely recent version of Xcode and the corresponding command-line tools are required.
 
-For personal usage, you can use homebrew to install almost all of Aegisub's dependencies:
+For personal usage, you can use pip and homebrew to install almost all of Aegisub's dependencies:
 
-	brew install autoconf automake ffmpeg ffms2 fftw freetype fribidi gettext icu4c libass m4 pkg-config boost
-	brew install luajit --HEAD
+	brew install libass nasm ninja boost zlib icu4c pkg-config ffms2 fftw hunspell gettext cmake
 	brew link --force gettext
 	export LDFLAGS="-L/usr/local/opt/icu4c/lib"
 	export CPPFLAGS="-I/usr/local/opt/icu4c/include"
 	export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
+	pip install meson
 
-wxWidgets is located in vendor/wxWidgets, and can be built like so:
-
-	CPPFLAGS="$CPPFLAGS -D__ASSERT_MACROS_DEFINE_VERSIONS_WITHOUT_UNDERSCORES=1" \
-	./configure --disable-aboutdlg --disable-animatectrl --disable-aui --disable-any \
-	--disable-bannerwindow --disable-base64 --disable-calendar --disable-caret \
-	--disable-cmdline --disable-colourpicker --disable-compat28 --disable-config \
-	--disable-constraints --disable-datepick --disable-dctransform --disable-debugreport \
-	--disable-dialupman --disable-docview --disable-filehistory --disable-finddlg \
-	--disable-fs_archive --disable-fs_inet --disable-fs_zip --disable-fsvolume \
-	--disable-fswatcher --disable-gif --disable-help --disable-html --disable-ipc \
-	--disable-joystick --disable-jpeg --disable-largefile --disable-markup --disable-mdi \
-	--disable-mediactrl --disable-metafiles --disable-miniframe --disable-notifmsg \
-	--disable-numberdlg --disable-pcx --disable-pnm --disable-postscript \
-	--disable-prefseditor --disable-printarch --disable-progressdlg --disable-propgrid \
-	--disable-protocol --disable-protocols --disable-rearrangectrl --disable-ribbon \
-	--disable-richtext --disable-richtooltip --disable-snglinst --disable-sockets \
-	--disable-sockets --disable-sound --disable-splash --disable-splines \
-	--disable-std_iostreams --disable-svg --disable-tarstream --disable-tiff \
-	--disable-tipdlg --disable-tipwindow --disable-url --disable-webkit --disable-webview \
-	--disable-wizarddlg --disable-xrc \
-	--enable-geometry --enable-imaglist --enable-listctrl --enable-stc --with-cocoa \
-	--with-libpng=yes --with-macosx-version-min=10.9 \
-	--with-opengl \
-	--without-libjpeg --without-libtiff --without-regex \
-	&& make
-
-Once the dependencies are installed, build Aegisub with `autoreconf && ./configure --with-wxdir=/path/to/Aegisub/vendor/wxWidgets && make && make osx-bundle`.
-`autoreconf` should be skipped if you are building from a source tarball rather than `git`.
+Once the dependencies are installed, build Aegisub with `meson build && meson compile -C build`.
 
 ## Updating Moonscript
 
