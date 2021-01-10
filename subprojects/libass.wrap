@@ -2,4 +2,3 @@
 directory = libass
 url = https://github.com/TypesettingTools/libass.git
 revision = meson-pr
-patch_directory = libass
