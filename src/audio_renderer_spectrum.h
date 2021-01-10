@@ -61,10 +61,34 @@ class AudioSpectrumRenderer final : public AudioRendererBitmapProvider {
 	/// Colour tables used for rendering
 	std::vector<AudioColorScheme> colors;
 
+	/// User-provided value for derivation_size
+	size_t derivation_size_user = 0;
+
+	/// User-provided value for derivation_dist
+	size_t derivation_dist_user = 0;
+
+	/// Maximum audible, displayed frequency. Avoids wasting the display space
+	/// with ultrasonic content at sampling rates > 40 kHz.
+	float max_freq = 20000.f;
+
+	/// Relative vertical position of the 1 kHz frequency, in (0 ; 1) open range
+	/// 0 = bottom of the display zone, 1 = top
+	/// The actual position, as displayed, is limited by the available mapping
+	/// curves (linear and log).
+	/// Values close to 0 will give a linear curve, and close to 1 a log curve.
+	float pos_fref = 1.0f / 3;
+
+	/// Reference frequency which vertical position is constant, Hz.
+	const float freq_ref = 1000.0f;
+
 	/// Binary logarithm of number of samples to use in deriving frequency-power data
+	/// This could differ from the user-provided value because the actual value
+	/// used in computations may be scaled, depending on the sampling rate.
 	size_t derivation_size = 0;
 
 	/// Binary logarithm of number of samples between the start of derivations
+	/// This could differ from the user-provided value because the actual value
+	/// used in computations may be scaled, depending on the sampling rate.
 	size_t derivation_dist = 0;
 
 	/// @brief Reset in response to changing audio provider
@@ -89,6 +113,9 @@ class AudioSpectrumRenderer final : public AudioRendererBitmapProvider {
 	/// @param dest Buffer to fill
 	template<class T>
 	void ConvertToFloat(size_t count, T *dest);
+
+	/// @brief Updates the derivation_* after a derivation_*_user change.
+	void update_derivation_values ();
 
 #ifdef WITH_FFTW3
 	/// FFTW plan data
@@ -132,6 +159,12 @@ public:
 	/// The derivation distance must be smaller than or equal to the size. If the distance
 	/// is specified too large, it will be clamped to the size.
 	void SetResolution(size_t derivation_size, size_t derivation_dist);
+
+	/// @brief Set the vertical relative position of the reference frequency (1 kHz)
+	/// @param fref_pos_ Vertical position of the 1 kHz frequency. Between 0 and 1, boundaries excluded.
+	///
+	/// A value close to 0 gives a linear display, and close to 1 a logarithmic display.
+	void set_reference_frequency_position (float pos_fref_);
 
 	/// @brief Cleans up the cache
 	/// @param max_size Maximum size in bytes for the cache

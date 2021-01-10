@@ -71,7 +71,8 @@
 			"Spectrum" : {
 				"Cutoff" : 0,
 				"Memory Max" : 128,
-				"Quality" : 1
+				"Quality" : 1,
+				"FreqCurve" : 0
 			}
 		},
 		"Snap" : {
