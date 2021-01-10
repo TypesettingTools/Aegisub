@@ -2,9 +2,9 @@ name: Meson CI
 
 on:
   push:
-    branches: [ meson-vs2019 ]
+    branches: [ master ]
   pull_request:
-    branches: [ meson-vs2019 ]
+    branches: [ master ]
 
 jobs:
   build:
