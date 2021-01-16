@@ -131,6 +131,7 @@ else
                                                        '-DwxBUILD_SHARED=@0@'.format(build_shared),
                                                        '-DwxUSE_WEBVIEW=OFF', # breaks build on linux
                                                        '-DCMAKE_BUILD_TYPE=@0@'.format(build_type),
+                                                       '-DwxUSE_IMAGE=ON',
                                                        '-DwxBUILD_MONOLITHIC=ON']) # otherwise breaks project generation w/ meson
     deps += [
         wx.dependency('wxmono'),
