@@ -366,7 +366,7 @@ size_t IconvWrapper::RequiredBufferSize(std::string const& str) {
 }
 
 size_t IconvWrapper::RequiredBufferSize(const char* src, size_t srcLen) {
-	char buff[65536];
+	char buff[4096];
 	size_t charsWritten = 0;
 	size_t res;
 
