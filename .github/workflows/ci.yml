@@ -1,0 +1,112 @@
+name: Meson CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+
+    strategy:
+      matrix:
+        config:
+          - {
+            name: Windows MSVC Release,
+            os: windows-latest,
+            msvc: true,
+            buildtype: release,
+            args: -Ddefault_library=static --force-fallback-for=zlib,harfbuzz
+          }
+          #- {
+          #  name: Windows MinGW,
+          #  os: windows-latest,
+          #  msvc: false
+          #}
+          - {
+            name: Ubuntu Debug,
+            os: ubuntu-latest,
+            buildtype: debugoptimized,
+            args: ""
+          }
+          - {
+            name: Ubuntu Release,
+            os: ubuntu-latest,
+            buildtype: release,
+            args: ""
+          }
+          - {
+            name: macOS Debug,
+            os: macos-latest,
+            buildtype: debugoptimized,
+            args: -Ddefault_library=static
+          }
+          - {
+            name: macOS Release,
+            os: macos-latest,
+            buildtype: release,
+            args: -Ddefault_library=static
+          }
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '0'
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Setup Meson
+        run: |
+          python -m pip install --upgrade pip
+          pip install meson
+
+      - name: Setup MSVC
+        if: matrix.config.os == 'windows-latest' && matrix.config.msvc == true
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install dependencies (Windows)
+        if: matrix.config.os == 'windows-latest'
+        run: |
+          choco install ninja innosetup
+          $url = "https://github.com/leafo/moonscript/releases/download/win32-v0.5.0/moonscript-187bac54ee5a7450013e9c38e005a0e671b76f45.zip"
+          mkdir moonscript
+          Invoke-WebRequest -Uri $url -OutFile ".\moonscript\moonscript.zip"
+          cd moonscript
+          7z e moonscript.zip
+          Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Install dependencies (MacOS)
+        if: matrix.config.os == 'macos-latest'
+        run: |
+          brew install luarocks nasm ninja
+          luarocks install luafilesystem 1.8.0
+          luarocks install moonscript --dev
+
+      - name: Install dependencies (Linux)
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev
+
+      - name: Configure
+        run: meson build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }}
+
+      - name: Build
+        run: meson compile -C build
+
+      - name: Generate Windows installer
+        if: matrix.config.os == 'windows-latest'
+        run: meson compile win-installer -C build
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        if: matrix.config.os == 'windows-latest'
+        with:
+          name: ${{ matrix.config.name }}
+          path: |
+            build/Aegisub-*.exe

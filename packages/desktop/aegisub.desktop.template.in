@@ -1,9 +1,9 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-_Name=Aegisub
-_GenericName=Subtitle Editor
-_Comment=Create and edit subtitles for film and videos.
+Name=Aegisub
+GenericName=Subtitle Editor
+Comment=Create and edit subtitles for film and videos.
 Exec=@AEGISUB_COMMAND@ %f
 TryExec=@AEGISUB_COMMAND@
 Icon=aegisub

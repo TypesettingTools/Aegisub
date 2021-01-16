@@ -275,7 +275,7 @@ template<class FeatureType>
 void VisualTool<FeatureType>::DrawAllFeatures() {
 	wxColour grid_color = to_wx(line_color_secondary_opt->GetColor());
 	gl.SetLineColour(grid_color, 1.0f, 1);
-	wxColour base_fill = to_wx(line_color_primary_opt->GetColor());
+	wxColour base_fill = to_wx(highlight_color_primary_opt->GetColor());
 	wxColour active_fill = to_wx(highlight_color_secondary_opt->GetColor());
 	wxColour alt_fill = to_wx(line_color_primary_opt->GetColor());
 	for (auto& feature : features) {

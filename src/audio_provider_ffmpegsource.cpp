@@ -126,10 +126,8 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 
 	// reindex if the error handling mode has changed
 	FFMS_IndexErrorHandling ErrorHandling = GetErrorHandlingMode();
-#if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (2 << 8) | 0)
 	if (Index && FFMS_GetErrorHandling(Index) != ErrorHandling)
 		Index = nullptr;
-#endif
 
 	// moment of truth
 	if (!Index) {
@@ -167,7 +165,6 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 			throw agi::AudioProviderError("unknown or unsupported sample format");
 	}
 
-#if FFMS_VERSION >= ((2 << 24) | (17 << 16) | (4 << 8) | 0)
 	if (channels > 1 || bytes_per_sample != 2) {
 		std::unique_ptr<FFMS_ResampleOptions, decltype(&FFMS_DestroyResampleOptions)>
 			opt(FFMS_CreateResampleOptions(AudioSource), FFMS_DestroyResampleOptions);
@@ -181,7 +178,6 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 			float_samples = false;
 		}
 	}
-#endif
 }
 
 }

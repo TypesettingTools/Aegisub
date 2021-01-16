@@ -1,0 +1,24 @@
+option('alsa', type: 'feature', description: 'ALSA audio output')
+option('openal', type: 'feature', description: 'OpenAL audio output')
+option('libpulse', type: 'feature', description: 'PulseAudio audio output')
+option('portaudio', type: 'feature', description: 'PortAudio audio output')
+option('directsound', type: 'feature', description: 'DirectSound audio output')
+option('default_audio_output', type: 'combo', choices: ['auto', 'ALSA', 'OpenAL', 'PulseAudio', 'PortAudio', 'DirectSound'], description: 'Default audio output')
+
+option('ffms2', type: 'feature', description: 'FFMS2 video source')
+option('avisynth', type: 'feature', description: 'AviSynth video source')
+
+option('fftw3', type: 'feature', description: 'FFTW3 support')
+option('hunspell', type: 'feature', description: 'Hunspell spell checker')
+option('uchardet', type: 'feature', description: 'uchardet character encoding detection')
+
+option('system_luajit', type: 'boolean', value: false, description: 'Force using system luajit')
+option('local_boost', type: 'boolean', value: false, description: 'Force using locally compiled Boost')
+
+option('credit', type: 'string', value: '', description: 'Build credit shown in program title')
+
+option('enable_update_checker', type: 'boolean', value: false, description: 'Enable the update checker')
+option('update_server', type: 'string', value: 'updates.aegisub.org', description: 'Server to use for the update checker')
+option('update_url', type: 'string', value: '/trunk', description: 'Base path to use for the update checker')
+
+option('build_osx_bundle', type: 'boolean', value: 'false', description: 'Package Aegisub.app on OSX')

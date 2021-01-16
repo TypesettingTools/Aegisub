@@ -50,20 +50,6 @@
 #include <wx/intl.h>
 #include <wx/choicdlg.h>
 
-#if FFMS_VERSION < ((2 << 24) | (22 << 16) | (0 << 8) | 0)
-enum {
-	FFMS_LOG_QUIET = -8,
-	FFMS_LOG_PANIC = 0,
-	FFMS_LOG_FATAL = 8,
-	FFMS_LOG_ERROR = 16,
-	FFMS_LOG_WARNING = 24,
-	FFMS_LOG_INFO = 32,
-	FFMS_LOG_VERBOSE = 40,
-	FFMS_LOG_DEBUG = 48,
-	FFMS_LOG_TRACE = 56
-};
-#endif
-
 FFmpegSourceProvider::FFmpegSourceProvider(agi::BackgroundRunner *br)
 : br(br)
 {
@@ -95,22 +81,13 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer,
 			ps->SetProgress(Current, Total);
 			return ps->IsCancelled();
 		};
-#if FFMS_VERSION >= ((2 << 24) | (21 << 16) | (0 << 8) | 0)
 		if (Track == TrackSelection::All)
 			FFMS_TrackTypeIndexSettings(Indexer, FFMS_TYPE_AUDIO, 1, 0);
 		else if (Track != TrackSelection::None)
 			FFMS_TrackIndexSettings(Indexer, static_cast<int>(Track), 1, 0);
+		FFMS_TrackTypeIndexSettings(Indexer, FFMS_TYPE_VIDEO, 1, 0);
 		FFMS_SetProgressCallback(Indexer, callback, ps);
 		Index = FFMS_DoIndexing2(Indexer, IndexEH, &ErrInfo);
-#else
-		int Trackmask = 0;
-		if (Track == TrackSelection::All)
-			Trackmask = std::numeric_limits<int>::max();
-		else if (Track != TrackSelection::None)
-			Trackmask = 1 << static_cast<int>(Track);
-		Index = FFMS_DoIndexing(Indexer, Trackmask, 0,
-			nullptr, nullptr, IndexEH, callback, ps, &ErrInfo);
-#endif
 	});
 
 	if (Index == nullptr)
@@ -129,12 +106,6 @@ FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer,
 std::map<int, std::string> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type) {
 	std::map<int,std::string> TrackList;
 	int NumTracks = FFMS_GetNumTracksI(Indexer);
-
-	// older versions of ffms2 can't index audio tracks past 31
-#if FFMS_VERSION < ((2 << 24) | (21 << 16) | (0 << 8) | 0)
-	if (Type == FFMS_TYPE_AUDIO)
-		NumTracks = std::min(NumTracks, std::numeric_limits<int>::digits);
-#endif
 
 	for (int i=0; i<NumTracks; i++) {
 		if (FFMS_GetTrackTypeI(Indexer, i) == Type) {

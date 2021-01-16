@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import re
 import sys
@@ -32,21 +32,21 @@ def collectlibs(lib, masterlist, targetdir):
 			badlist.append(l)
 		if ((not is_sys_lib(l)) or is_bad_lib(l)) and not l in masterlist:
 			locallist.append(l)
-			print "found %s:" % l
+			print("found %s:" % l)
 
 			check = l
 			link_list = []
 			while check:
 				if os.path.isfile(check) and not os.path.islink(check):
 					os.system("cp '%s' '%s'" % (check, targetdir))
-					print "    FILE %s ... copied to target" % check
+					print("    FILE %s ... copied to target" % check)
 					if link_list:
 						for link in link_list:
 							link_map[link] = os.path.basename(check)
 					break
 					
 				if os.path.islink(check):
-					print "    LINK %s" % check
+					print("    LINK %s" % check)
 					link_list.append(os.path.basename(check))
 					check = os.path.dirname(check) + "/" + os.readlink(check)
 
@@ -60,20 +60,20 @@ def collectlibs(lib, masterlist, targetdir):
 exit;
 binname = sys.argv[1]
 targetdir = os.path.dirname(binname)
-print "Searching for libraries in ", binname, "..."
+print("Searching for libraries in ", binname, "...")
 libs = [binname]
 collectlibs(sys.argv[1], libs, targetdir)
 
 
-print
-print "System libraries used..."
+print()
+print("System libraries used...")
 goodlist.sort()
 for l in goodlist:
-	print l
+	print(l)
 
 
-print
-print "Fixing library install names..."
+print()
+print("Fixing library install names...")
 in_tool_cmdline = "install_name_tool "
 for lib in libs:
 	libbase = os.path.basename(lib)
@@ -85,19 +85,19 @@ for lib in libs:
 
 	if libbase in link_map:
 		libbase = link_map[libbase]
-		print "%s -> @executable_path/%s (REMAPPED)" % (lib, libbase)
+		print("%s -> @executable_path/%s (REMAPPED)" % (lib, libbase))
 	else:
-		print "%s -> @executable_path/%s" % (lib, libbase)
+		print("%s -> @executable_path/%s" % (lib, libbase))
 
 	os.system("%s -id '@executable_path/%s' '%s/%s'" % (in_tool_cmdline, libbase, targetdir, libbase))
 	sys.stdout.flush()
 
 if badlist:
-	print
-	print "WARNING: The following libraries have blacklisted paths:"
+	print()
+	print("WARNING: The following libraries have blacklisted paths:")
 	for lib in sorted(badlist):
-		print lib
-	print "These paths normally have files from a package manager, which means that end result may not work if copied to another machine."
+		print(lib)
+	print("These paths normally have files from a package manager, which means that end result may not work if copied to another machine.")
 
-print
-print "All done!"
+print()
+print("All done!")

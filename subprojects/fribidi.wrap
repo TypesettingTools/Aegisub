@@ -1,0 +1,7 @@
+[wrap-git]
+directory = fribidi
+url = https://github.com/fribidi/fribidi.git
+revision = master
+
+[provide]
+fribidi = libfribidi_dep

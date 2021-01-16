@@ -29,6 +29,7 @@ namespace agi {
 		/// @param keyframes List of keyframes to save
 		void Save(agi::fs::path const& filename, std::vector<int> const& keyframes);
 
-		DEFINE_EXCEPTION(Error, Exception);
+		DEFINE_EXCEPTION(KeyframeFormatParseError, agi::InvalidInputException);
+		DEFINE_EXCEPTION(UnknownKeyframeFormatError, agi::InvalidInputException);
 	}
 }
