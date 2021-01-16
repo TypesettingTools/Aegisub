@@ -243,7 +243,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	wxStaticBoxSizer *destination_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));
 
 	dest_label = new wxStaticText(this, -1, " ");
-	dest_ctrl = new wxTextCtrl(this, -1, c->path->Decode(OPT_GET("Path/Fonts Collector Destination")->GetString()).wstring());
+	dest_ctrl = new wxTextCtrl(this, -1, to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()));
 	dest_browse_button = new wxButton(this, -1, _("&Browse..."));
 
 	wxSizer *dest_browse_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -294,29 +294,29 @@ void DialogFontsCollector::OnStart(wxCommandEvent &) {
 	collection_log->ClearAll();
 	collection_log->SetReadOnly(true);
 
-	agi::fs::path dest;
+	agi::fs::path dest_path;
 	if (mode != FcMode::CheckFontsOnly) {
-		dest = path.Decode(mode == FcMode::CopyToScriptFolder ? "?script/" : from_wx(dest_ctrl->GetValue()));
+		auto dest = mode == FcMode::CopyToScriptFolder ? "?script/" : from_wx(dest_ctrl->GetValue());
+		dest_path = path.Decode(dest);
 
 		if (mode != FcMode::CopyToZip) {
-			if (agi::fs::FileExists(dest))
+			if (agi::fs::FileExists(dest_path))
 				wxMessageBox(_("Invalid destination."), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 			try {
-				agi::fs::CreateDirectory(dest);
+				agi::fs::CreateDirectory(dest_path);
 			}
 			catch (agi::Exception const&) {
 				wxMessageBox(_("Could not create destination folder."), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 				return;
 			}
 		}
-		else if (agi::fs::DirectoryExists(dest) || dest.filename().empty()) {
+		else if (agi::fs::DirectoryExists(dest_path) || dest_path.filename().empty()) {
 			wxMessageBox(_("Invalid path for .zip file."), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 			return;
 		}
-	}
 
-	if (mode != FcMode::CheckFontsOnly)
-		OPT_SET("Path/Fonts Collector Destination")->SetString(dest.string());
+		OPT_SET("Path/Fonts Collector Destination")->SetString(dest);
+	}
 
 	// Disable the UI while it runs as we don't support canceling
 	EnableCloseButton(false);
@@ -327,7 +327,7 @@ void DialogFontsCollector::OnStart(wxCommandEvent &) {
 	collection_mode->Enable(false);
 	dest_label->Enable(false);
 
-	FontsCollectorThread(subs, dest, mode, GetEventHandler());
+	FontsCollectorThread(subs, dest_path, mode, GetEventHandler());
 }
 
 void DialogFontsCollector::OnBrowse(wxCommandEvent &) {
