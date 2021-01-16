@@ -39,7 +39,7 @@ else
 endif
 docdir = prefix / 'doc'
 dataroot = datadir / 'aegisub'
-add_project_arguments('-DP_DATA="@0@"'.format(dataroot), language: 'cpp')
+add_project_arguments('-DP_DATA="@0@"'.format(dataroot), '-DP_LOCALE="@0@"'.format(localedir), language: 'cpp')
 
 if host_machine.system() == 'windows'
     add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
