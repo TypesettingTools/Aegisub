@@ -4,4 +4,4 @@
 DestDir: {tmp}; Source: "{#DEPS_DIR}\VC_redist\VC_redist.x{#ARCH}.exe"; Flags: nocompression deleteafterinstall
 
 [Run]
-Filename: {tmp}\vcredist_{#ARCH}.exe; StatusMsg: {cm:InstallRuntime}; Parameters: "/install /quiet /norestart"
+Filename: {tmp}\VC_redist.x{#ARCH}.exe; StatusMsg: {cm:InstallRuntime}; Parameters: "/install /quiet /norestart"
