@@ -21,6 +21,8 @@ Set-Location $DepsDir
 # DepCtrl
 if (!(Test-Path DependencyControl)) {
 	git clone https://github.com/TypesettingTools/DependencyControl.git
+	Set-Location DependencyControl
+	git checkout v0.6.3-alpha
 }
 
 # YUtils
