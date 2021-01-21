@@ -39,7 +39,6 @@ else
 endif
 docdir = prefix / 'doc'
 dataroot = datadir / 'aegisub'
-add_project_arguments('-DP_DATA="@0@"'.format(dataroot), '-DP_LOCALE="@0@"'.format(localedir), language: 'cpp')
 
 if host_machine.system() == 'windows'
     add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
@@ -52,6 +51,7 @@ endif
 
 conf = configuration_data()
 conf.set_quoted('P_DATA', dataroot)
+conf.set_quoted('P_LOCALE', localedir)
 if get_option('credit') != ''
     conf.set_quoted('BUILD_CREDIT', get_option('credit'))
 endif
@@ -60,7 +60,6 @@ conf.set('WITH_UPDATE_CHECKER', get_option('enable_update_checker'))
 deps = []
 deps_inc = []
 
-conf.set('WITH_FONTCONFIG', '0')
 if host_machine.system() == 'darwin'
     add_languages('objc', 'objcpp')
     add_project_arguments('-DGL_SILENCE_DEPRECATION', language: 'cpp')
