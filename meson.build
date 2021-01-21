@@ -277,7 +277,7 @@ endif
 
 if not deps.contains(luajit)
     luajit_sp = subproject('luajit')
-    luajit_inc = luajit_sp.get_variable('incdir')
+    luajit_inc = luajit_sp.get_variable('src_inc')
     deps += luajit_sp.get_variable('luajit_dep')
 else
     luajit_inc = include_directories(luajit.get_pkgconfig_variable('includedir'))

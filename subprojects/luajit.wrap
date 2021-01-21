@@ -1,0 +1,8 @@
+[wrap-git]
+directory = luajit
+url = https://github.com/LuaJIT/LuaJIT.git
+revision = v2.1
+patch_directory = luajit
+
+[provide]
+luajit = luajit_dep
