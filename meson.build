@@ -66,7 +66,7 @@ if host_machine.system() == 'darwin'
     # meson neither supports objcpp_std nor inherits cpp_std https://github.com/mesonbuild/meson/issues/5495
     add_project_arguments('-std=c++11', language: 'objcpp')
 elif host_machine.system() != 'windows'
-    conf.set('WITH_FONTCONFIG', '1')
+    conf.set('WITH_FONTCONFIG', 1)
     deps += dependency('fontconfig')
 endif
 
@@ -100,7 +100,7 @@ endif
 
 deps += boost_dep
 if host_machine.system() == 'windows'
-    conf.set('BOOST_USE_WINDOWS_H', '1')
+    conf.set('BOOST_USE_WINDOWS_H', 1)
 endif
 
 deps += dependency('zlib')
@@ -195,7 +195,7 @@ foreach dep: [
     optname = dep[0].split('-')[0]
     if d.found() and not get_option(optname).disabled()
         deps += d
-        conf.set('WITH_@0@'.format(dep[0].split('-')[0].to_upper()), '1')
+        conf.set('WITH_@0@'.format(dep[0].split('-')[0].to_upper()), 1)
         dep_avail += dep[2]
     elif get_option(optname).enabled()
         error('@0@ enabled but not found'.format(dep[2]))
@@ -218,7 +218,7 @@ if host_machine.system() == 'windows' and not get_option('directsound').disabled
     dxguid_dep = cc.find_library('dxguid', required: true)
     if dsound_dep.found() and winmm_dep.found() and ole32_dep.found() and dxguid_dep.found() and have_dsound_h
         deps += [dsound_dep, winmm_dep, ole32_dep, dxguid_dep]
-        conf.set('WITH_DIRECTSOUND', '1')
+        conf.set('WITH_DIRECTSOUND', 1)
         dep_avail += 'DirectSound'
     endif
 endif

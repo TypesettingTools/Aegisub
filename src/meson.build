@@ -214,7 +214,9 @@ elif host_machine.system() == 'windows'
                                                  depends: version_h,
                                                  include_directories: [res_inc, version_inc, wx_inc])
     endif
-elif conf.get('WITH_FONTCONFIG') == '1'
+endif
+
+if conf.has('WITH_FONTCONFIG')
     aegisub_src += 'font_file_lister_fontconfig.cpp'
 endif
 
