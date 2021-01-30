@@ -1,15 +1,15 @@
 conf_pkg = configuration_data()
 
 if host_machine.system() == 'windows'
-    installer_setup = find_program(meson.source_root() / 'tools/win-installer-setup.ps1', )
+    installer_setup = find_program(meson.project_source_root() / 'tools/win-installer-setup.ps1', )
     run_target('win-installer',
-               command: [installer_setup, meson.build_root(), meson.source_root()])
+               command: [installer_setup, meson.project_build_root(), meson.project_source_root()])
 elif host_machine.system() == 'darwin'
     # temporary hack until version.sh generates this properly
-    run_command('cp', meson.source_root() / 'tools' / 'osx-bundle.sed', meson.build_root())
+    run_command('cp', meson.project_source_root() / 'tools' / 'osx-bundle.sed', meson.project_build_root())
     fontconfig_conf = run_command('pkg-config', '--variable=confdir', 'fontconfig').stdout().strip()
     run_target('osx-bundle',
-               command: ['../tools/osx-bundle.sh', meson.source_root(), meson.build_root(), 'wx-config', fontconfig_conf, '',
+               command: ['../tools/osx-bundle.sh', meson.project_source_root(), meson.project_build_root(), 'wx-config', fontconfig_conf, '',
                          get_option('build_osx_bundle') ? 'TRUE' : 'FALSE'])
 else
     conf_pkg.set('AEGISUB_COMMAND', 'aegisub')

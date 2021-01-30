@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
-import sys
-import os
+import sys, os
 
 manifestfile, cppfile, hfile = sys.argv[1:]
 

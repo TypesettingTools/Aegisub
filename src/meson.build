@@ -257,4 +257,4 @@ aegisub = executable('aegisub', aegisub_src, version_h, acconf,
                      install: true,
                      install_dir: bindir,
                      dependencies: deps,
-                     gui_app: true)
+                     win_subsystem: 'windows')

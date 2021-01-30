@@ -1,4 +1,4 @@
-respack = find_program('../../tools/respack.py')
+respack = find_program(meson.project_source_root() / 'tools/respack.py')
 
 resrc = [
     custom_target('bitmap.{cpp,h}',

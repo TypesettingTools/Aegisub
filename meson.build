@@ -46,10 +46,6 @@ endif
 docdir = prefix / 'doc'
 dataroot = datadir / 'aegisub'
 
-if host_machine.system() == 'windows'
-
-endif
-
 # MSVC sets this automatically with -MDd, but it has a different meaning on other platforms
 if get_option('debug') and host_machine.system() != 'windows'
     add_project_arguments('-D_DEBUG', language: 'cpp')
