@@ -173,7 +173,7 @@ elif host_machine.system() == 'windows'
     aegisub_src += [
         'avisynth_wrap.cpp',
         'font_file_lister_gdi.cpp',
-        'libass_gdi_fontselect.cpp',
+        # 'libass_gdi_fontselect.cpp',
         'video_provider_avs.cpp',
     ]
 
