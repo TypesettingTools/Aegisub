@@ -258,3 +258,13 @@ aegisub = executable('aegisub', aegisub_src, version_h, acconf,
                      install_dir: bindir,
                      dependencies: deps,
                      win_subsystem: 'windows')
+
+if host_machine.system() == 'windows'
+    mt_exe = find_program('mt.exe')
+    apply_manifest = find_program(meson.project_source_root() / 'tools/apply-manifest.py')
+    custom_target('apply-manifest',
+                  input: aegisub,
+                  output: 'applied_manifest',
+                  command: [apply_manifest, mt_exe, '@INPUT@'],
+                  build_by_default: true)
+endif
