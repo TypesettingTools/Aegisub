@@ -304,7 +304,7 @@ endif
 
 deps += dep_gl
 
-if not get_option('csri').disabled()
+if not get_option('csri').disabled() and host_machine.system() == 'windows'
     conf.set('WITH_CSRI', 1)
 
     csri_sp = subproject('csri')
