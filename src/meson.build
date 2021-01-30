@@ -220,6 +220,10 @@ if conf.has('WITH_FONTCONFIG')
     aegisub_src += 'font_file_lister_fontconfig.cpp'
 endif
 
+if conf.has('WITH_CSRI')
+    aegisub_src += 'subtitles_provider_csri.cpp'
+endif
+
 opt_src = [
     ['ALSA', 'audio_player_alsa.cpp'],
     ['PortAudio', 'audio_player_portaudio.cpp'],

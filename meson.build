@@ -42,6 +42,10 @@ dataroot = datadir / 'aegisub'
 
 if host_machine.system() == 'windows'
     add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
+
+    if not get_option('csri').disabled()
+        add_global_arguments('-DCSRI_NO_EXPORT', language: 'c')
+    endif
 endif
 
 # MSVC sets this automatically with -MDd, but it has a different meaning on other platforms
@@ -300,7 +304,12 @@ endif
 
 deps += dep_gl
 
-# TODO: csri
+if not get_option('csri').disabled()
+    conf.set('WITH_CSRI', 1)
+
+    csri_sp = subproject('csri')
+    deps += csri_sp.get_variable('csri_dep')
+endif
 
 acconf = configure_file(output: 'acconf.h', configuration: conf)
 

@@ -11,6 +11,7 @@ option('avisynth', type: 'feature', description: 'AviSynth video source')
 option('fftw3', type: 'feature', description: 'FFTW3 support')
 option('hunspell', type: 'feature', description: 'Hunspell spell checker')
 option('uchardet', type: 'feature', description: 'uchardet character encoding detection')
+option('csri', type: 'feature', description: 'CSRI support')
 
 option('system_luajit', type: 'boolean', value: false, description: 'Force using system luajit')
 option('local_boost', type: 'boolean', value: false, description: 'Force using locally compiled Boost')
