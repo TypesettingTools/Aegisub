@@ -10,6 +10,8 @@ system_deps = [
 # compat flag is needed for both the buildvm code generator (compiled natively) and luajit itself
 add_project_arguments('-DLUAJIT_ENABLE_LUA52COMPAT', language: 'c', native: true)
 add_project_arguments('-DLUAJIT_ENABLE_LUA52COMPAT', language: 'c', native: false)
+add_project_arguments('-DENDIAN_LE', language: 'c', native: true)
+add_project_arguments('-DENDIAN_LE', language: 'c', native: false)
 if host_machine.system() == 'linux'
     add_project_arguments('-DLUAJIT_OS=LUAJIT_OS_LINUX', language: 'c', native: true)
     readline_dep = cc.find_library('readline')

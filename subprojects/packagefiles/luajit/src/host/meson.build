@@ -3,7 +3,7 @@ minilua = executable('minilua', 'minilua.c',
                      native: true)
 
 if host_machine.cpu_family() == 'x86_64'
-    dynasm_arch = 'x86'
+    dynasm_arch = 'x64'
 else
     dynasm_arch = host_machine.cpu_family()
 endif
