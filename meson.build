@@ -12,6 +12,12 @@ if host_machine.system() == 'windows'
         nasm = subproject('nasm').get_variable('nasm')
         meson.override_find_program('nasm', nasm)
     endif
+
+    add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
+
+    if not get_option('csri').disabled()
+        add_global_arguments('-DCSRI_NO_EXPORT', language: 'c')
+    endif
 endif
 
 if host_machine.system() == 'windows'
@@ -41,11 +47,7 @@ docdir = prefix / 'doc'
 dataroot = datadir / 'aegisub'
 
 if host_machine.system() == 'windows'
-    add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
 
-    if not get_option('csri').disabled()
-        add_global_arguments('-DCSRI_NO_EXPORT', language: 'c')
-    endif
 endif
 
 # MSVC sets this automatically with -MDd, but it has a different meaning on other platforms
