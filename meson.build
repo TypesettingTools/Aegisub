@@ -7,16 +7,16 @@ project('Aegisub', ['c', 'cpp'],
 cmake = import('cmake')
 
 if host_machine.system() == 'windows'
-    sys_nasm = find_program('nasm', required: false)
-    if not sys_nasm.found()
-        nasm = subproject('nasm').get_variable('nasm')
-        meson.override_find_program('nasm', nasm)
-    endif
-
     add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
 
     if not get_option('csri').disabled()
         add_global_arguments('-DCSRI_NO_EXPORT', language: 'c')
+    endif
+
+    sys_nasm = find_program('nasm', required: false)
+    if not sys_nasm.found()
+        nasm = subproject('nasm').get_variable('nasm')
+        meson.override_find_program('nasm', nasm)
     endif
 endif
 
