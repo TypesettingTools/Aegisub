@@ -37,14 +37,15 @@ if host_machine.system() == 'darwin' and get_option('build_osx_bundle')
     bindir = prefix / 'MacOS'
     datadir = prefix / 'SharedSupport'
     localedir = prefix / 'Resources'
+    dataroot = datadir
 else
     prefix = get_option('prefix')
     bindir = prefix / get_option('bindir')
     datadir = prefix / get_option('datadir')
     localedir = prefix / get_option('localedir')
+    dataroot = datadir / 'aegisub'
 endif
 docdir = prefix / 'doc'
-dataroot = datadir / 'aegisub'
 
 # MSVC sets this automatically with -MDd, but it has a different meaning on other platforms
 if get_option('debug') and host_machine.system() != 'windows'
