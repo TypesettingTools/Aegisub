@@ -170,7 +170,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 
 	auto source_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
 	source_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
-	source_matrix_sizer->Add(source_matrix, wxSizerFlags(1).Center().Right());
+	source_matrix_sizer->Add(source_matrix, wxSizerFlags(1).Center());
 
 	auto source_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Source Resolution"));
 	source_res_box->Add(source_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
@@ -184,7 +184,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 
 	auto dest_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
 	dest_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
-	dest_matrix_sizer->Add(dest_matrix, wxSizerFlags(1).Center().Right());
+	dest_matrix_sizer->Add(dest_matrix, wxSizerFlags(1).Center());
 
 	auto dest_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Destination Resolution"));
 	dest_res_box->Add(dest_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
