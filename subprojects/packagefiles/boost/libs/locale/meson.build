@@ -64,6 +64,10 @@ endif
 if not cpp.check_header('iconv.h')
     locale_deps += dependency('iconv')
 endif
+iconv_dep = cpp.find_library('iconv', required: false)
+if iconv_dep.found()
+    locale_deps += iconv_dep
+endif
 locale_args += '-DBOOST_LOCALE_WITH_ICONV=1'
 
 locale_deps += icu_deps

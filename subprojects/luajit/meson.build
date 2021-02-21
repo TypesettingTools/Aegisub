@@ -37,5 +37,11 @@ incdir = include_directories('include')
 
 subdir('src')
 
+luajit_link_args = []
+if host_machine.system() == 'darwin'
+	luajit_link_args = ['pagezero_size', '10000', '-image_base', '100000000']
+endif
+
 luajit_dep = declare_dependency(link_with: luajit_lib,
+                                link_args: luajit_link_args,
                                 include_directories: incdir)
