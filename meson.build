@@ -77,10 +77,13 @@ cxx = meson.get_compiler('cpp')
 cc = meson.get_compiler('c')
 deps += cc.find_library('m', required: false)
 deps += cc.find_library('dl', required: false)
-if not cxx.check_header('iconv.h')
+
+iconv_dep = cc.find_library('iconv', required: false)
+if not (iconv_dep.found() or cc.has_function('iconv_open'))
     iconv_sp = subproject('iconv') # this really needs to be replaced with a proper port
-    deps += iconv_sp.get_variable('libiconv_dep')
+    iconv_dep = iconv_sp.get_variable('libiconv_dep')
 endif
+deps += iconv_dep
 
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
