@@ -61,9 +61,12 @@ else
     locale_args += '-DBOOST_LOCALE_NO_WINAPI_BACKEND=1'
 endif
 
-if not cpp.check_header('iconv.h')
-    locale_deps += dependency('iconv')
+cxx = meson.get_compiler('cpp')
+iconv_dep = cxx.find_library('iconv', required: false)
+if not (iconv_dep.found() or cxx.has_function('iconv_open'))
+    iconv_dep = dependency('iconv')
 endif
+locale_deps += iconv_dep
 locale_args += '-DBOOST_LOCALE_WITH_ICONV=1'
 
 locale_deps += icu_deps
