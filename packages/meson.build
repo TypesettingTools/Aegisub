@@ -5,8 +5,6 @@ if host_machine.system() == 'windows'
     run_target('win-installer',
                command: [installer_setup, meson.project_build_root(), meson.project_source_root()])
 elif host_machine.system() == 'darwin'
-    # temporary hack until version.sh generates this properly
-    run_command('cp', meson.project_source_root() / 'tools' / 'osx-bundle.sed', meson.project_build_root())
     fontconfig_conf = run_command('pkg-config', '--variable=confdir', 'fontconfig').stdout().strip()
     run_target('osx-bundle',
                command: ['../tools/osx-bundle.sh', meson.project_source_root(), meson.project_build_root(), 'wx-config', fontconfig_conf, '',

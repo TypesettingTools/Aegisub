@@ -20,6 +20,7 @@ if ! test -d "${srcdir}/.git"; then
     exit 2
   fi
 fi
+osx_bundle_sed_path="${builddir}/osx-bundle.sed"
 
 last_svn_revision=6962
 last_svn_hash="16cd907fe7482cb54a7374cd28b8501f138116be"
@@ -44,6 +45,7 @@ else
   tagged_release=0
 fi
 
+build_date="$(date "+%Y-%m-%d %H:%M %Z")"
 
 new_version_h="\
 #define BUILD_GIT_VERSION_NUMBER ${git_revision}
@@ -52,11 +54,21 @@ new_version_h="\
 #define INSTALLER_VERSION \"${installer_version}\"
 #define RESOURCE_BASE_VERSION ${resource_version}"
 
+osx_bundle_sed="\
+s/@PLIST_VERSION@/${git_version_str}/g
+s/@PLIST_BUILD_DATE@/${build_date}/g
+/ *@LOCALIZATIONS@/ {
+  r languages
+  d
+}"
 
 # Write it only if it's changed to avoid spurious rebuilds
 # This bizzare comparison method is due to that newlines in shell variables are very exciting
 case "$(cat ${version_h_path} 2> /dev/null)"
 in
   "${new_version_h}");;
-  *) echo "${new_version_h}" > "${version_h_path}"
+  *)
+    echo "${new_version_h}" > "${version_h_path}"
+    echo "${osx_bundle_sed}" > "${osx_bundle_sed_path}"
+    ;;
 esac
