@@ -19,7 +19,7 @@ jobs:
             os: windows-latest,
             msvc: true,
             buildtype: release,
-            args: -Ddefault_library=static --force-fallback-for=zlib,harfbuzz
+            args: '-Ddefault_library=static --force-fallback-for=zlib,harfbuzz'
           }
           #- {
           #  name: Windows MinGW,
@@ -30,13 +30,13 @@ jobs:
             name: Ubuntu Debug,
             os: ubuntu-latest,
             buildtype: debugoptimized,
-            args: ""
+            args: ''
           }
           - {
             name: Ubuntu Release,
             os: ubuntu-latest,
             buildtype: release,
-            args: ""
+            args: ''
           }
           - {
             name: macOS Debug,
@@ -108,5 +108,4 @@ jobs:
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }}
-          path: |
-            build/Aegisub-*.exe
+          path: build/Aegisub-*.exe
