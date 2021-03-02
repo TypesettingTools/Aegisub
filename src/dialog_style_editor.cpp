@@ -200,7 +200,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	for (int i = 0; i < 3; i++)
 		margin[i] = new wxSpinCtrl(this, -1, std::to_wstring(style->Margin[i]),
 		                           wxDefaultPosition, wxSize(60, -1),
-		                           wxSP_ARROW_KEYS, 0, 9999, style->Margin[i]);
+		                           wxSP_ARROW_KEYS, -9999, 99999, style->Margin[i]);
 
 	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	auto Outline = num_text_ctrl(&work->outline_w, 0.0, 1000.0, 0.1);
