@@ -63,8 +63,8 @@ CollectionResult FontConfigFontFileLister::GetFontPaths(std::string const& facen
 	std::string family = facename[0] == '@' ? facename.substr(1) : facename;
 	boost::to_lower(family);
 
-	int weight = bold == 0 ? 80 :
-	             bold == 1 ? 200 :
+	int weight = bold == 0 ? 400 :
+	             bold == 1 ? 700 :
 	                         bold;
 	int slant  = italic ? 110 : 0;
 
@@ -74,7 +74,7 @@ CollectionResult FontConfigFontFileLister::GetFontPaths(std::string const& facen
 
 	FcPatternAddBool(pat, FC_OUTLINE, true);
 	FcPatternAddInteger(pat, FC_SLANT, slant);
-	FcPatternAddInteger(pat, FC_WEIGHT, weight);
+	FcPatternAddInteger(pat, FC_WEIGHT, FcWeightFromOpenType(weight));
 
 	FcDefaultSubstitute(pat);
 	if (!FcConfigSubstitute(config, pat, FcMatchPattern)) return ret;
