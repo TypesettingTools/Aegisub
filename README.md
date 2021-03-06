@@ -32,7 +32,7 @@ All other dependencies are either stored in the repository or are included as su
 Building:
 
 1. Clone Aegisub's repository: `git clone https://github.com/TypesettingTools/Aegisub.git`
-2. From the Visual Studio "x64 Native Tools Command Prompt", generate the build directory: `meson build -Ddefault_library=static`
+2. From the Visual Studio "x64 Native Tools Command Prompt", generate the build directory: `meson build -Ddefault_library=static -Db_lto=true`
 3. Build with `cd build` and `meson compile`
 
 You should now have a binary at `src/aegisub.exe`.
