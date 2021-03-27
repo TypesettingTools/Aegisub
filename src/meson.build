@@ -164,18 +164,18 @@ aegisub_src = files(
 )
 
 if host_machine.system() == 'darwin'
-    aegisub_src += [
+    aegisub_src += files(
         'font_file_lister_coretext.mm',
         'osx/osx_utils.mm',
         'osx/retina_helper.mm',
-    ]
+    )
 elif host_machine.system() == 'windows'
-    aegisub_src += [
+    aegisub_src += files(
         'avisynth_wrap.cpp',
         'font_file_lister_gdi.cpp',
         # 'libass_gdi_fontselect.cpp',
         'video_provider_avs.cpp',
-    ]
+    )
 
     if cc.has_header('wingdi.h')
         deps += cc.find_library('gdi32', required: true)
@@ -217,11 +217,11 @@ elif host_machine.system() == 'windows'
 endif
 
 if conf.has('WITH_FONTCONFIG')
-    aegisub_src += 'font_file_lister_fontconfig.cpp'
+    aegisub_src += files('font_file_lister_fontconfig.cpp')
 endif
 
 if conf.has('WITH_CSRI')
-    aegisub_src += 'subtitles_provider_csri.cpp'
+    aegisub_src += files('subtitles_provider_csri.cpp')
 endif
 
 opt_src = [
@@ -242,29 +242,6 @@ opt_src = [
 
 foreach opt: opt_src
     if dep_avail.contains(opt[0])
-        aegisub_src += opt[1]
+        aegisub_src += files(opt[1])
     endif
 endforeach
-
-aegisub_cpp_pch = ['include/agi_pre.h']
-aegisub_c_pch = ['include/agi_pre_c.h']
-
-aegisub = executable('aegisub', aegisub_src, version_h, acconf,
-                     link_with: [libresrc, libluabins, libaegisub],
-                     include_directories: [libaegisub_inc, libresrc_inc, version_inc, deps_inc],
-                     cpp_pch: aegisub_cpp_pch,
-                     c_pch: aegisub_c_pch,
-                     install: true,
-                     install_dir: bindir,
-                     dependencies: deps,
-                     win_subsystem: 'windows')
-
-if host_machine.system() == 'windows'
-    mt_exe = find_program('mt.exe')
-    apply_manifest = find_program(meson.project_source_root() / 'tools/apply-manifest.py')
-    custom_target('apply-manifest',
-                  input: aegisub,
-                  output: 'applied_manifest',
-                  command: [apply_manifest, mt_exe, '@INPUT@'],
-                  build_by_default: true)
-endif
