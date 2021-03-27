@@ -54,6 +54,7 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
 
 void VisualToolDrag::SetToolbar(wxToolBar *tb) {
 	toolbar = tb;
+	toolbar->AddSeparator();
 	toolbar->AddTool(-1, _("Toggle between \\move and \\pos"), ICON(visual_move_conv_move));
 	toolbar->Realize();
 	toolbar->Show(true);

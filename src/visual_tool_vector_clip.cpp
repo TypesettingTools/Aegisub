@@ -52,6 +52,8 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, agi::Context *c
 void VisualToolVectorClip::SetToolbar(wxToolBar *toolBar) {
 	this->toolBar = toolBar;
 
+	toolBar->AddSeparator();
+
 	int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
 
 #define ICON(name) icon_size == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24)
