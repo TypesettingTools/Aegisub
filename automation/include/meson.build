@@ -8,6 +8,7 @@ lua_files = files(
     'moonscript.lua',
     're.lua',
     'unicode.lua',
+    'unicode-monkeypatch.lua',
     'utils-auto4.lua',
     'utils.lua',
 )
