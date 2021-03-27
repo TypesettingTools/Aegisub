@@ -1,6 +1,7 @@
 ljlib_src = files(
     'lib_base.c',
     'lib_bit.c',
+    'lib_buffer.c',
     'lib_debug.c',
     'lib_ffi.c',
     'lib_io.c',
@@ -58,6 +59,7 @@ ljcore_src = files(
     'lj_prng.c',
     'lj_profile.c',
     'lj_record.c',
+    'lj_serialize.c',
     'lj_snap.c',
     'lj_state.c',
     'lj_str.c',
