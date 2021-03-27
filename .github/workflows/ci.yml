@@ -38,18 +38,18 @@ jobs:
             buildtype: release,
             args: ''
           }
-          - {
-            name: macOS Debug,
-            os: macos-latest,
-            buildtype: debugoptimized,
-            args: -Ddefault_library=static
-          }
-          - {
-            name: macOS Release,
-            os: macos-latest,
-            buildtype: release,
-            args: -Ddefault_library=static
-          }
+          #- {
+          #  name: macOS Debug,
+          #  os: macos-latest,
+          #  buildtype: debugoptimized,
+          #  args: -Ddefault_library=static
+          #}
+          #- {
+          #  name: macOS Release,
+          #  os: macos-latest,
+          #  buildtype: release,
+          #  args: -Ddefault_library=static
+          #}
 
     steps:
       - uses: actions/checkout@v2
