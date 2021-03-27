@@ -1,4 +1,4 @@
-local fii = require("ffi")
+local ffi = require("ffi")
 
 if ffi.os ~= "Windows" then
 	return
@@ -77,6 +77,7 @@ end
 local function execresult(stat)
 	if stat == -1 then
 		return fileresult(0, nil)
+	end
 
 	if stat == 0 then
 		return true, "exit", stat
@@ -90,10 +91,13 @@ local orig_remove = os.remove
 local orig_execute = os.execute
 
 function io.open(fname, mode)
-	local wfname = widen(path)
+	local wfname = widen(fname)
+	if not mode then
+		mode = "r"
+	end
 	local wmode = widen(mode)
 
-	local file = assert(open("nul", "rb"))
+	local file = assert(orig_open("nul", "rb"))
 	if ffi.C._wfreopen(wfname, wmode, file) == nil then
 		local msg, errno = select(2, file:close())
 		return nil, fname .. ": " .. msg, errno
@@ -111,7 +115,7 @@ function os.rename(oldname, newname)
 end
 
 function os.remove(fname)
-	local wfname = widen(path)
+	local wfname = widen(fname)
 
 	local stat = ffi.C._wremove(wfname)
 	return fileresult(stat, fname)
