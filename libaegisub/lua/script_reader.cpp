@@ -146,6 +146,14 @@ namespace agi { namespace lua {
 		lua_rawseti(L, -2, 2);
 		lua_pop(L, 2); // loaders, package
 
+#ifdef _WIN32
+		// Replace the default lua IO functions with our unicode compatibile ones
+		luaL_loadstring(L, "require('unicode-monkeypatch')");
+		if (lua_pcall(L, 0, 0, 0)) {
+			return false; // leave error message
+		}
+#endif
+
 		luaL_loadstring(L, "return require('moonscript').loadstring");
 		if (lua_pcall(L, 0, 1, 0)) {
 			return false; // leave error message
