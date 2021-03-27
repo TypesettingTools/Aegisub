@@ -8,17 +8,17 @@ system_deps = [
 ]
 
 # compat flag is needed for both the buildvm code generator (compiled natively) and luajit itself
-add_project_arguments('-DLUAJIT_ENABLE_LUA52COMPAT', language: 'c', native: true)
-add_project_arguments('-DLUAJIT_ENABLE_LUA52COMPAT', language: 'c', native: false)
-add_project_arguments('-DENDIAN_LE', language: 'c', native: true)
-add_project_arguments('-DENDIAN_LE', language: 'c', native: false)
+add_project_arguments('-DLUAJIT_ENABLE_LUA52COMPAT', '-DENDIAN_LE', language: 'c', native: true)
+add_project_arguments('-DLUAJIT_ENABLE_LUA52COMPAT', '-DENDIAN_LE', language: 'c', native: false)
 if host_machine.system() == 'linux'
     add_project_arguments('-DLUAJIT_OS=LUAJIT_OS_LINUX', language: 'c', native: true)
+    add_project_arguments('-DLUAJIT_UNWIND_EXTERNAL', language: 'c', native: false)
     readline_dep = cc.find_library('readline')
     ljvm_mode = 'elfasm'
     ljvm_bout = 'lj_vm.s'
 elif host_machine.system() == 'darwin'
     add_project_arguments('-DLUAJIT_OS=LUAJIT_OS_OSX', language: 'c', native: true)
+    add_project_arguments('-DLUAJIT_UNWIND_EXTERNAL', language: 'c', native: false)
     readline_dep = cc.find_library('readline')
     ljvm_mode = 'machasm'
     ljvm_bout = 'lj_vm.s'
