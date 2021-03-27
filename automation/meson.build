@@ -1,3 +1,5 @@
+subdir('include')
+
 automation_dir = dataroot / 'automation'
 
 install_data(
