@@ -184,7 +184,7 @@ foreach dep: [
     # other
     ['fftw3', '', 'FFTW3', []],
     ['hunspell', '', 'Hunspell', ['hunspell', 'hunspell_dep']],
-    ['uchardet', '', 'uchardet', []], # needs a proper port
+    ['uchardet', '', 'uchardet', ['uchardet', 'uchardet_dep']],
 ]
     dep_version = dep[1] != '' ? dep[1] : '>=0'
     # [provide] section is ignored if required is false;
