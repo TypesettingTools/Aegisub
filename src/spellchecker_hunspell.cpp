@@ -29,7 +29,6 @@
 
 #include <boost/range/algorithm.hpp>
 
-#define HUNSPELL_STATIC
 #undef near
 #include <hunspell/hunspell.hxx>
 
