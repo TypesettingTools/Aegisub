@@ -19,7 +19,7 @@ jobs:
             os: windows-latest,
             msvc: true,
             buildtype: release,
-            args: '-Ddefault_library=static --force-fallback-for=zlib,harfbuzz'
+            args: '-Ddefault_library=static --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng -Dfreetype2:harfbuzz=disabled -Dharfbuzz:freetype=disabled -Dharfbuzz:cairo=disabled -Dharfbuzz:glib=disabled -Dharfbuzz:gobject=disabled'
           }
           #- {
           #  name: Windows MinGW,
