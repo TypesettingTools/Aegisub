@@ -183,7 +183,7 @@ foreach dep: [
     ['ffms2', '>=2.22', 'FFMS2', ['ffms2', 'ffms2_dep']],
     # other
     ['fftw3', '', 'FFTW3', []],
-    ['hunspell', '', 'Hunspell', []], # needs a proper port
+    ['hunspell', '', 'Hunspell', ['hunspell', 'hunspell_dep']],
     ['uchardet', '', 'uchardet', []], # needs a proper port
 ]
     dep_version = dep[1] != '' ? dep[1] : '>=0'
