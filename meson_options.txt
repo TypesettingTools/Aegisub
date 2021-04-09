@@ -16,6 +16,8 @@ option('csri', type: 'feature', description: 'CSRI support')
 option('system_luajit', type: 'boolean', value: false, description: 'Force using system luajit')
 option('local_boost', type: 'boolean', value: false, description: 'Force using locally compiled Boost')
 
+option('wx_version', type: 'string', value: '3.0.0', description: 'The minimum wxWidgets version to use')
+
 option('credit', type: 'string', value: '', description: 'Build credit shown in program title')
 
 option('enable_update_checker', type: 'boolean', value: false, description: 'Enable the update checker')

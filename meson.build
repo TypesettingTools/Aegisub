@@ -111,7 +111,7 @@ endif
 
 deps += dependency('zlib')
 
-wx_minver = '>=3.0.0'
+wx_minver = '>=' + get_option('wx_version')
 if host_machine.system() == 'darwin'
     wx_minver = '>=3.1.0'
 endif
