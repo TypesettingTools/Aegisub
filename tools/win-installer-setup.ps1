@@ -76,7 +76,9 @@ if (!(Test-Path VC_redist)) {
 
 # TODO dictionaries
 
-# TODO localization
+# localization
+Set-Location $BuildRoot
+meson compile aegisub-gmo
 
 # Invoke InnoSetup
 $IssUrl = Join-Path $InstallerDir "aegisub_depctrl.iss"
