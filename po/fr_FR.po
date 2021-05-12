@@ -304,7 +304,7 @@ msgstr "Appliquer aux styles"
 
 #: ../src/dialog_timing_processor.cpp:159
 msgid "Select styles to process. Unchecked ones will be ignored."
-msgstr "Choix des style à appliquer. Ceux non-cochés seront ignorés."
+msgstr "Choix des styles à appliquer. Ceux non-cochés seront ignorés."
 
 #: ../src/dialog_timing_processor.cpp:161 ../src/dialog_paste_over.cpp:88
 msgid "&All"
