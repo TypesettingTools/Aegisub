@@ -710,6 +710,7 @@ msgid ""
 "with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
 msgstr ""
+
 "Le nom de stockage spécifié contient au moins un caractère interdit. Ils ont été remplacés "
 "par des tirets bas.\n"
 "Le stockage a été renommé en « %s »."
@@ -1341,16 +1342,16 @@ msgstr "alterner le soulignage"
 
 #: ../src/command/edit.cpp:467 ../src/command/edit.cpp:468
 msgid "Toggle Strikeout"
-msgstr "Alterner le barrage"
+msgstr "Alterner la biffure"
 
 #: ../src/command/edit.cpp:469
 msgid "Toggle strikeout (\\s) for the current selection or at the current cursor position"
 msgstr ""
-"Alterner le barrage (\\s) pour la sélection en cours ou à la position actuelle du curseur"
+"Alterner la biffure (\\s) pour la sélection en cours ou à la position actuelle du curseur"
 
 #: ../src/command/edit.cpp:472
 msgid "toggle strikeout"
-msgstr "alterner le barrage"
+msgstr "alterner la biffure"
 
 #: ../src/command/edit.cpp:479
 msgid "Font Face..."
