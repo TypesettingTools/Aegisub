@@ -48,8 +48,6 @@ Write-Output 'Make install'
 meson install --no-rebuild --destdir $InstallerDir
 Write-Output 'Gathering files'
 Copy-New-Item $InstallerDir\bin\aegisub.exe  $PortableOutputDir
-# TODO: check and remove freetype later
-Copy-New-Item $InstallerDir\bin\freetype-6.dll  $PortableOutputDir
 
 Write-Output 'Copying - translations'
 Copy-New-Items "$InstallerDir\share\locale\*"  "$PortableOutputDir\locale" -Recurse
