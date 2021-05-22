@@ -4,8 +4,8 @@ if host_machine.system() == 'windows'
     installer_setup = find_program(meson.project_source_root() / 'tools/win-installer-setup.ps1')
     run_target('win-installer',
                command: [installer_setup, meson.project_build_root(), meson.project_source_root()])
-    portable_setup = find_program(meson.project_source_root() / 'packages/win_installer/portable/create-portable.bat')
-    run_target('win-portable', command: [portable_setup, meson.project_source_root()])
+    portable_setup = find_program(meson.project_source_root() / 'packages/win_installer/portable/create-portable.ps1')
+    run_target('win-portable', command: [portable_setup, meson.project_build_root(), meson.project_source_root()])
 elif host_machine.system() == 'darwin'
     fontconfig_conf = run_command('pkg-config', '--variable=confdir', 'fontconfig').stdout().strip()
     run_target('osx-bundle',
