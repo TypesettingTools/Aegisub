@@ -27,6 +27,7 @@ install_data(
     'include/moonscript.lua',
     'include/re.lua',
     'include/unicode.lua',
+    'include/unicode-monkeypatch.lua',
     'include/utils-auto4.lua',
     'include/utils.lua',
     install_dir: automation_dir / 'include')
