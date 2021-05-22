@@ -44,3 +44,4 @@ subprojects/dirent-*
 subprojects/expat-*
 subprojects/googletest-*
 subprojects/hunspell-*
+subprojects/uchardet-*
