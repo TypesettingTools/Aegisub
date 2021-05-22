@@ -79,7 +79,7 @@ else
     setup_sh = find_program('setup.sh')
 endif
 
-test_data_des = meson.project_build_root() / 'tests'
+test_data_des = meson.project_build_root()
 custom_target('setup-test-data',
     input: e,
     output: 'applied_test_setup',
