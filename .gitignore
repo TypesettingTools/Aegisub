@@ -43,3 +43,4 @@ subprojects/zlib-*
 subprojects/dirent-*
 subprojects/expat-*
 subprojects/googletest-*
+subprojects/hunspell-*
