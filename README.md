@@ -40,6 +40,8 @@ Installer:
 
 You can generate the installer with `ninja win-installer` after a successful build. This assumes a working internet connection and installation of the optional dependencies.
 
+You can generate the portable zip with `meson compile win-portable -C build` after a successful build.
+
 ### OS X
 
 A vaguely recent version of Xcode and the corresponding command-line tools are required.
