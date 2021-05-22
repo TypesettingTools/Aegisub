@@ -1,0 +1,9 @@
+[wrap-file]
+directory = uchardet-0.0.7
+source_url = https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.7.tar.xz
+source_filename = uchardet-0.0.7.tar.gz
+source_hash = 3fc79408ae1d84b406922fa9319ce005631c95ca0f34b205fad867e8b30e45b1
+patch_directory = uchardet
+
+[provides]
+uchardet = uchardet_dep
