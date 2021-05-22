@@ -53,11 +53,20 @@ all_test_sources += [
 ]
 
 test_inc = include_directories('support')
+
+# force UTF8 for MSVC
+if host_machine.system() == 'windows'
+    extra_args = ['/utf-8']
+else
+    extra_args = []
+endif
+
 e = executable(
     'gtest-main',
     all_test_sources,
     include_directories : [test_inc, libaegisub_inc, deps_inc],
     dependencies : all_test_deps,
+    cpp_args : extra_args,
     link_with : all_test_dep_libs,
 )    
 test('gtest main', e)
