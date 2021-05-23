@@ -1,0 +1,41 @@
+SRC								TGT				NOTE
+Timing Post-Processor			計時後置處理器
+Select							選取
+Selection						選取範圍
+Lead-in							提前開始
+Lead-out						延後結束
+Line							橫列
+Column							直行
+Continuous						無縫銜接		專指「字幕橫列」部分
+Snap							緊貼			專指「字幕橫列」部分
+Gap								空隙			此處用「長」「短」單位
+Bias							傾向
+threshold (thres.)				臨界值
+duration						時長
+script							文稿
+shoutcut						快速鍵
+command							命令
+source							來源
+destination (dest.)				目的地
+skip							略過
+go back							返回
+Regular Expression				正規表示式
+comment							備註
+frame							影格
+frame rate						影格速率
+offset							偏移
+format							格式
+time code						時間碼
+font							字型
+color							顏色
+margin							邊距
+outline							邊框
+miscellaneous					雜項
+preview							預覽
+Opaque							不透明度
+Font face						字型樣式
+primary color					主顏色
+secondary color					次顏色
+scale							縮放比例		X 座標, Y 座標
+
+offset:L201
