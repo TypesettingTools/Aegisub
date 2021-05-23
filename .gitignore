@@ -1,6 +1,3 @@
-# IDE
-.vscode/
-
 /tests/data
 
 packages/desktop/aegisub.desktop
