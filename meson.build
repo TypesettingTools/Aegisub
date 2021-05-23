@@ -251,7 +251,7 @@ conf_platform = configuration_data()
 conf_platform.set('DEFAULT_PLAYER_AUDIO', def_audio)
 
 luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'))
-if luajit.found()
+if luajit.found() and luajit.type_name() != 'internal'
     luajit_test = cc.run('''#include <lauxlib.h>
 int main(void)
 {
