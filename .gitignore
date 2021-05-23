@@ -26,6 +26,7 @@ subprojects/fontconfig*
 subprojects/freetype2
 subprojects/fribidi
 subprojects/glib*
+subprojects/googletest-*
 subprojects/harfbuzz
 subprojects/icu
 subprojects/libass
