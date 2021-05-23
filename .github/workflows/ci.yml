@@ -103,9 +103,20 @@ jobs:
         if: matrix.config.os == 'windows-latest'
         run: meson compile win-installer -C build
 
-      - name: Upload artifacts
+      - name: Generate Windows portable installer
+        if: matrix.config.os == 'windows-latest'
+        run: cd build && ninja win-portable
+
+      - name: Upload artifacts - win_installer
         uses: actions/upload-artifact@v2
         if: matrix.config.os == 'windows-latest'
         with:
-          name: ${{ matrix.config.name }}
+          name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
+      
+      - name: Upload artifacts - portable.zip
+        uses: actions/upload-artifact@v2
+        if: matrix.config.os == 'windows-latest'
+        with:
+          name: ${{ matrix.config.name }} - portable
+          path: build/aegisub-portable-64.zip
