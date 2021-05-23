@@ -1,14 +1,14 @@
-SRC								TGT				NOTE
+SRC								TGT					NOTE
 Timing Post-Processor			計時後置處理器
 Select							選取
 Selection						選取範圍
 Lead-in							提前開始
 Lead-out						延後結束
-Line							橫列
+Line							橫列；字幕列
 Column							直行
-Continuous						無縫銜接		專指「字幕橫列」部分
-Snap							緊貼			專指「字幕橫列」部分
-Gap								空隙			此處用「長」「短」單位
+Continuous						無縫銜接			專指「字幕橫列」部分
+Snap							緊貼				專指「字幕橫列」部分
+Gap								空隙				此處用「長」「短」單位
 Bias							傾向
 threshold (thres.)				臨界值
 duration						時長
@@ -36,6 +36,21 @@ Opaque							不透明度
 Font face						字型樣式
 primary color					主顏色
 secondary color					次顏色
-scale							縮放比例		X 座標, Y 座標
+scale							縮放比例			X 座標, Y 座標
+glyph							字形
+style							樣式
+automation						自動化文稿
+active							作用
+inactive						非作用
+screenshot						截圖
+grid							格線
+boundaries						邊線				不確定！
+template						模板
+standard						標準
+collision						衝突
+header							標頭
+Preferences						偏好設定
+level							層級；等級；程度
+default							預設值
 
-offset:L201
+offset:L448
