@@ -103,6 +103,10 @@ jobs:
         if: matrix.config.os == 'windows-latest'
         run: meson compile win-installer -C build
 
+      - name: Generate Windows portable installer
+        if: matrix.config.os == 'windows-latest'
+        run: cd build && ninja win-portable
+
       - name: Upload artifacts - win_installer
         uses: actions/upload-artifact@v2
         if: matrix.config.os == 'windows-latest'
