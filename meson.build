@@ -133,14 +133,14 @@ else
 
     opt_var = cmake.subproject_options()
     opt_var.add_cmake_defines({
-        'wxBUILD_INSTALL': false,       # '-DwxBUILD_INSTALL=OFF'
-        'wxBUILD_PRECOMP': false,       # '-DwxBUILD_PRECOMP=OFF', # otherwise breaks project generation w/ meson
-        'wxBUILD_SHARED': build_shared, # '-DwxBUILD_SHARED=@0@'.format(build_shared)
+        'wxBUILD_INSTALL': false,
+        'wxBUILD_PRECOMP': false,       # otherwise breaks project generation w/ meson
+        'wxBUILD_SHARED': build_shared,
 
-        'wxUSE_WEBVIEW': false,         # '-DwxUSE_WEBVIEW=OFF', # breaks build on linux
-        'CMAKE_BUILD_TYPE': build_type, # '-DCMAKE_BUILD_TYPE=@0@'.format(build_type)
-        'wxUSE_IMAGE': true,            # '-DwxUSE_IMAGE=ON'
-        'wxBUILD_MONOLITHIC': true      # '-DwxBUILD_MONOLITHIC=ON', # otherwise breaks project generation w/ meson
+        'wxUSE_WEBVIEW': false,         # breaks build on linux
+        'CMAKE_BUILD_TYPE': build_type,
+        'wxUSE_IMAGE': true,
+        'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
     })
 
     wx = cmake.subproject('wxWidgets', options: opt_var)
