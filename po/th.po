@@ -1,3 +1,4 @@
+
   
 # This file is distributed under the same license as the Aegisub package.
 # Niels Martin Hansen <nielsm@aegisub.org>, 2005-2014.
@@ -20,73 +21,73 @@ msgstr ""
 
 #: ../src/dialog_shift_times.cpp:92
 msgid "unsaved"
-msgstr ""
+msgstr "ไม่บันทึก"
 
 #: ../src/dialog_shift_times.cpp:96
 #, c-format
 msgid "%s frames"
-msgstr ""
+msgstr "%s เฟรม"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
-msgstr ""
+msgstr "ย้อนกลับ"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "forward"
-msgstr ""
+msgstr "ล่วงหน้า"
 
 #: ../src/dialog_shift_times.cpp:102
 msgid "s+e"
-msgstr ""
+msgstr "s+e"
 
 #: ../src/dialog_shift_times.cpp:103
 msgid "s"
-msgstr ""
+msgstr "s"
 
 #: ../src/dialog_shift_times.cpp:104
 msgid "e"
-msgstr ""
+msgstr "e"
 
 #: ../src/dialog_shift_times.cpp:111
 msgid "all"
-msgstr ""
+msgstr "ทั้งหมด"
 
 #: ../src/dialog_shift_times.cpp:113
 #, c-format
 msgid "from %d onward"
-msgstr ""
+msgstr "ตั้งแต่ %d เป็นต้นไป"
 
 #: ../src/dialog_shift_times.cpp:115
 msgid "sel "
-msgstr ""
+msgstr "เลือก"
 
 #: ../src/dialog_shift_times.cpp:133 ../src/command/time.cpp:153
 msgid "Shift Times"
-msgstr ""
+msgstr "เลื่อนเวลา"
 
 #: ../src/dialog_shift_times.cpp:142
 msgid "&Time: "
-msgstr ""
+msgstr "&เวลา :"
 
 #: ../src/dialog_shift_times.cpp:143
 msgid "Shift by time"
-msgstr ""
+msgstr "เปลี่ยนเวลา"
 
 #: ../src/dialog_shift_times.cpp:146
 msgid "&Frames: "
-msgstr ""
+msgstr "&เฟรม"
 
 #: ../src/dialog_shift_times.cpp:147
 msgid "Shift by frames"
-msgstr ""
+msgstr "เปลี่ยนเฟรม"
 
 #: ../src/dialog_shift_times.cpp:151
 msgid "Enter time in h:mm:ss.cs notation"
-msgstr ""
+msgstr "ป้อนเวลาในรูปแบบ h:mm:ss.cs"
 
 #: ../src/dialog_shift_times.cpp:154
 msgid "Enter number of frames to shift by"
-msgstr ""
+msgstr "ป้อนเวลาที่จะเลื่อนในรูปแบบ h:mm:ss.cs"
 
 #: ../src/dialog_shift_times.cpp:156
 msgid "For&ward"
@@ -610,26 +611,26 @@ msgstr ""
 
 #: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:578
 msgid "&New"
-msgstr ""
+msgstr "&ใหม่"
 
 #: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:579
 msgid "&Edit"
-msgstr ""
+msgstr "&แก้ไข"
 
 #: ../src/dialog_style_manager.cpp:205 ../src/preferences.cpp:580
 #: ../src/dialog_attachments.cpp:79
 msgid "&Delete"
-msgstr ""
+msgstr "&ลบ"
 
 #: ../src/dialog_style_manager.cpp:218
 #, c-format
 msgid "%s - Copy"
-msgstr ""
+msgstr "%s - คัดลอก"
 
 #: ../src/dialog_style_manager.cpp:220
 #, c-format
 msgid "%s - Copy (%d)"
-msgstr ""
+msgstr "%s - คัดลอก (%d)"
 
 #: ../src/dialog_style_manager.cpp:243
 msgid "Could not parse style"
@@ -6056,259 +6057,259 @@ msgstr ""
 
 #: default_menu.json:0
 msgid "&Insert (before)"
-msgstr ""
+msgstr "เพิ่มบรรทัดใหม่ ช่วงก่อนหน้าบรรทัดนี้"
 
 
 #: default_menu.json:0
 msgid "Insert (after)"
-msgstr ""
+msgstr "เพิ่มบรรทัดใหม่ ช่วงต่อจากหน้าบรรทัดนี้"
 
 
 #: default_menu.json:0
 msgid "Insert at video time (before)"
-msgstr ""
+msgstr "เพิ่มบรรทัดใหม่ ในเวลาก่อนหน้าบรรทัดนี้"
 
 
 #: default_menu.json:0
 msgid "Insert at video time (after)"
-msgstr ""
+msgstr "เพิ่มบรรทัดใหม่ ในเวลาต่อจากบรรทัดนี้"
 
 
 #: default_menu.json:0
 msgid "&Join (concatenate)"
-msgstr ""
+msgstr "รวมข้อความ (รวมบรรทัดทั้งหมดเป็นหนึ่งบรรทัดเก็บข้อความทั้งหมด)"
 
 
 #: default_menu.json:0
 msgid "Join (keep first)"
-msgstr ""
+msgstr "รวมข้อความ (รวมบรรทัดทั้งหมดเป็นหนึ่งบรรทัดเก็บแค่ข้อความบนสุด)"
 
 
 #: default_menu.json:0
 msgid "Join (as Karaoke)"
-msgstr ""
+msgstr "รวมข้อความ (รวมบรรทัดทั้งหมดเป็นหนึ่งบรรทัดเป็นคาราโอะเกะ)"
 
 
 #: default_menu.json:0
 msgid "&Make times continuous (change start)"
-msgstr ""
+msgstr "ทำเวลาให้ต่อเนื่องกัน (เปลี่ยนจุดเริ่มต้น)"
 
 
 #: default_menu.json:0
 msgid "&Make times continuous (change end)"
-msgstr ""
+msgstr "ทำเวลาให้ต่อเนื่องกัน (เปลี่ยนจุดสิ้นสุด)"
 
 
 #: default_menu.json:0
 msgid "&File"
-msgstr ""
+msgstr "ไ&ฟล์"
 
 
 #: default_menu.json:0
 msgid "&Subtitle"
-msgstr ""
+msgstr "คำ&บรรยาย"
 
 
 #: default_menu.json:0
 msgid "&Timing"
-msgstr ""
+msgstr "เว&ลา"
 
 
 #: default_menu.json:0
 msgid "&Video"
-msgstr ""
+msgstr "&วิดีโอ"
 
 
 #: default_menu.json:0
 msgid "&Audio"
-msgstr ""
+msgstr "เ&สียง"
 
 
 #: default_menu.json:0
 msgid "A&utomation"
-msgstr ""
+msgstr "&อัตโนมัติ"
 
 
 #: default_menu.json:0
 msgid "Vie&w"
-msgstr ""
+msgstr "มุมมอ&ง"
 
 
 #: default_menu.json:0
 msgid "&Help"
-msgstr ""
+msgstr "&ช่วยเหลือ"
 
 
 #: default_menu.json:0
 msgid "&Insert Lines"
-msgstr ""
+msgstr "เพิ่มบรรทัด"
 
 
 #: default_menu.json:0
 msgid "Join Lines"
-msgstr ""
+msgstr "รวมบรรทัด"
 
 
 #: default_menu.json:0
 msgid "Sort All Lines"
-msgstr ""
+msgstr "จัดเรียงทุกบรรทัด"
 
 
 #: default_menu.json:0
 msgid "Sort Selected Lines"
-msgstr ""
+msgstr "จัดเรียงบรรทัดที่เลือก"
 
 
 #: default_menu.json:0
 msgid "Make Times Continuous"
-msgstr ""
+msgstr "ทำให้เวลาต่อเนื่องกัน"
 
 
 #: default_menu.json:0
 msgid "Set &Zoom"
-msgstr ""
+msgstr "ตั้งค่าการซูม"
 
 
 #: default_menu.json:0
 msgid "Override &AR"
-msgstr ""
+msgstr "เปลี่ยนขนาดวิดีโอ"
 
 
 #: default_menu.json:0
 msgid "&Export As..."
-msgstr ""
+msgstr "ส่งออกเป็น..."
 
 
 #: default_hotkey.json:602:
 msgid "Subtitle Edit Box"
-msgstr ""
+msgstr "กล่องแก้ไขคำบรรยาย"
 
 
 #: ../automation/autoload/macro-1-edgeblur.lua:6
 msgid "Add edgeblur"
-msgstr ""
+msgstr "เพิ่มขอบเบลอ"
 
 
 #: ../automation/autoload/macro-1-edgeblur.lua:7
 msgid "A demo macro showing how to do simple line modification in Automation 4"
-msgstr ""
+msgstr "สาธิตมาโครที่แสดงวิธีการปรับเปลี่ยนบรรทัดอย่างง่ายใน Automation 4"
 
 
 #: ../automation/autoload/macro-1-edgeblur.lua:21
 msgid "Adds \\be1 tags to all selected lines"
-msgstr ""
+msgstr "เพิ่ม \\be1 แท็กในบรรทัดที่เลือกทั้งหมด"
 
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:32
 msgid "Automatic karaoke lead-in"
-msgstr ""
+msgstr "นำเข้าคาราโอเกะอัตโนมัติ"
 
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:33
 msgid "Join up the ends of selected lines and add \\k tags to shift karaoke"
-msgstr ""
+msgstr "ต่อท้ายบรรทัดที่เลือกและเพิ่ม \\k แท็กเพื่อเปลี่ยนคาราโอเกะ"
 
 
 #: ../automation/autoload/cleantags-autoload.lua:31
 msgid "Clean Tags"
-msgstr ""
+msgstr "ล้างแท็ก"
 
 
 #: ../automation/autoload/cleantags-autoload.lua:32
 msgid "Clean subtitle lines by re-arranging ASS tags and override blocks within the lines"
-msgstr ""
+msgstr "ล้างบรรทัดคำบรรยายโดยการจัดเรียงแท็ก ASS ใหม่และลบล้างบล็อกภายในบรรทัด"
 
 
 #: ../automation/autoload/kara-templater.lua:36
 msgid "Karaoke Templater"
-msgstr ""
+msgstr "ตัวเทมเพลตคาราโอเกะ"
 
 
 #: ../automation/autoload/kara-templater.lua:37
 msgid "Macro and export filter to apply karaoke effects using the template language"
-msgstr ""
+msgstr "มาโครและตัวกรองการส่งออกเพื่อใช้เอฟเฟกต์คาราโอเกะโดยใช้ภาษาแม่แบบ"
 
 
 #: ../automation/autoload/kara-templater.lua:858
 msgid "Apply karaoke template"
-msgstr ""
+msgstr "ใช้เทมเพลตคาราโอเกะ"
 
 
 #: ../automation/autoload/kara-templater.lua:858
 msgid "Applies karaoke effects from templates"
-msgstr ""
+msgstr "ใช้เอฟเฟกต์คาราโอเกะจากเทมเพลต"
 
 
 #: ../automation/autoload/kara-templater.lua:859
 msgid "Karaoke template"
-msgstr ""
+msgstr "เทมเพลตคาราโอเกะ"
 
 
 #: ../automation/autoload/kara-templater.lua:859
 msgid "Apply karaoke effect templates to the subtitles.\n\nSee the help file for information on how to use this."
-msgstr ""
+msgstr "ใช้เทมเพลตเอฟเฟกต์คาราโอเกะกับคำบรรยาย \n\nดูไฟล์วิธีใช้สำหรับข้อมูลเกี่ยวกับวิธีการใช้งาน"
 
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
-msgstr ""
+msgstr "แท็กแถบ"
 
 
 #: ../automation/autoload/strip-tags.lua:18
 msgid "Remove all override tags from selected lines"
-msgstr ""
+msgstr "ลบแท็กแทนที่ทั้งหมดออกจากบรรทัดที่เลือก"
 
 
 #: ../automation/autoload/strip-tags.lua:28
 msgid "strip tags"
-msgstr ""
+msgstr "แท็กแถบ"
 
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 msgid "Make fullwidth"
-msgstr ""
+msgstr "ทำให้เต็มความกว้าง"
 
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:80
 msgid "Convert Latin letters to SJIS fullwidth letters"
-msgstr ""
+msgstr "แปลงตัวอักษรละตินเป็นตัวอักษรเต็มและความกว้าง SJIS"
 
 
 #: aegisub.desktop:4
 msgid "Aegisub"
-msgstr ""
+msgstr "Aegisub"
 
 
 #: aegisub.desktop:5
 msgid "Subtitle Editor"
-msgstr ""
+msgstr "ตัวแก้ไขคำบรรยาย"
 
 
 #: aegisub.desktop:6
 msgid "Create and edit subtitles for film and videos."
-msgstr ""
+msgstr "สร้างและแก้ไขคำบรรยายสำหรับภาพยนตร์และวิดีโอ"
 
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Installing runtime libraries..."
-msgstr ""
+msgstr "การติดตั้งไลบรารี runtime..."
 
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Create a start menu icon"
-msgstr ""
+msgstr "เริ่มสร้างเมนูไอคอน"
 
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Automatically check for new versions of Aegisub"
-msgstr ""
+msgstr "ตรวจสอบ Aegisub เวอร์ชันใหม่โดยอัตโนมัติ"
 
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Update Checker:"
-msgstr ""
+msgstr "ตัวตรวจสอบการอัพเดท:"
 
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "This will install Aegisub {#BUILD_GIT_VERSION_STRING} on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code."
-msgstr ""
+msgstr "เพื่อที่จะติดตั้ง Aegisub {#BUILD_GIT_VERSION_STRING} บนคอมพิวเตอร์ของคุณ %n%nAegisub ได้รับการคุ้มครองโดย GNU General Public License เวอร์ชัน 2 ซึ่งหมายความว่าคุณสามารถใช้แอปพลิเคชันเพื่อวัตถุประสงค์ใดๆ โดยไม่เสียค่าใช้จ่าย แต่จะไม่มีการรับประกันใดๆทั้งสิ้น %n%nดูที่เว็บไซต์ Aegisub สำหรับข้อมูลเกี่ยวกับการรับซอร์สโค้ด"
