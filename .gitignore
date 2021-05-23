@@ -38,3 +38,5 @@ subprojects/proxy-libintl*
 subprojects/wxWidgets
 subprojects/zlib-*
 subprojects/dirent-*
+subprojects/hunspell-*
+subprojects/uchardet-*
