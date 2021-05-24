@@ -258,7 +258,7 @@ conf_platform = configuration_data()
 conf_platform.set('DEFAULT_PLAYER_AUDIO', def_audio)
 
 luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'))
-if luajit.found()
+if luajit.found() and luajit.type_name() != 'internal'
     luajit_test = cc.run('''#include <lauxlib.h>
 int main(void)
 {
@@ -287,7 +287,7 @@ if not deps.contains(luajit)
     luajit_inc = luajit_sp.get_variable('src_inc')
     deps += luajit_sp.get_variable('luajit_dep')
 else
-    luajit_inc = include_directories(luajit.get_pkgconfig_variable('includedir'))
+    luajit_inc = include_directories(luajit.get_variable('includedir'))
 endif
 subdir('subprojects/luabins/src')
 

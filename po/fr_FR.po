@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-08-24 16:41+0200\n"
 "PO-Revision-Date: \n"
-"Last-Translator: Cirrus Wazza <cirrus_wazza@gmx.fr>\n"
+"Last-Translator: Ichunjo\n"
 "Language-Team: Céréales Killer <cerkil@free.fr>\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Bookmarks: -1,596,-1,-1,-1,-1,-1,-1,-1,-1\n"
-"X-Generator: Poedit 1.8.4\n"
+"X-Generator: Poedit 2.4.3\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../src/dialog_shift_times.cpp:92
@@ -55,7 +55,7 @@ msgstr "depuis %d vers"
 
 #: ../src/dialog_shift_times.cpp:115
 msgid "sel "
-msgstr "sél."
+msgstr "sél. "
 
 #: ../src/dialog_shift_times.cpp:133 ../src/command/time.cpp:153
 msgid "Shift Times"
@@ -63,7 +63,7 @@ msgstr "Décalage temps"
 
 #: ../src/dialog_shift_times.cpp:142
 msgid "&Time: "
-msgstr "&Temps :"
+msgstr "&Temps : "
 
 #: ../src/dialog_shift_times.cpp:143
 msgid "Shift by time"
@@ -71,7 +71,7 @@ msgstr "Décalage temporel"
 
 #: ../src/dialog_shift_times.cpp:146
 msgid "&Frames: "
-msgstr "&Images :"
+msgstr "&Images : "
 
 #: ../src/dialog_shift_times.cpp:147
 msgid "Shift by frames"
@@ -90,24 +90,19 @@ msgid "For&ward"
 msgstr "En a&vant"
 
 #: ../src/dialog_shift_times.cpp:157
-msgid ""
-"Shifts subs forward, making them appear later. Use if they are appearing too "
-"soon."
+msgid "Shifts subs forward, making them appear later. Use if they are appearing too soon."
 msgstr ""
-"Sous-titres décalés vers l'avant, apparition plus tardive. À utiliser s'ils "
-"arrivent trop tôt."
+"Sous-titres décalés vers l'avant, apparition plus tardive. À utiliser s'ils arrivent trop "
+"tôt."
 
 #: ../src/dialog_shift_times.cpp:159
 msgid "&Backward"
 msgstr "En a&rrière"
 
 #: ../src/dialog_shift_times.cpp:160
-msgid ""
-"Shifts subs backward, making them appear earlier. Use if they are appearing "
-"too late."
+msgid "Shifts subs backward, making them appear earlier. Use if they are appearing too late."
 msgstr ""
-"Sous-titres décalés vers l'arrière, appartion plus tôt. À utiliser s'ils "
-"arrivent trop tard."
+"Sous-titres décalés vers l'arrière, appartion plus tôt. À utiliser s'ils arrivent trop tard."
 
 #: ../src/dialog_shift_times.cpp:162
 msgid "&All rows"
@@ -162,12 +157,8 @@ msgid "Fix Styles"
 msgstr "Réparation de styles"
 
 #: ../src/export_fixstyle.cpp:46
-msgid ""
-"Fixes styles by replacing any style that isn't available on file with "
-"Default."
-msgstr ""
-"Répare les styles en remplaçant tout style absent dans le fichier par "
-"Default."
+msgid "Fixes styles by replacing any style that isn't available on file with Default."
+msgstr "Répare les styles en remplaçant tout style absent dans le fichier par Default."
 
 #: ../src/audio_karaoke.cpp:72
 msgid "Discard all uncommitted splits"
@@ -220,21 +211,19 @@ msgstr ""
 msgid "The file was not recognised as an Automation script: %s"
 msgstr "Le fichier n'a pas été reconnu comme un script d'automatisme : %s"
 
-#: ../src/auto4_base.cpp:496 ../src/command/timecode.cpp:74
-#: ../src/command/timecode.cpp:94 ../src/command/video.cpp:568
-#: ../src/command/audio.cpp:84 ../src/command/keyframe.cpp:74
+#: ../src/auto4_base.cpp:496 ../src/command/timecode.cpp:74 ../src/command/timecode.cpp:94
+#: ../src/command/video.cpp:568 ../src/command/audio.cpp:84 ../src/command/keyframe.cpp:74
 msgid "All Files"
-msgstr "Tous fichiers"
+msgstr "Tous les fichiers"
 
-#: ../src/auto4_base.cpp:502 ../src/command/timecode.cpp:74
-#: ../src/command/timecode.cpp:94 ../src/command/keyframe.cpp:74
-#: ../src/subtitle_format.cpp:312
+#: ../src/auto4_base.cpp:502 ../src/command/timecode.cpp:74 ../src/command/timecode.cpp:94
+#: ../src/command/keyframe.cpp:74 ../src/subtitle_format.cpp:312
 msgid "All Supported Formats"
-msgstr "Tout format supporté"
+msgstr "Tous les formats supportés"
 
 #: ../src/auto4_base.cpp:508
 msgid "File was not recognized as a script"
-msgstr "Le fichier n'a pas été reconnu comme un script"
+msgstr "Le fichier n'a pas été reconnu en tant que script"
 
 #: ../src/search_replace_engine.cpp:247 ../src/search_replace_engine.cpp:331
 msgid "replace"
@@ -244,8 +233,8 @@ msgstr "remplacer"
 #, c-format
 msgid "One match was replaced."
 msgid_plural "%d matches were replaced."
-msgstr[0] "Une correspondance a été remplacé."
-msgstr[1] "%d correspondances ont été remplacés"
+msgstr[0] "Une correspondance a été remplacée."
+msgstr[1] "%d correspondances ont été remplacées."
 
 #: ../src/search_replace_engine.cpp:335
 msgid "No matches found."
@@ -282,11 +271,11 @@ msgstr "FPS :"
 
 #: ../src/dialog_video_details.cpp:60
 msgid "Resolution:"
-msgstr "Résolution :"
+msgstr "Définition vidéo :"
 
 #: ../src/dialog_video_details.cpp:61
 msgid "Length:"
-msgstr "Longueur :"
+msgstr "Durée :"
 
 #: ../src/dialog_video_details.cpp:61
 #, c-format
@@ -299,8 +288,7 @@ msgstr[1] "%d images (%s)"
 msgid "Decoder:"
 msgstr "Décodeur :"
 
-#: ../src/dialog_video_details.cpp:65 ../src/preferences.cpp:165
-#: ../src/preferences.cpp:417
+#: ../src/dialog_video_details.cpp:65 ../src/preferences.cpp:165 ../src/preferences.cpp:417
 msgid "Video"
 msgstr "Vidéo"
 
@@ -314,8 +302,7 @@ msgstr "Appliquer aux styles"
 
 #: ../src/dialog_timing_processor.cpp:159
 msgid "Select styles to process. Unchecked ones will be ignored."
-msgstr ""
-"Choix des style à appliquer. Ceux qui ne sont pas cochés seront ignorés."
+msgstr "Choix des styles à appliquer. Ceux non-cochés seront ignorés."
 
 #: ../src/dialog_timing_processor.cpp:161 ../src/dialog_paste_over.cpp:88
 msgid "&All"
@@ -331,11 +318,10 @@ msgstr "Aucu&n"
 
 #: ../src/dialog_timing_processor.cpp:165
 msgid "Deselect all styles"
-msgstr "Écarter tous les styles."
+msgstr "Désélectionner tous les styles"
 
 #: ../src/dialog_timing_processor.cpp:168 ../src/command/app.cpp:207
-#: ../src/dialog_properties.cpp:138 ../src/preferences.cpp:127
-#: ../src/preferences.cpp:167
+#: ../src/dialog_properties.cpp:138 ../src/preferences.cpp:127 ../src/preferences.cpp:167
 msgid "Options"
 msgstr "Options"
 
@@ -381,23 +367,20 @@ msgstr "Activ&er"
 
 #: ../src/dialog_timing_processor.cpp:192
 msgid ""
-"Enable snapping of subtitles together if they are within a certain distance "
-"of each other"
-msgstr ""
-"Activer l'assemblage des sous-titres s'ils sont à moins d'une certaine "
-"distance"
+"Enable snapping of subtitles together if they are within a certain distance of each other"
+msgstr "Activer le collage des sous-titres s'ils sont à moins d'une certaine distance"
 
 #: ../src/dialog_timing_processor.cpp:195
 msgid "Max gap:"
-msgstr "Escapement maxi :"
+msgstr "Écart maxi :"
 
 #: ../src/dialog_timing_processor.cpp:196
 msgid ""
-"Maximum difference between start and end time for two subtitles to be made "
-"continuous, in milliseconds"
+"Maximum difference between start and end time for two subtitles to be made continuous, in "
+"milliseconds"
 msgstr ""
-"Différence maximale entre le début et la fin pour rendre deux sous-titres "
-"continus, en millisecondes"
+"Différence maximale entre le début et la fin pour rendre deux sous-titres continus, en "
+"millisecondes"
 
 #: ../src/dialog_timing_processor.cpp:197
 msgid "Max overlap:"
@@ -405,25 +388,25 @@ msgstr "Recouvrement maxi :"
 
 #: ../src/dialog_timing_processor.cpp:198
 msgid ""
-"Maximum overlap between the end and start time for two subtitles to be made "
-"continuous, in milliseconds"
+"Maximum overlap between the end and start time for two subtitles to be made continuous, in "
+"milliseconds"
 msgstr ""
-"Recouvrement maximal entre le début et la fin pour rendre deux sous-titres "
-"continus, en millisecondes"
+"Recouvrement maximal entre le début et la fin pour rendre deux sous-titres continus, en "
+"millisecondes"
 
 #: ../src/dialog_timing_processor.cpp:201
 msgid ""
-"Sets how to set the adjoining of lines. If set totally to left, it will "
-"extend or shrink start time of the second line; if totally to right, it will "
-"extend or shrink the end time of the first line."
+"Sets how to set the adjoining of lines. If set totally to left, it will extend or shrink "
+"start time of the second line; if totally to right, it will extend or shrink the end time of "
+"the first line."
 msgstr ""
-"Règle la façon de joindre des lignes. Si on règle tout à gauche, cela "
-"étendra ou réduira le temps de départ de la deuxième ligne ; tout à droite, "
-"cela étendra ou réduira le temps de fin de la première ligne."
+"Gère la façon de joindre des lignes. Si réglé tout à gauche, cela étendra ou réduira le "
+"temps de départ de la deuxième ligne ; tout à droite, cela étendra ou réduira le temps de "
+"fin de la première ligne."
 
 #: ../src/dialog_timing_processor.cpp:204
 msgid "Bias: Start <- "
-msgstr "Biais : Début <-"
+msgstr "Biais : Début <- "
 
 #: ../src/dialog_timing_processor.cpp:206
 msgid " -> End"
@@ -438,12 +421,10 @@ msgid "E&nable"
 msgstr "Activer"
 
 #: ../src/dialog_timing_processor.cpp:218
-msgid ""
-"Enable snapping of subtitles to nearest keyframe, if distance is within "
-"threshold"
+msgid "Enable snapping of subtitles to nearest keyframe, if distance is within threshold"
 msgstr ""
-"Permet le collage des sous-titres sur l'image clé la plus proche, si le "
-"seuil n'est pas dépassé"
+"Permet le collage des sous-titres sur l'image clé la plus proche, si le seuil n'est pas "
+"dépassé"
 
 #: ../src/dialog_timing_processor.cpp:229
 msgid "Starts before thres.:"
@@ -451,11 +432,11 @@ msgstr "Démarre avant seuil :"
 
 #: ../src/dialog_timing_processor.cpp:230
 msgid ""
-"Threshold for 'before start' distance, that is, how many milliseconds a "
-"subtitle must start before a keyframe to snap to it"
+"Threshold for 'before start' distance, that is, how many milliseconds a subtitle must start "
+"before a keyframe to snap to it"
 msgstr ""
-"Seuil de distance « avant début » définissant combien de millisecondes un "
-"sous-titre doit démarrer avant l'image clé pour s'y coller"
+"Seuil de distance « avant début » définissant combien de millisecondes un sous-titre doit "
+"démarrer avant l'image clé pour s'y coller"
 
 #: ../src/dialog_timing_processor.cpp:232
 msgid "Starts after thres.:"
@@ -463,11 +444,11 @@ msgstr "Démarre après seuil :"
 
 #: ../src/dialog_timing_processor.cpp:233
 msgid ""
-"Threshold for 'after start' distance, that is, how many milliseconds a "
-"subtitle must start after a keyframe to snap to it"
+"Threshold for 'after start' distance, that is, how many milliseconds a subtitle must start "
+"after a keyframe to snap to it"
 msgstr ""
-"Seuil de distance « après début » définissant combien de millisecondes un "
-"sous-titre doit démarrer après l'image clé pour s'y coller"
+"Seuil de distance « après début » définissant combien de millisecondes un sous-titre doit "
+"démarrer après l'image clé pour s'y coller"
 
 #: ../src/dialog_timing_processor.cpp:237
 msgid "Ends before thres.:"
@@ -475,11 +456,11 @@ msgstr "Finit avant seuil :"
 
 #: ../src/dialog_timing_processor.cpp:238
 msgid ""
-"Threshold for 'before end' distance, that is, how many milliseconds a "
-"subtitle must end before a keyframe to snap to it"
+"Threshold for 'before end' distance, that is, how many milliseconds a subtitle must end "
+"before a keyframe to snap to it"
 msgstr ""
-"Seuil de distance « avant fin » définissant combien de millisecondes un sous-"
-"titre doit finir avant l'image clé pour s'y coller"
+"Seuil de distance « avant fin » définissant combien de millisecondes un sous-titre doit "
+"finir avant l'image clé pour s'y coller"
 
 #: ../src/dialog_timing_processor.cpp:240
 msgid "Ends after thres.:"
@@ -487,11 +468,11 @@ msgstr "Finit après seuil :"
 
 #: ../src/dialog_timing_processor.cpp:241
 msgid ""
-"Threshold for 'after end' distance, that is, how many milliseconds a "
-"subtitle must end after a keyframe to snap to it"
+"Threshold for 'after end' distance, that is, how many milliseconds a subtitle must end after "
+"a keyframe to snap to it"
 msgstr ""
-"Seuil de distance « après fin » définissant combien de millisecondes un sous-"
-"titre doit finir après l'image clé pour s'y coller"
+"Seuil de distance « après fin » définissant combien de millisecondes un sous-titre doit "
+"finir après l'image clé pour s'y coller"
 
 #: ../src/dialog_timing_processor.cpp:349
 #, c-format
@@ -526,8 +507,7 @@ msgstr "Lecture des sous-titres d'un fichier Matroska."
 msgid "Styling Assistant"
 msgstr "Assistant de styles"
 
-#: ../src/dialog_styling_assistant.cpp:65
-#: ../src/dialog_styling_assistant.cpp:66
+#: ../src/dialog_styling_assistant.cpp:65 ../src/dialog_styling_assistant.cpp:66
 msgid "Current line"
 msgstr "Ligne active"
 
@@ -537,7 +517,7 @@ msgstr "Styles disponibles"
 
 #: ../src/dialog_styling_assistant.cpp:80
 msgid "Set style"
-msgstr "Régler  le style"
+msgstr "Régler le style"
 
 #: ../src/dialog_styling_assistant.cpp:87 ../src/dialog_translation.cpp:108
 msgid "Keys"
@@ -546,7 +526,7 @@ msgstr "Touches"
 #: ../src/dialog_styling_assistant.cpp:90 ../src/command/tool.cpp:142
 #: ../src/command/tool.cpp:226 ../src/dialog_translation.cpp:111
 msgid "Accept changes"
-msgstr "Valide les modifications"
+msgstr "Valider les modifications"
 
 #: ../src/dialog_styling_assistant.cpp:91 ../src/command/tool.cpp:153
 #: ../src/command/tool.cpp:237 ../src/dialog_translation.cpp:112
@@ -607,11 +587,11 @@ msgstr "Aller à"
 
 #: ../src/dialog_jumpto.cpp:72
 msgid "Frame: "
-msgstr "Image :"
+msgstr "Image : "
 
 #: ../src/dialog_jumpto.cpp:73
 msgid "Time: "
-msgstr "Temps :"
+msgstr "Temps : "
 
 #: ../src/dialog_style_manager.cpp:188
 msgid "Move style up"
@@ -623,11 +603,11 @@ msgstr "Descendre le style"
 
 #: ../src/dialog_style_manager.cpp:190
 msgid "Move style to top"
-msgstr "Mettre le style en tête"
+msgstr "Mettre le style en haut"
 
 #: ../src/dialog_style_manager.cpp:191
 msgid "Move style to bottom"
-msgstr "Mettre le style en pied"
+msgstr "Mettre le style en bas"
 
 #: ../src/dialog_style_manager.cpp:192
 msgid "Sort styles alphabetically"
@@ -639,7 +619,7 @@ msgstr "&Nouveau"
 
 #: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:579
 msgid "&Edit"
-msgstr "&Édition"
+msgstr "&Modifier"
 
 #: ../src/dialog_style_manager.cpp:205 ../src/preferences.cpp:580
 #: ../src/dialog_attachments.cpp:79
@@ -673,7 +653,7 @@ msgstr "Gestionnaire de styles"
 
 #: ../src/dialog_style_manager.cpp:273
 msgid "Catalog of available storages"
-msgstr "Catalogue des stocks disponibles"
+msgstr "Catalogue des stockages disponibles"
 
 #: ../src/dialog_style_manager.cpp:275
 msgid "New"
@@ -697,7 +677,7 @@ msgstr "&Importer depuis un script..."
 
 #: ../src/dialog_style_manager.cpp:296
 msgid "<- Copy to &storage"
-msgstr "<- Copier dan&s la banque"
+msgstr "<- Copier dan&s le stockage"
 
 #: ../src/dialog_style_manager.cpp:307
 msgid "Current script"
@@ -709,30 +689,31 @@ msgstr "Fermer"
 
 #: ../src/dialog_style_manager.cpp:454
 msgid "New storage name:"
-msgstr "Nouveau nom de stock :"
+msgstr "Nouveau nom de stockage :"
 
 #: ../src/dialog_style_manager.cpp:454
 msgid "New catalog entry"
-msgstr "Nouvelle entrée catalogue"
+msgstr "Nouvelle entrée de stockage"
 
 #: ../src/dialog_style_manager.cpp:469
 msgid "A catalog with that name already exists."
-msgstr "Un catalogue avec ce nom existe déjà."
+msgstr "Un stockage avec ce nom existe déjà."
 
 #: ../src/dialog_style_manager.cpp:469
 msgid "Catalog name conflict"
-msgstr "Conflit de nom de catalogue"
+msgstr "Conflit de nom de stockage"
 
 #: ../src/dialog_style_manager.cpp:476
 #, c-format
 msgid ""
-"The specified catalog name contains one or more illegal characters. They "
-"have been replaced with underscores instead.\n"
+"The specified catalog name contains one or more illegal characters. They have been replaced "
+"with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
 msgstr ""
-"Le nom de catalogue spécifié contient au moins un caractère interdit. Ils "
-"ont été remplacés par des soulignés.\n"
-"Le catalogue a été renommé en « %s »."
+
+"Le nom de stockage spécifié contient au moins un caractère interdit. Ils ont été remplacés "
+"par des tirets bas.\n"
+"Le stockage a été renommé en « %s »."
 
 #: ../src/dialog_style_manager.cpp:477
 msgid "Invalid characters"
@@ -741,19 +722,16 @@ msgstr "Caractères interdits"
 #: ../src/dialog_style_manager.cpp:490
 #, c-format
 msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
-msgstr "Êtes-vous sûr de vouloir supprimer le stock « %s » du catalogue ?"
+msgstr "Êtes-vous sûr de vouloir supprimer le stockage « %s » du catalogue ?"
 
 #: ../src/dialog_style_manager.cpp:491
 msgid "Confirm delete"
-msgstr "Suppression confirmée"
+msgstr "Confirmer la suppression"
 
 #: ../src/dialog_style_manager.cpp:509
 #, c-format
-msgid ""
-"There is already a style with the name \"%s\" in the current storage. "
-"Overwrite?"
-msgstr ""
-"Il existe déjà un style nommé « %s » dans la banque courante. Le remplacer ?"
+msgid "There is already a style with the name \"%s\" in the current storage. Overwrite?"
+msgstr "Il existe déjà un style « %s » dans le stockage courant. Le remplacer ?"
 
 #: ../src/dialog_style_manager.cpp:509 ../src/dialog_style_manager.cpp:536
 #: ../src/dialog_style_manager.cpp:714
@@ -762,11 +740,8 @@ msgstr "Conflit de nom de style"
 
 #: ../src/dialog_style_manager.cpp:536 ../src/dialog_style_manager.cpp:713
 #, c-format
-msgid ""
-"There is already a style with the name \"%s\" in the current script. "
-"Overwrite?"
-msgstr ""
-"Il existe déjà un style nommé « %s » dans le script actif. Le remplacer ?"
+msgid "There is already a style with the name \"%s\" in the current script. Overwrite?"
+msgstr "Il existe déjà un style « %s » dans le script actif. Le remplacer ?"
 
 #: ../src/dialog_style_manager.cpp:547
 msgid "style copy"
@@ -778,11 +753,11 @@ msgstr "collage de style"
 
 #: ../src/dialog_style_manager.cpp:620
 msgid "Confirm delete from storage"
-msgstr "Suppression du stock confirmée"
+msgstr "Confirmer suppression du stockage"
 
 #: ../src/dialog_style_manager.cpp:659
 msgid "Confirm delete from current"
-msgstr "Suppression de l'actif confirmée"
+msgstr "Confirmer suppression de l'actif"
 
 #: ../src/dialog_style_manager.cpp:663
 msgid "style delete"
@@ -795,7 +770,7 @@ msgstr "Ouvrir un fichier sous-titres"
 
 #: ../src/dialog_style_manager.cpp:698
 msgid "The selected file has no available styles."
-msgstr "Le fichier choisi n'a pas de style valide."
+msgstr "Le fichier sélectionné n'a pas de style valide."
 
 #: ../src/dialog_style_manager.cpp:698
 msgid "Error Importing Styles"
@@ -815,7 +790,7 @@ msgstr "importation de styles"
 
 #: ../src/dialog_style_manager.cpp:839
 msgid "Are you sure? This cannot be undone!"
-msgstr "Êtes-vous sur ? Cet action ne peut être annulée !"
+msgstr "Êtes-vous sûr ? Cette action ne peut être annulée !"
 
 #: ../src/dialog_style_manager.cpp:839
 msgid "Sort styles"
@@ -864,15 +839,15 @@ msgstr "« %s » n'est pas un nom de commande valide"
 
 #: ../src/command/video.cpp:84
 msgid "&Cinematic (2.35)"
-msgstr "&Cinématique (2.35)"
+msgstr "&cinématographique (2.35)"
 
 #: ../src/command/video.cpp:85
 msgid "Cinematic (2.35)"
-msgstr "Cinématique (2.35)"
+msgstr "Cinématographique (2.35)"
 
 #: ../src/command/video.cpp:86
 msgid "Force video to 2.35 aspect ratio"
-msgstr "Forcer la vidéo aux proportions 2.35"
+msgstr "Forcer la vidéo au rapport de forme 2.35"
 
 #: ../src/command/video.cpp:102
 msgid "C&ustom..."
@@ -884,7 +859,7 @@ msgstr "Personnalisation"
 
 #: ../src/command/video.cpp:104
 msgid "Force video to a custom aspect ratio"
-msgstr "Forcer la vidéo à un format d'image personnalisé"
+msgstr "Forcer la vidéo à un rapport de forme personnalisé"
 
 #: ../src/command/video.cpp:115
 msgid ""
@@ -893,22 +868,22 @@ msgid ""
 "  fractional (e.g. 16:9)\n"
 "  specific resolution (e.g. 853x480)"
 msgstr ""
-"Saisir les proportions soit :\n"
+"Saisir le rapport de forme soit :\n"
 " en décimale (ex. 2.35)\n"
 " en fraction (ex. 16:9)\n"
-" en résolution spécifique (ex. 853x480)"
+" en définition d'image spécifique (ex. 853x480)"
 
 #: ../src/command/video.cpp:116
 msgid "Enter aspect ratio"
-msgstr "Saisir les proportions"
+msgstr "Saisir le rapport de forme"
 
 #: ../src/command/video.cpp:135
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
-msgstr "Valeur incorrecte ! Les proportions doivent être entre 0.5 et 5.0."
+msgstr "Valeur incorrecte ! Le rapport de forme doit être compris entre 0.5 et 5.0."
 
 #: ../src/command/video.cpp:135
 msgid "Invalid Aspect Ratio"
-msgstr "Proportions invalides"
+msgstr "Rapport de forme invalide"
 
 #: ../src/command/video.cpp:145
 msgid "&Default"
@@ -920,7 +895,7 @@ msgstr "Défaut"
 
 #: ../src/command/video.cpp:147
 msgid "Use video's original aspect ratio"
-msgstr "Utiliser le format d'origine de la vidéo"
+msgstr "Utiliser le rapport de forme d'origine de la vidéo"
 
 #: ../src/command/video.cpp:163
 msgid "&Fullscreen (4:3)"
@@ -932,7 +907,7 @@ msgstr "Plein écran (4:3)"
 
 #: ../src/command/video.cpp:165
 msgid "Force video to 4:3 aspect ratio"
-msgstr "Forcer la vidéo au format 4:3"
+msgstr "Forcer la vidéo au rapport de forme 4:3"
 
 #: ../src/command/video.cpp:181
 msgid "&Widescreen (16:9)"
@@ -944,7 +919,7 @@ msgstr "Écran large (16:9)"
 
 #: ../src/command/video.cpp:183
 msgid "Force video to 16:9 aspect ratio"
-msgstr "Forcer la vidéo au format 16:9"
+msgstr "Forcer la vidéo au rapport de forme 16:9"
 
 #: ../src/command/video.cpp:200
 msgid "&Close Video"
@@ -963,24 +938,21 @@ msgid "Copy coordinates to Clipboard"
 msgstr "Copie les coordonnées dans le presse-papier"
 
 #: ../src/command/video.cpp:213
-msgid ""
-"Copy the current coordinates of the mouse over the video to the clipboard"
-msgstr ""
-"Copier les coordonnées actuelles de la souris sur la vidéo dans le presse-"
-"papier"
+msgid "Copy the current coordinates of the mouse over the video to the clipboard"
+msgstr "Copier les coordonnées actuelles de la souris sur la vidéo dans le presse-papier"
 
 #: ../src/command/video.cpp:222 ../src/command/video.cpp:223
 msgid "Cycle active subtitles provider"
-msgstr "Cycle de fournisseur de sous-titres actif"
+msgstr "Faire défiler les fournisseurs de sous-titres"
 
 #: ../src/command/video.cpp:224
 msgid "Cycle through the available subtitles providers"
-msgstr "À travers les sous-titres Cycle fournisseurs disponibles"
+msgstr "Faire défiler les fournisseurs de sous-titres disponibles"
 
 #: ../src/command/video.cpp:235
 #, c-format
 msgid "Subtitles provider set to %s"
-msgstr "Fournisseur de sous-titres défini à %s"
+msgstr "Fournisseur de sous-titres configuré sur %s"
 
 #: ../src/command/video.cpp:242
 msgid "&Detach Video"
@@ -991,12 +963,9 @@ msgid "Detach Video"
 msgstr "Détacher la vidéo"
 
 #: ../src/command/video.cpp:244
-msgid ""
-"Detach the video display from the main window, displaying it in a separate "
-"Window"
+msgid "Detach the video display from the main window, displaying it in a separate Window"
 msgstr ""
-"Détachez l'affichage vidéo à partir de la fenêtre principale, l'afficher "
-"dans une fenêtre séparée"
+"Détacher l'affichage vidéo de la fenêtre principale et l'afficher dans une fenêtre séparée"
 
 #: ../src/command/video.cpp:262
 msgid "Show &Video Details"
@@ -1012,30 +981,27 @@ msgstr "Afficher les détails vidéo"
 
 #: ../src/command/video.cpp:274 ../src/command/video.cpp:275
 msgid "Toggle video slider focus"
-msgstr "Bascule focus curseur vidéo"
+msgstr "Changer cible de saisie curseur vidéo"
 
 #: ../src/command/video.cpp:276
-msgid ""
-"Toggle focus between the video slider and the previous thing to have focus"
+msgid "Toggle focus between the video slider and the previous thing to have focus"
 msgstr ""
-"Basculer le focus entre le curseur de la vidéo et l'élément précédent à "
-"avoir le focus"
+"Changer la cible de saisie entre le curseur de la vidéo et l'élément précédemment ciblé"
 
 #: ../src/command/video.cpp:297 ../src/command/video.cpp:298
 msgid "Copy image to Clipboard"
-msgstr "Copie l'image dans le presse-papier"
+msgstr "Copier l'image dans le presse-papier"
 
 #: ../src/command/video.cpp:299
 msgid "Copy the currently displayed frame to the clipboard"
-msgstr "Copie l'image affichée dans le presse-papier"
+msgstr "Copier l'image affichée dans le presse-papier"
 
 #: ../src/command/video.cpp:308 ../src/command/video.cpp:309
 msgid "Copy image to Clipboard (no subtitles)"
-msgstr "Copie l'image dans le presse-papier (sans sous-titres)"
+msgstr "Copier l'image dans le presse-papier (sans sous-titres)"
 
 #: ../src/command/video.cpp:310
-msgid ""
-"Copy the currently displayed frame to the clipboard, without the subtitles"
+msgid "Copy the currently displayed frame to the clipboard, without the subtitles"
 msgstr "Copier l'image affichée dans le presse-papier sans les sous-titres"
 
 #: ../src/command/video.cpp:319 ../src/command/video.cpp:320
@@ -1044,15 +1010,15 @@ msgstr "Image suivante"
 
 #: ../src/command/video.cpp:321
 msgid "Seek to the next frame"
-msgstr "Chercher l'image suivante"
+msgstr "Aller à l'image suivante"
 
 #: ../src/command/video.cpp:330 ../src/command/video.cpp:331
 msgid "Next Boundary"
-msgstr "Limite suivante"
+msgstr "Délimitation suivante"
 
 #: ../src/command/video.cpp:332
 msgid "Seek to the next beginning or end of a subtitle"
-msgstr "Saute au début ou la fin du sous-titre suivant"
+msgstr "Aller au début ou la fin du sous-titre suivant"
 
 #: ../src/command/video.cpp:359 ../src/command/video.cpp:360
 msgid "Next Keyframe"
@@ -1060,12 +1026,11 @@ msgstr "Image clé suivante"
 
 #: ../src/command/video.cpp:361
 msgid "Seek to the next keyframe"
-msgstr "Chercher l'image clé suivante"
+msgstr "Aller à l'image clé suivante"
 
-#: ../src/command/video.cpp:373 ../src/command/video.cpp:374
-#: ../src/command/video.cpp:375
+#: ../src/command/video.cpp:373 ../src/command/video.cpp:374 ../src/command/video.cpp:375
 msgid "Fast jump forward"
-msgstr "Saut rapide avant"
+msgstr "Saut rapide vers l'avant"
 
 #: ../src/command/video.cpp:386 ../src/command/video.cpp:387
 msgid "Previous Frame"
@@ -1073,15 +1038,15 @@ msgstr "Image précédente"
 
 #: ../src/command/video.cpp:388
 msgid "Seek to the previous frame"
-msgstr "Chercher l'image précédente"
+msgstr "Aller à l'image précédente"
 
 #: ../src/command/video.cpp:397 ../src/command/video.cpp:398
 msgid "Previous Boundary"
-msgstr "Limite précédente"
+msgstr "Délimitation précédente"
 
 #: ../src/command/video.cpp:399
 msgid "Seek to the previous beginning or end of a subtitle"
-msgstr "Saute au début ou la fin du sous-titre précédent"
+msgstr "Aller au début ou la fin du sous-titre précédent"
 
 #: ../src/command/video.cpp:426 ../src/command/video.cpp:427
 msgid "Previous Keyframe"
@@ -1089,34 +1054,31 @@ msgstr "Image clé précédente"
 
 #: ../src/command/video.cpp:428
 msgid "Seek to the previous keyframe"
-msgstr "Chercher l'image clé précédente"
+msgstr "Aller à l'image clé précédente"
 
-#: ../src/command/video.cpp:448 ../src/command/video.cpp:449
-#: ../src/command/video.cpp:450
+#: ../src/command/video.cpp:448 ../src/command/video.cpp:449 ../src/command/video.cpp:450
 msgid "Fast jump backwards"
-msgstr "Saut rapide arrière"
+msgstr "Saut rapide en arrière"
 
 #: ../src/command/video.cpp:499 ../src/command/video.cpp:500
 msgid "Save PNG snapshot"
-msgstr "Enregistre une copie d'écran PNG"
+msgstr "Enregistrer une capture d'écran PNG"
 
 #: ../src/command/video.cpp:501
-msgid ""
-"Save the currently displayed frame to a PNG file in the video's directory"
-msgstr ""
-"Enregistrer l'image affichée en fichier PNG dans le répertoire de la vidéo"
+msgid "Save the currently displayed frame to a PNG file in the video's directory"
+msgstr "Enregistrer l'image affichée en fichier PNG dans le répertoire de la vidéo"
 
 #: ../src/command/video.cpp:510 ../src/command/video.cpp:511
 msgid "Save PNG snapshot (no subtitles)"
-msgstr "Enregistre une copie d'écran PNG (sans sous-titres)"
+msgstr "Enregistrer une capture d'écran PNG (sans sous-titres)"
 
 #: ../src/command/video.cpp:512
 msgid ""
-"Save the currently displayed frame without the subtitles to a PNG file in "
-"the video's directory"
+"Save the currently displayed frame without the subtitles to a PNG file in the video's "
+"directory"
 msgstr ""
-"Enregistrer l'image affichée sans les sous-titres en fichier PNG dans le "
-"répertoire de la vidéo"
+"Enregistrer l'image affichée sans les sous-titres en fichier PNG dans le répertoire de la "
+"vidéo"
 
 #: ../src/command/video.cpp:522
 msgid "&Jump to..."
@@ -1124,7 +1086,7 @@ msgstr "&Aller à..."
 
 #: ../src/command/video.cpp:524
 msgid "Jump to frame or time"
-msgstr "Va à l'image ou au temps"
+msgstr "Aller à l'image ou au temps"
 
 #: ../src/command/video.cpp:536
 msgid "Jump Video to &End"
@@ -1184,13 +1146,13 @@ msgstr "Ouvrir un clip vidéo de l'espace réservé avec une couleur unie"
 
 #: ../src/command/video.cpp:592 ../src/command/video.cpp:593
 msgid "Toggle autoscroll of video"
-msgstr "Bascule le mode de défilement de la vidéo"
+msgstr "Alterner le mode de défilement de la vidéo"
 
 #: ../src/command/video.cpp:594
 msgid "Toggle automatically seeking video to the start time of selected lines"
 msgstr ""
-"Bascule automatiquement le signal vidéo de recherche du temps de début de "
-"lignes sélectionnées"
+"Alterner automatiquement le signal vidéo de recherche du temps de début des lignes "
+"sélectionnées"
 
 #: ../src/command/video.cpp:609 ../src/command/video.cpp:610
 msgid "Play"
@@ -1202,10 +1164,9 @@ msgstr "Lire la vidéo depuis cette position"
 
 #: ../src/command/video.cpp:621 ../src/command/video.cpp:622
 msgid "Play line"
-msgstr "Lecture ligne"
+msgstr "Lire la ligne"
 
-#: ../src/command/video.cpp:623 ../src/command/audio.cpp:260
-#: ../src/command/audio.cpp:261
+#: ../src/command/video.cpp:623 ../src/command/audio.cpp:260 ../src/command/audio.cpp:261
 msgid "Play current line"
 msgstr "Lire la ligne active"
 
@@ -1219,11 +1180,11 @@ msgstr "Afficher le masque d'overscan"
 
 #: ../src/command/video.cpp:634
 msgid ""
-"Show a mask over the video, indicating areas that might get cropped off by "
-"overscan on televisions"
+"Show a mask over the video, indicating areas that might get cropped off by overscan on "
+"televisions"
 msgstr ""
-"Affiche un masque sur la vidéo indiquant les zones qui seront réduites par "
-"l'overscan sur les téléviseurs"
+"Afficher un masque sur la vidéo indiquant les zones qui seront coupées par l'overscan sur "
+"les téléviseurs"
 
 #: ../src/command/video.cpp:650
 msgid "&100%"
@@ -1235,11 +1196,11 @@ msgstr "100 %"
 
 #: ../src/command/video.cpp:652
 msgid "Set zoom to 100%"
-msgstr "Mettre le zoom à 100 %"
+msgstr "Régler le zoom à 100 %"
 
 #: ../src/command/video.cpp:669 ../src/command/video.cpp:670
 msgid "Stop video"
-msgstr "Arrêt vidéo"
+msgstr "Arrêter la vidéo"
 
 #: ../src/command/video.cpp:671
 msgid "Stop video playback"
@@ -1255,7 +1216,7 @@ msgstr "200 %"
 
 #: ../src/command/video.cpp:683
 msgid "Set zoom to 200%"
-msgstr "Mettre le zoom à 200 %"
+msgstr "Régler le zoom à 200 %"
 
 #: ../src/command/video.cpp:699
 msgid "&50%"
@@ -1267,31 +1228,31 @@ msgstr "50 %"
 
 #: ../src/command/video.cpp:701
 msgid "Set zoom to 50%"
-msgstr "Mettre le zoom à 50 %"
+msgstr "Régler le zoom à 50 %"
 
 #: ../src/command/video.cpp:717 ../src/command/video.cpp:718
 msgid "Zoom In"
-msgstr "Zoom avant"
+msgstr "Agrandir"
 
 #: ../src/command/video.cpp:719
 msgid "Zoom video in"
-msgstr "Zoom avant vidéo"
+msgstr "Agrandir la vidéo"
 
 #: ../src/command/video.cpp:729 ../src/command/video.cpp:730
 msgid "Zoom Out"
-msgstr "Zoom arrière"
+msgstr "Rétrécir"
 
 #: ../src/command/video.cpp:731
 msgid "Zoom video out"
-msgstr "Zoom arrière vidéo"
+msgstr "Rétrécir la vidéo"
 
 #: ../src/command/edit.cpp:131 ../src/command/edit.cpp:831
 msgid "paste"
-msgstr "colle"
+msgstr "coller"
 
 #: ../src/command/edit.cpp:369
 msgid "set color"
-msgstr "réglage couleur"
+msgstr "régler couleur"
 
 #: ../src/command/edit.cpp:383
 msgid "Primary Color..."
@@ -1303,8 +1264,7 @@ msgstr "Couleur principale"
 
 #: ../src/command/edit.cpp:385
 msgid "Set the primary fill color (\\c) at the cursor position"
-msgstr ""
-"Régler la couleur principale de remplissage (\\c) à la position du curseur"
+msgstr "Définir la couleur principale de remplissage (\\c) à la position du curseur"
 
 #: ../src/command/edit.cpp:395
 msgid "Secondary Color..."
@@ -1316,9 +1276,7 @@ msgstr "Couleur secondaire"
 
 #: ../src/command/edit.cpp:397
 msgid "Set the secondary (karaoke) fill color (\\2c) at the cursor position"
-msgstr ""
-"Régler la couleur secondaire (karaoké) de remplissage (\\2c) à la position "
-"du curseur"
+msgstr "Définir la couleur secondaire de remplissage (karaoké) (\\2c) à la position du curseur"
 
 #: ../src/command/edit.cpp:407
 msgid "Outline Color..."
@@ -1330,82 +1288,70 @@ msgstr "Couleur du contour"
 
 #: ../src/command/edit.cpp:409
 msgid "Set the outline color (\\3c) at the cursor position"
-msgstr "Régler la couleur du contour (\\3c) à la position du curseur"
+msgstr "Définir la couleur du contour (\\3c) à la position du curseur"
 
 #: ../src/command/edit.cpp:419
 msgid "Shadow Color..."
-msgstr "Couleur de l’ombre..."
+msgstr "Couleur de l'ombre..."
 
 #: ../src/command/edit.cpp:420
 msgid "Shadow Color"
-msgstr "Couleur de l’ombre"
+msgstr "Couleur de l'ombre"
 
 #: ../src/command/edit.cpp:421
 msgid "Set the shadow color (\\4c) at the cursor position"
-msgstr "Régler la couleur de l'ombre (\\4c) à la position du curseur"
+msgstr "Définir la couleur de l'ombre (\\4c) à la position du curseur"
 
 #: ../src/command/edit.cpp:431 ../src/command/edit.cpp:432
 msgid "Toggle Bold"
-msgstr "Passer en Gras"
+msgstr "Alterner le gras"
 
 #: ../src/command/edit.cpp:433
-msgid ""
-"Toggle bold (\\b) for the current selection or at the current cursor position"
-msgstr ""
-"Passer en gras (\\b) pour la sélection en cours ou à la position actuelle du "
-"curseur"
+msgid "Toggle bold (\\b) for the current selection or at the current cursor position"
+msgstr "Alterner le gras (\\b) pour la sélection en cours ou à la position actuelle du curseur"
 
 #: ../src/command/edit.cpp:436
 msgid "toggle bold"
-msgstr "Passer en gras"
+msgstr "alterner le gras"
 
 #: ../src/command/edit.cpp:443 ../src/command/edit.cpp:444
 msgid "Toggle Italics"
-msgstr "Passer en Italique"
+msgstr "Alterner l'italique"
 
 #: ../src/command/edit.cpp:445
-msgid ""
-"Toggle italics (\\i) for the current selection or at the current cursor "
-"position"
+msgid "Toggle italics (\\i) for the current selection or at the current cursor position"
 msgstr ""
-"Passer en italique (\\i) pour la sélection en cours ou à la position "
-"actuelle du curseur"
+"Alterner l'italique (\\i) pour la sélection en cours ou à la position actuelle du curseur"
 
 #: ../src/command/edit.cpp:448
 msgid "toggle italic"
-msgstr "Passer en italique"
+msgstr "alterner l'italique"
 
 #: ../src/command/edit.cpp:455 ../src/command/edit.cpp:456
 msgid "Toggle Underline"
-msgstr "Passer en Souligné"
+msgstr "Alterner le soulignage"
 
 #: ../src/command/edit.cpp:457
-msgid ""
-"Toggle underline (\\u) for the current selection or at the current cursor "
-"position"
+msgid "Toggle underline (\\u) for the current selection or at the current cursor position"
 msgstr ""
-"Passer en souligné (\\u) pour la sélection en cours ou à la position "
-"actuelle du curseur"
+"Alterner le soulignage (\\u) pour la sélection en cours ou à la position actuelle du curseur"
 
 #: ../src/command/edit.cpp:460
 msgid "toggle underline"
-msgstr "Passer en Souligné"
+msgstr "alterner le soulignage"
 
 #: ../src/command/edit.cpp:467 ../src/command/edit.cpp:468
 msgid "Toggle Strikeout"
-msgstr "Passer en Barré"
+msgstr "Alterner la biffure"
 
 #: ../src/command/edit.cpp:469
-msgid ""
-"Toggle strikeout (\\s) for the current selection or at the current cursor "
-"position"
+msgid "Toggle strikeout (\\s) for the current selection or at the current cursor position"
 msgstr ""
-"Passer en barré (\\s) pour la sélection en cours ou à la position actuelle "
-"du curseur"
+"Alterner la biffure (\\s) pour la sélection en cours ou à la position actuelle du curseur"
 
 #: ../src/command/edit.cpp:472
 msgid "toggle strikeout"
-msgstr "Passer en Barré"
+msgstr "alterner la biffure"
 
 #: ../src/command/edit.cpp:479
 msgid "Font Face..."
@@ -1413,15 +1359,15 @@ msgstr "Police personnalisée..."
 
 #: ../src/command/edit.cpp:480 ../src/preferences_base.cpp:251
 msgid "Font Face"
-msgstr "Police personnalisée"
+msgstr "Police d'écriture"
 
 #: ../src/command/edit.cpp:481
 msgid "Select a font face and size"
-msgstr "Sélectionnez une police et la taille"
+msgstr "Sélectionner police d'écriture et taille"
 
 #: ../src/command/edit.cpp:508
 msgid "set font"
-msgstr "régler la police"
+msgstr "définir police d'écriture"
 
 #: ../src/command/edit.cpp:535
 msgid "Find and R&eplace..."
@@ -1433,7 +1379,7 @@ msgstr "Chercher et remplacer"
 
 #: ../src/command/edit.cpp:537
 msgid "Find and replace words in subtitles"
-msgstr "Cherche et remplace des mots dans les sous-titres"
+msgstr "Chercher et remplacer des mots dans les sous-titres"
 
 #: ../src/command/edit.cpp:598
 msgid "&Copy Lines"
@@ -1445,71 +1391,71 @@ msgstr "Copier des lignes"
 
 #: ../src/command/edit.cpp:600
 msgid "Copy subtitles to the clipboard"
-msgstr "Copiez les sous-titres dans le presse-papiers"
+msgstr "Copier les sous-titres dans le presse-papiers"
 
 #: ../src/command/edit.cpp:621
 msgid "Cu&t Lines"
-msgstr "Co&uper des lignes"
+msgstr "Co&uper les lignes"
 
 #: ../src/command/edit.cpp:622
 msgid "Cut Lines"
-msgstr "Couper des lignes"
+msgstr "Couper les lignes"
 
 #: ../src/command/edit.cpp:623
 msgid "Cut subtitles"
-msgstr "Couper des sous-titres"
+msgstr "Couper les sous-titres"
 
 #: ../src/command/edit.cpp:630
 msgid "cut lines"
-msgstr "Couper des lignes"
+msgstr "couper les lignes"
 
 #: ../src/command/edit.cpp:638
 msgid "De&lete Lines"
-msgstr "Supprimer des &lignes"
+msgstr "Supprimer les &lignes"
 
 #: ../src/command/edit.cpp:639
 msgid "Delete Lines"
-msgstr "Suppression de lignes"
+msgstr "Supprimer les lignes"
 
 #: ../src/command/edit.cpp:640
 msgid "Delete currently selected lines"
-msgstr "Supprime les lignes sélectionnées"
+msgstr "Supprimer les lignes sélectionnées"
 
 #: ../src/command/edit.cpp:643
 msgid "delete lines"
-msgstr "Suppression de lignes"
+msgstr "supprimer les lignes"
 
 #: ../src/command/edit.cpp:708 ../src/command/edit.cpp:1093
 msgid "split"
-msgstr "divise"
+msgstr "diviser"
 
 #: ../src/command/edit.cpp:708
 msgid "duplicate lines"
-msgstr "dupliquer des lignes"
+msgstr "dupliquer les lignes"
 
 #: ../src/command/edit.cpp:715
 msgid "&Duplicate Lines"
-msgstr "&Dupliquer des lignes"
+msgstr "&Dupliquer les lignes"
 
 #: ../src/command/edit.cpp:716
 msgid "Duplicate Lines"
-msgstr "Dupliquer des lignes"
+msgstr "Dupliquer les lignes"
 
 #: ../src/command/edit.cpp:717
 msgid "Duplicate the selected lines"
-msgstr "Duplique les lignes sélectionnées"
+msgstr "Dupliquer les lignes sélectionnées"
 
 #: ../src/command/edit.cpp:726 ../src/command/edit.cpp:727
 msgid "Split lines after current frame"
-msgstr "Scinder les lignes après l'image actuelle"
+msgstr "Scinder les lignes après l'image en cours"
 
 #: ../src/command/edit.cpp:728
 msgid ""
-"Split the current line into a line which ends on the current frame and a "
-"line which starts on the next frame"
+"Split the current line into a line which ends on the current frame and a line which starts "
+"on the next frame"
 msgstr ""
-"Scinder la ligne en cours en une ligne qui se termine sur l'image actuelle "
-"et une ligne qui démarre sur l'image suivante"
+"Scinder la ligne en cours en une ligne qui se termine à l'image actuelle et une ligne qui "
+"démarre à l'image suivante"
 
 #: ../src/command/edit.cpp:738 ../src/command/edit.cpp:739
 msgid "Split lines before current frame"
@@ -1517,11 +1463,11 @@ msgstr "Scinder les lignes avant l'image actuelle"
 
 #: ../src/command/edit.cpp:740
 msgid ""
-"Split the current line into a line which ends on the previous frame and a "
-"line which starts on the current frame"
+"Split the current line into a line which ends on the previous frame and a line which starts "
+"on the current frame"
 msgstr ""
-"Scinder la ligne en cours en une ligne qui se termine sur l'image précédente "
-"et une ligne qui démarre sur l'image actuelle"
+"Scinder la ligne en cours en une ligne qui se termine à l'image précédente et une ligne qui "
+"démarre à l'image actuelle"
 
 #: ../src/command/edit.cpp:775
 msgid "As &Karaoke"
@@ -1533,29 +1479,27 @@ msgstr "En karaoké"
 
 #: ../src/command/edit.cpp:777
 msgid "Join selected lines in a single one, as karaoke"
-msgstr "Fusionner lignes sélectionnées en une seule, comme le karaoké"
+msgstr "Fusionner les lignes sélectionnées en une seule, comme un karaoké"
 
 #: ../src/command/edit.cpp:780
 msgid "join as karaoke"
-msgstr "Joindre en karaoké"
+msgstr "joindre en karaoké"
 
 #: ../src/command/edit.cpp:786
 msgid "&Concatenate"
-msgstr "&Chaînage"
+msgstr "&Concaténer"
 
 #: ../src/command/edit.cpp:787
 msgid "Concatenate"
-msgstr "Enchaîner"
+msgstr "Concaténer"
 
 #: ../src/command/edit.cpp:788
 msgid "Join selected lines in a single one, concatenating text together"
-msgstr ""
-"Fusionner les lignes sélectionnées en une seule, concaténation du texte "
-"ensemble"
+msgstr "Fusionner les lignes sélectionnées en une seule, tout en concaténant le texte"
 
 #: ../src/command/edit.cpp:791 ../src/command/edit.cpp:802
 msgid "join lines"
-msgstr "jonction de lignes"
+msgstr "fusionner lignes"
 
 #: ../src/command/edit.cpp:797
 msgid "Keep &First"
@@ -1566,48 +1510,45 @@ msgid "Keep First"
 msgstr "Garder la première"
 
 #: ../src/command/edit.cpp:799
-msgid ""
-"Join selected lines in a single one, keeping text of first and discarding "
-"remaining"
+msgid "Join selected lines in a single one, keeping text of first and discarding remaining"
 msgstr ""
-"Fusionner les lignes sélectionnées en une seule, garder le texte du premier "
-"et rejeter le restant"
+"Fusionner les lignes sélectionnées en une seule, et ne garder que le texte de la première"
 
 #: ../src/command/edit.cpp:840
 msgid "&Paste Lines"
-msgstr "Coller des lignes"
+msgstr "Coller les lignes"
 
 #: ../src/command/edit.cpp:841
 msgid "Paste Lines"
-msgstr "Coller des lignes"
+msgstr "Coller les lignes"
 
 #: ../src/command/edit.cpp:842
 msgid "Paste subtitles"
-msgstr "Coller des sous-titres"
+msgstr "Coller les sous-titres"
 
 #: ../src/command/edit.cpp:871
 msgid "Paste Lines &Over..."
-msgstr "C&oller des lignes sur..."
+msgstr "C&oller les lignes sur..."
 
 #: ../src/command/edit.cpp:872
 msgid "Paste Lines Over"
-msgstr "Coller des lignes sur"
+msgstr "Coller les lignes sur"
 
 #: ../src/command/edit.cpp:873
 msgid "Paste subtitles over others"
-msgstr "Coller les sous-titres sur les autres"
+msgstr "Coller les sous-titres sur d'autres"
 
 #: ../src/command/edit.cpp:956
 msgid "Recom&bine Lines"
-msgstr "Recom&biner des lignes"
+msgstr "Recom&biner les lignes"
 
 #: ../src/command/edit.cpp:957
 msgid "Recombine Lines"
-msgstr "Recombiner des lignes"
+msgstr "Recombiner les lignes"
 
 #: ../src/command/edit.cpp:958
 msgid "Recombine subtitles which have been split and merged"
-msgstr "Recombiner les sous-titres qui ont été coupés et fusionnés"
+msgstr "Recombiner des sous-titres qui ont été coupés et fusionnés"
 
 #: ../src/command/edit.cpp:1028
 msgid "combining"
@@ -1619,72 +1560,66 @@ msgstr "Couper des lignes (en karaoké)"
 
 #: ../src/command/edit.cpp:1036
 msgid "Use karaoke timing to split line into multiple smaller lines"
-msgstr ""
-"Utiliser tempo du karaoke pour couper la ligne en plusieurs petites lignes"
+msgstr "Utiliser les temps karaoké pour couper la ligne en plusieurs petites lignes"
 
 #: ../src/command/edit.cpp:1070
 msgid "splitting"
 msgstr "division"
 
-#: ../src/command/edit.cpp:1098 ../src/command/edit.cpp:1099
-#: ../src/subs_edit_ctrl.cpp:375
+#: ../src/command/edit.cpp:1098 ../src/command/edit.cpp:1099 ../src/subs_edit_ctrl.cpp:375
 msgid "Split at cursor (estimate times)"
 msgstr "Couper au curseur (durée estimée)"
 
 #: ../src/command/edit.cpp:1100
 msgid ""
-"Split the current line at the cursor, dividing the original line's duration "
-"between the new ones"
+"Split the current line at the cursor, dividing the original line's duration between the new "
+"ones"
 msgstr ""
-"Couper la ligne en cours au niveau du curseur, en divisant la durée de la "
-"ligne d'origine entre les nouveaux"
+"Couper la ligne en cours au niveau du curseur, en divisant la durée de la ligne d'origine "
+"entre les nouveaux"
 
-#: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
-#: ../src/subs_edit_ctrl.cpp:374
+#: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115 ../src/subs_edit_ctrl.cpp:374
 msgid "Split at cursor (preserve times)"
 msgstr "Couper au curseur (durée préservée)"
 
 #: ../src/command/edit.cpp:1116
-msgid ""
-"Split the current line at the cursor, setting both lines to the original "
-"line's times"
+msgid "Split the current line at the cursor, setting both lines to the original line's times"
 msgstr ""
-"Couper la ligne en cours au niveau du curseur, en plaçant les deux lignes "
-"aux temps de la ligne originale"
+"Couper la ligne en cours au niveau du curseur, en plaçant les deux lignes aux temps de la "
+"ligne originale"
 
 #: ../src/command/edit.cpp:1125 ../src/command/edit.cpp:1126
 msgid "Split at cursor (at video frame)"
-msgstr "Couper au Curseur (à l'image de la vidéo)"
+msgstr "Couper au curseur (à l'image de la vidéo)"
 
 #: ../src/command/edit.cpp:1127
 msgid ""
-"Split the current line at the cursor, dividing the line's duration at the "
-"current video frame"
+"Split the current line at the cursor, dividing the line's duration at the current video frame"
 msgstr ""
-"Couper la ligne en cours au niveau du curseur, en divisant la durée de la "
-"ligne à l'image actuelle de la vidéo"
+"Couper la ligne en cours au niveau du curseur, en divisant la durée de la ligne à l'image "
+"actuelle de la vidéo"
 
 #: ../src/command/edit.cpp:1143
 msgid "Redo last undone action"
-msgstr "Rétablir la dernière action annulée"
+msgstr "Restaurer la dernière action annulée"
 
 #: ../src/command/edit.cpp:1148
 msgid "Nothing to &redo"
-msgstr "Rien à &refaire"
+msgstr "Rien à &restaurer"
 
 #: ../src/command/edit.cpp:1149
 #, c-format
 msgid "&Redo %s"
-msgstr "&Rétablir %s"
+msgstr "&Restaurer %s"
 
 #: ../src/command/edit.cpp:1153
 msgid "Nothing to redo"
-msgstr "Rien à refaire"
+msgstr "Rien à restaurer"
 
 #: ../src/command/edit.cpp:1154
 #, c-format
 msgid "Redo %s"
-msgstr "Rétablir %s"
+msgstr "Restaurer %s"
 
 #: ../src/command/edit.cpp:1169
 msgid "Undo last action"
@@ -1692,7 +1627,7 @@ msgstr "Annuler la dernière action"
 
 #: ../src/command/edit.cpp:1174
 msgid "Nothing to &undo"
-msgstr "Rien à &défaire"
+msgstr "Rien à &annuler"
 
 #: ../src/command/edit.cpp:1175
 #, c-format
@@ -1701,7 +1636,7 @@ msgstr "Ann&uler %s"
 
 #: ../src/command/edit.cpp:1179
 msgid "Nothing to undo"
-msgstr "Rien à défaire"
+msgstr "Rien à annuler"
 
 #: ../src/command/edit.cpp:1180
 #, c-format
@@ -1714,16 +1649,13 @@ msgstr "Rétablir"
 
 #: ../src/command/edit.cpp:1196
 msgid "Revert the active line to its initial state (shown in the upper editor)"
-msgstr ""
-"Rétablir la ligne active à son état initial (montrée dans l'éditeur "
-"supérieure)"
+msgstr "Restaurer la ligne active à son état initial"
 
 #: ../src/command/edit.cpp:1201
 msgid "revert line"
 msgstr "rétablir la ligne"
 
-#: ../src/command/edit.cpp:1207 ../src/command/edit.cpp:1208
-#: ../src/preferences.cpp:389
+#: ../src/command/edit.cpp:1207 ../src/command/edit.cpp:1208 ../src/preferences.cpp:389
 msgid "Clear"
 msgstr "Effacer"
 
@@ -1733,7 +1665,7 @@ msgstr "Effacer le texte de la ligne courante"
 
 #: ../src/command/edit.cpp:1214 ../src/command/edit.cpp:1233
 msgid "clear line"
-msgstr "Effacer la ligne"
+msgstr "effacer la ligne"
 
 #: ../src/command/edit.cpp:1221 ../src/command/edit.cpp:1222
 msgid "Clear Text"
@@ -1741,37 +1673,31 @@ msgstr "Effacer le texte"
 
 #: ../src/command/edit.cpp:1223
 msgid "Clear the current line's text, leaving override tags"
-msgstr ""
-"Effacez le texte de la ligne courante, en laissant les balises de "
-"remplacement"
+msgstr "Effacer le texte de la ligne courante, en laissant les balises de remplacement"
 
-#: ../src/command/edit.cpp:1239 ../src/command/edit.cpp:1240
-#: ../src/command/tool.cpp:271
+#: ../src/command/edit.cpp:1239 ../src/command/edit.cpp:1240 ../src/command/tool.cpp:271
 msgid "Insert Original"
 msgstr "Insérer l'original"
 
 #: ../src/command/edit.cpp:1241
 msgid "Insert the original line text at the cursor"
-msgstr "Insérez la ligne de texte original sur le curseur"
+msgstr "Insérer la ligne de texte original sur le curseur"
 
 #: ../src/command/edit.cpp:1249
 msgid "insert original"
-msgstr "Insérer l'original"
+msgstr "insérer l'original"
 
-#: ../src/command/recent.cpp:43 ../src/command/recent.cpp:44
-#: ../src/command/recent.cpp:45 ../src/command/recent.cpp:46
-#: ../src/command/recent.cpp:47 ../src/command/recent.cpp:51
-#: ../src/command/recent.cpp:52 ../src/command/recent.cpp:62
-#: ../src/command/recent.cpp:63 ../src/command/recent.cpp:73
-#: ../src/command/recent.cpp:74 ../src/command/recent.cpp:85
-#: ../src/command/recent.cpp:86 ../src/command/recent.cpp:96
-#: ../src/command/recent.cpp:97
+#: ../src/command/recent.cpp:43 ../src/command/recent.cpp:44 ../src/command/recent.cpp:45
+#: ../src/command/recent.cpp:46 ../src/command/recent.cpp:47 ../src/command/recent.cpp:51
+#: ../src/command/recent.cpp:52 ../src/command/recent.cpp:62 ../src/command/recent.cpp:63
+#: ../src/command/recent.cpp:73 ../src/command/recent.cpp:74 ../src/command/recent.cpp:85
+#: ../src/command/recent.cpp:86 ../src/command/recent.cpp:96 ../src/command/recent.cpp:97
 msgid "Recent"
 msgstr "Fichiers récents"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
-msgstr "Ouvre un fichier audio récent"
+msgstr "Ouvrir un fichier audio récent"
 
 #: ../src/command/recent.cpp:44 ../src/command/recent.cpp:64
 msgid "Open recent keyframes"
@@ -1795,15 +1721,15 @@ msgstr "Ouvrir des vidéos récentes"
 
 #: ../src/command/subtitle.cpp:78
 msgid "A&ttachments..."
-msgstr "A&ttachements..."
+msgstr "P&ièces jointes..."
 
 #: ../src/command/subtitle.cpp:79
 msgid "Attachments"
-msgstr "Accessoires"
+msgstr "Pièces jointes"
 
 #: ../src/command/subtitle.cpp:80
 msgid "Open the attachment manager dialog"
-msgstr "Ouvrir la boîte de dialogue du gestionnaire de fichier"
+msgstr "Ouvrir la boîte de dialogue du gestionnaire de pièce jointe"
 
 #: ../src/command/subtitle.cpp:91
 msgid "&Find..."
@@ -1844,7 +1770,7 @@ msgstr "Après ligne active"
 
 #: ../src/command/subtitle.cpp:135
 msgid "Insert a new line after the current one"
-msgstr "Insérez une nouvelle ligne après l'actuelle"
+msgstr "Insérer une nouvelle ligne après celle active"
 
 #: ../src/command/subtitle.cpp:167 ../src/command/subtitle.cpp:168
 msgid "After Current, at Video Time"
@@ -1852,7 +1778,7 @@ msgstr "Après l'active, au point de synchronisation"
 
 #: ../src/command/subtitle.cpp:169
 msgid "Insert a new line after the current one, starting at video time"
-msgstr "Insérez une nouvelle ligne après l'actuelle, au début de la vidéo"
+msgstr "Insérer une nouvelle ligne après celle active, au début de la vidéo"
 
 #: ../src/command/subtitle.cpp:178
 msgid "&Before Current"
@@ -1864,7 +1790,7 @@ msgstr "Avant ligne active"
 
 #: ../src/command/subtitle.cpp:180
 msgid "Insert a new line before the current one"
-msgstr "Insérez une nouvelle ligne avant la ligne actuelle"
+msgstr "Insérer une nouvelle ligne avant la ligne active"
 
 #: ../src/command/subtitle.cpp:209 ../src/command/subtitle.cpp:210
 msgid "Before Current, at Video Time"
@@ -1872,8 +1798,7 @@ msgstr "Avant l'active, au point de synchronisation"
 
 #: ../src/command/subtitle.cpp:211
 msgid "Insert a new line before the current one, starting at video time"
-msgstr ""
-"Insérez une nouvelle ligne avant la ligne actuelle, au début de la vidéo"
+msgstr "Insérez une nouvelle ligne avant la ligne active, au début de la vidéo"
 
 #: ../src/command/subtitle.cpp:221
 msgid "&New Subtitles"
@@ -1910,8 +1835,7 @@ msgstr "Ouvrir un fichier de sous-titres auto-sauvegardé"
 #: ../src/command/subtitle.cpp:250
 msgid "Open a previous version of a file which was autosaved by Aegisub"
 msgstr ""
-"Ouvrez une version précédente d'un fichier qui a été sauvegardée "
-"automatiquement par Aegisub"
+"Ouvrir une version précédente d'un fichier qui a été sauvegardée automatiquement par Aegisub"
 
 #: ../src/command/subtitle.cpp:263
 msgid "Open Subtitles with &Charset..."
@@ -1923,8 +1847,7 @@ msgstr "Ouvrir sous-titres avec jeu de caractères"
 
 #: ../src/command/subtitle.cpp:265
 msgid "Open a subtitles file with a specific file encoding"
-msgstr ""
-"Ouvrir un fichier de sous-titres avec un encodage de fichier spécifique"
+msgstr "Ouvrir un fichier de sous-titres avec un encodage de fichier spécifique"
 
 #: ../src/command/subtitle.cpp:273
 msgid "Choose charset code:"
@@ -1984,7 +1907,7 @@ msgstr "Enregistrer les sous-titres sous"
 
 #: ../src/command/subtitle.cpp:352
 msgid "Save subtitles with another name"
-msgstr "Enregistrer sous-titres avec un autre nom"
+msgstr "Enregistrer les sous-titres avec un autre nom"
 
 #: ../src/command/subtitle.cpp:361 ../src/dialog_selected_choices.cpp:26
 #: ../src/subs_edit_ctrl.cpp:369 ../src/dialog_export.cpp:125
@@ -1997,7 +1920,7 @@ msgstr "Tout sélectionner"
 
 #: ../src/command/subtitle.cpp:363
 msgid "Select all dialogue lines"
-msgstr "Sélectionnez toutes les lignes de dialogue"
+msgstr "Sélectionner toutes les lignes de dialogue"
 
 #: ../src/command/subtitle.cpp:375 ../src/command/subtitle.cpp:376
 msgid "Select Visible"
@@ -2005,9 +1928,7 @@ msgstr "Sélection visible"
 
 #: ../src/command/subtitle.cpp:377
 msgid "Select all dialogue lines that are visible on the current video frame"
-msgstr ""
-"Sélectionnez toutes les lignes de dialogue qui sont visibles sur l'image "
-"vidéo en cours"
+msgstr "Sélectionner toutes les lignes de dialogue visibles sur l'image en cours"
 
 #: ../src/command/subtitle.cpp:407
 msgid "Spell &Checker..."
@@ -2015,11 +1936,11 @@ msgstr "&Correcteur orthographique..."
 
 #: ../src/command/subtitle.cpp:408 ../src/dialog_spellchecker.cpp:103
 msgid "Spell Checker"
-msgstr "Vérificateur d'orthographe"
+msgstr "Correcteur orthographique"
 
 #: ../src/command/subtitle.cpp:409
 msgid "Open spell checker"
-msgstr "Ouvre le correcteur orthographique"
+msgstr "Ouvrir le correcteur orthographique"
 
 #: ../src/command/tool.cpp:58
 msgid "ASSDraw3..."
@@ -2031,7 +1952,7 @@ msgstr "ASSDraw3"
 
 #: ../src/command/tool.cpp:60
 msgid "Launch the ASSDraw3 tool for vector drawing"
-msgstr "Lancez l'outil ASSDraw3 pour le dessin vectoriel"
+msgstr "Lancer ASSDraw3 pour le dessin vectoriel"
 
 #: ../src/command/tool.cpp:70
 msgid "&Export Subtitles..."
@@ -2042,24 +1963,22 @@ msgid "Export Subtitles"
 msgstr "Exporter les sous-titres"
 
 #: ../src/command/tool.cpp:72
-msgid ""
-"Save a copy of subtitles in a different format or with processing applied to "
-"it"
+msgid "Save a copy of subtitles in a different format or with processing applied to it"
 msgstr ""
-"Enregistrer une copie de sous-titres dans un format différent ou avec le "
-"traitement qui lui est appliqué"
+"Enregistrer une copie de sous-titres dans un format différent ou avec un traitement à lui "
+"appliquer"
 
 #: ../src/command/tool.cpp:83
 msgid "&Fonts Collector..."
-msgstr "Collecte des &polices..."
+msgstr "Collecte des &polices d'écriture..."
 
 #: ../src/command/tool.cpp:84 ../src/dialog_fonts_collector.cpp:218
 msgid "Fonts Collector"
-msgstr "Collecte des polices"
+msgstr "Collecte des polices d'écriture"
 
 #: ../src/command/tool.cpp:85
 msgid "Open fonts collector"
-msgstr "Ouvrir le collecteur de polices"
+msgstr "Ouvrir le collecteur de polices d'écriture"
 
 #: ../src/command/tool.cpp:95
 msgid "S&elect Lines..."
@@ -2071,7 +1990,7 @@ msgstr "Choix de lignes"
 
 #: ../src/command/tool.cpp:97
 msgid "Select lines based on defined criteria"
-msgstr "Sélectionnez les lignes en fonction de critères définis"
+msgstr "Sélectionner des lignes à partir de critères définis"
 
 #: ../src/command/tool.cpp:107
 msgid "&Resample Resolution..."
@@ -2083,11 +2002,10 @@ msgstr "Rééchantillonnage de la résolution"
 
 #: ../src/command/tool.cpp:109
 msgid ""
-"Resample subtitles to maintain their current appearance at a different "
-"script resolution"
+"Resample subtitles to maintain their current appearance at a different script resolution"
 msgstr ""
-"Rééchantillonner sous-titres pour maintenir leur aspect actuel à une "
-"résolution de script différente"
+"Rééchantillonner les sous-titres pour maintenir leur aspect actuel à une résolution de "
+"script différente"
 
 #: ../src/command/tool.cpp:122
 msgid "St&yling Assistant..."
@@ -2099,11 +2017,11 @@ msgstr "Ouvre l'assistant de style"
 
 #: ../src/command/tool.cpp:141 ../src/command/tool.cpp:225
 msgid "&Accept changes"
-msgstr "V&alide les modifications"
+msgstr "V&alider les modifications"
 
 #: ../src/command/tool.cpp:143 ../src/command/tool.cpp:227
 msgid "Commit changes and move to the next line"
-msgstr "Accepter les modifications et passer à la ligne suivante"
+msgstr "Valider les modifications et passer à la ligne suivante"
 
 #: ../src/command/tool.cpp:152 ../src/command/tool.cpp:236
 msgid "&Preview changes"
@@ -2111,7 +2029,7 @@ msgstr "A&perçu des modifications"
 
 #: ../src/command/tool.cpp:154 ../src/command/tool.cpp:238
 msgid "Commit changes and stay on the current line"
-msgstr "Accepter les modifications et rester sur la ligne actuelle"
+msgstr "Valider les modifications et rester sur la ligne actuelle"
 
 #: ../src/command/tool.cpp:164
 msgid "&Styles Manager..."
@@ -2119,31 +2037,31 @@ msgstr "Gestionnaire de &styles..."
 
 #: ../src/command/tool.cpp:166
 msgid "Open the styles manager"
-msgstr "Ouvrez le gestionnaire de styles"
+msgstr "Ouvrir le gestionnaire de styles"
 
 #: ../src/command/tool.cpp:176
 msgid "&Kanji Timer..."
-msgstr "Chrono &kanji..."
+msgstr "Minutage &kanji..."
 
 #: ../src/command/tool.cpp:177
 msgid "Kanji Timer"
-msgstr "Chrono kanji"
+msgstr "Minutage kanji"
 
 #: ../src/command/tool.cpp:178
 msgid "Open the Kanji timer copier"
-msgstr "Ouvrir le copieur de chrono Kanji"
+msgstr "Ouvrir le copieur de minutage Kanji"
 
 #: ../src/command/tool.cpp:188
 msgid "&Timing Post-Processor..."
-msgstr "Postprocesseur &temporel..."
+msgstr "Postprocesseur &de synchronisation..."
 
 #: ../src/command/tool.cpp:190
 msgid ""
-"Post-process the subtitle timing to add lead-ins and lead-outs, snap timing "
-"to scene changes, etc."
+"Post-process the subtitle timing to add lead-ins and lead-outs, snap timing to scene "
+"changes, etc."
 msgstr ""
-"Post-traitement de la synchronisation des sous-titres pour ajouter des blanc "
-"de fin, de début, synchronisation instantanée aux changements de scène, etc."
+"Post-traitement de la synchronisation des sous-titres pour ajouter des blancs de fin, de "
+"début, synchronisation instantanée aux changements de scène, etc."
 
 #: ../src/command/tool.cpp:200
 msgid "&Translation Assistant..."
@@ -2155,40 +2073,38 @@ msgstr "Assistant à la traduction"
 
 #: ../src/command/tool.cpp:202
 msgid "Open translation assistant"
-msgstr "Ouvre l'assistant à la traduction"
+msgstr "Ouvrir l'assistant à la traduction"
 
 #: ../src/command/tool.cpp:210
 msgid "There is nothing to translate in the file."
-msgstr "Il n'y a rien à traduire dans le fichier"
+msgstr "Il n'y a rien à traduire dans le fichier."
 
 #: ../src/command/tool.cpp:247
 msgid "&Next Line"
 msgstr "Lig&ne suivante"
 
-#: ../src/command/tool.cpp:248 ../src/command/grid.cpp:51
-#: ../src/command/grid.cpp:52 ../src/command/grid.cpp:63
-#: ../src/command/grid.cpp:64 ../src/command/time.cpp:354
+#: ../src/command/tool.cpp:248 ../src/command/grid.cpp:51 ../src/command/grid.cpp:52
+#: ../src/command/grid.cpp:63 ../src/command/grid.cpp:64 ../src/command/time.cpp:354
 #: ../src/command/time.cpp:355
 msgid "Next Line"
 msgstr "Ligne suivante"
 
 #: ../src/command/tool.cpp:249
 msgid "Move to the next line without committing changes"
-msgstr "Aller à la ligne suivante à valider"
+msgstr "Aller à la ligne suivante sans valider les changements"
 
 #: ../src/command/tool.cpp:258
 msgid "&Previous Line"
 msgstr "Ligne &précédente"
 
-#: ../src/command/tool.cpp:259 ../src/command/grid.cpp:90
-#: ../src/command/grid.cpp:91 ../src/command/time.cpp:366
-#: ../src/command/time.cpp:367
+#: ../src/command/tool.cpp:259 ../src/command/grid.cpp:90 ../src/command/grid.cpp:91
+#: ../src/command/time.cpp:366 ../src/command/time.cpp:367
 msgid "Previous Line"
 msgstr "Ligne &précédente"
 
 #: ../src/command/tool.cpp:260
 msgid "Move to the previous line without committing changes"
-msgstr "Aller à la ligne précédente sans accepter les modifications"
+msgstr "Aller à la ligne précédente sans valider les modifications"
 
 #: ../src/command/tool.cpp:270
 msgid "&Insert Original"
@@ -2312,24 +2228,23 @@ msgstr "&Options..."
 
 #: ../src/command/app.cpp:208
 msgid "Configure Aegisub"
-msgstr "Paramétrer Aegisub"
+msgstr "Configurer Aegisub"
 
 #: ../src/command/app.cpp:222 ../src/command/app.cpp:223
 msgid "Toggle global hotkey overrides"
-msgstr "Basculer entre les touches de raccourcis globales et modifiées"
+msgstr "Alterner entre les touches de raccourcis globales et modifiées"
 
 #: ../src/command/app.cpp:224
 msgid "Toggle global hotkey overrides (Medusa Mode)"
-msgstr ""
-"Basculer entre les touches de raccourcis globales et modifiées (Mode Medusa)"
+msgstr "Alterner entre les touches de raccourcis globales et modifiées (Mode Medusa)"
 
 #: ../src/command/app.cpp:239
 msgid "Toggle the main toolbar"
-msgstr "Basculer sur la barre d'outils principale"
+msgstr "Alterner la barre d'outils principale"
 
 #: ../src/command/app.cpp:244
 msgid "Hide Toolbar"
-msgstr "Masque la barre d'outils"
+msgstr "Masquer la barre d'outils"
 
 #: ../src/command/app.cpp:245
 msgid "Show Toolbar"
@@ -2345,7 +2260,7 @@ msgstr "Vérifier les mises à jour"
 
 #: ../src/command/app.cpp:262
 msgid "Check to see if there is a new version of Aegisub available"
-msgstr "Vérifie s'il existe une nouvelle version disponible d'Aegisub"
+msgstr "Vérifier s'il existe une nouvelle version disponible d'Aegisub"
 
 #: ../src/command/grid.cpp:53
 msgid "Move to the next subtitle line"
@@ -2371,12 +2286,10 @@ msgstr "Nom de l'acteur"
 msgid "Sort all subtitles by their actor names"
 msgstr "Trier tous les sous-titres par leur nom d'acteur"
 
-#: ../src/command/grid.cpp:107 ../src/command/grid.cpp:127
-#: ../src/command/grid.cpp:139 ../src/command/grid.cpp:151
-#: ../src/command/grid.cpp:163 ../src/command/grid.cpp:175
-#: ../src/command/grid.cpp:187 ../src/command/grid.cpp:199
-#: ../src/command/grid.cpp:211 ../src/command/grid.cpp:223
-#: ../src/command/grid.cpp:235 ../src/command/grid.cpp:247
+#: ../src/command/grid.cpp:107 ../src/command/grid.cpp:127 ../src/command/grid.cpp:139
+#: ../src/command/grid.cpp:151 ../src/command/grid.cpp:163 ../src/command/grid.cpp:175
+#: ../src/command/grid.cpp:187 ../src/command/grid.cpp:199 ../src/command/grid.cpp:211
+#: ../src/command/grid.cpp:223 ../src/command/grid.cpp:235 ../src/command/grid.cpp:247
 msgid "sort"
 msgstr "tri"
 
@@ -2384,31 +2297,29 @@ msgstr "tri"
 msgid "Sort selected subtitles by their actor names"
 msgstr "Trier les sous-titres sélectionnés par leur nom d'acteur"
 
-#: ../src/command/grid.cpp:133 ../src/command/grid.cpp:145
-#: ../src/dialog_search_replace.cpp:87
+#: ../src/command/grid.cpp:133 ../src/command/grid.cpp:145 ../src/dialog_search_replace.cpp:87
 msgid "&Effect"
 msgstr "&Effet"
 
-#: ../src/command/grid.cpp:134 ../src/command/grid.cpp:146
-#: ../src/dialog_paste_over.cpp:72 ../src/subs_edit_box.cpp:145
-#: ../src/grid_column.cpp:191 ../src/grid_column.cpp:192
+#: ../src/command/grid.cpp:134 ../src/command/grid.cpp:146 ../src/dialog_paste_over.cpp:72
+#: ../src/subs_edit_box.cpp:145 ../src/grid_column.cpp:191 ../src/grid_column.cpp:192
 msgid "Effect"
 msgstr "Effet"
 
 #: ../src/command/grid.cpp:135
 msgid "Sort all subtitles by their effects"
-msgstr "Trier tous les sous-titres par leurs effets"
+msgstr "Trier tous les sous-titres par leur effet"
 
 #: ../src/command/grid.cpp:147
 msgid "Sort selected subtitles by their effects"
-msgstr "Trier les sous-titres sélectionnés par leurs effets"
+msgstr "Trier les sous-titres sélectionnés par leur effet"
 
 #: ../src/command/grid.cpp:157 ../src/command/grid.cpp:169
 msgid "&End Time"
 msgstr "T&emps de fin"
 
-#: ../src/command/grid.cpp:158 ../src/command/grid.cpp:170
-#: ../src/dialog_paste_over.cpp:66 ../src/grid_column.cpp:147
+#: ../src/command/grid.cpp:158 ../src/command/grid.cpp:170 ../src/dialog_paste_over.cpp:66
+#: ../src/grid_column.cpp:147
 msgid "End Time"
 msgstr "Temps fin"
 
@@ -2424,8 +2335,8 @@ msgstr "Trier les sous-titres sélectionnés par leur temps de fin"
 msgid "&Layer"
 msgstr "Ca&lque"
 
-#: ../src/command/grid.cpp:182 ../src/command/grid.cpp:194
-#: ../src/dialog_paste_over.cpp:64 ../src/grid_column.cpp:107
+#: ../src/command/grid.cpp:182 ../src/command/grid.cpp:194 ../src/dialog_paste_over.cpp:64
+#: ../src/grid_column.cpp:107
 msgid "Layer"
 msgstr "Calque"
 
@@ -2441,10 +2352,10 @@ msgstr "Trier les sous-titres sélectionnés par leur numéro de calque"
 msgid "&Start Time"
 msgstr "Temp&s début"
 
-#: ../src/command/grid.cpp:206 ../src/command/grid.cpp:218
-#: ../src/dialog_paste_over.cpp:65 ../src/grid_column.cpp:129
+#: ../src/command/grid.cpp:206 ../src/command/grid.cpp:218 ../src/dialog_paste_over.cpp:65
+#: ../src/grid_column.cpp:129
 msgid "Start Time"
-msgstr "Temps départ"
+msgstr "Temps début"
 
 #: ../src/command/grid.cpp:207
 msgid "Sort all subtitles by their start times"
@@ -2458,8 +2369,7 @@ msgstr "Trier tous les sous-titres par leur temps de début"
 msgid "St&yle Name"
 msgstr "Nom du st&yle"
 
-#: ../src/command/grid.cpp:230 ../src/command/grid.cpp:242
-#: ../src/dialog_style_editor.cpp:177
+#: ../src/command/grid.cpp:230 ../src/command/grid.cpp:242 ../src/dialog_style_editor.cpp:177
 msgid "Style Name"
 msgstr "Nom du style"
 
@@ -2473,11 +2383,11 @@ msgstr "Trier les sous-titres sélectionnés par leur nom de style"
 
 #: ../src/command/grid.cpp:254 ../src/command/grid.cpp:255
 msgid "Cycle Tag Hiding Mode"
-msgstr "Mode balises de cycle cachées"
+msgstr "Défiler modes d'affichage balises"
 
 #: ../src/command/grid.cpp:256
 msgid "Cycle through tag hiding modes"
-msgstr "Bascule entre les modes d'affichage des balises"
+msgstr "Défiler les modes d'affichage des balises"
 
 #: ../src/command/grid.cpp:266
 msgid "ASS Override Tag mode set to show full tags."
@@ -2505,7 +2415,7 @@ msgstr "Masquer les balises prioritaires dans la grille des sous-titres"
 
 #: ../src/command/grid.cpp:294
 msgid "Sh&ow Tags"
-msgstr "V&oir les étiquettes"
+msgstr "A&fficher les balises"
 
 #: ../src/command/grid.cpp:295
 msgid "Show Tags"
@@ -2513,23 +2423,20 @@ msgstr "Afficher les balises"
 
 #: ../src/command/grid.cpp:296
 msgid "Show full override tags in the subtitle grid"
-msgstr ""
-"Affichage complet des balises prioritaires sur la grille des sous-titres"
+msgstr "Afficher complètement les balises prioritaires sur la grille des sous-titres"
 
 #: ../src/command/grid.cpp:310
 msgid "S&implify Tags"
-msgstr "S&implification des balises"
+msgstr "S&implifier les balises"
 
 #: ../src/command/grid.cpp:311
 msgid "Simplify Tags"
-msgstr "Simplification des balises"
+msgstr "Simplifier les balises"
 
 #: ../src/command/grid.cpp:312
-msgid ""
-"Replace override tags in the subtitle grid with a simplified placeholder"
+msgid "Replace override tags in the subtitle grid with a simplified placeholder"
 msgstr ""
-"Remplacer les balises prioritaires dans la grille des sous-titres par un "
-"repère simplifié"
+"Remplacer les balises prioritaires dans la grille des sous-titres par un repère simplifié"
 
 #: ../src/command/grid.cpp:348 ../src/command/grid.cpp:349
 msgid "Move line up"
@@ -2537,11 +2444,11 @@ msgstr "Monter la ligne"
 
 #: ../src/command/grid.cpp:350
 msgid "Move the selected lines up one row"
-msgstr "Monte les lignes sélectionnées d'une rangée"
+msgstr "Monter les lignes sélectionnées d'une rangée"
 
 #: ../src/command/grid.cpp:359 ../src/command/grid.cpp:376
 msgid "move lines"
-msgstr "déplace des lignes"
+msgstr "déplacer des lignes"
 
 #: ../src/command/grid.cpp:365 ../src/command/grid.cpp:366
 msgid "Move line down"
@@ -2549,7 +2456,7 @@ msgstr "Descendre la ligne"
 
 #: ../src/command/grid.cpp:367
 msgid "Move the selected lines down one row"
-msgstr "Descend les lignes sélectionnées d'une rangée"
+msgstr "Descendre les lignes sélectionnées d'une rangée"
 
 #: ../src/command/grid.cpp:383 ../src/command/grid.cpp:384
 msgid "Swap Lines"
@@ -2561,7 +2468,7 @@ msgstr "Permuter les deux lignes sélectionnées"
 
 #: ../src/command/grid.cpp:396
 msgid "swap lines"
-msgstr "inversion de lignes"
+msgstr "inverser les lignes"
 
 #: ../src/command/automation.cpp:48
 msgid "&Reload Automation scripts"
@@ -2573,51 +2480,47 @@ msgstr "Recharger les scripts d'automatisme"
 
 #: ../src/command/automation.cpp:50
 msgid "Reload all Automation scripts and rescan the autoload folder"
-msgstr ""
-"Recharger tous les scripts d'automatisme et rescruter le dossier de "
-"chargement automatique"
+msgstr "Recharger tous les scripts d'automatisme et rescanner le dossier autoload"
 
 #: ../src/command/automation.cpp:55
 msgid "Reloaded all Automation scripts"
-msgstr "Recharger tous les scripts d'automatisme"
+msgstr "Recharge de tous les scripts d'automatisme"
 
 #: ../src/command/automation.cpp:61
 msgid "R&eload autoload Automation scripts"
-msgstr "R&echarger les scripts d'automatisme autochargés"
+msgstr "R&echarger les scripts d'automatisme « autoload »"
 
 #: ../src/command/automation.cpp:62
 msgid "Reload autoload Automation scripts"
-msgstr "Recharger les scripts d'automatisme autochargés"
+msgstr "Recharger les scripts d'automatisme « autoload »"
 
 #: ../src/command/automation.cpp:63
 msgid "Rescan the Automation autoload folder"
-msgstr "Rescruter le dossier de chargement des automatismes"
+msgstr "Rescanner le dossier des automatismes « autoload »"
 
 #: ../src/command/automation.cpp:67
 msgid "Reloaded autoload Automation scripts"
-msgstr "Recharger les scripts d'automatisme autochargés"
+msgstr "Recharge des scripts d'automatisme « autoload »"
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
 msgid "&Automation..."
 msgstr "&Automatisme..."
 
-#: ../src/command/automation.cpp:75 ../src/command/automation.cpp:87
-#: ../src/preferences.cpp:314
+#: ../src/command/automation.cpp:75 ../src/command/automation.cpp:87 ../src/preferences.cpp:314
 msgid "Automation"
 msgstr "Automatisme"
 
 #: ../src/command/automation.cpp:76
 msgid "Open automation manager"
-msgstr "Ouvre le gestionnaire d'automatismes"
+msgstr "Ouvre le gestionnaire des automatismes"
 
 #: ../src/command/automation.cpp:88
 msgid ""
-"Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan "
-"autoload folder and reload all automation scripts"
+"Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan autoload folder "
+"and reload all automation scripts"
 msgstr ""
-"Ouvrir le gestionnaire d'automatisation. Ctrl: Rescanne le dossier auto-"
-"chargement. Ctrl+Maj: Rescanne le dossier auto-chargement et recharger tous "
-"les scripts d'automatisation"
+"Ouvrir le gestionnaire des automatismes. Ctrl: Rescanne le dossier « autoload »chargement. "
+"Ctrl+Maj: Rescanner le dossier « autoload » et recharger tous les scripts d'automatisme"
 
 #: ../src/command/time.cpp:99
 msgid "adjoin"
@@ -2625,29 +2528,27 @@ msgstr "joint"
 
 #: ../src/command/time.cpp:104
 msgid "Change &End"
-msgstr "Changer la &fin"
+msgstr "Modifier la &fin"
 
 #: ../src/command/time.cpp:105
 msgid "Change End"
-msgstr "Changer la fin"
+msgstr "Modifier la fin"
 
 #: ../src/command/time.cpp:106
 msgid "Change end times of lines to the next line's start time"
-msgstr ""
-"Modifier les temps de fin de ligne au temps de début de la ligne suivante"
+msgstr "Modifier les temps de fin des lignes au temps de début de la ligne suivante"
 
 #: ../src/command/time.cpp:115
 msgid "Change &Start"
-msgstr "Changer le &début"
+msgstr "Modifier le &début"
 
 #: ../src/command/time.cpp:116
 msgid "Change Start"
-msgstr "Changer le début"
+msgstr "Modifier le début"
 
 #: ../src/command/time.cpp:117
 msgid "Change start times of lines to the previous line's end time"
-msgstr ""
-"Modifier les temps de début de ligne au temps de finde la ligne précédente"
+msgstr "Modifier les temps de début des lignes au temps de fin de la ligne précédente"
 
 #: ../src/command/time.cpp:127
 msgid "Shift to &Current Frame"
@@ -2659,9 +2560,7 @@ msgstr "Décaler vers l'image active"
 
 #: ../src/command/time.cpp:129
 msgid "Shift selection so that the active line starts at current frame"
-msgstr ""
-"Décaler la sélection pour que la première ligne active démarre sur l'image "
-"courante"
+msgstr "Décaler la sélection pour que la première ligne active démarre sur l'image active"
 
 #: ../src/command/time.cpp:145
 msgid "shift to frame"
@@ -2673,7 +2572,7 @@ msgstr "&Décalage temporel..."
 
 #: ../src/command/time.cpp:154
 msgid "Shift subtitles by time or frames"
-msgstr "Décale des sous-titres en temps ou images"
+msgstr "Décaler des sous-titres en temps ou images"
 
 #: ../src/command/time.cpp:175 ../src/audio_timing_dialogue.cpp:512
 #: ../src/audio_timing_dialogue.cpp:518
@@ -2690,7 +2589,7 @@ msgstr "Coller la fin à la vidéo"
 
 #: ../src/command/time.cpp:183
 msgid "Set end of selected subtitles to current video frame"
-msgstr "Applique la fin des sous-titres sélectionnés à l'image vidéo active"
+msgstr "Appliquer la fin des sous-titres sélectionnés à l'image vidéo active"
 
 #: ../src/command/time.cpp:193
 msgid "Snap to S&cene"
@@ -2701,11 +2600,9 @@ msgid "Snap to Scene"
 msgstr "Coller à la scène"
 
 #: ../src/command/time.cpp:195
-msgid ""
-"Set start and end of subtitles to the keyframes around current video frame"
+msgid "Set start and end of subtitles to the keyframes around current video frame"
 msgstr ""
-"Met le début et la fin des sous-titre sur les clés d'image autour de l'image "
-"vidéo active"
+"Définir le début et la fin des sous-titre sur les images-clés proche de l'image vidéo active"
 
 #: ../src/command/time.cpp:232
 msgid "snap to scene"
@@ -2713,46 +2610,43 @@ msgstr "coller à la scène"
 
 #: ../src/command/time.cpp:238 ../src/command/time.cpp:239
 msgid "Add lead in and out"
-msgstr "Ajout blancs de début et de fin"
+msgstr "Ajouter blancs de début et de fin"
 
 #: ../src/command/time.cpp:240
 msgid "Add both lead in and out to the selected lines"
-msgstr "Ajouter à la fois les entrée et sortie pour les lignes sélectionnées"
+msgstr "Ajouter blanc de début et de fin pour les lignes sélectionnées"
 
 #: ../src/command/time.cpp:252 ../src/command/time.cpp:253
 msgid "Add lead in"
-msgstr "Ajout de blanc de début"
+msgstr "Ajouter blanc de début"
 
 #: ../src/command/time.cpp:254
 msgid "Add the lead in time to the selected lines"
-msgstr "Ajout de blanc de début pour les lignes sélectionnées"
+msgstr "Ajouter blanc de début pour les lignes sélectionnées"
 
 #: ../src/command/time.cpp:264 ../src/command/time.cpp:265
 msgid "Add lead out"
-msgstr "Ajout de blanc de fin"
+msgstr "Ajouter blanc de fin"
 
 #: ../src/command/time.cpp:266
 msgid "Add the lead out time to the selected lines"
-msgstr "Ajout de blanc de fin pour les lignes sélectionnées"
+msgstr "Ajouter un blanc de fin pour les lignes sélectionnées"
 
 #: ../src/command/time.cpp:275 ../src/command/time.cpp:276
 msgid "Increase length"
-msgstr "Augmenter la longueur"
+msgstr "Agrandir la durée"
 
 #: ../src/command/time.cpp:277
 msgid "Increase the length of the current timing unit"
-msgstr "Augmenter la longueur de l'unité de temps actuelle"
+msgstr "Agrandir la longueur de l'unité de temps actuelle"
 
 #: ../src/command/time.cpp:286 ../src/command/time.cpp:287
 msgid "Increase length and shift"
-msgstr "Augmenter la longueur et décaler"
+msgstr "Agrandir la longueur et décaler"
 
 #: ../src/command/time.cpp:288
-msgid ""
-"Increase the length of the current timing unit and shift the following items"
-msgstr ""
-"Allonger la longueur de l'unité de temps courante et décaler les éléments "
-"suivants"
+msgid "Increase the length of the current timing unit and shift the following items"
+msgstr "Agrandir la longueur de l'unité de temps actuelle et décaler les éléments suivants"
 
 #: ../src/command/time.cpp:297 ../src/command/time.cpp:298
 msgid "Decrease length"
@@ -2760,34 +2654,31 @@ msgstr "Réduire la longueur"
 
 #: ../src/command/time.cpp:299
 msgid "Decrease the length of the current timing unit"
-msgstr "Réduire la longueur de l'actuelle unité de temps"
+msgstr "Réduire la longueur de l'unité de temps actuelle"
 
 #: ../src/command/time.cpp:308 ../src/command/time.cpp:309
 msgid "Decrease length and shift"
 msgstr "Réduire la longueur et décaler"
 
 #: ../src/command/time.cpp:310
-msgid ""
-"Decrease the length of the current timing unit and shift the following items"
-msgstr ""
-"Réduire la longueur de l'unité de temps courante et décaler les éléments "
-"suivants"
+msgid "Decrease the length of the current timing unit and shift the following items"
+msgstr "Réduire la longueur de l'unité de temps actuelle et décaler les éléments suivants"
 
 #: ../src/command/time.cpp:319 ../src/command/time.cpp:320
 msgid "Shift start time forward"
-msgstr "Décale les temps de début vers l'avant"
+msgstr "Décaler les temps de début vers l'avant"
 
 #: ../src/command/time.cpp:321
 msgid "Shift the start time of the current timing unit forward"
-msgstr "Avancer le temps de départ de l'unité de temps courante"
+msgstr "Décaler le temps de début de l'unité de temps actuelle"
 
 #: ../src/command/time.cpp:330 ../src/command/time.cpp:331
 msgid "Shift start time backward"
-msgstr "Reculer le temps de départ"
+msgstr "Décaler le temps de départ en arrière"
 
 #: ../src/command/time.cpp:332
 msgid "Shift the start time of the current timing unit backward"
-msgstr "Reculer le temps de départ de l'unité de temps courante"
+msgstr "Décaler le temps de départ de l'unité de temps actuelle en arrière"
 
 #: ../src/command/time.cpp:342
 msgid "Snap &Start to Video"
@@ -2799,7 +2690,7 @@ msgstr "Coller le début à la vidéo"
 
 #: ../src/command/time.cpp:344
 msgid "Set start of selected subtitles to current video frame"
-msgstr "Applique le début du sous-titre sélectionné à l'image vidéo active."
+msgstr "Appliquer le début du sous-titre sélectionné à l'image vidéo active"
 
 #: ../src/command/time.cpp:356
 msgid "Next line or syllable"
@@ -2815,7 +2706,7 @@ msgstr "Standard"
 
 #: ../src/command/vis_tool.cpp:58
 msgid "Standard mode, double click sets position"
-msgstr "Mode standard, double-clic règle la position."
+msgstr "Mode standard, le double-clic définit la position"
 
 #: ../src/command/vis_tool.cpp:64 ../src/command/vis_tool.cpp:65
 #: ../src/visual_tool_vector_clip.cpp:57
@@ -2832,7 +2723,7 @@ msgstr "Rotation Z"
 
 #: ../src/command/vis_tool.cpp:74
 msgid "Rotate subtitles on their Z axis"
-msgstr "Tourne les sous-titres selon leur axe Z"
+msgstr "Pivoter les sous-titres sur l'axe Z"
 
 #: ../src/command/vis_tool.cpp:80 ../src/command/vis_tool.cpp:81
 msgid "Rotate XY"
@@ -2840,31 +2731,31 @@ msgstr "Rotation XY"
 
 #: ../src/command/vis_tool.cpp:82
 msgid "Rotate subtitles on their X and Y axes"
-msgstr "Tourne les sous-titres selon leurs axes X et Y"
+msgstr "Pivoter les sous-titres selon les axes X et Y"
 
 #: ../src/command/vis_tool.cpp:88 ../src/command/vis_tool.cpp:89
 msgid "Scale"
-msgstr "Anamorphose"
+msgstr "Ajuster taille"
 
 #: ../src/command/vis_tool.cpp:90
 msgid "Scale subtitles on X and Y axes"
-msgstr "Anamorphose les sous-titres selon les axes X et Y"
+msgstr "Ajuster la taille les sous-titres selon les axes X et Y"
 
 #: ../src/command/vis_tool.cpp:96 ../src/command/vis_tool.cpp:97
 msgid "Clip"
-msgstr "Clip"
+msgstr "Contraindre"
 
 #: ../src/command/vis_tool.cpp:98
 msgid "Clip subtitles to a rectangle"
-msgstr "Contraint les sous-titres dans un rectangle"
+msgstr "Contraindre les sous-titres dans un rectangle"
 
 #: ../src/command/vis_tool.cpp:104 ../src/command/vis_tool.cpp:105
 msgid "Vector Clip"
-msgstr "Clip vectoriel"
+msgstr "Zone vectorielle"
 
 #: ../src/command/vis_tool.cpp:106
 msgid "Clip subtitles to a vectorial area"
-msgstr "Contraint les sous-titres dans une zone vectorielle"
+msgstr "Contraindre les sous-titres dans une zone vectorielle"
 
 #: ../src/command/audio.cpp:65
 msgid "&Close Audio"
@@ -2876,7 +2767,7 @@ msgstr "Fermer l'audio"
 
 #: ../src/command/audio.cpp:67
 msgid "Close the currently open audio file"
-msgstr "Fermez le fichier audio actuellement ouvert"
+msgstr "Fermer le fichier audio actuellement ouvert"
 
 #: ../src/command/audio.cpp:77
 msgid "&Open Audio File..."
@@ -2896,11 +2787,11 @@ msgstr "Formats audio"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
-msgstr "Ouvre un fichier audio vierge de 2 h 30"
+msgstr "Ouvrir un audio vierge de 2 h 30"
 
 #: ../src/command/audio.cpp:95
 msgid "Open a 150 minutes blank audio clip, for debugging"
-msgstr "Ouvrir un clip audio vierge de 150 minutes pour débogage"
+msgstr "Ouvrir 150 minutes d'audio vierge, pour débogage"
 
 #: ../src/command/audio.cpp:104 ../src/command/audio.cpp:105
 msgid "Open 2h30 Noise Audio"
@@ -2908,7 +2799,7 @@ msgstr "Ouvrir 2 h 30 de bruit audio"
 
 #: ../src/command/audio.cpp:106
 msgid "Open a 150 minutes noise-filled audio clip, for debugging"
-msgstr "Ouvrir un clip audio de 150 minutes de bruit, pour débogage"
+msgstr "Ouvrir 150 minutes de bruit audio, pour débogage"
 
 #: ../src/command/audio.cpp:116
 msgid "Open Audio from &Video"
@@ -2920,7 +2811,7 @@ msgstr "Ouvrir l'audio de la vidéo"
 
 #: ../src/command/audio.cpp:118
 msgid "Open the audio from the current video file"
-msgstr "Ouvrez l'audio du fichier vidéo en cours"
+msgstr "Ouvrir l'audio du fichier vidéo en cours"
 
 #: ../src/command/audio.cpp:132
 msgid "&Spectrum Display"
@@ -2960,17 +2851,15 @@ msgstr "Enregistrer le clip audio"
 
 #: ../src/command/audio.cpp:247 ../src/command/audio.cpp:248
 msgid "Play current audio selection"
-msgstr "Lire la sélection audio courante"
+msgstr "Lire la sélection audio"
 
 #: ../src/command/audio.cpp:249
 msgid "Play the current audio selection, ignoring changes made while playing"
-msgstr ""
-"Lire la sélection audio en ignorant les modifications apportées pendant la "
-"lecture"
+msgstr "Lire la sélection audio en ignorant les modifications apportées pendant la lecture"
 
 #: ../src/command/audio.cpp:262
 msgid "Play the audio for the current line"
-msgstr "Lire l'audio pour la ligne actuelle"
+msgstr "Lire l'audio de la ligne actuelle"
 
 #: ../src/command/audio.cpp:275 ../src/command/audio.cpp:276
 msgid "Play audio selection"
@@ -2986,7 +2875,7 @@ msgstr "Lire la sélection audio ou arrêter"
 
 #: ../src/command/audio.cpp:289
 msgid "Play selection, or stop playback if it's already playing"
-msgstr "lire la sélection, ou arrêter la lecture si elle est déjà en cours"
+msgstr "Lire la sélection, ou arrêter la lecture si elle est déjà en cours"
 
 #: ../src/command/audio.cpp:304 ../src/command/audio.cpp:305
 msgid "Stop playing"
@@ -2996,60 +2885,51 @@ msgstr "Arrêter la lecture"
 msgid "Stop audio and video playback"
 msgstr "Arrêtez la lecture audio et vidéo"
 
-#: ../src/command/audio.cpp:322 ../src/command/audio.cpp:323
-#: ../src/command/audio.cpp:324
+#: ../src/command/audio.cpp:322 ../src/command/audio.cpp:323 ../src/command/audio.cpp:324
 msgid "Play 500 ms before selection"
 msgstr "Lire 500 ms avant la sélection"
 
-#: ../src/command/audio.cpp:336 ../src/command/audio.cpp:337
-#: ../src/command/audio.cpp:338
+#: ../src/command/audio.cpp:336 ../src/command/audio.cpp:337 ../src/command/audio.cpp:338
 msgid "Play 500 ms after selection"
 msgstr "Lire 500 ms après la sélection"
 
-#: ../src/command/audio.cpp:350 ../src/command/audio.cpp:351
-#: ../src/command/audio.cpp:352
+#: ../src/command/audio.cpp:350 ../src/command/audio.cpp:351 ../src/command/audio.cpp:352
 msgid "Play last 500 ms of selection"
 msgstr "Lire les dernières 500 ms de la sélection"
 
-#: ../src/command/audio.cpp:364 ../src/command/audio.cpp:365
-#: ../src/command/audio.cpp:366
+#: ../src/command/audio.cpp:364 ../src/command/audio.cpp:365 ../src/command/audio.cpp:366
 msgid "Play first 500 ms of selection"
 msgstr "Lire les premières 500 ms de la sélection"
 
-#: ../src/command/audio.cpp:380 ../src/command/audio.cpp:381
-#: ../src/command/audio.cpp:382
+#: ../src/command/audio.cpp:380 ../src/command/audio.cpp:381 ../src/command/audio.cpp:382
 msgid "Play from selection start to end of file"
-msgstr "Lit du début de la sélection à la fin du fichier"
+msgstr "Lire du début de la sélection à la fin du fichier"
 
 #: ../src/command/audio.cpp:393 ../src/command/audio.cpp:394
 msgid "Commit"
-msgstr "Accepter"
+msgstr "Valider"
 
 #: ../src/command/audio.cpp:395
 msgid "Commit any pending audio timing changes"
-msgstr "Accepter tous les changements de temps audio en instance"
+msgstr "Valider tous les changements de temps audio en attente"
 
 #: ../src/command/audio.cpp:409 ../src/command/audio.cpp:410
 msgid "Commit and use default timing for next line"
-msgstr "Accepter et utiliser le temps par défaut pour la ligne suivante"
+msgstr "Valider et utiliser le temps par défaut pour la ligne suivante"
 
 #: ../src/command/audio.cpp:411
-msgid ""
-"Commit any pending audio timing changes and reset the next line's times to "
-"the default"
+msgid "Commit any pending audio timing changes and reset the next line's times to the default"
 msgstr ""
-"Accepter les modifications de temps audio en instance et appliquer le temps "
-"par défaut à la ligne suivante"
+"Valider les modifications de temps audio en attente et appliquer le temps par défaut à la "
+"ligne suivante"
 
 #: ../src/command/audio.cpp:424 ../src/command/audio.cpp:425
 msgid "Commit and move to next line"
-msgstr "Accepter et aller à la ligne suivante"
+msgstr "Valider et aller à la ligne suivante"
 
 #: ../src/command/audio.cpp:426
 msgid "Commit any pending audio timing changes and move to the next line"
-msgstr ""
-"Accepter toute modification de temps audio en instance et aller à la ligne "
-"suivante"
+msgstr "Valider les modifications de temps audio en attente et aller à la ligne suivante"
 
 #: ../src/command/audio.cpp:439 ../src/command/audio.cpp:440
 msgid "Commit and stay on current line"
@@ -3057,9 +2937,7 @@ msgstr "Valider et rester sur la ligne courante"
 
 #: ../src/command/audio.cpp:441
 msgid "Commit any pending audio timing changes and stay on the current line"
-msgstr ""
-"Accepter toute modification de temps audio en instance et rester sur la "
-"ligne courante"
+msgstr "Valider les modifications de temps audio en attente et rester sur la ligne active"
 
 #: ../src/command/audio.cpp:452 ../src/command/audio.cpp:453
 msgid "Go to selection"
@@ -3067,8 +2945,7 @@ msgstr "Aller à la sélection"
 
 #: ../src/command/audio.cpp:454
 msgid "Scroll the audio display to center on the current audio selection"
-msgstr ""
-"Faites défiler l'affichage audio pour centrer sur la sélection audio actuelle"
+msgstr "Faire défiler l'affichage audio pour le centrer sur la sélection audio actuelle"
 
 #: ../src/command/audio.cpp:463 ../src/command/audio.cpp:464
 msgid "Scroll left"
@@ -3086,38 +2963,33 @@ msgstr "Défiler à droite"
 msgid "Scroll the audio display right"
 msgstr "Défiler l'affichage audio à droite"
 
-#: ../src/command/audio.cpp:490 ../src/command/audio.cpp:491
-#: ../src/command/audio.cpp:492
+#: ../src/command/audio.cpp:490 ../src/command/audio.cpp:491 ../src/command/audio.cpp:492
 msgid "Auto scroll audio display to selected line"
-msgstr "Auto-défilement de l'affichage audio de la ligne sélectionnée"
+msgstr "Auto-défilement de l'affichage audio vers la ligne sélectionnée"
 
-#: ../src/command/audio.cpp:507 ../src/command/audio.cpp:508
-#: ../src/command/audio.cpp:509
+#: ../src/command/audio.cpp:507 ../src/command/audio.cpp:508 ../src/command/audio.cpp:509
 msgid "Automatically commit all changes"
-msgstr "Valider automatiquement toute modification"
+msgstr "Valider automatiquement les modifications"
 
 #: ../src/command/audio.cpp:524 ../src/command/audio.cpp:525
 msgid "Auto go to next line on commit"
-msgstr "Aller automatiquement à la ligne suivante après validation"
+msgstr "Passer automatiquement à la ligne suivante après validation"
 
 #: ../src/command/audio.cpp:526
 msgid "Automatically go to next line on commit"
-msgstr "Aller automatiquement à la ligne suivante après validation"
+msgstr "Passer automatiquement à la ligne suivante après validation"
 
-#: ../src/command/audio.cpp:541 ../src/command/audio.cpp:542
-#: ../src/command/audio.cpp:543
+#: ../src/command/audio.cpp:541 ../src/command/audio.cpp:542 ../src/command/audio.cpp:543
 msgid "Spectrum analyzer mode"
 msgstr "Mode analyse de spectre"
 
-#: ../src/command/audio.cpp:558 ../src/command/audio.cpp:559
-#: ../src/command/audio.cpp:560
+#: ../src/command/audio.cpp:558 ../src/command/audio.cpp:559 ../src/command/audio.cpp:560
 msgid "Link vertical zoom and volume sliders"
 msgstr "Lier les curseurs de zoom vertical et de volume"
 
-#: ../src/command/audio.cpp:575 ../src/command/audio.cpp:576
-#: ../src/command/audio.cpp:577
+#: ../src/command/audio.cpp:575 ../src/command/audio.cpp:576 ../src/command/audio.cpp:577
 msgid "Toggle karaoke mode"
-msgstr "Basculer en mode karaoké"
+msgstr "Alterner mode karaoké"
 
 #: ../src/command/help.cpp:48
 msgid "&Bug Tracker..."
@@ -3130,8 +3002,8 @@ msgstr "Traqueur de bogues"
 #: ../src/command/help.cpp:50
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
 msgstr ""
-"Visitez le traqueur de bogues d'Aegisub pour rendre compte de bogues et "
-"demander de nouvelles fonctions"
+"Visitez le traqueur de bogues d'Aegisub pour signaler des bogues et proposer des "
+"nouvelles fonctions"
 
 #: ../src/command/help.cpp:69
 msgid "&Contents"
@@ -3171,15 +3043,15 @@ msgstr "Visitez le canal IRC officiel d'Aegisub"
 
 #: ../src/command/help.cpp:105
 msgid "&Visual Typesetting"
-msgstr "Typographie &visuelle"
+msgstr "Éditions vidéos"
 
 #: ../src/command/help.cpp:106
 msgid "Visual Typesetting"
-msgstr "Typographie visuelle"
+msgstr "Éditions vidéos"
 
 #: ../src/command/help.cpp:107
 msgid "Open the manual page for Visual Typesetting"
-msgstr "Ouvrir la page du manuel pour la typographie visuelle"
+msgstr "Ouvrir la page du manuel des éditions vidéos"
 
 #: ../src/command/help.cpp:117
 msgid "&Website"
@@ -3198,11 +3070,8 @@ msgid "Close Keyframes"
 msgstr "Fermer les images clés"
 
 #: ../src/command/keyframe.cpp:51
-msgid ""
-"Discard the currently loaded keyframes and use those from the video, if any"
-msgstr ""
-"Ignorer les images clés actuellement chargés et utiliser ceux de la vidéo, "
-"le cas échéant"
+msgid "Discard the currently loaded keyframes and use those from the video, if any"
+msgstr "Ignorer les images clés chargées et utiliser celles de la vidéo, le cas échéant"
 
 #: ../src/command/keyframe.cpp:66
 msgid "Open Keyframes..."
@@ -3218,7 +3087,7 @@ msgstr "Ouvrir un fichier de liste d'images clés"
 
 #: ../src/command/keyframe.cpp:72
 msgid "Open keyframes file"
-msgstr "Ouvrir un fichier des images clés"
+msgstr "Ouvrir un fichier d'images clés"
 
 #: ../src/command/keyframe.cpp:85
 msgid "Save Keyframes..."
@@ -3302,7 +3171,7 @@ msgstr "Aegisub n'a trouvé aucune erreur orthographique dans ce script."
 
 #: ../src/dialog_spellchecker.cpp:329 ../src/dialog_spellchecker.cpp:343
 msgid "spell check replace"
-msgstr "Remplacement proposé"
+msgstr "remplacement proposé"
 
 #: ../src/preferences_base.cpp:63
 msgid "Please choose the folder:"
@@ -3318,7 +3187,7 @@ msgstr "Choisir..."
 
 #: ../src/preferences_base.cpp:252
 msgid "Font Size"
-msgstr "Taille du caractère"
+msgstr "Taille de la police d'écriture"
 
 #: ../src/dialog_properties.cpp:89
 msgid "Script Properties"
@@ -3342,15 +3211,15 @@ msgstr "Traduction :"
 
 #: ../src/dialog_properties.cpp:101
 msgid "Editing:"
-msgstr "Édition :"
+msgstr "Adaptation :"
 
 #: ../src/dialog_properties.cpp:102
 msgid "Timing:"
-msgstr "Minutage :"
+msgstr "Synchronisation :"
 
 #: ../src/dialog_properties.cpp:103
 msgid "Synch point:"
-msgstr "Synchronisation :"
+msgstr "Point de synchronisation :"
 
 #: ../src/dialog_properties.cpp:104
 msgid "Updated by:"
@@ -3367,7 +3236,7 @@ msgstr "De la &vidéo"
 
 #: ../src/dialog_properties.cpp:133
 msgid "Resolution"
-msgstr "Résolution"
+msgstr "Définition vidéo"
 
 #: ../src/dialog_properties.cpp:141
 msgid "0: Smart wrapping, top line is wider"
@@ -3383,24 +3252,23 @@ msgstr "2 : pas de répartition, césures sur \\n et \\N"
 
 #: ../src/dialog_properties.cpp:144
 msgid "3: Smart wrapping, bottom line is wider"
-msgstr "3 : répartition intelligente, ligne infériieure plus grande"
+msgstr "3 : répartition intelligente, ligne inférieure plus grande"
 
 #: ../src/dialog_properties.cpp:148
 msgid "Wrap Style: "
-msgstr "Style de répartition :"
+msgstr "Style de répartition : "
 
 #: ../src/dialog_properties.cpp:151
 msgid "Scale Border and Shadow"
-msgstr "Échelle bord et ombre"
+msgstr "Adapter taille bord et ombre"
 
 #: ../src/dialog_properties.cpp:152
 msgid ""
-"Scale border and shadow together with script/render resolution. If this is "
-"unchecked, relative border and shadow size will depend on renderer."
+"Scale border and shadow together with script/render resolution. If this is unchecked, "
+"relative border and shadow size will depend on renderer."
 msgstr ""
-"Adapter le bord et l'ombre ensemble selon la résolution du script. Si "
-"l'option n'est pas cochée, la taille relative du bord et de l'ombre "
-"dépendront du rendu."
+"Adapter le bord et l'ombre selon la définition vidéo du script. Si l'option n'est pas "
+"cochée, la taille relative du bord et de l'ombre dépendront du rendu."
 
 #: ../src/dialog_properties.cpp:193
 msgid "property changes"
@@ -3408,15 +3276,15 @@ msgstr "modifications des propriétés"
 
 #: ../src/dialog_fonts_collector.cpp:107
 msgid "Symlinking fonts to folder...\n"
-msgstr "Liaision des polices vers le dossier...\n"
+msgstr "Liaison symbolique des polices d'écriture vers le dossier...\n"
 
 #: ../src/dialog_fonts_collector.cpp:111
 msgid "Copying fonts to folder...\n"
-msgstr "Copie des polices vers le dossier...\n"
+msgstr "Copie des polices d'écriture vers le dossier...\n"
 
 #: ../src/dialog_fonts_collector.cpp:114
 msgid "Copying fonts to archive...\n"
-msgstr "Copie des polices dans l'archive...\n"
+msgstr "Copie des polices d'écriture dans l'archive...\n"
 
 #: ../src/dialog_fonts_collector.cpp:126
 #, c-format
@@ -3450,42 +3318,41 @@ msgstr "* Échec copie %s.\n"
 
 #: ../src/dialog_fonts_collector.cpp:204
 msgid "Done. All fonts copied."
-msgstr "Terminé. Toutes les polices ont été copiées."
+msgstr "Terminé. Toutes les polices d'écriture ont été copiées."
 
 #: ../src/dialog_fonts_collector.cpp:206
 msgid "Done. Some fonts could not be copied."
-msgstr "Terminé. Certaines polices n'ont pas été copiées."
+msgstr "Terminé. Certaines polices d'écriture n'ont pas été copiées."
 
 #: ../src/dialog_fonts_collector.cpp:209
 msgid ""
 "\n"
-"Over 32 MB of fonts were copied. Some of the fonts may not be loaded by the "
-"player if they are all attached to a Matroska file."
+"Over 32 MB of fonts were copied. Some of the fonts may not be loaded by the player if they "
+"are all attached to a Matroska file."
 msgstr ""
 "\n"
-"Plus de 32 Mo de polices ont été copiés. Certaines polices ne seront pas "
-"chargées par le lecteur si elles ont toutes été attachées au fichier "
-"Matroska."
+"Plus de 32 Mo de polices d'écriture ont été copiés. Certaines polices ne seront pas chargées "
+"par le lecteur si elles ont toutes été attachées au fichier Matroska."
 
 #: ../src/dialog_fonts_collector.cpp:224
 msgid "Check fonts for availability"
-msgstr "Tester la disponibilité des polices"
+msgstr "Tester la disponibilité des polices d'écriture"
 
 #: ../src/dialog_fonts_collector.cpp:225
 msgid "Copy fonts to folder"
-msgstr "Copier les polices dans le dossier"
+msgstr "Copier les polices d'écriture dans le dossier"
 
 #: ../src/dialog_fonts_collector.cpp:226
 msgid "Copy fonts to subtitle file's folder"
-msgstr "Copier les polices dans le dossier des sous-titres"
+msgstr "Copier les polices d'écriture dans le dossier des sous-titres"
 
 #: ../src/dialog_fonts_collector.cpp:227
 msgid "Copy fonts to zipped archive"
-msgstr "Copier les polices dans une archive compressée"
+msgstr "Copier les polices d'écriture dans une archive compressée"
 
 #: ../src/dialog_fonts_collector.cpp:229
 msgid "Symlink fonts to folder"
-msgstr "Liaison des polices dans le dossier"
+msgstr "Liaison des polices d'écriture dans le dossier"
 
 #: ../src/dialog_fonts_collector.cpp:232 ../src/dialog_selection.cpp:150
 msgid "Action"
@@ -3513,8 +3380,7 @@ msgstr "Destination invalide."
 
 #: ../src/dialog_fonts_collector.cpp:301 ../src/dialog_fonts_collector.cpp:306
 #: ../src/dialog_fonts_collector.cpp:311 ../src/preferences.cpp:257
-#: ../src/dialog_kara_timing_copy.cpp:574
-#: ../src/dialog_kara_timing_copy.cpp:576
+#: ../src/dialog_kara_timing_copy.cpp:574 ../src/dialog_kara_timing_copy.cpp:576
 #: ../src/dialog_kara_timing_copy.cpp:626
 msgid "Error"
 msgstr "Erreur"
@@ -3529,11 +3395,11 @@ msgstr "Chemin du fichier .zip invalide."
 
 #: ../src/dialog_fonts_collector.cpp:335
 msgid "Select archive file name"
-msgstr "Choix du nom de l'archive"
+msgstr "Choisir le nom de l'archive"
 
 #: ../src/dialog_fonts_collector.cpp:342
 msgid "Select folder to save fonts on"
-msgstr "Choix du dossier pour les polices"
+msgstr "Choisir le dossier pour les polices"
 
 #: ../src/dialog_fonts_collector.cpp:356
 msgid "N/A"
@@ -3541,18 +3407,18 @@ msgstr "N/D"
 
 #: ../src/dialog_fonts_collector.cpp:364
 msgid ""
-"Choose the folder where the fonts will be collected to. It will be created "
-"if it doesn't exist."
+"Choose the folder where the fonts will be collected to. It will be created if it doesn't "
+"exist."
 msgstr ""
-"Dossier de destination des polices collectées. S'il est absent, il sera créé."
+"Dossier de destination des polices d'écriture collectées. S'il est absent, il sera créé."
 
 #: ../src/dialog_fonts_collector.cpp:371
 msgid ""
-"Enter the name of the destination zip file to collect the fonts to. If a "
-"folder is entered, a default name will be used."
+"Enter the name of the destination zip file to collect the fonts to. If a folder is entered, "
+"a default name will be used."
 msgstr ""
-"Nom du fichier zip devant recevoir les polices. Si un dossier est choisi, un "
-"nom par défaut sera utilisé."
+"Nom du fichier zip qui doit recevoir les polices. Si un dossier est choisi, un nom par "
+"défaut sera utilisé."
 
 #: ../src/audio_renderer_waveform.cpp:154
 msgid "Maximum"
@@ -3572,7 +3438,7 @@ msgstr "Échi&quier"
 
 #: ../src/dialog_dummy_video.cpp:118
 msgid "Video resolution:"
-msgstr "Résolution vidéo :"
+msgstr "Définition vidéo :"
 
 #: ../src/dialog_dummy_video.cpp:120
 msgid "Color:"
@@ -3580,7 +3446,7 @@ msgstr "Couleur :"
 
 #: ../src/dialog_dummy_video.cpp:121
 msgid "Frame rate (fps):"
-msgstr "Défilement (FPS) :"
+msgstr "Fréquence d'image (IPS) :"
 
 #: ../src/dialog_dummy_video.cpp:122
 msgid "Duration (frames):"
@@ -3591,8 +3457,8 @@ msgstr "Durée (images) :"
 msgid "Resulting duration: %s"
 msgstr "Durée : %s"
 
-#: ../src/preferences.cpp:61 ../src/preferences.cpp:63
-#: ../src/preferences.cpp:316 ../src/preferences.cpp:341
+#: ../src/preferences.cpp:61 ../src/preferences.cpp:63 ../src/preferences.cpp:316
+#: ../src/preferences.cpp:341
 msgid "General"
 msgstr "Général"
 
@@ -3606,9 +3472,7 @@ msgstr "Afficher la barre d'outils principale"
 
 #: ../src/preferences.cpp:66
 msgid "Save UI state in subtitles files"
-msgstr ""
-"Enregistrer l'état de l'interface utilisateur dans les fichiers de sous-"
-"titres"
+msgstr "Enregistrer l'état de l'interface utilisateur dans les fichiers de sous-titres"
 
 #: ../src/preferences.cpp:69
 msgid "Toolbar Icon Size"
@@ -3656,15 +3520,15 @@ msgstr "Catalogues de style par défaut"
 
 #: ../src/preferences.cpp:89
 msgid ""
-"The chosen style catalogs will be loaded when you start a new file or import "
-"files in the various formats.\n"
+"The chosen style catalogs will be loaded when you start a new file or import files in the "
+"various formats.\n"
 "\n"
 "You can set up style catalogs in the Style Manager."
 msgstr ""
-"Les catalogues de style choisis seront chargés lorsque vous démarrez un "
-"nouveau fichier ou importez des fichiers dans différents formats.\n"
+"Les catalogues de style choisis seront chargés en démarrant un nouveau fichier ou en "
+"important des fichiers dans différents formats.\n"
 "\n"
-"Vous pouvez configurer des catalogues styles dans le gestionnaire des styles."
+"Configuration possible des catalogues styles dans le gestionnaire des styles."
 
 #: ../src/preferences.cpp:114
 msgid "New files"
@@ -3700,7 +3564,7 @@ msgstr "Verrouiller le défilement sur le curseur"
 
 #: ../src/preferences.cpp:130
 msgid "Snap markers by default"
-msgstr "Coller aux marquers par défaut"
+msgstr "Coller aux marqueurs par défaut"
 
 #: ../src/preferences.cpp:131
 msgid "Auto-focus on mouse over"
@@ -3712,31 +3576,31 @@ msgstr "Jouer l'audio lors de pas vidéo"
 
 #: ../src/preferences.cpp:133
 msgid "Left-click-drag moves end marker"
-msgstr "Clic gauche-glissé déplace le marqueur de fin"
+msgstr "Le clic gauche glissé déplace le marqueur de fin"
 
 #: ../src/preferences.cpp:134
 msgid "Default timing length (ms)"
-msgstr "Longueur de temps par défaut (ms)"
+msgstr "Durée par défaut (en ms)"
 
 #: ../src/preferences.cpp:135
 msgid "Default lead-in length (ms)"
-msgstr "Longueur du blanc de début par défaut (ms)"
+msgstr "Durée du blanc de début par défaut (en ms)"
 
 #: ../src/preferences.cpp:136
 msgid "Default lead-out length (ms)"
-msgstr "Longueur du blanc de fin par défaut (ms)"
+msgstr "Durée du blanc de fin par défaut (en ms)"
 
 #: ../src/preferences.cpp:138
 msgid "Marker drag-start sensitivity (px)"
-msgstr "Sensibilité du départ du glissé du marqueur (px)"
+msgstr "Sensibilité du départ du glissé du marqueur (en px)"
 
 #: ../src/preferences.cpp:139
 msgid "Line boundary thickness (px)"
-msgstr "Épaisseur de la ligne de limite (px)"
+msgstr "Épaisseur de la ligne de limite (en px)"
 
 #: ../src/preferences.cpp:140
 msgid "Maximum snap distance (px)"
-msgstr "Distance maximale de contrainte (px)"
+msgstr "Distance maximale de collage (en px)"
 
 #: ../src/preferences.cpp:142
 msgid "Don't show"
@@ -3744,11 +3608,11 @@ msgstr "Ne pas afficher"
 
 #: ../src/preferences.cpp:142
 msgid "Show previous"
-msgstr "Afficher précédent"
+msgstr "Afficher précédente"
 
 #: ../src/preferences.cpp:142
 msgid "Show previous and next"
-msgstr "Afficher précédent et suivant"
+msgstr "Afficher précédente et suivante"
 
 #: ../src/preferences.cpp:142
 msgid "Show all"
@@ -3788,7 +3652,7 @@ msgstr "Limites secondes"
 
 #: ../src/preferences.cpp:155
 msgid "Waveform Style"
-msgstr "Forme d'onde"
+msgstr "Style forme d'onde"
 
 #: ../src/preferences.cpp:157
 msgid "Audio labels"
@@ -3796,16 +3660,15 @@ msgstr "Étiquettes audio"
 
 #: ../src/preferences.cpp:168
 msgid "Show keyframes in slider"
-msgstr "Affichier les clés d'image dans la glissière"
+msgstr "Afficher les images clés dans le champ"
 
 #: ../src/preferences.cpp:170
 msgid "Only show visual tools when mouse is over video"
-msgstr "N'afficher que les outils vidéo lorsque la souris est sur la vidéo"
+msgstr "N'afficher les outils vidéo que lorsque la souris est sur la vidéo"
 
 #: ../src/preferences.cpp:172
 msgid "Seek video to line start on selection change"
-msgstr ""
-"Chercher dans la vidéo la ligne de départ sur modification de sélection"
+msgstr "Sauter au début de ligne quand changement de sélection"
 
 #: ../src/preferences.cpp:174
 msgid "Automatically open audio when opening video"
@@ -3817,19 +3680,19 @@ msgstr "Zoom par défaut"
 
 #: ../src/preferences.cpp:181
 msgid "Fast jump step in frames"
-msgstr "Pas du saut rapide dans les images"
+msgstr "Pas du saut rapide en images"
 
 #: ../src/preferences.cpp:185
 msgid "Screenshot save path"
-msgstr "Chemin d'enregistrement des copies d'écran"
+msgstr "Chemin d'enregistrement des captures d'écran"
 
 #: ../src/preferences.cpp:187
 msgid "Script Resolution"
-msgstr "Résolution du script"
+msgstr "Définition vidéo du script"
 
 #: ../src/preferences.cpp:188
 msgid "Use resolution of first video opened"
-msgstr "Utiliser la résolution de la première vidéo ouverte"
+msgstr "Utiliser la définition vidéo de la première vidéo ouverte"
 
 #: ../src/preferences.cpp:191
 msgid "Default width"
@@ -3849,7 +3712,7 @@ msgstr "Toujours ré-échantillonner"
 
 #: ../src/preferences.cpp:197
 msgid "Match video resolution on open"
-msgstr "Coller à la résolution vidéo à l'ouverture"
+msgstr "Faire correspondre à la définition vidéo à l'ouverture"
 
 #: ../src/preferences.cpp:204
 msgid "Interface"
@@ -3861,15 +3724,15 @@ msgstr "Boîte d'édition"
 
 #: ../src/preferences.cpp:207
 msgid "Enable call tips"
-msgstr "Appel astuces disponible"
+msgstr "Activer les actuces"
 
 #: ../src/preferences.cpp:208
 msgid "Overwrite in time boxes"
-msgstr "Écrasement dans cases temps"
+msgstr "Remplacement dans cases temps"
 
 #: ../src/preferences.cpp:210
 msgid "Enable syntax highlighting"
-msgstr "Mise en valeur syntaxique disponible"
+msgstr "Activer la surbrillance syntaxique"
 
 #: ../src/preferences.cpp:211
 msgid "Dictionaries path"
@@ -3885,15 +3748,15 @@ msgstr "Nombre maximum de caractères par ligne"
 
 #: ../src/preferences.cpp:216
 msgid "Characters Per Second Warning Threshold"
-msgstr "Caractères par seconde seuil d'avertissement"
+msgstr "Seuil d'avertissement des caractères par seconde"
 
 #: ../src/preferences.cpp:217
 msgid "Characters Per Second Error Threshold"
-msgstr "Caractères par seconde seuil d'erreur"
+msgstr "Seuil d'erreur des caractères par seconde"
 
 #: ../src/preferences.cpp:218
 msgid "Ignore whitespace"
-msgstr "Ignorer l'espace blanc"
+msgstr "Ignorer les espaces"
 
 #: ../src/preferences.cpp:219
 msgid "Ignore punctuation"
@@ -3905,15 +3768,15 @@ msgstr "Grille"
 
 #: ../src/preferences.cpp:222
 msgid "Focus grid on click"
-msgstr "Grille de focus sur clic"
+msgstr "La grille devient la cible de saisie par un clic"
 
 #: ../src/preferences.cpp:223
 msgid "Highlight visible subtitles"
-msgstr "Surligner les sous-titres visibles"
+msgstr "Surbriller les sous-titres visibles"
 
 #: ../src/preferences.cpp:224
 msgid "Hide overrides symbol"
-msgstr "Masquer les symboles de recouvrement"
+msgstr "Caractère de masquage des balises"
 
 #: ../src/preferences.cpp:232 ../src/dialog_style_editor.cpp:179
 msgid "Colors"
@@ -3925,7 +3788,7 @@ msgstr "Affichage audio"
 
 #: ../src/preferences.cpp:241
 msgid "Play cursor"
-msgstr "Curseur lecteur"
+msgstr "Curseur du lecteur"
 
 #: ../src/preferences.cpp:242
 msgid "Line boundary start"
@@ -3945,7 +3808,7 @@ msgstr "Limite des syllabes"
 
 #: ../src/preferences.cpp:248
 msgid "Syntax Highlighting"
-msgstr "Surlignage syntaxique"
+msgstr "Surbrillance syntaxique"
 
 #: ../src/preferences.cpp:249
 msgid "Background"
@@ -4001,7 +3864,7 @@ msgstr "Couleurs d'affichage audio"
 
 #: ../src/preferences.cpp:269 ../src/preferences.cpp:370
 msgid "Spectrum"
-msgstr "Spectre"
+msgstr "Spectrogramme"
 
 #: ../src/preferences.cpp:270
 msgid "Waveform"
@@ -4009,7 +3872,7 @@ msgstr "Forme d'onde"
 
 #: ../src/preferences.cpp:272
 msgid "Subtitle Grid"
-msgstr "Grille sous-titres"
+msgstr "Grille des sous-titres"
 
 #: ../src/preferences.cpp:273
 msgid "Standard foreground"
@@ -4061,7 +3924,35 @@ msgstr "Lignes"
 
 #: ../src/preferences.cpp:285
 msgid "CPS Error"
-msgstr "Erreur de caractères/seconde"
+msgstr "Erreur de CPS"
+
+#: ../src/preferences.cpp:291
+msgid "Visual Typesetting Tools"
+msgstr "Outils des éditions vidéo"
+
+#: ../src/preferences.cpp:292
+msgid "Primary Lines"
+msgstr "Lignes principales"
+
+#: ../src/preferences.cpp:293
+msgid "Secondary Lines"
+msgstr "Lignes secondaires"
+
+#: ../src/preferences.cpp:294
+msgid "Primary Highlight"
+msgstr "Surbrillance principale"
+
+#: ../src/preferences.cpp:295
+msgid "Secondary Highlight"
+msgstr "Surbrillance secondaire"
+
+#: ../src/preferences.cpp:298
+msgid "Visual Typesetting Tools Alpha"
+msgstr "Transparence des outils des éditions vidéo"
+
+#: ../src/preferences.cpp:299
+msgid "Shaded Area"
+msgstr "Zone grisée"
 
 #: ../src/preferences.cpp:294
 msgid "Backup"
@@ -4079,14 +3970,13 @@ msgstr "Disponible"
 msgid "Interval in seconds"
 msgstr "Intervale en secondes"
 
-#: ../src/preferences.cpp:301 ../src/preferences.cpp:307
-#: ../src/preferences.cpp:368
+#: ../src/preferences.cpp:301 ../src/preferences.cpp:307 ../src/preferences.cpp:368
 msgid "Path"
 msgstr "Chemin"
 
 #: ../src/preferences.cpp:302
 msgid "Autosave after every change"
-msgstr "Enregistrement automatique après chaque modification"
+msgstr "Enregistrement automatique après une modification"
 
 #: ../src/preferences.cpp:304
 msgid "Automatic Backup"
@@ -4094,15 +3984,15 @@ msgstr "Sauvegarde automatique"
 
 #: ../src/preferences.cpp:318
 msgid "Base path"
-msgstr "Chemin de base"
+msgstr "Chemin"
 
 #: ../src/preferences.cpp:319
 msgid "Include path"
-msgstr "Chemin d'inclusions"
+msgstr "Chemin « include »"
 
 #: ../src/preferences.cpp:320
 msgid "Auto-load path"
-msgstr "Chemin de chargement auto"
+msgstr "Chemin « auto-load »"
 
 #: ../src/preferences.cpp:322
 msgid "0: Fatal"
@@ -4170,11 +4060,11 @@ msgstr "Avancé"
 
 #: ../src/preferences.cpp:343
 msgid ""
-"Changing these settings might result in bugs and/or crashes.  Do not touch "
-"these unless you know what you're doing."
+"Changing these settings might result in bugs and/or crashes.  Do not touch these unless you "
+"know what you're doing."
 msgstr ""
-"Modifier ces réglages peut générer des bogues ou des plantages. Ne modifier "
-"que si vous savez ce que vous faites."
+"Modifier ces réglages peut générer des bogues ou des plantages. Ne modifier que si vous "
+"savez ce que vous faites."
 
 #: ../src/preferences.cpp:356 ../src/preferences.cpp:419
 msgid "Expert"
@@ -4194,7 +4084,7 @@ msgstr "Cache"
 
 #: ../src/preferences.cpp:365
 msgid "None (NOT RECOMMENDED)"
-msgstr "Aucune (DÉCONSEILLÉ)"
+msgstr "Aucun (DÉCONSEILLÉ)"
 
 #: ../src/preferences.cpp:365
 msgid "RAM"
@@ -4314,11 +4204,9 @@ msgstr "Raccourcis clavier"
 
 #: ../src/preferences.cpp:672
 msgid ""
-"Are you sure that you want to restore the defaults? All your settings will "
-"be overridden."
+"Are you sure that you want to restore the defaults? All your settings will be overridden."
 msgstr ""
-"Êtes-vous sûr de vouloir rétablir les réglages par défaut ? Tous vos "
-"réglages seront perdus."
+"Êtes-vous sûr de vouloir rétablir les réglages par défaut ? Tous vos réglages seront perdus."
 
 #: ../src/preferences.cpp:672
 msgid "Restore defaults?"
@@ -4394,7 +4282,7 @@ msgstr "Aucune macro d'automatisme chargée"
 
 #: ../src/dialog_about.cpp:46
 msgid "Translated into LANGUAGE by PERSON\n"
-msgstr "Traduit en français par Céréales Killer\n"
+msgstr "Traduction originelle en français par Céréales Killer, corrigée par Vardë\n"
 
 #: ../src/dialog_about.cpp:122
 msgid ""
@@ -4411,15 +4299,15 @@ msgstr "Compilé par %s le %s."
 
 #: ../src/dialog_kara_timing_copy.cpp:57
 msgid "Source: "
-msgstr "Source :"
+msgstr "Source : "
 
 #: ../src/dialog_kara_timing_copy.cpp:58
 msgid "Dest: "
-msgstr "Cible :"
+msgstr "Cible : "
 
 #: ../src/dialog_kara_timing_copy.cpp:470
 msgid "Kanji timing"
-msgstr "Minutage kanji"
+msgstr "Synchronisation kanji"
 
 #: ../src/dialog_kara_timing_copy.cpp:475 ../src/dialog_paste_over.cpp:73
 #: ../src/grid_column.cpp:334 ../src/grid_column.cpp:335
@@ -4453,8 +4341,7 @@ msgid ""
 "Enter: Link, accept line when done\n"
 "Backspace: Unlink last"
 msgstr ""
-"Lorsque le focus est sur la boîte texte cible, utiliser les touches "
-"suivantes :\n"
+"Lorsque la cible de saisie est la boîte texte cible, utiliser les touches suivantes :\n"
 "\n"
 "Flèche droite : agrandit la longueur de sélection cible\n"
 "Flèche gauche : réduit la longueur de sélection cible\n"
@@ -4498,7 +4385,7 @@ msgstr "&Fermer"
 
 #: ../src/dialog_kara_timing_copy.cpp:566
 msgid "kanji timing"
-msgstr "minutage kanji"
+msgstr "synchronisation kanji"
 
 #: ../src/dialog_kara_timing_copy.cpp:574
 msgid "Select source and destination styles first."
@@ -4532,13 +4419,12 @@ msgstr "Choisir les champs que vous voulez recouvrir :"
 msgid "Comment"
 msgstr "Commentaire"
 
-#: ../src/dialog_paste_over.cpp:67 ../src/grid_column.cpp:177
-#: ../src/grid_column.cpp:178
+#: ../src/dialog_paste_over.cpp:67 ../src/grid_column.cpp:177 ../src/grid_column.cpp:178
 msgid "Style"
 msgstr "Style"
 
-#: ../src/dialog_paste_over.cpp:68 ../src/subs_edit_box.cpp:140
-#: ../src/grid_column.cpp:205 ../src/grid_column.cpp:206
+#: ../src/dialog_paste_over.cpp:68 ../src/subs_edit_box.cpp:140 ../src/grid_column.cpp:205
+#: ../src/grid_column.cpp:206
 msgid "Actor"
 msgstr "Acteur"
 
@@ -4583,11 +4469,11 @@ msgstr ""
 
 #: ../src/main.cpp:302
 msgid ""
-"Do you want Aegisub to check for updates whenever it starts? You can still "
-"do it manually via the Help menu."
+"Do you want Aegisub to check for updates whenever it starts? You can still do it manually "
+"via the Help menu."
 msgstr ""
-"Voulez-vous qu'Aegisub recherche les mises à jour au démarrage ? Vous "
-"pourrez toujours le faire manuellement par le menu Aide."
+"Voulez-vous qu'Aegisub recherche les mises à jour au démarrage ? Vous pourrez toujours le "
+"faire manuellement par le menu « aide »."
 
 #: ../src/main.cpp:302
 msgid "Check for updates?"
@@ -4600,13 +4486,12 @@ msgstr "Erreur de programme"
 #: ../src/main.cpp:406
 #, c-format
 msgid ""
-"An unexpected error has occurred. Please save your work and restart "
-"Aegisub.\n"
+"An unexpected error has occurred. Please save your work and restart Aegisub.\n"
 "\n"
 "Error Message: %s"
 msgstr ""
-"Une erreur inattendue s'est produite. S'il vous plaît, enregistrez votre "
-"travail et redémarrez Aegisub.\n"
+"Une erreur inattendue s'est produite. Veuillez enregistrer votre travail et redémarrez "
+"Aegisub.\n"
 "\n"
 "Message d'erreur : %s"
 
@@ -4616,9 +4501,7 @@ msgstr "&Commentaire"
 
 #: ../src/subs_edit_box.cpp:120
 msgid "Comment this line out. Commented lines don't show up on screen."
-msgstr ""
-"Commente cette ligne en dehors. Les lignes de commentaires ne sont pas "
-"affichées à l'écran."
+msgstr "Commenter cette ligne. Les lignes de commentaires ne sont pas affichées à l'écran."
 
 #: ../src/subs_edit_box.cpp:127
 msgid "Style for this line"
@@ -4629,21 +4512,16 @@ msgid "Edit"
 msgstr "Éditer"
 
 #: ../src/subs_edit_box.cpp:140
-msgid ""
-"Actor name for this speech. This is only for reference, and is mainly "
-"useless."
-msgstr ""
-"Nom de l'acteur pour ce dialogue. Cela ne sert que de référence, donc "
-"inutile."
+msgid "Actor name for this speech. This is only for reference, and is mainly useless."
+msgstr "Nom de l'acteur pour ce dialogue. Cela ne sert que de référence, donc inutile."
 
 #: ../src/subs_edit_box.cpp:145
 msgid ""
-"Effect for this line. This can be used to store extra information for "
-"karaoke scripts, or for the effects supported by the renderer."
+"Effect for this line. This can be used to store extra information for karaoke scripts, or "
+"for the effects supported by the renderer."
 msgstr ""
-"Effet pour cette ligne. Peut être utilisé pour stocker des informations "
-"supplémentaires pour des scripts karaoké our pour des effets supportés par "
-"le codeur."
+"Effet pour cette ligne. Peut être utilisé pour stocker des informations supplémentaires pour "
+"des scripts karaoké ou pour des effets supportés par le moteur de rendu."
 
 #: ../src/subs_edit_box.cpp:151
 msgid "Number of characters in the longest line of this subtitle."
@@ -4711,14 +4589,12 @@ msgstr "Afficher l'original"
 
 #: ../src/subs_edit_box.cpp:194
 msgid ""
-"Show the contents of the subtitle line when it was first selected above the "
-"edit box. This is sometimes useful when editing subtitles or translating "
-"subtitles into another language."
+"Show the contents of the subtitle line when it was first selected above the edit box. This "
+"is sometimes useful when editing subtitles or translating subtitles into another language."
 msgstr ""
-"Afficher le contenu de la ligne de sous-titre quand il a été sélectionné en "
-"premier au-dessus de la zone d'édition. Cela peut être utile lors de "
-"l'édition de sous-titres ou de traduction des sous-titres dans une autre "
-"langue."
+"Afficher le contenu de la ligne de sous-titre lorsqu'elle a été sélectionné pour la première "
+"fois au-dessus de la zone d'édition. Cela peut être utile lors de la modification de sous-"
+"titres ou de traduction des sous-titres dans une autre langue."
 
 #: ../src/subs_edit_box.cpp:441
 msgid "modify text"
@@ -4841,7 +4717,7 @@ msgstr[1] "La sélection a été fixée à %u lignes"
 
 #: ../src/dialog_selection.cpp:212
 msgid "Selection was set to no lines"
-msgstr "La sélection a été fixée à aucun ligne"
+msgstr "La sélection n'a été fixée à aucune ligne"
 
 #: ../src/dialog_selection.cpp:218
 #, c-format
@@ -4872,7 +4748,7 @@ msgstr "Sélection"
 #: ../src/font_file_lister.cpp:72
 #, c-format
 msgid "Style '%s' does not exist\n"
-msgstr "Style '%s' n'existe pas\n"
+msgstr "Le style '%s' n'existe pas\n"
 
 #: ../src/font_file_lister.cpp:138
 #, c-format
@@ -4892,7 +4768,7 @@ msgstr "'%s' n'a pas une variante gras.\n"
 #: ../src/font_file_lister.cpp:151
 #, c-format
 msgid "'%s' does not have an italic variant.\n"
-msgstr "'%s' n'a pas une variante italique.\n"
+msgstr "'%s' ne possède pas de variante italique.\n"
 
 #: ../src/font_file_lister.cpp:155
 #, c-format
@@ -4918,7 +4794,7 @@ msgstr "Analyse du fichier\n"
 
 #: ../src/font_file_lister.cpp:200
 msgid "Searching for font files\n"
-msgstr "Recherche des polices\n"
+msgstr "Recherche de polices d'écriture\n"
 
 #: ../src/font_file_lister.cpp:202
 msgid ""
@@ -4942,36 +4818,30 @@ msgstr[1] "%d polices sont introuvables\n"
 #: ../src/font_file_lister.cpp:214
 #, c-format
 msgid "One font was found, but was missing glyphs used in the script.\n"
-msgid_plural ""
-"%d fonts were found, but were missing glyphs used in the script.\n"
-msgstr[0] ""
-"Une police a été trouvée, mais était absente des glyphs utilisés dans le "
-"script.\n"
+msgid_plural "%d fonts were found, but were missing glyphs used in the script.\n"
+msgstr[0] "Une police a été trouvée, mais était absente des glyphes utilisés dans le script.\n"
 msgstr[1] ""
-"%d polices ont été trouvées, mais étaient absentes des glyphs utilisés dans "
-"le script.\n"
+"%d polices ont été trouvées, mais étaient absentes des glyphes utilisés dans le script.\n"
 
 #: ../src/export_framerate.cpp:52
 msgid "Transform Framerate"
-msgstr "Transformation défilement"
+msgstr "Modifier fréquence d'image"
 
 #: ../src/export_framerate.cpp:53
 msgid ""
-"Transform subtitle times, including those in override tags, from an input "
-"framerate to an output framerate.\n"
+"Transform subtitle times, including those in override tags, from an input framerate to an "
+"output framerate.\n"
 "\n"
-"This is useful for converting regular time subtitles to VFRaC time subtitles "
-"for hardsubbing.\n"
-"It can also be used to convert subtitles to a different speed video, such as "
-"NTSC to PAL speedup."
+"This is useful for converting regular time subtitles to VFRaC time subtitles for "
+"hardsubbing.\n"
+"It can also be used to convert subtitles to a different speed video, such as NTSC to PAL "
+"speedup."
 msgstr ""
-"Transforme les données temporelles, même celles qui sont dans les balises "
-"prioritaires, depuis un taux d'entrée vers un taux de sortie.\n"
+"Transforme les données temporelles, même celles qui sont dans les balises prioritaires, "
+"depuis une fréquence d'image vers une nouvelle fréquence d'image.\n"
 "\n"
-"Très pratique pour convertir les temps réguliers en VFRaC pour "
-"l'incrustation.\n"
-"Peut également être utile pour convertir la vitesse des sous-titres, comme "
-"de NTSC vers PAL."
+"Très pratique pour convertir les temps réguliers en VFRaC pour l'incrustation.\n"
+"Peut également être utile pour convertir la vitesse des sous-titres, comme de NTSC vers PAL."
 
 #: ../src/export_framerate.cpp:92
 msgid "V&ariable"
@@ -4979,7 +4849,7 @@ msgstr "V&ariable"
 
 #: ../src/export_framerate.cpp:96
 msgid "&Constant: "
-msgstr "&Constante :"
+msgstr "&Constante : "
 
 #: ../src/export_framerate.cpp:108
 msgid "&Reverse transformation"
@@ -4987,11 +4857,11 @@ msgstr "Transformation inve&rse"
 
 #: ../src/export_framerate.cpp:116
 msgid "Input framerate: "
-msgstr "Défilement d'entrée :"
+msgstr "Fréquence d'image d'entrée : "
 
 #: ../src/export_framerate.cpp:118
 msgid "Output: "
-msgstr "Sortie :"
+msgstr "Sortie : "
 
 #: ../src/audio_display.cpp:677
 #, c-format
@@ -5020,11 +4890,11 @@ msgstr "Ajoute une ligne"
 
 #: ../src/visual_tool_vector_clip.cpp:59
 msgid "Bicubic"
-msgstr "Bicubique"
+msgstr "Cubique"
 
 #: ../src/visual_tool_vector_clip.cpp:59
 msgid "Appends a bezier bicubic curve"
-msgstr "Ajoute une courbe de Bézier bicubique"
+msgstr "Ajoute une courbe de Bézier cubique"
 
 #: ../src/visual_tool_vector_clip.cpp:61
 msgid "Convert"
@@ -5032,7 +4902,7 @@ msgstr "Convertir"
 
 #: ../src/visual_tool_vector_clip.cpp:61
 msgid "Converts a segment between line and bicubic"
-msgstr "Convertit un segment ligne en bicubique"
+msgstr "Convertit un segment ligne et cubique"
 
 #: ../src/visual_tool_vector_clip.cpp:62
 msgid "Insert"
@@ -5068,11 +4938,11 @@ msgstr "Dessine une forme libre adoucie"
 
 #: ../src/visual_tool_vector_clip.cpp:265
 msgid "delete control point"
-msgstr "supprime un point de contrôle."
+msgstr "supprime un point de contrôle"
 
 #: ../src/dialog_automation.cpp:106
 msgid "Automation Manager"
-msgstr "Gestion d'automatisme"
+msgstr "Gestionnaire d'automatismes"
 
 #: ../src/dialog_automation.cpp:117
 msgid "&Add"
@@ -5324,11 +5194,11 @@ msgstr "Marge Vertical"
 
 #: ../src/grid_column.cpp:266
 msgid "CPS"
-msgstr "caractères/seconde"
+msgstr "CPS"
 
 #: ../src/grid_column.cpp:267
 msgid "Characters Per Second"
-msgstr "caractères/seconde"
+msgstr "Caractères Par Seconde"
 
 #: ../src/dialog_text_import.cpp:47
 msgid "Text import options"
@@ -5356,8 +5226,7 @@ msgstr "Temps et numéro de l'image courante"
 
 #: ../src/video_box.cpp:65
 msgid "Time of this frame relative to start and end of current subs"
-msgstr ""
-"Temps de cette image relatif au début et à la fin du sous-titre courant"
+msgstr "Temps de cette image relatif au début et à la fin du sous-titre courant"
 
 #: ../src/ass_style.cpp:193
 msgid "ANSI"
@@ -5437,19 +5306,19 @@ msgstr "Choix couleur"
 
 #: ../src/dialog_colorpicker.cpp:556
 msgid "Color spectrum"
-msgstr "Couleur du spectre"
+msgstr "Couleur du spectrogramme"
 
 #: ../src/dialog_colorpicker.cpp:560
 msgid "RGB/R"
-msgstr "RVB/R"
+msgstr "RGB/R"
 
 #: ../src/dialog_colorpicker.cpp:560
 msgid "RGB/G"
-msgstr "RVB/V"
+msgstr "RGB/G"
 
 #: ../src/dialog_colorpicker.cpp:560
 msgid "RGB/B"
-msgstr "RVB/B"
+msgstr "RGB/B"
 
 #: ../src/dialog_colorpicker.cpp:560
 msgid "HSL/L"
@@ -5461,7 +5330,7 @@ msgstr "HSV/H"
 
 #: ../src/dialog_colorpicker.cpp:567
 msgid "RGB color"
-msgstr "Couleur RVB"
+msgstr "Couleur RGB"
 
 #: ../src/dialog_colorpicker.cpp:568
 msgid "HSL color"
@@ -5583,7 +5452,7 @@ msgstr "120,000 IPS"
 
 #: ../src/subtitle_format.cpp:124
 msgid "Please choose the appropriate FPS for the subtitles:"
-msgstr "Choisir le taux d'image par seconde (IPS) approprié aux sous-titres :"
+msgstr "Choisir la fréquence d'image (IPS) approprié aux sous-titres :"
 
 #: ../src/subtitle_format.cpp:124
 msgid "FPS"
@@ -5668,31 +5537,30 @@ msgstr "(Dé)charger les fichiers ?"
 
 #: ../src/project.cpp:255
 msgid "The audio file was not found: "
-msgstr "Le fichier audio n'a pas été trouvé :"
+msgstr "Le fichier audio n'a pas été trouvé : "
 
 #: ../src/project.cpp:263
 msgid ""
-"None of the available audio providers recognised the selected file as "
-"containing audio data.\n"
+"None of the available audio providers recognised the selected file as containing audio "
+"data.\n"
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"Aucune source audio valide n'a identifié le fichier sélectionné pouvant "
+"Aucun des fournisseurs audios disponibles n'a identifié le fichier sélectionné pouvant "
 "contenir des données audio.\n"
 "\n"
-"Les sources suivantes ont été essayés :\n"
+"Les fournisseurs audios suivants ont été essayés :\n"
 
 #: ../src/project.cpp:266
 msgid ""
-"None of the available audio providers have a codec available to handle the "
-"selected file.\n"
+"None of the available audio providers have a codec available to handle the selected file.\n"
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"Aucun des sources audio disponibles ont un codec disponible pour gérer le "
-"fichier sélectionné.\n"
+"Aucun des fournisseurs audios disponibles n'a un codec disponible pour gérer le fichier "
+"sélectionné.\n"
 "\n"
-"Les sources suivantes ont été essayés :\n"
+"Les fournisseurs audios suivants ont été essayés :\n"
 "\n"
 
 #: ../src/dialog_style_editor.cpp:127
@@ -5701,7 +5569,7 @@ msgstr "Éditeur de style"
 
 #: ../src/dialog_style_editor.cpp:178
 msgid "Font"
-msgstr "Police"
+msgstr "Police d'écriture"
 
 #: ../src/dialog_style_editor.cpp:180
 msgid "Margins"
@@ -5785,11 +5653,11 @@ msgstr "Distance des bords haut et bas, en pixels"
 
 #: ../src/dialog_style_editor.cpp:225
 msgid ""
-"When selected, display an opaque box behind the subtitles instead of an "
-"outline around the text"
+"When selected, display an opaque box behind the subtitles instead of an outline around the "
+"text"
 msgstr ""
-"Lorsque sélectionné, affiche une boîte opaque derrière les sous-titres au "
-"lieu du contour du texte"
+"Lorsque sélectionné, affiche une boîte opaque derrière les sous-titres à la place du contour "
+"du texte"
 
 #: ../src/dialog_style_editor.cpp:226
 msgid "Outline width, in pixels"
@@ -5812,11 +5680,8 @@ msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Angle de rotation de l'axe Z, en degrés"
 
 #: ../src/dialog_style_editor.cpp:231
-msgid ""
-"Encoding, only useful in unicode if the font doesn't have the proper unicode "
-"mapping"
-msgstr ""
-"Encodage, utile en Unicode si la police n'a pas son propre codage Unicode."
+msgid "Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"
+msgstr "Encodage, utile en Unicode si la police n'a pas son propre codage Unicode"
 
 #: ../src/dialog_style_editor.cpp:232
 msgid "Character spacing, in pixels"
@@ -5824,7 +5689,7 @@ msgstr "Espacement des caractères, en pixels"
 
 #: ../src/dialog_style_editor.cpp:233
 msgid "Alignment in screen, in numpad style"
-msgstr "Alignement à l'écran, en style clavier numérique"
+msgstr "Alignement à l'écran, comme sur un pavé numérique"
 
 #: ../src/dialog_style_editor.cpp:277
 msgid "Primary"
@@ -5880,19 +5745,15 @@ msgstr "Couleur de l'arrière-plan de l'aperçu"
 
 #: ../src/dialog_style_editor.cpp:413
 msgid "There is already a style with this name. Please choose another name."
-msgstr ""
-"Il y a déjà un style portant ce nom. S'il vous plaît choisissez un autre nom."
+msgstr "Il y a déjà un style portant ce nom. Veuillez choisir un autre nom."
 
 #: ../src/dialog_style_editor.cpp:413
 msgid "Style name conflict"
 msgstr "Conflit de nom de style"
 
 #: ../src/dialog_style_editor.cpp:425
-msgid ""
-"Do you want to change all instances of this style in the script to this new "
-"name?"
-msgstr ""
-"Voulez-vous remplacer toutes les occurrences de ce style par ce nouveau nom ?"
+msgid "Do you want to change all instances of this style in the script to this new name?"
+msgstr "Voulez-vous remplacer toutes les occurrences de ce style par ce nouveau nom ?"
 
 #: ../src/dialog_style_editor.cpp:426
 msgid "Update script?"
@@ -5900,11 +5761,11 @@ msgstr "Mettre à jour le script ?"
 
 #: ../src/dialog_export_ebu3264.cpp:84
 msgid ""
-"Time code offset in incorrect format. Ensure it is entered as four groups of "
-"two digits separated by colons."
+"Time code offset in incorrect format. Ensure it is entered as four groups of two digits "
+"separated by colons."
 msgstr ""
-"Format de décalage codes temps incorrect. Saisissez-les en quatre groupes de "
-"deux chiffres séparés par des virgules."
+"Format de décalage codes temps incorrect. Saisissez-les en quatre groupes de deux chiffres "
+"séparés par des virgules."
 
 #: ../src/dialog_export_ebu3264.cpp:84
 msgid "EBU STL export"
@@ -5916,27 +5777,27 @@ msgstr "Exporter au format EBU STL"
 
 #: ../src/dialog_export_ebu3264.cpp:103
 msgid "23.976 fps (non-standard, STL24.01)"
-msgstr "23,976 i/s (non standard, STL24.01)"
+msgstr "23,976 IPS (non standard, STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:104
 msgid "24 fps (non-standard, STL24.01)"
-msgstr "24 i/s (non standard, STL24.01)"
+msgstr "24 IPS (non standard, STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:105
 msgid "25 fps (STL25.01)"
-msgstr "25 i/s (STL25.01)"
+msgstr "25 IPS (STL25.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:106
 msgid "29.97 fps (non-dropframe, STL30.01)"
-msgstr "29,97 i/s (sans dépôt d'image, STL30.01)"
+msgstr "29,97 IPS (sans dépôt d'image, STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:107
 msgid "29.97 fps (dropframe, STL30.01)"
-msgstr "29,97 i/s (dépôt d'image, STL30.01)"
+msgstr "29,97 IPS (dépôt d'image, STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:108
 msgid "30 fps (STL30.01)"
-msgstr "30 i/s (STL30.01)"
+msgstr "30 IPS (STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:110
 msgid "TV standard"
@@ -5976,11 +5837,11 @@ msgstr "Encodage texte"
 
 #: ../src/dialog_export_ebu3264.cpp:126
 msgid "Automatically wrap long lines (ASS)"
-msgstr "Retour automatique des lignes longues (ASS)"
+msgstr "Césure automatique des longues lignes (ASS)"
 
 #: ../src/dialog_export_ebu3264.cpp:127
 msgid "Automatically wrap long lines (Balanced)"
-msgstr "Césure automatique des lignes longues (équilibré)"
+msgstr "Césure automatique des longues lignes (équilibré)"
 
 #: ../src/dialog_export_ebu3264.cpp:128
 msgid "Abort if any lines are too long"
@@ -6055,25 +5916,24 @@ msgstr "Résolution incompatible"
 #: ../src/dialog_video_properties.cpp:46
 #, c-format
 msgid ""
-"The resolution of the loaded video and the resolution specified for the "
-"subtitles don't match.\n"
+"The resolution of the loaded video and the resolution specified for the subtitles don't "
+"match.\n"
 "\n"
 "Video resolution:\t%d x %d\n"
 "Script resolution:\t%d x %d\n"
 "\n"
 "Change subtitles resolution to match video?"
 msgstr ""
-"Les résolutions de la vidéo chargée et des sous-titres ne correspondent "
-"pas.\n"
+"La définition de la vidéo chargée et des sous-titres ne correspondent pas.\n"
 "\n"
-"Résolution vidéo : \t%d x %d\n"
-"Résolution script : \t%d x %d\n"
+"Définition vidéo : \t%d x %d\n"
+"Définition script : \t%d x %d\n"
 "\n"
-"Changer la résolution des sous-titres pour correspondre à la vidéo ?"
+"Changer la définition des sous-titres pour correspondre à la vidéo ?"
 
 #: ../src/dialog_video_properties.cpp:54 ../src/dialog_video_properties.cpp:63
 msgid "Set to video resolution"
-msgstr "Définir la résolution vidéo"
+msgstr "Définir la définition vidéo"
 
 #: ../src/dialog_video_properties.cpp:55
 msgid "Resample script (stretch to new aspect ratio)"
@@ -6093,19 +5953,19 @@ msgstr "Rééchantillonner le script"
 
 #: ../src/dialog_video_properties.cpp:163
 msgid "change script resolution"
-msgstr "changer la résolution du script"
+msgstr "changer la définition vidéo du script"
 
 #: ../src/dialog_attachments.cpp:68
 msgid "Attachment List"
-msgstr "Liste des affectations"
+msgstr "Liste des pièces jointes"
 
 #: ../src/dialog_attachments.cpp:76
 msgid "Attach &Font"
-msgstr "&Polices liées"
+msgstr "&Ajouter une police"
 
 #: ../src/dialog_attachments.cpp:77
 msgid "Attach &Graphics"
-msgstr "&Images liées"
+msgstr "&Ajouter une image"
 
 #: ../src/dialog_attachments.cpp:78
 msgid "E&xtract"
@@ -6113,7 +5973,7 @@ msgstr "E&xtraire"
 
 #: ../src/dialog_attachments.cpp:110
 msgid "Attachment name"
-msgstr "Nom de l'affectation"
+msgstr "Nom de la pièce jointe"
 
 #: ../src/dialog_attachments.cpp:111
 msgid "Size"
@@ -6129,11 +5989,11 @@ msgstr "Choix du fichier à joindre"
 
 #: ../src/dialog_attachments.cpp:142
 msgid "attach font file"
-msgstr "Ajout des polices"
+msgstr "ajout de police d'écriture"
 
 #: ../src/dialog_attachments.cpp:152
 msgid "attach graphics file"
-msgstr "Ajout des images"
+msgstr "ajout d'image"
 
 #: ../src/dialog_attachments.cpp:164
 msgid "Select the path to save the files to:"
@@ -6145,7 +6005,7 @@ msgstr "Choix du chemin d'enregistrement du fichier :"
 
 #: ../src/dialog_attachments.cpp:189
 msgid "remove attachment"
-msgstr "Enlever les ajouts"
+msgstr "enlever fichier joint"
 
 #: ../src/dialog_translation.cpp:77
 msgid "Original"
@@ -6157,7 +6017,7 @@ msgstr "Traduction"
 
 #: ../src/dialog_translation.cpp:115
 msgid "Insert original"
-msgstr "Insère original"
+msgstr "Insérer original"
 
 #: ../src/dialog_translation.cpp:118
 msgid "Delete line"
@@ -6174,7 +6034,7 @@ msgstr "Plus de ligne à traduire."
 #: ../src/dialog_translation.cpp:186 ../src/dialog_translation.cpp:236
 #, c-format
 msgid "Current line: %d/%d"
-msgstr "Ligne courante : %d/%d"
+msgstr "Ligne active : %d/%d"
 
 #: ../src/dialog_translation.cpp:273
 msgid "translation assistant"
@@ -6182,7 +6042,7 @@ msgstr "assistant à la traduction"
 
 #: ../src/visual_tool.cpp:122
 msgid "visual typesetting"
-msgstr "typographie visuelle"
+msgstr "édition vidéo"
 
 #: ../src/dialog_resample.cpp:119
 msgid "&Symmetrical"
@@ -6210,7 +6070,7 @@ msgstr "Manuel"
 
 #: ../src/dialog_resample.cpp:147
 msgid "Aspect Ratio Handling"
-msgstr "Changer la résolution vidéo"
+msgstr "Gestion du rapport de forme"
 
 #: ../src/dialog_resample.cpp:162
 msgid "Margin offset"
@@ -6222,15 +6082,15 @@ msgstr "x"
 
 #: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
 msgid "YCbCr Matrix:"
-msgstr "YCbCr Matrix :"
+msgstr "Matrice YCbCr :"
 
 #: ../src/dialog_resample.cpp:175
 msgid "Source Resolution"
-msgstr "Résolution de la source"
+msgstr "Définition vidéo source"
 
 #: ../src/dialog_resample.cpp:189
 msgid "Destination Resolution"
-msgstr "Résolution de la destination"
+msgstr "Définition vidéo destination"
 
 #: ../src/dialog_version_check.cpp:94
 msgid "Version Checker"
@@ -6275,21 +6135,18 @@ msgid ""
 "There was an error checking for updates to Aegisub:\n"
 "%s\n"
 "\n"
-"If other applications can access the Internet fine, this is probably a "
-"temporary server problem on our end."
+"If other applications can access the Internet fine, this is probably a temporary server "
+"problem on our end."
 msgstr ""
-"Une erreur s'est produite lors de la vérification des mises à jour "
-"d'Aegisub :\n"
+"Une erreur s'est produite lors de la vérification des mises à jour d'Aegisub :\n"
 "%s\n"
 "\n"
-"Si d'autres applications accèdent à internet sans problème, c'est "
-"probablement dû à un problème ponctuel de notre serveur."
+"Si d'autres applications accèdent à internet sans problème, c'est probablement dû à un "
+"problème ponctuel de notre serveur."
 
 #: ../src/dialog_version_check.cpp:379
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
-"Une erreur inconnue s'est produite lors de la vérification des mises à jour "
-"d'Aegisub."
+msgstr "Une erreur inconnue s'est produite lors de la vérification des mises à jour d'Aegisub."
 
 #: default_menu.json:0
 msgid "&Insert (before)"
@@ -6385,7 +6242,7 @@ msgstr "Réglage du &zoom"
 
 #: default_menu.json:0
 msgid "Override &AR"
-msgstr "Outrep&asser les proportions"
+msgstr "Outrep&asser le rapport de forme"
 
 #: default_menu.json:0
 msgid "&Export As..."
@@ -6401,9 +6258,7 @@ msgstr "Ajouter flou de contour"
 
 #: ../automation/autoload/macro-1-edgeblur.lua:7
 msgid "A demo macro showing how to do simple line modification in Automation 4"
-msgstr ""
-"Macro de démo montrant comment faire une modification simple de ligne en "
-"Automation 4"
+msgstr "Macro de démo montrant comment faire une modification simple de ligne en Automation 4"
 
 #: ../automation/autoload/macro-1-edgeblur.lua:21
 msgid "Adds \\be1 tags to all selected lines"
@@ -6416,31 +6271,26 @@ msgstr "Introduction karaoké automatique"
 #: ../automation/autoload/karaoke-auto-leadin.lua:33
 msgid "Join up the ends of selected lines and add \\k tags to shift karaoke"
 msgstr ""
-"Joindre la fin des lignes sélectionnées et ajouter des balises \\k pour "
-"décalage en karaoké"
+"Joindre la fin des lignes sélectionnées et ajouter des balises \\k pour décalage en karaoké"
 
 #: ../automation/autoload/cleantags-autoload.lua:31
 msgid "Clean Tags"
 msgstr "Nettoyage des balises"
 
 #: ../automation/autoload/cleantags-autoload.lua:32
-msgid ""
-"Clean subtitle lines by re-arranging ASS tags and override blocks within the "
-"lines"
+msgid "Clean subtitle lines by re-arranging ASS tags and override blocks within the lines"
 msgstr ""
-"Nettoyage des lignes de sous-titres en réarrangeant les balises ASS et en "
-"écrasant les blocs dans les lignes"
+"Nettoyage des lignes de sous-titres en réarrangeant les balises ASS et en écrasant les blocs "
+"dans les lignes"
 
 #: ../automation/autoload/kara-templater.lua:36
 msgid "Karaoke Templater"
 msgstr "Création modèle karaoké"
 
 #: ../automation/autoload/kara-templater.lua:37
-msgid ""
-"Macro and export filter to apply karaoke effects using the template language"
+msgid "Macro and export filter to apply karaoke effects using the template language"
 msgstr ""
-"Macro et filtres d'export pour appliquer les effets karaoké en utilisant le "
-"modèle de langue"
+"Macro et filtres d'export pour appliquer les effets karaoké en utilisant le modèle de langue"
 
 #: ../automation/autoload/kara-templater.lua:858
 msgid "Apply karaoke template"
@@ -6474,11 +6324,11 @@ msgstr "Enlève toutes les balises de recouvrement des lignes sélectionnées"
 
 #: ../automation/autoload/strip-tags.lua:28
 msgid "strip tags"
-msgstr "bande de balises"
+msgstr "Retirer balises"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 msgid "Make fullwidth"
-msgstr "Remplacer par de larges lettres"
+msgstr "Remplacer par du pleine chasse"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:80
 msgid "Convert Latin letters to SJIS fullwidth letters"
@@ -6494,11 +6344,11 @@ msgstr "Éditeur de sous-titres"
 
 #: aegisub.desktop:6
 msgid "Create and edit subtitles for film and videos."
-msgstr "Crée et édite des sous-titres pour films et vidéos."
+msgstr "Crée et modifie des sous-titres pour contenu vidéo."
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Installing runtime libraries..."
-msgstr "Installation de bibliothèques d'exécution..."
+msgstr "Installation des bibliothèques d'exécution..."
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Create a start menu icon"
@@ -6514,1409 +6364,12 @@ msgstr "Contrôle de la mise à jour :"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid ""
-"This will install Aegisub {#BUILD_GIT_VERSION_STRING} on your computer.%n"
-"%nAegisub is covered by the GNU General Public License version 2. This means "
-"you may use the application for any purpose without charge, but that no "
-"warranties of any kind are given either.%n%nSee the Aegisub website for "
-"information on obtaining the source code."
+"This will install Aegisub {#BUILD_GIT_VERSION_STRING} on your computer.%n%nAegisub is "
+"covered by the GNU General Public License version 2. This means you may use the application "
+"for any purpose without charge, but that no warranties of any kind are given either.%n%nSee "
+"the Aegisub website for information on obtaining the source code."
 msgstr ""
-"Ceci installera Aegisub {#BUILD_GIT_VERSION_STRING} sur votre computer.%n"
-"%nAegisub est couvert par la GNU General Public License version 2. Cela "
-"signifie que vous pouvez utiliser l'application pour n'importe quel but, "
-"sans frais, mais qu'aucune garantie d'aucune sorte ne soit donnée.%n%nAller "
-"le site de Aegisub pour savoir comment obtenir le code source."
-
-#~ msgid ""
-#~ "An Automation script failed to load. File name: '%s', error reported: %s"
-#~ msgstr ""
-#~ "Échec du chargement d'un script d'automatisme. Fichier : « %s », erreur "
-#~ "retournée : %s"
-
-#~ msgid "%d frames (%s)"
-#~ msgstr "%d images (%s)"
-
-#~ msgid "Are you sure you want to delete these %d styles?"
-#~ msgstr "Êtes-vous sûr de vouloir supprimer ces %d styles ?"
-
-#~ msgid "Style name collision."
-#~ msgstr "Conflit de nom de style."
-
-#~ msgid "Closes the currently open timecodes file"
-#~ msgstr "Ferme le fichier de codes temporels actif"
-
-#~ msgid "Opens a VFR timecodes v1 or v2 file"
-#~ msgstr "Ouvre un fichier de codages temporels VFR v1 ou v2"
-
-#~ msgid "Saves a VFR timecodes v2 file"
-#~ msgstr "Enregistre un fichier de codes temporels VFR v2"
-
-#~ msgid "Forces video to 2.35 aspect ratio"
-#~ msgstr "Forcer la vidéo aux proportions 2.35"
-
-#~ msgid "Forces video to a custom aspect ratio"
-#~ msgstr "Forcer la vidéo aux proportions personnalisées"
-
-#~ msgid "Leave video on original aspect ratio"
-#~ msgstr "Laisser la vidéo à ses proportions d'origine"
-
-#~ msgid "Forces video to 4:3 aspect ratio"
-#~ msgstr "Forcer la vidéo aux proportions 4:3"
-
-#~ msgid "Forces video to 16:9 aspect ratio"
-#~ msgstr "Forcer la vidéo aux proportions 16:9"
-
-#~ msgid "Closes the currently open video file"
-#~ msgstr "Ferme le fichier vidéo actuellement ouvert"
-
-#~ msgid "Detach video, displaying it in a separate Window"
-#~ msgstr "Détache la vidéo pour l'afficher dans une fenêtre séparée"
-
-#~ msgid "Shows video details"
-#~ msgstr "Affiche les détails de la vidéo"
-
-#~ msgid "Toggle focus between the video slider and other things"
-#~ msgstr "Basculer le focus entre le curseur vidéo et les autres éléments"
-
-#~ msgid "Seek to the next subtitle boundary"
-#~ msgstr "Chercher la limite de sous-titre suivante"
-
-#~ msgid "Seek to the previous subtitle boundary"
-#~ msgstr "Chercher la limite de sous-titre précédente"
-
-#~ msgid "Jumps the video to the end frame of current subtitle"
-#~ msgstr "Met la vidéo à l'image de fin du sous-titre actif"
-
-#~ msgid "Jumps the video to the start frame of current subtitle"
-#~ msgstr "Met la vidéo à l'image de début du sous-titre actif"
-
-#~ msgid "Opens a video file"
-#~ msgstr "Ouvre un fichier vidéo"
-
-#~ msgid "Opens a video clip with solid color"
-#~ msgstr "Ouvre un clip vidéo formé d'une couleur pleine"
-
-#~ msgid "Copy subtitles"
-#~ msgstr "Copier des sous-titres"
-
-#~ msgid "D&uplicate and Shift by 1 Frame"
-#~ msgstr "D&upliquer et décaler d'une image"
-
-#~ msgid "Duplicate and Shift by 1 Frame"
-#~ msgstr "Dupliquer et décaler d'une image"
-
-#~ msgid "Duplicate lines and shift by one frame"
-#~ msgstr "Duplique les lignes et les décale d'une image"
-
-#~ msgid "Joins selected lines in a single one, as karaoke"
-#~ msgstr "Joint les lignes sélectionnées en une seul, en karaoké"
-
-#~ msgid "Joins selected lines in a single one, concatenating text together"
-#~ msgstr ""
-#~ "Joint les lignes sélectionnées en une seule, chaînant le texte ensemble"
-
-#~ msgid ""
-#~ "Joins selected lines in a single one, keeping text of first and "
-#~ "discarding remaining"
-#~ msgstr ""
-#~ "Joint les lignes sélectionnées en une seule, ne gardant que le texte de "
-#~ "la première"
-
-#~ msgid "Recombine subtitles when they have been split and merged"
-#~ msgstr "Recombine des sous-titres lorsqu'ils ont été divisés et fusionnés"
-
-#~ msgid "Uses karaoke timing to split line into multiple smaller lines"
-#~ msgstr ""
-#~ "Utilise le minutage karaoké pour diviser la ligne en plusieurs petites "
-#~ "lignes"
-
-#~ msgid "Redoes last action"
-#~ msgstr "Rétablit la dernière action"
-
-#~ msgid "Undoes last action"
-#~ msgstr "Annule la dernière action"
-
-#~ msgid "Open the attachment list"
-#~ msgstr "Ouvrir la liste des affectations"
-
-#~ msgid "Find words in subtitles"
-#~ msgstr "Chercher des mots dans les sous-titres"
-
-#~ msgid "Find next match of last word"
-#~ msgstr "Cherche l'occurrence suivant du dernier mot"
-
-#~ msgid "Inserts a line after current"
-#~ msgstr "Insère une ligne après l'active"
-
-#~ msgid "Inserts a line after current, starting at video time"
-#~ msgstr ""
-#~ "Insère une ligne après celle active démarrant au point de synchronisation"
-
-#~ msgid "Inserts a line before current"
-#~ msgstr "Insère une ligne avant celle active"
-
-#~ msgid "Inserts a line before current, starting at video time"
-#~ msgstr ""
-#~ "Insère une ligne avant celle active démarrant au point de synchronisation"
-
-#~ msgid "Opens a subtitles file"
-#~ msgstr "Ouvre un fichier de sous-titres"
-
-#~ msgid "Opens a subtitles file with a specific charset"
-#~ msgstr ""
-#~ "Ouvre un fichier de sous-titres avec un jeu de caractères spécifique"
-
-#~ msgid "Opens the subtitles from the current video file"
-#~ msgstr "Ouvre les sous-titres du fichier vidéo courant"
-
-#~ msgid "Saves subtitles"
-#~ msgstr "Enregistre les sous-titres"
-
-#~ msgid "Saves subtitles with another name"
-#~ msgstr "Enregistre les sous-titres sous un autre nom"
-
-#~ msgid "Selects all dialogue lines"
-#~ msgstr "Sélectionne toutes les lignes de dialogue"
-
-#~ msgid "Selects all lines that are currently visible on video frame"
-#~ msgstr ""
-#~ "Sélectione toutes les lignes qui sont visibiles dans l'image vidéo active"
-
-#~ msgid "Launch ASSDraw3 tool for vector drawing"
-#~ msgstr "Lance l'outil « ASSDraw3 » pour le dessin vectoriel"
-
-#~ msgid "Saves a copy of subtitles with processing applied to it"
-#~ msgstr ""
-#~ "Enregistre une copie des sous-titres après leur avoir appliqué une action"
-
-#~ msgid "Selects lines based on defined criteria"
-#~ msgstr "Sélectionne des lignes sur des critères définis"
-
-#~ msgid "Changes resolution and modifies subtitles to conform to change"
-#~ msgstr "Change la résolution et modifie les sous-titres pour les adapter"
-
-#~ msgid "Open styles manager"
-#~ msgstr "Ouvre le gestionnaire de styles"
-
-#~ msgid "Open Kanji timer"
-#~ msgstr "Ouvre le chrono kanji"
-
-#~ msgid ""
-#~ "Runs a post-processor for timing to deal with lead-ins, lead-outs, scene "
-#~ "timing and etc"
-#~ msgstr ""
-#~ "Lance un postprocesseur pour ajuster les blancs de début et de fin, la "
-#~ "synchro, etc."
-
-#~ msgid "Display audio and subtitles only"
-#~ msgstr "N'affiche que l'audio et les sous-titres"
-
-#~ msgid "Display audio, video and subtitles"
-#~ msgstr "Affiche l'audio, la vidéo et les sous-titres"
-
-#~ msgid "Display subtitles only"
-#~ msgstr "N'affiche que les sous-titres"
-
-#~ msgid "Display video and subtitles only"
-#~ msgstr "N'affiche que la vidéo et les sous-titres"
-
-#~ msgid "Swaps the two selected lines"
-#~ msgstr "Intervertit les deux lignes sélectionnées"
-
-#~ msgid "Changes times of subs so end times begin on next's start time"
-#~ msgstr ""
-#~ "Change les temps du sous-titre pour qu'il finisse sur le temps de début "
-#~ "suivant"
-
-#~ msgid "Changes times of subs so start times begin on previous's end time"
-#~ msgstr ""
-#~ "Change les temps du sous-titre pour qu'il commence sur le temps de fin "
-#~ "précédent"
-
-#~ msgid "Closes the currently open audio file"
-#~ msgstr "Ferme le fichier audio actif"
-
-#~ msgid "Opens an audio file"
-#~ msgstr "Ouvre un fichier audio"
-
-#~ msgid "Opens the audio from the current video file"
-#~ msgstr "Ouvre la bande son du fichier vidéo actif"
-
-#~ msgid "Create an audio clip of the selected line"
-#~ msgstr "Crée un clip audio de la ligne sélectionnée"
-
-#~ msgid "Play selection or stop playback if it's already playing"
-#~ msgstr ""
-#~ "Jouer la sélection ou arrêter la reproduction si elle est déjà en cours"
-
-#~ msgid "Auto scrolls audio display to selected line"
-#~ msgstr "Affichage auto de l'audio de la ligne sélectionnée"
-
-#~ msgid "Auto goes to next line on commit"
-#~ msgstr "Aller à la ligne suivante à la validation"
-
-#~ msgid "All Fil&es"
-#~ msgstr "Tous fichi&ers"
-
-#~ msgid "Resource files"
-#~ msgstr "Fichiers de ressource"
-
-#~ msgid "Closes the currently open keyframes list"
-#~ msgstr "Ferme la liste des images clés actuelle"
-
-#~ msgid "Opens a keyframe list file"
-#~ msgstr "Ouvre un fichier de liste de clés d'image"
-
-#~ msgid "Saves the current keyframe list"
-#~ msgstr "Enregistre la liste de images clés active"
-
-#~ msgid "Reverse"
-#~ msgstr "Inverser"
-
-#~ msgid "Collision: "
-#~ msgstr "Collision :"
-
-#~ msgid "Aegisub was built without any font file listers enabled"
-#~ msgstr "Aegisub a été compilé sans aucun listeur de polices activé"
-
-#~ msgid "Resulting duration: %d:%02d:%02d.%03d"
-#~ msgstr "Durée résultante : %d:%02d:%02d.%03d"
-
-#~ msgid "Invalid fps or length value"
-#~ msgstr "Valeur FPS ou longueur invalides"
-
-#~ msgid "Allow grid to take focus"
-#~ msgstr "Permettre la grille de prendre focus"
-
-#~ msgid "File name"
-#~ msgstr "Nom du fichier"
-
-#~ msgid "Left Margin (0 = default)"
-#~ msgstr "Marge de gauche (0 = par défaut)"
-
-#~ msgid "Right Margin (0 = default)"
-#~ msgstr "Marge de droite (0 = par défaut)"
-
-#~ msgid "Vertical Margin (0 = default)"
-#~ msgstr "Marge verticale (0 = par défaut)"
-
-#~ msgid "Bold"
-#~ msgstr "Gras"
-
-#~ msgid "Italics"
-#~ msgstr "Italique"
-
-#~ msgid "Underline"
-#~ msgstr "Souligné"
-
-#~ msgid "Strikeout"
-#~ msgstr "Barré"
-
-#~ msgid "Primary color"
-#~ msgstr "Couleur primaire"
-
-#~ msgid "Secondary color"
-#~ msgstr "Couleur secondaire"
-
-#~ msgid "Outline color"
-#~ msgstr "Couleur du contour"
-
-#~ msgid "Shadow color"
-#~ msgstr "Couleur de l'ombre"
-
-#~ msgid "Commits the text (Enter)"
-#~ msgstr "Accepte le texte (Entrée)"
-
-#~ msgid "MarginL change"
-#~ msgstr "modification margeG"
-
-#~ msgid "MarginR change"
-#~ msgstr "modification margeD"
-
-#~ msgid "MarginV change"
-#~ msgstr "modification margeV"
-
-#~ msgid "Selection was set to %u lines"
-#~ msgstr "La sélection a été fixée à %u lignes"
-
-#~ msgid "%u lines were added to selection"
-#~ msgstr "%u lignes ont été ajoutées à la sélection"
-
-#~ msgid "%u lines were removed from selection"
-#~ msgstr "%u lignes ont été retirées de la sélection"
-
-#~ msgid "%d fonts could not be found.\n"
-#~ msgstr "%d polices sont absentes.\n"
-
-#~ msgid "%d fonts were found, but were missing glyphs used in the script.\n"
-#~ msgstr ""
-#~ "%d polices trouvées mais des glyphes utilisés dans le script sont "
-#~ "absents.\n"
-
-#~ msgid ""
-#~ "Collecting font data from system. This might take a while, depending on "
-#~ "the number of fonts installed. Results are cached and subsequent "
-#~ "executions will be faster...\n"
-#~ msgstr ""
-#~ "Collecte des données de polices du système. Cela peut durer un moment "
-#~ "selon le nombre de polices installées. Les résultats seront mis en cache "
-#~ "et les prochaines exécutions seront plus rapides...\n"
-
-#~ msgid "Done collecting font data.\n"
-#~ msgstr "Collecte des données de polices achevée.\n"
-
-#~ msgid "    Subtitle format handler: %s"
-#~ msgstr "    Format sous-titre : %s"
-
-#~ msgid "Update &Video"
-#~ msgstr "Mise à jour &vidéo"
-
-#~ msgid "All rows"
-#~ msgstr "Toutes les colonnes"
-
-#~ msgid "Selected rows"
-#~ msgstr "Colonnes sélectionnées"
-
-#~ msgid "%i matches were replaced."
-#~ msgstr "%i correspondances remplacées."
-
-#~ msgid "delete"
-#~ msgstr "supprime"
-
-#~ msgid "Associate file types"
-#~ msgstr "Types de fichiers associés"
-
-#~ msgid ""
-#~ "Aegisub can take over the following file types.\n"
-#~ "\n"
-#~ "If you want Aegisub to no longer be associated with a file type, you must "
-#~ "tell another program to take over the file type."
-#~ msgstr ""
-#~ "Aegisub peut gérer les types de fichiers suivants.\n"
-#~ "\n"
-#~ "Si vous ne désirez plus associer un type de fichier à Aegisub, vous devez "
-#~ "demander à un autre logiciel de gérer le type de fichier."
-
-#~ msgid ""
-#~ "Aegisub is already associated with all supported file types.\n"
-#~ "\n"
-#~ "If you want Aegisub to no longer be associated with a file type, you must "
-#~ "tell another program to take over the file type."
-#~ msgstr ""
-#~ "Aegisub est déjà associé à tous les types de fichiers supportés.\n"
-#~ "\n"
-#~ "Si vous ne désirez plus associer un type de fichier à Aegisub, vous devez "
-#~ "demander à un autre logiciel de gérer le type de fichier."
-
-#~ msgid "Make Aegisub default editor for subtitles?"
-#~ msgstr "Faire d'Aegisub votre éditeur de sous-titres par défaut ?"
-
-#~ msgid ""
-#~ "Aegisub is not your default editor for subtitle files. Do you want to "
-#~ "make Aegisub your default editor for subtitle files?"
-#~ msgstr ""
-#~ "Aegisub n'est pas votre éditeur de sous-titres par défaut. Voulez-vous "
-#~ "faire d'Aegisub votre éditeur de sous-titres par défaut ?"
-
-#~ msgid "Always perform this check when Aegisub starts"
-#~ msgstr "Toujours faire cette vérification au démarrage d'Aegisub"
-
-#~ msgid "&Yes"
-#~ msgstr "&Oui"
-
-#~ msgid "&No"
-#~ msgstr "&Non"
-
-#~ msgid ""
-#~ "You already have timecodes loaded. Would you like to replace them with "
-#~ "timecodes from the video file?"
-#~ msgstr ""
-#~ "Vous avez déjà chargé des codes temps. Les remplacer par les codes temps "
-#~ "du fichier ?"
-
-#~ msgid "Replace timecodes?"
-#~ msgstr "Remplacer les codes de temps ?"
-
-#~ msgid "Set opacity, from 0 (opaque) to 255 (transparent)"
-#~ msgstr "Réglage d'opacité, de 0 (opaque) à 255 (transparent)"
-
-#~ msgid "No subtitle providers available. Cannot preview subs."
-#~ msgstr "Aucune source de sous-titres. Aperçu impossible."
-
-#~ msgid "Load audio"
-#~ msgstr "Charger audio"
-
-#~ msgid "Reading into RAM"
-#~ msgstr "Lecture en RAM"
-
-#~ msgid "Reading to Hard Disk cache"
-#~ msgstr "Lecture en cache du disque dur"
-
-#~ msgid "&Change aspect ratio"
-#~ msgstr "&Changer les proportions"
-
-#~ msgid "Select overlaps"
-#~ msgstr "Sélectionner les recouvrements"
-
-#~ msgid "Select lines which begin while another non-comment line is active"
-#~ msgstr ""
-#~ "Sélection des lignes qui commencent alors qu'une autre ligne non "
-#~ "commentée est active"
-
-#~ msgid "Clean Script Info"
-#~ msgstr "Nettoyer les infos script"
-
-#~ msgid ""
-#~ "Removes all but the absolutely required fields from the Script Info "
-#~ "section. You might want to run this on files that you plan to distribute "
-#~ "in original form."
-#~ msgstr ""
-#~ "Enlève tout sauf les champs indispensables de la section Info du script. "
-#~ "Vous devriez effectuer ce nettoyage sur les fichiers que vous voulez "
-#~ "distribuer en tant qu'originaux."
-
-#~ msgid "Seek bar"
-#~ msgstr "Barre de recherche"
-
-#~ msgid "Play selection (%KEY%/%KEY%)"
-#~ msgstr "Lire la sélection (%KEY%/%KEY%)"
-
-#~ msgid "Play current line (%KEY%)"
-#~ msgstr "Lire la ligne courante (%KEY%)"
-
-#~ msgid "Stop (%KEY%)"
-#~ msgstr "Arrêter (%KEY%)"
-
-#~ msgid "Add lead in (%KEY%)"
-#~ msgstr "Ajoute un blanc de début (%KEY%)"
-
-#~ msgid "Add lead out (%KEY%)"
-#~ msgstr "Ajoute un blanc de fin (%KEY%)"
-
-#~ msgid "Commit changes (%KEY%/%KEY%)"
-#~ msgstr "Valide les modifications (%KEY%/%KEY%)"
-
-#~ msgid "Enable Medusa-Style Timing Shortcuts"
-#~ msgstr "Activer les raccourcis temporels style Medusa"
-
-#~ msgid "Karaoke"
-#~ msgstr "Karaoké"
-
-#~ msgid "Accept Split"
-#~ msgstr "Accepter la division"
-
-#~ msgid "Commit splits and leave split-mode"
-#~ msgstr "Valider les divisions et sortir du mode division"
-
-#~ msgid "Join"
-#~ msgstr "Joindre"
-
-#~ msgid "Join selected syllables"
-#~ msgstr "Joindre les syllabes sélectionnées"
-
-#~ msgid "Split"
-#~ msgstr "Diviser"
-
-#~ msgid "Enter split-mode"
-#~ msgstr "Entrer en mode division"
-
-#~ msgid ""
-#~ "Do you want to commit your changes? If you choose No, they will be "
-#~ "discarded."
-#~ msgstr ""
-#~ "Voulez-vous valider vos modifications ? Si vous refusez, elles seront "
-#~ "rejetées."
-
-#~ msgid "Commit?"
-#~ msgstr "Valider ?"
-
-#~ msgid "Script completed"
-#~ msgstr "Script achevé"
-
-#~ msgid "Not enough parameters for Aegisub::text_extents()"
-#~ msgstr "Pas assez de paramètres pour Aegisub:text_extents()"
-
-#~ msgid ""
-#~ "Tried to register PerlConsole, but support for it was disabled in this "
-#~ "version."
-#~ msgstr ""
-#~ "Tentative d'enregistrer PerlConsole, mais le support en a été désactivé "
-#~ "dans cette version."
-
-#~ msgid "Fatal error: "
-#~ msgstr "Erreur critique :"
-
-#~ msgid "Error: "
-#~ msgstr "Erreur :"
-
-#~ msgid "Warning: "
-#~ msgstr "Avertissement :"
-
-#~ msgid "Hint: "
-#~ msgstr "Conseil :"
-
-#~ msgid "Debug: "
-#~ msgstr "Débogage :"
-
-#~ msgid "Trace: "
-#~ msgstr "Trace :"
-
-#~ msgid "Executing "
-#~ msgstr "Exécution"
-
-#~ msgid "Perl script"
-#~ msgstr "Script Perl"
-
-#~ msgid ""
-#~ "Unable to add the automation include path(s) to @INC: the script's code "
-#~ "may not compile or execute properly."
-#~ msgstr ""
-#~ "Impossible d'ajouter l'automatisme ni le(s) chemin(s) à @INC : le code du "
-#~ "script ne peut se compiler ou s'exécuter correctement."
-
-#~ msgid "Reloading %s because the file on disk (%s) changed."
-#~ msgstr "Rechargement de %s car le fichier sur le disque (%s) a été modifié."
-
-#~ msgid "Saving changes"
-#~ msgstr "Enregistrement des modifications"
-
-#~ msgid "Colour Picker"
-#~ msgstr "Pipette :"
-
-#~ msgid "Select all"
-#~ msgstr "Sélectionner tout"
-
-#~ msgid "Attach fonts to current subtitles"
-#~ msgstr "Joindre les polices aux sous-titres actuels"
-
-#~ msgid "DEBUG: Verify all fonts in system"
-#~ msgstr "Débug : vérifier les polices du système"
-
-#~ msgid "Zip Archives (*.zip)|*.zip"
-#~ msgstr "Archives Zip (*.zip)|*.zip"
-
-#~ msgid "Invalid destination directory."
-#~ msgstr "Répertoire de destination invalide."
-
-#~ msgid "Scanning file for fonts..."
-#~ msgstr "Recherche des polices du fichier... "
-
-#~ msgid "Checking fonts...\n"
-#~ msgstr "Analyse des polices...\n"
-
-#~ msgid ""
-#~ "\n"
-#~ "Finished writing to %s.\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Fin d'écriture vers %s.\n"
-
-#~ msgid "font attachment"
-#~ msgstr "affectation des polices"
-
-#~ msgid "Not found.\n"
-#~ msgstr "Introuvable.\n"
-
-#~ msgid "Found.\n"
-#~ msgstr "Trouvé.\n"
-
-#~ msgid "\"%s\" found on style \"%s\".\n"
-#~ msgstr "« %s » trouvée dans la feuille de style « %s ».\n"
-
-#~ msgid "\"%s\" found on dialogue line \"%d\".\n"
-#~ msgstr "« %s » trouvée sur ligne dialogue « %d ».\n"
-
-#~ msgid "\"%s\" found.\n"
-#~ msgstr "« %s » trouvée.\n"
-
-#~ msgid "Source Style"
-#~ msgstr "Style source"
-
-#~ msgid "Dest Style"
-#~ msgstr "Style cible"
-
-#~ msgid "Startup"
-#~ msgstr "Démarrage"
-
-#~ msgid "Check File Associations on Start"
-#~ msgstr "Vérifier l'association des fichiers au démarrage"
-
-#~ msgid "Limits for levels and recent files"
-#~ msgstr "Limite des niveaux et des fichiers récents"
-
-#~ msgid "Maximum recent timecode files"
-#~ msgstr "Maximum des fichiers chrono récents"
-
-#~ msgid "Maximum recent keyframe files"
-#~ msgstr "Maximum de fichiers images clés récents"
-
-#~ msgid "Maximum recent subtitle files"
-#~ msgstr "Maximum de fichiers sous-titres récents"
-
-#~ msgid "Maximum recent video files"
-#~ msgstr "Maximum de fichiers vidéo récents"
-
-#~ msgid "Maximum recent audio files"
-#~ msgstr "Maximum de fichiers audio récents"
-
-#~ msgid "Maximum recent find strings"
-#~ msgstr "Maximum de chaînes trouvées récentes"
-
-#~ msgid "Maximum recent replace strings"
-#~ msgstr "Maximum de chaînes remplacées récentes"
-
-#~ msgid "Auto-save"
-#~ msgstr "Enregistrement automatique"
-
-#~ msgid "File paths"
-#~ msgstr "Chemins d'accès aux fichiers"
-
-#~ msgid "Miscellanea"
-#~ msgstr "Divers"
-
-#~ msgid "seconds."
-#~ msgstr "secondes."
-
-#~ msgid "Auto-save path:"
-#~ msgstr "Chemin d'accès enregistrement auto :"
-
-#~ msgid "Auto-backup path:"
-#~ msgstr "Chemin d'accès sauvegarde auto :"
-
-#~ msgid "Crash recovery path:"
-#~ msgstr "Chemin d'accès restauration crash :"
-
-#~ msgid "Link commiting of times"
-#~ msgstr "Lier validation des temps"
-
-#~ msgid "Path to dictionary files:"
-#~ msgstr "Chemin des fichiers dictionnaires :"
-
-#~ msgid "Modified Background"
-#~ msgstr "Arrière-plan modifié"
-
-#~ msgid "Syntax highlighter - "
-#~ msgstr "Mise en valeur syntaxique -"
-
-#~ msgid "Font: "
-#~ msgstr "Police :"
-
-#~ msgid "Highlight subtitles that are currently visible in video"
-#~ msgstr "Mise en valeur des sous-titres visibles dans la vidéo"
-
-#~ msgid "Header"
-#~ msgstr "Têtière"
-
-#~ msgid "Replace override tags with: "
-#~ msgstr "Remplacer les balises superposées par :"
-
-#~ msgid "Advanced - EXPERT USERS ONLY"
-#~ msgstr "Avancé - RÉSERVÉ AUX EXPERTS"
-
-#~ msgid "Grab times from line upon selection"
-#~ msgstr "Coller les temps de la ligne au-dessus de la sélection"
-
-#~ msgid "Snap to adjacent lines"
-#~ msgstr "Coller aux lignes adjacentes"
-
-#~ msgid "Draw secondary lines"
-#~ msgstr "Dessiner les lignes secondaires"
-
-#~ msgid "Draw selection background"
-#~ msgstr "Dessiner l'arrière-plan de sélection"
-
-#~ msgid "Draw timeline"
-#~ msgstr "Dessiner la ligne de temps"
-
-#~ msgid "Draw keyframes"
-#~ msgstr "Dessiner les images clés"
-
-#~ msgid "Selection background - modified"
-#~ msgstr "Arrière-plan sélection - modifié"
-
-#~ msgid "Waveform - selection"
-#~ msgstr "Forme d'onde - sélection"
-
-#~ msgid "Waveform - modified"
-#~ msgstr "Forme d'onde - modifiée"
-
-#~ msgid "Waveform - inactive"
-#~ msgstr "Forme d'onde - inactive"
-
-#~ msgid "Syllable text"
-#~ msgstr "Texte syllabe"
-
-#~ msgid "HD cache name"
-#~ msgstr "Nom cache DD"
-
-#~ msgid "Spectrum cutoff"
-#~ msgstr "Limite spectrale"
-
-#~ msgid "Function"
-#~ msgstr "Fonction"
-
-#~ msgid "Key"
-#~ msgstr "Touche"
-
-#~ msgid "Set Hotkey..."
-#~ msgstr "Régler les raccourcis clavier..."
-
-#~ msgid "Clear Hotkey"
-#~ msgstr "Supprimer les raccourcis clavier"
-
-#~ msgid "Default All"
-#~ msgstr "Tout par défaut"
-
-#~ msgid "File save/load"
-#~ msgstr "Enregistrement/chargement fichier"
-
-#~ msgid "Aegisub must restart for the changes to take effect. Restart now?"
-#~ msgstr ""
-#~ "Aegisub doit être relancé pour appliquer les modifications. Redémarrage ?"
-
-#~ msgid "Restart Aegisub"
-#~ msgstr "Redémarrage d'Aegisub"
-
-#~ msgid "Press Key"
-#~ msgstr "Presser une touche"
-
-#~ msgid "Press key to bind to \"%s\" or Esc to cancel."
-#~ msgstr "Presser une touche pour lier à « %s » ou Echap. pour annuler."
-
-#~ msgid ""
-#~ "The hotkey %s is already mapped to %s. If you proceed, that hotkey will "
-#~ "be cleared. Proceed?"
-#~ msgstr ""
-#~ "Le raccourci %s est déjà lié à %s. Si vous continuez, ce raccourci sera "
-#~ "supprimé. Continuer ?"
-
-#~ msgid "Hotkey conflict"
-#~ msgstr "Conflit de raccourcis"
-
-#~ msgid "Margin Top"
-#~ msgstr "Marge de tête"
-
-#~ msgid "Margin Bottom"
-#~ msgstr "Marge de pied"
-
-#~ msgid "All"
-#~ msgstr "Tout"
-
-#~ msgid ""
-#~ "Invalid resolution: destination resolution cannot be 0 on either "
-#~ "dimension."
-#~ msgstr ""
-#~ "Résolution invalide : la résolution sible ne peut être 0 dans aucun sens."
-
-#~ msgid "History"
-#~ msgstr "Historique"
-
-#~ msgid "s, "
-#~ msgstr "s,"
-
-#~ msgid "e, "
-#~ msgstr "e,"
-
-#~ msgid "original"
-#~ msgstr "original"
-
-#~ msgid "replace with"
-#~ msgstr "remplacer par"
-
-#~ msgid "Replace All"
-#~ msgstr "Tout remplacer"
-
-#~ msgid ""
-#~ "You have chosen to use the \"Comic Sans\" font. As the programmer and a "
-#~ "typesetter,\n"
-#~ "I must urge you to reconsider. Comic Sans is the most abused font in the "
-#~ "history\n"
-#~ "of computing, so please avoid using it unless it's REALLY suitable. "
-#~ "Thanks."
-#~ msgstr ""
-#~ "Vous avez choisi d'utiliser la police « Comic Sans ». En tant que "
-#~ "programmeur et typographe,\n"
-#~ "je vous conseille de reconsidérer votre choix, Comic Sans étant la police "
-#~ "la plus abusée\n"
-#~ "de l'histoire informatique, donc à proscrire sauf si elle est VRAIMENT "
-#~ "adaptée. Merci."
-
-#~ msgid "Warning"
-#~ msgstr "Avertissement"
-
-#~ msgid "Copy of "
-#~ msgstr "Copie de "
-
-#~ msgid "Are you sure you want to delete these "
-#~ msgstr "Êtes-vous sûr de vouloir supprimer ces "
-
-#~ msgid " styles?"
-#~ msgstr " styles ?"
-
-#~ msgid "Styling assistant"
-#~ msgstr "Assistant des styles"
-
-#~ msgid "Enable preview (slow)"
-#~ msgstr "Afficher l'aperçu (lent)"
-
-#~ msgid "style changes"
-#~ msgstr "modifications du style"
-
-#~ msgid "Threshold:"
-#~ msgstr "Seuil :"
-
-#~ msgid ""
-#~ "Aegisub can export subtitles to many different formats, character "
-#~ "encodings, and even compensate Variable Frame Rate so you can hardsub "
-#~ "them - it's all in the Export option in File menu."
-#~ msgstr ""
-#~ "Aegisub peut exporter les sous-titres dans de nombreux formats, encodages "
-#~ "de caractères et même compenser le Variable Frame Rate (taux de "
-#~ "défilement variable) afin de pouvoir les encoder. Tout est dans Options "
-#~ "d'exportation dans le menu Fichier."
-
-#~ msgid ""
-#~ "You can easily translate subtitle files using the translation assistant."
-#~ msgstr ""
-#~ "Vous pouvez facilement traduire des fichiers de sous-titres en utilisant "
-#~ "l'assistant de traduction."
-
-#~ msgid ""
-#~ "Styles can be stored in different storages, so that you can keep your "
-#~ "projects organized."
-#~ msgstr ""
-#~ "Les styles peuvent être stockés dans différents stocks, vous pouvez ainsi "
-#~ "garder vos projets organisés."
-
-#~ msgid ""
-#~ "Use keyboard shortcuts! They make your life easier, for example, Ctrl"
-#~ "+Enter updates changes on current line without going to next. Check the "
-#~ "manual for a complete list."
-#~ msgstr ""
-#~ "Utilisez les raccourcis clavier ! Ils vous faciliteront la vie, par "
-#~ "exemple, Ctrl+Entrée met à jour les modifications de la ligne active sans "
-#~ "passer à la suivante. Consultez le manuel pour ue liste complète."
-
-#~ msgid ""
-#~ "There is no reason to use the SSA format (as opposed to ASS). ASS is very "
-#~ "similar, but adds some important functionality. Most importantly, "
-#~ "however, is that only ASS supports certain override tags (such as \\pos "
-#~ "and \\t). Those only work on SSA files because VSFilter/Textsub is "
-#~ "merciful."
-#~ msgstr ""
-#~ "ll n'y a pas de raison d'utiliser le format SSA (opposé au ASS). ASS est "
-#~ "très similaire, mais il ajoute quelques fonctions importantes. Le plus "
-#~ "important, cependant, est que seul ASS supporte certaines balises de "
-#~ "placement (comme \\pos et \\t). Elles ne fonctionnent qu'avec des "
-#~ "fichiers SSA car VSFilter/Textsub est clément."
-
-#~ msgid "DON'T PANIC!"
-#~ msgstr "NE PANIQUEZ PAS !"
-
-#~ msgid ""
-#~ "Aegisub has several features to make sure you will never lose your work. "
-#~ "It will periodically save your subtitles to autosave folder, and will "
-#~ "create a copy of subs whenever you open them, to autoback folder. Also, "
-#~ "if it crashes, it will attempt to save a restore file."
-#~ msgstr ""
-#~ "Aegisub a plusieurs fonctions pour vous assurer de ne jamais perdre votre "
-#~ "travail. Il enregistrera périodiquement vos sous-titres dans son dossier "
-#~ "d'enregistrement automatique et créera une copie des sous-titres si vous "
-#~ "deviez les ouvrir, dans son dossier de sauvegarde. De même, s'il plante, "
-#~ "il essaiera d'enregistrer un fichier de restauration."
-
-#~ msgid ""
-#~ "The styling assistant is a practical way to set styles to each line, when "
-#~ "each actor has a different style assigned to it."
-#~ msgstr ""
-#~ "L'assistant de styles est une façon pratique d'appliquer des styles à "
-#~ "chaque ligne, lorsque chaque acteur a un style différent."
-
-#~ msgid ""
-#~ "The fonts collector is one of the most useful features, which resumes the "
-#~ "boring task of hunting down fonts into a matter of a few clicks."
-#~ msgstr ""
-#~ "Le collecteur de polices est l'une des fonctions les plus utiles "
-#~ "puisqu'elle réduit la fastidieuse tâche de la collecte des polices à "
-#~ "quelques clics."
-
-#~ msgid ""
-#~ "When you are done with your subtitles and ready to distribute them, "
-#~ "remember: say no to MP4, OGM or AVI. Matroska is your friend."
-#~ msgstr ""
-#~ "Lorsque vos sous-titres sont terminés et prêts à être diffusés, rappelez-"
-#~ "vous : dites non à MP4, OGM ou AVI. Mastroska est votre ami."
-
-#~ msgid ""
-#~ "Much like anything loaded via DirectShow, certain files may have a "
-#~ "strange structure (such as h.264 into AVI or XviD will null frames) which "
-#~ "may cause unreliable seeking (that is, video frames might be off by one "
-#~ "frame). This is not an Aegisub bug - you may consider reencoding those "
-#~ "videos before working with them."
-#~ msgstr ""
-#~ "Comme tout ce qui est chargé par DirectShow, certains fichiers peuvent "
-#~ "avoir une structure bizarre (comme du h.264 en AVI ou du XviD avec null "
-#~ "frames) causant un affichage inexploitable (tel les images vidéo décalées "
-#~ "d'une image). Ce n'est pas un bogue d'Aegisub - il vous faudra réencoder "
-#~ "ces fichiers avant de travailler avec."
-
-#~ msgid ""
-#~ "Try the spectrum mode for the audio display, it can make it much easier "
-#~ "to spot where the important points in the audio are."
-#~ msgstr ""
-#~ "Essayez le mode spectral pour l'affichage audio, il peut vous aider à "
-#~ "visualiser plus facilement les points importants de la bande son."
-
-#~ msgid ""
-#~ "If you decode your audio to a PCM WAV file before loading it in Aegisub, "
-#~ "you don't have to wait for it to be decoded before you can use it."
-#~ msgstr ""
-#~ "Si vous décodez votre bande son en un fichier PCM WA avant de le charger "
-#~ "dans Aegisub, vous n'aurez pas à attendre après son décodage pour "
-#~ "l'utiliser."
-
-#~ msgid ""
-#~ "Having video open is often more a nuisance than a help when timing "
-#~ "subtitles. Timing with only audio open is often much easier. You can "
-#~ "always adjust the subtitles to match the video later on."
-#~ msgstr ""
-#~ "Avoir la vidéo ouverte est plus une source d'ennuis qu'une aide à la "
-#~ "synchronisation des sous-titres. La synchro avec la seule bande son est "
-#~ "plus facile. Vous pourrez toujours ajuster les sous-titres à la vidéo "
-#~ "plus tard."
-
-#~ msgid ""
-#~ "If the audio doesn't seem to work properly during video playback, try "
-#~ "loading audio separately. Just select Audio->Load from video, that "
-#~ "usually makes the audio much more reliable."
-#~ msgstr ""
-#~ "Si la bande son ne semble pas fonctionner correctement durant la lecture "
-#~ "vidéo, essayez de charger le son séparément. Allez sur Audio -> Charger "
-#~ "depuis la vidéo, ce qui rendra la bande son plus fiable."
-
-#~ msgid "If anything goes wrong, blame movax."
-#~ msgstr "Si quelque chose va mal, blâmez-en movax."
-
-#~ msgid "Current line: ?"
-#~ msgstr "Ligne active : ?"
-
-#~ msgid "From Video"
-#~ msgstr "Depuis la vidéo"
-
-#~ msgid "video"
-#~ msgstr "vidéo"
-
-#~ msgid "audio"
-#~ msgstr "audio"
-
-#~ msgid "Save"
-#~ msgstr "Enregistrer"
-
-#~ msgid "Save subtitles"
-#~ msgstr "Enregistrer les sous-titres"
-
-#~ msgid "Jump To..."
-#~ msgstr "Aller à..."
-
-#~ msgid "Jump video to time/frame"
-#~ msgstr "Avancer au temps/image de la vidéo"
-
-#~ msgid "Jump video to end"
-#~ msgstr "Aller à la fin de la vidéo"
-
-#~ msgid "Snap start to video"
-#~ msgstr "Coller au départ de la vidéo"
-
-#~ msgid "Snap subtitles to scene"
-#~ msgstr "Coller les sous-titres à la scène"
-
-#~ msgid "Snap selected subtitles so they match current scene start/end"
-#~ msgstr ""
-#~ "Colle les sous-titres sélectionnés aux début et fin de la scène active"
-
-#~ msgid "Shift subtitles to frame"
-#~ msgstr "Décalage de sous-titres à l'image"
-
-#~ msgid "Shift selected subtitles so first selected starts at this frame"
-#~ msgstr ""
-#~ "Décale les sous-titres sélectionnés au premier départ sélectionné de "
-#~ "l'image"
-
-#~ msgid "Open Styles Manager"
-#~ msgstr "Ouvrir le gestionnaire de styles"
-
-#~ msgid "Open Attachment List"
-#~ msgstr "Ouvrir la liste des accessoires"
-
-#~ msgid "Open Fonts Collector"
-#~ msgstr "Ouvrir le collecteur de polices"
-
-#~ msgid "Open Shift Times Dialogue"
-#~ msgstr "Ouvrir le dialogue de décalage temporel"
-
-#~ msgid "Open Styling Assistant"
-#~ msgstr "Ouvrir l'assistant de styles"
-
-#~ msgid "Open Translation Assistant"
-#~ msgstr "Ouvrir l'assistant à la traduction"
-
-#~ msgid "Resample"
-#~ msgstr "Rééchantillonnage"
-
-#~ msgid "Open Timing Post-processor dialog"
-#~ msgstr "Ouvrir le dialogue du postprocesseur temporel"
-
-#~ msgid "Open Kanji Timer dialog"
-#~ msgstr "Ouvrir le dialogue du chrono kanji"
-
-#~ msgid "Open Spell checker"
-#~ msgstr "Ouvrir le correcteur orthographique"
-
-#~ msgid "Sort by Time"
-#~ msgstr "Tri par temps"
-
-#~ msgid "&Automation"
-#~ msgstr "&Automatisme"
-
-#~ msgid "&Associations..."
-#~ msgstr "&Associations..."
-
-#~ msgid "Associate file types with Aegisub"
-#~ msgstr "Associe les types de fichiers à Aegisub"
-
-#~ msgid "Open log window"
-#~ msgstr "Ouvre la fenêtre d'historique"
-
-#~ msgid "Resource files distributed with Aegisub"
-#~ msgstr "Fichiers de ressources distribués avec Aegisub"
-
-#~ msgid "Save before continuing?"
-#~ msgstr "Enregistrer avant de continuer ?"
-
-#~ msgid "You have timecodes loaded currently. Would you like to unload them?"
-#~ msgstr ""
-#~ "Vous avez des codes temporels actuellement chargés. Voulez-vous les "
-#~ "décharger ?"
-
-#~ msgid "Unload timecodes?"
-#~ msgstr "Décharger les codes temps ?"
-
-#~ msgid "All files"
-#~ msgstr "Tous fichiers"
-
-#~ msgid "Open audio file"
-#~ msgstr "Ouvrir un fichier audio"
-
-#~ msgid "All Supported Types"
-#~ msgstr "Tout type supporté"
-
-#~ msgid "Save timecodes file"
-#~ msgstr "Enregistrer le fichier de codes temps"
-
-#~ msgid "show full tags."
-#~ msgstr "affichage complet des balises."
-
-#~ msgid "Help"
-#~ msgstr "Aide"
-
-#~ msgid "Cut"
-#~ msgstr "Couper"
-
-#~ msgid "Paste"
-#~ msgstr "Coller"
-
-#~ msgid "Paste Over"
-#~ msgstr "Coller sur"
-
-#~ msgid "Video Jump"
-#~ msgstr "Saut vidéo"
-
-#~ msgid "Set Start to Video"
-#~ msgstr "Régler sur début de la vidéo"
-
-#~ msgid "Set End to Video"
-#~ msgstr "Régler sur fin de la vidéo"
-
-#~ msgid "Shift by Current Time"
-#~ msgstr "Décaler du temps actif"
-
-#~ msgid "Zoom 50%"
-#~ msgstr "Zoom 50 %"
-
-#~ msgid "Video global prev frame"
-#~ msgstr "Image précédente vidéo globale"
-
-#~ msgid "Video global focus seek"
-#~ msgstr "Recherche point sur vidéo globale"
-
-#~ msgid "Video global play"
-#~ msgstr "Lecture vidéo globale"
-
-#~ msgid "Grid global prev line"
-#~ msgstr "Ligne précédente sur grille globale"
-
-#~ msgid "Grid global next line"
-#~ msgstr "Ligne suivante sur grille globale"
-
-#~ msgid "Save Subtitles Alt"
-#~ msgstr "Enregistrement alteratif des sous-titres"
-
-#~ msgid "Video global zoom in"
-#~ msgstr "Zoom avant vidéo globale"
-
-#~ msgid "Video global zoom out"
-#~ msgstr "Zoom arrière vidéo globale"
-
-#~ msgid "Grid move row down"
-#~ msgstr "Grille déplacer rangée vers le bas"
-
-#~ msgid "Grid move row up"
-#~ msgstr "Grille déplacer rangée vers le haut"
-
-#~ msgid "Grid delete rows"
-#~ msgstr "Grille suppression rangées"
-
-#~ msgid "Grid duplicate rows"
-#~ msgstr "Grille duplication rangées"
-
-#~ msgid "Grid duplicate and shift one frame"
-#~ msgstr "Grille dupliquer et décaler une image"
-
-#~ msgid "Audio Commit Alt"
-#~ msgstr "Audio Validation alt."
-
-#~ msgid "Audio Commit"
-#~ msgstr "Audio validation"
-
-#~ msgid "Audio Commit (Stay)"
-#~ msgstr "Audio validation (rester)"
-
-#~ msgid "Audio Prev Line"
-#~ msgstr "Audio ligne précédente"
-
-#~ msgid "Audio Prev Line Alt"
-#~ msgstr "Audio Ligne précédente alt."
-
-#~ msgid "Audio Next Line"
-#~ msgstr "Audio Ligne suivante"
-
-#~ msgid "Audio Next Line Alt"
-#~ msgstr "Audio Ligne suivante alt."
-
-#~ msgid "Audio Play"
-#~ msgstr "Audio Lecture"
-
-#~ msgid "Audio Play Alt"
-#~ msgstr "Audio Lecture alt."
-
-#~ msgid "Audio Play or Stop"
-#~ msgstr "Audio Lecture ou arrêt"
-
-#~ msgid "Audio Stop"
-#~ msgstr "Audio Arrêt"
-
-#~ msgid "Audio Karaoke Increase Len"
-#~ msgstr "Audio Augmenter longueur karaoké"
-
-#~ msgid "Audio Karaoke Decrease Len"
-#~ msgstr "Audio Réduire longueur karaoké"
-
-#~ msgid "Audio Karaoke Increase Len Shift"
-#~ msgstr "Audio Augmenter décalage longeur karaoké"
-
-#~ msgid "Audio Karaoke Decrease Len Shift"
-#~ msgstr "Audio Réduire décalage longueur karaoké"
-
-#~ msgid "Audio Play First 500ms"
-#~ msgstr "Audio Lire premiers 500 ms"
-
-#~ msgid "Audio Play Last 500ms"
-#~ msgstr "Audio Lire derniers 500 ms"
-
-#~ msgid "Audio Play 500ms Before"
-#~ msgstr "Audio Lire 500 ms avant"
-
-#~ msgid "Audio Play 500ms After"
-#~ msgstr "Audio Lire 500 ms après"
-
-#~ msgid "Audio Play To End"
-#~ msgstr "Audio Lire jusqu'à la fin"
-
-#~ msgid "Audio Play Original Line"
-#~ msgstr "Audio Lire ligne d'origine"
-
-#~ msgid "Audio Add Lead In"
-#~ msgstr "Audio Ajout blanc de début"
-
-#~ msgid "Audio Add Lead Out"
-#~ msgstr "Audio Ajout blanc de fin"
-
-#~ msgid "Audio Medusa Toggle"
-#~ msgstr "Audio Medusa Bascule"
-
-#~ msgid "Audio Medusa Play"
-#~ msgstr "Audio Medusa Lecture"
-
-#~ msgid "Audio Medusa Stop"
-#~ msgstr "Audio Medusa Arrêt"
-
-#~ msgid "Audio Medusa Shift Start Back"
-#~ msgstr "Audio Medusa Décale le début en arrière"
-
-#~ msgid "Audio Medusa Shift Start Forward"
-#~ msgstr "Audio Medusa Décale le début en avant"
-
-#~ msgid "Audio Medusa Shift End Back"
-#~ msgstr "Audio Medusa Décale la fin en arrière"
-
-#~ msgid "Audio Medusa Shift End Forward"
-#~ msgstr "Audio Medusa Décale la fin en avant"
-
-#~ msgid "Audio Medusa Play Before"
-#~ msgstr "Audio Medusa Lecture avant"
-
-#~ msgid "Audio Medusa Play After"
-#~ msgstr "Audio Medusa Lecture après"
-
-#~ msgid "Audio Medusa Next"
-#~ msgstr "Audio Medusa Suivant"
-
-#~ msgid "Audio Medusa Previous"
-#~ msgstr "Audio Medusa Précédet"
-
-#~ msgid "Audio Medusa Enter"
-#~ msgstr "Audio Medusa Entrée"
-
-#~ msgid "Translation Assistant Play Audio"
-#~ msgstr "Assistant de traduction Lecture audio"
-
-#~ msgid "Translation Assistant Play Video"
-#~ msgstr "Assistant de traduction Lecture vidéo"
-
-#~ msgid "Translation Assistant Next"
-#~ msgstr "Assistant de traduction Suivant"
-
-#~ msgid "Translation Assistant Prev"
-#~ msgstr "Assistant de traduction Précédent"
-
-#~ msgid "Translation Assistant Accept"
-#~ msgstr "Assistant de traduction Accepter"
-
-#~ msgid "Translation Assistant Preview"
-#~ msgstr "Assistant de traduction Aperçu"
-
-#~ msgid "Translation Assistant Insert Original"
-#~ msgstr "Assistant de traduction Original"
-
-#~ msgid "Styling Assistant Play Audio"
-#~ msgstr "Assistant de styles Lecture audio"
-
-#~ msgid "Styling Assistant Play Video"
-#~ msgstr "Assistant de styles Lecture vidéo"
-
-#~ msgid "Styling Assistant Next"
-#~ msgstr "Assistant de styles Suivant"
-
-#~ msgid "Styling Assistant Prev"
-#~ msgstr "Assistant de styles Précédent"
-
-#~ msgid "Styling Assistant Accept"
-#~ msgstr "Assistant de styles Accepter"
-
-#~ msgid "Styling Assistant Preview"
-#~ msgstr "Assistant de styles Aperçu"
-
-#~ msgid "Load keyframes"
-#~ msgstr "Charger des codes temps"
-
-#~ msgid "Reading keyframes from video"
-#~ msgstr "Lecture des codes temps de la vidéo"
-
-#~ msgid "Reading keyframe and timecode data from Matroska file."
-#~ msgstr ""
-#~ "Lecture des données d'images clés et de codes temps d'u fichier Matroska."
-
-#~ msgid ""
-#~ "Configuration file is either invalid or corrupt. The current file will be "
-#~ "backed up and replaced with a default file."
-#~ msgstr ""
-#~ "Le fichier de configuration est invalide ou corrompu. Le fichier actif "
-#~ "sera sauvegardé et remplacé par un fichier de base."
-
-#~ msgid "Font Face Name"
-#~ msgstr "Nom de la police"
-
-#~ msgid "Commits the text (Enter). Hold Ctrl to stay in line (%KEY%)."
-#~ msgstr ""
-#~ "Accepte le texte (Entrée). Maintenez Control pour rester sur la ligne "
-#~ "(%KEY%)."
-
-#~ msgid "Time"
-#~ msgstr "Temps"
-
-#~ msgid "editing"
-#~ msgstr "édition"
-
-#~ msgid "&Duplicate"
-#~ msgstr "&Dupliquer"
-
-#~ msgid "&Duplicate and shift by 1 frame"
-#~ msgstr "&Dupliquer et décaler d'une image"
-
-#~ msgid "Split (by karaoke)"
-#~ msgstr "Diviser (en karaoké)"
-
-#~ msgid "&Swap"
-#~ msgstr "Inver&ser"
-
-#~ msgid ""
-#~ "Joins selected lines in a single one, making each line into a karaoke "
-#~ "syllable"
-#~ msgstr ""
-#~ "Joint les lignes sélectionnées en une seule, découpant chaque ligne en "
-#~ "syllabes karaoké"
-
-#~ msgid "C&ut"
-#~ msgstr "Co&uper"
-
-#~ msgid "Cuts selected lines to clipboard"
-#~ msgstr "Coupe les lignes sélectionnées et les mets dans le presse-papier"
-
-#~ msgid "Paste lines from clipboard"
-#~ msgstr "Colle les lignes depuis le presse-papier"
-
-#~ msgid "The starting point is beyond the length of the audio loaded."
-#~ msgstr "Le point de départ est au-delà de la longueur de l'audio chargée."
-
-#~ msgid "There is no audio to save."
-#~ msgstr "Aucune audio à enregistrer."
-
-#~ msgid "Couldn't allocate memory."
-#~ msgstr "Impossible d'allouer la mémoire."
-
-#~ msgid "load"
-#~ msgstr "charge"
-
-#~ msgid "Please wait, caching fonts..."
-#~ msgstr "Patientez, mise des polices en cache..."
-
-#~ msgid "Exporting PRS"
-#~ msgstr "Exportation PRS"
-
-#~ msgid "No timecodes to average"
-#~ msgstr "Aucun code temps pour faire la moyenne "
-
-#~ msgid "Realtime"
-#~ msgstr "Temps réel"
-
-#~ msgid "Toggle realtime display of changes."
-#~ msgstr "Basculer l'affichage des modifications en temps réel."
-
-#~ msgid "Unknown"
-#~ msgstr "Inconnu"
-
-#~ msgid ""
-#~ "You already have timecodes loaded. Replace them with the timecodes from "
-#~ "the Matroska file?"
-#~ msgstr ""
-#~ "Vous avez déjà chargé des codes temps. Les remplacer par les codes temps "
-#~ "du fichier Matroska ?"
+"Ceci installera Aegisub {#BUILD_GIT_VERSION_STRING} sur votre ordinateur.%n%nAegisub est "
+"couvert par la GNU General Public License version 2. Cela signifie que vous pouvez utiliser "
+"l'application pour n'importe quel but, sans frais, mais qu'aucune garantie n'est donnée.%n"
+"%Veuillez visiter le site d'Aegisub pour l'obtention du code source."

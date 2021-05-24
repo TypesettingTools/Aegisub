@@ -61,7 +61,7 @@ else
     extra_args = []
 endif
 
-e = executable(
+runner = executable(
     'gtest-main',
     all_test_sources,
     include_directories : [test_inc, libaegisub_inc, deps_inc],
@@ -69,7 +69,7 @@ e = executable(
     cpp_args : extra_args,
     link_with : all_test_dep_libs,
 )    
-test('gtest main', e)
+test('gtest main', runner)
 
 
 # setup test env
@@ -81,7 +81,7 @@ endif
 
 test_data_des = meson.project_build_root()
 custom_target('setup-test-data',
-    input: e,
+    input: runner,
     output: 'applied_test_setup',
     command: [setup_sh, test_data_des],
     build_by_default: true

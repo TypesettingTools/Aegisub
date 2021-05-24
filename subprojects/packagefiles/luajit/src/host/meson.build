@@ -2,10 +2,13 @@ minilua = executable('minilua', 'minilua.c',
                      dependencies: system_deps,
                      native: true)
 
-if host_machine.cpu_family() == 'x86_64'
+cpu_family = host_machine.cpu_family()
+if cpu_family == 'x86_64'
     dynasm_arch = 'x64'
+elif cpu_family == 'aarch64'
+    dynasm_arch = 'arm64'
 else
-    dynasm_arch = host_machine.cpu_family()
+    dynasm_arch = cpu_family
 endif
 
 dynasm_dasc = files('../vm_@0@.dasc'.format(dynasm_arch))

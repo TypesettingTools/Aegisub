@@ -22,10 +22,9 @@ Prerequisites:
 There are a few optional dependencies that must be installed and on your PATH:
 
 1. msgfmt, to build the translations
-2. WinRAR, to build the portable installer
-3. InnoSetup, to build the regular installer
-4. 7zip, to build the regular installer
-5. Moonscript, to build the regular installer
+2. InnoSetup, to build the regular installer
+3. 7zip, to build the regular installer
+4. Moonscript, to build the regular installer
 
 All other dependencies are either stored in the repository or are included as submodules.
 
@@ -40,6 +39,8 @@ You should now have a binary: `aegisub.exe`.
 Installer:
 
 You can generate the installer with `ninja win-installer` after a successful build. This assumes a working internet connection and installation of the optional dependencies.
+
+You can generate the portable zip with `ninja win-portable` after a successful build.
 
 ### OS X
 
