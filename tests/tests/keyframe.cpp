@@ -41,8 +41,9 @@ TEST(lagi_keyframe, save) {
 
 TEST(lagi_keyframe, bad_files) {
 	EXPECT_THROW(Load(""), agi::fs::FileSystemError);
-	EXPECT_THROW(Load("data/keyframe/empty.txt"), Error);
-	EXPECT_THROW(Load("data/keyframe/garbage.txt"), Error);
+	// TODO: use more clearly error type
+	EXPECT_THROW(Load("data/keyframe/empty.txt"), agi::InvalidInputException);
+	EXPECT_THROW(Load("data/keyframe/garbage.txt"), agi::InvalidInputException);
 }
 
 TEST(lagi_keyframe, xvid) {
