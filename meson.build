@@ -1,7 +1,7 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.56.1',
-        default_options: ['cpp_std=c++11', 'buildtype=debugoptimized'],
+        default_options: ['cpp_std=c++14', 'buildtype=debugoptimized'],
         version: '3.2.2')
 
 cmake = import('cmake')
@@ -122,22 +122,29 @@ wx_dep = dependency('wxWidgets', version: wx_minver,
 if wx_dep.found()
     deps += wx_dep
 else
-    build_shared = 'ON'
+    build_shared = true
     if get_option('default_library') == 'static'
-        build_shared = 'OFF'
+        build_shared = false
     endif
     build_type = 'Release'
     if get_option('buildtype') == 'debug'
         build_type = 'Debug'
     endif
 
-    wx = cmake.subproject('wxWidgets', cmake_options: ['-DwxBUILD_INSTALL=OFF',
-                                                       '-DwxBUILD_PRECOMP=OFF', # otherwise breaks project generation w/ meson
-                                                       '-DwxBUILD_SHARED=@0@'.format(build_shared),
-                                                       '-DwxUSE_WEBVIEW=OFF', # breaks build on linux
-                                                       '-DCMAKE_BUILD_TYPE=@0@'.format(build_type),
-                                                       '-DwxUSE_IMAGE=ON',
-                                                       '-DwxBUILD_MONOLITHIC=ON']) # otherwise breaks project generation w/ meson
+    opt_var = cmake.subproject_options()
+    opt_var.add_cmake_defines({
+        'wxBUILD_INSTALL': false,
+        'wxBUILD_PRECOMP': false,       # otherwise breaks project generation w/ meson
+        'wxBUILD_SHARED': build_shared,
+
+        'wxUSE_WEBVIEW': false,         # breaks build on linux
+        'CMAKE_BUILD_TYPE': build_type,
+        'wxUSE_IMAGE': true,
+        'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
+    })
+
+    wx = cmake.subproject('wxWidgets', options: opt_var)
+
     deps += [
         wx.dependency('wxmono'),
         wx.dependency('wxregex'),
