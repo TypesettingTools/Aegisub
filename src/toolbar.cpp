@@ -74,6 +74,12 @@ namespace {
 		/// Listener for hotkey change signal
 		agi::signal::Connection hotkeys_changed_slot;
 
+		/// Listeners for duration changed for the 4 play options
+		agi::signal::Connection audio_play_before_changed_duration;
+		agi::signal::Connection audio_play_after_changed_duration;
+		agi::signal::Connection audio_play_begin_changed_duration;
+		agi::signal::Connection audio_play_end_changed_duration;
+
 		/// Enable/disable the toolbar buttons
 		void OnIdle(wxIdleEvent &) {
 			for (size_t i = 0; i < commands.size(); ++i) {
@@ -180,6 +186,10 @@ namespace {
 			RegenerateToolbar();
 		}))
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
+		, audio_play_before_changed_duration(OPT_SUB("Audio/Play Selection Duration/Before", &Toolbar::RegenerateToolbar, this))
+		, audio_play_after_changed_duration(OPT_SUB("Audio/Play Selection Duration/After", &Toolbar::RegenerateToolbar, this))
+		, audio_play_begin_changed_duration(OPT_SUB("Audio/Play Selection Duration/Begin", &Toolbar::RegenerateToolbar, this))
+		, audio_play_end_changed_duration(OPT_SUB("Audio/Play Selection Duration/End", &Toolbar::RegenerateToolbar, this))
 		{
 			Populate();
 			Bind(wxEVT_TOOL, &Toolbar::OnClick, this);
@@ -201,6 +211,10 @@ namespace {
 		}))
 #endif
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
+		, audio_play_before_changed_duration(OPT_SUB("Audio/Play Selection Duration/Before", &Toolbar::RegenerateToolbar, this))
+		, audio_play_after_changed_duration(OPT_SUB("Audio/Play Selection Duration/After", &Toolbar::RegenerateToolbar, this))
+		, audio_play_begin_changed_duration(OPT_SUB("Audio/Play Selection Duration/Begin", &Toolbar::RegenerateToolbar, this))
+		, audio_play_end_changed_duration(OPT_SUB("Audio/Play Selection Duration/End", &Toolbar::RegenerateToolbar, this))
 		{
 			parent->SetToolBar(this);
 			Populate();
