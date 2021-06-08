@@ -5603,233 +5603,237 @@ msgstr ""
 
 #: ../src/dialog_style_editor.cpp:232
 msgid "Character spacing, in pixels"
-msgstr ""
+msgstr "การเว้นวรรคอักขระ หน่วยเป็นพิกเซล"
 
 #: ../src/dialog_style_editor.cpp:233
 msgid "Alignment in screen, in numpad style"
-msgstr ""
+msgstr "การจัดตำแหน่งในหน้าจอในรูปแบบแป้นตัวเลข"
 
 #: ../src/dialog_style_editor.cpp:277
 msgid "Primary"
-msgstr ""
+msgstr "หลัก"
 
 #: ../src/dialog_style_editor.cpp:277
 msgid "Secondary"
-msgstr ""
+msgstr "รอง"
 
 #: ../src/dialog_style_editor.cpp:277
 msgid "Shadow"
-msgstr ""
+msgstr "เงา"
 
 #: ../src/dialog_style_editor.cpp:306
 msgid "Outline:"
-msgstr ""
+msgstr "โครงร่าง:"
 
 #: ../src/dialog_style_editor.cpp:307
 msgid "Shadow:"
-msgstr ""
+msgstr "เงา:"
 
 #: ../src/dialog_style_editor.cpp:312
 msgid "Scale X%:"
-msgstr ""
+msgstr "ขนาด X%:"
 
 #: ../src/dialog_style_editor.cpp:313
 msgid "Scale Y%:"
-msgstr ""
+msgstr "ขนาด Y%:"
 
 #: ../src/dialog_style_editor.cpp:314
 msgid "Rotation:"
-msgstr ""
+msgstr "การหมุน:"
 
 #: ../src/dialog_style_editor.cpp:315
 msgid "Spacing:"
-msgstr ""
+msgstr "ระยะห่าง:"
 
 #: ../src/dialog_style_editor.cpp:318
 msgid "Encoding:"
-msgstr ""
+msgstr "การเข้ารหัส:"
 
 #: ../src/dialog_style_editor.cpp:328
 msgid "Preview of current style"
-msgstr ""
+msgstr "ดูตัวอย่างสไตล์ปัจจุบัน"
 
 #: ../src/dialog_style_editor.cpp:331
 msgid "Text to be used for the preview"
-msgstr ""
+msgstr "ข้อความที่จะใช้สำหรับการแสดงตัวอย่าง"
 
 #: ../src/dialog_style_editor.cpp:332
 msgid "Color of preview background"
-msgstr ""
+msgstr "สีของพื้นหลังแสดงตัวอย่าง"
 
 #: ../src/dialog_style_editor.cpp:413
 msgid "There is already a style with this name. Please choose another name."
-msgstr ""
+msgstr "มีรูปแบบที่ใช้ชื่อนี้อยู่แล้ว โปรดเลือกชื่ออื่น"
 
 #: ../src/dialog_style_editor.cpp:413
 msgid "Style name conflict"
-msgstr ""
+msgstr "ชื่อสไตล์ขัดแย้งกัน"
 
 #: ../src/dialog_style_editor.cpp:425
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
 msgstr ""
+"คุณต้องการเปลี่ยนอินสแตนซ์ทั้งหมดของสไตล์นี้ในสคริปต์เป็น"
+"ชื่อใหม่หรือไม่?"
 
 #: ../src/dialog_style_editor.cpp:426
 msgid "Update script?"
-msgstr ""
+msgstr "อัปเดตสคริปต์หรือไม่"
 
 #: ../src/dialog_export_ebu3264.cpp:84
 msgid ""
 "Time code offset in incorrect format. Ensure it is entered as four groups of "
 "two digits separated by colons."
 msgstr ""
+"รหัสชดเชยเวลารูปแบบที่ไม่ถูกต้อง ตรวจสอบให้แน่ใจว่าได้ป้อนเป็นสี่กลุ่มของ "
+"ตัวเลขสองหลักคั่นด้วยเครื่องหมายทวิภาค(โคลอน)"
 
 #: ../src/dialog_export_ebu3264.cpp:84
 msgid "EBU STL export"
-msgstr ""
+msgstr "การส่งออก EBU STL"
 
 #: ../src/dialog_export_ebu3264.cpp:100
 msgid "Export to EBU STL format"
-msgstr ""
+msgstr "ส่งออกเป็นรูปแบบ EBU STL"
 
 #: ../src/dialog_export_ebu3264.cpp:103
 msgid "23.976 fps (non-standard, STL24.01)"
-msgstr ""
+msgstr "23.976 fps (ไม่ได้มาตรฐาน, STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:104
 msgid "24 fps (non-standard, STL24.01)"
-msgstr ""
+msgstr "24 fps (non-standard, STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:105
 msgid "25 fps (STL25.01)"
-msgstr ""
+msgstr "25 fps (STL25.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:106
 msgid "29.97 fps (non-dropframe, STL30.01)"
-msgstr ""
+msgstr "29.97 fps (ไม่ดรอปเฟรม, STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:107
 msgid "29.97 fps (dropframe, STL30.01)"
-msgstr ""
+msgstr "29.97 fps (ดรอปเฟรม, STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:108
 msgid "30 fps (STL30.01)"
-msgstr ""
+msgstr "30 fps (STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:110
 msgid "TV standard"
-msgstr ""
+msgstr "มาตรฐานทีวี"
 
 #: ../src/dialog_export_ebu3264.cpp:113
 msgid "Out-times are inclusive"
-msgstr ""
+msgstr "รวมเวลานอกแล้ว"
 
 #: ../src/dialog_export_ebu3264.cpp:116
 msgid "ISO 6937-2 (Latin/Western Europe)"
-msgstr ""
+msgstr "ISO 6937-2 (ละติน/ยุโรปตะวันตก)"
 
 #: ../src/dialog_export_ebu3264.cpp:117
 msgid "ISO 8859-5 (Cyrillic)"
-msgstr ""
+msgstr "ISO 8859-5 (ซีริลลิก)"
 
 #: ../src/dialog_export_ebu3264.cpp:118
 msgid "ISO 8859-6 (Arabic)"
-msgstr ""
+msgstr "ISO 8859-6 (อาหรับ)"
 
 #: ../src/dialog_export_ebu3264.cpp:119
 msgid "ISO 8859-7 (Greek)"
-msgstr ""
+msgstr "ISO 8859-7 (กรีก)"
 
 #: ../src/dialog_export_ebu3264.cpp:120
 msgid "ISO 8859-8 (Hebrew)"
-msgstr ""
+msgstr "ISO 8859-8 (ฮีบรู)"
 
 #: ../src/dialog_export_ebu3264.cpp:121
 msgid "UTF-8 Unicode (non-standard)"
-msgstr ""
+msgstr "UTF-8 Unicode (ไม่ได้มาตรฐาน)"
 
 #: ../src/dialog_export_ebu3264.cpp:123
 msgid "Text encoding"
-msgstr ""
+msgstr "การเข้ารหัสข้อความ"
 
 #: ../src/dialog_export_ebu3264.cpp:126
 msgid "Automatically wrap long lines (ASS)"
-msgstr ""
+msgstr "ตัดบรรทัดที่นยาวโดยอัตโนมัติ (ASS)"
 
 #: ../src/dialog_export_ebu3264.cpp:127
 msgid "Automatically wrap long lines (Balanced)"
-msgstr ""
+msgstr "ตัดบรรทัดที่นยาวโดยอัตโนมัติ (สมดุล)"
 
 #: ../src/dialog_export_ebu3264.cpp:128
 msgid "Abort if any lines are too long"
-msgstr ""
+msgstr "ยกเลิกหากมีบรรทัดใดยาวเกินไป"
 
 #: ../src/dialog_export_ebu3264.cpp:129
 msgid "Skip lines that are too long"
-msgstr ""
+msgstr "ข้ามบรรทัดที่ยาวเกินไป"
 
 #: ../src/dialog_export_ebu3264.cpp:134
 msgid "Translate alignments"
-msgstr ""
+msgstr "แปลการจัดตำแหน่ง"
 
 #: ../src/dialog_export_ebu3264.cpp:139
 msgid "Open subtitles"
-msgstr ""
+msgstr "เปิดคำบรรยาย"
 
 #: ../src/dialog_export_ebu3264.cpp:140
 msgid "Level-1 teletext"
-msgstr ""
+msgstr "โทรสาร ระดับ-1"
 
 #: ../src/dialog_export_ebu3264.cpp:141
 msgid "Level-2 teletext"
-msgstr ""
+msgstr "โทรสาร ระดับ-2"
 
 #: ../src/dialog_export_ebu3264.cpp:147
 msgid "Max. line length:"
-msgstr ""
+msgstr "ความยาวสูงสุดของบรรทัดยาว:"
 
 #: ../src/dialog_export_ebu3264.cpp:151
 msgid "Time code offset:"
-msgstr ""
+msgstr "ชดเชยรหัสเวลา:"
 
 #: ../src/dialog_export_ebu3264.cpp:154
 msgid "Text formatting"
-msgstr ""
+msgstr "การจัดรูปแบบข้อความ"
 
 #: ../src/dialog_export_ebu3264.cpp:159
 msgid "Time codes"
-msgstr ""
+msgstr "รหัสเวลา"
 
 #: ../src/dialog_export_ebu3264.cpp:163
 msgid "Display standard"
-msgstr ""
+msgstr "มาตรฐานการแสดงผล"
 
 #: ../src/subs_controller.cpp:158
 #, c-format
 msgid "File backup saved as \"%s\"."
-msgstr ""
+msgstr "บันทึกไฟล์สำรองเป็น \"%s\""
 
 #: ../src/subs_controller.cpp:260
 #, c-format
 msgid "Do you want to save changes to %s?"
-msgstr ""
+msgstr "คุณต้องการบันทึกการเปลี่ยนแปลงเป็น %s หรือไม่"
 
 #: ../src/subs_controller.cpp:260
 msgid "Unsaved changes"
-msgstr ""
+msgstr "การเปลี่ยนแปลงที่ยังไม่ได้บันทึก"
 
 #: ../src/subs_controller.cpp:395
 msgid "Untitled"
-msgstr ""
+msgstr "ไม่มีชื่อ"
 
 #: ../src/subs_controller.cpp:397
 msgid "untitled"
-msgstr ""
+msgstr "ไม่มีชื่อ"
 
 #: ../src/dialog_video_properties.cpp:44
 msgid "Resolution mismatch"
-msgstr ""
+msgstr "ความละเอียดไม่ตรงกัน"
 
 #: ../src/dialog_video_properties.cpp:46
 #, c-format
@@ -5842,204 +5846,210 @@ msgid ""
 "\n"
 "Change subtitles resolution to match video?"
 msgstr ""
+"ความละเอียดของวิดีโอที่โหลดและความละเอียดที่ระบุนั้น "
+"มีคำบรรยายไม่ตรงกัน\n"
+"ความละเอียดวิดีโอ:\t%d x %d\n"
+"ความละเอียดของสคริปต์:\t%d x %d\n"
+"\n"
+"เปลี่ยนความละเอียดของคำบรรยายให้ตรงกับวิดีโอไหมใช่หรือไม่"
 
 #: ../src/dialog_video_properties.cpp:54 ../src/dialog_video_properties.cpp:63
 msgid "Set to video resolution"
-msgstr ""
+msgstr "ตั้งค่าความละเอียดวิดีโอ"
 
 #: ../src/dialog_video_properties.cpp:55
 msgid "Resample script (stretch to new aspect ratio)"
-msgstr ""
+msgstr "สคริปต์ตัวอย่างใหม่ (ขยายเป็นอัตราส่วนใหม่)"
 
 #: ../src/dialog_video_properties.cpp:56
 msgid "Resample script (add borders)"
-msgstr ""
+msgstr "สคริปต์ตัวอย่างใหม่ (เพิ่มเส้นขอบ)"
 
 #: ../src/dialog_video_properties.cpp:57
 msgid "Resample script (remove borders)"
-msgstr ""
+msgstr "สคริปต์ตัวอย่างใหม่ (ลบเส้นขอบ)"
 
 #: ../src/dialog_video_properties.cpp:64
 msgid "Resample script"
-msgstr ""
+msgstr "สคริปต์ตัวอย่าง"
 
 #: ../src/dialog_video_properties.cpp:163
 msgid "change script resolution"
-msgstr ""
+msgstr "เปลี่ยนความละเอียดของสคริปต์"
 
 #: ../src/dialog_attachments.cpp:68
 msgid "Attachment List"
-msgstr ""
+msgstr "รายการเอกสารแนบ"
 
 #: ../src/dialog_attachments.cpp:76
 msgid "Attach &Font"
-msgstr ""
+msgstr "แนบแบบอักษร"
 
 #: ../src/dialog_attachments.cpp:77
 msgid "Attach &Graphics"
-msgstr ""
+msgstr "แนบกราฟิก"
 
 #: ../src/dialog_attachments.cpp:78
 msgid "E&xtract"
-msgstr ""
+msgstr "ถอน"
 
 #: ../src/dialog_attachments.cpp:110
 msgid "Attachment name"
-msgstr ""
+msgstr "ชื่อไฟล์แนบ"
 
 #: ../src/dialog_attachments.cpp:111
 msgid "Size"
-msgstr ""
+msgstr "ขนาด"
 
 #: ../src/dialog_attachments.cpp:112
 msgid "Group"
-msgstr ""
+msgstr "กลุ่ม"
 
 #: ../src/dialog_attachments.cpp:138 ../src/dialog_attachments.cpp:147
 msgid "Choose file to be attached"
-msgstr ""
+msgstr "เลือกไฟล์ที่จะแนบ"
 
 #: ../src/dialog_attachments.cpp:142
 msgid "attach font file"
-msgstr ""
+msgstr "แนบไฟล์แบบอักษร"
 
 #: ../src/dialog_attachments.cpp:152
 msgid "attach graphics file"
-msgstr ""
+msgstr "แนบไฟล์กราฟิก"
 
 #: ../src/dialog_attachments.cpp:164
 msgid "Select the path to save the files to:"
-msgstr ""
+msgstr "เลือกเส้นทางที่จะบันทึกไฟล์ที่:"
 
 #: ../src/dialog_attachments.cpp:167
 msgid "Select the path to save the file to:"
-msgstr ""
+msgstr "เลือกเส้นทางที่จะบันทึกไฟล์ที่:"
 
 #: ../src/dialog_attachments.cpp:189
 msgid "remove attachment"
-msgstr ""
+msgstr "ลบไฟล์แนบ"
 
 #: ../src/dialog_translation.cpp:77
 msgid "Original"
-msgstr ""
+msgstr "ต้นฉบับ"
 
 #: ../src/dialog_translation.cpp:100
 msgid "Translation"
-msgstr ""
+msgstr "การแปล"
 
 #: ../src/dialog_translation.cpp:115
 msgid "Insert original"
-msgstr ""
+msgstr "ใส่ข้อความต้นฉบับ"
 
 #: ../src/dialog_translation.cpp:118
 msgid "Delete line"
-msgstr ""
+msgstr "ลบบรรทัด"
 
 #: ../src/dialog_translation.cpp:121
 msgid "Enable &preview"
-msgstr ""
+msgstr "เปิดใช้งานการแสดงตัวอย่าง"
 
 #: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:278
 msgid "No more lines to translate."
-msgstr ""
+msgstr "ไม่มีบรรทัดให้แปลอีกต่อไป"
 
 #: ../src/dialog_translation.cpp:186 ../src/dialog_translation.cpp:236
 #, c-format
 msgid "Current line: %d/%d"
-msgstr ""
+msgstr "บรรทัดปัจจุบัน: %d/%d"
 
 #: ../src/dialog_translation.cpp:273
 msgid "translation assistant"
-msgstr ""
+msgstr "ผู้ช่วยแปล"
 
 #: ../src/visual_tool.cpp:122
 msgid "visual typesetting"
-msgstr ""
+msgstr "การเรียงพิมพ์ภาพ"
 
 #: ../src/dialog_resample.cpp:119
 msgid "&Symmetrical"
-msgstr ""
+msgstr "สมมาตร"
 
 #: ../src/dialog_resample.cpp:143
 msgid "From s&cript"
-msgstr ""
+msgstr "จากสคริปต์"
 
 #: ../src/dialog_resample.cpp:146
 msgid "Stretch"
-msgstr ""
+msgstr "ยืด"
 
 #: ../src/dialog_resample.cpp:146
 msgid "Add borders"
-msgstr ""
+msgstr "เพิ่มเส้นขอบ"
 
 #: ../src/dialog_resample.cpp:146
 msgid "Remove borders"
-msgstr ""
+msgstr "ลบขอบ"
 
 #: ../src/dialog_resample.cpp:146
 msgid "Manual"
-msgstr ""
+msgstr "ปรับแต่งเอง"
 
 #: ../src/dialog_resample.cpp:147
 msgid "Aspect Ratio Handling"
-msgstr ""
+msgstr "การจัดการอัตราส่วนภาพ"
 
 #: ../src/dialog_resample.cpp:162
 msgid "Margin offset"
-msgstr ""
+msgstr "ชดเชยริม"
 
 #: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
 msgid "YCbCr Matrix:"
-msgstr ""
+msgstr "YCbCr เมทริกซ์:"
 
 #: ../src/dialog_resample.cpp:175
 msgid "Source Resolution"
-msgstr ""
+msgstr "ความละเอียดจากต้นทาง"
 
 #: ../src/dialog_resample.cpp:189
 msgid "Destination Resolution"
-msgstr ""
+msgstr "ความละเอียดปลายทาง"
 
 #: ../src/dialog_version_check.cpp:94
 msgid "Version Checker"
-msgstr ""
+msgstr "ตัวตรวจสอบเวอร์ชัน"
 
 #: ../src/dialog_version_check.cpp:119
 msgid "&Auto Check for Updates"
-msgstr ""
+msgstr "ตรวจสอบการอัปเดตอัตโนมัติ"
 
 #: ../src/dialog_version_check.cpp:124
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "เตือนฉันอีกครั้งในหนึ่งสัปดาห์"
 
 #: ../src/dialog_version_check.cpp:288
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "ไม่สามารถเชื่อมต่อกับการอัปเดตเซิร์ฟเวอร์"
 
 #: ../src/dialog_version_check.cpp:310
 msgid "Could not download from updates server."
-msgstr ""
+msgstr "ไม่สามารถดาวน์โหลดจากการอัปเดตเซิร์ฟเวอร์"
 
 #: ../src/dialog_version_check.cpp:312
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "คำขอ HTTP ล้มเหลว ได้รับการตอบกลับจาก HTTP %d"
 
 #: ../src/dialog_version_check.cpp:343
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "พบการอัพเดท Aegisub"
 
 #: ../src/dialog_version_check.cpp:345
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "พบการอัปเดตที่เป็นไปได้หลายอย่างของ Aegisub"
 
 #: ../src/dialog_version_check.cpp:347
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "ไม่มีการอัปเดตของ Aegisub"
 
 #: ../src/dialog_version_check.cpp:375
 #, c-format
@@ -6050,10 +6060,15 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"มีข้อผิดพลาดในการตรวจสอบการอัปเดตของ Aegisub:\n"
+"%s\n"
+"\n"
+"หากแอปพลิเคชันอื่นสามารถเข้าถึงอินเทอร์เน็ตได้ดี นี่อาจเป็น"
+"ปัญหาเซิร์ฟเวอร์ชั่วคราวในส่วนของเรา"
 
 #: ../src/dialog_version_check.cpp:379
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "เกิดข้อผิดพลาดที่ไม่รู้จักขณะตรวจสอบการอัปเดตของ Aegisub"
 
 #: default_menu.json:0
 msgid "&Insert (before)"
