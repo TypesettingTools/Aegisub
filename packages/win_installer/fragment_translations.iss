@@ -34,7 +34,8 @@ Source: {#BUILD_ROOT}\po\zh_TW.gmo;       DestDir: {app}\locale\zh_TW; DestName:
 #endif
 ; END ENABLE_TRANSLATIONS
 
-
+;; TODO: rm those lines
+;;  xref: [Update and review translations · Issue #132 · TypesettingTools/Aegisub](https://github.com/TypesettingTools/Aegisub/issues/132)
 #ifdef ENABLE_WX_TRANSLATIONS
 ; wxWidgets localization (commented out ones are out of date; some don't have wxstd.mo)
 Source: src\mo\wxstd-ar.mo;      DestDir: {app}\locale\ar;    DestName: wxstd.mo;   Flags: ignoreversion; Components: translations
