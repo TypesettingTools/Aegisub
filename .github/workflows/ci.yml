@@ -42,13 +42,13 @@ jobs:
             name: macOS Debug,
             os: macos-latest,
             buildtype: debugoptimized,
-            args: -Ddefault_library=static
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
           }
           - {
             name: macOS Release,
             os: macos-latest,
             buildtype: release,
-            args: -Ddefault_library=static
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
           }
 
     steps:
@@ -83,7 +83,7 @@ jobs:
       - name: Install dependencies (MacOS)
         if: matrix.config.os == 'macos-latest'
         run: |
-          brew install luarocks nasm ninja
+          brew install luarocks ninja
           luarocks install luafilesystem 1.8.0
           luarocks install moonscript --dev
 
@@ -102,6 +102,7 @@ jobs:
       - name: Run test
         run: meson test -C build --verbose
 
+      # Windows artifacts
       - name: Generate Windows installer
         if: matrix.config.os == 'windows-latest'
         run: meson compile win-installer -C build
@@ -123,3 +124,17 @@ jobs:
         with:
           name: ${{ matrix.config.name }} - portable
           path: build/aegisub-portable-64.zip
+      
+      # macOS artifacts
+      - name: Generate macOS installer
+        if: matrix.config.os == 'macos-latest'
+        run: |
+          meson compile osx-bundle -C build
+          meson compile osx-build-dmg -C build
+
+      - name: Upload artifacts - macOS dmg
+        uses: actions/upload-artifact@v2
+        if: matrix.config.os == 'macos-latest'
+        with:
+          name: ${{ matrix.config.name }} - installer
+          path: build/Aegisub-*.dmg
