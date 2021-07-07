@@ -111,5 +111,8 @@ echo
 echo "---- Compressing ----"
 /usr/bin/hdiutil convert "${DMG_RW_PATH}" -format UDBZ -imagekey bzip2-level=9 -o "${DMG_PATH}"
 
+echo "---- Removing temp dmg \"${DMG_RW_PATH}\" ----"
+rm -rf "${DMG_RW_PATH}"
+
 echo
 echo "Done!"
