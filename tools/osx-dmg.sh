@@ -15,37 +15,46 @@
 
 set -e
 
-TMP_DMG="temp_dmg"
-PKG_DIR="Aegisub.app"
-PKG_NAME="Aegisub-${1}"
-PKG_NAME_RW="Aegisub-${1}_rw.dmg"
-PKG_NAME_VOLUME="Aegisub-${1}"
+SRC_DIR="${1}"
+BUILD_DIR="${2}"
+AEGI_VER="${3}"
+
+PKG_NAME="Aegisub-${AEGI_VER}"
+PKG_NAME_VOLUME="${PKG_NAME}"
+
+PKG_DIR="${BUILD_DIR}/Aegisub.app"
+DMG_TMP_DIR="${BUILD_DIR}/temp_dmg"
+DMG_PATH="${BUILD_DIR}/${PKG_NAME}.dmg"
+DMG_RW_PATH="${BUILD_DIR}/${PKG_NAME}_rw.dmg"
+
 
 if ! test -d "${PKG_DIR}"; then
   echo "\"${PKG_DIR}\" does not exist, please run 'make osx-bundle'"
   exit 1;
 fi
 
-rm -rf "${TMP_DMG}" "${PKG_NAME}.dmg"
-mkdir -v "${TMP_DMG}"
 echo
-echo "---- Copying ${1} into ${TMP_DMG}/ ----"
-cp -R "${PKG_DIR}" "${TMP_DMG}"
+echo "---- Removing old \"${DMG_TMP_DIR}\", \"${DMG_PATH}\", \"${DMG_RW_PATH}\" ----"
+rm -rf "${DMG_TMP_DIR}" "${DMG_PATH}" "${DMG_RW_PATH}"
+mkdir -v "${DMG_TMP_DIR}"
+echo
+echo "---- Copying ${AEGI_VER} into ${DMG_TMP_DIR}/ ----"
+cp -R "${PKG_DIR}" "${DMG_TMP_DIR}"
 
 echo
 echo "---- Setting up ----"
-ln -vsf /Applications "${TMP_DMG}"
-mkdir -v "${TMP_DMG}/.background"
-cp -v packages/osx_dmg/dmg_background.png "${TMP_DMG}/.background/background.png"
-cp -v packages/osx_bundle/Contents/Resources/Aegisub.icns "${TMP_DMG}/.VolumeIcon.icns"
+ln -vsf /Applications "${DMG_TMP_DIR}"
+mkdir -v "${DMG_TMP_DIR}/.background"
+cp -v "${SRC_DIR}/packages/osx_dmg/dmg_background.png" "${DMG_TMP_DIR}/.background/background.png"
+cp -v "${SRC_DIR}/packages/osx_bundle/Contents/Resources/Aegisub.icns" "${DMG_TMP_DIR}/.VolumeIcon.icns"
 
 echo
 echo "---- Creating image ----"
-/usr/bin/hdiutil create -srcfolder "${TMP_DMG}" -volname "${PKG_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${PKG_NAME_RW}"
+/usr/bin/hdiutil create -srcfolder "${DMG_TMP_DIR}" -volname "${PKG_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${DMG_RW_PATH}"
 
 echo
 echo "---- Mounting image ----"
-DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${PKG_NAME_RW}" |awk '/GUID_partition_scheme/ {print $1}'`
+DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${DMG_RW_PATH}" |awk '/GUID_partition_scheme/ {print $1}'`
 echo "Device name: ${DEV_NAME}"
 
 echo
@@ -61,7 +70,7 @@ if test -n "${SET_STYLE}"; then
   echo "---- Running AppleScript to set style ----"
   SCRIPT_TMP=`mktemp /tmp/aegisub_dmg_as.XXX`
 
-  sed -f scripts/osx-bundle.sed packages/osx_dmg/dmg_set_style.applescript > ${SCRIPT_TMP}
+  sed -f "${SRC_DIR}/scripts/osx-bundle.sed" "${SRC_DIR}/packages/osx_dmg/dmg_set_style.applescript" > ${SCRIPT_TMP}
 
   /usr/bin/osacompile -o ${SCRIPT_TMP}.scpt ${SCRIPT_TMP}
 
@@ -79,18 +88,18 @@ if test -n "${SET_STYLE}"; then
 
   hdiutil detach "${DEV_NAME}"
 
-  DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${PKG_NAME_RW}" |awk '/GUID_partition_scheme/ {print $1}'`
+  DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${DMG_RW_PATH}" |awk '/GUID_partition_scheme/ {print $1}'`
   echo "Device name: ${DEV_NAME}"
 
-  cp -v "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" packages/osx_dmg/DS_Store
-  SetFile -a v packages/osx_dmg/DS_Store
+  cp -v "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" "${SRC_DIR}/packages/osx_dmg/DS_Store"
+  SetFile -a v "${SRC_DIR}/packages/osx_dmg/DS_Store"
   hdiutil detach "${DEV_NAME}"
 
-  rm -rf "${TMP_DMG}"  "${PKG_NAME_RW}" ${SCRIPT_TMP}.scpt ${SCRIPT_TMP}
+  rm -rf "${DMG_TMP_DIR}"  "${DMG_RW_PATH}" ${SCRIPT_TMP}.scpt ${SCRIPT_TMP}
   exit 0
 else
   echo "---- Installing DS_Store ----"
-  cp -v packages/osx_dmg/DS_Store "/Volumes/${PKG_NAME_VOLUME}/.DS_Store"
+  cp -v "${SRC_DIR}/packages/osx_dmg/DS_Store" "/Volumes/${PKG_NAME_VOLUME}/.DS_Store"
 fi
 
 echo
@@ -100,11 +109,7 @@ echo /usr/bin/hdiutil detach "${DEV_NAME}" -force
 
 echo
 echo "---- Compressing ----"
-/usr/bin/hdiutil convert "${PKG_NAME_RW}" -format UDBZ -imagekey bzip2-level=9 -o "${PKG_NAME}.dmg"
-
-echo
-echo "---- Removing \"${TMP_DMG}\", \"${PKG_NAME_RW}\" ----"
-rm -rf "${TMP_DMG}"  "${PKG_NAME_RW}"
+/usr/bin/hdiutil convert "${DMG_RW_PATH}" -format UDBZ -imagekey bzip2-level=9 -o "${DMG_PATH}"
 
 echo
 echo "Done!"

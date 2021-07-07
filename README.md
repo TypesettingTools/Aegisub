@@ -62,6 +62,7 @@ meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_o
 meson compile -C build_static
 meson test -C build_static --verbose
 meson compile osx-bundle -C build_static
+meson compile osx-build-dmg -C build_static
 ```
 
 ## Updating Moonscript
