@@ -56,6 +56,14 @@ For personal usage, you can use pip and homebrew to install almost all of Aegisu
 
 Once the dependencies are installed, build Aegisub with `meson build && meson compile -C build`.
 
+**build dmg**
+```bash
+meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_osx_bundle=true -Dlocal_boost=true
+meson compile -C build_static
+meson test -C build_static --verbose
+meson compile osx-bundle -C build_static
+```
+
 ## Updating Moonscript
 
 From within the Moonscript repository, run `bin/moon bin/splat.moon -l moonscript moonscript/ > bin/moonscript.lua`.
