@@ -63,7 +63,7 @@ public:
 	bool NeedsCache() const override { return true; }
 };
 
-AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
+AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) try {
 	agi::acs::CheckFileRead(filename);
 
 	std::lock_guard<std::mutex> lock(avs_wrapper.GetMutex());
@@ -99,6 +99,9 @@ AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
 		else
 			throw agi::AudioProviderError("Avisynth error: " + errmsg);
 	}
+}
+catch (AvisynthError& err) {
+	throw agi::AudioProviderError("Avisynth error: " + std::string(err.msg));
 }
 
 void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
