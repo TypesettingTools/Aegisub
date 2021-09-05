@@ -87,7 +87,8 @@ jobs:
           brew install luarocks ninja
           luarocks install luafilesystem 1.8.0
           luarocks install moonscript --dev
-          brew install libass zlib ffms2 fftw hunspell openal-soft
+          brew install libass zlib ffms2 fftw hunspell
+          brew install pulseaudio  # NO OpenAL in github CI
 
       - name: Install dependencies (Linux)
         if: matrix.config.os == 'ubuntu-latest'
