@@ -19,7 +19,17 @@ jobs:
             os: windows-latest,
             msvc: true,
             buildtype: release,
-            args: '-Ddefault_library=static --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng -Dfreetype2:harfbuzz=disabled -Dharfbuzz:freetype=disabled -Dharfbuzz:cairo=disabled -Dharfbuzz:glib=disabled -Dharfbuzz:gobject=disabled -Dfribidi:docs=false'
+            args: >
+              -Ddefault_library=static 
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng 
+              -Dfreetype2:harfbuzz=disabled 
+              -Dharfbuzz:freetype=disabled 
+              -Dharfbuzz:cairo=disabled 
+              -Dharfbuzz:glib=disabled 
+              -Dharfbuzz:gobject=disabled
+              -Dharfbuzz:tests=false
+              -Dfribidi:tests=false
+              -Dlibpng:tests=false
           }
           #- {
           #  name: Windows MinGW,
@@ -103,7 +113,7 @@ jobs:
         run: meson compile -C build
       
       - name: Run test
-        run: meson test -C build --verbose
+        run: meson test -C build --verbose "gtest main"
 
       # Windows artifacts
       - name: Generate Windows installer
