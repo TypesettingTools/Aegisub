@@ -14,12 +14,11 @@ jobs:
     strategy:
       matrix:
         config:
-          - {
-            name: Windows MSVC Release,
-            os: windows-latest,
-            msvc: true,
-            buildtype: release,
-            args: >-
+          - name: Windows MSVC Release
+            os: windows-latest
+            msvc: true
+            buildtype: release
+            args: >
               -Ddefault_library=static 
               --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng 
               -Dfreetype2:harfbuzz=disabled 
@@ -30,7 +29,6 @@ jobs:
               -Dharfbuzz:tests=false
               -Dfribidi:tests=false
               -Dlibpng:tests=false
-          }
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
