@@ -88,7 +88,7 @@ void SubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
 		push_line(line.GetEntryData());
 
 	if (!subs->Attachments.empty()) {
-		// TODO: some scripts may have a lot of attachments, 
+		// TODO: some scripts may have a lot of attachments,
 		// so ideally we'd want to write only those actually used on the requested video frame,
 		// but this would require some pre-parsing of the attached font files with FreeType,
 		// which isn't probably trivial.
