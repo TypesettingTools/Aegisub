@@ -18,7 +18,7 @@ jobs:
             os: windows-latest
             msvc: true
             buildtype: release
-            args: >
+            args: >-
               -Ddefault_library=static 
               --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng 
               -Dfreetype2:harfbuzz=disabled 
