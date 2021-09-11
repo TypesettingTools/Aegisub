@@ -27,7 +27,9 @@ jobs:
               -Dharfbuzz:glib=disabled 
               -Dharfbuzz:gobject=disabled
               -Dharfbuzz:tests=false
+              -Dharfbuzz:docs=false
               -Dfribidi:tests=false
+              -Dfribidi:docs=false
               -Dlibpng:tests=false
           #- {
           #  name: Windows MinGW,
