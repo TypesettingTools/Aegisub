@@ -26,11 +26,10 @@ jobs:
               -Dharfbuzz:cairo=disabled 
               -Dharfbuzz:glib=disabled 
               -Dharfbuzz:gobject=disabled
-              -Dharfbuzz:tests=false
-              -Dharfbuzz:docs=false
+              -Dharfbuzz:tests=disabled
+              -Dharfbuzz:docs=disabled
               -Dfribidi:tests=false
               -Dfribidi:docs=false
-              -Dlibpng:tests=false
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
