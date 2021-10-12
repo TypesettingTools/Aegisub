@@ -30,6 +30,7 @@ jobs:
               -Dharfbuzz:docs=disabled
               -Dfribidi:tests=false
               -Dfribidi:docs=false
+              -Dfontconfig=disabled
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
