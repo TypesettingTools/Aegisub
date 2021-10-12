@@ -14,13 +14,23 @@ jobs:
     strategy:
       matrix:
         config:
-          - {
-            name: Windows MSVC Release,
-            os: windows-latest,
-            msvc: true,
-            buildtype: release,
-            args: '-Ddefault_library=static --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng -Dfreetype2:harfbuzz=disabled -Dharfbuzz:freetype=disabled -Dharfbuzz:cairo=disabled -Dharfbuzz:glib=disabled -Dharfbuzz:gobject=disabled'
-          }
+          - name: Windows MSVC Release
+            os: windows-latest
+            msvc: true
+            buildtype: release
+            args: >-
+              -Ddefault_library=static 
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng 
+              -Dfreetype2:harfbuzz=disabled 
+              -Dharfbuzz:freetype=disabled 
+              -Dharfbuzz:cairo=disabled 
+              -Dharfbuzz:glib=disabled 
+              -Dharfbuzz:gobject=disabled
+              -Dharfbuzz:tests=disabled
+              -Dharfbuzz:docs=disabled
+              -Dfribidi:tests=false
+              -Dfribidi:docs=false
+              -Dlibass:fontconfig=disabled
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
@@ -42,13 +52,13 @@ jobs:
             name: macOS Debug,
             os: macos-latest,
             buildtype: debugoptimized,
-            args: -Ddefault_library=static
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
           }
           - {
             name: macOS Release,
             os: macos-latest,
             buildtype: release,
-            args: -Ddefault_library=static
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
           }
 
     steps:
@@ -83,9 +93,12 @@ jobs:
       - name: Install dependencies (MacOS)
         if: matrix.config.os == 'macos-latest'
         run: |
-          brew install luarocks nasm ninja
+          brew update
+          brew install luarocks ninja
           luarocks install luafilesystem 1.8.0
           luarocks install moonscript --dev
+          brew install libass zlib ffms2 fftw hunspell
+          brew install pulseaudio  # NO OpenAL in github CI
 
       - name: Install dependencies (Linux)
         if: matrix.config.os == 'ubuntu-latest'
@@ -100,8 +113,9 @@ jobs:
         run: meson compile -C build
       
       - name: Run test
-        run: meson test -C build --verbose
+        run: meson test -C build --verbose "gtest main"
 
+      # Windows artifacts
       - name: Generate Windows installer
         if: matrix.config.os == 'windows-latest'
         run: meson compile win-installer -C build
@@ -123,3 +137,17 @@ jobs:
         with:
           name: ${{ matrix.config.name }} - portable
           path: build/aegisub-portable-64.zip
+      
+      # macOS artifacts
+      - name: Generate macOS installer
+        if: matrix.config.os == 'macos-latest'
+        run: |
+          meson compile osx-bundle -C build
+          meson compile osx-build-dmg -C build
+
+      - name: Upload artifacts - macOS dmg
+        uses: actions/upload-artifact@v2
+        if: matrix.config.os == 'macos-latest'
+        with:
+          name: ${{ matrix.config.name }} - installer
+          path: build/Aegisub-*.dmg

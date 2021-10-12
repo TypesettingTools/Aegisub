@@ -8,9 +8,13 @@ if host_machine.system() == 'windows'
     run_target('win-portable', command: [portable_setup, meson.project_build_root(), meson.project_source_root()])
 elif host_machine.system() == 'darwin'
     fontconfig_conf = run_command('pkg-config', '--variable=confdir', 'fontconfig').stdout().strip()
+    bundle_app_sh = find_program(meson.project_source_root() / 'tools/osx-bundle.sh')
     run_target('osx-bundle',
-               command: ['../tools/osx-bundle.sh', meson.project_source_root(), meson.project_build_root(), 'wx-config', fontconfig_conf, '',
+               command: [bundle_app_sh, meson.project_source_root(), meson.project_build_root(), 'wx-config', fontconfig_conf, '',
                          get_option('build_osx_bundle') ? 'TRUE' : 'FALSE'])
+    build_dmg_sh = find_program(meson.project_source_root() / 'tools/osx-dmg.sh')
+    run_target('osx-build-dmg',
+               command: [build_dmg_sh, meson.project_source_root(), meson.project_build_root(), meson.project_version()])
 else
     conf_pkg.set('AEGISUB_COMMAND', 'aegisub')
 

@@ -4,7 +4,7 @@ set -e
 
 SRC_DIR="${1}"
 BUILD_DIR="${2}"
-WX_PREFIX=`${3} --prefix`
+WX_PREFIX=""
 FONTCONFIG_CONF_DIR="${4}"
 DICT_DIR="${5}"
 MESON_BUILD_OSX_BUNDLE="${6}"
@@ -75,26 +75,28 @@ mkdir -vp "${PKG_DIR}/Contents/Resources/en.lproj"
 #mv "${PKG_DIR}/Contents/Resources/sr_RS.lproj" "${PKG_DIR}/Contents/Resources/sr_YU.lproj"
 #mv "${PKG_DIR}/Contents/Resources/sr_RS@latin.lproj" "${PKG_DIR}/Contents/Resources/sr_YU@latin.lproj"
 
-echo
-echo "---- Copying WX locale files ----"
-
-for i in `ls -1 ${SRC_DIR}/po/*.mo|sed "s|po/\(.*\).mo|\1|"`; do
-  WX_MO="${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo"
-
-  if ! test -f "${WX_MO}"; then
-    WX_MO="${HOME_DIR}/wxstd/${i}.mo"
-  fi
-
-  if test -f "${WX_MO}"; then
-    cp -v "${WX_MO}" "${PKG_DIR}/Contents/Resources/${i}.lproj/"
-  else
-    echo "WARNING: \"$i\" locale in aegisub but no WX catalog found!"
-  fi
-done
+## TODO: rm those lines
+##  xref: [Update and review translations · Issue #132 · TypesettingTools/Aegisub](https://github.com/TypesettingTools/Aegisub/issues/132)
+# echo
+# echo "---- Copying WX locale files ----"
+#
+# for i in `ls -1 ${SRC_DIR}/po/*.mo|sed "s|po/\(.*\).mo|\1|"`; do
+#   WX_MO="${WX_PREFIX}/share/locale/${i}/LC_MESSAGES/wxstd.mo"
+#
+#   if ! test -f "${WX_MO}"; then
+#     WX_MO="${HOME_DIR}/wxstd/${i}.mo"
+#   fi
+#
+#   if test -f "${WX_MO}"; then
+#     cp -v "${WX_MO}" "${PKG_DIR}/Contents/Resources/${i}.lproj/"
+#   else
+#     echo "WARNING: \"$i\" locale in aegisub but no WX catalog found!"
+#   fi
+# done
 
 echo
 echo "---- Fixing libraries ----"
-sudo python "${SRC_DIR}/tools/osx-fix-libs.py" "${PKG_DIR}/Contents/MacOS/aegisub" || exit $?
+sudo python3 "${SRC_DIR}/tools/osx-fix-libs.py" "${PKG_DIR}/Contents/MacOS/aegisub" || exit $?
 
 echo
 echo "Done creating \"${PKG_DIR}\""

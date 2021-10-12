@@ -48,14 +48,23 @@ A vaguely recent version of Xcode and the corresponding command-line tools are r
 
 For personal usage, you can use pip and homebrew to install almost all of Aegisub's dependencies:
 
-	brew install libass nasm ninja boost zlib icu4c pkg-config ffms2 fftw hunspell gettext cmake
-	brew link --force gettext
-	export LDFLAGS="-L/usr/local/opt/icu4c/lib"
-	export CPPFLAGS="-I/usr/local/opt/icu4c/include"
-	export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
-	pip install meson
+    pip3 install meson
+    brew install cmake ninja pkg-config  libass boost zlib ffms2 fftw hunspell
+    export LDFLAGS="-L/usr/local/opt/icu4c/lib"
+    export CPPFLAGS="-I/usr/local/opt/icu4c/include"
+    export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
 
 Once the dependencies are installed, build Aegisub with `meson build && meson compile -C build`.
+
+#### Build dmg
+
+```bash
+meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_osx_bundle=true -Dlocal_boost=true
+meson compile -C build_static
+meson test -C build_static --verbose
+meson compile osx-bundle -C build_static
+meson compile osx-build-dmg -C build_static
+```
 
 ## Updating Moonscript
 
