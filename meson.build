@@ -193,25 +193,27 @@ foreach dep: [
     ['hunspell', '', 'Hunspell', ['hunspell', 'hunspell_dep']],
     ['uchardet', '', 'uchardet', ['uchardet', 'uchardet_dep']],
 ]
-    dep_version = dep[1] != '' ? dep[1] : '>=0'
-    # [provide] section is ignored if required is false;
-    # must provided define fallback explicitly
-    # (with meson 0.56 you can do allow_fallback: true):
-    #d = dependency(dep[0], version: dep_version,
-    #               required: false, allow_fallback: true)
-    if dep[3].length() > 0
-        d = dependency(dep[0], version: dep_version, fallback: dep[3])
-    else
-        d = dependency(dep[0], version: dep_version, required: false)
-    endif
-
     optname = dep[0].split('-')[0]
-    if d.found() and not get_option(optname).disabled()
-        deps += d
-        conf.set('WITH_@0@'.format(dep[0].split('-')[0].to_upper()), 1)
-        dep_avail += dep[2]
-    elif get_option(optname).enabled()
-        error('@0@ enabled but not found'.format(dep[2]))
+    if not get_option(optname).disabled()
+        dep_version = dep[1] != '' ? dep[1] : '>=0'
+        # [provide] section is ignored if required is false;
+        # must provided define fallback explicitly
+        # (with meson 0.56 you can do allow_fallback: true):
+        #d = dependency(dep[0], version: dep_version,
+        #               required: false, allow_fallback: true)
+        if dep[3].length() > 0
+            d = dependency(dep[0], version: dep_version, fallback: dep[3])
+        else
+            d = dependency(dep[0], version: dep_version, required: false)
+        endif
+
+        if d.found()
+            deps += d
+            conf.set('WITH_@0@'.format(dep[0].split('-')[0].to_upper()), 1)
+            dep_avail += dep[2]
+        elif get_option(optname).enabled()
+            error('@0@ enabled but not found'.format(dep[2]))
+        endif
     endif
 endforeach
 
