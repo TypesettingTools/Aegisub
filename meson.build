@@ -182,16 +182,16 @@ deps += dependency('icu-i18n', version: '>=4.8.1.1')
 dep_avail = []
 foreach dep: [
     # audio, in order of precedence
-    ['libpulse', [], 'PulseAudio', []],
-    ['alsa', [], 'ALSA', []],
-    ['portaudio-2.0', [], 'PortAudio', []],
-    ['openal', '>=0.0.8', 'OpenAL', []],
+    ['libpulse', [], 'PulseAudio', [], []],
+    ['alsa', [], 'ALSA', [], []],
+    ['portaudio-2.0', [], 'PortAudio', [], []],
+    ['openal', '>=0.0.8', 'OpenAL', [], ['OpenAL']],
     # video
-    ['ffms2', '>=2.22', 'FFMS2', ['ffms2', 'ffms2_dep']],
+    ['ffms2', '>=2.22', 'FFMS2', ['ffms2', 'ffms2_dep'], []],
     # other
-    ['fftw3', [], 'FFTW3', []],
-    ['hunspell', [], 'Hunspell', ['hunspell', 'hunspell_dep']],
-    ['uchardet', [], 'uchardet', ['uchardet', 'uchardet_dep']],
+    ['fftw3', [], 'FFTW3', [], []],
+    ['hunspell', [], 'Hunspell', ['hunspell', 'hunspell_dep'], []],
+    ['uchardet', [], 'uchardet', ['uchardet', 'uchardet_dep'], []],
 ]
     optname = dep[0].split('-')[0]
     if not get_option(optname).disabled()
@@ -204,6 +204,10 @@ foreach dep: [
             d = dependency(dep[0], version: dep[1], fallback: dep[3])
         else
             d = dependency(dep[0], version: dep[1], required: false)
+        endif
+
+        if not d.found() and dep[4].length() > 0 and host_machine.system() == 'darwin'
+            d = dependency('appleframeworks', modules: dep[4], required: false)
         endif
 
         if d.found()
