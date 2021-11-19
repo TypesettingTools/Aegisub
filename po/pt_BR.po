@@ -4963,7 +4963,7 @@ msgstr "Inserir no tempo do vídeo (antes)"
 
 #: subs_grid.cpp:155
 msgid "Insert at video time (after)"
-msgstr "Inserir no tempo do vídeo (antes)"
+msgstr "Inserir no tempo do vídeo (depois)"
 
 #: subs_grid.cpp:167
 msgid "&Duplicate"
