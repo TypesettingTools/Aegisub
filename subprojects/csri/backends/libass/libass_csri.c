@@ -105,6 +105,8 @@ int csri_request_fmt(csri_inst *inst, const struct csri_fmt *fmt)
 	if (!csri_is_rgb(fmt->pixfmt) || csri_has_alpha(fmt->pixfmt))
 		return -1;
 	ass_set_frame_size(inst->ass_renderer, fmt->width, fmt->height);
+	// Note: this relies on CSRI always rendering at video storage res
+	ass_set_storage_size(inst->ass_renderer, fmt->width, fmt->height);
 	return 0;
 }
 
