@@ -407,9 +407,10 @@ void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 }
 
 void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
+	bool videoPan = OPT_GET("Video/Video Pan")->GetBool();
 	if (int wheel = event.GetWheelRotation()) {
 		if (ForwardMouseWheelEvent(this, event))
-			if (event.ControlDown())
+			if (event.ControlDown() || !videoPan)
 				SetWindowZoom(windowZoomValue + .125 * (wheel / event.GetWheelDelta()));
 			else
 				SetVideoZoom(wheel / event.GetWheelDelta());
