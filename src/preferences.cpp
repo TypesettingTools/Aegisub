@@ -433,6 +433,9 @@ void Advanced_Video(wxTreebook *book, Preferences *parent) {
 
 	wxArrayString sp_choice = to_wx(SubtitlesProviderFactory::GetClasses());
 	p->OptionChoice(expert, _("Subtitles provider"), sp_choice, "Subtitle/Provider");
+	
+	p->OptionChoice(expert, _("Video Panning"), "Video/Video Pan");
+	
 
 #ifdef WITH_AVISYNTH
 	auto avisynth = p->PageSizer("Avisynth");

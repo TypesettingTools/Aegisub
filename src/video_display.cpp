@@ -372,17 +372,29 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 
 	last_mouse_pos = mouse_pos = event.GetPosition();
 
-	if (event.GetButton() == wxMOUSE_BTN_MIDDLE) {
-		if ((panning = event.ButtonDown()))
-			pan_last_pos = event.GetPosition();
-	}
-	if (panning && event.Dragging()) {
-		pan_x += event.GetX() - pan_last_pos.X();
-		pan_y += event.GetY() - pan_last_pos.Y();
-		pan_last_pos = event.GetPosition();
+	///if video pan
+	bool videoPan = OPT_GET("Video/Video Pan")->GetBool();
 
-		PositionVideo();
+	if (videoPan){
+		if (event.GetButton() == wxMOUSE_BTN_MIDDLE) {
+			if ((panning = event.ButtonDown()))
+				pan_last_pos = event.GetPosition();
+		}
+		if (panning && event.Dragging()) {
+			pan_x += event.GetX() - pan_last_pos.X();
+			pan_y += event.GetY() - pan_last_pos.Y();
+			pan_last_pos = event.GetPosition();
+
+			PositionVideo();
+		}
 	}
+	else if ((pan_x != 0 || pan_y != 0) && !videoPan)
+	{
+	    pan_x = pan_y = 0;
+	    PositionVideo();
+	}
+
+	///
 
 	if (tool)
 		tool->OnMouseEvent(event);
