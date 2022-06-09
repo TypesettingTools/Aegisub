@@ -65,11 +65,11 @@ local function fileresult(stat, fname)
 		return true
 	end
 
-	local errno = ffi.errno
+	local errno = ffi.errno()
 	local msg = ffi.C.strerror(errno)
 
 	if fname then
-		return nil, fname .. ": " .. msg, errno
+		return nil, fname .. ": " .. ffi.string(msg), errno
 	end
 	return nil, msg, errno
 end
@@ -125,7 +125,8 @@ function os.execute(command)
 	local wcommand = command
 	if command then
 		wcommand = widen(command)
-		return execresult(wcommand)
+    		local stat = ffi.C._wsystem(wcommand)
+		return execresult(stat)
 	end
 
 	return true

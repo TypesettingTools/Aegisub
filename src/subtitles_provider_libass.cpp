@@ -170,6 +170,8 @@ LibassSubtitlesProvider::~LibassSubtitlesProvider() {
 
 void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
 	ass_set_frame_size(renderer(), frame.width, frame.height);
+	// Note: this relies on Aegisub always rendering at video storage res
+	ass_set_storage_size(renderer(), frame.width, frame.height);
 
 	ASS_Image* img = ass_render_frame(renderer(), ass_track, int(time * 1000), nullptr);
 
