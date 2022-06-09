@@ -96,9 +96,9 @@ if  [ -d "../DependencyControl" ]; then
     cp ../DependencyControl/ffi-experiments/build/lib*.so usr/lib/
 
 
-
-    touch postinst
-cat >> postinst << 'EOF'
+    mkdir -p DEBIAN/
+    touch DEBIAN/postinst
+cat >> DEBIAN/postinst << 'EOF'
 #!/bin/sh
 set -e
 
@@ -123,18 +123,33 @@ HOME_DIR=$( getent passwd "$SUDO_USER" | cut -d: -f6 )
 
 mkdir -p "$HOME_DIR/.aegisub/automation/"
 
+sudo chown -R $SUDO_USER "$HOME_DIR/.aegisub/"
+
 cp -r /tmp/DependencyControl/*  "$HOME_DIR/.aegisub/automation/"
 
 rm -r /tmp/DependencyControl/
 
 EOF
 
-
-
-   
-
+chmod 555 DEBIAN/postinst
 
 fi
+
+# libboost libraries, genersted during buildtime (or not build, since already on the system, but DON'T do that to disctribute this!!!)
+
+    cp ../subprojects/boost_1_74_0/libs/chrono/lib*.so usr/lib/
+
+    cp ../subprojects/boost_1_74_0/libs/filesystem/lib*.so usr/lib/
+
+    cp ../subprojects/boost_1_74_0/libs/locale/lib*.so usr/lib/
+
+    cp ../subprojects/boost_1_74_0/libs/program_options/lib*.so usr/lib/
+
+    cp ../subprojects/boost_1_74_0/libs/regex/lib*.so usr/lib/
+
+    cp ../subprojects/boost_1_74_0/libs/thread/lib*.so usr/lib/
+
+
 
 
 mkdir -p usr/share/applications
@@ -170,6 +185,7 @@ declare -a aegisub_logos=('16x16.png' '22x22.png' '24x24.png' '32x32.png' '48x48
 
         mkdir -p "usr/share/icons/hicolor/$dir/apps/"
         cp "../../packages/desktop/$dir/aegisub.$ext" "usr/share/icons/hicolor/$dir/apps/"
+
     done
 
 
@@ -221,9 +237,6 @@ cp ../../packages/desktop/pixmaps/aegisub.xpm usr/share/pixmaps/
 # now creating the debian control files
 
 
-mkdir DEBIAN
-
-
 touch DEBIAN/control
 
 ## TODO use dpkg-gencontrol
@@ -271,9 +284,19 @@ rm debian/control
 rm -r debian
 
 
+
+# create md5sums
+
+touch DEBIAN/md5sums
+
+md5sum $(find * -type f -not -path 'DEBIAN/*') > DEBIAN/md5sums
+
+
+
 cd ..
 
-dpkg-deb --build --root-owner-group $DEB_NAME
+dpkg-deb --build -Zxz  --root-owner-group $DEB_NAME
+
 
 rm -r $DEB_NAME
 

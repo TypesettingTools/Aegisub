@@ -13,6 +13,7 @@ jobs:
 
     strategy:
       matrix:
+        python-version: [ '3.x' ]
         config:
           - name: Windows MSVC Release
             os: windows-latest
@@ -66,9 +67,11 @@ jobs:
         with:
           fetch-depth: '0'
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: ${{ matrix.python-version }}
+        env:
+          AGENT_TOOLSDIRECTORY: /opt/hostedtoolcache
 
       - name: Setup Meson
         run: |
@@ -104,7 +107,8 @@ jobs:
         if: matrix.config.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
-          sudo apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev
+          sudo apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev luarocks lua
+          sudo luarocks install moonscript
 
       - name: Configure
         run: meson build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }}
