@@ -151,3 +151,18 @@ jobs:
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.dmg
+
+      # linux (ubuntu) artifacts
+      - name: Generate Linux (ubuntu) installer
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          meson compile -C build linux-dependency-control
+          meson compile -C build aegisub.desktop
+          meson compile -C build ubuntu-deb
+
+      - name: Upload artifacts - macOS dmg
+        uses: actions/upload-artifact@v2
+        if: matrix.config.os == 'ubuntu-latest'
+        with:
+          name: ${{ matrix.config.name }} - deb package
+          path: build/aegisub_*.deb

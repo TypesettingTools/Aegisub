@@ -15,7 +15,35 @@ elif host_machine.system() == 'darwin'
     build_dmg_sh = find_program(meson.project_source_root() / 'tools/osx-dmg.sh')
     run_target('osx-build-dmg',
                command: [build_dmg_sh, meson.project_source_root(), meson.project_build_root(), meson.project_version()])
+elif host_machine.system() == 'linux'
+
+        dependency_control_setup = find_program(meson.project_source_root() / 'tools/dependency-control.sh')
+        run_target('linux-dependency-control',
+                command: [dependency_control_setup, meson.project_build_root(), meson.project_source_root()])
+        installer_setup = find_program(meson.project_source_root() / 'tools/ubuntu-build-deb.sh')
+        run_target('ubuntu-deb',
+                command: [installer_setup, meson.project_build_root(), meson.project_source_root()])
+
+
+
+
+    conf_pkg.set('AEGISUB_COMMAND', 'aegisub')
+
+    desktop_template = configure_file(input: 'desktop/aegisub.desktop.template.in',
+                                      output: 'aegisub.desktop.template',
+                                      configuration: conf_pkg)
+
+    i18n = import('i18n')
+    i18n.merge_file(input: desktop_template,
+                    output: 'aegisub.desktop',
+                    type: 'desktop',
+                    po_dir: '../po',
+                    install_dir: meson.project_build_root() / 'packages' / 'applications')
+
+
 else
+   
+
     conf_pkg.set('AEGISUB_COMMAND', 'aegisub')
 
     desktop_template = configure_file(input: 'desktop/aegisub.desktop.template.in',
