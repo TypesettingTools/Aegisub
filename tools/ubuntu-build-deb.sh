@@ -129,26 +129,32 @@ cp -r /tmp/DependencyControl/*  "$HOME_DIR/.aegisub/automation/"
 
 rm -r /tmp/DependencyControl/
 
+
+## better not do that here, but why not xD
+
+
+
+
+
 EOF
 
 chmod 555 DEBIAN/postinst
 
 fi
 
-# libboost libraries, genersted during buildtime (or not build, since already on the system, but DON'T do that to disctribute this!!!)
 
-    cp ../subprojects/boost_1_74_0/libs/chrono/lib*.so usr/lib/
+    # all locally not available libraries are now in subprojects, 
+    # they either have to be included, or with options forced to be used form the system, so that
+    # 'dpkg-shlibdeps' can read them all
 
-    cp ../subprojects/boost_1_74_0/libs/filesystem/lib*.so usr/lib/
+    
 
-    cp ../subprojects/boost_1_74_0/libs/locale/lib*.so usr/lib/
+    declare -a  ALL_SO=$(find ../subprojects/ -type f -regex ".*\.so")
 
-    cp ../subprojects/boost_1_74_0/libs/program_options/lib*.so usr/lib/
+    for SO in  ${ALL_SO[@]}; do
+        cp $SO usr/lib/
 
-    cp ../subprojects/boost_1_74_0/libs/regex/lib*.so usr/lib/
-
-    cp ../subprojects/boost_1_74_0/libs/thread/lib*.so usr/lib/
-
+    done  
 
 
 
