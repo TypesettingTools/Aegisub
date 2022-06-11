@@ -164,7 +164,7 @@ jobs:
           meson compile -C build aegisub.desktop
           meson compile -C build ubuntu-deb
 
-      - name: Upload artifacts - macOS dmg
+      - name: Upload artifacts - ubuntu deb
         uses: actions/upload-artifact@v2
         if: matrix.config.os == 'ubuntu-latest'
         with:
