@@ -27,7 +27,7 @@ elif host_machine.system() == 'linux'
 
 ## TODO : use meson.project_build_root()
 
- #    'ubuntu-install-local': 'sudo dpkg -i build/$(ls build/  | grep aegisub_)'
+ #    'ubuntu-install-local': 'sudo dpkg -i build/$(ls build/  | grep aegisub_.*deb)'
 
 
 

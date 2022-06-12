@@ -3477,6 +3477,10 @@ msgstr "Aktuelles Skript"
 msgid "Close"
 msgstr "Schließen"
 
+#: ../src/dialog_style_manager.cpp:270
+msgid "&Yes, all"
+msgstr "Ja, alle"
+
 #: ../src/dialog_style_manager.cpp:353
 msgid "New storage name:"
 msgstr "Neuer Speichername:"

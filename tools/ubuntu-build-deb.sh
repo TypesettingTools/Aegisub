@@ -29,7 +29,6 @@ cp -r ../../automation/include/ usr/share/aegisub/automation/
 
 
 
-## TODO dependecy control
 
 mkdir -p usr/lib
 
@@ -52,30 +51,7 @@ if  [ -d "../DependencyControl" ]; then
 
     cp ../DependencyControl/YUtils/src/Yutils.lua tmp/DependencyControl/include/
 
-    cd ../DependencyControl/ffi-experiments/
 
-    if ! command -v "moonc" &> /dev/null
-    then
-        if command -v "apt-get" &> /dev/null
-        then
-            echo "Trying to install mooscript automatically"
-            sudo apt-get install luarocks lua -y
-            sudo luarocks install moonscript
-
-        else
-            echo "You don't have moonscript installed, please install it"
-            exit 1
-
-        fi
-    fi
-
-
-
-    make lua
-
-    make all
-
-    cd "../../$DEB_NAME"
 
     mkdir -p tmp/DependencyControl/include/requireffi/
 
@@ -125,10 +101,12 @@ mkdir -p "$HOME_DIR/.aegisub/automation/"
 
 sudo chown -R $SUDO_USER "$HOME_DIR/.aegisub/"
 
-cp -r /tmp/DependencyControl/*  "$HOME_DIR/.aegisub/automation/"
+if [ -d "/tmp/DependencyControl" ]; then
 
-rm -r /tmp/DependencyControl/
+    cp -r /tmp/DependencyControl/*  "$HOME_DIR/.aegisub/automation/"
 
+    rm -r /tmp/DependencyControl/
+fi
 
 ## better not do that here, but why not xD
 
@@ -179,6 +157,7 @@ cp ../packages/aegisub.desktop usr/share/applications/
 
 
 mkdir -p usr/share/icons/hicolor
+mkdir -p usr/share/icons/Humanity/mimes
 
 
 declare -a aegisub_logos=('16x16.png' '22x22.png' '24x24.png' '32x32.png' '48x48.png' '64x64.png' 'scalable.svg')
@@ -188,10 +167,17 @@ declare -a aegisub_logos=('16x16.png' '22x22.png' '24x24.png' '32x32.png' '48x48
         declare -a parts=(`echo $logo | tr "." " "`)  
         dir=${parts[0]}
         ext=${parts[1]}
+        size=${dir:0:2}
 
         mkdir -p "usr/share/icons/hicolor/$dir/apps/"
         cp "../../packages/desktop/$dir/aegisub.$ext" "usr/share/icons/hicolor/$dir/apps/"
 
+        if ! [ size == "sc" ]; then 
+        ## TODO: better iocns suppoort, and this doesn't even work, maybe run "sudo gtk-update-icon-cache /usr/share/icons/Humanity" afterwards
+            mkdir -p "usr/share/icons/Humanity/mimes/$size"
+            cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ass.svg"
+            cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ssa.svg"
+        fi
     done
 
 
@@ -240,9 +226,10 @@ mkdir -p usr/share/pixmaps
 cp ../../packages/desktop/pixmaps/aegisub.xpm usr/share/pixmaps/
 
 
+
 # now creating the debian control files
 
-
+mkdir -p DEBIAN/
 touch DEBIAN/control
 
 ## TODO use dpkg-gencontrol
@@ -303,7 +290,7 @@ cd ..
 
 dpkg-deb --build -Zxz  --root-owner-group $DEB_NAME
 
-
+exit 0
 rm -r $DEB_NAME
 
 

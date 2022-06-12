@@ -13,7 +13,6 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [ '3.x' ]
         config:
           - name: Windows MSVC Release
             os: windows-latest
@@ -61,17 +60,23 @@ jobs:
             buildtype: release,
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
           }
+        python-version: [ '3.x' ]    
 
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: '0'
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-        env:
-          AGENT_TOOLSDIRECTORY: /opt/hostedtoolcache
+      # pre-commit setup
+      # This has issues running on self-hosted. See https://github.com/actions/setup-python/issues/162.
+      # - uses: actions/setup-python@v4
+      # The self-hosted runner has python 2.7.18 and 3.7.10 installed.
+      - name: Hard Install python3
+        if: matrix.config.os == 'ubuntu-latest'
+        run: |
+          apt-get update
+          apt-get install python3 python3-pip -y
+          ln -s $(which python3) /usr/bin/python
 
       - name: Setup Meson
         run: |
@@ -106,9 +111,9 @@ jobs:
       - name: Install dependencies (Linux)
         if: matrix.config.os == 'ubuntu-latest'
         run: |
-          sudo apt-get update
-          sudo apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev luarocks libcurl4-nss-dev lua5.1* -y
-          sudo luarocks install moonscript
+          apt-get update
+          apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev luarocks libcurl4-nss-dev lua5.1* -y
+          luarocks install moonscript
 
       - name: Configure
         run: meson build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }}

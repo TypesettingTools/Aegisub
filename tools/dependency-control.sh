@@ -35,6 +35,30 @@ if  ! [ -d "ffi-experiments" ]; then
     git clone https://github.com/TypesettingTools/ffi-experiments.git &> /dev/null
     cd "ffi-experiments"
     git checkout tags/DMv0.5.0-PTv0.1.6 &> /dev/null
+    # weird but necessary ( on my machine)
+    sudo chmod 777 -R .
+    if ! command -v "moonc" &> /dev/null
+    then
+        if command -v "apt-get" &> /dev/null
+        then
+            echo "Trying to install mooscript automatically"
+            sudo apt-get install luarocks lua -y
+            sudo luarocks install moonscript
+
+        else
+            echo "You don't have moonscript installed, please install it"
+            exit 1
+
+        fi
+    fi
+
+
+
+    make -B lua
+
+    make -B all
+
+
     cd ..
 
 fi
