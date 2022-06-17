@@ -38,6 +38,8 @@ fi
 
     # COOMPILE
 
+    ## maybe this has to be done:  git config --global --add safe.directory $PWD
+
     sudo meson compile -C build
 
     # PACK into DEB
@@ -63,7 +65,7 @@ fi
     # so that i can pass e.g ["histyor","save"] um auch write=true bei wakatime umzusezne, also todoo, better execve!!!!
     # and third options is te function that is run and then executed with the event, the object and some additional data!
 
-    # while changing styles, make ersetze alle available, install also snippet /Vorlage) and icons for ass!
+    # while changing styles, make "replace all" available, install also snippet /Vorlagen (snippest??? is this folder langauge dependent?)) and icons for ass!
 
 
 
@@ -73,4 +75,5 @@ fi
     #also probaly lua with luarocks and shared .so ?!
     #fix missing std lua scripts,
     #lua lfs.so missing lua_gettop,
-    #create own trasnlation deb(build / generate  them!)
+    #create own translation deb(build / generate  them!) (their all under build/po/<LANG>/LC_MESSAGES/aegisub.mo) and have to go into (... look into original l10n deb package)
+    # create flatpak: https://docs.flatpak.org/en/latest/first-build.html

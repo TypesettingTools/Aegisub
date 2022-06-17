@@ -2,7 +2,7 @@
 
 
 
-cd ${MESON_BUILD_ROOT}
+cd ${MESON_BUILD_ROOT} || exit 5
 
 ## TODO get these numbers dynamically
 
@@ -11,7 +11,7 @@ DEB_NAME="aegisub_3.2.2+dpctrl-ubuntu_amd64"
 # create deb directroy, later this will be bundled into the deb
 
 mkdir $DEB_NAME
-cd $DEB_NAME
+cd $DEB_NAME || exit 5
 
 # now create the pseudo file system and copy all relevant systems in there
 
@@ -19,13 +19,13 @@ mkdir -p usr/bin
 
 cp ../aegisub usr/bin/
 
-mkdir -p usr/share/aegisub/automation
+mkdir -p usr/local/share/aegisub/automation
 
-cp -r ../../automation/autoload/ usr/share/aegisub/automation/
+cp -r ../../automation/autoload/ usr/local/share/aegisub/automation/
 
-cp -r ../../automation/demos/ usr/share/aegisub/automation/
+cp -r ../../automation/demos/ usr/local/share/aegisub/automation/
 
-cp -r ../../automation/include/ usr/share/aegisub/automation/
+cp -r ../../automation/include/ usr/local/share/aegisub/automation/
 
 
 
@@ -73,9 +73,11 @@ if  [ -d "../DependencyControl" ]; then
 
 
     mkdir -p DEBIAN/
+
+     #post or preinst ???
     touch DEBIAN/postinst
 cat >> DEBIAN/postinst << 'EOF'
-#!/bin/sh
+#!/bin/bash
 set -e
 
 ## check if executed correctly:
@@ -85,21 +87,20 @@ set -e
 if [ -z "$SUDO_USER" ]; then
 
 echo  "DO NOT call the installation from the root user, but rather use 'sudo <installation command>' to install it, otheriwse the files can't be moved to the correct folder!!"
-
+exit 5
 rm -r /tmp/DependencyControl/
-
-exit 1
 
 fi
 
-HOME_DIR=$( getent passwd "$SUDO_USER" | cut -d: -f6 )
+HOME_DIR=$(getent passwd "$SUDO_USER" | cut -d: -f6 )
 
 
 ## now copy the file from tmp to the target!
+## better not do that here, but why not xD
 
 mkdir -p "$HOME_DIR/.aegisub/automation/"
 
-sudo chown -R $SUDO_USER "$HOME_DIR/.aegisub/"
+sudo chown -R "$SUDO_USER" "$HOME_DIR/.aegisub/"
 
 if [ -d "/tmp/DependencyControl" ]; then
 
@@ -108,10 +109,67 @@ if [ -d "/tmp/DependencyControl" ]; then
     rm -r /tmp/DependencyControl/
 fi
 
-## better not do that here, but why not xD
+
+## generate mimetypes: see https://wiki.ubuntu.com.cn/UbuntuHelp:AddingMimeTypes
+
+if [ -d "/tmp/Aegisub" ]; then
+
+    EXISTS_SSA=$(grep 'text/x-ssa' /etc/mime.types || echo "")
+    EXISTS_ASS=$(grep 'text/x-ass' /etc/mime.types || echo "")
+
+    if [ -z "$EXISTS_SSA" ]; then 
+        echo "text/x-ssa ssa"  >> /etc/mime.types
+    fi
+
+    if [ -z "$EXISTS_ASS" ]; then 
+        echo "text/x-ass ass"  >> /etc/mime.types
+    fi
 
 
+    mkdir -p "/usr/share/icons/hicolor/scalable/mimetypes/"
 
+    cp "/tmp/Aegisub/scaleable.svg" "/usr/share/icons/hicolor/scalable/mimetypes/text-x-ssa.svg"
+    cp "/tmp/Aegisub/scaleable.svg" "/usr/share/icons/hicolor/scalable/mimetypes/text-x-ass.svg"
+
+
+    EXISTS_MIME_TYPE_ASS=$(grep -rn 'text/x-ass' /usr/share/mime/packages/ || echo "")
+    EXISTS_MIME_TYPE_SSA=$(grep -rn 'text/x-ssa' /usr/share/mime/packages/ || echo "")
+
+    if [ -z "$EXISTS_MIME_TYPE_ASS" ] || [ -z "$EXISTS_MIME_TYPE_SSA" ]; then 
+        
+        # should exist, but fdor safty
+        mkdir -p "/usr/share/mime/packages/"
+
+        touch "/usr/share/mime/packages/text.xml"
+        echo "" > "/usr/share/mime/packages/text.xml"
+
+        echo '<?xml version="1.0" encoding="UTF-8"?>'                                       >> "/usr/share/mime/packages/text.xml"
+        echo '<mime-info xmlns='\''http://www.freedesktop.org/standards/shared-mime-info'\''>'  >> "/usr/share/mime/packages/text.xml"
+        echo '        <mime-type type="text/x-ass">'                                        >> "/usr/share/mime/packages/text.xml"
+        echo '                <glob pattern="*.ass"/>'                                      >> "/usr/share/mime/packages/text.xml"
+        echo '                <magic priority="100">'                                       >> "/usr/share/mime/packages/text.xml"
+        echo '                    <match value="0xEF" type="byte" offset="0"/>'             >> "/usr/share/mime/packages/text.xml"
+        echo '                    <match value="0xBB" type="byte" offset="1"/>'             >> "/usr/share/mime/packages/text.xml"
+        echo '                    <match value="0xBF" type="byte" offset="2"/>'             >> "/usr/share/mime/packages/text.xml"
+        echo '                    <match value="[Script Info]" type="string" offset="3"/>'  >> "/usr/share/mime/packages/text.xml"
+        echo '                </magic>'                                                     >> "/usr/share/mime/packages/text.xml"
+        echo '        </mime-type>'                                                         >> "/usr/share/mime/packages/text.xml"
+        echo '        <mime-type type="text/x-ssa">'                                        >> "/usr/share/mime/packages/text.xml"
+        echo '                <glob pattern="*.ssa"/>'                                      >> "/usr/share/mime/packages/text.xml"
+        echo '        </mime-type>'                                                         >> "/usr/share/mime/packages/text.xml"
+        echo '</mime-info>'                                                                 >> "/usr/share/mime/packages/text.xml"
+
+        sudo update-mime-database /usr/share/mime
+        sudo update-icon-caches /usr/share/icons/*
+        sudo gtk-update-icon-cache /usr/share/icons/hicolor -f
+    fi
+        
+    rm -r /tmp/Aegisub/
+
+    sudo chmod -R 776 /usr/local/share/aegisub
+    sudo chown -R "root:$SUDO_USER" "/usr/local/share/aegisub"
+
+fi
 
 
 EOF
@@ -141,9 +199,9 @@ mkdir -p usr/share/applications
 
 
 if ! [ -f "../packages/aegisub.desktop" ]; then
-    cd ../..
+    cd ../..  || exit 5
     meson -C build aegisub.desktop
-    cd "${MESON_BUILD_ROOT}/$DEB_NAME"
+    cd "${MESON_BUILD_ROOT}/$DEB_NAME"  || exit 5
 
 fi
 
@@ -172,11 +230,15 @@ declare -a aegisub_logos=('16x16.png' '22x22.png' '24x24.png' '32x32.png' '48x48
         mkdir -p "usr/share/icons/hicolor/$dir/apps/"
         cp "../../packages/desktop/$dir/aegisub.$ext" "usr/share/icons/hicolor/$dir/apps/"
 
-        if ! [ size == "sc" ]; then 
-        ## TODO: better iocns suppoort, and this doesn't even work, maybe run "sudo gtk-update-icon-cache /usr/share/icons/Humanity" afterwards
+        # if it's not the scalable file, but rather the 16x16 etc.
+        if ! [ "$size" = "sc" ]; then 
+        ## TODO: better icons suppoort, and this doesn't even work, maybe run "sudo gtk-update-icon-cache /usr/share/icons/Humanity" afterwards
             mkdir -p "usr/share/icons/Humanity/mimes/$size"
             cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ass.svg"
             cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ssa.svg"
+        else 
+            mkdir -p tmp/Aegisub/
+            cp "../../packages/desktop/scalable/aegisub.svg" "tmp/Aegisub/scaleable.svg"
         fi
     done
 
@@ -286,11 +348,10 @@ md5sum $(find * -type f -not -path 'DEBIAN/*') > DEBIAN/md5sums
 
 
 
-cd ..
+cd ..  || exit 5
 
 dpkg-deb --build -Zxz  --root-owner-group $DEB_NAME
 
-exit 0
 rm -r $DEB_NAME
 
 
