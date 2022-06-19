@@ -52,6 +52,7 @@ fi
     # INSTALL if no second parameter is given
     if  [ -z $2 ]; then
         sudo dpkg -i build/$(ls build/  | grep aegisub_.*deb)
+        sudo dpkg -i build/$(ls build/  | grep aegisub-l10n_.*deb)
     else
 
         sudo meson install -C build
@@ -59,7 +60,7 @@ fi
     fi
 
 
-    #TODOfix crash of luafs.so and distribute and test that, python setup test (test .deb in livecd!!!!!!)
+    #TODO fix crash of luafs.so and distribute and test that, python setup test (test .deb in livecd!!!!!!)
     #fix missing std lua scripts,
     #lua lfs.so missing lua_gettop,
 
@@ -72,7 +73,5 @@ fi
     #TODO make icons for ass work!
     #icons for .ass .ssa
     #mime type,
-
-    #TODO create own translation deb(build / generate  them!) (their all under build/po/<LANG>/LC_MESSAGES/aegisub.mo) and have to go into (... look into original l10n deb package)
 
     #TODO create flatpak: https://docs.flatpak.org/en/latest/first-build.html

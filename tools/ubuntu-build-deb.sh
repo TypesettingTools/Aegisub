@@ -359,9 +359,70 @@ rm -r $DEB_NAME
 ## NOW generate locales!
 
 
-#TODO generate aegisub-l10n (but also old deb can be used, if the version is adjusted, or even without that?)
+LOCALE_DEB_NAME="aegisub-l10n_3.2.2+dpctrl-ubuntu_amd64"
+
+# create deb directroy, later this will be bundled into the deb
+
+mkdir $LOCALE_DEB_NAME
+cd $LOCALE_DEB_NAME || exit 5
+
+
+# now create the pseudo file system and copy all relevant systems in there
+
+mkdir -p usr/share/locale
+
+
+cp -r ../po/* usr/share/locale/
 
 
 
 
+# now creating the debian control files
 
+mkdir -p DEBIAN/
+touch DEBIAN/control
+
+## TODO use dpkg-gencontrol
+
+
+cat > DEBIAN/control << 'EOF'
+Package: aegisub-l10n
+Source: aegisub
+Version: 3.2.2+dpctrl-ubuntu
+Architecture: all
+Maintainer: None
+Installed-Size: 3230
+Depends: aegisub (>= 3.2.2+dpctrl-ubuntu)
+Section: localization
+Priority: optional
+Original-Maintainer: Aniol Marti <amarti@caliu.cat>
+Description: aegisub language packages
+ Originally created as tool to make typesetting, particularly in anime
+ fansubs, a less painful experience, Aegisub has grown into a fully
+ fledged, highly customizable subtitle editor.
+ .
+ It features a lot of convenient tools to help you with timing, typesetting,
+ editing and translating subtitles, as well as a powerful scripting environment
+ called Automation (originally mostly intended for creating karaoke effects,
+ Automation can now be used much else, including creating macros and various
+ other convenient tools).
+ .
+ This package contains language packages for the following languages:
+ ca, cs, da, de, el, es, fa, fi, fr, hu, id, it, ja, ko, pl, pt_BR, pt_PT, ru,
+ sr_RS, vi, zh_CN, zh_TW
+EOF
+
+
+# create md5sums
+
+touch DEBIAN/md5sums
+
+md5sum $(find * -type f -not -path 'DEBIAN/*') > DEBIAN/md5sums
+
+
+
+cd ..  || exit 5
+
+dpkg-deb --build -Zxz  --root-owner-group $LOCALE_DEB_NAME
+
+rm -r $LOCALE_DEB_NAME
