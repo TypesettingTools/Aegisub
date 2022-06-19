@@ -23,9 +23,17 @@ mkdir -p usr/local/share/aegisub/automation
 
 cp -r ../../automation/autoload/ usr/local/share/aegisub/automation/
 
+
 cp -r ../../automation/demos/ usr/local/share/aegisub/automation/
 
 cp -r ../../automation/include/ usr/local/share/aegisub/automation/
+
+
+# remove the meson build files, that where copied over
+
+rm usr/local/share/aegisub/automation/include/meson.build
+
+rm usr/local/share/aegisub/automation/include/aegisub/meson.build
 
 
 
@@ -70,6 +78,8 @@ if  [ -d "../DependencyControl" ]; then
     cp ../DependencyControl/ffi-experiments/build/PreciseTimer.lua tmp/DependencyControl/include/PT/
 
     cp ../DependencyControl/ffi-experiments/build/lib*.so usr/lib/
+
+
 
 
     mkdir -p DEBIAN/
@@ -245,16 +255,21 @@ declare -a aegisub_logos=('16x16.png' '22x22.png' '24x24.png' '32x32.png' '48x48
 
 
 
-mkdir -p usr/share/man
+##changing the permissions of the added files
 
-touch usr/share/man/aegisub-3.2.2
+chmod +r -R usr/
+
+
+mkdir -p usr/share/man/man1
+
+touch usr/share/man/man1/aegisub.1
 
 
 DATE=$(date +"%B %d, %Y")
 
-echo ".TH aegisub-3.2.2 \"$DATE\"" >> usr/share/man/aegisub-3.2.2
+echo ".TH aegisub-3.2.2 \"$DATE\"" >> usr/share/man/man1/aegisub.1
 
-cat >> usr/share/man/aegisub-3.2.2 << 'EOF'
+cat >> usr/share/man/man1/aegisub.1 << 'EOF'
 .SH NAME
 aegisub-3.2.2 \- advanced subtitle editor
 .SH SYNOPSIS
@@ -272,7 +287,7 @@ Automation can now be used much else, including creating macros and various
 other convenient tools).
 .SH SEE ALSO
 You can find more documentation on the following website:
-http://docs.aegisub.org/manual/
+https://aegi.vmoe.info/docs/3.0
 .SH AUTHOR
 aegisub-3.2.2 was written by the Aegisub Project <http://www.aegisub.org/>.
 .PP
@@ -281,7 +296,7 @@ for the Debian project (but may be used by others).
 EOF
 
 
-gzip  usr/share/man/aegisub-3.2.2 
+gzip  usr/share/man/man1/aegisub.1
 
 mkdir -p usr/share/pixmaps
 

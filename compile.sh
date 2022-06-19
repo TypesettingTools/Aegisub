@@ -42,6 +42,10 @@ fi
 
     sudo meson compile -C build
 
+    ## run tests, these fail at the moment, for some file permission reasons :(
+
+    # meson test -C build --verbose "gtest main"
+
     # PACK into DEB
 
     sudo meson compile -C build linux-dependency-control
