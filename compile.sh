@@ -58,22 +58,23 @@ fi
 
     fi
 
-    # TODO: event system, 
-    # + fix crash of luafs.so and distribute and test that, python setup test (test .deb in livecd!!!!!!)
 
-    #event system: gets each time a ave point is made, so that it sees activity, pass in a object that persists the calls, so that teh waktaim handler can be stored there, additionally a ebent string or array of string!!!
-    # so that i can pass e.g ["histyor","save"] um auch write=true bei wakatime umzusezne, also todoo, better execve!!!!
-    # and third options is te function that is run and then executed with the event, the object and some additional data!
-
-    # while changing styles, make "replace all" available, install also snippet /Vorlagen (snippest??? is this folder langauge dependent?)) and icons for ass!
-
-
-
-    #icons for .ass .ssa
-    #mime type,
-    #dependency control compile  in that sh! script, 
-    #also probaly lua with luarocks and shared .so ?!
+    #TODOfix crash of luafs.so and distribute and test that, python setup test (test .deb in livecd!!!!!!)
     #fix missing std lua scripts,
     #lua lfs.so missing lua_gettop,
-    #create own translation deb(build / generate  them!) (their all under build/po/<LANG>/LC_MESSAGES/aegisub.mo) and have to go into (... look into original l10n deb package)
-    # create flatpak: https://docs.flatpak.org/en/latest/first-build.html
+
+
+    # TODO: event system, 
+    #event system: gets each time a ave point is made, so that it sees activity, pass in a object that persists the calls, so that the wakatime handler can be stored there, additionally a event string or array of string!!!
+    # so that i can pass e.g ["histyor","save"] to set write=true fro wakatime
+    # and third options is the function that is run and then executed with the event, and an object (table) with some additional data!
+
+    #TODO  install also snippet /Vorlagen (snippets??? is this folder language dependent?)) and 
+
+    #TODO make icons for ass work!
+    #icons for .ass .ssa
+    #mime type,
+
+    #TODO create own translation deb(build / generate  them!) (their all under build/po/<LANG>/LC_MESSAGES/aegisub.mo) and have to go into (... look into original l10n deb package)
+
+    #TODO create flatpak: https://docs.flatpak.org/en/latest/first-build.html
