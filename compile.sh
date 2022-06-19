@@ -69,8 +69,6 @@ fi
     # so that i can pass e.g ["histyor","save"] to set write=true fro wakatime
     # and third options is the function that is run and then executed with the event, and an object (table) with some additional data!
 
-    #TODO  install also snippet /Vorlagen (snippets??? is this folder language dependent?)) and 
-
     #TODO make icons for ass work!
     #icons for .ass .ssa
     #mime type,
