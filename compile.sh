@@ -70,8 +70,8 @@ fi
 
 
     # TODO: event system, 
-    #event system: gets each time a ave point is made, so that it sees activity, pass in a object that persists the calls, so that the wakatime handler can be stored there, additionally a event string or array of string!!!
-    # so that i can pass e.g ["histyor","save"] to set write=true fro wakatime
+    #event system: gets each time a save point is made, so that it sees activity, pass in a object that persists the calls, so that the wakatime handler can be stored there, additionally a event string or array of string!!!
+    # so that i can pass e.g ["history","save"] to set write=true fro wakatime
     # and third options is the function that is run and then executed with the event, and an object (table) with some additional data!
 
     #TODO make icons for ass work!

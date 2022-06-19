@@ -11,7 +11,8 @@ fi
 cd "DependencyControl"
 
 if  ! [ -d "DependencyControl" ]; then
-    git clone https://github.com/TypesettingTools/DependencyControl.git &> /dev/null
+    # a fork to get a script working, The module l0.DependencyControl.SemanticVersioning is missing in the original one!
+    git clone https://github.com/Totto16/DependencyControl.git &> /dev/null
 fi
 
 if  ! [ -d "YUtils" ]; then
@@ -23,10 +24,11 @@ if  ! [ -d "luajson" ]; then
 fi
 
 if  ! [ -d "ffi-experiments" ]; then
-    # a fork to get a script working, that doesn'T work on ubuntu (where /bin/sh doesn't support [[)
+    # a fork to get a script working, that doesn't work on ubuntu (where /bin/sh doesn't support [[)
     git clone https://github.com/Totto16/ffi-experiments.git &> /dev/null
     cd "ffi-experiments"
-    # weird but necessary ( on my machine), is it really?
+    # weird but necessary, since executning in root :(, 
+    #TODO FIX THAT
     sudo chmod 777 -R .
     if ! command -v "moonc" &> /dev/null
     then
