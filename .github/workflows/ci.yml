@@ -128,6 +128,7 @@ jobs:
       - name: Build
         run: meson compile -C build
       
+      # at the moment disabled, since some permissions are set wrong! :(
       - name: Run test
         if: false
         run: meson test -C build --verbose "gtest main"
