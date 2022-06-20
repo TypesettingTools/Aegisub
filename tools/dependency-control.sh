@@ -11,7 +11,7 @@ fi
 cd "DependencyControl"
 
 if  ! [ -d "DependencyControl" ]; then
-    # a fork to get a script working, The module l0.DependencyControl.SemanticVersioning is missing in the original one!
+#  git clone https://github.com/TypesettingTools/DependencyControl.git --branch sqlite
     git clone https://github.com/Totto16/DependencyControl.git &> /dev/null
 fi
 

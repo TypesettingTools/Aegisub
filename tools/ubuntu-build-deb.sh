@@ -182,6 +182,16 @@ if [ -d "/tmp/Aegisub" ]; then
 fi
 
 
+if ! command -v "luarocks" &> /dev/null
+    then
+    sudo apt-get install luarocks > /dev/null
+fi
+
+sudo luarocks install lsqlite3   > /dev/null
+    # sudo luarocks install moonscript > /dev/null
+
+
+
 EOF
 
 chmod 555 DEBIAN/postinst
