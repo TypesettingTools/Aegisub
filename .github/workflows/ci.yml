@@ -38,13 +38,12 @@ jobs:
           #  os: windows-latest,
           #  msvc: false
           #}
-          ## currently not built
-          #- {
-          #  name: Ubuntu Debug,
-          #  os: ubuntu-latest,
-          #  buildtype: debugoptimized,
-          #  args: ''
-          #}
+          - {
+            name: Ubuntu Debug,
+            os: ubuntu-latest,
+            buildtype: debugoptimized,
+            args: ''
+          }
           - {
             name: Ubuntu Release,
             os: ubuntu-latest,
@@ -81,9 +80,9 @@ jobs:
       - name: Hard Install python3
         if: matrix.config.os == 'ubuntu-latest'
         run: |
-          apt-get update
-          apt-get install python3 python3-pip -y
-          ln -s $(which python3) /usr/bin/python
+          sudo apt-get update
+          sudo apt-get install python3 python3-pip -y
+          sudo ln -s $(which python3) /usr/bin/python
 
       - name: Setup Meson
         run: |
@@ -118,9 +117,9 @@ jobs:
       - name: Install dependencies (Linux)
         if: matrix.config.os == 'ubuntu-latest'
         run: |
-          apt-get update
-          apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev luarocks libcurl4-nss-dev lua5.1* -y
-          luarocks install moonscript
+          sudo apt-get update
+          sudo apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev luarocks libcurl4-nss-dev lua5.1* -y
+          sudo luarocks install moonscript
 
       - name: Configure
         run: meson build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }}
@@ -173,9 +172,9 @@ jobs:
       - name: Generate Linux (ubuntu) installer
         if: matrix.config.os == 'ubuntu-latest'
         run: |
-          meson compile -C build linux-dependency-control
-          meson compile -C build aegisub.desktop
-          meson compile -C build ubuntu-deb
+          sudo meson compile -C build linux-dependency-control
+          sudo meson compile -C build aegisub.desktop
+          sudo meson compile -C build ubuntu-deb
 
       - name: Upload artifacts - ubuntu deb
         uses: actions/upload-artifact@v3
