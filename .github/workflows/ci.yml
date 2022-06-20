@@ -174,9 +174,9 @@ jobs:
       - name: Generate Linux (ubuntu) installer
         if: matrix.config.os == 'ubuntu-latest'
         run: |
-          sudo meson compile -C build linux-dependency-control
-          sudo meson compile -C build aegisub.desktop
-          sudo meson compile -C build ubuntu-deb
+          meson compile -C build linux-dependency-control
+          meson compile -C build aegisub.desktop
+          meson compile -C build ubuntu-deb
 
       - name: Upload artifacts - ubuntu deb
         uses: actions/upload-artifact@v3
