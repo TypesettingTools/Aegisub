@@ -16,23 +16,23 @@ jobs:
       matrix:
         python-version: [ '3.x' ]   
         config:
-          - name: Windows MSVC Release
-            os: windows-latest
-            msvc: true
-            buildtype: release
-            args: >-
-              -Ddefault_library=static 
-              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng 
-              -Dfreetype2:harfbuzz=disabled 
-              -Dharfbuzz:freetype=disabled 
-              -Dharfbuzz:cairo=disabled 
-              -Dharfbuzz:glib=disabled 
-              -Dharfbuzz:gobject=disabled
-              -Dharfbuzz:tests=disabled
-              -Dharfbuzz:docs=disabled
-              -Dfribidi:tests=false
-              -Dfribidi:docs=false
-              -Dlibass:fontconfig=disabled
+          #- name: Windows MSVC Release
+            #os: windows-latest
+            #msvc: true
+            #buildtype: release
+            #args: >-
+              #-Ddefault_library=static 
+              #--force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng 
+              #-Dfreetype2:harfbuzz=disabled 
+              #-Dharfbuzz:freetype=disabled 
+              #-Dharfbuzz:cairo=disabled 
+              #-Dharfbuzz:glib=disabled 
+              #-Dharfbuzz:gobject=disabled
+              #-Dharfbuzz:tests=disabled
+              #-Dharfbuzz:docs=disabled
+              #-Dfribidi:tests=false
+              #-Dfribidi:docs=false
+              #-Dlibass:fontconfig=disabled
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
@@ -50,18 +50,18 @@ jobs:
             buildtype: release,
             args: ''
           }
-          - {
-            name: macOS Debug,
-            os: macos-latest,
-            buildtype: debugoptimized,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
-          }
-          - {
-            name: macOS Release,
-            os: macos-latest,
-            buildtype: release,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
-          } 
+          #- {
+          #  name: macOS Debug,
+          #  os: macos-latest,
+          #  buildtype: debugoptimized,
+          #  args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
+          #}
+          #- {
+          #  name: macOS Release,
+          #  os: macos-latest,
+          #  buildtype: release,
+          #  args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
+          #} 
 
     steps:
       - uses: actions/checkout@v2
