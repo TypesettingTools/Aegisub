@@ -151,8 +151,6 @@ if [ -d "/tmp/Aegisub" ]; then
         mkdir -p "/usr/share/mime/packages/"
 
         touch "/usr/share/mime/packages/text.xml"
-        echo "" > "/usr/share/mime/packages/text.xml"
-
         echo '<?xml version="1.0" encoding="UTF-8"?>'                                       >> "/usr/share/mime/packages/text.xml"
         echo '<mime-info xmlns='\''http://www.freedesktop.org/standards/shared-mime-info'\''>'  >> "/usr/share/mime/packages/text.xml"
         echo '        <mime-type type="text/x-ass">'                                        >> "/usr/share/mime/packages/text.xml"
@@ -184,11 +182,13 @@ fi
 
 if ! command -v "luarocks" &> /dev/null
     then
-    sudo apt-get install luarocks > /dev/null
+    echo  "luarocks is missing, the installer should install that, but if not, then you have to to that manually: 'sudo apt-get install luarocks'"
+exit 6
 fi
 
-sudo luarocks install lsqlite3   > /dev/null
-    # sudo luarocks install moonscript > /dev/null
+## for sqlite version of dependency-control
+# sudo luarocks install lsqlite3    > /dev/null
+sudo luarocks install moonscript  > /dev/null
 
 
 
@@ -355,8 +355,8 @@ DEPENDECIES=$(dpkg-shlibdeps -O ../aegisub 2>/dev/null)
 
 DEPENDECY_LIST=${DEPENDECIES:15}
 
-
-echo "Depends: $DEPENDECY_LIST"  >> DEBIAN/control
+# adding luarocks, that is also needed for dependency control!
+echo "Depends: $DEPENDECY_LIST ,luarocks (>= 3.8.0+dfsg1-1)"  >> DEBIAN/control
 
 
 rm debian/control

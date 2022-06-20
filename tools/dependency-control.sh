@@ -11,8 +11,12 @@ fi
 cd "DependencyControl"
 
 if  ! [ -d "DependencyControl" ]; then
-#  git clone https://github.com/TypesettingTools/DependencyControl.git --branch sqlite
-    git clone https://github.com/Totto16/DependencyControl.git &> /dev/null
+    # git clone https://github.com/TypesettingTools/DependencyControl.git --branch sqlite
+    # git clone https://github.com/Totto16/DependencyControl.git &> /dev/null
+    git clone https://github.com/TypesettingTools/DependencyControl.git &> /dev/null
+    cd "DependencyControl"
+    git checkout tags/v0.6.4-alpha &> /dev/null
+    cd ..
 fi
 
 if  ! [ -d "YUtils" ]; then
