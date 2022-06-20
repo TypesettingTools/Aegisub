@@ -182,4 +182,4 @@ jobs:
         if: matrix.config.os == 'ubuntu-latest' && ${{ !env.ACT }}
         with:
           name: ${{ matrix.config.name }} - deb package
-          path: build/aegisub_*.deb
+          path: build/aegisub*.deb
