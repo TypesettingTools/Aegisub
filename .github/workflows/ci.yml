@@ -69,20 +69,21 @@ jobs:
           fetch-depth: '0'
 
       # pre-commit setup
-      # This has issues running on self-hosted. See https://github.com/actions/setup-python/issues/162.
     
-      #- uses: actions/setup-python@v4
-        #with:
-          #python-version: ${{ matrix.python-version }}
-        #env:
-          #AGENT_TOOLSDIRECTORY: /opt/hostedtoolcache
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+        env:
+          AGENT_TOOLSDIRECTORY: /opt/hostedtoolcache
 
-      - name: Hard Install python3
-        if: matrix.config.os == 'ubuntu-latest'
-        run: |
-          sudo apt-get update
-          sudo apt-get install python3 python3-pip -y
-          sudo ln -s $(which python3) /usr/bin/python
+    # This has issues running on self-hosted. See https://github.com/actions/setup-python/issues/162.
+
+      #- name: Hard Install python3
+        #if: matrix.config.os == 'ubuntu-latest'
+        #run: |
+          #sudo apt-get update
+          #sudo apt-get install python3 python3-pip -y
+          #sudo ln -s $(which python3) /usr/bin/python
 
       - name: Setup Meson
         run: |
