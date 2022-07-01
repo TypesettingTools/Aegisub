@@ -20,6 +20,7 @@
 #include <libaegisub/fs_fwd.h>
 
 #include <atomic>
+#include <memory>
 #include <vector>
 
 namespace agi {
