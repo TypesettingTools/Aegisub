@@ -12,6 +12,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         config:
           - name: Windows MSVC Release
