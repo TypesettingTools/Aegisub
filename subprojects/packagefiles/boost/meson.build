@@ -1,7 +1,9 @@
 project('boost', 'cpp',
     version: '1.79.0',
     meson_version: '>=0.55.0'
+    default_options: ['cpp_std=c++20', 'cpp_link_args=-std=c++20'] # c++20' is needed for the newer features!!
     )
+
 
 prj_version = meson.project_version() 
 
@@ -20,9 +22,6 @@ int main(void){return 0;}
 
 
 
-# c++20' is needed for the newer features!!
-add_project_arguments(['-std=c++20'], language : 'cpp')
-add_project_link_arguments(['-std=c++20'], language : 'cpp')
 add_project_arguments('-DBOOST_ALL_NO_LIB=1', language: 'cpp')
 
 if get_option('buildtype').startswith('release')

@@ -35,7 +35,7 @@ fi
 
     bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true -Dwx_version=3.1.7"
 
-    # COOMPILE
+    # COMPILE
 
     ## maybe this has to be done:  git config --global --add safe.directory $PWD
 

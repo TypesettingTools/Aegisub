@@ -146,18 +146,40 @@ else
     endif
 
     opt_var = cmake.subproject_options()
-    opt_var.add_cmake_defines({
-        'wxBUILD_INSTALL': false,
-        'wxBUILD_PRECOMP': 'OFF',       # otherwise breaks project generation w/ meson
-        'wxBUILD_SHARED': build_shared,
 
-        'wxUSE_WEBVIEW': false,         # breaks build on linux
-        'wxUSE_REGEX': 'builtin',   # no more boost_regex needed!
-        'CMAKE_BUILD_TYPE': build_type,
-        'wxUSE_IMAGE': true,
-        'wxBUILD_COMPATIBILITY':'3.1',
-        'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
-    })
+    if host_machine.system() == 'linux' and get_option('wx_use_qt')
+        opt_var.add_cmake_defines({
+            'wxBUILD_INSTALL': false,
+            'wxBUILD_PRECOMP': 'OFF',       # otherwise breaks project generation w/ meson
+            'wxBUILD_SHARED': build_shared,
+
+            'wxUSE_WEBVIEW': false,         # breaks build on linux
+            'wxUSE_REGEX': 'builtin',   # no more boost_regex needed!
+            'CMAKE_BUILD_TYPE': build_type,
+            'wxUSE_IMAGE': true,
+            'wxBUILD_COMPATIBILITY':'3.1',
+            'wxBUILD_MONOLITHIC': true,      # otherwise breaks project generation w/ meson
+            # special add_cmake_defines
+            'wxTOOLKIT': 'qt',
+            'wxUSE_QT': 'yes',
+            'wxUSE_GTK': 'no'
+            })
+
+# sudo apt-get install qt5*-dev libcppunit-dev build-essential libjpeg-dev libtiff5-dev ubuntu-restricted-extras freeglut3 freeglut3-dev libsdl1.2-dev libgstreamer-plugins-base1.0-dev 
+    else 
+        opt_var.add_cmake_defines({
+            'wxBUILD_INSTALL': false,
+            'wxBUILD_PRECOMP': 'OFF',       # otherwise breaks project generation w/ meson
+            'wxBUILD_SHARED': build_shared,
+
+            'wxUSE_WEBVIEW': false,         # breaks build on linux
+            'wxUSE_REGEX': 'builtin',   # no more boost_regex needed!
+            'CMAKE_BUILD_TYPE': build_type,
+            'wxUSE_IMAGE': true,
+            'wxBUILD_COMPATIBILITY':'3.1',
+            'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
+        })
+    endif
 
     wx = cmake.subproject('wxWidgets', options: opt_var)
 
