@@ -1,10 +1,10 @@
 chrono_sources = files([
     'src/chrono.cpp',
-    'src/thread_clock.cpp',
     'src/process_cpu_clocks.cpp',
+    'src/thread_clock.cpp'
 ])
 
-boost_chrono = library('boost_chrono', chrono_sources,
+boost_chrono = library('boost_chrono' +'.'+ prj_version, chrono_sources,
                        include_directories: inc,
                        cpp_args: is_static ? '-DBOOST_All_STATIC_LINK=1' : '-DBOOST_All_DYN_LINK=1',
                        dependencies: thread_dep)

@@ -40,6 +40,16 @@ rm usr/local/share/aegisub/automation/include/aegisub/meson.build
 
 mkdir -p usr/lib
 
+## since local bioost is used, the libraries have to be used!!
+
+mkdir -p lib/x86_64-linux-gnu/
+
+declare -a modules=('chrono' 'thread' 'filesystem' 'locale' 'program_options')
+boost_version='1.79.0'
+    for module in  ${modules[@]}; do
+        cp "../subprojects/boost_1_79_0/libs/$module/libboost_$module.$boost_version.so" "usr/lib/"
+    done  
+
 
 ## Only including DependencyControl, if it was build!
 
@@ -357,7 +367,6 @@ DEPENDECY_LIST=${DEPENDECIES:15}
 
 # adding luarocks, that is also needed for dependency control!
 echo "Depends: $DEPENDECY_LIST ,luarocks (>= 3.8.0+dfsg1-1)"  >> DEBIAN/control
-
 
 rm debian/control
 

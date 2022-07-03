@@ -1,33 +1,31 @@
-regex_sources = files([
-    'src/c_regex_traits.cpp',
-    'src/cpp_regex_traits.cpp',
-    'src/cregex.cpp',
-    'src/fileiter.cpp',
-    'src/icu.cpp',
-    'src/instances.cpp',
-    'src/posix_api.cpp',
-    'src/regex.cpp',
-    'src/regex_debug.cpp',
-    'src/regex_raw_buffer.cpp',
-    'src/regex_traits_defaults.cpp',
-    'src/static_mutex.cpp',
-    'src/w32_regex_traits.cpp',
-    'src/wc_regex_traits.cpp',
-    'src/wide_posix_api.cpp',
-    'src/winstances.cpp',
-    'src/usinstances.cpp',
-])
+# Copyright 2018 Mike Dev
+# Copyright 2019 Peter Dimov
+# Distributed under the Boost Software License, Version 1.0.
+# See accompanying file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt
+# We support CMake 3.5, but prefer 3.16 policies and behavior
 
-regex_args = ['-DBOOST_HAS_ICU=1']
+# NOTE: this doesn't work atm
+#  it was partailyl converted by the tools/cmake2meson.py utility and partially by hand, but it isn't needed so I didn't finish it!
 
-if not is_static
-    regex_args += '-DBOOST_REGEX_DYN_LINK=1'
+
+boost_regex_inc = include_directories('boost/regex')
+boost_regex_dep = library('boost_regex' +'.'+ prj_version, 
+include_directories: [boost_regex_inc])
+if not get_option('BOOST_REGEX_STANDALONE')
+  # target_link_libraries(['boost_regex', 'INTERFACE', 'Boost::config', 'Boost::throw_exception', 'Boost::predef', 'Boost::assert'])
+else
+  # target_compile_definitions(['boost_regex', 'INTERFACE', 'BOOST_REGEX_STANDALONE'])
 endif
-
-boost_regex = library('boost_regex', regex_sources,
-                      include_directories: inc,
-                      cpp_args: regex_args,
-                      dependencies: [thread_dep, icu_deps])
-
-boost_regex_dep = declare_dependency(link_with: boost_regex, include_directories: inc,
-                                     compile_args: '-DBOOST_ALL_NO_LIB=1')
+ICU_dep = dependency('ICU')
+#option(BOOST_REGEX_ENABLE_ICU "Boost.Regex: enable ICU support" ${ICU_FOUND})
+if ICU_dep.found()
+  boost_regex_icu_dep = library('boost_regex_icu')
+  # target_include_directories(['boost_regex_icu', 'INTERFACE', 'include'])
+  if not get_option('BOOST_REGEX_STANDALONE')
+    # target_link_libraries(['boost_regex_icu', 'INTERFACE', 'Boost::config', 'Boost::throw_exception', 'Boost::predef', 'Boost::assert'])
+  else
+    # target_compile_definitions(['boost_regex_icu', 'INTERFACE', 'BOOST_REGEX_STANDALONE'])
+  endif
+  ICU_dep = dependency('ICU')
+  # target_link_libraries(['boost_regex_icu', 'INTERFACE', 'ICU::data', 'ICU::i18n', 'ICU::uc'])
+endif

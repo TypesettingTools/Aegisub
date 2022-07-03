@@ -88,7 +88,8 @@ deps += iconv_dep
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
-boost_modules = ['chrono', 'filesystem', 'thread', 'locale', 'regex']
+## since at least 1.79 (or 1.75 ?) regex isn't needed anymore, its a C++11 builtin!)
+boost_modules = ['chrono', 'filesystem', 'thread', 'locale', ]
 if not get_option('local_boost')
     boost_dep = dependency('boost', version: '>=1.50.0',
                             modules: boost_modules + ['system'],
@@ -138,7 +139,7 @@ else
         'wxBUILD_SHARED': build_shared,
 
         'wxUSE_WEBVIEW': false,         # breaks build on linux
-        'wxUSE_REGEX': 'builtin',  
+        'wxUSE_REGEX': 'builtin',   # no more boost_regex needed!
         'CMAKE_BUILD_TYPE': build_type,
         'wxUSE_IMAGE': true,
         'wxBUILD_COMPATIBILITY':'3.1',

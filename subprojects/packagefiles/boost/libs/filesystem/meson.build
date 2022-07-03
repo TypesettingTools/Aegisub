@@ -1,14 +1,13 @@
 filesystem_sources = files([
-    'src/codecvt_error_category.cpp',
+'src/codecvt_error_category.cpp',
     'src/exception.cpp',
-    'src/directory.cpp',
     'src/operations.cpp',
+    'src/directory.cpp',
     'src/path.cpp',
     'src/path_traits.cpp',
-    'src/portability.cpp',
-    'src/unique_path.cpp',
-    'src/utf8_codecvt_facet.cpp',
-    'src/windows_file_codecvt.cpp',
+    'src/portability.cpp', 
+    'src/unique_path.cpp', 
+    'src/utf8_codecvt_facet.cpp'
 ])
 
 filesystem_args = ['-DBOOST_FILESYSTEM_SOURCE',
@@ -26,7 +25,7 @@ if host_machine.system() == 'windows'
     endif
 endif
 
-boost_filesystem = library('boost_filesystem', filesystem_sources,
+boost_filesystem = library('boost_filesystem' +'.'+ prj_version, filesystem_sources,
                            include_directories: inc,
                            cpp_args: filesystem_args,
                            dependencies: [thread_dep, filesystem_deps])
