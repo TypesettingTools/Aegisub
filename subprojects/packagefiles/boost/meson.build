@@ -1,7 +1,7 @@
 project('boost', 'cpp',
     version: '1.79.0',
     meson_version: '>=0.55.0',
-    default_options: 'cpp_std=c++20' # c++20' is needed for the newer features!
+    default_options: 'cpp_std='+cpp_20_std # c++20' is needed for the newer features!
     )
 
 prj_version = meson.project_version() 
@@ -11,8 +11,8 @@ thread_dep = dependency('threads')
 inc = include_directories('.')
 is_static = get_option('default_library') == 'static'
 
-add_project_arguments(['-std=c++20'], language : 'cpp')
-add_project_link_arguments(['-std=c++20'], language : 'cpp')
+add_project_arguments(['-std='+cpp_20_std], language : 'cpp')
+add_project_link_arguments(['-std='+cpp_20_std], language : 'cpp')
 add_project_arguments('-DBOOST_ALL_NO_LIB=1', language: 'cpp')
 
 if get_option('buildtype').startswith('release')

@@ -82,9 +82,10 @@ int main(void){return 0;}
 '''
 
 has_stdcpp20 = cxx.links(code, args : '-std=c++20', name : 'std check')
-
+cpp_20_std = '-std=c++20'
 if not has_stdcpp20
-    error('std=c++20 isn\'t supported by the compiler!')
+   #  error('std=c++20 isn\'t supported by the compiler!')
+   cpp_20_std = '-std=c++2a'
 endif
 
 cc = meson.get_compiler('c')
