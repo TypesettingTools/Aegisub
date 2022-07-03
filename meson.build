@@ -74,6 +74,19 @@ elif host_machine.system() != 'windows'
 endif
 
 cxx = meson.get_compiler('cpp')
+
+
+code = '''#include<stdio.h>
+void func() { printf("Compile me.\n"); }
+int main(void){return 0;}
+'''
+
+has_stdcpp20 = cxx.links(code, args : '-std=c++20', name : 'std check')
+
+if not has_stdcpp20
+    error('std=c++20 isn\'t supported by the compiler!')
+endif
+
 cc = meson.get_compiler('c')
 deps += cc.find_library('m', required: false)
 deps += cc.find_library('dl', required: false)
