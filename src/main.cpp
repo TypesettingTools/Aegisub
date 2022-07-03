@@ -230,9 +230,6 @@ bool AegisubApp::OnInit() {
 	// Init hotkeys
 	hotkey::init();
 
-	// Init wakatime
-	// wakatime::init();
-
 	StartupLog("Load MRU");
 	config::mru = new agi::MRUManager(config::path->Decode("?user/mru.json"), GET_DEFAULT_CONFIG(default_mru), config::opt);
 
@@ -359,7 +356,6 @@ int AegisubApp::OnExit() {
 	delete config::opt;
 	delete config::mru;
 	hotkey::clear();
-	// wakatime::clear()
 	cmd::clear();
 
 	delete config::global_scripts;

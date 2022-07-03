@@ -67,21 +67,3 @@ fi
         sudo meson install -C build
 
     fi
-
-
-
-    # TODO: event system, 
-    #event system: gets each time a save point is made, so that it sees activity, pass in a object that persists the calls, so that the wakatime handler can be stored there, additionally a event string or array of string!!!
-    # so that i can pass e.g ["history","save"] to set write=true fro wakatime
-    # and third options is the function that is run and then executed with the event, and an object (table) with some additional data!
-
-    #TODO make icons for ass work!
-    #icons for .ass .ssa
-    #mime type,
-
-    #TODO create flatpak: https://docs.flatpak.org/en/latest/first-build.html
-
-
-
-    # TODO : git single file update system, use event system for making regularly git updates, if enabled, for better saving, delete automatically, after some time!
-    # git doesn't support single iles, so make directory with only that file ?!
