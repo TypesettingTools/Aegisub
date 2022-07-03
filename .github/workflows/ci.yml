@@ -8,7 +8,7 @@ on:
   workflow_dispatch:  
 env:
   CC: gcc-11
-  CCX: g++-11
+  CXX: g++-11
 
 jobs:
   build:

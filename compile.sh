@@ -10,11 +10,11 @@ ARG="release"
 fi
 
 export CC=gcc
-export CCX=g++
+export CXX=g++
 
 buildtype=""
 if [ $ARG == "release" ]; then 
-    buildtype ="release"
+    buildtype="release"
 elif [ $ARG == "debug" ]; then
     buildtype="debugoptimized"
 elif [ $ARG == "runner" ]; then
