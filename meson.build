@@ -81,7 +81,7 @@ void func() { printf("Compile me.\n"); }
 int main(void){return 0;}
 '''
 
-has_stdcpp20 = cxx.links(code, args : '-std=c++20', name : 'std check')
+has_stdcpp20 = cxx.links(code, args : '-std=c++20', name : 'std=c++20 check')
 # c++20' is needed for the newer features!! c++2a is not enough!
 if not has_stdcpp20
     error('std=c++20 isn\'t supported by the compiler!')
