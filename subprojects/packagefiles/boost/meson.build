@@ -27,8 +27,8 @@ endif
 
 # c++20' is needed for the newer features!
 
-add_project_arguments(['-std='+cpp_20_std], language : 'cpp')
-add_project_link_arguments(['-std='+cpp_20_std], language : 'cpp')
+add_project_arguments([cpp_20_std], language : 'cpp')
+add_project_link_arguments([cpp_20_std], language : 'cpp')
 add_project_arguments('-DBOOST_ALL_NO_LIB=1', language: 'cpp')
 
 if get_option('buildtype').startswith('release')
