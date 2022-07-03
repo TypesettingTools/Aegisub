@@ -21,6 +21,8 @@
 #include "compat.h"
 #include "options.h"
 
+#include "wakatime.h"
+
 #include <libaegisub/path.h>
 
 #include <boost/range/algorithm/find.hpp>
@@ -249,6 +251,9 @@ static bool check(std::string const& context, agi::Context *c, int key_code, int
 
 bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt) {
 	try {
+
+		wakatime::update(false);
+
 		if (!check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
 			evt.Skip();
 			return false;

@@ -161,6 +161,7 @@ aegisub_src = files(
     'visual_tool_rotatez.cpp',
     'visual_tool_scale.cpp',
     'visual_tool_vector_clip.cpp',
+    'wakatime.cpp',
 )
 
 if host_machine.system() == 'darwin'
