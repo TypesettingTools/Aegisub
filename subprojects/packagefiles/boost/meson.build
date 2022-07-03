@@ -22,7 +22,7 @@ has_stdcpp20 = cxx.links(code, args : '-std=c++20', name : 'std check')
 cpp_20_std = '-std=c++20'
 if not has_stdcpp20
    #  error('std=c++20 isn\'t supported by the compiler!')
-   cpp_20_std = '-std=c++2a'
+   cpp_20_std = '--std=c++2a'
 endif
 
 # c++20' is needed for the newer features!
