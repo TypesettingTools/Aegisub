@@ -134,22 +134,27 @@ else
     opt_var = cmake.subproject_options()
     opt_var.add_cmake_defines({
         'wxBUILD_INSTALL': false,
-        'wxBUILD_PRECOMP': false,       # otherwise breaks project generation w/ meson
+        'wxBUILD_PRECOMP': 'OFF',       # otherwise breaks project generation w/ meson
         'wxBUILD_SHARED': build_shared,
 
         'wxUSE_WEBVIEW': false,         # breaks build on linux
+        'wxUSE_REGEX': 'builtin',  
         'CMAKE_BUILD_TYPE': build_type,
         'wxUSE_IMAGE': true,
+        'wxBUILD_COMPATIBILITY':'3.1',
         'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
     })
 
     wx = cmake.subproject('wxWidgets', options: opt_var)
+
 
     deps += [
         wx.dependency('wxmono'),
         wx.dependency('wxregex'),
         wx.dependency('wxscintilla')
     ]
+
+    wx.target_list()
 
     if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
         deps += [

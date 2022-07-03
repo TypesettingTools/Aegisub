@@ -1,7 +1,5 @@
 #!/bin/env bash
 
-set -xe
-
 ARG=$1
 
 if  [ -z $1 ]; then 
@@ -14,10 +12,11 @@ fi
 export CC=gcc
 export CCX=g++
 
+buildtype=""
 if [ $ARG == "release" ]; then 
-    COMMAND="meson build -Dbuildtype=release"
+    buildtype ="release"
 elif [ $ARG == "debug" ]; then
-    COMMAND="meson build -Dbuildtype=debugoptimized"
+    buildtype="debugoptimized"
 elif [ $ARG == "runner" ]; then
 
     ACT=$(which act)
@@ -34,7 +33,7 @@ fi
 
     # CONFIGURE
 
-    bash -c "$COMMAND"
+    bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true -Dwx_version=3.1.7"
 
     # COOMPILE
 
@@ -47,6 +46,11 @@ fi
     # meson test -C build --verbose "gtest main"
 
     # PACK into DEB
+
+    if [ ! -f "build/aegisub" ]; then
+        echo "Failed to build aegiusb. Aborting"
+        exit 4
+    fi
 
     sudo meson compile -C build linux-dependency-control
     sudo meson compile -C build aegisub.desktop
@@ -64,10 +68,6 @@ fi
     fi
 
 
-    #TODO fix crash of luafs.so and distribute and test that, python setup test (test .deb in livecd!!!!!!)
-    #fix missing std lua scripts,
-    #lua lfs.so missing lua_gettop,
-
 
     # TODO: event system, 
     #event system: gets each time a save point is made, so that it sees activity, pass in a object that persists the calls, so that the wakatime handler can be stored there, additionally a event string or array of string!!!
@@ -79,3 +79,8 @@ fi
     #mime type,
 
     #TODO create flatpak: https://docs.flatpak.org/en/latest/first-build.html
+
+
+
+    # TODO : git single file update system, use event system for making regularly git updates, if enabled, for better saving, delete automatically, after some time!
+    # git doesn't support single iles, so make directory with only that file ?!
