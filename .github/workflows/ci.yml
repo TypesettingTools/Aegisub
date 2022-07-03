@@ -42,13 +42,13 @@ jobs:
             name: Ubuntu Debug,
             os: ubuntu-latest,
             buildtype: debugoptimized,
-            args: ''
+            args: -Dlocal_boost=true -Dwx_version=3.1.7
           }
           - {
             name: Ubuntu Release,
             os: ubuntu-latest,
             buildtype: release,
-            args: ''
+            args: -Dlocal_boost=true -Dwx_version=3.1.7
           }
           #- {
           #  name: macOS Debug,
