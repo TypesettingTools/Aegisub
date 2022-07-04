@@ -1,3 +1,5 @@
+fs = import('fs')
+
 respack = find_program(meson.project_source_root() / 'tools/respack.py')
 
 resrc = [
@@ -12,16 +14,24 @@ conf_platform_json = configure_file(input: 'default_config_platform.json.in',
                                     configuration: conf_platform)
 
 if host_machine.system() == 'darwin'
-    resrc += custom_target('default_config.{cpp,h}',
-                           command: [respack, '@INPUT0@', '@OUTPUT@'],
-                           input: [files('manifest_osx.respack'), conf_platform_json],
-                           output: ['default_config.cpp', 'default_config.h'])
+    resmanifest = 'manifest_osx.respack'
 else
-    resrc += custom_target('default_config.{cpp,h}',
-                           command: [respack, '@INPUT0@', '@OUTPUT@'],
-                           input: [files('manifest.respack'), conf_platform_json],
-                           output: ['default_config.cpp', 'default_config.h'])
+    resmanifest = 'manifest.respack'
 endif
+
+resmanifest_files = [conf_platform_json]
+# Filter out the files we've generated ourselves
+foreach rfile : fs.read(resmanifest).strip().split('\n')
+    rfile_s = rfile.strip()
+    if fs.is_file(rfile_s)
+        resmanifest_files += files(rfile_s)
+    endif
+endforeach
+
+resrc += custom_target('default_config.{cpp,h}',
+                        command: [respack, '@INPUT0@', '@OUTPUT@'],
+                        input: [files(resmanifest), resmanifest_files],
+                        output: ['default_config.cpp', 'default_config.h'])
 
 
 libresrc_inc = include_directories('.')
