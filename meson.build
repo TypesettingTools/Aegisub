@@ -223,6 +223,14 @@ endforeach
 if host_machine.system() == 'windows' and get_option('avisynth').enabled()
     conf.set('WITH_AVISYNTH', 1) # bundled separately with installer
     deps += cc.find_library('avifil32', required: true)
+
+    avs_opt = cmake.subproject_options()
+    avs_opt.add_cmake_defines({
+        'HEADERS_ONLY': true
+    })
+
+    avs = cmake.subproject('avisynth', options: avs_opt)
+    deps_inc += avs.include_directories('AviSynth-Headers')
 endif
 
 if host_machine.system() == 'windows' and not get_option('directsound').disabled()
