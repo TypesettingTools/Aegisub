@@ -63,11 +63,7 @@ AviSynthWrapper::AviSynthWrapper() {
 		if (!CreateScriptEnv)
 			throw AvisynthError("Failed to get address of CreateScriptEnv from avisynth.dll");
 
-		// Require Avisynth 2.5.6+?
-		if (OPT_GET("Provider/Avisynth/Allow Ancient")->GetBool())
-			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION-1);
-		else
-			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
+		env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
 
 		if (!env)
 			throw AvisynthError("Failed to create a new avisynth script environment. Avisynth is too old?");

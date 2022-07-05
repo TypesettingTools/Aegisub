@@ -436,8 +436,6 @@ void Advanced_Video(wxTreebook *book, Preferences *parent) {
 
 #ifdef WITH_AVISYNTH
 	auto avisynth = p->PageSizer("Avisynth");
-	p->OptionAdd(avisynth, _("Allow pre-2.56a Avisynth"), "Provider/Avisynth/Allow Ancient");
-	p->CellSkip(avisynth);
 	p->OptionAdd(avisynth, _("Avisynth memory limit"), "Provider/Avisynth/Memory Max");
 #endif
 
