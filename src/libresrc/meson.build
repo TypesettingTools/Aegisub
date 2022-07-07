@@ -30,7 +30,8 @@ endforeach
 
 resrc += custom_target('default_config.{cpp,h}',
                         command: [respack, '@INPUT0@', '@OUTPUT@'],
-                        input: [files(resmanifest), resmanifest_files],
+                        input: [files(resmanifest)],
+                        depend_files: resmanifest_files,
                         output: ['default_config.cpp', 'default_config.h'])
 
 
