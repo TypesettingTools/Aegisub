@@ -50,6 +50,8 @@
         "",
         "am/meta",
         "",
+        "tool/assdraw",
+        "",
         "time/shift",
         "tool/style/assistant",
         "tool/translation_assistant",
