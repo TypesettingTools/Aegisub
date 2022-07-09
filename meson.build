@@ -1,10 +1,15 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.56.1',
+        meson_version: '>=0.56.1', # with 63.0.0 the cmake project of wxWidgets fails!!! do 
         default_options: ['cpp_std=c++14', 'buildtype=debugoptimized'],
-        version: '3.2.2')
+        version: '3.3.0')
 
 cmake = import('cmake')
+message(meson.version().split('.')[1])
+if meson.version().split('.')[1] == '63'
+    error('MESON 63 >= is not supported atm! run \'pip install meson==0.62.2\' to install the latest supported version!')
+endif
+
 
 if host_machine.system() == 'windows'
     add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
@@ -134,7 +139,7 @@ deps += dependency('zlib')
 
 wx_minver = '>=' + get_option('wx_version')
 if host_machine.system() == 'darwin'
-    wx_minver = '>=3.1.0'
+    wx_minver = '>=3.2.0'
 endif
 wx_dep = dependency('wxWidgets', version: wx_minver,
                     required: false,
@@ -184,7 +189,10 @@ else
             'CMAKE_BUILD_TYPE': build_type,
             'wxUSE_IMAGE': true,
             'wxBUILD_COMPATIBILITY':'3.1',
-            'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
+            'wxBUILD_MONOLITHIC': true,      # otherwise breaks project generation w/ meson
+            'wxTOOLKIT': 'gtk',
+            'wxUSE_QT': 'no',
+            'wxUSE_GTK': 'yes'
         })
     endif
 

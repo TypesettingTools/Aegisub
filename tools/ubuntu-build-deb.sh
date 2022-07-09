@@ -6,7 +6,7 @@ cd ${MESON_BUILD_ROOT} || exit 5
 
 ## TODO get these numbers dynamically
 
-DEB_NAME="aegisub_3.2.2+dpctrl-ubuntu_amd64"
+DEB_NAME="aegisub_3.3.0+dpctrl-ubuntu_amd64"
 
 # create deb directroy, later this will be bundled into the deb
 
@@ -287,13 +287,13 @@ touch usr/share/man/man1/aegisub.1
 
 DATE=$(date +"%B %d, %Y")
 
-echo ".TH aegisub-3.2.2 \"$DATE\"" >> usr/share/man/man1/aegisub.1
+echo ".TH aegisub-3.3.0 \"$DATE\"" >> usr/share/man/man1/aegisub.1
 
 cat >> usr/share/man/man1/aegisub.1 << 'EOF'
 .SH NAME
-aegisub-3.2.2 \- advanced subtitle editor
+aegisub-3.3.0 \- advanced subtitle editor
 .SH SYNOPSIS
-.B aegisub-3.2.2
+.B aegisub
 .IR "files" "..."
 .SH DESCRIPTION
 Originally created as tool to make typesetting, particularly in anime
@@ -309,7 +309,7 @@ other convenient tools).
 You can find more documentation on the following website:
 https://aegi.vmoe.info/docs/3.0
 .SH AUTHOR
-aegisub-3.2.2 was written by the Aegisub Project <http://www.aegisub.org/>.
+aegisub-3.3.0 was written by the Aegisub Project <http://www.aegisub.org/>.
 .PP
 This manual page was written by Sebastian Reichel <sre@debian.org>
 for the Debian project (but may be used by others).
@@ -335,7 +335,7 @@ touch DEBIAN/control
 cat > DEBIAN/control << 'EOF'
 
 Package: aegisub
-Version: 3.2.2+dpctrl-ubuntu
+Version: 3.3.0+dpctrl-ubuntu
 Architecture: amd64
 Maintainer: None
 Suggests: aegisub-l10n
@@ -393,7 +393,7 @@ rm -r $DEB_NAME
 ## NOW generate locales!
 
 
-LOCALE_DEB_NAME="aegisub-l10n_3.2.2+dpctrl-ubuntu_amd64"
+LOCALE_DEB_NAME="aegisub-l10n_3.3.0+dpctrl-ubuntu_amd64"
 
 # create deb directroy, later this will be bundled into the deb
 
@@ -422,11 +422,11 @@ touch DEBIAN/control
 cat > DEBIAN/control << 'EOF'
 Package: aegisub-l10n
 Source: aegisub
-Version: 3.2.2+dpctrl-ubuntu
+Version: 3.3.0+dpctrl-ubuntu
 Architecture: all
 Maintainer: None
 Installed-Size: 3230
-Depends: aegisub (>= 3.2.2+dpctrl-ubuntu)
+Depends: aegisub (>= 3.3.0+dpctrl-ubuntu)
 Section: localization
 Priority: optional
 Original-Maintainer: Aniol Marti <amarti@caliu.cat>

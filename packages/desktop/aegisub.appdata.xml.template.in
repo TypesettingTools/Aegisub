@@ -53,6 +53,6 @@
     <binary>aegisub</binary>
   </provides>
   <releases>
-    <release version="3.2.2" date="2014-12-08"/>
+    <release version="3.3.0" date="2022-07-09"/>
   </releases>
 </component>

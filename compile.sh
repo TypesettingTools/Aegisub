@@ -18,6 +18,9 @@ if [ $ARG == "release" ]; then
     buildtype="release"
 elif [ $ARG == "debug" ]; then
     buildtype="debugoptimized"
+elif [ $ARG == "clean" ]; then
+    rm -rf build/
+    exit 0
 elif [ $ARG == "runner" ]; then
 
     ACT=$(which act)

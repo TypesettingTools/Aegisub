@@ -1,0 +1,4 @@
+[wrap-git]
+directory = assdraw
+url = https://github.com/biki-desu/assdraw.git
+revision = master
