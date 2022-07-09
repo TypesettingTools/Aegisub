@@ -23,6 +23,9 @@ elif host_machine.system() == 'linux'
         installer_setup = find_program(meson.project_source_root() / 'tools/ubuntu-build-deb.sh')
         run_target('ubuntu-deb',
                 command: [installer_setup, meson.project_build_root(), meson.project_source_root()])
+        assdraw_compile_and_setup = find_program(meson.project_source_root() / 'tools/ubuntu-build-assdraw.sh')
+        run_target('ubuntu.assdraw-deb',
+                command: [assdraw_compile_and_setup, meson.project_build_root(), meson.project_source_root()])
         
 
 ## TODO : use meson.project_build_root()

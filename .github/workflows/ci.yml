@@ -181,10 +181,11 @@ jobs:
           meson compile -C build linux-dependency-control
           meson compile -C build aegisub.desktop
           meson compile -C build ubuntu-deb
+          meson compile -C build ubuntu.assdraw-deb
 
       - name: Upload artifacts - ubuntu deb
         uses: actions/upload-artifact@v3
         if: matrix.config.os == 'ubuntu-latest' && ${{ !env.ACT }}
         with:
           name: ${{ matrix.config.name }} - deb package
-          path: build/aegisub*.deb
+          path: build/*.deb

@@ -19,7 +19,7 @@ if [ $ARG == "release" ]; then
 elif [ $ARG == "debug" ]; then
     buildtype="debugoptimized"
 elif [ $ARG == "clean" ]; then
-    rm -rf build/
+    sudo rm -rf build/
     exit 0
 elif [ $ARG == "runner" ]; then
 
@@ -59,12 +59,14 @@ fi
     sudo meson compile -C build linux-dependency-control
     sudo meson compile -C build aegisub.desktop
     sudo meson compile -C build ubuntu-deb
+    sudo meson compile -C build ubuntu.assdraw-deb
 
 
     # INSTALL if no second parameter is given
     if  [ -z $2 ]; then
         sudo dpkg -i build/$(ls build/  | grep aegisub_.*deb) || sudo apt-get -f install
         sudo dpkg -i build/$(ls build/  | grep aegisub-l10n_.*deb)  || sudo apt-get -f install
+        sudo dpkg -i build/$(ls build/  | grep assdraw.*deb)  || sudo apt-get -f install
     else
 
         sudo meson install -C build

@@ -40,7 +40,7 @@ rm usr/local/share/aegisub/automation/include/aegisub/meson.build
 
 mkdir -p usr/lib
 
-## since local bioost is used, the libraries have to be used!!
+## since local boost is used, the libraries have to be used!!
 
 mkdir -p lib/x86_64-linux-gnu/
 
