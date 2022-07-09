@@ -5,7 +5,7 @@ project('Aegisub', ['c', 'cpp'],
         version: '3.3.0')
 
 cmake = import('cmake')
-message(meson.version().split('.')[1])
+
 if meson.version().split('.')[1] == '63'
     error('MESON 63 >= is not supported atm! run \'pip install meson==0.62.2\' to install the latest supported version!')
 endif
