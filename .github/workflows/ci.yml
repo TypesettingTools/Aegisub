@@ -16,6 +16,7 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         python-version: [ '3.x' ]   
         config:

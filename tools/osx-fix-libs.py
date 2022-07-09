@@ -49,6 +49,11 @@ def collectlibs(lib, masterlist, targetdir):
                 basename = os.path.basename(check)
                 target = os.path.join(targetdir, basename)
 
+                if os.path.islink(target):
+                    # If a library was a symlink to a file with the same name in another directory,
+                    # this could otherwise cause a FileNotFoundError
+                    os.remove(target)
+
                 if os.path.isfile(check) and not os.path.islink(check):
                     try:
                         shutil.copy(check, target)
