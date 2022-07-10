@@ -360,7 +360,6 @@ void FrameMain::OnKeyDown(wxKeyEvent &event) {
 }
 
 void FrameMain::OnMouseEvent(wxMouseEvent &event) {
-	printf("test\n");
 	wakatime::update(false);
 	// pass it on, so that it can be used later!
 	event.Skip();
