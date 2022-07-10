@@ -305,6 +305,13 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_TIMER(ID_APP_TIMER_STATUSCLEAR, FrameMain::OnStatusClear)
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 	EVT_CHAR_HOOK(FrameMain::OnKeyDown)
+	EVT_LEFT_DOWN(FrameMain::OnMouseEvent)
+	EVT_MIDDLE_DOWN(FrameMain::OnMouseEvent)
+	EVT_RIGHT_DOWN(FrameMain::OnMouseEvent)
+	EVT_LEFT_UP(FrameMain::OnMouseEvent)
+	EVT_MIDDLE_UP(FrameMain::OnMouseEvent)
+	EVT_RIGHT_UP(FrameMain::OnMouseEvent)
+	EVT_MOTION(FrameMain::OnMouseEvent)
 	EVT_MOUSEWHEEL(FrameMain::OnMouseWheel)
 END_EVENT_TABLE()
 
@@ -352,6 +359,15 @@ void FrameMain::OnKeyDown(wxKeyEvent &event) {
 	hotkey::check("Main Frame", context.get(), event);
 }
 
+void FrameMain::OnMouseEvent(wxMouseEvent &event) {
+	printf("test\n");
+	wakatime::update(false);
+	// pass it on, so that it can be used later!
+	event.Skip();
+}
+
+
 void FrameMain::OnMouseWheel(wxMouseEvent &evt) {
+	wakatime::update(false);
 	ForwardMouseWheelEvent(this, evt);
 }
