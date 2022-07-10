@@ -22,6 +22,16 @@ elif [ $ARG == "debug" ]; then
 elif [ $ARG == "clean" ]; then
     sudo rm -rf build/
     exit 0
+elif [ $ARG == "format" ]; then
+
+
+    # TODO, use clang-tidy
+    # sudo find src/ -name '*.h' -o -name '*.cpp' -exec clang-tidy -checks='*'  -fix  {}  -- -std=c++14  -I${vcpkgRoot}/packages/ -I/{vcpkgRoot}/packages/wxwidgets_x64-linux/include/ -I{vcpkgRoot}/packages/wxwidgets_x64-linux/include/wx-3.1/;
+
+    sudo find src/ -name '*.h' -o -name '*.cpp' | xargs clang-format -style=file -i 
+    sudo find libaegisub/ -name '*.h' -o -name '*.cpp' | xargs clang-format -style=file -i 
+
+    exit 0
 elif [ $ARG == "dev" ]; then
     buildtype="debugoptimized"
     DEBUG="true"
