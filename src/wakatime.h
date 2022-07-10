@@ -19,6 +19,7 @@
 
 #include <wx/string.h>
 #include <wx/arrstr.h>
+#include "libaegisub/path.h"
 
 namespace wakatime {
 
@@ -27,7 +28,7 @@ void init();
 
 void clear();
 
-void update(bool isWrite);
+void update(bool isWrite, agi::fs::path const* filename = nullptr);
 
 
 using namespace std::chrono;
@@ -45,16 +46,21 @@ using namespace std::chrono;
         wxString* output_string; // can be empty and is nullptr if an error occured
     } CLIResponse;
 
+    typedef struct {
+        wxString* project_name;
+        wxString* file_name;
+        bool changed;
+    } ProjectInfo;
+
 
 /// @class cli
 /// the wakatime cli class, it has the needed methods
     class cli {
     public:
-    cli (wxString* project_name){
+        cli (){
                 if(!handle_cli()){
                     assert(false && "ERROR");
                 }
-                this->project_name = project_name;
 
                 last_heartbeat = 0s;
 
@@ -72,25 +78,27 @@ using namespace std::chrono;
                     key = aegisub_key;
                 }
 
-                send_heartbeat(new wxString("file"),false);
-
             }
 
 
         /// Map to hold Combo instances
-        bool initialize(wxString* project_name);
-        void change_project(wxString* project_name, wxString* new_file);
+        bool initialize();
+        void change_project(wxString* new_file, wxString* project_name);
         void change_api_key(wxString* key);
-        bool send_heartbeat(wxString* file, bool isWrite);
+        bool send_heartbeat(bool isWrite);
+        ProjectInfo project_info = {
+            project_name : nullptr,
+            file_name: nullptr,
+            changed: false
+        };
 
     private:
-        wxString* project_name;
         wxString* key;
         seconds last_heartbeat;
         Plugin plugin_info = {
             program: "Aegisub",
             plugin_name: "aegisub-wakatime",
-            type: "Advanced SubStation Alpha",
+            type: "ASS",//Advanced SubStation Alpha",
             version: "0.0.1"
         };
         wxString* cli_path;

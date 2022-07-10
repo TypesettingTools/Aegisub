@@ -16,8 +16,12 @@
 /* #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/json.h" */
-#include "libaegisub/log.h"
+
+#include "options.h"
 #include "wakatime.h"
+
+#include "libaegisub/log.h"
+#include "libaegisub/path.h"
 
 #include <chrono>
 #include <wx/string.h>
@@ -43,9 +47,12 @@ namespace wakatime {
 using namespace std::chrono;
 
 
-        void cli::change_project(wxString* project_name, wxString* new_file){
-			this->project_name = project_name;
-			send_heartbeat(new_file,true);
+        void cli::change_project(wxString* new_file, wxString* project_name){
+            project_info.file_name = new_file;
+            project_info.project_name = project_name;
+			project_info.changed = true;
+
+			send_heartbeat(false);
 		}
 
         void cli::change_api_key(wxString* key){
@@ -53,38 +60,42 @@ using namespace std::chrono;
 			// TODO check validity of key!
 		}
 
-        bool cli::send_heartbeat(wxString* file, bool isWrite){
+        bool cli::send_heartbeat(bool isWrite){
+
+/* 
+
+    --TODO:    Check for api key in ~/.wakatime.cfg, prompt user to enter if does not exist
+    -- TODO: Process event listeners to detect when current file changes, a file is modified, and a file is saved
+    --[[   Current file changed (our file change event listener code is run)
+        go to Send heartbeat function with isWrite false
+    User types in a file (our file modified event listener code is run)
+        go to Send heartbeat function with isWrite false
+    A file is saved (our file save event listener code is run)
+        go to Send heartbeat function with isWrite true ]]
+            assert(false && "Not implemented yet"); */
+
 
 		seconds now =  duration_cast<seconds>(steady_clock::now().time_since_epoch());
 
         // TODO get that data!
-        bool lastFileChanged = false;
-		if (!(last_heartbeat + (2s* 60) < now || isWrite || lastFileChanged)){
+		if (!(last_heartbeat + (2s* 60) < now || isWrite || project_info.changed)){
             LOG_D("wakatime/send_heartbet") << "No heartbeat to send";
 			return false;
 		}
 
+        project_info.changed = false;
 		last_heartbeat = now;
 
-/* 
-      "--entity string"                    Absolute path to file for the heartbeat. Can also be a url, domain or app when --entity-type is not file.
-
-      "--key string                       Your wakatime api key; uses api_key from ~/.wakatime.cfg by default.
-    language string                  Optional language name. If valid, takes priority over auto-detected language.
 
 
-    [     Send heartbeat function
-        check lastHeartbeat variable. if isWrite is false, and file has not changed since last heartbeat, and less than 2 minutes since last heartbeat, then return and do nothing
-        run wakatime-cli in background process passing it the current file
-        update lastHeartbeat variable with current file and current time
- ]]
-        "--project string"                   Override auto-detected project. Use --alternate-project to supply a fallback project if one can't b
- */
         wxArrayString *buffer = new wxArrayString();
 
         buffer->Add(wxString::Format("--language '%s'", plugin_info.type));
-        buffer->Add(wxString::Format("--entity '%s'", *file));
-        buffer->Add(wxString::Format("--project '%s'", *project_name));
+
+        //TODO use translation for default file name!
+        buffer->Add(wxString::Format("--entity '%s'", project_info.file_name == nullptr ? "Unbenannt.ass": *project_info.file_name));
+        buffer->Add(wxString::Format("--project '%s'", project_info.project_name == nullptr ?  "Unbenannt" : *project_info.project_name));
+
         if (isWrite ){
             buffer->Add("--write");
         }
@@ -104,36 +115,41 @@ using namespace std::chrono;
 	}
 
         bool cli::handle_cli(){
-			cli_path = new wxString("/home/totto/.wakatime/wakatime-cli");
-			if(!is_cli_present()){
-				return download_cli();
-			}
 
-			return true;
+        wxArrayString *output = new wxArrayString();
 
-/* 
+		long returnCode = wxExecute("bash  -c \"realpath ~",*output, wxEXEC_SYNC);
 
-    -- TODO:   Check for wakatime-cli, or download into ~/.wakatime/ if missing or needs an update
-    --TODO:    Check for api key in ~/.wakatime.cfg, prompt user to enter if does not exist
-    -- TODO: Process event listeners to detect when current file changes, a file is modified, and a file is saved
-    --[[   Current file changed (our file change event listener code is run)
-        go to Send heartbeat function with isWrite false
-    User types in a file (our file modified event listener code is run)
-        go to Send heartbeat function with isWrite false
-    A file is saved (our file save event listener code is run)
-        go to Send heartbeat function with isWrite true ]]
-            assert(false && "Not implemented yet"); */
+        if(returnCode != 0){
+            return false;
+        }
+        wxString* homePath = StringArrayToString(output);
+		cli_path = new wxString(wxString::Format("%s/.wakatime/wakatime-cli",*homePath));
+        LOG_D("CLI/PATH") << cli_path->ToAscii();
+		if(!is_cli_present()){
+            LOG_D("CLI/PATH") << "path not present!";
+			return download_cli();
+		}
+
+		return true;
+
+
         }
 
+
        	bool cli::is_cli_present(){
-			// TODO check if cli_path exists!
-			return true;
-            assert(false && "Not implemented yet");
+			
+            long returnCode = wxExecute(wxString::Format("bash  -c \"which '%s' > /dev/null\"",*cli_path), wxEXEC_SYNC);
+
+            return returnCode == 0;
         }
 
         bool cli::download_cli(){
-            assert(false && "Not implemented yet");
-			return false;
+            //TODO generalize and finish, WIP
+            return false;
+             long returnCode = wxExecute(wxString::Format("bash  -c \"mkdir -p ~/.wakatime && wget  'https://github.com/wakatime/wakatime-cli/releases/download/v1.52.1-alpha.1/wakatime-cli-linux-amd64.zip -o ~/.wakatime/ > /dev/null && unzip && ln -S .... etc\"",*cli_path), wxEXEC_SYNC);
+
+            return returnCode == 0;
         }
 
         CLIResponse cli::invoke_cli(wxArrayString* options){
@@ -191,8 +207,7 @@ using namespace std::chrono;
 
 	wakatime::cli *wakatime_cli = nullptr;
 	void init() {
-        LOG_D("wakatime/init");
-		wakatime_cli = new cli(new wxString("project name"));
+		wakatime_cli = new cli();
 	}
 
 	void clear() {
@@ -201,9 +216,20 @@ using namespace std::chrono;
 	}
 
 
-	void update(bool isWrite){
-	//TODO: 	assert(false && "Not implemented yet");
-	    bool send_successfully = wakatime_cli->send_heartbeat(new wxString("file"),isWrite);
+	void update(bool isWrite, agi::fs::path const* filename){
+        if(filename != nullptr){
+            wxString* temp_file_name = new wxString(filename->string());
+            wxString* temp_project_name = new wxString(filename->parent_path().filename().string());
+            wakatime_cli->project_info.changed =  wakatime_cli->project_info.file_name == nullptr || !wakatime_cli->project_info.file_name->IsSameAs(*temp_file_name)
+                || wakatime_cli->project_info.project_name == nullptr || wakatime_cli->project_info.project_name->IsSameAs(*temp_project_name);
+                LOG_D("wakatime/update") << "has changed: " << wakatime_cli->project_info.changed;
+
+            if(wakatime_cli->project_info.changed){
+                wakatime_cli->project_info.file_name = temp_file_name;
+                wakatime_cli->project_info.project_name = temp_project_name; 
+            }
+        }
+	    bool send_successfully = wakatime_cli->send_heartbeat(isWrite);
 		LOG_D("wakatime/update") << "isWrite: " << isWrite << " send_successfully: " << send_successfully;
 	}
 

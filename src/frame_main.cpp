@@ -345,6 +345,9 @@ void FrameMain::OnSubtitlesOpen() {
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
+	// could use that context information, but not necessary
+	//const_cast<agi::fs::path const*>(context.get()->subsController.get()->Filename())
+	
 	wakatime::update(false);
 	hotkey::check("Main Frame", context.get(), event);
 }

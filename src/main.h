@@ -27,6 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <wx/app.h>
 
 #include "aegisublocale.h"
