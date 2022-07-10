@@ -28,7 +28,8 @@
 // Aegisub Project http://www.aegisub.org/
 
 /// @file tooltip_manager.cpp
-/// @brief Generate tooltips for controls by combining a base text and any hotkeys found for the function
+/// @brief Generate tooltips for controls by combining a base text and any hotkeys found for the
+/// function
 /// @ingroup custom_control
 ///
 
@@ -46,13 +47,14 @@
 struct ToolTipBinding {
 	wxWeakRef<wxWindow> window;
 	wxString toolTip;
-	const char *command;
-	const char *context;
+	const char* command;
+	const char* context;
 	void Update();
 };
 
-void ToolTipManager::Bind(wxWindow *window, wxString tooltip, const char *context, const char *command) {
-	ToolTipBinding tip{window, tooltip, command, context};
+void ToolTipManager::Bind(wxWindow* window, wxString tooltip, const char* context,
+                          const char* command) {
+	ToolTipBinding tip{ window, tooltip, command, context };
 	tip.Update();
 
 	static std::list<ToolTipBinding> tips;
@@ -61,19 +63,18 @@ void ToolTipManager::Bind(wxWindow *window, wxString tooltip, const char *contex
 }
 
 void ToolTipBinding::Update() {
-	if (!window) return;
+	if(!window) return;
 
 	std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(context, command);
 
 	std::string str;
-	for (size_t i = 0; i < hotkeys.size(); ++i) {
-		if (i > 0) str += "/";
+	for(size_t i = 0; i < hotkeys.size(); ++i) {
+		if(i > 0) str += "/";
 		str += hotkeys[i];
 	}
-	if (str.empty()) {
+	if(str.empty()) {
 		window->SetToolTip(toolTip);
-	}
-	else {
+	} else {
 		window->SetToolTip(toolTip + to_wx(" (" + str + ")"));
 	}
 }

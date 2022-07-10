@@ -50,28 +50,27 @@ AssStyle::AssStyle() {
 	UpdateData();
 }
 
-AssEntryGroup AssStyle::Group() const { return AssEntryGroup::STYLE; }
+AssEntryGroup AssStyle::Group() const {
+	return AssEntryGroup::STYLE;
+}
 
 namespace {
 class parser {
 	agi::split_iterator<agi::StringRange::const_iterator> pos;
 
 	std::string next_tok() {
-		if (pos.eof())
-			throw SubtitleFormatParseError("Malformed style: not enough fields");
+		if(pos.eof()) throw SubtitleFormatParseError("Malformed style: not enough fields");
 		return agi::str(trim_copy(*pos++));
 	}
 
-public:
+  public:
 	parser(std::string const& str) {
 		auto colon = find(str.begin(), str.end(), ':');
-		if (colon != str.end())
-			pos = agi::Split(agi::StringRange(colon + 1, str.end()), ',');
+		if(colon != str.end()) pos = agi::Split(agi::StringRange(colon + 1, str.end()), ',');
 	}
 
 	void check_done() const {
-		if (!pos.eof())
-			throw SubtitleFormatParseError("Malformed style: too many fields");
+		if(!pos.eof()) throw SubtitleFormatParseError("Malformed style: too many fields");
 	}
 
 	std::string next_str() { return next_tok(); }
@@ -80,8 +79,7 @@ public:
 	int next_int() {
 		try {
 			return boost::lexical_cast<int>(next_tok());
-		}
-		catch (boost::bad_lexical_cast const&) {
+		} catch(boost::bad_lexical_cast const&) {
 			throw SubtitleFormatParseError("Malformed style: bad int field");
 		}
 	}
@@ -89,18 +87,16 @@ public:
 	double next_double() {
 		try {
 			return boost::lexical_cast<double>(next_tok());
-		}
-		catch (boost::bad_lexical_cast const&) {
+		} catch(boost::bad_lexical_cast const&) {
 			throw SubtitleFormatParseError("Malformed style: bad double field");
 		}
 	}
 
 	void skip_token() {
-		if (!pos.eof())
-			++pos;
+		if(!pos.eof()) ++pos;
 	}
 };
-}
+} // namespace
 
 AssStyle::AssStyle(std::string const& str, int version) {
 	parser p(str);
@@ -109,13 +105,12 @@ AssStyle::AssStyle(std::string const& str, int version) {
 	font = p.next_str();
 	fontsize = p.next_double();
 
-	if (version != 0) {
+	if(version != 0) {
 		primary = p.next_color();
 		secondary = p.next_color();
 		outline = p.next_color();
 		shadow = p.next_color();
-	}
-	else {
+	} else {
 		primary = p.next_color();
 		secondary = p.next_color();
 
@@ -130,7 +125,7 @@ AssStyle::AssStyle(std::string const& str, int version) {
 	bold = !!p.next_int();
 	italic = !!p.next_int();
 
-	if (version != 0) {
+	if(version != 0) {
 		underline = !!p.next_int();
 		strikeout = !!p.next_int();
 
@@ -138,8 +133,7 @@ AssStyle::AssStyle(std::string const& str, int version) {
 		scaley = p.next_double();
 		spacing = p.next_double();
 		angle = p.next_double();
-	}
-	else {
+	} else {
 		// SSA defaults
 		underline = false;
 		strikeout = false;
@@ -155,16 +149,14 @@ AssStyle::AssStyle(std::string const& str, int version) {
 	shadow_w = p.next_double();
 	alignment = p.next_int();
 
-	if (version == 0)
-		alignment = SsaToAss(alignment);
+	if(version == 0) alignment = SsaToAss(alignment);
 
 	Margin[0] = mid(-9999, p.next_int(), 99999);
 	Margin[1] = mid(-9999, p.next_int(), 99999);
 	Margin[2] = mid(-9999, p.next_int(), 99999);
 
 	// Skip alpha level
-	if (version == 0)
-		p.skip_token();
+	if(version == 0) p.skip_token();
 
 	encoding = p.next_int();
 
@@ -177,20 +169,16 @@ void AssStyle::UpdateData() {
 	replace(name.begin(), name.end(), ',', ';');
 	replace(font.begin(), font.end(), ',', ';');
 
-	data = agi::format("Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i",
-		name, font, fontsize,
-		primary.GetAssStyleFormatted(),
-		secondary.GetAssStyleFormatted(),
-		outline.GetAssStyleFormatted(),
-		shadow.GetAssStyleFormatted(),
-		(bold? -1 : 0), (italic ? -1 : 0),
-		(underline ? -1 : 0), (strikeout ? -1 : 0),
-		scalex, scaley, spacing, angle,
-		borderstyle, outline_w, shadow_w, alignment,
-		Margin[0], Margin[1], Margin[2], encoding);
+	data = agi::format(
+	    "Style: %s,%s,%g,%s,%s,%s,%s,%d,%d,%d,%d,%g,%g,%g,%g,%d,%g,%g,%i,%i,%i,%i,%i", name, font,
+	    fontsize, primary.GetAssStyleFormatted(), secondary.GetAssStyleFormatted(),
+	    outline.GetAssStyleFormatted(), shadow.GetAssStyleFormatted(), (bold ? -1 : 0),
+	    (italic ? -1 : 0), (underline ? -1 : 0), (strikeout ? -1 : 0), scalex, scaley, spacing,
+	    angle, borderstyle, outline_w, shadow_w, alignment, Margin[0], Margin[1], Margin[2],
+	    encoding);
 }
 
-void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
+void AssStyle::GetEncodings(wxArrayString& encodingStrings) {
 	encodingStrings.Clear();
 	encodingStrings.Add(wxString("0 - ") + _("ANSI"));
 	encodingStrings.Add(wxString("1 - ") + _("Default"));
@@ -214,29 +202,29 @@ void AssStyle::GetEncodings(wxArrayString &encodingStrings) {
 }
 
 int AssStyle::AssToSsa(int ass_align) {
-	switch (ass_align) {
-		case 1:  return 1;
-		case 2:  return 2;
-		case 3:  return 3;
-		case 4:  return 9;
-		case 5:  return 10;
-		case 6:  return 11;
-		case 7:  return 5;
-		case 8:  return 6;
-		case 9:  return 7;
+	switch(ass_align) {
+		case 1: return 1;
+		case 2: return 2;
+		case 3: return 3;
+		case 4: return 9;
+		case 5: return 10;
+		case 6: return 11;
+		case 7: return 5;
+		case 8: return 6;
+		case 9: return 7;
 		default: return 2;
 	}
 }
 
 int AssStyle::SsaToAss(int ssa_align) {
 	switch(ssa_align) {
-		case 1:  return 1;
-		case 2:  return 2;
-		case 3:  return 3;
-		case 5:  return 7;
-		case 6:  return 8;
-		case 7:  return 9;
-		case 9:  return 4;
+		case 1: return 1;
+		case 2: return 2;
+		case 3: return 3;
+		case 5: return 7;
+		case 6: return 8;
+		case 7: return 9;
+		case 9: return 4;
 		case 10: return 5;
 		case 11: return 6;
 		default: return 2;

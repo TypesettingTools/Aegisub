@@ -43,18 +43,19 @@
 #include <algorithm>
 #include <clocale>
 #include <functional>
-#include <wx/intl.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
+#include <wx/intl.h>
 
 #ifndef AEGISUB_CATALOG
 #define AEGISUB_CATALOG "aegisub"
 #endif
 
-wxTranslations *AegisubLocale::GetTranslations() {
-	wxTranslations *translations = wxTranslations::Get();
-	if (!translations) {
+wxTranslations* AegisubLocale::GetTranslations() {
+	wxTranslations* translations = wxTranslations::Get();
+	if(!translations) {
 		wxTranslations::Set(translations = new wxTranslations);
-		wxFileTranslationsLoader::AddCatalogLookupPathPrefix(config::path->Decode("?data/locale/").wstring());
+		wxFileTranslationsLoader::AddCatalogLookupPathPrefix(
+		    config::path->Decode("?data/locale/").wstring());
 #if !defined(_WIN32) && !defined(__APPLE__) && !defined(APPIMAGE_BUILD)
 		wxFileTranslationsLoader::AddCatalogLookupPathPrefix(P_LOCALE);
 #endif
@@ -63,7 +64,7 @@ wxTranslations *AegisubLocale::GetTranslations() {
 }
 
 void AegisubLocale::Init(std::string const& language) {
-	wxTranslations *translations = GetTranslations();
+	wxTranslations* translations = GetTranslations();
 	translations->SetLanguage(to_wx(language));
 	translations->AddCatalog(AEGISUB_CATALOG);
 	translations->AddStdCatalog();
@@ -79,45 +80,39 @@ bool AegisubLocale::HasLanguage(std::string const& language) {
 }
 
 std::string AegisubLocale::PickLanguage() {
-	if (active_language.empty()) {
+	if(active_language.empty()) {
 		wxString os_ui_language = GetTranslations()->GetBestTranslation(AEGISUB_CATALOG);
-		if (!os_ui_language.empty())
-			return from_wx(os_ui_language);
+		if(!os_ui_language.empty()) return from_wx(os_ui_language);
 	}
 
 	wxArrayString langs = GetTranslations()->GetAvailableTranslations(AEGISUB_CATALOG);
 
 	// No translations available, so don't bother asking the user
-	if (langs.empty() && active_language.empty())
-		return "en_US";
+	if(langs.empty() && active_language.empty()) return "en_US";
 
 	langs.insert(langs.begin(), "en_US");
 
 	// Check if user local language is available, if so, make it first
-	const wxLanguageInfo *info = wxLocale::GetLanguageInfo(wxLocale::GetSystemLanguage());
-	if (info) {
+	const wxLanguageInfo* info = wxLocale::GetLanguageInfo(wxLocale::GetSystemLanguage());
+	if(info) {
 		auto it = std::find(langs.begin(), langs.end(), info->CanonicalName);
-		if (it != langs.end())
-			std::rotate(langs.begin(), it, it + 1);
+		if(it != langs.end()) std::rotate(langs.begin(), it, it + 1);
 	}
 
 	// Generate names
 	wxArrayString langNames;
-	for (auto const& lang : langs)
+	for(auto const& lang : langs)
 		langNames.push_back(LocalizedLanguageName(lang));
 
 	long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxOK | wxCENTRE;
-	if (!active_language.empty())
-		style |= wxCANCEL;
+	if(!active_language.empty()) style |= wxCANCEL;
 
 	wxSingleChoiceDialog dialog(nullptr, "Please choose a language:", "Language", langNames,
-			(void **)nullptr,
-			style);
-	if (dialog.ShowModal() == wxID_OK) {
+	                            (void**)nullptr, style);
+	if(dialog.ShowModal() == wxID_OK) {
 		int picked = dialog.GetSelection();
 		auto new_lang = from_wx(langs[picked]);
-		if (new_lang != active_language)
-			return new_lang;
+		if(new_lang != active_language) return new_lang;
 	}
 
 	return "";

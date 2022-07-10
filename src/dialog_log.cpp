@@ -44,12 +44,11 @@
 
 namespace {
 class EmitLog final : public agi::log::Emitter {
-	wxTextCtrl *text_ctrl;
-public:
-	EmitLog(wxTextCtrl *t)
-	: text_ctrl(t)
-	{
-		for (auto const& sm : agi::log::log->GetMessages())
+	wxTextCtrl* text_ctrl;
+
+  public:
+	EmitLog(wxTextCtrl* t) : text_ctrl(t) {
+		for(auto const& sm : agi::log::log->GetMessages())
 			log(sm);
 	}
 
@@ -58,51 +57,42 @@ public:
 #ifndef _WIN32
 		tm tmtime;
 		localtime_r(&time, &tmtime);
-		auto log = fmt_wx("%c %02d:%02d:%02d %-6d <%-25s> [%s:%s:%d]  %s\n",
-			agi::log::Severity_ID[sm.severity],
-			tmtime.tm_hour,
-			tmtime.tm_min,
-			tmtime.tm_sec,
-			(sm.time % 1000000000),
-			sm.section,
-			sm.file,
-			sm.func,
-			sm.line,
-			sm.message);
+		auto log =
+		    fmt_wx("%c %02d:%02d:%02d %-6d <%-25s> [%s:%s:%d]  %s\n",
+		           agi::log::Severity_ID[sm.severity], tmtime.tm_hour, tmtime.tm_min, tmtime.tm_sec,
+		           (sm.time % 1000000000), sm.section, sm.file, sm.func, sm.line, sm.message);
 #else
-		auto log = fmt_wx("%c %-6ld.%09ld <%-25s> [%s:%s:%d]  %s\n",
-			agi::log::Severity_ID[sm.severity],
-			(sm.time / 1000000000),
-			(sm.time % 1000000000),
-			sm.section,
-			sm.file,
-			sm.func,
-			sm.line,
-			sm.message);
+		auto log =
+		    fmt_wx("%c %-6ld.%09ld <%-25s> [%s:%s:%d]  %s\n", agi::log::Severity_ID[sm.severity],
+		           (sm.time / 1000000000), (sm.time % 1000000000), sm.section, sm.file, sm.func,
+		           sm.line, sm.message);
 #endif
 
-		if (wxIsMainThread())
+		if(wxIsMainThread())
 			text_ctrl->AppendText(log);
 		else
-			agi::dispatch::Main().Async([=]{ text_ctrl->AppendText(log); });
+			agi::dispatch::Main().Async([=] { text_ctrl->AppendText(log); });
 	}
 };
 
 class LogWindow : public wxDialog {
-	agi::log::Emitter *emit_log;
+	agi::log::Emitter* emit_log;
 
-public:
-	LogWindow(agi::Context *c);
+  public:
+	LogWindow(agi::Context* c);
 	~LogWindow();
 };
 
-LogWindow::LogWindow(agi::Context *c)
-: wxDialog(c->parent, -1, _("Log window"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX | wxRESIZE_BORDER)
-{
-	wxTextCtrl *text_ctrl = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(700,300), wxTE_MULTILINE|wxTE_READONLY);
-	text_ctrl->SetDefaultStyle(wxTextAttr(wxNullColour, wxNullColour, wxFont(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)));
+LogWindow::LogWindow(agi::Context* c)
+    : wxDialog(c->parent, -1, _("Log window"), wxDefaultPosition, wxDefaultSize,
+               wxCAPTION | wxCLOSE_BOX | wxRESIZE_BORDER) {
+	wxTextCtrl* text_ctrl = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxSize(700, 300),
+	                                       wxTE_MULTILINE | wxTE_READONLY);
+	text_ctrl->SetDefaultStyle(
+	    wxTextAttr(wxNullColour, wxNullColour,
+	               wxFont(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL)));
 
-	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(text_ctrl, wxSizerFlags(1).Expand().Border());
 	sizer->Add(new wxButton(this, wxID_OK), wxSizerFlags(0).Border().Right());
 	SetSizerAndFit(sizer);
@@ -113,8 +103,8 @@ LogWindow::LogWindow(agi::Context *c)
 LogWindow::~LogWindow() {
 	agi::log::log->Unsubscribe(emit_log);
 }
-}
+} // namespace
 
-void ShowLogWindow(agi::Context *c) {
+void ShowLogWindow(agi::Context* c) {
 	c->dialog->Show<LogWindow>(c);
 }

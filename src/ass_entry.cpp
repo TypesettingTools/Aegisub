@@ -23,13 +23,8 @@
 
 std::string const& AssEntry::GroupHeader() const {
 	static std::string ass_headers[] = {
-		"[Script Info]",
-		"[V4+ Styles]",
-		"[Fonts]",
-		"[Graphics]",
-		"[Events]",
-		"[Aegisub Extradata]",
-		""
+		"[Script Info]", "[V4+ Styles]",        "[Fonts]", "[Graphics]",
+		"[Events]",      "[Aegisub Extradata]", ""
 	};
 	return ass_headers[(int)Group()];
 }

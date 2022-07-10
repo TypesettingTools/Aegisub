@@ -24,8 +24,8 @@
 #include <libaegisub/io.h>
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/log.h>
-#include <libaegisub/path.h>
 #include <libaegisub/make_unique.h>
+#include <libaegisub/path.h>
 
 #include <boost/range/algorithm.hpp>
 
@@ -33,22 +33,20 @@
 #include <hunspell/hunspell.hxx>
 
 HunspellSpellChecker::HunspellSpellChecker()
-: lang_listener(OPT_SUB("Tool/Spell Checker/Language", &HunspellSpellChecker::OnLanguageChanged, this))
-, dict_path_listener(OPT_SUB("Path/Dictionary", &HunspellSpellChecker::OnPathChanged, this))
-{
+    : lang_listener(
+          OPT_SUB("Tool/Spell Checker/Language", &HunspellSpellChecker::OnLanguageChanged, this)),
+      dict_path_listener(OPT_SUB("Path/Dictionary", &HunspellSpellChecker::OnPathChanged, this)) {
 	OnLanguageChanged();
 }
 
-HunspellSpellChecker::~HunspellSpellChecker() {
-}
+HunspellSpellChecker::~HunspellSpellChecker() {}
 
 bool HunspellSpellChecker::CanAddWord(std::string const& word) {
-	if (!hunspell) return false;
+	if(!hunspell) return false;
 	try {
 		conv->Convert(word);
 		return true;
-	}
-	catch (agi::charset::ConvError const&) {
+	} catch(agi::charset::ConvError const&) {
 		return false;
 	}
 }
@@ -58,24 +56,23 @@ bool HunspellSpellChecker::CanRemoveWord(std::string const& word) {
 }
 
 void HunspellSpellChecker::AddWord(std::string const& word) {
-	if (!hunspell) return;
+	if(!hunspell) return;
 
 	// Add it to the in-memory dictionary
 	hunspell->add(conv->Convert(word).c_str());
 
 	// Add the word
-	if (customWords.insert(word).second)
-		WriteUserDictionary();
+	if(customWords.insert(word).second) WriteUserDictionary();
 }
 
 void HunspellSpellChecker::RemoveWord(std::string const& word) {
-	if (!hunspell) return;
+	if(!hunspell) return;
 
 	// Remove it from the in-memory dictionary
 	hunspell->remove(conv->Convert(word).c_str());
 
 	auto word_iter = customWords.find(word);
-	if (word_iter != customWords.end()) {
+	if(word_iter != customWords.end()) {
 		customWords.erase(word_iter);
 
 		WriteUserDictionary();
@@ -88,12 +85,10 @@ void HunspellSpellChecker::ReadUserDictionary() {
 	// Read the old contents of the user's dictionary
 	try {
 		auto stream = agi::io::Open(userDicPath);
-		copy_if(
-			++agi::line_iterator<std::string>(*stream), agi::line_iterator<std::string>(),
-			inserter(customWords, customWords.end()),
-			[](std::string const& str) { return !str.empty(); });
-	}
-	catch (agi::fs::FileNotFound const&) {
+		copy_if(++agi::line_iterator<std::string>(*stream), agi::line_iterator<std::string>(),
+		        inserter(customWords, customWords.end()),
+		        [](std::string const& str) { return !str.empty(); });
+	} catch(agi::fs::FileNotFound const&) {
 		// Not an error; user dictionary just doesn't exist
 	}
 }
@@ -106,40 +101,40 @@ void HunspellSpellChecker::WriteUserDictionary() {
 	{
 		agi::io::Save writer(userDicPath);
 		writer.Get() << customWords.size() << "\n";
-		copy(customWords.begin(), customWords.end(), std::ostream_iterator<std::string>(writer.Get(), "\n"));
+		copy(customWords.begin(), customWords.end(),
+		     std::ostream_iterator<std::string>(writer.Get(), "\n"));
 	}
 
 	// Announce a language change so that any other spellcheckers reload the
 	// current dictionary to get the addition/removal
 	lang_listener.Block();
-	OPT_SET("Tool/Spell Checker/Language")->SetString(OPT_GET("Tool/Spell Checker/Language")->GetString());
+	OPT_SET("Tool/Spell Checker/Language")
+	    ->SetString(OPT_GET("Tool/Spell Checker/Language")->GetString());
 	lang_listener.Unblock();
 }
 
 bool HunspellSpellChecker::CheckWord(std::string const& word) {
-	if (!hunspell) return true;
+	if(!hunspell) return true;
 	try {
 		return hunspell->spell(conv->Convert(word).c_str()) == 1;
-	}
-	catch (agi::charset::ConvError const&) {
+	} catch(agi::charset::ConvError const&) {
 		return false;
 	}
 }
 
 std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string const& word) {
 	std::vector<std::string> suggestions;
-	if (!hunspell) return suggestions;
+	if(!hunspell) return suggestions;
 
-	char **results;
+	char** results;
 	int n = hunspell->suggest(&results, conv->Convert(word).c_str());
 
 	suggestions.reserve(n);
 	// Convert suggestions to UTF-8
-	for (int i = 0; i < n; ++i) {
+	for(int i = 0; i < n; ++i) {
 		try {
 			suggestions.push_back(rconv->Convert(results[i]));
-		}
-		catch (agi::charset::ConvError const&) {
+		} catch(agi::charset::ConvError const&) {
 			// Shouldn't ever actually happen...
 		}
 		free(results[i]);
@@ -150,7 +145,7 @@ std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string const&
 	return suggestions;
 }
 
-static std::vector<std::string> langs(const char *filter) {
+static std::vector<std::string> langs(const char* filter) {
 	std::vector<std::string> paths;
 	auto data_path = config::path->Decode("?dictionary/");
 	auto user_path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
@@ -159,7 +154,8 @@ static std::vector<std::string> langs(const char *filter) {
 	agi::fs::DirectoryIterator(user_path, filter).GetAll(paths);
 
 	// Drop extensions
-	for (auto& fn : paths) fn.resize(fn.size() - 4);
+	for(auto& fn : paths)
+		fn.resize(fn.size() - 4);
 
 	boost::sort(paths);
 	paths.erase(unique(begin(paths), end(paths)), end(paths));
@@ -168,14 +164,15 @@ static std::vector<std::string> langs(const char *filter) {
 }
 
 std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
-	if (languages.empty())
+	if(languages.empty())
 		boost::set_intersection(langs("*.dic"), langs("*.aff"), back_inserter(languages));
 	return languages;
 }
 
-static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& aff, agi::fs::path& dic) {
-	aff = path/agi::format("%s.aff", language);
-	dic = path/agi::format("%s.dic", language);
+static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& aff,
+                       agi::fs::path& dic) {
+	aff = path / agi::format("%s.aff", language);
+	dic = path / agi::format("%s.dic", language);
 	return agi::fs::FileExists(aff) && agi::fs::FileExists(dic);
 }
 
@@ -183,37 +180,36 @@ void HunspellSpellChecker::OnLanguageChanged() {
 	hunspell.reset();
 
 	auto language = OPT_GET("Tool/Spell Checker/Language")->GetString();
-	if (language.empty()) return;
+	if(language.empty()) return;
 
 	agi::fs::path aff, dic;
 	auto path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString() + "/");
-	if (!check_path(path, language, aff, dic)) {
+	if(!check_path(path, language, aff, dic)) {
 		path = config::path->Decode("?dictionary/");
-		if (!check_path(path, language, aff, dic))
-			return;
+		if(!check_path(path, language, aff, dic)) return;
 	}
 
 	LOG_I("dictionary/file") << dic;
 
 #ifdef _WIN32
 	// The prefix makes hunspell assume the paths are UTF-8 and use _wfopen
-	hunspell = agi::make_unique<Hunspell>(("\\\\?\\" + aff.string()).c_str(), ("\\\\?\\" + dic.string()).c_str());
+	hunspell = agi::make_unique<Hunspell>(("\\\\?\\" + aff.string()).c_str(),
+	                                      ("\\\\?\\" + dic.string()).c_str());
 #else
 	hunspell = agi::make_unique<Hunspell>(aff.string().c_str(), dic.string().c_str());
 #endif
-	if (!hunspell) return;
+	if(!hunspell) return;
 
 	conv = agi::make_unique<agi::charset::IconvWrapper>("utf-8", hunspell->get_dic_encoding());
 	rconv = agi::make_unique<agi::charset::IconvWrapper>(hunspell->get_dic_encoding(), "utf-8");
 
-	userDicPath = config::path->Decode("?user/dictionaries")/agi::format("user_%s.dic", language);
+	userDicPath = config::path->Decode("?user/dictionaries") / agi::format("user_%s.dic", language);
 	ReadUserDictionary();
 
-	for (auto const& word : customWords) {
+	for(auto const& word : customWords) {
 		try {
 			hunspell->add(conv->Convert(word).c_str());
-		}
-		catch (agi::charset::ConvError const&) {
+		} catch(agi::charset::ConvError const&) {
 			// Normally this shouldn't happen, but some versions of Aegisub
 			// wrote words in the wrong charset
 		}

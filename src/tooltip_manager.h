@@ -31,6 +31,6 @@ class wxString;
 class wxWindow;
 
 class ToolTipManager {
-public:
-	static void Bind(wxWindow *window, wxString tooltip, const char *context, const char *command);
+  public:
+	static void Bind(wxWindow* window, wxString tooltip, const char* context, const char* command);
 };

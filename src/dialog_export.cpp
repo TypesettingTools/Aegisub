@@ -30,8 +30,8 @@
 #include "ass_exporter.h"
 #include "ass_file.h"
 #include "compat.h"
-#include "include/aegisub/context.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "subtitle_format.h"
 #include "utils.h"
@@ -42,9 +42,9 @@
 #include <algorithm>
 #include <boost/filesystem/path.hpp>
 #include <wx/button.h>
-#include <wx/dialog.h>
 #include <wx/checklst.h>
 #include <wx/choice.h>
+#include <wx/dialog.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -53,39 +53,39 @@
 namespace {
 class DialogExport {
 	wxDialog d;
-	agi::Context *c;
+	agi::Context* c;
 
 	/// The export transform engine
 	AssExporter exporter;
 
 	/// The description of the currently selected export filter
-	wxTextCtrl *filter_description;
+	wxTextCtrl* filter_description;
 
 	/// A list of all registered export filters
-	wxCheckListBox *filter_list;
+	wxCheckListBox* filter_list;
 
 	/// A list of available target charsets
-	wxChoice *charset_list;
+	wxChoice* charset_list;
 
-	wxSizer *opt_sizer;
+	wxSizer* opt_sizer;
 
-	void OnProcess(wxCommandEvent &);
-	void OnChange(wxCommandEvent &);
+	void OnProcess(wxCommandEvent&);
+	void OnChange(wxCommandEvent&);
 
 	/// Set all the checkboxes
 	void SetAll(bool new_value);
 	/// Update which options sizers are shown
 	void RefreshOptions();
 
-public:
-	DialogExport(agi::Context *c);
+  public:
+	DialogExport(agi::Context* c);
 	~DialogExport();
 	void ShowModal() { d.ShowModal(); }
 };
 
 // Swap the items at idx and idx + 1
-void swap(wxCheckListBox *list, int idx, int sel_dir) {
-	if (idx < 0 || idx + 1 == (int)list->GetCount()) return;
+void swap(wxCheckListBox* list, int idx, int sel_dir) {
+	if(idx < 0 || idx + 1 == (int)list->GetCount()) return;
 
 	list->Freeze();
 	wxString tempname = list->GetString(idx);
@@ -98,11 +98,9 @@ void swap(wxCheckListBox *list, int idx, int sel_dir) {
 	list->Thaw();
 }
 
-DialogExport::DialogExport(agi::Context *c)
-: d(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
-, c(c)
-, exporter(c)
-{
+DialogExport::DialogExport(agi::Context* c)
+    : d(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX),
+      c(c), exporter(c) {
 	d.SetIcon(GETICON(export_menu_16));
 	d.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 
@@ -113,40 +111,43 @@ DialogExport::DialogExport(agi::Context *c)
 
 	// Get selected filters
 	std::string const& selected = c->ass->Properties.export_filters;
-	for (auto token : agi::Split(selected, '|')) {
+	for(auto token : agi::Split(selected, '|')) {
 		auto it = find(begin(filters), end(filters), token);
-		if (it != end(filters))
-			filter_list->Check(distance(begin(filters), it));
+		if(it != end(filters)) filter_list->Check(distance(begin(filters), it));
 	}
 
-	wxButton *btn_up = new wxButton(&d, -1, _("Move &Up"), wxDefaultPosition, wxSize(90, -1));
-	wxButton *btn_down = new wxButton(&d, -1, _("Move &Down"), wxDefaultPosition, wxSize(90, -1));
-	wxButton *btn_all = new wxButton(&d, -1, _("Select &All"), wxDefaultPosition, wxSize(80, -1));
-	wxButton *btn_none = new wxButton(&d, -1, _("Select &None"), wxDefaultPosition, wxSize(80, -1));
+	wxButton* btn_up = new wxButton(&d, -1, _("Move &Up"), wxDefaultPosition, wxSize(90, -1));
+	wxButton* btn_down = new wxButton(&d, -1, _("Move &Down"), wxDefaultPosition, wxSize(90, -1));
+	wxButton* btn_all = new wxButton(&d, -1, _("Select &All"), wxDefaultPosition, wxSize(80, -1));
+	wxButton* btn_none = new wxButton(&d, -1, _("Select &None"), wxDefaultPosition, wxSize(80, -1));
 
-	btn_up->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
-	btn_down->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection(), 1); });
+	btn_up->Bind(wxEVT_BUTTON,
+	             [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
+	btn_down->Bind(wxEVT_BUTTON,
+	               [=](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection(), 1); });
 	btn_all->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { SetAll(true); });
 	btn_none->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { SetAll(false); });
 
-	wxSizer *top_buttons = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer* top_buttons = new wxBoxSizer(wxHORIZONTAL);
 	top_buttons->Add(btn_up, wxSizerFlags(1).Expand());
 	top_buttons->Add(btn_down, wxSizerFlags(1).Expand().Border(wxRIGHT));
 	top_buttons->Add(btn_all, wxSizerFlags(1).Expand());
 	top_buttons->Add(btn_none, wxSizerFlags(1).Expand());
 
-	filter_description = new wxTextCtrl(&d, -1, "", wxDefaultPosition, wxSize(200, 60), wxTE_MULTILINE | wxTE_READONLY);
+	filter_description = new wxTextCtrl(&d, -1, "", wxDefaultPosition, wxSize(200, 60),
+	                                    wxTE_MULTILINE | wxTE_READONLY);
 
 	// Charset dropdown list
-	wxStaticText *charset_list_label = new wxStaticText(&d, -1, _("Text encoding:"));
-	charset_list = new wxChoice(&d, -1, wxDefaultPosition, wxDefaultSize, agi::charset::GetEncodingsList<wxArrayString>());
-	wxSizer *charset_list_sizer = new wxBoxSizer(wxHORIZONTAL);
+	wxStaticText* charset_list_label = new wxStaticText(&d, -1, _("Text encoding:"));
+	charset_list = new wxChoice(&d, -1, wxDefaultPosition, wxDefaultSize,
+	                            agi::charset::GetEncodingsList<wxArrayString>());
+	wxSizer* charset_list_sizer = new wxBoxSizer(wxHORIZONTAL);
 	charset_list_sizer->Add(charset_list_label, wxSizerFlags().Center().Border(wxRIGHT));
 	charset_list_sizer->Add(charset_list, wxSizerFlags(1).Expand());
-	if (!charset_list->SetStringSelection(to_wx(c->ass->Properties.export_encoding)))
+	if(!charset_list->SetStringSelection(to_wx(c->ass->Properties.export_encoding)))
 		charset_list->SetStringSelection("Unicode (UTF-8)");
 
-	wxSizer *top_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Filters"));
+	wxSizer* top_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Filters"));
 	top_sizer->Add(filter_list, wxSizerFlags(1).Expand());
 	top_sizer->Add(top_buttons, wxSizerFlags(0).Expand());
 	top_sizer->Add(filter_description, wxSizerFlags(0).Expand().Border(wxTOP));
@@ -157,13 +158,13 @@ DialogExport::DialogExport(agi::Context *c)
 	d.Bind(wxEVT_BUTTON, &DialogExport::OnProcess, this, wxID_OK);
 	d.Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Export"), wxID_HELP);
 
-	wxSizer *horz_sizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer* horz_sizer = new wxBoxSizer(wxHORIZONTAL);
 	opt_sizer = new wxBoxSizer(wxVERTICAL);
 	exporter.DrawSettings(&d, opt_sizer);
 	horz_sizer->Add(top_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxRIGHT));
 	horz_sizer->Add(opt_sizer, wxSizerFlags(1).Expand().Border(wxALL & ~wxLEFT));
 
-	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer* main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(horz_sizer, wxSizerFlags(1).Expand());
 	main_sizer->Add(btn_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	d.SetSizerAndFit(main_sizer);
@@ -173,54 +174,52 @@ DialogExport::DialogExport(agi::Context *c)
 
 DialogExport::~DialogExport() {
 	c->ass->Properties.export_filters.clear();
-	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
-		if (filter_list->IsChecked(i)) {
-			if (!c->ass->Properties.export_filters.empty())
-				c->ass->Properties.export_filters += "|";
+	for(size_t i = 0; i < filter_list->GetCount(); ++i) {
+		if(filter_list->IsChecked(i)) {
+			if(!c->ass->Properties.export_filters.empty()) c->ass->Properties.export_filters += "|";
 			c->ass->Properties.export_filters += from_wx(filter_list->GetString(i));
 		}
 	}
 }
 
-void DialogExport::OnProcess(wxCommandEvent &) {
-	if (!d.TransferDataFromWindow()) return;
+void DialogExport::OnProcess(wxCommandEvent&) {
+	if(!d.TransferDataFromWindow()) return;
 
-	auto filename = SaveFileSelector(_("Export subtitles file"), "", "", "", SubtitleFormat::GetWildcards(1), &d);
-	if (filename.empty()) return;
+	auto filename = SaveFileSelector(_("Export subtitles file"), "", "", "",
+	                                 SubtitleFormat::GetWildcards(1), &d);
+	if(filename.empty()) return;
 
-	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
-		if (filter_list->IsChecked(i))
-			exporter.AddFilter(from_wx(filter_list->GetString(i)));
+	for(size_t i = 0; i < filter_list->GetCount(); ++i) {
+		if(filter_list->IsChecked(i)) exporter.AddFilter(from_wx(filter_list->GetString(i)));
 	}
 
 	try {
 		wxBusyCursor busy;
 		c->ass->Properties.export_encoding = from_wx(charset_list->GetStringSelection());
 		exporter.Export(filename, from_wx(charset_list->GetStringSelection()), &d);
-	}
-	catch (agi::UserCancelException const&) { }
-	catch (agi::Exception const& err) {
-		wxMessageBox(to_wx(err.GetMessage()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
-	}
-	catch (std::exception const& err) {
-		wxMessageBox(to_wx(err.what()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
-	}
-	catch (...) {
-		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
+	} catch(agi::UserCancelException const&) {
+	} catch(agi::Exception const& err) {
+		wxMessageBox(to_wx(err.GetMessage()), "Error exporting subtitles",
+		             wxOK | wxICON_ERROR | wxCENTER, &d);
+	} catch(std::exception const& err) {
+		wxMessageBox(to_wx(err.what()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER,
+		             &d);
+	} catch(...) {
+		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER,
+		             &d);
 	}
 
 	d.EndModal(0);
 }
 
-void DialogExport::OnChange(wxCommandEvent &) {
+void DialogExport::OnChange(wxCommandEvent&) {
 	wxString sel = filter_list->GetStringSelection();
-	if (!sel.empty())
-		filter_description->SetValue(to_wx(exporter.GetDescription(from_wx(sel))));
+	if(!sel.empty()) filter_description->SetValue(to_wx(exporter.GetDescription(from_wx(sel))));
 }
 
 void DialogExport::SetAll(bool new_value) {
 	filter_list->Freeze();
-	for (size_t i = 0; i < filter_list->GetCount(); ++i)
+	for(size_t i = 0; i < filter_list->GetCount(); ++i)
 		filter_list->Check(i, new_value);
 	filter_list->Thaw();
 
@@ -228,15 +227,15 @@ void DialogExport::SetAll(bool new_value) {
 }
 
 void DialogExport::RefreshOptions() {
-	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
-		if (wxSizer *sizer = exporter.GetSettingsSizer(from_wx(filter_list->GetString(i))))
+	for(size_t i = 0; i < filter_list->GetCount(); ++i) {
+		if(wxSizer* sizer = exporter.GetSettingsSizer(from_wx(filter_list->GetString(i))))
 			opt_sizer->Show(sizer, filter_list->IsChecked(i), true);
 	}
 	d.Layout();
 	d.GetSizer()->Fit(&d);
 }
-}
+} // namespace
 
-void ShowExportDialog(agi::Context *c) {
+void ShowExportDialog(agi::Context* c) {
 	DialogExport(c).ShowModal();
 }

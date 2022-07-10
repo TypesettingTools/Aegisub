@@ -20,18 +20,20 @@
 
 #include <libaegisub/signal.h>
 
-namespace agi { struct Context; }
+namespace agi {
+struct Context;
+}
 class AssDialogue;
 
 /// @class AssKaraoke
 /// @brief Karaoke parser and parsed karaoke data model
 class AssKaraoke {
-public:
+  public:
 	/// Parsed syllable data
 	struct Syllable {
-		int start_time; ///< Start time relative to time zero (not line start) in milliseconds
-		int duration;   ///< Duration in milliseconds
-		std::string text; ///< Stripped syllable text
+		int start_time;       ///< Start time relative to time zero (not line start) in milliseconds
+		int duration;         ///< Duration in milliseconds
+		std::string text;     ///< Stripped syllable text
 		std::string tag_type; ///< \k, \kf or \ko
 		/// Non-karaoke override tags in this syllable. Key is an index in text
 		/// before which the value should be inserted
@@ -40,23 +42,25 @@ public:
 		/// Get the text of this line with override tags and optionally the karaoke tag
 		std::string GetText(bool k_tag) const;
 	};
-private:
+
+  private:
 	std::vector<Syllable> syls;
 
 	bool no_announce = false;
 
 	agi::signal::Signal<> AnnounceSyllablesChanged;
-	void ParseSyllables(const AssDialogue *line, Syllable &syl);
+	void ParseSyllables(const AssDialogue* line, Syllable& syl);
 
-public:
+  public:
 	/// Constructor
 	/// @param line Initial line
 	/// @param auto_split Should the line automatically be split on spaces if there are no k tags?
-	/// @param normalize Should the total duration of the syllables be forced to equal the line duration?
-	AssKaraoke(const AssDialogue *line = nullptr, bool auto_split = false, bool normalize = true);
+	/// @param normalize Should the total duration of the syllables be forced to equal the line
+	/// duration?
+	AssKaraoke(const AssDialogue* line = nullptr, bool auto_split = false, bool normalize = true);
 
 	/// Parse a dialogue line
-	void SetLine(const AssDialogue *line, bool auto_split = false, bool normalize = true);
+	void SetLine(const AssDialogue* line, bool auto_split = false, bool normalize = true);
 
 	/// Add a split before character pos in syllable syl_idx
 	void AddSplit(size_t syl_idx, size_t pos);

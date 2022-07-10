@@ -27,37 +27,32 @@
 
 #include <limits>
 
-Vector2D::Vector2D()
-: x(std::numeric_limits<float>::min())
-, y(std::numeric_limits<float>::min())
-{
-}
+Vector2D::Vector2D() : x(std::numeric_limits<float>::min()), y(std::numeric_limits<float>::min()) {}
 
-Vector2D operator *(float f, Vector2D v) {
+Vector2D operator*(float f, Vector2D v) {
 	return Vector2D(v.X() * f, v.Y() * f);
 }
 
-Vector2D operator /(float f, Vector2D v) {
+Vector2D operator/(float f, Vector2D v) {
 	return Vector2D(f / v.X(), f / v.Y());
 }
 
-Vector2D operator +(float f, Vector2D v) {
+Vector2D operator+(float f, Vector2D v) {
 	return Vector2D(v.X() + f, v.Y() + f);
 }
 
-Vector2D operator -(float f, Vector2D v) {
+Vector2D operator-(float f, Vector2D v) {
 	return Vector2D(f - v.X(), f - v.Y());
 }
 
 Vector2D Vector2D::Unit() const {
 	float len = Len();
-	if (len == 0)
-		return Vector2D(0, 0);
+	if(len == 0) return Vector2D(0, 0);
 	return *this / len;
 }
 
 Vector2D Vector2D::SingleAxis() const {
-	if (std::abs(x) < std::abs(y))
+	if(std::abs(x) < std::abs(y))
 		return Vector2D(0, y);
 	else
 		return Vector2D(x, 0);

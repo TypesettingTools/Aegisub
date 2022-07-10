@@ -49,7 +49,7 @@ class AudioWaveformRenderer final : public AudioRendererBitmapProvider {
 	void OnSetProvider() override { audio_buffer.reset(); }
 	void OnSetMillisecondsPerPixel() override { audio_buffer.reset(); }
 
-public:
+  public:
 	/// @brief Constructor
 	/// @param color_scheme_name Name of the color scheme to use
 	AudioWaveformRenderer(std::string const& color_scheme_name);
@@ -61,16 +61,16 @@ public:
 	/// @param bmp   [in,out] Bitmap to render into, also carries length information
 	/// @param start First column of pixel data in display to render
 	/// @param style Style to render audio in
-	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style) override;
+	void Render(wxBitmap& bmp, int start, AudioRenderingStyle style) override;
 
 	/// @brief Render blank area
-	void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style) override;
+	void RenderBlank(wxDC& dc, const wxRect& rect, AudioRenderingStyle style) override;
 
 	/// @brief Cleans up the cache
 	/// @param max_size Maximum size in bytes for the cache
 	///
 	/// Does nothing for waveform renderer, since it does not have a backend cache
-	void AgeCache(size_t max_size) override { }
+	void AgeCache(size_t max_size) override {}
 
 	/// Get a list of waveform rendering modes
 	static wxArrayString GetWaveformStyles();

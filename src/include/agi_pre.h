@@ -63,7 +63,7 @@
 
 #ifdef _MSC_VER
 #pragma warning(push)
-#pragma warning(disable:4996)
+#pragma warning(disable : 4996)
 #endif
 
 // Common C++
@@ -78,7 +78,6 @@
 #include <set>
 #include <string>
 #include <type_traits>
-#include <type_traits>
 #include <typeinfo>
 #include <unordered_map>
 #include <utility>
@@ -89,8 +88,8 @@
 #endif
 
 #ifdef _WIN32
-#include <objbase.h>
 #include <mmsystem.h>
+#include <objbase.h>
 #else
 #include <sys/param.h>
 #endif

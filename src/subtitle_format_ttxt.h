@@ -38,19 +38,21 @@ class AssDialogue;
 class wxXmlNode;
 
 class TTXTSubtitleFormat final : public SubtitleFormat {
-	AssDialogue *ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const;
-	void ProcessHeader(wxXmlNode *node) const;
+	AssDialogue* ProcessLine(wxXmlNode* node, AssDialogue* prev, int version) const;
+	void ProcessHeader(wxXmlNode* node) const;
 
-	void WriteHeader(wxXmlNode *root) const;
-	void WriteLine(wxXmlNode *root, const AssDialogue *prev, const AssDialogue *line) const;
+	void WriteHeader(wxXmlNode* root) const;
+	void WriteLine(wxXmlNode* root, const AssDialogue* prev, const AssDialogue* line) const;
 
-	void ConvertToTTXT(AssFile &file) const;
+	void ConvertToTTXT(AssFile& file) const;
 
-public:
+  public:
 	TTXTSubtitleFormat();
 	std::vector<std::string> GetReadWildcards() const override;
 	std::vector<std::string> GetWriteWildcards() const override;
 
-	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
-	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
+	void ReadFile(AssFile* target, agi::fs::path const& filename, agi::vfr::Framerate const& fps,
+	              std::string const& forceEncoding) const override;
+	void WriteFile(const AssFile* src, agi::fs::path const& filename,
+	               agi::vfr::Framerate const& fps, std::string const& encoding) const override;
 };

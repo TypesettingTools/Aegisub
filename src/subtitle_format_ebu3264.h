@@ -25,10 +25,11 @@
 /// Based on specifications obtained at <http://tech.ebu.ch/docs/tech/tech3264.pdf>
 /// Work on support for this format was sponsored by Bandai.
 class Ebu3264SubtitleFormat final : public SubtitleFormat {
-public:
+  public:
 	Ebu3264SubtitleFormat();
-	std::vector<std::string> GetWriteWildcards() const override { return {"stl"}; }
-	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
+	std::vector<std::string> GetWriteWildcards() const override { return { "stl" }; }
+	void WriteFile(const AssFile* src, agi::fs::path const& filename,
+	               agi::vfr::Framerate const& fps, std::string const& encoding) const override;
 
 	DEFINE_EXCEPTION(ConversionFailed, agi::InvalidInputException);
 };

@@ -12,11 +12,10 @@ Author: Terry Caton
 
 #include <vector>
 
-namespace json
-{
+namespace json {
 
 class Reader {
-public:
+  public:
 	// this structure will be reported in one of the exceptions defined below
 	struct Location {
 		unsigned int m_nLine = 0;       // document line, zero-indexed
@@ -27,11 +26,9 @@ public:
 	// thrown during the first phase of reading. generally catches low-level
 	// problems such as errant characters or corrupt/incomplete documents
 	class ScanException final : public Exception {
-	public:
+	  public:
 		ScanException(std::string const& sMessage, Reader::Location locError)
-		: Exception(sMessage)
-		, m_locError(std::move(locError))
-		{ }
+		    : Exception(sMessage), m_locError(std::move(locError)) {}
 
 		Reader::Location m_locError;
 	};
@@ -39,12 +36,11 @@ public:
 	// thrown during the second phase of reading. generally catches
 	// higher-level problems such as missing commas or brackets
 	class ParseException final : public Exception {
-	public:
-		ParseException(std::string const& sMessage, Reader::Location locTokenBegin, Reader::Location locTokenEnd)
-		: Exception(sMessage)
-		, m_locTokenBegin(std::move(locTokenBegin))
-		, m_locTokenEnd(std::move(locTokenEnd))
-		{ }
+	  public:
+		ParseException(std::string const& sMessage, Reader::Location locTokenBegin,
+		               Reader::Location locTokenEnd)
+		    : Exception(sMessage), m_locTokenBegin(std::move(locTokenBegin)),
+		      m_locTokenEnd(std::move(locTokenEnd)) {}
 
 		Reader::Location m_locTokenBegin;
 		Reader::Location m_locTokenEnd;
@@ -52,7 +48,7 @@ public:
 
 	static void Read(UnknownElement& elementRoot, std::istream& istr);
 
-private:
+  private:
 	struct Token {
 		enum Type {
 			TOKEN_OBJECT_BEGIN,  // {
@@ -99,4 +95,4 @@ private:
 	std::string const& MatchExpectedToken(Token::Type nExpected, TokenStream& tokenStream);
 };
 
-}
+} // namespace json

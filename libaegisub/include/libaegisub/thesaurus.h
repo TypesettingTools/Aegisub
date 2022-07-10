@@ -23,7 +23,9 @@
 namespace agi {
 
 class read_file_mapping;
-namespace charset { class IconvWrapper; }
+namespace charset {
+class IconvWrapper;
+}
 
 class Thesaurus {
 	/// Map of word -> byte position in the data file
@@ -33,7 +35,7 @@ class Thesaurus {
 	/// Converter from the data file's charset to UTF-8
 	std::unique_ptr<charset::IconvWrapper> conv;
 
-public:
+  public:
 	/// A pair of a word and synonyms for that word
 	typedef std::pair<std::string, std::vector<std::string>> Entry;
 
@@ -48,4 +50,4 @@ public:
 	std::vector<Entry> Lookup(std::string const& word);
 };
 
-}
+} // namespace agi

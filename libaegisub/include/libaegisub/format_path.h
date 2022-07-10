@@ -20,17 +20,15 @@
 
 namespace agi {
 // Default version quotes the path
-template<>
-struct writer<char, agi::fs::path> {
+template <> struct writer<char, agi::fs::path> {
 	static void write(std::basic_ostream<char>& out, int max_len, agi::fs::path const& value) {
 		out << value.string();
 	}
 };
 
-template<>
-struct writer<wchar_t, agi::fs::path> {
+template <> struct writer<wchar_t, agi::fs::path> {
 	static void write(std::basic_ostream<wchar_t>& out, int max_len, agi::fs::path const& value) {
 		out << value.wstring();
 	}
 };
-}
+} // namespace agi

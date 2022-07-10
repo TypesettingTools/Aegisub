@@ -18,60 +18,53 @@
 #include <boost/range/adaptor/transformed.hpp>
 
 namespace agi {
-	namespace of_type_detail {
-		using namespace boost::adaptors;
+namespace of_type_detail {
+using namespace boost::adaptors;
 
-		/// Tag type returned from of_type<T>() to select the operator| overload
-		template<class T> struct of_type_tag {};
+/// Tag type returned from of_type<T>() to select the operator| overload
+template <class T> struct of_type_tag {};
 
-		/// Take the address of a value and dynamic_cast it to Type*
-		template<class Type>
-		struct cast_to {
-			typedef Type *result_type;
+/// Take the address of a value and dynamic_cast it to Type*
+template <class Type> struct cast_to {
+	typedef Type* result_type;
 
-			template<class InType> Type *operator()(InType &ptr) const {
-				return typeid(ptr) == typeid(Type) ? static_cast<Type*>(&ptr) : nullptr;
-			}
-
-			template<class InType> Type *operator()(std::unique_ptr<InType>& ptr) const {
-				return (*this)(*ptr);
-			}
-
-			template<class InType> Type *operator()(std::unique_ptr<InType> const& ptr) const {
-				return (*this)(*ptr);
-			}
-
-			template<class InType> Type *operator()(InType *ptr) const {
-				return (*this)(*ptr);
-			}
-		};
-
-		template<class Type>
-		inline bool not_null(Type *ptr) {
-			return !!ptr;
-		}
-
-		// Defined here for ADL reasons, since we don't want the tag type in
-		// the top-level agi namespace (and it lets us get away with the using
-		// namespace above)
-		template<class Rng, class Type>
-		inline auto operator|(Rng& r, of_type_tag<Type>)
-			-> decltype(r | transformed(cast_to<Type>()) | filtered(not_null<Type>))
-		{
-			return r | transformed(cast_to<Type>()) | filtered(not_null<Type>);
-		}
-
-		// const overload of the above
-		template<class Rng, class Type>
-		inline auto operator|(Rng const& r, of_type_tag<Type>)
-			-> decltype(r | transformed(cast_to<const Type>()) | filtered(not_null<const Type>))
-		{
-			return r | transformed(cast_to<const Type>()) | filtered(not_null<const Type>);
-		}
+	template <class InType> Type* operator()(InType& ptr) const {
+		return typeid(ptr) == typeid(Type) ? static_cast<Type*>(&ptr) : nullptr;
 	}
 
-	template<class T>
-	inline of_type_detail::of_type_tag<T> of_type() {
-		return of_type_detail::of_type_tag<T>();
+	template <class InType> Type* operator()(std::unique_ptr<InType>& ptr) const {
+		return (*this)(*ptr);
 	}
+
+	template <class InType> Type* operator()(std::unique_ptr<InType> const& ptr) const {
+		return (*this)(*ptr);
+	}
+
+	template <class InType> Type* operator()(InType* ptr) const { return (*this)(*ptr); }
+};
+
+template <class Type> inline bool not_null(Type* ptr) {
+	return !!ptr;
 }
+
+// Defined here for ADL reasons, since we don't want the tag type in
+// the top-level agi namespace (and it lets us get away with the using
+// namespace above)
+template <class Rng, class Type>
+inline auto operator|(Rng& r, of_type_tag<Type>)
+    -> decltype(r | transformed(cast_to<Type>()) | filtered(not_null<Type>)) {
+	return r | transformed(cast_to<Type>()) | filtered(not_null<Type>);
+}
+
+// const overload of the above
+template <class Rng, class Type>
+inline auto operator|(Rng const& r, of_type_tag<Type>)
+    -> decltype(r | transformed(cast_to<const Type>()) | filtered(not_null<const Type>)) {
+	return r | transformed(cast_to<const Type>()) | filtered(not_null<const Type>);
+}
+} // namespace of_type_detail
+
+template <class T> inline of_type_detail::of_type_tag<T> of_type() {
+	return of_type_detail::of_type_tag<T>();
+}
+} // namespace agi

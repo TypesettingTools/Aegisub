@@ -19,7 +19,8 @@
 #include <libaegisub/charset_conv.h>
 #include <memory>
 
-namespace agi { namespace charset {
+namespace agi {
+namespace charset {
 
 /// @brief A charset converter for ISO-6937-2
 ///
@@ -32,14 +33,15 @@ class Converter6937 final : public Converter {
 	/// Should unsupported characters be replaced with '?'
 	const bool subst;
 
-public:
+  public:
 	/// Constructor
 	/// @param subst Enable substitution for unsupported characters
 	/// @param src Source encoding
-	Converter6937(bool subst, const char *src);
+	Converter6937(bool subst, const char* src);
 
 	/// Convert a string. Interface is the same as iconv.
 	size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft);
 };
 
-} }
+} // namespace charset
+} // namespace agi

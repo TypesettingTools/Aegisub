@@ -18,13 +18,14 @@
 #include <vector>
 
 namespace agi {
-	struct karaoke_match_result {
-		/// The number of strings in the source matched
-		size_t source_length;
-		/// The number of characters in the destination string matched
-		size_t destination_length;
-	};
+struct karaoke_match_result {
+	/// The number of strings in the source matched
+	size_t source_length;
+	/// The number of characters in the destination string matched
+	size_t destination_length;
+};
 
-	/// Try to automatically select the portion of dst which corresponds to the first string in src
-	karaoke_match_result auto_match_karaoke(std::vector<std::string> const& src, std::string const& dst);
-}
+/// Try to automatically select the portion of dst which corresponds to the first string in src
+karaoke_match_result auto_match_karaoke(std::vector<std::string> const& src,
+                                        std::string const& dst);
+} // namespace agi

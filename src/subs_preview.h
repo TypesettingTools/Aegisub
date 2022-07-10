@@ -33,8 +33,8 @@
 ///
 
 #include <memory>
-#include <wx/window.h>
 #include <wx/bitmap.h>
+#include <wx/window.h>
 
 class AssFile;
 class AssStyle;
@@ -64,11 +64,11 @@ class SubtitlesPreview final : public wxWindow {
 	/// Regenerate the bitmap
 	void UpdateBitmap();
 	/// Resize event handler
-	void OnSize(wxSizeEvent &event);
+	void OnSize(wxSizeEvent& event);
 	/// Paint event handler
-	void OnPaint(wxPaintEvent &);
+	void OnPaint(wxPaintEvent&);
 
-public:
+  public:
 	/// Set the style to use
 	void SetStyle(AssStyle const& style);
 	/// Set the text to display
@@ -76,6 +76,6 @@ public:
 	/// Set the background color
 	void SetColour(agi::Color col);
 
-	SubtitlesPreview(wxWindow *parent, wxSize size, int style, agi::Color colour);
+	SubtitlesPreview(wxWindow* parent, wxSize size, int style, agi::Color colour);
 	~SubtitlesPreview();
 };

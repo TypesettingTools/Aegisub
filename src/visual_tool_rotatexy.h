@@ -33,13 +33,14 @@ class VisualToolRotateXY final : public VisualTool<VisualDraggableFeature> {
 	float orig_x = 0.f; ///< x rotation at the beginning of the current hold
 	float orig_y = 0.f; ///< y rotation at the beginning of the current hold
 
-	Feature *org;
+	Feature* org;
 
 	void DoRefresh() override;
 	void Draw() override;
-	void UpdateDrag(Feature *feature) override;
+	void UpdateDrag(Feature* feature) override;
 	bool InitializeHold() override;
 	void UpdateHold() override;
-public:
-	VisualToolRotateXY(VideoDisplay *parent, agi::Context *context);
+
+  public:
+	VisualToolRotateXY(VideoDisplay* parent, agi::Context* context);
 };

@@ -19,12 +19,7 @@
 
 class AssFile;
 
-enum class ResampleARMode {
-	Stretch,
-	AddBorder,
-	RemoveBorder,
-	Manual
-};
+enum class ResampleARMode { Stretch, AddBorder, RemoveBorder, Manual };
 
 enum class YCbCrMatrix : int {
 	rgb,
@@ -44,11 +39,11 @@ std::vector<std::string> MatrixNames();
 
 /// Configuration parameters for a resample
 struct ResampleSettings {
-	int margin[4];  ///< Amount to add to each margin
-	int source_x;   ///< Original  X resolution
-	int source_y;   ///< Original Y resolution
-	int dest_x;     ///< New X resolution
-	int dest_y;     ///< New Y resolution
+	int margin[4];          ///< Amount to add to each margin
+	int source_x;           ///< Original  X resolution
+	int source_y;           ///< Original Y resolution
+	int dest_x;             ///< New X resolution
+	int dest_y;             ///< New Y resolution
 	ResampleARMode ar_mode; ///< What to do if the old AR and new AR don't match
 	YCbCrMatrix source_matrix;
 	YCbCrMatrix dest_matrix;
@@ -57,4 +52,4 @@ struct ResampleSettings {
 /// Resample the subtitles in the project
 /// @param file Subtitles to resample
 /// @param settings Resample configuration settings
-void ResampleResolution(AssFile *file, ResampleSettings settings);
+void ResampleResolution(AssFile* file, ResampleSettings settings);

@@ -42,7 +42,7 @@
 #include <libaegisub/make_unique.h>
 
 namespace {
-	using cmd::Command;
+using cmd::Command;
 
 struct keyframe_close final : public Command {
 	CMD_NAME("keyframe/close")
@@ -52,13 +52,9 @@ struct keyframe_close final : public Command {
 	STR_HELP("Discard the currently loaded keyframes and use those from the video, if any")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) override {
-		return c->project->CanCloseKeyframes();
-	}
+	bool Validate(const agi::Context* c) override { return c->project->CanCloseKeyframes(); }
 
-	void operator()(agi::Context *c) override {
-		c->project->CloseKeyframes();
-	}
+	void operator()(agi::Context* c) override { c->project->CloseKeyframes(); }
 };
 
 struct keyframe_open final : public Command {
@@ -68,17 +64,15 @@ struct keyframe_open final : public Command {
 	STR_DISP("Open Keyframes")
 	STR_HELP("Open a keyframe list file")
 
-	void operator()(agi::Context *c) override {
+	void operator()(agi::Context* c) override {
 		auto filename = OpenFileSelector(
-			_("Open keyframes file"),
-			"Path/Last/Keyframes", "" ,".txt",
-			from_wx(_("All Supported Formats") +
-				" (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|" +
-				_("All Files") + " (*.*)|*.*"),
-			c->parent);
+		    _("Open keyframes file"), "Path/Last/Keyframes", "", ".txt",
+		    from_wx(_("All Supported Formats") +
+		            " (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|" +
+		            _("All Files") + " (*.*)|*.*"),
+		    c->parent);
 
-		if (!filename.empty())
-			c->project->LoadKeyframes(filename);
+		if(!filename.empty()) c->project->LoadKeyframes(filename);
 	}
 };
 
@@ -90,24 +84,23 @@ struct keyframe_save final : public Command {
 	STR_HELP("Save the current list of keyframes to a file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) override {
-		return !c->project->Keyframes().empty();
-	}
+	bool Validate(const agi::Context* c) override { return !c->project->Keyframes().empty(); }
 
-	void operator()(agi::Context *c) override {
-		auto filename = SaveFileSelector(_("Save keyframes file"), "Path/Last/Keyframes", "", "*.key.txt", "Text files (*.txt)|*.txt", c->parent);
-		if (filename.empty()) return;
+	void operator()(agi::Context* c) override {
+		auto filename = SaveFileSelector(_("Save keyframes file"), "Path/Last/Keyframes", "",
+		                                 "*.key.txt", "Text files (*.txt)|*.txt", c->parent);
+		if(filename.empty()) return;
 
 		agi::keyframe::Save(filename, c->project->Keyframes());
 		config::mru->Add("Keyframes", filename);
 	}
 };
-}
+} // namespace
 
 namespace cmd {
-	void init_keyframe() {
-		reg(agi::make_unique<keyframe_close>());
-		reg(agi::make_unique<keyframe_open>());
-		reg(agi::make_unique<keyframe_save>());
-	}
+void init_keyframe() {
+	reg(agi::make_unique<keyframe_close>());
+	reg(agi::make_unique<keyframe_open>());
+	reg(agi::make_unique<keyframe_save>());
 }
+} // namespace cmd

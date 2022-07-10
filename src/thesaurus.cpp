@@ -35,23 +35,22 @@
 #include <boost/range/algorithm.hpp>
 
 Thesaurus::Thesaurus()
-: lang_listener(OPT_SUB("Tool/Thesaurus/Language", &Thesaurus::OnLanguageChanged, this))
-, dict_path_listener(OPT_SUB("Path/Dictionary", &Thesaurus::OnPathChanged, this))
-{
+    : lang_listener(OPT_SUB("Tool/Thesaurus/Language", &Thesaurus::OnLanguageChanged, this)),
+      dict_path_listener(OPT_SUB("Path/Dictionary", &Thesaurus::OnPathChanged, this)) {
 	OnLanguageChanged();
 }
 
 Thesaurus::~Thesaurus() {
-	if (cancel_load) *cancel_load = true;
+	if(cancel_load) *cancel_load = true;
 }
 
 std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string word) {
-	if (!impl) return {};
+	if(!impl) return {};
 	boost::to_lower(word);
 	return impl->Lookup(word);
 }
 
-static std::vector<std::string> langs(const char *ext) {
+static std::vector<std::string> langs(const char* ext) {
 	std::vector<std::string> paths;
 	auto data_path = config::path->Decode("?data/dictionaries/");
 	auto user_path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString());
@@ -61,7 +60,8 @@ static std::vector<std::string> langs(const char *ext) {
 	agi::fs::DirectoryIterator(user_path, filter).GetAll(paths);
 
 	// Drop extensions and the th_ prefix
-	for (auto& fn : paths) fn = fn.substr(3, fn.size() - filter.size() + 1);
+	for(auto& fn : paths)
+		fn = fn.substr(3, fn.size() - filter.size() + 1);
 
 	boost::sort(paths);
 	paths.erase(unique(begin(paths), end(paths)), end(paths));
@@ -70,14 +70,15 @@ static std::vector<std::string> langs(const char *ext) {
 }
 
 std::vector<std::string> Thesaurus::GetLanguageList() const {
-	if (languages.empty())
+	if(languages.empty())
 		boost::set_intersection(langs("idx"), langs("dat"), back_inserter(languages));
 	return languages;
 }
 
-static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& idx, agi::fs::path& dat) {
-	idx = path/agi::format("th_%s.idx", language);
-	dat = path/agi::format("th_%s.dat", language);
+static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& idx,
+                       agi::fs::path& dat) {
+	idx = path / agi::format("th_%s.idx", language);
+	dat = path / agi::format("th_%s.dat", language);
 	return agi::fs::FileExists(idx) && agi::fs::FileExists(dat);
 }
 
@@ -85,34 +86,32 @@ void Thesaurus::OnLanguageChanged() {
 	impl.reset();
 
 	auto language = OPT_GET("Tool/Thesaurus/Language")->GetString();
-	if (language.empty()) return;
+	if(language.empty()) return;
 
 	agi::fs::path idx, dat;
 
 	auto path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString() + "/");
-	if (!check_path(path, language, idx, dat)) {
+	if(!check_path(path, language, idx, dat)) {
 		path = config::path->Decode("?data/dictionaries/");
-		if (!check_path(path, language, idx, dat))
-			return;
+		if(!check_path(path, language, idx, dat)) return;
 	}
 
 	LOG_I("thesaurus/file") << "Using thesaurus: " << dat;
 
-	if (cancel_load) *cancel_load = true;
-	cancel_load = new bool{false};
+	if(cancel_load) *cancel_load = true;
+	cancel_load = new bool{ false };
 	auto cancel = cancel_load; // Needed to avoid capturing via `this`
-	agi::dispatch::Background().Async([=]{
+	agi::dispatch::Background().Async([=] {
 		try {
 			auto thes = agi::make_unique<agi::Thesaurus>(dat, idx);
-			agi::dispatch::Main().Sync([&thes, cancel, this]{
-				if (!*cancel) {
+			agi::dispatch::Main().Sync([&thes, cancel, this] {
+				if(!*cancel) {
 					impl = std::move(thes);
 					cancel_load = nullptr;
 				}
 				delete cancel;
 			});
-		}
-		catch (agi::Exception const& e) {
+		} catch(agi::Exception const& e) {
 			LOG_E("thesaurus") << e.GetMessage();
 		}
 	});

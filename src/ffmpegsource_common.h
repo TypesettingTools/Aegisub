@@ -40,32 +40,31 @@
 #include <libaegisub/fs_fwd.h>
 #include <libaegisub/scoped_ptr.h>
 
-namespace agi { class BackgroundRunner; }
+namespace agi {
+class BackgroundRunner;
+}
 
 /// @class FFmpegSourceProvider
 /// @brief Base class for FFMS2 source providers; contains common functions etc
 class FFmpegSourceProvider {
 	friend class FFmpegSourceCacheCleaner;
-	agi::BackgroundRunner *br;
+	agi::BackgroundRunner* br;
 
-public:
-	FFmpegSourceProvider(agi::BackgroundRunner *br);
+  public:
+	FFmpegSourceProvider(agi::BackgroundRunner* br);
 
 	// X11 is wonderful
 #undef None
 
-	enum class TrackSelection : int {
-		None = -1,
-		All = -2
-	};
+	enum class TrackSelection : int { None = -1, All = -2 };
 
 	void CleanCache();
 
-	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, agi::fs::path const& Cachename,
-		                   TrackSelection Track,
-		                   FFMS_IndexErrorHandling IndexEH);
-	std::map<int, std::string> GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type);
-	TrackSelection AskForTrackSelection(const std::map<int, std::string>& TrackList, FFMS_TrackType Type);
+	FFMS_Index* DoIndexing(FFMS_Indexer* Indexer, agi::fs::path const& Cachename,
+	                       TrackSelection Track, FFMS_IndexErrorHandling IndexEH);
+	std::map<int, std::string> GetTracksOfType(FFMS_Indexer* Indexer, FFMS_TrackType Type);
+	TrackSelection AskForTrackSelection(const std::map<int, std::string>& TrackList,
+	                                    FFMS_TrackType Type);
 	agi::fs::path GetCacheFilename(agi::fs::path const& filename);
 	void SetLogLevel();
 	FFMS_IndexErrorHandling GetErrorHandlingMode();

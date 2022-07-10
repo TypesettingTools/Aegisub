@@ -39,11 +39,11 @@
 
 #include <libaegisub/format.h>
 
-std::string inline_string_encode(const std::string &input) {
+std::string inline_string_encode(const std::string& input) {
 	std::string output;
 	output.reserve(input.size());
-	for (char c : input) {
-		if (c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C)
+	for(char c : input) {
+		if(c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C)
 			output += agi::format("#%02X", (unsigned char)c);
 		else
 			output += c;
@@ -51,11 +51,11 @@ std::string inline_string_encode(const std::string &input) {
 	return output;
 }
 
-std::string inline_string_decode(const std::string &input) {
+std::string inline_string_decode(const std::string& input) {
 	std::string output;
 	output.reserve(input.size());
-	for (size_t i = 0; i < input.size(); ++i) {
-		if (input[i] != '#' || i + 2 > input.size())
+	for(size_t i = 0; i < input.size(); ++i) {
+		if(input[i] != '#' || i + 2 > input.size())
 			output += input[i];
 		else {
 			output += (char)strtol(input.substr(i + 1, 2).c_str(), nullptr, 16);

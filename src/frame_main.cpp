@@ -34,17 +34,17 @@
 #include "frame_main.h"
 
 #include "include/aegisub/context.h"
+#include "include/aegisub/hotkey.h"
 #include "include/aegisub/menu.h"
 #include "include/aegisub/toolbar.h"
-#include "include/aegisub/hotkey.h"
 
 #include "ass_file.h"
 #include "async_video_provider.h"
-#include "audio_controller.h"
 #include "audio_box.h"
+#include "audio_controller.h"
 #include "base_grid.h"
-#include "compat.h"
 #include "command/command.h"
+#include "compat.h"
 #include "dialog_detached_video.h"
 #include "dialog_manager.h"
 #include "libresrc/libresrc.h"
@@ -70,9 +70,7 @@
 #include <wx/statline.h>
 #include <wx/sysopt.h>
 
-enum {
-	ID_APP_TIMER_STATUSCLEAR = 12002
-};
+enum { ID_APP_TIMER_STATUSCLEAR = 12002 };
 
 #ifdef WITH_STARTUPLOG
 #define StartupLog(a) MessageBox(0, a, "Aegisub startup log", 0)
@@ -82,12 +80,13 @@ enum {
 
 /// Handle files drag and dropped onto Aegisub
 class AegisubFileDropTarget final : public wxFileDropTarget {
-	agi::Context *context;
-public:
-	AegisubFileDropTarget(agi::Context *context) : context(context) { }
+	agi::Context* context;
+
+  public:
+	AegisubFileDropTarget(agi::Context* context) : context(context) {}
 	bool OnDropFiles(wxCoord, wxCoord, wxArrayString const& filenames) override {
 		std::vector<agi::fs::path> files;
-		for (wxString const& fn : filenames)
+		for(wxString const& fn : filenames)
 			files.push_back(from_wx(fn));
 		agi::dispatch::Main().Async([=] { context->project->LoadList(files); });
 		return true;
@@ -95,9 +94,9 @@ public:
 };
 
 FrameMain::FrameMain()
-: wxFrame(nullptr, -1, "", wxDefaultPosition, wxSize(920,700), wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
-, context(agi::make_unique<agi::Context>())
-{
+    : wxFrame(nullptr, -1, "", wxDefaultPosition, wxSize(920, 700),
+              wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN),
+      context(agi::make_unique<agi::Context>()) {
 	StartupLog("Entering FrameMain constructor");
 
 #ifdef __WXGTK__
@@ -121,7 +120,7 @@ FrameMain::FrameMain()
 	context->frame = this;
 
 	StartupLog("Apply saved Maximized state");
-	if (OPT_GET("App/Maximized")->GetBool()) Maximize(true);
+	if(OPT_GET("App/Maximized")->GetBool()) Maximize(true);
 
 	StartupLog("Initialize toolbar");
 	wxSystemOptions::SetOption("msw.remap", 0);
@@ -161,7 +160,7 @@ FrameMain::FrameMain()
 	StartupLog("Leaving FrameMain constructor");
 }
 
-FrameMain::~FrameMain () {
+FrameMain::~FrameMain() {
 	context->project->CloseAudio();
 	context->project->CloseVideo();
 
@@ -169,13 +168,12 @@ FrameMain::~FrameMain () {
 }
 
 void FrameMain::EnableToolBar(agi::OptionValue const& opt) {
-	if (opt.GetBool()) {
-		if (!GetToolBar()) {
+	if(opt.GetBool()) {
+		if(!GetToolBar()) {
 			toolbar::AttachToolbar(this, "main", context.get(), "Default");
 			GetToolBar()->Realize();
 		}
-	}
-	else if (wxToolBar *old_tb = GetToolBar()) {
+	} else if(wxToolBar* old_tb = GetToolBar()) {
 		SetToolBar(nullptr);
 		delete old_tb;
 		Layout();
@@ -184,7 +182,8 @@ void FrameMain::EnableToolBar(agi::OptionValue const& opt) {
 
 void FrameMain::InitContents() {
 	StartupLog("Create background panel");
-	auto Panel = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
+	auto Panel =
+	    new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
 
 	StartupLog("Create subtitles grid");
 	context->subsGrid = new BaseGrid(Panel, context.get());
@@ -206,9 +205,9 @@ void FrameMain::InitContents() {
 	TopSizer->Add(videoBox, 0, wxEXPAND, 0);
 	TopSizer->Add(ToolsSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
 	MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(new wxStaticLine(Panel),0,wxEXPAND | wxALL,0);
-	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,0);
-	MainSizer->Add(context->subsGrid,1,wxEXPAND | wxALL,0);
+	MainSizer->Add(new wxStaticLine(Panel), 0, wxEXPAND | wxALL, 0);
+	MainSizer->Add(TopSizer, 0, wxEXPAND | wxALL, 0);
+	MainSizer->Add(context->subsGrid, 1, wxEXPAND | wxALL, 0);
 	Panel->SetSizer(MainSizer);
 
 	StartupLog("Perform layout");
@@ -217,24 +216,28 @@ void FrameMain::InitContents() {
 }
 
 void FrameMain::SetDisplayMode(int video, int audio) {
-	if (!IsShownOnScreen()) return;
+	if(!IsShownOnScreen()) return;
 
 	bool sv = false, sa = false;
 
-	if (video == -1) sv = showVideo;
-	else if (video)  sv = context->project->VideoProvider() && !context->dialog->Get<DialogDetachedVideo>();
+	if(video == -1)
+		sv = showVideo;
+	else if(video)
+		sv = context->project->VideoProvider() && !context->dialog->Get<DialogDetachedVideo>();
 
-	if (audio == -1) sa = showAudio;
-	else if (audio)  sa = !!context->project->AudioProvider();
+	if(audio == -1)
+		sa = showAudio;
+	else if(audio)
+		sa = !!context->project->AudioProvider();
 
 	// See if anything changed
-	if (sv == showVideo && sa == showAudio) return;
+	if(sv == showVideo && sa == showAudio) return;
 
 	showVideo = sv;
 	showAudio = sa;
 
 	bool didFreeze = !IsFrozen();
-	if (didFreeze) Freeze();
+	if(didFreeze) Freeze();
 
 	context->videoController->Stop();
 
@@ -244,12 +247,12 @@ void FrameMain::SetDisplayMode(int video, int audio) {
 	MainSizer->Layout();
 	Layout();
 
-	if (didFreeze) Thaw();
+	if(didFreeze) Thaw();
 }
 
 void FrameMain::UpdateTitle() {
 	wxString newTitle;
-	if (context->subsController->IsModified()) newTitle << "* ";
+	if(context->subsController->IsModified()) newTitle << "* ";
 	newTitle << context->subsController->Filename().filename().wstring();
 
 #ifndef __WXMAC__
@@ -261,11 +264,11 @@ void FrameMain::UpdateTitle() {
 	OSXSetModified(context->subsController->IsModified());
 #endif
 
-	if (GetTitle() != newTitle) SetTitle(newTitle);
+	if(GetTitle() != newTitle) SetTitle(newTitle);
 }
 
-void FrameMain::OnVideoOpen(AsyncVideoProvider *provider) {
-	if (!provider) {
+void FrameMain::OnVideoOpen(AsyncVideoProvider* provider) {
+	if(!provider) {
 		SetDisplayMode(0, -1);
 		return;
 	}
@@ -276,53 +279,53 @@ void FrameMain::OnVideoOpen(AsyncVideoProvider *provider) {
 	// Set zoom level based on video resolution and window size
 	double zoom = context->videoDisplay->GetZoom();
 	wxSize windowSize = GetSize();
-	if (vidx*3*zoom > windowSize.GetX()*4 || vidy*4*zoom > windowSize.GetY()*6)
+	if(vidx * 3 * zoom > windowSize.GetX() * 4 || vidy * 4 * zoom > windowSize.GetY() * 6)
 		context->videoDisplay->SetZoom(zoom * .25);
-	else if (vidx*3*zoom > windowSize.GetX()*2 || vidy*4*zoom > windowSize.GetY()*3)
+	else if(vidx * 3 * zoom > windowSize.GetX() * 2 || vidy * 4 * zoom > windowSize.GetY() * 3)
 		context->videoDisplay->SetZoom(zoom * .5);
 
-	SetDisplayMode(1,-1);
+	SetDisplayMode(1, -1);
 
-	if (OPT_GET("Video/Detached/Enabled")->GetBool() && !context->dialog->Get<DialogDetachedVideo>())
+	if(OPT_GET("Video/Detached/Enabled")->GetBool() && !context->dialog->Get<DialogDetachedVideo>())
 		cmd::call("video/detach", context.get());
 	Thaw();
 }
 
 void FrameMain::OnVideoDetach(agi::OptionValue const& opt) {
-	if (opt.GetBool())
+	if(opt.GetBool())
 		SetDisplayMode(0, -1);
-	else if (context->project->VideoProvider())
+	else if(context->project->VideoProvider())
 		SetDisplayMode(1, -1);
 }
 
-void FrameMain::StatusTimeout(wxString text,int ms) {
-	SetStatusText(text,1);
+void FrameMain::StatusTimeout(wxString text, int ms) {
+	SetStatusText(text, 1);
 	StatusClear.SetOwner(this, ID_APP_TIMER_STATUSCLEAR);
-	StatusClear.Start(ms,true);
+	StatusClear.Start(ms, true);
 }
 
 BEGIN_EVENT_TABLE(FrameMain, wxFrame)
-	EVT_TIMER(ID_APP_TIMER_STATUSCLEAR, FrameMain::OnStatusClear)
-	EVT_CLOSE(FrameMain::OnCloseWindow)
-	EVT_CHAR_HOOK(FrameMain::OnKeyDown)
-	EVT_LEFT_DOWN(FrameMain::OnMouseEvent)
-	EVT_MIDDLE_DOWN(FrameMain::OnMouseEvent)
-	EVT_RIGHT_DOWN(FrameMain::OnMouseEvent)
-	EVT_LEFT_UP(FrameMain::OnMouseEvent)
-	EVT_MIDDLE_UP(FrameMain::OnMouseEvent)
-	EVT_RIGHT_UP(FrameMain::OnMouseEvent)
-	EVT_MOTION(FrameMain::OnMouseEvent)
-	EVT_MOUSEWHEEL(FrameMain::OnMouseWheel)
+EVT_TIMER(ID_APP_TIMER_STATUSCLEAR, FrameMain::OnStatusClear)
+EVT_CLOSE(FrameMain::OnCloseWindow)
+EVT_CHAR_HOOK(FrameMain::OnKeyDown)
+EVT_LEFT_DOWN(FrameMain::OnMouseEvent)
+EVT_MIDDLE_DOWN(FrameMain::OnMouseEvent)
+EVT_RIGHT_DOWN(FrameMain::OnMouseEvent)
+EVT_LEFT_UP(FrameMain::OnMouseEvent)
+EVT_MIDDLE_UP(FrameMain::OnMouseEvent)
+EVT_RIGHT_UP(FrameMain::OnMouseEvent)
+EVT_MOTION(FrameMain::OnMouseEvent)
+EVT_MOUSEWHEEL(FrameMain::OnMouseWheel)
 END_EVENT_TABLE()
 
-void FrameMain::OnCloseWindow(wxCloseEvent &event) {
+void FrameMain::OnCloseWindow(wxCloseEvent& event) {
 	wxEventBlocker blocker(this, wxEVT_CLOSE_WINDOW);
 
 	context->videoController->Stop();
 	context->audioController->Stop();
 
 	// Ask user if he wants to save first
-	if (context->subsController->TryToClose(event.CanVeto()) == wxCANCEL) {
+	if(context->subsController->TryToClose(event.CanVeto()) == wxCANCEL) {
 		event.Veto();
 		return;
 	}
@@ -335,12 +338,12 @@ void FrameMain::OnCloseWindow(wxCloseEvent &event) {
 	Destroy();
 }
 
-void FrameMain::OnStatusClear(wxTimerEvent &) {
-	SetStatusText("",1);
+void FrameMain::OnStatusClear(wxTimerEvent&) {
+	SetStatusText("", 1);
 }
 
-void FrameMain::OnAudioOpen(agi::AudioProvider *provider) {
-	if (provider)
+void FrameMain::OnAudioOpen(agi::AudioProvider* provider) {
+	if(provider)
 		SetDisplayMode(-1, 1);
 	else
 		SetDisplayMode(-1, 0);
@@ -351,22 +354,21 @@ void FrameMain::OnSubtitlesOpen() {
 	SetDisplayMode(1, 1);
 }
 
-void FrameMain::OnKeyDown(wxKeyEvent &event) {
+void FrameMain::OnKeyDown(wxKeyEvent& event) {
 	// could use that context information, but not necessary
-	//const_cast<agi::fs::path const*>(context.get()->subsController.get()->Filename())
-	
+	// const_cast<agi::fs::path const*>(context.get()->subsController.get()->Filename())
+
 	wakatime::update(false);
 	hotkey::check("Main Frame", context.get(), event);
 }
 
-void FrameMain::OnMouseEvent(wxMouseEvent &event) {
+void FrameMain::OnMouseEvent(wxMouseEvent& event) {
 	wakatime::update(false);
 	// pass it on, so that it can be used later!
 	event.Skip();
 }
 
-
-void FrameMain::OnMouseWheel(wxMouseEvent &evt) {
+void FrameMain::OnMouseWheel(wxMouseEvent& evt) {
 	wakatime::update(false);
 	ForwardMouseWheelEvent(this, evt);
 }

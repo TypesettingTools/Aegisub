@@ -42,39 +42,35 @@ static FilterList& filters() {
 }
 
 AssExportFilter::AssExportFilter(std::string name, std::string description, int priority)
-: name(std::move(name))
-, priority(priority)
-, description(std::move(description))
-{
-}
+    : name(std::move(name)), priority(priority), description(std::move(description)) {}
 
 void AssExportFilterChain::Register(std::unique_ptr<AssExportFilter> filter) {
 	int filter_copy = 1;
 	std::string name = filter->name;
 	// Find a unique name
-	while (GetFilter(name))
+	while(GetFilter(name))
 		name = agi::format("%s (%d)", filter->name, filter_copy++);
 
 	filter->name = name;
 
 	// Look for place to insert
 	auto begin(filters().begin()), end(filters().end());
-	while (begin != end && begin->priority >= filter->priority) ++begin;
+	while(begin != end && begin->priority >= filter->priority)
+		++begin;
 	filters().insert(begin, *filter.release());
 }
 
-FilterList *AssExportFilterChain::GetFilterList() {
+FilterList* AssExportFilterChain::GetFilterList() {
 	return &filters();
 }
 
 void AssExportFilterChain::Clear() {
-	filters().clear_and_dispose([](AssExportFilter *f) { delete f; });
+	filters().clear_and_dispose([](AssExportFilter* f) { delete f; });
 }
 
-AssExportFilter *AssExportFilterChain::GetFilter(std::string const& name) {
-	for (auto& filter : filters()) {
-		if (filter.name == name)
-			return &filter;
+AssExportFilter* AssExportFilterChain::GetFilter(std::string const& name) {
+	for(auto& filter : filters()) {
+		if(filter.name == name) return &filter;
 	}
 	return nullptr;
 }

@@ -17,7 +17,7 @@
 #include <wx/settings.h>
 
 // Defined in osx_utils.mm
-void SetPlaceholderText(wxWindow *window, wxString const& placeholder);
+void SetPlaceholderText(wxWindow* window, wxString const& placeholder);
 
 /// @class Placeholder
 /// @brief A wrapper around a control to add placeholder text
@@ -26,14 +26,13 @@ void SetPlaceholderText(wxWindow *window, wxString const& placeholder);
 /// text describing the control when the value would otherwise be empty, which
 /// is removed when the control is focused to begin typing in it, and restored
 /// when the control loses focus and the value is empty
-template<class BaseCtrl>
-class Placeholder final : public BaseCtrl {
+template <class BaseCtrl> class Placeholder final : public BaseCtrl {
 	wxString placeholder; ///< Placeholder string
 	bool is_placeholder;  ///< Should the value be cleared on focus?
 
 	/// Wrapper around Create to make it possible to override it for specific
 	/// base classes
-	inline void Create(wxWindow *parent, wxSize const& size, long style) {
+	inline void Create(wxWindow* parent, wxSize const& size, long style) {
 		BaseCtrl::Create(parent, -1, placeholder, wxDefaultPosition, size, style);
 	}
 
@@ -42,7 +41,7 @@ class Placeholder final : public BaseCtrl {
 	void OnSetFocus(wxFocusEvent& evt) {
 		evt.Skip();
 
-		if (is_placeholder) {
+		if(is_placeholder) {
 			BaseCtrl::ChangeValue("");
 			BaseCtrl::SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
 		}
@@ -54,17 +53,16 @@ class Placeholder final : public BaseCtrl {
 		ChangeValue(BaseCtrl::GetValue());
 	}
 
-public:
+  public:
 	/// Constructor
 	/// @param parent Parent window
 	/// @param placeholder Placeholder string
 	/// @param size Control size
 	/// @param style Style flags to pass to the base control
 	/// @param tooltip Tooltip string
-	Placeholder(wxWindow *parent, wxString const& placeholder, wxSize const& size, long style, wxString const& tooltip)
-	: placeholder(placeholder)
-	, is_placeholder(true)
-	{
+	Placeholder(wxWindow* parent, wxString const& placeholder, wxSize const& size, long style,
+	            wxString const& tooltip)
+	    : placeholder(placeholder), is_placeholder(true) {
 		Create(parent, size, style);
 		BaseCtrl::SetToolTip(tooltip);
 		BaseCtrl::SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
@@ -78,33 +76,30 @@ public:
 	///
 	/// If new_value is empty, the control will switch to placeholder mode
 	void ChangeValue(wxString new_value) {
-		if (new_value.empty() && !this->HasFocus()) {
+		if(new_value.empty() && !this->HasFocus()) {
 			is_placeholder = true;
 			new_value = placeholder;
 			BaseCtrl::SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
-		}
-		else {
+		} else {
 			is_placeholder = false;
 			BaseCtrl::SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
 		}
 
 		// This check should be pointless, but wxGTK is awesome and generates
 		// change events in wxComboBox::ChangeValue
-		if (new_value != BaseCtrl::GetValue())
-			BaseCtrl::ChangeValue(new_value);
+		if(new_value != BaseCtrl::GetValue()) BaseCtrl::ChangeValue(new_value);
 	}
 
 	/// Override GetValue to return empty when in placeholder mode rather than the placeholder text
 	wxString GetValue() const {
-		if (is_placeholder && !this->HasFocus())
-			return "";
+		if(is_placeholder && !this->HasFocus()) return "";
 		return BaseCtrl::GetValue();
 	}
 #else
-public:
-	Placeholder(wxWindow *parent, wxString const& placeholder, wxSize const& size, long style, wxString const& tooltip)
-	: placeholder(placeholder)
-	{
+  public:
+	Placeholder(wxWindow* parent, wxString const& placeholder, wxSize const& size, long style,
+	            wxString const& tooltip)
+	    : placeholder(placeholder) {
 		Create(parent, size, style);
 		BaseCtrl::SetToolTip(tooltip);
 		SetPlaceholderText(this, placeholder);
@@ -112,6 +107,7 @@ public:
 #endif
 };
 
-template<> inline void Placeholder<wxComboBox>::Create(wxWindow *parent, wxSize const& size, long style) {
+template <>
+inline void Placeholder<wxComboBox>::Create(wxWindow* parent, wxSize const& size, long style) {
 	wxComboBox::Create(parent, -1, "", wxDefaultPosition, size, 0, nullptr, style);
 }

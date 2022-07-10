@@ -25,8 +25,8 @@
 #ifdef __APPLE__
 namespace agi {
 class OptionValue;
-std::unique_ptr<agi::SpellChecker> CreateCocoaSpellChecker(OptionValue *opt);
-}
+std::unique_ptr<agi::SpellChecker> CreateCocoaSpellChecker(OptionValue* opt);
+} // namespace agi
 #endif
 
 std::unique_ptr<agi::SpellChecker> SpellCheckerFactory::GetSpellChecker() {

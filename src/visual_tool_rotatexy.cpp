@@ -30,16 +30,15 @@
 #include <cmath>
 #include <wx/colour.h>
 
-VisualToolRotateXY::VisualToolRotateXY(VideoDisplay *parent, agi::Context *context)
-: VisualTool<VisualDraggableFeature>(parent, context)
-{
+VisualToolRotateXY::VisualToolRotateXY(VideoDisplay* parent, agi::Context* context)
+    : VisualTool<VisualDraggableFeature>(parent, context) {
 	org = new Feature;
 	org->type = DRAG_BIG_TRIANGLE;
 	features.push_back(*org);
 }
 
 void VisualToolRotateXY::Draw() {
-	if (!active_line) return;
+	if(!active_line) return;
 
 	DrawAllFeatures();
 
@@ -70,7 +69,7 @@ void VisualToolRotateXY::Draw() {
 	static const float fade_factor = 0.9f / radius;
 
 	std::vector<float> colors(line_count * 8 * 4);
-	for (int i = 0; i < line_count * 8; ++i) {
+	for(int i = 0; i < line_count * 8; ++i) {
 		colors[i * 4 + 0] = r;
 		colors[i * 4 + 1] = g;
 		colors[i * 4 + 2] = b;
@@ -78,7 +77,7 @@ void VisualToolRotateXY::Draw() {
 	}
 
 	std::vector<float> points(line_count * 8 * 2);
-	for (int i = 0; i < line_count; ++i) {
+	for(int i = 0; i < line_count; ++i) {
 		int pos = spacing * (i - radius);
 
 		points[i * 16 + 0] = pos;
@@ -111,37 +110,20 @@ void VisualToolRotateXY::Draw() {
 	// Draw vectors
 	gl.SetLineColour(line_color_primary, 1.f, 2);
 	float vectors[] = {
-		0.f, 0.f, 0.f,
-		50.f, 0.f, 0.f,
-		0.f, 0.f, 0.f,
-		0.f, 50.f, 0.f,
-		0.f, 0.f, 0.f,
-		0.f, 0.f, 50.f,
+		0.f, 0.f, 0.f, 50.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 50.f, 0.f, 0.f, 0.f, 0.f, 0.f, 0.f, 50.f,
 	};
 	gl.DrawLines(3, vectors, 6);
 
 	// Draw arrow tops
 	float arrows[] = {
-		60.f,  0.f,  0.f,
-		50.f, -3.f, -3.f,
-		50.f,  3.f, -3.f,
-		50.f,  3.f,  3.f,
-		50.f, -3.f,  3.f,
-		50.f, -3.f, -3.f,
+		60.f, 0.f,  0.f,  50.f, -3.f, -3.f, 50.f, 3.f,  -3.f,
+		50.f, 3.f,  3.f,  50.f, -3.f, 3.f,  50.f, -3.f, -3.f,
 
-		 0.f, 60.f,  0.f,
-		-3.f, 50.f, -3.f,
-		 3.f, 50.f, -3.f,
-		 3.f, 50.f,  3.f,
-		-3.f, 50.f,  3.f,
-		-3.f, 50.f, -3.f,
+		0.f,  60.f, 0.f,  -3.f, 50.f, -3.f, 3.f,  50.f, -3.f,
+		3.f,  50.f, 3.f,  -3.f, 50.f, 3.f,  -3.f, 50.f, -3.f,
 
-		 0.f,  0.f, 60.f,
-		-3.f, -3.f, 50.f,
-		 3.f, -3.f, 50.f,
-		 3.f,  3.f, 50.f,
-		-3.f,  3.f, 50.f,
-		-3.f, -3.f, 50.f,
+		0.f,  0.f,  60.f, -3.f, -3.f, 50.f, 3.f,  -3.f, 50.f,
+		3.f,  3.f,  50.f, -3.f, 3.f,  50.f, -3.f, -3.f, 50.f,
 	};
 
 	gl.DrawLines(3, arrows, 18);
@@ -158,13 +140,12 @@ bool VisualToolRotateXY::InitializeHold() {
 
 void VisualToolRotateXY::UpdateHold() {
 	Vector2D delta = (mouse_pos - drag_start) * 2;
-	if (shift_down)
-		delta = delta.SingleAxis();
+	if(shift_down) delta = delta.SingleAxis();
 
 	angle_x = orig_x - delta.Y();
 	angle_y = orig_y + delta.X();
 
-	if (ctrl_down) {
+	if(ctrl_down) {
 		angle_x = floorf(angle_x / 30.f + .5f) * 30.f;
 		angle_y = floorf(angle_y / 30.f + .5f) * 30.f;
 	}
@@ -176,23 +157,22 @@ void VisualToolRotateXY::UpdateHold() {
 	SetSelectedOverride("\\fry", agi::format("%.4g", angle_y));
 }
 
-void VisualToolRotateXY::UpdateDrag(Feature *feature) {
+void VisualToolRotateXY::UpdateDrag(Feature* feature) {
 	auto org = GetLineOrigin(active_line);
-	if (!org) org = GetLinePosition(active_line);
+	if(!org) org = GetLinePosition(active_line);
 	auto d = ToScriptCoords(feature->pos) - org;
 
-	for (auto line : c->selectionController->GetSelectedSet()) {
+	for(auto line : c->selectionController->GetSelectedSet()) {
 		org = GetLineOrigin(line);
-		if (!org) org = GetLinePosition(line);
+		if(!org) org = GetLinePosition(line);
 		SetOverride(line, "\\org", (d + org).PStr());
 	}
 }
 
 void VisualToolRotateXY::DoRefresh() {
-	if (!active_line) return;
+	if(!active_line) return;
 
-	if (!(org->pos = GetLineOrigin(active_line)))
-		org->pos = GetLinePosition(active_line);
+	if(!(org->pos = GetLineOrigin(active_line))) org->pos = GetLinePosition(active_line);
 	org->pos = FromScriptCoords(org->pos);
 
 	GetLineRotation(active_line, angle_x, angle_y, angle_z);

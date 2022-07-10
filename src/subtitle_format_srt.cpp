@@ -68,9 +68,9 @@ enum class TagType {
 };
 
 TagType type_from_name(std::string const& tag) {
-	switch (tag.size()) {
+	switch(tag.size()) {
 		case 1:
-			switch (tag[0]) {
+			switch(tag[0]) {
 				case 'b': return TagType::BOLD_OPEN;
 				case 'i': return TagType::ITALICS_OPEN;
 				case 'u': return TagType::UNDERLINE_OPEN;
@@ -78,8 +78,8 @@ TagType type_from_name(std::string const& tag) {
 				default: return TagType::UNKNOWN;
 			}
 		case 2:
-			if (tag[0] != '/') return TagType::UNKNOWN;
-			switch (tag[1]) {
+			if(tag[0] != '/') return TagType::UNKNOWN;
+			switch(tag[1]) {
 				case 'b': return TagType::BOLD_CLOSE;
 				case 'i': return TagType::ITALICS_CLOSE;
 				case 'u': return TagType::UNDERLINE_CLOSE;
@@ -87,8 +87,8 @@ TagType type_from_name(std::string const& tag) {
 				default: return TagType::UNKNOWN;
 			}
 		default:
-			if (tag == "font") return TagType::FONT_OPEN;
-			if (tag == "/font") return TagType::FONT_CLOSE;
+			if(tag == "font") return TagType::FONT_OPEN;
+			if(tag == "/font") return TagType::FONT_CLOSE;
 			return TagType::UNKNOWN;
 	}
 }
@@ -97,10 +97,10 @@ struct ToggleTag {
 	char tag;
 	int level = 0;
 
-	ToggleTag(char tag) : tag(tag) { }
+	ToggleTag(char tag) : tag(tag) {}
 
 	void Open(std::string& out) {
-		if (level == 0) {
+		if(level == 0) {
 			out += "{\\";
 			out += tag;
 			out += "1}";
@@ -109,13 +109,12 @@ struct ToggleTag {
 	}
 
 	void Close(std::string& out) {
-		if (level == 1) {
+		if(level == 1) {
 			out += "{\\";
 			out += tag;
 			out += '}';
 		}
-		if (level > 0)
-			--level;
+		if(level > 0) --level;
 	}
 };
 
@@ -130,16 +129,14 @@ class SrtTagParser {
 	const boost::regex attrib_matcher;
 	const boost::regex is_quoted;
 
-public:
+  public:
 	SrtTagParser()
-	: tag_matcher("^(.*?)<(/?b|/?i|/?u|/?s|/?font)([^>]*)>(.*)$", boost::regex::icase)
-	, attrib_matcher(R"(^[[:space:]]+(face|size|color)=('[^']*'|"[^"]*"|[^[:space:]]+))", boost::regex::icase)
-	, is_quoted(R"(^(['"]).*\1$)")
-	{
-	}
+	    : tag_matcher("^(.*?)<(/?b|/?i|/?u|/?s|/?font)([^>]*)>(.*)$", boost::regex::icase),
+	      attrib_matcher(R"(^[[:space:]]+(face|size|color)=('[^']*'|"[^"]*"|[^[:space:]]+))",
+	                     boost::regex::icase),
+	      is_quoted(R"(^(['"]).*\1$)") {}
 
-	std::string ToAss(std::string srt)
-	{
+	std::string ToAss(std::string srt) {
 		ToggleTag bold('b');
 		ToggleTag italic('i');
 		ToggleTag underline('u');
@@ -148,19 +145,17 @@ public:
 
 		std::string ass; // result to be built
 
-		while (!srt.empty())
-		{
+		while(!srt.empty()) {
 			boost::smatch result;
-			if (!regex_match(srt, result, tag_matcher))
-			{
+			if(!regex_match(srt, result, tag_matcher)) {
 				// no more tags could be matched, end of string
 				ass.append(srt);
 				break;
 			}
 
 			// we found a tag, translate it
-			std::string pre_text  = result.str(1);
-			std::string tag_name  = result.str(2);
+			std::string pre_text = result.str(1);
+			std::string tag_name = result.str(2);
 			std::string tag_attrs = result.str(3);
 			std::string post_text = result.str(4);
 
@@ -170,103 +165,89 @@ public:
 			srt = post_text;
 
 			boost::to_lower(tag_name);
-			switch (type_from_name(tag_name))
-			{
-			case TagType::BOLD_OPEN:       bold.Open(ass);       break;
-			case TagType::BOLD_CLOSE:      bold.Close(ass);      break;
-			case TagType::ITALICS_OPEN:    italic.Open(ass);     break;
-			case TagType::ITALICS_CLOSE:   italic.Close(ass);    break;
-			case TagType::UNDERLINE_OPEN:  underline.Open(ass);  break;
-			case TagType::UNDERLINE_CLOSE: underline.Close(ass); break;
-			case TagType::STRIKEOUT_OPEN:  strikeout.Open(ass);  break;
-			case TagType::STRIKEOUT_CLOSE: strikeout.Close(ass); break;
-			case TagType::FONT_OPEN:
-				{
+			switch(type_from_name(tag_name)) {
+				case TagType::BOLD_OPEN: bold.Open(ass); break;
+				case TagType::BOLD_CLOSE: bold.Close(ass); break;
+				case TagType::ITALICS_OPEN: italic.Open(ass); break;
+				case TagType::ITALICS_CLOSE: italic.Close(ass); break;
+				case TagType::UNDERLINE_OPEN: underline.Open(ass); break;
+				case TagType::UNDERLINE_CLOSE: underline.Close(ass); break;
+				case TagType::STRIKEOUT_OPEN: strikeout.Open(ass); break;
+				case TagType::STRIKEOUT_CLOSE: strikeout.Close(ass); break;
+				case TagType::FONT_OPEN: {
 					// new attributes to fill in
 					FontAttribs new_attribs;
 					FontAttribs old_attribs;
 					// start out with any previous ones on stack
-					if (font_stack.size() > 0)
-						old_attribs = font_stack.back();
+					if(font_stack.size() > 0) old_attribs = font_stack.back();
 					new_attribs = old_attribs;
 					// now find all attributes on this font tag
 					boost::smatch result;
-					while (regex_search(tag_attrs, result, attrib_matcher))
-					{
+					while(regex_search(tag_attrs, result, attrib_matcher)) {
 						// get attribute name and values
 						std::string attr_name = result.str(1);
 						std::string attr_value = result.str(2);
 
 						// clean them
 						boost::to_lower(attr_name);
-						if (regex_match(attr_value, is_quoted))
+						if(regex_match(attr_value, is_quoted))
 							attr_value = attr_value.substr(1, attr_value.size() - 2);
 
 						// handle the attributes
-						if (attr_name == "face")
+						if(attr_name == "face")
 							new_attribs.face = agi::format("{\\fn%s}", attr_value);
-						else if (attr_name == "size")
+						else if(attr_name == "size")
 							new_attribs.size = agi::format("{\\fs%s}", attr_value);
-						else if (attr_name == "color")
-							new_attribs.color = agi::format("{\\c%s}", agi::Color(attr_value).GetAssOverrideFormatted());
+						else if(attr_name == "color")
+							new_attribs.color = agi::format(
+							    "{\\c%s}", agi::Color(attr_value).GetAssOverrideFormatted());
 
 						// remove this attribute to prepare for the next
 						tag_attrs = result.suffix().str();
 					}
 
 					// the attributes changed from old are then written out
-					if (new_attribs.face != old_attribs.face)
-						ass.append(new_attribs.face);
-					if (new_attribs.size != old_attribs.size)
-						ass.append(new_attribs.size);
-					if (new_attribs.color != old_attribs.color)
-						ass.append(new_attribs.color);
+					if(new_attribs.face != old_attribs.face) ass.append(new_attribs.face);
+					if(new_attribs.size != old_attribs.size) ass.append(new_attribs.size);
+					if(new_attribs.color != old_attribs.color) ass.append(new_attribs.color);
 
 					// lastly dump the new attributes state onto the stack
 					font_stack.push_back(new_attribs);
-				}
-				break;
-			case TagType::FONT_CLOSE:
-				{
+				} break;
+				case TagType::FONT_CLOSE: {
 					// this requires a font stack entry
-					if (font_stack.empty())
-						break;
+					if(font_stack.empty()) break;
 					// get the current attribs
 					FontAttribs cur_attribs = font_stack.back();
 					// remove them from the stack
 					font_stack.pop_back();
 					// grab the old attributes if there are any
 					FontAttribs old_attribs;
-					if (font_stack.size() > 0)
-						old_attribs = font_stack.back();
+					if(font_stack.size() > 0) old_attribs = font_stack.back();
 					// then restore the attributes to previous settings
-					if (cur_attribs.face != old_attribs.face)
-					{
-						if (old_attribs.face.empty())
+					if(cur_attribs.face != old_attribs.face) {
+						if(old_attribs.face.empty())
 							ass.append("{\\fn}");
 						else
 							ass.append(old_attribs.face);
 					}
-					if (cur_attribs.size != old_attribs.size)
-					{
-						if (old_attribs.size.empty())
+					if(cur_attribs.size != old_attribs.size) {
+						if(old_attribs.size.empty())
 							ass.append("{\\fs}");
 						else
 							ass.append(old_attribs.size);
 					}
-					if (cur_attribs.color != old_attribs.color)
-					{
-						if (old_attribs.color.empty())
+					if(cur_attribs.color != old_attribs.color) {
+						if(old_attribs.color.empty())
 							ass.append("{\\c}");
 						else
 							ass.append(old_attribs.color);
 					}
-				}
-				break;
-			default:
-				// unknown tag, replicate it in the output
-				ass.append("<").append(tag_name).append(tag_attrs).append(">");
-				break;
+				} break;
+				default:
+					// unknown tag, replicate it in the output
+					ass.append("<").append(tag_name).append(tag_attrs).append(">");
+					break;
 			}
 		}
 
@@ -277,35 +258,27 @@ public:
 	}
 };
 
-std::string WriteSRTTime(agi::Time const& ts)
-{
+std::string WriteSRTTime(agi::Time const& ts) {
 	return ts.GetSrtFormatted();
 }
 
-}
+} // namespace
 
-SRTSubtitleFormat::SRTSubtitleFormat()
-: SubtitleFormat("SubRip")
-{
-}
+SRTSubtitleFormat::SRTSubtitleFormat() : SubtitleFormat("SubRip") {}
 
 std::vector<std::string> SRTSubtitleFormat::GetReadWildcards() const {
-	return {"srt"};
+	return { "srt" };
 }
 
 std::vector<std::string> SRTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-enum class ParseState {
-	INITIAL,
-	TIMESTAMP,
-	FIRST_LINE_OF_BODY,
-	REST_OF_BODY,
-	LAST_WAS_BLANK
-};
+enum class ParseState { INITIAL, TIMESTAMP, FIRST_LINE_OF_BODY, REST_OF_BODY, LAST_WAS_BLANK };
 
-void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
+void SRTSubtitleFormat::ReadFile(AssFile* target, agi::fs::path const& filename,
+                                 agi::vfr::Framerate const& fps,
+                                 std::string const& encoding) const {
 	using namespace std;
 
 	TextFileReader file(filename, encoding);
@@ -314,47 +287,50 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	// See parsing algorithm at <http://devel.aegisub.org/wiki/SubtitleFormats/SRT>
 
 	// "hh:mm:ss,fff --> hh:mm:ss,fff" (e.g. "00:00:04,070 --> 00:00:10,04")
-	const boost::regex timestamp_regex("^([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2},[0-9]{1,}) --> ([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2},[0-9]{1,})");
+	const boost::regex timestamp_regex("^([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2},[0-9]{1,}) --> "
+	                                   "([0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2},[0-9]{1,})");
 
 	SrtTagParser tag_parser;
 
 	ParseState state = ParseState::INITIAL;
 	int line_num = 0;
 	int linebreak_debt = 0;
-	AssDialogue *line = nullptr;
+	AssDialogue* line = nullptr;
 	std::string text;
-	while (file.HasMoreLines()) {
+	while(file.HasMoreLines()) {
 		std::string text_line = file.ReadLineFromFile();
 		++line_num;
 		boost::trim(text_line);
 
 		boost::smatch timestamp_match;
 		bool found_timestamps = false;
-		switch (state) {
+		switch(state) {
 			case ParseState::INITIAL:
 				// ignore leading blank lines
-				if (text_line.empty()) break;
-				if (all(text_line, boost::is_digit())) {
+				if(text_line.empty()) break;
+				if(all(text_line, boost::is_digit())) {
 					// found the line number, throw it away and hope for timestamps
 					state = ParseState::TIMESTAMP;
 					break;
 				}
-				if (regex_search(text_line, timestamp_match, timestamp_regex)) {
+				if(regex_search(text_line, timestamp_match, timestamp_regex)) {
 					found_timestamps = true;
 					break;
 				}
 
-				throw SRTParseError(agi::format("Parsing SRT: Expected subtitle index at line %d", line_num));
+				throw SRTParseError(
+				    agi::format("Parsing SRT: Expected subtitle index at line %d", line_num));
 
 			case ParseState::TIMESTAMP:
-				if (!regex_search(text_line, timestamp_match, timestamp_regex))
-					throw SRTParseError(agi::format("Parsing SRT: Expected timestamp pair at line %d", line_num));
+				if(!regex_search(text_line, timestamp_match, timestamp_regex))
+					throw SRTParseError(
+					    agi::format("Parsing SRT: Expected timestamp pair at line %d", line_num));
 
 				found_timestamps = true;
 				break;
 
 			case ParseState::FIRST_LINE_OF_BODY:
-				if (text_line.empty()) {
+				if(text_line.empty()) {
 					// that's not very interesting... blank subtitle?
 					state = ParseState::LAST_WAS_BLANK;
 					// no previous line that needs a line break after
@@ -366,7 +342,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 				break;
 
 			case ParseState::REST_OF_BODY:
-				if (text_line.empty()) {
+				if(text_line.empty()) {
 					// Might be either the gap between two subtitles or just a
 					// blank line in the middle of a subtitle, so defer adding
 					// the line break until we check what's on the next line
@@ -380,28 +356,28 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 
 			case ParseState::LAST_WAS_BLANK:
 				++linebreak_debt;
-				if (text_line.empty()) break;
-				if (all(text_line, boost::is_digit())) {
+				if(text_line.empty()) break;
+				if(all(text_line, boost::is_digit())) {
 					// Hopefully it's the start of a new subtitle, and the
 					// previous blank line(s) were the gap between subtitles
 					state = ParseState::TIMESTAMP;
 					break;
 				}
-				if (regex_search(text_line, timestamp_match, timestamp_regex)) {
+				if(regex_search(text_line, timestamp_match, timestamp_regex)) {
 					found_timestamps = true;
 					break;
 				}
 
 				// assume it's a continuation of the subtitle text
 				// resolve our line break debt and append the line text
-				while (linebreak_debt-- > 0)
+				while(linebreak_debt-- > 0)
 					text.append("\\N");
 				text.append(text_line);
 				state = ParseState::REST_OF_BODY;
 				break;
 		}
-		if (found_timestamps) {
-			if (line) {
+		if(found_timestamps) {
+			if(line) {
 				// finalize active line
 				line->Text = tag_parser.ToAss(text);
 				text.clear();
@@ -418,14 +394,16 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 		}
 	}
 
-	if (state == ParseState::TIMESTAMP || state == ParseState::FIRST_LINE_OF_BODY)
+	if(state == ParseState::TIMESTAMP || state == ParseState::FIRST_LINE_OF_BODY)
 		throw SRTParseError("Parsing SRT: Incomplete file");
 
-	if (line) // an unfinalized line
+	if(line) // an unfinalized line
 		line->Text = tag_parser.ToAss(text);
 }
 
-void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
+void SRTSubtitleFormat::WriteFile(const AssFile* src, agi::fs::path const& filename,
+                                  agi::vfr::Framerate const& fps,
+                                  std::string const& encoding) const {
 	TextFileWriter file(filename, encoding);
 
 	// Convert to SRT
@@ -441,8 +419,8 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 #endif
 
 	// Write lines
-	int i=0;
-	for (auto const& current : copy.Events) {
+	int i = 0;
+	for(auto const& current : copy.Events) {
 		file.WriteLineToFile(std::to_string(++i));
 		file.WriteLineToFile(WriteSRTTime(current.Start) + " --> " + WriteSRTTime(current.End));
 		file.WriteLineToFile(ConvertTags(&current));
@@ -450,23 +428,19 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	}
 }
 
-bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
-	if (!file->Attachments.empty())
-		return false;
+bool SRTSubtitleFormat::CanSave(const AssFile* file) const {
+	if(!file->Attachments.empty()) return false;
 
 	auto def = boost::flyweight<std::string>("Default");
-	for (auto const& line : file->Events) {
-		if (line.Style != def)
-			return false;
+	for(auto const& line : file->Events) {
+		if(line.Style != def) return false;
 
 		auto blocks = line.ParseTags();
-		for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
+		for(auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 			// Verify that all overrides used are supported
-			for (auto const& tag : ovr->Tags) {
-				if (tag.Name.size() != 2)
-					return false;
-				if (!strchr("bisu", tag.Name[1]))
-					return false;
+			for(auto const& tag : ovr->Tags) {
+				if(tag.Name.size() != 2) return false;
+				if(!strchr("bisu", tag.Name[1])) return false;
 			}
 		}
 	}
@@ -474,48 +448,39 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 	return true;
 }
 
-std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
-	struct tag_state { char tag; bool value; };
-	tag_state tag_states[] = {
-		{'b', false},
-		{'i', false},
-		{'s', false},
-		{'u', false}
+std::string SRTSubtitleFormat::ConvertTags(const AssDialogue* diag) const {
+	struct tag_state {
+		char tag;
+		bool value;
 	};
+	tag_state tag_states[] = { { 'b', false }, { 'i', false }, { 's', false }, { 'u', false } };
 
 	std::string final;
-	for (auto& block : diag->ParseTags()) {
-		switch (block->GetType()) {
-		case AssBlockType::OVERRIDE:
-			for (auto const& tag : static_cast<AssDialogueBlockOverride&>(*block).Tags) {
-				if (!tag.IsValid() || tag.Name.size() != 2)
-					continue;
-				for (auto& state : tag_states) {
-					if (state.tag != tag.Name[1]) continue;
+	for(auto& block : diag->ParseTags()) {
+		switch(block->GetType()) {
+			case AssBlockType::OVERRIDE:
+				for(auto const& tag : static_cast<AssDialogueBlockOverride&>(*block).Tags) {
+					if(!tag.IsValid() || tag.Name.size() != 2) continue;
+					for(auto& state : tag_states) {
+						if(state.tag != tag.Name[1]) continue;
 
-					bool temp = tag.Params[0].Get(false);
-					if (temp && !state.value)
-						final += agi::format("<%c>", state.tag);
-					if (!temp && state.value)
-						final += agi::format("</%c>", state.tag);
-					state.value = temp;
+						bool temp = tag.Params[0].Get(false);
+						if(temp && !state.value) final += agi::format("<%c>", state.tag);
+						if(!temp && state.value) final += agi::format("</%c>", state.tag);
+						state.value = temp;
+					}
 				}
-			}
-			break;
-		case AssBlockType::PLAIN:
-			final += block->GetText();
-			break;
-		case AssBlockType::DRAWING:
-		case AssBlockType::COMMENT:
-			break;
+				break;
+			case AssBlockType::PLAIN: final += block->GetText(); break;
+			case AssBlockType::DRAWING:
+			case AssBlockType::COMMENT: break;
 		}
 	}
 
 	// Ensure all tags are closed
 	// Otherwise unclosed overrides might affect lines they shouldn't, see bug #809 for example
-	for (auto state : tag_states) {
-		if (state.value)
-			final += agi::format("</%c>", state.tag);
+	for(auto state : tag_states) {
+		if(state.value) final += agi::format("</%c>", state.tag);
 	}
 
 	return final;

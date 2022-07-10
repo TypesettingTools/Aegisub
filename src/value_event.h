@@ -19,24 +19,21 @@
 #include <wx/event.h>
 
 /// A wxEvent which holds a single templated value
-template<typename T>
-class ValueEvent : public wxEvent {
+template <typename T> class ValueEvent : public wxEvent {
 	const T value;
 
-public:
-	ValueEvent(wxEventType type, int id, T value)
-	: wxEvent(id, type)
-	, value(std::move(value))
-	{ }
+  public:
+	ValueEvent(wxEventType type, int id, T value) : wxEvent(id, type), value(std::move(value)) {}
 
-	wxEvent *Clone() const override;
+	wxEvent* Clone() const override;
 	T const& Get() const { return value; }
 };
 
 // Defined out-of-line so that `extern template` can suppress the emission of
 // the vtable in every object file that includes the declaration
-template<typename T>
-wxEvent *ValueEvent<T>::Clone() const { return new ValueEvent<T>(*this); }
+template <typename T> wxEvent* ValueEvent<T>::Clone() const {
+	return new ValueEvent<T>(*this);
+}
 
 #define AGI_DECLARE_EVENT(evt_type, value_type) \
 	wxDECLARE_EVENT(evt_type, ValueEvent<value_type>); \

@@ -47,7 +47,7 @@
 
 namespace {
 class DialogSpellChecker final : public wxDialog {
-	agi::Context *context; ///< The project context
+	agi::Context* context;                           ///< The project context
 	std::unique_ptr<agi::SpellChecker> spellchecker; ///< The spellchecking engine
 
 	/// Words which the user has indicated should always be corrected
@@ -62,17 +62,17 @@ class DialogSpellChecker final : public wxDialog {
 	int word_start; ///< Start index of the current misspelled word
 	int word_len;   ///< Length of the current misspelled word
 
-	wxTextCtrl *orig_word;    ///< The word being corrected
-	wxTextCtrl *replace_word; ///< The replacement that will be used if "Replace" is clicked
-	wxListBox *suggest_list;  ///< The list of suggested replacements
+	wxTextCtrl* orig_word;    ///< The word being corrected
+	wxTextCtrl* replace_word; ///< The replacement that will be used if "Replace" is clicked
+	wxListBox* suggest_list;  ///< The list of suggested replacements
 
-	wxComboBox *language;      ///< The list of available languages
-	wxButton *add_button;      ///< Add word to currently active dictionary
-	wxButton *remove_button;   ///< Remove word from currently active dictionary
+	wxComboBox* language;    ///< The list of available languages
+	wxButton* add_button;    ///< Add word to currently active dictionary
+	wxButton* remove_button; ///< Remove word from currently active dictionary
 
-	AssDialogue *start_line = nullptr;  ///< The first line checked
-	AssDialogue *active_line = nullptr; ///< The most recently checked line
-	bool has_looped = false;            ///< Has the search already looped from the end to beginning?
+	AssDialogue* start_line = nullptr;  ///< The first line checked
+	AssDialogue* active_line = nullptr; ///< The most recently checked line
+	bool has_looped = false; ///< Has the search already looped from the end to beginning?
 
 	/// Find the next misspelled word and close the dialog if there are none
 	/// @return Are there any more misspelled words?
@@ -83,7 +83,7 @@ class DialogSpellChecker final : public wxDialog {
 	/// @param start_pos Index in the line to start at
 	/// @param[in,out] commit_id Commit id for coalescing autoreplace commits
 	/// @return Was a misspelling found?
-	bool CheckLine(AssDialogue *active_line, int start_pos, int *commit_id);
+	bool CheckLine(AssDialogue* active_line, int start_pos, int* commit_id);
 
 	/// Set the current word to be corrected
 	void SetWord(std::string const& word);
@@ -95,36 +95,38 @@ class DialogSpellChecker final : public wxDialog {
 
 	void OnReplace(wxCommandEvent&);
 
-public:
-	DialogSpellChecker(agi::Context *context);
+  public:
+	DialogSpellChecker(agi::Context* context);
 };
 
-DialogSpellChecker::DialogSpellChecker(agi::Context *context)
-: wxDialog(context->parent, -1, _("Spell Checker"))
-, context(context)
-, spellchecker(SpellCheckerFactory::GetSpellChecker())
-{
+DialogSpellChecker::DialogSpellChecker(agi::Context* context)
+    : wxDialog(context->parent, -1, _("Spell Checker")), context(context),
+      spellchecker(SpellCheckerFactory::GetSpellChecker()) {
 	SetIcon(GETICON(spellcheck_toolbutton_16));
 
-	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer* main_sizer = new wxBoxSizer(wxVERTICAL);
 
 	auto current_word_sizer = new wxFlexGridSizer(2, 5, 5);
 	main_sizer->Add(current_word_sizer, wxSizerFlags().Expand().Border(wxALL, 5));
 
-	wxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer* bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
 	main_sizer->Add(bottom_sizer, wxSizerFlags().Expand().Border(~wxTOP & wxALL, 5));
 
-	wxSizer *bottom_left_sizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer* bottom_left_sizer = new wxBoxSizer(wxVERTICAL);
 	bottom_sizer->Add(bottom_left_sizer, wxSizerFlags().Expand().Border(wxRIGHT, 5));
 
-	wxSizer *actions_sizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer* actions_sizer = new wxBoxSizer(wxVERTICAL);
 	bottom_sizer->Add(actions_sizer, wxSizerFlags().Expand());
 
 	// Misspelled word and currently selected correction
 	current_word_sizer->AddGrowableCol(1, 1);
-	current_word_sizer->Add(new wxStaticText(this, -1, _("Misspelled word:")), 0, wxALIGN_CENTER_VERTICAL);
-	current_word_sizer->Add(orig_word = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_READONLY), wxSizerFlags(1).Expand());
-	current_word_sizer->Add(new wxStaticText(this, -1, _("Replace with:")), 0, wxALIGN_CENTER_VERTICAL);
+	current_word_sizer->Add(new wxStaticText(this, -1, _("Misspelled word:")), 0,
+	                        wxALIGN_CENTER_VERTICAL);
+	current_word_sizer->Add(
+	    orig_word = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_READONLY),
+	    wxSizerFlags(1).Expand());
+	current_word_sizer->Add(new wxStaticText(this, -1, _("Replace with:")), 0,
+	                        wxALIGN_CENTER_VERTICAL);
 	current_word_sizer->Add(replace_word = new wxTextCtrl(this, -1, ""), wxSizerFlags(1).Expand());
 
 	replace_word->Bind(wxEVT_TEXT, [=](wxCommandEvent&) {
@@ -139,29 +141,31 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 
 	// List of supported spellchecker languages
 	{
-		if (!spellchecker) {
+		if(!spellchecker) {
 			wxMessageBox("No spellchecker available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
 			throw agi::UserCancelException("No spellchecker available");
 		}
 
 		dictionary_lang_codes = to_wx(spellchecker->GetLanguageList());
-		if (dictionary_lang_codes.empty()) {
-			wxMessageBox("No spellchecker dictionaries available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
+		if(dictionary_lang_codes.empty()) {
+			wxMessageBox("No spellchecker dictionaries available.", "Error",
+			             wxOK | wxICON_ERROR | wxCENTER);
 			throw agi::UserCancelException("No spellchecker dictionaries available");
 		}
 
 		wxArrayString language_names(dictionary_lang_codes);
-		for (size_t i = 0; i < dictionary_lang_codes.size(); ++i) {
-			if (const wxLanguageInfo *info = wxLocale::FindLanguageInfo(dictionary_lang_codes[i]))
+		for(size_t i = 0; i < dictionary_lang_codes.size(); ++i) {
+			if(const wxLanguageInfo* info = wxLocale::FindLanguageInfo(dictionary_lang_codes[i]))
 				language_names[i] = info->Description;
 		}
 
-		language = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, language_names, wxCB_DROPDOWN | wxCB_READONLY);
+		language = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, language_names,
+		                          wxCB_DROPDOWN | wxCB_READONLY);
 		wxString cur_lang = to_wx(OPT_GET("Tool/Spell Checker/Language")->GetString());
 		int cur_lang_index = dictionary_lang_codes.Index(cur_lang);
-		if (cur_lang_index == wxNOT_FOUND) cur_lang_index = dictionary_lang_codes.Index("en");
-		if (cur_lang_index == wxNOT_FOUND) cur_lang_index = dictionary_lang_codes.Index("en_US");
-		if (cur_lang_index == wxNOT_FOUND) cur_lang_index = 0;
+		if(cur_lang_index == wxNOT_FOUND) cur_lang_index = dictionary_lang_codes.Index("en");
+		if(cur_lang_index == wxNOT_FOUND) cur_lang_index = dictionary_lang_codes.Index("en_US");
+		if(cur_lang_index == wxNOT_FOUND) cur_lang_index = 0;
 		language->SetSelection(cur_lang_index);
 		language->Bind(wxEVT_COMBOBOX, &DialogSpellChecker::OnChangeLanguage, this);
 
@@ -171,18 +175,18 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	{
 		wxSizerFlags button_flags = wxSizerFlags().Expand().Border(wxBOTTOM, 5);
 
-		auto make_checkbox = [&](wxString const& text, const char *opt) {
+		auto make_checkbox = [&](wxString const& text, const char* opt) {
 			auto checkbox = new wxCheckBox(this, -1, text);
 			actions_sizer->Add(checkbox, button_flags);
 			checkbox->SetValue(OPT_GET(opt)->GetBool());
 			checkbox->Bind(wxEVT_CHECKBOX,
-				[=](wxCommandEvent &evt) { OPT_SET(opt)->SetBool(!!evt.GetInt()); });
+			               [=](wxCommandEvent& evt) { OPT_SET(opt)->SetBool(!!evt.GetInt()); });
 		};
 
 		make_checkbox(_("&Skip Comments"), "Tool/Spell Checker/Skip Comments");
 		make_checkbox(_("Ignore &UPPERCASE words"), "Tool/Spell Checker/Skip Uppercase");
 
-		wxButton *button;
+		wxButton* button;
 
 		actions_sizer->Add(button = new wxButton(this, -1, _("&Replace")), button_flags);
 		button->Bind(wxEVT_BUTTON, &DialogSpellChecker::OnReplace, this);
@@ -203,13 +207,15 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 			FindNext();
 		});
 
-		actions_sizer->Add(add_button = new wxButton(this, -1, _("Add to &dictionary")), button_flags);
+		actions_sizer->Add(add_button = new wxButton(this, -1, _("Add to &dictionary")),
+		                   button_flags);
 		add_button->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
 			spellchecker->AddWord(from_wx(orig_word->GetValue()));
 			FindNext();
 		});
 
-		actions_sizer->Add(remove_button = new wxButton(this, -1, _("Remove fro&m dictionary")), button_flags);
+		actions_sizer->Add(remove_button = new wxButton(this, -1, _("Remove fro&m dictionary")),
+		                   button_flags);
 		remove_button->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
 			spellchecker->RemoveWord(from_wx(replace_word->GetValue()));
 			SetWord(from_wx(orig_word->GetValue()));
@@ -223,8 +229,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	SetSizerAndFit(main_sizer);
 	CenterOnParent();
 
-	if (FindNext())
-		Show();
+	if(FindNext()) Show();
 }
 
 void DialogSpellChecker::OnReplace(wxCommandEvent&) {
@@ -244,9 +249,9 @@ void DialogSpellChecker::OnChangeSuggestion(wxCommandEvent&) {
 }
 
 bool DialogSpellChecker::FindNext() {
-	AssDialogue *real_active_line = context->selectionController->GetActiveLine();
+	AssDialogue* real_active_line = context->selectionController->GetActiveLine();
 	// User has changed the active line; restart search from this position
-	if (real_active_line != active_line) {
+	if(real_active_line != active_line) {
 		active_line = real_active_line;
 		has_looped = false;
 		start_line = active_line;
@@ -255,8 +260,7 @@ bool DialogSpellChecker::FindNext() {
 	int start_pos = context->textSelectionController->GetInsertionPoint();
 	int commit_id = -1;
 
-	if (CheckLine(active_line, start_pos, &commit_id))
-		return true;
+	if(CheckLine(active_line, start_pos, &commit_id)) return true;
 
 	auto it = context->ass->iterator_to(*active_line);
 
@@ -265,30 +269,30 @@ bool DialogSpellChecker::FindNext() {
 	// word should be hit last
 	while(!has_looped || active_line != start_line) {
 		// Wrap around to the beginning if we hit the end
-		if (++it == context->ass->Events.end()) {
+		if(++it == context->ass->Events.end()) {
 			it = context->ass->Events.begin();
 			has_looped = true;
 		}
 
 		active_line = &*it;
-		if (CheckLine(active_line, 0, &commit_id))
-			return true;
+		if(CheckLine(active_line, 0, &commit_id)) return true;
 	}
 
-	if (IsShown()) {
-		wxMessageBox(_("Aegisub has finished checking spelling of this script."), _("Spell checking complete."));
+	if(IsShown()) {
+		wxMessageBox(_("Aegisub has finished checking spelling of this script."),
+		             _("Spell checking complete."));
 		Close();
-	}
-	else {
-		wxMessageBox(_("Aegisub has found no spelling mistakes in this script."), _("Spell checking complete."));
+	} else {
+		wxMessageBox(_("Aegisub has found no spelling mistakes in this script."),
+		             _("Spell checking complete."));
 		throw agi::UserCancelException("No spelling mistakes");
 	}
 
 	return false;
 }
 
-bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int *commit_id) {
-	if (active_line->Comment && OPT_GET("Tool/Spell Checker/Skip Comments")->GetBool()) return false;
+bool DialogSpellChecker::CheckLine(AssDialogue* active_line, int start_pos, int* commit_id) {
+	if(active_line->Comment && OPT_GET("Tool/Spell Checker/Skip Comments")->GetBool()) return false;
 
 	std::string text = active_line->Text;
 	auto tokens = agi::ass::TokenizeDialogueBody(text);
@@ -297,8 +301,8 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 	bool ignore_uppercase = OPT_GET("Tool/Spell Checker/Skip Uppercase")->GetBool();
 
 	word_start = 0;
-	for (auto const& tok : tokens) {
-		if (tok.type != agi::ass::DialogueTokenType::WORD || word_start < start_pos) {
+	for(auto const& tok : tokens) {
+		if(tok.type != agi::ass::DialogueTokenType::WORD || word_start < start_pos) {
 			word_start += tok.length;
 			continue;
 		}
@@ -306,13 +310,14 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 		word_len = tok.length;
 		std::string word = text.substr(word_start, word_len);
 
-		if (auto_ignore.count(word) || spellchecker->CheckWord(word) || (ignore_uppercase && word == boost::locale::to_upper(word))) {
+		if(auto_ignore.count(word) || spellchecker->CheckWord(word) ||
+		   (ignore_uppercase && word == boost::locale::to_upper(word))) {
 			word_start += tok.length;
 			continue;
 		}
 
 		auto auto_rep = auto_replace.find(word);
-		if (auto_rep == auto_replace.end()) {
+		if(auto_rep == auto_replace.end()) {
 #ifdef __WXGTK__
 			// http://trac.wxwidgets.org/ticket/14369
 			orig_word->Remove(0, -1);
@@ -326,22 +331,24 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 
 		text.replace(word_start, word_len, auto_rep->second);
 		active_line->Text = text;
-		*commit_id = context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT, *commit_id);
+		*commit_id =
+		    context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT, *commit_id);
 		word_start += auto_rep->second.size();
 	}
 	return false;
 }
 
 void DialogSpellChecker::Replace() {
-	AssDialogue *active_line = context->selectionController->GetActiveLine();
+	AssDialogue* active_line = context->selectionController->GetActiveLine();
 
 	// Only replace if the user hasn't changed the selection to something else
-	if (to_wx(active_line->Text.get().substr(word_start, word_len)) == orig_word->GetValue()) {
+	if(to_wx(active_line->Text.get().substr(word_start, word_len)) == orig_word->GetValue()) {
 		std::string text = active_line->Text;
 		text.replace(word_start, word_len, from_wx(replace_word->GetValue()));
 		active_line->Text = text;
 		context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT);
-		context->textSelectionController->SetInsertionPoint(word_start + replace_word->GetValue().size());
+		context->textSelectionController->SetInsertionPoint(word_start +
+		                                                    replace_word->GetValue().size());
 	}
 }
 
@@ -358,8 +365,8 @@ void DialogSpellChecker::SetWord(std::string const& word) {
 
 	add_button->Enable(spellchecker->CanAddWord(word));
 }
-}
+} // namespace
 
-void ShowSpellcheckerDialog(agi::Context *c) {
+void ShowSpellcheckerDialog(agi::Context* c) {
 	c->dialog->Show<DialogSpellChecker>(c);
 }

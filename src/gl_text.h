@@ -37,9 +37,11 @@
 namespace {
 struct OpenGLTextGlyph;
 class OpenGLTextTexture;
-}
+} // namespace
 
-namespace agi { struct Color; }
+namespace agi {
+struct Color;
+}
 
 typedef boost::container::map<int, OpenGLTextGlyph> glyphMap;
 
@@ -66,8 +68,9 @@ class OpenGLText {
 	/// @brief Create a new glyph
 	OpenGLTextGlyph const& CreateGlyph(int chr);
 
-	void DrawString(const std::string &text,int x,int y);
-public:
+	void DrawString(const std::string& text, int x, int y);
+
+  public:
 	/// @brief Get the currently active font
 	wxFont GetFont() const { return font; }
 
@@ -84,12 +87,12 @@ public:
 	/// @param text String to print
 	/// @param x    x coordinate
 	/// @param y    y coordinate
-	void Print(const std::string &text,int x,int y);
+	void Print(const std::string& text, int x, int y);
 	/// @brief Get the extents of a string printed with the current font in pixels
 	/// @param text String to get extends of
 	/// @param[out] w    Width
 	/// @param[out] h    Height
-	void GetExtent(const std::string &text,int &w,int &h);
+	void GetExtent(const std::string& text, int& w, int& h);
 
 	OpenGLText();
 	~OpenGLText();

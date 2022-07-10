@@ -20,30 +20,27 @@
 
 namespace agi {
 /// A generic scoped holder for non-pointer handles
-template<class T, class Del = void(*)(T)>
-class scoped_holder {
+template <class T, class Del = void (*)(T)> class scoped_holder {
 	T value;
 	Del destructor;
 
 	scoped_holder(scoped_holder const&);
 	scoped_holder& operator=(scoped_holder const&);
-public:
+
+  public:
 	operator T() const { return value; }
 	T operator->() const { return value; }
 
 	scoped_holder& operator=(T new_value) {
-		if (value)
-			destructor(value);
+		if(value) destructor(value);
 		value = new_value;
 		return *this;
 	}
 
-	scoped_holder(T value, Del destructor)
-	: value(value)
-	, destructor(destructor)
-	{
-	}
+	scoped_holder(T value, Del destructor) : value(value), destructor(destructor) {}
 
-	~scoped_holder() { if (value) destructor(value); }
+	~scoped_holder() {
+		if(value) destructor(value);
+	}
 };
-}
+} // namespace agi

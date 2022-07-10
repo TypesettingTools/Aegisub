@@ -25,8 +25,12 @@
 class AsyncVideoProvider;
 class DialogProgress;
 class wxString;
-namespace agi { class AudioProvider; }
-namespace agi { struct Context; }
+namespace agi {
+class AudioProvider;
+}
+namespace agi {
+struct Context;
+}
 struct ProjectProperties;
 
 class Project {
@@ -40,19 +44,20 @@ class Project {
 	agi::fs::path timecodes_file;
 	agi::fs::path keyframes_file;
 
-	agi::signal::Signal<agi::AudioProvider *> AnnounceAudioProviderModified;
-	agi::signal::Signal<AsyncVideoProvider *> AnnounceVideoProviderModified;
+	agi::signal::Signal<agi::AudioProvider*> AnnounceAudioProviderModified;
+	agi::signal::Signal<AsyncVideoProvider*> AnnounceVideoProviderModified;
 	agi::signal::Signal<agi::vfr::Framerate const&> AnnounceTimecodesModified;
 	agi::signal::Signal<std::vector<int> const&> AnnounceKeyframesModified;
 
 	bool video_has_subtitles = false;
-	DialogProgress *progress = nullptr;
-	agi::Context *context = nullptr;
+	DialogProgress* progress = nullptr;
+	agi::Context* context = nullptr;
 
 	void ShowError(wxString const& message);
 	void ShowError(std::string const& message);
 
-	bool DoLoadSubtitles(agi::fs::path const& path, std::string encoding, ProjectProperties &properties);
+	bool DoLoadSubtitles(agi::fs::path const& path, std::string encoding,
+	                     ProjectProperties& properties);
 	void DoLoadAudio(agi::fs::path const& path, bool quiet);
 	bool DoLoadVideo(agi::fs::path const& path);
 	void DoLoadTimecodes(agi::fs::path const& path);
@@ -63,24 +68,25 @@ class Project {
 	void ReloadAudio();
 	void ReloadVideo();
 
-	void SetPath(agi::fs::path& var, const char *token, const char *mru, agi::fs::path const& value);
+	void SetPath(agi::fs::path& var, const char* token, const char* mru,
+	             agi::fs::path const& value);
 
-public:
-	Project(agi::Context *context);
+  public:
+	Project(agi::Context* context);
 	~Project();
 
-	void LoadSubtitles(agi::fs::path path, std::string encoding="", bool load_linked=true);
+	void LoadSubtitles(agi::fs::path path, std::string encoding = "", bool load_linked = true);
 	void CloseSubtitles();
 	bool CanLoadSubtitlesFromVideo() const { return video_has_subtitles; }
 
 	void LoadAudio(agi::fs::path path);
 	void CloseAudio();
-	agi::AudioProvider *AudioProvider() const { return audio_provider.get(); }
+	agi::AudioProvider* AudioProvider() const { return audio_provider.get(); }
 	agi::fs::path const& AudioName() const { return audio_file; }
 
 	void LoadVideo(agi::fs::path path);
 	void CloseVideo();
-	AsyncVideoProvider *VideoProvider() const { return video_provider.get(); }
+	AsyncVideoProvider* VideoProvider() const { return video_provider.get(); }
 	agi::fs::path const& VideoName() const { return video_file; }
 
 	void LoadTimecodes(agi::fs::path path);

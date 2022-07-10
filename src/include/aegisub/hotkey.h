@@ -22,21 +22,22 @@
 #include <wx/event.h>
 
 namespace agi {
-	struct Context;
-	namespace hotkey { class Hotkey; }
+struct Context;
+namespace hotkey {
+class Hotkey;
 }
+} // namespace agi
 
 namespace hotkey {
 
-extern agi::hotkey::Hotkey *inst;
+extern agi::hotkey::Hotkey* inst;
 
 void init();
 void clear();
 
-bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt);
+bool check(std::string const& context, agi::Context* c, wxKeyEvent& evt);
 std::string keypress_to_str(int key_code, int modifier);
 std::string get_hotkey_str_first(std::string const& context, std::string const& command);
 std::vector<std::string> get_hotkey_strs(std::string const& context, std::string const& command);
-
 
 } // namespace hotkey

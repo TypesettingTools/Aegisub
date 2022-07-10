@@ -33,9 +33,9 @@
 #include <wx/textctrl.h>
 
 namespace agi {
-	class OptionValue;
-	struct Context;
-}
+class OptionValue;
+struct Context;
+} // namespace agi
 
 /// @brief A text edit control for editing agi::Time objects
 ///
@@ -43,10 +43,10 @@ namespace agi {
 /// being edited as either a h:mm:ss.cc formatted time, or a frame number
 class TimeEdit final : public wxTextCtrl {
 	bool byFrame = false; ///< Is the time displayed as a frame number?
-	agi::Context *c; ///< Project context
-	bool isEnd;      ///< Should the time be treated as an end time for time <-> frame conversions?
-	agi::Time time;  ///< The time, which may be displayed as either a frame number or time
-	bool insert;     ///< If true, disable overwriting behavior in time mode
+	agi::Context* c;      ///< Project context
+	bool isEnd;     ///< Should the time be treated as an end time for time <-> frame conversions?
+	agi::Time time; ///< The time, which may be displayed as either a frame number or time
+	bool insert;    ///< If true, disable overwriting behavior in time mode
 
 	agi::signal::Connection insert_opt;
 
@@ -56,24 +56,28 @@ class TimeEdit final : public wxTextCtrl {
 	/// Set the value of the text box from the current time and byFrame setting
 	void UpdateText();
 
-	void OnContextMenu(wxContextMenuEvent &event);
-	void OnFocusLost(wxFocusEvent &evt);
+	void OnContextMenu(wxContextMenuEvent& event);
+	void OnFocusLost(wxFocusEvent& evt);
 	void OnInsertChanged(agi::OptionValue const& opt);
-	void OnKeyDown(wxKeyEvent &event);
-	void OnChar(wxKeyEvent &event);
-	void OnModified(wxCommandEvent &event);
+	void OnKeyDown(wxKeyEvent& event);
+	void OnChar(wxKeyEvent& event);
+	void OnModified(wxCommandEvent& event);
 
 #ifdef __WXGTK__
 	// IM processing completely breaks modifying a text ctrl's in response to
 	// wxEVT_CHAR (changing the value clears it and modifying the insertion
 	// point does nothing). IM processing should never be relevant here, so
 	// just disable it.
-	int GTKIMFilterKeypress(GdkEventKey *) const override { return 0; }
+	int GTKIMFilterKeypress(GdkEventKey*) const override {
+		return 0;
+	}
 #endif
 
-public:
+  public:
 	/// Get the current time as an agi::Time object
-	agi::Time GetTime() const { return time; }
+	agi::Time GetTime() const {
+		return time;
+	}
 	/// Set the time
 	void SetTime(agi::Time time);
 
@@ -92,6 +96,9 @@ public:
 	/// @param c Project context
 	/// @param value Initial value. Must be a valid time string or empty
 	/// @param size Initial control size
-	/// @param asEnd Treat the time as a line end time (rather than start) for time <-> frame number conversions
-	TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::string& value = std::string(), const wxSize& size = wxDefaultSize, bool asEnd = false);
+	/// @param asEnd Treat the time as a line end time (rather than start) for time <-> frame number
+	/// conversions
+	TimeEdit(wxWindow* parent, wxWindowID id, agi::Context* c,
+	         const std::string& value = std::string(), const wxSize& size = wxDefaultSize,
+	         bool asEnd = false);
 };

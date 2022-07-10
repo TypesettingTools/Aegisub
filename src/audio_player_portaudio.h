@@ -63,7 +63,7 @@ class PortAudioPlayer final : public AudioPlayer {
 	int64_t end = 0;     ///< End position
 	PaTime pa_start;     ///< PortAudio internal start position
 
-	PaStream *stream = nullptr; ///< PortAudio stream
+	PaStream* stream = nullptr; ///< PortAudio stream
 
 	/// @brief PortAudio callback, used to fill buffer for playback, and prime the playback buffer.
 	/// @param inputBuffer     Input buffer.
@@ -73,19 +73,13 @@ class PortAudioPlayer final : public AudioPlayer {
 	/// @param statusFlags     Status flags
 	/// @param userData        Local data to hand callback
 	/// @return Whether to stop playback.
-	static int paCallback(
-		const void *inputBuffer,
-		void *outputBuffer,
-		unsigned long framesPerBuffer,
-		const PaStreamCallbackTimeInfo*
-		timeInfo,
-		PaStreamCallbackFlags
-		statusFlags,
-		void *userData);
+	static int paCallback(const void* inputBuffer, void* outputBuffer,
+	                      unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo,
+	                      PaStreamCallbackFlags statusFlags, void* userData);
 
 	/// @brief Called when the callback has finished.
 	/// @param userData Local data to be handed to the callback.
-	static void paStreamFinishedCallback(void *userData);
+	static void paStreamFinishedCallback(void* userData);
 
 	/// Gather the list of output devices supported by a host API
 	/// @param host_idx Host API ID
@@ -93,9 +87,9 @@ class PortAudioPlayer final : public AudioPlayer {
 
 	void OpenStream();
 
-public:
+  public:
 	/// @brief Constructor
-	PortAudioPlayer(agi::AudioProvider *provider);
+	PortAudioPlayer(agi::AudioProvider* provider);
 
 	/// @brief Destructor
 	~PortAudioPlayer();
@@ -103,7 +97,7 @@ public:
 	/// @brief Play audio.
 	/// @param start Start position.
 	/// @param count Frame count
-	void Play(int64_t start,int64_t count);
+	void Play(int64_t start, int64_t count);
 	/// @brief Stop Playback
 	/// @param timerToo Stop display timer?
 	void Stop();
@@ -123,7 +117,6 @@ public:
 	/// @param pos End position
 	void SetEndPosition(int64_t position) { end = position; }
 
-
 	/// @brief Set volume level
 	/// @param vol Volume
 	void SetVolume(double vol) { volume = vol; }
@@ -135,4 +128,4 @@ public:
 	/// Get list of available output devices
 	static wxArrayString GetOutputDevices();
 };
-#endif //ifdef WITH_PORTAUDIO
+#endif // ifdef WITH_PORTAUDIO

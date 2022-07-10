@@ -46,45 +46,44 @@
 namespace {
 class FFmpegSourceAudioProvider final : public agi::AudioProvider, FFmpegSourceProvider {
 	/// audio source object
-	agi::scoped_holder<FFMS_AudioSource*, void (FFMS_CC *)(FFMS_AudioSource*)> AudioSource;
+	agi::scoped_holder<FFMS_AudioSource*, void(FFMS_CC*)(FFMS_AudioSource*)> AudioSource;
 
-	mutable char FFMSErrMsg[1024];			///< FFMS error message
-	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
+	mutable char FFMSErrMsg[1024];  ///< FFMS error message
+	mutable FFMS_ErrorInfo ErrInfo; ///< FFMS error codes/messages
 
 	void LoadAudio(agi::fs::path const& filename);
-	void FillBuffer(void *Buf, int64_t Start, int64_t Count) const override {
-		if (FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo))
-			throw agi::AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
+	void FillBuffer(void* Buf, int64_t Start, int64_t Count) const override {
+		if(FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo))
+			throw agi::AudioDecodeError(std::string("Failed to get audio samples: ") +
+			                            ErrInfo.Buffer);
 	}
 
-public:
-	FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *br);
+  public:
+	FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner* br);
 
 	bool NeedsCache() const override { return true; }
 };
 
 /// @brief Constructor
 /// @param filename The filename to open
-FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *br) try
-: FFmpegSourceProvider(br)
-, AudioSource(nullptr, FFMS_DestroyAudioSource)
-{
-	ErrInfo.Buffer		= FFMSErrMsg;
-	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
-	ErrInfo.ErrorType	= FFMS_ERROR_SUCCESS;
-	ErrInfo.SubType		= FFMS_ERROR_SUCCESS;
+FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(agi::fs::path const& filename,
+                                                     agi::BackgroundRunner* br) try
+    : FFmpegSourceProvider(br), AudioSource(nullptr, FFMS_DestroyAudioSource) {
+	ErrInfo.Buffer = FFMSErrMsg;
+	ErrInfo.BufferSize = sizeof(FFMSErrMsg);
+	ErrInfo.ErrorType = FFMS_ERROR_SUCCESS;
+	ErrInfo.SubType = FFMS_ERROR_SUCCESS;
 	SetLogLevel();
 
 	LoadAudio(filename);
-}
-catch (agi::EnvironmentError const& err) {
+} catch(agi::EnvironmentError const& err) {
 	throw agi::AudioProviderError(err.GetMessage());
 }
 
 void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
-	FFMS_Indexer *Indexer = FFMS_CreateIndexer(filename.string().c_str(), &ErrInfo);
-	if (!Indexer) {
-		if (ErrInfo.SubType == FFMS_ERROR_FILE_READ)
+	FFMS_Indexer* Indexer = FFMS_CreateIndexer(filename.string().c_str(), &ErrInfo);
+	if(!Indexer) {
+		if(ErrInfo.SubType == FFMS_ERROR_FILE_READ)
 			throw agi::fs::FileNotFound(std::string(ErrInfo.Buffer));
 		else
 			throw agi::AudioDataNotFound(ErrInfo.Buffer);
@@ -95,13 +94,12 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	// initialize the track number to an invalid value so we can detect later on
 	// whether the user actually had to choose a track or not
 	int TrackNumber = -1;
-	if (TrackList.size() > 1) {
+	if(TrackList.size() > 1) {
 		auto Selection = AskForTrackSelection(TrackList, FFMS_TYPE_AUDIO);
-		if (Selection == TrackSelection::None)
+		if(Selection == TrackSelection::None)
 			throw agi::UserCancelException("audio loading canceled by user");
 		TrackNumber = static_cast<int>(Selection);
-	}
-	else if (TrackList.size() == 1)
+	} else if(TrackList.size() == 1)
 		TrackNumber = TrackList.begin()->first;
 	else
 		throw agi::AudioDataNotFound("no audio tracks found");
@@ -110,69 +108,81 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	agi::fs::path CacheName = GetCacheFilename(filename);
 
 	// try to read index
-	agi::scoped_holder<FFMS_Index*, void (FFMS_CC*)(FFMS_Index*)>
-		Index(FFMS_ReadIndex(CacheName.string().c_str(), &ErrInfo), FFMS_DestroyIndex);
+	agi::scoped_holder<FFMS_Index*, void(FFMS_CC*)(FFMS_Index*)> Index(
+	    FFMS_ReadIndex(CacheName.string().c_str(), &ErrInfo), FFMS_DestroyIndex);
 
-	if (Index && FFMS_IndexBelongsToFile(Index, filename.string().c_str(), &ErrInfo))
+	if(Index && FFMS_IndexBelongsToFile(Index, filename.string().c_str(), &ErrInfo))
 		Index = nullptr;
 
-	if (Index) {
+	if(Index) {
 		// we already have an index, but the desired track may not have been
 		// indexed, and if it wasn't we need to reindex
-		FFMS_Track *TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
-		if (FFMS_GetNumFrames(TempTrackData) <= 0)
-			Index = nullptr;
+		FFMS_Track* TempTrackData = FFMS_GetTrackFromIndex(Index, TrackNumber);
+		if(FFMS_GetNumFrames(TempTrackData) <= 0) Index = nullptr;
 	}
 
 	// reindex if the error handling mode has changed
 	FFMS_IndexErrorHandling ErrorHandling = GetErrorHandlingMode();
-	if (Index && FFMS_GetErrorHandling(Index) != ErrorHandling)
-		Index = nullptr;
+	if(Index && FFMS_GetErrorHandling(Index) != ErrorHandling) Index = nullptr;
 
 	// moment of truth
-	if (!Index) {
+	if(!Index) {
 		TrackSelection TrackMask = static_cast<TrackSelection>(TrackNumber);
-		if (OPT_GET("Provider/FFmpegSource/Index All Tracks")->GetBool())
+		if(OPT_GET("Provider/FFmpegSource/Index All Tracks")->GetBool())
 			TrackMask = TrackSelection::All;
 		Index = DoIndexing(Indexer, CacheName, TrackMask, ErrorHandling);
-	}
-	else
+	} else
 		FFMS_CancelIndexing(Indexer);
 
 	// update access time of index file so it won't get cleaned away
 	agi::fs::Touch(CacheName);
 
-	AudioSource = FFMS_CreateAudioSource(filename.string().c_str(), TrackNumber, Index, FFMS_DELAY_FIRST_VIDEO_TRACK, &ErrInfo);
-	if (!AudioSource)
+	AudioSource = FFMS_CreateAudioSource(filename.string().c_str(), TrackNumber, Index,
+	                                     FFMS_DELAY_FIRST_VIDEO_TRACK, &ErrInfo);
+	if(!AudioSource)
 		throw agi::AudioProviderError(std::string("Failed to open audio track: ") + ErrInfo.Buffer);
 
 	const FFMS_AudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
 
-	channels	= AudioInfo.Channels;
-	sample_rate	= AudioInfo.SampleRate;
+	channels = AudioInfo.Channels;
+	sample_rate = AudioInfo.SampleRate;
 	num_samples = AudioInfo.NumSamples;
 	decoded_samples = AudioInfo.NumSamples;
-	if (channels <= 0 || sample_rate <= 0 || num_samples <= 0)
+	if(channels <= 0 || sample_rate <= 0 || num_samples <= 0)
 		throw agi::AudioProviderError("sanity check failed, consult your local psychiatrist");
 
-	switch (AudioInfo.SampleFormat) {
-		case FFMS_FMT_U8:  bytes_per_sample = 1; float_samples = false; break;
-		case FFMS_FMT_S16: bytes_per_sample = 2; float_samples = false; break;
-		case FFMS_FMT_S32: bytes_per_sample = 4; float_samples = false; break;
-		case FFMS_FMT_FLT: bytes_per_sample = 4; float_samples = true; break;
-		case FFMS_FMT_DBL: bytes_per_sample = 8; float_samples = true; break;
-		default:
-			throw agi::AudioProviderError("unknown or unsupported sample format");
+	switch(AudioInfo.SampleFormat) {
+		case FFMS_FMT_U8:
+			bytes_per_sample = 1;
+			float_samples = false;
+			break;
+		case FFMS_FMT_S16:
+			bytes_per_sample = 2;
+			float_samples = false;
+			break;
+		case FFMS_FMT_S32:
+			bytes_per_sample = 4;
+			float_samples = false;
+			break;
+		case FFMS_FMT_FLT:
+			bytes_per_sample = 4;
+			float_samples = true;
+			break;
+		case FFMS_FMT_DBL:
+			bytes_per_sample = 8;
+			float_samples = true;
+			break;
+		default: throw agi::AudioProviderError("unknown or unsupported sample format");
 	}
 
-	if (channels > 1 || bytes_per_sample != 2) {
-		std::unique_ptr<FFMS_ResampleOptions, decltype(&FFMS_DestroyResampleOptions)>
-			opt(FFMS_CreateResampleOptions(AudioSource), FFMS_DestroyResampleOptions);
+	if(channels > 1 || bytes_per_sample != 2) {
+		std::unique_ptr<FFMS_ResampleOptions, decltype(&FFMS_DestroyResampleOptions)> opt(
+		    FFMS_CreateResampleOptions(AudioSource), FFMS_DestroyResampleOptions);
 		opt->ChannelLayout = FFMS_CH_FRONT_CENTER;
 		opt->SampleFormat = FFMS_FMT_S16;
 
 		// Might fail if FFMS2 wasn't built with libavresample
-		if (!FFMS_SetOutputFormatA(AudioSource, opt.get(), nullptr)) {
+		if(!FFMS_SetOutputFormatA(AudioSource, opt.get(), nullptr)) {
 			channels = 1;
 			bytes_per_sample = 2;
 			float_samples = false;
@@ -180,9 +190,10 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	}
 }
 
-}
+} // namespace
 
-std::unique_ptr<agi::AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *br) {
+std::unique_ptr<agi::AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& file,
+                                                                    agi::BackgroundRunner* br) {
 	return agi::make_unique<FFmpegSourceAudioProvider>(file, br);
 }
 

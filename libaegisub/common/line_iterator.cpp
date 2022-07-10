@@ -12,63 +12,60 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <libaegisub/line_iterator.h>
 #include <libaegisub/charset_conv.h>
+#include <libaegisub/line_iterator.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 
 namespace agi {
 
-line_iterator_base::line_iterator_base(std::istream &stream, std::string encoding)
-: stream(&stream)
-{
+line_iterator_base::line_iterator_base(std::istream& stream, std::string encoding)
+    : stream(&stream) {
 	boost::to_lower(encoding);
-	if (encoding != "utf-8") {
+	if(encoding != "utf-8") {
 		agi::charset::IconvWrapper c("utf-8", encoding.c_str());
-		c.Convert("\r", 1, reinterpret_cast<char *>(&cr), sizeof(int));
-		c.Convert("\n", 1, reinterpret_cast<char *>(&lf), sizeof(int));
+		c.Convert("\r", 1, reinterpret_cast<char*>(&cr), sizeof(int));
+		c.Convert("\n", 1, reinterpret_cast<char*>(&lf), sizeof(int));
 		width = c.RequiredBufferSize("\n");
 		conv = std::make_shared<agi::charset::IconvWrapper>(encoding.c_str(), "utf-8");
 	}
 }
 
-bool line_iterator_base::getline(std::string &str) {
-	if (!stream) return false;
-	if (!stream->good()) {
+bool line_iterator_base::getline(std::string& str) {
+	if(!stream) return false;
+	if(!stream->good()) {
 		stream = nullptr;
 		return false;
 	}
 
-	if (width == 1) {
+	if(width == 1) {
 		std::getline(*stream, str);
-		if (str.size() && str.back() == '\r')
-			str.pop_back();
-	}
-	else {
+		if(str.size() && str.back() == '\r') str.pop_back();
+	} else {
 		union {
 			int32_t chr;
 			char buf[4];
 		} u;
 
-		for (;;) {
+		for(;;) {
 			u.chr = 0;
 			std::streamsize read = stream->rdbuf()->sgetn(u.buf, width);
-			if (read < (std::streamsize)width) {
-				for (int i = 0; i < read; i++) {
+			if(read < (std::streamsize)width) {
+				for(int i = 0; i < read; i++) {
 					str += u.buf[i];
 				}
 				stream->setstate(std::ios::eofbit);
 				break;
 			}
-			if (u.chr == cr) continue;
-			if (u.chr == lf) break;
-			for (int i = 0; i < read; i++) {
+			if(u.chr == cr) continue;
+			if(u.chr == lf) break;
+			for(int i = 0; i < read; i++) {
 				str += u.buf[i];
 			}
 		}
 	}
 
-	if (conv.get()) {
+	if(conv.get()) {
 		std::string tmp;
 		conv->Convert(str, tmp);
 		str = std::move(tmp);
@@ -76,4 +73,4 @@ bool line_iterator_base::getline(std::string &str) {
 
 	return true;
 }
-}
+} // namespace agi

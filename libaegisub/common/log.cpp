@@ -25,34 +25,35 @@
 #include <boost/range/algorithm/remove_if.hpp>
 #include <chrono>
 
-namespace agi { namespace log {
+namespace agi {
+namespace log {
 
 /// Global log sink.
-LogSink *log;
+LogSink* log;
 
 /// Short Severity ID
 /// Keep this ordered the same as Severity
-const char *Severity_ID = "EAWID";
+const char* Severity_ID = "EAWID";
 
-LogSink::LogSink() : queue(dispatch::Create()) { }
+LogSink::LogSink() : queue(dispatch::Create()) {}
 
 LogSink::~LogSink() {
 	// The destructor for emitters may try to log messages, so disable all the
 	// emitters before destructing any
 	decltype(emitters) emitters_temp;
-	queue->Sync([&]{ swap(emitters_temp, emitters); });
+	queue->Sync([&] { swap(emitters_temp, emitters); });
 }
 
 void LogSink::Log(SinkMessage const& sm) {
 	queue->Async([=] {
-		if (messages.size() < 250)
+		if(messages.size() < 250)
 			messages.push_back(sm);
 		else {
 			messages[next_idx] = sm;
-			if (++next_idx == 250)
-				next_idx = 0;
+			if(++next_idx == 250) next_idx = 0;
 		}
-		for (auto& em : emitters) em->log(sm);
+		for(auto& em : emitters)
+			em->log(sm);
 	});
 }
 
@@ -62,11 +63,12 @@ void LogSink::Subscribe(std::unique_ptr<Emitter> em) {
 	queue->Sync([=] { emitters.emplace_back(tmp); });
 }
 
-void LogSink::Unsubscribe(Emitter *em) {
+void LogSink::Unsubscribe(Emitter* em) {
 	queue->Sync([=] {
 		emitters.erase(
-			boost::remove_if(emitters, [=](std::unique_ptr<Emitter> const& e) { return e.get() == em; }),
-			emitters.end());
+		    boost::remove_if(emitters,
+		                     [=](std::unique_ptr<Emitter> const& e) { return e.get() == em; }),
+		    emitters.end());
 	});
 	LOG_D("agi/log/emitter/unsubscribe") << "Un-Subscribe: " << this;
 }
@@ -81,9 +83,9 @@ decltype(LogSink::messages) LogSink::GetMessages() const {
 	return ret;
 }
 
-Message::Message(const char *section, Severity severity, const char *file, const char *func, int line)
-: msg(buffer, sizeof buffer)
-{
+Message::Message(const char* section, Severity severity, const char* file, const char* func,
+                 int line)
+    : msg(buffer, sizeof buffer) {
 	using namespace std::chrono;
 	sm.section = section;
 	sm.severity = severity;
@@ -99,22 +101,22 @@ Message::~Message() {
 }
 
 JsonEmitter::JsonEmitter(fs::path const& directory)
-: fp(new boost::filesystem::ofstream(unique_path(directory/util::strftime("%Y-%m-%d-%H-%M-%S-%%%%%%%%.json"))))
-{
-}
+    : fp(new boost::filesystem::ofstream(
+          unique_path(directory / util::strftime("%Y-%m-%d-%H-%M-%S-%%%%%%%%.json")))) {}
 
 void JsonEmitter::log(SinkMessage const& sm) {
 	json::Object entry;
-	entry["sec"]      = sm.time / 1000000000;
-	entry["usec"]     = sm.time % 1000000000;
+	entry["sec"] = sm.time / 1000000000;
+	entry["usec"] = sm.time % 1000000000;
 	entry["severity"] = sm.severity;
-	entry["section"]  = sm.section;
-	entry["file"]     = sm.file;
-	entry["func"]     = sm.func;
-	entry["line"]     = sm.line;
-	entry["message"]  = sm.message;
+	entry["section"] = sm.section;
+	entry["file"] = sm.file;
+	entry["func"] = sm.func;
+	entry["line"] = sm.line;
+	entry["message"] = sm.message;
 	agi::JsonWriter::Write(entry, *fp);
 	fp->flush();
 }
 
-} }
+} // namespace log
+} // namespace agi

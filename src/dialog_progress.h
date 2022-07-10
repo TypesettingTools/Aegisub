@@ -33,13 +33,13 @@ class wxTextCtrl;
 /// @brief Progress-bar dialog box for displaying during long operations
 class DialogProgress final : public wxDialog, public agi::BackgroundRunner {
 	friend class DialogProgressSink;
-	DialogProgressSink *ps;
+	DialogProgressSink* ps;
 
-	wxStaticText *title;
-	wxStaticText *text;
-	wxGauge *gauge;
-	wxButton *cancel_button;
-	wxTextCtrl *log_output;
+	wxStaticText* title;
+	wxStaticText* text;
+	wxGauge* gauge;
+	wxButton* cancel_button;
+	wxTextCtrl* log_output;
 
 	wxTimer pulse_timer;
 
@@ -51,18 +51,18 @@ class DialogProgress final : public wxDialog, public agi::BackgroundRunner {
 	int progress_anim_duration = 0;
 
 	void OnShow(wxShowEvent&);
-	void OnCancel(wxCommandEvent &);
+	void OnCancel(wxCommandEvent&);
 	void OnIdle(wxIdleEvent&);
 
 	void SetProgress(int target);
 
-public:
+  public:
 	/// Constructor
 	/// @param parent Parent window of the dialog
 	/// @param title Initial title of the dialog
 	/// @param message Initial message of the dialog
-	DialogProgress(wxWindow *parent, wxString const& title="", wxString const& message="");
+	DialogProgress(wxWindow* parent, wxString const& title = "", wxString const& message = "");
 
 	/// BackgroundWorker implementation
-	void Run(std::function<void(agi::ProgressSink *)> task) override;
+	void Run(std::function<void(agi::ProgressSink*)> task) override;
 };

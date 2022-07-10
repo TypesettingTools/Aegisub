@@ -41,7 +41,7 @@
 #include <libaegisub/make_unique.h>
 
 namespace {
-	using cmd::Command;
+using cmd::Command;
 
 struct reload_all final : public Command {
 	CMD_NAME("am/reload")
@@ -49,7 +49,7 @@ struct reload_all final : public Command {
 	STR_DISP("Reload Automation scripts")
 	STR_HELP("Reload all Automation scripts and rescan the autoload folder")
 
-	void operator()(agi::Context *c) override {
+	void operator()(agi::Context* c) override {
 		config::global_scripts->Reload();
 		c->local_scripts->Reload();
 		c->frame->StatusTimeout(_("Reloaded all Automation scripts"));
@@ -62,7 +62,7 @@ struct reload_autoload final : public Command {
 	STR_DISP("Reload autoload Automation scripts")
 	STR_HELP("Rescan the Automation autoload folder")
 
-	void operator()(agi::Context *c) override {
+	void operator()(agi::Context* c) override {
 		config::global_scripts->Reload();
 		c->frame->StatusTimeout(_("Reloaded autoload Automation scripts"));
 	}
@@ -75,9 +75,7 @@ struct open_manager final : public Command {
 	STR_DISP("Automation")
 	STR_HELP("Open automation manager")
 
-	void operator()(agi::Context *c) override {
-		ShowAutomationDialog(c);
-	}
+	void operator()(agi::Context* c) override { ShowAutomationDialog(c); }
 };
 
 struct meta final : public Command {
@@ -85,27 +83,27 @@ struct meta final : public Command {
 	CMD_ICON(automation_toolbutton)
 	STR_MENU("&Automation...")
 	STR_DISP("Automation")
-	STR_HELP("Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan autoload folder and reload all automation scripts")
+	STR_HELP("Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan autoload "
+	         "folder and reload all automation scripts")
 
-	void operator()(agi::Context *c) override {
-		if (wxGetMouseState().CmdDown()) {
-			if (wxGetMouseState().ShiftDown())
+	void operator()(agi::Context* c) override {
+		if(wxGetMouseState().CmdDown()) {
+			if(wxGetMouseState().ShiftDown())
 				cmd::call("am/reload", c);
 			else
 				cmd::call("am/reload/autoload", c);
-		}
-		else
+		} else
 			cmd::call("am/manager", c);
 	}
 };
 
-}
+} // namespace
 
 namespace cmd {
-	void init_automation() {
-		reg(agi::make_unique<meta>());
-		reg(agi::make_unique<open_manager>());
-		reg(agi::make_unique<reload_all>());
-		reg(agi::make_unique<reload_autoload>());
-	}
+void init_automation() {
+	reg(agi::make_unique<meta>());
+	reg(agi::make_unique<open_manager>());
+	reg(agi::make_unique<reload_all>());
+	reg(agi::make_unique<reload_autoload>());
 }
+} // namespace cmd

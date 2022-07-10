@@ -23,57 +23,57 @@
 #include <string>
 
 namespace agi {
-	/// @class ProgressSink
-	/// @brief A receiver for progress updates sent from a worker function
+/// @class ProgressSink
+/// @brief A receiver for progress updates sent from a worker function
+///
+/// Note that ProgressSinks are not required to be thread-safe. The only
+/// guarantee provided is that they can be used on the thread they are
+/// spawned on (which may or may not be the GUI thread).
+class ProgressSink {
+  public:
+	/// Virtual destructor so that things can safely inherit from this
+	virtual ~ProgressSink() {}
+
+	/// Set the progress to indeterminate
+	virtual void SetIndeterminate() = 0;
+
+	/// Set the title of the running task
+	virtual void SetTitle(std::string const& title) = 0;
+	/// Set an additional message associated with the task
+	virtual void SetMessage(std::string const& msg) = 0;
+	/// Set the current task progress
+	virtual void SetProgress(int64_t cur, int64_t max) = 0;
+
+	/// @brief Log a message
 	///
-	/// Note that ProgressSinks are not required to be thread-safe. The only
-	/// guarantee provided is that they can be used on the thread they are
-	/// spawned on (which may or may not be the GUI thread).
-	class ProgressSink {
-	public:
-		/// Virtual destructor so that things can safely inherit from this
-		virtual ~ProgressSink() { }
+	/// If any messages are logged then the dialog will not automatically close
+	/// when the task finishes so that the user has the chance to read them.
+	virtual void Log(std::string const& str) = 0;
 
-		/// Set the progress to indeterminate
-		virtual void SetIndeterminate()=0;
+	/// Has the user asked the task to cancel?
+	virtual bool IsCancelled() = 0;
+};
 
-		/// Set the title of the running task
-		virtual void SetTitle(std::string const& title)=0;
-		/// Set an additional message associated with the task
-		virtual void SetMessage(std::string const& msg)=0;
-		/// Set the current task progress
-		virtual void SetProgress(int64_t cur, int64_t max)=0;
+/// @class BackgroundRunner
+/// @brief A class which runs a function, providing it with a progress sink
+///
+/// Normally implementations of this interface will spawn a new thread to
+/// run the task on, but there are sensible implementations that may not.
+/// For example, an implementation which has no UI and simply writes the
+/// log output to a file would simply run on the main thread.
+class BackgroundRunner {
+  public:
+	/// Virtual destructor so that things can safely inherit from this
+	virtual ~BackgroundRunner() {}
 
-		/// @brief Log a message
-		///
-		/// If any messages are logged then the dialog will not automatically close
-		/// when the task finishes so that the user has the chance to read them.
-		virtual void Log(std::string const& str)=0;
-
-		/// Has the user asked the task to cancel?
-		virtual bool IsCancelled()=0;
-	};
-
-	/// @class BackgroundRunner
-	/// @brief A class which runs a function, providing it with a progress sink
+	/// @brief Run a function on a background thread
+	/// @param task Function to run
+	/// @throws agi::UserCancelException on cancel
 	///
-	/// Normally implementations of this interface will spawn a new thread to
-	/// run the task on, but there are sensible implementations that may not.
-	/// For example, an implementation which has no UI and simply writes the
-	/// log output to a file would simply run on the main thread.
-	class BackgroundRunner {
-	public:
-		/// Virtual destructor so that things can safely inherit from this
-		virtual ~BackgroundRunner() { }
-
-		/// @brief Run a function on a background thread
-		/// @param task Function to run
-		/// @throws agi::UserCancelException on cancel
-		///
-		/// Blocks the calling thread until the task completes or is canceled.
-		/// Progress updates sent to the progress sink passed to the task should
-		/// be displayed to the user in some way, along with some way for the
-		/// user to cancel the task.
-		virtual void Run(std::function<void(ProgressSink *)> task)=0;
-	};
-}
+	/// Blocks the calling thread until the task completes or is canceled.
+	/// Progress updates sent to the progress sink passed to the task should
+	/// be displayed to the user in some way, along with some way for the
+	/// user to cancel the task.
+	virtual void Run(std::function<void(ProgressSink*)> task) = 0;
+};
+} // namespace agi

@@ -21,13 +21,13 @@
 #include <string>
 
 namespace agi {
-	/// Character set conversion and detection.
-	namespace charset {
+/// Character set conversion and detection.
+namespace charset {
 
 /// @brief Returns the character set with the highest confidence
 /// @param file File to check
 /// @return Detected character set.
 std::string Detect(agi::fs::path const& file);
 
-	} // namespace util
+} // namespace charset
 } // namespace agi

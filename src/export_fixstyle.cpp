@@ -34,8 +34,8 @@
 
 #include "export_fixstyle.h"
 
-#include "ass_file.h"
 #include "ass_dialogue.h"
+#include "ass_file.h"
 #include "compat.h"
 
 #include <algorithm>
@@ -43,17 +43,20 @@
 #include <wx/intl.h>
 
 AssFixStylesFilter::AssFixStylesFilter()
-: AssExportFilter(from_wx(_("Fix Styles")), from_wx(_("Fixes styles by replacing any style that isn't available on file with Default.")), -5000)
-{
-}
+    : AssExportFilter(
+          from_wx(_("Fix Styles")),
+          from_wx(
+              _("Fixes styles by replacing any style that isn't available on file with Default.")),
+          -5000) {}
 
-void AssFixStylesFilter::ProcessSubs(AssFile *subs) {
+void AssFixStylesFilter::ProcessSubs(AssFile* subs) {
 	auto styles = subs->GetStyles();
-	for (auto& str : styles) boost::to_lower(str);
+	for(auto& str : styles)
+		boost::to_lower(str);
 	sort(begin(styles), end(styles));
 
-	for (auto& diag : subs->Events) {
-		if (!binary_search(begin(styles), end(styles), boost::to_lower_copy(diag.Style.get())))
+	for(auto& diag : subs->Events) {
+		if(!binary_search(begin(styles), end(styles), boost::to_lower_copy(diag.Style.get())))
 			diag.Style = "Default";
 	}
 }

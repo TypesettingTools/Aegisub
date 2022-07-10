@@ -21,10 +21,11 @@
 class wxBitmap;
 class wxIcon;
 
-wxBitmap libresrc_getimage(const unsigned char *image, size_t size, double scale=1.0, int dir=0);
-wxIcon libresrc_geticon(const unsigned char *image, size_t size);
+wxBitmap libresrc_getimage(const unsigned char* image, size_t size, double scale = 1.0,
+                           int dir = 0);
+wxIcon libresrc_geticon(const unsigned char* image, size_t size);
 #define GETIMAGE(a) libresrc_getimage(a, sizeof(a))
 #define GETIMAGEDIR(a, s, d) libresrc_getimage(a, sizeof(a), s, d)
 #define GETICON(a) libresrc_geticon(a, sizeof(a))
 
-#define GET_DEFAULT_CONFIG(a) std::make_pair(reinterpret_cast<const char *>(a), sizeof(a))
+#define GET_DEFAULT_CONFIG(a) std::make_pair(reinterpret_cast<const char*>(a), sizeof(a))

@@ -41,9 +41,9 @@
 /// @brief Cache for blocks of data in a stream or similar
 /// @tparam BlockT             Type of blocks to store
 /// @tparam MacroblockExponent Controls the number of blocks per macroblock, for tuning memory usage
-/// @tparam BlockFactoryT      Type of block factory, see BasicDataBlockFactory class for detail on these
-template <typename BlockT, int MacroblockExponent, typename BlockFactoryT>
-class DataBlockCache {
+/// @tparam BlockFactoryT      Type of block factory, see BasicDataBlockFactory class for detail on
+/// these
+template <typename BlockT, int MacroblockExponent, typename BlockFactoryT> class DataBlockCache {
 	/// Type of an array of blocks
 	typedef std::vector<typename BlockFactoryT::BlockType> BlockArray;
 
@@ -82,10 +82,8 @@ class DataBlockCache {
 
 	/// @brief Dispose of all blocks in a macroblock and mark it empty
 	/// @param mb_index Index of macroblock to clear
-	void KillMacroBlock(MacroBlock &mb)
-	{
-		if (mb.blocks.empty())
-			return;
+	void KillMacroBlock(MacroBlock& mb) {
+		if(mb.blocks.empty()) return;
 
 		auto& ba = mb.blocks;
 		size -= (ba.size() - std::count(ba.begin(), ba.end(), nullptr)) * factory.GetBlockSize();
@@ -94,7 +92,7 @@ class DataBlockCache {
 		age.erase(mb.position);
 	}
 
-public:
+  public:
 	/// @brief Constructor
 	/// @param block_count Total number of blocks the cache will manage
 	/// @param factory     Factory object to use for producing blocks
@@ -104,8 +102,7 @@ public:
 	///
 	/// The factory object passed must respond well to copying.
 	DataBlockCache(size_t block_count, BlockFactoryT factory = BlockFactoryT())
-	: factory(std::move(factory))
-	{
+	    : factory(std::move(factory)) {
 		SetBlockCount(block_count);
 	}
 
@@ -116,10 +113,8 @@ public:
 	/// @param block_count New number of blocks to hold
 	///
 	/// This will completely de-allocate the cache and re-allocate it with the new block count.
-	void SetBlockCount(size_t block_count)
-	{
-		if (data.size() > 0)
-			Age(0);
+	void SetBlockCount(size_t block_count) {
+		if(data.size() > 0) Age(0);
 
 		macroblock_size = 1UL << MacroblockExponent;
 		macroblock_index_mask = macroblock_size - 1;
@@ -136,11 +131,9 @@ public:
 	///
 	/// The max_size is not a hard limit, the cache size might somewhat exceed the max
 	/// after the aging operation, though it shouldn't be by much.
-	void Age(size_t max_size)
-	{
+	void Age(size_t max_size) {
 		// Quick way out: get rid of everything
-		if (max_size == 0)
-		{
+		if(max_size == 0) {
 			size_t block_count = data.size();
 			data.clear();
 			data.resize(block_count);
@@ -150,30 +143,28 @@ public:
 		}
 
 		// Remove old entries until we're under the max size
-		for (auto it = age.rbegin(); size > max_size && it != age.rend(); it++)
+		for(auto it = age.rbegin(); size > max_size && it != age.rend(); it++)
 			KillMacroBlock(**it);
 	}
 
 	/// @brief Obtain a data block from the cache
 	/// @param      i       Index of the block to retrieve
-	/// @param[out] created On return, tells whether the returned block was created during the operation
+	/// @param[out] created On return, tells whether the returned block was created during the
+	/// operation
 	/// @return A pointer to the block in cache
 	///
 	/// It is legal to pass 0 (null) for created, in this case nothing is returned in it.
-	BlockT& Get(size_t i, bool *created = nullptr)
-	{
+	BlockT& Get(size_t i, bool* created = nullptr) {
 		size_t mbi = i >> MacroblockExponent;
 		assert(mbi < data.size());
 
-		auto &mb = data[mbi];
+		auto& mb = data[mbi];
 
 		// Move this macroblock to the front of the age list
-		if (mb.blocks.empty())
-		{
+		if(mb.blocks.empty()) {
 			mb.blocks.resize(macroblock_size);
 			age.push_front(&mb);
-		}
-		else if (mb.position != begin(age))
+		} else if(mb.position != begin(age))
 			age.splice(begin(age), age, mb.position);
 
 		mb.position = age.begin();
@@ -181,19 +172,17 @@ public:
 		size_t block_index = i & macroblock_index_mask;
 		assert(block_index < mb.blocks.size());
 
-		BlockT *b = mb.blocks[block_index].get();
+		BlockT* b = mb.blocks[block_index].get();
 
-		if (!b)
-		{
+		if(!b) {
 			mb.blocks[block_index] = factory.ProduceBlock(i);
 			b = mb.blocks[block_index].get();
 			assert(b != nullptr);
 			size += factory.GetBlockSize();
 
-			if (created) *created = true;
-		}
-		else
-			if (created) *created = false;
+			if(created) *created = true;
+		} else if(created)
+			*created = false;
 
 		return *b;
 	}

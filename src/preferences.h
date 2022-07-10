@@ -26,26 +26,29 @@
 
 class wxButton;
 class wxTreebook;
-namespace agi { class OptionValue; }
+namespace agi {
+class OptionValue;
+}
 
 class Preferences final : public wxDialog {
-public:
-	typedef std::function<void ()> Thunk;
-private:
-	wxTreebook *book;
-	wxButton *applyButton;
+  public:
+	typedef std::function<void()> Thunk;
+
+  private:
+	wxTreebook* book;
+	wxButton* applyButton;
 
 	std::map<std::string, std::unique_ptr<agi::OptionValue>> pending_changes;
 	std::vector<Thunk> pending_callbacks;
 	std::vector<std::string> option_names;
 
-	void OnOK(wxCommandEvent &);
-	void OnCancel(wxCommandEvent &);
-	void OnApply(wxCommandEvent &);
+	void OnOK(wxCommandEvent&);
+	void OnCancel(wxCommandEvent&);
+	void OnApply(wxCommandEvent&);
 	void OnResetDefault(wxCommandEvent&);
 
-public:
-	Preferences(wxWindow *parent);
+  public:
+	Preferences(wxWindow* parent);
 
 	/// Add an option to be set when the OK or Apply button is clicked
 	/// @param new_value Clone of the option with the new value to copy over

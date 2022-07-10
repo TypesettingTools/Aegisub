@@ -39,7 +39,7 @@
 
 class FrameMain;
 namespace agi {
-	struct Context;
+struct Context;
 }
 
 class AegisubApp : public wxApp {
@@ -53,14 +53,16 @@ class AegisubApp : public wxApp {
 	void OnFatalException() override;
 	bool OnExceptionInMainLoop() override;
 
-	void OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg) override;
+	void OnAssertFailure(const wxChar* file, int line, const wxChar* func, const wxChar* cond,
+	                     const wxChar* msg) override;
 
 	void UnhandledException(bool);
 
 	void OpenFiles(wxArrayStringsAdapter filenames);
 
-	std::vector<FrameMain *> frames;
-public:
+	std::vector<FrameMain*> frames;
+
+  public:
 	AegisubApp();
 	AegisubLocale locale;
 
@@ -70,9 +72,9 @@ public:
 	// Apple events
 	void MacOpenFiles(wxArrayString const& filenames)
 #ifdef __APPLE__
-		override
+	    override
 #endif
-	;
+	    ;
 };
 
 wxDECLARE_APP(AegisubApp);

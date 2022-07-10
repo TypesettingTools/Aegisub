@@ -18,33 +18,34 @@
 #include <memory>
 
 namespace agi {
-	namespace dispatch {
-		typedef std::function<void()> Thunk;
+namespace dispatch {
+typedef std::function<void()> Thunk;
 
-		class Queue {
-			virtual void DoInvoke(Thunk thunk)=0;
-		public:
-			virtual ~Queue() { }
+class Queue {
+	virtual void DoInvoke(Thunk thunk) = 0;
 
-			/// Invoke the thunk on this processing queue, returning immediately
-			void Async(Thunk thunk);
+  public:
+	virtual ~Queue() {}
 
-			/// Invoke the thunk on this processing queue, returning only when
-			/// it's complete
-			void Sync(Thunk thunk);
-		};
+	/// Invoke the thunk on this processing queue, returning immediately
+	void Async(Thunk thunk);
 
-		/// Initialize the dispatch thread pools
-		/// @param invoke_main A function which invokes the thunk on the GUI thread
-		void Init(std::function<void (Thunk)> invoke_main);
+	/// Invoke the thunk on this processing queue, returning only when
+	/// it's complete
+	void Sync(Thunk thunk);
+};
 
-		/// Get the main queue, which runs on the GUI thread
-		Queue& Main();
+/// Initialize the dispatch thread pools
+/// @param invoke_main A function which invokes the thunk on the GUI thread
+void Init(std::function<void(Thunk)> invoke_main);
 
-		/// Get the generic background queue, which runs thunks in parallel
-		Queue& Background();
+/// Get the main queue, which runs on the GUI thread
+Queue& Main();
 
-		/// Create a new serial queue
-		std::unique_ptr<Queue> Create();
-	}
-}
+/// Get the generic background queue, which runs thunks in parallel
+Queue& Background();
+
+/// Create a new serial queue
+std::unique_ptr<Queue> Create();
+} // namespace dispatch
+} // namespace agi

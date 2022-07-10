@@ -18,9 +18,11 @@
 #include <string>
 
 class SubtitlesProvider;
-namespace agi { class BackgroundRunner; }
+namespace agi {
+class BackgroundRunner;
+}
 
 namespace libass {
-	std::unique_ptr<SubtitlesProvider> Create(std::string const&, agi::BackgroundRunner *br);
-	void CacheFonts();
-}
+std::unique_ptr<SubtitlesProvider> Create(std::string const&, agi::BackgroundRunner* br);
+void CacheFonts();
+} // namespace libass

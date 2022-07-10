@@ -18,7 +18,9 @@
 /// @see persist_location.cpp
 /// @ingroup utility
 
-namespace agi { class OptionValue; }
+namespace agi {
+class OptionValue;
+}
 class wxDialog;
 class wxMoveEvent;
 class wxSizeEvent;
@@ -33,20 +35,20 @@ class wxSizeEvent;
 /// recreated in the future. This class should always have lifetime equal to
 /// the associated dialog, as it does not unbind its events.
 class PersistLocation {
-	agi::OptionValue *x_opt;
-	agi::OptionValue *y_opt;
-	agi::OptionValue *w_opt;
-	agi::OptionValue *h_opt;
-	agi::OptionValue *maximize_opt;
-	wxDialog *dialog;
+	agi::OptionValue* x_opt;
+	agi::OptionValue* y_opt;
+	agi::OptionValue* w_opt;
+	agi::OptionValue* h_opt;
+	agi::OptionValue* maximize_opt;
+	wxDialog* dialog;
 
 	void OnMove(wxMoveEvent&);
 	void OnSize(wxSizeEvent&);
 
-public:
+  public:
 	/// Persist the location of a dialog
 	/// @param dialog The dialog to save and restore the position of
 	/// @param options_prefix Prefix for the options names to store the location
 	/// @param size_too Save and restore the size in addition to position
-	PersistLocation(wxDialog *dialog, std::string options_prefix, bool size_too = false);
+	PersistLocation(wxDialog* dialog, std::string options_prefix, bool size_too = false);
 };

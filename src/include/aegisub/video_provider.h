@@ -42,25 +42,25 @@
 struct VideoFrame;
 
 class VideoProvider {
-public:
+  public:
 	virtual ~VideoProvider() = default;
 
 	/// Override this method to actually get frames
-	virtual void GetFrame(int n, VideoFrame &frame)=0;
+	virtual void GetFrame(int n, VideoFrame& frame) = 0;
 
 	/// Set the YCbCr matrix to the specified one
 	///
 	/// Providers are free to disregard this, and should if the requested
 	/// matrix makes no sense or the input isn't YCbCr.
-	virtual void SetColorSpace(std::string const& matrix)=0;
+	virtual void SetColorSpace(std::string const& matrix) = 0;
 
 	// Override the following methods to get video information:
-	virtual int GetFrameCount() const=0;			///< Get total number of frames
-	virtual int GetWidth() const=0;					///< Returns the video width in pixels
-	virtual int GetHeight() const=0;				///< Returns the video height in pixels
-	virtual double GetDAR() const=0;				///< Returns the video display aspect ratio
-	virtual agi::vfr::Framerate GetFPS() const=0;	///< Get frame rate
-	virtual std::vector<int> GetKeyFrames() const=0;///< Returns list of keyframes
+	virtual int GetFrameCount() const = 0;             ///< Get total number of frames
+	virtual int GetWidth() const = 0;                  ///< Returns the video width in pixels
+	virtual int GetHeight() const = 0;                 ///< Returns the video height in pixels
+	virtual double GetDAR() const = 0;                 ///< Returns the video display aspect ratio
+	virtual agi::vfr::Framerate GetFPS() const = 0;    ///< Get frame rate
+	virtual std::vector<int> GetKeyFrames() const = 0; ///< Returns list of keyframes
 
 	/// Get the source colorspace of the video before it was converted to RGB
 	/// @return A string describing the source colorspace or "None" if it is
@@ -68,7 +68,8 @@ public:
 	virtual std::string GetColorSpace() const = 0;
 	virtual std::string GetRealColorSpace() const { return GetColorSpace(); }
 
-	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
+	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable
+	/// seeking"
 	virtual std::string GetWarning() const { return ""; }
 
 	/// @brief Name of decoder, e.g. "Avisynth/FFMpegSource"
@@ -78,7 +79,8 @@ public:
 	/// @return Returns true if caching is desired, false otherwise.
 	virtual bool WantsCaching() const { return false; }
 
-	/// Should the video properties in the script be set to this video's property if they already have values?
+	/// Should the video properties in the script be set to this video's property if they already
+	/// have values?
 	virtual bool ShouldSetVideoProperties() const { return true; }
 
 	/// Does the file which this provider is reading have an audio track?

@@ -37,24 +37,17 @@
 #include <boost/intrusive/list_hook.hpp>
 #include <string>
 
-enum class AssEntryGroup {
-	INFO = 0,
-	STYLE,
-	FONT,
-	GRAPHIC,
-	DIALOGUE,
-	EXTRADATA,
-	GROUP_MAX
-};
+enum class AssEntryGroup { INFO = 0, STYLE, FONT, GRAPHIC, DIALOGUE, EXTRADATA, GROUP_MAX };
 
-using AssEntryListHook = boost::intrusive::make_list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>>::type;
+using AssEntryListHook = boost::intrusive::make_list_base_hook<
+    boost::intrusive::link_mode<boost::intrusive::auto_unlink>>::type;
 
 class AssEntry {
-public:
+  public:
 	virtual ~AssEntry() = default;
 
 	/// Section of the file this entry belongs to
-	virtual AssEntryGroup Group() const=0;
+	virtual AssEntryGroup Group() const = 0;
 
 	/// ASS or SSA Section header for this entry's group
 	std::string const& GroupHeader() const;

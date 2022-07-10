@@ -19,21 +19,20 @@
 #include <boost/locale/conversion.hpp>
 
 namespace {
-template<std::string (*func)(const char *, std::locale const&)>
-char *wrap(const char *str, char **err) {
+template <std::string (*func)(const char*, std::locale const&)>
+char* wrap(const char* str, char** err) {
 	try {
 		return agi::lua::strndup(func(str, std::locale()));
-	} catch (std::exception const& e) {
+	} catch(std::exception const& e) {
 		*err = strdup(e.what());
 		return nullptr;
 	}
 }
-}
+} // namespace
 
-extern "C" int luaopen_unicode_impl(lua_State *L) {
-	agi::lua::register_lib_table(L, {},
-		"to_upper_case", wrap<boost::locale::to_upper<char>>,
-		"to_lower_case", wrap<boost::locale::to_lower<char>>,
-		"to_fold_case", wrap<boost::locale::fold_case<char>>);
+extern "C" int luaopen_unicode_impl(lua_State* L) {
+	agi::lua::register_lib_table(L, {}, "to_upper_case", wrap<boost::locale::to_upper<char>>,
+	                             "to_lower_case", wrap<boost::locale::to_lower<char>>,
+	                             "to_fold_case", wrap<boost::locale::fold_case<char>>);
 	return 1;
 }

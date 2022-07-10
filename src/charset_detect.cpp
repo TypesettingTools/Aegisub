@@ -47,16 +47,14 @@ namespace CharSetDetect {
 
 std::string GetEncoding(agi::fs::path const& filename) {
 	auto encoding = agi::charset::Detect(filename);
-	if (!encoding.empty())
-		return encoding;
+	if(!encoding.empty()) return encoding;
 
 	auto choices = agi::charset::GetEncodingsList<wxArrayString>();
-	int choice = wxGetSingleChoiceIndex(
-		_("Aegisub could not narrow down the character set to a single one.\nPlease pick one below:"),
-		_("Choose character set"),
-		choices);
-	if (choice == -1) throw agi::UserCancelException("Cancelled encoding selection");
+	int choice = wxGetSingleChoiceIndex(_("Aegisub could not narrow down the character set to a "
+	                                      "single one.\nPlease pick one below:"),
+	                                    _("Choose character set"), choices);
+	if(choice == -1) throw agi::UserCancelException("Cancelled encoding selection");
 	return from_wx(choices[choice]);
 }
 
-}
+} // namespace CharSetDetect

@@ -30,7 +30,7 @@ class AssAttachment final : public AssEntry {
 
 	AssEntryGroup group;
 
-public:
+  public:
 	/// Get the size of the attached file in bytes
 	size_t GetSize() const;
 
@@ -43,7 +43,7 @@ public:
 
 	/// Get the name of the attached file
 	/// @param raw If false, remove the SSA filename mangling
-	std::string GetFileName(bool raw=false) const;
+	std::string GetFileName(bool raw = false) const;
 
 	std::string const& GetEntryData() const { return entry_data; }
 	AssEntryGroup Group() const override;

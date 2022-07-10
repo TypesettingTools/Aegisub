@@ -25,9 +25,9 @@
 /// @class VisualToolDragDraggableFeature
 /// @brief VisualDraggableFeature with a time value
 class VisualToolDragDraggableFeature final : public VisualDraggableFeature {
-public:
+  public:
 	int time = 0;
-	VisualToolDragDraggableFeature *parent = nullptr;
+	VisualToolDragDraggableFeature* parent = nullptr;
 };
 
 class wxBitmapButton;
@@ -38,14 +38,14 @@ class wxToolBar;
 /// @brief Moveable features for the positions of each visible line
 class VisualToolDrag final : public VisualTool<VisualToolDragDraggableFeature> {
 	/// The subtoolbar for the move/pos conversion button
-	wxToolBar *toolbar;
+	wxToolBar* toolbar;
 	/// The feature last clicked on for the double-click handler
 	/// Equal to curFeature during drags; possibly different at all other times
 	/// nullptr if no features have been clicked on or the last clicked on one no
 	/// longer exists
-	Feature *primary = nullptr;
+	Feature* primary = nullptr;
 	/// The last announced selection set
-	std::vector<AssDialogue *> selection;
+	std::vector<AssDialogue*> selection;
 
 	/// When the button is pressed, will it convert the line to a move (vs. from
 	/// move to pos)? Used to avoid changing the button's icon unnecessarily
@@ -54,8 +54,8 @@ class VisualToolDrag final : public VisualTool<VisualToolDragDraggableFeature> {
 	/// @brief Create the features for a line
 	/// @param diag Line to create the features for
 	/// @param pos Insertion point in the feature list
-	void MakeFeatures(AssDialogue *diag, feature_list::iterator pos);
-	void MakeFeatures(AssDialogue *diag);
+	void MakeFeatures(AssDialogue* diag, feature_list::iterator pos);
+	void MakeFeatures(AssDialogue* diag);
 
 	void OnSelectedSetChanged();
 
@@ -64,15 +64,16 @@ class VisualToolDrag final : public VisualTool<VisualToolDragDraggableFeature> {
 	void OnLineChanged() override;
 	void OnCoordinateSystemsChanged() override { OnFileChanged(); }
 
-	bool InitializeDrag(Feature *feature) override;
-	void UpdateDrag(Feature *feature) override;
+	bool InitializeDrag(Feature* feature) override;
+	void UpdateDrag(Feature* feature) override;
 	void Draw() override;
 	void OnDoubleClick() override;
 
 	/// Set the pos/move button to the correct icon based on the active line
 	void UpdateToggleButtons();
-	void OnSubTool(wxCommandEvent &event);
-public:
-	VisualToolDrag(VideoDisplay *parent, agi::Context *context);
-	void SetToolbar(wxToolBar *tb) override;
+	void OnSubTool(wxCommandEvent& event);
+
+  public:
+	VisualToolDrag(VideoDisplay* parent, agi::Context* context);
+	void SetToolbar(wxToolBar* tb) override;
 };

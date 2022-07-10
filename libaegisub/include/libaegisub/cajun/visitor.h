@@ -10,8 +10,7 @@ Author: Terry Caton
 
 #include "elements.h"
 
-namespace json
-{
+namespace json {
 
 struct Visitor {
 	virtual ~Visitor() = default;
@@ -37,4 +36,4 @@ struct ConstVisitor {
 	virtual void Visit(const Null& null) = 0;
 };
 
-} // End namespace
+} // namespace json

@@ -18,19 +18,18 @@
 #include "include/aegisub/context.h"
 #include "selection_controller.h"
 
-InitialLineState::InitialLineState(agi::Context *c)
-: active_line_connection(c->selectionController->AddActiveLineListener(&InitialLineState::OnActiveLineChanged, this))
-{
+InitialLineState::InitialLineState(agi::Context* c)
+    : active_line_connection(c->selectionController->AddActiveLineListener(
+          &InitialLineState::OnActiveLineChanged, this)) {
 	OnActiveLineChanged(c->selectionController->GetActiveLine());
 }
 
-void InitialLineState::OnActiveLineChanged(AssDialogue *new_line) {
-	if (new_line) {
-		if (new_line->Id == line_id) return;
+void InitialLineState::OnActiveLineChanged(AssDialogue* new_line) {
+	if(new_line) {
+		if(new_line->Id == line_id) return;
 		line_id = new_line->Id;
 		initial_text = new_line->Text;
-	}
-	else {
+	} else {
 		line_id = 0;
 		initial_text.clear();
 	}

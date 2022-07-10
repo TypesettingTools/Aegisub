@@ -43,19 +43,19 @@
 #include <libaegisub/log.h>
 #include <libaegisub/make_unique.h>
 
-#include <mmsystem.h>
 #include <dsound.h>
+#include <mmsystem.h>
 
 namespace {
 class DirectSoundPlayer;
 
 class DirectSoundPlayerThread final : public wxThread {
-	DirectSoundPlayer *parent;
+	DirectSoundPlayer* parent;
 	HANDLE stopnotify;
 
-public:
+  public:
 	void Stop(); // Notify thread to stop audio playback. Thread safe.
-	DirectSoundPlayerThread(DirectSoundPlayer *parent);
+	DirectSoundPlayerThread(DirectSoundPlayer* parent);
 	~DirectSoundPlayerThread();
 
 	wxThread::ExitCode Entry();
@@ -74,17 +74,17 @@ class DirectSoundPlayer final : public AudioPlayer {
 	volatile int64_t endPos = 0;
 	DWORD startTime = 0;
 
-	IDirectSound8 *directSound = nullptr;
-	IDirectSoundBuffer8 *buffer = nullptr;
+	IDirectSound8* directSound = nullptr;
+	IDirectSoundBuffer8* buffer = nullptr;
 
 	bool FillBuffer(bool fill);
-	DirectSoundPlayerThread *thread = nullptr;
+	DirectSoundPlayerThread* thread = nullptr;
 
-public:
-	DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *parent);
+  public:
+	DirectSoundPlayer(agi::AudioProvider* provider, wxWindow* parent);
 	~DirectSoundPlayer();
 
-	void Play(int64_t start,int64_t count);
+	void Play(int64_t start, int64_t count);
 	void Stop();
 
 	bool IsPlaying() { return playing; }
@@ -96,16 +96,16 @@ public:
 	void SetVolume(double vol) { volume = vol; }
 };
 
-DirectSoundPlayer::DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *parent)
-: AudioPlayer(provider)
-{
+DirectSoundPlayer::DirectSoundPlayer(agi::AudioProvider* provider, wxWindow* parent)
+    : AudioPlayer(provider) {
 	// Initialize the DirectSound object
 	HRESULT res;
-	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback,&directSound,nullptr); // TODO: support selecting audio device
-	if (FAILED(res)) throw AudioPlayerOpenError("Failed initializing DirectSound");
+	res = DirectSoundCreate8(&DSDEVID_DefaultPlayback, &directSound,
+	                         nullptr); // TODO: support selecting audio device
+	if(FAILED(res)) throw AudioPlayerOpenError("Failed initializing DirectSound");
 
 	// Set DirectSound parameters
-	directSound->SetCooperativeLevel((HWND)parent->GetHandle(),DSSCL_PRIORITY);
+	directSound->SetCooperativeLevel((HWND)parent->GetHandle(), DSSCL_PRIORITY);
 
 	// Create the wave format structure
 	WAVEFORMATEX waveFormat;
@@ -118,10 +118,10 @@ DirectSoundPlayer::DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *par
 	waveFormat.cbSize = sizeof(waveFormat);
 
 	// Create the buffer initializer
-	int aim = waveFormat.nAvgBytesPerSec * 15/100; // 150 ms buffer
+	int aim = waveFormat.nAvgBytesPerSec * 15 / 100; // 150 ms buffer
 	int min = DSBSIZE_MIN;
 	int max = DSBSIZE_MAX;
-	bufSize = std::min(std::max(min,aim),max);
+	bufSize = std::min(std::max(min, aim), max);
 	DSBUFFERDESC desc;
 	desc.dwSize = sizeof(DSBUFFERDESC);
 	desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS;
@@ -131,13 +131,13 @@ DirectSoundPlayer::DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *par
 	desc.guid3DAlgorithm = GUID_NULL;
 
 	// Create the buffer
-	IDirectSoundBuffer *buf;
-	res = directSound->CreateSoundBuffer(&desc,&buf,nullptr);
-	if (res != DS_OK) throw AudioPlayerOpenError("Failed creating DirectSound buffer");
+	IDirectSoundBuffer* buf;
+	res = directSound->CreateSoundBuffer(&desc, &buf, nullptr);
+	if(res != DS_OK) throw AudioPlayerOpenError("Failed creating DirectSound buffer");
 
 	// Copy interface to buffer
-	res = buf->QueryInterface(IID_IDirectSoundBuffer8,(LPVOID*) &buffer);
-	if (res != S_OK) throw AudioPlayerOpenError("Failed casting interface to IDirectSoundBuffer8");
+	res = buf->QueryInterface(IID_IDirectSoundBuffer8, (LPVOID*)&buffer);
+	if(res != S_OK) throw AudioPlayerOpenError("Failed casting interface to IDirectSoundBuffer8");
 
 	// Set data
 	offset = 0;
@@ -146,15 +146,13 @@ DirectSoundPlayer::DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *par
 DirectSoundPlayer::~DirectSoundPlayer() {
 	Stop();
 
-	if (buffer)
-		buffer->Release();
+	if(buffer) buffer->Release();
 
-	if (directSound)
-		directSound->Release();
+	if(directSound) directSound->Release();
 }
 
 bool DirectSoundPlayer::FillBuffer(bool fill) {
-	if (playPos >= endPos) return false;
+	if(playPos >= endPos) return false;
 
 	// Variables
 	HRESULT res;
@@ -164,30 +162,29 @@ bool DirectSoundPlayer::FillBuffer(bool fill) {
 
 	// To write length
 	int toWrite = 0;
-	if (fill) {
+	if(fill) {
 		toWrite = bufSize;
-	}
-	else {
+	} else {
 		DWORD bufplay;
 		res = buffer->GetCurrentPosition(&bufplay, nullptr);
-		if (FAILED(res)) return false;
+		if(FAILED(res)) return false;
 		toWrite = (int)bufplay - (int)offset;
-		if (toWrite < 0) toWrite += bufSize;
+		if(toWrite < 0) toWrite += bufSize;
 	}
-	if (toWrite == 0) return true;
+	if(toWrite == 0) return true;
 
 	// Make sure we only get as many samples as are available
-	if (playPos + toWrite/bytesps > endPos) {
+	if(playPos + toWrite / bytesps > endPos) {
 		toWrite = (endPos - playPos) * bytesps;
 	}
 
 	// If we're going to fill the entire buffer (ie. at start of playback) start by zeroing it out
 	// If it's not zeroed out we might have a playback selection shorter than the buffer
 	// and then everything after the playback selection will be junk, which we don't want played.
-	if (fill) {
-RetryClear:
+	if(fill) {
+	RetryClear:
 		res = buffer->Lock(0, bufSize, &ptr1, &size1, &ptr2, &size2, 0);
-		if (res == DSERR_BUFFERLOST) {
+		if(res == DSERR_BUFFERLOST) {
 			buffer->Restore();
 			goto RetryClear;
 		}
@@ -198,43 +195,45 @@ RetryClear:
 
 	// Lock buffer
 RetryLock:
-	if (fill) {
+	if(fill) {
 		res = buffer->Lock(offset, toWrite, &ptr1, &size1, &ptr2, &size2, 0);
-	}
-	else {
-		res = buffer->Lock(offset, toWrite, &ptr1, &size1, &ptr2, &size2, 0);//DSBLOCK_FROMWRITECURSOR);
+	} else {
+		res = buffer->Lock(offset, toWrite, &ptr1, &size1, &ptr2, &size2,
+		                   0); // DSBLOCK_FROMWRITECURSOR);
 	}
 
 	// Buffer lost?
-	if (res == DSERR_BUFFERLOST) {
+	if(res == DSERR_BUFFERLOST) {
 		LOG_D("audio/player/dsound1") << "lost dsound buffer";
 		buffer->Restore();
 		goto RetryLock;
 	}
 
-	if (FAILED(res)) return false;
+	if(FAILED(res)) return false;
 
 	// Convert size to number of samples
 	unsigned long int count1 = size1 / bytesps;
 	unsigned long int count2 = size2 / bytesps;
 
-	LOG_D_IF(count1, "audio/player/dsound1") << "DS fill: " << (unsigned long)playPos << " -> " << (unsigned long)playPos+count1;
-	LOG_D_IF(count2, "audio/player/dsound1") << "DS fill: " << (unsigned long)playPos+count1 << " -> " << (unsigned long)playPos+count1+count2;
+	LOG_D_IF(count1, "audio/player/dsound1")
+	    << "DS fill: " << (unsigned long)playPos << " -> " << (unsigned long)playPos + count1;
+	LOG_D_IF(count2, "audio/player/dsound1") << "DS fill: " << (unsigned long)playPos + count1
+	                                         << " -> " << (unsigned long)playPos + count1 + count2;
 	LOG_D_IF(!count1 && !count2, "audio/player/dsound1") << "DS fill: nothing";
 
 	// Get source wave
-	if (count1) provider->GetAudioWithVolume(ptr1, playPos, count1, volume);
-	if (count2) provider->GetAudioWithVolume(ptr2, playPos+count1, count2, volume);
-	playPos += count1+count2;
+	if(count1) provider->GetAudioWithVolume(ptr1, playPos, count1, volume);
+	if(count2) provider->GetAudioWithVolume(ptr2, playPos + count1, count2, volume);
+	playPos += count1 + count2;
 
-	buffer->Unlock(ptr1,count1*bytesps,ptr2,count2*bytesps);
+	buffer->Unlock(ptr1, count1 * bytesps, ptr2, count2 * bytesps);
 
-	offset = (offset + count1*bytesps + count2*bytesps) % bufSize;
+	offset = (offset + count1 * bytesps + count2 * bytesps) % bufSize;
 
 	return playPos < endPos;
 }
 
-void DirectSoundPlayer::Play(int64_t start,int64_t count) {
+void DirectSoundPlayer::Play(int64_t start, int64_t count) {
 	// Make sure that it's stopped
 	Stop();
 	// The thread is now guaranteed dead
@@ -246,7 +245,7 @@ void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 
 	// Set variables
 	startPos = start;
-	endPos = start+count;
+	endPos = start + count;
 	playPos = start;
 	offset = 0;
 
@@ -254,7 +253,7 @@ void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 	FillBuffer(true);
 
 	DWORD play_flag = 0;
-	if (count*provider->GetBytesPerSample() > bufSize) {
+	if(count * provider->GetBytesPerSample() > bufSize) {
 		// Start thread
 		thread = new DirectSoundPlayerThread(this);
 		thread->Create();
@@ -264,15 +263,15 @@ void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 
 	// Play
 	buffer->SetCurrentPosition(0);
-	res = buffer->Play(0,0,play_flag);
-	if (SUCCEEDED(res)) playing = true;
+	res = buffer->Play(0, 0, play_flag);
+	if(SUCCEEDED(res)) playing = true;
 	startTime = GetTickCount();
 }
 
 void DirectSoundPlayer::Stop() {
 	// Stop the thread
-	if (thread) {
-		if (thread->IsAlive()) {
+	if(thread) {
+		if(thread->IsAlive()) {
 			thread->Stop();
 			thread->Wait();
 		}
@@ -280,7 +279,7 @@ void DirectSoundPlayer::Stop() {
 	}
 	// The thread is now guaranteed dead and there are no concurrency problems to worry about
 
-	if (buffer) buffer->Stop(); // the thread should have done this already
+	if(buffer) buffer->Stop(); // the thread should have done this already
 
 	// Reset variables
 	playing = false;
@@ -291,12 +290,12 @@ void DirectSoundPlayer::Stop() {
 }
 
 void DirectSoundPlayer::SetEndPosition(int64_t pos) {
-	if (playing) endPos = pos;
+	if(playing) endPos = pos;
 }
 
 int64_t DirectSoundPlayer::GetCurrentPosition() {
 	// Check if buffer is loaded
-	if (!buffer || !playing) return 0;
+	if(!buffer || !playing) return 0;
 
 	// FIXME: this should be based on not duration played but actual sample being heard
 	// (during vidoeo playback, cur_frame might get changed to resync)
@@ -305,7 +304,8 @@ int64_t DirectSoundPlayer::GetCurrentPosition() {
 	return startPos + tdiff * provider->GetSampleRate() / 1000;
 }
 
-DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer *par) : wxThread(wxTHREAD_JOINABLE) {
+DirectSoundPlayerThread::DirectSoundPlayerThread(DirectSoundPlayer* par)
+    : wxThread(wxTHREAD_JOINABLE) {
 	parent = par;
 	stopnotify = CreateEvent(nullptr, true, false, nullptr);
 }
@@ -319,8 +319,8 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 
 	// Wake up thread every half second to fill buffer as needed
 	// This more or less assumes the buffer is at least one second long
-	while (WaitForSingleObject(stopnotify, 50) == WAIT_TIMEOUT) {
-		if (!parent->FillBuffer(false)) {
+	while(WaitForSingleObject(stopnotify, 50) == WAIT_TIMEOUT) {
+		if(!parent->FillBuffer(false)) {
 			// FillBuffer returns false when end of stream is reached
 			LOG_D("audio/player/dsound1") << "DS thread hit end of stream";
 			break;
@@ -329,24 +329,29 @@ wxThread::ExitCode DirectSoundPlayerThread::Entry() {
 
 	// Now fill buffer with silence
 	DWORD bytesFilled = 0;
-	while (WaitForSingleObject(stopnotify, 50) == WAIT_TIMEOUT) {
+	while(WaitForSingleObject(stopnotify, 50) == WAIT_TIMEOUT) {
 		void *buf1, *buf2;
 		DWORD size1, size2;
 		DWORD playpos;
 		HRESULT res;
 		res = parent->buffer->GetCurrentPosition(&playpos, nullptr);
-		if (FAILED(res)) break;
+		if(FAILED(res)) break;
 		int toWrite = playpos - parent->offset;
-		while (toWrite < 0) toWrite += parent->bufSize;
+		while(toWrite < 0)
+			toWrite += parent->bufSize;
 		res = parent->buffer->Lock(parent->offset, toWrite, &buf1, &size1, &buf2, &size2, 0);
-		if (FAILED(res)) break;
-		if (size1) memset(buf1, 0, size1);
-		if (size2) memset(buf2, 0, size2);
-		LOG_D_IF(size1, "audio/player/dsound1") << "DS blnk:" << (unsigned long)parent->playPos+bytesFilled << " -> " << (unsigned long)parent->playPos+bytesFilled+size1;
-		LOG_D_IF(size2, "audio/player/dsound1") << "DS blnk:" << (unsigned long)parent->playPos+bytesFilled+size1 << " -> " << (unsigned long)parent->playPos+bytesFilled+size1+size2;
+		if(FAILED(res)) break;
+		if(size1) memset(buf1, 0, size1);
+		if(size2) memset(buf2, 0, size2);
+		LOG_D_IF(size1, "audio/player/dsound1")
+		    << "DS blnk:" << (unsigned long)parent->playPos + bytesFilled << " -> "
+		    << (unsigned long)parent->playPos + bytesFilled + size1;
+		LOG_D_IF(size2, "audio/player/dsound1")
+		    << "DS blnk:" << (unsigned long)parent->playPos + bytesFilled + size1 << " -> "
+		    << (unsigned long)parent->playPos + bytesFilled + size1 + size2;
 		bytesFilled += size1 + size2;
 		parent->buffer->Unlock(buf1, size1, buf2, size2);
-		if (bytesFilled > parent->bufSize) break;
+		if(bytesFilled > parent->bufSize) break;
 		parent->offset = (parent->offset + size1 + size2) % parent->bufSize;
 	}
 
@@ -365,9 +370,10 @@ void DirectSoundPlayerThread::Stop() {
 	// Increase the stopnotify by one, causing a wait for it to succeed
 	SetEvent(stopnotify);
 }
-}
+} // namespace
 
-std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(agi::AudioProvider *provider, wxWindow *parent) {
+std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(agi::AudioProvider* provider,
+                                                     wxWindow* parent) {
 	return agi::make_unique<DirectSoundPlayer>(provider, parent);
 }
 

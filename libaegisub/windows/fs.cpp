@@ -22,8 +22,8 @@
 #include "libaegisub/scoped_ptr.h"
 #include "libaegisub/util.h"
 
-using agi::charset::ConvertW;
 using agi::charset::ConvertLocal;
+using agi::charset::ConvertW;
 
 #include <boost/filesystem.hpp>
 namespace bfs = boost::filesystem;
@@ -33,12 +33,12 @@ namespace bfs = boost::filesystem;
 
 #undef CreateDirectory
 
-namespace agi { namespace fs {
+namespace agi {
+namespace fs {
 std::string ShortName(path const& p) {
 	std::wstring out(MAX_PATH + 1, 0);
 	DWORD len = GetShortPathName(p.c_str(), &out[0], out.size());
-	if (!len)
-		return p.string();
+	if(!len) return p.string();
 	out.resize(len);
 	return ConvertLocal(out);
 }
@@ -50,13 +50,17 @@ void Touch(path const& file) {
 	FILETIME ft;
 	GetSystemTime(&st);
 	if(!SystemTimeToFileTime(&st, &ft))
-		throw EnvironmentError("SystemTimeToFileTime failed with error: " + util::ErrorString(GetLastError()));
+		throw EnvironmentError("SystemTimeToFileTime failed with error: " +
+		                       util::ErrorString(GetLastError()));
 
-	scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)>
-		h(CreateFile(file.c_str(), GENERIC_WRITE, 0, nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr), CloseHandle);
+	scoped_holder<HANDLE, BOOL(__stdcall*)(HANDLE)> h(CreateFile(file.c_str(), GENERIC_WRITE, 0,
+	                                                             nullptr, OPEN_ALWAYS,
+	                                                             FILE_ATTRIBUTE_NORMAL, nullptr),
+	                                                  CloseHandle);
 	// error handling etc.
-	if (!SetFileTime(h, nullptr, nullptr, &ft))
-		throw EnvironmentError("SetFileTime failed with error: " + util::ErrorString(GetLastError()));
+	if(!SetFileTime(h, nullptr, nullptr, &ft))
+		throw EnvironmentError("SetFileTime failed with error: " +
+		                       util::ErrorString(GetLastError()));
 }
 
 void Copy(fs::path const& from, fs::path const& to) {
@@ -64,35 +68,32 @@ void Copy(fs::path const& from, fs::path const& to) {
 	CreateDirectory(to.parent_path());
 	acs::CheckDirWrite(to.parent_path());
 
-	if (!CopyFile(from.wstring().c_str(), to.wstring().c_str(), false)) {
-		switch (GetLastError()) {
-		case ERROR_FILE_NOT_FOUND:
-			throw FileNotFound(from);
-		case ERROR_ACCESS_DENIED:
-			throw fs::WriteDenied("Could not overwrite " + to.string());
-		default:
-			throw fs::WriteDenied("Could not copy: " + util::ErrorString(GetLastError()));
+	if(!CopyFile(from.wstring().c_str(), to.wstring().c_str(), false)) {
+		switch(GetLastError()) {
+			case ERROR_FILE_NOT_FOUND: throw FileNotFound(from);
+			case ERROR_ACCESS_DENIED: throw fs::WriteDenied("Could not overwrite " + to.string());
+			default: throw fs::WriteDenied("Could not copy: " + util::ErrorString(GetLastError()));
 		}
 	}
 }
 
 struct DirectoryIterator::PrivData {
-	scoped_holder<HANDLE, BOOL (__stdcall *)(HANDLE)> h{INVALID_HANDLE_VALUE, FindClose};
+	scoped_holder<HANDLE, BOOL(__stdcall*)(HANDLE)> h{ INVALID_HANDLE_VALUE, FindClose };
 };
 
-DirectoryIterator::DirectoryIterator() { }
+DirectoryIterator::DirectoryIterator() {}
 DirectoryIterator::DirectoryIterator(path const& p, std::string const& filter)
-: privdata(new PrivData)
-{
+    : privdata(new PrivData) {
 	WIN32_FIND_DATA data;
-	privdata->h = FindFirstFileEx((p/(filter.empty() ? "*.*" : filter)).c_str(), FindExInfoBasic, &data, FindExSearchNameMatch, nullptr, 0);
-	if (privdata->h == INVALID_HANDLE_VALUE) {
+	privdata->h = FindFirstFileEx((p / (filter.empty() ? "*.*" : filter)).c_str(), FindExInfoBasic,
+	                              &data, FindExSearchNameMatch, nullptr, 0);
+	if(privdata->h == INVALID_HANDLE_VALUE) {
 		privdata.reset();
 		return;
 	}
 
 	value = ConvertW(data.cFileName);
-	while (value[0] == '.' && (value[1] == 0 || value[1] == '.'))
+	while(value[0] == '.' && (value[1] == 0 || value[1] == '.'))
 		++*this;
 }
 
@@ -102,7 +103,7 @@ bool DirectoryIterator::operator==(DirectoryIterator const& rhs) const {
 
 DirectoryIterator& DirectoryIterator::operator++() {
 	WIN32_FIND_DATA data;
-	if (FindNextFile(privdata->h, &data))
+	if(FindNextFile(privdata->h, &data))
 		value = ConvertW(data.cFileName);
 	else {
 		privdata.reset();
@@ -111,6 +112,7 @@ DirectoryIterator& DirectoryIterator::operator++() {
 	return *this;
 }
 
-DirectoryIterator::~DirectoryIterator() { }
+DirectoryIterator::~DirectoryIterator() {}
 
-} }
+} // namespace fs
+} // namespace agi

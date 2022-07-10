@@ -21,8 +21,8 @@
 #include <libaegisub/fs_fwd.h>
 
 namespace agi {
-	/// Framerate handling.
-	namespace vfr {
+/// Framerate handling.
+namespace vfr {
 
 enum Time {
 	/// Use the actual frame times
@@ -75,7 +75,8 @@ class Framerate {
 
 	/// Set FPS properties from the timecodes vector
 	void SetFromTimecodes();
-public:
+
+  public:
 	Framerate(Framerate const&) = default;
 	Framerate& operator=(Framerate const&) = default;
 
@@ -101,7 +102,7 @@ public:
 	/// @param numerator Timebase numerator
 	/// @param denominator Timebase denominator
 	/// @param drop Enable drop frames if the FPS requires it
-	Framerate(int64_t numerator, int64_t denominator, bool drop=true);
+	Framerate(int64_t numerator, int64_t denominator, bool drop = true);
 
 	/// @brief VFR from frame times
 	/// @param timecodes Vector of frame start times in milliseconds
@@ -147,7 +148,7 @@ public:
 	/// from wall clock time.
 	///
 	/// For integral frame rates, no frame dropping occurs.
-	void SmpteAtTime(int ms, int *h, int *m, int *s, int *f) const;
+	void SmpteAtTime(int ms, int* h, int* m, int* s, int* f) const;
 
 	/// @brief Get the components of the SMPTE timecode for the given frame
 	/// @param[out] h Hours component
@@ -162,7 +163,7 @@ public:
 	/// from wall clock time.
 	///
 	/// For integral frame rates, no frame dropping occurs.
-	void SmpteAtFrame(int frame, int *h, int *m, int *s, int *f) const;
+	void SmpteAtFrame(int frame, int* h, int* m, int* s, int* f) const;
 
 	/// @brief Get the frame indicated by the SMPTE timecode components
 	/// @param h Hours component
@@ -193,17 +194,25 @@ public:
 	void Save(fs::path const& file, int length = -1) const;
 
 	/// Is this frame rate possibly variable?
-	bool IsVFR() const {return timecodes.size() > 1; }
+	bool IsVFR() const {
+		return timecodes.size() > 1;
+	}
 
 	/// Does this represent a valid frame rate?
-	bool IsLoaded() const { return numerator > 0; }
+	bool IsLoaded() const {
+		return numerator > 0;
+	}
 
 	/// Get average FPS of this frame rate
-	double FPS() const { return double(numerator) / denominator; }
+	double FPS() const {
+		return double(numerator) / denominator;
+	}
 
 	/// Does this frame rate need drop frames for SMPTE timeish frame numbers?
-	bool NeedsDropFrames() const { return drop; }
+	bool NeedsDropFrames() const {
+		return drop;
+	}
 };
 
-	} // namespace vfr
+} // namespace vfr
 } // namespace agi

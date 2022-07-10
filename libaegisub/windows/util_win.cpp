@@ -22,14 +22,15 @@
 #include <windows.h>
 
 namespace agi {
-	namespace util {
+namespace util {
 
 using agi::charset::ConvertW;
 
 std::string ErrorString(int error) {
 	LPWSTR lpstr = nullptr;
 
-	if(FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, error, 0, reinterpret_cast<LPWSTR>(&lpstr), 0, nullptr) == 0) {
+	if(FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, nullptr, error, 0,
+	                 reinterpret_cast<LPWSTR>(&lpstr), 0, nullptr) == 0) {
 		/// @todo Return the actual 'unknown error' string from windows.
 		return "Unknown Error";
 	}
@@ -56,14 +57,14 @@ void SetThreadName(LPCSTR szThreadName) {
 	info.dwThreadID = -1;
 	info.dwFlags = 0;
 	__try {
-		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (ULONG_PTR *)&info);
+		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (ULONG_PTR*)&info);
+	} __except(EXCEPTION_CONTINUE_EXECUTION) {
 	}
-	__except (EXCEPTION_CONTINUE_EXECUTION) {}
 }
 
 void sleep_for(int ms) {
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
-	} // namespace io
+} // namespace util
 } // namespace agi

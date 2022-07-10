@@ -23,9 +23,9 @@
 #include "visual_tool.h"
 
 class VisualToolScale final : public VisualTool<VisualDraggableFeature> {
-	Vector2D scale; ///< The current scale
+	Vector2D scale;         ///< The current scale
 	Vector2D initial_scale; ///< The scale at the beginning of the current hold
-	Vector2D pos; ///< Position of the line
+	Vector2D pos;           ///< Position of the line
 
 	float rx = 0.f; ///< X rotation
 	float ry = 0.f; ///< Y rotation
@@ -36,6 +36,7 @@ class VisualToolScale final : public VisualTool<VisualDraggableFeature> {
 
 	void DoRefresh() override;
 	void Draw() override;
-public:
-	VisualToolScale(VideoDisplay *parent, agi::Context *context);
+
+  public:
+	VisualToolScale(VideoDisplay* parent, agi::Context* context);
 };

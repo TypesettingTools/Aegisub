@@ -70,16 +70,16 @@ class OpenALPlayer final : public AudioPlayer, wxTimer {
 
 	float volume = 1.f; ///< Current audio volume
 	ALsizei samplerate; ///< Sample rate of the audio
-	int bpf; ///< Bytes per frame
+	int bpf;            ///< Bytes per frame
 
 	int64_t start_frame = 0; ///< First frame of playbacka
-	int64_t cur_frame = 0; ///< Next frame to write to playback buffers
-	int64_t end_frame = 0; ///< Last frame to play
+	int64_t cur_frame = 0;   ///< Next frame to write to playback buffers
+	int64_t end_frame = 0;   ///< Last frame to play
 
-	ALCdevice *device = nullptr; ///< OpenAL device handle
-	ALCcontext *context = nullptr; ///< OpenAL sound context
-	ALuint buffers[num_buffers]; ///< OpenAL sound buffers
-	ALuint source = 0; ///< OpenAL playback source
+	ALCdevice* device = nullptr;   ///< OpenAL device handle
+	ALCcontext* context = nullptr; ///< OpenAL sound context
+	ALuint buffers[num_buffers];   ///< OpenAL sound buffers
+	ALuint source = 0;             ///< OpenAL playback source
 
 	/// Index into buffers, first free (unqueued) buffer to be filled
 	ALsizei buf_first_free = 0;
@@ -107,11 +107,11 @@ class OpenALPlayer final : public AudioPlayer, wxTimer {
 	void InitContext();
 	void TeardownContext();
 
-public:
-	OpenALPlayer(agi::AudioProvider *provider);
+  public:
+	OpenALPlayer(agi::AudioProvider* provider);
 	~OpenALPlayer();
 
-	void Play(int64_t start,int64_t count) override;
+	void Play(int64_t start, int64_t count) override;
 	void Stop() override;
 	bool IsPlaying() override { return playing; }
 
@@ -122,59 +122,54 @@ public:
 	void SetVolume(double vol) override { volume = vol; }
 };
 
-OpenALPlayer::OpenALPlayer(agi::AudioProvider *provider)
-: AudioPlayer(provider)
-, samplerate(provider->GetSampleRate())
-, bpf(provider->GetChannels() * provider->GetBytesPerSample())
-{
+OpenALPlayer::OpenALPlayer(agi::AudioProvider* provider)
+    : AudioPlayer(provider), samplerate(provider->GetSampleRate()),
+      bpf(provider->GetChannels() * provider->GetBytesPerSample()) {
 	device = alcOpenDevice(nullptr);
-	if (!device) throw AudioPlayerOpenError("Failed opening default OpenAL device");
+	if(!device) throw AudioPlayerOpenError("Failed opening default OpenAL device");
 
 	// Determine buffer length
 	decode_buffer.resize(samplerate * bpf / num_buffers / 2); // buffers for half a second of audio
 }
 
-OpenALPlayer::~OpenALPlayer()
-{
+OpenALPlayer::~OpenALPlayer() {
 	Stop();
 	alcCloseDevice(device);
 }
 
-void OpenALPlayer::InitContext()
-{
-	if (context) return;
+void OpenALPlayer::InitContext() {
+	if(context) return;
 
 	try {
 		// Create context
 		context = alcCreateContext(device, nullptr);
-		if (!context) throw AudioPlayerOpenError("Failed creating OpenAL context");
-		if (!alcMakeContextCurrent(context)) throw AudioPlayerOpenError("Failed selecting OpenAL context");
+		if(!context) throw AudioPlayerOpenError("Failed creating OpenAL context");
+		if(!alcMakeContextCurrent(context))
+			throw AudioPlayerOpenError("Failed selecting OpenAL context");
 
 		// Clear error code
 		alGetError();
 
 		// Generate buffers
 		alGenBuffers(num_buffers, buffers);
-		if (alGetError() != AL_NO_ERROR) throw AudioPlayerOpenError("Error generating OpenAL buffers");
+		if(alGetError() != AL_NO_ERROR)
+			throw AudioPlayerOpenError("Error generating OpenAL buffers");
 
 		// Generate source
 		alGenSources(1, &source);
-		if (alGetError() != AL_NO_ERROR) {
+		if(alGetError() != AL_NO_ERROR) {
 			alDeleteBuffers(num_buffers, buffers);
 			throw AudioPlayerOpenError("Error generating OpenAL source");
 		}
-	}
-	catch (...)
-	{
+	} catch(...) {
 		alcDestroyContext(context);
 		context = nullptr;
 		throw;
 	}
 }
 
-void OpenALPlayer::TeardownContext()
-{
-	if (!context) return;
+void OpenALPlayer::TeardownContext() {
+	if(!context) return;
 	alcMakeContextCurrent(context);
 	alDeleteSources(1, &source);
 	alDeleteBuffers(num_buffers, buffers);
@@ -183,11 +178,10 @@ void OpenALPlayer::TeardownContext()
 	context = nullptr;
 }
 
-void OpenALPlayer::Play(int64_t start, int64_t count)
-{
+void OpenALPlayer::Play(int64_t start, int64_t count) {
 	InitContext();
 	alcMakeContextCurrent(context);
-	if (playing) {
+	if(playing) {
 		// Quick reset
 		playing = false;
 		alSourceStop(source);
@@ -213,10 +207,9 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 	playback_segment_timer.Start();
 }
 
-void OpenALPlayer::Stop()
-{
+void OpenALPlayer::Stop() {
 	TeardownContext();
-	if (!playing) return;
+	if(!playing) return;
 
 	// Reset data
 	wxTimer::Stop();
@@ -232,42 +225,44 @@ void OpenALPlayer::Stop()
 	alcMakeContextCurrent(nullptr);
 }
 
-void OpenALPlayer::FillBuffers(ALsizei count)
-{
+void OpenALPlayer::FillBuffers(ALsizei count) {
 	InitContext();
 	// Do the actual filling/queueing
-	for (count = mid(1, count, buffers_free); count > 0; --count) {
+	for(count = mid(1, count, buffers_free); count > 0; --count) {
 		ALsizei fill_len = mid<ALsizei>(0, decode_buffer.size() / bpf, end_frame - cur_frame);
 
-		if (fill_len > 0)
+		if(fill_len > 0)
 			// Get fill_len frames of audio
 			provider->GetAudioWithVolume(&decode_buffer[0], cur_frame, fill_len, volume);
-		if ((size_t)fill_len * bpf < decode_buffer.size())
+		if((size_t)fill_len * bpf < decode_buffer.size())
 			// And zerofill the rest
 			memset(&decode_buffer[fill_len * bpf], 0, decode_buffer.size() - fill_len * bpf);
 
 		cur_frame += fill_len;
 
-		alBufferData(buffers[buf_first_free], AL_FORMAT_MONO16, &decode_buffer[0], decode_buffer.size(), samplerate);
-		alSourceQueueBuffers(source, 1, &buffers[buf_first_free]); // FIXME: collect buffer handles and queue all at once instead of one at a time?
+		alBufferData(buffers[buf_first_free], AL_FORMAT_MONO16, &decode_buffer[0],
+		             decode_buffer.size(), samplerate);
+		alSourceQueueBuffers(source, 1,
+		                     &buffers[buf_first_free]); // FIXME: collect buffer handles and queue
+		                                                // all at once instead of one at a time?
 		buf_first_free = (buf_first_free + 1) % num_buffers;
 		--buffers_free;
 	}
 }
 
-void OpenALPlayer::Notify()
-{
+void OpenALPlayer::Notify() {
 	InitContext();
 	alcMakeContextCurrent(context);
 	ALsizei newplayed;
 	alGetSourcei(source, AL_BUFFERS_PROCESSED, &newplayed);
 
-	LOG_D("player/audio/openal") << "buffers_played=" << buffers_played << " newplayed=" << newplayed;
+	LOG_D("player/audio/openal") << "buffers_played=" << buffers_played
+	                             << " newplayed=" << newplayed;
 
-	if (newplayed > 0) {
+	if(newplayed > 0) {
 		// Reclaim buffers
 		ALuint bufs[num_buffers];
-		for (ALsizei i = 0; i < newplayed; ++i) {
+		for(ALsizei i = 0; i < newplayed; ++i) {
 			bufs[i] = buffers[buf_first_queued];
 			buf_first_queued = (buf_first_queued + 1) % num_buffers;
 		}
@@ -282,29 +277,29 @@ void OpenALPlayer::Notify()
 		FillBuffers(newplayed);
 	}
 
-	LOG_D("player/audio/openal") << "frames played=" << (buffers_played - num_buffers) * decode_buffer.size() / bpf << " num frames=" << end_frame - start_frame;
+	LOG_D("player/audio/openal") << "frames played="
+	                             << (buffers_played - num_buffers) * decode_buffer.size() / bpf
+	                             << " num frames=" << end_frame - start_frame;
 	// Check that all of the selected audio plus one full set of buffers has been queued
-	if ((buffers_played - num_buffers) * (int64_t)decode_buffer.size() > (end_frame - start_frame) * bpf) {
+	if((buffers_played - num_buffers) * (int64_t)decode_buffer.size() >
+	   (end_frame - start_frame) * bpf) {
 		Stop();
 	}
 }
 
-void OpenALPlayer::SetEndPosition(int64_t pos)
-{
+void OpenALPlayer::SetEndPosition(int64_t pos) {
 	end_frame = pos;
 }
 
-int64_t OpenALPlayer::GetCurrentPosition()
-{
+int64_t OpenALPlayer::GetCurrentPosition() {
 	// FIXME: this should be based on not duration played but actual sample being heard
 	// (during video playback, cur_frame might get changed to resync)
 	long extra = playback_segment_timer.Time();
 	return buffers_played * decode_buffer.size() / bpf + start_frame + extra * samplerate / 1000;
 }
-}
+} // namespace
 
-std::unique_ptr<AudioPlayer> CreateOpenALPlayer(agi::AudioProvider *provider, wxWindow *)
-{
+std::unique_ptr<AudioPlayer> CreateOpenALPlayer(agi::AudioProvider* provider, wxWindow*) {
 	return agi::make_unique<OpenALPlayer>(provider);
 }
 

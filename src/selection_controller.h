@@ -33,21 +33,23 @@
 #include <vector>
 
 class AssDialogue;
-typedef std::set<AssDialogue *> Selection;
+typedef std::set<AssDialogue*> Selection;
 
-namespace agi { struct Context; }
+namespace agi {
+struct Context;
+}
 
 class SelectionController {
-	agi::signal::Signal<AssDialogue *> AnnounceActiveLineChanged;
+	agi::signal::Signal<AssDialogue*> AnnounceActiveLineChanged;
 	agi::signal::Signal<> AnnounceSelectedSetChanged;
 
-	agi::Context *context;
+	agi::Context* context;
 
-	Selection selection; ///< Currently selected lines
-	AssDialogue *active_line = nullptr; ///< The currently active line or 0 if none
+	Selection selection;                ///< Currently selected lines
+	AssDialogue* active_line = nullptr; ///< The currently active line or 0 if none
 
-public:
-	SelectionController(agi::Context *context);
+  public:
+	SelectionController(agi::Context* context);
 
 	/// @brief Change the active line
 	/// @param new_line Subtitle line to become the new active line
@@ -59,11 +61,11 @@ public:
 	/// the active line was actually changed.
 	///
 	/// This method must not affect the selected set.
-	void SetActiveLine(AssDialogue *new_line);
+	void SetActiveLine(AssDialogue* new_line);
 
 	/// @brief Obtain the active line
 	/// @return The active line or nullptr if there is none
-	AssDialogue *GetActiveLine() const { return active_line;  }
+	AssDialogue* GetActiveLine() const { return active_line; }
 
 	/// @brief Change the selected set
 	/// @param new_selection The set of subtitle lines to become the new selected set
@@ -82,7 +84,7 @@ public:
 	Selection const& GetSelectedSet() const { return selection; }
 
 	/// Get the selection sorted by row number
-	std::vector<AssDialogue *> GetSortedSelection() const;
+	std::vector<AssDialogue*> GetSortedSelection() const;
 
 	/// @brief Set both the selected set and active line
 	/// @param new_line Subtitle line to become the new active line
@@ -91,7 +93,7 @@ public:
 	/// This sets both the active line and selected set before announcing the
 	/// change to either of them, and is guaranteed to announce the active line
 	/// change before the selection change.
-	void SetSelectionAndActive(Selection new_selection, AssDialogue *new_line);
+	void SetSelectionAndActive(Selection new_selection, AssDialogue* new_line);
 
 	/// @brief Change the active line to the next in sequence
 	///

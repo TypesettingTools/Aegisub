@@ -41,10 +41,7 @@
 
 #include <limits>
 
-Spline::Spline(const VisualToolBase &tl)
-: coord_translator(tl)
-{
-}
+Spline::Spline(const VisualToolBase& tl) : coord_translator(tl) {}
 
 Vector2D Spline::ToScript(Vector2D vec) const {
 	return coord_translator.ToScriptCoords(vec) * scale;
@@ -64,10 +61,10 @@ std::string Spline::EncodeToAss() const {
 	result.reserve(size() * 10);
 	char last = 0;
 
-	for (auto const& pt : *this) {
-		switch (pt.type) {
+	for(auto const& pt : *this) {
+		switch(pt.type) {
 			case SplineCurve::POINT:
-				if (last != 'm') {
+				if(last != 'm') {
 					result += "m ";
 					last = 'm';
 				}
@@ -75,7 +72,7 @@ std::string Spline::EncodeToAss() const {
 				break;
 
 			case SplineCurve::LINE:
-				if (last != 'l') {
+				if(last != 'l') {
 					result += "l ";
 					last = 'l';
 				}
@@ -83,7 +80,7 @@ std::string Spline::EncodeToAss() const {
 				break;
 
 			case SplineCurve::BICUBIC:
-				if (last != 'b') {
+				if(last != 'b') {
 					result += "b ";
 					last = 'b';
 				}
@@ -106,16 +103,16 @@ void Spline::DecodeFromAss(std::string const& str) {
 
 	// Prepare
 	char command = 'm';
-	Vector2D pt{0, 0};
+	Vector2D pt{ 0, 0 };
 
 	// Tokenize the string
-	for (auto token : agi::Split(str, ' ')) {
+	for(auto token : agi::Split(str, ' ')) {
 		double n;
-		if (agi::util::try_parse(agi::str(token), &n)) {
+		if(agi::util::try_parse(agi::str(token), &n)) {
 			stack.push_back(n);
 
 			// Move
-			if (stack.size() == 2 && command == 'm') {
+			if(stack.size() == 2 && command == 'm') {
 				pt = FromScript(Vector2D(stack[0], stack[1]));
 				stack.clear();
 
@@ -123,8 +120,8 @@ void Spline::DecodeFromAss(std::string const& str) {
 			}
 
 			// Line
-			if (stack.size() == 2 && command == 'l') {
-				if (empty()) push_back(pt);
+			if(stack.size() == 2 && command == 'l') {
+				if(empty()) push_back(pt);
 
 				SplineCurve curve(pt, FromScript(Vector2D(stack[0], stack[1])));
 				push_back(curve);
@@ -134,13 +131,12 @@ void Spline::DecodeFromAss(std::string const& str) {
 			}
 
 			// Bicubic
-			else if (stack.size() == 6 && command == 'b') {
-				if (empty()) push_back(pt);
+			else if(stack.size() == 6 && command == 'b') {
+				if(empty()) push_back(pt);
 
-				SplineCurve curve(pt,
-					FromScript(Vector2D(stack[0], stack[1])),
-					FromScript(Vector2D(stack[2], stack[3])),
-					FromScript(Vector2D(stack[4], stack[5])));
+				SplineCurve curve(pt, FromScript(Vector2D(stack[0], stack[1])),
+				                  FromScript(Vector2D(stack[2], stack[3])),
+				                  FromScript(Vector2D(stack[4], stack[5])));
 				push_back(curve);
 
 				pt = curve.p4;
@@ -148,39 +144,31 @@ void Spline::DecodeFromAss(std::string const& str) {
 			}
 		}
 		// Got something else
-		else if (token.size() == 1) {
+		else if(token.size() == 1) {
 			command = token[0];
 			stack.clear();
 		}
 	}
 }
 
-void Spline::MovePoint(iterator curve,int point,Vector2D pos) {
+void Spline::MovePoint(iterator curve, int point, Vector2D pos) {
 	auto prev = std::prev(curve, curve != begin());
 	auto next = std::next(curve);
-	if (next != end() && next->type == SplineCurve::POINT)
-		next = end();
+	if(next != end() && next->type == SplineCurve::POINT) next = end();
 
 	// Modify
-	if (point == 0) {
+	if(point == 0) {
 		curve->p1 = pos;
-		if (curve != begin() && curve->type != SplineCurve::POINT)
-			prev->EndPoint() = pos;
-		if (next != end() && curve->type == SplineCurve::POINT)
-			next->p1 = pos;
-	}
-	else if (point == 1) {
+		if(curve != begin() && curve->type != SplineCurve::POINT) prev->EndPoint() = pos;
+		if(next != end() && curve->type == SplineCurve::POINT) next->p1 = pos;
+	} else if(point == 1) {
 		curve->p2 = pos;
-		if (next != end() && curve->type == SplineCurve::LINE)
-			next->p1 = pos;
-	}
-	else if (point == 2) {
+		if(next != end() && curve->type == SplineCurve::LINE) next->p1 = pos;
+	} else if(point == 2) {
 		curve->p3 = pos;
-	}
-	else if (point == 3) {
+	} else if(point == 3) {
 		curve->p4 = pos;
-		if (next != end())
-			next->p1 = pos;
+		if(next != end()) next->p1 = pos;
 	}
 }
 
@@ -193,10 +181,9 @@ std::vector<float> Spline::GetPointList(std::vector<int>& first, std::vector<int
 	int curCount = 0;
 
 	// Generate points for each curve
-	for (auto const& elem : *this) {
-		if (elem.type == SplineCurve::POINT) {
-			if (curCount > 0)
-				count.push_back(curCount);
+	for(auto const& elem : *this) {
+		if(elem.type == SplineCurve::POINT) {
+			if(curCount > 0) count.push_back(curCount);
 
 			// start new path
 			first.push_back(points.size() / 2);
@@ -211,8 +198,8 @@ std::vector<float> Spline::GetPointList(std::vector<int>& first, std::vector<int
 
 std::vector<float> Spline::GetPointList(iterator curve) {
 	std::vector<float> points;
-	if (curve == end()) return points;
-	switch (curve->type) {
+	if(curve == end()) return points;
+	switch(curve->type) {
 		case SplineCurve::LINE:
 			points.push_back(curve->p1.X());
 			points.push_back(curve->p1.Y());
@@ -220,31 +207,30 @@ std::vector<float> Spline::GetPointList(iterator curve) {
 			points.push_back(curve->p2.Y());
 			break;
 
-		case SplineCurve::BICUBIC:
-			curve->GetPoints(points);
-			break;
+		case SplineCurve::BICUBIC: curve->GetPoints(points); break;
 
 		default: break;
 	}
 	return points;
 }
 
-void Spline::GetClosestParametricPoint(Vector2D reference, iterator &curve, float &t, Vector2D &pt) {
+void Spline::GetClosestParametricPoint(Vector2D reference, iterator& curve, float& t,
+                                       Vector2D& pt) {
 	curve = end();
 	t = 0.f;
-	if (empty()) return;
+	if(empty()) return;
 
 	// Close the shape
 	emplace_back(back().EndPoint(), front().p1);
 
 	float closest = std::numeric_limits<float>::infinity();
 	size_t idx = 0;
-	for (size_t i = 0; i < size(); ++i) {
+	for(size_t i = 0; i < size(); ++i) {
 		auto& cur = (*this)[i];
 		float param = cur.GetClosestParam(reference);
 		Vector2D p1 = cur.GetPoint(param);
-		float dist = (p1-reference).SquareLen();
-		if (dist < closest) {
+		float dist = (p1 - reference).SquareLen();
+		if(dist < closest) {
 			closest = dist;
 			t = param;
 			idx = i;
@@ -266,14 +252,13 @@ Vector2D Spline::GetClosestPoint(Vector2D reference) {
 
 void Spline::Smooth(float smooth) {
 	// See if there are enough curves
-	if (size() < 3) return;
+	if(size() < 3) return;
 
 	// Smooth curve
-	for (auto cur = begin(); cur != end(); ++cur) {
+	for(auto cur = begin(); cur != end(); ++cur) {
 		auto prev_curve = prev(cur != begin() ? cur : end());
 		auto next_curve = next(cur);
-		if (next_curve == end())
-			next_curve = begin();
+		if(next_curve == end()) next_curve = begin();
 
 		cur->Smooth(prev_curve->p1, next_curve->EndPoint(), smooth);
 	}

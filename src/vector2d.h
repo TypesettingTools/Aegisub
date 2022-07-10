@@ -28,30 +28,30 @@
 class Vector2D {
 	float x, y;
 
-public:
+  public:
 	float X() const { return x; }
 	float Y() const { return y; }
 
 	Vector2D();
-	Vector2D(float x, float y) : x(x), y(y) { }
-	Vector2D(wxPoint pt) : x(pt.x), y(pt.y) { }
-	Vector2D(Vector2D x, Vector2D y) : x(x.x), y(y.y) { }
-	Vector2D(float x, Vector2D y) : x(x), y(y.y) { }
-	Vector2D(Vector2D x, float y) : x(x.x), y(y) { }
+	Vector2D(float x, float y) : x(x), y(y) {}
+	Vector2D(wxPoint pt) : x(pt.x), y(pt.y) {}
+	Vector2D(Vector2D x, Vector2D y) : x(x.x), y(y.y) {}
+	Vector2D(float x, Vector2D y) : x(x), y(y.y) {}
+	Vector2D(Vector2D x, float y) : x(x.x), y(y) {}
 
-	bool operator ==(const Vector2D r) const { return x == r.x && y == r.y; }
-	bool operator !=(const Vector2D r) const { return x != r.x || y != r.y; }
+	bool operator==(const Vector2D r) const { return x == r.x && y == r.y; }
+	bool operator!=(const Vector2D r) const { return x != r.x || y != r.y; }
 	explicit operator bool() const;
 
-	Vector2D operator -() const { return Vector2D(-x, -y); }
-	Vector2D operator +(const Vector2D r) const { return Vector2D(x + r.x, y + r.y); }
-	Vector2D operator -(const Vector2D r) const { return Vector2D(x - r.x, y - r.y); }
-	Vector2D operator *(const Vector2D r) const { return Vector2D(x * r.x, y * r.y); }
-	Vector2D operator /(const Vector2D r) const { return Vector2D(x / r.x, y / r.y); }
-	Vector2D operator +(float param) const { return Vector2D(x + param, y + param); }
-	Vector2D operator -(float param) const { return Vector2D(x - param, y - param); }
-	Vector2D operator *(float param) const { return Vector2D(x * param, y * param); }
-	Vector2D operator /(float param) const { return Vector2D(x / param, y / param); }
+	Vector2D operator-() const { return Vector2D(-x, -y); }
+	Vector2D operator+(const Vector2D r) const { return Vector2D(x + r.x, y + r.y); }
+	Vector2D operator-(const Vector2D r) const { return Vector2D(x - r.x, y - r.y); }
+	Vector2D operator*(const Vector2D r) const { return Vector2D(x * r.x, y * r.y); }
+	Vector2D operator/(const Vector2D r) const { return Vector2D(x / r.x, y / r.y); }
+	Vector2D operator+(float param) const { return Vector2D(x + param, y + param); }
+	Vector2D operator-(float param) const { return Vector2D(x - param, y - param); }
+	Vector2D operator*(float param) const { return Vector2D(x * param, y * param); }
+	Vector2D operator/(float param) const { return Vector2D(x / param, y / param); }
 
 	Vector2D Unit() const;
 	Vector2D SingleAxis() const;
@@ -65,8 +65,8 @@ public:
 	float Cross(const Vector2D param) const { return x * param.y - y * param.x; }
 	float Dot(const Vector2D param) const { return x * param.x + y * param.y; }
 
-	float Len() const { return sqrt(x*x + y*y); }
-	float SquareLen() const { return x*x + y*y; }
+	float Len() const { return sqrt(x * x + y * y); }
+	float SquareLen() const { return x * x + y * y; }
 	float Angle() const { return atan2(y, x); }
 
 	/// Get as string with given separator
@@ -79,7 +79,7 @@ public:
 	static Vector2D FromAngle(float angle) { return Vector2D(cos(-angle), sin(-angle)); }
 };
 
-Vector2D operator * (float f, Vector2D v);
-Vector2D operator / (float f, Vector2D v);
-Vector2D operator + (float f, Vector2D v);
-Vector2D operator - (float f, Vector2D v);
+Vector2D operator*(float f, Vector2D v);
+Vector2D operator/(float f, Vector2D v);
+Vector2D operator+(float f, Vector2D v);
+Vector2D operator-(float f, Vector2D v);

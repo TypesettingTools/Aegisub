@@ -30,11 +30,12 @@
 #include <cstdlib>
 
 class FFT {
-	void DoTransform(size_t n_samples,float *input,float *output_r,float *output_i,bool inverse);
+	void DoTransform(size_t n_samples, float* input, float* output_r, float* output_i,
+	                 bool inverse);
 
-public:
-	void Transform(size_t n_samples,float *input,float *output_r,float *output_i);
-	void InverseTransform(size_t n_samples,float *input,float *output_r,float *output_i);
+  public:
+	void Transform(size_t n_samples, float* input, float* output_r, float* output_i);
+	void InverseTransform(size_t n_samples, float* input, float* output_r, float* output_i);
 	bool IsPowerOfTwo(unsigned int x);
 	unsigned int NumberOfBitsNeeded(unsigned int n_samples);
 	unsigned int ReverseBits(unsigned int index, unsigned int bits);

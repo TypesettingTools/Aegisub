@@ -38,8 +38,12 @@
 class AudioPlayer;
 class AudioTimingController;
 class TimeRange;
-namespace agi { class AudioProvider; }
-namespace agi { struct Context; }
+namespace agi {
+class AudioProvider;
+}
+namespace agi {
+struct Context;
+}
 
 /// @class AudioController
 /// @brief Manage playback of an open audio stream
@@ -48,7 +52,7 @@ namespace agi { struct Context; }
 /// project's current audio provider.
 class AudioController final : public wxEvtHandler {
 	/// Project context this controller belongs to
-	agi::Context *context;
+	agi::Context* context;
 
 	/// Slot for subtitles save signal
 	agi::signal::Connection subtitle_save_slot;
@@ -71,12 +75,7 @@ class AudioController final : public wxEvtHandler {
 	/// The current timing mode, if any; owned by the audio controller
 	std::unique_ptr<AudioTimingController> timing_controller;
 
-	enum PlaybackMode {
-		PM_NotPlaying,
-		PM_Range,
-		PM_PrimaryRange,
-		PM_ToEnd
-	};
+	enum PlaybackMode { PM_NotPlaying, PM_Range, PM_PrimaryRange, PM_ToEnd };
 	/// The current playback mode
 	PlaybackMode playback_mode = PM_NotPlaying;
 
@@ -84,13 +83,13 @@ class AudioController final : public wxEvtHandler {
 	wxTimer playback_timer;
 
 	/// The audio provider
-	agi::AudioProvider *provider = nullptr;
+	agi::AudioProvider* provider = nullptr;
 	agi::signal::Connection provider_connection;
 
-	void OnAudioProvider(agi::AudioProvider *new_provider);
+	void OnAudioProvider(agi::AudioProvider* new_provider);
 
 	/// Event handler for the playback timer
-	void OnPlaybackTimer(wxTimerEvent &event);
+	void OnPlaybackTimer(wxTimerEvent& event);
 
 	/// @brief Timing controller signals primary playback range changed
 	void OnTimingControllerUpdatedPrimaryRange();
@@ -103,9 +102,9 @@ class AudioController final : public wxEvtHandler {
 
 #ifdef wxHAS_POWER_EVENTS
 	/// Handle computer going into suspend mode by stopping audio and closing device
-	void OnComputerSuspending(wxPowerEvent &event);
+	void OnComputerSuspending(wxPowerEvent& event);
 	/// Handle computer resuming from suspend by re-opening the audio device
-	void OnComputerResuming(wxPowerEvent &event);
+	void OnComputerResuming(wxPowerEvent& event);
 #endif
 
 	/// @brief Convert a count of audio samples to a time in milliseconds
@@ -122,8 +121,8 @@ class AudioController final : public wxEvtHandler {
 	/// @return Duration in milliseconds
 	int GetDuration() const;
 
-public:
-	AudioController(agi::Context *context);
+  public:
+	AudioController(agi::Context* context);
 	~AudioController();
 
 	/// @brief Start or restart audio playback, playing a range
@@ -131,7 +130,7 @@ public:
 	///
 	/// The end of the played back range may be requested changed, but is not
 	/// changed automatically from any other operations.
-	void PlayRange(const TimeRange &range);
+	void PlayRange(const TimeRange& range);
 
 	/// @brief Start or restart audio playback, playing the primary playback range
 	///
@@ -140,7 +139,8 @@ public:
 	/// The playback end can not be changed in any other way.
 	void PlayPrimaryRange();
 
-	/// @brief Start or restart audio playback, playing from a point to the end of of the primary playback range
+	/// @brief Start or restart audio playback, playing from a point to the end of of the primary
+	/// playback range
 	/// @param start_ms Time in milliseconds to start playback at
 	///
 	/// This behaves like PlayPrimaryRange, but the start point can differ from
@@ -178,14 +178,16 @@ public:
 
 	/// @brief Return the current timing controller
 	/// @return The current timing controller or 0
-	AudioTimingController *GetTimingController() const { return timing_controller.get(); }
+	AudioTimingController* GetTimingController() const {
+		return timing_controller.get();
+	}
 
 	/// @brief Change the current timing controller
 	/// @param new_mode The new timing controller or nullptr
 	void SetTimingController(std::unique_ptr<AudioTimingController> new_controller);
 
-	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackPosition,        AddPlaybackPositionListener)
-	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackStop,            AddPlaybackStopListener)
+	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackPosition, AddPlaybackPositionListener)
+	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackStop, AddPlaybackStopListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceTimingControllerChanged, AddTimingControllerListener)
-	DEFINE_SIGNAL_ADDERS(AnnounceAudioPlayerOpened,       AddAudioPlayerOpenListener)
+	DEFINE_SIGNAL_ADDERS(AnnounceAudioPlayerOpened, AddAudioPlayerOpenListener)
 };

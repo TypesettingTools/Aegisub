@@ -25,21 +25,22 @@ using namespace agi;
 
 /// Anything integral -> 16 bit signed machine-endian audio converter
 namespace {
-template<class Target>
-class BitdepthConvertAudioProvider final : public AudioProviderWrapper {
+template <class Target> class BitdepthConvertAudioProvider final : public AudioProviderWrapper {
 	int src_bytes_per_sample;
 	mutable std::vector<uint8_t> src_buf;
 
-public:
-	BitdepthConvertAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
-		if (bytes_per_sample > 8)
-			throw AudioProviderError("Audio format converter: audio with bitdepths greater than 64 bits/sample is currently unsupported");
+  public:
+	BitdepthConvertAudioProvider(std::unique_ptr<AudioProvider> src)
+	    : AudioProviderWrapper(std::move(src)) {
+		if(bytes_per_sample > 8)
+			throw AudioProviderError("Audio format converter: audio with bitdepths greater than 64 "
+			                         "bits/sample is currently unsupported");
 
 		src_bytes_per_sample = bytes_per_sample;
 		bytes_per_sample = sizeof(Target);
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count64) const override {
+	void FillBuffer(void* buf, int64_t start, int64_t count64) const override {
 		auto count = static_cast<size_t>(count64);
 		assert(count == count64);
 
@@ -48,24 +49,24 @@ public:
 
 		auto dest = static_cast<int16_t*>(buf);
 
-		for (int64_t i = 0; i < count * channels; ++i) {
+		for(int64_t i = 0; i < count * channels; ++i) {
 			int64_t sample = 0;
 
 			// 8 bits per sample is assumed to be unsigned with a bias of 127,
 			// while everything else is assumed to be signed with zero bias
-			if (src_bytes_per_sample == 1)
+			if(src_bytes_per_sample == 1)
 				sample = src_buf[i] - 128;
 			else {
-				for (int j = src_bytes_per_sample; j > 0; --j) {
+				for(int j = src_bytes_per_sample; j > 0; --j) {
 					sample <<= 8;
 					sample += src_buf[i * src_bytes_per_sample + j - 1];
 				}
 			}
 
-			if (static_cast<size_t>(src_bytes_per_sample) > sizeof(Target))
+			if(static_cast<size_t>(src_bytes_per_sample) > sizeof(Target))
 				sample /= 1LL << (src_bytes_per_sample - sizeof(Target)) * 8;
-			else if (static_cast<size_t>(src_bytes_per_sample) < sizeof(Target))
-				sample *=  1LL << (sizeof(Target) - src_bytes_per_sample ) * 8;
+			else if(static_cast<size_t>(src_bytes_per_sample) < sizeof(Target))
+				sample *= 1LL << (sizeof(Target) - src_bytes_per_sample) * 8;
 
 			dest[i] = static_cast<Target>(sample);
 		}
@@ -73,17 +74,18 @@ public:
 };
 
 /// Floating point -> 16 bit signed machine-endian audio converter
-template<class Source, class Target>
+template <class Source, class Target>
 class FloatConvertAudioProvider final : public AudioProviderWrapper {
 	mutable std::vector<Source> src_buf;
 
-public:
-	FloatConvertAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
+  public:
+	FloatConvertAudioProvider(std::unique_ptr<AudioProvider> src)
+	    : AudioProviderWrapper(std::move(src)) {
 		bytes_per_sample = sizeof(Target);
 		float_samples = false;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count64) const override {
+	void FillBuffer(void* buf, int64_t start, int64_t count64) const override {
 		auto count = static_cast<size_t>(count64);
 		assert(count == count64);
 
@@ -92,16 +94,17 @@ public:
 
 		auto dest = static_cast<Target*>(buf);
 
-		for (size_t i = 0; i < static_cast<size_t>(count * channels); ++i) {
+		for(size_t i = 0; i < static_cast<size_t>(count * channels); ++i) {
 			Source expanded;
-			if (src_buf[i] < 0)
+			if(src_buf[i] < 0)
 				expanded = static_cast<Target>(-src_buf[i] * std::numeric_limits<Target>::min());
 			else
 				expanded = static_cast<Target>(src_buf[i] * std::numeric_limits<Target>::max());
 
-			dest[i] = expanded < std::numeric_limits<Target>::min() ? std::numeric_limits<Target>::min() :
-			          expanded > std::numeric_limits<Target>::max() ? std::numeric_limits<Target>::max() :
-			                                                          static_cast<Target>(expanded);
+			dest[i] =
+			    expanded < std::numeric_limits<Target>::min()   ? std::numeric_limits<Target>::min()
+			    : expanded > std::numeric_limits<Target>::max() ? std::numeric_limits<Target>::max()
+			                                                    : static_cast<Target>(expanded);
 		}
 	}
 };
@@ -111,13 +114,14 @@ class DownmixAudioProvider final : public AudioProviderWrapper {
 	int src_channels;
 	mutable std::vector<int16_t> src_buf;
 
-public:
-	DownmixAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
+  public:
+	DownmixAudioProvider(std::unique_ptr<AudioProvider> src)
+	    : AudioProviderWrapper(std::move(src)) {
 		src_channels = channels;
 		channels = 1;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count64) const override {
+	void FillBuffer(void* buf, int64_t start, int64_t count64) const override {
 		auto count = static_cast<size_t>(count64);
 		assert(count == count64);
 
@@ -126,9 +130,9 @@ public:
 
 		auto dst = static_cast<int16_t*>(buf);
 		// Just average the channels together
-		while (count-- > 0) {
+		while(count-- > 0) {
 			int sum = 0;
-			for (int c = 0; c < src_channels; ++c)
+			for(int c = 0; c < src_channels; ++c)
 				sum += src_buf[count * src_channels + c];
 			dst[count] = static_cast<int16_t>(sum / src_channels);
 		}
@@ -138,67 +142,71 @@ public:
 /// Sample doubler with linear interpolation for the samples provider
 /// Requires 16-bit mono input
 class SampleDoublingAudioProvider final : public AudioProviderWrapper {
-public:
-	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
+  public:
+	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider> src)
+	    : AudioProviderWrapper(std::move(src)) {
 		sample_rate *= 2;
 		num_samples *= 2;
 		decoded_samples = decoded_samples * 2;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
-		int16_t *src, *dst = static_cast<int16_t *>(buf);
+	void FillBuffer(void* buf, int64_t start, int64_t count) const override {
+		int16_t *src, *dst = static_cast<int16_t*>(buf);
 
 		// We need to always get at least two samples to be able to interpolate
 		int16_t srcbuf[2];
-		if (count == 1) {
+		if(count == 1) {
 			source->GetAudio(srcbuf, start / 2, 2);
 			src = srcbuf;
-		}
-		else {
+		} else {
 			source->GetAudio(buf, start / 2, (start + count) / 2 - start / 2 + 1);
 			src = dst;
 		}
 
 		// walking backwards so that the conversion can be done in place
-		for (; count > 0; --count) {
+		for(; count > 0; --count) {
 			auto src_index = (start + count - 1) / 2 - start / 2;
 			auto i = count - 1;
-			if ((start + i) & 1)
+			if((start + i) & 1)
 				dst[i] = (int16_t)(((int32_t)src[src_index] + src[src_index + 1]) / 2);
 			else
 				dst[i] = src[src_index];
 		}
 	}
 };
-}
+} // namespace
 
 namespace agi {
 std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider> provider) {
 	// Ensure 16-bit audio with proper endianness
-	if (provider->AreSamplesFloat()) {
+	if(provider->AreSamplesFloat()) {
 		LOG_D("audio_provider") << "Converting float to S16";
-		if (provider->GetBytesPerSample() == sizeof(float))
-			provider = agi::make_unique<FloatConvertAudioProvider<float, int16_t>>(std::move(provider));
+		if(provider->GetBytesPerSample() == sizeof(float))
+			provider =
+			    agi::make_unique<FloatConvertAudioProvider<float, int16_t>>(std::move(provider));
 		else
-			provider = agi::make_unique<FloatConvertAudioProvider<double, int16_t>>(std::move(provider));
+			provider =
+			    agi::make_unique<FloatConvertAudioProvider<double, int16_t>>(std::move(provider));
 	}
-	if (provider->GetBytesPerSample() != 2) {
-		LOG_D("audio_provider") << "Converting " << provider->GetBytesPerSample() << " bytes per sample or wrong endian to S16";
+	if(provider->GetBytesPerSample() != 2) {
+		LOG_D("audio_provider") << "Converting " << provider->GetBytesPerSample()
+		                        << " bytes per sample or wrong endian to S16";
 		provider = agi::make_unique<BitdepthConvertAudioProvider<int16_t>>(std::move(provider));
 	}
 
 	// We currently only support mono audio
-	if (provider->GetChannels() != 1) {
-		LOG_D("audio_provider") << "Downmixing to mono from " << provider->GetChannels() << " channels";
+	if(provider->GetChannels() != 1) {
+		LOG_D("audio_provider") << "Downmixing to mono from " << provider->GetChannels()
+		                        << " channels";
 		provider = agi::make_unique<DownmixAudioProvider>(std::move(provider));
 	}
 
 	// Some players don't like low sample rate audio
-	while (provider->GetSampleRate() < 32000) {
+	while(provider->GetSampleRate() < 32000) {
 		LOG_D("audio_provider") << "Doubling sample rate";
 		provider = agi::make_unique<SampleDoublingAudioProvider>(std::move(provider));
 	}
 
 	return provider;
 }
-}
+} // namespace agi

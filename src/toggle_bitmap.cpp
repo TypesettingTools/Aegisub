@@ -41,12 +41,10 @@
 #include <wx/settings.h>
 #include <wx/tglbtn.h>
 
-ToggleBitmap::ToggleBitmap(wxWindow *parent, agi::Context *context, const char *cmd_name, int icon_size, const char *ht_ctx, wxSize const& size)
-: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
-, context(context)
-, command(*cmd::get(cmd_name))
-, img(command.Icon(icon_size))
-{
+ToggleBitmap::ToggleBitmap(wxWindow* parent, agi::Context* context, const char* cmd_name,
+                           int icon_size, const char* ht_ctx, wxSize const& size)
+    : wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER), context(context),
+      command(*cmd::get(cmd_name)), img(command.Icon(icon_size)) {
 	int w = size.GetWidth() != -1 ? size.GetWidth() : img.GetWidth();
 	int h = size.GetHeight() != -1 ? size.GetHeight() : img.GetHeight();
 	SetClientSize(w, h);
@@ -60,22 +58,19 @@ ToggleBitmap::ToggleBitmap(wxWindow *parent, agi::Context *context, const char *
 	Bind(wxEVT_LEFT_DOWN, &ToggleBitmap::OnMouseEvent, this);
 }
 
-void ToggleBitmap::OnMouseEvent(wxMouseEvent &) {
-	if (command.Validate(context))
-		command(context);
+void ToggleBitmap::OnMouseEvent(wxMouseEvent&) {
+	if(command.Validate(context)) command(context);
 	Refresh(false);
 }
 
-void ToggleBitmap::OnPaint(wxPaintEvent &) {
+void ToggleBitmap::OnPaint(wxPaintEvent&) {
 	wxAutoBufferedPaintDC dc(this);
 
 	// Get background color
-	wxColour bgColor = command.IsActive(context) ? wxColour(0,255,0) : wxColour(255,0,0);
+	wxColour bgColor = command.IsActive(context) ? wxColour(0, 255, 0) : wxColour(255, 0, 0);
 	wxColor sysCol = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNHIGHLIGHT);
-	bgColor.Set(
-		(sysCol.Red() + bgColor.Red()) / 2,
-		(sysCol.Green() + bgColor.Green()) / 2,
-		(sysCol.Blue() + bgColor.Blue()) / 2);
+	bgColor.Set((sysCol.Red() + bgColor.Red()) / 2, (sysCol.Green() + bgColor.Green()) / 2,
+	            (sysCol.Blue() + bgColor.Blue()) / 2);
 
 	dc.SetPen(*wxTRANSPARENT_PEN);
 	dc.SetBrush(wxBrush(bgColor));

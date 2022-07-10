@@ -40,61 +40,65 @@
 
 #include <boost/range/iterator_range.hpp>
 
-std::unique_ptr<AudioPlayer> CreateAlsaPlayer(agi::AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(agi::AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreateDirectSound2Player(agi::AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreateOpenALPlayer(agi::AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(agi::AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(agi::AudioProvider *providers, wxWindow *window);
-std::unique_ptr<AudioPlayer> CreateOSSPlayer(agi::AudioProvider *providers, wxWindow *window);
+std::unique_ptr<AudioPlayer> CreateAlsaPlayer(agi::AudioProvider* providers, wxWindow* window);
+std::unique_ptr<AudioPlayer> CreateDirectSoundPlayer(agi::AudioProvider* providers,
+                                                     wxWindow* window);
+std::unique_ptr<AudioPlayer> CreateDirectSound2Player(agi::AudioProvider* providers,
+                                                      wxWindow* window);
+std::unique_ptr<AudioPlayer> CreateOpenALPlayer(agi::AudioProvider* providers, wxWindow* window);
+std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(agi::AudioProvider* providers, wxWindow* window);
+std::unique_ptr<AudioPlayer> CreatePulseAudioPlayer(agi::AudioProvider* providers,
+                                                    wxWindow* window);
+std::unique_ptr<AudioPlayer> CreateOSSPlayer(agi::AudioProvider* providers, wxWindow* window);
 
 namespace {
-	struct factory {
-		const char *name;
-		std::unique_ptr<AudioPlayer> (*create)(agi::AudioProvider *, wxWindow *window);
-		bool hidden;
-	};
+struct factory {
+	const char* name;
+	std::unique_ptr<AudioPlayer> (*create)(agi::AudioProvider*, wxWindow* window);
+	bool hidden;
+};
 
-	const factory factories[] = {
+const factory factories[] = {
 #ifdef WITH_ALSA
-		{"ALSA", CreateAlsaPlayer, false},
+	{ "ALSA", CreateAlsaPlayer, false },
 #endif
 #ifdef WITH_DIRECTSOUND
-		{"DirectSound-old", CreateDirectSoundPlayer, false},
-		{"DirectSound", CreateDirectSound2Player, false},
+	{ "DirectSound-old", CreateDirectSoundPlayer, false },
+	{ "DirectSound", CreateDirectSound2Player, false },
 #endif
 #ifdef WITH_OPENAL
-		{"OpenAL", CreateOpenALPlayer, false},
+	{ "OpenAL", CreateOpenALPlayer, false },
 #endif
 #ifdef WITH_PORTAUDIO
-		{"PortAudio", CreatePortAudioPlayer, false},
+	{ "PortAudio", CreatePortAudioPlayer, false },
 #endif
 #ifdef WITH_LIBPULSE
-		{"PulseAudio", CreatePulseAudioPlayer, false},
+	{ "PulseAudio", CreatePulseAudioPlayer, false },
 #endif
 #ifdef WITH_OSS
-		{"OSS", CreateOSSPlayer, false},
+	{ "OSS", CreateOSSPlayer, false },
 #endif
-	};
-}
+};
+} // namespace
 
 std::vector<std::string> AudioPlayerFactory::GetClasses() {
 	return ::GetClasses(boost::make_iterator_range(std::begin(factories), std::end(factories)));
 }
 
-std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(agi::AudioProvider *provider, wxWindow *window) {
-	if (std::begin(factories) == std::end(factories))
+std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(agi::AudioProvider* provider,
+                                                                wxWindow* window) {
+	if(std::begin(factories) == std::end(factories))
 		throw AudioPlayerOpenError("No audio players are available.");
 
 	auto preferred = OPT_GET("Audio/Player")->GetString();
-	auto sorted = GetSorted(boost::make_iterator_range(std::begin(factories), std::end(factories)), preferred);
+	auto sorted = GetSorted(boost::make_iterator_range(std::begin(factories), std::end(factories)),
+	                        preferred);
 
 	std::string error;
-	for (auto factory : sorted) {
+	for(auto factory : sorted) {
 		try {
 			return factory->create(provider, window);
-		}
-		catch (AudioPlayerOpenError const& err) {
+		} catch(AudioPlayerOpenError const& err) {
 			error += std::string(factory->name) + " factory: " + err.GetMessage() + "\n";
 		}
 	}

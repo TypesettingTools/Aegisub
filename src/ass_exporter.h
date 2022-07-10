@@ -39,7 +39,9 @@
 #include <vector>
 
 class AssExportFilter;
-namespace agi { struct Context; }
+namespace agi {
+struct Context;
+}
 class wxSizer;
 class wxWindow;
 
@@ -53,14 +55,14 @@ class AssExporter {
 	std::vector<AssExportFilter*> filters;
 
 	/// Input context
-	agi::Context *c;
+	agi::Context* c;
 
 	/// Have the config windows been created, or should filters simply use
 	/// their default settings
 	bool is_default = true;
 
-public:
-	AssExporter(agi::Context *c);
+  public:
+	AssExporter(agi::Context* c);
 
 	/// Get the names of all registered export filters
 	std::vector<std::string> GetAllFilterNames() const;
@@ -73,15 +75,16 @@ public:
 	/// @param file Target filename
 	/// @param charset Target charset
 	/// @param parent_window Parent window the filters should use when opening dialogs
-	void Export(agi::fs::path const& file, std::string const& charset, wxWindow *parent_window= nullptr);
+	void Export(agi::fs::path const& file, std::string const& charset,
+	            wxWindow* parent_window = nullptr);
 
 	/// Add configuration panels for all registered filters to the target sizer
 	/// @param parent Parent window for controls
 	/// @param target_sizer Sizer to add configuration panels to
-	void DrawSettings(wxWindow *parent, wxSizer *target_sizer);
+	void DrawSettings(wxWindow* parent, wxSizer* target_sizer);
 
 	/// Get the sizer created by DrawSettings for a specific filter
-	wxSizer *GetSettingsSizer(std::string const& name);
+	wxSizer* GetSettingsSizer(std::string const& name);
 
 	/// Get the description of the named export filter
 	/// @throws std::string if filter is not found

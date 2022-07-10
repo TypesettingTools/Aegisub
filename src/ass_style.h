@@ -38,8 +38,9 @@ class wxArrayString;
 class AssStyle final : public AssEntry, public AssEntryListHook {
 	std::string data;
 
-public:
-	std::string name = "Default"; ///< Name of the style; must be case-insensitively unique within a file despite being case-sensitive
+  public:
+	std::string name = "Default"; ///< Name of the style; must be case-insensitively unique within a
+	                              ///< file despite being case-sensitive
 	std::string font = "Arial";   ///< Font face name
 	double fontsize = 48.;        ///< Font size
 
@@ -68,10 +69,10 @@ public:
 	void UpdateData();
 
 	/// @brief Get a list of valid ASS font encodings
-	static void GetEncodings(wxArrayString &encodingStrings);
+	static void GetEncodings(wxArrayString& encodingStrings);
 
 	AssStyle();
-	AssStyle(std::string const& data, int version=1);
+	AssStyle(std::string const& data, int version = 1);
 
 	std::string const& GetEntryData() const { return data; }
 	AssEntryGroup Group() const override;

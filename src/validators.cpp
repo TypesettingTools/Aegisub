@@ -26,7 +26,7 @@
 #include <wx/textctrl.h>
 
 namespace {
-std::string new_value(wxTextCtrl *ctrl, int chr) {
+std::string new_value(wxTextCtrl* ctrl, int chr) {
 	long from, to;
 	ctrl->GetSelection(&from, &to);
 	auto value = ctrl->GetValue();
@@ -37,118 +37,100 @@ wxChar decimal_separator() {
 	auto sep = wxLocale::GetInfo(wxLOCALE_DECIMAL_POINT, wxLOCALE_CAT_NUMBER);
 	return sep.empty() ? '.' : sep[0];
 }
-}
+} // namespace
 
 IntValidator::IntValidator(int val, bool allow_negative)
-: value(val)
-, allow_negative(allow_negative)
-{
+    : value(val), allow_negative(allow_negative) {
 	Bind(wxEVT_CHAR, &IntValidator::OnChar, this);
 }
 
 IntValidator::IntValidator(IntValidator const& rgt)
-: value(rgt.value)
-, allow_negative(rgt.allow_negative)
-{
+    : value(rgt.value), allow_negative(rgt.allow_negative) {
 	SetWindow(rgt.GetWindow());
 	Bind(wxEVT_CHAR, &IntValidator::OnChar, this);
 }
 
 bool IntValidator::TransferToWindow() {
-	static_cast<wxTextCtrl *>(GetWindow())->SetValue(std::to_wstring(value));
+	static_cast<wxTextCtrl*>(GetWindow())->SetValue(std::to_wstring(value));
 	return true;
 }
 
 void IntValidator::OnChar(wxKeyEvent& event) {
 	int chr = event.GetKeyCode();
-	if (chr < WXK_SPACE || chr == WXK_DELETE || chr > WXK_START) {
+	if(chr < WXK_SPACE || chr == WXK_DELETE || chr > WXK_START) {
 		event.Skip();
 		return;
 	}
 
-	auto ctrl = static_cast<wxTextCtrl *>(GetWindow());
+	auto ctrl = static_cast<wxTextCtrl*>(GetWindow());
 	auto str = new_value(ctrl, chr);
 	int parsed;
-	if (allow_negative && str == "-")
+	if(allow_negative && str == "-")
 		event.Skip();
-	else if (agi::util::try_parse(str, &parsed) && (allow_negative || parsed >= 0))
+	else if(agi::util::try_parse(str, &parsed) && (allow_negative || parsed >= 0))
 		event.Skip();
-	else if (!wxValidator::IsSilent())
+	else if(!wxValidator::IsSilent())
 		wxBell();
 }
 
-DoubleValidator::DoubleValidator(double *val, bool allow_negative)
-: value(val)
-, min(allow_negative ? std::numeric_limits<double>::lowest() : 0)
-, max(std::numeric_limits<double>::max())
-, decimal_sep(decimal_separator())
-{
+DoubleValidator::DoubleValidator(double* val, bool allow_negative)
+    : value(val), min(allow_negative ? std::numeric_limits<double>::lowest() : 0),
+      max(std::numeric_limits<double>::max()), decimal_sep(decimal_separator()) {
 	Bind(wxEVT_CHAR, &DoubleValidator::OnChar, this);
 }
 
-DoubleValidator::DoubleValidator(double *val, double min, double max)
-: value(val)
-, min(min)
-, max(max)
-, decimal_sep(decimal_separator())
-{
+DoubleValidator::DoubleValidator(double* val, double min, double max)
+    : value(val), min(min), max(max), decimal_sep(decimal_separator()) {
 	Bind(wxEVT_CHAR, &DoubleValidator::OnChar, this);
 }
 
 DoubleValidator::DoubleValidator(DoubleValidator const& rgt)
-: value(rgt.value)
-, min(rgt.min)
-, max(rgt.max)
-, decimal_sep(rgt.decimal_sep)
-{
+    : value(rgt.value), min(rgt.min), max(rgt.max), decimal_sep(rgt.decimal_sep) {
 	Bind(wxEVT_CHAR, &DoubleValidator::OnChar, this);
 	SetWindow(rgt.GetWindow());
 }
 
 void DoubleValidator::OnChar(wxKeyEvent& event) {
 	int chr = event.GetKeyCode();
-	if (chr < WXK_SPACE || chr == WXK_DELETE || chr > WXK_START) {
+	if(chr < WXK_SPACE || chr == WXK_DELETE || chr > WXK_START) {
 		event.Skip();
 		return;
 	}
 
-	if (chr == decimal_sep)
-		chr = '.';
+	if(chr == decimal_sep) chr = '.';
 
-	auto str = new_value(static_cast<wxTextCtrl *>(GetWindow()), chr);
-	if (decimal_sep != '.')
-		replace(begin(str), end(str), (char)decimal_sep, '.');
+	auto str = new_value(static_cast<wxTextCtrl*>(GetWindow()), chr);
+	if(decimal_sep != '.') replace(begin(str), end(str), (char)decimal_sep, '.');
 
 	double parsed;
 	bool can_parse = agi::util::try_parse(str, &parsed);
-	if ((min < 0 && str == "-") || str == ".")
+	if((min < 0 && str == "-") || str == ".")
 		event.Skip();
-	else if (can_parse && parsed >= min && parsed <= max)
+	else if(can_parse && parsed >= min && parsed <= max)
 		event.Skip();
-	else if (can_parse && min < 0 && chr == '-') // allow negating an existing value even if it results in being out of range
+	else if(can_parse && min < 0 &&
+	        chr == '-') // allow negating an existing value even if it results in being out of range
 		event.Skip();
-	else if (!wxValidator::IsSilent())
+	else if(!wxValidator::IsSilent())
 		wxBell();
 }
 
 bool DoubleValidator::TransferToWindow() {
 	auto str = std::to_wstring(*value);
-	if (decimal_sep != '.')
-		std::replace(str.begin(), str.end(), L'.', decimal_sep);
-	if (str.find(decimal_sep) != str.npos) {
-		while (str.back() == '0')
+	if(decimal_sep != '.') std::replace(str.begin(), str.end(), L'.', decimal_sep);
+	if(str.find(decimal_sep) != str.npos) {
+		while(str.back() == '0')
 			str.pop_back();
 	}
-	static_cast<wxTextCtrl *>(GetWindow())->SetValue(str);
+	static_cast<wxTextCtrl*>(GetWindow())->SetValue(str);
 	return true;
 }
 
 bool DoubleValidator::TransferFromWindow() {
-	auto ctrl = static_cast<wxTextCtrl *>(GetWindow());
-	if (!Validate(ctrl)) return false;
+	auto ctrl = static_cast<wxTextCtrl*>(GetWindow());
+	if(!Validate(ctrl)) return false;
 	auto str = from_wx(ctrl->GetValue());
-	if (decimal_sep != '.')
-		replace(begin(str), end(str), (char)decimal_sep, '.');
+	if(decimal_sep != '.') replace(begin(str), end(str), (char)decimal_sep, '.');
 	agi::util::try_parse(str, value);
 	return true;
 }
@@ -169,27 +151,25 @@ bool DoubleSpinValidator::TransferFromWindow() {
 }
 
 int EnumBinderBase::Get() {
-	if (auto rb = dynamic_cast<wxRadioBox*>(GetWindow()))
-		return rb->GetSelection();
-	if (auto rb = dynamic_cast<wxComboBox*>(GetWindow()))
-		return rb->GetSelection();
+	if(auto rb = dynamic_cast<wxRadioBox*>(GetWindow())) return rb->GetSelection();
+	if(auto rb = dynamic_cast<wxComboBox*>(GetWindow())) return rb->GetSelection();
 	throw agi::InternalError("Control type not supported by EnumBinder");
 }
 
 void EnumBinderBase::Set(int value) {
-	if (auto rb = dynamic_cast<wxRadioBox*>(GetWindow()))
+	if(auto rb = dynamic_cast<wxRadioBox*>(GetWindow()))
 		rb->SetSelection(value);
-	else if (auto rb = dynamic_cast<wxComboBox*>(GetWindow()))
+	else if(auto rb = dynamic_cast<wxComboBox*>(GetWindow()))
 		rb->SetSelection(value);
 	else
 		throw agi::InternalError("Control type not supported by EnumBinder");
 }
 
 bool StringBinder::TransferFromWindow() {
-	wxWindow *window = GetWindow();
-	if (wxTextCtrl *ctrl = dynamic_cast<wxTextCtrl*>(window))
+	wxWindow* window = GetWindow();
+	if(wxTextCtrl* ctrl = dynamic_cast<wxTextCtrl*>(window))
 		*value = from_wx(ctrl->GetValue());
-	else if (wxComboBox *ctrl = dynamic_cast<wxComboBox*>(window))
+	else if(wxComboBox* ctrl = dynamic_cast<wxComboBox*>(window))
 		*value = from_wx(ctrl->GetValue());
 	else
 		throw agi::InternalError("Unsupported control type");
@@ -197,10 +177,10 @@ bool StringBinder::TransferFromWindow() {
 }
 
 bool StringBinder::TransferToWindow() {
-	wxWindow *window = GetWindow();
-	if (wxTextCtrl *ctrl = dynamic_cast<wxTextCtrl*>(window))
+	wxWindow* window = GetWindow();
+	if(wxTextCtrl* ctrl = dynamic_cast<wxTextCtrl*>(window))
 		ctrl->SetValue(to_wx(*value));
-	else if (wxComboBox *ctrl = dynamic_cast<wxComboBox*>(window))
+	else if(wxComboBox* ctrl = dynamic_cast<wxComboBox*>(window))
 		ctrl->SetValue(to_wx(*value));
 	else
 		throw agi::InternalError("Unsupported control type");

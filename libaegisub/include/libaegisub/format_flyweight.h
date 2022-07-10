@@ -19,18 +19,17 @@
 #include <boost/flyweight.hpp>
 
 namespace agi {
-template<>
-struct writer<char, boost::flyweight<std::string>> {
-	static void write(std::basic_ostream<char>& out, int max_len, boost::flyweight<std::string> const& value) {
+template <> struct writer<char, boost::flyweight<std::string>> {
+	static void write(std::basic_ostream<char>& out, int max_len,
+	                  boost::flyweight<std::string> const& value) {
 		writer<char, std::string>::write(out, max_len, value.get());
 	}
 };
 
-template<>
-struct writer<wchar_t, boost::flyweight<std::string>> {
-	static void write(std::basic_ostream<wchar_t>& out, int max_len, boost::flyweight<std::string> const& value) {
+template <> struct writer<wchar_t, boost::flyweight<std::string>> {
+	static void write(std::basic_ostream<wchar_t>& out, int max_len,
+	                  boost::flyweight<std::string> const& value) {
 		writer<wchar_t, std::string>::write(out, max_len, value.get());
 	}
 };
-}
-
+} // namespace agi

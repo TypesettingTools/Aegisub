@@ -28,37 +28,39 @@ class wxCommandEvent;
 class wxKeyEvent;
 class wxListBox;
 class wxTextCtrl;
-namespace agi { struct Context; }
+namespace agi {
+struct Context;
+}
 
 class DialogStyling final : public wxDialog {
-	agi::Context *c;
+	agi::Context* c;
 	agi::signal::Connection active_line_connection;
 
-	wxButton *play_audio;
-	wxButton *play_video;
-	wxCheckBox *auto_seek;
-	wxListBox *style_list;
-	wxTextCtrl *current_line_text;
-	wxTextCtrl *style_name;
+	wxButton* play_audio;
+	wxButton* play_video;
+	wxCheckBox* auto_seek;
+	wxListBox* style_list;
+	wxTextCtrl* current_line_text;
+	wxTextCtrl* style_name;
 
-	void OnActivate(wxActivateEvent &evt);
-	void OnKeyDown(wxKeyEvent &evt);
-	void OnCharHook(wxKeyEvent &evt);
-	void OnListClicked(wxCommandEvent &evt);
-	void OnListDoubleClicked(wxCommandEvent &evt);
-	void OnPlayAudioButton(wxCommandEvent &evt);
-	void OnPlayVideoButton(wxCommandEvent &evt);
-	void OnStyleBoxModified(wxCommandEvent &evt);
+	void OnActivate(wxActivateEvent& evt);
+	void OnKeyDown(wxKeyEvent& evt);
+	void OnCharHook(wxKeyEvent& evt);
+	void OnListClicked(wxCommandEvent& evt);
+	void OnListDoubleClicked(wxCommandEvent& evt);
+	void OnPlayAudioButton(wxCommandEvent& evt);
+	void OnPlayVideoButton(wxCommandEvent& evt);
+	void OnStyleBoxModified(wxCommandEvent& evt);
 
-	void OnActiveLineChanged(AssDialogue *);
+	void OnActiveLineChanged(AssDialogue*);
 
-	AssDialogue *active_line = nullptr;
+	AssDialogue* active_line = nullptr;
 
 	std::unique_ptr<PersistLocation> persist;
 
-public:
+  public:
 	void Commit(bool next);
 
-	DialogStyling(agi::Context *context);
+	DialogStyling(agi::Context* context);
 	~DialogStyling();
 };

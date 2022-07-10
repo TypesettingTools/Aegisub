@@ -33,14 +33,16 @@ class TextSelectionController;
 class VideoController;
 class VideoDisplay;
 class wxWindow;
-namespace Automation4 { class ScriptManager; }
+namespace Automation4 {
+class ScriptManager;
+}
 
 namespace agi {
 class Path;
 
 struct Context {
 	// Note: order here matters quite a bit, as things need to be set up and
-    // torn down in the correct order
+	// torn down in the correct order
 	std::unique_ptr<AssFile> ass;
 	std::unique_ptr<TextSelectionController> textSelectionController;
 	std::unique_ptr<SubsController> subsController;
@@ -54,20 +56,20 @@ struct Context {
 	std::unique_ptr<Path> path;
 
 	// Things that should probably be in some sort of UI-context-model
-	wxWindow *parent = nullptr;
-	wxWindow *previousFocus = nullptr;
-	wxWindow *videoSlider = nullptr;
+	wxWindow* parent = nullptr;
+	wxWindow* previousFocus = nullptr;
+	wxWindow* videoSlider = nullptr;
 
 	// Views (i.e. things that should eventually not be here at all)
-	AudioBox *audioBox = nullptr;
-	AudioKaraoke *karaoke = nullptr;
-	BaseGrid *subsGrid = nullptr;
+	AudioBox* audioBox = nullptr;
+	AudioKaraoke* karaoke = nullptr;
+	BaseGrid* subsGrid = nullptr;
 	std::unique_ptr<DialogManager> dialog;
-	FrameMain *frame = nullptr;
-	VideoDisplay *videoDisplay = nullptr;
+	FrameMain* frame = nullptr;
+	VideoDisplay* videoDisplay = nullptr;
 
 	Context();
 	~Context();
 };
 
-}
+} // namespace agi

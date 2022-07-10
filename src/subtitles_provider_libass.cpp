@@ -63,10 +63,10 @@ extern "C" {
 
 namespace {
 std::unique_ptr<agi::dispatch::Queue> cache_queue;
-ASS_Library *library;
+ASS_Library* library;
 
-void msg_callback(int level, const char *fmt, va_list args, void *) {
-	if (level >= 7) return;
+void msg_callback(int level, const char* fmt, va_list args, void*) {
+	if(level >= 7) return;
 	char buf[1024];
 #ifdef _WIN32
 	vsprintf_s(buf, sizeof(buf), fmt, args);
@@ -74,7 +74,7 @@ void msg_callback(int level, const char *fmt, va_list args, void *) {
 	vsnprintf(buf, sizeof(buf), fmt, args);
 #endif
 
-	if (level < 2) // warning/error
+	if(level < 2) // warning/error
 		LOG_I("subtitle/provider/libass") << buf;
 	else // verbose
 		LOG_D("subtitle/provider/libass") << buf;
@@ -83,58 +83,56 @@ void msg_callback(int level, const char *fmt, va_list args, void *) {
 // Stuff used on the cache thread, owned by a shared_ptr in case the provider
 // gets deleted before the cache finishing updating
 struct cache_thread_shared {
-	ASS_Renderer *renderer = nullptr;
-	std::atomic<bool> ready{false};
-	~cache_thread_shared() { if (renderer) ass_renderer_done(renderer); }
+	ASS_Renderer* renderer = nullptr;
+	std::atomic<bool> ready{ false };
+	~cache_thread_shared() {
+		if(renderer) ass_renderer_done(renderer);
+	}
 };
 
 class LibassSubtitlesProvider final : public SubtitlesProvider {
-	agi::BackgroundRunner *br;
+	agi::BackgroundRunner* br;
 	std::shared_ptr<cache_thread_shared> shared;
 	ASS_Track* ass_track = nullptr;
 
-	ASS_Renderer *renderer() {
-		if (shared->ready)
-			return shared->renderer;
+	ASS_Renderer* renderer() {
+		if(shared->ready) return shared->renderer;
 
 		auto block = [&] {
-			if (shared->ready)
-				return;
+			if(shared->ready) return;
 			agi::util::sleep_for(250);
-			if (shared->ready)
-				return;
-			br->Run([=](agi::ProgressSink *ps) {
+			if(shared->ready) return;
+			br->Run([=](agi::ProgressSink* ps) {
 				ps->SetTitle(from_wx(_("Updating font index")));
 				ps->SetMessage(from_wx(_("This may take several minutes")));
 				ps->SetIndeterminate();
-				while (!shared->ready && !ps->IsCancelled())
+				while(!shared->ready && !ps->IsCancelled())
 					agi::util::sleep_for(250);
 			});
 		};
 
-		if (wxThread::IsMain())
+		if(wxThread::IsMain())
 			block();
 		else
 			agi::dispatch::Main().Sync(block);
 		return shared->renderer;
 	}
 
-public:
-	LibassSubtitlesProvider(agi::BackgroundRunner *br);
+  public:
+	LibassSubtitlesProvider(agi::BackgroundRunner* br);
 	~LibassSubtitlesProvider();
 
-	void LoadSubtitles(const char *data, size_t len) override {
-		if (ass_track) ass_free_track(ass_track);
-		ass_track = ass_read_memory(library, const_cast<char *>(data), len, nullptr);
-		if (!ass_track) throw agi::InternalError("libass failed to load subtitles.");
+	void LoadSubtitles(const char* data, size_t len) override {
+		if(ass_track) ass_free_track(ass_track);
+		ass_track = ass_read_memory(library, const_cast<char*>(data), len, nullptr);
+		if(!ass_track) throw agi::InternalError("libass failed to load subtitles.");
 	}
 
-	void DrawSubtitles(VideoFrame &dst, double time) override;
+	void DrawSubtitles(VideoFrame& dst, double time) override;
 
 	void Reinitialize() override {
 		// No need to reinit if we're not even done with the initial init
-		if (!shared->ready)
-			return;
+		if(!shared->ready) return;
 
 		ass_renderer_done(shared->renderer);
 		shared->renderer = ass_renderer_init(library);
@@ -143,14 +141,12 @@ public:
 	}
 };
 
-LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br)
-: br(br)
-, shared(std::make_shared<cache_thread_shared>())
-{
+LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner* br)
+    : br(br), shared(std::make_shared<cache_thread_shared>()) {
 	auto state = shared;
 	cache_queue->Async([state] {
 		auto ass_renderer = ass_renderer_init(library);
-		if (ass_renderer) {
+		if(ass_renderer) {
 			ass_set_font_scale(ass_renderer, 1.);
 			ass_set_fonts(ass_renderer, nullptr, "Sans", 1, nullptr, true);
 		}
@@ -160,15 +156,15 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br)
 }
 
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
-	if (ass_track) ass_free_track(ass_track);
+	if(ass_track) ass_free_track(ass_track);
 }
 
-#define _r(c) ((c)>>24)
-#define _g(c) (((c)>>16)&0xFF)
-#define _b(c) (((c)>>8)&0xFF)
+#define _r(c) ((c) >> 24)
+#define _g(c) (((c) >> 16) & 0xFF)
+#define _b(c) (((c) >> 8) & 0xFF)
 #define _a(c) ((c)&0xFF)
 
-void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
+void LibassSubtitlesProvider::DrawSubtitles(VideoFrame& frame, double time) {
 	ass_set_frame_size(renderer(), frame.width, frame.height);
 	// Note: this relies on Aegisub always rendering at video storage res
 	ass_set_storage_size(renderer(), frame.width, frame.height);
@@ -176,15 +172,15 @@ void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
 	ASS_Image* img = ass_render_frame(renderer(), ass_track, int(time * 1000), nullptr);
 
 	// libass actually returns several alpha-masked monochrome images.
-	// Here, we loop through their linked list, get the colour of the current, and blend into the frame.
-	// This is repeated for all of them.
+	// Here, we loop through their linked list, get the colour of the current, and blend into the
+	// frame. This is repeated for all of them.
 
 	using namespace boost::gil;
-	auto dst = interleaved_view(frame.width, frame.height, (bgra8_pixel_t*)frame.data.data(), frame.width * 4);
-	if (frame.flipped)
-		dst = flipped_up_down_view(dst);
+	auto dst = interleaved_view(frame.width, frame.height, (bgra8_pixel_t*)frame.data.data(),
+	                            frame.width * 4);
+	if(frame.flipped) dst = flipped_up_down_view(dst);
 
-	for (; img; img = img->next) {
+	for(; img; img = img->next) {
 		unsigned int opacity = 255 - ((unsigned int)_a(img->color));
 		unsigned int r = (unsigned int)_r(img->color);
 		unsigned int g = (unsigned int)_g(img->color);
@@ -193,23 +189,24 @@ void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
 		auto srcview = interleaved_view(img->w, img->h, (gray8_pixel_t*)img->bitmap, img->stride);
 		auto dstview = subimage_view(dst, img->dst_x, img->dst_y, img->w, img->h);
 
-		transform_pixels(dstview, srcview, dstview, [=](const bgra8_pixel_t frame, const gray8_pixel_t src) -> bgra8_pixel_t {
-			unsigned int k = ((unsigned)src) * opacity / 255;
-			unsigned int ck = 255 - k;
+		transform_pixels(dstview, srcview, dstview,
+		                 [=](const bgra8_pixel_t frame, const gray8_pixel_t src) -> bgra8_pixel_t {
+			                 unsigned int k = ((unsigned)src) * opacity / 255;
+			                 unsigned int ck = 255 - k;
 
-			bgra8_pixel_t ret;
-			ret[0] = (k * b + ck * frame[0]) / 255;
-			ret[1] = (k * g + ck * frame[1]) / 255;
-			ret[2] = (k * r + ck * frame[2]) / 255;
-			ret[3] = 0;
-			return ret;
-		});
+			                 bgra8_pixel_t ret;
+			                 ret[0] = (k * b + ck * frame[0]) / 255;
+			                 ret[1] = (k * g + ck * frame[1]) / 255;
+			                 ret[2] = (k * r + ck * frame[2]) / 255;
+			                 ret[3] = 0;
+			                 return ret;
+		                 });
 	}
 }
-}
+} // namespace
 
 namespace libass {
-std::unique_ptr<SubtitlesProvider> Create(std::string const&, agi::BackgroundRunner *br) {
+std::unique_ptr<SubtitlesProvider> Create(std::string const&, agi::BackgroundRunner* br) {
 	return agi::make_unique<LibassSubtitlesProvider>(br);
 }
 
@@ -228,4 +225,4 @@ void CacheFonts() {
 		ass_renderer_done(ass_renderer);
 	});
 }
-}
+} // namespace libass

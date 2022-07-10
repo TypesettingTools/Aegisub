@@ -32,8 +32,8 @@
 #define WIN32_LEAN_AND_MEAN
 
 #ifdef _WIN32
-#include <objbase.h>
 #include <mmsystem.h>
+#include <objbase.h>
 #else
 #include <sys/param.h>
 #endif
@@ -43,4 +43,3 @@
 #else
 #include <GL/gl.h>
 #endif
-

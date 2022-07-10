@@ -32,14 +32,14 @@
 /// @ingroup utility
 ///
 /// Functions for "inline string encoding" handling,
-/// a simple encoding-form used for encoding strings that can't contain control codes and a few other special characters,
-/// so they can be stored as part of a field in an ASS line
+/// a simple encoding-form used for encoding strings that can't contain control codes and a few
+/// other special characters, so they can be stored as part of a field in an ASS line
 ///
 /// Even though the encoding will handle unicode strings, it can only encode ASCII characters.
 /// This is not a problem, since only ASCII characters are used for the special purposes.
 ///
-/// The encoding is based on an escape-character followed by a two-digit hexadecimal number, the number being the
-/// ASCII code for the encoded character. The escape character is # (ASCII 0x23).
+/// The encoding is based on an escape-character followed by a two-digit hexadecimal number, the
+/// number being the ASCII code for the encoded character. The escape character is # (ASCII 0x23).
 ///
 /// @verbatim
 /// The following ASCII codes must be escaped:
@@ -54,5 +54,5 @@
 
 #include <string>
 
-std::string inline_string_encode(const std::string &input);
-std::string inline_string_decode(const std::string &input);
+std::string inline_string_encode(const std::string& input);
+std::string inline_string_decode(const std::string& input);

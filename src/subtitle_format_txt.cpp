@@ -45,13 +45,10 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
-TXTSubtitleFormat::TXTSubtitleFormat()
-: SubtitleFormat("Plain-Text")
-{
-}
+TXTSubtitleFormat::TXTSubtitleFormat() : SubtitleFormat("Plain-Text") {}
 
 std::vector<std::string> TXTSubtitleFormat::GetReadWildcards() const {
-	return {"txt"};
+	return { "txt" };
 }
 
 std::vector<std::string> TXTSubtitleFormat::GetWriteWildcards() const {
@@ -60,11 +57,14 @@ std::vector<std::string> TXTSubtitleFormat::GetWriteWildcards() const {
 
 bool TXTSubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
 	auto str = filename.string();
-	return boost::iends_with(str, ".txt") && !(boost::iends_with(str, ".encore.txt") || boost::iends_with(str, ".transtation.txt"));
+	return boost::iends_with(str, ".txt") &&
+	       !(boost::iends_with(str, ".encore.txt") || boost::iends_with(str, ".transtation.txt"));
 }
 
-void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
-	if (!ShowPlainTextImportDialog()) return;
+void TXTSubtitleFormat::ReadFile(AssFile* target, agi::fs::path const& filename,
+                                 agi::vfr::Framerate const& fps,
+                                 std::string const& encoding) const {
+	if(!ShowPlainTextImportDialog()) return;
 
 	TextFileReader file(filename, encoding, false);
 
@@ -75,26 +75,26 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	std::string comment = OPT_GET("Tool/Import/Text/Comment Starter")->GetString();
 
 	// Parse file
-	while (file.HasMoreLines()) {
+	while(file.HasMoreLines()) {
 		std::string value = file.ReadLineFromFile();
-		if (value.empty() && !OPT_GET("Tool/Import/Text/Include Blank")->GetBool()) continue;
+		if(value.empty() && !OPT_GET("Tool/Import/Text/Include Blank")->GetBool()) continue;
 
 		// Check if this isn't a timecodes file
-		if (boost::starts_with(value, "# timecode"))
+		if(boost::starts_with(value, "# timecode"))
 			throw SubtitleFormatParseError("File is a timecode file, cannot load as subtitles.");
 
 		// Read comment data
 		bool isComment = false;
-		if (!comment.empty() && boost::starts_with(value, comment)) {
+		if(!comment.empty() && boost::starts_with(value, comment)) {
 			isComment = true;
 			value.erase(0, comment.size());
 		}
 
 		// Read actor data
-		if (!isComment && !separator.empty() && !value.empty()) {
-			if (value[0] != ' ' && value[0] != '\t') {
+		if(!isComment && !separator.empty() && !value.empty()) {
+			if(value[0] != ' ' && value[0] != '\t') {
 				size_t pos = value.find(separator);
-				if (pos != std::string::npos) {
+				if(pos != std::string::npos) {
 					actor = value.substr(0, pos);
 					boost::trim(actor);
 					value.erase(0, pos + 1);
@@ -105,8 +105,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 		// Trim spaces at start
 		boost::trim_left(value);
 
-		if (value.empty())
-			isComment = true;
+		if(value.empty()) isComment = true;
 
 		// Sets line up
 		auto line = new AssDialogue;
@@ -119,39 +118,37 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	}
 }
 
-void TXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
+void TXTSubtitleFormat::WriteFile(const AssFile* src, agi::fs::path const& filename,
+                                  agi::vfr::Framerate const& fps,
+                                  std::string const& encoding) const {
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out
-	for (auto const& dia : src->Events) {
-		if (!dia.Comment) {
+	for(auto const& dia : src->Events) {
+		if(!dia.Comment) {
 			num_dialogue_lines++;
-			if (!dia.Actor.get().empty())
-				num_actor_names++;
+			if(!dia.Actor.get().empty()) num_actor_names++;
 		}
 	}
 
 	// If too few lines have Actor filled out, don't write it
-	bool write_actors = num_actor_names > num_dialogue_lines/2;
+	bool write_actors = num_actor_names > num_dialogue_lines / 2;
 	bool strip_formatting = true;
 
 	TextFileWriter file(filename, encoding);
 	file.WriteLineToFile(std::string("# Exported by Aegisub ") + GetAegisubShortVersionString());
 
 	// Write the file
-	for (auto const& dia : src->Events) {
+	for(auto const& dia : src->Events) {
 		std::string out_line;
 
-		if (dia.Comment)
-			out_line = "# ";
+		if(dia.Comment) out_line = "# ";
 
-		if (write_actors)
-			out_line += dia.Actor.get() + ": ";
+		if(write_actors) out_line += dia.Actor.get() + ": ";
 
 		std::string out_text = strip_formatting ? dia.GetStrippedText() : dia.Text;
 		out_line += out_text;
 
-		if (!out_text.empty())
-			file.WriteLineToFile(out_line);
+		if(!out_text.empty()) file.WriteLineToFile(out_line);
 	}
 }

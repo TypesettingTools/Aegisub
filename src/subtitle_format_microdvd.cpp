@@ -50,13 +50,10 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 
-MicroDVDSubtitleFormat::MicroDVDSubtitleFormat()
-: SubtitleFormat("MicroDVD")
-{
-}
+MicroDVDSubtitleFormat::MicroDVDSubtitleFormat() : SubtitleFormat("MicroDVD") {}
 
 std::vector<std::string> MicroDVDSubtitleFormat::GetReadWildcards() const {
-	return {"sub"};
+	return { "sub" };
 }
 
 std::vector<std::string> MicroDVDSubtitleFormat::GetWriteWildcards() const {
@@ -65,46 +62,49 @@ std::vector<std::string> MicroDVDSubtitleFormat::GetWriteWildcards() const {
 
 static const boost::regex line_regex(R"(^[\{\[]([0-9]+)[\}\]][\{\[]([0-9]+)[\}\]](.*)$)");
 
-bool MicroDVDSubtitleFormat::CanReadFile(agi::fs::path const& filename, std::string const& encoding) const {
+bool MicroDVDSubtitleFormat::CanReadFile(agi::fs::path const& filename,
+                                         std::string const& encoding) const {
 	// Return false immediately if extension is wrong
-	if (!agi::fs::HasExtension(filename, "sub")) return false;
+	if(!agi::fs::HasExtension(filename, "sub")) return false;
 
 	// Since there is an infinity of .sub formats, load first line and check if it's valid
 	TextFileReader file(filename, encoding);
-	if (file.HasMoreLines())
-		return regex_match(file.ReadLineFromFile(), line_regex);
+	if(file.HasMoreLines()) return regex_match(file.ReadLineFromFile(), line_regex);
 
 	return false;
 }
 
-void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, std::string const& encoding) const {
+void MicroDVDSubtitleFormat::ReadFile(AssFile* target, agi::fs::path const& filename,
+                                      agi::vfr::Framerate const& vfps,
+                                      std::string const& encoding) const {
 	TextFileReader file(filename, encoding);
 
-	target->LoadDefault(false, OPT_GET("Subtitle Format/MicroDVD/Default Style Catalog")->GetString());
+	target->LoadDefault(false,
+	                    OPT_GET("Subtitle Format/MicroDVD/Default Style Catalog")->GetString());
 
 	agi::vfr::Framerate fps;
 
 	bool isFirst = true;
-	while (file.HasMoreLines()) {
+	while(file.HasMoreLines()) {
 		boost::smatch match;
 		std::string line = file.ReadLineFromFile();
-		if (!regex_match(line, match, line_regex)) continue;
+		if(!regex_match(line, match, line_regex)) continue;
 
 		std::string text = match[3].str();
 
 		// If it's the first, check if it contains fps information
-		if (isFirst) {
+		if(isFirst) {
 			isFirst = false;
 
 			double cfr;
-			if (agi::util::try_parse(text, &cfr)) {
+			if(agi::util::try_parse(text, &cfr)) {
 				fps = cfr;
 				continue;
 			}
 
 			// If it wasn't an fps line, ask the user for it
 			fps = AskForFPS(true, false, vfps);
-			if (!fps.IsLoaded()) return;
+			if(!fps.IsLoaded()) return;
 		}
 
 		int f1 = boost::lexical_cast<int>(match[1]);
@@ -120,9 +120,11 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& file
 	}
 }
 
-void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, std::string const& encoding) const {
+void MicroDVDSubtitleFormat::WriteFile(const AssFile* src, agi::fs::path const& filename,
+                                       agi::vfr::Framerate const& vfps,
+                                       std::string const& encoding) const {
 	agi::vfr::Framerate fps = AskForFPS(true, false, vfps);
-	if (!fps.IsLoaded()) return;
+	if(!fps.IsLoaded()) return;
 
 	AssFile copy(*src);
 	copy.Sort();
@@ -135,14 +137,14 @@ void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& 
 	TextFileWriter file(filename, encoding);
 
 	// Write FPS line
-	if (!fps.IsVFR())
-		file.WriteLineToFile(agi::format("{1}{1}%.6f", fps.FPS()));
+	if(!fps.IsVFR()) file.WriteLineToFile(agi::format("{1}{1}%.6f", fps.FPS()));
 
 	// Write lines
-	for (auto const& current : copy.Events) {
+	for(auto const& current : copy.Events) {
 		int start = fps.FrameAtTime(current.Start, agi::vfr::START);
 		int end = fps.FrameAtTime(current.End, agi::vfr::END);
 
-		file.WriteLineToFile(agi::format("{%i}{%i}%s", start, end, boost::replace_all_copy(current.Text.get(), "\\N", "|")));
+		file.WriteLineToFile(agi::format("{%i}{%i}%s", start, end,
+		                                 boost::replace_all_copy(current.Text.get(), "\\N", "|")));
 	}
 }

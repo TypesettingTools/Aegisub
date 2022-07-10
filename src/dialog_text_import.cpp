@@ -46,7 +46,7 @@ bool ShowPlainTextImportDialog() {
 
 	wxDialog d(nullptr, -1, _("Text import options"));
 
-	auto make_text_ctrl = [&](std::string *var) {
+	auto make_text_ctrl = [&](std::string* var) {
 		return new wxTextCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, 0, StringBinder(var));
 	};
 
@@ -57,21 +57,25 @@ bool ShowPlainTextImportDialog() {
 	fg->Add(make_text_ctrl(&comment), 0, wxEXPAND);
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(fg, 1, wxALL|wxEXPAND, 5);
-	main_sizer->Add(new wxCheckBox(&d, -1, _("Include blank lines"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&include_blank)), 0, wxLEFT|wxRIGHT|wxALIGN_RIGHT, 5);
-	main_sizer->Add(d.CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
+	main_sizer->Add(fg, 1, wxALL | wxEXPAND, 5);
+	main_sizer->Add(new wxCheckBox(&d, -1, _("Include blank lines"), wxDefaultPosition,
+	                               wxDefaultSize, 0, wxGenericValidator(&include_blank)),
+	                0, wxLEFT | wxRIGHT | wxALIGN_RIGHT, 5);
+	main_sizer->Add(d.CreateSeparatedButtonSizer(wxOK | wxCANCEL), 0, wxALL | wxEXPAND, 5);
 	d.SetSizerAndFit(main_sizer);
 
-	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) {
-		d.TransferDataFromWindow();
+	d.Bind(
+	    wxEVT_BUTTON,
+	    [&](wxCommandEvent&) {
+		    d.TransferDataFromWindow();
 
-		OPT_SET("Tool/Import/Text/Actor Separator")->SetString(seperator);
-		OPT_SET("Tool/Import/Text/Comment Starter")->SetString(comment);
-		OPT_SET("Tool/Import/Text/Include Blank")->SetBool(include_blank);
+		    OPT_SET("Tool/Import/Text/Actor Separator")->SetString(seperator);
+		    OPT_SET("Tool/Import/Text/Comment Starter")->SetString(comment);
+		    OPT_SET("Tool/Import/Text/Include Blank")->SetBool(include_blank);
 
-		d.EndModal(wxID_OK);
-	}, wxID_OK);
-
+		    d.EndModal(wxID_OK);
+	    },
+	    wxID_OK);
 
 	return d.ShowModal() == wxID_OK;
 }

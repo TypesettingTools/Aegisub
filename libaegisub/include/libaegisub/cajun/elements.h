@@ -11,8 +11,8 @@ Author: Terry Caton
 #include <cstdint>
 #include <map>
 #include <memory>
-#include <string>
 #include <stdexcept>
+#include <string>
 #include <vector>
 
 namespace json {
@@ -32,12 +32,11 @@ typedef std::map<std::string, UnknownElement> Object;
 
 struct Null;
 
-
 /////////////////////////////////////////////////////////////////////////
 // Exception - base class for all JSON-related runtime errors
 class Exception : public std::runtime_error {
-public:
-	Exception(const std::string& sMessage) : std::runtime_error(sMessage) { }
+  public:
+	Exception(const std::string& sMessage) : std::runtime_error(sMessage) {}
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -54,60 +53,58 @@ public:
 //  (when document structure is well-known):
 //  String str = objInvoices[1]["Customer"]["Company"];
 class UnknownElement {
-public:
-   UnknownElement();
-   UnknownElement(UnknownElement&& unknown);
-   UnknownElement(Object object);
-   UnknownElement(Array array);
-   UnknownElement(double number);
-   UnknownElement(int number);
-   UnknownElement(int64_t number);
-   UnknownElement(bool boolean);
-   UnknownElement(const char *string);
-   UnknownElement(String string);
-   UnknownElement(Null null);
+  public:
+	UnknownElement();
+	UnknownElement(UnknownElement&& unknown);
+	UnknownElement(Object object);
+	UnknownElement(Array array);
+	UnknownElement(double number);
+	UnknownElement(int number);
+	UnknownElement(int64_t number);
+	UnknownElement(bool boolean);
+	UnknownElement(const char* string);
+	UnknownElement(String string);
+	UnknownElement(Null null);
 
-   ~UnknownElement();
+	~UnknownElement();
 
-   UnknownElement& operator=(UnknownElement&& unknown);
+	UnknownElement& operator=(UnknownElement&& unknown);
 
-   // implicit cast to actual element type. throws on failure
-   operator Object const&() const;
-   operator Array const&() const;
-   operator Integer const&() const;
-   operator Double const&() const;
-   operator Boolean const&() const;
-   operator String const&() const;
-   operator Null const&() const;
-   operator Object&();
-   operator Array&();
-   operator Integer&();
-   operator Double&();
-   operator Boolean&();
-   operator String&();
-   operator Null&();
+	// implicit cast to actual element type. throws on failure
+	operator Object const&() const;
+	operator Array const&() const;
+	operator Integer const&() const;
+	operator Double const&() const;
+	operator Boolean const&() const;
+	operator String const&() const;
+	operator Null const&() const;
+	operator Object&();
+	operator Array&();
+	operator Integer&();
+	operator Double&();
+	operator Boolean&();
+	operator String&();
+	operator Null&();
 
-   // implements visitor pattern
-   void Accept(ConstVisitor& visitor) const;
-   void Accept(Visitor& visitor);
+	// implements visitor pattern
+	void Accept(ConstVisitor& visitor) const;
+	void Accept(Visitor& visitor);
 
-   class Imp;
+	class Imp;
 
-private:
-   UnknownElement(UnknownElement const& unknown) = delete;
+  private:
+	UnknownElement(UnknownElement const& unknown) = delete;
 
-   template <typename ElementTypeT>
-   ElementTypeT const& CastTo() const;
+	template <typename ElementTypeT> ElementTypeT const& CastTo() const;
 
-   template <typename ElementTypeT>
-   ElementTypeT& CastTo();
+	template <typename ElementTypeT> ElementTypeT& CastTo();
 
-   std::unique_ptr<Imp> m_pImp;
+	std::unique_ptr<Imp> m_pImp;
 };
 
 /////////////////////////////////////////////////////////////////////////////////
 // Null - doesn't do much of anything but satisfy the JSON spec. It is the default
 //  element type of UnknownElement
-struct Null { };
+struct Null {};
 
-} // end namespace
+} // namespace json

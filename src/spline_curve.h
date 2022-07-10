@@ -42,12 +42,9 @@ class SplineCurve {
 
 	/// Closest distance between p3 and segment p1-p2
 	float GetClosestSegmentDistance(Vector2D p1, Vector2D p2, Vector2D p3) const;
-public:
-	enum CurveType {
-		POINT,
-		LINE,
-		BICUBIC
-	};
+
+  public:
+	enum CurveType { POINT, LINE, BICUBIC };
 
 	Vector2D p1;
 	Vector2D p2;
@@ -81,5 +78,5 @@ public:
 	/// Get the coordinates of each point on this curve
 	/// @param[out] points Vector to add points to
 	/// @return Number of points in the curve
-	int GetPoints(std::vector<float> &points) const;
+	int GetPoints(std::vector<float>& points) const;
 };

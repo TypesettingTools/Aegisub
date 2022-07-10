@@ -25,13 +25,13 @@ class TextSelectionController {
 	int insertion_point = 0;
 	bool changing = false;
 
-	wxStyledTextCtrl *ctrl = nullptr;
+	wxStyledTextCtrl* ctrl = nullptr;
 
-	void UpdateUI(wxStyledTextEvent &evt);
+	void UpdateUI(wxStyledTextEvent& evt);
 
 	agi::signal::Signal<> AnnounceSelectionChanged;
 
-public:
+  public:
 	void SetSelection(int start, int end);
 	void SetInsertionPoint(int point);
 
@@ -39,7 +39,7 @@ public:
 	int GetSelectionEnd() const { return selection_end; }
 	int GetInsertionPoint() const { return insertion_point; }
 
-	void SetControl(wxStyledTextCtrl *ctrl);
+	void SetControl(wxStyledTextCtrl* ctrl);
 	~TextSelectionController();
 
 	DEFINE_SIGNAL_ADDERS(AnnounceSelectionChanged, AddSelectionListener)

@@ -17,18 +17,21 @@
 #include "subtitle_format.h"
 
 class AssSubtitleFormat final : public SubtitleFormat {
-public:
-	AssSubtitleFormat() : SubtitleFormat("Advanced SubStation Alpha") { }
+  public:
+	AssSubtitleFormat() : SubtitleFormat("Advanced SubStation Alpha") {}
 
-	std::vector<std::string> GetReadWildcards() const override { return {"ass", "ssa"}; }
-	std::vector<std::string> GetWriteWildcards() const override { return {"ass"}; }
+	std::vector<std::string> GetReadWildcards() const override { return { "ass", "ssa" }; }
+	std::vector<std::string> GetWriteWildcards() const override { return { "ass" }; }
 
 	// Naturally the ASS subtitle format can save all ASS files
 	bool CanSave(const AssFile*) const override { return true; }
 
-	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
-	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
+	void ReadFile(AssFile* target, agi::fs::path const& filename, agi::vfr::Framerate const& fps,
+	              std::string const& forceEncoding) const override;
+	void WriteFile(const AssFile* src, agi::fs::path const& filename,
+	               agi::vfr::Framerate const& fps, std::string const& encoding) const override;
 
 	// Does not write [Aegisub Project Garbage] and [Aegisub Extradata] sections when exporting
-	void ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
+	void ExportFile(const AssFile* src, agi::fs::path const& filename,
+	                agi::vfr::Framerate const& fps, std::string const& encoding) const override;
 };

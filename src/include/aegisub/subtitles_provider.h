@@ -43,18 +43,20 @@ struct VideoFrame;
 
 class SubtitlesProvider {
 	std::vector<char> buffer;
-	virtual void LoadSubtitles(const char *data, size_t len)=0;
+	virtual void LoadSubtitles(const char* data, size_t len) = 0;
 
-public:
+  public:
 	virtual ~SubtitlesProvider() = default;
-	void LoadSubtitles(AssFile *subs, int time = -1);
-	virtual void DrawSubtitles(VideoFrame &dst, double time)=0;
-	virtual void Reinitialize() { }
+	void LoadSubtitles(AssFile* subs, int time = -1);
+	virtual void DrawSubtitles(VideoFrame& dst, double time) = 0;
+	virtual void Reinitialize() {}
 };
 
-namespace agi { class BackgroundRunner; }
+namespace agi {
+class BackgroundRunner;
+}
 
 struct SubtitlesProviderFactory {
-	static std::unique_ptr<SubtitlesProvider> GetProvider(agi::BackgroundRunner *br);
+	static std::unique_ptr<SubtitlesProvider> GetProvider(agi::BackgroundRunner* br);
 	static std::vector<std::string> GetClasses();
 };

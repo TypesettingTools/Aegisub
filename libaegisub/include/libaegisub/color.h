@@ -17,25 +17,25 @@
 #include <string>
 
 namespace agi {
-	struct Color {
-		unsigned char r = 0;	///< Red component
-		unsigned char g = 0;	///< Green component
-		unsigned char b = 0;	///< Blue component
-		unsigned char a = 0;	///< Alpha component
+struct Color {
+	unsigned char r = 0; ///< Red component
+	unsigned char g = 0; ///< Green component
+	unsigned char b = 0; ///< Blue component
+	unsigned char a = 0; ///< Alpha component
 
-		Color() = default;
-		Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0);
-		Color(std::string const& str);
+	Color() = default;
+	Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0);
+	Color(std::string const& str);
 
-		bool operator==(Color const& col) const;
-		bool operator!=(Color const& col) const;
+	bool operator==(Color const& col) const;
+	bool operator!=(Color const& col) const;
 
-		std::string GetAssStyleFormatted() const;
-		std::string GetAssOverrideFormatted() const;
-		std::string GetSsaFormatted() const;
-		std::string GetHexFormatted(bool rgba=false) const;
-		std::string GetRgbFormatted() const;
+	std::string GetAssStyleFormatted() const;
+	std::string GetAssOverrideFormatted() const;
+	std::string GetSsaFormatted() const;
+	std::string GetHexFormatted(bool rgba = false) const;
+	std::string GetRgbFormatted() const;
 
-		operator std::string() const { return GetRgbFormatted(); }
-	};
-}
+	operator std::string() const { return GetRgbFormatted(); }
+};
+} // namespace agi

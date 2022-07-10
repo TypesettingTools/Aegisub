@@ -38,10 +38,11 @@ class wxRadioButton;
 class wxTextCtrl;
 
 /// @class AssTransformFramerateFilter
-/// @brief Transform subtitle times, including those in override tags, from an input framerate to an output framerate
+/// @brief Transform subtitle times, including those in override tags, from an input framerate to an
+/// output framerate
 class AssTransformFramerateFilter final : public AssExportFilter {
-	agi::Context *c = nullptr;
-	AssDialogue *line = nullptr;
+	agi::Context* c = nullptr;
+	AssDialogue* line = nullptr;
 	int newStart = 0;
 	int newEnd = 0;
 	int newK = 0;
@@ -51,22 +52,23 @@ class AssTransformFramerateFilter final : public AssExportFilter {
 	agi::vfr::Framerate Input;  ///< Destination frame rate
 	agi::vfr::Framerate Output; ///< Source frame rate
 
-	wxTextCtrl *InputFramerate; ///< Input frame rate text box
-	wxTextCtrl *OutputFramerate; ///< Output frame rate text box
+	wxTextCtrl* InputFramerate;  ///< Input frame rate text box
+	wxTextCtrl* OutputFramerate; ///< Output frame rate text box
 
-	wxRadioButton *RadioOutputCFR; ///< CFR radio control
-	wxRadioButton *RadioOutputVFR; ///< VFR radio control
+	wxRadioButton* RadioOutputCFR; ///< CFR radio control
+	wxRadioButton* RadioOutputVFR; ///< VFR radio control
 
-	wxCheckBox *Reverse; ///< Switch input and output
+	wxCheckBox* Reverse; ///< Switch input and output
 
 	/// @brief Apply the transformation to a file
 	/// @param subs File to process
-	void TransformFrameRate(AssFile *subs);
+	void TransformFrameRate(AssFile* subs);
 	/// @brief Transform a single tag
 	/// @param name Name of the tag
 	/// @param curParam Current parameter being processed
 	/// @param userdata Filter instance
-	static void TransformTimeTags(std::string const& name, AssOverrideParameter *curParam, void *userdata);
+	static void TransformTimeTags(std::string const& name, AssOverrideParameter* curParam,
+	                              void* userdata);
 
 	/// @brief Convert a time from the input frame rate to the output frame rate
 	/// @param time Time in ms to convert
@@ -77,9 +79,10 @@ class AssTransformFramerateFilter final : public AssExportFilter {
 	///   2. The relative distance between the beginning of the frame which time
 	///      is in and the beginning of the next frame
 	int ConvertTime(int time);
-public:
+
+  public:
 	AssTransformFramerateFilter();
-	void ProcessSubs(AssFile *subs, wxWindow *) override;
-	wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c) override;
-	void LoadSettings(bool is_default, agi::Context *c) override;
+	void ProcessSubs(AssFile* subs, wxWindow*) override;
+	wxWindow* GetConfigDialogWindow(wxWindow* parent, agi::Context* c) override;
+	void LoadSettings(bool is_default, agi::Context* c) override;
 };

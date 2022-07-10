@@ -27,9 +27,9 @@ DEFINE_EXCEPTION(MatroskaException, agi::Exception);
 class AssFile;
 
 class MatroskaWrapper {
-public:
+  public:
 	/// Check if the file is a matroska file with at least one subtitle track
 	static bool HasSubtitles(agi::fs::path const& filename);
 	/// Load subtitles from a matroska file
-	static void GetSubtitles(agi::fs::path const& filename, AssFile *target);
+	static void GetSubtitles(agi::fs::path const& filename, AssFile* target);
 };

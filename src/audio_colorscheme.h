@@ -33,13 +33,11 @@
 ///
 /// Manage colour schemes for the audio display
 
-
 #include <vector>
 
 #include <wx/colour.h>
 
 #include "utils.h"
-
 
 /// @class AudioSpectrumColorMap
 /// @brief Provides colour maps for audio display rendering
@@ -57,12 +55,11 @@ class AudioColorScheme {
 
 	/// @brief Get a floating point value's colour as a 24-bit RGB pixel
 	/// @param val The value to map from
-	const unsigned char *get_color(float val) const
-	{
+	const unsigned char* get_color(float val) const {
 		return &palette[mid<size_t>(0, val * factor, factor) * 3];
 	}
 
-public:
+  public:
 	/// @brief Constructor
 	/// @param prec Bit precision to create the colour map with
 	/// @param scheme_name Name of the colour scheme to use
@@ -77,10 +74,9 @@ public:
 	///
 	/// Writes into the XRGB pixel (assumed 32 bit without alpha) passed.
 	/// The pixel format is assumed to be the same as that in the palette.
-	void map(float val, unsigned char *pixel) const
-	{
+	void map(float val, unsigned char* pixel) const {
 		// Find the colour in the palette
-		const unsigned char *color = get_color(val);
+		const unsigned char* color = get_color(val);
 		// Copy to the destination.
 		// Has to be done one byte at a time since we're writing RGB and not RGBX or RGBA
 		// data, and we otherwise write past the end of the pixel we're writing, possibly
@@ -95,9 +91,8 @@ public:
 	/// @brief Get a floating point value's colour as a wxColour
 	/// @param val The value to map from
 	/// @return The corresponding wxColour
-	wxColour get(float val) const
-	{
-		const unsigned char *color = get_color(val);
+	wxColour get(float val) const {
+		const unsigned char* color = get_color(val);
 		return wxColour(color[0], color[1], color[2]);
 	}
 };

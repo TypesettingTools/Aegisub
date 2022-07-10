@@ -19,10 +19,9 @@
 #include <boost/flyweight.hpp>
 
 namespace std {
-	template <typename T>
-	struct hash<boost::flyweight<T>> {
-		size_t operator()(boost::flyweight<T> const& ss) const {
-			return hash<const void*>()(&ss.get());
-		}
-	};
-}
+template <typename T> struct hash<boost::flyweight<T>> {
+	size_t operator()(boost::flyweight<T> const& ss) const {
+		return hash<const void*>()(&ss.get());
+	}
+};
+} // namespace std

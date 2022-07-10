@@ -25,7 +25,7 @@
 #include <libaegisub/exception.h>
 
 namespace agi {
-	namespace charset {
+namespace charset {
 
 DEFINE_EXCEPTION(ConvError, Exception);
 DEFINE_EXCEPTION(UnsupportedConversion, ConvError);
@@ -34,7 +34,7 @@ DEFINE_EXCEPTION(BufferTooSmall, ConversionFailure);
 DEFINE_EXCEPTION(BadInput, ConversionFailure);
 DEFINE_EXCEPTION(BadOutput, ConversionFailure);
 
-typedef void *iconv_t;
+typedef void* iconv_t;
 
 /// RAII handle for iconv
 class Iconv {
@@ -42,15 +42,18 @@ class Iconv {
 	Iconv(Iconv const&) = delete;
 	void operator=(Iconv const&) = delete;
 
-public:
+  public:
 	Iconv();
-	Iconv(const char *source, const char *dest);
+	Iconv(const char* source, const char* dest);
 	~Iconv();
 
 	Iconv(Iconv&& o) { std::swap(cd, o.cd); }
-	Iconv& operator=(Iconv&& o) { std::swap(cd, o.cd); return *this; }
+	Iconv& operator=(Iconv&& o) {
+		std::swap(cd, o.cd);
+		return *this;
+	}
 
-	size_t operator()(const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
+	size_t operator()(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft);
 	operator iconv_t() { return cd; }
 };
 
@@ -58,7 +61,8 @@ public:
 /// POSIX iconv implementations
 struct Converter {
 	virtual ~Converter() = default;
-	virtual size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) = 0;
+	virtual size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf,
+	                       size_t* outbytesleft) = 0;
 };
 
 /// @brief A C++ wrapper for iconv
@@ -67,7 +71,7 @@ class IconvWrapper {
 	size_t fromNulLen = 0;
 	std::unique_ptr<Converter> conv;
 
-public:
+  public:
 	/// @brief Create a converter
 	/// @param sourceEncoding Source encoding name, may be a pretty name
 	/// @param destEncoding   Destination encoding name, may be a pretty name
@@ -82,16 +86,20 @@ public:
 	/// @return Converted string. Note that std::string always uses a single byte
 	///         terminator, so c_str() may not return a valid string if the dest
 	///         charset has wider terminators
-	std::string Convert(std::string const& source) { return Convert(source.c_str(), source.size()); }
-	std::string Convert(const char *source, size_t len);
+	std::string Convert(std::string const& source) {
+		return Convert(source.c_str(), source.size());
+	}
+	std::string Convert(const char* source, size_t len);
 	/// @brief Convert a string from the source to destination charset
 	/// @param source String to convert
 	/// @param[out] dest String to place the result in
-	void Convert(std::string const& source, std::string &dest) { Convert(source.c_str(), source.size(), dest); }
-	void Convert(const char *source, size_t len, std::string &dest);
+	void Convert(std::string const& source, std::string& dest) {
+		Convert(source.c_str(), source.size(), dest);
+	}
+	void Convert(const char* source, size_t len, std::string& dest);
 	size_t Convert(const char* source, size_t sourceSize, char* dest, size_t destSize);
 	/// Bare wrapper around iconv; see iconv documention for details
-	size_t Convert(const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
+	size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft);
 
 	/// @brief Get the required buffer size required to fit the source string in the target charset
 	/// @param source A string in the source charset
@@ -112,20 +120,21 @@ public:
 /// Is the conversion from src to dst supported by the linked iconv library?
 /// @param src Source encoding name
 /// @param dst Destination encoding name
-/// @return false if either charset is not supported or the conversion cannot be done directly, true otherwise
-bool IsConversionSupported(const char *src, const char *dst);
+/// @return false if either charset is not supported or the conversion cannot be done directly, true
+/// otherwise
+bool IsConversionSupported(const char* src, const char* dst);
 
 /// Get a list of supported encodings with user-friendly names
-template<class T>
-T const& GetEncodingsList() {
+template <class T> T const& GetEncodingsList() {
 	static T name_list;
-	if (name_list.empty()) {
-#		define ADD(pretty, real) if (IsConversionSupported(real, "utf-8")) name_list.push_back(pretty);
-#		include <libaegisub/charsets.def>
-#		undef ADD
+	if(name_list.empty()) {
+#define ADD(pretty, real) \
+	if(IsConversionSupported(real, "utf-8")) name_list.push_back(pretty);
+#include <libaegisub/charsets.def>
+#undef ADD
 	}
 	return name_list;
 }
 
-	}
-}
+} // namespace charset
+} // namespace agi

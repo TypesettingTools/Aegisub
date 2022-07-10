@@ -20,7 +20,8 @@
 #include <wx/listbox.h>
 #include <wx/sizer.h>
 
-int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const& message, wxString const& caption, wxArrayString const& choices) {
+int GetSelectedChoices(wxWindow* parent, wxArrayInt& selections, wxString const& message,
+                       wxString const& caption, wxArrayString const& choices) {
 	wxMultiChoiceDialog dialog(parent, message, caption, choices);
 
 	auto selAll = new wxButton(&dialog, -1, _("Select &All"));
@@ -43,7 +44,7 @@ int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const&
 
 	dialog.SetSelections(selections);
 
-	if (dialog.ShowModal() != wxID_OK) return -1;
+	if(dialog.ShowModal() != wxID_OK) return -1;
 
 	selections = dialog.GetSelections();
 	return selections.GetCount();

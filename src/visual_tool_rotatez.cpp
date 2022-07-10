@@ -33,16 +33,14 @@
 static const float deg2rad = 3.1415926536f / 180.f;
 static const float rad2deg = 180.f / 3.1415926536f;
 
-VisualToolRotateZ::VisualToolRotateZ(VideoDisplay *parent, agi::Context *context)
-: VisualTool<VisualDraggableFeature>(parent, context)
-, org(new Feature)
-{
+VisualToolRotateZ::VisualToolRotateZ(VideoDisplay* parent, agi::Context* context)
+    : VisualTool<VisualDraggableFeature>(parent, context), org(new Feature) {
 	features.push_back(*org);
 	org->type = DRAG_BIG_TRIANGLE;
 }
 
 void VisualToolRotateZ::Draw() {
-	if (!active_line) return;
+	if(!active_line) return;
 
 	DrawAllFeatures();
 
@@ -53,8 +51,7 @@ void VisualToolRotateZ::Draw() {
 
 	float radius = (pos - org->pos).Len();
 	float oRadius = radius;
-	if (radius < 50)
-		radius = 50;
+	if(radius < 50) radius = 50;
 
 	// Set up the projection
 	gl.SetOrigin(org->pos);
@@ -70,9 +67,10 @@ void VisualToolRotateZ::Draw() {
 	int markers = 6;
 	float markStart = -90.f / markers;
 	float markEnd = markStart + (180.f / markers);
-	for (int i = 0; i < markers; ++i) {
+	for(int i = 0; i < markers; ++i) {
 		float angle = i * (360.f / markers);
-		gl.DrawRing(Vector2D(0, 0), radius+30, radius+12, 1.0, angle+markStart, angle+markEnd);
+		gl.DrawRing(Vector2D(0, 0), radius + 30, radius + 12, 1.0, angle + markStart,
+		            angle + markEnd);
 	}
 
 	// Draw the baseline through the origin showing current rotation
@@ -80,8 +78,9 @@ void VisualToolRotateZ::Draw() {
 	gl.SetLineColour(line_color_primary, 1, 2);
 	gl.DrawLine(angle_vec * -radius, angle_vec * radius);
 
-	if (org->pos != pos) {
-		Vector2D rotated_pos = Vector2D::FromAngle(angle * deg2rad - (pos - org->pos).Angle()) * oRadius;
+	if(org->pos != pos) {
+		Vector2D rotated_pos =
+		    Vector2D::FromAngle(angle * deg2rad - (pos - org->pos).Angle()) * oRadius;
 
 		// Draw the line from origin to rotated position
 		gl.DrawLine(Vector2D(), rotated_pos);
@@ -100,7 +99,7 @@ void VisualToolRotateZ::Draw() {
 	gl.ResetTransform();
 
 	// Draw line to mouse if it isn't over the origin feature
-	if (mouse_pos && (mouse_pos - org->pos).SquareLen() > 100) {
+	if(mouse_pos && (mouse_pos - org->pos).SquareLen() > 100) {
 		gl.SetLineColour(line_color_secondary);
 		gl.DrawLine(org->pos, mouse_pos);
 	}
@@ -114,31 +113,30 @@ bool VisualToolRotateZ::InitializeHold() {
 void VisualToolRotateZ::UpdateHold() {
 	angle = orig_angle - (org->pos - mouse_pos).Angle() * rad2deg;
 
-	if (ctrl_down)
-		angle = floorf(angle / 30.f + .5f) * 30.f;
+	if(ctrl_down) angle = floorf(angle / 30.f + .5f) * 30.f;
 
 	angle = fmodf(angle + 360.f, 360.f);
 
 	SetSelectedOverride("\\frz", agi::format("%.4g", angle));
 }
 
-void VisualToolRotateZ::UpdateDrag(Feature *feature) {
+void VisualToolRotateZ::UpdateDrag(Feature* feature) {
 	auto org = GetLineOrigin(active_line);
-	if (!org) org = GetLinePosition(active_line);
+	if(!org) org = GetLinePosition(active_line);
 	auto d = ToScriptCoords(feature->pos) - org;
 
-	for (auto line : c->selectionController->GetSelectedSet()) {
+	for(auto line : c->selectionController->GetSelectedSet()) {
 		org = GetLineOrigin(line);
-		if (!org) org = GetLinePosition(line);
+		if(!org) org = GetLinePosition(line);
 		SetOverride(line, "\\org", (d + org).PStr());
 	}
 }
 
 void VisualToolRotateZ::DoRefresh() {
-	if (!active_line) return;
+	if(!active_line) return;
 
 	pos = FromScriptCoords(GetLinePosition(active_line));
-	if (!(org->pos = GetLineOrigin(active_line)))
+	if(!(org->pos = GetLineOrigin(active_line)))
 		org->pos = pos;
 	else
 		org->pos = FromScriptCoords(org->pos);

@@ -21,25 +21,27 @@
 #include <iterator>
 #include <memory>
 
-#include <cstdint>
 #include <boost/interprocess/streams/bufferstream.hpp>
+#include <cstdint>
 
 namespace agi {
 
-namespace charset { class IconvWrapper; }
+namespace charset {
+class IconvWrapper;
+}
 
 class line_iterator_base {
-	std::istream *stream = nullptr; ///< Stream to iterate over
+	std::istream* stream = nullptr; ///< Stream to iterate over
 	std::shared_ptr<agi::charset::IconvWrapper> conv;
-	int cr = '\r'; ///< CR character in the source encoding
-	int lf = '\n'; ///< LF character in the source encoding
-	size_t width = 1;  ///< width of LF character in the source encoding
+	int cr = '\r';    ///< CR character in the source encoding
+	int lf = '\n';    ///< LF character in the source encoding
+	size_t width = 1; ///< width of LF character in the source encoding
 
-protected:
-	bool getline(std::string &str);
+  protected:
+	bool getline(std::string& str);
 
-public:
-	line_iterator_base(std::istream &stream, std::string encoding = "utf-8");
+  public:
+	line_iterator_base(std::istream& stream, std::string encoding = "utf-8");
 
 	line_iterator_base() = default;
 	line_iterator_base(line_iterator_base const&) = default;
@@ -54,8 +56,9 @@ public:
 
 /// @class line_iterator
 /// @brief An iterator over lines in a stream
-template<class OutputType = std::string>
-class line_iterator final : public line_iterator_base, public std::iterator<std::input_iterator_tag, OutputType> {
+template <class OutputType = std::string>
+class line_iterator final : public line_iterator_base,
+                            public std::iterator<std::input_iterator_tag, OutputType> {
 	OutputType value; ///< Value to return when this is dereference
 
 	/// @brief Convert a string to the output type
@@ -64,19 +67,19 @@ class line_iterator final : public line_iterator_base, public std::iterator<std:
 	/// line_iterator users can either ensure that operator>> is defined for
 	/// their desired output type or simply provide a specialization of this
 	/// method which does the conversion.
-	inline bool convert(std::string &str);
+	inline bool convert(std::string& str);
 
 	/// @brief Get the next value from the stream
 	void next();
-public:
+
+  public:
 	/// @brief Constructor
 	/// @param stream The stream to read from. The calling code is responsible
 	///               for ensuring that the stream remains valid for the
 	///               lifetime of the iterator and that it get cleaned up.
 	/// @param encoding Encoding of the text read from the stream
-	line_iterator(std::istream &stream, std::string encoding = "utf-8")
-	: line_iterator_base(stream, std::move(encoding))
-	{
+	line_iterator(std::istream& stream, std::string encoding = "utf-8")
+	    : line_iterator_base(stream, std::move(encoding)) {
 		++(*this);
 	}
 
@@ -108,32 +111,29 @@ public:
 };
 
 // Enable range-based for
-template<typename T>
-line_iterator<T>& begin(line_iterator<T>& it) { return it; }
-
-template<typename T>
-line_iterator<T> end(line_iterator<T>&) { return agi::line_iterator<T>(); }
-
-template<class OutputType>
-void line_iterator<OutputType>::next() {
-	std::string str;
-	if (!getline(str))
-		return;
-	if (!convert(str))
-		next();
+template <typename T> line_iterator<T>& begin(line_iterator<T>& it) {
+	return it;
 }
 
-template<>
-inline void line_iterator<std::string>::next() {
+template <typename T> line_iterator<T> end(line_iterator<T>&) {
+	return agi::line_iterator<T>();
+}
+
+template <class OutputType> void line_iterator<OutputType>::next() {
+	std::string str;
+	if(!getline(str)) return;
+	if(!convert(str)) next();
+}
+
+template <> inline void line_iterator<std::string>::next() {
 	value.clear();
 	getline(value);
 }
 
-template<class OutputType>
-inline bool line_iterator<OutputType>::convert(std::string &str) {
+template <class OutputType> inline bool line_iterator<OutputType>::convert(std::string& str) {
 	boost::interprocess::ibufferstream ss(str.data(), str.size());
 	ss >> value;
 	return !ss.fail();
 }
 
-}
+} // namespace agi

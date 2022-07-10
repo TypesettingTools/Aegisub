@@ -44,7 +44,7 @@
 #include <wx/msgdlg.h>
 
 namespace {
-	using cmd::Command;
+using cmd::Command;
 
 struct timecode_close final : public Command {
 	CMD_NAME("timecode/close")
@@ -54,13 +54,9 @@ struct timecode_close final : public Command {
 	STR_HELP("Close the currently open timecodes file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) override {
-		return c->project->CanCloseTimecodes();
-	}
+	bool Validate(const agi::Context* c) override { return c->project->CanCloseTimecodes(); }
 
-	void operator()(agi::Context *c) override {
-		c->project->CloseTimecodes();
-	}
+	void operator()(agi::Context* c) override { c->project->CloseTimecodes(); }
 };
 
 struct timecode_open final : public Command {
@@ -70,11 +66,12 @@ struct timecode_open final : public Command {
 	STR_DISP("Open Timecodes File")
 	STR_HELP("Open a VFR timecodes v1 or v2 file")
 
-	void operator()(agi::Context *c) override {
-		auto str = from_wx(_("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*");
-		auto filename = OpenFileSelector(_("Open Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
-		if (!filename.empty())
-			c->project->LoadTimecodes(filename);
+	void operator()(agi::Context* c) override {
+		auto str =
+		    from_wx(_("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*");
+		auto filename = OpenFileSelector(_("Open Timecodes File"), "Path/Last/Timecodes", "", "",
+		                                 str, c->parent);
+		if(!filename.empty()) c->project->LoadTimecodes(filename);
 	}
 };
 
@@ -86,31 +83,31 @@ struct timecode_save final : public Command {
 	STR_HELP("Save a VFR timecodes v2 file")
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context *c) override {
-		return c->project->Timecodes().IsLoaded();
-	}
+	bool Validate(const agi::Context* c) override { return c->project->Timecodes().IsLoaded(); }
 
-	void operator()(agi::Context *c) override {
-		auto str = from_wx(_("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*");
-		auto filename = SaveFileSelector(_("Save Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
-		if (filename.empty()) return;
+	void operator()(agi::Context* c) override {
+		auto str =
+		    from_wx(_("All Supported Formats") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*");
+		auto filename = SaveFileSelector(_("Save Timecodes File"), "Path/Last/Timecodes", "", "",
+		                                 str, c->parent);
+		if(filename.empty()) return;
 
 		try {
 			auto provider = c->project->VideoProvider();
 			c->project->Timecodes().Save(filename, provider ? provider->GetFrameCount() : -1);
 			config::mru->Add("Timecodes", filename);
-		}
-		catch (agi::Exception const& err) {
-			wxMessageBox(to_wx(err.GetMessage()), "Error saving timecodes", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+		} catch(agi::Exception const& err) {
+			wxMessageBox(to_wx(err.GetMessage()), "Error saving timecodes",
+			             wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };
-}
+} // namespace
 
 namespace cmd {
-	void init_timecode() {
-		reg(agi::make_unique<timecode_close>());
-		reg(agi::make_unique<timecode_open>());
-		reg(agi::make_unique<timecode_save>());
-	}
+void init_timecode() {
+	reg(agi::make_unique<timecode_close>());
+	reg(agi::make_unique<timecode_open>());
+	reg(agi::make_unique<timecode_save>());
 }
+} // namespace cmd

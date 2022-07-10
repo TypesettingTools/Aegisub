@@ -35,9 +35,10 @@
 #include "auto4_base.h"
 
 namespace Automation4 {
-	class LuaScriptFactory final : public ScriptFactory {
-		std::unique_ptr<Script> Produce(agi::fs::path const& filename) const override;
-	public:
-		LuaScriptFactory();
-	};
-}
+class LuaScriptFactory final : public ScriptFactory {
+	std::unique_ptr<Script> Produce(agi::fs::path const& filename) const override;
+
+  public:
+	LuaScriptFactory();
+};
+} // namespace Automation4

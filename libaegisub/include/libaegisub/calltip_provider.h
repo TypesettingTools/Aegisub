@@ -18,15 +18,18 @@
 #include <vector>
 
 namespace agi {
-namespace ass { struct DialogueToken; }
+namespace ass {
+struct DialogueToken;
+}
 
 struct Calltip {
-	const char *text;       ///< Text of the calltip
+	const char* text;       ///< Text of the calltip
 	size_t highlight_start; ///< Start index of the current parameter in text
 	size_t highlight_end;   ///< End index of the current parameter in text
 	size_t tag_position;    ///< Start index of the tag in the input line
 };
 
 /// Get the calltip to show for the given cursor position in the text
-Calltip GetCalltip(std::vector<ass::DialogueToken> const& tokens, std::string const& text, size_t pos);
-}
+Calltip GetCalltip(std::vector<ass::DialogueToken> const& tokens, std::string const& text,
+                   size_t pos);
+} // namespace agi

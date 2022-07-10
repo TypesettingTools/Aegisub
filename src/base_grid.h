@@ -35,9 +35,9 @@
 #include <wx/window.h>
 
 namespace agi {
-	struct Context;
-	class OptionValue;
-}
+struct Context;
+class OptionValue;
+} // namespace agi
 class AssDialogue;
 class GridColumn;
 class WidthHelper;
@@ -47,7 +47,7 @@ class BaseGrid final : public wxWindow {
 	int lineHeight = 1;     ///< Height of a line in pixels in the current font
 	bool holding = false;   ///< Is a drag selection in process?
 	wxFont font;            ///< Current grid font
-	wxScrollBar *scrollBar; ///< The grid's scrollbar
+	wxScrollBar* scrollBar; ///< The grid's scrollbar
 	bool byFrame = false;   ///< Should times be displayed as frame numbers
 
 	/// Row from which the selection shrinks/grows from when selecting via the
@@ -64,7 +64,7 @@ class BaseGrid final : public wxWindow {
 	/// Rows which are visible on the current video frame
 	std::vector<int> visible_rows;
 
-	agi::Context *context; ///< Associated project context
+	agi::Context* context; ///< Associated project context
 
 	std::vector<std::unique_ptr<GridColumn>> columns;
 	std::vector<bool> columns_visible;
@@ -82,7 +82,7 @@ class BaseGrid final : public wxWindow {
 		wxBrush LeftCol;
 	} row_colors;
 
-	std::vector<AssDialogue*> index_line_map;  ///< Row number -> dialogue line
+	std::vector<AssDialogue*> index_line_map; ///< Row number -> dialogue line
 
 	/// Connection for video seek event. Stored explicitly so that it can be
 	/// blocked if the relevant option is disabled
@@ -91,28 +91,28 @@ class BaseGrid final : public wxWindow {
 	/// Cached grid body context menu
 	std::unique_ptr<wxMenu> context_menu;
 
-	void OnContextMenu(wxContextMenuEvent &evt);
+	void OnContextMenu(wxContextMenuEvent& evt);
 	void OnHighlightVisibleChange(agi::OptionValue const& opt);
-	void OnKeyDown(wxKeyEvent &event);
-	void OnCharHook(wxKeyEvent &event);
-	void OnMouseEvent(wxMouseEvent &event);
-	void OnPaint(wxPaintEvent &event);
-	void OnScroll(wxScrollEvent &event);
-	void OnShowColMenu(wxCommandEvent &event);
-	void OnSize(wxSizeEvent &event);
+	void OnKeyDown(wxKeyEvent& event);
+	void OnCharHook(wxKeyEvent& event);
+	void OnMouseEvent(wxMouseEvent& event);
+	void OnPaint(wxPaintEvent& event);
+	void OnScroll(wxScrollEvent& event);
+	void OnShowColMenu(wxCommandEvent& event);
+	void OnSize(wxSizeEvent& event);
 	void OnSubtitlesCommit(int type);
-	void OnActiveLineChanged(AssDialogue *);
+	void OnActiveLineChanged(AssDialogue*);
 	void OnSeek();
 
 	void AdjustScrollbar();
 	void SetColumnWidths();
 
-	bool IsDisplayed(const AssDialogue *line) const;
+	bool IsDisplayed(const AssDialogue* line) const;
 
 	void UpdateMaps();
 	void UpdateStyle();
 
-	void SelectRow(int row, bool addToSelected = false, bool select=true);
+	void SelectRow(int row, bool addToSelected = false, bool select = true);
 
 	int GetRows() const { return index_line_map.size(); }
 	void MakeRowVisible(int row);
@@ -120,10 +120,10 @@ class BaseGrid final : public wxWindow {
 	/// @brief Get dialogue by index
 	/// @param n Index to look up
 	/// @return Subtitle dialogue line for index, or 0 if invalid index
-	AssDialogue *GetDialogue(int n) const;
+	AssDialogue* GetDialogue(int n) const;
 
-public:
-	BaseGrid(wxWindow* parent, agi::Context *context);
+  public:
+	BaseGrid(wxWindow* parent, agi::Context* context);
 	~BaseGrid();
 
 	void SetByFrame(bool state);

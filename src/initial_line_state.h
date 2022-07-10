@@ -16,7 +16,9 @@
 
 #include <string>
 
-namespace agi { struct Context; }
+namespace agi {
+struct Context;
+}
 class AssDialogue;
 
 class InitialLineState {
@@ -25,10 +27,10 @@ class InitialLineState {
 	int line_id;
 
 	agi::signal::Signal<std::string const&> InitialStateChanged;
-	void OnActiveLineChanged(AssDialogue *new_line);
+	void OnActiveLineChanged(AssDialogue* new_line);
 
-public:
-	InitialLineState(agi::Context *c);
+  public:
+	InitialLineState(agi::Context* c);
 
 	std::string const& GetInitialText() const { return initial_text; }
 	DEFINE_SIGNAL_ADDERS(InitialStateChanged, AddChangeListener)

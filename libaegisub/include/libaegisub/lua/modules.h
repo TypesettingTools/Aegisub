@@ -16,6 +16,8 @@
 
 struct lua_State;
 
-namespace agi { namespace lua {
-	void preload_modules(lua_State *L);
-} }
+namespace agi {
+namespace lua {
+void preload_modules(lua_State* L);
+}
+} // namespace agi

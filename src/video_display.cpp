@@ -47,8 +47,8 @@
 #include "retina_helper.h"
 #include "spline_curve.h"
 #include "utils.h"
-#include "video_out_gl.h"
 #include "video_controller.h"
+#include "video_out_gl.h"
 #include "visual_tool.h"
 
 #include <libaegisub/make_unique.h>
@@ -65,43 +65,40 @@
 #include <GL/gl.h>
 #endif
 
-/// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
-int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
+/// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil
+/// buffer
+int attribList[] = { WX_GL_RGBA, WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
 
 /// An OpenGL error occurred while uploading or displaying a frame
 class OpenGlException final : public agi::Exception {
-public:
-	OpenGlException(const char *func, int err)
-	: agi::Exception(agi::format("%s failed with error code %d", func, err))
-	{ }
+  public:
+	OpenGlException(const char* func, int err)
+	    : agi::Exception(agi::format("%s failed with error code %d", func, err)) {}
 };
 
-#define E(cmd) cmd; if (GLenum err = glGetError()) throw OpenGlException(#cmd, err)
+#define E(cmd) \
+	cmd; \
+	if(GLenum err = glGetError()) throw OpenGlException(#cmd, err)
 
-VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBox, wxWindow *parent, agi::Context *c)
-: wxGLCanvas(parent, -1, attribList)
-, autohideTools(OPT_GET("Tool/Visual/Autohide"))
-, con(c)
-, zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
-, toolBar(toolbar)
-, zoomBox(zoomBox)
-, freeSize(freeSize)
-, retina_helper(agi::make_unique<RetinaHelper>(this))
-, scale_factor(retina_helper->GetScaleFactor())
-, scale_factor_connection(retina_helper->AddScaleFactorListener([=](int new_scale_factor) {
-	double new_zoom = zoomValue * new_scale_factor / scale_factor;
-	scale_factor = new_scale_factor;
-	SetZoom(new_zoom);
-}))
-{
+VideoDisplay::VideoDisplay(wxToolBar* toolbar, bool freeSize, wxComboBox* zoomBox, wxWindow* parent,
+                           agi::Context* c)
+    : wxGLCanvas(parent, -1, attribList), autohideTools(OPT_GET("Tool/Visual/Autohide")), con(c),
+      zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125), toolBar(toolbar),
+      zoomBox(zoomBox), freeSize(freeSize), retina_helper(agi::make_unique<RetinaHelper>(this)),
+      scale_factor(retina_helper->GetScaleFactor()),
+      scale_factor_connection(retina_helper->AddScaleFactorListener([=](int new_scale_factor) {
+	      double new_zoom = zoomValue * new_scale_factor / scale_factor;
+	      scale_factor = new_scale_factor;
+	      SetZoom(new_zoom);
+      })) {
 	zoomBox->SetValue(fmt_wx("%g%%", zoomValue * 100.));
 	zoomBox->Bind(wxEVT_COMBOBOX, &VideoDisplay::SetZoomFromBox, this);
 	zoomBox->Bind(wxEVT_TEXT_ENTER, &VideoDisplay::SetZoomFromBoxText, this);
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	connections = agi::signal::make_vector({
-		con->project->AddVideoProviderListener(&VideoDisplay::UpdateSize, this),
-		con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this),
+	    con->project->AddVideoProviderListener(&VideoDisplay::UpdateSize, this),
+	    con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this),
 	});
 
 	Bind(wxEVT_PAINT, std::bind(&VideoDisplay::Render, this));
@@ -125,84 +122,74 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	SetLayoutDirection(wxLayout_LeftToRight);
 }
 
-VideoDisplay::~VideoDisplay () {
+VideoDisplay::~VideoDisplay() {
 	Unload();
 	con->videoController->Unbind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 }
 
 bool VideoDisplay::InitContext() {
-	if (!IsShownOnScreen())
-		return false;
+	if(!IsShownOnScreen()) return false;
 
 	// If this display is in a minimized detached dialog IsShownOnScreen will
 	// return true, but the client size is guaranteed to be 0
-	if (GetClientSize() == wxSize(0, 0))
-		return false;
+	if(GetClientSize() == wxSize(0, 0)) return false;
 
-	if (!glContext)
-		glContext = agi::make_unique<wxGLContext>(this);
+	if(!glContext) glContext = agi::make_unique<wxGLContext>(this);
 
 	SetCurrent(*glContext);
 	return true;
 }
 
-void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
+void VideoDisplay::UploadFrameData(FrameReadyEvent& evt) {
 	pending_frame = evt.frame;
 	Render();
 }
 
 void VideoDisplay::Render() try {
-	if (!con->project->VideoProvider() || !InitContext() || (!videoOut && !pending_frame))
-		return;
+	if(!con->project->VideoProvider() || !InitContext() || (!videoOut && !pending_frame)) return;
 
-	if (!videoOut)
-		videoOut = agi::make_unique<VideoOutGL>();
+	if(!videoOut) videoOut = agi::make_unique<VideoOutGL>();
 
-	if (!tool)
-		cmd::call("video/tool/cross", con);
+	if(!tool) cmd::call("video/tool/cross", con);
 
 	try {
-		if (pending_frame) {
+		if(pending_frame) {
 			videoOut->UploadFrameData(*pending_frame);
 			pending_frame.reset();
 		}
-	}
-	catch (const VideoOutInitException& err) {
-		wxLogError(
-			"Failed to initialize video display. Closing other running "
-			"programs and updating your video card drivers may fix this.\n"
-			"Error message reported: %s",
-			err.GetMessage());
+	} catch(const VideoOutInitException& err) {
+		wxLogError("Failed to initialize video display. Closing other running "
+		           "programs and updating your video card drivers may fix this.\n"
+		           "Error message reported: %s",
+		           err.GetMessage());
 		con->project->CloseVideo();
 		return;
-	}
-	catch (const VideoOutRenderException& err) {
-		wxLogError(
-			"Could not upload video frame to graphics card.\n"
-			"Error message reported: %s",
-			err.GetMessage());
+	} catch(const VideoOutRenderException& err) {
+		wxLogError("Could not upload video frame to graphics card.\n"
+		           "Error message reported: %s",
+		           err.GetMessage());
 		return;
 	}
 
-	if (videoSize.GetWidth() == 0) videoSize.SetWidth(1);
-	if (videoSize.GetHeight() == 0) videoSize.SetHeight(1);
+	if(videoSize.GetWidth() == 0) videoSize.SetWidth(1);
+	if(videoSize.GetHeight() == 0) videoSize.SetHeight(1);
 
-	if (!viewport_height || !viewport_width)
-		PositionVideo();
+	if(!viewport_height || !viewport_width) PositionVideo();
 
 	videoOut->Render(viewport_left, viewport_bottom, viewport_width, viewport_height);
 	E(glViewport(0, std::min(viewport_bottom, 0), videoSize.GetWidth(), videoSize.GetHeight()));
 
 	E(glMatrixMode(GL_PROJECTION));
 	E(glLoadIdentity());
-	E(glOrtho(0.0f, videoSize.GetWidth() / scale_factor, videoSize.GetHeight() / scale_factor, 0.0f, -1000.0f, 1000.0f));
+	E(glOrtho(0.0f, videoSize.GetWidth() / scale_factor, videoSize.GetHeight() / scale_factor, 0.0f,
+	          -1000.0f, 1000.0f));
 
-	if (OPT_GET("Video/Overscan Mask")->GetBool()) {
+	if(OPT_GET("Video/Overscan Mask")->GetBool()) {
 		double ar = con->videoController->GetAspectRatioValue();
 
-		// Based on BBC's guidelines: http://www.bbc.co.uk/guidelines/dq/pdf/tv/tv_standards_london.pdf
-		// 16:9 or wider
-		if (ar > 1.75) {
+		// Based on BBC's guidelines:
+		// http://www.bbc.co.uk/guidelines/dq/pdf/tv/tv_standards_london.pdf 16:9 or wider
+		if(ar > 1.75) {
 			DrawOverscanMask(.1f, .05f);
 			DrawOverscanMask(0.035f, 0.035f);
 		}
@@ -213,16 +200,13 @@ void VideoDisplay::Render() try {
 		}
 	}
 
-	if ((mouse_pos || !autohideTools->GetBool()) && tool)
-		tool->Draw();
+	if((mouse_pos || !autohideTools->GetBool()) && tool) tool->Draw();
 
 	SwapBuffers();
-}
-catch (const agi::Exception &err) {
-	wxLogError(
-		"An error occurred trying to render the video frame on the screen.\n"
-		"Error message reported: %s",
-		err.GetMessage());
+} catch(const agi::Exception& err) {
+	wxLogError("An error occurred trying to render the video frame on the screen.\n"
+	           "Error message reported: %s",
+	           err.GetMessage());
 	con->project->CloseVideo();
 }
 
@@ -231,28 +215,22 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 	Vector2D size = Vector2D(horizontal_percent, vertical_percent) / 2 * v;
 
 	// Clockwise from top-left
-	Vector2D corners[] = {
-		size,
-		Vector2D(viewport_width - size.X(), size),
-		v - size,
-		Vector2D(size, viewport_height - size.Y())
-	};
+	Vector2D corners[] = { size, Vector2D(viewport_width - size.X(), size), v - size,
+		                   Vector2D(size, viewport_height - size.Y()) };
 
 	// Shift to compensate for black bars
 	Vector2D pos(viewport_left, viewport_top);
-	for (auto& corner : corners)
+	for(auto& corner : corners)
 		corner = corner + pos;
 
 	int count = 0;
 	std::vector<float> points;
-	for (size_t i = 0; i < 4; ++i) {
+	for(size_t i = 0; i < 4; ++i) {
 		size_t prev = (i + 3) % 4;
 		size_t next = (i + 1) % 4;
-		count += SplineCurve(
-				(corners[prev] + corners[i] * 4) / 5,
-				corners[i], corners[i],
-				(corners[next] + corners[i] * 4) / 5)
-			.GetPoints(points);
+		count += SplineCurve((corners[prev] + corners[i] * 4) / 5, corners[i], corners[i],
+		                     (corners[next] + corners[i] * 4) / 5)
+		             .GetPoints(points);
 	}
 
 	OpenGLWrapper gl;
@@ -261,12 +239,13 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 
 	std::vector<int> vstart(1, 0);
 	std::vector<int> vcount(1, count);
-	gl.DrawMultiPolygon(points, vstart, vcount, Vector2D(viewport_left, viewport_top), Vector2D(viewport_width, viewport_height), true);
+	gl.DrawMultiPolygon(points, vstart, vcount, Vector2D(viewport_left, viewport_top),
+	                    Vector2D(viewport_width, viewport_height), true);
 }
 
 void VideoDisplay::PositionVideo() {
 	auto provider = con->project->VideoProvider();
-	if (!provider || !IsShownOnScreen()) return;
+	if(!provider || !IsShownOnScreen()) return;
 
 	viewport_left = 0;
 	viewport_bottom = GetClientSize().GetHeight() * scale_factor - videoSize.GetHeight();
@@ -274,29 +253,31 @@ void VideoDisplay::PositionVideo() {
 	viewport_width = videoSize.GetWidth();
 	viewport_height = videoSize.GetHeight();
 
-	if (freeSize) {
+	if(freeSize) {
 		int vidW = provider->GetWidth();
 		int vidH = provider->GetHeight();
 
 		AspectRatio arType = con->videoController->GetAspectRatioType();
 		double displayAr = double(viewport_width) / viewport_height;
-		double videoAr = arType == AspectRatio::Default ? double(vidW) / vidH : con->videoController->GetAspectRatioValue();
+		double videoAr = arType == AspectRatio::Default
+		                     ? double(vidW) / vidH
+		                     : con->videoController->GetAspectRatioValue();
 
 		// Window is wider than video, blackbox left/right
-		if (displayAr - videoAr > 0.01) {
+		if(displayAr - videoAr > 0.01) {
 			int delta = viewport_width - videoAr * viewport_height;
 			viewport_left = delta / 2;
 			viewport_width -= delta;
 		}
 		// Video is wider than window, blackbox top/bottom
-		else if (videoAr - displayAr > 0.01) {
+		else if(videoAr - displayAr > 0.01) {
 			int delta = viewport_height - viewport_width / videoAr;
 			viewport_top = viewport_bottom = delta / 2;
 			viewport_height -= delta;
 		}
 	}
 
-	if (tool)
+	if(tool)
 		tool->SetDisplayArea(viewport_left / scale_factor, viewport_top / scale_factor,
 		                     viewport_width / scale_factor, viewport_height / scale_factor);
 
@@ -305,24 +286,24 @@ void VideoDisplay::PositionVideo() {
 
 void VideoDisplay::UpdateSize() {
 	auto provider = con->project->VideoProvider();
-	if (!provider || !IsShownOnScreen()) return;
+	if(!provider || !IsShownOnScreen()) return;
 
 	videoSize.Set(provider->GetWidth(), provider->GetHeight());
 	videoSize *= zoomValue;
-	if (con->videoController->GetAspectRatioType() != AspectRatio::Default)
+	if(con->videoController->GetAspectRatioType() != AspectRatio::Default)
 		videoSize.SetWidth(videoSize.GetHeight() * con->videoController->GetAspectRatioValue());
 
 	wxEventBlocker blocker(this);
-	if (freeSize) {
-		wxWindow *top = GetParent();
-		while (!top->IsTopLevel()) top = top->GetParent();
+	if(freeSize) {
+		wxWindow* top = GetParent();
+		while(!top->IsTopLevel())
+			top = top->GetParent();
 
 		wxSize cs = GetClientSize();
 		wxSize oldSize = top->GetSize();
 		top->SetSize(top->GetSize() + videoSize / scale_factor - cs);
 		SetClientSize(cs + top->GetSize() - oldSize);
-	}
-	else {
+	} else {
 		SetMinClientSize(videoSize / scale_factor);
 		SetMaxClientSize(videoSize / scale_factor);
 
@@ -332,80 +313,73 @@ void VideoDisplay::UpdateSize() {
 	PositionVideo();
 }
 
-void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
-	if (freeSize) {
+void VideoDisplay::OnSizeEvent(wxSizeEvent& event) {
+	if(freeSize) {
 		videoSize = GetClientSize() * scale_factor;
 		PositionVideo();
 		zoomValue = double(viewport_height) / con->project->VideoProvider()->GetHeight();
 		zoomBox->ChangeValue(fmt_wx("%g%%", zoomValue * 100.));
 		con->ass->Properties.video_zoom = zoomValue;
-	}
-	else {
+	} else {
 		PositionVideo();
 	}
 }
 
 void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
-	if (event.ButtonDown())
-		SetFocus();
+	if(event.ButtonDown()) SetFocus();
 
 	last_mouse_pos = mouse_pos = event.GetPosition();
 
-	if (tool)
-		tool->OnMouseEvent(event);
+	if(tool) tool->OnMouseEvent(event);
 }
 
 void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 	mouse_pos = Vector2D();
-	if (tool)
-		tool->OnMouseEvent(event);
+	if(tool) tool->OnMouseEvent(event);
 }
 
 void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
-	if (int wheel = event.GetWheelRotation()) {
-		if (ForwardMouseWheelEvent(this, event))
+	if(int wheel = event.GetWheelRotation()) {
+		if(ForwardMouseWheelEvent(this, event))
 			SetZoom(zoomValue + .125 * (wheel / event.GetWheelDelta()));
 	}
 }
 
 void VideoDisplay::OnContextMenu(wxContextMenuEvent&) {
-	if (!context_menu) context_menu = menu::GetMenu("video_context", con);
+	if(!context_menu) context_menu = menu::GetMenu("video_context", con);
 	SetCursor(wxNullCursor);
 	menu::OpenPopupMenu(context_menu.get(), this);
 }
 
-void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
+void VideoDisplay::OnKeyDown(wxKeyEvent& event) {
 	hotkey::check("Video", con, event);
 }
 
 void VideoDisplay::SetZoom(double value) {
-	if (value == 0) return;
+	if(value == 0) return;
 	zoomValue = std::max(value, .125);
 	size_t selIndex = zoomValue / .125 - 1;
-	if (selIndex < zoomBox->GetCount())
-		zoomBox->SetSelection(selIndex);
+	if(selIndex < zoomBox->GetCount()) zoomBox->SetSelection(selIndex);
 	zoomBox->ChangeValue(fmt_wx("%g%%", zoomValue * 100.));
 	con->ass->Properties.video_zoom = zoomValue;
 	UpdateSize();
 }
 
-void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
+void VideoDisplay::SetZoomFromBox(wxCommandEvent&) {
 	int sel = zoomBox->GetSelection();
-	if (sel != wxNOT_FOUND) {
+	if(sel != wxNOT_FOUND) {
 		zoomValue = (sel + 1) * .125;
 		con->ass->Properties.video_zoom = zoomValue;
 		UpdateSize();
 	}
 }
 
-void VideoDisplay::SetZoomFromBoxText(wxCommandEvent &) {
+void VideoDisplay::SetZoomFromBoxText(wxCommandEvent&) {
 	wxString strValue = zoomBox->GetValue();
-	if (strValue.EndsWith("%"))
-		strValue.RemoveLast();
+	if(strValue.EndsWith("%")) strValue.RemoveLast();
 
 	double value;
-	if (strValue.ToDouble(&value))
-		SetZoom(value / 100.);
+	if(strValue.ToDouble(&value)) SetZoom(value / 100.);
 }
 
 void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
@@ -418,7 +392,7 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 	tool->SetToolbar(toolBar);
 
 	// Update size as the new typesetting tool may have changed the subtoolbar size
-	if (!freeSize)
+	if(!freeSize)
 		UpdateSize();
 	else {
 		// UpdateSize fits the window to the video, which we don't want to do
@@ -437,7 +411,7 @@ Vector2D VideoDisplay::GetMousePosition() const {
 }
 
 void VideoDisplay::Unload() {
-	if (glContext) {
+	if(glContext) {
 		SetCurrent(*glContext);
 	}
 	videoOut.reset();

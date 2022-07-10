@@ -35,9 +35,10 @@
 #include "subtitle_format.h"
 
 class MKVSubtitleFormat final : public SubtitleFormat {
-public:
+  public:
 	MKVSubtitleFormat();
 	std::vector<std::string> GetReadWildcards() const override;
 
-	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
+	void ReadFile(AssFile* target, agi::fs::path const& filename, agi::vfr::Framerate const& fps,
+	              std::string const& forceEncoding) const override;
 };

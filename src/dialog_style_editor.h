@@ -45,11 +45,14 @@ class wxSpinCtrl;
 class wxTextCtrl;
 class wxThreadEvent;
 class wxWindow;
-namespace agi { struct Context; struct Color; }
-template<typename T> class ValueEvent;
+namespace agi {
+struct Context;
+struct Color;
+} // namespace agi
+template <typename T> class ValueEvent;
 
 class DialogStyleEditor final : public wxDialog {
-	agi::Context *c;
+	agi::Context* c;
 	std::unique_ptr<PersistLocation> persist;
 
 	/// If true, the style was just created and so the user should not be
@@ -60,48 +63,49 @@ class DialogStyleEditor final : public wxDialog {
 	bool updating = false;
 
 	/// The style currently being edited
-	AssStyle *style;
+	AssStyle* style;
 
 	/// Copy of style passed to the subtitles preview to avoid making changes
 	/// before Apply is clicked
 	std::unique_ptr<AssStyle> work;
 
 	/// The style storage style is in, if applicable
-	AssStyleStorage *store;
+	AssStyleStorage* store;
 
-	wxTextCtrl *StyleName;
-	wxComboBox *FontName;
-	wxCheckBox *BoxBold;
-	wxCheckBox *BoxItalic;
-	wxCheckBox *BoxUnderline;
-	wxCheckBox *BoxStrikeout;
-	wxSpinCtrl *margin[3];
-	wxRadioBox *Alignment;
-	wxCheckBox *OutlineType;
-	wxComboBox *Encoding;
-	wxTextCtrl *PreviewText;
-	SubtitlesPreview *SubsPreview;
+	wxTextCtrl* StyleName;
+	wxComboBox* FontName;
+	wxCheckBox* BoxBold;
+	wxCheckBox* BoxItalic;
+	wxCheckBox* BoxUnderline;
+	wxCheckBox* BoxStrikeout;
+	wxSpinCtrl* margin[3];
+	wxRadioBox* Alignment;
+	wxCheckBox* OutlineType;
+	wxComboBox* Encoding;
+	wxTextCtrl* PreviewText;
+	SubtitlesPreview* SubsPreview;
 
-	void SetBitmapColor(int n,wxColour color);
+	void SetBitmapColor(int n, wxColour color);
 	int AlignToControl(int n);
 	int ControlToAlign(int n);
 	void UpdateWorkStyle();
 
-	void OnChildFocus(wxChildFocusEvent &event);
-	void OnCommandPreviewUpdate(wxCommandEvent &event);
+	void OnChildFocus(wxChildFocusEvent& event);
+	void OnCommandPreviewUpdate(wxCommandEvent& event);
 
-	void OnPreviewTextChange(wxCommandEvent &event);
-	void OnPreviewColourChange(ValueEvent<agi::Color> &event);
+	void OnPreviewTextChange(wxCommandEvent& event);
+	void OnPreviewColourChange(ValueEvent<agi::Color>& event);
 
 	/// @brief Maybe apply changes and maybe close the dialog
 	/// @param apply Should changes be applied?
 	/// @param close Should the dialog be closed?
-	void Apply(bool apply,bool close);
+	void Apply(bool apply, bool close);
 	/// @brief Sets color for one of the four color buttons
 	void OnSetColor(ValueEvent<agi::Color>& evt);
 
-public:
-	DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, std::string const& new_name, wxArrayString const& font_list);
+  public:
+	DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Context* c, AssStyleStorage* store,
+	                  std::string const& new_name, wxArrayString const& font_list);
 	~DialogStyleEditor();
 
 	std::string GetStyleName() const;

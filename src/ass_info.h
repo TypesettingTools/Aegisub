@@ -20,9 +20,9 @@ class AssInfo final : public AssEntry {
 	std::string key;
 	std::string value;
 
-public:
+  public:
 	AssInfo(AssInfo const& o) = default;
-	AssInfo(std::string key, std::string value) : key(std::move(key)), value(std::move(value)) { }
+	AssInfo(std::string key, std::string value) : key(std::move(key)), value(std::move(value)) {}
 
 	AssEntryGroup Group() const override { return AssEntryGroup::INFO; }
 	std::string GetEntryData() const { return key + ": " + value; }

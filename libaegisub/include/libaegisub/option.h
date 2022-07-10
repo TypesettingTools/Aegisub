@@ -27,22 +27,22 @@
 #include <libaegisub/fs_fwd.h>
 
 namespace json {
-	class UnknownElement;
-	typedef std::map<std::string, UnknownElement> Object;
-}
+class UnknownElement;
+typedef std::map<std::string, UnknownElement> Object;
+} // namespace json
 
 namespace agi {
 class OptionValue;
 
 class Options {
-public:
+  public:
 	/// Options class settings.
 	enum OptionSetting {
-		NONE       = 0x000,		///< Do nothing (default)
-		FLUSH_SKIP = 0x001		///< Skip writing the config file to disk
+		NONE = 0x000,      ///< Do nothing (default)
+		FLUSH_SKIP = 0x001 ///< Skip writing the config file to disk
 	};
 
-private:
+  private:
 	std::vector<std::unique_ptr<OptionValue>> values;
 
 	/// User config (file that will be written to disk)
@@ -53,18 +53,21 @@ private:
 
 	/// @brief Load a config file into the Options object.
 	/// @param config Config to load.
-	/// @param ignore_errors Log invalid entires in the option file and continue rather than throwing an exception
+	/// @param ignore_errors Log invalid entires in the option file and continue rather than
+	/// throwing an exception
 	void LoadConfig(std::istream& stream, bool ignore_errors = false);
 
-public:
+  public:
 	/// @brief Constructor
 	/// @param file User config that will be loaded from and written back to.
 	/// @param default_config Default configuration.
-	Options(agi::fs::path const& file, std::pair<const char *, size_t> default_config, const OptionSetting setting = NONE);
+	Options(agi::fs::path const& file, std::pair<const char*, size_t> default_config,
+	        const OptionSetting setting = NONE);
 
-	template<size_t N>
-	Options(agi::fs::path const& file, const char (&default_config)[N], const OptionSetting setting = NONE)
-	: Options(file, {default_config, N - 1}, setting) { }
+	template <size_t N>
+	Options(agi::fs::path const& file, const char (&default_config)[N],
+	        const OptionSetting setting = NONE)
+	    : Options(file, { default_config, N - 1 }, setting) {}
 
 	/// Destructor
 	~Options();
@@ -72,15 +75,15 @@ public:
 	/// @brief Get an option by name.
 	/// @param name Option to get.
 	/// Get an option value object by name throw an internal exception if the option is not found.
-	OptionValue *Get(const char *name);
-	OptionValue *Get(std::string const& name) { return Get(name.c_str()); }
+	OptionValue* Get(const char* name);
+	OptionValue* Get(std::string const& name) { return Get(name.c_str()); }
 
 	/// @brief Next configuration file to load.
 	/// @param[in] src Stream to load from.
 	/// Load next config which will supersede any values from previous configs
 	/// can be called as many times as required, but only after ConfigDefault() and
 	/// before ConfigUser()
-	void ConfigNext(std::istream &stream) { LoadConfig(stream); }
+	void ConfigNext(std::istream& stream) { LoadConfig(stream); }
 
 	/// @brief Set user config file.
 	/// Set the user configuration file and read options from it, closes all

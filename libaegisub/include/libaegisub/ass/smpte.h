@@ -29,12 +29,12 @@ class SmpteFormatter {
 	/// Separator character
 	char sep;
 
-public:
-	SmpteFormatter(vfr::Framerate fps, char sep=':');
+  public:
+	SmpteFormatter(vfr::Framerate fps, char sep = ':');
 
 	/// Convert an Time to a SMPTE timecode
 	std::string ToSMPTE(Time time) const;
 	/// Convert a SMPTE timecode to an Time
 	Time FromSMPTE(std::string const& str) const;
 };
-}
+} // namespace agi

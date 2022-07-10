@@ -26,29 +26,30 @@ AGI_DECLARE_EVENT(EVT_COLOR, agi::Color);
 
 /// A button which displays a currently-selected color and lets the user pick
 /// a new color when clicked
-class ColourButton: public wxButton {
+class ColourButton : public wxButton {
 	wxImage bmp;       ///< The button's bitmap label
 	agi::Color colour; ///< The current colour
 
 	/// Update the bitmap label after the color is changed
 	void UpdateBitmap();
 
-public:
+  public:
 	/// Constructor
 	/// @param parent Parent window
 	/// @param size Size of the bitmap (note: not the size of the button)
 	/// @param alpha Let the user adjust the color's alpha
 	/// @param color Initial color to display
-	ColourButton(wxWindow *parent, wxSize const& size, bool alpha, agi::Color color = agi::Color(), wxValidator const& validator = wxDefaultValidator);
+	ColourButton(wxWindow* parent, wxSize const& size, bool alpha, agi::Color color = agi::Color(),
+	             wxValidator const& validator = wxDefaultValidator);
 
 	/// Get the currently selected color
 	agi::Color GetColor() { return colour; }
 };
 
 struct ColorValidator final : public wxValidator {
-	agi::Color *color;
-	ColorValidator(agi::Color *color) : color(color) { }
-	wxValidator *Clone() const override { return new ColorValidator(color); }
+	agi::Color* color;
+	ColorValidator(agi::Color* color) : color(color) {}
+	wxValidator* Clone() const override { return new ColorValidator(color); }
 	bool Validate(wxWindow*) override { return true; }
 	bool TransferToWindow() override { return true; }
 

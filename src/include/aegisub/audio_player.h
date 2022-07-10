@@ -41,31 +41,34 @@
 #include <string>
 #include <vector>
 
-namespace agi { class AudioProvider; }
+namespace agi {
+class AudioProvider;
+}
 class wxWindow;
 
 class AudioPlayer {
-protected:
-	agi::AudioProvider *provider;
+  protected:
+	agi::AudioProvider* provider;
 
-public:
-	AudioPlayer(agi::AudioProvider *provider) : provider(provider) { }
+  public:
+	AudioPlayer(agi::AudioProvider* provider) : provider(provider) {}
 	virtual ~AudioPlayer() = default;
 
-	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range
-	virtual void Stop()=0;			// Stop playing
-	virtual bool IsPlaying()=0;
+	virtual void Play(int64_t start, int64_t count) = 0; // Play sample range
+	virtual void Stop() = 0;                             // Stop playing
+	virtual bool IsPlaying() = 0;
 
-	virtual void SetVolume(double volume)=0;
+	virtual void SetVolume(double volume) = 0;
 
-	virtual int64_t GetEndPosition()=0;
-	virtual int64_t GetCurrentPosition()=0;
-	virtual void SetEndPosition(int64_t pos)=0;
+	virtual int64_t GetEndPosition() = 0;
+	virtual int64_t GetCurrentPosition() = 0;
+	virtual void SetEndPosition(int64_t pos) = 0;
 };
 
 struct AudioPlayerFactory {
 	static std::vector<std::string> GetClasses();
-	static std::unique_ptr<AudioPlayer> GetAudioPlayer(agi::AudioProvider *provider, wxWindow *window);
+	static std::unique_ptr<AudioPlayer> GetAudioPlayer(agi::AudioProvider* provider,
+	                                                   wxWindow* window);
 };
 
 DEFINE_EXCEPTION(AudioPlayerOpenError, agi::Exception);

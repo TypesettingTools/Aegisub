@@ -31,24 +31,22 @@
 #include <GL/gl.h>
 #endif
 
-#include "video_out_gl.h"
 #include "utils.h"
 #include "video_frame.h"
+#include "video_out_gl.h"
 
 namespace {
-template<typename Exception>
-BOOST_NOINLINE void throw_error(GLenum err, const char *msg) {
+template <typename Exception> BOOST_NOINLINE void throw_error(GLenum err, const char* msg) {
 	LOG_E("video/out/gl") << msg << " failed with error code " << err;
 	throw Exception(msg, err);
 }
-}
+} // namespace
 
 #define DO_CHECK_ERROR(cmd, Exception, msg) \
 	do { \
 		cmd; \
 		GLenum err = glGetError(); \
-		if (BOOST_UNLIKELY(err)) \
-			throw_error<Exception>(err, msg); \
+		if(BOOST_UNLIKELY(err)) throw_error<Exception>(err, msg); \
 	} while(0);
 #define CHECK_INIT_ERROR(cmd) DO_CHECK_ERROR(cmd, VideoOutInitException, #cmd)
 #define CHECK_ERROR(cmd) DO_CHECK_ERROR(cmd, VideoOutRenderException, #cmd)
@@ -67,28 +65,34 @@ struct VideoOutGL::TextureInfo {
 /// @param format The texture's format
 /// @return Whether the texture could be created.
 static bool TestTexture(int width, int height, GLint format) {
-	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_PROXY_TEXTURE_2D, 0, format, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+	             nullptr);
 	glGetTexLevelParameteriv(GL_PROXY_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
-	while (glGetError()) { } // Silently swallow all errors as we don't care why it failed if it did
+	while(glGetError()) {
+	} // Silently swallow all errors as we don't care why it failed if it did
 
 	LOG_I("video/out/gl") << "VideoOutGL::TestTexture: " << width << "x" << height;
 	return format != 0;
 }
 
-VideoOutGL::VideoOutGL() { }
+VideoOutGL::VideoOutGL() {}
 
 /// @brief Runtime detection of required OpenGL capabilities
 void VideoOutGL::DetectOpenGLCapabilities() {
-	if (maxTextureSize != 0) return;
+	if(maxTextureSize != 0) return;
 
 	// Test for supported internalformats
-	if (TestTexture(64, 64, GL_RGBA8)) internalFormat = GL_RGBA8;
-	else if (TestTexture(64, 64, GL_RGBA)) internalFormat = GL_RGBA;
-	else throw VideoOutInitException("Could not create a 64x64 RGB texture in any format.");
+	if(TestTexture(64, 64, GL_RGBA8))
+		internalFormat = GL_RGBA8;
+	else if(TestTexture(64, 64, GL_RGBA))
+		internalFormat = GL_RGBA;
+	else
+		throw VideoOutInitException("Could not create a 64x64 RGB texture in any format.");
 
 	// Test for the maximum supported texture size
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
-	while (maxTextureSize > 64 && !TestTexture(maxTextureSize, maxTextureSize, internalFormat)) maxTextureSize >>= 1;
+	while(maxTextureSize > 64 && !TestTexture(maxTextureSize, maxTextureSize, internalFormat))
+		maxTextureSize >>= 1;
 	LOG_I("video/out/gl") << "Maximum texture size is " << maxTextureSize << "x" << maxTextureSize;
 
 	// Test for rectangular texture support
@@ -104,8 +108,10 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	using namespace std;
 
 	// Do nothing if the frame size and format are unchanged
-	if (width == frameWidth && height == frameHeight && format == frameFormat && flipped == frameFlipped) return;
-	frameWidth  = width;
+	if(width == frameWidth && height == frameHeight && format == frameFormat &&
+	   flipped == frameFlipped)
+		return;
+	frameWidth = width;
 	frameHeight = height;
 	frameFormat = format;
 	frameFlipped = flipped;
@@ -114,7 +120,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	DetectOpenGLCapabilities();
 
 	// Clean up old textures
-	if (textureIdList.size() > 0) {
+	if(textureIdList.size() > 0) {
 		CHECK_INIT_ERROR(glDeleteTextures(textureIdList.size(), &textureIdList[0]));
 		textureIdList.clear();
 		textureList.clear();
@@ -122,8 +128,8 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 
 	// Create the textures
 	int textureArea = maxTextureSize - 2;
-	textureRows  = (int)ceil(double(height) / textureArea);
-	textureCols  = (int)ceil(double(width) / textureArea);
+	textureRows = (int)ceil(double(height) / textureArea);
+	textureCols = (int)ceil(double(width) / textureArea);
 	textureCount = textureRows * textureCols;
 	textureIdList.resize(textureCount);
 	textureList.resize(textureCount);
@@ -158,7 +164,7 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	CHECK_ERROR(dl = glGenLists(1));
 	CHECK_ERROR(glNewList(dl, GL_COMPILE));
 
-	CHECK_ERROR(glClearColor(0,0,0,0));
+	CHECK_ERROR(glClearColor(0, 0, 0, 0));
 	CHECK_ERROR(glClearStencil(0));
 	CHECK_ERROR(glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
 
@@ -169,10 +175,9 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	CHECK_ERROR(glMatrixMode(GL_PROJECTION));
 	CHECK_ERROR(glLoadIdentity());
 	CHECK_ERROR(glPushMatrix());
-	if (frameFlipped) {
+	if(frameFlipped) {
 		CHECK_ERROR(glOrtho(0.0f, frameWidth, 0.0f, frameHeight, -1000.0f, 1000.0f));
-	}
-	else {
+	} else {
 		CHECK_ERROR(glOrtho(0.0f, frameWidth, frameHeight, 0.0f, -1000.0f, 1000.0f));
 	}
 
@@ -181,23 +186,23 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 	// Calculate the position information for each texture
 	int lastRow = textureRows - 1;
 	int lastCol = textureCols - 1;
-	for (int row = 0; row < textureRows; ++row) {
-		for (int col = 0; col < textureCols; ++col) {
+	for(int row = 0; row < textureRows; ++row) {
+		for(int col = 0; col < textureCols; ++col) {
 			TextureInfo& ti = textureList[row * textureCols + col];
 
 			// Width and height of the area read from the frame data
 			int sourceX = col * textureArea;
 			int sourceY = row * textureArea;
-			ti.sourceW  = std::min(frameWidth  - sourceX, maxTextureSize);
-			ti.sourceH  = std::min(frameHeight - sourceY, maxTextureSize);
+			ti.sourceW = std::min(frameWidth - sourceX, maxTextureSize);
+			ti.sourceH = std::min(frameHeight - sourceY, maxTextureSize);
 
 			// Used instead of GL_PACK_SKIP_ROWS/GL_PACK_SKIP_PIXELS due to
 			// performance issues with the emulation
 			ti.dataOffset = sourceY * frameWidth * bpp + sourceX * bpp;
 
 			int textureHeight = SmallestPowerOf2(ti.sourceH);
-			int textureWidth  = SmallestPowerOf2(ti.sourceW);
-			if (!supportsRectangularTextures) {
+			int textureWidth = SmallestPowerOf2(ti.sourceW);
+			if(!supportsRectangularTextures) {
 				textureWidth = textureHeight = std::max(textureWidth, textureHeight);
 			}
 
@@ -210,10 +215,10 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 			float y2 = sourceY + textureHeight - (row != lastRow);
 
 			// Portion of the texture actually used
-			float top    = row == 0 ? 0 : 1.0f / textureHeight;
-			float left   = col == 0 ? 0 : 1.0f / textureWidth;
+			float top = row == 0 ? 0 : 1.0f / textureHeight;
+			float left = col == 0 ? 0 : 1.0f / textureWidth;
 			float bottom = row == lastRow ? 1.0f : 1.0f - 1.0f / textureHeight;
-			float right  = col == lastCol ? 1.0f : 1.0f - 1.0f / textureWidth;
+			float right = col == lastCol ? 1.0f : 1.0f - 1.0f / textureWidth;
 
 			// Store the stuff needed later
 			ti.textureID = textureIdList[row * textureCols + col];
@@ -224,12 +229,16 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 
 			// Place the texture
 			glBegin(GL_QUADS);
-				glTexCoord2f(left,  top);     glVertex2f(x1, y1);
-				glTexCoord2f(right, top);     glVertex2f(x2, y1);
-				glTexCoord2f(right, bottom);  glVertex2f(x2, y2);
-				glTexCoord2f(left,  bottom);  glVertex2f(x1, y2);
+			glTexCoord2f(left, top);
+			glVertex2f(x1, y1);
+			glTexCoord2f(right, top);
+			glVertex2f(x2, y1);
+			glTexCoord2f(right, bottom);
+			glVertex2f(x2, y2);
+			glTexCoord2f(left, bottom);
+			glVertex2f(x1, y2);
 			glEnd();
-			if (GLenum err = glGetError()) throw VideoOutRenderException("GL_QUADS", err);
+			if(GLenum err = glGetError()) throw VideoOutRenderException("GL_QUADS", err);
 		}
 	}
 	CHECK_ERROR(glDisable(GL_TEXTURE_2D));
@@ -239,10 +248,13 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 
 	// Create the textures outside of the display list as there's no need to
 	// remake them on every frame
-	for (int i = 0; i < textureCount; ++i) {
-		LOG_I("video/out/gl") << "Using texture size: " << textureSizes[i].first << "x" << textureSizes[i].second;
+	for(int i = 0; i < textureCount; ++i) {
+		LOG_I("video/out/gl") << "Using texture size: " << textureSizes[i].first << "x"
+		                      << textureSizes[i].second;
 		CHECK_INIT_ERROR(glBindTexture(GL_TEXTURE_2D, textureIdList[i]));
-		CHECK_INIT_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, textureSizes[i].first, textureSizes[i].second, 0, format, GL_UNSIGNED_BYTE, nullptr));
+		CHECK_INIT_ERROR(glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, textureSizes[i].first,
+		                              textureSizes[i].second, 0, format, GL_UNSIGNED_BYTE,
+		                              nullptr));
 		CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 		CHECK_INIT_ERROR(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP));
@@ -251,17 +263,17 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 }
 
 void VideoOutGL::UploadFrameData(VideoFrame const& frame) {
-	if (frame.height == 0 || frame.width == 0) return;
+	if(frame.height == 0 || frame.width == 0) return;
 
 	InitTextures(frame.width, frame.height, GL_BGRA_EXT, 4, frame.flipped);
 
 	// Set the row length, needed to be able to upload partial rows
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, frame.pitch / 4));
 
-	for (auto& ti : textureList) {
+	for(auto& ti : textureList) {
 		CHECK_ERROR(glBindTexture(GL_TEXTURE_2D, ti.textureID));
-		CHECK_ERROR(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, ti.sourceW,
-			ti.sourceH, GL_BGRA_EXT, GL_UNSIGNED_BYTE, &frame.data[ti.dataOffset]));
+		CHECK_ERROR(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, ti.sourceW, ti.sourceH, GL_BGRA_EXT,
+		                            GL_UNSIGNED_BYTE, &frame.data[ti.dataOffset]));
 	}
 
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, 0));
@@ -272,11 +284,10 @@ void VideoOutGL::Render(int dx1, int dy1, int dx2, int dy2) {
 	CHECK_ERROR(glCallList(dl));
 	CHECK_ERROR(glMatrixMode(GL_MODELVIEW));
 	CHECK_ERROR(glLoadIdentity());
-
 }
 
 VideoOutGL::~VideoOutGL() {
-	if (textureIdList.size() > 0) {
+	if(textureIdList.size() > 0) {
 		glDeleteTextures(textureIdList.size(), &textureIdList[0]);
 		glDeleteLists(dl, 1);
 	}

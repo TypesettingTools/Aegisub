@@ -18,35 +18,32 @@
 
 namespace agi {
 namespace address_of_detail {
-	using namespace boost::adaptors;
+using namespace boost::adaptors;
 
-	// Tag type to select the operator| overload
-	struct address_of_tag_type { };
+// Tag type to select the operator| overload
+struct address_of_tag_type {};
 
-	template<typename Iterator>
-	struct take_address_of {
-		using result_type = typename std::iterator_traits<Iterator>::pointer;
-		using input_type = typename std::iterator_traits<Iterator>::reference;
+template <typename Iterator> struct take_address_of {
+	using result_type = typename std::iterator_traits<Iterator>::pointer;
+	using input_type = typename std::iterator_traits<Iterator>::reference;
 
-		result_type operator()(input_type v) const { return &v; }
-	};
+	result_type operator()(input_type v) const { return &v; }
+};
 
-	template<typename Rng>
-	auto operator|(Rng&& r, address_of_tag_type)
-		-> boost::transformed_range<take_address_of<typename Rng::iterator>, Rng>
-	{
-		return r | transformed(take_address_of<typename Rng::iterator>());
-	}
-
-	template<typename Rng>
-	auto operator|(Rng& r, address_of_tag_type)
-		-> boost::transformed_range<take_address_of<typename Rng::iterator>, Rng>
-	{
-		return r | transformed(take_address_of<typename Rng::iterator>());
-	}
+template <typename Rng>
+auto operator|(Rng&& r, address_of_tag_type)
+    -> boost::transformed_range<take_address_of<typename Rng::iterator>, Rng> {
+	return r | transformed(take_address_of<typename Rng::iterator>());
 }
+
+template <typename Rng>
+auto operator|(Rng& r, address_of_tag_type)
+    -> boost::transformed_range<take_address_of<typename Rng::iterator>, Rng> {
+	return r | transformed(take_address_of<typename Rng::iterator>());
+}
+} // namespace address_of_detail
 
 namespace {
-	const auto address_of = address_of_detail::address_of_tag_type{};
+const auto address_of = address_of_detail::address_of_tag_type{};
 }
-}
+} // namespace agi

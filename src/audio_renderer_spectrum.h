@@ -82,21 +82,20 @@ class AudioSpectrumRenderer final : public AudioRendererBitmapProvider {
 	/// @brief Fill a block with frequency-power data for a time range
 	/// @param      block_index Index of the block to fill data for
 	/// @param[out] block       Address to write the data to
-	void FillBlock(size_t block_index, float *block);
+	void FillBlock(size_t block_index, float* block);
 
 	/// @brief Convert audio data to float range [-1;+1)
 	/// @param count Samples to convert
 	/// @param dest Buffer to fill
-	template<class T>
-	void ConvertToFloat(size_t count, T *dest);
+	template <class T> void ConvertToFloat(size_t count, T* dest);
 
 #ifdef WITH_FFTW3
 	/// FFTW plan data
 	fftw_plan dft_plan = nullptr;
 	/// Pre-allocated input array for FFTW
-	double *dft_input = nullptr;
+	double* dft_input = nullptr;
 	/// Pre-allocated output array for FFTW
-	fftw_complex *dft_output = nullptr;
+	fftw_complex* dft_output = nullptr;
 #else
 	/// Pre-allocated scratch area for doing FFT derivations
 	std::vector<float> fft_scratch;
@@ -105,7 +104,7 @@ class AudioSpectrumRenderer final : public AudioRendererBitmapProvider {
 	/// Pre-allocated scratch area for storing raw audio data
 	std::vector<int16_t> audio_scratch;
 
-public:
+  public:
 	/// @brief Constructor
 	/// @param color_scheme_name Name of the color scheme to use
 	AudioSpectrumRenderer(std::string const& color_scheme_name);
@@ -117,14 +116,16 @@ public:
 	/// @param bmp   [in,out] Bitmap to render into, also carries length information
 	/// @param start First column of pixel data in display to render
 	/// @param style Style to render audio in
-	void Render(wxBitmap &bmp, int start, AudioRenderingStyle style) override;
+	void Render(wxBitmap& bmp, int start, AudioRenderingStyle style) override;
 
 	/// @brief Render blank area
-	void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style) override;
+	void RenderBlank(wxDC& dc, const wxRect& rect, AudioRenderingStyle style) override;
 
 	/// @brief Set the derivation resolution
-	/// @param derivation_size Binary logarithm of number of samples to use in deriving frequency-power data
-	/// @param derivation_dist Binary logarithm of number of samples between the start of derivations
+	/// @param derivation_size Binary logarithm of number of samples to use in deriving
+	/// frequency-power data
+	/// @param derivation_dist Binary logarithm of number of samples between the start of
+	/// derivations
 	///
 	/// The derivations done will each use 2^derivation_size audio samples and at a distance
 	/// of 2^derivation_dist samples.

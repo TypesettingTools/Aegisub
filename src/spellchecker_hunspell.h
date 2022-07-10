@@ -29,7 +29,11 @@
 #include <memory>
 #include <set>
 
-namespace agi { namespace charset { class IconvWrapper; } }
+namespace agi {
+namespace charset {
+class IconvWrapper;
+}
+} // namespace agi
 class Hunspell;
 
 /// @brief Hunspell-based spell checker implementation
@@ -65,7 +69,7 @@ class HunspellSpellChecker final : public agi::SpellChecker {
 	/// Save words to custom dictionary
 	void WriteUserDictionary();
 
-public:
+  public:
 	HunspellSpellChecker();
 	~HunspellSpellChecker();
 

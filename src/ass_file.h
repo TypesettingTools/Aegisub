@@ -43,8 +43,10 @@ class AssInfo;
 class AssStyle;
 class wxString;
 
-template<typename T>
-using EntryList = typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>, boost::intrusive::base_hook<AssEntryListHook>>::type;
+template <typename T>
+using EntryList =
+    typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>,
+                                         boost::intrusive::base_hook<AssEntryListHook>>::type;
 
 struct ExtradataEntry {
 	uint32_t id;
@@ -54,8 +56,8 @@ struct ExtradataEntry {
 
 struct AssFileCommit {
 	wxString const& message;
-	int *commit_id;
-	AssDialogue *single_line;
+	int* commit_id;
+	AssDialogue* single_line;
 };
 
 struct ProjectProperties {
@@ -82,7 +84,8 @@ class AssFile {
 	/// A set of changes has been committed to the file (AssFile::COMMITType)
 	agi::signal::Signal<int, const AssDialogue*> AnnounceCommit;
 	agi::signal::Signal<AssFileCommit> PushState;
-public:
+
+  public:
 	/// The lines in the file
 	std::vector<AssInfo> Info;
 	EntryList<AssStyle> Styles;
@@ -94,7 +97,7 @@ public:
 	uint32_t next_extradata_id = 0;
 
 	AssFile();
-	AssFile(const AssFile &from);
+	AssFile(const AssFile& from);
 	AssFile& operator=(AssFile from);
 	~AssFile();
 
@@ -111,14 +114,14 @@ public:
 	/// @brief Get a style by name
 	/// @param name Style name
 	/// @return Pointer to style or nullptr
-	AssStyle *GetStyle(std::string const& name);
+	AssStyle* GetStyle(std::string const& name);
 
-	void swap(AssFile &) throw();
+	void swap(AssFile&) throw();
 
 	/// @brief Get the script resolution
 	/// @param[out] w Width
 	/// @param[in] h Height
-	void GetResolution(int &w,int &h) const;
+	void GetResolution(int& w, int& h) const;
 	/// Get the value in a [Script Info] key as int, or 0 if it is not present
 	int GetScriptInfoAsInt(std::string const& key) const;
 	/// Get the value in a [Script Info] key as string.
@@ -144,28 +147,28 @@ public:
 		/// been updated yet
 		/// Note that it is intentional that this cannot be combined with
 		/// other commit types
-		COMMIT_NEW         = 0,
+		COMMIT_NEW = 0,
 		/// The order of lines in the file has changed
-		COMMIT_ORDER       = 0x1,
+		COMMIT_ORDER = 0x1,
 		/// The script info section has changed in some way
-		COMMIT_SCRIPTINFO  = 0x2,
+		COMMIT_SCRIPTINFO = 0x2,
 		/// The styles have changed in some way
-		COMMIT_STYLES      = 0x4,
+		COMMIT_STYLES = 0x4,
 		/// The attachments have changed in some way
-		COMMIT_ATTACHMENT  = 0x8,
+		COMMIT_ATTACHMENT = 0x8,
 		/// Dialogue lines have been added or removed
 		/// Note that if the active dialogue line was removed, the active line
 		/// should be updated BEFORE committing
 		COMMIT_DIAG_ADDREM = 0x10,
 		/// The metadata fields of existing dialogue lines have changed
-		COMMIT_DIAG_META   = 0x20,
+		COMMIT_DIAG_META = 0x20,
 		/// The start and/or end times of existing dialogue lines have changed
-		COMMIT_DIAG_TIME   = 0x40,
+		COMMIT_DIAG_TIME = 0x40,
 		/// The text of existing dialogue lines have changed
-		COMMIT_DIAG_TEXT   = 0x80,
-		COMMIT_DIAG_FULL   = COMMIT_DIAG_META | COMMIT_DIAG_TIME | COMMIT_DIAG_TEXT,
+		COMMIT_DIAG_TEXT = 0x80,
+		COMMIT_DIAG_FULL = COMMIT_DIAG_META | COMMIT_DIAG_TIME | COMMIT_DIAG_TEXT,
 		/// Extradata entries were added/modified/removed
-		COMMIT_EXTRADATA   = 0x100,
+		COMMIT_EXTRADATA = 0x100,
 	};
 
 	DEFINE_SIGNAL_ADDERS(AnnounceCommit, AddCommitListener)
@@ -177,7 +180,8 @@ public:
 	/// @param commitId    Commit to amend rather than pushing a new commit
 	/// @param single_line Line which was changed, if only one line was
 	/// @return Unique identifier for the new undo group
-	int Commit(wxString const& desc, int type, int commitId = -1, AssDialogue *single_line = nullptr);
+	int Commit(wxString const& desc, int type, int commitId = -1,
+	           AssDialogue* single_line = nullptr);
 
 	/// Comparison function for use when sorting
 	typedef bool (*CompFunc)(AssDialogue const& lft, AssDialogue const& rgt);
@@ -198,9 +202,11 @@ public:
 	/// @brief Sort the dialogue lines in this file
 	/// @param comp Comparison function to use. Defaults to sorting by start time.
 	/// @param limit If non-empty, only lines in this set are sorted
-	void Sort(CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
+	void Sort(CompFunc comp = CompStart,
+	          std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
 	/// @brief Sort the dialogue lines in the given list
 	/// @param comp Comparison function to use. Defaults to sorting by start time.
 	/// @param limit If non-empty, only lines in this set are sorted
-	static void Sort(EntryList<AssDialogue>& lst, CompFunc comp = CompStart, std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
+	static void Sort(EntryList<AssDialogue>& lst, CompFunc comp = CompStart,
+	                 std::set<AssDialogue*> const& limit = std::set<AssDialogue*>());
 };
