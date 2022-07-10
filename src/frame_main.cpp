@@ -58,6 +58,7 @@
 #include "video_box.h"
 #include "video_controller.h"
 #include "video_display.h"
+#include "wakatime.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
@@ -344,6 +345,7 @@ void FrameMain::OnSubtitlesOpen() {
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
+	wakatime::update(false);
 	hotkey::check("Main Frame", context.get(), event);
 }
 

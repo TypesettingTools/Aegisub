@@ -31,6 +31,8 @@
 #include "selection_controller.h"
 #include "subtitle_format.h"
 #include "text_selection_controller.h"
+#include "libaegisub/log.h"
+#include "wakatime.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/format_path.h>
@@ -198,6 +200,7 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, std::strin
 }
 
 void SubsController::Save(agi::fs::path const& filename, std::string const& encoding) {
+	wakatime::update(true);
 	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
 	if (!writer)
 		throw agi::InvalidInputException("Unknown file type.");

@@ -21,7 +21,6 @@
 #include "compat.h"
 #include "options.h"
 
-#include "wakatime.h"
 
 #include <libaegisub/path.h>
 
@@ -239,8 +238,6 @@ std::string keypress_to_str(int key_code, int modifier) {
 
 static bool check(std::string const& context, agi::Context *c, int key_code, int modifier) {
 
-	wakatime::update(false);
-
 	std::string combo = keypress_to_str(key_code, modifier);
 	if (combo.empty()) return false;
 
@@ -254,8 +251,6 @@ static bool check(std::string const& context, agi::Context *c, int key_code, int
 
 bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt) {
 	try {
-
-		wakatime::update(false);
 
 		if (!check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
 			evt.Skip();
