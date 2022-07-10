@@ -8,7 +8,7 @@ cd ${MESON_BUILD_ROOT}
 if  ! [ -d "assdraw" ]; then
     # git clone https://github.com/TypesettingTools/DependencyControl.git --branch sqlite
     # git clone https://github.com/Totto16/DependencyControl.git &> /dev/null
-    git clone https://github.com/biki-desu/assdraw.git &> /dev/null
+    git clone https://github.com/Totto16/assdraw.git &> /dev/null
 fi
 
 cd "assdraw"
@@ -60,7 +60,7 @@ Name=Assdraw
 Comment=Create and edit vectors for aegisub.
 Exec=assdraw
 TryExec=assdraw
-Icon=assdraw
+Icon=/usr/share/assdraw/launcher.png
 Terminal=false
 Categories=AudioVideo;AudioVideoEditing;GTK;
 StartupNotify=false
@@ -73,6 +73,8 @@ cp ../packages/assdraw.desktop usr/share/applications/
 mkdir -p usr/share/assdraw/
 
 cp ../assdraw/src/assdraw usr/share/assdraw/
+
+cp ../assdraw/src/bitmaps/assdraw.png usr/share/assdraw/launcher.png
 
 ##changing the permissions of the added files
 

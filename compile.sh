@@ -14,6 +14,7 @@ export CC=gcc
 export CXX=g++
 
 buildtype=""
+DEBUG="false"
 if [ $ARG == "release" ]; then 
     buildtype="release"
 elif [ $ARG == "debug" ]; then
@@ -21,6 +22,9 @@ elif [ $ARG == "debug" ]; then
 elif [ $ARG == "clean" ]; then
     sudo rm -rf build/
     exit 0
+elif [ $ARG == "dev" ]; then
+    buildtype="debugoptimized"
+    DEBUG="true"
 elif [ $ARG == "runner" ]; then
 
     ACT=$(which act)
@@ -38,6 +42,12 @@ fi
     # CONFIGURE
 
     bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true -Dwx_version=3.1.7"
+
+    if [ $DEBUG == "true" ]; then
+        nodemon --watch src/ -e .cpp,.h --exec "sudo meson compile -C build && ./build/aegisub || exit 1"
+        exit 0
+    fi
+
 
     # COMPILE
 

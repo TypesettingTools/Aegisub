@@ -60,7 +60,10 @@ struct tool_assdraw final : public Command {
 	STR_HELP("Launch the ASSDraw3 tool for vector drawing")
 
 	void operator()(agi::Context *) override {
+		#ifdef _WIN32
 		wxExecute("\"" + config::path->Decode("?data/ASSDraw3.exe").wstring() + "\"");
+#endif
+		wxExecute("bash  -c \"$(which assdraw)\"");
 	}
 };
 
@@ -290,9 +293,17 @@ namespace cmd {
 		reg(agi::make_unique<tool_time_postprocess>());
 		reg(agi::make_unique<tool_translation_assistant>());
 #ifdef _WIN32
-		if (agi::fs::FileExists(config::path->Decode("?data/ASSDraw3.exe")))
+		if (agi::fs::FileExists(config::path->Decode("?data/ASSDraw3.exe"))) {
 			reg(agi::make_unique<tool_assdraw>());
+		}
 #endif
+
+		long returnCode = wxExecute("bash -c \"command -v assdraw > /dev/null\"", wxEXEC_SYNC);
+
+		if (returnCode == 0){
+			reg(agi::make_unique<tool_assdraw>());
+		}
+
 		reg(agi::make_unique<tool_translation_assistant_commit>());
 		reg(agi::make_unique<tool_translation_assistant_preview>());
 		reg(agi::make_unique<tool_translation_assistant_next>());
