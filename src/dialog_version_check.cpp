@@ -30,10 +30,9 @@
 #ifdef WITH_UPDATE_CHECKER
 
 #ifdef _MSC_VER
-#pragma warning( \
-    disable : 4250) // 'boost::asio::basic_socket_iostream<Protocol>' : inherits
-                    // 'std::basic_ostream<_Elem,_Traits>::std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2'
-                    // via dominance
+#pragma warning(disable : 4250) // 'boost::asio::basic_socket_iostream<Protocol>' : inherits
+                                // 'std::basic_ostream<_Elem,_Traits>::std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2'
+                                // via dominance
 #endif
 
 #include "compat.h"
