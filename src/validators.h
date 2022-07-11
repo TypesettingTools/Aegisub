@@ -28,25 +28,25 @@ class IntValidator final : public wxValidator {
 	bool CheckCharacter(int chr, bool is_first) const;
 	void OnChar(wxKeyEvent& event);
 
-	bool Validate(wxWindow*) override { return true; }
+	bool Validate(wxWindow *) override { return true; }
 	wxObject* Clone() const override { return new IntValidator(*this); }
 	bool TransferToWindow() override;
 	bool TransferFromWindow() override { return true; }
 
 	IntValidator(IntValidator const& rgt);
 
-  public:
-	explicit IntValidator(int val = 0, bool allow_negative = false);
+public:
+	explicit IntValidator(int val=0, bool allow_negative=false);
 };
 
 class DoubleValidator final : public wxValidator {
-	double* value;
+	double *value;
 	double min;
 	double max;
 	wxChar decimal_sep;
 
 	bool Validate(wxWindow* parent) override { return true; }
-	bool CheckCharacter(int chr, bool is_first, bool* got_decimal) const;
+	bool CheckCharacter(int chr, bool is_first, bool *got_decimal) const;
 	void OnChar(wxKeyEvent& event);
 
 	DoubleValidator(DoubleValidator const& rgt);
@@ -55,34 +55,35 @@ class DoubleValidator final : public wxValidator {
 	bool TransferToWindow() override;
 	bool TransferFromWindow() override;
 
-  public:
-	explicit DoubleValidator(double* val, bool allow_negative = false);
-	explicit DoubleValidator(double* val, double min, double max);
+public:
+	explicit DoubleValidator(double *val, bool allow_negative=false);
+	explicit DoubleValidator(double *val, double min, double max);
 };
 
 class DoubleSpinValidator final : public wxValidator {
-	double* value;
-	wxValidator* Clone() const override { return new DoubleSpinValidator(value); }
+	double *value;
+	wxValidator *Clone() const override { return new DoubleSpinValidator(value); }
 	bool Validate(wxWindow*) override { return true; }
 	bool TransferToWindow() override;
 	bool TransferFromWindow() override;
 
-  public:
-	DoubleSpinValidator(double* value) : value(value) {}
+public:
+	DoubleSpinValidator(double *value) : value(value) { }
 };
 
 class EnumBinderBase : public wxValidator {
-	bool Validate(wxWindow*) override { return true; }
+	bool Validate(wxWindow *) override { return true; }
 
-  protected:
+protected:
 	int Get();
 	void Set(int value);
 };
 
-template <typename T> class EnumBinder final : public EnumBinderBase {
-	T* value;
+template<typename T>
+class EnumBinder final : public EnumBinderBase {
+	T *value;
 
-	wxObject* Clone() const override { return new EnumBinder<T>(value); }
+	wxObject *Clone() const override { return new EnumBinder<T>(value); }
 
 	bool TransferFromWindow() override {
 		*value = static_cast<T>(Get());
@@ -94,23 +95,24 @@ template <typename T> class EnumBinder final : public EnumBinderBase {
 		return true;
 	}
 
-  public:
-	explicit EnumBinder(T* value) : value(value) {}
-	EnumBinder(EnumBinder const& rhs) : EnumBinderBase(rhs), value(rhs.value) {}
+public:
+	explicit EnumBinder(T *value) : value(value) { }
+	EnumBinder(EnumBinder const& rhs) : EnumBinderBase(rhs), value(rhs.value) { }
 };
 
-template <typename T> EnumBinder<T> MakeEnumBinder(T* value) {
+template<typename T>
+EnumBinder<T> MakeEnumBinder(T *value) {
 	return EnumBinder<T>(value);
 }
 
 class StringBinder final : public wxValidator {
-	std::string* value;
+	std::string *value;
 
 	wxObject* Clone() const override { return new StringBinder(value); }
-	bool Validate(wxWindow*) override { return true; }
+	bool Validate(wxWindow*) override { return true;}
 	bool TransferToWindow() override;
 	bool TransferFromWindow() override;
 
-  public:
-	explicit StringBinder(std::string* value) : value(value) {}
+public:
+	explicit StringBinder(std::string *value) : value(value) { }
 };

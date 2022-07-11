@@ -14,13 +14,5 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-namespace boost {
-namespace filesystem {
-class path;
-}
-} // namespace boost
-namespace agi {
-namespace fs {
-typedef boost::filesystem::path path;
-}
-} // namespace agi
+namespace boost { namespace filesystem { class path; } }
+namespace agi { namespace fs { typedef boost::filesystem::path path; } }

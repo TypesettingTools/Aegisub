@@ -40,30 +40,35 @@
 #include <wx/dc.h>
 
 namespace {
-template <typename T> bool compare_and_set(T& var, const T new_value) {
-	if(var == new_value) return false;
-	var = new_value;
-	return true;
+	template<typename T>
+	bool compare_and_set(T &var, const T new_value)
+	{
+		if (var == new_value) return false;
+		var = new_value;
+		return true;
+	}
 }
-} // namespace
 
-AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(
-    AudioRenderer* renderer)
-    : renderer(renderer) {
+AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer)
+: renderer(renderer)
+{
 	assert(renderer);
 }
 
-std::unique_ptr<wxBitmap> AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int /* i */) {
+std::unique_ptr<wxBitmap> AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int /* i */)
+{
 	return agi::make_unique<wxBitmap>(renderer->cache_bitmap_width, renderer->pixel_height, 24);
 }
 
-size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const {
+size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
+{
 	return sizeof(wxBitmap) + renderer->cache_bitmap_width * renderer->pixel_height * 3;
 }
 
-AudioRenderer::AudioRenderer() {
+AudioRenderer::AudioRenderer()
+{
 	bitmaps.reserve(AudioStyle_MAX);
-	for(int i = 0; i < AudioStyle_MAX; ++i)
+	for (int i = 0; i < AudioStyle_MAX; ++i)
 		bitmaps.emplace_back(256, AudioRendererBitmapCacheBitmapFactory(this));
 
 	// Make sure there's *some* values for those fields, and in the caches
@@ -71,32 +76,43 @@ AudioRenderer::AudioRenderer() {
 	SetHeight(1);
 }
 
-void AudioRenderer::SetMillisecondsPerPixel(const double new_pixel_ms) {
-	if(compare_and_set(pixel_ms, new_pixel_ms)) {
-		if(renderer) renderer->SetMillisecondsPerPixel(pixel_ms);
+void AudioRenderer::SetMillisecondsPerPixel(const double new_pixel_ms)
+{
+	if (compare_and_set(pixel_ms, new_pixel_ms))
+	{
+		if (renderer)
+			renderer->SetMillisecondsPerPixel(pixel_ms);
 
 		ResetBlockCount();
 	}
 }
 
-void AudioRenderer::SetHeight(const int _pixel_height) {
-	if(compare_and_set(pixel_height, _pixel_height)) Invalidate();
+void AudioRenderer::SetHeight(const int _pixel_height)
+{
+	if (compare_and_set(pixel_height, _pixel_height))
+		Invalidate();
 }
 
-void AudioRenderer::SetAmplitudeScale(const float _amplitude_scale) {
-	if(compare_and_set(amplitude_scale, _amplitude_scale)) {
+void AudioRenderer::SetAmplitudeScale(const float _amplitude_scale)
+{
+	if (compare_and_set(amplitude_scale, _amplitude_scale))
+	{
 		// A scaling of 0 or a negative scaling makes no sense
 		assert(amplitude_scale > 0);
-		if(renderer) renderer->SetAmplitudeScale(amplitude_scale);
+		if (renderer)
+			renderer->SetAmplitudeScale(amplitude_scale);
 		Invalidate();
 	}
 }
 
-void AudioRenderer::SetRenderer(AudioRendererBitmapProvider* const _renderer) {
-	if(compare_and_set(renderer, _renderer)) {
+void AudioRenderer::SetRenderer(AudioRendererBitmapProvider *const _renderer)
+{
+	if (compare_and_set(renderer, _renderer))
+	{
 		Invalidate();
 
-		if(renderer) {
+		if (renderer)
+		{
 			renderer->SetProvider(provider);
 			renderer->SetAmplitudeScale(amplitude_scale);
 			renderer->SetMillisecondsPerPixel(pixel_ms);
@@ -104,46 +120,54 @@ void AudioRenderer::SetRenderer(AudioRendererBitmapProvider* const _renderer) {
 	}
 }
 
-void AudioRenderer::SetAudioProvider(agi::AudioProvider* const _provider) {
-	if(compare_and_set(provider, _provider)) {
+void AudioRenderer::SetAudioProvider(agi::AudioProvider *const _provider)
+{
+	if (compare_and_set(provider, _provider))
+	{
 		Invalidate();
 
-		if(renderer) renderer->SetProvider(provider);
+		if (renderer)
+			renderer->SetProvider(provider);
 
 		ResetBlockCount();
 	}
 }
 
-void AudioRenderer::SetCacheMaxSize(const size_t max_size) {
+void AudioRenderer::SetCacheMaxSize(const size_t max_size)
+{
 	// Limit the bitmap cache sizes to 16 MB hard, to avoid the risk of exhausting
 	// system bitmap object resources and similar. Experimenting shows that 16 MB
 	// bitmap cache should be plenty even if working with a one hour audio clip.
-	cache_bitmap_maxsize = std::min<size_t>(max_size / 8, 0x1000000);
+	cache_bitmap_maxsize = std::min<size_t>(max_size/8, 0x1000000);
 	// The renderer gets whatever is left.
-	cache_renderer_maxsize = max_size - 4 * cache_bitmap_maxsize;
+	cache_renderer_maxsize = max_size - 4*cache_bitmap_maxsize;
 }
 
-void AudioRenderer::ResetBlockCount() {
-	if(provider) {
+void AudioRenderer::ResetBlockCount()
+{
+	if (provider)
+	{
 		const size_t total_blocks = NumBlocks(provider->GetNumSamples());
-		for(auto& bmp : bitmaps)
-			bmp.SetBlockCount(total_blocks);
+		for (auto& bmp : bitmaps) bmp.SetBlockCount(total_blocks);
 	}
 }
 
-size_t AudioRenderer::NumBlocks(const int64_t samples) const {
+size_t AudioRenderer::NumBlocks(const int64_t samples) const
+{
 	const double duration = samples * 1000.0 / provider->GetSampleRate();
 	return static_cast<size_t>(duration / pixel_ms / cache_bitmap_width);
 }
 
-wxBitmap const& AudioRenderer::GetCachedBitmap(const int i, const AudioRenderingStyle style) {
+wxBitmap const& AudioRenderer::GetCachedBitmap(const int i, const AudioRenderingStyle style)
+{
 	assert(provider);
 	assert(renderer);
 
 	bool created = false;
 	auto& bmp = bitmaps[style].Get(i, &created);
-	if(created) {
-		renderer->Render(bmp, i * cache_bitmap_width, style);
+	if (created)
+	{
+		renderer->Render(bmp, i*cache_bitmap_width, style);
 		needs_age = true;
 	}
 
@@ -151,13 +175,13 @@ wxBitmap const& AudioRenderer::GetCachedBitmap(const int i, const AudioRendering
 	return bmp;
 }
 
-void AudioRenderer::Render(wxDC& dc, wxPoint origin, const int start, const int length,
-                           const AudioRenderingStyle style) {
+void AudioRenderer::Render(wxDC &dc, wxPoint origin, const int start, const int length, const AudioRenderingStyle style)
+{
 	assert(start >= 0);
 
-	if(!provider) return;
-	if(!renderer) return;
-	if(length <= 0) return;
+	if (!provider) return;
+	if (!renderer) return;
+	if (length <= 0) return;
 
 	// One past last absolute pixel strip to render
 	const int end = start + length;
@@ -168,45 +192,51 @@ void AudioRenderer::Render(wxDC& dc, wxPoint origin, const int start, const int 
 	// And the offset in it to start its use at
 	const int firstbitmapoffset = start % cache_bitmap_width;
 	// The last bitmap required
-	const int lastbitmap =
-	    std::min<int>(end / cache_bitmap_width, NumBlocks(provider->GetDecodedSamples()) - 1);
+	const int lastbitmap = std::min<int>(end / cache_bitmap_width, NumBlocks(provider->GetDecodedSamples()) - 1);
 
 	// Set a clipping region so that the first and last bitmaps don't draw
 	// outside the requested range
 	const wxDCClipper clipper(dc, wxRect(origin, wxSize(length, pixel_height)));
 	origin.x -= firstbitmapoffset;
 
-	for(int i = firstbitmap; i <= lastbitmap; ++i) {
+	for (int i = firstbitmap; i <= lastbitmap; ++i)
+	{
 		dc.DrawBitmap(GetCachedBitmap(i, style), origin);
 		origin.x += cache_bitmap_width;
 	}
 
 	// Now render blank audio from origin to end
-	if(origin.x < lastx)
-		renderer->RenderBlank(
-		    dc, wxRect(origin.x - 1, origin.y, lastx - origin.x + 1, pixel_height), style);
+	if (origin.x < lastx)
+		renderer->RenderBlank(dc, wxRect(origin.x-1, origin.y, lastx-origin.x+1, pixel_height), style);
 
-	if(needs_age) {
+	if (needs_age)
+	{
 		bitmaps[style].Age(cache_bitmap_maxsize);
 		renderer->AgeCache(cache_renderer_maxsize);
 		needs_age = false;
 	}
 }
 
-void AudioRenderer::Invalidate() {
-	for(auto& bmp : bitmaps)
-		bmp.Age(0);
+void AudioRenderer::Invalidate()
+{
+	for (auto& bmp : bitmaps) bmp.Age(0);
 	needs_age = false;
 }
 
-void AudioRendererBitmapProvider::SetProvider(agi::AudioProvider* const _provider) {
-	if(compare_and_set(provider, _provider)) OnSetProvider();
+void AudioRendererBitmapProvider::SetProvider(agi::AudioProvider *const _provider)
+{
+	if (compare_and_set(provider, _provider))
+		OnSetProvider();
 }
 
-void AudioRendererBitmapProvider::SetMillisecondsPerPixel(const double new_pixel_ms) {
-	if(compare_and_set(pixel_ms, new_pixel_ms)) OnSetMillisecondsPerPixel();
+void AudioRendererBitmapProvider::SetMillisecondsPerPixel(const double new_pixel_ms)
+{
+	if (compare_and_set(pixel_ms, new_pixel_ms))
+		OnSetMillisecondsPerPixel();
 }
 
-void AudioRendererBitmapProvider::SetAmplitudeScale(const float _amplitude_scale) {
-	if(compare_and_set(amplitude_scale, _amplitude_scale)) OnSetAmplitudeScale();
+void AudioRendererBitmapProvider::SetAmplitudeScale(const float _amplitude_scale)
+{
+	if (compare_and_set(amplitude_scale, _amplitude_scale))
+		OnSetAmplitudeScale();
 }

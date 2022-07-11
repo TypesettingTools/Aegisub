@@ -24,16 +24,22 @@
 #include <boost/interprocess/streams/bufferstream.hpp>
 
 TextFileReader::TextFileReader(agi::fs::path const& filename, std::string encoding, bool trim)
-    : file(agi::make_unique<agi::read_file_mapping>(filename)),
-      stream(agi::make_unique<boost::interprocess::ibufferstream>(file->read(), file->size())),
-      trim(trim), iter(agi::line_iterator<std::string>(*stream, encoding)) {}
+: file(agi::make_unique<agi::read_file_mapping>(filename))
+, stream(agi::make_unique<boost::interprocess::ibufferstream>(file->read(), file->size()))
+, trim(trim)
+, iter(agi::line_iterator<std::string>(*stream, encoding))
+{
+}
 
-TextFileReader::~TextFileReader() {}
+TextFileReader::~TextFileReader() {
+}
 
 std::string TextFileReader::ReadLineFromFile() {
 	std::string str = *iter;
 	++iter;
-	if(trim) boost::trim(str);
-	if(boost::starts_with(str, "\xEF\xBB\xBF")) str.erase(0, 3);
+	if (trim)
+		boost::trim(str);
+	if (boost::starts_with(str, "\xEF\xBB\xBF"))
+		str.erase(0, 3);
 	return str;
 }

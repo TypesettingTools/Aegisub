@@ -36,8 +36,8 @@
 #include <string>
 
 namespace CharSetDetect {
-/// @brief Get character set name.
-/// @param filename File to check
-/// @return Character set name
-std::string GetEncoding(agi::fs::path const& filename);
-} // namespace CharSetDetect
+	/// @brief Get character set name.
+	/// @param filename File to check
+	/// @return Character set name
+	std::string GetEncoding(agi::fs::path const& filename);
+}

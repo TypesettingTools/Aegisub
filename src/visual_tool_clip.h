@@ -24,8 +24,8 @@
 
 /// VisualDraggableFeature with siblings
 struct ClipCorner final : public VisualDraggableFeature {
-	ClipCorner* horiz = nullptr; ///< Other corner on this corner's horizontal line
-	ClipCorner* vert = nullptr;  ///< Other corner on this corner's vertical line
+	ClipCorner *horiz = nullptr; ///< Other corner on this corner's horizontal line
+	ClipCorner *vert = nullptr;  ///< Other corner on this corner's vertical line
 	ClipCorner() { type = DRAG_SMALL_CIRCLE; }
 };
 
@@ -42,11 +42,10 @@ class VisualToolClip final : public VisualTool<ClipCorner> {
 	void DoRefresh() override;
 	void SetFeaturePositions();
 
-	bool InitializeDrag(ClipCorner* feature) override { return true; }
-	void UpdateDrag(ClipCorner* feature) override;
+	bool InitializeDrag(ClipCorner *feature) override { return true; }
+	void UpdateDrag(ClipCorner *feature) override;
 
 	void Draw() override;
-
-  public:
-	VisualToolClip(VideoDisplay* parent, agi::Context* context);
+public:
+	VisualToolClip(VideoDisplay *parent, agi::Context *context);
 };

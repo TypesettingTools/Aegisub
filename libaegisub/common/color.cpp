@@ -21,7 +21,8 @@
 namespace agi {
 
 Color::Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
-    : r(r), g(g), b(b), a(a) {}
+: r(r), g(g), b(b), a(a)
+{ }
 
 Color::Color(std::string const& str) {
 	parser::parse(*this, str);
@@ -40,7 +41,8 @@ std::string Color::GetSsaFormatted() const {
 }
 
 std::string Color::GetHexFormatted(bool rgba) const {
-	if(rgba) return agi::format("#%02X%02X%02X%02X", r, g, b, a);
+	if (rgba)
+		return agi::format("#%02X%02X%02X%02X", r, g, b, a);
 	return agi::format("#%02X%02X%02X", r, g, b);
 }
 
@@ -56,4 +58,4 @@ bool Color::operator!=(Color const& col) const {
 	return !(*this == col);
 }
 
-} // namespace agi
+}

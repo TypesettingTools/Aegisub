@@ -58,32 +58,29 @@ int SmallestPowerOf2(int x);
 void RestartAegisub();
 
 /// Add the OS X 10.7+ full-screen button to a window
-void AddFullScreenButton(wxWindow* window);
+void AddFullScreenButton(wxWindow *window);
 
-void SetFloatOnParent(wxWindow* window);
+void SetFloatOnParent(wxWindow *window);
 
 /// Forward a mouse wheel event to the window under the mouse if needed
 /// @param source The initial target of the wheel event
 /// @param evt The event
 /// @return Should the calling code process the event?
-bool ForwardMouseWheelEvent(wxWindow* source, wxMouseEvent& evt);
+bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt);
 
 /// Clean up the given cache directory, limiting the size to max_size
 /// @param directory Directory to clean
 /// @param file_type Wildcard pattern for files to clean up
 /// @param max_size Maximum size of directory in MB
 /// @param max_files Maximum number of files
-void CleanCache(agi::fs::path const& directory, std::string const& file_type, uint64_t max_size,
-                uint64_t max_files = -1);
+void CleanCache(agi::fs::path const& directory, std::string const& file_type, uint64_t max_size, uint64_t max_files = -1);
 
 /// @brief Templated abs() function
-template <typename T> T tabs(T x) {
-	return x < 0 ? -x : x;
-}
+template <typename T> T tabs(T x) { return x < 0 ? -x : x; }
 
 /// Get the middle value of a, b, and c (i.e. clamp b to [a,c])
 /// @precondition a <= c
-template <typename T> inline T mid(T a, T b, T c) {
+template<typename T> inline T mid(T a, T b, T c) {
 	return a > b ? a : (b > c ? c : b);
 }
 
@@ -97,22 +94,16 @@ void SetClipboard(wxBitmap const& new_value);
 
 wxString FontFace(std::string opt_prefix);
 
-agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name,
-                               std::string const& default_filename,
-                               std::string const& default_extension, std::string const& wildcard,
-                               wxWindow* parent);
-agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name,
-                               std::string const& default_filename,
-                               std::string const& default_extension, std::string const& wildcard,
-                               wxWindow* parent);
+agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent);
+agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent);
 
 wxString LocalizedLanguageName(wxString const& lang);
 
 namespace osx {
-/// Make the given menu the OS X Window menu
-void make_windows_menu(wxMenu* wxmenu);
-/// Activate a top-level document window other than the given one
-bool activate_top_window_other_than(wxFrame* wx);
-// Bring all windows to the front, maintaining relative z-order
-void bring_to_front();
-} // namespace osx
+	/// Make the given menu the OS X Window menu
+	void make_windows_menu(wxMenu *wxmenu);
+	/// Activate a top-level document window other than the given one
+	bool activate_top_window_other_than(wxFrame *wx);
+	// Bring all windows to the front, maintaining relative z-order
+	void bring_to_front();
+}

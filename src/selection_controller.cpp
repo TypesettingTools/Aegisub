@@ -23,48 +23,52 @@
 
 #include <algorithm>
 
-SelectionController::SelectionController(agi::Context* c) : context(c) {}
+SelectionController::SelectionController(agi::Context *c) : context(c) { }
 
 void SelectionController::SetSelectedSet(Selection new_selection) {
 	selection = std::move(new_selection);
 	AnnounceSelectedSetChanged();
 }
 
-void SelectionController::SetActiveLine(AssDialogue* new_line) {
-	if(new_line != active_line) {
+void SelectionController::SetActiveLine(AssDialogue *new_line) {
+	if (new_line != active_line) {
 		active_line = new_line;
-		if(active_line) context->ass->Properties.active_row = active_line->Row;
+		if (active_line)
+			context->ass->Properties.active_row = active_line->Row;
 		AnnounceActiveLineChanged(new_line);
 	}
 }
 
-void SelectionController::SetSelectionAndActive(Selection new_selection, AssDialogue* new_line) {
+void SelectionController::SetSelectionAndActive(Selection new_selection, AssDialogue *new_line) {
 	bool active_line_changed = new_line != active_line;
 	selection = std::move(new_selection);
 	active_line = new_line;
-	if(active_line) context->ass->Properties.active_row = active_line->Row;
+	if (active_line)
+		context->ass->Properties.active_row = active_line->Row;
 
 	AnnounceSelectedSetChanged();
-	if(active_line_changed) AnnounceActiveLineChanged(new_line);
+	if (active_line_changed)
+		AnnounceActiveLineChanged(new_line);
 }
 
-std::vector<AssDialogue*> SelectionController::GetSortedSelection() const {
-	std::vector<AssDialogue*> ret(selection.begin(), selection.end());
-	sort(begin(ret), end(ret), [](AssDialogue* a, AssDialogue* b) { return a->Row < b->Row; });
+std::vector<AssDialogue *> SelectionController::GetSortedSelection() const {
+	std::vector<AssDialogue *> ret(selection.begin(), selection.end());
+	sort(begin(ret), end(ret), [](AssDialogue *a, AssDialogue *b) { return a->Row < b->Row; });
 	return ret;
 }
 
 void SelectionController::PrevLine() {
-	if(!active_line) return;
+	if (!active_line) return;
 	auto it = context->ass->iterator_to(*active_line);
-	if(it != context->ass->Events.begin()) {
+	if (it != context->ass->Events.begin()) {
 		--it;
-		SetSelectionAndActive({ &*it }, &*it);
+		SetSelectionAndActive({&*it}, &*it);
 	}
 }
 
 void SelectionController::NextLine() {
-	if(!active_line) return;
+	if (!active_line) return;
 	auto it = context->ass->iterator_to(*active_line);
-	if(++it != context->ass->Events.end()) SetSelectionAndActive({ &*it }, &*it);
+	if (++it != context->ass->Events.end())
+		SetSelectionAndActive({&*it}, &*it);
 }

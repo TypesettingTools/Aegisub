@@ -21,9 +21,7 @@
 #include <libaegisub/fs_fwd.h>
 #include <libaegisub/line_iterator.h>
 
-namespace agi {
-class read_file_mapping;
-}
+namespace agi { class read_file_mapping; }
 
 /// @class TextFileReader
 /// @brief A line-based text file reader
@@ -33,12 +31,12 @@ class TextFileReader {
 	bool trim;
 	agi::line_iterator<std::string> iter;
 
-  public:
+public:
 	/// @brief Constructor
 	/// @param filename File to open
 	/// @param enc      Encoding to use, or empty to autodetect
 	/// @param trim     Whether to trim whitespace from lines read
-	TextFileReader(agi::fs::path const& filename, std::string encoding, bool trim = true);
+	TextFileReader(agi::fs::path const& filename, std::string encoding, bool trim=true);
 	/// @brief Destructor
 	~TextFileReader();
 

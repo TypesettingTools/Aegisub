@@ -34,9 +34,7 @@
 
 #include "include/aegisub/video_provider.h"
 
-namespace agi {
-struct Color;
-}
+namespace agi { struct Color; }
 
 /// @class DummyVideoProvider
 /// @brief A dummy video provider for when opening a file is just too much effort
@@ -52,7 +50,7 @@ class DummyVideoProvider final : public VideoProvider {
 	/// The data for the image returned for all frames
 	std::vector<unsigned char> data;
 
-  public:
+public:
 	/// Create a dummy video from separate parameters
 	/// @param fps Frame rate of the dummy video
 	/// @param frames Length in frames of the dummy video
@@ -60,24 +58,22 @@ class DummyVideoProvider final : public VideoProvider {
 	/// @param height Height in pixels of the dummy video
 	/// @param colour Primary colour of the dummy video
 	/// @param pattern Use a checkerboard pattern rather than a solid colour
-	DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour,
-	                   bool pattern);
+	DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
 	/// Make a fake filename which when passed to the constructor taking a
 	/// string will result in a video with the given parameters
-	static std::string MakeFilename(double fps, int frames, int width, int height,
-	                                agi::Color colour, bool pattern);
+	static std::string MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
-	void GetFrame(int n, VideoFrame& frame) override;
-	void SetColorSpace(std::string const&) override {}
+	void GetFrame(int n, VideoFrame &frame) override;
+	void SetColorSpace(std::string const&) override { }
 
-	int GetFrameCount() const override { return framecount; }
-	int GetWidth() const override { return width; }
-	int GetHeight() const override { return height; }
-	double GetDAR() const override { return 0; }
-	agi::vfr::Framerate GetFPS() const override { return fps; }
+	int GetFrameCount()             const override { return framecount; }
+	int GetWidth()                  const override { return width; }
+	int GetHeight()                 const override { return height; }
+	double GetDAR()                 const override { return 0; }
+	agi::vfr::Framerate GetFPS()    const override { return fps; }
 	std::vector<int> GetKeyFrames() const override { return {}; }
-	std::string GetColorSpace() const override { return "None"; }
-	std::string GetDecoderName() const override { return "Dummy Video Provider"; }
+	std::string GetColorSpace()     const override { return "None"; }
+	std::string GetDecoderName()    const override { return "Dummy Video Provider"; }
 	bool ShouldSetVideoProperties() const override { return false; }
 };

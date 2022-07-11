@@ -19,13 +19,13 @@
 #include <vector>
 
 namespace agi {
-struct kana_pair {
-	const char* kana;
-	const char* romaji;
-};
+	struct kana_pair {
+		const char *kana;
+		const char *romaji;
+	};
 
-/// Transliterated romaji for the given kana, or nullptr if not applicable
-std::vector<const char*> kana_to_romaji(std::string const& kana);
+	/// Transliterated romaji for the given kana, or nullptr if not applicable
+	std::vector<const char *> kana_to_romaji(std::string const& kana);
 
-boost::iterator_range<const kana_pair*> romaji_to_kana(std::string const& romaji);
-} // namespace agi
+	boost::iterator_range<const kana_pair *> romaji_to_kana(std::string const& romaji);
+}

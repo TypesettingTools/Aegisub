@@ -22,9 +22,8 @@
 #include <boost/thread.hpp>
 #endif
 
-namespace agi {
-namespace util {
-void SetThreadName(const char*) {}
+namespace agi { namespace util {
+void SetThreadName(const char *) { }
 
 void sleep_for(int ms) {
 #ifdef __clang__
@@ -34,5 +33,4 @@ void sleep_for(int ms) {
 #endif
 }
 
-} // namespace util
-} // namespace agi
+} }

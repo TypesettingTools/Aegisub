@@ -19,19 +19,19 @@
 #include <libaegisub/charset_conv_win.h>
 
 namespace {
-std::string from_w(agi::charset::IconvWrapper& w32Conv, std::wstring const& source) {
+std::string from_w(agi::charset::IconvWrapper &w32Conv, std::wstring const& source) {
 	std::string dest;
 	size_t srcLen = source.size() * sizeof(wchar_t);
-	const char* src = reinterpret_cast<const char*>(source.c_str());
+	const char* src = reinterpret_cast<const char *>(source.c_str());
 	size_t len = w32Conv.RequiredBufferSize(src, srcLen);
 	dest.resize(len);
 	w32Conv.Convert(src, srcLen, &dest[0], len);
 	return dest;
 }
-} // namespace
+}
 
 namespace agi {
-namespace charset {
+	namespace charset {
 
 std::wstring ConvertW(std::string const& source) {
 	static IconvWrapper w32Conv("utf-8", "utf-16le", false);
@@ -39,7 +39,7 @@ std::wstring ConvertW(std::string const& source) {
 	std::wstring dest;
 	size_t len = w32Conv.RequiredBufferSize(source);
 	dest.resize(len / sizeof(wchar_t));
-	w32Conv.Convert(source.data(), source.size(), reinterpret_cast<char*>(&dest[0]), len);
+	w32Conv.Convert(source.data(), source.size(), reinterpret_cast<char *>(&dest[0]), len);
 	return dest;
 }
 
@@ -53,5 +53,5 @@ std::string ConvertLocal(std::wstring const& source) {
 	return from_w(w32Conv, source);
 }
 
-} // namespace charset
-} // namespace agi
+	}
+}

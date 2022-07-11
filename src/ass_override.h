@@ -53,7 +53,13 @@ enum class AssParameterClass {
 	COLOR
 };
 
-enum class VariableDataType { INT, FLOAT, TEXT, BOOL, BLOCK };
+enum class VariableDataType {
+	INT,
+	FLOAT,
+	TEXT,
+	BOOL,
+	BLOCK
+};
 
 /// A single parameter to an override tag
 class AssOverrideParameter {
@@ -61,7 +67,7 @@ class AssOverrideParameter {
 	mutable std::unique_ptr<AssDialogueBlockOverride> block;
 	VariableDataType type;
 
-  public:
+public:
 	AssOverrideParameter(VariableDataType type, AssParameterClass classification);
 	AssOverrideParameter(AssOverrideParameter&&) = default;
 	AssOverrideParameter& operator=(AssOverrideParameter&&) = default;
@@ -74,15 +80,17 @@ class AssOverrideParameter {
 	bool omitted = true;
 
 	VariableDataType GetType() const { return type; }
-	template <class T> void Set(T param);
-	template <class T> T Get() const;
-	template <class T> T Get(T def) const { return !omitted ? Get<T>() : def; }
+	template<class T> void Set(T param);
+	template<class T> T Get() const;
+	template<class T> T Get(T def) const {
+		return !omitted ? Get<T>() : def;
+	}
 };
 
 class AssOverrideTag {
 	bool valid = false;
 
-  public:
+public:
 	AssOverrideTag() = default;
 	AssOverrideTag(std::string const& text);
 	AssOverrideTag(AssOverrideTag&&) = default;
@@ -93,6 +101,6 @@ class AssOverrideTag {
 
 	bool IsValid() const { return valid; }
 	void Clear();
-	void SetText(const std::string& text);
+	void SetText(const std::string &text);
 	operator std::string() const;
 };

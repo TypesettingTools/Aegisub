@@ -46,7 +46,7 @@ class AssStyleStorage {
 	agi::fs::path file;
 	std::vector<std::unique_ptr<AssStyle>> style;
 
-  public:
+public:
 	~AssStyleStorage();
 
 	typedef std::vector<std::unique_ptr<AssStyle>>::iterator iterator;
@@ -56,8 +56,8 @@ class AssStyleStorage {
 	const_iterator begin() const { return style.begin(); }
 	const_iterator end() const { return style.end(); }
 	void push_back(std::unique_ptr<AssStyle> new_style);
-	AssStyle* back() { return style.back().get(); }
-	AssStyle* operator[](size_t idx) const { return style[idx].get(); }
+	AssStyle *back() { return style.back().get(); }
+	AssStyle *operator[](size_t idx) const { return style[idx].get(); }
 	size_t size() const { return style.size(); }
 	void clear();
 
@@ -70,7 +70,7 @@ class AssStyleStorage {
 	/// Get the style with the given name
 	/// @param name Case-insensitive style name
 	/// @return Style or nullptr if the requested style is not found
-	AssStyle* GetStyle(std::string const& name);
+	AssStyle *GetStyle(std::string const& name);
 
 	/// Save stored styles to a file
 	void Save() const;
@@ -92,5 +92,5 @@ class AssStyleStorage {
 
 	/// Insert all styles into a file, replacing existing styles with the same names
 	/// @param file File to replace styles in
-	void ReplaceIntoFile(AssFile& file);
+	void ReplaceIntoFile(AssFile &file);
 };

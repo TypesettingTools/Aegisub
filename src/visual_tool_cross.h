@@ -19,8 +19,8 @@
 /// @ingroup visual_ts
 ///
 
-#include "visual_feature.h"
 #include "visual_tool.h"
+#include "visual_feature.h"
 
 #include <memory>
 
@@ -35,8 +35,7 @@ class VisualToolCross final : public VisualTool<VisualDraggableFeature> {
 	void OnDoubleClick() override;
 	void Draw() override;
 	std::string Text(Vector2D v);
-
-  public:
-	VisualToolCross(VideoDisplay* parent, agi::Context* context);
+public:
+	VisualToolCross(VideoDisplay *parent, agi::Context *context);
 	~VisualToolCross();
 };

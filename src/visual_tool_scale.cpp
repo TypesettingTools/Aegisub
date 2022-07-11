@@ -25,11 +25,13 @@
 
 #include <wx/colour.h>
 
-VisualToolScale::VisualToolScale(VideoDisplay* parent, agi::Context* context)
-    : VisualTool<VisualDraggableFeature>(parent, context) {}
+VisualToolScale::VisualToolScale(VideoDisplay *parent, agi::Context *context)
+: VisualTool<VisualDraggableFeature>(parent, context)
+{
+}
 
 void VisualToolScale::Draw() {
-	if(!active_line) return;
+	if (!active_line) return;
 
 	// The length in pixels of the 100% zoom
 	static const int base_len = 160;
@@ -42,8 +44,9 @@ void VisualToolScale::Draw() {
 	wxColour highlight_color = to_wx(highlight_color_primary_opt->GetColor());
 
 	// Ensure that the scaling UI is comfortably visible on screen
-	Vector2D base_point = pos.Max(Vector2D(base_len / 2 + guide_size, base_len / 2 + guide_size))
-	                          .Min(video_res - base_len / 2 - guide_size * 3);
+	Vector2D base_point = pos
+		.Max(Vector2D(base_len / 2 + guide_size, base_len / 2 + guide_size))
+		.Min(video_res - base_len / 2 - guide_size * 3);
 
 	// Set the origin to the base point and apply the line's rotation
 	gl.SetOrigin(base_point);
@@ -79,14 +82,10 @@ void VisualToolScale::Draw() {
 
 	// Draw the feet
 	gl.SetLineColour(line_color_secondary, 1.f, 2);
-	gl.DrawLine(Vector2D(half_len + guide_size, -half_len),
-	            Vector2D(half_len + guide_size + guide_size / 2, -half_len));
-	gl.DrawLine(Vector2D(half_len + guide_size, half_len),
-	            Vector2D(half_len + guide_size + guide_size / 2, half_len));
-	gl.DrawLine(Vector2D(-half_len, half_len + guide_size),
-	            Vector2D(-half_len, half_len + guide_size + guide_size / 2));
-	gl.DrawLine(Vector2D(half_len, half_len + guide_size),
-	            Vector2D(half_len, half_len + guide_size + guide_size / 2));
+	gl.DrawLine(Vector2D(half_len + guide_size, -half_len), Vector2D(half_len + guide_size + guide_size / 2, -half_len));
+	gl.DrawLine(Vector2D(half_len + guide_size, half_len), Vector2D(half_len + guide_size + guide_size / 2, half_len));
+	gl.DrawLine(Vector2D(-half_len, half_len + guide_size), Vector2D(-half_len, half_len + guide_size + guide_size / 2));
+	gl.DrawLine(Vector2D(half_len, half_len + guide_size), Vector2D(half_len, half_len + guide_size + guide_size / 2));
 
 	gl.ResetTransform();
 }
@@ -98,23 +97,25 @@ bool VisualToolScale::InitializeHold() {
 
 void VisualToolScale::UpdateHold() {
 	Vector2D delta = (mouse_pos - drag_start) * Vector2D(1, -1);
-	if(shift_down) delta = delta.SingleAxis();
-	if(alt_down) {
-		if(std::abs(delta.X()) > std::abs(delta.Y()))
+	if (shift_down)
+		delta = delta.SingleAxis();
+	if (alt_down) {
+		if (std::abs(delta.X()) > std::abs(delta.Y()))
 			delta = Vector2D(delta.X(), delta.X() * (initial_scale.Y() / initial_scale.X()));
 		else
 			delta = Vector2D(delta.Y() * (initial_scale.X() / initial_scale.Y()), delta.Y());
 	}
 
 	scale = Vector2D(0, 0).Max(delta * 1.25f + initial_scale);
-	if(ctrl_down) scale = scale.Round(25.f);
+	if (ctrl_down)
+		scale = scale.Round(25.f);
 
 	SetSelectedOverride("\\fscx", std::to_string((int)scale.X()));
 	SetSelectedOverride("\\fscy", std::to_string((int)scale.Y()));
 }
 
 void VisualToolScale::DoRefresh() {
-	if(!active_line) return;
+	if (!active_line) return;
 
 	GetLineScale(active_line, scale);
 	GetLineRotation(active_line, rx, ry, rz);

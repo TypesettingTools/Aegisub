@@ -30,10 +30,13 @@
 
 #include <wx/colour.h>
 
-VisualToolClip::VisualToolClip(VideoDisplay* parent, agi::Context* context)
-    : VisualTool<ClipCorner>(parent, context), cur_1(0, 0), cur_2(video_res) {
-	ClipCorner* feats[4];
-	for(auto& feat : feats) {
+VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context)
+: VisualTool<ClipCorner>(parent, context)
+, cur_1(0, 0)
+, cur_2(video_res)
+{
+	ClipCorner *feats[4];
+	for (auto& feat : feats) {
 		feat = new ClipCorner;
 		features.push_back(*feat);
 	}
@@ -61,7 +64,7 @@ VisualToolClip::VisualToolClip(VideoDisplay* parent, agi::Context* context)
 }
 
 void VisualToolClip::Draw() {
-	if(!active_line) return;
+	if (!active_line) return;
 
 	DrawAllFeatures();
 
@@ -77,14 +80,15 @@ void VisualToolClip::Draw() {
 	// Draw outside area
 	gl.SetLineColour(line_color, 0.0f);
 	gl.SetFillColour(*wxBLACK, shaded_alpha);
-	if(inverse) {
+	if (inverse) {
 		gl.DrawRectangle(cur_1, cur_2);
-	} else {
+	}
+	else {
 		Vector2D v_min = video_pos;
 		Vector2D v_max = video_pos + video_res;
 		Vector2D c_min = cur_1.Min(cur_2);
 		Vector2D c_max = cur_1.Max(cur_2);
-		gl.DrawRectangle(v_min, Vector2D(v_max, c_min));
+		gl.DrawRectangle(v_min,                  Vector2D(v_max, c_min));
 		gl.DrawRectangle(Vector2D(v_min, c_max), v_max);
 		gl.DrawRectangle(Vector2D(v_min, c_min), Vector2D(c_min, c_max));
 		gl.DrawRectangle(Vector2D(c_max, c_min), Vector2D(v_max, c_max));
@@ -105,10 +109,9 @@ void VisualToolClip::UpdateHold() {
 }
 
 void VisualToolClip::CommitHold() {
-	std::string value = agi::format("(%s,%s)", ToScriptCoords(cur_1.Min(cur_2)).Str(),
-	                                ToScriptCoords(cur_1.Max(cur_2)).Str());
+	std::string value = agi::format("(%s,%s)", ToScriptCoords(cur_1.Min(cur_2)).Str(), ToScriptCoords(cur_1.Max(cur_2)).Str());
 
-	for(auto line : c->selectionController->GetSelectedSet()) {
+	for (auto line : c->selectionController->GetSelectedSet()) {
 		// This check is technically not correct as it could be outside of an
 		// override block... but that's rather unlikely
 		bool has_iclip = line->Text.get().find("\\iclip") != std::string::npos;
@@ -116,7 +119,7 @@ void VisualToolClip::CommitHold() {
 	}
 }
 
-void VisualToolClip::UpdateDrag(ClipCorner* feature) {
+void VisualToolClip::UpdateDrag(ClipCorner *feature) {
 	// Update features which share an edge with the dragged one
 	feature->horiz->pos = Vector2D(feature->horiz->pos, feature->pos);
 	feature->vert->pos = Vector2D(feature->pos, feature->vert->pos);
@@ -129,14 +132,14 @@ void VisualToolClip::UpdateDrag(ClipCorner* feature) {
 
 void VisualToolClip::SetFeaturePositions() {
 	auto it = features.begin();
-	(it++)->pos = cur_1;                  // Top-left
+	(it++)->pos = cur_1; // Top-left
 	(it++)->pos = Vector2D(cur_2, cur_1); // Top-right
 	(it++)->pos = Vector2D(cur_1, cur_2); // Bottom-left
-	it->pos = cur_2;                      // Bottom-right
+	it->pos = cur_2; // Bottom-right
 }
 
 void VisualToolClip::DoRefresh() {
-	if(active_line) {
+	if (active_line) {
 		GetLineClip(active_line, cur_1, cur_2, inverse);
 		cur_1 = FromScriptCoords(cur_1);
 		cur_2 = FromScriptCoords(cur_2);

@@ -44,21 +44,22 @@
 #include <memory>
 #include <wx/sizer.h>
 
-AssExporter::AssExporter(agi::Context* c) : c(c) {}
+AssExporter::AssExporter(agi::Context *c) : c(c) { }
 
-void AssExporter::DrawSettings(wxWindow* parent, wxSizer* target_sizer) {
+void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 	is_default = false;
-	for(auto& filter : *AssExportFilterChain::GetFilterList()) {
+	for (auto& filter : *AssExportFilterChain::GetFilterList()) {
 		// Make sure to construct static box sizer first, so it won't overlap
 		// the controls on wxMac.
 		auto box = new wxStaticBoxSizer(wxVERTICAL, parent, to_wx(filter.GetName()));
-		wxWindow* window = filter.GetConfigDialogWindow(parent, c);
-		if(window) {
+		wxWindow *window = filter.GetConfigDialogWindow(parent, c);
+		if (window) {
 			box->Add(window, 0, wxEXPAND, 0);
 			target_sizer->Add(box, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
 			target_sizer->Show(box, false);
 			Sizers[filter.GetName()] = box;
-		} else {
+		}
+		else {
 			delete box;
 		}
 	}
@@ -66,40 +67,41 @@ void AssExporter::DrawSettings(wxWindow* parent, wxSizer* target_sizer) {
 
 void AssExporter::AddFilter(std::string const& name) {
 	auto filter = AssExportFilterChain::GetFilter(name);
-	if(!filter) throw agi::InternalError("Filter not found: " + name);
+	if (!filter) throw agi::InternalError("Filter not found: " + name);
 
 	filters.push_back(filter);
 }
 
 std::vector<std::string> AssExporter::GetAllFilterNames() const {
 	std::vector<std::string> names;
-	for(auto& filter : *AssExportFilterChain::GetFilterList())
+	for (auto& filter : *AssExportFilterChain::GetFilterList())
 		names.emplace_back(filter.GetName());
 	return names;
 }
 
-void AssExporter::Export(agi::fs::path const& filename, std::string const& charset,
-                         wxWindow* export_dialog) {
+void AssExporter::Export(agi::fs::path const& filename, std::string const& charset, wxWindow *export_dialog) {
 	AssFile subs(*c->ass);
 
-	for(auto filter : filters) {
+	for (auto filter : filters) {
 		filter->LoadSettings(is_default, c);
 		filter->ProcessSubs(&subs, export_dialog);
 	}
 
-	const SubtitleFormat* writer = SubtitleFormat::GetWriter(filename);
-	if(!writer) throw agi::InvalidInputException("Unknown file type.");
+	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
+	if (!writer)
+		throw agi::InvalidInputException("Unknown file type.");
 
 	writer->ExportFile(&subs, filename, c->project->Timecodes(), charset);
 }
 
-wxSizer* AssExporter::GetSettingsSizer(std::string const& name) {
+wxSizer *AssExporter::GetSettingsSizer(std::string const& name) {
 	auto pos = Sizers.find(name);
 	return pos == Sizers.end() ? nullptr : pos->second;
 }
 
 std::string const& AssExporter::GetDescription(std::string const& name) const {
 	auto filter = AssExportFilterChain::GetFilter(name);
-	if(filter) return filter->GetDescription();
+	if (filter)
+		return filter->GetDescription();
 	throw agi::InternalError("Filter not found: " + name);
 }

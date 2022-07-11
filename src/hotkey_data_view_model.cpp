@@ -36,15 +36,14 @@ using namespace agi::hotkey;
 /// @class HotkeyModelItem
 /// @brief A base class for things exposed by HotkeyDataViewModel
 class HotkeyModelItem {
-  protected:
+protected:
 	~HotkeyModelItem() = default;
-
-  public:
-	virtual unsigned int GetChildren(wxDataViewItemArray& children) const = 0;
-	virtual wxDataViewItem GetParent() const = 0;
-	virtual void GetValue(wxVariant& variant, unsigned int col) const = 0;
-	virtual bool IsContainer() const = 0;
-	virtual bool SetValue(wxVariant const& variant, unsigned int col) = 0;
+public:
+	virtual unsigned int GetChildren(wxDataViewItemArray &children) const=0;
+	virtual wxDataViewItem GetParent() const=0;
+	virtual void GetValue(wxVariant &variant, unsigned int col) const=0;
+	virtual bool IsContainer() const=0;
+	virtual bool SetValue(wxVariant const& variant, unsigned int col)=0;
 };
 
 class HotkeyModelRoot;
@@ -55,57 +54,67 @@ class HotkeyModelCategory;
 ///
 /// All actual mutation of hotkeys happens through this class
 class HotkeyModelCombo final : public HotkeyModelItem {
-	HotkeyModelCategory* parent; ///< The containing category
-	Combo combo;                 ///< The actual hotkey
+	HotkeyModelCategory *parent; ///< The containing category
+	Combo combo;				 ///< The actual hotkey
 	std::string cmd_name;
 	std::string cmd_str;
-
-  public:
-	HotkeyModelCombo(HotkeyModelCategory* parent, Combo const& combo)
-	    : parent(parent), combo(combo), cmd_name(combo.CmdName()), cmd_str(combo.Str()) {}
-
-	bool IsVisible(std::string const& filter) const {
-		return boost::to_lower_copy(cmd_name).find(filter) != std::string::npos ||
-		       boost::to_lower_copy(cmd_str).find(filter) != std::string::npos;
+public:
+	HotkeyModelCombo(HotkeyModelCategory *parent, Combo const& combo)
+	: parent(parent)
+	, combo(combo)
+	, cmd_name(combo.CmdName())
+	, cmd_str(combo.Str())
+	{
 	}
 
-	void Apply(Hotkey::HotkeyMap* hk_map) {
-		if(combo.CmdName().size() || combo.Str().size())
+	bool IsVisible(std::string const& filter) const {
+		return boost::to_lower_copy(cmd_name).find(filter) != std::string::npos
+			|| boost::to_lower_copy(cmd_str).find(filter) != std::string::npos;
+	}
+
+	void Apply(Hotkey::HotkeyMap *hk_map) {
+		if (combo.CmdName().size() || combo.Str().size())
 			hk_map->insert(make_pair(combo.CmdName(), combo));
 	}
 
-	unsigned int GetChildren(wxDataViewItemArray&) const override { return 0; }
+	unsigned int GetChildren(wxDataViewItemArray &) const override { return 0; }
 	wxDataViewItem GetParent() const override { return wxDataViewItem(parent); }
 	bool IsContainer() const override { return false; }
 
-	void GetValue(wxVariant& variant, unsigned int col) const override {
-		if(col == 0)
+	void GetValue(wxVariant &variant, unsigned int col) const override {
+		if (col == 0)
 			variant = to_wx(combo.Str());
-		else if(col == 1) {
+		else if (col == 1) {
 			wxIcon icon;
 			try {
 				auto icon_bmp = cmd::get(combo.CmdName())->Icon(16);
-				if(icon_bmp.IsOk()) icon.CopyFromBitmap(icon_bmp);
-			} catch(agi::Exception const&) {
+				if (icon_bmp.IsOk())
+					icon.CopyFromBitmap(icon_bmp);
+			}
+			catch (agi::Exception const&) {
 				// Just use no icon; error is reported in the description column
 			}
 			variant << wxDataViewIconText(to_wx(combo.CmdName()), icon);
-		} else if(col == 2) {
+		}
+		else if (col == 2) {
 			try {
 				variant = cmd::get(combo.CmdName())->StrHelp();
-			} catch(agi::Exception const& e) {
+			}
+			catch (agi::Exception const& e) {
 				variant = to_wx(e.GetMessage());
 			}
-		} else
+		}
+		else
 			throw agi::InternalError("HotkeyDataViewModel asked for an invalid column number");
 	}
 
 	bool SetValue(wxVariant const& variant, unsigned int col) override {
-		if(col == 0) {
+		if (col == 0) {
 			combo = Combo(combo.Context(), combo.CmdName(), from_wx(variant.GetString()));
 			cmd_str = combo.Str();
 			return true;
-		} else if(col == 1) {
+		}
+		else if (col == 1) {
 			wxDataViewIconText text;
 			text << variant;
 			cmd_name = from_wx(text.GetText());
@@ -119,14 +128,17 @@ class HotkeyModelCombo final : public HotkeyModelItem {
 /// A hotkey context exposed in the data view
 class HotkeyModelCategory final : public HotkeyModelItem {
 	std::list<HotkeyModelCombo> children;
-	wxDataViewModel* model;
+	wxDataViewModel *model;
 	std::string name;
 	wxString translated_name;
 	wxDataViewItemArray visible_items;
-
-  public:
-	HotkeyModelCategory(wxDataViewModel* model, std::string const& name)
-	    : model(model), name(name), translated_name(wxGetTranslation(to_wx(name))) {}
+public:
+	HotkeyModelCategory(wxDataViewModel *model, std::string const& name)
+	: model(model)
+	, name(name)
+	, translated_name(wxGetTranslation(to_wx(name)))
+	{
+	}
 
 	wxDataViewItem AddChild(Combo const& combo) {
 		children.emplace_back(this, combo);
@@ -136,8 +148,8 @@ class HotkeyModelCategory final : public HotkeyModelItem {
 	}
 
 	void Delete(wxDataViewItem const& item) {
-		for(auto it = children.begin(); it != children.end(); ++it) {
-			if(&*it == item.GetID()) {
+		for (auto it = children.begin(); it != children.end(); ++it) {
+			if (&*it == item.GetID()) {
 				model->ItemDeleted(wxDataViewItem(this), wxDataViewItem((void*)&*it));
 				children.erase(it);
 				return;
@@ -145,14 +157,14 @@ class HotkeyModelCategory final : public HotkeyModelItem {
 		}
 	}
 
-	void Apply(Hotkey::HotkeyMap* hk_map) {
-		for(auto& combo : children)
+	void Apply(Hotkey::HotkeyMap *hk_map) {
+		for (auto& combo : children)
 			combo.Apply(hk_map);
 	}
 
 	void SetFilter(std::string const& new_filter) {
-		std::vector<HotkeyModelCombo*> old_visible;
-		for(auto item : visible_items)
+		std::vector<HotkeyModelCombo *> old_visible;
+		for (auto item : visible_items)
 			old_visible.push_back(static_cast<HotkeyModelCombo*>(item.GetID()));
 		sort(begin(old_visible), end(old_visible));
 
@@ -161,17 +173,22 @@ class HotkeyModelCategory final : public HotkeyModelItem {
 		wxDataViewItemArray added;
 		wxDataViewItemArray removed;
 
-		for(auto& combo : children) {
+		for (auto& combo : children) {
 			bool was_visible = binary_search(begin(old_visible), end(old_visible), &combo);
 			bool is_visible = combo.IsVisible(new_filter);
 
-			if(is_visible) visible_items.push_back(wxDataViewItem(&combo));
-			if(was_visible && !is_visible) removed.push_back(wxDataViewItem(&combo));
-			if(is_visible && !was_visible) added.push_back(wxDataViewItem(&combo));
+			if (is_visible)
+				visible_items.push_back(wxDataViewItem(&combo));
+			if (was_visible && !is_visible)
+				removed.push_back(wxDataViewItem(&combo));
+			if (is_visible && !was_visible)
+				added.push_back(wxDataViewItem(&combo));
 		}
 
-		if(!added.empty()) model->ItemsAdded(wxDataViewItem(this), added);
-		if(!removed.empty()) model->ItemsDeleted(wxDataViewItem(this), removed);
+		if (!added.empty())
+			model->ItemsAdded(wxDataViewItem(this), added);
+		if (!removed.empty())
+			model->ItemsDeleted(wxDataViewItem(this), removed);
 	}
 
 	std::string const& GetName() const { return name; }
@@ -179,14 +196,14 @@ class HotkeyModelCategory final : public HotkeyModelItem {
 	wxDataViewItem GetParent() const override { return wxDataViewItem(nullptr); }
 	bool IsContainer() const override { return true; }
 	bool SetValue(wxVariant const&, unsigned int) override { return false; }
-	void GetValue(wxVariant& variant, unsigned int col) const override {
-		if(col == 1)
+	void GetValue(wxVariant &variant, unsigned int col) const override {
+		if (col == 1)
 			variant << wxDataViewIconText(translated_name);
 		else
 			variant = translated_name;
 	}
 
-	unsigned int GetChildren(wxDataViewItemArray& out) const override {
+	unsigned int GetChildren(wxDataViewItemArray &out) const override {
 		out = visible_items;
 		return out.size();
 	}
@@ -195,17 +212,16 @@ class HotkeyModelCategory final : public HotkeyModelItem {
 /// The root containing the hotkey contexts
 class HotkeyModelRoot final : public HotkeyModelItem {
 	std::list<HotkeyModelCategory> categories;
-
-  public:
-	HotkeyModelRoot(wxDataViewModel* model) {
+public:
+	HotkeyModelRoot(wxDataViewModel *model) {
 		Hotkey::HotkeyMap const& hk_map = hotkey::inst->GetHotkeyMap();
 		std::map<std::string, HotkeyModelCategory*> cat_map;
 
-		for(auto const& category : hk_map) {
+		for (auto const& category : hk_map) {
 			std::string const& cat_name = category.second.Context();
-			HotkeyModelCategory* cat;
+			HotkeyModelCategory *cat;
 			auto cat_it = cat_map.find(cat_name);
-			if(cat_it != cat_map.end())
+			if (cat_it != cat_map.end())
 				cat = cat_it->second;
 			else {
 				categories.emplace_back(model, cat_name);
@@ -216,44 +232,48 @@ class HotkeyModelRoot final : public HotkeyModelItem {
 		}
 	}
 
-	void Apply(Hotkey::HotkeyMap* hk_map) {
-		for(auto& category : categories)
+	void Apply(Hotkey::HotkeyMap *hk_map) {
+		for (auto& category : categories)
 			category.Apply(hk_map);
 	}
 
 	void SetFilter(std::string const& filter) {
-		for(auto& category : categories)
+		for (auto& category : categories)
 			category.SetFilter(filter);
 	}
 
 	wxDataViewItem GetParent() const override { return wxDataViewItem(nullptr); }
 	bool IsContainer() const override { return true; }
 	bool SetValue(wxVariant const&, unsigned int) override { return false; }
-	void GetValue(wxVariant&, unsigned int) const override {}
+	void GetValue(wxVariant &, unsigned int) const override { }
 
-	unsigned int GetChildren(wxDataViewItemArray& out) const override {
+	unsigned int GetChildren(wxDataViewItemArray &out) const override {
 		out.reserve(categories.size());
-		for(auto const& category : categories)
+		for (auto const& category : categories)
 			out.push_back(wxDataViewItem((void*)&category));
 		return out.size();
 	}
 };
 
-HotkeyDataViewModel::HotkeyDataViewModel(Preferences* parent)
-    : root(agi::make_unique<HotkeyModelRoot>(this)), parent(parent) {}
+HotkeyDataViewModel::HotkeyDataViewModel(Preferences *parent)
+: root(agi::make_unique<HotkeyModelRoot>(this))
+, parent(parent)
+{
+}
 
-const HotkeyModelItem* HotkeyDataViewModel::get(wxDataViewItem const& item) const {
-	if(item.IsOk()) return static_cast<HotkeyModelItem*>(item.GetID());
+const HotkeyModelItem * HotkeyDataViewModel::get(wxDataViewItem const& item) const {
+	if (item.IsOk())
+		return static_cast<HotkeyModelItem*>(item.GetID());
 	return root.get();
 }
 
-HotkeyModelItem* HotkeyDataViewModel::get(wxDataViewItem const& item) {
-	if(item.IsOk()) return static_cast<HotkeyModelItem*>(item.GetID());
+HotkeyModelItem * HotkeyDataViewModel::get(wxDataViewItem const& item) {
+	if (item.IsOk())
+		return static_cast<HotkeyModelItem*>(item.GetID());
 	return root.get();
 }
 
-unsigned int HotkeyDataViewModel::GetChildren(wxDataViewItem const& item,
-                                              wxDataViewItemArray& children) const {
+unsigned int HotkeyDataViewModel::GetChildren(wxDataViewItem const& item, wxDataViewItemArray &children) const {
 	return get(item)->GetChildren(children);
 }
 
@@ -261,8 +281,7 @@ wxDataViewItem HotkeyDataViewModel::GetParent(wxDataViewItem const& item) const 
 	return get(item)->GetParent();
 }
 
-void HotkeyDataViewModel::GetValue(wxVariant& variant, wxDataViewItem const& item,
-                                   unsigned int col) const {
+void HotkeyDataViewModel::GetValue(wxVariant &variant, wxDataViewItem const& item, unsigned int col) const {
 	get(item)->GetValue(variant, col);
 }
 
@@ -270,9 +289,8 @@ bool HotkeyDataViewModel::IsContainer(wxDataViewItem const& item) const {
 	return get(item)->IsContainer();
 }
 
-bool HotkeyDataViewModel::SetValue(wxVariant const& variant, wxDataViewItem const& item,
-                                   unsigned int col) {
-	if(!has_pending_changes) {
+bool HotkeyDataViewModel::SetValue(wxVariant const& variant, wxDataViewItem const& item, unsigned int col) {
+	if (!has_pending_changes) {
 		has_pending_changes = true;
 		parent->AddPendingChange([=] { Apply(); });
 	}
@@ -280,20 +298,21 @@ bool HotkeyDataViewModel::SetValue(wxVariant const& variant, wxDataViewItem cons
 }
 
 wxDataViewItem HotkeyDataViewModel::New(wxDataViewItem item) {
-	if(!item.IsOk()) return wxDataViewItem();
+	if (!item.IsOk()) return wxDataViewItem();
 
-	if(!IsContainer(item)) item = GetParent(item);
+	if (!IsContainer(item))
+		item = GetParent(item);
 
-	HotkeyModelCategory* ctx = static_cast<HotkeyModelCategory*>(item.GetID());
+	HotkeyModelCategory *ctx = static_cast<HotkeyModelCategory*>(item.GetID());
 	return ctx->AddChild(Combo(ctx->GetName(), "", ""));
 }
 
 void HotkeyDataViewModel::Delete(wxDataViewItem const& item) {
-	if(!item.IsOk() || IsContainer(item)) return;
+	if (!item.IsOk() || IsContainer(item)) return;
 
 	static_cast<HotkeyModelCategory*>(GetParent(item).GetID())->Delete(item);
 
-	if(!has_pending_changes) {
+	if (!has_pending_changes) {
 		has_pending_changes = true;
 		parent->AddPendingChange([=] { Apply(); });
 	}

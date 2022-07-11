@@ -29,7 +29,8 @@
 namespace agi {
 
 Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path)
-    : dat(make_unique<read_file_mapping>(dat_path)) {
+: dat(make_unique<read_file_mapping>(dat_path))
+{
 	read_file_mapping idx_file(idx_path);
 	boost::interprocess::ibufferstream idx(idx_file.read(), static_cast<size_t>(idx_file.size()));
 
@@ -41,33 +42,33 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 	conv = make_unique<charset::IconvWrapper>(encoding_name.c_str(), "utf-8");
 
 	// Read the list of words and file offsets for those words
-	for(auto const& line : line_iterator<std::string>(idx, encoding_name)) {
+	for (auto const& line : line_iterator<std::string>(idx, encoding_name)) {
 		auto pos = line.find('|');
-		if(pos != line.npos && line.find('|', pos + 1) == line.npos)
+		if (pos != line.npos && line.find('|', pos + 1) == line.npos)
 			offsets[line.substr(0, pos)] = static_cast<size_t>(atoi(line.c_str() + pos + 1));
 	}
 }
 
-Thesaurus::~Thesaurus() {}
+Thesaurus::~Thesaurus() { }
 
 std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
 	std::vector<Entry> out;
-	if(!dat) return out;
+	if (!dat) return out;
 
 	auto it = offsets.find(word);
-	if(it == offsets.end()) return out;
-	if(it->second >= dat->size()) return out;
+	if (it == offsets.end()) return out;
+	if (it->second >= dat->size()) return out;
 
 	auto len = dat->size() - it->second;
 	auto buff = dat->read(it->second, len);
 	auto buff_end = buff + len;
 
 	std::string temp;
-	auto read_line = [&](std::string& temp) -> std::string* {
+	auto read_line = [&] (std::string& temp) -> std::string * {
 		auto start = buff;
 		auto end = std::find(buff, buff_end, '\n');
 		buff = end < buff_end ? end + 1 : buff_end;
-		if(end > start && end[-1] == '\r') --end;
+		if (end > start && end[-1] == '\r') --end;
 		temp.clear();
 		conv->Convert(start, end - start, temp);
 		return &temp;
@@ -76,24 +77,27 @@ std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
 	// First line is the word and meaning count
 	std::vector<std::string> header;
 	agi::Split(header, *read_line(temp), '|');
-	if(header.size() != 2) return out;
+	if (header.size() != 2) return out;
 	int meanings = atoi(header[1].c_str());
 
 	out.reserve(meanings);
 	std::vector<std::string> line;
-	for(int i = 0; i < meanings; ++i) {
+	for (int i = 0; i < meanings; ++i) {
 		agi::Split(line, *read_line(temp), '|');
-		if(line.size() < 2) continue;
+		if (line.size() < 2)
+			continue;
 
 		Entry e;
 		// The "definition" is just the part of speech (which may be empty)
 		// plus the word it's giving synonyms for (which may not be the passed word)
-		if(!line[0].empty()) e.first = line[0] + ' ';
+		if (!line[0].empty())
+			e.first = line[0] + ' ';
 		e.first += line[1];
 		e.second.reserve(line.size() - 2);
 
-		for(size_t i = 2; i < line.size(); ++i) {
-			if(line[i].size()) e.second.emplace_back(std::move(line[i]));
+		for (size_t i = 2; i < line.size(); ++i) {
+			if (line[i].size())
+				e.second.emplace_back(std::move(line[i]));
 		}
 
 		out.emplace_back(std::move(e));
@@ -102,4 +106,4 @@ std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
 	return out;
 }
 
-} // namespace agi
+}

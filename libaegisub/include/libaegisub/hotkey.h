@@ -21,12 +21,12 @@
 #include <libaegisub/signal.h>
 
 namespace json {
-class UnknownElement;
-typedef std::map<std::string, UnknownElement> Object;
-} // namespace json
+	class UnknownElement;
+	typedef std::map<std::string, UnknownElement> Object;
+}
 
 namespace agi {
-namespace hotkey {
+	namespace hotkey {
 
 /// @class Combo
 /// A Combo represents a linear sequence of characters set in an std::vector.
@@ -35,13 +35,16 @@ class Combo {
 	std::string keys;
 	std::string cmd_name;
 	std::string context;
-
-  public:
+public:
 	/// Constructor
 	/// @param ctx Context
 	/// @param cmd Command name
 	Combo(std::string ctx, std::string cmd, std::string keys)
-	    : keys(std::move(keys)), cmd_name(std::move(cmd)), context(std::move(ctx)) {}
+	: keys(std::move(keys))
+	, cmd_name(std::move(cmd))
+	, context(std::move(ctx))
+	{
+	}
 
 	/// String representation of the Combo
 	std::string const& Str() const { return keys; }
@@ -57,14 +60,13 @@ class Combo {
 /// @class Hotkey
 /// Holds the map of Combo instances and handles searching for matching key sequences.
 class Hotkey {
-  public:
+public:
 	/// Map to hold Combo instances
 	typedef std::multimap<std::string, Combo> HotkeyMap;
-
-  private:
-	HotkeyMap cmd_map;                 ///< Command name -> Combo
-	std::vector<const Combo*> str_map; ///< Sorted by string representation
-	const agi::fs::path config_file;   ///< Default user config location.
+private:
+	HotkeyMap cmd_map;                  ///< Command name -> Combo
+	std::vector<const Combo *> str_map; ///< Sorted by string representation
+	const agi::fs::path config_file;    ///< Default user config location.
 	bool backup_config_file = false;
 
 	/// Build hotkey map.
@@ -79,38 +81,36 @@ class Hotkey {
 
 	/// Announce that the loaded hotkeys have been changed
 	agi::signal::Signal<> HotkeysChanged;
-
-  public:
+public:
 	/// Constructor
 	/// @param file           Location of user config file.
 	/// @param default_config Default config.
-	Hotkey(agi::fs::path const& file, std::pair<const char*, size_t> default_config);
+	Hotkey(agi::fs::path const& file, std::pair<const char *, size_t> default_config);
 
-	template <size_t N>
+	template<size_t N>
 	Hotkey(agi::fs::path const& file, const char (&default_config)[N])
-	    : Hotkey(file, { default_config, N - 1 }) {}
+	: Hotkey(file, {default_config, N - 1}) { }
 
 	/// Scan for a matching key.
 	/// @param context  Context requested.
 	/// @param str      Hyphen separated key sequence.
 	/// @param always   Enable the "Always" override context
 	/// @return Name of command or "" if none match
-	std::string Scan(const std::string& context, const std::string& str, bool always) const;
+	std::string Scan(const std::string &context, const std::string &str, bool always) const;
 
-	bool HasHotkey(const std::string& context, const std::string& str) const;
+	bool HasHotkey(const std::string &context, const std::string &str) const;
 
 	/// Get the string representation of the hotkeys for the given command
 	/// @param context Context requested
 	/// @param command Command name
 	/// @return A vector of all hotkeys for that command in the context
-	std::vector<std::string> GetHotkeys(const std::string& context,
-	                                    const std::string& command) const;
+	std::vector<std::string> GetHotkeys(const std::string &context, const std::string &command) const;
 
 	/// Get a string representation of a hotkeys for the given command
 	/// @param context Context requested
 	/// @param command Command name
 	/// @return A hotkey for the given command or "" if there are none
-	std::string GetHotkey(const std::string& context, const std::string& command) const;
+	std::string GetHotkey(const std::string &context, const std::string &command) const;
 
 	/// Get the raw command name -> combo map for all registered hotkeys
 	HotkeyMap const& GetHotkeyMap() const { return cmd_map; }
@@ -121,5 +121,5 @@ class Hotkey {
 	DEFINE_SIGNAL_ADDERS(HotkeysChanged, AddHotkeyChangeListener)
 };
 
-} // namespace hotkey
+	} // namespace hotkey
 } // namespace agi

@@ -46,16 +46,16 @@ enum AudioRenderingStyle {
 	AudioStyle_MAX
 };
 
+
 /// @class AudioRenderingStyleRanges
 /// @brief Abstract container for ranges of audio rendering styles
 ///
 /// Interface for producers of audio rendering ranges, consumers should
 /// implement this interface for objects to pass to producers.
 class AudioRenderingStyleRanges {
-  protected:
-	~AudioRenderingStyleRanges() {}
-
-  public:
+protected:
+	~AudioRenderingStyleRanges() { }
+public:
 	/// @brief Add a range to the line
 	/// @param start First milisecond in range
 	/// @param end   One past last milisecond in range

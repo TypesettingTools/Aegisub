@@ -12,6 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+
 /// @file util_osx.h
 /// @brief OSX Utilities
 /// @ingroup libaegisub osx
@@ -30,16 +31,15 @@
 #include <string>
 
 namespace agi {
-namespace osx {
-class AppNapDisabler {
-	void* handle;
-
-  public:
-	AppNapDisabler(std::string reason);
-	~AppNapDisabler();
-};
-} // namespace osx
-namespace util {
+	namespace osx {
+		class AppNapDisabler {
+			void *handle;
+		public:
+			AppNapDisabler(std::string reason);
+			~AppNapDisabler();
+		};
+	}
+    namespace util {
 /// @brief Get the esources directory.
 /// @return Resources directory.
 ///
@@ -54,5 +54,5 @@ std::string GetBundleResourcesDirectory();
 std::string GetBundleSharedSupportDirectory();
 
 std::string GetApplicationSupportDirectory();
-} // namespace util
+    } // namespace util
 } // namespace agi

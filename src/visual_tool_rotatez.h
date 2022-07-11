@@ -23,25 +23,24 @@
 #include "visual_tool.h"
 
 class VisualToolRotateZ final : public VisualTool<VisualDraggableFeature> {
-	float angle = 0.f;      ///< Current Z rotation
+	float angle = 0.f; ///< Current Z rotation
 	float orig_angle = 0.f; ///< Z rotation at the beginning of the current hold
-	Vector2D pos;           ///< Position of the dialogue line
-	Vector2D scale;         ///< Current scale
+	Vector2D pos; ///< Position of the dialogue line
+	Vector2D scale; ///< Current scale
 
 	float rotation_x = 0.f; ///< Current X rotation
 	float rotation_y = 0.f; ///< Current Y rotation
 
-	Feature* org; ///< The origin feature
+	Feature *org; ///< The origin feature
 
 	bool InitializeHold() override;
 	void UpdateHold() override;
 
-	void UpdateDrag(Feature* feature) override;
+	void UpdateDrag(Feature *feature) override;
 
 	void DoRefresh() override;
 
 	void Draw() override;
-
-  public:
-	VisualToolRotateZ(VideoDisplay* parent, agi::Context* context);
+public:
+	VisualToolRotateZ(VideoDisplay *parent, agi::Context *context);
 };

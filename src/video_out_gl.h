@@ -61,10 +61,9 @@ class VideoOutGL {
 	void DetectOpenGLCapabilities();
 	void InitTextures(int width, int height, GLenum format, int bpp, bool flipped);
 
-	VideoOutGL(const VideoOutGL&) = delete;
+	VideoOutGL(const VideoOutGL &) = delete;
 	VideoOutGL& operator=(const VideoOutGL&) = delete;
-
-  public:
+public:
 	/// @brief Set the frame to be displayed when Render() is called
 	/// @param frame The frame to be displayed
 	void UploadFrameData(VideoFrame const& frame);
@@ -85,15 +84,17 @@ DEFINE_EXCEPTION(VideoOutException, agi::Exception);
 
 /// An OpenGL error occurred while uploading or displaying a frame
 class VideoOutRenderException final : public VideoOutException {
-  public:
-	VideoOutRenderException(const char* func, int err)
-	    : VideoOutException(std::string(func) + " failed with error code " + std::to_string(err)) {}
+public:
+	VideoOutRenderException(const char *func, int err)
+	: VideoOutException(std::string(func) + " failed with error code " + std::to_string(err))
+	{ }
 };
 
 /// An OpenGL error occurred while setting up the video display
 class VideoOutInitException final : public VideoOutException {
-  public:
-	VideoOutInitException(const char* func, int err)
-	    : VideoOutException(std::string(func) + " failed with error code " + std::to_string(err)) {}
-	VideoOutInitException(const char* err) : VideoOutException(err) {}
+public:
+	VideoOutInitException(const char *func, int err)
+	: VideoOutException(std::string(func) + " failed with error code " + std::to_string(err))
+	{ }
+	VideoOutInitException(const char *err) : VideoOutException(err) { }
 };

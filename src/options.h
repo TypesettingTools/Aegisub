@@ -20,20 +20,16 @@
 #include <libaegisub/option.h>
 #include <libaegisub/option_value.h>
 
-namespace agi {
-class Path;
-}
-namespace Automation4 {
-class AutoloadScriptManager;
-}
+namespace agi { class Path; }
+namespace Automation4 { class AutoloadScriptManager; }
 
 /// For holding all configuration-related objects and values.
 namespace config {
-extern agi::Options* opt;    ///< Options
-extern agi::MRUManager* mru; ///< Most Recently Used
-extern agi::Path* path;
-extern Automation4::AutoloadScriptManager* global_scripts;
-} // namespace config
+	extern agi::Options *opt;    ///< Options
+	extern agi::MRUManager *mru; ///< Most Recently Used
+	extern agi::Path *path;
+	extern Automation4::AutoloadScriptManager *global_scripts;
+}
 
 /// Macro to get OptionValue object
 #define OPT_GET(x) const_cast<const agi::OptionValue*>(config::opt->Get(x))

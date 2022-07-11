@@ -35,22 +35,17 @@
 #include <wx/bitmap.h>
 #include <wx/control.h>
 
-namespace agi {
-struct Context;
-}
-namespace cmd {
-class Command;
-}
+namespace agi { struct Context; }
+namespace cmd { class Command; }
 
 class ToggleBitmap final : public wxControl {
-	agi::Context* context;
-	cmd::Command& command;
+	agi::Context *context;
+	cmd::Command &command;
 	wxBitmap img;
 
-	void OnMouseEvent(wxMouseEvent& evt);
-	void OnPaint(wxPaintEvent& evt);
+	void OnMouseEvent(wxMouseEvent &evt);
+	void OnPaint(wxPaintEvent &evt);
 
-  public:
-	ToggleBitmap(wxWindow* parent, agi::Context* context, const char* command, int icon_size,
-	             const char* ht_ctx, wxSize const& size = wxDefaultSize);
+public:
+	ToggleBitmap(wxWindow *parent, agi::Context *context, const char *command, int icon_size, const char *ht_ctx, wxSize const& size = wxDefaultSize);
 };

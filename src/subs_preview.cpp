@@ -32,11 +32,11 @@
 /// @ingroup custom_control
 ///
 
-#include "subs_preview.h"
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_style.h"
 #include "dialog_progress.h"
+#include "subs_preview.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
 #include "video_provider_dummy.h"
@@ -46,9 +46,13 @@
 #include <wx/dcclient.h>
 #include <wx/msgdlg.h>
 
-SubtitlesPreview::SubtitlesPreview(wxWindow* parent, wxSize size, int winStyle, agi::Color col)
-    : wxWindow(parent, -1, wxDefaultPosition, size, winStyle), style(new AssStyle), back_color(col),
-      sub_file(agi::make_unique<AssFile>()), line(new AssDialogue) {
+SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, agi::Color col)
+: wxWindow(parent, -1, wxDefaultPosition, size, winStyle)
+, style(new AssStyle)
+, back_color(col)
+, sub_file(agi::make_unique<AssFile>())
+, line(new AssDialogue)
+{
 	line->Text = "{\\q2}preview";
 
 	SetStyle(*style);
@@ -66,10 +70,12 @@ SubtitlesPreview::SubtitlesPreview(wxWindow* parent, wxSize size, int winStyle, 
 	Bind(wxEVT_SIZE, &SubtitlesPreview::OnSize, this);
 }
 
-SubtitlesPreview::~SubtitlesPreview() {}
+SubtitlesPreview::~SubtitlesPreview() {
+}
 
 void SubtitlesPreview::SetStyle(AssStyle const& new_style) {
-	if(provider && style->font != new_style.font) provider->Reinitialize();
+	if (provider && style->font != new_style.font)
+		provider->Reinitialize();
 
 	*style = new_style;
 	style->name = "Default";
@@ -81,33 +87,32 @@ void SubtitlesPreview::SetStyle(AssStyle const& new_style) {
 
 void SubtitlesPreview::SetText(std::string const& text) {
 	std::string new_text = "{\\q2}" + text;
-	if(new_text != line->Text) {
+	if (new_text != line->Text) {
 		line->Text = new_text;
 		UpdateBitmap();
 	}
 }
 
 void SubtitlesPreview::SetColour(agi::Color col) {
-	if(col != back_color) {
+	if (col != back_color) {
 		back_color = col;
-		vid = agi::make_unique<DummyVideoProvider>(0.0, 10, bmp->GetWidth(), bmp->GetHeight(),
-		                                           back_color, true);
+		vid = agi::make_unique<DummyVideoProvider>(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), back_color, true);
 		UpdateBitmap();
 	}
 }
 
 void SubtitlesPreview::UpdateBitmap() {
-	if(!vid) return;
+	if (!vid) return;
 
 	VideoFrame frame;
 	vid->GetFrame(0, frame);
 
-	if(provider) {
+	if (provider) {
 		try {
 			provider->LoadSubtitles(sub_file.get());
 			provider->DrawSubtitles(frame, 0.1);
-		} catch(...) {
 		}
+		catch (...) { }
 	}
 
 	// Convert frame to bitmap
@@ -115,12 +120,12 @@ void SubtitlesPreview::UpdateBitmap() {
 	Refresh();
 }
 
-void SubtitlesPreview::OnPaint(wxPaintEvent&) {
+void SubtitlesPreview::OnPaint(wxPaintEvent &) {
 	wxPaintDC(this).DrawBitmap(*bmp, 0, 0);
 }
 
-void SubtitlesPreview::OnSize(wxSizeEvent& evt) {
-	if(bmp.get() && evt.GetSize() == bmp->GetSize()) return;
+void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
+	if (bmp.get() && evt.GetSize() == bmp->GetSize()) return;
 
 	int w = evt.GetSize().GetWidth();
 	int h = evt.GetSize().GetHeight();
@@ -128,12 +133,16 @@ void SubtitlesPreview::OnSize(wxSizeEvent& evt) {
 	bmp = agi::make_unique<wxBitmap>(w, h, -1);
 	vid = agi::make_unique<DummyVideoProvider>(0.0, 10, w, h, back_color, true);
 	try {
-		if(!progress) progress = agi::make_unique<DialogProgress>(this);
-		if(!provider) provider = SubtitlesProviderFactory::GetProvider(progress.get());
-	} catch(...) {
-		wxMessageBox("Could not get any subtitles provider for the preview box. Make "
-		             "sure that you have a provider installed.",
-		             "No subtitles provider", wxOK | wxICON_ERROR | wxCENTER);
+		if (!progress)
+			progress = agi::make_unique<DialogProgress>(this);
+		if (!provider)
+			provider = SubtitlesProviderFactory::GetProvider(progress.get());
+	}
+	catch (...) {
+		wxMessageBox(
+			"Could not get any subtitles provider for the preview box. Make "
+			"sure that you have a provider installed.",
+			"No subtitles provider", wxOK | wxICON_ERROR | wxCENTER);
 	}
 
 	sub_file->SetScriptInfo("PlayResX", std::to_string(w));

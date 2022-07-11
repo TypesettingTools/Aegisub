@@ -21,17 +21,17 @@
 #include "ass_file.h"
 #include "ass_info.h"
 #include "ass_style.h"
-#include "command/command.h"
 #include "compat.h"
+#include "command/command.h"
 #include "format.h"
 #include "frame_main.h"
 #include "include/aegisub/context.h"
-#include "libaegisub/log.h"
 #include "options.h"
 #include "project.h"
 #include "selection_controller.h"
 #include "subtitle_format.h"
 #include "text_selection_controller.h"
+#include "libaegisub/log.h"
 #include "wakatime.h"
 
 #include <libaegisub/dispatch.h>
@@ -43,14 +43,14 @@
 #include <wx/msgdlg.h>
 
 namespace {
-void autosave_timer_changed(wxTimer* timer) {
-	int freq = OPT_GET("App/Auto/Save Every Seconds")->GetInt();
-	if(freq > 0 && OPT_GET("App/Auto/Save")->GetBool())
-		timer->Start(freq * 1000);
-	else
-		timer->Stop();
+	void autosave_timer_changed(wxTimer *timer) {
+		int freq = OPT_GET("App/Auto/Save Every Seconds")->GetInt();
+		if (freq > 0 && OPT_GET("App/Auto/Save")->GetBool())
+			timer->Start(freq * 1000);
+		else
+			timer->Stop();
+	}
 }
-} // namespace
 
 struct SubsController::UndoInfo {
 	wxString undo_description;
@@ -66,11 +66,14 @@ struct SubsController::UndoInfo {
 	int active_line_id = 0;
 	int pos = 0, sel_start = 0, sel_end = 0;
 
-	UndoInfo(const agi::Context* c, wxString const& d, int commit_id)
-	    : undo_description(d), commit_id(commit_id), attachments(c->ass->Attachments),
-	      extradata(c->ass->Extradata) {
+	UndoInfo(const agi::Context *c, wxString const& d, int commit_id)
+	: undo_description(d)
+	, commit_id(commit_id)
+	, attachments(c->ass->Attachments)
+	, extradata(c->ass->Extradata)
+	{
 		script_info.reserve(c->ass->Info.size());
-		for(auto const& info : c->ass->Info)
+		for (auto const& info : c->ass->Info)
 			script_info.emplace_back(info.Key(), info.Value());
 
 		styles.reserve(c->ass->Styles.size());
@@ -84,7 +87,7 @@ struct SubsController::UndoInfo {
 		UpdateTextSelection(c);
 	}
 
-	void Apply(agi::Context* c) const {
+	void Apply(agi::Context *c) const {
 		// Keep old dialogue lines alive until after the commit is complete
 		// since a bunch of stuff holds references to them
 		AssFile old;
@@ -96,19 +99,21 @@ struct SubsController::UndoInfo {
 
 		sort(begin(selection), end(selection));
 
-		AssDialogue* active_line = nullptr;
+		AssDialogue *active_line = nullptr;
 		Selection new_sel;
 
-		for(auto const& info : script_info)
+		for (auto const& info : script_info)
 			c->ass->Info.push_back(*new AssInfo(info.first, info.second));
-		for(auto const& style : styles)
+		for (auto const& style : styles)
 			c->ass->Styles.push_back(*new AssStyle(style));
 		c->ass->Attachments = attachments;
-		for(auto const& event : events) {
+		for (auto const& event : events) {
 			auto copy = new AssDialogue(event);
 			c->ass->Events.push_back(*copy);
-			if(copy->Id == active_line_id) active_line = copy;
-			if(binary_search(begin(selection), end(selection), copy->Id)) new_sel.insert(copy);
+			if (copy->Id == active_line_id)
+				active_line = copy;
+			if (binary_search(begin(selection), end(selection), copy->Id))
+				new_sel.insert(copy);
 		}
 		c->ass->Extradata = extradata;
 
@@ -119,32 +124,33 @@ struct SubsController::UndoInfo {
 		c->textSelectionController->SetSelection(sel_start, sel_end);
 	}
 
-	void UpdateActiveLine(const agi::Context* c) {
+	void UpdateActiveLine(const agi::Context *c) {
 		auto line = c->selectionController->GetActiveLine();
-		if(line) active_line_id = line->Id;
+		if (line)
+			active_line_id = line->Id;
 	}
 
-	void UpdateSelection(const agi::Context* c) {
+	void UpdateSelection(const agi::Context *c) {
 		auto const& sel = c->selectionController->GetSelectedSet();
 		selection.clear();
 		selection.reserve(sel.size());
-		for(const auto diag : sel)
+		for (const auto diag : sel)
 			selection.push_back(diag->Id);
 	}
 
-	void UpdateTextSelection(const agi::Context* c) {
+	void UpdateTextSelection(const agi::Context *c) {
 		pos = c->textSelectionController->GetInsertionPoint();
 		sel_start = c->textSelectionController->GetSelectionStart();
 		sel_end = c->textSelectionController->GetSelectionEnd();
 	}
 };
 
-SubsController::SubsController(agi::Context* context)
-    : context(context),
-      undo_connection(context->ass->AddUndoManager(&SubsController::OnCommit, this)),
-      text_selection_connection(context->textSelectionController->AddSelectionListener(
-          &SubsController::OnTextSelectionChanged, this)),
-      autosave_queue(agi::dispatch::Create()) {
+SubsController::SubsController(agi::Context *context)
+: context(context)
+, undo_connection(context->ass->AddUndoManager(&SubsController::OnCommit, this))
+, text_selection_connection(context->textSelectionController->AddSelectionListener(&SubsController::OnTextSelectionChanged, this))
+, autosave_queue(agi::dispatch::Create())
+{
 	autosave_timer_changed(&autosave_timer);
 	OPT_SUB("App/Auto/Save", [=] { autosave_timer_changed(&autosave_timer); });
 	OPT_SUB("App/Auto/Save Every Seconds", [=] { autosave_timer_changed(&autosave_timer); });
@@ -153,21 +159,18 @@ SubsController::SubsController(agi::Context* context)
 
 SubsController::~SubsController() {
 	// Make sure there are no autosaves in progress
-	autosave_queue->Sync([] {});
+	autosave_queue->Sync([]{ });
 }
 
-void SubsController::SetSelectionController(SelectionController* selection_controller) {
-	active_line_connection = context->selectionController->AddActiveLineListener(
-	    &SubsController::OnActiveLineChanged, this);
-	selection_connection = context->selectionController->AddSelectionListener(
-	    &SubsController::OnSelectionChanged, this);
+void SubsController::SetSelectionController(SelectionController *selection_controller) {
+	active_line_connection = context->selectionController->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
+	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
 }
 
 ProjectProperties SubsController::Load(agi::fs::path const& filename, std::string charset) {
 	AssFile temp;
 
-	SubtitleFormat::GetReader(filename, charset)
-	    ->ReadFile(&temp, filename, context->project->Timecodes(), charset);
+	SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
 
 	context->ass->swap(temp);
 	auto props = context->ass->Properties;
@@ -181,16 +184,15 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, std::strin
 	context->ass->Commit("", AssFile::COMMIT_NEW);
 
 	// Save backup of file
-	if(CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
+	if (CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
 		auto path_str = OPT_GET("Path/Auto/Backup")->GetString();
 		agi::fs::path path;
-		if(path_str.empty())
+		if (path_str.empty())
 			path = filename.parent_path();
 		else
 			path = context->path->Decode(path_str);
 		agi::fs::CreateDirectory(path);
-		agi::fs::Copy(filename, path / (filename.stem().string() + ".ORIGINAL" +
-		                                filename.extension().string()));
+		agi::fs::Copy(filename, path/(filename.stem().string() + ".ORIGINAL" + filename.extension().string()));
 	}
 
 	FileOpen(filename);
@@ -199,8 +201,9 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, std::strin
 
 void SubsController::Save(agi::fs::path const& filename, std::string const& encoding) {
 	wakatime::update(true, &filename);
-	const SubtitleFormat* writer = SubtitleFormat::GetWriter(filename);
-	if(!writer) throw agi::InvalidInputException("Unknown file type.");
+	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
+	if (!writer)
+		throw agi::InvalidInputException("Unknown file type.");
 
 	int old_autosaved_commit_id = autosaved_commit_id, old_saved_commit_id = saved_commit_id;
 	try {
@@ -214,7 +217,8 @@ void SubsController::Save(agi::fs::path const& filename, std::string const& enco
 		context->ass->CleanExtradata();
 		writer->WriteFile(context->ass.get(), filename, 0, encoding);
 		FileSave();
-	} catch(...) {
+	}
+	catch (...) {
 		autosaved_commit_id = old_autosaved_commit_id;
 		saved_commit_id = old_saved_commit_id;
 		throw;
@@ -230,20 +234,20 @@ void SubsController::Close() {
 	filename.clear();
 	AssFile blank;
 	blank.swap(*context->ass);
-	context->ass->LoadDefault(true,
-	                          OPT_GET("Subtitle Format/ASS/Default Style Catalog")->GetString());
+	context->ass->LoadDefault(true, OPT_GET("Subtitle Format/ASS/Default Style Catalog")->GetString());
 	context->ass->Commit("", AssFile::COMMIT_NEW);
 	FileOpen(filename);
 }
 
 int SubsController::TryToClose(bool allow_cancel) const {
-	if(!IsModified()) return wxYES;
+	if (!IsModified())
+		return wxYES;
 
 	int flags = wxYES_NO;
-	if(allow_cancel) flags |= wxCANCEL;
-	int result = wxMessageBox(fmt_tl("Do you want to save changes to %s?", Filename()),
-	                          _("Unsaved changes"), flags, context->parent);
-	if(result == wxYES) {
+	if (allow_cancel)
+		flags |= wxCANCEL;
+	int result = wxMessageBox(fmt_tl("Do you want to save changes to %s?", Filename()), _("Unsaved changes"), flags, context->parent);
+	if (result == wxYES) {
 		cmd::call("subtitle/save", context);
 		// If it fails saving, return cancel anyway
 		return IsModified() ? wxCANCEL : wxYES;
@@ -252,13 +256,16 @@ int SubsController::TryToClose(bool allow_cancel) const {
 }
 
 void SubsController::AutoSave() {
-	if(commit_id == autosaved_commit_id) return;
+	if (commit_id == autosaved_commit_id)
+		return;
 
 	auto directory = context->path->Decode(OPT_GET("Path/Auto/Save")->GetString());
-	if(directory.empty()) directory = filename.parent_path();
+	if (directory.empty())
+		directory = filename.parent_path();
 
 	auto name = filename.filename();
-	if(name.empty()) name = "Untitled";
+	if (name.empty())
+		name = "Untitled";
 
 	autosaved_commit_id = commit_id;
 	auto frame = context->frame;
@@ -269,24 +276,29 @@ void SubsController::AutoSave() {
 
 		try {
 			agi::fs::CreateDirectory(directory);
-			auto path = directory / agi::format("%s.%s.AUTOSAVE.ass", name.string(),
-			                                    agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
+			auto path = directory /  agi::format("%s.%s.AUTOSAVE.ass", name.string(),
+			                                     agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
 			SubtitleFormat::GetWriter(path)->WriteFile(subs.get(), path, 0);
 			msg = fmt_tl("File backup saved as \"%s\".", path);
-		} catch(const agi::Exception& err) {
+		}
+		catch (const agi::Exception& err) {
 			msg = to_wx("Exception when attempting to autosave file: " + err.GetMessage());
-		} catch(...) {
+		}
+		catch (...) {
 			msg = "Unhandled exception when attempting to autosave file.";
 		}
 
-		agi::dispatch::Main().Async([frame, msg] { frame->StatusTimeout(msg); });
+		agi::dispatch::Main().Async([frame, msg] {
+			frame->StatusTimeout(msg);
+		});
 	});
 }
 
 bool SubsController::CanSave() const {
 	try {
 		return SubtitleFormat::GetWriter(filename)->CanSave(context->ass.get());
-	} catch(...) {
+	}
+	catch (...) {
 		return false;
 	}
 }
@@ -299,16 +311,16 @@ void SubsController::SetFileName(agi::fs::path const& path) {
 }
 
 void SubsController::OnCommit(AssFileCommit c) {
-	if(c.message.empty() && !undo_stack.empty()) return;
+	if (c.message.empty() && !undo_stack.empty()) return;
 
 	commit_id = next_commit_id++;
 	// Allow coalescing only if it's the last change and the file has not been
 	// saved since the last change
-	if(commit_id == *c.commit_id + 1 && redo_stack.empty() && saved_commit_id + 1 != commit_id) {
+	if (commit_id == *c.commit_id+1 && redo_stack.empty() && saved_commit_id+1 != commit_id) {
 		// If only one line changed just modify it instead of copying the file
-		if(c.single_line && c.single_line->Group() == AssEntryGroup::DIALOGUE) {
-			for(auto& diag : undo_stack.back().events) {
-				if(diag.Id == c.single_line->Id) {
+		if (c.single_line && c.single_line->Group() == AssEntryGroup::DIALOGUE) {
+			for (auto& diag : undo_stack.back().events) {
+				if (diag.Id == c.single_line->Id) {
 					diag = *c.single_line;
 					break;
 				}
@@ -321,8 +333,9 @@ void SubsController::OnCommit(AssFileCommit c) {
 	}
 
 	// Make sure the file has at least one style and one dialogue line
-	if(context->ass->Styles.empty()) context->ass->Styles.push_back(*new AssStyle);
-	if(context->ass->Events.empty()) {
+	if (context->ass->Styles.empty())
+		context->ass->Styles.push_back(*new AssStyle);
+	if (context->ass->Events.empty()) {
 		context->ass->Events.push_back(*new AssDialogue);
 		context->ass->Events.back().Row = 0;
 	}
@@ -332,30 +345,32 @@ void SubsController::OnCommit(AssFileCommit c) {
 	undo_stack.emplace_back(context, c.message, commit_id);
 
 	int depth = std::max<int>(OPT_GET("Limits/Undo Levels")->GetInt(), 2);
-	while((int)undo_stack.size() > depth)
+	while ((int)undo_stack.size() > depth)
 		undo_stack.pop_front();
 
-	if(undo_stack.size() > 1 && OPT_GET("App/Auto/Save on Every Change")->GetBool() &&
-	   !filename.empty() && CanSave())
+	if (undo_stack.size() > 1 && OPT_GET("App/Auto/Save on Every Change")->GetBool() && !filename.empty() && CanSave())
 		Save(filename);
 
 	*c.commit_id = commit_id;
 }
 
 void SubsController::OnActiveLineChanged() {
-	if(!undo_stack.empty()) undo_stack.back().UpdateActiveLine(context);
+	if (!undo_stack.empty())
+		undo_stack.back().UpdateActiveLine(context);
 }
 
 void SubsController::OnSelectionChanged() {
-	if(!undo_stack.empty()) undo_stack.back().UpdateSelection(context);
+	if (!undo_stack.empty())
+		undo_stack.back().UpdateSelection(context);
 }
 
 void SubsController::OnTextSelectionChanged() {
-	if(!undo_stack.empty()) undo_stack.back().UpdateTextSelection(context);
+	if (!undo_stack.empty())
+		undo_stack.back().UpdateTextSelection(context);
 }
 
 void SubsController::Undo() {
-	if(undo_stack.size() <= 1) return;
+	if (undo_stack.size() <= 1) return;
 	redo_stack.splice(redo_stack.end(), undo_stack, std::prev(undo_stack.end()));
 
 	commit_id = undo_stack.back().commit_id;
@@ -366,7 +381,7 @@ void SubsController::Undo() {
 }
 
 void SubsController::Redo() {
-	if(redo_stack.empty()) return;
+	if (redo_stack.empty()) return;
 	undo_stack.splice(undo_stack.end(), redo_stack, std::prev(redo_stack.end()));
 
 	commit_id = undo_stack.back().commit_id;
@@ -385,9 +400,9 @@ wxString SubsController::GetRedoDescription() const {
 }
 
 agi::fs::path SubsController::Filename() const {
-	if(!filename.empty()) return filename;
+	if (!filename.empty()) return filename;
 
-		// Apple HIG says "untitled" should not be capitalised
+	// Apple HIG says "untitled" should not be capitalised
 #ifndef __WXMAC__
 	return _("Untitled").wx_str();
 #else

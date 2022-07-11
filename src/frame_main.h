@@ -35,23 +35,18 @@ class AegisubApp;
 class AsyncVideoProvider;
 class AudioBox;
 class VideoBox;
-namespace agi {
-class AudioProvider;
-}
-namespace agi {
-struct Context;
-class OptionValue;
-} // namespace agi
+namespace agi { class AudioProvider; }
+namespace agi { struct Context; class OptionValue; }
 
 class FrameMain : public wxFrame {
 	friend class AegisubApp;
 
 	std::unique_ptr<agi::Context> context;
 
-	// XXX: Make Freeze()/Thaw() noops on GTK, this seems to be buggy
+    // XXX: Make Freeze()/Thaw() noops on GTK, this seems to be buggy
 #ifdef __WXGTK__
-	void Freeze(void) {}
-	void Thaw(void) {}
+    void Freeze(void) {}
+    void Thaw(void) {}
 #endif
 
 	bool showVideo = true; ///< Is the video display shown?
@@ -62,47 +57,43 @@ class FrameMain : public wxFrame {
 
 	void UpdateTitle();
 
-	void OnKeyDown(wxKeyEvent& event);
-	void OnMouseEvent(wxMouseEvent& event);
-	void OnMouseWheel(wxMouseEvent& evt);
+	void OnKeyDown(wxKeyEvent &event);
+	void OnMouseEvent(wxMouseEvent &event);
+	void OnMouseWheel(wxMouseEvent &evt);
 
-	void OnStatusClear(wxTimerEvent& event);
-	void OnCloseWindow(wxCloseEvent& event);
+	void OnStatusClear(wxTimerEvent &event);
+	void OnCloseWindow (wxCloseEvent &event);
 
-	void OnAudioOpen(agi::AudioProvider* provider);
-	void OnVideoOpen(AsyncVideoProvider* provider);
+	void OnAudioOpen(agi::AudioProvider *provider);
+	void OnVideoOpen(AsyncVideoProvider *provider);
 	void OnVideoDetach(agi::OptionValue const& opt);
 	void OnSubtitlesOpen();
 
 	void EnableToolBar(agi::OptionValue const& opt);
 
-	AudioBox* audioBox; ///< The audio area
-	VideoBox* videoBox; ///< The video area
+	AudioBox *audioBox;      ///< The audio area
+	VideoBox *videoBox;      ///< The video area
 
-	wxSizer* MainSizer;  ///< Arranges things from top to bottom in the window
-	wxSizer* TopSizer;   ///< Arranges video box and tool box from left to right
-	wxSizer* ToolsSizer; ///< Arranges audio and editing areas top to bottom
+	wxSizer *MainSizer;  ///< Arranges things from top to bottom in the window
+	wxSizer *TopSizer;   ///< Arranges video box and tool box from left to right
+	wxSizer *ToolsSizer; ///< Arranges audio and editing areas top to bottom
 
-  public:
+public:
 	FrameMain();
 	~FrameMain();
 
 	/// Set the status bar text
 	/// @param text New status bar text
 	/// @param ms Time in milliseconds that the message should be visible
-	void StatusTimeout(wxString text, int ms = 10000);
+	void StatusTimeout(wxString text,int ms=10000);
 
 	/// @brief Set the video and audio display visibility
 	/// @param video -1: leave unchanged; 0: hide; 1: show
 	/// @param audio -1: leave unchanged; 0: hide; 1: show
-	void SetDisplayMode(int showVid, int showAudio);
+	void SetDisplayMode(int showVid,int showAudio);
 
-	bool IsVideoShown() const {
-		return showVideo;
-	}
-	bool IsAudioShown() const {
-		return showAudio;
-	}
+	bool IsVideoShown() const { return showVideo; }
+	bool IsAudioShown() const { return showAudio; }
 
 	DECLARE_EVENT_TABLE()
 };

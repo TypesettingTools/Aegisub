@@ -48,32 +48,33 @@ using namespace agi;
 class DummyAudioProvider final : public AudioProvider {
 	bool noise;
 
-	void FillBuffer(void* buf, int64_t start, int64_t count) const override {
-		if(noise) {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+		if (noise) {
 			std::default_random_engine e(int32_t(start >> 32) ^ int32_t(start));
 			std::uniform_int_distribution<int16_t> uniform_dist(-5000, 5000);
-			for(int64_t i = 0; i < count; ++i)
-				static_cast<short*>(buf)[i] = uniform_dist(e);
-		} else
+			for (int64_t i = 0; i < count; ++i)
+				static_cast<short *>(buf)[i] = uniform_dist(e);
+		}
+		else
 			memset(buf, 0, static_cast<size_t>(count) * bytes_per_sample);
 	}
 
-  public:
+public:
 	DummyAudioProvider(agi::fs::path const& uri) {
 		noise = boost::contains(uri.string(), ":noise?");
 		channels = 1;
 		sample_rate = 44100;
 		bytes_per_sample = 2;
 		float_samples = false;
-		decoded_samples = num_samples = (int64_t)5 * 30 * 60 * 1000 * sample_rate / 1000;
+		decoded_samples = num_samples = (int64_t)5*30*60*1000 * sample_rate / 1000;
 	}
 };
-} // namespace
+}
 
 namespace agi {
-std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& file,
-                                                        agi::BackgroundRunner*) {
-	if(!boost::starts_with(file.string(), "dummy-audio:")) return {};
+std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *) {
+	if (!boost::starts_with(file.string(), "dummy-audio:"))
+		return {};
 	return agi::make_unique<DummyAudioProvider>(file);
 }
-} // namespace agi
+}

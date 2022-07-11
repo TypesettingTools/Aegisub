@@ -53,9 +53,9 @@ struct FrameReadyEvent;
 struct VideoFrame;
 
 namespace agi {
-struct Context;
-class OptionValue;
-} // namespace agi
+	struct Context;
+	class OptionValue;
+}
 
 class VideoDisplay final : public wxGLCanvas {
 	/// Signals the display is connected to
@@ -63,7 +63,7 @@ class VideoDisplay final : public wxGLCanvas {
 
 	const agi::OptionValue* autohideTools;
 
-	agi::Context* con;
+	agi::Context *con;
 
 	std::unique_ptr<wxMenu> context_menu;
 
@@ -77,11 +77,9 @@ class VideoDisplay final : public wxGLCanvas {
 	int viewport_left = 0;
 	/// The width of the video in screen pixels
 	int viewport_width = 0;
-	/// Screen pixels between the bottom of the canvas and the bottom of the video; used for
-	/// glViewport
+	/// Screen pixels between the bottom of the canvas and the bottom of the video; used for glViewport
 	int viewport_bottom = 0;
-	/// Screen pixels between the bottom of the canvas and the top of the video; used for coordinate
-	/// space conversion
+	/// Screen pixels between the bottom of the canvas and the top of the video; used for coordinate space conversion
 	int viewport_top = 0;
 	/// The height of the video in screen pixels
 	int viewport_height = 0;
@@ -101,7 +99,7 @@ class VideoDisplay final : public wxGLCanvas {
 	std::unique_ptr<wxGLContext> glContext;
 
 	/// The dropdown box for selecting zoom levels
-	wxComboBox* zoomBox;
+	wxComboBox *zoomBox;
 
 	/// Whether the display can be freely resized by the user
 	bool freeSize;
@@ -134,19 +132,23 @@ class VideoDisplay final : public wxGLCanvas {
 	void SetZoomFromBoxText(wxCommandEvent&);
 
 	/// @brief Key event handler
-	void OnKeyDown(wxKeyEvent& event);
+	void OnKeyDown(wxKeyEvent &event);
 	/// @brief Mouse event handler
 	void OnMouseEvent(wxMouseEvent& event);
 	void OnMouseWheel(wxMouseEvent& event);
 	void OnMouseLeave(wxMouseEvent& event);
 	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
-	void OnSizeEvent(wxSizeEvent& event);
+	void OnSizeEvent(wxSizeEvent &event);
 	void OnContextMenu(wxContextMenuEvent&);
 
-  public:
+public:
 	/// @brief Constructor
-	VideoDisplay(wxToolBar* visualSubToolBar, bool isDetached, wxComboBox* zoomBox,
-	             wxWindow* parent, agi::Context* context);
+	VideoDisplay(
+		wxToolBar *visualSubToolBar,
+		bool isDetached,
+		wxComboBox *zoomBox,
+		wxWindow* parent,
+		agi::Context *context);
 	~VideoDisplay();
 
 	/// @brief Render the currently visible frame

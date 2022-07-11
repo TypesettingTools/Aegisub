@@ -23,25 +23,27 @@
 #include <boost/algorithm/string/predicate.hpp>
 
 // Out-of-line to anchor vtable
-AssEntryGroup AssAttachment::Group() const {
-	return group;
-}
+AssEntryGroup AssAttachment::Group() const { return group; }
 
 AssAttachment::AssAttachment(std::string const& header, AssEntryGroup group)
-    : entry_data(header + "\r\n"), filename(header.substr(10)), group(group) {}
+: entry_data(header + "\r\n")
+, filename(header.substr(10))
+, group(group)
+{
+}
 
 AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
-    : filename(name.filename().string()), group(group) {
+: filename(name.filename().string())
+, group(group)
+{
 	// SSA stuffs some information about the font in the embedded filename, but
 	// nothing else uses it so just do the absolute minimum (0 is the encoding)
-	if(boost::iends_with(filename.get(), ".ttf"))
-		filename = filename.get().substr(0, filename.get().size() - 4) + "_0" +
-		           filename.get().substr(filename.get().size() - 4);
+	if (boost::iends_with(filename.get(), ".ttf"))
+		filename = filename.get().substr(0, filename.get().size() - 4) + "_0" + filename.get().substr(filename.get().size() - 4);
 
 	agi::read_file_mapping file(name);
 	auto buff = file.read();
-	entry_data =
-	    (group == AssEntryGroup::FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
+	entry_data = (group == AssEntryGroup::FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
 	entry_data = entry_data.get() + agi::ass::UUEncode(buff, buff + file.size());
 }
 
@@ -52,17 +54,17 @@ size_t AssAttachment::GetSize() const {
 
 void AssAttachment::Extract(agi::fs::path const& filename) const {
 	auto header_end = entry_data.get().find('\n');
-	auto decoded =
-	    agi::ass::UUDecode(entry_data.get().c_str() + header_end + 1, &entry_data.get().back() + 1);
+	auto decoded = agi::ass::UUDecode(entry_data.get().c_str() + header_end + 1, &entry_data.get().back() + 1);
 	agi::io::Save(filename, true).Get().write(&decoded[0], decoded.size());
 }
 
 std::string AssAttachment::GetFileName(bool raw) const {
-	if(raw || !boost::iends_with(filename.get(), ".ttf")) return filename;
+	if (raw || !boost::iends_with(filename.get(), ".ttf")) return filename;
 
 	// Remove stuff after last underscore if it's a font
 	std::string::size_type last_under = filename.get().rfind('_');
-	if(last_under == std::string::npos) return filename;
+	if (last_under == std::string::npos)
+		return filename;
 
 	return filename.get().substr(0, last_under) + ".ttf";
 }

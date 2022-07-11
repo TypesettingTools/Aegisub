@@ -33,31 +33,33 @@ class GdiFont {
 	size_t size = 0;
 	std::unique_ptr<char[]> font_data;
 
-  public:
-	GdiFont(HFONT font, std::shared_ptr<HDC__> dc) : font(font), dc(dc) {}
+public:
+	GdiFont(HFONT font, std::shared_ptr<HDC__> dc) : font(font), dc(dc) { }
 	~GdiFont() { DeleteObject(font); }
 
-	size_t GetData(unsigned char* data, size_t offset, size_t len);
+	size_t GetData(unsigned char *data, size_t offset, size_t len);
 	bool CheckPostscript() { return false; }
 	bool CheckGlyph(uint32_t codepoint) { return true; }
 	void Destroy() { delete this; }
 };
 
-size_t GdiFont::GetData(unsigned char* data, size_t offset, size_t len) {
-	if(!font_data) {
+size_t GdiFont::GetData(unsigned char *data, size_t offset, size_t len) {
+	if (!font_data) {
 		SelectObject(dc.get(), font);
 		size = GetFontData(dc.get(), 0, 0, 0, 0);
-		if(size == GDI_ERROR) return 0;
+		if (size == GDI_ERROR)
+			return 0;
 		font_data.reset(new char[size]);
 		GetFontData(dc.get(), 0, 0, font_data.get(), size);
 	}
 
-	if(!data) return size;
+	if (!data)
+		return size;
 	memcpy(data, font_data.get() + offset, len);
 	return len;
 }
 
-void match_fonts(ASS_Library* lib, ASS_FontProvider* provider, char* name) {
+void match_fonts(ASS_Library *lib, ASS_FontProvider *provider, char *name) {
 	std::shared_ptr<HDC__> dc(CreateCompatibleDC(nullptr), [](HDC dc) { DeleteDC(dc); });
 
 	LOGFONTW lf{};
@@ -69,13 +71,13 @@ void match_fonts(ASS_Library* lib, ASS_FontProvider* provider, char* name) {
 		meta.slant = lf.lfItalic ? FONT_SLANT_ITALIC : FONT_SLANT_NONE;
 		meta.width = FONT_WIDTH_NORMAL;
 
-		meta.families = static_cast<char**>(malloc(sizeof(char*)));
+		meta.families= static_cast<char **>(malloc(sizeof(char *)));
 		meta.n_family = 1;
 
-		auto name = static_cast<char*>(malloc(LF_FACESIZE * 4));
+		auto name = static_cast<char *>(malloc(LF_FACESIZE * 4));
 		auto len = wcsnlen(lf.lfFaceName, LF_FACESIZE);
-		auto written = WideCharToMultiByte(CP_UTF8, 0, lf.lfFaceName, len, name, LF_FACESIZE * 4,
-		                                   nullptr, nullptr);
+		auto written = WideCharToMultiByte(CP_UTF8, 0, lf.lfFaceName, len,
+		                                   name, LF_FACESIZE * 4, nullptr, nullptr);
 		name[written] = 0;
 		meta.families[0] = name;
 
@@ -83,24 +85,25 @@ void match_fonts(ASS_Library* lib, ASS_FontProvider* provider, char* name) {
 		ass_font_provider_add_font(provider, &meta, nullptr, 0, new GdiFont(hfont, dc));
 	};
 	using type = decltype(cb);
-	EnumFontFamiliesEx(
-	    dc.get(), &lf,
-	    [](const LOGFONT* lf, const TEXTMETRIC*, DWORD, LPARAM lParam) -> int {
-		    (*reinterpret_cast<type*>(lParam))(*lf);
-		    return 1;
-	    },
-	    (LPARAM)&cb, 0);
+	EnumFontFamiliesEx(dc.get(), &lf, [](const LOGFONT *lf, const TEXTMETRIC *, DWORD, LPARAM lParam) -> int {
+		(*reinterpret_cast<type*>(lParam))(*lf);
+		return 1;
+	}, (LPARAM)&cb, 0);
 }
 
 template <typename T, T> struct wrapper;
 template <typename T, typename R, typename... Args, R (T::*method)(Args...)>
 struct wrapper<R (T::*)(Args...), method> {
-	static R call(void* obj, Args... args) { return (static_cast<T*>(obj)->*method)(args...); }
+	static R call(void *obj, Args... args) {
+		return (static_cast<T*>(obj)->*method)(args...);
+	}
 };
-} // namespace
+}
 
-extern "C" ASS_FontProvider* ass_directwrite_add_provider(ASS_Library*, ASS_FontSelector* selector,
-                                                          const char*) {
+extern "C"
+ASS_FontProvider *ass_directwrite_add_provider(ASS_Library *,
+                                               ASS_FontSelector *selector,
+                                               const char *) {
 #define WRAP(method) &wrapper<decltype(&method), &method>::call
 	static ASS_FontProviderFuncs callbacks = {
 		WRAP(GdiFont::GetData),

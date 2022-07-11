@@ -40,120 +40,114 @@
 
 namespace {
 class DialogSelection final : public wxDialog {
-	agi::Context* con; ///< Project context
+	agi::Context *con; ///< Project context
 
-	wxTextCtrl* match_text;                 ///< Text to search for
-	wxCheckBox* case_sensitive;             ///< Should the search be case-sensitive
-	wxCheckBox* apply_to_dialogue;          ///< Select/deselect uncommented lines
-	wxCheckBox* apply_to_comments;          ///< Select/deselect commented lines
-	wxRadioButton* select_unmatching_lines; ///< Select lines which don't match instead
-	wxRadioBox* selection_change_type;      ///< What sort of action to take on the selection
-	wxRadioBox* dialogue_field;             ///< Which dialogue field to look at
-	wxRadioBox* match_mode;
+	wxTextCtrl *match_text; ///< Text to search for
+	wxCheckBox *case_sensitive; ///< Should the search be case-sensitive
+	wxCheckBox *apply_to_dialogue; ///< Select/deselect uncommented lines
+	wxCheckBox *apply_to_comments; ///< Select/deselect commented lines
+	wxRadioButton *select_unmatching_lines; ///< Select lines which don't match instead
+	wxRadioBox *selection_change_type; ///< What sort of action to take on the selection
+	wxRadioBox *dialogue_field; ///< Which dialogue field to look at
+	wxRadioBox *match_mode;
 
 	void Process(wxCommandEvent&);
 
 	/// Dialogue/Comment check handler to ensure at least one is always checked
 	/// @param chk The checkbox to check if both are clear
-	void OnDialogueCheckbox(wxCheckBox* chk);
+	void OnDialogueCheckbox(wxCheckBox *chk);
 
-  public:
-	DialogSelection(agi::Context* c);
+public:
+	DialogSelection(agi::Context *c);
 	~DialogSelection();
 };
 
-enum class Action { SET = 0, ADD, SUB, INTERSECT };
+enum class Action {
+	SET = 0,
+	ADD,
+	SUB,
+	INTERSECT
+};
 
-enum Mode { EXACT = 0, CONTAINS, REGEXP };
+enum Mode {
+	EXACT = 0,
+	CONTAINS,
+	REGEXP
+};
 
-std::set<AssDialogue*> process(std::string const& match_text, bool match_case, Mode mode,
-                               bool invert, bool comments, bool dialogue, int field_n,
-                               AssFile* ass) {
-	SearchReplaceSettings settings = { match_text,
-		                               std::string(),
-		                               static_cast<SearchReplaceSettings::Field>(field_n),
-		                               SearchReplaceSettings::Limit::ALL,
-		                               match_case,
-		                               mode == Mode::REGEXP,
-		                               false,
-		                               false,
-		                               mode == Mode::EXACT };
+std::set<AssDialogue*> process(std::string const& match_text, bool match_case, Mode mode, bool invert, bool comments, bool dialogue, int field_n, AssFile *ass) {
+	SearchReplaceSettings settings = {
+		match_text,
+		std::string(),
+		static_cast<SearchReplaceSettings::Field>(field_n),
+		SearchReplaceSettings::Limit::ALL,
+		match_case,
+		mode == Mode::REGEXP,
+		false,
+		false,
+		mode == Mode::EXACT
+	};
 
 	auto predicate = SearchReplaceEngine::GetMatcher(settings);
 
 	std::set<AssDialogue*> matches;
-	for(auto& diag : ass->Events) {
-		if(diag.Comment && !comments) continue;
-		if(!diag.Comment && !dialogue) continue;
+	for (auto& diag : ass->Events) {
+		if (diag.Comment && !comments) continue;
+		if (!diag.Comment && !dialogue) continue;
 
-		if(invert != predicate(&diag, 0)) matches.insert(&diag);
+		if (invert != predicate(&diag, 0))
+			matches.insert(&diag);
 	}
 
 	return matches;
 }
 
-DialogSelection::DialogSelection(agi::Context* c)
-    : wxDialog(c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTION), con(c) {
+DialogSelection::DialogSelection(agi::Context *c) :
+wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTION)
+, con(c)
+{
 	SetIcon(GETICON(select_lines_button_16));
 
-	wxSizer* main_sizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
 	wxSizerFlags main_flags = wxSizerFlags().Expand().Border();
 
-	wxRadioButton* select_matching_lines = nullptr;
+	wxRadioButton *select_matching_lines = nullptr;
 	{
-		wxSizer* match_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Match"));
+		wxSizer *match_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Match"));
 		{
 			wxSizerFlags radio_flags = wxSizerFlags().Border(wxLEFT | wxRIGHT);
-			wxSizer* match_radio_line = new wxBoxSizer(wxHORIZONTAL);
-			match_radio_line->Add(select_matching_lines =
-			                          new wxRadioButton(this, -1, _("&Matches"), wxDefaultPosition,
-			                                            wxDefaultSize, wxRB_GROUP),
-			                      radio_flags);
-			match_radio_line->Add(select_unmatching_lines =
-			                          new wxRadioButton(this, -1, _("&Doesn't Match")),
-			                      radio_flags);
-			match_radio_line->Add(case_sensitive = new wxCheckBox(this, -1, _("Match c&ase")),
-			                      radio_flags);
+			wxSizer *match_radio_line = new wxBoxSizer(wxHORIZONTAL);
+			match_radio_line->Add(select_matching_lines = new wxRadioButton(this, -1, _("&Matches"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP), radio_flags);
+			match_radio_line->Add(select_unmatching_lines = new wxRadioButton(this, -1, _("&Doesn't Match")), radio_flags);
+			match_radio_line->Add(case_sensitive = new wxCheckBox(this, -1, _("Match c&ase")), radio_flags);
 			match_sizer->Add(match_radio_line);
 		}
-		match_sizer->Add(match_text = new wxTextCtrl(
-		                     this, -1, to_wx(OPT_GET("Tool/Select Lines/Text")->GetString())),
-		                 main_flags);
+		match_sizer->Add(match_text = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Select Lines/Text")->GetString())), main_flags);
 
 		main_sizer->Add(match_sizer, main_flags);
 	}
 
 	{
 		wxString modes[] = { _("&Exact match"), _("&Contains"), _("&Regular Expression match") };
-		main_sizer->Add(match_mode = new wxRadioBox(this, -1, _("Mode"), wxDefaultPosition,
-		                                            wxDefaultSize, 3, modes, 1),
-		                main_flags);
+		main_sizer->Add(match_mode = new wxRadioBox(this, -1, _("Mode"), wxDefaultPosition, wxDefaultSize, 3, modes, 1), main_flags);
 	}
 
 	{
 		wxString fields[] = { _("&Text"), _("&Style"), _("Act&or"), _("E&ffect") };
-		main_sizer->Add(dialogue_field = new wxRadioBox(this, -1, _("In Field"), wxDefaultPosition,
-		                                                wxDefaultSize, 4, fields),
-		                main_flags);
+		main_sizer->Add(dialogue_field = new wxRadioBox(this, -1, _("In Field"), wxDefaultPosition, wxDefaultSize, 4, fields), main_flags);
 	}
 
 	{
-		wxSizer* comment_sizer =
-		    new wxStaticBoxSizer(wxHORIZONTAL, this, _("Match dialogues/comments"));
-		comment_sizer->Add(apply_to_dialogue = new wxCheckBox(this, -1, _("D&ialogues")),
-		                   wxSizerFlags().Border());
-		comment_sizer->Add(apply_to_comments = new wxCheckBox(this, -1, _("Comme&nts")),
-		                   wxSizerFlags().Border());
+		wxSizer *comment_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Match dialogues/comments"));
+		comment_sizer->Add(apply_to_dialogue = new wxCheckBox(this, -1, _("D&ialogues")), wxSizerFlags().Border());
+		comment_sizer->Add(apply_to_comments = new wxCheckBox(this, -1, _("Comme&nts")), wxSizerFlags().Border());
 		main_sizer->Add(comment_sizer, main_flags);
 	}
 
 	{
-		wxString actions[] = { _("Set se&lection"), _("&Add to selection"),
-			                   _("S&ubtract from selection"), _("Intersect &with selection") };
-		main_sizer->Add(selection_change_type = new wxRadioBox(
-		                    this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, 4, actions, 1),
-		                main_flags);
+		wxString actions[] = { _("Set se&lection"), _("&Add to selection"), _("S&ubtract from selection"), _("Intersect &with selection") };
+		main_sizer->Add(selection_change_type = new wxRadioBox(this, -1, _("Action"), wxDefaultPosition, wxDefaultSize, 4, actions, 1), main_flags);
 	}
 
 	main_sizer->Add(CreateButtonSizer(wxOK | wxCANCEL | wxHELP), main_flags);
@@ -172,10 +166,8 @@ DialogSelection::DialogSelection(agi::Context* c)
 
 	Bind(wxEVT_BUTTON, &DialogSelection::Process, this, wxID_OK);
 	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Select Lines"), wxID_HELP);
-	apply_to_comments->Bind(
-	    wxEVT_CHECKBOX, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_dialogue));
-	apply_to_dialogue->Bind(
-	    wxEVT_CHECKBOX, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_comments));
+	apply_to_comments->Bind(wxEVT_CHECKBOX, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_dialogue));
+	apply_to_dialogue->Bind(wxEVT_CHECKBOX, std::bind(&DialogSelection::OnDialogueCheckbox, this, apply_to_comments));
 }
 
 DialogSelection::~DialogSelection() {
@@ -193,12 +185,13 @@ void DialogSelection::Process(wxCommandEvent&) {
 	std::set<AssDialogue*> matches;
 
 	try {
-		matches =
-		    process(from_wx(match_text->GetValue()), case_sensitive->IsChecked(),
-		            static_cast<Mode>(match_mode->GetSelection()),
-		            select_unmatching_lines->GetValue(), apply_to_comments->IsChecked(),
-		            apply_to_dialogue->IsChecked(), dialogue_field->GetSelection(), con->ass.get());
-	} catch(agi::Exception const&) {
+		matches = process(
+			from_wx(match_text->GetValue()), case_sensitive->IsChecked(),
+			static_cast<Mode>(match_mode->GetSelection()), select_unmatching_lines->GetValue(),
+			apply_to_comments->IsChecked(), apply_to_dialogue->IsChecked(),
+			dialogue_field->GetSelection(), con->ass.get());
+	}
+	catch (agi::Exception const&) {
 		Close();
 		return;
 	}
@@ -206,24 +199,24 @@ void DialogSelection::Process(wxCommandEvent&) {
 	auto action = static_cast<Action>(selection_change_type->GetSelection());
 
 	Selection old_sel, new_sel;
-	if(action != Action::SET) old_sel = con->selectionController->GetSelectedSet();
+	if (action != Action::SET)
+		old_sel = con->selectionController->GetSelectedSet();
 
 	wxString message;
 	size_t count = 0;
-	switch(action) {
+	switch (action) {
 		case Action::SET:
 			new_sel = std::move(matches);
-			message = (count = new_sel.size()) ? fmt_plural(count, "Selection was set to one line",
-			                                                "Selection was set to %u lines", count)
-			                                   : _("Selection was set to no lines");
+			message = (count = new_sel.size())
+				? fmt_plural(count, "Selection was set to one line", "Selection was set to %u lines", count)
+				: _("Selection was set to no lines");
 			break;
 
 		case Action::ADD:
 			boost::set_union(old_sel, matches, inserter(new_sel, new_sel.begin()));
 			message = (count = new_sel.size() - old_sel.size())
-			              ? fmt_plural(count, "One line was added to selection",
-			                           "%u lines were added to selection", count)
-			              : _("No lines were added to selection");
+				? fmt_plural(count, "One line was added to selection", "%u lines were added to selection", count)
+				: _("No lines were added to selection");
 			break;
 
 		case Action::SUB:
@@ -232,31 +225,32 @@ void DialogSelection::Process(wxCommandEvent&) {
 
 		case Action::INTERSECT:
 			boost::set_intersection(old_sel, matches, inserter(new_sel, new_sel.begin()));
-		sub_message:
+			sub_message:
 			message = (count = old_sel.size() - new_sel.size())
-			              ? fmt_plural(count, "One line was removed from selection",
-			                           "%u lines were removed from selection", count)
-			              : _("No lines were removed from selection");
+				? fmt_plural(count, "One line was removed from selection", "%u lines were removed from selection", count)
+				: _("No lines were removed from selection");
 			break;
 	}
 
-	if(count == 0)
+	if (count == 0)
 		wxMessageBox(message, _("Selection"), wxOK | wxCENTER, this);
 	else
 		con->frame->StatusTimeout(message);
 
-	AssDialogue* new_active = con->selectionController->GetActiveLine();
-	if(new_sel.size() && !new_sel.count(new_active)) new_active = *new_sel.begin();
+	AssDialogue *new_active = con->selectionController->GetActiveLine();
+	if (new_sel.size() && !new_sel.count(new_active))
+		new_active = *new_sel.begin();
 	con->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
 
 	Close();
 }
 
-void DialogSelection::OnDialogueCheckbox(wxCheckBox* chk) {
-	if(!apply_to_dialogue->IsChecked() && !apply_to_comments->GetValue()) chk->SetValue(true);
+void DialogSelection::OnDialogueCheckbox(wxCheckBox *chk) {
+	if(!apply_to_dialogue->IsChecked() && !apply_to_comments->GetValue())
+		chk->SetValue(true);
 }
-} // namespace
+}
 
-void ShowSelectLinesDialog(agi::Context* c) {
+void ShowSelectLinesDialog(agi::Context *c) {
 	c->dialog->Show<DialogSelection>(c);
 }

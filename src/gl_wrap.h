@@ -35,7 +35,7 @@ class OpenGLWrapper {
 	bool transform_pushed;
 	void PrepareTransform();
 
-  public:
+public:
 	OpenGLWrapper();
 
 	void SetLineColour(wxColour col, float alpha = 1.0f, int width = 1);
@@ -55,18 +55,14 @@ class OpenGLWrapper {
 	void DrawLine(Vector2D p1, Vector2D p2) const;
 	void DrawDashedLine(Vector2D p1, Vector2D p2, float dashLen) const;
 	void DrawEllipse(Vector2D center, Vector2D radius) const;
-	void DrawCircle(Vector2D center, float radius) const {
-		DrawEllipse(center, Vector2D(radius, radius));
-	}
+	void DrawCircle(Vector2D center, float radius) const { DrawEllipse(center, Vector2D(radius, radius)); }
 	void DrawRectangle(Vector2D p1, Vector2D p2) const;
-	void DrawRing(Vector2D center, float r1, float r2, float ar = 1.0f, float arcStart = 0.0f,
-	              float arcEnd = 0.0f) const;
+	void DrawRing(Vector2D center, float r1, float r2, float ar = 1.0f, float arcStart = 0.0f, float arcEnd = 0.0f) const;
 	void DrawTriangle(Vector2D p1, Vector2D p2, Vector2D p3) const;
 
 	void DrawLines(size_t dim, std::vector<float> const& lines);
-	void DrawLines(size_t dim, std::vector<float> const& lines, size_t c_dim,
-	               std::vector<float> const& colors);
-	void DrawLines(size_t dim, const float* lines, size_t n);
+	void DrawLines(size_t dim, std::vector<float> const& lines, size_t c_dim, std::vector<float> const& colors);
+	void DrawLines(size_t dim, const float *lines, size_t n);
 	void DrawLineStrip(size_t dim, std::vector<float> const& lines);
 
 	/// Draw a multipolygon serialized into a single array
@@ -76,9 +72,7 @@ class OpenGLWrapper {
 	/// @param video_pos Top-left corner of the visible area
 	/// @param video_size Bottom-right corner of the visible area
 	/// @param invert Draw the area outside the polygons instead
-	void DrawMultiPolygon(std::vector<float> const& points, std::vector<int>& start,
-	                      std::vector<int>& count, Vector2D video_pos, Vector2D video_size,
-	                      bool invert);
+	void DrawMultiPolygon(std::vector<float> const& points, std::vector<int> &start, std::vector<int> &count, Vector2D video_pos, Vector2D video_size, bool invert);
 
-	static bool IsExtensionSupported(const char* ext);
+	static bool IsExtensionSupported(const char *ext);
 };

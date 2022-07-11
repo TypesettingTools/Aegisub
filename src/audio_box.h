@@ -33,9 +33,9 @@
 #include <libaegisub/signal.h>
 
 namespace agi {
-struct Context;
-class OptionValue;
-} // namespace agi
+	struct Context;
+	class OptionValue;
+}
 
 class AudioController;
 class AudioDisplay;
@@ -51,37 +51,38 @@ class wxSlider;
 /// @brief Panel with audio playback and timing controls, also containing an AudioDisplay
 class AudioBox final : public wxSashWindow {
 	/// The controller controlling this audio box
-	AudioController* controller;
+	AudioController *controller;
 
 	/// Project context this operates on
-	agi::Context* context;
+	agi::Context *context;
 
 	agi::signal::Connection audio_open_connection;
 
+
 	/// Panel containing the children
-	wxPanel* panel;
+	wxPanel *panel;
 
 	/// The audio display in the box
-	AudioDisplay* audioDisplay;
+	AudioDisplay *audioDisplay;
 
-	wxSlider* HorizontalZoom;
-	wxSlider* VerticalZoom;
-	wxSlider* VolumeBar;
+	wxSlider *HorizontalZoom;
+	wxSlider *VerticalZoom;
+	wxSlider *VolumeBar;
 
 	// Mouse wheel zoom accumulator
 	int mouse_zoom_accum = 0;
 
 	void SetHorizontalZoom(int new_zoom);
 	void OnAudioOpen();
-	void OnHorizontalZoom(wxScrollEvent& event);
-	void OnMouseWheel(wxMouseEvent& evt);
-	void OnSashDrag(wxSashEvent& event);
+	void OnHorizontalZoom(wxScrollEvent &event);
+	void OnMouseWheel(wxMouseEvent &evt);
+	void OnSashDrag(wxSashEvent &event);
 	void OnVerticalLink(agi::OptionValue const& opt);
-	void OnVerticalZoom(wxScrollEvent& event);
-	void OnVolume(wxScrollEvent& event);
+	void OnVerticalZoom(wxScrollEvent &event);
+	void OnVolume(wxScrollEvent &event);
 
-  public:
-	AudioBox(wxWindow* parent, agi::Context* context);
+public:
+	AudioBox(wxWindow *parent, agi::Context *context);
 
 	void ShowKaraokeBar(bool show);
 

@@ -48,22 +48,26 @@
 
 #define TimeEditWindowStyle
 
-enum { Time_Edit_Copy = 1320, Time_Edit_Paste };
+enum {
+	Time_Edit_Copy = 1320,
+	Time_Edit_Paste
+};
 
-TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context* c, const std::string& value,
-                   const wxSize& size, bool asEnd)
-    : wxTextCtrl(parent, id, to_wx(value), wxDefaultPosition, size,
-                 wxTE_CENTRE | wxTE_PROCESS_ENTER),
-      c(c), isEnd(asEnd), insert(!OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool()),
-      insert_opt(OPT_SUB("Subtitle/Time Edit/Insert Mode", &TimeEdit::OnInsertChanged, this)) {
+TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::string& value, const wxSize& size, bool asEnd)
+: wxTextCtrl(parent, id, to_wx(value), wxDefaultPosition, size, wxTE_CENTRE | wxTE_PROCESS_ENTER)
+, c(c)
+, isEnd(asEnd)
+, insert(!OPT_GET("Subtitle/Time Edit/Insert Mode")->GetBool())
+, insert_opt(OPT_SUB("Subtitle/Time Edit/Insert Mode", &TimeEdit::OnInsertChanged, this))
+{
 	// Set validator
 	wxTextValidator val(wxFILTER_INCLUDE_CHAR_LIST);
-	wxString includes[] = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ":", "," };
+	wxString includes[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ":", ","};
 	val.SetIncludes(wxArrayString(countof(includes), includes));
 	SetValidator(val);
 
 	// Other stuff
-	if(value.empty()) SetValue(to_wx(time.GetAssFormatted()));
+	if (value.empty()) SetValue(to_wx(time.GetAssFormatted()));
 
 	Bind(wxEVT_MENU, std::bind(&TimeEdit::CopyTime, this), Time_Edit_Copy);
 	Bind(wxEVT_MENU, std::bind(&TimeEdit::PasteTime, this), Time_Edit_Paste);
@@ -75,7 +79,7 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context* c, const std::
 }
 
 void TimeEdit::SetTime(agi::Time new_time) {
-	if(time != new_time) {
+	if (time != new_time) {
 		time = new_time;
 		UpdateText();
 	}
@@ -90,39 +94,39 @@ void TimeEdit::SetFrame(int fn) {
 }
 
 void TimeEdit::SetByFrame(bool enableByFrame) {
-	if(enableByFrame == byFrame) return;
+	if (enableByFrame == byFrame) return;
 
 	byFrame = enableByFrame && c->project->Timecodes().IsLoaded();
 	UpdateText();
 }
 
-void TimeEdit::OnModified(wxCommandEvent& event) {
+void TimeEdit::OnModified(wxCommandEvent &event) {
 	event.Skip();
-	if(byFrame) {
+	if (byFrame) {
 		long temp = 0;
 		GetValue().ToLong(&temp);
 		time = c->project->Timecodes().TimeAtFrame(temp, isEnd ? agi::vfr::END : agi::vfr::START);
-	} else if(insert)
+	}
+	else if (insert)
 		time = from_wx(GetValue());
 }
 
 void TimeEdit::UpdateText() {
-	if(byFrame)
-		ChangeValue(std::to_wstring(
-		    c->project->Timecodes().FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
+	if (byFrame)
+		ChangeValue(std::to_wstring(c->project->Timecodes().FrameAtTime(time, isEnd ? agi::vfr::END : agi::vfr::START)));
 	else
 		ChangeValue(to_wx(time.GetAssFormatted()));
 }
 
-void TimeEdit::OnKeyDown(wxKeyEvent& event) {
+void TimeEdit::OnKeyDown(wxKeyEvent &event) {
 	int kc = event.GetKeyCode();
 
 	// Needs to be done here to trump user-defined hotkeys
 	int key = event.GetUnicodeKey();
-	if(event.CmdDown()) {
-		if(key == 'C' || key == 'X')
+	if (event.CmdDown()) {
+		if (key == 'C' || key == 'X')
 			CopyTime();
-		else if(key == 'V')
+		else if (key == 'V')
 			PasteTime();
 		else
 			event.Skip();
@@ -131,12 +135,12 @@ void TimeEdit::OnKeyDown(wxKeyEvent& event) {
 
 	// Shift-Insert would paste the stuff anyway
 	// but no one updates the private "time" variable.
-	if(event.ShiftDown() && kc == WXK_INSERT) {
+	if (event.ShiftDown() && kc == WXK_INSERT) {
 		PasteTime();
 		return;
 	}
 
-	if(byFrame || insert) {
+	if (byFrame || insert) {
 		event.Skip();
 		return;
 	}
@@ -144,38 +148,41 @@ void TimeEdit::OnKeyDown(wxKeyEvent& event) {
 
 	// On OS X backspace is reported as delete
 #ifdef __APPLE__
-	if(kc == WXK_DELETE) kc = WXK_BACK;
+	if (kc == WXK_DELETE)
+		kc = WXK_BACK;
 #endif
 
 	// Back just moves cursor back one without deleting
-	if(kc == WXK_BACK) {
+	if (kc == WXK_BACK) {
 		long start = GetInsertionPoint();
-		if(start > 0) SetInsertionPoint(start - 1);
+		if (start > 0)
+			SetInsertionPoint(start - 1);
 	}
 	// Delete just does nothing
-	else if(kc != WXK_DELETE)
+	else if (kc != WXK_DELETE)
 		event.Skip();
 }
 
-void TimeEdit::OnChar(wxKeyEvent& event) {
+void TimeEdit::OnChar(wxKeyEvent &event) {
 	event.Skip();
-	if(byFrame || insert) return;
+	if (byFrame || insert) return;
 
 	int key = event.GetUnicodeKey();
-	if((key < '0' || key > '9') && key != ';' && key != '.' && key != ',') return;
+	if ((key < '0' || key > '9') && key != ';' && key != '.' && key != ',') return;
 
 	event.Skip(false);
 
 	long start = GetInsertionPoint();
 	std::string text = from_wx(GetValue());
 	// Cursor is at the end so do nothing
-	if(start >= (long)text.size()) return;
+	if (start >= (long)text.size()) return;
 
 	// If the cursor is at punctuation, move it forward to the next digit
-	if(text[start] == ':' || text[start] == '.' || text[start] == ',') ++start;
+	if (text[start] == ':' || text[start] == '.' || text[start] == ',')
+		++start;
 
 	// : and . hop over punctuation but never insert anything
-	if(key == ':' || key == ';' || key == '.' || key == ',') {
+	if (key == ':' || key == ';' || key == '.' || key == ',') {
 		SetInsertionPoint(start);
 		return;
 	}
@@ -191,8 +198,8 @@ void TimeEdit::OnInsertChanged(agi::OptionValue const& opt) {
 	insert = !opt.GetBool();
 }
 
-void TimeEdit::OnContextMenu(wxContextMenuEvent& evt) {
-	if(byFrame || insert) {
+void TimeEdit::OnContextMenu(wxContextMenuEvent &evt) {
+	if (byFrame || insert) {
 		evt.Skip();
 		return;
 	}
@@ -203,8 +210,9 @@ void TimeEdit::OnContextMenu(wxContextMenuEvent& evt) {
 	PopupMenu(&menu);
 }
 
-void TimeEdit::OnFocusLost(wxFocusEvent& evt) {
-	if(insert || byFrame) UpdateText();
+void TimeEdit::OnFocusLost(wxFocusEvent &evt) {
+	if (insert || byFrame)
+		UpdateText();
 	evt.Skip();
 }
 
@@ -213,16 +221,16 @@ void TimeEdit::CopyTime() {
 }
 
 void TimeEdit::PasteTime() {
-	if(byFrame) {
+	if (byFrame) {
 		Paste();
 		return;
 	}
 
 	std::string text(GetClipboard());
-	if(text.empty()) return;
+	if (text.empty()) return;
 
 	agi::Time tempTime(text);
-	if(tempTime.GetAssFormatted() == text) {
+	if (tempTime.GetAssFormatted() == text) {
 		SetTime(tempTime);
 		SetSelection(0, GetValue().size());
 

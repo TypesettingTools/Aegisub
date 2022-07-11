@@ -41,11 +41,17 @@ struct SubtitlesProviderErrorEvent;
 struct VideoProviderErrorEvent;
 
 namespace agi {
-struct Context;
-class OptionValue;
-} // namespace agi
+	struct Context;
+	class OptionValue;
+}
 
-enum class AspectRatio { Default = 0, Fullscreen, Widescreen, Cinematic, Custom };
+enum class AspectRatio {
+	Default = 0,
+	Fullscreen,
+	Widescreen,
+	Cinematic,
+	Custom
+};
 
 /// Manage stuff related to video playback
 class VideoController final : public wxEvtHandler {
@@ -54,11 +60,11 @@ class VideoController final : public wxEvtHandler {
 	/// Aspect ratio was changed (type, value)
 	agi::signal::Signal<AspectRatio, double> ARChange;
 
-	agi::Context* context;
+	agi::Context *context;
 
 	/// The video provider owned by the threaded frame source, or nullptr if no
 	/// video is open
-	AsyncVideoProvider* provider = nullptr;
+	AsyncVideoProvider *provider = nullptr;
 
 	/// Last seen script color matrix
 	std::string color_matrix;
@@ -93,19 +99,19 @@ class VideoController final : public wxEvtHandler {
 
 	std::vector<agi::signal::Connection> connections;
 
-	void OnPlayTimer(wxTimerEvent& event);
+	void OnPlayTimer(wxTimerEvent &event);
 
 	void OnVideoError(VideoProviderErrorEvent const& err);
 	void OnSubtitlesError(SubtitlesProviderErrorEvent const& err);
 
-	void OnSubtitlesCommit(int type, const AssDialogue* changed);
-	void OnNewVideoProvider(AsyncVideoProvider* provider);
-	void OnActiveLineChanged(AssDialogue* line);
+	void OnSubtitlesCommit(int type, const AssDialogue *changed);
+	void OnNewVideoProvider(AsyncVideoProvider *provider);
+	void OnActiveLineChanged(AssDialogue *line);
 
 	void RequestFrame();
 
-  public:
-	VideoController(agi::Context* context);
+public:
+	VideoController(agi::Context *context);
 
 	/// Is the video currently playing?
 	bool IsPlaying() const { return playback.IsRunning(); }

@@ -19,9 +19,9 @@
 #include <string>
 
 namespace crash_writer {
-void Initialize(agi::fs::path const& path);
-void Cleanup();
+	void Initialize(agi::fs::path const& path);
+	void Cleanup();
 
-void Write();
-void Write(std::string const& error);
-} // namespace crash_writer
+	void Write();
+	void Write(std::string const& error);
+}

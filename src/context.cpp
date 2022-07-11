@@ -34,17 +34,21 @@
 
 namespace agi {
 Context::Context()
-    : ass(make_unique<AssFile>()), textSelectionController(make_unique<TextSelectionController>()),
-      subsController(make_unique<SubsController>(this)), project(make_unique<Project>(this)),
-      local_scripts(make_unique<Automation4::LocalScriptManager>(this)),
-      selectionController(make_unique<SelectionController>(this)),
-      videoController(make_unique<VideoController>(this)),
-      audioController(make_unique<AudioController>(this)),
-      initialLineState(make_unique<InitialLineState>(this)),
-      search(make_unique<SearchReplaceEngine>(this)), path(make_unique<Path>(*config::path)),
-      dialog(make_unique<DialogManager>()) {
+: ass(make_unique<AssFile>())
+, textSelectionController(make_unique<TextSelectionController>())
+, subsController(make_unique<SubsController>(this))
+, project(make_unique<Project>(this))
+, local_scripts(make_unique<Automation4::LocalScriptManager>(this))
+, selectionController(make_unique<SelectionController>(this))
+, videoController(make_unique<VideoController>(this))
+, audioController(make_unique<AudioController>(this))
+, initialLineState(make_unique<InitialLineState>(this))
+, search(make_unique<SearchReplaceEngine>(this))
+, path(make_unique<Path>(*config::path))
+, dialog(make_unique<DialogManager>())
+{
 	subsController->SetSelectionController(selectionController.get());
 }
 
 Context::~Context() = default;
-} // namespace agi
+}

@@ -28,7 +28,7 @@
 #include <unicode/utf8.h>
 
 namespace {
-int32_t next_codepoint(const char* str, size_t* i) {
+int32_t next_codepoint(const char *str, size_t *i) {
 	UChar32 c;
 	U8_NEXT_UNSAFE(str, *i, c);
 	return c;
@@ -40,8 +40,9 @@ bool is_whitespace(int32_t c) {
 
 bool is_whitespace(std::string const& str) {
 	size_t i = 0;
-	while(auto c = next_codepoint(str.c_str(), &i)) {
-		if(!u_isUWhiteSpace(c)) return false;
+	while (auto c = next_codepoint(str.c_str(), &i)) {
+		if (!u_isUWhiteSpace(c))
+			return false;
 	}
 	return true;
 }
@@ -52,14 +53,13 @@ int compare(std::string const& a, std::string const& b) {
 	return std::use_facet<collator<char>>(std::locale()).compare(collator_base::primary, a, b);
 }
 
-} // namespace
+}
 
 namespace agi {
 
-karaoke_match_result auto_match_karaoke(std::vector<std::string> const& source_strings,
-                                        std::string const& dest_string) {
+karaoke_match_result auto_match_karaoke(std::vector<std::string> const& source_strings, std::string const& dest_string) {
 	karaoke_match_result result = { 0, 0 };
-	if(source_strings.empty()) return result;
+	if (source_strings.empty()) return result;
 
 	using namespace boost::locale::boundary;
 	using boost::starts_with;
@@ -74,18 +74,19 @@ karaoke_match_result auto_match_karaoke(std::vector<std::string> const& source_s
 	// syllables and exit if either ran out.
 	auto eat_whitespace = [&]() -> bool {
 		size_t i = 0, first_non_whitespace = 0;
-		while(is_whitespace(next_codepoint(src.c_str(), &i)))
+		while (is_whitespace(next_codepoint(src.c_str(), &i)))
 			first_non_whitespace = i;
-		if(first_non_whitespace) src = src.substr(first_non_whitespace);
+		if (first_non_whitespace)
+			src = src.substr(first_non_whitespace);
 
-		while(dst != dst_end && is_whitespace(dst->str())) {
+		while (dst != dst_end && is_whitespace(dst->str())) {
 			++dst;
 			++result.destination_length;
 		}
 
 		// If we ran out of dest then this needs to match the rest of the
 		// source syllables (this probably means the user did something wrong)
-		if(dst == dst_end) {
+		if (dst == dst_end) {
 			result.source_length = source_strings.size();
 			return true;
 		}
@@ -93,28 +94,28 @@ karaoke_match_result auto_match_karaoke(std::vector<std::string> const& source_s
 		return src.empty();
 	};
 
-	if(eat_whitespace()) return result;
+	if (eat_whitespace()) return result;
 
 	// We now have a non-whitespace character at the beginning of both source
 	// and destination. Check if the source starts with a romanized kana, and
 	// if it does then check if the destination also has the appropriate
 	// character. If it does, match them and repeat.
-	while(!src.empty()) {
+	while (!src.empty()) {
 		// First check for a basic match of the first character of the source and dest
 		auto first_src_char = ssegment_index(character, begin(src), end(src)).begin()->str();
-		if(compare(first_src_char, dst->str()) == 0) {
+		if (compare(first_src_char, dst->str()) == 0) {
 			++dst;
 			++result.destination_length;
 			src.erase(0, first_src_char.size());
-			if(eat_whitespace()) return result;
+			if (eat_whitespace()) return result;
 			continue;
 		}
 
 		auto check = [&](kana_pair const& kp) -> bool {
-			if(!starts_with(&*dst->begin(), kp.kana)) return false;
+			if (!starts_with(&*dst->begin(), kp.kana)) return false;
 
 			src = src.substr(strlen(kp.romaji));
-			for(size_t i = 0; kp.kana[i];) {
+			for (size_t i = 0; kp.kana[i]; ) {
 				i += dst->length();
 				++result.destination_length;
 				++dst;
@@ -123,20 +124,20 @@ karaoke_match_result auto_match_karaoke(std::vector<std::string> const& source_s
 		};
 
 		bool matched = false;
-		for(auto const& match : romaji_to_kana(src)) {
-			if(check(match)) {
-				if(eat_whitespace()) return result;
+		for (auto const& match : romaji_to_kana(src)) {
+			if (check(match)) {
+				if (eat_whitespace()) return result;
 				matched = true;
 				break;
 			}
 		}
-		if(!matched) break;
+		if (!matched) break;
 	}
 
 	// Source and dest are now non-empty and start with non-whitespace.
 	// If there's only one character left in the dest, it obviously needs to
 	// match all of the source syllables left.
-	if(std::distance(dst, dst_end) == 1) {
+	if (std::distance(dst, dst_end) == 1) {
 		result.source_length = source_strings.size();
 		++result.destination_length;
 		return result;
@@ -159,33 +160,32 @@ karaoke_match_result auto_match_karaoke(std::vector<std::string> const& source_s
 	// skipping. Higher numbers probably increase false-positives.
 	static const int dst_lookahead_max = 3;
 
-	for(size_t lookahead = 0; lookahead < dst_lookahead_max; ++lookahead) {
-		if(++dst == dst_end) break;
+	for (size_t lookahead = 0; lookahead < dst_lookahead_max; ++lookahead) {
+		if (++dst == dst_end) break;
 
 		// Transliterate this character if it's a known hiragana or katakana character
-		std::vector<const char*> translit;
+		std::vector<const char *> translit;
 		auto next = std::next(dst);
-		if(next != dst_end)
+		if (next != dst_end)
 			boost::copy(kana_to_romaji(dst->str() + next->str()), back_inserter(translit));
 		boost::copy(kana_to_romaji(dst->str()), back_inserter(translit));
 
 		// Search for it and the transliterated version in the source
 		int src_lookahead_max = (lookahead + 1) * max_character_length;
 		int src_lookahead_pos = 0;
-		for(auto const& syl : source_strings) {
+		for (auto const& syl : source_strings) {
 			// Don't count blank syllables in the max search distance
-			if(is_whitespace(syl)) continue;
-			if(++src_lookahead_pos == 1) continue;
-			if(src_lookahead_pos > src_lookahead_max) break;
+			if (is_whitespace(syl)) continue;
+			if (++src_lookahead_pos == 1) continue;
+			if (src_lookahead_pos > src_lookahead_max) break;
 
 			std::string lsyl = boost::to_lower_copy(syl);
-			if(!(starts_with(syl, dst->str()) ||
-			     util::any_of(translit, [&](const char* str) { return starts_with(lsyl, str); })))
+			if (!(starts_with(syl, dst->str()) || util::any_of(translit, [&](const char *str) { return starts_with(lsyl, str); })))
 				continue;
 
 			// The syllable immediately after the current one matched, so
 			// everything up to the match must go with the current syllable.
-			if(src_lookahead_pos == 2) {
+			if (src_lookahead_pos == 2) {
 				result.destination_length += lookahead + 1;
 				return result;
 			}
@@ -193,8 +193,7 @@ karaoke_match_result auto_match_karaoke(std::vector<std::string> const& source_s
 			// The match was multiple syllables ahead, so just divide the
 			// destination characters evenly between the source syllables
 			result.destination_length += 1;
-			result.source_length =
-			    static_cast<size_t>((src_lookahead_pos - 1.0) / (lookahead + 1.0) + .5);
+			result.source_length = static_cast<size_t>((src_lookahead_pos - 1.0) / (lookahead + 1.0) + .5);
 			return result;
 		}
 	}
@@ -205,4 +204,4 @@ karaoke_match_result auto_match_karaoke(std::vector<std::string> const& source_s
 
 	return result;
 }
-} // namespace agi
+}

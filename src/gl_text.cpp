@@ -66,8 +66,11 @@ struct OpenGLTextGlyph {
 	int h = 0;    ///< Height of the glyph in pixels
 	wxFont font;  ///< Font used for this glyph
 
-	OpenGLTextGlyph(int value, wxFont const& font) : str(wxChar(value)), font(font) {
-		wxCoord desc, lead;
+	OpenGLTextGlyph(int value, wxFont const& font)
+	: str(wxChar(value))
+	, font(font)
+	{
+		wxCoord desc,lead;
 
 		wxBitmap tempBmp(32, 32, 24);
 		wxMemoryDC dc(tempBmp);
@@ -80,9 +83,19 @@ struct OpenGLTextGlyph {
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-		float tex_coords[] = { x1, y1, x1, y2, x2, y2, x2, y1 };
+		float tex_coords[] = {
+			x1, y1,
+			x1, y2,
+			x2, y2,
+			x2, y1
+		};
 
-		float vert_coords[] = { x, y, x, y + h, x + w, y + h, x + w, y };
+		float vert_coords[] = {
+			x, y,
+			x, y + h,
+			x + w, y + h,
+			x + w, y
+		};
 
 		glVertexPointer(2, GL_FLOAT, 0, vert_coords);
 		glTexCoordPointer(2, GL_FLOAT, 0, tex_coords);
@@ -105,15 +118,15 @@ class OpenGLTextTexture final : boost::noncopyable {
 	GLuint tex = 0; ///< The texture
 
 	/// Insert the glyph into this texture at the current coordinates
-	void Insert(OpenGLTextGlyph& glyph) {
+	void Insert(OpenGLTextGlyph &glyph) {
 		int w = glyph.w;
 		int h = glyph.h;
 
 		// Fill glyph structure
-		glyph.x1 = float(x) / width;
-		glyph.y1 = float(y) / height;
-		glyph.x2 = float(x + w) / width;
-		glyph.y2 = float(y + h) / height;
+		glyph.x1 = float(x)/width;
+		glyph.y1 = float(y)/height;
+		glyph.x2 = float(x+w)/width;
+		glyph.y2 = float(y+h)/height;
 		glyph.tex = tex;
 
 		// Create bitmap and bind it to a DC
@@ -132,23 +145,21 @@ class OpenGLTextTexture final : boost::noncopyable {
 		int imgw = img.GetWidth();
 		int imgh = img.GetHeight();
 		std::vector<unsigned char> alpha(imgw * imgh * 2, 255);
-		const unsigned char* read = img.GetData();
-		for(size_t write = 1; write < alpha.size(); write += 2, read += 3)
+		const unsigned char *read = img.GetData();
+		for (size_t write = 1; write < alpha.size(); write += 2, read += 3)
 			alpha[write] = *read;
 
 		// Upload image to video memory
 		glBindTexture(GL_TEXTURE_2D, tex);
-		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, imgw, imgh, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE,
-		                &alpha[0]);
-		if(glGetError())
-			throw agi::EnvironmentError(
-			    "Internal OpenGL text renderer error: Error uploading glyph data to video memory.");
+		glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, imgw, imgh, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, &alpha[0]);
+		if (glGetError()) throw agi::EnvironmentError("Internal OpenGL text renderer error: Error uploading glyph data to video memory.");
 	}
 
-  public:
-	OpenGLTextTexture(OpenGLTextGlyph& glyph)
-	    : width(std::max(SmallestPowerOf2(glyph.w), 64)),
-	      height(std::max(SmallestPowerOf2(glyph.h), 64)) {
+public:
+	OpenGLTextTexture(OpenGLTextGlyph &glyph)
+	: width(std::max(SmallestPowerOf2(glyph.w), 64))
+	, height(std::max(SmallestPowerOf2(glyph.h), 64))
+	{
 		width = height = std::max(width, height);
 
 		// Generate and bind
@@ -162,37 +173,36 @@ class OpenGLTextTexture final : boost::noncopyable {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 		// Allocate texture
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE,
-		             nullptr);
-		if(glGetError())
-			throw agi::EnvironmentError(
-			    "Internal OpenGL text renderer error: Could not allocate text texture");
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_ALPHA, GL_UNSIGNED_BYTE, nullptr);
+		if (glGetError()) throw agi::EnvironmentError("Internal OpenGL text renderer error: Could not allocate text texture");
 
 		TryToInsert(glyph);
 	}
 
-	OpenGLTextTexture(OpenGLTextTexture&& rhs) BOOST_NOEXCEPT : x(rhs.x),
-	                                                            y(rhs.y),
-	                                                            nextY(rhs.nextY),
-	                                                            width(rhs.width),
-	                                                            height(rhs.height),
-	                                                            tex(rhs.tex) {
+	OpenGLTextTexture(OpenGLTextTexture&& rhs) BOOST_NOEXCEPT
+	: x(rhs.x)
+	, y(rhs.y)
+	, nextY(rhs.nextY)
+	, width(rhs.width)
+	, height(rhs.height)
+	, tex(rhs.tex)
+	{
 		rhs.tex = 0;
 	}
 
 	~OpenGLTextTexture() {
-		if(tex) glDeleteTextures(1, &tex);
+		if (tex) glDeleteTextures(1, &tex);
 	}
 
 	/// @brief Try to insert a glyph into this texture
 	/// @param[in][out] glyph Texture to insert
 	/// @return Was the texture successfully added?
-	bool TryToInsert(OpenGLTextGlyph& glyph) {
-		if(glyph.w > width) return false;
-		if(y + glyph.h > height) return false;
+	bool TryToInsert(OpenGLTextGlyph &glyph) {
+		if (glyph.w > width) return false;
+		if (y + glyph.h > height) return false;
 
 		// Can fit in this row?
-		if(x + glyph.w < width) {
+		if (x + glyph.w < width) {
 			Insert(glyph);
 			x += glyph.w;
 			nextY = std::max(nextY, y + glyph.h);
@@ -200,21 +210,21 @@ class OpenGLTextTexture final : boost::noncopyable {
 		}
 
 		// Can fit the next row?
-		if(nextY + glyph.h > height) return false;
+		if (nextY + glyph.h > height) return false;
 		x = 0;
 		y = nextY;
 		return TryToInsert(glyph);
 	}
 };
 
-} // namespace
+}
 
-OpenGLText::OpenGLText() {}
-OpenGLText::~OpenGLText() {}
+OpenGLText::OpenGLText() { }
+OpenGLText::~OpenGLText() { }
 
 void OpenGLText::SetFont(std::string const& face, int size, bool bold, bool italics) {
 	// No change required
-	if(size == fontSize && face == fontFace && bold == fontBold && italics == fontItalics) return;
+	if (size == fontSize && face == fontFace && bold == fontBold && italics == fontItalics) return;
 
 	// Set font
 	fontFace = face;
@@ -237,17 +247,17 @@ void OpenGLText::SetColour(agi::Color col) {
 	a = col.a / 255.f;
 }
 
-void OpenGLText::Print(const std::string& text, int x, int y) {
+void OpenGLText::Print(const std::string &text, int x, int y) {
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Draw border
 	glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-	DrawString(text, x - 1, y);
-	DrawString(text, x + 1, y);
-	DrawString(text, x, y - 1);
-	DrawString(text, x, y + 1);
+	DrawString(text, x-1, y);
+	DrawString(text, x+1, y);
+	DrawString(text, x, y-1);
+	DrawString(text, x, y+1);
 
 	// Draw primary string
 	glColor4f(r, g, b, a);
@@ -258,18 +268,18 @@ void OpenGLText::Print(const std::string& text, int x, int y) {
 	glDisable(GL_BLEND);
 }
 
-void OpenGLText::DrawString(const std::string& text, int x, int y) {
-	for(char curChar : text) {
+void OpenGLText::DrawString(const std::string &text, int x, int y) {
+	for (char curChar : text) {
 		OpenGLTextGlyph const& glyph = GetGlyph(curChar);
 		glyph.Draw(x, y);
 		x += glyph.w;
 	}
 }
 
-void OpenGLText::GetExtent(std::string const& text, int& w, int& h) {
+void OpenGLText::GetExtent(std::string const& text, int &w, int &h) {
 	w = h = 0;
 
-	for(char curChar : text) {
+	for (char curChar : text) {
 		OpenGLTextGlyph const& glyph = GetGlyph(curChar);
 		w += glyph.w;
 		h = std::max(h, glyph.h);
@@ -282,11 +292,12 @@ OpenGLTextGlyph const& OpenGLText::GetGlyph(int i) {
 }
 
 OpenGLTextGlyph const& OpenGLText::CreateGlyph(int n) {
-	OpenGLTextGlyph& glyph = glyphs.emplace(n, OpenGLTextGlyph(n, font)).first->second;
+	OpenGLTextGlyph &glyph = glyphs.emplace(n, OpenGLTextGlyph(n, font)).first->second;
 
 	// Insert into some texture
-	for(auto& texture : textures) {
-		if(texture.TryToInsert(glyph)) return glyph;
+	for (auto& texture : textures) {
+		if (texture.TryToInsert(glyph))
+			return glyph;
 	}
 
 	// No texture could fit it, create a new one

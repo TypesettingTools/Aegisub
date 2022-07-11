@@ -42,12 +42,9 @@ class AssFile;
 class AssExportFilterChain;
 class wxWindow;
 
-namespace agi {
-struct Context;
-}
+namespace agi { struct Context; }
 
-class AssExportFilter : public boost::intrusive::make_list_base_hook<
-                            boost::intrusive::link_mode<boost::intrusive::auto_unlink>>::type {
+class AssExportFilter : public boost::intrusive::make_list_base_hook<boost::intrusive::link_mode<boost::intrusive::auto_unlink>>::type {
 	/// The filter chain needs to be able to muck around with filter names when
 	/// they're registered to avoid duplicates
 	friend class AssExportFilterChain;
@@ -61,7 +58,7 @@ class AssExportFilter : public boost::intrusive::make_list_base_hook<
 	/// User-visible description of this filter
 	std::string description;
 
-  public:
+public:
 	AssExportFilter(std::string name, std::string description, int priority = 0);
 	virtual ~AssExportFilter() = default;
 
@@ -72,31 +69,30 @@ class AssExportFilter : public boost::intrusive::make_list_base_hook<
 	/// @param subs Subtitles to process
 	/// @param parent_window Window to use as the parent if the filter wishes
 	///                      to open a progress dialog
-	virtual void ProcessSubs(AssFile* subs, wxWindow* parent_window = nullptr) = 0;
+	virtual void ProcessSubs(AssFile *subs, wxWindow *parent_window=nullptr)=0;
 
 	/// Draw setup controls
 	/// @param parent Parent window to add controls to
 	/// @param c Project context
-	virtual wxWindow* GetConfigDialogWindow(wxWindow* parent, agi::Context* c) { return nullptr; }
+	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c) { return nullptr; }
 
 	/// Load settings to use from the configuration dialog
 	/// @param is_default If true use default settings instead
 	/// @param c Project context
-	virtual void LoadSettings(bool is_default, agi::Context* c) {}
+	virtual void LoadSettings(bool is_default, agi::Context *c) { }
 };
 
-typedef boost::intrusive::make_list<AssExportFilter,
-                                    boost::intrusive::constant_time_size<false>>::type FilterList;
+typedef boost::intrusive::make_list<AssExportFilter, boost::intrusive::constant_time_size<false>>::type FilterList;
 
 class AssExportFilterChain {
-  public:
+public:
 	/// Register an export filter
 	static void Register(std::unique_ptr<AssExportFilter> filter);
 	/// Unregister and delete all export filters
 	static void Clear();
 	/// Get a filter by name or nullptr if it doesn't exist
-	static AssExportFilter* GetFilter(std::string const& name);
+	static AssExportFilter *GetFilter(std::string const& name);
 
 	/// Get the list of registered filters
-	static FilterList* GetFilterList();
+	static FilterList *GetFilterList();
 };

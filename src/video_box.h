@@ -32,22 +32,20 @@
 #include <vector>
 #include <wx/panel.h>
 
-namespace agi {
-struct Context;
-}
+namespace agi { struct Context; }
 class wxTextCtrl;
 
 /// @class VideoBox
 /// @brief The box containing the video display and associated controls
 class VideoBox final : public wxPanel {
 	std::vector<agi::signal::Connection> connections;
-	agi::Context* context;     ///< Project context
-	wxTextCtrl* VideoPosition; ///< Current frame/time
-	wxTextCtrl* VideoSubsPos;  ///< Time relative to the active subtitle line
+	agi::Context *context;     ///< Project context
+	wxTextCtrl *VideoPosition; ///< Current frame/time
+	wxTextCtrl *VideoSubsPos;  ///< Time relative to the active subtitle line
 
 	/// Update VideoPosition and VideoSubsPos
 	void UpdateTimeBoxes();
 
-  public:
-	VideoBox(wxWindow* parent, bool isDetached, agi::Context* context);
+public:
+	VideoBox(wxWindow *parent, bool isDetached, agi::Context *context);
 };

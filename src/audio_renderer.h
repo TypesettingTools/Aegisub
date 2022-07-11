@@ -40,9 +40,7 @@
 class AudioRenderer;
 class AudioRendererBitmapProvider;
 class wxDC;
-namespace agi {
-class AudioProvider;
-}
+namespace agi { class AudioProvider; }
 
 /// @class AudioRendererBitmapCacheBitmapFactory
 /// @brief Produces wxBitmap objects for DataBlockCache storage for the audio renderer
@@ -50,11 +48,11 @@ struct AudioRendererBitmapCacheBitmapFactory {
 	typedef std::unique_ptr<wxBitmap> BlockType;
 
 	/// The audio renderer we're producing bitmaps for
-	AudioRenderer* renderer;
+	AudioRenderer *renderer;
 
 	/// @brief Constructor
 	/// @param renderer The audio renderer to produce bitmaps for
-	AudioRendererBitmapCacheBitmapFactory(AudioRenderer* renderer);
+	AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer);
 
 	/// @brief Create a new bitmap
 	/// @param i Unused
@@ -70,6 +68,7 @@ struct AudioRendererBitmapCacheBitmapFactory {
 
 /// The type of a bitmap cache
 typedef DataBlockCache<wxBitmap, 8, AudioRendererBitmapCacheBitmapFactory> AudioRendererBitmapCache;
+
 
 /// @class AudioRenderer
 /// @brief Renders audio to bitmap images for display on screen
@@ -100,10 +99,10 @@ class AudioRenderer {
 	bool needs_age = false;
 
 	/// Actual renderer for bitmaps
-	AudioRendererBitmapProvider* renderer = nullptr;
+	AudioRendererBitmapProvider *renderer = nullptr;
 
 	/// Audio provider to use as source
-	agi::AudioProvider* provider = nullptr;
+	agi::AudioProvider *provider = nullptr;
 
 	/// @brief Make sure bitmap index i is in cache
 	/// @param i     Index of bitmap to get into cache
@@ -124,7 +123,7 @@ class AudioRenderer {
 	/// Calculate the number of cache blocks needed for a given number of samples
 	size_t NumBlocks(int64_t samples) const;
 
-  public:
+public:
 	/// @brief Constructor
 	///
 	/// Initialises audio rendering to a do-nothing state. An audio provider
@@ -176,7 +175,7 @@ class AudioRenderer {
 	/// can be functional.
 	///
 	/// Changing renderer invalidates all cached bitmaps.
-	void SetRenderer(AudioRendererBitmapProvider* renderer);
+	void SetRenderer(AudioRendererBitmapProvider *renderer);
 
 	/// @brief Change audio provider
 	/// @param provider New audio provider to use
@@ -192,7 +191,7 @@ class AudioRenderer {
 	/// Changing audio provider invalidates all cached bitmaps.
 	///
 	/// If a renderer is set, this will also set the audio provider for the renderer.
-	void SetAudioProvider(agi::AudioProvider* provider);
+	void SetAudioProvider(agi::AudioProvider *provider);
 
 	/// @brief Render audio to a device context
 	/// @param dc       The device context to draw to
@@ -203,7 +202,7 @@ class AudioRenderer {
 	///
 	/// The first audio sample rendered is start*pixel_samples, and the number
 	/// of audio samples rendered is length*pixel_samples.
-	void Render(wxDC& dc, wxPoint origin, int start, int length, AudioRenderingStyle style);
+	void Render(wxDC &dc, wxPoint origin, int start, int length, AudioRenderingStyle style);
 
 	/// @brief Invalidate all cached data
 	///
@@ -216,14 +215,15 @@ class AudioRenderer {
 	void Invalidate();
 };
 
+
 /// @class AudioRendererBitmapProvider
 /// @brief Base class for audio renderer implementations
 ///
 /// Derive from this class to implement a way to render audio to images.
 class AudioRendererBitmapProvider {
-  protected:
+protected:
 	/// Audio provider to use for rendering
-	agi::AudioProvider* provider;
+	agi::AudioProvider *provider;
 	/// Horizontal zoom in milliseconds per pixel
 	double pixel_ms;
 	/// Vertical zoom/amplitude scale factor
@@ -232,21 +232,21 @@ class AudioRendererBitmapProvider {
 	/// @brief Called when the audio provider changes
 	///
 	/// Implementations can override this method to do something when the audio provider is changed
-	virtual void OnSetProvider() {}
+	virtual void OnSetProvider() { }
 
 	/// @brief Called when horizontal zoom changes
 	///
 	/// Implementations can override this method to do something when the horizontal zoom is changed
-	virtual void OnSetMillisecondsPerPixel() {}
+	virtual void OnSetMillisecondsPerPixel() { }
 
 	/// @brief Called when vertical zoom changes
 	///
 	/// Implementations can override this method to do something when the vertical zoom is changed
-	virtual void OnSetAmplitudeScale() {}
+	virtual void OnSetAmplitudeScale() { }
 
-  public:
+public:
 	/// @brief Constructor
-	AudioRendererBitmapProvider() : provider(nullptr), pixel_ms(0), amplitude_scale(0){};
+	AudioRendererBitmapProvider() : provider(nullptr), pixel_ms(0), amplitude_scale(0) { };
 
 	/// @brief Destructor
 	virtual ~AudioRendererBitmapProvider() = default;
@@ -258,7 +258,7 @@ class AudioRendererBitmapProvider {
 	///
 	/// Deriving classes must implement this method. The bitmap in bmp holds
 	/// the width and height to render.
-	virtual void Render(wxBitmap& bmp, int start, AudioRenderingStyle style) = 0;
+	virtual void Render(wxBitmap &bmp, int start, AudioRenderingStyle style) = 0;
 
 	/// @brief Blank audio rendering function
 	/// @param dc    The device context to render to
@@ -267,11 +267,11 @@ class AudioRendererBitmapProvider {
 	///
 	/// Deriving classes must implement this method. The rectangle has the height
 	/// of the entire canvas the audio is being rendered in.
-	virtual void RenderBlank(wxDC& dc, const wxRect& rect, AudioRenderingStyle style) = 0;
+	virtual void RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style) = 0;
 
 	/// @brief Change audio provider
 	/// @param provider Audio provider to change to
-	void SetProvider(agi::AudioProvider* provider);
+	void SetProvider(agi::AudioProvider *provider);
 
 	/// @brief Change horizontal zoom
 	/// @param pixel_ms Milliseconds per pixel to zoom to
@@ -286,5 +286,5 @@ class AudioRendererBitmapProvider {
 	///
 	/// Deriving classes should override this method if they implement any
 	/// kind of caching.
-	virtual void AgeCache(size_t max_size) {}
+	virtual void AgeCache(size_t max_size) { }
 };

@@ -23,16 +23,16 @@
 
 class SelectionController;
 namespace agi {
-namespace dispatch {
-class Queue;
+	namespace dispatch {
+		class Queue;
+	}
+	struct Context;
 }
-struct Context;
-} // namespace agi
 struct AssFileCommit;
 struct ProjectProperties;
 
 class SubsController {
-	agi::Context* context;
+	agi::Context *context;
 	agi::signal::Connection undo_connection;
 	agi::signal::Connection active_line_connection;
 	agi::signal::Connection selection_connection;
@@ -78,15 +78,15 @@ class SubsController {
 	void OnSelectionChanged();
 	void OnTextSelectionChanged();
 
-  public:
-	SubsController(agi::Context* context);
+public:
+	SubsController(agi::Context *context);
 	~SubsController();
 
 	/// Set the selection controller to use
 	///
 	/// Required due to that the selection controller is the subtitles grid, and
 	/// so is created long after the subtitles controller
-	void SetSelectionController(SelectionController* selection_controller);
+	void SetSelectionController(SelectionController *selection_controller);
 
 	/// The file's path and filename if any, or platform-appropriate "untitled"
 	agi::fs::path Filename() const;
@@ -101,9 +101,8 @@ class SubsController {
 
 	/// @brief Save to a file
 	/// @param file Path to save to
-	/// @param encoding Encoding to use, or empty to let the writer decide (which usually means
-	/// "App/Save Charset")
-	void Save(agi::fs::path const& file, std::string const& encoding = "");
+	/// @param encoding Encoding to use, or empty to let the writer decide (which usually means "App/Save Charset")
+	void Save(agi::fs::path const& file, std::string const& encoding="");
 
 	/// Close the currently open file (i.e. open a new blank file)
 	void Close();

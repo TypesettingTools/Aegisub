@@ -20,12 +20,12 @@
 #include <wx/intl.h>
 #include <wx/mstream.h>
 
-wxBitmap libresrc_getimage(const unsigned char* buff, size_t size, double scale, int dir) {
+wxBitmap libresrc_getimage(const unsigned char *buff, size_t size, double scale, int dir) {
 	wxMemoryInputStream mem(buff, size);
-	if(dir != wxLayout_RightToLeft)
+	if (dir != wxLayout_RightToLeft)
 #if wxCHECK_VERSION(3, 1, 0)
-		// Since wxWidgets 3.1.0, there is an undocumented third parameter in the ctor of wxBitmap
-		// from wxImage This "scale" parameter sets the logical scale factor of the created wxBitmap
+	// Since wxWidgets 3.1.0, there is an undocumented third parameter in the ctor of wxBitmap from wxImage
+	// This "scale" parameter sets the logical scale factor of the created wxBitmap
 		return wxBitmap(wxImage(mem), wxBITMAP_SCREEN_DEPTH, scale);
 	return wxBitmap(wxImage(mem).Mirror(), wxBITMAP_SCREEN_DEPTH, scale);
 #else
@@ -34,7 +34,7 @@ wxBitmap libresrc_getimage(const unsigned char* buff, size_t size, double scale,
 #endif
 }
 
-wxIcon libresrc_geticon(const unsigned char* buff, size_t size) {
+wxIcon libresrc_geticon(const unsigned char *buff, size_t size) {
 	wxMemoryInputStream mem(buff, size);
 	wxIcon icon;
 	icon.CopyFromBitmap(wxBitmap(wxImage(mem)));

@@ -20,36 +20,41 @@
 #include <wx/translation.h>
 
 namespace agi {
-template <> struct writer<char, wxString> {
+template<>
+struct writer<char, wxString> {
 	static void write(std::basic_ostream<char>& out, int max_len, wxString const& value) {
-		writer<char, const wxStringCharType*>::write(out, max_len, value.wx_str());
+		writer<char, const wxStringCharType *>::write(out, max_len, value.wx_str());
 	}
 };
 
-template <> struct writer<wchar_t, wxString> {
+template<>
+struct writer<wchar_t, wxString> {
 	static void write(std::basic_ostream<wchar_t>& out, int max_len, wxString const& value) {
-		writer<wchar_t, const wxStringCharType*>::write(out, max_len, value.wx_str());
+		writer<wchar_t, const wxStringCharType *>::write(out, max_len, value.wx_str());
 	}
 };
 
-template <typename... Args> std::string format(wxString const& fmt, Args&&... args) {
+template<typename... Args>
+std::string format(wxString const& fmt, Args&&... args) {
 	boost::interprocess::basic_vectorstream<std::basic_string<char>> out;
-	format(out, (const char*)fmt.utf8_str(), std::forward<Args>(args)...);
+	format(out, (const char *)fmt.utf8_str(), std::forward<Args>(args)...);
 	return out.vector();
 }
 
-template <typename... Args> wxString wxformat(wxString const& fmt, Args&&... args) {
+template<typename... Args>
+wxString wxformat(wxString const& fmt, Args&&... args) {
 	boost::interprocess::basic_vectorstream<std::basic_string<wxStringCharType>> out;
 	format(out, fmt.wx_str(), std::forward<Args>(args)...);
 	return out.vector();
 }
 
-template <typename... Args> wxString wxformat(const wxStringCharType* fmt, Args&&... args) {
+template<typename... Args>
+wxString wxformat(const wxStringCharType *fmt, Args&&... args) {
 	boost::interprocess::basic_vectorstream<std::basic_string<wxStringCharType>> out;
 	format(out, fmt, std::forward<Args>(args)...);
 	return out.vector();
 }
-} // namespace agi
+}
 
 #define fmt_wx(str, ...) agi::wxformat(wxS(str), __VA_ARGS__)
 #define fmt_tl(str, ...) agi::wxformat(wxGetTranslation(wxS(str)), __VA_ARGS__)

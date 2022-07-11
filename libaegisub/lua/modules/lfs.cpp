@@ -29,98 +29,115 @@ AGI_DEFINE_TYPE_NAME(DirectoryIterator);
 }
 
 namespace {
-template <typename Func> auto wrap(char** err, Func f) -> decltype(f()) {
+template<typename Func>
+auto wrap(char **err, Func f) -> decltype(f()) {
 	try {
 		return f();
-	} catch(std::exception const& e) {
+	}
+	catch (std::exception const& e) {
 		*err = strdup(e.what());
-	} catch(agi::Exception const& e) {
+	}
+	catch (agi::Exception const& e) {
 		*err = strndup(e.GetMessage());
-	} catch(...) {
+	}
+	catch (...) {
 		*err = strdup("Unknown error");
 	}
 	return 0;
 }
 
-template <typename Ret> bool setter(const char* path, char** err, Ret (*f)(bfs::path const&)) {
-	return wrap(err, [=] {
+template<typename Ret>
+bool setter(const char *path, char **err, Ret (*f)(bfs::path const&)) {
+	return wrap(err, [=]{
 		f(path);
 		return true;
 	});
 }
 
-bool lfs_chdir(const char* dir, char** err) {
+bool lfs_chdir(const char *dir, char **err) {
 	return setter(dir, err, &bfs::current_path);
 }
 
-char* currentdir(char** err) {
-	return wrap(err, [] { return strndup(bfs::current_path().string()); });
+char *currentdir(char **err) {
+	return wrap(err, []{
+		return strndup(bfs::current_path().string());
+	});
 }
 
-bool mkdir(const char* dir, char** err) {
+bool mkdir(const char *dir, char **err) {
 	return setter(dir, err, &CreateDirectory);
 }
 
-bool lfs_rmdir(const char* dir, char** err) {
+bool lfs_rmdir(const char *dir, char **err) {
 	return setter(dir, err, &Remove);
 }
 
-bool touch(const char* path, char** err) {
+bool touch(const char *path, char **err) {
 	return setter(path, err, &Touch);
 }
 
-char* dir_next(DirectoryIterator& it, char** err) {
-	if(it == end(it)) return nullptr;
-	return wrap(err, [&] {
+char *dir_next(DirectoryIterator &it, char **err) {
+	if (it == end(it)) return nullptr;
+	return wrap(err, [&]{
 		auto str = strndup(*it);
 		++it;
 		return str;
 	});
 }
 
-void dir_close(DirectoryIterator& it) {
+void dir_close(DirectoryIterator &it) {
 	it = DirectoryIterator();
 }
 
-void dir_free(DirectoryIterator* it) {
+void dir_free(DirectoryIterator *it) {
 	delete it;
 }
 
-DirectoryIterator* dir_new(const char* path, char** err) {
-	return wrap(err, [=] { return new DirectoryIterator(path, ""); });
+DirectoryIterator *dir_new(const char *path, char **err) {
+	return wrap(err, [=]{
+		return new DirectoryIterator(path, "");
+	});
 }
 
-const char* get_mode(const char* path, char** err) {
-	return wrap(err, [=]() -> const char* {
-		switch(bfs::status(path).type()) {
-			case bfs::file_not_found: return nullptr; break;
-			case bfs::regular_file: return "file"; break;
-			case bfs::directory_file: return "directory"; break;
-			case bfs::symlink_file: return "link"; break;
-			case bfs::block_file: return "block device"; break;
-			case bfs::character_file: return "char device"; break;
-			case bfs::fifo_file: return "fifo"; break;
-			case bfs::socket_file: return "socket"; break;
-			case bfs::reparse_file: return "reparse point"; break;
-			default: return "other"; break;
+const char *get_mode(const char *path, char **err) {
+	return wrap(err, [=]() -> const char * {
+		switch (bfs::status(path).type()) {
+			case bfs::file_not_found: return nullptr;         break;
+			case bfs::regular_file:   return "file";          break;
+			case bfs::directory_file: return "directory";     break;
+			case bfs::symlink_file:   return "link";          break;
+			case bfs::block_file:     return "block device";  break;
+			case bfs::character_file: return "char device";   break;
+			case bfs::fifo_file:      return "fifo";          break;
+			case bfs::socket_file:    return "socket";        break;
+			case bfs::reparse_file:   return "reparse point"; break;
+			default:                  return "other";         break;
 		}
 	});
 }
 
-time_t get_mtime(const char* path, char** err) {
+time_t get_mtime(const char *path, char **err) {
 	return wrap(err, [=] { return ModifiedTime(path); });
 }
 
-uintmax_t get_size(const char* path, char** err) {
+uintmax_t get_size(const char *path, char **err) {
 	return wrap(err, [=] { return Size(path); });
 }
-} // namespace
+}
 
-extern "C" int luaopen_lfs_impl(lua_State* L) {
-	agi::lua::register_lib_table(L, { "DirectoryIterator" }, "chdir", lfs_chdir, "currentdir",
-	                             currentdir, "mkdir", mkdir, "rmdir", lfs_rmdir, "touch", touch,
-	                             "get_mtime", get_mtime, "get_mode", get_mode, "get_size", get_size,
-	                             "dir_new", dir_new, "dir_free", dir_free, "dir_next", dir_next,
-	                             "dir_close", dir_close);
+extern "C" int luaopen_lfs_impl(lua_State *L) {
+	agi::lua::register_lib_table(L, {"DirectoryIterator"},
+		"chdir", lfs_chdir,
+		"currentdir", currentdir,
+		"mkdir", mkdir,
+		"rmdir", lfs_rmdir,
+		"touch", touch,
+		"get_mtime", get_mtime,
+		"get_mode", get_mode,
+		"get_size", get_size,
+		"dir_new", dir_new,
+		"dir_free", dir_free,
+		"dir_next", dir_next,
+		"dir_close", dir_close);
 	return 1;
 }

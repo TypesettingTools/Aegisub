@@ -40,7 +40,7 @@
 #include <wx/msgdlg.h>
 
 namespace {
-using cmd::Command;
+	using cmd::Command;
 
 struct help_bugs final : public Command {
 	CMD_NAME("help/bugs")
@@ -49,12 +49,11 @@ struct help_bugs final : public Command {
 	STR_DISP("Bug Tracker")
 	STR_HELP("Visit Aegisub's bug tracker to report bugs and request new features")
 
-	void operator()(agi::Context* c) override {
-		if(wxGetMouseState().CmdDown()) {
-			if(wxGetMouseState().ShiftDown()) {
-				wxMessageBox("Now crashing with an access violation...");
-				for(char* foo = (char*)nullptr;;)
-					*foo++ = 42;
+	void operator()(agi::Context *c) override {
+		if (wxGetMouseState().CmdDown()) {
+			if (wxGetMouseState().ShiftDown()) {
+				 wxMessageBox("Now crashing with an access violation...");
+				for (char *foo = (char*)nullptr;;) *foo++ = 42;
 			} else {
 				wxMessageBox("Now crashing with an unhandled exception...");
 				throw c->parent;
@@ -71,7 +70,9 @@ struct help_contents final : public Command {
 	STR_DISP("Contents")
 	STR_HELP("Help topics")
 
-	void operator()(agi::Context*) override { HelpButton::OpenPage("Main"); }
+	void operator()(agi::Context *) override {
+		HelpButton::OpenPage("Main");
+	}
 };
 
 struct help_irc final : public Command {
@@ -81,7 +82,7 @@ struct help_irc final : public Command {
 	STR_DISP("IRC Channel")
 	STR_HELP("Visit Aegisub's official IRC channel")
 
-	void operator()(agi::Context*) override {
+	void operator()(agi::Context *) override {
 		wxLaunchDefaultBrowser("irc://irc.rizon.net/aegisub", wxBROWSER_NEW_WINDOW);
 	}
 };
@@ -93,7 +94,9 @@ struct help_video final : public Command {
 	STR_DISP("Visual Typesetting")
 	STR_HELP("Open the manual page for Visual Typesetting")
 
-	void operator()(agi::Context*) override { HelpButton::OpenPage("Visual Typesetting"); }
+	void operator()(agi::Context *) override {
+		HelpButton::OpenPage("Visual Typesetting");
+	}
 };
 
 struct help_website final : public Command {
@@ -103,18 +106,18 @@ struct help_website final : public Command {
 	STR_DISP("Website")
 	STR_HELP("Visit Aegisub's official website")
 
-	void operator()(agi::Context*) override {
+	void operator()(agi::Context *) override {
 		wxLaunchDefaultBrowser("http://www.aegisub.org/", wxBROWSER_NEW_WINDOW);
 	}
 };
-} // namespace
+}
 
 namespace cmd {
-void init_help() {
-	reg(agi::make_unique<help_bugs>());
-	reg(agi::make_unique<help_contents>());
-	reg(agi::make_unique<help_irc>());
-	reg(agi::make_unique<help_video>());
-	reg(agi::make_unique<help_website>());
+	void init_help() {
+		reg(agi::make_unique<help_bugs>());
+		reg(agi::make_unique<help_contents>());
+		reg(agi::make_unique<help_irc>());
+		reg(agi::make_unique<help_video>());
+		reg(agi::make_unique<help_website>());
+	}
 }
-} // namespace cmd

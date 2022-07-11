@@ -29,8 +29,10 @@
 #include <libaegisub/format.h>
 #include <libaegisub/make_unique.h>
 
-VisualToolCross::VisualToolCross(VideoDisplay* parent, agi::Context* context)
-    : VisualTool<VisualDraggableFeature>(parent, context), gl_text(agi::make_unique<OpenGLText>()) {
+VisualToolCross::VisualToolCross(VideoDisplay *parent, agi::Context *context)
+: VisualTool<VisualDraggableFeature>(parent, context)
+, gl_text(agi::make_unique<OpenGLText>())
+{
 	parent->SetCursor(wxCursor(wxCURSOR_BLANK));
 }
 
@@ -41,19 +43,19 @@ VisualToolCross::~VisualToolCross() {
 void VisualToolCross::OnDoubleClick() {
 	Vector2D d = ToScriptCoords(mouse_pos) - GetLinePosition(active_line);
 
-	for(auto line : c->selectionController->GetSelectedSet()) {
+	for (auto line : c->selectionController->GetSelectedSet()) {
 		Vector2D p1, p2;
 		int t1, t2;
-		if(GetLineMove(line, p1, p2, t1, t2)) {
-			if(t1 > 0 || t2 > 0)
-				SetOverride(line, "\\move",
-				            agi::format("(%s,%s,%d,%d)", Text(p1 + d), Text(p2 + d), t1, t2));
+		if (GetLineMove(line, p1, p2, t1, t2)) {
+			if (t1 > 0 || t2 > 0)
+				SetOverride(line, "\\move", agi::format("(%s,%s,%d,%d)", Text(p1 + d), Text(p2 + d), t1, t2));
 			else
 				SetOverride(line, "\\move", agi::format("(%s,%s)", Text(p1 + d), Text(p2 + d)));
-		} else
+		}
+		else
 			SetOverride(line, "\\pos", "(" + Text(GetLinePosition(line) + d) + ")");
 
-		if(Vector2D org = GetLineOrigin(line))
+		if (Vector2D org = GetLineOrigin(line))
 			SetOverride(line, "\\org", "(" + Text(org + d) + ")");
 	}
 
@@ -61,14 +63,16 @@ void VisualToolCross::OnDoubleClick() {
 }
 
 void VisualToolCross::Draw() {
-	if(!mouse_pos) return;
+	if (!mouse_pos) return;
 
 	// Draw cross
 	gl.SetInvert();
 	gl.SetLineColour(*wxWHITE, 1.0, 1);
 	float lines[] = {
-		0.f, mouse_pos.Y(), video_res.X() + video_pos.X() * 2, mouse_pos.Y(), mouse_pos.X(),
-		0.f, mouse_pos.X(), video_res.Y() + video_pos.Y() * 2
+		0.f, mouse_pos.Y(),
+		video_res.X() + video_pos.X() * 2, mouse_pos.Y(),
+		mouse_pos.X(), 0.f,
+		mouse_pos.X(), video_res.Y() + video_pos.Y() * 2
 	};
 	gl.DrawLines(2, lines, 4);
 	gl.ClearInvert();
@@ -83,12 +87,12 @@ void VisualToolCross::Draw() {
 	// Place the text in the corner of the cross closest to the center of the video
 	int dx = mouse_pos.X();
 	int dy = mouse_pos.Y();
-	if(dx > video_res.X() / 2)
+	if (dx > video_res.X() / 2)
 		dx -= tw + 4;
 	else
 		dx += 4;
 
-	if(dy < video_res.Y() / 2)
+	if (dy < video_res.Y() / 2)
 		dy += 3;
 	else
 		dy -= th + 3;

@@ -19,8 +19,8 @@
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/format.h>
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
+#include <libaegisub/make_unique.h>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/interprocess/detail/os_thread_functions.hpp>
@@ -32,17 +32,17 @@ using namespace agi;
 
 class HDAudioProvider final : public AudioProviderWrapper {
 	mutable temp_file_mapping file;
-	std::atomic<bool> cancelled = { false };
+	std::atomic<bool> cancelled = {false};
 	std::thread decoder;
 
-	void FillBuffer(void* buf, int64_t start, int64_t count) const override {
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		auto missing = std::min(count, start + count - decoded_samples);
-		if(missing > 0) {
+		if (missing > 0) {
 			memset(static_cast<int16_t*>(buf) + count - missing, 0, missing * bytes_per_sample);
 			count -= missing;
 		}
 
-		if(count > 0) {
+		if (count > 0) {
 			start *= bytes_per_sample;
 			count *= bytes_per_sample;
 			memcpy(buf, file.read(start, count), count);
@@ -51,26 +51,25 @@ class HDAudioProvider final : public AudioProviderWrapper {
 
 	fs::path CacheFilename(fs::path const& dir) {
 		// Check free space
-		if((uint64_t)num_samples * bytes_per_sample > fs::FreeSpace(dir))
-			throw AudioProviderError("Not enough free disk space in " + dir.string() +
-			                         " to cache the audio");
+		if ((uint64_t)num_samples * bytes_per_sample > fs::FreeSpace(dir))
+			throw AudioProviderError("Not enough free disk space in " + dir.string() + " to cache the audio");
 
 		return format("audio-%lld-%lld", time(nullptr),
 		              boost::interprocess::ipcdetail::get_current_process_id());
 	}
 
-  public:
+public:
 	HDAudioProvider(std::unique_ptr<AudioProvider> src, agi::fs::path const& dir)
-	    : AudioProviderWrapper(std::move(src)),
-	      file(dir / CacheFilename(dir), num_samples * bytes_per_sample) {
+	: AudioProviderWrapper(std::move(src))
+	, file(dir / CacheFilename(dir), num_samples * bytes_per_sample)
+	{
 		decoded_samples = 0;
 		decoder = std::thread([&] {
 			int64_t block = 65536;
-			for(int64_t i = 0; i < num_samples; i += block) {
-				if(cancelled) break;
+			for (int64_t i = 0; i < num_samples; i += block) {
+				if (cancelled) break;
 				block = std::min(block, num_samples - i);
-				source->GetAudio(file.write(i * bytes_per_sample, block * bytes_per_sample), i,
-				                 block);
+				source->GetAudio(file.write(i * bytes_per_sample, block * bytes_per_sample), i, block);
 				decoded_samples += block;
 			}
 		});
@@ -81,11 +80,10 @@ class HDAudioProvider final : public AudioProviderWrapper {
 		decoder.join();
 	}
 };
-} // namespace
+}
 
 namespace agi {
-std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> src,
-                                                     agi::fs::path const& dir) {
+std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> src, agi::fs::path const& dir) {
 	return agi::make_unique<HDAudioProvider>(std::move(src), dir);
 }
-} // namespace agi
+}

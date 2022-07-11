@@ -39,16 +39,13 @@
 #include <libaegisub/make_unique.h>
 
 namespace {
-using cmd::Command;
+	using cmd::Command;
 
-COMMAND_GROUP(recent_audio, "recent/audio", _("Recent"), _("Recent"), _("Open recent audio"));
-COMMAND_GROUP(recent_keyframes, "recent/keyframe", _("Recent"), _("Recent"),
-              _("Open recent keyframes"));
-COMMAND_GROUP(recent_subtitle, "recent/subtitle", _("Recent"), _("Recent"),
-              _("Open recent subtitles"));
-COMMAND_GROUP(recent_timecodes, "recent/timecodes", _("Recent"), _("Recent"),
-              _("Open recent timecodes"));
-COMMAND_GROUP(recent_video, "recent/video", _("Recent"), _("Recent"), _("Open recent video"));
+COMMAND_GROUP(recent_audio,     "recent/audio",     _("Recent"), _("Recent"), _("Open recent audio"));
+COMMAND_GROUP(recent_keyframes, "recent/keyframe",  _("Recent"), _("Recent"), _("Open recent keyframes"));
+COMMAND_GROUP(recent_subtitle,  "recent/subtitle",  _("Recent"), _("Recent"), _("Open recent subtitles"));
+COMMAND_GROUP(recent_timecodes, "recent/timecodes", _("Recent"), _("Recent"), _("Open recent timecodes"));
+COMMAND_GROUP(recent_video,     "recent/video",     _("Recent"), _("Recent"), _("Open recent video"));
 
 struct recent_audio_entry : public Command {
 	CMD_NAME("recent/audio/")
@@ -56,7 +53,7 @@ struct recent_audio_entry : public Command {
 	STR_DISP("Recent")
 	STR_HELP("Open recent audio")
 
-	void operator()(agi::Context* c, int id) {
+	void operator()(agi::Context *c, int id) {
 		c->project->LoadAudio(config::mru->GetEntry("Audio", id));
 	}
 };
@@ -67,7 +64,7 @@ struct recent_keyframes_entry : public Command {
 	STR_DISP("Recent")
 	STR_HELP("Open recent keyframes")
 
-	void operator()(agi::Context* c, int id) {
+	void operator()(agi::Context *c, int id) {
 		c->project->LoadKeyframes(config::mru->GetEntry("Keyframes", id));
 	}
 };
@@ -78,12 +75,11 @@ struct recent_subtitle_entry : public Command {
 	STR_DISP("Recent")
 	STR_HELP("Open recent subtitles")
 
-	void operator()(agi::Context* c, int id) {
+	void operator()(agi::Context *c, int id) {
 #ifdef __APPLE__
-		wxGetApp().NewProjectContext().project->LoadSubtitles(
-		    config::mru->GetEntry("Subtitle", id));
+		wxGetApp().NewProjectContext().project->LoadSubtitles(config::mru->GetEntry("Subtitle", id));
 #else
-		if(c->subsController->TryToClose() == wxCANCEL) return;
+		if (c->subsController->TryToClose() == wxCANCEL) return;
 		c->project->LoadSubtitles(config::mru->GetEntry("Subtitle", id));
 #endif
 	}
@@ -95,7 +91,7 @@ struct recent_timecodes_entry : public Command {
 	STR_DISP("Recent")
 	STR_HELP("Open recent timecodes")
 
-	void operator()(agi::Context* c, int id) {
+	void operator()(agi::Context *c, int id) {
 		c->project->LoadTimecodes(config::mru->GetEntry("Timecodes", id));
 	}
 };
@@ -106,36 +102,38 @@ struct recent_video_entry : public Command {
 	STR_DISP("Recent")
 	STR_HELP("Open recent videos")
 
-	void operator()(agi::Context* c, int id) {
+	void operator()(agi::Context *c, int id) {
 		c->project->LoadVideo(config::mru->GetEntry("Video", id));
 	}
 };
 
-template <class T> class mru_wrapper final : public T {
+template<class T>
+class mru_wrapper final : public T {
 	int id;
 	std::string full_name;
-
-  public:
-	const char* name() const { return full_name.c_str(); }
-	void operator()(agi::Context* c) { T::operator()(c, id); }
-	mru_wrapper(int id) : id(id), full_name(T::name() + std::to_string(id)) {}
+public:
+	const char *name() const { return full_name.c_str(); }
+	void operator()(agi::Context *c) {
+		T::operator()(c, id);
+	}
+	mru_wrapper(int id) : id(id) , full_name(T::name() + std::to_string(id)) { }
 };
-} // namespace
+}
 
 namespace cmd {
-void init_recent() {
-	reg(agi::make_unique<recent_audio>());
-	reg(agi::make_unique<recent_keyframes>());
-	reg(agi::make_unique<recent_subtitle>());
-	reg(agi::make_unique<recent_timecodes>());
-	reg(agi::make_unique<recent_video>());
+	void init_recent() {
+		reg(agi::make_unique<recent_audio>());
+		reg(agi::make_unique<recent_keyframes>());
+		reg(agi::make_unique<recent_subtitle>());
+		reg(agi::make_unique<recent_timecodes>());
+		reg(agi::make_unique<recent_video>());
 
-	for(int i = 0; i < 16; ++i) {
-		reg(agi::make_unique<mru_wrapper<recent_audio_entry>>(i));
-		reg(agi::make_unique<mru_wrapper<recent_keyframes_entry>>(i));
-		reg(agi::make_unique<mru_wrapper<recent_subtitle_entry>>(i));
-		reg(agi::make_unique<mru_wrapper<recent_timecodes_entry>>(i));
-		reg(agi::make_unique<mru_wrapper<recent_video_entry>>(i));
+		for (int i = 0; i < 16; ++i) {
+			reg(agi::make_unique<mru_wrapper<recent_audio_entry>>(i));
+			reg(agi::make_unique<mru_wrapper<recent_keyframes_entry>>(i));
+			reg(agi::make_unique<mru_wrapper<recent_subtitle_entry>>(i));
+			reg(agi::make_unique<mru_wrapper<recent_timecodes_entry>>(i));
+			reg(agi::make_unique<mru_wrapper<recent_video_entry>>(i));
+		}
 	}
 }
-} // namespace cmd

@@ -18,45 +18,45 @@
 
 #include <wx/stc/stc.h>
 
-void TextSelectionController::SetControl(wxStyledTextCtrl* ctrl) {
+void TextSelectionController::SetControl(wxStyledTextCtrl *ctrl) {
 	this->ctrl = ctrl;
-	if(ctrl) ctrl->Bind(wxEVT_STC_UPDATEUI, &TextSelectionController::UpdateUI, this);
+	if (ctrl)
+		ctrl->Bind(wxEVT_STC_UPDATEUI, &TextSelectionController::UpdateUI, this);
 }
 
 TextSelectionController::~TextSelectionController() {
-	if(ctrl) ctrl->Unbind(wxEVT_STC_UPDATEUI, &TextSelectionController::UpdateUI, this);
+	if (ctrl) ctrl->Unbind(wxEVT_STC_UPDATEUI, &TextSelectionController::UpdateUI, this);
 }
 
-#define GET(var, new_value) \
-	do { \
-		int tmp = new_value; \
-		if(tmp != var) { \
-			var = tmp; \
-			changed = true; \
-		} \
-	} while(false)
+#define GET(var, new_value) do { \
+	int tmp = new_value;      \
+	if (tmp != var) {         \
+		var = tmp;            \
+		changed = true;       \
+	}                         \
+} while(false)
 
-#define SET(var, new_value, Setter) \
-	do { \
-		if(var != new_value) { \
-			var = new_value; \
-			if(ctrl) ctrl->Setter(var); \
-		} \
-	} while(false)
+#define SET(var, new_value, Setter) do { \
+	if (var != new_value) {              \
+		var = new_value;                 \
+		if (ctrl) ctrl->Setter(var);     \
+	}                                    \
+} while (false)
 
-void TextSelectionController::UpdateUI(wxStyledTextEvent& evt) {
-	if(changing) return;
+void TextSelectionController::UpdateUI(wxStyledTextEvent &evt) {
+	if (changing) return;
 
 	bool changed = false;
 	GET(insertion_point, ctrl->GetInsertionPoint());
-	if(evt.GetUpdated() & wxSTC_UPDATE_SELECTION) {
+	if (evt.GetUpdated() & wxSTC_UPDATE_SELECTION) {
 		GET(selection_start, ctrl->GetSelectionStart());
 		GET(selection_end, ctrl->GetSelectionEnd());
-	} else {
+	}
+	else {
 		GET(selection_start, insertion_point);
 		GET(selection_end, insertion_point);
 	}
-	if(changed) AnnounceSelectionChanged();
+	if (changed) AnnounceSelectionChanged();
 }
 
 void TextSelectionController::SetInsertionPoint(int position) {

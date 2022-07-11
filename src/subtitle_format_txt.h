@@ -35,7 +35,7 @@
 #include "subtitle_format.h"
 
 class TXTSubtitleFormat final : public SubtitleFormat {
-  public:
+public:
 	TXTSubtitleFormat();
 	std::vector<std::string> GetReadWildcards() const override;
 	std::vector<std::string> GetWriteWildcards() const override;
@@ -44,8 +44,6 @@ class TXTSubtitleFormat final : public SubtitleFormat {
 	bool CanSave(const AssFile*) const override { return false; }
 
 	bool CanWriteFile(agi::fs::path const& filename) const override;
-	void ReadFile(AssFile* target, agi::fs::path const& filename, agi::vfr::Framerate const& fps,
-	              std::string const& forceEncoding) const override;
-	void WriteFile(const AssFile* src, agi::fs::path const& filename,
-	               agi::vfr::Framerate const& fps, std::string const& encoding) const override;
+	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
+	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
 };

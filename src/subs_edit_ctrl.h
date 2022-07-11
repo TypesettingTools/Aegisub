@@ -34,12 +34,10 @@
 
 class Thesaurus;
 namespace agi {
-class SpellChecker;
-struct Context;
-namespace ass {
-struct DialogueToken;
+	class SpellChecker;
+	struct Context;
+	namespace ass { struct DialogueToken; }
 }
-} // namespace agi
 
 /// @class SubsTextEditCtrl
 /// @brief A Scintilla control with spell checking and syntax highlighting
@@ -51,7 +49,7 @@ class SubsTextEditCtrl final : public wxStyledTextCtrl {
 	std::unique_ptr<Thesaurus> thesaurus;
 
 	/// Project context, for splitting lines
-	agi::Context* context;
+	agi::Context *context;
 
 	/// The word right-clicked on, used for spellchecker replacing
 	std::string currentWord;
@@ -82,16 +80,15 @@ class SubsTextEditCtrl final : public wxStyledTextCtrl {
 	/// Tokenized version of line_text
 	std::vector<agi::ass::DialogueToken> tokenized_line;
 
-	void OnContextMenu(wxContextMenuEvent&);
+	void OnContextMenu(wxContextMenuEvent &);
 	void OnDoubleClick(wxStyledTextEvent&);
-	void OnUseSuggestion(wxCommandEvent& event);
-	void OnSetDicLanguage(wxCommandEvent& event);
-	void OnSetThesLanguage(wxCommandEvent& event);
-	void OnLoseFocus(wxFocusEvent& event);
-	void OnKeyDown(wxKeyEvent& event);
+	void OnUseSuggestion(wxCommandEvent &event);
+	void OnSetDicLanguage(wxCommandEvent &event);
+	void OnSetThesLanguage(wxCommandEvent &event);
+	void OnLoseFocus(wxFocusEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
 
-	void SetSyntaxStyle(int id, wxFont& font, std::string const& name,
-	                    wxColor const& default_background);
+	void SetSyntaxStyle(int id, wxFont &font, std::string const& name, wxColor const& default_background);
 	void Subscribe(std::string const& name);
 
 	void StyleSpellCheck();
@@ -101,19 +98,19 @@ class SubsTextEditCtrl final : public wxStyledTextCtrl {
 	void UpdateStyle();
 
 	/// Add the thesaurus suggestions to a menu
-	void AddThesaurusEntries(wxMenu& menu);
+	void AddThesaurusEntries(wxMenu &menu);
 
 	/// Add the spell checker suggestions to a menu
-	void AddSpellCheckerEntries(wxMenu& menu);
+	void AddSpellCheckerEntries(wxMenu &menu);
 
 	/// Generate a languages submenu from a list of locales and a current language
 	/// @param base_id ID to use for the first menu item
 	/// @param curLang Currently selected language
 	/// @param lang Full list of languages
-	wxMenu* GetLanguagesMenu(int base_id, wxString const& curLang, wxArrayString const& langs);
+	wxMenu *GetLanguagesMenu(int base_id, wxString const& curLang, wxArrayString const& langs);
 
-  public:
-	SubsTextEditCtrl(wxWindow* parent, wxSize size, long style, agi::Context* context);
+public:
+	SubsTextEditCtrl(wxWindow* parent, wxSize size, long style, agi::Context *context);
 	~SubsTextEditCtrl();
 
 	void SetTextTo(std::string const& text);

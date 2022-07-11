@@ -46,20 +46,22 @@ enum {
 };
 
 AudioWaveformRenderer::AudioWaveformRenderer(std::string const& color_scheme_name)
-    : render_averages(OPT_GET("Audio/Display/Waveform Style")->GetInt() == Waveform_MaxAvg) {
+: render_averages(OPT_GET("Audio/Display/Waveform Style")->GetInt() == Waveform_MaxAvg)
+{
 	colors.reserve(AudioStyle_MAX);
-	for(int i = 0; i < AudioStyle_MAX; ++i)
+	for (int i = 0; i < AudioStyle_MAX; ++i)
 		colors.emplace_back(6, color_scheme_name, i);
 }
 
-AudioWaveformRenderer::~AudioWaveformRenderer() {}
+AudioWaveformRenderer::~AudioWaveformRenderer() { }
 
-void AudioWaveformRenderer::Render(wxBitmap& bmp, int start, AudioRenderingStyle style) {
+void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle style)
+{
 	wxMemoryDC dc(bmp);
 	wxRect rect(wxPoint(0, 0), bmp.GetSize());
 	int midpoint = rect.height / 2;
 
-	const AudioColorScheme* pal = &colors[style];
+	const AudioColorScheme *pal = &colors[style];
 
 	double pixel_samples = pixel_ms * provider->GetSampleRate() / 1000.0;
 
@@ -69,10 +71,10 @@ void AudioWaveformRenderer::Render(wxBitmap& bmp, int start, AudioRenderingStyle
 	dc.DrawRectangle(rect);
 
 	// Make sure we've got a buffer to fill with audio data
-	if(!audio_buffer) {
+	if (!audio_buffer)
+	{
 		// Buffer for one pixel strip of audio
-		size_t buffer_needed =
-		    pixel_samples * provider->GetChannels() * provider->GetBytesPerSample();
+		size_t buffer_needed = pixel_samples * provider->GetChannels() * provider->GetBytesPerSample();
 		audio_buffer.reset(new char[buffer_needed]);
 	}
 
@@ -84,18 +86,23 @@ void AudioWaveformRenderer::Render(wxBitmap& bmp, int start, AudioRenderingStyle
 	wxPen pen_peaks(wxPen(pal->get(0.4f)));
 	wxPen pen_avgs(wxPen(pal->get(0.7f)));
 
-	for(int x = 0; x < rect.width; ++x) {
+	for (int x = 0; x < rect.width; ++x)
+	{
 		provider->GetAudio(audio_buffer.get(), (int64_t)cur_sample, (int64_t)pixel_samples);
 		cur_sample += pixel_samples;
 
 		int peak_min = 0, peak_max = 0;
 		int64_t avg_min_accum = 0, avg_max_accum = 0;
-		auto aud = reinterpret_cast<const int16_t*>(audio_buffer.get());
-		for(int si = pixel_samples; si > 0; --si, ++aud) {
-			if(*aud > 0) {
+		auto aud = reinterpret_cast<const int16_t *>(audio_buffer.get());
+		for (int si = pixel_samples; si > 0; --si, ++aud)
+		{
+			if (*aud > 0)
+			{
 				peak_max = std::max(peak_max, (int)*aud);
 				avg_max_accum += *aud;
-			} else {
+			}
+			else
+			{
 				peak_min = std::min(peak_min, (int)*aud);
 				avg_min_accum += *aud;
 			}
@@ -104,21 +111,19 @@ void AudioWaveformRenderer::Render(wxBitmap& bmp, int start, AudioRenderingStyle
 		// midpoint is half height
 		peak_min = std::max((int)(peak_min * amplitude_scale * midpoint) / 0x8000, -midpoint);
 		peak_max = std::min((int)(peak_max * amplitude_scale * midpoint) / 0x8000, midpoint);
-		int avg_min = std::max(
-		    (int)(avg_min_accum * amplitude_scale * midpoint / pixel_samples) / 0x8000, -midpoint);
-		int avg_max = std::min(
-		    (int)(avg_max_accum * amplitude_scale * midpoint / pixel_samples) / 0x8000, midpoint);
+		int avg_min = std::max((int)(avg_min_accum * amplitude_scale * midpoint / pixel_samples) / 0x8000, -midpoint);
+		int avg_max = std::min((int)(avg_max_accum * amplitude_scale * midpoint / pixel_samples) / 0x8000, midpoint);
 
 		dc.SetPen(pen_peaks);
 		dc.DrawLine(x, midpoint - peak_max, x, midpoint - peak_min);
-		if(render_averages) {
+		if (render_averages) {
 			dc.SetPen(pen_avgs);
 			dc.DrawLine(x, midpoint - avg_max, x, midpoint - avg_min);
 		}
 	}
 
 	// Horizontal zero-point line
-	if(render_averages)
+	if (render_averages)
 		dc.SetPen(wxPen(pal->get(1.0f)));
 	else
 		dc.SetPen(pen_peaks);
@@ -126,8 +131,9 @@ void AudioWaveformRenderer::Render(wxBitmap& bmp, int start, AudioRenderingStyle
 	dc.DrawLine(0, midpoint, rect.width, midpoint);
 }
 
-void AudioWaveformRenderer::RenderBlank(wxDC& dc, const wxRect& rect, AudioRenderingStyle style) {
-	const AudioColorScheme* pal = &colors[style];
+void AudioWaveformRenderer::RenderBlank(wxDC &dc, const wxRect &rect, AudioRenderingStyle style)
+{
+	const AudioColorScheme *pal = &colors[style];
 	wxColor line(pal->get(1.0));
 	wxColor bg(pal->get(0.0));
 
@@ -141,7 +147,7 @@ void AudioWaveformRenderer::RenderBlank(wxDC& dc, const wxRect& rect, AudioRende
 	dc.DrawRectangle(rect.x, rect.y + halfheight + 1, rect.width, rect.height - halfheight - 1);
 
 	dc.SetPen(wxPen(line));
-	dc.DrawLine(rect.x, rect.y + halfheight, rect.x + rect.width, rect.y + halfheight);
+	dc.DrawLine(rect.x, rect.y+halfheight, rect.x+rect.width, rect.y+halfheight);
 }
 
 wxArrayString AudioWaveformRenderer::GetWaveformStyles() {

@@ -37,31 +37,29 @@
 
 #include <libaegisub/signal.h>
 
-namespace agi {
-struct Context;
-}
+namespace agi { struct Context; }
 class AsyncVideoProvider;
 class PersistLocation;
 class VideoBox;
 class VideoDisplay;
 
 class DialogDetachedVideo final : public wxDialog {
-	agi::Context* context;
-	VideoDisplay* old_display;
-	wxWindow* old_slider;
+	agi::Context *context;
+	VideoDisplay *old_display;
+	wxWindow *old_slider;
 	agi::signal::Connection video_open;
 	std::unique_ptr<PersistLocation> persist;
 
-	void OnClose(wxCloseEvent&);
+	void OnClose(wxCloseEvent &);
 	/// Minimize event handler to hack around a wx bug
-	void OnMinimize(wxIconizeEvent& evt);
-	void OnKeyDown(wxKeyEvent& evt);
-	void OnVideoOpen(AsyncVideoProvider* new_provider);
+	void OnMinimize(wxIconizeEvent &evt);
+	void OnKeyDown(wxKeyEvent &evt);
+	void OnVideoOpen(AsyncVideoProvider *new_provider);
 
-  public:
+public:
 	/// @brief Constructor
 	/// @param context Project context
-	DialogDetachedVideo(agi::Context* context);
+	DialogDetachedVideo(agi::Context *context);
 	/// Destructor
 	~DialogDetachedVideo();
 };

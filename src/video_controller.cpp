@@ -31,7 +31,6 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
-#include "async_video_provider.h"
 #include "audio_controller.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
@@ -39,50 +38,52 @@
 #include "project.h"
 #include "selection_controller.h"
 #include "time_range.h"
+#include "async_video_provider.h"
 #include "utils.h"
 
 #include <libaegisub/ass/time.h>
 
 #include <wx/log.h>
 
-VideoController::VideoController(agi::Context* c)
-    : context(c), playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video")),
-      connections(agi::signal::make_vector({
-          context->ass->AddCommitListener(&VideoController::OnSubtitlesCommit, this),
-          context->project->AddVideoProviderListener(&VideoController::OnNewVideoProvider, this),
-          context->selectionController->AddActiveLineListener(&VideoController::OnActiveLineChanged,
-                                                              this),
-      })) {
+VideoController::VideoController(agi::Context *c)
+: context(c)
+, playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
+, connections(agi::signal::make_vector({
+	context->ass->AddCommitListener(&VideoController::OnSubtitlesCommit, this),
+	context->project->AddVideoProviderListener(&VideoController::OnNewVideoProvider, this),
+	context->selectionController->AddActiveLineListener(&VideoController::OnActiveLineChanged, this),
+}))
+{
 	Bind(EVT_VIDEO_ERROR, &VideoController::OnVideoError, this);
 	Bind(EVT_SUBTITLES_ERROR, &VideoController::OnSubtitlesError, this);
 	playback.Bind(wxEVT_TIMER, &VideoController::OnPlayTimer, this);
 }
 
-void VideoController::OnNewVideoProvider(AsyncVideoProvider* new_provider) {
+void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 	Stop();
 	provider = new_provider;
 	color_matrix = provider ? provider->GetColorSpace() : "";
 }
 
-void VideoController::OnSubtitlesCommit(int type, const AssDialogue* changed) {
-	if(!provider) return;
+void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
+	if (!provider) return;
 
-	if((type & AssFile::COMMIT_SCRIPTINFO) || type == AssFile::COMMIT_NEW) {
+	if ((type & AssFile::COMMIT_SCRIPTINFO) || type == AssFile::COMMIT_NEW) {
 		auto new_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
-		if(!new_matrix.empty() && new_matrix != color_matrix) {
+		if (!new_matrix.empty() && new_matrix != color_matrix) {
 			color_matrix = new_matrix;
 			provider->SetColorSpace(new_matrix);
 		}
 	}
 
-	if(!changed)
+	if (!changed)
 		provider->LoadSubtitles(context->ass.get());
 	else
 		provider->UpdateSubtitles(context->ass.get(), changed);
 }
 
-void VideoController::OnActiveLineChanged(AssDialogue* line) {
-	if(line && provider && OPT_GET("Video/Subtitle Sync")->GetBool()) {
+void VideoController::OnActiveLineChanged(AssDialogue *line) {
+	if (line && provider && OPT_GET("Video/Subtitle Sync")->GetBool()) {
 		Stop();
 		JumpToTime(line->Start);
 	}
@@ -94,16 +95,18 @@ void VideoController::RequestFrame() {
 }
 
 void VideoController::JumpToFrame(int n) {
-	if(!provider) return;
+	if (!provider) return;
 
 	bool was_playing = IsPlaying();
-	if(was_playing) Stop();
+	if (was_playing)
+		Stop();
 
 	frame_n = mid(0, n, provider->GetFrameCount() - 1);
 	RequestFrame();
 	Seek(frame_n);
 
-	if(was_playing) Play();
+	if (was_playing)
+		Play();
 }
 
 void VideoController::JumpToTime(int ms, agi::vfr::Time end) {
@@ -111,30 +114,30 @@ void VideoController::JumpToTime(int ms, agi::vfr::Time end) {
 }
 
 void VideoController::NextFrame() {
-	if(!provider || IsPlaying() || frame_n == provider->GetFrameCount()) return;
+	if (!provider || IsPlaying() || frame_n == provider->GetFrameCount())
+		return;
 
 	JumpToFrame(frame_n + 1);
-	if(playAudioOnStep->GetBool())
-		context->audioController->PlayRange(
-		    TimeRange(TimeAtFrame(frame_n - 1), TimeAtFrame(frame_n)));
+	if (playAudioOnStep->GetBool())
+		context->audioController->PlayRange(TimeRange(TimeAtFrame(frame_n - 1), TimeAtFrame(frame_n)));
 }
 
 void VideoController::PrevFrame() {
-	if(!provider || IsPlaying() || frame_n == 0) return;
+	if (!provider || IsPlaying() || frame_n == 0)
+		return;
 
 	JumpToFrame(frame_n - 1);
-	if(playAudioOnStep->GetBool())
-		context->audioController->PlayRange(
-		    TimeRange(TimeAtFrame(frame_n), TimeAtFrame(frame_n + 1)));
+	if (playAudioOnStep->GetBool())
+		context->audioController->PlayRange(TimeRange(TimeAtFrame(frame_n), TimeAtFrame(frame_n + 1)));
 }
 
 void VideoController::Play() {
-	if(IsPlaying()) {
+	if (IsPlaying()) {
 		Stop();
 		return;
 	}
 
-	if(!provider) return;
+	if (!provider) return;
 
 	start_ms = TimeAtFrame(frame_n);
 	end_frame = provider->GetFrameCount() - 1;
@@ -148,14 +151,13 @@ void VideoController::Play() {
 void VideoController::PlayLine() {
 	Stop();
 
-	AssDialogue* curline = context->selectionController->GetActiveLine();
-	if(!curline) return;
+	AssDialogue *curline = context->selectionController->GetActiveLine();
+	if (!curline) return;
 
 	context->audioController->PlayRange(TimeRange(curline->Start, curline->End));
 
 	// Round-trip conversion to convert start to exact
-	int startFrame =
-	    FrameAtTime(context->selectionController->GetActiveLine()->Start, agi::vfr::START);
+	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start, agi::vfr::START);
 	start_ms = TimeAtFrame(startFrame);
 	end_frame = FrameAtTime(context->selectionController->GetActiveLine()->End, agi::vfr::END) + 1;
 
@@ -166,19 +168,18 @@ void VideoController::PlayLine() {
 }
 
 void VideoController::Stop() {
-	if(IsPlaying()) {
+	if (IsPlaying()) {
 		playback.Stop();
 		context->audioController->Stop();
 	}
 }
 
-void VideoController::OnPlayTimer(wxTimerEvent&) {
+void VideoController::OnPlayTimer(wxTimerEvent &) {
 	using namespace std::chrono;
-	int next_frame = FrameAtTime(
-	    start_ms + duration_cast<milliseconds>(steady_clock::now() - playback_start_time).count());
-	if(next_frame == frame_n) return;
+	int next_frame = FrameAtTime(start_ms + duration_cast<milliseconds>(steady_clock::now() - playback_start_time).count());
+	if (next_frame == frame_n) return;
 
-	if(next_frame >= end_frame)
+	if (next_frame >= end_frame)
 		Stop();
 	else {
 		frame_n = next_frame;
@@ -188,12 +189,12 @@ void VideoController::OnPlayTimer(wxTimerEvent&) {
 }
 
 double VideoController::GetARFromType(AspectRatio type) const {
-	switch(type) {
-		case AspectRatio::Default: return (double)provider->GetWidth() / provider->GetHeight();
-		case AspectRatio::Fullscreen: return 4.0 / 3.0;
-		case AspectRatio::Widescreen: return 16.0 / 9.0;
-		case AspectRatio::Cinematic: return 2.35;
-		default: throw agi::InternalError("Bad AR type");
+	switch (type) {
+		case AspectRatio::Default:    return (double)provider->GetWidth()/provider->GetHeight();
+		case AspectRatio::Fullscreen: return 4.0/3.0;
+		case AspectRatio::Widescreen: return 16.0/9.0;
+		case AspectRatio::Cinematic:  return 2.35;
+        default: throw agi::InternalError("Bad AR type");
 	}
 }
 
@@ -222,11 +223,14 @@ int VideoController::FrameAtTime(int time, agi::vfr::Time type) const {
 }
 
 void VideoController::OnVideoError(VideoProviderErrorEvent const& err) {
-	wxLogError("Failed seeking video. The video file may be corrupt or incomplete.\n"
-	           "Error message reported: %s",
-	           to_wx(err.GetMessage()));
+	wxLogError(
+		"Failed seeking video. The video file may be corrupt or incomplete.\n"
+		"Error message reported: %s",
+		to_wx(err.GetMessage()));
 }
 
 void VideoController::OnSubtitlesError(SubtitlesProviderErrorEvent const& err) {
-	wxLogError("Failed rendering subtitles. Error message reported: %s", to_wx(err.GetMessage()));
+	wxLogError(
+		"Failed rendering subtitles. Error message reported: %s",
+		to_wx(err.GetMessage()));
 }

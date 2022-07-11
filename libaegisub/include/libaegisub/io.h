@@ -24,7 +24,7 @@
 #include <memory>
 
 namespace agi {
-namespace io {
+	namespace io {
 
 DEFINE_EXCEPTION(IOError, Exception);
 DEFINE_EXCEPTION(IOFatal, IOError);
@@ -36,11 +36,11 @@ class Save {
 	const fs::path file_name;
 	const fs::path tmp_name;
 
-  public:
+public:
 	Save(fs::path const& file, bool binary = false);
 	~Save() noexcept(false);
 	std::ostream& Get() { return *fp; }
 };
 
-} // namespace io
+	} // namespace io
 } // namespace agi

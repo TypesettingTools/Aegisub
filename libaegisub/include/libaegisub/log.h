@@ -21,25 +21,19 @@
 
 // These macros below aren't a perm solution, it will depend on how annoying they are through
 // actual usage, and also depends on msvc support.
-#define LOG_SINK(section, severity) \
-	agi::log::Message(section, severity, __FILE__, __FUNCTION__, __LINE__).stream()
+#define LOG_SINK(section, severity) agi::log::Message(section, severity, __FILE__, __FUNCTION__, __LINE__).stream()
 #define LOG_E(section) LOG_SINK(section, agi::log::Exception)
 #define LOG_A(section) LOG_SINK(section, agi::log::Assert)
 #define LOG_W(section) LOG_SINK(section, agi::log::Warning)
 #define LOG_I(section) LOG_SINK(section, agi::log::Info)
 #define LOG_D(section) LOG_SINK(section, agi::log::Debug)
 
-#define LOG_W_IF(cond, section) \
-	if(cond) LOG_SINK(section, agi::log::Warning)
-#define LOG_I_IF(cond, section) \
-	if(cond) LOG_SINK(section, agi::log::Info)
-#define LOG_D_IF(cond, section) \
-	if(cond) LOG_SINK(section, agi::log::Debug)
+#define LOG_W_IF(cond, section) if (cond) LOG_SINK(section, agi::log::Warning)
+#define LOG_I_IF(cond, section) if (cond) LOG_SINK(section, agi::log::Info)
+#define LOG_D_IF(cond, section) if (cond) LOG_SINK(section, agi::log::Debug)
 
 namespace agi {
-namespace dispatch {
-class Queue;
-}
+namespace dispatch { class Queue; }
 namespace log {
 
 class LogSink;
@@ -55,18 +49,18 @@ enum Severity {
 
 /// Short Severity ID
 /// Set in common/log.cpp, keep this ordered the same as Severity.
-extern const char* Severity_ID;
+extern const char *Severity_ID;
 
 /// Global log sink.
-extern LogSink* log;
+extern LogSink *log;
 
 /// Container to hold a single message
 struct SinkMessage {
 	std::string message; ///< Formatted message
 	int64_t time;        ///< Time at execution in nanoseconds since epoch
-	const char* section; ///< Section info eg "video/open" "video/seek" etc
-	const char* file;    ///< Source file
-	const char* func;    ///< Function name
+	const char *section; ///< Section info eg "video/open" "video/seek" etc
+	const char *file;    ///< Source file
+	const char *func;    ///< Function name
 	Severity severity;   ///< Severity
 	int line;            ///< Source line
 };
@@ -82,7 +76,7 @@ class LogSink {
 	/// List of pointers to emitters
 	std::vector<std::unique_ptr<Emitter>> emitters;
 
-  public:
+public:
 	LogSink();
 	~LogSink();
 
@@ -95,7 +89,7 @@ class LogSink {
 
 	/// @brief Unsubscribe and delete an emitter
 	/// @param em Emitter to delete
-	void Unsubscribe(Emitter* em);
+	void Unsubscribe(Emitter *em);
 
 	/// @brief @get the complete (current) log.
 	/// @return Const pointer to internal sink.
@@ -104,19 +98,19 @@ class LogSink {
 
 /// An emitter to produce human readable output for a log sink.
 class Emitter {
-  public:
+public:
 	/// Destructor
-	virtual ~Emitter() {}
+	virtual ~Emitter() { }
 
 	/// Accept a single log entry
-	virtual void log(SinkMessage const& sm) = 0;
+	virtual void log(SinkMessage const& sm)=0;
 };
 
 /// A simple emitter which writes the log to a file in json format
 class JsonEmitter final : public Emitter {
 	std::unique_ptr<std::ostream> fp;
 
-  public:
+public:
 	/// Constructor
 	/// @param directory Directory to write the log file in
 	JsonEmitter(fs::path const& directory);
@@ -130,17 +124,17 @@ class Message {
 	SinkMessage sm;
 	char buffer[2048];
 
-  public:
-	Message(const char* section, Severity severity, const char* file, const char* func, int line);
+public:
+	Message(const char *section, Severity severity, const char *file, const char *func, int line);
 	~Message();
 	std::ostream& stream() { return msg; }
 };
 
 /// Emit log entries to stdout.
-class EmitSTDOUT : public Emitter {
-  public:
+class EmitSTDOUT: public Emitter {
+public:
 	void log(SinkMessage const& sm) override;
 };
 
-} // namespace log
+	} // namespace log
 } // namespace agi

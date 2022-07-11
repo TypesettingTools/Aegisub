@@ -23,25 +23,23 @@
 
 #include <wx/dialog.h>
 
-namespace agi {
-struct Context;
-}
+namespace agi { struct Context; }
 class SearchReplaceEngine;
 struct SearchReplaceSettings;
 class wxComboBox;
 
 class DialogSearchReplace final : public wxDialog {
-	agi::Context* c;
+	agi::Context *c;
 	std::unique_ptr<SearchReplaceSettings> settings;
 	bool has_replace;
-	wxComboBox* find_edit;
-	wxComboBox* replace_edit;
+	wxComboBox *find_edit;
+	wxComboBox *replace_edit;
 
 	void UpdateDropDowns();
 	void FindReplace(bool (SearchReplaceEngine::*func)());
 
-  public:
-	static void Show(agi::Context* context, bool with_replace);
+public:
+	static void Show(agi::Context *context, bool with_replace);
 
 	DialogSearchReplace(agi::Context* c, bool with_replace);
 	~DialogSearchReplace();

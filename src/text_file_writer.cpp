@@ -23,16 +23,18 @@
 
 #include "options.h"
 
-#include <libaegisub/charset_conv.h>
 #include <libaegisub/io.h>
+#include <libaegisub/charset_conv.h>
 #include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 
 TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
-    : file(new agi::io::Save(filename, true)) {
-	if(encoding.empty()) encoding = OPT_GET("App/Save Charset")->GetString();
-	if(encoding != "utf-8" && encoding != "UTF-8") {
+: file(new agi::io::Save(filename, true))
+{
+	if (encoding.empty())
+		encoding = OPT_GET("App/Save Charset")->GetString();
+	if (encoding != "utf-8" && encoding != "UTF-8") {
 		conv = agi::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.c_str(), true);
 		newline = conv->Convert(newline);
 	}
@@ -40,7 +42,8 @@ TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encodi
 	try {
 		// Write the BOM
 		WriteLineToFile("\xEF\xBB\xBF", false);
-	} catch(agi::charset::ConversionFailure&) {
+	}
+	catch (agi::charset::ConversionFailure&) {
 		// If the BOM could not be converted to the target encoding it isn't needed
 	}
 }
@@ -50,11 +53,13 @@ TextFileWriter::~TextFileWriter() {
 }
 
 void TextFileWriter::WriteLineToFile(std::string const& line, bool addLineBreak) {
-	if(conv) {
+	if (conv) {
 		auto converted = conv->Convert(line);
 		file->Get().write(converted.data(), converted.size());
-	} else
+	}
+	else
 		file->Get().write(line.data(), line.size());
 
-	if(addLineBreak) file->Get().write(newline.data(), newline.size());
+	if (addLineBreak)
+		file->Get().write(newline.data(), newline.size());
 }

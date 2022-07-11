@@ -36,7 +36,12 @@
 #include <boost/flyweight.hpp>
 #include <vector>
 
-enum class AssBlockType { PLAIN, COMMENT, OVERRIDE, DRAWING };
+enum class AssBlockType {
+	PLAIN,
+	COMMENT,
+	OVERRIDE,
+	DRAWING
+};
 
 /// @class AssDialogueBlock
 /// @brief AssDialogue Blocks
@@ -59,12 +64,11 @@ enum class AssBlockType { PLAIN, COMMENT, OVERRIDE, DRAWING };
 /// the other fields in the specific class, and returns the new value.
 /// @endverbatim
 class AssDialogueBlock {
-  protected:
+protected:
 	/// Text of this block
 	std::string text;
-
-  public:
-	AssDialogueBlock(std::string text) : text(std::move(text)) {}
+public:
+	AssDialogueBlock(std::string text) : text(std::move(text)) { }
 	virtual ~AssDialogueBlock() = default;
 
 	virtual AssBlockType GetType() const = 0;
@@ -72,32 +76,30 @@ class AssDialogueBlock {
 };
 
 class AssDialogueBlockPlain final : public AssDialogueBlock {
-  public:
+public:
 	using AssDialogueBlock::text;
 	AssBlockType GetType() const override { return AssBlockType::PLAIN; }
-	AssDialogueBlockPlain(std::string const& text = std::string()) : AssDialogueBlock(text) {}
+	AssDialogueBlockPlain(std::string const& text = std::string()) : AssDialogueBlock(text) { }
 };
 
 class AssDialogueBlockComment final : public AssDialogueBlock {
-  public:
+public:
 	AssBlockType GetType() const override { return AssBlockType::COMMENT; }
-	AssDialogueBlockComment(std::string const& text = std::string())
-	    : AssDialogueBlock("{" + text + "}") {}
+	AssDialogueBlockComment(std::string const& text = std::string()) : AssDialogueBlock("{" + text + "}") { }
 };
 
 class AssDialogueBlockDrawing final : public AssDialogueBlock {
-  public:
+public:
 	using AssDialogueBlock::text;
 	int Scale;
 
 	AssBlockType GetType() const override { return AssBlockType::DRAWING; }
-	AssDialogueBlockDrawing(std::string const& text, int scale)
-	    : AssDialogueBlock(text), Scale(scale) {}
+	AssDialogueBlockDrawing(std::string const& text, int scale) : AssDialogueBlock(text), Scale(scale) { }
 };
 
 class AssDialogueBlockOverride final : public AssDialogueBlock {
-  public:
-	AssDialogueBlockOverride(std::string const& text = std::string()) : AssDialogueBlock(text) {}
+public:
+	AssDialogueBlockOverride(std::string const& text = std::string()) : AssDialogueBlock(text) { }
 
 	std::vector<AssOverrideTag> Tags;
 
@@ -107,11 +109,11 @@ class AssDialogueBlockOverride final : public AssDialogueBlock {
 	void AddTag(std::string const& tag);
 
 	/// Type of callback function passed to ProcessParameters
-	typedef void (*ProcessParametersCallback)(std::string const&, AssOverrideParameter*, void*);
+	typedef void (*ProcessParametersCallback)(std::string const&, AssOverrideParameter *, void *);
 	/// @brief Process parameters via callback
 	/// @param callback The callback function to call per tag parameter
 	/// @param userData User data to pass to callback function
-	void ProcessParameters(ProcessParametersCallback callback, void* userData);
+	void ProcessParameters(ProcessParametersCallback callback, void *userData);
 };
 
 struct AssDialogueBase {
@@ -127,7 +129,7 @@ struct AssDialogueBase {
 	/// Layer number
 	int Layer = 0;
 	/// Margins: 0 = Left, 1 = Right, 2 = Top (Vertical)
-	std::array<int, 3> Margin = std::array<int, 3>{ { 0, 0, 0 } };
+	std::array<int, 3> Margin = std::array<int, 3>{{ 0, 0, 0 }};
 	/// Starting time
 	agi::Time Start = 0;
 	/// Ending time
@@ -148,8 +150,7 @@ class AssDialogue final : public AssEntry, public AssDialogueBase, public AssEnt
 	/// @brief Parse raw ASS data into everything else
 	/// @param data ASS line
 	void Parse(std::string const& data);
-
-  public:
+public:
 	AssEntryGroup Group() const override { return AssEntryGroup::DIALOGUE; }
 
 	/// Parse text as ASS and return block information
@@ -166,7 +167,7 @@ class AssDialogue final : public AssEntry, public AssDialogueBase, public AssEnt
 	std::string GetEntryData() const;
 
 	/// Does this line collide with the passed line?
-	bool CollidesWith(const AssDialogue* target) const;
+	bool CollidesWith(const AssDialogue *target) const;
 
 	AssDialogue();
 	AssDialogue(AssDialogue const&);
@@ -174,3 +175,4 @@ class AssDialogue final : public AssEntry, public AssDialogueBase, public AssEnt
 	AssDialogue(std::string const& data);
 	~AssDialogue();
 };
+

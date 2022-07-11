@@ -35,29 +35,36 @@
 
 #include <libaegisub/exception.h>
 
-AudioColorScheme::AudioColorScheme(int prec, std::string const& scheme_name,
-                                   int audio_rendering_style)
-    : palette((3 << prec) + 3), factor((size_t)1 << prec) {
+AudioColorScheme::AudioColorScheme(int prec, std::string const& scheme_name, int audio_rendering_style)
+: palette((3<<prec) + 3)
+, factor((size_t)1<<prec)
+{
 	std::string opt_base = "Colour/Schemes/" + scheme_name + "/";
-	switch(static_cast<AudioRenderingStyle>(audio_rendering_style)) {
-		case AudioStyle_Normal: opt_base += "Normal/"; break;
+	switch (static_cast<AudioRenderingStyle>(audio_rendering_style))
+	{
+		case AudioStyle_Normal:   opt_base += "Normal/"; break;
 		case AudioStyle_Inactive: opt_base += "Inactive/"; break;
 		case AudioStyle_Selected: opt_base += "Selection/"; break;
-		case AudioStyle_Primary: opt_base += "Primary/"; break;
+		case AudioStyle_Primary:  opt_base += "Primary/"; break;
 		default: throw agi::InternalError("Unknown audio rendering styling");
 	}
 
-	double h_base = OPT_GET(opt_base + "Hue Offset")->GetDouble();
+	double h_base  = OPT_GET(opt_base + "Hue Offset")->GetDouble();
 	double h_scale = OPT_GET(opt_base + "Hue Scale")->GetDouble();
-	double s_base = OPT_GET(opt_base + "Saturation Offset")->GetDouble();
+	double s_base  = OPT_GET(opt_base + "Saturation Offset")->GetDouble();
 	double s_scale = OPT_GET(opt_base + "Saturation Scale")->GetDouble();
-	double l_base = OPT_GET(opt_base + "Lightness Offset")->GetDouble();
+	double l_base  = OPT_GET(opt_base + "Lightness Offset")->GetDouble();
 	double l_scale = OPT_GET(opt_base + "Lightness Scale")->GetDouble();
 
-	for(size_t i = 0; i <= factor; ++i) {
+	for (size_t i = 0; i <= factor; ++i)
+	{
 		auto t = (double)i / factor;
-		hsl_to_rgb(mid<int>(0, h_base + t * h_scale, 255), mid<int>(0, s_base + t * s_scale, 255),
-		           mid<int>(0, l_base + t * l_scale, 255), &palette[i * 3 + 0], &palette[i * 3 + 1],
-		           &palette[i * 3 + 2]);
+		hsl_to_rgb(
+			mid<int>(0, h_base + t * h_scale, 255),
+			mid<int>(0, s_base + t * s_scale, 255),
+			mid<int>(0, l_base + t * l_scale, 255),
+			&palette[i * 3 + 0],
+			&palette[i * 3 + 1],
+			&palette[i * 3 + 2]);
 	}
 }

@@ -45,96 +45,98 @@
 
 DEFINE_EXCEPTION(TTXTParseError, SubtitleFormatParseError);
 
-TTXTSubtitleFormat::TTXTSubtitleFormat() : SubtitleFormat("MPEG-4 Streaming Text") {}
+TTXTSubtitleFormat::TTXTSubtitleFormat()
+: SubtitleFormat("MPEG-4 Streaming Text")
+{
+}
 
 std::vector<std::string> TTXTSubtitleFormat::GetReadWildcards() const {
-	return { "ttxt" };
+	return {"ttxt"};
 }
 
 std::vector<std::string> TTXTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-void TTXTSubtitleFormat::ReadFile(AssFile* target, agi::fs::path const& filename,
-                                  agi::vfr::Framerate const& fps,
-                                  std::string const& encoding) const {
+void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	target->LoadDefault(false, OPT_GET("Subtitle Format/TTXT/Default Style Catalog")->GetString());
 
 	// Load XML document
 	wxXmlDocument doc;
-	if(!doc.Load(filename.wstring())) throw TTXTParseError("Failed loading TTXT XML file.");
+	if (!doc.Load(filename.wstring())) throw TTXTParseError("Failed loading TTXT XML file.");
 
 	// Check root node name
-	if(doc.GetRoot()->GetName() != "TextStream") throw TTXTParseError("Invalid TTXT file.");
+	if (doc.GetRoot()->GetName() != "TextStream") throw TTXTParseError("Invalid TTXT file.");
 
 	// Check version
 	wxString verStr = doc.GetRoot()->GetAttribute("version", "");
 	int version = -1;
-	if(verStr == "1.0")
+	if (verStr == "1.0")
 		version = 0;
-	else if(verStr == "1.1")
+	else if (verStr == "1.1")
 		version = 1;
 	else
 		throw TTXTParseError("Unknown TTXT version: " + from_wx(verStr));
 
 	// Get children
-	AssDialogue* diag = nullptr;
+	AssDialogue *diag = nullptr;
 	int lines = 0;
-	for(wxXmlNode* child = doc.GetRoot()->GetChildren(); child; child = child->GetNext()) {
+	for (wxXmlNode *child = doc.GetRoot()->GetChildren(); child; child = child->GetNext()) {
 		// Line
-		if(child->GetName() == "TextSample") {
-			if((diag = ProcessLine(child, diag, version))) {
+		if (child->GetName() == "TextSample") {
+			if ((diag = ProcessLine(child, diag, version))) {
 				lines++;
 				target->Events.push_back(*diag);
 			}
 		}
 		// Header
-		else if(child->GetName() == "TextStreamHeader") {
+		else if (child->GetName() == "TextStreamHeader") {
 			ProcessHeader(child);
 		}
 	}
 
 	// No lines?
-	if(lines == 0) target->Events.push_back(*new AssDialogue);
+	if (lines == 0)
+		target->Events.push_back(*new AssDialogue);
 }
 
-AssDialogue* TTXTSubtitleFormat::ProcessLine(wxXmlNode* node, AssDialogue* prev,
-                                             int version) const {
+AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev, int version) const {
 	// Get time
 	wxString sampleTime = node->GetAttribute("sampleTime", "00:00:00.000");
 	agi::Time time(from_wx(sampleTime));
 
 	// Set end time of last line
-	if(prev) prev->End = time;
+	if (prev)
+		prev->End = time;
 
 	// Get text
 	wxString text;
-	if(version == 0)
+	if (version == 0)
 		text = node->GetAttribute("text", "");
 	else
 		text = node->GetNodeContent();
 
 	// Create line
-	if(text.empty()) return nullptr;
+	if (text.empty()) return nullptr;
 
 	// Create dialogue
 	auto diag = new AssDialogue;
 	diag->Start = time;
-	diag->End = 36000000 - 10;
+	diag->End = 36000000-10;
 
 	// Process text for 1.0
-	if(version == 0) {
+	if (version == 0) {
 		wxString finalText;
 		finalText.reserve(text.size());
 		bool in = false;
 		bool first = true;
-		for(auto chr : text) {
-			if(chr == '\'') {
-				if(!in && !first) finalText += "\\N";
+		for (auto chr : text) {
+			if (chr == '\'') {
+				if (!in && !first) finalText += "\\N";
 				first = false;
 				in = !in;
-			} else if(in)
-				finalText += chr;
+			}
+			else if (in) finalText += chr;
 		}
 		diag->Text = from_wx(finalText);
 	}
@@ -149,20 +151,18 @@ AssDialogue* TTXTSubtitleFormat::ProcessLine(wxXmlNode* node, AssDialogue* prev,
 	return diag;
 }
 
-void TTXTSubtitleFormat::ProcessHeader(wxXmlNode* node) const {
+void TTXTSubtitleFormat::ProcessHeader(wxXmlNode *node) const {
 	// TODO
 }
 
-void TTXTSubtitleFormat::WriteFile(const AssFile* src, agi::fs::path const& filename,
-                                   agi::vfr::Framerate const& fps,
-                                   std::string const& encoding) const {
+void TTXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	// Convert to TTXT
 	AssFile copy(*src);
 	ConvertToTTXT(copy);
 
 	// Create XML structure
 	wxXmlDocument doc;
-	wxXmlNode* root = new wxXmlNode(nullptr, wxXML_ELEMENT_NODE, "TextStream");
+	wxXmlNode *root = new wxXmlNode(nullptr, wxXML_ELEMENT_NODE, "TextStream");
 	root->AddAttribute("version", "1.1");
 	doc.SetRoot(root);
 
@@ -170,8 +170,8 @@ void TTXTSubtitleFormat::WriteFile(const AssFile* src, agi::fs::path const& file
 	WriteHeader(root);
 
 	// Create lines
-	const AssDialogue* prev = nullptr;
-	for(auto const& current : copy.Events) {
+	const AssDialogue *prev = nullptr;
+	for (auto const& current : copy.Events) {
 		WriteLine(root, prev, &current);
 		prev = &current;
 	}
@@ -180,9 +180,9 @@ void TTXTSubtitleFormat::WriteFile(const AssFile* src, agi::fs::path const& file
 	doc.Save(filename.wstring());
 }
 
-void TTXTSubtitleFormat::WriteHeader(wxXmlNode* root) const {
+void TTXTSubtitleFormat::WriteHeader(wxXmlNode *root) const {
 	// Write stream header
-	wxXmlNode* node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextStreamHeader");
+	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextStreamHeader");
 	node->AddAttribute("width", "400");
 	node->AddAttribute("height", "60");
 	node->AddAttribute("layer", "0");
@@ -208,7 +208,7 @@ void TTXTSubtitleFormat::WriteHeader(wxXmlNode* root) const {
 	node = new wxXmlNode(wxXML_ELEMENT_NODE, "FontTable");
 	root->AddChild(node);
 
-	wxXmlNode* subNode = new wxXmlNode(wxXML_ELEMENT_NODE, "FontTableEntry");
+	wxXmlNode *subNode = new wxXmlNode(wxXML_ELEMENT_NODE, "FontTableEntry");
 	subNode->AddAttribute("fontName", "Sans");
 	subNode->AddAttribute("fontID", "1");
 	node->AddChild(subNode);
@@ -230,11 +230,10 @@ void TTXTSubtitleFormat::WriteHeader(wxXmlNode* root) const {
 	root->AddChild(node);
 }
 
-void TTXTSubtitleFormat::WriteLine(wxXmlNode* root, const AssDialogue* prev,
-                                   const AssDialogue* line) const {
+void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, const AssDialogue *prev, const AssDialogue *line) const {
 	// If it doesn't start at the end of previous, add blank
-	if(prev && prev->End != line->Start) {
-		wxXmlNode* node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
+	if (prev && prev->End != line->Start) {
+		wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
 		node->AddAttribute("sampleTime", to_wx("0" + prev->End.GetAssFormatted(true)));
 		node->AddAttribute("xml:space", "preserve");
 		root->AddChild(node);
@@ -242,14 +241,14 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode* root, const AssDialogue* prev,
 	}
 
 	// Generate and insert node
-	wxXmlNode* node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
+	wxXmlNode *node = new wxXmlNode(wxXML_ELEMENT_NODE, "TextSample");
 	node->AddAttribute("sampleTime", to_wx("0" + line->Start.GetAssFormatted(true)));
 	node->AddAttribute("xml:space", "preserve");
 	root->AddChild(node);
 	node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", to_wx(line->Text)));
 }
 
-void TTXTSubtitleFormat::ConvertToTTXT(AssFile& file) const {
+void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
 	file.Sort();
 	StripComments(file);
 	RecombineOverlaps(file);
@@ -259,11 +258,12 @@ void TTXTSubtitleFormat::ConvertToTTXT(AssFile& file) const {
 
 	// Find last line
 	agi::Time lastTime;
-	if(!file.Events.empty()) lastTime = file.Events.back().End;
+	if (!file.Events.empty())
+		lastTime = file.Events.back().End;
 
 	// Insert blank line at the end
 	auto diag = new AssDialogue;
 	diag->Start = lastTime;
-	diag->End = lastTime + OPT_GET("Timing/Default Duration")->GetInt();
+	diag->End = lastTime+OPT_GET("Timing/Default Duration")->GetInt();
 	file.Events.push_back(*diag);
 }

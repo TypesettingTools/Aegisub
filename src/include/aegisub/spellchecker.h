@@ -21,9 +21,7 @@
 
 #include <memory>
 
-namespace agi {
-class SpellChecker;
-}
+namespace agi { class SpellChecker; }
 
 struct SpellCheckerFactory {
 	static std::unique_ptr<agi::SpellChecker> GetSpellChecker();

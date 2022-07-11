@@ -30,8 +30,7 @@
 #include <wx/button.h>
 
 class HelpButton final : public wxButton {
-  public:
-	HelpButton(wxWindow* parent, const char* page, wxPoint position = wxDefaultPosition,
-	           wxSize size = wxDefaultSize);
-	static void OpenPage(const char* page);
+public:
+	HelpButton(wxWindow *parent, const char *page, wxPoint position=wxDefaultPosition, wxSize size=wxDefaultSize);
+	static void OpenPage(const char *page);
 };

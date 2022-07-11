@@ -35,11 +35,15 @@ class TimeRange {
 	int _begin;
 	int _end;
 
-  public:
+public:
 	/// @brief Constructor
 	/// @param begin Index of the first millisecond to include in the range
 	/// @param end   Index of one past the last millisecond to include in the range
-	TimeRange(int begin, int end) : _begin(begin), _end(end) { assert(end >= begin); }
+	TimeRange(int begin, int end)
+	: _begin(begin), _end(end)
+	{
+		assert(end >= begin);
+	}
 
 	/// Get the length of the range in milliseconds
 	int length() const { return _end - _begin; }
@@ -52,7 +56,8 @@ class TimeRange {
 	bool contains(int ms) const { return ms >= begin() && ms < end(); }
 
 	/// Determine whether there is an overlap between two ranges
-	bool overlaps(const TimeRange& other) const {
+	bool overlaps(const TimeRange &other) const
+	{
 		return other.contains(_begin) || contains(other._begin);
 	}
 };

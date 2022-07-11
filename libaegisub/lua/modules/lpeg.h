@@ -10,16 +10,18 @@
 
 #include "lua.h"
 
-#define KEYNEWPATT "lpeg.newpf"
+
+#define KEYNEWPATT	"lpeg.newpf"
+
 
 /*
 ** type of extension functions that define new "patterns" for LPEG
 ** It should return the new current position or NULL if match fails
 */
-typedef const char* (*PattFunc)(const char* s,   /* current position */
-                                const char* e,   /* string end */
-                                const char* o,   /* string start */
-                                const void* ud); /* user data */
+typedef const char *(*PattFunc) (const char *s,  /* current position */
+                                 const char *e,  /* string end */
+                                 const char *o,  /* string start */
+                                 const void *ud);  /* user data */
 
 /*
 ** function to create new patterns based on 'PattFunc' functions.
@@ -28,8 +30,9 @@ typedef const char* (*PattFunc)(const char* s,   /* current position */
 ** a variable that points to the function. In ANSI C a void* cannot
 ** point to a function.)
 */
-typedef void (*Newpf)(lua_State* L, PattFunc f, /* pattern */
-                      const void* ud,           /* (user) data to be passed to 'f' */
-                      size_t l);                /* size of data to be passed to 'f' */
+typedef void (*Newpf) (lua_State *L,
+                       PattFunc f,  /* pattern */
+                       const void *ud,  /* (user) data to be passed to 'f' */
+                       size_t l);  /* size of data to be passed to 'f' */
 
 #endif

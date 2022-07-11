@@ -17,15 +17,19 @@
 #include <string>
 
 namespace agi {
-enum { IGNORE_NONE = 0, IGNORE_WHITESPACE = 1, IGNORE_PUNCTUATION = 2, IGNORE_BLOCKS = 4 };
+	enum {
+		IGNORE_NONE = 0,
+		IGNORE_WHITESPACE = 1,
+		IGNORE_PUNCTUATION = 2,
+		IGNORE_BLOCKS = 4
+	};
 
-/// Get the length in characters of the longest line in the given text
-size_t MaxLineLength(std::string const& text, int ignore_mask);
-/// Get the total number of characters in the string
-size_t CharacterCount(std::string const& str, int ignore_mask);
-size_t CharacterCount(std::string::const_iterator begin, std::string::const_iterator end,
-                      int ignore_mask);
-/// Get index in bytes of the nth character in str, or str.size() if str
-/// has less than n characters
-size_t IndexOfCharacter(std::string const& str, size_t n);
-} // namespace agi
+	/// Get the length in characters of the longest line in the given text
+	size_t MaxLineLength(std::string const& text, int ignore_mask);
+	/// Get the total number of characters in the string
+	size_t CharacterCount(std::string const& str, int ignore_mask);
+	size_t CharacterCount(std::string::const_iterator begin, std::string::const_iterator end, int ignore_mask);
+	/// Get index in bytes of the nth character in str, or str.size() if str
+	/// has less than n characters
+	size_t IndexOfCharacter(std::string const& str, size_t n);
+}

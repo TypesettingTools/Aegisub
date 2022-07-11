@@ -59,44 +59,48 @@
 #include <wx/choicdlg.h>
 
 namespace {
-std::vector<std::unique_ptr<SubtitleFormat>> formats;
+	std::vector<std::unique_ptr<SubtitleFormat>> formats;
 }
 
-SubtitleFormat::SubtitleFormat(std::string name) : name(std::move(name)) {}
+SubtitleFormat::SubtitleFormat(std::string name)
+: name(std::move(name))
+{
+}
 
 bool SubtitleFormat::CanReadFile(agi::fs::path const& filename, std::string const&) const {
 	auto wildcards = GetReadWildcards();
 	return any_of(begin(wildcards), end(wildcards),
-	              [&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
+		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
 bool SubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
 	auto wildcards = GetWriteWildcards();
 	return any_of(begin(wildcards), end(wildcards),
-	              [&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
+		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
-bool SubtitleFormat::CanSave(const AssFile* subs) const {
-	if(!subs->Attachments.empty()) return false;
+bool SubtitleFormat::CanSave(const AssFile *subs) const {
+	if (!subs->Attachments.empty())
+		return false;
 
 	auto def = boost::flyweight<std::string>("Default");
-	for(auto const& line : subs->Events) {
-		if(line.Style != def || line.GetStrippedText() != line.Text) return false;
+	for (auto const& line : subs->Events) {
+		if (line.Style != def || line.GetStrippedText() != line.Text)
+			return false;
 	}
 
 	return true;
 }
 
-agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte,
-                                              agi::vfr::Framerate const& fps) {
+agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte, agi::vfr::Framerate const& fps) {
 	wxArrayString choices;
 
 	bool vidLoaded = false;
-	if(fps.IsLoaded()) {
+	if (fps.IsLoaded()) {
 		vidLoaded = true;
-		if(!fps.IsVFR())
+		if (!fps.IsVFR())
 			choices.Add(fmt_tl("From video (%g)", fps.FPS()));
-		else if(allow_vfr)
+		else if (allow_vfr)
 			choices.Add(_("From video (VFR)"));
 		else
 			vidLoaded = false;
@@ -108,7 +112,8 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte,
 	choices.Add(_("24.000 FPS (FILM)"));
 	choices.Add(_("25.000 FPS (PAL)"));
 	choices.Add(_("29.970 FPS (NTSC)"));
-	if(show_smpte) choices.Add(_("29.970 FPS (NTSC with SMPTE dropframe)"));
+	if (show_smpte)
+		choices.Add(_("29.970 FPS (NTSC with SMPTE dropframe)"));
 	choices.Add(_("30.000 FPS"));
 	choices.Add(_("50.000 FPS (PAL x2)"));
 	choices.Add(_("59.940 FPS (NTSC x2)"));
@@ -117,70 +122,71 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte,
 	choices.Add(_("120.000 FPS"));
 
 	bool was_busy = wxIsBusy();
-	if(was_busy) wxEndBusyCursor();
-	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"),
-	                                    _("FPS"), choices);
-	if(was_busy) wxBeginBusyCursor();
+	if (was_busy) wxEndBusyCursor();
+	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"), _("FPS"), choices);
+	if (was_busy) wxBeginBusyCursor();
 
 	using agi::vfr::Framerate;
-	if(choice == -1) return Framerate();
+	if (choice == -1)
+		return Framerate();
 
 	// Get FPS from choice
-	if(vidLoaded) --choice;
-	if(!show_smpte && choice > 4) --choice;
+	if (vidLoaded)
+		--choice;
+	if (!show_smpte && choice > 4)
+		--choice;
 
-	switch(choice) {
-		case -1: return fps; break;
-		case 0: return Framerate(15, 1); break;
-		case 1: return Framerate(24000, 1001); break;
-		case 2: return Framerate(24, 1); break;
-		case 3: return Framerate(25, 1); break;
-		case 4: return Framerate(30000, 1001); break;
-		case 5: return Framerate(30000, 1001, true); break;
-		case 6: return Framerate(30, 1); break;
-		case 7: return Framerate(50, 1); break;
-		case 8: return Framerate(60000, 1001); break;
-		case 9: return Framerate(60, 1); break;
+	switch (choice) {
+		case -1: return fps;                     break;
+		case 0:  return Framerate(15, 1);        break;
+		case 1:  return Framerate(24000, 1001);  break;
+		case 2:  return Framerate(24, 1);        break;
+		case 3:  return Framerate(25, 1);        break;
+		case 4:  return Framerate(30000, 1001);  break;
+		case 5:  return Framerate(30000, 1001, true); break;
+		case 6:  return Framerate(30, 1);        break;
+		case 7:  return Framerate(50, 1);        break;
+		case 8:  return Framerate(60000, 1001);  break;
+		case 9:  return Framerate(60, 1);        break;
 		case 10: return Framerate(120000, 1001); break;
-		case 11: return Framerate(120, 1); break;
+		case 11: return Framerate(120, 1);       break;
 	}
 	throw agi::InternalError("Out of bounds result from wxGetSingleChoiceIndex?");
 }
 
-void SubtitleFormat::StripTags(AssFile& file) {
-	for(auto& current : file.Events)
+void SubtitleFormat::StripTags(AssFile &file) {
+	for (auto& current : file.Events)
 		current.StripTags();
 }
 
-void SubtitleFormat::ConvertNewlines(AssFile& file, std::string const& newline,
-                                     bool mergeLineBreaks) {
-	for(auto& current : file.Events) {
+void SubtitleFormat::ConvertNewlines(AssFile &file, std::string const& newline, bool mergeLineBreaks) {
+	for (auto& current : file.Events) {
 		std::string repl = current.Text;
 		boost::replace_all(repl, "\\h", " ");
 		boost::ireplace_all(repl, "\\n", newline);
-		if(mergeLineBreaks) {
+		if (mergeLineBreaks) {
 			std::string dbl(newline + newline);
 			size_t pos = 0;
-			while((pos = repl.find(dbl, pos)) != std::string::npos)
+			while ((pos = repl.find(dbl, pos)) != std::string::npos)
 				boost::replace_all(repl, dbl, newline);
 		}
 		current.Text = repl;
 	}
 }
 
-void SubtitleFormat::StripComments(AssFile& file) {
-	file.Events.remove_and_dispose_if(
-	    [](AssDialogue const& diag) { return diag.Comment || diag.Text.get().empty(); },
-	    [](AssDialogue* e) { delete e; });
+void SubtitleFormat::StripComments(AssFile &file) {
+	file.Events.remove_and_dispose_if([](AssDialogue const& diag) {
+		return diag.Comment || diag.Text.get().empty();
+	}, [](AssDialogue *e) { delete e; });
 }
 
 /// @brief Split and merge lines so there are no overlapping lines
 ///
 /// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
-void SubtitleFormat::RecombineOverlaps(AssFile& file) {
+void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 	auto cur = file.Events.begin();
-	for(auto next = std::next(cur); next != file.Events.end(); cur = std::prev(next)) {
-		if(next == file.Events.begin() || cur->End <= next->Start) {
+	for (auto next = std::next(cur); next != file.Events.end(); cur = std::prev(next)) {
+		if (next == file.Events.begin() || cur->End <= next->Start) {
 			++next;
 			continue;
 		}
@@ -189,15 +195,14 @@ void SubtitleFormat::RecombineOverlaps(AssFile& file) {
 		std::unique_ptr<AssDialogue> curdlg(&*next);
 		++next;
 
-		auto insert_line = [&](AssDialogue* newdlg) {
-			file.Events.insert(
-			    std::find_if(next, file.Events.end(),
-			                 [&](AssDialogue const& pos) { return pos.Start >= newdlg->Start; }),
-			    *newdlg);
+		auto insert_line = [&](AssDialogue *newdlg) {
+			file.Events.insert(std::find_if(next, file.Events.end(), [&](AssDialogue const& pos) {
+				return pos.Start >= newdlg->Start;
+			}), *newdlg);
 		};
 
-		// Is there an A part before the overlap?
-		if(curdlg->Start > prevdlg->Start) {
+		//Is there an A part before the overlap?
+		if (curdlg->Start > prevdlg->Start) {
 			// Produce new entry with correct values
 			auto newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = prevdlg->Start;
@@ -217,7 +222,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile& file) {
 		}
 
 		// Is there an A part after the overlap?
-		if(prevdlg->End > curdlg->End) {
+		if (prevdlg->End > curdlg->End) {
 			// Produce new entry with correct values
 			auto newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = curdlg->End;
@@ -227,7 +232,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile& file) {
 		}
 
 		// Is there a B part after the overlap?
-		if(curdlg->End > prevdlg->End) {
+		if (curdlg->End > prevdlg->End) {
 			// Produce new entry with correct values
 			auto newdlg = new AssDialogue(*prevdlg);
 			newdlg->Start = prevdlg->End;
@@ -239,12 +244,12 @@ void SubtitleFormat::RecombineOverlaps(AssFile& file) {
 }
 
 /// @brief Merge identical lines that follow each other
-void SubtitleFormat::MergeIdentical(AssFile& file) {
+void SubtitleFormat::MergeIdentical(AssFile &file) {
 	auto next = file.Events.begin();
 	auto cur = next++;
 
-	for(; next != file.Events.end(); cur = next++) {
-		if(cur->End == next->Start && cur->Text == next->Text) {
+	for (; next != file.Events.end(); cur = next++) {
+		if (cur->End == next->Start && cur->Text == next->Text) {
 			// Merge timing
 			next->Start = std::min(next->Start, cur->Start);
 			next->End = std::max(next->End, cur->End);
@@ -256,7 +261,7 @@ void SubtitleFormat::MergeIdentical(AssFile& file) {
 }
 
 void SubtitleFormat::LoadFormats() {
-	if(formats.empty()) {
+	if (formats.empty()) {
 		formats.emplace_back(agi::make_unique<AssSubtitleFormat>());
 		formats.emplace_back(agi::make_unique<Ebu3264SubtitleFormat>());
 		formats.emplace_back(agi::make_unique<EncoreSubtitleFormat>());
@@ -270,22 +275,22 @@ void SubtitleFormat::LoadFormats() {
 	}
 }
 
-template <class Cont, class Pred> SubtitleFormat* find_or_throw(Cont& container, Pred pred) {
+template<class Cont, class Pred>
+SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 	auto it = find_if(container.begin(), container.end(), pred);
-	if(it == container.end())
+	if (it == container.end())
 		throw UnknownSubtitleFormatError("Subtitle format for extension not found");
 	return it->get();
 }
 
-const SubtitleFormat* SubtitleFormat::GetReader(agi::fs::path const& filename,
-                                                std::string const& encoding) {
+const SubtitleFormat *SubtitleFormat::GetReader(agi::fs::path const& filename, std::string const& encoding) {
 	LoadFormats();
 	return find_or_throw(formats, [&](std::unique_ptr<SubtitleFormat> const& f) {
 		return f->CanReadFile(filename, encoding);
 	});
 }
 
-const SubtitleFormat* SubtitleFormat::GetWriter(agi::fs::path const& filename) {
+const SubtitleFormat *SubtitleFormat::GetWriter(agi::fs::path const& filename) {
 	LoadFormats();
 	return find_or_throw(formats, [&](std::unique_ptr<SubtitleFormat> const& f) {
 		return f->CanWriteFile(filename);
@@ -298,17 +303,14 @@ std::string SubtitleFormat::GetWildcards(int mode) {
 	std::vector<std::string> all;
 	std::string final;
 
-	for(auto const& format : formats) {
+	for (auto const& format : formats) {
 		auto cur = mode == 0 ? format->GetReadWildcards() : format->GetWriteWildcards();
-		if(cur.empty()) continue;
+		if (cur.empty()) continue;
 
-		for(auto& str : cur)
-			str.insert(0, "*.");
+		for (auto& str : cur) str.insert(0, "*.");
 		all.insert(all.end(), begin(cur), end(cur));
-		final +=
-		    "|" + format->GetName() + " (" + boost::join(cur, ",") + ")|" + boost::join(cur, ";");
+		final += "|" + format->GetName() + " (" + boost::join(cur, ",") + ")|" + boost::join(cur, ";");
 	}
 
-	return from_wx(_("All Supported Formats")) + " (" + boost::join(all, ",") + ")|" +
-	       boost::join(all, ";") + final;
+	return from_wx(_("All Supported Formats")) + " (" + boost::join(all, ",") + ")|" + boost::join(all, ";") + final;
 }

@@ -19,14 +19,14 @@
 class wxWindow;
 
 class RetinaHelper {
-	wxWindow* window;
-	void* observer;
+	wxWindow *window;
+	void *observer;
 	agi::signal::Signal<int> ScaleFactorChanged;
-
-  public:
-	RetinaHelper(wxWindow* window);
+public:
+	RetinaHelper(wxWindow *window);
 	~RetinaHelper();
 
 	int GetScaleFactor() const;
 	DEFINE_SIGNAL_ADDERS(ScaleFactorChanged, AddScaleFactorListener)
 };
+

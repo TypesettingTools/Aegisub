@@ -35,55 +35,55 @@
 
 #include <algorithm>
 
-static const char* pages[][2] = {
-	{ "Attachment Manager", "Attachment_Manager" },
-	{ "Automation Manager", "Automation/Manager" },
-	{ "Colour Picker", "Colour_Picker" },
-	{ "Dummy Video", "Video#dummy-video" },
-	{ "Export", "Exporting" },
-	{ "Fonts Collector", "Fonts_Collector" },
-	{ "Kanji Timer", "Kanji_Timer" },
-	{ "Main", "Main_Page" },
-	{ "Options", "Options" },
-	{ "Paste Over", "Paste_Over" },
-	{ "Properties", "Properties" },
-	{ "Resample resolution", "Resolution_Resampler" },
-	{ "Resolution mismatch", "Script_Resolution#automatic-resolution-change" },
-	{ "Shift Times", "Shift_Times" },
-	{ "Select Lines", "Select_Lines" },
-	{ "Spell Checker", "Spell_Checker" },
-	{ "Style Editor", "Styles" },
-	{ "Styles Manager", "Styles" },
-	{ "Styling Assistant", "Styling_Assistant" },
-	{ "Timing Processor", "Timing_Post-Processor" },
-	{ "Translation Assistant", "Translation_Assistant" },
-	{ "Visual Typesetting", "Visual_Typesetting" },
+static const char *pages[][2] = {
+	{"Attachment Manager", "Attachment_Manager"},
+	{"Automation Manager", "Automation/Manager"},
+	{"Colour Picker", "Colour_Picker"},
+	{"Dummy Video", "Video#dummy-video"},
+	{"Export", "Exporting"},
+	{"Fonts Collector", "Fonts_Collector"},
+	{"Kanji Timer", "Kanji_Timer"},
+	{"Main", "Main_Page"},
+	{"Options", "Options"},
+	{"Paste Over", "Paste_Over"},
+	{"Properties", "Properties"},
+	{"Resample resolution", "Resolution_Resampler"},
+	{"Resolution mismatch", "Script_Resolution#automatic-resolution-change"},
+	{"Shift Times", "Shift_Times"},
+	{"Select Lines", "Select_Lines"},
+	{"Spell Checker", "Spell_Checker"},
+	{"Style Editor", "Styles"},
+	{"Styles Manager", "Styles"},
+	{"Styling Assistant", "Styling_Assistant"},
+	{"Timing Processor", "Timing_Post-Processor"},
+	{"Translation Assistant", "Translation_Assistant"},
+	{"Visual Typesetting", "Visual_Typesetting"},
 };
 
 namespace {
-const char* url(const char* page) {
-	auto it = std::lower_bound(
-	    std::begin(pages), std::end(pages), page,
-	    [](const char* pair[], const char* page) { return strcmp(pair[0], page) < 0; });
-	return it == std::end(pages) ? nullptr : (*it)[1];
+	const char *url(const char *page) {
+		auto it = std::lower_bound(std::begin(pages), std::end(pages), page, [](const char *pair[], const char *page) {
+			return strcmp(pair[0], page) < 0;
+		});
+		return it == std::end(pages) ? nullptr : (*it)[1];
+	}
 }
-} // namespace
 
-HelpButton::HelpButton(wxWindow* parent, const char* page, wxPoint position, wxSize size)
-    : wxButton(parent, wxID_HELP, "", position, size) {
+HelpButton::HelpButton(wxWindow *parent, const char *page, wxPoint position, wxSize size)
+: wxButton(parent, wxID_HELP, "", position, size)
+{
 	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { OpenPage(page); });
-	if(!url(page)) throw agi::InternalError("Invalid help page");
+	if (!url(page))
+		throw agi::InternalError("Invalid help page");
 }
 
-// TODO: website is down, either use an alternative or ship the pdfs manually and open them with
-// "wxExecute"
+// TODO: website is down, either use an alternative or ship the pdfs manually and open them with "wxExecute"
 
-void HelpButton::OpenPage(const char* pageID) {
+void HelpButton::OpenPage(const char *pageID) {
 	auto page = url(pageID);
 	auto sep = strchr(page, '#');
-	if(sep)
-		wxLaunchDefaultBrowser(
-		    fmt_wx("https://aegi.vmoe.info/docs/3.0/%.*s/%s", sep - page, page, sep));
+	if (sep)
+		wxLaunchDefaultBrowser(fmt_wx("https://aegi.vmoe.info/docs/3.0/%.*s/%s", sep - page, page, sep));
 	else
 		wxLaunchDefaultBrowser(fmt_wx("https://aegi.vmoe.info/docs/3.0/%s/", page));
 }

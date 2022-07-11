@@ -25,16 +25,15 @@ class Preferences;
 /// @brief A wxDataViewModel for hotkeys
 class HotkeyDataViewModel final : public wxDataViewModel {
 	std::unique_ptr<HotkeyModelRoot> root;
-	Preferences* parent;
+	Preferences *parent;
 	bool has_pending_changes = false;
 
 	/// Get the real item from the wrapper, or root if it's wrapping nullptr
-	const HotkeyModelItem* get(wxDataViewItem const& item) const;
+	const HotkeyModelItem *get(wxDataViewItem const& item) const;
 	/// Get the real item from the wrapper, or root if it's wrapping nullptr
-	HotkeyModelItem* get(wxDataViewItem const& item);
-
-  public:
-	HotkeyDataViewModel(Preferences* parent);
+	HotkeyModelItem *get(wxDataViewItem const& item);
+public:
+	HotkeyDataViewModel(Preferences *parent);
 
 	/// Create a new hotkey in the current context
 	/// @param item A context or hotkey entry
@@ -51,10 +50,9 @@ class HotkeyDataViewModel final : public wxDataViewModel {
 	unsigned int GetColumnCount() const override { return 3; }
 	wxString GetColumnType(unsigned int) const override { return "string"; }
 
-	unsigned int GetChildren(wxDataViewItem const& item,
-	                         wxDataViewItemArray& children) const override;
+	unsigned int GetChildren(wxDataViewItem const& item, wxDataViewItemArray &children) const override;
 	wxDataViewItem GetParent(wxDataViewItem const& item) const override;
-	void GetValue(wxVariant& variant, wxDataViewItem const& item, unsigned int col) const override;
+	void GetValue(wxVariant &variant, wxDataViewItem const& item, unsigned int col) const override;
 	bool IsContainer(wxDataViewItem const& item) const override;
 	bool SetValue(wxVariant const& variant, wxDataViewItem const& item, unsigned int col) override;
 };

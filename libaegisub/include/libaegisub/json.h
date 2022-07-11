@@ -19,19 +19,17 @@
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/fs_fwd.h>
 
-namespace agi {
-namespace json_util {
+namespace agi { namespace json_util {
 
 /// Parse a JSON stream.
 /// @param stream JSON stream to parse
 /// @return json::UnknownElement
-json::UnknownElement parse(std::istream& stream);
+json::UnknownElement parse(std::istream &stream);
 
 /// Parse a json stream, with default handler.
 /// @param file Path to JSON file.
 /// @param Default config file to load incase of nonexistent file
 /// @return json::UnknownElement
-json::UnknownElement file(agi::fs::path const& file, std::pair<const char*, size_t> default_config);
+json::UnknownElement file(agi::fs::path const& file, std::pair<const char *, size_t> default_config);
 
-} // namespace json_util
-} // namespace agi
+} }

@@ -23,7 +23,7 @@ class Time {
 	/// Time in milliseconds
 	int time = 0;
 
-  public:
+public:
 	Time(int ms = 0);
 	Time(std::string const& text);
 
@@ -33,9 +33,9 @@ class Time {
 
 	/// Return the time as a string
 	/// @param ms Use milliseconds precision, for non-ASS formats
-	std::string GetAssFormatted(bool ms = false) const;
+	std::string GetAssFormatted(bool ms=false) const;
 
 	/// Return the time as a string
 	std::string GetSrtFormatted() const;
 };
-} // namespace agi
+}

@@ -42,42 +42,43 @@
 
 // Allocate storage for and initialise static members
 namespace {
-int avs_refcount = 0;
-HINSTANCE hLib = nullptr;
-IScriptEnvironment* env = nullptr;
-std::mutex AviSynthMutex;
-} // namespace
+	int avs_refcount = 0;
+	HINSTANCE hLib = nullptr;
+	IScriptEnvironment *env = nullptr;
+	std::mutex AviSynthMutex;
+}
 
 typedef IScriptEnvironment* __stdcall FUNC(int);
 
 AviSynthWrapper::AviSynthWrapper() {
-	if(!avs_refcount++) {
+	if (!avs_refcount++) {
 		hLib = LoadLibrary(L"avisynth.dll");
 
-		if(!hLib) throw AvisynthError("Could not load avisynth.dll");
+		if (!hLib)
+			throw AvisynthError("Could not load avisynth.dll");
 
-		FUNC* CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
-		if(!CreateScriptEnv)
+		FUNC *CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
+		if (!CreateScriptEnv)
 			throw AvisynthError("Failed to get address of CreateScriptEnv from avisynth.dll");
 
 		// Require Avisynth 2.5.6+?
-		if(OPT_GET("Provider/Avisynth/Allow Ancient")->GetBool())
-			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION - 1);
+		if (OPT_GET("Provider/Avisynth/Allow Ancient")->GetBool())
+			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION-1);
 		else
 			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
 
-		if(!env)
-			throw AvisynthError(
-			    "Failed to create a new avisynth script environment. Avisynth is too old?");
+		if (!env)
+			throw AvisynthError("Failed to create a new avisynth script environment. Avisynth is too old?");
 
 		// Set memory limit
 		const int memoryMax = OPT_GET("Provider/Avisynth/Memory Max")->GetInt();
-		if(memoryMax) env->SetMemoryMax(memoryMax);
+		if (memoryMax)
+			env->SetMemoryMax(memoryMax);
 	}
 }
 
 AviSynthWrapper::~AviSynthWrapper() {
-	if(!--avs_refcount) {
+	if (!--avs_refcount) {
 		delete env;
 		FreeLibrary(hLib);
 	}
@@ -87,7 +88,7 @@ std::mutex& AviSynthWrapper::GetMutex() const {
 	return AviSynthMutex;
 }
 
-IScriptEnvironment* AviSynthWrapper::GetEnv() const {
+IScriptEnvironment *AviSynthWrapper::GetEnv() const {
 	return env;
 }
 

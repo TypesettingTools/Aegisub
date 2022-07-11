@@ -22,8 +22,8 @@
 #include <libaegisub/util.h>
 
 #include <boost/filesystem/fstream.hpp>
-#include <wx/stackwalk.h>
 #include <wx/string.h>
+#include <wx/stackwalk.h>
 
 using namespace agi;
 
@@ -34,9 +34,11 @@ fs::path crashlog_path;
 class StackWalker : public wxStackWalker {
 	boost::filesystem::ofstream fp;
 
-  public:
-	StackWalker(std::string const& cause) : fp(crashlog_path, std::ios::app) {
-		if(!fp.good()) return;
+public:
+	StackWalker(std::string const& cause)
+	: fp(crashlog_path, std::ios::app)
+	{
+		if (!fp.good()) return;
 
 		fp << util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
 		fp << agi::format("VER - %s\n", GetAegisubLongVersionString());
@@ -44,32 +46,31 @@ class StackWalker : public wxStackWalker {
 	}
 
 	~StackWalker() {
-		if(!fp.good()) return;
+		if (!fp.good()) return;
 
 		fp << "End of stack dump.\n";
 		fp << "----------------------------------------\n\n";
 	}
 
 	void OnStackFrame(wxStackFrame const& frame) override final {
-		if(!fp.good()) return;
+		if (!fp.good()) return;
 
-		fp << agi::format("%03u - %p: %s", frame.GetLevel(), frame.GetAddress(),
-		                  frame.GetName().utf8_str().data());
-		if(frame.HasSourceLocation())
+		fp << agi::format("%03u - %p: %s", frame.GetLevel(), frame.GetAddress(), frame.GetName().utf8_str().data());
+		if (frame.HasSourceLocation())
 			fp << agi::format(" on %s:%u", frame.GetFileName().utf8_str().data(), frame.GetLine());
 
 		fp << "\n";
 	}
 };
 #endif
-} // namespace
+}
 
 namespace crash_writer {
 void Initialize(fs::path const& path) {
 	crashlog_path = path / "crashlog.txt";
 }
 
-void Cleanup() {}
+void Cleanup() { }
 
 void Write() {
 #if wxUSE_STACKWALKER == 1
@@ -80,7 +81,7 @@ void Write() {
 
 void Write(std::string const& error) {
 	boost::filesystem::ofstream file(crashlog_path, std::ios::app);
-	if(file.is_open()) {
+	if (file.is_open()) {
 		file << util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
 		file << agi::format("VER - %s\n", GetAegisubLongVersionString());
 		file << agi::format("EXC - Aegisub has crashed with unhandled exception \"%s\".\n", error);
@@ -88,4 +89,4 @@ void Write(std::string const& error) {
 		file.close();
 	}
 }
-} // namespace crash_writer
+}

@@ -50,8 +50,8 @@
 #include "utils.h"
 #include "validators.h"
 
-#include <libaegisub/make_unique.h>
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
@@ -65,18 +65,17 @@
 /// Style rename helper that walks a file searching for a style and optionally
 /// updating references to it
 class StyleRenamer {
-	agi::Context* c;
+	agi::Context *c;
 	bool found_any = false;
 	bool do_replace = false;
 	std::string source_name;
 	std::string new_name;
 
 	/// Process a single override parameter to check if it's \r with this style name
-	static void ProcessTag(std::string const& tag, AssOverrideParameter* param, void* userData) {
-		StyleRenamer* self = static_cast<StyleRenamer*>(userData);
-		if(tag == "\\r" && param->GetType() == VariableDataType::TEXT &&
-		   param->Get<std::string>() == self->source_name) {
-			if(self->do_replace)
+	static void ProcessTag(std::string const& tag, AssOverrideParameter* param, void *userData) {
+		StyleRenamer *self = static_cast<StyleRenamer*>(userData);
+		if (tag == "\\r" && param->GetType() == VariableDataType::TEXT && param->Get<std::string>() == self->source_name) {
+			if (self->do_replace)
 				param->Set(self->new_name);
 			else
 				self->found_any = true;
@@ -87,26 +86,31 @@ class StyleRenamer {
 		found_any = false;
 		do_replace = replace;
 
-		for(auto& diag : c->ass->Events) {
-			if(diag.Style == source_name) {
-				if(replace)
+		for (auto& diag : c->ass->Events) {
+			if (diag.Style == source_name) {
+				if (replace)
 					diag.Style = new_name;
 				else
 					found_any = true;
 			}
 
 			auto blocks = diag.ParseTags();
-			for(auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
+			for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
 				block->ProcessParameters(&StyleRenamer::ProcessTag, this);
-			if(replace) diag.UpdateText(blocks);
+			if (replace)
+				diag.UpdateText(blocks);
 
-			if(found_any) return;
+			if (found_any) return;
 		}
 	}
 
-  public:
-	StyleRenamer(agi::Context* c, std::string source_name, std::string new_name)
-	    : c(c), source_name(std::move(source_name)), new_name(std::move(new_name)) {}
+public:
+	StyleRenamer(agi::Context *c, std::string source_name, std::string new_name)
+	: c(c)
+	, source_name(std::move(source_name))
+	, new_name(std::move(new_name))
+	{
+	}
 
 	/// Check if there are any uses of the original style name in the file
 	bool NeedsReplace() {
@@ -115,20 +119,23 @@ class StyleRenamer {
 	}
 
 	/// Replace all uses of the original style name with the new one
-	void Replace() { Walk(true); }
+	void Replace() {
+		Walk(true);
+	}
 };
 
-DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Context* c,
-                                     AssStyleStorage* store, std::string const& new_name,
-                                     wxArrayString const& font_list)
-    : wxDialog(parent, -1, _("Style Editor"), wxDefaultPosition, wxDefaultSize,
-               wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER),
-      c(c), style(style), store(store) {
-	if(new_name.size()) {
+DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Context *c, AssStyleStorage *store, std::string const& new_name, wxArrayString const& font_list)
+: wxDialog (parent, -1, _("Style Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
+, c(c)
+, style(style)
+, store(store)
+{
+	if (new_name.size()) {
 		is_new = true;
 		style = this->style = new AssStyle(*style);
 		style->name = new_name;
-	} else if(!style) {
+	}
+	else if (!style) {
 		is_new = true;
 		style = this->style = new AssStyle;
 	}
@@ -137,20 +144,18 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 
 	SetIcon(GETICON(style_toolbutton_16));
 
-	auto add_with_label = [&](wxSizer* sizer, wxString const& label, wxWindow* ctrl) {
-		sizer->Add(new wxStaticText(this, -1, label),
-		           wxSizerFlags().Center().Border(wxLEFT | wxRIGHT));
+	auto add_with_label = [&](wxSizer *sizer, wxString const& label, wxWindow *ctrl) {
+		sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Border(wxLEFT | wxRIGHT));
 		sizer->Add(ctrl, wxSizerFlags(1).Left().Expand());
 	};
 
-	auto num_text_ctrl = [&](double* value, double min, double max,
-	                         double step) -> wxSpinCtrlDouble* {
-		auto scd = new wxSpinCtrlDouble(this, -1, "", wxDefaultPosition, wxSize(75, -1),
-		                                wxSP_ARROW_KEYS, min, max, *value, step);
+	auto num_text_ctrl = [&](double *value, double min, double max, double step) -> wxSpinCtrlDouble * {
+		auto scd = new wxSpinCtrlDouble(this, -1, "", wxDefaultPosition,
+			wxSize(75, -1), wxSP_ARROW_KEYS, min, max, *value, step);
 		scd->SetValidator(DoubleSpinValidator(value));
-		scd->Bind(wxEVT_SPINCTRLDOUBLE, [=](wxSpinDoubleEvent& evt) {
+		scd->Bind(wxEVT_SPINCTRLDOUBLE, [=](wxSpinDoubleEvent &evt) {
 			evt.Skip();
-			if(updating) return;
+			if (updating) return;
 
 			bool old = updating;
 			updating = true;
@@ -170,37 +175,34 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 	AssStyle::GetEncodings(encodingStrings);
 
 	// Create sizers
-	wxSizer* NameSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Style Name"));
-	wxSizer* FontSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Font"));
-	wxSizer* ColorsSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Colors"));
-	wxSizer* MarginSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Margins"));
-	wxSizer* OutlineBox = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Outline"));
-	wxSizer* MiscBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Miscellaneous"));
-	wxSizer* PreviewBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Preview"));
+	wxSizer *NameSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Style Name"));
+	wxSizer *FontSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Font"));
+	wxSizer *ColorsSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Colors"));
+	wxSizer *MarginSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Margins"));
+	wxSizer *OutlineBox = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Outline"));
+	wxSizer *MiscBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Miscellaneous"));
+	wxSizer *PreviewBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Preview"));
 
 	// Create controls
 	StyleName = new wxTextCtrl(this, -1, to_wx(style->name));
-	FontName = new wxComboBox(this, -1, to_wx(style->font), wxDefaultPosition, wxSize(150, -1), 0,
-	                          nullptr, wxCB_DROPDOWN);
+	FontName = new wxComboBox(this, -1, to_wx(style->font), wxDefaultPosition, wxSize(150, -1), 0, nullptr, wxCB_DROPDOWN);
 	auto FontSize = num_text_ctrl(&work->fontsize, 0, 10000.0, 1.0);
 	BoxBold = new wxCheckBox(this, -1, _("&Bold"));
 	BoxItalic = new wxCheckBox(this, -1, _("&Italic"));
 	BoxUnderline = new wxCheckBox(this, -1, _("&Underline"));
 	BoxStrikeout = new wxCheckBox(this, -1, _("&Strikeout"));
-	ColourButton* colorButton[] = { new ColourButton(this, wxSize(55, 16), true, style->primary,
-		                                             ColorValidator(&work->primary)),
-		                            new ColourButton(this, wxSize(55, 16), true, style->secondary,
-		                                             ColorValidator(&work->secondary)),
-		                            new ColourButton(this, wxSize(55, 16), true, style->outline,
-		                                             ColorValidator(&work->outline)),
-		                            new ColourButton(this, wxSize(55, 16), true, style->shadow,
-		                                             ColorValidator(&work->shadow)) };
-	for(int i = 0; i < 3; i++)
-		margin[i] = new wxSpinCtrl(this, -1, std::to_wstring(style->Margin[i]), wxDefaultPosition,
-		                           wxSize(60, -1), wxSP_ARROW_KEYS, -9999, 99999, style->Margin[i]);
+	ColourButton *colorButton[] = {
+		new ColourButton(this, wxSize(55, 16), true, style->primary, ColorValidator(&work->primary)),
+		new ColourButton(this, wxSize(55, 16), true, style->secondary, ColorValidator(&work->secondary)),
+		new ColourButton(this, wxSize(55, 16), true, style->outline, ColorValidator(&work->outline)),
+		new ColourButton(this, wxSize(55, 16), true, style->shadow, ColorValidator(&work->shadow))
+	};
+	for (int i = 0; i < 3; i++)
+		margin[i] = new wxSpinCtrl(this, -1, std::to_wstring(style->Margin[i]),
+		                           wxDefaultPosition, wxSize(60, -1),
+		                           wxSP_ARROW_KEYS, -9999, 99999, style->Margin[i]);
 
-	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9,
-	                           alignValues, 3, wxRA_SPECIFY_COLS);
+	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	auto Outline = num_text_ctrl(&work->outline_w, 0.0, 1000.0, 0.1);
 	auto Shadow = num_text_ctrl(&work->shadow_w, 0.0, 1000.0, 0.1);
 	OutlineType = new wxCheckBox(this, -1, _("&Opaque box"));
@@ -208,8 +210,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 	auto ScaleY = num_text_ctrl(&work->scaley, 0.0, 10000.0, 1.0);
 	auto Angle = num_text_ctrl(&work->angle, -360.0, 360.0, 1.0);
 	auto Spacing = num_text_ctrl(&work->spacing, 0.0, 1000.0, 0.1);
-	Encoding = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, encodingStrings,
-	                          wxCB_READONLY);
+	Encoding = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, encodingStrings, wxCB_READONLY);
 
 	// Set control tooltips
 	StyleName->SetToolTip(_("Style name"));
@@ -222,15 +223,13 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 	margin[0]->SetToolTip(_("Distance from left edge, in pixels"));
 	margin[1]->SetToolTip(_("Distance from right edge, in pixels"));
 	margin[2]->SetToolTip(_("Distance from top/bottom edge, in pixels"));
-	OutlineType->SetToolTip(_("When selected, display an opaque box behind the subtitles instead "
-	                          "of an outline around the text"));
+	OutlineType->SetToolTip(_("When selected, display an opaque box behind the subtitles instead of an outline around the text"));
 	Outline->SetToolTip(_("Outline width, in pixels"));
 	Shadow->SetToolTip(_("Shadow distance, in pixels"));
 	ScaleX->SetToolTip(_("Scale X, in percentage"));
 	ScaleY->SetToolTip(_("Scale Y, in percentage"));
 	Angle->SetToolTip(_("Angle to rotate in Z axis, in degrees"));
-	Encoding->SetToolTip(
-	    _("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"));
+	Encoding->SetToolTip(_("Encoding, only useful in unicode if the font doesn't have the proper unicode mapping"));
 	Spacing->SetToolTip(_("Character spacing, in pixels"));
 	Alignment->SetToolTip(_("Alignment in screen, in numpad style"));
 
@@ -249,21 +248,21 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 
 	// Set encoding value
 	bool found = false;
-	for(size_t i = 0; i < encodingStrings.Count(); i++) {
-		if(encodingStrings[i].StartsWith(EncodingValue)) {
+	for (size_t i=0;i<encodingStrings.Count();i++) {
+		if (encodingStrings[i].StartsWith(EncodingValue)) {
 			Encoding->Select(i);
 			found = true;
 			break;
 		}
 	}
-	if(!found) Encoding->Select(0);
+	if (!found) Encoding->Select(0);
 
 	// Style name sizer
 	NameSizer->Add(StyleName, 1, wxALL, 0);
 
 	// Font sizer
-	wxSizer* FontSizerTop = new wxBoxSizer(wxHORIZONTAL);
-	wxSizer* FontSizerBottom = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *FontSizerTop = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *FontSizerBottom = new wxBoxSizer(wxHORIZONTAL);
 	FontSizerTop->Add(FontName, 1, wxALL, 0);
 	FontSizerTop->Add(FontSize, 0, wxLEFT, 5);
 	FontSizerBottom->AddStretchSpacer(1);
@@ -278,29 +277,29 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 	// Colors sizer
 	wxString colorLabels[] = { _("Primary"), _("Secondary"), _("Outline"), _("Shadow") };
 	ColorsSizer->AddStretchSpacer(1);
-	for(int i = 0; i < 4; ++i) {
+	for (int i = 0; i < 4; ++i) {
 		auto sizer = new wxBoxSizer(wxVERTICAL);
 		sizer->Add(new wxStaticText(this, -1, colorLabels[i]), 0, wxBOTTOM | wxALIGN_CENTER, 5);
 		sizer->Add(colorButton[i], 0, wxBOTTOM | wxALIGN_CENTER, 5);
-		ColorsSizer->Add(sizer, 0, wxLEFT, i ? 5 : 0);
+		ColorsSizer->Add(sizer, 0, wxLEFT, i?5:0);
 	}
 	ColorsSizer->AddStretchSpacer(1);
 
 	// Margins
 	wxString marginLabels[] = { _("Left"), _("Right"), _("Vert") };
 	MarginSizer->AddStretchSpacer(1);
-	for(int i = 0; i < 3; i++) {
+	for (int i=0;i<3;i++) {
 		auto sizer = new wxBoxSizer(wxVERTICAL);
 		sizer->AddStretchSpacer(1);
 		sizer->Add(new wxStaticText(this, -1, marginLabels[i]), 0, wxCENTER, 0);
 		sizer->Add(margin[i], 0, wxTOP | wxCENTER, 5);
 		sizer->AddStretchSpacer(1);
-		MarginSizer->Add(sizer, 0, wxEXPAND | wxLEFT, i ? 5 : 0);
+		MarginSizer->Add(sizer, 0, wxEXPAND | wxLEFT, i?5:0);
 	}
 	MarginSizer->AddStretchSpacer(1);
 
 	// Margins+Alignment
-	wxSizer* MarginAlign = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *MarginAlign = new wxBoxSizer(wxHORIZONTAL);
 	MarginAlign->Add(MarginSizer, 1, wxLEFT | wxEXPAND, 0);
 	MarginAlign->Add(Alignment, 0, wxLEFT | wxEXPAND, 5);
 
@@ -316,20 +315,16 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 	add_with_label(MiscBoxTop, _("Rotation:"), Angle);
 	add_with_label(MiscBoxTop, _("Spacing:"), Spacing);
 
-	wxSizer* MiscBoxBottom = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *MiscBoxBottom = new wxBoxSizer(wxHORIZONTAL);
 	add_with_label(MiscBoxBottom, _("Encoding:"), Encoding);
 
 	MiscBox->Add(MiscBoxTop, wxSizerFlags().Expand());
 	MiscBox->Add(MiscBoxBottom, wxSizerFlags().Expand().Border(wxTOP));
 
 	// Preview
-	auto previewButton = new ColourButton(
-	    this, wxSize(45, 16), false, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
-	PreviewText =
-	    new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
-	SubsPreview =
-	    new SubtitlesPreview(this, wxSize(100, 60), wxSUNKEN_BORDER,
-	                         OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
+	auto previewButton = new ColourButton(this, wxSize(45, 16), false, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
+	PreviewText = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
+	SubsPreview = new SubtitlesPreview(this, wxSize(100, 60), wxSUNKEN_BORDER, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
 
 	SubsPreview->SetToolTip(_("Preview of current style"));
 	SubsPreview->SetStyle(*style);
@@ -337,7 +332,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 	PreviewText->SetToolTip(_("Text to be used for the preview"));
 	previewButton->SetToolTip(_("Color of preview background"));
 
-	wxSizer* PreviewBottomSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *PreviewBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	PreviewBottomSizer->Add(PreviewText, 1, wxEXPAND | wxRIGHT, 5);
 	PreviewBottomSizer->Add(previewButton, 0, wxEXPAND, 0);
 	PreviewBox->Add(SubsPreview, 1, wxEXPAND | wxBOTTOM, 5);
@@ -347,25 +342,25 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 	auto ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY | wxHELP);
 
 	// Left side sizer
-	wxSizer* LeftSizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer *LeftSizer = new wxBoxSizer(wxVERTICAL);
 	LeftSizer->Add(NameSizer, 0, wxBOTTOM | wxEXPAND, 5);
 	LeftSizer->Add(FontSizer, 0, wxBOTTOM | wxEXPAND, 5);
 	LeftSizer->Add(ColorsSizer, 0, wxBOTTOM | wxEXPAND, 5);
 	LeftSizer->Add(MarginAlign, 0, wxBOTTOM | wxEXPAND, 0);
 
 	// Right side sizer
-	wxSizer* RightSizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
 	RightSizer->Add(OutlineBox, wxSizerFlags().Expand().Border(wxBOTTOM));
 	RightSizer->Add(MiscBox, wxSizerFlags().Expand().Border(wxBOTTOM));
 	RightSizer->Add(PreviewBox, wxSizerFlags(1).Expand());
 
 	// Controls Sizer
-	wxSizer* ControlSizer = new wxBoxSizer(wxHORIZONTAL);
+	wxSizer *ControlSizer = new wxBoxSizer(wxHORIZONTAL);
 	ControlSizer->Add(LeftSizer, 0, wxEXPAND, 0);
 	ControlSizer->Add(RightSizer, 1, wxLEFT | wxEXPAND, 5);
 
 	// General Layout
-	wxSizer* MainSizer = new wxBoxSizer(wxVERTICAL);
+	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(ControlSizer, 1, wxALL | wxEXPAND, 5);
 	MainSizer->Add(ButtonSizer, 0, wxBOTTOM | wxEXPAND, 5);
 
@@ -393,12 +388,13 @@ DialogStyleEditor::DialogStyleEditor(wxWindow* parent, AssStyle* style, agi::Con
 	Bind(wxEVT_BUTTON, std::bind(&DialogStyleEditor::Apply, this, false, true), wxID_CANCEL);
 	Bind(wxEVT_BUTTON, std::bind(&HelpButton::OpenPage, "Style Editor"), wxID_HELP);
 
-	for(auto const& elem : colorButton)
+	for (auto const& elem : colorButton)
 		elem->Bind(EVT_COLOR, &DialogStyleEditor::OnSetColor, this);
 }
 
 DialogStyleEditor::~DialogStyleEditor() {
-	if(is_new) delete style;
+	if (is_new)
+		delete style;
 }
 
 std::string DialogStyleEditor::GetStyleName() const {
@@ -406,34 +402,34 @@ std::string DialogStyleEditor::GetStyleName() const {
 }
 
 void DialogStyleEditor::Apply(bool apply, bool close) {
-	if(apply) {
+	if (apply) {
 		std::string new_name = from_wx(StyleName->GetValue());
 
 		// Get list of existing styles
 		std::vector<std::string> styles = store ? store->GetNames() : c->ass->GetStyles();
 
 		// Check if style name is unique
-		AssStyle* existing = store ? store->GetStyle(new_name) : c->ass->GetStyle(new_name);
-		if(existing && existing != style) {
-			wxMessageBox(_("There is already a style with this name. Please choose another name."),
-			             _("Style name conflict"), wxOK | wxICON_ERROR | wxCENTER);
+		AssStyle *existing = store ? store->GetStyle(new_name) : c->ass->GetStyle(new_name);
+		if (existing && existing != style) {
+			wxMessageBox(_("There is already a style with this name. Please choose another name."), _("Style name conflict"), wxOK | wxICON_ERROR | wxCENTER);
 			return;
 		}
 
 		// Style name change
 		bool did_rename = false;
-		if(work->name != new_name) {
-			if(!store && !is_new) {
+		if (work->name != new_name) {
+			if (!store && !is_new) {
 				StyleRenamer renamer(c, work->name, new_name);
-				if(renamer.NeedsReplace()) {
+				if (renamer.NeedsReplace()) {
 					// See if user wants to update style name through script
-					int answer = wxMessageBox(_("Do you want to change all instances of this style "
-					                            "in the script to this new name?"),
-					                          _("Update script?"), wxYES_NO | wxCANCEL);
+					int answer = wxMessageBox(
+						_("Do you want to change all instances of this style in the script to this new name?"),
+						_("Update script?"),
+						wxYES_NO | wxCANCEL);
 
-					if(answer == wxCANCEL) return;
+					if (answer == wxCANCEL) return;
 
-					if(answer == wxYES) {
+					if (answer == wxYES) {
 						did_rename = true;
 						renamer.Replace();
 					}
@@ -447,24 +443,23 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 
 		*style = *work;
 		style->UpdateData();
-		if(is_new) {
-			if(store)
+		if (is_new) {
+			if (store)
 				store->push_back(std::unique_ptr<AssStyle>(style));
 			else
 				c->ass->Styles.push_back(*style);
 			is_new = false;
 		}
-		if(!store)
-			c->ass->Commit(_("style change"),
-			               AssFile::COMMIT_STYLES | (did_rename ? AssFile::COMMIT_DIAG_FULL : 0));
+		if (!store)
+			c->ass->Commit(_("style change"), AssFile::COMMIT_STYLES | (did_rename ? AssFile::COMMIT_DIAG_FULL : 0));
 
 		// Update preview
-		if(!close) SubsPreview->SetStyle(*style);
+		if (!close) SubsPreview->SetStyle(*style);
 	}
 
-	if(close) {
+	if (close) {
 		EndModal(apply);
-		if(PreviewText)
+		if (PreviewText)
 			OPT_SET("Tool/Style Editor/Preview Text")->SetString(from_wx(PreviewText->GetValue()));
 	}
 }
@@ -484,7 +479,7 @@ void DialogStyleEditor::UpdateWorkStyle() {
 
 	work->alignment = ControlToAlign(Alignment->GetSelection());
 
-	for(size_t i = 0; i < 3; ++i)
+	for (size_t i = 0; i < 3; ++i)
 		work->Margin[i] = margin[i]->GetValue();
 
 	work->bold = BoxBold->IsChecked();
@@ -498,30 +493,30 @@ void DialogStyleEditor::OnSetColor(ValueEvent<agi::Color>&) {
 	SubsPreview->SetStyle(*work);
 }
 
-void DialogStyleEditor::OnChildFocus(wxChildFocusEvent& event) {
+void DialogStyleEditor::OnChildFocus(wxChildFocusEvent &event) {
 	UpdateWorkStyle();
 	SubsPreview->SetStyle(*work);
 	event.Skip();
 }
 
-void DialogStyleEditor::OnPreviewTextChange(wxCommandEvent& event) {
+void DialogStyleEditor::OnPreviewTextChange (wxCommandEvent &event) {
 	SubsPreview->SetText(from_wx(PreviewText->GetValue()));
 	event.Skip();
 }
 
-void DialogStyleEditor::OnPreviewColourChange(ValueEvent<agi::Color>& evt) {
+void DialogStyleEditor::OnPreviewColourChange(ValueEvent<agi::Color> &evt) {
 	SubsPreview->SetColour(evt.Get());
 	OPT_SET("Colour/Style Editor/Background/Preview")->SetColor(evt.Get());
 }
 
-void DialogStyleEditor::OnCommandPreviewUpdate(wxCommandEvent& event) {
+void DialogStyleEditor::OnCommandPreviewUpdate(wxCommandEvent &event) {
 	UpdateWorkStyle();
 	SubsPreview->SetStyle(*work);
 	event.Skip();
 }
 
 int DialogStyleEditor::ControlToAlign(int n) {
-	switch(n) {
+	switch (n) {
 		case 0: return 7;
 		case 1: return 8;
 		case 2: return 9;
@@ -536,7 +531,7 @@ int DialogStyleEditor::ControlToAlign(int n) {
 }
 
 int DialogStyleEditor::AlignToControl(int n) {
-	switch(n) {
+	switch (n) {
 		case 7: return 0;
 		case 8: return 1;
 		case 9: return 2;

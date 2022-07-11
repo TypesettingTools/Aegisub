@@ -39,12 +39,8 @@
 #include <wx/timer.h>
 #include <wx/window.h>
 
-namespace agi {
-class AudioProvider;
-}
-namespace agi {
-struct Context;
-}
+namespace agi { class AudioProvider; }
+namespace agi { struct Context; }
 
 class AudioController;
 class AudioRenderer;
@@ -53,9 +49,9 @@ class TimeRange;
 
 // Helper classes used in implementation of the audio display
 namespace {
-class AudioDisplayScrollbar;
-class AudioDisplayTimeline;
-} // namespace
+	class AudioDisplayScrollbar;
+	class AudioDisplayTimeline;
+}
 class AudioDisplayInteractionObject;
 class AudioMarkerInteractionObject;
 
@@ -65,11 +61,11 @@ class AudioMarkerInteractionObject;
 /// The audio display is the common view that allows the user to interact with the active
 /// timing controller. The audio display also renders audio according to the audio controller
 /// and the timing controller, using an audio renderer instance.
-class AudioDisplay : public wxWindow {
+class AudioDisplay: public wxWindow {
 	agi::signal::Connection audio_open_connection;
 
 	std::vector<agi::signal::Connection> connections;
-	agi::Context* context;
+	agi::Context *context;
 
 	/// The audio renderer manager
 	std::unique_ptr<AudioRenderer> audio_renderer;
@@ -78,9 +74,9 @@ class AudioDisplay : public wxWindow {
 	std::unique_ptr<AudioRendererBitmapProvider> audio_renderer_provider;
 
 	/// The controller managing us
-	AudioController* controller = nullptr;
+	AudioController *controller = nullptr;
 
-	agi::AudioProvider* provider = nullptr;
+	agi::AudioProvider *provider = nullptr;
 
 	/// Scrollbar helper object
 	std::unique_ptr<AudioDisplayScrollbar> scrollbar;
@@ -91,10 +87,12 @@ class AudioDisplay : public wxWindow {
 	/// The interaction object for the last-dragged audio marker
 	std::unique_ptr<AudioMarkerInteractionObject> audio_marker;
 
+
 	/// Current object on display being dragged, if any
-	AudioDisplayInteractionObject* dragged_object = nullptr;
+	AudioDisplayInteractionObject *dragged_object = nullptr;
 	/// Change the dragged object and update mouse capture
-	void SetDraggedObject(AudioDisplayInteractionObject* new_obj);
+	void SetDraggedObject(AudioDisplayInteractionObject *new_obj);
+
 
 	/// Timer for scrolling when markers are dragged out of the displayed area
 	wxTimer scroll_timer;
@@ -158,58 +156,58 @@ class AudioDisplay : public wxWindow {
 	/// @param dc DC to paint to
 	/// @param updtime Time range to repaint
 	/// @param updrect Pixel range to repaint
-	void PaintAudio(wxDC& dc, TimeRange updtime, wxRect updrect);
+	void PaintAudio(wxDC &dc, TimeRange updtime, wxRect updrect);
 
 	/// Paint the markers in a time range
 	/// @param dc DC to paint to
 	/// @param updtime Time range to repaint
-	void PaintMarkers(wxDC& dc, TimeRange updtime);
+	void PaintMarkers(wxDC &dc, TimeRange updtime);
 
 	/// Draw a single foot for a marker
 	/// @param dc DC to paint to
 	/// @param marker_x Position of the marker whose foot is being painted in pixels
 	/// @param dir -1 for left, 1 for right
-	void PaintFoot(wxDC& dc, int marker_x, int dir);
+	void PaintFoot(wxDC &dc, int marker_x, int dir);
 
 	/// Paint the labels in a time range
 	/// @param dc DC to paint to
 	/// @param updtime Time range to repaint
-	void PaintLabels(wxDC& dc, TimeRange updtime);
+	void PaintLabels(wxDC &dc, TimeRange updtime);
 
 	/// Paint the track cursor
 	/// @param dc DC to paint to
-	void PaintTrackCursor(wxDC& dc);
+	void PaintTrackCursor(wxDC &dc);
 
 	/// Forward the mouse event to the appropriate child control, if any
 	/// @return Was the mouse event forwarded somewhere?
-	bool ForwardMouseEvent(wxMouseEvent& event);
+	bool ForwardMouseEvent(wxMouseEvent &event);
 
 	/// wxWidgets paint event
-	void OnPaint(wxPaintEvent& event);
+	void OnPaint(wxPaintEvent &event);
 	/// wxWidgets mouse input event
-	void OnMouseEvent(wxMouseEvent& event);
+	void OnMouseEvent(wxMouseEvent &event);
 	/// wxWidgets control size changed event
-	void OnSize(wxSizeEvent& event);
+	void OnSize(wxSizeEvent &event);
 	/// wxWidgets input focus changed event
-	void OnFocus(wxFocusEvent& event);
+	void OnFocus(wxFocusEvent &event);
 	/// wxWidgets keypress event
 	void OnKeyDown(wxKeyEvent& event);
-	void OnScrollTimer(wxTimerEvent& event);
-	void OnLoadTimer(wxTimerEvent&);
+	void OnScrollTimer(wxTimerEvent &event);
+	void OnLoadTimer(wxTimerEvent &);
 	void OnMouseEnter(wxMouseEvent&);
 	void OnMouseLeave(wxMouseEvent&);
 
 	int GetDuration() const;
 
-	void OnAudioOpen(agi::AudioProvider* provider);
+	void OnAudioOpen(agi::AudioProvider *provider);
 	void OnPlaybackPosition(int ms_position);
 	void OnSelectionChanged();
 	void OnStyleRangesChanged();
 	void OnTimingController();
 	void OnMarkerMoved();
 
-  public:
-	AudioDisplay(wxWindow* parent, AudioController* controller, agi::Context* context);
+public:
+	AudioDisplay(wxWindow *parent, AudioController *controller, agi::Context *context);
 	~AudioDisplay();
 
 	/// @brief Scroll the audio display
@@ -244,7 +242,8 @@ class AudioDisplay : public wxWindow {
 	/// margin. The edge that is not ensured to be in view might be outside of
 	/// view or might be closer to the display edge than the
 	/// margin.
-	void ScrollTimeRangeInView(const TimeRange& range);
+	void ScrollTimeRangeInView(const TimeRange &range);
+
 
 	/// @brief Change the zoom level
 	/// @param new_zoom_level The new zoom level to use

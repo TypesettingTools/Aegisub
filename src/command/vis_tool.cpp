@@ -31,85 +31,90 @@
 #include <libaegisub/make_unique.h>
 
 namespace {
-using cmd::Command;
+	using cmd::Command;
 
-template <class T> struct visual_tool_command : public Command {
-	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
+	template<class T>
+	struct visual_tool_command : public Command {
+		CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
-	bool Validate(const agi::Context* c) override { return !!c->project->VideoProvider(); }
+		bool Validate(const agi::Context *c) override {
+			return !!c->project->VideoProvider();
+		}
 
-	bool IsActive(const agi::Context* c) override { return c->videoDisplay->ToolIsType(typeid(T)); }
+		bool IsActive(const agi::Context *c) override {
+			return c->videoDisplay->ToolIsType(typeid(T));
+		}
 
-	void operator()(agi::Context* c) override {
-		c->videoDisplay->SetTool(agi::make_unique<T>(c->videoDisplay, c));
-	}
-};
+		void operator()(agi::Context *c) override {
+			c->videoDisplay->SetTool(agi::make_unique<T>(c->videoDisplay, c));
+		}
+	};
 
-struct visual_mode_cross final : public visual_tool_command<VisualToolCross> {
-	CMD_NAME("video/tool/cross")
-	CMD_ICON(visual_standard)
-	STR_MENU("Standard")
-	STR_DISP("Standard")
-	STR_HELP("Standard mode, double click sets position")
-};
+	struct visual_mode_cross final : public visual_tool_command<VisualToolCross> {
+		CMD_NAME("video/tool/cross")
+		CMD_ICON(visual_standard)
+		STR_MENU("Standard")
+		STR_DISP("Standard")
+		STR_HELP("Standard mode, double click sets position")
+	};
 
-struct visual_mode_drag final : public visual_tool_command<VisualToolDrag> {
-	CMD_NAME("video/tool/drag")
-	CMD_ICON(visual_move)
-	STR_MENU("Drag")
-	STR_DISP("Drag")
-	STR_HELP("Drag subtitles")
-};
+	struct visual_mode_drag final : public visual_tool_command<VisualToolDrag> {
+		CMD_NAME("video/tool/drag")
+		CMD_ICON(visual_move)
+		STR_MENU("Drag")
+		STR_DISP("Drag")
+		STR_HELP("Drag subtitles")
+	};
 
-struct visual_mode_rotate_z final : public visual_tool_command<VisualToolRotateZ> {
-	CMD_NAME("video/tool/rotate/z")
-	CMD_ICON(visual_rotatez)
-	STR_MENU("Rotate Z")
-	STR_DISP("Rotate Z")
-	STR_HELP("Rotate subtitles on their Z axis")
-};
+	struct visual_mode_rotate_z final : public visual_tool_command<VisualToolRotateZ> {
+		CMD_NAME("video/tool/rotate/z")
+		CMD_ICON(visual_rotatez)
+		STR_MENU("Rotate Z")
+		STR_DISP("Rotate Z")
+		STR_HELP("Rotate subtitles on their Z axis")
+	};
 
-struct visual_mode_rotate_xy final : public visual_tool_command<VisualToolRotateXY> {
-	CMD_NAME("video/tool/rotate/xy")
-	CMD_ICON(visual_rotatexy)
-	STR_MENU("Rotate XY")
-	STR_DISP("Rotate XY")
-	STR_HELP("Rotate subtitles on their X and Y axes")
-};
+	struct visual_mode_rotate_xy final : public visual_tool_command<VisualToolRotateXY> {
+		CMD_NAME("video/tool/rotate/xy")
+		CMD_ICON(visual_rotatexy)
+		STR_MENU("Rotate XY")
+		STR_DISP("Rotate XY")
+		STR_HELP("Rotate subtitles on their X and Y axes")
+	};
 
-struct visual_mode_scale final : public visual_tool_command<VisualToolScale> {
-	CMD_NAME("video/tool/scale")
-	CMD_ICON(visual_scale)
-	STR_MENU("Scale")
-	STR_DISP("Scale")
-	STR_HELP("Scale subtitles on X and Y axes")
-};
+	struct visual_mode_scale final : public visual_tool_command<VisualToolScale> {
+		CMD_NAME("video/tool/scale")
+		CMD_ICON(visual_scale)
+		STR_MENU("Scale")
+		STR_DISP("Scale")
+		STR_HELP("Scale subtitles on X and Y axes")
+	};
 
-struct visual_mode_clip final : public visual_tool_command<VisualToolClip> {
-	CMD_NAME("video/tool/clip")
-	CMD_ICON(visual_clip)
-	STR_MENU("Clip")
-	STR_DISP("Clip")
-	STR_HELP("Clip subtitles to a rectangle")
-};
+	struct visual_mode_clip final : public visual_tool_command<VisualToolClip> {
+		CMD_NAME("video/tool/clip")
+		CMD_ICON(visual_clip)
+		STR_MENU("Clip")
+		STR_DISP("Clip")
+		STR_HELP("Clip subtitles to a rectangle")
+	};
 
-struct visual_mode_vector_clip final : public visual_tool_command<VisualToolVectorClip> {
-	CMD_NAME("video/tool/vector_clip")
-	CMD_ICON(visual_vector_clip)
-	STR_MENU("Vector Clip")
-	STR_DISP("Vector Clip")
-	STR_HELP("Clip subtitles to a vectorial area")
-};
-} // namespace
+	struct visual_mode_vector_clip final : public visual_tool_command<VisualToolVectorClip> {
+		CMD_NAME("video/tool/vector_clip")
+		CMD_ICON(visual_vector_clip)
+		STR_MENU("Vector Clip")
+		STR_DISP("Vector Clip")
+		STR_HELP("Clip subtitles to a vectorial area")
+	};
+}
 
 namespace cmd {
-void init_visual_tools() {
-	reg(agi::make_unique<visual_mode_cross>());
-	reg(agi::make_unique<visual_mode_drag>());
-	reg(agi::make_unique<visual_mode_rotate_z>());
-	reg(agi::make_unique<visual_mode_rotate_xy>());
-	reg(agi::make_unique<visual_mode_scale>());
-	reg(agi::make_unique<visual_mode_clip>());
-	reg(agi::make_unique<visual_mode_vector_clip>());
+	void init_visual_tools() {
+		reg(agi::make_unique<visual_mode_cross>());
+		reg(agi::make_unique<visual_mode_drag>());
+		reg(agi::make_unique<visual_mode_rotate_z>());
+		reg(agi::make_unique<visual_mode_rotate_xy>());
+		reg(agi::make_unique<visual_mode_scale>());
+		reg(agi::make_unique<visual_mode_clip>());
+		reg(agi::make_unique<visual_mode_vector_clip>());
+	}
 }
-} // namespace cmd

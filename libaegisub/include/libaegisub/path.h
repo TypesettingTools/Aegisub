@@ -16,6 +16,7 @@
 
 #pragma once
 
+
 #include <libaegisub/fs_fwd.h>
 
 #include <array>
@@ -30,7 +31,7 @@ class Path {
 	/// Platform-specific code to fill in the default paths, called in the constructor
 	void FillPlatformSpecificPaths();
 
-  public:
+public:
 	/// Constructor
 	Path();
 
@@ -52,9 +53,7 @@ class Path {
 	/// @return A path relative to `token`'s value if `token` is set, `path` otherwise
 	/// @throws InternalError if `token` is not a valid token name
 	fs::path MakeRelative(fs::path const& path, std::string const& token) const;
-	fs::path MakeRelative(fs::path const& path, const char* token) const {
-		return MakeRelative(path, std::string(token));
-	}
+	fs::path MakeRelative(fs::path const& path, const char *token) const { return MakeRelative(path, std::string(token)); }
 
 	/// Make `path` relative to `base`, if possible
 	/// @param path An absolute path
@@ -71,7 +70,7 @@ class Path {
 	/// @param token_name A single word token beginning with '?'
 	/// @param token_value An absolute path to a directory or file
 	/// @throws InternalError if `token` is not a valid token name
-	void SetToken(const char* token_name, fs::path const& token_value);
+	void SetToken(const char *token_name, fs::path const& token_value);
 };
 
-} // namespace agi
+}

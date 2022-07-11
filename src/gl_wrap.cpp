@@ -27,8 +27,8 @@
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
 #else
-#include "gl/glext.h"
 #include <GL/gl.h>
+#include "gl/glext.h"
 #endif
 
 static const float deg2rad = 3.1415926536f / 180.f;
@@ -38,7 +38,7 @@ static const float pi = 3.1415926535897932384626433832795f;
 #define glGetProc(a) wglGetProcAddress(a)
 #elif !defined(__APPLE__)
 #include <GL/glx.h>
-#define glGetProc(a) glXGetProcAddress((const GLubyte*)(a))
+#define glGetProc(a) glXGetProcAddress((const GLubyte *)(a))
 #endif
 
 #if defined(__APPLE__)
@@ -48,17 +48,18 @@ static const float pi = 3.1415926535897932384626433832795f;
 #else
 #define GL_EXT(type, name) \
 	static type name = reinterpret_cast<type>(glGetProc(#name)); \
-	if(!name) { \
-		name = reinterpret_cast<type>(&name##Fallback); \
+	if (!name) { \
+	name = reinterpret_cast<type>(& name ## Fallback); \
 	}
 #endif
 
 class VertexArray {
 	std::vector<float> data;
 	size_t dim;
-
-  public:
-	VertexArray(size_t dims, size_t elems) { SetSize(dims, elems); }
+public:
+	VertexArray(size_t dims, size_t elems) {
+		SetSize(dims, elems);
+	}
 
 	void SetSize(size_t dims, size_t elems) {
 		dim = dims;
@@ -86,7 +87,8 @@ class VertexArray {
 		glVertexPointer(dim, GL_FLOAT, 0, &data[0]);
 		glDrawArrays(mode, 0, data.size() / dim);
 		glDisableClientState(GL_VERTEX_ARRAY);
-		if(clear) data.clear();
+		if (clear)
+			data.clear();
 	}
 };
 
@@ -112,7 +114,7 @@ static inline Vector2D interp(Vector2D p1, Vector2D p2, float t) {
 
 void OpenGLWrapper::DrawDashedLine(Vector2D p1, Vector2D p2, float step) const {
 	step /= (p2 - p1).Len();
-	for(float t = 0; t < 1.f; t += 2 * step) {
+	for (float t = 0; t < 1.f; t += 2 * step) {
 		DrawLine(interp(p1, p2, t), interp(p1, p2, t + step));
 	}
 }
@@ -129,12 +131,12 @@ void OpenGLWrapper::DrawRectangle(Vector2D p1, Vector2D p2) const {
 	buf.Set(3, Vector2D(p1, p2));
 
 	// Fill
-	if(fill_a != 0.f) {
+	if (fill_a != 0.f) {
 		SetModeFill();
 		buf.Draw(GL_QUADS, false);
 	}
 	// Outline
-	if(line_a != 0.f) {
+	if (line_a != 0.f) {
 		SetModeLine();
 		buf.Draw(GL_LINE_LOOP);
 	}
@@ -147,27 +149,28 @@ void OpenGLWrapper::DrawTriangle(Vector2D p1, Vector2D p2, Vector2D p3) const {
 	buf.Set(2, p3);
 
 	// Fill
-	if(fill_a != 0.f) {
+	if (fill_a != 0.f) {
 		SetModeFill();
 		buf.Draw(GL_TRIANGLES, false);
 	}
 	// Outline
-	if(line_a != 0.f) {
+	if (line_a != 0.f) {
 		SetModeLine();
 		buf.Draw(GL_LINE_LOOP);
 	}
 }
 
-void OpenGLWrapper::DrawRing(Vector2D center, float r1, float r2, float ar, float arc_start,
-                             float arc_end) const {
-	if(r2 > r1) std::swap(r1, r2);
+void OpenGLWrapper::DrawRing(Vector2D center, float r1, float r2, float ar, float arc_start, float arc_end) const {
+	if (r2 > r1)
+		std::swap(r1, r2);
 
 	// Arc range
 	bool needs_end_caps = arc_start != arc_end;
 
 	arc_end *= deg2rad;
 	arc_start *= deg2rad;
-	if(arc_end <= arc_start) arc_end += 2.f * pi;
+	if (arc_end <= arc_start)
+		arc_end += 2.f * pi;
 	float range = arc_end - arc_start;
 
 	// Math
@@ -180,13 +183,13 @@ void OpenGLWrapper::DrawRing(Vector2D center, float r1, float r2, float ar, floa
 	Vector2D scale_inner = Vector2D(ar, 1) * r1;
 	Vector2D scale_outer = Vector2D(ar, 1) * r2;
 
-	if(fill_a != 0.f) {
+	if (fill_a != 0.f) {
 		SetModeFill();
 
 		// Annulus
-		if(r1 != r2) {
+		if (r1 != r2) {
 			buf.SetSize(2, (steps + 1) * 2);
-			for(int i = 0; i <= steps; i++) {
+			for (int i = 0; i <= steps; i++) {
 				Vector2D offset = Vector2D::FromAngle(cur_angle);
 				buf.Set(i * 2 + 0, center + offset * scale_inner);
 				buf.Set(i * 2 + 1, center + offset * scale_outer);
@@ -197,7 +200,7 @@ void OpenGLWrapper::DrawRing(Vector2D center, float r1, float r2, float ar, floa
 		// Circle
 		else {
 			buf.SetSize(2, steps);
-			for(int i = 0; i < steps; i++) {
+			for (int i = 0; i < steps; i++) {
 				buf.Set(i, center + Vector2D::FromAngle(cur_angle) * scale_inner);
 				cur_angle += step;
 			}
@@ -207,31 +210,31 @@ void OpenGLWrapper::DrawRing(Vector2D center, float r1, float r2, float ar, floa
 		cur_angle = arc_start;
 	}
 
-	if(line_a == 0.f) return;
+	if (line_a == 0.f) return;
 
 	// Outer
 	steps++;
 	buf.SetSize(2, steps);
 
 	SetModeLine();
-	for(int i = 0; i < steps; i++) {
+	for (int i = 0; i < steps; i++) {
 		buf.Set(i, center + Vector2D::FromAngle(cur_angle) * scale_outer);
 		cur_angle += step;
 	}
 	buf.Draw(GL_LINE_STRIP);
 
 	// Inner
-	if(r1 == r2) return;
+	if (r1 == r2) return;
 
 	cur_angle = arc_start;
 	buf.SetSize(2, steps);
-	for(int i = 0; i < steps; i++) {
+	for (int i = 0; i < steps; i++) {
 		buf.Set(i, center + Vector2D::FromAngle(cur_angle) * scale_inner);
 		cur_angle += step;
 	}
 	buf.Draw(GL_LINE_STRIP);
 
-	if(!needs_end_caps) return;
+	if (!needs_end_caps) return;
 
 	buf.SetSize(2, 4);
 	buf.Set(0, center + Vector2D::FromAngle(arc_start) * scale_inner);
@@ -261,7 +264,7 @@ void OpenGLWrapper::SetModeLine() const {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glLineWidth(line_width);
-	if(smooth)
+	if (smooth)
 		glEnable(GL_LINE_SMOOTH);
 	else
 		glDisable(GL_LINE_SMOOTH);
@@ -269,8 +272,7 @@ void OpenGLWrapper::SetModeLine() const {
 
 void OpenGLWrapper::SetModeFill() const {
 	glColor4f(fill_r, fill_g, fill_b, fill_a);
-	if(fill_a == 1.f)
-		glDisable(GL_BLEND);
+	if (fill_a == 1.f) glDisable(GL_BLEND);
 	else {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -290,8 +292,8 @@ void OpenGLWrapper::ClearInvert() {
 	smooth = true;
 }
 
-bool OpenGLWrapper::IsExtensionSupported(const char* ext) {
-	char* extList = (char*)glGetString(GL_EXTENSIONS);
+bool OpenGLWrapper::IsExtensionSupported(const char *ext) {
+	char *extList = (char * )glGetString(GL_EXTENSIONS);
 	return extList && !!strstr(extList, ext);
 }
 
@@ -299,8 +301,7 @@ void OpenGLWrapper::DrawLines(size_t dim, std::vector<float> const& lines) {
 	DrawLines(dim, &lines[0], lines.size() / dim);
 }
 
-void OpenGLWrapper::DrawLines(size_t dim, std::vector<float> const& lines, size_t c_dim,
-                              std::vector<float> const& colors) {
+void OpenGLWrapper::DrawLines(size_t dim, std::vector<float> const& lines, size_t c_dim, std::vector<float> const& colors) {
 	glShadeModel(GL_SMOOTH);
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(c_dim, GL_FLOAT, 0, &colors[0]);
@@ -309,7 +310,7 @@ void OpenGLWrapper::DrawLines(size_t dim, std::vector<float> const& lines, size_
 	glShadeModel(GL_FLAT);
 }
 
-void OpenGLWrapper::DrawLines(size_t dim, const float* lines, size_t n) {
+void OpenGLWrapper::DrawLines(size_t dim, const float *lines, size_t n) {
 	SetModeLine();
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(dim, GL_FLOAT, 0, lines);
@@ -328,17 +329,14 @@ void OpenGLWrapper::DrawLineStrip(size_t dim, std::vector<float> const& lines) {
 // Substitute for glMultiDrawArrays for sub-1.4 OpenGL
 // Not required on OS X.
 #ifndef __APPLE__
-static void APIENTRY glMultiDrawArraysFallback(GLenum mode, const GLint* first,
-                                               const GLsizei* count, GLsizei primcount) {
-	for(int i = 0; i < primcount; ++i) {
+static void APIENTRY glMultiDrawArraysFallback(GLenum mode, const GLint *first, const GLsizei *count, GLsizei primcount) {
+	for (int i = 0; i < primcount; ++i) {
 		glDrawArrays(mode, *first++, *count++);
 	}
 }
 #endif
 
-void OpenGLWrapper::DrawMultiPolygon(std::vector<float> const& points, std::vector<int>& start,
-                                     std::vector<int>& count, Vector2D video_pos,
-                                     Vector2D video_size, bool invert) {
+void OpenGLWrapper::DrawMultiPolygon(std::vector<float> const& points, std::vector<int> &start, std::vector<int> &count, Vector2D video_pos, Vector2D video_size, bool invert) {
 	GL_EXT(PFNGLMULTIDRAWARRAYSPROC, glMultiDrawArrays);
 
 	float real_line_a = line_a;
@@ -415,12 +413,17 @@ void OpenGLWrapper::SetRotation(float x, float y, float z) {
 
 void OpenGLWrapper::SetShear(float x, float y) {
 	PrepareTransform();
-	float matrix[16] = { 1, y, 0, 0, x, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
+	float matrix[16] = {
+		1, y, 0, 0,
+		x, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1
+	};
 	glMultMatrixf(matrix);
 }
 
 void OpenGLWrapper::PrepareTransform() {
-	if(!transform_pushed) {
+	if (!transform_pushed) {
 		glMatrixMode(GL_MODELVIEW);
 		glPushMatrix();
 		glLoadIdentity();
@@ -429,7 +432,7 @@ void OpenGLWrapper::PrepareTransform() {
 }
 
 void OpenGLWrapper::ResetTransform() {
-	if(transform_pushed) {
+	if (transform_pushed) {
 		glPopMatrix();
 		transform_pushed = false;
 	}

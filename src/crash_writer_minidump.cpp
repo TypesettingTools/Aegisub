@@ -32,67 +32,74 @@
 #include <DbgHelp.h>
 #include <Windows.h>
 
-extern EXCEPTION_POINTERS* wxGlobalSEInformation;
+extern EXCEPTION_POINTERS *wxGlobalSEInformation;
 
 namespace {
 wchar_t crash_dump_path[MAX_PATH];
 agi::fs::path crashlog_path;
 
-using MiniDumpWriteDump = BOOL(WINAPI*)(HANDLE hProcess, DWORD dwPid, HANDLE hFile,
-                                        MINIDUMP_TYPE DumpType,
-                                        CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
-                                        CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
-                                        CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
+using MiniDumpWriteDump = BOOL(WINAPI *)(
+	HANDLE hProcess,
+	DWORD dwPid,
+	HANDLE hFile,
+	MINIDUMP_TYPE DumpType,
+	CONST PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam,
+	CONST PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
+	CONST PMINIDUMP_CALLBACK_INFORMATION CallbackParam);
 
 struct dump_thread_state {
 	std::mutex start_mutex;
 	std::condition_variable start_cv;
 
 	std::atomic<bool> exit = false;
-	EXCEPTION_POINTERS* ep = nullptr;
+	EXCEPTION_POINTERS *ep = nullptr;
 	DWORD thread_id = 0;
 
 	// Must be last so everything else is initialized before it
 	std::thread thread;
 
-	dump_thread_state() : thread([&] { main(); }) {}
+	dump_thread_state() : thread([&] { main(); }) { }
 
 	void main() {
 		auto module = LoadLibrary(L"dbghelp.dll");
-		if(!module) return;
+		if (!module) return;
 
 		auto fn = reinterpret_cast<MiniDumpWriteDump>(GetProcAddress(module, "MiniDumpWriteDump"));
-		if(!fn) {
+		if (!fn) {
 			FreeLibrary(module);
 			return;
 		}
 
 		std::unique_lock<std::mutex> lock(start_mutex);
 		start_cv.wait(lock, [&] { return ep || exit; });
-		if(ep) write_dump(fn);
+		if (ep)
+			write_dump(fn);
 		FreeLibrary(module);
 	}
 
 	void write_dump(MiniDumpWriteDump fn) {
-		auto file = CreateFile(crash_dump_path, GENERIC_WRITE,
-		                       0, // no sharing
-		                       nullptr, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
-		if(file == INVALID_HANDLE_VALUE) return;
+		auto file = CreateFile(crash_dump_path,
+			GENERIC_WRITE,
+			0,  // no sharing
+			nullptr,
+			CREATE_NEW,
+			FILE_ATTRIBUTE_NORMAL,
+			nullptr);
+		if (file == INVALID_HANDLE_VALUE) return;
 
 		MINIDUMP_EXCEPTION_INFORMATION info;
 		info.ThreadId = thread_id;
 		info.ExceptionPointers = ep;
 		info.ClientPointers = FALSE;
 
-		fn(GetCurrentProcess(), GetCurrentProcessId(), file, MiniDumpNormal, &info, nullptr,
-		   nullptr);
+		fn(GetCurrentProcess(), GetCurrentProcessId(), file, MiniDumpNormal, &info, nullptr, nullptr);
 
 		CloseHandle(file);
 	}
 };
 
 std::unique_ptr<dump_thread_state> dump_thread;
-} // namespace
+}
 
 namespace crash_writer {
 void Initialize(agi::fs::path const& path) {
@@ -113,7 +120,8 @@ void Initialize(agi::fs::path const& path) {
 	len += swprintf_s(crash_dump_path + len, MAX_PATH - len, L"%d", GetCurrentProcessId());
 	wcscpy_s(crash_dump_path + len, MAX_PATH - len, L".dmp");
 
-	if(!dump_thread) dump_thread = agi::make_unique<dump_thread_state>();
+	if (!dump_thread)
+		dump_thread = agi::make_unique<dump_thread_state>();
 }
 
 void Cleanup() {
@@ -133,11 +141,11 @@ void Write() {
 
 void Write(std::string const& error) {
 	boost::filesystem::ofstream file(crashlog_path, std::ios::app);
-	if(file.is_open()) {
+	if (file.is_open()) {
 		file << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
 		agi::format(file, "VER - %s\n", GetAegisubLongVersionString());
 		agi::format(file, "EXC - Aegisub has crashed with unhandled exception \"%s\".\n", error);
 		file << "----------------------------------------\n\n";
 	}
 }
-} // namespace crash_writer
+}

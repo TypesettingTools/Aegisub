@@ -24,18 +24,19 @@
 
 #ifndef __APPLE__
 #include <fstream>
-#include <libgen.h>
 #include <stdlib.h>
+#include <libgen.h>
 #endif
 
 namespace {
 #ifndef __APPLE__
 std::string home_dir() {
-	const char* env = getenv("HOME");
-	if(env) return env;
+	const char *env = getenv("HOME");
+	if (env) return env;
 
-	if((env = getenv("USER")) || (env = getenv("LOGNAME"))) {
-		if(passwd* user_info = getpwnam(env)) return user_info->pw_dir;
+	if ((env = getenv("USER")) || (env = getenv("LOGNAME"))) {
+		if (passwd *user_info = getpwnam(env))
+			return user_info->pw_dir;
 	}
 
 	throw agi::EnvironmentError("Could not get home directory. Make sure HOME is set.");
@@ -52,9 +53,9 @@ std::string exe_dir() {
 	exe = realpath("/proc/self/exe", NULL);
 #endif
 
-	if(!exe) return "";
+	if (!exe) return "";
 
-	if((dir = dirname(exe)) && strlen(dir) > 0) {
+	if ((dir = dirname(exe)) && strlen(dir) > 0) {
 		data = dir;
 	}
 
@@ -62,20 +63,20 @@ std::string exe_dir() {
 
 	return data;
 }
-#endif /* APPIMAGE_BUILD */
-#endif /* !__APPLE__ */
-} // namespace
+#endif  /* APPIMAGE_BUILD */
+#endif  /* !__APPLE__ */
+}
 
 namespace agi {
 void Path::FillPlatformSpecificPaths() {
 #ifndef __APPLE__
 	agi::fs::path home = home_dir();
-	SetToken("?user", home / ".aegisub");
-	SetToken("?local", home / ".aegisub");
+	SetToken("?user", home/".aegisub");
+	SetToken("?local", home/".aegisub");
 
 #ifdef APPIMAGE_BUILD
 	agi::fs::path data = exe_dir();
-	if(data == "") data = home / ".aegisub";
+	if (data == "") data = home/".aegisub";
 	SetToken("?data", data);
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 #else
@@ -85,12 +86,12 @@ void Path::FillPlatformSpecificPaths() {
 
 #else
 	agi::fs::path app_support = agi::util::GetApplicationSupportDirectory();
-	SetToken("?user", app_support / "Aegisub");
-	SetToken("?local", app_support / "Aegisub");
+	SetToken("?user", app_support/"Aegisub");
+	SetToken("?local", app_support/"Aegisub");
 	SetToken("?data", agi::util::GetBundleSharedSupportDirectory());
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 #endif
 	SetToken("?temp", boost::filesystem::temp_directory_path());
 }
 
-} // namespace agi
+}

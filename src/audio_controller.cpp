@@ -39,10 +39,11 @@
 
 #include <algorithm>
 
-AudioController::AudioController(agi::Context* context)
-    : context(context), playback_timer(this),
-      provider_connection(
-          context->project->AddAudioProviderListener(&AudioController::OnAudioProvider, this)) {
+AudioController::AudioController(agi::Context *context)
+: context(context)
+, playback_timer(this)
+, provider_connection(context->project->AddAudioProviderListener(&AudioController::OnAudioProvider, this))
+{
 	Bind(wxEVT_TIMER, &AudioController::OnPlaybackTimer, this, playback_timer.GetId());
 
 #ifdef wxHAS_POWER_EVENTS
@@ -53,74 +54,87 @@ AudioController::AudioController(agi::Context* context)
 	OPT_SUB("Audio/Player", &AudioController::OnAudioPlayerChanged, this);
 }
 
-AudioController::~AudioController() {
+AudioController::~AudioController()
+{
 	Stop();
 }
 
-void AudioController::OnPlaybackTimer(wxTimerEvent&) {
-	if(!player) return;
+void AudioController::OnPlaybackTimer(wxTimerEvent &)
+{
+	if (!player) return;
 
 	int64_t pos = player->GetCurrentPosition();
-	if(!player->IsPlaying() ||
-	   (playback_mode != PM_ToEnd && pos >= player->GetEndPosition() + 200)) {
+	if (!player->IsPlaying() ||
+		(playback_mode != PM_ToEnd && pos >= player->GetEndPosition()+200))
+	{
 		// The +200 is to allow the player to end the sound output cleanly,
 		// otherwise a popping artifact can sometimes be heard.
 		Stop();
-	} else {
+	}
+	else
+	{
 		AnnouncePlaybackPosition(MillisecondsFromSamples(pos));
 	}
 }
 
 #ifdef wxHAS_POWER_EVENTS
-void AudioController::OnComputerSuspending(wxPowerEvent&) {
+void AudioController::OnComputerSuspending(wxPowerEvent &)
+{
 	Stop();
 	player.reset();
 }
 
-void AudioController::OnComputerResuming(wxPowerEvent&) {
+void AudioController::OnComputerResuming(wxPowerEvent &)
+{
 	OnAudioPlayerChanged();
 }
 #endif
 
-void AudioController::OnAudioPlayerChanged() {
-	if(!provider) return;
+void AudioController::OnAudioPlayerChanged()
+{
+	if (!provider) return;
 
 	Stop();
 	player.reset();
 
-	try {
+	try
+	{
 		player = AudioPlayerFactory::GetAudioPlayer(provider, context->parent);
-	} catch(...) {
+	}
+	catch (...)
+	{
 		/// @todo This really shouldn't be just swallowing all audio player open errors
 		context->project->CloseAudio();
 	}
 	AnnounceAudioPlayerOpened();
 }
 
-void AudioController::OnAudioProvider(agi::AudioProvider* new_provider) {
+void AudioController::OnAudioProvider(agi::AudioProvider *new_provider)
+{
 	provider = new_provider;
 	Stop();
 	player.reset();
 	OnAudioPlayerChanged();
 }
 
-void AudioController::SetTimingController(std::unique_ptr<AudioTimingController> new_controller) {
+void AudioController::SetTimingController(std::unique_ptr<AudioTimingController> new_controller)
+{
 	timing_controller = std::move(new_controller);
-	if(timing_controller)
-		timing_controller->AddUpdatedPrimaryRangeListener(
-		    &AudioController::OnTimingControllerUpdatedPrimaryRange, this);
+	if (timing_controller)
+		timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
 
 	AnnounceTimingControllerChanged();
 }
 
-void AudioController::OnTimingControllerUpdatedPrimaryRange() {
-	if(playback_mode == PM_PrimaryRange)
-		player->SetEndPosition(
-		    SamplesFromMilliseconds(timing_controller->GetPrimaryPlaybackRange().end()));
+void AudioController::OnTimingControllerUpdatedPrimaryRange()
+{
+	if (playback_mode == PM_PrimaryRange)
+		player->SetEndPosition(SamplesFromMilliseconds(timing_controller->GetPrimaryPlaybackRange().end()));
 }
 
-void AudioController::PlayRange(const TimeRange& range) {
-	if(!player) return;
+void AudioController::PlayRange(const TimeRange &range)
+{
+	if (!player) return;
 
 	player->Play(SamplesFromMilliseconds(range.begin()), SamplesFromMilliseconds(range.length()));
 	playback_mode = PM_Range;
@@ -129,29 +143,35 @@ void AudioController::PlayRange(const TimeRange& range) {
 	AnnouncePlaybackPosition(range.begin());
 }
 
-void AudioController::PlayPrimaryRange() {
+void AudioController::PlayPrimaryRange()
+{
 	PlayRange(GetPrimaryPlaybackRange());
-	if(playback_mode == PM_Range) playback_mode = PM_PrimaryRange;
+	if (playback_mode == PM_Range)
+		playback_mode = PM_PrimaryRange;
 }
 
-void AudioController::PlayToEndOfPrimary(int start_ms) {
+void AudioController::PlayToEndOfPrimary(int start_ms)
+{
 	PlayRange(TimeRange(start_ms, GetPrimaryPlaybackRange().end()));
-	if(playback_mode == PM_Range) playback_mode = PM_PrimaryRange;
+	if (playback_mode == PM_Range)
+		playback_mode = PM_PrimaryRange;
 }
 
-void AudioController::PlayToEnd(int start_ms) {
-	if(!player) return;
+void AudioController::PlayToEnd(int start_ms)
+{
+	if (!player) return;
 
 	int64_t start_sample = SamplesFromMilliseconds(start_ms);
-	player->Play(start_sample, provider->GetNumSamples() - start_sample);
+	player->Play(start_sample, provider->GetNumSamples()-start_sample);
 	playback_mode = PM_ToEnd;
 	playback_timer.Start(20);
 
 	AnnouncePlaybackPosition(start_ms);
 }
 
-void AudioController::Stop() {
-	if(!player) return;
+void AudioController::Stop()
+{
+	if (!player) return;
 
 	player->Stop();
 	playback_mode = PM_NotPlaying;
@@ -160,40 +180,46 @@ void AudioController::Stop() {
 	AnnouncePlaybackStop();
 }
 
-bool AudioController::IsPlaying() {
+bool AudioController::IsPlaying()
+{
 	return player && playback_mode != PM_NotPlaying;
 }
 
-int AudioController::GetPlaybackPosition() {
-	if(!IsPlaying()) return 0;
+int AudioController::GetPlaybackPosition()
+{
+	if (!IsPlaying()) return 0;
 
 	return MillisecondsFromSamples(player->GetCurrentPosition());
 }
 
-int AudioController::GetDuration() const {
-	if(!provider) return 0;
-	return (provider->GetNumSamples() * 1000 + provider->GetSampleRate() - 1) /
-	       provider->GetSampleRate();
+int AudioController::GetDuration() const
+{
+	if (!provider) return 0;
+	return (provider->GetNumSamples() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
 }
 
-TimeRange AudioController::GetPrimaryPlaybackRange() const {
-	if(timing_controller)
+TimeRange AudioController::GetPrimaryPlaybackRange() const
+{
+	if (timing_controller)
 		return timing_controller->GetPrimaryPlaybackRange();
 	else
-		return TimeRange{ 0, 0 };
+		return TimeRange{0, 0};
 }
 
-void AudioController::SetVolume(double volume) {
-	if(!player) return;
+void AudioController::SetVolume(double volume)
+{
+	if (!player) return;
 	player->SetVolume(volume);
 }
 
-int64_t AudioController::SamplesFromMilliseconds(int64_t ms) const {
-	if(!provider) return 0;
+int64_t AudioController::SamplesFromMilliseconds(int64_t ms) const
+{
+	if (!provider) return 0;
 	return (ms * provider->GetSampleRate() + 999) / 1000;
 }
 
-int64_t AudioController::MillisecondsFromSamples(int64_t samples) const {
-	if(!provider) return 0;
+int64_t AudioController::MillisecondsFromSamples(int64_t samples) const
+{
+	if (!provider) return 0;
 	return samples * 1000 / provider->GetSampleRate();
 }

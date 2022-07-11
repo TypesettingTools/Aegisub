@@ -21,15 +21,15 @@
 #include <functional>
 #include <map>
 #include <string>
-#include <unordered_map>
 #include <vector>
+#include <unordered_map>
 
 #include <wx/string.h>
 
 class AssDialogue;
 class AssFile;
 
-typedef std::function<void(wxString, int)> FontCollectorStatusCallback;
+typedef std::function<void (wxString, int)> FontCollectorStatusCallback;
 
 struct CollectionResult {
 	/// Characters which could not be found in any font files
@@ -46,13 +46,12 @@ class GdiFontFileLister {
 	agi::scoped_holder<HDC> dc;
 	std::string buffer;
 
-	bool ProcessLogFont(LOGFONTW const& expected, LOGFONTW const& actual,
-	                    std::vector<int> const& characters);
+	bool ProcessLogFont(LOGFONTW const& expected, LOGFONTW const& actual, std::vector<int> const& characters);
 
-  public:
+public:
 	/// Constructor
 	/// @param cb Callback for status logging
-	GdiFontFileLister(FontCollectorStatusCallback& cb);
+	GdiFontFileLister(FontCollectorStatusCallback &cb);
 
 	/// @brief Get the path to the font with the given styles
 	/// @param facename Name of font face
@@ -60,8 +59,7 @@ class GdiFontFileLister {
 	/// @param italic Italic?
 	/// @param characters Characters in this style
 	/// @return Path to the matching font file(s), or empty if not found
-	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic,
-	                              std::vector<int> const& characters);
+	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters);
 };
 
 using FontFileLister = GdiFontFileLister;
@@ -69,7 +67,7 @@ using FontFileLister = GdiFontFileLister;
 #elif defined(__APPLE__)
 
 struct CoreTextFontFileLister {
-	CoreTextFontFileLister(FontCollectorStatusCallback&) {}
+	CoreTextFontFileLister(FontCollectorStatusCallback &) {}
 
 	/// @brief Get the path to the font with the given styles
 	/// @param facename Name of font face
@@ -77,8 +75,7 @@ struct CoreTextFontFileLister {
 	/// @param italic Italic?
 	/// @param characters Characters in this style
 	/// @return Path to the matching font file(s), or empty if not found
-	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic,
-	                              std::vector<int> const& characters);
+	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters);
 };
 
 using FontFileLister = CoreTextFontFileLister;
@@ -93,18 +90,16 @@ typedef struct _FcFontSet FcFontSet;
 class FontConfigFontFileLister {
 	agi::scoped_holder<FcConfig*> config;
 
-	/// @brief Case-insensitive match ASS/SSA font family against full name. (also known as "name
-	/// for humans")
+	/// @brief Case-insensitive match ASS/SSA font family against full name. (also known as "name for humans")
 	/// @param family font fullname
 	/// @param bold weight attribute
 	/// @param italic italic attribute
 	/// @return font set
-	FcFontSet* MatchFullname(const char* family, int weight, int slant);
-
-  public:
+	FcFontSet *MatchFullname(const char *family, int weight, int slant);
+public:
 	/// Constructor
 	/// @param cb Callback for status logging
-	FontConfigFontFileLister(FontCollectorStatusCallback& cb);
+	FontConfigFontFileLister(FontCollectorStatusCallback &cb);
 
 	/// @brief Get the path to the font with the given styles
 	/// @param facename Name of font face
@@ -112,8 +107,7 @@ class FontConfigFontFileLister {
 	/// @param italic Italic?
 	/// @param characters Characters in this style
 	/// @return Path to the matching font file(s), or empty if not found
-	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic,
-	                              std::vector<int> const& characters);
+	CollectionResult GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters);
 };
 
 using FontFileLister = FontConfigFontFileLister;
@@ -132,8 +126,8 @@ class FontCollector {
 
 	/// Data about where each style is used
 	struct UsageData {
-		std::vector<int> chars; ///< Characters used in this style which glyphs will be needed for
-		std::vector<int> lines; ///< Lines on which this style is used via overrides
+		std::vector<int> chars;          ///< Characters used in this style which glyphs will be needed for
+		std::vector<int> lines;          ///< Lines on which this style is used via overrides
 		std::vector<std::string> styles; ///< ASS styles which use this style
 	};
 
@@ -154,7 +148,7 @@ class FontCollector {
 	int missing_glyphs = 0;
 
 	/// Gather all of the unique styles with text on a line
-	void ProcessDialogueLine(const AssDialogue* line, int index);
+	void ProcessDialogueLine(const AssDialogue *line, int index);
 
 	/// Get the font for a single style
 	void ProcessChunk(std::pair<StyleInfo, UsageData> const& style);
@@ -162,7 +156,7 @@ class FontCollector {
 	/// Print the lines and styles on which a missing font is used
 	void PrintUsage(UsageData const& data);
 
-  public:
+public:
 	/// Constructor
 	/// @param status_callback Function to pass status updates to
 	/// @param lister The actual font file lister
@@ -172,5 +166,5 @@ class FontCollector {
 	/// @param file Lines in the subtitle file to check
 	/// @param status Callback function for messages
 	/// @return List of paths to fonts
-	std::vector<agi::fs::path> GetFontPaths(const AssFile* file);
+	std::vector<agi::fs::path> GetFontPaths(const AssFile *file);
 };

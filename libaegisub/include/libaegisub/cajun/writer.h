@@ -22,10 +22,10 @@
 namespace agi {
 
 class JsonWriter final : json::ConstVisitor {
-	std::ostream& ostr;
+	std::ostream &ostr;
 	std::string indent;
 
-	JsonWriter(std::ostream& ostr) : ostr(ostr) {}
+	JsonWriter(std::ostream &ostr) : ostr(ostr) { }
 
 	void Visit(json::Array const& array) override;
 	void Visit(bool boolean) override;
@@ -36,11 +36,12 @@ class JsonWriter final : json::ConstVisitor {
 	void Visit(std::string const& string) override;
 	void Visit(json::UnknownElement const& unknown);
 
-  public:
-	template <typename T> static void Write(T const& value, std::ostream& ostr) {
+public:
+	template <typename T>
+	static void Write(T const& value, std::ostream& ostr) {
 		JsonWriter(ostr).Visit(value);
 		ostr.flush();
 	}
 };
 
-} // namespace agi
+}

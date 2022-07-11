@@ -41,7 +41,7 @@ namespace {
 /// Populate a ResampleSettings structure with data from the user
 struct DialogResample {
 	wxDialog d;
-	agi::Context* c; ///< Project context
+	agi::Context *c; ///< Project context
 
 	int script_w;
 	int script_h;
@@ -50,39 +50,46 @@ struct DialogResample {
 	int video_h = 0;
 	YCbCrMatrix video_mat;
 
-	wxSpinCtrl* source_x;
-	wxSpinCtrl* source_y;
-	wxSpinCtrl* dest_x;
-	wxSpinCtrl* dest_y;
-	wxComboBox* source_matrix;
-	wxComboBox* dest_matrix;
-	wxCheckBox* symmetrical;
-	wxRadioBox* ar_mode;
-	wxSpinCtrl* margin_ctrl[4];
+	wxSpinCtrl *source_x;
+	wxSpinCtrl *source_y;
+	wxSpinCtrl *dest_x;
+	wxSpinCtrl *dest_y;
+	wxComboBox *source_matrix;
+	wxComboBox *dest_matrix;
+	wxCheckBox *symmetrical;
+	wxRadioBox *ar_mode;
+	wxSpinCtrl *margin_ctrl[4];
 
-	wxButton* from_script;
-	wxButton* from_video;
+	wxButton *from_script;
+	wxButton *from_video;
 
-	void SetSourceFromScript(wxCommandEvent&);
+	void SetSourceFromScript(wxCommandEvent &);
 	/// Set the destination resolution to the video's resolution
-	void SetDestFromVideo(wxCommandEvent&);
+	void SetDestFromVideo(wxCommandEvent &);
 	/// Symmetrical checkbox toggle handler
-	void OnSymmetrical(wxCommandEvent&);
+	void OnSymmetrical(wxCommandEvent &);
 	/// Copy margin values over if symmetrical is enabled
-	void OnMarginChange(wxSpinCtrl* src, wxSpinCtrl* dst);
+	void OnMarginChange(wxSpinCtrl *src, wxSpinCtrl *dst);
 	void UpdateButtons();
 
-  public:
+public:
 	/// Constructor
 	/// @param context Project context
 	/// @param[out] settings Settings struct to populate
-	DialogResample(agi::Context* context, ResampleSettings& settings);
+	DialogResample(agi::Context *context, ResampleSettings &settings);
 };
 
-enum { LEFT = 0, RIGHT = 1, TOP = 2, BOTTOM = 3 };
+enum {
+	LEFT = 0,
+	RIGHT = 1,
+	TOP = 2,
+	BOTTOM = 3
+};
 
-DialogResample::DialogResample(agi::Context* c, ResampleSettings& settings)
-    : d(c->parent, -1, _("Resample Resolution")), c(c) {
+DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
+: d(c->parent, -1, _("Resample Resolution"))
+, c(c)
+{
 	d.SetIcon(GETICON(resample_toolbutton_16));
 
 	memset(&settings, 0, sizeof(settings));
@@ -91,11 +98,12 @@ DialogResample::DialogResample(agi::Context* c, ResampleSettings& settings)
 	settings.source_y = script_h;
 	settings.source_matrix = script_mat = MatrixFromString(c->ass->GetScriptInfo("YCbCr Matrix"));
 
-	if(auto provider = c->project->VideoProvider()) {
+	if (auto provider = c->project->VideoProvider()) {
 		settings.dest_x = video_w = provider->GetWidth();
 		settings.dest_y = video_h = provider->GetHeight();
 		settings.dest_matrix = video_mat = MatrixFromString(provider->GetRealColorSpace());
-	} else {
+	}
+	else {
 		settings.dest_x = script_w;
 		settings.dest_y = script_h;
 		settings.dest_matrix = script_mat;
@@ -103,9 +111,8 @@ DialogResample::DialogResample(agi::Context* c, ResampleSettings& settings)
 	}
 
 	// Create all controls and set validators
-	for(size_t i = 0; i < 4; ++i) {
-		margin_ctrl[i] = new wxSpinCtrl(&d, -1, "0", wxDefaultPosition, wxSize(50, -1),
-		                                wxSP_ARROW_KEYS, -9999, 9999, 0);
+	for (size_t i = 0; i < 4; ++i) {
+		margin_ctrl[i] = new wxSpinCtrl(&d, -1, "0", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, -9999, 9999, 0);
 		margin_ctrl[i]->SetValidator(wxGenericValidator(&settings.margin[i]));
 	}
 
@@ -115,18 +122,14 @@ DialogResample::DialogResample(agi::Context* c, ResampleSettings& settings)
 	margin_ctrl[RIGHT]->Enable(false);
 	margin_ctrl[BOTTOM]->Enable(false);
 
-	source_x =
-	    new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	source_y =
-	    new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	source_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize,
-	                               to_wx(MatrixNames()), wxCB_READONLY);
-	dest_x =
-	    new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	dest_y =
-	    new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	dest_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize, to_wx(MatrixNames()),
-	                             wxCB_READONLY);
+	source_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	source_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	source_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition,
+		wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
+	dest_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	dest_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	dest_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize,
+		to_wx(MatrixNames()), wxCB_READONLY);
 
 	source_x->SetValidator(wxGenericValidator(&settings.source_x));
 	source_y->SetValidator(wxGenericValidator(&settings.source_y));
@@ -140,10 +143,9 @@ DialogResample::DialogResample(agi::Context* c, ResampleSettings& settings)
 	from_script = new wxButton(&d, -1, _("From s&cript"));
 	from_script->Enable(false);
 
-	wxString ar_modes[] = { _("Stretch"), _("Add borders"), _("Remove borders"), _("Manual") };
-	ar_mode =
-	    new wxRadioBox(&d, -1, _("Aspect Ratio Handling"), wxDefaultPosition, wxDefaultSize,
-	                   boost::size(ar_modes), ar_modes, 1, 4, MakeEnumBinder(&settings.ar_mode));
+	wxString ar_modes[] = {_("Stretch"), _("Add borders"), _("Remove borders"), _("Manual")};
+	ar_mode = new wxRadioBox(&d, -1, _("Aspect Ratio Handling"), wxDefaultPosition,
+		wxDefaultSize, boost::size(ar_modes), ar_modes, 1, 4, MakeEnumBinder(&settings.ar_mode));
 
 	// Position the controls
 	auto margin_sizer = new wxGridSizer(3, 3, 5, 5);
@@ -162,14 +164,12 @@ DialogResample::DialogResample(agi::Context* c, ResampleSettings& settings)
 
 	auto source_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	source_res_sizer->Add(new wxStaticText(&d, -1, _("x")),
-	                      wxSizerFlags().Center().Border(wxRIGHT));
+	source_res_sizer->Add(new wxStaticText(&d, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
 	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	source_res_sizer->Add(from_script, wxSizerFlags(1));
 
 	auto source_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	source_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")),
-	                         wxSizerFlags().Border(wxRIGHT).Center());
+	source_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
 	source_matrix_sizer->Add(source_matrix, wxSizerFlags(1).Center());
 
 	auto source_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Source Resolution"));
@@ -183,8 +183,7 @@ DialogResample::DialogResample(agi::Context* c, ResampleSettings& settings)
 	dest_res_sizer->Add(from_video, wxSizerFlags(1));
 
 	auto dest_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	dest_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")),
-	                       wxSizerFlags().Border(wxRIGHT).Center());
+	dest_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
 	dest_matrix_sizer->Add(dest_matrix, wxSizerFlags(1).Center());
 
 	auto dest_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Destination Resolution"));
@@ -196,8 +195,7 @@ DialogResample::DialogResample(agi::Context* c, ResampleSettings& settings)
 	main_sizer->Add(dest_res_box, wxSizerFlags().Expand().Border());
 	main_sizer->Add(ar_mode, wxSizerFlags().Expand().Border());
 	main_sizer->Add(margin_box, wxSizerFlags(1).Expand().Border());
-	main_sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP),
-	                wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	main_sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	d.SetSizerAndFit(main_sizer);
 	d.CenterOnParent();
 
@@ -212,13 +210,11 @@ DialogResample::DialogResample(agi::Context* c, ResampleSettings& settings)
 	from_video->Bind(wxEVT_BUTTON, &DialogResample::SetDestFromVideo, this);
 	from_script->Bind(wxEVT_BUTTON, &DialogResample::SetSourceFromScript, this);
 	symmetrical->Bind(wxEVT_CHECKBOX, &DialogResample::OnSymmetrical, this);
-	margin_ctrl[LEFT]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this,
-	                                             margin_ctrl[LEFT], margin_ctrl[RIGHT]));
-	margin_ctrl[TOP]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this,
-	                                            margin_ctrl[TOP], margin_ctrl[BOTTOM]));
+	margin_ctrl[LEFT]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this, margin_ctrl[LEFT], margin_ctrl[RIGHT]));
+	margin_ctrl[TOP]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this, margin_ctrl[TOP], margin_ctrl[BOTTOM]));
 }
 
-void DialogResample::SetDestFromVideo(wxCommandEvent&) {
+void DialogResample::SetDestFromVideo(wxCommandEvent &) {
 	dest_x->SetValue(video_w);
 	dest_y->SetValue(video_h);
 	dest_matrix->SetSelection((int)video_mat);
@@ -232,7 +228,7 @@ void DialogResample::SetSourceFromScript(wxCommandEvent&) {
 
 void DialogResample::UpdateButtons() {
 	from_video->Enable(c->project->VideoProvider() &&
-	                   (dest_x->GetValue() != video_w || dest_y->GetValue() != video_h));
+		(dest_x->GetValue() != video_w || dest_y->GetValue() != video_h));
 	from_script->Enable(source_x->GetValue() != script_w || source_y->GetValue() != script_h);
 
 	auto source_ar = double(source_x->GetValue()) / source_y->GetValue();
@@ -249,23 +245,24 @@ void DialogResample::UpdateButtons() {
 	margin_ctrl[BOTTOM]->Enable(margins && !symmetrical->GetValue());
 }
 
-void DialogResample::OnSymmetrical(wxCommandEvent&) {
+void DialogResample::OnSymmetrical(wxCommandEvent &) {
 	bool state = !symmetrical->IsChecked();
 
 	margin_ctrl[RIGHT]->Enable(state);
 	margin_ctrl[BOTTOM]->Enable(state);
 
-	if(!state) {
+	if (!state) {
 		margin_ctrl[RIGHT]->SetValue(margin_ctrl[LEFT]->GetValue());
 		margin_ctrl[BOTTOM]->SetValue(margin_ctrl[TOP]->GetValue());
 	}
 }
 
-void DialogResample::OnMarginChange(wxSpinCtrl* src, wxSpinCtrl* dst) {
-	if(symmetrical->IsChecked()) dst->SetValue(src->GetValue());
+void DialogResample::OnMarginChange(wxSpinCtrl *src, wxSpinCtrl *dst) {
+	if (symmetrical->IsChecked())
+		dst->SetValue(src->GetValue());
 }
-} // namespace
+}
 
-bool PromptForResampleSettings(agi::Context* c, ResampleSettings& settings) {
+bool PromptForResampleSettings(agi::Context *c, ResampleSettings &settings) {
 	return DialogResample(c, settings).d.ShowModal() == wxID_OK;
 }

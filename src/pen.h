@@ -18,9 +18,7 @@
 
 #include <libaegisub/signal.h>
 
-namespace agi {
-class OptionValue;
-}
+namespace agi { class OptionValue; }
 
 /// @class Pen
 /// @brief A simple wrapper around wxPen to bind the colour and width to the
@@ -33,18 +31,18 @@ class Pen {
 	void OnColourChanged(agi::OptionValue const& opt);
 	void OnWidthChanged(agi::OptionValue const& opt);
 
-  public:
+public:
 	/// Constructor
 	/// @param colour_opt Option name to get the colour from
 	/// @param width_opt Option name to get the width from
 	/// @param style Pen style
-	Pen(const char* colour_opt, const char* width_opt, wxPenStyle style = wxPENSTYLE_SOLID);
+	Pen(const char *colour_opt, const char *width_opt, wxPenStyle style = wxPENSTYLE_SOLID);
 
 	/// Constructor
 	/// @param colour_opt Option name to get the colour from
 	/// @param width Pen width
 	/// @param style Pen style
-	Pen(const char* colour_opt, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID);
+	Pen(const char *colour_opt, int width = 1, wxPenStyle style = wxPENSTYLE_SOLID);
 
 	/// Implicit conversion to wxPen
 	operator wxPen const&() const { return impl; }

@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 
-#include <wx/arrstr.h>
 #include <wx/colour.h>
+#include <wx/arrstr.h>
 #include <wx/string.h>
 
 #include <libaegisub/color.h>
@@ -16,4 +16,4 @@ wxArrayString to_wx(std::vector<std::string> const& vec);
 agi::Color from_wx(wxColour color);
 std::string from_wx(wxString const& str);
 
-wxArrayString lagi_MRU_wxAS(const char* list);
+wxArrayString lagi_MRU_wxAS(const char *list);

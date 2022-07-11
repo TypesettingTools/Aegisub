@@ -19,17 +19,16 @@
 #include "libaegisub/lua/ffi.h"
 #include "libaegisub/lua/utils.h"
 
-extern "C" int luaopen_luabins(lua_State* L);
-extern "C" int luaopen_re_impl(lua_State* L);
-extern "C" int luaopen_unicode_impl(lua_State* L);
-extern "C" int luaopen_lfs_impl(lua_State* L);
-extern "C" int luaopen_lpeg(lua_State* L);
+extern "C" int luaopen_luabins(lua_State *L);
+extern "C" int luaopen_re_impl(lua_State *L);
+extern "C" int luaopen_unicode_impl(lua_State *L);
+extern "C" int luaopen_lfs_impl(lua_State *L);
+extern "C" int luaopen_lpeg(lua_State *L);
 
-namespace agi {
-namespace lua {
-int regex_init(lua_State* L);
+namespace agi { namespace lua {
+int regex_init(lua_State *L);
 
-void preload_modules(lua_State* L) {
+void preload_modules(lua_State *L) {
 	luaL_openlibs(L);
 
 	lua_getglobal(L, "package");
@@ -46,7 +45,7 @@ void preload_modules(lua_State* L) {
 	register_lib_functions(L); // silence an unused static function warning
 }
 
-void do_register_lib_function(lua_State* L, const char* name, const char* type_name, void* func) {
+void do_register_lib_function(lua_State *L, const char *name, const char *type_name, void *func) {
 	lua_pushvalue(L, -2); // push cast function
 	lua_pushstring(L, type_name);
 	lua_pushlightuserdata(L, func);
@@ -54,13 +53,13 @@ void do_register_lib_function(lua_State* L, const char* name, const char* type_n
 	lua_setfield(L, -2, name);
 }
 
-void do_register_lib_table(lua_State* L, std::initializer_list<const char*> types) {
+void do_register_lib_table(lua_State *L, std::initializer_list<const char *> types) {
 	lua_getglobal(L, "require");
 	lua_pushstring(L, "ffi");
 	lua_call(L, 1, 1);
 
 	// Register all passed type with the ffi
-	for(auto type : types) {
+	for (auto type : types) {
 		lua_getfield(L, -1, "cdef");
 		lua_pushfstring(L, "typedef struct %s %s;", type, type);
 		lua_call(L, 1, 0);
@@ -71,5 +70,4 @@ void do_register_lib_table(lua_State* L, std::initializer_list<const char*> type
 
 	// leaves ffi.cast on the stack
 }
-} // namespace lua
-} // namespace agi
+} }

@@ -36,7 +36,7 @@ class VisualToolBase;
 
 class Spline final : private std::vector<SplineCurve> {
 	/// Visual tool to do the conversion between script and video pixels
-	const VisualToolBase& coord_translator;
+	const VisualToolBase &coord_translator;
 	/// Spline scale
 	int scale = 0;
 	int raw_scale = 0;
@@ -46,9 +46,8 @@ class Spline final : private std::vector<SplineCurve> {
 
 	/// Script coordinates -> Video coordinates
 	Vector2D FromScript(Vector2D vec) const;
-
-  public:
-	Spline(const VisualToolBase& scale);
+public:
+	Spline(const VisualToolBase &scale);
 
 	/// Encode to an ASS vector drawing
 	std::string EncodeToAss() const;
@@ -69,7 +68,7 @@ class Spline final : private std::vector<SplineCurve> {
 	void MovePoint(iterator curve, int point, Vector2D pos);
 
 	/// Smooth the spline
-	void Smooth(float smooth = 1.0f);
+	void Smooth(float smooth=1.0f);
 
 	/// Gets a list of points in the curve
 	std::vector<float> GetPointList(std::vector<int>& first, std::vector<int>& count);
@@ -77,7 +76,7 @@ class Spline final : private std::vector<SplineCurve> {
 	std::vector<float> GetPointList(iterator curve);
 
 	/// Get t value and curve of the point closest to reference
-	void GetClosestParametricPoint(Vector2D reference, iterator& curve, float& t, Vector2D& point);
+	void GetClosestParametricPoint(Vector2D reference, iterator& curve, float &t, Vector2D &point);
 	/// Get closest point on the curve to reference
 	Vector2D GetClosestPoint(Vector2D reference);
 	Vector2D GetClosestControlPoint(Vector2D reference);

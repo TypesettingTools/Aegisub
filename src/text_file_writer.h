@@ -25,13 +25,9 @@
 #include <libaegisub/fs_fwd.h>
 
 namespace agi {
-namespace charset {
-class IconvWrapper;
+	namespace charset { class IconvWrapper; }
+	namespace io { class Save; }
 }
-namespace io {
-class Save;
-}
-} // namespace agi
 
 class TextFileWriter {
 	std::unique_ptr<agi::io::Save> file;
@@ -42,9 +38,9 @@ class TextFileWriter {
 	std::string newline = "\n";
 #endif
 
-  public:
-	TextFileWriter(agi::fs::path const& filename, std::string encoding = "");
+public:
+	TextFileWriter(agi::fs::path const& filename, std::string encoding="");
 	~TextFileWriter();
 
-	void WriteLineToFile(std::string const& line, bool addLineBreak = true);
+	void WriteLineToFile(std::string const& line, bool addLineBreak=true);
 };

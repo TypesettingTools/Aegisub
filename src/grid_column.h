@@ -18,15 +18,13 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
 #include <vector>
+#include <unordered_map>
 
 class AssDialogue;
 class wxDC;
 class wxString;
-namespace agi {
-struct Context;
-}
+namespace agi { struct Context; }
 
 class WidthHelper {
 	struct Entry {
@@ -34,34 +32,32 @@ class WidthHelper {
 		int age;
 	};
 	int age = 0;
-	wxDC* dc = nullptr;
+	wxDC *dc = nullptr;
 	std::unordered_map<boost::flyweight<std::string>, Entry> widths;
 #ifdef _WIN32
 	wxString scratch;
 #endif
 
-  public:
-	void SetDC(wxDC* dc) {
-		this->dc = dc;
-	}
+public:
+	void SetDC(wxDC *dc) { this->dc = dc; }
 	void Age();
 
 	int operator()(boost::flyweight<std::string> const& str);
 	int operator()(std::string const& str);
 	int operator()(wxString const& str);
-	int operator()(const char* str);
-	int operator()(const wchar_t* str);
+	int operator()(const char *str);
+	int operator()(const wchar_t *str);
 };
 
 class GridColumn {
-  protected:
+protected:
 	int width = 0;
 	bool visible = true;
 
-	virtual int Width(const agi::Context* c, WidthHelper& helper) const = 0;
-	virtual wxString Value(const AssDialogue* d, const agi::Context* c) const = 0;
+	virtual int Width(const agi::Context *c, WidthHelper &helper) const = 0;
+	virtual wxString Value(const AssDialogue *d, const agi::Context *c) const = 0;
 
-  public:
+public:
 	virtual ~GridColumn() = default;
 
 	virtual bool Centered() const { return false; }
@@ -70,13 +66,13 @@ class GridColumn {
 
 	virtual wxString const& Header() const = 0;
 	virtual wxString const& Description() const = 0;
-	virtual void Paint(wxDC& dc, int x, int y, const AssDialogue* d, const agi::Context* c) const;
+	virtual void Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *c) const;
 
 	int Width() const { return width; }
 	bool Visible() const { return visible; }
 
-	virtual void UpdateWidth(const agi::Context* c, WidthHelper& helper);
-	virtual void SetByFrame(bool /* by_frame */) {}
+	virtual void UpdateWidth(const agi::Context *c, WidthHelper &helper);
+	virtual void SetByFrame(bool /* by_frame */) { }
 	void SetVisible(bool new_value) { visible = new_value; }
 };
 

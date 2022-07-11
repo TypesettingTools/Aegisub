@@ -24,20 +24,17 @@
 #include <libaegisub/log.h>
 
 #include <ShlObj.h>
-#include <Usp10.h>
 #include <boost/scope_exit.hpp>
 #include <unicode/utf16.h>
+#include <Usp10.h>
 
-static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir,
-                                std::vector<agi::fs::path>& files) {
+static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir, std::vector<agi::fs::path> &files) {
 	static const auto fonts_key_name = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
-
+	
 	HKEY key;
 	auto ret = RegOpenKeyExW(hkey, fonts_key_name, 0, KEY_QUERY_VALUE, &key);
-	if(ret != ERROR_SUCCESS) return;
-	BOOST_SCOPE_EXIT_ALL(=) {
-		RegCloseKey(key);
-	};
+	if (ret != ERROR_SUCCESS) return;
+	BOOST_SCOPE_EXIT_ALL(=) { RegCloseKey(key); };
 
 	DWORD name_buf_size = SHRT_MAX;
 	DWORD data_buf_size = MAX_PATH;
@@ -45,28 +42,26 @@ static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir,
 	auto font_name = new wchar_t[name_buf_size];
 	auto font_filename = new wchar_t[data_buf_size];
 
-	for(DWORD i = 0;; ++i) {
-	retry:
+	for (DWORD i = 0;; ++i) {
+retry:
 		DWORD name_len = name_buf_size;
 		DWORD data_len = data_buf_size;
 
-		ret = RegEnumValueW(key, i, font_name, &name_len, NULL, NULL,
-		                    reinterpret_cast<BYTE*>(font_filename), &data_len);
-		if(ret == ERROR_MORE_DATA) {
+		ret = RegEnumValueW(key, i, font_name, &name_len, NULL, NULL, reinterpret_cast<BYTE*>(font_filename), &data_len);
+		if (ret == ERROR_MORE_DATA) {
 			data_buf_size = data_len;
 			delete font_filename;
 			font_filename = new wchar_t[data_buf_size];
 			goto retry;
 		}
-		if(ret == ERROR_NO_MORE_ITEMS) break;
-		if(ret != ERROR_SUCCESS) continue;
+		if (ret == ERROR_NO_MORE_ITEMS) break;
+		if (ret != ERROR_SUCCESS) continue;
 
 		agi::fs::path font_path(font_filename);
-		if(!agi::fs::FileExists(font_path))
-			// Doesn't make a ton of sense to do this with user fonts, but they seem to be stored as
-			// full paths anyway
+		if (!agi::fs::FileExists(font_path))
+			// Doesn't make a ton of sense to do this with user fonts, but they seem to be stored as full paths anyway
 			font_path = font_dir / font_path;
-		if(agi::fs::FileExists(font_path)) // The path might simply be invalid
+		if (agi::fs::FileExists(font_path)) // The path might simply be invalid
 			files.push_back(font_path);
 	}
 
@@ -75,7 +70,7 @@ static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir,
 }
 
 namespace {
-uint32_t murmur3(const char* data, uint32_t len) {
+uint32_t murmur3(const char *data, uint32_t len) {
 	static const uint32_t c1 = 0xcc9e2d51;
 	static const uint32_t c2 = 0x1b873593;
 	static const uint32_t r1 = 15;
@@ -86,8 +81,8 @@ uint32_t murmur3(const char* data, uint32_t len) {
 	uint32_t hash = 0;
 
 	const int nblocks = len / 4;
-	auto blocks = reinterpret_cast<const uint32_t*>(data);
-	for(uint32_t i = 0; i * 4 < len; ++i) {
+	auto blocks = reinterpret_cast<const uint32_t *>(data);
+	for (uint32_t i = 0; i * 4 < len; ++i) {
 		uint32_t k = blocks[i];
 		k *= c1;
 		k = _rotl(k, r1);
@@ -125,17 +120,18 @@ std::vector<agi::fs::path> get_installed_fonts() {
 
 using font_index = std::unordered_multimap<uint32_t, agi::fs::path>;
 
-font_index index_fonts(FontCollectorStatusCallback& cb) {
+font_index index_fonts(FontCollectorStatusCallback &cb) {
 	font_index hash_to_path;
 	auto fonts = get_installed_fonts();
 	std::unique_ptr<char[]> buffer(new char[1024]);
-	for(auto const& path : fonts) {
+	for (auto const& path : fonts) {
 		try {
 			auto stream = agi::io::Open(path, true);
 			stream->read(&buffer[0], 1024);
 			auto hash = murmur3(&buffer[0], stream->tellg());
 			hash_to_path.emplace(hash, path);
-		} catch(agi::Exception const& e) {
+		}
+		catch (agi::Exception const& e) {
 			cb(to_wx(e.GetMessage() + "\n"), 3);
 		}
 	}
@@ -148,58 +144,63 @@ void get_font_data(std::string& buffer, HDC dc) {
 	// For ttc files we have to ask for the "ttcf" table to get the complete file
 	DWORD ttcf = 0x66637474;
 	auto size = GetFontData(dc, ttcf, 0, nullptr, 0);
-	if(size == GDI_ERROR) {
+	if (size == GDI_ERROR) {
 		ttcf = 0;
 		size = GetFontData(dc, 0, 0, nullptr, 0);
 	}
-	if(size == GDI_ERROR || size == 0) return;
+	if (size == GDI_ERROR || size == 0)
+		return;
 
 	buffer.resize(size);
 	GetFontData(dc, ttcf, 0, &buffer[0], size);
 }
-} // namespace
+}
 
-GdiFontFileLister::GdiFontFileLister(FontCollectorStatusCallback& cb)
-    : dc(CreateCompatibleDC(nullptr), [](HDC dc) { DeleteDC(dc); }) {
+GdiFontFileLister::GdiFontFileLister(FontCollectorStatusCallback &cb)
+: dc(CreateCompatibleDC(nullptr), [](HDC dc) { DeleteDC(dc); })
+{
 	cb(_("Updating font cache\n"), 0);
 	index = index_fonts(cb);
 }
 
-CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, int bold, bool italic,
-                                                 std::vector<int> const& characters) {
+CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, int bold, bool italic, std::vector<int> const& characters) {
 	CollectionResult ret;
 
 	LOGFONTW lf{};
 	lf.lfCharSet = DEFAULT_CHARSET;
 	wcsncpy(lf.lfFaceName, agi::charset::ConvertW(facename).c_str(), LF_FACESIZE);
 	lf.lfItalic = italic ? -1 : 0;
-	lf.lfWeight = bold == 0 ? 400 : bold == 1 ? 700 : bold;
+	lf.lfWeight = bold == 0 ? 400 :
+	              bold == 1 ? 700 :
+	                          bold;
 
 	// Gather all of the styles for the given family name
 	std::vector<LOGFONTW> matches;
 	using type = decltype(matches);
-	EnumFontFamiliesEx(
-	    dc, &lf,
-	    [](const LOGFONT* lf, const TEXTMETRIC*, DWORD, LPARAM lParam) -> int {
-		    reinterpret_cast<type*>(lParam)->push_back(*lf);
-		    return 1;
-	    },
-	    (LPARAM)&matches, 0);
+	EnumFontFamiliesEx(dc, &lf, [](const LOGFONT *lf, const TEXTMETRIC *, DWORD, LPARAM lParam) -> int {
+		reinterpret_cast<type*>(lParam)->push_back(*lf);
+		return 1;
+	}, (LPARAM)&matches, 0);
 
-	if(matches.empty()) return ret;
+	if (matches.empty())
+		return ret;
 
 	// If the user asked for a non-regular style, verify that it actually exists
-	if(italic || bold) {
+	if (italic || bold) {
 		bool has_bold = false;
 		bool has_italic = false;
 		bool has_bold_italic = false;
 
-		auto is_italic = [&](LOGFONTW const& lf) { return !italic || lf.lfItalic; };
+		auto is_italic = [&](LOGFONTW const& lf) {
+			return !italic || lf.lfItalic;
+		};
 		auto is_bold = [&](LOGFONTW const& lf) {
-			return !bold || (bold == 1 && lf.lfWeight >= 700) || (bold > 1 && lf.lfWeight > bold);
+			return !bold
+				|| (bold == 1 && lf.lfWeight >= 700)
+				|| (bold > 1 && lf.lfWeight > bold);
 		};
 
-		for(auto const& match : matches) {
+		for (auto const& match : matches) {
 			has_bold = has_bold || is_bold(match);
 			has_italic = has_italic || is_italic(match);
 			has_bold_italic = has_bold_italic || (is_bold(match) && is_italic(match));
@@ -223,28 +224,31 @@ CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, in
 	get_font_data(buffer, dc);
 
 	auto range = index.equal_range(murmur3(buffer.c_str(), std::min<size_t>(buffer.size(), 1024U)));
-	if(range.first == range.second) return ret; // could instead write to a temp dir
+	if (range.first == range.second)
+		return ret; // could instead write to a temp dir
 
 	// Compare the full files for each of the fonts with the same prefix
 	std::unique_ptr<char[]> file_buffer(new char[buffer.size()]);
-	for(auto it = range.first; it != range.second; ++it) {
+	for (auto it = range.first; it != range.second; ++it) {
 		auto stream = agi::io::Open(it->second, true);
 		stream->read(&file_buffer[0], buffer.size());
-		if((size_t)stream->tellg() != buffer.size()) continue;
-		if(memcmp(&file_buffer[0], &buffer[0], buffer.size()) == 0) {
+		if ((size_t)stream->tellg() != buffer.size())
+			continue;
+		if (memcmp(&file_buffer[0], &buffer[0], buffer.size()) == 0) {
 			ret.paths.push_back(it->second);
 			break;
 		}
 	}
 
 	// No fonts actually matched
-	if(ret.paths.empty()) return ret;
+	if (ret.paths.empty())
+		return ret;
 
 	// Convert the characters to a utf-16 string
 	std::wstring utf16characters;
 	utf16characters.reserve(characters.size());
-	for(int chr : characters) {
-		if(U16_LENGTH(chr) == 1)
+	for (int chr : characters) {
+		if (U16_LENGTH(chr) == 1)
 			utf16characters.push_back(static_cast<wchar_t>(chr));
 		else {
 			utf16characters.push_back(U16_LEAD(chr));
@@ -257,30 +261,34 @@ CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, in
 
 	// First try to check glyph coverage with Uniscribe, since it
 	// handles non-BMP unicode characters
-	auto hr =
-	    ScriptGetCMap(dc, &cache, utf16characters.data(), utf16characters.size(), 0, indices.get());
+	auto hr = ScriptGetCMap(dc, &cache, utf16characters.data(),
+		utf16characters.size(), 0, indices.get());
 
 	// Uniscribe doesn't like some types of fonts, so fall back to GDI
-	if(hr == E_HANDLE) {
-		GetGlyphIndicesW(dc, utf16characters.data(), utf16characters.size(), indices.get(),
-		                 GGI_MARK_NONEXISTING_GLYPHS);
-		for(size_t i = 0; i < utf16characters.size(); ++i) {
-			if(U16_IS_SURROGATE(utf16characters[i])) continue;
-			if(indices[i] == SHRT_MAX) ret.missing += utf16characters[i];
+	if (hr == E_HANDLE) {
+		GetGlyphIndicesW(dc, utf16characters.data(), utf16characters.size(),
+			indices.get(), GGI_MARK_NONEXISTING_GLYPHS);
+		for (size_t i = 0; i < utf16characters.size(); ++i) {
+			if (U16_IS_SURROGATE(utf16characters[i]))
+				continue;
+			if (indices[i] == SHRT_MAX)
+				ret.missing += utf16characters[i];
 		}
-	} else if(hr == S_FALSE) {
-		for(size_t i = 0; i < utf16characters.size(); ++i) {
+	}
+	else if (hr == S_FALSE) {
+		for (size_t i = 0; i < utf16characters.size(); ++i) {
 			// Uniscribe doesn't report glyph indexes for non-BMP characters,
 			// so we have to call ScriptGetCMap on each individual pair to
 			// determine if it's the missing one
-			if(U16_IS_LEAD(utf16characters[i])) {
+			if (U16_IS_LEAD(utf16characters[i])) {
 				hr = ScriptGetCMap(dc, &cache, &utf16characters[i], 2, 0, &indices[i]);
-				if(hr == S_FALSE) {
+				if (hr == S_FALSE) {
 					ret.missing += utf16characters[i];
 					ret.missing += utf16characters[i + 1];
 				}
 				++i;
-			} else if(indices[i] == 0) {
+			}
+			else if (indices[i] == 0) {
 				ret.missing += utf16characters[i];
 			}
 		}

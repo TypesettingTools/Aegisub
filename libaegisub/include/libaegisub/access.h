@@ -14,24 +14,19 @@
 
 #include <libaegisub/fs_fwd.h>
 
-namespace agi {
-namespace acs {
-enum Type { FileRead, DirRead, FileWrite, DirWrite };
+namespace agi { namespace acs {
+enum Type {
+	FileRead,
+	DirRead,
+	FileWrite,
+	DirWrite
+};
 
 void Check(fs::path const& file, acs::Type);
 
-static inline void CheckFileRead(fs::path const& file) {
-	Check(file, acs::FileRead);
-}
-static inline void CheckFileWrite(fs::path const& file) {
-	Check(file, acs::FileWrite);
-}
+static inline void CheckFileRead(fs::path const& file) { Check(file, acs::FileRead); }
+static inline void CheckFileWrite(fs::path const& file) { Check(file, acs::FileWrite); }
 
-static inline void CheckDirRead(fs::path const& dir) {
-	Check(dir, acs::DirRead);
-}
-static inline void CheckDirWrite(fs::path const& dir) {
-	Check(dir, acs::DirWrite);
-}
-} // namespace acs
-} // namespace agi
+static inline void CheckDirRead(fs::path const& dir) { Check(dir, acs::DirRead); }
+static inline void CheckDirWrite(fs::path const& dir) { Check(dir, acs::DirWrite); }
+} }

@@ -32,11 +32,9 @@ class VideoProviderError;
 struct AssDialogueBase;
 struct VideoFrame;
 namespace agi {
-class BackgroundRunner;
-namespace dispatch {
-class Queue;
+	class BackgroundRunner;
+	namespace dispatch { class Queue; }
 }
-} // namespace agi
 
 /// An asynchronous video decoding and subtitle rendering wrapper
 class AsyncVideoProvider {
@@ -48,10 +46,10 @@ class AsyncVideoProvider {
 	/// Video provider
 	std::unique_ptr<VideoProvider> source_provider;
 	/// Event handler to send FrameReady events to
-	wxEvtHandler* parent;
+	wxEvtHandler *parent;
 
 	int frame_number = -1; ///< Last frame number requested
-	double time = -1.;     ///< Time of the frame to pass to the subtitle renderer
+	double time = -1.; ///< Time of the frame to pass to the subtitle renderer
 
 	/// Copy of the subtitles file to avoid having to touch the project context
 	std::unique_ptr<AssFile> subs;
@@ -80,13 +78,13 @@ class AsyncVideoProvider {
 
 	std::vector<std::shared_ptr<VideoFrame>> buffers;
 
-  public:
+public:
 	/// @brief Load the passed subtitle file
 	/// @param subs File to load
 	///
 	/// This function blocks until is it is safe for the calling thread to
 	/// modify subs
-	void LoadSubtitles(const AssFile* subs) throw();
+	void LoadSubtitles(const AssFile *subs) throw();
 
 	/// @brief Update a previously loaded subtitle file
 	/// @param subs Subtitle file which was last passed to LoadSubtitles
@@ -94,7 +92,7 @@ class AsyncVideoProvider {
 	///
 	/// This function only supports changes to existing lines, and not
 	/// insertions or deletions.
-	void UpdateSubtitles(const AssFile* subs, const AssDialogue* changes) throw();
+	void UpdateSubtitles(const AssFile *subs, const AssDialogue *changes) throw();
 
 	/// @brief Queue a request for a frame
 	/// @brief frame Frame number
@@ -113,24 +111,23 @@ class AsyncVideoProvider {
 	/// Ask the video provider to change YCbCr matricies
 	void SetColorSpace(std::string const& matrix);
 
-	int GetFrameCount() const { return source_provider->GetFrameCount(); }
-	int GetWidth() const { return source_provider->GetWidth(); }
-	int GetHeight() const { return source_provider->GetHeight(); }
-	double GetDAR() const { return source_provider->GetDAR(); }
-	agi::vfr::Framerate GetFPS() const { return source_provider->GetFPS(); }
+	int GetFrameCount() const             { return source_provider->GetFrameCount(); }
+	int GetWidth() const                  { return source_provider->GetWidth(); }
+	int GetHeight() const                 { return source_provider->GetHeight(); }
+	double GetDAR() const                 { return source_provider->GetDAR(); }
+	agi::vfr::Framerate GetFPS() const    { return source_provider->GetFPS(); }
 	std::vector<int> GetKeyFrames() const { return source_provider->GetKeyFrames(); }
-	std::string GetColorSpace() const { return source_provider->GetColorSpace(); }
+	std::string GetColorSpace() const     { return source_provider->GetColorSpace(); }
 	std::string GetRealColorSpace() const { return source_provider->GetRealColorSpace(); }
-	std::string GetWarning() const { return source_provider->GetWarning(); }
-	std::string GetDecoderName() const { return source_provider->GetDecoderName(); }
+	std::string GetWarning() const        { return source_provider->GetWarning(); }
+	std::string GetDecoderName() const    { return source_provider->GetDecoderName(); }
 	bool ShouldSetVideoProperties() const { return source_provider->ShouldSetVideoProperties(); }
-	bool HasAudio() const { return source_provider->HasAudio(); }
+	bool HasAudio() const                 { return source_provider->HasAudio(); }
 
 	/// @brief Constructor
 	/// @param videoFileName File to open
 	/// @param parent Event handler to send FrameReady events to
-	AsyncVideoProvider(agi::fs::path const& filename, std::string const& colormatrix,
-	                   wxEvtHandler* parent, agi::BackgroundRunner* br);
+	AsyncVideoProvider(agi::fs::path const& filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
 	~AsyncVideoProvider();
 };
 
@@ -140,20 +137,20 @@ struct FrameReadyEvent final : public wxEvent {
 	std::shared_ptr<VideoFrame> frame;
 	/// Time which was used for subtitle rendering
 	double time;
-	wxEvent* Clone() const override { return new FrameReadyEvent(*this); };
+	wxEvent *Clone() const override { return new FrameReadyEvent(*this); };
 	FrameReadyEvent(std::shared_ptr<VideoFrame> frame, double time)
-	    : frame(std::move(frame)), time(time) {}
+	: frame(std::move(frame)), time(time) { }
 };
 
 // These exceptions are wxEvents so that they can be passed directly back to
 // the parent thread as events
 struct VideoProviderErrorEvent final : public wxEvent, public agi::Exception {
-	wxEvent* Clone() const override { return new VideoProviderErrorEvent(*this); };
+	wxEvent *Clone() const override { return new VideoProviderErrorEvent(*this); };
 	VideoProviderErrorEvent(VideoProviderError const& err);
 };
 
 struct SubtitlesProviderErrorEvent final : public wxEvent, public agi::Exception {
-	wxEvent* Clone() const override { return new SubtitlesProviderErrorEvent(*this); };
+	wxEvent *Clone() const override { return new SubtitlesProviderErrorEvent(*this); };
 	SubtitlesProviderErrorEvent(std::string const& msg);
 };
 

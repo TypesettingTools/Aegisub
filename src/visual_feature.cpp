@@ -32,37 +32,42 @@
 /// @ingroup visual_ts
 ///
 
-#include "visual_feature.h"
 #include "gl_wrap.h"
+#include "visual_feature.h"
 
 bool VisualDraggableFeature::IsMouseOver(Vector2D mouse_pos) const {
-	if(!pos) return false;
+	if (!pos) return false;
 
 	Vector2D delta = mouse_pos - pos;
 
-	switch(type) {
-		case DRAG_BIG_SQUARE: return fabs(delta.X()) < 6 && fabs(delta.Y()) < 6;
+	switch (type) {
+		case DRAG_BIG_SQUARE:
+			return fabs(delta.X()) < 6 && fabs(delta.Y()) < 6;
 
-		case DRAG_BIG_CIRCLE: return delta.SquareLen() < 36;
+		case DRAG_BIG_CIRCLE:
+			return delta.SquareLen() < 36;
 
 		case DRAG_BIG_TRIANGLE: {
-			if(delta.Y() < -10 || delta.Y() > 6) return false;
+			if (delta.Y() < -10 || delta.Y() > 6) return false;
 			float dy = delta.Y() - 6;
 			return 16 * delta.X() + 9 * dy < 0 && 16 * delta.X() - 9 * dy > 0;
 		}
 
-		case DRAG_SMALL_SQUARE: return fabs(delta.X()) < 3 && fabs(delta.Y()) < 3;
+		case DRAG_SMALL_SQUARE:
+			return fabs(delta.X()) < 3 && fabs(delta.Y()) < 3;
 
-		case DRAG_SMALL_CIRCLE: return delta.SquareLen() < 9;
+		case DRAG_SMALL_CIRCLE:
+			return delta.SquareLen() < 9;
 
-		default: return false;
+		default:
+			return false;
 	}
 }
 
 void VisualDraggableFeature::Draw(OpenGLWrapper const& gl) const {
-	if(!pos) return;
+	if (!pos) return;
 
-	switch(type) {
+	switch (type) {
 		case DRAG_BIG_SQUARE:
 			gl.DrawRectangle(pos - 6, pos + 6);
 			gl.DrawLine(pos - Vector2D(0, 12), pos + Vector2D(0, 12));
@@ -82,10 +87,15 @@ void VisualDraggableFeature::Draw(OpenGLWrapper const& gl) const {
 			gl.DrawLine(pos, pos + Vector2D(14, 8));
 			break;
 
-		case DRAG_SMALL_SQUARE: gl.DrawRectangle(pos - 3, pos + 3); break;
+		case DRAG_SMALL_SQUARE:
+			gl.DrawRectangle(pos - 3, pos + 3);
+			break;
 
-		case DRAG_SMALL_CIRCLE: gl.DrawCircle(pos, 3); break;
-		default: break;
+		case DRAG_SMALL_CIRCLE:
+			gl.DrawCircle(pos, 3);
+			break;
+		default:
+			break;
 	}
 }
 
@@ -94,7 +104,8 @@ void VisualDraggableFeature::StartDrag() {
 }
 
 void VisualDraggableFeature::UpdateDrag(Vector2D d, bool single_axis) {
-	if(single_axis) d = d.SingleAxis();
+	if (single_axis)
+		d = d.SingleAxis();
 
 	pos = start + d;
 }

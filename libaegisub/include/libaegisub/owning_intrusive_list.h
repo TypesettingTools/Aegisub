@@ -20,14 +20,10 @@
 
 namespace agi {
 
-template <typename T>
-class owning_intrusive_list final
-    : private boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>>::type {
-	typedef
-	    typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>>::type
-	        base;
-
-  public:
+template<typename T>
+class owning_intrusive_list final : private boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>>::type {
+	typedef typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>>::type base;
+public:
 	using base::back;
 	using base::begin;
 	using base::cbegin;
@@ -53,13 +49,9 @@ class owning_intrusive_list final
 	using base::splice;
 	using base::swap;
 
-	using typename base::const_iterator;
 	using typename base::const_node_ptr;
 	using typename base::const_pointer;
-	using typename base::const_reference;
 	using typename base::const_reverse_iterator;
-	using typename base::difference_type;
-	using typename base::iterator;
 	using typename base::node;
 	using typename base::node_algorithms;
 	using typename base::node_ptr;
@@ -69,41 +61,32 @@ class owning_intrusive_list final
 	using typename base::reverse_iterator;
 	using typename base::size_type;
 	using typename base::value_type;
+	using typename base::iterator;
+	using typename base::const_iterator;
+	using typename base::const_reference;
+	using typename base::difference_type;
 
-	iterator erase(const_iterator b, const_iterator e) {
-		return this->erase_and_dispose(b, e, [](T* e) { delete e; });
-	}
-	iterator erase(const_iterator b, const_iterator e, difference_type n) {
-		return this->erase_and_dispose(b, e, n, [](T* e) { delete e; });
-	}
-	iterator erase(const_iterator i) {
-		return this->erase_and_dispose(i, [](T* e) { delete e; });
-	}
-	void clear() {
-		this->clear_and_dispose([](T* e) { delete e; });
-	}
-	void pop_back() {
-		this->pop_back_and_dispose([](T* e) { delete e; });
-	}
-	void pop_front() {
-		this->pop_front_and_dispose([](T* e) { delete e; });
-	}
-	void remove(const_reference value) {
-		return this->remove_and_dispose(value, [](T* e) { delete e; });
-	}
-	void unique() {
-		this->unique_and_dispose([](T* e) { delete e; });
+	iterator erase(const_iterator b, const_iterator e) { return this->erase_and_dispose(b, e, [](T *e) { delete e; }); }
+	iterator erase(const_iterator b, const_iterator e, difference_type n) { return this->erase_and_dispose(b, e, n, [](T *e) { delete e; }); }
+	iterator erase(const_iterator i) { return this->erase_and_dispose(i, [](T *e) { delete e; }); }
+	void clear() { this->clear_and_dispose([](T *e) { delete e; }); }
+	void pop_back() { this->pop_back_and_dispose([](T *e) { delete e; }); }
+	void pop_front() { this->pop_front_and_dispose([](T *e) { delete e; }); }
+	void remove(const_reference value) { return this->remove_and_dispose(value, [](T *e) { delete e; }); }
+	void unique() { this->unique_and_dispose([](T *e) { delete e; }); }
+
+	template<class Pred> void remove_if(Pred&& pred) {
+		this->remove_if_and_dispose(std::forward<Pred>(pred), [](T *e) { delete e; });
 	}
 
-	template <class Pred> void remove_if(Pred&& pred) {
-		this->remove_if_and_dispose(std::forward<Pred>(pred), [](T* e) { delete e; });
+	template<class BinaryPredicate> void unique(BinaryPredicate&& pred) {
+		this->unique_and_dispose(std::forward<BinaryPredicate>(pred), [](T *e) { delete e; });
 	}
 
-	template <class BinaryPredicate> void unique(BinaryPredicate&& pred) {
-		this->unique_and_dispose(std::forward<BinaryPredicate>(pred), [](T* e) { delete e; });
+	~owning_intrusive_list() {
+		clear();
 	}
-
-	~owning_intrusive_list() { clear(); }
 };
 
-} // namespace agi
+}
+

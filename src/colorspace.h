@@ -33,17 +33,17 @@
 ///
 
 /// Convert a HSL color to RGB; all values are expected to be in range 0..255
-void hsl_to_rgb(int H, int S, int L, unsigned char* R, unsigned char* G, unsigned char* B);
+void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigned char *B);
 
 /// Convert a HSV color to RGB; all values are expected to be in range 0..255
-void hsv_to_rgb(int H, int S, int V, unsigned char* R, unsigned char* G, unsigned char* B);
+void hsv_to_rgb(int H, int S, int V, unsigned char *R, unsigned char *G, unsigned char *B);
 
 /// Convert an RGB color to HSL; all values are expected to be in range 0..255
-void rgb_to_hsl(int R, int G, int B, unsigned char* H, unsigned char* S, unsigned char* L);
+void rgb_to_hsl(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *L);
 
 /// Convert an RGB color to HSV; all values are expected to be in range 0..255
-void rgb_to_hsv(int R, int G, int B, unsigned char* H, unsigned char* S, unsigned char* V);
+void rgb_to_hsv(int R, int G, int B, unsigned char *H, unsigned char *S, unsigned char *V);
 
-void hsv_to_hsl(int iH, int iS, int iV, unsigned char* oH, unsigned char* oS, unsigned char* oL);
+void hsv_to_hsl(int iH, int iS, int iV, unsigned char *oH, unsigned char *oS, unsigned char *oL);
 
-void hsl_to_hsv(int iH, int iS, int iL, unsigned char* oH, unsigned char* oS, unsigned char* oV);
+void hsl_to_hsv(int iH, int iS, int iL, unsigned char *oH, unsigned char *oS, unsigned char *oV);

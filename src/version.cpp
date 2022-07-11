@@ -36,31 +36,31 @@
 #include "git_version.h"
 
 #ifdef _DEBUG
-#define DEBUG_SUFFIX " [DEBUG VERSION]"
+	#define DEBUG_SUFFIX " [DEBUG VERSION]"
 #else
-#define DEBUG_SUFFIX ""
+	#define DEBUG_SUFFIX ""
 #endif
 
 #if defined(BUILD_CREDIT) && !TAGGED_RELEASE
-#define BUILD_CREDIT_SUFFIX ", " BUILD_CREDIT
+	#define BUILD_CREDIT_SUFFIX ", " BUILD_CREDIT
 #else
-#define BUILD_CREDIT_SUFFIX ""
+	#define BUILD_CREDIT_SUFFIX ""
 #endif
 
-const char* GetAegisubLongVersionString() {
+const char *GetAegisubLongVersionString() {
 	return BUILD_GIT_VERSION_STRING BUILD_CREDIT_SUFFIX DEBUG_SUFFIX;
 }
 
-const char* GetAegisubShortVersionString() {
+const char *GetAegisubShortVersionString() {
 	return BUILD_GIT_VERSION_STRING DEBUG_SUFFIX;
 }
 
 #ifdef BUILD_CREDIT
-const char* GetAegisubBuildTime() {
+const char *GetAegisubBuildTime() {
 	return __DATE__ " " __TIME__;
 }
 
-const char* GetAegisubBuildCredit() {
+const char *GetAegisubBuildCredit() {
 	return BUILD_CREDIT;
 	return "";
 }
@@ -70,7 +70,7 @@ bool GetIsOfficialRelease() {
 	return false;
 }
 
-const char* GetVersionNumber() {
+const char *GetVersionNumber() {
 	return BUILD_GIT_VERSION_STRING;
 }
 

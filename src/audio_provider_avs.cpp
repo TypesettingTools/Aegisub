@@ -35,17 +35,17 @@
 #ifdef WITH_AVISYNTH
 #include <libaegisub/audio/provider.h>
 
-#include "audio_controller.h"
 #include "avisynth.h"
 #include "avisynth_wrap.h"
+#include "audio_controller.h"
 #include "options.h"
 #include "utils.h"
 
 #include <libaegisub/access.h>
 #include <libaegisub/charset_conv.h>
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
+#include <libaegisub/make_unique.h>
 
 #include <mutex>
 
@@ -55,9 +55,9 @@ class AvisynthAudioProvider final : public agi::AudioProvider {
 	PClip clip;
 
 	void LoadFromClip(AVSValue clip);
-	void FillBuffer(void* buf, int64_t start, int64_t count) const;
+	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
-  public:
+public:
 	AvisynthAudioProvider(agi::fs::path const& filename);
 
 	bool NeedsCache() const override { return true; }
@@ -69,35 +69,32 @@ AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
 	std::lock_guard<std::mutex> lock(avs_wrapper.GetMutex());
 
 	try {
-		IScriptEnvironment* env = avs_wrapper.GetEnv();
+		IScriptEnvironment *env = avs_wrapper.GetEnv();
 
 		// Include
-		if(agi::fs::HasExtension(filename, "avs"))
-			LoadFromClip(
-			    env->Invoke("Import", env->SaveString(agi::fs::ShortName(filename).c_str())));
+		if (agi::fs::HasExtension(filename, "avs"))
+			LoadFromClip(env->Invoke("Import", env->SaveString(agi::fs::ShortName(filename).c_str())));
 		// Use DirectShowSource
 		else {
-			const char* argnames[3] = { 0, "video", "audio" };
-			AVSValue args[3] = { env->SaveString(agi::fs::ShortName(filename).c_str()), false,
-				                 true };
+			const char * argnames[3] = { 0, "video", "audio" };
+			AVSValue args[3] = { env->SaveString(agi::fs::ShortName(filename).c_str()), false, true };
 
 			// Load DirectShowSource.dll from app dir if it exists
 			agi::fs::path dsspath(config::path->Decode("?data/DirectShowSource.dll"));
-			if(agi::fs::FileExists(dsspath))
+			if (agi::fs::FileExists(dsspath))
 				env->Invoke("LoadPlugin", env->SaveString(agi::fs::ShortName(dsspath).c_str()));
 
 			// Load audio with DSS if it exists
-			if(env->FunctionExists("DirectShowSource"))
+			if (env->FunctionExists("DirectShowSource"))
 				LoadFromClip(env->Invoke("DirectShowSource", AVSValue(args, 3), argnames));
 			// Otherwise fail
 			else
-				throw agi::AudioProviderError(
-				    "No suitable audio source filter found. Try placing DirectShowSource.dll in "
-				    "the Aegisub application directory.");
+				throw agi::AudioProviderError("No suitable audio source filter found. Try placing DirectShowSource.dll in the Aegisub application directory.");
 		}
-	} catch(AvisynthError& err) {
+	}
+	catch (AvisynthError &err) {
 		std::string errmsg(err.msg);
-		if(errmsg.find("filter graph manager won't talk to me") != errmsg.npos)
+		if (errmsg.find("filter graph manager won't talk to me") != errmsg.npos)
 			throw agi::AudioDataNotFound("Avisynth error: " + errmsg);
 		else
 			throw agi::AudioProviderError("Avisynth error: " + errmsg);
@@ -107,9 +104,9 @@ AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
 void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 	// Check if it has audio
 	VideoInfo vi = clip.AsClip()->GetVideoInfo();
-	if(!vi.HasAudio()) throw agi::AudioDataNotFound("No audio found.");
+	if (!vi.HasAudio()) throw agi::AudioDataNotFound("No audio found.");
 
-	IScriptEnvironment* env = avs_wrapper.GetEnv();
+	IScriptEnvironment *env = avs_wrapper.GetEnv();
 
 	// Convert to one channel
 	AVSValue script = env->Invoke(OPT_GET("Audio/Downmixer")->GetString().c_str(), clip);
@@ -120,8 +117,9 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 
 	// Convert sample rate
 	int setsample = OPT_GET("Provider/Audio/AVS/Sample Rate")->GetInt();
-	if(setsample == 0 && vi.SamplesPerSecond() < 32000) setsample = 44100;
-	if(setsample != 0) {
+	if (setsample == 0 && vi.SamplesPerSecond() < 32000)
+		setsample = 44100;
+	if (setsample != 0) {
 		AVSValue args[2] = { script, setsample };
 		script = env->Invoke("ResampleAudio", AVSValue(args, 2));
 	}
@@ -140,13 +138,12 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 	this->clip = tempclip;
 }
 
-void AvisynthAudioProvider::FillBuffer(void* buf, int64_t start, int64_t count) const {
+void AvisynthAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	clip->GetAudio(buf, start, count, avs_wrapper.GetEnv());
 }
-} // namespace
+}
 
-std::unique_ptr<agi::AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& file,
-                                                                agi::BackgroundRunner*) {
+std::unique_ptr<agi::AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *) {
 	return agi::make_unique<AvisynthAudioProvider>(file);
 }
 #endif

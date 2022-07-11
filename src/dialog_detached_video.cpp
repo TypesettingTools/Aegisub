@@ -50,16 +50,16 @@
 
 #include <boost/filesystem/path.hpp>
 
-#include <wx/display.h> /// Must be included last.
 #include <wx/sizer.h>
+#include <wx/display.h> /// Must be included last.
 
-DialogDetachedVideo::DialogDetachedVideo(agi::Context* context)
-    : wxDialog(context->parent, -1, "Detached Video", wxDefaultPosition, wxSize(400, 300),
-               wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX |
-                   wxWANTS_CHARS),
-      context(context), old_display(context->videoDisplay), old_slider(context->videoSlider),
-      video_open(
-          context->project->AddVideoProviderListener(&DialogDetachedVideo::OnVideoOpen, this)) {
+DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
+: wxDialog(context->parent, -1, "Detached Video", wxDefaultPosition, wxSize(400,300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
+, context(context)
+, old_display(context->videoDisplay)
+, old_slider(context->videoSlider)
+, video_open(context->project->AddVideoProviderListener(&DialogDetachedVideo::OnVideoOpen, this))
+{
 	// Set obscure stuff
 	SetExtraStyle((GetExtraStyle() & ~wxWS_EX_BLOCK_EVENTS) | wxWS_EX_PROCESS_UI_UPDATES);
 
@@ -73,24 +73,23 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context* context)
 	videoBox->Layout();
 
 	// Set sizer
-	wxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(videoBox, 1, wxEXPAND);
+	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
+	mainSizer->Add(videoBox,1,wxEXPAND);
 	SetSizerAndFit(mainSizer);
 
 	// Ensure we can grow smaller, without these the window is locked to at least the initial size
-	context->videoDisplay->SetMinSize(wxSize(1, 1));
-	videoBox->SetMinSize(wxSize(1, 1));
-	SetMinSize(wxSize(1, 1));
+	context->videoDisplay->SetMinSize(wxSize(1,1));
+	videoBox->SetMinSize(wxSize(1,1));
+	SetMinSize(wxSize(1,1));
 
 	persist = agi::make_unique<PersistLocation>(this, "Video/Detached");
 
 	int display_index = wxDisplay::GetFromWindow(this);
 	// Ensure that the dialog is no larger than the screen
-	if(display_index != wxNOT_FOUND) {
+	if (display_index != wxNOT_FOUND) {
 		wxRect bounds_rect = GetRect();
 		wxRect disp_rect = wxDisplay(display_index).GetClientArea();
-		SetSize(std::min(bounds_rect.width, disp_rect.width),
-		        std::min(bounds_rect.height, disp_rect.height));
+		SetSize(std::min(bounds_rect.width, disp_rect.width), std::min(bounds_rect.height, disp_rect.height));
 	}
 
 	OPT_SET("Video/Detached/Enabled")->SetBool(true);
@@ -102,9 +101,9 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context* context)
 	AddFullScreenButton(this);
 }
 
-DialogDetachedVideo::~DialogDetachedVideo() {}
+DialogDetachedVideo::~DialogDetachedVideo() { }
 
-void DialogDetachedVideo::OnClose(wxCloseEvent& evt) {
+void DialogDetachedVideo::OnClose(wxCloseEvent &evt) {
 	context->videoDisplay->Destroy();
 
 	context->videoDisplay = old_display;
@@ -117,8 +116,8 @@ void DialogDetachedVideo::OnClose(wxCloseEvent& evt) {
 	evt.Skip();
 }
 
-void DialogDetachedVideo::OnMinimize(wxIconizeEvent& event) {
-	if(event.IsIconized()) {
+void DialogDetachedVideo::OnMinimize(wxIconizeEvent &event) {
+	if (event.IsIconized()) {
 		// Force the video display to repaint as otherwise the last displayed
 		// frame stays visible even though the dialog is minimized
 		Hide();
@@ -126,12 +125,12 @@ void DialogDetachedVideo::OnMinimize(wxIconizeEvent& event) {
 	}
 }
 
-void DialogDetachedVideo::OnKeyDown(wxKeyEvent& evt) {
+void DialogDetachedVideo::OnKeyDown(wxKeyEvent &evt) {
 	hotkey::check("Video Display", context, evt);
 }
 
-void DialogDetachedVideo::OnVideoOpen(AsyncVideoProvider* new_provider) {
-	if(new_provider)
+void DialogDetachedVideo::OnVideoOpen(AsyncVideoProvider *new_provider) {
+	if (new_provider)
 		SetTitle(fmt_tl("Video: %s", context->project->VideoName().filename()));
 	else {
 		Close();

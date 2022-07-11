@@ -46,23 +46,19 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 
-AssStyleStorage::~AssStyleStorage() {}
-void AssStyleStorage::clear() {
-	style.clear();
-}
-void AssStyleStorage::push_back(std::unique_ptr<AssStyle> new_style) {
-	style.emplace_back(std::move(new_style));
-}
+AssStyleStorage::~AssStyleStorage() { }
+void AssStyleStorage::clear() { style.clear(); }
+void AssStyleStorage::push_back(std::unique_ptr<AssStyle> new_style) { style.emplace_back(std::move(new_style)); }
 
 void AssStyleStorage::Save() const {
-	if(file.empty()) return;
+	if (file.empty()) return;
 
 	agi::fs::CreateDirectory(file.parent_path());
 
 	agi::io::Save out(file);
 	out.Get() << "\xEF\xBB\xBF";
 
-	for(auto const& cur : style)
+	for (auto const& cur : style)
 		out.Get() << cur->GetEntryData() << std::endl;
 }
 
@@ -72,14 +68,15 @@ void AssStyleStorage::Load(agi::fs::path const& filename) {
 
 	try {
 		auto in = agi::io::Open(file);
-		for(auto const& line : agi::line_iterator<std::string>(*in)) {
+		for (auto const& line : agi::line_iterator<std::string>(*in)) {
 			try {
 				style.emplace_back(agi::make_unique<AssStyle>(line));
 			} catch(...) {
 				/* just ignore invalid lines for now */
 			}
 		}
-	} catch(agi::fs::FileNotAccessible const&) {
+	}
+	catch (agi::fs::FileNotAccessible const&) {
 		// Just treat a missing file as an empty file
 	}
 }
@@ -95,35 +92,36 @@ void AssStyleStorage::Delete(int idx) {
 
 std::vector<std::string> AssStyleStorage::GetNames() {
 	std::vector<std::string> names;
-	for(auto const& cur : style)
+	for (auto const& cur : style)
 		names.emplace_back(cur->name);
 	return names;
 }
 
-AssStyle* AssStyleStorage::GetStyle(std::string const& name) {
-	for(auto& cur : style) {
-		if(boost::iequals(cur->name, name)) return cur.get();
+AssStyle *AssStyleStorage::GetStyle(std::string const& name) {
+	for (auto& cur : style) {
+		if (boost::iequals(cur->name, name))
+			return cur.get();
 	}
 	return nullptr;
 }
 
 std::vector<std::string> AssStyleStorage::GetCatalogs() {
 	std::vector<std::string> catalogs;
-	for(auto const& file :
-	    agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
+	for (auto const& file : agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
 		catalogs.push_back(agi::fs::path(file).stem().string());
 	return catalogs;
 }
 
 bool AssStyleStorage::CatalogExists(std::string const& catalogname) {
-	if(catalogname.empty()) return false;
+	if (catalogname.empty()) return false;
 	auto filename = config::path->Decode("?user/catalog/" + catalogname + ".sty");
 	return agi::fs::FileExists(filename);
 }
 
-void AssStyleStorage::ReplaceIntoFile(AssFile& file) {
-	for(auto const& s : style) {
+void AssStyleStorage::ReplaceIntoFile(AssFile &file) {
+	for (auto const& s : style) {
 		delete file.GetStyle(s->name);
 		file.Styles.push_back(*new AssStyle(*s));
 	}
 }
+

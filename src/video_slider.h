@@ -32,17 +32,15 @@
 #include <vector>
 #include <wx/window.h>
 
-namespace agi {
-struct Context;
-}
+namespace agi { struct Context; }
 
 class VideoController;
 class AsyncVideoProvider;
 
 /// @class VideoSlider
 /// @brief Slider for displaying and adjusting the video position
-class VideoSlider : public wxWindow {
-	agi::Context* c;            ///< Associated project context
+class VideoSlider: public wxWindow {
+	agi::Context *c; ///< Associated project context
 	std::vector<int> keyframes; ///< Currently loaded keyframes
 	std::vector<agi::signal::Connection> connections;
 
@@ -57,18 +55,18 @@ class VideoSlider : public wxWindow {
 	void SetValue(int value);
 
 	/// Video open event handler
-	void VideoOpened(AsyncVideoProvider* new_provider);
+	void VideoOpened(AsyncVideoProvider *new_provider);
 	/// Keyframe open even handler
 	void KeyframesChanged(std::vector<int> const& newKeyframes);
 
-	void OnMouse(wxMouseEvent& event);
-	void OnKeyDown(wxKeyEvent& event);
-	void OnCharHook(wxKeyEvent& event);
-	void OnPaint(wxPaintEvent&);
-	void OnFocus(wxFocusEvent&);
+	void OnMouse(wxMouseEvent &event);
+	void OnKeyDown(wxKeyEvent &event);
+	void OnCharHook(wxKeyEvent &event);
+	void OnPaint(wxPaintEvent &);
+	void OnFocus(wxFocusEvent &);
 
-  public:
-	VideoSlider(wxWindow* parent, agi::Context* c);
+public:
+	VideoSlider(wxWindow* parent, agi::Context *c);
 
 	DECLARE_EVENT_TABLE()
 };

@@ -14,8 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <libaegisub/ass/smpte.h>
 #include <libaegisub/ass/time.h>
+#include <libaegisub/ass/smpte.h>
 
 #include <libaegisub/format.h>
 #include <libaegisub/split.h>
@@ -24,32 +24,36 @@
 #include <algorithm>
 
 namespace agi {
-Time::Time(int time) : time(util::mid(0, time, 10 * 60 * 60 * 1000 - 6)) {}
+Time::Time(int time) : time(util::mid(0, time, 10 * 60 * 60 * 1000 - 6)) { }
 
 Time::Time(std::string const& text) {
 	int after_decimal = -1;
 	int current = 0;
-	for(char c : text) {
-		if(c == ':') {
+	for (char c : text) {
+		if (c == ':') {
 			time = time * 60 + current;
 			current = 0;
-		} else if(c == '.' || c == ',') {
+		}
+		else if (c == '.' || c == ',') {
 			time = (time * 60 + current) * 1000;
 			current = 0;
 			after_decimal = 100;
-		} else if(c < '0' || c > '9')
+		}
+		else if (c < '0' || c > '9')
 			continue;
-		else if(after_decimal < 0) {
+		else if (after_decimal < 0) {
 			current *= 10;
 			current += c - '0';
-		} else {
+		}
+		else {
 			time += (c - '0') * after_decimal;
 			after_decimal /= 10;
 		}
 	}
 
 	// Never saw a decimal, so convert now to ms
-	if(after_decimal < 0) time = (time * 60 + current) * 1000;
+	if (after_decimal < 0)
+		time = (time * 60 + current) * 1000;
 
 	// Limit to the valid range
 	time = util::mid(0, time, 10 * 60 * 60 * 1000 - 6);
@@ -66,7 +70,8 @@ std::string Time::GetAssFormatted(bool msPrecision) const {
 	ret[7] = '.';
 	ret[8] = '0' + (ass_time % 1000) / 100;
 	ret[9] = '0' + (ass_time % 100) / 10;
-	if(msPrecision) ret[10] = '0' + ass_time % 10;
+	if (msPrecision)
+		ret[10] = '0' + ass_time % 10;
 	return ret;
 }
 
@@ -85,10 +90,14 @@ std::string Time::GetSrtFormatted() const {
 	return ret;
 }
 
-SmpteFormatter::SmpteFormatter(vfr::Framerate fps, char sep) : fps(std::move(fps)), sep(sep) {}
+SmpteFormatter::SmpteFormatter(vfr::Framerate fps, char sep)
+: fps(std::move(fps))
+, sep(sep)
+{
+}
 
 std::string SmpteFormatter::ToSMPTE(Time time) const {
-	int h = 0, m = 0, s = 0, f = 0;
+	int h=0, m=0, s=0, f=0;
 	fps.SmpteAtTime(time, &h, &m, &s, &f);
 	return format("%02d%c%02d%c%02d%c%02d", h, sep, m, sep, s, sep, f);
 }
@@ -96,7 +105,7 @@ std::string SmpteFormatter::ToSMPTE(Time time) const {
 Time SmpteFormatter::FromSMPTE(std::string const& str) const {
 	std::vector<std::string> toks;
 	Split(toks, str, sep);
-	if(toks.size() != 4) return 0;
+	if (toks.size() != 4) return 0;
 
 	int h, m, s, f;
 	util::try_parse(toks[0], &h);
@@ -105,4 +114,4 @@ Time SmpteFormatter::FromSMPTE(std::string const& str) const {
 	util::try_parse(toks[3], &f);
 	return fps.TimeAtSmpte(h, m, s, f);
 }
-} // namespace agi
+}

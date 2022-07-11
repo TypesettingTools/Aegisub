@@ -43,14 +43,14 @@
 #include "../video_controller.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
+#include <libaegisub/make_unique.h>
 
 #include <wx/msgdlg.h>
 #include <wx/utils.h>
 
 namespace {
-using cmd::Command;
+	using cmd::Command;
 
 struct tool_assdraw final : public Command {
 	CMD_NAME("tool/assdraw")
@@ -59,8 +59,8 @@ struct tool_assdraw final : public Command {
 	STR_DISP("ASSDraw3")
 	STR_HELP("Launch the ASSDraw3 tool for vector drawing")
 
-	void operator()(agi::Context*) override {
-#ifdef _WIN32
+	void operator()(agi::Context *) override {
+		#ifdef _WIN32
 		wxExecute("\"" + config::path->Decode("?data/ASSDraw3.exe").wstring() + "\"");
 #endif
 		wxExecute("bash  -c \"$(which assdraw)\"");
@@ -74,7 +74,7 @@ struct tool_export final : public Command {
 	STR_DISP("Export Subtitles")
 	STR_HELP("Save a copy of subtitles in a different format or with processing applied to it")
 
-	void operator()(agi::Context* c) override {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		ShowExportDialog(c);
 	}
@@ -87,7 +87,9 @@ struct tool_font_collector final : public Command {
 	STR_DISP("Fonts Collector")
 	STR_HELP("Open fonts collector")
 
-	void operator()(agi::Context* c) override { ShowFontsCollectorDialog(c); }
+	void operator()(agi::Context *c) override {
+		ShowFontsCollectorDialog(c);
+	}
 };
 
 struct tool_line_select final : public Command {
@@ -97,7 +99,9 @@ struct tool_line_select final : public Command {
 	STR_DISP("Select Lines")
 	STR_HELP("Select lines based on defined criteria")
 
-	void operator()(agi::Context* c) override { ShowSelectLinesDialog(c); }
+	void operator()(agi::Context *c) override {
+		ShowSelectLinesDialog(c);
+	}
 };
 
 struct tool_resampleres final : public Command {
@@ -105,13 +109,13 @@ struct tool_resampleres final : public Command {
 	CMD_ICON(resample_toolbutton)
 	STR_MENU("&Resample Resolution...")
 	STR_DISP("Resample Resolution")
-	STR_HELP(
-	    "Resample subtitles to maintain their current appearance at a different script resolution")
+	STR_HELP("Resample subtitles to maintain their current appearance at a different script resolution")
 
-	void operator()(agi::Context* c) override {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		ResampleSettings settings;
-		if(PromptForResampleSettings(c, settings)) ResampleResolution(c->ass.get(), settings);
+		if (PromptForResampleSettings(c, settings))
+			ResampleResolution(c->ass.get(), settings);
 	}
 };
 
@@ -122,13 +126,17 @@ struct tool_style_assistant final : public Command {
 	STR_DISP("Styling Assistant")
 	STR_HELP("Open styling assistant")
 
-	void operator()(agi::Context* c) override { c->dialog->Show<DialogStyling>(c); }
+	void operator()(agi::Context *c) override {
+		c->dialog->Show<DialogStyling>(c);
+	}
 };
 
 struct tool_styling_assistant_validator : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context* c) override { return !!c->dialog->Get<DialogStyling>(); }
+	bool Validate(const agi::Context *c) override {
+		return !!c->dialog->Get<DialogStyling>();
+	}
 };
 
 struct tool_styling_assistant_commit final : public tool_styling_assistant_validator {
@@ -137,7 +145,9 @@ struct tool_styling_assistant_commit final : public tool_styling_assistant_valid
 	STR_DISP("Accept changes")
 	STR_HELP("Commit changes and move to the next line")
 
-	void operator()(agi::Context* c) override { c->dialog->Get<DialogStyling>()->Commit(true); }
+	void operator()(agi::Context *c) override {
+		c->dialog->Get<DialogStyling>()->Commit(true);
+	}
 };
 
 struct tool_styling_assistant_preview final : public tool_styling_assistant_validator {
@@ -146,7 +156,9 @@ struct tool_styling_assistant_preview final : public tool_styling_assistant_vali
 	STR_DISP("Preview changes")
 	STR_HELP("Commit changes and stay on the current line")
 
-	void operator()(agi::Context* c) override { c->dialog->Get<DialogStyling>()->Commit(false); }
+	void operator()(agi::Context *c) override {
+		c->dialog->Get<DialogStyling>()->Commit(false);
+	}
 };
 
 struct tool_style_manager final : public Command {
@@ -156,7 +168,9 @@ struct tool_style_manager final : public Command {
 	STR_DISP("Styles Manager")
 	STR_HELP("Open the styles manager")
 
-	void operator()(agi::Context* c) override { ShowStyleManagerDialog(c); }
+	void operator()(agi::Context *c) override {
+		ShowStyleManagerDialog(c);
+	}
 };
 
 struct tool_time_kanji final : public Command {
@@ -166,7 +180,9 @@ struct tool_time_kanji final : public Command {
 	STR_DISP("Kanji Timer")
 	STR_HELP("Open the Kanji timer copier")
 
-	void operator()(agi::Context* c) override { ShowKanjiTimerDialog(c); }
+	void operator()(agi::Context *c) override {
+		ShowKanjiTimerDialog(c);
+	}
 };
 
 struct tool_time_postprocess final : public Command {
@@ -174,10 +190,11 @@ struct tool_time_postprocess final : public Command {
 	CMD_ICON(timing_processor_toolbutton)
 	STR_MENU("&Timing Post-Processor...")
 	STR_DISP("Timing Post-Processor")
-	STR_HELP("Post-process the subtitle timing to add lead-ins and lead-outs, snap timing to scene "
-	         "changes, etc.")
+	STR_HELP("Post-process the subtitle timing to add lead-ins and lead-outs, snap timing to scene changes, etc.")
 
-	void operator()(agi::Context* c) override { ShowTimingProcessorDialog(c); }
+	void operator()(agi::Context *c) override {
+		ShowTimingProcessorDialog(c);
+	}
 };
 
 struct tool_translation_assistant final : public Command {
@@ -187,11 +204,12 @@ struct tool_translation_assistant final : public Command {
 	STR_DISP("Translation Assistant")
 	STR_HELP("Open translation assistant")
 
-	void operator()(agi::Context* c) override {
+	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		try {
 			c->dialog->ShowModal<DialogTranslation>(c);
-		} catch(DialogTranslation::NothingToTranslate const&) {
+		}
+		catch (DialogTranslation::NothingToTranslate const&) {
 			wxMessageBox(_("There is nothing to translate in the file."));
 		}
 	}
@@ -200,7 +218,9 @@ struct tool_translation_assistant final : public Command {
 struct tool_translation_assistant_validator : public Command {
 	CMD_TYPE(COMMAND_VALIDATE)
 
-	bool Validate(const agi::Context* c) override { return !!c->dialog->Get<DialogTranslation>(); }
+	bool Validate(const agi::Context *c) override {
+		return !!c->dialog->Get<DialogTranslation>();
+	}
 };
 
 struct tool_translation_assistant_commit final : public tool_translation_assistant_validator {
@@ -209,7 +229,9 @@ struct tool_translation_assistant_commit final : public tool_translation_assista
 	STR_DISP("Accept changes")
 	STR_HELP("Commit changes and move to the next line")
 
-	void operator()(agi::Context* c) override { c->dialog->Get<DialogTranslation>()->Commit(true); }
+	void operator()(agi::Context *c) override {
+		c->dialog->Get<DialogTranslation>()->Commit(true);
+	}
 };
 
 struct tool_translation_assistant_preview final : public tool_translation_assistant_validator {
@@ -218,7 +240,7 @@ struct tool_translation_assistant_preview final : public tool_translation_assist
 	STR_DISP("Preview changes")
 	STR_HELP("Commit changes and stay on the current line")
 
-	void operator()(agi::Context* c) override {
+	void operator()(agi::Context *c) override {
 		c->dialog->Get<DialogTranslation>()->Commit(false);
 	}
 };
@@ -229,7 +251,9 @@ struct tool_translation_assistant_next final : public tool_translation_assistant
 	STR_DISP("Next Line")
 	STR_HELP("Move to the next line without committing changes")
 
-	void operator()(agi::Context* c) override { c->dialog->Get<DialogTranslation>()->NextBlock(); }
+	void operator()(agi::Context *c) override {
+		c->dialog->Get<DialogTranslation>()->NextBlock();
+	}
 };
 
 struct tool_translation_assistant_prev final : public tool_translation_assistant_validator {
@@ -238,7 +262,9 @@ struct tool_translation_assistant_prev final : public tool_translation_assistant
 	STR_DISP("Previous Line")
 	STR_HELP("Move to the previous line without committing changes")
 
-	void operator()(agi::Context* c) override { c->dialog->Get<DialogTranslation>()->PrevBlock(); }
+	void operator()(agi::Context *c) override {
+		c->dialog->Get<DialogTranslation>()->PrevBlock();
+	}
 };
 
 struct tool_translation_assistant_insert final : public tool_translation_assistant_validator {
@@ -247,41 +273,41 @@ struct tool_translation_assistant_insert final : public tool_translation_assista
 	STR_DISP("Insert Original")
 	STR_HELP("Insert the untranslated text")
 
-	void operator()(agi::Context* c) override {
+	void operator()(agi::Context *c) override {
 		c->dialog->Get<DialogTranslation>()->InsertOriginal();
 	}
 };
-} // namespace
+}
 
 namespace cmd {
-void init_tool() {
-	reg(agi::make_unique<tool_export>());
-	reg(agi::make_unique<tool_font_collector>());
-	reg(agi::make_unique<tool_line_select>());
-	reg(agi::make_unique<tool_resampleres>());
-	reg(agi::make_unique<tool_style_assistant>());
-	reg(agi::make_unique<tool_styling_assistant_commit>());
-	reg(agi::make_unique<tool_styling_assistant_preview>());
-	reg(agi::make_unique<tool_style_manager>());
-	reg(agi::make_unique<tool_time_kanji>());
-	reg(agi::make_unique<tool_time_postprocess>());
-	reg(agi::make_unique<tool_translation_assistant>());
+	void init_tool() {
+		reg(agi::make_unique<tool_export>());
+		reg(agi::make_unique<tool_font_collector>());
+		reg(agi::make_unique<tool_line_select>());
+		reg(agi::make_unique<tool_resampleres>());
+		reg(agi::make_unique<tool_style_assistant>());
+		reg(agi::make_unique<tool_styling_assistant_commit>());
+		reg(agi::make_unique<tool_styling_assistant_preview>());
+		reg(agi::make_unique<tool_style_manager>());
+		reg(agi::make_unique<tool_time_kanji>());
+		reg(agi::make_unique<tool_time_postprocess>());
+		reg(agi::make_unique<tool_translation_assistant>());
 #ifdef _WIN32
-	if(agi::fs::FileExists(config::path->Decode("?data/ASSDraw3.exe"))) {
-		reg(agi::make_unique<tool_assdraw>());
-	}
+		if (agi::fs::FileExists(config::path->Decode("?data/ASSDraw3.exe"))) {
+			reg(agi::make_unique<tool_assdraw>());
+		}
 #endif
 
-	long returnCode = wxExecute("bash -c \"command -v assdraw > /dev/null\"", wxEXEC_SYNC);
+		long returnCode = wxExecute("bash -c \"command -v assdraw > /dev/null\"", wxEXEC_SYNC);
 
-	if(returnCode == 0) {
-		reg(agi::make_unique<tool_assdraw>());
+		if (returnCode == 0){
+			reg(agi::make_unique<tool_assdraw>());
+		}
+
+		reg(agi::make_unique<tool_translation_assistant_commit>());
+		reg(agi::make_unique<tool_translation_assistant_preview>());
+		reg(agi::make_unique<tool_translation_assistant_next>());
+		reg(agi::make_unique<tool_translation_assistant_prev>());
+		reg(agi::make_unique<tool_translation_assistant_insert>());
 	}
-
-	reg(agi::make_unique<tool_translation_assistant_commit>());
-	reg(agi::make_unique<tool_translation_assistant_preview>());
-	reg(agi::make_unique<tool_translation_assistant_next>());
-	reg(agi::make_unique<tool_translation_assistant_prev>());
-	reg(agi::make_unique<tool_translation_assistant_insert>());
 }
-} // namespace cmd

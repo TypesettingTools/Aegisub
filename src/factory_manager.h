@@ -18,33 +18,36 @@
 #include <vector>
 
 namespace {
-template <typename Container> std::vector<std::string> GetClasses(Container const& c) {
+template<typename Container>
+std::vector<std::string> GetClasses(Container const& c) {
 	std::vector<std::string> list;
-	for(auto const& provider : c) {
-		if(!provider.hidden) list.push_back(provider.name);
+	for (auto const& provider : c) {
+		if (!provider.hidden)
+			list.push_back(provider.name);
 	}
 	return list;
 }
 
-template <typename Container>
-auto GetSorted(Container const& c, std::string const& preferred)
-    -> std::vector<decltype(&*c.begin())> {
+template<typename Container>
+auto GetSorted(Container const& c, std::string const& preferred) -> std::vector<decltype(&*c.begin())> {
 	std::vector<decltype(&*c.begin())> sorted;
 	sorted.reserve(std::distance(c.begin(), c.end()));
 	size_t end_of_hidden = 0;
 	bool any_hidden = false;
-	for(auto const& provider : c) {
-		if(provider.hidden) {
+	for (auto const& provider : c) {
+		if (provider.hidden) {
 			sorted.push_back(&provider);
 			any_hidden = true;
-		} else if(any_hidden && end_of_hidden == 0) {
+		}
+		else if (any_hidden && end_of_hidden == 0) {
 			end_of_hidden = sorted.size();
 			sorted.push_back(&provider);
-		} else if(preferred == provider.name)
+		}
+		else if (preferred == provider.name)
 			sorted.insert(sorted.begin() + end_of_hidden, &provider);
 		else
 			sorted.push_back(&provider);
 	}
 	return sorted;
 }
-} // namespace
+}

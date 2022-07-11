@@ -35,9 +35,7 @@ class AssDialogue;
 class AssFile;
 class AssKaraoke;
 class AudioRenderingStyleRanges;
-namespace agi {
-struct Context;
-}
+namespace agi { struct Context; }
 
 #include "audio_marker.h"
 
@@ -52,14 +50,14 @@ struct Context;
 /// The timing controller must then be sent the marker drag events as well as
 /// clicks in empty areas of the audio display.
 class AudioTimingController : public AudioMarkerProvider, public AudioLabelProvider {
-  protected:
+protected:
 	/// The primary playback range has changed, usually as a result of user interaction.
 	agi::signal::Signal<> AnnounceUpdatedPrimaryRange;
 
 	/// One or more rendering style ranges have changed in the timing controller.
 	agi::signal::Signal<> AnnounceUpdatedStyleRanges;
 
-  public:
+public:
 	/// @brief Get any warning message to show in the audio display
 	/// @return The warning message to show, may be empty if there is none
 	virtual wxString GetWarningMessage() const = 0;
@@ -86,7 +84,7 @@ class AudioTimingController : public AudioMarkerProvider, public AudioLabelProvi
 
 	/// @brief Get all rendering style ranges
 	/// @param[out] ranges Rendering ranges will be added to this
-	virtual void GetRenderingStyles(AudioRenderingStyleRanges& ranges) const = 0;
+	virtual void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const = 0;
 
 	enum NextMode {
 		/// Advance to the next timing unit, whether it's a line or a sub-part
@@ -156,8 +154,7 @@ class AudioTimingController : public AudioMarkerProvider, public AudioLabelProvi
 	/// @param snap_range  Maximum snapping range in milliseconds
 	/// @return All audio markers at the clicked position which are eligible
 	///         to be dragged, if any.
-	virtual std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, bool alt_down,
-	                                              int sensitivity, int snap_range) = 0;
+	virtual std::vector<AudioMarker*> OnLeftClick(int ms, bool ctrl_down, bool alt_down, int sensitivity, int snap_range) = 0;
 
 	/// @brief The user pressed the right mouse button on the audio
 	/// @param ms          The time in milliseconds the user clicked
@@ -166,16 +163,14 @@ class AudioTimingController : public AudioMarkerProvider, public AudioLabelProvi
 	/// @param snap_range  Maximum snapping range in milliseconds
 	/// @return All audio markers at the clicked position which are eligible
 	///         to be dragged, if any.
-	virtual std::vector<AudioMarker*> OnRightClick(int ms, bool ctrl_down, int sensitivity,
-	                                               int snap_range) = 0;
+	virtual std::vector<AudioMarker*> OnRightClick(int ms, bool ctrl_down, int sensitivity, int snap_range) = 0;
 
 	/// @brief The user dragged one or more timing markers
 	/// @param marker       The markers being dragged. This is guaranteed to be
 	///                     a vector returned from OnLeftClick or OnRightClick.
 	/// @param new_position Time position the marker was dragged to
 	/// @param snap_range   Maximum snapping range in milliseconds
-	virtual void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position,
-	                          int snap_range) = 0;
+	virtual void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int snap_range) = 0;
 
 	/// @brief Destructor
 	virtual ~AudioTimingController() = default;
@@ -186,11 +181,9 @@ class AudioTimingController : public AudioMarkerProvider, public AudioLabelProvi
 
 /// @brief Create a standard dialogue audio timing controller
 /// @param c Project context
-std::unique_ptr<AudioTimingController> CreateDialogueTimingController(agi::Context* c);
+std::unique_ptr<AudioTimingController> CreateDialogueTimingController(agi::Context *c);
 
 /// @brief Create a karaoke audio timing controller
 /// @param c Project context
 /// @param kara Karaoke model
-std::unique_ptr<AudioTimingController>
-CreateKaraokeTimingController(agi::Context* c, AssKaraoke* kara,
-                              agi::signal::Connection& file_changed);
+std::unique_ptr<AudioTimingController> CreateKaraokeTimingController(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);

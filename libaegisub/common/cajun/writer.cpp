@@ -21,7 +21,7 @@
 
 namespace agi {
 void JsonWriter::Visit(json::Array const& array) {
-	if(array.empty()) {
+	if (array.empty()) {
 		ostr << "[]";
 		return;
 	}
@@ -30,8 +30,8 @@ void JsonWriter::Visit(json::Array const& array) {
 	ostr << "[\n";
 
 	bool first = true;
-	for(auto const& entry : array) {
-		if(!first) ostr << ",\n";
+	for (auto const& entry : array) {
+		if (!first) ostr << ",\n";
 		first = false;
 
 		ostr << indent;
@@ -43,7 +43,7 @@ void JsonWriter::Visit(json::Array const& array) {
 }
 
 void JsonWriter::Visit(json::Object const& object) {
-	if(object.empty()) {
+	if (object.empty()) {
 		ostr << "{}";
 		return;
 	}
@@ -52,8 +52,8 @@ void JsonWriter::Visit(json::Object const& object) {
 	ostr << "{\n";
 
 	bool first = true;
-	for(auto const& entry : object) {
-		if(!first) ostr << ",\n";
+	for (auto const& entry : object) {
+		if (!first) ostr << ",\n";
 		first = false;
 
 		ostr << indent;
@@ -70,38 +70,31 @@ void JsonWriter::Visit(double d) {
 	ostr << std::setprecision(20) << d;
 
 	double unused;
-	if(!std::modf(d, &unused)) ostr << ".0";
+	if (!std::modf(d, &unused))
+		ostr << ".0";
 }
 
 void JsonWriter::Visit(std::string const& str) {
 	ostr << '"';
 
-	for(auto c : str) {
-		switch(c) {
-			case '"': ostr << "\\\""; break;
+	for (auto c : str) {
+		switch (c) {
+			case '"':  ostr << "\\\""; break;
 			case '\\': ostr << "\\\\"; break;
-			case '\b': ostr << "\\b"; break;
-			case '\f': ostr << "\\f"; break;
-			case '\n': ostr << "\\n"; break;
-			case '\r': ostr << "\\r"; break;
-			case '\t': ostr << "\\t"; break;
-			default: ostr << c; break;
+			case '\b': ostr << "\\b";  break;
+			case '\f': ostr << "\\f";  break;
+			case '\n': ostr << "\\n";  break;
+			case '\r': ostr << "\\r";  break;
+			case '\t': ostr << "\\t";  break;
+			default:   ostr << c;      break;
 		}
 	}
 
 	ostr << '"';
 }
 
-void JsonWriter::Visit(int64_t i) {
-	ostr << i;
+void JsonWriter::Visit(int64_t i) { ostr << i; }
+void JsonWriter::Visit(bool b) { ostr << (b ? "true" : "false"); }
+void JsonWriter::Visit(json::Null const&) { ostr << "null"; }
+void JsonWriter::Visit(json::UnknownElement const& unknown) { unknown.Accept(*this); }
 }
-void JsonWriter::Visit(bool b) {
-	ostr << (b ? "true" : "false");
-}
-void JsonWriter::Visit(json::Null const&) {
-	ostr << "null";
-}
-void JsonWriter::Visit(json::UnknownElement const& unknown) {
-	unknown.Accept(*this);
-}
-} // namespace agi

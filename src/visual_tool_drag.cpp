@@ -42,18 +42,17 @@ static const DraggableFeatureType DRAG_ORIGIN = DRAG_BIG_TRIANGLE;
 static const DraggableFeatureType DRAG_START = DRAG_BIG_SQUARE;
 static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
 
-#define ICON(name) \
-	(OPT_GET("App/Toolbar Icon Size")->GetInt() == 16 ? GETIMAGE(name##_16) : GETIMAGE(name##_24))
+#define ICON(name) (OPT_GET("App/Toolbar Icon Size")->GetInt() == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24))
 
-VisualToolDrag::VisualToolDrag(VideoDisplay* parent, agi::Context* context)
-    : VisualTool<VisualToolDragDraggableFeature>(parent, context) {
-	connections.push_back(
-	    c->selectionController->AddSelectionListener(&VisualToolDrag::OnSelectedSetChanged, this));
+VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
+: VisualTool<VisualToolDragDraggableFeature>(parent, context)
+{
+	connections.push_back(c->selectionController->AddSelectionListener(&VisualToolDrag::OnSelectedSetChanged, this));
 	auto const& sel_set = c->selectionController->GetSelectedSet();
 	selection.insert(begin(selection), begin(sel_set), end(sel_set));
 }
 
-void VisualToolDrag::SetToolbar(wxToolBar* tb) {
+void VisualToolDrag::SetToolbar(wxToolBar *tb) {
 	toolbar = tb;
 	toolbar->AddSeparator();
 	toolbar->AddTool(-1, _("Toggle between \\move and \\pos"), ICON(visual_move_conv_move));
@@ -65,39 +64,36 @@ void VisualToolDrag::SetToolbar(wxToolBar* tb) {
 
 void VisualToolDrag::UpdateToggleButtons() {
 	bool to_move = true;
-	if(active_line) {
+	if (active_line) {
 		Vector2D p1, p2;
 		int t1, t2;
 		to_move = !GetLineMove(active_line, p1, p2, t1, t2);
 	}
 
-	if(to_move == button_is_move) return;
+	if (to_move == button_is_move) return;
 
 	toolbar->SetToolNormalBitmap(toolbar->GetToolByPos(1)->GetId(),
-	                             to_move ? ICON(visual_move_conv_move)
-	                                     : ICON(visual_move_conv_pos));
+		to_move ? ICON(visual_move_conv_move) : ICON(visual_move_conv_pos));
 	button_is_move = to_move;
 }
 
-void VisualToolDrag::OnSubTool(wxCommandEvent&) {
+void VisualToolDrag::OnSubTool(wxCommandEvent &) {
 	// Toggle \move <-> \pos
-	VideoController* vc = c->videoController.get();
-	for(auto line : selection) {
+	VideoController *vc = c->videoController.get();
+	for (auto line : selection) {
 		Vector2D p1, p2;
 		int t1, t2;
 
 		bool has_move = GetLineMove(line, p1, p2, t1, t2);
 
-		if(has_move)
+		if (has_move)
 			SetOverride(line, "\\pos", p1.PStr());
 		else {
 			p1 = GetLinePosition(line);
 			// Round the start and end times to exact frames
-			int start =
-			    vc->TimeAtFrame(vc->FrameAtTime(line->Start, agi::vfr::START)) - line->Start;
+			int start = vc->TimeAtFrame(vc->FrameAtTime(line->Start, agi::vfr::START)) - line->Start;
 			int end = vc->TimeAtFrame(vc->FrameAtTime(line->Start, agi::vfr::END)) - line->Start;
-			SetOverride(line, "\\move",
-			            agi::format("(%s,%s,%d,%d)", p1.Str(), p1.Str(), start, end));
+			SetOverride(line, "\\move", agi::format("(%s,%s,%d,%d)", p1.Str(), p1.Str(), start, end));
 		}
 	}
 
@@ -117,31 +113,34 @@ void VisualToolDrag::OnFileChanged() {
 	primary = nullptr;
 	active_feature = nullptr;
 
-	for(auto& diag : c->ass->Events) {
-		if(IsDisplayed(&diag)) MakeFeatures(&diag);
+	for (auto& diag : c->ass->Events) {
+		if (IsDisplayed(&diag))
+			MakeFeatures(&diag);
 	}
 
 	UpdateToggleButtons();
 }
 
 void VisualToolDrag::OnFrameChanged() {
-	if(primary && !IsDisplayed(primary->line)) primary = nullptr;
+	if (primary && !IsDisplayed(primary->line))
+		primary = nullptr;
 
 	auto feat = features.begin();
 	auto end = features.end();
 
-	for(auto& diag : c->ass->Events) {
-		if(IsDisplayed(&diag)) {
+	for (auto& diag : c->ass->Events) {
+		if (IsDisplayed(&diag)) {
 			// Features don't exist and should
-			if(feat == end || feat->line != &diag) MakeFeatures(&diag, feat);
+			if (feat == end || feat->line != &diag)
+				MakeFeatures(&diag, feat);
 			// Move past already existing features for the line
 			else
-				while(feat != end && feat->line == &diag)
-					++feat;
-		} else {
+				while (feat != end && feat->line == &diag) ++feat;
+		}
+		else {
 			// Remove all features for this line (if any)
-			while(feat != end && feat->line == &diag) {
-				if(&*feat == active_feature) active_feature = nullptr;
+			while (feat != end && feat->line == &diag) {
+				if (&*feat == active_feature) active_feature = nullptr;
 				feat->line = nullptr;
 				RemoveSelection(&*feat);
 				feat = features.erase(feat);
@@ -150,25 +149,26 @@ void VisualToolDrag::OnFrameChanged() {
 	}
 }
 
-template <class C, class T> static bool line_not_present(C const& set, T const& it) {
-	return std::none_of(set.begin(), set.end(),
-	                    [&](typename C::value_type const& cmp) { return cmp->line == it->line; });
+template<class C, class T> static bool line_not_present(C const& set, T const& it) {
+	return std::none_of(set.begin(), set.end(), [&](typename C::value_type const& cmp) {
+		return cmp->line == it->line;
+	});
 }
 
 void VisualToolDrag::OnSelectedSetChanged() {
 	auto const& new_sel_set = c->selectionController->GetSelectedSet();
-	std::vector<AssDialogue*> new_sel(begin(new_sel_set), end(new_sel_set));
+	std::vector<AssDialogue *> new_sel(begin(new_sel_set), end(new_sel_set));
 
 	bool any_changed = false;
-	for(auto it = features.begin(); it != features.end();) {
+	for (auto it = features.begin(); it != features.end(); ) {
 		bool was_selected = boost::binary_search(selection, it->line);
 		bool is_selected = boost::binary_search(new_sel, it->line);
-		if(was_selected && !is_selected) {
+		if (was_selected && !is_selected) {
 			sel_features.erase(&*it++);
 			any_changed = true;
-		} else {
-			if(is_selected && !was_selected && it->type == DRAG_START &&
-			   line_not_present(sel_features, it)) {
+		}
+		else {
+			if (is_selected && !was_selected && it->type == DRAG_START && line_not_present(sel_features, it)) {
 				sel_features.insert(&*it);
 				any_changed = true;
 			}
@@ -176,7 +176,8 @@ void VisualToolDrag::OnSelectedSetChanged() {
 		}
 	}
 
-	if(any_changed) parent->Render();
+	if (any_changed)
+		parent->Render();
 	selection = std::move(new_sel);
 }
 
@@ -187,11 +188,11 @@ void VisualToolDrag::Draw() {
 	wxColour line_color = to_wx(line_color_primary_opt->GetColor());
 
 	// Draw connecting lines
-	for(auto& feature : features) {
-		if(feature.type == DRAG_START) continue;
+	for (auto& feature : features) {
+		if (feature.type == DRAG_START) continue;
 
-		Feature* p2 = &feature;
-		Feature* p1 = feature.parent;
+		Feature *p2 = &feature;
+		Feature *p1 = feature.parent;
 
 		// Move end marker has an arrow; origin doesn't
 		bool has_arrow = p2->type == DRAG_END;
@@ -199,14 +200,14 @@ void VisualToolDrag::Draw() {
 
 		// Don't show the connecting line if the features are very close
 		Vector2D direction = p2->pos - p1->pos;
-		if(direction.SquareLen() < (20 + arrow_len) * (20 + arrow_len)) continue;
+		if (direction.SquareLen() < (20 + arrow_len) * (20 + arrow_len)) continue;
 
 		direction = direction.Unit();
 		// Get the start and end points of the line
 		Vector2D start = p1->pos + direction * 10;
 		Vector2D end = p2->pos - direction * (10 + arrow_len);
 
-		if(has_arrow) {
+		if (has_arrow) {
 			gl.SetLineColour(line_color, 0.8f, 2);
 
 			// Arrow line
@@ -224,11 +225,11 @@ void VisualToolDrag::Draw() {
 	}
 }
 
-void VisualToolDrag::MakeFeatures(AssDialogue* diag) {
+void VisualToolDrag::MakeFeatures(AssDialogue *diag) {
 	MakeFeatures(diag, features.end());
 }
 
-void VisualToolDrag::MakeFeatures(AssDialogue* diag, feature_list::iterator pos) {
+void VisualToolDrag::MakeFeatures(AssDialogue *diag, feature_list::iterator pos) {
 	Vector2D p1 = FromScriptCoords(GetLinePosition(diag));
 
 	// Create \pos feature
@@ -238,14 +239,15 @@ void VisualToolDrag::MakeFeatures(AssDialogue* diag, feature_list::iterator pos)
 	feat->type = DRAG_START;
 	feat->line = diag;
 
-	if(boost::binary_search(selection, diag)) sel_features.insert(feat.get());
+	if (boost::binary_search(selection, diag))
+		sel_features.insert(feat.get());
 	features.insert(pos, *feat.release());
 
 	Vector2D p2;
 	int t1, t2;
 
 	// Create move destination feature
-	if(GetLineMove(diag, p1, p2, t1, t2)) {
+	if (GetLineMove(diag, p1, p2, t1, t2)) {
 		feat = agi::make_unique<Feature>();
 		feat->pos = FromScriptCoords(p2);
 		feat->layer = 1;
@@ -261,7 +263,7 @@ void VisualToolDrag::MakeFeatures(AssDialogue* diag, feature_list::iterator pos)
 	}
 
 	// Create org feature
-	if(Vector2D org = GetLineOrigin(diag)) {
+	if (Vector2D org = GetLineOrigin(diag)) {
 		feat = agi::make_unique<Feature>();
 		feat->pos = FromScriptCoords(org);
 		feat->layer = -1;
@@ -273,56 +275,57 @@ void VisualToolDrag::MakeFeatures(AssDialogue* diag, feature_list::iterator pos)
 	}
 }
 
-bool VisualToolDrag::InitializeDrag(Feature* feature) {
+bool VisualToolDrag::InitializeDrag(Feature *feature) {
 	primary = feature;
 
 	// Set time of clicked feature to the current frame and shift all other
 	// selected features by the same amount
-	if(feature->type != DRAG_ORIGIN) {
+	if (feature->type != DRAG_ORIGIN) {
 		int time = c->videoController->TimeAtFrame(frame_number) - feature->line->Start;
 		int change = time - feature->time;
 
-		for(auto feat : sel_features)
+		for (auto feat : sel_features)
 			feat->time += change;
 	}
 	return true;
 }
 
-void VisualToolDrag::UpdateDrag(Feature* feature) {
-	if(feature->type == DRAG_ORIGIN) {
+void VisualToolDrag::UpdateDrag(Feature *feature) {
+	if (feature->type == DRAG_ORIGIN) {
 		SetOverride(feature->line, "\\org", ToScriptCoords(feature->pos).PStr());
 		return;
 	}
 
-	Feature* end_feature = feature->parent;
-	if(feature->type == DRAG_END) std::swap(feature, end_feature);
+	Feature *end_feature = feature->parent;
+	if (feature->type == DRAG_END)
+		std::swap(feature, end_feature);
 
-	if(!feature->parent)
+	if (!feature->parent)
 		SetOverride(feature->line, "\\pos", ToScriptCoords(feature->pos).PStr());
 	else
-		SetOverride(feature->line, "\\move",
-		            agi::format("(%s,%s,%d,%d)", ToScriptCoords(feature->pos).Str(),
-		                        ToScriptCoords(end_feature->pos).Str(), feature->time,
-		                        end_feature->time));
+		SetOverride(feature->line, "\\move", agi::format("(%s,%s,%d,%d)"
+			, ToScriptCoords(feature->pos).Str()
+			, ToScriptCoords(end_feature->pos).Str()
+			, feature->time , end_feature->time));
 }
 
 void VisualToolDrag::OnDoubleClick() {
-	Vector2D d = ToScriptCoords(mouse_pos) -
-	             (primary ? ToScriptCoords(primary->pos) : GetLinePosition(active_line));
+	Vector2D d = ToScriptCoords(mouse_pos) - (primary ? ToScriptCoords(primary->pos) : GetLinePosition(active_line));
 
-	for(auto line : c->selectionController->GetSelectedSet()) {
+	for (auto line : c->selectionController->GetSelectedSet()) {
 		Vector2D p1, p2;
 		int t1, t2;
-		if(GetLineMove(line, p1, p2, t1, t2)) {
-			if(t1 > 0 || t2 > 0)
-				SetOverride(line, "\\move",
-				            agi::format("(%s,%s,%d,%d)", (p1 + d).Str(), (p2 + d).Str(), t1, t2));
+		if (GetLineMove(line, p1, p2, t1, t2)) {
+			if (t1 > 0 || t2 > 0)
+				SetOverride(line, "\\move", agi::format("(%s,%s,%d,%d)", (p1 + d).Str(), (p2 + d).Str(), t1, t2));
 			else
 				SetOverride(line, "\\move", agi::format("(%s,%s)", (p1 + d).Str(), (p2 + d).Str()));
-		} else
+		}
+		else
 			SetOverride(line, "\\pos", (GetLinePosition(line) + d).PStr());
 
-		if(Vector2D org = GetLineOrigin(line)) SetOverride(line, "\\org", (org + d).PStr());
+		if (Vector2D org = GetLineOrigin(line))
+			SetOverride(line, "\\org", (org + d).PStr());
 	}
 
 	Commit(_("positioning"));

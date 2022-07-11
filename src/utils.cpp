@@ -51,27 +51,27 @@
 #include <wx/window.h>
 
 #ifdef __APPLE__
-#include <CoreText/CTFont.h>
 #include <libaegisub/util_osx.h>
+#include <CoreText/CTFont.h>
 #endif
 
 /// @brief There shall be no kiB, MiB stuff here Pretty reading of size
 wxString PrettySize(int bytes) {
-	const char* suffix[] = { "", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+	const char *suffix[] = { "", "kB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 
 	// Set size
 	size_t i = 0;
 	double size = bytes;
-	while(size > 1024 && i + 1 < sizeof(suffix) / sizeof(suffix[0])) {
+	while (size > 1024 && i + 1 < sizeof(suffix) / sizeof(suffix[0])) {
 		size /= 1024.0;
 		i++;
 	}
 
 	// Set number of decimal places
-	const char* fmt = "%.0f";
-	if(size < 10)
+	const char *fmt = "%.0f";
+	if (size < 10)
 		fmt = "%.2f";
-	else if(size < 100)
+	else if (size < 100)
 		fmt = "%1.f";
 	return agi::wxformat(fmt, size) + " " + suffix[i];
 }
@@ -79,7 +79,7 @@ wxString PrettySize(int bytes) {
 std::string float_to_string(double val) {
 	std::string s = agi::format("%.3f", val);
 	size_t pos = s.find_last_not_of("0");
-	if(pos != s.find(".")) ++pos;
+	if (pos != s.find(".")) ++pos;
 	s.erase(begin(s) + pos, end(s));
 	return s;
 }
@@ -107,16 +107,15 @@ void RestartAegisub() {
 }
 #endif
 
-bool ForwardMouseWheelEvent(wxWindow* source, wxMouseEvent& evt) {
-	wxWindow* target = wxFindWindowAtPoint(wxGetMousePosition());
-	if(!target || target == source) return true;
+bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt) {
+	wxWindow *target = wxFindWindowAtPoint(wxGetMousePosition());
+	if (!target || target == source) return true;
 
 	// If the mouse is over a parent of the source window just pretend it's
 	// over the source window, so that the mouse wheel works on borders and such
-	wxWindow* parent = source->GetParent();
-	while(parent && parent != target)
-		parent = parent->GetParent();
-	if(parent == target) return true;
+	wxWindow *parent = source->GetParent();
+	while (parent && parent != target) parent = parent->GetParent();
+	if (parent == target) return true;
 
 	// Otherwise send it to the new target
 	target->GetEventHandler()->ProcessEvent(evt);
@@ -126,9 +125,9 @@ bool ForwardMouseWheelEvent(wxWindow* source, wxMouseEvent& evt) {
 
 std::string GetClipboard() {
 	wxString data;
-	wxClipboard* cb = wxClipboard::Get();
-	if(cb->Open()) {
-		if(cb->IsSupported(wxDF_TEXT) || cb->IsSupported(wxDF_UNICODETEXT)) {
+	wxClipboard *cb = wxClipboard::Get();
+	if (cb->Open()) {
+		if (cb->IsSupported(wxDF_TEXT) || cb->IsSupported(wxDF_UNICODETEXT)) {
 			wxTextDataObject raw_data;
 			cb->GetData(raw_data);
 			data = raw_data.GetText();
@@ -139,8 +138,8 @@ std::string GetClipboard() {
 }
 
 void SetClipboard(std::string const& new_data) {
-	wxClipboard* cb = wxClipboard::Get();
-	if(cb->Open()) {
+	wxClipboard *cb = wxClipboard::Get();
+	if (cb->Open()) {
 		cb->SetData(new wxTextDataObject(to_wx(new_data)));
 		cb->Flush();
 		cb->Close();
@@ -148,57 +147,56 @@ void SetClipboard(std::string const& new_data) {
 }
 
 void SetClipboard(wxBitmap const& new_data) {
-	wxClipboard* cb = wxClipboard::Get();
-	if(cb->Open()) {
+	wxClipboard *cb = wxClipboard::Get();
+	if (cb->Open()) {
 		cb->SetData(new wxBitmapDataObject(new_data));
 		cb->Flush();
 		cb->Close();
 	}
 }
 
-void CleanCache(agi::fs::path const& directory, std::string const& file_type, uint64_t max_size,
-                uint64_t max_files) {
+void CleanCache(agi::fs::path const& directory, std::string const& file_type, uint64_t max_size, uint64_t max_files) {
 	static std::unique_ptr<agi::dispatch::Queue> queue;
-	if(!queue) queue = agi::dispatch::Create();
+	if (!queue)
+		queue = agi::dispatch::Create();
 
 	max_size <<= 20;
-	if(max_files == 0) max_files = std::numeric_limits<uint64_t>::max();
-	queue->Async([=] {
-		LOG_D("utils/clean_cache") << "cleaning " << directory / file_type;
+	if (max_files == 0)
+		max_files = std::numeric_limits<uint64_t>::max();
+	queue->Async([=]{
+		LOG_D("utils/clean_cache") << "cleaning " << directory/file_type;
 		uint64_t total_size = 0;
 		using cache_item = std::pair<int64_t, agi::fs::path>;
 		std::vector<cache_item> cachefiles;
-		for(auto const& file : agi::fs::DirectoryIterator(directory, file_type)) {
-			agi::fs::path path = directory / file;
-			cachefiles.push_back({ agi::fs::ModifiedTime(path), path });
+		for (auto const& file : agi::fs::DirectoryIterator(directory, file_type)) {
+			agi::fs::path path = directory/file;
+			cachefiles.push_back({agi::fs::ModifiedTime(path), path});
 			total_size += agi::fs::Size(path);
 		}
 
-		if(cachefiles.size() <= max_files && total_size <= max_size) {
-			LOG_D("utils/clean_cache")
-			    << agi::format("cache does not need cleaning (maxsize=%d, cursize=%d, maxfiles=%d, "
-			                   "numfiles=%d), exiting",
-			                   max_size, total_size, max_files, cachefiles.size());
+		if (cachefiles.size() <= max_files && total_size <= max_size) {
+			LOG_D("utils/clean_cache") << agi::format("cache does not need cleaning (maxsize=%d, cursize=%d, maxfiles=%d, numfiles=%d), exiting"
+				, max_size, total_size, max_files, cachefiles.size());
 			return;
 		}
 
-		sort(begin(cachefiles), end(cachefiles),
-		     [](cache_item const& a, cache_item const& b) { return a.first < b.first; });
+		sort(begin(cachefiles), end(cachefiles), [](cache_item const& a, cache_item const& b) {
+			return a.first < b.first;
+		});
 
 		int deleted = 0;
-		for(auto const& i : cachefiles) {
+		for (auto const& i : cachefiles) {
 			// stop cleaning?
-			if((total_size <= max_size && cachefiles.size() - deleted <= max_files) ||
-			   cachefiles.size() - deleted < 2)
+			if ((total_size <= max_size && cachefiles.size() - deleted <= max_files) || cachefiles.size() - deleted < 2)
 				break;
 
 			uint64_t size = agi::fs::Size(i.second);
 			try {
 				agi::fs::Remove(i.second);
 				LOG_D("utils/clean_cache") << "deleted " << i.second;
-			} catch(agi::Exception const& e) {
-				LOG_D("utils/clean_cache")
-				    << "failed to delete file " << i.second << ": " << e.GetMessage();
+			}
+			catch  (agi::Exception const& e) {
+				LOG_D("utils/clean_cache") << "failed to delete file " << i.second << ": " << e.GetMessage();
 				continue;
 			}
 
@@ -212,28 +210,26 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 
 #ifndef __WXOSX_COCOA__
 // OS X implementation in osx_utils.mm
-void AddFullScreenButton(wxWindow*) {}
-void SetFloatOnParent(wxWindow*) {}
+void AddFullScreenButton(wxWindow *) { }
+void SetFloatOnParent(wxWindow *) { }
 
 // OS X implementation in retina_helper.mm
-RetinaHelper::RetinaHelper(wxWindow*) {}
-RetinaHelper::~RetinaHelper() {}
-int RetinaHelper::GetScaleFactor() const {
-	return 1;
-}
+RetinaHelper::RetinaHelper(wxWindow *) { }
+RetinaHelper::~RetinaHelper() { }
+int RetinaHelper::GetScaleFactor() const { return 1; }
 #endif
 
 wxString FontFace(std::string opt_prefix) {
 	opt_prefix += "/Font Face";
 	auto value = OPT_GET(opt_prefix)->GetString();
 #ifdef __WXOSX_COCOA__
-	if(value.empty()) {
+	if (value.empty()) {
 		auto default_font = CTFontCreateUIFontForLanguage(kCTFontUserFontType, 0, nullptr);
 		auto default_font_name = CTFontCopyPostScriptName(default_font);
 		CFRelease(default_font);
 
 		auto utf8_str = CFStringGetCStringPtr(default_font_name, kCFStringEncodingUTF8);
-		if(utf8_str)
+		if (utf8_str)
 			value = utf8_str;
 		else {
 			char buffer[1024];
@@ -248,40 +244,27 @@ wxString FontFace(std::string opt_prefix) {
 	return to_wx(value);
 }
 
-static agi::fs::path FileSelector(wxString const& message, std::string const& option_name,
-                                  std::string const& default_filename,
-                                  std::string const& default_extension, std::string const& wildcard,
-                                  int flags, wxWindow* parent) {
+static agi::fs::path FileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, int flags, wxWindow *parent) {
 	wxString path;
-	if(!option_name.empty()) path = to_wx(OPT_GET(option_name)->GetString());
-	agi::fs::path filename =
-	    wxFileSelector(message, path, to_wx(default_filename), to_wx(default_extension),
-	                   to_wx(wildcard), flags, parent)
-	        .wx_str();
-	if(!filename.empty() && !option_name.empty())
+	if (!option_name.empty())
+		path = to_wx(OPT_GET(option_name)->GetString());
+	agi::fs::path filename = wxFileSelector(message, path, to_wx(default_filename), to_wx(default_extension), to_wx(wildcard), flags, parent).wx_str();
+	if (!filename.empty() && !option_name.empty())
 		OPT_SET(option_name)->SetString(filename.parent_path().string());
 	return filename;
 }
 
-agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name,
-                               std::string const& default_filename,
-                               std::string const& default_extension, std::string const& wildcard,
-                               wxWindow* parent) {
-	return FileSelector(message, option_name, default_filename, default_extension, wildcard,
-	                    wxFD_OPEN | wxFD_FILE_MUST_EXIST, parent);
+agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent) {
+	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST, parent);
 }
 
-agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name,
-                               std::string const& default_filename,
-                               std::string const& default_extension, std::string const& wildcard,
-                               wxWindow* parent) {
-	return FileSelector(message, option_name, default_filename, default_extension, wildcard,
-	                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT, parent);
+agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent) {
+	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT, parent);
 }
 
 wxString LocalizedLanguageName(wxString const& lang) {
 	icu::Locale iculoc(lang.c_str());
-	if(!iculoc.isBogus()) {
+	if (!iculoc.isBogus()) {
 		icu::UnicodeString ustr;
 		iculoc.getDisplayName(iculoc, ustr);
 #ifdef _MSC_VER
@@ -293,6 +276,7 @@ wxString LocalizedLanguageName(wxString const& lang) {
 #endif
 	}
 
-	if(auto info = wxLocale::FindLanguageInfo(lang)) return info->Description;
+	if (auto info = wxLocale::FindLanguageInfo(lang))
+		return info->Description;
 	return lang;
 }

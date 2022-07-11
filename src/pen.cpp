@@ -27,13 +27,17 @@ void Pen::OnWidthChanged(agi::OptionValue const& opt) {
 	impl.SetWidth(opt.GetInt());
 }
 
-Pen::Pen(const char* colour_opt, const char* width_opt, wxPenStyle style)
-    : impl(to_wx(OPT_GET(colour_opt)->GetColor()), OPT_GET(width_opt)->GetInt(), style),
-      colour_con(OPT_SUB(colour_opt, &Pen::OnColourChanged, this)),
-      width_con(OPT_SUB(width_opt, &Pen::OnWidthChanged, this)) {}
+Pen::Pen(const char *colour_opt, const char *width_opt, wxPenStyle style)
+: impl(to_wx(OPT_GET(colour_opt)->GetColor()), OPT_GET(width_opt)->GetInt(), style)
+, colour_con(OPT_SUB(colour_opt, &Pen::OnColourChanged, this))
+, width_con(OPT_SUB(width_opt, &Pen::OnWidthChanged, this))
+{
+}
 
-Pen::Pen(const char* colour_opt, int width, wxPenStyle style)
-    : impl(to_wx(OPT_GET(colour_opt)->GetColor()), width, style),
-      colour_con(OPT_SUB(colour_opt, &Pen::OnColourChanged, this)) {}
+Pen::Pen(const char *colour_opt, int width, wxPenStyle style)
+: impl(to_wx(OPT_GET(colour_opt)->GetColor()), width, style)
+, colour_con(OPT_SUB(colour_opt, &Pen::OnColourChanged, this))
+{
+}
 
-Pen::~Pen() {}
+Pen::~Pen() { }
