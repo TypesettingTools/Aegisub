@@ -28,18 +28,7 @@
 #include <boost/range/algorithm/set_algorithm.hpp>
 #include <wx/toolbar.h>
 
-/// Button IDs
-enum {
-	BUTTON_DRAG = 1300,
-	BUTTON_LINE,
-	BUTTON_BICUBIC,
-	BUTTON_CONVERT,
-	BUTTON_INSERT,
-	BUTTON_REMOVE,
-	BUTTON_FREEHAND,
-	BUTTON_FREEHAND_SMOOTH,
-	BUTTON_LAST // Leave this at the end and don't use it
-};
+int BUTTON_ID_BASE = 1300;
 
 VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualToolVectorClipDraggableFeature>(parent, context)
@@ -55,29 +44,29 @@ void VisualToolVectorClip::SetToolbar(wxToolBar *toolBar) {
 	int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
 
 #define ICON(name) BITMAPBUNDLE(icon_size == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24))
-	toolBar->AddTool(BUTTON_DRAG, _("Drag"), ICON(visual_vector_clip_drag), _("Drag control points"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_LINE, _("Line"), ICON(visual_vector_clip_line), _("Appends a line"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_BICUBIC, _("Bicubic"), ICON(visual_vector_clip_bicubic), _("Appends a bezier bicubic curve"), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_DRAG, _("Drag"), ICON(visual_vector_clip_drag), _("Drag control points"), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_LINE, _("Line"), ICON(visual_vector_clip_line), _("Appends a line"), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_BICUBIC, _("Bicubic"), ICON(visual_vector_clip_bicubic), _("Appends a bezier bicubic curve"), wxITEM_CHECK);
 	toolBar->AddSeparator();
-	toolBar->AddTool(BUTTON_CONVERT, _("Convert"), ICON(visual_vector_clip_convert), _("Converts a segment between line and bicubic"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_INSERT, _("Insert"), ICON(visual_vector_clip_insert), _("Inserts a control point"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_REMOVE, _("Remove"), ICON(visual_vector_clip_remove), _("Removes a control point"), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_CONVERT, _("Convert"), ICON(visual_vector_clip_convert), _("Converts a segment between line and bicubic"), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_INSERT, _("Insert"), ICON(visual_vector_clip_insert), _("Inserts a control point"), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_REMOVE, _("Remove"), ICON(visual_vector_clip_remove), _("Removes a control point"), wxITEM_CHECK);
 	toolBar->AddSeparator();
-	toolBar->AddTool(BUTTON_FREEHAND, _("Freehand"), ICON(visual_vector_clip_freehand), _("Draws a freehand shape"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_FREEHAND_SMOOTH, _("Freehand smooth"), ICON(visual_vector_clip_freehand_smooth), _("Draws a smoothed freehand shape"), wxITEM_CHECK);
-	toolBar->ToggleTool(BUTTON_DRAG, true);
+	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_FREEHAND, _("Freehand"), ICON(visual_vector_clip_freehand), _("Draws a freehand shape"), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_FREEHAND_SMOOTH, _("Freehand smooth"), ICON(visual_vector_clip_freehand_smooth), _("Draws a smoothed freehand shape"), wxITEM_CHECK);
+	toolBar->ToggleTool(BUTTON_ID_BASE + VCLIP_DRAG, true);
 	toolBar->Realize();
 	toolBar->Show(true);
-	toolBar->Bind(wxEVT_TOOL, [=, this](wxCommandEvent& e) { SetMode(e.GetId() - BUTTON_DRAG); });
-	SetMode(features.empty());
+	toolBar->Bind(wxEVT_TOOL, [=, this](wxCommandEvent& e) { SetMode((VisualToolVectorClipMode) (e.GetId() - BUTTON_ID_BASE)); });
+	SetMode(features.empty() ? VCLIP_LINE : VCLIP_DRAG);
 #undef ICON
 }
 
-void VisualToolVectorClip::SetMode(int new_mode) {
+void VisualToolVectorClip::SetMode(VisualToolVectorClipMode new_mode) {
 	// Manually enforce radio behavior as we want one selection in the bar
 	// rather than one per group
-	for (int i = BUTTON_DRAG; i < BUTTON_LAST; i++)
-		toolBar->ToggleTool(i, i == new_mode + BUTTON_DRAG);
+	for (int i = 0; i < VCLIP_LAST; i++)
+		toolBar->ToggleTool(BUTTON_ID_BASE + i, i == new_mode);
 
 	mode = new_mode;
 }
@@ -105,7 +94,7 @@ void VisualToolVectorClip::Draw() {
 	// draw the shade over clipped out areas and line showing the clip
 	gl.DrawMultiPolygon(points, start, count, video_pos, video_res, !inverse);
 
-	if (mode == 0 && holding && drag_start && mouse_pos) {
+	if (mode == VCLIP_DRAG && holding && drag_start && mouse_pos) {
 		// Draw drag-select box
 		Vector2D top_left = drag_start.Min(mouse_pos);
 		Vector2D bottom_right = drag_start.Max(mouse_pos);
@@ -121,7 +110,7 @@ void VisualToolVectorClip::Draw() {
 	spline.GetClosestParametricPoint(mouse_pos, highlighted_curve, t, pt);
 
 	// Draw highlighted line
-	if ((mode == 3 || mode == 4) && !active_feature && points.size() > 2) {
+	if ((mode == VCLIP_CONVERT || mode == VCLIP_INSERT) && !active_feature && points.size() > 2) {
 		auto highlighted_points = spline.GetPointList(highlighted_curve);
 		if (!highlighted_points.empty()) {
 			gl.SetLineColour(highlight_color_secondary, 1.f, 2);
@@ -158,7 +147,7 @@ void VisualToolVectorClip::Draw() {
 	}
 
 	// Draw preview of inserted line
-	if (mode == 1 || mode == 2) {
+	if (mode == VCLIP_LINE || mode == VCLIP_BICUBIC) {
 		if (spline.size() && mouse_pos) {
 			auto c0 = std::find_if(spline.rbegin(), spline.rend(),
 				[](SplineCurve const& s) { return s.type == SplineCurve::POINT; });
@@ -169,7 +158,7 @@ void VisualToolVectorClip::Draw() {
 	}
 
 	// Draw preview of insert point
-	if (mode == 4)
+	if (mode == VCLIP_INSERT)
 		gl.DrawCircle(pt, 4);
 }
 
@@ -276,13 +265,13 @@ bool VisualToolVectorClip::InitializeDrag(Feature *feature) {
 
 bool VisualToolVectorClip::InitializeHold() {
 	// Box selection
-	if (mode == 0) {
+	if (mode == VCLIP_DRAG) {
 		box_added.clear();
 		return true;
 	}
 
 	// Insert line/bicubic
-	if (mode == 1 || mode == 2) {
+	if (mode == VCLIP_LINE || mode == VCLIP_BICUBIC) {
 		SplineCurve curve;
 
 		// New spline beginning at the clicked point
@@ -294,7 +283,7 @@ bool VisualToolVectorClip::InitializeHold() {
 			// Continue from the spline in progress
 			// Don't bother setting p2 as UpdateHold will handle that
 			curve.p1 = spline.back().EndPoint();
-			curve.type = mode == 1 ? SplineCurve::LINE : SplineCurve::BICUBIC;
+			curve.type = mode == VCLIP_LINE ? SplineCurve::LINE : SplineCurve::BICUBIC;
 		}
 
 		spline.push_back(curve);
@@ -305,7 +294,7 @@ bool VisualToolVectorClip::InitializeHold() {
 	}
 
 	// Convert and insert
-	if (mode == 3 || mode == 4) {
+	if (mode == VCLIP_CONVERT || mode == VCLIP_INSERT) {
 		// Get closest point
 		Vector2D pt;
 		Spline::iterator curve;
@@ -313,7 +302,7 @@ bool VisualToolVectorClip::InitializeHold() {
 		spline.GetClosestParametricPoint(mouse_pos, curve, t, pt);
 
 		// Convert line <-> bicubic
-		if (mode == 3) {
+		if (mode == VCLIP_CONVERT) {
 			if (curve != spline.end()) {
 				if (curve->type == SplineCurve::LINE) {
 					curve->type = SplineCurve::BICUBIC;
@@ -351,7 +340,7 @@ bool VisualToolVectorClip::InitializeHold() {
 	}
 
 	// Freehand spline draw
-	if (mode == 6 || mode == 7) {
+	if (mode == VCLIP_FREEHAND || mode == VCLIP_FREEHAND_SMOOTH) {
 		sel_features.clear();
 		features.clear();
 		active_feature = nullptr;
@@ -373,7 +362,7 @@ static bool in_box(Vector2D top_left, Vector2D bottom_right, Vector2D p) {
 
 void VisualToolVectorClip::UpdateHold() {
 	// Box selection
-	if (mode == 0) {
+	if (mode == VCLIP_DRAG) {
 		std::set<Feature *> boxed_features;
 		Vector2D p1 = drag_start.Min(mouse_pos);
 		Vector2D p2 = drag_start.Max(mouse_pos);
@@ -397,13 +386,13 @@ void VisualToolVectorClip::UpdateHold() {
 		return;
 	}
 
-	if (mode == 1) {
+	if (mode == VCLIP_LINE) {
 		spline.back().EndPoint() = mouse_pos;
 		features.back().pos = mouse_pos;
 	}
 
 	// Insert bicubic
-	else if (mode == 2) {
+	else if (mode == VCLIP_BICUBIC) {
 		SplineCurve &curve = spline.back();
 		curve.EndPoint() = mouse_pos;
 
@@ -420,25 +409,25 @@ void VisualToolVectorClip::UpdateHold() {
 	}
 
 	// Freehand
-	else if (mode == 6 || mode == 7) {
+	else if (mode == VCLIP_FREEHAND || mode == VCLIP_FREEHAND_SMOOTH) {
 		// See if distance is enough
 		Vector2D const& last = spline.back().EndPoint();
 		float len = (last - mouse_pos).SquareLen();
-		if ((mode == 6 && len >= 900) || (mode == 7 && len >= 3600)) {
+		if ((mode == VCLIP_FREEHAND && len >= 900) || (mode == VCLIP_FREEHAND_SMOOTH && len >= 3600)) {
 			spline.emplace_back(last, mouse_pos);
 			MakeFeature(spline.size() - 1);
 		}
 	}
 
-	if (mode == 3 || mode == 4) return;
+	if (mode == VCLIP_CONVERT || mode == VCLIP_INSERT) return;
 
 	// Smooth spline
-	if (!holding && mode == 7)
+	if (!holding && mode == VCLIP_FREEHAND_SMOOTH)
 		spline.Smooth();
 
 	// End freedraw
-	if (!holding && (mode == 6 || mode == 7)) {
-		SetMode(0);
+	if (!holding && (mode == VCLIP_FREEHAND || mode == VCLIP_FREEHAND_SMOOTH)) {
+		SetMode(VCLIP_DRAG);
 		MakeFeatures();
 	}
 }
