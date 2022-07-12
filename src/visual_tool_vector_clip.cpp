@@ -39,7 +39,7 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, agi::Context *c
 void VisualToolVectorClip::AddTool(std::string command_name, VisualToolVectorClipMode mode) {
 	cmd::Command *command = cmd::get(command_name);
 	int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
-	toolBar->AddTool(BUTTON_ID_BASE + mode, command->StrDisplay(c), command->Icon(icon_size), command->StrHelp(), wxITEM_CHECK);
+	toolBar->AddTool(BUTTON_ID_BASE + mode, command->StrDisplay(c), command->Icon(icon_size), command->GetTooltip("Video"), wxITEM_CHECK);
 }
 
 

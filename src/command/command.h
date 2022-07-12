@@ -103,6 +103,9 @@ DEFINE_EXCEPTION(CommandNotFound, CommandError);
 		/// Short help string describing what the command does
 		virtual wxString StrHelp() const=0;
 
+		/// Formats the Help text together with the registered hotkey
+		wxString GetTooltip(std::string ht_context) const;
+
 		/// Get this command's type flags
 		/// @return Bitmask of CommandFlags
 		virtual int Type() const { return COMMAND_NORMAL; }

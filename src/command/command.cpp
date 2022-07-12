@@ -18,6 +18,9 @@
 #include "format.h"
 
 #include <libaegisub/log.h>
+#include <libaegisub/string.h>
+
+#include "include/aegisub/hotkey.h"
 
 #include <wx/intl.h>
 
@@ -30,6 +33,16 @@ static iterator find_command(std::string_view name) {
 	if (auto it = cmd_map.find(name); it != cmd_map.end())
 		return it;
 	throw CommandNotFound(agi::format(_("'%s' is not a valid command name"), name));
+}
+
+wxString Command::GetTooltip(std::string ht_context) const {
+	wxString ret = StrHelp();
+
+	std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(ht_context, name());
+	if (!hotkeys.empty())
+		ret += to_wx(" (" + agi::Join("/", hotkeys) + ")");
+
+	return ret;
 }
 
 void reg(std::unique_ptr<Command> cmd) {
