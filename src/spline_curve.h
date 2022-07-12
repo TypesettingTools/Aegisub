@@ -32,6 +32,8 @@
 /// @ingroup visual_ts
 ///
 
+#pragma once
+
 #include "vector2d.h"
 
 #include <vector>

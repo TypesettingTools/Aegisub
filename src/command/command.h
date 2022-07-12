@@ -16,6 +16,8 @@
 /// @brief Command base class and main header.
 /// @ingroup command
 
+#pragma once
+
 #include <map>
 #include <string>
 #include <vector>

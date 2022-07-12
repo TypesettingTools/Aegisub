@@ -35,6 +35,7 @@
 #include <libaegisub/signal.h>
 
 #include "vector2d.h"
+#include "visual_tool_vector_clip.h"
 
 #include <memory>
 #include <typeinfo>
@@ -165,7 +166,11 @@ public:
 
 	void SetTool(std::unique_ptr<VisualToolBase> new_tool);
 
+	void SetSubTool(int subtool) const { tool->SetSubTool(subtool); };
+
 	bool ToolIsType(std::type_info const& type) const;
+
+	int GetSubTool() const { return tool->GetSubTool(); };
 
 	/// Discard all OpenGL state
 	void Unload();

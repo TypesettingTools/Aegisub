@@ -36,39 +36,50 @@ VisualToolVectorClip::VisualToolVectorClip(VideoDisplay *parent, agi::Context *c
 {
 }
 
+void VisualToolVectorClip::AddTool(std::string command_name, VisualToolVectorClipMode mode) {
+	cmd::Command *command = cmd::get(command_name);
+	int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
+	toolBar->AddTool(BUTTON_ID_BASE + mode, command->StrDisplay(c), command->Icon(icon_size), command->StrHelp(), wxITEM_CHECK);
+}
+
+
 void VisualToolVectorClip::SetToolbar(wxToolBar *toolBar) {
 	this->toolBar = toolBar;
 
 	toolBar->AddSeparator();
 
-	int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
+	AddTool("video/tool/vclip/drag", VCLIP_DRAG);
+	AddTool("video/tool/vclip/line", VCLIP_LINE);
+	AddTool("video/tool/vclip/bicubic", VCLIP_BICUBIC);
+	toolBar->AddSeparator();
+	AddTool("video/tool/vclip/convert", VCLIP_CONVERT);
+	AddTool("video/tool/vclip/insert", VCLIP_INSERT);
+	AddTool("video/tool/vclip/remove", VCLIP_REMOVE);
+	toolBar->AddSeparator();
+	AddTool("video/tool/vclip/freehand", VCLIP_FREEHAND);
+	AddTool("video/tool/vclip/freehand_smooth", VCLIP_FREEHAND_SMOOTH);
 
-#define ICON(name) BITMAPBUNDLE(icon_size == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24))
-	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_DRAG, _("Drag"), ICON(visual_vector_clip_drag), _("Drag control points"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_LINE, _("Line"), ICON(visual_vector_clip_line), _("Appends a line"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_BICUBIC, _("Bicubic"), ICON(visual_vector_clip_bicubic), _("Appends a bezier bicubic curve"), wxITEM_CHECK);
-	toolBar->AddSeparator();
-	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_CONVERT, _("Convert"), ICON(visual_vector_clip_convert), _("Converts a segment between line and bicubic"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_INSERT, _("Insert"), ICON(visual_vector_clip_insert), _("Inserts a control point"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_REMOVE, _("Remove"), ICON(visual_vector_clip_remove), _("Removes a control point"), wxITEM_CHECK);
-	toolBar->AddSeparator();
-	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_FREEHAND, _("Freehand"), ICON(visual_vector_clip_freehand), _("Draws a freehand shape"), wxITEM_CHECK);
-	toolBar->AddTool(BUTTON_ID_BASE + VCLIP_FREEHAND_SMOOTH, _("Freehand smooth"), ICON(visual_vector_clip_freehand_smooth), _("Draws a smoothed freehand shape"), wxITEM_CHECK);
 	toolBar->ToggleTool(BUTTON_ID_BASE + VCLIP_DRAG, true);
 	toolBar->Realize();
 	toolBar->Show(true);
-	toolBar->Bind(wxEVT_TOOL, [=, this](wxCommandEvent& e) { SetMode((VisualToolVectorClipMode) (e.GetId() - BUTTON_ID_BASE)); });
-	SetMode(features.empty() ? VCLIP_LINE : VCLIP_DRAG);
-#undef ICON
+	toolBar->Bind(wxEVT_TOOL, [=, this](wxCommandEvent& e) { SetSubTool((VisualToolVectorClipMode) (e.GetId() - BUTTON_ID_BASE)); });
+	SetSubTool(features.empty() ? VCLIP_LINE : VCLIP_DRAG);
 }
 
-void VisualToolVectorClip::SetMode(VisualToolVectorClipMode new_mode) {
+void VisualToolVectorClip::SetSubTool(int subtool) {
+	if (toolBar == nullptr) {
+		throw agi::InternalError("Vector clip toolbar hasn't been set yet!");
+	}
 	// Manually enforce radio behavior as we want one selection in the bar
 	// rather than one per group
 	for (int i = 0; i < VCLIP_LAST; i++)
-		toolBar->ToggleTool(BUTTON_ID_BASE + i, i == new_mode);
+		toolBar->ToggleTool(BUTTON_ID_BASE + i, i == subtool);
 
-	mode = new_mode;
+	mode = subtool;
+}
+
+int VisualToolVectorClip::GetSubTool() {
+	return mode;
 }
 
 void VisualToolVectorClip::Draw() {
@@ -427,7 +438,7 @@ void VisualToolVectorClip::UpdateHold() {
 
 	// End freedraw
 	if (!holding && (mode == VCLIP_FREEHAND || mode == VCLIP_FREEHAND_SMOOTH)) {
-		SetMode(VCLIP_DRAG);
+		SetSubTool(VCLIP_DRAG);
 		MakeFeatures();
 	}
 }

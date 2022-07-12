@@ -49,6 +49,24 @@ namespace {
 		}
 	};
 
+	template<VisualToolVectorClipMode M>
+	struct visual_tool_vclip_command : public Command {
+		CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
+
+		bool Validate(const agi::Context *c) override {
+			return !!c->project->VideoProvider();
+		}
+
+		bool IsActive(const agi::Context *c) override {
+			return c->videoDisplay->ToolIsType(typeid(VisualToolVectorClip)) && c->videoDisplay->GetSubTool() == M;
+		}
+
+		void operator()(agi::Context *c) override {
+			c->videoDisplay->SetTool(std::make_unique<VisualToolVectorClip>(c->videoDisplay, c));
+			c->videoDisplay->SetSubTool(M);
+		}
+	};
+
 	struct visual_mode_cross final : public visual_tool_command<VisualToolCross> {
 		CMD_NAME("video/tool/cross")
 		CMD_ICON(visual_standard)
@@ -104,6 +122,66 @@ namespace {
 		STR_DISP("Vector Clip")
 		STR_HELP("Clip subtitles to a vectorial area")
 	};
+
+	// Vector clip tools
+
+	struct visual_mode_vclip_drag final : public visual_tool_vclip_command<VCLIP_DRAG> {
+		CMD_NAME("video/tool/vclip/drag")
+		CMD_ICON(visual_vector_clip_drag)
+		STR_MENU("Drag")
+		STR_DISP("Drag")
+		STR_HELP("Drag control points")
+	};
+
+	struct visual_mode_vclip_line final : public visual_tool_vclip_command<VCLIP_LINE> {
+		CMD_NAME("video/tool/vclip/line")
+		CMD_ICON(visual_vector_clip_line)
+		STR_MENU("Line")
+		STR_DISP("Line")
+		STR_HELP("Appends a line")
+	};
+	struct visual_mode_vclip_bicubic final : public visual_tool_vclip_command<VCLIP_BICUBIC> {
+		CMD_NAME("video/tool/vclip/bicubic")
+		CMD_ICON(visual_vector_clip_bicubic)
+		STR_MENU("Bicubic")
+		STR_DISP("Bicubic")
+		STR_HELP("Appends a bezier bicubic curve")
+	};
+	struct visual_mode_vclip_convert final : public visual_tool_vclip_command<VCLIP_CONVERT> {
+		CMD_NAME("video/tool/vclip/convert")
+		CMD_ICON(visual_vector_clip_convert)
+		STR_MENU("Convert")
+		STR_DISP("Convert")
+		STR_HELP("Converts a segment between line and bicubic")
+	};
+	struct visual_mode_vclip_insert final : public visual_tool_vclip_command<VCLIP_INSERT> {
+		CMD_NAME("video/tool/vclip/insert")
+		CMD_ICON(visual_vector_clip_insert)
+		STR_MENU("Insert")
+		STR_DISP("Insert")
+		STR_HELP("Inserts a control point")
+	};
+	struct visual_mode_vclip_remove final : public visual_tool_vclip_command<VCLIP_REMOVE> {
+		CMD_NAME("video/tool/vclip/remove")
+		CMD_ICON(visual_vector_clip_remove)
+		STR_MENU("Remove")
+		STR_DISP("Remove")
+		STR_HELP("Removes a control point")
+	};
+	struct visual_mode_vclip_freehand final : public visual_tool_vclip_command<VCLIP_FREEHAND> {
+		CMD_NAME("video/tool/vclip/freehand")
+		CMD_ICON(visual_vector_clip_freehand)
+		STR_MENU("Freehand")
+		STR_DISP("Freehand")
+		STR_HELP("Draws a freehand shape")
+	};
+	struct visual_mode_vclip_freehand_smooth final : public visual_tool_vclip_command<VCLIP_FREEHAND_SMOOTH> {
+		CMD_NAME("video/tool/vclip/freehand_smooth")
+		CMD_ICON(visual_vector_clip_freehand_smooth)
+		STR_MENU("Freehand smooth")
+		STR_DISP("Freehand smooth")
+		STR_HELP("Draws a smoothed freehand shape")
+	};
 }
 
 namespace cmd {
@@ -115,5 +193,14 @@ namespace cmd {
 		reg(std::make_unique<visual_mode_scale>());
 		reg(std::make_unique<visual_mode_clip>());
 		reg(std::make_unique<visual_mode_vector_clip>());
+
+		reg(std::make_unique<visual_mode_vclip_drag>());
+		reg(std::make_unique<visual_mode_vclip_line>());
+		reg(std::make_unique<visual_mode_vclip_bicubic>());
+		reg(std::make_unique<visual_mode_vclip_convert>());
+		reg(std::make_unique<visual_mode_vclip_insert>());
+		reg(std::make_unique<visual_mode_vclip_remove>());
+		reg(std::make_unique<visual_mode_vclip_freehand>());
+		reg(std::make_unique<visual_mode_vclip_freehand_smooth>());
 	}
 }
