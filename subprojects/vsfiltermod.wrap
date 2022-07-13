@@ -1,7 +1,0 @@
-[wrap-git]
-directory = vsfiltermod
-url = https://github.com/Totto16/VSFilterMod.git
-revision = master
-
-[provide]
-vsfiltermod = vsfiltermod_dep
