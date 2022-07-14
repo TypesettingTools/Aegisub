@@ -15,11 +15,20 @@
 /* #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/json.h" */
+
+#pragma once
+#ifndef _WAKATIME_H_
+#define _WAKATIME_H_
+
+#include "libaegisub/path.h"
+
 #include <chrono>
+#include <functional>
 
 #include <wx/string.h>
 #include <wx/arrstr.h>
-#include "libaegisub/path.h"
+
+
 
 namespace wakatime {
 
@@ -41,10 +50,15 @@ using namespace std::chrono;
     } Plugin;
 
     typedef struct  {
-        bool send_successful;
+        bool ok;
         wxString* error_string; // is nullptr if no error occured
         wxString* output_string; // can be empty and is nullptr if an error occured
     } CLIResponse;
+
+
+        std::ostream& operator<<(std::ostream& os,  const wakatime::CLIResponse& arg);
+
+        std::ostream& operator<<(std::ostream& os, const wakatime::CLIResponse * arg);
 
     typedef struct {
         wxString* project_name;
@@ -65,17 +79,25 @@ using namespace std::chrono;
                 last_heartbeat = 0s;
 
                 //TODO get from internal settings!
-                wxString* aegisub_key =  nullptr; //"8c982ef8-3baa-44d6-865b-203949200c5e";//agi::config::getKey(wakatime_key_setting);
+                wxString* aegisub_key =  nullptr; //"8c982ef8-3baa-44d6-865b-203949200c5e"; //agi::config::getKey(wakatime_key_setting);
                 if(aegisub_key == nullptr){
                     wxArrayString *buffer = new wxArrayString();
                     buffer->Add(wxString("--config-read api_key"));
-                    CLIResponse stored_api_key = invoke_cli(buffer);
-                    if (stored_api_key.send_successful){
-                        key = stored_api_key.output_string;
-                        //agi::config::setKey(wakatime_key_setting,key);
-                    }
+                    invoke_cli_async(buffer,[this](CLIResponse response)-> void{
+                
+                        if (response.ok){
+                            this->key = response.output_string;
+                            if(this->key->Last() == '\n'){
+                                this->key = new wxString(this->key->ToAscii().data(),this->key->Length()-1 );
+                            }
+
+                            std::cout << response;
+                            //agi::config::setKey(wakatime_key_setting,key);
+                        }
+                    });
                 }else{
-                    key = aegisub_key;
+                    this->key = aegisub_key;
+                    // write to wakatime config!!!
                 }
 
             }
@@ -85,7 +107,8 @@ using namespace std::chrono;
         bool initialize();
         void change_project(wxString* new_file, wxString* project_name);
         void change_api_key(wxString* key);
-        bool send_heartbeat(bool isWrite);
+        void send_heartbeat(bool isWrite);
+        void get_time_today();
         ProjectInfo project_info = {
             project_name : nullptr,
             file_name: nullptr,
@@ -105,7 +128,12 @@ using namespace std::chrono;
         bool handle_cli();
         bool is_cli_present();
         bool download_cli();
-        CLIResponse invoke_cli(wxArrayString* options);
 
+        //@deprecated
+        CLIResponse invoke_cli_sync(wxArrayString* options);
+
+        void invoke_cli_async(wxArrayString* options, std::function<void ( CLIResponse response)> callback);
     };
 }
+
+#endif
