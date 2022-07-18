@@ -134,12 +134,14 @@ using namespace std::chrono;
         wxArrayString *buffer = new wxArrayString();
 
         buffer->Add(wxString::Format("--language '%s'", plugin_info.short_type));
+        buffer->Add(wxString::Format("--alternate-language '%s'", plugin_info.long_type));
 
         //TODO use translation for default file name!
         // subs_controller->Filename()
 
         buffer->Add(wxString::Format("--entity '%s'", project_info.file_name == nullptr ? "Unbenannt.ass": *project_info.file_name));
-        buffer->Add(wxString::Format("--project '%s'", project_info.project_name == nullptr ?  "Unbenannt" : *project_info.project_name));
+        // "--project" gets detected by the folder name! (the manual project name is also the folder name, atm at least!)
+        buffer->Add(wxString::Format("--alternate-project '%s'", project_info.project_name == nullptr ?  "Unbenannt" : *project_info.project_name));
 
         if (isWrite ){
             buffer->Add("--write");
@@ -229,7 +231,14 @@ using namespace std::chrono;
                     });
                 }else{
                     this->key = new wxString(aegisub_key);
-                    //TODO:  write to wakatime config (maybe done automatically!!!
+
+                    wxArrayString *buffer = new wxArrayString();
+                    buffer->Add(wxString::Format("--config-write api_key=%s", *(this->key)));
+                    invoke_cli_async(buffer,[this](CLIResponse response)-> void{
+                        if (!response.ok){
+                            LOG_E("wakatime/execute/async") << "Couldn't save the wakatime key to the config!\n";
+                        }
+                    });
                 }
         }
 
