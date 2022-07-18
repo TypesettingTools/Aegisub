@@ -18,7 +18,6 @@
 #include "libaegisub/json.h" */
 
 #include "options.h"
-#include "version.h"
 #include "wakatime.h"
 
 #include "libaegisub/log.h"
@@ -137,7 +136,7 @@ using namespace std::chrono;
         buffer->Add(wxString::Format("--alternate-language '%s'", plugin_info.long_type));
 
         //TODO use translation for default file name!
-        // subs_controller->Filename()
+        // subs_controller->Filename() return "Unbenannt" or "Untitled" when no file is loaded! (.ass has to be set additionally, and file path is ""!)
 
         buffer->Add(wxString::Format("--entity '%s'", project_info.file_name == nullptr ? "Unbenannt.ass": *project_info.file_name));
         // "--project" gets detected by the folder name! (the manual project name is also the folder name, atm at least!)
@@ -248,13 +247,12 @@ using namespace std::chrono;
             options->Add("--verbose");
         }
 
-        options->Add(wxString::Format("--key '%s'",*(this->key)));
-        //TODO also version should be dynamic!
-        options->Add(wxString::Format("--plugin 'aegisub/%s %s/%s'",plugin_info.version, plugin_info.plugin_name,GetAegisubLongVersionString()));
+        if(this->key != nullptr && !this->key->IsEmpty()){
+            options->Add(wxString::Format("--key '%s'",*(this->key)));
+        }
+        options->Add(wxString::Format("--plugin 'aegisub/%s %s/%s'",plugin_info.plugin_version, plugin_info.plugin_name, *(plugin_info.aegisub_version)));
 
         wxString command = wxString::Format("%s %s", *cli_path, * StringArrayToString(options));
-
-
         wxProcess* process = new wxProcess();
         process->Redirect();
 
