@@ -21,6 +21,7 @@
 #define _WAKATIME_H_
 
 #include "libaegisub/path.h"
+#include "options.h"
 
 #include <chrono>
 #include <functional>
@@ -45,7 +46,8 @@ using namespace std::chrono;
     typedef struct  {
         const wxString program;
         const wxString plugin_name;
-        const wxString type;
+        const wxString short_type;
+        const wxString long_type;
         const wxString version;
     } Plugin;
 
@@ -78,27 +80,10 @@ using namespace std::chrono;
 
                 last_heartbeat = 0s;
 
-                //TODO get from internal settings!
-                wxString* aegisub_key =  nullptr; //"8c982ef8-3baa-44d6-865b-203949200c5e"; //agi::config::getKey(wakatime_key_setting);
-                if(aegisub_key == nullptr){
-                    wxArrayString *buffer = new wxArrayString();
-                    buffer->Add(wxString("--config-read api_key"));
-                    invoke_cli_async(buffer,[this](CLIResponse response)-> void{
-                
-                        if (response.ok){
-                            this->key = response.output_string;
-                            if(this->key->Last() == '\n'){
-                                this->key = new wxString(this->key->ToAscii().data(),this->key->Length()-1 );
-                            }
+	            OPT_SUB("Wakatime/API_Key", &cli::getKey, this);
+                OPT_SUB("Wakatime/Debug", &cli::getDebug, this);
 
-                            std::cout << response;
-                            //agi::config::setKey(wakatime_key_setting,key);
-                        }
-                    });
-                }else{
-                    this->key = aegisub_key;
-                    // write to wakatime config!!!
-                }
+                this->getKey();
 
             }
 
@@ -118,19 +103,21 @@ using namespace std::chrono;
     private:
         wxString* key;
         seconds last_heartbeat;
+        bool debug;
         Plugin plugin_info = {
             program: "Aegisub",
             plugin_name: "aegisub-wakatime",
-            type: "ASS",//Advanced SubStation Alpha",
-            version: "0.0.1"
+            short_type: "ASS", //Advanced SubStation Alpha",
+            long_type:"Advanced SubStation Alpha",
+            version: "1.0.1"
         };
         wxString* cli_path;
         bool handle_cli();
         bool is_cli_present();
         bool download_cli();
-
-        //@deprecated
-        CLIResponse invoke_cli_sync(wxArrayString* options);
+        bool is_key_valid(wxString key);
+        void getKey();
+        void getDebug();
 
         void invoke_cli_async(wxArrayString* options, std::function<void ( CLIResponse response)> callback);
     };

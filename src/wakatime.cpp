@@ -18,6 +18,7 @@
 #include "libaegisub/json.h" */
 
 #include "options.h"
+#include "version.h"
 #include "wakatime.h"
 
 #include "libaegisub/log.h"
@@ -117,37 +118,26 @@ using namespace std::chrono;
 
         void cli::send_heartbeat(bool isWrite){
 
-/* 
-
-    --TODO:    Check for api key in ~/.wakatime.cfg, prompt user to enter if does not exist
-    -- TODO: Process event listeners to detect when current file changes, a file is modified, and a file is saved
-    --[[   Current file changed (our file change event listener code is run)
-        go to Send heartbeat function with isWrite false
-    User types in a file (our file modified event listener code is run)
-        go to Send heartbeat function with isWrite false
-    A file is saved (our file save event listener code is run)
-        go to Send heartbeat function with isWrite true ]]
-            assert(false && "Not implemented yet"); */
-
-
 		seconds now =  duration_cast<seconds>(steady_clock::now().time_since_epoch());
 
-        // TODO get that data!
 		if (!(last_heartbeat + (2s* 60) < now || isWrite || project_info.changed)){
-            LOG_D("wakatime/send_heartbet") << "No heartbeat to send";
 			return;
 		}
 
         project_info.changed = false;
 		last_heartbeat = now;
 
-
+        if(this->key->IsEmpty()){
+            return;
+        }
 
         wxArrayString *buffer = new wxArrayString();
 
-        buffer->Add(wxString::Format("--language '%s'", plugin_info.type));
+        buffer->Add(wxString::Format("--language '%s'", plugin_info.short_type));
 
         //TODO use translation for default file name!
+        // subs_controller->Filename()
+
         buffer->Add(wxString::Format("--entity '%s'", project_info.file_name == nullptr ? "Unbenannt.ass": *project_info.file_name));
         buffer->Add(wxString::Format("--project '%s'", project_info.project_name == nullptr ?  "Unbenannt" : *project_info.project_name));
 
@@ -186,9 +176,7 @@ using namespace std::chrono;
         }
         wxString* homePath = StringArrayToString(output);
 		cli_path = new wxString(wxString::Format("%s/.wakatime/wakatime-cli",*homePath));
-        LOG_D("CLI/PATH") << cli_path->ToAscii();
 		if(!is_cli_present()){
-            LOG_D("CLI/PATH") << "path not present!";
 			return download_cli();
 		}
 
@@ -206,27 +194,60 @@ using namespace std::chrono;
         }
 
         bool cli::download_cli(){
-            //TODO generalize and finish, WIP
+
+            //TODO generalize (os independent) and finish, WIP
             return false;
              long returnCode = wxExecute(wxString::Format("bash  -c \"mkdir -p ~/.wakatime && wget  'https://github.com/wakatime/wakatime-cli/releases/download/v1.52.1-alpha.1/wakatime-cli-linux-amd64.zip -o ~/.wakatime/ > /dev/null && unzip && ln -S .... etc\"",*cli_path), wxEXEC_SYNC);
 
             return returnCode == 0;
         }
  
+        bool cli::is_key_valid(wxString key){
+            // invoke cli with --key and get return code!
+           return true;
+        }
+
+        void cli::getDebug(){
+            this->debug = OPT_GET("Wakatime/Debug")->GetBool();
+        }
+
+        void cli::getKey(){
+                std::string aegisub_key = OPT_GET("Wakatime/API_Key")->GetString();
+                if(aegisub_key.empty()){
+                    wxArrayString *buffer = new wxArrayString();
+                    buffer->Add(wxString("--config-read api_key"));
+                    invoke_cli_async(buffer,[this](CLIResponse response)-> void{
+                
+                        if (response.ok){
+                            this->key = response.output_string;
+                            if(this->key->Last() == '\n'){
+                                this->key = new wxString(this->key->ToAscii().data(),this->key->Length()-1 );
+                            }
+
+                            OPT_SET("Wakatime/API_Key")->SetString(this->key->ToStdString());
+                        }
+                    });
+                }else{
+                    this->key = new wxString(aegisub_key);
+                    //TODO:  write to wakatime config (maybe done automatically!!!
+                }
+        }
+
         void cli::invoke_cli_async(wxArrayString* options, std::function<void ( CLIResponse response)> callback){
 
-        options->Add("--verbose");
+        if(this->debug){
+            options->Add("--verbose");
+        }
 
+        options->Add(wxString::Format("--key '%s'",*(this->key)));
         //TODO also version should be dynamic!
-        options->Add(wxString::Format("--plugin 'aegisub/%s %s/8975-master-8d77da3'",plugin_info.version, plugin_info.plugin_name));
+        options->Add(wxString::Format("--plugin 'aegisub/%s %s/%s'",plugin_info.version, plugin_info.plugin_name,GetAegisubLongVersionString()));
 
         wxString command = wxString::Format("%s %s", *cli_path, * StringArrayToString(options));
 
-        LOG_D("wakatime/execute") << command.ToAscii();
 
-
-    wxProcess* process = new wxProcess();
-    process->Redirect();
+        wxProcess* process = new wxProcess();
+        process->Redirect();
 
 
         std::function< void (wxProcessEvent& event)> lambda = ([process, command, callback](wxProcessEvent& event)-> void{
@@ -237,106 +258,58 @@ using namespace std::chrono;
                 output_string: nullptr
             };
             
-        wxInputStream* outputStream = process->GetInputStream() ;
-        if(outputStream == nullptr){
-               LOG_E("wakatime/execute/async") << "Command couldn't be executed: " << command.ToAscii();
-            response.error_string = new wxString("Stdout was NULL");
-            response.ok = false;
-             callback(response);
-             return;
-        }
-        
-        wxInputStream* errorStream = process->GetErrorStream() ;
-        if(errorStream == nullptr){
-               LOG_E("wakatime/execute/async") << "Command couldn't be executed: " << command.ToAscii();
-            response.error_string = new wxString("Stderr was NULL");
-            response.ok = false;
-             callback(response);
-             return;
-        }
-
-
-        wxString* error_string = ReadInputStream(errorStream);
-        wxString* output_string = ReadInputStream(outputStream);
-
-
-        if(event.GetExitCode() != 0 || output_string == nullptr || !error_string->IsEmpty()){
-            LOG_E("wakatime/execute/async") << "Command couldn't be executed: " << command.ToAscii();
-  
-            LOG_E("wakatime/execute/async") << "The Errors were: " << error_string->ToAscii();
+            wxInputStream* outputStream = process->GetInputStream() ;
+            if(outputStream == nullptr){
+                LOG_E("wakatime/execute/async") << "Command couldn't be executed: " << command.ToAscii();
+                response.error_string = new wxString("Stdout was NULL");
+                response.ok = false;
+                callback(response);
+                return;
+            }
             
-            response.error_string = error_string;
-            response.ok = false;
-             callback(response);
-             return;
-        } 
+            wxInputStream* errorStream = process->GetErrorStream() ;
+            if(errorStream == nullptr){
+                LOG_E("wakatime/execute/async") << "Command couldn't be executed: " << command.ToAscii();
+                response.error_string = new wxString("Stderr was NULL");
+                response.ok = false;
+                callback(response);
+                return;
+            }
 
 
-        LOG_D("wakatime/output") << " " << output_string->ToAscii();
+            wxString* error_string = ReadInputStream(errorStream);
+            wxString* output_string = ReadInputStream(outputStream);
 
-        response.output_string = output_string;
+
+            if(event.GetExitCode() != 0 || output_string == nullptr || !error_string->IsEmpty()){
+                LOG_E("wakatime/execute/async") << "Command couldn't be executed: " << command.ToAscii();
+
+                LOG_E("wakatime/execute/async") << "The Errors were: " << error_string->ToAscii();
+                
+                response.error_string = error_string;
+                response.ok = false;
+                callback(response);
+                return;
+            } 
 
 
-		    callback(response);
+            response.output_string = output_string;
+
+
+            callback(response);
             return;
         });
-        // wxEventTag, wxProcessEvent
 
         process->Bind(wxEVT_END_PROCESS, lambda);
 
 
-
-      long pid = wxExecute(command, wxEXEC_ASYNC,process);
+        long pid = wxExecute(command, wxEXEC_ASYNC,process);
 
         if(pid == 0){
             LOG_E("wakatime/execute") << "Command couldn't be executed: " << command.ToAscii();
             return;
         }
     }
-
-
-
-    CLIResponse cli::invoke_cli_sync(wxArrayString* options){
-		//	assert(false && "Not implemented yet");
-
-        CLIResponse response = {
-            ok:true,
-            error_string : nullptr,
-            output_string: nullptr
-        };
-
-        options->Add("--verbose");
-
-        //TODO also version should be dynamic!
-        options->Add(wxString::Format("--plugin 'aegisub/%s %s/8975-master-8d77da3'",plugin_info.version, plugin_info.plugin_name));
-
-        wxString command = wxString::Format("%s %s", *cli_path, * StringArrayToString(options));
-        LOG_D("wakatime/execute") << command.ToAscii();
-
-
-        wxArrayString *output = new wxArrayString();
-        wxArrayString *errors = new wxArrayString();
-
-        long returnCode = wxExecute(command, *output, *errors, wxEXEC_SYNC & wxEXEC_NODISABLE);
-        if(returnCode != 0 || !errors->IsEmpty()){
-            LOG_E("wakatime/execute") << "Command couldn't be executed: " << command.ToAscii();
-            wxString* error_string = StringArrayToString(errors,"\n");
-            LOG_E("wakatime/execute") << "The Errors were: " << error_string->ToAscii();
-            
-            response.error_string = error_string;
-            response.ok = false;
-            return response;
-        } 
-
-        wxString* output_string = StringArrayToString(output,"\n");
-        LOG_D("wakatime/output") << " " << output_string->ToAscii();
-
-        response.output_string = output_string;
-
-
-		return response;
-    };
-
 
 
 	wakatime::cli *wakatime_cli = nullptr;
@@ -346,7 +319,6 @@ using namespace std::chrono;
 
 	void clear() {
 		delete wakatime_cli;
-        LOG_D("wakatime/clear");
 	}
 
 
@@ -356,7 +328,6 @@ using namespace std::chrono;
             wxString* temp_project_name = new wxString(filename->parent_path().filename().string());
             wakatime_cli->project_info.changed =  wakatime_cli->project_info.file_name == nullptr || !wakatime_cli->project_info.file_name->IsSameAs(*temp_file_name)
                 || wakatime_cli->project_info.project_name == nullptr || wakatime_cli->project_info.project_name->IsSameAs(*temp_project_name);
-                LOG_D("wakatime/update") << "has changed: " << wakatime_cli->project_info.changed;
 
             if(wakatime_cli->project_info.changed){
                 wakatime_cli->project_info.file_name = temp_file_name;
