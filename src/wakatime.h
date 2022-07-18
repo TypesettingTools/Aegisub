@@ -22,6 +22,7 @@
 
 #include "libaegisub/path.h"
 #include "options.h"
+#include "version.h"
 
 #include <chrono>
 #include <functional>
@@ -48,7 +49,8 @@ using namespace std::chrono;
         const wxString plugin_name;
         const wxString short_type;
         const wxString long_type;
-        const wxString version;
+        const wxString plugin_version;
+        wxString* aegisub_version;
     } Plugin;
 
     typedef struct  {
@@ -83,8 +85,10 @@ using namespace std::chrono;
 	            OPT_SUB("Wakatime/API_Key", &cli::getKey, this);
                 OPT_SUB("Wakatime/Debug", &cli::getDebug, this);
 
-                this->getKey();
+                this->plugin_info.aegisub_version = new wxString(GetAegisubLongVersionString());
 
+                this->getDebug();
+                this->getKey(); 
             }
 
 
@@ -107,9 +111,9 @@ using namespace std::chrono;
         Plugin plugin_info = {
             program: "Aegisub",
             plugin_name: "aegisub-wakatime",
-            short_type: "ASS", //Advanced SubStation Alpha",
+            short_type: "ASS",
             long_type:"Advanced SubStation Alpha",
-            version: "1.0.1"
+            plugin_version: "1.0.1"
         };
         wxString* cli_path;
         bool handle_cli();
