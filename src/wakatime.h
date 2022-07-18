@@ -88,8 +88,7 @@ using namespace std::chrono;
                 this->plugin_info.aegisub_version = new wxString(GetAegisubLongVersionString());
 
                 this->getDebug();
-                this->getKey();
-
+                this->getKey(); 
             }
 
 
