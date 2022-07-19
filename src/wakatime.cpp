@@ -19,6 +19,7 @@
 
 #include "options.h"
 #include "wakatime.h"
+#include "frame_main.h"
 
 #include "libaegisub/log.h"
 #include "libaegisub/path.h"
@@ -49,7 +50,7 @@ namespace wakatime {
     }
 
     #define BUF_SIZE 1024
-    wxString* ReadInputStream(wxInputStream* input){
+    wxString* ReadInputStream(wxInputStream* input, bool trimLastNewLine = false){
         wxString* output = new wxString();
         void* buffer = malloc(BUF_SIZE);
         while(input->CanRead() && !input->Eof()){
@@ -59,6 +60,9 @@ namespace wakatime {
             switch(error){
                 case wxSTREAM_NO_ERROR:
                 case wxSTREAM_EOF:
+                    if(*((char*)buffer + strlen((char*)buffer)-1) == '\n' && trimLastNewLine){
+                        read-=1;
+                    }
                     output->append(wxString::FromUTF8((char*)buffer, read));
                     return output;
                 case wxSTREAM_WRITE_ERROR:
@@ -74,7 +78,9 @@ namespace wakatime {
             }
         }
 
-
+        if(output->Last() == '\n' && trimLastNewLine){
+            output = new wxString(output->ToAscii().data(),output->Length()-1 );
+        }
         return output;
     }
 
@@ -159,7 +165,7 @@ using namespace std::chrono;
         buffer->Add("--today");
         invoke_cli_async(buffer,[this](CLIResponse time_today)->void{
                 if(time_today.ok){
-                    LOG_D("time/today") << time_today.output_string->ToAscii();
+                    this->setTime(time_today.output_string);
                 }
         
             
@@ -212,6 +218,14 @@ using namespace std::chrono;
             this->debug = OPT_GET("Wakatime/Debug")->GetBool();
         }
 
+        void cli::setTime(wxString *time){
+            this->currentTime = time;
+            if(this->updateFunction != nullptr){
+                this->updateFunction();
+            }
+        }
+
+
         void cli::getKey(){
                 std::string aegisub_key = OPT_GET("Wakatime/API_Key")->GetString();
                 if(aegisub_key.empty()){
@@ -221,10 +235,6 @@ using namespace std::chrono;
                 
                         if (response.ok){
                             this->key = response.output_string;
-                            if(this->key->Last() == '\n'){
-                                this->key = new wxString(this->key->ToAscii().data(),this->key->Length()-1 );
-                            }
-
                             OPT_SET("Wakatime/API_Key")->SetString(this->key->ToStdString());
                         }
                     });
@@ -284,8 +294,10 @@ using namespace std::chrono;
             }
 
 
-            wxString* error_string = ReadInputStream(errorStream);
-            wxString* output_string = ReadInputStream(outputStream);
+            wxString* error_string = ReadInputStream(errorStream, true);
+            wxString* output_string = ReadInputStream(outputStream, true);
+
+            
 
 
             if(event.GetExitCode() != 0 || output_string == nullptr || !error_string->IsEmpty()){
@@ -328,6 +340,22 @@ using namespace std::chrono;
 		delete wakatime_cli;
 	}
 
+    void setUpdateFunction(std::function<void ()> updateFunction){
+        updateFunction();
+        if(wakatime_cli == nullptr){
+            LOG_E("plugin/wakatime") << "ERROR: couldn't set the update function!\n";
+            return;
+        }
+        wakatime_cli->updateFunction = updateFunction;
+    }
+
+    wxString getTime(){
+        if(wakatime_cli->currentTime == nullptr){
+            return wxString("");
+        }
+        return wxString::Format(" - %s", *(wakatime_cli->currentTime));
+    }
+
 
 	void update(bool isWrite, agi::fs::path const* filename){
         if(filename != nullptr){
@@ -342,7 +370,6 @@ using namespace std::chrono;
             }
         }
 	    wakatime_cli->send_heartbeat(isWrite);
-		LOG_D("wakatime/update") << "initiated async request";
 	}
 
 } // namespace wakatime

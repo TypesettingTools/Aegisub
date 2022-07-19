@@ -23,6 +23,7 @@
 #include "libaegisub/path.h"
 #include "options.h"
 #include "version.h"
+#include "frame_main.h"
 
 #include <chrono>
 #include <functional>
@@ -40,6 +41,10 @@ void init();
 void clear();
 
 void update(bool isWrite, agi::fs::path const* filename = nullptr);
+
+void setUpdateFunction(std::function<void ()> updateFunction);
+
+wxString getTime();
 
 
 using namespace std::chrono;
@@ -87,8 +92,13 @@ using namespace std::chrono;
 
                 this->plugin_info.aegisub_version = new wxString(GetAegisubLongVersionString());
 
+                this->setTime(new wxString("Loading..."));
+
+
                 this->getDebug();
                 this->getKey(); 
+
+                this->setTime(new wxString("No Project Selected"));
             }
 
 
@@ -97,12 +107,14 @@ using namespace std::chrono;
         void change_project(wxString* new_file, wxString* project_name);
         void change_api_key(wxString* key);
         void send_heartbeat(bool isWrite);
-        void get_time_today();
         ProjectInfo project_info = {
             project_name : nullptr,
             file_name: nullptr,
             changed: false
         };
+
+        wxString* currentTime;
+        std::function<void ()> updateFunction;
 
     private:
         wxString* key;
@@ -116,12 +128,15 @@ using namespace std::chrono;
             plugin_version: "1.0.1"
         };
         wxString* cli_path;
+
+        void get_time_today();
         bool handle_cli();
         bool is_cli_present();
         bool download_cli();
         bool is_key_valid(wxString key);
         void getKey();
         void getDebug();
+        void setTime(wxString* text);
 
         void invoke_cli_async(wxArrayString* options, std::function<void ( CLIResponse response)> callback);
     };

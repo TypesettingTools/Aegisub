@@ -159,6 +159,9 @@ FrameMain::FrameMain()
 	SetDisplayMode(1, 1);
 
 	StartupLog("Leaving FrameMain constructor");
+	wakatime::setUpdateFunction([this]()->void{
+		this->UpdateTitle();
+	});
 }
 
 FrameMain::~FrameMain () {
@@ -253,7 +256,7 @@ void FrameMain::UpdateTitle() {
 	newTitle << context->subsController->Filename().filename().wstring();
 
 #ifndef __WXMAC__
-	newTitle << " - Aegisub " << GetAegisubLongVersionString();
+	newTitle << " - Aegisub " << GetAegisubLongVersionString() << wakatime::getTime();
 #endif
 
 #if defined(__WXMAC__)
