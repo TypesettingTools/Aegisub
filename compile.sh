@@ -82,3 +82,13 @@ fi
         sudo meson install -C build
 
     fi
+
+
+
+    #TODO make icons for ass work!
+    #icons for .ass .ssa
+    #mime type,
+
+    #TODO create flatpak: https://docs.flatpak.org/en/latest/first-build.html
+
+    # TODO compile each dependency local with the newest (stable?) version and then distruibute them as deb, and their also gonna be neede for flatpak support!

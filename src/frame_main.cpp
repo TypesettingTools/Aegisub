@@ -58,6 +58,7 @@
 #include "video_box.h"
 #include "video_controller.h"
 #include "video_display.h"
+#include "wakatime.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
@@ -158,6 +159,9 @@ FrameMain::FrameMain()
 	SetDisplayMode(1, 1);
 
 	StartupLog("Leaving FrameMain constructor");
+	wakatime::setUpdateFunction([this]()->void{
+		this->UpdateTitle();
+	});
 }
 
 FrameMain::~FrameMain () {
@@ -252,7 +256,7 @@ void FrameMain::UpdateTitle() {
 	newTitle << context->subsController->Filename().filename().wstring();
 
 #ifndef __WXMAC__
-	newTitle << " - Aegisub " << GetAegisubLongVersionString();
+	newTitle << " - Aegisub " << GetAegisubLongVersionString() << wakatime::getTime();
 #endif
 
 #if defined(__WXMAC__)
@@ -304,6 +308,13 @@ BEGIN_EVENT_TABLE(FrameMain, wxFrame)
 	EVT_TIMER(ID_APP_TIMER_STATUSCLEAR, FrameMain::OnStatusClear)
 	EVT_CLOSE(FrameMain::OnCloseWindow)
 	EVT_CHAR_HOOK(FrameMain::OnKeyDown)
+	EVT_LEFT_DOWN(FrameMain::OnMouseEvent)
+	EVT_MIDDLE_DOWN(FrameMain::OnMouseEvent)
+	EVT_RIGHT_DOWN(FrameMain::OnMouseEvent)
+	EVT_LEFT_UP(FrameMain::OnMouseEvent)
+	EVT_MIDDLE_UP(FrameMain::OnMouseEvent)
+	EVT_RIGHT_UP(FrameMain::OnMouseEvent)
+	EVT_MOTION(FrameMain::OnMouseEvent)
 	EVT_MOUSEWHEEL(FrameMain::OnMouseWheel)
 END_EVENT_TABLE()
 
@@ -344,9 +355,21 @@ void FrameMain::OnSubtitlesOpen() {
 }
 
 void FrameMain::OnKeyDown(wxKeyEvent &event) {
+	// could use that context information, but not necessary
+	//const_cast<agi::fs::path const*>(context.get()->subsController.get()->Filename())
+	
+	wakatime::update(false);
 	hotkey::check("Main Frame", context.get(), event);
 }
 
+void FrameMain::OnMouseEvent(wxMouseEvent &event) {
+	wakatime::update(false);
+	// pass it on, so that it can be used later!
+	event.Skip();
+}
+
+
 void FrameMain::OnMouseWheel(wxMouseEvent &evt) {
+	wakatime::update(false);
 	ForwardMouseWheelEvent(this, evt);
 }

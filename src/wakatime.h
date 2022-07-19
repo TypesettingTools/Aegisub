@@ -12,45 +12,134 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include "libaegisub/fs.h"
+/* #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
-#include "libaegisub/json.h"
+#include "libaegisub/json.h" */
+
+#pragma once
+#ifndef _WAKATIME_H_
+#define _WAKATIME_H_
+
+#include "libaegisub/path.h"
+#include "options.h"
+#include "version.h"
+#include "frame_main.h"
+
 #include <chrono>
+#include <functional>
+
+#include <wx/string.h>
+#include <wx/arrstr.h>
+
+
 
 namespace wakatime {
+
 
 void init();
 
 void clear();
 
-void update(bool isWrite);
+void update(bool isWrite, agi::fs::path const* filename = nullptr);
+
+void setUpdateFunction(std::function<void ()> updateFunction);
+
+wxString getTime();
 
 
 using namespace std::chrono;
+
+    typedef struct  {
+        const wxString program;
+        const wxString plugin_name;
+        const wxString short_type;
+        const wxString long_type;
+        const wxString plugin_version;
+        wxString* aegisub_version;
+    } Plugin;
+
+    typedef struct  {
+        bool ok;
+        wxString* error_string; // is nullptr if no error occured
+        wxString* output_string; // can be empty and is nullptr if an error occured
+    } CLIResponse;
+
+
+        std::ostream& operator<<(std::ostream& os,  const wakatime::CLIResponse& arg);
+
+        std::ostream& operator<<(std::ostream& os, const wakatime::CLIResponse * arg);
+
+    typedef struct {
+        wxString* project_name;
+        wxString* file_name;
+        bool changed;
+    } ProjectInfo;
+
 
 /// @class cli
 /// the wakatime cli class, it has the needed methods
     class cli {
     public:
+        cli (){
+                if(!handle_cli()){
+                    assert(false && "ERROR");
+                }
+
+                last_heartbeat = 0s;
+
+	            OPT_SUB("Wakatime/API_Key", &cli::getKey, this);
+                OPT_SUB("Wakatime/Debug", &cli::getDebug, this);
+
+                this->plugin_info.aegisub_version = new wxString(GetAegisubLongVersionString());
+
+                this->setTime(new wxString("Loading..."));
+
+
+                this->getDebug();
+                this->getKey(); 
+
+                this->setTime(new wxString("No Project Selected"));
+            }
+
+
         /// Map to hold Combo instances
-        bool initialize(char* project_name);
-        void change_project(char* project_name, char* new_file);
-        void change_api_key(char* key);
-        bool send_heartbeat(char* file, bool isWrite, bool force = false);
+        bool initialize();
+        void change_project(wxString* new_file, wxString* project_name);
+        void change_api_key(wxString* key);
+        void send_heartbeat(bool isWrite);
+        ProjectInfo project_info = {
+            project_name : nullptr,
+            file_name: nullptr,
+            changed: false
+        };
+
+        wxString* currentTime;
+        std::function<void ()> updateFunction;
 
     private:
-        char * project_name;
-        char * key;
+        wxString* key;
         seconds last_heartbeat;
-        const char* program = "Aegisub";
-        const char* plugin_name = "wakatime-aegisub";
-        const char* type = "Advanced SubStation Alpha";
-        const char* version = "0.0.1";
-        char* cli_path;
+        bool debug;
+        Plugin plugin_info = {
+            program: "Aegisub",
+            plugin_name: "aegisub-wakatime",
+            short_type: "ASS",
+            long_type:"Advanced SubStation Alpha",
+            plugin_version: "1.0.1"
+        };
+        wxString* cli_path;
+
+        void get_time_today();
         bool handle_cli();
         bool is_cli_present();
         bool download_cli();
-        char* invoke_cli(char** options, size_t options_size);
+        bool is_key_valid(wxString key);
+        void getKey();
+        void getDebug();
+        void setTime(wxString* text);
 
+        void invoke_cli_async(wxArrayString* options, std::function<void ( CLIResponse response)> callback);
     };
 }
+
+#endif

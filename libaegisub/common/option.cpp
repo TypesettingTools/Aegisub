@@ -236,11 +236,11 @@ void Options::LoadConfig(std::istream& stream, bool ignore_errors) {
 
 	while (src_it != src_end && dst_it != dst_end) {
 		int cmp = (*src_it)->GetName().compare((*dst_it)->GetName());
-		if (cmp < 0) // Option doesn't exist in defaults so skip
+		if (cmp < 0) {// Option doesn't exist in defaults so skip
 			++src_it;
-		else if (cmp > 0)
+		} else if (cmp > 0){
 			++dst_it;
-		else {
+		} else {
 			if (ignore_errors) {
 				try {
 					(*dst_it)->Set((*src_it).get());
@@ -248,8 +248,7 @@ void Options::LoadConfig(std::istream& stream, bool ignore_errors) {
 				catch (agi::InternalError const& e) {
 					LOG_E("option/load/config_visitor") << "Error loading option from user configuration: " << e.GetMessage();
 				}
-			}
-			else {
+			} else {
 				*dst_it = std::move(*src_it);
 			}
 			++src_it;

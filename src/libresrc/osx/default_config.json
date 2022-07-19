@@ -612,5 +612,9 @@
 			"Show Keyframes" : true
 		},
 		"Subtitle Sync" : true
+	},
+	"Wakatime":{
+		"API_Key":"",
+		"Debug":false
 	}
 }
