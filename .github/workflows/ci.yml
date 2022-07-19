@@ -83,7 +83,7 @@ jobs:
     # This has issues running on self-hosted. See https://github.com/actions/setup-python/issues/162.
 
       #- name: Hard Install python3
-        #if: matrix.config.os == 'ubuntu-latest'
+        #if: matrix.config.os == 'ubuntu-22.04'
         #run: |
           #sudo apt-get update
           #sudo apt-get install python3 python3-pip -y
@@ -120,7 +120,7 @@ jobs:
           brew install pulseaudio  # NO OpenAL in github CI
 
       - name: Install dependencies (Linux)
-        if: matrix.config.os == 'ubuntu-latest'
+        if: matrix.config.os == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install ninja-build build-essential libx11-dev gcc-11 g++-11 libwxgtk3.0-gtk3-dev libgtk-3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev luarocks libcurl4-nss-dev lua5.1* -y
@@ -177,7 +177,7 @@ jobs:
 
       # linux (ubuntu) artifacts
       - name: Generate Linux (ubuntu) installer
-        if: matrix.config.os == 'ubuntu-latest'
+        if: matrix.config.os == 'ubuntu-22.04'
         run: |
           meson compile -C build linux-dependency-control
           meson compile -C build aegisub.desktop
@@ -186,7 +186,7 @@ jobs:
 
       - name: Upload artifacts - ubuntu deb
         uses: actions/upload-artifact@v3
-        if: matrix.config.os == 'ubuntu-latest' && ${{ !env.ACT }}
+        if: matrix.config.os == 'ubuntu-22.04' && ${{ !env.ACT }}
         with:
           name: ${{ matrix.config.name }} - deb package
           path: build/*.deb
