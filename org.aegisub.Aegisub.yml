@@ -1,6 +1,6 @@
 app-id: org.aegisub.Aegisub
 runtime: org.freedesktop.Platform
-runtime-version: '21.08'
+runtime-version: "21.08"
 sdk: org.freedesktop.Sdk
 command: aegisub
 modules:
@@ -12,8 +12,8 @@ modules:
       - -Dwx_version=3.2.0
       - --force-fallback-for=wxWidgets,icu,luajit
     build-options:
-        build-args:
+      build-args:
+        - --share=network
     sources:
-      - type: git
-        url: https://github.com/Totto16/Aegisub.git
-        branch: master
+      - type: dir
+        path: .
