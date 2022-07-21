@@ -43,3 +43,6 @@ subprojects/hunspell-*
 subprojects/uchardet-*
 
 .vscode/*
+
+flatpak-build/
+.flatpak-builder/

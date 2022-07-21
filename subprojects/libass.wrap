@@ -1,4 +1,4 @@
 [wrap-git]
 directory = libass
-url = https://github.com/TypesettingTools/libass.git
-revision = meson-pr
+url = https://github.com/libass/libass
+revision = 0.16.0

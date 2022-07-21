@@ -3,7 +3,7 @@ set -e
 
 ARG=$1
 
-if  [ -z $1 ]; then 
+if  [ -z "$1" ]; then 
 
 ARG="release"
 
@@ -15,7 +15,31 @@ export CXX=g++
 
 buildtype=""
 DEBUG="false"
-if [ $ARG == "release" ]; then 
+
+if [ $ARG == "--help" ] || [ $ARG == "-h"  ]; then 
+
+cat << 'EOF'
+Usage: ./compile.sh [options] [command] [subcommand]
+
+Compile script for building aegisub and additional tools
+
+Options:
+    -h, --help         display help for command
+
+Commands:
+    release
+    debug
+    clean
+    dev
+    runner
+    flatpak
+
+SubCommands:
+    ignore
+EOF
+
+    exit 0
+elif [ $ARG == "release" ]; then 
     buildtype="release"
 elif [ $ARG == "debug" ]; then
     buildtype="debugoptimized"
@@ -29,7 +53,19 @@ elif [ $ARG == "runner" ]; then
 
     ACT=$(which act)
 
-    sudo $ACT -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-22.04
+    sudo "$ACT" -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-22.04
+    exit 0
+elif [ $ARG == "flatpak" ]; then
+    BUILD_DIR="flatpak-build"
+    UNIQUE_ID="org.aegisub.Aegisub"
+    flatpak-builder --force-clean "$BUILD_DIR" "$UNIQUE_ID.yml"
+
+    ## now test
+
+    flatpak-builder --user --install --force-clean "$BUILD_DIR" "$UNIQUE_ID.yml"
+    flatpak run "$UNIQUE_ID"
+
+
     exit 0
 else
 
@@ -41,7 +77,7 @@ fi
 
     # CONFIGURE
 
-    bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true -Dwx_version=3.1.7"
+    bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true -Dlocal_wx=true -Dwx_version=3.1.7 --force-fallback-for=wxWidgets"
 
     if [ $DEBUG == "true" ]; then
         nodemon --watch src/ -e .cpp,.h --exec "sudo meson compile -C build && ./build/aegisub || exit 1"
@@ -69,14 +105,14 @@ fi
     sudo meson compile -C build linux-dependency-control
     sudo meson compile -C build aegisub.desktop
     sudo meson compile -C build ubuntu-deb
-    sudo meson compile -C build ubuntu.assdraw-deb
+#    sudo meson compile -C build ubuntu.assdraw-deb
 
 
-    # INSTALL if no second parameter is given
-    if  [ -z $2 ]; then
-        sudo dpkg -i build/$(ls build/  | grep aegisub_.*deb) || sudo apt-get -f install
-        sudo dpkg -i build/$(ls build/  | grep aegisub-l10n_.*deb)  || sudo apt-get -f install
-        sudo dpkg -i build/$(ls build/  | grep assdraw.*deb)  || sudo apt-get -f install
+    # INSTALL if no second parameter is given, not the best, but it works
+    if  [ -z "$2" ]; then
+        sudo dpkg -i "build/$(ls build/  | grep "aegisub_.*deb")" || sudo apt-get -f install
+        sudo dpkg -i "build/$(ls build/  | grep "aegisub-l10n_.*deb")"  || sudo apt-get -f install
+    #    sudo dpkg -i build/$(ls build/  | grep assdraw.*deb)  || sudo apt-get -f install
     else
 
         sudo meson install -C build
