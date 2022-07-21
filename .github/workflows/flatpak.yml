@@ -3,6 +3,8 @@ name: Flatpak build
 on:
   release:
     types: [published]
+  push:
+    branches: [ flatpak ]
   workflow_dispatch:
 env:
   CC: gcc-11
