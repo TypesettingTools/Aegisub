@@ -77,7 +77,7 @@ fi
 
     # CONFIGURE
 
-    bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true -Dlocal_wx=true -Dwx_version=3.1.7 --force-fallback-for=wxWidgets"
+    bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true  -Dwx_version=3.2.0 --force-fallback-for=wxWidgets"
 
     if [ $DEBUG == "true" ]; then
         nodemon --watch src/ -e .cpp,.h --exec "sudo meson compile -C build && ./build/aegisub || exit 1"

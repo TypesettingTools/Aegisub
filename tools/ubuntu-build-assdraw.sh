@@ -153,8 +153,9 @@ DEPENDECIES=$(dpkg-shlibdeps -O ../assdraw/src/assdraw 2>/dev/null)
 
 DEPENDECY_LIST=${DEPENDECIES:15}
 
-# adding luarocks, that is also needed for dependency control!
-echo "Depends: $DEPENDECY_LIST"  >> DEBIAN/control
+if [ ! -z "$DEPENDECY_LIST" ]; then
+    echo "Depends: $DEPENDECY_LIST"  >> DEBIAN/control
+fi
 
 rm debian/control
 
