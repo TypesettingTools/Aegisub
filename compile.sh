@@ -44,7 +44,7 @@ elif [ $ARG == "release" ]; then
 elif [ $ARG == "debug" ]; then
     buildtype="debugoptimized"
 elif [ $ARG == "clean" ]; then
-    sudo rm -rf build/
+    rm -rf build/
     exit 0
 elif [ $ARG == "dev" ]; then
     buildtype="debugoptimized"
@@ -89,11 +89,11 @@ fi
 
     ## maybe this has to be done:  git config --global --add safe.directory $PWD
 
-    sudo meson compile -C build
+    meson compile -C build
 
     ## run tests, these fail at the moment, for some file permission reasons :(
 
-    # meson test -C build --verbose "gtest main"
+    meson test -C build --verbose "gtest main"
 
     # PACK into DEB
 
@@ -102,21 +102,25 @@ fi
         exit 4
     fi
 
-    sudo meson compile -C build linux-dependency-control
-    sudo meson compile -C build aegisub.desktop
-    sudo meson compile -C build ubuntu-deb
-#    sudo meson compile -C build ubuntu.assdraw-deb
+    meson compile -C build linux-dependency-control
+    meson compile -C build aegisub.desktop
+    meson compile -C build ubuntu-deb
+    meson compile -C build ubuntu.assdraw-deb
 
 
     # INSTALL if no second parameter is given, not the best, but it works
     if  [ -z "$2" ]; then
         sudo dpkg -i "build/$(ls build/  | grep "aegisub_.*deb")" || sudo apt-get -f install
         sudo dpkg -i "build/$(ls build/  | grep "aegisub-l10n_.*deb")"  || sudo apt-get -f install
-    #    sudo dpkg -i build/$(ls build/  | grep assdraw.*deb)  || sudo apt-get -f install
+        sudo dpkg -i build/$(ls build/  | grep assdraw.*deb)  || sudo apt-get -f install
     else
 
-        sudo meson install -C build
-
+        #noop
+        bash -c ""
+        
+        # enable if needed
+        # sudo meson install -C build
+        
     fi
 
 
