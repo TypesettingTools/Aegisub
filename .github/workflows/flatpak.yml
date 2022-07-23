@@ -4,7 +4,7 @@ on:
   release:
     types: [published]
   push:
-    branches: [ flatpak ]
+    branches: [flatpak]
   workflow_dispatch:
 env:
   CC: gcc-11
@@ -12,12 +12,26 @@ env:
 
 jobs:
   flatpak:
-    name: "Flatpak"
+    name: "Flatpak build org.aegisub.Aegisub"
     runs-on: ubuntu-22.04
     container:
       image: bilelmoussaoui/flatpak-github-actions:freedesktop-21.08
       options: --privileged
     steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: tinywrkb/flathub
+          ref: org.freedesktop.Sdk.Extension.wxwidgets
+      - name: Install flatpak and flatpak Builder
+        run: |
+          sudo apt-get update
+          sudo apt-get install flatpak flatpak-builder -y
+      - name: Built wxWidgest Extension
+        run: flatpak-builder  wx-build/ org.freedesktop.Sdk.Extension.wxwidgets.yaml
+      - name: Install built Flatpak Extension
+        run: flatpak-builder --user --install  --force-clean  wx-build/ org.freedesktop.Sdk.Extension.wxwidgets.yaml
+      - name: Go back to root
+        run: cd ..
       - uses: actions/checkout@v3
         with:
           ref: flatpak
