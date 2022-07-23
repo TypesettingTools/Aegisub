@@ -108,6 +108,8 @@ wxDEFINE_EVENT(EVT_CALL_THUNK, ValueEvent<agi::dispatch::Thunk>);
 /// Message displayed when an exception has occurred.
 static wxString exception_message = "Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.";
 
+agi::fs::path 	AegisubApp::startCwd = agi::fs::path{};
+
 /// @brief Gets called when application starts.
 /// @return bool
 bool AegisubApp::OnInit() {
@@ -147,6 +149,8 @@ bool AegisubApp::OnInit() {
 	}
 
 	boost::filesystem::path::imbue(std::locale());
+
+	AegisubApp::startCwd = boost::filesystem::current_path();
 
 	// Pointless `this` capture required due to http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51494
 	agi::dispatch::Init([this](agi::dispatch::Thunk f) {
@@ -277,15 +281,7 @@ bool AegisubApp::OnInit() {
 		exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
 		// Load plugins
-
-		// Before Loading Plugins, save the current path, that could be changed by lua
-		auto cwd = boost::filesystem::current_path();
-
 		Automation4::ScriptFactory::Register(agi::make_unique<Automation4::LuaScriptFactory>());
-
-		// Then afterwards restore that path
-		boost::filesystem::current_path(cwd);
-
 		libass::CacheFonts();
 
 		// Load Automation scripts

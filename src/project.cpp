@@ -13,7 +13,7 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 //
 // Aegisub Project http://www.aegisub.org/
-
+#include "main.h"
 #include "project.h"
 
 #include "ass_dialogue.h"
@@ -469,9 +469,16 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	};
 
 	agi::fs::path audio, video, subs, timecodes, keyframes;
+	agi::fs::path currentWorkingDir = ! AegisubApp::startCwd.empty() ? AegisubApp::startCwd : boost::filesystem::current_path();
+
 	for (auto file : files) {
-		if (file.is_relative()) file = absolute(file);
-		if (!agi::fs::FileExists(file)) continue;
+				if (file.is_relative()) {
+			file = boost::filesystem::absolute(file, currentWorkingDir);
+		}
+
+		if (!agi::fs::FileExists(file)){
+			continue;
+		}
 
 		auto ext = file.extension().string();
 		boost::to_lower(ext);
