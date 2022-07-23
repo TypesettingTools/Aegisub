@@ -17,3 +17,4 @@ modules:
     sources:
       - type: dir
         path: .
+        disable-shallow-clone: true
