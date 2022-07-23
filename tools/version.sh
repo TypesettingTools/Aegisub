@@ -1,3 +1,6 @@
+
+set -xe
+
 builddir="$1"
 srcdir="$2"
 
