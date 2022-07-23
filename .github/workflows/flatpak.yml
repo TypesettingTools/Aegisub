@@ -22,11 +22,7 @@ jobs:
         with:
           repository: tinywrkb/flathub
           ref: org.freedesktop.Sdk.Extension.wxwidgets
-      - name: Install flatpak and flatpak Builder
-        run: |
-          sudo apt-get update
-          sudo apt-get install flatpak flatpak-builder -y
-      - name: Built wxWidgest Extension
+      - name: Build wxWidgest Extension
         run: flatpak-builder  wx-build/ org.freedesktop.Sdk.Extension.wxwidgets.yaml
       - name: Install built Flatpak Extension
         run: flatpak-builder --user --install  --force-clean  wx-build/ org.freedesktop.Sdk.Extension.wxwidgets.yaml
