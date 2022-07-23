@@ -282,15 +282,7 @@ bool AegisubApp::OnInit() {
 		exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
 		// Load plugins
-
-		// Before Loading Plugins, save the current path, that could be changed by lua
-		auto cwd = boost::filesystem::current_path();
-
 		Automation4::ScriptFactory::Register(agi::make_unique<Automation4::LuaScriptFactory>());
-
-		// Then afterwards restore that path
-		boost::filesystem::current_path(cwd);
-
 		libass::CacheFonts();
 
 		// Load Automation scripts
