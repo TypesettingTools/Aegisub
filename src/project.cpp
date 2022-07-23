@@ -469,11 +469,10 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	};
 
 	agi::fs::path audio, video, subs, timecodes, keyframes;
-	agi::fs::path currentWorkingDir = getenv("PWD") != nullptr ? getenv("PWD") : boost::filesystem::current_path();
-
+	
 	for (auto file : files) {
 		if (file.is_relative()) {
-			file = boost::filesystem::absolute(file,currentWorkingDir);
+			file = boost::filesystem::absolute(file,boost::filesystem::current_path());
 		}
 
 		if (!agi::fs::FileExists(file)){
