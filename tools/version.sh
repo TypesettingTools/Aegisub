@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 
 builddir="$1"
 srcdir="$2"
@@ -53,7 +55,7 @@ if [ -z $git_revision ]; then
     echo "git repo was corrupted or not cloned with all refs, this is probably a 'git clone' or similar error"
     exit 2
 elif ! [[ $yournumber =~ $re ]] ; then
-    echo "git_revision is not a number, but '$git_revision' , this happened probably due to a git rev issue!
+    echo "git_revision is not a number, but '$git_revision' , this happened probably due to a git rev issue!"
     exit 2
 fi 
 
