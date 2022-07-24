@@ -25,4 +25,4 @@ jobs:
         with:
           bundle: aegisub.flatpak
           manifest-path: org.aegisub.Aegisub.yml
-          run-tests: true
+          run-tests: false

@@ -32,6 +32,7 @@ modules:
         disable-shallow-clone: true
     post-install:
       - find subprojects/ -iregex ".*\.so" -exec cp {}  ${FLATPAK_DEST}/lib/ \;
+    run-tests: true
 
 finish-args:
   - --socket=x11
