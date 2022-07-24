@@ -20,20 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          repository: tinywrkb/flathub
-          ref: org.freedesktop.Sdk.Extension.wxwidgets
-      - name: Get Extensions that are required by the wxWidget Extension
-        run: |
-          flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-          flatpak install flathub  org.freedesktop.Sdk.Extension.vala/x86_64/21.08 org.freedesktop.Sdk.Extension.vala/x86_64/21.08 -y
-      - name: Build wxWidget Extension
-        run: flatpak-builder  wx-build/ org.freedesktop.Sdk.Extension.wxwidgets.yaml
-      - name: Install built Flatpak Extension
-        run: flatpak-builder --user --install  --force-clean  wx-build/ org.freedesktop.Sdk.Extension.wxwidgets.yaml
-      - name: Go back to root
-        run: cd ..
-      - uses: actions/checkout@v3
-        with:
           ref: flatpak
       - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
         with:

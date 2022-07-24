@@ -4,10 +4,17 @@ runtime-version: "21.08"
 sdk: org.freedesktop.Sdk
 command: aegisub
 modules:
-  - name: wxwidgets
-    buildsystem: simple
-    build-commands:
-      - /usr/lib/sdk/wxwidgets/install-wxwidgets.sh
+  - name: glu
+    buildsystem: meson
+    cleanup:
+      - /include
+      - /lib/debug
+      - /lib/pkgconfig
+      - /lib/*.a
+    sources:
+      - type: archive
+        url: https://ftp.osuosl.org/pub/blfs/conglomeration/glu/glu-9.0.2.tar.xz
+        sha256: 6e7280ff585c6a1d9dfcdf2fca489251634b3377bfc33c29e4002466a38d02d4
   - name: aegisub
     buildsystem: meson
     config-opts:
@@ -23,7 +30,15 @@ modules:
         url: https://github.com/Totto16/Aegisub.git
         branch: flatpak
         disable-shallow-clone: true
-  - name: move built libraries to the right location
-    buildsystem: simple
-    build-commands:
-      - echo "todo" #./move_dependencies.sh 
+    post-install:
+      - find subprojects/ -iregex ".*\.so" -exec cp {}  ${FLATPAK_DEST}/lib/ \;
+
+finish-args:
+  - --socket=x11
+  - --socket=wayland
+  - --socket=pulseaudio
+  - --share=network
+  - --device=all
+  - --device=dri
+  - --filesystem=~/.aegisub
+  - --filesystem=host 
