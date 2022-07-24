@@ -80,29 +80,8 @@ using namespace std::chrono;
 /// the wakatime cli class, it has the needed methods
     class cli {
     public:
-        cli (){
-                if(!handle_cli()){
-                    assert(false && "ERROR");
-                }
+        cli();
 
-                last_heartbeat = 0s;
-
-	            OPT_SUB("Wakatime/API_Key", &cli::getKey, this);
-                OPT_SUB("Wakatime/Debug", &cli::getDebug, this);
-
-                this->plugin_info.aegisub_version = new wxString(GetAegisubLongVersionString());
-
-                this->setTime(new wxString("Loading..."));
-
-
-                this->getDebug();
-                this->getKey(); 
-
-                this->setTime(new wxString("No Project Selected"));
-            }
-
-
-        /// Map to hold Combo instances
         bool initialize();
         void change_project(wxString* new_file, wxString* project_name);
         void change_api_key(wxString* key);
@@ -128,6 +107,7 @@ using namespace std::chrono;
             plugin_version: "1.0.1"
         };
         wxString* cli_path;
+        bool cliInstalled;
 
         void get_time_today();
         bool handle_cli();

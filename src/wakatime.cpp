@@ -40,7 +40,6 @@
 
 namespace wakatime {
 
-
     wxString* StringArrayToString(wxArrayString* input, wxString* seperator){
             wxString* output = new wxString();
             for(size_t i=0; i < input->GetCount(); ++i){
@@ -74,7 +73,7 @@ namespace wakatime {
                     output->Empty();
                     return output;
                 default:
-                    assert(false && "UNREACHABLE");
+                    assert(false && "UNREACHABLE default in switch case");
             }
         }
 
@@ -106,6 +105,32 @@ namespace wakatime {
 
 
 using namespace std::chrono;
+
+
+            cli::cli (){
+                if(!handle_cli()){
+                    this->cliInstalled = false;
+                    return;
+                }
+                this->cliInstalled = true;
+
+                last_heartbeat = 0s;
+
+	            OPT_SUB("Wakatime/API_Key", &cli::getKey, this);
+                OPT_SUB("Wakatime/Debug", &cli::getDebug, this);
+
+                this->plugin_info.aegisub_version = new wxString(GetAegisubLongVersionString());
+
+                this->setTime(new wxString("Loading..."));
+
+
+                this->getDebug();
+                this->getKey(); 
+
+                this->setTime(new wxString("No Project Selected"));
+            }
+
+
 
 
         void cli::change_project(wxString* new_file, wxString* project_name){
@@ -252,6 +277,17 @@ using namespace std::chrono;
         }
 
         void cli::invoke_cli_async(wxArrayString* options, std::function<void ( CLIResponse response)> callback){
+
+
+        if(!this->cliInstalled){
+            CLIResponse response = {
+                ok:false,
+                error_string : new wxString("Wakatime CLI not installed"),
+                output_string: nullptr
+            };
+            callback(response);
+            return;
+        }
 
         if(this->debug){
             options->Add("--verbose");
