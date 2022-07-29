@@ -501,11 +501,11 @@ std::string VisualToolBase::GetLineVectorClip(AssDialogue *diag, int &scale, boo
 		tag = find_tag(blocks, "\\clip");
 
 	if (tag && tag->size() == 4) {
-		return agi::format("m %d %d l %d %d %d %d %d %d"
-			, (*tag)[0].Get<int>(), (*tag)[1].Get<int>()
-			, (*tag)[2].Get<int>(), (*tag)[1].Get<int>()
-			, (*tag)[2].Get<int>(), (*tag)[3].Get<int>()
-			, (*tag)[0].Get<int>(), (*tag)[3].Get<int>());
+		return agi::format("m %.2f %.2f l %.2f %.2f %.2f %.2f %.2f %.2f"
+			, (*tag)[0].Get<double>(), (*tag)[1].Get<double>()
+			, (*tag)[2].Get<double>(), (*tag)[1].Get<double>()
+			, (*tag)[2].Get<double>(), (*tag)[3].Get<double>()
+			, (*tag)[0].Get<double>(), (*tag)[3].Get<double>());
 	}
 	if (tag) {
 		scale = std::max((*tag)[0].Get(scale), 1);

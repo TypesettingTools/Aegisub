@@ -70,7 +70,7 @@ public:
 	float Angle() const { return atan2(y, x); }
 
 	/// Get as string with given separator
-	std::string Str(char sep = ',') const;
+	std::string Str(char sep = ',', int precision = 2) const;
 	/// Get as string surrounded by parentheses with given separator
 	std::string PStr(char sep = ',') const;
 	/// Get as string with given separator with values rounded to ints

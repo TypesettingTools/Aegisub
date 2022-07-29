@@ -100,5 +100,5 @@ void VisualToolCross::Draw() {
 }
 
 std::string VisualToolCross::Text(Vector2D v) {
-	return video_res.X() > script_res.X() ? v.Str() : v.DStr();
+	return video_res.X() > script_res.X() ? v.Str(',', 3) : v.DStr();
 }

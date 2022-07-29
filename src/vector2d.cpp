@@ -87,6 +87,6 @@ std::string Vector2D::DStr(char sep) const {
 	return agi::format("%d%c%d", (int)x, sep, (int)y);
 }
 
-std::string Vector2D::Str(char sep) const {
-	return float_to_string(x) + sep + float_to_string(y);
+std::string Vector2D::Str(char sep, int precision) const {
+	return float_to_string(x, precision) + sep + float_to_string(y, precision);
 }
