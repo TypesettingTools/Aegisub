@@ -113,8 +113,9 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 	AVSValue script;
 
 	// Convert to one channel
-	if (OPT_GET("Audio/Downmixer")->GetString() != "None")
-		script = env->Invoke(OPT_GET("Audio/Downmixer")->GetString().c_str(), clip);
+	std::string downmixtype = OPT_GET("Audio/Downmixer")->GetString();
+	if (downmixtype == "ConvertToMono" || downmixtype == "GetLeftChannel" || downmixtype == "GetRightChannel")
+		script = env->Invoke(downmixtype.c_str(), clip);
 	else
 		script = clip;
 
