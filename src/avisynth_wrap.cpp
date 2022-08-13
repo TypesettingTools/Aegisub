@@ -105,7 +105,7 @@ AviSynthWrapper::AviSynthWrapper() {
 
 AviSynthWrapper::~AviSynthWrapper() {
 	if (!--avs_refcount) {
-		delete env;
+		env->DeleteScriptEnvironment();
 #ifdef _WIN32
 		FreeLibrary(hLib);
 #else
