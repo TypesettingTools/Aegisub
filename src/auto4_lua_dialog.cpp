@@ -286,6 +286,10 @@ namespace Automation4 {
 					max = DBL_MAX;
 					min = -DBL_MAX;
 				}
+				if (step != 0.0) {
+					min = min == -DBL_MAX ? 0.0 : min;
+					max = max == DBL_MAX ? 100.0 : max;
+				}
 			}
 
 			bool CanSerialiseValue() const override { return true; }
