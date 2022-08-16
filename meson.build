@@ -94,7 +94,7 @@ deps += dependency('libass', version: '>=0.9.7',
 
 boost_modules = ['chrono', 'filesystem', 'thread', 'locale', 'regex']
 if not get_option('local_boost')
-    boost_dep = dependency('boost', version: '>=1.50.0',
+    boost_dep = dependency('boost', version: '>=1.70.0',
                             modules: boost_modules + ['system'],
                             required: false,
                             static: get_option('default_library') == 'static')
@@ -117,7 +117,7 @@ deps += dependency('zlib')
 
 wx_minver = '>=' + get_option('wx_version')
 if host_machine.system() == 'darwin'
-    wx_minver = '>=3.1.0'
+    wx_minver = '>=3.2.0'
 endif
 wx_dep = dependency('wxWidgets', version: wx_minver,
                     required: false,
@@ -139,15 +139,13 @@ else
     opt_var.add_cmake_defines({
         'CMAKE_BUILD_TYPE': build_type,
 
-        'wxBUILD_INSTALL': false,
-        'wxBUILD_PRECOMP': false,       # otherwise breaks project generation w/ meson
-        'wxBUILD_MONOLITHIC': true,     # otherwise breaks project generation w/ meson
+        'wxBUILD_COMPATIBILITY': '3.1',
+        'wxBUILD_INSTALL': 'OFF',
+        'wxBUILD_PRECOMP': 'OFF',       # otherwise breaks project generation w/ meson
+        'wxBUILD_MONOLITHIC': 'ON',     # otherwise breaks project generation w/ meson
         'wxBUILD_SHARED': build_shared,
 
-        'WXWIN_COMPATIBILITY_2_4': false,
-        'WXWIN_COMPATIBILITY_2_6': false,
-        'WXWIN_COMPATIBILITY_2_8': false,
-        'wxDIALOG_UNIT_COMPATIBILITY': false,
+        'wxDIALOG_UNIT_COMPATIBILITY': 0,
         'wxUSE_ON_FATAL_EXCEPTION': 1,
         'wxUSE_STACKWALKER': 0,
         'wxUSE_DEBUGREPORT': 0,
@@ -175,7 +173,7 @@ else
         'wxUSE_CONSOLE_EVENTLOOP': 1,
         'wxUSE_FILE': 1,
         'wxUSE_FFILE': 1,
-        'wxUSE_FSVOLUME': 0,
+        'wxUSE_FSVOLUME': 1,
         'wxUSE_STDPATHS': 1,
         'wxUSE_TEXTBUFFER': 0,
         'wxUSE_TEXTFILE': 0,

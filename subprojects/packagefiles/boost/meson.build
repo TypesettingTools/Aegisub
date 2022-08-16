@@ -1,5 +1,5 @@
 project('boost', 'cpp',
-  version: '1.74.0',
+  version: '1.80.0',
   meson_version: '>=0.55.0')
 
 cpp = meson.get_compiler('cpp')

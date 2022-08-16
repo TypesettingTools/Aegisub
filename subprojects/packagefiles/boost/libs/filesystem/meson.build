@@ -12,6 +12,7 @@ filesystem_sources = files([
 ])
 
 filesystem_args = ['-DBOOST_FILESYSTEM_SOURCE',
+                   '-DBOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF=1',
                    is_static ? '-DBOOST_FILESYSTEM_STATIC_LINK=1' : '-DBOOST_FILESYSTEM_DYN_LINK=1']
 
 filesystem_deps = []
