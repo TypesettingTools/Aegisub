@@ -292,13 +292,9 @@ else
 endif
 
 if not deps.contains(luajit)
-    luajit_sp = subproject('luajit')
-    luajit_inc = luajit_sp.get_variable('src_inc')
-    deps += luajit_sp.get_variable('luajit_dep')
-else
-    luajit_inc = include_directories(luajit.get_variable('includedir'))
+    deps += subproject('luajit').get_variable('luajit_dep')
 endif
-subdir('subprojects/luabins/src')
+deps += subproject('luabins').get_variable('luabins_dep')
 
 dep_gl = dependency('gl', required: false)
 if not dep_gl.found()
@@ -342,7 +338,7 @@ aegisub_cpp_pch = ['src/include/agi_pre.h']
 aegisub_c_pch = ['src/include/agi_pre_c.h']
 
 aegisub = executable('aegisub', aegisub_src, version_h, acconf,
-                     link_with: [libresrc, libluabins, libaegisub],
+                     link_with: [libresrc, libaegisub],
                      include_directories: [libaegisub_inc, libresrc_inc, version_inc, deps_inc, include_directories('src')],
                      cpp_pch: aegisub_cpp_pch,
                      c_pch: aegisub_c_pch,
