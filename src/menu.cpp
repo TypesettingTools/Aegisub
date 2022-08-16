@@ -33,7 +33,6 @@
 #include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 #include <libaegisub/split.h>
 
@@ -161,7 +160,7 @@ class CommandManager {
 			text = c->StrMenu(context);
 		else
 			text = item.second->GetItemLabel().BeforeFirst('\t');
-		item.second->SetItemLabel(text + to_wx("\t" + hotkey::get_hotkey_str_first("Default", c->name())));
+		item.second->SetItemLabel(text + "\t" + to_wx(hotkey::get_hotkey_str_first("Default", c->name())));
 	}
 
 public:
@@ -192,7 +191,7 @@ public:
 			flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 			wxITEM_NORMAL;
 
-		menu_text += to_wx("\t" + hotkey::get_hotkey_str_first("Default", co->name()));
+		menu_text += "\t" + to_wx(hotkey::get_hotkey_str_first("Default", co->name()));
 
 		wxMenuItem *item = new wxMenuItem(parent, MENU_ID_BASE + items.size(), menu_text, co->StrHelp(), kind);
 #ifndef __WXMAC__
@@ -472,7 +471,7 @@ class AutomationMenu final : public wxMenu {
 			for (auto section : agi::Split(name, wxS('/'))) {
 				std::string sectionname(section.begin(), section.end());
 
-				if (section.end() == name.end()) {
+				if (section.end() == std::string_view(name).end()) {
 					parent->subitems.emplace_back(sectionname, macro);
 				}
 				else {
@@ -514,7 +513,7 @@ namespace menu {
 		}
 #endif
 
-		auto menu = agi::make_unique<CommandMenuBar>(c);
+		auto menu = std::make_unique<CommandMenuBar>(c);
 		for (auto const& item : get_menu(name)) {
 			std::string submenu, disp;
 			read_entry(item, "submenu", &submenu);
@@ -548,7 +547,7 @@ namespace menu {
 	}
 
 	std::unique_ptr<wxMenu> GetMenu(std::string const& name, agi::Context *c) {
-		auto menu = agi::make_unique<CommandMenu>(c);
+		auto menu = std::make_unique<CommandMenu>(c);
 		build_menu(name, c, &menu->cm, menu.get());
 		menu->Bind(wxEVT_MENU_OPEN, &CommandManager::OnMenuOpen, &menu->cm);
 		menu->Bind(wxEVT_MENU, &CommandManager::OnMenuClick, &menu->cm);

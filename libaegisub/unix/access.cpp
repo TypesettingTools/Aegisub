@@ -21,7 +21,7 @@
 #include "libaegisub/fs.h"
 
 #include <sys/stat.h>
-#include <errno.h>
+#include <cerrno>
 #include <unistd.h>
 
 #include <boost/filesystem/path.hpp>

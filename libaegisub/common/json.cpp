@@ -41,7 +41,7 @@ json::UnknownElement parse(std::istream &stream) {
 	}
 }
 
-json::UnknownElement file(agi::fs::path const& file, std::pair<const char *, size_t> default_config) {
+json::UnknownElement file(agi::fs::path const& file, std::string_view default_config) {
 	try {
 		if (fs::FileExists(file))
 			return parse(*io::Open(file));
@@ -55,7 +55,7 @@ json::UnknownElement file(agi::fs::path const& file, std::pair<const char *, siz
 	catch (agi::Exception& e) {
 		LOG_E("json/file") << "Unexpected error when reading config file " << file << ": " << e.GetMessage();
 	}
-	boost::interprocess::ibufferstream stream(default_config.first, default_config.second);
+	boost::interprocess::ibufferstream stream(default_config.data(), default_config.size());
 	return parse(stream);
 }
 

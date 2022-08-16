@@ -25,7 +25,7 @@
 #include <boost/range/algorithm/remove_if.hpp>
 #include <chrono>
 
-namespace agi { namespace log {
+namespace agi::log {
 
 /// Global log sink.
 LogSink *log;
@@ -117,4 +117,4 @@ void JsonEmitter::log(SinkMessage const& sm) {
 	fp->flush();
 }
 
-} }
+}

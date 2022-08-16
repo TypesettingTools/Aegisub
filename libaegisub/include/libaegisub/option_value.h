@@ -68,7 +68,7 @@ class OptionValue {
 protected:
 	void NotifyChanged() { ValueChanged(*this); }
 
-	OptionValue(std::string name) BOOST_NOEXCEPT : name(std::move(name)) { }
+	OptionValue(std::string name) noexcept : name(std::move(name)) { }
 
 public:
 	virtual ~OptionValue() = default;
@@ -130,16 +130,16 @@ CONFIG_OPTIONVALUE(Double, double)
 CONFIG_OPTIONVALUE(Color, Color)
 CONFIG_OPTIONVALUE(Bool, bool)
 
-#define CONFIG_OPTIONVALUE_LIST(type_name, type)                                          \
+#define CONFIG_OPTIONVALUE_LIST(type_name, type, rt)                                      \
 	class OptionValueList##type_name final : public OptionValue {                         \
 		std::vector<type> array;                                                          \
 		std::vector<type> array_default;                                                  \
 		std::string name;                                                                 \
 	public:                                                                               \
-		typedef std::vector<type> value_type;                                             \
-		OptionValueList##type_name(std::string name, std::vector<type> const& value = std::vector<type>()) \
-		: OptionValue(std::move(name))                                                    \
-		, array(value), array_default(value) { }                                          \
+		using value_type = std::vector<type>;                                             \
+		using raw_type = rt;                                                              \
+		OptionValueList##type_name(std::string name, std::vector<type> const& value = {}) \
+		: OptionValue(std::move(name)), array(value), array_default(value) { }            \
 		std::vector<type> const& GetValue() const { return array; }                       \
 		void SetValue(std::vector<type> val) { array = std::move(val); NotifyChanged(); } \
 		OptionType GetType() const { return OptionType::List##type_name; }                \
@@ -148,11 +148,11 @@ CONFIG_OPTIONVALUE(Bool, bool)
 		void Set(const OptionValue *nv);                                                  \
 	};
 
-CONFIG_OPTIONVALUE_LIST(String, std::string)
-CONFIG_OPTIONVALUE_LIST(Int, int64_t)
-CONFIG_OPTIONVALUE_LIST(Double, double)
-CONFIG_OPTIONVALUE_LIST(Color, Color)
-CONFIG_OPTIONVALUE_LIST(Bool, bool)
+CONFIG_OPTIONVALUE_LIST(String, std::string, std::string)
+CONFIG_OPTIONVALUE_LIST(Int, int64_t, int64_t)
+CONFIG_OPTIONVALUE_LIST(Double, double, double)
+CONFIG_OPTIONVALUE_LIST(Color, Color, std::string)
+CONFIG_OPTIONVALUE_LIST(Bool, bool, bool)
 
 #define CONFIG_OPTIONVALUE_ACCESSORS(ReturnType, Type) \
 	inline ReturnType const& OptionValue::Get##Type() const { return As<OptionValue##Type>(OptionType::Type)->GetValue(); } \

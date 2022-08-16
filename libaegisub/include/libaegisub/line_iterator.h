@@ -49,7 +49,6 @@ public:
 	line_iterator_base& operator=(line_iterator_base&&) = default;
 
 	bool operator==(line_iterator_base const& rgt) const { return stream == rgt.stream; }
-	bool operator!=(line_iterator_base const& rgt) const { return !operator==(rgt); }
 };
 
 /// @class line_iterator

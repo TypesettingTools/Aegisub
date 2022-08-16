@@ -13,7 +13,7 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include <cstdlib>
-#include <utility>
+#include <string_view>
 
 #include "bitmap.h"
 #include "default_config.h"
@@ -27,4 +27,4 @@ wxIcon libresrc_geticon(const unsigned char *image, size_t size);
 #define GETIMAGEDIR(a, s, d) libresrc_getimage(a, sizeof(a), s, d)
 #define GETICON(a) libresrc_geticon(a, sizeof(a))
 
-#define GET_DEFAULT_CONFIG(a) std::make_pair(reinterpret_cast<const char *>(a), sizeof(a))
+#define GET_DEFAULT_CONFIG(a) std::string_view(reinterpret_cast<const char *>(a), sizeof(a))

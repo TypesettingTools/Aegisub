@@ -37,13 +37,17 @@ struct releaser {
 template<typename T>
 using objc_ptr = std::unique_ptr<T, releaser>;
 
+NSString *ns_str(std::string_view str) {
+    return [[[NSString alloc] initWithBytes:str.data() length:str.length() encoding:NSUTF8StringEncoding] autorelease];
+}
+
 class CocoaSpellChecker final : public agi::SpellChecker {
+    NSSpellChecker *spellChecker = NSSpellChecker.sharedSpellChecker;
     objc_ptr<NSString> language;
     agi::signal::Connection lang_listener;
 
     void OnLanguageChanged(agi::OptionValue const& opt) {
-        language.reset([[NSString alloc] initWithCString:opt.GetString().c_str()
-                                                encoding:NSUTF8StringEncoding]);
+        language.reset(ns_str(opt.GetString()).retain);
     }
 
 public:
@@ -54,50 +58,49 @@ public:
     }
 
     std::vector<std::string> GetLanguageList() override {
-        return array_to_vector([[NSSpellChecker sharedSpellChecker] availableLanguages]);
+        return array_to_vector(NSSpellChecker.sharedSpellChecker.availableLanguages);
     }
 
-    bool CheckWord(std::string const& word) override {
-        auto str = [NSString stringWithUTF8String:word.c_str()];
-        auto range = [NSSpellChecker.sharedSpellChecker checkSpellingOfString:str
-                                                                   startingAt:0
-                                                                     language:language.get()
-                                                                         wrap:NO
-                                                       inSpellDocumentWithTag:0
-                                                                    wordCount:nullptr];
+    bool CheckWord(std::string_view word) override {
+        auto range = [spellChecker checkSpellingOfString:ns_str(word)
+                                              startingAt:0
+                                                language:language.get()
+                                                    wrap:NO
+                                  inSpellDocumentWithTag:0
+                                               wordCount:nullptr];
         return range.location == NSNotFound;
     }
 
-    std::vector<std::string> GetSuggestions(std::string const& word) override {
-        auto str = [NSString stringWithUTF8String:word.c_str()];
-        auto range = [NSSpellChecker.sharedSpellChecker checkSpellingOfString:str
-                                                                   startingAt:0
-                                                                     language:language.get()
-                                                                         wrap:NO
-                                                       inSpellDocumentWithTag:0
-                                                                    wordCount:nullptr];
-        return array_to_vector([NSSpellChecker.sharedSpellChecker guessesForWordRange:range
-                                                                             inString:str
-                                                                             language:language.get()
-                                                               inSpellDocumentWithTag:0]);
+    std::vector<std::string> GetSuggestions(std::string_view word) override {
+        auto str = ns_str(word);
+        auto range = [spellChecker checkSpellingOfString:str
+                                              startingAt:0
+                                                language:language.get()
+                                                    wrap:NO
+                                  inSpellDocumentWithTag:0
+                                               wordCount:nullptr];
+        return array_to_vector([spellChecker guessesForWordRange:range
+                                                        inString:str
+                                                        language:language.get()
+                                          inSpellDocumentWithTag:0]);
     }
 
-    bool CanAddWord(std::string const&) override {
+    bool CanAddWord(std::string_view) override {
         return true;
     }
 
-    bool CanRemoveWord(std::string const& str) override {
-        return [NSSpellChecker.sharedSpellChecker hasLearnedWord:[NSString stringWithUTF8String:str.c_str()]];
+    bool CanRemoveWord(std::string_view str) override {
+        return [spellChecker hasLearnedWord:ns_str(str)];
     }
 
-    void AddWord(std::string const& word) override {
-        NSSpellChecker.sharedSpellChecker.language = language.get();
-        [NSSpellChecker.sharedSpellChecker learnWord:[NSString stringWithUTF8String:word.c_str()]];
+    void AddWord(std::string_view word) override {
+        spellChecker.language = language.get();
+        [spellChecker learnWord:ns_str(word)];
     }
 
-    void RemoveWord(std::string const& word) override {
-        NSSpellChecker.sharedSpellChecker.language = language.get();
-        [NSSpellChecker.sharedSpellChecker unlearnWord:[NSString stringWithUTF8String:word.c_str()]];
+    void RemoveWord(std::string_view word) override {
+        spellChecker.language = language.get();
+        [spellChecker unlearnWord:ns_str(word)];
     }
 };
 }

@@ -30,8 +30,7 @@ std::string from_w(agi::charset::IconvWrapper &w32Conv, std::wstring const& sour
 }
 }
 
-namespace agi {
-	namespace charset {
+namespace agi::charset {
 
 std::wstring ConvertW(std::string const& source) {
 	static IconvWrapper w32Conv("utf-8", "utf-16le", false);
@@ -54,4 +53,3 @@ std::string ConvertLocal(std::wstring const& source) {
 }
 
 	}
-}

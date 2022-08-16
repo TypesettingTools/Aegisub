@@ -51,7 +51,6 @@
 
 #include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/charset_conv.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/range/algorithm/copy.hpp>
 #include <wx/msgdlg.h>
@@ -452,24 +451,24 @@ struct subtitle_spellcheck final : public Command {
 
 namespace cmd {
 	void init_subtitle() {
-		reg(agi::make_unique<subtitle_attachment>());
-		reg(agi::make_unique<subtitle_find>());
-		reg(agi::make_unique<subtitle_find_next>());
-		reg(agi::make_unique<subtitle_insert_after>());
-		reg(agi::make_unique<subtitle_insert_after_videotime>());
-		reg(agi::make_unique<subtitle_insert_before>());
-		reg(agi::make_unique<subtitle_insert_before_videotime>());
-		reg(agi::make_unique<subtitle_new>());
-		reg(agi::make_unique<subtitle_close>());
-		reg(agi::make_unique<subtitle_open>());
-		reg(agi::make_unique<subtitle_open_autosave>());
-		reg(agi::make_unique<subtitle_open_charset>());
-		reg(agi::make_unique<subtitle_open_video>());
-		reg(agi::make_unique<subtitle_properties>());
-		reg(agi::make_unique<subtitle_save>());
-		reg(agi::make_unique<subtitle_save_as>());
-		reg(agi::make_unique<subtitle_select_all>());
-		reg(agi::make_unique<subtitle_select_visible>());
-		reg(agi::make_unique<subtitle_spellcheck>());
+		reg(std::make_unique<subtitle_attachment>());
+		reg(std::make_unique<subtitle_find>());
+		reg(std::make_unique<subtitle_find_next>());
+		reg(std::make_unique<subtitle_insert_after>());
+		reg(std::make_unique<subtitle_insert_after_videotime>());
+		reg(std::make_unique<subtitle_insert_before>());
+		reg(std::make_unique<subtitle_insert_before_videotime>());
+		reg(std::make_unique<subtitle_new>());
+		reg(std::make_unique<subtitle_close>());
+		reg(std::make_unique<subtitle_open>());
+		reg(std::make_unique<subtitle_open_autosave>());
+		reg(std::make_unique<subtitle_open_charset>());
+		reg(std::make_unique<subtitle_open_video>());
+		reg(std::make_unique<subtitle_properties>());
+		reg(std::make_unique<subtitle_save>());
+		reg(std::make_unique<subtitle_save_as>());
+		reg(std::make_unique<subtitle_select_all>());
+		reg(std::make_unique<subtitle_select_visible>());
+		reg(std::make_unique<subtitle_spellcheck>());
 	}
 }

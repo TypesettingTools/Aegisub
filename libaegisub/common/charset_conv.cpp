@@ -16,7 +16,7 @@
 /// @brief Wrapper for libiconv to present a more C++-friendly API
 /// @ingroup libaegisub
 
-#include <errno.h>
+#include <cerrno>
 #include <cstdint>
 
 #include <cassert>
@@ -189,7 +189,7 @@ namespace {
 			if (code == 0xFEFF) return;
 			if (code == 0x5C) callback("\\", 1, callback_arg);
 			else {
-				ConverterImpl *self = static_cast<ConverterImpl *>(convPtr);
+				auto *self = static_cast<ConverterImpl *>(convPtr);
 				callback(self->invalidRep, self->invalidRepSize, callback_arg);
 			}
 		}
@@ -271,7 +271,7 @@ namespace {
 	}
 } // namespace {
 
-namespace agi { namespace charset {
+namespace agi::charset {
 Iconv::Iconv() : cd(iconv_invalid) { }
 
 Iconv::Iconv(const char *source, const char *dest)
@@ -298,7 +298,7 @@ IconvWrapper::IconvWrapper(const char* sourceEncoding, const char* destEncoding,
 	fromNulLen = nul_size(sourceEncoding);
 }
 
-IconvWrapper::~IconvWrapper() { }
+IconvWrapper::~IconvWrapper() = default;
 
 std::string IconvWrapper::Convert(const char *source, size_t len) {
 	std::string dest;
@@ -425,4 +425,3 @@ bool IsConversionSupported(const char *src, const char *dst) {
 }
 
 	}
-}

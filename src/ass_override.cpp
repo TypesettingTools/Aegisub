@@ -35,11 +35,10 @@
 #include <libaegisub/color.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/format.h>
-#include <libaegisub/make_unique.h>
+#include <libaegisub/split.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/trim.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <functional>
@@ -85,12 +84,12 @@ template<> bool AssOverrideParameter::Get<bool>() const {
 }
 
 template<> agi::Color AssOverrideParameter::Get<agi::Color>() const {
-	return Get<std::string>();
+	return std::string_view(Get<std::string>());
 }
 
 template<> AssDialogueBlockOverride *AssOverrideParameter::Get<AssDialogueBlockOverride*>() const {
 	if (!block) {
-		block = agi::make_unique<AssDialogueBlockOverride>(Get<std::string>());
+		block = std::make_unique<AssDialogueBlockOverride>(Get<std::string>());
 		block->ParseTags();
 	}
 	return block.get();
@@ -307,7 +306,7 @@ static void load_protos() {
 	proto[i].AddParam(VariableDataType::BLOCK);
 }
 
-std::vector<std::string> tokenize(const std::string &text) {
+std::vector<std::string> tokenize(std::string_view text) {
 	std::vector<std::string> paramList;
 	paramList.reserve(6);
 
@@ -317,7 +316,7 @@ std::vector<std::string> tokenize(const std::string &text) {
 	if (text[0] != '(') {
 		// There's just one parameter (because there's no parentheses)
 		// This means text is all our parameters
-		paramList.emplace_back(boost::trim_copy(text));
+		paramList.emplace_back(agi::Trim(text));
 		return paramList;
 	}
 
@@ -344,7 +343,7 @@ std::vector<std::string> tokenize(const std::string &text) {
 			i++;
 		}
 		// i now points to the first character not member of this parameter
-		paramList.emplace_back(boost::trim_copy(text.substr(start, i - start)));
+		paramList.emplace_back(agi::Trim(text.substr(start, i - start)));
 	}
 
 	if (i+1 < textlen) {
@@ -355,7 +354,7 @@ std::vector<std::string> tokenize(const std::string &text) {
 	return paramList;
 }
 
-void parse_parameters(AssOverrideTag *tag, const std::string &text, AssOverrideTagProto::iterator proto_it) {
+void parse_parameters(AssOverrideTag *tag, std::string_view text, AssOverrideTagProto::iterator proto_it) {
 	tag->Clear();
 
 	// Tokenize text, attempting to find all parameters

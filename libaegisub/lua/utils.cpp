@@ -20,16 +20,16 @@
 #include "libaegisub/log.h"
 
 #include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/reversed.hpp>
-#include <boost/regex.hpp>
+
+#include <regex>
 
 #ifdef _MSC_VER
 // Disable warnings for noreturn functions having return types
 #pragma warning(disable: 4645 4646)
 #endif
 
-namespace agi { namespace lua {
+namespace agi::lua {
 std::string get_string_or_default(lua_State *L, int idx) {
 	size_t len = 0;
 	const char *str = lua_tolstring(L, idx, &len);
@@ -140,8 +140,8 @@ int add_stack_trace(lua_State *L) {
 
 	// Strip the location from the error message since it's redundant with
 	// the stack trace
-	boost::regex location(R"(^\[string ".*"\]:[0-9]+: )");
-	message = regex_replace(message, location, "", boost::format_first_only);
+	std::regex location(R"(^\[string ".*"\]:[0-9]+: )");
+    message = regex_replace(message, location, "", std::regex_constants::format_first_only);
 
 	std::vector<std::string> frames;
 	frames.emplace_back(std::move(message));
@@ -157,7 +157,7 @@ int add_stack_trace(lua_State *L) {
 			std::string file = ar.source;
 			if (file == "=[C]")
 				file = "<C function>";
-			else if (boost::ends_with(file, ".moon"))
+			else if (file.ends_with(".moon"))
 				is_moon = true;
 
 			auto real_line = [&](int line) {
@@ -181,7 +181,7 @@ int add_stack_trace(lua_State *L) {
 	return 1;
 }
 
-int BOOST_NORETURN error(lua_State *L, const char *fmt, ...) {
+[[noreturn]] int error(lua_State *L, const char *fmt, ...) {
 	va_list argp;
 	va_start(argp, fmt);
 	luaL_where(L, 1);
@@ -191,7 +191,7 @@ int BOOST_NORETURN error(lua_State *L, const char *fmt, ...) {
 	throw error_tag();
 }
 
-int BOOST_NORETURN argerror(lua_State *L, int narg, const char *extramsg) {
+[[noreturn]] int argerror(lua_State *L, int narg, const char *extramsg) {
 	lua_Debug ar;
 	if (!lua_getstack(L, 0, &ar))
 		error(L, "bad argument #%d (%s)", narg, extramsg);
@@ -203,7 +203,7 @@ int BOOST_NORETURN argerror(lua_State *L, int narg, const char *extramsg) {
 		narg, ar.name, extramsg);
 }
 
-int BOOST_NORETURN typerror(lua_State *L, int narg, const char *tname) {
+[[noreturn]] int typerror(lua_State *L, int narg, const char *tname) {
 	const char *msg = lua_pushfstring(L, "%s expected, got %s",
 		tname, luaL_typename(L, narg));
 	argerror(L, narg, msg);
@@ -260,5 +260,4 @@ void LuaStackcheck::dump() {
 }
 #endif
 
-}
 }

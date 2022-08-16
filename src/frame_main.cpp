@@ -61,7 +61,6 @@
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 
 #include <wx/dnd.h>
 #include <wx/msgdlg.h>
@@ -95,7 +94,7 @@ public:
 
 FrameMain::FrameMain()
 : wxFrame(nullptr, -1, "", wxDefaultPosition, wxSize(920,700), wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
-, context(agi::make_unique<agi::Context>())
+, context(std::make_unique<agi::Context>())
 {
 	StartupLog("Entering FrameMain constructor");
 

@@ -111,7 +111,7 @@ void Spline::DecodeFromAss(std::string const& str) {
 	// Tokenize the string
 	for (auto token : agi::Split(str, ' ')) {
 		double n;
-		if (agi::util::try_parse(agi::str(token), &n)) {
+		if (agi::util::try_parse(token, &n)) {
 			stack.push_back(n);
 
 			// Move

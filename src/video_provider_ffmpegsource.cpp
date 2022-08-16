@@ -41,7 +41,6 @@
 #include "video_frame.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 
 namespace {
 typedef enum AGI_ColorSpaces {
@@ -374,7 +373,7 @@ void FFmpegSourceVideoProvider::GetFrame(int n, VideoFrame &out) {
 }
 
 std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const& path, std::string const& colormatrix, agi::BackgroundRunner *br) {
-	return agi::make_unique<FFmpegSourceVideoProvider>(path, colormatrix, br);
+	return std::make_unique<FFmpegSourceVideoProvider>(path, colormatrix, br);
 }
 
 #endif /* WITH_FFMS2 */

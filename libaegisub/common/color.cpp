@@ -24,7 +24,7 @@ Color::Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 : r(r), g(g), b(b), a(a)
 { }
 
-Color::Color(std::string const& str) {
+Color::Color(std::string_view str) {
 	parser::parse(*this, str);
 }
 
@@ -48,14 +48,6 @@ std::string Color::GetHexFormatted(bool rgba) const {
 
 std::string Color::GetRgbFormatted() const {
 	return agi::format("rgb(%d, %d, %d)", r, g, b);
-}
-
-bool Color::operator==(Color const& col) const {
-	return r == col.r && g == col.g && b == col.b && a == col.a;
-}
-
-bool Color::operator!=(Color const& col) const {
-	return !(*this == col);
 }
 
 }

@@ -42,11 +42,9 @@
 #include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/split.h>
 
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/algorithm/string/trim.hpp>
 #include <future>
 
 #include <wx/dcmemory.h>
@@ -263,7 +261,7 @@ namespace Automation4 {
 
 		std::string include_paths = OPT_GET("Path/Automation/Include")->GetString();
 		for (auto tok : agi::Split(include_paths, '|')) {
-			auto path = config::path->Decode(agi::str(tok));
+			auto path = config::path->Decode(std::string(tok));
 			if (path.is_absolute() && agi::fs::DirectoryExists(path))
 				include_path.emplace_back(std::move(path));
 		}
@@ -323,7 +321,7 @@ namespace Automation4 {
 		std::vector<std::future<std::unique_ptr<Script>>> script_futures;
 
 		for (auto tok : agi::Split(path, '|')) {
-			auto dirname = config::path->Decode(agi::str(tok));
+			auto dirname = config::path->Decode(std::string(tok));
 			if (!agi::fs::DirectoryExists(dirname)) continue;
 
 			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*"))
@@ -373,8 +371,8 @@ namespace Automation4 {
 		auto autobasefn(OPT_GET("Path/Automation/Base")->GetString());
 
 		for (auto tok : agi::Split(local_scripts, '|')) {
-			tok = boost::trim_copy(tok);
-			if (boost::size(tok) == 0) continue;
+			tok = agi::Trim(tok);
+			if (tok.size() == 0) continue;
 			char first_char = tok[0];
 			std::string trimmed(begin(tok) + 1, end(tok));
 
@@ -418,7 +416,7 @@ namespace Automation4 {
 
 			auto scriptfn(script->GetFilename().string());
 			auto autobase_rel = context->path->MakeRelative(scriptfn, autobasefn);
-			auto assfile_rel = context->path->MakeRelative(scriptfn, "?script");
+			auto assfile_rel = context->path->MakeRelative(scriptfn, std::string_view("?script"));
 
 			if (autobase_rel.string().size() <= scriptfn.size() && autobase_rel.string().size() <= assfile_rel.string().size()) {
 				scriptfn = "$" + autobase_rel.generic_string();
@@ -464,7 +462,7 @@ namespace Automation4 {
 			wxLogError(_("The file was not recognised as an Automation script: %s"), filename.wstring());
 		}
 
-		return create_unknown ? agi::make_unique<UnknownScript>(filename) : nullptr;
+		return create_unknown ? std::make_unique<UnknownScript>(filename) : nullptr;
 	}
 
 	std::vector<std::unique_ptr<ScriptFactory>>& ScriptFactory::Factories()

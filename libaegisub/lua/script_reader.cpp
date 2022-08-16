@@ -24,7 +24,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <lauxlib.h>
 
-namespace agi { namespace lua {
+namespace agi::lua {
 	bool LoadFile(lua_State *L, agi::fs::path const& raw_filename) {
 		auto filename = raw_filename;
 		try {
@@ -36,7 +36,7 @@ namespace agi { namespace lua {
 
 		agi::read_file_mapping file(filename);
 		auto buff = file.read();
-		size_t size = static_cast<size_t>(file.size());
+		auto size = static_cast<size_t>(file.size());
 
 		// Discard the BOM if present
 		if (size >= 3 && buff[0] == -17 && buff[1] == -69 && buff[2] == -65) {
@@ -162,4 +162,4 @@ namespace agi { namespace lua {
 
 		return true;
 	}
-} }
+}

@@ -39,7 +39,6 @@
 #include "options.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 
 #include <map>
 
@@ -183,7 +182,7 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 }
 
 std::unique_ptr<agi::AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *br) {
-	return agi::make_unique<FFmpegSourceAudioProvider>(file, br);
+	return std::make_unique<FFmpegSourceAudioProvider>(file, br);
 }
 
 #endif /* WITH_FFMS2 */

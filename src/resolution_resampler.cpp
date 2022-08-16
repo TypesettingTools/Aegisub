@@ -69,9 +69,9 @@ namespace {
 		std::string final;
 		final.reserve(drawing.size());
 
-		for (auto const& cur : agi::Split(drawing, ' ')) {
+		for (auto cur : agi::Split(drawing, ' ')) {
 			double val;
-			if (agi::util::try_parse(agi::str(cur), &val)) {
+			if (agi::util::try_parse(cur, &val)) {
 				if (is_x)
 					val = (val + shift_x) * scale_x;
 				else

@@ -17,6 +17,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 namespace agi {
 class Time {
@@ -25,7 +26,7 @@ class Time {
 
 public:
 	Time(int ms = 0);
-	Time(std::string const& text);
+	Time(std::string_view text);
 
 	/// Get millisecond, rounded to centisecond precision
 	// Always round up for 5ms because the range is [start, stop)

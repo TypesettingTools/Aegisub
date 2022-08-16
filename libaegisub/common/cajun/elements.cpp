@@ -36,7 +36,7 @@ struct CastVisitor final : public CastVisitorBase {
 namespace json {
 class UnknownElement::Imp {
 public:
-	virtual ~Imp() {}
+	virtual ~Imp() = default;
 	virtual void Accept(ConstVisitor& visitor) const = 0;
 	virtual void Accept(Visitor& visitor) = 0;
 };
@@ -50,18 +50,20 @@ class Imp_T final : public UnknownElement::Imp {
 public:
 	Imp_T(ElementTypeT element) : m_Element(std::move(element)) { }
 
-	void Accept(ConstVisitor& visitor) const { visitor.Visit(m_Element); }
-	void Accept(Visitor& visitor)            { visitor.Visit(m_Element); }
+	void Accept(ConstVisitor& visitor) const override { visitor.Visit(m_Element); }
+	void Accept(Visitor& visitor) override            { visitor.Visit(m_Element); }
 };
 }
 
 namespace json {
-UnknownElement::UnknownElement()                         : m_pImp(new Imp_T<Null>(Null())) {}
-UnknownElement::UnknownElement(UnknownElement&& unknown) : m_pImp(std::move(unknown.m_pImp)) {}
+UnknownElement::UnknownElement() noexcept = default;
 UnknownElement::UnknownElement(int number)               : m_pImp(new Imp_T<Integer>(number)) {}
 UnknownElement::UnknownElement(const char *string)       : m_pImp(new Imp_T<String>(string)) {}
+UnknownElement::UnknownElement(std::string_view string)  : m_pImp(new Imp_T<String>(String(string))) {}
 
-UnknownElement::~UnknownElement() { }
+UnknownElement::UnknownElement(UnknownElement&& unknown) noexcept = default;
+UnknownElement& UnknownElement::operator=(UnknownElement&& unknown) noexcept = default;
+UnknownElement::~UnknownElement() = default;
 
 #define DEFINE_UE_TYPE(Type) \
 	UnknownElement::UnknownElement(Type val) : m_pImp(new Imp_T<Type>(std::move(val))) { } \
@@ -76,37 +78,45 @@ DEFINE_UE_TYPE(Boolean)
 DEFINE_UE_TYPE(String)
 DEFINE_UE_TYPE(Null)
 
-UnknownElement& UnknownElement::operator=(UnknownElement&& unknown) {
-   m_pImp = std::move(unknown.m_pImp);
-   return *this;
-}
-
 template <typename ElementTypeT>
 ElementTypeT const& UnknownElement::CastTo() const {
-   CastVisitor<ElementTypeT> castVisitor;
-   const_cast<UnknownElement *>(this)->Accept(castVisitor);
-   if (!castVisitor.element)
-      throw Exception("Bad cast");
-   return *castVisitor.element;
+	CastVisitor<ElementTypeT> castVisitor;
+	const_cast<UnknownElement *>(this)->Accept(castVisitor);
+	if (!castVisitor.element)
+		throw Exception("Bad cast");
+	return *castVisitor.element;
 }
 
 template <typename ElementTypeT>
 ElementTypeT& UnknownElement::CastTo() {
-   CastVisitor<ElementTypeT> castVisitor;
-   Accept(castVisitor);
+	CastVisitor<ElementTypeT> castVisitor;
+	Accept(castVisitor);
 
-   // If this element is uninitialized, implicitly convert it to the desired type
-   if (castVisitor.is_null) {
-      *this = ElementTypeT();
-      return *this;
-   }
+	// If this element is uninitialized, implicitly convert it to the desired type
+	if (castVisitor.is_null) {
+		*this = ElementTypeT();
+		return *this;
+	}
 
-   // Otherwise throw an exception
-   if (!castVisitor.element)
-      throw Exception("Bad cast");
-   return *castVisitor.element;
+	// Otherwise throw an exception
+	if (!castVisitor.element)
+		throw Exception("Bad cast");
+	return *castVisitor.element;
 }
 
-void UnknownElement::Accept(ConstVisitor& visitor) const { m_pImp->Accept(visitor); }
-void UnknownElement::Accept(Visitor& visitor)            { m_pImp->Accept(visitor); }
+void UnknownElement::Accept(ConstVisitor& visitor) const {
+	if (m_pImp)
+		m_pImp->Accept(visitor);
+	else
+		visitor.Visit(Null());
+}
+
+void UnknownElement::Accept(Visitor& visitor) {
+	if (m_pImp)
+		m_pImp->Accept(visitor);
+	else {
+		Null null;
+		visitor.Visit(null);
+	}
+}
 }

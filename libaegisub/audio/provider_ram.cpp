@@ -16,7 +16,6 @@
 
 #include "libaegisub/audio/provider.h"
 
-#include "libaegisub/make_unique.h"
 
 #include <array>
 #include <boost/container/stable_vector.hpp>
@@ -63,7 +62,7 @@ public:
 		});
 	}
 
-	~RAMAudioProvider() {
+	~RAMAudioProvider() override {
 		cancelled = true;
 		decoder.join();
 	}
@@ -91,6 +90,6 @@ void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 
 namespace agi {
 std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> src) {
-	return agi::make_unique<RAMAudioProvider>(std::move(src));
+	return std::make_unique<RAMAudioProvider>(std::move(src));
 }
 }

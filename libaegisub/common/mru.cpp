@@ -23,7 +23,7 @@
 #include "libaegisub/option_value.h"
 
 namespace {
-const char *mru_names[] = {
+std::string_view mru_names[] = {
 	"Audio",
 	"Find",
 	"Keyframes",
@@ -33,7 +33,7 @@ const char *mru_names[] = {
 	"Video",
 };
 
-const char *option_names[] = {
+std::string_view option_names[] = {
 	"Limits/MRU",
 	"Limits/Find Replace",
 	"Limits/MRU",
@@ -43,9 +43,9 @@ const char *option_names[] = {
 	"Limits/MRU",
 };
 
-int mru_index(const char *key) {
+int mru_index(std::string_view key) {
 	int i;
-	switch (*key) {
+	switch (key[0]) {
 	case 'A': i = 0; break;
 	case 'F': i = 1; break;
 	case 'K': i = 2; break;
@@ -55,12 +55,12 @@ int mru_index(const char *key) {
 	case 'V': i = 6; break;
 	default: return -1;
 	}
-	return strcmp(key, mru_names[i]) == 0 ? i : -1;
+	return key == mru_names[i] ? i : -1;
 }
 }
 
 namespace agi {
-MRUManager::MRUManager(agi::fs::path const& config, std::pair<const char *, size_t> default_config, agi::Options *options)
+MRUManager::MRUManager(agi::fs::path const& config, std::string_view default_config, agi::Options *options)
 : config_name(config)
 , options(options)
 {
@@ -71,14 +71,14 @@ MRUManager::MRUManager(agi::fs::path const& config, std::pair<const char *, size
 		Load(it.first.c_str(), it.second);
 }
 
-MRUManager::MRUListMap &MRUManager::Find(const char *key) {
+MRUManager::MRUListMap &MRUManager::Find(std::string_view key) {
 	auto index = mru_index(key);
 	if (index == -1)
 		throw MRUError("Invalid key value");
 	return mru[index];
 }
 
-void MRUManager::Add(const char *key, agi::fs::path const& entry) {
+void MRUManager::Add(std::string_view key, agi::fs::path const& entry) {
 	MRUListMap &map = Find(key);
 	auto it = find(begin(map), end(map), entry);
 	if (it == begin(map) && it != end(map))
@@ -93,17 +93,17 @@ void MRUManager::Add(const char *key, agi::fs::path const& entry) {
 	Flush();
 }
 
-void MRUManager::Remove(const char *key, agi::fs::path const& entry) {
+void MRUManager::Remove(std::string_view key, agi::fs::path const& entry) {
 	auto& map = Find(key);
 	map.erase(remove(begin(map), end(map), entry), end(map));
 	Flush();
 }
 
-const MRUManager::MRUListMap* MRUManager::Get(const char *key) {
+const MRUManager::MRUListMap* MRUManager::Get(std::string_view key) {
 	return &Find(key);
 }
 
-agi::fs::path const& MRUManager::GetEntry(const char *key, const size_t entry) {
+agi::fs::path const& MRUManager::GetEntry(std::string_view key, const size_t entry) {
 	const auto map = Get(key);
 	if (entry >= map->size())
 		throw MRUError("Requested element index is out of range.");
@@ -115,7 +115,7 @@ void MRUManager::Flush() {
 	json::Object out;
 
 	for (size_t i = 0; i < mru.size(); ++i) {
-		json::Array &array = out[mru_names[i]];
+		json::Array &array = out.emplace(mru_names[i], json::Array()).first->second;
 		for (auto const& p : mru[i])
 			array.push_back(p.string());
 	}
@@ -123,7 +123,7 @@ void MRUManager::Flush() {
 	agi::JsonWriter::Write(out, io::Save(config_name).Get());
 }
 
-void MRUManager::Prune(const char *key, MRUListMap& map) const {
+void MRUManager::Prune(std::string_view key, MRUListMap& map) const {
 	size_t limit = 16u;
 	if (options) {
 		int idx = mru_index(key);
@@ -133,7 +133,7 @@ void MRUManager::Prune(const char *key, MRUListMap& map) const {
 	map.resize(std::min(limit, map.size()));
 }
 
-void MRUManager::Load(const char *key, const json::Array& array) {
+void MRUManager::Load(std::string_view key, const json::Array& array) {
 	int idx = mru_index(key);
 	if (idx == -1) return;
 

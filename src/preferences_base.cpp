@@ -25,7 +25,6 @@
 
 #include <libaegisub/exception.h>
 #include <libaegisub/path.h>
-#include <libaegisub/make_unique.h>
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
@@ -48,7 +47,7 @@
 		type(std::string const& n, Preferences *p) : name(n), parent(p) { } \
 		void operator()(evttype& evt) {                                     \
 			evt.Skip();                                                     \
-			parent->SetOption(agi::make_unique<agi::opt>(name, body));      \
+			parent->SetOption(std::make_unique<agi::opt>(name, body));      \
 		}                                                                   \
 	}
 

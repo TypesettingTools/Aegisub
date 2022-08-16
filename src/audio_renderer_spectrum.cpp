@@ -40,7 +40,6 @@
 #endif
 
 #include <libaegisub/audio/provider.h>
-#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
@@ -115,7 +114,7 @@ void AudioSpectrumRenderer::RecreateCache()
 	if (provider)
 	{
 		size_t block_count = (size_t)((provider->GetNumSamples() + ((size_t)1<<derivation_dist) - 1) >> derivation_dist);
-		cache = agi::make_unique<AudioSpectrumCache>(block_count, this);
+		cache = std::make_unique<AudioSpectrumCache>(block_count, this);
 
 #ifdef WITH_FFTW3
 		dft_input = fftw_alloc_real(2<<derivation_size);

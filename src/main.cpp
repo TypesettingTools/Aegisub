@@ -61,7 +61,6 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
@@ -147,8 +146,7 @@ bool AegisubApp::OnInit() {
 
 	boost::filesystem::path::imbue(std::locale());
 
-	// Pointless `this` capture required due to http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51494
-	agi::dispatch::Init([this](agi::dispatch::Thunk f) {
+	agi::dispatch::Init([](agi::dispatch::Thunk f) {
 		auto evt = new ValueEvent<agi::dispatch::Thunk>(EVT_CALL_THUNK, -1, std::move(f));
 		wxTheApp->QueueEvent(evt);
 	});
@@ -167,7 +165,7 @@ bool AegisubApp::OnInit() {
 
 	agi::log::log = new agi::log::LogSink;
 #ifdef _DEBUG
-	agi::log::log->Subscribe(agi::make_unique<agi::log::EmitSTDOUT>());
+	agi::log::log->Subscribe(std::make_unique<agi::log::EmitSTDOUT>());
 #endif
 
 	// Set config file
@@ -192,7 +190,7 @@ bool AegisubApp::OnInit() {
 	StartupLog("Create log writer");
 	auto path_log = config::path->Decode("?user/log/");
 	agi::fs::CreateDirectory(path_log);
-	agi::log::log->Subscribe(agi::make_unique<agi::log::JsonEmitter>(path_log));
+	agi::log::log->Subscribe(std::make_unique<agi::log::JsonEmitter>(path_log));
 	CleanCache(path_log, "*.json", 10, 100);
 
 	StartupLog("Load user configuration");
@@ -276,7 +274,7 @@ bool AegisubApp::OnInit() {
 		exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
 		// Load plugins
-		Automation4::ScriptFactory::Register(agi::make_unique<Automation4::LuaScriptFactory>());
+		Automation4::ScriptFactory::Register(std::make_unique<Automation4::LuaScriptFactory>());
 		libass::CacheFonts();
 
 		// Load Automation scripts
@@ -285,8 +283,8 @@ bool AegisubApp::OnInit() {
 
 		// Load export filters
 		StartupLog("Register export filters");
-		AssExportFilterChain::Register(agi::make_unique<AssFixStylesFilter>());
-		AssExportFilterChain::Register(agi::make_unique<AssTransformFramerateFilter>());
+		AssExportFilterChain::Register(std::make_unique<AssFixStylesFilter>());
+		AssExportFilterChain::Register(std::make_unique<AssTransformFramerateFilter>());
 
 		StartupLog("Install PNG handler");
 		wxImage::AddHandler(new wxPNGHandler);

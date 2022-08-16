@@ -57,14 +57,14 @@ struct TimecodeRange {
 	int start;
 	int end;
 	double fps;
-	bool operator<(TimecodeRange const& cmp) const { return start < cmp.start; }
+	auto operator<=>(TimecodeRange const& cmp) const { return start <=> cmp.start; }
 };
 
 /// @brief Parse a single line of a v1 timecode file
 /// @param str Line to parse
 /// @return The line in TimecodeRange form, or TimecodeRange() if it's a comment
 TimecodeRange v1_parse_line(std::string const& str) {
-	if (str.empty() || str[0] == '#') return TimecodeRange();
+	if (str.empty() || str[0] == '#') return {};
 
 	boost::interprocess::ibufferstream ss(str.data(), str.size());
 	TimecodeRange range;
@@ -130,7 +130,7 @@ int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<
 }
 }
 
-namespace agi { namespace vfr {
+namespace agi::vfr {
 Framerate::Framerate(double fps)
 : denominator(default_denominator)
 , numerator(int64_t(fps * denominator))
@@ -321,4 +321,4 @@ int Framerate::TimeAtSmpte(int h, int m, int s, int f) const {
 	return TimeAtFrame(FrameAtSmpte(h, m, s, f));
 }
 
-} }
+}

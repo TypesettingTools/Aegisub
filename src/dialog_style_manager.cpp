@@ -46,14 +46,12 @@
 #include "subtitle_format.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 #include <libaegisub/signal.h>
 #include <libaegisub/split.h>
 #include <libaegisub/vfr.h>
 
 #include <algorithm>
-#include <boost/algorithm/string/trim.hpp>
 #include <functional>
 #include <future>
 #include <memory>
@@ -229,10 +227,10 @@ void add_styles(Func1 name_checker, Func2 style_adder) {
 	auto cb = GetClipboard();
 	int failed_to_parse = 0;
 	for (auto tok : agi::Split(cb, '\n')) {
-		tok = boost::trim_copy(tok);
+		tok = agi::Trim(tok);
 		if (tok.empty()) continue;
 		try {
-			AssStyle *s = new AssStyle(agi::str(tok));
+			AssStyle *s = new AssStyle(tok);
 			s->name = unique_name(name_checker, s->name);
 			style_adder(s);
 		}
@@ -327,7 +325,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	SetSizerAndFit(MainSizer);
 
 	// Position window
-	persist = agi::make_unique<PersistLocation>(this, "Tool/Style Manager");
+	persist = std::make_unique<PersistLocation>(this, "Tool/Style Manager");
 
 	// Populate lists
 	LoadCatalog();
@@ -435,7 +433,7 @@ void DialogStyleManager::LoadCatalog() {
 	// Create a default storage if there are none
 	if (CatalogList->IsListEmpty()) {
 		Store.LoadCatalog("Default");
-		Store.push_back(agi::make_unique<AssStyle>());
+		Store.push_back(std::make_unique<AssStyle>());
 		Store.Save();
 		CatalogList->Append("Default");
 	}
@@ -513,7 +511,7 @@ void DialogStyleManager::OnCopyToStorage() {
 			}
 		}
 		else {
-			Store.push_back(agi::make_unique<AssStyle>(*styleMap.at(selections[i])));
+			Store.push_back(std::make_unique<AssStyle>(*styleMap.at(selections[i])));
 			copied.push_back(styleName);
 		}
 	}

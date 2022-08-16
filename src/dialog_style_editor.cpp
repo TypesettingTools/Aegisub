@@ -51,7 +51,6 @@
 #include "validators.h"
 
 #include <libaegisub/of_type_adaptor.h>
-#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
@@ -140,7 +139,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 		style = this->style = new AssStyle;
 	}
 
-	work = agi::make_unique<AssStyle>(*style);
+	work = std::make_unique<AssStyle>(*style);
 
 	SetIcon(GETICON(style_toolbutton_16));
 
@@ -371,7 +370,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	StyleName->SetInsertionPoint(0);
 	StyleName->SetInsertionPoint(-1);
 
-	persist = agi::make_unique<PersistLocation>(this, "Tool/Style Editor", true);
+	persist = std::make_unique<PersistLocation>(this, "Tool/Style Editor", true);
 
 	Bind(wxEVT_CHILD_FOCUS, &DialogStyleEditor::OnChildFocus, this);
 

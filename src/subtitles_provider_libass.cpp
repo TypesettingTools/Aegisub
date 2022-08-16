@@ -42,7 +42,6 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <atomic>
@@ -210,7 +209,7 @@ void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
 
 namespace libass {
 std::unique_ptr<SubtitlesProvider> Create(std::string const&, agi::BackgroundRunner *br) {
-	return agi::make_unique<LibassSubtitlesProvider>(br);
+	return std::make_unique<LibassSubtitlesProvider>(br);
 }
 
 void CacheFonts() {

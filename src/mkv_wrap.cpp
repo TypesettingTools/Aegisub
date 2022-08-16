@@ -125,37 +125,34 @@ static void read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 		if (ps->IsCancelled()) return;
 		if (frameSize == 0) continue;
 
-		const auto readBuf = input->file.read(filePos, frameSize);
-		const auto readBufEnd = readBuf + frameSize;
+		const std::string_view readBuf(input->file.read(filePos, frameSize), frameSize);
 
 		// Get start and end times
 		int64_t timecodeScaleLow = 1000000;
 		agi::Time subStart = startTime / timecodeScaleLow;
 		agi::Time subEnd = endTime / timecodeScaleLow;
 
-		using str_range = boost::iterator_range<const char *>;
-
 		// Process SSA/ASS
 		if (!srt) {
-			auto first = std::find(readBuf, readBufEnd, ',');
-			if (first == readBufEnd) continue;
-			auto second = std::find(first + 1, readBufEnd, ',');
-			if (second == readBufEnd) continue;
+			auto first = readBuf.find(',');
+			if (first == readBuf.npos) continue;
+			auto second = readBuf.find(',', first + 1);
+			if (second == readBuf.npos) continue;
 
 			subList.emplace_back(
-				boost::lexical_cast<int>(str_range(readBuf, first)),
+				boost::lexical_cast<int>(readBuf.substr(0, first)),
 				agi::format("Dialogue: %d,%s,%s,%s"
-					, boost::lexical_cast<int>(str_range(first + 1, second))
+					, boost::lexical_cast<int>(readBuf.substr(first + 1, second - (first + 1)))
 					, subStart.GetAssFormatted()
 					, subEnd.GetAssFormatted()
-					, str_range(second + 1, readBufEnd)));
+					, readBuf.substr(second + 1)));
 		}
 		// Process SRT
 		else {
 			auto line = agi::format("Dialogue: 0,%s,%s,Default,,0,0,0,,%s"
 				, subStart.GetAssFormatted()
 				, subEnd.GetAssFormatted()
-				, str_range(readBuf, readBufEnd));
+				, readBuf);
 			boost::replace_all(line, "\r\n", "\\N");
 			boost::replace_all(line, "\r", "\\N");
 			boost::replace_all(line, "\n", "\\N");

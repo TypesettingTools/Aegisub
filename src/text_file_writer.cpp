@@ -25,7 +25,6 @@
 
 #include <libaegisub/io.h>
 #include <libaegisub/charset_conv.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 
@@ -35,7 +34,7 @@ TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encodi
 	if (encoding.empty())
 		encoding = OPT_GET("App/Save Charset")->GetString();
 	if (encoding != "utf-8" && encoding != "UTF-8") {
-		conv = agi::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.c_str(), true);
+		conv = std::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.c_str(), true);
 		newline = conv->Convert(newline);
 	}
 

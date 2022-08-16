@@ -24,7 +24,7 @@
 // characters, and files with non-multiple-of-three lengths are padded with
 // zero.
 
-namespace agi { namespace ass {
+namespace agi::ass {
 
 std::string UUEncode(const char *begin, const char *end, bool insert_linebreaks) {
 	size_t size = std::distance(begin, end);
@@ -82,4 +82,4 @@ std::vector<char> UUDecode(const char *begin, const char *end) {
 
 	return ret;
 }
-} }
+}

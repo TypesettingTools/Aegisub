@@ -43,7 +43,6 @@
 #include "../selection_controller.h"
 #include "../video_controller.h"
 
-#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 
@@ -377,23 +376,23 @@ struct time_prev final : public Command {
 
 namespace cmd {
 	void init_time() {
-		reg(agi::make_unique<time_add_lead_both>());
-		reg(agi::make_unique<time_add_lead_in>());
-		reg(agi::make_unique<time_add_lead_out>());
-		reg(agi::make_unique<time_continuous_end>());
-		reg(agi::make_unique<time_continuous_start>());
-		reg(agi::make_unique<time_frame_current>());
-		reg(agi::make_unique<time_length_decrease>());
-		reg(agi::make_unique<time_length_decrease_shift>());
-		reg(agi::make_unique<time_length_increase>());
-		reg(agi::make_unique<time_length_increase_shift>());
-		reg(agi::make_unique<time_next>());
-		reg(agi::make_unique<time_prev>());
-		reg(agi::make_unique<time_shift>());
-		reg(agi::make_unique<time_snap_end_video>());
-		reg(agi::make_unique<time_snap_scene>());
-		reg(agi::make_unique<time_snap_start_video>());
-		reg(agi::make_unique<time_start_decrease>());
-		reg(agi::make_unique<time_start_increase>());
+		reg(std::make_unique<time_add_lead_both>());
+		reg(std::make_unique<time_add_lead_in>());
+		reg(std::make_unique<time_add_lead_out>());
+		reg(std::make_unique<time_continuous_end>());
+		reg(std::make_unique<time_continuous_start>());
+		reg(std::make_unique<time_frame_current>());
+		reg(std::make_unique<time_length_decrease>());
+		reg(std::make_unique<time_length_decrease_shift>());
+		reg(std::make_unique<time_length_increase>());
+		reg(std::make_unique<time_length_increase_shift>());
+		reg(std::make_unique<time_next>());
+		reg(std::make_unique<time_prev>());
+		reg(std::make_unique<time_shift>());
+		reg(std::make_unique<time_snap_end_video>());
+		reg(std::make_unique<time_snap_scene>());
+		reg(std::make_unique<time_snap_start_video>());
+		reg(std::make_unique<time_start_decrease>());
+		reg(std::make_unique<time_start_increase>());
 	}
 }

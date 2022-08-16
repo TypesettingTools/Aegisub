@@ -45,7 +45,6 @@
 #include "subs_controller.h"
 #include "video_controller.h"
 
-#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
@@ -601,7 +600,7 @@ void BaseGrid::SetColumnWidths() {
 	int x = 0;
 
 	if (!width_helper)
-		width_helper = agi::make_unique<WidthHelper>();
+		width_helper = std::make_unique<WidthHelper>();
 	width_helper->SetDC(&dc);
 
 	for (auto const& column : columns) {

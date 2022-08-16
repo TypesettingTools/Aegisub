@@ -40,7 +40,6 @@
 
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 
 #ifdef __WINDOWS__
 #include <al.h>
@@ -305,7 +304,7 @@ int64_t OpenALPlayer::GetCurrentPosition()
 
 std::unique_ptr<AudioPlayer> CreateOpenALPlayer(agi::AudioProvider *provider, wxWindow *)
 {
-	return agi::make_unique<OpenALPlayer>(provider);
+	return std::make_unique<OpenALPlayer>(provider);
 }
 
 #endif // WITH_OPENAL

@@ -71,7 +71,7 @@ public:
 	static void GetEncodings(wxArrayString &encodingStrings);
 
 	AssStyle();
-	AssStyle(std::string const& data, int version=1);
+	AssStyle(std::string_view data, int version=1);
 
 	std::string const& GetEntryData() const { return data; }
 	AssEntryGroup Group() const override;

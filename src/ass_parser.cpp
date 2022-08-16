@@ -23,7 +23,6 @@
 #include "subtitle_format.h"
 
 #include <libaegisub/ass/uuencode.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
@@ -32,11 +31,11 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
-#include <boost/variant.hpp>
 #include <unordered_map>
+#include <variant>
 
 class AssParser::HeaderToProperty {
-	using field = boost::variant<
+	using field = std::variant<
 		std::string ProjectProperties::*,
 		int ProjectProperties::*,
 		double ProjectProperties::*
@@ -81,7 +80,7 @@ public:
 				void operator()(int ProjectProperties::*f)         const { try_parse(value, &(obj.*f)); }
 				void operator()(double ProjectProperties::*f)      const { try_parse(value, &(obj.*f)); }
 			} visitor {target->Properties, value};
-			boost::apply_visitor(visitor, it->second);
+			std::visit(visitor, it->second);
 			return true;
 		}
 
@@ -95,15 +94,14 @@ public:
 };
 
 AssParser::AssParser(AssFile *target, int version)
-: property_handler(agi::make_unique<HeaderToProperty>())
+: property_handler(std::make_unique<HeaderToProperty>())
 , target(target)
 , version(version)
 , state(&AssParser::ParseScriptInfoLine)
 {
 }
 
-AssParser::~AssParser() {
-}
+AssParser::~AssParser() = default;
 
 void AssParser::ParseAttachmentLine(std::string const& data) {
 	bool is_filename = boost::starts_with(data, "fontname: ") || boost::starts_with(data, "filename: ");
@@ -188,12 +186,12 @@ void AssParser::ParseStyleLine(std::string const& data) {
 
 void AssParser::ParseFontLine(std::string const& data) {
 	if (boost::starts_with(data, "fontname: "))
-		attach = agi::make_unique<AssAttachment>(data, AssEntryGroup::FONT);
+		attach = std::make_unique<AssAttachment>(data, AssEntryGroup::FONT);
 }
 
 void AssParser::ParseGraphicsLine(std::string const& data) {
 	if (boost::starts_with(data, "filename: "))
-		attach = agi::make_unique<AssAttachment>(data, AssEntryGroup::GRAPHIC);
+		attach = std::make_unique<AssAttachment>(data, AssEntryGroup::GRAPHIC);
 }
 
 void AssParser::ParseExtradataLine(std::string const &data) {

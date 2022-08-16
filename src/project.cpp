@@ -42,7 +42,6 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/keyframe.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
@@ -64,10 +63,11 @@ Project::Project(agi::Context *c) : context(c) {
 Project::~Project() { }
 
 void Project::UpdateRelativePaths() {
-	context->ass->Properties.audio_file     = context->path->MakeRelative(audio_file, "?script").generic_string();
-	context->ass->Properties.video_file     = context->path->MakeRelative(video_file, "?script").generic_string();
-	context->ass->Properties.timecodes_file = context->path->MakeRelative(timecodes_file, "?script").generic_string();
-	context->ass->Properties.keyframes_file = context->path->MakeRelative(keyframes_file, "?script").generic_string();
+	using namespace std::string_view_literals;
+	context->ass->Properties.audio_file     = context->path->MakeRelative(audio_file, "?script"sv).generic_string();
+	context->ass->Properties.video_file     = context->path->MakeRelative(video_file, "?script"sv).generic_string();
+	context->ass->Properties.timecodes_file = context->path->MakeRelative(timecodes_file, "?script"sv).generic_string();
+	context->ass->Properties.keyframes_file = context->path->MakeRelative(keyframes_file, "?script"sv).generic_string();
 }
 
 void Project::ReloadAudio() {
@@ -289,7 +289,7 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 
 	try {
 		auto old_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
-		video_provider = agi::make_unique<AsyncVideoProvider>(path, old_matrix, context->videoController.get(), progress);
+		video_provider = std::make_unique<AsyncVideoProvider>(path, old_matrix, context->videoController.get(), progress);
 	}
 	catch (agi::UserCancelException const&) { return false; }
 	catch (agi::fs::FileSystemError const& err) {

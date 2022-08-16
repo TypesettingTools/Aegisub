@@ -15,6 +15,7 @@
 #include <boost/filesystem/path.hpp>
 #include <map>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <libaegisub/fs_fwd.h>
@@ -22,7 +23,7 @@
 
 namespace json {
 	class UnknownElement;
-	typedef std::map<std::string, UnknownElement> Object;
+	typedef std::map<std::string, UnknownElement, std::less<>> Object;
 }
 
 namespace agi {
@@ -39,22 +40,22 @@ public:
 	/// Constructor
 	/// @param ctx Context
 	/// @param cmd Command name
-	Combo(std::string ctx, std::string cmd, std::string keys)
-	: keys(std::move(keys))
-	, cmd_name(std::move(cmd))
-	, context(std::move(ctx))
+	Combo(std::string_view ctx, std::string_view cmd, std::string_view keys)
+	: keys(keys)
+	, cmd_name(cmd)
+	, context(ctx)
 	{
 	}
 
 	/// String representation of the Combo
-	std::string const& Str() const { return keys; }
+	std::string_view Str() const { return keys; }
 
 	/// Command name triggered by the combination.
 	/// @return Command name
-	std::string const& CmdName() const { return cmd_name; }
+	std::string_view CmdName() const { return cmd_name; }
 
 	/// Context this Combo is triggered in.
-	std::string const& Context() const { return context; }
+	std::string_view Context() const { return context; }
 };
 
 /// @class Hotkey
@@ -62,7 +63,7 @@ public:
 class Hotkey {
 public:
 	/// Map to hold Combo instances
-	typedef std::multimap<std::string, Combo> HotkeyMap;
+	typedef std::multimap<std::string, Combo, std::less<>> HotkeyMap;
 private:
 	HotkeyMap cmd_map;                  ///< Command name -> Combo
 	std::vector<const Combo *> str_map; ///< Sorted by string representation
@@ -72,7 +73,7 @@ private:
 	/// Build hotkey map.
 	/// @param context Context being parsed.
 	/// @param object  json::Object holding items for context being parsed.
-	void BuildHotkey(std::string const& context, const json::Object& object);
+	void BuildHotkey(std::string_view context, const json::Object& object);
 
 	/// Write active Hotkey configuration to disk.
 	void Flush();
@@ -85,32 +86,28 @@ public:
 	/// Constructor
 	/// @param file           Location of user config file.
 	/// @param default_config Default config.
-	Hotkey(agi::fs::path const& file, std::pair<const char *, size_t> default_config);
-
-	template<size_t N>
-	Hotkey(agi::fs::path const& file, const char (&default_config)[N])
-	: Hotkey(file, {default_config, N - 1}) { }
+	Hotkey(agi::fs::path const& file, std::string_view default_config);
 
 	/// Scan for a matching key.
 	/// @param context  Context requested.
 	/// @param str      Hyphen separated key sequence.
 	/// @param always   Enable the "Always" override context
 	/// @return Name of command or "" if none match
-	std::string Scan(const std::string &context, const std::string &str, bool always) const;
+	std::string_view Scan(std::string_view context, std::string_view str, bool always) const;
 
-	bool HasHotkey(const std::string &context, const std::string &str) const;
+	bool HasHotkey(std::string_view context, std::string_view str) const;
 
 	/// Get the string representation of the hotkeys for the given command
 	/// @param context Context requested
 	/// @param command Command name
 	/// @return A vector of all hotkeys for that command in the context
-	std::vector<std::string> GetHotkeys(const std::string &context, const std::string &command) const;
+	std::vector<std::string> GetHotkeys(std::string_view context, std::string_view command) const;
 
 	/// Get a string representation of a hotkeys for the given command
 	/// @param context Context requested
 	/// @param command Command name
 	/// @return A hotkey for the given command or "" if there are none
-	std::string GetHotkey(const std::string &context, const std::string &command) const;
+	std::string_view GetHotkey(std::string_view context, std::string_view command) const;
 
 	/// Get the raw command name -> combo map for all registered hotkeys
 	HotkeyMap const& GetHotkeyMap() const { return cmd_map; }

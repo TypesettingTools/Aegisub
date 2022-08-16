@@ -59,7 +59,6 @@
 #include <libaegisub/lua/modules.h>
 #include <libaegisub/lua/script_reader.h>
 #include <libaegisub/lua/utils.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 
 #include <algorithm>
@@ -676,7 +675,7 @@ namespace {
 	int LuaCommand::LuaRegister(lua_State *L)
 	{
 		static std::mutex mutex;
-		auto command = agi::make_unique<LuaCommand>(L);
+		auto command = std::make_unique<LuaCommand>(L);
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			cmd::reg(std::move(command));
@@ -949,7 +948,7 @@ namespace {
 	int LuaExportFilter::LuaRegister(lua_State *L)
 	{
 		static std::mutex mutex;
-		auto filter = agi::make_unique<LuaExportFilter>(L);
+		auto filter = std::make_unique<LuaExportFilter>(L);
 		{
 			std::lock_guard<std::mutex> lock(mutex);
 			AssExportFilterChain::Register(std::move(filter));
@@ -1033,7 +1032,7 @@ namespace Automation4 {
 	std::unique_ptr<Script> LuaScriptFactory::Produce(agi::fs::path const& filename) const
 	{
 		if (agi::fs::HasExtension(filename, "lua") || agi::fs::HasExtension(filename, "moon"))
-			return agi::make_unique<LuaScript>(filename);
+			return std::make_unique<LuaScript>(filename);
 		return nullptr;
 	}
 }

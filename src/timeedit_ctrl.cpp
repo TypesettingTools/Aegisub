@@ -108,7 +108,7 @@ void TimeEdit::OnModified(wxCommandEvent &event) {
 		time = c->project->Timecodes().TimeAtFrame(temp, isEnd ? agi::vfr::END : agi::vfr::START);
 	}
 	else if (insert)
-		time = from_wx(GetValue());
+		time = agi::Time(GetValue().utf8_str().data());
 }
 
 void TimeEdit::UpdateText() {
@@ -173,7 +173,7 @@ void TimeEdit::OnChar(wxKeyEvent &event) {
 	event.Skip(false);
 
 	long start = GetInsertionPoint();
-	std::string text = from_wx(GetValue());
+	auto text = GetValue().utf8_string();
 	// Cursor is at the end so do nothing
 	if (start >= (long)text.size()) return;
 
@@ -189,7 +189,7 @@ void TimeEdit::OnChar(wxKeyEvent &event) {
 
 	// Overwrite the digit
 	text[start] = (char)key;
-	time = text;
+	time = agi::Time(text);
 	SetValue(to_wx(time.GetAssFormatted()));
 	SetInsertionPoint(start + 1);
 }

@@ -38,8 +38,6 @@
 #include "selection_controller.h"
 #include "video_controller.h"
 
-#include <libaegisub/make_unique.h>
-
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
@@ -154,7 +152,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 
 	SetSizerAndFit(main_sizer);
 
-	persist = agi::make_unique<PersistLocation>(this, "Tool/Translation Assistant");
+	persist = std::make_unique<PersistLocation>(this, "Tool/Translation Assistant");
 
 	Bind(wxEVT_KEY_DOWN, &DialogTranslation::OnKeyDown, this);
 

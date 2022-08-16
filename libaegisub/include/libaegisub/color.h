@@ -15,6 +15,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 namespace agi {
 	struct Color {
@@ -25,10 +26,9 @@ namespace agi {
 
 		Color() = default;
 		Color(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 0);
-		Color(std::string const& str);
+		Color(std::string_view str);
 
-		bool operator==(Color const& col) const;
-		bool operator!=(Color const& col) const;
+		bool operator==(Color const&) const noexcept = default;
 
 		std::string GetAssStyleFormatted() const;
 		std::string GetAssOverrideFormatted() const;

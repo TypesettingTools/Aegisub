@@ -22,7 +22,7 @@
 TEST(lagi_split, delim_not_present) {
 	std::string str("hello");
 	for (auto tok : agi::Split(str, ','))
-		EXPECT_EQ("hello", agi::str(tok));
+		EXPECT_EQ("hello", tok);
 }
 
 TEST(lagi_split, delim_present) {
@@ -30,18 +30,16 @@ TEST(lagi_split, delim_present) {
 	std::string expected[] = {"a", "b", "c", ""};
 	size_t i = 0;
 	for (auto tok : agi::Split(str, ','))
-		EXPECT_EQ(expected[i++], agi::str(tok));
+		EXPECT_EQ(expected[i++], tok);
 }
 
 TEST(lagi_split, does_not_copy_input) {
 	std::string str("hello");
 	for (auto tok : agi::Split(str, ',')) {
-		EXPECT_EQ(str.begin(), tok.begin());
-		EXPECT_EQ(str.end(), tok.end());
+		EXPECT_EQ(&*str.begin(), &*tok.begin());
 	}
 
 	auto rng = agi::Split(str, 'e');
-	EXPECT_EQ(str.begin(), begin(*rng));
-	EXPECT_EQ(str.end(), end(*std::next(rng)));
+	EXPECT_EQ(&*str.begin(), &*begin(*rng));
 }
 

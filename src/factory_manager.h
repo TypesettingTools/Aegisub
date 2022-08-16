@@ -29,9 +29,9 @@ std::vector<std::string> GetClasses(Container const& c) {
 }
 
 template<typename Container>
-auto GetSorted(Container const& c, std::string const& preferred) -> std::vector<decltype(&*c.begin())> {
-	std::vector<decltype(&*c.begin())> sorted;
-	sorted.reserve(std::distance(c.begin(), c.end()));
+auto GetSorted(Container const& c, std::string const& preferred) {
+	std::vector<decltype(&*std::begin(c))> sorted;
+	sorted.reserve(c.size());
 	size_t end_of_hidden = 0;
 	bool any_hidden = false;
 	for (auto const& provider : c) {

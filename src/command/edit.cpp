@@ -52,7 +52,6 @@
 
 #include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/of_type_adaptor.h>
-#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -1269,37 +1268,37 @@ struct edit_insert_original final : public Command {
 
 namespace cmd {
 	void init_edit() {
-		reg(agi::make_unique<edit_color_primary>());
-		reg(agi::make_unique<edit_color_secondary>());
-		reg(agi::make_unique<edit_color_outline>());
-		reg(agi::make_unique<edit_color_shadow>());
-		reg(agi::make_unique<edit_font>());
-		reg(agi::make_unique<edit_find_replace>());
-		reg(agi::make_unique<edit_line_copy>());
-		reg(agi::make_unique<edit_line_cut>());
-		reg(agi::make_unique<edit_line_delete>());
-		reg(agi::make_unique<edit_line_duplicate>());
-		reg(agi::make_unique<edit_line_duplicate_shift>());
-		reg(agi::make_unique<edit_line_duplicate_shift_back>());
-		reg(agi::make_unique<edit_line_join_as_karaoke>());
-		reg(agi::make_unique<edit_line_join_concatenate>());
-		reg(agi::make_unique<edit_line_join_keep_first>());
-		reg(agi::make_unique<edit_line_paste>());
-		reg(agi::make_unique<edit_line_paste_over>());
-		reg(agi::make_unique<edit_line_recombine>());
-		reg(agi::make_unique<edit_line_split_by_karaoke>());
-		reg(agi::make_unique<edit_line_split_estimate>());
-		reg(agi::make_unique<edit_line_split_preserve>());
-		reg(agi::make_unique<edit_line_split_video>());
-		reg(agi::make_unique<edit_style_bold>());
-		reg(agi::make_unique<edit_style_italic>());
-		reg(agi::make_unique<edit_style_underline>());
-		reg(agi::make_unique<edit_style_strikeout>());
-		reg(agi::make_unique<edit_redo>());
-		reg(agi::make_unique<edit_undo>());
-		reg(agi::make_unique<edit_revert>());
-		reg(agi::make_unique<edit_insert_original>());
-		reg(agi::make_unique<edit_clear>());
-		reg(agi::make_unique<edit_clear_text>());
+		reg(std::make_unique<edit_color_primary>());
+		reg(std::make_unique<edit_color_secondary>());
+		reg(std::make_unique<edit_color_outline>());
+		reg(std::make_unique<edit_color_shadow>());
+		reg(std::make_unique<edit_font>());
+		reg(std::make_unique<edit_find_replace>());
+		reg(std::make_unique<edit_line_copy>());
+		reg(std::make_unique<edit_line_cut>());
+		reg(std::make_unique<edit_line_delete>());
+		reg(std::make_unique<edit_line_duplicate>());
+		reg(std::make_unique<edit_line_duplicate_shift>());
+		reg(std::make_unique<edit_line_duplicate_shift_back>());
+		reg(std::make_unique<edit_line_join_as_karaoke>());
+		reg(std::make_unique<edit_line_join_concatenate>());
+		reg(std::make_unique<edit_line_join_keep_first>());
+		reg(std::make_unique<edit_line_paste>());
+		reg(std::make_unique<edit_line_paste_over>());
+		reg(std::make_unique<edit_line_recombine>());
+		reg(std::make_unique<edit_line_split_by_karaoke>());
+		reg(std::make_unique<edit_line_split_estimate>());
+		reg(std::make_unique<edit_line_split_preserve>());
+		reg(std::make_unique<edit_line_split_video>());
+		reg(std::make_unique<edit_style_bold>());
+		reg(std::make_unique<edit_style_italic>());
+		reg(std::make_unique<edit_style_underline>());
+		reg(std::make_unique<edit_style_strikeout>());
+		reg(std::make_unique<edit_redo>());
+		reg(std::make_unique<edit_undo>());
+		reg(std::make_unique<edit_revert>());
+		reg(std::make_unique<edit_insert_original>());
+		reg(std::make_unique<edit_clear>());
+		reg(std::make_unique<edit_clear_text>());
 	}
 }

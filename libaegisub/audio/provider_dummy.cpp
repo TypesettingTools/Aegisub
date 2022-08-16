@@ -17,9 +17,7 @@
 #include "libaegisub/audio/provider.h"
 
 #include "libaegisub/fs.h"
-#include "libaegisub/make_unique.h"
 
-#include <boost/algorithm/string/predicate.hpp>
 #include <random>
 
 /*
@@ -61,7 +59,7 @@ class DummyAudioProvider final : public AudioProvider {
 
 public:
 	DummyAudioProvider(agi::fs::path const& uri) {
-		noise = boost::contains(uri.string(), ":noise?");
+		noise = uri.string().find(":noise?") != std::string::npos;
 		channels = 1;
 		sample_rate = 44100;
 		bytes_per_sample = 2;
@@ -73,8 +71,8 @@ public:
 
 namespace agi {
 std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *) {
-	if (!boost::starts_with(file.string(), "dummy-audio:"))
+	if (!file.string().starts_with("dummy-audio:"))
 		return {};
-	return agi::make_unique<DummyAudioProvider>(file);
+	return std::make_unique<DummyAudioProvider>(file);
 }
 }

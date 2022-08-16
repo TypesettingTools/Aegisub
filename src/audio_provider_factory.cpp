@@ -25,8 +25,6 @@
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
 
-#include <boost/range/iterator_range.hpp>
-
 using namespace agi;
 
 std::unique_ptr<AudioProvider> CreateAvisynthAudioProvider(fs::path const& filename, BackgroundRunner *);
@@ -39,7 +37,7 @@ struct factory {
 	bool hidden;
 };
 
-const factory providers[] = {
+const std::initializer_list<factory> providers = {
 	{"Dummy", CreateDummyAudioProvider, true},
 	{"PCM", CreatePCMAudioProvider, true},
 #ifdef WITH_FFMS2
@@ -52,14 +50,14 @@ const factory providers[] = {
 }
 
 std::vector<std::string> GetAudioProviderNames() {
-	return ::GetClasses(boost::make_iterator_range(std::begin(providers), std::end(providers)));
+	return ::GetClasses(providers);
 }
 
 std::unique_ptr<agi::AudioProvider> GetAudioProvider(fs::path const& filename,
                                                      Path const& path_helper,
                                                      BackgroundRunner *br) {
 	auto preferred = OPT_GET("Audio/Provider")->GetString();
-	auto sorted = GetSorted(boost::make_iterator_range(std::begin(providers), std::end(providers)), preferred);
+	auto sorted = GetSorted(providers, preferred);
 
 	std::unique_ptr<AudioProvider> provider;
 	bool found_file = false;

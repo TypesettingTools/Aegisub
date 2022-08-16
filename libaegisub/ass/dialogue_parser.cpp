@@ -21,17 +21,18 @@
 #include <boost/locale/boundary/index.hpp>
 #include <boost/locale/boundary/segment.hpp>
 #include <boost/locale/boundary/types.hpp>
+#include <boost/range/distance.hpp>
 
 namespace {
 
-typedef std::vector<agi::ass::DialogueToken> TokenVec;
+using TokenVec = std::vector<agi::ass::DialogueToken>;
 using namespace agi::ass;
 namespace dt = DialogueTokenType;
 namespace ss = SyntaxStyle;
 
 class SyntaxHighlighter {
 	TokenVec ranges;
-	std::string const& text;
+	std::string_view text;
 	agi::SpellChecker *spellchecker;
 
 	void SetStyling(size_t len, int type) {
@@ -42,7 +43,7 @@ class SyntaxHighlighter {
 	}
 
 public:
-	SyntaxHighlighter(std::string const& text, agi::SpellChecker *spellchecker)
+	SyntaxHighlighter(std::string_view text, agi::SpellChecker *spellchecker)
 	: text(text)
 	, spellchecker(spellchecker)
 	{ }
@@ -91,7 +92,7 @@ public:
 };
 
 class WordSplitter {
-	std::string const& text;
+	std::string_view text;
 	std::vector<DialogueToken> &tokens;
 	size_t pos = 0;
 
@@ -108,9 +109,9 @@ class WordSplitter {
 
 	void SplitText(size_t &i) {
 		using namespace boost::locale::boundary;
-		ssegment_index map(word, text.begin() + pos, text.begin() + pos + tokens[i].length);
+		segment_index map(word, text.begin() + pos, text.begin() + pos + tokens[i].length);
 		for (auto const& segment : map) {
-			auto len = static_cast<size_t>(distance(begin(segment), end(segment)));
+			auto len = static_cast<size_t>(boost::distance(segment));
 			if (segment.rule() & word_letters)
 				SwitchTo(i, dt::WORD, len);
 			else
@@ -119,7 +120,7 @@ class WordSplitter {
 	}
 
 public:
-	WordSplitter(std::string const& text, std::vector<DialogueToken> &tokens)
+	WordSplitter(std::string_view text, std::vector<DialogueToken> &tokens)
 	: text(text)
 	, tokens(tokens)
 	{ }
@@ -137,14 +138,15 @@ public:
 };
 }
 
-namespace agi {
-namespace ass {
+namespace agi::ass {
 
-std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<DialogueToken> const& tokens, SpellChecker *spellchecker) {
+std::vector<DialogueToken> SyntaxHighlight(std::string_view text,
+	                                       std::vector<DialogueToken> const& tokens,
+	                                       SpellChecker *spellchecker) {
 	return SyntaxHighlighter(text, spellchecker).Highlight(tokens);
 }
 
-void MarkDrawings(std::string const& str, std::vector<DialogueToken> &tokens) {
+void MarkDrawings(std::string_view str, std::vector<DialogueToken> &tokens) {
 	if (tokens.empty()) return;
 
 	size_t last_ovr_end = 0;
@@ -209,10 +211,9 @@ void MarkDrawings(std::string const& str, std::vector<DialogueToken> &tokens) {
 	}
 }
 
-void SplitWords(std::string const& str, std::vector<DialogueToken> &tokens) {
+void SplitWords(std::string_view str, std::vector<DialogueToken> &tokens) {
 	MarkDrawings(str, tokens);
 	WordSplitter(str, tokens).SplitWords();
 }
 
-}
 }

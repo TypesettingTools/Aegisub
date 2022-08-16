@@ -37,7 +37,9 @@
 #include <wx/bitmap.h>
 #include <wx/string.h>
 
+class wxFrame;
 class wxKeyEvent;
+class wxMenu;
 class wxMouseEvent;
 class wxStyledTextCtrl;
 class wxWindow;

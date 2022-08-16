@@ -167,7 +167,7 @@ int get_iso6937(int codepoint) {
 
 } // namespace {
 
-namespace agi { namespace charset {
+namespace agi::charset {
 
 #ifdef _LIBICONV_VERSION
 #define INTERNAL_CHARSET "UCS-4-INTERNAL"
@@ -243,4 +243,4 @@ size_t Converter6937::Convert(const char **inbuf, size_t *inbytesleft, char **ou
 	return bytes_written;
 }
 
-} } // namespace agi::charset
+} // namespace agi::charset

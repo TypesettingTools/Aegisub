@@ -407,10 +407,11 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 				text.clear();
 			}
 
+			auto to_sv = [](auto p) { return std::string_view(&*p.first, p.second - p.first); };
 			// create new subtitle
 			line = new AssDialogue;
-			line->Start = timestamp_match.str(1);
-			line->End = timestamp_match.str(2);
+			line->Start = to_sv(timestamp_match[1]);
+			line->End = to_sv(timestamp_match[2]);
 			// store pointer to subtitle, we'll continue working on it
 			target->Events.push_back(*line);
 			// next we're reading the text
