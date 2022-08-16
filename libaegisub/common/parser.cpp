@@ -41,7 +41,7 @@ using namespace boost::spirit;
 
 /// Convert a abgr value in an int or unsigned int to an agi::Color
 struct unpack_colors : public boost::static_visitor<agi::Color> {
-	template<typename T> struct result { typedef agi::Color type; };
+	template<typename T> struct result { using type = agi::Color; };
 
 	template<class T> agi::Color operator()(T arg) const {
 		return boost::apply_visitor(*this, arg);
@@ -102,7 +102,7 @@ struct color_grammar : qi::grammar<Iterator, agi::Color()> {
 
 template <typename Lexer>
 struct dialogue_tokens final : lex::lexer<Lexer> {
-	int paren_depth;
+	int paren_depth = 0;
 
 	template<typename KT>
 	void init(KT &&kara_templater) {
@@ -161,7 +161,7 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 			;
 	}
 
-	dialogue_tokens(bool karaoke_templater) : paren_depth(0) {
+	dialogue_tokens(bool karaoke_templater)  {
 		using lex::string;
 		using namespace agi::ass::DialogueTokenType;
 
@@ -173,13 +173,13 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 };
 
 template<typename Parser, typename T>
-bool do_try_parse(std::string const& str, Parser parser, T *out) {
+bool do_try_parse(std::string_view str, Parser parser, T *out) {
 	using namespace boost::spirit::qi;
 	T res;
-	char const* cstr = str.c_str();
+	auto cstr = str.data(), end = str.data() + str.size();
 
-	bool parsed = parse(cstr, cstr + str.size(), parser, res);
-	if (parsed && cstr == &str[str.size()]) {
+	bool parsed = parse(cstr, end, parser, res);
+	if (parsed && cstr == end) {
 		*out = res;
 		return true;
 	}
@@ -191,20 +191,21 @@ bool do_try_parse(std::string const& str, Parser parser, T *out) {
 
 namespace agi {
 namespace parser {
-	bool parse(Color &dst, std::string const& str) {
-		std::string::const_iterator begin = str.begin();
-		bool parsed = parse(begin, str.end(), color_grammar<std::string::const_iterator>(), dst);
-		return parsed && begin == str.end();
+	bool parse(Color &dst, std::string_view str) {
+		if (str.empty()) return false;
+		auto begin = str.data(), end = str.data() + str.size();
+		bool parsed = parse(begin, end, color_grammar<const char *>(), dst);
+		return parsed && begin == end;
 	}
 }
 
 namespace ass {
-	std::vector<DialogueToken> TokenizeDialogueBody(std::string const& str, bool karaoke_templater) {
+	std::vector<DialogueToken> TokenizeDialogueBody(std::string_view str, bool karaoke_templater) {
 		static const dialogue_tokens<lex::lexertl::actor_lexer<>> kt(true);
 		static const dialogue_tokens<lex::lexertl::actor_lexer<>> not_kt(false);
 		auto const& tokenizer = karaoke_templater ? kt : not_kt;
 
-		char const *first = str.c_str();
+		char const *first = str.data();
 		char const *last = first + str.size();
 		std::vector<DialogueToken> data;
 		auto it = tokenizer.begin(first, last), end = tokenizer.end();
@@ -225,11 +226,11 @@ namespace ass {
 
 namespace util {
 	// from util.h
-	bool try_parse(std::string const& str, double *out) {
+	bool try_parse(std::string_view str, double *out) {
 		return do_try_parse(str, boost::spirit::qi::double_, out);
 	}
 
-	bool try_parse(std::string const& str, int *out) {
+	bool try_parse(std::string_view str, int *out) {
 		return do_try_parse(str, boost::spirit::qi::int_, out);
 	}
 }

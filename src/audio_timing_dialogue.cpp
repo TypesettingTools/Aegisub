@@ -40,7 +40,6 @@
 #include "utils.h"
 
 #include <libaegisub/ass/time.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/range/algorithm.hpp>
 #include <wx/pen.h>
@@ -924,5 +923,5 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 
 std::unique_ptr<AudioTimingController> CreateDialogueTimingController(agi::Context *c)
 {
-	return agi::make_unique<AudioTimingControllerDialogue>(c);
+	return std::make_unique<AudioTimingControllerDialogue>(c);
 }

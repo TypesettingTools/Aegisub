@@ -38,7 +38,6 @@
 #include "../libresrc/libresrc.h"
 #include "../options.h"
 
-#include <libaegisub/make_unique.h>
 
 namespace {
 	using cmd::Command;
@@ -103,9 +102,9 @@ struct meta final : public Command {
 
 namespace cmd {
 	void init_automation() {
-		reg(agi::make_unique<meta>());
-		reg(agi::make_unique<open_manager>());
-		reg(agi::make_unique<reload_all>());
-		reg(agi::make_unique<reload_autoload>());
+		reg(std::make_unique<meta>());
+		reg(std::make_unique<open_manager>());
+		reg(std::make_unique<reload_all>());
+		reg(std::make_unique<reload_autoload>());
 	}
 }

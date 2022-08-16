@@ -15,7 +15,6 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "libaegisub/lua/ffi.h"
-#include "libaegisub/make_unique.h"
 
 #include <boost/regex/icu.hpp>
 
@@ -49,7 +48,7 @@ bool search(u32regex& re, const char *str, size_t len, int start, boost::cmatch&
 }
 
 match *regex_match(u32regex& re, const char *str, size_t len, int start) {
-	auto result = agi::make_unique<match>();
+	auto result = std::make_unique<match>();
 	if (!search(re, str, len, start, result->m))
 		return nullptr;
 	return result.release();
@@ -96,7 +95,7 @@ char *regex_replace(u32regex& re, const char *replacement, const char *str, size
 }
 
 u32regex *regex_compile(const char *pattern, int flags, char **err) {
-	auto re = agi::make_unique<u32regex>();
+	auto re = std::make_unique<u32regex>();
 	try {
 		*re = boost::make_u32regex(pattern, boost::u32regex::perl | flags);
 		return re.release();

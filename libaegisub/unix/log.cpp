@@ -18,7 +18,7 @@
 #include <ctime>
 #include <unistd.h>
 
-namespace agi { namespace log {
+namespace agi::log {
 void EmitSTDOUT::log(SinkMessage const& sm) {
 	time_t time = sm.time / 1000000000;
 	tm tmtime;
@@ -40,4 +40,4 @@ void EmitSTDOUT::log(SinkMessage const& sm) {
 	if (!isatty(fileno(stdout)))
 		fflush(stdout);
 }
-} }
+}

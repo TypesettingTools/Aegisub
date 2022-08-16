@@ -39,8 +39,6 @@
 #include "subtitle_format_ass.h"
 #include "video_frame.h"
 
-#include <libaegisub/make_unique.h>
-
 #include <mutex>
 
 #ifdef WIN32
@@ -122,7 +120,7 @@ std::vector<std::string> List() {
 }
 
 std::unique_ptr<SubtitlesProvider> Create(std::string const& name, agi::BackgroundRunner *) {
-	return agi::make_unique<CSRISubtitlesProvider>(name);
+	return std::make_unique<CSRISubtitlesProvider>(name);
 }
 }
 #endif // WITH_CSRI

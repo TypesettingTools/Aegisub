@@ -30,6 +30,6 @@ json::UnknownElement parse(std::istream &stream);
 /// @param file Path to JSON file.
 /// @param Default config file to load incase of nonexistent file
 /// @return json::UnknownElement
-json::UnknownElement file(agi::fs::path const& file, std::pair<const char *, size_t> default_config);
+json::UnknownElement file(agi::fs::path const& file, std::string_view default_config);
 
 } }

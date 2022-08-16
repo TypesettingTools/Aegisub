@@ -17,7 +17,6 @@
 #include "libaegisub/audio/provider.h"
 
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 
 #include <limits>
 
@@ -178,25 +177,25 @@ std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioP
 	if (provider->AreSamplesFloat()) {
 		LOG_D("audio_provider") << "Converting float to S16";
 		if (provider->GetBytesPerSample() == sizeof(float))
-			provider = agi::make_unique<FloatConvertAudioProvider<float, int16_t>>(std::move(provider));
+			provider = std::make_unique<FloatConvertAudioProvider<float, int16_t>>(std::move(provider));
 		else
-			provider = agi::make_unique<FloatConvertAudioProvider<double, int16_t>>(std::move(provider));
+			provider = std::make_unique<FloatConvertAudioProvider<double, int16_t>>(std::move(provider));
 	}
 	if (provider->GetBytesPerSample() != 2) {
 		LOG_D("audio_provider") << "Converting " << provider->GetBytesPerSample() << " bytes per sample or wrong endian to S16";
-		provider = agi::make_unique<BitdepthConvertAudioProvider<int16_t>>(std::move(provider));
+		provider = std::make_unique<BitdepthConvertAudioProvider<int16_t>>(std::move(provider));
 	}
 
 	// We currently only support mono audio
 	if (provider->GetChannels() != 1) {
 		LOG_D("audio_provider") << "Downmixing to mono from " << provider->GetChannels() << " channels";
-		provider = agi::make_unique<DownmixAudioProvider>(std::move(provider));
+		provider = std::make_unique<DownmixAudioProvider>(std::move(provider));
 	}
 
 	// Some players don't like low sample rate audio
 	while (provider->GetSampleRate() < 32000) {
 		LOG_D("audio_provider") << "Doubling sample rate";
-		provider = agi::make_unique<SampleDoublingAudioProvider>(std::move(provider));
+		provider = std::make_unique<SampleDoublingAudioProvider>(std::move(provider));
 	}
 
 	return provider;

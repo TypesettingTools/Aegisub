@@ -44,7 +44,6 @@
 #include <libaegisub/ass/dialogue_parser.h>
 #include <libaegisub/calltip_provider.h>
 #include <libaegisub/character_count.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/spellchecker.h>
 
 #include <boost/algorithm/string/predicate.hpp>
@@ -84,7 +83,7 @@ enum {
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, agi::Context *context)
 : wxStyledTextCtrl(parent, -1, wxDefaultPosition, wsize, style)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
-, thesaurus(agi::make_unique<Thesaurus>())
+, thesaurus(std::make_unique<Thesaurus>())
 , context(context)
 {
 	// Set properties

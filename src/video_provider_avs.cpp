@@ -38,7 +38,6 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <mutex>
@@ -323,6 +322,6 @@ void AvisynthVideoProvider::GetFrame(int n, VideoFrame &out) {
 
 namespace agi { class BackgroundRunner; }
 std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const& path, std::string const& colormatrix, agi::BackgroundRunner *) {
-	return agi::make_unique<AvisynthVideoProvider>(path, colormatrix);
+	return std::make_unique<AvisynthVideoProvider>(path, colormatrix);
 }
 #endif // HAVE_AVISYNTH

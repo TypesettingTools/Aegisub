@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file option.cpp
-/// @brief Option interface.
-/// @ingroup libaegisub
-
 #include "libaegisub/option.h"
 
 #include "libaegisub/cajun/reader.h"
@@ -28,9 +24,7 @@
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
 #include "libaegisub/option_value.h"
-#include "libaegisub/make_unique.h"
 
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <cassert>
 #include <memory>
@@ -51,23 +45,22 @@ class ConfigVisitor final : public json::ConstVisitor {
 	bool ignore_errors;
 
 	void Error(const char *message) {
-		if (ignore_errors)
-			LOG_E("option/load/config_visitor") << "Error loading option from user configuration: " << message;
-		else
+		if (!ignore_errors)
 			throw OptionJsonValueError(message);
+		LOG_E("option/load/config_visitor") << "Error loading option from user configuration: " << message;
 	}
 
 	template<class OptionValueType>
-	void ReadArray(json::Array const& src, std::string const& array_type) {
+	void ReadArray(json::Array const& src) {
 		typename OptionValueType::value_type arr;
 		arr.reserve(src.size());
 		for (json::Object const& obj : src)
-			arr.push_back((typename OptionValueType::value_type::value_type)(obj.begin()->second));
+			arr.emplace_back(static_cast<typename OptionValueType::raw_type>((obj.begin()->second)));
 
-		values.push_back(agi::make_unique<OptionValueType>(name, std::move(arr)));
+		values.push_back(std::make_unique<OptionValueType>(name, std::move(arr)));
 	}
 
-	void Visit(const json::Object& object) {
+	void Visit(const json::Object& object) override {
 		auto old_name = name;
 		for (auto const& obj : object) {
 			name = old_name + (old_name.empty() ? "" : "/") + obj.first;
@@ -76,7 +69,7 @@ class ConfigVisitor final : public json::ConstVisitor {
 		name = old_name;
 	}
 
-	void Visit(const json::Array& array) {
+	void Visit(const json::Array& array) override {
 		if (array.empty())
 			return Error("Cannot infer the type of an empty array");
 
@@ -93,45 +86,45 @@ class ConfigVisitor final : public json::ConstVisitor {
 		}
 
 		if (array_type == "string")
-			ReadArray<OptionValueListString>(array, array_type);
+			ReadArray<OptionValueListString>(array);
 		else if (array_type == "int")
-			ReadArray<OptionValueListInt>(array, array_type);
+			ReadArray<OptionValueListInt>(array);
 		else if (array_type == "double")
-			ReadArray<OptionValueListDouble>(array, array_type);
+			ReadArray<OptionValueListDouble>(array);
 		else if (array_type == "bool")
-			ReadArray<OptionValueListBool>(array, array_type);
+			ReadArray<OptionValueListBool>(array);
 		else if (array_type == "color")
-			ReadArray<OptionValueListColor>(array, array_type);
+			ReadArray<OptionValueListColor>(array);
 		else
 			Error("Array type not handled");
 	}
 
-	void Visit(int64_t number) {
-		values.push_back(agi::make_unique<OptionValueInt>(name, number));
+	void Visit(int64_t number) override {
+		values.push_back(std::make_unique<OptionValueInt>(name, number));
 	}
 
-	void Visit(double number) {
-		values.push_back(agi::make_unique<OptionValueDouble>(name, number));
+	void Visit(double number) override {
+		values.push_back(std::make_unique<OptionValueDouble>(name, number));
 	}
 
-	void Visit(const json::String& string) {
+	void Visit(const json::String& string) override {
 		size_t size = string.size();
 		if ((size == 4 && string[0] == '#') ||
 			(size == 7 && string[0] == '#') ||
-			(size >= 10 && boost::starts_with(string, "rgb(")) ||
-			((size == 9 || size == 10) && boost::starts_with(string, "&H")))
+			(size >= 10 && string.starts_with("rgb(")) ||
+			((size == 9 || size == 10) && string.starts_with("&H")))
 		{
-			values.push_back(agi::make_unique<OptionValueColor>(name, string));
+			values.push_back(std::make_unique<OptionValueColor>(name, agi::Color(string)));
 		} else {
-			values.push_back(agi::make_unique<OptionValueString>(name, string));
+			values.push_back(std::make_unique<OptionValueString>(name, string));
 		}
 	}
 
-	void Visit(bool boolean) {
-		values.push_back(agi::make_unique<OptionValueBool>(name, boolean));
+	void Visit(bool boolean) override {
+		values.push_back(std::make_unique<OptionValueBool>(name, boolean));
 	}
 
-	void Visit(const json::Null& null) {
+	void Visit(const json::Null& null) override {
 		Error("Attempt to read null value");
 	}
 
@@ -169,11 +162,7 @@ struct option_name_cmp {
 		return a->GetName() < b->GetName();
 	}
 
-	bool operator()(std::unique_ptr<OptionValue> const& a, std::string const& b) const {
-		return a->GetName() < b;
-	}
-
-	bool operator()(std::unique_ptr<OptionValue> const& a, const char *b) const {
+	bool operator()(std::unique_ptr<OptionValue> const& a, std::string_view b) const {
 		return a->GetName() < b;
 	}
 };
@@ -182,12 +171,12 @@ struct option_name_cmp {
 
 namespace agi {
 
-Options::Options(agi::fs::path const& file, std::pair<const char *, size_t> default_config, const OptionSetting setting)
+Options::Options(agi::fs::path const& file, std::string_view default_config, const OptionSetting setting)
 : config_file(file)
 , setting(setting)
 {
 	LOG_D("agi/options") << "New Options object";
-	boost::interprocess::ibufferstream stream(default_config.first, default_config.second);
+	boost::interprocess::ibufferstream stream(default_config.data(), default_config.size());
 	LoadConfig(stream);
 }
 
@@ -258,7 +247,7 @@ void Options::LoadConfig(std::istream& stream, bool ignore_errors) {
 	}
 }
 
-OptionValue *Options::Get(const char *name) {
+OptionValue *Options::Get(std::string_view name) {
 	auto index = lower_bound(begin(values), end(values), name, option_name_cmp());
 	if (index != end(values) && (*index)->GetName() == name)
 		return index->get();

@@ -148,19 +148,19 @@ DEFINE_EXCEPTION(CommandNotFound, CommandError);
 
 	/// Unregister a command.
 	/// @param cmd Command name to unregister. The associated command object is deleted.
-	void unreg(std::string const& name);
+	void unreg(std::string_view name);
 
 	/// Call a command.
 	/// @param name Name of the command to call.
 	/// @param c  Current Context.
-	void call(std::string const& name, agi::Context *c);
+	void call(std::string_view name, agi::Context *c);
 
 	/// Retrieve a Command object.
 	/// @param Command object.
-	Command* get(std::string const& name);
+	Command* get(std::string_view name);
 
 	/// Get a list of registered command names
-	std::vector<std::string> get_registered_commands();
+	std::vector<std::string_view> get_registered_commands();
 
 	/// Unregister and deletes all commands
 	void clear();

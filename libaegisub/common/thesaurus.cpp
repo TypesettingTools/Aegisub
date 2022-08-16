@@ -21,7 +21,6 @@
 #include "libaegisub/charset_conv.h"
 #include "libaegisub/file_mapping.h"
 #include "libaegisub/line_iterator.h"
-#include "libaegisub/make_unique.h"
 #include "libaegisub/split.h"
 
 #include <boost/interprocess/streams/bufferstream.hpp>
@@ -29,7 +28,7 @@
 namespace agi {
 
 Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path)
-: dat(make_unique<read_file_mapping>(dat_path))
+: dat(std::make_unique<read_file_mapping>(dat_path))
 {
 	read_file_mapping idx_file(idx_path);
 	boost::interprocess::ibufferstream idx(idx_file.read(), static_cast<size_t>(idx_file.size()));
@@ -39,7 +38,7 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 	std::string unused_entry_count;
 	getline(idx, unused_entry_count);
 
-	conv = make_unique<charset::IconvWrapper>(encoding_name.c_str(), "utf-8");
+	conv = std::make_unique<charset::IconvWrapper>(encoding_name.c_str(), "utf-8");
 
 	// Read the list of words and file offsets for those words
 	for (auto const& line : line_iterator<std::string>(idx, encoding_name)) {
@@ -49,7 +48,7 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 	}
 }
 
-Thesaurus::~Thesaurus() { }
+Thesaurus::~Thesaurus() = default;
 
 std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string const& word) {
 	std::vector<Entry> out;

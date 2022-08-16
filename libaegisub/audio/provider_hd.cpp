@@ -20,7 +20,6 @@
 #include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/interprocess/detail/os_thread_functions.hpp>
@@ -75,7 +74,7 @@ public:
 		});
 	}
 
-	~HDAudioProvider() {
+	~HDAudioProvider() override {
 		cancelled = true;
 		decoder.join();
 	}
@@ -84,6 +83,6 @@ public:
 
 namespace agi {
 std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> src, agi::fs::path const& dir) {
-	return agi::make_unique<HDAudioProvider>(std::move(src), dir);
+	return std::make_unique<HDAudioProvider>(std::move(src), dir);
 }
 }

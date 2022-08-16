@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file osx_utils.mm
-/// @see utils.h
-/// @ingroup utils
-///
-
 #include <wx/frame.h>
 #include <wx/menu.h>
 #include <wx/osx/core/cfstring.h>

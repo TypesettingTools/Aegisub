@@ -27,7 +27,6 @@
 #include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 #include <libaegisub/thesaurus.h>
 
@@ -103,7 +102,7 @@ void Thesaurus::OnLanguageChanged() {
 	auto cancel = cancel_load; // Needed to avoid capturing via `this`
 	agi::dispatch::Background().Async([=]{
 		try {
-			auto thes = agi::make_unique<agi::Thesaurus>(dat, idx);
+			auto thes = std::make_unique<agi::Thesaurus>(dat, idx);
 			agi::dispatch::Main().Sync([&thes, cancel, this]{
 				if (!*cancel) {
 					impl = std::move(thes);

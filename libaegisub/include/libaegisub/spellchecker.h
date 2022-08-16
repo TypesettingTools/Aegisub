@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace agi {
@@ -26,31 +26,31 @@ public:
 
 	/// Add word to the dictionary
 	/// @param word Word to add
-	virtual void AddWord(std::string const& word)=0;
+	virtual void AddWord(std::string_view word)=0;
 
 	/// Remove word from the dictionary
 	/// @param word Word to remove
-	virtual void RemoveWord(std::string const& word)=0;
+	virtual void RemoveWord(std::string_view word)=0;
 
 	/// Can the word be added to the current dictionary?
 	/// @param word Word to check
 	/// @return Whether or not word can be added
-	virtual bool CanAddWord(std::string const& word)=0;
+	virtual bool CanAddWord(std::string_view word)=0;
 
 	/// Can the word be removed from the current dictionary?
 	/// @param word Word to check
 	/// @return Whether or not word can be removed
-	virtual bool CanRemoveWord(std::string const& word)=0;
+	virtual bool CanRemoveWord(std::string_view word)=0;
 
 	/// Check if the given word is spelled correctly
 	/// @param word Word to check
 	/// @return Whether or not the word is valid
-	virtual bool CheckWord(std::string const& word)=0;
+	virtual bool CheckWord(std::string_view word)=0;
 
 	/// Get possible corrections for a misspelled word
 	/// @param word Word to get suggestions for
 	/// @return List of suggestions, if any
-	virtual std::vector<std::string> GetSuggestions(std::string const& word)=0;
+	virtual std::vector<std::string> GetSuggestions(std::string_view word)=0;
 
 	/// Get a list of languages which dictionaries are present for
 	virtual std::vector<std::string> GetLanguageList()=0;

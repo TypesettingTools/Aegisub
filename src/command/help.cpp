@@ -35,7 +35,6 @@
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
 
-#include <libaegisub/make_unique.h>
 
 #include <wx/msgdlg.h>
 
@@ -114,10 +113,10 @@ struct help_website final : public Command {
 
 namespace cmd {
 	void init_help() {
-		reg(agi::make_unique<help_bugs>());
-		reg(agi::make_unique<help_contents>());
-		reg(agi::make_unique<help_irc>());
-		reg(agi::make_unique<help_video>());
-		reg(agi::make_unique<help_website>());
+		reg(std::make_unique<help_bugs>());
+		reg(std::make_unique<help_contents>());
+		reg(std::make_unique<help_irc>());
+		reg(std::make_unique<help_video>());
+		reg(std::make_unique<help_website>());
 	}
 }

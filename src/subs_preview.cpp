@@ -41,7 +41,6 @@
 #include "video_frame.h"
 #include "video_provider_dummy.h"
 
-#include <libaegisub/make_unique.h>
 
 #include <wx/dcclient.h>
 #include <wx/msgdlg.h>
@@ -50,7 +49,7 @@ SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, 
 : wxWindow(parent, -1, wxDefaultPosition, size, winStyle)
 , style(new AssStyle)
 , back_color(col)
-, sub_file(agi::make_unique<AssFile>())
+, sub_file(std::make_unique<AssFile>())
 , line(new AssDialogue)
 {
 	line->Text = "{\\q2}preview";
@@ -96,7 +95,7 @@ void SubtitlesPreview::SetText(std::string const& text) {
 void SubtitlesPreview::SetColour(agi::Color col) {
 	if (col != back_color) {
 		back_color = col;
-		vid = agi::make_unique<DummyVideoProvider>(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), back_color, true);
+		vid = std::make_unique<DummyVideoProvider>(0.0, 10, bmp->GetWidth(), bmp->GetHeight(), back_color, true);
 		UpdateBitmap();
 	}
 }
@@ -130,11 +129,11 @@ void SubtitlesPreview::OnSize(wxSizeEvent &evt) {
 	int w = evt.GetSize().GetWidth();
 	int h = evt.GetSize().GetHeight();
 
-	bmp = agi::make_unique<wxBitmap>(w, h, -1);
-	vid = agi::make_unique<DummyVideoProvider>(0.0, 10, w, h, back_color, true);
+	bmp = std::make_unique<wxBitmap>(w, h, -1);
+	vid = std::make_unique<DummyVideoProvider>(0.0, 10, w, h, back_color, true);
 	try {
 		if (!progress)
-			progress = agi::make_unique<DialogProgress>(this);
+			progress = std::make_unique<DialogProgress>(this);
 		if (!provider)
 			provider = SubtitlesProviderFactory::GetProvider(progress.get());
 	}

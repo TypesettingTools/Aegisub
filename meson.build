@@ -1,7 +1,7 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.56.1',
-        default_options: ['cpp_std=c++14', 'buildtype=debugoptimized'],
+        default_options: ['cpp_std=c++20', 'buildtype=debugoptimized'],
         version: '3.2.2')
 
 cmake = import('cmake')
@@ -67,7 +67,7 @@ if host_machine.system() == 'darwin'
     add_languages('objc', 'objcpp')
     add_project_arguments('-DGL_SILENCE_DEPRECATION', language: 'cpp')
     # meson neither supports objcpp_std nor inherits cpp_std https://github.com/mesonbuild/meson/issues/5495
-    add_project_arguments('-std=c++11', language: 'objcpp')
+    add_project_arguments('-std=c++20', language: 'objcpp')
 elif host_machine.system() != 'windows'
     conf.set('WITH_FONTCONFIG', 1)
     deps += dependency('fontconfig')

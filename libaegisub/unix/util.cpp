@@ -15,22 +15,12 @@
 #include <libaegisub/util.h>
 
 #include <cstddef>
-
-#ifdef _LIBCPP_VERSION
 #include <thread>
-#else
-#include <boost/thread.hpp>
-#endif
 
-namespace agi { namespace util {
+namespace agi::util {
 void SetThreadName(const char *) { }
 
 void sleep_for(int ms) {
-#ifdef __clang__
 	std::this_thread::sleep_for(std::chrono::milliseconds(ms));
-#else
-	boost::this_thread::sleep_for(boost::chrono::milliseconds(ms));
-#endif
 }
-
-} }
+}

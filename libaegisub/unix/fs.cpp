@@ -64,7 +64,7 @@ struct DirectoryIterator::PrivData {
 	}
 };
 
-DirectoryIterator::DirectoryIterator() { }
+DirectoryIterator::DirectoryIterator() = default;
 DirectoryIterator::DirectoryIterator(path const& p, std::string const& filter)
 : privdata(new PrivData(p, filter))
 {

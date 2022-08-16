@@ -100,11 +100,11 @@ void init() {
 		auto hk_map = hotkey::inst->GetHotkeyMap();
 		for (auto const& hotkey : boost::make_iterator_range(hk_map.equal_range("edit/line/duplicate/shift"))) {
 			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/before", hotkey.second.Str());
-			hk_map.insert({combo.CmdName(), combo});
+			hk_map.emplace(combo.CmdName(), combo);
 		}
 		for (auto const& hotkey : boost::make_iterator_range(hk_map.equal_range("edit/line/duplicate/shift_back"))) {
 			auto combo = agi::hotkey::Combo(hotkey.second.Context(), "edit/line/split/after", hotkey.second.Str());
-			hk_map.insert({combo.CmdName(), combo});
+			hk_map.emplace(combo.CmdName(), combo);
 		}
 
 		hk_map.erase("edit/line/duplicate/shift");
@@ -235,11 +235,11 @@ std::string keypress_to_str(int key_code, int modifier) {
 	return combo;
 }
 
-static bool check(std::string const& context, agi::Context *c, int key_code, int modifier) {
+static bool check(std::string_view context, agi::Context *c, int key_code, int modifier) {
 	std::string combo = keypress_to_str(key_code, modifier);
 	if (combo.empty()) return false;
 
-	std::string command = inst->Scan(context, combo, OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool());
+	auto command = inst->Scan(context, combo, OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool());
 	if (!command.empty()) {
 		cmd::call(command, c);
 		return true;
@@ -247,7 +247,7 @@ static bool check(std::string const& context, agi::Context *c, int key_code, int
 	return false;
 }
 
-bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt) {
+bool check(std::string_view context, agi::Context *c, wxKeyEvent &evt) {
 	try {
 		if (!check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
 			evt.Skip();
@@ -262,11 +262,11 @@ bool check(std::string const& context, agi::Context *c, wxKeyEvent &evt) {
 	}
 }
 
-std::vector<std::string> get_hotkey_strs(std::string const& context, std::string const& command) {
+std::vector<std::string> get_hotkey_strs(std::string_view context, std::string_view command) {
 	return inst->GetHotkeys(context, command);
 }
 
-std::string get_hotkey_str_first(std::string const& context, std::string const& command) {
+std::string_view get_hotkey_str_first(std::string_view context, std::string_view command) {
 	return inst->GetHotkey(context, command);
 }
 

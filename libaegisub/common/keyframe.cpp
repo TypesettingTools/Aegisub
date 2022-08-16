@@ -24,7 +24,6 @@
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
 
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/algorithm/copy.hpp>
 
 namespace {
@@ -34,7 +33,7 @@ std::vector<int> agi_keyframes(std::istream &file) {
 	file >> fps_str;
 	file >> fps;
 
-	return std::vector<int>(agi::line_iterator<int>(file), agi::line_iterator<int>());
+	return {agi::line_iterator<int>(file), agi::line_iterator<int>()};
 }
 
 std::vector<int> enumerated_keyframes(std::istream &file, char (*func)(std::string const&)) {
@@ -112,12 +111,12 @@ std::vector<int> Load(agi::fs::path const& filename) {
 	getline(is, header);
 
 	if (header == "# keyframe format v1") return agi_keyframes(is);
-	if (boost::starts_with(header, "# XviD 2pass stat file")) return enumerated_keyframes(is, xvid);
-	if (boost::starts_with(header, "# ffmpeg 2-pass log file, using xvid codec")) return enumerated_keyframes(is, xvid);
-	if (boost::starts_with(header, "# avconv 2-pass log file, using xvid codec")) return enumerated_keyframes(is, xvid);
-	if (boost::starts_with(header, "##map version")) return enumerated_keyframes(is, divx);
-	if (boost::starts_with(header, "#options:")) return enumerated_keyframes(is, x264);
-	if (boost::starts_with(header, "# WWXD log file, using qpfile format")) return indexed_keyframes(is, wwxd);
+	if (header.starts_with("# XviD 2pass stat file")) return enumerated_keyframes(is, xvid);
+	if (header.starts_with("# ffmpeg 2-pass log file, using xvid codec")) return enumerated_keyframes(is, xvid);
+	if (header.starts_with("# avconv 2-pass log file, using xvid codec")) return enumerated_keyframes(is, xvid);
+	if (header.starts_with("##map version")) return enumerated_keyframes(is, divx);
+	if (header.starts_with("#options:")) return enumerated_keyframes(is, x264);
+	if (header.starts_with("# WWXD log file, using qpfile format")) return indexed_keyframes(is, wwxd);
 
 	throw UnknownKeyframeFormatError("File header does not match any known formats");
 }

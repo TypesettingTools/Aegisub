@@ -52,7 +52,7 @@
 ///
 /// The encoded string should be usable in any kind of field in an ASS file.
 
-#include <string>
+#include <string_view>
 
-std::string inline_string_encode(const std::string &input);
-std::string inline_string_decode(const std::string &input);
+std::string inline_string_encode(std::string_view input);
+std::string inline_string_decode(std::string_view input);

@@ -18,7 +18,6 @@
 
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
@@ -201,7 +200,7 @@ TEST(lagi_audio, volume_should_clamp_rather_than_wrap) {
 }
 
 TEST(lagi_audio, ram_cache) {
-	auto provider = agi::CreateRAMAudioProvider(agi::make_unique<TestAudioProvider<>>());
+	auto provider = agi::CreateRAMAudioProvider(std::make_unique<TestAudioProvider<>>());
 	EXPECT_EQ(1, provider->GetChannels());
 	EXPECT_EQ(90 * 48000, provider->GetNumSamples());
 	EXPECT_EQ(48000, provider->GetSampleRate());
@@ -218,7 +217,7 @@ TEST(lagi_audio, ram_cache) {
 }
 
 TEST(lagi_audio, hd_cache) {
-	auto provider = agi::CreateHDAudioProvider(agi::make_unique<TestAudioProvider<>>(), agi::Path().Decode("?temp"));
+	auto provider = agi::CreateHDAudioProvider(std::make_unique<TestAudioProvider<>>(), agi::Path().Decode("?temp"));
 	while (provider->GetDecodedSamples() != provider->GetNumSamples()) agi::util::sleep_for(0);
 
 	uint16_t buff[512];
@@ -229,7 +228,7 @@ TEST(lagi_audio, hd_cache) {
 }
 
 TEST(lagi_audio, convert_8bit) {
-	auto provider = agi::CreateConvertAudioProvider(agi::make_unique<TestAudioProvider<uint8_t>>());
+	auto provider = agi::CreateConvertAudioProvider(std::make_unique<TestAudioProvider<uint8_t>>());
 
 	int16_t data[256];
 	provider->GetAudio(data, 0, 256);
@@ -238,7 +237,7 @@ TEST(lagi_audio, convert_8bit) {
 }
 
 TEST(lagi_audio, convert_32bit) {
-	auto src = agi::make_unique<TestAudioProvider<uint32_t>>(100000);
+	auto src = std::make_unique<TestAudioProvider<uint32_t>>(100000);
 	src->bias = INT_MIN;
 	auto provider = agi::CreateConvertAudioProvider(std::move(src));
 
@@ -271,7 +270,7 @@ TEST(lagi_audio, sample_doubling) {
 		}
 	};
 
-	auto provider = agi::CreateConvertAudioProvider(agi::make_unique<AudioProvider>());
+	auto provider = agi::CreateConvertAudioProvider(std::make_unique<AudioProvider>());
 	EXPECT_EQ(40000, provider->GetSampleRate());
 
 	int16_t samples[6];
@@ -309,7 +308,7 @@ TEST(lagi_audio, stereo_downmix) {
 		}
 	};
 
-	auto provider = agi::CreateConvertAudioProvider(agi::make_unique<AudioProvider>());
+	auto provider = agi::CreateConvertAudioProvider(std::make_unique<AudioProvider>());
 	EXPECT_EQ(1, provider->GetChannels());
 
 	int16_t samples[100];
@@ -339,7 +338,7 @@ struct FloatAudioProvider : agi::AudioProvider {
 };
 
 TEST(lagi_audio, float_conversion) {
-	auto provider = agi::CreateConvertAudioProvider(agi::make_unique<FloatAudioProvider<float>>());
+	auto provider = agi::CreateConvertAudioProvider(std::make_unique<FloatAudioProvider<float>>());
 	EXPECT_FALSE(provider->AreSamplesFloat());
 
 	int16_t samples[1 << 16];
@@ -349,7 +348,7 @@ TEST(lagi_audio, float_conversion) {
 }
 
 TEST(lagi_audio, double_conversion) {
-	auto provider = agi::CreateConvertAudioProvider(agi::make_unique<FloatAudioProvider<double>>());
+	auto provider = agi::CreateConvertAudioProvider(std::make_unique<FloatAudioProvider<double>>());
 	EXPECT_FALSE(provider->AreSamplesFloat());
 
 	int16_t samples[1 << 16];

@@ -19,7 +19,7 @@
 #include <memory>
 #include <vector>
 
-namespace agi { namespace signal {
+namespace agi::signal {
 class Connection;
 
 /// Implementation details; nothing outside this file should directly touch
@@ -63,10 +63,10 @@ class Connection {
 	std::unique_ptr<detail::ConnectionToken> token;
 public:
 	Connection() = default;
-	Connection(UnscopedConnection src) BOOST_NOEXCEPT : token(src.token) { token->claimed = true; }
-	Connection(Connection&& that) BOOST_NOEXCEPT : token(std::move(that.token)) { }
-	Connection(detail::ConnectionToken *token) BOOST_NOEXCEPT : token(token) { token->claimed = true; }
-	Connection& operator=(Connection&& that) BOOST_NOEXCEPT { token = std::move(that.token); return *this; }
+	Connection(UnscopedConnection src) noexcept : token(src.token) { token->claimed = true; }
+	Connection(Connection&& that) noexcept = default;
+	Connection(detail::ConnectionToken *token) noexcept : token(token) { token->claimed = true; }
+	Connection& operator=(Connection&& that) noexcept = default;
 
 	/// @brief End this connection
 	///
@@ -100,7 +100,7 @@ namespace detail {
 		SignalBase& operator=(SignalBase const&) = delete;
 	protected:
 		SignalBase() = default;
-		virtual ~SignalBase() {};
+		virtual ~SignalBase() = default;
 		/// @brief Notify a slot that it has been disconnected
 		/// @param tok Token to disconnect
 		///
@@ -131,18 +131,13 @@ class Signal final : private detail::SignalBase {
 	std::vector<std::pair<detail::ConnectionToken*, Slot>> slots; /// Signals currently connected to this slot
 
 	void Disconnect(detail::ConnectionToken *tok) override {
-		for (auto it = begin(slots), e = end(slots); it != e; ++it) {
-			if (tok == it->first) {
-				slots.erase(it);
-				return;
-			}
-		}
+		std::erase_if(slots, [=](auto& slot) { return slot.first == tok; });
 	}
 
-	UnscopedConnection DoConnect(Slot sig) {
-		auto token = MakeToken();
-		slots.emplace_back(token, sig);
-		return UnscopedConnection(token);
+	UnscopedConnection DoConnect(Slot&& sig) {
+		std::unique_ptr<detail::ConnectionToken> token(MakeToken());
+		slots.emplace_back(token.get(), std::move(sig));
+		return UnscopedConnection(token.release());
 	}
 
 public:
@@ -167,8 +162,8 @@ public:
 	/// @brief Connect a signal to this slot
 	/// @param sig Signal to connect
 	/// @return The connection object
-	UnscopedConnection Connect(Slot sig) {
-		return DoConnect(sig);
+	UnscopedConnection Connect(Slot&& sig) {
+		return DoConnect(std::move(sig));
 	}
 
 	// Convenience wrapper for a member function which matches the signal's signature
@@ -208,7 +203,7 @@ inline std::vector<Connection> make_vector(std::initializer_list<UnscopedConnect
 	return std::vector<Connection>(std::begin(connections), std::end(connections));
 }
 
-} }
+}
 
 /// @brief Define functions which forward their arguments to the connect method
 ///        of the named signal

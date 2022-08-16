@@ -27,11 +27,10 @@
 
 #include <libaegisub/color.h>
 #include <libaegisub/format.h>
-#include <libaegisub/make_unique.h>
 
 VisualToolCross::VisualToolCross(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualDraggableFeature>(parent, context)
-, gl_text(agi::make_unique<OpenGLText>())
+, gl_text(std::make_unique<OpenGLText>())
 {
 	parent->SetCursor(wxCursor(wxCURSOR_BLANK));
 }

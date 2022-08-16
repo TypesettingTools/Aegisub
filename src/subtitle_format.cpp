@@ -50,7 +50,6 @@
 #include "subtitle_format_txt.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/vfr.h>
 
 #include <algorithm>
@@ -262,16 +261,16 @@ void SubtitleFormat::MergeIdentical(AssFile &file) {
 
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {
-		formats.emplace_back(agi::make_unique<AssSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<Ebu3264SubtitleFormat>());
-		formats.emplace_back(agi::make_unique<EncoreSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<MKVSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<MicroDVDSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<SRTSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<SsaSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<TTXTSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<TXTSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<TranStationSubtitleFormat>());
+		formats.emplace_back(std::make_unique<AssSubtitleFormat>());
+		formats.emplace_back(std::make_unique<Ebu3264SubtitleFormat>());
+		formats.emplace_back(std::make_unique<EncoreSubtitleFormat>());
+		formats.emplace_back(std::make_unique<MKVSubtitleFormat>());
+		formats.emplace_back(std::make_unique<MicroDVDSubtitleFormat>());
+		formats.emplace_back(std::make_unique<SRTSubtitleFormat>());
+		formats.emplace_back(std::make_unique<SsaSubtitleFormat>());
+		formats.emplace_back(std::make_unique<TTXTSubtitleFormat>());
+		formats.emplace_back(std::make_unique<TXTSubtitleFormat>());
+		formats.emplace_back(std::make_unique<TranStationSubtitleFormat>());
 	}
 }
 

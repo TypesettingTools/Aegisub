@@ -11,8 +11,9 @@ Author: Terry Caton
 #include <cstdint>
 #include <map>
 #include <memory>
-#include <string>
 #include <stdexcept>
+#include <string>
+#include <string_view>
 #include <vector>
 
 namespace json {
@@ -28,16 +29,15 @@ typedef double Double;
 typedef bool Boolean;
 typedef std::string String;
 typedef std::vector<UnknownElement> Array;
-typedef std::map<std::string, UnknownElement> Object;
+typedef std::map<std::string, UnknownElement, std::less<>> Object;
 
 struct Null;
-
 
 /////////////////////////////////////////////////////////////////////////
 // Exception - base class for all JSON-related runtime errors
 class Exception : public std::runtime_error {
 public:
-	Exception(const std::string& sMessage) : std::runtime_error(sMessage) { }
+   Exception(const std::string& sMessage) : std::runtime_error(sMessage) { }
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -55,8 +55,8 @@ public:
 //  String str = objInvoices[1]["Customer"]["Company"];
 class UnknownElement {
 public:
-   UnknownElement();
-   UnknownElement(UnknownElement&& unknown);
+   UnknownElement() noexcept;
+   UnknownElement(UnknownElement&& unknown) noexcept;
    UnknownElement(Object object);
    UnknownElement(Array array);
    UnknownElement(double number);
@@ -65,11 +65,12 @@ public:
    UnknownElement(bool boolean);
    UnknownElement(const char *string);
    UnknownElement(String string);
+   UnknownElement(std::string_view string);
    UnknownElement(Null null);
 
    ~UnknownElement();
 
-   UnknownElement& operator=(UnknownElement&& unknown);
+   UnknownElement& operator=(UnknownElement&& unknown) noexcept;
 
    // implicit cast to actual element type. throws on failure
    operator Object const&() const;
@@ -86,6 +87,7 @@ public:
    operator Boolean&();
    operator String&();
    operator Null&();
+   operator std::string_view();
 
    // implements visitor pattern
    void Accept(ConstVisitor& visitor) const;

@@ -18,13 +18,13 @@
 #include <main.h>
 
 class MockSpellChecker : public agi::SpellChecker {
-	void AddWord(std::string const&) override { }
-	void RemoveWord(std::string const&) override { }
-	bool CanAddWord(std::string const&) override { return false; }
-	bool CanRemoveWord(std::string const&) override { return false; }
-	std::vector<std::string> GetSuggestions(std::string const&) override { return std::vector<std::string>(); }
+	void AddWord(std::string_view) override { }
+	void RemoveWord(std::string_view) override { }
+	bool CanAddWord(std::string_view) override { return false; }
+	bool CanRemoveWord(std::string_view) override { return false; }
+	std::vector<std::string> GetSuggestions(std::string_view) override { return std::vector<std::string>(); }
 	std::vector<std::string> GetLanguageList() override { return std::vector<std::string>(); }
-	bool CheckWord(std::string const& word) override { return word != "incorrect"; }
+	bool CheckWord(std::string_view word) override { return word != "incorrect"; }
 };
 
 using namespace agi::ass;

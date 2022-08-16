@@ -18,7 +18,6 @@
 
 #include "libaegisub/file_mapping.h"
 #include "libaegisub/fs.h"
-#include "libaegisub/make_unique.h"
 
 #include <array>
 #include <vector>
@@ -106,7 +105,7 @@ struct RiffWav {
 	static uint32_t chunk_size(uint32_t size) { return size; }
 };
 
-typedef std::array<uint8_t, 16> GUID;
+using GUID = std::array<uint8_t, 16>;
 
 static const GUID w64GuidRIFF = {{
 	// {66666972-912E-11CF-A5D6-28DB04C10000}
@@ -219,7 +218,7 @@ std::unique_ptr<AudioProvider> CreatePCMAudioProvider(fs::path const& filename, 
 	std::string msg;
 
 	try {
-		return make_unique<WavPCMAudioProvider<RiffWav>>(filename);
+		return std::make_unique<WavPCMAudioProvider<RiffWav>>(filename);
 	}
 	catch (AudioDataNotFound const& err) {
 		msg = "RIFF PCM WAV audio provider: " + err.GetMessage();
@@ -230,7 +229,7 @@ std::unique_ptr<AudioProvider> CreatePCMAudioProvider(fs::path const& filename, 
 	}
 
 	try {
-		return make_unique<WavPCMAudioProvider<Wave64>>(filename);
+		return std::make_unique<WavPCMAudioProvider<Wave64>>(filename);
 	}
 	catch (AudioDataNotFound const& err) {
 		msg += "\nWave64 audio provider: " + err.GetMessage();
@@ -242,7 +241,6 @@ std::unique_ptr<AudioProvider> CreatePCMAudioProvider(fs::path const& filename, 
 
 	if (wrong_file_type)
 		throw AudioDataNotFound(msg);
-	else
-		throw AudioProviderError(msg);
+	throw AudioProviderError(msg);
 }
 }

@@ -35,8 +35,6 @@
 #include "selection_controller.h"
 #include "video_controller.h"
 
-#include <libaegisub/make_unique.h>
-
 #include <wx/checkbox.h>
 #include <wx/colour.h>
 #include <wx/event.h>
@@ -135,7 +133,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 
 	SetSizerAndFit(main_sizer);
 
-	persist = agi::make_unique<PersistLocation>(this, "Tool/Styling Assistant");
+	persist = std::make_unique<PersistLocation>(this, "Tool/Styling Assistant");
 
 	Bind(wxEVT_ACTIVATE, &DialogStyling::OnActivate, this);
 	Bind(wxEVT_CHAR_HOOK, &DialogStyling::OnCharHook, this);

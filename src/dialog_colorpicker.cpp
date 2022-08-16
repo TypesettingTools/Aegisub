@@ -37,7 +37,6 @@
 #include "value_event.h"
 
 #include <libaegisub/scoped_ptr.h>
-#include <libaegisub/make_unique.h>
 
 #include <memory>
 #include <vector>
@@ -651,7 +650,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	SetSizerAndFit(main_sizer);
 
-	persist = agi::make_unique<PersistLocation>(this, "Tool/Colour Picker");
+	persist = std::make_unique<PersistLocation>(this, "Tool/Colour Picker");
 
 	// Fill the controls
 	int mode = OPT_GET("Tool/Colour Picker/Mode")->GetInt();

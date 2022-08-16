@@ -34,7 +34,6 @@
 #include "audio_renderer.h"
 
 #include <libaegisub/audio/provider.h>
-#include <libaegisub/make_unique.h>
 
 #include <algorithm>
 #include <wx/dc.h>
@@ -57,7 +56,7 @@ AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(Aud
 
 std::unique_ptr<wxBitmap> AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int /* i */)
 {
-	return agi::make_unique<wxBitmap>(renderer->cache_bitmap_width, renderer->pixel_height, 24);
+	return std::make_unique<wxBitmap>(renderer->cache_bitmap_width, renderer->pixel_height, 24);
 }
 
 size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
