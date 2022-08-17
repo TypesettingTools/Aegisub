@@ -57,9 +57,7 @@ void Touch(path const& file) {
 }
 
 void Copy(fs::path const& from, fs::path const& to) {
-	acs::CheckFileRead(from);
 	CreateDirectory(to.parent_path());
-	acs::CheckDirWrite(to.parent_path());
 
 	if (!CopyFile(from.wstring().c_str(), to.wstring().c_str(), false)) {
 		switch (GetLastError()) {
