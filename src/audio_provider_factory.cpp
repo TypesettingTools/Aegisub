@@ -106,7 +106,7 @@ std::unique_ptr<agi::AudioProvider> GetAudioProvider(fs::path const& filename,
 		provider = CreateConvertAudioProvider(std::move(provider));
 
 	// Change provider to RAM/HD cache if needed
-	int cache = OPT_GET("Audio/Cache/Type")->GetInt();
+	auto cache = OPT_GET("Audio/Cache/Type")->GetInt();
 	if (!cache || !needs_cache)
 		return CreateLockAudioProvider(std::move(provider));
 

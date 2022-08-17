@@ -97,7 +97,7 @@ std::string get_string(lua_State *L, int idx);
 std::string get_global_string(lua_State *L, const char *name);
 
 std::string check_string(lua_State *L, int idx);
-int check_int(lua_State *L, int idx);
+long check_int(lua_State *L, int idx);
 size_t check_uint(lua_State *L, int idx);
 void *check_udata(lua_State *L, int idx, const char *mt);
 

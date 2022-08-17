@@ -171,8 +171,8 @@ karaoke_match_result auto_match_karaoke(std::vector<std::string> const& source_s
 		boost::copy(kana_to_romaji(dst->str()), back_inserter(translit));
 
 		// Search for it and the transliterated version in the source
-		int src_lookahead_max = (lookahead + 1) * max_character_length;
-		int src_lookahead_pos = 0;
+		size_t src_lookahead_max = (lookahead + 1) * max_character_length;
+		size_t src_lookahead_pos = 0;
 		for (auto const& syl : source_strings) {
 			// Don't count blank syllables in the max search distance
 			if (is_whitespace(syl)) continue;
