@@ -34,21 +34,21 @@ template class boost::interprocess::basic_vectorbuf<std::wstring>;
 
 namespace {
 template<typename Char>
-int actual_len(int max_len, const Char *value) {
+size_t actual_len(size_t max_len, const Char *value) {
 	int len = 0;
 	while (value[len] && (max_len <= 0 || len < max_len)) ++len;
 	return len;
 }
 
 template<typename Char>
-int actual_len(int max_len, std::basic_string<Char> value) {
+size_t actual_len(size_t max_len, std::basic_string<Char> value) {
 	if (max_len > 0 && static_cast<size_t>(max_len) < value.size())
 		return max_len;
 	return value.size();
 }
 
 template<typename Char>
-void do_write_str(std::basic_ostream<Char>& out, const Char *str, int len) {
+void do_write_str(std::basic_ostream<Char>& out, const Char *str, size_t len) {
 	out.write(str, len);
 }
 
@@ -204,12 +204,12 @@ struct format_parser {
 namespace agi {
 
 template<typename StreamChar, typename Char>
-void writer<StreamChar, const Char *>::write(std::basic_ostream<StreamChar>& out, int max_len, const Char *value) {
+void writer<StreamChar, const Char *>::write(std::basic_ostream<StreamChar>& out, size_t max_len, const Char *value) {
 	do_write_str(out, value, actual_len(max_len, value));
 }
 
 template<typename StreamChar, typename Char>
-void writer<StreamChar, std::basic_string<Char>>::write(std::basic_ostream<StreamChar>& out, int max_len, std::basic_string<Char> const& value) {
+void writer<StreamChar, std::basic_string<Char>>::write(std::basic_ostream<StreamChar>& out, size_t max_len, std::basic_string<Char> const& value) {
 	do_write_str(out, value.data(), actual_len(max_len, value));
 }
 

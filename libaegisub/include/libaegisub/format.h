@@ -51,19 +51,19 @@ Out runtime_cast(In const& value) {
 
 template<typename Char, typename T>
 struct writer {
-	static void write(std::basic_ostream<Char>& out, int, T const& value) {
+	static void write(std::basic_ostream<Char>& out, size_t, T const& value) {
 		out << value;
 	}
 };
 
 template<typename StreamChar, typename Char>
 struct writer<StreamChar, const Char *> {
-	static void write(std::basic_ostream<StreamChar>& out, int max_len, const Char *value);
+	static void write(std::basic_ostream<StreamChar>& out, size_t max_len, const Char *value);
 };
 
 template<typename StreamChar, typename Char>
 struct writer<StreamChar, std::basic_string<Char>> {
-	static void write(std::basic_ostream<StreamChar>& out, int max_len, std::basic_string<Char> const& value);
+	static void write(std::basic_ostream<StreamChar>& out, size_t max_len, std::basic_string<Char> const& value);
 };
 
 // Ensure things with specializations don't get implicitly initialized

@@ -115,7 +115,7 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 
 		this->self
 			= string("\\\\[nNh]", LINE_BREAK)
-			| char_('{', OVR_BEGIN)[ref(paren_depth) = 0, _state = "OVR"]
+			| char_('{', OVR_BEGIN)[(ref(paren_depth) = 0, _state = "OVR")]
 			| kara_templater
 			| string(".", TEXT)
 			;
@@ -133,7 +133,7 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 			= char_('{', ERROR)
 			| char_('}', OVR_END)[_state = "INITIAL"]
 			| char_('(', OPEN_PAREN)[++ref(paren_depth)]
-			| char_(')', CLOSE_PAREN)[--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"]]
+			| char_(')', CLOSE_PAREN)[(--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"])]
 			| char_('\\', TAG_START)[_state = "TAGSTART"]
 			| char_(',', ARG_SEP)
 			| string("\\s+", WHITESPACE)
@@ -153,8 +153,8 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 
 		this->self("TAGNAME")
 			= string("[a-z]+", TAG_NAME)[_state = "ARG"]
-			| char_('(', OPEN_PAREN)[++ref(paren_depth), _state = "ARG"]
-			| char_(')', CLOSE_PAREN)[--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"]]
+			| char_('(', OPEN_PAREN)[(++ref(paren_depth), _state = "ARG")]
+			| char_(')', CLOSE_PAREN)[(--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"])]
 			| char_('}', OVR_END)[_state = "INITIAL"]
 			| char_('\\', TAG_START)[_state = "TAGSTART"]
 			| string(".", ARG)[_state = "ARG"]

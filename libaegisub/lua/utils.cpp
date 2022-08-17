@@ -60,7 +60,7 @@ std::string check_string(lua_State *L, int idx) {
 	return std::string(str, len);
 }
 
-int check_int(lua_State *L, int idx) {
+long check_int(lua_State *L, int idx) {
 	auto v = lua_tointeger(L, idx);
 	if (v == 0 && !lua_isnumber(L, idx))
 		typerror(L, idx, "number");
