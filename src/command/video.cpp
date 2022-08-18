@@ -286,9 +286,13 @@ struct video_focus_seek final : public validator_video_loaded {
 	}
 };
 
-wxImage get_image(agi::Context *c, bool raw) {
+wxImage get_image(agi::Context *c, bool raw, bool subsonly = false) {
 	auto frame = c->videoController->GetFrameN();
-	return GetImage(*c->project->VideoProvider()->GetFrame(frame, c->project->Timecodes().TimeAtFrame(frame), raw));
+	if (subsonly) {
+		return GetImageWithAlpha(c->project->VideoProvider()->GetSubtitles(c->project->Timecodes().TimeAtFrame(frame)));
+	} else {
+		return GetImage(*c->project->VideoProvider()->GetFrame(frame, c->project->Timecodes().TimeAtFrame(frame), raw));
+	}
 }
 
 struct video_frame_copy final : public validator_video_loaded {
@@ -310,6 +314,17 @@ struct video_frame_copy_raw final : public validator_video_loaded {
 
 	void operator()(agi::Context *c) override {
 		SetClipboard(wxBitmap(get_image(c, true), 24));
+	}
+};
+
+struct video_frame_copy_subs final : public validator_video_loaded {
+	CMD_NAME("video/frame/copy/subs")
+	STR_MENU("Copy image to Clipboard (only subtitles)")
+	STR_DISP("Copy image to Clipboard (only subtitles)")
+	STR_HELP("Copy the currently displayed subtitles to the clipboard, with transparent background")
+
+	void operator()(agi::Context *c) override {
+		SetClipboard(wxBitmap(get_image(c, false, true), 32));
 	}
 };
 
@@ -455,7 +470,7 @@ struct video_frame_prev_large final : public validator_video_loaded {
 	}
 };
 
-static void save_snapshot(agi::Context *c, bool raw) {
+static void save_snapshot(agi::Context *c, bool raw, bool subsonly = false) {
 	auto option = OPT_GET("Path/Screenshot")->GetString();
 	agi::fs::path basepath;
 
@@ -490,7 +505,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 		path = agi::format("%s_%03d_%d.png", basepath.string(), session_shot_count++, c->videoController->GetFrameN());
 	} while (agi::fs::FileExists(path));
 
-	get_image(c, raw).SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
+	get_image(c, raw, subsonly).SaveFile(to_wx(path), wxBITMAP_TYPE_PNG);
 }
 
 struct video_frame_save final : public validator_video_loaded {
@@ -512,6 +527,17 @@ struct video_frame_save_raw final : public validator_video_loaded {
 
 	void operator()(agi::Context *c) override {
 		save_snapshot(c, true);
+	}
+};
+
+struct video_frame_save_subs final : public validator_video_loaded {
+	CMD_NAME("video/frame/save/subs")
+	STR_MENU("Save PNG snapshot (only subtitles)")
+	STR_DISP("Save PNG snapshot (only subtitles)")
+	STR_HELP("Save the currently displayed subtitles with transparent background to a PNG file in the video's directory")
+
+	void operator()(agi::Context *c) override {
+		save_snapshot(c, false, true);
 	}
 };
 
@@ -750,6 +776,7 @@ namespace cmd {
 		reg(std::make_unique<video_focus_seek>());
 		reg(std::make_unique<video_frame_copy>());
 		reg(std::make_unique<video_frame_copy_raw>());
+		reg(std::make_unique<video_frame_copy_subs>());
 		reg(std::make_unique<video_frame_next>());
 		reg(std::make_unique<video_frame_next_boundary>());
 		reg(std::make_unique<video_frame_next_keyframe>());
@@ -760,6 +787,7 @@ namespace cmd {
 		reg(std::make_unique<video_frame_prev_large>());
 		reg(std::make_unique<video_frame_save>());
 		reg(std::make_unique<video_frame_save_raw>());
+		reg(std::make_unique<video_frame_save_subs>());
 		reg(std::make_unique<video_jump>());
 		reg(std::make_unique<video_jump_end>());
 		reg(std::make_unique<video_jump_start>());

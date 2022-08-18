@@ -44,3 +44,17 @@ wxImage GetImage(VideoFrame const& frame) {
 	copy_and_convert_pixels(src, dst, color_converter());
 	return img;
 }
+
+wxImage GetImageWithAlpha(VideoFrame const &frame) {
+	wxImage img = GetImage(frame);
+	img.InitAlpha();
+	uint8_t *dst = img.GetAlpha();
+	const uint8_t *src = frame.data.data() + 3;
+	for (int y = 0; y < frame.height; y++) {
+		for (int x = 0; x < frame.width; x++) {
+			*(dst++) = *src;
+			src += 4;
+		}
+	}
+	return img;
+}

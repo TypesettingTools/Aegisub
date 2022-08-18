@@ -156,6 +156,9 @@
         { "command" : "video/frame/save/raw" },
         { "command" : "video/frame/copy/raw" },
         {},
+        { "command" : "video/frame/save/subs" },
+        { "command" : "video/frame/copy/subs" },
+        {},
         { "command" : "video/copy_coordinates" }
     ]
 }

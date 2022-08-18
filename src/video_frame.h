@@ -27,3 +27,4 @@ struct VideoFrame {
 };
 
 wxImage GetImage(VideoFrame const& frame);
+wxImage GetImageWithAlpha(VideoFrame const& frame);
