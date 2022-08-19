@@ -51,6 +51,7 @@
 #include "../video_controller.h"
 
 #include <libaegisub/address_of_adaptor.h>
+#include <libaegisub/ass/karaoke.h>
 #include <libaegisub/of_type_adaptor.h>
 
 #include <algorithm>
@@ -1050,11 +1051,11 @@ struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 		if (sel.empty()) return;
 
 		Selection new_sel;
-		AssKaraoke kara;
+		agi::ass::Karaoke kara;
 
 		std::vector<std::unique_ptr<AssDialogue>> to_delete;
 		for (auto line : sel) {
-			kara.SetLine(line);
+			SetKaraokeLine(kara, line);
 
 			// If there aren't at least two tags there's nothing to split
 			if (kara.size() < 2) continue;

@@ -16,12 +16,9 @@
 
 #include "libaegisub/ass/dialogue_parser.h"
 
+#include "libaegisub/exception.h"
 #include "libaegisub/spellchecker.h"
-
-#include <boost/locale/boundary/index.hpp>
-#include <boost/locale/boundary/segment.hpp>
-#include <boost/locale/boundary/types.hpp>
-#include <boost/range/distance.hpp>
+#include "libaegisub/unicode.h"
 
 namespace {
 
@@ -108,14 +105,21 @@ class WordSplitter {
 	}
 
 	void SplitText(size_t &i) {
-		using namespace boost::locale::boundary;
-		segment_index map(word, text.begin() + pos, text.begin() + pos + tokens[i].length);
-		for (auto const& segment : map) {
-			auto len = static_cast<size_t>(boost::distance(segment));
-			if (segment.rule() & word_letters)
+		UErrorCode err = U_ZERO_ERROR;
+		thread_local std::unique_ptr<icu::BreakIterator>
+		bi(icu::BreakIterator::createWordInstance(icu::Locale::getDefault(), err));
+		agi::UTextPtr ut(utext_openUTF8(nullptr, text.data() + pos, tokens[i].length, &err));
+		bi->setText(ut.get(), err);
+		if (U_FAILURE(err)) throw agi::InternalError(u_errorName(err));
+		size_t pos = 0;
+		while (bi->next() != UBRK_DONE) {
+			auto len = bi->current() - pos;
+			auto rule = bi->getRuleStatus(); // FIXME: getRuleStatusVec?
+			if (rule >= UBRK_WORD_LETTER && rule < UBRK_WORD_KANA_LIMIT)
 				SwitchTo(i, dt::WORD, len);
 			else
 				SwitchTo(i, dt::TEXT, len);
+			pos = bi->current();
 		}
 	}
 
@@ -215,5 +219,4 @@ void SplitWords(std::string_view str, std::vector<DialogueToken> &tokens) {
 	MarkDrawings(str, tokens);
 	WordSplitter(str, tokens).SplitWords();
 }
-
 }

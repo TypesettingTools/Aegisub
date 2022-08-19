@@ -315,7 +315,7 @@ void SubsTextEditCtrl::SetTextTo(std::string const& text) {
 	auto insertion_point = GetInsertionPoint();
 	if (static_cast<size_t>(insertion_point) > line_text.size())
 		line_text = GetTextRaw().data();
-	auto old_pos = agi::CharacterCount(line_text.begin(), line_text.begin() + insertion_point, 0);
+	auto old_pos = agi::CharacterCount(std::string_view(line_text).substr(0, insertion_point), 0);
 	line_text.clear();
 
 	if (context) {

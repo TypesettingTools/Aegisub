@@ -1,4 +1,4 @@
-// Copyright (c) 2010, Amar Takhar <verm@aegisub.org>
+// Copyright (c) 2022, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -11,31 +11,28 @@
 // WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+//
+// Aegisub Project http://www.aegisub.org/
 
-#include <gtest/gtest.h>
+#include "libaegisub/unicode.h"
 
-#include <libaegisub/dispatch.h>
-#include <libaegisub/fs.h>
-#include <libaegisub/log.h>
-#include <libaegisub/util.h>
+#include "libaegisub/exception.h"
 
-#include <cstdlib>
-#include <ctime>
+using namespace agi;
 
-int main(int argc, char **argv) {
-	agi::dispatch::Init([](agi::dispatch::Thunk) { });
-	agi::util::InitLocale();
-
-	agi::log::log = new agi::log::LogSink;
-	agi::log::log->Subscribe(std::make_unique<agi::log::JsonEmitter>("./"));
-	::testing::InitGoogleTest(&argc, argv);
-
-	srand(time(nullptr));
-
-	int retval = RUN_ALL_TESTS();
-
-	delete agi::log::log;
-
-	return retval;
+BreakIterator::BreakIterator() {
+	UErrorCode err = U_ZERO_ERROR;
+	bi.reset(icu::BreakIterator::createCharacterInstance(icu::Locale::getDefault(), err));
+	if (U_FAILURE(err)) throw agi::InternalError(u_errorName(err));
 }
 
+void BreakIterator::set_text(std::string_view new_str) {
+	UErrorCode err = U_ZERO_ERROR;
+	UTextPtr ut(utext_openUTF8(nullptr, new_str.data(), new_str.size(), &err));
+	bi->setText(ut.get(), err);
+	if (U_FAILURE(err)) throw agi::InternalError(u_errorName(err));
+
+	str = new_str;
+	begin = 0;
+	end = bi->next();
+}

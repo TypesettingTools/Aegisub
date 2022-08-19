@@ -16,24 +16,34 @@
 
 #include <libaegisub/lua/ffi.h>
 
-#include <boost/locale/conversion.hpp>
+#include <unicode/unistr.h>
 
 namespace {
-template<std::string (*func)(const char *, std::locale const&)>
-char *wrap(const char *str, char **err) {
-	try {
-		return agi::lua::strndup(func(str, std::locale()));
-	} catch (std::exception const& e) {
-		*err = strdup(e.what());
-		return nullptr;
+char *wrap(void (*fn)(icu::UnicodeString&), const char *str, char **err) {
+	auto ustr = icu::UnicodeString::fromUTF8(str);
+	if (ustr.isBogus()) {
+		*err = strdup((std::string("Converting \"") + str + "\" to a unicode string failed.").c_str());
 	}
+	fn(ustr);
+	std::string out;
+	ustr.toUTF8String(out);
+	return agi::lua::strndup(out);
 }
+
+template<void (*fn)(icu::UnicodeString&)>
+char *wrap(const char *str, char **err) {
+	return wrap(fn, str, err);
+}
+
+void to_upper(icu::UnicodeString& str) { str.toUpper(); }
+void to_lower(icu::UnicodeString& str) { str.toLower(); }
+void to_fold(icu::UnicodeString& str) { str.foldCase(); }
 }
 
 extern "C" int luaopen_unicode_impl(lua_State *L) {
 	agi::lua::register_lib_table(L, {},
-		"to_upper_case", wrap<boost::locale::to_upper<char>>,
-		"to_lower_case", wrap<boost::locale::to_lower<char>>,
-		"to_fold_case", wrap<boost::locale::fold_case<char>>);
+		"to_upper_case", wrap<to_upper>,
+		"to_lower_case", wrap<to_lower>,
+		"to_fold_case", wrap<to_fold>);
 	return 1;
 }

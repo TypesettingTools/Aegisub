@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2013, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -578,21 +578,21 @@ agi::kana_pair romaji_to_kana[] = {
 	{"\xE3\x83\x85", "zu"},              // ヅ
 };
 
-bool cmp_kana(agi::kana_pair const& kp, std::string const& kana) {
-	return strcmp(kp.kana, kana.c_str()) < 0;
+bool cmp_kana(agi::kana_pair const& kp, std::string_view kana) {
+	return kp.kana < kana;
 }
 
 struct cmp_romaji {
-	bool operator()(agi::kana_pair const& kp, std::string const& romaji) const {
-		return strcmp(kp.romaji, romaji.c_str()) < 0;
+	bool operator()(agi::kana_pair const& kp, std::string_view romaji) const {
+		return kp.romaji < romaji;
 	}
-	bool operator()(std::string const& romaji, agi::kana_pair const& kp) const {
-		return strcmp(kp.romaji, romaji.c_str()) > 0;
+	bool operator()(std::string_view romaji, agi::kana_pair const& kp) const {
+		return romaji < kp.romaji;
 	}
 
 #ifdef _MSC_VER // debug iterator stuff needs this overload
 	bool operator()(agi::kana_pair const& a, agi::kana_pair const& b) const {
-		return strcmp(a.romaji, b.romaji) < 0;
+		return a.romaji < b.romaji;
 	}
 #endif
 };
@@ -600,18 +600,18 @@ struct cmp_romaji {
 }
 
 namespace agi {
-std::vector<const char *> kana_to_romaji(std::string const& kana) {
-	std::vector<const char *> ret;
+std::vector<std::string_view> kana_to_romaji(std::string_view kana) {
+	std::vector<std::string_view> ret;
 	for (auto pair = boost::lower_bound(::kana_to_romaji, kana, cmp_kana);
-		pair != std::end(::kana_to_romaji) && !strcmp(pair->kana, kana.c_str());
-		++pair)
+		 pair != std::end(::kana_to_romaji) && pair->kana == kana;
+		 ++pair)
 		ret.push_back(pair->romaji);
 	return ret;
 }
 
-boost::iterator_range<const kana_pair *> romaji_to_kana(std::string const& romaji) {
+boost::iterator_range<const kana_pair *> romaji_to_kana(std::string_view romaji) {
 	for (size_t len = std::min<size_t>(3, romaji.size()); len > 0; --len) {
-		auto pair = boost::equal_range(::romaji_to_kana, romaji.substr(0, len).c_str(), cmp_romaji());
+		auto pair = boost::equal_range(::romaji_to_kana, romaji.substr(0, len), cmp_romaji());
 		if (pair.first != pair.second)
 			return boost::make_iterator_range(pair.first, pair.second);
 	}

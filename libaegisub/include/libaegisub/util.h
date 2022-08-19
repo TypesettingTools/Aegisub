@@ -76,6 +76,7 @@ namespace agi::util {
 	}
 
 	std::string ErrorString(int error);
+	void InitLocale();
 
 	template<typename Integer>
 	auto range(Integer end) -> decltype(boost::irange<Integer>(0, end)) {

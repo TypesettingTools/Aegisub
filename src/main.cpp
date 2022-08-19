@@ -120,29 +120,7 @@ bool AegisubApp::OnInit() {
 	// be created now
 	(void)wxLog::GetActiveTarget();
 
-	{
-		// Try to get the UTF-8 version of the current locale
-		auto locale = boost::locale::generator().generate("");
-
-		// Check if we actually got a UTF-8 locale
-		using codecvt = std::codecvt<wchar_t, char, std::mbstate_t>;
-		int result = std::codecvt_base::error;
-		if (std::has_facet<codecvt>(locale)) {
-			wchar_t test[] = L"\xFFFE";
-			char buff[8];
-			auto mb = std::mbstate_t();
-			const wchar_t* from_next;
-			char* to_next;
-			result = std::use_facet<codecvt>(locale).out(mb,
-				test, std::end(test), from_next,
-				buff, std::end(buff), to_next);
-		}
-
-		// If we didn't get a UTF-8 locale, force it to a known one
-		if (result != std::codecvt_base::ok)
-			locale = boost::locale::generator().generate("en_US.UTF-8");
-		std::locale::global(locale);
-	}
+	agi::util::InitLocale();
 
 	boost::filesystem::path::imbue(std::locale());
 

@@ -14,7 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <string>
+#include <string_view>
 
 namespace agi {
 	enum {
@@ -25,11 +25,10 @@ namespace agi {
 	};
 
 	/// Get the length in characters of the longest line in the given text
-	size_t MaxLineLength(std::string const& text, int ignore_mask);
+	size_t MaxLineLength(std::string_view text, int ignore_mask);
 	/// Get the total number of characters in the string
-	size_t CharacterCount(std::string const& str, int ignore_mask);
-	size_t CharacterCount(std::string::const_iterator begin, std::string::const_iterator end, int ignore_mask);
+	size_t CharacterCount(std::string_view str, int ignore_mask);
 	/// Get index in bytes of the nth character in str, or str.size() if str
 	/// has less than n characters
-	size_t IndexOfCharacter(std::string const& str, size_t n);
+	size_t IndexOfCharacter(std::string_view str, size_t n);
 }
