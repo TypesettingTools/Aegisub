@@ -41,6 +41,7 @@
 #include "ass_style.h"
 #include "compat.h"
 
+#include <libaegisub/ass/karaoke.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/log.h>
 #include <libaegisub/lua/utils.h>
@@ -653,7 +654,8 @@ namespace Automation4 {
 		set_field(L, "text_stripped", "");
 		lua_rawseti(L, -2, idx++);
 
-		AssKaraoke kara(dia, false, false);
+		agi::ass::Karaoke kara;
+		SetKaraokeLine(kara, dia, false, false);
 		for (auto const& syl : kara) {
 			lua_createtable(L, 0, 6);
 			set_field(L, "duration", syl.duration);

@@ -35,6 +35,10 @@ TEST(lagi_character_count, ignore_blocks) {
 	EXPECT_EQ(11, agi::CharacterCount("{asdf}hello", agi::IGNORE_NONE));
 	EXPECT_EQ(10, agi::CharacterCount("{asdfhello", agi::IGNORE_NONE));
 	EXPECT_EQ(5, agi::CharacterCount("{asdf}hello", agi::IGNORE_BLOCKS));
+	EXPECT_EQ(10, agi::CharacterCount("{asdfhello", agi::IGNORE_BLOCKS));
+	EXPECT_EQ(5, agi::CharacterCount("he{asdf}llo", agi::IGNORE_BLOCKS));
+	EXPECT_EQ(5, agi::CharacterCount("{}h{}e{}l{}l{}o{}", agi::IGNORE_BLOCKS));
+	EXPECT_EQ(5, agi::CharacterCount("{a}h{a}e{a}l{a}l{a}o{a}", agi::IGNORE_BLOCKS));
 }
 
 TEST(lagi_character_count, ignore_punctuation) {

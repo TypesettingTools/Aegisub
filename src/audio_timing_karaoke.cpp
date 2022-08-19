@@ -14,8 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <libaegisub/signal.h>
-
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "ass_karaoke.h"
@@ -29,6 +27,9 @@
 #include "pen.h"
 #include "selection_controller.h"
 #include "utils.h"
+
+#include <libaegisub/ass/karaoke.h>
+#include <libaegisub/signal.h>
 
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/adaptor/filtered.hpp>
@@ -75,7 +76,7 @@ class AudioTimingControllerKaraoke final : public AudioTimingController {
 
 	agi::Context *c;          ///< Project context
 	AssDialogue *active_line; ///< Currently active line
-	AssKaraoke *kara;         ///< Parsed karaoke model provided by karaoke controller
+	agi::ass::Karaoke *kara;         ///< Parsed karaoke model provided by karaoke controller
 
 	size_t cur_syl = 0; ///< Index of currently selected syllable in the line
 
@@ -134,15 +135,15 @@ public:
 	std::vector<AudioMarker*> OnRightClick(int ms, bool, int, int) override;
 	void OnMarkerDrag(std::vector<AudioMarker*> const& marker, int new_position, int) override;
 
-	AudioTimingControllerKaraoke(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed);
+	AudioTimingControllerKaraoke(agi::Context *c, agi::ass::Karaoke *kara, agi::signal::Connection& file_changed);
 };
 
-std::unique_ptr<AudioTimingController> CreateKaraokeTimingController(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed)
+std::unique_ptr<AudioTimingController> CreateKaraokeTimingController(agi::Context *c, agi::ass::Karaoke *kara, agi::signal::Connection& file_changed)
 {
 	return std::make_unique<AudioTimingControllerKaraoke>(c, kara, file_changed);
 }
 
-AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, AssKaraoke *kara, agi::signal::Connection& file_changed)
+AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, agi::ass::Karaoke *kara, agi::signal::Connection& file_changed)
 : file_changed_slot(file_changed)
 , c(c)
 , active_line(c->selectionController->GetActiveLine())

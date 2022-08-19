@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_karaoke.cpp
-/// @brief Karaoke table UI in audio box (not in audio display)
-/// @ingroup audio_ui
-///
-
 #include "audio_karaoke.h"
 
 #include "include/aegisub/context.h"
@@ -36,8 +31,10 @@
 #include "selection_controller.h"
 #include "utils.h"
 
+#include <libaegisub/ass/karaoke.h>
+#include <libaegisub/unicode.h>
+
 #include <algorithm>
-#include <boost/locale/boundary.hpp>
 #include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/dcclient.h>
@@ -62,7 +59,7 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 , file_changed(c->ass->AddCommitListener(&AudioKaraoke::OnFileChanged, this))
 , audio_opened(c->project->AddAudioProviderListener(&AudioKaraoke::OnAudioOpened, this))
 , active_line_changed(c->selectionController->AddActiveLineListener(&AudioKaraoke::OnActiveLineChanged, this))
-, kara(std::make_unique<AssKaraoke>())
+, kara(std::make_unique<agi::ass::Karaoke>())
 {
 	using std::bind;
 
@@ -225,7 +222,7 @@ void AudioKaraoke::RenderText() {
 		dc.DrawLine(syl_line, 0, syl_line, bmp_size.GetHeight());
 }
 
-void AudioKaraoke::AddMenuItem(wxMenu &menu, std::string const& tag, wxString const& help, std::string const& selected) {
+void AudioKaraoke::AddMenuItem(wxMenu &menu, std::string_view tag, wxString const& help, std::string_view selected) {
 	wxMenuItem *item = menu.AppendCheckItem(-1, to_wx(tag), help);
 	menu.Bind(wxEVT_MENU, std::bind(&AudioKaraoke::SetTagType, this, tag), item->GetId());
 	item->Check(tag == selected);
@@ -235,7 +232,7 @@ void AudioKaraoke::OnContextMenu(wxContextMenuEvent&) {
 	if (!enabled) return;
 
 	wxMenu context_menu(_("Karaoke tag"));
-	std::string type = kara->GetTagType();
+	auto type = kara->GetTagType();
 
 	AddMenuItem(context_menu, "\\k", _("Change karaoke tag to \\k"), type);
 	AddMenuItem(context_menu, "\\kf", _("Change karaoke tag to \\kf"), type);
@@ -333,26 +330,23 @@ void AudioKaraoke::OnScrollTimer(wxTimerEvent&) {
 void AudioKaraoke::LoadFromLine() {
 	scroll_x = 0;
 	scroll_timer.Stop();
-	kara->SetLine(active_line, true);
+	SetKaraokeLine(*kara, active_line, true);
 	SetDisplayText();
 	accept_button->Enable(kara->GetText() != active_line->Text);
 	cancel_button->Enable(false);
 }
 
 void AudioKaraoke::SetDisplayText() {
-	using namespace boost::locale::boundary;
-
 	wxMemoryDC dc;
 	dc.SetFont(split_font);
 
-	auto get_char_width = [&](std::string const& character) -> int {
-		const auto it = char_widths.find(character);
-		if (it != end(char_widths))
+	auto get_char_width = [&](std::string_view character) -> int {
+		if (auto it = char_widths.find(character); it != char_widths.end())
 			return it->second;
 
 		const auto size = dc.GetTextExtent(to_wx(character));
 		char_height = std::max(char_height, size.GetHeight());
-		char_widths[character] = size.GetWidth();
+		char_widths.emplace(character, size.GetWidth());
 		return size.GetWidth();
 	};
 
@@ -379,10 +373,11 @@ void AudioKaraoke::SetDisplayText() {
 		char_to_byte.push_back(1);
 
 		size_t syl_idx = 1;
-		const ssegment_index characters(character, begin(syl.text), end(syl.text));
-		for (auto chr : characters) {
+		agi::BreakIterator characters;
+		characters.set_text(syl.text);
+		for (; !characters.done(); characters.next()) {
 			// Calculate the width in pixels of this character
-			const std::string character = chr.str();
+			const auto character = characters.current();
 			const int width = get_char_width(character);
 			char_width = std::max(char_width, width);
 			str_char_widths.push_back(width);
@@ -423,7 +418,7 @@ void AudioKaraoke::AcceptSplit() {
 	cancel_button->Enable(false);
 }
 
-void AudioKaraoke::SetTagType(std::string const& new_tag) {
+void AudioKaraoke::SetTagType(std::string_view new_tag) {
 	kara->SetTagType(new_tag);
 	AcceptSplit();
 }

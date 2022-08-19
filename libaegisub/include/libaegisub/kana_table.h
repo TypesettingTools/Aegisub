@@ -20,12 +20,12 @@
 
 namespace agi {
 	struct kana_pair {
-		const char *kana;
-		const char *romaji;
+		std::string_view kana;
+		std::string_view romaji;
 	};
 
 	/// Transliterated romaji for the given kana, or nullptr if not applicable
-	std::vector<const char *> kana_to_romaji(std::string const& kana);
+	std::vector<std::string_view> kana_to_romaji(std::string_view kana);
 
-	boost::iterator_range<const kana_pair *> romaji_to_kana(std::string const& romaji);
+	boost::iterator_range<const kana_pair *> romaji_to_kana(std::string_view romaji);
 }

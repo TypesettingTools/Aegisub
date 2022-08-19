@@ -90,7 +90,7 @@ namespace agi {
 		///
 		/// Deriving classes should always use this constructor for initialising
 		/// the base class.
-		Exception(std::string msg) : message(std::move(msg)) { }
+		Exception(std::string&& msg) : message(std::move(msg)) { }
 
 	public:
 		/// @brief Get the outer exception error message
