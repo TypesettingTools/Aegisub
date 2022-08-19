@@ -15,4 +15,10 @@
             <supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}"/>
         </application>
     </compatibility>
+    <application xmlns="urn:schemas-microsoft-com:asm.v3">
+        <windowsSettings>
+            <dpiAware xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">True/PM</dpiAware>
+            <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">PerMonitorV2,PerMonitor</dpiAwareness>
+        </windowsSettings>
+    </application>
 </assembly>
