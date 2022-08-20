@@ -9,7 +9,7 @@ wxArrayString lagi_MRU_wxAS(const char *list) {
 	wxArrayString ret;
 	ret.reserve(vec.size());
 	transform(vec.begin(), vec.end(), std::back_inserter(ret),
-		[](agi::fs::path const& p) { return p.wstring(); });
+		[](std::filesystem::path const& p) { return p.wstring(); });
 	return ret;
 }
 

@@ -81,7 +81,7 @@ class writer {
 	std::ostream& out;
 
 public:
-	writer(agi::fs::path const& filename) : outfile(filename, true), out(outfile.Get()) { }
+	writer(std::filesystem::path const& filename) : outfile(filename, true), out(outfile.Get()) { }
 
 	template<int N>
 	void write(const char(&str)[N]) {

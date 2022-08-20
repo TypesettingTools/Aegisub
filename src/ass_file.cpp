@@ -26,7 +26,6 @@
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/filesystem/path.hpp>
 #include <cassert>
 #include <unordered_map>
 #include <unordered_set>
@@ -98,7 +97,7 @@ EntryList<AssDialogue>::iterator AssFile::iterator_to(AssDialogue& line) {
 	return in_list ? Events.iterator_to(line) : Events.end();
 }
 
-void AssFile::InsertAttachment(agi::fs::path const& filename) {
+void AssFile::InsertAttachment(std::filesystem::path const& filename) {
 	AssEntryGroup group = AssEntryGroup::GRAPHIC;
 
 	auto ext = boost::to_lower_copy(filename.extension().string());

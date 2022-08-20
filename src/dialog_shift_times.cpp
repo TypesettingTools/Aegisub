@@ -40,7 +40,6 @@
 #include <libaegisub/cajun/reader.h>
 #include <libaegisub/cajun/writer.h>
 
-#include <boost/filesystem/path.hpp>
 #include <string_view>
 #include <wx/dialog.h>
 #include <wx/listbox.h>
@@ -53,7 +52,7 @@ namespace {
 class DialogShiftTimes final : public wxDialog {
 	agi::Context *context;
 
-	agi::fs::path history_filename;
+	std::filesystem::path history_filename;
 	json::Array history;
 	agi::vfr::Framerate fps;
 	agi::signal::Connection timecodes_loaded_slot;

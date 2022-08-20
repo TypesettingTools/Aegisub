@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_style_storage.cpp
-/// @brief Manage stores of styles
-/// @ingroup style_editor
-///
-
 #include "ass_style_storage.h"
 
 #include "ass_file.h"
@@ -61,7 +56,7 @@ void AssStyleStorage::Save() const {
 		out.Get() << cur->GetEntryData() << std::endl;
 }
 
-void AssStyleStorage::Load(agi::fs::path const& filename) {
+void AssStyleStorage::Load(std::filesystem::path const& filename) {
 	file = filename;
 	clear();
 
@@ -107,7 +102,7 @@ AssStyle *AssStyleStorage::GetStyle(std::string const& name) {
 std::vector<std::string> AssStyleStorage::GetCatalogs() {
 	std::vector<std::string> catalogs;
 	for (auto const& file : agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
-		catalogs.push_back(agi::fs::path(file).stem().string());
+		catalogs.push_back(std::filesystem::path(file).stem().string());
 	return catalogs;
 }
 

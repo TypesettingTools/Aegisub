@@ -14,11 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file text_file_writer.cpp
-/// @brief Write plain text files line by line
-/// @ingroup utility
-///
-
 #include "text_file_writer.h"
 
 #include "options.h"
@@ -28,7 +23,7 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 
-TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
+TextFileWriter::TextFileWriter(std::filesystem::path const& filename, std::string encoding)
 : file(new agi::io::Save(filename, true))
 {
 	if (encoding.empty())

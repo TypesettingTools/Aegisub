@@ -12,9 +12,8 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include "fs_fwd.h"
-
 #include <boost/container/flat_map.hpp>
+#include <filesystem>
 #include <iosfwd>
 #include <memory>
 #include <string>
@@ -40,7 +39,7 @@ public:
 	/// Constructor
 	/// @param dat_path Path to data file
 	/// @param idx_path Path to index file
-	Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path);
+	Thesaurus(std::filesystem::path const& dat_path, std::filesystem::path const& idx_path);
 	~Thesaurus();
 
 	/// Look up synonyms for a word

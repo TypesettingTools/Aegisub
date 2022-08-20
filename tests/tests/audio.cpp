@@ -21,9 +21,9 @@
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
-#include <boost/filesystem/fstream.hpp>
+#include <fstream>
 
-namespace bfs = boost::filesystem;
+namespace bfs = std::filesystem;
 
 TEST(lagi_audio, dummy_blank) {
 	auto provider = agi::CreateDummyAudioProvider("dummy-audio:", nullptr);
@@ -121,7 +121,7 @@ TEST(lagi_audio, save_audio_clip) {
 	agi::SaveAudioClip(*provider, path, 60 * 60 * 1000, (60 * 60 + 10) * 1000);
 
 	{
-		bfs::ifstream s(path, std::ios_base::binary);
+		std::ifstream s(path, std::ios_base::binary);
 		ASSERT_TRUE(s.good());
 		s.seekg(0, std::ios::end);
 		// 10 seconds of 44.1 kHz samples per second of 16-bit mono, plus 44 bytes of header
@@ -140,7 +140,7 @@ TEST(lagi_audio, save_audio_clip_out_of_audio_range) {
 	// Start time after end of clip: empty file
 	agi::SaveAudioClip(*provider, path, end_time, end_time + 1);
 	{
-		bfs::ifstream s(path, std::ios_base::binary);
+		std::ifstream s(path, std::ios_base::binary);
 		ASSERT_TRUE(s.good());
 		s.seekg(0, std::ios::end);
 		EXPECT_EQ(44, s.tellg());
@@ -150,7 +150,7 @@ TEST(lagi_audio, save_audio_clip_out_of_audio_range) {
 	// Start time >= end time: empty file
 	agi::SaveAudioClip(*provider, path, end_time - 1, end_time - 1);
 	{
-		bfs::ifstream s(path, std::ios_base::binary);
+		std::ifstream s(path, std::ios_base::binary);
 		ASSERT_TRUE(s.good());
 		s.seekg(0, std::ios::end);
 		EXPECT_EQ(44, s.tellg());
@@ -160,7 +160,7 @@ TEST(lagi_audio, save_audio_clip_out_of_audio_range) {
 	// Start time during clip, end time after end of clip: save only the part that exists
 	agi::SaveAudioClip(*provider, path, end_time - 1000, end_time + 1000);
 	{
-		bfs::ifstream s(path, std::ios_base::binary);
+		std::ifstream s(path, std::ios_base::binary);
 		ASSERT_TRUE(s.good());
 		s.seekg(0, std::ios::end);
 		// 1 second of 44.1 kHz samples per second of 16-bit mono, plus 44 bytes of header
@@ -392,8 +392,8 @@ TEST(lagi_audio, pcm_truncated) {
 
 	char file[1000];
 
-	{ bfs::ifstream s(path, std::ios_base::binary); s.read(file, sizeof file); }
-	{ bfs::ofstream s(path, std::ios_base::binary); s.write(file, sizeof file); }
+	{ std::ifstream s(path, std::ios_base::binary); s.read(file, sizeof file); }
+	{ std::ofstream s(path, std::ios_base::binary); s.write(file, sizeof file); }
 
 	{
 		auto provider = agi::CreatePCMAudioProvider(path, nullptr);
@@ -418,7 +418,7 @@ TEST(lagi_audio, pcm_truncated) {
 #define RIFF "RIFF\0\0\0\x60WAVE"
 #define FMT_VALID "fmt \x10\0\0\0\1\0\1\0\x10\0\0\0\x20\0\0\0\2\0\x10\0"
 #define DATA_VALID "data\1\0\0\0\0\0"
-#define WRITE(str) do { bfs::ofstream s(path, std::ios_base::binary); s.write(str, sizeof(str) - 1); } while (false)
+#define WRITE(str) do { std::ofstream s(path, std::ios_base::binary); s.write(str, sizeof(str) - 1); } while (false)
 
 TEST(lagi_audio, pcm_incomplete) {
 	auto path = agi::Path().Decode("?temp/pcm_incomplete");
@@ -426,7 +426,7 @@ TEST(lagi_audio, pcm_incomplete) {
 	agi::fs::Remove(path);
 	ASSERT_THROW(agi::CreatePCMAudioProvider(path, nullptr), agi::fs::FileNotFound);
 
-	{bfs::ofstream(path, std::ios_base::binary); }
+	{std::ofstream(path, std::ios_base::binary); }
 	ASSERT_THROW(agi::CreatePCMAudioProvider(path, nullptr), agi::AudioDataNotFound);
 
 	// Invalid tags
@@ -442,7 +442,7 @@ TEST(lagi_audio, pcm_incomplete) {
 	// -1 for nul term, -3 so that longest file is still invalid
 	for (size_t i = 0; i < sizeof(valid_file) - 4; ++i) {
 		{
-			bfs::ofstream s(path, std::ios_base::binary);
+			std::ofstream s(path, std::ios_base::binary);
 			s.write(valid_file, i);
 		}
 		ASSERT_THROW(agi::CreatePCMAudioProvider(path, nullptr), agi::AudioDataNotFound);
@@ -530,14 +530,14 @@ TEST(lagi_audio, wave64_truncated) {
 	// Should be invalid until there's an entire sample
 	for (size_t i = 0; i < sizeof(WAVE64_FILE) - 4; ++i) {
 		{
-			bfs::ofstream s(path, std::ios_base::binary);
+			std::ofstream s(path, std::ios_base::binary);
 			s.write(WAVE64_FILE, i);
 		}
 		ASSERT_THROW(agi::CreatePCMAudioProvider(path, nullptr), agi::AudioDataNotFound);
 	}
 
 	{
-		bfs::ofstream s(path, std::ios_base::binary);
+		std::ofstream s(path, std::ios_base::binary);
 		s.write(WAVE64_FILE, sizeof(WAVE64_FILE) - 3);
 	}
 	ASSERT_NO_THROW(agi::CreatePCMAudioProvider(path, nullptr));

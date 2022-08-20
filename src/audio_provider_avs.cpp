@@ -58,12 +58,12 @@ class AvisynthAudioProvider final : public agi::AudioProvider {
 	void FillBuffer(void *buf, int64_t start, int64_t count) const;
 
 public:
-	AvisynthAudioProvider(agi::fs::path const& filename);
+	AvisynthAudioProvider(std::filesystem::path const& filename);
 
 	bool NeedsCache() const override { return true; }
 };
 
-AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
+AvisynthAudioProvider::AvisynthAudioProvider(std::filesystem::path const& filename) {
 	agi::acs::CheckFileRead(filename);
 
 	std::lock_guard<std::mutex> lock(avs_wrapper.GetMutex());
@@ -80,7 +80,7 @@ AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
 			AVSValue args[3] = { env->SaveString(agi::fs::ShortName(filename).c_str()), false, true };
 
 			// Load DirectShowSource.dll from app dir if it exists
-			agi::fs::path dsspath(config::path->Decode("?data/DirectShowSource.dll"));
+			std::filesystem::path dsspath(config::path->Decode("?data/DirectShowSource.dll"));
 			if (agi::fs::FileExists(dsspath))
 				env->Invoke("LoadPlugin", env->SaveString(agi::fs::ShortName(dsspath).c_str()));
 
@@ -143,7 +143,7 @@ void AvisynthAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) 
 }
 }
 
-std::unique_ptr<agi::AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *) {
+std::unique_ptr<agi::AudioProvider> CreateAvisynthAudioProvider(std::filesystem::path const& file, agi::BackgroundRunner *) {
 	return agi::make_unique<AvisynthAudioProvider>(file);
 }
 #endif

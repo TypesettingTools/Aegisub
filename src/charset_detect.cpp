@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file charset_detect.cpp
-/// @brief Wrapper around text encoding detection library
-/// @ingroup utility
-///
-
 #include "charset_detect.h"
 
 #include "compat.h"
@@ -45,7 +40,7 @@
 
 namespace CharSetDetect {
 
-std::string GetEncoding(agi::fs::path const& filename) {
+std::string GetEncoding(std::filesystem::path const& filename) {
 	auto encoding = agi::charset::Detect(filename);
 	if (!encoding.empty())
 		return encoding;

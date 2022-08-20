@@ -23,17 +23,17 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 
-std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
-std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
-std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
-std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
+std::unique_ptr<VideoProvider> CreateDummyVideoProvider(std::filesystem::path const&, std::string const&, agi::BackgroundRunner *);
+std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(std::filesystem::path const&, std::string const&, agi::BackgroundRunner *);
+std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(std::filesystem::path const&, std::string const&, agi::BackgroundRunner *);
+std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(std::filesystem::path const&, std::string const&, agi::BackgroundRunner *);
 
 std::unique_ptr<VideoProvider> CreateCacheVideoProvider(std::unique_ptr<VideoProvider>);
 
 namespace {
 	struct factory {
 		const char *name;
-		std::unique_ptr<VideoProvider> (*create)(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
+		std::unique_ptr<VideoProvider> (*create)(std::filesystem::path const&, std::string const&, agi::BackgroundRunner *);
 		bool hidden;
 	};
 
@@ -53,7 +53,7 @@ std::vector<std::string> VideoProviderFactory::GetClasses() {
 	return ::GetClasses(providers);
 }
 
-std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br) {
+std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(std::filesystem::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br) {
 	auto preferred = OPT_GET("Video/Provider")->GetString();
 	auto sorted = GetSorted(providers, preferred);
 

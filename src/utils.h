@@ -29,9 +29,8 @@
 
 #pragma once
 
-#include <libaegisub/fs_fwd.h>
-
 #include <cstdint>
+#include <filesystem>
 #include <string>
 
 #include <wx/bitmap.h>
@@ -75,7 +74,7 @@ bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt);
 /// @param file_type Wildcard pattern for files to clean up
 /// @param max_size Maximum size of directory in MB
 /// @param max_files Maximum number of files
-void CleanCache(agi::fs::path const& directory, std::string const& file_type, uint64_t max_size, uint64_t max_files = -1);
+void CleanCache(std::filesystem::path const& directory, std::string const& file_type, uint64_t max_size, uint64_t max_files = -1);
 
 /// @brief Templated abs() function
 template <typename T> T tabs(T x) { return x < 0 ? -x : x; }
@@ -96,8 +95,8 @@ void SetClipboard(wxBitmap const& new_value);
 
 wxString FontFace(std::string opt_prefix);
 
-agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent);
-agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent);
+std::filesystem::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent);
+std::filesystem::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent);
 
 wxString LocalizedLanguageName(wxString const& lang);
 

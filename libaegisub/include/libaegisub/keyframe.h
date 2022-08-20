@@ -13,23 +13,21 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include <libaegisub/exception.h>
-#include <libaegisub/fs_fwd.h>
 
+#include <filesystem>
 #include <vector>
 
-namespace agi {
-	namespace keyframe {
-		/// @brief Load a keyframe file
-		/// @param filename File to load
-		/// @return List of frame numbers which are keyframes
-		std::vector<int> Load(agi::fs::path const& filename);
+namespace agi::keyframe {
+/// @brief Load a keyframe file
+/// @param filename File to load
+/// @return List of frame numbers which are keyframes
+std::vector<int> Load(std::filesystem::path const& filename);
 
-		/// @brief Save keyframes to a file
-		/// @param filename File to save to
-		/// @param keyframes List of keyframes to save
-		void Save(agi::fs::path const& filename, std::vector<int> const& keyframes);
+/// @brief Save keyframes to a file
+/// @param filename File to save to
+/// @param keyframes List of keyframes to save
+void Save(std::filesystem::path const& filename, std::vector<int> const& keyframes);
 
-		DEFINE_EXCEPTION(KeyframeFormatParseError, agi::InvalidInputException);
-		DEFINE_EXCEPTION(UnknownKeyframeFormatError, agi::InvalidInputException);
-	}
+DEFINE_EXCEPTION(KeyframeFormatParseError, agi::InvalidInputException);
+DEFINE_EXCEPTION(UnknownKeyframeFormatError, agi::InvalidInputException);
 }

@@ -81,10 +81,10 @@ class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvid
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
 	bool has_audio = false;
 
-	void LoadVideo(agi::fs::path const& filename, std::string const& colormatrix);
+	void LoadVideo(std::filesystem::path const& filename, std::string const& colormatrix);
 
 public:
-	FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br);
+	FFmpegSourceVideoProvider(std::filesystem::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br);
 
 	void GetFrame(int n, VideoFrame &out) override;
 
@@ -141,7 +141,7 @@ std::string colormatrix_description(int cs, int cr) {
 	}
 }
 
-FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br) try
+FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(std::filesystem::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br) try
 : FFmpegSourceProvider(br)
 , VideoSource(nullptr, FFMS_DestroyVideoSource)
 {
@@ -158,7 +158,7 @@ catch (agi::EnvironmentError const& err) {
 	throw VideoOpenError(err.GetMessage());
 }
 
-void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::string const& colormatrix) {
+void FFmpegSourceVideoProvider::LoadVideo(std::filesystem::path const& filename, std::string const& colormatrix) {
 	FFMS_Indexer *Indexer = FFMS_CreateIndexer(filename.string().c_str(), &ErrInfo);
 	if (!Indexer) {
 		if (ErrInfo.SubType == FFMS_ERROR_FILE_READ)
@@ -372,7 +372,7 @@ void FFmpegSourceVideoProvider::GetFrame(int n, VideoFrame &out) {
 }
 }
 
-std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const& path, std::string const& colormatrix, agi::BackgroundRunner *br) {
+std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(std::filesystem::path const& path, std::string const& colormatrix, agi::BackgroundRunner *br) {
 	return std::make_unique<FFmpegSourceVideoProvider>(path, colormatrix, br);
 }
 

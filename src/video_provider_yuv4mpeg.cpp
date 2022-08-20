@@ -139,7 +139,7 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 	int IndexFile(uint64_t pos);
 
 public:
-	YUV4MPEGVideoProvider(agi::fs::path const& filename);
+	YUV4MPEGVideoProvider(std::filesystem::path const& filename);
 
 	void GetFrame(int n, VideoFrame &frame) override;
 	void SetColorSpace(std::string const&) override { }
@@ -157,7 +157,7 @@ public:
 
 /// @brief Constructor
 /// @param filename The filename to open
-YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
+YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(std::filesystem::path const& filename)
 : file(filename)
 {
 	if (file.size() < 10)
@@ -426,6 +426,6 @@ void YUV4MPEGVideoProvider::GetFrame(int n, VideoFrame &frame) {
 }
 
 namespace agi { class BackgroundRunner; }
-std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const& path, std::string const&, agi::BackgroundRunner *) {
+std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(std::filesystem::path const& path, std::string const&, agi::BackgroundRunner *) {
 	return std::make_unique<YUV4MPEGVideoProvider>(path);
 }

@@ -27,14 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_style_storage.h
-/// @see ass_style_storage.cpp
-/// @ingroup style_editor
-///
-
-#include <libaegisub/fs_fwd.h>
-
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
@@ -43,7 +36,7 @@ class AssFile;
 class AssStyle;
 
 class AssStyleStorage {
-	agi::fs::path file;
+	std::filesystem::path file;
 	std::vector<std::unique_ptr<AssStyle>> style;
 
 public:
@@ -77,7 +70,7 @@ public:
 
 	/// Load stored styles from a file
 	/// @param filename Catalog filename. Does not have to exist.
-	void Load(agi::fs::path const& filename);
+	void Load(std::filesystem::path const& filename);
 
 	/// Load stored styles from a file in the default location
 	/// @param catalogname Basename for the catalog file. Does not have to exist.

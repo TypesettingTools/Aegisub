@@ -17,12 +17,11 @@
 #include "libaegisub/fs.h"
 #include "libaegisub/lua/ffi.h"
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <chrono>
 
 using namespace agi::fs;
 using namespace agi::lua;
-namespace bfs = boost::filesystem;
+namespace bfs = std::filesystem;
 
 namespace agi {
 AGI_DEFINE_TYPE_NAME(DirectoryIterator);
@@ -101,23 +100,26 @@ DirectoryIterator *dir_new(const char *path, char **err) {
 
 const char *get_mode(const char *path, char **err) {
 	return wrap(err, [=]() -> const char * {
+		using enum bfs::file_type;
 		switch (bfs::status(path).type()) {
-			case bfs::file_not_found: return nullptr;         break;
-			case bfs::regular_file:   return "file";          break;
-			case bfs::directory_file: return "directory";     break;
-			case bfs::symlink_file:   return "link";          break;
-			case bfs::block_file:     return "block device";  break;
-			case bfs::character_file: return "char device";   break;
-			case bfs::fifo_file:      return "fifo";          break;
-			case bfs::socket_file:    return "socket";        break;
-			case bfs::reparse_file:   return "reparse point"; break;
-			default:                  return "other";         break;
+			case not_found: return nullptr;
+			case regular:   return "file";
+			case directory: return "directory";
+			case symlink:   return "link";
+			case block:     return "block device";
+			case character: return "char device";
+			case fifo:      return "fifo";
+			case socket:    return "socket";
+			default:        return "other";
 		}
 	});
 }
 
 time_t get_mtime(const char *path, char **err) {
-	return wrap(err, [=] { return ModifiedTime(path); });
+	return wrap(err, [=]() -> time_t {
+		using namespace std::chrono;
+		return duration_cast<seconds>(ModifiedTime(path).time_since_epoch()).count();
+	});
 }
 
 uintmax_t get_size(const char *path, char **err) {

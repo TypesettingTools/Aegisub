@@ -84,7 +84,7 @@ class AegisubFileDropTarget final : public wxFileDropTarget {
 public:
 	AegisubFileDropTarget(agi::Context *context) : context(context) { }
 	bool OnDropFiles(wxCoord, wxCoord, wxArrayString const& filenames) override {
-		std::vector<agi::fs::path> files;
+		std::vector<std::filesystem::path> files;
 		for (wxString const& fn : filenames)
 			files.push_back(from_wx(fn));
 		agi::dispatch::Main().Async([=] { context->project->LoadList(files); });

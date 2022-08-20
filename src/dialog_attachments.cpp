@@ -126,7 +126,7 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& commit_ms
 	diag.GetPaths(paths);
 
 	for (auto const& fn : paths)
-		ass->InsertAttachment(agi::fs::path(fn.wx_str()));
+		ass->InsertAttachment(std::filesystem::path(fn.wx_str()));
 
 	ass->Commit(commit_msg, AssFile::COMMIT_ATTACHMENT);
 
@@ -153,15 +153,15 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &) {
 }
 
 void DialogAttachments::OnExtract(wxCommandEvent &) {
-	int i = listView->GetFirstSelected();
+	long i = listView->GetFirstSelected();
 	if (i == -1) return;
 
-	agi::fs::path path;
+	std::filesystem::path path;
 	bool fullPath = false;
 
 	// Multiple or single?
 	if (listView->GetNextSelected(i) != -1)
-		path = wxDirSelector(_("Select the path to save the files to:"), to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString())).c_str();
+		path = wxDirSelector(_("Select the path to save the files to:"), to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString())).utf8_str().data();
 	else {
 		path = SaveFileSelector(
 			_("Select the path to save the file to:"),

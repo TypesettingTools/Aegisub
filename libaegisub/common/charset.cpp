@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file charset.cpp
-/// @brief Character set detection and manipulation utilities.
-/// @ingroup libaegisub
-
 #include "libaegisub/charset.h"
 
 #include "libaegisub/file_mapping.h"
@@ -25,8 +21,8 @@
 #include <uchardet.h>
 #endif
 
-namespace agi { namespace charset {
-std::string Detect(agi::fs::path const& file) {
+namespace agi::charset {
+std::string Detect(std::filesystem::path const& file) {
 	agi::read_file_mapping fp(file);
 
 	// First check for known magic bytes which identify the file type
@@ -86,4 +82,4 @@ std::string Detect(agi::fs::path const& file) {
 	return "utf-8";
 #endif
 }
-} }
+}
