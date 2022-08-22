@@ -86,8 +86,8 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool replace)
 	wxString field[] = { _("&Text"), _("St&yle"), _("A&ctor"), _("&Effect") };
 	wxString affect[] = { _("A&ll rows"), _("Selected &rows") };
 	auto limit_sizer = new wxBoxSizer(wxHORIZONTAL);
-	limit_sizer->Add(new wxRadioBox(this, -1, _("In Field"), wxDefaultPosition, wxDefaultSize, countof(field), field, 0, wxRA_SPECIFY_COLS, MakeEnumBinder(&settings->field)), wxSizerFlags().Border(wxRIGHT));
-	limit_sizer->Add(new wxRadioBox(this, -1, _("Limit to"), wxDefaultPosition, wxDefaultSize, countof(affect), affect, 0, wxRA_SPECIFY_COLS, MakeEnumBinder(&settings->limit_to)));
+	limit_sizer->Add(new wxRadioBox(this, -1, _("In Field"), wxDefaultPosition, wxDefaultSize, std::size(field), field, 0, wxRA_SPECIFY_COLS, MakeEnumBinder(&settings->field)), wxSizerFlags().Border(wxRIGHT));
+	limit_sizer->Add(new wxRadioBox(this, -1, _("Limit to"), wxDefaultPosition, wxDefaultSize, std::size(affect), affect, 0, wxRA_SPECIFY_COLS, MakeEnumBinder(&settings->limit_to)));
 
 	auto find_next = new wxButton(this, -1, _("&Find next"));
 	auto replace_next = new wxButton(this, -1, _("Replace &next"));

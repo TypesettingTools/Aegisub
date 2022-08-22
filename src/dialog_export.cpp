@@ -195,7 +195,7 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 	try {
 		wxBusyCursor busy;
 		c->ass->Properties.export_encoding = from_wx(charset_list->GetStringSelection());
-		exporter.Export(filename, from_wx(charset_list->GetStringSelection()), &d);
+		exporter.Export(filename, charset_list->GetStringSelection().utf8_str().data(), &d);
 	}
 	catch (agi::UserCancelException const&) { }
 	catch (agi::Exception const& err) {

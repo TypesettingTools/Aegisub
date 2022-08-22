@@ -51,6 +51,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/vfr.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/join.hpp>
@@ -61,20 +62,20 @@ namespace {
 	std::vector<std::unique_ptr<SubtitleFormat>> formats;
 }
 
-SubtitleFormat::SubtitleFormat(std::string name)
-: name(std::move(name))
+SubtitleFormat::SubtitleFormat(std::string_view name)
+: name(name)
 {
 }
 
-bool SubtitleFormat::CanReadFile(std::filesystem::path const& filename, std::string const&) const {
+bool SubtitleFormat::CanReadFile(std::filesystem::path const& filename, const char *) const {
 	auto wildcards = GetReadWildcards();
-	return any_of(begin(wildcards), end(wildcards),
+	return agi::util::any_of(wildcards,
 		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
 bool SubtitleFormat::CanWriteFile(std::filesystem::path const& filename) const {
 	auto wildcards = GetWriteWildcards();
-	return any_of(begin(wildcards), end(wildcards),
+	return agi::util::any_of(wildcards,
 		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
@@ -158,7 +159,7 @@ void SubtitleFormat::StripTags(AssFile &file) {
 		current.StripTags();
 }
 
-void SubtitleFormat::ConvertNewlines(AssFile &file, std::string const& newline, bool mergeLineBreaks) {
+void SubtitleFormat::ConvertNewlines(AssFile &file, std::string_view newline, bool mergeLineBreaks) {
 	for (auto& current : file.Events) {
 		std::string repl = current.Text;
 		boost::replace_all(repl, "\\h", " ");
@@ -282,7 +283,7 @@ SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 	return it->get();
 }
 
-const SubtitleFormat *SubtitleFormat::GetReader(std::filesystem::path const& filename, std::string const& encoding) {
+const SubtitleFormat *SubtitleFormat::GetReader(std::filesystem::path const& filename, const char *encoding) {
 	LoadFormats();
 	return find_or_throw(formats, [&](std::unique_ptr<SubtitleFormat> const& f) {
 		return f->CanReadFile(filename, encoding);
@@ -308,7 +309,12 @@ std::string SubtitleFormat::GetWildcards(int mode) {
 
 		for (auto& str : cur) str.insert(0, "*.");
 		all.insert(all.end(), begin(cur), end(cur));
-		final += "|" + format->GetName() + " (" + boost::join(cur, ",") + ")|" + boost::join(cur, ";");
+		final += "|";
+		final += format->GetName();
+		final += " {";
+		final += boost::join(cur, ",");
+		final += ")|";
+		final += boost::join(cur, ";");
 	}
 
 	return from_wx(_("All Supported Formats")) + " (" + boost::join(all, ",") + ")|" + boost::join(all, ";") + final;

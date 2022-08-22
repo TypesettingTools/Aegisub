@@ -36,5 +36,5 @@ public:
 	TextFileWriter(std::filesystem::path const& filename, std::string encoding="");
 	~TextFileWriter();
 
-	void WriteLineToFile(std::string const& line, bool addLineBreak=true);
+	void WriteLineToFile(std::string_view line, bool addLineBreak=true);
 };

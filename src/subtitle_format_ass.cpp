@@ -33,7 +33,7 @@
 
 DEFINE_EXCEPTION(AssParseError, SubtitleFormatParseError);
 
-void AssSubtitleFormat::ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
+void AssSubtitleFormat::ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
 	int version = !agi::fs::HasExtension(filename, "ssa");
 
 	TextFileReader file(filename, encoding);
@@ -151,7 +151,7 @@ struct Writer {
 };
 }
 
-void AssSubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
+void AssSubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
 	Writer writer(filename, encoding);
 	writer.Write(src->Info);
 	writer.Write(src->Properties);
@@ -161,7 +161,7 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path cons
 	writer.WriteExtradata(src->Extradata);
 }
 
-void AssSubtitleFormat::ExportFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
+void AssSubtitleFormat::ExportFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
 	Writer writer(filename, encoding);
 	writer.Write(src->Info);
 	writer.Write(src->Styles);

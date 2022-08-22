@@ -17,6 +17,7 @@
 #include <iosfwd>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace agi {
@@ -26,7 +27,7 @@ namespace charset { class IconvWrapper; }
 
 class Thesaurus {
 	/// Map of word -> byte position in the data file
-	boost::container::flat_map<std::string, size_t> offsets;
+	boost::container::flat_map<std::string, size_t, std::less<>> offsets;
 	/// Read handle to the data file
 	std::unique_ptr<read_file_mapping> dat;
 	/// Converter from the data file's charset to UTF-8
@@ -34,7 +35,7 @@ class Thesaurus {
 
 public:
 	/// A pair of a word and synonyms for that word
-	typedef std::pair<std::string, std::vector<std::string>> Entry;
+	using Entry = std::pair<std::string, std::vector<std::string>>;
 
 	/// Constructor
 	/// @param dat_path Path to data file
@@ -44,7 +45,7 @@ public:
 
 	/// Look up synonyms for a word
 	/// @param word Word to look up
-	std::vector<Entry> Lookup(std::string const& word);
+	std::vector<Entry> Lookup(std::string_view word);
 };
 
 }

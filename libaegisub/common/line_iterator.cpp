@@ -19,16 +19,15 @@
 
 namespace agi {
 
-line_iterator_base::line_iterator_base(std::istream &stream, std::string encoding)
+line_iterator_base::line_iterator_base(std::istream &stream, const char *encoding)
 : stream(&stream)
 {
-	boost::to_lower(encoding);
-	if (encoding != "utf-8") {
-		agi::charset::IconvWrapper c("utf-8", encoding.c_str());
-		c.Convert("\r", 1, reinterpret_cast<char *>(&cr), sizeof(int));
-		c.Convert("\n", 1, reinterpret_cast<char *>(&lf), sizeof(int));
-		width = c.RequiredBufferSize("\n");
-		conv = std::make_shared<agi::charset::IconvWrapper>(encoding.c_str(), "utf-8");
+	std::string_view e = encoding;
+	if (e != "utf-8" && e != "UTF-8") {
+		agi::charset::IconvWrapper c("utf-8", encoding);
+		c.Convert("\r", cr);
+		width = c.Convert("\n", lf);
+		conv = std::make_shared<agi::charset::IconvWrapper>(encoding, "utf-8");
 	}
 }
 
@@ -45,30 +44,25 @@ bool line_iterator_base::getline(std::string &str) {
 			str.pop_back();
 	}
 	else {
-		union {
-			int32_t chr;
-			char buf[4];
-		} u;
-
 		for (;;) {
-			u.chr = 0;
-			std::streamsize read = stream->rdbuf()->sgetn(u.buf, width);
+			std::array<char, 4> buf = {0, 0, 0, 0};
+			std::streamsize read = stream->rdbuf()->sgetn(buf.data(), width);
 			if (read < (std::streamsize)width) {
 				for (int i = 0; i < read; i++) {
-					str += u.buf[i];
+					str += buf[i];
 				}
 				stream->setstate(std::ios::eofbit);
 				break;
 			}
-			if (u.chr == cr) continue;
-			if (u.chr == lf) break;
+			if (buf == cr) continue;
+			if (buf == lf) break;
 			for (int i = 0; i < read; i++) {
-				str += u.buf[i];
+				str += buf[i];
 			}
 		}
 	}
 
-	if (conv.get()) {
+	if (conv) {
 		std::string tmp;
 		conv->Convert(str, tmp);
 		str = std::move(tmp);

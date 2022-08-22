@@ -122,7 +122,7 @@ bool Project::DoLoadSubtitles(std::filesystem::path const& path, std::string enc
 	}
 
 	try {
-		properties = context->subsController->Load(path, encoding);
+		properties = context->subsController->Load(path, encoding.c_str());
 	}
 	catch (agi::UserCancelException const&) { return false; }
 	catch (agi::fs::FileNotFound const&) {

@@ -165,7 +165,7 @@ void SubsController::SetSelectionController(SelectionController *selection_contr
 	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
 }
 
-ProjectProperties SubsController::Load(std::filesystem::path const& filename, std::string charset) {
+ProjectProperties SubsController::Load(std::filesystem::path const& filename, const char *charset) {
 	AssFile temp;
 
 	SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
@@ -197,7 +197,7 @@ ProjectProperties SubsController::Load(std::filesystem::path const& filename, st
 	return props;
 }
 
-void SubsController::Save(std::filesystem::path const& filename, std::string const& encoding) {
+void SubsController::Save(std::filesystem::path const& filename, const char *encoding) {
 	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
 	if (!writer)
 		throw agi::InvalidInputException("Unknown file type.");

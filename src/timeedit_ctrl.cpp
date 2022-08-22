@@ -63,7 +63,7 @@ TimeEdit::TimeEdit(wxWindow* parent, wxWindowID id, agi::Context *c, const std::
 	// Set validator
 	wxTextValidator val(wxFILTER_INCLUDE_CHAR_LIST);
 	wxString includes[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", ":", ","};
-	val.SetIncludes(wxArrayString(countof(includes), includes));
+	val.SetIncludes(wxArrayString(std::size(includes), includes));
 	SetValidator(val);
 
 	// Other stuff

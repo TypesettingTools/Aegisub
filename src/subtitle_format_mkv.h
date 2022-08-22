@@ -27,17 +27,18 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file subtitle_format_mkv.h
-/// @see subtitle_format_mkv.cpp
-/// @ingroup subtitle_io matroska
-///
-
 #include "subtitle_format.h"
+
+#include "mkv_wrap.h"
 
 class MKVSubtitleFormat final : public SubtitleFormat {
 public:
-	MKVSubtitleFormat();
-	std::vector<std::string> GetReadWildcards() const override;
+	MKVSubtitleFormat() : SubtitleFormat("Matroska") {}
+	std::vector<std::string> GetReadWildcards() const override {
+		return {"mkv", "mka", "mks"};
+	}
 
-	void ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
+	void ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const&, const char *) const override {
+		MatroskaWrapper::GetSubtitles(filename, target);
+	}
 };
