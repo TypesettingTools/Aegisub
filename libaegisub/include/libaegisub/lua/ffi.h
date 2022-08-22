@@ -19,7 +19,7 @@
 #include <cstdlib>
 #include <lua.hpp>
 
-namespace agi { namespace lua {
+namespace agi::lua {
 void do_register_lib_function(lua_State *L, const char *name, const char *type_name, void *func);
 void do_register_lib_table(lua_State *L, std::initializer_list<const char *> types);
 
@@ -53,4 +53,4 @@ char *strndup(T const& str) {
 	return ret;
 }
 
-} }
+} // namespace agi::lua

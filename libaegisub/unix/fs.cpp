@@ -65,7 +65,7 @@ struct DirectoryIterator::PrivData {
 
 DirectoryIterator::DirectoryIterator() = default;
 DirectoryIterator::DirectoryIterator(path const& p, std::string const& filter)
-: privdata(new PrivData(p, filter))
+: privdata(std::make_unique<PrivData>(p, filter))
 {
 	if (privdata->it == sfs::directory_iterator())
 		privdata.reset();

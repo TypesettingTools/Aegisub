@@ -12,16 +12,13 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file line_iterator.h
-/// @brief An iterator over lines in a stream
-/// @ingroup libaegisub
-
 #pragma once
 
+#include <array>
+#include <cstdint>
 #include <iterator>
 #include <memory>
 
-#include <cstdint>
 #include <boost/interprocess/streams/bufferstream.hpp>
 
 namespace agi {
@@ -31,15 +28,14 @@ namespace charset { class IconvWrapper; }
 class line_iterator_base {
 	std::istream *stream = nullptr; ///< Stream to iterate over
 	std::shared_ptr<agi::charset::IconvWrapper> conv;
-	int cr = '\r'; ///< CR character in the source encoding
-	int lf = '\n'; ///< LF character in the source encoding
+	std::array<char, 4> cr{'\r', 0, 0, 0}, lf{'\n', 0, 0, 0};
 	size_t width = 1;  ///< width of LF character in the source encoding
 
 protected:
 	bool getline(std::string &str);
 
 public:
-	line_iterator_base(std::istream &stream, std::string encoding = "utf-8");
+	line_iterator_base(std::istream &stream, const char *encoding = "utf-8");
 
 	line_iterator_base() = default;
 	line_iterator_base(line_iterator_base const&) = default;
@@ -80,8 +76,8 @@ public:
 	///               for ensuring that the stream remains valid for the
 	///               lifetime of the iterator and that it get cleaned up.
 	/// @param encoding Encoding of the text read from the stream
-	line_iterator(std::istream &stream, std::string encoding = "utf-8")
-	: line_iterator_base(stream, std::move(encoding))
+	line_iterator(std::istream &stream, const char *encoding = "utf-8")
+	: line_iterator_base(stream, encoding)
 	{
 		++(*this);
 	}

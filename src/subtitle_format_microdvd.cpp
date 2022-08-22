@@ -65,7 +65,7 @@ std::vector<std::string> MicroDVDSubtitleFormat::GetWriteWildcards() const {
 
 static const boost::regex line_regex(R"(^[\{\[]([0-9]+)[\}\]][\{\[]([0-9]+)[\}\]](.*)$)");
 
-bool MicroDVDSubtitleFormat::CanReadFile(std::filesystem::path const& filename, std::string const& encoding) const {
+bool MicroDVDSubtitleFormat::CanReadFile(std::filesystem::path const& filename, const char *encoding) const {
 	// Return false immediately if extension is wrong
 	if (!agi::fs::HasExtension(filename, "sub")) return false;
 
@@ -77,7 +77,7 @@ bool MicroDVDSubtitleFormat::CanReadFile(std::filesystem::path const& filename, 
 	return false;
 }
 
-void MicroDVDSubtitleFormat::ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& vfps, std::string const& encoding) const {
+void MicroDVDSubtitleFormat::ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& vfps, const char *encoding) const {
 	TextFileReader file(filename, encoding);
 
 	target->LoadDefault(false, OPT_GET("Subtitle Format/MicroDVD/Default Style Catalog")->GetString());
@@ -120,7 +120,7 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, std::filesystem::path con
 	}
 }
 
-void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& vfps, std::string const& encoding) const {
+void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& vfps, const char *encoding) const {
 	agi::vfr::Framerate fps = AskForFPS(true, false, vfps);
 	if (!fps.IsLoaded()) return;
 

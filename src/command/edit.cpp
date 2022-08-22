@@ -95,16 +95,16 @@ struct validate_sel_multiple : public Command {
 };
 
 template<typename String>
-AssDialogue *get_dialogue(String data) {
+std::unique_ptr<AssDialogue> get_dialogue(String data) {
 	boost::trim(data);
 	try {
 		// Try to interpret the line as an ASS line
-		return new AssDialogue(data);
+		return std::make_unique<AssDialogue>(data);
 	}
 	catch (...) {
 		// Line didn't parse correctly, assume it's plain text that
 		// should be pasted in the Text field only
-		auto d = new AssDialogue;
+		auto d = std::make_unique<AssDialogue>();
 		d->End = 0;
 		d->Text = data;
 		return d;
@@ -138,25 +138,25 @@ void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 	}
 }
 
-AssDialogue *paste_over(wxWindow *parent, std::vector<bool>& pasteOverOptions, AssDialogue *new_line, AssDialogue *old_line) {
+bool paste_over(wxWindow *parent, std::vector<bool>& pasteOverOptions, AssDialogue &new_line, AssDialogue &old_line) {
 	if (pasteOverOptions.empty()) {
-		if (!ShowPasteOverDialog(parent)) return nullptr;
+		if (!ShowPasteOverDialog(parent)) return false;
 		pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
 	}
 
-	if (pasteOverOptions[0])  old_line->Comment   = new_line->Comment;
-	if (pasteOverOptions[1])  old_line->Layer     = new_line->Layer;
-	if (pasteOverOptions[2])  old_line->Start     = new_line->Start;
-	if (pasteOverOptions[3])  old_line->End       = new_line->End;
-	if (pasteOverOptions[4])  old_line->Style     = new_line->Style;
-	if (pasteOverOptions[5])  old_line->Actor     = new_line->Actor;
-	if (pasteOverOptions[6])  old_line->Margin[0] = new_line->Margin[0];
-	if (pasteOverOptions[7])  old_line->Margin[1] = new_line->Margin[1];
-	if (pasteOverOptions[8])  old_line->Margin[2] = new_line->Margin[2];
-	if (pasteOverOptions[9])  old_line->Effect    = new_line->Effect;
-	if (pasteOverOptions[10]) old_line->Text      = new_line->Text;
+	if (pasteOverOptions[0])  old_line.Comment   = new_line.Comment;
+	if (pasteOverOptions[1])  old_line.Layer     = new_line.Layer;
+	if (pasteOverOptions[2])  old_line.Start     = new_line.Start;
+	if (pasteOverOptions[3])  old_line.End       = new_line.End;
+	if (pasteOverOptions[4])  old_line.Style     = new_line.Style;
+	if (pasteOverOptions[5])  old_line.Actor     = new_line.Actor;
+	if (pasteOverOptions[6])  old_line.Margin[0] = new_line.Margin[0];
+	if (pasteOverOptions[7])  old_line.Margin[1] = new_line.Margin[1];
+	if (pasteOverOptions[8])  old_line.Margin[2] = new_line.Margin[2];
+	if (pasteOverOptions[9])  old_line.Effect    = new_line.Effect;
+	if (pasteOverOptions[10]) old_line.Text      = new_line.Text;
 
-	return old_line;
+	return true;
 }
 
 struct parsed_line {
@@ -869,9 +869,9 @@ struct edit_line_paste final : public Command {
 		}
 		else {
 			auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
-			paste_lines(c, false, [=](AssDialogue *new_line) -> AssDialogue * {
+			paste_lines(c, false, [=](std::unique_ptr<AssDialogue> new_line) -> AssDialogue * {
 				c->ass->Events.insert(pos, *new_line);
-				return new_line;
+				return new_line.release();
 			});
 		}
 	}
@@ -901,27 +901,26 @@ struct edit_line_paste_over final : public Command {
 		if (sel.size() < 2) {
 			auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
 
-			paste_lines(c, true, [&](AssDialogue *new_line) -> AssDialogue * {
-				std::unique_ptr<AssDialogue> deleter(new_line);
+			paste_lines(c, true, [&](std::unique_ptr<AssDialogue> new_line) -> AssDialogue * {
 				if (pos == c->ass->Events.end()) return nullptr;
 
-				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, &*pos);
-				if (ret)
+				auto& old = *pos;
+				if (paste_over(c->parent, pasteOverOptions, *new_line, old))
 					++pos;
-				return ret;
+				return &old;
 			});
 		}
 		else {
 			// Multiple lines selected, so paste over the selection
 			auto sorted_selection = c->selectionController->GetSortedSelection();
 			auto pos = begin(sorted_selection);
-			paste_lines(c, true, [&](AssDialogue *new_line) -> AssDialogue * {
-				std::unique_ptr<AssDialogue> deleter(new_line);
+			paste_lines(c, true, [&](std::unique_ptr<AssDialogue> new_line) -> AssDialogue * {
 				if (pos == end(sorted_selection)) return nullptr;
 
-				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, *pos);
-				if (ret) ++pos;
-				return ret;
+				auto& old = **pos;
+				if (paste_over(c->parent, pasteOverOptions, *new_line, old))
+					++pos;
+				return &old;
 			});
 		}
 	}

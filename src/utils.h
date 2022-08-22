@@ -91,8 +91,6 @@ std::string GetClipboard();
 void SetClipboard(std::string const& new_value);
 void SetClipboard(wxBitmap const& new_value);
 
-#define countof(array) (sizeof(array) / sizeof(array[0]))
-
 wxString FontFace(std::string opt_prefix);
 
 std::filesystem::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent);

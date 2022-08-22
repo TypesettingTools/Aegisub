@@ -569,8 +569,8 @@ namespace
 		if (export_settings.text_encoding == EbuExportSettings::utf8)
 			memcpy(gsi.cct, "U8", 2);
 		memcpy(gsi.lc, "00", 2);
-		gsi_encoder.Convert(scriptinfo_title.c_str(), scriptinfo_title.size(), gsi.opt, 32);
-		gsi_encoder.Convert(scriptinfo_translation.c_str(), scriptinfo_translation.size(), gsi.tn, 32);
+		gsi_encoder.Convert(scriptinfo_title, std::span<char>(gsi.opt, 32));
+		gsi_encoder.Convert(scriptinfo_translation, std::span<char>(gsi.tn, 32));
 		{
 			char buf[20];
 			time_t now;
@@ -592,7 +592,7 @@ namespace
 		gsi.tnd = '1';
 		gsi.dsn = '1';
 		memcpy(gsi.co, "XXX", 3);
-		gsi_encoder.Convert(scriptinfo_editing.c_str(), scriptinfo_editing.size(), gsi.en, 32);
+		gsi_encoder.Convert(scriptinfo_editing, std::span<char>(gsi.en, 32));
 		if (export_settings.text_encoding == EbuExportSettings::utf8)
 			strncpy(gsi.uda, "This file was exported by Aegisub using non-standard UTF-8 encoding for the subtitle blocks. The TTI.TF field contains UTF-8-encoded text interspersed with the standard formatting codes, which are not encoded. GSI.CCT is set to 'U8' to signify this.", sizeof(gsi.uda));
 
@@ -622,7 +622,7 @@ Ebu3264SubtitleFormat::Ebu3264SubtitleFormat()
 {
 }
 
-void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const&) const
+void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *) const
 {
 	// collect data from user
 	EbuExportSettings export_settings = get_export_config(nullptr);

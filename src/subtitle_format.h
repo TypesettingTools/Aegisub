@@ -36,10 +36,10 @@
 #include <vector>
 
 class AssFile;
-namespace agi { namespace vfr { class Framerate; } }
+namespace agi::vfr { class Framerate; }
 
 class SubtitleFormat {
-	std::string name;
+	std::string_view name;
 
 	/// Get this format's wildcards for a load dialog
 	virtual std::vector<std::string> GetReadWildcards() const { return {}; }
@@ -52,7 +52,7 @@ public:
 	/// Convert newlines to the specified character(s)
 	/// @param lineEnd newline character(s)
 	/// @param mergeLineBreaks Should multiple consecutive line breaks be merged into one?
-	static void ConvertNewlines(AssFile &file, std::string const& newline, bool mergeLineBreaks = true);
+	static void ConvertNewlines(AssFile &file, std::string_view newline, bool mergeLineBreaks = true);
 	/// Remove All commented and empty lines
 	static void StripComments(AssFile &file);
 	/// @brief Split and merge lines so there are no overlapping lines
@@ -69,18 +69,18 @@ public:
 
 	/// Constructor
 	/// @param Subtitle format name
-	SubtitleFormat(std::string name);
+	SubtitleFormat(std::string_view name);
 	/// Destructor
 	virtual ~SubtitleFormat() = default;
 
 	/// Get this format's name
-	std::string const& GetName() const { return name; }
+	std::string_view GetName() const { return name; }
 
 	/// @brief Check if the given file can be read by this format
 	///
 	/// Default implementation simply checks if the file's extension is in the
 	/// format's wildcard list
-	virtual bool CanReadFile(std::filesystem::path const& filename, std::string const& encoding) const;
+	virtual bool CanReadFile(std::filesystem::path const& filename, const char *encoding) const;
 
 	/// @brief Check if the given file can be written by this format
 	///
@@ -98,20 +98,20 @@ public:
 	/// @param[out] target Destination to read lines into
 	/// @param filename File to load
 	/// @param encoding Encoding to use. May be ignored by the reader.
-	virtual void ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const { }
+	virtual void ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const { }
 
 	/// Save a subtitle file
 	/// @param src Data to write
 	/// @param filename File to write to
 	/// @param forceEncoding Encoding to use or empty string for default
-	virtual void WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding="") const { }
+	virtual void WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *encoding="") const { }
 
 	/// Export a subtitle file
 	///
 	/// This is used when saving via Export As..., for subtitle formats which
 	/// want to distinguish between exporting a final version of a script and
 	/// saving a project.
-	virtual void ExportFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding="") const {
+	virtual void ExportFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *encoding="") const {
 		WriteFile(src, filename, fps, encoding);
 	}
 
@@ -120,7 +120,7 @@ public:
 	static std::string GetWildcards(int mode);
 
 	/// Get a subtitle format that can read the given file or nullptr if none can
-	static const SubtitleFormat *GetReader(std::filesystem::path const& filename, std::string const& encoding);
+	static const SubtitleFormat *GetReader(std::filesystem::path const& filename, const char *encoding);
 	/// Get a subtitle format that can write the given file or nullptr if none can
 	static const SubtitleFormat *GetWriter(std::filesystem::path const& filename);
 	/// Initialize subtitle formats

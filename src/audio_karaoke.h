@@ -30,6 +30,12 @@ namespace agi::ass { class Karaoke; }
 namespace agi { class AudioProvider; }
 namespace agi { struct Context; }
 
+struct StringHash {
+	using is_transparent = void;
+	size_t operator()(std::string_view str) const { return std::hash<std::string_view>{}(str); }
+	size_t operator()(std::string const& str) const { return (*this)(std::string_view(str)); }
+};
+
 /// @class AudioKaraoke
 /// @brief Syllable split and join UI for karaoke
 ///
@@ -92,7 +98,7 @@ class AudioKaraoke final : public wxWindow {
 	std::vector<size_t> char_to_byte;
 
 	/// Cached width of characters from GetTextExtent
-	std::unordered_map<std::string, int, std::less<>> char_widths;
+	std::unordered_map<std::string, int, StringHash, std::equal_to<>> char_widths;
 
 	int scroll_x = 0; ///< Distance the display has been shifted to the left in pixels
 	int scroll_dir = 0; ///< Direction the display will be scrolled on scroll_timer ticks (+/- 1)

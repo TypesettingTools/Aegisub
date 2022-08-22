@@ -38,10 +38,9 @@ HunspellSpellChecker::HunspellSpellChecker()
 	OnLanguageChanged();
 }
 
-HunspellSpellChecker::~HunspellSpellChecker() {
-}
+HunspellSpellChecker::~HunspellSpellChecker() = default;
 
-bool HunspellSpellChecker::CanAddWord(std::string const& word) {
+bool HunspellSpellChecker::CanAddWord(std::string_view word) {
 	if (!hunspell) return false;
 	try {
 		conv->Convert(word);
@@ -52,11 +51,11 @@ bool HunspellSpellChecker::CanAddWord(std::string const& word) {
 	}
 }
 
-bool HunspellSpellChecker::CanRemoveWord(std::string const& word) {
+bool HunspellSpellChecker::CanRemoveWord(std::string_view word) {
 	return !!customWords.count(word);
 }
 
-void HunspellSpellChecker::AddWord(std::string const& word) {
+void HunspellSpellChecker::AddWord(std::string_view word) {
 	if (!hunspell) return;
 
 	// Add it to the in-memory dictionary
@@ -67,7 +66,7 @@ void HunspellSpellChecker::AddWord(std::string const& word) {
 		WriteUserDictionary();
 }
 
-void HunspellSpellChecker::RemoveWord(std::string const& word) {
+void HunspellSpellChecker::RemoveWord(std::string_view word) {
 	if (!hunspell) return;
 
 	// Remove it from the in-memory dictionary
@@ -90,7 +89,7 @@ void HunspellSpellChecker::ReadUserDictionary() {
 		copy_if(
 			++agi::line_iterator<std::string>(*stream), agi::line_iterator<std::string>(),
 			inserter(customWords, customWords.end()),
-			[](std::string const& str) { return !str.empty(); });
+			[](auto const& str) { return !str.empty(); });
 	}
 	catch (agi::fs::FileNotFound const&) {
 		// Not an error; user dictionary just doesn't exist
@@ -115,7 +114,7 @@ void HunspellSpellChecker::WriteUserDictionary() {
 	lang_listener.Unblock();
 }
 
-bool HunspellSpellChecker::CheckWord(std::string const& word) {
+bool HunspellSpellChecker::CheckWord(std::string_view word) {
 	if (!hunspell) return true;
 	try {
 		return hunspell->spell(conv->Convert(word).c_str()) == 1;
@@ -125,7 +124,7 @@ bool HunspellSpellChecker::CheckWord(std::string const& word) {
 	}
 }
 
-std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string const& word) {
+std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string_view word) {
 	std::vector<std::string> suggestions;
 	if (!hunspell) return suggestions;
 
@@ -172,7 +171,8 @@ std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
 	return languages;
 }
 
-static bool check_path(std::filesystem::path const& path, std::string const& language, std::filesystem::path& aff, std::filesystem::path& dic) {
+static bool check_path(std::filesystem::path const& path, std::string_view language,
+	                   std::filesystem::path& aff, std::filesystem::path& dic) {
 	aff = path/agi::format("%s.aff", language);
 	dic = path/agi::format("%s.dic", language);
 	return agi::fs::FileExists(aff) && agi::fs::FileExists(dic);

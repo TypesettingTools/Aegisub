@@ -176,16 +176,16 @@ Framerate::Framerate(std::filesystem::path const& filename)
 {
 	auto file = agi::io::Open(filename);
 	auto encoding = agi::charset::Detect(filename);
-	auto line = *line_iterator<std::string>(*file, encoding);
+	auto line = *line_iterator<std::string>(*file, encoding.c_str());
 	if (line == "# timecode format v2") {
-		copy(line_iterator<int>(*file, encoding), line_iterator<int>(), back_inserter(timecodes));
+		copy(line_iterator<int>(*file, encoding.c_str()), line_iterator<int>(), back_inserter(timecodes));
 		SetFromTimecodes();
 		return;
 	}
 	if (line == "# timecode format v1" || line.substr(0, 7) == "Assume ") {
 		if (line[0] == '#')
-			line = *line_iterator<std::string>(*file, encoding);
-		numerator = v1_parse(line_iterator<std::string>(*file, encoding), line, timecodes, last);
+			line = *line_iterator<std::string>(*file, encoding.c_str());
+		numerator = v1_parse(line_iterator<std::string>(*file, encoding.c_str()), line, timecodes, last);
 		return;
 	}
 

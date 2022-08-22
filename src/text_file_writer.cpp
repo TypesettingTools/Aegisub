@@ -29,7 +29,7 @@ TextFileWriter::TextFileWriter(std::filesystem::path const& filename, std::strin
 	if (encoding.empty())
 		encoding = OPT_GET("App/Save Charset")->GetString();
 	if (encoding != "utf-8" && encoding != "UTF-8") {
-		conv = std::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.c_str(), true);
+		conv = std::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.data(), true);
 		newline = conv->Convert(newline);
 	}
 
@@ -42,11 +42,10 @@ TextFileWriter::TextFileWriter(std::filesystem::path const& filename, std::strin
 	}
 }
 
-TextFileWriter::~TextFileWriter() {
-	// Explicit empty destructor required with a unique_ptr to an incomplete class
-}
+// Explicit empty destructor required with a unique_ptr to an incomplete class
+TextFileWriter::~TextFileWriter() = default;
 
-void TextFileWriter::WriteLineToFile(std::string const& line, bool addLineBreak) {
+void TextFileWriter::WriteLineToFile(std::string_view line, bool addLineBreak) {
 	if (conv) {
 		auto converted = conv->Convert(line);
 		file->Get().write(converted.data(), converted.size());

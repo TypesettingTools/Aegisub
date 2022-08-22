@@ -19,7 +19,7 @@
 #include <libaegisub/charset_conv.h>
 #include <memory>
 
-namespace agi { namespace charset {
+namespace agi::charset {
 
 /// @brief A charset converter for ISO-6937-2
 ///
@@ -27,7 +27,7 @@ namespace agi { namespace charset {
 /// it's not used by anything but old subtitle formats
 class Converter6937 final : public Converter {
 	/// Converter to UCS-4 so that we only have to deal with unicode codepoints
-	std::unique_ptr<IconvWrapper> to_ucs4;
+	std::unique_ptr<Converter> to_ucs4;
 
 	/// Should unsupported characters be replaced with '?'
 	const bool subst;
@@ -42,4 +42,4 @@ public:
 	size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft);
 };
 
-} }
+}

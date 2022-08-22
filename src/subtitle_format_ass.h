@@ -26,9 +26,9 @@ public:
 	// Naturally the ASS subtitle format can save all ASS files
 	bool CanSave(const AssFile*) const override { return true; }
 
-	void ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& forceEncoding) const override;
-	void WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
+	void ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *forceEncoding) const override;
+	void WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
 
 	// Does not write [Aegisub Project Garbage] and [Aegisub Extradata] sections when exporting
-	void ExportFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const override;
+	void ExportFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
 };

@@ -34,7 +34,6 @@ using path = std::filesystem::path;
 		type(path const& p) : base(message + p.string()) { } \
 		type(std::string const& s) : base(s) { } \
 		const char *GetName() const { return ""; } \
-		Exception *Copy() const { return new type(*this); } \
 	}
 
 /// @class agi::FileSystemError

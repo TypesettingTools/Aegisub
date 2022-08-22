@@ -96,12 +96,12 @@ public:
 	/// @brief Load from a file
 	/// @param file File name
 	/// @param charset Character set of file
-	ProjectProperties Load(std::filesystem::path const& file, std::string charset);
+	ProjectProperties Load(std::filesystem::path const& file, const char *charset);
 
 	/// @brief Save to a file
 	/// @param file Path to save to
 	/// @param encoding Encoding to use, or empty to let the writer decide (which usually means "App/Save Charset")
-	void Save(std::filesystem::path const& file, std::string const& encoding="");
+	void Save(std::filesystem::path const& file, const char *encoding="");
 
 	/// Close the currently open file (i.e. open a new blank file)
 	void Close();

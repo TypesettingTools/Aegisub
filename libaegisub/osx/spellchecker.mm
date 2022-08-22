@@ -107,6 +107,6 @@ public:
 
 namespace agi {
 std::unique_ptr<SpellChecker> CreateCocoaSpellChecker(OptionValue *opt) {
-    return std::unique_ptr<SpellChecker>(new CocoaSpellChecker(opt));
+    return std::make_unique<CocoaSpellChecker>(opt);
 }
 }
