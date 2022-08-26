@@ -53,9 +53,9 @@ Write-Output 'Copying - translations'
 Copy-New-Items "$InstallerDir\share\locale\*"  "$PortableOutputDir\locale" -Recurse
 Write-Output 'Copying - codecs'
 Write-Output 'Copying - codecs\Avisynth'
-Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x86-64\DevIL.dll  $PortableOutputDir
-Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x86-64\AviSynth.dll  $PortableOutputDir
-Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x86-64\plugins\DirectShowSource.dll  $PortableOutputDir
+Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x64\Output\system\DevIL.dll  $PortableOutputDir
+Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x64\Output\AviSynth.dll  $PortableOutputDir
+Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x64\Output\plugins\DirectShowSource.dll  $PortableOutputDir
 Write-Output 'Copying - codecs\VSFilter'
 Copy-New-Item $InstallerDepsDir\VSFilter\x64\VSFilter.dll  $PortableOutputDir\csri
 Write-Output 'Copying - runtimes\MS-CRT'
