@@ -71,7 +71,7 @@ if (!(Test-Path ffi-experiments)) {
 # VC++ redistributable
 if (!(Test-Path VC_redist)) {
 	$redistDir = New-Item -ItemType Directory VC_redist
-	Invoke-WebRequest https://aka.ms/vs/16/release/VC_redist.x64.exe -OutFile "$redistDir\VC_redist.x64.exe" -UseBasicParsing
+	Invoke-WebRequest https://aka.ms/vs/17/release/VC_redist.x64.exe -OutFile "$redistDir\VC_redist.x64.exe" -UseBasicParsing
 }
 
 # TODO dictionaries
