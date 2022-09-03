@@ -43,6 +43,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/split.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <future>
@@ -494,7 +495,7 @@ namespace Automation4 {
 			catchall.pop_back();
 
 		if (Factories().size() > 1)
-			fnfilter = from_wx(_("All Supported Formats")) + "|" + catchall + "|" + fnfilter;
+			fnfilter = agi::Str(from_wx(_("All Supported Formats")), "|", catchall, "|", fnfilter);
 
 		return fnfilter;
 	}

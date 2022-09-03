@@ -42,6 +42,7 @@
 #include <libaegisub/log.h>
 #include <libaegisub/lua/utils.h>
 #include <libaegisub/split.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptor/map.hpp>
@@ -526,7 +527,7 @@ namespace Automation4 {
 			if (control->CanSerialiseValue()) {
 				if (!res.empty())
 					res += "|";
-				res += inline_string_encode(control->name) + ":" + control->SerialiseValue();
+				agi::AppendStr(res, inline_string_encode(control->name), ":", control->SerialiseValue());
 			}
 		}
 
@@ -535,16 +536,15 @@ namespace Automation4 {
 
 	void LuaDialog::Unserialise(const std::string &serialised) {
 		for (auto tok : agi::Split(serialised, '|')) {
-			auto pos = std::find(begin(tok), end(tok), ':');
-			if (pos == end(tok)) continue;
+			auto pos = tok.find(':');
+			if (pos == tok.npos) continue;
 
-			std::string name = inline_string_decode(std::string(begin(tok), pos));
-			std::string value(pos + 1, end(tok));
+			std::string name = inline_string_decode(tok.substr(0, pos));
 
 			// Hand value to all controls matching name
 			for (auto& control : controls) {
 				if (control->name == name && control->CanSerialiseValue())
-					control->UnserialiseValue(value);
+					control->UnserialiseValue(tok.substr(pos + 1));
 			}
 		}
 	}

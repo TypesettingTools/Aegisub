@@ -109,7 +109,7 @@ public:
 	std::shared_ptr<VideoFrame> GetFrame(int frame, double time, bool raw = false);
 
 	/// Ask the video provider to change YCbCr matricies
-	void SetColorSpace(std::string const& matrix);
+	void SetColorSpace(std::string_view matrix);
 
 	int GetFrameCount() const             { return source_provider->GetFrameCount(); }
 	int GetWidth() const                  { return source_provider->GetWidth(); }
@@ -127,7 +127,7 @@ public:
 	/// @brief Constructor
 	/// @param videoFileName File to open
 	/// @param parent Event handler to send FrameReady events to
-	AsyncVideoProvider(std::filesystem::path const& filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
+	AsyncVideoProvider(std::filesystem::path const& filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
 	~AsyncVideoProvider();
 };
 

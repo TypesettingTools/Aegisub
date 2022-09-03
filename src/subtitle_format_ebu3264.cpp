@@ -538,9 +538,9 @@ namespace
 
 	BlockGSI create_header(AssFile const& copy, EbuExportSettings const& export_settings)
 	{
-		std::string scriptinfo_title = copy.GetScriptInfo("Title");
-		std::string scriptinfo_translation = copy.GetScriptInfo("Original Translation");
-		std::string scriptinfo_editing = copy.GetScriptInfo("Original Editing");
+		std::string_view scriptinfo_title = copy.GetScriptInfo("Title");
+		std::string_view scriptinfo_translation = copy.GetScriptInfo("Original Translation");
+		std::string_view scriptinfo_editing = copy.GetScriptInfo("Original Editing");
 
 		agi::charset::IconvWrapper gsi_encoder("UTF-8", "CP850");
 

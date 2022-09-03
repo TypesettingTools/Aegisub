@@ -304,11 +304,6 @@ void KaraokeLineMatchDisplay::SetInputData(AssDialogue *src, AssDialogue *dst)
 	matcher.SetInputData(ParseKaraokeSyllables(src), dst->GetStrippedText());
 }
 
-std::string KaraokeLineMatchDisplay::GetOutputLine() const
-{
-	return matcher.GetOutputLine();
-}
-
 void KaraokeLineMatchDisplay::IncreaseSourceMatch()
 {
 	if (matcher.IncreaseSourceMatch()) Refresh(true);

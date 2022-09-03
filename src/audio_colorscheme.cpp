@@ -34,12 +34,13 @@
 #include "options.h"
 
 #include <libaegisub/exception.h>
+#include <libaegisub/string.h>
 
 AudioColorScheme::AudioColorScheme(int prec, std::string const& scheme_name, int audio_rendering_style)
 : palette((3<<prec) + 3)
 , factor((size_t)1<<prec)
 {
-	std::string opt_base = "Colour/Schemes/" + scheme_name + "/";
+	std::string opt_base = agi::Str("Colour/Schemes/", scheme_name, "/");
 	switch (static_cast<AudioRenderingStyle>(audio_rendering_style))
 	{
 		case AudioStyle_Normal:   opt_base += "Normal/"; break;

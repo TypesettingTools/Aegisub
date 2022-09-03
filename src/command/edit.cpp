@@ -53,6 +53,7 @@
 #include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/ass/karaoke.h>
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/string.h>
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -242,7 +243,8 @@ struct parsed_line {
 		std::string insert(tag + value);
 		int shift = insert.size();
 		if (plain || blockn < 0) {
-			line->Text = line->Text.get().substr(0, orig_pos) + "{" + insert + "}" + line->Text.get().substr(orig_pos);
+			std::string_view text = line->Text.get();
+			line->Text = agi::Str(text.substr(0, orig_pos), "{", insert, "}", text.substr(orig_pos));
 			shift += 2;
 			blocks = line->ParseTags();
 		}
@@ -769,14 +771,14 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 
 static void combine_karaoke(AssDialogue *first, AssDialogue *second) {
 	if (second)
-		first->Text = first->Text.get() + "{\\k" + std::to_string((second->End - second->Start) / 10) + "}" + second->Text.get();
+		first->Text = agi::Str(first->Text.get(), "{\\k", std::to_string((second->End - second->Start) / 10), "}", second->Text.get());
 	else
-		first->Text = "{\\k" + std::to_string((first->End - first->Start) / 10) + "}" + first->Text.get();
+		first->Text = agi::Str("{\\k", std::to_string((first->End - first->Start) / 10), "}", first->Text.get());
 }
 
 static void combine_concat(AssDialogue *first, AssDialogue *second) {
 	if (second)
-		first->Text = first->Text.get() + " " + second->Text.get();
+		first->Text = agi::Str(first->Text.get(), " ", second->Text.get());
 }
 
 static void combine_drop(AssDialogue *, AssDialogue *) { }

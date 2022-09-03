@@ -29,8 +29,8 @@
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
 #include <libaegisub/signal.h>
+#include <libaegisub/string.h>
 
-#include <boost/algorithm/string/join.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <vector>
 
@@ -162,7 +162,7 @@ namespace {
 
 			std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(ht_context, command->name());
 			if (!hotkeys.empty())
-				ret += to_wx(" (" + boost::join(hotkeys, "/") + ")");
+				ret += to_wx(" (" + agi::Join("/", hotkeys) + ")");
 
 			return ret;
 		}
