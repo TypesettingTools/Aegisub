@@ -14,10 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file visual_tool.h
-/// @see visual_tool.cpp
-/// @ingroup visual_ts
-
 #pragma once
 
 #include "gl_wrap.h"

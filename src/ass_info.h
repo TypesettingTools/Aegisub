@@ -22,12 +22,12 @@ class AssInfo final : public AssEntry {
 
 public:
 	AssInfo(AssInfo const& o) = default;
-	AssInfo(std::string key, std::string value) : key(std::move(key)), value(std::move(value)) { }
+	AssInfo(std::string_view key, std::string_view value) : key(key), value(value) { }
 
 	AssEntryGroup Group() const override { return AssEntryGroup::INFO; }
 	std::string GetEntryData() const { return key + ": " + value; }
 
-	std::string Key() const { return key; }
-	std::string Value() const { return value; }
-	void SetValue(std::string const& new_value) { value = new_value; }
+	std::string_view Key() const { return key; }
+	std::string_view Value() const { return value; }
+	void SetValue(std::string_view new_value) { value = new_value; }
 };

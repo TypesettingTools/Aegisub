@@ -14,10 +14,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file visual_tool.cpp
-/// @brief Base class for visual typesetting functions
-/// @ingroup visual_ts
-
 #include "visual_tool.h"
 
 #include "ass_dialogue.h"
@@ -36,6 +32,7 @@
 #include <libaegisub/ass/time.h>
 #include <libaegisub/format.h>
 #include <libaegisub/of_type_adaptor.h>
+#include <libaegisub/string.h>
 
 #include <algorithm>
 
@@ -553,7 +550,7 @@ void VisualToolBase::SetOverride(AssDialogue* line, std::string const& tag, std:
 		line->UpdateText(blocks);
 	}
 	else
-		line->Text = "{" + tag + value + "}" + line->Text.get();
+		line->Text = agi::Str("{", tag, value, "}", line->Text.get());
 }
 
 // If only export worked

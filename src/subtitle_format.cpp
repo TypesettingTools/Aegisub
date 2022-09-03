@@ -51,10 +51,10 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/vfr.h>
+#include <libaegisub/string.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
-#include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <wx/choicdlg.h>
 
@@ -165,7 +165,7 @@ void SubtitleFormat::ConvertNewlines(AssFile &file, std::string_view newline, bo
 		boost::replace_all(repl, "\\h", " ");
 		boost::ireplace_all(repl, "\\n", newline);
 		if (mergeLineBreaks) {
-			std::string dbl(newline + newline);
+			auto dbl = agi::Str(newline, newline);
 			size_t pos = 0;
 			while ((pos = repl.find(dbl, pos)) != std::string::npos)
 				boost::replace_all(repl, dbl, newline);
@@ -309,13 +309,11 @@ std::string SubtitleFormat::GetWildcards(int mode) {
 
 		for (auto& str : cur) str.insert(0, "*.");
 		all.insert(all.end(), begin(cur), end(cur));
-		final += "|";
-		final += format->GetName();
-		final += " {";
-		final += boost::join(cur, ",");
+		agi::AppendStr(final, "|", format->GetName(), " {");
+		agi::AppendJoin(final, ",", cur);
 		final += ")|";
-		final += boost::join(cur, ";");
+		agi::AppendJoin(final, ";", cur);
 	}
 
-	return from_wx(_("All Supported Formats")) + " (" + boost::join(all, ",") + ")|" + boost::join(all, ";") + final;
+	return agi::Str(from_wx(_("All Supported Formats")), " (", agi::Join(",", all), ")|", agi::Join(";", all), final);
 }

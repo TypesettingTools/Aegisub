@@ -45,6 +45,7 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/log.h>
 #include <libaegisub/lua/utils.h>
+#include <libaegisub/string.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -58,7 +59,7 @@ namespace {
 	[[noreturn]]
 	BadField bad_field(const char *expected_type, const char *name, const char *line_clasee)
 	{
-		throw BadField(std::string("Invalid or missing field '") + name + "' in '" + line_clasee + "' class subtitle line (expected " + expected_type + ")");
+		throw BadField(agi::Str("Invalid or missing field '", name, "' in '", line_clasee, "' class subtitle line (expected ", expected_type, ")"));
 	}
 
 	void get_field(lua_State *L, const char *name, const char *line_class, int (*p)(lua_State *, int))

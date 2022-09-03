@@ -36,6 +36,7 @@
 #include <libaegisub/exception.h>
 #include <libaegisub/format.h>
 #include <libaegisub/split.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -411,7 +412,7 @@ void AssDialogueBlockOverride::AddTag(std::string const& tag) {
 
 static std::string tag_str(AssOverrideTag const& t) { return t; }
 std::string AssDialogueBlockOverride::GetText() {
-	text = "{" + join(Tags | transformed(tag_str), std::string()) + "}";
+	text = agi::Str("{", agi::Join("", Tags | transformed(tag_str)), "}");
 	return text;
 }
 

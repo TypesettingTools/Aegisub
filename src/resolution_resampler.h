@@ -38,8 +38,8 @@ enum class YCbCrMatrix : int {
 	pc_240m
 };
 
-YCbCrMatrix MatrixFromString(std::string const& str);
-std::string MatrixToString(YCbCrMatrix mat);
+YCbCrMatrix MatrixFromString(std::string_view str);
+std::string_view MatrixToString(YCbCrMatrix mat);
 std::vector<std::string> MatrixNames();
 
 /// Configuration parameters for a resample

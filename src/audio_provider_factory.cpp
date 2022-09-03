@@ -24,6 +24,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
+#include <libaegisub/string.h>
 
 using namespace agi;
 
@@ -74,18 +75,18 @@ std::unique_ptr<agi::AudioProvider> GetAudioProvider(fs::path const& filename,
 		}
 		catch (fs::FileNotFound const& err) {
 			LOG_D("audio_provider") << err.GetMessage();
-			msg_all += std::string(factory->name) + ": " + err.GetMessage() + " not found.\n";
+			agi::AppendStr(msg_all, factory->name, ": ", err.GetMessage(), " not found.\n");
 		}
 		catch (AudioDataNotFound const& err) {
 			LOG_D("audio_provider") << err.GetMessage();
 			found_file = true;
-			msg_all += std::string(factory->name) + ": " + err.GetMessage() + "\n";
+			agi::AppendStr(msg_all, factory->name, ": ", err.GetMessage(), "\n");
 		}
 		catch (AudioProviderError const& err) {
 			LOG_D("audio_provider") << err.GetMessage();
 			found_audio = true;
 			found_file = true;
-			std::string thismsg = std::string(factory->name) + ": " + err.GetMessage() + "\n";
+			std::string thismsg = agi::Str(factory->name, ": ", err.GetMessage(), "\n");
 			msg_all += thismsg;
 			msg_partial += thismsg;
 		}

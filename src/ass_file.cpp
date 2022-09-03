@@ -107,7 +107,7 @@ void AssFile::InsertAttachment(std::filesystem::path const& filename) {
 	Attachments.emplace_back(filename, group);
 }
 
-std::string AssFile::GetScriptInfo(std::string const& key) const {
+std::string_view AssFile::GetScriptInfo(std::string_view key) const {
 	for (auto const& info : Info) {
 		if (boost::iequals(key, info.Key()))
 			return info.Value();
@@ -116,11 +116,11 @@ std::string AssFile::GetScriptInfo(std::string const& key) const {
 	return "";
 }
 
-int AssFile::GetScriptInfoAsInt(std::string const& key) const {
-	return atoi(GetScriptInfo(key).c_str());
+int AssFile::GetScriptInfoAsInt(std::string_view key) const {
+	return atoi(GetScriptInfo(key).data());
 }
 
-void AssFile::SetScriptInfo(std::string const& key, std::string const& value) {
+void AssFile::SetScriptInfo(std::string_view key, std::string_view value) {
 	for (auto it = Info.begin(); it != Info.end(); ++it) {
 		if (boost::iequals(key, it->Key())) {
 			if (value.empty())
@@ -226,14 +226,14 @@ void AssFile::Sort(EntryList<AssDialogue> &lst, CompFunc comp, std::set<AssDialo
 	}
 }
 
-uint32_t AssFile::AddExtradata(std::string const& key, std::string const& value) {
+uint32_t AssFile::AddExtradata(std::string_view key, std::string_view value) {
 	for (auto const& data : Extradata) {
 		// perform brute-force deduplication by simple key and value comparison
 		if (key == data.key && value == data.value) {
 			return data.id;
 		}
 	}
-	Extradata.push_back(ExtradataEntry{next_extradata_id, key, value});
+	Extradata.push_back(ExtradataEntry{next_extradata_id, std::string(key), std::string(value)});
 	return next_extradata_id++; // return old value, then post-increment
 }
 

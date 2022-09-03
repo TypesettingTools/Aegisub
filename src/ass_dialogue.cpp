@@ -27,19 +27,15 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_dialogue.cpp
-/// @brief Class for dialogue lines in subtitles
-/// @ingroup subs_storage
-
 #include "ass_dialogue.h"
 #include "subtitle_format.h"
 #include "utils.h"
 
 #include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/split.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/join.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 #include <boost/spirit/include/karma_generate.hpp>
@@ -79,7 +75,7 @@ public:
 
 	std::string_view next_tok() {
 		if (pos.eof())
-			throw SubtitleFormatParseError("Failed parsing line: " + std::string(str));
+			throw SubtitleFormatParseError(agi::Str("Failed parsing line: ", str));
 		return *pos++;
 	}
 
@@ -269,7 +265,7 @@ void AssDialogue::StripTags() {
 static std::string get_text(std::unique_ptr<AssDialogueBlock> &d) { return d->GetText(); }
 void AssDialogue::UpdateText(std::vector<std::unique_ptr<AssDialogueBlock>>& blocks) {
 	if (blocks.empty()) return;
-	Text = join(blocks | transformed(get_text), "");
+	Text = agi::Join("", blocks | transformed(get_text));
 }
 
 bool AssDialogue::CollidesWith(const AssDialogue *target) const {
@@ -280,5 +276,5 @@ bool AssDialogue::CollidesWith(const AssDialogue *target) const {
 static std::string get_text_p(AssDialogueBlock *d) { return d->GetText(); }
 std::string AssDialogue::GetStrippedText() const {
 	auto blocks = ParseTags();
-	return join(blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p), "");
+	return agi::Join("", blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p));
 }

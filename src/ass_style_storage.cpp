@@ -37,6 +37,7 @@
 #include <libaegisub/io.h>
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/path.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -50,10 +51,10 @@ void AssStyleStorage::Save() const {
 	agi::fs::CreateDirectory(file.parent_path());
 
 	agi::io::Save out(file);
-	out.Get() << "\xEF\xBB\xBF";
+	out.Get() << "\xEF\xBB\xBF"; // UTF-8 BOM
 
 	for (auto const& cur : style)
-		out.Get() << cur->GetEntryData() << std::endl;
+		out.Get() << cur->GetEntryData() << "\n";
 }
 
 void AssStyleStorage::Load(std::filesystem::path const& filename) {
@@ -75,9 +76,8 @@ void AssStyleStorage::Load(std::filesystem::path const& filename) {
 	}
 }
 
-void AssStyleStorage::LoadCatalog(std::string const& catalogname) {
-	auto filename = config::path->Decode("?user/catalog/" + catalogname + ".sty");
-	Load(filename);
+void AssStyleStorage::LoadCatalog(std::string_view catalogname) {
+	Load(config::path->Decode(agi::Str("?user/catalog/", catalogname, ".sty")));
 }
 
 void AssStyleStorage::Delete(int idx) {
@@ -91,7 +91,7 @@ std::vector<std::string> AssStyleStorage::GetNames() {
 	return names;
 }
 
-AssStyle *AssStyleStorage::GetStyle(std::string const& name) {
+AssStyle *AssStyleStorage::GetStyle(std::string_view name) {
 	for (auto& cur : style) {
 		if (boost::iequals(cur->name, name))
 			return cur.get();
@@ -106,9 +106,9 @@ std::vector<std::string> AssStyleStorage::GetCatalogs() {
 	return catalogs;
 }
 
-bool AssStyleStorage::CatalogExists(std::string const& catalogname) {
+bool AssStyleStorage::CatalogExists(std::string_view catalogname) {
 	if (catalogname.empty()) return false;
-	auto filename = config::path->Decode("?user/catalog/" + catalogname + ".sty");
+	auto filename = config::path->Decode(agi::Str("?user/catalog/", catalogname, ".sty"));
 	return agi::fs::FileExists(filename);
 }
 

@@ -91,7 +91,7 @@ static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_ha
 	}
 }
 
-AsyncVideoProvider::AsyncVideoProvider(std::filesystem::path const& video_filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
+AsyncVideoProvider::AsyncVideoProvider(std::filesystem::path const& video_filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
 : worker(agi::dispatch::Create())
 , subs_provider(get_subs_provider(parent, br))
 , source_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix, br))
@@ -208,8 +208,10 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::GetFrame(int frame, double time,
 	return ret;
 }
 
-void AsyncVideoProvider::SetColorSpace(std::string const& matrix) {
-	worker->Async([=] { source_provider->SetColorSpace(matrix); });
+void AsyncVideoProvider::SetColorSpace(std::string_view matrix) {
+	worker->Async([this, matrix = std::string(matrix)]() {
+		source_provider->SetColorSpace(matrix);
+	});
 }
 
 wxDEFINE_EVENT(EVT_FRAME_READY, FrameReadyEvent);

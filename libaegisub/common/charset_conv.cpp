@@ -12,20 +12,17 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file charset_conv.cpp
-/// @brief Wrapper for libiconv to present a more C++-friendly API
-/// @ingroup libaegisub
+#include <libaegisub/charset_conv.h>
 
+#include <libaegisub/string.h>
+#include "charset_6937.h"
+
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/algorithm.hpp>
+#include <cassert>
 #include <cerrno>
 #include <cstdint>
-
-#include <cassert>
-#include <boost/range/algorithm.hpp>
-
-#include <libaegisub/charset_conv.h>
 #include <iconv.h>
-
-#include "charset_6937.h"
 
 // Check if we can use advanced fallback capabilities added in GNU's iconv
 // implementation
@@ -267,7 +264,7 @@ Iconv::Iconv(const char *source, const char *dest)
 : cd(iconv_open(dest, source))
 {
 	if (cd == iconv_invalid)
-		throw UnsupportedConversion(std::string("Cannot convert from ") + source + " to " + dest);
+		throw UnsupportedConversion(agi::Str("Cannot convert from ", source, " to ", dest));
 }
 
 Iconv::~Iconv() {

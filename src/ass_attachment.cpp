@@ -19,6 +19,7 @@
 #include <libaegisub/ass/uuencode.h>
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/io.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -43,8 +44,8 @@ AssAttachment::AssAttachment(std::filesystem::path const& name, AssEntryGroup gr
 
 	agi::read_file_mapping file(name);
 	auto buff = file.read();
-	entry_data = (group == AssEntryGroup::FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
-	entry_data = entry_data.get() + agi::ass::UUEncode(buff, buff + file.size());
+	entry_data = agi::Str(group == AssEntryGroup::FONT ? "fontname: " : "filename: ", filename.get(), "\r\n",
+		agi::ass::UUEncode(buff, buff + file.size()));
 }
 
 size_t AssAttachment::GetSize() const {

@@ -426,6 +426,6 @@ void YUV4MPEGVideoProvider::GetFrame(int n, VideoFrame &frame) {
 }
 
 namespace agi { class BackgroundRunner; }
-std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(std::filesystem::path const& path, std::string const&, agi::BackgroundRunner *) {
+std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(std::filesystem::path const& path, std::string_view, agi::BackgroundRunner *) {
 	return std::make_unique<YUV4MPEGVideoProvider>(path);
 }

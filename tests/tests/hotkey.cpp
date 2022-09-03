@@ -45,79 +45,79 @@ TEST(lagi_hotkey, empty_default) {
 TEST(lagi_hotkey, scan) {
 	Hotkey h("", simple_valid);
 
-	EXPECT_STREQ("cmd1", h.Scan("Always", "Ctrl-C", false).c_str());
-	EXPECT_STREQ("cmd2", h.Scan("Default", "Ctrl-C", false).c_str());
-	EXPECT_STREQ("cmd2", h.Scan("Other", "Ctrl-C", false).c_str());
-	EXPECT_STREQ("cmd2", h.Scan("Nonexistent", "Ctrl-C", false).c_str());
+	EXPECT_EQ("cmd1", h.Scan("Always", "Ctrl-C", false));
+	EXPECT_EQ("cmd2", h.Scan("Default", "Ctrl-C", false));
+	EXPECT_EQ("cmd2", h.Scan("Other", "Ctrl-C", false));
+	EXPECT_EQ("cmd2", h.Scan("Nonexistent", "Ctrl-C", false));
 
-	EXPECT_STREQ("cmd1", h.Scan("Always", "Ctrl-C", true).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Default", "Ctrl-C", true).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Other", "Ctrl-C", true).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Nonexistent", "Ctrl-C", true).c_str());
+	EXPECT_EQ("cmd1", h.Scan("Always", "Ctrl-C", true));
+	EXPECT_EQ("cmd1", h.Scan("Default", "Ctrl-C", true));
+	EXPECT_EQ("cmd1", h.Scan("Other", "Ctrl-C", true));
+	EXPECT_EQ("cmd1", h.Scan("Nonexistent", "Ctrl-C", true));
 
-	EXPECT_STREQ("cmd1", h.Scan("Always", "Alt-C", false).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Default", "Alt-C", false).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Other", "Alt-C", false).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Nonexistent", "Alt-C", false).c_str());
+	EXPECT_EQ("cmd1", h.Scan("Always", "Alt-C", false));
+	EXPECT_EQ("cmd1", h.Scan("Default", "Alt-C", false));
+	EXPECT_EQ("cmd1", h.Scan("Other", "Alt-C", false));
+	EXPECT_EQ("cmd1", h.Scan("Nonexistent", "Alt-C", false));
 
-	EXPECT_STREQ("cmd1", h.Scan("Always", "Alt-C", true).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Default", "Alt-C", true).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Other", "Alt-C", true).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Nonexistent", "Alt-C", true).c_str());
+	EXPECT_EQ("cmd1", h.Scan("Always", "Alt-C", true));
+	EXPECT_EQ("cmd1", h.Scan("Default", "Alt-C", true));
+	EXPECT_EQ("cmd1", h.Scan("Other", "Alt-C", true));
+	EXPECT_EQ("cmd1", h.Scan("Nonexistent", "Alt-C", true));
 
-	EXPECT_STREQ("", h.Scan("Always", "Shift-C", false).c_str());
-	EXPECT_STREQ("", h.Scan("Default", "Shift-C", false).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Other", "Shift-C", false).c_str());
-	EXPECT_STREQ("", h.Scan("Nonexistent", "Shift-C", false).c_str());
+	EXPECT_EQ("", h.Scan("Always", "Shift-C", false));
+	EXPECT_EQ("", h.Scan("Default", "Shift-C", false));
+	EXPECT_EQ("cmd1", h.Scan("Other", "Shift-C", false));
+	EXPECT_EQ("", h.Scan("Nonexistent", "Shift-C", false));
 
-	EXPECT_STREQ("", h.Scan("Always", "Shift-C", true).c_str());
-	EXPECT_STREQ("", h.Scan("Default", "Shift-C", true).c_str());
-	EXPECT_STREQ("cmd1", h.Scan("Other", "Shift-C", true).c_str());
-	EXPECT_STREQ("", h.Scan("Nonexistent", "Shift-C", true).c_str());
+	EXPECT_EQ("", h.Scan("Always", "Shift-C", true));
+	EXPECT_EQ("", h.Scan("Default", "Shift-C", true));
+	EXPECT_EQ("cmd1", h.Scan("Other", "Shift-C", true));
+	EXPECT_EQ("", h.Scan("Nonexistent", "Shift-C", true));
 
-	EXPECT_STREQ("", h.Scan("Always", "Q", false).c_str());
-	EXPECT_STREQ("", h.Scan("Default", "Q", false).c_str());
-	EXPECT_STREQ("cmd3", h.Scan("Other", "Q", false).c_str());
-	EXPECT_STREQ("", h.Scan("Nonexistent", "Q", false).c_str());
+	EXPECT_EQ("", h.Scan("Always", "Q", false));
+	EXPECT_EQ("", h.Scan("Default", "Q", false));
+	EXPECT_EQ("cmd3", h.Scan("Other", "Q", false));
+	EXPECT_EQ("", h.Scan("Nonexistent", "Q", false));
 
-	EXPECT_STREQ("", h.Scan("Always", "Q", true).c_str());
-	EXPECT_STREQ("", h.Scan("Default", "Q", true).c_str());
-	EXPECT_STREQ("cmd3", h.Scan("Other", "Q", true).c_str());
-	EXPECT_STREQ("", h.Scan("Nonexistent", "Q", true).c_str());
+	EXPECT_EQ("", h.Scan("Always", "Q", true));
+	EXPECT_EQ("", h.Scan("Default", "Q", true));
+	EXPECT_EQ("cmd3", h.Scan("Other", "Q", true));
+	EXPECT_EQ("", h.Scan("Nonexistent", "Q", true));
 
-	EXPECT_STREQ("", h.Scan("Always", "C", false).c_str());
-	EXPECT_STREQ("", h.Scan("Default", "C", false).c_str());
-	EXPECT_STREQ("", h.Scan("Other", "C", false).c_str());
-	EXPECT_STREQ("", h.Scan("Nonexistent", "C", false).c_str());
+	EXPECT_EQ("", h.Scan("Always", "C", false));
+	EXPECT_EQ("", h.Scan("Default", "C", false));
+	EXPECT_EQ("", h.Scan("Other", "C", false));
+	EXPECT_EQ("", h.Scan("Nonexistent", "C", false));
 
-	EXPECT_STREQ("", h.Scan("Always", "C", true).c_str());
-	EXPECT_STREQ("", h.Scan("Default", "C", true).c_str());
-	EXPECT_STREQ("", h.Scan("Other", "C", true).c_str());
-	EXPECT_STREQ("", h.Scan("Nonexistent", "C", true).c_str());
+	EXPECT_EQ("", h.Scan("Always", "C", true));
+	EXPECT_EQ("", h.Scan("Default", "C", true));
+	EXPECT_EQ("", h.Scan("Other", "C", true));
+	EXPECT_EQ("", h.Scan("Nonexistent", "C", true));
 }
 
 TEST(lagi_hotkey, get_hotkey) {
 	Hotkey h("", simple_valid);
 
-	EXPECT_STREQ("Ctrl-C", h.GetHotkey("Always", "cmd1").c_str());
-	EXPECT_STREQ("Alt-C", h.GetHotkey("Default", "cmd1").c_str());
-	EXPECT_STREQ("Shift-C", h.GetHotkey("Other", "cmd1").c_str());
-	EXPECT_STREQ("Alt-C", h.GetHotkey("Nonexistent", "cmd1").c_str());
+	EXPECT_EQ("Ctrl-C", h.GetHotkey("Always", "cmd1"));
+	EXPECT_EQ("Alt-C", h.GetHotkey("Default", "cmd1"));
+	EXPECT_EQ("Shift-C", h.GetHotkey("Other", "cmd1"));
+	EXPECT_EQ("Alt-C", h.GetHotkey("Nonexistent", "cmd1"));
 
-	EXPECT_STREQ("Ctrl-C", h.GetHotkey("Always", "cmd2").c_str());
-	EXPECT_STREQ("Ctrl-C", h.GetHotkey("Default", "cmd2").c_str());
-	EXPECT_STREQ("Ctrl-C", h.GetHotkey("Other", "cmd2").c_str());
-	EXPECT_STREQ("Ctrl-C", h.GetHotkey("Nonexistent", "cmd2").c_str());
+	EXPECT_EQ("Ctrl-C", h.GetHotkey("Always", "cmd2"));
+	EXPECT_EQ("Ctrl-C", h.GetHotkey("Default", "cmd2"));
+	EXPECT_EQ("Ctrl-C", h.GetHotkey("Other", "cmd2"));
+	EXPECT_EQ("Ctrl-C", h.GetHotkey("Nonexistent", "cmd2"));
 
-	EXPECT_STREQ("", h.GetHotkey("Always", "cmd3").c_str());
-	EXPECT_STREQ("", h.GetHotkey("Default", "cmd3").c_str());
-	EXPECT_STREQ("Q", h.GetHotkey("Other", "cmd3").c_str());
-	EXPECT_STREQ("", h.GetHotkey("Nonexistent", "cmd3").c_str());
+	EXPECT_EQ("", h.GetHotkey("Always", "cmd3"));
+	EXPECT_EQ("", h.GetHotkey("Default", "cmd3"));
+	EXPECT_EQ("Q", h.GetHotkey("Other", "cmd3"));
+	EXPECT_EQ("", h.GetHotkey("Nonexistent", "cmd3"));
 
-	EXPECT_STREQ("", h.GetHotkey("Always", "cmd4").c_str());
-	EXPECT_STREQ("", h.GetHotkey("Default", "cmd4").c_str());
-	EXPECT_STREQ("", h.GetHotkey("Other", "cmd4").c_str());
-	EXPECT_STREQ("", h.GetHotkey("Nonexistent", "cmd4").c_str());
+	EXPECT_EQ("", h.GetHotkey("Always", "cmd4"));
+	EXPECT_EQ("", h.GetHotkey("Default", "cmd4"));
+	EXPECT_EQ("", h.GetHotkey("Other", "cmd4"));
+	EXPECT_EQ("", h.GetHotkey("Nonexistent", "cmd4"));
 }
 
 TEST(lagi_hotkey, get_hotkeys) {
@@ -176,8 +176,8 @@ TEST(lagi_hotkey, set_hotkey_map) {
 		h.SetHotkeyMap(hm);
 		EXPECT_TRUE(listener_called);
 
-		EXPECT_STREQ("cmd1", h.Scan("Always", "C", false).c_str());
-		EXPECT_STREQ("cmd2", h.Scan("Default", "Shift-C", false).c_str());
+		EXPECT_EQ("cmd1", h.Scan("Always", "C", false));
+		EXPECT_EQ("cmd2", h.Scan("Default", "Shift-C", false));
 	}
 
 	EXPECT_EQ(2, Hotkey("data/hotkey_tmp", "{}").GetHotkeyMap().size());
@@ -194,9 +194,9 @@ TEST(lagi_hotkey, combo_stuff) {
 	ASSERT_EQ(1, std::distance(it, end));
 
 	Combo c = it->second;
-	EXPECT_STREQ("Ctrl-C", c.Str().c_str());
-	EXPECT_STREQ("cmd2", c.CmdName().c_str());
-	EXPECT_STREQ("Default", c.Context().c_str());
+	EXPECT_EQ("Ctrl-C", c.Str());
+	EXPECT_EQ("cmd2", c.CmdName());
+	EXPECT_EQ("Default", c.Context());
 }
 
 TEST(lagi_hotkey,  old_format_is_backed_up_before_migrating) {
