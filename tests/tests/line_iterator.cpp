@@ -24,34 +24,26 @@
 #include <vector>
 
 template<typename T>
-void test_values(agi::line_iterator<T>& iter) {
-	EXPECT_EQ(iter, end(iter));
-}
-
-template<typename T, typename First, typename... Values>
-void test_values(agi::line_iterator<T>& iter, First first, Values... values) {
-	EXPECT_FALSE(iter == end(iter));
-	EXPECT_EQ(*iter, first);
-	EXPECT_NO_THROW(++iter);
-	test_values(iter, values...);
-}
-
-template<typename T, typename... Values>
-void test(std::string const& str, const char *encoding, Values... values) {
+void test(std::string const& str, const char *encoding, std::initializer_list<T> values) {
 	std::stringstream ss(str);
 	agi::line_iterator<T> iter;
 	EXPECT_NO_THROW(iter = agi::line_iterator<T>(ss, encoding));
-	test_values(iter, values...);
+	for (auto&& value : values) {
+		ASSERT_NE(iter, end(iter));
+		EXPECT_EQ(*iter, value);
+		EXPECT_NO_THROW(++iter);
+	}
+	EXPECT_EQ(iter, end(iter));
 }
 
 template<typename T, typename... Values>
 void expect_eq(const char *str, Values... values) {
 	std::string utf8(str);
-	test<T>(utf8, "utf-8", values...);
+	test<T>(utf8, "utf-8", {values...});
 
 	agi::charset::IconvWrapper conv("utf-8", "utf-16");
 	auto utf16 = conv.Convert(utf8);
-	test<T>(utf16, "utf-16", values...);
+	test<T>(utf16, "utf-16", {values...});
 }
 
 TEST(lagi_line, int) {

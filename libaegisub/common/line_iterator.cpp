@@ -28,6 +28,7 @@ line_iterator_base::line_iterator_base(std::istream &stream, const char *encodin
 		c.Convert("\r", cr);
 		width = c.Convert("\n", lf);
 		conv = std::make_shared<agi::charset::IconvWrapper>(encoding, "utf-8");
+		assert(width != 0);
 	}
 }
 
