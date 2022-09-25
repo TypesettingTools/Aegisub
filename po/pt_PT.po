@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-05-15 10:05-0700\n"
-"PO-Revision-Date: 2014-05-19 22:58-0000\n"
-"Last-Translator: Daniel Mota <1060446@isep.ipp.pt>\n"
-"Language-Team: Leinad4Mind <1060446@isep.ipp.pt> & RiCON <wiiaboo@gmail."
+"PO-Revision-Date: 2022-09-26 00:37-0000\n"
+"Last-Translator: Leinad4Mind <leinad4mind@protonmail.com>\n"
+"Language-Team: Leinad4Mind <leinad4mind@protonmail.com> & RiCON <wiiaboo@gmail."
 "com>\n"
 "Language: pt_PT\n"
 "MIME-Version: 1.0\n"
@@ -889,8 +889,8 @@ msgid ""
 "  fractional (e.g. 16:9)\n"
 "  specific resolution (e.g. 853x480)"
 msgstr ""
-"Entre o Aspect Ratio (largura dividido por altura) em forma decimal (ex. "
-"2.35) ou fracional (ex. 16:9). Entre um valor como 853x480 para definir uma "
+"Introduza o Aspect Ratio (largura dividido por altura) em forma decimal (ex. "
+"2.35) ou fracional (ex. 16:9). Introduza um valor como 853x480 para definir uma "
 "resolução específica."
 
 #: ../src/command/video.cpp:120
@@ -1335,63 +1335,63 @@ msgstr "Escolha a cor da sombra (\\4c) para ser colocada na posição do cursor"
 
 #: ../src/command/edit.cpp:431 ../src/command/edit.cpp:432
 msgid "Toggle Bold"
-msgstr "Fixar Negrito"
+msgstr "Adicionar Negrito"
 
 #: ../src/command/edit.cpp:433
 msgid ""
 "Toggle bold (\\b) for the current selection or at the current cursor position"
 msgstr ""
-"Alternar/Colocar o negrito (\\b) na selecção actual ou na posição do cursor"
+"Adiciona ou remove negrito (\\b) na selecção actual ou na posição do cursor"
 
 #: ../src/command/edit.cpp:436
 msgid "toggle bold"
-msgstr "fixar negrito"
+msgstr "Adicionar negrito"
 
 #: ../src/command/edit.cpp:443 ../src/command/edit.cpp:444
 msgid "Toggle Italics"
-msgstr "Fixar Itálico"
+msgstr "Adicionar Itálico"
 
 #: ../src/command/edit.cpp:445
 msgid ""
 "Toggle italics (\\i) for the current selection or at the current cursor "
 "position"
 msgstr ""
-"Alternar/Colocar o itálico (\\i) na selecção actual ou na posição do cursor"
+"Adiciona ou remove o itálico (\\i) na selecção actual ou na posição do cursor"
 
 #: ../src/command/edit.cpp:448
 msgid "toggle italic"
-msgstr "fixar itálico"
+msgstr "adicionar itálico"
 
 #: ../src/command/edit.cpp:455 ../src/command/edit.cpp:456
 msgid "Toggle Underline"
-msgstr "Fixar Sublinhado"
+msgstr "Adicionar Sublinhado"
 
 #: ../src/command/edit.cpp:457
 msgid ""
 "Toggle underline (\\u) for the current selection or at the current cursor "
 "position"
 msgstr ""
-"Alternar/Colocar o sublinhado (\\u) na selecção actual ou na posição do "
+"Adiciona ou remove o sublinhado (\\u) na selecção actual ou na posição do "
 "cursor"
 
 #: ../src/command/edit.cpp:460
 msgid "toggle underline"
-msgstr "fixar sublinhado"
+msgstr "adicionar sublinhado"
 
 #: ../src/command/edit.cpp:467 ../src/command/edit.cpp:468
 msgid "Toggle Strikeout"
-msgstr "Fixar Rasurado"
+msgstr "Adicionar Rasurado"
 
 #: ../src/command/edit.cpp:469
 msgid ""
 "Toggle strikeout (\\s) for the current selection or at the current cursor "
 "position"
 msgstr ""
-"Alternar/Colocar o rasurado (\\s) na selecção actual ou na posição do cursor"
+"Adiciona ou remove o rasurado (\\s) na selecção actual ou na posição do cursor"
 
 #: ../src/command/edit.cpp:472
 msgid "toggle strikeout"
-msgstr "fixar rasurado"
+msgstr "adicionar rasurado"
 
 #: ../src/command/edit.cpp:479
 msgid "Font Face..."
@@ -2050,7 +2050,7 @@ msgstr "Seleccionar Linhas"
 
 #: ../src/command/tool.cpp:103
 msgid "Select lines based on defined criteria"
-msgstr "Selecciona linhas baseado no critério definido"
+msgstr "Selecciona linhas baseadas no critério definido"
 
 #: ../src/command/tool.cpp:113
 msgid "&Resample Resolution..."
@@ -2605,7 +2605,7 @@ msgstr "Mudar o Fim"
 #: ../src/command/time.cpp:106
 msgid "Change end times of lines to the next line's start time"
 msgstr ""
-"Altera os tempos de saída da legenda de modo a que terminem no início (tempo "
+"Altera os tempos de saída da legenda de modo que terminem no início (tempo "
 "de entrada) da próxima linha"
 
 #: ../src/command/time.cpp:115
@@ -2619,7 +2619,7 @@ msgstr "Mudar o Início"
 #: ../src/command/time.cpp:117
 msgid "Change start times of lines to the previous line's end time"
 msgstr ""
-"Altera os tempos de entrada da legenda de modo a que elas começem logo após "
+"Altera os tempos de entrada da legenda de modo que elas comecem logo após "
 "o término (tempo de saída) da linha anterior"
 
 #: ../src/command/time.cpp:127
@@ -2905,7 +2905,7 @@ msgstr "Abrir 2h30 de Áudio Vazio"
 #: ../src/command/audio.cpp:120
 msgid "Open a 150 minutes blank audio clip, for debugging"
 msgstr ""
-"Abrir um ficheiro de áudio com duração de 150 minutos, totalment vazio, para "
+"Abrir um ficheiro de áudio com duração de 150 minutos, totalmente vazio, para "
 "efeitos de depuração"
 
 #: ../src/command/audio.cpp:134 ../src/command/audio.cpp:135
@@ -3666,7 +3666,7 @@ msgstr "Estilos predefinidos"
 
 #: ../src/preferences.cpp:116
 msgid "Default style catalogs"
-msgstr "Cátalogos de estilos predefinidos"
+msgstr "Catálogos de estilos predefinidos"
 
 #: ../src/preferences.cpp:120
 msgid ""
@@ -3916,7 +3916,7 @@ msgstr "Foca a grelha ao clicar"
 
 #: ../src/preferences.cpp:249
 msgid "Highlight visible subtitles"
-msgstr "Destacar legendas vísiveis"
+msgstr "Destacar legendas visíveis"
 
 #: ../src/preferences.cpp:250
 msgid "Hide overrides symbol"
@@ -4629,7 +4629,7 @@ msgid ""
 "karaoke scripts, or for the effects supported by the renderer."
 msgstr ""
 "Efeito para esta linha. Pode ser usado para armazenar informação extra para "
-"scripts de karaoke, ou para efeitos suportados pelo rasterizador."
+"scripts de karaoke, ou para efeitos suportados pelo renderizador."
 
 #: ../src/subs_edit_box.cpp:143
 msgid "Number of characters in the longest line of this subtitle."
@@ -5861,7 +5861,7 @@ msgid ""
 "two digits separated by colons."
 msgstr ""
 "Formato do Deslocamento do Tempo incorrecto. Confirme a presença de quatro "
-"grupo de dois digitos separados por dois pontos"
+"grupo de dois dígitos separados por dois pontos"
 
 #: ../src/dialog_export_ebu3264.cpp:83
 msgid "EBU STL export"
@@ -5913,7 +5913,7 @@ msgstr "ISO 8859-5 (Cirílico)"
 
 #: ../src/dialog_export_ebu3264.cpp:116
 msgid "ISO 8859-6 (Arabic)"
-msgstr "ISO 8859-6 (Arábe)"
+msgstr "ISO 8859-6 (Árabe)"
 
 #: ../src/dialog_export_ebu3264.cpp:117
 msgid "ISO 8859-7 (Greek)"
@@ -5945,7 +5945,7 @@ msgstr "Abortar caso as linhas sejam demasiado longas"
 
 #: ../src/dialog_export_ebu3264.cpp:127
 msgid "Skip lines that are too long"
-msgstr "Avançe as linhas demasiado longas"
+msgstr "Avance as linhas demasiado longas"
 
 #: ../src/dialog_export_ebu3264.cpp:132
 msgid "Translate alignments"
@@ -5969,7 +5969,7 @@ msgstr "Tempo de entrada padrão"
 
 #: ../src/dialog_export_ebu3264.cpp:149
 msgid "Time code offset:"
-msgstr "Fomato do Desclocamento do Tempo:"
+msgstr "Formato do Deslocamento do Tempo:"
 
 #: ../src/dialog_export_ebu3264.cpp:152
 msgid "Text formatting"
@@ -6416,7 +6416,7 @@ msgstr ""
 "Irá ser instalado no seu computador a versão {#BUILD_GIT_VERSION_STRING} do "
 "Aegisub.%n%nO Aegisub está protegido sob a Licença Pública Geral GNU (GPL "
 "version 2). O que significa que poderá fazer uso da aplicação para qualquer "
-"propósito, sem que seja cobrado, mas não serão dadas quaisquer tipos de "
+"propósito, sem que seja cobrado, mas não serão dados quaisquer tipos de "
 "garantias.%n%nVeja a página do Aegisub para mais informações sobre como "
 "obter o código-fonte."
 
@@ -6492,7 +6492,7 @@ msgstr ""
 
 #~ msgid "Aegisub was built without any font file listers enabled"
 #~ msgstr ""
-#~ "O Aegisub foi compilado sem listadores de ficheiros de tipos de letra"
+#~ "O Aegisub foi compilado sem listagens de ficheiros de tipos de letra"
 
 #~ msgid "Invalid fps or length value"
 #~ msgstr "Valor de FPS ou duração inválido"
@@ -6820,7 +6820,7 @@ msgstr ""
 #~ msgstr "Fundo Modificado"
 
 #~ msgid "Syntax highlighter - "
-#~ msgstr "Destacador de sintaxe - "
+#~ msgstr "Marcador de sintaxe - "
 
 #~ msgid "Font: "
 #~ msgstr "Fonte: "
@@ -7263,13 +7263,13 @@ msgstr ""
 #~ msgstr "Vídeo tocar (global)"
 
 #~ msgid "Grid global prev line"
-#~ msgstr "Grade global linha anterior"
+#~ msgstr "Grelha global linha anterior"
 
 #~ msgid "Grid global next line"
-#~ msgstr "Grade global próxima linha"
+#~ msgstr "Grelha global próxima linha"
 
 #~ msgid "Save Subtitles Alt"
-#~ msgstr "Guardar Legendas (alternativo)"
+#~ msgstr "Guardar Legendas (alternativa)"
 
 #~ msgid "Video global zoom in"
 #~ msgstr "Vídeo global aumentar zoom"
@@ -7278,19 +7278,19 @@ msgstr ""
 #~ msgstr "Vídeo global diminuir zoom"
 
 #~ msgid "Grid move row down"
-#~ msgstr "Grade mover linha abaixo"
+#~ msgstr "Grelha mover linha abaixo"
 
 #~ msgid "Grid move row up"
-#~ msgstr "Grade mover linha a cima"
+#~ msgstr "Grelha mover linha acima"
 
 #~ msgid "Grid delete rows"
-#~ msgstr "Grade deletar linhas"
+#~ msgstr "Grelha eliminar linhas"
 
 #~ msgid "Grid duplicate rows"
-#~ msgstr "Grade duplicar linhas"
+#~ msgstr "Grelha duplicar linhas"
 
 #~ msgid "Grid duplicate and shift one frame"
-#~ msgstr "Grade duplicar e ajustar por um frame"
+#~ msgstr "Grelha duplicar e ajustar por um frame"
 
 #~ msgid "Audio Commit Alt"
 #~ msgstr "Áudio Aceitar (alternativo)"
@@ -7554,7 +7554,7 @@ msgstr ""
 #~ msgstr "Nova versão encontrada!\n"
 
 #~ msgid "Please go to the following URL to download it: %s\n"
-#~ msgstr "Por favor vá até o seguinte endereço para pegá-la: %s\n"
+#~ msgstr "Por favor, vá até o seguinte endereço para pegá-la: %s\n"
 
 #~ msgid "No new version has been found.\n"
 #~ msgstr "Nenhuma versão nova foi encontrada.\n"
@@ -7598,14 +7598,14 @@ msgstr ""
 #~ "Do you want to carry it over to the destination?\n"
 #~ "It will be ignored otherwise."
 #~ msgstr ""
-#~ "A linha fonte contem texto antes do primeiro bloco de karaoke.\n"
-#~ "Você quer carregá-lo para o destino?Caso contrário, ele será ignorado."
+#~ "A linha fonte contém texto antes do primeiro bloco de karaoke.\n"
+#~ "Desejas carregá-lo para o destino? Caso contrário, será ignorado."
 
 #~ msgid "Kanji timer"
 #~ msgstr "Temporizador de Kanji"
 
 #~ msgid "Possible error parsing source line"
-#~ msgstr "Possivel erro interpretando linha fonte"
+#~ msgstr "Possível erro interpretando linha fonte"
 
 #~ msgid "Group some text first."
 #~ msgstr "Agrupe algum texto antes."
@@ -7633,8 +7633,8 @@ msgstr ""
 #~ "which has unreliable seeking. Frame numbers might not match the real "
 #~ "number. PROCEED AT YOUR OWN RISK!"
 #~ msgstr ""
-#~ "Aviso! O arquivo está sendo aberto com o DirectShowSource do Avisynth, "
-#~ "que possui busca imprecisa. O número dos quadros podem não corresponder "
+#~ "Aviso! O ficheiro está a ser aberto com o DirectShowSource do Avisynth, "
+#~ "que possui procura imprecisa. O número dos frames podem não corresponder "
 #~ "ao número real. PROSSIGA A SEU PRÓPRIO RISCO!"
 
 #~ msgid "DirectShow"
@@ -7689,14 +7689,14 @@ msgstr ""
 #~ "Automation module is Copyright (c) 2005-2006 Niels Martin Hansen (aka "
 #~ "jfs).\n"
 #~ msgstr ""
-#~ "O sistema de Automação é Copyright (c) 2005-2006 Niels Martin Hansen (aka "
+#~ "O sistema de Automatização tem direitos de autor (c) 2005-2006 Niels Martin Hansen (aka "
 #~ "jfs).\n"
 
 #~ msgid ""
 #~ "Motion tracker module is Copyright (c) 2006 Hajo Krabbenhoeft (aka "
 #~ "Tentacle).\n"
 #~ msgstr ""
-#~ "O Rastreador de Movimento é Copyright (c) 2006 Hajo Krabbenhoeft (aka "
+#~ "O Rastreador de Movimento tem direitos de autor (c) 2006 Hajo Krabbenhoeft (aka "
 #~ "Tentacle).\n"
 
 #~ msgid ""
@@ -7715,7 +7715,7 @@ msgstr ""
 #~ "Substation Alpha Mode - Left click sets start and right click sets end"
 #~ msgstr ""
 #~ "Modo Substation Alpha - Clique com o botão esquerdo para definir início e "
-#~ "com o direiro para definir fim"
+#~ "com o direito para definir fim"
 
 #~ msgid "&Create..."
 #~ msgstr "&Criar"
