@@ -64,8 +64,6 @@ public:
 };
 
 AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) try {
-	agi::acs::CheckFileRead(filename);
-
 	std::lock_guard<std::mutex> lock(avs_wrapper.GetMutex());
 
 	try {
@@ -150,6 +148,7 @@ void AvisynthAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) 
 }
 
 std::unique_ptr<agi::AudioProvider> CreateAvisynthAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *) {
+	agi::acs::CheckFileRead(file);
 	return agi::make_unique<AvisynthAudioProvider>(file);
 }
 #endif

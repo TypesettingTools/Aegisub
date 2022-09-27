@@ -94,8 +94,6 @@ public:
 };
 
 AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) try {
-	agi::acs::CheckFileRead(filename);
-
 	std::lock_guard<std::mutex> lock(avs.GetMutex());
 
 #ifdef _WIN32
@@ -326,6 +324,7 @@ void AvisynthVideoProvider::GetFrame(int n, VideoFrame &out) {
 
 namespace agi { class BackgroundRunner; }
 std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const& path, std::string const& colormatrix, agi::BackgroundRunner *) {
+	agi::acs::CheckFileRead(path);
 	return agi::make_unique<AvisynthVideoProvider>(path, colormatrix);
 }
 #endif // HAVE_AVISYNTH
