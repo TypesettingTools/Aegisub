@@ -227,7 +227,7 @@ catch (const agi::Exception &err) {
 
 void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_percent) const {
 	Vector2D v = Vector2D(viewport_width, viewport_height) / scale_factor;
-	Vector2D size = Vector2D(horizontal_percent, vertical_percent) / 2 * v;
+	Vector2D size = Vector2D(horizontal_percent, vertical_percent) * v;
 
 	// Clockwise from top-left
 	Vector2D corners[] = {
