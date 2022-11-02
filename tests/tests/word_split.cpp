@@ -108,12 +108,12 @@ TEST(lagi_word_split, drawing) {
 
 	SplitWords(text, tokens);
 
-	ASSERT_EQ(15u, tokens.size());
+	ASSERT_EQ(17u, tokens.size());
 	EXPECT_EQ(dt::WORD, tokens[0].type);
 	EXPECT_EQ(dt::WORD, tokens[2].type);
-	EXPECT_EQ(dt::WORD, tokens[14].type);
+	EXPECT_EQ(dt::WORD, tokens[16].type);
 
-	EXPECT_EQ(dt::DRAWING, tokens[8].type);
+	EXPECT_EQ(dt::DRAWING_CMD, tokens[8].type);
 }
 
 TEST(lagi_word_split, unclosed_ovr) {

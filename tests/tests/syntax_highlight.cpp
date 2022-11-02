@@ -74,19 +74,71 @@ TEST(lagi_syntax, spellcheck) {
 }
 
 TEST(lagi_syntax, drawing) {
-	tok_str("incorrect{\\p1}m 10 10{\\p}correct", false,
+	tok_str("incorrect{\\clip(m 10 10 l 20 20 c)\\p1}m 10 10 b 0 0 0 100 100 0{\\p}correct", false,
 		expect_style(ss::SPELLING, 9u);
 		expect_style(ss::OVERRIDE, 1u);
 		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::TAG, 4u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::DRAWING_CMD, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_X, 2u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_Y, 2u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_CMD, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_X, 2u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_Y, 2u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_CMD, 1u);
+		expect_style(ss::PUNCTUATION, 2u);
 		expect_style(ss::TAG, 1u);
 		expect_style(ss::PARAMETER, 1u);
 		expect_style(ss::OVERRIDE, 1u);
-		expect_style(ss::DRAWING, 7u);
+		expect_style(ss::DRAWING_CMD, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_X, 2u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_Y, 2u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_CMD, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_X, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_Y, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_X, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_Y, 3u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::DRAWING_ENDPOINT_X, 4u);
+		expect_style(ss::DRAWING_ENDPOINT_Y, 1u);
 		expect_style(ss::OVERRIDE, 1u);
 		expect_style(ss::PUNCTUATION, 1u);
 		expect_style(ss::TAG, 1u);
 		expect_style(ss::OVERRIDE, 1u);
 		expect_style(ss::NORMAL, 7u);
+	);
+}
+
+TEST(lagi_syntax, drawing_without_m) {
+	tok_str("{\\p1}l 100 100 0 100", false,
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::PUNCTUATION, 1u);
+		expect_style(ss::TAG, 1u);
+		expect_style(ss::PARAMETER, 1u);
+		expect_style(ss::OVERRIDE, 1u);
+		expect_style(ss::ERROR, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::ERROR, 3u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::ERROR, 3u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::ERROR, 1u);
+		expect_style(ss::NORMAL, 1u);
+		expect_style(ss::ERROR, 3u);
 	);
 }
 

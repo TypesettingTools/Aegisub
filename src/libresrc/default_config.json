@@ -229,7 +229,9 @@
 				"Background" : {
 					"Brackets" : "",
 					"Comment" : "",
-					"Drawing" : "",
+					"Drawing Command" : "",
+					"Drawing X" : "",
+					"Drawing Y" : "",
 					"Error" : "rgb(255, 200, 200)",
 					"Karaoke Template" : "",
 					"Karaoke Variable" : "",
@@ -242,7 +244,9 @@
 				"Bold" : {
 					"Brackets" : false,
 					"Comment" : true,
-					"Drawing" : true,
+					"Drawing Command" : true,
+					"Drawing X" : false,
+					"Drawing Y" : false,
 					"Error" : false,
 					"Karaoke Template" : true,
 					"Karaoke Variable" : true,
@@ -252,9 +256,14 @@
 					"Slashes" : false,
 					"Tags" : true
 				},
+				"Underline": {
+					"Drawing Endpoint": true
+				},
 				"Brackets" : "rgb(20, 50, 255)",
 				"Comment" : "rgb(0,0,0)",
-				"Drawing" : "rgb(0,0,0)",
+				"Drawing Command" : "rgb(0,0,0)",
+				"Drawing X" : "rgb(90,40,40)",
+				"Drawing Y" : "rgb(40,90,40)",
 				"Error" : "rgb(200, 0, 0)",
 				"Karaoke Template" : "rgb(128, 0, 192)",
 				"Karaoke Variable" : "rgb(128, 0, 192)",

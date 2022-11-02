@@ -58,7 +58,11 @@ public:
 				case dt::ERROR:      SetStyling(tok.length, ss::ERROR);      break;
 				case dt::ARG:        SetStyling(tok.length, ss::PARAMETER);  break;
 				case dt::COMMENT:    SetStyling(tok.length, ss::COMMENT);    break;
-				case dt::DRAWING:    SetStyling(tok.length, ss::DRAWING);    break;
+				case dt::DRAWING_CMD:SetStyling(tok.length, ss::DRAWING_CMD);break;
+				case dt::DRAWING_X:  SetStyling(tok.length, ss::DRAWING_X);  break;
+				case dt::DRAWING_Y:  SetStyling(tok.length, ss::DRAWING_Y);  break;
+				case dt::DRAWING_ENDPOINT_X: SetStyling(tok.length, ss::DRAWING_ENDPOINT_X); break;
+				case dt::DRAWING_ENDPOINT_Y: SetStyling(tok.length, ss::DRAWING_ENDPOINT_Y); break;
 				case dt::TEXT:       SetStyling(tok.length, ss::NORMAL);     break;
 				case dt::TAG_NAME:   SetStyling(tok.length, ss::TAG);        break;
 				case dt::OPEN_PAREN: case dt::CLOSE_PAREN: case dt::ARG_SEP: case dt::TAG_START:
@@ -70,6 +74,8 @@ public:
 				case dt::WHITESPACE:
 					if (ranges.size() && ranges.back().type == ss::PARAMETER)
 						SetStyling(tok.length, ss::PARAMETER);
+					else if (ranges.size() && ranges.back().type == ss::DRAWING_ENDPOINT_X)
+						SetStyling(tok.length, ss::DRAWING_ENDPOINT_X); 	// connect the underline between x and y of endpoints
 					else
 						SetStyling(tok.length, ss::NORMAL);
 					break;
@@ -136,6 +142,66 @@ class WordSplitter {
 		}
 	}
 
+	void SplitDrawing(size_t &i) {
+		size_t starti = i;
+
+		// First, split into words
+		size_t dpos = pos;
+		size_t tlen = 0;
+		bool tokentype = text[pos] == ' ' || text[pos] == '\t';
+		while (tlen < tokens[i].length) {
+			bool newtype = text[dpos] == ' ' || text[dpos] == '\t';
+			if (newtype != tokentype) {
+				tokentype = newtype;
+				SwitchTo(i, tokentype ? dt::DRAWING_FULL : dt::WHITESPACE, tlen);
+				tokens[i].type = tokentype ? dt::WHITESPACE : dt::DRAWING_FULL;
+				tlen = 0;
+			}
+			++tlen;
+			++dpos;
+		}
+
+		// Then, label all the tokens
+		dpos = pos;
+		int num_coord = 0;
+		char lastcmd = ' ';
+
+		for (size_t j = starti; j <= i; j++) {
+			char c = text[dpos];
+			if (tokens[j].type == dt::WHITESPACE) {
+			} else if (lastcmd == ' ' && c != 'm') {
+				tokens[j].type = dt::ERROR;
+			} else if (c == 'm' || c == 'n' || c == 'l' || c == 's' || c == 'b' || c == 'p' || c == 'c') {
+				tokens[j].type = dt::DRAWING_CMD;
+
+				if (tokens[j].length != 1)
+					tokens[j].type = dt::ERROR;
+				if (num_coord % 2 != 0)
+					tokens[j].type = dt::ERROR;
+
+				lastcmd = c;
+				num_coord = 0;
+			} else {
+				bool valid = true;
+				for (size_t k = 0; k < tokens[j].length; k++) {
+					char c = text[dpos + k];
+					if (!((c >= '0' && c <= '9') || c == '.' || c == '-' || c == 'e')) {
+						valid = false;
+					}
+				}
+				if (!valid)
+					tokens[j].type = dt::ERROR;
+				else if (lastcmd == 'b' && num_coord % 6 >= 4)
+					tokens[j].type = num_coord % 2 == 0 ? dt::DRAWING_ENDPOINT_X : dt::DRAWING_ENDPOINT_Y;
+				else
+					tokens[j].type = num_coord % 2 == 0 ? dt::DRAWING_X : dt::DRAWING_Y;
+				++num_coord;
+			}
+
+			dpos += tokens[j].length;
+		}
+	}
+
 public:
 	WordSplitter(std::string_view text, std::vector<DialogueToken> &tokens)
 	: text(text)
@@ -149,6 +215,9 @@ public:
 			size_t len = tokens[i].length;
 			if (tokens[i].type == dt::TEXT)
 				SplitText(i);
+			else if (tokens[i].type == dt::DRAWING_FULL) {
+				SplitDrawing(i);
+			}
 			pos += len;
 		}
 	}
@@ -182,9 +251,52 @@ void MarkDrawings(std::string_view str, std::vector<DialogueToken> &tokens) {
 		switch (tokens[i].type) {
 			case dt::TEXT:
 				if (in_drawing)
-					tokens[i].type = dt::DRAWING;
+					tokens[i].type = dt::DRAWING_FULL;
 				break;
 			case dt::TAG_NAME:
+				// Mark vector clip arguments as drawings
+				if (i + 3 < tokens.size() && (len == 4 || len == 5) && str.substr(pos, len).ends_with("clip")) {
+					if (tokens[i + 1].type != dt::OPEN_PAREN)
+						goto tag_p;
+
+					size_t drawing_start = 0;
+					size_t drawing_end = 0;
+
+					// Try to find a vector clip
+					for (size_t j = i + 2; j < tokens.size(); j++) {
+						if (tokens[j].type == dt::ARG_SEP) {
+							if (drawing_start) {
+								break; 	// More than two arguents - this is a rectangular clip
+							}
+							drawing_start = j + 1;
+						} else if (tokens[j].type == dt::CLOSE_PAREN) {
+							drawing_end = j;
+							break;
+						} else if (tokens[j].type != dt::WHITESPACE && tokens[j].type != dt::ARG) {
+							break;
+						}
+					}
+
+					if (!drawing_end)
+						goto tag_p;
+					if (!drawing_start)
+						drawing_start = i + 2;
+					if (drawing_end == drawing_start)
+						goto tag_p;
+
+					// We found a clip between drawing_start and drawing_end. Now, join
+					// all the tokens into one and label it as a drawing.
+					size_t tokenlen = 0;
+					for (size_t j = drawing_start; j < drawing_end; j++) {
+						tokenlen += tokens[j].length;
+					}
+
+					tokens[drawing_start].length = tokenlen;
+					tokens[drawing_start].type = dt::DRAWING_FULL;
+					tokens.erase(tokens.begin() + drawing_start + 1, tokens.begin() + drawing_end);
+					last_ovr_end -= drawing_end - drawing_start - 1;
+				}
+tag_p:
 				if (len != 1 || i + 1 >= tokens.size() || str[pos] != 'p')
 					break;
 
@@ -218,7 +330,7 @@ void MarkDrawings(std::string_view str, std::vector<DialogueToken> &tokens) {
 			case dt::KARAOKE_VARIABLE: break;
 			case dt::LINE_BREAK: break;
 			default:
-				tokens[i].type = in_drawing ? dt::DRAWING : dt::TEXT;
+				tokens[i].type = in_drawing ? dt::DRAWING_FULL : dt::TEXT;
 				if (i > 0 && tokens[i - 1].type == tokens[i].type) {
 					tokens[i - 1].length += tokens[i].length;
 					tokens.erase(tokens.begin() + i);

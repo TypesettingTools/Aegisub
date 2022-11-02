@@ -253,7 +253,11 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 	p->OptionAdd(syntax, _("Background"), "Colour/Subtitle/Background");
 	p->OptionAdd(syntax, _("Normal"), "Colour/Subtitle/Syntax/Normal");
 	p->OptionAdd(syntax, _("Comments"), "Colour/Subtitle/Syntax/Comment");
-	p->OptionAdd(syntax, _("Drawings"), "Colour/Subtitle/Syntax/Drawing");
+	p->OptionAdd(syntax, _("Drawing Commands"), "Colour/Subtitle/Syntax/Drawing Command");
+	p->OptionAdd(syntax, _("Drawing X Coords"), "Colour/Subtitle/Syntax/Drawing X");
+	p->OptionAdd(syntax, _("Drawing Y Coords"), "Colour/Subtitle/Syntax/Drawing Y");
+	p->OptionAdd(syntax, _("Underline Spline Endpoints"), "Colour/Subtitle/Syntax/Underline/Drawing Endpoint");
+	p->CellSkip(syntax);
 	p->OptionAdd(syntax, _("Brackets"), "Colour/Subtitle/Syntax/Brackets");
 	p->OptionAdd(syntax, _("Slashes and Parentheses"), "Colour/Subtitle/Syntax/Slashes");
 	p->OptionAdd(syntax, _("Tags"), "Colour/Subtitle/Syntax/Tags");

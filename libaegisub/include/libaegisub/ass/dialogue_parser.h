@@ -39,7 +39,12 @@ namespace agi {
 				ERROR,
 				COMMENT,
 				WHITESPACE,
-				DRAWING,
+				DRAWING_FULL,
+				DRAWING_CMD,
+				DRAWING_X,
+				DRAWING_Y,
+				DRAWING_ENDPOINT_X,
+				DRAWING_ENDPOINT_Y,
 				KARAOKE_TEMPLATE,
 				KARAOKE_VARIABLE
 			};
@@ -49,7 +54,11 @@ namespace agi {
 			enum {
 				NORMAL = 0,
 				COMMENT,
-				DRAWING,
+				DRAWING_CMD,
+				DRAWING_X,
+				DRAWING_Y,
+				DRAWING_ENDPOINT_X,
+				DRAWING_ENDPOINT_Y,
 				OVERRIDE,
 				PUNCTUATION,
 				TAG,
