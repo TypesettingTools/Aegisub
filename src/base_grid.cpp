@@ -186,6 +186,9 @@ void BaseGrid::UpdateStyle() {
 	row_colors.SelectedComment.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Selected Comment")->GetColor()));
 	row_colors.LeftCol.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Left Column")->GetColor()));
 
+	if (width_helper)
+		width_helper->ClearCache();
+
 	SetColumnWidths();
 
 	AdjustScrollbar();
