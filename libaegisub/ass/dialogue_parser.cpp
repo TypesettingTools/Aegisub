@@ -185,7 +185,7 @@ class WordSplitter {
 				bool valid = true;
 				for (size_t k = 0; k < tokens[j].length; k++) {
 					char c = text[dpos + k];
-					if (!((c >= '0' && c <= '9') || c == '.' || c == '-' || c == 'e')) {
+					if (!((c >= '0' && c <= '9') || c == '.' || c == '+' || c == '-' || c == 'e' || c == 'E')) {
 						valid = false;
 					}
 				}
