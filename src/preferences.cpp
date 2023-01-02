@@ -486,8 +486,11 @@ public:
 	}
 
 	bool SetValue(wxVariant const& var) override {
-		value << var;
-		return true;
+		if (var.GetType() == "wxDataViewIconText") {
+			value << var;
+			return true;
+		}
+		return false;
 	}
 
 	bool Render(wxRect rect, wxDC *dc, int state) override {
