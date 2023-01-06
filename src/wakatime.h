@@ -104,7 +104,7 @@ using namespace std::chrono;
             plugin_name: "aegisub-wakatime",
             short_type: "ASS",
             long_type:"Advanced SubStation Alpha",
-            plugin_version: "1.0.1"
+            plugin_version: "1.1.3"
         };
         wxString* cli_path;
         bool cliInstalled;

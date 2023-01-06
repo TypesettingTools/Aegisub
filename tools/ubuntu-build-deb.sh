@@ -152,6 +152,10 @@ if [ -d "/tmp/Aegisub" ]; then
     cp "/tmp/Aegisub/scaleable.svg" "/usr/share/icons/hicolor/scalable/mimetypes/text-x-ass.svg"
 
 
+    # also here: /usr/share/icons/Humanity/mimes/16/text-x-ssa.svg
+
+    # use icon browser to make it work!!
+
     EXISTS_MIME_TYPE_ASS=$(grep -rn 'text/x-ass' /usr/share/mime/packages/ || echo "")
     EXISTS_MIME_TYPE_SSA=$(grep -rn 'text/x-ssa' /usr/share/mime/packages/ || echo "")
 
@@ -262,7 +266,7 @@ declare -a aegisub_logos=('16x16.png' '22x22.png' '24x24.png' '32x32.png' '48x48
 
         # if it's not the scalable file, but rather the 16x16 etc.
         if ! [ "$size" = "sc" ]; then 
-        ## TODO: better icons suppoort, and this doesn't even work, maybe run "sudo gtk-update-icon-cache /usr/share/icons/Humanity" afterwards
+        ## TODO: better icons support, and this doesn't even work, maybe run "sudo gtk-update-icon-cache /usr/share/icons/Humanity" afterwards
             mkdir -p "usr/share/icons/Humanity/mimes/$size"
             cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ass.svg"
             cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ssa.svg"

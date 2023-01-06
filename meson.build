@@ -7,7 +7,8 @@ project('Aegisub', ['c', 'cpp'],
 cmake = import('cmake')
 
 if meson.version().version_compare('>=0.63.0')
-    error('MESON 63 >= is not supported atm! run \'pip install meson==0.62.2\' to install the latest supported version!')
+    # TODO fix this annoying cmake sandbox error
+    error('MESON 0.63.0 >= is not supported atm! run \'pip install meson==0.62.2\' to install the latest supported version!')
 endif
 
 
@@ -174,7 +175,7 @@ else
             'wxUSE_GTK': 'no'
             })
 
-## TODO tested it with qt, it has many errors and graphic glitches then!!!, to fic them everywhere where something differs from gtk3 use #idfeds
+## TODO tested it with qt, it has many errors and graphic glitches then!!!, to fix them everywhere where something differs from gtk3 use #ifdefs
 
 # sudo apt-get install qt5*-dev libcppunit-dev build-essential libjpeg-dev libtiff5-dev ubuntu-restricted-extras freeglut3 freeglut3-dev libsdl1.2-dev libgstreamer-plugins-base1.0-dev 
 

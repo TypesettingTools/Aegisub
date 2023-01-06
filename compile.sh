@@ -10,8 +10,8 @@ ARG="release"
 
 fi
 
-export CC=gcc
-export CXX=g++
+export CC=gcc-12
+export CXX=g++-12
 
 buildtype=""
 DEBUG="false"
@@ -77,7 +77,7 @@ fi
 
     # CONFIGURE
 
-    bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true  -Dwx_version=3.2.0 --force-fallback-for=wxWidgets"
+    bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true  -Dwx_version=3.2.1"
 
     if [ $DEBUG == "true" ]; then
         nodemon --watch src/ -e .cpp,.h --exec "sudo meson compile -C build && ./build/aegisub || exit 1"
@@ -112,7 +112,7 @@ fi
     if  [ -z "$2" ]; then
         sudo dpkg -i "build/$(ls build/  | grep "aegisub_.*deb")" || sudo apt-get -f install
         sudo dpkg -i "build/$(ls build/  | grep "aegisub-l10n_.*deb")"  || sudo apt-get -f install
-        sudo dpkg -i build/$(ls build/  | grep assdraw.*deb)  || sudo apt-get -f install
+        sudo dpkg -i "build/$(ls build/  | grep "assdraw.*deb")"  || sudo apt-get -f install
     else
 
         #noop
