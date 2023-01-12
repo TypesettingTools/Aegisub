@@ -123,7 +123,10 @@ jobs:
       # Windows artifacts
       - name: Generate Windows installer
         if: matrix.config.os == 'windows-latest'
-        run: meson compile win-installer -C build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:
+          meson compile win-installer -C build
 
       - name: Generate Windows portable installer
         if: matrix.config.os == 'windows-latest'

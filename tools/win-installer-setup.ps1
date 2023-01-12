@@ -18,6 +18,11 @@ $Env:SOURCE_ROOT = $SourceRoot
 
 Set-Location $DepsDir
 
+$GitHeaders = @{}
+if (Test-Path 'Env:GITHUB_TOKEN') {
+	$GitHeaders = @{ 'Authorization' = 'Bearer ' + $Env:GITHUB_TOKEN }
+}
+
 # DepCtrl
 if (!(Test-Path DependencyControl)) {
 	git clone https://github.com/TypesettingTools/DependencyControl.git
@@ -38,7 +43,7 @@ if (!(Test-Path luajson)) {
 
 # Avisynth
 if (!(Test-Path AviSynthPlus64)) {
-	$avsReleases = Invoke-WebRequest "https://api.github.com/repos/AviSynth/AviSynthPlus/releases/latest" -UseBasicParsing | ConvertFrom-Json
+	$avsReleases = Invoke-WebRequest "https://api.github.com/repos/AviSynth/AviSynthPlus/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
 	$avsUrl = $avsReleases.assets[0].browser_download_url
 	Invoke-WebRequest $avsUrl -OutFile AviSynthPlus.7z -UseBasicParsing
 	7z x AviSynthPlus.7z
@@ -50,7 +55,7 @@ if (!(Test-Path AviSynthPlus64)) {
 if (!(Test-Path VSFilter)) {
 	$vsFilterDir = New-Item -ItemType Directory VSFilter
 	Set-Location $vsFilterDir
-	$vsFilterReleases = Invoke-WebRequest "https://api.github.com/repos/pinterf/xy-VSFilter/releases/latest" -UseBasicParsing | ConvertFrom-Json
+	$vsFilterReleases = Invoke-WebRequest "https://api.github.com/repos/pinterf/xy-VSFilter/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
 	$vsFilterUrl = $vsFilterReleases.assets[0].browser_download_url
 	Invoke-WebRequest $vsFilterUrl -OutFile VSFilter.7z -UseBasicParsing
 	7z x VSFilter.7z
