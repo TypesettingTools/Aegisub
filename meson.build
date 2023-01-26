@@ -52,6 +52,10 @@ if get_option('debug') and host_machine.system() != 'windows'
     add_project_arguments('-D_DEBUG', language: 'cpp')
 endif
 
+if get_option('buildtype') == 'release'
+    add_project_arguments('-DNDEBUG', language: 'cpp')
+endif
+
 conf = configuration_data()
 conf.set_quoted('P_DATA', dataroot)
 conf.set_quoted('P_LOCALE', localedir)
