@@ -143,7 +143,7 @@ Framerate::Framerate(double fps)
 Framerate::Framerate(int64_t numerator, int64_t denominator, bool drop)
 : denominator(denominator)
 , numerator(numerator)
-, drop(drop && numerator % denominator != 0)
+, drop(drop && denominator != 0 && numerator % denominator != 0)
 {
 	if (numerator <= 0 || denominator <= 0)
 		throw InvalidFramerate("Numerator and denominator must both be greater than zero");
