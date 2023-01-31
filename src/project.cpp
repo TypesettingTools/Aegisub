@@ -428,7 +428,7 @@ void Project::LoadList(std::vector<std::filesystem::path> const& files) {
 		".rm",
 		".rmvb",
 		".ts",
-		".webm"
+		".webm",
 		".wmv",
 		".y4m",
 		".yuv"
