@@ -324,7 +324,6 @@ void AvisynthVideoProvider::GetFrame(int n, VideoFrame &out) {
 
 namespace agi { class BackgroundRunner; }
 std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const& path, std::string const& colormatrix, agi::BackgroundRunner *) {
-	agi::acs::CheckFileRead(path);
 	return agi::make_unique<AvisynthVideoProvider>(path, colormatrix);
 }
 #endif // HAVE_AVISYNTH
