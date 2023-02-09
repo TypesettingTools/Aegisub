@@ -46,6 +46,7 @@ class BaseGrid final : public wxWindow {
 	std::vector<agi::signal::Connection> connections;
 	int lineHeight = 1;     ///< Height of a line in pixels in the current font
 	bool holding = false;   ///< Is a drag selection in process?
+	int scrollWheelProgress  = 0;	///< How close we are to reaching a full mouse wheel step
 	wxFont font;            ///< Current grid font
 	wxScrollBar *scrollBar; ///< The grid's scrollbar
 	bool byFrame = false;   ///< Should times be displayed as frame numbers
