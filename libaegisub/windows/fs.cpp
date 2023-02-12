@@ -32,8 +32,12 @@ using agi::charset::ConvertLocal;
 
 namespace agi { namespace fs {
 std::string ShortName(path const& p) {
-	std::wstring out(MAX_PATH + 1, 0);
-	DWORD len = GetShortPathName(p.c_str(), &out[0], out.size());
+	DWORD length = GetShortPathName(p.c_str(), NULL, 0);
+	if (!length)
+		return p.string();
+
+	std::wstring out(length, 0);
+	DWORD len = GetShortPathName(p.c_str(), out.data(), out.size());
 	if (!len)
 		return p.string();
 	out.resize(len);
