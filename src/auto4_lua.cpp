@@ -124,7 +124,8 @@ namespace {
 
 	const char *clipboard_get()
 	{
-		std::string data = GetClipboard();
+		std::string data;
+		agi::dispatch::Main().Sync([&] { data = GetClipboard(); });
 		if (data.empty())
 			return nullptr;
 		return strndup(data);
@@ -134,18 +135,14 @@ namespace {
 	{
 		bool succeeded = false;
 
-#if wxUSE_OLE
-		// OLE needs to be initialized on each thread that wants to write to
-		// the clipboard, which wx does not handle automatically
-		wxClipboard cb;
-#else
-		wxClipboard &cb = *wxTheClipboard;
-#endif
-		if (cb.Open()) {
-			succeeded = cb.SetData(new wxTextDataObject(wxString::FromUTF8(str)));
-			cb.Close();
-			cb.Flush();
-		}
+		agi::dispatch::Main().Sync([&] {
+			wxClipboard &cb = *wxTheClipboard;
+			if (cb.Open()) {
+				succeeded = cb.SetData(new wxTextDataObject(wxString::FromUTF8(str)));
+				cb.Close();
+				cb.Flush();
+			}
+		});
 
 		return succeeded;
 	}
