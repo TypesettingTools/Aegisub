@@ -36,6 +36,7 @@
 
 #include "compat.h"
 
+#include <libaegisub/dispatch.h>
 #include <libaegisub/lua/utils.h>
 
 #include <wx/filedlg.h>
@@ -197,7 +198,6 @@ namespace Automation4 {
 
 	int LuaProgressSink::LuaDisplayOpenDialog(lua_State *L)
 	{
-		ProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
 		wxString message(check_wxstring(L, 1));
 		wxString dir(check_wxstring(L, 2));
 		wxString file(check_wxstring(L, 3));
@@ -211,26 +211,24 @@ namespace Automation4 {
 		if (must_exist)
 			flags |= wxFD_FILE_MUST_EXIST;
 
-		wxFileDialog diag(nullptr, message, dir, file, wildcard, flags);
-		if (ps->ShowDialog(&diag) == wxID_CANCEL) {
-			lua_pushnil(L);
-			return 1;
-		}
+		agi::dispatch::Main().Sync([&] {
+			wxFileDialog diag(nullptr, message, dir, file, wildcard, flags);
+			if (diag.ShowModal() == wxID_CANCEL) {
+				lua_pushnil(L);
+			} else if (multiple) {
+				wxArrayString files;
+				diag.GetPaths(files);
 
-		if (multiple) {
-			wxArrayString files;
-			diag.GetPaths(files);
-
-			lua_createtable(L, files.size(), 0);
-			for (size_t i = 0; i < files.size(); ++i) {
-				lua_pushstring(L, files[i].utf8_str());
-				lua_rawseti(L, -2, i + 1);
+				lua_createtable(L, files.size(), 0);
+				for (size_t i = 0; i < files.size(); ++i) {
+					lua_pushstring(L, files[i].utf8_str());
+					lua_rawseti(L, -2, i + 1);
+				}
+			} else {
+				lua_pushstring(L, diag.GetPath().utf8_str());
 			}
+		});
 
-			return 1;
-		}
-
-		lua_pushstring(L, diag.GetPath().utf8_str());
 		return 1;
 	}
 
@@ -247,13 +245,15 @@ namespace Automation4 {
 		if (prompt_overwrite)
 			flags |= wxFD_OVERWRITE_PROMPT;
 
-		wxFileDialog diag(ps->GetParentWindow(), message, dir, file, wildcard, flags);
-		if (ps->ShowDialog(&diag) == wxID_CANCEL) {
-			lua_pushnil(L);
-			return 1;
-		}
+		agi::dispatch::Main().Sync([&] {
+			wxFileDialog diag(ps->GetParentWindow(), message, dir, file, wildcard, flags);
+			if (diag.ShowModal() == wxID_CANCEL) {
+				lua_pushnil(L);
+			} else {
+				lua_pushstring(L, diag.GetPath().utf8_str());
+			}
+		});
 
-		lua_pushstring(L, diag.GetPath().utf8_str());
 		return 1;
 	}
 }
