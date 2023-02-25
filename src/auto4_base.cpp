@@ -221,13 +221,6 @@ namespace Automation4 {
 		});
 	}
 
-	int ProgressSink::ShowDialog(wxDialog *dialog)
-	{
-		int ret = 0;
-		agi::dispatch::Main().Sync([&] { ret = dialog->ShowModal(); });
-		return ret;
-	}
-
 	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, std::string const& title)
 	: impl(new DialogProgress(parent, to_wx(title)))
 	{
