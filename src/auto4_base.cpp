@@ -215,6 +215,7 @@ namespace Automation4 {
 			wxWindow *ww = config_dialog->CreateWindow(&w); // generate actual dialog contents
 			s->Add(ww, 0, wxALL, 5); // add contents to dialog
 			w.SetSizerAndFit(s);
+			w.SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
 			w.CenterOnParent();
 			w.ShowModal();
 		});
