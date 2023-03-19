@@ -1,4 +1,4 @@
-// Copyright (c) 2022, Totto
+// Copyright (c) 2022-2023, Totto16
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -116,7 +116,9 @@ cli::cli() {
   }
   this->cliInstalled = true;
 
-  last_heartbeat = 0s;
+  last_heartbeat =
+      duration_cast<seconds>(steady_clock::now().time_since_epoch());
+  ;
 
   OPT_SUB("Wakatime/API_Key", &cli::getKey, this);
   OPT_SUB("Wakatime/Debug", &cli::getDebug, this);
@@ -147,18 +149,24 @@ void cli::change_api_key(wxString *key) {
 
 void cli::send_heartbeat(bool isWrite) {
 
-  seconds now = duration_cast<seconds>(steady_clock::now().time_since_epoch());
-
-  if (!(last_heartbeat + (2s * 60) < now || isWrite || project_info.changed)) {
-    return;
-  }
-
-  project_info.changed = false;
-  last_heartbeat = now;
-
   if (this->key->IsEmpty()) {
     return;
   }
+
+  seconds now = duration_cast<seconds>(steady_clock::now().time_since_epoch());
+
+  if (!((last_heartbeat + (2min) < now) || isWrite || project_info.changed)) {
+    return;
+  }
+
+  LOG_D("plugin/wakatime") << "send_heartbeat - isWrite: " << isWrite
+                           << " project_info.changed: " << project_info.changed
+                           << " last_heartbeat: "
+                           << (now - last_heartbeat).count()
+                           << " seconds ago\n";
+
+  project_info.changed = false;
+  last_heartbeat = now;
 
   wxArrayString *buffer = new wxArrayString();
 
@@ -181,6 +189,7 @@ void cli::send_heartbeat(bool isWrite) {
                                    ? "Unbenannt"
                                    : *project_info.project_name));
 
+  // TODO: if project_info.changed, should --write be enabled?
   if (isWrite) {
     buffer->Add("--write");
   }
@@ -195,7 +204,10 @@ void cli::get_time_today() {
   wxArrayString *buffer = new wxArrayString();
   buffer->Add("--today");
   // TODO: maybe add an option for that?
-  buffer->Add("--today-hide-categories");
+  // buffer->Add("--today-hide-categories building"); // e.g.
+  // Can be "coding", "building", "indexing", "debugging", "running tests",
+  // "writing tests", "manual testing", "code reviewing", "browsing", or
+  // "designing". Defaults to "coding".
   invoke_cli_async(buffer, [this](CLIResponse time_today) -> void {
     if (time_today.ok) {
       this->setTime(time_today.output_string);
@@ -206,7 +218,7 @@ void cli::get_time_today() {
 bool cli::handle_cli() {
 
   wxArrayString *output = new wxArrayString();
-
+  // TODO: al this commands aren't os independent, fix that!
   long returnCode = wxExecute("bash  -c \"realpath ~", *output, wxEXEC_SYNC);
 
   if (returnCode != 0) {
@@ -359,7 +371,8 @@ void cli::invoke_cli_async(wxArrayString *options,
               << "Command couldn't be executed: " << command.ToAscii();
 
           LOG_E("wakatime/execute/async")
-              << "The Errors were: " << error_string->ToAscii();
+              << "The Errors were: " << error_string->ToAscii() << "\n"
+              << "exitCode: " << event.GetExitCode();
 
           response.error_string = error_string;
           response.ok = false;
@@ -407,21 +420,28 @@ wxString getTime() {
   return wxString::Format(" - %s", *(wakatime_cli->currentTime));
 }
 
-void update(bool isWrite, agi::fs::path const *filename) {
-  if (filename != nullptr) {
-    wxString *temp_file_name = new wxString(filename->string());
-    wxString *temp_project_name =
-        new wxString(filename->parent_path().filename().string());
-    wakatime_cli->project_info.changed =
-        wakatime_cli->project_info.file_name == nullptr ||
-        !wakatime_cli->project_info.file_name->IsSameAs(*temp_file_name) ||
-        wakatime_cli->project_info.project_name == nullptr ||
-        wakatime_cli->project_info.project_name->IsSameAs(*temp_project_name);
+void update(bool isWrite) {
+  LOG_D("plugin/wakatime") << "update -  isWrite: " << isWrite << "\n";
 
-    if (wakatime_cli->project_info.changed) {
-      wakatime_cli->project_info.file_name = temp_file_name;
-      wakatime_cli->project_info.project_name = temp_project_name;
-    }
+  wakatime_cli->send_heartbeat(isWrite);
+}
+
+void update(bool isWrite, agi::fs::path const &filename) {
+  LOG_D("plugin/wakatime") << "update -  isWrite: " << isWrite
+                           << " filename: " << filename.string() << "\n";
+
+  wxString *temp_file_name = new wxString(filename.string());
+  wxString *temp_project_name =
+      new wxString(filename.parent_path().filename().string());
+  wakatime_cli->project_info.changed =
+      wakatime_cli->project_info.file_name == nullptr ||
+      !wakatime_cli->project_info.file_name->IsSameAs(*temp_file_name) ||
+      wakatime_cli->project_info.project_name == nullptr ||
+      !wakatime_cli->project_info.project_name->IsSameAs(*temp_project_name);
+
+  if (wakatime_cli->project_info.changed) {
+    wakatime_cli->project_info.file_name = temp_file_name;
+    wakatime_cli->project_info.project_name = temp_project_name;
   }
   wakatime_cli->send_heartbeat(isWrite);
 }

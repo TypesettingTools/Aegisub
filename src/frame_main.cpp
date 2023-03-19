@@ -115,6 +115,9 @@ FrameMain::FrameMain()
 	context->subsController->AddFileSaveListener(&FrameMain::UpdateTitle, this);
 	context->project->AddAudioProviderListener(&FrameMain::OnAudioOpen, this);
 	context->project->AddVideoProviderListener(&FrameMain::OnVideoOpen, this);
+	wakatime::setUpdateFunction([this]()->void{
+		this->UpdateTitle();
+	});
 
 	StartupLog("Initializing context frames");
 	context->parent = this;
@@ -159,9 +162,6 @@ FrameMain::FrameMain()
 	SetDisplayMode(1, 1);
 
 	StartupLog("Leaving FrameMain constructor");
-	wakatime::setUpdateFunction([this]()->void{
-		this->UpdateTitle();
-	});
 }
 
 FrameMain::~FrameMain () {
