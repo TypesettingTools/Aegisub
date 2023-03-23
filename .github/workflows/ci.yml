@@ -138,6 +138,7 @@ jobs:
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
+          if-no-files-found: error
       
       - name: Upload artifacts - portable.zip
         uses: actions/upload-artifact@v3
@@ -159,3 +160,4 @@ jobs:
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.dmg
+          if-no-files-found: error
