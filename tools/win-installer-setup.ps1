@@ -69,7 +69,9 @@ if (!(Test-Path ffi-experiments)) {
 	git clone https://github.com/TypesettingTools/ffi-experiments.git
 	Set-Location ffi-experiments
 	meson build -Ddefault_library=static
+	if(!$?) { Exit $LASTEXITCODE }
 	meson compile -C build
+	if(!$?) { Exit $LASTEXITCODE }
 	Set-Location $DepsDir
 }
 
@@ -84,7 +86,9 @@ if (!(Test-Path VC_redist)) {
 # localization
 Set-Location $BuildRoot
 meson compile aegisub-gmo
+if(!$?) { Exit $LASTEXITCODE }
 
 # Invoke InnoSetup
 $IssUrl = Join-Path $InstallerDir "aegisub_depctrl.iss"
 iscc $IssUrl
+if(!$?) { Exit $LASTEXITCODE }
