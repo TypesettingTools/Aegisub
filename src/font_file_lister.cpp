@@ -139,6 +139,8 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 			break;
 		}
 		case AssBlockType::DRAWING:
+			used_styles[style].drawing = true;
+			break;
 		case AssBlockType::COMMENT:
 			break;
 		}
@@ -146,7 +148,11 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 }
 
 void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
-	if (style.second.chars.empty()) return;
+	if (style.second.chars.empty() && !style.second.drawing) return;
+
+	if (style.second.chars.empty() && style.second.drawing) {
+		status_callback(fmt_tl("Font '%s' is used in a drawing, but not in any text.\n", style.first.facename), 3);
+	}
 
 	auto res = lister.GetFontPaths(style.first.facename, style.first.bold, style.first.italic, style.second.chars);
 
