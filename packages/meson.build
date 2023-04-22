@@ -24,8 +24,8 @@ elif host_machine.system() == 'darwin'
 else
     conf_pkg.set('AEGISUB_COMMAND', 'aegisub')
 
-    desktop_template = configure_file(input: 'desktop/aegisub.desktop.template.in',
-                                      output: 'aegisub.desktop.template',
+    desktop_template = configure_file(input: 'desktop/aegisub.desktop.in.in',
+                                      output: 'aegisub.desktop.in',
                                       configuration: conf_pkg)
 
     i18n = import('i18n')

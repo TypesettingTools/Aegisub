@@ -1,3 +1,5 @@
+packages/desktop/aegisub.desktop.in.in
+
 src/ass_style.cpp
 src/audio_box.cpp
 src/audio_karaoke.cpp
