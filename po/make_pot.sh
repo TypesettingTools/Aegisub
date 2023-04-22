@@ -41,7 +41,7 @@ find ../automation -name *.lua \
 
 for i in 'Name' 'GenericName' 'Comment' 'Keywords'
 do
-  grep ^$i -n ../packages/desktop/aegisub.desktop.template.in \
+  grep ^$i -n ../packages/desktop/aegisub.desktop.in.in \
     | sed 's/\([0-9]\+\):[^=]\+=\(.*\)$/aegisub.desktop|\1|"\2"/' \
     | maybe_append
 done
