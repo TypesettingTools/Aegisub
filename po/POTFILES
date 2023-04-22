@@ -1,4 +1,5 @@
 packages/desktop/aegisub.desktop.in.in
+packages/desktop/aegisub.appdata.xml.in.in
 
 src/ass_style.cpp
 src/audio_box.cpp
