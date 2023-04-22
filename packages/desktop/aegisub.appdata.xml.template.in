@@ -28,23 +28,23 @@
   <screenshots>
     <screenshot type="default">
       <_caption>Typesetting</_caption>
-      <image>http://static.aegisub.org/img/screenshots/unix/typesetting-efc51b7a.png</image>
+      <image>https://aegisub.org/img/screenshots/unix/typesetting.png</image>
     </screenshot>
     <screenshot>
       <_caption>Audio video</_caption>
-      <image>http://static.aegisub.org/img/screenshots/unix/audio-video-f1f81fc2.png</image>
+      <image>https://aegisub.org/img/screenshots/unix/audio-video.png</image>
     </screenshot>
     <screenshot>
       <_caption>Audio timing</_caption>
-      <image>http://static.aegisub.org/img/screenshots/unix/audio-timing-1d8fce7e.png</image>
+      <image>https://aegisub.org/img/screenshots/unix/audio-timing.png</image>
     </screenshot>
   </screenshots>
   <developer_name>Aegisub Group</developer_name>
   <url type="bugtracker">https://github.com/TypesettingTools/Aegisub/issues</url>
-  <url type="faq">http://docs.aegisub.org/manual/FAQ</url>
+  <url type="faq">https://aegisub.org/docs/latest/faq</url>
   <url type="help">https://aegisub.org/docs/latest/main_page/</url>
-  <url type="homepage">http://aegisub.org</url>
-  <url type="translate">https://sites.google.com/site/rockytdrontransifex/aegisub</url>
+  <url type="homepage">https://aegisub.org</url>
+  <url type="translate">https://github.com/TypesettingTools/Aegisub</url>
   <content_rating type="oars-1.0">
     <content_attribute id="social-info">mild</content_attribute>
   </content_rating>
