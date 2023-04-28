@@ -35,6 +35,7 @@ grep '"[A-Za-z ]\+" : {' -n ../src/libresrc/default_hotkey.json \
   | maybe_append
 
 find ../automation -name *.lua \
+  | LC_ALL=C sort \
   | xargs grep tr\"[^\"]\*\" -o -n \
   | sed 's/\(.*\):\([0-9]\+\):tr\(".*"\)/\1|\2|\3/' \
   | sed 's/\\/\\\\\\\\/g' \
