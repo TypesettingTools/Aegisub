@@ -42,12 +42,8 @@ find ../automation -name *.lua \
   | sed 's/\\/\\\\\\\\/g' \
   | maybe_append
 
-for i in 'Name' 'GenericName' 'Comment' 'Keywords'
-do
-  grep ^$i -n ../packages/desktop/aegisub.desktop.in.in \
-    | sed 's/\([0-9]\+\):[^=]\+=\(.*\)$/aegisub.desktop|\1|"\2"/' \
-    | maybe_append
-done
+xgettext ../packages/desktop/aegisub.desktop.in.in \
+  --language=Desktop --join-existing --omit-header -o aegisub.pot
 
 for i in 'name' 'summary' 'p' 'li' 'caption'; do
   xmlstarlet sel -t -v "//$i" ../packages/desktop/aegisub.metainfo.xml.in.in | jq -R .
