@@ -3,17 +3,18 @@ set -e
 
 maybe_append() {
   while read -r msg; do
-    msgfile=$(echo $msg | cut -d'|' -f1)
-    msgline=$(echo $msg | cut -d'|' -f2)
-    msgid=$(echo $msg | cut -d'|' -f3-)
+    msgfile=$(printf '%s' "$msg" | cut -d'|' -f1)
+    msgline=$(printf '%s' "$msg" | cut -d'|' -f2)
+    msgid=$(printf '%s' "$msg" | cut -d'|' -f3-)
 
     if ! grep -Fq "msgid $msgid" aegisub.pot; then
-      echo "\n#: $msgfile:$msgline\nmsgid $msgid\nmsgstr \"\"\n" >> aegisub.pot
+      printf "\n#: %s:%s\nmsgid %s\nmsgstr \"\"\n\n" \
+        "$msgfile" "$msgline" "$msgid" >> aegisub.pot
     fi
   done
 }
 
-find ../src ../src/command -name \*.cpp -o -name \*.h \
+find ../src ../src/command -name '*.cpp' -o -name '*.h' \
   | xgettext --files-from=- -o - --c++ --sort-by-file \
              -k_ -kSTR_MENU -kSTR_DISP -kSTR_HELP -kfmt_tl -kfmt_plural:2,3 -kwxT -kwxPLURAL:1,2 \
   | sed 's/SOME DESCRIPTIVE TITLE./Aegisub 3.2/' \
@@ -35,11 +36,10 @@ grep '"[A-Za-z ]\+" : {' -n ../src/libresrc/default_hotkey.json \
   | sed 's/^\([0-9]\+:\).*\("[^"]\+"\).*$/default_hotkey.json|\1|\2/' \
   | maybe_append
 
-find ../automation -name *.lua \
+find ../automation -name '*.lua' \
   | LC_ALL=C sort \
-  | xargs grep tr\"[^\"]\*\" -o -n \
+  | xargs grep 'tr"[^"]*"' -o -n \
   | sed 's/\(.*\):\([0-9]\+\):tr\(".*"\)/\1|\2|\3/' \
-  | sed 's/\\/\\\\\\\\/g' \
   | maybe_append
 
 xgettext ../packages/desktop/aegisub.desktop.in.in \
@@ -50,7 +50,7 @@ xgettext ../packages/desktop/aegisub.metainfo.xml.in.in \
 
 grep '^_[A-Za-z0-9]*=.*' ../packages/win_installer/fragment_strings.iss.in | while read line
 do
-  echo "$line" \
+  printf '%s\n' "$line" \
     | sed 's/[^=]*=\(.*\)/packages\/win_installer\/fragment_strings.iss|1|"\1"/' \
     | maybe_append
 done
