@@ -45,9 +45,8 @@ find ../automation -name *.lua \
 xgettext ../packages/desktop/aegisub.desktop.in.in \
   --language=Desktop --join-existing --omit-header -o aegisub.pot
 
-for i in 'name' 'summary' 'p' 'li' 'caption'; do
-  xmlstarlet sel -t -v "//$i" ../packages/desktop/aegisub.metainfo.xml.in.in | jq -R .
-done | nl -v0 -w1 -s'|' | sed -re 's/^/aegisub.metainfo.xml|/' | maybe_append
+xgettext ../packages/desktop/aegisub.metainfo.xml.in.in \
+  --language=AppData --join-existing --omit-header -o aegisub.pot
 
 grep '^_[A-Za-z0-9]*=.*' ../packages/win_installer/fragment_strings.iss.in | while read line
 do
