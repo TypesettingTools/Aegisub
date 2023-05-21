@@ -78,6 +78,8 @@ namespace Automation4 {
 		std::deque<PendingCommit> pending_commits;
 		/// Lines to delete once processing complete successfully
 		std::vector<std::unique_ptr<AssEntry>> lines_to_delete;
+		/// Lines that were allocated here and need to be deleted if the script is cancelled.
+		std::vector<AssEntry *> allocated_lines;
 
 		/// Create copies of all of the lines in the script info section if it
 		/// hasn't already happened. This is done lazily, since it only needs
@@ -117,6 +119,8 @@ namespace Automation4 {
 		void AssEntryToLua(lua_State *L, size_t idx);
 		/// assumes a Lua representation of AssEntry on the top of the stack, and creates an AssEntry object of it
 		static std::unique_ptr<AssEntry> LuaToAssEntry(lua_State *L, AssFile *ass=nullptr);
+
+		std::unique_ptr<AssEntry> LuaToTrackedAssEntry(lua_State *L);
 
 		/// @brief Signal that the script using this file is now done running
 		/// @param set_undo If there's any uncommitted changes to the file,

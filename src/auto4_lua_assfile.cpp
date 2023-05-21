@@ -340,6 +340,12 @@ namespace Automation4 {
 		return result;
 	}
 
+	std::unique_ptr<AssEntry> LuaAssFile::LuaToTrackedAssEntry(lua_State *L) {
+		std::unique_ptr<AssEntry> e = LuaToAssEntry(L, ass);
+		allocated_lines.push_back(e.get());
+		return e;
+	}
+
 	int LuaAssFile::ObjectIndexRead(lua_State *L)
 	{
 		switch (lua_type(L, 2)) {
@@ -465,7 +471,7 @@ namespace Automation4 {
 				// insert
 				CheckBounds(n);
 
-				auto e = LuaToAssEntry(L, ass);
+				auto e = LuaToTrackedAssEntry(L);
 				modification_type |= modification_mask(e.get());
 				QueueLineForDeletion(n - 1);
 				AssignLine(n - 1, std::move(e));
@@ -554,7 +560,7 @@ namespace Automation4 {
 
 		for (int i = 1; i <= n; i++) {
 			lua_pushvalue(L, i);
-			auto e = LuaToAssEntry(L, ass);
+			auto e = LuaToTrackedAssEntry(L);
 			modification_type |= modification_mask(e.get());
 
 			if (lines.empty()) {
@@ -598,7 +604,7 @@ namespace Automation4 {
 		new_entries.reserve(n - 1);
 		for (int i = 2; i <= n; i++) {
 			lua_pushvalue(L, i);
-			auto e = LuaToAssEntry(L, ass);
+			auto e = LuaToTrackedAssEntry(L);
 			modification_type |= modification_mask(e.get());
 			InsertLine(new_entries, i - 2, std::move(e));
 			lua_pop(L, 1);
@@ -747,6 +753,7 @@ namespace Automation4 {
 	void LuaAssFile::Cancel()
 	{
 		for (auto& line : lines_to_delete) line.release();
+		for (AssEntry *line : allocated_lines) delete line;
 		references--;
 		if (!references) delete this;
 	}
