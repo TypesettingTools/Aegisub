@@ -517,6 +517,7 @@ namespace {
 		if (lua_isnumber(L, -1) && lua_tointeger(L, -1) == 3) {
 			lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
 			description = "Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.";
+			stackcheck.check_stack(0);
 			return;
 		}
 
@@ -529,6 +530,7 @@ namespace {
 			name = GetPrettyFilename().string();
 
 		lua_pop(L, 1);
+		stackcheck.check_stack(0);
 		// if we got this far, the script should be ready
 		loaded = true;
 	}

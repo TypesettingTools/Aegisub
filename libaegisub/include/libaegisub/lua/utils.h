@@ -124,7 +124,6 @@ struct LuaStackcheck {
 	void dump();
 
 	LuaStackcheck(lua_State *L) : L(L), startstack(lua_gettop(L)) { }
-	~LuaStackcheck() { check_stack(0); }
 };
 #else
 struct LuaStackcheck {
