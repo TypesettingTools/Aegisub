@@ -125,10 +125,10 @@
 		"edit/line/delete" : [
 			"Ctrl-Delete"
 		],
-		"edit/line/duplicate/shift" : [
+		"edit/line/split/before" : [
 			"Ctrl-D"
 		],
-		"edit/line/duplicate/shift_back" : [
+		"edit/line/split/after" : [
 			"Ctrl-Shift-D"
 		],
 		"edit/line/paste" : [
