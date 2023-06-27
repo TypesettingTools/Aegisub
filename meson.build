@@ -69,6 +69,10 @@ if get_option('official_release')
     conf.set('AEGI_OFFICIAL_RELEASE', 1)
 endif
 conf.set('WITH_UPDATE_CHECKER', get_option('enable_update_checker'))
+if get_option('enable_update_checker')
+    conf.set_quoted('UPDATE_CHECKER_SERVER', get_option('update_server'))
+    conf.set_quoted('UPDATE_CHECKER_BASE_URL', get_option('update_url'))
+endif
 
 deps = []
 deps_inc = []
@@ -276,6 +280,41 @@ endif
 
 conf_platform = configuration_data()
 conf_platform.set('DEFAULT_PLAYER_AUDIO', def_audio)
+
+if get_option('enable_update_checker')
+    libcurl_dep = dependency('libcurl', required: false)
+
+    if (not libcurl_dep.found())
+        libcurl_opt = cmake.subproject_options()
+        options_dict = {
+            'HTTP_ONLY': true,
+            'BUILD_CURL_EXE': false,
+            'CMAKE_BUILD_TYPE': get_option('buildtype') == 'release' ? 'Release' : 'Debug',
+        }
+        if host_machine.system() == 'windows'
+            options_dict += {'CURL_USE_SCHANNEL': true}
+            deps += cc.find_library('crypt32')
+        elif host_machine.system() == 'darwin'
+            options_dict += {'CURL_USE_SECTRANSP': true}
+        else
+            options_dict += {'CURL_USE_OPENSSL': true}
+        endif
+        if get_option('default_library') == 'static' and (host_machine.system() == 'windows' or host_machine.system() == 'darwin')
+            options_dict += {'BUILD_SHARED_LIBS': false}
+            add_project_arguments('-DCURL_STATICLIB', language: ['cpp'])
+        endif
+        libcurl_opt.add_cmake_defines(options_dict)
+        libcurl = cmake.subproject('curl', options: libcurl_opt)
+
+        libcurl_dep = libcurl.dependency('libcurl')
+
+        # Horrible meson hack to work around the cmake subproject creating broken include directories
+        libcurl_dep = libcurl_dep.partial_dependency(compile_args: true, link_args: true, links: true, sources: true)
+        libcurl_fixed_inc = declare_dependency(include_directories: subproject('curl_meson').get_variable('libcurl_fixed_inc'))
+        deps += [libcurl_fixed_inc]
+    endif
+    deps += [libcurl_dep]
+endif
 
 luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'))
 if luajit.found() and luajit.type_name() != 'internal'
