@@ -20,6 +20,7 @@ tools/repack-thes-dict.dSYM
 build*/
 subprojects/boost*/
 subprojects/cairo*
+subprojects/curl-*
 subprojects/ffmpeg
 subprojects/ffms2*
 subprojects/fontconfig*
