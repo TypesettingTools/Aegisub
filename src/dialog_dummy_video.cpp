@@ -15,6 +15,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "colour_button.h"
+#include "compat.h"
 #include "format.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
@@ -40,7 +41,7 @@ namespace {
 struct DialogDummyVideo {
 	wxDialog d;
 
-	double fps       = OPT_GET("Video/Dummy/FPS")->GetDouble();
+	wxString fps     = OPT_GET("Video/Dummy/FPS String")->GetString();
 	int width        = OPT_GET("Video/Dummy/Last/Width")->GetInt();
 	int height       = OPT_GET("Video/Dummy/Last/Height")->GetInt();
 	int length       = OPT_GET("Video/Dummy/Last/Length")->GetInt();
@@ -54,7 +55,7 @@ struct DialogDummyVideo {
 	void AddCtrl(wxString const& label, T *ctrl);
 
 	void OnResolutionShortcut(wxCommandEvent &evt);
-	void UpdateLengthDisplay();
+	bool UpdateLengthDisplay();
 
 	DialogDummyVideo(wxWindow *parent);
 };
@@ -83,10 +84,6 @@ wxSpinCtrl *spin_ctrl(wxWindow *parent, int min, int max, int *value) {
 	auto ctrl = new wxSpinCtrl(parent, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, min, max, *value);
 	ctrl->SetValidator(wxGenericValidator(value));
 	return ctrl;
-}
-
-wxControl *spin_ctrl(wxWindow *parent, double min, double max, double *value) {
-	return new wxTextCtrl(parent, -1, "", wxDefaultPosition, wxSize(50, -1), 0, DoubleValidator(value, min, max));
 }
 
 wxComboBox *resolution_shortcuts(wxWindow *parent, int width, int height) {
@@ -120,7 +117,9 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	AddCtrl(_("Video resolution:"), resolution_shortcuts(&d, width, height));
 	AddCtrl("", res_sizer);
 	AddCtrl(_("Color:"), color_sizer);
-	AddCtrl(_("Frame rate (fps):"), spin_ctrl(&d, .1, 1000.0, &fps));
+	wxTextValidator fpsVal(wxFILTER_INCLUDE_CHAR_LIST, &fps);
+	fpsVal.SetCharIncludes("0123456789./");
+	AddCtrl(_("Frame rate (fps):"), new wxTextCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, 0, fpsVal));
 	AddCtrl(_("Duration (frames):"), spin_ctrl(&d, 2, 36000000, &length)); // Ten hours of 1k FPS
 	AddCtrl("", length_display = new wxStaticText(&d, -1, ""));
 
@@ -132,17 +131,19 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	main_sizer->Add(new wxStaticLine(&d, wxHORIZONTAL), wxSizerFlags().HorzBorder().Expand());
 	main_sizer->Add(btn_sizer, wxSizerFlags().Expand().Border());
 
-	UpdateLengthDisplay();
+	btn_sizer->GetAffirmativeButton()->Enable(UpdateLengthDisplay());
 
 	d.SetSizerAndFit(main_sizer);
 	d.CenterOnParent();
 
 	d.Bind(wxEVT_COMBOBOX, &DialogDummyVideo::OnResolutionShortcut, this);
 	color_btn->Bind(EVT_COLOR, [=, this](ValueEvent<agi::Color>& e) { color = e.Get(); });
-	d.Bind(wxEVT_SPINCTRL, [&](wxCommandEvent&) {
+	auto on_update = [&, btn_sizer](wxCommandEvent&) {
 		d.TransferDataFromWindow();
-		UpdateLengthDisplay();
-	});
+		btn_sizer->GetAffirmativeButton()->Enable(UpdateLengthDisplay());
+	};
+	d.Bind(wxEVT_SPINCTRL, on_update);
+	d.Bind(wxEVT_TEXT, on_update);
 }
 
 static void add_label(wxWindow *parent, wxSizer *sizer, wxString const& label) {
@@ -166,8 +167,16 @@ void DialogDummyVideo::OnResolutionShortcut(wxCommandEvent &e) {
 	d.TransferDataToWindow();
 }
 
-void DialogDummyVideo::UpdateLengthDisplay() {
-	length_display->SetLabel(fmt_tl("Resulting duration: %s", agi::Time(length / fps * 1000).GetAssFormatted(true)));
+bool DialogDummyVideo::UpdateLengthDisplay() {
+	std::string dur = "-";
+	bool valid = false;
+	auto fr = DummyVideoProvider::TryParseFramerate(from_wx(fps));
+	if (fr.has_value()) {
+		dur = agi::Time(fr.value().TimeAtFrame(length)).GetAssFormatted(true);
+		valid = true;
+	}
+	length_display->SetLabel(fmt_tl("Resulting duration: %s", dur));
+	return valid;
 }
 }
 
@@ -176,12 +185,12 @@ std::string CreateDummyVideo(wxWindow *parent) {
 	if (dlg.d.ShowModal() != wxID_OK)
 		return "";
 
-	OPT_SET("Video/Dummy/FPS")->SetDouble(dlg.fps);
+	OPT_SET("Video/Dummy/FPS String")->SetString(from_wx(dlg.fps));
 	OPT_SET("Video/Dummy/Last/Width")->SetInt(dlg.width);
 	OPT_SET("Video/Dummy/Last/Height")->SetInt(dlg.height);
 	OPT_SET("Video/Dummy/Last/Length")->SetInt(dlg.length);
 	OPT_SET("Colour/Video Dummy/Last Colour")->SetColor(dlg.color);
 	OPT_SET("Video/Dummy/Pattern")->SetBool(dlg.pattern);
 
-	return DummyVideoProvider::MakeFilename(dlg.fps, dlg.length, dlg.width, dlg.height, dlg.color, dlg.pattern);
+	return DummyVideoProvider::MakeFilename(from_wx(dlg.fps), dlg.length, dlg.width, dlg.height, dlg.color, dlg.pattern);
 }

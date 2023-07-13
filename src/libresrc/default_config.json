@@ -606,7 +606,7 @@
 			"Maximized" : false
 		},
 		"Dummy" : {
-			"FPS" : 23.975999999999999091,
+			"FPS String" : "24000/1001",
 			"Last" : {
 				"Height" : 720,
 				"Length" : 40000,

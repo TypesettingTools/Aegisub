@@ -34,6 +34,8 @@
 
 #include "include/aegisub/video_provider.h"
 
+#include <optional>
+
 namespace agi { struct Color; }
 
 /// @class DummyVideoProvider
@@ -58,11 +60,12 @@ public:
 	/// @param height Height in pixels of the dummy video
 	/// @param colour Primary colour of the dummy video
 	/// @param pattern Use a checkerboard pattern rather than a solid colour
-	DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
+	DummyVideoProvider(agi::vfr::Framerate fps, int frames, int width, int height, agi::Color colour, bool pattern);
 
 	/// Make a fake filename which when passed to the constructor taking a
 	/// string will result in a video with the given parameters
-	static std::string MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern);
+	static std::string MakeFilename(std::string fps, int frames, int width, int height, agi::Color colour, bool pattern);
+	static std::optional<agi::vfr::Framerate> TryParseFramerate(std::string fps_string);
 
 	void GetFrame(int n, VideoFrame &frame) override;
 	void SetColorSpace(std::string const&) override { }

@@ -38,6 +38,7 @@
 #include "video_frame.h"
 
 #include <libaegisub/color.h>
+#include <libaegisub/exception.h>
 #include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
@@ -45,7 +46,7 @@
 #include <libaegisub/format.h>
 #include <boost/gil.hpp>
 
-DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern)
+DummyVideoProvider::DummyVideoProvider(agi::vfr::Framerate fps, int frames, int width, int height, agi::Color colour, bool pattern)
 : framecount(frames)
 , fps(fps)
 , width(width)
@@ -85,8 +86,36 @@ DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int he
 	}
 }
 
-std::string DummyVideoProvider::MakeFilename(double fps, int frames, int width, int height, agi::Color colour, bool pattern) {
-	return agi::format("?dummy:%f:%d:%d:%d:%d:%d:%d:%s", fps, frames, width, height, (int)colour.r, (int)colour.g, (int)colour.b, (pattern ? "c" : ""));
+std::optional<agi::vfr::Framerate> DummyVideoProvider::TryParseFramerate(std::string fps_string) {
+	using agi::util::try_parse;
+
+	double fps_double;
+	if (try_parse(fps_string, &fps_double)) {
+		try {
+			return agi::vfr::Framerate(fps_double);
+		} catch (agi::vfr::InvalidFramerate) {
+			return {};
+		}
+	} else {
+		std::vector<std::string> numden;
+		agi::Split(numden, fps_string, '/');
+		if (numden.size() != 2)
+			return {};
+
+		int num, den;
+		if (!try_parse(numden[0], &num)) return {};
+		if (!try_parse(numden[1], &den)) return {};
+
+		try {
+			return agi::vfr::Framerate(num, den);
+		} catch (agi::vfr::InvalidFramerate) {
+			return {};
+		}
+	}
+}
+
+std::string DummyVideoProvider::MakeFilename(std::string fps, int frames, int width, int height, agi::Color colour, bool pattern) {
+	return agi::format("?dummy:%s:%d:%d:%d:%d:%d:%d:%s", fps, frames, width, height, (int)colour.r, (int)colour.g, (int)colour.b, (pattern ? "c" : ""));
 }
 
 void DummyVideoProvider::GetFrame(int, VideoFrame &frame) {
@@ -99,21 +128,22 @@ void DummyVideoProvider::GetFrame(int, VideoFrame &frame) {
 
 namespace agi { class BackgroundRunner; }
 std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, std::string_view, agi::BackgroundRunner *) {
-	if (!boost::starts_with(filename.string(), "?dummy"))
+	// Use filename.generic_string here so forward slashes stay as they are
+	if (!boost::starts_with(filename.generic_string(), "?dummy"))
 		return {};
 
 	std::vector<std::string> toks;
-	auto fields = filename.string().substr(7);
+	auto fields = filename.generic_string().substr(7);
 	agi::Split(toks, fields, ':');
 	if (toks.size() != 8)
 		throw VideoOpenError("Too few fields in dummy video parameter list");
 
 	size_t i = 0;
-	double fps;
 	int frames, width, height, red, green, blue;
 
 	using agi::util::try_parse;
-	if (!try_parse(toks[i++], &fps))    throw VideoOpenError("Unable to parse fps field in dummy video parameter list");
+	auto fps = DummyVideoProvider::TryParseFramerate(toks[i++]);
+	if (!fps.has_value())				throw VideoOpenError("Unable to parse fps field in dummy video parameter list");
 	if (!try_parse(toks[i++], &frames)) throw VideoOpenError("Unable to parse framecount field in dummy video parameter list");
 	if (!try_parse(toks[i++], &width))  throw VideoOpenError("Unable to parse width field in dummy video parameter list");
 	if (!try_parse(toks[i++], &height)) throw VideoOpenError("Unable to parse height field in dummy video parameter list");
@@ -123,5 +153,5 @@ std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& fil
 
 	bool pattern = toks[i] == "c";
 
-	return std::make_unique<DummyVideoProvider>(fps, frames, width, height, agi::Color(red, green, blue), pattern);
+	return std::make_unique<DummyVideoProvider>(fps.value(), frames, width, height, agi::Color(red, green, blue), pattern);
 }
