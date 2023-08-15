@@ -360,7 +360,7 @@ size_t IconvWrapper::Convert(std::string_view source, std::span<char> dest) {
 bool IsConversionSupported(const char *src, const char *dst) {
 	iconv_t cd = iconv_open(dst, src);
 	bool supported = cd != iconv_invalid;
-	iconv_close(cd);
+	if (supported) iconv_close(cd);
 	return supported;
 }
 
