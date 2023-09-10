@@ -75,6 +75,23 @@ ljcore_src = files(
 
 src_inc = include_directories('.')
 
+minilua = executable('minilua', 'host/minilua.c',
+                     dependencies: system_deps,
+                     native: true)
+
+relver = vcs_tag(command: ['git', 'show', '-s', '--format=%ct'],
+                 fallback: 'ROLLING',
+                 input: 'luajit_relver.txt.in',
+                 output: 'luajit_relver.txt',
+                 replace_string: '@VCS_CT@')
+
+luajit_rolling_h = files('luajit_rolling.h')
+
+luajit_h = custom_target('luajit_h',
+                         command: [minilua, '@INPUT@', '@OUTPUT@'],
+                         input: ['host/genversion.lua', 'luajit_rolling.h', relver],
+                         output: 'luajit.h')
+
 subdir('host')
 
 hdrgen = [
@@ -84,7 +101,8 @@ hdrgen = [
     'recdef',
 ]
 
-genheaders = []
+genheaders = [luajit_h]
+
 foreach h: hdrgen
     genheaders += custom_target(h,
                                 command: [buildvm, '-m', h, '-o', '@OUTPUT@', ljlib_src],

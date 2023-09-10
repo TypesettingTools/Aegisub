@@ -1,7 +1,3 @@
-minilua = executable('minilua', 'minilua.c',
-                     dependencies: system_deps,
-                     native: true)
-
 cpu_family = host_machine.cpu_family()
 if cpu_family == 'x86_64'
     dynasm_arch = 'x64'
@@ -54,7 +50,7 @@ buildvm_arch = custom_target('buildvm_arch.h',
                              input: dynasm_dasc,
                              output: 'buildvm_arch.h')
 
-buildvm = executable('buildvm', buildvm_src, buildvm_arch,
+buildvm = executable('buildvm', buildvm_src, buildvm_arch, luajit_h,
                      dependencies: system_deps,
                      include_directories: src_inc,
                      native: true)
