@@ -9,10 +9,10 @@ import subprocess
 
 is_bad_lib = re.compile(r'(/usr/local|/opt)').match
 is_sys_lib = re.compile(r'(/usr|/System)').match
-otool_libname_extract = re.compile(r'\s+(/.*?)[(\s:]').search
-otool_loader_path_extract = re.compile(r'\s+@loader_path/(.*?)[(\s:]').search
+otool_libname_extract = re.compile(r'\s+([/@].*?)[(\s:]').search
 goodlist = []
 badlist = []
+badlist_orig = []
 link_map = {}
 
 
@@ -22,23 +22,58 @@ def otool(cmdline):
         return p.stdout.readlines()
 
 
+def get_rpath(lib):
+    info = otool(['-l', lib])
+    commands = []
+    command = []
+    for line in info:
+        line = line.strip()
+        if line.startswith("Load command "):
+            commands.append(command)
+            command = []
+        else:
+            command.append(line)
+    commands.append(command)
+
+    # yuck
+    return [line.split()[1] for command in commands if "cmd LC_RPATH" in command for line in command if line.startswith("path")]
+
+
 def collectlibs(lib, masterlist, targetdir):
     global goodlist, link_map
     liblist = otool(['-L', lib])
     locallist = []
 
     for l in liblist:
-        lr = otool_libname_extract(l)
-        if lr:
-            l = lr.group(1)
-        else:
-            lr = otool_loader_path_extract(l)
-            if lr:
-                l = os.path.join(os.path.dirname(lib), lr.group(1))
-            else:
-                continue
-        if is_bad_lib(l) and l not in badlist:
-            badlist.append(l)
+        l = otool_libname_extract(l)
+        if not l:
+            continue
+
+        l = l.group(1)
+        l_orig = l
+
+        if l.startswith("@rpath/"):
+            rpath = get_rpath(lib)
+
+            if not rpath:
+                print(f"{lib} uses @rpath but has no rpath set!")
+                exit(-1)
+
+            # all cases of libs using rpath so far just had a single directory in rpath...
+            # so let's just hope it stays that way and worry about the other cases when we get to them
+            if len(rpath) >= 2:
+                print(f"Warning: {lib} uses @rpath with more than one entry in rpath. Guessing one entry...")
+
+            l = os.path.join(rpath[0], l[len("@rpath/"):])
+
+        if l.startswith("@loader_path/"):
+            l = os.path.join(os.path.dirname(lib), l[len("@loader_path/"):])
+
+        if is_bad_lib(l):
+            if l not in badlist:
+                badlist.append(l)
+            if l_orig not in badlist_orig:
+                badlist_orig.append(l_orig)
         if ((not is_sys_lib(l)) or is_bad_lib(l)) and l not in masterlist:
             locallist.append(l)
             print("found %s:" % l)
@@ -76,7 +111,6 @@ def collectlibs(lib, masterlist, targetdir):
                     print("    LINK %s ... copied to target" % check)
                     link_list.append(basename)
                     check = os.path.join(os.path.dirname(check), link_dst)
-
         elif l not in goodlist and l not in masterlist:
             goodlist.append(l)
     masterlist.extend(locallist)
@@ -101,10 +135,13 @@ if __name__ == '__main__':
     print()
     print("Fixing library install names...")
     in_tool_cmdline = ['install_name_tool']
-    for lib in libs:
+    for lib in badlist_orig:
         libbase = os.path.basename(lib)
         if libbase in link_map:
+            print("%s -> @executable_path/%s (REMAPPED)" % (lib, libbase))
             libbase = link_map[libbase]
+        else:
+            print("%s -> @executable_path/%s" % (lib, libbase))
         in_tool_cmdline = in_tool_cmdline + ['-change', lib,
                                              '@executable_path/' + libbase]
     for lib in libs:
@@ -112,9 +149,6 @@ if __name__ == '__main__':
 
         if libbase in link_map:
             libbase = link_map[libbase]
-            print("%s -> @executable_path/%s (REMAPPED)" % (lib, libbase))
-        else:
-            print("%s -> @executable_path/%s" % (lib, libbase))
 
         targetlib = targetdir + '/' + libbase
         orig_permission = os.stat(targetlib).st_mode
