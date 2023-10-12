@@ -23,10 +23,10 @@ OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ]]
 
-cleantags_version = "1.301"
-cleantags_modified = "13 November 2009"
+cleantags_version = "1.302"
+cleantags_modified = "12 October 2023"
 
-ktag = "\\[kK][fo]?%d+"
+ktag = "\\[kK][fo]?[%d.]+"
 
 --[[ The main function that performs the cleaning up
 Takes: text
