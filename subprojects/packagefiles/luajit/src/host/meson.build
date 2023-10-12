@@ -21,6 +21,7 @@ else
     hpre = '#include "@0@/../lj_arch.h"'.format(meson.current_source_dir())
 
     checkdefs = [
+        ['LJ_LE', '1', ['-D', 'ENDIAN_LE']],
         ['LJ_ARCH_BITS', '64', ['-D', 'P64']],
         ['LJ_HASJIT', '1', ['-D', 'JIT']],
         ['LJ_HASFFI', '1', ['-D', 'FFI']],
