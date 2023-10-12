@@ -328,6 +328,14 @@ namespace Automation4 {
 			{
 				lua_getfield(L, -1, "items");
 				read_string_array(L, items);
+
+#ifdef __WXMAC__
+				// Work around a wxOSX bug where combo boxes with the empty string as value still select some item
+				// https://github.com/wxWidgets/wxWidgets/issues/25011
+				if (value == "" && std::find(items.begin(), items.end(), value) == items.end()) {
+					items.insert(items.begin(), value);
+				}
+#endif
 			}
 
 			bool CanSerialiseValue() const override { return true; }
