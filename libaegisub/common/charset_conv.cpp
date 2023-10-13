@@ -22,7 +22,6 @@
 #include <cassert>
 #include <cerrno>
 #include <cstdint>
-#include <iconv.h>
 
 // Check if we can use advanced fallback capabilities added in GNU's iconv
 // implementation

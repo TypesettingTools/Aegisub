@@ -25,6 +25,7 @@
 #include <vector>
 
 #include <libaegisub/exception.h>
+#include <iconv.h>
 
 namespace agi::charset {
 
@@ -34,8 +35,6 @@ DEFINE_EXCEPTION(ConversionFailure, ConvError);
 DEFINE_EXCEPTION(BufferTooSmall, ConversionFailure);
 DEFINE_EXCEPTION(BadInput, ConversionFailure);
 DEFINE_EXCEPTION(BadOutput, ConversionFailure);
-
-typedef void *iconv_t;
 
 /// RAII handle for iconv
 class Iconv {
