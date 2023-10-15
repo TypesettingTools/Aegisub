@@ -53,6 +53,7 @@
 // Allocate storage for and initialise static members
 namespace {
 	int avs_refcount = 0;
+	bool failed = false;
 #ifdef _WIN32
 	HINSTANCE hLib = nullptr;
 #else
@@ -66,7 +67,7 @@ const AVS_Linkage *AVS_linkage = nullptr;
 
 typedef IScriptEnvironment* __stdcall FUNC(int);
 
-AviSynthWrapper::AviSynthWrapper() {
+AviSynthWrapper::AviSynthWrapper() try {
 	if (!avs_refcount++) {
 #ifdef _WIN32
 #define CONCATENATE(x, y) x ## y
@@ -101,6 +102,9 @@ AviSynthWrapper::AviSynthWrapper() {
 		if (memoryMax)
 			env->SetMemoryMax(memoryMax);
 	}
+} catch (AvisynthError const&) {
+	avs_refcount--;
+	throw;
 }
 
 AviSynthWrapper::~AviSynthWrapper() {
