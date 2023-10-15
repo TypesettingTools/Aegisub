@@ -67,7 +67,7 @@ const AVS_Linkage *AVS_linkage = nullptr;
 typedef IScriptEnvironment* __stdcall FUNC(int);
 
 AviSynthWrapper::AviSynthWrapper() {
-	if (!avs_refcount){
+	if (!avs_refcount++) {
 #ifdef _WIN32
 #define CONCATENATE(x, y) x ## y
 #define _Lstr(x) CONCATENATE(L, x)
@@ -93,8 +93,6 @@ AviSynthWrapper::AviSynthWrapper() {
 
 		if (!env)
 			throw AvisynthError("Failed to create a new avisynth script environment. Avisynth is too old?");
-
-		avs_refcount++;
 
 		AVS_linkage = env->GetAVSLinkage();
 
