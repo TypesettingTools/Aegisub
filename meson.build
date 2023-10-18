@@ -6,12 +6,6 @@ project('Aegisub', ['c', 'cpp'],
 
 cmake = import('cmake')
 
-if meson.version().version_compare('>=0.63.0')
-    # TODO fix this annoying cmake sandbox error
-    error('MESON 0.63.0 >= is not supported atm! run \'pip install meson==0.62.2\' to install the latest supported version!')
-endif
-
-
 if host_machine.system() == 'windows'
     add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
 
@@ -351,7 +345,7 @@ if not deps.contains(luajit)
 else
     luajit_inc = include_directories(luajit.get_variable('includedir'))
 endif
-subdir('subprojects/luabins/src')
+subdir('vendor/luabins/src')
 
 dep_gl = dependency('gl', required: false)
 if not dep_gl.found()
