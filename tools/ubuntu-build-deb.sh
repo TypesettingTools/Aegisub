@@ -1,7 +1,5 @@
 #!/bin/env bash
 
-
-
 cd ${MESON_BUILD_ROOT} || exit 5
 
 ## TODO get these numbers dynamically
@@ -23,20 +21,15 @@ mkdir -p usr/local/share/aegisub/automation
 
 cp -r ../../automation/autoload/ usr/local/share/aegisub/automation/
 
-
 cp -r ../../automation/demos/ usr/local/share/aegisub/automation/
 
 cp -r ../../automation/include/ usr/local/share/aegisub/automation/
-
 
 # remove the meson build files, that where copied over
 
 rm usr/local/share/aegisub/automation/include/meson.build
 
 rm usr/local/share/aegisub/automation/include/aegisub/meson.build
-
-
-
 
 mkdir -p usr/lib
 
@@ -46,14 +39,15 @@ mkdir -p lib/x86_64-linux-gnu/
 
 declare -a modules=('chrono' 'thread' 'filesystem' 'locale' 'program_options')
 boost_version='1.79.0'
-    for module in  ${modules[@]}; do
+for module in ${modules[@]}; do
+    if [ -d "../subprojects/boost_1_79_0/libs/$module" ]; then
         cp "../subprojects/boost_1_79_0/libs/$module/libboost_$module.$boost_version.so" "usr/lib/"
-    done  
-
+    fi
+done
 
 ## Only including DependencyControl, if it was build!
 
-if  [ -d "../DependencyControl" ]; then
+if [ -d "../DependencyControl" ]; then
 
     mkdir -p tmp/DependencyControl/autoload/
 
@@ -68,8 +62,6 @@ if  [ -d "../DependencyControl" ]; then
     cp -r ../DependencyControl/luajson/lua/* tmp/DependencyControl/include/
 
     cp ../DependencyControl/YUtils/src/Yutils.lua tmp/DependencyControl/include/
-
-
 
     mkdir -p tmp/DependencyControl/include/requireffi/
 
@@ -89,14 +81,11 @@ if  [ -d "../DependencyControl" ]; then
 
     cp ../DependencyControl/ffi-experiments/build/lib*.so usr/lib/
 
-
-
-
     mkdir -p DEBIAN/
 
-     #post or preinst ???
+    #post or preinst ???
     touch DEBIAN/postinst
-cat >> DEBIAN/postinst << 'EOF'
+    cat >>DEBIAN/postinst <<'EOF'
 #!/bin/bash
 set -e
 
@@ -106,7 +95,7 @@ set -e
 
 if [ -z "$SUDO_USER" ]; then
 
-echo  "DO NOT call the installation from the root user, but rather use 'sudo <installation command>' to install it, otheriwse the files can't be moved to the correct folder!!"
+echo  "DO NOT call the installation from the root user, but rather use 'sudo <installation command>' to install it, otherwise the files can't be moved to the correct folder!!"
 exit 5
 rm -r /tmp/DependencyControl/
 
@@ -208,92 +197,76 @@ sudo luarocks install moonscript  > /dev/null
 
 EOF
 
-chmod 555 DEBIAN/postinst
+    chmod 555 DEBIAN/postinst
 
 fi
 
+# all locally not available libraries are now in subprojects,
+# they either have to be included, or with options forced to be used form the system, so that
+# 'dpkg-shlibdeps' can read them all
 
-    # all locally not available libraries are now in subprojects, 
-    # they either have to be included, or with options forced to be used form the system, so that
-    # 'dpkg-shlibdeps' can read them all
+declare -a ALL_SO=$(find ../subprojects/ -type f -regex ".*\.so")
 
-    
+for SO in ${ALL_SO[@]}; do
+    cp $SO usr/lib/
 
-    declare -a  ALL_SO=$(find ../subprojects/ -type f -regex ".*\.so")
-
-    for SO in  ${ALL_SO[@]}; do
-        cp $SO usr/lib/
-
-    done  
-
-
+done
 
 mkdir -p usr/share/applications
 
-
-
 if ! [ -f "../packages/aegisub.desktop" ]; then
-    cd ../..  || exit 5
+    cd ../.. || exit 5
     meson -C build aegisub.desktop
-    cd "${MESON_BUILD_ROOT}/$DEB_NAME"  || exit 5
+    cd "${MESON_BUILD_ROOT}/$DEB_NAME" || exit 5
 
 fi
 
-
 cp ../packages/aegisub.desktop usr/share/applications/
-
 
 ## TODO changelog.Debian.gz and copyright, see original deb
 
 # mkdir -p usr/share/doc/aegisub
 
-
 mkdir -p usr/share/icons/hicolor
 mkdir -p usr/share/icons/Humanity/mimes
 
-
 declare -a aegisub_logos=('16x16.png' '22x22.png' '24x24.png' '32x32.png' '48x48.png' '64x64.png' 'scalable.svg')
 
-    for logo in ${aegisub_logos[@]}; do
+for logo in ${aegisub_logos[@]}; do
 
-        declare -a parts=(`echo $logo | tr "." " "`)  
-        dir=${parts[0]}
-        ext=${parts[1]}
-        size=${dir:0:2}
+    declare -a parts=($(echo $logo | tr "." " "))
+    dir=${parts[0]}
+    ext=${parts[1]}
+    size=${dir:0:2}
 
-        mkdir -p "usr/share/icons/hicolor/$dir/apps/"
-        cp "../../packages/desktop/$dir/aegisub.$ext" "usr/share/icons/hicolor/$dir/apps/"
+    mkdir -p "usr/share/icons/hicolor/$dir/apps/"
+    cp "../../packages/desktop/$dir/aegisub.$ext" "usr/share/icons/hicolor/$dir/apps/"
 
-        # if it's not the scalable file, but rather the 16x16 etc.
-        if ! [ "$size" = "sc" ]; then 
+    # if it's not the scalable file, but rather the 16x16 etc.
+    if ! [ "$size" = "sc" ]; then
         ## TODO: better icons support, and this doesn't even work, maybe run "sudo gtk-update-icon-cache /usr/share/icons/Humanity" afterwards
-            mkdir -p "usr/share/icons/Humanity/mimes/$size"
-            cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ass.svg"
-            cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ssa.svg"
-        else 
-            mkdir -p tmp/Aegisub/
-            cp "../../packages/desktop/scalable/aegisub.svg" "tmp/Aegisub/scaleable.svg"
-        fi
-    done
-
-
-
+        mkdir -p "usr/share/icons/Humanity/mimes/$size"
+        cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ass.svg"
+        cp "../../packages/desktop/scalable/aegisub.svg" "usr/share/icons/Humanity/mimes/$size/text-x-ssa.svg"
+    else
+        mkdir -p tmp/Aegisub/
+        cp "../../packages/desktop/scalable/aegisub.svg" "tmp/Aegisub/scaleable.svg"
+    fi
+done
 
 ##changing the permissions of the added files
 
 chmod +r -R usr/
 
-
 mkdir -p usr/share/man/man1
 
 touch usr/share/man/man1/aegisub.1
 
-
 DATE=$(date +"%B %d, %Y")
 
-echo ".TH aegisub-3.3.0 \"$DATE\"" >> usr/share/man/man1/aegisub.1
+echo ".TH aegisub-3.3.0 \"$DATE\"" >>usr/share/man/man1/aegisub.1
 
-cat >> usr/share/man/man1/aegisub.1 << 'EOF'
+cat >>usr/share/man/man1/aegisub.1 <<'EOF'
 .SH NAME
 aegisub-3.3.0 \- advanced subtitle editor
 .SH SYNOPSIS
@@ -319,14 +292,11 @@ This manual page was written by Sebastian Reichel <sre@debian.org>
 for the Debian project (but may be used by others).
 EOF
 
-
-gzip  usr/share/man/man1/aegisub.1
+gzip usr/share/man/man1/aegisub.1
 
 mkdir -p usr/share/pixmaps
 
 cp ../../packages/desktop/pixmaps/aegisub.xpm usr/share/pixmaps/
-
-
 
 # now creating the debian control files
 
@@ -335,8 +305,7 @@ touch DEBIAN/control
 
 ## TODO use dpkg-gencontrol
 
-
-cat > DEBIAN/control << 'EOF'
+cat >DEBIAN/control <<'EOF'
 
 Package: aegisub
 Version: 3.3.0+dpctrl-ubuntu
@@ -358,48 +327,40 @@ Description: advanced subtitle editor
 Original-Maintainer: Aniol Marti <amarti@caliu.cat>
 EOF
 
-
 mkdir debian
 
 touch debian/control
 
-DEPENDECIES=$(dpkg-shlibdeps -O ../aegisub 2>/dev/null) 
+DEPENDECIES=$(dpkg-shlibdeps -O ../aegisub 2>/dev/null)
 
 # substring, removes the first 15 charcaters
 
 DEPENDECY_LIST=${DEPENDECIES:15}
 
 if [ ! -z "$DEPENDECY_LIST" ]; then
-    $DEPENDECY_LIST  = "$DEPENDECY_LIST ,"
+    $DEPENDECY_LIST = "$DEPENDECY_LIST ,"
 fi
 
 # adding luarocks, that is also needed for dependency control!
-echo "Depends: $DEPENDECY_LIST luarocks (>= 3.8.0+dfsg1-1)"  >> DEBIAN/control
+echo "Depends: $DEPENDECY_LIST luarocks (>= 3.8.0+dfsg1-1)" >>DEBIAN/control
 
 rm debian/control
 
 rm -r debian
 
-
-
 # create md5sums
 
 touch DEBIAN/md5sums
 
-md5sum $(find * -type f -not -path 'DEBIAN/*') > DEBIAN/md5sums
+md5sum $(find * -type f -not -path 'DEBIAN/*') >DEBIAN/md5sums
 
+cd .. || exit 5
 
-
-cd ..  || exit 5
-
-dpkg-deb --build -Zxz  --root-owner-group $DEB_NAME
+dpkg-deb --build -Zxz --root-owner-group $DEB_NAME
 
 rm -r $DEB_NAME
 
-
-
 ## NOW generate locales!
-
 
 LOCALE_DEB_NAME="aegisub-l10n_3.3.0+dpctrl-ubuntu_amd64"
 
@@ -408,16 +369,11 @@ LOCALE_DEB_NAME="aegisub-l10n_3.3.0+dpctrl-ubuntu_amd64"
 mkdir $LOCALE_DEB_NAME
 cd $LOCALE_DEB_NAME || exit 5
 
-
 # now create the pseudo file system and copy all relevant systems in there
 
 mkdir -p usr/share/locale
 
-
 cp -r ../po/* usr/share/locale/
-
-
-
 
 # now creating the debian control files
 
@@ -426,8 +382,7 @@ touch DEBIAN/control
 
 ## TODO use dpkg-gencontrol
 
-
-cat > DEBIAN/control << 'EOF'
+cat >DEBIAN/control <<'EOF'
 Package: aegisub-l10n
 Source: aegisub
 Version: 3.3.0+dpctrl-ubuntu
@@ -454,17 +409,14 @@ Description: aegisub language packages
  sr_RS, vi, zh_CN, zh_TW
 EOF
 
-
 # create md5sums
 
 touch DEBIAN/md5sums
 
-md5sum $(find * -type f -not -path 'DEBIAN/*') > DEBIAN/md5sums
+md5sum $(find * -type f -not -path 'DEBIAN/*') >DEBIAN/md5sums
 
+cd .. || exit 5
 
-
-cd ..  || exit 5
-
-dpkg-deb --build -Zxz  --root-owner-group $LOCALE_DEB_NAME
+dpkg-deb --build -Zxz --root-owner-group $LOCALE_DEB_NAME
 
 rm -r $LOCALE_DEB_NAME
