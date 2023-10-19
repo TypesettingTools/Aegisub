@@ -57,7 +57,7 @@ elif [ $ARG == "runner" ]; then
 elif [ $ARG == "flatpak" ]; then
     BUILD_DIR="flatpak-build"
     UNIQUE_ID="org.aegisub.Aegisub"
-    flatpak-builder --force-clean "$BUILD_DIR" "$UNIQUE_ID.yml"
+    flatpak-builder --user --force-clean "$BUILD_DIR" "$UNIQUE_ID.yml"
 
     ## now test
 
