@@ -38,6 +38,8 @@ const char *GetAegisubLongVersionString();
 const char *GetAegisubShortVersionString();
 /// Timestamp of build, only shown in About box
 const char *GetAegisubBuildTime();
+/// Year of build, only shown in About box
+const char *GetAegisubBuildYear();
 /// Name of who built the binary
 const char *GetAegisubBuildCredit();
 /// Is release?

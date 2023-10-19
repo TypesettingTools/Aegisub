@@ -49,7 +49,7 @@ void ShowAboutDialog(wxWindow *parent) {
 
 	// Generate about string
 	wxString aboutString = wxString("Aegisub ") + GetAegisubShortVersionString() + ".\n"
-		"Copyright (c) 2005-2019 Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et al.\n\n"
+		fmt_tl("Copyright (c) 2005-%s Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et al.\n\n",GetAegisubBuildTime())+ 
 		"Programmers:\n"
 		"    Alysson Souza e Silva\n"
 		"    Amar Takhar\n"
@@ -123,7 +123,7 @@ void ShowAboutDialog(wxWindow *parent) {
 #endif
 		+ _("\nSee the help file for full credits.\n")
 #ifdef BUILD_CREDIT
-		+ fmt_tl("Built by %s on %s.", GetAegisubBuildCredit(), GetAegisubBuildTime())
+		+ fmt_tl("Built by '%s' on '%s'.", GetAegisubBuildCredit(), GetAegisubBuildTime())
 #endif
 		;
 
