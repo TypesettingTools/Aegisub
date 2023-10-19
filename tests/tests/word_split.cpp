@@ -75,7 +75,9 @@ TEST(lagi_word_split, two_words_newline) {
 }
 
 TEST(lagi_word_split, two_words_unicode) {
-	std::string text = u8"abc\u300adef";
+
+	//TODO: C++20 and unicode is a mess!, fix this
+	const std::u8string text = u8"abc\u300adef";
 	std::vector<DialogueToken> tokens = {{dt::TEXT, 9}};
 
 	SplitWords(text, tokens);

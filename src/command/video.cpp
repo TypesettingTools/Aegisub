@@ -475,7 +475,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 		// If where ever that is isn't defined, we can't save there
 		if ((basepath == "\\") || (basepath == "/")) {
 			// So save to the current user's home dir instead
-			basepath = wxGetHomeDir().c_str();
+			basepath = wxGetHomeDir().ToStdString();
 		}
 	}
 	// Actual fixed (possibly relative) path, decode it

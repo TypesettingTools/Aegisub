@@ -93,12 +93,12 @@ static const char *LastStartupState = nullptr;
 #endif
 
 void AegisubApp::OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg) {
-	LOG_A("wx/assert") << file << ":" << line << ":" << func << "() " << cond << ": " << msg;
+	LOG_A("wx/assert") <<  wxString(file) << ":" << line << ":" << wxString(func) << "() " << wxString(cond) << ": " << wxString(msg);
 	wxApp::OnAssertFailure(file, line, func, cond, msg);
 }
 
 AegisubApp::AegisubApp() {
-	// http://trac.wxwidgets.org/ticket/14302
+	//https://github.com/wxWidgets/wxWidgets/issues/14302
 	wxSetEnv("UBUNTU_MENUPROXY", "0");
 }
 
