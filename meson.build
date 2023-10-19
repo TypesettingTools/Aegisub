@@ -142,7 +142,7 @@ wx_dep = dependency(
     modules: ['std', 'stc', 'gl'],
 )
 
-if wx_dep.found() and not get_option('local_boost')
+if wx_dep.found() and not get_option('local_wx')
     deps += wx_dep
 else
     build_shared = true
