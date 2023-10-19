@@ -1,45 +1,83 @@
 app-id: org.aegisub.Aegisub
 runtime: org.freedesktop.Platform
-runtime-version: "21.08"
+runtime-version: "23.08"
 sdk: org.freedesktop.Sdk
 command: aegisub
 modules:
-  - name: glu
-    buildsystem: meson
-    cleanup:
-      - /include
-      - /lib/debug
-      - /lib/pkgconfig
-      - /lib/*.a
-    sources:
-      - type: archive
-        url: https://ftp.osuosl.org/pub/blfs/conglomeration/glu/glu-9.0.2.tar.xz
-        sha256: 6e7280ff585c6a1d9dfcdf2fca489251634b3377bfc33c29e4002466a38d02d4
-  - name: aegisub
-    buildsystem: meson
-    config-opts:
-      - -Dbuildtype=release
-      - -Dlocal_boost=true
-      - -Dwx_version=3.2.0
-      - --force-fallback-for=wxWidgets,icu,luajit
-    build-options:
-      build-args:
-        - --share=network
-    sources:
-      - type: git
-        url: https://github.com/Totto16/Aegisub.git
-        branch: flatpak
-        disable-shallow-clone: true
-    post-install:
-      - find subprojects/ -iregex ".*\.so" -exec cp {}  ${FLATPAK_DEST}/lib/ \;
-    run-tests: true
+    # - name: glu
+    #   buildsystem: meson
+    #   cleanup:
+    #       - /include
+    #       - /lib/debug
+    #       - /lib/pkgconfig
+    #       - /lib/*.a
+    #   sources:
+    #       - type: archive
+    #         url: https://ftp.osuosl.org/pub/blfs/conglomeration/glu/glu-9.0.3.tar.xz
+    #         sha256: bd43fe12f374b1192eb15fe20e45ff456b9bc26ab57f0eee919f96ca0f8a330f
+
+    - name: lua
+      buildsystem: simple
+      sources:
+          - type: archive
+            url: https://www.lua.org/ftp/lua-5.4.6.tar.gz
+            sha256: 7d5ea1b9cb6aa0b59ca3dde1c6adcb57ef83a1ba8e5432c0ecd06bf439b3ad88
+      build-commands: 
+          - sed -i 's/INSTALL_TOP= \/usr\/local/INSTALL_TOP= \/app/g' Makefile
+          - make
+          - make install
+
+    # - name: luajit
+    #   buildsystem: meson
+    #   sources:
+    #       - type: git
+    #         url: https://github.com/LuaJIT/LuaJIT.git
+    #         branch: v2.1
+    #       - type: dir
+    #         path: subprojects/packagefiles/luajit
+
+    # - name: luajit
+    #   buildsystem: simple
+    #   sources:
+    #       - type: git
+    #         url: https://github.com/LuaJIT/LuaJIT
+    #         branch: v2.1
+    #   build-commands:
+    #       - make
+    #       - make install
+    #   post-install:
+    #       - ls -lsa ${FLATPAK_DEST}/;
+    #       - ls -lsa .
+
+    - name: aegisub
+      buildsystem: meson
+      config-opts:
+          - -Dbuildtype=release
+          - -Dlocal_boost=true
+          - -Dlocal_wx=true
+          - -Dwx_version=3.2.3
+          - --force-fallback-for=icu,luajit
+          - -Dcredit=Flatpak build
+      build-options:
+          build-args:
+              - --share=network
+      sources:
+          - type: dir
+            path: "."
+            skip:
+                - .github/
+                - .vscode/
+                - build
+      post-install:
+          - find subprojects/ -iregex ".*\.so" -exec cp {}  ${FLATPAK_DEST}/lib/ \;
+      run-tests: true
 
 finish-args:
-  - --socket=x11
-  - --socket=wayland
-  - --socket=pulseaudio
-  - --share=network
-  - --device=all
-  - --device=dri
-  - --filesystem=~/.aegisub
-  - --filesystem=host 
+    - --socket=x11
+    - --socket=wayland
+    - --socket=pulseaudio
+    - --share=network
+    - --device=all
+    - --device=dri
+    - --filesystem=~/.aegisub
+    - --filesystem=host
