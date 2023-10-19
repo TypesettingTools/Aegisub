@@ -1,8 +1,11 @@
-project('Aegisub', ['c', 'cpp'],
-        license: 'BSD-3-Clause',
-        meson_version: '>=0.56.1', # with 63.0.0 the cmake project of wxWidgets fails!!! do 
-        default_options: ['cpp_std=c++14', 'buildtype=debugoptimized'],
-        version: '3.3.0')
+project(
+    'Aegisub',
+    ['c', 'cpp'],
+    license: 'BSD-3-Clause',
+    meson_version: '>=0.63.0',
+    default_options: ['cpp_std=c++20', 'buildtype=debugoptimized'],
+    version: '3.3.0',
+)
 
 cmake = import('cmake')
 
@@ -26,11 +29,13 @@ else
     version_sh = find_program('tools/version.sh')
 endif
 version_inc = include_directories('.')
-version_h = custom_target('git_version.h',
-                          command: [version_sh, meson.current_build_dir(), meson.current_source_dir()],
-                          build_by_default: true,
-                          build_always_stale: true, # has internal check whether target file will be refreshed
-                          output: ['git_version.h'])
+version_h = custom_target(
+    'git_version.h',
+    command: [version_sh, meson.current_build_dir(), meson.current_source_dir()],
+    build_by_default: true,
+    build_always_stale: true, # has internal check whether target file will be refreshed
+    output: ['git_version.h'],
+)
 
 if host_machine.system() == 'darwin' and get_option('build_osx_bundle')
     prefix = meson.current_build_dir() / 'Aegisub.app' / 'Contents'
@@ -73,51 +78,48 @@ elif host_machine.system() != 'windows'
     deps += dependency('fontconfig')
 endif
 
-cxx = meson.get_compiler('cpp')
-
-
-code = '''#include<stdio.h>
-void func() { printf("Compile me.\n"); }
-int main(void){return 0;}
-'''
-
-has_stdcpp20 = cxx.links(code, args : '-std=c++20', name : 'std=c++20 check')
-# c++20' is needed for the newer features!! c++2a is not enough!
-if not has_stdcpp20
-    error('std=c++20 isn\'t supported by the compiler!')
-endif
-
 cc = meson.get_compiler('c')
 deps += cc.find_library('m', required: false)
 deps += cc.find_library('dl', required: false)
 
 if meson.version().version_compare('>=0.60.0')
-  iconv_dep = dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
+    iconv_dep = dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 else
-  iconv_dep = cc.find_library('iconv', required: false)
-  if not (iconv_dep.found() or cc.has_function('iconv_open'))
-      iconv_sp = subproject('iconv') # this really needs to be replaced with a proper port
-      iconv_dep = iconv_sp.get_variable('libiconv_dep')
-  endif
+    iconv_dep = cc.find_library('iconv', required: false)
+    if not (iconv_dep.found() or cc.has_function('iconv_open'))
+        iconv_sp = subproject('iconv') # this really needs to be replaced with a proper port
+        iconv_dep = iconv_sp.get_variable('libiconv_dep')
+    endif
 endif
 deps += iconv_dep
 
-deps += dependency('libass', version: '>=0.9.7',
-                   fallback: ['libass', 'libass_dep'])
+deps += dependency(
+    'libass',
+    version: '>=0.9.7',
+    fallback: ['libass', 'libass_dep'],
+)
 
 ## since at least 1.79 (or 1.75 ?) regex isn't needed anymore, its a C++11 builtin!)
-boost_modules = ['chrono', 'filesystem', 'thread', 'locale', ]
+boost_modules = [
+    'chrono',
+    'filesystem',
+    'thread',
+    'locale',
+]
 if not get_option('local_boost')
-    boost_dep = dependency('boost', version: '>=1.50.0',
-                            modules: boost_modules + ['system'],
-                            required: false,
-                            static: get_option('default_library') == 'static')
+    boost_dep = dependency(
+        'boost',
+        version: '>=1.50.0',
+        modules: boost_modules + ['system'],
+        required: false,
+        static: get_option('default_library') == 'static',
+    )
 endif
 
 if get_option('local_boost') or not boost_dep.found()
     boost_dep = []
     boost = subproject('boost')
-    foreach module: boost_modules
+    foreach module : boost_modules
         boost_dep += boost.get_variable('boost_' + module + '_dep')
     endforeach
 endif
@@ -133,11 +135,14 @@ wx_minver = '>=' + get_option('wx_version')
 if host_machine.system() == 'darwin'
     wx_minver = '>=3.2.0'
 endif
-wx_dep = dependency('wxWidgets', version: wx_minver,
-                    required: false,
-                    modules: ['std', 'stc', 'gl'])
+wx_dep = dependency(
+    'wxWidgets',
+    version: wx_minver,
+    required: false,
+    modules: ['std', 'stc', 'gl'],
+)
 
-if wx_dep.found()
+if wx_dep.found() and not get_option('local_boost')
     deps += wx_dep
 else
     build_shared = true
@@ -152,53 +157,53 @@ else
     opt_var = cmake.subproject_options()
 
     if host_machine.system() == 'linux' and get_option('wx_use_qt')
-        opt_var.add_cmake_defines({
-            'wxBUILD_INSTALL': false,
-            'wxBUILD_PRECOMP': 'OFF',       # otherwise breaks project generation w/ meson
-            'wxBUILD_SHARED': build_shared,
+        opt_var.add_cmake_defines(
+            {
+                'wxBUILD_INSTALL': false,
+                'wxBUILD_PRECOMP': 'OFF', # otherwise breaks project generation w/ meson
+                'wxBUILD_SHARED': build_shared,
 
-            'wxUSE_WEBVIEW': false,         # breaks build on linux
-            'wxUSE_REGEX': 'builtin',   # no more boost_regex needed!
-            'CMAKE_BUILD_TYPE': build_type,
-            'wxUSE_IMAGE': true,
-            'wxBUILD_COMPATIBILITY':'3.1',
-            'wxBUILD_MONOLITHIC': true,      # otherwise breaks project generation w/ meson
-            # special add_cmake_defines
-            'wxTOOLKIT': 'qt',
-            'wxUSE_QT': 'yes',
-            'wxUSE_GTK': 'no'
-            })
+                'wxUSE_WEBVIEW': false, # breaks build on linux
+                'wxUSE_REGEX': 'builtin', # no more boost_regex needed!
+                'CMAKE_BUILD_TYPE': build_type,
+                'wxUSE_IMAGE': true,
+                'wxBUILD_COMPATIBILITY': '3.1',
+                'wxBUILD_MONOLITHIC': true, # otherwise breaks project generation w/ meson
+                # special add_cmake_defines
+                'wxTOOLKIT': 'qt',
+                'wxUSE_QT': 'yes',
+                'wxUSE_GTK': 'no',
+            },
+        )
 
-## TODO tested it with qt, it has many errors and graphic glitches then!!!, to fix them everywhere where something differs from gtk3 use #ifdefs
+        ## TODO tested it with qt, it has many errors and graphic glitches then!!!, to fix them everywhere where something differs from gtk3 use #ifdefs
 
-# sudo apt-get install qt5*-dev libcppunit-dev build-essential libjpeg-dev libtiff5-dev ubuntu-restricted-extras freeglut3 freeglut3-dev libsdl1.2-dev libgstreamer-plugins-base1.0-dev 
+        # sudo apt-get install qt5*-dev libcppunit-dev build-essential libjpeg-dev libtiff5-dev ubuntu-restricted-extras freeglut3 freeglut3-dev libsdl1.2-dev libgstreamer-plugins-base1.0-dev 
 
-    else 
-        opt_var.add_cmake_defines({
-            'wxBUILD_INSTALL': false,
-            'wxBUILD_PRECOMP': 'OFF',       # otherwise breaks project generation w/ meson
-            'wxBUILD_SHARED': build_shared,
+    else
+        opt_var.add_cmake_defines(
+            {
+                'wxBUILD_INSTALL': false,
+                'wxBUILD_PRECOMP': 'OFF', # otherwise breaks project generation w/ meson
+                'wxBUILD_SHARED': build_shared,
 
-            'wxUSE_WEBVIEW': false,         # breaks build on linux
-            'wxUSE_REGEX': 'builtin',   # no more boost_regex needed!
-            'CMAKE_BUILD_TYPE': build_type,
-            'wxUSE_IMAGE': true,
-            'wxBUILD_COMPATIBILITY':'3.1',
-            'wxBUILD_MONOLITHIC': true,      # otherwise breaks project generation w/ meson
-            'wxTOOLKIT': 'gtk',
-            'wxUSE_QT': 'no',
-            'wxUSE_GTK': 'yes'
-        })
+                'wxUSE_WEBVIEW': false, # breaks build on linux
+                'wxUSE_REGEX': 'builtin', # no more boost_regex needed!
+                'CMAKE_BUILD_TYPE': build_type,
+                'wxUSE_IMAGE': true,
+                'wxBUILD_COMPATIBILITY': '3.1',
+                'wxBUILD_MONOLITHIC': true, # otherwise breaks project generation w/ meson
+                'wxTOOLKIT': 'gtk',
+                'wxUSE_QT': 'no',
+                'wxUSE_GTK': 'yes',
+            },
+        )
     endif
 
     wx = cmake.subproject('wxWidgets', options: opt_var)
 
 
-    deps += [
-        wx.dependency('wxmono'),
-        wx.dependency('wxregex'),
-        wx.dependency('wxscintilla')
-    ]
+    deps += [wx.dependency('wxmono'), wx.dependency('wxregex'), wx.dependency('wxscintilla')]
 
     wx.target_list()
 
@@ -231,7 +236,7 @@ deps += dependency('icu-uc', version: '>=4.8.1.1')
 deps += dependency('icu-i18n', version: '>=4.8.1.1')
 
 dep_avail = []
-foreach dep: [
+foreach dep : [
     # audio, in order of precedence
     ['libpulse', [], 'PulseAudio', [], []],
     ['alsa', [], 'ALSA', [], []],
@@ -252,13 +257,25 @@ foreach dep: [
         #d = dependency(dep[0], version: dep[1],
         #               required: false, allow_fallback: true)
         if dep[3].length() > 0
-            d = dependency(dep[0], version: dep[1], fallback: dep[3])
+            d = dependency(
+                dep[0],
+                version: dep[1],
+                fallback: dep[3],
+            )
         else
-            d = dependency(dep[0], version: dep[1], required: false)
+            d = dependency(
+                dep[0],
+                version: dep[1],
+                required: false,
+            )
         endif
 
         if not d.found() and dep[4].length() > 0 and host_machine.system() == 'darwin'
-            d = dependency('appleframeworks', modules: dep[4], required: false)
+            d = dependency(
+                'appleframeworks',
+                modules: dep[4],
+                required: false,
+            )
         endif
 
         if d.found()
@@ -285,7 +302,13 @@ if host_machine.system() == 'windows' and not get_option('directsound').disabled
     endif
 
     dxguid_dep = cc.find_library('dxguid', required: true)
-    if dsound_dep.found() and winmm_dep.found() and ole32_dep.found() and dxguid_dep.found() and have_dsound_h
+    if (
+        dsound_dep.found()
+        and winmm_dep.found()
+        and ole32_dep.found()
+        and dxguid_dep.found()
+        and have_dsound_h
+    )
         deps += [dsound_dep, winmm_dep, ole32_dep, dxguid_dep]
         conf.set('WITH_DIRECTSOUND', 1)
         dep_avail += 'DirectSound'
@@ -293,7 +316,10 @@ if host_machine.system() == 'windows' and not get_option('directsound').disabled
 endif
 
 if host_machine.system() == 'darwin'
-    frameworks_dep = dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon', 'IOKit'])
+    frameworks_dep = dependency(
+        'appleframeworks',
+        modules: ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon', 'IOKit'],
+    )
     deps += frameworks_dep
 endif
 
@@ -313,9 +339,14 @@ endif
 conf_platform = configuration_data()
 conf_platform.set('DEFAULT_PLAYER_AUDIO', def_audio)
 
-luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'))
+luajit = dependency(
+    'luajit',
+    version: '>=2.0.0',
+    required: get_option('system_luajit'),
+)
 if luajit.found() and luajit.type_name() != 'internal'
-    luajit_test = cc.run('''#include <lauxlib.h>
+    luajit_test = cc.run(
+        '''#include <lauxlib.h>
 int main(void)
 {
     lua_State *L = luaL_newstate();
@@ -323,7 +354,9 @@ int main(void)
     // This is valid in lua 5.2, but a syntax error in 5.1
     const char testprogram[] = "function foo() while true do break return end end";
     return luaL_loadstring(L, testprogram) == LUA_ERRSYNTAX;
-}''', dependencies: luajit)
+}''',
+        dependencies: luajit,
+    )
 
     if luajit_test.returncode() == 1
         if get_option('system_luajit')
@@ -376,7 +409,10 @@ if not get_option('csri').disabled() and host_machine.system() == 'windows'
     deps += csri_sp.get_variable('csri_dep')
 endif
 
-acconf = configure_file(output: 'acconf.h', configuration: conf)
+acconf = configure_file(
+    output: 'acconf.h',
+    configuration: conf,
+)
 
 subdir('automation')
 subdir('libaegisub')
@@ -388,22 +424,35 @@ subdir('tests')
 aegisub_cpp_pch = ['src/include/agi_pre.h']
 aegisub_c_pch = ['src/include/agi_pre_c.h']
 
-aegisub = executable('aegisub', aegisub_src, version_h, acconf,
-                     link_with: [libresrc, libluabins, libaegisub],
-                     include_directories: [libaegisub_inc, libresrc_inc, version_inc, deps_inc, include_directories('src')],
-                     cpp_pch: aegisub_cpp_pch,
-                     c_pch: aegisub_c_pch,
-                     install: true,
-                     install_dir: bindir,
-                     dependencies: deps,
-                     win_subsystem: 'windows')
+aegisub = executable(
+    'aegisub',
+    aegisub_src,
+    version_h,
+    acconf,
+    link_with: [libresrc, libluabins, libaegisub],
+    include_directories: [
+        libaegisub_inc,
+        libresrc_inc,
+        version_inc,
+        deps_inc,
+        include_directories('src'),
+    ],
+    cpp_pch: aegisub_cpp_pch,
+    c_pch: aegisub_c_pch,
+    install: true,
+    install_dir: bindir,
+    dependencies: deps,
+    win_subsystem: 'windows',
+)
 
 if host_machine.system() == 'windows'
     mt_exe = find_program('mt.exe')
     apply_manifest = find_program(meson.project_source_root() / 'tools/apply-manifest.py')
-    custom_target('apply-manifest',
-                  input: aegisub,
-                  output: 'applied_manifest',
-                  command: [apply_manifest, mt_exe, '@INPUT@'],
-                  build_by_default: true)
+    custom_target(
+        'apply-manifest',
+        input: aegisub,
+        output: 'applied_manifest',
+        command: [apply_manifest, mt_exe, '@INPUT@'],
+        build_by_default: true,
+    )
 endif

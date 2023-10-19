@@ -15,6 +15,7 @@ option('csri', type: 'feature', description: 'CSRI support')
 
 option('system_luajit', type: 'boolean', value: false, description: 'Force using system luajit')
 option('local_boost', type: 'boolean', value: false, description: 'Force using locally compiled Boost')
+option('local_wx', type: 'boolean', value: false, description: 'Force using locally compiled wxWidgets')
 
 option('wx_version', type: 'string', value: '3.0.0', description: 'The minimum wxWidgets version to use')
 option('wx_use_qt', type: 'boolean', value: false, description: 'If you want to use qt instead of gtk on linux. it is only used, when the local wxWidgtes is used!')
