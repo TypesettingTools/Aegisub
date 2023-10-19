@@ -139,7 +139,7 @@ libass_dep = dependency('libass', version: '>=0.9.7',
 deps += libass_dep
 
 boost_static = meson.version().version_compare('>=0.63.0') and get_option('prefer_static')    # boost dependencies do not respect prefer_static https://github.com/mesonbuild/meson/issues/15458
-boost_modules = ['chrono', 'locale']
+boost_modules = ['chrono', 'locale', 'program_options']
 
 if boost_static
     boost_modules += 'thread'   # static boost dependencies do not include transitive dependencies https://github.com/mesonbuild/meson/issues/15457
