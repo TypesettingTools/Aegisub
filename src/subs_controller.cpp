@@ -149,10 +149,13 @@ SubsController::SubsController(agi::Context *context)
 , text_selection_connection(context->textSelectionController->AddSelectionListener(&SubsController::OnTextSelectionChanged, this))
 , autosave_queue(agi::dispatch::Create())
 {
-	autosave_timer_changed(&autosave_timer);
-	BindConnection(OPT_SUB("App/Auto/Save", [this] { autosave_timer_changed(&autosave_timer); }));
-	BindConnection(OPT_SUB("App/Auto/Save Every Seconds", [this] { autosave_timer_changed(&autosave_timer); }));
-	autosave_timer.Bind(wxEVT_TIMER, [this](wxTimerEvent&) { AutoSave(); });
+	if (config::hasGui) {
+		autosave_timer = std::make_unique<wxTimer>();
+		autosave_timer_changed(autosave_timer.get());
+		BindConnection(OPT_SUB("App/Auto/Save", [this] { autosave_timer_changed(autosave_timer.get()); }));
+		BindConnection(OPT_SUB("App/Auto/Save Every Seconds", [this] { autosave_timer_changed(autosave_timer.get()); }));
+		autosave_timer->Bind(wxEVT_TIMER, [this](wxTimerEvent&) { AutoSave(); });
+	}
 }
 
 SubsController::~SubsController() {
