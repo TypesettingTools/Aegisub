@@ -55,8 +55,6 @@ class wxStyledTextEvent;
 class wxTextCtrl;
 struct AssDialogueBase;
 
-template<class Base> class Placeholder;
-
 /// @brief Main subtitle edit box
 ///
 /// Controls the text edit and all surrounding controls
@@ -86,13 +84,13 @@ class SubsEditBox final : public wxPanel {
 	wxCheckBox *comment_box;
 	wxComboBox *style_box;
 	wxButton *style_edit_button;
-	Placeholder<wxComboBox> *actor_box;
+	wxComboBox *actor_box;
 	TimeEdit *start_time;
 	TimeEdit *end_time;
 	TimeEdit *duration;
 	wxSpinCtrl *layer;
 	std::array<wxTextCtrl *, 3> margin;
-	Placeholder<wxComboBox> *effect_box;
+	wxComboBox *effect_box;
 	wxRadioButton *by_time;
 	wxRadioButton *by_frame;
 	wxTextCtrl *char_count;
@@ -153,8 +151,6 @@ class SubsEditBox final : public wxPanel {
 	void OnSize(wxSizeEvent &event);
 	void OnSplit(wxCommandEvent&);
 	void DoOnSplit(bool show_original);
-
-	void SetPlaceholderCtrl(wxControl *ctrl, wxString const& value);
 
 	/// @brief Set a field in each selected line to a specified value
 	/// @param set   Callable which updates a passed line
