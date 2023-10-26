@@ -157,11 +157,13 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 #endif
 	crash_writer::Initialize(config::path->Decode("?user"));
 
-	StartupLog("Create log writer");
-	auto path_log = config::path->Decode("?user/log/");
-	agi::fs::CreateDirectory(path_log);
-	agi::log::log->Subscribe(std::make_unique<agi::log::JsonEmitter>(path_log));
-	CleanCache(path_log, "*.json", 10, 100);
+	if (config::hasGui) {
+		StartupLog("Create log writer");
+		auto path_log = config::path->Decode("?user/log/");
+		agi::fs::CreateDirectory(path_log);
+		agi::log::log->Subscribe(std::make_unique<agi::log::JsonEmitter>(path_log));
+		CleanCache(path_log, "*.json", 10, 100);
+	}
 
 	StartupLog("Load user configuration");
 	try {
@@ -197,7 +199,7 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 	hotkey::init();
 
 	StartupLog("Load MRU");
-	config::mru = new agi::MRUManager(config::path->Decode("?user/mru.json"), GET_DEFAULT_CONFIG(default_mru), config::opt);
+	config::mru = new agi::MRUManager(config::hasGui ? config::path->Decode("?user/mru.json") : "", GET_DEFAULT_CONFIG(default_mru), config::opt);
 
 	agi::util::SetThreadName("AegiMain");
 
