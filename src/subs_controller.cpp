@@ -185,7 +185,7 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, const char
 	context->ass->Commit("", AssFile::COMMIT_NEW);
 
 	// Save backup of file
-	if (CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
+	if (config::hasGui && CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
 		auto path_str = OPT_GET("Path/Auto/Backup")->GetString();
 		agi::fs::path path;
 		if (path_str.empty())
