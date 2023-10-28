@@ -48,8 +48,8 @@ void ShowAboutDialog(wxWindow *parent) {
 		translatorCredit.clear();
 
 	// Generate about string
-	wxString aboutString = wxString("Aegisub ") + GetAegisubShortVersionString() + ".\n"
-		fmt_tl("Copyright (c) 2005-%s Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et al.\n\n",GetAegisubBuildTime())+ 
+	wxString aboutString = wxString("Aegisub ") + GetAegisubShortVersionString() + ".\n" + 
+		fmt_tl("Copyright (c) 2005-%s Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et al.\n\n",GetAegisubBuildYear())+ 
 		"Programmers:\n"
 		"    Alysson Souza e Silva\n"
 		"    Amar Takhar\n"
