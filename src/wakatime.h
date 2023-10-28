@@ -17,8 +17,6 @@
 #include "libaegisub/json.h" */
 
 #pragma once
-#ifndef _WAKATIME_H_
-#define _WAKATIME_H_
 
 #include "frame_main.h"
 #include "libaegisub/path.h"
@@ -26,6 +24,7 @@
 #include "version.h"
 
 #include <chrono>
+#include <expected>
 #include <functional>
 
 #include <wx/arrstr.h>
@@ -43,23 +42,24 @@ void update(bool isWrite);
 
 void setUpdateFunction(std::function<void()> updateFunction);
 
-wxString getTime();
-
-using namespace std::chrono;
+std::string getTime();
 
 typedef struct {
-  const wxString program;
-  const wxString plugin_name;
-  const wxString short_type;
-  const wxString long_type;
-  const wxString plugin_version;
-  wxString *aegisub_version;
+  const std::string program;
+  const std::string plugin_name;
+  const std::string short_type;
+  const std::string long_type;
+  const std::string plugin_version;
+  const std::string aegisub_version;
 } Plugin;
 
 typedef struct {
-  bool ok;
-  wxString *error_string;  // is nullptr if no error occured
-  wxString *output_string; // can be empty and is nullptr if an error occured
+
+  std::string error_string;  // is empty if no error occured
+  std::string output_string; // is empty if an error occured
+
+  [[nodiscard]] bool ok() const { return this->error_string.empty(); };
+
 } CLIResponse;
 
 std::ostream &operator<<(std::ostream &os, const wakatime::CLIResponse &arg);
@@ -67,8 +67,8 @@ std::ostream &operator<<(std::ostream &os, const wakatime::CLIResponse &arg);
 std::ostream &operator<<(std::ostream &os, const wakatime::CLIResponse *arg);
 
 typedef struct {
-  wxString *project_name;
-  wxString *file_name;
+  std::string project_name;
+  std::string file_name;
   bool changed;
 } ProjectInfo;
 
@@ -76,47 +76,39 @@ typedef struct {
 /// the wakatime cli class, it has the needed methods
 class cli {
 public:
-  cli();
+  cli(Plugin &plugin_info);
 
   bool initialize();
-  void change_project(wxString *new_file, wxString *project_name);
-  void change_api_key(wxString *key);
+  void change_project(std::string &new_file, std::string &project_name);
+  void change_api_key(std::string &key);
   void send_heartbeat(bool isWrite);
   ProjectInfo project_info = {
-    project_name : nullptr,
-    file_name : nullptr,
+    project_name : "",
+    file_name : "",
     changed : false
   };
 
-  wxString *currentTime;
+  std::string currentTime = "";
   std::function<void()> updateFunction;
 
 private:
-  wxString *key;
-  seconds last_heartbeat;
+  std::string key = " ";
+  std::chrono::seconds last_heartbeat;
   bool debug;
-  Plugin plugin_info = {
-    program : "Aegisub",
-    plugin_name : "aegisub-wakatime",
-    short_type : "ASS",
-    long_type : "Advanced SubStation Alpha",
-    plugin_version : "1.1.4"
-  };
-  wxString *cli_path;
+  Plugin plugin_info;
+  std::string cli_path = "";
   bool cliInstalled;
 
   void get_time_today();
   bool handle_cli();
   bool is_cli_present();
   bool download_cli();
-  bool is_key_valid(wxString key);
+  bool is_key_valid(std::string &key);
   void getKey();
   void getDebug();
-  void setTime(wxString *text);
+  void setTime(std::string text);
 
-  void invoke_cli_async(wxArrayString *options,
+  void invoke_cli_async(std::vector<std::string> &options,
                         std::function<void(CLIResponse response)> callback);
 };
 } // namespace wakatime
-
-#endif

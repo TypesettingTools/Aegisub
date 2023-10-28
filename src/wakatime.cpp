@@ -26,8 +26,10 @@
 #include <chrono>
 #include <functional>
 #include <iostream>
+#include <numeric>
 #include <ostream>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 
 #include <wx/arrstr.h>
@@ -39,14 +41,22 @@
 
 namespace wakatime {
 
-wxString *StringArrayToString(wxArrayString *input, wxString *seperator) {
-  wxString *output = new wxString();
+std::string StringArrayToString(std::vector<std::string> &input,
+                                const char *const delimiter = " ") {
+  return std::accumulate(
+      std::next(input.begin()), input.end(), input[0],
+      [delimiter](std::string a, std::string b) { return a + delimiter + b; });
+}
+
+std::string StringArrayToString(wxArrayString *input,
+                                const char *const delimiter = " ") {
+  std::vector<std::string> result{};
+  result.reserve(input->GetCount());
   for (size_t i = 0; i < input->GetCount(); ++i) {
-    output->Append(
-        i == 0 ? input->Item(i)
-               : (wxString::Format("%s%s", *seperator, input->Item(i))));
+
+    result.push_back(input->Item(i).ToStdString());
   }
-  return output;
+  return StringArrayToString(result, delimiter);
 }
 
 #define BUF_SIZE 1024
@@ -80,25 +90,18 @@ wxString *ReadInputStream(wxInputStream *input, bool trimLastNewLine = false) {
     }
   }
 
-  if (output->Last() == '\n' && trimLastNewLine) {
-    output = new wxString(output->ToAscii().data(), output->Length() - 1);
+  if (output->EndsWith("\n") && trimLastNewLine) {
+    output->Trim(true);
   }
   return output;
 }
 
-wxString *StringArrayToString(wxArrayString *input,
-                              const char *seperator = " ") {
-  return StringArrayToString(input, new wxString(seperator));
-}
-
 std::ostream &operator<<(std::ostream &os, const wakatime::CLIResponse &arg) {
-  os << "CLIResponse: isOk: " << (arg.ok ? "yes" : "no") << "\n\tstreams:\n"
-     << "\t\terror: '"
-     << (arg.error_string == nullptr ? "NULL" : arg.error_string->ToAscii())
+  os << "CLIResponse: isOk: " << (arg.ok() ? "yes" : "no") << "\n\tstreams:\n"
+     << "\t\terror: '" << (arg.error_string.empty() ? "NULL" : arg.error_string)
      << "'\n"
      << "\t\toutput: '"
-     << (arg.output_string == nullptr ? "NULL" : arg.output_string->ToAscii())
-     << "'\n\n";
+     << (arg.output_string.empty() ? "NULL" : arg.output_string) << "'\n\n";
   return os;
 }
 
@@ -107,34 +110,29 @@ std::ostream &operator<<(std::ostream &os, const wakatime::CLIResponse *arg) {
   return os;
 }
 
-using namespace std::chrono;
-
-cli::cli() {
+cli::cli(Plugin &plugin_info) : plugin_info{plugin_info} {
   if (!handle_cli()) {
     this->cliInstalled = false;
     return;
   }
   this->cliInstalled = true;
 
-  last_heartbeat =
-      duration_cast<seconds>(steady_clock::now().time_since_epoch());
+  last_heartbeat = std::chrono::duration_cast<std::chrono::seconds>(
+      std::chrono::steady_clock::now().time_since_epoch());
   ;
 
   OPT_SUB("Wakatime/API_Key", &cli::getKey, this);
   OPT_SUB("Wakatime/Debug", &cli::getDebug, this);
 
-  this->plugin_info.aegisub_version =
-      new wxString(GetAegisubLongVersionString());
-
-  this->setTime(new wxString("Loading..."));
+  this->setTime("Loading...");
 
   this->getDebug();
   this->getKey();
 
-  this->setTime(new wxString("No Project Selected"));
+  this->setTime("No Project Selected");
 }
 
-void cli::change_project(wxString *new_file, wxString *project_name) {
+void cli::change_project(std::string &new_file, std::string &project_name) {
   project_info.file_name = new_file;
   project_info.project_name = project_name;
   project_info.changed = true;
@@ -142,20 +140,22 @@ void cli::change_project(wxString *new_file, wxString *project_name) {
   send_heartbeat(false);
 }
 
-void cli::change_api_key(wxString *key) {
+void cli::change_api_key(std::string &key) {
   this->key = key;
   // TODO check validity of key!
 }
 
 void cli::send_heartbeat(bool isWrite) {
 
-  if (this->key->IsEmpty()) {
+  if (this->key.empty()) {
     return;
   }
 
-  seconds now = duration_cast<seconds>(steady_clock::now().time_since_epoch());
+  std::chrono::seconds now = std::chrono::duration_cast<std::chrono::seconds>(
+      std::chrono::steady_clock::now().time_since_epoch());
 
-  if (!((last_heartbeat + (2min) < now) || isWrite || project_info.changed)) {
+  if (!((last_heartbeat + std::chrono::minutes(2) < now) || isWrite ||
+        project_info.changed)) {
     return;
   }
 
@@ -168,30 +168,30 @@ void cli::send_heartbeat(bool isWrite) {
   project_info.changed = false;
   last_heartbeat = now;
 
-  wxArrayString *buffer = new wxArrayString();
+  std::vector<std::string> buffer{};
 
-  buffer->Add(wxString::Format("--language '%s'", plugin_info.short_type));
-  buffer->Add(
-      wxString::Format("--alternate-language '%s'", plugin_info.long_type));
+  buffer.push_back("--language '" + plugin_info.short_type + "'");
+  buffer.push_back("--alternate-language '" + plugin_info.long_type + "'");
 
   // TODO use translation for default file name!
   //  subs_controller->Filename() return "Unbenannt" or "Untitled" when no file
   //  is loaded! (.ass has to be set additionally, and file path is ""!)
 
-  buffer->Add(
-      wxString::Format("--entity '%s'", project_info.file_name == nullptr
-                                            ? "Unbenannt.ass"
-                                            : *project_info.file_name));
+  buffer.push_back("--entity '" +
+                   (project_info.file_name.empty() ? "Unbenannt.ass"
+                                                   : project_info.file_name) +
+                   "'");
   // "--project" gets detected by the folder name! (the manual project name is
   // also the folder name, atm at least!)
-  buffer->Add(wxString::Format("--alternate-project '%s'",
-                               project_info.project_name == nullptr
-                                   ? "Unbenannt"
-                                   : *project_info.project_name));
+  buffer.push_back("--alternate-project '" +
+                   (project_info.project_name.empty()
+                        ? "Unbenannt"
+                        : project_info.project_name) +
+                   "'");
 
   // TODO: if project_info.changed, should --write be enabled?
   if (isWrite) {
-    buffer->Add("--write");
+    buffer.push_back("--write");
   }
 
   invoke_cli_async(buffer, [this](CLIResponse response_string) -> void {
@@ -201,15 +201,15 @@ void cli::send_heartbeat(bool isWrite) {
 
 void cli::get_time_today() {
 
-  wxArrayString *buffer = new wxArrayString();
-  buffer->Add("--today");
+  std::vector<std::string> buffer{};
+  buffer.push_back("--today");
   // TODO: maybe add an option for that?
   // buffer->Add("--today-hide-categories building"); // e.g.
   // Can be "coding", "building", "indexing", "debugging", "running tests",
   // "writing tests", "manual testing", "code reviewing", "browsing", or
   // "designing". Defaults to "coding".
   invoke_cli_async(buffer, [this](CLIResponse time_today) -> void {
-    if (time_today.ok) {
+    if (time_today.ok()) {
       this->setTime(time_today.output_string);
     }
   });
@@ -218,15 +218,14 @@ void cli::get_time_today() {
 bool cli::handle_cli() {
 
   wxArrayString *output = new wxArrayString();
-  // TODO: al this commands aren't os independent, fix that!
+  // TODO: all this commands aren't os independent, fix that!
   long returnCode = wxExecute("bash  -c \"realpath ~", *output, wxEXEC_SYNC);
 
   if (returnCode != 0) {
     return false;
   }
-  wxString *homePath = StringArrayToString(output);
-  cli_path =
-      new wxString(wxString::Format("%s/.wakatime/wakatime-cli", *homePath));
+  std::string homePath = StringArrayToString(output);
+  cli_path = homePath + "/.wakatime/wakatime-cli";
   if (!is_cli_present()) {
     return download_cli();
   }
@@ -237,7 +236,7 @@ bool cli::handle_cli() {
 bool cli::is_cli_present() {
 
   long returnCode = wxExecute(
-      wxString::Format("bash  -c \"which '%s' > /dev/null\"", *cli_path),
+      wxString::Format("bash  -c \"which '%s' > /dev/null\"", cli_path),
       wxEXEC_SYNC);
 
   return returnCode == 0;
@@ -247,26 +246,25 @@ bool cli::download_cli() {
 
   // TODO generalize (os independent) and finish, WIP
   return false;
-  long returnCode =
-      wxExecute(wxString::Format(
-                    "bash  -c \"mkdir -p ~/.wakatime && wget  "
-                    "'https://github.com/wakatime/wakatime-cli/releases/"
-                    "download/v1.52.1-alpha.1/wakatime-cli-linux-amd64.zip -o "
-                    "~/.wakatime/ > /dev/null && unzip && ln -S .... etc\"",
-                    *cli_path),
-                wxEXEC_SYNC);
+  long returnCode = wxExecute(
+      wxString::Format("bash  -c \"mkdir -p ~/.wakatime && wget  "
+                       "'https://github.com/wakatime/wakatime-cli/releases/"
+                       "download/v1.86.5/wakatime-cli-linux-amd64.zip' -o "
+                       "~/.wakatime/ > /dev/null && unzip && ln -S .... etc\"",
+                       cli_path),
+      wxEXEC_SYNC);
 
   return returnCode == 0;
 }
 
-bool cli::is_key_valid(wxString key) {
-  // invoke cli with --key and get return code!
+bool is_key_valid(std::string &key) {
+  // TODO: invoke cli with --key and get return code!
   return true;
 }
 
 void cli::getDebug() { this->debug = OPT_GET("Wakatime/Debug")->GetBool(); }
 
-void cli::setTime(wxString *time) {
+void cli::setTime(std::string time) {
   this->currentTime = time;
   if (this->updateFunction != nullptr) {
     this->updateFunction();
@@ -276,131 +274,143 @@ void cli::setTime(wxString *time) {
 void cli::getKey() {
   std::string aegisub_key = OPT_GET("Wakatime/API_Key")->GetString();
   if (aegisub_key.empty()) {
-    wxArrayString *buffer = new wxArrayString();
-    buffer->Add(wxString("--config-read api_key"));
+    std::vector<std::string> buffer{};
+    buffer.push_back("--config-read api_key");
     invoke_cli_async(buffer, [this](CLIResponse response) -> void {
-      if (response.ok) {
+      if (response.ok()) {
         this->key = response.output_string;
-        OPT_SET("Wakatime/API_Key")->SetString(this->key->ToStdString());
+        OPT_SET("Wakatime/API_Key")->SetString(this->key);
       }
     });
   } else {
-    this->key = new wxString(aegisub_key);
-
-    wxArrayString *buffer = new wxArrayString();
-    buffer->Add(wxString::Format("--config-write api_key=%s", *(this->key)));
+    this->key = aegisub_key;
+    std::vector<std::string> buffer{};
+    buffer.push_back("--config-write api_key=" + this->key);
     invoke_cli_async(buffer, [this](CLIResponse response) -> void {
-      if (!response.ok) {
+      if (!response.ok()) {
         LOG_E("wakatime/execute/async")
-            << "Couldn't save the wakatime key to the config!\n";
+            << "Couldn't save the wakatime key to the config, reason:\n"
+            << response.error_string;
       }
     });
   }
 }
 
-void cli::invoke_cli_async(wxArrayString *options,
+void cli::invoke_cli_async(std::vector<std::string> &options,
                            std::function<void(CLIResponse response)> callback) {
 
-  if (!this->cliInstalled) {
-    CLIResponse response = {
-      ok : false,
-      error_string : new wxString("Wakatime CLI not installed"),
-      output_string : nullptr
-    };
-    callback(response);
-    return;
-  }
+  try {
 
-  if (this->debug) {
-    options->Add("--verbose");
-  }
+    if (!this->cliInstalled) {
+      CLIResponse response = {
+        error_string : "Wakatime CLI not installed",
+        output_string : ""
+      };
+      callback(response);
+      return;
+    }
 
-  if (this->key != nullptr && !this->key->IsEmpty()) {
-    options->Add(wxString::Format("--key '%s'", *(this->key)));
-  }
-  options->Add(wxString::Format(
-      "--plugin 'aegisub/%s %s/%s'", plugin_info.plugin_version,
-      plugin_info.plugin_name, *(plugin_info.aegisub_version)));
+    if (this->debug) {
+      options.push_back("--verbose");
+    }
 
-  wxString command =
-      wxString::Format("%s %s", *cli_path, *StringArrayToString(options));
-  // TODO use shared pointer or similar!
+    if (!this->key.empty()) {
+      options.push_back("--key '" + this->key + "'");
+    }
+    options.push_back("--plugin 'aegisub/" + plugin_info.plugin_version + " " +
+                      plugin_info.plugin_name + "/" +
+                      plugin_info.aegisub_version + "'");
 
-  // since we handle the OnTerminate indirectly via event handler, we have to
-  // delete the process to close opened pipes and free other resources, when
-  // it's okay< to do so, and its okay after the callback returns it!
-  wxProcess *process = new wxProcess();
-  process->Redirect();
+    wxString command =
+        wxString::Format("%s %s", cli_path, StringArrayToString(options));
 
-  std::function<void(wxProcessEvent & event)> lambda =
-      ([process, callback, command](wxProcessEvent &event) -> void {
-        CLIResponse response = {
-          ok : true,
-          error_string : nullptr,
-          output_string : nullptr
-        };
+    // since we handle the OnTerminate indirectly via event handler, we have to
+    // delete the process to close opened pipes and free other resources, when
+    // it's okay< to do so, and its okay after the callback returns it!
+    wxProcess *process = new wxProcess();
+    process->Redirect();
 
-        wxInputStream *outputStream = process->GetInputStream();
-        if (outputStream == nullptr) {
-          LOG_E("wakatime/execute/async")
-              << "Command couldn't be executed: " << command.ToAscii();
-          response.error_string = new wxString("Stdout was NULL");
-          response.ok = false;
+    std::function<void(wxProcessEvent & event)> lambda =
+        ([process, callback, command](wxProcessEvent &event) -> void {
+          CLIResponse response = {error_string : "", output_string : ""};
+
+          wxInputStream *outputStream = process->GetInputStream();
+          if (outputStream == nullptr) {
+            LOG_E("wakatime/execute/async")
+                << "Command couldn't be executed: " << command.utf8_str();
+            response.error_string = "Stdout was NULL";
+            callback(response);
+            delete process;
+            return;
+          }
+
+          wxInputStream *errorStream = process->GetErrorStream();
+          if (errorStream == nullptr) {
+            LOG_E("wakatime/execute/async")
+                << "Command couldn't be executed: " << command.utf8_str();
+            response.error_string = "Stderr was NULL";
+            callback(response);
+            delete process;
+            return;
+          }
+
+          wxString *error_string = ReadInputStream(errorStream, true);
+          wxString *output_string = ReadInputStream(outputStream, true);
+
+          if (event.GetExitCode() != 0 || output_string == nullptr ||
+              !error_string->IsEmpty()) {
+            LOG_E("wakatime/execute/async")
+                << "Command couldn't be executed: " << command.utf8_str();
+
+            LOG_E("wakatime/execute/async")
+                << "The Errors were: " << error_string->ToStdString() << "\n"
+                << "exitCode: " << event.GetExitCode();
+
+            response.error_string = error_string->ToStdString();
+            callback(response);
+            delete process;
+            return;
+          }
+
+          response.output_string = output_string->ToStdString();
+
           callback(response);
           delete process;
           return;
-        }
+        });
 
-        wxInputStream *errorStream = process->GetErrorStream();
-        if (errorStream == nullptr) {
-          LOG_E("wakatime/execute/async")
-              << "Command couldn't be executed: " << command.ToAscii();
-          response.error_string = new wxString("Stderr was NULL");
-          response.ok = false;
-          callback(response);
-          delete process;
-          return;
-        }
+    process->Bind(wxEVT_END_PROCESS, lambda);
 
-        wxString *error_string = ReadInputStream(errorStream, true);
-        wxString *output_string = ReadInputStream(outputStream, true);
+    LOG_D("wakatime/execute") << "Executing: " << command.utf8_str();
 
-        if (event.GetExitCode() != 0 || output_string == nullptr ||
-            !error_string->IsEmpty()) {
-          LOG_E("wakatime/execute/async")
-              << "Command couldn't be executed: " << command.ToAscii();
+    long pid = wxExecute(command, wxEXEC_ASYNC, process);
 
-          LOG_E("wakatime/execute/async")
-              << "The Errors were: " << error_string->ToAscii() << "\n"
-              << "exitCode: " << event.GetExitCode();
+    if (pid == 0) {
+      LOG_E("wakatime/execute")
+          << "Command couldn't be executed: " << command.utf8_str();
+      return;
+    }
 
-          response.error_string = error_string;
-          response.ok = false;
-          callback(response);
-          delete process;
-          return;
-        }
-
-        response.output_string = output_string;
-
-        callback(response);
-        delete process;
-        return;
-      });
-
-  process->Bind(wxEVT_END_PROCESS, lambda);
-
-  long pid = wxExecute(command, wxEXEC_ASYNC, process);
-
-  if (pid == 0) {
-    LOG_E("wakatime/execute")
-        << "Command couldn't be executed: " << command.ToAscii();
+  } catch (const std::exception &exc) {
+    LOG_E("wakatime/execute") << "Caught exception: " << exc.what();
     return;
   }
 }
 
 wakatime::cli *wakatime_cli = nullptr;
-void init() { wakatime_cli = new cli(); }
+void init() {
+
+  Plugin plugin_info = {
+    program : "Aegisub",
+    plugin_name : "aegisub-wakatime",
+    short_type : "ASS",
+    long_type : "Advanced SubStation Alpha",
+    plugin_version : "1.2.0",
+    aegisub_version : GetAegisubLongVersionString(),
+  };
+
+  wakatime_cli = new cli(plugin_info);
+};
 
 void clear() { delete wakatime_cli; }
 
@@ -413,11 +423,11 @@ void setUpdateFunction(std::function<void()> updateFunction) {
   wakatime_cli->updateFunction = updateFunction;
 }
 
-wxString getTime() {
-  if (wakatime_cli->currentTime == nullptr) {
-    return wxString("");
+std::string getTime() {
+  if (wakatime_cli->currentTime.empty()) {
+    return std::string("");
   }
-  return wxString::Format(" - %s", *(wakatime_cli->currentTime));
+  return std::string(" - ") + wakatime_cli->currentTime;
 }
 
 void update(bool isWrite) {
@@ -430,14 +440,11 @@ void update(bool isWrite, agi::fs::path const &filename) {
   LOG_D("plugin/wakatime") << "update -  isWrite: " << isWrite
                            << " filename: " << filename.string() << "\n";
 
-  wxString *temp_file_name = new wxString(filename.string());
-  wxString *temp_project_name =
-      new wxString(filename.parent_path().filename().string());
+  std::string temp_file_name = filename.string();
+  std::string temp_project_name = filename.parent_path().filename().string();
   wakatime_cli->project_info.changed =
-      wakatime_cli->project_info.file_name == nullptr ||
-      !wakatime_cli->project_info.file_name->IsSameAs(*temp_file_name) ||
-      wakatime_cli->project_info.project_name == nullptr ||
-      !wakatime_cli->project_info.project_name->IsSameAs(*temp_project_name);
+      wakatime_cli->project_info.file_name.compare(temp_file_name) != 0 ||
+      wakatime_cli->project_info.project_name.compare(temp_project_name) != 0;
 
   if (wakatime_cli->project_info.changed) {
     wakatime_cli->project_info.file_name = temp_file_name;
