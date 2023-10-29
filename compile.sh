@@ -37,7 +37,6 @@ SubCommands:
     ignore
 EOF
 
-    exit 0
 elif [ $ARG == "release" ]; then
     buildtype="release"
 elif [ $ARG == "debug" ]; then
@@ -57,10 +56,6 @@ elif [ $ARG == "runner" ]; then
 elif [ $ARG == "flatpak" ]; then
     BUILD_DIR="flatpak-build"
     UNIQUE_ID="org.aegisub.Aegisub"
-    flatpak-builder --user --force-clean "$BUILD_DIR" "$UNIQUE_ID.yml"
-
-    ## now test
-
     flatpak-builder --user --install --force-clean "$BUILD_DIR" "$UNIQUE_ID.yml"
     flatpak run "$UNIQUE_ID"
 
@@ -74,7 +69,7 @@ fi
 
 # CONFIGURE
 
-bash -c "meson build -Dbuildtype=$buildtype -Dlocal_boost=true  -Dwx_version=3.2.3 -Dcredit='Totto local build'"
+bash -c "meson build -Dbuildtype=$buildtype -Dwx_version=3.2.3 -Dcredit='Totto local build'"
 
 if [ $DEBUG == "true" ]; then
     nodemon --watch src/ -e .cpp,.h --exec "sudo meson compile -C build && ./build/aegisub || exit 1"
@@ -100,8 +95,8 @@ fi
 
 meson compile -C build linux-dependency-control
 meson compile -C build aegisub.desktop
-meson compile -C build ubuntu-deb
-#  meson compile -C build ubuntu.assdraw-deb
+meson compile -C build ubuntu.aegsiub.deb
+meson compile -C build ubuntu.assdraw.deb
 
 # INSTALL if no second parameter is given, not the best, but it works
 if [ -z "$2" ]; then
