@@ -13,8 +13,10 @@ lua_files = files(
     'utils.lua',
 )
 
-foreach f: lua_files
-    configure_file(input: f, output: '@PLAINNAME@', copy: true)
+fs = import('fs')
+
+foreach file: lua_files
+    fs.copyfile(file)
 endforeach
 
 subdir('aegisub')
