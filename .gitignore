@@ -46,3 +46,4 @@ subprojects/uchardet-*
 
 flatpak-build/
 .flatpak-builder/
+.repo/
