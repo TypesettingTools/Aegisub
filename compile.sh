@@ -37,6 +37,8 @@ SubCommands:
     ignore
 EOF
 
+    exit 0
+
 elif [ $ARG == "release" ]; then
     buildtype="release"
 elif [ $ARG == "debug" ]; then
