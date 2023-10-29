@@ -1,6 +1,6 @@
 #!/bin/env bash
 
-cd ${MESON_BUILD_ROOT} || exit 5
+cd "${MESON_BUILD_ROOT}" || exit 5
 
 ## TODO get these numbers dynamically
 
@@ -8,7 +8,12 @@ DEB_NAME="aegisub_3.3.0+dpctrl-ubuntu_amd64"
 
 # create deb directroy, later this will be bundled into the deb
 
+if [ -d $DEB_NAME ]; then
+    rm -rf $DEB_NAME
+fi
+
 mkdir $DEB_NAME
+
 cd $DEB_NAME || exit 5
 
 # now create the pseudo file system and copy all relevant systems in there
@@ -38,10 +43,13 @@ mkdir -p usr/lib
 mkdir -p lib/x86_64-linux-gnu/
 
 declare -a modules=('chrono' 'thread' 'filesystem' 'locale' 'program_options')
-boost_version='1.79.0'
+local_boost_version='1.83.0'
+local_boost_dir=$(echo "$local_boost_version" | sed s/\\./_/g)
+
+# shellcheck disable=SC2068
 for module in ${modules[@]}; do
-    if [ -d "../subprojects/boost_1_79_0/libs/$module" ]; then
-        cp "../subprojects/boost_1_79_0/libs/$module/libboost_$module.$boost_version.so" "usr/lib/"
+    if [ -d "../subprojects/boost_$local_boost_dir/libs/$module" ]; then
+        cp "../subprojects/boost_$local_boost_dir/libs/$module/libboost_$module.$local_boost_version.so" "usr/lib/"
     fi
 done
 
@@ -203,12 +211,13 @@ fi
 
 # all locally not available libraries are now in subprojects,
 # they either have to be included, or with options forced to be used form the system, so that
-# 'dpkg-shlibdeps' can read them all
+# 'dpkg-shlibdeps' can't read the build ones, so they have to be copied
 
 declare -a ALL_SO=$(find ../subprojects/ -type f -regex ".*\.so")
 
+# shellcheck disable=SC2068
 for SO in ${ALL_SO[@]}; do
-    cp $SO usr/lib/
+    cp "$SO" usr/lib/
 
 done
 
@@ -232,9 +241,10 @@ mkdir -p usr/share/icons/Humanity/mimes
 
 declare -a aegisub_logos=('16x16.png' '22x22.png' '24x24.png' '32x32.png' '48x48.png' '64x64.png' 'scalable.svg')
 
+# shellcheck disable=SC2068
 for logo in ${aegisub_logos[@]}; do
 
-    declare -a parts=($(echo $logo | tr "." " "))
+    declare -a parts=($(echo "$logo" | tr "." " "))
     dir=${parts[0]}
     ext=${parts[1]}
     size=${dir:0:2}
@@ -331,14 +341,19 @@ mkdir debian
 
 touch debian/control
 
-DEPENDECIES=$(dpkg-shlibdeps -O ../aegisub 2>/dev/null)
+DEPENDECIES=$(dpkg-shlibdeps --ignore-missing-info -O ../aegisub 2>/dev/null)
 
-# substring, removes the first 15 charcaters
+if
+    ! dpkg-shlibdeps -O ../aegisub 2>/dev/null
+then
+    echo "WARNING: you used some local libs to compile, this can't be published (if you build all libraries in the subproject, than it can, since we also include those!)"
+fi
 
+# substring, removes the first 15 charcaters (shlibs:Depends=...)
 DEPENDECY_LIST=${DEPENDECIES:15}
 
-if [ ! -z "$DEPENDECY_LIST" ]; then
-    $DEPENDECY_LIST = "$DEPENDECY_LIST ,"
+if [ -n "$DEPENDECY_LIST" ]; then
+    DEPENDECY_LIST="$DEPENDECY_LIST ,"
 fi
 
 # adding luarocks, that is also needed for dependency control!

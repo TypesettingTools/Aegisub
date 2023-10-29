@@ -1,18 +1,14 @@
 #!/bin/env bash
 
+cd "${MESON_BUILD_ROOT}" || exit 5
 
-cd ${MESON_BUILD_ROOT}
-
-
-
-if  ! [ -d "assdraw" ]; then
-    # git clone https://github.com/TypesettingTools/DependencyControl.git --branch sqlite
-    # git clone https://github.com/Totto16/DependencyControl.git &> /dev/null
-    git clone https://github.com/Totto16/assdraw.git &> /dev/null
+if [ -d "assdraw" ]; then
+    cd assdraw && git pull && cd ..
+else
+    git clone https://github.com/Totto16/assdraw.git &>/dev/null
 fi
 
-cd "assdraw"
-
+cd "assdraw" || exit 5
 
 ./autogen.sh
 
@@ -26,8 +22,11 @@ cd ..
 
 DEB_NAME="assdraw_3.0.0-ubuntu_amd64"
 
-
 # create deb directroy, later this will be bundled into the deb
+
+if [ -d $DEB_NAME ]; then
+    rm -rf $DEB_NAME
+fi
 
 mkdir $DEB_NAME
 cd $DEB_NAME || exit 5
@@ -42,17 +41,13 @@ cp ../assdraw/src/assdraw usr/bin/
 
 mkdir -p usr/lib
 
-
 mkdir -p lib/x86_64-linux-gnu/
 
 mkdir -p DEBIAN/
 
-
 mkdir -p usr/share/applications
 
-
-
-cat > ../packages/assdraw.desktop << 'EOF'
+cat >../packages/assdraw.desktop <<'EOF'
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -67,7 +62,6 @@ StartupNotify=false
 StartupWMClass=assdraw
 EOF
 
-
 cp ../packages/assdraw.desktop usr/share/applications/
 
 mkdir -p usr/share/assdraw/
@@ -80,20 +74,17 @@ cp ../assdraw/src/bitmaps/assdraw.png usr/share/assdraw/launcher.png
 
 chmod +r -R usr/
 
-
 mkdir -p usr/share/man/man1
 
 touch usr/share/man/man1/assdraw.1
-
-
 
 ## TODO make it properly
 
 DATE=$(date +"%B %d, %Y")
 
-echo ".TH assdraw-3.0.0 \"$DATE\"" >> usr/share/man/man1/assdraw.1
+echo ".TH assdraw-3.0.0 \"$DATE\"" >>usr/share/man/man1/assdraw.1
 
-cat >> usr/share/man/man1/assdraw.1 << 'EOF'
+cat >>usr/share/man/man1/assdraw.1 <<'EOF'
 .SH NAME
 assdraw-3.0.0 \- advanced subtitle editor
 .SH SYNOPSIS
@@ -118,9 +109,7 @@ This manual page was written by Sebastian Reichel <sre@debian.org>
 for the Debian project (but may be used by others).
 EOF
 
-
-gzip  usr/share/man/man1/assdraw.1
-
+gzip usr/share/man/man1/assdraw.1
 
 # now creating the debian control files
 
@@ -130,7 +119,7 @@ touch DEBIAN/control
 ## TODO use dpkg-gencontrol
 
 ## TODO make it properly
-cat > DEBIAN/control << 'EOF'
+cat >DEBIAN/control <<'EOF'
 
 
 Package: assdraw
@@ -142,35 +131,37 @@ Priority: optional
 Description: todo
 EOF
 
-
 mkdir debian
 
 touch debian/control
 
-DEPENDECIES=$(dpkg-shlibdeps -O ../assdraw/src/assdraw 2>/dev/null) 
+DEPENDECIES=$(dpkg-shlibdeps --ignore-missing-info -O ../assdraw/src/assdraw 2>/dev/null)
 
-# substring, removes the first 15 charcaters
+if
+    ! dpkg-shlibdeps -O ../assdraw/src/assdraw 2>/dev/null
+then
+    echo "WARNING: you used some local libs to compile, this can't be published"
+fi
 
+# substring, removes the first 15 charcaters (shlibs:Depends=...)
 DEPENDECY_LIST=${DEPENDECIES:15}
 
-if [ ! -z "$DEPENDECY_LIST" ]; then
-    echo "Depends: $DEPENDECY_LIST"  >> DEBIAN/control
+if [ -n "$DEPENDECY_LIST" ]; then
+    echo "Depends: $DEPENDECY_LIST" >>DEBIAN/control
 fi
 
 rm debian/control
 
 rm -r debian
 
-
 # create md5sums
 
 touch DEBIAN/md5sums
 
-md5sum $(find * -type f -not -path 'DEBIAN/*') > DEBIAN/md5sums
+md5sum $(find * -type f -not -path 'DEBIAN/*') >DEBIAN/md5sums
 
+cd .. || exit 5
 
-cd ..  || exit 5
-
-dpkg-deb --build -Zxz  --root-owner-group $DEB_NAME
+dpkg-deb --build -Zxz --root-owner-group $DEB_NAME
 
 rm -r $DEB_NAME
