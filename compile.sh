@@ -69,7 +69,7 @@ fi
 
 # CONFIGURE
 
-bash -c "meson build -Dbuildtype=$buildtype -Dwx_version=3.2.3 -Dcredit='Totto local build'"
+bash -c "meson setup build -Dbuildtype=$buildtype -Dwx_version=3.2.3 -Dcredit='Totto local build'"
 
 if [ $DEBUG == "true" ]; then
     nodemon --watch src/ -e .cpp,.h --exec "sudo meson compile -C build && ./build/aegisub || exit 1"
