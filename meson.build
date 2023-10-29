@@ -109,7 +109,7 @@ boost_modules = [
 if not get_option('local_boost')
     boost_dep = dependency(
         'boost',
-        version: '>=1.50.0',
+        version: '>=1.81.0',
         modules: boost_modules + ['system'],
         required: false,
         static: get_option('default_library') == 'static',
