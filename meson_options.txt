@@ -27,3 +27,6 @@ option('update_server', type: 'string', value: 'updates.aegisub.org', descriptio
 option('update_url', type: 'string', value: '/trunk', description: 'Base path to use for the update checker')
 
 option('build_osx_bundle', type: 'boolean', value: false, description: 'Package Aegisub.app on OSX')
+
+
+option('tests', type: 'feature', value: 'auto', description: 'enable tests')

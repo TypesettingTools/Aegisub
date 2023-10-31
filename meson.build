@@ -3,7 +3,10 @@ project(
     ['c', 'cpp'],
     license: 'BSD-3-Clause',
     meson_version: '>=1.2.0',
-    default_options: {'cpp_std':'c++20', 'buildtype':'debugoptimized'},
+    default_options: {
+        'cpp_std': 'c++20',
+        'buildtype': 'debugoptimized',
+    },
     version: '3.3.0',
 )
 
@@ -419,7 +422,10 @@ subdir('libaegisub')
 subdir('packages')
 subdir('po')
 subdir('src')
-subdir('tests')
+
+if meson.get_option('tests').allowed()
+    subdir('tests')
+endif
 
 aegisub_cpp_pch = ['src/include/agi_pre.h']
 aegisub_c_pch = ['src/include/agi_pre_c.h']

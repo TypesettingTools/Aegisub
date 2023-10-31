@@ -108,6 +108,8 @@ modules:
           - -Dwx_version=3.2.3
           - --force-fallback-for=icu,luajit
           - -Dcredit=Flatpak build
+          - -Dcpp_args=-DFLATPAK_BUILD
+          - -Dtests=disabled
       build-options:
           build-args:
               - --share=network
