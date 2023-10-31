@@ -224,7 +224,7 @@ namespace Automation4 {
 	}
 
 	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, std::string const& title)
-	: impl(new DialogProgress(parent, to_wx(title)))
+	: impl(new OptDialogProgress(parent, to_wx(title)))
 	{
 	}
 
@@ -242,12 +242,12 @@ namespace Automation4 {
 
 	wxWindow *BackgroundScriptRunner::GetParentWindow() const
 	{
-		return impl.get();
+		return impl->getImpl();
 	}
 
 	std::string BackgroundScriptRunner::GetTitle() const
 	{
-		return from_wx(impl->GetTitle());
+		return from_wx(impl->getImpl()->GetTitle());
 	}
 
 	// Script

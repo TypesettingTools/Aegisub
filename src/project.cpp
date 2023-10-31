@@ -264,7 +264,7 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 
 void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 	if (!progress)
-		progress = new DialogProgress(context->parent);
+		progress = new OptDialogProgress(context->parent);
 
 	try {
 		try {
@@ -310,7 +310,7 @@ void Project::CloseAudio() {
 
 bool Project::DoLoadVideo(agi::fs::path const& path) {
 	if (!progress)
-		progress = new DialogProgress(context->parent);
+		progress = new OptDialogProgress(context->parent);
 
 	try {
 		video_provider = std::make_unique<AsyncVideoProvider>(path, context->ass->GetYCbCrMatrix(), context->videoController.get(), progress);
