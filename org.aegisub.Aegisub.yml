@@ -22,17 +22,6 @@ modules:
             url: https://ftp.osuosl.org/pub/blfs/conglomeration/glu/glu-9.0.3.tar.xz
             sha256: bd43fe12f374b1192eb15fe20e45ff456b9bc26ab57f0eee919f96ca0f8a330f
 
-    # TODO: build boost beforehand!
-    # - name: boost
-    #   buildsystem: simple
-    #   sources:
-    #       - type: archive
-    #         url: https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
-    #         sha256: c0685b68dd44cc46574cce86c4e17c0f611b15e195be9848dfd0769a0a207628
-
-    #   build-commands:
-    #       - echo "todo"
-
     - name: wxWidgets
       buildsystem: simple
       sources:
@@ -45,6 +34,71 @@ modules:
           - cd buildgtk && make
           - cd buildgtk && make install
           - cd buildgtk && ldconfig
+
+    # TODO: remove luarocks from the final build pack
+    - name: luarocks
+      buildsystem: simple
+      sources:
+          - type: archive
+            url: https://luarocks.org/releases/luarocks-3.9.2.tar.gz
+            sha256: bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb
+      build-commands:
+          - ./configure --prefix=/app --with-lua=/app
+          - make
+          - make install
+
+    - name: YUtils
+      buildsystem: simple
+      sources:
+          - type: git
+            url: https://github.com/TypesettingTools/YUtils.git
+      build-commands:
+          - mkdir -p /app/share/aegisub/automation/include/
+          - cp src/Yutils.lua /app/share/aegisub/automation/include/Yutils.lua
+
+    - name: luajson
+      buildsystem: simple
+      sources:
+          - type: git
+            url: https://github.com/harningt/luajson.git
+      build-commands:
+          - mkdir -p /app/share/aegisub/automation/include/
+          - cp -r lua/* /app/share/aegisub/automation/include/
+
+    - name: ffi-experiments
+      buildsystem: simple
+      sources:
+          - type: git
+            url: https://github.com/Totto16/ffi-experiments.git
+      build-commands:
+          - luarocks install moonscript --dev
+          - make -B lua
+          - luarocks remove moonscript # remove again, to not end in the final pack
+          - make -B all
+          - mkdir -p /app/share/aegisub/automation/include/requireffi/
+          - cp build/requireffi.lua /app/share/aegisub/automation/include/requireffi/
+          - mkdir -p /app/share/aegisub/automation/include/BM/
+          - cp build/BadMutex.lua /app/share/aegisub/automation/include/BM/
+          - mkdir -p /app/share/aegisub/automation/include/DM/
+          - cp build/DownloadManager.lua /app/share/aegisub/automation/include/DM/
+          - mkdir -p /app/share/aegisub/automation/include/PT/
+          - cp build/PreciseTimer.lua /app/share/aegisub/automation/include/PT/
+          - cp build/lib*.so /app/lib/
+      build-options:
+          build-args:
+              - --share=network
+
+    - name: DependencyControl
+      buildsystem: simple
+      sources:
+          - type: git
+            url: https://github.com/TypesettingTools/DependencyControl.git
+            tag: v0.6.4-alpha
+      build-commands:
+          - mkdir -p /app/share/aegisub/automation/autoload/
+          - cp macros/l0.DependencyControl.Toolbox.moon /app/share/aegisub/automation/autoload/
+          - mkdir -p /app/share/aegisub/automation/include/l0/
+          - cp -r modules/* /app/share/aegisub/automation/include/l0/
 
     - name: aegisub
       buildsystem: meson

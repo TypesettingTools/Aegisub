@@ -198,8 +198,8 @@ exit 6
 fi
 
 ## for sqlite version of dependency-control
-# sudo luarocks install lsqlite3    > /dev/null
-sudo luarocks install moonscript  > /dev/null
+# sudo luarocks install lsqlite3 > /dev/null
+sudo luarocks install moonscript > /dev/null
 
 
 
