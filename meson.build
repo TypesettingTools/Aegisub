@@ -423,7 +423,7 @@ subdir('packages')
 subdir('po')
 subdir('src')
 
-if meson.get_option('tests').allowed()
+if get_option('tests').allowed()
     subdir('tests')
 endif
 
