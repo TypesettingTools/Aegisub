@@ -24,6 +24,7 @@
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
+#include <libaegisub/make_unique.h>
 #include <libaegisub/util_osx.h>
 
 #include <atomic>
@@ -255,4 +256,22 @@ void DialogProgress::SetProgress(int target) {
 		progress_anim_duration = std::max<int>(100, duration_cast<milliseconds>(now - progress_anim_start_time).count() * 11 / 10);
 	progress_anim_start_time = now;
 	progress_target = target;
+}
+
+OptDialogProgress::OptDialogProgress(wxWindow *parent, wxString const& title, wxString const& message)
+: impl(config::hasGui ? new DialogProgress(parent, title, message) : nullptr)
+{ }
+
+void OptDialogProgress::Run(std::function<void(agi::ProgressSink*)> task) {
+	if (impl) {
+		impl->Run(task);
+	} else {
+		agi::CLIProgressSink ps;
+		try {
+			task(&ps);
+		}
+		catch (agi::Exception const& e) {
+			ps.Log(e.GetMessage());
+		}
+	}
 }
