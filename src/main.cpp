@@ -79,7 +79,9 @@ namespace config {
 	agi::MRUManager *mru = nullptr;
 	agi::Path *path = nullptr;
 	Automation4::AutoloadScriptManager *global_scripts;
+
 	bool hasGui = false;
+	std::map<std::string, std::vector<std::string>> choice_indices;
 }
 
 wxIMPLEMENT_APP_NO_MAIN(AegisubApp);
