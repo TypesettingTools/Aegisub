@@ -93,6 +93,7 @@ aegisub_src = files(
     'gl_text.cpp',
     'gl_wrap.cpp',
     'grid_column.cpp',
+    'gui_wrap.cpp',
     'help_button.cpp',
     'hotkey.cpp',
     'hotkey_data_view_model.cpp',
