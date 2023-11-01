@@ -38,6 +38,7 @@
 #include "ass_parser.h"
 #include "compat.h"
 #include "dialog_progress.h"
+#include "gui_wrap.h"
 #include "MatroskaParser.h"
 #include "options.h"
 #include "subtitle_format_srt.h"
@@ -53,8 +54,6 @@
 #include <boost/range/irange.hpp>
 #include <boost/tokenizer.hpp>
 #include <iterator>
-
-#include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
 struct MkvStdIO final : InputStream {
 	agi::read_file_mapping file;
@@ -243,7 +242,7 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 		trackToRead = tracksFound[0];
 	// Pick a track
 	else {
-		int choice = wxGetSingleChoiceIndex(_("Choose which track to read:"), _("Multiple subtitle tracks found"), to_wx(tracksNames));
+		int choice = wrapChoiceDialog("subtitle-track", _("Choose which track to read:"), _("Multiple subtitle tracks found"), to_wx(tracksNames));
 		if (choice == -1)
 			throw agi::UserCancelException("canceled");
 

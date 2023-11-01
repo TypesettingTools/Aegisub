@@ -27,6 +27,7 @@
 #include "dialog_progress.h"
 #include "dialogs.h"
 #include "format.h"
+#include "gui_wrap.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"
@@ -82,7 +83,7 @@ void Project::ReloadVideo() {
 }
 
 void Project::ShowError(wxString const& message) {
-	wxMessageBox(message, _("Error loading file"), wxOK | wxICON_ERROR | wxCENTER, context->parent);
+	wrapMessageBox(message, _("Error loading file"), wxOK | wxICON_ERROR | wxCENTER, context->parent);
 }
 
 void Project::ShowError(std::string const& message) {
@@ -151,7 +152,8 @@ bool Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding, P
 		sel.insert(active_line);
 	}
 	context->selectionController->SetSelectionAndActive(std::move(sel), active_line);
-	context->subsGrid->ScrollTo(properties.scroll_position);
+	if (config::hasGui)
+		context->subsGrid->ScrollTo(properties.scroll_position);
 
 	return true;
 }
@@ -340,7 +342,7 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 
 	std::string warning = video_provider->GetWarning();
 	if (!warning.empty())
-		wxMessageBox(to_wx(warning), _("Warning"), wxICON_WARNING | wxOK);
+		wrapMessageBox(to_wx(warning), _("Warning"), wxICON_WARNING | wxOK);
 
 	video_has_subtitles = false;
 	if (agi::fs::HasExtension(path, "mkv"))
