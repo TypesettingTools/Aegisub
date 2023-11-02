@@ -65,7 +65,8 @@ VideoController::VideoController(agi::Context *c)
 }
 
 void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
-	Stop();
+	if (config::hasGui)
+		Stop();
 	provider = new_provider;
 	color_matrix = std::nullopt;
 }
@@ -88,7 +89,7 @@ void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 }
 
 void VideoController::OnActiveLineChanged(AssDialogue *line) {
-	if (line && provider && OPT_GET("Video/Subtitle Sync")->GetBool()) {
+	if (config::hasGui && line && provider && OPT_GET("Video/Subtitle Sync")->GetBool()) {
 		Stop();
 		JumpToTime(line->Start);
 	}
