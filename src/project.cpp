@@ -330,7 +330,8 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 
 	AnnounceVideoProviderModified(video_provider.get());
 
-	UpdateVideoProperties(context->ass.get(), video_provider.get(), context->parent);
+	if (config::hasGui)
+		UpdateVideoProperties(context->ass.get(), video_provider.get(), context->parent);
 	video_provider->LoadSubtitles(context->ass.get());
 
 	timecodes = video_provider->GetFPS();
