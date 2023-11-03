@@ -35,7 +35,6 @@ modules:
           - cd buildgtk && make install
           - cd buildgtk && ldconfig
 
-    # TODO: remove luarocks from the final build pack
     - name: luarocks
       buildsystem: simple
       sources:
@@ -71,9 +70,9 @@ modules:
           - type: git
             url: https://github.com/Totto16/ffi-experiments.git
       build-commands:
-          - luarocks install moonscript --dev
+          - luarocks install moonscript --dev ## we need the dev version for lua 5.4!
           - make -B lua
-          - luarocks remove moonscript # remove again, to not end in the final pack
+          #  - luarocks remove moonscript # remove again, to not end in the final pack
           - make -B all
           - mkdir -p /app/share/aegisub/automation/include/requireffi/
           - cp build/requireffi.lua /app/share/aegisub/automation/include/requireffi/
@@ -91,22 +90,30 @@ modules:
     - name: DependencyControl
       buildsystem: simple
       sources:
-          - type: git
-            url: https://github.com/TypesettingTools/DependencyControl.git
-            tag: v0.6.4-alpha
+          - type: archive
+            url: https://github.com/TypesettingTools/DependencyControl/archive/refs/tags/v0.6.4-alpha.tar.gz
+            sha256: b4ba3da034be85d2394d4ec7de4192a76be45f900a60dd484a0d1af3d6671c71
       build-commands:
           - mkdir -p /app/share/aegisub/automation/autoload/
           - cp macros/l0.DependencyControl.Toolbox.moon /app/share/aegisub/automation/autoload/
           - mkdir -p /app/share/aegisub/automation/include/l0/
           - cp -r modules/* /app/share/aegisub/automation/include/l0/
 
+    - name: boost
+      buildsystem: simple
+      sources:
+          - type: archive
+            url: https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
+            sha256: c0685b68dd44cc46574cce86c4e17c0f611b15e195be9848dfd0769a0a207628
+      build-commands:
+          - ./bootstrap.sh
+          - ./b2 --prefix=/app --with-chrono --with-filesystem --with-thread --with-locale --with-system install variant=release
+
     - name: aegisub
       buildsystem: meson
       config-opts:
           - -Dbuildtype=release
-          - -Dlocal_boost=true
           - -Dwx_version=3.2.3
-          - --force-fallback-for=icu,luajit
           - -Dcredit=Flatpak build
           - -Dcpp_args=-DFLATPAK_BUILD
           - -Dtests=disabled
