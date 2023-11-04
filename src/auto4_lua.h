@@ -217,6 +217,10 @@ namespace Automation4 {
 		/// in a single table
 		int LuaReadBack(lua_State *L);
 
+		/// Simulates the given button being pressed. Useful when the dialog
+		/// isn't actually being shown, like in CLI mode.
+		void PushButton(int button);
+
 		// ScriptDialog implementation
 		wxWindow* CreateWindow(wxWindow *parent) override;
 		std::string Serialise() override;

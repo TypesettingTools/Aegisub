@@ -35,6 +35,7 @@ aegisub_src = files(
     'auto4_lua_progresssink.cpp',
     'base_grid.cpp',
     'charset_detect.cpp',
+    'cli.cpp',
     'colorspace.cpp',
     'colour_button.cpp',
     'command/app.cpp',

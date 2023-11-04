@@ -35,8 +35,10 @@
 #include "auto4_lua.h"
 
 #include "compat.h"
+#include "options.h"
 
 #include <libaegisub/dispatch.h>
+#include <libaegisub/log.h>
 #include <libaegisub/lua/utils.h>
 
 #include <wx/filedlg.h>
@@ -190,7 +192,15 @@ namespace Automation4 {
 		ProgressSink *ps = GetObjPointer(L, lua_upvalueindex(1));
 
 		LuaDialog dlg(L, true); // magically creates the config dialog structure etc
-		ps->ShowDialog(&dlg);
+
+		if (config::hasGui) {
+			ps->ShowDialog(&dlg);
+		} else if (config::dialog_responses.size() > 0) {
+			auto& pair = config::dialog_responses.front();
+			dlg.PushButton(pair.first);
+			dlg.Unserialise(pair.second);
+			config::dialog_responses.pop_front();
+		}
 
 		// more magic: puts two values on stack: button pushed and table with control results
 		return dlg.LuaReadBack(L);
@@ -211,23 +221,44 @@ namespace Automation4 {
 		if (must_exist)
 			flags |= wxFD_FILE_MUST_EXIST;
 
-		agi::dispatch::Main().Sync([&] {
-			wxFileDialog diag(nullptr, message, dir, file, wildcard, flags);
-			if (diag.ShowModal() == wxID_CANCEL) {
-				lua_pushnil(L);
-			} else if (multiple) {
-				wxArrayString files;
-				diag.GetPaths(files);
+		if (config::hasGui) {
+			agi::dispatch::Main().Sync([&] {
+				wxFileDialog diag(nullptr, message, dir, file, wildcard, flags);
+				if (diag.ShowModal() == wxID_CANCEL) {
+					lua_pushnil(L);
+				} else if (multiple) {
+					wxArrayString files;
+					diag.GetPaths(files);
 
-				lua_createtable(L, files.size(), 0);
-				for (size_t i = 0; i < files.size(); ++i) {
-					lua_pushstring(L, files[i].utf8_str());
+					lua_createtable(L, files.size(), 0);
+					for (size_t i = 0; i < files.size(); ++i) {
+						lua_pushstring(L, files[i].utf8_str());
+						lua_rawseti(L, -2, i + 1);
+					}
+				} else {
+					lua_pushstring(L, diag.GetPath().utf8_str());
+				}
+			});
+		} else if (!config::file_responses.empty()) {
+			auto& paths = config::file_responses.front();
+
+			if (multiple) {
+				lua_createtable(L, paths.size(), 0);
+				for (size_t i = 0; i < paths.size(); ++i) {
+					LOG_I("automation/lua/dialog") << "Opening " << paths[i];
+					lua_pushstring(L, paths[i].string().c_str());
 					lua_rawseti(L, -2, i + 1);
 				}
 			} else {
-				lua_pushstring(L, diag.GetPath().utf8_str());
+				LOG_I("automation/lua/dialog") << "Opening " << paths[0];
+				lua_pushstring(L, paths[0].string().c_str());
 			}
-		});
+
+			config::file_responses.pop_front();
+		} else {
+			LOG_I("automation/lua/dialog") << "Canceling open dialog";
+			lua_pushnil(L);
+		}
 
 		return 1;
 	}
@@ -245,14 +276,24 @@ namespace Automation4 {
 		if (prompt_overwrite)
 			flags |= wxFD_OVERWRITE_PROMPT;
 
-		agi::dispatch::Main().Sync([&] {
-			wxFileDialog diag(ps->GetParentWindow(), message, dir, file, wildcard, flags);
-			if (diag.ShowModal() == wxID_CANCEL) {
-				lua_pushnil(L);
-			} else {
-				lua_pushstring(L, diag.GetPath().utf8_str());
-			}
-		});
+		if (config::hasGui) {
+			agi::dispatch::Main().Sync([&] {
+				wxFileDialog diag(ps->GetParentWindow(), message, dir, file, wildcard, flags);
+				if (diag.ShowModal() == wxID_CANCEL) {
+					lua_pushnil(L);
+				} else {
+					lua_pushstring(L, diag.GetPath().utf8_str());
+				}
+			});
+		} else if (!config::file_responses.empty()){
+			auto& paths = config::file_responses.front();
+			LOG_I("automation/lua/dialog") << "Saving to " << paths[0];
+			lua_pushstring(L, paths[0].string().c_str());
+			config::file_responses.pop_front();
+		} else {
+			LOG_I("automation/lua/dialog") << "Canceling save dialog";
+			lua_pushnil(L);
+		}
 
 		return 1;
 	}

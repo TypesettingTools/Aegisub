@@ -36,6 +36,7 @@
 
 #include "colour_button.h"
 #include "compat.h"
+#include "options.h"
 #include "validators.h"
 
 #include <libaegisub/ass/string_codec.h>
@@ -452,6 +453,15 @@ namespace Automation4 {
 				btn->first = id;
 			});
 		}
+
+		if (buttons.empty()) {
+			buttons.emplace_back(wxID_OK, "");
+			buttons.emplace_back(wxID_CANCEL, "");
+		}
+
+		for (int i = 0; i < buttons.size(); i++) {
+			LOG_D("automation/lua/dialog") << "created button: " << buttons[i].second << " (" << i << ")";
+		}
 	}
 
 	wxWindow* LuaDialog::CreateWindow(wxWindow *parent) {
@@ -465,11 +475,6 @@ namespace Automation4 {
 		if (!use_buttons) {
 			window->SetSizerAndFit(s);
 			return window;
-		}
-
-		if (buttons.size() == 0) {
-			buttons.emplace_back(wxID_OK, "");
-			buttons.emplace_back(wxID_CANCEL, "");
 		}
 
 		auto dialog = static_cast<wxDialog *>(parent);
@@ -515,10 +520,14 @@ namespace Automation4 {
 	int LuaDialog::LuaReadBack(lua_State *L) {
 		// First read back which button was pressed, if any
 		if (use_buttons) {
-			if (button_pushed == -1 || buttons[button_pushed].first == wxID_CANCEL)
+			if (button_pushed == -1 || buttons[button_pushed].first == wxID_CANCEL) {
+				LOG_I("automation/lua/dialog") << "Pushing cancel";
 				lua_pushboolean(L, false);
-			else
-				lua_pushstring(L, buttons[button_pushed].second.c_str());
+			} else {
+				const char* s = buttons[button_pushed].second.c_str();
+				LOG_I("automation/lua/dialog") << "Pushing " << s;
+				lua_pushstring(L, s);
+			}
 		}
 
 		// Then read controls back
@@ -529,6 +538,15 @@ namespace Automation4 {
 		}
 
 		return use_buttons ? 2 : 1;
+	}
+
+	void LuaDialog::PushButton(int button) {
+		if (button != -1 && (button < 0 || button >= buttons.size())) {
+			LOG_E("agi/auto4_lua_dialog") << "Button " << button << " not in range; defaulting to cancel";
+			button = -1;
+		}
+
+		button_pushed = button;
 	}
 
 	std::string LuaDialog::Serialise() {
