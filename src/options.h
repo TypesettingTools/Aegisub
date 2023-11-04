@@ -31,6 +31,7 @@ namespace config {
 	extern Automation4::AutoloadScriptManager *global_scripts;
 
 	extern bool hasGui;
+	extern bool hasInitializedWx;
 	extern std::map<std::string, std::vector<std::string>> choice_indices;
 	extern std::list<std::pair<int, std::string>> dialog_responses;
 	extern std::list<std::vector<agi::fs::path>> file_responses;

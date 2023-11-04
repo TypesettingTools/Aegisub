@@ -86,6 +86,7 @@ namespace config {
 	Automation4::AutoloadScriptManager *global_scripts;
 
 	bool hasGui = false;
+	bool hasInitializedWx = false;
 	bool loadGlobalAutomation = false;
 	std::map<std::string, std::vector<std::string>> choice_indices;
 	std::list<std::pair<int, std::string>> dialog_responses;
@@ -515,9 +516,14 @@ int main(int argc, char *argv[]) {
 		// restore cwd for saving
 		std::filesystem::current_path(cwd);
 		context.subsController->Save(std::filesystem::absolute(vm["out-file"].as<std::string>()));
+
+		if (config::hasInitializedWx) {
+			wxUninitialize();
+		}
 		return 0;
 	} else {
 		config::loadGlobalAutomation = true;
+		config::hasInitializedWx = true;
 		return wxEntry(argc, argv);
 	}
 }
