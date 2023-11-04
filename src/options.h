@@ -32,6 +32,8 @@ namespace config {
 
 	extern bool hasGui;
 	extern std::map<std::string, std::vector<std::string>> choice_indices;
+	extern std::list<std::pair<int, std::string>> dialog_responses;
+	extern std::list<std::vector<agi::fs::path>> file_responses;
 }
 
 /// Macro to get OptionValue object
