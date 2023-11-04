@@ -37,8 +37,11 @@
 #include "command/command.h"
 #include "include/aegisub/hotkey.h"
 
+#include "ass_dialogue.h"
+#include "ass_file.h"
 #include "auto4_base.h"
 #include "auto4_lua_factory.h"
+#include "cli.h"
 #include "compat.h"
 #include "crash_writer.h"
 #include "dialogs.h"
@@ -50,6 +53,7 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "project.h"
+#include "selection_controller.h"
 #include "subs_controller.h"
 #include "subtitles_provider_libass.h"
 #include "utils.h"
@@ -63,8 +67,10 @@
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
+#include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
+#include <boost/filesystem/operations.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -80,7 +86,10 @@ namespace config {
 	Automation4::AutoloadScriptManager *global_scripts;
 
 	bool hasGui = false;
+	bool loadGlobalAutomation = false;
 	std::map<std::string, std::vector<std::string>> choice_indices;
+	std::list<std::pair<int, std::string>> dialog_responses;
+	std::list<std::vector<agi::fs::path>> file_responses;
 }
 
 wxIMPLEMENT_APP_NO_MAIN(AegisubApp);
@@ -253,13 +262,15 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 		libass::CacheFonts();
 
 		// Load Automation scripts
-		StartupLog("Load global Automation scripts");
-		config::global_scripts = new Automation4::AutoloadScriptManager(OPT_GET("Path/Automation/Autoload")->GetString());
+		if (config::loadGlobalAutomation) {
+			StartupLog("Load global Automation scripts");
+			config::global_scripts = new Automation4::AutoloadScriptManager(OPT_GET("Path/Automation/Autoload")->GetString());
 
-		// Load export filters
-		StartupLog("Register export filters");
-		AssExportFilterChain::Register(std::make_unique<AssFixStylesFilter>());
-		AssExportFilterChain::Register(std::make_unique<AssTransformFramerateFilter>());
+			// Load export filters
+			StartupLog("Register export filters");
+			AssExportFilterChain::Register(std::make_unique<AssFixStylesFilter>());
+			AssExportFilterChain::Register(std::make_unique<AssTransformFramerateFilter>());
+		}
 	}
 	catch (agi::Exception const& e) {
 		showError(e.GetMessage(), "Fatal error while initializing");
@@ -278,6 +289,62 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 	return true;
 }
 
+void AegisubSetupInitialLocale() {
+	// Try to get the UTF-8 version of the current locale
+	auto locale = boost::locale::generator().generate("");
+
+	// Check if we actually got a UTF-8 locale
+	using codecvt = std::codecvt<wchar_t, char, std::mbstate_t>;
+	int result = std::codecvt_base::error;
+	if (std::has_facet<codecvt>(locale)) {
+		wchar_t test[] = L"\xFFFE";
+		char buff[8];
+		auto mb = std::mbstate_t();
+		const wchar_t* from_next;
+		char* to_next;
+		result = std::use_facet<codecvt>(locale).out(mb,
+			test, std::end(test), from_next,
+			buff, std::end(buff), to_next);
+	}
+
+	// If we didn't get a UTF-8 locale, force it to a known one
+	if (result != std::codecvt_base::ok)
+		locale = boost::locale::generator().generate("en_US.UTF-8");
+	std::locale::global(locale);
+}
+
+std::unique_ptr<Automation4::Script> find_script(const std::string& file)
+{
+	auto absolute = agi::fs::path(file);
+	auto relative = boost::filesystem::current_path() / file;
+
+	agi::fs::path script;
+
+	if (agi::fs::FileExists(absolute)) {
+		script = absolute;
+	} else if (agi::fs::FileExists(relative)) {
+		script = relative;
+	} else {
+		auto autodirs = OPT_GET("Path/Automation/Autoload")->GetString();
+
+		for (auto tok : agi::Split(autodirs, '|')) {
+			auto dirname = config::path->Decode(agi::str(tok));
+			if (!agi::fs::DirectoryExists(dirname)) continue;
+
+			auto scriptname = dirname / file;
+			if (agi::fs::FileExists(scriptname)) {
+				script = scriptname;
+			}
+		}
+	}
+
+	if (script.empty()) {
+		throw agi::InvalidInputException("Could not find script file: " + file);
+	}
+
+	return Automation4::ScriptFactory::CreateFromFile(script, true, false);
+}
+
 /// @brief Gets called when application starts.
 /// @return int
 int main(int argc, char *argv[]) {
@@ -287,30 +354,49 @@ int main(int argc, char *argv[]) {
 	boost::program_options::options_description flags("Options");
 	boost::program_options::positional_options_description posdesc;
 
-	flags.add_options()
-		("help", "produce help message")
-		("cli", "whether to run in CLI mode, without opening a GUI window")
+	cmdline.add_options()
+		("in-file", boost::program_options::value<std::string>(), "input file")
+		("out-file", boost::program_options::value<std::string>(), "output file")
+		("macro", boost::program_options::value<std::string>(), "macro to run")
 	;
 
-	cmdline.add(flags);
-	boost::program_options::variables_map vm;
+	flags.add_options()
+		("help", "produce help message")
+		("cli", "run in CLI mode, without a GUI window. Enables the other options")
+		("video", boost::program_options::value<std::string>(), "video to load")
+		("timecodes", boost::program_options::value<std::string>(), "timecodes to load")
+		("keyframes", boost::program_options::value<std::string>(), "keyframes to load")
+		("automation", boost::program_options::value<std::vector<std::string>>(), "an automation script to run")
+		("active-line", boost::program_options::value<int>()->default_value(-1), "the active line")
+		("selected-lines", boost::program_options::value<std::string>()->default_value(""), "the selected lines")
+		("dialog", boost::program_options::value<std::vector<std::string>>(), "response to a dialog, in JSON")
+		("file", boost::program_options::value<std::vector<std::string>>(), "filename to supply to an open/save call")
+	;
 
+	//TODO figure this out properly
+
+	cmdline.add(flags);
+	posdesc.add("in-file", 1);
+	posdesc.add("out-file", 1);
+	posdesc.add("macro", 1);
+	boost::program_options::variables_map vm;
 	boost::program_options::store(
 		boost::program_options::command_line_parser(argc, argv).
 		options(cmdline).positional(posdesc).run(), vm);
 	boost::program_options::notify(vm);
 
-	if (vm.count("help")) {
+	bool cli = vm.count("cli");
+	config::hasGui = !cli;
+
+	if (vm.count("help") || (cli && !vm.count("macro"))) {
+		if (!vm.count("help"))
+			std::cout << "Too few arguments." << std::endl;
 		std::cout << argv[0] << " [options] <input file> <output file> <macro>" << std::endl;
 		std::cout << flags << std::endl;
 		return 0;
 	}
 
-	bool cli = vm.count("cli");
-
 	agi::util::InitLocale();
-
-	config::hasGui = !cli;
 
 	if (cli) {
 		// TODO force everything onto one thread or figure something else out here
@@ -322,9 +408,116 @@ int main(int argc, char *argv[]) {
 			return -1;
 		}
 
-		std::unique_ptr<agi::Context> context = std::make_unique<agi::Context>();
+		agi::Context context;
+
+		LOG_D("main") << "Loading subtitles...";
+		context.project->LoadSubtitles(std::filesystem::absolute(vm["in-file"].as<std::string>()), "", false);
+
+		if (vm.count("video")) {
+			LOG_D("main") << "Loading video...";
+			context.project->LoadVideo(std::filesystem::absolute(vm["video"].as<std::string>()));
+		}
+
+		if (vm.count("timecodes")) {
+			LOG_D("main") << "Loading timecodes...";
+			context.project->LoadTimecodes(std::filesystem::absolute(vm["timecodes"].as<std::string>()));
+		}
+
+		if (vm.count("keyframes")) {
+			LOG_D("main") << "Loading keyframes...";
+			context.project->LoadKeyframes(std::filesystem::absolute(vm["keyframes"].as<std::string>()));
+		}
+
+		auto active_index = vm["active-line"].as<int>();
+		AssDialogue* active_line = nullptr;
+
+		auto selected_indices = parse_range(vm["selected-lines"].as<std::string>());
+		Selection selected_lines;
+
+		int i = 0;
+		for (auto& line : context.ass->Events) {
+			if (i == active_index) {
+				active_line = &line;
+			}
+
+			if (selected_indices.empty() || selected_indices.count(i)) {
+				selected_lines.insert(&line);
+				if (active_line == nullptr) {
+					// assign first line in selection as a fallback
+					active_line = &line;
+				}
+			}
+			i++;
+		}
+
+		if (active_line == nullptr) {
+			// selection was empty
+			active_line = &context.ass->Events.front();
+			selected_lines.insert(active_line);
+		}
+
+		context.selectionController->SetSelectionAndActive(
+			std::move(selected_lines), active_line);
+
+		if (vm.count("dialog"))
+			config::dialog_responses = parse_dialog_responses(vm["dialog"].as<std::vector<std::string>>());
+
+		if (vm.count("file"))
+			config::file_responses = parse_file_responses(vm["file"].as<std::vector<std::string>>());
+
+		// cache cwd in case automation changes it
+		auto cwd = std::filesystem::current_path();
+
+		std::vector<std::unique_ptr<Automation4::Script>> scripts;
+		if (vm.count("automation")) {
+			for (auto& s : vm["automation"].as<std::vector<std::string>>()) {
+				LOG_D("main") << "Loading " << s;
+				auto script = find_script(s);
+				if (!script) {
+					return 1;
+				}
+				scripts.emplace_back(std::move(script));
+			}
+		}
+
+		auto macro = vm["macro"].as<std::string>();
+
+		cmd::Command *cmd = nullptr;
+
+		// Allow calling automation scripts by their display name
+		for (auto const& script : scripts) {
+			for (auto const& c: script->GetMacros()) {
+				if (c->StrMenu(&context) == to_wx(macro)) {
+					cmd = c;
+				}
+			}
+		}
+
+		// If we don't find one, try the command name instead
+		if (!cmd) {
+			try {
+				cmd = cmd::get(macro);
+			} catch (cmd::CommandNotFound const&) {
+				std::cerr << "Command not found: " << macro << std::endl;
+				LOG_E("main") << "Command not found: " << macro;
+				return 1;
+			}
+		}
+
+		if (!cmd->Validate(&context)) {
+			LOG_E("main") << "Skipping automation because validation function returned false";
+			return 1;
+		}
+
+		LOG_D("main") << "Calling " << cmd->name();
+		(*cmd)(&context);
+
+		// restore cwd for saving
+		std::filesystem::current_path(cwd);
+		context.subsController->Save(std::filesystem::absolute(vm["out-file"].as<std::string>()));
 		return 0;
 	} else {
+		config::loadGlobalAutomation = true;
 		return wxEntry(argc, argv);
 	}
 }
