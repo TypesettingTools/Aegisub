@@ -7,6 +7,10 @@ system_deps = [
     cc.find_library('m', required: false)
 ]
 
+# get architecture id for the host machine so it can be set when compiling buildvm natively
+lj_target_id = cc.get_define('LUAJIT_TARGET', prefix: '#include "@0@/src/lj_arch.h"'.format(meson.current_source_dir()))
+add_project_arguments('-DLUAJIT_TARGET=@0@'.format(lj_target_id), language: 'c', native: true)
+
 # compat flag is needed for both the buildvm code generator (compiled natively) and luajit itself
 add_project_arguments('-DLUAJIT_ENABLE_LUA52COMPAT', '-DENDIAN_LE', language: 'c', native: true)
 add_project_arguments('-DLUAJIT_ENABLE_LUA52COMPAT', '-DENDIAN_LE', language: 'c', native: false)
