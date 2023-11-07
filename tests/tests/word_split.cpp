@@ -76,11 +76,9 @@ TEST(lagi_word_split, two_words_newline) {
 
 TEST(lagi_word_split, two_words_unicode) {
 
-	//TODO: C++20 and unicode is a mess!, fix this
-	const std::u8string text = u8"abc\u300adef";
+	const std::string text = "abc\u300adef";
 	std::vector<DialogueToken> tokens = {{dt::TEXT, 9}};
-
-	SplitWords(text, tokens);
+	EXPECT_NO_THROW(SplitWords(text, tokens));
 	ASSERT_EQ(3u, tokens.size());
 	EXPECT_EQ(dt::WORD, tokens[0].type);
 	EXPECT_EQ(3u, tokens[0].length);

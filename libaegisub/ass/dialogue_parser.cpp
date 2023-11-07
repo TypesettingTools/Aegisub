@@ -23,7 +23,6 @@
 #include <boost/locale/boundary/types.hpp>
 
 #include <cuchar>
-#include "UTF8StringHelper.hpp"
 
 namespace {
 
@@ -215,13 +214,6 @@ void MarkDrawings(std::string const& str, std::vector<DialogueToken> &tokens) {
 void SplitWords(std::string const& str, std::vector<DialogueToken> &tokens) {
 	MarkDrawings(str, tokens);
 	WordSplitter(str, tokens).SplitWords();
-}
-
-
-void SplitWords(std::u8string const& str, std::vector<DialogueToken> &tokens) {
-	std::string const normal_str = ToECSString(str);
-	MarkDrawings(normal_str, tokens);
-	WordSplitter(normal_str, tokens).SplitWords();
 }
 
 }

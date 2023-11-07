@@ -1,26 +1,7 @@
-
-cpp = meson.get_compiler('cpp')
-test_ut8_conversion = cpp.compiles(
-    '''#include <cuchar>
-#include "UTF8StringHelper.hpp"
-int main(void)
-{
-    const std::u8string str = u8"abc\u300adef";
-    std::string const normal_str = ToECSString(str);
-}''',
-    include_directories: include_directories('ass'),
-)
-
-if not test_ut8_conversion
-    error('No proper unicode support is present in the compiler!')
-endif
-
-
 libaegisub_src = [
     'ass/dialogue_parser.cpp',
     'ass/time.cpp',
     'ass/uuencode.cpp',
-    'ass/UTF8StringHelper.hpp',
 
     'audio/provider_convert.cpp',
     'audio/provider.cpp',
