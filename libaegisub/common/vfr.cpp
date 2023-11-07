@@ -49,7 +49,7 @@ void validate_timecodes(std::vector<int> const& timecodes) {
 /// @param timecodes List of timecodes to normalize
 void normalize_timecodes(std::vector<int> &timecodes) {
 	if (int front = timecodes.front())
-		boost::for_each(timecodes, [=](int &tc) { tc -= front; });
+		boost::for_each(timecodes, [front](int &tc) { tc -= front; });
 }
 
 // A "start,end,fps" line in a v1 timecode file

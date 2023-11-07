@@ -88,7 +88,7 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 , freeSize(freeSize)
 , retina_helper(agi::make_unique<RetinaHelper>(this))
 , scale_factor(retina_helper->GetScaleFactor())
-, scale_factor_connection(retina_helper->AddScaleFactorListener([=](int new_scale_factor) {
+, scale_factor_connection(retina_helper->AddScaleFactorListener([=,  this](int new_scale_factor) {
 	double new_zoom = zoomValue * new_scale_factor / scale_factor;
 	scale_factor = new_scale_factor;
 	SetZoom(new_zoom);

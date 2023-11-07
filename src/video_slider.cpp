@@ -51,7 +51,7 @@ VideoSlider::VideoSlider (wxWindow* parent, agi::Context *c)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxWANTS_CHARS | wxFULL_REPAINT_ON_RESIZE)
 , c(c)
 , connections(agi::signal::make_vector({
-	OPT_SUB("Video/Slider/Show Keyframes", [=] { Refresh(false); }),
+	OPT_SUB("Video/Slider/Show Keyframes", [=,  this] { Refresh(false); }),
 	c->videoController->AddSeekListener(&VideoSlider::SetValue, this),
 	c->project->AddVideoProviderListener(&VideoSlider::VideoOpened, this),
 	c->project->AddKeyframesListener(&VideoSlider::KeyframesChanged, this),

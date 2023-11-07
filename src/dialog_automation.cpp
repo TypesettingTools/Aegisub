@@ -294,7 +294,7 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 			ei->script->GetFilename().wstring(),
 			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load")));
 
-		boost::transform(ei->script->GetMacros(), append_info, [=](const cmd::Command *f) {
+		boost::transform(ei->script->GetMacros(), append_info, [=,  this](const cmd::Command *f) {
 			return fmt_tl("    Macro: %s (%s)", f->StrDisplay(context), f->name());
 		});
 		boost::transform(ei->script->GetFilters(), append_info, [](const Automation4::ExportFilter* f) {

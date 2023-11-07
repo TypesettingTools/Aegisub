@@ -84,7 +84,7 @@ public:
 		if (wxIsMainThread())
 			text_ctrl->AppendText(log);
 		else
-			agi::dispatch::Main().Async([=]{ text_ctrl->AppendText(log); });
+			agi::dispatch::Main().Async([=,  this]{ text_ctrl->AppendText(log); });
 	}
 };
 

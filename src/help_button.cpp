@@ -72,7 +72,7 @@ namespace {
 HelpButton::HelpButton(wxWindow *parent, const char *page, wxPoint position, wxSize size)
 : wxButton(parent, wxID_HELP, "", position, size)
 {
-	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { OpenPage(page); });
+	Bind(wxEVT_BUTTON, [=,  this](wxCommandEvent&) { OpenPage(page); });
 	if (!url(page))
 		throw agi::InternalError("Invalid help page");
 }

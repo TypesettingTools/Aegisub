@@ -281,7 +281,7 @@ namespace {
 		}
 		std::string text = check_string(L, 1);
 		lua_pop(L, 1);
-		agi::dispatch::Main().Async([=] { c->frame->StatusTimeout(to_wx(text)); });
+		agi::dispatch::Main().Async([c, text] { c->frame->StatusTimeout(to_wx(text)); });
 		return 0;
 	}
 

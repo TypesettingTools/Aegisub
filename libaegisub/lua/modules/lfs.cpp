@@ -48,7 +48,7 @@ auto wrap(char **err, Func f) -> decltype(f()) {
 
 template<typename Ret>
 bool setter(const char *path, char **err, Ret (*f)(bfs::path const&)) {
-	return wrap(err, [=]{
+	return wrap(err, [path,f]{
 		f(path);
 		return true;
 	});
@@ -94,13 +94,13 @@ void dir_free(DirectoryIterator *it) {
 }
 
 DirectoryIterator *dir_new(const char *path, char **err) {
-	return wrap(err, [=]{
+	return wrap(err, [path]{
 		return new DirectoryIterator(path, "");
 	});
 }
 
 const char *get_mode(const char *path, char **err) {
-	return wrap(err, [=]() -> const char * {
+	return wrap(err, [path]() -> const char * {
 		switch (bfs::status(path).type()) {
 			case bfs::file_not_found: return nullptr;         break;
 			case bfs::regular_file:   return "file";          break;
@@ -117,11 +117,11 @@ const char *get_mode(const char *path, char **err) {
 }
 
 time_t get_mtime(const char *path, char **err) {
-	return wrap(err, [=] { return ModifiedTime(path); });
+	return wrap(err, [path] { return ModifiedTime(path); });
 }
 
 uintmax_t get_size(const char *path, char **err) {
-	return wrap(err, [=] { return Size(path); });
+	return wrap(err, [path] { return Size(path); });
 }
 }
 

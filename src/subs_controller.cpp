@@ -152,9 +152,9 @@ SubsController::SubsController(agi::Context *context)
 , autosave_queue(agi::dispatch::Create())
 {
 	autosave_timer_changed(&autosave_timer);
-	OPT_SUB("App/Auto/Save", [=] { autosave_timer_changed(&autosave_timer); });
-	OPT_SUB("App/Auto/Save Every Seconds", [=] { autosave_timer_changed(&autosave_timer); });
-	autosave_timer.Bind(wxEVT_TIMER, [=](wxTimerEvent&) { AutoSave(); });
+	OPT_SUB("App/Auto/Save", [=,  this] { autosave_timer_changed(&autosave_timer); });
+	OPT_SUB("App/Auto/Save Every Seconds", [=,  this] { autosave_timer_changed(&autosave_timer); });
+	autosave_timer.Bind(wxEVT_TIMER, [=,  this](wxTimerEvent&) { AutoSave(); });
 }
 
 SubsController::~SubsController() {

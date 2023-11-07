@@ -44,7 +44,7 @@ LogSink::~LogSink() {
 }
 
 void LogSink::Log(SinkMessage const& sm) {
-	queue->Async([=] {
+	queue->Async([=,  this] {
 		if (messages.size() < 250)
 			messages.push_back(sm);
 		else {
@@ -59,13 +59,13 @@ void LogSink::Log(SinkMessage const& sm) {
 void LogSink::Subscribe(std::unique_ptr<Emitter> em) {
 	LOG_D("agi/log/emitter/subscribe") << "Subscribe: " << this;
 	auto tmp = em.release();
-	queue->Sync([=] { emitters.emplace_back(tmp); });
+	queue->Sync([=,  this] { emitters.emplace_back(tmp); });
 }
 
 void LogSink::Unsubscribe(Emitter *em) {
-	queue->Sync([=] {
+	queue->Sync([=,  this] {
 		emitters.erase(
-			boost::remove_if(emitters, [=](std::unique_ptr<Emitter> const& e) { return e.get() == em; }),
+			boost::remove_if(emitters, [=,  this](std::unique_ptr<Emitter> const& e) { return e.get() == em; }),
 			emitters.end());
 	});
 	LOG_D("agi/log/emitter/unsubscribe") << "Un-Subscribe: " << this;

@@ -382,7 +382,7 @@ int AegisubApp::OnExit() {
 
 agi::Context& AegisubApp::NewProjectContext() {
 	auto frame = new FrameMain;
-	frame->Bind(wxEVT_DESTROY, [=](wxWindowDestroyEvent& evt) {
+	frame->Bind(wxEVT_DESTROY, [=,  this](wxWindowDestroyEvent& evt) {
 		if (evt.GetWindow() != frame) {
 			evt.Skip();
 			return;

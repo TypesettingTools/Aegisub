@@ -605,11 +605,11 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	auto delete_button = new wxButton(this, -1, _("&Delete"));
 
 	new_button->Bind(wxEVT_BUTTON, &Interface_Hotkeys::OnNewButton, this);
-	edit_button->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { edit_item(dvc, dvc->GetSelection()); });
-	delete_button->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { model->Delete(dvc->GetSelection()); });
+	edit_button->Bind(wxEVT_BUTTON, [=,  this](wxCommandEvent&) { edit_item(dvc, dvc->GetSelection()); });
+	delete_button->Bind(wxEVT_BUTTON, [=,  this](wxCommandEvent&) { model->Delete(dvc->GetSelection()); });
 
 	quick_search->Bind(wxEVT_TEXT, &Interface_Hotkeys::OnUpdateFilter, this);
-	quick_search->Bind(wxEVT_SEARCHCTRL_CANCEL_BTN, [=](wxCommandEvent&) { quick_search->SetValue(""); });
+	quick_search->Bind(wxEVT_SEARCHCTRL_CANCEL_BTN, [=,  this](wxCommandEvent&) { quick_search->SetValue(""); });
 
 	dvc = new wxDataViewCtrl(this, -1);
 	dvc->AssociateModel(model.get());

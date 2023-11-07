@@ -869,7 +869,7 @@ struct edit_line_paste final : public Command {
 		}
 		else {
 			auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
-			paste_lines(c, false, [=](AssDialogue *new_line) -> AssDialogue * {
+			paste_lines(c, false, [=,  this](AssDialogue *new_line) -> AssDialogue * {
 				c->ass->Events.insert(pos, *new_line);
 				return new_line;
 			});

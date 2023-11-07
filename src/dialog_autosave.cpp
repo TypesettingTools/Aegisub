@@ -74,7 +74,7 @@ DialogAutosave::DialogAutosave(wxWindow *parent)
 
 	wxSizer *versions_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Versions"));
 	version_list = new wxListBox(&d, -1);
-	version_list->Bind(wxEVT_LISTBOX_DCLICK, [=](wxCommandEvent&) { d.EndModal(wxID_OK); });
+	version_list->Bind(wxEVT_LISTBOX_DCLICK, [=,  this](wxCommandEvent&) { d.EndModal(wxID_OK); });
 	versions_box->Add(version_list, wxSizerFlags(1).Expand().Border());
 
 	wxSizer *boxes_sizer = new wxBoxSizer(wxHORIZONTAL);

@@ -108,7 +108,7 @@ void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
 	uint_fast32_t req_version = ++version;
 
 	auto copy = new AssFile(*new_subs);
-	worker->Async([=]{
+	worker->Async([=,  this]{
 		subs.reset(copy);
 		single_frame = NEW_SUBS_FILE;
 		ProcAsync(req_version, false);
@@ -121,7 +121,7 @@ void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, const AssDialo
 	// Copy just the line which were changed, then replace the line at the
 	// same index in the worker's copy of the file with the new entry
 	auto copy = new AssDialogue(*changed);
-	worker->Async([=]{
+	worker->Async([=,  this]{
 		int i = 0;
 		auto it = subs->Events.begin();
 		std::advance(it, copy->Row - i);
@@ -137,7 +137,7 @@ void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, const AssDialo
 void AsyncVideoProvider::RequestFrame(int new_frame, double new_time) throw() {
 	uint_fast32_t req_version = ++version;
 
-	worker->Async([=]{
+	worker->Async([=,  this]{
 		time = new_time;
 		frame_number = new_frame;
 		ProcAsync(req_version, false);
@@ -209,7 +209,7 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::GetFrame(int frame, double time,
 }
 
 void AsyncVideoProvider::SetColorSpace(std::string const& matrix) {
-	worker->Async([=] { source_provider->SetColorSpace(matrix); });
+	worker->Async([=,  this] { source_provider->SetColorSpace(matrix); });
 }
 
 wxDEFINE_EVENT(EVT_FRAME_READY, FrameReadyEvent);

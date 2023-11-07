@@ -153,7 +153,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 		auto scd = new wxSpinCtrlDouble(this, -1, "", wxDefaultPosition,
 			wxSize(75, -1), wxSP_ARROW_KEYS, min, max, *value, step);
 		scd->SetValidator(DoubleSpinValidator(value));
-		scd->Bind(wxEVT_SPINCTRLDOUBLE, [=](wxSpinDoubleEvent &evt) {
+		scd->Bind(wxEVT_SPINCTRLDOUBLE, [=,  this](wxSpinDoubleEvent &evt) {
 			evt.Skip();
 			if (updating) return;
 

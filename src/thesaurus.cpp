@@ -101,7 +101,7 @@ void Thesaurus::OnLanguageChanged() {
 	if (cancel_load) *cancel_load = true;
 	cancel_load = new bool{false};
 	auto cancel = cancel_load; // Needed to avoid capturing via `this`
-	agi::dispatch::Background().Async([=]{
+	agi::dispatch::Background().Async([=,  this]{
 		try {
 			auto thes = agi::make_unique<agi::Thesaurus>(dat, idx);
 			agi::dispatch::Main().Sync([&thes, cancel, this]{

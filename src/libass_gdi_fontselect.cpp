@@ -65,7 +65,7 @@ void match_fonts(ASS_Library *lib, ASS_FontProvider *provider, char *name) {
 	LOGFONTW lf{};
 	lf.lfCharSet = DEFAULT_CHARSET;
 	MultiByteToWideChar(CP_UTF8, 0, name, -1, lf.lfFaceName, LF_FACESIZE);
-	auto cb = [=](LOGFONTW const& lf) {
+	auto cb = [=,  this](LOGFONTW const& lf) {
 		ASS_FontProviderMetaData meta{};
 		meta.weight = lf.lfWeight;
 		meta.slant = lf.lfItalic ? FONT_SLANT_ITALIC : FONT_SLANT_NONE;

@@ -257,7 +257,7 @@ void OptionPage::EnableIfChecked(wxControl *cbx, wxControl *ctrl) {
 	if (!cb) return;
 
 	ctrl->Enable(cb->IsChecked());
-	cb->Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& evt) { ctrl->Enable(!!evt.GetInt()); evt.Skip(); });
+	cb->Bind(wxEVT_CHECKBOX, [=,  this](wxCommandEvent& evt) { ctrl->Enable(!!evt.GetInt()); evt.Skip(); });
 }
 
 void OptionPage::DisableIfChecked(wxControl *cbx, wxControl *ctrl) {
@@ -265,5 +265,5 @@ void OptionPage::DisableIfChecked(wxControl *cbx, wxControl *ctrl) {
 	if (!cb) return;
 
 	ctrl->Enable(!cb->IsChecked());
-	cb->Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& evt) { ctrl->Enable(!evt.GetInt()); evt.Skip(); });
+	cb->Bind(wxEVT_CHECKBOX, [=,  this](wxCommandEvent& evt) { ctrl->Enable(!evt.GetInt()); evt.Skip(); });
 }

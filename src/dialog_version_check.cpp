@@ -166,7 +166,7 @@ DEFINE_EXCEPTION(VersionCheckError, agi::Exception);
 
 void PostErrorEvent(bool interactive, wxString const& error_text) {
 	if (interactive) {
-		agi::dispatch::Main().Async([=]{
+		agi::dispatch::Main().Async([=,  this]{
 			new VersionCheckerResultDialog(error_text, {});
 		});
 	}
@@ -336,7 +336,7 @@ void DoCheck(bool interactive) {
 	}
 
 	if (!results.empty() || interactive) {
-		agi::dispatch::Main().Async([=]{
+		agi::dispatch::Main().Async([=,  this]{
 			wxString text;
 			if (results.size() == 1)
 				text = _("An update to Aegisub was found.");
@@ -352,7 +352,7 @@ void DoCheck(bool interactive) {
 }
 
 void PerformVersionCheck(bool interactive) {
-	agi::dispatch::Background().Async([=]{
+	agi::dispatch::Background().Async([=,  this]{
 		if (!interactive) {
 			// Automatic checking enabled?
 			if (!OPT_GET("App/Auto/Check For Updates")->GetBool())

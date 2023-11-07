@@ -213,7 +213,7 @@ public:
 
 	/// Unregister a dynamic menu item
 	void Remove(wxMenuItem *item) {
-		auto pred = [=](std::pair<std::string, wxMenuItem*> const& o) {
+		auto pred = [=,  this](std::pair<std::string, wxMenuItem*> const& o) {
 			return o.second == item;
 		};
 
@@ -501,8 +501,8 @@ namespace menu {
 	void GetMenuBar(std::string const& name, wxFrame *window, agi::Context *c) {
 #ifdef __WXMAC__
 		auto bind_events = [&](CommandMenuBar *menu) {
-			window->Bind(wxEVT_ACTIVATE, [=](wxActivateEvent&) { menu->cm.SetContext(c); });
-			window->Bind(wxEVT_DESTROY, [=](wxWindowDestroyEvent&) {
+			window->Bind(wxEVT_ACTIVATE, [=,  this](wxActivateEvent&) { menu->cm.SetContext(c); });
+			window->Bind(wxEVT_DESTROY, [=,  this](wxWindowDestroyEvent&) {
 				if (!osx::activate_top_window_other_than(window))
 					menu->cm.SetContext(nullptr);
 			});

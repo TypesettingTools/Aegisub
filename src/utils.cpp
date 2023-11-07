@@ -163,7 +163,7 @@ void CleanCache(agi::fs::path const& directory, std::string const& file_type, ui
 	max_size <<= 20;
 	if (max_files == 0)
 		max_files = std::numeric_limits<uint64_t>::max();
-	queue->Async([=]{
+	queue->Async([&directory, &file_type, max_size, max_files]{
 		LOG_D("utils/clean_cache") << "cleaning " << directory/file_type;
 		uint64_t total_size = 0;
 		using cache_item = std::pair<int64_t, agi::fs::path>;

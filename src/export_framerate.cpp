@@ -70,7 +70,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	auto FromVideo = new wxButton(base,-1,_("From &video"));
 	if (Input.IsLoaded()) {
 		initialInput = fmt_wx("%2.3f", Input.FPS());
-		FromVideo->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
+		FromVideo->Bind(wxEVT_BUTTON, [=,  this](wxCommandEvent&) {
 			InputFramerate->SetValue(fmt_wx("%g", c->project->Timecodes().FPS()));
 		});
 	}

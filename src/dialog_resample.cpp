@@ -205,8 +205,8 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	// Bind events
 	using std::bind;
 	d.Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
-	d.Bind(wxEVT_SPINCTRL, [=](wxCommandEvent&) { UpdateButtons(); });
-	d.Bind(wxEVT_RADIOBOX, [=](wxCommandEvent&) { UpdateButtons(); });
+	d.Bind(wxEVT_SPINCTRL, [=,  this](wxCommandEvent&) { UpdateButtons(); });
+	d.Bind(wxEVT_RADIOBOX, [=,  this](wxCommandEvent&) { UpdateButtons(); });
 	from_video->Bind(wxEVT_BUTTON, &DialogResample::SetDestFromVideo, this);
 	from_script->Bind(wxEVT_BUTTON, &DialogResample::SetSourceFromScript, this);
 	symmetrical->Bind(wxEVT_CHECKBOX, &DialogResample::OnSymmetrical, this);

@@ -115,7 +115,7 @@ wxTextCtrl *make_ctrl(wxWindow *parent, wxSizer *sizer, wxString const& desc, in
 	sizer->Add(ctrl, wxSizerFlags().Expand().Border(wxRIGHT));
 
 	ctrl->Enable(cb->IsChecked());
-	cb->Bind(wxEVT_CHECKBOX, [=](wxCommandEvent& evt) {
+	cb->Bind(wxEVT_CHECKBOX, [cb, ctrl](wxCommandEvent& evt) {
 		ctrl->Enable(cb->IsChecked());
 		evt.Skip();
 	});

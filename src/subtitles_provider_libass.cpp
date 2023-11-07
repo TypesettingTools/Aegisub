@@ -103,7 +103,7 @@ class LibassSubtitlesProvider final : public SubtitlesProvider {
 			agi::util::sleep_for(250);
 			if (shared->ready)
 				return;
-			br->Run([=](agi::ProgressSink *ps) {
+			br->Run([=,  this](agi::ProgressSink *ps) {
 				ps->SetTitle(from_wx(_("Updating font index")));
 				ps->SetMessage(from_wx(_("This may take several minutes")));
 				ps->SetIndeterminate();
@@ -193,7 +193,7 @@ void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
 		auto srcview = interleaved_view(img->w, img->h, (gray8_pixel_t*)img->bitmap, img->stride);
 		auto dstview = subimage_view(dst, img->dst_x, img->dst_y, img->w, img->h);
 
-		transform_pixels(dstview, srcview, dstview, [=](const bgra8_pixel_t frame, const gray8_pixel_t src) -> bgra8_pixel_t {
+		transform_pixels(dstview, srcview, dstview, [=,  this](const bgra8_pixel_t frame, const gray8_pixel_t src) -> bgra8_pixel_t {
 			unsigned int k = ((unsigned)src) * opacity / 255;
 			unsigned int ck = 255 - k;
 
