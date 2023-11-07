@@ -1,3 +1,7 @@
+#include <cuchar>
+#include <ranges>
+#include <concepts>
+
 //from https://stackoverflow.com/questions/55556200/convert-between-stdu8string-and-stdstring
 
 /// \brief Converts the range of UTF-8 code units to execution encoding.
