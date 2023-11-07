@@ -15,7 +15,7 @@ export CXX=g++-13
 buildtype=""
 DEBUG="false"
 
-if [ $ARG == "--help" ] || [ $ARG == "-h" ]; then
+if [ "$ARG" == "--help" ] || [ "$ARG" == "-h" ]; then
 
     cat <<'EOF'
 Usage: ./compile.sh [options] [command] [subcommand]
@@ -39,26 +39,33 @@ EOF
 
     exit 0
 
-elif [ $ARG == "release" ]; then
+elif [ "$ARG" == "release" ]; then
     buildtype="release"
-elif [ $ARG == "debug" ]; then
+elif [ "$ARG" == "debug" ]; then
     buildtype="debugoptimized"
-elif [ $ARG == "clean" ]; then
+elif [ "$ARG" == "clean" ]; then
     rm -rf build/
     exit 0
-elif [ $ARG == "dev" ]; then
+elif [ "$ARG" == "dev" ]; then
     buildtype="debugoptimized"
     DEBUG="true"
-elif [ $ARG == "runner" ]; then
+elif [ "$ARG" == "runner" ]; then
 
     ACT=$(which act)
 
     sudo "$ACT" -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-22.04
     exit 0
-elif [ $ARG == "flatpak" ]; then
+elif [ "$ARG" == "flatpak" ]; then
     BUILD_DIR="flatpak-build"
     UNIQUE_ID="org.aegisub.Aegisub"
-    flatpak-builder --user --install --force-clean "$BUILD_DIR"  --repo=./.repo "$UNIQUE_ID.yml"
+    flatpak-builder --gpg-sign=E90FB7C6F9097B980187EAE9C919C07E0A9371D6 --user --force-clean "$BUILD_DIR" --repo=./.repo "$UNIQUE_ID.yml"
+
+    flatpak install --user --reinstall --assumeyes "$(pwd)/.repo" "$UNIQUE_ID.Debug"
+    flatpak install --user --reinstall --assumeyes "$(pwd)/.repo" "$UNIQUE_ID.Locale"
+    flatpak install --user --reinstall --assumeyes "$(pwd)/.repo" "$UNIQUE_ID"
+
+    flatpak build-bundle .repo/ aegisub.flatpak "$UNIQUE_ID"
+
     flatpak run "$UNIQUE_ID"
 
     exit 0
@@ -84,9 +91,8 @@ fi
 
 meson compile -C build
 
-## run tests, these fail at the moment, for some file permission reasons :(
-# TODO: test fail locally atm
-# meson test -C build --verbose "gtest main"
+## run tests
+meson test -C build --verbose "gtest main"
 
 # PACK into DEB
 
