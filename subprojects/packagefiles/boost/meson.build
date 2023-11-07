@@ -6,6 +6,7 @@ project(
     default_options: ['cpp_std=c++20'],
 )
 
+warning('NOTE: after manually porting to boost 1.83 some things stopped working, this port is not working ATM!')
 
 prj_version = meson.project_version()
 
@@ -32,3 +33,4 @@ modules = ['chrono', 'thread', 'filesystem', 'locale', 'program_options']
 foreach module : modules
     subdir('libs/' + module)
 endforeach
+
