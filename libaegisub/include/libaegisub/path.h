@@ -14,6 +14,9 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
+
 #include <libaegisub/fs_fwd.h>
 
 #include <array>

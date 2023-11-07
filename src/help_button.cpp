@@ -77,11 +77,13 @@ HelpButton::HelpButton(wxWindow *parent, const char *page, wxPoint position, wxS
 		throw agi::InternalError("Invalid help page");
 }
 
+// TODO: website is down, either use an alternative or ship the pdfs manually and open them with "wxExecute"
+
 void HelpButton::OpenPage(const char *pageID) {
 	auto page = url(pageID);
 	auto sep = strchr(page, '#');
 	if (sep)
-		wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.2/%.*s/%s", sep - page, page, sep));
+		wxLaunchDefaultBrowser(fmt_wx("https://aegi.vmoe.info/docs/3.0/%.*s/%s", sep - page, page, sep));
 	else
-		wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.2/%s/", page));
+		wxLaunchDefaultBrowser(fmt_wx("https://aegi.vmoe.info/docs/3.0/%s/", page));
 }

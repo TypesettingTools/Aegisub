@@ -75,6 +75,64 @@ ljcore_src = files(
 
 src_inc = include_directories('.')
 
+
+
+git = find_program('git')
+
+fs = import('fs')
+
+luajit_relver_txt = disabler()
+
+if host_machine.system() == 'windows'
+    if fs.exists('..' / '.git')
+        luajit_relver_txt = custom_target(
+            'luajit_relver.txt',
+            command: [git, 'show', '-s', '--format=%%ct'],
+            output: 'luajit_relver.txt',
+            capture: true,
+        )
+    else
+        luajit_relver_txt = custom_target(
+            'luajit_relver.txt',
+            command: ['type', '..\.relver'],
+            output: 'luajit_relver.txt',
+            capture: true,
+        )
+    endif
+else
+    if fs.exists('..' / '.git')
+        luajit_relver_txt = custom_target(
+            'luajit_relver.txt',
+            command: [git, 'show', '-s', '--format=%ct'],
+            output: 'luajit_relver.txt',
+            capture: true,
+        )
+    else
+        luajit_relver_txt = custom_target(
+            'luajit_relver.txt',
+            command: ['cat', '../.relver'],
+            output: 'luajit_relver.txt',
+            capture: true,
+        )
+    endif
+endif
+
+lua = find_program('lua')
+
+build_luajit_h = custom_target(
+    'luajit.h',
+    command: [
+        lua,
+        meson.current_source_dir() / 'host' / 'genversion.lua',
+        '@INPUT0@',
+        '@INPUT1@',
+        '@OUTPUT@',
+    ],
+    input: ['luajit_rolling.h', luajit_relver_txt],
+    output: 'luajit.h',
+)
+
+
 subdir('host')
 
 hdrgen = [
@@ -85,19 +143,36 @@ hdrgen = [
 ]
 
 genheaders = []
-foreach h: hdrgen
-    genheaders += custom_target(h,
-                                command: [buildvm, '-m', h, '-o', '@OUTPUT@', ljlib_src],
-                                output: 'lj_@0@.h'.format(h))
+foreach h : hdrgen
+    genheaders += custom_target(
+        h,
+        command: [buildvm, '-m', h, '-o', '@OUTPUT@', ljlib_src],
+        output: 'lj_@0@.h'.format(h),
+    )
 endforeach
 
-genheaders += custom_target('folddef',
-                            command: [buildvm, '-m', 'folddef', '-o', '@OUTPUT@', files('lj_opt_fold.c')],
-                            output: 'lj_folddef.h')
+genheaders += custom_target(
+    'folddef',
+    command: [
+        buildvm,
+        '-m', 'folddef',
+        '-o', '@OUTPUT@',
+        files('lj_opt_fold.c'),
+    ],
+    output: 'lj_folddef.h',
+)
 
-ljvm = custom_target(ljvm_bout,
-                     command: [buildvm, '-m', ljvm_mode, '-o', '@OUTPUT@'],
-                     output: ljvm_bout)
+ljvm = custom_target(
+    ljvm_bout,
+    command: [buildvm, '-m', ljvm_mode, '-o', '@OUTPUT@'],
+    output: ljvm_bout,
+)
 
-luajit_lib = static_library('luajit', ljlib_src, ljcore_src, genheaders, ljvm,
-                            dependencies: system_deps)
+luajit_lib = static_library(
+    'luajit',
+    ljlib_src,
+    ljcore_src,
+    genheaders,
+    ljvm,
+    dependencies: system_deps,
+)

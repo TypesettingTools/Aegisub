@@ -55,6 +55,7 @@
 #include "utils.h"
 #include "value_event.h"
 #include "version.h"
+#include "wakatime.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/format_path.h>
@@ -66,6 +67,7 @@
 #include <libaegisub/util.h>
 
 #include <boost/interprocess/streams/bufferstream.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/locale.hpp>
 #include <locale>
 #include <wx/clipbrd.h>
@@ -91,12 +93,12 @@ static const char *LastStartupState = nullptr;
 #endif
 
 void AegisubApp::OnAssertFailure(const wxChar *file, int line, const wxChar *func, const wxChar *cond, const wxChar *msg) {
-	LOG_A("wx/assert") << file << ":" << line << ":" << func << "() " << cond << ": " << msg;
+	LOG_A("wx/assert") <<  wxString(file) << ":" << line << ":" << wxString(func) << "() " << wxString(cond) << ": " << wxString(msg);
 	wxApp::OnAssertFailure(file, line, func, cond, msg);
 }
 
 AegisubApp::AegisubApp() {
-	// http://trac.wxwidgets.org/ticket/14302
+	//https://github.com/wxWidgets/wxWidgets/issues/14302
 	wxSetEnv("UBUNTU_MENUPROXY", "0");
 }
 
@@ -106,6 +108,8 @@ wxDEFINE_EVENT(EVT_CALL_THUNK, ValueEvent<agi::dispatch::Thunk>);
 
 /// Message displayed when an exception has occurred.
 static wxString exception_message = "Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.";
+
+agi::fs::path 	AegisubApp::startCwd = agi::fs::path{};
 
 /// @brief Gets called when application starts.
 /// @return bool
@@ -145,7 +149,9 @@ bool AegisubApp::OnInit() {
 		std::locale::global(locale);
 	}
 
-	boost::filesystem::path::imbue(std::locale());
+	boost::filesystem::path::imbue (std::locale());
+
+	AegisubApp::startCwd = boost::filesystem::current_path();
 
 	// Pointless `this` capture required due to http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51494
 	agi::dispatch::Init([this](agi::dispatch::Thunk f) {
@@ -229,6 +235,10 @@ bool AegisubApp::OnInit() {
 
 	// Init hotkeys
 	hotkey::init();
+
+	// Init wakatime
+	wakatime::init();
+
 
 	StartupLog("Load MRU");
 	config::mru = new agi::MRUManager(config::path->Decode("?user/mru.json"), GET_DEFAULT_CONFIG(default_mru), config::opt);
@@ -356,6 +366,7 @@ int AegisubApp::OnExit() {
 	delete config::opt;
 	delete config::mru;
 	hotkey::clear();
+	wakatime::clear();
 	cmd::clear();
 
 	delete config::global_scripts;

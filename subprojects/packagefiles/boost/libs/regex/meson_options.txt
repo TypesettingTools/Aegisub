@@ -1,0 +1,1 @@
+option('BOOST_REGEX_STANDALONE', description : 'Boost.Regex: Enable Standalone Mode (i.e. no Boost dependencies)')

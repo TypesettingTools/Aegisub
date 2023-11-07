@@ -15,6 +15,15 @@
 		"audio/stop" : [
 			"KP_8"
 		],
+		"automation/lua/kara-templater/Apply karaoke template" : [
+			"Ctrl-Tab"
+		],
+		"automation/lua/totto.QC.basic/:QC Basic" : [
+			"Ctrl-Alt-Q"
+		],
+		"automation/lua/totto.QC.basic/:Quick Timing Totto" : [
+			"Ctrl-Shift-T"
+		],
 		"time/length/decrease" : [
 			"KP_7"
 		],
@@ -125,17 +134,26 @@
 		"edit/line/delete" : [
 			"Ctrl-Delete"
 		],
-		"edit/line/duplicate/shift" : [
-			"Ctrl-D"
+		"edit/line/duplicate" : [
+			"Ctrl-Shift-C"
 		],
-		"edit/line/duplicate/shift_back" : [
+		"edit/line/split/after" : [
 			"Ctrl-Shift-D"
+		],
+		"edit/line/split/before" : [
+			"Ctrl-D"
 		],
 		"edit/line/paste" : [
 			"Ctrl-V"
 		],
 		"edit/line/paste/over" : [
 			"Ctrl-Shift-V"
+		],
+		"edit/line/join/concatenate" : [
+			"Ctrl-Alt-Y"
+		],
+		"edit/line/join/keep_first" : [
+			"Ctrl-Shift-Y"
 		],
 		"edit/redo" : [
 			"Ctrl-Y"
@@ -176,6 +194,12 @@
 		],
 		"subtitle/save/as" : [
 			"Ctrl-Shift-S"
+		],
+		"time/continuous/end" : [
+			"Ctrl-Shift-2"
+		],
+		"time/continuous/start" : [
+			"Ctrl-Shift-1"
 		],
 		"time/frame/current" : [
 			"Ctrl-6"

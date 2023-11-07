@@ -22,6 +22,8 @@
 #include <boost/locale/boundary/segment.hpp>
 #include <boost/locale/boundary/types.hpp>
 
+#include <cuchar>
+
 namespace {
 
 typedef std::vector<agi::ass::DialogueToken> TokenVec;

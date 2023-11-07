@@ -119,7 +119,7 @@ namespace {
 	int get_translation(lua_State *L)
 	{
 		wxString str(check_wxstring(L, 1));
-		push_value(L, _(str).utf8_str());
+		push_value(L, _(str).ToStdString());
 		return 1;
 	}
 

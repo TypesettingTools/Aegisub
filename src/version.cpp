@@ -55,6 +55,11 @@ const char *GetAegisubShortVersionString() {
 	return BUILD_GIT_VERSION_STRING DEBUG_SUFFIX;
 }
 
+const char *GetAegisubBuildYear() {
+	const char *build_year = __DATE__ + 7;
+	return build_year;
+}
+
 #ifdef BUILD_CREDIT
 const char *GetAegisubBuildTime() {
 	return __DATE__ " " __TIME__;

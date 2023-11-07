@@ -455,6 +455,24 @@ void Advanced_Video(wxTreebook *book, Preferences *parent) {
 	p->SetSizerAndFit(p->sizer);
 }
 
+
+
+/// Advanced Plugin preferences subpage
+void Advanced_Plugin(wxTreebook *book, Preferences *parent) {
+	auto p = new OptionPage(book, parent, _("Plugins"), OptionPage::PAGE_SUB);
+
+	auto wakatime = p->PageSizer(_("Wakatime"));
+	p->OptionAdd(wakatime, _("Enable Debug Logs"), "Wakatime/Debug");
+
+	//p->CellSkip(wakatime);
+
+	p->OptionAdd(wakatime, _("API Key"), "Wakatime/API_Key");
+
+	p->CellSkip(wakatime);
+	
+	p->SetSizerAndFit(p->sizer);
+}
+
 /// wxDataViewIconTextRenderer with command name autocompletion
 class CommandRenderer final : public wxDataViewCustomRenderer {
 	wxArrayString autocomplete;
@@ -710,6 +728,7 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	Advanced(book, this);
 	Advanced_Audio(book, this);
 	Advanced_Video(book, this);
+	Advanced_Plugin(book, this);
 
 	book->Fit();
 

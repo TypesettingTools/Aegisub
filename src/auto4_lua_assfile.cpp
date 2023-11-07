@@ -170,16 +170,16 @@ namespace Automation4 {
 			set_field(L, "start_time", dia->Start);
 			set_field(L, "end_time", dia->End);
 
-			set_field(L, "style", dia->Style);
-			set_field(L, "actor", dia->Actor);
-			set_field(L, "effect", dia->Effect);
+			set_field(L, "style", dia->Style.get());
+			set_field(L, "actor", dia->Actor.get());
+			set_field(L, "effect", dia->Effect.get());
 
 			set_field(L, "margin_l", dia->Margin[0]);
 			set_field(L, "margin_r", dia->Margin[1]);
 			set_field(L, "margin_t", dia->Margin[2]);
 			set_field(L, "margin_b", dia->Margin[2]);
 
-			set_field(L, "text", dia->Text);
+			set_field(L, "text", dia->Text.get());
 
 			// create extradata table
 			lua_newtable(L);

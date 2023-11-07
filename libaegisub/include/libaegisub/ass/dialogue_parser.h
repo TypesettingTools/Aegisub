@@ -78,6 +78,8 @@ namespace agi {
 		/// own tokens and convert the body of drawings to DRAWING tokens
 		void SplitWords(std::string const& str, std::vector<DialogueToken> &tokens);
 
+		void SplitWords(std::u8string const& str, std::vector<DialogueToken> &tokens);
+
 		std::vector<DialogueToken> SyntaxHighlight(std::string const& text, std::vector<DialogueToken> const& tokens, SpellChecker *spellchecker);
 	}
 }

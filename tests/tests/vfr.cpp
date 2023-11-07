@@ -34,7 +34,7 @@ using namespace util;
 TEST(lagi_vfr, constructors_good) {
 	EXPECT_NO_THROW(Framerate(1.));
 	EXPECT_NO_THROW(Framerate(Framerate(1.)));
-	EXPECT_NO_THROW(Framerate({ 0, 10 }));
+	EXPECT_NO_THROW(Framerate(std::vector<int>{ 0, 10 }));
 
 	EXPECT_NO_THROW(Framerate("data/vfr/in/v1_start_equals_end.txt"));
 	EXPECT_NO_THROW(Framerate("data/vfr/in/v1_whitespace.txt"));
@@ -50,8 +50,8 @@ TEST(lagi_vfr, constructors_bad_cfr) {
 TEST(lagi_vfr, constructors_bad_timecodes) {
 	EXPECT_THROW(Framerate(std::initializer_list<int>{}), InvalidFramerate);
 	EXPECT_THROW(Framerate({0}), InvalidFramerate);
-	EXPECT_THROW(Framerate({10, 0}), InvalidFramerate);
-	EXPECT_THROW(Framerate({0, 0}), InvalidFramerate);
+	EXPECT_THROW(Framerate(std::vector<int>{10, 0}), InvalidFramerate);
+	EXPECT_THROW(Framerate(std::vector<int>{0, 0}), InvalidFramerate);
 }
 
 TEST(lagi_vfr, constructors_bad_v1) {
@@ -227,7 +227,7 @@ TEST(lagi_vfr, vfr_time_at_frame_end) {
 
 TEST(lagi_vfr, vfr_time_at_frame_outside_range) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate({ 0, 100, 200 }));
+	ASSERT_NO_THROW(fps = Framerate(std::vector<int>{ 0, 100, 200 }));
 	EXPECT_GT(0, fps.TimeAtFrame(-1));
 	EXPECT_EQ(0, fps.TimeAtFrame(0));
 	EXPECT_EQ(100, fps.TimeAtFrame(1));
@@ -316,7 +316,7 @@ TEST(lagi_vfr, validate_save) {
 
 TEST(lagi_vfr, save_vfr_nolen) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate({ 0, 100, 200 }));
+	ASSERT_NO_THROW(fps = Framerate(std::vector<int>{ 0, 100, 200 }));
 	ASSERT_NO_THROW(fps.Save("data/vfr/out/v2_nolen.txt"));
 
 	EXPECT_TRUE(validate_save("data/vfr/in/v2_nolen.txt", "data/vfr/out/v2_nolen.txt"));
@@ -324,7 +324,7 @@ TEST(lagi_vfr, save_vfr_nolen) {
 
 TEST(lagi_vfr, save_vfr_len) {
 	Framerate fps;
-	ASSERT_NO_THROW(fps = Framerate({ 0, 100, 200 }));
+	ASSERT_NO_THROW(fps = Framerate(std::vector<int>{ 0, 100, 200 }));
 	ASSERT_NO_THROW(fps.Save("data/vfr/out/v2_len_3_10.txt", 10));
 
 	EXPECT_TRUE(validate_save("data/vfr/in/v2_len_3_10.txt", "data/vfr/out/v2_len_3_10.txt", 3));

@@ -1,0 +1,146 @@
+app-id: org.aegisub.Aegisub
+runtime: org.freedesktop.Platform
+runtime-version: "23.08"
+sdk: org.freedesktop.Sdk
+command: aegisub
+modules:
+    - name: lua
+      buildsystem: simple
+      sources:
+          - type: archive
+            url: https://www.lua.org/ftp/lua-5.4.6.tar.gz
+            sha256: 7d5ea1b9cb6aa0b59ca3dde1c6adcb57ef83a1ba8e5432c0ecd06bf439b3ad88
+      build-commands:
+          - sed -i 's/INSTALL_TOP= \/usr\/local/INSTALL_TOP= \/app/g' Makefile
+          - make
+          - make install
+
+    - name: glu
+      buildsystem: meson
+      sources:
+          - type: archive
+            url: https://ftp.osuosl.org/pub/blfs/conglomeration/glu/glu-9.0.3.tar.xz
+            sha256: bd43fe12f374b1192eb15fe20e45ff456b9bc26ab57f0eee919f96ca0f8a330f
+
+    - name: wxWidgets
+      buildsystem: simple
+      sources:
+          - type: archive
+            url: https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.3/wxWidgets-3.2.3.tar.bz2
+            sha256: c170ab67c7e167387162276aea84e055ee58424486404bba692c401730d1a67a
+      build-commands:
+          - mkdir buildgtk
+          - cd buildgtk && ../configure --prefix=/app --with-opengl --with-gtk --enable-monolithic --enable-unicode --with-regex --enable-image
+          - cd buildgtk && make
+          - cd buildgtk && make install
+          - cd buildgtk && ldconfig
+
+    - name: luarocks
+      buildsystem: simple
+      sources:
+          - type: archive
+            url: https://luarocks.org/releases/luarocks-3.9.2.tar.gz
+            sha256: bca6e4ecc02c203e070acdb5f586045d45c078896f6236eb46aa33ccd9b94edb
+      build-commands:
+          - ./configure --prefix=/app --with-lua=/app
+          - make
+          - make install
+
+    - name: YUtils
+      buildsystem: simple
+      sources:
+          - type: git
+            url: https://github.com/TypesettingTools/YUtils.git
+      build-commands:
+          - mkdir -p /app/share/aegisub/automation/include/
+          - cp src/Yutils.lua /app/share/aegisub/automation/include/Yutils.lua
+
+    - name: luajson
+      buildsystem: simple
+      sources:
+          - type: git
+            url: https://github.com/harningt/luajson.git
+      build-commands:
+          - mkdir -p /app/share/aegisub/automation/include/
+          - cp -r lua/* /app/share/aegisub/automation/include/
+
+    - name: ffi-experiments
+      buildsystem: simple
+      sources:
+          - type: git
+            url: https://github.com/Totto16/ffi-experiments.git
+      build-commands:
+          - luarocks install moonscript --dev ## we need the dev version for lua 5.4!
+          - make -B lua
+          #  - luarocks remove moonscript # remove again, to not end in the final pack
+          - make -B all
+          - mkdir -p /app/share/aegisub/automation/include/requireffi/
+          - cp build/requireffi.lua /app/share/aegisub/automation/include/requireffi/
+          - mkdir -p /app/share/aegisub/automation/include/BM/
+          - cp build/BadMutex.lua /app/share/aegisub/automation/include/BM/
+          - mkdir -p /app/share/aegisub/automation/include/DM/
+          - cp build/DownloadManager.lua /app/share/aegisub/automation/include/DM/
+          - mkdir -p /app/share/aegisub/automation/include/PT/
+          - cp build/PreciseTimer.lua /app/share/aegisub/automation/include/PT/
+          - cp build/lib*.so /app/lib/
+      build-options:
+          build-args:
+              - --share=network
+
+    - name: DependencyControl
+      buildsystem: simple
+      sources:
+          - type: archive
+            url: https://github.com/TypesettingTools/DependencyControl/archive/refs/tags/v0.6.4-alpha.tar.gz
+            sha256: b4ba3da034be85d2394d4ec7de4192a76be45f900a60dd484a0d1af3d6671c71
+      build-commands:
+          - mkdir -p /app/share/aegisub/automation/autoload/
+          - cp macros/l0.DependencyControl.Toolbox.moon /app/share/aegisub/automation/autoload/
+          - mkdir -p /app/share/aegisub/automation/include/l0/
+          - cp -r modules/* /app/share/aegisub/automation/include/l0/
+
+    - name: boost
+      buildsystem: simple
+      sources:
+          - type: archive
+            url: https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
+            sha256: c0685b68dd44cc46574cce86c4e17c0f611b15e195be9848dfd0769a0a207628
+      build-commands:
+          - ./bootstrap.sh
+          - ./b2 --prefix=/app --with-chrono --with-filesystem --with-thread --with-locale --with-system install variant=release
+
+    - name: aegisub
+      buildsystem: meson
+      config-opts:
+          - -Dbuildtype=release
+          - -Dwx_version=3.2.3
+          - -Dcredit=Flatpak build
+          - -Dcpp_args=-DFLATPAK_BUILD
+          - -Dtests=disabled
+      build-options:
+          build-args:
+              - --share=network
+      sources:
+          - type: dir
+            path: "."
+            skip:
+                - .github/
+                - .vscode/
+                - build
+      post-install:
+          - find subprojects/ -iregex ".*\.so" -exec cp {}  ${FLATPAK_DEST}/lib/ \;
+      run-tests: false # TODO fix tests
+
+finish-args:
+    - --socket=x11
+    - --socket=wayland
+    - --socket=pulseaudio
+    - --share=network
+    - --device=all
+    - --device=dri
+    - --filesystem=~/.aegisub
+    - --filesystem=~/.fonts
+    - --filesystem=/usr/share/fonts
+    - --filesystem=host
+    - --talk-name=org.freedesktop.portal.Background
+    - --talk-name=org.freedesktop.portal.Notification

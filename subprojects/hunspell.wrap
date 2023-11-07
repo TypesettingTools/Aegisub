@@ -1,9 +1,9 @@
 [wrap-file]
-directory = hunspell-1.7.0
-source_url = https://github.com/hunspell/hunspell/files/2573619/hunspell-1.7.0.tar.gz
-source_filename = hunspell-1.7.0.tar.gz
-source_hash = 57be4e03ae9dd62c3471f667a0d81a14513e314d4d92081292b90435944ff951
+directory = hunspell-1.7.2
+source_url = https://github.com/hunspell/hunspell/releases/download/v1.7.2/hunspell-1.7.2.tar.gz
+source_filename = hunspell-1.7.2.tar.gz
+source_hash = 11ddfa39afe28c28539fe65fc4f1592d410c1e9b6dd7d8a91ca25d85e9ec65b8
 patch_directory = hunspell
 
-[provides]
+[provide]
 hunspell = hunspell_dep

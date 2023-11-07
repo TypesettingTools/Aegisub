@@ -1,6 +1,6 @@
 [wrap-file]
-directory = boost_1_74_0
-source_url = https://boostorg.jfrog.io/artifactory/main/release/1.74.0/source/boost_1_74_0.tar.gz
-source_filename = boost_1_74_0.tar.gz
-source_hash = afff36d392885120bcac079148c177d1f6f7730ec3d47233aa51b0afa4db94a5
+directory = boost_1_83_0
+source_url = https://boostorg.jfrog.io/artifactory/main/release/1.83.0/source/boost_1_83_0.tar.gz
+source_filename = boost_1_83_0.tar.gz
+source_hash = c0685b68dd44cc46574cce86c4e17c0f611b15e195be9848dfd0769a0a207628
 patch_directory = boost

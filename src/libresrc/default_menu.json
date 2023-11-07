@@ -76,6 +76,7 @@
         { "command" : "tool/resampleres" },
         { "command" : "subtitle/spellcheck" },
         {},
+        { "command" : "tool/assdraw" },
         { "submenu" : "main/subtitle/insert lines", "text" : "&Insert Lines" },
         { "command" : "edit/line/duplicate" },
         { "command" : "edit/line/split/before" },

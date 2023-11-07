@@ -79,3 +79,4 @@ src/visual_tool.cpp
 src/visual_tool_cross.cpp
 src/visual_tool_drag.cpp
 src/visual_tool_vector_clip.cpp
+src/wakatime.cpp

@@ -17,9 +17,12 @@
 #include <main.h>
 #include <util.h>
 
+#include <algorithm>
+
 #include <libaegisub/fs.h>
 
 using namespace agi::fs;
+
 
 TEST(lagi_fs, exists) {
 	EXPECT_TRUE(Exists("data/file"));
@@ -156,7 +159,7 @@ TEST(lagi_fs, dir_iterator_no_filter) {
 	std::vector<std::string> files;
 	ASSERT_NO_THROW(DirectoryIterator("data/dir_iterator", "").GetAll(files));
 	ASSERT_EQ(4u, files.size());
-	sort(begin(files), end(files)); // order is not guaranteed
+	std::sort(begin(files), end(files)); // order is not guaranteed
 	EXPECT_STREQ("1.a", files[0].c_str());
 	EXPECT_STREQ("1.b", files[1].c_str());
 	EXPECT_STREQ("2.a", files[2].c_str());
@@ -167,7 +170,7 @@ TEST(lagi_fs, dir_iterator_ext_filter) {
 	std::vector<std::string> files;
 	ASSERT_NO_THROW(DirectoryIterator("data/dir_iterator", "*.a").GetAll(files));
 	ASSERT_EQ(2u, files.size());
-	sort(begin(files), end(files)); // order is not guaranteed
+	std::sort(begin(files), end(files)); // order is not guaranteed
 	EXPECT_STREQ("1.a", files[0].c_str());
 	EXPECT_STREQ("2.a", files[1].c_str());
 }
@@ -176,7 +179,7 @@ TEST(lagi_fs, dir_iterator_ext_filter_skipping_first_works) {
 	std::vector<std::string> files;
 	ASSERT_NO_THROW(DirectoryIterator("data/dir_iterator", "*.b").GetAll(files));
 	ASSERT_EQ(2u, files.size());
-	sort(begin(files), end(files)); // order is not guaranteed
+	std::sort(begin(files), end(files)); // order is not guaranteed
 	EXPECT_STREQ("1.b", files[0].c_str());
 	EXPECT_STREQ("2.b", files[1].c_str());
 }
@@ -185,7 +188,7 @@ TEST(lagi_fs, dir_iterator_fn_filter) {
 	std::vector<std::string> files;
 	ASSERT_NO_THROW(DirectoryIterator("data/dir_iterator", "1.*").GetAll(files));
 	ASSERT_EQ(2u, files.size());
-	sort(begin(files), end(files)); // order is not guaranteed
+	std::sort(begin(files), end(files)); // order is not guaranteed
 	EXPECT_STREQ("1.a", files[0].c_str());
 	EXPECT_STREQ("1.b", files[1].c_str());
 }

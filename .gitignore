@@ -41,3 +41,9 @@ subprojects/zlib-*
 subprojects/dirent-*
 subprojects/hunspell-*
 subprojects/uchardet-*
+
+.vscode/*
+
+flatpak-build/
+.flatpak-builder/
+.repo/

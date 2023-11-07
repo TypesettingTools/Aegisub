@@ -47,6 +47,7 @@
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <future>
 
 #include <wx/dcmemory.h>
@@ -313,7 +314,15 @@ namespace Automation4 {
 	AutoloadScriptManager::AutoloadScriptManager(std::string path)
 	: path(std::move(path))
 	{
+		// Before Loading Plugins, save the current path, that could be changed by lua
+		auto cwd = boost::filesystem::current_path();
+
 		Reload();
+
+
+		// Then afterwards restore that path
+		boost::filesystem::current_path(cwd);
+		
 	}
 
 	void AutoloadScriptManager::Reload()

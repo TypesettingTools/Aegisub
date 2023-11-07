@@ -27,6 +27,9 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
+
 #include <memory>
 #include <wx/frame.h>
 #include <wx/timer.h>
@@ -58,6 +61,7 @@ class FrameMain : public wxFrame {
 	void UpdateTitle();
 
 	void OnKeyDown(wxKeyEvent &event);
+	void OnMouseEvent(wxMouseEvent &event);
 	void OnMouseWheel(wxMouseEvent &evt);
 
 	void OnStatusClear(wxTimerEvent &event);

@@ -1,9 +1,13 @@
 [wrap-file]
-directory = uchardet-0.0.7
-source_url = https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.7.tar.xz
-source_filename = uchardet-0.0.7.tar.gz
-source_hash = 3fc79408ae1d84b406922fa9319ce005631c95ca0f34b205fad867e8b30e45b1
-patch_directory = uchardet
+directory = uchardet-0.0.8
+source_url = https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.8.tar.xz
+source_filename = uchardet-0.0.8.tar.xz
+source_hash = e97a60cfc00a1c147a674b097bb1422abd9fa78a2d9ce3f3fdcc2e78a34ac5f0
+patch_filename = uchardet_0.0.8-1_patch.zip
+patch_url = https://wrapdb.mesonbuild.com/v2/uchardet_0.0.8-1/get_patch
+patch_hash = 08077037aabc920d461794e8d81596efe80b9a7d7792e090fd89db9c1dc9fd76
+source_fallback_url = https://github.com/mesonbuild/wrapdb/releases/download/uchardet_0.0.8-1/uchardet-0.0.8.tar.xz
+wrapdb_version = 0.0.8-1
 
-[provides]
+[provide]
 uchardet = uchardet_dep

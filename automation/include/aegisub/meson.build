@@ -9,6 +9,6 @@ lua_files = files(
     'util.moon',
 )
 
-foreach f: lua_files
-    configure_file(input: f, output: '@PLAINNAME@', copy: true)
+foreach file: lua_files
+    fs.copyfile(file)
 endforeach

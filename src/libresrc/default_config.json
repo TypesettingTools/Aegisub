@@ -414,16 +414,16 @@
 			"Translate Alignments" : true
 		},
 		"MicroDVD": {
-			"Default Style Catalog": "Default",
+			"Default Style Catalog": "Default"
 		},
 		"SRT": {
-			"Default Style Catalog": "Default",
+			"Default Style Catalog": "Default"
 		},
 		"TTXT": {
-			"Default Style Catalog": "Default",
+			"Default Style Catalog": "Default"
 		},
 		"TXT": {
-			"Default Style Catalog": "Default",
+			"Default Style Catalog": "Default"
 		}
 	},
 
@@ -612,5 +612,9 @@
 			"Show Keyframes" : true
 		},
 		"Subtitle Sync" : true
+	},
+	"Wakatime":{
+		"API_Key":"",
+		"Debug":false
 	}
 }

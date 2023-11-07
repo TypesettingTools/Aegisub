@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+
+
 builddir="$1"
 srcdir="$2"
 
@@ -46,6 +49,16 @@ else
 fi
 
 build_date="$(date "+%Y-%m-%d %H:%M %Z")"
+
+number_regex='^[0-9]+$'
+if [ -z $git_revision ]; then
+    echo "git repo was corrupted or not cloned with all refs, this is probably a 'git clone' or similar error"
+    exit 2
+elif ! [[ $git_revision =~ $number_regex ]] ; then
+    echo "git_revision is not a number, but '$git_revision' , this happened probably due to a git rev issue!"
+    exit 2
+fi 
+
 
 new_version_h="\
 #define BUILD_GIT_VERSION_NUMBER ${git_revision}
