@@ -178,8 +178,8 @@ jobs:
         run: |
           meson compile -C build linux-dependency-control
           meson compile -C build aegisub.desktop
-          meson compile -C build ubuntu-deb
-          meson compile -C build ubuntu.assdraw-deb
+          meson compile -C build ubuntu.aegsiub.deb
+          meson compile -C build ubuntu.assdraw.deb
 
       - name: Upload artifacts - ubuntu deb
         uses: actions/upload-artifact@v3
