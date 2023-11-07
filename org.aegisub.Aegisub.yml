@@ -139,4 +139,8 @@ finish-args:
     - --device=all
     - --device=dri
     - --filesystem=~/.aegisub
+    - --filesystem=~/.fonts
+    - --filesystem=/usr/share/fonts
     - --filesystem=host
+    - --talk-name=org.freedesktop.portal.Background
+    - --talk-name=org.freedesktop.portal.Notification

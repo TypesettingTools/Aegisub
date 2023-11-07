@@ -38,60 +38,38 @@ elif host_machine.system() == 'darwin'
             meson.project_version(),
         ],
     )
-elif host_machine.system() == 'linux'
-
-    dependency_control_setup = find_program(
-        meson.project_source_root() / 'tools/dependency-control.sh',
-    )
-    run_target(
-        'linux-dependency-control',
-        command: [dependency_control_setup, meson.project_build_root(), meson.project_source_root()],
-    )
-    installer_setup = find_program(meson.project_source_root() / 'tools/ubuntu-build-deb.sh')
-    run_target(
-        'ubuntu.aegsiub.deb',
-        command: [installer_setup, meson.project_build_root(), meson.project_source_root()],
-    )
-    assdraw_compile_and_setup = find_program(
-        meson.project_source_root() / 'tools/ubuntu-build-assdraw.sh',
-    )
-    run_target(
-        'ubuntu.assdraw.deb',
-        command: [
-            assdraw_compile_and_setup,
-            meson.project_build_root(),
-            meson.project_source_root(),
-        ],
-    )
-
-
-    ## TODO : use meson.project_build_root()
-
-    #    'ubuntu-install-local': 'sudo dpkg -i build/$(ls build/  | grep aegisub_.*deb)'
-
-
-
-
-
-    conf_pkg.set('AEGISUB_COMMAND', 'aegisub')
-
-    desktop_template = configure_file(
-        input: 'desktop/aegisub.desktop.template.in',
-        output: 'aegisub.desktop.template',
-        configuration: conf_pkg,
-    )
-
-    i18n = import('i18n')
-    i18n.merge_file(
-        input: desktop_template,
-        output: 'aegisub.desktop',
-        type: 'desktop',
-        po_dir: '../po',
-        install_dir: meson.project_build_root() / 'packages' / 'applications',
-    )
-
 else
 
+    if host_machine.system() == 'linux'
+        dependency_control_setup = find_program(
+            meson.project_source_root() / 'tools/dependency-control.sh',
+        )
+        run_target(
+            'linux-dependency-control',
+            command: [
+                dependency_control_setup,
+                meson.project_build_root(),
+                meson.project_source_root(),
+            ],
+        )
+        installer_setup = find_program(meson.project_source_root() / 'tools/ubuntu-build-deb.sh')
+        run_target(
+            'ubuntu.aegsiub.deb',
+            command: [installer_setup, meson.project_build_root(), meson.project_source_root()],
+        )
+        assdraw_compile_and_setup = find_program(
+            meson.project_source_root() / 'tools/ubuntu-build-assdraw.sh',
+        )
+        run_target(
+            'ubuntu.assdraw.deb',
+            command: [
+                assdraw_compile_and_setup,
+                meson.project_build_root(),
+                meson.project_source_root(),
+            ],
+        )
+
+    endif
 
     conf_pkg.set('AEGISUB_COMMAND', 'aegisub')
 
@@ -110,6 +88,7 @@ else
         install: true,
         install_dir: datadir / 'applications',
     )
+
 
     aegisub_logos = [
         '16x16.png',
