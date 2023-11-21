@@ -25,10 +25,6 @@ checkdefs = [
     ['LJ_ABI_PAUTH', '1', ['-D', 'PAUTH']],
 ]
 
-if host_machine.cpu_family() == 'x86'
-    checkdefs += ['__SSE2__', '1', ['-D', 'SSE']]
-endif
-
 foreach def: checkdefs
     if cc.get_define(def[0], prefix: hpre) == def[1]
         dasm += def[2]
