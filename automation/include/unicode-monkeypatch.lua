@@ -125,7 +125,7 @@ function os.execute(command)
 	local wcommand = command
 	if command then
 		wcommand = widen(command)
-    		local stat = ffi.C._wsystem(wcommand)
+		local stat = ffi.C._wsystem(wcommand)
 		return execresult(stat)
 	end
 
