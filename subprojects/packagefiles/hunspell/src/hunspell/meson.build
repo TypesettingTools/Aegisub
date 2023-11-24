@@ -21,3 +21,5 @@ endif
 
 hunspell = library('hunspell', hunspell_sources,
                    cpp_args: cpp_args + compile_args)
+
+inc = include_directories('.')
