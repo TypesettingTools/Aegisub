@@ -19,20 +19,14 @@
 #include "libaegisub/color.h"
 #include "libaegisub/ass/dialogue_parser.h"
 
+#include <boost/phoenix/core.hpp>
+#include <boost/phoenix/operator.hpp>
+#include <boost/phoenix/fusion.hpp>
+#include <boost/phoenix/statement.hpp>
+
 #include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
-
-// We have to use the copy of pheonix within spirit if it exists, as the
-// standalone copy has different header guards
-#ifdef HAVE_BOOST_SPIRIT_HOME_PHOENIX_VERSION_HPP
-#include <boost/spirit/home/phoenix/statement.hpp>
-#else
-#include <boost/phoenix/statement.hpp>
-#endif
 
 BOOST_FUSION_ADAPT_STRUCT(
 	agi::Color,
