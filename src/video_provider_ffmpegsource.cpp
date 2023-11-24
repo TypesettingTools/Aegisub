@@ -372,8 +372,8 @@ void FFmpegSourceVideoProvider::GetFrame(int n, VideoFrame &out) {
 }
 }
 
-std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(std::filesystem::path const& path, std::string const& colormatrix, agi::BackgroundRunner *br) {
-	return std::make_unique<FFmpegSourceVideoProvider>(path, colormatrix, br);
+std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(std::filesystem::path const& path, std::string_view colormatrix, agi::BackgroundRunner *br) {
+	return std::make_unique<FFmpegSourceVideoProvider>(path, std::string(colormatrix), br);
 }
 
 #endif /* WITH_FFMS2 */

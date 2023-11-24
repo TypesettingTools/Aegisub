@@ -15,7 +15,6 @@
 #include "libaegisub/log.h"
 
 #include "libaegisub/charset_conv_win.h"
-#include "libaegisub/make_unique.h"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>

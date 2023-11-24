@@ -22,9 +22,9 @@
 #ifdef WITH_HUNSPELL
 #include <libaegisub/spellchecker.h>
 
-#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
+#include <filesystem>
 #include <memory>
 #include <set>
 

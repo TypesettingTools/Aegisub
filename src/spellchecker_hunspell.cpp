@@ -62,7 +62,7 @@ void HunspellSpellChecker::AddWord(std::string_view word) {
 	hunspell->add(conv->Convert(word).c_str());
 
 	// Add the word
-	if (customWords.insert(word).second)
+	if (customWords.insert(std::string(word)).second)
 		WriteUserDictionary();
 }
 
