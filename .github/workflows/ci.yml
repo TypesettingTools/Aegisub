@@ -64,11 +64,11 @@ jobs:
           }
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: '0'
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
@@ -127,14 +127,14 @@ jobs:
         run: cd build && ninja win-portable
 
       - name: Upload artifacts - win_installer
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
       
       - name: Upload artifacts - portable.zip
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }} - portable
@@ -148,7 +148,7 @@ jobs:
           meson compile osx-build-dmg -C build
 
       - name: Upload artifacts - macOS dmg
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: matrix.config.os == 'macos-latest'
         with:
           name: ${{ matrix.config.name }} - installer
