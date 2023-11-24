@@ -95,7 +95,10 @@ jobs:
       - name: Install dependencies (MacOS)
         if: matrix.config.os == 'macos-latest'
         run: |
-          brew update
+          export HOMEBREW_NO_INSTALL_CLEANUP=1
+          export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+          # Skip brew update for now, see https://github.com/actions/setup-python/issues/577
+          # brew update
           brew install luarocks ninja
           luarocks install luafilesystem 1.8.0
           luarocks install moonscript --dev
