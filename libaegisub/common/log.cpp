@@ -19,11 +19,10 @@
 #include "libaegisub/dispatch.h"
 #include "libaegisub/util.h"
 
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/range/algorithm/remove_if.hpp>
 #include <chrono>
+#include <filesystem>
+#include <fstream>
 
 namespace agi::log {
 
@@ -98,8 +97,8 @@ Message::~Message() {
 	agi::log::log->Log(sm);
 }
 
-JsonEmitter::JsonEmitter(fs::path const& directory)
-: fp(new boost::filesystem::ofstream(unique_path(directory/util::strftime("%Y-%m-%d-%H-%M-%S-%%%%%%%%.json"))))
+JsonEmitter::JsonEmitter(std::filesystem::path const& directory)
+: fp(new std::ofstream(directory/util::strftime("%Y-%m-%d-%H-%M-%S.json")))
 {
 }
 

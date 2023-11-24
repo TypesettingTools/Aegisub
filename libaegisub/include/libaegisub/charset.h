@@ -12,12 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file charset.h
-/// @brief Character set detection and manipulation utilities.
-/// @ingroup libaegisub
-
-#include <libaegisub/fs_fwd.h>
-
+#include <filesystem>
 #include <string>
 
 namespace agi {
@@ -27,7 +22,7 @@ namespace agi {
 /// @brief Returns the character set with the highest confidence
 /// @param file File to check
 /// @return Detected character set.
-std::string Detect(agi::fs::path const& file);
+std::string Detect(std::filesystem::path const& file);
 
 	} // namespace util
 } // namespace agi

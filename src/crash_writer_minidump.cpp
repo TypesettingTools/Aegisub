@@ -35,7 +35,7 @@ extern EXCEPTION_POINTERS *wxGlobalSEInformation;
 
 namespace {
 wchar_t crash_dump_path[MAX_PATH];
-agi::fs::path crashlog_path;
+std::filesystem::path crashlog_path;
 
 using MiniDumpWriteDump = BOOL(WINAPI *)(
 	HANDLE hProcess,
@@ -101,7 +101,7 @@ std::unique_ptr<dump_thread_state> dump_thread;
 }
 
 namespace crash_writer {
-void Initialize(agi::fs::path const& path) {
+void Initialize(std::filesystem::path const& path) {
 	crashlog_path = path / "crashlog.txt";
 
 	auto dump_path = path / "crashdumps";

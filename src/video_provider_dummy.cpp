@@ -42,7 +42,6 @@
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/filesystem/path.hpp>
 #include <libaegisub/format.h>
 #include <boost/gil.hpp>
 
@@ -99,7 +98,7 @@ void DummyVideoProvider::GetFrame(int, VideoFrame &frame) {
 }
 
 namespace agi { class BackgroundRunner; }
-std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, std::string const&, agi::BackgroundRunner *) {
+std::unique_ptr<VideoProvider> CreateDummyVideoProvider(std::filesystem::path const& filename, std::string const&, agi::BackgroundRunner *) {
 	if (!boost::starts_with(filename.string(), "?dummy"))
 		return {};
 

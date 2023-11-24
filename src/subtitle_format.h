@@ -30,8 +30,8 @@
 #pragma once
 
 #include <libaegisub/exception.h>
-#include <libaegisub/fs_fwd.h>
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -80,13 +80,13 @@ public:
 	///
 	/// Default implementation simply checks if the file's extension is in the
 	/// format's wildcard list
-	virtual bool CanReadFile(agi::fs::path const& filename, std::string const& encoding) const;
+	virtual bool CanReadFile(std::filesystem::path const& filename, std::string const& encoding) const;
 
 	/// @brief Check if the given file can be written by this format
 	///
 	/// Default implementation simply checks if the file's extension is in the
 	/// format's wildcard list
-	virtual bool CanWriteFile(agi::fs::path const& filename) const;
+	virtual bool CanWriteFile(std::filesystem::path const& filename) const;
 
 	/// @brief Check if the given subtitles can be losslessly written by this format
 	///
@@ -98,20 +98,20 @@ public:
 	/// @param[out] target Destination to read lines into
 	/// @param filename File to load
 	/// @param encoding Encoding to use. May be ignored by the reader.
-	virtual void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const { }
+	virtual void ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const { }
 
 	/// Save a subtitle file
 	/// @param src Data to write
 	/// @param filename File to write to
 	/// @param forceEncoding Encoding to use or empty string for default
-	virtual void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding="") const { }
+	virtual void WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding="") const { }
 
 	/// Export a subtitle file
 	///
 	/// This is used when saving via Export As..., for subtitle formats which
 	/// want to distinguish between exporting a final version of a script and
 	/// saving a project.
-	virtual void ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding="") const {
+	virtual void ExportFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding="") const {
 		WriteFile(src, filename, fps, encoding);
 	}
 
@@ -120,9 +120,9 @@ public:
 	static std::string GetWildcards(int mode);
 
 	/// Get a subtitle format that can read the given file or nullptr if none can
-	static const SubtitleFormat *GetReader(agi::fs::path const& filename, std::string const& encoding);
+	static const SubtitleFormat *GetReader(std::filesystem::path const& filename, std::string const& encoding);
 	/// Get a subtitle format that can write the given file or nullptr if none can
-	static const SubtitleFormat *GetWriter(agi::fs::path const& filename);
+	static const SubtitleFormat *GetWriter(std::filesystem::path const& filename);
 	/// Initialize subtitle formats
 	static void LoadFormats();
 };

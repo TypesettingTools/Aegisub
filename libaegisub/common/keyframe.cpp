@@ -12,11 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file keyframe.cpp
-/// @see keyframe.h
-/// @ingroup libaegisub
-///
-
 #include "libaegisub/keyframe.h"
 
 #include <sstream>
@@ -94,8 +89,8 @@ int wwxd(std::string const& line) {
 }
 }
 
-namespace agi { namespace keyframe {
-void Save(agi::fs::path const& filename, std::vector<int> const& keyframes) {
+namespace agi::keyframe {
+void Save(std::filesystem::path const& filename, std::vector<int> const& keyframes) {
 	io::Save file(filename);
 	std::ostream& of = file.Get();
 	of << "# keyframe format v1" << std::endl;
@@ -103,7 +98,7 @@ void Save(agi::fs::path const& filename, std::vector<int> const& keyframes) {
 	boost::copy(keyframes, std::ostream_iterator<int>(of, "\n"));
 }
 
-std::vector<int> Load(agi::fs::path const& filename) {
+std::vector<int> Load(std::filesystem::path const& filename) {
 	auto file = io::Open(filename);
 	std::istream &is(*file);
 
@@ -121,4 +116,4 @@ std::vector<int> Load(agi::fs::path const& filename) {
 	throw UnknownKeyframeFormatError("File header does not match any known formats");
 }
 
-} }
+}

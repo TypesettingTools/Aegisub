@@ -12,13 +12,12 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <map>
 #include <string>
 #include <string_view>
 #include <vector>
 
-#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
 namespace json {
@@ -26,9 +25,7 @@ namespace json {
 	typedef std::map<std::string, UnknownElement, std::less<>> Object;
 }
 
-namespace agi {
-	namespace hotkey {
-
+namespace agi::hotkey {
 /// @class Combo
 /// A Combo represents a linear sequence of characters set in an std::vector.
 /// This makes up a single combination, or "Hotkey".
@@ -67,7 +64,7 @@ public:
 private:
 	HotkeyMap cmd_map;                  ///< Command name -> Combo
 	std::vector<const Combo *> str_map; ///< Sorted by string representation
-	const agi::fs::path config_file;    ///< Default user config location.
+	const std::filesystem::path config_file;    ///< Default user config location.
 	bool backup_config_file = false;
 
 	/// Build hotkey map.
@@ -86,7 +83,7 @@ public:
 	/// Constructor
 	/// @param file           Location of user config file.
 	/// @param default_config Default config.
-	Hotkey(agi::fs::path const& file, std::string_view default_config);
+	Hotkey(std::filesystem::path const& file, std::string_view default_config);
 
 	/// Scan for a matching key.
 	/// @param context  Context requested.
@@ -118,5 +115,4 @@ public:
 	DEFINE_SIGNAL_ADDERS(HotkeysChanged, AddHotkeyChangeListener)
 };
 
-	} // namespace hotkey
-} // namespace agi
+} // namespace agi::hotkey

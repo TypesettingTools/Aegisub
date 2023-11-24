@@ -171,7 +171,7 @@ struct option_name_cmp {
 
 namespace agi {
 
-Options::Options(agi::fs::path const& file, std::string_view default_config, const OptionSetting setting)
+Options::Options(std::filesystem::path const& file, std::string_view default_config, OptionSetting setting)
 : config_file(file)
 , setting(setting)
 {

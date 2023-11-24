@@ -58,12 +58,12 @@ std::vector<std::string> TXTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-bool TXTSubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
+bool TXTSubtitleFormat::CanWriteFile(std::filesystem::path const& filename) const {
 	auto str = filename.string();
 	return boost::iends_with(str, ".txt") && !(boost::iends_with(str, ".encore.txt") || boost::iends_with(str, ".transtation.txt"));
 }
 
-void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
+void TXTSubtitleFormat::ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	if (!ShowPlainTextImportDialog()) return;
 
 	TextFileReader file(filename, encoding, false);
@@ -119,7 +119,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	}
 }
 
-void TXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
+void TXTSubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const& encoding) const {
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out

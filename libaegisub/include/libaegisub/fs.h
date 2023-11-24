@@ -15,11 +15,10 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <libaegisub/exception.h>
-#include <libaegisub/fs_fwd.h>
 
-#include <boost/filesystem/path.hpp>
 #include <cstdint>
 #include <ctime>
+#include <filesystem>
 #include <iterator>
 #include <memory>
 #include <string>
@@ -27,8 +26,10 @@
 #undef CreateDirectory
 
 namespace agi::fs {
+using path = std::filesystem::path;
+
 /// Define a filesystem error which takes a path or a string
-	#define DEFINE_FS_EXCEPTION(type, base, message) \
+#define DEFINE_FS_EXCEPTION(type, base, message) \
 	struct type : public base { \
 		type(path const& p) : base(message + p.string()) { } \
 		type(std::string const& s) : base(s) { } \
@@ -104,7 +105,7 @@ uintmax_t Size(path const& file_path);
 /// @throws agi::FileNotFound if path does not exist
 /// @throws agi::acs::NotAFile if path is a directory
 /// @throws agi::acs::Read if path exists but could not be read
-time_t ModifiedTime(path const& file_path);
+std::filesystem::file_time_type ModifiedTime(path const& file_path);
 
 /// Create a directory and all required intermediate directories
 /// @throws agi::acs::Write if the directory could not be created.
@@ -140,7 +141,7 @@ bool Remove(path const& file);
 /// @param ext Case-insensitive extension, without leading dot
 bool HasExtension(path const& p, std::string const& ext);
 
-agi::fs::path Canonicalize(agi::fs::path const& path);
+std::filesystem::path Canonicalize(std::filesystem::path const& path);
 
 class DirectoryIterator {
 	struct PrivData;
@@ -171,4 +172,4 @@ template<typename T>
 inline void DirectoryIterator::GetAll(T& cont) {
 	copy(*this, end(*this), std::back_inserter(cont));
 }
-}
+} // namespace agi::fs

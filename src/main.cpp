@@ -122,8 +122,6 @@ bool AegisubApp::OnInit() {
 
 	agi::util::InitLocale();
 
-	boost::filesystem::path::imbue(std::locale());
-
 	agi::dispatch::Init([](agi::dispatch::Thunk f) {
 		auto evt = new ValueEvent<agi::dispatch::Thunk>(EVT_CALL_THUNK, -1, std::move(f));
 		wxTheApp->QueueEvent(evt);
@@ -372,7 +370,7 @@ void AegisubApp::CloseAll() {
 void AegisubApp::UnhandledException(bool stackWalk) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
 	bool any = false;
-	agi::fs::path path;
+	std::filesystem::path path;
 	for (auto& frame : frames) {
 		auto c = frame->context.get();
 		if (!c || !c->ass || !c->subsController) continue;
@@ -455,7 +453,7 @@ void AegisubApp::MacOpenFiles(wxArrayString const& filenames) {
 }
 
 void AegisubApp::OpenFiles(wxArrayStringsAdapter filenames) {
-	std::vector<agi::fs::path> files;
+	std::vector<std::filesystem::path> files;
 	for (size_t i = 0; i < filenames.GetCount(); ++i)
 		files.push_back(from_wx(filenames[i]));
 	if (!files.empty())

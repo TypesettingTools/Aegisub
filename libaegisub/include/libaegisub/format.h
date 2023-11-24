@@ -14,10 +14,9 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <libaegisub/fs_fwd.h>
-
 #include <boost/interprocess/streams/vectorstream.hpp>
 #include <boost/io/ios_state.hpp>
+#include <filesystem>
 #include <type_traits>
 
 class wxString;
@@ -67,8 +66,8 @@ struct writer<StreamChar, std::basic_string<Char>> {
 };
 
 // Ensure things with specializations don't get implicitly initialized
-template<> struct writer<char, agi::fs::path>;
-template<> struct writer<wchar_t, agi::fs::path>;
+template<> struct writer<char, std::filesystem::path>;
+template<> struct writer<wchar_t, std::filesystem::path>;
 template<> struct writer<char, wxString>;
 template<> struct writer<wchar_t, wxString>;
 

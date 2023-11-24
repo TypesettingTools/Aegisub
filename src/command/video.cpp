@@ -457,7 +457,7 @@ struct video_frame_prev_large final : public validator_video_loaded {
 
 static void save_snapshot(agi::Context *c, bool raw) {
 	auto option = OPT_GET("Path/Screenshot")->GetString();
-	agi::fs::path basepath;
+	std::filesystem::path basepath;
 
 	auto videoname = c->project->VideoName();
 	bool is_dummy = boost::starts_with(videoname.string(), "?dummy");
@@ -474,7 +474,7 @@ static void save_snapshot(agi::Context *c, bool raw) {
 		// If where ever that is isn't defined, we can't save there
 		if ((basepath == "\\") || (basepath == "/")) {
 			// So save to the current user's home dir instead
-			basepath = wxGetHomeDir().c_str();
+			basepath = wxGetHomeDir().utf8_str().data();
 		}
 	}
 	// Actual fixed (possibly relative) path, decode it

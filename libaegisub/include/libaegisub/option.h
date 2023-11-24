@@ -14,13 +14,11 @@
 
 #pragma once
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <iosfwd>
 #include <map>
 #include <memory>
 #include <vector>
-
-#include <libaegisub/fs_fwd.h>
 
 namespace json {
 	class UnknownElement;
@@ -42,7 +40,7 @@ private:
 	std::vector<std::unique_ptr<OptionValue>> values;
 
 	/// User config (file that will be written to disk)
-	const agi::fs::path config_file;
+	const std::filesystem::path config_file;
 
 	/// Settings.
 	const OptionSetting setting;
@@ -56,7 +54,7 @@ public:
 	/// @brief Constructor
 	/// @param file User config that will be loaded from and written back to.
 	/// @param default_config Default configuration.
-	Options(agi::fs::path const& file, std::string_view default_config, OptionSetting setting = NONE);
+	Options(std::filesystem::path const& file, std::string_view default_config, OptionSetting setting = NONE);
 
 	/// Destructor
 	~Options();

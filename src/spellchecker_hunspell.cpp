@@ -172,7 +172,7 @@ std::vector<std::string> HunspellSpellChecker::GetLanguageList() {
 	return languages;
 }
 
-static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& aff, agi::fs::path& dic) {
+static bool check_path(std::filesystem::path const& path, std::string const& language, std::filesystem::path& aff, std::filesystem::path& dic) {
 	aff = path/agi::format("%s.aff", language);
 	dic = path/agi::format("%s.dic", language);
 	return agi::fs::FileExists(aff) && agi::fs::FileExists(dic);
@@ -184,7 +184,7 @@ void HunspellSpellChecker::OnLanguageChanged() {
 	auto language = OPT_GET("Tool/Spell Checker/Language")->GetString();
 	if (language.empty()) return;
 
-	agi::fs::path aff, dic;
+	std::filesystem::path aff, dic;
 	auto path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString() + "/");
 	if (!check_path(path, language, aff, dic)) {
 		path = config::path->Decode("?dictionary/");

@@ -622,7 +622,7 @@ Ebu3264SubtitleFormat::Ebu3264SubtitleFormat()
 {
 }
 
-void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, std::string const&) const
+void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, std::string const&) const
 {
 	// collect data from user
 	EbuExportSettings export_settings = get_export_config(nullptr);

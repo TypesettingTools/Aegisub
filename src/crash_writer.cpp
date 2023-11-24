@@ -21,18 +21,19 @@
 #include <libaegisub/format.h>
 #include <libaegisub/util.h>
 
-#include <boost/filesystem/fstream.hpp>
+#include <filesystem>
+#include <fstream>
 #include <wx/string.h>
 #include <wx/stackwalk.h>
 
 using namespace agi;
 
 namespace {
-fs::path crashlog_path;
+std::filesystem::path crashlog_path;
 
 #if wxUSE_STACKWALKER == 1
 class StackWalker : public wxStackWalker {
-	boost::filesystem::ofstream fp;
+	std::ofstream fp;
 
 public:
 	StackWalker(std::string const& cause)
@@ -66,7 +67,7 @@ public:
 }
 
 namespace crash_writer {
-void Initialize(fs::path const& path) {
+void Initialize(std::filesystem::path const& path) {
 	crashlog_path = path / "crashlog.txt";
 }
 
@@ -80,7 +81,7 @@ void Write() {
 }
 
 void Write(std::string const& error) {
-	boost::filesystem::ofstream file(crashlog_path, std::ios::app);
+	std::ofstream file(crashlog_path, std::ios::app);
 	if (file.is_open()) {
 		file << util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
 		file << agi::format("VER - %s\n", GetAegisubLongVersionString());

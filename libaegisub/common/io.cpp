@@ -12,10 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file io.cpp
-/// @brief Windows IO methods.
-/// @ingroup libaegisub
-
 #include "libaegisub/io.h"
 
 #include <libaegisub/access.h>
@@ -23,16 +19,15 @@
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
 
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <fstream>
 
-namespace agi {
-	namespace io {
+namespace agi::io {
+using namespace std::filesystem;
 
-std::unique_ptr<std::istream> Open(fs::path const& file, bool binary) {
+std::unique_ptr<std::istream> Open(path const& file, bool binary) {
 	LOG_D("agi/io/open/file") << file;
 
-	auto stream = std::make_unique<boost::filesystem::ifstream>(file, (binary ? std::ios::binary : std::ios::in));
+	auto stream = std::make_unique<std::ifstream>(file, (binary ? std::ios::binary : std::ios::in));
 	if (stream->fail()) {
 		acs::CheckFileRead(file);
 		throw IOFatal("Unknown fatal error occurred opening " + file.string());
@@ -41,13 +36,13 @@ std::unique_ptr<std::istream> Open(fs::path const& file, bool binary) {
 	return std::unique_ptr<std::istream>(stream.release());
 }
 
-Save::Save(fs::path const& file, bool binary)
+Save::Save(path const& file, bool binary)
 : file_name(file)
-, tmp_name(unique_path(file.parent_path()/(file.stem().string() + "_tmp_%%%%" + file.extension().string())))
+, tmp_name(file.parent_path()/(file.stem().string() + ".tmp" + file.extension().string()))
 {
 	LOG_D("agi/io/save/file") << file;
 
-	fp = std::make_unique<boost::filesystem::ofstream>(tmp_name, binary ? std::ios::binary : std::ios::out);
+	fp = std::make_unique<std::ofstream>(tmp_name, binary ? std::ios::binary : std::ios::out);
 	if (!fp->good()) {
 		acs::CheckDirWrite(file.parent_path());
 		acs::CheckFileWrite(file);
@@ -71,5 +66,4 @@ Save::~Save() noexcept(false) {
 	}
 }
 
-	} // namespace io
-} // namespace agi
+} // namespace agi::io
