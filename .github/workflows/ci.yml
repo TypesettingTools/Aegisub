@@ -54,13 +54,13 @@ jobs:
             name: macOS Debug,
             os: macos-latest,
             buildtype: debugoptimized,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
           }
           - {
             name: macOS Release,
             os: macos-latest,
             buildtype: release,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
           }
 
     steps:
@@ -74,7 +74,7 @@ jobs:
 
       - name: Setup Meson
         run: |
-          python -m pip install --upgrade pip
+          python -m pip install --upgrade pip setuptools
           pip install meson
 
       - name: Setup MSVC
