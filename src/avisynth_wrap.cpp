@@ -40,47 +40,82 @@
 
 #include <mutex>
 
+#ifndef _WIN32
+#include <dlfcn.h>
+#endif
+
+#ifdef _WIN32
+#define AVISYNTH_SO "avisynth.dll"
+#else
+#define AVISYNTH_SO "libavisynth.so"
+#endif
+
 // Allocate storage for and initialise static members
 namespace {
 	int avs_refcount = 0;
+	bool failed = false;
+#ifdef _WIN32
 	HINSTANCE hLib = nullptr;
+#else
+	void* hLib = nullptr;
+#endif
 	IScriptEnvironment *env = nullptr;
 	std::mutex AviSynthMutex;
 }
+// This needs to be visible so Avisynth sees it
+const AVS_Linkage *AVS_linkage = nullptr;
 
 typedef IScriptEnvironment* __stdcall FUNC(int);
 
-AviSynthWrapper::AviSynthWrapper() {
+AviSynthWrapper::AviSynthWrapper() try {
 	if (!avs_refcount++) {
-		hLib = LoadLibrary(L"avisynth.dll");
+#ifdef _WIN32
+#define CONCATENATE(x, y) x ## y
+#define _Lstr(x) CONCATENATE(L, x)
+		hLib = LoadLibraryW(_Lstr(AVISYNTH_SO));
+#undef _Lstr
+#undef CONCATENATE
+#else
+		hLib = dlopen(AVISYNTH_SO, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
+#endif
 
 		if (!hLib)
-			throw AvisynthError("Could not load avisynth.dll");
+			throw AvisynthError("Could not load " AVISYNTH_SO);
 
-		FUNC *CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
+#ifdef _WIN32
+		FUNC* CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
+#else
+		FUNC* CreateScriptEnv = (FUNC*)dlsym(hLib, "CreateScriptEnvironment");
+#endif
 		if (!CreateScriptEnv)
-			throw AvisynthError("Failed to get address of CreateScriptEnv from avisynth.dll");
+			throw AvisynthError("Failed to get address of CreateScriptEnv from " AVISYNTH_SO);
 
-		// Require Avisynth 2.5.6+?
-		if (OPT_GET("Provider/Avisynth/Allow Ancient")->GetBool())
-			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION-1);
-		else
-			env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
+		env = CreateScriptEnv(AVISYNTH_INTERFACE_VERSION);
 
 		if (!env)
 			throw AvisynthError("Failed to create a new avisynth script environment. Avisynth is too old?");
+
+		AVS_linkage = env->GetAVSLinkage();
 
 		// Set memory limit
 		const int memoryMax = OPT_GET("Provider/Avisynth/Memory Max")->GetInt();
 		if (memoryMax)
 			env->SetMemoryMax(memoryMax);
 	}
+} catch (AvisynthError const&) {
+	avs_refcount--;
+	throw;
 }
 
 AviSynthWrapper::~AviSynthWrapper() {
 	if (!--avs_refcount) {
-		delete env;
+		env->DeleteScriptEnvironment();
+#ifdef _WIN32
 		FreeLibrary(hLib);
+#else
+		dlclose(hLib);
+#endif
+		AVS_linkage = nullptr;
 	}
 }
 

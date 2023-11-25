@@ -93,9 +93,7 @@ public:
 	bool HasAudio() const override                 { return has_audio; }
 };
 
-AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) {
-	agi::acs::CheckFileRead(filename);
-
+AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) try {
 	std::lock_guard<std::mutex> lock(avs.GetMutex());
 
 #ifdef _WIN32
@@ -181,6 +179,9 @@ file_exit:
 	catch (AvisynthError const& err) {
 		throw VideoOpenError("Avisynth error: " + std::string(err.msg));
 	}
+}
+catch (AvisynthError const& err) {
+	throw VideoProviderError("Avisynth error: " + std::string(err.msg));
 }
 
 void AvisynthVideoProvider::Init(std::string const& colormatrix) {

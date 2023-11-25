@@ -63,9 +63,7 @@ public:
 	bool NeedsCache() const override { return true; }
 };
 
-AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
-	agi::acs::CheckFileRead(filename);
-
+AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) try {
 	std::lock_guard<std::mutex> lock(avs_wrapper.GetMutex());
 
 	try {
@@ -100,6 +98,9 @@ AvisynthAudioProvider::AvisynthAudioProvider(agi::fs::path const& filename) {
 			throw agi::AudioProviderError("Avisynth error: " + errmsg);
 	}
 }
+catch (AvisynthError& err) {
+	throw agi::AudioProviderError("Avisynth error: " + std::string(err.msg));
+}
 
 void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 	// Check if it has audio
@@ -107,12 +108,15 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 	if (!vi.HasAudio()) throw agi::AudioDataNotFound("No audio found.");
 
 	IScriptEnvironment *env = avs_wrapper.GetEnv();
+	AVSValue script;
 
 	// Convert to one channel
-	AVSValue script = env->Invoke(OPT_GET("Audio/Downmixer")->GetString().c_str(), clip);
+	std::string downmixtype = OPT_GET("Audio/Downmixer")->GetString();
+	if (downmixtype == "ConvertToMono" || downmixtype == "GetLeftChannel" || downmixtype == "GetRightChannel")
+		script = env->Invoke(downmixtype.c_str(), clip);
+	else
+		script = clip;
 
-	// Convert to 16 bits per sample
-	script = env->Invoke("ConvertAudioTo16bit", script);
 	vi = script.AsClip()->GetVideoInfo();
 
 	// Convert sample rate
@@ -132,8 +136,8 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 	channels = vi.AudioChannels();
 	decoded_samples = num_samples = vi.num_audio_samples;
 	sample_rate = vi.SamplesPerSecond();
-	bytes_per_sample = vi.BytesPerAudioSample();
-	float_samples = false;
+	bytes_per_sample = vi.BytesPerChannelSample();
+	float_samples = vi.IsSampleType(SAMPLE_FLOAT);
 
 	this->clip = tempclip;
 }
