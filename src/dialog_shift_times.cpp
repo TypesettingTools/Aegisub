@@ -40,7 +40,6 @@
 #include <libaegisub/cajun/reader.h>
 #include <libaegisub/cajun/writer.h>
 
-#include <string_view>
 #include <wx/dialog.h>
 #include <wx/listbox.h>
 #include <wx/radiobox.h>
@@ -288,12 +287,12 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 
 	json::Object& obj = history[entry];
 	if (obj["is by time"]) {
-		shift_time->SetTime(agi::Time((std::string_view)obj["amount"]));
+		shift_time->SetTime(agi::Time((std::string&)obj["amount"]));
 		shift_by_time->SetValue(true);
 		OnByTime(evt);
 	}
 	else {
-		shift_frames->SetValue(to_wx((std::string_view)obj["amount"]));
+		shift_frames->SetValue(to_wx((std::string&)obj["amount"]));
 		if (shift_by_frames->IsEnabled()) {
 			shift_by_frames->SetValue(true);
 			OnByFrames(evt);

@@ -87,7 +87,6 @@ public:
    operator Boolean&();
    operator String&();
    operator Null&();
-   operator std::string_view();
 
    // implements visitor pattern
    void Accept(ConstVisitor& visitor) const;
