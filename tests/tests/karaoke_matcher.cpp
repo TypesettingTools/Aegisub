@@ -367,8 +367,6 @@ TEST_F(lagi_karaoke_matcher, dest_match_walking) {
 	EXPECT_STATE(0, 1, 0, 4);
 }
 
-#define EXPECT_MATCH_GROUPS()
-
 TEST_F(lagi_karaoke_matcher, simple_grouping) {
 	init("abcd", "\\k", 100, {{100, "1"}, {200, "2"}, {300, "3"}, {400, "4"}});
 	EXPECT_EQ(matcher.GetOutputLine(), "");
@@ -376,8 +374,6 @@ TEST_F(lagi_karaoke_matcher, simple_grouping) {
 
 	EXPECT_TRUE(matcher.AcceptMatch());
 	EXPECT_EQ(matcher.GetOutputLine(), "{\\k10}a");
-	EXPECT_MATCH_GROUPS()
-	EXPECT_EQ(matcher.MatchedGroups(), std::span<const agi::KaraokeMatcher::MatchGroup>());
 
 	EXPECT_TRUE(matcher.AcceptMatch());
 	EXPECT_EQ(matcher.GetOutputLine(), "{\\k10}a{\\k20}b");
