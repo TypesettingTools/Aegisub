@@ -23,8 +23,6 @@
 
 #include <fstream>
 
-namespace bfs = std::filesystem;
-
 TEST(lagi_audio, dummy_blank) {
 	auto provider = agi::CreateDummyAudioProvider("dummy-audio:", nullptr);
 

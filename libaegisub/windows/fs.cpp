@@ -25,9 +25,6 @@
 using agi::charset::ConvertW;
 using agi::charset::ConvertLocal;
 
-#include <boost/filesystem.hpp>
-namespace bfs = boost::filesystem;
-
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 

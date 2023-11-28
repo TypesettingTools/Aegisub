@@ -21,7 +21,7 @@
 
 using namespace agi::fs;
 using namespace agi::lua;
-namespace bfs = std::filesystem;
+namespace sfs = std::filesystem;
 
 namespace agi {
 AGI_DEFINE_TYPE_NAME(DirectoryIterator);
@@ -46,7 +46,7 @@ auto wrap(char **err, Func f) -> decltype(f()) {
 }
 
 template<typename Ret>
-bool setter(const char *path, char **err, Ret (*f)(bfs::path const&)) {
+bool setter(const char *path, char **err, Ret (*f)(sfs::path const&)) {
 	return wrap(err, [=]{
 		f(path);
 		return true;
@@ -54,12 +54,12 @@ bool setter(const char *path, char **err, Ret (*f)(bfs::path const&)) {
 }
 
 bool lfs_chdir(const char *dir, char **err) {
-	return setter(dir, err, &bfs::current_path);
+	return setter(dir, err, &sfs::current_path);
 }
 
 char *currentdir(char **err) {
 	return wrap(err, []{
-		return strndup(bfs::current_path().string());
+		return strndup(sfs::current_path().string());
 	});
 }
 
@@ -100,8 +100,8 @@ DirectoryIterator *dir_new(const char *path, char **err) {
 
 const char *get_mode(const char *path, char **err) {
 	return wrap(err, [=]() -> const char * {
-		using enum bfs::file_type;
-		switch (bfs::status(path).type()) {
+		using enum sfs::file_type;
+		switch (sfs::status(path).type()) {
 			case not_found: return nullptr;
 			case regular:   return "file";
 			case directory: return "directory";

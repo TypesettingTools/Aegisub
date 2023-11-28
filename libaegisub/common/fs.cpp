@@ -22,11 +22,11 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <system_error>
 
-namespace bfs = std::filesystem;
+namespace sfs = std::filesystem;
 
 namespace agi::fs {
 namespace {
-void check_error(std::error_code ec, const char *exp, bfs::path const& src_path, bfs::path const& dst_path) {
+void check_error(std::error_code ec, const char *exp, sfs::path const& src_path, sfs::path const& dst_path) {
 	if (ec == std::error_code{}) return;
 	using enum std::errc;
 	switch (ec.value()) {
@@ -58,31 +58,31 @@ void check_error(std::error_code ec, const char *exp, bfs::path const& src_path,
 	CHECKED_CALL(auto ret = exp, src_path, std::filesystem::path()); \
 	return ret
 
-#define WRAP_BFS(bfs_name, agi_name) \
-	auto agi_name(path const& p) -> decltype(bfs::bfs_name(p)) { \
-		CHECKED_CALL_RETURN(bfs::bfs_name(p, ec), p); \
+#define WRAP_SFS(sfs_name, agi_name) \
+	auto agi_name(path const& p) -> decltype(sfs::sfs_name(p)) { \
+		CHECKED_CALL_RETURN(sfs::sfs_name(p, ec), p); \
 	}
 
-#define WRAP_BFS_IGNORE_ERROR(bfs_name, agi_name) \
-	auto agi_name(path const& p) -> decltype(bfs::bfs_name(p)) { \
+#define WRAP_SFS_IGNORE_ERROR(sfs_name, agi_name) \
+	auto agi_name(path const& p) -> decltype(sfs::sfs_name(p)) { \
 		std::error_code ec; \
-		return bfs::bfs_name(p, ec); \
+		return sfs::sfs_name(p, ec); \
 	}
 
 // sasuga windows.h
 #undef CreateDirectory
 
-	WRAP_BFS(file_size, SizeImpl)
-	WRAP_BFS(space, Space)
+	WRAP_SFS(file_size, SizeImpl)
+	WRAP_SFS(space, Space)
 } // anonymous namespace
 
-	WRAP_BFS_IGNORE_ERROR(exists, Exists)
-	WRAP_BFS_IGNORE_ERROR(is_regular_file, FileExists)
-	WRAP_BFS_IGNORE_ERROR(is_directory, DirectoryExists)
-	WRAP_BFS(last_write_time, ModifiedTime)
-	WRAP_BFS(create_directories, CreateDirectory)
-	WRAP_BFS(remove, Remove)
-	WRAP_BFS(canonical, Canonicalize)
+	WRAP_SFS_IGNORE_ERROR(exists, Exists)
+	WRAP_SFS_IGNORE_ERROR(is_regular_file, FileExists)
+	WRAP_SFS_IGNORE_ERROR(is_directory, DirectoryExists)
+	WRAP_SFS(last_write_time, ModifiedTime)
+	WRAP_SFS(create_directories, CreateDirectory)
+	WRAP_SFS(remove, Remove)
+	WRAP_SFS(canonical, Canonicalize)
 
 	uintmax_t Size(path const& p) {
 		if (DirectoryExists(p))
@@ -95,7 +95,7 @@ void check_error(std::error_code ec, const char *exp, bfs::path const& src_path,
 	}
 
 	void Rename(const path& from, const path& to) {
-		CHECKED_CALL(bfs::rename(from, to, ec), from, to);
+		CHECKED_CALL(sfs::rename(from, to, ec), from, to);
 	}
 
 	bool HasExtension(path const& p, std::string const& ext) {

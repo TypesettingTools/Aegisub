@@ -22,8 +22,6 @@
 
 #include <libaegisub/exception.h>
 
-#include <boost/filesystem.hpp>
-
 #include <Shlobj.h>
 #include <Shellapi.h>
 
@@ -39,7 +37,7 @@ agi::fs::path WinGetFolderPath(int folder) {
 namespace agi {
 
 void Path::FillPlatformSpecificPaths() {
-	SetToken("?temp", boost::filesystem::temp_directory_path());
+	SetToken("?temp", std::filesystem::temp_directory_path());
 
 	SetToken("?user", WinGetFolderPath(CSIDL_APPDATA)/"Aegisub");
 	SetToken("?local", WinGetFolderPath(CSIDL_LOCAL_APPDATA)/"Aegisub");
