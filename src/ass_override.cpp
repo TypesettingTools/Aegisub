@@ -38,7 +38,6 @@
 #include <libaegisub/split.h>
 #include <libaegisub/string.h>
 
-#include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
@@ -465,10 +464,9 @@ AssOverrideTag::operator std::string() const {
 	if (parentheses) result += "(";
 
 	// Add parameters
-	result += join(Params
+	result += agi::Join(",", Params
 		| filtered([](AssOverrideParameter const& p) { return !p.omitted; } )
-		| transformed(param_str),
-		",");
+		| transformed(param_str));
 
 	if (parentheses) result += ")";
 	return result;

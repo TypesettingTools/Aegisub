@@ -18,8 +18,8 @@
 
 #include "libaegisub/format.h"
 #include "libaegisub/log.h"
+#include "libaegisub/string.h"
 
-#include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 
 #include <regex>
@@ -176,7 +176,7 @@ int add_stack_trace(lua_State *L) {
 		}
 	}
 
-	push_value(L, join(frames | boost::adaptors::reversed, "\n"));
+	push_value(L, agi::Join("\n", frames | boost::adaptors::reversed));
 
 	return 1;
 }
