@@ -38,7 +38,7 @@ wxString to_wx(std::string const& str) {
 }
 
 wxString to_wx(std::string_view str) {
-	return wxString::FromUTF8Unchecked(str.data());
+	return wxString::FromUTF8Unchecked(str.data(), str.size());
 }
 
 wxString to_wx(const char *str) {

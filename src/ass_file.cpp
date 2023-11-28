@@ -117,7 +117,7 @@ std::string_view AssFile::GetScriptInfo(std::string_view key) const {
 }
 
 int AssFile::GetScriptInfoAsInt(std::string_view key) const {
-	return atoi(GetScriptInfo(key).data());
+	return atoi(std::string(GetScriptInfo(key)).c_str());
 }
 
 void AssFile::SetScriptInfo(std::string_view key, std::string_view value) {

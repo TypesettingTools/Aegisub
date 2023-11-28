@@ -252,7 +252,7 @@ namespace Automation4 {
 
 			bool CanSerialiseValue() const override  { return true; }
 			std::string SerialiseValue() const override { return std::to_string(value); }
-			void UnserialiseValue(std::string_view serialised) override { value = atoi(serialised.data()); }
+			void UnserialiseValue(std::string_view serialised) override { value = atoi(std::string(serialised).c_str()); }
 
 			wxControl *Create(wxWindow *parent) override {
 				cw = new wxSpinCtrl(parent, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value);
@@ -290,7 +290,7 @@ namespace Automation4 {
 
 			bool CanSerialiseValue() const override { return true; }
 			std::string SerialiseValue() const override { return std::to_string(value); }
-			void UnserialiseValue(std::string_view serialised) override { value = atof(serialised.data()); }
+			void UnserialiseValue(std::string_view serialised) override { value = atof(std::string(serialised).c_str()); }
 
 			wxControl *Create(wxWindow *parent) override {
 				if (step > 0) {

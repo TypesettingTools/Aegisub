@@ -309,7 +309,7 @@ std::string SubtitleFormat::GetWildcards(int mode) {
 
 		for (auto& str : cur) str.insert(0, "*.");
 		all.insert(all.end(), begin(cur), end(cur));
-		agi::AppendStr(final, "|", format->GetName(), " {");
+		agi::AppendStr(final, "|", format->GetName(), " (");
 		agi::AppendJoin(final, ",", cur);
 		final += ")|";
 		agi::AppendJoin(final, ";", cur);
