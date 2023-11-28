@@ -88,15 +88,26 @@ std::pair<size_t, size_t> ifind(std::string const& haystack, std::string const& 
 	icu::Edits edits;
 	const auto folded_hs = fold_case(haystack, &edits);
 	const auto folded_n = fold_case(needle, nullptr);
-	auto match = find_range(folded_hs, folded_n);
-	if (match == bad_match || !edits.hasChanges())
-		return match;
 	auto it = edits.getFineIterator();
-	UErrorCode err = U_ZERO_ERROR;
-	match.first = it.sourceIndexFromDestinationIndex(static_cast<int32_t>(match.first), err);
-	match.second = it.sourceIndexFromDestinationIndex(static_cast<int32_t>(match.second), err);
-	if (U_FAILURE(err)) throw InvalidInputException(u_errorName(err));
-	return match;
+	size_t pos = 0;
+	while (true) {
+		auto match = find_range(folded_hs, folded_n, pos);
+		if (match == bad_match || !edits.hasChanges())
+			return match;
+		UErrorCode err = U_ZERO_ERROR;
+
+		int32_t first_raw = it.sourceIndexFromDestinationIndex(static_cast<int32_t>(match.first), err);
+		int32_t second_raw = it.sourceIndexFromDestinationIndex(static_cast<int32_t>(match.second), err);
+
+		bool good_match = it.destinationIndexFromSourceIndex(first_raw, err) == static_cast<int32_t>(match.first) && it.destinationIndexFromSourceIndex(second_raw, err) == static_cast<int32_t>(match.second);
+
+		if (U_FAILURE(err)) throw InvalidInputException(u_errorName(err));
+
+		if (good_match)
+			return {first_raw, second_raw};
+
+		pos = match.first + 1;
+	}
 }
 
 std::string tagless_find_helper::strip_tags(std::string const& str, size_t s) {
