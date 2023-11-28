@@ -261,11 +261,3 @@ void LuaStackcheck::dump() {
 #endif
 
 }
-
-namespace boost::locale::impl_icu {
-struct cdata;
-std::locale create_parsing(std::locale const& in, cdata const&, uint32_t) { return in; }
-std::locale create_boundary(std::locale const& in, cdata const&, uint32_t) { return in; }
-std::locale create_calendar(std::locale const& in, cdata const&) { return in; }
-std::locale create_formatting(std::locale const& in, cdata const&, uint32_t) { return in; }
-}
