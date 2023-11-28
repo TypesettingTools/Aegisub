@@ -173,7 +173,7 @@ void TimeEdit::OnChar(wxKeyEvent &event) {
 	event.Skip(false);
 
 	long start = GetInsertionPoint();
-	auto text = GetValue().utf8_string();
+	auto text = from_wx(GetValue());
 	// Cursor is at the end so do nothing
 	if (start >= (long)text.size()) return;
 
