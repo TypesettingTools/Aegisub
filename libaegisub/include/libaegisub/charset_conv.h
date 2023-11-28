@@ -12,6 +12,10 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+/// @file charset_conv.h
+/// @brief Wrapper for libiconv to present a more C++-friendly API
+/// @ingroup libaegisub
+
 #pragma once
 
 #include <memory>

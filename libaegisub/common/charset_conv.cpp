@@ -66,13 +66,53 @@ namespace {
 		});
 
 		if (enc != std::end(pretty_names) && strcmp(enc->pretty, name) == 0)
-			name = enc->real;
-		// UTF-16 and UTF-32 encode a BOM, which we don't want
-		if (boost::iequals(name, "utf-16"))
-			name = "utf-16be";
-		if (boost::iequals(name, "utf-32"))
-			name = "utf-32be";
+			return enc->real;
 		return name;
+	}
+
+	size_t get_bom_size(Iconv& cd) {
+		// Most (but not all) iconv implementations automatically insert a BOM
+		// at the beginning of text converted to UTF-8, UTF-16 and UTF-32, but
+		// we usually don't want this, as some of the wxString using code
+		// assumes there is no BOM (as the exact encoding is known externally)
+		// As such, when doing conversions we will strip the BOM if it exists,
+		// then manually add it when writing files
+
+		char buff[8];
+		const char* src = "";
+		char *dst = buff;
+		size_t srcLen = 1;
+		size_t dstLen = 8;
+
+		size_t res = cd(&src, &srcLen, &dst, &dstLen);
+		assert(res != iconv_failed);
+		assert(srcLen == 0);
+
+		size_t size = 0;
+		for (src = buff; src < dst; ++src) {
+			if (*src) ++size;
+		}
+		if (size) {
+			// If there is a BOM, it will always be at least as big as the NUL
+			size = std::max(size, (8 - dstLen) / 2);
+		}
+		return size;
+	}
+
+	void eat_bom(Iconv& cd, size_t bomSize, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+		// If this encoding has a forced BOM (i.e. it's UTF-16 or UTF-32 without
+		// a specified byte order), skip over it
+		if (bomSize > 0 && inbytesleft && *inbytesleft) {
+			// libiconv marks the bom as written after writing the first
+			// character after the bom rather than when it writes the bom, so
+			// convert at least one extra character
+			char bom[8];
+			char *dst = bom;
+			size_t dstSize = std::min((size_t)8, bomSize + *outbytesleft);
+			const char *src = *inbuf;
+			size_t srcSize = *inbytesleft;
+			cd(&src, &srcSize, &dst, &dstSize);
+		}
 	}
 
 	// Calculate the size of NUL in the given character set
@@ -97,16 +137,22 @@ namespace {
 
 #ifdef ICONV_POSIX
 	class ConverterImpl final : public Converter {
+		size_t bomSize;
 		Iconv cd;
 	public:
 		// subst is not used here because POSIX doesn't let you disable substitution
 		ConverterImpl(bool, const char* sourceEncoding, const char* destEncoding)
 		{
 			const char *dstEnc = get_real_encoding_name(destEncoding);
+			cd = Iconv("utf-8", dstEnc);
+
+			bomSize = get_bom_size(cd);
 			cd = Iconv(get_real_encoding_name(sourceEncoding), dstEnc);
 		}
 
 		size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+			eat_bom(cd, bomSize, inbuf, inbytesleft, outbuf, outbytesleft);
+
 			size_t res = cd(inbuf, inbytesleft, outbuf, outbytesleft);
 
 			// This loop never does anything useful with a POSIX-compliant iconv
@@ -124,6 +170,7 @@ namespace {
 #else
 
 	class ConverterImpl final : public iconv_fallbacks, public Converter {
+		size_t bomSize;
 		char invalidRep[8];
 		size_t invalidRepSize;
 		Iconv cd;
@@ -149,6 +196,8 @@ namespace {
 		{
 			const char *dstEnc = get_real_encoding_name(destEncoding);
 			cd = Iconv("utf-8", dstEnc);
+
+			bomSize = get_bom_size(cd);
 
 			// Get fallback character
 			const char sbuff[] = "?";
@@ -179,6 +228,7 @@ namespace {
 		}
 
 		size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) override {
+			eat_bom(cd, bomSize, inbuf, inbytesleft, outbuf, outbytesleft);
 			size_t res = cd(inbuf, inbytesleft, outbuf, outbytesleft);
 
 			if (res == iconv_failed && errno == E2BIG && *outbytesleft == 0) {
