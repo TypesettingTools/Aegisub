@@ -49,6 +49,8 @@ tests_args = []
 # force UTF8 for MSVC
 if host_machine.system() == 'windows'
     tests_args += ['/utf-8']
+elif host_machine.system() == 'darwin'
+    tests_args += ['-DGTEST_HAS_POSIX_RE=0']
 endif
 
 runner = executable(
