@@ -136,6 +136,7 @@ else
     endif
 
     opt_var = cmake.subproject_options()
+    opt_var.set_override_option('cpp_std', 'c++14')
     opt_var.add_cmake_defines({
         'wxBUILD_INSTALL': false,
         'wxBUILD_PRECOMP': false,       # otherwise breaks project generation w/ meson
