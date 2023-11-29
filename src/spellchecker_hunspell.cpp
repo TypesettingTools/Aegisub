@@ -117,7 +117,7 @@ void HunspellSpellChecker::WriteUserDictionary() {
 bool HunspellSpellChecker::CheckWord(std::string_view word) {
 	if (!hunspell) return true;
 	try {
-		return hunspell->spell(conv->Convert(word).c_str()) == 1;
+		return hunspell->spell(conv->Convert(word)) == 1;
 	}
 	catch (agi::charset::ConvError const&) {
 		return false;
@@ -128,22 +128,17 @@ std::vector<std::string> HunspellSpellChecker::GetSuggestions(std::string_view w
 	std::vector<std::string> suggestions;
 	if (!hunspell) return suggestions;
 
-	char **results;
-	int n = hunspell->suggest(&results, conv->Convert(word).c_str());
+	std::vector<std::string> results = hunspell->suggest(conv->Convert(word));
 
-	suggestions.reserve(n);
 	// Convert suggestions to UTF-8
-	for (int i = 0; i < n; ++i) {
+	for (auto const& result : results) {
 		try {
-			suggestions.push_back(rconv->Convert(results[i]));
+			suggestions.push_back(rconv->Convert(result));
 		}
 		catch (agi::charset::ConvError const&) {
 			// Shouldn't ever actually happen...
 		}
-		free(results[i]);
 	}
-
-	free(results);
 
 	return suggestions;
 }
