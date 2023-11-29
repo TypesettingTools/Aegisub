@@ -31,6 +31,7 @@ TEST(lagi_split, delim_present) {
 	size_t i = 0;
 	for (auto tok : agi::Split(str, ','))
 		EXPECT_EQ(expected[i++], tok);
+	EXPECT_EQ(i, std::size(expected));
 }
 
 TEST(lagi_split, does_not_copy_input) {

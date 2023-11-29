@@ -20,6 +20,7 @@
 namespace agi {
 	template<typename Char>
 	class split_iterator {
+		bool is_end = true;
 		std::basic_string_view<Char> str;
 		size_t pos = 0;
 		Char delim;
@@ -32,26 +33,29 @@ namespace agi {
 		using difference_type = ptrdiff_t;
 
 		split_iterator(std::basic_string_view<Char> str, Char c)
-		: str(str), delim(c)
+		: is_end(str.size() == 0), str(str), delim(c)
 		{
 			pos = str.find(delim);
 		}
 
 		split_iterator() = default;
 
-		bool eof() const { return str.size() == 0; }
+		bool eof() const { return is_end; }
 
 		std::basic_string_view<Char> operator*() const {
 			return str.substr(0, pos);
 		}
 
 		bool operator==(split_iterator const& it) const {
+			if (is_end || it.is_end)
+				return is_end && it.is_end;
 			return str == it.str && (str.size() == 0 || delim == it.delim);
 		}
 
 		split_iterator& operator++() {
 			if (pos == str.npos) {
 				str = str.substr(str.size());
+				is_end = true;
 			} else {
 				str = str.substr(pos + 1);
 				pos = str.find(delim);
