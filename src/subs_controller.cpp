@@ -389,11 +389,11 @@ void SubsController::Redo() {
 }
 
 wxString SubsController::GetUndoDescription() const {
-	return IsUndoStackEmpty() ? "" : undo_stack.back().undo_description;
+	return IsUndoStackEmpty() ? wxString() : undo_stack.back().undo_description;
 }
 
 wxString SubsController::GetRedoDescription() const {
-	return IsRedoStackEmpty() ? "" : redo_stack.back().undo_description;
+	return IsRedoStackEmpty() ? wxString() : redo_stack.back().undo_description;
 }
 
 std::filesystem::path SubsController::Filename() const {

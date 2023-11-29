@@ -16,6 +16,7 @@
 
 #include <main.h>
 
+#include <array>
 #include <cstdint>
 #include <iconv.h>
 

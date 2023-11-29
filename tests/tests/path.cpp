@@ -154,7 +154,7 @@ TEST(lagi_path, make_absolute_on_network_path) {
 
 TEST(lagi_path, make_relative_on_network_path) {
 	Path p;
-	ASSERT_NO_THROW(p.MakeRelative("\\\\foo\\bar", "?data"));
+	ASSERT_NO_THROW(p.MakeRelative("\\\\foo\\bar", "?data"sv));
 	EXPECT_STREQ("\\\\foo\\bar", p.MakeRelative("\\\\foo\\bar", "?data"sv).string().c_str());
 }
 #endif

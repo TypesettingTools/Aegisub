@@ -15,6 +15,11 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <boost/interprocess/detail/os_file_functions.hpp>
+
+#ifdef _WIN32
+#undef GetMessage
+#endif
+
 #include <cstdint>
 #include <filesystem>
 
