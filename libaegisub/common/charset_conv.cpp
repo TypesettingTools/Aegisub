@@ -357,38 +357,6 @@ size_t IconvWrapper::Convert(std::string_view source, std::span<char> dest) {
 	return dest.size() - dstLen;
 }
 
-size_t IconvWrapper::RequiredBufferSize(std::string_view str) {
-	return RequiredBufferSize(str.data(), str.size());
-}
-
-size_t IconvWrapper::RequiredBufferSize(const char* src, size_t srcLen) {
-	char buff[4096];
-	size_t charsWritten = 0;
-	size_t res;
-
-	do {
-		char* dst = buff;
-		size_t dstSize = sizeof(buff);
-		res = conv->Convert(&src, &srcLen, &dst, &dstSize);
-		conv->Convert(nullptr, nullptr, &dst, &dstSize);
-
-		charsWritten += dst - buff;
-	} while (res == iconv_failed && errno == E2BIG);
-
-	if (res == iconv_failed) {
-		switch (errno) {
-			case EINVAL:
-			case EILSEQ:
-				throw BadInput(
-					"One or more characters in the input string were not valid "
-					"characters in the given input encoding");
-			default:
-				throw ConversionFailure("An unknown conversion failure occurred");
-		}
-	}
-	return charsWritten;
-}
-
 bool IsConversionSupported(const char *src, const char *dst) {
 	iconv_t cd = iconv_open(dst, src);
 	bool supported = cd != iconv_invalid;

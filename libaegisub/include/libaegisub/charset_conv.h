@@ -93,16 +93,6 @@ public:
 	/// @param[out] dest Buffer to place the result in
 	/// @return Number of bytes written to dest
 	size_t Convert(std::string_view source, std::span<char> dest);
-
-	/// @brief Get the required buffer size required to fit the source string in the target charset
-	/// @param source A string in the source charset
-	/// @param sourceSize Length of the source in bytes
-	/// @return Bytes required, including NUL terminator if applicable
-	size_t RequiredBufferSize(const char* source, size_t sourceSize);
-	/// @brief Get the required buffer size required to fit the source string in the target charset
-	/// @param str A string in the source charset
-	/// @return Bytes required, not including space needed for NUL terminator
-	size_t RequiredBufferSize(std::string_view str);
 };
 
 /// Is the conversion from src to dst supported by the linked iconv library?
