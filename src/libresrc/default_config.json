@@ -611,6 +611,7 @@
 			"Fast Jump Step" : 10,
 			"Show Keyframes" : true
 		},
-		"Subtitle Sync" : true
+		"Subtitle Sync" : true,
+		"Video Pan": false
 	}
 }
