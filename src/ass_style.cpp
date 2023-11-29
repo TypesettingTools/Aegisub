@@ -64,7 +64,7 @@ class parser {
 public:
 	parser(std::string_view str) {
 		if (auto colon = str.find(':'); colon != str.npos) {
-			str.remove_prefix(colon);
+			str.remove_prefix(colon + 1);
 			pos = agi::Split(str, ',');
 		}
 	}
