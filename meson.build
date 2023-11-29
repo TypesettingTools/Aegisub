@@ -291,13 +291,10 @@ else
     message('System luajit not found; using built-in luajit')
 endif
 
-internal_luajit = false
 if not deps.contains(luajit)
     deps += subproject('luajit').get_variable('luajit_dep')
-    internal_luajit = true
 endif
-#                                               Replace with dict once meson 1.2 can be required
-deps += subproject('luabins', default_options: ['internal_luajit=@0@'.format(internal_luajit)]).get_variable('luabins_dep')
+deps += subproject('luabins').get_variable('luabins_dep')
 
 dep_gl = dependency('gl', required: false)
 if not dep_gl.found()

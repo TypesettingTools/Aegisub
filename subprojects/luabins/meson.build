@@ -9,12 +9,5 @@ luabins_src = files(
     'src/write.c',
 )
 
-deps = []
-if get_option('internal_luajit')
-    deps += subproject('luajit').get_variable('luajit_dep')
-else
-    deps += dependency('luajit')
-endif
-
-luabins = static_library('luabins', luabins_src, dependencies: deps)
+luabins = static_library('luabins', luabins_src, dependencies: dependency('luajit'))
 luabins_dep = declare_dependency(link_with: luabins)
