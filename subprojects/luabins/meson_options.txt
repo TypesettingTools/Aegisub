@@ -1,0 +1,2 @@
+option('internal_luajit', type: 'boolean', value: false, description: 'Whether to use luajit from a subproject')
+
