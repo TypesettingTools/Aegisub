@@ -165,6 +165,7 @@ void InitLocale() {
 	UErrorCode err = U_ZERO_ERROR;
 	icu::Locale::setDefault(icu::Locale::createCanonical(id.c_str()), err);
 	if (U_FAILURE(err)) throw InternalError(u_errorName(err));
+	std::locale::global(boost::locale::generator().generate(""));
 }
 } // namespace util
 

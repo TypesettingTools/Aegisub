@@ -65,8 +65,6 @@
 #include <libaegisub/util.h>
 
 #include <boost/interprocess/streams/bufferstream.hpp>
-#include <boost/locale.hpp>
-#include <locale>
 #include <wx/clipbrd.h>
 #include <wx/msgdlg.h>
 #include <wx/stackwalk.h>
