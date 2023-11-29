@@ -87,7 +87,7 @@ public:
 		std::vector<std::filesystem::path> files;
 		for (wxString const& fn : filenames)
 			files.push_back(from_wx(fn));
-		agi::dispatch::Main().Async([=] { context->project->LoadList(files); });
+		agi::dispatch::Main().Async([=, this] { context->project->LoadList(files); });
 		return true;
 	}
 };

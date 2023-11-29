@@ -301,7 +301,7 @@ public:
 		SetCursor(*wxCROSS_CURSOR);
 
 		Bind(wxEVT_LEFT_DOWN, &ColorPickerRecent::OnClick, this);
-		Bind(wxEVT_SIZE, [=](wxSizeEvent&) { UpdateBitmap(); });
+		Bind(wxEVT_SIZE, [=, this](wxSizeEvent&) { UpdateBitmap(); });
 	}
 
 	/// Load the colors to show
@@ -868,7 +868,7 @@ void DialogColorPicker::UpdateSpectrumDisplay() {
 	}
 	preview_box->SetBitmap(tempBmp);
 
-	alpha_slider_img = make_slider_img([=](unsigned char *slid) {
+	alpha_slider_img = make_slider_img([=, this](unsigned char *slid) {
 		static_assert(slider_width % alpha_box_size == 0, "Slider width must be a multiple of alpha box width");
 
 		for (int y = 0; y < 256; ++y) {
@@ -910,7 +910,7 @@ static wxBitmap *make_spectrum(wxBitmap *bitmap, Func func) {
 }
 
 wxBitmap *DialogColorPicker::MakeGBSpectrum() {
-	return make_spectrum(&rgb_spectrum[0], [=](unsigned char *spec) {
+	return make_spectrum(&rgb_spectrum[0], [=, this](unsigned char *spec) {
 		for (int g = 0; g < 256; g++) {
 			for (int b = 0; b < 256; b++) {
 				*spec++ = cur_color.r;
@@ -922,7 +922,7 @@ wxBitmap *DialogColorPicker::MakeGBSpectrum() {
 }
 
 wxBitmap *DialogColorPicker::MakeRBSpectrum() {
-	return make_spectrum(&rgb_spectrum[1], [=](unsigned char *spec) {
+	return make_spectrum(&rgb_spectrum[1], [=, this](unsigned char *spec) {
 		for (int r = 0; r < 256; r++) {
 			for (int b = 0; b < 256; b++) {
 				*spec++ = r;
@@ -934,7 +934,7 @@ wxBitmap *DialogColorPicker::MakeRBSpectrum() {
 }
 
 wxBitmap *DialogColorPicker::MakeRGSpectrum() {
-	return make_spectrum(&rgb_spectrum[2], [=](unsigned char *spec) {
+	return make_spectrum(&rgb_spectrum[2], [=, this](unsigned char *spec) {
 		for (int r = 0; r < 256; r++) {
 			for (int g = 0; g < 256; g++) {
 				*spec++ = r;
