@@ -34,7 +34,7 @@ wxColour to_wx(agi::Color color) {
 }
 
 wxString to_wx(std::string const& str) {
-	return wxString::FromUTF8Unchecked(str);
+	return wxString::FromUTF8Unchecked(str.c_str());
 }
 
 wxString to_wx(std::string_view str) {

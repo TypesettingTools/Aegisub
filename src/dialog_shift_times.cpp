@@ -86,11 +86,11 @@ public:
 };
 
 static wxString get_history_string(json::Object &obj) {
-	auto filename = wxString::FromUTF8Unchecked((obj["filename"]));
+	auto filename = to_wx(obj["filename"]);
 	if (filename.empty())
 		filename = _("unsaved");
 
-	auto shift_amount = wxString::FromUTF8Unchecked((obj["amount"]));
+	auto shift_amount = to_wx(obj["amount"]);
 	if (!obj["is by time"])
 		shift_amount = fmt_tl("%s frames", shift_amount);
 
