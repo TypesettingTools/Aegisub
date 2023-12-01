@@ -96,6 +96,6 @@ std::vector<KaraokeSyllable> ParseKaraokeSyllables(const AssDialogue *line) {
 }
 
 void SetKaraokeLine(Karaoke& karaoke, const AssDialogue *line, bool auto_split, bool normalize) {
-	karaoke.SetLine(ParseKaraokeSyllables(line), normalize, auto_split);
+	karaoke.SetLine(ParseKaraokeSyllables(line), auto_split, normalize ? line->End : std::optional<int>());
 }
 
