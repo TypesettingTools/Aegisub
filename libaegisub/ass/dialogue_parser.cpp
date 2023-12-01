@@ -106,19 +106,32 @@ class WordSplitter {
 
 	void SplitText(size_t &i) {
 		UErrorCode err = U_ZERO_ERROR;
-		thread_local std::unique_ptr<icu::BreakIterator>
-		bi(icu::BreakIterator::createWordInstance(icu::Locale::getDefault(), err));
+		thread_local std::unique_ptr<icu::BreakIterator> bi(icu::BreakIterator::createWordInstance(icu::Locale::getDefault(), err));
 		agi::UTextPtr ut(utext_openUTF8(nullptr, text.data() + pos, tokens[i].length, &err));
 		bi->setText(ut.get(), err);
 		if (U_FAILURE(err)) throw agi::InternalError(u_errorName(err));
 		size_t pos = 0;
 		while (bi->next() != UBRK_DONE) {
 			auto len = bi->current() - pos;
-			auto rule = bi->getRuleStatus(); // FIXME: getRuleStatusVec?
-			if (rule >= UBRK_WORD_LETTER && rule < UBRK_WORD_KANA_LIMIT)
-				SwitchTo(i, dt::WORD, len);
-			else
-				SwitchTo(i, dt::TEXT, len);
+
+			std::vector<int32_t> rules(8);
+			int n = bi->getRuleStatusVec(rules.data(), rules.size(), err);
+			if (err == U_BUFFER_OVERFLOW_ERROR) {
+				err = U_ZERO_ERROR;
+				bi->getRuleStatusVec(rules.data(), rules.size(), err);
+			}
+
+			if (U_FAILURE(err)) throw agi::InternalError(u_errorName(err));
+
+			auto token_type = dt::TEXT;
+
+			for (size_t i = 0; i < n; i++) {
+				if (rules[i] >= UBRK_WORD_LETTER && rules[i] < UBRK_WORD_IDEO_LIMIT) {
+					token_type = dt::WORD;
+					break;
+				}
+			}
+			SwitchTo(i, token_type, len);
 			pos = bi->current();
 		}
 	}
