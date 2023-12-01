@@ -34,15 +34,15 @@ wxColour to_wx(agi::Color color) {
 }
 
 wxString to_wx(std::string const& str) {
-	return wxString::FromUTF8Unchecked(str.c_str());
+	return wxString(str.c_str(), wxConvUTF8);
 }
 
 wxString to_wx(std::string_view str) {
-	return wxString::FromUTF8Unchecked(str.data(), str.size());
+	return wxString(str.data(), wxConvUTF8, str.size());
 }
 
 wxString to_wx(const char *str) {
-	return wxString::FromUTF8Unchecked(str);
+	return wxString(str, wxConvUTF8);
 }
 
 agi::Color from_wx(wxColour color) {
