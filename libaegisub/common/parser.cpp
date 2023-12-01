@@ -16,9 +16,6 @@
 
 #include "parser.h"
 
-#include "libaegisub/color.h"
-#include "libaegisub/ass/dialogue_parser.h"
-
 #include <boost/phoenix/core.hpp>
 #include <boost/phoenix/operator.hpp>
 #include <boost/phoenix/fusion.hpp>
@@ -27,6 +24,10 @@
 #include <boost/spirit/include/qi.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
+
+// dialogue_parser.h needs to be included last because of windows.h memes
+#include "libaegisub/color.h"
+#include "libaegisub/ass/dialogue_parser.h"
 
 BOOST_FUSION_ADAPT_STRUCT(
 	agi::Color,
