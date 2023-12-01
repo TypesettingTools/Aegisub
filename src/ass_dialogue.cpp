@@ -113,7 +113,7 @@ void AssDialogue::Parse(std::string const& raw) {
 		margin = mid(-9999, boost::lexical_cast<int>(tkn.next_tok()), 99999);
 	Effect = tkn.next_str_trim();
 
-	std::string text{tkn.next_tok()};
+	std::string text{tkn.next_tok().begin(), str.end()};
 
 	if (text.size() > 1 && text[0] == '{' && text[1] == '=') {
 		static const boost::regex extradata_test("^\\{(=\\d+)+\\}");
