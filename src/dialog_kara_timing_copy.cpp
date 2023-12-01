@@ -82,9 +82,9 @@ public:
 	std::string GetOutputLine() const { return matcher.GetOutputLine(); }
 
 	/// Number of syllables not yet matched from source
-	size_t GetRemainingSource() const { return matcher.UnmatchedSource().size(); }
+	size_t GetRemainingSource() const { return matcher.UnmatchedSource().size() + matcher.CurrentSourceSelection().size(); }
 	/// Number of characters not yet matched from destination
-	size_t GetRemainingDestination() const { return matcher.UnmatchedDestination().size(); }
+	size_t GetRemainingDestination() const { return matcher.UnmatchedDestination().size() + matcher.CurrentDestinationSelection().size(); }
 
 	// Adjust source and destination match lengths
 	void IncreaseSourceMatch();
@@ -301,7 +301,8 @@ void KaraokeLineMatchDisplay::OnPaint(wxPaintEvent &)
 void KaraokeLineMatchDisplay::SetInputData(AssDialogue *src, AssDialogue *dst)
 {
 	last_total_matchgroup_render_width = 0;
-	matcher.SetInputData(ParseKaraokeSyllables(src), dst->GetStrippedText());
+	matcher.SetInputData(ParseKaraokeSyllables(src), dst ? dst->GetStrippedText() : "");
+	Refresh(true);
 }
 
 void KaraokeLineMatchDisplay::IncreaseSourceMatch()

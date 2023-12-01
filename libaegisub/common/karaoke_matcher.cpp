@@ -213,6 +213,7 @@ namespace agi {
 void KaraokeMatcher::SetInputData(std::vector<ass::KaraokeSyllable>&& src, std::string&& dst) {
 	syllables = std::move(src);
 	matched_groups.clear();
+	character_positions.clear();
 	src_start = 0;
 	src_len = syllables.size() ? 1 : 0;
 
@@ -239,7 +240,7 @@ std::string KaraokeMatcher::GetOutputLine() const {
 }
 
 bool KaraokeMatcher::IncreaseSourceMatch() {
-	if (src_start + src_len < syllables.size()) { // FIXME: off-by-one?
+	if (src_start + src_len < syllables.size()) {
 		++src_len;
 		return true;
 	}
