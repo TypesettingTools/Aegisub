@@ -2,9 +2,7 @@ name: Meson CI
 
 on:
   push:
-    branches:
-      - master
-      - more_modernization
+    branches: [ master ]
   pull_request:
     branches: [ master ]
 
