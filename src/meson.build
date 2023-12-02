@@ -54,7 +54,6 @@ aegisub_src = files(
     'command/vis_tool.cpp',
     'compat.cpp',
     'context.cpp',
-    'crash_writer.cpp',
     'dialog_about.cpp',
     'dialog_attachments.cpp',
     'dialog_automation.cpp',
@@ -171,6 +170,7 @@ if host_machine.system() == 'darwin'
 elif host_machine.system() == 'windows'
     aegisub_src += files(
         'avisynth_wrap.cpp',
+        'crash_writer_minidump.cpp',
         'font_file_lister_gdi.cpp',
         # 'libass_gdi_fontselect.cpp',
         'video_provider_avs.cpp',
@@ -214,6 +214,12 @@ elif host_machine.system() == 'windows'
                                                  include_directories: [res_inc, version_inc, wx_inc])
     endif
     aegisub_src += windows.compile_resources('res/strings.rc')
+endif
+
+if host_machine.system() != 'windows'
+    aegisub_src += files(
+        'crash_writer.cpp'
+    )
 endif
 
 if conf.has('WITH_FONTCONFIG')
