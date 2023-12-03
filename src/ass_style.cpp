@@ -40,7 +40,6 @@
 #include <libaegisub/format.h>
 #include <libaegisub/split.h>
 
-#include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <wx/intl.h>
 
@@ -54,19 +53,20 @@ AssEntryGroup AssStyle::Group() const { return AssEntryGroup::STYLE; }
 
 namespace {
 class parser {
-	agi::split_iterator<agi::StringRange::const_iterator> pos;
+	agi::split_iterator<char> pos;
 
-	std::string next_tok() {
+	std::string_view next_tok() {
 		if (pos.eof())
 			throw SubtitleFormatParseError("Malformed style: not enough fields");
-		return agi::str(trim_copy(*pos++));
+		return agi::Trim(*pos++);
 	}
 
 public:
-	parser(std::string const& str) {
-		auto colon = find(str.begin(), str.end(), ':');
-		if (colon != str.end())
-			pos = agi::Split(agi::StringRange(colon + 1, str.end()), ',');
+	parser(std::string_view str) {
+		if (auto colon = str.find(':'); colon != str.npos) {
+			str.remove_prefix(colon + 1);
+			pos = agi::Split(str, ',');
+		}
 	}
 
 	void check_done() const {
@@ -74,7 +74,7 @@ public:
 			throw SubtitleFormatParseError("Malformed style: too many fields");
 	}
 
-	std::string next_str() { return next_tok(); }
+	std::string next_str() { return std::string(next_tok()); }
 	agi::Color next_color() { return next_tok(); }
 
 	int next_int() {
@@ -102,7 +102,7 @@ public:
 };
 }
 
-AssStyle::AssStyle(std::string const& str, int version) {
+AssStyle::AssStyle(std::string_view str, int version) {
 	parser p(str);
 
 	name = p.next_str();

@@ -50,11 +50,11 @@
 #include "subtitle_format_txt.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/vfr.h>
+#include <libaegisub/string.h>
+#include <libaegisub/util.h>
 
 #include <algorithm>
-#include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <wx/choicdlg.h>
 
@@ -62,20 +62,20 @@ namespace {
 	std::vector<std::unique_ptr<SubtitleFormat>> formats;
 }
 
-SubtitleFormat::SubtitleFormat(std::string name)
-: name(std::move(name))
+SubtitleFormat::SubtitleFormat(std::string_view name)
+: name(name)
 {
 }
 
-bool SubtitleFormat::CanReadFile(agi::fs::path const& filename, std::string const&) const {
+bool SubtitleFormat::CanReadFile(std::filesystem::path const& filename, const char *) const {
 	auto wildcards = GetReadWildcards();
-	return any_of(begin(wildcards), end(wildcards),
+	return agi::util::any_of(wildcards,
 		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
-bool SubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
+bool SubtitleFormat::CanWriteFile(std::filesystem::path const& filename) const {
 	auto wildcards = GetWriteWildcards();
-	return any_of(begin(wildcards), end(wildcards),
+	return agi::util::any_of(wildcards,
 		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
@@ -159,13 +159,13 @@ void SubtitleFormat::StripTags(AssFile &file) {
 		current.StripTags();
 }
 
-void SubtitleFormat::ConvertNewlines(AssFile &file, std::string const& newline, bool mergeLineBreaks) {
+void SubtitleFormat::ConvertNewlines(AssFile &file, std::string_view newline, bool mergeLineBreaks) {
 	for (auto& current : file.Events) {
 		std::string repl = current.Text;
 		boost::replace_all(repl, "\\h", " ");
 		boost::ireplace_all(repl, "\\n", newline);
 		if (mergeLineBreaks) {
-			std::string dbl(newline + newline);
+			auto dbl = agi::Str(newline, newline);
 			size_t pos = 0;
 			while ((pos = repl.find(dbl, pos)) != std::string::npos)
 				boost::replace_all(repl, dbl, newline);
@@ -262,16 +262,16 @@ void SubtitleFormat::MergeIdentical(AssFile &file) {
 
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {
-		formats.emplace_back(agi::make_unique<AssSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<Ebu3264SubtitleFormat>());
-		formats.emplace_back(agi::make_unique<EncoreSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<MKVSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<MicroDVDSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<SRTSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<SsaSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<TTXTSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<TXTSubtitleFormat>());
-		formats.emplace_back(agi::make_unique<TranStationSubtitleFormat>());
+		formats.emplace_back(std::make_unique<AssSubtitleFormat>());
+		formats.emplace_back(std::make_unique<Ebu3264SubtitleFormat>());
+		formats.emplace_back(std::make_unique<EncoreSubtitleFormat>());
+		formats.emplace_back(std::make_unique<MKVSubtitleFormat>());
+		formats.emplace_back(std::make_unique<MicroDVDSubtitleFormat>());
+		formats.emplace_back(std::make_unique<SRTSubtitleFormat>());
+		formats.emplace_back(std::make_unique<SsaSubtitleFormat>());
+		formats.emplace_back(std::make_unique<TTXTSubtitleFormat>());
+		formats.emplace_back(std::make_unique<TXTSubtitleFormat>());
+		formats.emplace_back(std::make_unique<TranStationSubtitleFormat>());
 	}
 }
 
@@ -283,14 +283,14 @@ SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 	return it->get();
 }
 
-const SubtitleFormat *SubtitleFormat::GetReader(agi::fs::path const& filename, std::string const& encoding) {
+const SubtitleFormat *SubtitleFormat::GetReader(std::filesystem::path const& filename, const char *encoding) {
 	LoadFormats();
 	return find_or_throw(formats, [&](std::unique_ptr<SubtitleFormat> const& f) {
 		return f->CanReadFile(filename, encoding);
 	});
 }
 
-const SubtitleFormat *SubtitleFormat::GetWriter(agi::fs::path const& filename) {
+const SubtitleFormat *SubtitleFormat::GetWriter(std::filesystem::path const& filename) {
 	LoadFormats();
 	return find_or_throw(formats, [&](std::unique_ptr<SubtitleFormat> const& f) {
 		return f->CanWriteFile(filename);
@@ -309,8 +309,11 @@ std::string SubtitleFormat::GetWildcards(int mode) {
 
 		for (auto& str : cur) str.insert(0, "*.");
 		all.insert(all.end(), begin(cur), end(cur));
-		final += "|" + format->GetName() + " (" + boost::join(cur, ",") + ")|" + boost::join(cur, ";");
+		agi::AppendStr(final, "|", format->GetName(), " (");
+		agi::AppendJoin(final, ",", cur);
+		final += ")|";
+		agi::AppendJoin(final, ";", cur);
 	}
 
-	return from_wx(_("All Supported Formats")) + " (" + boost::join(all, ",") + ")|" + boost::join(all, ";") + final;
+	return agi::Str(from_wx(_("All Supported Formats")), " (", agi::Join(",", all), ")|", agi::Join(";", all), final);
 }

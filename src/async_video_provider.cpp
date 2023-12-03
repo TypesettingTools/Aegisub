@@ -91,7 +91,7 @@ static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_ha
 	}
 }
 
-AsyncVideoProvider::AsyncVideoProvider(agi::fs::path const& video_filename, std::string const& colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
+AsyncVideoProvider::AsyncVideoProvider(std::filesystem::path const& video_filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
 : worker(agi::dispatch::Create())
 , subs_provider(get_subs_provider(parent, br))
 , source_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix, br))
@@ -108,7 +108,7 @@ void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
 	uint_fast32_t req_version = ++version;
 
 	auto copy = new AssFile(*new_subs);
-	worker->Async([=]{
+	worker->Async([=, this]{
 		subs.reset(copy);
 		single_frame = NEW_SUBS_FILE;
 		ProcAsync(req_version, false);
@@ -121,7 +121,7 @@ void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, const AssDialo
 	// Copy just the line which were changed, then replace the line at the
 	// same index in the worker's copy of the file with the new entry
 	auto copy = new AssDialogue(*changed);
-	worker->Async([=]{
+	worker->Async([=, this]{
 		int i = 0;
 		auto it = subs->Events.begin();
 		std::advance(it, copy->Row - i);
@@ -137,7 +137,7 @@ void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, const AssDialo
 void AsyncVideoProvider::RequestFrame(int new_frame, double new_time) throw() {
 	uint_fast32_t req_version = ++version;
 
-	worker->Async([=]{
+	worker->Async([=, this]{
 		time = new_time;
 		frame_number = new_frame;
 		ProcAsync(req_version, false);
@@ -192,7 +192,7 @@ void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version, bool check_updated
 	last_rendered = frame_number;
 
 	try {
-		FrameReadyEvent *evt = new FrameReadyEvent(ProcFrame(frame_number, time), time);
+		auto evt = new FrameReadyEvent(ProcFrame(frame_number, time), time);
 		evt->SetEventType(EVT_FRAME_READY);
 		parent->QueueEvent(evt);
 	}
@@ -208,8 +208,10 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::GetFrame(int frame, double time,
 	return ret;
 }
 
-void AsyncVideoProvider::SetColorSpace(std::string const& matrix) {
-	worker->Async([=] { source_provider->SetColorSpace(matrix); });
+void AsyncVideoProvider::SetColorSpace(std::string_view matrix) {
+	worker->Async([this, matrix = std::string(matrix)]() {
+		source_provider->SetColorSpace(matrix);
+	});
 }
 
 wxDEFINE_EVENT(EVT_FRAME_READY, FrameReadyEvent);
@@ -217,12 +219,12 @@ wxDEFINE_EVENT(EVT_VIDEO_ERROR, VideoProviderErrorEvent);
 wxDEFINE_EVENT(EVT_SUBTITLES_ERROR, SubtitlesProviderErrorEvent);
 
 VideoProviderErrorEvent::VideoProviderErrorEvent(VideoProviderError const& err)
-: agi::Exception(err.GetMessage())
+: agi::Exception(std::string(err.GetMessage()))
 {
 	SetEventType(EVT_VIDEO_ERROR);
 }
 SubtitlesProviderErrorEvent::SubtitlesProviderErrorEvent(std::string const& err)
-: agi::Exception(err)
+: agi::Exception(std::string(err))
 {
 	SetEventType(EVT_SUBTITLES_ERROR);
 }

@@ -38,7 +38,7 @@
 
 #include <libaegisub/signal.h>
 
-namespace agi { namespace vfr { class Framerate; } }
+namespace agi::vfr { class Framerate; }
 namespace agi { struct Context; }
 namespace agi { class Time; }
 class AssDialogue;

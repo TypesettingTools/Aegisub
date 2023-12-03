@@ -17,12 +17,11 @@
 #include "libaegisub/fs.h"
 #include "libaegisub/lua/ffi.h"
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <chrono>
 
 using namespace agi::fs;
 using namespace agi::lua;
-namespace bfs = boost::filesystem;
+namespace sfs = std::filesystem;
 
 namespace agi {
 AGI_DEFINE_TYPE_NAME(DirectoryIterator);
@@ -47,7 +46,7 @@ auto wrap(char **err, Func f) -> decltype(f()) {
 }
 
 template<typename Ret>
-bool setter(const char *path, char **err, Ret (*f)(bfs::path const&)) {
+bool setter(const char *path, char **err, Ret (*f)(sfs::path const&)) {
 	return wrap(err, [=]{
 		f(path);
 		return true;
@@ -55,12 +54,12 @@ bool setter(const char *path, char **err, Ret (*f)(bfs::path const&)) {
 }
 
 bool lfs_chdir(const char *dir, char **err) {
-	return setter(dir, err, &bfs::current_path);
+	return setter(dir, err, &sfs::current_path);
 }
 
 char *currentdir(char **err) {
 	return wrap(err, []{
-		return strndup(bfs::current_path().string());
+		return strndup(sfs::current_path().string());
 	});
 }
 
@@ -101,23 +100,26 @@ DirectoryIterator *dir_new(const char *path, char **err) {
 
 const char *get_mode(const char *path, char **err) {
 	return wrap(err, [=]() -> const char * {
-		switch (bfs::status(path).type()) {
-			case bfs::file_not_found: return nullptr;         break;
-			case bfs::regular_file:   return "file";          break;
-			case bfs::directory_file: return "directory";     break;
-			case bfs::symlink_file:   return "link";          break;
-			case bfs::block_file:     return "block device";  break;
-			case bfs::character_file: return "char device";   break;
-			case bfs::fifo_file:      return "fifo";          break;
-			case bfs::socket_file:    return "socket";        break;
-			case bfs::reparse_file:   return "reparse point"; break;
-			default:                  return "other";         break;
+		using enum sfs::file_type;
+		switch (sfs::status(path).type()) {
+			case not_found: return nullptr;
+			case regular:   return "file";
+			case directory: return "directory";
+			case symlink:   return "link";
+			case block:     return "block device";
+			case character: return "char device";
+			case fifo:      return "fifo";
+			case socket:    return "socket";
+			default:        return "other";
 		}
 	});
 }
 
 time_t get_mtime(const char *path, char **err) {
-	return wrap(err, [=] { return ModifiedTime(path); });
+	return wrap(err, [=]() -> time_t {
+		using namespace std::chrono;
+		return duration_cast<seconds>(ModifiedTime(path).time_since_epoch()).count();
+	});
 }
 
 uintmax_t get_size(const char *path, char **err) {

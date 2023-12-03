@@ -42,11 +42,10 @@
 #include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/split.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/algorithm/string/trim.hpp>
 #include <future>
 
 #include <wx/dcmemory.h>
@@ -208,7 +207,7 @@ namespace Automation4 {
 
 	void ProgressSink::ShowDialog(ScriptDialog *config_dialog)
 	{
-		agi::dispatch::Main().Sync([=] {
+		agi::dispatch::Main().Sync([=, this] {
 			wxDialog w; // container dialog box
 			w.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 			w.Create(bsr->GetParentWindow(), -1, to_wx(bsr->GetTitle()));
@@ -256,14 +255,14 @@ namespace Automation4 {
 	}
 
 	// Script
-	Script::Script(agi::fs::path const& filename)
+	Script::Script(std::filesystem::path const& filename)
 	: filename(filename)
 	{
 		include_path.emplace_back(filename.parent_path());
 
 		std::string include_paths = OPT_GET("Path/Automation/Include")->GetString();
 		for (auto tok : agi::Split(include_paths, '|')) {
-			auto path = config::path->Decode(agi::str(tok));
+			auto path = config::path->Decode(std::string(tok));
 			if (path.is_absolute() && agi::fs::DirectoryExists(path))
 				include_path.emplace_back(std::move(path));
 		}
@@ -323,7 +322,7 @@ namespace Automation4 {
 		std::vector<std::future<std::unique_ptr<Script>>> script_futures;
 
 		for (auto tok : agi::Split(path, '|')) {
-			auto dirname = config::path->Decode(agi::str(tok));
+			auto dirname = config::path->Decode(std::string(tok));
 			if (!agi::fs::DirectoryExists(dirname)) continue;
 
 			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*"))
@@ -373,12 +372,12 @@ namespace Automation4 {
 		auto autobasefn(OPT_GET("Path/Automation/Base")->GetString());
 
 		for (auto tok : agi::Split(local_scripts, '|')) {
-			tok = boost::trim_copy(tok);
-			if (boost::size(tok) == 0) continue;
+			tok = agi::Trim(tok);
+			if (tok.size() == 0) continue;
 			char first_char = tok[0];
 			std::string trimmed(begin(tok) + 1, end(tok));
 
-			agi::fs::path basepath;
+			std::filesystem::path basepath;
 			if (first_char == '~') {
 				basepath = context->subsController->Filename().parent_path();
 			} else if (first_char == '$') {
@@ -410,7 +409,7 @@ namespace Automation4 {
 		// 3. If step 2 failed, or absolute path is shorter than path relative to ass, use absolute path ("/")
 		// 4. Otherwise, use path relative to ass ("~")
 		std::string scripts_string;
-		agi::fs::path autobasefn(OPT_GET("Path/Automation/Base")->GetString());
+		std::filesystem::path autobasefn(OPT_GET("Path/Automation/Base")->GetString());
 
 		for (auto& script : GetScripts()) {
 			if (!scripts_string.empty())
@@ -418,7 +417,7 @@ namespace Automation4 {
 
 			auto scriptfn(script->GetFilename().string());
 			auto autobase_rel = context->path->MakeRelative(scriptfn, autobasefn);
-			auto assfile_rel = context->path->MakeRelative(scriptfn, "?script");
+			auto assfile_rel = context->path->MakeRelative(scriptfn, std::string_view("?script"));
 
 			if (autobase_rel.string().size() <= scriptfn.size() && autobase_rel.string().size() <= assfile_rel.string().size()) {
 				scriptfn = "$" + autobase_rel.generic_string();
@@ -448,7 +447,7 @@ namespace Automation4 {
 		Factories().emplace_back(std::move(factory));
 	}
 
-	std::unique_ptr<Script> ScriptFactory::CreateFromFile(agi::fs::path const& filename, bool complain_about_unrecognised, bool create_unknown)
+	std::unique_ptr<Script> ScriptFactory::CreateFromFile(std::filesystem::path const& filename, bool complain_about_unrecognised, bool create_unknown)
 	{
 		for (auto& factory : Factories()) {
 			auto s = factory->Produce(filename);
@@ -464,7 +463,7 @@ namespace Automation4 {
 			wxLogError(_("The file was not recognised as an Automation script: %s"), filename.wstring());
 		}
 
-		return create_unknown ? agi::make_unique<UnknownScript>(filename) : nullptr;
+		return create_unknown ? std::make_unique<UnknownScript>(filename) : nullptr;
 	}
 
 	std::vector<std::unique_ptr<ScriptFactory>>& ScriptFactory::Factories()
@@ -496,7 +495,7 @@ namespace Automation4 {
 			catchall.pop_back();
 
 		if (Factories().size() > 1)
-			fnfilter = from_wx(_("All Supported Formats")) + "|" + catchall + "|" + fnfilter;
+			fnfilter = agi::Str(from_wx(_("All Supported Formats")), "|", catchall, "|", fnfilter);
 
 		return fnfilter;
 	}

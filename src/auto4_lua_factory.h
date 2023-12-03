@@ -36,7 +36,7 @@
 
 namespace Automation4 {
 	class LuaScriptFactory final : public ScriptFactory {
-		std::unique_ptr<Script> Produce(agi::fs::path const& filename) const override;
+		std::unique_ptr<Script> Produce(std::filesystem::path const& filename) const override;
 	public:
 		LuaScriptFactory();
 	};

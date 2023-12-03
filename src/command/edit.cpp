@@ -51,8 +51,9 @@
 #include "../video_controller.h"
 
 #include <libaegisub/address_of_adaptor.h>
+#include <libaegisub/ass/karaoke.h>
 #include <libaegisub/of_type_adaptor.h>
-#include <libaegisub/make_unique.h>
+#include <libaegisub/string.h>
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -95,16 +96,16 @@ struct validate_sel_multiple : public Command {
 };
 
 template<typename String>
-AssDialogue *get_dialogue(String data) {
+std::unique_ptr<AssDialogue> get_dialogue(String data) {
 	boost::trim(data);
 	try {
 		// Try to interpret the line as an ASS line
-		return new AssDialogue(data);
+		return std::make_unique<AssDialogue>(data);
 	}
 	catch (...) {
 		// Line didn't parse correctly, assume it's plain text that
 		// should be pasted in the Text field only
-		auto d = new AssDialogue;
+		auto d = std::make_unique<AssDialogue>();
 		d->End = 0;
 		d->Text = data;
 		return d;
@@ -138,25 +139,25 @@ void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 	}
 }
 
-AssDialogue *paste_over(wxWindow *parent, std::vector<bool>& pasteOverOptions, AssDialogue *new_line, AssDialogue *old_line) {
+bool paste_over(wxWindow *parent, std::vector<bool>& pasteOverOptions, AssDialogue &new_line, AssDialogue &old_line) {
 	if (pasteOverOptions.empty()) {
-		if (!ShowPasteOverDialog(parent)) return nullptr;
+		if (!ShowPasteOverDialog(parent)) return false;
 		pasteOverOptions = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();
 	}
 
-	if (pasteOverOptions[0])  old_line->Comment   = new_line->Comment;
-	if (pasteOverOptions[1])  old_line->Layer     = new_line->Layer;
-	if (pasteOverOptions[2])  old_line->Start     = new_line->Start;
-	if (pasteOverOptions[3])  old_line->End       = new_line->End;
-	if (pasteOverOptions[4])  old_line->Style     = new_line->Style;
-	if (pasteOverOptions[5])  old_line->Actor     = new_line->Actor;
-	if (pasteOverOptions[6])  old_line->Margin[0] = new_line->Margin[0];
-	if (pasteOverOptions[7])  old_line->Margin[1] = new_line->Margin[1];
-	if (pasteOverOptions[8])  old_line->Margin[2] = new_line->Margin[2];
-	if (pasteOverOptions[9])  old_line->Effect    = new_line->Effect;
-	if (pasteOverOptions[10]) old_line->Text      = new_line->Text;
+	if (pasteOverOptions[0])  old_line.Comment   = new_line.Comment;
+	if (pasteOverOptions[1])  old_line.Layer     = new_line.Layer;
+	if (pasteOverOptions[2])  old_line.Start     = new_line.Start;
+	if (pasteOverOptions[3])  old_line.End       = new_line.End;
+	if (pasteOverOptions[4])  old_line.Style     = new_line.Style;
+	if (pasteOverOptions[5])  old_line.Actor     = new_line.Actor;
+	if (pasteOverOptions[6])  old_line.Margin[0] = new_line.Margin[0];
+	if (pasteOverOptions[7])  old_line.Margin[1] = new_line.Margin[1];
+	if (pasteOverOptions[8])  old_line.Margin[2] = new_line.Margin[2];
+	if (pasteOverOptions[9])  old_line.Effect    = new_line.Effect;
+	if (pasteOverOptions[10]) old_line.Text      = new_line.Text;
 
-	return old_line;
+	return true;
 }
 
 struct parsed_line {
@@ -242,7 +243,8 @@ struct parsed_line {
 		std::string insert(tag + value);
 		int shift = insert.size();
 		if (plain || blockn < 0) {
-			line->Text = line->Text.get().substr(0, orig_pos) + "{" + insert + "}" + line->Text.get().substr(orig_pos);
+			std::string_view text = line->Text.get();
+			line->Text = agi::Str(text.substr(0, orig_pos), "{", insert, "}", text.substr(orig_pos));
 			shift += 2;
 			blocks = line->ParseTags();
 		}
@@ -769,14 +771,14 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 
 static void combine_karaoke(AssDialogue *first, AssDialogue *second) {
 	if (second)
-		first->Text = first->Text.get() + "{\\k" + std::to_string((second->End - second->Start) / 10) + "}" + second->Text.get();
+		first->Text = agi::Str(first->Text.get(), "{\\k", std::to_string((second->End - second->Start) / 10), "}", second->Text.get());
 	else
-		first->Text = "{\\k" + std::to_string((first->End - first->Start) / 10) + "}" + first->Text.get();
+		first->Text = agi::Str("{\\k", std::to_string((first->End - first->Start) / 10), "}", first->Text.get());
 }
 
 static void combine_concat(AssDialogue *first, AssDialogue *second) {
 	if (second)
-		first->Text = first->Text.get() + " " + second->Text.get();
+		first->Text = agi::Str(first->Text.get(), " ", second->Text.get());
 }
 
 static void combine_drop(AssDialogue *, AssDialogue *) { }
@@ -869,9 +871,9 @@ struct edit_line_paste final : public Command {
 		}
 		else {
 			auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
-			paste_lines(c, false, [=](AssDialogue *new_line) -> AssDialogue * {
+			paste_lines(c, false, [=](std::unique_ptr<AssDialogue> new_line) -> AssDialogue * {
 				c->ass->Events.insert(pos, *new_line);
-				return new_line;
+				return new_line.release();
 			});
 		}
 	}
@@ -901,27 +903,26 @@ struct edit_line_paste_over final : public Command {
 		if (sel.size() < 2) {
 			auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
 
-			paste_lines(c, true, [&](AssDialogue *new_line) -> AssDialogue * {
-				std::unique_ptr<AssDialogue> deleter(new_line);
+			paste_lines(c, true, [&](std::unique_ptr<AssDialogue> new_line) -> AssDialogue * {
 				if (pos == c->ass->Events.end()) return nullptr;
 
-				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, &*pos);
-				if (ret)
+				auto& old = *pos;
+				if (paste_over(c->parent, pasteOverOptions, *new_line, old))
 					++pos;
-				return ret;
+				return &old;
 			});
 		}
 		else {
 			// Multiple lines selected, so paste over the selection
 			auto sorted_selection = c->selectionController->GetSortedSelection();
 			auto pos = begin(sorted_selection);
-			paste_lines(c, true, [&](AssDialogue *new_line) -> AssDialogue * {
-				std::unique_ptr<AssDialogue> deleter(new_line);
+			paste_lines(c, true, [&](std::unique_ptr<AssDialogue> new_line) -> AssDialogue * {
 				if (pos == end(sorted_selection)) return nullptr;
 
-				AssDialogue *ret = paste_over(c->parent, pasteOverOptions, new_line, *pos);
-				if (ret) ++pos;
-				return ret;
+				auto& old = **pos;
+				if (paste_over(c->parent, pasteOverOptions, *new_line, old))
+					++pos;
+				return &old;
 			});
 		}
 	}
@@ -1051,11 +1052,11 @@ struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 		if (sel.empty()) return;
 
 		Selection new_sel;
-		AssKaraoke kara;
+		agi::ass::Karaoke kara;
 
 		std::vector<std::unique_ptr<AssDialogue>> to_delete;
 		for (auto line : sel) {
-			kara.SetLine(line);
+			SetKaraokeLine(kara, line);
 
 			// If there aren't at least two tags there's nothing to split
 			if (kara.size() < 2) continue;
@@ -1269,37 +1270,37 @@ struct edit_insert_original final : public Command {
 
 namespace cmd {
 	void init_edit() {
-		reg(agi::make_unique<edit_color_primary>());
-		reg(agi::make_unique<edit_color_secondary>());
-		reg(agi::make_unique<edit_color_outline>());
-		reg(agi::make_unique<edit_color_shadow>());
-		reg(agi::make_unique<edit_font>());
-		reg(agi::make_unique<edit_find_replace>());
-		reg(agi::make_unique<edit_line_copy>());
-		reg(agi::make_unique<edit_line_cut>());
-		reg(agi::make_unique<edit_line_delete>());
-		reg(agi::make_unique<edit_line_duplicate>());
-		reg(agi::make_unique<edit_line_duplicate_shift>());
-		reg(agi::make_unique<edit_line_duplicate_shift_back>());
-		reg(agi::make_unique<edit_line_join_as_karaoke>());
-		reg(agi::make_unique<edit_line_join_concatenate>());
-		reg(agi::make_unique<edit_line_join_keep_first>());
-		reg(agi::make_unique<edit_line_paste>());
-		reg(agi::make_unique<edit_line_paste_over>());
-		reg(agi::make_unique<edit_line_recombine>());
-		reg(agi::make_unique<edit_line_split_by_karaoke>());
-		reg(agi::make_unique<edit_line_split_estimate>());
-		reg(agi::make_unique<edit_line_split_preserve>());
-		reg(agi::make_unique<edit_line_split_video>());
-		reg(agi::make_unique<edit_style_bold>());
-		reg(agi::make_unique<edit_style_italic>());
-		reg(agi::make_unique<edit_style_underline>());
-		reg(agi::make_unique<edit_style_strikeout>());
-		reg(agi::make_unique<edit_redo>());
-		reg(agi::make_unique<edit_undo>());
-		reg(agi::make_unique<edit_revert>());
-		reg(agi::make_unique<edit_insert_original>());
-		reg(agi::make_unique<edit_clear>());
-		reg(agi::make_unique<edit_clear_text>());
+		reg(std::make_unique<edit_color_primary>());
+		reg(std::make_unique<edit_color_secondary>());
+		reg(std::make_unique<edit_color_outline>());
+		reg(std::make_unique<edit_color_shadow>());
+		reg(std::make_unique<edit_font>());
+		reg(std::make_unique<edit_find_replace>());
+		reg(std::make_unique<edit_line_copy>());
+		reg(std::make_unique<edit_line_cut>());
+		reg(std::make_unique<edit_line_delete>());
+		reg(std::make_unique<edit_line_duplicate>());
+		reg(std::make_unique<edit_line_duplicate_shift>());
+		reg(std::make_unique<edit_line_duplicate_shift_back>());
+		reg(std::make_unique<edit_line_join_as_karaoke>());
+		reg(std::make_unique<edit_line_join_concatenate>());
+		reg(std::make_unique<edit_line_join_keep_first>());
+		reg(std::make_unique<edit_line_paste>());
+		reg(std::make_unique<edit_line_paste_over>());
+		reg(std::make_unique<edit_line_recombine>());
+		reg(std::make_unique<edit_line_split_by_karaoke>());
+		reg(std::make_unique<edit_line_split_estimate>());
+		reg(std::make_unique<edit_line_split_preserve>());
+		reg(std::make_unique<edit_line_split_video>());
+		reg(std::make_unique<edit_style_bold>());
+		reg(std::make_unique<edit_style_italic>());
+		reg(std::make_unique<edit_style_underline>());
+		reg(std::make_unique<edit_style_strikeout>());
+		reg(std::make_unique<edit_redo>());
+		reg(std::make_unique<edit_undo>());
+		reg(std::make_unique<edit_revert>());
+		reg(std::make_unique<edit_insert_original>());
+		reg(std::make_unique<edit_clear>());
+		reg(std::make_unique<edit_clear_text>());
 	}
 }

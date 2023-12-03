@@ -14,12 +14,11 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <libaegisub/fs_fwd.h>
-
 #include <array>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace agi {
+namespace fs { using path = std::filesystem::path; }
 /// Class for handling everything path-related in Aegisub
 class Path {
 	/// Token -> Path map
@@ -35,22 +34,21 @@ public:
 	/// Decode and normalize a path which may begin with a registered token
 	/// @param path Path which is either already absolute or begins with a token
 	/// @return Absolute path
-	fs::path Decode(std::string const& path) const;
+	fs::path Decode(std::string_view path) const;
 
 	/// If path is relative, make it absolute relative to the token's path
 	/// @param path A possibly relative path
 	/// @param token Token containing base path for resolving relative paths
 	/// @return Absolute path if `path` is absolute or `token` is set, `path` otherwise
 	/// @throws InternalError if `token` is not a valid token name
-	fs::path MakeAbsolute(fs::path path, std::string const& token) const;
+	fs::path MakeAbsolute(fs::path path, std::string_view token) const;
 
 	/// If `token` is set, make `path` relative to it
 	/// @param path An absolute path
 	/// @param token Token name to make `path` relative to
 	/// @return A path relative to `token`'s value if `token` is set, `path` otherwise
 	/// @throws InternalError if `token` is not a valid token name
-	fs::path MakeRelative(fs::path const& path, std::string const& token) const;
-	fs::path MakeRelative(fs::path const& path, const char *token) const { return MakeRelative(path, std::string(token)); }
+	fs::path MakeRelative(fs::path const& path, std::string_view token) const;
 
 	/// Make `path` relative to `base`, if possible
 	/// @param path An absolute path
@@ -67,7 +65,7 @@ public:
 	/// @param token_name A single word token beginning with '?'
 	/// @param token_value An absolute path to a directory or file
 	/// @throws InternalError if `token` is not a valid token name
-	void SetToken(const char *token_name, fs::path const& token_value);
+	void SetToken(std::string_view token_name, fs::path const& token_value);
 };
 
-}
+} // namespace agi

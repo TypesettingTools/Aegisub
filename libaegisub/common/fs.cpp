@@ -20,67 +20,69 @@
 #include "libaegisub/log.h"
 
 #include <boost/algorithm/string/predicate.hpp>
-#define BOOST_NO_SCOPED_ENUMS
-#include <boost/filesystem/operations.hpp>
-#undef BOOST_NO_SCOPED_ENUMS
+#include <system_error>
 
-namespace bfs = boost::filesystem;
-namespace ec = boost::system::errc;
+namespace sfs = std::filesystem;
 
-// boost::filesystem functions throw a single exception type for all
+namespace agi::fs {
+namespace {
+void check_error(std::error_code ec, const char *exp, sfs::path const& src_path, sfs::path const& dst_path) {
+	if (ec == std::error_code{}) return;
+	using enum std::errc;
+	switch (ec.value()) {
+		case int(no_such_file_or_directory): throw FileNotFound(src_path);
+		case int(is_a_directory): throw NotAFile(src_path);
+		case int(not_a_directory): throw NotADirectory(src_path);
+		case int(no_space_on_device): throw DriveFull(dst_path);
+		case int(permission_denied):
+			if (!src_path.empty())
+				acs::CheckFileRead(src_path);
+			if (!dst_path.empty())
+				acs::CheckFileWrite(dst_path);
+			throw AccessDenied(src_path);
+		default:
+			LOG_D("filesystem") << "Unknown error when calling '" << exp << "': " << ec << ": " << ec.message();
+			throw FileSystemUnknownError(ec.message());
+	}
+}
+
+// std::filesystem functions throw a single exception type for all
 // errors, which isn't really what we want, so do some crazy wrapper
 // shit to map error codes to more useful exceptions.
 #define CHECKED_CALL(exp, src_path, dst_path) \
-	boost::system::error_code ec; \
+	std::error_code ec; \
 	exp; \
-	switch (ec.value()) {\
-		case ec::success: break; \
-		case ec::no_such_file_or_directory: throw FileNotFound(src_path); \
-		case ec::is_a_directory: throw NotAFile(src_path); \
-		case ec::not_a_directory: throw NotADirectory(src_path); \
-		case ec::no_space_on_device: throw DriveFull(dst_path); \
-		case ec::permission_denied: \
-			if (!src_path.empty()) \
-				acs::CheckFileRead(src_path); \
-			if (!dst_path.empty()) \
-				acs::CheckFileWrite(dst_path); \
-			throw AccessDenied(src_path); \
-		default: \
-			LOG_D("filesystem") << "Unknown error when calling '" << #exp << "': " << ec << ": " << ec.message(); \
-			throw FileSystemUnknownError(ec.message()); \
-	}
+	check_error(ec, #exp, src_path, dst_path);
 
 #define CHECKED_CALL_RETURN(exp, src_path) \
-	CHECKED_CALL(auto ret = exp, src_path, agi::fs::path()); \
+	CHECKED_CALL(auto ret = exp, src_path, std::filesystem::path()); \
 	return ret
 
-#define WRAP_BFS(bfs_name, agi_name) \
-	auto agi_name(path const& p) -> decltype(bfs::bfs_name(p)) { \
-		CHECKED_CALL_RETURN(bfs::bfs_name(p, ec), p); \
+#define WRAP_SFS(sfs_name, agi_name) \
+	auto agi_name(path const& p) -> decltype(sfs::sfs_name(p)) { \
+		CHECKED_CALL_RETURN(sfs::sfs_name(p, ec), p); \
 	}
 
-#define WRAP_BFS_IGNORE_ERROR(bfs_name, agi_name) \
-	auto agi_name(path const& p) -> decltype(bfs::bfs_name(p)) { \
-		boost::system::error_code ec; \
-		return bfs::bfs_name(p, ec); \
+#define WRAP_SFS_IGNORE_ERROR(sfs_name, agi_name) \
+	auto agi_name(path const& p) -> decltype(sfs::sfs_name(p)) { \
+		std::error_code ec; \
+		return sfs::sfs_name(p, ec); \
 	}
 
 // sasuga windows.h
 #undef CreateDirectory
 
-namespace agi { namespace fs {
-namespace {
-	WRAP_BFS(file_size, SizeImpl)
-	WRAP_BFS(space, Space)
-}
+	WRAP_SFS(file_size, SizeImpl)
+	WRAP_SFS(space, Space)
+} // anonymous namespace
 
-	WRAP_BFS_IGNORE_ERROR(exists, Exists)
-	WRAP_BFS_IGNORE_ERROR(is_regular_file, FileExists)
-	WRAP_BFS_IGNORE_ERROR(is_directory, DirectoryExists)
-	WRAP_BFS(last_write_time, ModifiedTime)
-	WRAP_BFS(create_directories, CreateDirectory)
-	WRAP_BFS(remove, Remove)
-	WRAP_BFS(canonical, Canonicalize)
+	WRAP_SFS_IGNORE_ERROR(exists, Exists)
+	WRAP_SFS_IGNORE_ERROR(is_regular_file, FileExists)
+	WRAP_SFS_IGNORE_ERROR(is_directory, DirectoryExists)
+	WRAP_SFS(last_write_time, ModifiedTime)
+	WRAP_SFS(create_directories, CreateDirectory)
+	WRAP_SFS(remove, Remove)
+	WRAP_SFS(canonical, Canonicalize)
 
 	uintmax_t Size(path const& p) {
 		if (DirectoryExists(p))
@@ -93,7 +95,7 @@ namespace {
 	}
 
 	void Rename(const path& from, const path& to) {
-		CHECKED_CALL(bfs::rename(from, to, ec), from, to);
+		CHECKED_CALL(sfs::rename(from, to, ec), from, to);
 	}
 
 	bool HasExtension(path const& p, std::string const& ext) {
@@ -102,4 +104,4 @@ namespace {
 		if (filename[filename.size() - ext.size() - 1] != '.') return false;
 		return boost::iends_with(filename, ext);
 	}
-} }
+}

@@ -22,24 +22,23 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/string.h>
 
-#include <boost/range/iterator_range.hpp>
-
-std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
-std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
-std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
-std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
+std::unique_ptr<VideoProvider> CreateDummyVideoProvider(std::filesystem::path const&, std::string_view, agi::BackgroundRunner *);
+std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(std::filesystem::path const&, std::string_view, agi::BackgroundRunner *);
+std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(std::filesystem::path const&, std::string_view, agi::BackgroundRunner *);
+std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(std::filesystem::path const&, std::string_view, agi::BackgroundRunner *);
 
 std::unique_ptr<VideoProvider> CreateCacheVideoProvider(std::unique_ptr<VideoProvider>);
 
 namespace {
 	struct factory {
 		const char *name;
-		std::unique_ptr<VideoProvider> (*create)(agi::fs::path const&, std::string const&, agi::BackgroundRunner *);
+		std::unique_ptr<VideoProvider> (*create)(std::filesystem::path const&, std::string_view, agi::BackgroundRunner *);
 		bool hidden;
 	};
 
-	const factory providers[] = {
+	const std::initializer_list<factory> providers = {
 		{"Dummy", CreateDummyVideoProvider, true},
 		{"YUV4MPEG", CreateYUV4MPEGVideoProvider, true},
 #ifdef WITH_FFMS2
@@ -52,12 +51,12 @@ namespace {
 }
 
 std::vector<std::string> VideoProviderFactory::GetClasses() {
-	return ::GetClasses(boost::make_iterator_range(std::begin(providers), std::end(providers)));
+	return ::GetClasses(providers);
 }
 
-std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path const& filename, std::string const& colormatrix, agi::BackgroundRunner *br) {
+std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(std::filesystem::path const& filename, std::string_view colormatrix, agi::BackgroundRunner *br) {
 	auto preferred = OPT_GET("Video/Provider")->GetString();
-	auto sorted = GetSorted(boost::make_iterator_range(std::begin(providers), std::end(providers)), preferred);
+	auto sorted = GetSorted(providers, preferred);
 
 	bool found = false;
 	bool supported = false;
@@ -90,7 +89,7 @@ std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path c
 			err = ex.GetMessage();
 		}
 
-		errors += std::string(factory->name) + ": " + err + "\n";
+		agi::AppendStr(errors, factory->name, ": ", err, "\n");
 		LOG_D("manager/video/provider") << factory->name << ": " << err;
 	}
 

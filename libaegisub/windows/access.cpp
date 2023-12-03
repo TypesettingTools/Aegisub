@@ -24,8 +24,6 @@
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
-#include <boost/filesystem.hpp>
-
 #include <windows.h>
 
 namespace {

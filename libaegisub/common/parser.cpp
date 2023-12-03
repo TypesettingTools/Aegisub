@@ -16,23 +16,18 @@
 
 #include "parser.h"
 
-#include "libaegisub/color.h"
-#include "libaegisub/ass/dialogue_parser.h"
+#include <boost/phoenix/core.hpp>
+#include <boost/phoenix/operator.hpp>
+#include <boost/phoenix/fusion.hpp>
+#include <boost/phoenix/statement.hpp>
 
 #include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_fusion.hpp>
 #include <boost/fusion/include/adapt_struct.hpp>
 #include <boost/spirit/include/lex_lexertl.hpp>
 
-// We have to use the copy of pheonix within spirit if it exists, as the
-// standalone copy has different header guards
-#ifdef HAVE_BOOST_SPIRIT_HOME_PHOENIX_VERSION_HPP
-#include <boost/spirit/home/phoenix/statement.hpp>
-#else
-#include <boost/phoenix/statement.hpp>
-#endif
+// dialogue_parser.h needs to be included last because of windows.h memes
+#include "libaegisub/color.h"
+#include "libaegisub/ass/dialogue_parser.h"
 
 BOOST_FUSION_ADAPT_STRUCT(
 	agi::Color,
@@ -47,7 +42,7 @@ using namespace boost::spirit;
 
 /// Convert a abgr value in an int or unsigned int to an agi::Color
 struct unpack_colors : public boost::static_visitor<agi::Color> {
-	template<typename T> struct result { typedef agi::Color type; };
+	template<typename T> struct result { using type = agi::Color; };
 
 	template<class T> agi::Color operator()(T arg) const {
 		return boost::apply_visitor(*this, arg);
@@ -108,7 +103,7 @@ struct color_grammar : qi::grammar<Iterator, agi::Color()> {
 
 template <typename Lexer>
 struct dialogue_tokens final : lex::lexer<Lexer> {
-	int paren_depth;
+	int paren_depth = 0;
 
 	template<typename KT>
 	void init(KT &&kara_templater) {
@@ -120,7 +115,7 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 
 		this->self
 			= string("\\\\[nNh]", LINE_BREAK)
-			| char_('{', OVR_BEGIN)[ref(paren_depth) = 0, _state = "OVR"]
+			| char_('{', OVR_BEGIN)[(ref(paren_depth) = 0, _state = "OVR")]
 			| kara_templater
 			| string(".", TEXT)
 			;
@@ -138,7 +133,7 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 			= char_('{', ERROR)
 			| char_('}', OVR_END)[_state = "INITIAL"]
 			| char_('(', OPEN_PAREN)[++ref(paren_depth)]
-			| char_(')', CLOSE_PAREN)[--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"]]
+			| char_(')', CLOSE_PAREN)[(--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"])]
 			| char_('\\', TAG_START)[_state = "TAGSTART"]
 			| char_(',', ARG_SEP)
 			| string("\\s+", WHITESPACE)
@@ -158,8 +153,8 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 
 		this->self("TAGNAME")
 			= string("[a-z]+", TAG_NAME)[_state = "ARG"]
-			| char_('(', OPEN_PAREN)[++ref(paren_depth), _state = "ARG"]
-			| char_(')', CLOSE_PAREN)[--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"]]
+			| char_('(', OPEN_PAREN)[(++ref(paren_depth), _state = "ARG")]
+			| char_(')', CLOSE_PAREN)[(--ref(paren_depth), if_(ref(paren_depth) == 0)[_state = "OVR"])]
 			| char_('}', OVR_END)[_state = "INITIAL"]
 			| char_('\\', TAG_START)[_state = "TAGSTART"]
 			| string(".", ARG)[_state = "ARG"]
@@ -167,7 +162,7 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 			;
 	}
 
-	dialogue_tokens(bool karaoke_templater) : paren_depth(0) {
+	dialogue_tokens(bool karaoke_templater)  {
 		using lex::string;
 		using namespace agi::ass::DialogueTokenType;
 
@@ -179,13 +174,13 @@ struct dialogue_tokens final : lex::lexer<Lexer> {
 };
 
 template<typename Parser, typename T>
-bool do_try_parse(std::string const& str, Parser parser, T *out) {
+bool do_try_parse(std::string_view str, Parser parser, T *out) {
 	using namespace boost::spirit::qi;
 	T res;
-	char const* cstr = str.c_str();
+	auto cstr = str.data(), end = str.data() + str.size();
 
-	bool parsed = parse(cstr, cstr + str.size(), parser, res);
-	if (parsed && cstr == &str[str.size()]) {
+	bool parsed = parse(cstr, end, parser, res);
+	if (parsed && cstr == end) {
 		*out = res;
 		return true;
 	}
@@ -197,20 +192,21 @@ bool do_try_parse(std::string const& str, Parser parser, T *out) {
 
 namespace agi {
 namespace parser {
-	bool parse(Color &dst, std::string const& str) {
-		std::string::const_iterator begin = str.begin();
-		bool parsed = parse(begin, str.end(), color_grammar<std::string::const_iterator>(), dst);
-		return parsed && begin == str.end();
+	bool parse(Color &dst, std::string_view str) {
+		if (str.empty()) return false;
+		auto begin = str.data(), end = str.data() + str.size();
+		bool parsed = parse(begin, end, color_grammar<const char *>(), dst);
+		return parsed && begin == end;
 	}
 }
 
 namespace ass {
-	std::vector<DialogueToken> TokenizeDialogueBody(std::string const& str, bool karaoke_templater) {
+	std::vector<DialogueToken> TokenizeDialogueBody(std::string_view str, bool karaoke_templater) {
 		static const dialogue_tokens<lex::lexertl::actor_lexer<>> kt(true);
 		static const dialogue_tokens<lex::lexertl::actor_lexer<>> not_kt(false);
 		auto const& tokenizer = karaoke_templater ? kt : not_kt;
 
-		char const *first = str.c_str();
+		char const *first = str.data();
 		char const *last = first + str.size();
 		std::vector<DialogueToken> data;
 		auto it = tokenizer.begin(first, last), end = tokenizer.end();
@@ -231,11 +227,11 @@ namespace ass {
 
 namespace util {
 	// from util.h
-	bool try_parse(std::string const& str, double *out) {
+	bool try_parse(std::string_view str, double *out) {
 		return do_try_parse(str, boost::spirit::qi::double_, out);
 	}
 
-	bool try_parse(std::string const& str, int *out) {
+	bool try_parse(std::string_view str, int *out) {
 		return do_try_parse(str, boost::spirit::qi::int_, out);
 	}
 }

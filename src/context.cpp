@@ -29,23 +29,22 @@
 #include "text_selection_controller.h"
 #include "video_controller.h"
 
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
 
 namespace agi {
 Context::Context()
-: ass(make_unique<AssFile>())
-, textSelectionController(make_unique<TextSelectionController>())
-, subsController(make_unique<SubsController>(this))
-, project(make_unique<Project>(this))
-, local_scripts(make_unique<Automation4::LocalScriptManager>(this))
-, selectionController(make_unique<SelectionController>(this))
-, videoController(make_unique<VideoController>(this))
-, audioController(make_unique<AudioController>(this))
-, initialLineState(make_unique<InitialLineState>(this))
-, search(make_unique<SearchReplaceEngine>(this))
-, path(make_unique<Path>(*config::path))
-, dialog(make_unique<DialogManager>())
+: ass(std::make_unique<AssFile>())
+, textSelectionController(std::make_unique<TextSelectionController>())
+, subsController(std::make_unique<SubsController>(this))
+, project(std::make_unique<Project>(this))
+, local_scripts(std::make_unique<Automation4::LocalScriptManager>(this))
+, selectionController(std::make_unique<SelectionController>(this))
+, videoController(std::make_unique<VideoController>(this))
+, audioController(std::make_unique<AudioController>(this))
+, initialLineState(std::make_unique<InitialLineState>(this))
+, search(std::make_unique<SearchReplaceEngine>(this))
+, path(std::make_unique<Path>(*config::path))
+, dialog(std::make_unique<DialogManager>())
 {
 	subsController->SetSelectionController(selectionController.get());
 }

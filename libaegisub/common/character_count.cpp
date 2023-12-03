@@ -18,74 +18,52 @@
 
 #include "libaegisub/ass/dialogue_parser.h"
 #include "libaegisub/exception.h"
+#include "libaegisub/unicode.h"
 
 #include <unicode/uchar.h>
 #include <unicode/utf8.h>
 
 #include <mutex>
-#include <unicode/brkiter.h>
 
 namespace {
-struct utext_deleter {
-	void operator()(UText *ut) { if (ut) utext_close(ut); }
-};
-using utext_ptr = std::unique_ptr<UText, utext_deleter>;
+const std::basic_string_view<char32_t> ass_special_chars = U"nNh";
 
-UChar32 ass_special_chars[] = {'n', 'N', 'h'};
+size_t count_in_range(std::string_view str, int mask) {
+	if (str.empty()) return 0;
 
-icu::BreakIterator& get_break_iterator(const char *ptr, size_t len) {
-	static std::unique_ptr<icu::BreakIterator> bi;
-	static std::once_flag token;
-	std::call_once(token, [&] {
-		UErrorCode status = U_ZERO_ERROR;
-		bi.reset(icu::BreakIterator::createCharacterInstance(icu::Locale::getDefault(), status));
-		if (U_FAILURE(status)) throw agi::InternalError("Failed to create character iterator");
-	});
-
-	UErrorCode err = U_ZERO_ERROR;
-	utext_ptr ut(utext_openUTF8(nullptr, ptr, len, &err));
-	if (U_FAILURE(err)) throw agi::InternalError("Failed to open utext");
-
-	bi->setText(ut.get(), err);
-	if (U_FAILURE(err)) throw agi::InternalError("Failed to set break iterator text");
-
-	return *bi;
-}
-
-template <typename Iterator>
-size_t count_in_range(Iterator begin, Iterator end, int mask) {
-	if (begin == end) return 0;
-
-	auto& character_bi = get_break_iterator(&*begin, end - begin);
+	thread_local agi::BreakIterator bi;
+	bi.set_text(str);
 
 	size_t count = 0;
-	auto pos = character_bi.first();
-	for (auto end = character_bi.next(); end != icu::BreakIterator::DONE; pos = end, end = character_bi.next()) {
-		if (!mask)
+	if (!mask) {
+		for (; !bi.done(); bi.next())
 			++count;
-		else {
-			UChar32 c;
-			int i = 0;
-			U8_NEXT_UNSAFE(begin + pos, i, c);
-			if ((U_GET_GC_MASK(c) & mask) == 0) {
-				if (mask & U_GC_Z_MASK && pos != 0) {
-					UChar32 *result = std::find(std::begin(ass_special_chars), std::end(ass_special_chars), c);
-					if (result != std::end(ass_special_chars)) {
-						UChar32 c2;
-						i = 0;
-						U8_PREV_UNSAFE(begin + pos, i, c2);
-						if (c2 != (UChar32) '\\')
-							++count;
-						else if (!(mask & U_GC_P_MASK))
-							--count;
-					}
-					else
-						++count;
-				}
-				else
-					++count;
-			}
+		return count;
+	}
+
+	UChar32 prev = 0;
+	for (; !bi.done(); bi.next()) {
+		// Getting the character category only requires the first codepoint of a character
+		UChar32 c;
+		int i = 0;
+		U8_NEXT(bi.current().data(), i, bi.current().size(), c);
+		UChar32 p = prev;
+		prev = c;
+
+		if ((U_GET_GC_MASK(c) & mask) != 0) // if character is an ignored category
+			continue;
+
+		// If previous character was a backslash and we're ignoring whitespace,
+		// check if this is an ass whitespace character (e.g. \h)
+		if (mask & U_GC_Z_MASK && p == '\\' && ass_special_chars.find(c) != ass_special_chars.npos) {
+			// If we're ignoring punctuation we didn't count the slash, but
+			// otherwise we need to uncount it
+			if (!(mask & U_GC_P_MASK))
+				--count;
+			continue;
 		}
+
+		++count;
 	}
 	return count;
 }
@@ -101,33 +79,33 @@ int ignore_mask_to_icu_mask(int mask) {
 }
 
 namespace agi {
-size_t CharacterCount(std::string::const_iterator begin, std::string::const_iterator end, int ignore) {
+size_t CharacterCount(std::string_view str, int ignore) {
 	int mask = ignore_mask_to_icu_mask(ignore);
 	if ((ignore & agi::IGNORE_BLOCKS) == 0)
-		return count_in_range(begin, end, mask);
+		return count_in_range(str, mask);
 
 	size_t characters = 0;
-	auto pos = begin;
-	do {
-		auto it = std::find(pos, end, '{');
-		characters += count_in_range(pos, it, mask);
-		if (it == end) break;
+	while (!str.empty()) {
+		auto pos = str.find('{');
+		if (pos == str.npos) break;
 
-		pos = std::find(pos, end, '}');
-		if (pos == end) {
-			characters += count_in_range(it, pos, mask);
-			break;
-		}
-	} while (++pos != end);
+		// if there's no trailing }, the rest of the string counts as characters,
+		// including the leading {
+		auto end = str.find('}');
+		if (end == str.npos) break;
+
+		if (pos > 0)
+			characters += count_in_range(str.substr(0, pos), mask);
+		str.remove_prefix(end + 1);
+	}
+
+	if (!str.empty())
+		characters += count_in_range(str, mask);
 
 	return characters;
 }
 
-size_t CharacterCount(std::string const& str, int mask) {
-	return CharacterCount(begin(str), end(str), mask);
-}
-
-size_t MaxLineLength(std::string const& text, int mask) {
+size_t MaxLineLength(std::string_view text, int mask) {
 	mask = ignore_mask_to_icu_mask(mask);
 	auto tokens = agi::ass::TokenizeDialogueBody(text);
 	agi::ass::MarkDrawings(text, tokens);
@@ -147,7 +125,7 @@ size_t MaxLineLength(std::string const& text, int mask) {
 			}
 		}
 		else if (token.type == agi::ass::DialogueTokenType::TEXT)
-			current_line_length += count_in_range(begin(text) + pos, begin(text) + pos + token.length, mask);
+			current_line_length += count_in_range(text.substr(pos, token.length), mask);
 
 		pos += token.length;
 	}
@@ -155,15 +133,15 @@ size_t MaxLineLength(std::string const& text, int mask) {
 	return std::max(max_line_length, current_line_length);
 }
 
-size_t IndexOfCharacter(std::string const& str, size_t n) {
+size_t IndexOfCharacter(std::string_view str, size_t n) {
 	if (str.empty() || n == 0) return 0;
-	auto& bi = get_break_iterator(&str[0], str.size());
+	thread_local BreakIterator bi;
+	bi.set_text(str);
 
-	for (auto pos = bi.first(), end = bi.next(); ; --n, pos = end, end = bi.next()) {
-		if (end == icu::BreakIterator::DONE)
-			return str.size();
-		if (n == 0)
-			return pos;
-	}
+	for (; n > 0 && !bi.done(); --n)
+		bi.next();
+	if (bi.done())
+		return str.size();
+	return bi.current().data() - str.data();
 }
 }

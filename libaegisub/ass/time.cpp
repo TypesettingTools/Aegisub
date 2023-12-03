@@ -26,7 +26,7 @@
 namespace agi {
 Time::Time(int time) : time(util::mid(0, time, 10 * 60 * 60 * 1000 - 6)) { }
 
-Time::Time(std::string const& text) {
+Time::Time(std::string_view text) {
 	int after_decimal = -1;
 	int current = 0;
 	for (char c : text) {

@@ -41,8 +41,8 @@
 
 #include <libaegisub/log.h>
 #include <libaegisub/lua/utils.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/split.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptor/map.hpp>
@@ -172,7 +172,7 @@ namespace Automation4 {
 
 			bool CanSerialiseValue() const override { return true; }
 			std::string SerialiseValue() const override { return inline_string_encode(text); }
-			void UnserialiseValue(const std::string &serialised) override { text = inline_string_decode(serialised); }
+			void UnserialiseValue(std::string_view serialised) override { text = inline_string_decode(serialised); }
 
 			wxControl *Create(wxWindow *parent) override {
 				cw = new wxTextCtrl(parent, -1, to_wx(text));
@@ -202,7 +202,9 @@ namespace Automation4 {
 
 			bool CanSerialiseValue() const override { return true; }
 			std::string SerialiseValue() const override { return inline_string_encode(color.GetHexFormatted(alpha)); }
-			void UnserialiseValue(const std::string &serialised) override { color = inline_string_decode(serialised); }
+			void UnserialiseValue(std::string_view serialised) override {
+				color = std::string_view(inline_string_decode(serialised));
+			}
 
 			wxControl *Create(wxWindow *parent) override {
 				wxControl *cw = new ColourButton(parent, wxSize(50*width,10*height), alpha, color, ColorValidator(&color));
@@ -250,7 +252,7 @@ namespace Automation4 {
 
 			bool CanSerialiseValue() const override  { return true; }
 			std::string SerialiseValue() const override { return std::to_string(value); }
-			void UnserialiseValue(const std::string &serialised) override { value = atoi(serialised.c_str()); }
+			void UnserialiseValue(std::string_view serialised) override { value = atoi(std::string(serialised).c_str()); }
 
 			wxControl *Create(wxWindow *parent) override {
 				cw = new wxSpinCtrl(parent, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, value);
@@ -288,7 +290,7 @@ namespace Automation4 {
 
 			bool CanSerialiseValue() const override { return true; }
 			std::string SerialiseValue() const override { return std::to_string(value); }
-			void UnserialiseValue(const std::string &serialised) override { value = atof(serialised.c_str()); }
+			void UnserialiseValue(std::string_view serialised) override { value = atof(std::string(serialised).c_str()); }
 
 			wxControl *Create(wxWindow *parent) override {
 				if (step > 0) {
@@ -326,7 +328,7 @@ namespace Automation4 {
 
 			bool CanSerialiseValue() const override { return true; }
 			std::string SerialiseValue() const override { return inline_string_encode(value); }
-			void UnserialiseValue(const std::string &serialised) override { value = inline_string_decode(serialised); }
+			void UnserialiseValue(std::string_view serialised) override { value = inline_string_decode(serialised); }
 
 			wxControl *Create(wxWindow *parent) override {
 				cw = new wxComboBox(parent, -1, to_wx(value), wxDefaultPosition, wxDefaultSize, to_wx(items), wxCB_READONLY, StringBinder(&value));
@@ -354,7 +356,7 @@ namespace Automation4 {
 
 			bool CanSerialiseValue() const override { return true; }
 			std::string SerialiseValue() const override { return value ? "1" : "0"; }
-			void UnserialiseValue(const std::string &serialised) override { value = serialised != "0"; }
+			void UnserialiseValue(std::string_view serialised) override { value = serialised != "0"; }
 
 			wxControl *Create(wxWindow *parent) override {
 				cw = new wxCheckBox(parent, -1, to_wx(label));
@@ -393,26 +395,26 @@ namespace Automation4 {
 
 			// Check control class and create relevant control
 			if (controlclass == "label")
-				ctl = agi::make_unique<LuaControl::Label>(L);
+				ctl = std::make_unique<LuaControl::Label>(L);
 			else if (controlclass == "edit")
-				ctl = agi::make_unique<LuaControl::Edit>(L);
+				ctl = std::make_unique<LuaControl::Edit>(L);
 			else if (controlclass == "intedit")
-				ctl = agi::make_unique<LuaControl::IntEdit>(L);
+				ctl = std::make_unique<LuaControl::IntEdit>(L);
 			else if (controlclass == "floatedit")
-				ctl = agi::make_unique<LuaControl::FloatEdit>(L);
+				ctl = std::make_unique<LuaControl::FloatEdit>(L);
 			else if (controlclass == "textbox")
-				ctl = agi::make_unique<LuaControl::Textbox>(L);
+				ctl = std::make_unique<LuaControl::Textbox>(L);
 			else if (controlclass == "dropdown")
-				ctl = agi::make_unique<LuaControl::Dropdown>(L);
+				ctl = std::make_unique<LuaControl::Dropdown>(L);
 			else if (controlclass == "checkbox")
-				ctl = agi::make_unique<LuaControl::Checkbox>(L);
+				ctl = std::make_unique<LuaControl::Checkbox>(L);
 			else if (controlclass == "color")
-				ctl = agi::make_unique<LuaControl::Color>(L, false);
+				ctl = std::make_unique<LuaControl::Color>(L, false);
 			else if (controlclass == "coloralpha")
-				ctl = agi::make_unique<LuaControl::Color>(L, true);
+				ctl = std::make_unique<LuaControl::Color>(L, true);
 			else if (controlclass == "alpha")
 				// FIXME
-				ctl = agi::make_unique<LuaControl::Edit>(L);
+				ctl = std::make_unique<LuaControl::Edit>(L);
 			else
 				error(L, "bad control table entry");
 
@@ -463,7 +465,7 @@ namespace Automation4 {
 
 		auto make_button = [&](wxWindowID id, int button_pushed, std::string const& text) -> wxButton *{
 			auto button = new wxButton(window, id, to_wx(text));
-			button->Bind(wxEVT_BUTTON, [=](wxCommandEvent &evt) {
+			button->Bind(wxEVT_BUTTON, [=, this](wxCommandEvent &evt) {
 				this->button_pushed = button_pushed;
 				dialog->TransferDataFromWindow();
 				dialog->EndModal(0);
@@ -525,7 +527,7 @@ namespace Automation4 {
 			if (control->CanSerialiseValue()) {
 				if (!res.empty())
 					res += "|";
-				res += inline_string_encode(control->name) + ":" + control->SerialiseValue();
+				agi::AppendStr(res, inline_string_encode(control->name), ":", control->SerialiseValue());
 			}
 		}
 
@@ -534,16 +536,15 @@ namespace Automation4 {
 
 	void LuaDialog::Unserialise(const std::string &serialised) {
 		for (auto tok : agi::Split(serialised, '|')) {
-			auto pos = std::find(begin(tok), end(tok), ':');
-			if (pos == end(tok)) continue;
+			auto pos = tok.find(':');
+			if (pos == tok.npos) continue;
 
-			std::string name = inline_string_decode(std::string(begin(tok), pos));
-			std::string value(pos + 1, end(tok));
+			std::string name = inline_string_decode(tok.substr(0, pos));
 
 			// Hand value to all controls matching name
 			for (auto& control : controls) {
 				if (control->name == name && control->CanSerialiseValue())
-					control->UnserialiseValue(value);
+					control->UnserialiseValue(tok.substr(pos + 1));
 			}
 		}
 	}

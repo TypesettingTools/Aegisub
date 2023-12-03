@@ -152,11 +152,9 @@ const extended_range iso6937_extended_codepoints[] = {
 	{ 0x266A, 0xD5 }
 };
 
-#define countof(array) (sizeof(array) / sizeof((array)[0]))
-
 /// Get the ISO-6937-2 value for the given unicode codepoint or 0 if it cannot be mapped
 int get_iso6937(int codepoint) {
-	if (static_cast<size_t>(codepoint) < countof(iso6937_codepoints))
+	if (static_cast<size_t>(codepoint) < std::size(iso6937_codepoints))
 		return iso6937_codepoints[codepoint];
 
 	auto ext = boost::lower_bound(iso6937_extended_codepoints, codepoint);
@@ -167,7 +165,7 @@ int get_iso6937(int codepoint) {
 
 } // namespace {
 
-namespace agi { namespace charset {
+namespace agi::charset {
 
 #ifdef _LIBICONV_VERSION
 #define INTERNAL_CHARSET "UCS-4-INTERNAL"
@@ -176,7 +174,7 @@ namespace agi { namespace charset {
 #endif
 
 Converter6937::Converter6937(bool subst, const char *src)
-: to_ucs4(new IconvWrapper(src, INTERNAL_CHARSET))
+: to_ucs4(Converter::create(true, src, INTERNAL_CHARSET))
 , subst(subst)
 {
 }
@@ -243,4 +241,4 @@ size_t Converter6937::Convert(const char **inbuf, size_t *inbytesleft, char **ou
 	return bytes_written;
 }
 
-} } // namespace agi::charset
+} // namespace agi::charset

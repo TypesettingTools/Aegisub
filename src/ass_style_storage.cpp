@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_style_storage.cpp
-/// @brief Manage stores of styles
-/// @ingroup style_editor
-///
-
 #include "ass_style_storage.h"
 
 #include "ass_file.h"
@@ -41,8 +36,8 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/io.h>
 #include <libaegisub/line_iterator.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/path.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -56,13 +51,13 @@ void AssStyleStorage::Save() const {
 	agi::fs::CreateDirectory(file.parent_path());
 
 	agi::io::Save out(file);
-	out.Get() << "\xEF\xBB\xBF";
+	out.Get() << "\xEF\xBB\xBF"; // UTF-8 BOM
 
 	for (auto const& cur : style)
-		out.Get() << cur->GetEntryData() << std::endl;
+		out.Get() << cur->GetEntryData() << "\n";
 }
 
-void AssStyleStorage::Load(agi::fs::path const& filename) {
+void AssStyleStorage::Load(std::filesystem::path const& filename) {
 	file = filename;
 	clear();
 
@@ -70,7 +65,7 @@ void AssStyleStorage::Load(agi::fs::path const& filename) {
 		auto in = agi::io::Open(file);
 		for (auto const& line : agi::line_iterator<std::string>(*in)) {
 			try {
-				style.emplace_back(agi::make_unique<AssStyle>(line));
+				style.emplace_back(std::make_unique<AssStyle>(line));
 			} catch(...) {
 				/* just ignore invalid lines for now */
 			}
@@ -81,9 +76,8 @@ void AssStyleStorage::Load(agi::fs::path const& filename) {
 	}
 }
 
-void AssStyleStorage::LoadCatalog(std::string const& catalogname) {
-	auto filename = config::path->Decode("?user/catalog/" + catalogname + ".sty");
-	Load(filename);
+void AssStyleStorage::LoadCatalog(std::string_view catalogname) {
+	Load(config::path->Decode(agi::Str("?user/catalog/", catalogname, ".sty")));
 }
 
 void AssStyleStorage::Delete(int idx) {
@@ -97,7 +91,7 @@ std::vector<std::string> AssStyleStorage::GetNames() {
 	return names;
 }
 
-AssStyle *AssStyleStorage::GetStyle(std::string const& name) {
+AssStyle *AssStyleStorage::GetStyle(std::string_view name) {
 	for (auto& cur : style) {
 		if (boost::iequals(cur->name, name))
 			return cur.get();
@@ -108,13 +102,13 @@ AssStyle *AssStyleStorage::GetStyle(std::string const& name) {
 std::vector<std::string> AssStyleStorage::GetCatalogs() {
 	std::vector<std::string> catalogs;
 	for (auto const& file : agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
-		catalogs.push_back(agi::fs::path(file).stem().string());
+		catalogs.push_back(std::filesystem::path(file).stem().string());
 	return catalogs;
 }
 
-bool AssStyleStorage::CatalogExists(std::string const& catalogname) {
+bool AssStyleStorage::CatalogExists(std::string_view catalogname) {
 	if (catalogname.empty()) return false;
-	auto filename = config::path->Decode("?user/catalog/" + catalogname + ".sty");
+	auto filename = config::path->Decode(agi::Str("?user/catalog/", catalogname, ".sty"));
 	return agi::fs::FileExists(filename);
 }
 

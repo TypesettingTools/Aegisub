@@ -16,7 +16,6 @@
 
 #include "libaegisub/audio/provider.h"
 
-#include <libaegisub/make_unique.h>
 
 #include <mutex>
 
@@ -39,6 +38,6 @@ public:
 
 namespace agi {
 std::unique_ptr<AudioProvider> CreateLockAudioProvider(std::unique_ptr<AudioProvider> src) {
-	return agi::make_unique<LockAudioProvider>(std::move(src));
+	return std::make_unique<LockAudioProvider>(std::move(src));
 }
 }

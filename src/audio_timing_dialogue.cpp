@@ -40,7 +40,6 @@
 #include "utils.h"
 
 #include <libaegisub/ass/time.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/range/algorithm.hpp>
 #include <wx/pen.h>
@@ -423,9 +422,9 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , active_line_connection(c->selectionController->AddActiveLineListener(&AudioTimingControllerDialogue::Revert, this))
 , selection_connection(c->selectionController->AddSelectionListener(&AudioTimingControllerDialogue::OnSelectedSetChanged, this))
 {
-	keyframes_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
-	video_position_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
-	seconds_provider.AddMarkerMovedListener([=]{ AnnounceMarkerMoved(); });
+	keyframes_provider.AddMarkerMovedListener([=, this]{ AnnounceMarkerMoved(); });
+	video_position_provider.AddMarkerMovedListener([=, this]{ AnnounceMarkerMoved(); });
+	seconds_provider.AddMarkerMovedListener([=, this]{ AnnounceMarkerMoved(); });
 
 	Revert();
 }
@@ -924,5 +923,5 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 
 std::unique_ptr<AudioTimingController> CreateDialogueTimingController(agi::Context *c)
 {
-	return agi::make_unique<AudioTimingControllerDialogue>(c);
+	return std::make_unique<AudioTimingControllerDialogue>(c);
 }

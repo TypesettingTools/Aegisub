@@ -1,23 +1,13 @@
-all_test_deps = []
-all_test_dep_libs = []
-all_test_sources = []
-
-
 gtest_proj = subproject('gtest')
 gtest_dep = gtest_proj.get_variable('gtest_dep')
 gmock_dep = gtest_proj.get_variable('gmock_dep')
 
-
-all_test_deps += [
-    gtest_dep, 
+tests_deps = [
+    gtest_dep,
     gmock_dep,
-    iconv_dep,
-    boost_dep
 ]
-all_test_dep_libs += [
-    libaegisub
-]
-all_test_sources += [
+
+tests_src = [
     'support/main.cpp',
     'support/util.cpp',
 
@@ -49,28 +39,30 @@ all_test_sources += [
     'tests/util.cpp',
     'tests/uuencode.cpp',
     'tests/vfr.cpp',
-    'tests/word_split.cpp'
+    'tests/word_split.cpp',
 ]
 
-test_inc = include_directories('support')
+tests_inc = include_directories('support')
+
+tests_args = []
 
 # force UTF8 for MSVC
 if host_machine.system() == 'windows'
-    extra_args = ['/utf-8']
-else
-    extra_args = []
+    tests_args += ['/utf-8']
+elif host_machine.system() == 'darwin'
+    tests_args += ['-DGTEST_HAS_POSIX_RE=0']
 endif
 
 runner = executable(
     'gtest-main',
-    all_test_sources,
-    include_directories : [test_inc, libaegisub_inc, deps_inc],
-    dependencies : all_test_deps,
-    cpp_args : extra_args,
-    link_with : all_test_dep_libs,
-)    
-test('gtest main', runner)
+    tests_src,
+    include_directories: [tests_inc, libaegisub_inc, deps_inc],
+    dependencies: [tests_deps, deps],
+    cpp_args: tests_args,
+    link_with: libaegisub,
+)
 
+test('gtest main', runner)
 
 # setup test env
 if host_machine.system() == 'windows'
@@ -79,10 +71,10 @@ else
     setup_sh = find_program('setup.sh')
 endif
 
-test_data_des = meson.project_build_root()
+tests_data_des = meson.project_build_root()
 custom_target('setup-test-data',
     input: runner,
     output: 'applied_test_setup',
-    command: [setup_sh, test_data_des],
+    command: [setup_sh, tests_data_des],
     build_by_default: true
 )

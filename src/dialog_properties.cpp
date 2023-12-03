@@ -70,13 +70,13 @@ class DialogProperties {
 	/// @param key Name of field
 	/// @param value New value
 	/// @return Did the value actually need to be changed?
-	int SetInfoIfDifferent(std::string const& key, std::string const& value);
+	int SetInfoIfDifferent(std::string_view key, std::string_view value);
 
 	/// Add a property with label and text box for updating the property
 	/// @param sizer Sizer to add the label and control to
 	/// @param label Label text to use
 	/// @param property Script info property name
-	void AddProperty(wxSizer *sizer, wxString const& label, std::string const& property);
+	void AddProperty(wxSizer *sizer, wxString const& label, std::string_view property);
 
 public:
 	/// Constructor
@@ -175,11 +175,11 @@ DialogProperties::DialogProperties(agi::Context *c)
 	d.CenterOnParent();
 }
 
-void DialogProperties::AddProperty(wxSizer *sizer, wxString const& label, std::string const& property) {
+void DialogProperties::AddProperty(wxSizer *sizer, wxString const& label, std::string_view property) {
 	wxTextCtrl *ctrl = new wxTextCtrl(&d, -1, to_wx(c->ass->GetScriptInfo(property)), wxDefaultPosition, wxSize(200, -1));
 	sizer->Add(new wxStaticText(&d, -1, label), wxSizerFlags().Center().Left());
 	sizer->Add(ctrl, wxSizerFlags(1).Expand());
-	properties.push_back({property, ctrl});
+	properties.emplace_back(property, ctrl);
 }
 
 void DialogProperties::OnOK(wxCommandEvent &) {
@@ -198,7 +198,7 @@ void DialogProperties::OnOK(wxCommandEvent &) {
 	d.EndModal(!!count);
 }
 
-int DialogProperties::SetInfoIfDifferent(std::string const& key, std::string const&value) {
+int DialogProperties::SetInfoIfDifferent(std::string_view key, std::string_view value) {
 	if (c->ass->GetScriptInfo(key) != value) {
 		c->ass->SetScriptInfo(key, value);
 		return 1;

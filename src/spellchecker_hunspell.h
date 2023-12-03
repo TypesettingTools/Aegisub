@@ -22,10 +22,9 @@
 #ifdef WITH_HUNSPELL
 #include <libaegisub/spellchecker.h>
 
-#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <memory>
 #include <set>
 
@@ -45,10 +44,10 @@ class HunspellSpellChecker final : public agi::SpellChecker {
 	std::vector<std::string> languages;
 
 	/// Path to user-local dictionary.
-	agi::fs::path userDicPath;
+	std::filesystem::path userDicPath;
 
 	/// Words in the custom user dictionary
-	std::set<std::string> customWords;
+	std::set<std::string, std::less<>> customWords;
 
 	/// Dictionary language change connection
 	agi::signal::Connection lang_listener;
@@ -69,12 +68,12 @@ public:
 	HunspellSpellChecker();
 	~HunspellSpellChecker();
 
-	void AddWord(std::string const& word) override;
-	void RemoveWord(std::string const& word) override;
-	bool CanAddWord(std::string const& word) override;
-	bool CanRemoveWord(std::string const& word) override;
-	bool CheckWord(std::string const& word) override;
-	std::vector<std::string> GetSuggestions(std::string const& word) override;
+	void AddWord(std::string_view word) override;
+	void RemoveWord(std::string_view word) override;
+	bool CanAddWord(std::string_view word) override;
+	bool CanRemoveWord(std::string_view word) override;
+	bool CheckWord(std::string_view word) override;
+	std::vector<std::string> GetSuggestions(std::string_view word) override;
 	std::vector<std::string> GetLanguageList() override;
 };
 

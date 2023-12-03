@@ -198,7 +198,7 @@ void FontCollector::PrintUsage(UsageData const& data) {
 	status_callback("\n", 2);
 }
 
-std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
+std::vector<std::filesystem::path> FontCollector::GetFontPaths(const AssFile *file) {
 	missing = 0;
 	missing_glyphs = 0;
 
@@ -220,7 +220,7 @@ std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
 	for (auto const& style : used_styles) ProcessChunk(style);
 	status_callback(_("Done\n\n"), 0);
 
-	std::vector<agi::fs::path> paths;
+	std::vector<std::filesystem::path> paths;
 	paths.reserve(results.size());
 	paths.insert(paths.end(), results.begin(), results.end());
 

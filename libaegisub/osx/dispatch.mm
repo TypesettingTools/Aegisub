@@ -24,20 +24,20 @@ using namespace agi::dispatch;
 std::function<void (Thunk)> invoke_main;
 
 struct OSXQueue : Queue {
-    virtual void DoSync(Thunk thunk)=0;
+    virtual void DoSync(Thunk&& thunk)=0;
 };
 
 struct MainQueue final : OSXQueue {
-    void DoInvoke(Thunk thunk) override { invoke_main(thunk); }
+    void DoInvoke(Thunk&& thunk) override { invoke_main(std::move(thunk)); }
 
-    void DoSync(Thunk thunk) override {
+    void DoSync(Thunk&& thunk) override {
         std::mutex m;
         std::condition_variable cv;
-        std::unique_lock<std::mutex> l(m);
+        std::unique_lock l(m);
         std::exception_ptr e;
         bool done = false;
         invoke_main([&]{
-            std::unique_lock<std::mutex> l(m);
+            std::unique_lock l(m);
             try {
                 thunk();
             }
@@ -57,8 +57,8 @@ struct GCDQueue final : OSXQueue {
     GCDQueue(dispatch_queue_t queue) : queue(queue) { }
     ~GCDQueue() { dispatch_release(queue); }
 
-    void DoInvoke(Thunk thunk) override {
-        dispatch_async(queue, ^{
+    void DoInvoke(Thunk&& thunk) override {
+        dispatch_async(queue, [thunk] {
             try {
                 thunk();
             }
@@ -69,7 +69,7 @@ struct GCDQueue final : OSXQueue {
         });
     }
 
-    void DoSync(Thunk thunk) override {
+    void DoSync(Thunk&& thunk) override {
         std::exception_ptr e;
         std::exception_ptr *e_ptr = &e;
         dispatch_sync(queue, ^{
@@ -85,13 +85,13 @@ struct GCDQueue final : OSXQueue {
 };
 }
 
-namespace agi { namespace dispatch {
-void Init(std::function<void (Thunk)> invoke_main) {
+namespace agi::dispatch {
+void Init(std::function<void (Thunk)>&& invoke_main) {
     ::invoke_main = std::move(invoke_main);
 }
 
-void Queue::Async(Thunk thunk) { DoInvoke(std::move(thunk)); }
-void Queue::Sync(Thunk thunk) { static_cast<OSXQueue *>(this)->DoSync(std::move(thunk)); }
+void Queue::Async(Thunk&& thunk) { DoInvoke(std::move(thunk)); }
+void Queue::Sync(Thunk&& thunk) { static_cast<OSXQueue *>(this)->DoSync(std::move(thunk)); }
 
 Queue& Main() {
     static MainQueue q;
@@ -104,7 +104,6 @@ Queue& Background() {
 }
 
 std::unique_ptr<Queue> Create() {
-    return std::unique_ptr<Queue>(new GCDQueue(dispatch_queue_create("Aegisub worker queue",
-                                                                     DISPATCH_QUEUE_SERIAL)));
+    return std::make_unique<GCDQueue>(dispatch_queue_create("Aegisub worker queue", DISPATCH_QUEUE_SERIAL));
 }
-} }
+} // agi::dispatch

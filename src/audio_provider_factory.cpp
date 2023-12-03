@@ -24,8 +24,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
-
-#include <boost/range/iterator_range.hpp>
+#include <libaegisub/string.h>
 
 using namespace agi;
 
@@ -39,7 +38,7 @@ struct factory {
 	bool hidden;
 };
 
-const factory providers[] = {
+const std::initializer_list<factory> providers = {
 	{"Dummy", CreateDummyAudioProvider, true},
 	{"PCM", CreatePCMAudioProvider, true},
 #ifdef WITH_FFMS2
@@ -52,14 +51,14 @@ const factory providers[] = {
 }
 
 std::vector<std::string> GetAudioProviderNames() {
-	return ::GetClasses(boost::make_iterator_range(std::begin(providers), std::end(providers)));
+	return ::GetClasses(providers);
 }
 
 std::unique_ptr<agi::AudioProvider> GetAudioProvider(fs::path const& filename,
                                                      Path const& path_helper,
                                                      BackgroundRunner *br) {
 	auto preferred = OPT_GET("Audio/Provider")->GetString();
-	auto sorted = GetSorted(boost::make_iterator_range(std::begin(providers), std::end(providers)), preferred);
+	auto sorted = GetSorted(providers, preferred);
 
 	std::unique_ptr<AudioProvider> provider;
 	bool found_file = false;
@@ -76,18 +75,18 @@ std::unique_ptr<agi::AudioProvider> GetAudioProvider(fs::path const& filename,
 		}
 		catch (fs::FileNotFound const& err) {
 			LOG_D("audio_provider") << err.GetMessage();
-			msg_all += std::string(factory->name) + ": " + err.GetMessage() + " not found.\n";
+			agi::AppendStr(msg_all, factory->name, ": ", err.GetMessage(), " not found.\n");
 		}
 		catch (AudioDataNotFound const& err) {
 			LOG_D("audio_provider") << err.GetMessage();
 			found_file = true;
-			msg_all += std::string(factory->name) + ": " + err.GetMessage() + "\n";
+			agi::AppendStr(msg_all, factory->name, ": ", err.GetMessage(), "\n");
 		}
 		catch (AudioProviderError const& err) {
 			LOG_D("audio_provider") << err.GetMessage();
 			found_audio = true;
 			found_file = true;
-			std::string thismsg = std::string(factory->name) + ": " + err.GetMessage() + "\n";
+			std::string thismsg = agi::Str(factory->name, ": ", err.GetMessage(), "\n");
 			msg_all += thismsg;
 			msg_partial += thismsg;
 		}
@@ -108,7 +107,7 @@ std::unique_ptr<agi::AudioProvider> GetAudioProvider(fs::path const& filename,
 		provider = CreateConvertAudioProvider(std::move(provider));
 
 	// Change provider to RAM/HD cache if needed
-	int cache = OPT_GET("Audio/Cache/Type")->GetInt();
+	auto cache = OPT_GET("Audio/Cache/Type")->GetInt();
 	if (!cache || !needs_cache)
 		return CreateLockAudioProvider(std::move(provider));
 

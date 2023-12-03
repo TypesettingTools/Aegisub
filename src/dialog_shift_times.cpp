@@ -40,7 +40,6 @@
 #include <libaegisub/cajun/reader.h>
 #include <libaegisub/cajun/writer.h>
 
-#include <boost/filesystem/path.hpp>
 #include <wx/dialog.h>
 #include <wx/listbox.h>
 #include <wx/radiobox.h>
@@ -52,7 +51,7 @@ namespace {
 class DialogShiftTimes final : public wxDialog {
 	agi::Context *context;
 
-	agi::fs::path history_filename;
+	std::filesystem::path history_filename;
 	json::Array history;
 	agi::vfr::Framerate fps;
 	agi::signal::Connection timecodes_loaded_slot;
@@ -87,11 +86,11 @@ public:
 };
 
 static wxString get_history_string(json::Object &obj) {
-	wxString filename = to_wx(obj["filename"]);
+	auto filename = to_wx(obj["filename"]);
 	if (filename.empty())
 		filename = _("unsaved");
 
-	wxString shift_amount(to_wx(obj["amount"]));
+	auto shift_amount = to_wx(obj["amount"]);
 	if (!obj["is by time"])
 		shift_amount = fmt_tl("%s frames", shift_amount);
 
@@ -117,8 +116,8 @@ static wxString get_history_string(json::Object &obj) {
 		lines += _("sel ");
 		for (auto it = sel.begin(); it != sel.end(); ++it) {
 			json::Object& range = *it;
-			int beg = (int64_t)range["start"];
-			int end = (int64_t)range["end"];
+			int64_t beg = range["start"];
+			int64_t end = range["end"];
 			if (beg == end)
 				lines += std::to_wstring(beg);
 			else
@@ -288,12 +287,12 @@ void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
 
 	json::Object& obj = history[entry];
 	if (obj["is by time"]) {
-		shift_time->SetTime(agi::Time((std::string)obj["amount"]));
+		shift_time->SetTime(agi::Time((std::string&)obj["amount"]));
 		shift_by_time->SetValue(true);
 		OnByTime(evt);
 	}
 	else {
-		shift_frames->SetValue(to_wx(obj["amount"]));
+		shift_frames->SetValue(to_wx((std::string&)obj["amount"]));
 		if (shift_by_frames->IsEnabled()) {
 			shift_by_frames->SetValue(true);
 			OnByFrames(evt);

@@ -19,13 +19,12 @@
 #include "libaegisub/dispatch.h"
 #include "libaegisub/util.h"
 
-#include <boost/filesystem/fstream.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/range/algorithm/remove_if.hpp>
 #include <chrono>
+#include <filesystem>
+#include <fstream>
 
-namespace agi { namespace log {
+namespace agi::log {
 
 /// Global log sink.
 LogSink *log;
@@ -44,7 +43,7 @@ LogSink::~LogSink() {
 }
 
 void LogSink::Log(SinkMessage const& sm) {
-	queue->Async([=] {
+	queue->Async([=, this] {
 		if (messages.size() < 250)
 			messages.push_back(sm);
 		else {
@@ -59,11 +58,11 @@ void LogSink::Log(SinkMessage const& sm) {
 void LogSink::Subscribe(std::unique_ptr<Emitter> em) {
 	LOG_D("agi/log/emitter/subscribe") << "Subscribe: " << this;
 	auto tmp = em.release();
-	queue->Sync([=] { emitters.emplace_back(tmp); });
+	queue->Sync([=, this] { emitters.emplace_back(tmp); });
 }
 
 void LogSink::Unsubscribe(Emitter *em) {
-	queue->Sync([=] {
+	queue->Sync([=, this] {
 		emitters.erase(
 			boost::remove_if(emitters, [=](std::unique_ptr<Emitter> const& e) { return e.get() == em; }),
 			emitters.end());
@@ -98,8 +97,8 @@ Message::~Message() {
 	agi::log::log->Log(sm);
 }
 
-JsonEmitter::JsonEmitter(fs::path const& directory)
-: fp(new boost::filesystem::ofstream(unique_path(directory/util::strftime("%Y-%m-%d-%H-%M-%S-%%%%%%%%.json"))))
+JsonEmitter::JsonEmitter(std::filesystem::path const& directory)
+: fp(new std::ofstream(directory/util::strftime("%Y-%m-%d-%H-%M-%S.json")))
 {
 }
 
@@ -117,4 +116,4 @@ void JsonEmitter::log(SinkMessage const& sm) {
 	fp->flush();
 }
 
-} }
+}

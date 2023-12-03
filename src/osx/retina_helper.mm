@@ -19,36 +19,15 @@
 #include <Cocoa/Cocoa.h>
 #include <wx/window.h>
 
-@interface RetinaObserver : NSObject
-@property (nonatomic, assign) NSWindow *window;
-@property (nonatomic, copy) void (^block)();
-@end
-
-@implementation RetinaObserver
-- (void)backingPropertiesDidChange:(NSNotification *)notification {
-	self.block();
-}
-
-- (void)dealloc {
-	[_block release];
-	[super dealloc];
-}
-@end
-
 RetinaHelper::RetinaHelper(wxWindow *window)
 : window(window)
-, observer([RetinaObserver new])
 {
 	NSView *view = window->GetHandle();
-	RetinaObserver *obs = (id)observer;
-	obs.window = view.window;
-	obs.block = ^{ ScaleFactorChanged(GetScaleFactor()); };
-
 	NSNotificationCenter *nc = NSNotificationCenter.defaultCenter;
-	[nc addObserver:(id)observer
-	       selector:@selector(backingPropertiesDidChange:)
-	           name:NSWindowDidChangeBackingPropertiesNotification
-	         object:view.window];
+	observer = [nc addObserverForName:NSWindowDidChangeBackingPropertiesNotification
+	                object:view.window
+	                 queue:NSOperationQueue.mainQueue
+	            usingBlock:^(id) { ScaleFactorChanged(GetScaleFactor()); }];
 
 	if ([view respondsToSelector:@selector(setWantsBestResolutionOpenGLSurface:)])
 		view.wantsBestResolutionOpenGLSurface = YES;
@@ -56,7 +35,6 @@ RetinaHelper::RetinaHelper(wxWindow *window)
 
 RetinaHelper::~RetinaHelper() {
 	[NSNotificationCenter.defaultCenter removeObserver:(id)observer];
-	[(id)observer release];
 }
 
 int RetinaHelper::GetScaleFactor() const {

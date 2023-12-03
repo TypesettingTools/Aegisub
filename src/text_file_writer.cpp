@@ -14,28 +14,22 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file text_file_writer.cpp
-/// @brief Write plain text files line by line
-/// @ingroup utility
-///
-
 #include "text_file_writer.h"
 
 #include "options.h"
 
 #include <libaegisub/io.h>
 #include <libaegisub/charset_conv.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 
-TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
+TextFileWriter::TextFileWriter(std::filesystem::path const& filename, std::string encoding)
 : file(new agi::io::Save(filename, true))
 {
 	if (encoding.empty())
 		encoding = OPT_GET("App/Save Charset")->GetString();
 	if (encoding != "utf-8" && encoding != "UTF-8") {
-		conv = agi::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.c_str(), true);
+		conv = std::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.data(), true);
 		newline = conv->Convert(newline);
 	}
 
@@ -48,11 +42,10 @@ TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encodi
 	}
 }
 
-TextFileWriter::~TextFileWriter() {
-	// Explicit empty destructor required with a unique_ptr to an incomplete class
-}
+// Explicit empty destructor required with a unique_ptr to an incomplete class
+TextFileWriter::~TextFileWriter() = default;
 
-void TextFileWriter::WriteLineToFile(std::string const& line, bool addLineBreak) {
+void TextFileWriter::WriteLineToFile(std::string_view line, bool addLineBreak) {
 	if (conv) {
 		auto converted = conv->Convert(line);
 		file->Get().write(converted.data(), converted.size());

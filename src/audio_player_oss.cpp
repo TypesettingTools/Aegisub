@@ -40,7 +40,6 @@
 
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -198,7 +197,7 @@ void OSSPlayer::Play(int64_t start, int64_t count)
     start_frame = cur_frame = start;
     end_frame = start + count;
 
-    thread = agi::make_unique<OSSPlayerThread>(this);
+    thread = std::make_unique<OSSPlayerThread>(this);
     thread->Create();
     thread->Run();
 
@@ -280,7 +279,7 @@ int64_t OSSPlayer::GetCurrentPosition()
 }
 
 std::unique_ptr<AudioPlayer> CreateOSSPlayer(agi::AudioProvider *provider, wxWindow *) {
-    return agi::make_unique<OSSPlayer>(provider);
+    return std::make_unique<OSSPlayer>(provider);
 }
 
 #endif // WITH_OSS

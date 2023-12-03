@@ -29,9 +29,9 @@
 
 #include "ass_entry.h"
 
-#include <libaegisub/fs_fwd.h>
 #include <libaegisub/signal.h>
 
+#include <filesystem>
 #include <boost/intrusive/list.hpp>
 #include <map>
 #include <set>
@@ -105,7 +105,7 @@ public:
 	/// @param style_catalog Style catalog name to fill styles from, blank to use default style
 	void LoadDefault(bool defline = true, std::string const& style_catalog = std::string());
 	/// Attach a file to the ass file
-	void InsertAttachment(agi::fs::path const& filename);
+	void InsertAttachment(std::filesystem::path const& filename);
 	/// Get the names of all of the styles available
 	std::vector<std::string> GetStyles() const;
 	/// @brief Get a style by name
@@ -120,17 +120,17 @@ public:
 	/// @param[in] h Height
 	void GetResolution(int &w,int &h) const;
 	/// Get the value in a [Script Info] key as int, or 0 if it is not present
-	int GetScriptInfoAsInt(std::string const& key) const;
+	int GetScriptInfoAsInt(std::string_view key) const;
 	/// Get the value in a [Script Info] key as string.
-	std::string GetScriptInfo(std::string const& key) const;
+	std::string_view GetScriptInfo(std::string_view key) const;
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
-	void SetScriptInfo(std::string const& key, std::string const& value);
+	void SetScriptInfo(std::string_view key, std::string_view value);
 
 	/// @brief Add a new extradata entry
 	/// @param key Class identifier/owner for the extradata
 	/// @param value Data for the extradata
 	/// @return ID of the created entry
-	uint32_t AddExtradata(std::string const& key, std::string const& value);
+	uint32_t AddExtradata(std::string_view key, std::string_view value);
 	/// Fetch all extradata entries from a list of IDs
 	std::vector<ExtradataEntry> GetExtradata(std::vector<uint32_t> const& id_list) const;
 	/// Remove unreferenced extradata entries

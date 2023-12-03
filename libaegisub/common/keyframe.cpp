@@ -12,11 +12,6 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file keyframe.cpp
-/// @see keyframe.h
-/// @ingroup libaegisub
-///
-
 #include "libaegisub/keyframe.h"
 
 #include <sstream>
@@ -24,7 +19,6 @@
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
 
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/algorithm/copy.hpp>
 
 namespace {
@@ -34,7 +28,7 @@ std::vector<int> agi_keyframes(std::istream &file) {
 	file >> fps_str;
 	file >> fps;
 
-	return std::vector<int>(agi::line_iterator<int>(file), agi::line_iterator<int>());
+	return {agi::line_iterator<int>(file), agi::line_iterator<int>()};
 }
 
 std::vector<int> enumerated_keyframes(std::istream &file, char (*func)(std::string const&)) {
@@ -95,8 +89,8 @@ int wwxd(std::string const& line) {
 }
 }
 
-namespace agi { namespace keyframe {
-void Save(agi::fs::path const& filename, std::vector<int> const& keyframes) {
+namespace agi::keyframe {
+void Save(std::filesystem::path const& filename, std::vector<int> const& keyframes) {
 	io::Save file(filename);
 	std::ostream& of = file.Get();
 	of << "# keyframe format v1" << std::endl;
@@ -104,7 +98,7 @@ void Save(agi::fs::path const& filename, std::vector<int> const& keyframes) {
 	boost::copy(keyframes, std::ostream_iterator<int>(of, "\n"));
 }
 
-std::vector<int> Load(agi::fs::path const& filename) {
+std::vector<int> Load(std::filesystem::path const& filename) {
 	auto file = io::Open(filename);
 	std::istream &is(*file);
 
@@ -112,14 +106,14 @@ std::vector<int> Load(agi::fs::path const& filename) {
 	getline(is, header);
 
 	if (header == "# keyframe format v1") return agi_keyframes(is);
-	if (boost::starts_with(header, "# XviD 2pass stat file")) return enumerated_keyframes(is, xvid);
-	if (boost::starts_with(header, "# ffmpeg 2-pass log file, using xvid codec")) return enumerated_keyframes(is, xvid);
-	if (boost::starts_with(header, "# avconv 2-pass log file, using xvid codec")) return enumerated_keyframes(is, xvid);
-	if (boost::starts_with(header, "##map version")) return enumerated_keyframes(is, divx);
-	if (boost::starts_with(header, "#options:")) return enumerated_keyframes(is, x264);
-	if (boost::starts_with(header, "# WWXD log file, using qpfile format")) return indexed_keyframes(is, wwxd);
+	if (header.starts_with("# XviD 2pass stat file")) return enumerated_keyframes(is, xvid);
+	if (header.starts_with("# ffmpeg 2-pass log file, using xvid codec")) return enumerated_keyframes(is, xvid);
+	if (header.starts_with("# avconv 2-pass log file, using xvid codec")) return enumerated_keyframes(is, xvid);
+	if (header.starts_with("##map version")) return enumerated_keyframes(is, divx);
+	if (header.starts_with("#options:")) return enumerated_keyframes(is, x264);
+	if (header.starts_with("# WWXD log file, using qpfile format")) return indexed_keyframes(is, wwxd);
 
 	throw UnknownKeyframeFormatError("File header does not match any known formats");
 }
 
-} }
+}

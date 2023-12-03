@@ -1,7 +1,7 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.56.1',
-        default_options: ['cpp_std=c++14', 'buildtype=debugoptimized'],
+        default_options: ['cpp_std=c++20', 'buildtype=debugoptimized'],
         version: '3.2.2')
 
 cmake = import('cmake')
@@ -67,7 +67,7 @@ if host_machine.system() == 'darwin'
     add_languages('objc', 'objcpp')
     add_project_arguments('-DGL_SILENCE_DEPRECATION', language: 'cpp')
     # meson neither supports objcpp_std nor inherits cpp_std https://github.com/mesonbuild/meson/issues/5495
-    add_project_arguments('-std=c++11', language: 'objcpp')
+    add_project_arguments('-std=c++20', language: 'objcpp')
 elif host_machine.system() != 'windows'
     conf.set('WITH_FONTCONFIG', 1)
     deps += dependency('fontconfig')
@@ -92,9 +92,9 @@ deps += iconv_dep
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
-boost_modules = ['chrono', 'filesystem', 'thread', 'locale', 'regex']
+boost_modules = ['chrono', 'thread', 'locale', 'regex']
 if not get_option('local_boost')
-    boost_dep = dependency('boost', version: '>=1.50.0',
+    boost_dep = dependency('boost', version: '>=1.70.0',
                             modules: boost_modules + ['system'],
                             required: false,
                             static: get_option('default_library') == 'static')
@@ -136,6 +136,7 @@ else
     endif
 
     opt_var = cmake.subproject_options()
+    opt_var.set_override_option('cpp_std', 'c++14')
     opt_var.add_cmake_defines({
         'wxBUILD_INSTALL': false,
         'wxBUILD_PRECOMP': false,       # otherwise breaks project generation w/ meson

@@ -23,20 +23,15 @@
 
 #include <boost/config.hpp>
 
-#ifndef BOOST_NORETURN
-#include <boost/exception/detail/attribute_noreturn.hpp>
-#define BOOST_NORETURN BOOST_ATTRIBUTE_NORETURN
-#endif
-
-namespace agi { namespace lua {
+namespace agi::lua {
 // Exception type for errors where the error details are on the lua stack
 struct error_tag {};
 
 // Below are functionally equivalent to the luaL_ functions, but using a C++
 // exception for stack unwinding
-int BOOST_NORETURN error(lua_State *L, const char *fmt, ...);
-int BOOST_NORETURN argerror(lua_State *L, int narg, const char *extramsg);
-int BOOST_NORETURN typerror(lua_State *L, int narg, const char *tname);
+[[noreturn]] int error(lua_State *L, const char *fmt, ...);
+[[noreturn]] int argerror(lua_State *L, int narg, const char *extramsg);
+[[noreturn]] int typerror(lua_State *L, int narg, const char *tname);
 void argcheck(lua_State *L, bool cond, int narg, const char *msg);
 
 inline void push_value(lua_State *L, bool value) { lua_pushboolean(L, value); }
@@ -102,7 +97,7 @@ std::string get_string(lua_State *L, int idx);
 std::string get_global_string(lua_State *L, const char *name);
 
 std::string check_string(lua_State *L, int idx);
-int check_int(lua_State *L, int idx);
+long check_int(lua_State *L, int idx);
 size_t check_uint(lua_State *L, int idx);
 void *check_udata(lua_State *L, int idx, const char *mt);
 
@@ -165,4 +160,4 @@ void lua_for_each(lua_State *L, Func&& func) {
 /// moonscript line rewriting support
 int add_stack_trace(lua_State *L);
 
-} }
+}

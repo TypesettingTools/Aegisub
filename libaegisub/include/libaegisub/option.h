@@ -12,23 +12,17 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file option.h
-/// @brief Public interface for option values.
-/// @ingroup libaegisub
-
 #pragma once
 
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <iosfwd>
 #include <map>
 #include <memory>
 #include <vector>
 
-#include <libaegisub/fs_fwd.h>
-
 namespace json {
 	class UnknownElement;
-	typedef std::map<std::string, UnknownElement> Object;
+	typedef std::map<std::string, UnknownElement, std::less<>> Object;
 }
 
 namespace agi {
@@ -46,7 +40,7 @@ private:
 	std::vector<std::unique_ptr<OptionValue>> values;
 
 	/// User config (file that will be written to disk)
-	const agi::fs::path config_file;
+	const std::filesystem::path config_file;
 
 	/// Settings.
 	const OptionSetting setting;
@@ -60,11 +54,7 @@ public:
 	/// @brief Constructor
 	/// @param file User config that will be loaded from and written back to.
 	/// @param default_config Default configuration.
-	Options(agi::fs::path const& file, std::pair<const char *, size_t> default_config, const OptionSetting setting = NONE);
-
-	template<size_t N>
-	Options(agi::fs::path const& file, const char (&default_config)[N], const OptionSetting setting = NONE)
-	: Options(file, {default_config, N - 1}, setting) { }
+	Options(std::filesystem::path const& file, std::string_view default_config, OptionSetting setting = NONE);
 
 	/// Destructor
 	~Options();
@@ -72,8 +62,7 @@ public:
 	/// @brief Get an option by name.
 	/// @param name Option to get.
 	/// Get an option value object by name throw an internal exception if the option is not found.
-	OptionValue *Get(const char *name);
-	OptionValue *Get(std::string const& name) { return Get(name.c_str()); }
+	OptionValue *Get(std::string_view name);
 
 	/// @brief Next configuration file to load.
 	/// @param[in] src Stream to load from.

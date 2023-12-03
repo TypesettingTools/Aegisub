@@ -12,54 +12,49 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file access.cpp
-/// @brief Unix access methods.
-/// @ingroup libaegisub unix
-
 #include "libaegisub/access.h"
 
 #include "libaegisub/fs.h"
 
+#include <filesystem>
 #include <sys/stat.h>
-#include <errno.h>
+#include <cerrno>
 #include <unistd.h>
 
-#include <boost/filesystem/path.hpp>
+namespace agi::acs {
 
-namespace agi {
-	namespace acs {
-
-void Check(agi::fs::path const& file, acs::Type type) {
-	struct stat file_stat;
-
-	int file_status = stat(file.c_str(), &file_stat);
-
-	if (file_status != 0) {
-		switch (errno) {
-			case ENOENT:
-				throw fs::FileNotFound(file);
-			case EACCES:
-				throw fs::ReadDenied(file);
-			case EIO:
+void Check(std::filesystem::path const& file, acs::Type type) {
+	auto cu = std::filesystem::current_path();
+	std::error_code ec;
+	auto s = std::filesystem::status(file, ec);
+	if (ec != std::error_code{}) {
+		using enum std::errc;
+		switch (ec.value()) {
+			case int(no_such_file_or_directory): throw fs::FileNotFound(file);
+			case int(permission_denied): throw fs::ReadDenied(file);
+			case int(io_error):
 				throw fs::FileSystemUnknownError("Fatal I/O error in 'stat' on path: " + file.string());
+			default:
+				throw fs::FileSystemUnknownError("Fatal I/O error in 'stat' on path: " + file.string() + ": " + ec.message());
 		}
 	}
 
+	using std::filesystem::file_type;
 	switch (type) {
 		case FileRead:
 		case FileWrite:
-			if ((file_stat.st_mode & S_IFREG) == 0)
+			if (s.type() != file_type::regular)
 				throw fs::NotAFile(file);
 		break;
 
 		case DirRead:
 		case DirWrite:
-			if ((file_stat.st_mode & S_IFDIR) == 0)
+			if (s.type() != file_type::directory)
 				throw fs::NotADirectory(file);
 		break;
 	}
 
-	file_status = access(file.c_str(), R_OK);
+	int file_status = access(file.c_str(), R_OK);
 	if (file_status != 0)
 		throw fs::ReadDenied(file);
 
@@ -70,5 +65,4 @@ void Check(agi::fs::path const& file, acs::Type type) {
 	}
 }
 
-	} // namespace acs
-} // namespace agi
+} // namespace agi::acs

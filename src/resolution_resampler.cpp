@@ -39,7 +39,7 @@ enum {
 	BOTTOM = 3
 };
 
-static const std::string names[] = {
+static const constexpr std::string_view names[] = {
 	"None",
 	"TV.601", "PC.601",
 	"TV.709", "PC.709",
@@ -47,7 +47,7 @@ static const std::string names[] = {
 	"TV.240M", "PC.240M"
 };
 
-YCbCrMatrix MatrixFromString(std::string const& str) {
+YCbCrMatrix MatrixFromString(std::string_view str) {
 	if (str.empty()) return YCbCrMatrix::tv_709;
 	auto pos = std::find(std::begin(names), std::end(names), str);
 	if (pos == std::end(names))
@@ -55,7 +55,7 @@ YCbCrMatrix MatrixFromString(std::string const& str) {
 	return static_cast<YCbCrMatrix>(std::distance(std::begin(names), pos));
 }
 
-std::string MatrixToString(YCbCrMatrix mat) {
+std::string_view MatrixToString(YCbCrMatrix mat) {
 	return names[static_cast<int>(mat)];
 }
 
@@ -69,9 +69,9 @@ namespace {
 		std::string final;
 		final.reserve(drawing.size());
 
-		for (auto const& cur : agi::Split(drawing, ' ')) {
+		for (auto cur : agi::Split(drawing, ' ')) {
 			double val;
-			if (agi::util::try_parse(agi::str(cur), &val)) {
+			if (agi::util::try_parse(cur, &val)) {
 				if (is_x)
 					val = (val + shift_x) * scale_x;
 				else

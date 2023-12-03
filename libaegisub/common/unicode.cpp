@@ -1,4 +1,4 @@
-// Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2022, Thomas Goyne <plorkyeran@aegisub.org>
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -14,11 +14,25 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <memory>
+#include "libaegisub/unicode.h"
 
-namespace agi {
-	template<typename T, typename... Args>
-	std::unique_ptr<T> make_unique(Args&&... args) {
-		return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-	}
+#include "libaegisub/exception.h"
+
+using namespace agi;
+
+BreakIterator::BreakIterator() {
+	UErrorCode err = U_ZERO_ERROR;
+	bi.reset(icu::BreakIterator::createCharacterInstance(icu::Locale::getDefault(), err));
+	if (U_FAILURE(err)) throw agi::InternalError(u_errorName(err));
+}
+
+void BreakIterator::set_text(std::string_view new_str) {
+	UErrorCode err = U_ZERO_ERROR;
+	UTextPtr ut(utext_openUTF8(nullptr, new_str.data(), new_str.size(), &err));
+	bi->setText(ut.get(), err);
+	if (U_FAILURE(err)) throw agi::InternalError(u_errorName(err));
+
+	str = new_str;
+	begin = 0;
+	end = bi->next();
 }

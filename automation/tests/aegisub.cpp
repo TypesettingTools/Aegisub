@@ -20,8 +20,8 @@
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/log.h>
+#include <libaegisub/util.h>
 
-#include <boost/locale/generator.hpp>
 #include <cstdio>
 #include <cstdlib>
 
@@ -36,7 +36,7 @@ void check(lua_State *L, int status) {
 }
 
 int close_and_exit(lua_State *L) {
-	int status = lua_tointeger(L, 1);
+	int status = (int)lua_tointeger(L, 1);
 	lua_close(L);
 	exit(status);
 }
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
-	std::locale::global(boost::locale::generator().generate(""));
+	agi::util::InitLocale();
 	agi::dispatch::Init([](agi::dispatch::Thunk f) { });
 	agi::log::log = new agi::log::LogSink;
 

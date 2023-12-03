@@ -17,24 +17,22 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
+#include <libaegisub/util.h>
 
-#include <boost/locale/generator.hpp>
 #include <cstdlib>
 #include <ctime>
 
 int main(int argc, char **argv) {
-	agi::dispatch::Init([](agi::dispatch::Thunk f) { });
-	std::locale::global(boost::locale::generator().generate(""));
+	agi::dispatch::Init([](agi::dispatch::Thunk) { });
+	agi::util::InitLocale();
 
-	int retval;
 	agi::log::log = new agi::log::LogSink;
-	agi::log::log->Subscribe(agi::make_unique<agi::log::JsonEmitter>("./"));
+	agi::log::log->Subscribe(std::make_unique<agi::log::JsonEmitter>("./"));
 	::testing::InitGoogleTest(&argc, argv);
 
 	srand(time(nullptr));
 
-	retval = RUN_ALL_TESTS();
+	int retval = RUN_ALL_TESTS();
 
 	delete agi::log::log;
 

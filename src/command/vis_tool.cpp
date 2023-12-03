@@ -28,7 +28,6 @@
 #include "../visual_tool_scale.h"
 #include "../visual_tool_vector_clip.h"
 
-#include <libaegisub/make_unique.h>
 
 namespace {
 	using cmd::Command;
@@ -46,7 +45,7 @@ namespace {
 		}
 
 		void operator()(agi::Context *c) override {
-			c->videoDisplay->SetTool(agi::make_unique<T>(c->videoDisplay, c));
+			c->videoDisplay->SetTool(std::make_unique<T>(c->videoDisplay, c));
 		}
 	};
 
@@ -109,12 +108,12 @@ namespace {
 
 namespace cmd {
 	void init_visual_tools() {
-		reg(agi::make_unique<visual_mode_cross>());
-		reg(agi::make_unique<visual_mode_drag>());
-		reg(agi::make_unique<visual_mode_rotate_z>());
-		reg(agi::make_unique<visual_mode_rotate_xy>());
-		reg(agi::make_unique<visual_mode_scale>());
-		reg(agi::make_unique<visual_mode_clip>());
-		reg(agi::make_unique<visual_mode_vector_clip>());
+		reg(std::make_unique<visual_mode_cross>());
+		reg(std::make_unique<visual_mode_drag>());
+		reg(std::make_unique<visual_mode_rotate_z>());
+		reg(std::make_unique<visual_mode_rotate_xy>());
+		reg(std::make_unique<visual_mode_scale>());
+		reg(std::make_unique<visual_mode_clip>());
+		reg(std::make_unique<visual_mode_vector_clip>());
 	}
 }

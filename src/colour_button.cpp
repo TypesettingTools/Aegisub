@@ -18,11 +18,7 @@
 
 #include "dialogs.h"
 
-#if BOOST_VERSION >= 106900
 #include <boost/gil.hpp>
-#else
-#include <boost/gil/gil_all.hpp>
-#endif
 
 AGI_DEFINE_EVENT(EVT_COLOR, agi::Color);
 
@@ -32,8 +28,8 @@ ColourButton::ColourButton(wxWindow *parent, wxSize const& size, bool alpha, agi
 , colour(std::move(col))
 {
 	UpdateBitmap();
-	Bind(wxEVT_BUTTON, [=](wxCommandEvent&) {
-		GetColorFromUser(GetParent(), colour, alpha, [=](agi::Color new_color) {
+	Bind(wxEVT_BUTTON, [=, this](wxCommandEvent&) {
+		GetColorFromUser(GetParent(), colour, alpha, [=, this](agi::Color new_color) {
 			colour = new_color;
 			UpdateBitmap();
 

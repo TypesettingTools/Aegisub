@@ -19,13 +19,15 @@
 #pragma once
 
 #include <memory>
+#include <span>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <libaegisub/exception.h>
+#include <iconv.h>
 
-namespace agi {
-	namespace charset {
+namespace agi::charset {
 
 DEFINE_EXCEPTION(ConvError, Exception);
 DEFINE_EXCEPTION(UnsupportedConversion, ConvError);
@@ -33,8 +35,6 @@ DEFINE_EXCEPTION(ConversionFailure, ConvError);
 DEFINE_EXCEPTION(BufferTooSmall, ConversionFailure);
 DEFINE_EXCEPTION(BadInput, ConversionFailure);
 DEFINE_EXCEPTION(BadOutput, ConversionFailure);
-
-typedef void *iconv_t;
 
 /// RAII handle for iconv
 class Iconv {
@@ -59,6 +59,7 @@ public:
 struct Converter {
 	virtual ~Converter() = default;
 	virtual size_t Convert(const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) = 0;
+	static std::unique_ptr<Converter> create(bool subst, const char *src, const char *dst);
 };
 
 /// @brief A C++ wrapper for iconv
@@ -74,7 +75,7 @@ public:
 	/// @param enableSubst    If true, when possible characters will be
 	///                       mutilated or dropped rather than a letting a
 	///                       conversion fail
-	IconvWrapper(const char* sourceEncoding, const char* destEncoding, bool enableSubst = true);
+	IconvWrapper(const char *sourceEncoding, const char *destEncoding, bool enableSubst = true);
 	~IconvWrapper();
 
 	/// @brief Convert a string from the source to destination charset
@@ -82,31 +83,16 @@ public:
 	/// @return Converted string. Note that std::string always uses a single byte
 	///         terminator, so c_str() may not return a valid string if the dest
 	///         charset has wider terminators
-	std::string Convert(std::string const& source) { return Convert(source.c_str(), source.size()); }
-	std::string Convert(const char *source, size_t len);
+	std::string Convert(std::string_view source);
 	/// @brief Convert a string from the source to destination charset
 	/// @param source String to convert
 	/// @param[out] dest String to place the result in
-	void Convert(std::string const& source, std::string &dest) { Convert(source.c_str(), source.size(), dest); }
-	void Convert(const char *source, size_t len, std::string &dest);
-	size_t Convert(const char* source, size_t sourceSize, char* dest, size_t destSize);
-	/// Bare wrapper around iconv; see iconv documention for details
-	size_t Convert(const char **inbuf, size_t *inbytesleft, char **outbuf, size_t *outbytesleft);
-
-	/// @brief Get the required buffer size required to fit the source string in the target charset
-	/// @param source A string in the source charset
-	/// @param sourceSize Length of the source in bytes
-	/// @return Bytes required, including NUL terminator if applicable
-	size_t RequiredBufferSize(const char* source, size_t sourceSize);
-	/// @brief Get the required buffer size required to fit the source string in the target charset
-	/// @param str A string in the source charset
-	/// @return Bytes required, not including space needed for NUL terminator
-	size_t RequiredBufferSize(std::string const& str);
-
-	/// Encoding-aware strlen for strings encoding in the source charset
-	size_t SrcStrLen(const char* str);
-	/// Encoding-aware strlen for strings encoding in the destination charset
-	size_t DstStrLen(const char* str);
+	void Convert(std::string_view source, std::string &dest);
+	/// @brief Convert a string from the source to destination charset
+	/// @param source String to convert
+	/// @param[out] dest Buffer to place the result in
+	/// @return Number of bytes written to dest
+	size_t Convert(std::string_view source, std::span<char> dest);
 };
 
 /// Is the conversion from src to dst supported by the linked iconv library?
@@ -127,5 +113,4 @@ T const& GetEncodingsList() {
 	return name_list;
 }
 
-	}
-}
+} // namespace agi::charset

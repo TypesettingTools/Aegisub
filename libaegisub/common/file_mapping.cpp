@@ -17,10 +17,8 @@
 #include "libaegisub/file_mapping.h"
 
 #include "libaegisub/fs.h"
-#include "libaegisub/make_unique.h"
 #include "libaegisub/util.h"
 
-#include <boost/filesystem/path.hpp>
 #include <boost/interprocess/mapped_region.hpp>
 #include <limits>
 
@@ -62,7 +60,7 @@ char *map(int64_t s_offset, uint64_t length, boost::interprocess::mode_t mode,
 		throw std::bad_alloc();
 
 	try {
-		region = agi::make_unique<mapped_region>(file, mode, mapping_start, static_cast<size_t>(length));
+		region = std::make_unique<mapped_region>(file, mode, mapping_start, static_cast<size_t>(length));
 	}
 	catch (interprocess_exception const&) {
 		throw agi::fs::FileSystemUnknownError("Failed mapping a view of the file");
@@ -74,7 +72,7 @@ char *map(int64_t s_offset, uint64_t length, boost::interprocess::mode_t mode,
 }
 
 namespace agi {
-file_mapping::file_mapping(fs::path const& filename, bool temporary)
+file_mapping::file_mapping(std::filesystem::path const& filename, bool temporary)
 #ifdef _WIN32
 : handle(CreateFileW(filename.wstring().c_str(),
 	temporary ? read_write : read_only,
@@ -118,7 +116,7 @@ file_mapping::~file_mapping() {
 	}
 }
 
-read_file_mapping::read_file_mapping(fs::path const& filename)
+read_file_mapping::read_file_mapping(std::filesystem::path const& filename)
 : file(filename, false)
 {
 	offset_t size = 0;
@@ -126,7 +124,7 @@ read_file_mapping::read_file_mapping(fs::path const& filename)
 	file_size = static_cast<uint64_t>(size);
 }
 
-read_file_mapping::~read_file_mapping() { }
+read_file_mapping::~read_file_mapping() = default;
 
 const char *read_file_mapping::read() {
 	return read(0, size());
@@ -136,7 +134,7 @@ const char *read_file_mapping::read(int64_t offset, uint64_t length) {
 	return map(offset, length, read_only, file_size, file, region, mapping_start);
 }
 
-temp_file_mapping::temp_file_mapping(fs::path const& filename, uint64_t size)
+temp_file_mapping::temp_file_mapping(std::filesystem::path const& filename, uint64_t size)
 : file(filename, true)
 , file_size(size)
 {
@@ -160,7 +158,7 @@ temp_file_mapping::temp_file_mapping(fs::path const& filename, uint64_t size)
 #endif
 }
 
-temp_file_mapping::~temp_file_mapping() { }
+temp_file_mapping::~temp_file_mapping() = default;
 
 const char *temp_file_mapping::read(int64_t offset, uint64_t length) {
 	return map(offset, length, read_only, file_size, file, read_region, read_mapping_start);

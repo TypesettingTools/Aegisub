@@ -14,10 +14,14 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <libaegisub/fs_fwd.h>
-
 #include <boost/interprocess/detail/os_file_functions.hpp>
+
+#ifdef _WIN32
+#undef GetMessage
+#endif
+
 #include <cstdint>
+#include <filesystem>
 
 namespace agi {
 	// boost::interprocess::file_mapping is awesome and uses CreateFileA on Windows
@@ -25,7 +29,7 @@ namespace agi {
 		boost::interprocess::file_handle_t handle;
 
 	public:
-		file_mapping(fs::path const& filename, bool temporary);
+		file_mapping(std::filesystem::path const& filename, bool temporary);
 		~file_mapping();
 		boost::interprocess::mapping_handle_t get_mapping_handle() const {
 			return boost::interprocess::ipcdetail::mapping_handle_from_file_handle(handle);
@@ -39,7 +43,7 @@ namespace agi {
 		uint64_t file_size = 0;
 
 	public:
-		read_file_mapping(fs::path const& filename);
+		read_file_mapping(std::filesystem::path const& filename);
 		~read_file_mapping();
 
 		uint64_t size() const { return file_size; }
@@ -57,7 +61,7 @@ namespace agi {
 		uint64_t write_mapping_start = 0;
 
 	public:
-		temp_file_mapping(fs::path const& filename, uint64_t size);
+		temp_file_mapping(std::filesystem::path const& filename, uint64_t size);
 		~temp_file_mapping();
 
 		const char *read(int64_t offset, uint64_t length);

@@ -27,11 +27,6 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file audio_player.h
-/// @brief Declaration of base-class for audio players
-/// @ingroup main_headers audio_output
-///
-
 #pragma once
 
 #include <libaegisub/exception.h>

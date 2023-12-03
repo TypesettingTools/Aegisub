@@ -20,11 +20,9 @@
 
 #include <libaegisub/format.h>
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/util.h>
 
 #include <atomic>
-#include <boost/filesystem/fstream.hpp>
 #include <condition_variable>
 #include <mutex>
 #include <thread>
@@ -36,7 +34,7 @@ extern EXCEPTION_POINTERS *wxGlobalSEInformation;
 
 namespace {
 wchar_t crash_dump_path[MAX_PATH];
-agi::fs::path crashlog_path;
+std::filesystem::path crashlog_path;
 
 using MiniDumpWriteDump = BOOL(WINAPI *)(
 	HANDLE hProcess,
@@ -102,7 +100,7 @@ std::unique_ptr<dump_thread_state> dump_thread;
 }
 
 namespace crash_writer {
-void Initialize(agi::fs::path const& path) {
+void Initialize(std::filesystem::path const& path) {
 	crashlog_path = path / "crashlog.txt";
 
 	auto dump_path = path / "crashdumps";
@@ -121,7 +119,7 @@ void Initialize(agi::fs::path const& path) {
 	wcscpy_s(crash_dump_path + len, MAX_PATH - len, L".dmp");
 
 	if (!dump_thread)
-		dump_thread = agi::make_unique<dump_thread_state>();
+		dump_thread = std::make_unique<dump_thread_state>();
 }
 
 void Cleanup() {
@@ -140,7 +138,7 @@ void Write() {
 }
 
 void Write(std::string const& error) {
-	boost::filesystem::ofstream file(crashlog_path, std::ios::app);
+	std::ofstream file(crashlog_path, std::ios::app);
 	if (file.is_open()) {
 		file << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
 		agi::format(file, "VER - %s\n", GetAegisubLongVersionString());

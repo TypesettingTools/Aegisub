@@ -41,7 +41,6 @@
 #include "../options.h"
 #include "../selection_controller.h"
 
-#include <libaegisub/make_unique.h>
 
 namespace {
 	using cmd::Command;
@@ -402,27 +401,27 @@ struct grid_swap final : public Command {
 
 namespace cmd {
 	void init_grid() {
-		reg(agi::make_unique<grid_line_next>());
-		reg(agi::make_unique<grid_line_next_create>());
-		reg(agi::make_unique<grid_line_prev>());
-		reg(agi::make_unique<grid_sort_actor>());
-		reg(agi::make_unique<grid_sort_effect>());
-		reg(agi::make_unique<grid_sort_end>());
-		reg(agi::make_unique<grid_sort_layer>());
-		reg(agi::make_unique<grid_sort_start>());
-		reg(agi::make_unique<grid_sort_style>());
-		reg(agi::make_unique<grid_sort_actor_selected>());
-		reg(agi::make_unique<grid_sort_effect_selected>());
-		reg(agi::make_unique<grid_sort_end_selected>());
-		reg(agi::make_unique<grid_sort_layer_selected>());
-		reg(agi::make_unique<grid_sort_start_selected>());
-		reg(agi::make_unique<grid_sort_style_selected>());
-		reg(agi::make_unique<grid_move_down>());
-		reg(agi::make_unique<grid_move_up>());
-		reg(agi::make_unique<grid_swap>());
-		reg(agi::make_unique<grid_tag_cycle_hiding>());
-		reg(agi::make_unique<grid_tags_hide>());
-		reg(agi::make_unique<grid_tags_show>());
-		reg(agi::make_unique<grid_tags_simplify>());
+		reg(std::make_unique<grid_line_next>());
+		reg(std::make_unique<grid_line_next_create>());
+		reg(std::make_unique<grid_line_prev>());
+		reg(std::make_unique<grid_sort_actor>());
+		reg(std::make_unique<grid_sort_effect>());
+		reg(std::make_unique<grid_sort_end>());
+		reg(std::make_unique<grid_sort_layer>());
+		reg(std::make_unique<grid_sort_start>());
+		reg(std::make_unique<grid_sort_style>());
+		reg(std::make_unique<grid_sort_actor_selected>());
+		reg(std::make_unique<grid_sort_effect_selected>());
+		reg(std::make_unique<grid_sort_end_selected>());
+		reg(std::make_unique<grid_sort_layer_selected>());
+		reg(std::make_unique<grid_sort_start_selected>());
+		reg(std::make_unique<grid_sort_style_selected>());
+		reg(std::make_unique<grid_move_down>());
+		reg(std::make_unique<grid_move_up>());
+		reg(std::make_unique<grid_swap>());
+		reg(std::make_unique<grid_tag_cycle_hiding>());
+		reg(std::make_unique<grid_tags_hide>());
+		reg(std::make_unique<grid_tags_show>());
+		reg(std::make_unique<grid_tags_simplify>());
 	}
 }

@@ -19,6 +19,7 @@
 #include <libaegisub/ass/uuencode.h>
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/io.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 
@@ -32,7 +33,7 @@ AssAttachment::AssAttachment(std::string const& header, AssEntryGroup group)
 {
 }
 
-AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
+AssAttachment::AssAttachment(std::filesystem::path const& name, AssEntryGroup group)
 : filename(name.filename().string())
 , group(group)
 {
@@ -43,8 +44,8 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 
 	agi::read_file_mapping file(name);
 	auto buff = file.read();
-	entry_data = (group == AssEntryGroup::FONT ? "fontname: " : "filename: ") + filename.get() + "\r\n";
-	entry_data = entry_data.get() + agi::ass::UUEncode(buff, buff + file.size());
+	entry_data = agi::Str(group == AssEntryGroup::FONT ? "fontname: " : "filename: ", filename.get(), "\r\n",
+		agi::ass::UUEncode(buff, buff + file.size()));
 }
 
 size_t AssAttachment::GetSize() const {
@@ -52,7 +53,7 @@ size_t AssAttachment::GetSize() const {
 	return entry_data.get().size() - header_end - 1;
 }
 
-void AssAttachment::Extract(agi::fs::path const& filename) const {
+void AssAttachment::Extract(std::filesystem::path const& filename) const {
 	auto header_end = entry_data.get().find('\n');
 	auto decoded = agi::ass::UUDecode(entry_data.get().c_str() + header_end + 1, &entry_data.get().back() + 1);
 	agi::io::Save(filename, true).Get().write(&decoded[0], decoded.size());

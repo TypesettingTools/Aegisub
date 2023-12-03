@@ -27,14 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_style_storage.h
-/// @see ass_style_storage.cpp
-/// @ingroup style_editor
-///
-
-#include <libaegisub/fs_fwd.h>
-
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <memory>
 #include <string>
 #include <vector>
@@ -43,7 +36,7 @@ class AssFile;
 class AssStyle;
 
 class AssStyleStorage {
-	agi::fs::path file;
+	std::filesystem::path file;
 	std::vector<std::unique_ptr<AssStyle>> style;
 
 public:
@@ -70,25 +63,25 @@ public:
 	/// Get the style with the given name
 	/// @param name Case-insensitive style name
 	/// @return Style or nullptr if the requested style is not found
-	AssStyle *GetStyle(std::string const& name);
+	AssStyle *GetStyle(std::string_view name);
 
 	/// Save stored styles to a file
 	void Save() const;
 
 	/// Load stored styles from a file
 	/// @param filename Catalog filename. Does not have to exist.
-	void Load(agi::fs::path const& filename);
+	void Load(std::filesystem::path const& filename);
 
 	/// Load stored styles from a file in the default location
 	/// @param catalogname Basename for the catalog file. Does not have to exist.
-	void LoadCatalog(std::string const& catalogname);
+	void LoadCatalog(std::string_view catalogname);
 
 	/// Make a list of all existing style catalogs in the default location
 	static std::vector<std::string> GetCatalogs();
 
 	/// Check whether the name catalog exists in the default location
 	/// @param catalogname Basename for the catalog file to check for.
-	static bool CatalogExists(std::string const& catalogname);
+	static bool CatalogExists(std::string_view catalogname);
 
 	/// Insert all styles into a file, replacing existing styles with the same names
 	/// @param file File to replace styles in

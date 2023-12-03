@@ -1,5 +1,6 @@
 libaegisub_src = [
     'ass/dialogue_parser.cpp',
+    'ass/karaoke.cpp',
     'ass/time.cpp',
     'ass/uuencode.cpp',
 
@@ -34,6 +35,7 @@ libaegisub_src = [
     'common/parser.cpp',
     'common/path.cpp',
     'common/thesaurus.cpp',
+    'common/unicode.cpp',
     'common/util.cpp',
     'common/vfr.cpp',
     'common/ycbcr_conv.cpp',

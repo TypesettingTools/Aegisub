@@ -42,7 +42,6 @@
 
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
-#include <libaegisub/make_unique.h>
 
 // Uncomment to enable extremely spammy debug logging
 //#define PORTAUDIO_DEBUG
@@ -280,7 +279,7 @@ bool PortAudioPlayer::IsPlaying() {
 }
 
 std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(agi::AudioProvider *provider, wxWindow *) {
-	return agi::make_unique<PortAudioPlayer>(provider);
+	return std::make_unique<PortAudioPlayer>(provider);
 }
 
 #endif // WITH_PORTAUDIO

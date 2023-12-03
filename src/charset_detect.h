@@ -27,17 +27,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file charset_detect.h
-/// @see charset_detect.cpp
-/// @ingroup utility
-///
-
-#include <libaegisub/fs_fwd.h>
+#include <filesystem>
 #include <string>
 
 namespace CharSetDetect {
 	/// @brief Get character set name.
 	/// @param filename File to check
 	/// @return Character set name
-	std::string GetEncoding(agi::fs::path const& filename);
+	std::string GetEncoding(std::filesystem::path const& filename);
 }

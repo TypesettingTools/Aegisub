@@ -38,7 +38,6 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <mutex>
@@ -67,11 +66,11 @@ class AvisynthVideoProvider: public VideoProvider {
 	PClip RGB32Video;
 	VideoInfo vi;
 
-	AVSValue Open(agi::fs::path const& filename);
-	void Init(std::string const& matrix);
+	AVSValue Open(std::filesystem::path const& filename);
+	void Init(std::string_view matrix);
 
 public:
-	AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix);
+	AvisynthVideoProvider(std::filesystem::path const& filename, std::string_view colormatrix);
 
 	void GetFrame(int n, VideoFrame &frame) override;
 
@@ -93,7 +92,7 @@ public:
 	bool HasAudio() const override                 { return has_audio; }
 };
 
-AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string const& colormatrix) {
+AvisynthVideoProvider::AvisynthVideoProvider(std::filesystem::path const& filename, std::string_view colormatrix) {
 	agi::acs::CheckFileRead(filename);
 
 	std::lock_guard<std::mutex> lock(avs.GetMutex());
@@ -183,7 +182,7 @@ file_exit:
 	}
 }
 
-void AvisynthVideoProvider::Init(std::string const& colormatrix) {
+void AvisynthVideoProvider::Init(std::string_view colormatrix) {
 	auto script = source_clip;
 	vi = script.AsClip()->GetVideoInfo();
 	has_audio = vi.HasAudio();
@@ -210,7 +209,7 @@ void AvisynthVideoProvider::Init(std::string const& colormatrix) {
 	fps = (double)vi.fps_numerator / vi.fps_denominator;
 }
 
-AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
+AVSValue AvisynthVideoProvider::Open(std::filesystem::path const& filename) {
 	IScriptEnvironment *env = avs.GetEnv();
 	char *videoFilename = env->SaveString(agi::fs::ShortName(filename).c_str());
 
@@ -322,7 +321,7 @@ void AvisynthVideoProvider::GetFrame(int n, VideoFrame &out) {
 }
 
 namespace agi { class BackgroundRunner; }
-std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const& path, std::string const& colormatrix, agi::BackgroundRunner *) {
-	return agi::make_unique<AvisynthVideoProvider>(path, colormatrix);
+std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(std::filesystem::path const& path, std::string_view colormatrix, agi::BackgroundRunner *) {
+	return std::make_unique<AvisynthVideoProvider>(path, colormatrix);
 }
 #endif // HAVE_AVISYNTH

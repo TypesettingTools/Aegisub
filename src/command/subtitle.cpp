@@ -51,7 +51,6 @@
 
 #include <libaegisub/address_of_adaptor.h>
 #include <libaegisub/charset_conv.h>
-#include <libaegisub/make_unique.h>
 
 #include <boost/range/algorithm/copy.hpp>
 #include <wx/msgdlg.h>
@@ -225,7 +224,7 @@ bool is_okay_to_close_subtitles(agi::Context *c) {
 #endif
 }
 
-void load_subtitles(agi::Context *c, agi::fs::path const& path, std::string const& encoding="") {
+void load_subtitles(agi::Context *c, std::filesystem::path const& path, std::string const& encoding="") {
 #ifdef __APPLE__
 	wxGetApp().NewProjectContext().project->LoadSubtitles(path, encoding);
 #else
@@ -342,7 +341,7 @@ struct subtitle_properties final : public Command {
 	}
 };
 
-static void save_subtitles(agi::Context *c, agi::fs::path filename) {
+static void save_subtitles(agi::Context *c, std::filesystem::path filename) {
 	if (filename.empty()) {
 		c->videoController->Stop();
 		filename = SaveFileSelector(_("Save subtitles file"), "Path/Last/Subtitles",
@@ -452,24 +451,24 @@ struct subtitle_spellcheck final : public Command {
 
 namespace cmd {
 	void init_subtitle() {
-		reg(agi::make_unique<subtitle_attachment>());
-		reg(agi::make_unique<subtitle_find>());
-		reg(agi::make_unique<subtitle_find_next>());
-		reg(agi::make_unique<subtitle_insert_after>());
-		reg(agi::make_unique<subtitle_insert_after_videotime>());
-		reg(agi::make_unique<subtitle_insert_before>());
-		reg(agi::make_unique<subtitle_insert_before_videotime>());
-		reg(agi::make_unique<subtitle_new>());
-		reg(agi::make_unique<subtitle_close>());
-		reg(agi::make_unique<subtitle_open>());
-		reg(agi::make_unique<subtitle_open_autosave>());
-		reg(agi::make_unique<subtitle_open_charset>());
-		reg(agi::make_unique<subtitle_open_video>());
-		reg(agi::make_unique<subtitle_properties>());
-		reg(agi::make_unique<subtitle_save>());
-		reg(agi::make_unique<subtitle_save_as>());
-		reg(agi::make_unique<subtitle_select_all>());
-		reg(agi::make_unique<subtitle_select_visible>());
-		reg(agi::make_unique<subtitle_spellcheck>());
+		reg(std::make_unique<subtitle_attachment>());
+		reg(std::make_unique<subtitle_find>());
+		reg(std::make_unique<subtitle_find_next>());
+		reg(std::make_unique<subtitle_insert_after>());
+		reg(std::make_unique<subtitle_insert_after_videotime>());
+		reg(std::make_unique<subtitle_insert_before>());
+		reg(std::make_unique<subtitle_insert_before_videotime>());
+		reg(std::make_unique<subtitle_new>());
+		reg(std::make_unique<subtitle_close>());
+		reg(std::make_unique<subtitle_open>());
+		reg(std::make_unique<subtitle_open_autosave>());
+		reg(std::make_unique<subtitle_open_charset>());
+		reg(std::make_unique<subtitle_open_video>());
+		reg(std::make_unique<subtitle_properties>());
+		reg(std::make_unique<subtitle_save>());
+		reg(std::make_unique<subtitle_save_as>());
+		reg(std::make_unique<subtitle_select_all>());
+		reg(std::make_unique<subtitle_select_visible>());
+		reg(std::make_unique<subtitle_spellcheck>());
 	}
 }

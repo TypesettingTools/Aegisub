@@ -33,11 +33,11 @@
 ///
 
 #ifdef WITH_FFMS2
+#include <filesystem>
 #include <map>
 
 #include <ffms.h>
 
-#include <libaegisub/fs_fwd.h>
 #include <libaegisub/scoped_ptr.h>
 
 namespace agi { class BackgroundRunner; }
@@ -61,12 +61,12 @@ public:
 
 	void CleanCache();
 
-	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, agi::fs::path const& Cachename,
+	FFMS_Index *DoIndexing(FFMS_Indexer *Indexer, std::filesystem::path const& Cachename,
 		                   TrackSelection Track,
 		                   FFMS_IndexErrorHandling IndexEH);
 	std::map<int, std::string> GetTracksOfType(FFMS_Indexer *Indexer, FFMS_TrackType Type);
 	TrackSelection AskForTrackSelection(const std::map<int, std::string>& TrackList, FFMS_TrackType Type);
-	agi::fs::path GetCacheFilename(agi::fs::path const& filename);
+	std::filesystem::path GetCacheFilename(std::filesystem::path const& filename);
 	void SetLogLevel();
 	FFMS_IndexErrorHandling GetErrorHandlingMode();
 };

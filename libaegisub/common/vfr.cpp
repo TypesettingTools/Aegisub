@@ -57,14 +57,14 @@ struct TimecodeRange {
 	int start;
 	int end;
 	double fps;
-	bool operator<(TimecodeRange const& cmp) const { return start < cmp.start; }
+	auto operator<=>(TimecodeRange const& cmp) const { return start <=> cmp.start; }
 };
 
 /// @brief Parse a single line of a v1 timecode file
 /// @param str Line to parse
 /// @return The line in TimecodeRange form, or TimecodeRange() if it's a comment
 TimecodeRange v1_parse_line(std::string const& str) {
-	if (str.empty() || str[0] == '#') return TimecodeRange();
+	if (str.empty() || str[0] == '#') return {};
 
 	boost::interprocess::ibufferstream ss(str.data(), str.size());
 	TimecodeRange range;
@@ -130,7 +130,7 @@ int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<
 }
 }
 
-namespace agi { namespace vfr {
+namespace agi::vfr {
 Framerate::Framerate(double fps)
 : denominator(default_denominator)
 , numerator(int64_t(fps * denominator))
@@ -171,28 +171,28 @@ Framerate::Framerate(std::initializer_list<int> timecodes)
 	SetFromTimecodes();
 }
 
-Framerate::Framerate(fs::path const& filename)
+Framerate::Framerate(std::filesystem::path const& filename)
 : denominator(default_denominator)
 {
 	auto file = agi::io::Open(filename);
 	auto encoding = agi::charset::Detect(filename);
-	auto line = *line_iterator<std::string>(*file, encoding);
+	auto line = *line_iterator<std::string>(*file, encoding.c_str());
 	if (line == "# timecode format v2") {
-		copy(line_iterator<int>(*file, encoding), line_iterator<int>(), back_inserter(timecodes));
+		copy(line_iterator<int>(*file, encoding.c_str()), line_iterator<int>(), back_inserter(timecodes));
 		SetFromTimecodes();
 		return;
 	}
 	if (line == "# timecode format v1" || line.substr(0, 7) == "Assume ") {
 		if (line[0] == '#')
-			line = *line_iterator<std::string>(*file, encoding);
-		numerator = v1_parse(line_iterator<std::string>(*file, encoding), line, timecodes, last);
+			line = *line_iterator<std::string>(*file, encoding.c_str());
+		numerator = v1_parse(line_iterator<std::string>(*file, encoding.c_str()), line, timecodes, last);
 		return;
 	}
 
 	throw UnknownFormat(line);
 }
 
-void Framerate::Save(fs::path const& filename, int length) const {
+void Framerate::Save(std::filesystem::path const& filename, int length) const {
 	agi::io::Save file(filename);
 	auto &out = file.Get();
 
@@ -321,4 +321,4 @@ int Framerate::TimeAtSmpte(int h, int m, int s, int f) const {
 	return TimeAtFrame(FrameAtSmpte(h, m, s, f));
 }
 
-} }
+}

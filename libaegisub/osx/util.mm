@@ -22,10 +22,10 @@
 #import <Foundation/Foundation.h>
 
 static std::string EmptyIfNil(NSString *string) {
-	return string ? [string UTF8String] : "";
+	return [string UTF8String] ?: "";
 }
 
-namespace agi { namespace osx {
+namespace agi::osx {
 AppNapDisabler::AppNapDisabler(std::string reason) : handle(nullptr) {
 	if (reason.empty()) reason = "Loading";
 	auto processInfo = [NSProcessInfo processInfo];
@@ -41,10 +41,9 @@ AppNapDisabler::~AppNapDisabler() {
 		[processInfo endActivity:(id)handle];
 	[(id)handle release];
 }
+} // namespace agi::osx
 
-}
-namespace util {
-
+namespace agi::util {
 std::string GetBundleResourcesDirectory() {
 	@autoreleasepool {
 		return EmptyIfNil([[[NSBundle mainBundle] resourceURL] path]);
@@ -63,4 +62,4 @@ std::string GetApplicationSupportDirectory() {
 	}
 }
 
-} }
+} // namespace agi::util

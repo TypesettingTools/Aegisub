@@ -27,25 +27,20 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file ass_dialogue.cpp
-/// @brief Class for dialogue lines in subtitles
-/// @ingroup subs_storage
-
 #include "ass_dialogue.h"
 #include "subtitle_format.h"
 #include "utils.h"
 
 #include <libaegisub/of_type_adaptor.h>
 #include <libaegisub/split.h>
-#include <libaegisub/make_unique.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 #include <boost/spirit/include/karma_generate.hpp>
 #include <boost/spirit/include/karma_int.hpp>
+#include <string_view>
 
 using namespace boost::adaptors;
 
@@ -72,31 +67,31 @@ AssDialogue::AssDialogue(std::string const& data) {
 AssDialogue::~AssDialogue () { }
 
 class tokenizer {
-	agi::StringRange str;
-	agi::split_iterator<agi::StringRange::const_iterator> pos;
+	std::string_view str;
+	agi::split_iterator<char> pos;
 
 public:
-	tokenizer(agi::StringRange const& str) : str(str) , pos(agi::Split(str, ',')) { }
+	tokenizer(std::string_view str) : str(str), pos(agi::Split(str, ',')) { }
 
-	agi::StringRange next_tok() {
+	std::string_view next_tok() {
 		if (pos.eof())
-			throw SubtitleFormatParseError("Failed parsing line: " + std::string(str.begin(), str.end()));
+			throw SubtitleFormatParseError(agi::Str("Failed parsing line: ", str));
 		return *pos++;
 	}
 
-	std::string next_str() { return agi::str(next_tok()); }
-	std::string next_str_trim() { return agi::str(boost::trim_copy(next_tok())); }
+	std::string next_str() { return std::string(next_tok()); }
+	std::string next_str_trim() { return std::string(agi::Trim(next_tok())); }
 };
 
 void AssDialogue::Parse(std::string const& raw) {
-	agi::StringRange str;
+	std::string_view str = raw;
 	if (boost::starts_with(raw, "Dialogue:")) {
 		Comment = false;
-		str = agi::StringRange(raw.begin() + 10, raw.end());
+		str.remove_prefix(10);
 	}
 	else if (boost::starts_with(raw, "Comment:")) {
 		Comment = true;
-		str = agi::StringRange(raw.begin() + 9, raw.end());
+		str.remove_prefix(9);
 	}
 	else
 		throw SubtitleFormatParseError("Failed parsing line: " + raw);
@@ -108,17 +103,14 @@ void AssDialogue::Parse(std::string const& raw) {
 	bool ssa = boost::istarts_with(tmp, "marked=");
 
 	// Get layer number
-	if (ssa)
-		Layer = 0;
-	else
-		Layer = boost::lexical_cast<int>(tmp);
+	Layer = ssa ? 0 : boost::lexical_cast<int>(tmp);
 
-	Start = tkn.next_str_trim();
-	End = tkn.next_str_trim();
+	Start = agi::Trim(tkn.next_tok());
+	End = agi::Trim(tkn.next_tok());
 	Style = tkn.next_str_trim();
 	Actor = tkn.next_str_trim();
 	for (int& margin : Margin)
-		margin = mid(-9999, boost::lexical_cast<int>(tkn.next_str()), 99999);
+		margin = mid(-9999, boost::lexical_cast<int>(tkn.next_tok()), 99999);
 	Effect = tkn.next_str_trim();
 
 	std::string text{tkn.next_tok().begin(), str.end()};
@@ -201,7 +193,7 @@ std::vector<std::unique_ptr<AssDialogueBlock>> AssDialogue::ParseTags() const {
 
 	// Empty line, make an empty block
 	if (Text.get().empty()) {
-		Blocks.push_back(agi::make_unique<AssDialogueBlockPlain>());
+		Blocks.push_back(std::make_unique<AssDialogueBlockPlain>());
 		return Blocks;
 	}
 
@@ -226,11 +218,11 @@ std::vector<std::unique_ptr<AssDialogueBlock>> AssDialogue::ParseTags() const {
 			if (work.size() && work.find('\\') == std::string::npos) {
 				//We've found an override block with no backslashes
 				//We're going to assume it's a comment and not consider it an override block
-				Blocks.push_back(agi::make_unique<AssDialogueBlockComment>(work));
+				Blocks.push_back(std::make_unique<AssDialogueBlockComment>(work));
 			}
 			else {
 				// Create block
-				auto block = agi::make_unique<AssDialogueBlockOverride>(work);
+				auto block = std::make_unique<AssDialogueBlockOverride>(work);
 				block->ParseTags();
 
 				// Look for \p in block
@@ -258,9 +250,9 @@ plain:
 		}
 
 		if (drawingLevel == 0)
-			Blocks.push_back(agi::make_unique<AssDialogueBlockPlain>(work));
+			Blocks.push_back(std::make_unique<AssDialogueBlockPlain>(work));
 		else
-			Blocks.push_back(agi::make_unique<AssDialogueBlockDrawing>(work, drawingLevel));
+			Blocks.push_back(std::make_unique<AssDialogueBlockDrawing>(work, drawingLevel));
 	}
 
 	return Blocks;
@@ -273,7 +265,7 @@ void AssDialogue::StripTags() {
 static std::string get_text(std::unique_ptr<AssDialogueBlock> &d) { return d->GetText(); }
 void AssDialogue::UpdateText(std::vector<std::unique_ptr<AssDialogueBlock>>& blocks) {
 	if (blocks.empty()) return;
-	Text = join(blocks | transformed(get_text), "");
+	Text = agi::Join("", blocks | transformed(get_text));
 }
 
 bool AssDialogue::CollidesWith(const AssDialogue *target) const {
@@ -284,5 +276,5 @@ bool AssDialogue::CollidesWith(const AssDialogue *target) const {
 static std::string get_text_p(AssDialogueBlock *d) { return d->GetText(); }
 std::string AssDialogue::GetStrippedText() const {
 	auto blocks = ParseTags();
-	return join(blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p), "");
+	return agi::Join("", blocks | agi::of_type<AssDialogueBlockPlain>() | transformed(get_text_p));
 }

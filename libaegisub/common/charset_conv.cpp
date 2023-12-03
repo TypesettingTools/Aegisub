@@ -12,20 +12,16 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file charset_conv.cpp
-/// @brief Wrapper for libiconv to present a more C++-friendly API
-/// @ingroup libaegisub
-
-#include <errno.h>
-#include <cstdint>
-
-#include <cassert>
-#include <boost/range/algorithm.hpp>
-
 #include <libaegisub/charset_conv.h>
-#include <iconv.h>
 
+#include <libaegisub/string.h>
 #include "charset_6937.h"
+
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/range/algorithm.hpp>
+#include <cassert>
+#include <cerrno>
+#include <cstdint>
 
 // Check if we can use advanced fallback capabilities added in GNU's iconv
 // implementation
@@ -42,10 +38,10 @@
 static const iconv_t iconv_invalid = (iconv_t)-1;
 static const size_t iconv_failed = (size_t)-1;
 
+using namespace std::string_view_literals;
+
 namespace {
 	using namespace agi::charset;
-
-	Converter *get_converter(bool subst, const char *src, const char *dst);
 
 /// @brief Map a user-friendly encoding name to the real encoding name
 	const char *get_real_encoding_name(const char *name) {
@@ -122,7 +118,7 @@ namespace {
 	size_t nul_size(const char *encoding) {
 		// We need a character set to convert from with a known encoding of NUL
 		// UTF-8 seems like the obvious choice
-		std::unique_ptr<Converter> cd(get_converter(false, "UTF-8", encoding));
+		auto cd = Converter::create(false, "UTF-8", encoding);
 
 		char dbuff[4];
 		char sbuff[] = "";
@@ -189,7 +185,7 @@ namespace {
 			if (code == 0xFEFF) return;
 			if (code == 0x5C) callback("\\", 1, callback_arg);
 			else {
-				ConverterImpl *self = static_cast<ConverterImpl *>(convPtr);
+				auto *self = static_cast<ConverterImpl *>(convPtr);
 				callback(self->invalidRep, self->invalidRepSize, callback_arg);
 			}
 		}
@@ -258,27 +254,16 @@ namespace {
 		}
 	};
 #endif
-
-	Converter *get_converter(bool subst, const char *src, const char *dst) {
-		try {
-			return new ConverterImpl(subst, src, dst);
-		}
-		catch (UnsupportedConversion const&) {
-			if (strcmp(dst, "ISO-6937-2"))
-				throw;
-			return new Converter6937(subst, src);
-		}
-	}
 } // namespace {
 
-namespace agi { namespace charset {
+namespace agi::charset {
 Iconv::Iconv() : cd(iconv_invalid) { }
 
 Iconv::Iconv(const char *source, const char *dest)
 : cd(iconv_open(dest, source))
 {
 	if (cd == iconv_invalid)
-		throw UnsupportedConversion(std::string("Cannot convert from ") + source + " to " + dest);
+		throw UnsupportedConversion(agi::Str("Cannot convert from ", source, " to ", dest));
 }
 
 Iconv::~Iconv() {
@@ -289,8 +274,19 @@ size_t Iconv::operator()(const char **inbuf, size_t *inbytesleft, char **outbuf,
 	return iconv(cd, ICONV_CONST_CAST(inbuf), inbytesleft, outbuf, outbytesleft);
 }
 
-IconvWrapper::IconvWrapper(const char* sourceEncoding, const char* destEncoding, bool enableSubst)
-: conv(get_converter(enableSubst, sourceEncoding, destEncoding))
+std::unique_ptr<Converter> Converter::create(bool subst, const char *src, const char *dst) {
+	try {
+		return std::make_unique<ConverterImpl>(subst, src, dst);
+	}
+	catch (UnsupportedConversion const&) {
+		if (dst != "ISO-6937-2"sv)
+			throw;
+		return std::make_unique<Converter6937>(subst, src);
+	}
+}
+
+IconvWrapper::IconvWrapper(const char *sourceEncoding, const char *destEncoding, bool enableSubst)
+: conv(Converter::create(enableSubst, sourceEncoding, destEncoding))
 {
 	// These need to be set only after we verify that the source and dest
 	// charsets are valid
@@ -298,16 +294,18 @@ IconvWrapper::IconvWrapper(const char* sourceEncoding, const char* destEncoding,
 	fromNulLen = nul_size(sourceEncoding);
 }
 
-IconvWrapper::~IconvWrapper() { }
+IconvWrapper::~IconvWrapper() = default;
 
-std::string IconvWrapper::Convert(const char *source, size_t len) {
+std::string IconvWrapper::Convert(std::string_view source) {
 	std::string dest;
-	Convert(source, len, dest);
+	Convert(source, dest);
 	return dest;
 }
 
-void IconvWrapper::Convert(const char *src, size_t srcLen, std::string &dest) {
+void IconvWrapper::Convert(std::string_view src_view, std::string &dest) {
 	char buff[512];
+	auto src = src_view.data();
+	auto srcLen = src_view.size();
 
 	size_t res;
 	do {
@@ -332,12 +330,14 @@ void IconvWrapper::Convert(const char *src, size_t srcLen, std::string &dest) {
 	}
 }
 
-size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, size_t destSize) {
-	if (sourceSize == (size_t)-1)
-		sourceSize = SrcStrLen(source);
+size_t IconvWrapper::Convert(std::string_view source, std::span<char> dest) {
+	auto src = source.data();
+	auto srcLen = source.size();
+	auto dst = dest.data();
+	auto dstLen = dest.size();
 
-	size_t res = conv->Convert(&source, &sourceSize, &dest, &destSize);
-	if (res == 0) res = conv->Convert(nullptr, nullptr, &dest, &destSize);
+	size_t res = conv->Convert(&src, &srcLen, &dst, &dstLen);
+	if (res == 0) res = conv->Convert(nullptr, nullptr, &dst, &dstLen);
 
 	if (res == iconv_failed) {
 		switch (errno) {
@@ -354,67 +354,7 @@ size_t IconvWrapper::Convert(const char* source, size_t sourceSize, char *dest, 
 				throw ConversionFailure("An unknown conversion failure occurred");
 		}
 	}
-	return res;
-}
-
-size_t IconvWrapper::Convert(const char** source, size_t* sourceSize, char** dest, size_t* destSize) {
-	return conv->Convert(source, sourceSize, dest, destSize);
-}
-
-size_t IconvWrapper::RequiredBufferSize(std::string const& str) {
-	return RequiredBufferSize(str.data(), str.size());
-}
-
-size_t IconvWrapper::RequiredBufferSize(const char* src, size_t srcLen) {
-	char buff[4096];
-	size_t charsWritten = 0;
-	size_t res;
-
-	do {
-		char* dst = buff;
-		size_t dstSize = sizeof(buff);
-		res = conv->Convert(&src, &srcLen, &dst, &dstSize);
-		conv->Convert(nullptr, nullptr, &dst, &dstSize);
-
-		charsWritten += dst - buff;
-	} while (res == iconv_failed && errno == E2BIG);
-
-	if (res == iconv_failed) {
-		switch (errno) {
-			case EINVAL:
-			case EILSEQ:
-				throw BadInput(
-					"One or more characters in the input string were not valid "
-					"characters in the given input encoding");
-			default:
-				throw ConversionFailure("An unknown conversion failure occurred");
-		}
-	}
-	return charsWritten;
-}
-
-static size_t mbstrlen(const char* str, size_t nulLen) {
-	const char *ptr;
-	switch (nulLen) {
-		case 1:
-			return strlen(str);
-		case 2:
-			for (ptr = str; *reinterpret_cast<const uint16_t *>(ptr) != 0; ptr += 2) ;
-			return ptr - str;
-		case 4:
-			for (ptr = str; *reinterpret_cast<const uint32_t *>(ptr) != 0; ptr += 4) ;
-			return ptr - str;
-		default:
-			return (size_t)-1;
-	}
-}
-
-size_t IconvWrapper::SrcStrLen(const char* str) {
-	return mbstrlen(str, fromNulLen);
-
-}
-size_t IconvWrapper::DstStrLen(const char* str) {
-	return mbstrlen(str, toNulLen);
+	return dest.size() - dstLen;
 }
 
 bool IsConversionSupported(const char *src, const char *dst) {
@@ -424,5 +364,4 @@ bool IsConversionSupported(const char *src, const char *dst) {
 	return supported;
 }
 
-	}
-}
+} // namespace agi::charset

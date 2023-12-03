@@ -18,9 +18,10 @@
 
 #include <main.h>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 using agi::Path;
+using namespace std::string_view_literals;
 
 #ifdef _WIN32
 #define DS "\\"
@@ -42,7 +43,7 @@ TEST(lagi_path, relative_path_clears_token) {
 	EXPECT_NO_THROW(p.SetToken("?video", "relative/path"));
 	EXPECT_STREQ("?video", p.Decode("?video").string().c_str());
 
-	EXPECT_NO_THROW(p.SetToken("?video", boost::filesystem::current_path()));
+	EXPECT_NO_THROW(p.SetToken("?video", std::filesystem::current_path()));
 	EXPECT_STRNE("?video", p.Decode("?video").string().c_str());
 
 	EXPECT_NO_THROW(p.SetToken("?video", "relative/path"));
@@ -52,7 +53,7 @@ TEST(lagi_path, relative_path_clears_token) {
 TEST(lagi_path, empty_path_clears_token) {
 	Path p;
 
-	EXPECT_NO_THROW(p.SetToken("?video", boost::filesystem::current_path()));
+	EXPECT_NO_THROW(p.SetToken("?video", std::filesystem::current_path()));
 	EXPECT_STRNE("?video", p.Decode("?video").string().c_str());
 
 	EXPECT_NO_THROW(p.SetToken("?video", ""));
@@ -62,12 +63,12 @@ TEST(lagi_path, empty_path_clears_token) {
 TEST(lagi_path, decode_sets_uses_right_slashes) {
 	Path p;
 
-	agi::fs::path expected = boost::filesystem::current_path()/"foo/bar.txt";
+	std::filesystem::path expected = std::filesystem::current_path()/"foo/bar.txt";
 	expected.make_preferred();
 
-	EXPECT_NO_THROW(p.SetToken("?video", boost::filesystem::current_path()));
+	EXPECT_NO_THROW(p.SetToken("?video", std::filesystem::current_path()));
 
-	agi::fs::path decoded;
+	std::filesystem::path decoded;
 	ASSERT_NO_THROW(decoded = p.Decode("?video/foo/bar.txt"));
 	EXPECT_STREQ(expected.string().c_str(), decoded.string().c_str());
 }
@@ -75,12 +76,12 @@ TEST(lagi_path, decode_sets_uses_right_slashes) {
 TEST(lagi_path, trailing_slash_on_token_is_optional) {
 	Path p;
 
-	agi::fs::path expected = boost::filesystem::current_path()/"foo.txt";
+	std::filesystem::path expected = std::filesystem::current_path()/"foo.txt";
 	expected.make_preferred();
 
-	EXPECT_NO_THROW(p.SetToken("?audio", boost::filesystem::current_path()));
+	EXPECT_NO_THROW(p.SetToken("?audio", std::filesystem::current_path()));
 
-	agi::fs::path decoded;
+	std::filesystem::path decoded;
 	ASSERT_NO_THROW(decoded = p.Decode("?audiofoo.txt"));
 	EXPECT_STREQ(expected.string().c_str(), decoded.string().c_str());
 
@@ -91,11 +92,11 @@ TEST(lagi_path, trailing_slash_on_token_is_optional) {
 TEST(lagi_path, setting_token_to_file_sets_to_parent_directory_instead) {
 	Path p;
 
-	agi::fs::path file = boost::filesystem::system_complete("data/file");
+	std::filesystem::path file = std::filesystem::absolute("data/file");
 	ASSERT_NO_THROW(p.SetToken("?script", file));
 	EXPECT_STREQ(file.parent_path().string().c_str(), p.Decode("?script").string().c_str());
 
-	file = boost::filesystem::system_complete("data/dir");
+	file = std::filesystem::absolute("data/dir");
 	ASSERT_NO_THROW(p.SetToken("?script", file));
 	EXPECT_STREQ(file.string().c_str(), p.Decode("?script").string().c_str());
 }
@@ -115,7 +116,7 @@ TEST(lagi_path, valid_token_names) {
 
 #define TEST_PLATFORM_PATH_TOKEN(tok) \
 	do { \
-		agi::fs::path d; \
+		std::filesystem::path d; \
 		ASSERT_NO_THROW(d = p.Decode(tok)); \
 		ASSERT_FALSE(d.empty()); \
 		ASSERT_STRNE(tok, d.string().c_str()); \
@@ -140,8 +141,8 @@ TEST(lagi_path, making_empty_absolute_gives_empty) {
 
 TEST(lagi_path, making_empty_relative_gives_empty) {
 	Path p;
-	ASSERT_NO_THROW(p.MakeRelative("", "?data"));
-	EXPECT_TRUE(p.MakeRelative("", "?data").empty());
+	ASSERT_NO_THROW(p.MakeRelative("", "?data"sv));
+	EXPECT_TRUE(p.MakeRelative("", "?data"sv).empty());
 }
 
 #ifdef _WIN32
@@ -153,12 +154,12 @@ TEST(lagi_path, make_absolute_on_network_path) {
 
 TEST(lagi_path, make_relative_on_network_path) {
 	Path p;
-	ASSERT_NO_THROW(p.MakeRelative("\\\\foo\\bar", "?data"));
-	EXPECT_STREQ("\\\\foo\\bar", p.MakeRelative("\\\\foo\\bar", "?data").string().c_str());
+	ASSERT_NO_THROW(p.MakeRelative("\\\\foo\\bar", "?data"sv));
+	EXPECT_STREQ("\\\\foo\\bar", p.MakeRelative("\\\\foo\\bar", "?data"sv).string().c_str());
 }
 #endif
 
-#define EXPECT_UNCHANGED(url, func) EXPECT_STREQ(url, p.func(url, "?data").string().c_str())
+#define EXPECT_UNCHANGED(url, func) EXPECT_STREQ(url, p.func(url, "?data"sv).string().c_str())
 
 TEST(lagi_path, make_absolute_on_dummy_url) {
 	Path p;

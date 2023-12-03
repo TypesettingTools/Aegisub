@@ -38,18 +38,12 @@
 #include "video_frame.h"
 
 #include <libaegisub/color.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/filesystem/path.hpp>
 #include <libaegisub/format.h>
-#if BOOST_VERSION >= 106900
 #include <boost/gil.hpp>
-#else
-#include <boost/gil/gil_all.hpp>
-#endif
 
 DummyVideoProvider::DummyVideoProvider(double fps, int frames, int width, int height, agi::Color colour, bool pattern)
 : framecount(frames)
@@ -104,12 +98,12 @@ void DummyVideoProvider::GetFrame(int, VideoFrame &frame) {
 }
 
 namespace agi { class BackgroundRunner; }
-std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, std::string const&, agi::BackgroundRunner *) {
+std::unique_ptr<VideoProvider> CreateDummyVideoProvider(std::filesystem::path const& filename, std::string_view, agi::BackgroundRunner *) {
 	if (!boost::starts_with(filename.string(), "?dummy"))
 		return {};
 
 	std::vector<std::string> toks;
-	auto const& fields = filename.string().substr(7);
+	auto fields = filename.string().substr(7);
 	agi::Split(toks, fields, ':');
 	if (toks.size() != 8)
 		throw VideoOpenError("Too few fields in dummy video parameter list");
@@ -129,5 +123,5 @@ std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& fil
 
 	bool pattern = toks[i] == "c";
 
-	return agi::make_unique<DummyVideoProvider>(fps, frames, width, height, agi::Color(red, green, blue), pattern);
+	return std::make_unique<DummyVideoProvider>(fps, frames, width, height, agi::Color(red, green, blue), pattern);
 }

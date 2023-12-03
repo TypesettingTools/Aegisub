@@ -31,15 +31,16 @@
 #include <string>
 
 namespace agi {
-	namespace osx {
-		class AppNapDisabler {
-			void *handle;
-		public:
-			AppNapDisabler(std::string reason);
-			~AppNapDisabler();
-		};
-	}
-    namespace util {
+namespace osx {
+class AppNapDisabler {
+	void *handle;
+public:
+	AppNapDisabler(std::string reason);
+	~AppNapDisabler();
+};
+}
+
+namespace util {
 /// @brief Get the esources directory.
 /// @return Resources directory.
 ///
@@ -54,5 +55,5 @@ std::string GetBundleResourcesDirectory();
 std::string GetBundleSharedSupportDirectory();
 
 std::string GetApplicationSupportDirectory();
-    } // namespace util
+} // namespace util
 } // namespace agi

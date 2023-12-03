@@ -39,7 +39,6 @@
 #include "../project.h"
 #include "../utils.h"
 
-#include <libaegisub/make_unique.h>
 
 #include <wx/msgdlg.h>
 
@@ -109,8 +108,8 @@ struct timecode_save final : public Command {
 
 namespace cmd {
 	void init_timecode() {
-		reg(agi::make_unique<timecode_close>());
-		reg(agi::make_unique<timecode_open>());
-		reg(agi::make_unique<timecode_save>());
+		reg(std::make_unique<timecode_close>());
+		reg(std::make_unique<timecode_open>());
+		reg(std::make_unique<timecode_save>());
 	}
 }

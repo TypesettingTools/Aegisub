@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <string>
+#include <string_view>
 
 namespace agi {
 	struct Color;
@@ -34,6 +34,6 @@ namespace agi {
 		///  * CSS-style rgb(r,g,b)
 		///
 		/// CSS's rgb(r%,g%,b%) format is not currently supported.
-		bool parse(Color &dst, std::string const& str);
+		bool parse(Color &dst, std::string_view str);
 	}
 }

@@ -41,10 +41,11 @@
 #include "ass_style.h"
 #include "compat.h"
 
+#include <libaegisub/ass/karaoke.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/log.h>
 #include <libaegisub/lua/utils.h>
-#include <libaegisub/make_unique.h>
+#include <libaegisub/string.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -55,37 +56,47 @@ namespace {
 	using namespace agi::lua;
 
 	DEFINE_EXCEPTION(BadField, Automation4::MacroRunError);
+	[[noreturn]]
 	BadField bad_field(const char *expected_type, const char *name, const char *line_clasee)
 	{
-		return BadField(std::string("Invalid or missing field '") + name + "' in '" + line_clasee + "' class subtitle line (expected " + expected_type + ")");
+		throw BadField(agi::Str("Invalid or missing field '", name, "' in '", line_clasee, "' class subtitle line (expected ", expected_type, ")"));
+	}
+
+	void get_field(lua_State *L, const char *name, const char *line_class, int (*p)(lua_State *, int))
+	{
+		lua_getfield(L, -1, name);
+		if (!p(L, -1))
+			bad_field("string", name, line_class);
 	}
 
 	std::string get_string_field(lua_State *L, const char *name, const char *line_class)
 	{
-		lua_getfield(L, -1, name);
-		if (!lua_isstring(L, -1))
-			throw bad_field("string", name, line_class);
-		std::string ret(lua_tostring(L, -1));
+		get_field(L, name, line_class, lua_isstring);
+		std::string ret(lua_tostring(L, -1), lua_strlen(L, -1));
+		lua_pop(L, 1);
+		return ret;
+	}
+
+	agi::Color get_color_field(lua_State *L, const char *name, const char *line_class)
+	{
+		get_field(L, name, line_class, lua_isstring);
+		agi::Color ret(std::string_view(lua_tostring(L, -1), lua_strlen(L, -1)));
 		lua_pop(L, 1);
 		return ret;
 	}
 
 	double get_double_field(lua_State *L, const char *name, const char *line_class)
 	{
-		lua_getfield(L, -1, name);
-		if (!lua_isnumber(L, -1))
-			throw bad_field("number", name, line_class);
+		get_field(L, name, line_class, lua_isnumber);
 		double ret = lua_tonumber(L, -1);
 		lua_pop(L, 1);
 		return ret;
 	}
 
-	int get_int_field(lua_State *L, const char *name, const char *line_class)
+	long get_int_field(lua_State *L, const char *name, const char *line_class)
 	{
-		lua_getfield(L, -1, name);
-		if (!lua_isnumber(L, -1))
-			throw bad_field("number", name, line_class);
-		int ret = lua_tointeger(L, -1);
+		get_field(L, name, line_class, lua_isnumber);
+		long ret = lua_tointeger(L, -1);
 		lua_pop(L, 1);
 		return ret;
 	}
@@ -94,7 +105,7 @@ namespace {
 	{
 		lua_getfield(L, -1, name);
 		if (!lua_isboolean(L, -1))
-			throw bad_field("boolean", name, line_class);
+			bad_field("boolean", name, line_class);
 		bool ret = !!lua_toboolean(L, -1);
 		lua_pop(L, 1);
 		return ret;
@@ -131,7 +142,7 @@ namespace {
 }
 
 namespace Automation4 {
-	LuaAssFile::~LuaAssFile() { }
+	LuaAssFile::~LuaAssFile() = default;
 
 	void LuaAssFile::CheckAllowModify()
 	{
@@ -256,17 +267,18 @@ namespace Automation4 {
 
 		std::unique_ptr<AssEntry> result;
 		if (lclass == "info")
-			result = agi::make_unique<AssInfo>(get_string_field(L, "key", "info"), get_string_field(L, "value", "info"));
+			result = std::make_unique<AssInfo>(get_string_field(L, "key", "info"),
+			                                   get_string_field(L, "value", "info"));
 		else if (lclass == "style") {
 			auto sty = new AssStyle;
 			result.reset(sty);
 			sty->name = get_string_field(L, "name", "style");
 			sty->font = get_string_field(L, "fontname", "style");
 			sty->fontsize = get_double_field(L, "fontsize", "style");
-			sty->primary = get_string_field(L, "color1", "style");
-			sty->secondary = get_string_field(L, "color2", "style");
-			sty->outline = get_string_field(L, "color3", "style");
-			sty->shadow = get_string_field(L, "color4", "style");
+			sty->primary = get_color_field(L, "color1", "style");
+			sty->secondary = get_color_field(L, "color2", "style");
+			sty->outline = get_color_field(L, "color3", "style");
+			sty->shadow = get_color_field(L, "color4", "style");
 			sty->bold = get_bool_field(L, "bold", "style");
 			sty->italic = get_bool_field(L, "italic", "style");
 			sty->underline = get_bool_field(L, "underline", "style");
@@ -388,7 +400,7 @@ namespace Automation4 {
 			// Just in case an insane user inserted non-info lines into the
 			// script info section...
 			while (lines[i]) ++i;
-			lines_to_delete.emplace_back(agi::make_unique<AssInfo>(info));
+			lines_to_delete.emplace_back(std::make_unique<AssInfo>(info));
 			lines[i++] = lines_to_delete.back().get();
 		}
 		script_info_copied = true;
@@ -643,7 +655,8 @@ namespace Automation4 {
 		set_field(L, "text_stripped", "");
 		lua_rawseti(L, -2, idx++);
 
-		AssKaraoke kara(dia, false, false);
+		agi::ass::Karaoke kara;
+		SetKaraokeLine(kara, dia, false, false);
 		for (auto const& syl : kara) {
 			lua_createtable(L, 0, 6);
 			set_field(L, "duration", syl.duration);

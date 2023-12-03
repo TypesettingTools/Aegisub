@@ -16,6 +16,7 @@
 
 #include <main.h>
 
+#include <array>
 #include <cstdint>
 #include <iconv.h>
 
@@ -29,31 +30,6 @@ TEST(lagi_iconv, InvalidConversions) {
 	EXPECT_THROW(IconvWrapper("nonexistent charset", "UTF-16LE"), UnsupportedConversion);
 	EXPECT_THROW(IconvWrapper("UTF-16LE", "nonexistent charset"), UnsupportedConversion);
 	EXPECT_THROW(IconvWrapper("nonexistent charset", "nonexistent charset"), UnsupportedConversion);
-}
-
-TEST(lagi_iconv, StrLen1) {
-	IconvWrapper conv("UTF-8", "UTF-8", false);
-	for (int i = 0; i < 10; i++) {
-		std::string str(i, ' ');
-		ASSERT_EQ(i, conv.SrcStrLen(str.c_str()));
-		ASSERT_EQ(i, conv.DstStrLen(str.c_str()));
-	}
-}
-TEST(lagi_iconv, StrLen2) {
-	IconvWrapper conv("UTF-16LE", "UTF-16LE", false);
-	for (int i = 0; i < 10; i++) {
-		std::basic_string<int16_t> str(i, ' ');
-		ASSERT_EQ(2*i, conv.SrcStrLen((const char *)str.c_str()));
-		ASSERT_EQ(2*i, conv.DstStrLen((const char *)str.c_str()));
-	}
-}
-TEST(lagi_iconv, StrLen4) {
-	IconvWrapper conv("UTF-32LE", "UTF-32LE", false);
-	for (int i = 0; i < 10; i++) {
-		std::basic_string<int32_t> str(i, ' ');
-		ASSERT_EQ(4*i, conv.SrcStrLen((const char *)str.c_str()));
-		ASSERT_EQ(4*i, conv.DstStrLen((const char *)str.c_str()));
-	}
 }
 
 #ifdef _LIBICONV_VERSION
@@ -111,14 +87,16 @@ TEST(lagi_iconv, Conversions) {
 // Basic overflow tests
 TEST(lagi_iconv, Buffer) {
 	IconvWrapper conv("UTF-8", "UTF-16LE", false);
-	char buff[32];
-	memset(buff, 0xFF, sizeof(buff));
+	std::array<char, 4> buff;
+	buff.fill(0xFF);
+	std::span<char> sbuff(buff);
+	std::string_view src("", 1);
 
-	EXPECT_THROW(conv.Convert("", 1, buff, 0), BufferTooSmall);
+	EXPECT_THROW(conv.Convert(src, sbuff.first(0)), BufferTooSmall);
 	EXPECT_EQ('\xFF', buff[0]);
-	EXPECT_THROW(conv.Convert("", 1, buff, 1), BufferTooSmall);
+	EXPECT_THROW(conv.Convert(src, sbuff.first(1)), BufferTooSmall);
 	EXPECT_EQ('\xFF', buff[0]);
-	EXPECT_NO_THROW(conv.Convert("", 1, buff, 2));
+	EXPECT_NO_THROW(conv.Convert(src, sbuff.first(2)));
 	EXPECT_EQ('\0', buff[0]);
 	EXPECT_EQ('\0', buff[1]);
 	EXPECT_EQ('\xFF', buff[2]);

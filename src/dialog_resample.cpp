@@ -145,7 +145,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 
 	wxString ar_modes[] = {_("Stretch"), _("Add borders"), _("Remove borders"), _("Manual")};
 	ar_mode = new wxRadioBox(&d, -1, _("Aspect Ratio Handling"), wxDefaultPosition,
-		wxDefaultSize, boost::size(ar_modes), ar_modes, 1, 4, MakeEnumBinder(&settings.ar_mode));
+		wxDefaultSize, std::size(ar_modes), ar_modes, 1, 4, MakeEnumBinder(&settings.ar_mode));
 
 	// Position the controls
 	auto margin_sizer = new wxGridSizer(3, 3, 5, 5);
@@ -205,8 +205,8 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	// Bind events
 	using std::bind;
 	d.Bind(wxEVT_BUTTON, bind(&HelpButton::OpenPage, "Resample resolution"), wxID_HELP);
-	d.Bind(wxEVT_SPINCTRL, [=](wxCommandEvent&) { UpdateButtons(); });
-	d.Bind(wxEVT_RADIOBOX, [=](wxCommandEvent&) { UpdateButtons(); });
+	d.Bind(wxEVT_SPINCTRL, [=, this](wxCommandEvent&) { UpdateButtons(); });
+	d.Bind(wxEVT_RADIOBOX, [=, this](wxCommandEvent&) { UpdateButtons(); });
 	from_video->Bind(wxEVT_BUTTON, &DialogResample::SetDestFromVideo, this);
 	from_script->Bind(wxEVT_BUTTON, &DialogResample::SetSourceFromScript, this);
 	symmetrical->Bind(wxEVT_CHECKBOX, &DialogResample::OnSymmetrical, this);

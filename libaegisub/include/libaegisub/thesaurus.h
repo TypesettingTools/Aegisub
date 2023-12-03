@@ -12,12 +12,12 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include "fs_fwd.h"
-
 #include <boost/container/flat_map.hpp>
+#include <filesystem>
 #include <iosfwd>
 #include <memory>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace agi {
@@ -27,7 +27,7 @@ namespace charset { class IconvWrapper; }
 
 class Thesaurus {
 	/// Map of word -> byte position in the data file
-	boost::container::flat_map<std::string, size_t> offsets;
+	boost::container::flat_map<std::string, size_t, std::less<>> offsets;
 	/// Read handle to the data file
 	std::unique_ptr<read_file_mapping> dat;
 	/// Converter from the data file's charset to UTF-8
@@ -35,17 +35,17 @@ class Thesaurus {
 
 public:
 	/// A pair of a word and synonyms for that word
-	typedef std::pair<std::string, std::vector<std::string>> Entry;
+	using Entry = std::pair<std::string, std::vector<std::string>>;
 
 	/// Constructor
 	/// @param dat_path Path to data file
 	/// @param idx_path Path to index file
-	Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path);
+	Thesaurus(std::filesystem::path const& dat_path, std::filesystem::path const& idx_path);
 	~Thesaurus();
 
 	/// Look up synonyms for a word
 	/// @param word Word to look up
-	std::vector<Entry> Lookup(std::string const& word);
+	std::vector<Entry> Lookup(std::string_view word);
 };
 
 }

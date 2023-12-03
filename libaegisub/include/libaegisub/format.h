@@ -14,10 +14,9 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <libaegisub/fs_fwd.h>
-
 #include <boost/interprocess/streams/vectorstream.hpp>
 #include <boost/io/ios_state.hpp>
+#include <filesystem>
 #include <type_traits>
 
 class wxString;
@@ -51,24 +50,24 @@ Out runtime_cast(In const& value) {
 
 template<typename Char, typename T>
 struct writer {
-	static void write(std::basic_ostream<Char>& out, int, T const& value) {
+	static void write(std::basic_ostream<Char>& out, size_t, T const& value) {
 		out << value;
 	}
 };
 
 template<typename StreamChar, typename Char>
 struct writer<StreamChar, const Char *> {
-	static void write(std::basic_ostream<StreamChar>& out, int max_len, const Char *value);
+	static void write(std::basic_ostream<StreamChar>& out, size_t max_len, const Char *value);
 };
 
 template<typename StreamChar, typename Char>
 struct writer<StreamChar, std::basic_string<Char>> {
-	static void write(std::basic_ostream<StreamChar>& out, int max_len, std::basic_string<Char> const& value);
+	static void write(std::basic_ostream<StreamChar>& out, size_t max_len, std::basic_string<Char> const& value);
 };
 
 // Ensure things with specializations don't get implicitly initialized
-template<> struct writer<char, agi::fs::path>;
-template<> struct writer<wchar_t, agi::fs::path>;
+template<> struct writer<char, std::filesystem::path>;
+template<> struct writer<wchar_t, std::filesystem::path>;
 template<> struct writer<char, wxString>;
 template<> struct writer<wchar_t, wxString>;
 

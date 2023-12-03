@@ -14,63 +14,52 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <boost/range/iterator_range.hpp>
+#include <locale>
+#include <string_view>
 
 namespace agi {
-	typedef boost::iterator_range<std::string::const_iterator> StringRange;
-
-	template<typename Iterator>
+	template<typename Char>
 	class split_iterator {
-		bool is_end = false;
-		Iterator b;
-		Iterator cur;
-		Iterator e;
-		typename Iterator::value_type c;
+		bool is_end = true;
+		std::basic_string_view<Char> str;
+		size_t pos = 0;
+		Char delim;
 
 	public:
 		using iterator_category = std::forward_iterator_tag;
-		using value_type = boost::iterator_range<Iterator>;
+		using value_type = std::string_view;
 		using pointer = value_type*;
 		using reference = value_type&;
 		using difference_type = ptrdiff_t;
 
-		split_iterator(Iterator begin, Iterator end, typename Iterator::value_type c)
-		: b(begin), cur(begin), e(end), c(c)
+		split_iterator(std::basic_string_view<Char> str, Char c)
+		: is_end(str.size() == 0), str(str), delim(c)
 		{
-			if (b != e)
-				cur = std::find(b, e, c);
-			else
-				is_end = true;
+			pos = str.find(delim);
 		}
 
-		split_iterator() : is_end(true) { }
+		split_iterator() = default;
 
 		bool eof() const { return is_end; }
 
-		boost::iterator_range<Iterator> operator*() const {
-			return boost::make_iterator_range(b, cur);
+		std::basic_string_view<Char> operator*() const {
+			return str.substr(0, pos);
 		}
 
 		bool operator==(split_iterator const& it) const {
 			if (is_end || it.is_end)
 				return is_end && it.is_end;
-			return b == it.b && cur == it.cur && e == it.e && c == it.c;
-		}
-
-		bool operator!=(split_iterator const& it) const {
-			return !(*this == it);
+			return str == it.str && (str.size() == 0 || delim == it.delim);
 		}
 
 		split_iterator& operator++() {
-			if (cur != e) {
-				b = cur + 1;
-				cur = std::find(b, e, c);
-			}
-			else {
-				b = e;
+			if (pos == str.npos) {
+				str = str.substr(str.size());
 				is_end = true;
+			} else {
+				str = str.substr(pos + 1);
+				pos = str.find(delim);
 			}
-
 			return *this;
 		}
 
@@ -81,29 +70,43 @@ namespace agi {
 		}
 	};
 
-	template<typename Iterator>
-	split_iterator<Iterator> begin(split_iterator<Iterator> const& it) {
+	template<typename Char>
+	split_iterator<Char> begin(split_iterator<Char> const& it) {
 		return it;
 	}
 
-	template<typename Iterator>
-	split_iterator<Iterator> end(split_iterator<Iterator> const&) {
-		return split_iterator<Iterator>();
+	template<typename Char>
+	split_iterator<Char> end(split_iterator<Char> const&) {
+		return split_iterator<Char>();
 	}
 
-	static inline std::string str(StringRange const& r) {
-		return std::string(r.begin(), r.end());
+	template<typename Char>
+	split_iterator<Char> Split(std::basic_string_view<Char> str, Char delim) {
+		return split_iterator<Char>(str, delim);
 	}
 
-	template<typename Str, typename Char>
-	split_iterator<typename Str::const_iterator> Split(Str const& str, Char delim) {
-		return split_iterator<typename Str::const_iterator>(begin(str), end(str), delim);
+	inline split_iterator<char> Split(std::basic_string_view<char> str, char delim) {
+		return split_iterator<char>(str, delim);
 	}
 
-	template<typename Cont, typename Str, typename Char>
-	void Split(Cont& out, Str const& str, Char delim) {
+	template<typename Cont, typename Char>
+	void Split(Cont& out, std::basic_string_view<Char> str, Char delim) {
 		out.clear();
 		for (auto const& tok : Split(str, delim))
 			out.emplace_back(begin(tok), end(tok));
+	}
+
+	template<typename Cont>
+	void Split(Cont& out, std::basic_string_view<char> str, char delim) {
+		Split<Cont, char>(out, str, delim);
+	}
+
+	inline std::string_view Trim(std::string_view str) {
+		std::locale loc;
+		while (str.size() && std::isspace(str.front(), loc))
+			str.remove_prefix(1);
+		while (str.size() && std::isspace(str.back(), loc))
+			str.remove_suffix(1);
+		return str;
 	}
 }

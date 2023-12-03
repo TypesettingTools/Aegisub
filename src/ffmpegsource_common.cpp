@@ -43,10 +43,10 @@
 #include <libaegisub/background_runner.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
+#include <libaegisub/string.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/crc.hpp>
-#include <boost/filesystem/path.hpp>
 #include <wx/intl.h>
 #include <wx/choicdlg.h>
 
@@ -61,7 +61,7 @@ FFmpegSourceProvider::FFmpegSourceProvider(agi::BackgroundRunner *br)
 /// @param CacheName    The filename of the output index file
 /// @param Trackmask    A binary mask of the track numbers to index
 FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer,
-	                                         agi::fs::path const& CacheName,
+	                                         std::filesystem::path const& CacheName,
 	                                         TrackSelection Track,
 	                                         FFMS_IndexErrorHandling IndexEH) {
 	char FFMSErrMsg[1024];
@@ -178,7 +178,7 @@ FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
 /// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist
 /// @param filename	The name of the source file
 /// @return			Returns the generated filename.
-agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filename) {
+std::filesystem::path FFmpegSourceProvider::GetCacheFilename(std::filesystem::path const& filename) {
 	// Get the size of the file to be hashed
 	uintmax_t len = agi::fs::Size(filename);
 
@@ -187,7 +187,8 @@ agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filena
 	hash.process_bytes(filename.string().c_str(), filename.string().size());
 
 	// Generate the filename
-	auto result = config::path->Decode("?local/ffms2cache/" + std::to_string(hash.checksum()) + "_" + std::to_string(len) + "_" + std::to_string(agi::fs::ModifiedTime(filename)) + ".ffindex");
+	auto modified_time = std::chrono::duration_cast<std::chrono::seconds>(agi::fs::ModifiedTime(filename).time_since_epoch()).count();
+	auto result = config::path->Decode(agi::Str("?local/ffms2cache/", std::to_string(hash.checksum()), "_", std::to_string(len), "_", std::to_string(modified_time), ".ffindex"));
 
 	// Ensure that folder exists
 	agi::fs::CreateDirectory(result.parent_path());

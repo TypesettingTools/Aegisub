@@ -20,7 +20,6 @@
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/locale/generator.hpp>
 #include <boost/phoenix/core/argument.hpp>
 #include <boost/phoenix/operator/comparison.hpp>
 #include <fstream>
@@ -84,7 +83,7 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 	agi::dispatch::Init([](agi::dispatch::Thunk f) { });
-	std::locale::global(boost::locale::generator().generate(""));
+	agi::util::InitLocale();
 	agi::log::log = new agi::log::LogSink;
 
 	convert(argv[1]);

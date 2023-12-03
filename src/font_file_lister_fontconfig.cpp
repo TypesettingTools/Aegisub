@@ -20,7 +20,6 @@
 #include <libaegisub/log.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
-#include <boost/filesystem/path.hpp>
 #include <fontconfig/fontconfig.h>
 #include <wx/intl.h>
 

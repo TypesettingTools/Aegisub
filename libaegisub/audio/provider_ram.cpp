@@ -16,7 +16,6 @@
 
 #include "libaegisub/audio/provider.h"
 
-#include "libaegisub/make_unique.h"
 
 #include <array>
 #include <boost/container/stable_vector.hpp>
@@ -63,7 +62,7 @@ public:
 		});
 	}
 
-	~RAMAudioProvider() {
+	~RAMAudioProvider() override {
 		cancelled = true;
 		decoder.join();
 	}
@@ -77,9 +76,9 @@ void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 			break;
 		}
 
-		const int i = (start * bytes_per_sample) >> CacheBits;
-		const int start_offset = (start * bytes_per_sample) & (CacheBlockSize-1);
-		const int read_size = std::min<int>(bytes_remaining, CacheBlockSize - start_offset);
+		const int64_t i = (start * bytes_per_sample) >> CacheBits;
+		const int64_t start_offset = (start * bytes_per_sample) & (CacheBlockSize-1);
+		const int64_t read_size = std::min(bytes_remaining, CacheBlockSize - start_offset);
 
 		memcpy(charbuf, &blockcache[i][start_offset], read_size);
 		charbuf += read_size;
@@ -91,6 +90,6 @@ void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 
 namespace agi {
 std::unique_ptr<AudioProvider> CreateRAMAudioProvider(std::unique_ptr<AudioProvider> src) {
-	return agi::make_unique<RAMAudioProvider>(std::move(src));
+	return std::make_unique<RAMAudioProvider>(std::move(src));
 }
 }

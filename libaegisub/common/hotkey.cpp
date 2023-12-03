@@ -23,30 +23,31 @@
 #include <algorithm>
 #include <boost/range/algorithm/equal_range.hpp>
 #include <tuple>
+#include <utility>
 
-namespace agi { namespace hotkey {
+namespace agi::hotkey {
 namespace {
 struct combo_cmp {
 	bool operator()(const Combo *a, const Combo *b) {
 		return a->Str() < b->Str();
 	}
 
-	bool operator()(const Combo *a, std::string const& b) {
+	bool operator()(const Combo *a, std::string_view b) {
 		return a->Str() < b;
 	}
 
-	bool operator()(std::string const& a, const Combo *b) {
+	bool operator()(std::string_view a, const Combo *b) {
 		return a < b->Str();
 	}
 };
 
 struct hotkey_visitor : json::ConstVisitor {
-	std::string const& context;
-	std::string const& command;
+	std::string_view context;
+	std::string_view command;
 	Hotkey::HotkeyMap& map;
 	bool needs_backup = false;
 
-	hotkey_visitor(std::string const& context, std::string const& command, Hotkey::HotkeyMap& map)
+	hotkey_visitor(std::string_view context, std::string_view command, Hotkey::HotkeyMap& map)
 	: context(context), command(command), map(map) { }
 
 	void Visit(std::string const& string) override {
@@ -85,7 +86,7 @@ struct hotkey_visitor : json::ConstVisitor {
 };
 }
 
-Hotkey::Hotkey(fs::path const& file, std::pair<const char *, size_t> default_config)
+Hotkey::Hotkey(fs::path const& file, std::string_view default_config)
 : config_file(file)
 {
 	LOG_D("hotkey/init") << "Generating hotkeys.";
@@ -96,7 +97,7 @@ Hotkey::Hotkey(fs::path const& file, std::pair<const char *, size_t> default_con
 	UpdateStrMap();
 }
 
-void Hotkey::BuildHotkey(std::string const& context, json::Object const& hotkeys) {
+void Hotkey::BuildHotkey(std::string_view context, json::Object const& hotkeys) {
 	for (auto const& command : hotkeys) {
 		json::Array const& command_hotkeys = command.second;
 
@@ -107,50 +108,48 @@ void Hotkey::BuildHotkey(std::string const& context, json::Object const& hotkeys
 	}
 }
 
-std::string Hotkey::Scan(std::string const& context, std::string const& str, bool always) const {
-	const std::string *local = nullptr, *dfault = nullptr;
+std::string_view Hotkey::Scan(std::string_view context, std::string_view str, bool always) const {
+	std::string_view local, dfault;
 
-	std::vector<const Combo *>::const_iterator index, end;
-	for (std::tie(index, end) = boost::equal_range(str_map, str, combo_cmp()); index != end; ++index) {
-		std::string const& ctext = (*index)->Context();
+	for (auto [index, end] = boost::equal_range(str_map, str, combo_cmp()); index != end; ++index) {
+		std::string_view ctext = (*index)->Context();
 
 		if (always && ctext == "Always") {
 			LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Always   Command: " << (*index)->CmdName();
 			return (*index)->CmdName();
 		}
 		if (ctext == "Default")
-			dfault = &(*index)->CmdName();
+			dfault = (*index)->CmdName();
 		else if (ctext == context)
-			local = &(*index)->CmdName();
+			local = (*index)->CmdName();
 	}
 
-	if (local) {
-		LOG_D("agi/hotkey/found") << "Found: " << str << "  Context: " << context << "  Command: " << *local;
-		return *local;
+	if (local.data()) {
+		LOG_D("agi/hotkey/found") << "Found: " << str << "  Context: " << context << "  Command: " << local;
+		return local;
 	}
-	if (dfault) {
-		LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Default   Command: " << *dfault;
-		return *dfault;
+	if (dfault.data()) {
+		LOG_D("agi/hotkey/found") << "Found: " << str << "  Context (req/found): " << context << "/Default   Command: " << dfault;
+		return dfault;
 	}
 
 	return "";
 }
 
-bool Hotkey::HasHotkey(std::string const& context, std::string const& str) const {
-	std::vector<const Combo *>::const_iterator index, end;
-	for (std::tie(index, end) = boost::equal_range(str_map, str, combo_cmp()); index != end; ++index) {
+bool Hotkey::HasHotkey(std::string_view context, std::string_view str) const {
+	for (auto [index, end] = boost::equal_range(str_map, str, combo_cmp()); index != end; ++index) {
 		if (context == (*index)->Context())
 			return true;
 	}
 	return false;
 }
 
-std::vector<std::string> Hotkey::GetHotkeys(std::string const& context, std::string const& command) const {
+std::vector<std::string> Hotkey::GetHotkeys(std::string_view context, std::string_view command) const {
 	std::vector<std::string> ret;
 
 	HotkeyMap::const_iterator it, end;
-	for (std::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
-		std::string const& ctext = it->second.Context();
+	for (auto [it, end] = cmd_map.equal_range(command); it != end; ++it) {
+		std::string_view ctext = it->second.Context();
 		if (ctext == "Always" || ctext == "Default" || ctext == context)
 			ret.emplace_back(it->second.Str());
 	}
@@ -161,11 +160,10 @@ std::vector<std::string> Hotkey::GetHotkeys(std::string const& context, std::str
 	return ret;
 }
 
-std::string Hotkey::GetHotkey(std::string const& context, std::string const& command) const {
-	std::string ret;
-	HotkeyMap::const_iterator it, end;
-	for (std::tie(it, end) = cmd_map.equal_range(command); it != end; ++it) {
-		std::string const& ctext = it->second.Context();
+std::string_view Hotkey::GetHotkey(std::string_view context, std::string_view command) const {
+	std::string_view ret;
+	for (auto [it, end] = cmd_map.equal_range(command); it != end; ++it) {
+		std::string_view ctext = it->second.Context();
 		if (ctext == context) return it->second.Str();
 		if (ctext == "Default")
 			ret = it->second.Str();
@@ -178,13 +176,13 @@ std::string Hotkey::GetHotkey(std::string const& context, std::string const& com
 void Hotkey::Flush() {
 	json::Object root;
 
-	for (auto const& combo : str_map) {
-		auto const& keys = combo->Str();
-		if (keys.empty()) continue;
+	auto get = [](json::Object& obj, std::string_view key) -> json::UnknownElement& {
+		return obj.emplace(key, json::UnknownElement()).first->second;
+	};
 
-		json::Object& context = root[combo->Context()];
-		json::Array& combo_array = context[combo->CmdName()];
-		combo_array.push_back(keys);
+	for (auto const& combo : str_map) {
+		json::Object& context = get(root, combo->Context());
+		static_cast<json::Array&>(get(context, combo->CmdName())).push_back(combo->Str());
 	}
 
 	if (backup_config_file && fs::FileExists(config_file) && !fs::FileExists(config_file.string() + ".3_1"))
@@ -210,4 +208,4 @@ void Hotkey::SetHotkeyMap(HotkeyMap new_map) {
 	HotkeysChanged();
 }
 
-} }
+}

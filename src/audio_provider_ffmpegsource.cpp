@@ -39,7 +39,6 @@
 #include "options.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/make_unique.h>
 
 #include <map>
 
@@ -51,21 +50,21 @@ class FFmpegSourceAudioProvider final : public agi::AudioProvider, FFmpegSourceP
 	mutable char FFMSErrMsg[1024];			///< FFMS error message
 	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
 
-	void LoadAudio(agi::fs::path const& filename);
+	void LoadAudio(std::filesystem::path const& filename);
 	void FillBuffer(void *Buf, int64_t Start, int64_t Count) const override {
 		if (FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo))
 			throw agi::AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
 	}
 
 public:
-	FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *br);
+	FFmpegSourceAudioProvider(std::filesystem::path const& filename, agi::BackgroundRunner *br);
 
 	bool NeedsCache() const override { return true; }
 };
 
 /// @brief Constructor
 /// @param filename The filename to open
-FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *br) try
+FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(std::filesystem::path const& filename, agi::BackgroundRunner *br) try
 : FFmpegSourceProvider(br)
 , AudioSource(nullptr, FFMS_DestroyAudioSource)
 {
@@ -81,7 +80,7 @@ catch (agi::EnvironmentError const& err) {
 	throw agi::AudioProviderError(err.GetMessage());
 }
 
-void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
+void FFmpegSourceAudioProvider::LoadAudio(std::filesystem::path const& filename) {
 	FFMS_Indexer *Indexer = FFMS_CreateIndexer(filename.string().c_str(), &ErrInfo);
 	if (!Indexer) {
 		if (ErrInfo.SubType == FFMS_ERROR_FILE_READ)
@@ -107,7 +106,7 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 		throw agi::AudioDataNotFound("no audio tracks found");
 
 	// generate a name for the cache file
-	agi::fs::path CacheName = GetCacheFilename(filename);
+	std::filesystem::path CacheName = GetCacheFilename(filename);
 
 	// try to read index
 	agi::scoped_holder<FFMS_Index*, void (FFMS_CC*)(FFMS_Index*)>
@@ -182,8 +181,8 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 
 }
 
-std::unique_ptr<agi::AudioProvider> CreateFFmpegSourceAudioProvider(agi::fs::path const& file, agi::BackgroundRunner *br) {
-	return agi::make_unique<FFmpegSourceAudioProvider>(file, br);
+std::unique_ptr<agi::AudioProvider> CreateFFmpegSourceAudioProvider(std::filesystem::path const& file, agi::BackgroundRunner *br) {
+	return std::make_unique<FFmpegSourceAudioProvider>(file, br);
 }
 
 #endif /* WITH_FFMS2 */

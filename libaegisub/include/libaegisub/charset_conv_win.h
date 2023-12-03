@@ -18,13 +18,15 @@
 
 #include <libaegisub/charset_conv.h>
 
+#include <string_view>
+
 namespace agi {
 	namespace charset {
 		/// Convert a UTF-8 string to a string suitable for use with Win32 API functions
-		std::wstring ConvertW(std::string const& src);
-		std::string ConvertW(std::wstring const& src);
+		std::wstring ConvertW(std::string_view src);
+		std::string ConvertW(std::wstring_view src);
 
 		/// Convert a UTF-16 string to the local charset
-		std::string ConvertLocal(std::wstring const& src);
+		std::string ConvertLocal(std::wstring_view src);
 	}
 }
