@@ -51,6 +51,9 @@ Copy-New-Item $InstallerDir\bin\aegisub.exe  $PortableOutputDir
 
 Write-Output 'Copying - translations'
 Copy-New-Items "$InstallerDir\share\locale\*"  "$PortableOutputDir\locale" -Recurse
+Write-Output 'Copying - dictionaries'
+Copy-New-Item $InstallerDepsDir\dictionaries\en_US.aff  $PortableOutputDir\dictionaries
+Copy-New-Item $InstallerDepsDir\dictionaries\en_US.dic  $PortableOutputDir\dictionaries
 Write-Output 'Copying - codecs'
 Write-Output 'Copying - codecs\Avisynth'
 Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x64\Output\system\DevIL.dll  $PortableOutputDir

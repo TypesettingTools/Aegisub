@@ -61,7 +61,14 @@ echo "---- Copying dictionaries ----"
 if test -f "${DICT_DIR}"; then
   cp -v "${DICT_DIR}/*" "${PKG_DIR}/Contents/SharedSupport/dictionaries"
 else
-  echo "Specified dictionary directory ${DICT_DIR} not found!"
+  mkdir -p "${BUILD_DIR}/dictionaries"
+  if ! test -f "${BUILD_DIR}/dictionaries/en_US.aff"; then
+      echo "Specified dictionary directory ${DICT_DIR} not found. Downloading dictionaries:"
+      curl -L "https://raw.githubusercontent.com/TypesettingTools/Aegisub-dictionaries/master/dicts/en_US.aff" -o "${BUILD_DIR}/dictionaries/en_US.aff"
+      curl -L "https://raw.githubusercontent.com/TypesettingTools/Aegisub-dictionaries/master/dicts/en_US.dic" -o "${BUILD_DIR}/dictionaries/en_US.dic"
+  fi
+  cp -v "${BUILD_DIR}/dictionaries/en_US.aff" "${PKG_DIR}/Contents/SharedSupport/dictionaries"
+  cp -v "${BUILD_DIR}/dictionaries/en_US.dic" "${PKG_DIR}/Contents/SharedSupport/dictionaries"
 fi
 
 echo
