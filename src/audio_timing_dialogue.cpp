@@ -323,8 +323,8 @@ class AudioTimingControllerDialogue final : public AudioTimingController {
 	/// The owning project context
 	agi::Context *context;
 
-	/// The time which was clicked on for alt-dragging mode
-	int clicked_ms;
+	/// The time which was clicked on for alt-dragging mode, or INT_MIN if not in alt-draging mode
+	int clicked_ms = INT_MIN;
 
 	/// Autocommit option
 	const agi::OptionValue *auto_commit = OPT_GET("Audio/Auto/Commit");

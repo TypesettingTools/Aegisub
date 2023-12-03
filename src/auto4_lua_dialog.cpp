@@ -286,6 +286,10 @@ namespace Automation4 {
 					max = DBL_MAX;
 					min = -DBL_MAX;
 				}
+				if (step != 0.0) {
+					min = min == -DBL_MAX ? 0.0 : min;
+					max = max == DBL_MAX ? 100.0 : max;
+				}
 			}
 
 			bool CanSerialiseValue() const override { return true; }
@@ -324,6 +328,12 @@ namespace Automation4 {
 			{
 				lua_getfield(L, -1, "items");
 				read_string_array(L, items);
+
+#ifdef __WXMAC__
+				if (std::find(items.begin(), items.end(), value) == items.end()) {
+					items.insert(items.begin(), value);
+				}
+#endif
 			}
 
 			bool CanSerialiseValue() const override { return true; }

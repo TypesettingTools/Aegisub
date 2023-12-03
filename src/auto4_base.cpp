@@ -221,13 +221,6 @@ namespace Automation4 {
 		});
 	}
 
-	int ProgressSink::ShowDialog(wxDialog *dialog)
-	{
-		int ret = 0;
-		agi::dispatch::Main().Sync([&] { ret = dialog->ShowModal(); });
-		return ret;
-	}
-
 	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, std::string const& title)
 	: impl(new DialogProgress(parent, to_wx(title)))
 	{
@@ -322,9 +315,13 @@ namespace Automation4 {
 
 		std::vector<std::future<std::unique_ptr<Script>>> script_futures;
 
+		std::set<std::filesystem::path> dirnames;
 		for (auto tok : agi::Split(path, '|')) {
 			auto dirname = config::path->Decode(std::string(tok));
 			if (!agi::fs::DirectoryExists(dirname)) continue;
+
+			if (dirnames.count(dirname)) continue;
+			dirnames.insert(dirname);
 
 			for (auto filename : agi::fs::DirectoryIterator(dirname, "*.*"))
 				script_futures.emplace_back(std::async(std::launch::async, [=] {

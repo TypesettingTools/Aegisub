@@ -54,9 +54,10 @@
 #include <wx/scrolbar.h>
 #include <wx/sizer.h>
 
+// Check menu.h for id range allocation before editing this enum
 enum {
 	GRID_SCROLLBAR = 1730,
-	MENU_SHOW_COL = 1250 // Needs 15 IDs after this
+	MENU_SHOW_COL = (wxID_HIGHEST + 1) + 2000 // Needs 15 IDs after this
 };
 
 BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
@@ -542,7 +543,7 @@ void BaseGrid::OnMouseEvent(wxMouseEvent &event) {
 void BaseGrid::OnContextMenu(wxContextMenuEvent &evt) {
 	wxPoint pos = evt.GetPosition();
 	if (pos == wxDefaultPosition || ScreenToClient(pos).y > lineHeight) {
-		if (!context_menu) context_menu = menu::GetMenu("grid_context", context);
+		if (!context_menu) context_menu = menu::GetMenu("grid_context", (wxID_HIGHEST + 1) + 8000, context);
 		menu::OpenPopupMenu(context_menu.get(), this);
 	}
 	else {
