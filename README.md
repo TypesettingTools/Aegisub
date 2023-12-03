@@ -17,7 +17,6 @@ Prerequisites:
 3. Python 3
 4. Meson
 5. CMake
-6. Powershell execution policy set to Unrestricted
 
 There are a few optional dependencies that must be installed and on your PATH:
 
