@@ -58,6 +58,9 @@ conf.set_quoted('P_LOCALE', localedir)
 if get_option('credit') != ''
     conf.set_quoted('BUILD_CREDIT', get_option('credit'))
 endif
+if get_option('official_release')
+    conf.set('AEGI_OFFICIAL_RELEASE', 1)
+endif
 conf.set('WITH_UPDATE_CHECKER', get_option('enable_update_checker'))
 
 deps = []

@@ -19,6 +19,7 @@ option('local_boost', type: 'boolean', value: false, description: 'Force using l
 option('wx_version', type: 'string', value: '3.0.0', description: 'The minimum wxWidgets version to use')
 
 option('credit', type: 'string', value: '', description: 'Build credit shown in program title')
+option('official_release', type: 'boolean', value: false, description: 'Set on official builds')
 
 option('enable_update_checker', type: 'boolean', value: false, description: 'Enable the update checker')
 option('update_server', type: 'string', value: 'updates.aegisub.org', description: 'Server to use for the update checker')
