@@ -21,7 +21,10 @@ if host_machine.system() == 'windows'
 endif
 
 if host_machine.system() == 'windows'
-    version_sh = find_program('tools/version.ps1')
+    powershell_exe = find_program('powershell')
+    version_sh = [powershell_exe,
+                  '-ExecutionPolicy', 'Bypass',
+                  '-File', meson.current_source_dir() / 'tools' / 'version.ps1']
 else
     version_sh = find_program('tools/version.sh')
 endif
