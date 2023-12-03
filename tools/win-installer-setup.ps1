@@ -81,7 +81,12 @@ if (!(Test-Path VC_redist)) {
 	Invoke-WebRequest https://aka.ms/vs/17/release/VC_redist.x64.exe -OutFile "$redistDir\VC_redist.x64.exe" -UseBasicParsing
 }
 
-# TODO dictionaries
+# dictionaries
+if (!(Test-Path dictionaries)) {
+	New-Item -ItemType Directory dictionaries
+	Invoke-WebRequest https://raw.githubusercontent.com/TypesettingTools/Aegisub-dictionaries/master/dicts/en_US.aff -OutFile dictionaries/en_US.aff -UseBasicParsing
+	Invoke-WebRequest https://raw.githubusercontent.com/TypesettingTools/Aegisub-dictionaries/master/dicts/en_US.dic -OutFile dictionaries/en_US.dic -UseBasicParsing
+}
 
 # localization
 Set-Location $BuildRoot
