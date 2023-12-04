@@ -23,6 +23,7 @@ elif host_machine.system() == 'darwin'
                command: [build_dmg_sh, meson.project_source_root(), meson.project_build_root(), meson.project_version()])
 else
     conf_pkg.set('AEGISUB_COMMAND', 'aegisub')
+    conf_pkg.set('AEGISUB_APP_NAME', app_name)
 
     desktop_template = configure_file(input: 'desktop/aegisub.desktop.template.in',
                                       output: 'aegisub.desktop.template',
@@ -30,7 +31,7 @@ else
 
     i18n = import('i18n')
     i18n.merge_file(input: desktop_template,
-                    output: 'aegisub.desktop',
+                    output: app_name + '.desktop',
                     type: 'desktop',
                     po_dir: '../po',
                     install: true,
@@ -42,6 +43,7 @@ else
         dir = s.split('.')[0]
         ext = s.split('.')[1]
         install_data('desktop' / dir / 'aegisub.' + ext,
-                     install_dir: datadir / 'icons' / 'hicolor' / dir / 'apps')
+                     install_dir: datadir / 'icons' / 'hicolor' / dir / 'apps',
+                    rename: [app_name + '.' + ext])
     endforeach
 endif

@@ -50,6 +50,11 @@ else
 endif
 docdir = prefix / 'doc'
 
+app_name = 'aegisub'
+if get_option('build_flatpak_bundle')
+    app_name = 'org.aegisub.Aegisub'
+endif
+
 # MSVC sets this automatically with -MDd, but it has a different meaning on other platforms
 if get_option('debug') and host_machine.system() != 'windows'
     add_project_arguments('-D_DEBUG', language: 'cpp')
@@ -65,6 +70,7 @@ if get_option('official_release')
     conf.set('AEGI_OFFICIAL_RELEASE', 1)
 endif
 conf.set('WITH_UPDATE_CHECKER', get_option('enable_update_checker'))
+conf.set('FLATPAK_BUILD', get_option('build_flatpak_bundle'))
 
 deps = []
 deps_inc = []
