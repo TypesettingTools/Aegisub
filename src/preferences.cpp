@@ -135,6 +135,10 @@ void Audio(wxTreebook *book, Preferences *parent) {
 	p->OptionAdd(general, _("Default timing length (ms)"), "Timing/Default Duration", 0, 36000);
 	p->OptionAdd(general, _("Default lead-in length (ms)"), "Audio/Lead/IN", 0, 36000);
 	p->OptionAdd(general, _("Default lead-out length (ms)"), "Audio/Lead/OUT", 0, 36000);
+	p->OptionAdd(general, _("Play after length (ms)"), "Audio/Play Selection Duration/After", 0, 36000);
+	p->OptionAdd(general, _("Play before length (ms)"), "Audio/Play Selection Duration/Before", 0, 36000);
+	p->OptionAdd(general, _("Play from beginning length (ms)"), "Audio/Play Selection Duration/Begin", 0, 36000);
+	p->OptionAdd(general, _("Play before end length (ms)"), "Audio/Play Selection Duration/End", 0, 36000);
 
 	p->OptionAdd(general, _("Marker drag-start sensitivity (px)"), "Audio/Start Drag Sensitivity", 1, 15);
 	p->OptionAdd(general, _("Line boundary thickness (px)"), "Audio/Line Boundaries Thickness", 1, 5);
