@@ -29,10 +29,6 @@
 
 #ifdef WITH_UPDATE_CHECKER
 
-#ifdef _MSC_VER
-#pragma warning(disable : 4250) // 'boost::asio::basic_socket_iostream<Protocol>' : inherits 'std::basic_ostream<_Elem,_Traits>::std::basic_ostream<_Elem,_Traits>::_Add_vtordisp2' via dominance
-#endif
-
 #include "compat.h"
 #include "format.h"
 #include "options.h"
@@ -46,9 +42,10 @@
 #include <libaegisub/split.h>
 
 #include <ctime>
-#include <boost/asio/ip/tcp.hpp>
+#include <curl/curl.h>
 #include <functional>
 #include <mutex>
+#include <sstream>
 #include <vector>
 #include <wx/button.h>
 #include <wx/checkbox.h>
@@ -280,44 +277,46 @@ static wxString GetAegisubLanguage() {
 	return to_wx(OPT_GET("App/Language")->GetString());
 }
 
+size_t writeToStringCb(char *contents, size_t size, size_t nmemb, std::string *s) {
+	s->append(contents, size * nmemb);
+	return size * nmemb;
+}
+
 void DoCheck(bool interactive) {
-	boost::asio::ip::tcp::iostream stream;
-	stream.connect(UPDATE_CHECKER_SERVER, "http");
-	if (!stream)
-		throw VersionCheckError(from_wx(_("Could not connect to updates server.")));
+	CURL *curl;
+	CURLcode res_code;
 
-	agi::format(stream,
-		"GET %s?rev=%d&rel=%d&os=%s&lang=%s&aegilang=%s HTTP/1.0\r\n"
-		"User-Agent: Aegisub %s\r\n"
-		"Host: %s\r\n"
-		"Accept: */*\r\n"
-		"Connection: close\r\n\r\n"
-		, UPDATE_CHECKER_BASE_URL
-		, GetSVNRevision()
-		, (GetIsOfficialRelease() ? 1 : 0)
-		, GetOSShortName()
-		, GetSystemLanguage()
-		, GetAegisubLanguage()
-		, GetAegisubLongVersionString()
-		, UPDATE_CHECKER_SERVER);
+	curl = curl_easy_init();
+	if (!curl)
+		throw VersionCheckError(from_wx(_("Curl could not be initialized.")));
 
-	std::string http_version;
-	stream >> http_version;
-	int status_code;
-	stream >> status_code;
-	if (!stream || http_version.substr(0, 5) != "HTTP/")
-		throw VersionCheckError(from_wx(_("Could not download from updates server.")));
-	if (status_code != 200)
-		throw VersionCheckError(agi::format(_("HTTP request failed, got HTTP response %d."), status_code));
+	curl_easy_setopt(curl, CURLOPT_URL,
+		agi::format("%s%s?rev=%d&rel=%d&os=%s&lang=%s&aegilang=%s"
+			, UPDATE_CHECKER_SERVER
+			, UPDATE_CHECKER_BASE_URL
+			, GetSVNRevision()
+			, (GetIsOfficialRelease() ? 1 : 0)
+			, GetOSShortName()
+			, GetSystemLanguage()
+			, GetAegisubLanguage()
+		).c_str());
+	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+	curl_easy_setopt(curl, CURLOPT_USERAGENT, agi::format("Aegisub %s", GetAegisubLongVersionString()).c_str());
 
-	stream.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	std::string result;
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writeToStringCb);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &result);
 
-	// Skip the headers since we don't care about them
-	for (auto const& header : agi::line_iterator<std::string>(stream))
-		if (header.empty()) break;
+	res_code = curl_easy_perform(curl);
+	curl_easy_cleanup(curl);
+	if (res_code != CURLE_OK) {
+		std::string err_msg = agi::format(_("Checking for updates failed: %s."), curl_easy_strerror(res_code));
+		throw VersionCheckError(err_msg);
+	}
 
+	std::stringstream ss(result);
 	std::vector<AegisubUpdateDescription> results;
-	for (auto const& line : agi::line_iterator<std::string>(stream)) {
+	for (auto const& line : agi::line_iterator<std::string>(ss)) {
 		if (line.empty()) continue;
 
 		std::vector<std::string> parsed;

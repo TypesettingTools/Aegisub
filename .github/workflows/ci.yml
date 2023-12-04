@@ -54,13 +54,13 @@ jobs:
             name: macOS Debug,
             os: macos-latest,
             buildtype: debugoptimized,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
           - {
             name: macOS Release,
             os: macos-latest,
             buildtype: release,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
 
     steps:
@@ -123,7 +123,10 @@ jobs:
       # Windows artifacts
       - name: Generate Windows installer
         if: matrix.config.os == 'windows-latest'
-        run: meson compile win-installer -C build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run:
+          meson compile win-installer -C build
 
       - name: Generate Windows portable installer
         if: matrix.config.os == 'windows-latest'
@@ -135,6 +138,7 @@ jobs:
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
+          if-no-files-found: error
       
       - name: Upload artifacts - portable.zip
         uses: actions/upload-artifact@v3
@@ -156,3 +160,4 @@ jobs:
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.dmg
+          if-no-files-found: error

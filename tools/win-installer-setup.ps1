@@ -18,6 +18,11 @@ $Env:SOURCE_ROOT = $SourceRoot
 
 Set-Location $DepsDir
 
+$GitHeaders = @{}
+if (Test-Path 'Env:GITHUB_TOKEN') {
+	$GitHeaders = @{ 'Authorization' = 'Bearer ' + $Env:GITHUB_TOKEN }
+}
+
 # DepCtrl
 if (!(Test-Path DependencyControl)) {
 	git clone https://github.com/TypesettingTools/DependencyControl.git
@@ -38,7 +43,7 @@ if (!(Test-Path luajson)) {
 
 # Avisynth
 if (!(Test-Path AviSynthPlus64)) {
-	$avsReleases = Invoke-WebRequest "https://api.github.com/repos/AviSynth/AviSynthPlus/releases/latest" -UseBasicParsing | ConvertFrom-Json
+	$avsReleases = Invoke-WebRequest "https://api.github.com/repos/AviSynth/AviSynthPlus/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
 	$avsUrl = $avsReleases.assets[0].browser_download_url
 	Invoke-WebRequest $avsUrl -OutFile AviSynthPlus.7z -UseBasicParsing
 	7z x AviSynthPlus.7z
@@ -50,7 +55,7 @@ if (!(Test-Path AviSynthPlus64)) {
 if (!(Test-Path VSFilter)) {
 	$vsFilterDir = New-Item -ItemType Directory VSFilter
 	Set-Location $vsFilterDir
-	$vsFilterReleases = Invoke-WebRequest "https://api.github.com/repos/pinterf/xy-VSFilter/releases/latest" -UseBasicParsing | ConvertFrom-Json
+	$vsFilterReleases = Invoke-WebRequest "https://api.github.com/repos/pinterf/xy-VSFilter/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
 	$vsFilterUrl = $vsFilterReleases.assets[0].browser_download_url
 	Invoke-WebRequest $vsFilterUrl -OutFile VSFilter.7z -UseBasicParsing
 	7z x VSFilter.7z
@@ -64,22 +69,31 @@ if (!(Test-Path ffi-experiments)) {
 	git clone https://github.com/TypesettingTools/ffi-experiments.git
 	Set-Location ffi-experiments
 	meson build -Ddefault_library=static
+	if(!$?) { Exit $LASTEXITCODE }
 	meson compile -C build
+	if(!$?) { Exit $LASTEXITCODE }
 	Set-Location $DepsDir
 }
 
 # VC++ redistributable
 if (!(Test-Path VC_redist)) {
 	$redistDir = New-Item -ItemType Directory VC_redist
-	Invoke-WebRequest https://aka.ms/vs/16/release/VC_redist.x64.exe -OutFile "$redistDir\VC_redist.x64.exe" -UseBasicParsing
+	Invoke-WebRequest https://aka.ms/vs/17/release/VC_redist.x64.exe -OutFile "$redistDir\VC_redist.x64.exe" -UseBasicParsing
 }
 
-# TODO dictionaries
+# dictionaries
+if (!(Test-Path dictionaries)) {
+	New-Item -ItemType Directory dictionaries
+	Invoke-WebRequest https://raw.githubusercontent.com/TypesettingTools/Aegisub-dictionaries/master/dicts/en_US.aff -OutFile dictionaries/en_US.aff -UseBasicParsing
+	Invoke-WebRequest https://raw.githubusercontent.com/TypesettingTools/Aegisub-dictionaries/master/dicts/en_US.dic -OutFile dictionaries/en_US.dic -UseBasicParsing
+}
 
 # localization
 Set-Location $BuildRoot
 meson compile aegisub-gmo
+if(!$?) { Exit $LASTEXITCODE }
 
 # Invoke InnoSetup
 $IssUrl = Join-Path $InstallerDir "aegisub_depctrl.iss"
 iscc $IssUrl
+if(!$?) { Exit $LASTEXITCODE }

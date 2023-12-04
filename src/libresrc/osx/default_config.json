@@ -389,6 +389,7 @@
 			"Syntax" : true
 		},
 		"Provider" : "libass",
+		"Show Original": false,
 		"Time Edit" : {
 			"Insert Mode" : true
 		}

@@ -21,8 +21,8 @@ option('wx_version', type: 'string', value: '3.0.0', description: 'The minimum w
 option('credit', type: 'string', value: '', description: 'Build credit shown in program title')
 option('official_release', type: 'boolean', value: false, description: 'Set on official builds')
 
-option('enable_update_checker', type: 'boolean', value: false, description: 'Enable the update checker')
-option('update_server', type: 'string', value: 'updates.aegisub.org', description: 'Server to use for the update checker')
+option('enable_update_checker', type: 'boolean', value: true, description: 'Enable the update checker')
+option('update_server', type: 'string', value: 'https://updates.aegisub.org', description: 'Server to use for the update checker')
 option('update_url', type: 'string', value: '/trunk', description: 'Base path to use for the update checker')
 
 option('build_osx_bundle', type: 'boolean', value: 'false', description: 'Package Aegisub.app on OSX')

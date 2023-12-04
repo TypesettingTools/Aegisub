@@ -1,6 +1,6 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.56.1',
+        meson_version: '>=0.57.0',
         default_options: ['cpp_std=c++20', 'buildtype=debugoptimized'],
         version: '3.2.2')
 
@@ -60,6 +60,10 @@ if get_option('debug') and host_machine.system() != 'windows'
     add_project_arguments('-D_DEBUG', language: 'cpp')
 endif
 
+if get_option('buildtype') == 'release'
+    add_project_arguments('-DNDEBUG', language: 'cpp')
+endif
+
 conf = configuration_data()
 conf.set_quoted('P_DATA', dataroot)
 conf.set_quoted('P_LOCALE', localedir)
@@ -71,6 +75,12 @@ if get_option('official_release')
 endif
 conf.set('WITH_UPDATE_CHECKER', get_option('enable_update_checker'))
 conf.set('FLATPAK_BUILD', get_option('build_flatpak_bundle'))
+
+if get_option('enable_update_checker')
+    conf.set_quoted('UPDATE_CHECKER_SERVER', get_option('update_server'))
+    conf.set_quoted('UPDATE_CHECKER_BASE_URL', get_option('update_url'))
+endif
+
 
 deps = []
 deps_inc = []
@@ -279,6 +289,41 @@ endif
 conf_platform = configuration_data()
 conf_platform.set('DEFAULT_PLAYER_AUDIO', def_audio)
 
+if get_option('enable_update_checker')
+    libcurl_dep = dependency('libcurl', required: false)
+
+    if (not libcurl_dep.found())
+        libcurl_opt = cmake.subproject_options()
+        options_dict = {
+            'HTTP_ONLY': true,
+            'BUILD_CURL_EXE': false,
+            'CMAKE_BUILD_TYPE': get_option('buildtype') == 'release' ? 'Release' : 'Debug',
+        }
+        if host_machine.system() == 'windows'
+            options_dict += {'CURL_USE_SCHANNEL': true}
+            deps += cc.find_library('crypt32')
+        elif host_machine.system() == 'darwin'
+            options_dict += {'CURL_USE_SECTRANSP': true}
+        else
+            options_dict += {'CURL_USE_OPENSSL': true}
+        endif
+        if get_option('default_library') == 'static' and (host_machine.system() == 'windows' or host_machine.system() == 'darwin')
+            options_dict += {'BUILD_SHARED_LIBS': false}
+            add_project_arguments('-DCURL_STATICLIB', language: ['cpp'])
+        endif
+        libcurl_opt.add_cmake_defines(options_dict)
+        libcurl = cmake.subproject('curl', options: libcurl_opt)
+
+        libcurl_dep = libcurl.dependency('libcurl')
+
+        # Horrible meson hack to work around the cmake subproject creating broken include directories
+        libcurl_dep = libcurl_dep.partial_dependency(compile_args: true, link_args: true, links: true, sources: true)
+        libcurl_fixed_inc = declare_dependency(include_directories: subproject('curl_meson').get_variable('libcurl_fixed_inc'))
+        deps += [libcurl_fixed_inc]
+    endif
+    deps += [libcurl_dep]
+endif
+
 luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'))
 if luajit.found() and luajit.type_name() != 'internal'
     luajit_test = cc.run('''#include <lauxlib.h>
@@ -350,7 +395,7 @@ subdir('tests')
 aegisub_cpp_pch = ['src/include/agi_pre.h']
 aegisub_c_pch = ['src/include/agi_pre_c.h']
 
-aegisub = executable('aegisub', aegisub_src, version_h, acconf,
+aegisub = executable('aegisub', aegisub_src, version_h, acconf, resrc,
                      link_with: [libresrc, libaegisub],
                      include_directories: [libaegisub_inc, libresrc_inc, version_inc, deps_inc, include_directories('src')],
                      cpp_pch: aegisub_cpp_pch,

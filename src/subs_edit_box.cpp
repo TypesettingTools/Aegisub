@@ -242,6 +242,12 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	context->textSelectionController->SetControl(edit_ctrl);
 	edit_ctrl->SetFocus();
+
+	bool show_original = OPT_GET("Subtitle/Show Original")->GetBool();
+	if (show_original) {
+		split_box->SetValue(true);
+		DoOnSplit(true);
+	}
 }
 
 SubsEditBox::~SubsEditBox() {
@@ -574,15 +580,22 @@ void SubsEditBox::SetControlsState(bool state) {
 }
 
 void SubsEditBox::OnSplit(wxCommandEvent&) {
+	bool show_original = split_box->IsChecked();
+	DoOnSplit(show_original);
+	OPT_SET("Subtitle/Show Original")->SetBool(show_original);
+}
+
+void SubsEditBox::DoOnSplit(bool show_original) {
 	Freeze();
-	GetSizer()->Show(secondary_editor, split_box->IsChecked());
-	GetSizer()->Show(bottom_sizer, split_box->IsChecked());
+	GetSizer()->Show(secondary_editor, show_original);
+	GetSizer()->Show(bottom_sizer, show_original);
 	Fit();
 	SetMinSize(GetSize());
-	GetParent()->GetSizer()->Layout();
+	wxSizer* parent_sizer = GetParent()->GetSizer();
+	if (parent_sizer) parent_sizer->Layout();
 	Thaw();
 
-	if (split_box->IsChecked())
+	if (show_original)
 		secondary_editor->SetValue(to_wx(c->initialLineState->GetInitialText()));
 }
 
