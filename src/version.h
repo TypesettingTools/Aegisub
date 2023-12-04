@@ -36,6 +36,8 @@
 const char *GetAegisubLongVersionString();
 /// Version string used in About box, looks nicer
 const char *GetAegisubShortVersionString();
+/// Year of build, only shown in About box
+const char *GetAegisubBuildYear();
 /// Timestamp of build, only shown in About box
 const char *GetAegisubBuildTime();
 /// Name of who built the binary
