@@ -118,7 +118,7 @@ modules:
             sha256: d653be97198a0543c69111122173c41a99e0b91426f9e17f06a858982c2fb03d
       build-commands:
           - mkdir build
-          - cd build && ../configure --prefix=/app
+          - cd build && ../configure --prefix=/app --enable-asm
           - cd build && make
           - cd build && make install
 
