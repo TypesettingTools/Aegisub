@@ -109,20 +109,8 @@ modules:
           - ./bootstrap.sh
           - ./b2 --prefix=/app --with-chrono --with-thread --with-locale --with-regex --with-system install variant=release
 
-    - name: libunibreak
-      buildsystem: simple
-      sources:
-          - type: archive
-            url: https://github.com/adah1972/libunibreak/releases/download/libunibreak_5_1/libunibreak-5.1.tar.gz
-            sha256: dd1a92d4c5646aa0e457ff41d89812ec5243863be6c20bbcb5ee380f3dd78377
-      build-commands:
-          - mkdir build
-          - cd build && ../configure --prefix=/app
-          - cd build && make
-          - cd build && make install
-
     # TODO: remove and use meson-pr branch of TypesettingTools/libass
-    - name: libass 
+    - name: libass
       buildsystem: simple
       sources:
           - type: archive
@@ -130,7 +118,7 @@ modules:
             sha256: d653be97198a0543c69111122173c41a99e0b91426f9e17f06a858982c2fb03d
       build-commands:
           - mkdir build
-          - cd build && ../configure --prefix=/app --enable-libunibreak
+          - cd build && ../configure --prefix=/app
           - cd build && make
           - cd build && make install
 
