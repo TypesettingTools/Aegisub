@@ -351,7 +351,9 @@ void Advanced(wxTreebook *book, Preferences *parent) {
 	auto general = p->PageSizer(_("General"));
 
 	auto warning = new wxStaticText(p, wxID_ANY ,_("Changing these settings might result in bugs and/or crashes.  Do not touch these unless you know what you're doing."));
-	warning->SetFont(wxFont(12, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
+	auto font = parent->GetFont().MakeBold();
+	font.SetPointSize(12);
+	warning->SetFont(font);
 	p->sizer->Fit(p);
 	warning->Wrap(400);
 	general->Add(warning, 0, wxALL, 5);
