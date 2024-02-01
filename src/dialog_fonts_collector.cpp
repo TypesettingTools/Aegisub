@@ -93,7 +93,14 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 			collector->AddPendingEvent(ValueEvent<color_str_pair>(EVT_ADD_TEXT, -1, {colour, text.Clone()}));
 		};
 
-		auto paths = FontCollector(AppendText).GetFontPaths(subs);
+		std::vector<agi::fs::path> paths;
+		try {
+			paths = FontCollector(AppendText).GetFontPaths(subs);
+		}
+		catch (agi::EnvironmentError const& err) {
+			AppendText(fmt_tl("* An error occurred when enumerating the used fonts: %s.\n", err.GetMessage()), 2);
+		}
+
 		if (paths.empty()) {
 			collector->AddPendingEvent(wxThreadEvent(EVT_COLLECTION_DONE));
 			return;

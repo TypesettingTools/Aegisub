@@ -40,17 +40,17 @@ struct CollectionResult {
 };
 
 #ifdef _WIN32
+#include <dwrite.h>
 class GdiFontFileLister {
-	std::unordered_multimap<uint32_t, agi::fs::path> index;
-	agi::scoped_holder<HDC> dc;
-	std::string buffer;
-
-	bool ProcessLogFont(LOGFONTW const& expected, LOGFONTW const& actual, std::vector<int> const& characters);
+	agi::scoped_holder<HDC> dc_sh;
+	agi::scoped_holder<IDWriteFactory*> dwrite_factory_sh;
+	agi::scoped_holder<IDWriteFontCollection*> font_collection_sh;
+	agi::scoped_holder<IDWriteGdiInterop*> gdi_interop_sh;
 
 public:
 	/// Constructor
-	/// @param cb Callback for status logging
-	GdiFontFileLister(FontCollectorStatusCallback &cb);
+	/// @throws agi::EnvironmentError if an error occurs during construction.
+	GdiFontFileLister(FontCollectorStatusCallback &);
 
 	/// @brief Get the path to the font with the given styles
 	/// @param facename Name of font face
