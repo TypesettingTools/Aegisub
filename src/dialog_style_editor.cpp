@@ -248,14 +248,21 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	// Set encoding value
 	bool found = false;
+	int default_i = -1;
 	for (size_t i=0;i<encodingStrings.Count();i++) {
 		if (encodingStrings[i].StartsWith(EncodingValue)) {
 			Encoding->Select(i);
 			found = true;
 			break;
 		}
+		if (default_i == -1 && encodingStrings[i].StartsWith("1")) {
+			default_i = i;
+		}
 	}
-	if (!found) Encoding->Select(0);
+	if (!found) {
+		assert(default_i != -1);
+		Encoding->Select(default_i);
+	}
 
 	// Style name sizer
 	NameSizer->Add(StyleName, 1, wxALL, 0);
@@ -471,8 +478,10 @@ void DialogStyleEditor::UpdateWorkStyle() {
 
 	work->font = from_wx(FontName->GetValue());
 
+	wxString encoding_selection = Encoding->GetValue();
+	wxString encoding_num = encoding_selection.substr(0, 1) + encoding_selection.substr(1).BeforeFirst('-');	// Have to account for -1
 	long templ = 0;
-	Encoding->GetValue().BeforeFirst('-').ToLong(&templ);
+	encoding_num.ToLong(&templ);
 	work->encoding = templ;
 
 	work->borderstyle = OutlineType->IsChecked() ? 3 : 1;
