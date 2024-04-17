@@ -59,8 +59,9 @@
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 
-#ifdef __WXMAC__
 #define NSUInteger size_t
+
+#ifdef __WXMAC__
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
