@@ -52,17 +52,18 @@ jobs:
 #        run: meson test -C build --verbose "gtest main"
 
       # macOS artifacts
-      - name: Generate macOS installer
-        run: |
-          meson compile osx-bundle -C build_static
-          meson compile osx-build-dmg -C build_static
+      - name: Generate macOS bundle
+        run: meson compile osx-bundle -C build_static
 
       - name: Sign the app bundle
-        run: codesign --sign - --force --deep build_static/Aegisub-*.dmg/Aegisub.app
+        run: codesign --sign - --force --deep build_static/Aegisub-*.app
+
+      - name: Generate macOS app dmg
+        run: meson compile osx-build-dmg -C build_static
 
       - name: Upload artifacts - macOS dmg
         uses: actions/upload-artifact@v3
         with:
-          name: Apple Silicon native - installer
+          name: Aegisub-3.2.2-darwin-aarch64
           path: build_static/Aegisub-*.dmg
           if-no-files-found: error
