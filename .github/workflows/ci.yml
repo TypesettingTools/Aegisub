@@ -55,6 +55,9 @@ jobs:
           meson compile osx-bundle -C build_static
           meson compile osx-build-dmg -C build_static
 
+      - name: Sign the app bundle
+        run: codesign --sign - --force --deep build_static/Aegisub-*.dmg/Aegisub.app
+
       - name: Upload artifacts - macOS dmg
         uses: actions/upload-artifact@v3
         with:
