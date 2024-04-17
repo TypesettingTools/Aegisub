@@ -16,7 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
       - name: Setup Meson
         run: |
@@ -33,8 +35,9 @@ jobs:
           # Skip brew update for now, see https://github.com/actions/setup-python/issues/577
           # brew update
           brew install cmake ninja pkg-config libass boost zlib ffms2 fftw hunspell luarocks pulseaudio ffmpeg
-          luarocks install luafilesystem 1.8.0
-          luarocks install moonscript --dev
+          # these steps are skipped because of the permission issue
+          # luarocks install luafilesystem 1.8.0
+          # luarocks install moonscript --dev
 
       - name: Configure
         run: meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_osx_bundle=true -Dlocal_boost=true
