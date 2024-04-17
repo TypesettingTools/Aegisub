@@ -60,6 +60,7 @@
 #include <wx/textctrl.h>
 
 #ifdef __WXMAC__
+#define NSUInteger size_t
 #include <ApplicationServices/ApplicationServices.h>
 #endif
 
