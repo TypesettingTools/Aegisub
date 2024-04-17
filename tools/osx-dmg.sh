@@ -58,8 +58,8 @@ DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${DMG_RW_PAT
 echo "Device name: ${DEV_NAME}"
 
 echo
-echo "---- Setting bless -openfolder ----"
-bless -openfolder "/Volumes/${PKG_NAME_VOLUME}"
+# echo "---- Setting bless -openfolder ----"
+# bless -openfolder "/Volumes/${PKG_NAME_VOLUME}"
 
 echo
 echo "---- Setting root icon using SetFile ----"
