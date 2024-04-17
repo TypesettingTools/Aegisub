@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Build Apple Silicon native and notarized dmg file
-    runs-on: macos-latest
+    runs-on: macos-14
 
 
     steps:
@@ -29,9 +29,9 @@ jobs:
         run: |
           export HOMEBREW_NO_INSTALL_CLEANUP=1
           export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-          export LDFLAGS="-L/usr/local/opt/icu4c/lib"
-          export CPPFLAGS="-I/usr/local/opt/icu4c/include -I/usr/local/include"
-          export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
+          export LDFLAGS="-L/opt/homebrew/opt/icu4c/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/icu4c/include -I/opt/homebrew/include"
+          export PKG_CONFIG_PATH="/opt/homebrew/opt/icu4c/lib/pkgconfig"
           # Skip brew update for now, see https://github.com/actions/setup-python/issues/577
           # brew update
           brew install cmake ninja pkg-config libass boost zlib ffms2 fftw hunspell luarocks pulseaudio ffmpeg boost wxwidgets icu4c
@@ -44,9 +44,6 @@ jobs:
 
       - name: Build
         run: meson compile -C build_static
-
-      - name: debug for the gitversion issue
-        run: cat build_static/git_version.h
 
 #      These steps are temporarily skipped due to the test failure
 #      - name: Run test
