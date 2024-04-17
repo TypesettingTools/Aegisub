@@ -45,6 +45,9 @@ jobs:
       - name: Build
         run: meson compile -C build_static
 
+      - name: debug for the gitversion issue
+        run: cat build_static/git_version.h
+
 #      These steps are temporarily skipped due to the test failure
 #      - name: Run test
 #        run: meson test -C build --verbose "gtest main"
