@@ -62,7 +62,7 @@ jobs:
         run: meson compile osx-build-dmg -C build_static
 
       - name: Upload artifacts - macOS dmg
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Aegisub-3.2.2-darwin-aarch64
           path: build_static/Aegisub-3.2.2.dmg
