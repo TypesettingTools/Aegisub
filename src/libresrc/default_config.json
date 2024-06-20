@@ -372,6 +372,7 @@
 			"Width" : 1280
 		},
 		"Edit Box" : {
+			"Soft Line Break": false,
 			"Font Face" : "",
 			"Font Size" : 10
 		},
