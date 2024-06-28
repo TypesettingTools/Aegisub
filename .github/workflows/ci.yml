@@ -31,15 +31,17 @@ jobs:
         run: |
           export HOMEBREW_NO_INSTALL_CLEANUP=1
           export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-          export LDFLAGS="-L/opt/homebrew/opt/icu4c/lib"
-          export CPPFLAGS="-I/opt/homebrew/opt/icu4c/include -I/opt/homebrew/include"
-          export PKG_CONFIG_PATH="/opt/homebrew/opt/icu4c/lib/pkgconfig"
+          export LDFLAGS="-L/opt/homebrew/opt/icu4c/lib -L/opt/homebrew/opt/libiconv/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/icu4c/include -I/opt/homebrew/include -I/opt/homebrew/opt/libiconv/include"
+          export PKG_CONFIG_PATH="/opt/homebrew/opt/icu4c/lib/pkgconfig:/opt/homebrew/opt/openal-soft/lib/pkgconfig"
           # Skip brew update for now, see https://github.com/actions/setup-python/issues/577
           # brew update
-          brew install cmake ninja pkg-config libass libiconv boost zlib ffms2 fftw hunspell luarocks pulseaudio ffmpeg boost wxwidgets icu4c
-          # these steps are skipped because of the permission issue
-          # luarocks install luafilesystem 1.8.0
-          # luarocks install moonscript --dev
+          brew install boost cmake ffmpeg ffms2 fftw \
+          hunspell libass libiconv luarocks \
+          meson ninja openal-soft pkg-config \
+          portaudio pulseaudio uchardet wxwidgets zlib
+          luarocks install luafilesystem 1.8.0
+          luarocks install moonscript --dev
 
       - name: Configure
         run: meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_osx_bundle=true -Dlocal_boost=true
