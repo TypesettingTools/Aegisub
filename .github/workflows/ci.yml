@@ -36,7 +36,7 @@ jobs:
           export PKG_CONFIG_PATH="/opt/homebrew/opt/icu4c/lib/pkgconfig"
           # Skip brew update for now, see https://github.com/actions/setup-python/issues/577
           # brew update
-          brew install cmake ninja pkg-config libass boost zlib ffms2 fftw hunspell luarocks pulseaudio ffmpeg boost wxwidgets icu4c
+          brew install cmake ninja pkg-config libass libiconv boost zlib ffms2 fftw hunspell luarocks pulseaudio ffmpeg boost wxwidgets icu4c
           # these steps are skipped because of the permission issue
           # luarocks install luafilesystem 1.8.0
           # luarocks install moonscript --dev
