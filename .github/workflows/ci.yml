@@ -50,7 +50,7 @@ jobs:
         run: meson compile -C build_static
 
       - name: Run test
-        run: meson test -C build --verbose "gtest main"
+        run: meson test -C build_static --verbose
 
       # macOS artifacts
       - name: Generate macOS bundle
