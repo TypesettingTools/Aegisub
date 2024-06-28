@@ -49,9 +49,8 @@ jobs:
       - name: Build
         run: meson compile -C build_static
 
-#      These steps are temporarily skipped due to the test failure
-#      - name: Run test
-#        run: meson test -C build --verbose "gtest main"
+      - name: Run test
+        run: meson test -C build --verbose "gtest main"
 
       # macOS artifacts
       - name: Generate macOS bundle
