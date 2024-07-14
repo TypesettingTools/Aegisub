@@ -109,8 +109,8 @@ jobs:
           # Skip brew update for now, see https://github.com/actions/setup-python/issues/577
           # brew update
           brew install luarocks ninja
-          luarocks install luafilesystem 1.8.0
-          luarocks install moonscript --dev
+          sudo luarocks install luafilesystem 1.8.0
+          sudo luarocks install moonscript --dev
           brew install libass zlib ffms2 fftw hunspell
           brew install pulseaudio  # NO OpenAL in github CI
 
