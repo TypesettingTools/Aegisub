@@ -52,13 +52,13 @@ jobs:
           }
           - {
             name: macOS Debug,
-            os: macos-latest,
+            os: macos-13,
             buildtype: debugoptimized,
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
           - {
             name: macOS Release,
-            os: macos-latest,
+            os: macos-13,
             buildtype: release,
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
