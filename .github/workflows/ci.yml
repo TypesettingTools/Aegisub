@@ -102,7 +102,7 @@ jobs:
           popd
 
       - name: Install dependencies (MacOS)
-        if: matrix.config.os == 'macos-latest'
+        if: startsWith(matrix.config.os, 'macos-')
         run: |
           export HOMEBREW_NO_INSTALL_CLEANUP=1
           export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
@@ -158,14 +158,14 @@ jobs:
       
       # macOS artifacts
       - name: Generate macOS installer
-        if: matrix.config.os == 'macos-latest'
+        if: startsWith(matrix.config.os, 'macos-')
         run: |
           meson compile osx-bundle -C build
           meson compile osx-build-dmg -C build
 
       - name: Upload artifacts - macOS dmg
         uses: actions/upload-artifact@v3
-        if: matrix.config.os == 'macos-latest'
+        if: startsWith(matrix.config.os, 'macos-')
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.dmg
