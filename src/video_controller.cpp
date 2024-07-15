@@ -159,7 +159,7 @@ void VideoController::PlayLine() {
 	// Round-trip conversion to convert start to exact
 	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start, agi::vfr::START);
 	start_ms = TimeAtFrame(startFrame);
-	end_frame = FrameAtTime(context->selectionController->GetActiveLine()->End, agi::vfr::END) + 1;
+	end_frame = FrameAtTime(context->selectionController->GetActiveLine()->End, agi::vfr::END);
 
 	JumpToFrame(startFrame);
 
@@ -179,7 +179,7 @@ void VideoController::OnPlayTimer(wxTimerEvent &) {
 	int next_frame = FrameAtTime(start_ms + duration_cast<milliseconds>(steady_clock::now() - playback_start_time).count());
 	if (next_frame == frame_n) return;
 
-	if (next_frame >= end_frame)
+	if (next_frame > end_frame)
 		Stop();
 	else {
 		frame_n = next_frame;
