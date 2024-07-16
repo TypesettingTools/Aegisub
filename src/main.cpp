@@ -104,6 +104,8 @@ wxDEFINE_EVENT(EVT_CALL_THUNK, ValueEvent<agi::dispatch::Thunk>);
 /// Message displayed when an exception has occurred.
 static wxString exception_message = "Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.";
 
+std::filesystem::path AegisubApp::startCwd = std::filesystem::path{""};
+
 /// @brief Gets called when application starts.
 /// @return bool
 bool AegisubApp::OnInit() {
@@ -119,6 +121,7 @@ bool AegisubApp::OnInit() {
 	(void)wxLog::GetActiveTarget();
 
 	agi::util::InitLocale();
+	AegisubApp::startCwd = std::filesystem::current_path();
 
 	agi::dispatch::Init([](agi::dispatch::Thunk f) {
 		auto evt = new ValueEvent<agi::dispatch::Thunk>(EVT_CALL_THUNK, -1, std::move(f));
