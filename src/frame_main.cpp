@@ -127,7 +127,7 @@ FrameMain::FrameMain()
 	EnableToolBar(*OPT_GET("App/Show Toolbar"));
 
 	StartupLog("Initialize menu bar");
-	menu::GetMenuBar("main", this, context.get());
+	menu::GetMenuBar("main", this, (wxID_HIGHEST + 1) + 10000, context.get());
 
 	StartupLog("Create status bar");
 	CreateStatusBar(2);

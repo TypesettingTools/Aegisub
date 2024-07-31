@@ -126,6 +126,7 @@ class FontCollector {
 	/// Data about where each style is used
 	struct UsageData {
 		std::vector<int> chars;          ///< Characters used in this style which glyphs will be needed for
+		bool drawing = false;            ///< Whether this style is used for a drawing
 		std::vector<int> lines;          ///< Lines on which this style is used via overrides
 		std::vector<std::string> styles; ///< ASS styles which use this style
 	};

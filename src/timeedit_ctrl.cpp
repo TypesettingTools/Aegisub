@@ -48,8 +48,9 @@
 
 #define TimeEditWindowStyle
 
+// Check menu.h for id range allocation before editing this enum
 enum {
-	Time_Edit_Copy = 1320,
+	Time_Edit_Copy = (wxID_HIGHEST + 1) + 3000,
 	Time_Edit_Paste
 };
 

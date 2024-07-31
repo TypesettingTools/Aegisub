@@ -143,7 +143,7 @@ Framerate::Framerate(double fps)
 Framerate::Framerate(int64_t numerator, int64_t denominator, bool drop)
 : denominator(denominator)
 , numerator(numerator)
-, drop(drop && numerator % denominator != 0)
+, drop(drop && denominator != 0 && numerator % denominator != 0)
 {
 	if (numerator <= 0 || denominator <= 0)
 		throw InvalidFramerate("Numerator and denominator must both be greater than zero");
@@ -225,7 +225,7 @@ int Framerate::FrameAtTime(int ms, Time type) const {
 		return int((ms * numerator / denominator - 999) / 1000);
 
 	if (ms > timecodes.back())
-		return int((ms * numerator - last + denominator - 1) / denominator / 1000) + (int)timecodes.size() - 1;
+		return int((ms * numerator - numerator / 2 - last + numerator - 1) / denominator / 1000) + (int)timecodes.size() - 1;
 
 	return (int)distance(lower_bound(timecodes.rbegin(), timecodes.rend(), ms, std::greater<int>()), timecodes.rend()) - 1;
 }

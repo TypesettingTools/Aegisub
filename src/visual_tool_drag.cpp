@@ -41,7 +41,13 @@ static const DraggableFeatureType DRAG_ORIGIN = DRAG_BIG_TRIANGLE;
 static const DraggableFeatureType DRAG_START = DRAG_BIG_SQUARE;
 static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
 
-#define ICON(name) (OPT_GET("App/Toolbar Icon Size")->GetInt() == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24))
+#define ICON(name) ( \
+	OPT_GET("App/Toolbar Icon Size")->GetInt() >= 64 ? GETIMAGE(name##_64) : \
+	OPT_GET("App/Toolbar Icon Size")->GetInt() >= 48 ? GETIMAGE(name##_48) : \
+	OPT_GET("App/Toolbar Icon Size")->GetInt() >= 32 ? GETIMAGE(name##_32) : \
+	OPT_GET("App/Toolbar Icon Size")->GetInt() >= 24 ? GETIMAGE(name##_24) : \
+	GETIMAGE(name##_16) \
+)
 
 VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualToolDragDraggableFeature>(parent, context)

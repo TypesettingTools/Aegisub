@@ -34,8 +34,8 @@ int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const&
 	selNone->Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { dialog.SetSelections(wxArrayInt()); });
 
 	auto buttonSizer = new wxBoxSizer(wxHORIZONTAL);
-	buttonSizer->Add(selAll, wxSizerFlags(0).Left());
-	buttonSizer->Add(selNone, wxSizerFlags(0).Right());
+	buttonSizer->Add(selAll);
+	buttonSizer->Add(selNone);
 
 	auto sizer = dialog.GetSizer();
 	sizer->Insert(2, buttonSizer, wxSizerFlags(0).Center());

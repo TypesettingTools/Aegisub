@@ -246,6 +246,8 @@ void DialogProgress::OnCancel(wxCommandEvent &) {
 }
 
 void DialogProgress::SetProgress(int target) {
+	pulse_timer.Stop();
+
 	if (target == progress_target) return;
 	using namespace std::chrono;
 
