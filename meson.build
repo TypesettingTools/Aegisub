@@ -404,6 +404,19 @@ if get_option('tests')
     subdir('tests')
 endif
 
+if get_option('bash_completion') and host_machine.system() != 'windows'
+  bash_comp = dependency('bash_completion', required: false)
+  if bash_comp.found()
+    bash_install_dir = bash_comp.get_variable(
+      pkgconfig: 'completionsdir',
+      pkgconfig_define: ['datadir', datadir]
+    )
+  else
+    bash_install_dir = join_paths(datadir, 'bash-completion', 'completions')
+  endif
+  install_data('tools/bash-completion.sh', install_dir: bash_install_dir, rename: 'aegisub')
+endif
+
 aegisub_cpp_pch = ['src/include/agi_pre.h']
 aegisub_c_pch = ['src/include/agi_pre_c.h']
 

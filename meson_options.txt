@@ -26,5 +26,6 @@ option('update_server', type: 'string', value: 'https://aegisub-updates.redvice.
 option('update_url', type: 'string', value: '/trunk', description: 'Base path to use for the update checker')
 
 option('build_osx_bundle', type: 'boolean', value: false, description: 'Package Aegisub.app on OSX')
+option('bash_completion', type: 'boolean', value: true, description: 'Install bash shell completions')
 
 option('tests', type: 'boolean', value: true, description: 'Build tests')
