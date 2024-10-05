@@ -6316,7 +6316,7 @@ msgstr ""
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
-msgstr "Bande de balises"
+msgstr "Retirer les balises"
 
 #: ../automation/autoload/strip-tags.lua:18
 msgid "Remove all override tags from selected lines"
@@ -6324,7 +6324,7 @@ msgstr "Enlève toutes les balises de recouvrement des lignes sélectionnées"
 
 #: ../automation/autoload/strip-tags.lua:28
 msgid "strip tags"
-msgstr "Retirer balises"
+msgstr "Retirer les balises"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 msgid "Make fullwidth"
