@@ -36,6 +36,7 @@
 
 #include <libaegisub/exception.h>
 #include <libaegisub/vfr.h>
+#include <libaegisub/ycbcr.h>
 
 #include <string>
 
