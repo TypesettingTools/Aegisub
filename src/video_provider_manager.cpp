@@ -24,6 +24,7 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/string.h>
+#include <libaegisub/split.h>
 
 #include <wx/translation.h>
 

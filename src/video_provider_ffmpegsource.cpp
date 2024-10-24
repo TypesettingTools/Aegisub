@@ -44,24 +44,10 @@
 
 #include <string_view>
 
-namespace {
-typedef enum AGI_ColorSpaces {
-	AGI_CS_RGB = 0,
-	AGI_CS_BT709 = 1,
-	AGI_CS_UNSPECIFIED = 2,
-	AGI_CS_FCC = 4,
-	AGI_CS_BT470BG = 5,
-	AGI_CS_SMPTE170M = 6,
-	AGI_CS_SMPTE240M = 7,
-	AGI_CS_YCOCG = 8,
-	AGI_CS_BT2020_NCL = 9,
-	AGI_CS_BT2020_CL = 10,
-	AGI_CS_SMPTE2085 = 11,
-	AGI_CS_CHROMATICITY_DERIVED_NCL = 12,
-	AGI_CS_CHROMATICITY_DERIVED_CL = 13,
-	AGI_CS_ICTCP = 14
-} AGI_ColorSpaces;
+using agi::ycbcr_matrix;
+using agi::ycbcr_range;
 
+namespace {
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
 class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvider {
@@ -71,13 +57,12 @@ class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvid
 
 	int Width = -1;                 ///< width in pixels
 	int Height = -1;                ///< height in pixels
-	int CS = -1;                    ///< Reported colorspace of first frame
-	int CR = -1;                    ///< Reported colorrange of first frame
+	ycbcr_matrix VideoCM = ycbcr_matrix::UNSPECIFIED;  ///< Reported colorspace of first frame (or guessed if unspecified)
+	ycbcr_range VideoCR = ycbcr_range::UNSPECIFIED;    ///< Reported colorrange of first frame (or guessed if unspecified)
 	double DAR;                     ///< display aspect ratio
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object
 	std::string ColorSpace;         ///< Colorspace name
-	std::string RealColorSpace;     ///< Colorspace name
 
 	char FFMSErrMsg[1024];          ///< FFMS error message
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
@@ -92,12 +77,14 @@ public:
 
 	void SetColorSpace(std::string const& matrix) override {
 		if (matrix == ColorSpace) return;
-		if (matrix == RealColorSpace)
-			FFMS_SetInputFormatV(VideoSource, CS, CR, FFMS_GetPixFmt(""), nullptr);
-		else if (matrix == "TV.601")
-			FFMS_SetInputFormatV(VideoSource, AGI_CS_BT470BG, CR, FFMS_GetPixFmt(""), nullptr);
-		else
-			return;
+
+		ycbcr_matrix CM = VideoCM;
+		ycbcr_range CR = VideoCR;
+		agi::ycbcr::override_colorspace(CM, CR, matrix, Width, Height);
+
+		if (FFMS_SetInputFormatV(VideoSource, static_cast<int>(CM), static_cast<int>(CR), FFMS_GetPixFmt(""), &ErrInfo))
+			throw VideoOpenError(std::string("Failed to set input format: ") + ErrInfo.Buffer);
+
 		ColorSpace = matrix;
 	}
 
@@ -109,33 +96,14 @@ public:
 
 	agi::vfr::Framerate GetFPS() const override    { return Timecodes; }
 	std::string GetColorSpace() const override     { return ColorSpace; }
-	std::string GetRealColorSpace() const override { return RealColorSpace; }
+	std::string GetRealColorSpace() const override {
+		return agi::ycbcr::colorspace_to_assycbcr(VideoCM, VideoCR).value_or("None");
+	}
 	std::vector<int> GetKeyFrames() const override { return KeyFramesList; };
 	std::string GetDecoderName() const override    { return "FFmpegSource"; }
 	bool WantsCaching() const override             { return true; }
 	bool HasAudio() const override                 { return has_audio; }
 };
-
-std::string colormatrix_description(int cs, int cr) {
-	// Assuming TV for unspecified
-	std::string str = cr == FFMS_CR_JPEG ? "PC" : "TV";
-
-	switch (cs) {
-		case AGI_CS_RGB:
-			return "None";
-		case AGI_CS_BT709:
-			return str + ".709";
-		case AGI_CS_FCC:
-			return str + ".FCC";
-		case AGI_CS_BT470BG:
-		case AGI_CS_SMPTE170M:
-			return str + ".601";
-		case AGI_CS_SMPTE240M:
-			return str + ".240M";
-		default:
-			throw VideoOpenError("Unknown video color space");
-	}
-}
 
 FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string_view colormatrix, agi::BackgroundRunner *br) try
 : FFmpegSourceProvider(br)
@@ -251,22 +219,11 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 	else
 		DAR = double(Width) / Height;
 
-	int VideoCS = CS = TempFrame->ColorSpace;
-	CR = TempFrame->ColorRange;
+	VideoCM = static_cast<ycbcr_matrix>(TempFrame->ColorSpace);
+	VideoCR = static_cast<ycbcr_range>(TempFrame->ColorRange);
+	agi::ycbcr::guess_colorspace(VideoCM, VideoCR, Width, Height);
 
-	if (CS == AGI_CS_UNSPECIFIED)
-		CS = Width > 1024 || Height >= 600 ? AGI_CS_BT709 : AGI_CS_BT470BG;
-	RealColorSpace = ColorSpace = colormatrix_description(CS, CR);
-
-	if (CS != AGI_CS_RGB && CS != AGI_CS_BT470BG && ColorSpace != colormatrix && colormatrix == "TV.601") {
-		CS = AGI_CS_BT470BG;
-		ColorSpace = colormatrix_description(AGI_CS_BT470BG, CR);
-	}
-
-	if (CS != VideoCS) {
-		if (FFMS_SetInputFormatV(VideoSource, CS, CR, FFMS_GetPixFmt(""), &ErrInfo))
-			throw VideoOpenError(std::string("Failed to set input format: ") + ErrInfo.Buffer);
-	}
+	SetColorSpace(colormatrix);
 
 	const int TargetFormat[] = { FFMS_GetPixFmt("bgra"), -1 };
 	if (FFMS_SetOutputFormatV2(VideoSource, TargetFormat, Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo))
