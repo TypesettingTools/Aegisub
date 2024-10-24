@@ -41,6 +41,45 @@
 
 struct VideoFrame;
 
+/// Color matrix constants matching the constants in ffmpeg
+/// (specifically libavutil's AVColorSpace) and/or H.273.
+typedef enum AGI_ColorSpaces {
+	AGI_CS_RGB = 0,
+	AGI_CS_BT709 = 1,
+	AGI_CS_UNSPECIFIED = 2,
+	AGI_CS_FCC = 4,
+	AGI_CS_BT470BG = 5,
+	AGI_CS_SMPTE170M = 6,
+	AGI_CS_SMPTE240M = 7,
+	AGI_CS_YCOCG = 8,
+	AGI_CS_BT2020_NCL = 9,
+	AGI_CS_BT2020_CL = 10,
+	AGI_CS_SMPTE2085 = 11,
+	AGI_CS_CHROMATICITY_DERIVED_NCL = 12,
+	AGI_CS_CHROMATICITY_DERIVED_CL = 13,
+	AGI_CS_ICTCP = 14
+} AGI_ColorSpaces;
+
+/// Color matrix constants matching the constants in ffmpeg
+/// (specifically libavutil's AVColorRange) and/or H.273.
+typedef enum AGI_ColorRanges {
+    AGI_CR_UNSPECIFIED = 0,
+    AGI_CR_MPEG = 1, // 219*2^(n-8), i.e. 16-235 with 8-bit samples
+    AGI_CR_JPEG = 2 // 2^n-1, or "fullrange"
+} AGI_ColorRanges;
+
+namespace ColorMatrix {
+
+std::string colormatrix_description(int CS, int CR);
+
+std::pair<int, int> parse_colormatrix(std::string_view matrix);
+
+void guess_colorspace(int &CS, int &CR, int Width, int Height);
+
+void override_colormatrix(int &CS, int &CR, std::string_view matrix, int Width, int Height);
+
+}
+
 class VideoProvider {
 public:
 	virtual ~VideoProvider() = default;
