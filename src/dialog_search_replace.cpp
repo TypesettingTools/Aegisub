@@ -22,6 +22,7 @@
 #include "dialog_search_replace.h"
 
 #include "compat.h"
+#include "dialog_manager.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "search_replace_engine.h"
@@ -41,11 +42,11 @@
 #include <wx/textctrl.h>
 #include <wx/valgen.h>
 
-DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool replace)
-: wxDialog(c->parent, -1, replace ? _("Replace") : _("Find"))
+template<bool has_replace>
+DialogSearchReplace<has_replace>::DialogSearchReplace(agi::Context* c)
+: wxDialog(c->parent, -1, has_replace ? _("Replace") : _("Find"))
 , c(c)
 , settings(std::make_unique<SearchReplaceSettings>())
-, has_replace(replace)
 {
 	auto recent_find(lagi_MRU_wxAS("Find"));
 	auto recent_replace(lagi_MRU_wxAS("Replace"));
@@ -127,10 +128,8 @@ DialogSearchReplace::DialogSearchReplace(agi::Context* c, bool replace)
 	replace_all->Bind(wxEVT_BUTTON, std::bind(&DialogSearchReplace::FindReplace, this, &SearchReplaceEngine::ReplaceAll));
 }
 
-DialogSearchReplace::~DialogSearchReplace() {
-}
-
-void DialogSearchReplace::FindReplace(bool (SearchReplaceEngine::*func)()) {
+template<bool has_replace>
+void DialogSearchReplace<has_replace>::FindReplace(bool (SearchReplaceEngine::*func)()) {
 	TransferDataFromWindow();
 
 	if (settings->find.empty())
@@ -168,27 +167,33 @@ static void update_mru(wxComboBox *cb, const char *mru_name) {
 	cb->Thaw();
 }
 
-void DialogSearchReplace::UpdateDropDowns() {
+template<bool has_replace>
+void DialogSearchReplace<has_replace>::UpdateDropDowns() {
 	update_mru(find_edit, "Find");
 
 	if (has_replace)
 		update_mru(replace_edit, "Replace");
 }
 
-void DialogSearchReplace::Show(agi::Context *context, bool replace) {
-	static DialogSearchReplace *diag = nullptr;
-
-	if (diag && replace != diag->has_replace) {
-		// Already opened, but wrong type - destroy and create the right one
-		diag->Destroy();
-		diag = nullptr;
+template<bool replace>
+void ShowSearchReplaceDialog(agi::Context *context) {
+	auto other = context->dialog->Get<DialogSearchReplace<!replace>>();
+	if (other != nullptr) {
+		other->Close();
 	}
 
-	if (!diag)
-		diag = new DialogSearchReplace(context, replace);
+	context->dialog->Show<DialogSearchReplace<replace>>(context);
+	auto dialog = context->dialog->Get<DialogSearchReplace<replace>>();
 
-	diag->find_edit->SetFocus();
-	diag->find_edit->SelectAll();
-	diag->wxDialog::Show();
-	diag->Raise();
+	dialog->find_edit->SetFocus();
+	dialog->find_edit->SelectAll();
+	dialog->Raise();
+}
+
+void ShowSearchReplaceDialog(agi::Context *context, bool replace) {
+	if (replace) {
+		ShowSearchReplaceDialog<true>(context);
+	} else {
+		ShowSearchReplaceDialog<false>(context);
+	}
 }

@@ -95,7 +95,7 @@ struct subtitle_find final : public Command {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		DialogSearchReplace::Show(c, false);
+		ShowSearchReplaceDialog(c, false);
 	}
 };
 
@@ -109,7 +109,7 @@ struct subtitle_find_next final : public Command {
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		if (!c->search->FindNext())
-			DialogSearchReplace::Show(c, false);
+			ShowSearchReplaceDialog(c, false);
 	}
 };
 

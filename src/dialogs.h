@@ -68,6 +68,7 @@ void ShowKanjiTimerDialog(agi::Context *c);
 void ShowLogWindow(agi::Context *c);
 void ShowPreferences(wxWindow *parent);
 void ShowPropertiesDialog(agi::Context *c);
+void ShowSearchReplaceDialog(agi::Context *c, bool replace);
 void ShowSelectLinesDialog(agi::Context *c);
 void ShowShiftTimesDialog(agi::Context *c);
 void ShowSpellcheckerDialog(agi::Context *c);

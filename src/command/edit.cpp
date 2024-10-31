@@ -546,7 +546,7 @@ struct edit_find_replace final : public Command {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		DialogSearchReplace::Show(c, true);
+		ShowSearchReplaceDialog(c, true);
 	}
 };
 
