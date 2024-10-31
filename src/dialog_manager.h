@@ -70,6 +70,7 @@ public:
 			if (*diag.first == typeid(DialogType)) {
 				diag.second->Show();
 				diag.second->SetFocus();
+				return;
 			}
 		}
 
