@@ -42,6 +42,7 @@ class AssDialogue;
 class AssInfo;
 class AssStyle;
 class wxString;
+namespace agi { struct Context; }
 
 template<typename T>
 using EntryList = typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>, boost::intrusive::base_hook<AssEntryListHook>>::type;
@@ -119,6 +120,14 @@ public:
 	/// @param[out] w Width
 	/// @param[in] h Height
 	void GetResolution(int &w,int &h) const;
+	/// @brief Get the specified layout resolution, if present, or 0 if it is not present
+	/// @param[out] w Width
+	/// @param[in] h Height
+	void GetLayoutResolution(int &w,int &h) const;
+	/// @brief Get the effective layout resolution (i.e. falling back to the video resolution, if present)
+	/// @param[out] w Width
+	/// @param[in] h Height
+	void GetEffectiveLayoutResolution(agi::Context *c, int &w,int &h) const;
 	/// Get the value in a [Script Info] key as int, or 0 if it is not present
 	int GetScriptInfoAsInt(std::string_view key) const;
 	/// Get the value in a [Script Info] key as string.
