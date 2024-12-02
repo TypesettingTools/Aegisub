@@ -36,6 +36,7 @@
 #include "project.h"
 #include "resolution_resampler.h"
 #include "validators.h"
+#include "video_controller.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <vector>
@@ -60,6 +61,8 @@ class DialogProperties {
 	wxComboBox *WrapStyle;   ///< Wrapping style for long lines
 	wxTextCtrl *ResX;        ///< Script x resolution
 	wxTextCtrl *ResY;        ///< Script y resolution
+	wxTextCtrl *LayoutResX;  ///< Layout x resolution
+	wxTextCtrl *LayoutResY;  ///< Layout y resolution
 	wxCheckBox *ScaleBorder; ///< If script resolution != video resolution how should borders be handled
 	wxComboBox *YCbCrMatrix;
 
@@ -67,6 +70,8 @@ class DialogProperties {
 	void OnOK(wxCommandEvent &event);
 	/// Set script resolution to video resolution button
 	void OnSetFromVideo(wxCommandEvent &event);
+	/// Set layout resolution to video resolution button
+	void OnSetLayoutResFromVideo(wxCommandEvent &event);
 	/// Set a script info field
 	/// @param key Name of field
 	/// @param value New value
@@ -125,17 +130,35 @@ DialogProperties::DialogProperties(agi::Context *c)
 	ResX = new wxTextCtrl(res_box,-1,"",wxDefaultPosition,wxDefaultSize,0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResX")));
 	ResY = new wxTextCtrl(res_box,-1,"",wxDefaultPosition,wxDefaultSize,0,IntValidator(c->ass->GetScriptInfoAsInt("PlayResY")));
 
+	LayoutResX = new wxTextCtrl(res_box,-1,"",wxDefaultPosition,wxDefaultSize,0,IntValidator(c->ass->GetScriptInfoAsInt("LayoutResX")));
+	LayoutResY = new wxTextCtrl(res_box,-1,"",wxDefaultPosition,wxDefaultSize,0,IntValidator(c->ass->GetScriptInfoAsInt("LayoutResY")));
+
 	wxButton *FromVideo = new wxButton(res_box,-1,_("From &video"));
 	if (!c->project->VideoProvider())
 		FromVideo->Enable(false);
 	else
 		FromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetFromVideo, this);
 
-	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
-	res_sizer->Add(ResX, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
-	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), 0, wxALIGN_CENTER | wxRIGHT, 5); // U+00D7 multiplication sign
-	res_sizer->Add(ResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
+	auto res_sizer = new wxFlexGridSizer(5, 5, 5);
+	res_sizer->AddGrowableCol(1, 1);
+	res_sizer->AddGrowableCol(3, 1);
+	res_sizer->Add(new wxStaticText(res_box, -1, _("Script: ")), wxSizerFlags().Center().Left());
+	res_sizer->Add(ResX, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
+	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), 0, wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
+	res_sizer->Add(ResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
 	res_sizer->Add(FromVideo, 1, 0, 0);
+
+	wxButton *LayoutResFromVideo = new wxButton(res_box,-1,_("From video"));
+	if (!c->project->VideoProvider())
+		LayoutResFromVideo->Enable(false);
+	else
+		LayoutResFromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetLayoutResFromVideo, this);
+
+	res_sizer->Add(new wxStaticText(res_box, -1, _("Layout: ")), wxSizerFlags().Center().Left());
+	res_sizer->Add(LayoutResX, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
+	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), 0, wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
+	res_sizer->Add(LayoutResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
+	res_sizer->Add(LayoutResFromVideo, 1, 0, 0);
 
 	YCbCrMatrix = new wxComboBox(res_box, -1, to_wx(c->ass->GetScriptInfo("YCbCr Matrix")),
 		 wxDefaultPosition, wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
@@ -195,6 +218,8 @@ void DialogProperties::OnOK(wxCommandEvent &) {
 
 	count += SetInfoIfDifferent("PlayResX", from_wx(ResX->GetValue()));
 	count += SetInfoIfDifferent("PlayResY", from_wx(ResY->GetValue()));
+	count += SetInfoIfDifferent("LayoutResX", from_wx(LayoutResX->GetValue()));
+	count += SetInfoIfDifferent("LayoutResY", from_wx(LayoutResY->GetValue()));
 	count += SetInfoIfDifferent("WrapStyle", std::to_string(WrapStyle->GetSelection()));
 	count += SetInfoIfDifferent("ScaledBorderAndShadow", ScaleBorder->GetValue() ? "yes" : "no");
 	count += SetInfoIfDifferent("YCbCr Matrix", from_wx(YCbCrMatrix->GetValue()));
@@ -212,9 +237,28 @@ int DialogProperties::SetInfoIfDifferent(std::string_view key, std::string_view 
 	return 0;
 }
 
+std::pair<int, int> GetVideoDisplayResolution(agi::Context *c) {
+	double dar = c->videoController->GetAspectRatioValue();
+	int width = c->project->VideoProvider()->GetWidth();
+	int height = c->project->VideoProvider()->GetHeight();
+	double sar = double(width) / double(height);
+
+	return std::make_pair(
+		width * std::max(1., dar / sar),
+		height * std::max(1., sar / dar)
+	);
+}
+
 void DialogProperties::OnSetFromVideo(wxCommandEvent &) {
-	ResX->SetValue(std::to_wstring(c->project->VideoProvider()->GetWidth()));
-	ResY->SetValue(std::to_wstring(c->project->VideoProvider()->GetHeight()));
+	auto [width, height] = GetVideoDisplayResolution(c);
+	ResX->SetValue(std::to_wstring(width));
+	ResY->SetValue(std::to_wstring(height));
+}
+
+void DialogProperties::OnSetLayoutResFromVideo(wxCommandEvent &) {
+	auto [width, height] = GetVideoDisplayResolution(c);
+	LayoutResX->SetValue(std::to_wstring(width));
+	LayoutResY->SetValue(std::to_wstring(height));
 }
 }
 
