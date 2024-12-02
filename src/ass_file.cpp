@@ -21,7 +21,10 @@
 #include "ass_info.h"
 #include "ass_style.h"
 #include "ass_style_storage.h"
+#include "async_video_provider.h"
 #include "options.h"
+#include "project.h"
+#include "include/aegisub/context.h"
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -150,6 +153,23 @@ void AssFile::GetResolution(int &sw, int &sh) const {
 		sw = sh == 1024 ? 1280 : sh * 4 / 3;
 	else if (sh == 0)
 		sh = sw == 1280 ? 1024 : sw * 3 / 4;
+}
+
+void AssFile::GetLayoutResolution(int &lw, int &lh) const {
+	lw = GetScriptInfoAsInt("LayoutResX");
+	lh = GetScriptInfoAsInt("LayoutResY");
+}
+
+void AssFile::GetEffectiveLayoutResolution(agi::Context *c, int &lw, int &lh) const {
+	GetLayoutResolution(lw, lh);
+	if (lw == 0 || lh == 0) {
+		if (c->project->VideoProvider()) {
+			lw = c->project->VideoProvider()->GetWidth();
+			lh = c->project->VideoProvider()->GetHeight();
+		} else {
+			GetResolution(lw, lh);
+		}
+	}
 }
 
 std::vector<std::string> AssFile::GetStyles() const {
