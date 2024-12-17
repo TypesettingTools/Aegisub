@@ -225,7 +225,7 @@ int Framerate::FrameAtTime(int ms, Time type) const {
 		return int((ms * numerator / denominator - 999) / 1000);
 
 	if (ms > timecodes.back())
-		return int((ms * numerator - last + denominator - 1) / denominator / 1000) + (int)timecodes.size() - 1;
+		return ((ms + 1) * numerator - last - numerator / 2 + (1000 * denominator - 1)) / (1000 * denominator) + timecodes.size() - 2;
 
 	return (int)distance(lower_bound(timecodes.rbegin(), timecodes.rend(), ms, std::greater<int>()), timecodes.rend()) - 1;
 }
