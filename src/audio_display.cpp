@@ -759,6 +759,15 @@ void AudioDisplay::ReloadRenderingSettings()
 			spectrum_width[spectrum_quality],
 			spectrum_distance[spectrum_quality]);
 
+		// Frequency curve
+		int64_t spectrum_freq_curve = OPT_GET("Audio/Renderer/Spectrum/FreqCurve")->GetInt();
+		spectrum_freq_curve = mid<int64_t>(0, spectrum_freq_curve, 4);
+		const float spectrum_fref_pos [] = { 0.001f, 0.125f, 0.333f, 0.425f, 0.999f };
+
+		audio_spectrum_renderer->set_reference_frequency_position (
+			spectrum_fref_pos [spectrum_freq_curve]
+		);
+
 		audio_renderer_provider = std::move(audio_spectrum_renderer);
 	}
 	else
@@ -1228,6 +1237,7 @@ void AudioDisplay::OnAudioOpen(agi::AudioProvider *provider)
 				OPT_SUB("Colour/Audio Display/Spectrum", &AudioDisplay::ReloadRenderingSettings, this),
 				OPT_SUB("Colour/Audio Display/Waveform", &AudioDisplay::ReloadRenderingSettings, this),
 				OPT_SUB("Audio/Renderer/Spectrum/Quality", &AudioDisplay::ReloadRenderingSettings, this),
+				OPT_SUB("Audio/Renderer/Spectrum/FreqCurve", &AudioDisplay::ReloadRenderingSettings, this),
 			});
 			OnTimingController();
 		}
