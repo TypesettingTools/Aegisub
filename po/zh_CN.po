@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2024-12-17 13:16+0800\n"
+"PO-Revision-Date: 2024-12-17 16:33+0800\n"
 "Last-Translator: ComputerFan <diannaomi97@gmail.com>\n"
 "Language-Team: Vmoe Fansub <vmoe@vmoe.info>\n"
 "Language: zh_CN\n"
@@ -334,7 +334,7 @@ msgstr "首选项"
 
 #: ../src/dialog_timing_processor.cpp:169
 msgid "Affect &selection only"
-msgstr "仅应用于所选"
+msgstr "仅应用于选中的行"
 
 #: ../src/dialog_timing_processor.cpp:174
 msgid "Lead-in/Lead-out"
@@ -575,7 +575,7 @@ msgstr "样式助手"
 
 #: ../src/audio_timing_karaoke.cpp:241
 msgid "karaoke timing"
-msgstr "卡拉OK计时"
+msgstr "卡拉OK时间轴"
 
 #: ../src/dialog_jumpto.cpp:66 ../src/command/video.cpp:523
 msgid "Jump to"
@@ -640,7 +640,7 @@ msgstr "无法解析样式"
 #, c-format
 msgid "Are you sure you want to delete this style?"
 msgid_plural "Are you sure you want to delete these %d styles?"
-msgstr[0] "您确定要删除 %d 样式？"
+msgstr[0] "您确定要删除 %d 个样式？"
 
 #: ../src/dialog_style_manager.cpp:259 ../src/command/tool.cpp:165
 msgid "Styles Manager"
@@ -844,7 +844,7 @@ msgstr "电影（2.35）"
 
 #: ../src/command/video.cpp:86
 msgid "Force video to 2.35 aspect ratio"
-msgstr "强制视频为2.35纵横比"
+msgstr "将视频强制显示为2.35宽高比"
 
 #: ../src/command/video.cpp:102
 msgid "C&ustom..."
@@ -856,7 +856,7 @@ msgstr "自定义"
 
 #: ../src/command/video.cpp:104
 msgid "Force video to a custom aspect ratio"
-msgstr "强制视频为自定义纵横比"
+msgstr "将视频强制显示为自定义宽高比"
 
 #: ../src/command/video.cpp:115
 msgid ""
@@ -865,20 +865,20 @@ msgid ""
 "  fractional (e.g. 16:9)\n"
 "  specific resolution (e.g. 853x480)"
 msgstr ""
-"可以以小数(例如 2.35)或是比数(例如16:9)输入纵横比。\n"
+"可以以小数(例如 2.35)或是比数(例如16:9)输入宽高比。\n"
 "也可以输入像853x480这样的数值来设置一个特定的分辨率"
 
 #: ../src/command/video.cpp:116
 msgid "Enter aspect ratio"
-msgstr "输入纵横比"
+msgstr "输入宽高比"
 
 #: ../src/command/video.cpp:135
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
-msgstr "无效数值！纵横比必须在0.5至5.0之间。"
+msgstr "无效数值！宽高比必须在0.5至5.0之间。"
 
 #: ../src/command/video.cpp:135
 msgid "Invalid Aspect Ratio"
-msgstr "无效纵横比"
+msgstr "无效宽高比"
 
 #: ../src/command/video.cpp:145
 msgid "&Default"
@@ -890,7 +890,7 @@ msgstr "默认"
 
 #: ../src/command/video.cpp:147
 msgid "Use video's original aspect ratio"
-msgstr "保持视频原始纵横比"
+msgstr "保持视频原始宽高比"
 
 #: ../src/command/video.cpp:163
 msgid "&Fullscreen (4:3)"
@@ -902,7 +902,7 @@ msgstr "全屏4:3"
 
 #: ../src/command/video.cpp:165
 msgid "Force video to 4:3 aspect ratio"
-msgstr "强制视频为4:3纵横比"
+msgstr "将视频强制显示为4:3宽高比"
 
 #: ../src/command/video.cpp:181
 msgid "&Widescreen (16:9)"
@@ -914,7 +914,7 @@ msgstr "宽屏16:9"
 
 #: ../src/command/video.cpp:183
 msgid "Force video to 16:9 aspect ratio"
-msgstr "强制视频为16:9纵横比"
+msgstr "将视频强制显示为16:9宽高比"
 
 #: ../src/command/video.cpp:200
 msgid "&Close Video"
@@ -1458,7 +1458,7 @@ msgstr ""
 
 #: ../src/command/edit.cpp:738 ../src/command/edit.cpp:739
 msgid "Split lines before current frame"
-msgstr "在分割行"
+msgstr "在当前帧前分割行"
 
 #: ../src/command/edit.cpp:740
 msgid ""
@@ -1559,7 +1559,7 @@ msgstr "分割行（按照卡拉OK）"
 
 #: ../src/command/edit.cpp:1036
 msgid "Use karaoke timing to split line into multiple smaller lines"
-msgstr "使用卡拉OK计时把行分成多个更小的行"
+msgstr "使用卡拉OK时间轴把行分成多个更小的行"
 
 #: ../src/command/edit.cpp:1070
 msgid "splitting"
@@ -1580,7 +1580,7 @@ msgstr ""
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
 #: ../src/subs_edit_ctrl.cpp:374
 msgid "Split at cursor (preserve times)"
-msgstr "在光标处分割 (保留原计时)"
+msgstr "在光标处分割 (保留原时间轴)"
 
 #: ../src/command/edit.cpp:1116
 msgid ""
@@ -1673,7 +1673,7 @@ msgstr "清除文本"
 
 #: ../src/command/edit.cpp:1223
 msgid "Clear the current line's text, leaving override tags"
-msgstr "清除当前行的文本，只保留tag"
+msgstr "清除当前行的文本，只保留特效标签"
 
 #: ../src/command/edit.cpp:1239 ../src/command/edit.cpp:1240
 #: ../src/command/tool.cpp:271
@@ -1870,7 +1870,7 @@ msgstr "从视频中打开字幕"
 
 #: ../src/command/subtitle.cpp:284
 msgid "Open the subtitles from the current video file"
-msgstr "从当前视频中打开内嵌字幕"
+msgstr "从当前视频中打开内封字幕"
 
 #: ../src/command/subtitle.cpp:300
 msgid "&Properties..."
@@ -2043,15 +2043,15 @@ msgstr "打开样式管理器"
 
 #: ../src/command/tool.cpp:176
 msgid "&Kanji Timer..."
-msgstr "汉字计时器(&K)…"
+msgstr "汉字K值配对(&K)…"
 
 #: ../src/command/tool.cpp:177
 msgid "Kanji Timer"
-msgstr "汉字计时器"
+msgstr "汉字K值配对"
 
 #: ../src/command/tool.cpp:178
 msgid "Open the Kanji timer copier"
-msgstr "打开汉字计时器"
+msgstr "打开汉字K值配对"
 
 #: ../src/command/tool.cpp:188
 msgid "&Timing Post-Processor..."
@@ -2471,7 +2471,7 @@ msgstr "互换行"
 
 #: ../src/command/grid.cpp:385
 msgid "Swap the two selected lines"
-msgstr "互换两个所选行"
+msgstr "互换所选的两行"
 
 #: ../src/command/grid.cpp:396
 msgid "swap lines"
@@ -2930,13 +2930,13 @@ msgstr "提交所有在波形上对时间的更改"
 
 #: ../src/command/audio.cpp:409 ../src/command/audio.cpp:410
 msgid "Commit and use default timing for next line"
-msgstr "提交并在下一行使用默认的计时"
+msgstr "提交并在下一行使用默认的时间轴"
 
 #: ../src/command/audio.cpp:411
 msgid ""
 "Commit any pending audio timing changes and reset the next line's times to "
 "the default"
-msgstr "提交所以挂起的音频计时更改，并重置下一行的时间为默认"
+msgstr "提交所有挂起的音频时间轴更改，并重置下一行的时间为默认"
 
 #: ../src/command/audio.cpp:424 ../src/command/audio.cpp:425
 msgid "Commit and move to next line"
@@ -3182,7 +3182,7 @@ msgstr "Aegisub已经检查完该脚本的拼写检查。"
 
 #: ../src/dialog_spellchecker.cpp:279 ../src/dialog_spellchecker.cpp:283
 msgid "Spell checking complete."
-msgstr "拼写检查完成。"
+msgstr "拼写检查完成"
 
 #: ../src/dialog_spellchecker.cpp:283
 msgid "Aegisub has found no spelling mistakes in this script."
@@ -3234,7 +3234,7 @@ msgstr "编辑："
 
 #: ../src/dialog_properties.cpp:102
 msgid "Timing:"
-msgstr "计时："
+msgstr "时间轴："
 
 #: ../src/dialog_properties.cpp:103
 msgid "Synch point:"
@@ -3263,7 +3263,7 @@ msgstr "0: 智能换行，上行较宽"
 
 #: ../src/dialog_properties.cpp:142
 msgid "1: End-of-line word wrapping, only \\N breaks"
-msgstr "1: 于行尾词处换行，仅于\\N 断行"
+msgstr "1: 于行尾词处换行，仅于 \\N 断行"
 
 #: ../src/dialog_properties.cpp:143
 msgid "2: No word wrapping, both \\n and \\N break"
@@ -4340,7 +4340,7 @@ msgstr ""
 "向上箭头：增加源选择的长度\n"
 "向下箭头：减少源选择的长度\n"
 "回车：连结，接受完成的行\n"
-"空格：解除最后的连结"
+"退格：解除最后的连结"
 
 #: ../src/dialog_kara_timing_copy.cpp:497
 msgid "S&tart!"
@@ -4348,11 +4348,11 @@ msgstr "开始！(&T)"
 
 #: ../src/dialog_kara_timing_copy.cpp:498
 msgid "&Link"
-msgstr "链接(&L)"
+msgstr "连结(&L)"
 
 #: ../src/dialog_kara_timing_copy.cpp:499
 msgid "&Unlink"
-msgstr "解除链接(&U)"
+msgstr "解除连结(&U)"
 
 #: ../src/dialog_kara_timing_copy.cpp:500
 msgid "Skip &Source Line"
@@ -4377,7 +4377,7 @@ msgstr "关闭(&C)"
 
 #: ../src/dialog_kara_timing_copy.cpp:566
 msgid "kanji timing"
-msgstr "汉字计时器"
+msgstr "汉字K值配对"
 
 #: ../src/dialog_kara_timing_copy.cpp:574
 msgid "Select source and destination styles first."
@@ -4731,7 +4731,7 @@ msgstr "0 行已被移出所选"
 
 #: ../src/dialog_selection.cpp:236
 msgid "Selection"
-msgstr "所选"
+msgstr "选择"
 
 #: ../src/font_file_lister.cpp:72
 #, c-format
@@ -4761,7 +4761,7 @@ msgstr "'%s' 不具有斜体。\n"
 #: ../src/font_file_lister.cpp:155
 #, c-format
 msgid "'%s' is missing %d glyphs used.\n"
-msgstr "'%s' 缺少 %d 字形。\n"
+msgstr "'%s' 缺少 %d 个字形。\n"
 
 #: ../src/font_file_lister.cpp:157
 #, c-format
@@ -4800,14 +4800,14 @@ msgstr "所有字体已找到。\n"
 #, c-format
 msgid "One font could not be found\n"
 msgid_plural "%d fonts could not be found.\n"
-msgstr[0] "%d 字体无法被找到。\n"
+msgstr[0] "%d 个字体无法被找到。\n"
 
 #: ../src/font_file_lister.cpp:214
 #, c-format
 msgid "One font was found, but was missing glyphs used in the script.\n"
 msgid_plural ""
 "%d fonts were found, but were missing glyphs used in the script.\n"
-msgstr[0] "%d 已找到，但是缺少脚本中使用的字形。\n"
+msgstr[0] "%d 个字体已找到，但是缺少脚本中使用的字形。\n"
 
 #: ../src/export_framerate.cpp:52
 msgid "Transform Framerate"
@@ -4823,7 +4823,7 @@ msgid ""
 "It can also be used to convert subtitles to a different speed video, such as "
 "NTSC to PAL speedup."
 msgstr ""
-"从输入到输出的影格率,转换字幕时间, 包含特效标签内的时间。\n"
+"将字幕时间（包括特效标签中的字幕时间）从输入帧率转换为输出帧率。\n"
 "\n"
 "转换标准字幕时间到VFRaC字幕时间是特别有用的。\n"
 "它也可以用来转换字幕到不同帧率的视频，例如应对NTSC到PAL的帧率提高。"
@@ -5458,11 +5458,11 @@ msgstr "轨道 %02d: %s"
 
 #: ../src/ffmpegsource_common.cpp:146
 msgid "Multiple video tracks detected, please choose the one you wish to load:"
-msgstr "发现多条视频流，请选择您希望装载的那个："
+msgstr "发现多条视频流，请选择要加载的视频："
 
 #: ../src/ffmpegsource_common.cpp:146
 msgid "Multiple audio tracks detected, please choose the one you wish to load:"
-msgstr "发现多条音频流，请选择您希望装载的那个："
+msgstr "发现多条音频流，请选择要加载的音轨："
 
 #: ../src/ffmpegsource_common.cpp:147
 msgid "Choose video track"
@@ -5531,7 +5531,7 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"没有可用的音频来源能够将所选文件识别为包含音频的文件。\n"
+"可用的音频来源无法将所选文件识别为包含音频的文件。\n"
 "\n"
 "已尝试下列来源：\n"
 
@@ -5542,7 +5542,7 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"没有可用的音频来源有可用于处理所选文件的解码器。\n"
+"可用的音频来源没有可用于处理所选文件的解码器。\n"
 "\n"
 "已尝试下列来源：\n"
 
@@ -5664,7 +5664,7 @@ msgstr "沿 Z 轴旋转角度 (角度)"
 msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping"
-msgstr "文字编码，仅当使用unicode时，字体没有合适的unicode映射时有用"
+msgstr "文字编码，仅当使用unicode时，字体没有正确的unicode映射时有用"
 
 #: ../src/dialog_style_editor.cpp:232
 msgid "Character spacing, in pixels"
@@ -5728,7 +5728,7 @@ msgstr "预览框背景色"
 
 #: ../src/dialog_style_editor.cpp:413
 msgid "There is already a style with this name. Please choose another name."
-msgstr "已有相同名称的样式。请使用另一个名称。"
+msgstr "已有相同名称的样式，请使用另一个名称。"
 
 #: ../src/dialog_style_editor.cpp:413
 msgid "Style name conflict"
@@ -5738,7 +5738,7 @@ msgstr "样式名称冲突"
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
-msgstr "想将脚本中所有应用该样式的字幕行的样式名都改为这个新名称吗？"
+msgstr "要将脚本中所有应用该样式的字幕行的样式名都改为这个新名称吗？"
 
 #: ../src/dialog_style_editor.cpp:426
 msgid "Update script?"
@@ -5974,7 +5974,7 @@ msgstr "选择要附加的文件"
 
 #: ../src/dialog_attachments.cpp:142
 msgid "attach font file"
-msgstr "附加字字体文件"
+msgstr "附加字体文件"
 
 #: ../src/dialog_attachments.cpp:152
 msgid "attach graphics file"
@@ -6055,7 +6055,7 @@ msgstr "自定义"
 
 #: ../src/dialog_resample.cpp:147
 msgid "Aspect Ratio Handling"
-msgstr "纵横比处理"
+msgstr "宽高比处理"
 
 #: ../src/dialog_resample.cpp:162
 msgid "Margin offset"
@@ -6126,7 +6126,7 @@ msgstr ""
 "Aegisub检查更新时出错：\n"
 "%s\n"
 "\n"
-"如果其他程序可以正常访问互联网，那么这很可能是我们的服务器的临时问题。"
+"如果其他程序可以正常访问互联网，可能是我们的服务器暂时出了问题。"
 
 #: ../src/dialog_version_check.cpp:379
 msgid "An unknown error occurred while checking for updates to Aegisub."
@@ -6178,7 +6178,7 @@ msgstr "字幕(&S)"
 
 #: default_menu.json:0
 msgid "&Timing"
-msgstr "计时(&T)"
+msgstr "时间轴(&T)"
 
 #: default_menu.json:0
 msgid "&Video"
@@ -6226,7 +6226,7 @@ msgstr "设置缩放(&Z)"
 
 #: default_menu.json:0
 msgid "Override &AR"
-msgstr "更改纵横比(&A)"
+msgstr "更改宽高比(&A)"
 
 #: default_menu.json:0
 msgid "&Export As..."
@@ -6246,7 +6246,7 @@ msgstr "此demo展示了如何用 Automation 4 编写一个简单的对行进行
 
 #: ../automation/autoload/macro-1-edgeblur.lua:21
 msgid "Adds \\be1 tags to all selected lines"
-msgstr "在所选行中添加 \\be1 标签"
+msgstr "为所选行添加 \\be1 标签"
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:32
 msgid "Automatic karaoke lead-in"
