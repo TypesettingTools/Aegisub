@@ -149,6 +149,12 @@ TEST(lagi_vfr, cfr_round_trip_exact) {
 	for (int i = -10; i < 11; i++) {
 		EXPECT_EQ(i, fps.FrameAtTime(fps.TimeAtFrame(i)));
 	}
+
+	ASSERT_NO_THROW(fps = Framerate(24000, 1001));
+	int frames[] = {-100, -10, -1, 0, 1, 10, 100, 6820};
+	for (int i : frames) {
+		EXPECT_EQ(i, fps.FrameAtTime(fps.TimeAtFrame(i)));
+	}
 }
 
 TEST(lagi_vfr, cfr_round_trip_start) {
@@ -157,12 +163,24 @@ TEST(lagi_vfr, cfr_round_trip_start) {
 	for (int i = -10; i < 11; i++) {
 		EXPECT_EQ(i, fps.FrameAtTime(fps.TimeAtFrame(i, START), START));
 	}
+
+	ASSERT_NO_THROW(fps = Framerate(24000, 1001));
+	int frames[] = {-100, -10, -1, 0, 1, 10, 100, 6820};
+	for (int i : frames) {
+		EXPECT_EQ(i, fps.FrameAtTime(fps.TimeAtFrame(i, START), START));
+	}
 }
 
 TEST(lagi_vfr, cfr_round_trip_end) {
 	Framerate fps;
 	ASSERT_NO_THROW(fps = Framerate(1.));
 	for (int i = -10; i < 11; i++) {
+		EXPECT_EQ(i, fps.FrameAtTime(fps.TimeAtFrame(i, END), END));
+	}
+
+	ASSERT_NO_THROW(fps = Framerate(24000, 1001));
+	int frames[] = {-100, -10, -1, 0, 1, 10, 100, 6820};
+	for (int i : frames) {
 		EXPECT_EQ(i, fps.FrameAtTime(fps.TimeAtFrame(i, END), END));
 	}
 }
