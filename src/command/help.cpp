@@ -58,7 +58,7 @@ struct help_bugs final : public Command {
 				throw c->parent;
 			}
 		}
-		wxLaunchDefaultBrowser("https://github.com/Aegisub/Aegisub/issues", wxBROWSER_NEW_WINDOW);
+		wxLaunchDefaultBrowser("https://github.com/TypesettingTools/Aegisub/issues", wxBROWSER_NEW_WINDOW);
 	}
 };
 

@@ -8,7 +8,7 @@ Text
 machines which you cannot install software on. To reduce the size several
 things are left out, such as most spellchecker dictionaries and the UI
 translations. The dictionaries are available as a separate download at the <a
-href="http://www.aegisub.org/" target="_blank">Aegisub website</a>.</p>
+href="http://aegisub.org/" target="_blank">Aegisub website</a>.</p>
 <p style="font-family: Tahoma; font-size: 14px;">Select where you want to
 unpack Aegisub and click <i>Extract</i>.</p>
 }

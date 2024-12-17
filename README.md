@@ -1,8 +1,8 @@
 # Aegisub
 
-For binaries and general information [see the homepage](http://www.aegisub.org).
+For binaries and general information [see the homepage](http://aegisub.org).
 
-The bug tracker can be found at https://github.com/Aegisub/Aegisub/issues.
+The bug tracker can be found at https://github.com/TypesettingTools/Aegisub/issues.
 
 Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](irc://irc.rizon.net/aegisub).
 
