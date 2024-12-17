@@ -6,16 +6,16 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2018-03-05 02:00+0800\n"
+"PO-Revision-Date: 2024-12-17 13:16+0800\n"
 "Last-Translator: ComputerFan <diannaomi97@gmail.com>\n"
 "Language-Team: Vmoe Fansub <vmoe@vmoe.info>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.8\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.5\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: ../src/dialog_shift_times.cpp:92
 msgid "unsaved"
@@ -330,7 +330,7 @@ msgstr "取消选择所有样式"
 #: ../src/dialog_properties.cpp:138 ../src/preferences.cpp:127
 #: ../src/preferences.cpp:167
 msgid "Options"
-msgstr "选项"
+msgstr "首选项"
 
 #: ../src/dialog_timing_processor.cpp:169
 msgid "Affect &selection only"
@@ -1272,7 +1272,7 @@ msgstr "次要颜色"
 
 #: ../src/command/edit.cpp:397
 msgid "Set the secondary (karaoke) fill color (\\2c) at the cursor position"
-msgstr "设置次要填充色（用于卡拉OK效果）标签(\\2c)，应用于鼠标的位置之后"
+msgstr "设置次要填充色（用于卡拉OK效果）标签(\\2c)，应用于光标的位置之后"
 
 #: ../src/command/edit.cpp:407
 msgid "Outline Color..."
@@ -1371,7 +1371,7 @@ msgstr "设置字体"
 
 #: ../src/command/edit.cpp:535
 msgid "Find and R&eplace..."
-msgstr "搜索替换(&E)…"
+msgstr "查找替换(&E)…"
 
 #: ../src/command/edit.cpp:536
 msgid "Find and Replace"
@@ -1447,7 +1447,7 @@ msgstr "重复所选行"
 
 #: ../src/command/edit.cpp:726 ../src/command/edit.cpp:727
 msgid "Split lines after current frame"
-msgstr "以当前帧后分割行"
+msgstr "在当前帧后分割行"
 
 #: ../src/command/edit.cpp:728
 msgid ""
@@ -1458,7 +1458,7 @@ msgstr ""
 
 #: ../src/command/edit.cpp:738 ../src/command/edit.cpp:739
 msgid "Split lines before current frame"
-msgstr "以当前帧前分割行"
+msgstr "在分割行"
 
 #: ../src/command/edit.cpp:740
 msgid ""
@@ -1568,14 +1568,14 @@ msgstr "分割"
 #: ../src/command/edit.cpp:1098 ../src/command/edit.cpp:1099
 #: ../src/subs_edit_ctrl.cpp:375
 msgid "Split at cursor (estimate times)"
-msgstr "在光标处分割（概略计时）"
+msgstr "在光标处分割（估算时间）"
 
 #: ../src/command/edit.cpp:1100
 msgid ""
 "Split the current line at the cursor, dividing the original line's duration "
 "between the new ones"
 msgstr ""
-"在光标处分割所选行，将新的两行的开始结束时间概略分割原始行的开始结束时间"
+"在光标处分割所选行，将新的两行的开始结束时间估算分割原始行的开始结束时间"
 
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
 #: ../src/subs_edit_ctrl.cpp:374
@@ -1733,7 +1733,7 @@ msgstr "附件"
 
 #: ../src/command/subtitle.cpp:80
 msgid "Open the attachment manager dialog"
-msgstr "打开附件管理器对话框"
+msgstr "打开附件管理器"
 
 #: ../src/command/subtitle.cpp:91
 msgid "&Find..."
@@ -2061,7 +2061,7 @@ msgstr "时间后续处理器(&T)…"
 msgid ""
 "Post-process the subtitle timing to add lead-ins and lead-outs, snap timing "
 "to scene changes, etc."
-msgstr "运行时间后续处理器来处理时间开始提前、结束延后以及镜头计时等"
+msgstr "运行时间后续处理器来处理时间开始提前、结束延后以及场景变化对帧等"
 
 #: ../src/command/tool.cpp:200
 msgid "&Translation Assistant..."
@@ -2585,15 +2585,15 @@ msgstr "按照时间或帧平移字幕"
 #: ../src/command/time.cpp:175 ../src/audio_timing_dialogue.cpp:512
 #: ../src/audio_timing_dialogue.cpp:518
 msgid "timing"
-msgstr "计时"
+msgstr "时间轴"
 
 #: ../src/command/time.cpp:181
 msgid "Snap &End to Video"
-msgstr "视频抓取为结束时间(&E)"
+msgstr "设置开始时间到视频(&E)"
 
 #: ../src/command/time.cpp:182
 msgid "Snap End to Video"
-msgstr "视频抓取为结束时间"
+msgstr "设置结束时间到视频"
 
 #: ../src/command/time.cpp:183
 msgid "Set end of selected subtitles to current video frame"
@@ -3481,7 +3481,7 @@ msgstr "通用"
 
 #: ../src/preferences.cpp:64
 msgid "Check for updates on startup"
-msgstr "启动时检查更新吗？"
+msgstr "启动时检查更新"
 
 #: ../src/preferences.cpp:65
 msgid "Show main toolbar"
@@ -3792,7 +3792,7 @@ msgstr "高亮可见字幕"
 
 #: ../src/preferences.cpp:224
 msgid "Hide overrides symbol"
-msgstr "隐藏特效标签"
+msgstr "特效标签替代符号"
 
 #: ../src/preferences.cpp:232 ../src/dialog_style_editor.cpp:179
 msgid "Colors"
@@ -4203,7 +4203,7 @@ msgstr "恢复默认？"
 
 #: ../src/preferences.cpp:690
 msgid "Preferences"
-msgstr "偏好"
+msgstr "首选项"
 
 #: ../src/preferences.cpp:718
 msgid "&Restore Defaults"
@@ -4299,7 +4299,7 @@ msgstr "目标："
 
 #: ../src/dialog_kara_timing_copy.cpp:470
 msgid "Kanji timing"
-msgstr "汉字计时器"
+msgstr "汉字K值配对"
 
 #: ../src/dialog_kara_timing_copy.cpp:475 ../src/dialog_paste_over.cpp:73
 #: ../src/grid_column.cpp:334 ../src/grid_column.cpp:335
@@ -4467,7 +4467,7 @@ msgstr "您想让Aegisub启动时检查更新吗？您也可以通过帮助菜�
 
 #: ../src/main.cpp:302
 msgid "Check for updates?"
-msgstr "检查更新吗？"
+msgstr "是否检查更新？"
 
 #: ../src/main.cpp:387 ../src/main.cpp:392
 msgid "Program error"
@@ -5371,7 +5371,7 @@ msgstr ""
 
 #: ../src/charset_detect.cpp:81
 msgid "Choose character set"
-msgstr "选择文字编码："
+msgstr "选择文字编码"
 
 #: ../src/dialog_detached_video.cpp:66 ../src/dialog_detached_video.cpp:134
 #, c-format
@@ -6347,10 +6347,10 @@ msgstr "自动更新："
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid ""
-"This will install Aegisub {#BUILD_GIT_VERSION_STRING} on your computer.%n"
-"%nAegisub is covered by the GNU General Public License version 2. This means "
-"you may use the application for any purpose without charge, but that no "
-"warranties of any kind are given either.%n%nSee the Aegisub website for "
+"This will install Aegisub {#BUILD_GIT_VERSION_STRING} on your computer."
+"%n%nAegisub is covered by the GNU General Public License version 2. This "
+"means you may use the application for any purpose without charge, but that "
+"no warranties of any kind are given either.%n%nSee the Aegisub website for "
 "information on obtaining the source code."
 msgstr ""
 "将会在您的电脑上安装Aegisub {#BUILD_GIT_VERSION_STRING} 。%n%nAegisub适用于"
