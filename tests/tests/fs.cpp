@@ -14,6 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <algorithm>
 #include <main.h>
 #include <util.h>
 
