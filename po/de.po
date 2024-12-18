@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2024-12-18 13:28+0100\n"
+"PO-Revision-Date: 2024-12-18 21:47+0100\n"
 "Last-Translator: arch1t3cht <arch1t3cht@gmail.com>\n"
 "Language-Team: Pantsu ga daisuki <erokawaii@yandex.ru>\n"
 "Language: de_DE\n"
@@ -2196,7 +2196,7 @@ msgstr "&Audio+Untertitel Ansicht"
 
 #: ../src/command/app.cpp:70
 msgid "Audio+Subs View"
-msgstr "Audio+Untertitel Anzeigen"
+msgstr "Audio+Untertitel Ansicht"
 
 #: ../src/command/app.cpp:71
 msgid "Display audio and the subtitles grid only"
@@ -4907,7 +4907,7 @@ msgstr "Fertig. Alle Schriftarten gefunden.\n"
 #, c-format
 msgid "One font could not be found\n"
 msgid_plural "%d fonts could not be found.\n"
-msgstr[0] "Eine Schriftart konnte nicht gefunden worden.\n"
+msgstr[0] "Eine Schriftart konnte nicht gefunden werden.\n"
 msgstr[1] "%d Schriftarten konnten nicht gefunden werden.\n"
 
 #: ../src/font_file_lister.cpp:214
@@ -6228,7 +6228,7 @@ msgstr "Konnte nichts vom Update-Server herunterladen."
 #: ../src/dialog_version_check.cpp:312
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr "HTTP-Anfrage fehlgeschlagen mit Code %d fehlgeschlagen."
+msgstr "HTTP-Anfrage mit Code %d fehlgeschlagen."
 
 #: ../src/dialog_version_check.cpp:343
 msgid "An update to Aegisub was found."
@@ -6428,7 +6428,7 @@ msgid ""
 msgstr ""
 "Wendet Karaoke-Vorlage an.\n"
 "\n"
-"Siehe Hilfedata für näherer Infos zur Verwendung."
+"Siehe Hilfedatei für näherer Infos zur Verwendung."
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
