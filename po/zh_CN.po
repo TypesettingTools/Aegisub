@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2024-12-18 17:25+0800\n"
+"PO-Revision-Date: 2024-12-18 17:29+0800\n"
 "Last-Translator: ComputerFan <diannaomi97@gmail.com>\n"
 "Language-Team: Vmoe Fansub <vmoe@vmoe.info>\n"
 "Language: zh_CN\n"
@@ -1579,7 +1579,7 @@ msgstr "在光标处分割所选行，把原始行的时段分配给新的两行
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
 #: ../src/subs_edit_ctrl.cpp:374
 msgid "Split at cursor (preserve times)"
-msgstr "在光标处分割 (保留原时间轴)"
+msgstr "在光标处分割（保留原时间轴）"
 
 #: ../src/command/edit.cpp:1116
 msgid ""
