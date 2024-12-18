@@ -1,17 +1,23 @@
+[Types]
+Name: "basic"; Description: "Standard installation"
+Name: "full"; Description: "Full installation"
+Name: "compact"; Description: "Compact installation"
+Name: "custom"; Description: "Custom installation"; Flags: iscustom
+
 [Components]
-Name: "main"; Description: "Main Files"; Types: full compact custom; Flags: fixed
-Name: "macros"; Description: "Automation Scripts"; Types: full
-Name: "macros\bundled"; Description: "Bundled macros"; Types: full
-Name: "macros\demos"; Description: "Example macros/Demos"; Types: full
+Name: "main"; Description: "Main Files"; Types: full compact custom basic; Flags: fixed
+Name: "macros"; Description: "Automation Scripts"; Types: full basic
+Name: "macros\bundled"; Description: "Bundled macros"; Types: full basic
+Name: "macros\demos"; Description: "Example macros/Demos"; Types: full basic
 #ifdef DEPCTRL
 Name: "macros\modules"; Description: "Modules"; Types: full
 Name: "macros\modules\depctrl"; Description: "DependencyControl"; Types: full
 Name: "macros\modules\yutils"; Description: "YUtils"; Types: full
 Name: "macros\modules\luajson"; Description: "LuaJSON"; Types: full
 #endif
-Name: "dictionaries"; Description: "Spellcheck Dictionaries"; Types: full
-Name: "dictionaries\en_US"; Description: "English (US)"; Types: full
-Name: "translations"; Description: "Aegisub Translations"; Types: full
+Name: "dictionaries"; Description: "Spellcheck Dictionaries"; Types: full basic
+Name: "dictionaries\en_US"; Description: "English (US)"; Types: full basic
+Name: "translations"; Description: "Aegisub Translations"; Types: full basic
 
 [Tasks]
 Name: "startmenuicon"; Description: "{cm:StartMenuIcon}"; GroupDescription: "{cm:AdditionalIcons}"

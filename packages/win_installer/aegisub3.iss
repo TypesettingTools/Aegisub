@@ -7,8 +7,8 @@
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 DefaultDirName={commonpf}\Aegisub
 PrivilegesRequired=poweruser
-ArchitecturesInstallIn64BitMode=x64
-ArchitecturesAllowed=x64
+ArchitecturesInstallIn64BitMode=x64compatible
+ArchitecturesAllowed=x64compatible
 
 #include "fragment_mainprogram.iss"
 #include "fragment_associations.iss"
