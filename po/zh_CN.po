@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2024-12-17 16:33+0800\n"
+"PO-Revision-Date: 2024-12-18 17:25+0800\n"
 "Last-Translator: ComputerFan <diannaomi97@gmail.com>\n"
 "Language-Team: Vmoe Fansub <vmoe@vmoe.info>\n"
 "Language: zh_CN\n"
@@ -330,7 +330,7 @@ msgstr "取消选择所有样式"
 #: ../src/dialog_properties.cpp:138 ../src/preferences.cpp:127
 #: ../src/preferences.cpp:167
 msgid "Options"
-msgstr "首选项"
+msgstr "选项"
 
 #: ../src/dialog_timing_processor.cpp:169
 msgid "Affect &selection only"
@@ -844,7 +844,7 @@ msgstr "电影（2.35）"
 
 #: ../src/command/video.cpp:86
 msgid "Force video to 2.35 aspect ratio"
-msgstr "将视频强制显示为2.35宽高比"
+msgstr "强制以 2.35:1 的比例显示视频画面"
 
 #: ../src/command/video.cpp:102
 msgid "C&ustom..."
@@ -902,7 +902,7 @@ msgstr "全屏4:3"
 
 #: ../src/command/video.cpp:165
 msgid "Force video to 4:3 aspect ratio"
-msgstr "将视频强制显示为4:3宽高比"
+msgstr "强制以 4:3 的比例显示视频画面"
 
 #: ../src/command/video.cpp:181
 msgid "&Widescreen (16:9)"
@@ -914,7 +914,7 @@ msgstr "宽屏16:9"
 
 #: ../src/command/video.cpp:183
 msgid "Force video to 16:9 aspect ratio"
-msgstr "将视频强制显示为16:9宽高比"
+msgstr "强制以 16:9 的比例显示视频画面"
 
 #: ../src/command/video.cpp:200
 msgid "&Close Video"
@@ -1574,8 +1574,7 @@ msgstr "在光标处分割（估算时间）"
 msgid ""
 "Split the current line at the cursor, dividing the original line's duration "
 "between the new ones"
-msgstr ""
-"在光标处分割所选行，将新的两行的开始结束时间估算分割原始行的开始结束时间"
+msgstr "在光标处分割所选行，把原始行的时段分配给新的两行"
 
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
 #: ../src/subs_edit_ctrl.cpp:374
@@ -3467,7 +3466,7 @@ msgstr "帧率 (fps)："
 
 #: ../src/dialog_dummy_video.cpp:122
 msgid "Duration (frames):"
-msgstr "长度 (帧)："
+msgstr "长度（帧）："
 
 #: ../src/dialog_dummy_video.cpp:164
 #, c-format
@@ -4800,14 +4799,14 @@ msgstr "所有字体已找到。\n"
 #, c-format
 msgid "One font could not be found\n"
 msgid_plural "%d fonts could not be found.\n"
-msgstr[0] "%d 个字体无法被找到。\n"
+msgstr[0] "有 %d 个字体无法找到。\n"
 
 #: ../src/font_file_lister.cpp:214
 #, c-format
 msgid "One font was found, but was missing glyphs used in the script.\n"
 msgid_plural ""
 "%d fonts were found, but were missing glyphs used in the script.\n"
-msgstr[0] "%d 个字体已找到，但是缺少脚本中使用的字形。\n"
+msgstr[0] "找到了 %d 个字体，但是缺少脚本中使用的字形。\n"
 
 #: ../src/export_framerate.cpp:52
 msgid "Transform Framerate"
@@ -4823,7 +4822,7 @@ msgid ""
 "It can also be used to convert subtitles to a different speed video, such as "
 "NTSC to PAL speedup."
 msgstr ""
-"将字幕时间（包括特效标签中的字幕时间）从输入帧率转换为输出帧率。\n"
+"将字幕时间（包括特效标签中的时间）从输入帧率转换为输出帧率。\n"
 "\n"
 "转换标准字幕时间到VFRaC字幕时间是特别有用的。\n"
 "它也可以用来转换字幕到不同帧率的视频，例如应对NTSC到PAL的帧率提高。"
@@ -5624,15 +5623,15 @@ msgstr "选择阴影颜色"
 
 #: ../src/dialog_style_editor.cpp:222
 msgid "Distance from left edge, in pixels"
-msgstr "与左边界距离 (像素)"
+msgstr "与左边界距离（像素）"
 
 #: ../src/dialog_style_editor.cpp:223
 msgid "Distance from right edge, in pixels"
-msgstr "与右边界距离 (像素)"
+msgstr "与右边界距离（像素）"
 
 #: ../src/dialog_style_editor.cpp:224
 msgid "Distance from top/bottom edge, in pixels"
-msgstr "与上/下边界距离 (像素)"
+msgstr "与上/下边界距离（像素）"
 
 #: ../src/dialog_style_editor.cpp:225
 msgid ""
@@ -5642,23 +5641,23 @@ msgstr "选中时，则使用不透明背景取代字幕的边框"
 
 #: ../src/dialog_style_editor.cpp:226
 msgid "Outline width, in pixels"
-msgstr "边框宽度 (像素)"
+msgstr "边框宽度（像素）"
 
 #: ../src/dialog_style_editor.cpp:227
 msgid "Shadow distance, in pixels"
-msgstr "阴影距离 (像素)"
+msgstr "阴影距离（像素）"
 
 #: ../src/dialog_style_editor.cpp:228
 msgid "Scale X, in percentage"
-msgstr "水平缩放率 (百分比)"
+msgstr "水平缩放率（百分比）"
 
 #: ../src/dialog_style_editor.cpp:229
 msgid "Scale Y, in percentage"
-msgstr "垂直缩放率 (百分比)"
+msgstr "垂直缩放率（百分比）"
 
 #: ../src/dialog_style_editor.cpp:230
 msgid "Angle to rotate in Z axis, in degrees"
-msgstr "沿 Z 轴旋转角度 (角度)"
+msgstr "沿 Z 轴旋转角度（角度）"
 
 #: ../src/dialog_style_editor.cpp:231
 msgid ""
@@ -5668,7 +5667,7 @@ msgstr "文字编码，仅当使用unicode时，字体没有正确的unicode映�
 
 #: ../src/dialog_style_editor.cpp:232
 msgid "Character spacing, in pixels"
-msgstr "字符间距 (像素)"
+msgstr "字符间距（像素）"
 
 #: ../src/dialog_style_editor.cpp:233
 msgid "Alignment in screen, in numpad style"
@@ -6134,11 +6133,11 @@ msgstr "Aegisub检查更新时发生未知错误。"
 
 #: default_menu.json:0
 msgid "&Insert (before)"
-msgstr "插入(之前)(&I)"
+msgstr "插入（之前）(&I)"
 
 #: default_menu.json:0
 msgid "Insert (after)"
-msgstr "插入(之后)"
+msgstr "插入（之后）"
 
 #: default_menu.json:0
 msgid "Insert at video time (before)"
@@ -6150,23 +6149,23 @@ msgstr "以视频时间插入(之后)"
 
 #: default_menu.json:0
 msgid "&Join (concatenate)"
-msgstr "合并 (连接)(&J)"
+msgstr "合并（连接）(&J)"
 
 #: default_menu.json:0
 msgid "Join (keep first)"
-msgstr "合并 (保留首行)"
+msgstr "合并（保留首行）"
 
 #: default_menu.json:0
 msgid "Join (as Karaoke)"
-msgstr "合并 (视为卡拉OK)"
+msgstr "合并（视为卡拉OK）"
 
 #: default_menu.json:0
 msgid "&Make times continuous (change start)"
-msgstr "使时间连续 (更改开始时间)(&M)"
+msgstr "使时间连续（更改开始时间）(&M)"
 
 #: default_menu.json:0
 msgid "&Make times continuous (change end)"
-msgstr "使时间连续 (更改结束时间)(&M)"
+msgstr "使时间连续（更改结束时间）(&M)"
 
 #: default_menu.json:0
 msgid "&File"
