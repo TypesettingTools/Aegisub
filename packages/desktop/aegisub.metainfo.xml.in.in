@@ -19,8 +19,6 @@
       <li>Fully scriptable through the Automation module</li>
     </ul>
   </description>
-  <!-- XXX: appstreamcli validation warning: cid-desktopapp-is-not-rdns
-       If improving this, the <id> and filename should probably also be changed.  -->
   <launchable type="desktop-id">aegisub.desktop</launchable>
   <kudos>
     <kudo>HiDpiIcon</kudo>
@@ -42,10 +40,10 @@
     </screenshot>
   </screenshots>
   <developer_name>Aegisub Group</developer_name>
-  <url type="bugtracker">https://github.com/Aegisub/Aegisub/issues</url>
-  <url type="faq">https://aegisub.org/docs/latest/faq</url>
-  <url type="help">https://aegisub.org/docs/latest</url>
-  <url type="homepage">https://aegisub.org</url>
+  <url type="bugtracker">https://github.com/TypesettingTools/Aegisub/issues</url>
+  <url type="faq">https://aegisub.org/docs/latest/faq/</url>
+  <url type="help">https://aegisub.org/docs/latest/main_page/</url>
+  <url type="homepage">http://aegisub.org</url>
   <url type="translate">https://github.com/Aegisub/Aegisub</url>
   <content_rating type="oars-1.0">
     <content_attribute id="social-info">mild</content_attribute>
@@ -55,7 +53,6 @@
     <binary>aegisub</binary>
   </provides>
   <releases>
-    <!-- TODO: automatic replace at config time -->
-    <release version="3.2.2" date="2014-12-08"/>
+    <release version="3.4.0" date="2024-12-17"/>
   </releases>
 </component>
