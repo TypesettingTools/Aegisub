@@ -36,11 +36,11 @@ else
                     install: true,
                     install_dir: datadir / 'applications')
 
-	appdata_template = configure_file(input: 'desktop/aegisub.appdata.xml.in.in',
-                                      output: 'aegisub.appdata.xml.in',
+	metainfo_template = configure_file(input: 'desktop/aegisub.metainfo.xml.in.in',
+                                      output: 'aegisub.metainfo.xml.in',
                                       configuration: conf_pkg)
-	i18n.merge_file(input: appdata_template,
-                    output: 'aegisub.appdata.xml',
+	i18n.merge_file(input: metainfo_template,
+                    output: 'aegisub.metainfo.xml',
                     type: 'xml',
                     po_dir: '../po',
                     install: true,
