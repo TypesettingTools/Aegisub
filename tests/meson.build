@@ -1,6 +1,10 @@
-gtest_proj = subproject('gtest')
-gtest_dep = gtest_proj.get_variable('gtest_dep')
-gmock_dep = gtest_proj.get_variable('gmock_dep')
+gtest_ver = '>=1.14.0'
+gtest_dep = dependency('gtest', 
+                       fallback : ['gtest', 'gtest_dep'], 
+                       version : gtest_ver)
+gmock_dep = dependency('gmock', 
+                       fallback : ['gtest', 'gmock_dep'], 
+                       version : gtest_ver)
 
 tests_deps = [
     gtest_dep,
