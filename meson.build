@@ -1,6 +1,6 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.57.0',
+        meson_version: '>=0.60.0',
         default_options: ['cpp_std=c++20', 'buildtype=debugoptimized'],
         version: '3.4.0')
 
@@ -92,16 +92,7 @@ cc = meson.get_compiler('c')
 deps += cc.find_library('m', required: false)
 deps += cc.find_library('dl', required: false)
 
-if meson.version().version_compare('>=0.60.0')
-  iconv_dep = dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
-else
-  iconv_dep = cc.find_library('iconv', required: false)
-  if not (iconv_dep.found() or cc.has_function('iconv_open'))
-      iconv_sp = subproject('iconv') # this really needs to be replaced with a proper port
-      iconv_dep = iconv_sp.get_variable('libiconv_dep')
-  endif
-endif
-deps += iconv_dep
+deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
@@ -316,8 +307,16 @@ if get_option('enable_update_checker')
     deps += [libcurl_dep]
 endif
 
-luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'))
-if luajit.found() and luajit.type_name() != 'internal'
+# There's a copy of this Lua dependency code in
+# subprojects/luabins/meson.build, keep it in sync.
+lua_provider = get_option('lua_provider')
+lua_auto = lua_provider == 'auto'
+if ['auto', 'luajit-system'].contains(lua_provider)
+    lua = dependency('luajit',
+                     version: '>=2.0.0',
+                     required: lua_provider == 'luajit-system',
+                     allow_fallback: lua_auto)
+
     luajit_test = cc.run('''#include <lauxlib.h>
 int main(void)
 {
@@ -326,25 +325,25 @@ int main(void)
     // This is valid in lua 5.2, but a syntax error in 5.1
     const char testprogram[] = "function foo() while true do break return end end";
     return luaL_loadstring(L, testprogram) == LUA_ERRSYNTAX;
-}''', dependencies: luajit)
+}''', dependencies: lua)
 
-    if luajit_test.returncode() == 1
-        if get_option('system_luajit')
-            error('System luajit found but not compiled in 5.2 mode')
-        else
-            message('System luajit found but not compiled in 5.2 mode; using built-in luajit')
-        endif
+    if luajit_test.returncode() == 1 and lua_provider == 'luajit-system'
+        error('luajit found but not compiled in 5.2 mode')
     else
-        deps += luajit
+        lua = disabler()
+        warning('luajit found but not compiled in 5.2 mode; trying fallback')
     endif
-else
-    message('System luajit not found; using built-in luajit')
 endif
+if (lua_auto and not lua.found()) or lua_provider == 'lua-system'
+    lua = dependency('lua52', 'lua-5.2',
+                     required: lua_provider == 'lua_system')
+endif
+if (lua_auto and not lua.found()) or lua_provider == 'luajit-local'
+    lua = subproject('luajit').get_variable('luajit_dep')
+endif
+deps += lua
 
-if not deps.contains(luajit)
-    deps += subproject('luajit').get_variable('luajit_dep')
-endif
-deps += subproject('luabins').get_variable('luabins_dep')
+deps += dependency('luabins', fallback: ['luabins', 'luabins_dep'])
 
 dep_gl = dependency('gl', required: false)
 if not dep_gl.found()

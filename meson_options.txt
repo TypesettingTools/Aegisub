@@ -13,7 +13,10 @@ option('hunspell', type: 'feature', description: 'Hunspell spell checker')
 option('uchardet', type: 'feature', description: 'uchardet character encoding detection')
 option('csri', type: 'feature', description: 'CSRI support')
 
-option('system_luajit', type: 'boolean', value: false, description: 'Force using system luajit')
+option('lua_provider', 
+       type: 'combo', 
+       choices: ['auto', 'luajit-system', 'luajit-local', 'lua-system'],
+       description: 'Which Lua implementation to use. "auto" tries all in a reasonable order')
 option('local_boost', type: 'boolean', value: false, description: 'Force using locally compiled Boost')
 
 option('wx_version', type: 'string', value: '3.0.0', description: 'The minimum wxWidgets version to use')
