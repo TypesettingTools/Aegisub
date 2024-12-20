@@ -24,8 +24,8 @@ elif host_machine.system() == 'darwin'
 else
     conf_pkg.set('AEGISUB_COMMAND', 'aegisub')
 
-    desktop_template = configure_file(input: 'desktop/aegisub.desktop.template.in',
-                                      output: 'aegisub.desktop.template',
+    desktop_template = configure_file(input: 'desktop/aegisub.desktop.in.in',
+                                      output: 'aegisub.desktop.in',
                                       configuration: conf_pkg)
 
     i18n = import('i18n')
@@ -35,6 +35,16 @@ else
                     po_dir: '../po',
                     install: true,
                     install_dir: datadir / 'applications')
+
+	metainfo_template = configure_file(input: 'desktop/aegisub.metainfo.xml.in.in',
+                                      output: 'aegisub.desktop.metainfo.xml.in',
+                                      configuration: conf_pkg)
+	i18n.merge_file(input: metainfo_template,
+                    output: 'aegisub.metainfo.xml',
+                    type: 'xml',
+                    po_dir: '../po',
+                    install: true,
+                    install_dir: datadir / 'metainfo')
 
     aegisub_logos = ['16x16.png', '22x22.png', '24x24.png', '32x32.png', '48x48.png', '64x64.png', 'scalable.svg']
 
