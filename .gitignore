@@ -1,18 +1,3 @@
-/tests/data
-
-packages/desktop/aegisub.desktop
-packages/desktop/aegisub.desktop.template
-src/libresrc/bitmap.cpp
-src/libresrc/bitmap.h
-src/libresrc/default_config.cpp
-src/libresrc/default_config.h
-src/libresrc/default_config_platform.json
-tests/*.json
-tests/run
-tools/osx-bundle-restart-helper
-tools/repack-thes-dict
-tools/repack-thes-dict.dSYM
-
 # Platform-specific
 .DS_Store
 
