@@ -1,0 +1,12 @@
+root = true
+
+[{src,libaegisub,automation,test,tools}/**.{c,cpp,h,hpp}]
+indent_style = tab
+indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[src/MatroskaParser.{c,h}]
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = false
