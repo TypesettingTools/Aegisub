@@ -27,6 +27,7 @@
 #include <boost/range/algorithm/copy.hpp>
 #include <boost/range/algorithm/set_algorithm.hpp>
 #include <wx/toolbar.h>
+#include <wx/version.h>
 
 /// Button IDs
 enum {
@@ -54,7 +55,11 @@ void VisualToolVectorClip::SetToolbar(wxToolBar *toolBar) {
 
 	int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
 
-#define ICON(name) icon_size == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24)
+#if wxCHECK_VERSION(3, 1, 6)
+# define ICON(name) icon_size == 16 ? wxBitmapBundle(GETIMAGE(name ## _16)) : wxBitmapBundle(GETIMAGE(name ## _24))
+#else
+# define ICON(name) icon_size == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24)
+#endif
 	toolBar->AddTool(BUTTON_DRAG, _("Drag"), ICON(visual_vector_clip_drag), _("Drag control points"), wxITEM_CHECK);
 	toolBar->AddTool(BUTTON_LINE, _("Line"), ICON(visual_vector_clip_line), _("Appends a line"), wxITEM_CHECK);
 	toolBar->AddTool(BUTTON_BICUBIC, _("Bicubic"), ICON(visual_vector_clip_bicubic), _("Appends a bezier bicubic curve"), wxITEM_CHECK);
