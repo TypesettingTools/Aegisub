@@ -38,6 +38,7 @@
 
 #include <libaegisub/scoped_ptr.h>
 
+#include <algorithm>
 #include <memory>
 #include <vector>
 

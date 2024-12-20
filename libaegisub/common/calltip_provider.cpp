@@ -19,6 +19,7 @@
 #include "libaegisub/ass/dialogue_parser.h"
 
 #include <algorithm>
+#include <cstring>
 
 namespace {
 struct proto_lit {

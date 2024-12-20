@@ -25,6 +25,7 @@
 #include "libaegisub/log.h"
 #include "libaegisub/option_value.h"
 
+#include <algorithm>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <cassert>
 #include <memory>

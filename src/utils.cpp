@@ -41,6 +41,7 @@
 #ifdef __UNIX__
 #include <unistd.h>
 #endif
+#include <algorithm>
 #include <map>
 #include <unicode/locid.h>
 #include <unicode/unistr.h>
