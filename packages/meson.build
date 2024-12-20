@@ -36,6 +36,16 @@ else
                     install: true,
                     install_dir: datadir / 'applications')
 
+	appdata_template = configure_file(input: 'desktop/aegisub.appdata.xml.in.in',
+                                      output: 'aegisub.appdata.xml.in',
+                                      configuration: conf_pkg)
+	i18n.merge_file(input: appdata_template,
+                    output: 'aegisub.appdata.xml',
+                    type: 'xml',
+                    po_dir: '../po',
+                    install: true,
+                    install_dir: datadir / 'metainfo')
+
     aegisub_logos = ['16x16.png', '22x22.png', '24x24.png', '32x32.png', '48x48.png', '64x64.png', 'scalable.svg']
 
     foreach s: aegisub_logos

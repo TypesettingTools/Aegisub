@@ -48,7 +48,7 @@ done
 
 if which xmlstarlet >/dev/null 2>&1 && which jq >/dev/null 2>&1; then
   for i in 'name' 'summary' 'p' 'li' 'caption'; do
-    xmlstarlet sel -t -v "//_$i" ../packages/desktop/aegisub.appdata.xml.template.in | jq -R .
+    xmlstarlet sel -t -v "//$i" ../packages/desktop/aegisub.appdata.xml.in.in | jq -R .
   done | nl -v0 -w1 -s'|' | sed -re 's/^/aegisub.appdata.xml|/' | maybe_append
 fi
 
