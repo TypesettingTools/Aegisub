@@ -397,8 +397,8 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
 	CGGetDisplaysWithPoint(CGPointMake(x, y), 1, &display_id, &display_count);
 
 	agi::scoped_holder<CGImageRef> img(CGDisplayCreateImageForRect(display_id, CGRectMake(x - resx / 2, y - resy / 2, resx, resy)), CGImageRelease);
-	NSUInteger width = CGImageGetWidth(img);
-	NSUInteger height = CGImageGetHeight(img);
+	size_t width = CGImageGetWidth(img);
+	size_t height = CGImageGetHeight(img);
 	std::vector<uint8_t> imgdata(height * width * 4);
 
 	agi::scoped_holder<CGColorSpaceRef> colorspace(CGColorSpaceCreateDeviceRGB(), CGColorSpaceRelease);

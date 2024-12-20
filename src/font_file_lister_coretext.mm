@@ -14,10 +14,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "font_file_lister.h"
-
 #include <AppKit/AppKit.h>
 #include <CoreText/CoreText.h>
+
+#include "font_file_lister.h"
 
 namespace {
 struct FontMatch {
