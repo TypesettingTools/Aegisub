@@ -1,0 +1,13 @@
+subprojects/csri    linguist-vendored
+subprojects/iconv   linguist-vendored
+subprojects/luabins linguist-vendored
+
+subprojects/csri/meson.build    -linguist-vendored
+subprojects/iconv/meson.build   -linguist-vendored
+subprojects/luabins/meson.build -linguist-vendored
+
+src/MatroskaParser.*    linguist-vendored
+
+libaegisub/lua/modules/lpeg.*       linguist-vendored
+
+automation/include/moonscript.lua   linguist-vendored
