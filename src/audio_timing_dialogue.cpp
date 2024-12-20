@@ -42,6 +42,7 @@
 #include <libaegisub/ass/time.h>
 
 #include <boost/range/algorithm.hpp>
+#include <list>
 #include <wx/pen.h>
 
 namespace {

@@ -32,6 +32,8 @@
 /// @ingroup utility
 ///
 
+#include "acconf.h"
+
 #include "aegisublocale.h"
 
 #include "compat.h"

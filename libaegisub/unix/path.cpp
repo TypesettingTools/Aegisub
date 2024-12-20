@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include "../acconf.h"
+
 #include <libaegisub/path.h>
 
 #include <libaegisub/exception.h>

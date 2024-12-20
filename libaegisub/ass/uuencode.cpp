@@ -17,6 +17,7 @@
 #include <libaegisub/ass/uuencode.h>
 
 #include <algorithm>
+#include <cstring>
 
 // Despite being called uuencoding by ass_specs.doc, the format is actually
 // somewhat different from real uuencoding.  Each 3-byte chunk is split into 4
