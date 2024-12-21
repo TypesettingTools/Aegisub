@@ -91,7 +91,7 @@ static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_ha
 	}
 }
 
-AsyncVideoProvider::AsyncVideoProvider(std::filesystem::path const& video_filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
+AsyncVideoProvider::AsyncVideoProvider(agi::fs::path const& video_filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
 : worker(agi::dispatch::Create())
 , subs_provider(get_subs_provider(parent, br))
 , source_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix, br))

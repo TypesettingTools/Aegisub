@@ -19,7 +19,6 @@
 #include "libaegisub/io.h"
 
 #include <fcntl.h>
-#include <filesystem>
 #include <fnmatch.h>
 #include <istream>
 #include <sys/time.h>

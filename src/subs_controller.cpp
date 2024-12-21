@@ -165,7 +165,7 @@ void SubsController::SetSelectionController(SelectionController *selection_contr
 	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
 }
 
-ProjectProperties SubsController::Load(std::filesystem::path const& filename, const char *charset) {
+ProjectProperties SubsController::Load(agi::fs::path const& filename, const char *charset) {
 	AssFile temp;
 
 	SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
@@ -184,7 +184,7 @@ ProjectProperties SubsController::Load(std::filesystem::path const& filename, co
 	// Save backup of file
 	if (CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
 		auto path_str = OPT_GET("Path/Auto/Backup")->GetString();
-		std::filesystem::path path;
+		agi::fs::path path;
 		if (path_str.empty())
 			path = filename.parent_path();
 		else
@@ -197,7 +197,7 @@ ProjectProperties SubsController::Load(std::filesystem::path const& filename, co
 	return props;
 }
 
-void SubsController::Save(std::filesystem::path const& filename, const char *encoding) {
+void SubsController::Save(agi::fs::path const& filename, const char *encoding) {
 	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
 	if (!writer)
 		throw agi::InvalidInputException("Unknown file type.");
@@ -300,7 +300,7 @@ bool SubsController::CanSave() const {
 	}
 }
 
-void SubsController::SetFileName(std::filesystem::path const& path) {
+void SubsController::SetFileName(agi::fs::path const& path) {
 	filename = path;
 	context->path->SetToken("?script", path.parent_path());
 	config::mru->Add("Subtitle", path);
@@ -396,13 +396,13 @@ wxString SubsController::GetRedoDescription() const {
 	return IsRedoStackEmpty() ? wxString() : redo_stack.back().undo_description;
 }
 
-std::filesystem::path SubsController::Filename() const {
+agi::fs::path SubsController::Filename() const {
 	if (!filename.empty()) return filename;
 
 	// Apple HIG says "untitled" should not be capitalised
 #ifndef __WXMAC__
-	return _("Untitled").wx_str();
+	return from_wx(_("Untitled"));
 #else
-	return _("untitled").wx_str();
+	return from_wx(_("untitled"));
 #endif
 }

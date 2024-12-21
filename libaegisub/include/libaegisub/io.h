@@ -13,8 +13,8 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include <libaegisub/exception.h>
+#include <libaegisub/fs.h>
 
-#include <filesystem>
 #include <iosfwd>
 #include <memory>
 
@@ -23,15 +23,15 @@ namespace agi::io {
 DEFINE_EXCEPTION(IOError, Exception);
 DEFINE_EXCEPTION(IOFatal, IOError);
 
-std::unique_ptr<std::istream> Open(std::filesystem::path const& file, bool binary = false);
+std::unique_ptr<std::istream> Open(agi::fs::path const& file, bool binary = false);
 
 class Save {
 	std::unique_ptr<std::ostream> fp;
-	const std::filesystem::path file_name;
-	const std::filesystem::path tmp_name;
+	const agi::fs::path file_name;
+	const agi::fs::path tmp_name;
 
 public:
-	Save(std::filesystem::path const& file, bool binary = false);
+	Save(agi::fs::path const& file, bool binary = false);
 	~Save() noexcept(false);
 	std::ostream& Get() { return *fp; }
 };

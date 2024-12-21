@@ -13,7 +13,7 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include <boost/container/flat_map.hpp>
-#include <filesystem>
+#include <libaegisub/fs.h>
 #include <iosfwd>
 #include <memory>
 #include <string>
@@ -40,7 +40,7 @@ public:
 	/// Constructor
 	/// @param dat_path Path to data file
 	/// @param idx_path Path to index file
-	Thesaurus(std::filesystem::path const& dat_path, std::filesystem::path const& idx_path);
+	Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path);
 	~Thesaurus();
 
 	/// Look up synonyms for a word

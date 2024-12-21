@@ -14,11 +14,11 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <libaegisub/fs.h>
+
 #include <array>
-#include <filesystem>
 
 namespace agi {
-namespace fs { using path = std::filesystem::path; }
 /// Class for handling everything path-related in Aegisub
 class Path {
 	/// Token -> Path map

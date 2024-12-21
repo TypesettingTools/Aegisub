@@ -18,8 +18,6 @@
 
 #include <main.h>
 
-#include <filesystem>
-
 using agi::Path;
 using namespace std::string_view_literals;
 
@@ -43,7 +41,7 @@ TEST(lagi_path, relative_path_clears_token) {
 	EXPECT_NO_THROW(p.SetToken("?video", "relative/path"));
 	EXPECT_STREQ("?video", p.Decode("?video").string().c_str());
 
-	EXPECT_NO_THROW(p.SetToken("?video", std::filesystem::current_path()));
+	EXPECT_NO_THROW(p.SetToken("?video", agi::fs::path(agi::fs::CurrentPath())));
 	EXPECT_STRNE("?video", p.Decode("?video").string().c_str());
 
 	EXPECT_NO_THROW(p.SetToken("?video", "relative/path"));
@@ -53,7 +51,7 @@ TEST(lagi_path, relative_path_clears_token) {
 TEST(lagi_path, empty_path_clears_token) {
 	Path p;
 
-	EXPECT_NO_THROW(p.SetToken("?video", std::filesystem::current_path()));
+	EXPECT_NO_THROW(p.SetToken("?video", agi::fs::CurrentPath()));
 	EXPECT_STRNE("?video", p.Decode("?video").string().c_str());
 
 	EXPECT_NO_THROW(p.SetToken("?video", ""));
@@ -63,12 +61,12 @@ TEST(lagi_path, empty_path_clears_token) {
 TEST(lagi_path, decode_sets_uses_right_slashes) {
 	Path p;
 
-	std::filesystem::path expected = std::filesystem::current_path()/"foo/bar.txt";
+	agi::fs::path expected = agi::fs::CurrentPath()/"foo/bar.txt";
 	expected.make_preferred();
 
-	EXPECT_NO_THROW(p.SetToken("?video", std::filesystem::current_path()));
+	EXPECT_NO_THROW(p.SetToken("?video", agi::fs::CurrentPath()));
 
-	std::filesystem::path decoded;
+	agi::fs::path decoded;
 	ASSERT_NO_THROW(decoded = p.Decode("?video/foo/bar.txt"));
 	EXPECT_STREQ(expected.string().c_str(), decoded.string().c_str());
 }
@@ -76,12 +74,12 @@ TEST(lagi_path, decode_sets_uses_right_slashes) {
 TEST(lagi_path, trailing_slash_on_token_is_optional) {
 	Path p;
 
-	std::filesystem::path expected = std::filesystem::current_path()/"foo.txt";
+	agi::fs::path expected = agi::fs::CurrentPath()/"foo.txt";
 	expected.make_preferred();
 
-	EXPECT_NO_THROW(p.SetToken("?audio", std::filesystem::current_path()));
+	EXPECT_NO_THROW(p.SetToken("?audio", agi::fs::CurrentPath()));
 
-	std::filesystem::path decoded;
+	agi::fs::path decoded;
 	ASSERT_NO_THROW(decoded = p.Decode("?audiofoo.txt"));
 	EXPECT_STREQ(expected.string().c_str(), decoded.string().c_str());
 
@@ -92,11 +90,11 @@ TEST(lagi_path, trailing_slash_on_token_is_optional) {
 TEST(lagi_path, setting_token_to_file_sets_to_parent_directory_instead) {
 	Path p;
 
-	std::filesystem::path file = std::filesystem::absolute("data/file");
+	agi::fs::path file = agi::fs::Absolute("data/file");
 	ASSERT_NO_THROW(p.SetToken("?script", file));
 	EXPECT_STREQ(file.parent_path().string().c_str(), p.Decode("?script").string().c_str());
 
-	file = std::filesystem::absolute("data/dir");
+	file = agi::fs::Absolute("data/dir");
 	ASSERT_NO_THROW(p.SetToken("?script", file));
 	EXPECT_STREQ(file.string().c_str(), p.Decode("?script").string().c_str());
 }
@@ -116,7 +114,7 @@ TEST(lagi_path, valid_token_names) {
 
 #define TEST_PLATFORM_PATH_TOKEN(tok) \
 	do { \
-		std::filesystem::path d; \
+		agi::fs::path d; \
 		ASSERT_NO_THROW(d = p.Decode(tok)); \
 		ASSERT_FALSE(d.empty()); \
 		ASSERT_STRNE(tok, d.string().c_str()); \

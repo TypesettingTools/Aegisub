@@ -69,12 +69,12 @@ std::string exe_dir() {
 namespace agi {
 void Path::FillPlatformSpecificPaths() {
 #ifndef __APPLE__
-	std::filesystem::path home = home_dir();
+	agi::fs::path home = home_dir();
 	SetToken("?user", home/".aegisub");
 	SetToken("?local", home/".aegisub");
 
 #ifdef APPIMAGE_BUILD
-	std::filesystem::path data = exe_dir();
+	agi::fs::path data = exe_dir();
 	if (data == "") data = home/".aegisub";
 	SetToken("?data", data);
 	SetToken("?dictionary", Decode("?data/dictionaries"));
@@ -84,13 +84,13 @@ void Path::FillPlatformSpecificPaths() {
 #endif
 
 #else
-	std::filesystem::path app_support = agi::util::GetApplicationSupportDirectory();
+	agi::fs::path app_support = agi::util::GetApplicationSupportDirectory();
 	SetToken("?user", app_support/"Aegisub");
 	SetToken("?local", app_support/"Aegisub");
 	SetToken("?data", agi::util::GetBundleSharedSupportDirectory());
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 #endif
-	SetToken("?temp", std::filesystem::temp_directory_path());
+	SetToken("?temp", agi::fs::path(std::filesystem::temp_directory_path()));
 }
 
 }

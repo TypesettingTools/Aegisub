@@ -14,20 +14,20 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <filesystem>
+#include <libaegisub/fs.h>
 
 namespace agi {
 // Default version quotes the path
 template<>
-struct writer<char, std::filesystem::path> {
-	static void write(std::basic_ostream<char>& out, int max_len, std::filesystem::path const& value) {
+struct writer<char, agi::fs::path> {
+	static void write(std::basic_ostream<char>& out, int max_len, agi::fs::path const& value) {
 		out << value.string();
 	}
 };
 
 template<>
-struct writer<wchar_t, std::filesystem::path> {
-	static void write(std::basic_ostream<wchar_t>& out, int max_len, std::filesystem::path const& value) {
+struct writer<wchar_t, agi::fs::path> {
+	static void write(std::basic_ostream<wchar_t>& out, int max_len, agi::fs::path const& value) {
 		out << value.wstring();
 	}
 };
