@@ -22,9 +22,9 @@
 #ifdef WITH_HUNSPELL
 #include <libaegisub/spellchecker.h>
 
+#include <libaegisub/fs.h>
 #include <libaegisub/signal.h>
 
-#include <filesystem>
 #include <memory>
 #include <set>
 
@@ -44,7 +44,7 @@ class HunspellSpellChecker final : public agi::SpellChecker {
 	std::vector<std::string> languages;
 
 	/// Path to user-local dictionary.
-	std::filesystem::path userDicPath;
+	agi::fs::path userDicPath;
 
 	/// Words in the custom user dictionary
 	std::set<std::string, std::less<>> customWords;

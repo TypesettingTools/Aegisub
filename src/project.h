@@ -14,10 +14,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <libaegisub/fs.h>
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
 
-#include <filesystem>
 #include <memory>
 #include <vector>
 
@@ -34,10 +34,10 @@ class Project {
 	agi::vfr::Framerate timecodes;
 	std::vector<int> keyframes;
 
-	std::filesystem::path audio_file;
-	std::filesystem::path video_file;
-	std::filesystem::path timecodes_file;
-	std::filesystem::path keyframes_file;
+	agi::fs::path audio_file;
+	agi::fs::path video_file;
+	agi::fs::path timecodes_file;
+	agi::fs::path keyframes_file;
 
 	agi::signal::Signal<agi::AudioProvider *> AnnounceAudioProviderModified;
 	agi::signal::Signal<AsyncVideoProvider *> AnnounceVideoProviderModified;
@@ -51,48 +51,48 @@ class Project {
 	void ShowError(wxString const& message);
 	void ShowError(std::string const& message);
 
-	bool DoLoadSubtitles(std::filesystem::path const& path, std::string encoding, ProjectProperties &properties);
-	void DoLoadAudio(std::filesystem::path const& path, bool quiet);
-	bool DoLoadVideo(std::filesystem::path const& path);
-	void DoLoadTimecodes(std::filesystem::path const& path);
-	void DoLoadKeyframes(std::filesystem::path const& path);
+	bool DoLoadSubtitles(agi::fs::path const& path, std::string encoding, ProjectProperties &properties);
+	void DoLoadAudio(agi::fs::path const& path, bool quiet);
+	bool DoLoadVideo(agi::fs::path const& path);
+	void DoLoadTimecodes(agi::fs::path const& path);
+	void DoLoadKeyframes(agi::fs::path const& path);
 
 	void LoadUnloadFiles(ProjectProperties properties);
 	void UpdateRelativePaths();
 	void ReloadAudio();
 	void ReloadVideo();
 
-	void SetPath(std::filesystem::path& var, const char *token, const char *mru, std::filesystem::path const& value);
+	void SetPath(agi::fs::path& var, const char *token, const char *mru, agi::fs::path const& value);
 
 public:
 	Project(agi::Context *context);
 	~Project();
 
-	void LoadSubtitles(std::filesystem::path path, std::string encoding="", bool load_linked=true);
+	void LoadSubtitles(agi::fs::path path, std::string encoding="", bool load_linked=true);
 	void CloseSubtitles();
 	bool CanLoadSubtitlesFromVideo() const { return video_has_subtitles; }
 
-	void LoadAudio(std::filesystem::path path);
+	void LoadAudio(agi::fs::path path);
 	void CloseAudio();
 	agi::AudioProvider *AudioProvider() const { return audio_provider.get(); }
-	std::filesystem::path const& AudioName() const { return audio_file; }
+	agi::fs::path const& AudioName() const { return audio_file; }
 
-	void LoadVideo(std::filesystem::path path);
+	void LoadVideo(agi::fs::path path);
 	void CloseVideo();
 	AsyncVideoProvider *VideoProvider() const { return video_provider.get(); }
-	std::filesystem::path const& VideoName() const { return video_file; }
+	agi::fs::path const& VideoName() const { return video_file; }
 
-	void LoadTimecodes(std::filesystem::path path);
+	void LoadTimecodes(agi::fs::path path);
 	void CloseTimecodes();
 	bool CanCloseTimecodes() const { return !timecodes_file.empty(); }
 	agi::vfr::Framerate const& Timecodes() const { return timecodes; }
 
-	void LoadKeyframes(std::filesystem::path path);
+	void LoadKeyframes(agi::fs::path path);
 	void CloseKeyframes();
 	bool CanCloseKeyframes() const { return !keyframes_file.empty(); }
 	std::vector<int> const& Keyframes() const { return keyframes; }
 
-	void LoadList(std::vector<std::filesystem::path> const& files);
+	void LoadList(std::vector<agi::fs::path> const& files);
 
 	DEFINE_SIGNAL_ADDERS(AnnounceAudioProviderModified, AddAudioProviderListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceVideoProviderModified, AddVideoProviderListener)

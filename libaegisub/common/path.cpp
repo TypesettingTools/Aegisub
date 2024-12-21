@@ -92,7 +92,7 @@ fs::path Path::MakeRelative(fs::path const& path, fs::path const& base) const {
 	auto ref_it = base.begin();
 	for (; path_it != path.end() && ref_it != base.end() && *path_it == *ref_it; ++path_it, ++ref_it) ;
 
-	std::filesystem::path result;
+	agi::fs::path result;
 	for (; ref_it != base.end(); ++ref_it)
 		result /= "..";
 	for (; path_it != path.end(); ++path_it)

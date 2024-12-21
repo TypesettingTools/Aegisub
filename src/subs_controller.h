@@ -14,10 +14,10 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <libaegisub/fs.h>
 #include <libaegisub/signal.h>
 
 #include <boost/container/list.hpp>
-#include <filesystem>
 #include <wx/timer.h>
 
 class SelectionController;
@@ -59,15 +59,15 @@ class SubsController {
 	std::unique_ptr<agi::dispatch::Queue> autosave_queue;
 
 	/// A new file has been opened (filename)
-	agi::signal::Signal<std::filesystem::path> FileOpen;
+	agi::signal::Signal<agi::fs::path> FileOpen;
 	/// The file has been saved
 	agi::signal::Signal<> FileSave;
 
 	/// The filename of the currently open file, if any
-	std::filesystem::path filename;
+	agi::fs::path filename;
 
 	/// Set the filename, updating things like the MRU and last used path
-	void SetFileName(std::filesystem::path const& file);
+	void SetFileName(agi::fs::path const& file);
 
 	/// Autosave the file if there have been any chances since the last autosave
 	void AutoSave();
@@ -88,7 +88,7 @@ public:
 	void SetSelectionController(SelectionController *selection_controller);
 
 	/// The file's path and filename if any, or platform-appropriate "untitled"
-	std::filesystem::path Filename() const;
+	agi::fs::path Filename() const;
 
 	/// Does the file have unsaved changes?
 	bool IsModified() const { return commit_id != saved_commit_id; };
@@ -96,12 +96,12 @@ public:
 	/// @brief Load from a file
 	/// @param file File name
 	/// @param charset Character set of file
-	ProjectProperties Load(std::filesystem::path const& file, const char *charset);
+	ProjectProperties Load(agi::fs::path const& file, const char *charset);
 
 	/// @brief Save to a file
 	/// @param file Path to save to
 	/// @param encoding Encoding to use, or empty to let the writer decide (which usually means "App/Save Charset")
-	void Save(std::filesystem::path const& file, const char *encoding="");
+	void Save(agi::fs::path const& file, const char *encoding="");
 
 	/// Close the currently open file (i.e. open a new blank file)
 	void Close();

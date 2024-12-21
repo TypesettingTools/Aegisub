@@ -23,7 +23,7 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 
-TextFileWriter::TextFileWriter(std::filesystem::path const& filename, std::string encoding)
+TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
 : file(new agi::io::Save(filename, true))
 {
 	if (encoding.empty())

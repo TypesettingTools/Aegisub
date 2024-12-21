@@ -14,7 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <filesystem>
+#include <libaegisub/fs.h>
 #include <memory>
 #include <string>
 #include <vector>
@@ -24,5 +24,5 @@ namespace agi { class BackgroundRunner; }
 
 struct VideoProviderFactory {
 	static std::vector<std::string> GetClasses();
-	static std::unique_ptr<VideoProvider> GetProvider(std::filesystem::path const& video_file, std::string_view colormatrix, agi::BackgroundRunner *br);
+	static std::unique_ptr<VideoProvider> GetProvider(agi::fs::path const& video_file, std::string_view colormatrix, agi::BackgroundRunner *br);
 };
