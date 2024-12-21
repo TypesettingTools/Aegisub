@@ -31,6 +31,8 @@
 
 #include "aegisublocale.h"
 
+#include <filesystem>
+
 #ifndef wxUSE_EXCEPTIONS
 #error wxWidgets is compiled without exceptions support. Aegisub requires exceptions support in wxWidgets to run safely.
 #endif
@@ -61,6 +63,7 @@ class AegisubApp : public wxApp {
 public:
 	AegisubApp();
 	AegisubLocale locale;
+	static std::filesystem::path startCwd;
 
 	agi::Context& NewProjectContext();
 	void CloseAll();
