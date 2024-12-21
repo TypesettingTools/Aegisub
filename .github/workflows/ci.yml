@@ -27,7 +27,6 @@ jobs:
               -Dfreetype2:harfbuzz=disabled 
               -Dharfbuzz:freetype=disabled 
               -Dharfbuzz:cairo=disabled 
-              -Dharfbuzz:icu=disabled 
               -Dharfbuzz:glib=disabled 
               -Dharfbuzz:gobject=disabled
               -Dharfbuzz:tests=disabled
