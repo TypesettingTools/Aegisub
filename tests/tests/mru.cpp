@@ -52,6 +52,14 @@ TEST(lagi_mru, add_entry) {
 	EXPECT_STREQ("/path/to/file", mru.Get("Video")->front().string().c_str());
 }
 
+TEST(lagi_mru, add_entry_utf8) {
+	agi::fs::Copy("data/mru_ok.json", "data/mru_tmp");
+	agi::MRUManager mru("data/mru_tmp", default_mru);
+	EXPECT_NO_THROW(mru.Add("Video", "/path/with/accents/é/日本語"));
+	EXPECT_STREQ("/path/with/accents/é/日本語", mru.Get("Video")->front().string().c_str());
+	EXPECT_STREQ(L"/path/with/accents/é/日本語", mru.Get("Video")->front().wstring().c_str());
+}
+
 TEST(lagi_mru, remove_entry) {
 	agi::fs::Copy("data/mru_ok.json", "data/mru_tmp");
 	agi::MRUManager mru("data/mru_tmp", default_mru);
