@@ -33,9 +33,9 @@
 
 #include <libaegisub/background_runner.h>
 #include <libaegisub/exception.h>
+#include <libaegisub/fs.h>
 #include <libaegisub/signal.h>
 
-#include <filesystem>
 #include <memory>
 #include <vector>
 
@@ -135,13 +135,13 @@ namespace Automation4 {
 	};
 
 	class Script {
-		std::filesystem::path filename;
+		agi::fs::path filename;
 
 	protected:
 		/// The automation include path, consisting of the user-specified paths
 		/// along with the script's path
-		std::vector<std::filesystem::path> include_path;
-		Script(std::filesystem::path const& filename);
+		std::vector<agi::fs::path> include_path;
+		Script(agi::fs::path const& filename);
 
 	public:
 		virtual ~Script() = default;
@@ -150,9 +150,9 @@ namespace Automation4 {
 		virtual void Reload() = 0;
 
 		/// The script's file name with path
-		std::filesystem::path GetFilename() const { return filename; }
+		agi::fs::path GetFilename() const { return filename; }
 		/// The script's file name without path
-		std::filesystem::path GetPrettyFilename() const { return filename.filename(); }
+		agi::fs::path GetPrettyFilename() const { return filename.filename(); }
 		/// The script's name. Not required to be unique.
 		virtual std::string GetName() const=0;
 		/// A short description of the script
@@ -234,7 +234,7 @@ namespace Automation4 {
 		///
 		/// This is private as it should only ever be called through
 		/// CreateFromFile
-		virtual std::unique_ptr<Script> Produce(std::filesystem::path const& filename) const = 0;
+		virtual std::unique_ptr<Script> Produce(agi::fs::path const& filename) const = 0;
 
 		static std::vector<std::unique_ptr<ScriptFactory>>& Factories();
 
@@ -259,7 +259,7 @@ namespace Automation4 {
 		/// @param filename Script to load
 		/// @param complain_about_unrecognised Should an error be displayed for files that aren't automation scripts?
 		/// @param create_unknown Create a placeholder rather than returning nullptr if no script engine supports the file
-		static std::unique_ptr<Script> CreateFromFile(std::filesystem::path const& filename, bool complain_about_unrecognised, bool create_unknown=true);
+		static std::unique_ptr<Script> CreateFromFile(agi::fs::path const& filename, bool complain_about_unrecognised, bool create_unknown=true);
 
 		static const std::vector<std::unique_ptr<ScriptFactory>>& GetFactories();
 	};
@@ -268,7 +268,7 @@ namespace Automation4 {
 	/// automation engines
 	class UnknownScript final : public Script {
 	public:
-		UnknownScript(std::filesystem::path const& filename) : Script(filename) { }
+		UnknownScript(agi::fs::path const& filename) : Script(filename) { }
 
 		void Reload() override { }
 

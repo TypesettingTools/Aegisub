@@ -12,9 +12,9 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+#include <libaegisub/fs.h>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <cstdint>
-#include <filesystem>
 #include <memory>
 #include <vector>
 
@@ -112,7 +112,7 @@ class JsonEmitter final : public Emitter {
 public:
 	/// Constructor
 	/// @param directory Directory to write the log file in
-	JsonEmitter(std::filesystem::path const& directory);
+	JsonEmitter(agi::fs::path const& directory);
 
 	void log(SinkMessage const&) override;
 };

@@ -17,9 +17,9 @@
 #include "include/aegisub/video_provider.h"
 
 #include <libaegisub/exception.h>
+#include <libaegisub/fs.h>
 
 #include <atomic>
-#include <filesystem>
 #include <memory>
 #include <set>
 #include <wx/event.h>
@@ -127,7 +127,7 @@ public:
 	/// @brief Constructor
 	/// @param videoFileName File to open
 	/// @param parent Event handler to send FrameReady events to
-	AsyncVideoProvider(std::filesystem::path const& filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
+	AsyncVideoProvider(agi::fs::path const& filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
 	~AsyncVideoProvider();
 };
 

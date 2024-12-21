@@ -72,7 +72,7 @@ char *map(int64_t s_offset, uint64_t length, boost::interprocess::mode_t mode,
 }
 
 namespace agi {
-file_mapping::file_mapping(std::filesystem::path const& filename, bool temporary)
+file_mapping::file_mapping(agi::fs::path const& filename, bool temporary)
 #ifdef _WIN32
 : handle(CreateFileW(filename.wstring().c_str(),
 	temporary ? read_write : read_only,
@@ -116,7 +116,7 @@ file_mapping::~file_mapping() {
 	}
 }
 
-read_file_mapping::read_file_mapping(std::filesystem::path const& filename)
+read_file_mapping::read_file_mapping(agi::fs::path const& filename)
 : file(filename, false)
 {
 	offset_t size = 0;
@@ -134,7 +134,7 @@ const char *read_file_mapping::read(int64_t offset, uint64_t length) {
 	return map(offset, length, read_only, file_size, file, region, mapping_start);
 }
 
-temp_file_mapping::temp_file_mapping(std::filesystem::path const& filename, uint64_t size)
+temp_file_mapping::temp_file_mapping(agi::fs::path const& filename, uint64_t size)
 : file(filename, true)
 , file_size(size)
 {

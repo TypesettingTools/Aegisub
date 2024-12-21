@@ -26,18 +26,22 @@
 #include <Shellapi.h>
 
 namespace {
+agi::fs::path PathFromWString(std::wstring_view path) {
+	return agi::fs::path(std::filesystem::path(path));
+}
+
 agi::fs::path WinGetFolderPath(int folder) {
 	wchar_t path[MAX_PATH+1] = {0};
 	if (FAILED(SHGetFolderPathW(0, folder, 0, 0, path)))
 		throw agi::EnvironmentError("SHGetFolderPath failed. This should not happen.");
-	return path;
+	return PathFromWString(path);
 }
 }
 
 namespace agi {
 
 void Path::FillPlatformSpecificPaths() {
-	SetToken("?temp", std::filesystem::temp_directory_path());
+	SetToken("?temp", agi::fs::path(std::filesystem::temp_directory_path()));
 
 	SetToken("?user", WinGetFolderPath(CSIDL_APPDATA)/"Aegisub");
 	SetToken("?local", WinGetFolderPath(CSIDL_LOCAL_APPDATA)/"Aegisub");
@@ -45,7 +49,7 @@ void Path::FillPlatformSpecificPaths() {
 	std::wstring filename(MAX_PATH + 1, L'\0');
 	while (static_cast<DWORD>(filename.size()) == GetModuleFileNameW(nullptr, &filename[0], filename.size()))
 		filename.resize(filename.size() * 2);
-	SetToken("?data", filename);
+	SetToken("?data", PathFromWString(filename));
 
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 }

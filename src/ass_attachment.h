@@ -17,7 +17,7 @@
 #include "ass_entry.h"
 
 #include <boost/flyweight.hpp>
-#include <filesystem>
+#include <libaegisub/fs.h>
 
 /// @class AssAttachment
 class AssAttachment final : public AssEntry {
@@ -38,7 +38,7 @@ public:
 
 	/// Extract the contents of this attachment to a file
 	/// @param filename Path to save the attachment to
-	void Extract(std::filesystem::path const& filename) const;
+	void Extract(agi::fs::path const& filename) const;
 
 	/// Get the name of the attached file
 	/// @param raw If false, remove the SSA filename mangling
@@ -49,5 +49,5 @@ public:
 
 	AssAttachment(AssAttachment const& rgt) = default;
 	AssAttachment(std::string const& header, AssEntryGroup group);
-	AssAttachment(std::filesystem::path const& name, AssEntryGroup group);
+	AssAttachment(agi::fs::path const& name, AssEntryGroup group);
 };

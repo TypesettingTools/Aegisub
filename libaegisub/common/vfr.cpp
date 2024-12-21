@@ -171,7 +171,7 @@ Framerate::Framerate(std::initializer_list<int> timecodes)
 	SetFromTimecodes();
 }
 
-Framerate::Framerate(std::filesystem::path const& filename)
+Framerate::Framerate(agi::fs::path const& filename)
 : denominator(default_denominator)
 {
 	auto file = agi::io::Open(filename);
@@ -192,7 +192,7 @@ Framerate::Framerate(std::filesystem::path const& filename)
 	throw UnknownFormat(line);
 }
 
-void Framerate::Save(std::filesystem::path const& filename, int length) const {
+void Framerate::Save(agi::fs::path const& filename, int length) const {
 	agi::io::Save file(filename);
 	auto &out = file.Get();
 

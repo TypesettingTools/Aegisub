@@ -14,11 +14,11 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <filesystem>
+#include <libaegisub/fs.h>
 #include <string>
 
 namespace crash_writer {
-	void Initialize(std::filesystem::path const& path);
+	void Initialize(agi::fs::path const& path);
 	void Cleanup();
 
 	void Write();

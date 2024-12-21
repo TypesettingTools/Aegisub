@@ -37,7 +37,7 @@ json::UnknownElement parse(std::istream &stream) {
 	}
 }
 
-json::UnknownElement file(std::filesystem::path const& file, std::string_view default_config) {
+json::UnknownElement file(agi::fs::path const& file, std::string_view default_config) {
 	try {
 		if (fs::FileExists(file))
 			return parse(*io::Open(file));

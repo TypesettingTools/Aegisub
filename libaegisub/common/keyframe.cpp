@@ -90,7 +90,7 @@ int wwxd(std::string const& line) {
 }
 
 namespace agi::keyframe {
-void Save(std::filesystem::path const& filename, std::vector<int> const& keyframes) {
+void Save(agi::fs::path const& filename, std::vector<int> const& keyframes) {
 	io::Save file(filename);
 	std::ostream& of = file.Get();
 	of << "# keyframe format v1" << std::endl;
@@ -98,7 +98,7 @@ void Save(std::filesystem::path const& filename, std::vector<int> const& keyfram
 	boost::copy(keyframes, std::ostream_iterator<int>(of, "\n"));
 }
 
-std::vector<int> Load(std::filesystem::path const& filename) {
+std::vector<int> Load(agi::fs::path const& filename) {
 	auto file = io::Open(filename);
 	std::istream &is(*file);
 

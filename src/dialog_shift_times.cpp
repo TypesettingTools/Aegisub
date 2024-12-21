@@ -51,7 +51,7 @@ namespace {
 class DialogShiftTimes final : public wxDialog {
 	agi::Context *context;
 
-	std::filesystem::path history_filename;
+	agi::fs::path history_filename;
 	json::Array history;
 	agi::vfr::Framerate fps;
 	agi::signal::Connection timecodes_loaded_slot;

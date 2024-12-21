@@ -67,13 +67,13 @@ SubtitleFormat::SubtitleFormat(std::string_view name)
 {
 }
 
-bool SubtitleFormat::CanReadFile(std::filesystem::path const& filename, const char *) const {
+bool SubtitleFormat::CanReadFile(agi::fs::path const& filename, const char *) const {
 	auto wildcards = GetReadWildcards();
 	return agi::util::any_of(wildcards,
 		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
-bool SubtitleFormat::CanWriteFile(std::filesystem::path const& filename) const {
+bool SubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
 	auto wildcards = GetWriteWildcards();
 	return agi::util::any_of(wildcards,
 		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
@@ -283,14 +283,14 @@ SubtitleFormat *find_or_throw(Cont &container, Pred pred) {
 	return it->get();
 }
 
-const SubtitleFormat *SubtitleFormat::GetReader(std::filesystem::path const& filename, const char *encoding) {
+const SubtitleFormat *SubtitleFormat::GetReader(agi::fs::path const& filename, const char *encoding) {
 	LoadFormats();
 	return find_or_throw(formats, [&](std::unique_ptr<SubtitleFormat> const& f) {
 		return f->CanReadFile(filename, encoding);
 	});
 }
 
-const SubtitleFormat *SubtitleFormat::GetWriter(std::filesystem::path const& filename) {
+const SubtitleFormat *SubtitleFormat::GetWriter(agi::fs::path const& filename) {
 	LoadFormats();
 	return find_or_throw(formats, [&](std::unique_ptr<SubtitleFormat> const& f) {
 		return f->CanWriteFile(filename);

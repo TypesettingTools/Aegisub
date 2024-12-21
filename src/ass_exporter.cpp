@@ -79,7 +79,7 @@ std::vector<std::string> AssExporter::GetAllFilterNames() const {
 	return names;
 }
 
-void AssExporter::Export(std::filesystem::path const& filename, const char *charset, wxWindow *export_dialog) {
+void AssExporter::Export(agi::fs::path const& filename, const char *charset, wxWindow *export_dialog) {
 	AssFile subs(*c->ass);
 
 	for (auto filter : filters) {

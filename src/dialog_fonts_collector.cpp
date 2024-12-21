@@ -87,7 +87,7 @@ using color_str_pair = std::pair<int, wxString>;
 wxDEFINE_EVENT(EVT_ADD_TEXT, ValueEvent<color_str_pair>);
 wxDEFINE_EVENT(EVT_COLLECTION_DONE, wxThreadEvent);
 
-void FontsCollectorThread(AssFile *subs, std::filesystem::path const& destination, FcMode oper, wxEvtHandler *collector) {
+void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMode oper, wxEvtHandler *collector) {
 	agi::dispatch::Background().Async([=]{
 		auto AppendText = [&](wxString text, int colour) {
 			collector->AddPendingEvent(ValueEvent<color_str_pair>(EVT_ADD_TEXT, -1, {colour, text.Clone()}));
@@ -293,7 +293,7 @@ void DialogFontsCollector::OnStart(wxCommandEvent &) {
 	collection_log->ClearAll();
 	collection_log->SetReadOnly(true);
 
-	std::filesystem::path dest_path;
+	agi::fs::path dest_path;
 	if (mode != FcMode::CheckFontsOnly) {
 		auto dest = mode == FcMode::CopyToScriptFolder ? "?script/" : from_wx(dest_ctrl->GetValue());
 		dest_path = path.Decode(dest);

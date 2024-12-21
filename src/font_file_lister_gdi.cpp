@@ -28,7 +28,7 @@
 #include <unicode/utf16.h>
 #include <Usp10.h>
 
-static void read_fonts_from_key(HKEY hkey, std::filesystem::path font_dir, std::vector<std::filesystem::path> &files) {
+static void read_fonts_from_key(HKEY hkey, agi::fs::path font_dir, std::vector<agi::fs::path> &files) {
 	static const auto fonts_key_name = L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts";
 	
 	HKEY key;
@@ -57,7 +57,7 @@ retry:
 		if (ret == ERROR_NO_MORE_ITEMS) break;
 		if (ret != ERROR_SUCCESS) continue;
 
-		std::filesystem::path font_path(font_filename);
+		agi::fs::path font_path(font_filename);
 		if (!agi::fs::FileExists(font_path))
 			// Doesn't make a ton of sense to do this with user fonts, but they seem to be stored as full paths anyway
 			font_path = font_dir / font_path;
@@ -102,12 +102,12 @@ uint32_t murmur3(const char *data, uint32_t len) {
 	return hash;
 }
 
-std::vector<std::filesystem::path> get_installed_fonts() {
-	std::vector<std::filesystem::path> files;
+std::vector<agi::fs::path> get_installed_fonts() {
+	std::vector<agi::fs::path> files;
 
 	wchar_t fdir[MAX_PATH];
 	SHGetFolderPathW(NULL, CSIDL_FONTS, NULL, 0, fdir);
-	std::filesystem::path font_dir(fdir);
+	agi::fs::path font_dir(fdir);
 
 	// System fonts
 	read_fonts_from_key(HKEY_LOCAL_MACHINE, font_dir, files);
@@ -118,7 +118,7 @@ std::vector<std::filesystem::path> get_installed_fonts() {
 	return files;
 }
 
-using font_index = std::unordered_multimap<uint32_t, std::filesystem::path>;
+using font_index = std::unordered_multimap<uint32_t, agi::fs::path>;
 
 font_index index_fonts(FontCollectorStatusCallback &cb) {
 	font_index hash_to_path;

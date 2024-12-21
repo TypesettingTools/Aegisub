@@ -26,7 +26,7 @@ namespace sfs = std::filesystem;
 
 namespace agi::fs {
 namespace {
-void check_error(std::error_code ec, const char *exp, sfs::path const& src_path, sfs::path const& dst_path) {
+void check_error(std::error_code ec, const char *exp, path const& src_path, path const& dst_path) {
 	if (ec == std::error_code{}) return;
 	using enum std::errc;
 	switch (ec.value()) {
@@ -55,7 +55,7 @@ void check_error(std::error_code ec, const char *exp, sfs::path const& src_path,
 	check_error(ec, #exp, src_path, dst_path);
 
 #define CHECKED_CALL_RETURN(exp, src_path) \
-	CHECKED_CALL(auto ret = exp, src_path, std::filesystem::path()); \
+	CHECKED_CALL(auto ret = exp, src_path, agi::fs::path()); \
 	return ret
 
 #define WRAP_SFS(sfs_name, agi_name) \
@@ -67,6 +67,12 @@ void check_error(std::error_code ec, const char *exp, sfs::path const& src_path,
 	auto agi_name(path const& p) -> decltype(sfs::sfs_name(p)) { \
 		std::error_code ec; \
 		return sfs::sfs_name(p, ec); \
+	}
+
+#define WRAP_SFS_AGI_PATH(sfs_name, agi_name) \
+	auto agi_name(path const& p) -> agi::fs::path { \
+		CHECKED_CALL(auto ret = sfs::sfs_name(p, ec), p, agi::fs::path()); \
+		return agi::fs::path(std::move(ret)); \
 	}
 
 // sasuga windows.h
@@ -82,7 +88,8 @@ void check_error(std::error_code ec, const char *exp, sfs::path const& src_path,
 	WRAP_SFS(last_write_time, ModifiedTime)
 	WRAP_SFS(create_directories, CreateDirectory)
 	WRAP_SFS(remove, Remove)
-	WRAP_SFS(canonical, Canonicalize)
+	WRAP_SFS_AGI_PATH(canonical, Canonicalize)
+	WRAP_SFS_AGI_PATH(absolute, Absolute)
 
 	uintmax_t Size(path const& p) {
 		if (DirectoryExists(p))
@@ -103,5 +110,13 @@ void check_error(std::error_code ec, const char *exp, sfs::path const& src_path,
 		if (filename.size() < ext.size() + 1) return false;
 		if (filename[filename.size() - ext.size() - 1] != '.') return false;
 		return boost::iends_with(filename, ext);
+	}
+
+	agi::fs::path CurrentPath() {
+		return agi::fs::path(std::filesystem::current_path());
+	}
+
+	void CurrentPath(path const& path) {
+		std::filesystem::current_path(path);
 	}
 }
