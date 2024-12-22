@@ -160,12 +160,33 @@ void tagless_find_helper::map_range(size_t &s, size_t &e) {
 }
 
 void InitLocale() {
-	// FIXME: need to verify we actually got a utf-8 locale
 	auto id = boost::locale::util::get_system_locale(true);
 	UErrorCode err = U_ZERO_ERROR;
 	icu::Locale::setDefault(icu::Locale::createCanonical(id.c_str()), err);
 	if (U_FAILURE(err)) throw InternalError(u_errorName(err));
-	std::locale::global(boost::locale::generator().generate(""));
+
+	// Try to get the UTF-8 version of the current locale
+	auto locale = boost::locale::generator().generate("");
+
+	// Check if we actually got a UTF-8 locale
+	using codecvt = std::codecvt<wchar_t, char, std::mbstate_t>;
+	int result = std::codecvt_base::error;
+	if (std::has_facet<codecvt>(locale)) {
+		wchar_t test[] = L"\xFFFE";
+		char buff[8];
+		auto mb = std::mbstate_t();
+		const wchar_t* from_next;
+		char* to_next;
+		result = std::use_facet<codecvt>(locale).out(mb,
+			test, std::end(test), from_next,
+			buff, std::end(buff), to_next);
+	}
+
+	// If we didn't get a UTF-8 locale, force it to a known one
+	// FIXME: Should the ICU locale also be forced to en_US here?
+	if (result != std::codecvt_base::ok)
+		locale = boost::locale::generator().generate("en_US.UTF-8");
+	std::locale::global(locale);
 }
 } // namespace util
 
