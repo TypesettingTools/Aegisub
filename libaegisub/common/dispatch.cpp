@@ -19,14 +19,15 @@
 #include "libaegisub/util.h"
 
 #include <atomic>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/executor_work_guard.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/strand.hpp>
 #include <condition_variable>
 #include <mutex>
 #include <thread>
 
 namespace {
-	boost::asio::io_service *service;
+	boost::asio::io_context *service;
 	std::function<void (agi::dispatch::Thunk)> invoke_main;
 	std::atomic<uint_fast32_t> threads_running;
 
@@ -38,28 +39,28 @@ namespace {
 
 	class BackgroundQueue final : public agi::dispatch::Queue {
 		void DoInvoke(agi::dispatch::Thunk&& thunk) override {
-			service->post(thunk);
+			boost::asio::post(*service, std::move(thunk));
 		}
 	};
 
 	class SerialQueue final : public agi::dispatch::Queue {
-		boost::asio::io_service::strand strand;
+		boost::asio::io_context::strand strand;
 
 		void DoInvoke(agi::dispatch::Thunk&& thunk) override {
-			strand.post(thunk);
+			boost::asio::post(strand, std::move(thunk));
 		}
 	public:
 		SerialQueue() : strand(*service) { }
 	};
 
 	struct IOServiceThreadPool {
-		boost::asio::io_service io_service;
-		std::unique_ptr<boost::asio::io_service::work> work;
+		boost::asio::io_context io_context;
+		boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work_guard;
 		std::vector<std::thread> threads;
 
-		IOServiceThreadPool() : work(new boost::asio::io_service::work(io_service)) { }
+		IOServiceThreadPool() : work_guard(boost::asio::make_work_guard(io_context)) { }
 		~IOServiceThreadPool() {
-			work.reset();
+			work_guard.reset();
 #ifndef _WIN32
 			for (auto& thread : threads) thread.join();
 #else
@@ -76,7 +77,7 @@ namespace agi::dispatch {
 
 void Init(std::function<void (Thunk)>&& invoke_main) {
 	static IOServiceThreadPool thread_pool;
-	::service = &thread_pool.io_service;
+	::service = &thread_pool.io_context;
 	::invoke_main = invoke_main;
 
 	thread_pool.threads.reserve(std::max<unsigned>(4, std::thread::hardware_concurrency()));
