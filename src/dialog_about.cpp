@@ -104,6 +104,7 @@ void ShowAboutDialog(wxWindow *parent) {
 #ifdef WITH_FFMS2
 		"    FFmpeg - Copyright (c) Fabrice Bellard;\n"
 		"    FFMS2 - Copyright (c) Fredrik Mellbin;\n"
+		"    dav1d - Copyright (c) VideoLAN and dav1d authors;\n"
 #endif
 #ifdef WITH_AVISYNTH
 		"    Avisynth 2.5 - Copyright (c) Ben Rudiak-Gould et al;\n"

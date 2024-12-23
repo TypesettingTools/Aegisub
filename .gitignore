@@ -6,6 +6,7 @@ build*/
 subprojects/boost*/
 subprojects/cairo*
 subprojects/curl-*
+subprojects/dav1d
 subprojects/ffmpeg
 subprojects/ffms2*
 subprojects/fontconfig*
