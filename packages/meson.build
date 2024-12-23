@@ -22,7 +22,11 @@ elif host_machine.system() == 'darwin'
     run_target('osx-build-dmg',
                command: [build_dmg_sh, meson.project_source_root(), meson.project_build_root(), meson.project_version()])
 else
+    aegisub_rdns_developer = 'org.aegisub'
+    aegisub_rdns_name = aegisub_rdns_developer + '.Aegisub'
     conf_pkg.set('AEGISUB_COMMAND', 'aegisub')
+    conf_pkg.set('AEGISUB_RDNS_DEVELOPER', aegisub_rdns_developer)
+    conf_pkg.set('AEGISUB_RDNS_NAME', aegisub_rdns_name)
 
     desktop_template = configure_file(input: 'desktop/aegisub.desktop.in.in',
                                       output: 'aegisub.desktop.in',
@@ -30,7 +34,7 @@ else
 
     i18n = import('i18n')
     i18n.merge_file(input: desktop_template,
-                    output: 'aegisub.desktop',
+                    output: aegisub_rdns_name + '.desktop',
                     type: 'desktop',
                     po_dir: '../po',
                     install: true,
@@ -40,7 +44,7 @@ else
                                       output: 'aegisub.metainfo.xml.in',
                                       configuration: conf_pkg)
 	i18n.merge_file(input: metainfo_template,
-                    output: 'aegisub.metainfo.xml',
+                    output: aegisub_rdns_name + '.metainfo.xml',
                     type: 'xml',
                     po_dir: '../po',
                     install: true,
@@ -52,6 +56,7 @@ else
         dir = s.split('.')[0]
         ext = s.split('.')[1]
         install_data('desktop' / dir / 'aegisub.' + ext,
+                     rename: aegisub_rdns_name + '.' + ext,
                      install_dir: datadir / 'icons' / 'hicolor' / dir / 'apps')
     endforeach
 endif

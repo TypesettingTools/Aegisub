@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-  <id>aegisub.desktop</id>
+  <id>@AEGISUB_RDNS_NAME@</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>BSD-3-Clause AND MIT AND MPL-1.1</project_license>
   <name>Aegisub</name>
@@ -19,9 +19,7 @@
       <li>Fully scriptable through the Automation module</li>
     </ul>
   </description>
-  <!-- XXX: appstreamcli validation warning: cid-desktopapp-is-not-rdns
-       If improving this, the <id> and filename should probably also be changed.  -->
-  <launchable type="desktop-id">aegisub.desktop</launchable>
+  <launchable type="desktop-id">@AEGISUB_RDNS_NAME@.desktop</launchable>
   <kudos>
     <kudo>HiDpiIcon</kudo>
     <kudo>HighContrast</kudo>
@@ -41,7 +39,9 @@
       <image>https://aegisub.org/img/screenshots/unix/audio-timing.png</image>
     </screenshot>
   </screenshots>
-  <developer_name>Aegisub Group</developer_name>
+  <developer id="@AEGISUB_RDNS_DEVELOPER@">
+    <name>Aegisub Group</name>
+  </developer>
   <url type="bugtracker">https://github.com/TypesettingTools/Aegisub/issues</url>
   <url type="faq">https://aegisub.org/docs/latest/faq</url>
   <url type="help">https://aegisub.org/docs/latest/main_page</url>
