@@ -254,6 +254,38 @@ int get_single_sel(wxListBox *lb) {
 	return n == 1 ? selections[0] : -1;
 }
 
+enum class StyleOverrideFlag :int {
+	No,
+	Yes,
+	YesAll
+};
+
+static StyleOverrideFlag DisplayStyleOverrideDialog(int remainingEntries, wxString styleName, wxString type){
+
+	if (remainingEntries <= 1){
+		int answer = wxMessageBox(
+				fmt_tl("There is already a style with the name \"%s\" in the current %s. Overwrite?", styleName, type),
+				_("Style name collision"),
+				wxYES_NO);
+		return (answer == wxYES) ? StyleOverrideFlag::Yes : StyleOverrideFlag::No;
+	}else{
+		wxMessageDialog *dialog = new wxMessageDialog(NULL, fmt_tl("There is already a style with the name \"%s\" in the current %s. Overwrite?", styleName,type), _("Style name collision"), wxYES_NO| wxCANCEL| wxCENTRE);
+
+		dialog->SetYesNoCancelLabels(dialog->GetYesLabel(), dialog->GetNoLabel(), _("Yes, all"));
+
+		int response = dialog->ShowModal();
+
+		if(response == wxID_YES){
+			return StyleOverrideFlag::Yes;
+		}else if(response == wxID_CANCEL){
+			return StyleOverrideFlag::YesAll;
+		}
+
+		return StyleOverrideFlag::No;
+	}
+}
+
+
 DialogStyleManager::DialogStyleManager(agi::Context *context)
 : wxDialog(context->parent, -1, _("Styles Manager"))
 , c(context)
@@ -501,11 +533,22 @@ void DialogStyleManager::OnCopyToStorage() {
 	int n = CurrentList->GetSelections(selections);
 	wxArrayString copied;
 	copied.reserve(n);
+	bool overwriteAll = false;
+
 	for (int i = 0; i < n; i++) {
 		wxString styleName = CurrentList->GetString(selections[i]);
 
 		if (AssStyle *style = Store.GetStyle(from_wx(styleName))) {
-			if (wxYES == wxMessageBox(fmt_tl("There is already a style with the name \"%s\" in the current storage. Overwrite?", styleName), _("Style name collision"), wxYES_NO)) {
+
+			bool overwriteThis = false;
+			if(!overwriteAll){
+				StyleOverrideFlag overwriteFlag = DisplayStyleOverrideDialog(n-i, styleName, "storage");
+				overwriteThis = overwriteFlag == StyleOverrideFlag::Yes;
+				overwriteAll = overwriteFlag == StyleOverrideFlag::YesAll;
+			}
+
+
+			if(overwriteAll || overwriteThis){
 				*style = *styleMap.at(selections[i]);
 				copied.push_back(styleName);
 			}
@@ -528,11 +571,21 @@ void DialogStyleManager::OnCopyToCurrent() {
 	int n = StorageList->GetSelections(selections);
 	wxArrayString copied;
 	copied.reserve(n);
+	bool overwriteAll = false;
+
 	for (int i = 0; i < n; i++) {
 		wxString styleName = StorageList->GetString(selections[i]);
 
 		if (AssStyle *style = c->ass->GetStyle(from_wx(styleName))) {
-			if (wxYES == wxMessageBox(fmt_tl("There is already a style with the name \"%s\" in the current script. Overwrite?", styleName), _("Style name collision"), wxYES_NO)) {
+
+			bool overwriteThis = false;
+			if(!overwriteAll){
+				StyleOverrideFlag overwriteFlag = DisplayStyleOverrideDialog(n-i, styleName,"script");
+				overwriteThis = overwriteFlag == StyleOverrideFlag::Yes;
+				overwriteAll = overwriteFlag == StyleOverrideFlag::YesAll;
+			}
+
+			if(overwriteAll || overwriteThis){
 				*style = *Store[selections[i]];
 				copied.push_back(styleName);
 			}
@@ -704,18 +757,27 @@ void DialogStyleManager::OnCurrentImport() {
 	int res = GetSelectedChoices(this, selections, _("Choose styles to import:"), _("Import Styles"), to_wx(styles));
 	if (res == -1 || selections.empty()) return;
 	bool modified = false;
+	bool overwriteAll = false;
+	int n = selections.GetCount();
 
 	// Loop through selection
-	for (auto const& sel : selections) {
+	for (int i =0; i < n; ++i) {
+		auto const& sel = selections.at(i);
+		auto const styleName =  styles[sel];
+
 		// Check if there is already a style with that name
 		if (AssStyle *existing = c->ass->GetStyle(styles[sel])) {
-			int answer = wxMessageBox(
-				fmt_tl("There is already a style with the name \"%s\" in the current script. Overwrite?", styles[sel]),
-				_("Style name collision"),
-				wxYES_NO);
-			if (answer == wxYES) {
+
+			bool overwriteThis = false;
+			if(!overwriteAll){
+				StyleOverrideFlag overwriteFlag = DisplayStyleOverrideDialog(n-i, styleName, "script");
+				overwriteThis = overwriteFlag == StyleOverrideFlag::Yes;
+				overwriteAll = overwriteFlag == StyleOverrideFlag::YesAll;
+			}
+
+			if (overwriteAll || overwriteThis) {
 				modified = true;
-				*existing = *temp.GetStyle(styles[sel]);
+				*existing = *temp.GetStyle(styleName);
 			}
 			continue;
 		}
