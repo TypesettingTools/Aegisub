@@ -185,7 +185,11 @@ static const char * GetOSShortName() {
 		else if (osver_maj == 6 && osver_min == 1)
 			return "win61"; // 7 and server 2008r2
 		else if (osver_maj == 6 && osver_min == 2)
-			return "win62"; // 8
+			return "win62"; // 8 and server 2012
+		else if (osver_maj == 6 && osver_min == 3)
+			return "win63"; // 8.1 and server 2012r2
+		else if (osver_maj == 10 && osver_min == 0)
+			return "win10"; // 10 or 11 and server 2016/2019
 		else
 			return "windows"; // future proofing? I doubt we run on nt4
 	}
