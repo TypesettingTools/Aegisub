@@ -384,7 +384,7 @@ public:
 void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
 	wxMemoryDC capdc(capture);
 	capdc.SetPen(*wxTRANSPARENT_PEN);
-#ifndef __WXMAC__
+#if !(defined(__WXMAC__) && (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_VERSION_15_0))
 	wxScreenDC screen;
 	capdc.StretchBlit(0, 0, resx * magnification, resy * magnification,
 		&screen, x - resx / 2, y - resy / 2, resx, resy);
