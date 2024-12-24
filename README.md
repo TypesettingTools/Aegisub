@@ -52,6 +52,9 @@ For personal usage, you can use pip and homebrew to install almost all of Aegisu
     export CPPFLAGS="-I/usr/local/opt/icu4c/include"
     export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
 
+When compiling on Apple Silicon, replace `/usr/local` with `/opt/homebrew`.
+When compiling on macOS 15.0 (Sequoia) or later, you may also want to `export MACOS_X_DEPLOYMENT_TARGET=14.0` to make the color picker work.
+
 Once the dependencies are installed, build Aegisub with `meson build && meson compile -C build`.
 
 #### Build dmg
