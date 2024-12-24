@@ -210,7 +210,7 @@ void DialogAutomation::UpdateDisplay()
 }
 
 template<class Container>
-static bool has_file(Container const& c, std::filesystem::path const& fn)
+static bool has_file(Container const& c, agi::fs::path const& fn)
 {
 	return any_of(c.begin(), c.end(),
 		[&](std::unique_ptr<Automation4::Script> const& s) { return fn == s->GetFilename(); });
@@ -231,7 +231,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 	diag.GetPaths(fnames);
 
 	for (auto const& fname : fnames) {
-		std::filesystem::path fnpath(fname.wx_str());
+		agi::fs::path fnpath(fname.wx_str());
 		OPT_SET("Path/Last/Automation")->SetString(fnpath.parent_path().string());
 
 		if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {

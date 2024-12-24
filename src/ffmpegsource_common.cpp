@@ -61,7 +61,7 @@ FFmpegSourceProvider::FFmpegSourceProvider(agi::BackgroundRunner *br)
 /// @param CacheName    The filename of the output index file
 /// @param Trackmask    A binary mask of the track numbers to index
 FFMS_Index *FFmpegSourceProvider::DoIndexing(FFMS_Indexer *Indexer,
-	                                         std::filesystem::path const& CacheName,
+	                                         agi::fs::path const& CacheName,
 	                                         TrackSelection Track,
 	                                         FFMS_IndexErrorHandling IndexEH) {
 	char FFMSErrMsg[1024];
@@ -178,7 +178,7 @@ FFMS_IndexErrorHandling FFmpegSourceProvider::GetErrorHandlingMode() {
 /// @brief	Generates an unique name for the ffms2 index file and prepares the cache folder if it doesn't exist
 /// @param filename	The name of the source file
 /// @return			Returns the generated filename.
-std::filesystem::path FFmpegSourceProvider::GetCacheFilename(std::filesystem::path const& filename) {
+agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filename) {
 	// Get the size of the file to be hashed
 	uintmax_t len = agi::fs::Size(filename);
 

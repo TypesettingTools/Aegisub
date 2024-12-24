@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <filesystem>
+#include <libaegisub/fs.h>
 #include <string>
 
 namespace agi {
@@ -22,7 +22,7 @@ namespace agi {
 /// @brief Returns the character set with the highest confidence
 /// @param file File to check
 /// @return Detected character set.
-std::string Detect(std::filesystem::path const& file);
+std::string Detect(agi::fs::path const& file);
 
 	} // namespace util
 } // namespace agi

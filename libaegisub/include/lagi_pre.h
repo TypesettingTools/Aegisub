@@ -18,7 +18,6 @@
 #endif
 
 #include <algorithm>
-#include <filesystem>
 #include <functional>
 #include <iterator>
 #include <map>

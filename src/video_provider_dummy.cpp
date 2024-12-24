@@ -98,7 +98,7 @@ void DummyVideoProvider::GetFrame(int, VideoFrame &frame) {
 }
 
 namespace agi { class BackgroundRunner; }
-std::unique_ptr<VideoProvider> CreateDummyVideoProvider(std::filesystem::path const& filename, std::string_view, agi::BackgroundRunner *) {
+std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, std::string_view, agi::BackgroundRunner *) {
 	if (!boost::starts_with(filename.string(), "?dummy"))
 		return {};
 

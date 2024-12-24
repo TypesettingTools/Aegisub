@@ -22,7 +22,7 @@
 #include <fstream>
 
 namespace agi::io {
-using namespace std::filesystem;
+using namespace agi::fs;
 
 std::unique_ptr<std::istream> Open(path const& file, bool binary) {
 	LOG_D("agi/io/open/file") << file;

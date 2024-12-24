@@ -224,7 +224,7 @@ bool is_okay_to_close_subtitles(agi::Context *c) {
 #endif
 }
 
-void load_subtitles(agi::Context *c, std::filesystem::path const& path, std::string const& encoding="") {
+void load_subtitles(agi::Context *c, agi::fs::path const& path, std::string const& encoding="") {
 #ifdef __APPLE__
 	wxGetApp().NewProjectContext().project->LoadSubtitles(path, encoding);
 #else
@@ -341,7 +341,7 @@ struct subtitle_properties final : public Command {
 	}
 };
 
-static void save_subtitles(agi::Context *c, std::filesystem::path filename) {
+static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 	if (filename.empty()) {
 		c->videoController->Stop();
 		filename = SaveFileSelector(_("Save subtitles file"), "Path/Last/Subtitles",

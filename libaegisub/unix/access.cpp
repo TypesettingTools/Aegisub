@@ -16,14 +16,13 @@
 
 #include "libaegisub/fs.h"
 
-#include <filesystem>
 #include <sys/stat.h>
 #include <cerrno>
 #include <unistd.h>
 
 namespace agi::acs {
 
-void Check(std::filesystem::path const& file, acs::Type type) {
+void Check(agi::fs::path const& file, acs::Type type) {
 	auto cu = std::filesystem::current_path();
 	std::error_code ec;
 	auto s = std::filesystem::status(file, ec);

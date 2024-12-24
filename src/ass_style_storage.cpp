@@ -57,7 +57,7 @@ void AssStyleStorage::Save() const {
 		out.Get() << cur->GetEntryData() << "\n";
 }
 
-void AssStyleStorage::Load(std::filesystem::path const& filename) {
+void AssStyleStorage::Load(agi::fs::path const& filename) {
 	file = filename;
 	clear();
 
@@ -102,7 +102,7 @@ AssStyle *AssStyleStorage::GetStyle(std::string_view name) {
 std::vector<std::string> AssStyleStorage::GetCatalogs() {
 	std::vector<std::string> catalogs;
 	for (auto const& file : agi::fs::DirectoryIterator(config::path->Decode("?user/catalog/"), "*.sty"))
-		catalogs.push_back(std::filesystem::path(file).stem().string());
+		catalogs.push_back(agi::fs::path(file).stem().string());
 	return catalogs;
 }
 

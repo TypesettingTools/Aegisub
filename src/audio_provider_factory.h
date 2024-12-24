@@ -14,7 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <filesystem>
+#include <libaegisub/fs.h>
 #include <memory>
 #include <vector>
 
@@ -24,7 +24,7 @@ namespace agi {
 	class Path;
 }
 
-std::unique_ptr<agi::AudioProvider> GetAudioProvider(std::filesystem::path const& filename,
+std::unique_ptr<agi::AudioProvider> GetAudioProvider(agi::fs::path const& filename,
                                                      agi::Path const& path_helper,
                                                      agi::BackgroundRunner *br);
 std::vector<std::string> GetAudioProviderNames();

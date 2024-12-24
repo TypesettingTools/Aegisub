@@ -14,15 +14,15 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <filesystem>
+#include <libaegisub/fs.h>
 #include <vector>
 
 struct lua_State;
 
 namespace agi::lua {
 	/// Load a Lua or Moonscript file at the given path
-	bool LoadFile(lua_State *L, std::filesystem::path const& filename);
+	bool LoadFile(lua_State *L, agi::fs::path const& filename);
 	/// Install our module loader and add include_path to the module search
 	/// path of the given lua state
-	bool Install(lua_State *L, std::vector<std::filesystem::path> const& include_path);
+	bool Install(lua_State *L, std::vector<agi::fs::path> const& include_path);
 }

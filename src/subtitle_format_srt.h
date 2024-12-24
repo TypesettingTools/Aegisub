@@ -45,6 +45,6 @@ public:
 
 	bool CanSave(const AssFile *file) const override;
 
-	void ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *forceEncoding) const override;
-	void WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
+	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *forceEncoding) const override;
+	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
 };

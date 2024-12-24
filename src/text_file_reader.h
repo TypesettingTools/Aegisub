@@ -15,8 +15,8 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <libaegisub/line_iterator.h>
+#include <libaegisub/fs.h>
 
-#include <filesystem>
 #include <iosfwd>
 #include <memory>
 #include <string>
@@ -36,7 +36,7 @@ public:
 	/// @param filename File to open
 	/// @param enc      Encoding to use, or empty to autodetect
 	/// @param trim     Whether to trim whitespace from lines read
-	TextFileReader(std::filesystem::path const& filename, const char *encoding, bool trim=true);
+	TextFileReader(agi::fs::path const& filename, const char *encoding, bool trim=true);
 	/// @brief Destructor
 	~TextFileReader();
 

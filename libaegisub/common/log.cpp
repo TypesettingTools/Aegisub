@@ -17,11 +17,11 @@
 #include "libaegisub/cajun/elements.h"
 #include "libaegisub/cajun/writer.h"
 #include "libaegisub/dispatch.h"
+#include "libaegisub/fs.h"
 #include "libaegisub/util.h"
 
 #include <boost/range/algorithm/remove_if.hpp>
 #include <chrono>
-#include <filesystem>
 #include <fstream>
 
 namespace agi::log {
@@ -97,7 +97,7 @@ Message::~Message() {
 	agi::log::log->Log(sm);
 }
 
-JsonEmitter::JsonEmitter(std::filesystem::path const& directory)
+JsonEmitter::JsonEmitter(agi::fs::path const& directory)
 : fp(new std::ofstream(directory/util::strftime("%Y-%m-%d-%H-%M-%S.json")))
 {
 }

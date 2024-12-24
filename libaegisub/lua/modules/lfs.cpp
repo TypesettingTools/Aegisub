@@ -46,7 +46,7 @@ auto wrap(char **err, Func f) -> decltype(f()) {
 }
 
 template<typename Ret>
-bool setter(const char *path, char **err, Ret (*f)(sfs::path const&)) {
+bool setter(const char *path, char **err, Ret (*f)(agi::fs::path const&)) {
 	return wrap(err, [=]{
 		f(path);
 		return true;
@@ -54,12 +54,12 @@ bool setter(const char *path, char **err, Ret (*f)(sfs::path const&)) {
 }
 
 bool lfs_chdir(const char *dir, char **err) {
-	return setter(dir, err, &sfs::current_path);
+	return setter(dir, err, CurrentPath);
 }
 
 char *currentdir(char **err) {
 	return wrap(err, []{
-		return strndup(sfs::current_path().string());
+		return strndup(CurrentPath().string());
 	});
 }
 

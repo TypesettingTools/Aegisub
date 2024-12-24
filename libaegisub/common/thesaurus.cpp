@@ -23,7 +23,7 @@
 
 namespace agi {
 
-Thesaurus::Thesaurus(std::filesystem::path const& dat_path, std::filesystem::path const& idx_path)
+Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_path)
 : dat(std::make_unique<read_file_mapping>(dat_path))
 {
 	read_file_mapping idx_file(idx_path);

@@ -14,7 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <filesystem>
+#include <libaegisub/fs.h>
 #include <memory>
 #include <string>
 
@@ -33,7 +33,7 @@ class TextFileWriter {
 #endif
 
 public:
-	TextFileWriter(std::filesystem::path const& filename, std::string encoding="");
+	TextFileWriter(agi::fs::path const& filename, std::string encoding="");
 	~TextFileWriter();
 
 	void WriteLineToFile(std::string_view line, bool addLineBreak=true);

@@ -74,7 +74,7 @@ std::vector<std::string> Thesaurus::GetLanguageList() const {
 	return languages;
 }
 
-static bool check_path(std::filesystem::path const& path, std::string const& language, std::filesystem::path& idx, std::filesystem::path& dat) {
+static bool check_path(agi::fs::path const& path, std::string const& language, agi::fs::path& idx, agi::fs::path& dat) {
 	idx = path/agi::format("th_%s.idx", language);
 	dat = path/agi::format("th_%s.dat", language);
 	return agi::fs::FileExists(idx) && agi::fs::FileExists(dat);
@@ -86,7 +86,7 @@ void Thesaurus::OnLanguageChanged() {
 	auto language = OPT_GET("Tool/Thesaurus/Language")->GetString();
 	if (language.empty()) return;
 
-	std::filesystem::path idx, dat;
+	agi::fs::path idx, dat;
 
 	auto path = config::path->Decode(OPT_GET("Path/Dictionary")->GetString() + "/");
 	if (!check_path(path, language, idx, dat)) {

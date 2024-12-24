@@ -17,8 +17,7 @@
 #include <libaegisub/format.h>
 
 #include <libaegisub/charset_conv.h>
-
-#include <filesystem>
+#include <libaegisub/fs.h>
 
 #ifdef _MSC_VER
 #define WCHAR_T_ENC "utf-16le"
