@@ -24,8 +24,12 @@ osx_bundle_sed_path="${builddir}/osx-bundle.sed"
 
 last_svn_revision=6962
 last_svn_hash="16cd907fe7482cb54a7374cd28b8501f138116be"
-
-git_revision=$(expr $last_svn_revision + $(git rev-list --count $last_svn_hash..HEAD))
+# Check if the commit exists first, it doesn't exist in shallow clones.
+if [ "$(git cat-file -t $last_svn_hash 2> /dev/null)" = "commit" ]; then
+  git_revision=$(expr $last_svn_revision + $(git rev-list --count $last_svn_hash..HEAD))
+else
+  git_revision=0
+fi
 git_version_str=$(git describe --exact-match 2> /dev/null)
 installer_version='0.0.0'
 resource_version='0, 0, 0'
