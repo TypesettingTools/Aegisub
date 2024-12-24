@@ -17,6 +17,7 @@
 /// @ingroup command
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 

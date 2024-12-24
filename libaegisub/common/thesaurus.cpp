@@ -19,6 +19,7 @@
 #include "libaegisub/line_iterator.h"
 #include "libaegisub/split.h"
 
+#include <algorithm>
 #include <boost/interprocess/streams/bufferstream.hpp>
 
 namespace agi {

@@ -40,6 +40,7 @@
 #include <libaegisub/format.h>
 #include <libaegisub/split.h>
 
+#include <algorithm>
 #include <boost/lexical_cast.hpp>
 #include <wx/intl.h>
 

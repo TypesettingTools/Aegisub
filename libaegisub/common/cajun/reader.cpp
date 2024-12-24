@@ -8,6 +8,7 @@ Author: Terry Caton
 
 #include "libaegisub/cajun/reader.h"
 
+#include <algorithm>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <cassert>
 
