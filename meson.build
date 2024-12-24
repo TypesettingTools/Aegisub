@@ -344,7 +344,7 @@ endif
 if not deps.contains(luajit)
     deps += subproject('luajit').get_variable('luajit_dep')
 endif
-deps += subproject('luabins').get_variable('luabins_dep')
+deps += dependency('luabins', fallback: ['luabins', 'luabins_dep'])
 
 dep_gl = dependency('gl', required: false)
 if not dep_gl.found()
