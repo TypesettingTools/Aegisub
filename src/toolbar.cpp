@@ -36,6 +36,7 @@
 
 #include <wx/frame.h>
 #include <wx/toolbar.h>
+#include <wx/version.h>
 
 namespace {
 	json::Object const& get_root() {
@@ -143,7 +144,11 @@ namespace {
 					wxITEM_NORMAL;
 
 				wxBitmap const& bitmap = command->Icon(icon_size, retina_helper.GetScaleFactor(), GetLayoutDirection());
+#if wxCHECK_VERSION(3, 1, 6)
+				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), wxBitmapBundle(bitmap), GetTooltip(command), kind);
+#else
 				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), bitmap, GetTooltip(command), kind);
+#endif
 
 				commands.push_back(command);
 				needs_onidle = needs_onidle || flags != cmd::COMMAND_NORMAL;
