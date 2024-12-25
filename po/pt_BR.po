@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2024-12-25 19:31-0300\n"
+"PO-Revision-Date: 2024-12-25 19:35-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary\n"
 "Language: pt_BR\n"
@@ -6229,9 +6229,7 @@ msgstr "Não foi possível conectar ao servidor de atualizações."
 
 #: ../src/dialog_version_check.cpp:310
 msgid "Could not download from updates server."
-msgstr ""
-"Não foi possível fazer o download peloChecagem de Versão servidor de "
-"atualizações."
+msgstr "Não foi possível fazer o download pelo servidor de atualizações."
 
 #: ../src/dialog_version_check.cpp:312
 #, c-format
