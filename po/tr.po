@@ -1,0 +1,3280 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Aegisub [TR]\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2024-12-25 22:24+0300\n"
+"Last-Translator: \n"
+"Language-Team: Türkçe\n"
+"Language: tr_TR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Loco-Version: 2.6.10; wp-6.5.5\n"
+
+msgid ""
+"\n"
+"Script info:\n"
+"Name: %s\n"
+"Description: %s\n"
+"Author: %s\n"
+"Version: %s\n"
+"Full path: %s\n"
+"State: %s\n"
+"\n"
+"Features provided by script:"
+msgstr ""
+"\n"
+"Betik bilgisi:\n"
+"Adı: %s\n"
+"Açıklama: %s\n"
+"Yazar: %s\n"
+"Versiyon: %s\n"
+"Tam yol: %s\n"
+"Bölge: %s\n"
+"Betik tarafından sağlanan özellikler:"
+
+msgid ""
+"\n"
+"See the help file for full credits.\n"
+msgstr ""
+"\n"
+"Tüm liste için yardım dosyasına bakınız.\n"
+
+msgid "    Export filter: %s"
+msgstr "    Dışa aktarma filtresi: %s"
+
+msgid " -> End"
+msgstr " -> Son"
+
+msgid "#"
+msgstr "#"
+
+msgid "%s - Copy"
+msgstr "%s - Kopyala"
+
+msgid "%s - Copy (%d)"
+msgstr "%s - Kopyala (%d)"
+
+msgid "%s frames"
+msgstr "%s kare"
+
+msgid "&100%"
+msgstr "&%100"
+
+msgid "&200%"
+msgstr "&%200"
+
+msgid "&50%"
+msgstr "&%50"
+
+msgid "&About"
+msgstr "&Hakkında"
+
+msgid "&Accept Line"
+msgstr "&Satırı Kabul Et"
+
+msgid "&Accept changes"
+msgstr "&Değişiklikleri kabul et"
+
+msgid "&Actor Name"
+msgstr "&Aktör Adı"
+
+msgid "&Add"
+msgstr "&Ekle"
+
+msgid "&Add to selection"
+msgstr "&Seçime ekle"
+
+msgid "&After Current"
+msgstr "&Seçiliden Sonra"
+
+msgid "&All"
+msgstr "&Tümü"
+
+msgid "&All rows"
+msgstr "&Tüm satırlar"
+
+msgid "&Audio"
+msgstr "&Ses"
+
+msgid "&Audio+Subs View"
+msgstr "&Ses+Altyazı Göster"
+
+msgid "&Auto Check for Updates"
+msgstr "&Güncellemeler için otomatik kontrol et"
+
+msgid "&Automation..."
+msgstr "&Otomasyon"
+
+msgid "&Backward"
+msgstr "&Geri"
+
+msgid "&Before Current"
+msgstr "&Seçiliden Önce"
+
+msgid "&Bold"
+msgstr "&Kalın"
+
+msgid "&Browse..."
+msgstr "&Gözat"
+
+msgid "&Bug Tracker..."
+msgstr "&Hata Takip"
+
+msgid "&Check for Updates..."
+msgstr "&Güncellemeleri kontrol et"
+
+msgid "&Cinematic (2.35)"
+msgstr "&Sinematik (2.35)"
+
+msgid "&Clear"
+msgstr "&Temizle"
+
+msgid "&Close"
+msgstr "&Kapat"
+
+msgid "&Close Audio"
+msgstr "&Ses Kapat"
+
+msgid "&Close Video"
+msgstr "&Videoyu Kapat"
+
+msgid "&Comment"
+msgstr "&Yorum"
+
+msgid "&Concatenate"
+msgstr "&Bitiştir"
+
+msgid "&Constant: "
+msgstr "&Sabit: "
+
+msgid "&Contains"
+msgstr "&İçerenleri"
+
+msgid "&Contents"
+msgstr "&Başlıklar"
+
+msgid "&Copy"
+msgstr "&Kopyala"
+
+msgid "&Copy Lines"
+msgstr "&Satırları Kopyala"
+
+msgid "&Default"
+msgstr "&Varsayılan"
+
+msgid "&Delete"
+msgstr "&Sil"
+
+msgid "&Detach Video"
+msgstr "&Videoyu Ayır"
+
+msgid "&Doesn't Match"
+msgstr "&Eşleştirme"
+
+msgid "&Duplicate Lines"
+msgstr "&Satırları Çoğalt"
+
+msgid "&Edit"
+msgstr "&Düzenle"
+
+msgid "&Effect"
+msgstr "&Efekt"
+
+msgid "&Enable"
+msgstr "&Aktif et"
+
+msgid "&End Time"
+msgstr "&Bitiş Zamanı"
+
+msgid "&End times only"
+msgstr "&Sadece bitiş süresinde"
+
+msgid "&Exact match"
+msgstr "&Tam eşleştir"
+
+msgid "&Export As..."
+msgstr "&Dışarı aktar"
+
+msgid "&Export Subtitles..."
+msgstr "&Altyazıyı dışarı aktar"
+
+msgid "&File"
+msgstr "&Dosya"
+
+msgid "&Find next"
+msgstr "&Sonrakini bul"
+
+msgid "&Find..."
+msgstr "&Bul"
+
+msgid "&Fonts Collector..."
+msgstr "&Font kolektör"
+
+msgid "&Forums"
+msgstr "&Forumlar"
+
+msgid "&Frames: "
+msgstr "&Kareler: "
+
+msgid "&Full view"
+msgstr "&Tam görüntü"
+
+msgid "&Fullscreen (4:3)"
+msgstr "&Tam Ekran (4:3)"
+
+msgid "&Go Back a Line"
+msgstr "&Satıra Geri Dön"
+
+msgid "&Help"
+msgstr "&Yardım"
+
+msgid "&Hide Tags"
+msgstr "&Etiketleri gizle."
+
+msgid "&IRC Channel"
+msgstr "&IRC Kanalı"
+
+msgid "&Ignore"
+msgstr "&Yoksay"
+
+msgid "&Import from script..."
+msgstr "&Betikten içeri aktar"
+
+msgid "&Insert (before)"
+msgstr "&Ekle (önce)"
+
+msgid "&Insert Lines"
+msgstr "&Satırları ekle"
+
+msgid "&Insert Original"
+msgstr "&Orjinali yerleştir"
+
+msgid "&Italic"
+msgstr "&İtalik"
+
+msgid "&Join (concatenate)"
+msgstr "&Birleştir (bitiştirmek)"
+
+msgid "&Jump to..."
+msgstr "&Sıçra"
+
+msgid "&Kanji Timer..."
+msgstr "&Kanji Zamanlama"
+
+msgid "&Language..."
+msgstr "&Dil"
+
+msgid "&Layer"
+msgstr "&Katman"
+
+msgid "&Link"
+msgstr "&Bağlantı"
+
+msgid "&Log window"
+msgstr "&Kütük penceresi"
+
+msgid "&Make times continuous (change end)"
+msgstr "&Zamanları devamlı yap (bitişi değiştir)"
+
+msgid "&Make times continuous (change start)"
+msgstr "&Zamanları devamlı yap (başlangıcı değiştir)"
+
+msgid "&Match case"
+msgstr "&Boyutu eşleştir"
+
+msgid "&Matches"
+msgstr "&Eşleştir"
+
+msgid "&New"
+msgstr "&Yeni"
+
+msgid "&New Subtitles"
+msgstr "&Yeni Altyazı"
+
+msgid "&Next Line"
+msgstr "&Sonraki satır"
+
+msgid "&None"
+msgstr "&Hiçbiri"
+
+msgid "&Opaque box"
+msgstr "&Opaklık kutusu"
+
+msgid "&Open Audio File..."
+msgstr "&Ses Dosyası Aç"
+
+msgid "&Open Subtitles..."
+msgstr "&Altyazı Aç"
+
+msgid "&Open Video..."
+msgstr "&Video Aç."
+
+msgid "&Options..."
+msgstr "&Ayarlar"
+
+msgid "&Paste"
+msgstr "&Yapıştır"
+
+msgid "&Paste Lines"
+msgstr "&Satırları Yapıştır"
+
+msgid "&Preview changes"
+msgstr "&Değişiklikleri önizle"
+
+msgid "&Previous Line"
+msgstr "&Önceki satır"
+
+msgid "&Properties..."
+msgstr "&Özellikler"
+
+msgid "&Recent"
+msgstr "&Geçerli olanlar"
+
+msgid "&Redo %s"
+msgstr "&%s eylemini ileri al"
+
+msgid "&Regular Expression match"
+msgstr "&Normal şekilde eşleştir"
+
+msgid "&Remove"
+msgstr "&Kaldır"
+
+msgid "&Replace"
+msgstr "&Değiştir"
+
+msgid "&Resample Resolution..."
+msgstr "&Çözünürlüğü Düzenle"
+
+msgid "&Restore Defaults"
+msgstr "&Varsayılana Geri Dön"
+
+msgid "&Reverse transformation"
+msgstr "&Çeviriyi terse çevir"
+
+msgid "&Save Subtitles"
+msgstr "&Altyazıyı Kaydet"
+
+msgid "&Seek video to line start time"
+msgstr "Başlangıç zamanı satırı için videoyu ara"
+
+msgid "&Start Time"
+msgstr "&Başlangıç Zamanı"
+
+msgid "&Start times only"
+msgstr "&Sadece başlangıç süresinde"
+
+msgid "&Start!"
+msgstr "&Başlat!"
+
+msgid "&Strikeout"
+msgstr "&Üstüçizili"
+
+msgid "&Style"
+msgstr "&Stil"
+
+msgid "&Styles Manager..."
+msgstr "&Stil Yönetimi"
+
+msgid "&Subtitle"
+msgstr "&Altyazı"
+
+msgid "&Symmetrical"
+msgstr "&Simetrik"
+
+msgid "&Text"
+msgstr "&Metin"
+
+msgid "&Time: "
+msgstr "&Zaman: "
+
+msgid "&Times"
+msgstr "&Süre"
+
+msgid "&Timing"
+msgstr "&Zamanlama"
+
+msgid "&Timing Post-Processor..."
+msgstr "&Destek-İşlemci Zamanlama"
+
+msgid "&Translation Assistant..."
+msgstr "&Çeviri Asistanı"
+
+msgid "&Underline"
+msgstr "&Altıçizili"
+
+msgid "&Undo %s"
+msgstr "&%s eylemini geri al"
+
+msgid "&Unlink"
+msgstr "&Bağlantı kaldır"
+
+msgid "&Use Dummy Video..."
+msgstr "&Sahte Video Kullan"
+
+msgid "&Use regular expressions"
+msgstr "&Normal ifadeleri kullan"
+
+msgid "&Video"
+msgstr "&Video"
+
+msgid "&Video+Subs View"
+msgstr "&Video+Altyazı Göster"
+
+msgid "&Visual Typesetting"
+msgstr "&Görsel yazımayarları"
+
+msgid "&Website"
+msgstr "&Website"
+
+msgid "&Widescreen (16:9)"
+msgstr "&Geniş ekran (16:9)"
+
+msgid "'%s' is not a valid command name"
+msgstr "'%s' geçerli bir komut adı değil"
+
+msgid "(Un)Load files?"
+msgstr "Dosyaları (Boşalt)Yükle?"
+
+msgid "* %s already exists on destination.\n"
+msgstr "* %s hedefte zaten bulunuyor.\n"
+
+msgid "* Copied %s.\n"
+msgstr "* Kopyalandı %s.\n"
+
+msgid "* Failed to copy %s.\n"
+msgstr "* %s kopyalama başarısız.\n"
+
+msgid "0: Fatal"
+msgstr "0: Önemli Hata"
+
+msgid "0: Smart wrapping, top line is wider"
+msgstr "0: Şık bölme, üst satır geniştir"
+
+msgid "1 frame"
+msgid_plural "%d frames (%s)"
+msgstr[0] "1 kare"
+msgstr[1] "%d kare (%s)"
+
+msgid "100%"
+msgstr "%100"
+
+msgid "119.880 FPS (NTSC x4)"
+msgstr "119.880 FPS (NTSC x4)"
+
+msgid "120.000 FPS"
+msgstr "120.000 FPS"
+
+msgid "15.000 FPS"
+msgstr "15.000 FPS"
+
+msgid "1: End-of-line word wrapping, only \\N breaks"
+msgstr "1: Satır sonu bölmesi, sadece \\N böler"
+
+msgid "1: Error"
+msgstr "1: Hata"
+
+msgid "200%"
+msgstr "%200"
+
+msgid "23.976 FPS (Decimated NTSC)"
+msgstr "23.976 FPS (Azaltılmış NTSC)"
+
+msgid "24.000 FPS (FILM)"
+msgstr "24.000 FPS (FILM)"
+
+msgid "25.000 FPS (PAL)"
+msgstr "25.000 FPS (PAL)"
+
+msgid "29.970 FPS (NTSC)"
+msgstr "29.970 FPS (NTSC)"
+
+msgid "2: No word wrapping, both \\n and \\N break"
+msgstr "2: Bölme yok, sadece \\n ve \\N böler"
+
+msgid "2: Warning"
+msgstr "2: Uyarı"
+
+msgid "30.000 FPS"
+msgstr "30.000 FPS"
+
+msgid "3: Hint"
+msgstr "3: İpucu"
+
+msgid "3: Smart wrapping, bottom line is wider"
+msgstr "3: Şık bölme, alt satır geniştir"
+
+msgid "4: Debug"
+msgstr "4: Hata ayıklama"
+
+msgid "50%"
+msgstr "%50"
+
+msgid "59.940 FPS (NTSC x2)"
+msgstr "59.940 FPS (NTSC x2)"
+
+msgid "5: Trace"
+msgstr "5: İzleme"
+
+msgid "60.000 FPS"
+msgstr "60.000 FPS"
+
+msgid "<- Copy to &storage"
+msgstr "Belleğe kopyala"
+
+msgid "A catalog with that name already exists."
+msgstr "Girilen adda bir katalog zaten var."
+
+msgid "A&ttachments..."
+msgstr "E&kler"
+
+msgid "A&utomation"
+msgstr "O&tomasyon"
+
+msgid "ANSI"
+msgstr "ANSI"
+
+msgid "ASS Override Tag mode set to hide tags."
+msgstr "ASS Şekillendirme Etiket modunu etiketleri gizlemeye ayarla."
+
+msgid "ASS Override Tag mode set to show full tags."
+msgstr "ASS Şekillendirme Etiket modunu tüm etiketleri göstermeye ayarla."
+
+msgid "ASS Override Tag mode set to simplify tags."
+msgstr "ASS Şekillendirme Etiket modunu etiketleri basitleştirmeye ayarla."
+
+msgid "ASSDraw3"
+msgstr "ASSDraw3"
+
+msgid "ASSDraw3..."
+msgstr "ASSDraw3"
+
+msgid "About"
+msgstr "Hakkında"
+
+msgid "About Aegisub"
+msgstr "Aegisub hakkında"
+
+msgid "Accept changes"
+msgstr "Değişiklikleri kabul et"
+
+msgid "Action"
+msgstr "Eylem"
+
+msgid "Actions"
+msgstr "Eylemler"
+
+msgid "Active Line Border"
+msgstr "Aktif satır çerçevesi"
+
+msgid "Actor"
+msgstr "Aktör"
+
+msgid "Actor Name"
+msgstr "Aktör Adı"
+
+msgid ""
+"Actor name for this speech. This is only for reference, and is mainly "
+"useless."
+msgstr "Bu konuşma için aktör adı. Bu sadece bir referans ve kullanışsız."
+
+msgid "Actor separator:"
+msgstr "Aktör bölücü:"
+
+msgid "Add \"%s\" to dictionary"
+msgstr "\"%s\" sözlüğe ekle"
+
+msgid "Add Automation script"
+msgstr "Otomasyon betiği ekle"
+
+msgid "Add lead &in:"
+msgstr "Giriş &ekle:"
+
+msgid "Add lead &out:"
+msgstr "Çıkış &ekle:"
+
+msgid "Add lead in"
+msgstr "Giriş ekle"
+
+msgid "Add lead out"
+msgstr "Çıkış ekle"
+
+msgid "Add to &dictionary"
+msgstr "Sözlüğe &ekle"
+
+msgid "Advanced"
+msgstr "Gelişmiş"
+
+msgid "Aegisub"
+msgstr "Aegisub"
+
+msgid ""
+"Aegisub could not narrow down the character set to a single one.\n"
+"Please pick one below:"
+msgstr ""
+"Aegisub karakter setini sadece bir taneye sınırlandıramıyor.\n"
+"Lütfen aşağıdan bir tane seçiniz:"
+
+msgid "Aegisub has finished checking spelling of this script."
+msgstr "Aegisub bu betiği kontrolünü tamamladı."
+
+msgid "Aegisub has found no spelling mistakes in this script."
+msgstr "Aegisub bu betikte hatalı kelime bulamadı."
+
+msgid "Affect"
+msgstr "Değiştir"
+
+msgid "Affect &selection only"
+msgstr "Sadece &seçimi düzenle"
+
+msgid "After Current"
+msgstr "Seçiliden Sonra"
+
+msgid "After Current, at Video Time"
+msgstr "Video Zamanında, Seçiliden Sonra"
+
+msgid "Alignment"
+msgstr "Hizalama"
+
+msgid "Alignment in screen, in numpad style"
+msgstr "Ekrandaki hizalaması, numpad stili"
+
+msgid "All Files"
+msgstr "Tüm Dosyalar"
+
+msgid "All Supported Formats"
+msgstr "Tüm Desteklenen Formatlar"
+
+msgid "All fonts found.\n"
+msgstr "Tüm fontlar bulundu.\n"
+
+msgid "All scripts"
+msgstr "Tüm betikler"
+
+msgid "Allow pre-2.56a Avisynth"
+msgstr "pre-2.56a Avisynth'a izin ver"
+
+msgid "Always"
+msgstr "Her Zaman"
+
+msgid "Angle to rotate in Z axis, in degrees"
+msgstr "Z aksında çevir, derece"
+
+msgid "Appends a bezier bicubic curve"
+msgstr "Bir bezier bikübik eğri ilave et"
+
+msgid "Appends a line"
+msgstr "Satır ilave et"
+
+msgid "Apply to styles"
+msgstr "Stillere uygula"
+
+msgid "Arabic"
+msgstr "Arapça"
+
+msgid ""
+"Are you sure that you want to restore the defaults? All your settings will "
+"be overridden."
+msgstr ""
+"Varsayılanlara geri dönmek istediğinizden emin misiniz? Tüm ayarlar "
+"sıfırlanacak."
+
+msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
+msgstr "Katalogtan \"%s\" belleğini silmek istediğinizden emin misiniz?"
+
+msgid "Are you sure you want to delete this style?"
+msgid_plural "Are you sure you want to delete these %d styles?"
+msgstr[0] "Bu stili silmek istediğinizden emin misiniz?"
+msgstr[1] "%d stillerini silmek istediğinizden emin misiniz?"
+
+msgid "Are you sure? This cannot be undone!"
+msgstr "Emin misiniz? Bu eylem geri alınamaz!"
+
+msgid "As &Karaoke"
+msgstr "Karaoke &Gibi"
+
+msgid "As Karaoke"
+msgstr "Karaoke"
+
+msgid "Ask"
+msgstr "Sor"
+
+msgid "Attach &Font"
+msgstr "Ek &Font"
+
+msgid "Attach &Graphics"
+msgstr "Ek &Grafik"
+
+msgid "Attachment List"
+msgstr "Ek Listesi"
+
+msgid "Attachment name"
+msgstr "Ek adı"
+
+msgid "Attachments"
+msgstr "Ekler"
+
+msgid "Attempt to &interpolate kanji."
+msgstr "Kanjiye interpole &etmeye çalış."
+
+msgid "Audio"
+msgstr "Ses"
+
+msgid "Audio Display"
+msgstr "Ses Ekranı"
+
+msgid "Audio Formats"
+msgstr "Ses Formatları"
+
+msgid "Audio Volume"
+msgstr "Ses seviyesi"
+
+msgid "Audio player"
+msgstr "Ses çalar"
+
+msgid "Audio provider"
+msgstr "Ses sağlayıcı"
+
+msgid "Audio+Subs View"
+msgstr "Ses+Altyazı Göster"
+
+msgid "Auto-focus on mouse over"
+msgstr "Fare üzerindeyken oto-odakla"
+
+msgid "Auto-load path"
+msgstr "Oto-yükleme yolu"
+
+msgid "Automatically commit all changes"
+msgstr "Otomatik tüm değişikleri işle"
+
+msgid "Automation"
+msgstr "Otomasyon"
+
+msgid "Automation Manager"
+msgstr "Otomasyon Yönetimi"
+
+msgid "Automation Script Info"
+msgstr "Otomasyon Betik Bilgisi"
+
+msgid "Autoreload on Export"
+msgstr "Dışarı aktarmada otomatik yenile"
+
+msgid "Avisynth down-mixer"
+msgstr "Avisynth alt-mikser"
+
+msgid "Avisynth memory limit"
+msgstr "Avisynth hafıza limiti"
+
+msgid "Background"
+msgstr "Arkaplan"
+
+msgid "Backup"
+msgstr "Yedek"
+
+msgid "Baltic"
+msgstr "Baltık"
+
+msgid "Base path"
+msgstr "Ana yol"
+
+msgid "Before Current"
+msgstr "Seçiliden Önce"
+
+msgid "Before Current, at Video Time"
+msgstr "Video Zamanında, Seçiliden Önce"
+
+msgid "Below Normal (recommended)"
+msgstr "Normal altı (önerilen)"
+
+msgid "Better quality"
+msgstr "Daha iyi kalite"
+
+msgid "Bias: Start <- "
+msgstr "Taraf: Başlangıç <- "
+
+msgid "Bicubic"
+msgstr "Bikübik"
+
+msgid "Blue:"
+msgstr "Mavi:"
+
+msgid "Brackets"
+msgstr "Köşeli Parantezler"
+
+msgid "Browse..."
+msgstr "Gözat"
+
+msgid "Bug Tracker"
+msgstr "&Hata Takip"
+
+msgid "Built by %s on %s."
+msgstr "Bu sürüm %s tarafından %s tarihinde oluşturuldu."
+
+msgid "C&ustom..."
+msgstr "Ö&zel"
+
+msgid "Cache"
+msgstr "Önbellek"
+
+msgid "Cache memory max (MB)"
+msgstr "Maksimum önbellek hafızası (MB)"
+
+msgid "Cache type"
+msgstr "Önbellek tipi"
+
+msgid "Cancel"
+msgstr "İptal et"
+
+msgid "Catalog name conflict"
+msgstr "Katalog adı çakışması"
+
+msgid "Catalog of available storages"
+msgstr "Kullanılır bellek kataloğu"
+
+msgid "Change &End"
+msgstr "Bitişi &Değiştir"
+
+msgid "Change &Start"
+msgstr "Başlangıcı &Değiştir"
+
+msgid "Change End"
+msgstr "Bitişi Değiştir"
+
+msgid "Change Start"
+msgstr "Başlangıcı Değiştir"
+
+msgid "Change karaoke tag to \\k"
+msgstr "Karaoke etiketini \\k ile değiştir"
+
+msgid "Change karaoke tag to \\kf"
+msgstr "Karaoke etiketini \\kf ile değiştir"
+
+msgid "Change karaoke tag to \\ko"
+msgstr "Karaoke etiketini \\ko ile değiştir"
+
+msgid "Character spacing, in pixels"
+msgstr "Karakter boşluğu, piksel"
+
+msgid "Charset"
+msgstr "Karakter seti"
+
+msgid "Check fonts for availability"
+msgstr "Fontların varlığını kontrol et"
+
+msgid "Check for Updates"
+msgstr "Güncellemeleri kontrol et"
+
+msgid "Check for updates?"
+msgstr "Güncellemeleri kontrol et?"
+
+msgid "Check to see if there is a new version of Aegisub available"
+msgstr "Aegisub'ın yeni versiyonunun olup olmadığını kontrol edin"
+
+msgid "Checkerboard &pattern"
+msgstr "Dama &deseni"
+
+msgid "Chinese BIG5"
+msgstr "Çince BIG5"
+
+msgid "Choose character set"
+msgstr "Karakter seti seçiniz"
+
+msgid "Choose charset code:"
+msgstr "Karakter seti kodu seç:"
+
+msgid "Choose file to be attached"
+msgstr "Eklenecek dosyayı seç"
+
+msgid "Choose outline color"
+msgstr "Dış rengi seç"
+
+msgid "Choose primary color"
+msgstr "Birincil rengi seç"
+
+msgid "Choose secondary color"
+msgstr "İkincil rengi seç"
+
+msgid "Choose shadow color"
+msgstr "Gölge rengini seç"
+
+msgid "Choose styles to import:"
+msgstr "İçeri aktarılacak stilleri seç:"
+
+msgid ""
+"Choose the folder where the fonts will be collected to. It will be created "
+"if it doesn't exist."
+msgstr ""
+"Fontların toplanacağı klasörü seçin. Eğer bulunmuyorsa oluşturulacaktır."
+
+msgid "Choose which track to read:"
+msgstr "Hangi parçanın okunacağını seç:"
+
+msgid "Choose..."
+msgstr "Seç"
+
+msgid "Cinematic (2.35)"
+msgstr "Sinematik (2.35)"
+
+msgid "Clear"
+msgstr "Temizle"
+
+msgid "Click on list"
+msgstr "Liste tıkla"
+
+msgid "Clip"
+msgstr "Klips"
+
+msgid "Clip subtitles to a rectangle"
+msgstr "Altyazıları dikdörtgene klipsle"
+
+msgid "Clip subtitles to a vectorial area"
+msgstr "Altyazıları vektörel bir alana ilişkilendir"
+
+msgid "Close"
+msgstr "Kapat"
+
+msgid "Close Audio"
+msgstr "Sesi Kapat"
+
+msgid "Close Keyframes"
+msgstr "Anahtar Kareleri Kapat"
+
+msgid "Close Timecodes File"
+msgstr "Zamankodu Dosyalarını Kapat"
+
+msgid "Close Video"
+msgstr "Videoyu Kapat"
+
+msgid "Close the currently open timecodes file"
+msgstr "Geçerli zamankodu dosyalarını kapat"
+
+msgid "Close the currently open video file"
+msgstr "Geçerli açık videoyu kapat"
+
+msgid "Collision foreground"
+msgstr "Çatışık önplan"
+
+msgid "Color of preview background"
+msgstr "Önizleme arkaplan rengi"
+
+msgid "Color:"
+msgstr "Renk:"
+
+msgid "Colors"
+msgstr "Renkler"
+
+msgid "Commands"
+msgstr "Komutlar"
+
+msgid "Comment"
+msgstr "Yorum"
+
+msgid "Comment background"
+msgstr "Yorum arkaplanı"
+
+msgid "Comment starter:"
+msgstr "Yorum başlatıcı:"
+
+msgid "Comment this line out. Commented lines don't show up on screen."
+msgstr "Bu satırı yorum yap. Yorum satırları ekranda gözükmez."
+
+msgid "Comments"
+msgstr "Yorumlar"
+
+msgid "Commit"
+msgstr "İşle"
+
+msgid "Commit splits"
+msgstr "Bölmeleri işle"
+
+msgid "Concatenate"
+msgstr "Bitiştir"
+
+msgid "Configure Aegisub"
+msgstr "Aegisubı Ayarla"
+
+msgid "Confirm delete"
+msgstr "Silmeyi onayla"
+
+msgid "Confirm delete from current"
+msgstr "Geçerliden silmeyi onayla"
+
+msgid "Confirm delete from storage"
+msgstr "Bellekten silmeyi onayla"
+
+msgid "Contents"
+msgstr "Başlıklar"
+
+msgid "Convert"
+msgstr "Çevir"
+
+msgid "Converts a segment between line and bicubic"
+msgstr "Bir segmenti satır ve bikübik arasında çevir"
+
+msgid "Copy Lines"
+msgstr "Satırları Kopyala"
+
+msgid "Copy coordinates to Clipboard"
+msgstr "Kordinatları Pano'ya kopyala"
+
+msgid "Copy fonts to folder"
+msgstr "Fontları klasöre kopyala"
+
+msgid "Copy fonts to zipped archive"
+msgstr "Fontları ziplenmiş arşive kopyala"
+
+msgid "Copy image to Clipboard"
+msgstr "Resmi Pano'ya kopyala"
+
+msgid "Copy image to Clipboard (no subtitles)"
+msgstr "Resmi Pano'ya kopyala (altyazı yok)"
+
+msgid ""
+"Copy the current coordinates of the mouse over the video to the clipboard"
+msgstr "Farenin mevcut koordinatlarını videonun üzerinde panoya kopyala"
+
+msgid "Copy to &current script ->"
+msgstr "Geçerli &betiklere kopyala ->"
+
+msgid "Copying fonts to archive...\n"
+msgstr "Fontlar arşive kopyalanıyor...\n"
+
+msgid "Copying fonts to folder...\n"
+msgstr "Fontlar klasöre kopyalanıyor...\n"
+
+msgid "Correctly loaded"
+msgstr "Düzgünce yüklendi"
+
+msgid "Could not create destination folder."
+msgstr "Hedef klasör oluşturulamıyor."
+
+msgid "Could not parse style"
+msgstr "Stil çözümlenemiyor"
+
+msgid "Create audio clip"
+msgstr "Ses klibi oluştur"
+
+msgid "Cu&t"
+msgstr "Ke&s"
+
+msgid "Cu&t Lines"
+msgstr "Sa&tırları Kes"
+
+msgid "Current frame time and number"
+msgstr "Geçerli kare zamanı ve numarası"
+
+msgid "Current line"
+msgstr "Geçerli satır"
+
+msgid "Current line: %d/%d"
+msgstr "Geçerli satır: %d/%d"
+
+msgid "Current script"
+msgstr "Geçerli betik"
+
+msgid "Cursor time"
+msgstr "İmleç zamanı"
+
+msgid "Custom"
+msgstr "Özel"
+
+msgid "Cut Lines"
+msgstr "Satırları Kes"
+
+msgid "Cut subtitles"
+msgstr "Altyazıları Kes"
+
+msgid "Cycle active subtitles provider"
+msgstr "Geçerli altyazı sağlayıcısı arasında geçiş yap"
+
+msgid "Cycle through tag hiding modes"
+msgstr "Etiket saklama modunu dönüştür"
+
+msgid "Cycle through the available subtitles providers"
+msgstr "Geçerli altyazı sağlayıcıları arasında geçiş yap"
+
+msgid "D&ialogues"
+msgstr "D&iyaloglar"
+
+msgid "De&lete Lines"
+msgstr "Sa&tırları Sil"
+
+msgid "Decoder:"
+msgstr "Dekoder:"
+
+msgid "Default"
+msgstr "Varsayılan"
+
+msgid "Default Zoom"
+msgstr "Varsayılan yakınlaştırma"
+
+msgid "Default mouse wheel to zoom"
+msgstr "Varsayılan fare tekeri yakınlaştırması"
+
+msgid "Delete"
+msgstr "Sil"
+
+msgid "Delete Lines"
+msgstr "Satırları Sil"
+
+msgid "Delete currently selected lines"
+msgstr "Seçili satırları tamamen sil"
+
+msgid "Delete line"
+msgstr "Satırı sil"
+
+msgid "Description"
+msgstr "Açıklama"
+
+msgid "Deselect all styles"
+msgstr "Tüm stillerden seçimi kaldır"
+
+msgid "Dest: "
+msgstr "Hedef: "
+
+msgid "Destination"
+msgstr "Hedef"
+
+msgid "Destination Resolution"
+msgstr "Geçersiz çözünürlük"
+
+msgid "Detach Video"
+msgstr "Videoyu Ayır"
+
+msgid ""
+"Detach the video display from the main window, displaying it in a separate "
+"Window"
+msgstr "Video görüntüsünü ana pencereden ayırıp ayrı bir pencerede görüntüle"
+
+msgid "Disable"
+msgstr "Etkisiz kıl"
+
+msgid "Discard all uncommitted splits"
+msgstr "Tüm işlenmemiş bölmeleri iptal et"
+
+msgid "Distance from left edge, in pixels"
+msgstr "Sol kenardan uzaklık, piksel"
+
+msgid "Distance from right edge, in pixels"
+msgstr "Sağ kenardan uzaklık, piksel"
+
+msgid "Distance from top/bottom edge, in pixels"
+msgstr "Üst/Alt kenarından uzaklık, piksel"
+
+msgid ""
+"Do you want Aegisub to check for updates whenever it starts? You can still "
+"do it manually via the Help menu."
+msgstr ""
+"Aegisub'ın başlangıçta güncellemeleri kontrol etmesini ister misiniz? Yardım "
+"menüsünden elle sizde yapabilirsiniz."
+
+msgid ""
+"Do you want to change all instances of this style in the script to this new "
+"name?"
+msgstr ""
+"Betikteki bu stile ait tüm örneklerin adını yenisiyle değiştirmek ister "
+"misiniz?"
+
+msgid "Do you want to load/unload the associated files?"
+msgstr "Bağlı dosyaları yüklemek/boşaltmak ister misiniz?"
+
+msgid "Don't show"
+msgstr "Gösterme"
+
+msgid ""
+"Done\n"
+"\n"
+msgstr ""
+"Tamamlandı\n"
+"\n"
+
+msgid "Done. All fonts copied."
+msgstr "Tamamlandı. Tüm fontlar kopyalandı."
+
+msgid "Done. Some fonts could not be copied."
+msgstr "Tamamlandı. Bazı fontlar kopyalanamadı."
+
+msgid "Drag"
+msgstr "Sürükle"
+
+msgid "Drag control points"
+msgstr "Kontrol noktalarını sürükle"
+
+msgid "Drag subtitles"
+msgstr "Altyazıları sürükle"
+
+msgid "Draws a freehand shape"
+msgstr "Freehand şekli çiz"
+
+msgid "Draws a smoothed freehand shape"
+msgstr "Yumuşatılmış freehand şekli çiz"
+
+msgid "Dummy video options"
+msgstr "Sahte video ayarları"
+
+msgid "Duplicate Lines"
+msgstr "Satırları Çoğalt"
+
+msgid "Duplicate the selected lines"
+msgstr "Seçili satırları çoğaltır"
+
+msgid "Duration (frames):"
+msgstr "Süre (karelerin):"
+
+msgid "E&ffect"
+msgstr "E&fekt"
+
+msgid "E&nable"
+msgstr "A&ktif et"
+
+msgid "E&xit"
+msgstr "Ç&ıkış"
+
+msgid "E&xtract"
+msgstr "Ç&ıkart"
+
+msgid "East European"
+msgstr "Doğu Avrupa"
+
+msgid "Edit"
+msgstr "Düzenle"
+
+msgid "Edit Box"
+msgstr "Düzenleme Kutusu"
+
+msgid "Editing:"
+msgstr "Düzenleme:"
+
+msgid "Effect"
+msgstr "Efekt"
+
+msgid ""
+"Effect for this line. This can be used to store extra information for "
+"karaoke scripts, or for the effects supported by the renderer."
+msgstr ""
+"Bu satır için efekt. Burası karaoke betikleri için ekstra bilgi alanı olarak "
+"kullanılabilir veya taraycı tarafından desteklenen efektler için."
+
+msgid "Empty"
+msgstr "Boş"
+
+msgid "Enable"
+msgstr "Aktif et"
+
+msgid "Enable &preview"
+msgstr "Önizlemeyi &aktif et"
+
+msgid "Enable adding of lead-ins to lines"
+msgstr "Satırlara giriş eklemeyi aktif et"
+
+msgid "Enable adding of lead-outs to lines"
+msgstr "Satırlara çıkış eklemeyi aktif et"
+
+msgid "Enable call tips"
+msgstr "Yardım balonunu aktif et"
+
+msgid ""
+"Enable snapping of subtitles to nearest keyframe, if distance is within "
+"threshold"
+msgstr ""
+"En yakın anahtar kareye altyazıları yaslamayı aktif et, eğer uzaklık sınırın "
+"içindeyse"
+
+msgid ""
+"Enable snapping of subtitles together if they are within a certain distance "
+"of each other"
+msgstr "Eğer farklı uzaklıktalarsa, altyazıları yaslamayı aktif et"
+
+msgid "Enable syntax highlighting"
+msgstr "Sözdizim vurgulamayı aktif et"
+
+msgid ""
+"Encoding, only useful in unicode if the font doesn't have the proper unicode "
+"mapping"
+msgstr ""
+"Kodlama, eğer font uygun unicode kodlamaya sahip değilse, sadece unicode'da "
+"etkilidir"
+
+msgid "Encoding:"
+msgstr "Kodlama:"
+
+msgid "End"
+msgstr "Bitiş"
+
+msgid "End Time"
+msgstr "Bitiş Zamanı"
+
+msgid "End time"
+msgstr "Bitiş zamanı"
+
+msgid "Ends after thres.:"
+msgstr "Sınırdan sonraki bitiş:"
+
+msgid "Ends before thres.:"
+msgstr "Sınırdan önceki bitiş:"
+
+msgid "Enter aspect ratio"
+msgstr "Ebat giriniz"
+
+msgid ""
+"Enter aspect ratio in either:\n"
+"  decimal (e.g. 2.35)\n"
+"  fractional (e.g. 16:9)\n"
+"  specific resolution (e.g. 853x480)"
+msgstr ""
+"En boy oranını şu ikisinden biri girin:\n"
+"   ondalık (ör. 2.35)\n"
+"   kesirlik (ör. 16:9)\n"
+"   belirli çözünürlük (ör. 853x480)"
+
+msgid "Enter number of frames to shift by"
+msgstr "Kaydırmak istediğiniz kare sayısını giriniz"
+
+msgid ""
+"Enter the name of the destination zip file to collect the fonts to. If a "
+"folder is entered, a default name will be used."
+msgstr ""
+"Fontların toplanacağı zip dosyasının adını giriniz. Eğer bir klasör "
+"girildiyse, varsayılan ad kullanılacaktır."
+
+msgid "Enter time in h:mm:ss.cs notation"
+msgstr "Zamanı gir h:mm:ss.cs olarak"
+
+msgid "Error"
+msgstr "Hata"
+
+msgid "Error Background"
+msgstr "Arkaplan Hatası"
+
+msgid "Error Importing Styles"
+msgstr "Stilleri Aktarmada Hata"
+
+msgid "Exit"
+msgstr "Çıkış"
+
+msgid "Exit the application"
+msgstr "Programdan çıkış yap"
+
+msgid "Expert"
+msgstr "Gelişmiş"
+
+msgid "Export"
+msgstr "Dışarı aktar"
+
+msgid "Export Subtitles"
+msgstr "Altyazıyı Dışarı Aktar"
+
+msgid "Export subtitles file"
+msgstr "Altyazı dosyalarını dışarı aktar"
+
+msgid "Export..."
+msgstr "Dışarı aktar"
+
+msgid "F&rame"
+msgstr "K&are"
+
+msgid "FPS"
+msgstr "FPS"
+
+msgid "FPS:"
+msgstr "FPS:"
+
+msgid "Failed to load"
+msgstr "Yükleme başarısız"
+
+msgid ""
+"Failed to load Automation script '%s':\n"
+"%s"
+msgstr ""
+"Otomasyon komut dosyası yüklenemedi '%s': \n"
+"%s"
+
+msgid "Fast jump step in frames"
+msgstr "Kareler arası hızlı sıçrama"
+
+msgid "Fields"
+msgstr "Alanlar"
+
+msgid "File backup saved as \"%s\"."
+msgstr "Dosya yedeği \"%s\" olarak kaydedildi."
+
+msgid "File name:"
+msgstr "Dosya adı:"
+
+msgid "File was not recognized as a script"
+msgstr "Dosya bir betik olarak tanınamadı"
+
+msgid "Filename"
+msgstr "Dosya adı"
+
+msgid "Files"
+msgstr "Dosyalar"
+
+msgid "Filters"
+msgstr "Filtreler"
+
+msgid "Find"
+msgstr "Bul"
+
+msgid "Find &Next"
+msgstr "Sonrakini &bul"
+
+msgid "Find Next"
+msgstr "Sonrakini Bul"
+
+msgid "Find and R&eplace..."
+msgstr "Bul ve &Değiştir"
+
+msgid "Find and Replace"
+msgstr "Bul ve Değiştir"
+
+msgid "Find and replace words in subtitles"
+msgstr "Altyazılarda kelimeleri bul ve değiştir"
+
+msgid "Find what:"
+msgstr "Aranacak:"
+
+msgid "Find/Replace"
+msgstr "Bul/Değiştir"
+
+msgid "Fix Styles"
+msgstr "Stilleri Onar"
+
+msgid ""
+"Fixes styles by replacing any style that isn't available on file with "
+"Default."
+msgstr "Dosyada stilleri onarmak için herhangi bir varsayılan stil bulunmuyor."
+
+msgid "Font"
+msgstr "Font"
+
+msgid "Font Face"
+msgstr "Font tipi"
+
+msgid "Font Face..."
+msgstr "Font Tipi"
+
+msgid "Font Size"
+msgstr "Font boyutu"
+
+msgid "Font face"
+msgstr "Font yüzü"
+
+msgid "Font size"
+msgstr "Font boyutu"
+
+msgid "Fonts Collector"
+msgstr "Font Kolektör"
+
+msgid "For&ward"
+msgstr "İ&leri"
+
+msgid "Force video to 16:9 aspect ratio"
+msgstr "Videoyu 16:9 ebatına uyarla"
+
+msgid "Force video to 2.35 aspect ratio"
+msgstr "Videoyu 2.35 ebatına uyarla"
+
+msgid "Force video to 4:3 aspect ratio"
+msgstr "Videoyu 4:3 ebatına uyarla"
+
+msgid "Force video to a custom aspect ratio"
+msgstr "Videoyu özel ebata uyarla"
+
+msgid "Forums"
+msgstr "Forumlar"
+
+msgid "Frame rate (fps):"
+msgstr "Kare hızı (fps):"
+
+msgid "Frame: "
+msgstr "Kare: "
+
+msgid "Freehand"
+msgstr "Freehand"
+
+msgid "Freehand smooth"
+msgstr "Freehand yumuşat"
+
+msgid "From &video"
+msgstr "Video&dan"
+
+msgid "Full view"
+msgstr "Hepsini Göster"
+
+msgid "Fullscreen (4:3)"
+msgstr "Tam ekran (4:3)"
+
+msgid "GB2312"
+msgstr "GB2312"
+
+msgid "General"
+msgstr "Genel"
+
+msgid "Global autoload scripts"
+msgstr "Genel betik oto yükleme"
+
+msgid "Go to selection"
+msgstr "Seçime git"
+
+msgid "Greek"
+msgstr "Yunanca"
+
+msgid "Green:"
+msgstr "Yeşil:"
+
+msgid "Grid"
+msgstr "Izgara"
+
+msgid "Group"
+msgstr "Grup"
+
+msgid "Group all of the source text."
+msgstr "Tüm kaynak yazıyı gruplandır."
+
+msgid "HSL/L"
+msgstr "HSL/L"
+
+msgid "HSV/H"
+msgstr "HSV/H"
+
+msgid "Hangeul"
+msgstr "Korece"
+
+msgid "Hard Disk"
+msgstr "Hard Disk"
+
+msgid "Hebrew"
+msgstr "İbranice"
+
+msgid "Help topics"
+msgstr "Yardım başlıkları"
+
+msgid "Hide Tags"
+msgstr "Etiketleri gizle"
+
+msgid "High quality"
+msgstr "Yüksek kalite"
+
+msgid "Horizontal zoom"
+msgstr "Yatay yakınlaştırma"
+
+msgid "Hotkeys"
+msgstr "Kısayollar"
+
+msgid "Hue:"
+msgstr "Ton:"
+
+msgid "IRC Channel"
+msgstr "IRC Kanalı"
+
+msgid "Ignore"
+msgstr "Yoksay"
+
+msgid "Import Styles"
+msgstr "Stilleri İçeri Aktar"
+
+msgid "In Field"
+msgstr "Bölge"
+
+msgid "In frame background"
+msgstr "Karedeki satır arkaplanı"
+
+msgid "Include path"
+msgstr "Aktarma yolu"
+
+msgid "Input framerate: "
+msgstr "Kare hızı gir: "
+
+msgid "Insane quality"
+msgstr "Maksimum kalite"
+
+msgid "Insert"
+msgstr "Ekle"
+
+msgid "Insert (after)"
+msgstr "Ekle (sonra)"
+
+msgid "Insert Original"
+msgstr "Orjinali Yerleştir"
+
+msgid "Insert at video time (after)"
+msgstr "Video zamanı ekle (sonra)"
+
+msgid "Insert at video time (before)"
+msgstr "Video zamanı ekle (önce)"
+
+msgid "Insert original"
+msgstr "Orjinali yerleştir"
+
+msgid "Inserts a control point"
+msgstr "Kontrol noktası ekler"
+
+msgid "Interface"
+msgstr "Arayüz"
+
+msgid "Intersect &with selection"
+msgstr "Seçimden &kes"
+
+msgid "Invalid Aspect Ratio"
+msgstr "Geçersiz Ebat"
+
+msgid "Invalid characters"
+msgstr "Geçersiz karakterler"
+
+msgid "Invalid destination."
+msgstr "Geçersiz hedef."
+
+msgid "Invalid path for .zip file."
+msgstr ".zip dosyası için geçersiz yol."
+
+msgid "Invalid script"
+msgstr "Geçersiz betik"
+
+msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
+msgstr "Geçersiz değer! Ebat 0.5 ve 5.0 arasında olmalı."
+
+msgid "Johab"
+msgstr "Johab"
+
+msgid "Join (as Karaoke)"
+msgstr "Birleştir (karaoke gibi)"
+
+msgid "Join (keep first)"
+msgstr "Birleştir (öncekini sakla)"
+
+msgid "Join Lines"
+msgstr "Satırları Birleştir"
+
+msgid "Join selected lines in a single one, concatenating text together"
+msgstr "Seçili satırları tek hale getirir, metinleri birleştirir"
+
+msgid "Jump Video to &End"
+msgstr "Video sonuna &atla"
+
+msgid "Jump Video to &Start"
+msgstr "Video başlangıcına &atla"
+
+msgid "Jump Video to End"
+msgstr "Video sonuna atla"
+
+msgid "Jump Video to Start"
+msgstr "Video başlangıcına atla"
+
+msgid "Jump to"
+msgstr "Sıçra"
+
+msgid "Jump to frame or time"
+msgstr "Kare veya zamana sıçra"
+
+msgid "Kanji Timer"
+msgstr "Kanji Zamanlama"
+
+msgid "Kanji timing"
+msgstr "Kanji zamanlama"
+
+msgid "Karaoke tag"
+msgstr "Karaoke etiketi"
+
+msgid "Karaoke templates"
+msgstr "Karaoke Şablonları"
+
+msgid "Keep &First"
+msgstr "İlkini &Koru"
+
+msgid "Keep First"
+msgstr "İlkini Koru"
+
+msgid "Keyframe snapping"
+msgstr "Anahtar kare yaslama"
+
+msgid "Keys"
+msgstr "Tuşlar"
+
+msgid "L"
+msgstr "L"
+
+msgid "Language"
+msgstr "Dil"
+
+msgid "Layer"
+msgstr "Katman"
+
+msgid "Layer number"
+msgstr "Katman numarası"
+
+msgid "Lead in to be added, in milliseconds"
+msgstr "Eklenecek giriş, mikrosaniye"
+
+msgid "Lead out to be added, in milliseconds"
+msgstr "Eklenecek çıkış, mikrosaniye"
+
+msgid "Lead-in/Lead-out"
+msgstr "Giriş/Çıkış"
+
+msgid "Left"
+msgstr "Sol"
+
+msgid "Left Column"
+msgstr "Sol sütun"
+
+msgid "Left Margin"
+msgstr "Sol Marjin"
+
+msgid "Length:"
+msgstr "Süre:"
+
+msgid "Limit to"
+msgstr "Limit"
+
+msgid "Line"
+msgstr "Satır"
+
+msgid "Line Break"
+msgstr "Boş Satır"
+
+msgid "Line Number"
+msgstr "Satır Numarası"
+
+msgid "Line duration"
+msgstr "Satır süresi"
+
+msgid "Line over maximum length: %s"
+msgstr "Maksimum uzunluktaki satır: %s"
+
+msgid "Lines"
+msgstr "Satırlar"
+
+msgid "Link vertical zoom and volume sliders"
+msgstr "Dikey yakınlaştırma ve ses düzeyi kaydırıcılarına bağlantı"
+
+msgid "Load from history"
+msgstr "Geçmişten yükle"
+
+msgid "Lock scroll on cursor"
+msgstr "Kaydırmayı imleçe kilitle"
+
+msgid "Log"
+msgstr "Kayıt"
+
+msgid "Log window"
+msgstr "Kütük penceresi"
+
+msgid "Lowest"
+msgstr "En düşük"
+
+msgid "Lum.:"
+msgstr "Par.:"
+
+msgid "Mac"
+msgstr "Mac"
+
+msgid "Make Times Continuous"
+msgstr "Zamanı Devamlı Yap"
+
+msgid "Make adjacent subtitles continuous"
+msgstr "Bitişik altyazıları devamlı yap"
+
+msgid "Manual"
+msgstr "Manüel"
+
+msgid "Margin Left"
+msgstr "Sol Marjin"
+
+msgid "Margin Right"
+msgstr "Sağ Marjin"
+
+msgid "Margin Vertical"
+msgstr "Dikey Marjin"
+
+msgid "Margin offset"
+msgstr "Marjin konumu"
+
+msgid "Margins"
+msgstr "Marjinler"
+
+msgid "Match"
+msgstr "Eşleştir"
+
+msgid "Match c&ase"
+msgstr "Boyutu e&şleştir"
+
+msgid "Match dialogues/comments"
+msgstr "Yorumları/diyalogları eşleştir"
+
+msgid "Match video resolution on open"
+msgstr "Açılışta video çözünürlüğünü eşleştir"
+
+msgid "Max gap:"
+msgstr "Maks boşluk:"
+
+msgid "Max overlap:"
+msgstr "Maks örtüşme:"
+
+msgid "Maximum"
+msgstr "Maksimum"
+
+msgid ""
+"Maximum difference between start and end time for two subtitles to be made "
+"continuous, in milliseconds"
+msgstr ""
+"İki altyazıyı devamlı yapmak için maksimumu başlangıç ve bitiş zaman farkı, "
+"milisaniye"
+
+msgid ""
+"Maximum overlap between the end and start time for two subtitles to be made "
+"continuous, in milliseconds"
+msgstr ""
+"İki altyazıyı devamlı yapmak için maksimum başlangıç ve bitiş zaman "
+"örtüşmesi, milisaniye"
+
+msgid "Miscellaneous"
+msgstr "Diğer"
+
+msgid "Misspelled word:"
+msgstr "Yanlış girilen kelime:"
+
+msgid "Mode"
+msgstr "Mod"
+
+msgid "Move &Down"
+msgstr "Aşağı &taşı"
+
+msgid "Move &Up"
+msgstr "Yukarı &taşı"
+
+msgid "Move style down"
+msgstr "Stili aşağı taşı"
+
+msgid "Move style to bottom"
+msgstr "Stili en aşağı taşı"
+
+msgid "Move style to top"
+msgstr "Stili en yukarı taşı"
+
+msgid "Move style up"
+msgstr "Stili yukarı taşı"
+
+msgid "Multiple subtitle tracks found"
+msgstr "Birden fazla altyazı parçası bulundu"
+
+msgid "N/A"
+msgstr "Bilinmiyor"
+
+msgid "Name"
+msgstr "Adı"
+
+msgid "Never"
+msgstr "Asla"
+
+msgid "New"
+msgstr "Yeni"
+
+msgid "New &Window"
+msgstr "Yeni &Pencere"
+
+msgid "New Subtitles"
+msgstr "Yeni Altyazı"
+
+msgid "New Window"
+msgstr "Yeni Pencere"
+
+msgid "New catalog entry"
+msgstr "Yeni katalog girişi"
+
+msgid "New storage name:"
+msgstr "Yeni bellek adı:"
+
+msgid "New subtitles"
+msgstr "Yeni altyazı"
+
+msgid "Next Frame"
+msgstr "Sonraki Kare"
+
+msgid "Next Line"
+msgstr "Sonraki Satır"
+
+msgid "Next line"
+msgstr "Sonraki satır"
+
+msgid "No Automation macros loaded"
+msgstr "Otomasyon makrosu yüklenmedi"
+
+msgid "No correction suggestions"
+msgstr "Düzeltme önerisi bulunmuyor"
+
+msgid "No lines were added to selection"
+msgstr "Seçime hiçbir satır eklenmedi"
+
+msgid "No lines were removed from selection"
+msgstr "Hiçbir satır seçimden çıkarılmadı"
+
+msgid "No matches found."
+msgstr "Eşleşme bulunamadı."
+
+msgid "No scripts"
+msgstr "Betik yok"
+
+msgid "No spell checker suggestions"
+msgstr "Yazım denetimi önerisi yok"
+
+msgid "No thesaurus suggestions"
+msgstr "Eşanlamlı önerisi yok"
+
+msgid "None (NOT RECOMMENDED)"
+msgstr "Hiçbiri (ÖNERİLMEZ)"
+
+msgid "Normal"
+msgstr "Normal"
+
+msgid "Nothing to &redo"
+msgstr "İleri alınan öge &mevcut değil"
+
+msgid "Nothing to &undo"
+msgstr "Geri alınan öge &mevcut değil"
+
+msgid "Nothing to redo"
+msgstr "İleri alınan öge mevcut değil"
+
+msgid "Nothing to undo"
+msgstr "Geri alınan öge mevcut değil"
+
+msgid "OEM"
+msgstr "OEM"
+
+msgid "One match was replaced."
+msgid_plural "%d matches were replaced."
+msgstr[0] "Bir eşleştirme değiştirildi."
+msgstr[1] "%d eşleştirmesi değiştirildi."
+
+msgid "One of the lines in the file (%i) has negative duration. Aborting."
+msgstr "(%i) dosyasındaki satırlardan biri negarif süreye sahip. Durduruluyor."
+
+msgid "Open"
+msgstr "Aç"
+
+msgid "Open A&utosaved Subtitles..."
+msgstr "Otokayıt A&ltyazılarını Aç"
+
+msgid "Open Audio File"
+msgstr "Ses Dosyası Aç"
+
+msgid "Open Audio from &Video"
+msgstr "Videodan ses dosyası aç"
+
+msgid "Open Audio from Video"
+msgstr "Videodan ses dosyası aç"
+
+msgid "Open Autosaved Subtitles"
+msgstr "Otokayıt Altyazılarını Aç"
+
+msgid "Open Keyframes"
+msgstr "Anahtar Kareleri Aç"
+
+msgid "Open Keyframes..."
+msgstr "Anahtar Kareleri Aç"
+
+msgid "Open Subtitles"
+msgstr "Altyazıyı Aç"
+
+msgid "Open Subtitles from &Video"
+msgstr "Altyazıyı Videodan &Aç"
+
+msgid "Open Subtitles from Video"
+msgstr "Altyazıyı Videodan Aç"
+
+msgid "Open Subtitles with &Charset..."
+msgstr "Altyazıyı karakter &seti ile aç"
+
+msgid "Open Subtitles with Charset"
+msgstr ".Altyazıyı karakter setiyle aç"
+
+msgid "Open Timecodes File"
+msgstr "Zamankodları Dosyasını Aç"
+
+msgid "Open Timecodes File..."
+msgstr "Zamankodu Dosyası Aç"
+
+msgid "Open Video"
+msgstr "Video Aç"
+
+msgid "Open a VFR timecodes v1 or v2 file"
+msgstr "VFR zamankodu v1 veya v2 dosyası açar"
+
+msgid "Open a new application window"
+msgstr "Yeni bir program penceresi aç"
+
+msgid "Open automation manager"
+msgstr "Otomasyon yönetimini aç"
+
+msgid "Open autosave file"
+msgstr "Otokayıt dosyasını aç"
+
+msgid "Open fonts collector"
+msgstr "Font kolektörünü aç"
+
+msgid "Open script properties window"
+msgstr "Betik özellikleri penceresini aç"
+
+msgid "Open spell checker"
+msgstr "Yazı denetimini açar"
+
+msgid "Open styling assistant"
+msgstr "Stil asistanını aç"
+
+msgid "Open subtitles"
+msgstr "Altyazı aç"
+
+msgid "Open subtitles file"
+msgstr "Altyazı dosyası aç"
+
+msgid "Open the manual page for Visual Typesetting"
+msgstr "Görsel Yazımayarları için elkitabı sayfasını açın"
+
+msgid "Open translation assistant"
+msgstr "Çeviri asistanını aç"
+
+msgid "Open video file"
+msgstr "Video dosyası aç"
+
+msgid "Options"
+msgstr "Ayarlar"
+
+msgid "Original"
+msgstr "Orjinal"
+
+msgid "Original script:"
+msgstr "Orjinal betik:"
+
+msgid "Outline"
+msgstr "Dışhat"
+
+msgid "Outline Color"
+msgstr "Dışhat Rengi"
+
+msgid "Outline Color..."
+msgstr "Dışhat Rengi"
+
+msgid "Outline width, in pixels"
+msgstr "Dışhat uzunluğu, piksel"
+
+msgid "Outline:"
+msgstr "Dışhat:"
+
+msgid "Output: "
+msgstr "Çıktı: "
+
+msgid "Override &AR"
+msgstr "Geçersiz &kıl"
+
+msgid "Parameters"
+msgstr "Parametreler"
+
+msgid "Parsing Matroska"
+msgstr "Matroska Ayrıştırma"
+
+msgid "Paste Lines"
+msgstr "Satırları Yapıştır"
+
+msgid "Paste Lines &Over..."
+msgstr "Satırları Üzerine &Yapıştır"
+
+msgid "Paste Lines Over"
+msgstr "Satırları Üzerine Yapıştır"
+
+msgid "Paste subtitles"
+msgstr "Altyazıları Yapıştır"
+
+msgid "Paste subtitles over others"
+msgstr "Altyazıları diğerlerinin üzerine yapıştır"
+
+msgid "Path"
+msgstr "Ana yol"
+
+msgid "Play"
+msgstr "Oynat"
+
+msgid "Play &Audio"
+msgstr "Sesi &Oynat"
+
+msgid "Play &Video"
+msgstr "Videoyu &Oynat"
+
+msgid "Play 500 ms after selection"
+msgstr "Seçimden sonra 500ms oynat"
+
+msgid "Play 500 ms before selection"
+msgstr "Seçimden önce 500ms oynat"
+
+msgid "Play audio"
+msgstr "Sesi oynat"
+
+msgid "Play current line"
+msgstr "Geçerli satırı oynat"
+
+msgid "Play cursor"
+msgstr "İmleçi oynat"
+
+msgid "Play from selection start to end of file"
+msgstr "Dosyanın başından sonuna kadar oynat"
+
+msgid "Play video"
+msgstr "Videoyu oynat"
+
+msgid "Play video starting on this position"
+msgstr "Bu pozisyonda video başlangıcını oynat"
+
+msgid "Please choose the appropriate FPS for the subtitles:"
+msgstr "Lütfen altyazılar için uygun FPS'yi seçiniz:"
+
+msgid "Please choose the folder:"
+msgstr "Lütfen bir klasör seçiniz:"
+
+msgid "Please select the fields that you want to paste over:"
+msgstr "Lütfen üzerine yapıştırmak istediğiniz alanları seçiniz:"
+
+msgid "Preview"
+msgstr "Önizleme"
+
+msgid "Preview changes"
+msgstr "Değişiklikleri önizle"
+
+msgid "Preview of current style"
+msgstr "Stilin önizlemesi"
+
+msgid "Previous Line"
+msgstr "Önceki Satır"
+
+msgid "Previous line"
+msgstr "Önceki satır"
+
+msgid "Previous line or syllable"
+msgstr "Önceki satır veya hece"
+
+msgid "Primary"
+msgstr "Birincil"
+
+msgid "Primary Color"
+msgstr "Birincil Renk"
+
+msgid "Primary Color..."
+msgstr "Birincil Renk"
+
+msgid "Properties"
+msgstr "Özellikler"
+
+msgid "Quality"
+msgstr "Kalite"
+
+msgid "RAM"
+msgstr "RAM"
+
+msgid "RGB/B"
+msgstr "RGB/B"
+
+msgid "RGB/G"
+msgstr "RGB/G"
+
+msgid "RGB/R"
+msgstr "RGB/R"
+
+msgid "Re&load"
+msgstr "Tekrar &Yükle"
+
+msgid "Re&scan Autoload Dir"
+msgstr "Otomatik yüklemeyi tekrar &tarayın"
+
+msgid "Reading subtitles from Matroska file."
+msgstr "Matroska dosyasından altyazıları oku."
+
+msgid "Recent"
+msgstr "Geçerli"
+
+msgid "Recom&bine Lines"
+msgstr "Satırları Tekrar Kom&bine Et"
+
+msgid "Recombine Lines"
+msgstr "Satırları Tekrar Kombine Et"
+
+msgid "Red:"
+msgstr "Kırmızı:"
+
+msgid "Redo %s"
+msgstr "%s eylemini ileri al"
+
+msgid "Regular quality"
+msgstr "Normal kalite"
+
+msgid "Reloaded all Automation scripts"
+msgstr "Tüm otomasyon betiklerini"
+
+msgid "Reloaded autoload Automation scripts"
+msgstr "Otomasyon betikleri otoyüklemeyi tekrar yükle"
+
+msgid "Remove"
+msgstr "Kaldır"
+
+msgid "Removes a control point"
+msgstr "Kontrol noktasını kaldırır"
+
+msgid "Replace"
+msgstr "Değiştir"
+
+msgid "Replace &all"
+msgstr "Tümünü &Değiştir"
+
+msgid "Replace &next"
+msgstr "Sonrakini &değiştir"
+
+msgid "Replace with:"
+msgstr "İle değiştir:"
+
+msgid "Resample Resolution"
+msgstr "Çözünürlüğü Düzenle"
+
+msgid "Resample script"
+msgstr "Betiği yeniden örnekle"
+
+msgid "Resolution"
+msgstr "Çözünürlük"
+
+msgid "Resolution mismatch"
+msgstr "Çözünürlük uyuşmuyor"
+
+msgid "Resolution:"
+msgstr "Çözünürlük:"
+
+msgid "Restore defaults?"
+msgstr "Varsayılana geri dön?"
+
+msgid "Right"
+msgstr "Sağ"
+
+msgid "Right Margin"
+msgstr "Sağ Marjin"
+
+msgid "Rotate XY"
+msgstr "Çevir XY"
+
+msgid "Rotate Z"
+msgstr "Çevir Z"
+
+msgid "Rotate subtitles on their X and Y axes"
+msgstr "Altyazıları X ve Y akslarında çevir"
+
+msgid "Rotate subtitles on their Z axis"
+msgstr "Altyazıları Z aksında çevir"
+
+msgid "Rotation:"
+msgstr "Rotasyon:"
+
+msgid "Russian"
+msgstr "Rusça"
+
+msgid "S&elect Lines..."
+msgstr "S&atırları Seç"
+
+msgid "S&hift Times..."
+msgstr "Z&amanları Kaydır"
+
+msgid "S&tart!"
+msgstr "B&aşlat!"
+
+msgid "S&ubtract from selection"
+msgstr "S&eçimden çıkar"
+
+msgid "Sat.:"
+msgstr "Doy.:"
+
+msgid "Save Keyframes"
+msgstr "Anahtar Kareleri Kaydet"
+
+msgid "Save Keyframes..."
+msgstr "Anahtar Kareleri Kaydet"
+
+msgid "Save PNG snapshot"
+msgstr "Ekranı PNG olarak kaydet"
+
+msgid "Save PNG snapshot (no subtitles)"
+msgstr "Ekranı PNG olarak kaydet (altyazı yok)"
+
+msgid "Save Subtitles"
+msgstr "Altyazıyı Kaydet"
+
+msgid "Save Subtitles &as..."
+msgstr "Altyazıyı farklı &kaydet"
+
+msgid "Save Subtitles as"
+msgstr "Altyazıyı Farklı Kaydet"
+
+msgid "Save Timecodes File"
+msgstr "Zamankodları dosyasını kaydet"
+
+msgid "Save Timecodes File..."
+msgstr "Zamankodu Dosyası Kaydet"
+
+msgid "Save a VFR timecodes v2 file"
+msgstr "VFR zamankodu v2 dosyası kaydet"
+
+msgid "Save audio clip"
+msgstr "Ses klibi kaydet"
+
+msgid "Save subtitles file"
+msgstr "Altyazı dosyasını kaydet"
+
+msgid "Save subtitles with another name"
+msgstr "Altyazıyı başka isimle kaydet"
+
+msgid "Scale"
+msgstr "Boyutlandır"
+
+msgid "Scale Border and Shadow"
+msgstr "Kenar ve Gölge Boyutlandır"
+
+msgid "Scale X%:"
+msgstr "Boyutlandır X%:"
+
+msgid "Scale X, in percentage"
+msgstr "Boyutlandır X, yüzdelik"
+
+msgid "Scale Y%:"
+msgstr "Boyutlandır Y%:"
+
+msgid "Scale Y, in percentage"
+msgstr "Boyutlandır Y, yüzdelik"
+
+msgid ""
+"Scale border and shadow together with script/render resolution. If this is "
+"unchecked, relative border and shadow size will depend on renderer."
+msgstr ""
+"Betik çözünürlüğü ile beraber dışhat ve gölgeyi boyutlandır. Eğer seçili "
+"değilse, ilgili dışhat ve gölge boyutlandırılacaktır."
+
+msgid "Scale subtitles on X and Y axes"
+msgstr "Altyazıları X ve Y akslarında boyutlandır"
+
+msgid "Screenshot save path"
+msgstr "Ekran görüntüsü yolu"
+
+msgid "Script"
+msgstr "Betik"
+
+msgid "Script Properties"
+msgstr "Betik Özellikleri"
+
+msgid "Script Resolution"
+msgstr "Betik Çözünürlüğü"
+
+msgid "Scripting engines installed:"
+msgstr "Yüklenen betik motorları:"
+
+msgid "Scroll left"
+msgstr "Sola Kaydır"
+
+msgid "Scroll right"
+msgstr "Sağa Kaydır"
+
+msgid "Secondary"
+msgstr "İkincil"
+
+msgid "Secondary Color"
+msgstr "İkincil Renk"
+
+msgid "Secondary Color..."
+msgstr "İkincil Renk"
+
+msgid "Seek video"
+msgstr "Videoyu ara"
+
+msgid "Select"
+msgstr "Seçim"
+
+msgid "Select &All"
+msgstr "Tümünü &Seç"
+
+msgid "Select &None"
+msgstr "Hiçbirini &seçme"
+
+msgid "Select Aegisub interface language"
+msgstr "Aegisub arabirim dilini seçin"
+
+msgid "Select All"
+msgstr "Tümünü seç"
+
+msgid "Select Fields to Paste Over"
+msgstr "Üzerine Yapıştırılacak Alanları Seç"
+
+msgid "Select Lines"
+msgstr "Satırları Seç"
+
+msgid "Select Visible"
+msgstr "Görünür Seç"
+
+msgid "Select a font face and size"
+msgstr "Bir font tipi ve boyutu seç"
+
+msgid "Select all styles"
+msgstr "Tüm stilleri seç"
+
+msgid "Select archive file name"
+msgstr "Arşiv dosya adı seç"
+
+msgid "Select folder to save fonts on"
+msgstr "Fontların kaydedileceği klasörü seçin"
+
+msgid "Select source and destination styles first."
+msgstr "Önce kaynak ve hedef stilleri seçin."
+
+msgid "Select style"
+msgstr "Stil seç"
+
+msgid "Select styles to process. Unchecked ones will be ignored."
+msgstr "İşlenecek stilleri seçiniz. Seçili olmayanlar yoksayılacak."
+
+msgid "Select the path to save the file to:"
+msgstr "Dosyayı kaydedecek yolu seç:"
+
+msgid "Select the path to save the files to:"
+msgstr "Dosyaları kaydedecek yolu seç:"
+
+msgid "Selected &rows"
+msgstr "Seçili &satırlar"
+
+msgid "Selected comment background"
+msgstr "Seçili yorum arkaplanı"
+
+msgid "Selection"
+msgstr "Seçim"
+
+msgid "Selection &onward"
+msgstr "İleri &seçim"
+
+msgid "Selection background"
+msgstr "Seçili arkaplan"
+
+msgid "Selection foreground"
+msgstr "Seçili önplan"
+
+msgid "Selection was set to no lines"
+msgstr "Seçim satıra ayarlandı"
+
+msgid "Set &Zoom"
+msgstr "Yakınlaştırmayı &Ayarla"
+
+msgid "Set end of selected subtitles to current video frame"
+msgstr "Seçili altyazıların sonunu geçerli video karesine ayarlar"
+
+msgid "Set se&lection"
+msgstr "Seçimi be&lirle"
+
+msgid ""
+"Set start and end of subtitles to the keyframes around current video frame"
+msgstr ""
+"Altyazının başlangıcı ve sonunu geçerli video karesinin civarındaki anahtar "
+"kareye ayarla"
+
+msgid "Set start of selected subtitles to current video frame"
+msgstr "Seçili altyazıların başlangıcını geçerli video karesine ayarlar"
+
+msgid "Set style"
+msgstr "Stil belirle"
+
+msgid "Set zoom to 100%"
+msgstr "Yakınlaştırmayı 100%'ye ayarla"
+
+msgid "Set zoom to 200%"
+msgstr "Yakınlaştırmayı 200%'ye ayarla"
+
+msgid "Set zoom to 50%"
+msgstr "Yakınlaştırmayı 50%'ye ayarla"
+
+msgid ""
+"Sets how to set the adjoining of lines. If set totally to left, it will "
+"extend or shrink start time of the second line; if totally to right, it will "
+"extend or shrink the end time of the first line."
+msgstr ""
+"Satırların nasıl birleştirileceğini ayarlayın. Eğer tamamen sola "
+"ayarlarsanır, ikinci satırın başlangıç zamanını genişletecek; eğer tamamen "
+"sağa ayarlarsanız, birinci satırın bitiş zamanını genişletecek."
+
+msgid "Shadow"
+msgstr "Gölge"
+
+msgid "Shadow Color"
+msgstr "Gölge Rengi"
+
+msgid "Shadow Color..."
+msgstr "Gölge rengi"
+
+msgid "Shadow distance, in pixels"
+msgstr "Gölge uzaklığı, piksel"
+
+msgid "Shadow:"
+msgstr "Gölge:"
+
+msgid "Shift Times"
+msgstr "Zamanları Kaydır"
+
+msgid "Shift by"
+msgstr "Kaydır"
+
+msgid "Shift by frames"
+msgstr "Kareyle kaydır"
+
+msgid "Shift by time"
+msgstr "Zamanla kaydır"
+
+msgid "Shift subtitles by time or frames"
+msgstr "Altyazıları zamana veya kareye göre kaydır"
+
+msgid "Shift to &Current Frame"
+msgstr "Geçerli &Kareye Kaydır"
+
+msgid "Shift to Current Frame"
+msgstr "Geçerli Kareye Kaydır"
+
+msgid "Shift_JIS"
+msgstr "Shift_JIS"
+
+msgid ""
+"Shifts subs backward, making them appear earlier. Use if they are appearing "
+"too late."
+msgstr ""
+"Altyazıları geri kaydırır, önceden görünmelerini sağlar. Geç çıkıyorlarsa "
+"kullanın."
+
+msgid ""
+"Shifts subs forward, making them appear later. Use if they are appearing too "
+"soon."
+msgstr ""
+"Altyazıları ileri kaydırır, sonradan görünmelerini sağlar. Erken "
+"çıkıyorlarsa kullanın."
+
+msgid "Shortcut Keys"
+msgstr "Kısayollar"
+
+msgid "Show &Info"
+msgstr "Bilgiyi &Göster"
+
+msgid "Show &Overscan Mask"
+msgstr "Üsttarama &Maskesini Göster"
+
+msgid "Show &Video Details"
+msgstr "Video &Detaylarını Göster"
+
+msgid "Show Original"
+msgstr "Orijinalini Göster"
+
+msgid "Show Overscan Mask"
+msgstr "Üsttarama Maskesini Göster"
+
+msgid "Show Video Details"
+msgstr "Video Detaylarını Göster"
+
+msgid ""
+"Show a mask over the video, indicating areas that might get cropped off by "
+"overscan on televisions"
+msgstr ""
+"Videonun üstünde bir maske göster, televizyonlarda görünemeyebilecek "
+"alanları tanımlar"
+
+msgid "Show all"
+msgstr "Hepsini göster"
+
+msgid "Show inactive lines"
+msgstr "Aktif olmayan satırları göster"
+
+msgid "Show keyframes in slider"
+msgstr "Anahtar kareyi kaydırıcıda göster"
+
+msgid "Show previous"
+msgstr "Öncekini göster"
+
+msgid "Show video details"
+msgstr "Video detaylarını göster"
+
+msgid "Simplify Tags"
+msgstr "Basitleştirilmiş etiketler"
+
+msgid "Size"
+msgstr "Boyut"
+
+msgid "Skip &Dest Line"
+msgstr "Hedef &Satırı Geç"
+
+msgid "Skip &Source Line"
+msgstr "Kaynak &Satırı Atla"
+
+msgid "Slashes and Parentheses"
+msgstr "Eğik Çizgi ve Parentezler"
+
+msgid "Snap &End to Video"
+msgstr "Sonunu &videoya yasla"
+
+msgid "Snap &Start to Video"
+msgstr "Başlangıcını &videoya yasla"
+
+msgid "Snap End to Video"
+msgstr "Video Sonuna Yasla"
+
+msgid "Snap Start to Video"
+msgstr "Video Başlangıcına Yasla"
+
+msgid "Snap to S&cene"
+msgstr "Ekrana Y&asla"
+
+msgid "Snap to Scene"
+msgstr "Ekrana Yasla"
+
+msgid "Sort All Lines"
+msgstr "Tüm Satırları Sırala"
+
+msgid "Sort Selected Lines"
+msgstr "Seçilen Satırları Sırala"
+
+msgid "Sort all subtitles by their start times"
+msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+
+msgid "Sort styles"
+msgstr "Stilleri sırala"
+
+msgid "Sort styles alphabetically"
+msgstr "Stilleri alfabetik sırala"
+
+msgid "Source: "
+msgstr "Kaynak: "
+
+msgid "Spacing:"
+msgstr "Boşluk:"
+
+msgid "Spectrum"
+msgstr "Spektrum"
+
+msgid "Spectrum analyzer mode"
+msgstr "Spektrum analiz modu"
+
+msgid "Spectrum mode:"
+msgstr "Spektrum modu:"
+
+msgid "Spell &Checker..."
+msgstr "Yazı &Denetimi"
+
+msgid "Spell Checker"
+msgstr "Yazı Denetimi"
+
+msgid "Spell checker language"
+msgstr "Yazım denetimi dili"
+
+msgid "Spell checker suggestions for \"%s\""
+msgstr "\"%s\" için yazı denetim önerileri"
+
+msgid "Spell checking complete."
+msgstr "Yazı denetimi tamamlandı."
+
+msgid "Split Lines (by karaoke)"
+msgstr "Satırları Böl (karaoke olarak)"
+
+msgid "Split at cursor (estimate times)"
+msgstr "İmleçte böl (zamanları biçimlendir)"
+
+msgid "Split at cursor (preserve times)"
+msgstr "İmleçte böl (zamanları koru)"
+
+msgid "Split lines after current frame"
+msgstr "Geçerli kareden sonra satırları böl"
+
+msgid "Split lines before current frame"
+msgstr "Geçerli kareden önce satırları böl"
+
+msgid "St&yling Assistant..."
+msgstr "St&il Asistanı"
+
+msgid "Standard"
+msgstr "Standart"
+
+msgid "Standard background"
+msgstr "Standart arkaplan"
+
+msgid "Standard foreground"
+msgstr "Standart önplan"
+
+msgid "Standard mode, double click sets position"
+msgstr "Standart mod, pozisyonu ayarlamak için çift tıkla"
+
+msgid "Start"
+msgstr "Başlangıç"
+
+msgid "Start Time"
+msgstr "Başlangıç Zamanı"
+
+msgid "Start a&nd End times"
+msgstr "Başlangıç v&e Bitiş süresinde"
+
+msgid "Start time"
+msgstr "Başlangıç zamanı"
+
+msgid "Starts after thres.:"
+msgstr "Sınırdan sonraki başlangıç:"
+
+msgid "Starts before thres.:"
+msgstr "Sınırdan önceki başlangıç:"
+
+msgid "Stop"
+msgstr "Dur"
+
+msgid "Stop video"
+msgstr "Videoyu durdur"
+
+msgid "Stop video playback"
+msgstr "Video oynatmayı durdur"
+
+msgid "Storage"
+msgstr "Bellek"
+
+msgid "Style"
+msgstr "Stil"
+
+msgid "Style Editor"
+msgstr "Stil Editörü"
+
+msgid "Style Name"
+msgstr "Stil adı"
+
+msgid "Style for this line"
+msgstr "Bu satır için stil"
+
+msgid "Style name"
+msgstr "Stil adı"
+
+msgid "Style name collision"
+msgstr "Stil adı çakışması"
+
+msgid "Styles"
+msgstr "Stiller"
+
+msgid "Styles Manager"
+msgstr "Stil Yönetimi"
+
+msgid "Styles available"
+msgstr "Stiller var"
+
+msgid "Styling Assistant"
+msgstr "Stil Asistanı"
+
+msgid "Subs Only View"
+msgstr "Sadece Altyazıları Göster"
+
+msgid "Subtitle-local scripts"
+msgstr "Yerel-altyazı betikleri"
+
+msgid "Subtitles provider"
+msgstr "Altyazı sağlayıcısı"
+
+msgid "Subtitles provider set to %s"
+msgstr "Altyazı sağlayıcısını %s olarak ayarla"
+
+msgid "Swap Lines"
+msgstr "Satırları Değiş"
+
+msgid "Symbol"
+msgstr "Sembol"
+
+msgid "Symlinking fonts to folder...\n"
+msgstr "Fontlar klasöre bağlanıyor...\n"
+
+msgid "Synch point:"
+msgstr "Senkron noktası:"
+
+msgid "Syntax Highlighting"
+msgstr "Sözdizim vurgulama"
+
+msgid "T&ime"
+msgstr "Z&aman"
+
+msgid "Tags"
+msgstr "Etiketler"
+
+msgid "Text"
+msgstr "Metin"
+
+msgid "Text encoding"
+msgstr "Metin kodlama"
+
+msgid "Text encoding:"
+msgstr "Metin kodlama:"
+
+msgid "Text import options"
+msgstr "İçeri metin aktarma ayarları"
+
+msgid "Text to be used for the preview"
+msgstr "Önizleme için kullanılacak yazı"
+
+msgid "Thai"
+msgstr "Taylandca"
+
+msgid "The file was not recognised as an Automation script: %s"
+msgstr "Dosya otomasyon betiği olarak algılanamadı %s"
+
+msgid ""
+"The resolution of the loaded video and the resolution specified for the "
+"subtitles don't match.\n"
+"\n"
+"Video resolution:\t%d x %d\n"
+"Script resolution:\t%d x %d\n"
+"\n"
+"Change subtitles resolution to match video?"
+msgstr ""
+"Yüklenen videonun ve altyazıların spesifik çözünürlüğü uyuşmuyor.\n"
+"\n"
+"Video çözünürlüğü:\t%d x %d\n"
+"Betik çözünürlüğü:\t%d x %d\n"
+"\n"
+"Altyazının çözünürlüğünü video ile eşleştir?"
+
+msgid "The selected file has no available styles."
+msgstr "Seçili dosya hiçbir stil içermiyor."
+
+msgid "The source and destination styles must be different."
+msgstr "Kaynak ve hedef stili birbirinden farklı olmalı."
+
+msgid ""
+"The specified catalog name contains one or more illegal characters. They "
+"have been replaced with underscores instead.\n"
+"The catalog has been renamed to \"%s\"."
+msgstr ""
+"Belirtilen katalog adı bir veya daha fazla geçersiz karakter içeriyor. "
+"Bulunanlar altçizgi ile değiştirildi.\n"
+"Kataloğun yeni adı \"%s\"."
+
+msgid ""
+"There is already a style with the name \"%s\" in the current script. "
+"Overwrite?"
+msgstr ""
+"Geçerli komut dosyasında zaten \"%s\" adında bir stil var. Üzerine yazılsın "
+"mı?"
+
+msgid ""
+"There is already a style with the name \"%s\" in the current storage. "
+"Overwrite?"
+msgstr ""
+"Mevcut depolamada zaten \"%s\" adında bir stil var. Üzerine yazılsın mı?"
+
+msgid "Thesaurus language"
+msgstr "Eşanlamlılar dili"
+
+msgid "Thesaurus suggestions for \"%s\""
+msgstr "\"%s\" için eşanlamlı önerileri"
+
+msgid "Thread priority"
+msgstr "Konu önceliği"
+
+msgid ""
+"Threshold for 'after end' distance, that is, how many milliseconds a "
+"subtitle must end after a keyframe to snap to it"
+msgstr ""
+"'bitiştensonraki' uzaklık için sınır, kaç adet karenin bir altyazıda bir "
+"anahtar kareye yaslanacağından sonra bitmeli"
+
+msgid ""
+"Threshold for 'after start' distance, that is, how many milliseconds a "
+"subtitle must start after a keyframe to snap to it"
+msgstr ""
+"'başlangıçtan önceki' uzaklık için sınır, kaç adet karenin bir altyazıda bir "
+"anahtar kareye yaslanacağından sonra başlamalı"
+
+msgid ""
+"Threshold for 'before end' distance, that is, how many milliseconds a "
+"subtitle must end before a keyframe to snap to it"
+msgstr ""
+"'bitişten önceki' uzaklık için sınır, kaç adet karenin bir altyazıda bir "
+"anahtar kareye yaslanacağından önce bitmeli"
+
+msgid ""
+"Threshold for 'before start' distance, that is, how many milliseconds a "
+"subtitle must start before a keyframe to snap to it"
+msgstr ""
+"'başlangıçtan önceki' uzaklık için sınır, kaç adet karenin bir altyazıda bir "
+"anahtar kareye yaslanacağından önce başlamalı"
+
+msgid "Time by frame number"
+msgstr "Kare numarası olarak zaman"
+
+msgid "Time by h:mm:ss.cs"
+msgstr "h:mm:ss.cs olarak zaman"
+
+msgid "Time of this frame relative to start and end of current subs"
+msgstr "Bu karenin zamanı geçerli altyazının başlangıç ve bitişine bağlıdır"
+
+msgid "Time: "
+msgstr "Zaman: "
+
+msgid "Times"
+msgstr "Süre"
+
+msgid "Timing Post-Processor"
+msgstr "Destek-İşlemci Zamanlaması"
+
+msgid "Timing:"
+msgstr "Zamanla:"
+
+msgid "Title:"
+msgstr "Başlık:"
+
+msgid "Toggle autoscroll of video"
+msgstr "Videonun otokaydırmasını değiştir"
+
+msgid "Toggle between \\move and \\pos"
+msgstr "\\move ve \\pos arasında geç"
+
+msgid ""
+"Toggle focus between the video slider and the previous thing to have focus"
+msgstr "."
+
+msgid "Toggle karaoke mode"
+msgstr "Karaoke moda geç"
+
+msgid ""
+"Total scripts loaded: %d\n"
+"Global scripts loaded: %d\n"
+"Local scripts loaded: %d\n"
+msgstr ""
+"Toplam yüklenen betik: %d\n"
+"Genel yüklenen betik: %d\n"
+"Lokal yüklenen betik: %d\n"
+
+msgid "Trace level"
+msgstr "İzleme seviyesi"
+
+msgid "Transform Framerate"
+msgstr "Karehızını değiştir"
+
+msgid "Translated into LANGUAGE by PERSON\n"
+msgstr "Kerim Demirkaynak tarafından Türkçeye çevrilmiştir\n"
+
+msgid "Translation"
+msgstr "Çeviri"
+
+msgid "Translation Assistant"
+msgstr "Çeviri Asistanı"
+
+msgid "Translation:"
+msgstr "Çeviri:"
+
+msgid "Turkish"
+msgstr "Türkçe"
+
+msgid "Undo %s"
+msgstr "Geri al ve %s"
+
+msgid "Undo Levels"
+msgstr "Geri alma sayısı"
+
+msgid "Unload timecodes"
+msgstr "Zamankodlarını boşalt"
+
+msgid "Unsaved changes"
+msgstr "Kayıt edilmeyen değişiklikler"
+
+msgid "Update Checker:"
+msgstr "Güncelleme Denetleyicisi:"
+
+msgid "Update details:"
+msgstr "Güncelleme detayları:"
+
+msgid "Update script?"
+msgstr "Betiği güncelle?"
+
+msgid "Updated by:"
+msgstr "Güncelleyen:"
+
+msgid "Updating font cache\n"
+msgstr "Font önbelleğini güncelle/n\n"
+
+msgid "Updating font index"
+msgstr "Font dizinini güncelle"
+
+msgid "Use Dummy Video"
+msgstr "Sahte Video Kullan"
+
+msgid "Use video's original aspect ratio"
+msgstr "Videoyu orjinal ebatta kullan"
+
+msgid "V&ariable"
+msgstr "D&eğer"
+
+msgid "Value:"
+msgstr "Değer:"
+
+msgid "Vector Clip"
+msgstr "Vektör Klip"
+
+msgid "Version Checker"
+msgstr "Versiyon Kontrol"
+
+msgid "Vert"
+msgstr "Dik"
+
+msgid "Vertical Margin"
+msgstr "Dikey Marjin"
+
+msgid "Vertical zoom"
+msgstr "Dikey yakınlaştırma"
+
+msgid "Video"
+msgstr "Video"
+
+msgid "Video Details"
+msgstr "Video Detayları"
+
+msgid "Video Formats"
+msgstr "Video Formatları"
+
+msgid "Video position"
+msgstr "Video pozisyonu"
+
+msgid "Video provider"
+msgstr "Video sağlayıcısı"
+
+msgid "Video resolution:"
+msgstr "Video çözünürlüğü:"
+
+msgid "Video+Subs View"
+msgstr "Video+Altyazı Göster"
+
+msgid "Video: %s"
+msgstr "Video: %s"
+
+msgid "Vie&w"
+msgstr "Görünü&m"
+
+msgid "Vietnamese"
+msgstr "Vietnamca"
+
+msgid "Visit Aegisub's bug tracker to report bugs and request new features"
+msgstr ""
+"Aegisub'ın hata izlemesine hataları rapor edin ve yeni özellik isteklerinizi "
+"bildirin"
+
+msgid "Visit Aegisub's forums"
+msgstr "Aegisub forumlarını ziyaret edin"
+
+msgid "Visit Aegisub's official IRC channel"
+msgstr "Aegisub'ın IRC kanalını ziyaret edin"
+
+msgid "Visit Aegisub's official website"
+msgstr "Aegisub'ın web sayfasını ziyaret edin"
+
+msgid "Visual Typesetting"
+msgstr "Görsel Yazımayarları"
+
+msgid "Waveform"
+msgstr "Dalga formu"
+
+msgid "Website"
+msgstr "Website"
+
+msgid ""
+"When selected, display an opaque box behind the subtitles instead of an "
+"outline around the text"
+msgstr ""
+"Seçilirse, yaznın etrafındaki dışhattın arkasında opak kutu gözükecektir"
+
+msgid ""
+"When the destination textbox has focus, use the following keys:\n"
+"\n"
+"Right Arrow: Increase dest. selection length\n"
+"Left Arrow: Decrease dest. selection length\n"
+"Up Arrow: Increase source selection length\n"
+"Down Arrow: Decrease source selection length\n"
+"Enter: Link, accept line when done\n"
+"Backspace: Unlink last"
+msgstr ""
+"Hedef kutusuna odaklandığında, aşağıdaki tuşları kullanın:\n"
+"\n"
+"Sağ Ok: Seçili hedef uzunluğu arttırır\n"
+"Sol Ok: Seçili hedef uzunluğu azaltır\n"
+"Yukarı Ok: Seçili kaynak uzunluğu arttırır\n"
+"Down Arrow: Decrease source selection length\n"
+"Enter: Link, accept line when done\n"
+"Backspace: Unlink last"
+
+msgid "Widescreen (16:9)"
+msgstr "Geniş ekran (16:9)"
+
+msgid "Wrap Style: "
+msgstr "Bölme Stili: "
+
+msgid "Zoom In"
+msgstr "Yaklaş"
+
+msgid "Zoom Out"
+msgstr "Uzaklaş"
+
+msgid "Zoom video in"
+msgstr "Videoya yaklaş"
+
+msgid "Zoom video out"
+msgstr "Videodan uzaklaş"
+
+msgid "actor change"
+msgstr "aktör değiştir"
+
+msgid "adjoin"
+msgstr "bitiştir"
+
+msgid "all"
+msgstr "hepsi"
+
+msgid "backward"
+msgstr "geri"
+
+msgid "change script resolution"
+msgstr "betik çözünürlüğünü değiştir"
+
+msgid "combining"
+msgstr "kombine etme"
+
+msgid "comment change"
+msgstr "yorum değiştir"
+
+msgid "cut lines"
+msgstr "satırları kes"
+
+msgid "delete lines"
+msgstr "satırları sil"
+
+msgid "duplicate lines"
+msgstr "satırları çoğalt"
+
+msgid "e"
+msgstr "e"
+
+msgid "effect change"
+msgstr "efekt değiştir"
+
+msgid "forward"
+msgstr "ileri"
+
+msgid "from %d onward"
+msgstr "%d'dan beri"
+
+msgid "insert original"
+msgstr "orjinali yerleştir"
+
+msgid "join as karaoke"
+msgstr "birleştir (karaoke gibi)"
+
+msgid "join lines"
+msgstr "batırları birleştir"
+
+msgid "kanji timing"
+msgstr "kanji zamanlama"
+
+msgid "karaoke split"
+msgstr "karaoke bölme"
+
+msgid "karaoke timing"
+msgstr "karaoke zamanlaması"
+
+msgid "layer change"
+msgstr "katman değiştir"
+
+msgid "line insertion"
+msgstr "satır ekleme"
+
+msgid "modify times"
+msgstr "zamanları düzenle"
+
+msgid "paste"
+msgstr "yapıştır"
+
+msgid "positioning"
+msgstr "yerleştirme"
+
+msgid "property changes"
+msgstr "özellik değişir"
+
+msgid "replace"
+msgstr "değiştir"
+
+msgid "resolution resampling"
+msgstr "çözünürlük düzenleniyor"
+
+msgid "s"
+msgstr "s"
+
+msgid "s+e"
+msgstr "s+e"
+
+msgid "sel "
+msgstr "seç "
+
+msgid "set font"
+msgstr "fontu ayarla"
+
+msgid "shift to frame"
+msgstr "kareye kaydır"
+
+msgid "shifting"
+msgstr "kaydırma"
+
+msgid "snap to scene"
+msgstr "sahneye yasla"
+
+msgid "sort"
+msgstr "sırala"
+
+msgid "spell check replace"
+msgstr "yazı denetimi değiştir"
+
+msgid "split"
+msgstr "böl"
+
+msgid "splitting"
+msgstr "bölme"
+
+msgid "style change"
+msgstr "stil değiştir"
+
+msgid "style copy"
+msgstr "stil kopyala"
+
+msgid "style delete"
+msgstr "stil sil"
+
+msgid "style import"
+msgstr "stili içeri aktar"
+
+msgid "style move"
+msgstr "stil taşı"
+
+msgid "style paste"
+msgstr "stil yapıştır"
+
+msgid "styling assistant"
+msgstr "stil asistanı"
+
+msgid "swap lines"
+msgstr "satırları takas et"
+
+msgid "timing"
+msgstr "zamanlama"
+
+msgid "timing processor"
+msgstr "zamanlama işlemcisi"
+
+msgid "translation assistant"
+msgstr "çeviri asistanı"
+
+msgid "unsaved"
+msgstr "kayıt edilmedi"
+
+msgid "visual typesetting"
+msgstr "görsel yazımayarları"
+
+msgid "x"
+msgstr "x"
