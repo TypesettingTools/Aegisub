@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2024-12-25 19:35-0300\n"
+"PO-Revision-Date: 2024-12-25 19:49-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary\n"
 "Language: pt_BR\n"
@@ -3851,7 +3851,7 @@ msgstr "Ativar dicas de parâmetros"
 
 #: ../src/preferences.cpp:208
 msgid "Overwrite in time boxes"
-msgstr "Sobscrever nas caixas de tempo"
+msgstr "Sobrescrever nas caixas de tempo"
 
 #: ../src/preferences.cpp:210
 msgid "Enable syntax highlighting"
