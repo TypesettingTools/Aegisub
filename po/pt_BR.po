@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2024-12-25 00:44-0300\n"
+"PO-Revision-Date: 2024-12-25 19:31-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary\n"
 "Language: pt_BR\n"
@@ -3614,7 +3614,7 @@ msgstr "Perguntar"
 
 #: ../src/preferences.cpp:72
 msgid "Automatically load linked files"
-msgstr "Carreguar automaticamente arquivos vinculados"
+msgstr "Abrir automaticamente arquivos vinculados"
 
 #: ../src/preferences.cpp:73
 msgid "Undo Levels"
@@ -3626,7 +3626,7 @@ msgstr "Listas de Recentemente Usados"
 
 #: ../src/preferences.cpp:76 ../src/dialog_autosave.cpp:70
 msgid "Files"
-msgstr "Aquivos"
+msgstr "Arquivos"
 
 #: ../src/preferences.cpp:77
 msgid "Find/Replace"
@@ -3851,7 +3851,7 @@ msgstr "Ativar dicas de parâmetros"
 
 #: ../src/preferences.cpp:208
 msgid "Overwrite in time boxes"
-msgstr "Subscrever nas caixas de tempo"
+msgstr "Sobscrever nas caixas de tempo"
 
 #: ../src/preferences.cpp:210
 msgid "Enable syntax highlighting"
@@ -3899,7 +3899,7 @@ msgstr "Destacar linhas visíveis"
 
 #: ../src/preferences.cpp:224
 msgid "Hide overrides symbol"
-msgstr "Símbolo de tags"
+msgstr "Símbolo de tags na grade de linhas"
 
 #: ../src/preferences.cpp:232 ../src/dialog_style_editor.cpp:179
 msgid "Colors"
@@ -4240,7 +4240,7 @@ msgstr "Abortar"
 
 #: ../src/preferences.cpp:391
 msgid "Audio indexing error handling mode"
-msgstr "Modo de manipulação de error para indexação de áudio"
+msgstr "Modo de manipulação de erro para indexação de áudio"
 
 #: ../src/preferences.cpp:393
 msgid "Always index all audio tracks"
@@ -4446,7 +4446,7 @@ msgstr ""
 "Seta para esquerda: Diminui a seleção de destino\n"
 "Seta para cima: Aumenta a seleção de origem\n"
 "Seta para baixo: Diminui a seleção de origem\n"
-"Enter: Vincular; aceita a linha quando pronto\n"
+"Enter: Vincular; aceita a linha quando pronta\n"
 "Backspace: Desvincula último"
 
 #: ../src/dialog_kara_timing_copy.cpp:497
@@ -4975,7 +4975,7 @@ msgstr "Taxa de quadros destino: "
 #: ../src/audio_display.cpp:677
 #, c-format
 msgid "%d%%, %d pixel/second"
-msgstr "%d%%, %d pixel/segundo"
+msgstr "%d%%, %d píxel/segundo"
 
 #: ../src/dialog_progress.cpp:197
 msgid "Cancel"
@@ -5035,7 +5035,7 @@ msgstr "Mão livre"
 
 #: ../src/visual_tool_vector_clip.cpp:65
 msgid "Draws a freehand shape"
-msgstr "Desenho a mão livre"
+msgstr "Desenho à mão livre"
 
 #: ../src/visual_tool_vector_clip.cpp:66
 msgid "Freehand smooth"
@@ -5043,7 +5043,7 @@ msgstr "Mão livre suave"
 
 #: ../src/visual_tool_vector_clip.cpp:66
 msgid "Draws a smoothed freehand shape"
-msgstr "Desenho a mão livre, suavizado"
+msgstr "Desenho à mão livre, suavizado"
 
 #: ../src/visual_tool_vector_clip.cpp:265
 msgid "delete control point"
@@ -5750,35 +5750,35 @@ msgstr "Escolha a cor da borda"
 
 #: ../src/dialog_style_editor.cpp:221
 msgid "Choose shadow color"
-msgstr "Escolha a cor das sombras"
+msgstr "Escolha a cor da sombra"
 
 #: ../src/dialog_style_editor.cpp:222
 msgid "Distance from left edge, in pixels"
-msgstr "Distância da margem esquerda, em pixeis"
+msgstr "Distância da margem esquerda, em píxeis"
 
 #: ../src/dialog_style_editor.cpp:223
 msgid "Distance from right edge, in pixels"
-msgstr "Distância da margem direita, em pixeis"
+msgstr "Distância da margem direita, em píxeis"
 
 #: ../src/dialog_style_editor.cpp:224
 msgid "Distance from top/bottom edge, in pixels"
-msgstr "Distância do topo ou base, em pixeis"
+msgstr "Distância do topo ou base, em píxeis"
 
 #: ../src/dialog_style_editor.cpp:225
 msgid ""
 "When selected, display an opaque box behind the subtitles instead of an "
 "outline around the text"
 msgstr ""
-"Quando selecionado, utiliza uma caixa opaca atrás das legendas ao invés da "
+"Quando selecionado, utiliza uma caixa opaca atrás das legendas em vez da "
 "borda em volta do texto"
 
 #: ../src/dialog_style_editor.cpp:226
 msgid "Outline width, in pixels"
-msgstr "Largura da borda, em pixeis"
+msgstr "Largura da borda, em píxeis"
 
 #: ../src/dialog_style_editor.cpp:227
 msgid "Shadow distance, in pixels"
-msgstr "Distância da sombra, em pixeis"
+msgstr "Distância da sombra, em píxeis"
 
 #: ../src/dialog_style_editor.cpp:228
 msgid "Scale X, in percentage"
@@ -5801,7 +5801,7 @@ msgstr ""
 
 #: ../src/dialog_style_editor.cpp:232
 msgid "Character spacing, in pixels"
-msgstr "Espaçamento de caracteres, em pixeis"
+msgstr "Espaçamento de caracteres, em píxeis"
 
 #: ../src/dialog_style_editor.cpp:233
 msgid "Alignment in screen, in numpad style"
@@ -6213,7 +6213,7 @@ msgstr "Resolução Nova"
 
 #: ../src/dialog_version_check.cpp:94
 msgid "Version Checker"
-msgstr "Checagem de Versão"
+msgstr "Verificação de Versão"
 
 #: ../src/dialog_version_check.cpp:119
 msgid "&Auto Check for Updates"
@@ -6229,12 +6229,14 @@ msgstr "Não foi possível conectar ao servidor de atualizações."
 
 #: ../src/dialog_version_check.cpp:310
 msgid "Could not download from updates server."
-msgstr "Não foi possível fazer o download do servidor de atualizações."
+msgstr ""
+"Não foi possível fazer o download peloChecagem de Versão servidor de "
+"atualizações."
 
 #: ../src/dialog_version_check.cpp:312
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr "Pedido HTTP falhou, recebeu reposta HTTP: %d."
+msgstr "Pedido HTTP falhou, recebeu resposta HTTP: %d."
 
 #: ../src/dialog_version_check.cpp:343
 msgid "An update to Aegisub was found."
@@ -6314,7 +6316,7 @@ msgstr "&Legendas"
 
 #: default_menu.json:0
 msgid "&Timing"
-msgstr "&Temporização"
+msgstr "&Sincronização"
 
 #: default_menu.json:0
 msgid "&Video"
