@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2024-12-25 19:49-0300\n"
+"PO-Revision-Date: 2024-12-25 20:23-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary\n"
 "Language: pt_BR\n"
@@ -579,7 +579,7 @@ msgstr "Selecionar o estilo"
 
 #: ../src/dialog_styling_assistant.cpp:101
 msgid "&Seek video to line start time"
-msgstr "&Pular o vídeo até o inicio de tempo da linha"
+msgstr "&Pular o vídeo até o início da linha"
 
 #: ../src/dialog_styling_assistant.cpp:110 ../src/dialog_translation.cpp:129
 msgid "Actions"
@@ -730,7 +730,7 @@ msgid ""
 "have been replaced with underscores instead.\n"
 "The catalog has been renamed to \"%s\"."
 msgstr ""
-"O nome de catálogo especificado contem um ou mais caracteres ilegais. Estes "
+"O nome de catálogo especificado contém um ou mais caracteres ilegais. Estes "
 "foram substituídos por underscores.\n"
 "O catálogo foi renomeado para \"%s\"."
 
@@ -2186,7 +2186,7 @@ msgstr "&Inserir Original"
 
 #: ../src/command/tool.cpp:272
 msgid "Insert the untranslated text"
-msgstr "Insere o texto não-traduzido"
+msgstr "Insere o texto não traduzido"
 
 #: ../src/command/app.cpp:58
 msgid "&About"
@@ -3279,7 +3279,7 @@ msgstr "Aegisub concluiu a verificação ortográfica deste script."
 
 #: ../src/dialog_spellchecker.cpp:279 ../src/dialog_spellchecker.cpp:283
 msgid "Spell checking complete."
-msgstr "Correção Ortográfica concluída."
+msgstr "Correção ortográfica concluída."
 
 #: ../src/dialog_spellchecker.cpp:283
 msgid "Aegisub has found no spelling mistakes in this script."
@@ -3291,7 +3291,7 @@ msgstr "corretor ortográfico - substituir"
 
 #: ../src/preferences_base.cpp:63
 msgid "Please choose the folder:"
-msgstr "Por favor escolha a pasta:"
+msgstr "Por favor, escolha a pasta:"
 
 #: ../src/preferences_base.cpp:209
 msgid "Browse..."
