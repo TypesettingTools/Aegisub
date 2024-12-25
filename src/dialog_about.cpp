@@ -121,6 +121,9 @@ void ShowAboutDialog(wxWindow *parent) {
 #ifdef WITH_FFTW3
 		"    FFTW - Copyright (c) Matteo Frigo, Massachusetts Institute of Technology;\n"
 #endif
+#ifdef WITH_UPDATE_CHECKER
+		"    libcurl - Copyright (c) Daniel Stenberg et al;\n"
+#endif
 		+ _("\nSee the help file for full credits.\n")
 #ifdef BUILD_CREDIT
 		+ fmt_tl("Built by %s on %s.", GetAegisubBuildCredit(), GetAegisubBuildTime())
