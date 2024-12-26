@@ -143,7 +143,7 @@ namespace {
 					wxITEM_NORMAL;
 
 				wxBitmap const& bitmap = command->Icon(icon_size, retina_helper.GetScaleFactor(), GetLayoutDirection());
-				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), bitmap, GetTooltip(command), kind);
+				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), BITMAPBUNDLE(bitmap), GetTooltip(command), kind);
 
 				commands.push_back(command);
 				needs_onidle = needs_onidle || flags != cmd::COMMAND_NORMAL;
