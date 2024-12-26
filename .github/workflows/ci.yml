@@ -40,14 +40,26 @@ jobs:
           #  msvc: false
           #}
           - {
-            name: Ubuntu Debug,
-            os: ubuntu-latest,
+            name: Ubuntu 22 Debug,
+            os: ubuntu-22.04,
             buildtype: debugoptimized,
             args: ''
           }
           - {
-            name: Ubuntu Release,
-            os: ubuntu-latest,
+            name: Ubuntu 22 Release,
+            os: ubuntu-22.04,
+            buildtype: release,
+            args: ''
+          }
+          - {
+            name: Ubuntu 24 Debug,
+            os: ubuntu-24.04,
+            buildtype: debugoptimized,
+            args: ''
+          }
+          - {
+            name: Ubuntu 24 Release,
+            os: ubuntu-24.04,
             buildtype: release,
             args: ''
           }
@@ -116,10 +128,17 @@ jobs:
           brew install pulseaudio  # NO OpenAL in github CI
 
       - name: Install dependencies (Linux)
-        if: matrix.config.os == 'ubuntu-latest'
+        if: startsWith(matrix.config.os, 'ubuntu-')
         run: |
           sudo apt-get update
-          sudo apt-get install ninja-build build-essential libx11-dev libwxgtk3.0-gtk3-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev
+          sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev ${{ matrix.config.os == 'ubuntu-22.04' && 'libwxgtk3.0-gtk3-dev' || 'libwxgtk3.2-dev' }}
+
+      - name: Set compiler (Linux)
+        if: matrix.config.os == 'ubuntu-22.04'
+        run: |
+          # We need to use Clang on Ubuntu 22 to avoid a bug with GCC 11
+          echo "CC=clang" >> $GITHUB_ENV
+          echo "CXX=clang++" >> $GITHUB_ENV
 
       - name: Configure
         run: meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
