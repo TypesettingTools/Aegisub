@@ -1,8 +1,8 @@
 # Aegisub
 
-For binaries and general information [see the homepage](http://aegisub.org).
+For binaries and general information [see the homepage](http://www.aegisub.org).
 
-The bug tracker can be found at https://github.com/TypesettingTools/Aegisub/issues.
+The bug tracker can be found at https://github.com/Aegisub/Aegisub/issues.
 
 Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](irc://irc.rizon.net/aegisub).
 
@@ -12,17 +12,18 @@ Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](i
 
 Prerequisites:
 
-1. Visual Studio (Community edition of any recent version is fine, needs the Windows SDK included)
-2. Python 3
-3. Meson
-4. CMake
+1. Visual Studio (Community edition of any recent version is fine)
+2. The June 2010 DirectX SDK (the final release before DirectSound was dropped)
+3. Python 3
+4. Meson
+5. CMake
 
 There are a few optional dependencies that must be installed and on your PATH:
 
-1. msgfmt, to build the translations (installing from https://mlocati.github.io/articles/gettext-iconv-windows.html seems to be the easiest option)
-2. InnoSetup, to build the regular installer (iscc.exe on your PATH)
-3. 7zip, to build the regular installer (7z.exe on your PATH)
-4. Moonscript, to build the regular installer (moonc.exe on your PATH)
+1. msgfmt, to build the translations
+2. InnoSetup, to build the regular installer
+3. 7zip, to build the regular installer
+4. Moonscript, to build the regular installer
 
 All other dependencies are either stored in the repository or are included as submodules.
 
@@ -46,14 +47,23 @@ A vaguely recent version of Xcode and the corresponding command-line tools are r
 
 For personal usage, you can use pip and homebrew to install almost all of Aegisub's dependencies:
 
-    pip3 install meson      # or brew install meson if you installed Python via brew
-    brew install cmake ninja pkg-config  libass boost zlib ffms2 fftw hunspell uchardet
+- For Mac/Intel:
+```
+    pip3 install meson
+    brew install cmake ninja pkg-config  libass boost zlib ffms2 fftw hunspell
     export LDFLAGS="-L/usr/local/opt/icu4c/lib"
     export CPPFLAGS="-I/usr/local/opt/icu4c/include"
     export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
+```
 
-When compiling on Apple Silicon, replace `/usr/local` with `/opt/homebrew`.
-When compiling on macOS 15.0 (Sequoia) or later, you may also want to `export MACOS_X_DEPLOYMENT_TARGET=14.0` to make the color picker work.
+- For Mac/Silicon:
+```
+    pip3 install meson
+    brew install cmake ninja pkg-config  libass boost zlib ffms2 fftw hunspell
+    export LDFLAGS="-L/opt/homebrew/opt/icu4c/lib"
+    export CPPFLAGS="-I/opt/homebrew/opt/icu4c/include"
+    export PKG_CONFIG_PATH="/opt/homebrew/opt/icu4c/lib/pkgconfig"
+```
 
 Once the dependencies are installed, build Aegisub with `meson build && meson compile -C build`.
 
