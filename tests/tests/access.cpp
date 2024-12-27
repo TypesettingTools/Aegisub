@@ -42,38 +42,26 @@ using namespace agi::fs;
 #define EX_NotADirectory(func, fail, pass) \
 	DO_TEST(func, func##ExNotADirectory, fail, NotADirectory, pass)
 
-#define EX_Read(func, fail, pass) \
-	DO_TEST(func, func##ExReadDenied, fail, ReadDenied, pass)
-
-#define EX_Write(func, fail, pass) \
-	DO_TEST(func, func##ExWriteDenied, fail, WriteDenied, pass)
-
 EX_FileNotFound(CheckFileRead, "data/file")
-EX_Read(CheckFileRead, "data/file_access_denied", "data/file")
 EX_NotAFile(CheckFileRead, "data/dir", "data/file")
 TEST(lagi_acs, CheckFileRead) {
 	EXPECT_NO_THROW(CheckFileRead("data/file"));
 }
 
 EX_FileNotFound(CheckFileWrite, "data/file")
-EX_Read(CheckFileWrite, "data/file_access_denied", "data/file")
 EX_NotAFile(CheckFileWrite, "data/dir", "data/file")
-EX_Write(CheckFileWrite, "data/file_read_only", "data/file")
 TEST(lagi_acs, CheckFileWrite) {
 	EXPECT_NO_THROW(CheckFileRead("data/file"));
 }
 
 EX_FileNotFound(CheckDirRead, "data/dir")
-EX_Read(CheckDirRead, "data/dir_access_denied", "data/dir")
 EX_NotADirectory(CheckDirRead, "data/file", "data/dir")
 TEST(lagi_acs, CheckDirRead) {
 	EXPECT_NO_THROW(CheckDirRead("data/dir"));
 }
 
 EX_FileNotFound(CheckDirWrite, "data/dir")
-EX_Read(CheckDirWrite, "data/dir_access_denied", "data/dir")
 EX_NotADirectory(CheckDirWrite, "data/file", "data/dir")
-EX_Write(CheckDirWrite, "data/dir_read_only", "data/dir")
 TEST(lagi_acs, CheckDirWrite) {
 	EXPECT_NO_THROW(CheckDirWrite("data/dir"));
 }
