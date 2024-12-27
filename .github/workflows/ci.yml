@@ -197,16 +197,13 @@ jobs:
         run: |
           set -e
 
-          # Work around https://github.com/mesonbuild/meson/issues/14005
-          rm -rf subprojects/luajit/.git
-
           meson dist --include-subprojects -C build
 
           # Make sure the subprojects we need are included
           mkdir distcheck
           tar -xJf build/meson-dist/*.tar.xz -C distcheck/
           test -e distcheck/*/subprojects/luabins/meson.build
-          test -e distcheck/*/subprojects/luajit/meson.build
+          test -e distcheck/*/subprojects/LuaJIT*/meson.build
 
       - name: Upload artifacts - tarball
         uses: actions/upload-artifact@v4

@@ -11,7 +11,8 @@ luabins_src = files(
 
 deps = []
 
-luajit = dependency('luajit', version: '>=2.0.0')
+luajit = dependency('luajit', version: '>=2.0.0', required: false,
+                    allow_fallback: false, method: 'pkg-config')
 if luajit.found() and luajit.type_name() != 'internal'
     luajit_test = meson.get_compiler('c').run('''#include <lauxlib.h>
 int main(void)
@@ -24,16 +25,24 @@ int main(void)
 }''', dependencies: luajit)
 
     if luajit_test.returncode() == 1
-        message('System luajit found but not compiled in 5.2 mode; using built-in luajit')
+        message('System luajit found but not compiled in 5.2 mode')
+        luajit = dependency('', required: false)
     else
         deps += luajit
     endif
 else
-    message('System luajit not found; using built-in luajit')
+    message('System luajit not found')
 endif
 
-if not deps.contains(luajit)
-    deps += subproject('luajit').get_variable('luajit_dep')
+if not luajit.found()
+    message('Using built-in luajit')
+    subproject('luajit') # Initialize subproject to ignore system luajit
+    luajit = dependency('luajit')
+    assert(luajit.type_name() == 'internal', 'System luajit used instead of built-in luajit')
+endif
+
+if luajit.type_name() == 'internal'
+    deps += luajit
 endif
 
 luabins = static_library('luabins', luabins_src, dependencies: deps)
