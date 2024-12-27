@@ -1,8 +1,14 @@
-[wrap-git]
-directory = luajit
-url = https://github.com/LuaJIT/LuaJIT.git
-revision = v2.1
-patch_directory = luajit
+[wrap-file]
+directory = LuaJIT-04dca7911ea255f37be799c18d74c305b921c1a6
+source_url = https://github.com/LuaJIT/LuaJIT/archive/04dca7911ea255f37be799c18d74c305b921c1a6.tar.gz
+source_filename = luajit-2.1.1720049189.tar.gz
+source_hash = 346b028d9ba85e04b7e23a43cc51ec076574d2efc0d271d4355141b0145cd6e0
+patch_filename = luajit_2.1.1720049189-2_patch.zip
+patch_url = https://wrapdb.mesonbuild.com/v2/luajit_2.1.1720049189-2/get_patch
+patch_hash = e54b4ff6dc1f8cb2d43a2a64b56822e644aa03edf4a0ef472678f3046e272655
+source_fallback_url = https://github.com/mesonbuild/wrapdb/releases/download/luajit_2.1.1720049189-2/luajit-2.1.1720049189.tar.gz
+wrapdb_version = 2.1.1720049189-2
 
 [provide]
-luajit = luajit_dep
+dependency_names = luajit
+program_names = luajit
