@@ -20,6 +20,7 @@
 #include "libaegisub/split.h"
 
 #include <boost/interprocess/streams/bufferstream.hpp>
+#include <algorithm>
 
 namespace agi {
 

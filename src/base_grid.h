@@ -32,6 +32,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <wx/brush.h>
+#include <wx/scrolbar.h>
 #include <wx/window.h>
 
 namespace agi {

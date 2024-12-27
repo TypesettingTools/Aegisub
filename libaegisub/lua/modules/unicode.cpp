@@ -17,7 +17,7 @@
 #include <libaegisub/lua/ffi.h>
 
 #include <unicode/unistr.h>
-
+#include <cstring>
 namespace {
 char *wrap(void (*fn)(icu::UnicodeString&), const char *str, char **err) {
 	auto ustr = icu::UnicodeString::fromUTF8(str);

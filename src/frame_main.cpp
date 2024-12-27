@@ -67,7 +67,7 @@
 #include <wx/sizer.h>
 #include <wx/statline.h>
 #include <wx/sysopt.h>
-
+#include <wx/toolbar.h>
 enum {
 	ID_APP_TIMER_STATUSCLEAR = 12002
 };
