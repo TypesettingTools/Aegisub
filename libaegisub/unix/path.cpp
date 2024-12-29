@@ -15,20 +15,14 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <libaegisub/path.h>
-
 #include <libaegisub/exception.h>
-#include <libaegisub/util_osx.h>
 
 #include <pwd.h>
-
-#ifndef __APPLE__
-#include <fstream>
 #include <stdlib.h>
-#include <libgen.h>
-#endif
+
+namespace sfs = std::filesystem;
 
 namespace {
-#ifndef __APPLE__
 std::string home_dir() {
 	const char *env = getenv("HOME");
 	if (env) return env;
@@ -42,39 +36,31 @@ std::string home_dir() {
 }
 
 #ifdef APPIMAGE_BUILD
-std::string exe_dir() {
-	char *exe, *dir;
-	std::string data = "";
-
-#ifdef __FreeBSD__
-	exe = realpath("/proc/self/file", NULL);
-#else
-	exe = realpath("/proc/self/exe", NULL);
-#endif
-
+sfs::path data_dir() {
+	char *exe = realpath("/proc/self/exe", NULL);
 	if (!exe) return "";
 
-	if ((dir = dirname(exe)) && strlen(dir) > 0) {
-		data = dir;
-	}
-
+	sfs::path p = sfs::path(exe).parent_path();
 	free(exe);
 
-	return data;
+	if (p.filename() == "bin") {
+		// assume unix prefix layout
+		return p.parent_path()/"share";
+	}
+
+	return p;
 }
-#endif  /* APPIMAGE_BUILD */
-#endif  /* !__APPLE__ */
+#endif
 }
 
 namespace agi {
 void Path::FillPlatformSpecificPaths() {
-#ifndef __APPLE__
-	std::filesystem::path home = home_dir();
+	sfs::path home = home_dir();
 	SetToken("?user", home/".aegisub");
 	SetToken("?local", home/".aegisub");
 
 #ifdef APPIMAGE_BUILD
-	std::filesystem::path data = exe_dir();
+	sfs::path data = data_dir();
 	if (data == "") data = home/".aegisub";
 	SetToken("?data", data);
 	SetToken("?dictionary", Decode("?data/dictionaries"));
@@ -83,14 +69,6 @@ void Path::FillPlatformSpecificPaths() {
 	SetToken("?dictionary", "/usr/share/hunspell");
 #endif
 
-#else
-	std::filesystem::path app_support = agi::util::GetApplicationSupportDirectory();
-	SetToken("?user", app_support/"Aegisub");
-	SetToken("?local", app_support/"Aegisub");
-	SetToken("?data", agi::util::GetBundleSharedSupportDirectory());
-	SetToken("?dictionary", Decode("?data/dictionaries"));
-#endif
-	SetToken("?temp", std::filesystem::temp_directory_path());
+	SetToken("?temp", sfs::temp_directory_path());
 }
-
 }
