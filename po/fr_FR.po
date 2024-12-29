@@ -4040,7 +4040,7 @@ msgstr "Aucun script"
 
 #: ../src/preferences.cpp:330
 msgid "Subtitle-local scripts"
-msgstr "Scirpts sous-titres locaux"
+msgstr "Scripts du fichier de sous-titre"
 
 #: ../src/preferences.cpp:330
 msgid "Global autoload scripts"
