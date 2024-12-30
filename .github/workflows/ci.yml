@@ -131,7 +131,7 @@ jobs:
         if: startsWith(matrix.config.os, 'ubuntu-')
         run: |
           sudo apt-get update
-          sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev ${{ matrix.config.os == 'ubuntu-22.04' && 'libwxgtk3.0-gtk3-dev' || 'libwxgtk3.2-dev' }}
+          sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev ${{ matrix.config.os == 'ubuntu-22.04' && 'libwxgtk3.0-gtk3-dev' || 'libwxgtk3.2-dev' }}
 
       - name: Set compiler (Linux)
         if: matrix.config.os == 'ubuntu-22.04'
@@ -189,4 +189,29 @@ jobs:
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.dmg
+          if-no-files-found: error
+
+      # Tarball
+      - name: Generate tarball
+        if: matrix.config.os == 'ubuntu-24.04' && matrix.config.buildtype == 'release'
+        run: |
+          set -e
+
+          # Work around https://github.com/mesonbuild/meson/issues/14005
+          rm -rf subprojects/luajit/.git
+
+          meson dist --include-subprojects -C build
+
+          # Make sure the subprojects we need are included
+          mkdir distcheck
+          tar -xJf build/meson-dist/*.tar.xz -C distcheck/
+          test -e distcheck/*/subprojects/luabins/meson.build
+          test -e distcheck/*/subprojects/luajit/meson.build
+
+      - name: Upload artifacts - tarball
+        uses: actions/upload-artifact@v4
+        if: matrix.config.os == 'ubuntu-24.04' && matrix.config.buildtype == 'release'
+        with:
+          name: Source Tarball
+          path: build/meson-dist/*.tar.xz
           if-no-files-found: error
