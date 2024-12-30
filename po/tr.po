@@ -2,16 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub [TR]\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-07-01 10:53-0700\n"
-"PO-Revision-Date: 2024-12-25 22:24+0300\n"
+"POT-Creation-Date: 2015-08-24 16:41+0200\n"
+"PO-Revision-Date: 2024-12-30 18:31+0300\n"
 "Last-Translator: \n"
 "Language-Team: Türkçe\n"
-"Language: tr_TR\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 3.4.4\n"
 "X-Loco-Version: 2.6.10; wp-6.5.5\n"
 
@@ -59,7 +59,7 @@ msgstr "seç "
 
 #: ../src/dialog_shift_times.cpp:133 ../src/command/time.cpp:153
 msgid "Shift Times"
-msgstr "Zamanları Kaydır"
+msgstr "Zamanı Kaydır"
 
 #: ../src/dialog_shift_times.cpp:142
 msgid "&Time: "
@@ -210,7 +210,7 @@ msgid ""
 "Failed to load Automation script '%s':\n"
 "%s"
 msgstr ""
-"Otomasyon komut dosyası yüklenemedi '%s': \n"
+"Otomasyon betik dosyası yüklenemedi '%s': \n"
 "%s"
 
 #: ../src/auto4_base.cpp:467
@@ -342,31 +342,31 @@ msgstr "Sadece &seçimi düzenle"
 
 #: ../src/dialog_timing_processor.cpp:174
 msgid "Lead-in/Lead-out"
-msgstr "Giriş/Çıkış"
+msgstr "Başlangıç/Bitiş"
 
 #: ../src/dialog_timing_processor.cpp:176
 msgid "Add lead &in:"
-msgstr "Giriş &ekle:"
+msgstr "Başlangıç &ekle:"
 
 #: ../src/dialog_timing_processor.cpp:178
 msgid "Enable adding of lead-ins to lines"
-msgstr "Satırlara giriş eklemeyi aktif et"
+msgstr "Satırlara başlangıç eklemeyi aktif et"
 
 #: ../src/dialog_timing_processor.cpp:179
 msgid "Lead in to be added, in milliseconds"
-msgstr "Eklenecek giriş, mikrosaniye"
+msgstr "Eklenecek başlangıç, mikrosaniye"
 
 #: ../src/dialog_timing_processor.cpp:181
 msgid "Add lead &out:"
-msgstr "Çıkış &ekle:"
+msgstr "Bitiş &ekle:"
 
 #: ../src/dialog_timing_processor.cpp:183
 msgid "Enable adding of lead-outs to lines"
-msgstr "Satırlara çıkış eklemeyi aktif et"
+msgstr "Satırlara bitiş eklemeyi aktif et"
 
 #: ../src/dialog_timing_processor.cpp:184
 msgid "Lead out to be added, in milliseconds"
-msgstr "Eklenecek çıkış, mikrosaniye"
+msgstr "Eklenecek bitiş, mikrosaniye"
 
 #: ../src/dialog_timing_processor.cpp:189
 msgid "Make adjacent subtitles continuous"
@@ -528,7 +528,7 @@ msgstr "Geçerli satır"
 
 #: ../src/dialog_styling_assistant.cpp:72
 msgid "Styles available"
-msgstr "Stiller var"
+msgstr "Mevcut stiller"
 
 #: ../src/dialog_styling_assistant.cpp:80
 msgid "Set style"
@@ -555,6 +555,15 @@ msgstr "Önceki satır"
 #: ../src/dialog_styling_assistant.cpp:93 ../src/dialog_translation.cpp:114
 msgid "Next line"
 msgstr "Sonraki satır"
+
+msgid "OK"
+msgstr "Tamam"
+
+msgid "Help"
+msgstr "Yardım"
+
+msgid "&Apply"
+msgstr "&Uygula"
 
 #: ../src/dialog_styling_assistant.cpp:94 ../src/dialog_translation.cpp:116
 msgid "Play video"
@@ -761,7 +770,7 @@ msgid ""
 "There is already a style with the name \"%s\" in the current script. "
 "Overwrite?"
 msgstr ""
-"Geçerli komut dosyasında zaten \"%s\" adında bir stil var. Üzerine yazılsın "
+"Geçerli betik dosyasında zaten \"%s\" adında bir stil var. Üzerine yazılsın "
 "mı?"
 
 #: ../src/dialog_style_manager.cpp:547
@@ -1004,21 +1013,20 @@ msgstr "Video detaylarını göster"
 
 #: ../src/command/video.cpp:274 ../src/command/video.cpp:275
 msgid "Toggle video slider focus"
-msgstr ""
+msgstr "Video kaydırıcı odağını değiştir"
 
 #: ../src/command/video.cpp:276
 msgid ""
 "Toggle focus between the video slider and the previous thing to have focus"
-msgstr "."
+msgstr "Video kaydırıcısı ile daha önce odaklanılan öğe arasında geçiş yap"
 
 #: ../src/command/video.cpp:297 ../src/command/video.cpp:298
 msgid "Copy image to Clipboard"
 msgstr "Resmi Pano'ya kopyala"
 
 #: ../src/command/video.cpp:299
-#, fuzzy
 msgid "Copy the currently displayed frame to the clipboard"
-msgstr "Farenin mevcut koordinatlarını videonun üzerinde panoya kopyala"
+msgstr "Görüntülenmekte olan kareyi panoya kopyala"
 
 #: ../src/command/video.cpp:308 ../src/command/video.cpp:309
 msgid "Copy image to Clipboard (no subtitles)"
@@ -1027,7 +1035,7 @@ msgstr "Resmi Pano'ya kopyala (altyazı yok)"
 #: ../src/command/video.cpp:310
 msgid ""
 "Copy the currently displayed frame to the clipboard, without the subtitles"
-msgstr ""
+msgstr "Görüntülenmekte olan kareyi altyazılar olmadan panoya kopyala"
 
 #: ../src/command/video.cpp:319 ../src/command/video.cpp:320
 msgid "Next Frame"
@@ -1035,63 +1043,57 @@ msgstr "Sonraki Kare"
 
 #: ../src/command/video.cpp:321
 msgid "Seek to the next frame"
-msgstr ""
+msgstr "Sonraki kareye geç"
 
 #: ../src/command/video.cpp:330 ../src/command/video.cpp:331
-#, fuzzy
 msgid "Next Boundary"
-msgstr "İkincil"
+msgstr "Sonraki Sınır"
 
 #: ../src/command/video.cpp:332
 msgid "Seek to the next beginning or end of a subtitle"
-msgstr ""
+msgstr "Sonraki altyazının başına veya sonuna git"
 
 #: ../src/command/video.cpp:359 ../src/command/video.cpp:360
-#, fuzzy
 msgid "Next Keyframe"
-msgstr "Sonraki Kare"
+msgstr "Sonraki Anahtar Kare"
 
 #: ../src/command/video.cpp:361
 msgid "Seek to the next keyframe"
-msgstr ""
+msgstr "Sonraki anahtar kareye git"
 
 #: ../src/command/video.cpp:373 ../src/command/video.cpp:374
 #: ../src/command/video.cpp:375
-#, fuzzy
 msgid "Fast jump forward"
-msgstr "Kareler arası hızlı sıçrama"
+msgstr "Hızlı ileri sıçra"
 
 #: ../src/command/video.cpp:386 ../src/command/video.cpp:387
-#, fuzzy
 msgid "Previous Frame"
-msgstr "Önceki Satır"
+msgstr "Önceki Kare"
 
 #: ../src/command/video.cpp:388
 msgid "Seek to the previous frame"
-msgstr ""
+msgstr "Önceki kareye git"
 
 #: ../src/command/video.cpp:397 ../src/command/video.cpp:398
-#, fuzzy
 msgid "Previous Boundary"
-msgstr "Önceki Satır"
+msgstr "Önceki Sınır"
 
 #: ../src/command/video.cpp:399
 msgid "Seek to the previous beginning or end of a subtitle"
-msgstr ""
+msgstr "Önceki altyazının başına veya sonuna git"
 
 #: ../src/command/video.cpp:426 ../src/command/video.cpp:427
-#, fuzzy
 msgid "Previous Keyframe"
-msgstr "Anahtar Kareleri Kapat"
+msgstr "Önceki Anahtar Kare"
 
 #: ../src/command/video.cpp:428
 msgid "Seek to the previous keyframe"
-msgstr ""
+msgstr "Önceki anahtar kareye git"
 
 #: ../src/command/video.cpp:448 ../src/command/video.cpp:449
 #: ../src/command/video.cpp:450
 msgid "Fast jump backwards"
-msgstr ""
+msgstr "Geriye doğru hızlı sıçra"
 
 #: ../src/command/video.cpp:499 ../src/command/video.cpp:500
 msgid "Save PNG snapshot"
@@ -1100,7 +1102,7 @@ msgstr "Ekranı PNG olarak kaydet"
 #: ../src/command/video.cpp:501
 msgid ""
 "Save the currently displayed frame to a PNG file in the video's directory"
-msgstr ""
+msgstr "Görüntülenen kareyi videonun dizinindeki bir PNG dosyasına kaydet"
 
 #: ../src/command/video.cpp:510 ../src/command/video.cpp:511
 msgid "Save PNG snapshot (no subtitles)"
@@ -1111,6 +1113,8 @@ msgid ""
 "Save the currently displayed frame without the subtitles to a PNG file in "
 "the video's directory"
 msgstr ""
+"Görüntülenen kareyi altyazılar olmadan videonun dizinindeki bir PNG "
+"dosyasına kaydet"
 
 #: ../src/command/video.cpp:522
 msgid "&Jump to..."
@@ -1122,39 +1126,37 @@ msgstr "Kare veya zamana sıçra"
 
 #: ../src/command/video.cpp:536
 msgid "Jump Video to &End"
-msgstr "Video sonuna &atla"
+msgstr "Video sonuna &sıçra"
 
 #: ../src/command/video.cpp:537
 msgid "Jump Video to End"
-msgstr "Video sonuna atla"
+msgstr "Video sonuna sıçra"
 
 #: ../src/command/video.cpp:538
 msgid "Jump the video to the end frame of current subtitle"
-msgstr ""
+msgstr "Videoyu geçerli altyazının son karesine sıçrat"
 
 #: ../src/command/video.cpp:549
 msgid "Jump Video to &Start"
-msgstr "Video başlangıcına &atla"
+msgstr "Video başlangıcına &sıçra"
 
 #: ../src/command/video.cpp:550
 msgid "Jump Video to Start"
-msgstr "Video başlangıcına atla"
+msgstr "Video başlangıcına sıçra"
 
 #: ../src/command/video.cpp:551
-#, fuzzy
 msgid "Jump the video to the start frame of current subtitle"
-msgstr "Bu karenin zamanı geçerli altyazının başlangıç ve bitişine bağlıdır"
+msgstr "Videoyu geçerli altyazının başlangıç karesine sıçrat"
 
 #: ../src/command/video.cpp:562
 msgid "&Open Video..."
-msgstr "&Video Aç."
+msgstr "&Video Aç"
 
 #: ../src/command/video.cpp:563
 msgid "Open Video"
 msgstr "Video Aç"
 
 #: ../src/command/video.cpp:564
-#, fuzzy
 msgid "Open a video file"
 msgstr "Video dosyası aç"
 
@@ -1176,7 +1178,7 @@ msgstr "Sahte Video Kullan"
 
 #: ../src/command/video.cpp:580
 msgid "Open a placeholder video clip with solid color"
-msgstr ""
+msgstr "Düz renkte bir yer tutucu video klip aç"
 
 #: ../src/command/video.cpp:592 ../src/command/video.cpp:593
 msgid "Toggle autoscroll of video"
@@ -1184,7 +1186,7 @@ msgstr "Videonun otokaydırmasını değiştir"
 
 #: ../src/command/video.cpp:594
 msgid "Toggle automatically seeking video to the start time of selected lines"
-msgstr ""
+msgstr "Videoyu otomatik olarak satırın başlangıcına kaydırmayı değiştir"
 
 #: ../src/command/video.cpp:609 ../src/command/video.cpp:610
 msgid "Play"
@@ -1195,9 +1197,8 @@ msgid "Play video starting on this position"
 msgstr "Bu pozisyonda video başlangıcını oynat"
 
 #: ../src/command/video.cpp:621 ../src/command/video.cpp:622
-#, fuzzy
 msgid "Play line"
-msgstr "Videoyu oynat"
+msgstr "Satırı oynat"
 
 #: ../src/command/video.cpp:623 ../src/command/audio.cpp:260
 #: ../src/command/audio.cpp:261
@@ -1285,9 +1286,8 @@ msgid "paste"
 msgstr "yapıştır"
 
 #: ../src/command/edit.cpp:369
-#, fuzzy
 msgid "set color"
-msgstr "Dış rengi seç"
+msgstr "rengi seç"
 
 #: ../src/command/edit.cpp:383
 msgid "Primary Color..."
@@ -1299,7 +1299,7 @@ msgstr "Birincil Renk"
 
 #: ../src/command/edit.cpp:385
 msgid "Set the primary fill color (\\c) at the cursor position"
-msgstr ""
+msgstr "İmleç konumundaki ana dolgu (\\c) rengini tanımla"
 
 #: ../src/command/edit.cpp:395
 msgid "Secondary Color..."
@@ -1311,19 +1311,19 @@ msgstr "İkincil Renk"
 
 #: ../src/command/edit.cpp:397
 msgid "Set the secondary (karaoke) fill color (\\2c) at the cursor position"
-msgstr ""
+msgstr "İmleç konumundaki ikincil (karaoke) dolgu rengini (\\2c) tanımla"
 
 #: ../src/command/edit.cpp:407
 msgid "Outline Color..."
-msgstr "Dışhat Rengi"
+msgstr "Kontur Rengi"
 
 #: ../src/command/edit.cpp:408
 msgid "Outline Color"
-msgstr "Dışhat Rengi"
+msgstr "Kontur Rengi"
 
 #: ../src/command/edit.cpp:409
 msgid "Set the outline color (\\3c) at the cursor position"
-msgstr ""
+msgstr "İmleç konumundaki kontur rengini (\\3c) tanımla"
 
 #: ../src/command/edit.cpp:419
 msgid "Shadow Color..."
@@ -1335,67 +1335,62 @@ msgstr "Gölge Rengi"
 
 #: ../src/command/edit.cpp:421
 msgid "Set the shadow color (\\4c) at the cursor position"
-msgstr ""
+msgstr "İmleç konumundaki gölge rengini (\\4c) tanımla"
 
 #: ../src/command/edit.cpp:431 ../src/command/edit.cpp:432
-#, fuzzy
 msgid "Toggle Bold"
-msgstr "Karaoke moda geç"
+msgstr "Kalınlığı Değiştir"
 
 #: ../src/command/edit.cpp:433
 msgid ""
 "Toggle bold (\\b) for the current selection or at the current cursor position"
-msgstr ""
+msgstr "Geçerli seçim veya imleç konumundan kalın yazıyı (\\b) değiştir"
 
 #: ../src/command/edit.cpp:436
 msgid "toggle bold"
-msgstr ""
+msgstr "kalınlığı değiştir"
 
 #: ../src/command/edit.cpp:443 ../src/command/edit.cpp:444
 msgid "Toggle Italics"
-msgstr ""
+msgstr "İtalikliği Değiştir"
 
 #: ../src/command/edit.cpp:445
 msgid ""
 "Toggle italics (\\i) for the current selection or at the current cursor "
 "position"
-msgstr ""
+msgstr "Geçerli seçim veya imleç konumundan italik yazıyı değiştir"
 
 #: ../src/command/edit.cpp:448
 msgid "toggle italic"
-msgstr ""
+msgstr "italikliği Değiştir"
 
 #: ../src/command/edit.cpp:455 ../src/command/edit.cpp:456
-#, fuzzy
 msgid "Toggle Underline"
-msgstr "&Altıçizili"
+msgstr "Altçizgiyi Değiştir"
 
 #: ../src/command/edit.cpp:457
 msgid ""
 "Toggle underline (\\u) for the current selection or at the current cursor "
 "position"
-msgstr ""
+msgstr "Geçerli seçimden veya imleç konumundan altçizgiyi (\\u) değiştir"
 
 #: ../src/command/edit.cpp:460
-#, fuzzy
 msgid "toggle underline"
-msgstr "&Altıçizili"
+msgstr "altçizgiyi değiştir"
 
 #: ../src/command/edit.cpp:467 ../src/command/edit.cpp:468
-#, fuzzy
 msgid "Toggle Strikeout"
-msgstr "&Üstüçizili"
+msgstr "Üstçizgiyi Değiştir"
 
 #: ../src/command/edit.cpp:469
 msgid ""
 "Toggle strikeout (\\s) for the current selection or at the current cursor "
 "position"
-msgstr ""
+msgstr "Geçerli seçimden veya imleç konumundan üstçizgiyi (\\s) değiştir"
 
 #: ../src/command/edit.cpp:472
-#, fuzzy
 msgid "toggle strikeout"
-msgstr "&Üstüçizili"
+msgstr "üstçizgiyi değiştir"
 
 #: ../src/command/edit.cpp:479
 msgid "Font Face..."
@@ -1434,9 +1429,8 @@ msgid "Copy Lines"
 msgstr "Satırları Kopyala"
 
 #: ../src/command/edit.cpp:600
-#, fuzzy
 msgid "Copy subtitles to the clipboard"
-msgstr "Resmi Pano'ya kopyala"
+msgstr "Altyazıları panoya kopyala"
 
 #: ../src/command/edit.cpp:621
 msgid "Cu&t Lines"
@@ -1499,6 +1493,8 @@ msgid ""
 "Split the current line into a line which ends on the current frame and a "
 "line which starts on the next frame"
 msgstr ""
+"Geçerli satırı, geçerli karede biten bir satıra ve bir sonraki karede "
+"başlayan bir satıra böler"
 
 #: ../src/command/edit.cpp:738 ../src/command/edit.cpp:739
 msgid "Split lines before current frame"
@@ -1509,6 +1505,8 @@ msgid ""
 "Split the current line into a line which ends on the previous frame and a "
 "line which starts on the current frame"
 msgstr ""
+"Geçerli satırı önceki karede biten bir satıra ve geçerli karede başlayan bir "
+"satıra böler"
 
 #: ../src/command/edit.cpp:775
 msgid "As &Karaoke"
@@ -1519,9 +1517,8 @@ msgid "As Karaoke"
 msgstr "Karaoke"
 
 #: ../src/command/edit.cpp:777
-#, fuzzy
 msgid "Join selected lines in a single one, as karaoke"
-msgstr "Seçili satırları tek hale getirir, metinleri birleştirir"
+msgstr "Seçilen satırları tek bir satırda birleştir, karaoke olarak"
 
 #: ../src/command/edit.cpp:780
 msgid "join as karaoke"
@@ -1552,11 +1549,13 @@ msgid "Keep First"
 msgstr "İlkini Koru"
 
 #: ../src/command/edit.cpp:799
-#, fuzzy
+#| msgid "Join selected lines in a single one, concatenating text together"
 msgid ""
 "Join selected lines in a single one, keeping text of first and discarding "
 "remaining"
-msgstr "Seçili satırları tek hale getirir, metinleri birleştirir"
+msgstr ""
+"Seçilen satırları tek bir satırda birleştir, ilk satırın metnini koru ve "
+"diğerlerini at"
 
 #: ../src/command/edit.cpp:840
 msgid "&Paste Lines"
@@ -1592,7 +1591,7 @@ msgstr "Satırları Tekrar Kombine Et"
 
 #: ../src/command/edit.cpp:958
 msgid "Recombine subtitles which have been split and merged"
-msgstr ""
+msgstr "Bölünmüş ve birleştirilmiş altyazıları yeniden birleştir"
 
 #: ../src/command/edit.cpp:1028
 msgid "combining"
@@ -1605,6 +1604,7 @@ msgstr "Satırları Böl (karaoke olarak)"
 #: ../src/command/edit.cpp:1036
 msgid "Use karaoke timing to split line into multiple smaller lines"
 msgstr ""
+"Satırı birden fazla küçük satıra bölmek için karaoke zamanlamasını kullan"
 
 #: ../src/command/edit.cpp:1070
 msgid "splitting"
@@ -1620,6 +1620,8 @@ msgid ""
 "Split the current line at the cursor, dividing the original line's duration "
 "between the new ones"
 msgstr ""
+"Geçerli satırı imleçte bölerek orijinal satırın süresini yenileri arasında "
+"paylaştırır"
 
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
 #: ../src/subs_edit_ctrl.cpp:374
@@ -1631,21 +1633,23 @@ msgid ""
 "Split the current line at the cursor, setting both lines to the original "
 "line's times"
 msgstr ""
+"Geçerli satırı imleçte böler, her iki satırı da orijinal satırın zamanlarına "
+"ayarlar"
 
 #: ../src/command/edit.cpp:1125 ../src/command/edit.cpp:1126
-#, fuzzy
 msgid "Split at cursor (at video frame)"
-msgstr "İmleçte böl (zamanları biçimlendir)"
+msgstr "İmleçte böl (video karesinde)"
 
 #: ../src/command/edit.cpp:1127
 msgid ""
 "Split the current line at the cursor, dividing the line's duration at the "
 "current video frame"
 msgstr ""
+"Geçerli satırı imleçte bölerek satırın süresini geçerli video karesine böler"
 
 #: ../src/command/edit.cpp:1143
 msgid "Redo last undone action"
-msgstr ""
+msgstr "Son geri alınan eylemi yinele"
 
 #: ../src/command/edit.cpp:1148
 msgid "Nothing to &redo"
@@ -1667,7 +1671,7 @@ msgstr "%s eylemini ileri al"
 
 #: ../src/command/edit.cpp:1169
 msgid "Undo last action"
-msgstr ""
+msgstr "Son eylemi geri al"
 
 #: ../src/command/edit.cpp:1174
 msgid "Nothing to &undo"
@@ -1688,18 +1692,16 @@ msgid "Undo %s"
 msgstr "Geri al ve %s"
 
 #: ../src/command/edit.cpp:1194 ../src/command/edit.cpp:1195
-#, fuzzy
 msgid "Revert"
-msgstr "Asla"
+msgstr "Geri al"
 
 #: ../src/command/edit.cpp:1196
 msgid "Revert the active line to its initial state (shown in the upper editor)"
-msgstr ""
+msgstr "Etkin hattı ilk durumuna geri döndür (üst düzenleyicide gösterilir)"
 
 #: ../src/command/edit.cpp:1201
-#, fuzzy
 msgid "revert line"
-msgstr "Satırı sil"
+msgstr "satırı geri al"
 
 #: ../src/command/edit.cpp:1207 ../src/command/edit.cpp:1208
 #: ../src/preferences.cpp:389
@@ -1707,23 +1709,20 @@ msgid "Clear"
 msgstr "Temizle"
 
 #: ../src/command/edit.cpp:1209
-#, fuzzy
 msgid "Clear the current line's text"
-msgstr "Geçerli satırı oynat"
+msgstr "Geçerli satırın metnini sil"
 
 #: ../src/command/edit.cpp:1214 ../src/command/edit.cpp:1233
-#, fuzzy
 msgid "clear line"
-msgstr "Satırı sil"
+msgstr "satırı sil"
 
 #: ../src/command/edit.cpp:1221 ../src/command/edit.cpp:1222
-#, fuzzy
 msgid "Clear Text"
-msgstr "Temizle"
+msgstr "Metni sil"
 
 #: ../src/command/edit.cpp:1223
 msgid "Clear the current line's text, leaving override tags"
-msgstr ""
+msgstr "Geçerli satırın metnini temizler, geçersiz kılma etiketlerini bırakır"
 
 #: ../src/command/edit.cpp:1239 ../src/command/edit.cpp:1240
 #: ../src/command/tool.cpp:271
@@ -1732,7 +1731,7 @@ msgstr "Orjinali Yerleştir"
 
 #: ../src/command/edit.cpp:1241
 msgid "Insert the original line text at the cursor"
-msgstr ""
+msgstr "Orijinal satırın metnini imlece ekle"
 
 #: ../src/command/edit.cpp:1249
 msgid "insert original"
@@ -1751,32 +1750,27 @@ msgstr "Geçerli"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
-msgstr ""
+msgstr "Son sesi aç"
 
 #: ../src/command/recent.cpp:44 ../src/command/recent.cpp:64
-#, fuzzy
 msgid "Open recent keyframes"
-msgstr "Anahtar Kareleri Aç"
+msgstr "Son anahtar kareyi aç"
 
 #: ../src/command/recent.cpp:45 ../src/command/recent.cpp:75
-#, fuzzy
 msgid "Open recent subtitles"
-msgstr "Altyazı aç"
+msgstr "Son altyazıları aç"
 
 #: ../src/command/recent.cpp:46 ../src/command/recent.cpp:87
-#, fuzzy
 msgid "Open recent timecodes"
-msgstr "Zamankodları Dosyasını Aç"
+msgstr "Son zaman kodlarını aç"
 
 #: ../src/command/recent.cpp:47
-#, fuzzy
 msgid "Open recent video"
-msgstr "Video Aç"
+msgstr "Son videoyu aç"
 
 #: ../src/command/recent.cpp:98
-#, fuzzy
 msgid "Open recent videos"
-msgstr "Video Aç"
+msgstr "Son videoları aç"
 
 #: ../src/command/subtitle.cpp:78
 msgid "A&ttachments..."
@@ -1788,7 +1782,7 @@ msgstr "Ekler"
 
 #: ../src/command/subtitle.cpp:80
 msgid "Open the attachment manager dialog"
-msgstr ""
+msgstr "Ek yöneticisi penceresini aç"
 
 #: ../src/command/subtitle.cpp:91
 msgid "&Find..."
@@ -1800,7 +1794,7 @@ msgstr "Bul"
 
 #: ../src/command/subtitle.cpp:93
 msgid "Search for text in the subtitles"
-msgstr ""
+msgstr "Altyazılarda metin ara"
 
 #: ../src/command/subtitle.cpp:104
 msgid "Find &Next"
@@ -1812,7 +1806,7 @@ msgstr "Sonrakini Bul"
 
 #: ../src/command/subtitle.cpp:106
 msgid "Find next match of last search"
-msgstr ""
+msgstr "Son aramanın bir sonraki eşleşmesini bul"
 
 #: ../src/command/subtitle.cpp:126 ../src/command/subtitle.cpp:160
 #: ../src/command/subtitle.cpp:202 ../src/command/grid.cpp:82
@@ -1828,9 +1822,8 @@ msgid "After Current"
 msgstr "Seçiliden Sonra"
 
 #: ../src/command/subtitle.cpp:135
-#, fuzzy
 msgid "Insert a new line after the current one"
-msgstr "Geçerli kareden sonra satırları böl"
+msgstr "Geçerli satırdan sonra yeni bir satır ekle"
 
 #: ../src/command/subtitle.cpp:167 ../src/command/subtitle.cpp:168
 msgid "After Current, at Video Time"
@@ -1838,7 +1831,7 @@ msgstr "Video Zamanında, Seçiliden Sonra"
 
 #: ../src/command/subtitle.cpp:169
 msgid "Insert a new line after the current one, starting at video time"
-msgstr ""
+msgstr "Video zamanından başlayarak geçerli satırdan sonra yeni bir satır ekle"
 
 #: ../src/command/subtitle.cpp:178
 msgid "&Before Current"
@@ -1849,9 +1842,8 @@ msgid "Before Current"
 msgstr "Seçiliden Önce"
 
 #: ../src/command/subtitle.cpp:180
-#, fuzzy
 msgid "Insert a new line before the current one"
-msgstr "Geçerli kareden önce satırları böl"
+msgstr "Geçerli satırdan önce yeni bir satır ekle"
 
 #: ../src/command/subtitle.cpp:209 ../src/command/subtitle.cpp:210
 msgid "Before Current, at Video Time"
@@ -1859,7 +1851,7 @@ msgstr "Video Zamanında, Seçiliden Önce"
 
 #: ../src/command/subtitle.cpp:211
 msgid "Insert a new line before the current one, starting at video time"
-msgstr ""
+msgstr "Video zamanından başlayarak geçerli satırdan önce yeni bir satır ekle"
 
 #: ../src/command/subtitle.cpp:221
 msgid "&New Subtitles"
@@ -1882,7 +1874,6 @@ msgid "Open Subtitles"
 msgstr "Altyazıyı Aç"
 
 #: ../src/command/subtitle.cpp:236
-#, fuzzy
 msgid "Open a subtitles file"
 msgstr "Altyazı dosyası aç"
 
@@ -1897,6 +1888,7 @@ msgstr "Otokayıt Altyazılarını Aç"
 #: ../src/command/subtitle.cpp:250
 msgid "Open a previous version of a file which was autosaved by Aegisub"
 msgstr ""
+"Aegisub tarafından otomatik olarak kaydedilen bir dosyanın önceki sürümünü aç"
 
 #: ../src/command/subtitle.cpp:263
 msgid "Open Subtitles with &Charset..."
@@ -1908,7 +1900,7 @@ msgstr ".Altyazıyı karakter setiyle aç"
 
 #: ../src/command/subtitle.cpp:265
 msgid "Open a subtitles file with a specific file encoding"
-msgstr ""
+msgstr "Belirli bir dosya kodlamasına sahip bir altyazı dosyasını aç"
 
 #: ../src/command/subtitle.cpp:273
 msgid "Choose charset code:"
@@ -1927,9 +1919,8 @@ msgid "Open Subtitles from Video"
 msgstr "Altyazıyı Videodan Aç"
 
 #: ../src/command/subtitle.cpp:284
-#, fuzzy
 msgid "Open the subtitles from the current video file"
-msgstr "Seçili altyazıların sonunu geçerli video karesine ayarlar"
+msgstr "Geçerli video dosyasındaki altyazıları aç"
 
 #: ../src/command/subtitle.cpp:300
 msgid "&Properties..."
@@ -1956,9 +1947,8 @@ msgid "Save Subtitles"
 msgstr "Altyazıyı Kaydet"
 
 #: ../src/command/subtitle.cpp:335
-#, fuzzy
 msgid "Save the current subtitles"
-msgstr "Altyazıyı Kaydet"
+msgstr "Geçerli altyazıları kaydet"
 
 #: ../src/command/subtitle.cpp:350
 msgid "Save Subtitles &as..."
@@ -1982,18 +1972,16 @@ msgid "Select All"
 msgstr "Tümünü seç"
 
 #: ../src/command/subtitle.cpp:363
-#, fuzzy
 msgid "Select all dialogue lines"
-msgstr "Tüm stilleri seç"
+msgstr "Tüm diyalog satırlarını seç"
 
 #: ../src/command/subtitle.cpp:375 ../src/command/subtitle.cpp:376
 msgid "Select Visible"
 msgstr "Görünür Seç"
 
 #: ../src/command/subtitle.cpp:377
-#, fuzzy
 msgid "Select all dialogue lines that are visible on the current video frame"
-msgstr "Seçili altyazıların başlangıcını geçerli video karesine ayarlar"
+msgstr "Geçerli video karesinde görünür olan tüm diyalog satırlarını seç"
 
 #: ../src/command/subtitle.cpp:407
 msgid "Spell &Checker..."
@@ -2017,7 +2005,7 @@ msgstr "ASSDraw3"
 
 #: ../src/command/tool.cpp:60
 msgid "Launch the ASSDraw3 tool for vector drawing"
-msgstr ""
+msgstr "Vektörel çizim için ASSDraw3 aracını başlat"
 
 #: ../src/command/tool.cpp:70
 msgid "&Export Subtitles..."
@@ -2032,6 +2020,8 @@ msgid ""
 "Save a copy of subtitles in a different format or with processing applied to "
 "it"
 msgstr ""
+"Altyazıların bir kopyasını farklı bir formatta veya işleme uygulanmış olarak "
+"kaydet"
 
 #: ../src/command/tool.cpp:83
 msgid "&Fonts Collector..."
@@ -2055,7 +2045,7 @@ msgstr "Satırları Seç"
 
 #: ../src/command/tool.cpp:97
 msgid "Select lines based on defined criteria"
-msgstr ""
+msgstr "Belirlenen kriterlere göre satırları seç"
 
 #: ../src/command/tool.cpp:107
 msgid "&Resample Resolution..."
@@ -2070,6 +2060,8 @@ msgid ""
 "Resample subtitles to maintain their current appearance at a different "
 "script resolution"
 msgstr ""
+"Altyazıların mevcut görünümünü farklı bir betik çözünürlüğünde koruyacak "
+"şekilde yeniden örnekle"
 
 #: ../src/command/tool.cpp:122
 msgid "St&yling Assistant..."
@@ -2085,7 +2077,7 @@ msgstr "&Değişiklikleri kabul et"
 
 #: ../src/command/tool.cpp:143 ../src/command/tool.cpp:227
 msgid "Commit changes and move to the next line"
-msgstr ""
+msgstr "Değişiklikleri uygula ve bir sonraki satıra geç"
 
 #: ../src/command/tool.cpp:152 ../src/command/tool.cpp:236
 msgid "&Preview changes"
@@ -2093,16 +2085,15 @@ msgstr "&Değişiklikleri önizle"
 
 #: ../src/command/tool.cpp:154 ../src/command/tool.cpp:238
 msgid "Commit changes and stay on the current line"
-msgstr ""
+msgstr "Değişiklikleri uygula ve geçerli satırda kal"
 
 #: ../src/command/tool.cpp:164
 msgid "&Styles Manager..."
 msgstr "&Stil Yönetimi"
 
 #: ../src/command/tool.cpp:166
-#, fuzzy
 msgid "Open the styles manager"
-msgstr "Otomasyon yönetimini aç"
+msgstr "Stil yöneticisini aç"
 
 #: ../src/command/tool.cpp:176
 msgid "&Kanji Timer..."
@@ -2114,7 +2105,7 @@ msgstr "Kanji Zamanlama"
 
 #: ../src/command/tool.cpp:178
 msgid "Open the Kanji timer copier"
-msgstr ""
+msgstr "Kanji zamanlayıcı kopyalayıcısını aç"
 
 #: ../src/command/tool.cpp:188
 msgid "&Timing Post-Processor..."
@@ -2125,6 +2116,8 @@ msgid ""
 "Post-process the subtitle timing to add lead-ins and lead-outs, snap timing "
 "to scene changes, etc."
 msgstr ""
+"Altyazı zamanlamasını son işlemden geçirerek başlangıç ve bitiş zamanı "
+"süreleri ekler, sahne değişimlerine göre zamanlamayı ayarlar, vb"
 
 #: ../src/command/tool.cpp:200
 msgid "&Translation Assistant..."
@@ -2140,7 +2133,7 @@ msgstr "Çeviri asistanını aç"
 
 #: ../src/command/tool.cpp:210
 msgid "There is nothing to translate in the file."
-msgstr ""
+msgstr "Dosyada çevrilecek hiçbir şey yok."
 
 #: ../src/command/tool.cpp:247
 msgid "&Next Line"
@@ -2155,7 +2148,7 @@ msgstr "Sonraki Satır"
 
 #: ../src/command/tool.cpp:249
 msgid "Move to the next line without committing changes"
-msgstr ""
+msgstr "Değişiklikleri uygulamadan sonraki satıra geç"
 
 #: ../src/command/tool.cpp:258
 msgid "&Previous Line"
@@ -2169,7 +2162,7 @@ msgstr "Önceki Satır"
 
 #: ../src/command/tool.cpp:260
 msgid "Move to the previous line without committing changes"
-msgstr ""
+msgstr "Değişiklikleri uygulamadan önceki satıra geç"
 
 #: ../src/command/tool.cpp:270
 msgid "&Insert Original"
@@ -2177,7 +2170,7 @@ msgstr "&Orjinali yerleştir"
 
 #: ../src/command/tool.cpp:272
 msgid "Insert the untranslated text"
-msgstr ""
+msgstr "Çevrilmemiş metni ekle"
 
 #: ../src/command/app.cpp:58
 msgid "&About"
@@ -2201,7 +2194,7 @@ msgstr "Ses+Altyazı Göster"
 
 #: ../src/command/app.cpp:71
 msgid "Display audio and the subtitles grid only"
-msgstr ""
+msgstr "Yalnızca ses ve altyazı ızgarasını görüntüle"
 
 #: ../src/command/app.cpp:89
 msgid "&Full view"
@@ -2213,21 +2206,19 @@ msgstr "Hepsini Göster"
 
 #: ../src/command/app.cpp:91
 msgid "Display audio, video and then subtitles grid"
-msgstr ""
+msgstr "Ses, video ve ardından altyazı ızgarasını görüntüle"
 
 #: ../src/command/app.cpp:109
-#, fuzzy
 msgid "S&ubs Only View"
-msgstr "Sadece Altyazıları Göster"
+msgstr "S&adece Altyazıları Göster"
 
 #: ../src/command/app.cpp:110
 msgid "Subs Only View"
 msgstr "Sadece Altyazıları Göster"
 
 #: ../src/command/app.cpp:111
-#, fuzzy
 msgid "Display the subtitles grid only"
-msgstr "Altyazı dosyasını kaydet"
+msgstr "Sadece altyazı ızgarasını göster"
 
 #: ../src/command/app.cpp:125
 msgid "&Video+Subs View"
@@ -2239,7 +2230,7 @@ msgstr "Video+Altyazı Göster"
 
 #: ../src/command/app.cpp:127
 msgid "Display video and the subtitles grid only"
-msgstr ""
+msgstr "Yalnızca video ve altyazı ızgarasını görüntüle"
 
 #: ../src/command/app.cpp:145
 msgid "E&xit"
@@ -2263,7 +2254,7 @@ msgstr "Dil"
 
 #: ../src/command/app.cpp:159
 msgid "Select Aegisub interface language"
-msgstr "Aegisub arabirim dilini seçin"
+msgstr "Aegisub arayüz dilini seç"
 
 #: ../src/command/app.cpp:182
 msgid "&Log window"
@@ -2275,7 +2266,7 @@ msgstr "Kütük penceresi"
 
 #: ../src/command/app.cpp:184
 msgid "View the event log"
-msgstr ""
+msgstr "Etkinlik günlüğünü görüntüle"
 
 #: ../src/command/app.cpp:194
 msgid "New &Window"
@@ -2295,30 +2286,27 @@ msgstr "&Ayarlar"
 
 #: ../src/command/app.cpp:208
 msgid "Configure Aegisub"
-msgstr "Aegisubı Ayarla"
+msgstr "Aegisub'ı Ayarla"
 
 #: ../src/command/app.cpp:222 ../src/command/app.cpp:223
-#, fuzzy
 msgid "Toggle global hotkey overrides"
-msgstr "Karaoke moda geç"
+msgstr "Küresel kısayol tuşlarını değiştir"
 
 #: ../src/command/app.cpp:224
 msgid "Toggle global hotkey overrides (Medusa Mode)"
-msgstr ""
+msgstr "Genel kısayol tuşlarını geçersiz kılmayı değiştir (Medusa Modu)"
 
 #: ../src/command/app.cpp:239
 msgid "Toggle the main toolbar"
-msgstr ""
+msgstr "Ana araç çubuğunu değiştir"
 
 #: ../src/command/app.cpp:244
-#, fuzzy
 msgid "Hide Toolbar"
-msgstr "Etiketleri gizle"
+msgstr "Araç Çubuğunu Gizle"
 
 #: ../src/command/app.cpp:245
-#, fuzzy
 msgid "Show Toolbar"
-msgstr "Hepsini göster"
+msgstr "Araç Çubuğunu Göster"
 
 #: ../src/command/app.cpp:260
 msgid "&Check for Updates..."
@@ -2334,16 +2322,15 @@ msgstr "Aegisub'ın yeni versiyonunun olup olmadığını kontrol edin"
 
 #: ../src/command/grid.cpp:53
 msgid "Move to the next subtitle line"
-msgstr ""
+msgstr "Sonraki altyazı satırına geç"
 
 #: ../src/command/grid.cpp:65
 msgid "Move to the next subtitle line, creating a new one if needed"
-msgstr ""
+msgstr "Gerekirse yeni bir tane oluşturarak bir sonraki altyazı satırına geç"
 
 #: ../src/command/grid.cpp:92
-#, fuzzy
 msgid "Move to the previous line"
-msgstr "Önceki satır"
+msgstr "Önceki satıra geç"
 
 #: ../src/command/grid.cpp:101 ../src/command/grid.cpp:121
 msgid "&Actor Name"
@@ -2354,9 +2341,8 @@ msgid "Actor Name"
 msgstr "Aktör Adı"
 
 #: ../src/command/grid.cpp:103
-#, fuzzy
 msgid "Sort all subtitles by their actor names"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Tüm altyazıları aktör adlarına göre sırala"
 
 #: ../src/command/grid.cpp:107 ../src/command/grid.cpp:127
 #: ../src/command/grid.cpp:139 ../src/command/grid.cpp:151
@@ -2368,9 +2354,8 @@ msgid "sort"
 msgstr "sırala"
 
 #: ../src/command/grid.cpp:123
-#, fuzzy
 msgid "Sort selected subtitles by their actor names"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Seçilen altyazıları aktör adlarına göre sırala"
 
 #: ../src/command/grid.cpp:133 ../src/command/grid.cpp:145
 #: ../src/dialog_search_replace.cpp:87
@@ -2384,14 +2369,12 @@ msgid "Effect"
 msgstr "Efekt"
 
 #: ../src/command/grid.cpp:135
-#, fuzzy
 msgid "Sort all subtitles by their effects"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Tüm altyazıları efektlerine göre sırala"
 
 #: ../src/command/grid.cpp:147
-#, fuzzy
 msgid "Sort selected subtitles by their effects"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Seçilen altyazıları efektlerine göre sırala"
 
 #: ../src/command/grid.cpp:157 ../src/command/grid.cpp:169
 msgid "&End Time"
@@ -2403,14 +2386,12 @@ msgid "End Time"
 msgstr "Bitiş Zamanı"
 
 #: ../src/command/grid.cpp:159
-#, fuzzy
 msgid "Sort all subtitles by their end times"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Tüm altyazıları bitiş zamanlarına göre sırala"
 
 #: ../src/command/grid.cpp:171
-#, fuzzy
 msgid "Sort selected subtitles by their end times"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Seçilen altyazıları bitiş zamanlarına göre sırala"
 
 #: ../src/command/grid.cpp:181 ../src/command/grid.cpp:193
 msgid "&Layer"
@@ -2422,14 +2403,12 @@ msgid "Layer"
 msgstr "Katman"
 
 #: ../src/command/grid.cpp:183
-#, fuzzy
 msgid "Sort all subtitles by their layer number"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Tüm altyazıları katman numaralarına göre sırala"
 
 #: ../src/command/grid.cpp:195
-#, fuzzy
 msgid "Sort selected subtitles by their layer number"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Seçilen altyazıları katman numaralarına göre sırala"
 
 #: ../src/command/grid.cpp:205 ../src/command/grid.cpp:217
 msgid "&Start Time"
@@ -2445,14 +2424,12 @@ msgid "Sort all subtitles by their start times"
 msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
 
 #: ../src/command/grid.cpp:219
-#, fuzzy
 msgid "Sort selected subtitles by their start times"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Seçilen altyazıları başlangıç zamanlarına göre sırala"
 
 #: ../src/command/grid.cpp:229 ../src/command/grid.cpp:241
-#, fuzzy
 msgid "St&yle Name"
-msgstr "Stil adı"
+msgstr "St&il Adı"
 
 #: ../src/command/grid.cpp:230 ../src/command/grid.cpp:242
 #: ../src/dialog_style_editor.cpp:177
@@ -2460,19 +2437,16 @@ msgid "Style Name"
 msgstr "Stil adı"
 
 #: ../src/command/grid.cpp:231
-#, fuzzy
 msgid "Sort all subtitles by their style names"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Tüm altyazıları stil adlarına göre sırala"
 
 #: ../src/command/grid.cpp:243
-#, fuzzy
 msgid "Sort selected subtitles by their style names"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Seçilen altyazıları stil adlarına göre sırala"
 
 #: ../src/command/grid.cpp:254 ../src/command/grid.cpp:255
-#, fuzzy
 msgid "Cycle Tag Hiding Mode"
-msgstr "Etiket saklama modunu dönüştür"
+msgstr "Etiket gizleme modunu değiştir"
 
 #: ../src/command/grid.cpp:256
 msgid "Cycle through tag hiding modes"
@@ -2492,7 +2466,7 @@ msgstr "ASS Şekillendirme Etiket modunu etiketleri gizlemeye ayarla."
 
 #: ../src/command/grid.cpp:278
 msgid "&Hide Tags"
-msgstr "&Etiketleri gizle."
+msgstr "&Etiketleri gizle"
 
 #: ../src/command/grid.cpp:279
 msgid "Hide Tags"
@@ -2500,26 +2474,23 @@ msgstr "Etiketleri gizle"
 
 #: ../src/command/grid.cpp:280
 msgid "Hide override tags in the subtitle grid"
-msgstr ""
+msgstr "Altyazı ızgarasında geçersiz kılma etiketlerini gizle"
 
 #: ../src/command/grid.cpp:294
-#, fuzzy
 msgid "Sh&ow Tags"
-msgstr "&Etiketleri gizle."
+msgstr "Et&iketleri göster"
 
 #: ../src/command/grid.cpp:295
-#, fuzzy
 msgid "Show Tags"
-msgstr "Hepsini göster"
+msgstr "Etiketleri göster"
 
 #: ../src/command/grid.cpp:296
 msgid "Show full override tags in the subtitle grid"
-msgstr ""
+msgstr "Altyazı kılavuzunda tam geçersiz kılma etiketlerini göster"
 
 #: ../src/command/grid.cpp:310
-#, fuzzy
 msgid "S&implify Tags"
-msgstr "Basitleştirilmiş etiketler"
+msgstr "B&asitleştirilmiş Etiketler"
 
 #: ../src/command/grid.cpp:311
 msgid "Simplify Tags"
@@ -2529,77 +2500,70 @@ msgstr "Basitleştirilmiş etiketler"
 msgid ""
 "Replace override tags in the subtitle grid with a simplified placeholder"
 msgstr ""
+"Altyazı kılavuzundaki geçersiz kılma etiketlerini basitleştirilmiş bir yer "
+"tutucu ile değiştir"
 
 #: ../src/command/grid.cpp:348 ../src/command/grid.cpp:349
-#, fuzzy
 msgid "Move line up"
-msgstr "Stili yukarı taşı"
+msgstr "Satırı yukarı taşı"
 
 #: ../src/command/grid.cpp:350
-#, fuzzy
 msgid "Move the selected lines up one row"
-msgstr "Seçili satırları çoğaltır"
+msgstr "Seçili satırları bir satır yukarı taşı"
 
 #: ../src/command/grid.cpp:359 ../src/command/grid.cpp:376
-#, fuzzy
 msgid "move lines"
-msgstr "batırları birleştir"
+msgstr "satırları taşı"
 
 #: ../src/command/grid.cpp:365 ../src/command/grid.cpp:366
-#, fuzzy
 msgid "Move line down"
-msgstr "Stili aşağı taşı"
+msgstr "Satırı aşağı taşı"
 
 #: ../src/command/grid.cpp:367
-#, fuzzy
 msgid "Move the selected lines down one row"
-msgstr "Seçili satırları çoğaltır"
+msgstr "Seçili satırları bir satır aşağı taşı"
 
 #: ../src/command/grid.cpp:383 ../src/command/grid.cpp:384
 msgid "Swap Lines"
 msgstr "Satırları Değiş"
 
 #: ../src/command/grid.cpp:385
-#, fuzzy
 msgid "Swap the two selected lines"
-msgstr "Seçili satırları çoğaltır"
+msgstr "Seçili iki satırı yer değiştir"
 
 #: ../src/command/grid.cpp:396
 msgid "swap lines"
 msgstr "satırları takas et"
 
 #: ../src/command/automation.cpp:48
-#, fuzzy
 msgid "&Reload Automation scripts"
-msgstr "Tüm otomasyon betiklerini"
+msgstr "&Otomasyon betiklerini yeniden yükle"
 
 #: ../src/command/automation.cpp:49
-#, fuzzy
 msgid "Reload Automation scripts"
-msgstr "Tüm otomasyon betiklerini"
+msgstr "Otomasyon betiklerini yeniden yükle"
 
 #: ../src/command/automation.cpp:50
-#, fuzzy
 msgid "Reload all Automation scripts and rescan the autoload folder"
-msgstr "Tüm otomasyon betiklerini"
+msgstr ""
+"Tüm otomasyon betiklerini yeniden yükle ve otomatik yükleme klasörünü "
+"yeniden tara"
 
 #: ../src/command/automation.cpp:55
 msgid "Reloaded all Automation scripts"
 msgstr "Tüm otomasyon betiklerini"
 
 #: ../src/command/automation.cpp:61
-#, fuzzy
 msgid "R&eload autoload Automation scripts"
-msgstr "Otomasyon betikleri otoyüklemeyi tekrar yükle"
+msgstr "O&tomasyon betikleri otoyüklemeyi tekrar yükle"
 
 #: ../src/command/automation.cpp:62
-#, fuzzy
 msgid "Reload autoload Automation scripts"
 msgstr "Otomasyon betikleri otoyüklemeyi tekrar yükle"
 
 #: ../src/command/automation.cpp:63
 msgid "Rescan the Automation autoload folder"
-msgstr ""
+msgstr "Otomasyon otomatik yükleme klasörünü yeniden tara"
 
 #: ../src/command/automation.cpp:67
 msgid "Reloaded autoload Automation scripts"
@@ -2623,6 +2587,9 @@ msgid ""
 "Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan "
 "autoload folder and reload all automation scripts"
 msgstr ""
+"Otomasyon yöneticisini aç. Ctrl: Otomatik yükleme klasörünü yeniden tara. "
+"Ctrl+Shift: Otomatik yükleme klasörünü yeniden tara ve tüm otomasyon "
+"betiklerini yeniden yükle"
 
 #: ../src/command/time.cpp:99
 msgid "adjoin"
@@ -2639,6 +2606,7 @@ msgstr "Bitişi Değiştir"
 #: ../src/command/time.cpp:106
 msgid "Change end times of lines to the next line's start time"
 msgstr ""
+"Satırların bitiş zamanlarını sonraki satırın başlangıç zamanına değiştir"
 
 #: ../src/command/time.cpp:115
 msgid "Change &Start"
@@ -2651,6 +2619,7 @@ msgstr "Başlangıcı Değiştir"
 #: ../src/command/time.cpp:117
 msgid "Change start times of lines to the previous line's end time"
 msgstr ""
+"Satırların başlangıç zamanlarını önceki satırın bitiş zamanına değiştir"
 
 #: ../src/command/time.cpp:127
 msgid "Shift to &Current Frame"
@@ -2662,7 +2631,7 @@ msgstr "Geçerli Kareye Kaydır"
 
 #: ../src/command/time.cpp:129
 msgid "Shift selection so that the active line starts at current frame"
-msgstr ""
+msgstr "Seçimi kaydırarak aktif satırın geçerli karede başlamasını sağla"
 
 #: ../src/command/time.cpp:145
 msgid "shift to frame"
@@ -2670,7 +2639,7 @@ msgstr "kareye kaydır"
 
 #: ../src/command/time.cpp:152
 msgid "S&hift Times..."
-msgstr "Z&amanları Kaydır"
+msgstr "Z&amanı Kaydır"
 
 #: ../src/command/time.cpp:154
 msgid "Shift subtitles by time or frames"
@@ -2713,83 +2682,79 @@ msgid "snap to scene"
 msgstr "sahneye yasla"
 
 #: ../src/command/time.cpp:238 ../src/command/time.cpp:239
-#, fuzzy
 msgid "Add lead in and out"
-msgstr "Çıkış ekle"
+msgstr "Başlangıç ve bitiş ekle"
 
 #: ../src/command/time.cpp:240
-#, fuzzy
 msgid "Add both lead in and out to the selected lines"
-msgstr "Seçili satırları çoğaltır"
+msgstr "Seçilen satırlara başlangıç ve bitiş ekle"
 
 #: ../src/command/time.cpp:252 ../src/command/time.cpp:253
 msgid "Add lead in"
-msgstr "Giriş ekle"
+msgstr "Başlangıç ekle"
 
 #: ../src/command/time.cpp:254
-#, fuzzy
 msgid "Add the lead in time to the selected lines"
-msgstr "Seçili satırları çoğaltır"
+msgstr "Seçilen satırlara başlangıç zamanı ekle"
 
 #: ../src/command/time.cpp:264 ../src/command/time.cpp:265
 msgid "Add lead out"
-msgstr "Çıkış ekle"
+msgstr "Bitiş ekle"
 
 #: ../src/command/time.cpp:266
-#, fuzzy
 msgid "Add the lead out time to the selected lines"
-msgstr "Seçili satırları çoğaltır"
+msgstr "Seçilen satırlara bitiş zamanı ekle"
 
 #: ../src/command/time.cpp:275 ../src/command/time.cpp:276
 msgid "Increase length"
-msgstr ""
+msgstr "Uzunluğu artır"
 
 #: ../src/command/time.cpp:277
 msgid "Increase the length of the current timing unit"
-msgstr ""
+msgstr "Geçerli zamanlama biriminin uzunluğunu arttır"
 
 #: ../src/command/time.cpp:286 ../src/command/time.cpp:287
 msgid "Increase length and shift"
-msgstr ""
+msgstr "Uzunluğu arttır ve kaydır"
 
 #: ../src/command/time.cpp:288
 msgid ""
 "Increase the length of the current timing unit and shift the following items"
 msgstr ""
+"Geçerli zamanlama biriminin uzunluğunu arttır ve sonraki öğeleri kaydır"
 
 #: ../src/command/time.cpp:297 ../src/command/time.cpp:298
 msgid "Decrease length"
-msgstr ""
+msgstr "Uzunluğu azalt"
 
 #: ../src/command/time.cpp:299
 msgid "Decrease the length of the current timing unit"
-msgstr ""
+msgstr "Geçerli zamanlama biriminin uzunluğunu azalt"
 
 #: ../src/command/time.cpp:308 ../src/command/time.cpp:309
 msgid "Decrease length and shift"
-msgstr ""
+msgstr "Uzunluğu azalt ve kaydır"
 
 #: ../src/command/time.cpp:310
 msgid ""
 "Decrease the length of the current timing unit and shift the following items"
-msgstr ""
+msgstr "Geçerli zamanlama biriminin uzunluğunu azalt ve sonraki öğeleri kaydır"
 
 #: ../src/command/time.cpp:319 ../src/command/time.cpp:320
-#, fuzzy
 msgid "Shift start time forward"
-msgstr "Altyazıları zamana veya kareye göre kaydır"
+msgstr "Başlangıç zamanını ileri kaydır"
 
 #: ../src/command/time.cpp:321
 msgid "Shift the start time of the current timing unit forward"
-msgstr ""
+msgstr "Geçerli zamanlama biriminin başlangıç zamanını ileri kaydır"
 
 #: ../src/command/time.cpp:330 ../src/command/time.cpp:331
 msgid "Shift start time backward"
-msgstr ""
+msgstr "Başlangıç zamanını geriye kaydır"
 
 #: ../src/command/time.cpp:332
 msgid "Shift the start time of the current timing unit backward"
-msgstr ""
+msgstr "Geçerli zamanlama biriminin başlangıç zamanını geriye doğru kaydır"
 
 #: ../src/command/time.cpp:342
 msgid "Snap &Start to Video"
@@ -2804,9 +2769,8 @@ msgid "Set start of selected subtitles to current video frame"
 msgstr "Seçili altyazıların başlangıcını geçerli video karesine ayarlar"
 
 #: ../src/command/time.cpp:356
-#, fuzzy
 msgid "Next line or syllable"
-msgstr "Önceki satır veya hece"
+msgstr "Sonraki satır veya hece"
 
 #: ../src/command/time.cpp:368
 msgid "Previous line or syllable"
@@ -2878,9 +2842,8 @@ msgid "Close Audio"
 msgstr "Sesi Kapat"
 
 #: ../src/command/audio.cpp:67
-#, fuzzy
 msgid "Close the currently open audio file"
-msgstr "Geçerli açık videoyu kapat"
+msgstr "Geçerli açık sesi kapat"
 
 #: ../src/command/audio.cpp:77
 msgid "&Open Audio File..."
@@ -2891,9 +2854,8 @@ msgid "Open Audio File"
 msgstr "Ses Dosyası Aç"
 
 #: ../src/command/audio.cpp:79
-#, fuzzy
 msgid "Open an audio file"
-msgstr "Ses Dosyası Aç"
+msgstr "Ses dosyası aç"
 
 #: ../src/command/audio.cpp:82
 msgid "Audio Formats"
@@ -2901,19 +2863,19 @@ msgstr "Ses Formatları"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
-msgstr ""
+msgstr "2s30dk boş sesi aç"
 
 #: ../src/command/audio.cpp:95
 msgid "Open a 150 minutes blank audio clip, for debugging"
-msgstr ""
+msgstr "Hata ayıklama için 150 dakikalık boş bir ses klibi aç"
 
 #: ../src/command/audio.cpp:104 ../src/command/audio.cpp:105
 msgid "Open 2h30 Noise Audio"
-msgstr ""
+msgstr "2s30dk gürültü sesini aç"
 
 #: ../src/command/audio.cpp:106
 msgid "Open a 150 minutes noise-filled audio clip, for debugging"
-msgstr ""
+msgstr "Hata ayıklama için 150 dakikalık gürültü dolu bir ses klibi aç"
 
 #: ../src/command/audio.cpp:116
 msgid "Open Audio from &Video"
@@ -2924,91 +2886,82 @@ msgid "Open Audio from Video"
 msgstr "Videodan ses dosyası aç"
 
 #: ../src/command/audio.cpp:118
-#, fuzzy
 msgid "Open the audio from the current video file"
-msgstr "Geçerli açık videoyu kapat"
+msgstr "Geçerli video dosyasındaki sesi aç"
 
 #: ../src/command/audio.cpp:132
-#, fuzzy
 msgid "&Spectrum Display"
-msgstr "Spektrum"
+msgstr "&Spektrum Ekranı"
 
 #: ../src/command/audio.cpp:133
-#, fuzzy
 msgid "Spectrum Display"
-msgstr "Spektrum"
+msgstr "Spektrum Ekranı"
 
 #: ../src/command/audio.cpp:134
 msgid "Display audio as a frequency-power spectrograph"
-msgstr ""
+msgstr "Sesi frekans-güç spektrum grafiği olarak görüntüle"
 
 #: ../src/command/audio.cpp:148
-#, fuzzy
 msgid "&Waveform Display"
-msgstr "Dalga formu"
+msgstr "&Dalga Formu Ekranı"
 
 #: ../src/command/audio.cpp:149
-#, fuzzy
 msgid "Waveform Display"
-msgstr "Dalga formu"
+msgstr "Dalga Formu Ekranı"
 
 #: ../src/command/audio.cpp:150
 msgid "Display audio as a linear amplitude graph"
-msgstr ""
+msgstr "Sesi doğrusal genlik grafiği olarak görüntüle"
 
 #: ../src/command/audio.cpp:187 ../src/command/audio.cpp:188
 msgid "Create audio clip"
 msgstr "Ses klibi oluştur"
 
 #: ../src/command/audio.cpp:189
-#, fuzzy
 msgid "Save an audio clip of the selected line"
-msgstr "Seçili satırları çoğaltır"
+msgstr "Seçilen satırın ses klibini kaydet"
 
 #: ../src/command/audio.cpp:200
 msgid "Save audio clip"
 msgstr "Ses klibi kaydet"
 
 #: ../src/command/audio.cpp:247 ../src/command/audio.cpp:248
-#, fuzzy
 msgid "Play current audio selection"
-msgstr "Geçerli satırı oynat"
+msgstr "Geçerli ses seçimini oynat"
 
 #: ../src/command/audio.cpp:249
 msgid "Play the current audio selection, ignoring changes made while playing"
 msgstr ""
+"Oynatma sırasında yapılan değişiklikleri yok sayarak geçerli ses seçimini "
+"oynatır"
 
 #: ../src/command/audio.cpp:262
-#, fuzzy
 msgid "Play the audio for the current line"
-msgstr "Geçerli satırı oynat"
+msgstr "Geçerli satırın sesini oynat"
 
 #: ../src/command/audio.cpp:275 ../src/command/audio.cpp:276
-#, fuzzy
 msgid "Play audio selection"
-msgstr "Seçime git"
+msgstr "Ses seçimini oynat"
 
 #: ../src/command/audio.cpp:277
 msgid "Play audio until the end of the selection is reached"
-msgstr ""
+msgstr "Seçimin sonuna gelene kadar sesi oynat"
 
 #: ../src/command/audio.cpp:287 ../src/command/audio.cpp:288
-#, fuzzy
 msgid "Play audio selection or stop"
-msgstr "Dosyanın başından sonuna kadar oynat"
+msgstr "Ses seçimini oynat veya durdur"
 
 #: ../src/command/audio.cpp:289
 msgid "Play selection, or stop playback if it's already playing"
-msgstr ""
+msgstr "Seçimi oynat ya da zaten oynatılıyorsa oynatmayı durdur"
 
 #: ../src/command/audio.cpp:304 ../src/command/audio.cpp:305
 msgid "Stop playing"
-msgstr ""
+msgstr "Oynatmayı durdur"
 
 #: ../src/command/audio.cpp:306
-#, fuzzy
 msgid "Stop audio and video playback"
-msgstr "Video oynatmayı durdur"
+msgstr "Ses ve video oynatmayı durdur"
 
 #: ../src/command/audio.cpp:322 ../src/command/audio.cpp:323
 #: ../src/command/audio.cpp:324
@@ -3022,15 +2975,13 @@ msgstr "Seçimden sonra 500ms oynat"
 
 #: ../src/command/audio.cpp:350 ../src/command/audio.cpp:351
 #: ../src/command/audio.cpp:352
-#, fuzzy
 msgid "Play last 500 ms of selection"
-msgstr "Seçimden sonra 500ms oynat"
+msgstr "Seçimin son 500 ms'sini oynat"
 
 #: ../src/command/audio.cpp:364 ../src/command/audio.cpp:365
 #: ../src/command/audio.cpp:366
-#, fuzzy
 msgid "Play first 500 ms of selection"
-msgstr "Seçimden sonra 500ms oynat"
+msgstr "Seçimin ilk 500 ms'sini oynat"
 
 #: ../src/command/audio.cpp:380 ../src/command/audio.cpp:381
 #: ../src/command/audio.cpp:382
@@ -3043,34 +2994,37 @@ msgstr "İşle"
 
 #: ../src/command/audio.cpp:395
 msgid "Commit any pending audio timing changes"
-msgstr ""
+msgstr "Bekleyen tüm ses zamanlama değişikliklerini uygula"
 
 #: ../src/command/audio.cpp:409 ../src/command/audio.cpp:410
 msgid "Commit and use default timing for next line"
-msgstr ""
+msgstr "Uygula ve bir sonraki satır için varsayılan zamanlamayı kullan"
 
 #: ../src/command/audio.cpp:411
 msgid ""
 "Commit any pending audio timing changes and reset the next line's times to "
 "the default"
 msgstr ""
+"Bekleyen tüm ses zamanlama değişikliklerini uygula ve sonraki satırın "
+"zamanlarını varsayılana sıfırla"
 
 #: ../src/command/audio.cpp:424 ../src/command/audio.cpp:425
 msgid "Commit and move to next line"
-msgstr ""
+msgstr "Uygula ve sonraki satıra geç"
 
 #: ../src/command/audio.cpp:426
 msgid "Commit any pending audio timing changes and move to the next line"
 msgstr ""
+"Bekleyen ses zamanlama değişikliklerini uygula ve bir sonraki satıra geç"
 
 #: ../src/command/audio.cpp:439 ../src/command/audio.cpp:440
-#, fuzzy
 msgid "Commit and stay on current line"
-msgstr "Geçerli satırı oynat"
+msgstr "Değişiklikleri onayla ve mevcut satırda kal"
 
 #: ../src/command/audio.cpp:441
 msgid "Commit any pending audio timing changes and stay on the current line"
 msgstr ""
+"Bekleyen tüm ses zamanlama değişikliklerini uygula ve geçerli satırda kal"
 
 #: ../src/command/audio.cpp:452 ../src/command/audio.cpp:453
 msgid "Go to selection"
@@ -3078,7 +3032,7 @@ msgstr "Seçime git"
 
 #: ../src/command/audio.cpp:454
 msgid "Scroll the audio display to center on the current audio selection"
-msgstr ""
+msgstr "Ses görüntüsünü geçerli ses seçimine odaklanacak şekilde kaydır"
 
 #: ../src/command/audio.cpp:463 ../src/command/audio.cpp:464
 msgid "Scroll left"
@@ -3086,7 +3040,7 @@ msgstr "Sola Kaydır"
 
 #: ../src/command/audio.cpp:465
 msgid "Scroll the audio display left"
-msgstr ""
+msgstr "Ses ekranını sola kaydır"
 
 #: ../src/command/audio.cpp:474 ../src/command/audio.cpp:475
 msgid "Scroll right"
@@ -3094,12 +3048,12 @@ msgstr "Sağa Kaydır"
 
 #: ../src/command/audio.cpp:476
 msgid "Scroll the audio display right"
-msgstr ""
+msgstr "Ses ekranını sağa kaydır"
 
 #: ../src/command/audio.cpp:490 ../src/command/audio.cpp:491
 #: ../src/command/audio.cpp:492
 msgid "Auto scroll audio display to selected line"
-msgstr ""
+msgstr "Ses ekranını seçilen satıra otomatik kaydır"
 
 #: ../src/command/audio.cpp:507 ../src/command/audio.cpp:508
 #: ../src/command/audio.cpp:509
@@ -3108,11 +3062,11 @@ msgstr "Otomatik tüm değişikleri işle"
 
 #: ../src/command/audio.cpp:524 ../src/command/audio.cpp:525
 msgid "Auto go to next line on commit"
-msgstr ""
+msgstr "Uygulama işlemi sonrası sonraki satıra otomatik geç"
 
 #: ../src/command/audio.cpp:526
 msgid "Automatically go to next line on commit"
-msgstr ""
+msgstr "Uygulama işlemi sonrası sonraki satıra otomatik olarak geç"
 
 #: ../src/command/audio.cpp:541 ../src/command/audio.cpp:542
 #: ../src/command/audio.cpp:543
@@ -3127,7 +3081,7 @@ msgstr "Dikey yakınlaştırma ve ses düzeyi kaydırıcılarına bağlantı"
 #: ../src/command/audio.cpp:575 ../src/command/audio.cpp:576
 #: ../src/command/audio.cpp:577
 msgid "Toggle karaoke mode"
-msgstr "Karaoke moda geç"
+msgstr "Karaoke moduna geç"
 
 #: ../src/command/help.cpp:48
 msgid "&Bug Tracker..."
@@ -3145,11 +3099,11 @@ msgstr ""
 
 #: ../src/command/help.cpp:69
 msgid "&Contents"
-msgstr "&Başlıklar"
+msgstr "&İçerikler"
 
 #: ../src/command/help.cpp:70
 msgid "Contents"
-msgstr "Başlıklar"
+msgstr "İçerikler"
 
 #: ../src/command/help.cpp:71
 msgid "Help topics"
@@ -3193,11 +3147,11 @@ msgstr "Görsel Yazımayarları için elkitabı sayfasını açın"
 
 #: ../src/command/help.cpp:117
 msgid "&Website"
-msgstr "&Website"
+msgstr "&Websitesi"
 
 #: ../src/command/help.cpp:118
 msgid "Website"
-msgstr "Website"
+msgstr "Websitesi"
 
 #: ../src/command/help.cpp:119
 msgid "Visit Aegisub's official website"
@@ -3211,6 +3165,7 @@ msgstr "Anahtar Kareleri Kapat"
 msgid ""
 "Discard the currently loaded keyframes and use those from the video, if any"
 msgstr ""
+"Geçerli yüklenen anahtar kareleri iptal et ve varsa videodan gelenleri kullan"
 
 #: ../src/command/keyframe.cpp:66
 msgid "Open Keyframes..."
@@ -3221,14 +3176,12 @@ msgid "Open Keyframes"
 msgstr "Anahtar Kareleri Aç"
 
 #: ../src/command/keyframe.cpp:68
-#, fuzzy
 msgid "Open a keyframe list file"
-msgstr "Anahtar Kareleri Aç"
+msgstr "Anahtar kare listesi dosyası aç"
 
 #: ../src/command/keyframe.cpp:72
-#, fuzzy
 msgid "Open keyframes file"
-msgstr "Anahtar Kareleri Aç"
+msgstr "Anahtar kare dosyası aç"
 
 #: ../src/command/keyframe.cpp:85
 msgid "Save Keyframes..."
@@ -3239,14 +3192,12 @@ msgid "Save Keyframes"
 msgstr "Anahtar Kareleri Kaydet"
 
 #: ../src/command/keyframe.cpp:87
-#, fuzzy
 msgid "Save the current list of keyframes to a file"
-msgstr "Geçerli açık videoyu kapat"
+msgstr "Geçerli anahtar kare listesini bir dosyaya kaydet"
 
 #: ../src/command/keyframe.cpp:95
-#, fuzzy
 msgid "Save keyframes file"
-msgstr "Anahtar Kareleri Kaydet"
+msgstr "Anahtar kare dosyasını kaydet"
 
 #: ../src/dialog_selected_choices.cpp:33 ../src/dialog_export.cpp:126
 msgid "Select &None"
@@ -3258,7 +3209,7 @@ msgstr "Font dizinini güncelle"
 
 #: ../src/subtitles_provider_libass.cpp:113
 msgid "This may take several minutes"
-msgstr ""
+msgstr "Bu işlem birkaç dakika sürebilir"
 
 #: ../src/dialog_spellchecker.cpp:125
 msgid "Misspelled word:"
@@ -3269,13 +3220,12 @@ msgid "Replace with:"
 msgstr "İle değiştir:"
 
 #: ../src/dialog_spellchecker.cpp:182 ../src/dialog_search_replace.cpp:80
-#, fuzzy
 msgid "&Skip Comments"
-msgstr "Yorumlar"
+msgstr "&Yorumları atla"
 
 #: ../src/dialog_spellchecker.cpp:183
 msgid "Ignore &UPPERCASE words"
-msgstr ""
+msgstr "Büyük &harfle yazılan sözcükleri yoksay"
 
 #: ../src/dialog_spellchecker.cpp:187
 msgid "&Replace"
@@ -3290,18 +3240,16 @@ msgid "&Ignore"
 msgstr "&Yoksay"
 
 #: ../src/dialog_spellchecker.cpp:200
-#, fuzzy
 msgid "Ignore a&ll"
-msgstr "Yoksay"
+msgstr "Tümünü y&oksay"
 
 #: ../src/dialog_spellchecker.cpp:206
 msgid "Add to &dictionary"
 msgstr "Sözlüğe &ekle"
 
 #: ../src/dialog_spellchecker.cpp:212
-#, fuzzy
 msgid "Remove fro&m dictionary"
-msgstr "Sözlüğe &ekle"
+msgstr "Sözlükten ka&ldır"
 
 #: ../src/dialog_spellchecker.cpp:279
 msgid "Aegisub has finished checking spelling of this script."
@@ -3433,14 +3381,14 @@ msgid "Copying fonts to archive...\n"
 msgstr "Fontlar arşive kopyalanıyor...\n"
 
 #: ../src/dialog_fonts_collector.cpp:126
-#, fuzzy, c-format
+#, c-format
 msgid "* Failed to create directory '%s': %s.\n"
-msgstr "* %s kopyalama başarısız.\n"
+msgstr "* '%s' dizini oluşturulamadı: %s.\n"
 
 #: ../src/dialog_fonts_collector.cpp:137
-#, fuzzy, c-format
+#, c-format
 msgid "* Failed to open %s.\n"
-msgstr "* %s kopyalama başarısız.\n"
+msgstr "* %s açılırken bir hata oluştu.\n"
 
 #: ../src/dialog_fonts_collector.cpp:192
 #, c-format
@@ -3453,9 +3401,9 @@ msgid "* %s already exists on destination.\n"
 msgstr "* %s hedefte zaten bulunuyor.\n"
 
 #: ../src/dialog_fonts_collector.cpp:196
-#, fuzzy, c-format
+#, c-format
 msgid "* Symlinked %s.\n"
-msgstr "* Kopyalandı %s.\n"
+msgstr "* %s ilişkilendirildi.\n"
 
 #: ../src/dialog_fonts_collector.cpp:198
 #, c-format
@@ -3476,6 +3424,9 @@ msgid ""
 "Over 32 MB of fonts were copied. Some of the fonts may not be loaded by the "
 "player if they are all attached to a Matroska file."
 msgstr ""
+"\n"
+"32 MB'tan fazla font kopyalandı. Eğer tüm fontlar bir Matroska dosyasına "
+"eklenmişse, bazı fontlar oynatıcı tarafından yüklenemeyebilir."
 
 #: ../src/dialog_fonts_collector.cpp:224
 msgid "Check fonts for availability"
@@ -3486,18 +3437,16 @@ msgid "Copy fonts to folder"
 msgstr "Fontları klasöre kopyala"
 
 #: ../src/dialog_fonts_collector.cpp:226
-#, fuzzy
 msgid "Copy fonts to subtitle file's folder"
-msgstr "Fontları klasöre kopyala"
+msgstr "Fontları altyazı dosyasının klasörüne kopyala"
 
 #: ../src/dialog_fonts_collector.cpp:227
 msgid "Copy fonts to zipped archive"
 msgstr "Fontları ziplenmiş arşive kopyala"
 
 #: ../src/dialog_fonts_collector.cpp:229
-#, fuzzy
 msgid "Symlink fonts to folder"
-msgstr "Fontlar klasöre bağlanıyor...\n"
+msgstr "Fontları klasöre bağla"
 
 #: ../src/dialog_fonts_collector.cpp:232 ../src/dialog_selection.cpp:150
 msgid "Action"
@@ -3572,7 +3521,7 @@ msgstr "Maksimum"
 
 #: ../src/audio_renderer_waveform.cpp:155
 msgid "Maximum + Average"
-msgstr ""
+msgstr "Maksimum + Ortalama"
 
 #: ../src/dialog_dummy_video.cpp:103
 msgid "Dummy video options"
@@ -3599,9 +3548,9 @@ msgid "Duration (frames):"
 msgstr "Süre (karelerin):"
 
 #: ../src/dialog_dummy_video.cpp:164
-#, fuzzy, c-format
+#, c-format
 msgid "Resulting duration: %s"
-msgstr "Satır süresi"
+msgstr "Süre: %s"
 
 #: ../src/preferences.cpp:61 ../src/preferences.cpp:63
 #: ../src/preferences.cpp:316 ../src/preferences.cpp:341
@@ -3609,22 +3558,20 @@ msgid "General"
 msgstr "Genel"
 
 #: ../src/preferences.cpp:64
-#, fuzzy
 msgid "Check for updates on startup"
-msgstr "Güncellemeleri kontrol et?"
+msgstr "Açılışta güncelleştirmeleri denetle"
 
 #: ../src/preferences.cpp:65
 msgid "Show main toolbar"
-msgstr ""
+msgstr "Ana araç çubuğunu göster"
 
 #: ../src/preferences.cpp:66
-#, fuzzy
 msgid "Save UI state in subtitles files"
-msgstr "Altyazı dosyasını kaydet"
+msgstr "Kullanıcı arayüzü durumunu altyazı dosyalarında kaydet"
 
 #: ../src/preferences.cpp:69
 msgid "Toolbar Icon Size"
-msgstr ""
+msgstr "Araç Çubuğu Simge Boyutu"
 
 #: ../src/preferences.cpp:70 ../src/preferences.cpp:195
 msgid "Never"
@@ -3639,9 +3586,8 @@ msgid "Ask"
 msgstr "Sor"
 
 #: ../src/preferences.cpp:72
-#, fuzzy
 msgid "Automatically load linked files"
-msgstr "Otomatik tüm değişikleri işle"
+msgstr "Bağlantılı dosyaları otomatik olarak yükle"
 
 #: ../src/preferences.cpp:73
 msgid "Undo Levels"
@@ -3649,7 +3595,7 @@ msgstr "Geri alma sayısı"
 
 #: ../src/preferences.cpp:75
 msgid "Recently Used Lists"
-msgstr ""
+msgstr "Son Kullanılanlar Listesi"
 
 #: ../src/preferences.cpp:76 ../src/dialog_autosave.cpp:70
 msgid "Files"
@@ -3660,13 +3606,12 @@ msgid "Find/Replace"
 msgstr "Bul/Değiştir"
 
 #: ../src/preferences.cpp:83
-#, fuzzy
 msgid "Default styles"
-msgstr "Stil belirle"
+msgstr "Varsayılan stiller"
 
 #: ../src/preferences.cpp:85
 msgid "Default style catalogs"
-msgstr ""
+msgstr "Varsayılan stil katalogları"
 
 #: ../src/preferences.cpp:89
 msgid ""
@@ -3675,30 +3620,30 @@ msgid ""
 "\n"
 "You can set up style catalogs in the Style Manager."
 msgstr ""
+"Seçilen stil katalogları, yeni bir dosya başlattığınızda veya çeşitli "
+"formatlardaki dosyaları içe aktardığınızda yüklenecektir.\n"
+"\n"
+"Stil kataloglarını Stil Yöneticisi'nde ayarlayabilirsiniz."
 
 #: ../src/preferences.cpp:114
-#, fuzzy
 msgid "New files"
-msgstr "Yeni Altyazı"
+msgstr "Yeni dosya"
 
 #: ../src/preferences.cpp:115
 msgid "MicroDVD import"
-msgstr ""
+msgstr "MicroDVD içe aktarma"
 
 #: ../src/preferences.cpp:116
-#, fuzzy
 msgid "SRT import"
-msgstr "stili içeri aktar"
+msgstr "SRT içe aktarma"
 
 #: ../src/preferences.cpp:117
-#, fuzzy
 msgid "TTXT import"
-msgstr "stili içeri aktar"
+msgstr "TTXT içe aktarma"
 
 #: ../src/preferences.cpp:118
-#, fuzzy
 msgid "Plain text import"
-msgstr "stili içeri aktar"
+msgstr "Düz metin içe aktarma"
 
 #: ../src/preferences.cpp:125 ../src/preferences.cpp:354
 msgid "Audio"
@@ -3714,7 +3659,7 @@ msgstr "Kaydırmayı imleçe kilitle"
 
 #: ../src/preferences.cpp:130
 msgid "Snap markers by default"
-msgstr ""
+msgstr "İşaretçileri varsayılan olarak hizala"
 
 #: ../src/preferences.cpp:131
 msgid "Auto-focus on mouse over"
@@ -3722,35 +3667,35 @@ msgstr "Fare üzerindeyken oto-odakla"
 
 #: ../src/preferences.cpp:132
 msgid "Play audio when stepping in video"
-msgstr ""
+msgstr "Videoda adım adım ilerlerken sesi oynat"
 
 #: ../src/preferences.cpp:133
 msgid "Left-click-drag moves end marker"
-msgstr ""
+msgstr "Sol tıklayıp sürükleme bitiş işaretçisini taşır"
 
 #: ../src/preferences.cpp:134
 msgid "Default timing length (ms)"
-msgstr ""
+msgstr "Varsayılan zamanlama uzunluğu (ms)"
 
 #: ../src/preferences.cpp:135
 msgid "Default lead-in length (ms)"
-msgstr ""
+msgstr "Varsayılan başlangıç uzunluğu (ms)"
 
 #: ../src/preferences.cpp:136
 msgid "Default lead-out length (ms)"
-msgstr ""
+msgstr "Varsayılan bitiş uzunluğu (ms)"
 
 #: ../src/preferences.cpp:138
 msgid "Marker drag-start sensitivity (px)"
-msgstr ""
+msgstr "İşaretçi sürükleme başlatma hassasiyeti (piksel)"
 
 #: ../src/preferences.cpp:139
 msgid "Line boundary thickness (px)"
-msgstr ""
+msgstr "Çizgi sınır kalınlığı (piksel)"
 
 #: ../src/preferences.cpp:140
 msgid "Maximum snap distance (px)"
-msgstr ""
+msgstr "Maksimum hizalama mesafesi (piksel)"
 
 #: ../src/preferences.cpp:142
 msgid "Don't show"
@@ -3761,9 +3706,8 @@ msgid "Show previous"
 msgstr "Öncekini göster"
 
 #: ../src/preferences.cpp:142
-#, fuzzy
 msgid "Show previous and next"
-msgstr "Öncekini göster"
+msgstr "Önceki ve sonrakini göster"
 
 #: ../src/preferences.cpp:142
 msgid "Show all"
@@ -3774,23 +3718,20 @@ msgid "Show inactive lines"
 msgstr "Aktif olmayan satırları göster"
 
 #: ../src/preferences.cpp:146
-#, fuzzy
 msgid "Include commented inactive lines"
-msgstr "Aktif olmayan satırları göster"
+msgstr "Yorumlanmış aktif olmayan satırları göster"
 
 #: ../src/preferences.cpp:148
 msgid "Display Visual Options"
-msgstr ""
+msgstr "Görsel Ayar Ekranı"
 
 #: ../src/preferences.cpp:149
-#, fuzzy
 msgid "Keyframes in dialogue mode"
-msgstr "Anahtar kareyi kaydırıcıda göster"
+msgstr "Diyalog modunda anahtar kare"
 
 #: ../src/preferences.cpp:150
-#, fuzzy
 msgid "Keyframes in karaoke mode"
-msgstr "Karaoke moda geç"
+msgstr "Karaoke modunda anahtar kareler"
 
 #: ../src/preferences.cpp:151
 msgid "Cursor time"
@@ -3802,17 +3743,15 @@ msgstr "Video pozisyonu"
 
 #: ../src/preferences.cpp:153 ../src/preferences.cpp:246
 msgid "Seconds boundaries"
-msgstr ""
+msgstr "Saniye sınırları"
 
 #: ../src/preferences.cpp:155
-#, fuzzy
 msgid "Waveform Style"
-msgstr "Dalga formu"
+msgstr "Dalga Formu Stili"
 
 #: ../src/preferences.cpp:157
-#, fuzzy
 msgid "Audio labels"
-msgstr "Ses çalar"
+msgstr "Ses etiketleri"
 
 #: ../src/preferences.cpp:168
 msgid "Show keyframes in slider"
@@ -3820,16 +3759,15 @@ msgstr "Anahtar kareyi kaydırıcıda göster"
 
 #: ../src/preferences.cpp:170
 msgid "Only show visual tools when mouse is over video"
-msgstr ""
+msgstr "Görsel araçları yalnızca fare videonun üzerindeyken göster"
 
 #: ../src/preferences.cpp:172
-#, fuzzy
 msgid "Seek video to line start on selection change"
-msgstr "Başlangıç zamanı satırı için videoyu ara"
+msgstr "Seçim değiştiğinde video'da satır başlangıcına atla"
 
 #: ../src/preferences.cpp:174
 msgid "Automatically open audio when opening video"
-msgstr ""
+msgstr "Video açarken sesi otomatik olarak aç"
 
 #: ../src/preferences.cpp:179
 msgid "Default Zoom"
@@ -3849,26 +3787,23 @@ msgstr "Betik Çözünürlüğü"
 
 #: ../src/preferences.cpp:188
 msgid "Use resolution of first video opened"
-msgstr ""
+msgstr "İlk açılan videonun çözünürlüğünü kullan"
 
 #: ../src/preferences.cpp:191
-#, fuzzy
 msgid "Default width"
-msgstr "Varsayılan"
+msgstr "Varsayılan genişlik"
 
 #: ../src/preferences.cpp:193
-#, fuzzy
 msgid "Default height"
-msgstr "Varsayılan"
+msgstr "Varsayılan yükseklik"
 
 #: ../src/preferences.cpp:195
-#, fuzzy
 msgid "Always set"
-msgstr "Her Zaman"
+msgstr "Her zaman etkinleştir"
 
 #: ../src/preferences.cpp:195
 msgid "Always resample"
-msgstr ""
+msgstr "Her zaman yeniden örnekle"
 
 #: ../src/preferences.cpp:197
 msgid "Match video resolution on open"
@@ -3888,7 +3823,7 @@ msgstr "Yardım balonunu aktif et"
 
 #: ../src/preferences.cpp:208
 msgid "Overwrite in time boxes"
-msgstr ""
+msgstr "Zaman kutularının üzerine yaz"
 
 #: ../src/preferences.cpp:210
 msgid "Enable syntax highlighting"
@@ -3896,31 +3831,31 @@ msgstr "Sözdizim vurgulamayı aktif et"
 
 #: ../src/preferences.cpp:211
 msgid "Dictionaries path"
-msgstr ""
+msgstr "Sözlüklerin yolu"
 
 #: ../src/preferences.cpp:214
 msgid "Character Counter"
-msgstr ""
+msgstr "Karakter Sayacı"
 
 #: ../src/preferences.cpp:215
 msgid "Maximum characters per line"
-msgstr ""
+msgstr "Satır başına maksimum karakter"
 
 #: ../src/preferences.cpp:216
 msgid "Characters Per Second Warning Threshold"
-msgstr ""
+msgstr "Saniye Başına Karakter Uyarı Eşiği"
 
 #: ../src/preferences.cpp:217
 msgid "Characters Per Second Error Threshold"
-msgstr ""
+msgstr "Saniye Başına Karakter Hata Eşiği"
 
 #: ../src/preferences.cpp:218
 msgid "Ignore whitespace"
-msgstr ""
+msgstr "Boşlukları yoksay"
 
 #: ../src/preferences.cpp:219
 msgid "Ignore punctuation"
-msgstr ""
+msgstr "Noktalama işaretlerini yoksay"
 
 #: ../src/preferences.cpp:221
 msgid "Grid"
@@ -3928,15 +3863,15 @@ msgstr "Izgara"
 
 #: ../src/preferences.cpp:222
 msgid "Focus grid on click"
-msgstr ""
+msgstr "Tıklamada ızgaraya odaklan"
 
 #: ../src/preferences.cpp:223
 msgid "Highlight visible subtitles"
-msgstr ""
+msgstr "Görünen altyazıları vurgula"
 
 #: ../src/preferences.cpp:224
 msgid "Hide overrides symbol"
-msgstr ""
+msgstr "Geçersiz kılma sembolünü gizle"
 
 #: ../src/preferences.cpp:232 ../src/dialog_style_editor.cpp:179
 msgid "Colors"
@@ -3948,24 +3883,23 @@ msgstr "Ses Ekranı"
 
 #: ../src/preferences.cpp:241
 msgid "Play cursor"
-msgstr "İmleçi oynat"
+msgstr "Oynatma imleci"
 
 #: ../src/preferences.cpp:242
 msgid "Line boundary start"
-msgstr ""
+msgstr "Satır sınırı başlangıcı"
 
 #: ../src/preferences.cpp:243
 msgid "Line boundary end"
-msgstr ""
+msgstr "Satır sınırı sonu"
 
 #: ../src/preferences.cpp:244
-#, fuzzy
 msgid "Line boundary inactive line"
-msgstr "Aktif olmayan satırları göster"
+msgstr "Aktif olmayan satır sınırı"
 
 #: ../src/preferences.cpp:245
 msgid "Syllable boundaries"
-msgstr ""
+msgstr "Hece sınırları"
 
 #: ../src/preferences.cpp:248
 msgid "Syntax Highlighting"
@@ -3985,7 +3919,7 @@ msgstr "Yorumlar"
 
 #: ../src/preferences.cpp:252
 msgid "Drawings"
-msgstr ""
+msgstr "Çizimler"
 
 #: ../src/preferences.cpp:253
 msgid "Brackets"
@@ -4016,14 +3950,12 @@ msgid "Karaoke templates"
 msgstr "Karaoke Şablonları"
 
 #: ../src/preferences.cpp:261
-#, fuzzy
 msgid "Karaoke variables"
-msgstr "Karaoke Şablonları"
+msgstr "Karaoke değişkenleri"
 
 #: ../src/preferences.cpp:267
-#, fuzzy
 msgid "Audio Color Schemes"
-msgstr "Ses seviyesi"
+msgstr "Ses Ekranı Renkleri"
 
 #: ../src/preferences.cpp:269 ../src/preferences.cpp:370
 msgid "Spectrum"
@@ -4034,9 +3966,8 @@ msgid "Waveform"
 msgstr "Dalga formu"
 
 #: ../src/preferences.cpp:272
-#, fuzzy
 msgid "Subtitle Grid"
-msgstr "Altyazı sağlayıcısı"
+msgstr "Altyazı Izgarası"
 
 #: ../src/preferences.cpp:273
 msgid "Standard foreground"
@@ -4071,9 +4002,8 @@ msgid "Selected comment background"
 msgstr "Seçili yorum arkaplanı"
 
 #: ../src/preferences.cpp:281
-#, fuzzy
 msgid "Header background"
-msgstr "Standart arkaplan"
+msgstr "Başlık arka planı"
 
 #: ../src/preferences.cpp:282
 msgid "Left Column"
@@ -4088,18 +4018,44 @@ msgid "Lines"
 msgstr "Satırlar"
 
 #: ../src/preferences.cpp:285
-#, fuzzy
 msgid "CPS Error"
-msgstr "Hata"
+msgstr "CPS Hatası"
+
+#: ../src/preferences.cpp:291
+msgid "Visual Typesetting Tools"
+msgstr "Görsel Dizgi Araçları"
+
+#: ../src/preferences.cpp:292
+msgid "Primary Lines"
+msgstr "Birincil Satırlar"
+
+#: ../src/preferences.cpp:293
+msgid "Secondary Lines"
+msgstr "İkincil Satırlar"
+
+#: ../src/preferences.cpp:294
+msgid "Primary Highlight"
+msgstr "Birincil Vurgulama"
+
+#: ../src/preferences.cpp:295
+msgid "Secondary Highlight"
+msgstr "İkincil Vurgulama"
+
+#: ../src/preferences.cpp:298
+msgid "Visual Typesetting Tools Alpha"
+msgstr "Görsel Dizgi Araçları Alfa"
+
+#: ../src/preferences.cpp:299
+msgid "Shaded Area"
+msgstr "Shaded Area"
 
 #: ../src/preferences.cpp:294
 msgid "Backup"
 msgstr "Yedek"
 
 #: ../src/preferences.cpp:296
-#, fuzzy
 msgid "Automatic Save"
-msgstr "Otomasyon Yönetimi"
+msgstr "Otomatik Kayıt"
 
 #: ../src/preferences.cpp:297 ../src/preferences.cpp:305
 msgid "Enable"
@@ -4107,7 +4063,7 @@ msgstr "Aktif et"
 
 #: ../src/preferences.cpp:300
 msgid "Interval in seconds"
-msgstr ""
+msgstr "Saniye cinsinden aralık"
 
 #: ../src/preferences.cpp:301 ../src/preferences.cpp:307
 #: ../src/preferences.cpp:368
@@ -4116,12 +4072,11 @@ msgstr "Ana yol"
 
 #: ../src/preferences.cpp:302
 msgid "Autosave after every change"
-msgstr ""
+msgstr "Her değişiklikten sonra otomatik kaydet"
 
 #: ../src/preferences.cpp:304
-#, fuzzy
 msgid "Automatic Backup"
-msgstr "Otomasyon"
+msgstr "Otomatik Yedekleme"
 
 #: ../src/preferences.cpp:318
 msgid "Base path"
@@ -4204,6 +4159,8 @@ msgid ""
 "Changing these settings might result in bugs and/or crashes.  Do not touch "
 "these unless you know what you're doing."
 msgstr ""
+"Bu ayarların değiştirilmesi hatalara ve/veya çökmelere neden olabilir.  Ne "
+"yaptığınızı bilmiyorsanız bunlara dokunmayın."
 
 #: ../src/preferences.cpp:356 ../src/preferences.cpp:419
 msgid "Expert"
@@ -4215,7 +4172,7 @@ msgstr "Ses sağlayıcı"
 
 #: ../src/preferences.cpp:362
 msgid "Audio player"
-msgstr "Ses çalar"
+msgstr "Ses oynatıcısı"
 
 #: ../src/preferences.cpp:364
 msgid "Cache"
@@ -4266,9 +4223,8 @@ msgid "Avisynth down-mixer"
 msgstr "Avisynth alt-mikser"
 
 #: ../src/preferences.cpp:383
-#, fuzzy
 msgid "Force sample rate"
-msgstr "Betiği yeniden örnekle"
+msgstr "Örnekleme hızını zorla"
 
 #: ../src/preferences.cpp:389
 msgid "Ignore"
@@ -4280,31 +4236,31 @@ msgstr "Dur"
 
 #: ../src/preferences.cpp:389
 msgid "Abort"
-msgstr ""
+msgstr "İptal"
 
 #: ../src/preferences.cpp:391
 msgid "Audio indexing error handling mode"
-msgstr ""
+msgstr "Ses dizini hata işleme modu"
 
 #: ../src/preferences.cpp:393
 msgid "Always index all audio tracks"
-msgstr ""
+msgstr "Her zaman tüm ses parçalarını dizinle"
 
 #: ../src/preferences.cpp:398
 msgid "Portaudio device"
-msgstr ""
+msgstr "Portaudio aygıtı"
 
 #: ../src/preferences.cpp:403
 msgid "OSS Device"
-msgstr ""
+msgstr "OSS Aygıtı"
 
 #: ../src/preferences.cpp:408
 msgid "Buffer latency"
-msgstr ""
+msgstr "Arabellek gecikmesi"
 
 #: ../src/preferences.cpp:409
 msgid "Buffer length"
-msgstr ""
+msgstr "Arabellek uzunluğu"
 
 #: ../src/preferences.cpp:422
 msgid "Video provider"
@@ -4316,7 +4272,7 @@ msgstr "Altyazı sağlayıcısı"
 
 #: ../src/preferences.cpp:428
 msgid "Force BT.601"
-msgstr ""
+msgstr "BT.601'i zorla kullan"
 
 #: ../src/preferences.cpp:432
 msgid "Allow pre-2.56a Avisynth"
@@ -4328,15 +4284,15 @@ msgstr "Avisynth hafıza limiti"
 
 #: ../src/preferences.cpp:442
 msgid "Debug log verbosity"
-msgstr ""
+msgstr "Hata ayıklama günlüğü ayrıntı seviyesi"
 
 #: ../src/preferences.cpp:444
 msgid "Decoding threads"
-msgstr ""
+msgstr "Çözümleme iş parçacıkları"
 
 #: ../src/preferences.cpp:445
 msgid "Enable unsafe seeking"
-msgstr ""
+msgstr "Güvensiz aramayı etkinleştir"
 
 #: ../src/preferences.cpp:574
 msgid "Hotkeys"
@@ -4356,7 +4312,7 @@ msgstr "Varsayılana geri dön?"
 
 #: ../src/preferences.cpp:690
 msgid "Preferences"
-msgstr ""
+msgstr "Tercihler"
 
 #: ../src/preferences.cpp:718
 msgid "&Restore Defaults"
@@ -4371,9 +4327,9 @@ msgid "Cu&t"
 msgstr "Ke&s"
 
 #: ../src/subs_edit_ctrl.cpp:402
-#, fuzzy, c-format
+#, c-format
 msgid "Remove \"%s\" from dictionary"
-msgstr "\"%s\" sözlüğe ekle"
+msgstr "Sözlükten “%s” sözcüğünü kaldır"
 
 #: ../src/subs_edit_ctrl.cpp:407
 msgid "No spell checker suggestions"
@@ -4416,7 +4372,7 @@ msgstr "Boş"
 
 #: ../src/menu.cpp:227
 msgid "&Recent"
-msgstr "&Geçerli olanlar"
+msgstr "&Son kullanılanlar"
 
 #: ../src/menu.cpp:410
 msgid "No Automation macros loaded"
@@ -4424,7 +4380,9 @@ msgstr "Otomasyon makrosu yüklenmedi"
 
 #: ../src/dialog_about.cpp:46
 msgid "Translated into LANGUAGE by PERSON\n"
-msgstr "Kerim Demirkaynak tarafından Türkçeye çevrilmiştir\n"
+msgstr ""
+"Kerim Demirkaynak ve Türk Anime çevirmenleri tarafından Türkçeye "
+"çevrilmiştir\n"
 
 #: ../src/dialog_about.cpp:122
 msgid ""
@@ -4542,9 +4500,8 @@ msgid "Group all of the source text."
 msgstr "Tüm kaynak yazıyı gruplandır."
 
 #: ../src/hotkey.cpp:175
-#, fuzzy
 msgid "Invalid command name for hotkey"
-msgstr "'%s' geçerli bir komut adı değil"
+msgstr "Kısayol tuşu için geçersiz komut adı"
 
 #: ../src/dialog_paste_over.cpp:55
 msgid "Select Fields to Paste Over"
@@ -4574,15 +4531,15 @@ msgstr "Aktör"
 
 #: ../src/dialog_paste_over.cpp:69
 msgid "Margin Left"
-msgstr "Sol Marjin"
+msgstr "Sol Kenar Boşluğu"
 
 #: ../src/dialog_paste_over.cpp:70
 msgid "Margin Right"
-msgstr "Sağ Marjin"
+msgstr "Sağ Kenar Boşluğu"
 
 #: ../src/dialog_paste_over.cpp:71
 msgid "Margin Vertical"
-msgstr "Dikey Marjin"
+msgstr "Dikey Kenar Boşluğu"
 
 #: ../src/dialog_paste_over.cpp:92
 msgid "&Times"
@@ -4590,7 +4547,7 @@ msgstr "&Süre"
 
 #: ../src/dialog_paste_over.cpp:94
 msgid "T&ext"
-msgstr ""
+msgstr "M&etin"
 
 #: ../src/main.cpp:274
 #, c-format
@@ -4603,6 +4560,13 @@ msgid ""
 "\n"
 "Aegisub will now close."
 msgstr ""
+"Hay aksi, Aegisub çöktü!\n"
+"\n"
+"Dosyanızın bir kopyası şu adrese kaydedilmeye çalışıldı:\n"
+"\n"
+"%s\n"
+"\n"
+"Aegisub şimdi kapanacak."
 
 #: ../src/main.cpp:302
 msgid ""
@@ -4618,7 +4582,7 @@ msgstr "Güncellemeleri kontrol et?"
 
 #: ../src/main.cpp:387 ../src/main.cpp:392
 msgid "Program error"
-msgstr ""
+msgstr "Program hatası"
 
 #: ../src/main.cpp:406
 #, c-format
@@ -4628,6 +4592,10 @@ msgid ""
 "\n"
 "Error Message: %s"
 msgstr ""
+"Beklenmedik bir hata oluştu. Lütfen çalışmanızı kaydedin ve Aegisub'ı "
+"yeniden başlatın.\n"
+"\n"
+"Hata Mesajı: %s"
 
 #: ../src/subs_edit_box.cpp:119
 msgid "&Comment"
@@ -4635,7 +4603,7 @@ msgstr "&Yorum"
 
 #: ../src/subs_edit_box.cpp:120
 msgid "Comment this line out. Commented lines don't show up on screen."
-msgstr "Bu satırı yorum yap. Yorum satırları ekranda gözükmez."
+msgstr "Bu satıra yorum yap. Yorum satırları ekranda gözükmez."
 
 #: ../src/subs_edit_box.cpp:127
 msgid "Style for this line"
@@ -4657,11 +4625,11 @@ msgid ""
 "karaoke scripts, or for the effects supported by the renderer."
 msgstr ""
 "Bu satır için efekt. Burası karaoke betikleri için ekstra bilgi alanı olarak "
-"kullanılabilir veya taraycı tarafından desteklenen efektler için."
+"kullanılabilir veya işleyici tarafından desteklenen efektler için."
 
 #: ../src/subs_edit_box.cpp:151
 msgid "Number of characters in the longest line of this subtitle."
-msgstr ""
+msgstr "Bu altyazının en uzun satırındaki karakter sayısı."
 
 #: ../src/subs_edit_box.cpp:158
 msgid "Layer number"
@@ -4681,30 +4649,27 @@ msgstr "Satır süresi"
 
 #: ../src/subs_edit_box.cpp:168
 msgid "Left Margin (0 = default from style)"
-msgstr ""
+msgstr "Sol Kenar Boşluğu (0 = stilden varsayılan)"
 
 #: ../src/subs_edit_box.cpp:168
-#, fuzzy
 msgid "left margin change"
-msgstr "katman değiştir"
+msgstr "sol kenar boşluğunu değiştir"
 
 #: ../src/subs_edit_box.cpp:169
 msgid "Right Margin (0 = default from style)"
-msgstr ""
+msgstr "Sağ Kenar Boşluğu (0 = stilden varsayılan)"
 
 #: ../src/subs_edit_box.cpp:169
-#, fuzzy
 msgid "right margin change"
-msgstr "Sağ Marjin"
+msgstr "sağ kenar boşluğu"
 
 #: ../src/subs_edit_box.cpp:170
 msgid "Vertical Margin (0 = default from style)"
-msgstr ""
+msgstr "Dikey Kenar Boşluğu (0 = stilden varsayılan)"
 
 #: ../src/subs_edit_box.cpp:170
-#, fuzzy
 msgid "vertical margin change"
-msgstr "Dikey Marjin"
+msgstr "dikey kenar boşluğu"
 
 #: ../src/subs_edit_box.cpp:189
 msgid "T&ime"
@@ -4732,11 +4697,13 @@ msgid ""
 "edit box. This is sometimes useful when editing subtitles or translating "
 "subtitles into another language."
 msgstr ""
+"Altyazı satırı ilk seçildiğinde, içeriğini düzenleme kutusunun üst kısmında "
+"gösterir. Bu, bazen altyazı düzenlerken veya altyazıları başka bir dile "
+"çevirirken faydalı olabilir."
 
 #: ../src/subs_edit_box.cpp:441
-#, fuzzy
 msgid "modify text"
-msgstr "zamanları düzenle"
+msgstr "metni değiştir"
 
 #: ../src/subs_edit_box.cpp:516
 msgid "modify times"
@@ -4808,7 +4775,7 @@ msgstr "&Stil"
 
 #: ../src/dialog_selection.cpp:137
 msgid "Act&or"
-msgstr ""
+msgstr "Akt&ör"
 
 #: ../src/dialog_selection.cpp:137
 msgid "E&ffect"
@@ -4827,9 +4794,8 @@ msgid "D&ialogues"
 msgstr "D&iyaloglar"
 
 #: ../src/dialog_selection.cpp:144
-#, fuzzy
 msgid "Comme&nts"
-msgstr "Yorumlar"
+msgstr "Yorum&lar"
 
 #: ../src/dialog_selection.cpp:149
 msgid "Set se&lection"
@@ -4848,33 +4814,33 @@ msgid "Intersect &with selection"
 msgstr "Seçimden &kes"
 
 #: ../src/dialog_selection.cpp:211
-#, fuzzy, c-format
+#, c-format
 msgid "Selection was set to one line"
 msgid_plural "Selection was set to %u lines"
 msgstr[0] "Seçim satıra ayarlandı"
-msgstr[1] "Seçim satıra ayarlandı"
+msgstr[1] "Seçim %u satırlarına ayarlandı"
 
 #: ../src/dialog_selection.cpp:212
 msgid "Selection was set to no lines"
 msgstr "Seçim satıra ayarlandı"
 
 #: ../src/dialog_selection.cpp:218
-#, fuzzy, c-format
+#, c-format
 msgid "One line was added to selection"
 msgid_plural "%u lines were added to selection"
-msgstr[0] "Seçime hiçbir satır eklenmedi"
-msgstr[1] "Seçime hiçbir satır eklenmedi"
+msgstr[0] "Seçime bir satır eklendi"
+msgstr[1] "Seçime %u satırları eklendi"
 
 #: ../src/dialog_selection.cpp:219
 msgid "No lines were added to selection"
 msgstr "Seçime hiçbir satır eklenmedi"
 
 #: ../src/dialog_selection.cpp:230
-#, fuzzy, c-format
+#, c-format
 msgid "One line was removed from selection"
 msgid_plural "%u lines were removed from selection"
-msgstr[0] "Hiçbir satır seçimden çıkarılmadı"
-msgstr[1] "Hiçbir satır seçimden çıkarılmadı"
+msgstr[0] "Seçimden bir satır çıkarıldı"
+msgstr[1] "%u satırları seçimden çıkarıldı"
 
 #: ../src/dialog_selection.cpp:231
 msgid "No lines were removed from selection"
@@ -4887,54 +4853,53 @@ msgstr "Seçim"
 #: ../src/font_file_lister.cpp:72
 #, c-format
 msgid "Style '%s' does not exist\n"
-msgstr ""
+msgstr "'%s' stili mevcut değil\n"
 
 #: ../src/font_file_lister.cpp:138
 #, c-format
 msgid "Could not find font '%s'\n"
-msgstr ""
+msgstr "'%s' fontu bulunamadı\n"
 
 #: ../src/font_file_lister.cpp:145
 #, c-format
 msgid "Found '%s' at '%s'\n"
-msgstr ""
+msgstr "'%s' bulundu, konum: '%s'\n"
 
 #: ../src/font_file_lister.cpp:149
 #, c-format
 msgid "'%s' does not have a bold variant.\n"
-msgstr ""
+msgstr "'%s' öğesinin kalın bir varyantı yok..\n"
 
 #: ../src/font_file_lister.cpp:151
 #, c-format
 msgid "'%s' does not have an italic variant.\n"
-msgstr ""
+msgstr "'%s' öğesisinin italik bir varyantı yok.\n"
 
 #: ../src/font_file_lister.cpp:155
 #, c-format
 msgid "'%s' is missing %d glyphs used.\n"
-msgstr ""
+msgstr "'%s' eksik %d glif içeriyor.\n"
 
 #: ../src/font_file_lister.cpp:157
 #, c-format
 msgid "'%s' is missing the following glyphs used: %s\n"
-msgstr ""
+msgstr "'%s' aşağıdaki glifleri eksik: %s\n"
 
 #: ../src/font_file_lister.cpp:168
 msgid "Used in styles:\n"
-msgstr ""
+msgstr "Kullanıldığı yerler:\n"
 
 #: ../src/font_file_lister.cpp:174
-#, fuzzy
 msgid "Used on lines:"
-msgstr "batırları birleştir"
+msgstr "Kullanıldığı satırlar:"
 
 #: ../src/font_file_lister.cpp:186
 msgid "Parsing file\n"
-msgstr ""
+msgstr "Dosya ayrıştırılıyor\n"
 
 #: ../src/font_file_lister.cpp:200
 msgid "Searching for font files\n"
-msgstr ""
+msgstr "Font dosyaları aranıyor\n"
 
 #: ../src/font_file_lister.cpp:202
 msgid ""
@@ -4949,11 +4914,11 @@ msgid "All fonts found.\n"
 msgstr "Tüm fontlar bulundu.\n"
 
 #: ../src/font_file_lister.cpp:211
-#, fuzzy, c-format
+#, c-format
 msgid "One font could not be found\n"
 msgid_plural "%d fonts could not be found.\n"
-msgstr[0] "Tamamlandı. Bazı fontlar kopyalanamadı."
-msgstr[1] "Tamamlandı. Bazı fontlar kopyalanamadı."
+msgstr[0] "Bir font bulunamadı\n"
+msgstr[1] "%d fontları bulunamadı.\n"
 
 #: ../src/font_file_lister.cpp:214
 #, c-format
@@ -4961,7 +4926,9 @@ msgid "One font was found, but was missing glyphs used in the script.\n"
 msgid_plural ""
 "%d fonts were found, but were missing glyphs used in the script.\n"
 msgstr[0] ""
+"Uma fonte foi encontrada, mas não possui glifos utilizados no script.\n"
 msgstr[1] ""
+"%d fontes foram encontradas, mas não possuem glifos utilizados no script.\n"
 
 #: ../src/export_framerate.cpp:52
 msgid "Transform Framerate"
@@ -4977,6 +4944,13 @@ msgid ""
 "It can also be used to convert subtitles to a different speed video, such as "
 "NTSC to PAL speedup."
 msgstr ""
+"Altyazı zamanlarını, geçersiz kılma etiketlerindekiler de dahil olmak üzere, "
+"başlangıç kare hızından bitiş kare hızına dönüştür.\n"
+"\n"
+"Bu, normal zamanlı altyazıları VFRaC zamanlı altyazılara dönüştürmek için "
+"kullanışlıdır ve hardsubbing işlemi için gereklidir..\n"
+"Ayrıca, altyazıları farklı hızda bir videoya dönüştürmek için "
+"kullanılabilir, örneğin NTSC'den PAL hızlandırması."
 
 #: ../src/export_framerate.cpp:92
 msgid "V&ariable"
@@ -5001,16 +4975,15 @@ msgstr "Çıktı: "
 #: ../src/audio_display.cpp:677
 #, c-format
 msgid "%d%%, %d pixel/second"
-msgstr ""
+msgstr "%d%%, %d piksel/saniye"
 
 #: ../src/dialog_progress.cpp:197
 msgid "Cancel"
-msgstr "İptal et"
+msgstr "İptal"
 
 #: ../src/dialog_progress.cpp:245
-#, fuzzy
 msgid "Cancelling..."
-msgstr "İptal et"
+msgstr "İptal ediliyor..."
 
 #: ../src/visual_tool_vector_clip.cpp:57
 msgid "Drag control points"
@@ -5073,9 +5046,8 @@ msgid "Draws a smoothed freehand shape"
 msgstr "Yumuşatılmış freehand şekli çiz"
 
 #: ../src/visual_tool_vector_clip.cpp:265
-#, fuzzy
 msgid "delete control point"
-msgstr "Kontrol noktası ekler"
+msgstr "kontrol noktasını sil"
 
 #: ../src/dialog_automation.cpp:106
 msgid "Automation Manager"
@@ -5167,7 +5139,7 @@ msgstr ""
 #: ../src/dialog_automation.cpp:298
 #, c-format
 msgid "    Macro: %s (%s)"
-msgstr ""
+msgstr "    Makro: %s (%s)"
 
 #: ../src/dialog_automation.cpp:301
 #, c-format
@@ -5223,23 +5195,20 @@ msgid "&Use regular expressions"
 msgstr "&Normal ifadeleri kullan"
 
 #: ../src/dialog_search_replace.cpp:81
-#, fuzzy
 msgid "S&kip Override Tags"
-msgstr "&Etiketleri gizle."
+msgstr "G&eçersiz Kılma Etiketlerini Atla"
 
 #: ../src/dialog_search_replace.cpp:87
 msgid "St&yle"
-msgstr ""
+msgstr "St&il"
 
 #: ../src/dialog_search_replace.cpp:87
-#, fuzzy
 msgid "A&ctor"
-msgstr "Aktör"
+msgstr "A&ktör"
 
 #: ../src/dialog_search_replace.cpp:88
-#, fuzzy
 msgid "A&ll rows"
-msgstr "&Tüm satırlar"
+msgstr "T&üm satırlar"
 
 #: ../src/dialog_search_replace.cpp:91
 msgid "Limit to"
@@ -5258,9 +5227,8 @@ msgid "Open autosave file"
 msgstr "Otokayıt dosyasını aç"
 
 #: ../src/dialog_autosave.cpp:75
-#, fuzzy
 msgid "Versions"
-msgstr "Versiyon Kontrol"
+msgstr "Sürümler"
 
 #: ../src/dialog_autosave.cpp:85
 msgid "Open"
@@ -5269,12 +5237,12 @@ msgstr "Aç"
 #: ../src/dialog_autosave.cpp:94
 #, c-format
 msgid "%s [ORIGINAL BACKUP]"
-msgstr ""
+msgstr "%s [ORIJINAL YEDEK]"
 
 #: ../src/dialog_autosave.cpp:95
 #, c-format
 msgid "%s [RECOVERED]"
-msgstr ""
+msgstr "%s [KURTARILDI]"
 
 #: ../src/audio_box.cpp:73
 msgid "Horizontal zoom"
@@ -5314,7 +5282,7 @@ msgstr "Sol"
 
 #: ../src/grid_column.cpp:238
 msgid "Left Margin"
-msgstr "Sol Marjin"
+msgstr "Sol Kenar Boşluğu"
 
 #: ../src/grid_column.cpp:242 ../src/dialog_style_editor.cpp:288
 msgid "Right"
@@ -5322,24 +5290,23 @@ msgstr "Sağ"
 
 #: ../src/grid_column.cpp:243
 msgid "Right Margin"
-msgstr "Sağ Marjin"
+msgstr "Sağ Kenar Boşluğu"
 
 #: ../src/grid_column.cpp:247 ../src/dialog_style_editor.cpp:288
 msgid "Vert"
-msgstr "Dik"
+msgstr "Dikey"
 
 #: ../src/grid_column.cpp:248
 msgid "Vertical Margin"
-msgstr "Dikey Marjin"
+msgstr "Dikey Kenar Boşluğu"
 
 #: ../src/grid_column.cpp:266
-#, fuzzy
 msgid "CPS"
-msgstr "FPS"
+msgstr "CPS"
 
 #: ../src/grid_column.cpp:267
 msgid "Characters Per Second"
-msgstr ""
+msgstr "Saniye Başına Karakter"
 
 #: ../src/dialog_text_import.cpp:47
 msgid "Text import options"
@@ -5355,7 +5322,7 @@ msgstr "Yorum başlatıcı:"
 
 #: ../src/dialog_text_import.cpp:61
 msgid "Include blank lines"
-msgstr ""
+msgstr "Boş satırları dahil et"
 
 #: ../src/video_box.cpp:57
 msgid "Seek video"
@@ -5442,14 +5409,12 @@ msgid "OEM"
 msgstr "OEM"
 
 #: ../src/dialog_colorpicker.cpp:542
-#, fuzzy
 msgid "Select Color"
-msgstr "Tümünü seç"
+msgstr "Renk Seçimi"
 
 #: ../src/dialog_colorpicker.cpp:556
-#, fuzzy
 msgid "Color spectrum"
-msgstr "Spektrum"
+msgstr "Spektrum rengi"
 
 #: ../src/dialog_colorpicker.cpp:560
 msgid "RGB/R"
@@ -5473,15 +5438,15 @@ msgstr "HSV/H"
 
 #: ../src/dialog_colorpicker.cpp:567
 msgid "RGB color"
-msgstr ""
+msgstr "RGB rengi"
 
 #: ../src/dialog_colorpicker.cpp:568
 msgid "HSL color"
-msgstr ""
+msgstr "HSL rengi"
 
 #: ../src/dialog_colorpicker.cpp:569
 msgid "HSV color"
-msgstr ""
+msgstr "HSV rengi"
 
 #: ../src/dialog_colorpicker.cpp:594
 msgid "Spectrum mode:"
@@ -5501,7 +5466,7 @@ msgstr "Mavi:"
 
 #: ../src/dialog_colorpicker.cpp:614
 msgid "Alpha:"
-msgstr ""
+msgstr "Alfa:"
 
 #: ../src/dialog_colorpicker.cpp:621 ../src/dialog_colorpicker.cpp:624
 msgid "Hue:"
@@ -5537,14 +5502,13 @@ msgid "Video: %s"
 msgstr "Video: %s"
 
 #: ../src/subtitle_format.cpp:100
-#, fuzzy, c-format
+#, c-format
 msgid "From video (%g)"
-msgstr "Video&dan"
+msgstr "Videodan (%g)"
 
 #: ../src/subtitle_format.cpp:102
-#, fuzzy
 msgid "From video (VFR)"
-msgstr "Video&dan"
+msgstr "Videodan (VFR)"
 
 #: ../src/subtitle_format.cpp:108
 msgid "15.000 FPS"
@@ -5556,7 +5520,7 @@ msgstr "23.976 FPS (Azaltılmış NTSC)"
 
 #: ../src/subtitle_format.cpp:110
 msgid "24.000 FPS (FILM)"
-msgstr "24.000 FPS (FILM)"
+msgstr "24.000 FPS (FİLM)"
 
 #: ../src/subtitle_format.cpp:111
 msgid "25.000 FPS (PAL)"
@@ -5567,7 +5531,6 @@ msgid "29.970 FPS (NTSC)"
 msgstr "29.970 FPS (NTSC)"
 
 #: ../src/subtitle_format.cpp:114
-#, fuzzy
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
 msgstr "29.970 FPS (NTSC)"
 
@@ -5576,9 +5539,8 @@ msgid "30.000 FPS"
 msgstr "30.000 FPS"
 
 #: ../src/subtitle_format.cpp:116
-#, fuzzy
 msgid "50.000 FPS (PAL x2)"
-msgstr "25.000 FPS (PAL)"
+msgstr "50.000 FPS (PAL x2)"
 
 #: ../src/subtitle_format.cpp:117
 msgid "59.940 FPS (NTSC x2)"
@@ -5606,34 +5568,34 @@ msgstr "FPS"
 
 #: ../src/ffmpegsource_common.cpp:94
 msgid "Indexing"
-msgstr ""
+msgstr "Dizinleme"
 
 #: ../src/ffmpegsource_common.cpp:95
 msgid "Reading timecodes and frame/sample data"
-msgstr ""
+msgstr "Zaman kodlarını ve kare/sample verilerini okuma"
 
 #: ../src/ffmpegsource_common.cpp:141
 #, c-format
 msgid "Track %02d: %s"
-msgstr ""
+msgstr "Parça %02d: %s"
 
 #: ../src/ffmpegsource_common.cpp:146
 msgid "Multiple video tracks detected, please choose the one you wish to load:"
 msgstr ""
+"Birden fazla video parçası algılandı, lütfen yüklemek istediğinizi seçin:"
 
 #: ../src/ffmpegsource_common.cpp:146
 msgid "Multiple audio tracks detected, please choose the one you wish to load:"
 msgstr ""
+"Birden fazla ses parçası algılandı, lütfen yüklemek istediğinizi seçin:"
 
 #: ../src/ffmpegsource_common.cpp:147
-#, fuzzy
 msgid "Choose video track"
-msgstr "Eklenecek dosyayı seç"
+msgstr "Video parçası seç"
 
 #: ../src/ffmpegsource_common.cpp:147
-#, fuzzy
 msgid "Choose audio track"
-msgstr "Gölge rengini seç"
+msgstr "Ses parçası seç"
 
 #: ../src/resolution_resampler.cpp:287
 msgid "resolution resampling"
@@ -5644,43 +5606,40 @@ msgid "Do you want to load/unload the associated files?"
 msgstr "Bağlı dosyaları yüklemek/boşaltmak ister misiniz?"
 
 #: ../src/project.cpp:198
-#, fuzzy
 msgid "Unload audio"
-msgstr "Sesi oynat"
+msgstr "Sesi kapat"
 
 #: ../src/project.cpp:198
 #, c-format
 msgid "Load audio file: %s"
-msgstr ""
+msgstr "Ses dosyası yükle: %s"
 
 #: ../src/project.cpp:200
-#, fuzzy
 msgid "Unload video"
-msgstr "Videoyu oynat"
+msgstr "Videoyu kapat"
 
 #: ../src/project.cpp:200
-#, fuzzy, c-format
+#, c-format
 msgid "Load video file: %s"
-msgstr "Video dosyası aç"
+msgstr "Video dosyasını yükle: %s"
 
 #: ../src/project.cpp:202
 msgid "Unload timecodes"
 msgstr "Zamankodlarını boşalt"
 
 #: ../src/project.cpp:202
-#, fuzzy, c-format
+#, c-format
 msgid "Load timecodes file: %s"
-msgstr "Zamankodlarını boşalt"
+msgstr "Zamankodları dosyasını yükle: %s"
 
 #: ../src/project.cpp:204
-#, fuzzy
 msgid "Unload keyframes"
-msgstr "Anahtar Kareleri Kapat"
+msgstr "Anahtar kareyi kapat"
 
 #: ../src/project.cpp:204
-#, fuzzy, c-format
+#, c-format
 msgid "Load keyframes file: %s"
-msgstr "Anahtar kareyi kaydırıcıda göster"
+msgstr "Anahtar kare dosyasını yükle: %s"
 
 #: ../src/project.cpp:206
 msgid "(Un)Load files?"
@@ -5688,7 +5647,7 @@ msgstr "Dosyaları (Boşalt)Yükle?"
 
 #: ../src/project.cpp:255
 msgid "The audio file was not found: "
-msgstr ""
+msgstr "Ses dosyası bulunamadı: "
 
 #: ../src/project.cpp:263
 msgid ""
@@ -5697,6 +5656,10 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
+"Geçerli ses sağlayıcılarının hiçbiri, seçilen dosyanın ses verisi içerdiğini "
+"tanımadı.\n"
+"\n"
+"Aşağıdaki sağlayıcılar denendi:\n"
 
 #: ../src/project.cpp:266
 msgid ""
@@ -5705,6 +5668,10 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
+"Geçerli ses sağlayıcılarının hiçbiri, seçilen dosyayı işlemek için bir kodek "
+"sunmuyor.\n"
+"\n"
+"Aşağıdaki sağlayıcılar denendi:\n"
 
 #: ../src/dialog_style_editor.cpp:127
 msgid "Style Editor"
@@ -5716,11 +5683,11 @@ msgstr "Font"
 
 #: ../src/dialog_style_editor.cpp:180
 msgid "Margins"
-msgstr "Marjinler"
+msgstr "Kenar Boşluğu"
 
 #: ../src/dialog_style_editor.cpp:181 ../src/dialog_style_editor.cpp:277
 msgid "Outline"
-msgstr "Dışhat"
+msgstr "Kontur"
 
 #: ../src/dialog_style_editor.cpp:182
 msgid "Miscellaneous"
@@ -5776,7 +5743,7 @@ msgstr "İkincil rengi seç"
 
 #: ../src/dialog_style_editor.cpp:220
 msgid "Choose outline color"
-msgstr "Dış rengi seç"
+msgstr "Kontur rengi seç"
 
 #: ../src/dialog_style_editor.cpp:221
 msgid "Choose shadow color"
@@ -5799,11 +5766,11 @@ msgid ""
 "When selected, display an opaque box behind the subtitles instead of an "
 "outline around the text"
 msgstr ""
-"Seçilirse, yaznın etrafındaki dışhattın arkasında opak kutu gözükecektir"
+"Seçilirse, yaznın etrafındaki konturun arkasında opaklık kutusu gözükecektir"
 
 #: ../src/dialog_style_editor.cpp:226
 msgid "Outline width, in pixels"
-msgstr "Dışhat uzunluğu, piksel"
+msgstr "Kontur uzunluğu, piksel"
 
 #: ../src/dialog_style_editor.cpp:227
 msgid "Shadow distance, in pixels"
@@ -5851,7 +5818,7 @@ msgstr "Gölge"
 
 #: ../src/dialog_style_editor.cpp:306
 msgid "Outline:"
-msgstr "Dışhat:"
+msgstr "Kontur:"
 
 #: ../src/dialog_style_editor.cpp:307
 msgid "Shadow:"
@@ -5890,15 +5857,12 @@ msgid "Color of preview background"
 msgstr "Önizleme arkaplan rengi"
 
 #: ../src/dialog_style_editor.cpp:413
-#, fuzzy
 msgid "There is already a style with this name. Please choose another name."
-msgstr ""
-"Mevcut depolamada zaten \"%s\" adında bir stil var. Üzerine yazılsın mı?"
+msgstr "Bu isimde bir stil zaten var. Lütfen başka bir isim seçin."
 
 #: ../src/dialog_style_editor.cpp:413
-#, fuzzy
 msgid "Style name conflict"
-msgstr "Katalog adı çakışması"
+msgstr "Stil adı çakışması"
 
 #: ../src/dialog_style_editor.cpp:425
 msgid ""
@@ -5917,72 +5881,72 @@ msgid ""
 "Time code offset in incorrect format. Ensure it is entered as four groups of "
 "two digits separated by colons."
 msgstr ""
+"Zaman kodu kaydırması yanlış formatta. Lütfen, iki haneli dört grup rakamın "
+"iki nokta üst üste ile ayrıldığından emin olun."
 
 #: ../src/dialog_export_ebu3264.cpp:84
-#, fuzzy
 msgid "EBU STL export"
-msgstr "Dışarı aktar"
+msgstr "EBU STL dışa aktar"
 
 #: ../src/dialog_export_ebu3264.cpp:100
 msgid "Export to EBU STL format"
-msgstr ""
+msgstr "EBU STL formatında dışa aktar"
 
 #: ../src/dialog_export_ebu3264.cpp:103
 msgid "23.976 fps (non-standard, STL24.01)"
-msgstr ""
+msgstr "23.976 fps (standart dışı, STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:104
 msgid "24 fps (non-standard, STL24.01)"
-msgstr ""
+msgstr "24 fps (standart dışı, STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:105
 msgid "25 fps (STL25.01)"
-msgstr ""
+msgstr "25 fps (STL25.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:106
 msgid "29.97 fps (non-dropframe, STL30.01)"
-msgstr ""
+msgstr "29,97 fps (dropframe olmayan, STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:107
 msgid "29.97 fps (dropframe, STL30.01)"
-msgstr ""
+msgstr "29.97 fps (dropframe, STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:108
 msgid "30 fps (STL30.01)"
-msgstr ""
+msgstr "30 fps (STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:110
-#, fuzzy
 msgid "TV standard"
-msgstr "Standart"
+msgstr "TV standardı"
 
 #: ../src/dialog_export_ebu3264.cpp:113
 msgid "Out-times are inclusive"
-msgstr ""
+msgstr "Bitiş zamanları dahildir"
 
 #: ../src/dialog_export_ebu3264.cpp:116
 msgid "ISO 6937-2 (Latin/Western Europe)"
-msgstr ""
+msgstr "ISO 6937-2 (Latin/Batı Avrupa)"
 
 #: ../src/dialog_export_ebu3264.cpp:117
 msgid "ISO 8859-5 (Cyrillic)"
-msgstr ""
+msgstr "ISO 8859-5 (Kiril)"
 
 #: ../src/dialog_export_ebu3264.cpp:118
 msgid "ISO 8859-6 (Arabic)"
-msgstr ""
+msgstr "ISO 8859-6 (Arapça)"
 
 #: ../src/dialog_export_ebu3264.cpp:119
 msgid "ISO 8859-7 (Greek)"
-msgstr ""
+msgstr "ISO 8859-7 (Yunanca)"
 
 #: ../src/dialog_export_ebu3264.cpp:120
 msgid "ISO 8859-8 (Hebrew)"
-msgstr ""
+msgstr "ISO 8859-8 (İbranice)"
 
 #: ../src/dialog_export_ebu3264.cpp:121
 msgid "UTF-8 Unicode (non-standard)"
-msgstr ""
+msgstr "UTF-8 Unicode (standart dışı)"
 
 #: ../src/dialog_export_ebu3264.cpp:123
 msgid "Text encoding"
@@ -5990,25 +5954,23 @@ msgstr "Metin kodlama"
 
 #: ../src/dialog_export_ebu3264.cpp:126
 msgid "Automatically wrap long lines (ASS)"
-msgstr ""
+msgstr "Uzun satırları otomatik olarak sar (ASS)"
 
 #: ../src/dialog_export_ebu3264.cpp:127
-#, fuzzy
 msgid "Automatically wrap long lines (Balanced)"
-msgstr "Otomatik tüm değişikleri işle"
+msgstr "Uzun satırları otomatik olarak sar (Dengeli)"
 
 #: ../src/dialog_export_ebu3264.cpp:128
 msgid "Abort if any lines are too long"
-msgstr ""
+msgstr "Herhangi bir satır çok uzunsa iptal et"
 
 #: ../src/dialog_export_ebu3264.cpp:129
 msgid "Skip lines that are too long"
-msgstr ""
+msgstr "Çok uzun olan sıraları atla"
 
 #: ../src/dialog_export_ebu3264.cpp:134
-#, fuzzy
 msgid "Translate alignments"
-msgstr "Çeviri"
+msgstr "Hizalamaları çevir"
 
 #: ../src/dialog_export_ebu3264.cpp:139
 msgid "Open subtitles"
@@ -6016,33 +5978,31 @@ msgstr "Altyazı aç"
 
 #: ../src/dialog_export_ebu3264.cpp:140
 msgid "Level-1 teletext"
-msgstr ""
+msgstr "Seviye-1 teletekst"
 
 #: ../src/dialog_export_ebu3264.cpp:141
 msgid "Level-2 teletext"
-msgstr ""
+msgstr "Seviye-2 teletekst"
 
 #: ../src/dialog_export_ebu3264.cpp:147
 msgid "Max. line length:"
-msgstr ""
+msgstr "Maks. satır uzunluğu:"
 
 #: ../src/dialog_export_ebu3264.cpp:151
 msgid "Time code offset:"
-msgstr ""
+msgstr "Zaman kodu kaydırması"
 
 #: ../src/dialog_export_ebu3264.cpp:154
-#, fuzzy
 msgid "Text formatting"
-msgstr "İçeri metin aktarma ayarları"
+msgstr "Metin biçimlendirme"
 
 #: ../src/dialog_export_ebu3264.cpp:159
-#, fuzzy
 msgid "Time codes"
-msgstr "Süre"
+msgstr "Zaman kodları"
 
 #: ../src/dialog_export_ebu3264.cpp:163
 msgid "Display standard"
-msgstr ""
+msgstr "Ekran standardı"
 
 #: ../src/subs_controller.cpp:158
 #, c-format
@@ -6052,20 +6012,19 @@ msgstr "Dosya yedeği \"%s\" olarak kaydedildi."
 #: ../src/subs_controller.cpp:260
 #, c-format
 msgid "Do you want to save changes to %s?"
-msgstr ""
+msgstr "%s öğesine yapılan değişiklikleri kaydetmek istiyor musunuz?"
 
 #: ../src/subs_controller.cpp:260
 msgid "Unsaved changes"
-msgstr "Kayıt edilmeyen değişiklikler"
+msgstr "Kaydedilmemiş değişiklikler"
 
 #: ../src/subs_controller.cpp:395
 msgid "Untitled"
-msgstr ""
+msgstr "Adsız"
 
 #: ../src/subs_controller.cpp:397
-#, fuzzy
 msgid "untitled"
-msgstr "&Altyazı"
+msgstr "adsız"
 
 #: ../src/dialog_video_properties.cpp:44
 msgid "Resolution mismatch"
@@ -6090,23 +6049,20 @@ msgstr ""
 "Altyazının çözünürlüğünü video ile eşleştir?"
 
 #: ../src/dialog_video_properties.cpp:54 ../src/dialog_video_properties.cpp:63
-#, fuzzy
 msgid "Set to video resolution"
-msgstr "Video çözünürlüğü:"
+msgstr "Video çözünürlüğüne ayarla"
 
 #: ../src/dialog_video_properties.cpp:55
 msgid "Resample script (stretch to new aspect ratio)"
-msgstr ""
+msgstr "Yeniden örnekleme betiği (yeni en boy oranına esnetme)"
 
 #: ../src/dialog_video_properties.cpp:56
-#, fuzzy
 msgid "Resample script (add borders)"
-msgstr "Betiği yeniden örnekle"
+msgstr "Betiği yeniden örnekle (sınırlar ekle)"
 
 #: ../src/dialog_video_properties.cpp:57
-#, fuzzy
 msgid "Resample script (remove borders)"
-msgstr "Betiği yeniden örnekle"
+msgstr "Betiği yeniden örnekle (kenarlıkları kaldır)"
 
 #: ../src/dialog_video_properties.cpp:64
 msgid "Resample script"
@@ -6149,14 +6105,12 @@ msgid "Choose file to be attached"
 msgstr "Eklenecek dosyayı seç"
 
 #: ../src/dialog_attachments.cpp:142
-#, fuzzy
 msgid "attach font file"
-msgstr "Ek &Font"
+msgstr "font dosyası ekle"
 
 #: ../src/dialog_attachments.cpp:152
-#, fuzzy
 msgid "attach graphics file"
-msgstr "Ek &Grafik"
+msgstr "grafik dosyası ekle"
 
 #: ../src/dialog_attachments.cpp:164
 msgid "Select the path to save the files to:"
@@ -6167,9 +6121,8 @@ msgid "Select the path to save the file to:"
 msgstr "Dosyayı kaydedecek yolu seç:"
 
 #: ../src/dialog_attachments.cpp:189
-#, fuzzy
 msgid "remove attachment"
-msgstr "Ekler"
+msgstr "eki kaldır"
 
 #: ../src/dialog_translation.cpp:77
 msgid "Original"
@@ -6193,7 +6146,7 @@ msgstr "Önizlemeyi &aktif et"
 
 #: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:278
 msgid "No more lines to translate."
-msgstr ""
+msgstr "Çevirecek başka satır yok."
 
 #: ../src/dialog_translation.cpp:186 ../src/dialog_translation.cpp:236
 #, c-format
@@ -6213,22 +6166,20 @@ msgid "&Symmetrical"
 msgstr "&Simetrik"
 
 #: ../src/dialog_resample.cpp:143
-#, fuzzy
 msgid "From s&cript"
-msgstr "Betik yok"
+msgstr "B&etikten"
 
 #: ../src/dialog_resample.cpp:146
 msgid "Stretch"
-msgstr ""
+msgstr "Esnetme"
 
 #: ../src/dialog_resample.cpp:146
 msgid "Add borders"
-msgstr ""
+msgstr "Kenarlık ekle"
 
 #: ../src/dialog_resample.cpp:146
-#, fuzzy
 msgid "Remove borders"
-msgstr "Kaldır"
+msgstr "Kenarlıkları kaldır"
 
 #: ../src/dialog_resample.cpp:146
 msgid "Manual"
@@ -6236,11 +6187,11 @@ msgstr "Manüel"
 
 #: ../src/dialog_resample.cpp:147
 msgid "Aspect Ratio Handling"
-msgstr ""
+msgstr "En-boy oranı yönetimi"
 
 #: ../src/dialog_resample.cpp:162
 msgid "Margin offset"
-msgstr "Marjin konumu"
+msgstr "Kenar boşluğu konumu"
 
 #: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
 msgid "x"
@@ -6248,16 +6199,15 @@ msgstr "x"
 
 #: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
 msgid "YCbCr Matrix:"
-msgstr ""
+msgstr "YCbCr Matrisi:"
 
 #: ../src/dialog_resample.cpp:175
-#, fuzzy
 msgid "Source Resolution"
-msgstr "Betik Çözünürlüğü"
+msgstr "Kaynak Çözünürlüğü"
 
 #: ../src/dialog_resample.cpp:189
 msgid "Destination Resolution"
-msgstr "Geçersiz çözünürlük"
+msgstr "Hedef Çözünürlüğü"
 
 #: ../src/dialog_version_check.cpp:94
 msgid "Version Checker"
@@ -6269,32 +6219,32 @@ msgstr "&Güncellemeler için otomatik kontrol et"
 
 #: ../src/dialog_version_check.cpp:124
 msgid "Remind me again in a &week"
-msgstr ""
+msgstr "Bir hafta sonra tekrar &hatırlat"
 
 #: ../src/dialog_version_check.cpp:288
 msgid "Could not connect to updates server."
-msgstr ""
+msgstr "Güncelleme sunucusuna bağlanılamadı."
 
 #: ../src/dialog_version_check.cpp:310
 msgid "Could not download from updates server."
-msgstr ""
+msgstr "Güncelleme sunucusundan indirilemedi."
 
 #: ../src/dialog_version_check.cpp:312
 #, c-format
 msgid "HTTP request failed, got HTTP response %d."
-msgstr ""
+msgstr "HTTP isteği başarısız oldu, %d HTTP yanıtı alındı."
 
 #: ../src/dialog_version_check.cpp:343
 msgid "An update to Aegisub was found."
-msgstr ""
+msgstr "Aegisub için bir güncelleme bulundu."
 
 #: ../src/dialog_version_check.cpp:345
 msgid "Several possible updates to Aegisub were found."
-msgstr ""
+msgstr "Aegisub için birkaç olası güncelleme bulundu."
 
 #: ../src/dialog_version_check.cpp:347
 msgid "There are no updates to Aegisub."
-msgstr ""
+msgstr "Aegisub için herhangi bir güncelleme yok."
 
 #: ../src/dialog_version_check.cpp:375
 #, c-format
@@ -6305,10 +6255,15 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
+"Aegisub güncellemelerini kontrol ederken bir hata oluştu:\n"
+"%s\n"
+"\n"
+"Diğer uygulamalar internete sorunsuz erişebiliyorsa, bu muhtemelen bizim "
+"tarafımızdaki geçici bir sunucu sorunudur."
 
 #: ../src/dialog_version_check.cpp:379
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr ""
+msgstr "Aegisub güncellemeleri kontrol edilirken bilinmeyen bir hata oluştu."
 
 #: default_menu.json:0
 msgid "&Insert (before)"
@@ -6411,65 +6366,66 @@ msgid "&Export As..."
 msgstr "&Dışarı aktar"
 
 #: default_hotkey.json:602:
-#, fuzzy
 msgid "Subtitle Edit Box"
-msgstr "Stil Editörü"
+msgstr "Altyazı Düzenleme Kutusu"
 
 #: ../automation/autoload/macro-1-edgeblur.lua:6
 msgid "Add edgeblur"
-msgstr ""
+msgstr "Kenar bulanıklığı ekle"
 
 #: ../automation/autoload/macro-1-edgeblur.lua:7
 msgid "A demo macro showing how to do simple line modification in Automation 4"
 msgstr ""
+"Automation 4'te basit satır değişikliği yapmayı gösteren bir demo makro"
 
 #: ../automation/autoload/macro-1-edgeblur.lua:21
 msgid "Adds \\be1 tags to all selected lines"
-msgstr ""
+msgstr "Seçilen tüm satırlara \\be1 etiketleri ekler"
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:32
-#, fuzzy
 msgid "Automatic karaoke lead-in"
-msgstr "Otomasyon makrosu yüklenmedi"
+msgstr "Otomatik karaoke başlangıcı"
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:33
 msgid "Join up the ends of selected lines and add \\k tags to shift karaoke"
 msgstr ""
+"Seçilen satırların sonlarını birleştir ve karaoke'yi kaydırmak için \\k "
+"etiketleri ekle"
 
 #: ../automation/autoload/cleantags-autoload.lua:31
-#, fuzzy
 msgid "Clean Tags"
-msgstr "Etiketleri gizle"
+msgstr "Etiketleri Sil"
 
 #: ../automation/autoload/cleantags-autoload.lua:32
 msgid ""
 "Clean subtitle lines by re-arranging ASS tags and override blocks within the "
 "lines"
 msgstr ""
+"ASS etiketlerini yeniden düzenleyerek altyazı satırlarını sil ve "
+"satırlardaki blokları geçersiz kıl"
 
 #: ../automation/autoload/kara-templater.lua:36
-#, fuzzy
 msgid "Karaoke Templater"
-msgstr "Karaoke Şablonları"
+msgstr "Karaoke Şablonlayıcı"
 
 #: ../automation/autoload/kara-templater.lua:37
 msgid ""
 "Macro and export filter to apply karaoke effects using the template language"
 msgstr ""
+"Şablon dili kullanarak karaoke efektlerini uygulamak için makro ve dışa "
+"aktarım filtresi"
 
 #: ../automation/autoload/kara-templater.lua:858
-#, fuzzy
 msgid "Apply karaoke template"
-msgstr "Karaoke Şablonları"
+msgstr "Karaoke şablonunu uygula"
 
 #: ../automation/autoload/kara-templater.lua:858
 msgid "Applies karaoke effects from templates"
-msgstr ""
+msgstr "Şablonlardan karaoke efektleri uygular"
 
 #: ../automation/autoload/kara-templater.lua:859
-#, fuzzy
 msgid "Karaoke template"
-msgstr "Karaoke Şablonları"
+msgstr "Karaoke şablonu"
 
 #: ../automation/autoload/kara-templater.lua:859
 msgid ""
@@ -6477,51 +6433,53 @@ msgid ""
 "\n"
 "See the help file for information on how to use this."
 msgstr ""
+"Altyazılara karaoke efekti şablonları uygula.\n"
+"\n"
+"Bunun nasıl kullanılacağı hakkında bilgi için yardım dosyasına bakın."
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
-msgstr ""
+msgstr "Etiketleri kaldır"
 
 #: ../automation/autoload/strip-tags.lua:18
 msgid "Remove all override tags from selected lines"
-msgstr ""
+msgstr "Seçili satırlardan tüm geçersiz kılma etiketlerini kaldır"
 
 #: ../automation/autoload/strip-tags.lua:28
 msgid "strip tags"
-msgstr ""
+msgstr "etiketleri kaldır"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 msgid "Make fullwidth"
-msgstr ""
+msgstr "Tam genişlik yap"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:80
 msgid "Convert Latin letters to SJIS fullwidth letters"
-msgstr ""
+msgstr "Latin harflerini SJIS tam genişlikli harflere dönüştür"
 
 #: aegisub.desktop:4
 msgid "Aegisub"
 msgstr "Aegisub"
 
 #: aegisub.desktop:5
-#, fuzzy
 msgid "Subtitle Editor"
-msgstr "Stil Editörü"
+msgstr "Altyazı Düzenleyici"
 
 #: aegisub.desktop:6
 msgid "Create and edit subtitles for film and videos."
-msgstr ""
+msgstr "Film ve videolar için altyazı oluştur ve düzenle."
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Installing runtime libraries..."
-msgstr ""
+msgstr "Çalışma zamanı kütüphaneleri yükleniyor..."
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Create a start menu icon"
-msgstr ""
+msgstr "Başlat menüsü simgesi oluştur"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Automatically check for new versions of Aegisub"
-msgstr ""
+msgstr "Aegisub için yeni sürümleri otomatik olarak kontrol et"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Update Checker:"
@@ -6535,3 +6493,8 @@ msgid ""
 "no warranties of any kind are given either.%n%nSee the Aegisub website for "
 "information on obtaining the source code."
 msgstr ""
+"Bu, Aegisub'ı {#BUILD_GIT_VERSION_STRING} bilgisayarınıza yükleyecektir."
+"%n%nAegisub, GNU Genel Kamu Lisansı sürüm 2 ile lisanslanmıştır. Bu, "
+"uygulamayı herhangi bir amaçla ücretsiz olarak kullanabileceğiniz anlamına "
+"gelir, ancak herhangi bir garanti verilmemektedir.%n%nKaynak koda nasıl "
+"erişileceği hakkında bilgi için Aegisub web sitesine bakın."
