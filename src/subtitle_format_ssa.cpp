@@ -42,7 +42,7 @@ std::string strip_newlines(std::string str) {
 }
 }
 
-void SsaSubtitleFormat::WriteFile(const AssFile *src, std::filesystem::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+void SsaSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	TextFileWriter file(filename, encoding);
 
 	file.WriteLineToFile("[Script Info]");

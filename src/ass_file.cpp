@@ -97,7 +97,7 @@ EntryList<AssDialogue>::iterator AssFile::iterator_to(AssDialogue& line) {
 	return in_list ? Events.iterator_to(line) : Events.end();
 }
 
-void AssFile::InsertAttachment(std::filesystem::path const& filename) {
+void AssFile::InsertAttachment(agi::fs::path const& filename) {
 	AssEntryGroup group = AssEntryGroup::GRAPHIC;
 
 	auto ext = boost::to_lower_copy(filename.extension().string());

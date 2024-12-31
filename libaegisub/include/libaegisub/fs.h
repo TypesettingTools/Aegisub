@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <libaegisub/exception.h>
 
 #include <cstdint>
@@ -26,7 +28,60 @@
 #undef CreateDirectory
 
 namespace agi::fs {
-using path = std::filesystem::path;
+
+/// @class agi::fs::path
+/// @brief Wrapper class around std::filesystem::path that properly handles
+/// charset conversions.
+///
+/// Takes UTF-8 strings in its constructor and returns UTF-8 strings
+/// in string(). Should be used everywhere instead of std::filesystem::path.
+///
+class path : public std::filesystem::path {
+public:
+	path(std::string_view string) : std::filesystem::path(std::u8string_view(reinterpret_cast<const char8_t *>(string.data()), string.size())) {}
+	path(std::string const& string) : std::filesystem::path(std::u8string_view(reinterpret_cast<const char8_t *>(string.data()), string.size())) {}
+	path(const char *c_str) : std::filesystem::path(reinterpret_cast<const char8_t *>(c_str)) {}
+
+	path() : std::filesystem::path() {}
+
+	// These are marked as explicit so that there is no way to accidentally go
+	// from string to std::filesystem::path to agi::fs::path by implicit conversions
+	explicit path(std::filesystem::path const& inner) : std::filesystem::path(inner) {}
+	explicit path(std::filesystem::path &&inner) : std::filesystem::path(std::move(inner)) {}
+
+	inline std::string string() const {
+		const auto result = std::filesystem::path::u8string();
+		return std::string(reinterpret_cast<const char *>(result.c_str()), result.size());
+	}
+
+	// We do not override wstring() here: While the conversion method for this is technically unspecified here,
+	// it seems to always return UTF-16 in practice. If this ever changes, wstring() can be overwritten or deleted here.
+
+	inline friend path operator/(path const& lhs, path const& rhs) {
+		const std::filesystem::path &lhs_ = lhs;
+		const std::filesystem::path &rhs_ = rhs;
+		return path(lhs_ / rhs_);
+	}
+
+#define WRAP_SFP(name) \
+	inline path name() const { \
+		return path(std::filesystem::path::name()); \
+	};
+
+	WRAP_SFP(root_name);
+	WRAP_SFP(root_directory);
+	WRAP_SFP(root_path);
+	WRAP_SFP(relative_path);
+	WRAP_SFP(parent_path);
+	WRAP_SFP(filename);
+	WRAP_SFP(stem);
+	WRAP_SFP(extension);
+
+	inline path& make_preferred() {
+		std::filesystem::path::make_preferred();
+		return *this;
+	};
+};
 
 /// Define a filesystem error which takes a path or a string
 #define DEFINE_FS_EXCEPTION(type, base, message) \
@@ -140,7 +195,10 @@ bool Remove(path const& file);
 /// @param ext Case-insensitive extension, without leading dot
 bool HasExtension(path const& p, std::string const& ext);
 
-std::filesystem::path Canonicalize(std::filesystem::path const& path);
+[[nodiscard]] path Canonicalize(path const& path);
+[[nodiscard]] path Absolute(path const& path);
+path CurrentPath();
+void CurrentPath(path const& path);
 
 class DirectoryIterator {
 	struct PrivData;

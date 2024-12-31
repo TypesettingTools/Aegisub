@@ -25,7 +25,7 @@
 #include <lauxlib.h>
 
 namespace agi::lua {
-	bool LoadFile(lua_State *L, std::filesystem::path const& raw_filename) {
+	bool LoadFile(lua_State *L, agi::fs::path const& raw_filename) {
 		auto filename = raw_filename;
 		try {
 			filename = agi::fs::Canonicalize(raw_filename);
@@ -89,9 +89,9 @@ namespace agi::lua {
 
 			// If there's a .moon file at that path, load it instead of the
 			// .lua file
-			std::filesystem::path path = filename;
+			agi::fs::path path = filename;
 			if (agi::fs::HasExtension(path, "lua")) {
-				std::filesystem::path moonpath = path;
+				agi::fs::path moonpath = path;
 				moonpath.replace_extension("moon");
 				if (agi::fs::FileExists(moonpath))
 					path = moonpath;

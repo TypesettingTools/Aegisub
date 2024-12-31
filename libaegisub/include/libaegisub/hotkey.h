@@ -12,12 +12,12 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <filesystem>
 #include <map>
 #include <string>
 #include <string_view>
 #include <vector>
 
+#include <libaegisub/fs.h>
 #include <libaegisub/signal.h>
 
 namespace json {
@@ -64,7 +64,7 @@ public:
 private:
 	HotkeyMap cmd_map;                  ///< Command name -> Combo
 	std::vector<const Combo *> str_map; ///< Sorted by string representation
-	const std::filesystem::path config_file;    ///< Default user config location.
+	const agi::fs::path config_file;    ///< Default user config location.
 	bool backup_config_file = false;
 
 	/// Build hotkey map.
@@ -83,7 +83,7 @@ public:
 	/// Constructor
 	/// @param file           Location of user config file.
 	/// @param default_config Default config.
-	Hotkey(std::filesystem::path const& file, std::string_view default_config);
+	Hotkey(agi::fs::path const& file, std::string_view default_config);
 
 	/// Scan for a matching key.
 	/// @param context  Context requested.

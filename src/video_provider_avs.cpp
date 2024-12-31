@@ -66,11 +66,11 @@ class AvisynthVideoProvider: public VideoProvider {
 	PClip RGB32Video;
 	VideoInfo vi;
 
-	AVSValue Open(std::filesystem::path const& filename);
+	AVSValue Open(agi::fs::path const& filename);
 	void Init(std::string_view matrix);
 
 public:
-	AvisynthVideoProvider(std::filesystem::path const& filename, std::string_view colormatrix);
+	AvisynthVideoProvider(agi::fs::path const& filename, std::string_view colormatrix);
 
 	void GetFrame(int n, VideoFrame &frame) override;
 
@@ -92,7 +92,7 @@ public:
 	bool HasAudio() const override                 { return has_audio; }
 };
 
-AvisynthVideoProvider::AvisynthVideoProvider(std::filesystem::path const& filename, std::string_view colormatrix) {
+AvisynthVideoProvider::AvisynthVideoProvider(agi::fs::path const& filename, std::string_view colormatrix) {
 	agi::acs::CheckFileRead(filename);
 
 	std::lock_guard<std::mutex> lock(avs.GetMutex());
@@ -209,7 +209,7 @@ void AvisynthVideoProvider::Init(std::string_view colormatrix) {
 	fps = (double)vi.fps_numerator / vi.fps_denominator;
 }
 
-AVSValue AvisynthVideoProvider::Open(std::filesystem::path const& filename) {
+AVSValue AvisynthVideoProvider::Open(agi::fs::path const& filename) {
 	IScriptEnvironment *env = avs.GetEnv();
 	char *videoFilename = env->SaveString(agi::fs::ShortName(filename).c_str());
 
@@ -321,7 +321,7 @@ void AvisynthVideoProvider::GetFrame(int n, VideoFrame &out) {
 }
 
 namespace agi { class BackgroundRunner; }
-std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(std::filesystem::path const& path, std::string_view colormatrix, agi::BackgroundRunner *) {
+std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const& path, std::string_view colormatrix, agi::BackgroundRunner *) {
 	return std::make_unique<AvisynthVideoProvider>(path, colormatrix);
 }
 #endif // HAVE_AVISYNTH
