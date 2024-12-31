@@ -4,6 +4,7 @@
 ; Aegisub localization
 #ifdef ENABLE_AEG_TRANSLATIONS
 Source: {#BUILD_ROOT}\po\ar\LC_MESSAGES\aegisub.mo;          DestDir: {app}\locale\ar;    DestName: aegisub.mo; Flags: ignoreversion; Components: translations
+Source: {#BUILD_ROOT}\po\be\LC_MESSAGES\aegisub.mo;          DestDir: {app}\locale\be;    DestName: aegisub.mo; Flags: ignoreversion; Components: translations
 Source: {#BUILD_ROOT}\po\bg\LC_MESSAGES\aegisub.mo;          DestDir: {app}\locale\bg;    DestName: aegisub.mo; Flags: ignoreversion; Components: translations
 Source: {#BUILD_ROOT}\po\ca\LC_MESSAGES\aegisub.mo;          DestDir: {app}\locale\ca;    DestName: aegisub.mo; Flags: ignoreversion; Components: translations
 Source: {#BUILD_ROOT}\po\cs\LC_MESSAGES\aegisub.mo;          DestDir: {app}\locale\cs;    DestName: aegisub.mo; Flags: ignoreversion; Components: translations
