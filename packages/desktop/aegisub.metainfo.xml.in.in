@@ -56,6 +56,6 @@
   </provides>
   <releases>
     <!-- TODO: automatic replace at config time -->
-    <release version="3.4.0" date="2024-12-17"/>
+    <release version="3.4.1" date="2025-01-01"/>
   </releases>
 </component>
