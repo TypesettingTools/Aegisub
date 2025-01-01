@@ -81,14 +81,27 @@ if (!(Test-Path VC_redist)) {
 	Invoke-WebRequest https://aka.ms/vs/17/release/VC_redist.x64.exe -OutFile "$redistDir\VC_redist.x64.exe" -UseBasicParsing
 }
 
-# dictionaries
+# Dictionaries
 if (!(Test-Path dictionaries)) {
 	New-Item -ItemType Directory dictionaries
 	Invoke-WebRequest https://raw.githubusercontent.com/TypesettingTools/Aegisub-dictionaries/master/dicts/en_US.aff -OutFile dictionaries/en_US.aff -UseBasicParsing
 	Invoke-WebRequest https://raw.githubusercontent.com/TypesettingTools/Aegisub-dictionaries/master/dicts/en_US.dic -OutFile dictionaries/en_US.dic -UseBasicParsing
 }
 
-# localization
+# Installer localization
+if (!(Test-Path innosetup-langs)) {
+	New-Item -ItemType Directory innosetup-langs
+	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/main/Files/Languages/Unofficial/Greek.isl -OutFile innosetup-langs/Greek.isl -UseBasicParsing
+	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/main/Files/Languages/Unofficial/Basque.isl -OutFile innosetup-langs/Basque.isl -UseBasicParsing
+	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/main/Files/Languages/Unofficial/Galician.isl -OutFile innosetup-langs/Galician.isl -UseBasicParsing
+	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/main/Files/Languages/Unofficial/Indonesian.isl -OutFile innosetup-langs/Indonesian.isl -UseBasicParsing
+	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/main/Files/Languages/Unofficial/SerbianCyrillic.isl -OutFile innosetup-langs/SerbianCyrillic.isl -UseBasicParsing
+	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/main/Files/Languages/Unofficial/SerbianLatin.isl -OutFile innosetup-langs/SerbianLatin.isl -UseBasicParsing
+	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/main/Files/Languages/Unofficial/ChineseSimplified.isl -OutFile innosetup-langs/ChineseSimplified.isl -UseBasicParsing
+	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/main/Files/Languages/Unofficial/ChineseTraditional.isl -OutFile innosetup-langs/ChineseTraditional.isl -UseBasicParsing
+}
+
+# Aegisub localization
 Set-Location $BuildRoot
 meson compile aegisub-gmo
 if(!$?) { Exit $LASTEXITCODE }
