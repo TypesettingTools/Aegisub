@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <boost/container/flat_map.hpp>
+#include <map>
 #include <libaegisub/fs.h>
 #include <iosfwd>
 #include <memory>
@@ -27,7 +27,7 @@ namespace charset { class IconvWrapper; }
 
 class Thesaurus {
 	/// Map of word -> byte position in the data file
-	boost::container::flat_map<std::string, size_t, std::less<>> offsets;
+	std::map<std::string, size_t, std::less<>> offsets;
 	/// Read handle to the data file
 	std::unique_ptr<read_file_mapping> dat;
 	/// Converter from the data file's charset to UTF-8
