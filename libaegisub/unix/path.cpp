@@ -23,20 +23,20 @@
 namespace sfs = std::filesystem;
 
 namespace {
-std::string home_dir() {
+agi::fs::path home_dir() {
 	const char *env = getenv("HOME");
-	if (env) return env;
+	if (env) return agi::fs::path(sfs::path(env));
 
 	if ((env = getenv("USER")) || (env = getenv("LOGNAME"))) {
 		if (passwd *user_info = getpwnam(env))
-			return user_info->pw_dir;
+			return agi::fs::path(sfs::path(user_info->pw_dir));
 	}
 
 	throw agi::EnvironmentError("Could not get home directory. Make sure HOME is set.");
 }
 
 #ifdef APPIMAGE_BUILD
-sfs::path data_dir() {
+agi::fs::path data_dir() {
 	char *exe = realpath("/proc/self/exe", NULL);
 	if (!exe) return "";
 
@@ -45,30 +45,29 @@ sfs::path data_dir() {
 
 	if (p.filename() == "bin") {
 		// assume unix prefix layout
-		return p.parent_path()/"share";
+		return agi::fs::path(p.parent_path()/"share");
 	}
 
-	return p;
+	return agi::fs::path(p);
 }
 #endif
 }
 
 namespace agi {
 void Path::FillPlatformSpecificPaths() {
-	sfs::path home = home_dir();
-	SetToken("?user", home/".aegisub");
-	SetToken("?local", home/".aegisub");
+	agi::fs::path dotdir = home_dir()/".aegisub";
+	SetToken("?user", dotdir);
+	SetToken("?local", dotdir);
 
 #ifdef APPIMAGE_BUILD
-	sfs::path data = data_dir();
-	if (data == "") data = home/".aegisub";
-	SetToken("?data", data);
+	agi::fs::path data = data_dir();
+	SetToken("?data", (data == "") ? dotdir : data);
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 #else
 	SetToken("?data", P_DATA);
 	SetToken("?dictionary", "/usr/share/hunspell");
 #endif
 
-	SetToken("?temp", sfs::temp_directory_path());
+	SetToken("?temp", agi::fs::path(sfs::temp_directory_path()));
 }
 }

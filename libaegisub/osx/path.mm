@@ -17,13 +17,15 @@
 #include <libaegisub/path.h>
 #include <libaegisub/util_osx.h>
 
+namespace sfs = std::filesystem;
+
 namespace agi {
 void Path::FillPlatformSpecificPaths() {
-	std::filesystem::path app_support = agi::util::GetApplicationSupportDirectory();
-	SetToken("?user", app_support/"Aegisub");
-	SetToken("?local", app_support/"Aegisub");
+	agi::fs::path user_dir = agi::fs::path(sfs::path(agi::util::GetApplicationSupportDirectory()))/"Aegisub";
+	SetToken("?user", user_dir);
+	SetToken("?local", user_dir);
 	SetToken("?data", agi::util::GetBundleSharedSupportDirectory());
 	SetToken("?dictionary", Decode("?data/dictionaries"));
-	SetToken("?temp", std::filesystem::temp_directory_path());
+	SetToken("?temp", agi::fs::path(sfs::temp_directory_path()));
 }
 }
