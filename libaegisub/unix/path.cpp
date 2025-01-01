@@ -23,7 +23,7 @@
 namespace sfs = std::filesystem;
 
 namespace {
-std::string home_dir() {
+sfs::path home_dir() {
 	const char *env = getenv("HOME");
 	if (env) return env;
 
@@ -55,20 +55,20 @@ sfs::path data_dir() {
 
 namespace agi {
 void Path::FillPlatformSpecificPaths() {
-	sfs::path home = home_dir();
-	SetToken("?user", home/".aegisub");
-	SetToken("?local", home/".aegisub");
+	sfs::path dotdir = home_dir()/".aegisub";
+	SetToken("?user", dotdir.string());
+	SetToken("?local", dotdir.string());
 
 #ifdef APPIMAGE_BUILD
 	sfs::path data = data_dir();
-	if (data == "") data = home/".aegisub";
-	SetToken("?data", data);
+	if (data == "") data = dotdir.string();
+	SetToken("?data", data.string());
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 #else
 	SetToken("?data", P_DATA);
 	SetToken("?dictionary", "/usr/share/hunspell");
 #endif
 
-	SetToken("?temp", sfs::temp_directory_path());
+	SetToken("?temp", sfs::temp_directory_path().string());
 }
 }
