@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-#include <filesystem>
+#include <libaegisub/fs.h>
 
 namespace agi::acs {
 enum Type {
@@ -22,11 +22,11 @@ enum Type {
 	DirWrite
 };
 
-void Check(std::filesystem::path const& file, acs::Type);
+void Check(agi::fs::path const& file, acs::Type);
 
-static inline void CheckFileRead(std::filesystem::path const& file) { Check(file, acs::FileRead); }
-static inline void CheckFileWrite(std::filesystem::path const& file) { Check(file, acs::FileWrite); }
+static inline void CheckFileRead(agi::fs::path const& file) { Check(file, acs::FileRead); }
+static inline void CheckFileWrite(agi::fs::path const& file) { Check(file, acs::FileWrite); }
 
-static inline void CheckDirRead(std::filesystem::path const& dir) { Check(dir, acs::DirRead); }
-static inline void CheckDirWrite(std::filesystem::path const& dir) { Check(dir, acs::DirWrite); }
+static inline void CheckDirRead(agi::fs::path const& dir) { Check(dir, acs::DirRead); }
+static inline void CheckDirWrite(agi::fs::path const& dir) { Check(dir, acs::DirWrite); }
 }

@@ -457,7 +457,7 @@ struct video_frame_prev_large final : public validator_video_loaded {
 
 static void save_snapshot(agi::Context *c, bool raw) {
 	auto option = OPT_GET("Path/Screenshot")->GetString();
-	std::filesystem::path basepath;
+	agi::fs::path basepath;
 
 	auto videoname = c->project->VideoName();
 	bool is_dummy = boost::starts_with(videoname.string(), "?dummy");

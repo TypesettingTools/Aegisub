@@ -19,9 +19,9 @@
 #include "version.h"
 
 #include <libaegisub/format.h>
+#include <libaegisub/fs.h>
 #include <libaegisub/util.h>
 
-#include <filesystem>
 #include <fstream>
 #include <wx/string.h>
 #include <wx/stackwalk.h>
@@ -29,7 +29,7 @@
 using namespace agi;
 
 namespace {
-std::filesystem::path crashlog_path;
+agi::fs::path crashlog_path;
 
 #if wxUSE_STACKWALKER == 1
 class StackWalker : public wxStackWalker {
@@ -67,7 +67,7 @@ public:
 }
 
 namespace crash_writer {
-void Initialize(std::filesystem::path const& path) {
+void Initialize(agi::fs::path const& path) {
 	crashlog_path = path / "crashlog.txt";
 }
 

@@ -35,6 +35,8 @@ version_h = custom_target('git_version.h',
                           build_always_stale: true, # has internal check whether target file will be refreshed
                           output: ['git_version.h'])
 
+meson.add_dist_script(version_sh, meson.current_build_dir(), meson.current_source_dir(), 'dist')
+
 if host_machine.system() == 'darwin' and get_option('build_osx_bundle')
     prefix = meson.current_build_dir() / 'Aegisub.app' / 'Contents'
     bindir = prefix / 'MacOS'

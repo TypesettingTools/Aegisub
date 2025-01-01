@@ -60,7 +60,7 @@ int mru_index(std::string_view key) {
 }
 
 namespace agi {
-MRUManager::MRUManager(std::filesystem::path const& config, std::string_view default_config, agi::Options *options)
+MRUManager::MRUManager(agi::fs::path const& config, std::string_view default_config, agi::Options *options)
 : config_name(config)
 , options(options)
 {
@@ -78,7 +78,7 @@ MRUManager::MRUListMap &MRUManager::Find(std::string_view key) {
 	return mru[index];
 }
 
-void MRUManager::Add(std::string_view key, std::filesystem::path const& entry) {
+void MRUManager::Add(std::string_view key, agi::fs::path const& entry) {
 	MRUListMap &map = Find(key);
 	auto it = find(begin(map), end(map), entry);
 	if (it == begin(map) && it != end(map))
@@ -93,7 +93,7 @@ void MRUManager::Add(std::string_view key, std::filesystem::path const& entry) {
 	Flush();
 }
 
-void MRUManager::Remove(std::string_view key, std::filesystem::path const& entry) {
+void MRUManager::Remove(std::string_view key, agi::fs::path const& entry) {
 	auto& map = Find(key);
 	map.erase(remove(begin(map), end(map), entry), end(map));
 	Flush();
@@ -103,7 +103,7 @@ const MRUManager::MRUListMap* MRUManager::Get(std::string_view key) {
 	return &Find(key);
 }
 
-std::filesystem::path const& MRUManager::GetEntry(std::string_view key, const size_t entry) {
+agi::fs::path const& MRUManager::GetEntry(std::string_view key, const size_t entry) {
 	const auto map = Get(key);
 	if (entry >= map->size())
 		throw MRUError("Requested element index is out of range.");

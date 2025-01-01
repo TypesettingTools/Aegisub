@@ -22,7 +22,7 @@
 #endif
 
 namespace agi::charset {
-std::string Detect(std::filesystem::path const& file) {
+std::string Detect(agi::fs::path const& file) {
 	agi::read_file_mapping fp(file);
 
 	// First check for known magic bytes which identify the file type

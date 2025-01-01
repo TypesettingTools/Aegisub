@@ -38,7 +38,7 @@ public:
 		return {"mkv", "mka", "mks"};
 	}
 
-	void ReadFile(AssFile *target, std::filesystem::path const& filename, agi::vfr::Framerate const&, const char *) const override {
+	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *) const override {
 		MatroskaWrapper::GetSubtitles(filename, target);
 	}
 };
