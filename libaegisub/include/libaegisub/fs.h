@@ -54,6 +54,11 @@ public:
 		return std::string(reinterpret_cast<const char *>(result.c_str()), result.size());
 	}
 
+	inline std::string generic_string() const {
+		const auto result = std::filesystem::path::generic_u8string();
+		return std::string(reinterpret_cast<const char *>(result.c_str()), result.size());
+	}
+
 	// We do not override wstring() here: While the conversion method for this is technically unspecified here,
 	// it seems to always return UTF-16 in practice. If this ever changes, wstring() can be overwritten or deleted here.
 
@@ -61,6 +66,15 @@ public:
 		const std::filesystem::path &lhs_ = lhs;
 		const std::filesystem::path &rhs_ = rhs;
 		return path(lhs_ / rhs_);
+	}
+
+	// This will only work if C is char, but for other calls we will get a compiler error, which
+	// is what we want. If operator<< for wostreams is ever needed, the compiler will complain and
+	// an implementation can be added.
+	template <typename C, typename T>
+	inline friend std::basic_ostream<C, T>& operator<<(std::basic_ostream<C, T> &ostr, path const& rhs) {
+		ostr << std::quoted(rhs.string());
+		return ostr;
 	}
 
 #define WRAP_SFP(name) \
