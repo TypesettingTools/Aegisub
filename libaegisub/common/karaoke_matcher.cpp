@@ -19,7 +19,6 @@
 #include "libaegisub/ass/karaoke.h"
 #include "libaegisub/exception.h"
 #include "libaegisub/kana_table.h"
-#include "libaegisub/scoped_ptr.h"
 #include "libaegisub/util.h"
 
 #include <boost/algorithm/string/case_conv.hpp>
@@ -30,16 +29,6 @@
 #include <unicode/utf8.h>
 
 namespace {
-int32_t next_codepoint(const char *str, size_t *i) {
-	UChar32 c;
-	U8_NEXT_UNSAFE(str, *i, c);
-	return c;
-}
-
-bool is_whitespace(int32_t c) {
-	return !!u_isUWhiteSpace(c);
-}
-
 bool is_whitespace(std::string_view str) {
 	size_t i = 0;
 	while (i < str.size()) {

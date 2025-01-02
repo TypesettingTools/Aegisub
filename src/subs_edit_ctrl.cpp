@@ -128,7 +128,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 		{
 			std::string text = GetTextRaw().data();
 			if (text == line_text) return;
-			line_text = move(text);
+			line_text = std::move(text);
 		}
 
 		UpdateStyle();

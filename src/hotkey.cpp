@@ -47,10 +47,12 @@ namespace {
 		{nullptr}
 	};
 
+#ifdef __WXMAC__
 	const char *added_hotkeys_minimize[][3] = {
 		{"app/minimize", "Default", "Ctrl-M"},
 		{nullptr}
 	};
+#endif
 
 	void migrate_hotkeys(const char *added[][3]) {
 		auto hk_map = hotkey::inst->GetHotkeyMap();

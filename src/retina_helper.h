@@ -19,8 +19,10 @@
 class wxWindow;
 
 class RetinaHelper {
+#ifdef __WXOSX_COCOA__
 	wxWindow *window;
 	void *observer;
+#endif
 	agi::signal::Signal<int> ScaleFactorChanged;
 public:
 	RetinaHelper(wxWindow *window);
