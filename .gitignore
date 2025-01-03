@@ -3,28 +3,9 @@
 
 # Meson
 build*/
-subprojects/boost*/
-subprojects/cairo*
-subprojects/curl-*
-subprojects/dav1d
-subprojects/ffmpeg
-subprojects/ffms2*
-subprojects/fontconfig*
-subprojects/freetype2
-subprojects/fribidi
-subprojects/glib*
-subprojects/googletest-*
-subprojects/harfbuzz
-subprojects/icu
-subprojects/libass
-subprojects/libffi*
-subprojects/libpng-*
-subprojects/luajit
-subprojects/nasm-*
-subprojects/packagecache
-subprojects/proxy-libintl*
-subprojects/wxWidgets
-subprojects/zlib-*
-subprojects/dirent-*
-subprojects/hunspell-*
-subprojects/uchardet-*
+/subprojects/*
+!/subprojects/*.wrap
+!/subprojects/packagefiles
+!/subprojects/csri
+!/subprojects/iconv
+!/subprojects/luabins
