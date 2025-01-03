@@ -50,7 +50,15 @@ cp -v "${SRC_DIR}/packages/osx_bundle/Contents/Resources/Aegisub.icns" "${DMG_TM
 
 echo
 echo "---- Creating image ----"
-/usr/bin/hdiutil create -srcfolder "${DMG_TMP_DIR}" -volname "${PKG_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${DMG_RW_PATH}"
+max_tries=10
+i=0
+until /usr/bin/hdiutil create -srcfolder "${DMG_TMP_DIR}" -volname "${PKG_NAME}" -fs HFS+ -fsargs "-c c=64,a=16,e=16" -format UDRW "${DMG_RW_PATH}"; do
+  if [ $i -eq $max_tries ]; then
+    echo "Error: hdiutil failed after ${max_tries} tries."
+    exit 1
+  fi
+  i=$((i+1))
+done
 
 echo
 echo "---- Mounting image ----"
