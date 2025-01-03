@@ -4,7 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>BSD-3-Clause AND MIT AND MPL-1.1</project_license>
   <name>Aegisub</name>
-  <summary>A free, cross-platform open source tool for creating and modifying subtitles</summary>
+  <summary>Create and modify subtitles</summary>
   <description>
     <p>Aegisub is a free, cross-platform open source tool for creating and modifying subtitles. Aegisub makes it quick and easy to time subtitles to audio, and features many powerful tools for styling them, including a built-in real-time video preview.</p>
     <p>Aegisub was originally created as a tool to make typesetting, particularly in anime fansubs, a less painful experience. At the time of the start of the project, many other programs that supported the Advanced Substation Alpha format lacked (and in many cases, still lack; development on several competing programs have since been dropped for various reasons completely unrelated to Aegisub) many vital functions, or were too buggy and/or unreliable to be really useful.</p>
@@ -25,6 +25,19 @@
     <kudo>HighContrast</kudo>
     <kudo>UserDocs</kudo>
   </kudos>
+  <categories>
+    <category>AudioVideo</category>
+    <category>Graphics</category>
+  </categories>
+  <keywords>
+    <keyword translate="no">ass</keyword>
+    <keyword translate="no">sub</keyword>
+    <keyword translate="no">srt</keyword>
+    <keyword>anime</keyword>
+    <keyword>movie</keyword>
+    <keyword>subtitle</keyword>
+    <keyword>translate</keyword>
+  </keywords>
   <screenshots>
     <screenshot type="default">
       <caption>Typesetting</caption>
@@ -43,19 +56,25 @@
     <name>Aegisub Group</name>
   </developer>
   <url type="bugtracker">https://github.com/TypesettingTools/Aegisub/issues</url>
+  <url type="vcs-browser">https://github.com/TypesettingTools/Aegisub</url>
   <url type="faq">https://aegisub.org/docs/latest/faq</url>
   <url type="help">https://aegisub.org/docs/latest/main_page</url>
   <url type="homepage">https://aegisub.org</url>
   <url type="translate">https://github.com/TypesettingTools/Aegisub</url>
-  <content_rating type="oars-1.0">
-    <content_attribute id="social-info">mild</content_attribute>
-  </content_rating>
+  <content_rating type="oars-1.1" />
   <translation type="gettext">aegisub</translation>
   <provides>
     <binary>aegisub</binary>
+    <mediatype>application/x-srt</mediatype>
+    <mediatype>text/plain</mediatype>
+    <mediatype>text/x-ass</mediatype>
+    <mediatype>text/x-microdvd</mediatype>
+    <mediatype>text/x-ssa</mediatype>
   </provides>
   <releases>
     <!-- TODO: automatic replace at config time -->
-    <release version="3.4.1" date="2025-01-01"/>
+    <release version="3.4.1" date="2025-01-01">
+      <url>https://aegisub.org/changelog/3.4.1/</url>
+    </release>
   </releases>
 </component>
