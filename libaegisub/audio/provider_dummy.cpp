@@ -18,6 +18,7 @@
 
 #include "libaegisub/fs.h"
 
+#include <cstring>
 #include <random>
 
 /*
