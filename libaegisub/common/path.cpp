@@ -29,7 +29,8 @@ constexpr std::string_view tokens[] = {
 	"?script",
 	"?temp",
 	"?user",
-	"?video"
+	"?video",
+	"?state"
 };
 
 int find_token(std::string_view str) {
@@ -44,6 +45,7 @@ int find_token(std::string_view str) {
 	case 't' + 'p': idx = 5; break;
 	case 'u' + 'r': idx = 6; break;
 	case 'v' + 'e': idx = 7; break;
+	case 's' + 't': idx = 8; break;
 	default: return -1;
 	}
 	return str.starts_with(tokens[idx]) ? idx : -1;
