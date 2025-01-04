@@ -329,17 +329,9 @@ endif
 luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'),
                     allow_fallback: false, method: 'pkg-config')
 if luajit.found() and luajit.type_name() != 'internal'
-    luajit_test = cc.run('''#include <lauxlib.h>
-int main(void)
-{
-    lua_State *L = luaL_newstate();
-    if (!L) return 1;
-    // This is valid in lua 5.2, but a syntax error in 5.1
-    const char testprogram[] = "function foo() while true do break return end end";
-    return luaL_loadstring(L, testprogram) == LUA_ERRSYNTAX;
-}''', dependencies: luajit)
+    luajit_test = cc.run(files('tests/tests/luajit_52.c'), dependencies: luajit)
 
-    if luajit_test.returncode() == 1
+    if luajit_test.returncode() != 0
         if get_option('system_luajit')
             error('System luajit found but not compiled in 5.2 mode')
         else
