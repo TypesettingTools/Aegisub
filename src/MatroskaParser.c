@@ -46,6 +46,8 @@
 #define	inline	  __inline
 
 #include <tchar.h>
+#else
+#include <alloca.h>
 #endif
 
 #ifndef EVCBUG
