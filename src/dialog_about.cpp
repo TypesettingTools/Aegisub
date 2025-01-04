@@ -39,6 +39,7 @@
 #include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/datetime.h>
 
 void ShowAboutDialog(wxWindow *parent) {
 	wxDialog d(parent, -1, _("About Aegisub"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX);
@@ -49,7 +50,7 @@ void ShowAboutDialog(wxWindow *parent) {
 
 	// Generate about string
 	wxString aboutString = wxString("Aegisub ") + GetAegisubShortVersionString() + ".\n"
-		"Copyright (c) 2005-2019 Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et al.\n\n"
+		"Copyright (c) 2005-" + wxString::Format("%d", wxDateTime::Now().GetYear()) + " Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et al.\n\n"
 		"Programmers:\n"
 		"    Alysson Souza e Silva\n"
 		"    Amar Takhar\n"
