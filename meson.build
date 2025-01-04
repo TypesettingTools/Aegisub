@@ -1,7 +1,15 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.57.0',
-        default_options: ['cpp_std=c++20', 'buildtype=debugoptimized', 'harfbuzz:icu=disabled', 'ffmpeg:libdav1d=enabled'],
+        default_options: [
+            'cpp_std=c++20',
+            'buildtype=debugoptimized',
+            'harfbuzz:icu=disabled',
+            'ffmpeg:libdav1d=enabled',
+            'luajit:amalgam=true',
+            'luajit:lua52compat=true',
+            'luajit:luajit=false',
+        ],
         version: '3.4.1')
 
 cmake = import('cmake')
@@ -318,7 +326,8 @@ if get_option('enable_update_checker')
     deps += [libcurl_dep]
 endif
 
-luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'))
+luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'),
+                    allow_fallback: false, method: 'pkg-config')
 if luajit.found() and luajit.type_name() != 'internal'
     luajit_test = cc.run('''#include <lauxlib.h>
 int main(void)
@@ -334,18 +343,25 @@ int main(void)
         if get_option('system_luajit')
             error('System luajit found but not compiled in 5.2 mode')
         else
-            message('System luajit found but not compiled in 5.2 mode; using built-in luajit')
+            message('System luajit found but not compiled in 5.2 mode')
+            luajit = dependency('', required: false)
         endif
     else
         deps += luajit
     endif
-else
-    message('System luajit not found; using built-in luajit')
 endif
 
-if not deps.contains(luajit)
-    deps += subproject('luajit').get_variable('luajit_dep')
+if not luajit.found()
+    message('Using built-in luajit')
+    subproject('luajit') # Initialize subproject to ignore system luajit
+    luajit = dependency('luajit')
+    assert(luajit.type_name() == 'internal', 'System luajit used instead of built-in luajit')
 endif
+
+if luajit.type_name() == 'internal'
+    deps += luajit
+endif
+
 deps += subproject('luabins').get_variable('luabins_dep')
 
 dep_gl = dependency('gl', required: false)
