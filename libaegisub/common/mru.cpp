@@ -139,8 +139,15 @@ void MRUManager::Load(std::string_view key, const json::Array& array) {
 
 	try {
 		mru[idx].reserve(array.size());
-		for (std::string const& str : array)
-			mru[idx].push_back(str);
+		for (std::string const& str : array) {
+			try {
+				mru[idx].push_back(str);
+			} catch (const std::exception &e) {
+				// Discard values with invalid (non-UTF-8) encodings.
+				// The exceptions thrown by the std::filesystem::path constructur are implementation-defined
+				// so we have to do a catchall.
+			}
+		}
 	}
 	catch (json::Exception const&) {
 		// Out of date MRU file; just discard the data and skip it
