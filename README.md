@@ -1,5 +1,4 @@
 # Aegisub - Advanced Subtitle Editor
-![logo-large.png](https://aegisub.org/img/logo-large.png)
 ## Quick Links
 [Homepage](https://aegisub.org/)\
 [Binaries](https://aegisub.org/downloads/)\
@@ -38,8 +37,7 @@ git clone https://github.com/TypesettingTools/Aegisub
 ```
 From the Visual Studio "x64 Native Tools Command Prompt," build Aegisub:
 ```sh
-meson setup build -Dbuildtype=release -Ddefault_library=static &&
-   meson compile -C build
+meson setup build -Ddefault_library=static && meson compile -C build
 ```
 You should now have a binary at _build/aegisub.exe_.
 
@@ -78,13 +76,13 @@ When compiling on Apple Silicon, replace `/usr/local` with `/opt/homebrew`.
 #### Building for macOS
 Once the dependencies are installed, build Aegisub:
 ```sh
-meson setup build -Dbuildtype=release && meson compile -C build
+meson setup build && meson compile -C build
 ```
 
 #### macOS Installer
 Create the macOS .dmg file as follows:
 ```sh
-meson setup build_static -Dbuildtype=release -Ddefault_library=static \
+meson setup build_static -Ddefault_library=static \
    -Dbuild_osx_bundle=true -Dlocal_boost=true
 meson test -C build_static --verbose
 meson compile osx-bundle -C build_static
@@ -104,7 +102,7 @@ Current stable versions of Alpine Linux don't have ffms2 packaged.
 
 #### Building on Linux
 ```sh
-meson setup build -Dbuildtype=release && meson compile -C build
+meson setup build && meson compile -C build
 ```
 
 ## Updating Moonscript
