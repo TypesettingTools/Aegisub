@@ -38,7 +38,6 @@
 #include "../dialogs.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
-#include "../options.h"
 #include "../resolution_resampler.h"
 #include "../video_controller.h"
 
@@ -50,18 +49,6 @@
 
 namespace {
 	using cmd::Command;
-
-struct tool_assdraw final : public Command {
-	CMD_NAME("tool/assdraw")
-	CMD_ICON(assdraw)
-	STR_MENU("ASSDraw3...")
-	STR_DISP("ASSDraw3")
-	STR_HELP("Launch the ASSDraw3 tool for vector drawing")
-
-	void operator()(agi::Context *) override {
-		wxExecute("\"" + config::path->Decode("?data/ASSDraw3.exe").wstring() + "\"");
-	}
-};
 
 struct tool_export final : public Command {
 	CMD_NAME("tool/export")
@@ -288,10 +275,6 @@ namespace cmd {
 		reg(std::make_unique<tool_time_kanji>());
 		reg(std::make_unique<tool_time_postprocess>());
 		reg(std::make_unique<tool_translation_assistant>());
-#ifdef _WIN32
-		if (agi::fs::FileExists(config::path->Decode("?data/ASSDraw3.exe")))
-			reg(std::make_unique<tool_assdraw>());
-#endif
 		reg(std::make_unique<tool_translation_assistant_commit>());
 		reg(std::make_unique<tool_translation_assistant_preview>());
 		reg(std::make_unique<tool_translation_assistant_next>());
