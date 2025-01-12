@@ -587,6 +587,9 @@ void SubsEditBox::OnSplit(wxCommandEvent&) {
 
 void SubsEditBox::DoOnSplit(bool show_original) {
 	Freeze();
+	if (show_original)
+		secondary_editor->SetValue(to_wx(c->initialLineState->GetInitialText()));
+
 	GetSizer()->Show(secondary_editor, show_original);
 	GetSizer()->Show(bottom_sizer, show_original);
 	Fit();
@@ -594,9 +597,6 @@ void SubsEditBox::DoOnSplit(bool show_original) {
 	wxSizer* parent_sizer = GetParent()->GetSizer();
 	if (parent_sizer) parent_sizer->Layout();
 	Thaw();
-
-	if (show_original)
-		secondary_editor->SetValue(to_wx(c->initialLineState->GetInitialText()));
 }
 
 void SubsEditBox::OnStyleChange(wxCommandEvent &evt) {
