@@ -258,7 +258,7 @@ if host_machine.system() == 'windows' and not get_option('directsound').disabled
     if dsound_dep.found() and winmm_dep.found() and ole32_dep.found() and dxguid_dep.found() and have_dsound_h
         deps += [dsound_dep, winmm_dep, ole32_dep, dxguid_dep]
         conf.set('WITH_DIRECTSOUND', 1)
-        dep_avail += 'DirectSound'
+        dep_avail = ['DirectSound'] + dep_avail
     endif
 endif
 
