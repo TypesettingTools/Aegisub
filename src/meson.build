@@ -172,7 +172,6 @@ elif host_machine.system() == 'windows'
         'avisynth_wrap.cpp',
         'crash_writer_minidump.cpp',
         'font_file_lister_gdi.cpp',
-        # 'libass_gdi_fontselect.cpp',
         'video_provider_avs.cpp',
     )
 
