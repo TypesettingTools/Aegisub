@@ -84,11 +84,11 @@ char *dir_next(DirectoryIterator &it, char **err) {
 	});
 }
 
-void dir_close(DirectoryIterator &it) {
+void dir_close(DirectoryIterator &it, char **err) {
 	it = DirectoryIterator();
 }
 
-void dir_free(DirectoryIterator *it) {
+void dir_free(DirectoryIterator *it, char **err) {
 	delete it;
 }
 
