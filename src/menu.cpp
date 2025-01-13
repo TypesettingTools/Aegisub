@@ -178,7 +178,7 @@ public:
 	}
 
 	int AddCommand(cmd::Command *co, wxMenu *parent, std::string const& text = "") {
-		return AddCommand(co, parent, text.empty() ? co->StrMenu(context) : _(to_wx(text)));
+		return AddCommand(co, parent, text.empty() ? co->StrMenu(context) : wxGetTranslation(to_wx(text)));
 	}
 
 	// because wxString doesn't have a move constructor
@@ -351,7 +351,7 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 #endif
 
 	if (read_entry(ele, "submenu", &submenu) && read_entry(ele, "text", &text)) {
-		wxString tl_text = _(to_wx(text));
+		wxString tl_text = wxGetTranslation(to_wx(text));
 		parent->AppendSubMenu(build_menu(submenu, c, cm), tl_text);
 #ifdef __WXMAC__
 		if (special == "help")
@@ -522,12 +522,12 @@ namespace menu {
 			read_entry(item, "submenu", &submenu);
 			read_entry(item, "text", &disp);
 			if (!submenu.empty()) {
-				menu->Append(build_menu(submenu, c, &menu->cm), _(to_wx(disp)));
+				menu->Append(build_menu(submenu, c, &menu->cm), wxGetTranslation(to_wx(disp)));
 			}
 			else {
 				read_entry(item, "special", &submenu);
 				if (submenu == "automation")
-					menu->Append(new AutomationMenu(c, &menu->cm), _(to_wx(disp)));
+					menu->Append(new AutomationMenu(c, &menu->cm), wxGetTranslation(to_wx(disp)));
 			}
 		}
 
