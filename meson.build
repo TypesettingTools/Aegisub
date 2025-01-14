@@ -389,7 +389,7 @@ if cc.has_function('alloca', prefix: '#include <stdlib.h>')
     # The files using alloca() already include <stdlib.h> unconditionally.
 elif cc.has_function('alloca', prefix: '#include <alloca.h>')
     conf_data.set('HAVE_ALLOCA_H', true)
-elif cc.has_function('_alloca', prefix: '#include <malloc.h>')
+elif cc.has_header_symbol('malloc.h', '_alloca')
     conf_data.set('HAVE_MALLOC_H', true)
 endif
 
