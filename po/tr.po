@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub [TR]\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-13 21:34+0100\n"
-"PO-Revision-Date: 2024-12-30 18:31+0300\n"
+"PO-Revision-Date: 2025-01-14 09:25+0300\n"
 "Last-Translator: \n"
 "Language-Team: Türkçe\n"
 "Language: tr\n"
@@ -225,7 +225,7 @@ msgstr "&Tam görüntü"
 
 #: ../src/command/app.cpp:88
 msgid "Full view"
-msgstr "Hepsini Göster"
+msgstr "Tam görünüm"
 
 #: ../src/command/app.cpp:89
 msgid "Display audio, video and then subtitles grid"
@@ -351,27 +351,27 @@ msgstr "Aegisub'ın yeni versiyonunun olup olmadığını kontrol edin"
 
 #: ../src/command/app.cpp:270 ../src/command/app.cpp:271
 msgid "Minimize"
-msgstr ""
+msgstr "Küçült"
 
 #: ../src/command/app.cpp:272
 msgid "Minimize the active window"
-msgstr ""
+msgstr "Aktif pencereyi simge durumuna küçült"
 
 #: ../src/command/app.cpp:281 ../src/command/app.cpp:282
 msgid "Zoom"
-msgstr ""
+msgstr "Yakınlaştır"
 
 #: ../src/command/app.cpp:283
 msgid "Maximize the active window"
-msgstr ""
+msgstr "Aktif pencereyi tam ekran yap"
 
 #: ../src/command/app.cpp:292 ../src/command/app.cpp:293
 msgid "Bring All to Front"
-msgstr ""
+msgstr "Tümünü Öne Getir"
 
 #: ../src/command/app.cpp:294
 msgid "Bring forward all open documents to the front"
-msgstr ""
+msgstr "Tüm açık belgeleri öne getir"
 
 #: ../src/command/audio.cpp:65
 msgid "&Close Audio"
@@ -1138,7 +1138,7 @@ msgstr "Geçerli satırın metnini temizler, geçersiz kılma etiketlerini bıra
 #: ../src/command/edit.cpp:1255 ../src/command/edit.cpp:1256
 #: ../src/command/tool.cpp:256
 msgid "Insert Original"
-msgstr "Orjinali Yerleştir"
+msgstr "Orijinali Yerleştir"
 
 #: ../src/command/edit.cpp:1257
 msgid "Insert the original line text at the cursor"
@@ -1146,7 +1146,7 @@ msgstr "Orijinal satırın metnini imlece ekle"
 
 #: ../src/command/edit.cpp:1265
 msgid "insert original"
-msgstr "orjinali yerleştir"
+msgstr "orijinali yerleştir"
 
 #: ../src/command/grid.cpp:50 ../src/command/grid.cpp:51
 #: ../src/command/grid.cpp:62 ../src/command/grid.cpp:63
@@ -1421,15 +1421,15 @@ msgstr "Aegisub'ın IRC kanalını ziyaret edin"
 
 #: ../src/command/help.cpp:92
 msgid "&Visual Typesetting"
-msgstr "&Görsel yazımayarları"
+msgstr "&Görsel Dizgi"
 
 #: ../src/command/help.cpp:93
 msgid "Visual Typesetting"
-msgstr "Görsel Yazımayarları"
+msgstr "Görsel Dizgi"
 
 #: ../src/command/help.cpp:94
 msgid "Open the manual page for Visual Typesetting"
-msgstr "Görsel Yazımayarları için elkitabı sayfasını açın"
+msgstr "Görsel Dizgi için kılavuz sayfasını aç"
 
 #: ../src/command/help.cpp:104
 msgid "&Website"
@@ -2134,7 +2134,7 @@ msgstr "Değişiklikleri uygulamadan önceki satıra geç"
 
 #: ../src/command/tool.cpp:255
 msgid "&Insert Original"
-msgstr "&Orjinali yerleştir"
+msgstr "&Orijinali yerleştir"
 
 #: ../src/command/tool.cpp:257
 msgid "Insert the untranslated text"
@@ -2194,7 +2194,7 @@ msgstr "&Varsayılan"
 
 #: ../src/command/video.cpp:146
 msgid "Use video's original aspect ratio"
-msgstr "Videoyu orjinal ebatta kullan"
+msgstr "Videoyu orijinal ebatta kullan"
 
 #: ../src/command/video.cpp:162
 msgid "&Fullscreen (4:3)"
@@ -2803,7 +2803,7 @@ msgstr "Aç"
 #: ../src/dialog_autosave.cpp:94
 #, c-format
 msgid "%s [ORIGINAL BACKUP]"
-msgstr "%s [ORIJINAL YEDEK]"
+msgstr "%s [ORİJİNAL YEDEK]"
 
 #: ../src/dialog_autosave.cpp:95
 #, c-format
@@ -3407,7 +3407,7 @@ msgstr "Başlık:"
 
 #: ../src/dialog_properties.cpp:107
 msgid "Original script:"
-msgstr "Orjinal betik:"
+msgstr "Orijinal betik:"
 
 #: ../src/dialog_properties.cpp:108
 msgid "Translation:"
@@ -4568,7 +4568,7 @@ msgstr "zamanlama işlemcisi"
 
 #: ../src/dialog_translation.cpp:77
 msgid "Original"
-msgstr "Orjinal"
+msgstr "Orijinal"
 
 #: ../src/dialog_translation.cpp:100
 msgid "Translation"
@@ -4576,7 +4576,7 @@ msgstr "Çeviri"
 
 #: ../src/dialog_translation.cpp:115
 msgid "Insert original"
-msgstr "Orjinali yerleştir"
+msgstr "Orijinali yerleştir"
 
 #: ../src/dialog_translation.cpp:118
 msgid "Delete line"
@@ -4613,12 +4613,12 @@ msgstr "Bir hafta sonra tekrar &hatırlat"
 
 #: ../src/dialog_version_check.cpp:295
 msgid "Curl could not be initialized."
-msgstr ""
+msgstr "Curl başlatılamadı."
 
 #: ../src/dialog_version_check.cpp:317
 #, c-format
 msgid "Checking for updates failed: %s."
-msgstr ""
+msgstr "Güncelleştirmelerin denetlenmesi başarısız oldu: %s."
 
 #: ../src/dialog_version_check.cpp:345
 msgid "An update to Aegisub was found."
@@ -4825,6 +4825,8 @@ msgstr "'%s' stili mevcut değil\n"
 #, c-format
 msgid "Font '%s' is used in a drawing, but not in any text.\n"
 msgstr ""
+"'%s' fontu bir çizimde kullanılmış, ancak herhangi bir metinde "
+"kullanılmamış.\n"
 
 #: ../src/font_file_lister.cpp:160
 #, c-format
@@ -5173,7 +5175,7 @@ msgstr "Gösterme"
 
 #: ../src/preferences.cpp:143
 msgid "Show all"
-msgstr "Hepsini göster"
+msgstr "Tümünü göster"
 
 #: ../src/preferences.cpp:143
 msgid "Show previous"
@@ -5345,7 +5347,7 @@ msgstr "Geçersiz kılma sembolünü gizle"
 
 #: ../src/preferences.cpp:229
 msgid "Skip over whitespace"
-msgstr ""
+msgstr "Boşlukları atla"
 
 #: ../src/preferences.cpp:244
 msgid "Audio Display"
@@ -5674,27 +5676,27 @@ msgstr "Kalite"
 
 #: ../src/preferences.cpp:388
 msgid "Compressed"
-msgstr ""
+msgstr "Sıkıştırılmış"
 
 #: ../src/preferences.cpp:388
 msgid "Extended"
-msgstr ""
+msgstr "Genişletilmiş"
 
 #: ../src/preferences.cpp:388
 msgid "Linear"
-msgstr ""
+msgstr "Doğrusal"
 
 #: ../src/preferences.cpp:388
 msgid "Logarithmic"
-msgstr ""
+msgstr "Logaritmik"
 
 #: ../src/preferences.cpp:388
 msgid "Medium"
-msgstr ""
+msgstr "Orta"
 
 #: ../src/preferences.cpp:390
 msgid "Frequency mapping"
-msgstr ""
+msgstr "Frekans haritalaması"
 
 #: ../src/preferences.cpp:392
 msgid "Cache memory max (MB)"
@@ -6197,7 +6199,7 @@ msgstr "Bu karenin zamanı geçerli altyazının başlangıç ve bitişine bağl
 
 #: ../src/visual_tool.cpp:119
 msgid "visual typesetting"
-msgstr "görsel yazımayarları"
+msgstr "görsel dizgi"
 
 #: ../src/visual_tool_cross.cpp:61 ../src/visual_tool_drag.cpp:330
 msgid "positioning"
@@ -6369,27 +6371,27 @@ msgstr "Geçersiz &kıl"
 
 #: default_menu.json:0
 msgid "Window"
-msgstr ""
+msgstr "Pencere"
 
 #: default_menu.json:0
 msgid "Open..."
-msgstr ""
+msgstr "Aç"
 
 #: default_menu.json:0
 msgid "Open Recent"
-msgstr ""
+msgstr "Son Açılanlar"
 
 #: default_menu.json:0
 msgid "Save"
-msgstr ""
+msgstr "Kaydet"
 
 #: default_menu.json:0
 msgid "Save As..."
-msgstr ""
+msgstr "Farklı Kaydet"
 
 #: default_menu.json:0
 msgid "Export As..."
-msgstr ""
+msgstr "Dışarı Aktar"
 
 #: default_hotkey.json:244:
 msgid "Subtitle Edit Box"
@@ -6498,12 +6500,14 @@ msgstr "Film ve videolar için altyazı oluştur ve düzenle."
 
 #: ../packages/desktop/aegisub.desktop.in.in:13
 msgid "subtitles;subtitle;captions;captioning;video;audio;"
-msgstr ""
+msgstr "altyazılar;altyazı;başlıklar;başlık;video;ses"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
 msgid ""
 "A free, cross-platform open source tool for creating and modifying subtitles"
 msgstr ""
+"Altyazı oluşturmak ve düzenlemek için platformlar arası, özgür ve açık "
+"kaynak kodlu bir program"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:9
 msgid ""
@@ -6512,6 +6516,10 @@ msgid ""
 "audio, and features many powerful tools for styling them, including a built-"
 "in real-time video preview."
 msgstr ""
+"Aegisub özgür ve açık kaynak kodlu bir platformlar arası altyazı düzenleme "
+"programıdır. Aegisub, altyazıları sesle eşleştirmeyi hızlı ve kolay hale "
+"getirir ve yerleşik gerçek zamanlı video önizlemesi de dahil olmak üzere, "
+"yazı biçimlendirme için birçok güçlü araç sunar."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:10
 msgid ""
@@ -6523,6 +6531,13 @@ msgid ""
 "unrelated to Aegisub) many vital functions, or were too buggy and/or "
 "unreliable to be really useful."
 msgstr ""
+"Aegisub, başlangıçta dizgi işlemini, özellikle anime fansub'larında, daha az "
+"zahmetli bir deneyim haline getirmek için oluşturuldu. Projenin "
+"başlangıcında, Advanced Substation Alpha formatını destekleyen birçok "
+"program, birçok hayati işlevden yoksundu (ve birçok durumda hâlâ yoksun; "
+"diğer bazı rakip programların geliştirilmesi, Aegisub'la ilgisi olmayan "
+"çeşitli nedenlerle tamamen durdurulmuştur) veya gerçekten kullanışlı "
+"olamayacak kadar hatalı ve/veya güvenilmezdi."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:11
 msgid ""
@@ -6533,46 +6548,53 @@ msgid ""
 "for creating karaoke effects, Automation can now be used much else, "
 "including creating macros and various other convenient tools)."
 msgstr ""
+"O zamandan beri Aegisub, tam teşekküllü ve yüksek derecede "
+"özelleştirilebilir bir altyazı düzenleyicisi haline geldi. Zamanlama, dizgi, "
+"düzenleme ve altyazı çevirme işlemlerinde size yardımcı olacak birçok pratik "
+"aracı içerir. Ayrıca, güçlü bir betikleme ortamı olan Otomasyon'a sahiptir. "
+"Başlangıçta ağırlıklı olarak karaoke efektleri oluşturmak için tasarlanan "
+"Otomasyon, artık makrolar ve çeşitli kullanışlı araçlar oluşturmak da dahil "
+"olmak üzere çok daha fazla işlev için kullanılabilir."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:12
 msgid "Some highlights of Aegisub:"
-msgstr ""
+msgstr "Aegisub'un bazı öne çıkan özellikleri:"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:14
 msgid "Simple and intuitive yet powerful interface for editing subtitles"
-msgstr ""
+msgstr "Basit ve sezgisel ancak güçlü bir altyazı düzenleme arayüzü"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:15
 msgid "Support for many formats and character sets"
-msgstr ""
+msgstr "Birçok format ve karakter seti desteği"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:16
 msgid "Powerful video mode"
-msgstr ""
+msgstr "Güçlü video modu"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:17
 msgid "Visual typesetting tools"
-msgstr ""
+msgstr "Görsel dizgi araçları"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:18
 msgid "Intuitive and customizable audio timing mode"
-msgstr ""
+msgstr "Sezgisel ve özelleştirilebilir ses zamanlama modu"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:19
 msgid "Fully scriptable through the Automation module"
-msgstr ""
+msgstr "Otomasyon modülü aracılığıyla tamamen betiklenebilir"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:30
 msgid "Typesetting"
-msgstr ""
+msgstr "Dizgi"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:34
 msgid "Audio video"
-msgstr ""
+msgstr "Sesli video"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:38
 msgid "Audio timing"
-msgstr ""
+msgstr "Ses zamanlama"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Installing runtime libraries..."
@@ -6589,6 +6611,12 @@ msgstr "Aegisub için yeni sürümleri otomatik olarak kontrol et"
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Update Checker:"
 msgstr "Güncelleme Denetleyicisi:"
+
+msgid "OK"
+msgstr "Tamam"
+
+msgid "&Apply"
+msgstr "&Uygula"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid ""
