@@ -385,6 +385,14 @@ if not get_option('csri').disabled() and host_machine.system() == 'windows'
     deps += csri_sp.get_variable('csri_dep')
 endif
 
+if cc.has_function('alloca', prefix: '#include <stdlib.h>')
+    # The files using alloca() already include <stdlib.h> unconditionally.
+elif cc.has_function('alloca', prefix: '#include <alloca.h>')
+    conf_data.set('HAVE_ALLOCA_H', true)
+elif cc.has_function('_alloca', prefix: '#include <malloc.h>')
+    conf_data.set('HAVE_MALLOC_H', true)
+endif
+
 acconf = configure_file(output: 'acconf.h', configuration: conf)
 
 subdir('automation')
