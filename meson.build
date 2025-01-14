@@ -2,6 +2,7 @@ project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.57.0',
         default_options: [
+            'b_ndebug=if-release',
             'cpp_std=c++20',
             'buildtype=debugoptimized',
             'harfbuzz:icu=disabled',
@@ -63,10 +64,6 @@ docdir = prefix / 'doc'
 # MSVC sets this automatically with -MDd, but it has a different meaning on other platforms
 if get_option('debug') and host_machine.system() != 'windows'
     add_project_arguments('-D_DEBUG', language: 'cpp')
-endif
-
-if get_option('buildtype') == 'release'
-    add_project_arguments('-DNDEBUG', language: 'cpp')
 endif
 
 conf = configuration_data()
