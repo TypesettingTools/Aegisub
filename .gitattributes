@@ -1,6 +1,6 @@
-subprojects/csri    linguist-vendored
-subprojects/iconv   linguist-vendored
-subprojects/luabins linguist-vendored
+subprojects/csri/*      linguist-vendored
+subprojects/iconv/*     linguist-vendored
+subprojects/luabins/*   linguist-vendored
 
 subprojects/csri/meson.build    -linguist-vendored
 subprojects/iconv/meson.build   -linguist-vendored
