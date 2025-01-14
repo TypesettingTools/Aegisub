@@ -75,8 +75,113 @@
   </provides>
   <releases>
     <!-- TODO: automatic replace at config time -->
+    <release version="3.4.2" date="2025-01-12">
+      <url>https://aegisub.org/changelog/3.4.2/</url>
+    </release>
     <release version="3.4.1" date="2025-01-01">
       <url>https://aegisub.org/changelog/3.4.1/</url>
+    </release>
+    <release version="3.4.0" date="2024-12-18">
+      <url>https://aegisub.org/changelog/3.4.0/</url>
+    </release>
+    <release version="3.2.2" date="2014-12-08">
+      <url>https://aegisub.org/changelog/3.2.2/</url>
+    </release>
+    <release version="3.2.1" date="2014-09-14">
+      <url>https://aegisub.org/changelog/3.2.1/</url>
+    </release>
+    <release version="3.2.0" date="2014-07-28">
+      <url>https://aegisub.org/changelog/3.2.0/</url>
+    </release>
+    <release version="3.1.3" date="2014-04-07">
+      <url>https://aegisub.org/changelog/3.1.3/</url>
+    </release>
+    <release version="3.1.2" date="2014-02-02">
+      <url>https://aegisub.org/changelog/3.1.2/</url>
+    </release>
+    <release version="3.1.1" date="2014-01-12">
+      <url>https://aegisub.org/changelog/3.1.1/</url>
+    </release>
+    <release version="3.1.0" date="2014-01-04">
+      <url>https://aegisub.org/changelog/3.1.0/</url>
+    </release>
+    <release version="3.0.4" date="2013-07-05">
+      <url>https://aegisub.org/changelog/3.0.4/</url>
+    </release>
+    <release version="3.0.3" date="2013-06-29">
+      <url>https://aegisub.org/changelog/3.0.3/</url>
+    </release>
+    <release version="3.0.2" date="2012-10-23">
+      <url>https://aegisub.org/changelog/3.0.2/</url>
+    </release>
+    <release version="3.0.1" date="2012-10-08">
+      <url>https://aegisub.org/changelog/3.0.1/</url>
+    </release>
+    <release version="3.0.0" date="2012-10-01">
+      <url>https://aegisub.org/changelog/3.0.0/</url>
+    </release>
+    <release version="2.1.9" date="2012-02-05">
+      <url>https://aegisub.org/changelog/2.1.9/</url>
+    </release>
+    <release version="2.1.8" date="2010-01-30">
+      <url>https://aegisub.org/changelog/2.1.8/</url>
+    </release>
+    <release version="2.1.7" date="2009-07-14">
+      <url>https://aegisub.org/changelog/2.1.7/</url>
+    </release>
+    <release version="2.1.6" date="2008-11-26">
+      <url>https://aegisub.org/changelog/2.1.6/</url>
+    </release>
+    <release version="2.1.5" date="2008-11-23">
+      <url>https://aegisub.org/changelog/2.1.5/</url>
+    </release>
+    <release version="2.1.4" date="2008-11-14">
+      <url>https://aegisub.org/changelog/2.1.4/</url>
+    </release>
+    <release version="2.1.3a" date="2008-10-29">
+      <url>https://aegisub.org/changelog/2.1.3a/</url>
+    </release>
+    <release version="1.10 beta" date="2006-08-07">
+      <url>https://aegisub.org/changelog/1.10/</url>
+    </release>
+    <release version="1.09 beta" date="2006-01-16">
+      <url>https://aegisub.org/changelog/1.09/</url>
+    </release>
+    <release version="1.08 beta" date="2006-01-03">
+      <url>https://aegisub.org/changelog/1.08/</url>
+    </release>
+    <release version="1.07 beta" date="2005-12-26">
+      <url>https://aegisub.org/changelog/1.07/</url>
+    </release>
+    <release version="1.06 beta" date="2005-11-29">
+      <url>https://aegisub.org/changelog/1.06/</url>
+    </release>
+    <release version="1.06a beta" date="2005-11-30">
+      <url>https://aegisub.org/changelog/1.06a/</url>
+    </release>
+    <release version="1.05 beta" date="2005-11-20">
+      <url>https://aegisub.org/changelog/1.05/</url>
+    </release>
+    <release version="1.04 beta" date="2005-11-16">
+      <url>https://aegisub.org/changelog/1.04/</url>
+    </release>
+    <release version="1.04a beta" date="2005-11-16">
+      <url>https://aegisub.org/changelog/1.04a/</url>
+    </release>
+    <release version="1.03 beta" date="2005-11-12">
+      <url>https://aegisub.org/changelog/1.03/</url>
+    </release>
+    <release version="1.02 beta" date="2005-11-08">
+      <url>https://aegisub.org/changelog/1.02/</url>
+    </release>
+    <release version="1.02a beta" date="2005-11-09">
+      <url>https://aegisub.org/changelog/1.02a/</url>
+    </release>
+    <release version="1.01 beta" date="2005-11-06">
+      <url>https://aegisub.org/changelog/1.01/</url>
+    </release>
+    <release version="1.00 beta" date="2005-11-05">
+      <url>https://aegisub.org/changelog/1.00/</url>
     </release>
   </releases>
 </component>
