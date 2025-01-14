@@ -47,6 +47,7 @@
 
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
+#include <wx/dc.h>
 #include <wx/event.h>
 #include <wx/listctrl.h>
 #include <wx/msgdlg.h>

@@ -21,7 +21,7 @@
 #include "libaegisub/log.h"
 #include "libaegisub/option.h"
 #include "libaegisub/option_value.h"
-
+#include <algorithm>
 namespace {
 std::string_view mru_names[] = {
 	"Audio",
