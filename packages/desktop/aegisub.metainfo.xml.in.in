@@ -65,7 +65,9 @@
   <translation type="gettext">aegisub</translation>
   <provides>
     <binary>aegisub</binary>
+    <mediatype>application/x-ass</mediatype>
     <mediatype>application/x-srt</mediatype>
+    <mediatype>application/x-ssa</mediatype>
     <mediatype>text/plain</mediatype>
     <mediatype>text/x-ass</mediatype>
     <mediatype>text/x-microdvd</mediatype>
