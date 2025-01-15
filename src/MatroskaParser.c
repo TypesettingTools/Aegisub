@@ -41,20 +41,27 @@
 #include <setjmp.h>
 
 #ifdef _WIN32
-// MS names some functions differently
-#define	alloca	  _alloca
 #define	inline	  __inline
 
 #include <tchar.h>
-#else
-#include <alloca.h>
 #endif
 
 #ifndef EVCBUG
 #define	EVCBUG
 #endif
 
+#include "acconf.h"
 #include "MatroskaParser.h"
+
+#ifdef HAVE_ALLOCA_H
+#include <alloca.h>
+#elif defined(HAVE_MALLOC_H)
+#include <malloc.h>
+#endif /* HAVE_ALLOCA_H */
+
+#ifdef HAVE_UNDERLINE_ALLOCA
+#define	alloca	  _alloca
+#endif
 
 #ifdef MATROSKA_COMPRESSION_SUPPORT
 #include <zlib.h>

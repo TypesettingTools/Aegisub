@@ -382,6 +382,20 @@ if not get_option('csri').disabled() and host_machine.system() == 'windows'
     deps += csri_sp.get_variable('csri_dep')
 endif
 
+if cc.has_function('alloca', prefix: '#include <stdlib.h>')
+    # The files using alloca() already include <stdlib.h> unconditionally.
+elif cc.has_function('alloca', prefix: '#include <alloca.h>')
+    conf.set('HAVE_ALLOCA_H', true)
+elif cc.has_header_symbol('malloc.h', '_alloca', prefix: '#include <stdlib.h>')
+    # cc.has_function() can't find _alloca() intrinsic on cl.exe, 
+    # so we use cc.has_header_symbol().
+    conf.set('HAVE_MALLOC_H', true)
+    conf.set('HAVE_UNDERLINE_ALLOCA', true)
+elif cc.has_header_symbol('malloc.h', 'alloca', prefix: '#include <stdlib.h>')
+    # clang-cl.exe has the wrong name for cl.exe's _alloca()
+    conf.set('HAVE_MALLOC_H', true)
+endif
+
 acconf = configure_file(output: 'acconf.h', configuration: conf)
 
 subdir('automation')
