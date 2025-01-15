@@ -55,6 +55,7 @@ libaegisub_src = [
 if host_machine.system() == 'darwin'
     libaegisub_src += [
         'osx/dispatch.mm',
+        'osx/path.mm',
         'osx/spellchecker.mm',
         'osx/util.mm',
     ]
@@ -76,9 +77,12 @@ else
         'unix/access.cpp',
         'unix/fs.cpp',
         'unix/log.cpp',
-        'unix/path.cpp',
         'unix/util.cpp',
     ]
+
+    if host_machine.system() != 'darwin'
+        libaegisub_src += 'unix/path.cpp'
+    endif
 endif
 
 libaegisub_cpp_pch = ['include/lagi_pre.h']
