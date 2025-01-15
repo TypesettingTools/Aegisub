@@ -1,10 +1,13 @@
-# Aegisub
+# Aegisub - Advanced Subtitle Editor
+## Quick Links
+[Homepage](https://aegisub.org/)\
+[Binaries](https://aegisub.org/downloads/)\
+[Bug tracker](https://github.com/TypesettingTools/Aegisub/issues)\
+[Discord](https://discord.com/invite/AZaVyPr)\
+IRC: irc://irc.rizon.net/aegisub
+<!-- Markdown only allows HTTP links, so the IRC isn't clickable. -->
 
-For binaries and general information [see the homepage](http://aegisub.org).
-
-The bug tracker can be found at https://github.com/TypesettingTools/Aegisub/issues.
-
-Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](irc://irc.rizon.net/aegisub).
+Support is available on Discord or IRC.
 
 ## Building Aegisub
 
