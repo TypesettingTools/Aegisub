@@ -1,6 +1,6 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.57.0',
+        meson_version: '>=0.60.0',
         default_options: [
             'b_ndebug=if-release',
             'cpp_std=c++20',
@@ -99,16 +99,7 @@ cc = meson.get_compiler('c')
 deps += cc.find_library('m', required: false)
 deps += cc.find_library('dl', required: false)
 
-if meson.version().version_compare('>=0.60.0')
-  iconv_dep = dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
-else
-  iconv_dep = cc.find_library('iconv', required: false)
-  if not (iconv_dep.found() or cc.has_function('iconv_open'))
-      iconv_sp = subproject('iconv') # this really needs to be replaced with a proper port
-      iconv_dep = iconv_sp.get_variable('libiconv_dep')
-  endif
-endif
-deps += iconv_dep
+deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
