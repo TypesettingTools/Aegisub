@@ -38,4 +38,4 @@ if __name__ == "__main__":
     override(base, over, diff=args.diff)
 
     with open(args.out, "w") as of:
-        json.dump(base, of, indent=4 if args.pretty else None)
+        json.dump(base, of, ensure_ascii=False, indent=4 if args.pretty else None)
