@@ -26,8 +26,10 @@ find ../src ../src/command -name '*.cpp' -o -name '*.h' \
   | sed 's/CHARSET/UTF-8/' \
   > aegisub.pot
 
-sed '/"text"/!d;s/^.*"text" : \("[^"]\+"\).*$/default_menu.json|0|\1/' ../src/libresrc/default_menu.json \
-  | maybe_append
+for f in default_menu.json default_menu_platform.json osx/default_menu.json; do
+    sed '/"text"/!d;s/^.*"text" : \("[^"]\+"\).*$/default_menu.json|0|\1/' ../src/libresrc/"$f" \
+      | maybe_append
+done
 
 sed '/"text"/!d;s/^.*"text" : \("[^"]\+"\).*$/default_menu.json|0|\1/' ../src/libresrc/osx/default_menu.json \
   | maybe_append

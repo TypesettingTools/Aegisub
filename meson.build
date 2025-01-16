@@ -285,8 +285,8 @@ else
     def_audio = ''
 endif
 
-conf_platform = configuration_data()
-conf_platform.set('DEFAULT_PLAYER_AUDIO', def_audio)
+conf_meson = configuration_data()
+conf_meson.set('DEFAULT_PLAYER_AUDIO', def_audio)
 
 if get_option('enable_update_checker')
     libcurl_dep = dependency('libcurl', required: false)

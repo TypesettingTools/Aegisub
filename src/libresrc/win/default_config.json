@@ -3,6 +3,6 @@
 		"Player" : "DirectSound"
 	},
 	"Subtitle" : {
-		"Provider" : "CSRI/xy-vsfilter_aegisub"
+		"Provider" : "CSRI/pf-xy-vsfilter_textsub"
 	}
 }
