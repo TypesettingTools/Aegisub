@@ -2,15 +2,23 @@
 
 import sys, os
 
-manifestfile, cppfile, hfile = sys.argv[1:]
+manifestfile, cppfile, hfile, sourcepath = sys.argv[1:]
 
 with open(manifestfile, 'r') as manifest:
-    files = dict((x.strip(), None) for x in manifest.readlines() if x.strip() != '')
+    files = dict(x.strip().split('|') if '|' in x else (x.strip(), None) for x in manifest.readlines() if x.strip() != '')    # type: ignore
 
-sourcepath = os.path.split(manifestfile)[0]
 buildpath = os.path.split(cppfile)[0]
 
 for k in files:
+    if files[k] == '':
+        files[k] = None
+
+    if files[k] != None:
+        if not os.path.isfile(files[k]):
+            print("{}: Failed to open '{}'".format(manifestfile, k))
+            sys.exit(1)
+        continue
+
     sf = os.path.join(sourcepath, k)
     bf = os.path.join(buildpath, k)
 

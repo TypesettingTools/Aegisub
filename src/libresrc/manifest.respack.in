@@ -1,0 +1,5 @@
+default_config.json|@DEFAULT_CONFIG_PATH@
+default_hotkey.json|@DEFAULT_HOTKEY_PATH@
+default_menu.json|@DEFAULT_MENU_PATH@
+default_mru.json
+default_toolbar.json
