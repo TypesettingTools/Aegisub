@@ -284,38 +284,21 @@ conf_meson = configuration_data()
 conf_meson.set('DEFAULT_PLAYER_AUDIO', def_audio)
 
 if get_option('enable_update_checker')
-    libcurl_dep = dependency('libcurl', required: false)
+    curl_disable = ['tool', 'dict', 'file', 'ftp', 'gopher', 'imap', 'ldap', 'ldaps', 'mqtt', 'pop3', 'rtmp', 'rtsp', 'smb', 'smtp', 'telnet', 'tftp']
+    curl_options = []
+    foreach opt : curl_disable
+        curl_options += opt + '=disabled'
+    endforeach
 
-    if (not libcurl_dep.found())
-        libcurl_opt = cmake.subproject_options()
-        options_dict = {
-            'HTTP_ONLY': true,
-            'BUILD_CURL_EXE': false,
-            'CMAKE_BUILD_TYPE': get_option('buildtype') == 'release' ? 'Release' : 'Debug',
-        }
-        if host_machine.system() == 'windows'
-            options_dict += {'CURL_USE_SCHANNEL': true}
-            deps += cc.find_library('crypt32')
-        elif host_machine.system() == 'darwin'
-            options_dict += {'CURL_USE_SECTRANSP': true}
-        else
-            options_dict += {'CURL_USE_OPENSSL': true}
-        endif
-        if get_option('default_library') == 'static' and (host_machine.system() == 'windows' or host_machine.system() == 'darwin')
-            options_dict += {'BUILD_SHARED_LIBS': false}
-            add_project_arguments('-DCURL_STATICLIB', language: ['cpp'])
-        endif
-        libcurl_opt.add_cmake_defines(options_dict)
-        libcurl = cmake.subproject('curl', options: libcurl_opt)
-
-        libcurl_dep = libcurl.dependency('libcurl')
-
-        # Horrible meson hack to work around the cmake subproject creating broken include directories
-        libcurl_dep = libcurl_dep.partial_dependency(compile_args: true, link_args: true, links: true, sources: true)
-        libcurl_fixed_inc = declare_dependency(include_directories: subproject('curl_meson').get_variable('libcurl_fixed_inc'))
-        deps += [libcurl_fixed_inc]
+    if host_machine.system() == 'windows'
+        curl_options += 'schannel=enabled'
+    elif host_machine.system() == 'darwin'
+        curl_options += 'secure-transport=enabled'
+    else
+        curl_options += 'openssl=enabled'
     endif
-    deps += [libcurl_dep]
+
+    deps += dependency('libcurl', allow_fallback: true, default_options: curl_options)
 endif
 
 luajit = dependency('luajit', version: '>=2.0.0', required: get_option('system_luajit'),
