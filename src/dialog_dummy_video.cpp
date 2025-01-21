@@ -36,6 +36,7 @@
 #include <wx/string.h>
 #include <wx/textctrl.h>
 #include <wx/valgen.h>
+#include <wx/valtext.h>
 
 namespace {
 struct DialogDummyVideo {
