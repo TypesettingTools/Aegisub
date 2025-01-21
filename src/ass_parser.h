@@ -13,6 +13,7 @@
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 #include <memory>
+#include <string>
 
 class AssAttachment;
 class AssFile;

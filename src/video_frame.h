@@ -14,6 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <stddef.h>
 #include <vector>
 
 class wxImage;

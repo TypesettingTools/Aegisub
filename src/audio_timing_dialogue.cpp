@@ -39,9 +39,12 @@
 #include "selection_controller.h"
 #include "utils.h"
 
+#include <list>
+
 #include <libaegisub/ass/time.h>
 
 #include <boost/range/algorithm.hpp>
+
 #include <wx/pen.h>
 
 namespace {
