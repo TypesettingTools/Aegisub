@@ -375,7 +375,23 @@ elif cc.has_header_symbol('malloc.h', 'alloca', prefix: '#include <stdlib.h>')
     conf.set('HAVE_MALLOC_H', true)
 endif
 
-acconf = configure_file(output: 'acconf.h', configuration: conf)
+aegisub_order_dep = []
+aegisub_defines = []
+
+if get_option('b_pch')
+    # Write the feature flags into a configure_file to not bloat the compiler args too much
+    aegisub_order_dep += configure_file(output: 'acconf.h', configuration: conf)
+else
+    # Manually pass the feature flags as compiler args
+    foreach key : conf.keys()
+        aegisub_defines += '-D@0@=@1@'.format(key, conf.get(key))
+    endforeach
+
+    if host_machine.system() == 'windows'
+        # This is also part of all the PCHs
+        aegisub_defines += '-DWIN32_LEAN_AND_MEAN'
+    endif
+endif
 
 subdir('automation')
 subdir('libaegisub')
@@ -387,7 +403,9 @@ subdir('tests')
 aegisub_cpp_pch = ['src/include/agi_pre.h']
 aegisub_c_pch = ['src/include/agi_pre_c.h']
 
-aegisub = executable('aegisub', aegisub_src, version_h, acconf, resrc,
+aegisub = executable('aegisub', aegisub_src, version_h, resrc, aegisub_order_dep,
+                     c_args: aegisub_defines,
+                     cpp_args: aegisub_defines,
                      link_with: [libresrc, libaegisub],
                      include_directories: [libaegisub_inc, libresrc_inc, version_inc, deps_inc, include_directories('src')],
                      cpp_pch: aegisub_cpp_pch,

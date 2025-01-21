@@ -35,6 +35,7 @@
 #include "spline_curve.h"
 #include "utils.h"
 
+#include <algorithm>
 #include <limits>
 
 SplineCurve::SplineCurve(Vector2D p1) : p1(p1), type(POINT) { }

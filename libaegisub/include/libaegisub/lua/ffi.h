@@ -17,6 +17,7 @@
 #include <libaegisub/type_name.h>
 
 #include <cstdlib>
+#include <cstring>
 #include <lua.hpp>
 
 namespace agi::lua {

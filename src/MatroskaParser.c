@@ -50,7 +50,6 @@
 #define	EVCBUG
 #endif
 
-#include "acconf.h"
 #include "MatroskaParser.h"
 
 #ifdef HAVE_ALLOCA_H
