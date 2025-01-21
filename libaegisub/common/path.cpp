@@ -68,7 +68,7 @@ fs::path Path::Decode(std::string_view path) const {
 	if (idx == -1 || paths[idx].empty())
 		return fs::path(path).make_preferred();
 	path = path.substr(tokens[idx].size());
-	if (path.size() && path[0] == '/') path.remove_prefix(1);
+	if (path.size() && (path[0] == '/' || path[0] == std::filesystem::path::preferred_separator)) path.remove_prefix(1);
 	if (path.empty()) return paths[idx];
 	return (paths[idx]/path).make_preferred();
 }
