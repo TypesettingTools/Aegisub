@@ -42,7 +42,6 @@
 #include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
-#include <boost/algorithm/string/predicate.hpp>
 #include <libaegisub/format.h>
 #include <boost/gil.hpp>
 
@@ -129,7 +128,7 @@ void DummyVideoProvider::GetFrame(int, VideoFrame &frame) {
 namespace agi { class BackgroundRunner; }
 std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, std::string_view, agi::BackgroundRunner *) {
 	// Use filename.generic_string here so forward slashes stay as they are
-	if (!boost::starts_with(filename.generic_string(), "?dummy"))
+	if (!filename.generic_string().starts_with("?dummy"))
 		return {};
 
 	std::vector<std::string> toks;

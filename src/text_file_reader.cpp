@@ -18,7 +18,6 @@
 
 #include <libaegisub/file_mapping.h>
 
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 
@@ -38,7 +37,7 @@ std::string TextFileReader::ReadLineFromFile() {
 	++iter;
 	if (trim)
 		boost::trim(str);
-	if (boost::starts_with(str, "\xEF\xBB\xBF"))
+	if (str.starts_with("\xEF\xBB\xBF"))
 		str.erase(0, 3);
 	return str;
 }

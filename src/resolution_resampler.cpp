@@ -28,7 +28,6 @@
 #include <libaegisub/ycbcr_conv.h>
 
 #include <algorithm>
-#include <boost/algorithm/string/predicate.hpp>
 #include <cmath>
 #include <wx/intl.h>
 
@@ -157,7 +156,7 @@ namespace {
 	}
 
 	void resample_line(resample_state *state, AssDialogue &diag) {
-		if (diag.Comment && (boost::starts_with(diag.Effect.get(), "template") || boost::starts_with(diag.Effect.get(), "code")))
+		if (diag.Comment && (diag.Effect.get().starts_with("template") || diag.Effect.get().starts_with("code")))
 			return;
 
 		auto blocks = diag.ParseTags();

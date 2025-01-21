@@ -19,7 +19,6 @@
 #include <libaegisub/karaoke_matcher.h>
 #include <libaegisub/format.h>
 
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
 namespace agi::ass {

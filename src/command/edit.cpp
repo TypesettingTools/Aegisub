@@ -819,7 +819,7 @@ struct edit_line_join_keep_first final : public validate_sel_multiple {
 static bool try_paste_lines(agi::Context *c) {
 	std::string data = GetClipboard();
 	boost::trim_left(data);
-	if (!boost::starts_with(data, "Dialogue:")) return false;
+	if (!data.starts_with("Dialogue:")) return false;
 
 	EntryList<AssDialogue> parsed;
 	boost::char_separator<char> sep("\r\n");
@@ -944,7 +944,7 @@ void expand_times(AssDialogue *src, AssDialogue *dst) {
 }
 
 bool check_start(AssDialogue *d1, AssDialogue *d2) {
-	if (boost::starts_with(d1->Text.get(), d2->Text.get())) {
+	if (d1->Text.get().starts_with(d2->Text.get())) {
 		d1->Text = trim_text(d1->Text.get().substr(d2->Text.get().size()));
 		expand_times(d1, d2);
 		return true;
@@ -953,7 +953,7 @@ bool check_start(AssDialogue *d1, AssDialogue *d2) {
 }
 
 bool check_end(AssDialogue *d1, AssDialogue *d2) {
-	if (boost::ends_with(d1->Text.get(), d2->Text.get())) {
+	if (d1->Text.get().ends_with(d2->Text.get())) {
 		d1->Text = trim_text(d1->Text.get().substr(0, d1->Text.get().size() - d2->Text.get().size()));
 		expand_times(d1, d2);
 		return true;

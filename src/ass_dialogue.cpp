@@ -85,11 +85,11 @@ public:
 
 void AssDialogue::Parse(std::string const& raw) {
 	std::string_view str = raw;
-	if (boost::starts_with(raw, "Dialogue:")) {
+	if (raw.starts_with("Dialogue:")) {
 		Comment = false;
 		str.remove_prefix(10);
 	}
-	else if (boost::starts_with(raw, "Comment:")) {
+	else if (raw.starts_with("Comment:")) {
 		Comment = true;
 		str.remove_prefix(9);
 	}

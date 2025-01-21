@@ -38,7 +38,6 @@
 #include <libaegisub/split.h>
 #include <libaegisub/string.h>
 
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 #include <functional>
@@ -57,8 +56,8 @@ template<> std::string AssOverrideParameter::Get<std::string>() const {
 	if (omitted) throw agi::InternalError("AssOverrideParameter::Get() called on omitted parameter");
 	if (block.get()) {
 		std::string str(block->GetText());
-		if (boost::starts_with(str, "{")) str.erase(begin(str));
-		if (boost::ends_with(str, "}")) str.erase(end(str) - 1);
+		if (str.starts_with("{")) str.erase(begin(str));
+		if (str.starts_with("}")) str.erase(end(str) - 1);
 		return str;
 	}
 	return value;
@@ -442,7 +441,7 @@ void AssOverrideTag::Clear() {
 void AssOverrideTag::SetText(const std::string &text) {
 	load_protos();
 	for (auto cur = proto.begin(); cur != proto.end(); ++cur) {
-		if (boost::starts_with(text, cur->name)) {
+		if (text.starts_with(cur->name)) {
 			Name = cur->name;
 			parse_parameters(this, text.substr(Name.size()), cur);
 			valid = true;

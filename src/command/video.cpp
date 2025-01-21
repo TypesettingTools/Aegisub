@@ -56,7 +56,6 @@
 #include <libaegisub/util.h>
 
 #include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <wx/msgdlg.h>
 #include <wx/textdlg.h>
@@ -475,12 +474,12 @@ static void save_snapshot(agi::Context *c, bool raw, bool subsonly = false) {
 	agi::fs::path basepath;
 
 	auto videoname = c->project->VideoName();
-	bool is_dummy = boost::starts_with(videoname.string(), "?dummy");
+	bool is_dummy = videoname.string().starts_with("?dummy");
 
 	// Is it a path specifier and not an actual fixed path?
 	if (option[0] == '?') {
 		// If dummy video is loaded, we can't save to the video location
-		if (boost::starts_with(option, "?video") && is_dummy) {
+		if (option.starts_with("?video") && is_dummy) {
 			// So try the script location instead
 			option = "?script";
 		}
