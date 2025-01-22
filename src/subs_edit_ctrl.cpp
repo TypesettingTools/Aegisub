@@ -90,21 +90,21 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	// Set properties
 	SetWrapMode(wxSTC_WRAP_WORD);
 	SetMarginWidth(1,0);
-	UsePopUp(false);
+	UsePopUp(wxSTC_POPUP_NEVER);
 	SetStyles();
 
 	// Set hotkeys
-	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_SCMOD_CTRL);
-	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_SCMOD_SHIFT);
-	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_SCMOD_NORM);
-	CmdKeyClear(wxSTC_KEY_TAB,wxSTC_SCMOD_NORM);
-	CmdKeyClear(wxSTC_KEY_TAB,wxSTC_SCMOD_SHIFT);
-	CmdKeyClear('D',wxSTC_SCMOD_CTRL);
-	CmdKeyClear('L',wxSTC_SCMOD_CTRL);
-	CmdKeyClear('L',wxSTC_SCMOD_CTRL | wxSTC_SCMOD_SHIFT);
-	CmdKeyClear('T',wxSTC_SCMOD_CTRL);
-	CmdKeyClear('T',wxSTC_SCMOD_CTRL | wxSTC_SCMOD_SHIFT);
-	CmdKeyClear('U',wxSTC_SCMOD_CTRL);
+	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_KEYMOD_CTRL);
+	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_KEYMOD_SHIFT);
+	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_KEYMOD_NORM);
+	CmdKeyClear(wxSTC_KEY_TAB,wxSTC_KEYMOD_NORM);
+	CmdKeyClear(wxSTC_KEY_TAB,wxSTC_KEYMOD_SHIFT);
+	CmdKeyClear('D',wxSTC_KEYMOD_CTRL);
+	CmdKeyClear('L',wxSTC_KEYMOD_CTRL);
+	CmdKeyClear('L',wxSTC_KEYMOD_CTRL | wxSTC_KEYMOD_SHIFT);
+	CmdKeyClear('T',wxSTC_KEYMOD_CTRL);
+	CmdKeyClear('T',wxSTC_KEYMOD_CTRL | wxSTC_KEYMOD_SHIFT);
+	CmdKeyClear('U',wxSTC_KEYMOD_CTRL);
 
 	using std::bind;
 
@@ -267,11 +267,7 @@ void SubsTextEditCtrl::UpdateStyle() {
 	cursor_pos = -1;
 	UpdateCallTip();
 
-#if wxVERSION_NUMBER >= 3100
 	StartStyling(0);
-#else
-	StartStyling(0, 255);
-#endif
 
 	if (!OPT_GET("Subtitle/Highlight/Syntax")->GetBool()) {
 		SetStyling(line_text.size(), 0);
