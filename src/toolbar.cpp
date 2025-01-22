@@ -23,7 +23,6 @@
 #include "include/aegisub/hotkey.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
-#include "retina_helper.h"
 
 #include <libaegisub/hotkey.h>
 #include <libaegisub/json.h>
@@ -60,16 +59,11 @@ namespace {
 		/// Hotkey context
 		std::string ht_context;
 
-		RetinaHelper retina_helper;
-
 		/// Current icon size
 		int icon_size;
 
 		/// Listener for icon size change signal
 		agi::signal::Connection icon_size_slot;
-
-		/// Listener for scale factor change signal
-		agi::signal::Connection scale_factor_slot;
 
 		/// Listener for hotkey change signal
 		agi::signal::Connection hotkeys_changed_slot;
@@ -142,7 +136,7 @@ namespace {
 					flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 					wxITEM_NORMAL;
 
-				wxBitmap const& bitmap = command->Icon(icon_size, retina_helper.GetScaleFactor(), GetLayoutDirection());
+				wxBitmap const& bitmap = command->Icon(icon_size, GetContentScaleFactor(), GetLayoutDirection());
 				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), wxBitmapBundle(bitmap), command->GetTooltip(ht_context), kind);
 
 				commands.push_back(command);
@@ -163,16 +157,13 @@ namespace {
 		, name(std::move(name))
 		, context(c)
 		, ht_context(std::move(ht_context))
-		, retina_helper(parent)
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
-		, scale_factor_slot(retina_helper.AddScaleFactorListener([this](double scale) {
-			RegenerateToolbar();
-		}))
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
 		{
 			Populate();
 			Bind(wxEVT_TOOL, &Toolbar::OnClick, this);
+			Bind(wxEVT_DPI_CHANGED, [this] (wxDPIChangedEvent &e) { RegenerateToolbar(); e.Skip(); });
 		}
 
 		Toolbar(wxFrame *parent, std::string name, agi::Context *c, std::string ht_context)
@@ -180,21 +171,18 @@ namespace {
 		, name(std::move(name))
 		, context(c)
 		, ht_context(std::move(ht_context))
-		, retina_helper(parent)
 #ifndef __WXMAC__
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
 #else
 		, icon_size(32)
-		, icon_size_slot(retina_helper.AddScaleFactorListener([this](double scale) {
-			RegenerateToolbar();
-		}))
 #endif
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
 		{
 			parent->SetToolBar(this);
 			Populate();
 			Bind(wxEVT_TOOL, &Toolbar::OnClick, this);
+			Bind(wxEVT_DPI_CHANGED, [this] (wxDPIChangedEvent &e) { RegenerateToolbar(); e.Skip(); });
 		}
 	};
 }
