@@ -127,11 +127,7 @@ endif
 
 deps += dependency('zlib')
 
-wx_minver = '>=' + get_option('wx_version')
-if host_machine.system() == 'darwin'
-    wx_minver = '>=3.1.0'
-endif
-wx_dep = dependency('wxWidgets', version: wx_minver,
+wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
                     required: false,
                     modules: ['std', 'stc', 'gl'])
 
@@ -148,10 +144,10 @@ else
     endif
 
     opt_var = cmake.subproject_options()
-    opt_var.set_override_option('cpp_std', 'c++14')
+    opt_var.set_override_option('cpp_std', 'c++20')
     opt_var.add_cmake_defines({
         'wxBUILD_INSTALL': false,
-        'wxBUILD_PRECOMP': false,       # otherwise breaks project generation w/ meson
+        'wxBUILD_PRECOMP': 'OFF',       # otherwise breaks project generation w/ meson
         'wxBUILD_SHARED': build_shared,
 
         'wxUSE_WEBVIEW': false,         # breaks build on linux
@@ -263,7 +259,7 @@ if host_machine.system() == 'windows' and cc.has_header('dwrite_3.h')
 endif
 
 if host_machine.system() == 'darwin'
-    frameworks_dep = dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon', 'IOKit'])
+    frameworks_dep = dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon', 'IOKit', 'QuartzCore'])
     deps += frameworks_dep
 endif
 
