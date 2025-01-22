@@ -27,7 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#ifdef WITH_UPDATE_CHECKER
+#if WITH_UPDATE_CHECKER != 0
 
 #include "compat.h"
 #include "format.h"

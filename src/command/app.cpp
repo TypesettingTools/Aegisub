@@ -320,7 +320,7 @@ namespace cmd {
 		reg(std::make_unique<app_maximize>());
 		reg(std::make_unique<app_bring_to_front>());
 #endif
-#ifdef WITH_UPDATE_CHECKER
+#if WITH_UPDATE_CHECKER != 0
 		reg(std::make_unique<app_updates>());
 #endif
 	}
