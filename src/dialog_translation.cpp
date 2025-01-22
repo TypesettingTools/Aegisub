@@ -95,7 +95,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		translated_text->SetMarginWidth(1, 0);
 		translated_text->SetFocus();
 		translated_text->Bind(wxEVT_CHAR_HOOK, &DialogTranslation::OnKeyDown, this);
-		translated_text->CmdKeyAssign(wxSTC_KEY_RETURN, wxSTC_SCMOD_SHIFT, wxSTC_CMD_NEWLINE);
+		translated_text->CmdKeyAssign(wxSTC_KEY_RETURN, wxSTC_KEYMOD_SHIFT, wxSTC_CMD_NEWLINE);
 
 		wxSizer *translated_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Translation"));
 		translated_box->Add(translated_text, 1, wxEXPAND, 0);
@@ -244,11 +244,7 @@ void DialogTranslation::UpdateDisplay() {
 			int initial_pos = original_text->GetLength();
 			original_text->AppendTextRaw(block->GetText().c_str());
 			if (i == cur_block) {
-#if wxVERSION_NUMBER >= 3100
 				original_text->StartStyling(initial_pos);
-#else
-				original_text->StartStyling(initial_pos, 255);
-#endif
 				original_text->SetStyling(block->GetText().size(), 1);
 			}
 		}
