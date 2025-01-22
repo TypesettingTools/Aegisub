@@ -384,7 +384,14 @@ if get_option('b_pch')
 else
     # Manually pass the feature flags as compiler args
     foreach key : conf.keys()
-        aegisub_defines += '-D@0@=@1@'.format(key, conf.get(key))
+        # Some hacks since meson apparently can't give you the type of a variable
+        if '@0@'.format(conf.get(key)) == 'true'
+            assert(conf.get(key) == true)
+            aegisub_defines += '-D@0@'.format(key)
+        elif '@0@'.format(conf.get(key)) != 'false'
+            # conf.set() with a string quotes the string so conf.get(key) can't be the actual string 'false'
+            aegisub_defines += '-D@0@=@1@'.format(key, conf.get(key))
+        endif
     endforeach
 
     if host_machine.system() == 'windows'
