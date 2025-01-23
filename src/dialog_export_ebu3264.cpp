@@ -109,6 +109,7 @@ int ShowEbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s) {
 	wxRadioBox *tv_standard_box = new wxRadioBox(&d, -1, _("TV standard"), wxDefaultPosition, wxDefaultSize, 6, tv_standards, 0, wxRA_SPECIFY_ROWS);
 
 	wxTextCtrl *timecode_offset_entry = new wxTextCtrl(&d, -1, "00:00:00:00");
+	timecode_offset_entry->SetInitialSize(timecode_offset_entry->GetSizeFromText(timecode_offset_entry->GetValue()));
 	wxCheckBox *inclusive_end_times_check = new wxCheckBox(&d, -1, _("Out-times are inclusive"));
 
 	wxString text_encodings[] = {
@@ -128,11 +129,9 @@ int ShowEbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s) {
 		_("Skip lines that are too long")
 	};
 
-	wxSpinCtrl *max_line_length_ctrl = new wxSpinCtrl(&d, -1, wxString(), wxDefaultPosition, wxSize(65, -1));
+	wxSpinCtrl *max_line_length_ctrl = new wxSpinCtrl(&d, -1, wxString(), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 10, 99);
 	wxComboBox *wrap_mode_ctrl = new wxComboBox(&d, -1, wrap_modes[0], wxDefaultPosition, wxDefaultSize, 4, wrap_modes, wxCB_DROPDOWN | wxCB_READONLY);
 	wxCheckBox *translate_alignments_check = new wxCheckBox(&d, -1, _("Translate alignments"));
-
-	max_line_length_ctrl->SetRange(10, 99);
 
 	wxString display_standards[] = {
 		_("Open subtitles"),

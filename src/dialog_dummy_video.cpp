@@ -82,7 +82,7 @@ static ResolutionShortcut resolutions[] = {
 };
 
 wxSpinCtrl *spin_ctrl(wxWindow *parent, int min, int max, int *value) {
-	auto ctrl = new wxSpinCtrl(parent, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, min, max, *value);
+	auto ctrl = new wxSpinCtrl(parent, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, *value);
 	ctrl->SetValidator(wxGenericValidator(value));
 	return ctrl;
 }
