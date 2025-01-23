@@ -112,7 +112,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 
 	// Create all controls and set validators
 	for (size_t i = 0; i < 4; ++i) {
-		margin_ctrl[i] = new wxSpinCtrl(&d, -1, "0", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, -9999, 9999, 0);
+		margin_ctrl[i] = new wxSpinCtrl(&d, -1, "0", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -9999, 9999, 0);
 		margin_ctrl[i]->SetValidator(wxGenericValidator(&settings.margin[i]));
 	}
 
@@ -122,12 +122,12 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	margin_ctrl[RIGHT]->Enable(false);
 	margin_ctrl[BOTTOM]->Enable(false);
 
-	source_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	source_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	source_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	source_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
 	source_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition,
 		wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
-	dest_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
-	dest_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxSize(50, -1), wxSP_ARROW_KEYS, 1, INT_MAX);
+	dest_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	dest_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
 	dest_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize,
 		to_wx(MatrixNames()), wxCB_READONLY);
 
@@ -166,7 +166,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	source_res_sizer->Add(new wxStaticText(&d, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
 	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	source_res_sizer->Add(from_script, wxSizerFlags(1));
+	source_res_sizer->Add(from_script);
 
 	auto source_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
 	source_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
@@ -180,7 +180,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	dest_res_sizer->Add(dest_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	dest_res_sizer->Add(new wxStaticText(&d, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
 	dest_res_sizer->Add(dest_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	dest_res_sizer->Add(from_video, wxSizerFlags(1));
+	dest_res_sizer->Add(from_video);
 
 	auto dest_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
 	dest_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());

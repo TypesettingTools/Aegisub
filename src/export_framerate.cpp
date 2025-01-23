@@ -78,7 +78,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 		initialInput = "23.976";
 		FromVideo->Enable(false);
 	}
-	InputFramerate = new wxTextCtrl(base,-1,initialInput,wxDefaultPosition,wxSize(60,20));
+	InputFramerate = new wxTextCtrl(base,-1,initialInput);
 	InputSizer->Add(InputFramerate,0,wxEXPAND | wxLEFT,5);
 	InputSizer->Add(FromVideo,0,wxEXPAND | wxLEFT,5);
 	InputSizer->AddStretchSpacer(1);
@@ -99,7 +99,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 		RadioOutputVFR->Enable(false);
 		RadioOutputCFR->SetValue(true);
 	}
-	OutputFramerate = new wxTextCtrl(base,-1,initialOutput,wxDefaultPosition,wxSize(60,20));
+	OutputFramerate = new wxTextCtrl(base,-1,initialOutput);
 	OutputSizerBottom->Add(RadioOutputCFR,0,wxEXPAND,0);
 	OutputSizerBottom->Add(OutputFramerate,0,wxEXPAND | wxLEFT,5);
 	OutputSizerBottom->AddStretchSpacer(1);

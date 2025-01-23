@@ -197,7 +197,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	make_ctrl(&d, adjBoxes, _("Max overlap:"), &adjOverlap, adjsEnable,
 		_("Maximum overlap between the end and start time for two subtitles to be made continuous, in milliseconds"));
 
-	adjacentBias = new wxSlider(&d, -1, mid<int>(0, OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble() * 100, 100), 0, 100, wxDefaultPosition, wxSize(-1,20));
+	adjacentBias = new wxSlider(&d, -1, mid<int>(0, OPT_GET("Tool/Timing Post Processor/Adjacent Bias")->GetDouble() * 100, 100), 0, 100);
 	adjacentBias->SetToolTip(_("Sets how to set the adjoining of lines. If set totally to left, it will extend or shrink start time of the second line; if totally to right, it will extend or shrink the end time of the first line."));
 
 	auto adjSliderSizer = new wxBoxSizer(wxHORIZONTAL);
