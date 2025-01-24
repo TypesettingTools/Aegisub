@@ -6,11 +6,10 @@ i18n = import('i18n')
 # of the Windows installer (iss), from Lua scripts and JSON files.
 # Until a solution is found, POT updates should continue to use make_pot.sh.
 i18n.gettext('aegisub',
-	         args: [
-	            '-k_', '-kSTR_MENU', '-kSTR_DISP', '-kSTR_HELP',
-	            '-kCOMMAND_GROUP:3', '-kCOMMAND_GROUP:4',
-	            '-kCOMMAND_GROUP:5,', '-kwxT', '-kfmt_tl',
-	            '-kfmt_plural:2,3', '-kwxPLURAL:1,2',
-	            '--sort-by-file'
-	         ],
-	         install_dir: localedir)
+             args: [
+                '-k_', '-kSTR_MENU', '-kSTR_DISP', '-kSTR_HELP',
+                '-kCOMMAND_GROUP:3', '-kCOMMAND_GROUP:4', '-kCOMMAND_GROUP:5,',
+              '-kfmt_tl', '-kfmt_plural:2,3',
+                '--sort-by-file'
+             ],
+             install_dir: localedir)
