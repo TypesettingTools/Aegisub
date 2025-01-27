@@ -83,7 +83,6 @@ if get_option('enable_update_checker')
 endif
 
 deps = []
-deps_inc = []
 
 if host_machine.system() == 'darwin'
     add_languages('objc', 'objcpp')
@@ -414,7 +413,7 @@ aegisub = executable('aegisub', aegisub_src, version_h, resrc, aegisub_order_dep
                      c_args: aegisub_defines,
                      cpp_args: aegisub_defines,
                      link_with: [libresrc, libaegisub],
-                     include_directories: [libaegisub_inc, libresrc_inc, version_inc, deps_inc, include_directories('src')],
+                     include_directories: [libaegisub_inc, libresrc_inc, version_inc, include_directories('src')],
                      cpp_pch: aegisub_cpp_pch,
                      c_pch: aegisub_c_pch,
                      install: true,

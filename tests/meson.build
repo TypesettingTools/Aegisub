@@ -60,7 +60,7 @@ endif
 runner = executable(
     'gtest-main',
     tests_src,
-    include_directories: [tests_inc, libaegisub_inc, deps_inc],
+    include_directories: [tests_inc, libaegisub_inc],
     dependencies: [tests_deps, deps],
     cpp_args: tests_args,
     link_with: libaegisub,
