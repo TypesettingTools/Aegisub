@@ -124,7 +124,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	Bind(wxEVT_CONTEXT_MENU, &SubsTextEditCtrl::OnContextMenu, this);
 	Bind(wxEVT_IDLE, std::bind(&SubsTextEditCtrl::UpdateCallTip, this));
 	Bind(wxEVT_STC_DOUBLECLICK, &SubsTextEditCtrl::OnDoubleClick, this);
-	Bind(wxEVT_STC_STYLENEEDED, [=, this](wxStyledTextEvent&) {
+	Bind(wxEVT_STC_STYLENEEDED, [this](wxStyledTextEvent&) {
 		{
 			std::string text = GetTextRaw().data();
 			if (text == line_text) return;
@@ -155,13 +155,13 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this);
 	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this);
 
-	Bind(wxEVT_MENU, [=, this](wxCommandEvent&) {
+	Bind(wxEVT_MENU, [this](wxCommandEvent&) {
 		if (spellchecker) spellchecker->AddWord(currentWord);
 		UpdateStyle();
 		SetFocus();
 	}, EDIT_MENU_ADD_TO_DICT);
 
-	Bind(wxEVT_MENU, [=, this](wxCommandEvent&) {
+	Bind(wxEVT_MENU, [this](wxCommandEvent&) {
 		if (spellchecker) spellchecker->RemoveWord(currentWord);
 		UpdateStyle();
 		SetFocus();

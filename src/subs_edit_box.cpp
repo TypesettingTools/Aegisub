@@ -125,7 +125,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	style_edit_button = new wxButton(this, -1, _("Edit"), wxDefaultPosition,
 		wxSize(GetTextExtent(_("Edit")).GetWidth() + 20, -1));
-	style_edit_button->Bind(wxEVT_BUTTON, [=, this](wxCommandEvent&) {
+	style_edit_button->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 		if (active_style) {
 			wxArrayString font_list = wxFontEnumerator::GetFacenames();
 			font_list.Sort();
@@ -227,7 +227,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
 	Bind(wxEVT_SIZE, &SubsEditBox::OnSize, this);
-	Bind(wxEVT_TIMER, [=, this](wxTimerEvent&) { commit_id = -1; });
+	Bind(wxEVT_TIMER, [this](wxTimerEvent&) { commit_id = -1; });
 
 	wxSizeEvent evt;
 	OnSize(evt);

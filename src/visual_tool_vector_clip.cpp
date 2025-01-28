@@ -62,7 +62,7 @@ void VisualToolVectorClip::SetToolbar(wxToolBar *toolBar) {
 	toolBar->ToggleTool(BUTTON_ID_BASE + VCLIP_DRAG, true);
 	toolBar->Realize();
 	toolBar->Show(true);
-	toolBar->Bind(wxEVT_TOOL, [=, this](wxCommandEvent& e) { SetSubTool((VisualToolVectorClipMode) (e.GetId() - BUTTON_ID_BASE)); });
+	toolBar->Bind(wxEVT_TOOL, [this](wxCommandEvent& e) { SetSubTool((VisualToolVectorClipMode) (e.GetId() - BUTTON_ID_BASE)); });
 	SetSubTool(features.empty() ? VCLIP_LINE : VCLIP_DRAG);
 }
 

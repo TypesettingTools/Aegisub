@@ -127,7 +127,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	current_word_sizer->Add(new wxStaticText(this, -1, _("Replace with:")), 0, wxALIGN_CENTER_VERTICAL);
 	current_word_sizer->Add(replace_word = new wxTextCtrl(this, -1, ""), wxSizerFlags(1).Expand());
 
-	replace_word->Bind(wxEVT_TEXT, [=, this](wxCommandEvent&) {
+	replace_word->Bind(wxEVT_TEXT, [this](wxCommandEvent&) {
 		remove_button->Enable(spellchecker->CanRemoveWord(from_wx(replace_word->GetValue())));
 	});
 
@@ -188,29 +188,29 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 		button->Bind(wxEVT_BUTTON, &DialogSpellChecker::OnReplace, this);
 
 		actions_sizer->Add(button = new wxButton(this, -1, _("Replace &all")), button_flags);
-		button->Bind(wxEVT_BUTTON, [=, this](wxCommandEvent&) {
+		button->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 			auto_replace[from_wx(orig_word->GetValue())] = from_wx(replace_word->GetValue());
 			Replace();
 			FindNext();
 		});
 
 		actions_sizer->Add(button = new wxButton(this, -1, _("&Ignore")), button_flags);
-		button->Bind(wxEVT_BUTTON, [=, this](wxCommandEvent&) { FindNext(); });
+		button->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { FindNext(); });
 
 		actions_sizer->Add(button = new wxButton(this, -1, _("Ignore a&ll")), button_flags);
-		button->Bind(wxEVT_BUTTON, [=, this](wxCommandEvent&) {
+		button->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 			auto_ignore.insert(from_wx(orig_word->GetValue()));
 			FindNext();
 		});
 
 		actions_sizer->Add(add_button = new wxButton(this, -1, _("Add to &dictionary")), button_flags);
-		add_button->Bind(wxEVT_BUTTON, [=, this](wxCommandEvent&) {
+		add_button->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 			spellchecker->AddWord(from_wx(orig_word->GetValue()));
 			FindNext();
 		});
 
 		actions_sizer->Add(remove_button = new wxButton(this, -1, _("Remove fro&m dictionary")), button_flags);
-		remove_button->Bind(wxEVT_BUTTON, [=, this](wxCommandEvent&) {
+		remove_button->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 			spellchecker->RemoveWord(from_wx(replace_word->GetValue()));
 			SetWord(from_wx(orig_word->GetValue()));
 		});

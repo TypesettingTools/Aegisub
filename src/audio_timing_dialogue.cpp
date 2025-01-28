@@ -425,9 +425,9 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , active_line_connection(c->selectionController->AddActiveLineListener(&AudioTimingControllerDialogue::Revert, this))
 , selection_connection(c->selectionController->AddSelectionListener(&AudioTimingControllerDialogue::OnSelectedSetChanged, this))
 {
-	keyframes_provider.AddMarkerMovedListener([=, this]{ AnnounceMarkerMoved(); });
-	video_position_provider.AddMarkerMovedListener([=, this]{ AnnounceMarkerMoved(); });
-	seconds_provider.AddMarkerMovedListener([=, this]{ AnnounceMarkerMoved(); });
+	keyframes_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
+	video_position_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
+	seconds_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
 
 	Revert();
 }

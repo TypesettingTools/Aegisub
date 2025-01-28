@@ -166,7 +166,7 @@ namespace {
 		, retina_helper(parent)
 		, icon_size(OPT_GET("App/Toolbar Icon Size")->GetInt())
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
-		, scale_factor_slot(retina_helper.AddScaleFactorListener([=, this](double scale) {
+		, scale_factor_slot(retina_helper.AddScaleFactorListener([this](double scale) {
 			RegenerateToolbar();
 		}))
 		, hotkeys_changed_slot(hotkey::inst->AddHotkeyChangeListener(&Toolbar::RegenerateToolbar, this))
@@ -186,7 +186,7 @@ namespace {
 		, icon_size_slot(OPT_SUB("App/Toolbar Icon Size", &Toolbar::OnIconSizeChange, this))
 #else
 		, icon_size(32)
-		, icon_size_slot(retina_helper.AddScaleFactorListener([=, this](double scale) {
+		, icon_size_slot(retina_helper.AddScaleFactorListener([this](double scale) {
 			RegenerateToolbar();
 		}))
 #endif

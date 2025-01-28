@@ -103,7 +103,7 @@ public:
 	}
 
 	void SetIndeterminate() override {
-		Main().Async([=, this]{ dialog->pulse_timer.Start(1000); });
+		Main().Async([this]{ dialog->pulse_timer.Start(1000); });
 	}
 };
 
@@ -136,7 +136,7 @@ DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxS
 	CenterOnParent();
 
 	Bind(wxEVT_SHOW, &DialogProgress::OnShow, this);
-	Bind(wxEVT_TIMER, [=, this](wxTimerEvent&) { gauge->Pulse(); });
+	Bind(wxEVT_TIMER, [this](wxTimerEvent&) { gauge->Pulse(); });
 }
 
 void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task) {

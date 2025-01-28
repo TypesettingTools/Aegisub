@@ -98,7 +98,7 @@ class LibassSubtitlesProvider final : public SubtitlesProvider {
 			agi::util::sleep_for(250);
 			if (shared->ready)
 				return;
-			br->Run([=, this](agi::ProgressSink *ps) {
+			br->Run([this](agi::ProgressSink *ps) {
 				ps->SetTitle(from_wx(_("Updating font index")));
 				ps->SetMessage(from_wx(_("This may take several minutes")));
 				ps->SetIndeterminate();

@@ -138,7 +138,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	d.CenterOnParent();
 
 	d.Bind(wxEVT_COMBOBOX, &DialogDummyVideo::OnResolutionShortcut, this);
-	color_btn->Bind(EVT_COLOR, [=, this](ValueEvent<agi::Color>& e) { color = e.Get(); });
+	color_btn->Bind(EVT_COLOR, [this](ValueEvent<agi::Color>& e) { color = e.Get(); });
 	auto on_update = [&, btn_sizer](wxCommandEvent&) {
 		d.TransferDataFromWindow();
 		btn_sizer->GetAffirmativeButton()->Enable(UpdateLengthDisplay());
