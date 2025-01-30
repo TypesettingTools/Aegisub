@@ -141,7 +141,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	work = std::make_unique<AssStyle>(*style);
 
-	SetIcon(GETICON(style_toolbutton_16));
+	SetIcons(GETICONS(style_toolbutton));
 
 	auto add_with_label = [&](wxSizer *sizer, wxString const& label, wxWindow *ctrl) {
 		sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Border(wxLEFT | wxRIGHT));

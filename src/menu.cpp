@@ -200,7 +200,7 @@ public:
 #ifndef __WXMAC__
 		/// @todo Maybe make this a configuration option instead?
 		if (kind == wxITEM_NORMAL)
-			item->SetBitmap(co->Icon(16));
+			item->SetBitmap(co->Icon());
 #endif
 		parent->Append(item);
 		items.push_back(co->name());

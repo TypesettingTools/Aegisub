@@ -90,7 +90,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 : d(c->parent, -1, _("Resample Resolution"))
 , c(c)
 {
-	d.SetIcon(GETICON(resample_toolbutton_16));
+	d.SetIcons(GETICONS(resample_toolbutton));
 
 	memset(&settings, 0, sizeof(settings));
 	c->ass->GetResolution(script_w, script_h);

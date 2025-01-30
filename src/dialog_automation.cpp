@@ -110,7 +110,7 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 , global_manager(config::global_scripts)
 , global_scripts_changed(global_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))
 {
-	SetIcon(GETICON(automation_toolbutton_16));
+	SetIcons(GETICONS(automation_toolbutton));
 
 	// create main controls
 	list = new wxListView(this, -1, wxDefaultPosition, wxSize(600, 175), wxLC_REPORT|wxLC_SINGLE_SEL);

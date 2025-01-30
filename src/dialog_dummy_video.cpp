@@ -102,7 +102,7 @@ wxComboBox *resolution_shortcuts(wxWindow *parent, int width, int height) {
 DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 : d(parent, -1, _("Dummy video options"))
 {
-	d.SetIcon(GETICON(use_dummy_video_menu_16));
+	d.SetIcons(GETICONS(use_dummy_video_menu));
 
 	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	res_sizer->Add(spin_ctrl(&d, 1, 10000, &width), wxSizerFlags(1).Expand());

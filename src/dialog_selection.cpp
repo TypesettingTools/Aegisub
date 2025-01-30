@@ -106,7 +106,7 @@ DialogSelection::DialogSelection(agi::Context *c) :
 wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTION)
 , con(c)
 {
-	SetIcon(GETICON(select_lines_button_16));
+	SetIcons(GETICONS(select_lines_button));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 

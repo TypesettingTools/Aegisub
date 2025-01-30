@@ -68,7 +68,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 , active_line(c->selectionController->GetActiveLine())
 , line_count(c->ass->Events.size())
 {
-	SetIcon(GETICON(translation_toolbutton_16));
+	SetIcons(GETICONS(translation_toolbutton));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 

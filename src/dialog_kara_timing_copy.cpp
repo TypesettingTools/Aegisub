@@ -385,7 +385,7 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 : wxDialog(c->parent, -1, _("Kanji timing"))
 , subs(c->ass.get())
 {
-	SetIcon(GETICON(kara_timing_copier_16));
+	SetIcons(GETICONS(kara_timing_copier));
 
 	wxSizer *DisplayBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Text"));
 	wxSizer *StylesBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles"));

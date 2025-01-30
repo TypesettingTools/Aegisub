@@ -14,19 +14,21 @@
 
 #include "libresrc.h"
 
+#include <map>
+
 #include <wx/bitmap.h>
+#include <wx/bmpbndl.h>
 #include <wx/icon.h>
+#include <wx/iconbndl.h>
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/mstream.h>
 
-wxBitmap libresrc_getimage(const unsigned char *buff, size_t size, double scale, int dir) {
+wxBitmap libresrc_getimage(const unsigned char *buff, size_t size, int dir) {
 	wxMemoryInputStream mem(buff, size);
 	if (dir != wxLayout_RightToLeft)
-	// Since wxWidgets 3.1.0, there is an undocumented third parameter in the ctor of wxBitmap from wxImage
-	// This "scale" parameter sets the logical scale factor of the created wxBitmap
-		return wxBitmap(wxImage(mem), wxBITMAP_SCREEN_DEPTH, scale);
-	return wxBitmap(wxImage(mem).Mirror(), wxBITMAP_SCREEN_DEPTH, scale);
+		return wxBitmap(wxImage(mem));
+	return wxBitmap(wxImage(mem).Mirror());
 }
 
 wxIcon libresrc_geticon(const unsigned char *buff, size_t size) {
@@ -34,4 +36,43 @@ wxIcon libresrc_geticon(const unsigned char *buff, size_t size) {
 	wxIcon icon;
 	icon.CopyFromBitmap(wxBitmap(wxImage(mem)));
 	return icon;
+}
+
+wxBitmapBundle libresrc_getbitmapbundle(const LibresrcBlob *images, size_t count, int height, int dir) {
+	// This function should only ever be called on the GUI thread but declaring this thread_local is the safe way
+	thread_local std::map<std::tuple<const LibresrcBlob *, int, int>, wxBitmapBundle> cache;
+	auto key = std::make_tuple(images, height, dir);
+
+	if (auto cached = cache.find(key); cached != cache.end()) {
+		return cached->second;
+	}
+
+	wxVector<wxBitmap> bitmaps;
+	bitmaps.reserve(count);
+	for (size_t i = 0; i < count; i++) {
+		bitmaps.push_back(libresrc_getimage(images[i].data, images[i].size, dir));
+		bitmaps.back().SetScaleFactor(double(images[i].scale) / height);
+	}
+
+	auto bundle = wxBitmapBundle::FromBitmaps(bitmaps);
+	cache[key] = bundle;
+
+	return bundle;
+}
+
+wxIconBundle libresrc_geticonbundle(const LibresrcBlob *images, size_t count) {
+	thread_local std::map<const LibresrcBlob *, wxIconBundle> cache;
+
+	if (auto cached = cache.find(images); cached != cache.end()) {
+		return cached->second;
+	}
+
+	wxIconBundle bundle;
+	for (size_t i = 0; i < count; i++) {
+		bundle.AddIcon(libresrc_geticon(images[i].data, images[i].size));
+	}
+
+	cache[images] = bundle;
+
+	return bundle;
 }

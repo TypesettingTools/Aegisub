@@ -227,7 +227,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 , subs(c->ass.get())
 , path(*c->path)
 {
-	SetIcon(GETICON(font_collector_button_16));
+	SetIcons(GETICONS(font_collector_button));
 
 	wxString modes[] = {
 		 _("Check fonts for availability")

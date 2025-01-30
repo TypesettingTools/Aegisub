@@ -486,8 +486,8 @@ public:
 		wxString text = iconText.GetText();
 
 		// adjust the label rect to take the width of the icon into account
-		label_rect.x += icon_width;
-		label_rect.width -= icon_width;
+		label_rect.x += parent->FromDIP(icon_width);
+		label_rect.width -= parent->FromDIP(icon_width);
 
 		wxTextCtrl* ctrl = new wxTextCtrl(parent, -1, text, label_rect.GetPosition(), label_rect.GetSize(), wxTE_PROCESS_ENTER);
 		ctrl->SetInsertionPointEnd();
@@ -505,11 +505,14 @@ public:
 	}
 
 	bool Render(wxRect rect, wxDC *dc, int state) override {
-		wxIcon const& icon = value.GetIcon();
+		wxIcon const& icon = value.GetBitmapBundle().GetIconFor(dc->GetWindow());
 		if (icon.IsOk())
-			dc->DrawIcon(icon, rect.x, rect.y + (rect.height - icon.GetHeight()) / 2);
+			dc->DrawIcon(icon, rect.x, rect.y + (rect.height - icon.GetLogicalHeight()) / 2);
 
-		RenderText(value.GetText(), icon_width, rect, dc, state);
+		// Using FromDIP here creates slightly awkward spacing when there is no bitmap available for the exact
+		// requested size (e.g. on 125% DPI scaling), but we cannot use the actual icon's size because our value
+		// may not have an icon.
+		RenderText(value.GetText(), dc->GetWindow()->FromDIP(icon_width), rect, dc, state);
 
 		return true;
 	}
@@ -517,6 +520,7 @@ public:
 	wxSize GetSize() const override {
 		if (!value.GetText().empty()) {
 			wxSize size = GetTextExtent(value.GetText());
+			// FIXME does this need to be DPI scaled? If so, where do we get the scale from?
 			size.x += icon_width;
 			return size;
 		}
@@ -709,7 +713,7 @@ void Preferences::OnResetDefault(wxCommandEvent&) {
 }
 
 Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, -1), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER) {
-	SetIcon(GETICON(options_button_16));
+	SetIcons(GETICONS(options_button));
 
 	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
 	General(book, this);
