@@ -453,7 +453,7 @@ class DialogColorPicker final : public wxDialog {
 	wxSpinCtrl *alpha_input;
 
 	/// The eyedropper is set to a blank icon when it's clicked, so store its normal bitmap
-	wxBitmap eyedropper_bitmap;
+	wxBitmapBundle eyedropper_bitmap;
 
 	/// The point where the eyedropper was click, used to make it possible to either
 	/// click the eyedropper or drag the eyedropper
@@ -585,8 +585,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	preview_box = new wxStaticBitmap(this, -1, wxBitmap(40, 40, 24), wxDefaultPosition, wxSize(40, 40), STATIC_BORDER_FLAG);
 	recent_box = new ColorPickerRecent(this, 8, 4, 16);
 
-	eyedropper_bitmap = GETIMAGE(eyedropper_tool_24);
-	eyedropper_bitmap.SetMask(new wxMask(eyedropper_bitmap, wxColour(255, 0, 255)));
+	eyedropper_bitmap = GETBUNDLE(eyedropper_tool, 24);
 	screen_dropper_icon = new wxStaticBitmap(this, -1, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
 	screen_dropper = new ColorPickerScreenDropper(this, 7, 7, 8);
 

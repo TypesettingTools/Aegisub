@@ -32,7 +32,7 @@
 /// @ingroup custom_control
 ///
 
-#include <wx/bitmap.h>
+#include <wx/bmpbndl.h>
 #include <wx/control.h>
 
 namespace agi { struct Context; }
@@ -41,7 +41,7 @@ namespace cmd { class Command; }
 class ToggleBitmap final : public wxControl {
 	agi::Context *context;
 	cmd::Command &command;
-	wxBitmap img;
+	wxBitmapBundle imgs;
 
 	void OnMouseEvent(wxMouseEvent &evt);
 	void OnPaint(wxPaintEvent &evt);

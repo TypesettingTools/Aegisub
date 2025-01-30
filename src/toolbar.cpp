@@ -136,8 +136,7 @@ namespace {
 					flags & cmd::COMMAND_TOGGLE ? wxITEM_CHECK :
 					wxITEM_NORMAL;
 
-				wxBitmap const& bitmap = command->Icon(icon_size, GetContentScaleFactor(), GetLayoutDirection());
-				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), wxBitmapBundle(bitmap), command->GetTooltip(ht_context), kind);
+				AddTool(TOOL_ID_BASE + commands.size(), command->StrDisplay(context), command->Icon(icon_size, GetLayoutDirection()), command->GetTooltip(ht_context), kind);
 
 				commands.push_back(command);
 				needs_onidle = needs_onidle || flags != cmd::COMMAND_NORMAL;

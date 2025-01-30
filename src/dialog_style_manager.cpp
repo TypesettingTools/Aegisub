@@ -173,7 +173,7 @@ public:
 	DialogStyleManager(agi::Context *context);
 };
 
-wxBitmapButton *add_bitmap_button(wxWindow *parent, wxSizer *sizer, wxBitmap const& img, wxString const& tooltip) {
+wxBitmapButton *add_bitmap_button(wxWindow *parent, wxSizer *sizer, wxBitmapBundle const& img, wxString const& tooltip) {
 	wxBitmapButton *btn = new wxBitmapButton(parent, -1, img);
 	btn->SetToolTip(tooltip);
 	sizer->Add(btn, wxSizerFlags().Expand());
@@ -184,11 +184,11 @@ wxSizer *make_move_buttons(wxWindow *parent, wxButton **up, wxButton **down, wxB
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->AddStretchSpacer(1);
 
-	*up     = add_bitmap_button(parent, sizer, GETIMAGE(arrow_up_24), _("Move style up"));
-	*down   = add_bitmap_button(parent, sizer, GETIMAGE(arrow_down_24), _("Move style down"));
-	*top    = add_bitmap_button(parent, sizer, GETIMAGE(arrow_up_stop_24), _("Move style to top"));
-	*bottom = add_bitmap_button(parent, sizer, GETIMAGE(arrow_down_stop_24), _("Move style to bottom"));
-	*sort   = add_bitmap_button(parent, sizer, GETIMAGE(arrow_sort_24), _("Sort styles alphabetically"));
+	*up     = add_bitmap_button(parent, sizer, GETBUNDLE(arrow_up, 24), _("Move style up"));
+	*down   = add_bitmap_button(parent, sizer, GETBUNDLE(arrow_down, 24), _("Move style down"));
+	*top    = add_bitmap_button(parent, sizer, GETBUNDLE(arrow_up_stop, 24), _("Move style to top"));
+	*bottom = add_bitmap_button(parent, sizer, GETBUNDLE(arrow_down_stop, 24), _("Move style to bottom"));
+	*sort   = add_bitmap_button(parent, sizer, GETBUNDLE(arrow_sort, 24), _("Sort styles alphabetically"));
 
 	sizer->AddStretchSpacer(1);
 	return sizer;
@@ -266,7 +266,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 }))
 {
 	using std::bind;
-	SetIcon(GETICON(style_toolbutton_16));
+	SetIcons(GETICONS(style_toolbutton));
 
 	// Catalog
 	wxSizer *CatalogBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Catalog of available storages"));

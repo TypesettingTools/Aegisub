@@ -41,8 +41,6 @@ static const DraggableFeatureType DRAG_ORIGIN = DRAG_BIG_TRIANGLE;
 static const DraggableFeatureType DRAG_START = DRAG_BIG_SQUARE;
 static const DraggableFeatureType DRAG_END = DRAG_BIG_CIRCLE;
 
-#define ICON(name) (OPT_GET("App/Toolbar Icon Size")->GetInt() == 16 ? GETIMAGE(name ## _16) : GETIMAGE(name ## _24))
-
 VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
 : VisualTool<VisualToolDragDraggableFeature>(parent, context)
 {
@@ -54,7 +52,7 @@ VisualToolDrag::VisualToolDrag(VideoDisplay *parent, agi::Context *context)
 void VisualToolDrag::SetToolbar(wxToolBar *tb) {
 	toolbar = tb;
 	toolbar->AddSeparator();
-	toolbar->AddTool(-1, _("Toggle between \\move and \\pos"), ICON(visual_move_conv_move));
+	toolbar->AddTool(-1, _("Toggle between \\move and \\pos"), GETBUNDLE(visual_move_conv_move, OPT_GET("App/Toolbar Icon Size")->GetInt()));
 	toolbar->Realize();
 	toolbar->Show(true);
 
@@ -71,8 +69,9 @@ void VisualToolDrag::UpdateToggleButtons() {
 
 	if (to_move == button_is_move) return;
 
+	int icon_size = OPT_GET("App/Toolbar Icon Size")->GetInt();
 	toolbar->SetToolNormalBitmap(toolbar->GetToolByPos(1)->GetId(),
-		to_move ? ICON(visual_move_conv_move) : ICON(visual_move_conv_pos));
+		to_move ? GETBUNDLE(visual_move_conv_move, icon_size) : GETBUNDLE(visual_move_conv_pos, icon_size));
 	button_is_move = to_move;
 }
 

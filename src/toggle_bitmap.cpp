@@ -45,14 +45,14 @@ ToggleBitmap::ToggleBitmap(wxWindow *parent, agi::Context *context, const char *
 : wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
 , context(context)
 , command(*cmd::get(cmd_name))
-, img(command.Icon(icon_size))
+, imgs(command.Icon(icon_size))
 {
-	int w = size.GetWidth() != -1 ? size.GetWidth() : img.GetWidth();
-	int h = size.GetHeight() != -1 ? size.GetHeight() : img.GetHeight();
+	wxBitmap img = imgs.GetBitmapFor(this);
+	int w = size.GetWidth() != -1 ? size.GetWidth() : img.GetLogicalWidth();
+	int h = size.GetHeight() != -1 ? size.GetHeight() : img.GetLogicalHeight();
 	SetClientSize(w, h);
 	GetSize(&w, &h);
 	SetSizeHints(w, h, w, h);
-
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 
 	ToolTipManager::Bind(this, command.StrHelp(), ht_ctx, cmd_name);
@@ -81,6 +81,7 @@ void ToggleBitmap::OnPaint(wxPaintEvent &) {
 	dc.SetBrush(wxBrush(bgColor));
 	dc.DrawRectangle(wxPoint(0, 0), GetClientSize());
 
-	wxSize excess = (GetClientSize() - img.GetSize()) / 2;
+	wxBitmap img = imgs.GetBitmapFor(this);
+	wxSize excess = (GetClientSize() - img.GetLogicalSize()) / 2;
 	dc.DrawBitmap(img, excess.GetX(), excess.GetY(), true);
 }

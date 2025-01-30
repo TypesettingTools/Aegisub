@@ -141,7 +141,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 {
 	using std::bind;
 
-	d.SetIcon(GETICON(timing_processor_toolbutton_16));
+	d.SetIcons(GETICONS(timing_processor_toolbutton));
 
 	// Read options
 	leadIn = OPT_GET("Tool/Timing Post Processor/Lead/IN")->GetInt();

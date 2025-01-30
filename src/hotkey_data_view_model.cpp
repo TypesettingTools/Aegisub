@@ -84,11 +84,9 @@ public:
 		if (col == 0)
 			variant = to_wx(combo.Str());
 		else if (col == 1) {
-			wxIcon icon;
+			wxBitmapBundle icon;
 			try {
-				auto icon_bmp = cmd::get(combo.CmdName())->Icon(16);
-				if (icon_bmp.IsOk())
-					icon.CopyFromBitmap(icon_bmp);
+				icon = cmd::get(combo.CmdName())->Icon();
 			}
 			catch (agi::Exception const&) {
 				// Just use no icon; error is reported in the description column

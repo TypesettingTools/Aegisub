@@ -89,7 +89,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 : d(c->parent, -1, _("Script Properties"))
 , c(c)
 {
-	d.SetIcon(GETICON(properties_toolbutton_16));
+	d.SetIcons(GETICONS(properties_toolbutton));
 
 	// Button sizer
 	// Create buttons first. See:

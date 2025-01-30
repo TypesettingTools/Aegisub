@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import sys, os
+from collections import defaultdict
 
 manifestfile, cppfile, hfile, sourcepath = sys.argv[1:]
 
@@ -33,6 +34,7 @@ for k in files:
 with open(cppfile, 'w') as cpp:
     cpp.write('#include "libresrc.h"\n')
     with open(hfile, 'w') as h:
+        groups = defaultdict(list)
 
         for k in files:
             with open(files[k], 'rb') as f:
@@ -42,3 +44,12 @@ with open(cppfile, 'w') as cpp:
             name = os.path.splitext(os.path.basename(k))[0]
             cpp.write('const unsigned char {}[] = {{{}}};\n'.format(name, datastr))
             h.write('extern const unsigned char {}[{}];\n'.format(name, len(data)))
+
+            if name.split('_')[-1].isnumeric():
+                groups['_'.join(name.split('_')[:-1])].append(name)
+
+        if groups:
+            h.write('\n')
+
+        for group in sorted(groups):
+            h.write('const LibresrcBlob {}[] = {{{}}};\n'.format(group, ', '.join('{{{}, sizeof({}), {}}}'.format(file, file, file.split('_')[-1]) for file in groups[group])))

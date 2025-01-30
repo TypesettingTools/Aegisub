@@ -137,7 +137,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 , timecodes_loaded_slot(context->project->AddTimecodesListener(&DialogShiftTimes::OnTimecodesLoaded, this))
 , selected_set_changed_slot(context->selectionController->AddSelectionListener(&DialogShiftTimes::OnSelectedSetChanged, this))
 {
-	SetIcon(GETICON(shift_times_toolbutton_16));
+	SetIcons(GETICONS(shift_times_toolbutton));
 
 	// Create controls
 	shift_by_time = new wxRadioButton(this, -1, _("&Time: "), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);

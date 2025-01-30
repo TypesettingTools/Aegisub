@@ -68,7 +68,7 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 , c(c)
 , jumpframe(c->videoController->GetFrameN())
 {
-	d.SetIcon(GETICON(jumpto_button_16));
+	d.SetIcons(GETICONS(jumpto_button));
 
 	auto LabelFrame = new wxStaticText(&d, -1, _("Frame: "));
 	auto LabelTime = new wxStaticText(&d, -1, _("Time: "));

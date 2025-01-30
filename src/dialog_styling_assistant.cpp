@@ -54,7 +54,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 , c(context)
 , active_line_connection(context->selectionController->AddActiveLineListener(&DialogStyling::OnActiveLineChanged, this))
 {
-	SetIcon(GETICON(styling_toolbutton_16));
+	SetIcons(GETICONS(styling_toolbutton));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	wxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);

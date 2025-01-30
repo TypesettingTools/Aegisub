@@ -104,7 +104,7 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 , context(context)
 , spellchecker(SpellCheckerFactory::GetSpellChecker())
 {
-	SetIcon(GETICON(spellcheck_toolbutton_16));
+	SetIcons(GETICONS(spellcheck_toolbutton));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 

@@ -102,7 +102,7 @@ DialogExport::DialogExport(agi::Context *c)
 , c(c)
 , exporter(c)
 {
-	d.SetIcon(GETICON(export_menu_16));
+	d.SetIcons(GETICONS(export_menu));
 	d.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 
 	std::vector<std::string> filters = exporter.GetAllFilterNames();
