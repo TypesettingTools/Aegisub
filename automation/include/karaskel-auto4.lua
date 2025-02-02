@@ -278,13 +278,17 @@ function karaskel.preproc_line_size(meta, styles, line)
 	for s = 0, line.kara.n do
 		local syl = line.kara[s]
 
+		syl.style = cur_style
 		-- Detect any reset style tags
-		local style_reset_name = syl.text:match("%{.*\\%r([^}\\]+)")
+		local _, reset_end, style_reset_name = syl.text:find("%{.*\\%r([^}\\]+)")
 		if style_reset_name and styles[style_reset_name] then
 			cur_style = styles[style_reset_name]
+			-- match does not include final }
+			if reset_end + 1 < #syl.text then
+				syl.style = cur_style
+			end
 		end
 
-		syl.style = cur_style
 		syl.width, syl.height = aegisub.text_extents(syl.style, syl.text_spacestripped)
 		syl.width = syl.width * meta.video_x_correct_factor
 		syl.prespacewidth = aegisub.text_extents(syl.style, syl.prespace) * meta.video_x_correct_factor
