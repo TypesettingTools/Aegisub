@@ -124,7 +124,13 @@ BEGIN_EVENT_TABLE(BaseGrid,wxWindow)
 	EVT_KEY_DOWN(BaseGrid::OnKeyDown)
 	EVT_CHAR_HOOK(BaseGrid::OnCharHook)
 	EVT_MENU_RANGE(MENU_SHOW_COL,MENU_SHOW_COL+15,BaseGrid::OnShowColMenu)
+	EVT_DPI_CHANGED(BaseGrid::OnDPIChanged)
 END_EVENT_TABLE()
+
+void BaseGrid::OnDPIChanged(wxDPIChangedEvent &e) {
+	UpdateStyle();
+	e.Skip();
+}
 
 void BaseGrid::OnSubtitlesCommit(int type) {
 	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_ORDER || type & AssFile::COMMIT_DIAG_ADDREM)
