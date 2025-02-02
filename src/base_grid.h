@@ -94,6 +94,7 @@ class BaseGrid final : public wxWindow {
 	/// Cached grid body context menu
 	std::unique_ptr<wxMenu> context_menu;
 
+	void OnDPIChanged(wxDPIChangedEvent &e);
 	void OnContextMenu(wxContextMenuEvent &evt);
 	void OnHighlightVisibleChange(agi::OptionValue const& opt);
 	void OnKeyDown(wxKeyEvent &event);
