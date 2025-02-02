@@ -283,7 +283,7 @@ function karaskel.preproc_line_size(meta, styles, line)
 		if style_reset_name and styles[style_reset_name] then
 			cur_style = styles[style_reset_name]
 		end
-		
+
 		syl.style = cur_style
 		syl.width, syl.height = aegisub.text_extents(syl.style, syl.text_spacestripped)
 		syl.width = syl.width * meta.video_x_correct_factor
@@ -302,6 +302,9 @@ function karaskel.preproc_line_size(meta, styles, line)
 		for f = 1, line.furi.n do
 			local furi = line.furi[f]
 			furi.style = line.furistyle
+			if styles[furi.syl.style.name .. "-furigana"] then
+				furi.style = styles[furi.syl.style.name .. "-furigana"]
+			end
 			furi.width, furi.height = aegisub.text_extents(furi.style, furi.text)
 			furi.width = furi.width * meta.video_x_correct_factor
 			furi.prespacewidth = 0
