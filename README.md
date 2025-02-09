@@ -105,7 +105,7 @@ sudo apt install build-essential pkg-config meson ninja-build gettext intltool l
 ``` bash
 meson setup build --prefix=/usr/local --buildtype=release --strip -Dsystem_luajit=false
 meson compile -C build
-meson install -C build
+meson install -C build --skip-subprojects luajit
 ```
 
 ## Updating Moonscript

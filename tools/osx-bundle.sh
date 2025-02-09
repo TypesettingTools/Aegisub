@@ -53,7 +53,7 @@ echo
 echo "---- Installing files ----"
 CURRENT_DIR=`pwd`
 cd ${BUILD_DIR}
-ninja install
+meson install --skip-subprojects luajit
 cd ${CURRENT_DIR}
 
 echo
