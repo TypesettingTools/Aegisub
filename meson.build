@@ -402,7 +402,7 @@ subdir('po')
 subdir('src')
 subdir('tests')
 
-if get_option('bash_completion')
+if get_option('bash_completion') and host_machine.system() != 'windows'
   bash_comp = dependency('bash_completion', required: false)
   if bash_comp.found()
     bash_install_dir = bash_comp.get_variable(
