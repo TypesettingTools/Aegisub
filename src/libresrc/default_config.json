@@ -394,6 +394,7 @@
 			"Font Size" : 8,
 			"Hide Overrides" : 1,
 			"Hide Overrides Char" : "☀",
+            "Join as Dialogue Format" : 0,
 			"Highlight Subtitles in Frame" : true
 		},
 		"Highlight" : {
