@@ -104,10 +104,10 @@ deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
-boost_modules = ['chrono', 'thread', 'locale', 'regex']
+boost_modules = ['chrono', 'thread', 'locale']
 if not get_option('local_boost')
     boost_dep = dependency('boost', version: '>=1.70.0',
-                            modules: boost_modules + ['system'],
+                            modules: boost_modules,
                             required: false,
                             static: get_option('default_library') == 'static')
 endif
@@ -115,7 +115,7 @@ endif
 if get_option('local_boost') or not boost_dep.found()
     boost_dep = []
     boost = subproject('boost')
-    foreach module: boost_modules
+    foreach module: (boost_modules + ['regex'])
         boost_dep += boost.get_variable('boost_' + module + '_dep')
     endforeach
 endif
