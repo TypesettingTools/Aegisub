@@ -307,6 +307,9 @@ class AudioTimingControllerDialogue final : public AudioTimingController {
 	/// All audio markers for active and inactive lines, sorted by position
 	std::vector<DialogueTimingMarker*> markers;
 
+    // All audio labels for active and inactive lines
+    std::vector<AudioLabel> labels;
+
 	/// Marker provider for video keyframes
 	AudioMarkerProviderKeyframes keyframes_provider;
 
@@ -389,7 +392,7 @@ public:
 
 	// AudioTimingController interface
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const override;
-	void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const override { }
+    void GetLabels(TimeRange const& range, std::vector<AudioLabel>& out) const override;
 	void Next(NextMode mode) override;
 	void Prev() override;
 	void Revert() override;
@@ -469,6 +472,42 @@ void AudioTimingControllerDialogue::GetRenderingStyles(AudioRenderingStyleRanges
 		line.GetStyleRange(&ranges);
 	for (auto const& line : inactive_lines)
 		line.GetStyleRange(&ranges);
+}
+
+void AudioTimingControllerDialogue::GetLabels(TimeRange const& range, std::vector<AudioLabel>& out) const {
+    // Add label for the active line
+    AssDialogue* activeLine = context->selectionController->GetActiveLine();
+    if (activeLine && !activeLine->Comment) {
+        TimeRange lineRange(activeLine->Start, activeLine->End);
+        if (range.overlaps(lineRange)) {
+            AudioLabel activeLabel{activeLine->GetStrippedText().c_str(), lineRange};
+            out.push_back(activeLabel);
+        }
+    }
+
+    // Add labels for selected lines
+    for (auto& line : selected_lines) {
+        AssDialogue* selectedLine = line.GetLine();
+        if (selectedLine && !selectedLine->Comment) {
+             TimeRange lineRange(selectedLine->Start, selectedLine->End);
+            if (range.overlaps(lineRange)) {
+                AudioLabel selectedLabel{selectedLine->GetStrippedText().c_str(), lineRange};
+                out.push_back(selectedLabel);
+            }
+        }
+    }
+
+    // Add labels for inactive lines
+    for (auto& line : inactive_lines) {
+        AssDialogue* inactiveLine = line.GetLine();
+        if (inactiveLine && !inactiveLine->Comment) {
+            TimeRange lineRange(inactiveLine->Start, inactiveLine->End);
+            if (range.overlaps(lineRange)) {
+                AudioLabel inactiveLabel{inactiveLine->GetStrippedText().c_str(), lineRange};
+                out.push_back(inactiveLabel);
+            }
+        }
+    }
 }
 
 void AudioTimingControllerDialogue::Next(NextMode mode)
