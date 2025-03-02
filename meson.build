@@ -81,6 +81,9 @@ if get_option('enable_update_checker')
     conf.set_quoted('UPDATE_CHECKER_SERVER', get_option('update_server'))
     conf.set_quoted('UPDATE_CHECKER_BASE_URL', get_option('update_url'))
 endif
+if get_option('relocatable') and host_machine.system() == 'linux'
+    conf.set('APPIMAGE_BUILD', 1)
+endif
 
 deps = []
 
