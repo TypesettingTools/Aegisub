@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.4.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-13 21:34+0100\n"
-"PO-Revision-Date: 2025-03-16 19:46+0000\n"
+"PO-Revision-Date: 2025-03-17 00:47+0000\n"
 "Last-Translator: zlom\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -3067,9 +3067,8 @@ msgid "Skip lines that are too long"
 msgstr "Пропускать слишком длинные строки"
 
 #: ../src/dialog_export_ebu3264.cpp:133
-#, fuzzy
 msgid "Translate alignments"
-msgstr "Переводить выравнивания"
+msgstr "Конвертировать выравнивания субтитров"
 
 #: ../src/dialog_export_ebu3264.cpp:138
 msgid "Open subtitles"
@@ -5553,11 +5552,11 @@ msgstr "Подсветка при наведении"
 
 #: ../src/preferences.cpp:298
 msgid "Visual Typesetting Tools Alpha"
-msgstr ""
+msgstr "Прозрачность инструментов вёрстки"
 
 #: ../src/preferences.cpp:299
 msgid "Shaded Area"
-msgstr ""
+msgstr "Затенение внешней области маски"
 
 #: ../src/preferences.cpp:308
 msgid "Backup"
@@ -6540,9 +6539,9 @@ msgid "Create and edit subtitles for film and videos."
 msgstr "Создание и редактирование субтитров для фильмов и видео."
 
 #: ../packages/desktop/aegisub.desktop.in.in:13
-#, fuzzy
 msgid "subtitles;subtitle;captions;captioning;video;audio;"
-msgstr "субтитры;субтитр;_;_;видео;аудио;"
+msgstr ""
+"субтитры;субтитр;создание субтитров;редактирование субтитров;видео;аудио;"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
 msgid ""
