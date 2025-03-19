@@ -1057,7 +1057,7 @@ msgstr "在文本光标处分割 (以视频帧)"
 msgid ""
 "Split the current line at the cursor, dividing the line's duration at the "
 "current video frame"
-msgstr "在文本光标处分割 行，以当前帧的时间分割"
+msgstr "在文本光标处分割行，以当前帧的时间分割"
 
 #: ../src/command/edit.cpp:1159
 msgid "Redo last undone action"
