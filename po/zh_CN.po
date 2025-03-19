@@ -1021,7 +1021,7 @@ msgstr "分割行 (按照卡拉OK)"
 
 #: ../src/command/edit.cpp:1048
 msgid "Use karaoke timing to split line into multiple smaller lines"
-msgstr "使用卡拉OK计时把行分成多个更小的行"
+msgstr "根据卡拉OK标签将行分割成多个更小的行"
 
 #: ../src/command/edit.cpp:1082
 msgid "splitting"
@@ -1134,7 +1134,7 @@ msgstr "清除文本"
 
 #: ../src/command/edit.cpp:1239
 msgid "Clear the current line's text, leaving override tags"
-msgstr "清除当前行的文本，只保留tag"
+msgstr "清除当前行的文本，只保留样式覆写标签"
 
 #: ../src/command/edit.cpp:1255 ../src/command/edit.cpp:1256
 #: ../src/command/tool.cpp:256
@@ -1374,7 +1374,7 @@ msgstr "互换行"
 
 #: ../src/command/grid.cpp:384
 msgid "Swap the two selected lines"
-msgstr "互换两个所选行"
+msgstr "互换所选的两行"
 
 #: ../src/command/grid.cpp:395
 msgid "swap lines"
@@ -1666,7 +1666,7 @@ msgstr "从视频中打开字幕"
 
 #: ../src/command/subtitle.cpp:318
 msgid "Open the subtitles from the current video file"
-msgstr "从当前视频中打开内嵌字幕"
+msgstr "从当前视频中打开内封字幕"
 
 #: ../src/command/subtitle.cpp:334
 msgid "&Properties..."
@@ -3306,7 +3306,7 @@ msgstr "目标: "
 
 #: ../src/dialog_kara_timing_copy.cpp:385
 msgid "Kanji timing"
-msgstr "匹配汉字K值"
+msgstr "汉字K值配对"
 
 #: ../src/dialog_kara_timing_copy.cpp:390 ../src/dialog_paste_over.cpp:73
 #: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
@@ -3355,11 +3355,11 @@ msgstr "开始!(&T)"
 
 #: ../src/dialog_kara_timing_copy.cpp:413
 msgid "&Link"
-msgstr "链接(&L)"
+msgstr "配对(&L)"
 
 #: ../src/dialog_kara_timing_copy.cpp:414
 msgid "&Unlink"
-msgstr "解除链接(&U)"
+msgstr "解除配对(&U)"
 
 #: ../src/dialog_kara_timing_copy.cpp:415
 msgid "Skip &Source Line"
@@ -3379,7 +3379,7 @@ msgstr "接受该行(&A)"
 
 #: ../src/dialog_kara_timing_copy.cpp:481
 msgid "kanji timing"
-msgstr "匹配汉字K值"
+msgstr "汉字K值配对"
 
 #: ../src/dialog_kara_timing_copy.cpp:489
 msgid "Select source and destination styles first."
@@ -3391,7 +3391,7 @@ msgstr "源样式与目标样式必须不同。"
 
 #: ../src/dialog_kara_timing_copy.cpp:541
 msgid "Group all of the source text."
-msgstr "需要完全分组源文本。"
+msgstr "需要配对源文本的所有组。"
 
 #: ../src/dialog_paste_over.cpp:55
 msgid "Select Fields to Paste Over"
@@ -4148,7 +4148,7 @@ msgstr "已有相同名称的样式。请使用另一个名称。"
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
-msgstr "想将脚本中所有应用该样式的字幕行的样式名都改为这个新名称吗?"
+msgstr "是否将脚本中所有应用该样式的字幕行的样式名都改为这个新名称?"
 
 #: ../src/dialog_style_editor.cpp:434
 msgid "Update script?"
@@ -4209,7 +4209,7 @@ msgstr "无法解析样式"
 #, c-format
 msgid "Are you sure you want to delete this style?"
 msgid_plural "Are you sure you want to delete these %d styles?"
-msgstr[0] "您确定要删除 %d 样式?"
+msgstr[0] "您确定要删除这 %d 个样式?"
 
 #: ../src/dialog_style_manager.cpp:272
 msgid "Catalog of available storages"
@@ -4292,14 +4292,14 @@ msgstr "样式名称冲突"
 msgid ""
 "There is already a style with the name \"%s\" in the current storage. "
 "Overwrite?"
-msgstr "当前已储存了相同的样式名“%s”。要覆盖吗?"
+msgstr "当前已储存了相同的样式名“%s”。是否覆盖?"
 
 #: ../src/dialog_style_manager.cpp:535 ../src/dialog_style_manager.cpp:713
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current script. "
 "Overwrite?"
-msgstr "当前脚本中已有相同的样式名\"%s\"。要覆盖吗?"
+msgstr "当前脚本中已有相同的样式名\"%s\"。是否覆盖?"
 
 #: ../src/dialog_style_manager.cpp:546
 msgid "style copy"
@@ -4448,7 +4448,7 @@ msgstr "取消选择所有样式"
 
 #: ../src/dialog_timing_processor.cpp:169
 msgid "Affect &selection only"
-msgstr "仅应用于所选"
+msgstr "仅应用于所选行"
 
 #: ../src/dialog_timing_processor.cpp:174
 msgid "Lead-in/Lead-out"
@@ -4648,7 +4648,7 @@ msgstr ""
 #: ../src/dialog_version_check.cpp:317
 #, fuzzy, c-format
 msgid "Checking for updates failed: %s."
-msgstr "是否检查更新?"
+msgstr "检查更新失败: %s。"
 
 #: ../src/dialog_version_check.cpp:345
 msgid "An update to Aegisub was found."
@@ -4674,7 +4674,7 @@ msgstr ""
 "Aegisub检查更新时出错: \n"
 "%s\n"
 "\n"
-"如果其他程序可以正常访问互联网，那么这很可能是我们的服务器的临时问题。"
+"如果其他程序可以正常访问互联网，可能是我们的服务器暂时出了问题。"
 
 #: ../src/dialog_version_check.cpp:381
 msgid "An unknown error occurred while checking for updates to Aegisub."
@@ -4785,7 +4785,7 @@ msgid ""
 "It can also be used to convert subtitles to a different speed video, such as "
 "NTSC to PAL speedup."
 msgstr ""
-"从输入到输出的影格率，转换字幕时间，包含样式覆写标签内的时间。\n"
+"将字幕时间（包括样式覆写标签中的时间）从输入帧率转换为输出帧率。\n"
 "\n"
 "转换标准字幕时间到VFRaC字幕时间是特别有用的。\n"
 "它也可以用来转换字幕到不同帧率的视频，例如应对NTSC到PAL的帧率提高。"
@@ -4862,12 +4862,12 @@ msgstr "已找到字体 '%s' 位于 '%s'\n"
 #: ../src/font_file_lister.cpp:174
 #, c-format
 msgid "'%s' does not have a bold variant.\n"
-msgstr "'%s' 没有粗体版本(bold variant)。\n"
+msgstr "未找到 '%s' 的粗体版本(bold variant)。\n"
 
 #: ../src/font_file_lister.cpp:176
 #, c-format
 msgid "'%s' does not have an italic variant.\n"
-msgstr "'%s' 没有斜体版本(italic variant)。\n"
+msgstr "未找到 '%s' 的斜体版本(italic variant)。\n"
 
 #: ../src/font_file_lister.cpp:180
 #, c-format
@@ -4911,14 +4911,14 @@ msgstr "所有字体已找到。\n"
 #, c-format
 msgid "One font could not be found\n"
 msgid_plural "%d fonts could not be found.\n"
-msgstr[0] "%d 个字体无法找到。\n"
+msgstr[0] "有 %d 个字体无法找到。\n"
 
 #: ../src/font_file_lister.cpp:239
 #, c-format
 msgid "One font was found, but was missing glyphs used in the script.\n"
 msgid_plural ""
 "%d fonts were found, but were missing glyphs used in the script.\n"
-msgstr[0] "%d 个已找到的字体缺少脚本中使用的字形。\n"
+msgstr[0] "有 %d 个已找到的字体缺少脚本中使用的字形。\n"
 
 #: ../src/font_file_lister_fontconfig.cpp:55
 msgid "Updating font cache\n"
@@ -5894,9 +5894,9 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"没有可用的音频来源能够将所选文件识别为包含音频的文件。\n"
+"没有可用的音频服务程序能够将所选文件识别为包含音频的文件。\n"
 "\n"
-"已尝试下列来源: \n"
+"已尝试下列服务程序: \n"
 
 #: ../src/project.cpp:265
 msgid ""
@@ -5905,9 +5905,9 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"没有可用的音频来源有可用于处理所选文件的解码器。\n"
+"没有可用的音频服务程序有可用于处理所选文件的解码器。\n"
 "\n"
-"已尝试下列来源: \n"
+"已尝试下列服务程序: \n"
 
 #: ../src/resolution_resampler.cpp:288
 msgid "resolution resampling"
@@ -6027,7 +6027,7 @@ msgstr "时间(&I)"
 
 #: ../src/subs_edit_box.cpp:185
 msgid "Time by h:mm:ss.cs"
-msgstr "按照 时:分:秒.厘秒 计时"
+msgstr "按照 时:分:秒.厘秒 显示时轴"
 
 #: ../src/subs_edit_box.cpp:186
 msgid "F&rame"
@@ -6035,7 +6035,7 @@ msgstr "帧(&R)"
 
 #: ../src/subs_edit_box.cpp:186
 msgid "Time by frame number"
-msgstr "按帧数计时"
+msgstr "按帧数显示时轴"
 
 #: ../src/subs_edit_box.cpp:189
 msgid "Show Original"
