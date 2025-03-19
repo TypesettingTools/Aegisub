@@ -561,7 +561,7 @@ msgstr "提交"
 
 #: ../src/command/audio.cpp:340
 msgid "Commit any pending audio timing changes"
-msgstr "提交所有在波形上对时间的更改"
+msgstr "提交所有在波形上对时轴的更改"
 
 #: ../src/command/audio.cpp:354 ../src/command/audio.cpp:355
 msgid "Commit and use default timing for next line"
