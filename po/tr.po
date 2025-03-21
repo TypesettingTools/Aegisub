@@ -4,7 +4,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-13 21:34+0100\n"
 "PO-Revision-Date: 2025-01-14 09:25+0300\n"
-"Last-Translator: \n"
+"Last-Translator: Kerim Demirkaynak <kerim@post.com>\n"
 "Language-Team: Türkçe\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
@@ -110,11 +110,11 @@ msgstr "%d%%, %d piksel/saniye"
 
 #: ../src/audio_karaoke.cpp:67
 msgid "Discard all uncommitted splits"
-msgstr "Tüm işlenmemiş bölmeleri iptal et"
+msgstr "Tüm uygulanmamış bölmeleri iptal et"
 
 #: ../src/audio_karaoke.cpp:71
 msgid "Commit splits"
-msgstr "Bölmeleri işle"
+msgstr "Bölmeleri uygula"
 
 #: ../src/audio_karaoke.cpp:234
 msgid "Karaoke tag"
@@ -221,7 +221,7 @@ msgstr "Yalnızca ses ve altyazı ızgarasını görüntüle"
 
 #: ../src/command/app.cpp:87
 msgid "&Full view"
-msgstr "&Tam görüntü"
+msgstr "&Tam görünüm"
 
 #: ../src/command/app.cpp:88
 msgid "Full view"
@@ -339,11 +339,11 @@ msgstr "Araç Çubuğunu Göster"
 
 #: ../src/command/app.cpp:258
 msgid "&Check for Updates..."
-msgstr "&Güncellemeleri kontrol et"
+msgstr "&Güncelleştirmeleri denetle"
 
 #: ../src/command/app.cpp:259
 msgid "Check for Updates"
-msgstr "Güncellemeleri kontrol et"
+msgstr "Güncelleştirmeleri denetle"
 
 #: ../src/command/app.cpp:260
 msgid "Check to see if there is a new version of Aegisub available"
@@ -539,7 +539,7 @@ msgstr "Dosyanın başından sonuna kadar oynat"
 
 #: ../src/command/audio.cpp:338 ../src/command/audio.cpp:339
 msgid "Commit"
-msgstr "İşle"
+msgstr "Uygula"
 
 #: ../src/command/audio.cpp:340
 msgid "Commit any pending audio timing changes"
@@ -585,7 +585,7 @@ msgstr "Ses görüntüsünü geçerli ses seçimine odaklanacak şekilde kaydır
 
 #: ../src/command/audio.cpp:408 ../src/command/audio.cpp:409
 msgid "Scroll left"
-msgstr "Sola Kaydır"
+msgstr "Sola kaydır"
 
 #: ../src/command/audio.cpp:410
 msgid "Scroll the audio display left"
@@ -593,7 +593,7 @@ msgstr "Ses ekranını sola kaydır"
 
 #: ../src/command/audio.cpp:419 ../src/command/audio.cpp:420
 msgid "Scroll right"
-msgstr "Sağa Kaydır"
+msgstr "Sağa kaydır"
 
 #: ../src/command/audio.cpp:421
 msgid "Scroll the audio display right"
@@ -607,7 +607,7 @@ msgstr "Ses ekranını seçilen satıra otomatik kaydır"
 #: ../src/command/audio.cpp:452 ../src/command/audio.cpp:453
 #: ../src/command/audio.cpp:454
 msgid "Automatically commit all changes"
-msgstr "Otomatik tüm değişikleri işle"
+msgstr "Otomatik tüm değişikleri uygula"
 
 #: ../src/command/audio.cpp:469 ../src/command/audio.cpp:470
 msgid "Auto go to next line on commit"
@@ -739,7 +739,7 @@ msgstr "İmleç konumundaki kontur rengini (\\3c) tanımla"
 
 #: ../src/command/edit.cpp:427
 msgid "Shadow Color..."
-msgstr "Gölge rengi"
+msgstr "Gölge Rengi"
 
 #: ../src/command/edit.cpp:428
 msgid "Shadow Color"
@@ -810,7 +810,7 @@ msgstr "Font Tipi"
 
 #: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:250
 msgid "Font Face"
-msgstr "Font tipi"
+msgstr "Font Tipi"
 
 #: ../src/command/edit.cpp:489
 msgid "Select a font face and size"
@@ -926,11 +926,11 @@ msgstr "Karaoke &Gibi"
 
 #: ../src/command/edit.cpp:789
 msgid "As Karaoke"
-msgstr "Karaoke"
+msgstr "Karaoke Gibi"
 
 #: ../src/command/edit.cpp:790
 msgid "Join selected lines in a single one, as karaoke"
-msgstr "Seçilen satırları tek bir satırda birleştir, karaoke olarak"
+msgstr "Seçilen satırları tek bir satırda birleştir, karaoke gibi"
 
 #: ../src/command/edit.cpp:793
 msgid "join as karaoke"
@@ -950,7 +950,7 @@ msgstr "Seçili satırları tek hale getirir, metinleri birleştirir"
 
 #: ../src/command/edit.cpp:804 ../src/command/edit.cpp:815
 msgid "join lines"
-msgstr "batırları birleştir"
+msgstr "satırları birleştir"
 
 #: ../src/command/edit.cpp:810
 msgid "Keep &First"
@@ -1546,7 +1546,7 @@ msgstr "Altyazılarda metin ara"
 
 #: ../src/command/subtitle.cpp:105
 msgid "Find &Next"
-msgstr "Sonrakini &bul"
+msgstr "Sonrakini &Bul"
 
 #: ../src/command/subtitle.cpp:106
 msgid "Find Next"
@@ -1723,7 +1723,7 @@ msgstr "Tümünü &Seç"
 
 #: ../src/command/subtitle.cpp:396
 msgid "Select All"
-msgstr "Tümünü seç"
+msgstr "Tümünü Seç"
 
 #: ../src/command/subtitle.cpp:397
 msgid "Select all dialogue lines"
@@ -2118,7 +2118,7 @@ msgstr "Dosyada çevrilecek hiçbir şey yok."
 
 #: ../src/command/tool.cpp:233
 msgid "&Next Line"
-msgstr "&Sonraki satır"
+msgstr "&Sonraki Satır"
 
 #: ../src/command/tool.cpp:235
 msgid "Move to the next line without committing changes"
@@ -2126,7 +2126,7 @@ msgstr "Değişiklikleri uygulamadan sonraki satıra geç"
 
 #: ../src/command/tool.cpp:244
 msgid "&Previous Line"
-msgstr "&Önceki satır"
+msgstr "&Önceki Satır"
 
 #: ../src/command/tool.cpp:246
 msgid "Move to the previous line without committing changes"
@@ -2202,7 +2202,7 @@ msgstr "&Tam Ekran (4:3)"
 
 #: ../src/command/video.cpp:163
 msgid "Fullscreen (4:3)"
-msgstr "Tam ekran (4:3)"
+msgstr "Tam Ekran (4:3)"
 
 #: ../src/command/video.cpp:164
 msgid "Force video to 4:3 aspect ratio"
@@ -2210,11 +2210,11 @@ msgstr "Videoyu 4:3 ebatına uyarla"
 
 #: ../src/command/video.cpp:180
 msgid "&Widescreen (16:9)"
-msgstr "&Geniş ekran (16:9)"
+msgstr "&Geniş Ekran (16:9)"
 
 #: ../src/command/video.cpp:181
 msgid "Widescreen (16:9)"
-msgstr "Geniş ekran (16:9)"
+msgstr "Geniş Ekran (16:9)"
 
 #: ../src/command/video.cpp:182
 msgid "Force video to 16:9 aspect ratio"
@@ -2527,7 +2527,7 @@ msgstr "%50"
 
 #: ../src/command/video.cpp:700
 msgid "Set zoom to 50%"
-msgstr "Yakınlaştırmayı 50%'ye ayarla"
+msgstr "Yakınlaştırmayı %50'ye ayarla"
 
 #: ../src/command/video.cpp:716 ../src/command/video.cpp:717
 msgid "Zoom In"
@@ -3738,7 +3738,7 @@ msgstr "e"
 
 #: ../src/dialog_shift_times.cpp:110
 msgid "all"
-msgstr "hepsi"
+msgstr "tümü"
 
 #: ../src/dialog_shift_times.cpp:113
 #, c-format
@@ -4415,7 +4415,7 @@ msgstr "Başlangıç &ekle:"
 
 #: ../src/dialog_timing_processor.cpp:178
 msgid "Enable adding of lead-ins to lines"
-msgstr "Satırlara başlangıç eklemeyi aktif et"
+msgstr "Satırlara başlangıç eklemeyi etkinleştir"
 
 #: ../src/dialog_timing_processor.cpp:179
 msgid "Lead in to be added, in milliseconds"
@@ -4427,7 +4427,7 @@ msgstr "Bitiş &ekle:"
 
 #: ../src/dialog_timing_processor.cpp:183
 msgid "Enable adding of lead-outs to lines"
-msgstr "Satırlara bitiş eklemeyi aktif et"
+msgstr "Satırlara bitiş eklemeyi etkinleştir"
 
 #: ../src/dialog_timing_processor.cpp:184
 msgid "Lead out to be added, in milliseconds"
@@ -4439,13 +4439,13 @@ msgstr "Bitişik altyazıları devamlı yap"
 
 #: ../src/dialog_timing_processor.cpp:190
 msgid "&Enable"
-msgstr "&Aktif et"
+msgstr "&Etkinleştir"
 
 #: ../src/dialog_timing_processor.cpp:192
 msgid ""
 "Enable snapping of subtitles together if they are within a certain distance "
 "of each other"
-msgstr "Eğer farklı uzaklıktalarsa, altyazıları yaslamayı aktif et"
+msgstr "Eğer farklı uzaklıktalarsa, altyazıları yaslamayı etkinleştir"
 
 #: ../src/dialog_timing_processor.cpp:195
 msgid "Max gap:"
@@ -4495,14 +4495,14 @@ msgstr "Anahtar kare yaslama"
 
 #: ../src/dialog_timing_processor.cpp:217
 msgid "E&nable"
-msgstr "A&ktif et"
+msgstr "E&tkinleştir"
 
 #: ../src/dialog_timing_processor.cpp:218
 msgid ""
 "Enable snapping of subtitles to nearest keyframe, if distance is within "
 "threshold"
 msgstr ""
-"En yakın anahtar kareye altyazıları yaslamayı aktif et, eğer uzaklık sınırın "
+"En yakın anahtar kareye altyazıları yaslamayı etkinleştir, eğer uzaklık sınırın "
 "içindeyse"
 
 #: ../src/dialog_timing_processor.cpp:229
@@ -4584,7 +4584,7 @@ msgstr "Satırı sil"
 
 #: ../src/dialog_translation.cpp:121
 msgid "Enable &preview"
-msgstr "Önizlemeyi &aktif et"
+msgstr "Önizlemeyi &etkinleştir"
 
 #: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:282
 msgid "No more lines to translate."
@@ -4605,7 +4605,7 @@ msgstr "Versiyon Kontrol"
 
 #: ../src/dialog_version_check.cpp:115
 msgid "&Auto Check for Updates"
-msgstr "&Güncellemeler için otomatik kontrol et"
+msgstr "&Güncelleştirmeleri otomatik denetle"
 
 #: ../src/dialog_version_check.cpp:120
 msgid "Remind me again in a &week"
@@ -4641,7 +4641,7 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
-"Aegisub güncellemelerini kontrol ederken bir hata oluştu:\n"
+"Aegisub güncelleştirmelerini denetlerken bir hata oluştu:\n"
 "%s\n"
 "\n"
 "Diğer uygulamalar internete sorunsuz erişebiliyorsa, bu muhtemelen bizim "
@@ -4649,7 +4649,7 @@ msgstr ""
 
 #: ../src/dialog_version_check.cpp:381
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr "Aegisub güncellemeleri kontrol edilirken bilinmeyen bir hata oluştu."
+msgstr "Aegisub güncelleştirmeleri denetlenirken bilinmeyen bir hata oluştu."
 
 #: ../src/dialog_video_details.cpp:45
 msgid "Video Details"
@@ -4973,14 +4973,14 @@ msgstr ""
 
 #: ../src/main.cpp:275
 msgid "Check for updates?"
-msgstr "Güncellemeleri kontrol et?"
+msgstr "Güncelleştirmeler denetlensin mi?"
 
 #: ../src/main.cpp:275
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
 msgstr ""
-"Aegisub'ın başlangıçta güncellemeleri kontrol etmesini ister misiniz? Yardım "
+"Aegisub'ın başlangıçta güncelleştirmeleri denetlemesini ister misiniz? Yardım "
 "menüsünden elle sizde yapabilirsiniz."
 
 #: ../src/main.cpp:392 ../src/main.cpp:395
@@ -5291,7 +5291,7 @@ msgstr "Düzenleme Kutusu"
 
 #: ../src/preferences.cpp:208
 msgid "Enable call tips"
-msgstr "Yardım balonunu aktif et"
+msgstr "Yardım balonunu etkinleştir"
 
 #: ../src/preferences.cpp:209
 msgid "Overwrite in time boxes"
@@ -5299,7 +5299,7 @@ msgstr "Zaman kutularının üzerine yaz"
 
 #: ../src/preferences.cpp:211
 msgid "Enable syntax highlighting"
-msgstr "Sözdizim vurgulamayı aktif et"
+msgstr "Sözdizim vurgulamayı etkinleştir"
 
 #: ../src/preferences.cpp:212
 msgid "Dictionaries path"
@@ -5419,7 +5419,7 @@ msgstr "Boş Satır"
 
 #: ../src/preferences.cpp:264
 msgid "Karaoke templates"
-msgstr "Karaoke Şablonları"
+msgstr "Karaoke şablonları"
 
 #: ../src/preferences.cpp:265
 msgid "Karaoke variables"
@@ -5531,7 +5531,7 @@ msgstr "Otomatik Kayıt"
 
 #: ../src/preferences.cpp:311 ../src/preferences.cpp:319
 msgid "Enable"
-msgstr "Aktif et"
+msgstr "Etkinleştir"
 
 #: ../src/preferences.cpp:314
 msgid "Interval in seconds"
@@ -6187,7 +6187,7 @@ msgstr "Bu işlem birkaç dakika sürebilir"
 
 #: ../src/video_box.cpp:57
 msgid "Seek video"
-msgstr "Videoyu ara"
+msgstr "Videoda ilerle"
 
 #: ../src/video_box.cpp:62
 msgid "Current frame time and number"
@@ -6610,13 +6610,7 @@ msgstr "Aegisub için yeni sürümleri otomatik olarak kontrol et"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Update Checker:"
-msgstr "Güncelleme Denetleyicisi:"
-
-msgid "OK"
-msgstr "Tamam"
-
-msgid "&Apply"
-msgstr "&Uygula"
+msgstr "Güncelleştirme Denetleyicisi:"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid ""
