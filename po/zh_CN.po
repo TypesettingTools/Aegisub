@@ -1988,7 +1988,7 @@ msgstr "选择多行"
 
 #: ../src/command/tool.cpp:83
 msgid "Select lines based on defined criteria"
-msgstr "按指定要求选择多行"
+msgstr "按限定条件选择多行"
 
 #: ../src/command/tool.cpp:93
 msgid "&Resample Resolution..."
