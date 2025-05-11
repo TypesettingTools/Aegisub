@@ -95,6 +95,18 @@ void AegisubApp::OnAssertFailure(const wxChar *file, int line, const wxChar *fun
 AegisubApp::AegisubApp() {
 	// http://trac.wxwidgets.org/ticket/14302
 	wxSetEnv("UBUNTU_MENUPROXY", "0");
+
+	// Fallback to X11 if wxGTK implementation is build without Wayland EGL support
+	// Fix https://github.com/TypesettingTools/Aegisub/issues/233
+	#if defined(__WXGTK__) && !wxUSE_GLCANVAS_EGL
+		wxString xdg_session_type = wxGetenv("XDG_SESSION_TYPE");
+		wxString wayland_display  = wxGetenv("WAYLAND_DISPLAY");
+
+		if (xdg_session_type == "wayland" || wayland_display.Contains("wayland")) {
+			wxSetEnv("GDK_BACKEND", "x11");
+		}
+	#endif
+
 }
 
 namespace {
