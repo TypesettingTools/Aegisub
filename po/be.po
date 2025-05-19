@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub (unofficial)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-13 21:34+0100\n"
+"POT-Creation-Date: 2025-02-02 21:53+0100\n"
 "PO-Revision-Date: 2018-09-26 07:39+0000\n"
 "Last-Translator: Viktar Lieškievič <vityay.leshkevich@yandex.ru>, 2019\n"
 "Language-Team: Belarusian (https://www.transifex.com/byplay/teams/91944/"
@@ -25,79 +25,83 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
 "(n%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: ../src/ass_style.cpp:195
+#: ../src/ass_style.cpp:196
+msgid "Auto-detect base direction (libass only)"
+msgstr ""
+
+#: ../src/ass_style.cpp:197
 msgid "ANSI"
 msgstr "ANSI"
 
-#: ../src/ass_style.cpp:196 ../src/command/video.cpp:145
+#: ../src/ass_style.cpp:198 ../src/command/video.cpp:144
 msgid "Default"
 msgstr "Па змаўчанні"
 
-#: ../src/ass_style.cpp:197
+#: ../src/ass_style.cpp:199
 msgid "Symbol"
 msgstr "Сімвал"
 
-#: ../src/ass_style.cpp:198
+#: ../src/ass_style.cpp:200
 msgid "Mac"
 msgstr "Mac"
 
-#: ../src/ass_style.cpp:199
+#: ../src/ass_style.cpp:201
 msgid "Shift_JIS"
 msgstr "Японская (Shift_JIS)"
 
-#: ../src/ass_style.cpp:200
+#: ../src/ass_style.cpp:202
 msgid "Hangeul"
 msgstr "Хангыль"
 
-#: ../src/ass_style.cpp:201
+#: ../src/ass_style.cpp:203
 msgid "Johab"
 msgstr "Карэйская (Johab)"
 
-#: ../src/ass_style.cpp:202
+#: ../src/ass_style.cpp:204
 msgid "GB2312"
 msgstr "Спрошчаная кітайская (GB2312)"
 
-#: ../src/ass_style.cpp:203
+#: ../src/ass_style.cpp:205
 msgid "Chinese BIG5"
 msgstr "Традыцыйная кітайская (BIG5)"
 
-#: ../src/ass_style.cpp:204
+#: ../src/ass_style.cpp:206
 msgid "Greek"
 msgstr "Грэчаская"
 
-#: ../src/ass_style.cpp:205
+#: ../src/ass_style.cpp:207
 msgid "Turkish"
 msgstr "Турэцкая"
 
-#: ../src/ass_style.cpp:206
+#: ../src/ass_style.cpp:208
 msgid "Vietnamese"
 msgstr "В'етнамская"
 
-#: ../src/ass_style.cpp:207
+#: ../src/ass_style.cpp:209
 msgid "Hebrew"
 msgstr "Іўрыт"
 
-#: ../src/ass_style.cpp:208
+#: ../src/ass_style.cpp:210
 msgid "Arabic"
 msgstr "Арабская"
 
-#: ../src/ass_style.cpp:209
+#: ../src/ass_style.cpp:211
 msgid "Baltic"
 msgstr "Балтыйская"
 
-#: ../src/ass_style.cpp:210
+#: ../src/ass_style.cpp:212
 msgid "Russian"
 msgstr "Руская"
 
-#: ../src/ass_style.cpp:211
+#: ../src/ass_style.cpp:213
 msgid "Thai"
 msgstr "Тайская"
 
-#: ../src/ass_style.cpp:212
+#: ../src/ass_style.cpp:214
 msgid "East European"
 msgstr "Усходне-Еўрапейская"
 
-#: ../src/ass_style.cpp:213
+#: ../src/ass_style.cpp:215
 msgid "OEM"
 msgstr "OEM"
 
@@ -154,7 +158,7 @@ msgstr "Максімум"
 msgid "Maximum + Average"
 msgstr "Максімум + Усярэдненае"
 
-#: ../src/audio_timing_dialogue.cpp:511 ../src/audio_timing_dialogue.cpp:517
+#: ../src/audio_timing_dialogue.cpp:514 ../src/audio_timing_dialogue.cpp:520
 #: ../src/command/time.cpp:176
 msgid "timing"
 msgstr "таймінг"
@@ -179,7 +183,7 @@ msgstr "Файл не вызначаны як скрыпт аўтаматыза�
 
 #: ../src/auto4_base.cpp:490 ../src/command/audio.cpp:84
 #: ../src/command/keyframe.cpp:76 ../src/command/timecode.cpp:73
-#: ../src/command/timecode.cpp:93 ../src/command/video.cpp:567
+#: ../src/command/timecode.cpp:93 ../src/command/video.cpp:592
 msgid "All Files"
 msgstr "Усе файлы"
 
@@ -318,8 +322,8 @@ msgid "&Options..."
 msgstr "&Налады..."
 
 #: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:146
-#: ../src/dialog_timing_processor.cpp:168 ../src/preferences.cpp:128
-#: ../src/preferences.cpp:168
+#: ../src/dialog_timing_processor.cpp:168 ../src/preferences.cpp:129
+#: ../src/preferences.cpp:169
 msgid "Options"
 msgstr "Параметры"
 
@@ -411,7 +415,7 @@ msgstr "Адкрыць аўдыяфайл"
 msgid "Audio Formats"
 msgstr "Фарматы аўдыя"
 
-#: ../src/command/audio.cpp:83 ../src/command/video.cpp:566
+#: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Фарматы відэа"
 
@@ -489,7 +493,7 @@ msgstr ""
 "Прайграць аўдыя ў бягучым вылучэнні без ўліку праведзеных у працэсе змяненняў"
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:622
+#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "Прайграць бягучы радок"
 
@@ -680,7 +684,7 @@ msgid "&Automation..."
 msgstr "&Аўтаматызацыя..."
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:328
+#: ../src/preferences.cpp:333
 msgid "Automation"
 msgstr "Аўтаматызацыя"
 
@@ -697,7 +701,7 @@ msgstr ""
 "аўтаматызацыі. Ctrl+Shift: Перасканаваць папку аўтазагрузкі аўтаматызацыі і "
 "перазагрузіць усе скрыпты аўтаматызацыі"
 
-#: ../src/command/command.cpp:32
+#: ../src/command/command.cpp:35
 #, c-format
 msgid "'%s' is not a valid command name"
 msgstr "'%s' — недапушчальнае імя каманды"
@@ -1042,7 +1046,7 @@ msgid "splitting"
 msgstr "прамежак"
 
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
-#: ../src/subs_edit_ctrl.cpp:393
+#: ../src/subs_edit_ctrl.cpp:398
 msgid "Split at cursor (estimate times)"
 msgstr "Разбіць па курсору (пералічыць час)"
 
@@ -1055,7 +1059,7 @@ msgstr ""
 "новымі радкамі"
 
 #: ../src/command/edit.cpp:1130 ../src/command/edit.cpp:1131
-#: ../src/subs_edit_ctrl.cpp:392
+#: ../src/subs_edit_ctrl.cpp:397
 msgid "Split at cursor (preserve times)"
 msgstr "Разбіць па курсору (пакінуць час)"
 
@@ -1135,7 +1139,7 @@ msgid "revert line"
 msgstr "вярнуць радок"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:410
 msgid "Clear"
 msgstr "Ачысціць"
 
@@ -1230,7 +1234,7 @@ msgstr "&Эфект"
 
 #: ../src/command/grid.cpp:133 ../src/command/grid.cpp:145
 #: ../src/dialog_paste_over.cpp:72 ../src/grid_column.cpp:214
-#: ../src/grid_column.cpp:215 ../src/subs_edit_box.cpp:142
+#: ../src/grid_column.cpp:215 ../src/subs_edit_box.cpp:140
 msgid "Effect"
 msgstr "Эфект"
 
@@ -1298,7 +1302,7 @@ msgid "St&yle Name"
 msgstr "&Стыль"
 
 #: ../src/command/grid.cpp:229 ../src/command/grid.cpp:241
-#: ../src/dialog_style_editor.cpp:177
+#: ../src/dialog_style_editor.cpp:178
 msgid "Style Name"
 msgstr "Стыль"
 
@@ -1506,17 +1510,6 @@ msgstr "Захаваць файл з ключкадрамі"
 msgid "Open recent audio"
 msgstr "Адкрыць нядаўняе аўдыя"
 
-#: ../src/command/recent.cpp:43 ../src/command/recent.cpp:44
-#: ../src/command/recent.cpp:45 ../src/command/recent.cpp:46
-#: ../src/command/recent.cpp:47 ../src/command/recent.cpp:51
-#: ../src/command/recent.cpp:52 ../src/command/recent.cpp:62
-#: ../src/command/recent.cpp:63 ../src/command/recent.cpp:73
-#: ../src/command/recent.cpp:74 ../src/command/recent.cpp:89
-#: ../src/command/recent.cpp:90 ../src/command/recent.cpp:100
-#: ../src/command/recent.cpp:101
-msgid "Recent"
-msgstr "Нядаўнія"
-
 #: ../src/command/recent.cpp:44 ../src/command/recent.cpp:64
 msgid "Open recent keyframes"
 msgstr "Адкрыць нядаўнія ключкадры"
@@ -1532,6 +1525,14 @@ msgstr "Адкрыць нядаўні файл таймкодаў"
 #: ../src/command/recent.cpp:47
 msgid "Open recent video"
 msgstr "Адкрыць нядаўняе відэа"
+
+#: ../src/command/recent.cpp:51 ../src/command/recent.cpp:52
+#: ../src/command/recent.cpp:62 ../src/command/recent.cpp:63
+#: ../src/command/recent.cpp:73 ../src/command/recent.cpp:74
+#: ../src/command/recent.cpp:89 ../src/command/recent.cpp:90
+#: ../src/command/recent.cpp:100 ../src/command/recent.cpp:101
+msgid "Recent"
+msgstr "Нядаўнія"
 
 #: ../src/command/recent.cpp:102
 msgid "Open recent videos"
@@ -1733,7 +1734,7 @@ msgid "Save subtitles with another name"
 msgstr "Захаваць субтытры пад іншай назвай"
 
 #: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:123
-#: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:387
+#: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:392
 msgid "Select &All"
 msgstr "Вылучыць &усе"
 
@@ -2000,7 +2001,7 @@ msgstr ""
 msgid "&Fonts Collector..."
 msgstr "&Зборшчык шрыфтоў..."
 
-#: ../src/command/tool.cpp:70 ../src/dialog_fonts_collector.cpp:219
+#: ../src/command/tool.cpp:70 ../src/dialog_fonts_collector.cpp:226
 msgid "Fonts Collector"
 msgstr "Зборшчык шрыфтоў"
 
@@ -2119,7 +2120,7 @@ msgid "&Translation Assistant..."
 msgstr "Памочнік &перакладу..."
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:64
-#: ../src/preferences.cpp:228
+#: ../src/preferences.cpp:229
 msgid "Translation Assistant"
 msgstr "Памочнік перакладу"
 
@@ -2155,31 +2156,31 @@ msgstr "&Уставіць арыгінал"
 msgid "Insert the untranslated text"
 msgstr "Уставіць неперакладзены тэкст"
 
-#: ../src/command/video.cpp:83
+#: ../src/command/video.cpp:82
 msgid "&Cinematic (2.35)"
 msgstr "&Кінематаграфічны (2.35)"
 
-#: ../src/command/video.cpp:84
+#: ../src/command/video.cpp:83
 msgid "Cinematic (2.35)"
 msgstr "Кінематаграфічны (2.35)"
 
-#: ../src/command/video.cpp:85
+#: ../src/command/video.cpp:84
 msgid "Force video to 2.35 aspect ratio"
 msgstr "Прымусова задаць суадносіны 2.35"
 
-#: ../src/command/video.cpp:101
+#: ../src/command/video.cpp:100
 msgid "C&ustom..."
 msgstr "А&сабістае..."
 
-#: ../src/command/video.cpp:102
+#: ../src/command/video.cpp:101
 msgid "Custom"
 msgstr "Асабістае"
 
-#: ../src/command/video.cpp:103
+#: ../src/command/video.cpp:102
 msgid "Force video to a custom aspect ratio"
 msgstr "Прымусова задаць свае суадносіны бакоў"
 
-#: ../src/command/video.cpp:114
+#: ../src/command/video.cpp:113
 msgid ""
 "Enter aspect ratio in either:\n"
 "  decimal (e.g. 2.35)\n"
@@ -2191,306 +2192,326 @@ msgstr ""
 " дробавы фармат (напрыклад 16:9)\n"
 " дакладнае разрозненне (напрыклад 853х480)"
 
-#: ../src/command/video.cpp:115
+#: ../src/command/video.cpp:114
 msgid "Enter aspect ratio"
 msgstr "Задаць суадносіны бакоў"
 
-#: ../src/command/video.cpp:134
+#: ../src/command/video.cpp:133
 msgid "Invalid Aspect Ratio"
 msgstr "Памылковыя суадносіны бакоў"
 
-#: ../src/command/video.cpp:134
+#: ../src/command/video.cpp:133
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr "Памылковае значэнне! Суадносіны бакоў павінны быць паміж 0.5 і 5.0."
 
-#: ../src/command/video.cpp:144
+#: ../src/command/video.cpp:143
 msgid "&Default"
 msgstr "Па &змаўчанні"
 
-#: ../src/command/video.cpp:146
+#: ../src/command/video.cpp:145
 msgid "Use video's original aspect ratio"
 msgstr "Выкарыстоўваць суадносіны бакоў па змаўчанні"
 
-#: ../src/command/video.cpp:162
+#: ../src/command/video.cpp:161
 msgid "&Fullscreen (4:3)"
 msgstr "&Паўнаэкранны (4:3)"
 
-#: ../src/command/video.cpp:163
+#: ../src/command/video.cpp:162
 msgid "Fullscreen (4:3)"
 msgstr "Паўнаэкранны (4:3)"
 
-#: ../src/command/video.cpp:164
+#: ../src/command/video.cpp:163
 msgid "Force video to 4:3 aspect ratio"
 msgstr "Прымусова задаць суадносіны 4:3"
 
-#: ../src/command/video.cpp:180
+#: ../src/command/video.cpp:179
 msgid "&Widescreen (16:9)"
 msgstr "&Шырокаэкарны (16:9)"
 
-#: ../src/command/video.cpp:181
+#: ../src/command/video.cpp:180
 msgid "Widescreen (16:9)"
 msgstr "Шырокаэкранны (16:9)"
 
-#: ../src/command/video.cpp:182
+#: ../src/command/video.cpp:181
 msgid "Force video to 16:9 aspect ratio"
 msgstr "Прымусова задаць суадносіны 16:9"
 
-#: ../src/command/video.cpp:199
+#: ../src/command/video.cpp:198
 msgid "&Close Video"
 msgstr "&Закрыць відэа"
 
-#: ../src/command/video.cpp:200
+#: ../src/command/video.cpp:199
 msgid "Close Video"
 msgstr "Закрыць відэа"
 
-#: ../src/command/video.cpp:201
+#: ../src/command/video.cpp:200
 msgid "Close the currently open video file"
 msgstr "Закрыць бягучы адкрыты відэафайл"
 
-#: ../src/command/video.cpp:210 ../src/command/video.cpp:211
+#: ../src/command/video.cpp:209 ../src/command/video.cpp:210
 msgid "Copy coordinates to Clipboard"
 msgstr "Капіяваць каардынаты ў буфер абмену"
 
-#: ../src/command/video.cpp:212
+#: ../src/command/video.cpp:211
 msgid ""
 "Copy the current coordinates of the mouse over the video to the clipboard"
 msgstr "Капіяваць у буфер абмену бягучыя кардынаты мышу адносна відэа"
 
-#: ../src/command/video.cpp:221 ../src/command/video.cpp:222
+#: ../src/command/video.cpp:220 ../src/command/video.cpp:221
 msgid "Cycle active subtitles provider"
 msgstr "Пераключыць правайдара аўдыя"
 
-#: ../src/command/video.cpp:223
+#: ../src/command/video.cpp:222
 msgid "Cycle through the available subtitles providers"
 msgstr "Цыклічна пераключацца паміж даступнымі правайдарамі аўдыя"
 
-#: ../src/command/video.cpp:234
+#: ../src/command/video.cpp:233
 #, c-format
 msgid "Subtitles provider set to %s"
 msgstr "Зададзены правайдар субтытраў %s"
 
-#: ../src/command/video.cpp:241
+#: ../src/command/video.cpp:240
 msgid "&Detach Video"
 msgstr "&Адлучыць відэа"
 
-#: ../src/command/video.cpp:242
+#: ../src/command/video.cpp:241
 msgid "Detach Video"
 msgstr "Адлучыць відэа"
 
-#: ../src/command/video.cpp:243
+#: ../src/command/video.cpp:242
 msgid ""
 "Detach the video display from the main window, displaying it in a separate "
 "Window"
 msgstr "Адлучыць відэа ад галоўнага акна і паказвваць яго ў асобным акне"
 
-#: ../src/command/video.cpp:261
+#: ../src/command/video.cpp:260
 msgid "Show &Video Details"
 msgstr "Звесткі пра &відэа"
 
-#: ../src/command/video.cpp:262
+#: ../src/command/video.cpp:261
 msgid "Show Video Details"
 msgstr "Звесткі пра відэа"
 
-#: ../src/command/video.cpp:263
+#: ../src/command/video.cpp:262
 msgid "Show video details"
 msgstr "Звесткі пра відэа"
 
-#: ../src/command/video.cpp:273 ../src/command/video.cpp:274
+#: ../src/command/video.cpp:272 ../src/command/video.cpp:273
 msgid "Toggle video slider focus"
 msgstr "Пераключыць фокус на паўзунок відэа"
 
-#: ../src/command/video.cpp:275
+#: ../src/command/video.cpp:274
 msgid ""
 "Toggle focus between the video slider and the previous thing to have focus"
 msgstr "Пераключыць фокус на паўзунок відэа з папярэдняга актыўнага элемента"
 
-#: ../src/command/video.cpp:296 ../src/command/video.cpp:297
+#: ../src/command/video.cpp:299 ../src/command/video.cpp:300
 msgid "Copy image to Clipboard"
 msgstr "Капіяваць кадр у буферу абмену"
 
-#: ../src/command/video.cpp:298
+#: ../src/command/video.cpp:301
 msgid "Copy the currently displayed frame to the clipboard"
 msgstr "Скапіяваць бягучы кадр у буфер абмену"
 
-#: ../src/command/video.cpp:307 ../src/command/video.cpp:308
+#: ../src/command/video.cpp:310 ../src/command/video.cpp:311
 msgid "Copy image to Clipboard (no subtitles)"
 msgstr "Капіяваць кадр у буфер абмену (без субтытраў)"
 
-#: ../src/command/video.cpp:309
+#: ../src/command/video.cpp:312
 msgid ""
 "Copy the currently displayed frame to the clipboard, without the subtitles"
 msgstr "Капіяваць бягучы кадр, які паказваецца без субтытраў у буфер абмену"
 
-#: ../src/command/video.cpp:318 ../src/command/video.cpp:319
+#: ../src/command/video.cpp:321 ../src/command/video.cpp:322
+msgid "Copy image to Clipboard (only subtitles)"
+msgstr ""
+
+#: ../src/command/video.cpp:323
+msgid ""
+"Copy the currently displayed subtitles to the clipboard, with transparent "
+"background"
+msgstr ""
+
+#: ../src/command/video.cpp:332 ../src/command/video.cpp:333
 msgid "Next Frame"
 msgstr "Наступны кадр"
 
-#: ../src/command/video.cpp:320
+#: ../src/command/video.cpp:334
 msgid "Seek to the next frame"
 msgstr "Перайсці на наступны кадр"
 
-#: ../src/command/video.cpp:329 ../src/command/video.cpp:330
+#: ../src/command/video.cpp:343 ../src/command/video.cpp:344
 msgid "Next Boundary"
 msgstr "Наступная мяжа"
 
-#: ../src/command/video.cpp:331
+#: ../src/command/video.cpp:345
 msgid "Seek to the next beginning or end of a subtitle"
 msgstr "Перайсці да наступнага пачатку або канца субтытраў"
 
-#: ../src/command/video.cpp:358 ../src/command/video.cpp:359
+#: ../src/command/video.cpp:372 ../src/command/video.cpp:373
 msgid "Next Keyframe"
 msgstr "Наступны ключкадр"
 
-#: ../src/command/video.cpp:360
+#: ../src/command/video.cpp:374
 msgid "Seek to the next keyframe"
 msgstr "Перайсці на наступны ключкадр"
 
-#: ../src/command/video.cpp:372 ../src/command/video.cpp:373
-#: ../src/command/video.cpp:374
+#: ../src/command/video.cpp:386 ../src/command/video.cpp:387
+#: ../src/command/video.cpp:388
 msgid "Fast jump forward"
 msgstr "Хуткі пераход наперад"
 
-#: ../src/command/video.cpp:385 ../src/command/video.cpp:386
+#: ../src/command/video.cpp:399 ../src/command/video.cpp:400
 msgid "Previous Frame"
 msgstr "Папярэдні кадр"
 
-#: ../src/command/video.cpp:387
+#: ../src/command/video.cpp:401
 msgid "Seek to the previous frame"
 msgstr "Перайсці на папярэдні кадр"
 
-#: ../src/command/video.cpp:396 ../src/command/video.cpp:397
+#: ../src/command/video.cpp:410 ../src/command/video.cpp:411
 msgid "Previous Boundary"
 msgstr "Папярэдняя мяжа"
 
-#: ../src/command/video.cpp:398
+#: ../src/command/video.cpp:412
 msgid "Seek to the previous beginning or end of a subtitle"
 msgstr "Перайсці да папярэдняга пачатку або канца субтытраў"
 
-#: ../src/command/video.cpp:425 ../src/command/video.cpp:426
+#: ../src/command/video.cpp:439 ../src/command/video.cpp:440
 msgid "Previous Keyframe"
 msgstr "Папярэдні ключкадр"
 
-#: ../src/command/video.cpp:427
+#: ../src/command/video.cpp:441
 msgid "Seek to the previous keyframe"
 msgstr "Перайсці да папярэдняга ключкадра"
 
-#: ../src/command/video.cpp:447 ../src/command/video.cpp:448
-#: ../src/command/video.cpp:449
+#: ../src/command/video.cpp:461 ../src/command/video.cpp:462
+#: ../src/command/video.cpp:463
 msgid "Fast jump backwards"
 msgstr "Хуткі пераход назад"
 
-#: ../src/command/video.cpp:498 ../src/command/video.cpp:499
+#: ../src/command/video.cpp:512 ../src/command/video.cpp:513
 msgid "Save PNG snapshot"
 msgstr "Захаваць кадр як PNG"
 
-#: ../src/command/video.cpp:500
+#: ../src/command/video.cpp:514
 msgid ""
 "Save the currently displayed frame to a PNG file in the video's directory"
 msgstr "Захаваць бягучы кадр ў PNG-файл у папку з відэа"
 
-#: ../src/command/video.cpp:509 ../src/command/video.cpp:510
+#: ../src/command/video.cpp:523 ../src/command/video.cpp:524
 msgid "Save PNG snapshot (no subtitles)"
 msgstr "Захаваць PNG-здымак (без субтытраў)"
 
-#: ../src/command/video.cpp:511
+#: ../src/command/video.cpp:525
 msgid ""
 "Save the currently displayed frame without the subtitles to a PNG file in "
 "the video's directory"
 msgstr "Захаваць бягучы кадр без субтытраў ў PNG-файл у папцы з відэа"
 
-#: ../src/command/video.cpp:521
+#: ../src/command/video.cpp:534 ../src/command/video.cpp:535
+msgid "Save PNG snapshot (only subtitles)"
+msgstr ""
+
+#: ../src/command/video.cpp:536
+msgid ""
+"Save the currently displayed subtitles with transparent background to a PNG "
+"file in the video's directory"
+msgstr ""
+
+#: ../src/command/video.cpp:546
 msgid "&Jump to..."
 msgstr "&Перайсці да..."
 
-#: ../src/command/video.cpp:522 ../src/dialog_jumpto.cpp:67
+#: ../src/command/video.cpp:547 ../src/dialog_jumpto.cpp:67
 msgid "Jump to"
 msgstr "Перайсці да"
 
-#: ../src/command/video.cpp:523
+#: ../src/command/video.cpp:548
 msgid "Jump to frame or time"
 msgstr "Перайсці да кадра або часу"
 
-#: ../src/command/video.cpp:535
+#: ../src/command/video.cpp:560
 msgid "Jump Video to &End"
 msgstr "Перамотка відэа да &канца"
 
-#: ../src/command/video.cpp:536
+#: ../src/command/video.cpp:561
 msgid "Jump Video to End"
 msgstr "Перамотка відэа да канца"
 
-#: ../src/command/video.cpp:537
+#: ../src/command/video.cpp:562
 msgid "Jump the video to the end frame of current subtitle"
 msgstr "Перамотка відэа да канчатковага кадра бягучага радка"
 
-#: ../src/command/video.cpp:548
+#: ../src/command/video.cpp:573
 msgid "Jump Video to &Start"
 msgstr "Перамотка відэа да &пачатка"
 
-#: ../src/command/video.cpp:549
+#: ../src/command/video.cpp:574
 msgid "Jump Video to Start"
 msgstr "Перамотка відэа да пачатка"
 
-#: ../src/command/video.cpp:550
+#: ../src/command/video.cpp:575
 msgid "Jump the video to the start frame of current subtitle"
 msgstr "Перамотка відэа да пачатковага кадра бягучага радка"
 
-#: ../src/command/video.cpp:561
+#: ../src/command/video.cpp:586
 msgid "&Open Video..."
 msgstr "&Адкрыць відэа..."
 
-#: ../src/command/video.cpp:562
+#: ../src/command/video.cpp:587
 msgid "Open Video"
 msgstr "Адкрыць відэа"
 
-#: ../src/command/video.cpp:563
+#: ../src/command/video.cpp:588
 msgid "Open a video file"
 msgstr "Адкрыць відэафайл"
 
-#: ../src/command/video.cpp:568
+#: ../src/command/video.cpp:593
 msgid "Open video file"
 msgstr "Адкрыць відэафайл"
 
-#: ../src/command/video.cpp:577
+#: ../src/command/video.cpp:602
 msgid "&Use Dummy Video..."
 msgstr "Выкарыстоўваць &пустое відэа"
 
-#: ../src/command/video.cpp:578
+#: ../src/command/video.cpp:603
 msgid "Use Dummy Video"
 msgstr "Выкарыстоўваць пустое відэа"
 
-#: ../src/command/video.cpp:579
+#: ../src/command/video.cpp:604
 msgid "Open a placeholder video clip with solid color"
 msgstr "Адкрыць запаўняльнае відэа з суцэльным колерам"
 
-#: ../src/command/video.cpp:591 ../src/command/video.cpp:592
+#: ../src/command/video.cpp:616 ../src/command/video.cpp:617
 msgid "Toggle autoscroll of video"
 msgstr "Уключыць аўтапрагортку відэа"
 
-#: ../src/command/video.cpp:593
+#: ../src/command/video.cpp:618
 msgid "Toggle automatically seeking video to the start time of selected lines"
 msgstr "Уключыць аўтаматычную перамотку відэа да часу пачатку вылучаных радкоў"
 
-#: ../src/command/video.cpp:608 ../src/command/video.cpp:609
+#: ../src/command/video.cpp:633 ../src/command/video.cpp:634
 msgid "Play"
 msgstr "Прайграць"
 
-#: ../src/command/video.cpp:610
+#: ../src/command/video.cpp:635
 msgid "Play video starting on this position"
 msgstr "Прайграць відэа з бягучай пазіцыі"
 
-#: ../src/command/video.cpp:620 ../src/command/video.cpp:621
+#: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
 msgstr "Прайграць радок"
 
-#: ../src/command/video.cpp:631
+#: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
 msgstr "Паказваць межы &адсячэння"
 
-#: ../src/command/video.cpp:632
+#: ../src/command/video.cpp:657
 msgid "Show Overscan Mask"
 msgstr "Паказваць межы адсячэння"
 
-#: ../src/command/video.cpp:633
+#: ../src/command/video.cpp:658
 msgid ""
 "Show a mask over the video, indicating areas that might get cropped off by "
 "overscan on televisions"
@@ -2498,122 +2519,182 @@ msgstr ""
 "Паказваць маску паверх відэа для паказу вобласцяў, якія могуць быць абрэзаны "
 "рамкай экрана тэлевізара"
 
-#: ../src/command/video.cpp:649
+#: ../src/command/video.cpp:674
 msgid "&100%"
 msgstr "&100%"
 
-#: ../src/command/video.cpp:650
+#: ../src/command/video.cpp:675
 msgid "100%"
 msgstr "100%"
 
-#: ../src/command/video.cpp:651
+#: ../src/command/video.cpp:676
 msgid "Set zoom to 100%"
 msgstr "Задаць маштаб у 100%"
 
-#: ../src/command/video.cpp:668 ../src/command/video.cpp:669
+#: ../src/command/video.cpp:693 ../src/command/video.cpp:694
 msgid "Stop video"
 msgstr "Спыніць відэа"
 
-#: ../src/command/video.cpp:670
+#: ../src/command/video.cpp:695
 msgid "Stop video playback"
 msgstr "Паставіць відэа на паўзу"
 
-#: ../src/command/video.cpp:680
+#: ../src/command/video.cpp:705
 msgid "&200%"
 msgstr "&200%"
 
-#: ../src/command/video.cpp:681
+#: ../src/command/video.cpp:706
 msgid "200%"
 msgstr "200%"
 
-#: ../src/command/video.cpp:682
+#: ../src/command/video.cpp:707
 msgid "Set zoom to 200%"
 msgstr "Задаць маштаб у 200%"
 
-#: ../src/command/video.cpp:698
+#: ../src/command/video.cpp:723
 msgid "&50%"
 msgstr "&50%"
 
-#: ../src/command/video.cpp:699
+#: ../src/command/video.cpp:724
 msgid "50%"
 msgstr "50%"
 
-#: ../src/command/video.cpp:700
+#: ../src/command/video.cpp:725
 msgid "Set zoom to 50%"
 msgstr "Задаць маштаб у 50%"
 
-#: ../src/command/video.cpp:716 ../src/command/video.cpp:717
+#: ../src/command/video.cpp:741 ../src/command/video.cpp:742
 msgid "Zoom In"
 msgstr "Павялічыць"
 
-#: ../src/command/video.cpp:718
+#: ../src/command/video.cpp:743
 msgid "Zoom video in"
 msgstr "Павялічыць маштаб відэа"
 
-#: ../src/command/video.cpp:728 ../src/command/video.cpp:729
+#: ../src/command/video.cpp:753 ../src/command/video.cpp:754
 msgid "Zoom Out"
 msgstr "Паменшыць"
 
-#: ../src/command/video.cpp:730
+#: ../src/command/video.cpp:755
 msgid "Zoom video out"
 msgstr "Паменшыць маштаб відэа"
 
-#: ../src/command/vis_tool.cpp:55 ../src/command/vis_tool.cpp:56
+#: ../src/command/vis_tool.cpp:73 ../src/command/vis_tool.cpp:74
 msgid "Standard"
 msgstr "Стандартны"
 
-#: ../src/command/vis_tool.cpp:57
+#: ../src/command/vis_tool.cpp:75
 msgid "Standard mode, double click sets position"
 msgstr "Рэжым вымярэння каардынат"
 
-#: ../src/command/vis_tool.cpp:63 ../src/command/vis_tool.cpp:64
-#: ../src/visual_tool_vector_clip.cpp:58
+#: ../src/command/vis_tool.cpp:81 ../src/command/vis_tool.cpp:82
+#: ../src/command/vis_tool.cpp:131 ../src/command/vis_tool.cpp:132
 msgid "Drag"
 msgstr "Перамясціць"
 
-#: ../src/command/vis_tool.cpp:65
+#: ../src/command/vis_tool.cpp:83
 msgid "Drag subtitles"
 msgstr "Перамясціць субтытры"
 
-#: ../src/command/vis_tool.cpp:71 ../src/command/vis_tool.cpp:72
+#: ../src/command/vis_tool.cpp:89 ../src/command/vis_tool.cpp:90
 msgid "Rotate Z"
 msgstr "Паварот па вось Z"
 
-#: ../src/command/vis_tool.cpp:73
+#: ../src/command/vis_tool.cpp:91
 msgid "Rotate subtitles on their Z axis"
 msgstr "Павярнуць субтытры па восі Z"
 
-#: ../src/command/vis_tool.cpp:79 ../src/command/vis_tool.cpp:80
+#: ../src/command/vis_tool.cpp:97 ../src/command/vis_tool.cpp:98
 msgid "Rotate XY"
 msgstr "Паварот па восях X і Y"
 
-#: ../src/command/vis_tool.cpp:81
+#: ../src/command/vis_tool.cpp:99
 msgid "Rotate subtitles on their X and Y axes"
 msgstr "Павярнуць субтытры па восях X і Y"
 
-#: ../src/command/vis_tool.cpp:87 ../src/command/vis_tool.cpp:88
+#: ../src/command/vis_tool.cpp:105 ../src/command/vis_tool.cpp:106
 msgid "Scale"
 msgstr "Маштаб"
 
-#: ../src/command/vis_tool.cpp:89
+#: ../src/command/vis_tool.cpp:107
 msgid "Scale subtitles on X and Y axes"
 msgstr "Маштаб субтытраў па восях X і Y"
 
-#: ../src/command/vis_tool.cpp:95 ../src/command/vis_tool.cpp:96
+#: ../src/command/vis_tool.cpp:113 ../src/command/vis_tool.cpp:114
 msgid "Clip"
 msgstr "Абрэзка"
 
-#: ../src/command/vis_tool.cpp:97
+#: ../src/command/vis_tool.cpp:115
 msgid "Clip subtitles to a rectangle"
 msgstr "Абрэзаць субтытры прамавугольнай вобласцю"
 
-#: ../src/command/vis_tool.cpp:103 ../src/command/vis_tool.cpp:104
+#: ../src/command/vis_tool.cpp:121 ../src/command/vis_tool.cpp:122
 msgid "Vector Clip"
 msgstr "Вектарная абрэзка"
 
-#: ../src/command/vis_tool.cpp:105
+#: ../src/command/vis_tool.cpp:123
 msgid "Clip subtitles to a vectorial area"
 msgstr "Абрэзаць субтытры вектарнай вобласцю"
+
+#: ../src/command/vis_tool.cpp:133
+msgid "Drag control points"
+msgstr "Перамясціць кантрольныя пункты"
+
+#: ../src/command/vis_tool.cpp:139 ../src/command/vis_tool.cpp:140
+msgid "Line"
+msgstr "Радок"
+
+#: ../src/command/vis_tool.cpp:141
+msgid "Appends a line"
+msgstr "Дадаць прамую"
+
+#: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
+msgid "Bicubic"
+msgstr "Крывая"
+
+#: ../src/command/vis_tool.cpp:148
+msgid "Appends a bezier bicubic curve"
+msgstr "Канвертаваць крывую Без'е"
+
+#: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
+msgid "Convert"
+msgstr "Канвертаваць"
+
+#: ../src/command/vis_tool.cpp:155
+msgid "Converts a segment between line and bicubic"
+msgstr "Канвертаваць сегмент з прамой у крывую Без'е і назад"
+
+#: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
+msgid "Insert"
+msgstr "Уставіць"
+
+#: ../src/command/vis_tool.cpp:162
+msgid "Inserts a control point"
+msgstr "Уставіць кантрольны пункт"
+
+#: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
+msgid "Remove"
+msgstr "Выдаліць"
+
+#: ../src/command/vis_tool.cpp:169
+msgid "Removes a control point"
+msgstr "Выдаліць кантрольны пункт"
+
+#: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
+msgid "Freehand"
+msgstr "Ад рукі"
+
+#: ../src/command/vis_tool.cpp:176
+msgid "Draws a freehand shape"
+msgstr "Рысаваць контур ад рукі"
+
+#: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
+msgid "Freehand smooth"
+msgstr "Ад рукі згладжана"
+
+#: ../src/command/vis_tool.cpp:183
+msgid "Draws a smoothed freehand shape"
+msgstr "Рысаваць згладжаны контур ад рукі"
 
 #: ../src/dialog_about.cpp:46
 msgid "Translated into LANGUAGE by PERSON\n"
@@ -2649,7 +2730,7 @@ msgid "E&xtract"
 msgstr "В&ыняць"
 
 #: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:204
-#: ../src/preferences.cpp:596
+#: ../src/preferences.cpp:605
 msgid "&Delete"
 msgstr "&Выдаліць"
 
@@ -2800,7 +2881,7 @@ msgstr "Звесткі аб скрыпце аўтаматызацыі"
 msgid "Open autosave file"
 msgstr "Адкрыць аўтаматычна захаваны файл"
 
-#: ../src/dialog_autosave.cpp:70 ../src/preferences.cpp:77
+#: ../src/dialog_autosave.cpp:70 ../src/preferences.cpp:78
 msgid "Files"
 msgstr "Файлы"
 
@@ -2822,43 +2903,43 @@ msgstr "%s [АРЫГІНАЛЬНАЯ РЭЗЕРВОВАЯ КОПІЯ]"
 msgid "%s [RECOVERED]"
 msgstr "%s[АДНОЎЛЕНА] "
 
-#: ../src/dialog_colorpicker.cpp:542
+#: ../src/dialog_colorpicker.cpp:543
 msgid "Select Color"
 msgstr "Выбраць колер"
 
-#: ../src/dialog_colorpicker.cpp:556
+#: ../src/dialog_colorpicker.cpp:557
 msgid "Color spectrum"
 msgstr "Спектр колеру"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "HSL/L"
 msgstr "HSL/L"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "HSV/H"
 msgstr "HSV/H"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "RGB/B"
 msgstr "RGB/B"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "RGB/G"
 msgstr "RGB/G"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "RGB/R"
 msgstr "RGB/R"
 
-#: ../src/dialog_colorpicker.cpp:567
+#: ../src/dialog_colorpicker.cpp:564
 msgid "RGB color"
 msgstr "Колер RGB"
 
-#: ../src/dialog_colorpicker.cpp:568
+#: ../src/dialog_colorpicker.cpp:565
 msgid "HSL color"
 msgstr "HSL колер"
 
-#: ../src/dialog_colorpicker.cpp:569
+#: ../src/dialog_colorpicker.cpp:566
 msgid "HSV color"
 msgstr "HSV колер"
 
@@ -2903,19 +2984,19 @@ msgstr "Значэнне:"
 msgid "Video: %s"
 msgstr "Відэа: %s"
 
-#: ../src/dialog_dummy_video.cpp:105
+#: ../src/dialog_dummy_video.cpp:103
 msgid "Dummy video options"
 msgstr "Параметры пустога відэа"
 
-#: ../src/dialog_dummy_video.cpp:117
+#: ../src/dialog_dummy_video.cpp:115
 msgid "Checkerboard &pattern"
 msgstr "Фон у &клетку"
 
-#: ../src/dialog_dummy_video.cpp:120
+#: ../src/dialog_dummy_video.cpp:118
 msgid "Video resolution:"
 msgstr "Разрозненне відэа:"
 
-#: ../src/dialog_dummy_video.cpp:122
+#: ../src/dialog_dummy_video.cpp:120
 msgid "Color:"
 msgstr "Колер:"
 
@@ -2927,7 +3008,7 @@ msgstr "Частата кадраў (кадр/сек):"
 msgid "Duration (frames):"
 msgstr "Працягласць (у кадрах):"
 
-#: ../src/dialog_dummy_video.cpp:170
+#: ../src/dialog_dummy_video.cpp:179
 #, c-format
 msgid "Resulting duration: %s"
 msgstr "Выніковая працягласць: %s"
@@ -3008,141 +3089,146 @@ msgstr "30 кадр/с (STL30.01)"
 msgid "TV standard"
 msgstr "ТБ-стандарт"
 
-#: ../src/dialog_export_ebu3264.cpp:112
+#: ../src/dialog_export_ebu3264.cpp:113
 msgid "Out-times are inclusive"
 msgstr "Залішні час уключаны"
 
-#: ../src/dialog_export_ebu3264.cpp:115
+#: ../src/dialog_export_ebu3264.cpp:116
 msgid "ISO 6937-2 (Latin/Western Europe)"
 msgstr "ISO 6937-2 (Лацінка/Заходняя Еўропа)"
 
-#: ../src/dialog_export_ebu3264.cpp:116
+#: ../src/dialog_export_ebu3264.cpp:117
 msgid "ISO 8859-5 (Cyrillic)"
 msgstr "ISO 8859-5 (Кірыліца)"
 
-#: ../src/dialog_export_ebu3264.cpp:117
+#: ../src/dialog_export_ebu3264.cpp:118
 msgid "ISO 8859-6 (Arabic)"
 msgstr "ISO 8859-6 (Арабскі)"
 
-#: ../src/dialog_export_ebu3264.cpp:118
+#: ../src/dialog_export_ebu3264.cpp:119
 msgid "ISO 8859-7 (Greek)"
 msgstr "ISO 8859-7 (Грэчаскі)"
 
-#: ../src/dialog_export_ebu3264.cpp:119
+#: ../src/dialog_export_ebu3264.cpp:120
 msgid "ISO 8859-8 (Hebrew)"
 msgstr "ISO 8859-8 (Еўрапескі)"
 
-#: ../src/dialog_export_ebu3264.cpp:120
+#: ../src/dialog_export_ebu3264.cpp:121
 msgid "UTF-8 Unicode (non-standard)"
 msgstr "UTF-8 Unicode (нестандартна)"
 
-#: ../src/dialog_export_ebu3264.cpp:122
+#: ../src/dialog_export_ebu3264.cpp:123
 msgid "Text encoding"
 msgstr "Кадзіроўка"
 
-#: ../src/dialog_export_ebu3264.cpp:125
+#: ../src/dialog_export_ebu3264.cpp:126
 msgid "Automatically wrap long lines (ASS)"
 msgstr "Аўтаматычна пераносіць доўгія радкі (ASS)"
 
-#: ../src/dialog_export_ebu3264.cpp:126
+#: ../src/dialog_export_ebu3264.cpp:127
 msgid "Automatically wrap long lines (Balanced)"
 msgstr "Аўтаматычна пераносіць доўгія радкі (сбалансавана)"
 
-#: ../src/dialog_export_ebu3264.cpp:127
+#: ../src/dialog_export_ebu3264.cpp:128
 msgid "Abort if any lines are too long"
 msgstr "Перапыняць, калі радок занадта доўгі"
 
-#: ../src/dialog_export_ebu3264.cpp:128
+#: ../src/dialog_export_ebu3264.cpp:129
 msgid "Skip lines that are too long"
 msgstr "Прапускаць занадта доўгія радкі"
 
-#: ../src/dialog_export_ebu3264.cpp:133
+#: ../src/dialog_export_ebu3264.cpp:134
 msgid "Translate alignments"
 msgstr "Выраўноўванне перакладу"
 
-#: ../src/dialog_export_ebu3264.cpp:138
+#: ../src/dialog_export_ebu3264.cpp:137
 msgid "Open subtitles"
 msgstr "Адкрыць субтытры"
 
-#: ../src/dialog_export_ebu3264.cpp:139
+#: ../src/dialog_export_ebu3264.cpp:138
 msgid "Level-1 teletext"
 msgstr "Level-1 тэлетэкст"
 
-#: ../src/dialog_export_ebu3264.cpp:140
+#: ../src/dialog_export_ebu3264.cpp:139
 msgid "Level-2 teletext"
 msgstr "Level-2 тэлетэкст"
 
-#: ../src/dialog_export_ebu3264.cpp:146
+#: ../src/dialog_export_ebu3264.cpp:145
 msgid "Max. line length:"
 msgstr "Макс. даўжыня радка:"
 
-#: ../src/dialog_export_ebu3264.cpp:150
+#: ../src/dialog_export_ebu3264.cpp:149
 msgid "Time code offset:"
 msgstr "Зрушэнне таймкода:"
 
-#: ../src/dialog_export_ebu3264.cpp:153
+#: ../src/dialog_export_ebu3264.cpp:152
 msgid "Text formatting"
 msgstr "Фарматаванне тэксту"
 
-#: ../src/dialog_export_ebu3264.cpp:158
+#: ../src/dialog_export_ebu3264.cpp:157
 msgid "Time codes"
 msgstr "Таймкоды"
 
-#: ../src/dialog_export_ebu3264.cpp:162
+#: ../src/dialog_export_ebu3264.cpp:161
 msgid "Display standard"
 msgstr "Стандарт паказу"
 
-#: ../src/dialog_fonts_collector.cpp:108
+#: ../src/dialog_fonts_collector.cpp:101
+#, c-format
+msgid "* An error occurred when enumerating the used fonts: %s.\n"
+msgstr ""
+
+#: ../src/dialog_fonts_collector.cpp:115
 msgid "Symlinking fonts to folder...\n"
 msgstr "Стварэнне спасылак на шрыфты ў папцы...\n"
 
-#: ../src/dialog_fonts_collector.cpp:112
+#: ../src/dialog_fonts_collector.cpp:119
 msgid "Copying fonts to folder...\n"
 msgstr "Капіяванне шрыфтоў у папку...\n"
 
-#: ../src/dialog_fonts_collector.cpp:115
+#: ../src/dialog_fonts_collector.cpp:122
 msgid "Copying fonts to archive...\n"
 msgstr "Архіваванне шрыфтоў...\n"
 
-#: ../src/dialog_fonts_collector.cpp:127
+#: ../src/dialog_fonts_collector.cpp:134
 #, c-format
 msgid "* Failed to create directory '%s': %s.\n"
 msgstr "* Не атрымалася стварыць папку '%s': %s.\n"
 
-#: ../src/dialog_fonts_collector.cpp:138
+#: ../src/dialog_fonts_collector.cpp:145
 #, c-format
 msgid "* Failed to open %s.\n"
 msgstr "* Не атрымалася адкрыць %s.\n"
 
-#: ../src/dialog_fonts_collector.cpp:193
+#: ../src/dialog_fonts_collector.cpp:200
 #, c-format
 msgid "* Copied %s.\n"
 msgstr "* %s скапіяваны.\n"
 
-#: ../src/dialog_fonts_collector.cpp:195
+#: ../src/dialog_fonts_collector.cpp:202
 #, c-format
 msgid "* %s already exists on destination.\n"
 msgstr "* %s ужо існуе ў прызначэнні.\n"
 
-#: ../src/dialog_fonts_collector.cpp:197
+#: ../src/dialog_fonts_collector.cpp:204
 #, c-format
 msgid "* Symlinked %s.\n"
 msgstr "* Створана спасылка для %s.\n"
 
-#: ../src/dialog_fonts_collector.cpp:199
+#: ../src/dialog_fonts_collector.cpp:206
 #, c-format
 msgid "* Failed to copy %s.\n"
 msgstr "* Памылка капіявання %s.\n"
 
-#: ../src/dialog_fonts_collector.cpp:205
+#: ../src/dialog_fonts_collector.cpp:212
 msgid "Done. All fonts copied."
 msgstr "Гатова. Усе шрыфты скапіяваны."
 
-#: ../src/dialog_fonts_collector.cpp:207
+#: ../src/dialog_fonts_collector.cpp:214
 msgid "Done. Some fonts could not be copied."
 msgstr "Гатова. Некаторыя шрыфты немагчыма скапіяваць."
 
-#: ../src/dialog_fonts_collector.cpp:210
+#: ../src/dialog_fonts_collector.cpp:217
 msgid ""
 "\n"
 "Over 32 MB of fonts were copied. Some of the fonts may not be loaded by the "
@@ -3152,84 +3238,84 @@ msgstr ""
 "Скапіявана больш за 32 МБ шрыфтоў. Прайгравальнік можа не загрузіць "
 "некаторыя шрыфты, калі іх усе далучыць да Matroska-файлу."
 
-#: ../src/dialog_fonts_collector.cpp:226
+#: ../src/dialog_fonts_collector.cpp:233
 msgid "Check fonts for availability"
 msgstr "Праверыць шрыфты на даступнасць"
 
-#: ../src/dialog_fonts_collector.cpp:227
+#: ../src/dialog_fonts_collector.cpp:234
 msgid "Copy fonts to folder"
 msgstr "Капіяваць шрыфты ў папку"
 
-#: ../src/dialog_fonts_collector.cpp:228
+#: ../src/dialog_fonts_collector.cpp:235
 msgid "Copy fonts to subtitle file's folder"
 msgstr "Капіяваць шрыфты ў папку з субтытрам"
 
-#: ../src/dialog_fonts_collector.cpp:229
+#: ../src/dialog_fonts_collector.cpp:236
 msgid "Copy fonts to zipped archive"
 msgstr "Стварыць ZIP-архіў са шрыфтамі"
 
-#: ../src/dialog_fonts_collector.cpp:231
+#: ../src/dialog_fonts_collector.cpp:238
 msgid "Symlink fonts to folder"
 msgstr "Стварыць спасылкі на шрыфты ў папцы"
 
-#: ../src/dialog_fonts_collector.cpp:236 ../src/dialog_selection.cpp:150
+#: ../src/dialog_fonts_collector.cpp:243 ../src/dialog_selection.cpp:150
 msgid "Action"
 msgstr "Дзеянне"
 
-#: ../src/dialog_fonts_collector.cpp:242
+#: ../src/dialog_fonts_collector.cpp:249
 msgid "Destination"
 msgstr "Прызначэнне"
 
-#: ../src/dialog_fonts_collector.cpp:246
+#: ../src/dialog_fonts_collector.cpp:253
 msgid "&Browse..."
 msgstr "&Агляд..."
 
-#: ../src/dialog_fonts_collector.cpp:255
+#: ../src/dialog_fonts_collector.cpp:262
 msgid "Log"
 msgstr "Журнал"
 
-#: ../src/dialog_fonts_collector.cpp:268
+#: ../src/dialog_fonts_collector.cpp:275
 msgid "&Start!"
 msgstr "&Выканаць!"
 
-#: ../src/dialog_fonts_collector.cpp:303 ../src/dialog_fonts_collector.cpp:308
-#: ../src/dialog_fonts_collector.cpp:313 ../src/dialog_kara_timing_copy.cpp:489
+#: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
+#: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
 #: ../src/dialog_kara_timing_copy.cpp:491
-#: ../src/dialog_kara_timing_copy.cpp:541 ../src/preferences.cpp:261
+#: ../src/dialog_kara_timing_copy.cpp:541 ../src/preferences.cpp:266
 msgid "Error"
 msgstr "Памылка"
 
-#: ../src/dialog_fonts_collector.cpp:303
+#: ../src/dialog_fonts_collector.cpp:310
 msgid "Invalid destination."
 msgstr "Памылковы шлях."
 
-#: ../src/dialog_fonts_collector.cpp:308
+#: ../src/dialog_fonts_collector.cpp:315
 msgid "Could not create destination folder."
 msgstr "Немагчыма стварыць мэтавую папку."
 
-#: ../src/dialog_fonts_collector.cpp:313
+#: ../src/dialog_fonts_collector.cpp:320
 msgid "Invalid path for .zip file."
 msgstr "Памылковы шлях да ZIP-архіва."
 
-#: ../src/dialog_fonts_collector.cpp:336
+#: ../src/dialog_fonts_collector.cpp:343
 msgid "Select archive file name"
 msgstr "Выбраць імя архіва"
 
-#: ../src/dialog_fonts_collector.cpp:343
+#: ../src/dialog_fonts_collector.cpp:350
 msgid "Select folder to save fonts on"
 msgstr "Выбраць папку для захавання шрыфтоў"
 
-#: ../src/dialog_fonts_collector.cpp:362
+#: ../src/dialog_fonts_collector.cpp:369
 msgid "N/A"
 msgstr "N/A"
 
-#: ../src/dialog_fonts_collector.cpp:370
+#: ../src/dialog_fonts_collector.cpp:377
 msgid ""
 "Choose the folder where the fonts will be collected to. It will be created "
 "if it doesn't exist."
 msgstr "Выбраць папку для збору шрыфтоў. Яна будзе створана, калі не існуе."
 
-#: ../src/dialog_fonts_collector.cpp:377
+#: ../src/dialog_fonts_collector.cpp:384
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to. If a "
 "folder is entered, a default name will be used."
@@ -3365,7 +3451,7 @@ msgid "Style"
 msgstr "Стыль"
 
 #: ../src/dialog_paste_over.cpp:68 ../src/grid_column.cpp:228
-#: ../src/grid_column.cpp:229 ../src/subs_edit_box.cpp:137
+#: ../src/grid_column.cpp:229 ../src/subs_edit_box.cpp:135
 msgid "Actor"
 msgstr "Акцёр"
 
@@ -3845,15 +3931,15 @@ msgstr "Час"
 msgid "&Clear"
 msgstr "&Ачысціць"
 
-#: ../src/dialog_shift_times.cpp:202
+#: ../src/dialog_shift_times.cpp:203
 msgid "Shift by"
 msgstr "Зрух на"
 
-#: ../src/dialog_shift_times.cpp:211
+#: ../src/dialog_shift_times.cpp:212
 msgid "Load from history"
 msgstr "Загрузка з гісторыі"
 
-#: ../src/dialog_shift_times.cpp:409
+#: ../src/dialog_shift_times.cpp:410
 msgid "shifting"
 msgstr "зрух"
 
@@ -3905,121 +3991,121 @@ msgstr "выпраўленне арфаграфіі"
 msgid "Style Editor"
 msgstr "Рэдактар стыля"
 
-#: ../src/dialog_style_editor.cpp:178
+#: ../src/dialog_style_editor.cpp:179
 msgid "Font"
 msgstr "Шрыфт"
 
-#: ../src/dialog_style_editor.cpp:179 ../src/preferences.cpp:236
+#: ../src/dialog_style_editor.cpp:180 ../src/preferences.cpp:237
 msgid "Colors"
 msgstr "Колеры"
 
-#: ../src/dialog_style_editor.cpp:180
+#: ../src/dialog_style_editor.cpp:181
 msgid "Margins"
 msgstr "Водступы"
 
-#: ../src/dialog_style_editor.cpp:181 ../src/dialog_style_editor.cpp:277
+#: ../src/dialog_style_editor.cpp:182 ../src/dialog_style_editor.cpp:285
 msgid "Outline"
 msgstr "Контур"
 
-#: ../src/dialog_style_editor.cpp:182
+#: ../src/dialog_style_editor.cpp:183
 msgid "Miscellaneous"
 msgstr "Рознае"
 
-#: ../src/dialog_style_editor.cpp:183
+#: ../src/dialog_style_editor.cpp:184
 msgid "Preview"
 msgstr "Перадпрагляд"
 
-#: ../src/dialog_style_editor.cpp:189
+#: ../src/dialog_style_editor.cpp:190
 msgid "&Bold"
 msgstr "&Тоўсты"
 
-#: ../src/dialog_style_editor.cpp:190
+#: ../src/dialog_style_editor.cpp:191
 msgid "&Italic"
 msgstr "&Курсіў"
 
-#: ../src/dialog_style_editor.cpp:191
+#: ../src/dialog_style_editor.cpp:192
 msgid "&Underline"
 msgstr "&Падкрэслены"
 
-#: ../src/dialog_style_editor.cpp:192
+#: ../src/dialog_style_editor.cpp:193
 msgid "&Strikeout"
 msgstr "&Закрэслены"
 
-#: ../src/dialog_style_editor.cpp:204
+#: ../src/dialog_style_editor.cpp:205
 msgid "Alignment"
 msgstr "Выраўноўванне"
 
-#: ../src/dialog_style_editor.cpp:207
+#: ../src/dialog_style_editor.cpp:208
 msgid "&Opaque box"
 msgstr "&Непразрысты фон"
 
-#: ../src/dialog_style_editor.cpp:215
+#: ../src/dialog_style_editor.cpp:216
 msgid "Style name"
 msgstr "Назва стыля"
 
-#: ../src/dialog_style_editor.cpp:216
+#: ../src/dialog_style_editor.cpp:217
 msgid "Font face"
 msgstr "Шрыфт"
 
-#: ../src/dialog_style_editor.cpp:217
+#: ../src/dialog_style_editor.cpp:218
 msgid "Font size"
 msgstr "Памер шрыфта"
 
-#: ../src/dialog_style_editor.cpp:218
+#: ../src/dialog_style_editor.cpp:219
 msgid "Choose primary color"
 msgstr "Выбраць першасны колер"
 
-#: ../src/dialog_style_editor.cpp:219
+#: ../src/dialog_style_editor.cpp:220
 msgid "Choose secondary color"
 msgstr "Выбраць другасны колер"
 
-#: ../src/dialog_style_editor.cpp:220
+#: ../src/dialog_style_editor.cpp:221
 msgid "Choose outline color"
 msgstr "Выбраць колер контуру"
 
-#: ../src/dialog_style_editor.cpp:221
+#: ../src/dialog_style_editor.cpp:222
 msgid "Choose shadow color"
 msgstr "Выбраць колер ценю"
 
-#: ../src/dialog_style_editor.cpp:222
+#: ../src/dialog_style_editor.cpp:223
 msgid "Distance from left edge, in pixels"
 msgstr "Адлегласць ад левага краю, у пікселях"
 
-#: ../src/dialog_style_editor.cpp:223
+#: ../src/dialog_style_editor.cpp:224
 msgid "Distance from right edge, in pixels"
 msgstr "Адлегласць ад правага краю, у пікселях"
 
-#: ../src/dialog_style_editor.cpp:224
+#: ../src/dialog_style_editor.cpp:225
 msgid "Distance from top/bottom edge, in pixels"
 msgstr "Водступ ад верхняга/ніжняга краю, у пікселях"
 
-#: ../src/dialog_style_editor.cpp:225
+#: ../src/dialog_style_editor.cpp:226
 msgid ""
 "When selected, display an opaque box behind the subtitles instead of an "
 "outline around the text"
 msgstr "Калі ўключана, будзе паказвацца непразрыстая рамка замест контуру"
 
-#: ../src/dialog_style_editor.cpp:226
+#: ../src/dialog_style_editor.cpp:227
 msgid "Outline width, in pixels"
 msgstr "Шырыня контуру, у пікселях"
 
-#: ../src/dialog_style_editor.cpp:227
+#: ../src/dialog_style_editor.cpp:228
 msgid "Shadow distance, in pixels"
 msgstr "Адлегласць ценю, у пікселях"
 
-#: ../src/dialog_style_editor.cpp:228
+#: ../src/dialog_style_editor.cpp:229
 msgid "Scale X, in percentage"
 msgstr "Маштаб па восі Х, у працэнтах"
 
-#: ../src/dialog_style_editor.cpp:229
+#: ../src/dialog_style_editor.cpp:230
 msgid "Scale Y, in percentage"
 msgstr "Маштаб па восі Y, у працэнтах"
 
-#: ../src/dialog_style_editor.cpp:230
+#: ../src/dialog_style_editor.cpp:231
 msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Паварочванне па восі Z, у градусах"
 
-#: ../src/dialog_style_editor.cpp:231
+#: ../src/dialog_style_editor.cpp:232
 msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping"
@@ -4027,97 +4113,97 @@ msgstr ""
 "Пры Юнікодзе, пабочныя кадзіроўкі выкарыстоўваюцца толькі калі шрыфт не мае "
 "набору сімвалаў Юнікода"
 
-#: ../src/dialog_style_editor.cpp:232
+#: ../src/dialog_style_editor.cpp:233
 msgid "Character spacing, in pixels"
 msgstr "Інтэрвал паміж сімваламі, у пікселях"
 
-#: ../src/dialog_style_editor.cpp:233
+#: ../src/dialog_style_editor.cpp:234
 msgid "Alignment in screen, in numpad style"
 msgstr "Выраўноўванне як на лічбавай клавіятуры"
 
-#: ../src/dialog_style_editor.cpp:277
+#: ../src/dialog_style_editor.cpp:285
 msgid "Primary"
 msgstr "Першасны"
 
-#: ../src/dialog_style_editor.cpp:277
+#: ../src/dialog_style_editor.cpp:285
 msgid "Secondary"
 msgstr "Другасны"
 
-#: ../src/dialog_style_editor.cpp:277
+#: ../src/dialog_style_editor.cpp:285
 msgid "Shadow"
 msgstr "Цень"
 
-#: ../src/dialog_style_editor.cpp:288 ../src/grid_column.cpp:263
+#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:263
 msgid "Left"
 msgstr "Лев"
 
-#: ../src/dialog_style_editor.cpp:288 ../src/grid_column.cpp:269
+#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:269
 msgid "Right"
 msgstr "Прав"
 
-#: ../src/dialog_style_editor.cpp:288 ../src/grid_column.cpp:275
+#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:275
 msgid "Vert"
 msgstr "Верт"
 
-#: ../src/dialog_style_editor.cpp:306
+#: ../src/dialog_style_editor.cpp:314
 msgid "Outline:"
 msgstr "Контур:"
 
-#: ../src/dialog_style_editor.cpp:307
+#: ../src/dialog_style_editor.cpp:315
 msgid "Shadow:"
 msgstr "Цень:"
 
-#: ../src/dialog_style_editor.cpp:312
+#: ../src/dialog_style_editor.cpp:320
 msgid "Scale X%:"
 msgstr "Маштаб X%:"
 
-#: ../src/dialog_style_editor.cpp:313
+#: ../src/dialog_style_editor.cpp:321
 msgid "Scale Y%:"
 msgstr "Маштаб Y%:"
 
-#: ../src/dialog_style_editor.cpp:314
+#: ../src/dialog_style_editor.cpp:322
 msgid "Rotation:"
 msgstr "Паварот:"
 
-#: ../src/dialog_style_editor.cpp:315
+#: ../src/dialog_style_editor.cpp:323
 msgid "Spacing:"
 msgstr "Інтэрвал:"
 
-#: ../src/dialog_style_editor.cpp:318
+#: ../src/dialog_style_editor.cpp:326
 msgid "Encoding:"
 msgstr "Кадзіроўка:"
 
-#: ../src/dialog_style_editor.cpp:328
+#: ../src/dialog_style_editor.cpp:336
 msgid "Preview of current style"
 msgstr "Перадпрагляд бягучага стыля"
 
-#: ../src/dialog_style_editor.cpp:331
+#: ../src/dialog_style_editor.cpp:339
 msgid "Text to be used for the preview"
 msgstr "Тэкст для перадпрагляду"
 
-#: ../src/dialog_style_editor.cpp:332
+#: ../src/dialog_style_editor.cpp:340
 msgid "Color of preview background"
 msgstr "Колер перадпрагляду фону"
 
-#: ../src/dialog_style_editor.cpp:413
+#: ../src/dialog_style_editor.cpp:421
 msgid "Style name conflict"
 msgstr "Канфлікт назваў стыляў"
 
-#: ../src/dialog_style_editor.cpp:413
+#: ../src/dialog_style_editor.cpp:421
 msgid "There is already a style with this name. Please choose another name."
 msgstr "Ужо існуе стыль пад дадзенай назвай. Выберыце іншае імя."
 
-#: ../src/dialog_style_editor.cpp:425
+#: ../src/dialog_style_editor.cpp:433
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
 msgstr "Змяніць назву стыля ва ўсіх радках, дзе ён выкарыстоўваецца?"
 
-#: ../src/dialog_style_editor.cpp:426
+#: ../src/dialog_style_editor.cpp:434
 msgid "Update script?"
 msgstr "Абнавіць скрыпт?"
 
-#: ../src/dialog_style_editor.cpp:453 ../src/subs_edit_box.cpp:603
+#: ../src/dialog_style_editor.cpp:461 ../src/subs_edit_box.cpp:604
 msgid "style change"
 msgstr "змена стылю"
 
@@ -4141,15 +4227,15 @@ msgstr "Перамясціць стыль да нізу"
 msgid "Sort styles alphabetically"
 msgstr "Сартаваць стылі па алфавіту"
 
-#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:594
+#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:603
 msgid "&New"
 msgstr "&Новы"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:595
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:604
 msgid "&Edit"
 msgstr "&Праўка"
 
-#: ../src/dialog_style_manager.cpp:203 ../src/subs_edit_ctrl.cpp:384
+#: ../src/dialog_style_manager.cpp:203 ../src/subs_edit_ctrl.cpp:389
 #: ../src/timeedit_ctrl.cpp:209
 msgid "&Copy"
 msgstr "&Капіяваць"
@@ -4602,7 +4688,7 @@ msgstr "Выдаліць радок"
 msgid "Enable &preview"
 msgstr "Уключыць &перадпрагляд"
 
-#: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:282
+#: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:278
 msgid "No more lines to translate."
 msgstr "Больш няма радкоў для перакладу."
 
@@ -4611,7 +4697,7 @@ msgstr "Больш няма радкоў для перакладу."
 msgid "Current line: %d/%d"
 msgstr "Бягучы радок: %d/%d"
 
-#: ../src/dialog_translation.cpp:277
+#: ../src/dialog_translation.cpp:273
 msgid "translation assistant"
 msgstr "памочнік перакладу"
 
@@ -4700,8 +4786,8 @@ msgstr "Працягласць:"
 msgid "Decoder:"
 msgstr "Дэкодар:"
 
-#: ../src/dialog_video_details.cpp:66 ../src/preferences.cpp:166
-#: ../src/preferences.cpp:433
+#: ../src/dialog_video_details.cpp:66 ../src/preferences.cpp:167
+#: ../src/preferences.cpp:438
 msgid "Video"
 msgstr "Відэа"
 
@@ -4924,7 +5010,6 @@ msgstr[3] ""
 "Знойдзена %d шрыфтоў, але не хапае гліфаў, якія выкарытоўваюцца ў скрыпце.\n"
 
 #: ../src/font_file_lister_fontconfig.cpp:55
-#: ../src/font_file_lister_gdi.cpp:162
 msgid "Updating font cache\n"
 msgstr "Абнаўленне кэшу шрыфтоў\n"
 
@@ -4972,7 +5057,7 @@ msgstr "Сімвалаў у секунду"
 msgid "Invalid command name for hotkey"
 msgstr "Памылковая назва каманды для гарачай клавішы"
 
-#: ../src/main.cpp:248
+#: ../src/main.cpp:246
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -4991,11 +5076,11 @@ msgstr ""
 "\n"
 "Зараз Aegisub будзе закрыты."
 
-#: ../src/main.cpp:275
+#: ../src/main.cpp:273
 msgid "Check for updates?"
 msgstr "Праверыць абнаўленні?"
 
-#: ../src/main.cpp:275
+#: ../src/main.cpp:273
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
@@ -5003,11 +5088,11 @@ msgstr ""
 "Правяраць абнаўленні праграмы Aegisub падчас запуску? Вы гэта можаце рабіць "
 "гэта і ўручную праз меню \"Дапамога\"."
 
-#: ../src/main.cpp:392 ../src/main.cpp:395
+#: ../src/main.cpp:390 ../src/main.cpp:393
 msgid "Program error"
 msgstr "Памылка праграмы"
 
-#: ../src/main.cpp:409
+#: ../src/main.cpp:407
 #, c-format
 msgid ""
 "An unexpected error has occurred. Please save your work and restart "
@@ -5048,64 +5133,64 @@ msgstr "Аналіз Matroska"
 msgid "Reading subtitles from Matroska file."
 msgstr "Счытванне субтытраў з файла Matroska. "
 
-#: ../src/preferences.cpp:62 ../src/preferences.cpp:64
-#: ../src/preferences.cpp:330 ../src/preferences.cpp:351
+#: ../src/preferences.cpp:63 ../src/preferences.cpp:65
+#: ../src/preferences.cpp:335 ../src/preferences.cpp:356
 msgid "General"
 msgstr "Асноўныя"
 
-#: ../src/preferences.cpp:65
+#: ../src/preferences.cpp:66
 msgid "Check for updates on startup"
 msgstr "Правяраць абнаўленні падчас запуску"
 
-#: ../src/preferences.cpp:66
+#: ../src/preferences.cpp:67
 msgid "Show main toolbar"
 msgstr "Паказаць галоўную панэль інструментаў"
 
-#: ../src/preferences.cpp:67
+#: ../src/preferences.cpp:68
 msgid "Save UI state in subtitles files"
 msgstr "Захоўваць стан інтэрфейсу ў файлах субтытраў"
 
-#: ../src/preferences.cpp:70
+#: ../src/preferences.cpp:71
 msgid "Toolbar Icon Size"
 msgstr "Памер значкоў панэлі інструментаў"
 
-#: ../src/preferences.cpp:71
+#: ../src/preferences.cpp:72
 msgid "Always"
 msgstr "Заўсёды"
 
-#: ../src/preferences.cpp:71 ../src/preferences.cpp:196
+#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
 msgid "Ask"
 msgstr "Спытаць"
 
-#: ../src/preferences.cpp:71 ../src/preferences.cpp:196
+#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
 msgid "Never"
 msgstr "Ніколі"
 
-#: ../src/preferences.cpp:73
+#: ../src/preferences.cpp:74
 msgid "Automatically load linked files"
 msgstr "Аўтаматычна загружаць звязаныя файлы"
 
-#: ../src/preferences.cpp:74
+#: ../src/preferences.cpp:75
 msgid "Undo Levels"
 msgstr "Колькасць магчымых адмен"
 
-#: ../src/preferences.cpp:76
+#: ../src/preferences.cpp:77
 msgid "Recently Used Lists"
 msgstr "Нядаўна выкарыстаныя спісы"
 
-#: ../src/preferences.cpp:78
+#: ../src/preferences.cpp:79
 msgid "Find/Replace"
 msgstr "Знайсці/Замяніць"
 
-#: ../src/preferences.cpp:84
+#: ../src/preferences.cpp:85
 msgid "Default styles"
 msgstr "Стылі па змаўчанні"
 
-#: ../src/preferences.cpp:86
+#: ../src/preferences.cpp:87
 msgid "Default style catalogs"
 msgstr "Каталог стыляў па змаўчанні"
 
-#: ../src/preferences.cpp:90
+#: ../src/preferences.cpp:91
 msgid ""
 "The chosen style catalogs will be loaded when you start a new file or import "
 "files in the various formats.\n"
@@ -5117,525 +5202,541 @@ msgstr ""
 "\n"
 "Вы можаце наладзіць каталогі стыляў у Менеджары стыляў."
 
-#: ../src/preferences.cpp:115
+#: ../src/preferences.cpp:116
 msgid "New files"
 msgstr "Новыя файлы"
 
-#: ../src/preferences.cpp:116
+#: ../src/preferences.cpp:117
 msgid "MicroDVD import"
 msgstr "Імпарт MicroDVD"
 
-#: ../src/preferences.cpp:117
+#: ../src/preferences.cpp:118
 msgid "SRT import"
 msgstr "Імпарт SRT"
 
-#: ../src/preferences.cpp:118
+#: ../src/preferences.cpp:119
 msgid "TTXT import"
 msgstr "Імпарт TTXT"
 
-#: ../src/preferences.cpp:119
+#: ../src/preferences.cpp:120
 msgid "Plain text import"
 msgstr "Імпарт звычайнага тэксту"
 
-#: ../src/preferences.cpp:126 ../src/preferences.cpp:366
+#: ../src/preferences.cpp:127 ../src/preferences.cpp:371
 msgid "Audio"
 msgstr "Аўдыя"
 
-#: ../src/preferences.cpp:129
+#: ../src/preferences.cpp:130
 msgid "Default mouse wheel to zoom"
 msgstr "Колца мышы мяняе маштаб"
 
-#: ../src/preferences.cpp:130
+#: ../src/preferences.cpp:131
 msgid "Lock scroll on cursor"
 msgstr "Прагортка за курсорам"
 
-#: ../src/preferences.cpp:131
+#: ../src/preferences.cpp:132
 msgid "Snap markers by default"
 msgstr "Прывязваць маркеры да сетцы па змаўчанні"
 
-#: ../src/preferences.cpp:132
+#: ../src/preferences.cpp:133
 msgid "Auto-focus on mouse over"
 msgstr "Аўтафокус пры навядзенні мышшу"
 
-#: ../src/preferences.cpp:133
+#: ../src/preferences.cpp:134
 msgid "Play audio when stepping in video"
 msgstr "Прайграваць аўдыя пры пераходзе па відэа"
 
-#: ../src/preferences.cpp:134
+#: ../src/preferences.cpp:135
 msgid "Left-click-drag moves end marker"
 msgstr "Перацягванне левай кнопкай мышы ссоўвае маркер канчатка"
 
-#: ../src/preferences.cpp:135
+#: ../src/preferences.cpp:136
 msgid "Default timing length (ms)"
 msgstr "Працягласць таймінга па змаўчанні (мс)"
 
-#: ../src/preferences.cpp:136
+#: ../src/preferences.cpp:137
 msgid "Default lead-in length (ms)"
 msgstr "Працягласць уступу па змаўчанні (мс)"
 
-#: ../src/preferences.cpp:137
+#: ../src/preferences.cpp:138
 msgid "Default lead-out length (ms)"
 msgstr "Працягласць канчатку па змаўчанні (мс)"
 
-#: ../src/preferences.cpp:139
+#: ../src/preferences.cpp:140
 msgid "Marker drag-start sensitivity (px)"
 msgstr "Кропак да пачатку перамяшчэння маркера (px)"
 
-#: ../src/preferences.cpp:140
+#: ../src/preferences.cpp:141
 msgid "Line boundary thickness (px)"
 msgstr "Таўшчыня ліній межаў радка (px)"
 
-#: ../src/preferences.cpp:141
+#: ../src/preferences.cpp:142
 msgid "Maximum snap distance (px)"
 msgstr "Максімальная дыстанцыя прывязвання (px)"
 
-#: ../src/preferences.cpp:143
+#: ../src/preferences.cpp:144
 msgid "Don't show"
 msgstr "Не паказваць"
 
-#: ../src/preferences.cpp:143
+#: ../src/preferences.cpp:144
 msgid "Show all"
 msgstr "Паказваць усе"
 
-#: ../src/preferences.cpp:143
+#: ../src/preferences.cpp:144
 msgid "Show previous"
 msgstr "Паказваць папярэдні"
 
-#: ../src/preferences.cpp:143
+#: ../src/preferences.cpp:144
 msgid "Show previous and next"
 msgstr "Паказваць папярэдні і наступны"
 
-#: ../src/preferences.cpp:145
+#: ../src/preferences.cpp:146
 msgid "Show inactive lines"
 msgstr "Паказваць неактыўныя радкі"
 
-#: ../src/preferences.cpp:147
+#: ../src/preferences.cpp:148
 msgid "Include commented inactive lines"
 msgstr "Паказваць неактыўныя закаменціраваныя радкі"
 
-#: ../src/preferences.cpp:149
+#: ../src/preferences.cpp:150
 msgid "Display Visual Options"
 msgstr "Візуальныя налады"
 
-#: ../src/preferences.cpp:150
+#: ../src/preferences.cpp:151
 msgid "Keyframes in dialogue mode"
 msgstr "Ключкадры ў дыялогавым рэжыме"
 
-#: ../src/preferences.cpp:151
+#: ../src/preferences.cpp:152
 msgid "Keyframes in karaoke mode"
 msgstr "Ключкадры ў рэжыме караоке"
 
-#: ../src/preferences.cpp:152
+#: ../src/preferences.cpp:153
 msgid "Cursor time"
 msgstr "Час курсору"
 
-#: ../src/preferences.cpp:153
+#: ../src/preferences.cpp:154
 msgid "Video position"
 msgstr "Пазіцыя відэа"
 
-#: ../src/preferences.cpp:154 ../src/preferences.cpp:250
+#: ../src/preferences.cpp:155 ../src/preferences.cpp:251
 msgid "Seconds boundaries"
 msgstr "Межы секунд"
 
-#: ../src/preferences.cpp:156
+#: ../src/preferences.cpp:157
 msgid "Waveform Style"
 msgstr "Стыль асцылаграмы"
 
-#: ../src/preferences.cpp:158
+#: ../src/preferences.cpp:159
 msgid "Audio labels"
 msgstr "Аўдыяпазнакі"
 
-#: ../src/preferences.cpp:169
+#: ../src/preferences.cpp:170
 msgid "Show keyframes in slider"
 msgstr "Паказваць ключкадры на паласе прагорткі"
 
-#: ../src/preferences.cpp:171
+#: ../src/preferences.cpp:172
 msgid "Only show visual tools when mouse is over video"
 msgstr "Паказваць толькі візуальныя інструменты пры навядзенні"
 
-#: ../src/preferences.cpp:173
+#: ../src/preferences.cpp:174
 msgid "Seek video to line start on selection change"
 msgstr "Пры змяненні вылучэння перамотваць відэа да пачатку радка."
 
-#: ../src/preferences.cpp:175
+#: ../src/preferences.cpp:176
 msgid "Automatically open audio when opening video"
 msgstr "Аўтазагрузка аўдыя пры адкрыцці відэа"
 
-#: ../src/preferences.cpp:180
+#: ../src/preferences.cpp:181
 msgid "Default Zoom"
 msgstr "Маштаб па змаўчанні"
 
-#: ../src/preferences.cpp:182
+#: ../src/preferences.cpp:183
 msgid "Fast jump step in frames"
 msgstr "Крок хуткага пераходу, у кадрах"
 
-#: ../src/preferences.cpp:186
+#: ../src/preferences.cpp:187
 msgid "Screenshot save path"
 msgstr "Шлях захавання здымкаў экрана"
 
-#: ../src/preferences.cpp:188
+#: ../src/preferences.cpp:189
 msgid "Script Resolution"
 msgstr "Разрозненне скрыпта"
 
-#: ../src/preferences.cpp:189
+#: ../src/preferences.cpp:190
 msgid "Use resolution of first video opened"
 msgstr "Выкарыстоўваць разрозненне першага адкрытага відэа"
 
-#: ../src/preferences.cpp:192
+#: ../src/preferences.cpp:193
 msgid "Default width"
 msgstr "Шырыня па змаўчанні"
 
-#: ../src/preferences.cpp:194
+#: ../src/preferences.cpp:195
 msgid "Default height"
 msgstr "Вышыня па змаўчанні"
 
-#: ../src/preferences.cpp:196
+#: ../src/preferences.cpp:197
 msgid "Always resample"
 msgstr "Заўжды пералічваць"
 
-#: ../src/preferences.cpp:196
+#: ../src/preferences.cpp:197
 msgid "Always set"
 msgstr "Заўжды задаваць"
 
-#: ../src/preferences.cpp:198
+#: ../src/preferences.cpp:199
 msgid "Match video resolution on open"
 msgstr "Падагнаць разрозненне відэа падчас адкрыцця"
 
-#: ../src/preferences.cpp:205
+#: ../src/preferences.cpp:206
 msgid "Interface"
 msgstr "Інтэрфейс"
 
-#: ../src/preferences.cpp:207
+#: ../src/preferences.cpp:208
 msgid "Edit Box"
 msgstr "Акно рэдагавання"
 
-#: ../src/preferences.cpp:208
+#: ../src/preferences.cpp:209
 msgid "Enable call tips"
 msgstr "Уключыць падказкі"
 
-#: ../src/preferences.cpp:209
+#: ../src/preferences.cpp:210
 msgid "Overwrite in time boxes"
 msgstr "Пераразлік часу пры ўводзе"
 
 #: ../src/preferences.cpp:211
+msgid "Shift+Enter adds \\n"
+msgstr ""
+
+#: ../src/preferences.cpp:212
 msgid "Enable syntax highlighting"
 msgstr "Уключыць падсвятленне сінтаксісу"
 
-#: ../src/preferences.cpp:212
+#: ../src/preferences.cpp:213
 msgid "Dictionaries path"
 msgstr "Шлях да слоўнікаў"
 
-#: ../src/preferences.cpp:215
+#: ../src/preferences.cpp:216
 msgid "Character Counter"
 msgstr "Лічыльнік сімвалаў"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Maximum characters per line"
 msgstr "Максімальная колькасць сімвалаў у радку"
 
-#: ../src/preferences.cpp:217
+#: ../src/preferences.cpp:218
 msgid "Characters Per Second Warning Threshold"
 msgstr "Значэнне сімвалаў у секунду, перавышэнне якога выдае папярэджанне"
 
-#: ../src/preferences.cpp:218
+#: ../src/preferences.cpp:219
 msgid "Characters Per Second Error Threshold"
 msgstr ""
 "Значэнне сімвалаў у секунду, перавышэнне якога выдае паведамленне аб памылцы"
 
-#: ../src/preferences.cpp:219
+#: ../src/preferences.cpp:220
 msgid "Ignore whitespace"
 msgstr "Ігнараваць прабелы"
 
-#: ../src/preferences.cpp:220
+#: ../src/preferences.cpp:221
 msgid "Ignore punctuation"
 msgstr "Ігнараваць пунктуацыю"
 
-#: ../src/preferences.cpp:222
+#: ../src/preferences.cpp:223
 msgid "Grid"
 msgstr "Сетка"
 
-#: ../src/preferences.cpp:223
+#: ../src/preferences.cpp:224
 msgid "Focus grid on click"
 msgstr "Пераключыць фокус на сетку пры націсканні"
 
-#: ../src/preferences.cpp:224
+#: ../src/preferences.cpp:225
 msgid "Highlight visible subtitles"
 msgstr "Падсвечваць бачныя субтытры"
 
-#: ../src/preferences.cpp:225
+#: ../src/preferences.cpp:226
 msgid "Hide overrides symbol"
 msgstr "Сімвал спрошчаных тэгаў"
 
-#: ../src/preferences.cpp:229
+#: ../src/preferences.cpp:230
 msgid "Skip over whitespace"
 msgstr ""
 
-#: ../src/preferences.cpp:244
+#: ../src/preferences.cpp:245
 msgid "Audio Display"
 msgstr "Акно аўдыя"
 
-#: ../src/preferences.cpp:245
+#: ../src/preferences.cpp:246
 msgid "Play cursor"
 msgstr "Курсор прайгравання"
 
-#: ../src/preferences.cpp:246
+#: ../src/preferences.cpp:247
 msgid "Line boundary start"
 msgstr "Межа радка - пачатак"
 
-#: ../src/preferences.cpp:247
+#: ../src/preferences.cpp:248
 msgid "Line boundary end"
 msgstr "Межа радка - канец"
 
-#: ../src/preferences.cpp:248
+#: ../src/preferences.cpp:249
 msgid "Line boundary inactive line"
 msgstr "Межа радка - неактыўны"
 
-#: ../src/preferences.cpp:249
+#: ../src/preferences.cpp:250
 msgid "Syllable boundaries"
 msgstr "Межа складаў"
 
-#: ../src/preferences.cpp:252
+#: ../src/preferences.cpp:253
 msgid "Syntax Highlighting"
 msgstr "Падсвятленне сінтаксісу"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:254
 msgid "Background"
 msgstr "Фон"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:255
 msgid "Normal"
 msgstr "Стандарт"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:256
 msgid "Comments"
 msgstr "Каментарыі"
 
-#: ../src/preferences.cpp:256
-msgid "Drawings"
-msgstr "Рысункі"
-
 #: ../src/preferences.cpp:257
+msgid "Drawing Commands"
+msgstr ""
+
+#: ../src/preferences.cpp:258
+msgid "Drawing X Coords"
+msgstr ""
+
+#: ../src/preferences.cpp:259
+msgid "Drawing Y Coords"
+msgstr ""
+
+#: ../src/preferences.cpp:260
+msgid "Underline Spline Endpoints"
+msgstr ""
+
+#: ../src/preferences.cpp:262
 msgid "Brackets"
 msgstr "Дужкі"
 
-#: ../src/preferences.cpp:258
+#: ../src/preferences.cpp:263
 msgid "Slashes and Parentheses"
 msgstr "Косыя рысы і круглыя дужкі"
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:264
 msgid "Tags"
 msgstr "Тэгі"
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:265
 msgid "Parameters"
 msgstr "Параметры"
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:267
 msgid "Error Background"
 msgstr "Фон памылкі"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:268
 msgid "Line Break"
 msgstr "Перанос радка"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:269
 msgid "Karaoke templates"
 msgstr "Шаблоны караоке"
 
-#: ../src/preferences.cpp:265
+#: ../src/preferences.cpp:270
 msgid "Karaoke variables"
 msgstr "Пераменныя караоке"
 
-#: ../src/preferences.cpp:271
+#: ../src/preferences.cpp:276
 msgid "Audio Color Schemes"
 msgstr "Колеравыя схемы аўдыя"
 
-#: ../src/preferences.cpp:273 ../src/preferences.cpp:382
+#: ../src/preferences.cpp:278 ../src/preferences.cpp:387
 msgid "Spectrum"
 msgstr "Спектр"
 
-#: ../src/preferences.cpp:274
+#: ../src/preferences.cpp:279
 msgid "Waveform"
 msgstr "Асцылаграма"
 
-#: ../src/preferences.cpp:276
+#: ../src/preferences.cpp:281
 msgid "Subtitle Grid"
 msgstr "Табліца субтытраў"
 
-#: ../src/preferences.cpp:277
+#: ../src/preferences.cpp:282
 msgid "Standard foreground"
 msgstr "Колер шрыфта"
 
-#: ../src/preferences.cpp:278
+#: ../src/preferences.cpp:283
 msgid "Standard background"
 msgstr "Стандартны фон"
 
-#: ../src/preferences.cpp:279
+#: ../src/preferences.cpp:284
 msgid "Selection foreground"
 msgstr "Колер шрыфта вылучэння"
 
-#: ../src/preferences.cpp:280
+#: ../src/preferences.cpp:285
 msgid "Selection background"
 msgstr "Фон вылучэння"
 
-#: ../src/preferences.cpp:281
+#: ../src/preferences.cpp:286
 msgid "Collision foreground"
 msgstr "Фон калізій"
 
-#: ../src/preferences.cpp:282
+#: ../src/preferences.cpp:287
 msgid "In frame background"
 msgstr "Фон радка ў кадры"
 
-#: ../src/preferences.cpp:283
+#: ../src/preferences.cpp:288
 msgid "Comment background"
 msgstr "Фон каментарыяў"
 
-#: ../src/preferences.cpp:284
+#: ../src/preferences.cpp:289
 msgid "Selected comment background"
 msgstr "Фон вылучаных каментарыяў"
 
-#: ../src/preferences.cpp:285
+#: ../src/preferences.cpp:290
 msgid "Header background"
 msgstr "Фон загалоўка"
 
-#: ../src/preferences.cpp:286
+#: ../src/preferences.cpp:291
 msgid "Left Column"
 msgstr "Левая калонка"
 
-#: ../src/preferences.cpp:287
+#: ../src/preferences.cpp:292
 msgid "Active Line Border"
 msgstr "Межа актыўнага радак"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:293
 msgid "Lines"
 msgstr "Радкі"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:294
 msgid "CPS Error"
 msgstr "Памылка сімв./сек"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:296
 msgid "Visual Typesetting Tools"
 msgstr ""
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:297
 msgid "Primary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:298
 msgid "Secondary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:294
+#: ../src/preferences.cpp:299
 msgid "Primary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:295
+#: ../src/preferences.cpp:300
 msgid "Secondary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:303
 msgid "Visual Typesetting Tools Alpha"
 msgstr ""
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:304
 msgid "Shaded Area"
 msgstr ""
 
-#: ../src/preferences.cpp:308
+#: ../src/preferences.cpp:313
 msgid "Backup"
 msgstr "Рэзервовыя копіі"
 
-#: ../src/preferences.cpp:310
+#: ../src/preferences.cpp:315
 msgid "Automatic Save"
 msgstr "Аўтазахаванне"
 
-#: ../src/preferences.cpp:311 ../src/preferences.cpp:319
+#: ../src/preferences.cpp:316 ../src/preferences.cpp:324
 msgid "Enable"
 msgstr "Уключыць"
 
-#: ../src/preferences.cpp:314
+#: ../src/preferences.cpp:319
 msgid "Interval in seconds"
 msgstr "Інтэрвал, сек"
 
-#: ../src/preferences.cpp:315 ../src/preferences.cpp:321
-#: ../src/preferences.cpp:380
+#: ../src/preferences.cpp:320 ../src/preferences.cpp:326
+#: ../src/preferences.cpp:385
 msgid "Path"
 msgstr "Шлях"
 
-#: ../src/preferences.cpp:316
+#: ../src/preferences.cpp:321
 msgid "Autosave after every change"
 msgstr "Аўтазахаванне пасля кожнай змены"
 
-#: ../src/preferences.cpp:318
+#: ../src/preferences.cpp:323
 msgid "Automatic Backup"
 msgstr "Аўтаматычныя рэзервовыя копіі"
 
-#: ../src/preferences.cpp:332
+#: ../src/preferences.cpp:337
 msgid "Base path"
 msgstr "Базавы шлях"
 
-#: ../src/preferences.cpp:333
+#: ../src/preferences.cpp:338
 msgid "Include path"
 msgstr "Шлях да загаловачных файлаў"
 
-#: ../src/preferences.cpp:334
+#: ../src/preferences.cpp:339
 msgid "Auto-load path"
 msgstr "Шлях да аўтаматычна загружаемых сцэнарыяў"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "0: Fatal"
 msgstr "0: Крытычны"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "1: Error"
 msgstr "1: Памылка"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "2: Warning"
 msgstr "2: Папярэджанне"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "3: Hint"
 msgstr "3: Падказка"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "4: Debug"
 msgstr "4: Адладка"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "5: Trace"
 msgstr "5: Інфармацыя"
 
-#: ../src/preferences.cpp:338
+#: ../src/preferences.cpp:343
 msgid "Trace level"
 msgstr "Узровень адсочвання"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:345
 msgid "All scripts"
 msgstr "Усе скрыпты"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:345
 msgid "Global autoload scripts"
 msgstr "Глабальныя аўтаматычна загружаемыя скрыпты"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:345
 msgid "No scripts"
 msgstr "Ніякія"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:345
 msgid "Subtitle-local scripts"
 msgstr "Лакальныя скрыпты"
 
-#: ../src/preferences.cpp:342
+#: ../src/preferences.cpp:347
 msgid "Autoreload on Export"
 msgstr "Аўтаматычна перазагружаць пры экспарце"
 
-#: ../src/preferences.cpp:349
+#: ../src/preferences.cpp:354
 msgid "Advanced"
 msgstr "Дадатковыя налады"
 
-#: ../src/preferences.cpp:353
+#: ../src/preferences.cpp:358
 msgid ""
 "Changing these settings might result in bugs and/or crashes.  Do not touch "
 "these unless you know what you're doing."
@@ -5643,163 +5744,163 @@ msgstr ""
 "Змена гэтых налад можа выклікаць некарэктную працу праграмы. Не змяняйце іх, "
 "калі сапраўды не ўпэўнены ў тым, што робіце."
 
-#: ../src/preferences.cpp:368 ../src/preferences.cpp:435
+#: ../src/preferences.cpp:373 ../src/preferences.cpp:440
 msgid "Expert"
 msgstr "Экспертныя"
 
-#: ../src/preferences.cpp:371
+#: ../src/preferences.cpp:376
 msgid "Audio provider"
 msgstr "Правайдар аўдыя"
 
-#: ../src/preferences.cpp:374
+#: ../src/preferences.cpp:379
 msgid "Audio player"
 msgstr "Прайграванне аўдыя праз"
 
-#: ../src/preferences.cpp:376
+#: ../src/preferences.cpp:381
 msgid "Cache"
 msgstr "Кэш"
 
-#: ../src/preferences.cpp:377
+#: ../src/preferences.cpp:382
 msgid "Hard Disk"
 msgstr "Цвёрды дыск"
 
-#: ../src/preferences.cpp:377
+#: ../src/preferences.cpp:382
 msgid "None (NOT RECOMMENDED)"
 msgstr "Не (НЕ РЭКАМЕНДУЕЦЦА)"
 
-#: ../src/preferences.cpp:377
+#: ../src/preferences.cpp:382
 msgid "RAM"
 msgstr "Аператыўная памяць"
 
-#: ../src/preferences.cpp:379
+#: ../src/preferences.cpp:384
 msgid "Cache type"
 msgstr "Тып кэша"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:389
 msgid "Better quality"
 msgstr "Добрая"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:389
 msgid "High quality"
 msgstr "Высокая"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:389
 msgid "Insane quality"
 msgstr "Лепшая"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:389
 msgid "Regular quality"
 msgstr "Звычайная"
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:391
 msgid "Quality"
 msgstr "Якасць"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Compressed"
 msgstr ""
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Extended"
 msgstr ""
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Linear"
 msgstr ""
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Logarithmic"
 msgstr ""
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Medium"
 msgstr ""
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:395
 msgid "Frequency mapping"
 msgstr ""
 
-#: ../src/preferences.cpp:392
+#: ../src/preferences.cpp:397
 msgid "Cache memory max (MB)"
 msgstr "Максімальны памер кэша (МБ)"
 
-#: ../src/preferences.cpp:398
+#: ../src/preferences.cpp:403
 msgid "Avisynth down-mixer"
 msgstr "Метад мікшыравання Avisynth’ам"
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:404
 msgid "Force sample rate"
 msgstr "Прымусова задаць сэмплінг"
 
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:410
 msgid "Abort"
 msgstr "Перапыніць"
 
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:410
 msgid "Ignore"
 msgstr "Ігнараваць"
 
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:410
 msgid "Stop"
 msgstr "Спыніць"
 
-#: ../src/preferences.cpp:407
+#: ../src/preferences.cpp:412
 msgid "Audio indexing error handling mode"
 msgstr "Рэжым апрацоўкі памылак індэксавання аўдыя"
 
-#: ../src/preferences.cpp:409
+#: ../src/preferences.cpp:414
 msgid "Always index all audio tracks"
 msgstr "Заўсёды індэксаваць усе аўдыятрэкі"
 
-#: ../src/preferences.cpp:414
+#: ../src/preferences.cpp:419
 msgid "Portaudio device"
 msgstr "Прылада Portaudio"
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:424
 msgid "OSS Device"
 msgstr "Прылада OSS"
 
-#: ../src/preferences.cpp:424
+#: ../src/preferences.cpp:429
 msgid "Buffer latency"
 msgstr "Латэнтнасць буферу"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:430
 msgid "Buffer length"
 msgstr "Даўжыня буферу"
 
-#: ../src/preferences.cpp:438
+#: ../src/preferences.cpp:443
 msgid "Video provider"
 msgstr "Правайдар відэа"
 
-#: ../src/preferences.cpp:441
+#: ../src/preferences.cpp:446
 msgid "Subtitles provider"
 msgstr "Правайдар субтытраў"
 
-#: ../src/preferences.cpp:445
+#: ../src/preferences.cpp:450
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Дазволіць Avisynth версіі ніжэй за 2.56a"
 
-#: ../src/preferences.cpp:447
+#: ../src/preferences.cpp:452
 msgid "Avisynth memory limit"
 msgstr "Ліміт памяці для Avisynth (МБ)"
 
-#: ../src/preferences.cpp:455
+#: ../src/preferences.cpp:460
 msgid "Debug log verbosity"
 msgstr "Падрабязнасць журнала адладкі"
 
-#: ../src/preferences.cpp:457
+#: ../src/preferences.cpp:462
 msgid "Decoding threads"
 msgstr "Колькасць патокаў дэкадавання"
 
-#: ../src/preferences.cpp:458
+#: ../src/preferences.cpp:463
 msgid "Enable unsafe seeking"
 msgstr "Дазволіць небяспечную перамотку"
 
-#: ../src/preferences.cpp:590
+#: ../src/preferences.cpp:599
 msgid "Hotkeys"
 msgstr "Гарачыя клавішы"
 
-#: ../src/preferences.cpp:688
+#: ../src/preferences.cpp:697
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -5807,15 +5908,15 @@ msgstr ""
 "Вы ўпэўнены, што жадаеце аднавіць налады па змаўчанні? Усе вашыя налады "
 "будуць скінуты. "
 
-#: ../src/preferences.cpp:688
+#: ../src/preferences.cpp:697
 msgid "Restore defaults?"
 msgstr "Аднавіць налады па змаўчанні? "
 
-#: ../src/preferences.cpp:706
+#: ../src/preferences.cpp:715
 msgid "Preferences"
 msgstr "Параметры"
 
-#: ../src/preferences.cpp:734
+#: ../src/preferences.cpp:743
 msgid "&Restore Defaults"
 msgstr "&Аднавіць параметры па змаўчанню"
 
@@ -5907,7 +6008,7 @@ msgstr ""
 "\n"
 "Былі скарыстаны наступныя правайдары:\n"
 
-#: ../src/resolution_resampler.cpp:289
+#: ../src/resolution_resampler.cpp:288
 msgid "resolution resampling"
 msgstr "пералік разрознення"
 
@@ -5950,29 +6051,29 @@ msgstr "Без імені"
 msgid "untitled"
 msgstr "без імені"
 
-#: ../src/subs_edit_box.cpp:116
+#: ../src/subs_edit_box.cpp:114
 msgid "&Comment"
 msgstr "&Каментарый"
 
-#: ../src/subs_edit_box.cpp:117
+#: ../src/subs_edit_box.cpp:115
 msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr "Закаменціраваць радок. Каментарыі не паказваюцца на экране."
 
-#: ../src/subs_edit_box.cpp:124
+#: ../src/subs_edit_box.cpp:122
 msgid "Style for this line"
 msgstr "Стыль радка"
 
-#: ../src/subs_edit_box.cpp:126 ../src/subs_edit_box.cpp:127
+#: ../src/subs_edit_box.cpp:124 ../src/subs_edit_box.cpp:125
 msgid "Edit"
 msgstr "Рэдагаваць"
 
-#: ../src/subs_edit_box.cpp:137
+#: ../src/subs_edit_box.cpp:135
 msgid ""
 "Actor name for this speech. This is only for reference, and is mainly "
 "useless."
 msgstr "Імя акцёра, які гаварыць прамову. Інфармацыя толькі для даведкі."
 
-#: ../src/subs_edit_box.cpp:142
+#: ../src/subs_edit_box.cpp:140
 msgid ""
 "Effect for this line. This can be used to store extra information for "
 "karaoke scripts, or for the effects supported by the renderer."
@@ -5980,71 +6081,71 @@ msgstr ""
 "Эфекты ў гэтым радку. Можна выкарыстоўваць для захавання дадатковых звестак "
 "для скрыптаў караоке або для эфектаў рэндарара."
 
-#: ../src/subs_edit_box.cpp:148
+#: ../src/subs_edit_box.cpp:147
 msgid "Number of characters in the longest line of this subtitle."
 msgstr "Колькасць сімвалаў у найдаўжэйшым радку гэтых субтытраў."
 
-#: ../src/subs_edit_box.cpp:155
+#: ../src/subs_edit_box.cpp:154
 msgid "Layer number"
 msgstr "Нумар слоя"
 
-#: ../src/subs_edit_box.cpp:159
+#: ../src/subs_edit_box.cpp:158
 msgid "Start time"
 msgstr "Час пачатку"
 
-#: ../src/subs_edit_box.cpp:160
+#: ../src/subs_edit_box.cpp:159
 msgid "End time"
 msgstr "Час заканчэння"
 
-#: ../src/subs_edit_box.cpp:162
+#: ../src/subs_edit_box.cpp:161
 msgid "Line duration"
 msgstr "Даўжыня радка"
 
-#: ../src/subs_edit_box.cpp:165
+#: ../src/subs_edit_box.cpp:164
 msgid "Left Margin (0 = default from style)"
 msgstr "Левы водступ (0 = па змаўчанні)"
 
-#: ../src/subs_edit_box.cpp:165
+#: ../src/subs_edit_box.cpp:164
 msgid "left margin change"
 msgstr "змяніць водступ злева"
 
-#: ../src/subs_edit_box.cpp:166
+#: ../src/subs_edit_box.cpp:165
 msgid "Right Margin (0 = default from style)"
 msgstr "Правы водступ (0 = па змаўчанні)"
 
-#: ../src/subs_edit_box.cpp:166
+#: ../src/subs_edit_box.cpp:165
 msgid "right margin change"
 msgstr "змяніць водступ справа"
 
-#: ../src/subs_edit_box.cpp:167
+#: ../src/subs_edit_box.cpp:166
 msgid "Vertical Margin (0 = default from style)"
 msgstr "Вертыкальны водступ (0 = па змаўчанні)"
 
-#: ../src/subs_edit_box.cpp:167
+#: ../src/subs_edit_box.cpp:166
 msgid "vertical margin change"
 msgstr "змяніць вертыкальны водступ"
 
-#: ../src/subs_edit_box.cpp:186
+#: ../src/subs_edit_box.cpp:185
 msgid "T&ime"
 msgstr "Ч&ас"
 
-#: ../src/subs_edit_box.cpp:186
+#: ../src/subs_edit_box.cpp:185
 msgid "Time by h:mm:ss.cs"
 msgstr "Час у h:mm:ss.cs"
 
-#: ../src/subs_edit_box.cpp:187
+#: ../src/subs_edit_box.cpp:186
 msgid "F&rame"
 msgstr "К&адр"
 
-#: ../src/subs_edit_box.cpp:187
+#: ../src/subs_edit_box.cpp:186
 msgid "Time by frame number"
 msgstr "Час па нумару кадра"
 
-#: ../src/subs_edit_box.cpp:190
+#: ../src/subs_edit_box.cpp:189
 msgid "Show Original"
 msgstr "Паказаць арыгінал"
 
-#: ../src/subs_edit_box.cpp:191
+#: ../src/subs_edit_box.cpp:190
 msgid ""
 "Show the contents of the subtitle line when it was first selected above the "
 "edit box. This is sometimes useful when editing subtitles or translating "
@@ -6053,79 +6154,79 @@ msgstr ""
 "Паказаць першапачатковае змесціва радка. Часам гэта карысна пры рэдагаванні "
 "субтытраў або перакладзе на іншую мову."
 
-#: ../src/subs_edit_box.cpp:444
+#: ../src/subs_edit_box.cpp:445
 msgid "modify text"
 msgstr "змяніць тэкст"
 
-#: ../src/subs_edit_box.cpp:522
+#: ../src/subs_edit_box.cpp:523
 msgid "modify times"
 msgstr "змяніць час"
 
-#: ../src/subs_edit_box.cpp:609
+#: ../src/subs_edit_box.cpp:610
 msgid "actor change"
 msgstr "змена акцёра"
 
-#: ../src/subs_edit_box.cpp:614
+#: ../src/subs_edit_box.cpp:615
 msgid "layer change"
 msgstr "змена слою"
 
-#: ../src/subs_edit_box.cpp:619
+#: ../src/subs_edit_box.cpp:620
 msgid "effect change"
 msgstr "змена эфекта"
 
-#: ../src/subs_edit_box.cpp:624
+#: ../src/subs_edit_box.cpp:625
 msgid "comment change"
 msgstr "каменціраванне"
 
-#: ../src/subs_edit_ctrl.cpp:373
+#: ../src/subs_edit_ctrl.cpp:378
 msgid "Spell checker language"
 msgstr "Мова праверкі арфаграфіі"
 
-#: ../src/subs_edit_ctrl.cpp:383
+#: ../src/subs_edit_ctrl.cpp:388
 msgid "Cu&t"
 msgstr "Выразаць"
 
-#: ../src/subs_edit_ctrl.cpp:385 ../src/timeedit_ctrl.cpp:210
+#: ../src/subs_edit_ctrl.cpp:390 ../src/timeedit_ctrl.cpp:210
 msgid "&Paste"
 msgstr "У&ставіць"
 
-#: ../src/subs_edit_ctrl.cpp:420
+#: ../src/subs_edit_ctrl.cpp:425
 #, c-format
 msgid "Remove \"%s\" from dictionary"
 msgstr "Выдаліць \"%s\" са слоўніку"
 
-#: ../src/subs_edit_ctrl.cpp:425
+#: ../src/subs_edit_ctrl.cpp:430
 msgid "No spell checker suggestions"
 msgstr "Няма варыянтаў"
 
-#: ../src/subs_edit_ctrl.cpp:431
+#: ../src/subs_edit_ctrl.cpp:436
 #, c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr "Варыянты для «%s»"
 
-#: ../src/subs_edit_ctrl.cpp:436
+#: ../src/subs_edit_ctrl.cpp:441
 msgid "No correction suggestions"
 msgstr "Няма варыянтаў"
 
-#: ../src/subs_edit_ctrl.cpp:442
+#: ../src/subs_edit_ctrl.cpp:447
 #, c-format
 msgid "Add \"%s\" to dictionary"
 msgstr "Дадаць «%s» у слоўнік"
 
-#: ../src/subs_edit_ctrl.cpp:477
+#: ../src/subs_edit_ctrl.cpp:482
 #, c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr "Варыянты тэзаўруса для «%s»"
 
-#: ../src/subs_edit_ctrl.cpp:480
+#: ../src/subs_edit_ctrl.cpp:485
 msgid "No thesaurus suggestions"
 msgstr "Няма варыянтаў тэзаўруса"
 
-#: ../src/subs_edit_ctrl.cpp:483
+#: ../src/subs_edit_ctrl.cpp:488
 msgid "Thesaurus language"
 msgstr "Мова тэзаўруса"
 
-#: ../src/subs_edit_ctrl.cpp:492
+#: ../src/subs_edit_ctrl.cpp:497
 msgid "Disable"
 msgstr "Адключыць"
 
@@ -6223,73 +6324,13 @@ msgstr "Час ад бягучага кадра да пачатку і канц�
 msgid "visual typesetting"
 msgstr "візуальнае афармленне"
 
-#: ../src/visual_tool_cross.cpp:61 ../src/visual_tool_drag.cpp:330
+#: ../src/visual_tool_cross.cpp:61 ../src/visual_tool_drag.cpp:329
 msgid "positioning"
 msgstr "размяшчэнне"
 
-#: ../src/visual_tool_drag.cpp:57
+#: ../src/visual_tool_drag.cpp:55
 msgid "Toggle between \\move and \\pos"
 msgstr "Пераключэнне між \\move і \\pos"
-
-#: ../src/visual_tool_vector_clip.cpp:58
-msgid "Drag control points"
-msgstr "Перамясціць кантрольныя пункты"
-
-#: ../src/visual_tool_vector_clip.cpp:59
-msgid "Appends a line"
-msgstr "Дадаць прамую"
-
-#: ../src/visual_tool_vector_clip.cpp:59
-msgid "Line"
-msgstr "Радок"
-
-#: ../src/visual_tool_vector_clip.cpp:60
-msgid "Appends a bezier bicubic curve"
-msgstr "Канвертаваць крывую Без'е"
-
-#: ../src/visual_tool_vector_clip.cpp:60
-msgid "Bicubic"
-msgstr "Крывая"
-
-#: ../src/visual_tool_vector_clip.cpp:62
-msgid "Convert"
-msgstr "Канвертаваць"
-
-#: ../src/visual_tool_vector_clip.cpp:62
-msgid "Converts a segment between line and bicubic"
-msgstr "Канвертаваць сегмент з прамой у крывую Без'е і назад"
-
-#: ../src/visual_tool_vector_clip.cpp:63
-msgid "Insert"
-msgstr "Уставіць"
-
-#: ../src/visual_tool_vector_clip.cpp:63
-msgid "Inserts a control point"
-msgstr "Уставіць кантрольны пункт"
-
-#: ../src/visual_tool_vector_clip.cpp:64
-msgid "Remove"
-msgstr "Выдаліць"
-
-#: ../src/visual_tool_vector_clip.cpp:64
-msgid "Removes a control point"
-msgstr "Выдаліць кантрольны пункт"
-
-#: ../src/visual_tool_vector_clip.cpp:66
-msgid "Draws a freehand shape"
-msgstr "Рысаваць контур ад рукі"
-
-#: ../src/visual_tool_vector_clip.cpp:66
-msgid "Freehand"
-msgstr "Ад рукі"
-
-#: ../src/visual_tool_vector_clip.cpp:67
-msgid "Draws a smoothed freehand shape"
-msgstr "Рысаваць згладжаны контур ад рукі"
-
-#: ../src/visual_tool_vector_clip.cpp:67
-msgid "Freehand smooth"
-msgstr "Ад рукі згладжана"
 
 #: ../src/visual_tool_vector_clip.cpp:272
 msgid "delete control point"
@@ -6330,6 +6371,18 @@ msgstr "Зрабіць &бесперапынным (змяніць пачата�
 #: default_menu.json:0
 msgid "&Make times continuous (change end)"
 msgstr "Зрабіць &бесперапынным (змяніць канец)"
+
+#: default_menu.json:0
+msgid "Make Times Continuous"
+msgstr "Зрабіць таймінг бесперапынным"
+
+#: default_menu.json:0
+msgid "Set &Zoom"
+msgstr "Задаць &маштаб"
+
+#: default_menu.json:0
+msgid "Override &AR"
+msgstr "Змяніць &суадносіны бакоў"
 
 #: default_menu.json:0
 msgid "&File"
@@ -6378,18 +6431,6 @@ msgstr "Сартаваць усе радкі"
 #: default_menu.json:0
 msgid "Sort Selected Lines"
 msgstr "Сартаваць выбраныя радкі"
-
-#: default_menu.json:0
-msgid "Make Times Continuous"
-msgstr "Зрабіць таймінг бесперапынным"
-
-#: default_menu.json:0
-msgid "Set &Zoom"
-msgstr "Задаць &маштаб"
-
-#: default_menu.json:0
-msgid "Override &AR"
-msgstr "Змяніць &суадносіны бакоў"
 
 #: default_menu.json:0
 msgid "Window"
@@ -6492,6 +6533,14 @@ msgstr "Зрабіць на ўсю шырыню"
 msgid "Convert Latin letters to SJIS fullwidth letters"
 msgstr "Канвертаваць лацінскія літары ў літары на ўсю шырыню SJIS "
 
+#: ../automation/autoload/select-overlaps.moon:17
+msgid "Select overlaps"
+msgstr ""
+
+#: ../automation/autoload/select-overlaps.moon:18
+msgid "Select lines which begin while another non-comment line is active"
+msgstr ""
+
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
 msgstr "Выдаленне тэгаў"
@@ -6504,26 +6553,25 @@ msgstr "Выдаліць усе тэгі з вылучаных радкоў"
 msgid "strip tags"
 msgstr "выдаленне тэгаў"
 
-#: ../packages/desktop/aegisub.desktop.in.in:5
+#: ../packages/desktop/aegisub.desktop.in.in:4
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:6
 msgid "Aegisub"
 msgstr "Aegisub"
 
-#: ../packages/desktop/aegisub.desktop.in.in:6
+#: ../packages/desktop/aegisub.desktop.in.in:5
 msgid "Subtitle Editor"
 msgstr "Рэдактар субтытраў"
 
-#: ../packages/desktop/aegisub.desktop.in.in:7
+#: ../packages/desktop/aegisub.desktop.in.in:6
 msgid "Create and edit subtitles for film and videos."
 msgstr "Стварыць і рэдагаваць субтытры для фільмаў і відэа."
 
-#: ../packages/desktop/aegisub.desktop.in.in:13
+#: ../packages/desktop/aegisub.desktop.in.in:12
 msgid "subtitles;subtitle;captions;captioning;video;audio;"
 msgstr ""
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
-msgid ""
-"A free, cross-platform open source tool for creating and modifying subtitles"
+msgid "Create and modify subtitles"
 msgstr ""
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:9
@@ -6583,15 +6631,15 @@ msgstr ""
 msgid "Fully scriptable through the Automation module"
 msgstr ""
 
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:30
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:43
 msgid "Typesetting"
 msgstr ""
 
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:34
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:47
 msgid "Audio video"
 msgstr ""
 
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:38
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
 msgstr ""
 
@@ -6624,3 +6672,6 @@ msgstr ""
 "2. Гэта азначае, што вы можаце выкарыстоўваць гэту праграму для любых мэт, "
 "але без якіх-небудзь гарантый.%n%nКаб даведацца пра атрыманне зыходнага "
 "кода, перайдзіце на сайт Aegisub."
+
+#~ msgid "Drawings"
+#~ msgstr "Рысункі"
