@@ -181,12 +181,12 @@ static void load_protos() {
 	// Longer tag names must appear before shorter tag names
 
 	proto[0].Set("\\alpha", VariableDataType::TEXT, AssParameterClass::ALPHA); // \alpha&H<aa>&
-	proto[++i].Set("\\bord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \bord<depth>
-	proto[++i].Set("\\xbord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \xbord<depth>
-	proto[++i].Set("\\ybord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \ybord<depth>
-	proto[++i].Set("\\shad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \shad<depth>
-	proto[++i].Set("\\xshad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \xshad<depth>
-	proto[++i].Set("\\yshad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \yshad<depth>
+	proto[++i].Set("\\bord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_XY); // \bord<depth>
+	proto[++i].Set("\\xbord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_X); // \xbord<depth>
+	proto[++i].Set("\\ybord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_Y); // \ybord<depth>
+	proto[++i].Set("\\shad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_XY); // \shad<depth>
+	proto[++i].Set("\\xshad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_X); // \xshad<depth>
+	proto[++i].Set("\\yshad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_Y); // \yshad<depth>
 
 	// \fade(<a1>,<a2>,<a3>,<t1>,<t2>,<t3>,<t4>)
 	i++;
@@ -249,17 +249,17 @@ static void load_protos() {
 	// \org(<x>,<y>)
 	i++;
 	proto[i].name = "\\org";
-	proto[i].AddParam(VariableDataType::INT, AssParameterClass::ABSOLUTE_POS_X);
-	proto[i].AddParam(VariableDataType::INT, AssParameterClass::ABSOLUTE_POS_Y);
+	proto[i].AddParam(VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_POS_X);
+	proto[i].AddParam(VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_POS_Y);
 
-	proto[++i].Set("\\pbo", VariableDataType::INT, AssParameterClass::ABSOLUTE_POS_Y); // \pbo<y>
+	proto[++i].Set("\\pbo", VariableDataType::INT, AssParameterClass::ABSOLUTE_SIZE_Y); // \pbo<y>
 	// \fad(<t1>,<t2>)
 	i++;
 	proto[i].name = "\\fad";
 	proto[i].AddParam(VariableDataType::INT, AssParameterClass::RELATIVE_TIME_START);
 	proto[i].AddParam(VariableDataType::INT, AssParameterClass::RELATIVE_TIME_END);
 
-	proto[++i].Set("\\fsp", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \fsp<pixels>
+	proto[++i].Set("\\fsp", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_Y); // \fsp<pixels> (affected by \fscx)
 	proto[++i].Set("\\frx", VariableDataType::FLOAT); // \frx<degrees>
 	proto[++i].Set("\\fry", VariableDataType::FLOAT); // \fry<degrees>
 	proto[++i].Set("\\frz", VariableDataType::FLOAT); // \frz<degrees>
@@ -277,12 +277,12 @@ static void load_protos() {
 	proto[++i].Set("\\fe", VariableDataType::TEXT); // \fe<charset>
 	proto[++i].Set("\\ko", VariableDataType::INT, AssParameterClass::KARAOKE); // \ko<duration>
 	proto[++i].Set("\\kf", VariableDataType::INT, AssParameterClass::KARAOKE); // \kf<duration>
-	proto[++i].Set("\\be", VariableDataType::INT, AssParameterClass::ABSOLUTE_SIZE); // \be<strength>
-	proto[++i].Set("\\blur", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \blur<strength>
+	proto[++i].Set("\\be", VariableDataType::INT, AssParameterClass::ABSOLUTE_SIZE_XY); // \be<strength>
+	proto[++i].Set("\\blur", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_XY); // \blur<strength>
 	proto[++i].Set("\\fn", VariableDataType::TEXT); // \fn<name>
 	proto[++i].Set("\\fs+", VariableDataType::FLOAT); // \fs+<size>
 	proto[++i].Set("\\fs-", VariableDataType::FLOAT); // \fs-<size>
-	proto[++i].Set("\\fs", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE); // \fs<size>
+	proto[++i].Set("\\fs", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_Y); // \fs<size>
 	proto[++i].Set("\\an", VariableDataType::INT); // \an<alignment>
 	proto[++i].Set("\\c", VariableDataType::TEXT, AssParameterClass::COLOR); // \c&H<bbggrr>&
 	proto[++i].Set("\\b", VariableDataType::INT); // \b<0/1/weight>
