@@ -75,7 +75,6 @@ namespace {
 					val = (val + shift_x) * scale_x;
 				else
 					val = (val + shift_y) * scale_y;
-				val = round(val * 8) / 8.0; // round to eighth-pixels
 				final += float_to_string(val);
 				final += ' ';
 				is_x = !is_x;
