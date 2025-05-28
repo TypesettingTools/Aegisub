@@ -76,7 +76,7 @@ jobs:
       - name: Setup Meson
         run: |
           python -m pip install --upgrade pip setuptools
-          pip install meson
+          pip install meson==1.7.2
 
       - name: Setup MSVC
         if: matrix.config.os == 'windows-latest' && matrix.config.msvc == true

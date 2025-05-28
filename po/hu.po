@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub Hungarian translation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-13 21:34+0100\n"
+"POT-Creation-Date: 2025-02-02 21:53+0100\n"
 "PO-Revision-Date: 2014-11-08 13:56+0100\n"
 "Last-Translator: Yuri <yurielvtars@gmail.com>\n"
 "Language-Team: Yuri <yurielvtars@gmail.com>\n"
@@ -14,79 +14,83 @@ msgstr ""
 "X-Generator: Poedit 1.6.9\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/ass_style.cpp:195
+#: ../src/ass_style.cpp:196
+msgid "Auto-detect base direction (libass only)"
+msgstr ""
+
+#: ../src/ass_style.cpp:197
 msgid "ANSI"
 msgstr "ANSI"
 
-#: ../src/ass_style.cpp:196 ../src/command/video.cpp:145
+#: ../src/ass_style.cpp:198 ../src/command/video.cpp:144
 msgid "Default"
 msgstr "Alapértelmezett"
 
-#: ../src/ass_style.cpp:197
+#: ../src/ass_style.cpp:199
 msgid "Symbol"
 msgstr "Szimbólum"
 
-#: ../src/ass_style.cpp:198
+#: ../src/ass_style.cpp:200
 msgid "Mac"
 msgstr "Mac"
 
-#: ../src/ass_style.cpp:199
+#: ../src/ass_style.cpp:201
 msgid "Shift_JIS"
 msgstr "Shift_JIS"
 
-#: ../src/ass_style.cpp:200
+#: ../src/ass_style.cpp:202
 msgid "Hangeul"
 msgstr "Hangeul"
 
-#: ../src/ass_style.cpp:201
+#: ../src/ass_style.cpp:203
 msgid "Johab"
 msgstr "Johab"
 
-#: ../src/ass_style.cpp:202
+#: ../src/ass_style.cpp:204
 msgid "GB2312"
 msgstr "GB2312"
 
-#: ../src/ass_style.cpp:203
+#: ../src/ass_style.cpp:205
 msgid "Chinese BIG5"
 msgstr "Kínai BIG5"
 
-#: ../src/ass_style.cpp:204
+#: ../src/ass_style.cpp:206
 msgid "Greek"
 msgstr "Görög"
 
-#: ../src/ass_style.cpp:205
+#: ../src/ass_style.cpp:207
 msgid "Turkish"
 msgstr "Török"
 
-#: ../src/ass_style.cpp:206
+#: ../src/ass_style.cpp:208
 msgid "Vietnamese"
 msgstr "Vietnámi"
 
-#: ../src/ass_style.cpp:207
+#: ../src/ass_style.cpp:209
 msgid "Hebrew"
 msgstr "Héber"
 
-#: ../src/ass_style.cpp:208
+#: ../src/ass_style.cpp:210
 msgid "Arabic"
 msgstr "Arab"
 
-#: ../src/ass_style.cpp:209
+#: ../src/ass_style.cpp:211
 msgid "Baltic"
 msgstr "Balti"
 
-#: ../src/ass_style.cpp:210
+#: ../src/ass_style.cpp:212
 msgid "Russian"
 msgstr "Orosz"
 
-#: ../src/ass_style.cpp:211
+#: ../src/ass_style.cpp:213
 msgid "Thai"
 msgstr "Thai"
 
-#: ../src/ass_style.cpp:212
+#: ../src/ass_style.cpp:214
 msgid "East European"
 msgstr "Kelet-európai"
 
-#: ../src/ass_style.cpp:213
+#: ../src/ass_style.cpp:215
 msgid "OEM"
 msgstr "OEM"
 
@@ -143,7 +147,7 @@ msgstr "Maximum"
 msgid "Maximum + Average"
 msgstr "Maximum + Átlag"
 
-#: ../src/audio_timing_dialogue.cpp:511 ../src/audio_timing_dialogue.cpp:517
+#: ../src/audio_timing_dialogue.cpp:514 ../src/audio_timing_dialogue.cpp:520
 #: ../src/command/time.cpp:176
 msgid "timing"
 msgstr "időzítés"
@@ -168,7 +172,7 @@ msgstr "Ez nem automatizációs script: %s"
 
 #: ../src/auto4_base.cpp:490 ../src/command/audio.cpp:84
 #: ../src/command/keyframe.cpp:76 ../src/command/timecode.cpp:73
-#: ../src/command/timecode.cpp:93 ../src/command/video.cpp:567
+#: ../src/command/timecode.cpp:93 ../src/command/video.cpp:592
 msgid "All Files"
 msgstr "Minden fájl"
 
@@ -307,8 +311,8 @@ msgid "&Options..."
 msgstr "&Beállítások..."
 
 #: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:146
-#: ../src/dialog_timing_processor.cpp:168 ../src/preferences.cpp:128
-#: ../src/preferences.cpp:168
+#: ../src/dialog_timing_processor.cpp:168 ../src/preferences.cpp:129
+#: ../src/preferences.cpp:169
 msgid "Options"
 msgstr "Beállítások"
 
@@ -400,7 +404,7 @@ msgstr "Megnyit egy hangfájlt."
 msgid "Audio Formats"
 msgstr "Audió formátumok"
 
-#: ../src/command/audio.cpp:83 ../src/command/video.cpp:566
+#: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Videó formátumok"
 
@@ -480,7 +484,7 @@ msgstr ""
 "Jelenlegi kijelölés lejátszása, figyelmen kívül hagyva a módosításokat."
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:622
+#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "Kijelölt sor lejátszása."
 
@@ -669,7 +673,7 @@ msgid "&Automation..."
 msgstr "&Automatizáció..."
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:328
+#: ../src/preferences.cpp:333
 msgid "Automation"
 msgstr "Automatizáció"
 
@@ -685,7 +689,7 @@ msgstr ""
 "Automatizációs scriptek kezelése. Ctrl: autoload mappa újraolvasása. "
 "Ctrl+Shift: autoload mappa újraolvasása és a scriptek újra betöltése."
 
-#: ../src/command/command.cpp:32
+#: ../src/command/command.cpp:35
 #, c-format
 msgid "'%s' is not a valid command name"
 msgstr "Érvénytelen parancsnév: '%s'"
@@ -1018,7 +1022,7 @@ msgid "splitting"
 msgstr "szétválasztás"
 
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
-#: ../src/subs_edit_ctrl.cpp:393
+#: ../src/subs_edit_ctrl.cpp:398
 msgid "Split at cursor (estimate times)"
 msgstr "Kurzornál szétválaszt (idők becslése)"
 
@@ -1029,7 +1033,7 @@ msgid ""
 msgstr "Az eredeti sor idejét fölosztja a szétválasztott sorok közt."
 
 #: ../src/command/edit.cpp:1130 ../src/command/edit.cpp:1131
-#: ../src/subs_edit_ctrl.cpp:392
+#: ../src/subs_edit_ctrl.cpp:397
 msgid "Split at cursor (preserve times)"
 msgstr "Kurzornál szétválaszt (idők megtartása)"
 
@@ -1110,7 +1114,7 @@ msgid "revert line"
 msgstr "eredetire vissza"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:410
 msgid "Clear"
 msgstr "Törlés"
 
@@ -1205,7 +1209,7 @@ msgstr "&Effekt"
 
 #: ../src/command/grid.cpp:133 ../src/command/grid.cpp:145
 #: ../src/dialog_paste_over.cpp:72 ../src/grid_column.cpp:214
-#: ../src/grid_column.cpp:215 ../src/subs_edit_box.cpp:142
+#: ../src/grid_column.cpp:215 ../src/subs_edit_box.cpp:140
 msgid "Effect"
 msgstr "Effekt"
 
@@ -1273,7 +1277,7 @@ msgid "St&yle Name"
 msgstr "Stílus &neve"
 
 #: ../src/command/grid.cpp:229 ../src/command/grid.cpp:241
-#: ../src/dialog_style_editor.cpp:177
+#: ../src/dialog_style_editor.cpp:178
 msgid "Style Name"
 msgstr "Stílus neve"
 
@@ -1483,17 +1487,6 @@ msgstr "Kulcskocka fájl mentése"
 msgid "Open recent audio"
 msgstr "Legutóbbi hangfájl megnyitása"
 
-#: ../src/command/recent.cpp:43 ../src/command/recent.cpp:44
-#: ../src/command/recent.cpp:45 ../src/command/recent.cpp:46
-#: ../src/command/recent.cpp:47 ../src/command/recent.cpp:51
-#: ../src/command/recent.cpp:52 ../src/command/recent.cpp:62
-#: ../src/command/recent.cpp:63 ../src/command/recent.cpp:73
-#: ../src/command/recent.cpp:74 ../src/command/recent.cpp:89
-#: ../src/command/recent.cpp:90 ../src/command/recent.cpp:100
-#: ../src/command/recent.cpp:101
-msgid "Recent"
-msgstr "Mostanában megnyitott"
-
 #: ../src/command/recent.cpp:44 ../src/command/recent.cpp:64
 msgid "Open recent keyframes"
 msgstr "Legutóbbi kulcskocka-fájl megnyitása"
@@ -1509,6 +1502,14 @@ msgstr "Legutóbbi időkód fájl megnyitása"
 #: ../src/command/recent.cpp:47
 msgid "Open recent video"
 msgstr "Legutóbbi videó megnyitása"
+
+#: ../src/command/recent.cpp:51 ../src/command/recent.cpp:52
+#: ../src/command/recent.cpp:62 ../src/command/recent.cpp:63
+#: ../src/command/recent.cpp:73 ../src/command/recent.cpp:74
+#: ../src/command/recent.cpp:89 ../src/command/recent.cpp:90
+#: ../src/command/recent.cpp:100 ../src/command/recent.cpp:101
+msgid "Recent"
+msgstr "Mostanában megnyitott"
 
 #: ../src/command/recent.cpp:102
 msgid "Open recent videos"
@@ -1711,7 +1712,7 @@ msgid "Save subtitles with another name"
 msgstr "Megnyitott felirat mentése más néven."
 
 #: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:123
-#: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:387
+#: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:392
 msgid "Select &All"
 msgstr "A&z összes kijelölése"
 
@@ -1977,7 +1978,7 @@ msgstr "A felirat másolatának más formátumba mentése, átdolgozása."
 msgid "&Fonts Collector..."
 msgstr "&Betűtípus összegyűjtő..."
 
-#: ../src/command/tool.cpp:70 ../src/dialog_fonts_collector.cpp:219
+#: ../src/command/tool.cpp:70 ../src/dialog_fonts_collector.cpp:226
 msgid "Fonts Collector"
 msgstr "Betűtípus összegyűjtő"
 
@@ -2096,7 +2097,7 @@ msgid "&Translation Assistant..."
 msgstr "&Fordító segéd..."
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:64
-#: ../src/preferences.cpp:228
+#: ../src/preferences.cpp:229
 msgid "Translation Assistant"
 msgstr "Fordító segéd"
 
@@ -2132,31 +2133,31 @@ msgstr "E&redetiből beilleszt"
 msgid "Insert the untranslated text"
 msgstr "Lefordítatlan szöveg beillesztése"
 
-#: ../src/command/video.cpp:83
+#: ../src/command/video.cpp:82
 msgid "&Cinematic (2.35)"
 msgstr "&CinemaScope (2,35)"
 
-#: ../src/command/video.cpp:84
+#: ../src/command/video.cpp:83
 msgid "Cinematic (2.35)"
 msgstr "CinemaScope (2,35)"
 
-#: ../src/command/video.cpp:85
+#: ../src/command/video.cpp:84
 msgid "Force video to 2.35 aspect ratio"
 msgstr "2,35-ös képarányba kényszeríti a videót."
 
-#: ../src/command/video.cpp:101
+#: ../src/command/video.cpp:100
 msgid "C&ustom..."
 msgstr "Egyéni"
 
-#: ../src/command/video.cpp:102
+#: ../src/command/video.cpp:101
 msgid "Custom"
 msgstr "Egyéni képarány"
 
-#: ../src/command/video.cpp:103
+#: ../src/command/video.cpp:102
 msgid "Force video to a custom aspect ratio"
 msgstr "Egyénileg megadott képarányba kényszeríti a videót."
 
-#: ../src/command/video.cpp:114
+#: ../src/command/video.cpp:113
 msgid ""
 "Enter aspect ratio in either:\n"
 "  decimal (e.g. 2.35)\n"
@@ -2168,209 +2169,219 @@ msgstr ""
 " hagyományos tört (pl.16:9)\n"
 " felbontás (pl. 853x480)"
 
-#: ../src/command/video.cpp:115
+#: ../src/command/video.cpp:114
 msgid "Enter aspect ratio"
 msgstr "Képarány megadása"
 
-#: ../src/command/video.cpp:134
+#: ../src/command/video.cpp:133
 msgid "Invalid Aspect Ratio"
 msgstr "Érvénytelen képarány"
 
-#: ../src/command/video.cpp:134
+#: ../src/command/video.cpp:133
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
 msgstr ""
 "Érvénytelen érték! A képaránynak 0.5 és 5.0 közötti értéknek kell lennie."
 
-#: ../src/command/video.cpp:144
+#: ../src/command/video.cpp:143
 msgid "&Default"
 msgstr "&Alapértelmezett"
 
-#: ../src/command/video.cpp:146
+#: ../src/command/video.cpp:145
 msgid "Use video's original aspect ratio"
 msgstr "A videót saját képarányában jeleníti meg."
 
-#: ../src/command/video.cpp:162
+#: ../src/command/video.cpp:161
 msgid "&Fullscreen (4:3)"
 msgstr "&Teljesképernyős képarány (4:3)"
 
-#: ../src/command/video.cpp:163
+#: ../src/command/video.cpp:162
 msgid "Fullscreen (4:3)"
 msgstr "Teljesképernyős (4:3)"
 
-#: ../src/command/video.cpp:164
+#: ../src/command/video.cpp:163
 msgid "Force video to 4:3 aspect ratio"
 msgstr "4:3-as képarányba kényszeríti a videót."
 
-#: ../src/command/video.cpp:180
+#: ../src/command/video.cpp:179
 msgid "&Widescreen (16:9)"
 msgstr "&Szélesvásznú képarány (16:9)"
 
-#: ../src/command/video.cpp:181
+#: ../src/command/video.cpp:180
 msgid "Widescreen (16:9)"
 msgstr "Szélesvásznú (16:9)"
 
-#: ../src/command/video.cpp:182
+#: ../src/command/video.cpp:181
 msgid "Force video to 16:9 aspect ratio"
 msgstr "16:9-es képarányba kényszeríti a videót."
 
-#: ../src/command/video.cpp:199
+#: ../src/command/video.cpp:198
 msgid "&Close Video"
 msgstr "Videó &bezárása"
 
-#: ../src/command/video.cpp:200
+#: ../src/command/video.cpp:199
 msgid "Close Video"
 msgstr "Videó bezárása"
 
-#: ../src/command/video.cpp:201
+#: ../src/command/video.cpp:200
 msgid "Close the currently open video file"
 msgstr "Bezárja a megnyitott videofájlt."
 
-#: ../src/command/video.cpp:210 ../src/command/video.cpp:211
+#: ../src/command/video.cpp:209 ../src/command/video.cpp:210
 msgid "Copy coordinates to Clipboard"
 msgstr "Koordináták mentése a Vágólapra"
 
-#: ../src/command/video.cpp:212
+#: ../src/command/video.cpp:211
 msgid ""
 "Copy the current coordinates of the mouse over the video to the clipboard"
 msgstr "Lementi a kurzor által kijelölt videó koordinátákat a vágólapra."
 
-#: ../src/command/video.cpp:221 ../src/command/video.cpp:222
+#: ../src/command/video.cpp:220 ../src/command/video.cpp:221
 msgid "Cycle active subtitles provider"
 msgstr "Felirat kimeneti vezérlőit jeleníti meg."
 
-#: ../src/command/video.cpp:223
+#: ../src/command/video.cpp:222
 msgid "Cycle through the available subtitles providers"
 msgstr "Az elérhető felirat kimeneti vezérlők listázása."
 
-#: ../src/command/video.cpp:234
+#: ../src/command/video.cpp:233
 #, c-format
 msgid "Subtitles provider set to %s"
 msgstr "Jelenlegi felirat kimeneti vezérlő: %s"
 
-#: ../src/command/video.cpp:241
+#: ../src/command/video.cpp:240
 msgid "&Detach Video"
 msgstr "Videó &leválasztása"
 
-#: ../src/command/video.cpp:242
+#: ../src/command/video.cpp:241
 msgid "Detach Video"
 msgstr "Videó leválasztása"
 
-#: ../src/command/video.cpp:243
+#: ../src/command/video.cpp:242
 msgid ""
 "Detach the video display from the main window, displaying it in a separate "
 "Window"
 msgstr "Leválasztja a videót és egy külön ablakban jeleníti meg."
 
-#: ../src/command/video.cpp:261
+#: ../src/command/video.cpp:260
 msgid "Show &Video Details"
 msgstr "Videó &adatai"
 
-#: ../src/command/video.cpp:262
+#: ../src/command/video.cpp:261
 msgid "Show Video Details"
 msgstr "Videó adatai"
 
-#: ../src/command/video.cpp:263
+#: ../src/command/video.cpp:262
 msgid "Show video details"
 msgstr "Megjeleníti a betöltött videó adatait."
 
-#: ../src/command/video.cpp:273 ../src/command/video.cpp:274
+#: ../src/command/video.cpp:272 ../src/command/video.cpp:273
 msgid "Toggle video slider focus"
 msgstr "Videó keresősávra fókuszálás kapcsolása"
 
-#: ../src/command/video.cpp:275
+#: ../src/command/video.cpp:274
 msgid ""
 "Toggle focus between the video slider and the previous thing to have focus"
 msgstr "Videó keresősáv és a korábbi aktív felület közti fókusz kapcsolása."
 
-#: ../src/command/video.cpp:296 ../src/command/video.cpp:297
+#: ../src/command/video.cpp:299 ../src/command/video.cpp:300
 msgid "Copy image to Clipboard"
 msgstr "Kép mentése a Vágólapra"
 
-#: ../src/command/video.cpp:298
+#: ../src/command/video.cpp:301
 msgid "Copy the currently displayed frame to the clipboard"
 msgstr "Lemásolja a jelenlegi képkockát a vágólapra."
 
-#: ../src/command/video.cpp:307 ../src/command/video.cpp:308
+#: ../src/command/video.cpp:310 ../src/command/video.cpp:311
 msgid "Copy image to Clipboard (no subtitles)"
 msgstr "Kép mentése a Vágólapra (felirat nélkül)"
 
-#: ../src/command/video.cpp:309
+#: ../src/command/video.cpp:312
 msgid ""
 "Copy the currently displayed frame to the clipboard, without the subtitles"
 msgstr "Feliratok nélkül lementi a jelenlegi képkockát a vágólapra."
 
-#: ../src/command/video.cpp:318 ../src/command/video.cpp:319
+#: ../src/command/video.cpp:321 ../src/command/video.cpp:322
+msgid "Copy image to Clipboard (only subtitles)"
+msgstr ""
+
+#: ../src/command/video.cpp:323
+msgid ""
+"Copy the currently displayed subtitles to the clipboard, with transparent "
+"background"
+msgstr ""
+
+#: ../src/command/video.cpp:332 ../src/command/video.cpp:333
 msgid "Next Frame"
 msgstr "Következő képkocka"
 
-#: ../src/command/video.cpp:320
+#: ../src/command/video.cpp:334
 msgid "Seek to the next frame"
 msgstr "A következő képkockára ugrik."
 
-#: ../src/command/video.cpp:329 ../src/command/video.cpp:330
+#: ../src/command/video.cpp:343 ../src/command/video.cpp:344
 msgid "Next Boundary"
 msgstr "Következő határvonal"
 
-#: ../src/command/video.cpp:331
+#: ../src/command/video.cpp:345
 msgid "Seek to the next beginning or end of a subtitle"
 msgstr "A következő felirat határvonalára ugrik."
 
-#: ../src/command/video.cpp:358 ../src/command/video.cpp:359
+#: ../src/command/video.cpp:372 ../src/command/video.cpp:373
 msgid "Next Keyframe"
 msgstr "Következő kulcskocka"
 
-#: ../src/command/video.cpp:360
+#: ../src/command/video.cpp:374
 msgid "Seek to the next keyframe"
 msgstr "A következő kulcskockára ugrik."
 
-#: ../src/command/video.cpp:372 ../src/command/video.cpp:373
-#: ../src/command/video.cpp:374
+#: ../src/command/video.cpp:386 ../src/command/video.cpp:387
+#: ../src/command/video.cpp:388
 msgid "Fast jump forward"
 msgstr "Gyorstekerés előre"
 
-#: ../src/command/video.cpp:385 ../src/command/video.cpp:386
+#: ../src/command/video.cpp:399 ../src/command/video.cpp:400
 msgid "Previous Frame"
 msgstr "Előző képkocka"
 
-#: ../src/command/video.cpp:387
+#: ../src/command/video.cpp:401
 msgid "Seek to the previous frame"
 msgstr "Az előző képkockára ugrik."
 
-#: ../src/command/video.cpp:396 ../src/command/video.cpp:397
+#: ../src/command/video.cpp:410 ../src/command/video.cpp:411
 msgid "Previous Boundary"
 msgstr "Eőző határvonal"
 
-#: ../src/command/video.cpp:398
+#: ../src/command/video.cpp:412
 msgid "Seek to the previous beginning or end of a subtitle"
 msgstr "Az előző felirat határvonalára ugrik."
 
-#: ../src/command/video.cpp:425 ../src/command/video.cpp:426
+#: ../src/command/video.cpp:439 ../src/command/video.cpp:440
 msgid "Previous Keyframe"
 msgstr "Előző kulcskocka"
 
-#: ../src/command/video.cpp:427
+#: ../src/command/video.cpp:441
 msgid "Seek to the previous keyframe"
 msgstr "Az előző kulcskockára ugrik."
 
-#: ../src/command/video.cpp:447 ../src/command/video.cpp:448
-#: ../src/command/video.cpp:449
+#: ../src/command/video.cpp:461 ../src/command/video.cpp:462
+#: ../src/command/video.cpp:463
 msgid "Fast jump backwards"
 msgstr "Gyorstekerés hátra"
 
-#: ../src/command/video.cpp:498 ../src/command/video.cpp:499
+#: ../src/command/video.cpp:512 ../src/command/video.cpp:513
 msgid "Save PNG snapshot"
 msgstr "PNG kép mentése"
 
-#: ../src/command/video.cpp:500
+#: ../src/command/video.cpp:514
 msgid ""
 "Save the currently displayed frame to a PNG file in the video's directory"
 msgstr "Lementi a jelenlegi képkockát egy PNG fájlba a videó mappájába."
 
-#: ../src/command/video.cpp:509 ../src/command/video.cpp:510
+#: ../src/command/video.cpp:523 ../src/command/video.cpp:524
 msgid "Save PNG snapshot (no subtitles)"
 msgstr "PNG kép mentése (felirat nélkül)"
 
-#: ../src/command/video.cpp:511
+#: ../src/command/video.cpp:525
 msgid ""
 "Save the currently displayed frame without the subtitles to a PNG file in "
 "the video's directory"
@@ -2378,99 +2389,109 @@ msgstr ""
 "Feliratok nélkül lementi a jelenlegi képkockát egy PNG fájlba a videó "
 "mappájába."
 
-#: ../src/command/video.cpp:521
+#: ../src/command/video.cpp:534 ../src/command/video.cpp:535
+msgid "Save PNG snapshot (only subtitles)"
+msgstr ""
+
+#: ../src/command/video.cpp:536
+msgid ""
+"Save the currently displayed subtitles with transparent background to a PNG "
+"file in the video's directory"
+msgstr ""
+
+#: ../src/command/video.cpp:546
 msgid "&Jump to..."
 msgstr "&Ugrás..."
 
-#: ../src/command/video.cpp:522 ../src/dialog_jumpto.cpp:67
+#: ../src/command/video.cpp:547 ../src/dialog_jumpto.cpp:67
 msgid "Jump to"
 msgstr "Ugrás"
 
-#: ../src/command/video.cpp:523
+#: ../src/command/video.cpp:548
 msgid "Jump to frame or time"
 msgstr "A megadott időhöz vagy képkockához ugrik."
 
-#: ../src/command/video.cpp:535
+#: ../src/command/video.cpp:560
 msgid "Jump Video to &End"
 msgstr "Ugrás a sor &végére"
 
-#: ../src/command/video.cpp:536
+#: ../src/command/video.cpp:561
 msgid "Jump Video to End"
 msgstr "Ugrás a sor végére"
 
-#: ../src/command/video.cpp:537
+#: ../src/command/video.cpp:562
 msgid "Jump the video to the end frame of current subtitle"
 msgstr "A feliratsor végére ugrik a videóban."
 
-#: ../src/command/video.cpp:548
+#: ../src/command/video.cpp:573
 msgid "Jump Video to &Start"
 msgstr "Ugrás a sor &kezdetére"
 
-#: ../src/command/video.cpp:549
+#: ../src/command/video.cpp:574
 msgid "Jump Video to Start"
 msgstr "Ugrás a sor kezdetére"
 
-#: ../src/command/video.cpp:550
+#: ../src/command/video.cpp:575
 msgid "Jump the video to the start frame of current subtitle"
 msgstr "A feliratsor kezdetére ugrik a videóban."
 
-#: ../src/command/video.cpp:561
+#: ../src/command/video.cpp:586
 msgid "&Open Video..."
 msgstr "Videó meg&nyitása..."
 
-#: ../src/command/video.cpp:562
+#: ../src/command/video.cpp:587
 msgid "Open Video"
 msgstr "Videó megnyitása..."
 
-#: ../src/command/video.cpp:563
+#: ../src/command/video.cpp:588
 msgid "Open a video file"
 msgstr "Megnyit egy videofájlt."
 
-#: ../src/command/video.cpp:568
+#: ../src/command/video.cpp:593
 msgid "Open video file"
 msgstr "Videofájl megnyitása"
 
-#: ../src/command/video.cpp:577
+#: ../src/command/video.cpp:602
 msgid "&Use Dummy Video..."
 msgstr "&Próbavideó használata..."
 
-#: ../src/command/video.cpp:578
+#: ../src/command/video.cpp:603
 msgid "Use Dummy Video"
 msgstr "Próbavideó használata"
 
-#: ../src/command/video.cpp:579
+#: ../src/command/video.cpp:604
 msgid "Open a placeholder video clip with solid color"
 msgstr "Egy egyöntetű színből álló videóklipet készít."
 
-#: ../src/command/video.cpp:591 ../src/command/video.cpp:592
+#: ../src/command/video.cpp:616 ../src/command/video.cpp:617
 msgid "Toggle autoscroll of video"
 msgstr "Videókövetés ki- és bekapcsolása"
 
-#: ../src/command/video.cpp:593
+#: ../src/command/video.cpp:618
 msgid "Toggle automatically seeking video to the start time of selected lines"
 msgstr "Videókövetés ki- és bekapcsolása."
 
-#: ../src/command/video.cpp:608 ../src/command/video.cpp:609
+#: ../src/command/video.cpp:633 ../src/command/video.cpp:634
 msgid "Play"
 msgstr "Lejátszás"
 
-#: ../src/command/video.cpp:610
+#: ../src/command/video.cpp:635
 msgid "Play video starting on this position"
 msgstr "Videó lejátszása a jelenlegi pozíciótól."
 
-#: ../src/command/video.cpp:620 ../src/command/video.cpp:621
+#: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
 msgstr "Sor lejátszása"
 
-#: ../src/command/video.cpp:631
+#: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
 msgstr "&Túlskálázási maszk megjelenítése"
 
-#: ../src/command/video.cpp:632
+#: ../src/command/video.cpp:657
 msgid "Show Overscan Mask"
 msgstr "Túlskálázási maszk megjelenítése"
 
-#: ../src/command/video.cpp:633
+#: ../src/command/video.cpp:658
 msgid ""
 "Show a mask over the video, indicating areas that might get cropped off by "
 "overscan on televisions"
@@ -2478,122 +2499,182 @@ msgstr ""
 "A televíziók túlskálázási eljárása miatt esetlegesen levágásra kerülő részek "
 "megjelölése."
 
-#: ../src/command/video.cpp:649
+#: ../src/command/video.cpp:674
 msgid "&100%"
 msgstr "&100%"
 
-#: ../src/command/video.cpp:650
+#: ../src/command/video.cpp:675
 msgid "100%"
 msgstr "100%"
 
-#: ../src/command/video.cpp:651
+#: ../src/command/video.cpp:676
 msgid "Set zoom to 100%"
 msgstr "100%-ra nagyítja a videót."
 
-#: ../src/command/video.cpp:668 ../src/command/video.cpp:669
+#: ../src/command/video.cpp:693 ../src/command/video.cpp:694
 msgid "Stop video"
 msgstr "Videó leállítása"
 
-#: ../src/command/video.cpp:670
+#: ../src/command/video.cpp:695
 msgid "Stop video playback"
 msgstr "Lejátszás leállítása"
 
-#: ../src/command/video.cpp:680
+#: ../src/command/video.cpp:705
 msgid "&200%"
 msgstr "&200%"
 
-#: ../src/command/video.cpp:681
+#: ../src/command/video.cpp:706
 msgid "200%"
 msgstr "200%"
 
-#: ../src/command/video.cpp:682
+#: ../src/command/video.cpp:707
 msgid "Set zoom to 200%"
 msgstr "200%-ra nagyítja a videót."
 
-#: ../src/command/video.cpp:698
+#: ../src/command/video.cpp:723
 msgid "&50%"
 msgstr "&50%"
 
-#: ../src/command/video.cpp:699
+#: ../src/command/video.cpp:724
 msgid "50%"
 msgstr "50%"
 
-#: ../src/command/video.cpp:700
+#: ../src/command/video.cpp:725
 msgid "Set zoom to 50%"
 msgstr "50%-ra nagyítja a videót."
 
-#: ../src/command/video.cpp:716 ../src/command/video.cpp:717
+#: ../src/command/video.cpp:741 ../src/command/video.cpp:742
 msgid "Zoom In"
 msgstr "Nagyítás"
 
-#: ../src/command/video.cpp:718
+#: ../src/command/video.cpp:743
 msgid "Zoom video in"
 msgstr "Nagyítja a videót."
 
-#: ../src/command/video.cpp:728 ../src/command/video.cpp:729
+#: ../src/command/video.cpp:753 ../src/command/video.cpp:754
 msgid "Zoom Out"
 msgstr "Kicsinyítés"
 
-#: ../src/command/video.cpp:730
+#: ../src/command/video.cpp:755
 msgid "Zoom video out"
 msgstr "Kicsinyíti a videót."
 
-#: ../src/command/vis_tool.cpp:55 ../src/command/vis_tool.cpp:56
+#: ../src/command/vis_tool.cpp:73 ../src/command/vis_tool.cpp:74
 msgid "Standard"
 msgstr "Hagyományos"
 
-#: ../src/command/vis_tool.cpp:57
+#: ../src/command/vis_tool.cpp:75
 msgid "Standard mode, double click sets position"
 msgstr "Hagyományos elhelyezés, duplaklikk a helyzetberakáshoz."
 
-#: ../src/command/vis_tool.cpp:63 ../src/command/vis_tool.cpp:64
-#: ../src/visual_tool_vector_clip.cpp:58
+#: ../src/command/vis_tool.cpp:81 ../src/command/vis_tool.cpp:82
+#: ../src/command/vis_tool.cpp:131 ../src/command/vis_tool.cpp:132
 msgid "Drag"
 msgstr "Elhelyezés"
 
-#: ../src/command/vis_tool.cpp:65
+#: ../src/command/vis_tool.cpp:83
 msgid "Drag subtitles"
 msgstr "Felirat elhelyezése"
 
-#: ../src/command/vis_tool.cpp:71 ../src/command/vis_tool.cpp:72
+#: ../src/command/vis_tool.cpp:89 ../src/command/vis_tool.cpp:90
 msgid "Rotate Z"
 msgstr "Forgatás Z"
 
-#: ../src/command/vis_tool.cpp:73
+#: ../src/command/vis_tool.cpp:91
 msgid "Rotate subtitles on their Z axis"
 msgstr "Felirat forgatása a Z tengely mentén."
 
-#: ../src/command/vis_tool.cpp:79 ../src/command/vis_tool.cpp:80
+#: ../src/command/vis_tool.cpp:97 ../src/command/vis_tool.cpp:98
 msgid "Rotate XY"
 msgstr "Forgatás XY"
 
-#: ../src/command/vis_tool.cpp:81
+#: ../src/command/vis_tool.cpp:99
 msgid "Rotate subtitles on their X and Y axes"
 msgstr "Felirat forgatása az X és az Y tengely mentén."
 
-#: ../src/command/vis_tool.cpp:87 ../src/command/vis_tool.cpp:88
+#: ../src/command/vis_tool.cpp:105 ../src/command/vis_tool.cpp:106
 msgid "Scale"
 msgstr "Méretezés"
 
-#: ../src/command/vis_tool.cpp:89
+#: ../src/command/vis_tool.cpp:107
 msgid "Scale subtitles on X and Y axes"
 msgstr "Felirat méretezése az X és Y tengelyen."
 
-#: ../src/command/vis_tool.cpp:95 ../src/command/vis_tool.cpp:96
+#: ../src/command/vis_tool.cpp:113 ../src/command/vis_tool.cpp:114
 msgid "Clip"
 msgstr "Körbevágás"
 
-#: ../src/command/vis_tool.cpp:97
+#: ../src/command/vis_tool.cpp:115
 msgid "Clip subtitles to a rectangle"
 msgstr "Felirat körbevágása téglalappal."
 
-#: ../src/command/vis_tool.cpp:103 ../src/command/vis_tool.cpp:104
+#: ../src/command/vis_tool.cpp:121 ../src/command/vis_tool.cpp:122
 msgid "Vector Clip"
 msgstr "Vektoros körbevágás"
 
-#: ../src/command/vis_tool.cpp:105
+#: ../src/command/vis_tool.cpp:123
 msgid "Clip subtitles to a vectorial area"
 msgstr "Felirat körbevágása vektorábrával."
+
+#: ../src/command/vis_tool.cpp:133
+msgid "Drag control points"
+msgstr "Vezérlőpontok mozgatása"
+
+#: ../src/command/vis_tool.cpp:139 ../src/command/vis_tool.cpp:140
+msgid "Line"
+msgstr "Egyenes"
+
+#: ../src/command/vis_tool.cpp:141
+msgid "Appends a line"
+msgstr "Egyenes beszúrása"
+
+#: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
+msgid "Bicubic"
+msgstr "Ív"
+
+#: ../src/command/vis_tool.cpp:148
+msgid "Appends a bezier bicubic curve"
+msgstr "Ív beszúrása"
+
+#: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
+msgid "Convert"
+msgstr "Váltás"
+
+#: ../src/command/vis_tool.cpp:155
+msgid "Converts a segment between line and bicubic"
+msgstr "Egyenes és ív típusú szegmens közötti váltás"
+
+#: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
+msgid "Insert"
+msgstr "Beszúrás"
+
+#: ../src/command/vis_tool.cpp:162
+msgid "Inserts a control point"
+msgstr "Vezérlőpont beszúrása"
+
+#: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
+msgid "Remove"
+msgstr "Eltávolítás"
+
+#: ../src/command/vis_tool.cpp:169
+msgid "Removes a control point"
+msgstr "Vezérlőpont eltávolítása"
+
+#: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
+msgid "Freehand"
+msgstr "Szabadkézi"
+
+#: ../src/command/vis_tool.cpp:176
+msgid "Draws a freehand shape"
+msgstr "Szabadkézi forma rajzolása"
+
+#: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
+msgid "Freehand smooth"
+msgstr "Szabadkézi ívelt"
+
+#: ../src/command/vis_tool.cpp:183
+msgid "Draws a smoothed freehand shape"
+msgstr "Ívelt szabadkézi forma rajzolása"
 
 #: ../src/dialog_about.cpp:46
 msgid "Translated into LANGUAGE by PERSON\n"
@@ -2629,7 +2710,7 @@ msgid "E&xtract"
 msgstr "&Kibontás"
 
 #: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:204
-#: ../src/preferences.cpp:596
+#: ../src/preferences.cpp:605
 msgid "&Delete"
 msgstr "T&örlés"
 
@@ -2780,7 +2861,7 @@ msgstr "Automatizációs script adatai"
 msgid "Open autosave file"
 msgstr "Automatikusan mentett fájl megnyitása"
 
-#: ../src/dialog_autosave.cpp:70 ../src/preferences.cpp:77
+#: ../src/dialog_autosave.cpp:70 ../src/preferences.cpp:78
 msgid "Files"
 msgstr "Mostanában megnyitott fájlok"
 
@@ -2802,43 +2883,43 @@ msgstr "%s [EREDETI MÁSOLATA]"
 msgid "%s [RECOVERED]"
 msgstr "%s [VISSZAÁLLÍTVA]"
 
-#: ../src/dialog_colorpicker.cpp:542
+#: ../src/dialog_colorpicker.cpp:543
 msgid "Select Color"
 msgstr "Szín kiválasztása"
 
-#: ../src/dialog_colorpicker.cpp:556
+#: ../src/dialog_colorpicker.cpp:557
 msgid "Color spectrum"
 msgstr "Színspektrum"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "HSL/L"
 msgstr "HSL/L"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "HSV/H"
 msgstr "HSV/H"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "RGB/B"
 msgstr "RGB/B"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "RGB/G"
 msgstr "RGB/G"
 
-#: ../src/dialog_colorpicker.cpp:560
+#: ../src/dialog_colorpicker.cpp:561
 msgid "RGB/R"
 msgstr "RGB/R"
 
-#: ../src/dialog_colorpicker.cpp:567
+#: ../src/dialog_colorpicker.cpp:564
 msgid "RGB color"
 msgstr "RGB szín"
 
-#: ../src/dialog_colorpicker.cpp:568
+#: ../src/dialog_colorpicker.cpp:565
 msgid "HSL color"
 msgstr "HSL szín"
 
-#: ../src/dialog_colorpicker.cpp:569
+#: ../src/dialog_colorpicker.cpp:566
 msgid "HSV color"
 msgstr "HSV szín"
 
@@ -2883,19 +2964,19 @@ msgstr "Érték:"
 msgid "Video: %s"
 msgstr "Videó: %s"
 
-#: ../src/dialog_dummy_video.cpp:105
+#: ../src/dialog_dummy_video.cpp:103
 msgid "Dummy video options"
 msgstr "Próbavideó beállítások"
 
-#: ../src/dialog_dummy_video.cpp:117
+#: ../src/dialog_dummy_video.cpp:115
 msgid "Checkerboard &pattern"
 msgstr "Sakktábla &mintázat"
 
-#: ../src/dialog_dummy_video.cpp:120
+#: ../src/dialog_dummy_video.cpp:118
 msgid "Video resolution:"
 msgstr "Videó felbontása:"
 
-#: ../src/dialog_dummy_video.cpp:122
+#: ../src/dialog_dummy_video.cpp:120
 msgid "Color:"
 msgstr "Szín:"
 
@@ -2907,7 +2988,7 @@ msgstr "Képkocka-szám (fps):"
 msgid "Duration (frames):"
 msgstr "Hossz (képkocka):"
 
-#: ../src/dialog_dummy_video.cpp:170
+#: ../src/dialog_dummy_video.cpp:179
 #, c-format
 msgid "Resulting duration: %s"
 msgstr "Időben kifejezve: %s"
@@ -2988,141 +3069,146 @@ msgstr "30 fps (STL30.01)"
 msgid "TV standard"
 msgstr "TV szabvány"
 
-#: ../src/dialog_export_ebu3264.cpp:112
+#: ../src/dialog_export_ebu3264.cpp:113
 msgid "Out-times are inclusive"
 msgstr "Out-time-okat is tartalmazza"
 
-#: ../src/dialog_export_ebu3264.cpp:115
+#: ../src/dialog_export_ebu3264.cpp:116
 msgid "ISO 6937-2 (Latin/Western Europe)"
 msgstr "ISO 6937-2 (Latin/Nyugat-európai)"
 
-#: ../src/dialog_export_ebu3264.cpp:116
+#: ../src/dialog_export_ebu3264.cpp:117
 msgid "ISO 8859-5 (Cyrillic)"
 msgstr "ISO 8859-5 (Cirill)"
 
-#: ../src/dialog_export_ebu3264.cpp:117
+#: ../src/dialog_export_ebu3264.cpp:118
 msgid "ISO 8859-6 (Arabic)"
 msgstr "ISO 8859-6 (Arab)"
 
-#: ../src/dialog_export_ebu3264.cpp:118
+#: ../src/dialog_export_ebu3264.cpp:119
 msgid "ISO 8859-7 (Greek)"
 msgstr "ISO 8859-7 (Görög)"
 
-#: ../src/dialog_export_ebu3264.cpp:119
+#: ../src/dialog_export_ebu3264.cpp:120
 msgid "ISO 8859-8 (Hebrew)"
 msgstr "ISO 8859-8 (Héber)"
 
-#: ../src/dialog_export_ebu3264.cpp:120
+#: ../src/dialog_export_ebu3264.cpp:121
 msgid "UTF-8 Unicode (non-standard)"
 msgstr "UTF-8 Unicode (nem szabványos)"
 
-#: ../src/dialog_export_ebu3264.cpp:122
+#: ../src/dialog_export_ebu3264.cpp:123
 msgid "Text encoding"
 msgstr "Szöveg karakterkódolása"
 
-#: ../src/dialog_export_ebu3264.cpp:125
+#: ../src/dialog_export_ebu3264.cpp:126
 msgid "Automatically wrap long lines (ASS)"
 msgstr "Automatikus sortörés (ASS)"
 
-#: ../src/dialog_export_ebu3264.cpp:126
+#: ../src/dialog_export_ebu3264.cpp:127
 msgid "Automatically wrap long lines (Balanced)"
 msgstr "Automatikus sortörés (Kiegyensúlyozott)"
 
-#: ../src/dialog_export_ebu3264.cpp:127
+#: ../src/dialog_export_ebu3264.cpp:128
 msgid "Abort if any lines are too long"
 msgstr "Leállít, ha akár egy sor is hosszabb"
 
-#: ../src/dialog_export_ebu3264.cpp:128
+#: ../src/dialog_export_ebu3264.cpp:129
 msgid "Skip lines that are too long"
 msgstr "Hosszabb sorok kihagyása"
 
-#: ../src/dialog_export_ebu3264.cpp:133
+#: ../src/dialog_export_ebu3264.cpp:134
 msgid "Translate alignments"
 msgstr "Szövegigazítások átvétele"
 
-#: ../src/dialog_export_ebu3264.cpp:138
+#: ../src/dialog_export_ebu3264.cpp:137
 msgid "Open subtitles"
 msgstr "Felirat megnyitása"
 
-#: ../src/dialog_export_ebu3264.cpp:139
+#: ../src/dialog_export_ebu3264.cpp:138
 msgid "Level-1 teletext"
 msgstr "Level-1 teletext"
 
-#: ../src/dialog_export_ebu3264.cpp:140
+#: ../src/dialog_export_ebu3264.cpp:139
 msgid "Level-2 teletext"
 msgstr "Level-2 teletext"
 
-#: ../src/dialog_export_ebu3264.cpp:146
+#: ../src/dialog_export_ebu3264.cpp:145
 msgid "Max. line length:"
 msgstr "Maximális sorhossz"
 
-#: ../src/dialog_export_ebu3264.cpp:150
+#: ../src/dialog_export_ebu3264.cpp:149
 msgid "Time code offset:"
 msgstr "Időkód eltolás:"
 
-#: ../src/dialog_export_ebu3264.cpp:153
+#: ../src/dialog_export_ebu3264.cpp:152
 msgid "Text formatting"
 msgstr "Szövegformázás"
 
-#: ../src/dialog_export_ebu3264.cpp:158
+#: ../src/dialog_export_ebu3264.cpp:157
 msgid "Time codes"
 msgstr "Időkódok"
 
-#: ../src/dialog_export_ebu3264.cpp:162
+#: ../src/dialog_export_ebu3264.cpp:161
 msgid "Display standard"
 msgstr "Megjelenítési szabvány"
 
-#: ../src/dialog_fonts_collector.cpp:108
+#: ../src/dialog_fonts_collector.cpp:101
+#, c-format
+msgid "* An error occurred when enumerating the used fonts: %s.\n"
+msgstr ""
+
+#: ../src/dialog_fonts_collector.cpp:115
 msgid "Symlinking fonts to folder...\n"
 msgstr "Betűtípusok symlinkelése a mappához...\n"
 
-#: ../src/dialog_fonts_collector.cpp:112
+#: ../src/dialog_fonts_collector.cpp:119
 msgid "Copying fonts to folder...\n"
 msgstr "Betűtípusok másolása a mappába...\n"
 
-#: ../src/dialog_fonts_collector.cpp:115
+#: ../src/dialog_fonts_collector.cpp:122
 msgid "Copying fonts to archive...\n"
 msgstr "Betűtípusok másolása az archívumba...\n"
 
-#: ../src/dialog_fonts_collector.cpp:127
+#: ../src/dialog_fonts_collector.cpp:134
 #, c-format
 msgid "* Failed to create directory '%s': %s.\n"
 msgstr "* Nem lehet mappát létrehozni: '%s': %s.\n"
 
-#: ../src/dialog_fonts_collector.cpp:138
+#: ../src/dialog_fonts_collector.cpp:145
 #, c-format
 msgid "* Failed to open %s.\n"
 msgstr "* Sikertelen megnyitás: %s.\n"
 
-#: ../src/dialog_fonts_collector.cpp:193
+#: ../src/dialog_fonts_collector.cpp:200
 #, c-format
 msgid "* Copied %s.\n"
 msgstr "* Másolva: %s.\n"
 
-#: ../src/dialog_fonts_collector.cpp:195
+#: ../src/dialog_fonts_collector.cpp:202
 #, c-format
 msgid "* %s already exists on destination.\n"
 msgstr "* %s már létezik ezen az útvonalon.\n"
 
-#: ../src/dialog_fonts_collector.cpp:197
+#: ../src/dialog_fonts_collector.cpp:204
 #, c-format
 msgid "* Symlinked %s.\n"
 msgstr "* Symlinkelve: %s.\n"
 
-#: ../src/dialog_fonts_collector.cpp:199
+#: ../src/dialog_fonts_collector.cpp:206
 #, c-format
 msgid "* Failed to copy %s.\n"
 msgstr "* Sikertelen másolás: %s.\n"
 
-#: ../src/dialog_fonts_collector.cpp:205
+#: ../src/dialog_fonts_collector.cpp:212
 msgid "Done. All fonts copied."
 msgstr "Kész. Minden betűtípust átmásoltam."
 
-#: ../src/dialog_fonts_collector.cpp:207
+#: ../src/dialog_fonts_collector.cpp:214
 msgid "Done. Some fonts could not be copied."
 msgstr "Kész. Néhány betűtípust nem sikerült átmásolni."
 
-#: ../src/dialog_fonts_collector.cpp:210
+#: ../src/dialog_fonts_collector.cpp:217
 msgid ""
 "\n"
 "Over 32 MB of fonts were copied. Some of the fonts may not be loaded by the "
@@ -3132,78 +3218,78 @@ msgstr ""
 "Több, mint 32 MB betűtípust másoltam le. Bizonyos betűtípusok esetleg nem "
 "fognak betöltődni, ha azok egy Matroska fájlba vannak ágyazva."
 
-#: ../src/dialog_fonts_collector.cpp:226
+#: ../src/dialog_fonts_collector.cpp:233
 msgid "Check fonts for availability"
 msgstr "Betűtípusok meglétének ellenőrzése"
 
-#: ../src/dialog_fonts_collector.cpp:227
+#: ../src/dialog_fonts_collector.cpp:234
 msgid "Copy fonts to folder"
 msgstr "Betűtípusok másolása mappába"
 
-#: ../src/dialog_fonts_collector.cpp:228
+#: ../src/dialog_fonts_collector.cpp:235
 msgid "Copy fonts to subtitle file's folder"
 msgstr "Betűtípusok másolása a feliratfájl mappájába"
 
-#: ../src/dialog_fonts_collector.cpp:229
+#: ../src/dialog_fonts_collector.cpp:236
 msgid "Copy fonts to zipped archive"
 msgstr "Betűtípusok másolása zip archívumba"
 
-#: ../src/dialog_fonts_collector.cpp:231
+#: ../src/dialog_fonts_collector.cpp:238
 msgid "Symlink fonts to folder"
 msgstr "Betűtípusok symlinkelése a mappába"
 
-#: ../src/dialog_fonts_collector.cpp:236 ../src/dialog_selection.cpp:150
+#: ../src/dialog_fonts_collector.cpp:243 ../src/dialog_selection.cpp:150
 msgid "Action"
 msgstr "Esemény"
 
-#: ../src/dialog_fonts_collector.cpp:242
+#: ../src/dialog_fonts_collector.cpp:249
 msgid "Destination"
 msgstr "Hely"
 
-#: ../src/dialog_fonts_collector.cpp:246
+#: ../src/dialog_fonts_collector.cpp:253
 msgid "&Browse..."
 msgstr "&Tallózás..."
 
-#: ../src/dialog_fonts_collector.cpp:255
+#: ../src/dialog_fonts_collector.cpp:262
 msgid "Log"
 msgstr "Napló"
 
-#: ../src/dialog_fonts_collector.cpp:268
+#: ../src/dialog_fonts_collector.cpp:275
 msgid "&Start!"
 msgstr "&Indít!"
 
-#: ../src/dialog_fonts_collector.cpp:303 ../src/dialog_fonts_collector.cpp:308
-#: ../src/dialog_fonts_collector.cpp:313 ../src/dialog_kara_timing_copy.cpp:489
+#: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
+#: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
 #: ../src/dialog_kara_timing_copy.cpp:491
-#: ../src/dialog_kara_timing_copy.cpp:541 ../src/preferences.cpp:261
+#: ../src/dialog_kara_timing_copy.cpp:541 ../src/preferences.cpp:266
 msgid "Error"
 msgstr "Hiba"
 
-#: ../src/dialog_fonts_collector.cpp:303
+#: ../src/dialog_fonts_collector.cpp:310
 msgid "Invalid destination."
 msgstr "Érvénytelen cél."
 
-#: ../src/dialog_fonts_collector.cpp:308
+#: ../src/dialog_fonts_collector.cpp:315
 msgid "Could not create destination folder."
 msgstr "A célmappát nem lehetett létrehozni."
 
-#: ../src/dialog_fonts_collector.cpp:313
+#: ../src/dialog_fonts_collector.cpp:320
 msgid "Invalid path for .zip file."
 msgstr "Érvénytelen .zip fájl elérési út."
 
-#: ../src/dialog_fonts_collector.cpp:336
+#: ../src/dialog_fonts_collector.cpp:343
 msgid "Select archive file name"
 msgstr "Archívum nevének kiválasztása"
 
-#: ../src/dialog_fonts_collector.cpp:343
+#: ../src/dialog_fonts_collector.cpp:350
 msgid "Select folder to save fonts on"
 msgstr "Válassza ki a betűtípusok mentési helyét:"
 
-#: ../src/dialog_fonts_collector.cpp:362
+#: ../src/dialog_fonts_collector.cpp:369
 msgid "N/A"
 msgstr "Nincs adat"
 
-#: ../src/dialog_fonts_collector.cpp:370
+#: ../src/dialog_fonts_collector.cpp:377
 msgid ""
 "Choose the folder where the fonts will be collected to. It will be created "
 "if it doesn't exist."
@@ -3211,7 +3297,7 @@ msgstr ""
 "Válassza ki, hogy hová szeretné menteni a betűtípusokat. Ha nem létezik a "
 "mappa, akkor most létre fog jönni."
 
-#: ../src/dialog_fonts_collector.cpp:377
+#: ../src/dialog_fonts_collector.cpp:384
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to. If a "
 "folder is entered, a default name will be used."
@@ -3346,7 +3432,7 @@ msgid "Style"
 msgstr "Stílus"
 
 #: ../src/dialog_paste_over.cpp:68 ../src/grid_column.cpp:228
-#: ../src/grid_column.cpp:229 ../src/subs_edit_box.cpp:137
+#: ../src/grid_column.cpp:229 ../src/subs_edit_box.cpp:135
 msgid "Actor"
 msgstr "Színész"
 
@@ -3819,15 +3905,15 @@ msgstr "Idők"
 msgid "&Clear"
 msgstr "T&örlés"
 
-#: ../src/dialog_shift_times.cpp:202
+#: ../src/dialog_shift_times.cpp:203
 msgid "Shift by"
 msgstr "Eltolás"
 
-#: ../src/dialog_shift_times.cpp:211
+#: ../src/dialog_shift_times.cpp:212
 msgid "Load from history"
 msgstr "Előzményekből betölt"
 
-#: ../src/dialog_shift_times.cpp:409
+#: ../src/dialog_shift_times.cpp:410
 msgid "shifting"
 msgstr "eltolás"
 
@@ -3879,122 +3965,122 @@ msgstr "helyesírás-ellenőrző csere"
 msgid "Style Editor"
 msgstr "Stílusszerkesztő"
 
-#: ../src/dialog_style_editor.cpp:178
+#: ../src/dialog_style_editor.cpp:179
 msgid "Font"
 msgstr "Betűtípus"
 
-#: ../src/dialog_style_editor.cpp:179 ../src/preferences.cpp:236
+#: ../src/dialog_style_editor.cpp:180 ../src/preferences.cpp:237
 msgid "Colors"
 msgstr "Színek"
 
-#: ../src/dialog_style_editor.cpp:180
+#: ../src/dialog_style_editor.cpp:181
 msgid "Margins"
 msgstr "Margók"
 
-#: ../src/dialog_style_editor.cpp:181 ../src/dialog_style_editor.cpp:277
+#: ../src/dialog_style_editor.cpp:182 ../src/dialog_style_editor.cpp:285
 msgid "Outline"
 msgstr "Körvonal"
 
-#: ../src/dialog_style_editor.cpp:182
+#: ../src/dialog_style_editor.cpp:183
 msgid "Miscellaneous"
 msgstr "Egyéb"
 
-#: ../src/dialog_style_editor.cpp:183
+#: ../src/dialog_style_editor.cpp:184
 msgid "Preview"
 msgstr "Előnézet"
 
-#: ../src/dialog_style_editor.cpp:189
+#: ../src/dialog_style_editor.cpp:190
 msgid "&Bold"
 msgstr "&Félkövér"
 
-#: ../src/dialog_style_editor.cpp:190
+#: ../src/dialog_style_editor.cpp:191
 msgid "&Italic"
 msgstr "&Dőlt"
 
-#: ../src/dialog_style_editor.cpp:191
+#: ../src/dialog_style_editor.cpp:192
 msgid "&Underline"
 msgstr "&Aláhúzott"
 
-#: ../src/dialog_style_editor.cpp:192
+#: ../src/dialog_style_editor.cpp:193
 msgid "&Strikeout"
 msgstr "&Áthúzott"
 
-#: ../src/dialog_style_editor.cpp:204
+#: ../src/dialog_style_editor.cpp:205
 msgid "Alignment"
 msgstr "Rendezés"
 
-#: ../src/dialog_style_editor.cpp:207
+#: ../src/dialog_style_editor.cpp:208
 msgid "&Opaque box"
 msgstr "&Kitöltött háttér"
 
-#: ../src/dialog_style_editor.cpp:215
+#: ../src/dialog_style_editor.cpp:216
 msgid "Style name"
 msgstr "Stílus neve"
 
-#: ../src/dialog_style_editor.cpp:216
+#: ../src/dialog_style_editor.cpp:217
 msgid "Font face"
 msgstr "Betűtípus kiválasztása"
 
-#: ../src/dialog_style_editor.cpp:217
+#: ../src/dialog_style_editor.cpp:218
 msgid "Font size"
 msgstr "Betűméret megadása"
 
-#: ../src/dialog_style_editor.cpp:218
+#: ../src/dialog_style_editor.cpp:219
 msgid "Choose primary color"
 msgstr "Elsődleges szín kiválasztása"
 
-#: ../src/dialog_style_editor.cpp:219
+#: ../src/dialog_style_editor.cpp:220
 msgid "Choose secondary color"
 msgstr "Másodlagos szín kiválasztása"
 
-#: ../src/dialog_style_editor.cpp:220
+#: ../src/dialog_style_editor.cpp:221
 msgid "Choose outline color"
 msgstr "Körvonal színének kiválasztása"
 
-#: ../src/dialog_style_editor.cpp:221
+#: ../src/dialog_style_editor.cpp:222
 msgid "Choose shadow color"
 msgstr "Árnyék színének kiválasztása"
 
-#: ../src/dialog_style_editor.cpp:222
+#: ../src/dialog_style_editor.cpp:223
 msgid "Distance from left edge, in pixels"
 msgstr "Távolság a bal széltől, pixelekben"
 
-#: ../src/dialog_style_editor.cpp:223
+#: ../src/dialog_style_editor.cpp:224
 msgid "Distance from right edge, in pixels"
 msgstr "Távolság a jobb széltől, pixelekben"
 
-#: ../src/dialog_style_editor.cpp:224
+#: ../src/dialog_style_editor.cpp:225
 msgid "Distance from top/bottom edge, in pixels"
 msgstr "Távolság az alsó/felső széltől, pixelekben"
 
-#: ../src/dialog_style_editor.cpp:225
+#: ../src/dialog_style_editor.cpp:226
 msgid ""
 "When selected, display an opaque box behind the subtitles instead of an "
 "outline around the text"
 msgstr ""
 "Jelölje be, ha körvonal helyett teljesen kitöltött hátteret szeretne látni."
 
-#: ../src/dialog_style_editor.cpp:226
+#: ../src/dialog_style_editor.cpp:227
 msgid "Outline width, in pixels"
 msgstr "Körvonal szélessége, pixelekben"
 
-#: ../src/dialog_style_editor.cpp:227
+#: ../src/dialog_style_editor.cpp:228
 msgid "Shadow distance, in pixels"
 msgstr "Árnyék távolsága, pixelekben"
 
-#: ../src/dialog_style_editor.cpp:228
+#: ../src/dialog_style_editor.cpp:229
 msgid "Scale X, in percentage"
 msgstr "Vízszintes nyújtás, százalékban"
 
-#: ../src/dialog_style_editor.cpp:229
+#: ../src/dialog_style_editor.cpp:230
 msgid "Scale Y, in percentage"
 msgstr "Függőleges nyújtás, százalékban"
 
-#: ../src/dialog_style_editor.cpp:230
+#: ../src/dialog_style_editor.cpp:231
 msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Forgatás a Z tengely mentén, fokokban"
 
-#: ../src/dialog_style_editor.cpp:231
+#: ../src/dialog_style_editor.cpp:232
 msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping"
@@ -4002,98 +4088,98 @@ msgstr ""
 "A kódolás beállítása csak akkor használatos, ha a megadott betűtípusnak "
 "nincs megfelelő unicode leképezése."
 
-#: ../src/dialog_style_editor.cpp:232
+#: ../src/dialog_style_editor.cpp:233
 msgid "Character spacing, in pixels"
 msgstr "Két karakter közti szünet, pixelekben"
 
-#: ../src/dialog_style_editor.cpp:233
+#: ../src/dialog_style_editor.cpp:234
 msgid "Alignment in screen, in numpad style"
 msgstr "Képernyőn való elrendezés numerikus billentyűzet stílusban."
 
-#: ../src/dialog_style_editor.cpp:277
+#: ../src/dialog_style_editor.cpp:285
 msgid "Primary"
 msgstr "Elsődleges"
 
-#: ../src/dialog_style_editor.cpp:277
+#: ../src/dialog_style_editor.cpp:285
 msgid "Secondary"
 msgstr "Másodlagos"
 
-#: ../src/dialog_style_editor.cpp:277
+#: ../src/dialog_style_editor.cpp:285
 msgid "Shadow"
 msgstr "Árnyék"
 
-#: ../src/dialog_style_editor.cpp:288 ../src/grid_column.cpp:263
+#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:263
 msgid "Left"
 msgstr "Bal"
 
-#: ../src/dialog_style_editor.cpp:288 ../src/grid_column.cpp:269
+#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:269
 msgid "Right"
 msgstr "Jobb"
 
-#: ../src/dialog_style_editor.cpp:288 ../src/grid_column.cpp:275
+#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:275
 msgid "Vert"
 msgstr "Függ."
 
-#: ../src/dialog_style_editor.cpp:306
+#: ../src/dialog_style_editor.cpp:314
 msgid "Outline:"
 msgstr "Körvonal:"
 
-#: ../src/dialog_style_editor.cpp:307
+#: ../src/dialog_style_editor.cpp:315
 msgid "Shadow:"
 msgstr "Árnyék:"
 
-#: ../src/dialog_style_editor.cpp:312
+#: ../src/dialog_style_editor.cpp:320
 msgid "Scale X%:"
 msgstr "Nyújtás X%:"
 
-#: ../src/dialog_style_editor.cpp:313
+#: ../src/dialog_style_editor.cpp:321
 msgid "Scale Y%:"
 msgstr "Nyújtás Y%:"
 
-#: ../src/dialog_style_editor.cpp:314
+#: ../src/dialog_style_editor.cpp:322
 msgid "Rotation:"
 msgstr "Forgatás:"
 
-#: ../src/dialog_style_editor.cpp:315
+#: ../src/dialog_style_editor.cpp:323
 msgid "Spacing:"
 msgstr "Ritkítás:"
 
-#: ../src/dialog_style_editor.cpp:318
+#: ../src/dialog_style_editor.cpp:326
 msgid "Encoding:"
 msgstr "Kódolás:"
 
-#: ../src/dialog_style_editor.cpp:328
+#: ../src/dialog_style_editor.cpp:336
 msgid "Preview of current style"
 msgstr "A jelenlegi stílus előnézete"
 
-#: ../src/dialog_style_editor.cpp:331
+#: ../src/dialog_style_editor.cpp:339
 msgid "Text to be used for the preview"
 msgstr "Az előnézetben megjelenő szöveg"
 
-#: ../src/dialog_style_editor.cpp:332
+#: ../src/dialog_style_editor.cpp:340
 msgid "Color of preview background"
 msgstr "Előnézet háttérszínének kiválasztása"
 
-#: ../src/dialog_style_editor.cpp:413
+#: ../src/dialog_style_editor.cpp:421
 msgid "Style name conflict"
 msgstr "Stílusnév ütközés"
 
-#: ../src/dialog_style_editor.cpp:413
+#: ../src/dialog_style_editor.cpp:421
 msgid "There is already a style with this name. Please choose another name."
 msgstr "Ilyen nevű stílus már létezik. Kérem adjon neki más nevet."
 
-#: ../src/dialog_style_editor.cpp:425
+#: ../src/dialog_style_editor.cpp:433
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
 msgstr ""
 "Meg akarja változtatni a felirat minden elemét erre az újonan megadott névre?"
 
-#: ../src/dialog_style_editor.cpp:426
+#: ../src/dialog_style_editor.cpp:434
 msgid "Update script?"
 msgstr "Felirat frissítése?"
 
-#: ../src/dialog_style_editor.cpp:453 ../src/subs_edit_box.cpp:603
+#: ../src/dialog_style_editor.cpp:461 ../src/subs_edit_box.cpp:604
 msgid "style change"
 msgstr "stílus változtatása"
 
@@ -4117,15 +4203,15 @@ msgstr "Aljára"
 msgid "Sort styles alphabetically"
 msgstr "Rendezés név szerint"
 
-#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:594
+#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:603
 msgid "&New"
 msgstr "&Új"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:595
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:604
 msgid "&Edit"
 msgstr "S&zerkesztés"
 
-#: ../src/dialog_style_manager.cpp:203 ../src/subs_edit_ctrl.cpp:384
+#: ../src/dialog_style_manager.cpp:203 ../src/subs_edit_ctrl.cpp:389
 #: ../src/timeedit_ctrl.cpp:209
 msgid "&Copy"
 msgstr "&Másolás"
@@ -4575,7 +4661,7 @@ msgstr "Sor törlése"
 msgid "Enable &preview"
 msgstr "&Előnézet"
 
-#: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:282
+#: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:278
 msgid "No more lines to translate."
 msgstr "Nincs több fordítható sor."
 
@@ -4584,7 +4670,7 @@ msgstr "Nincs több fordítható sor."
 msgid "Current line: %d/%d"
 msgstr "Jelenlegi sor: %d/%d"
 
-#: ../src/dialog_translation.cpp:277
+#: ../src/dialog_translation.cpp:273
 msgid "translation assistant"
 msgstr "fordító segéd"
 
@@ -4671,8 +4757,8 @@ msgstr "Hossz:"
 msgid "Decoder:"
 msgstr "Megjelenítő:"
 
-#: ../src/dialog_video_details.cpp:66 ../src/preferences.cpp:166
-#: ../src/preferences.cpp:433
+#: ../src/dialog_video_details.cpp:66 ../src/preferences.cpp:167
+#: ../src/preferences.cpp:438
 msgid "Video"
 msgstr "Videó"
 
@@ -4891,7 +4977,6 @@ msgstr[1] ""
 "karaktereket nem tartalmaz.\n"
 
 #: ../src/font_file_lister_fontconfig.cpp:55
-#: ../src/font_file_lister_gdi.cpp:162
 msgid "Updating font cache\n"
 msgstr "Betűtípus gyorsítótár frissítése...\n"
 
@@ -4939,7 +5024,7 @@ msgstr "Másodpercenkénti karakterszám"
 msgid "Invalid command name for hotkey"
 msgstr "Érvénytelen gyorsgomb parancsnév"
 
-#: ../src/main.cpp:248
+#: ../src/main.cpp:246
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -4958,11 +5043,11 @@ msgstr ""
 "\n"
 "Az Aegisub most bezáródik."
 
-#: ../src/main.cpp:275
+#: ../src/main.cpp:273
 msgid "Check for updates?"
 msgstr "Frissítések keresése?"
 
-#: ../src/main.cpp:275
+#: ../src/main.cpp:273
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
@@ -4970,11 +5055,11 @@ msgstr ""
 "Szeretné, ha az Aegisub minden indításkor a program frissebb verziója után "
 "keresne? Ezt kézzel is megteheti a Súgó menüponton keresztül."
 
-#: ../src/main.cpp:392 ../src/main.cpp:395
+#: ../src/main.cpp:390 ../src/main.cpp:393
 msgid "Program error"
 msgstr "Programhiba"
 
-#: ../src/main.cpp:409
+#: ../src/main.cpp:407
 #, c-format
 msgid ""
 "An unexpected error has occurred. Please save your work and restart "
@@ -5015,64 +5100,64 @@ msgstr "Matroska elemzése"
 msgid "Reading subtitles from Matroska file."
 msgstr "Felirat beolvasása a Matroska fájlból..."
 
-#: ../src/preferences.cpp:62 ../src/preferences.cpp:64
-#: ../src/preferences.cpp:330 ../src/preferences.cpp:351
+#: ../src/preferences.cpp:63 ../src/preferences.cpp:65
+#: ../src/preferences.cpp:335 ../src/preferences.cpp:356
 msgid "General"
 msgstr "Általános"
 
-#: ../src/preferences.cpp:65
+#: ../src/preferences.cpp:66
 msgid "Check for updates on startup"
 msgstr "Frissítések keresése minden indításkor"
 
-#: ../src/preferences.cpp:66
+#: ../src/preferences.cpp:67
 msgid "Show main toolbar"
 msgstr "Fő eszköztár megjelenítése"
 
-#: ../src/preferences.cpp:67
+#: ../src/preferences.cpp:68
 msgid "Save UI state in subtitles files"
 msgstr "Felhasználói felület állapotának mentése a feliratfájlba"
 
-#: ../src/preferences.cpp:70
+#: ../src/preferences.cpp:71
 msgid "Toolbar Icon Size"
 msgstr "Eszköztár ikonmérete"
 
-#: ../src/preferences.cpp:71
+#: ../src/preferences.cpp:72
 msgid "Always"
 msgstr "Mindig"
 
-#: ../src/preferences.cpp:71 ../src/preferences.cpp:196
+#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
 msgid "Ask"
 msgstr "Rákérdez"
 
-#: ../src/preferences.cpp:71 ../src/preferences.cpp:196
+#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
 msgid "Never"
 msgstr "Soha"
 
-#: ../src/preferences.cpp:73
+#: ../src/preferences.cpp:74
 msgid "Automatically load linked files"
 msgstr "Csatolt fájlok automatikus betöltése"
 
-#: ../src/preferences.cpp:74
+#: ../src/preferences.cpp:75
 msgid "Undo Levels"
 msgstr "Visszavonási szint"
 
-#: ../src/preferences.cpp:76
+#: ../src/preferences.cpp:77
 msgid "Recently Used Lists"
 msgstr "Mostanában megnyitott listák elemei"
 
-#: ../src/preferences.cpp:78
+#: ../src/preferences.cpp:79
 msgid "Find/Replace"
 msgstr "Keresés/Csere"
 
-#: ../src/preferences.cpp:84
+#: ../src/preferences.cpp:85
 msgid "Default styles"
 msgstr "Alapstílusok"
 
-#: ../src/preferences.cpp:86
+#: ../src/preferences.cpp:87
 msgid "Default style catalogs"
 msgstr "Alapértelmezett stíluskatalógusok"
 
-#: ../src/preferences.cpp:90
+#: ../src/preferences.cpp:91
 msgid ""
 "The chosen style catalogs will be loaded when you start a new file or import "
 "files in the various formats.\n"
@@ -5084,526 +5169,542 @@ msgstr ""
 "\n"
 "Katalógusokat a Stíluskezelőben tud létrehozni."
 
-#: ../src/preferences.cpp:115
+#: ../src/preferences.cpp:116
 msgid "New files"
 msgstr "Új felirat"
 
-#: ../src/preferences.cpp:116
+#: ../src/preferences.cpp:117
 msgid "MicroDVD import"
 msgstr "MicroDVD import"
 
-#: ../src/preferences.cpp:117
+#: ../src/preferences.cpp:118
 msgid "SRT import"
 msgstr "SRT import"
 
-#: ../src/preferences.cpp:118
+#: ../src/preferences.cpp:119
 msgid "TTXT import"
 msgstr "TTXT import"
 
-#: ../src/preferences.cpp:119
+#: ../src/preferences.cpp:120
 msgid "Plain text import"
 msgstr "Nyers szöveg import"
 
-#: ../src/preferences.cpp:126 ../src/preferences.cpp:366
+#: ../src/preferences.cpp:127 ../src/preferences.cpp:371
 msgid "Audio"
 msgstr "Audió"
 
-#: ../src/preferences.cpp:129
+#: ../src/preferences.cpp:130
 msgid "Default mouse wheel to zoom"
 msgstr "Az egérgörgő alapértéken nagyít"
 
-#: ../src/preferences.cpp:130
+#: ../src/preferences.cpp:131
 msgid "Lock scroll on cursor"
 msgstr "Lejátszási kurzor követése"
 
-#: ../src/preferences.cpp:131
+#: ../src/preferences.cpp:132
 msgid "Snap markers by default"
 msgstr "Határvonalak igazítása egymáshoz"
 
-#: ../src/preferences.cpp:132
+#: ../src/preferences.cpp:133
 msgid "Auto-focus on mouse over"
 msgstr "Fókuszba kerül, ha fölötte van a kurzor"
 
-#: ../src/preferences.cpp:133
+#: ../src/preferences.cpp:134
 msgid "Play audio when stepping in video"
 msgstr "Hang lejátszása videóban való léptetéskor"
 
-#: ../src/preferences.cpp:134
+#: ../src/preferences.cpp:135
 msgid "Left-click-drag moves end marker"
 msgstr "Bal egérgomb is mozgathatja a vége határvonalat"
 
-#: ../src/preferences.cpp:135
+#: ../src/preferences.cpp:136
 msgid "Default timing length (ms)"
 msgstr "Felirat időtartamának alapértelmezett hossza (ms)"
 
-#: ../src/preferences.cpp:136
+#: ../src/preferences.cpp:137
 msgid "Default lead-in length (ms)"
 msgstr "Felirat bevezetés alapértelmezett hossza (ms)"
 
-#: ../src/preferences.cpp:137
+#: ../src/preferences.cpp:138
 msgid "Default lead-out length (ms)"
 msgstr "Felirat kivezetés alapértelmezett hossza (ms)"
 
-#: ../src/preferences.cpp:139
+#: ../src/preferences.cpp:140
 msgid "Marker drag-start sensitivity (px)"
 msgstr "Határvonal igazítás érzékenysége (px)"
 
-#: ../src/preferences.cpp:140
+#: ../src/preferences.cpp:141
 msgid "Line boundary thickness (px)"
 msgstr "Határvonal vastagsága (px)"
 
-#: ../src/preferences.cpp:141
+#: ../src/preferences.cpp:142
 msgid "Maximum snap distance (px)"
 msgstr "Automata igazítás távolsága (px)"
 
-#: ../src/preferences.cpp:143
+#: ../src/preferences.cpp:144
 msgid "Don't show"
 msgstr "Ne mutassa"
 
-#: ../src/preferences.cpp:143
+#: ../src/preferences.cpp:144
 msgid "Show all"
 msgstr "Mindet mutassa"
 
-#: ../src/preferences.cpp:143
+#: ../src/preferences.cpp:144
 msgid "Show previous"
 msgstr "Csak az előzőt"
 
-#: ../src/preferences.cpp:143
+#: ../src/preferences.cpp:144
 msgid "Show previous and next"
 msgstr "Előzőt és a következőt"
 
-#: ../src/preferences.cpp:145
+#: ../src/preferences.cpp:146
 msgid "Show inactive lines"
 msgstr "Inaktív sorok megjelenítése"
 
-#: ../src/preferences.cpp:147
+#: ../src/preferences.cpp:148
 msgid "Include commented inactive lines"
 msgstr "Megjegyzésként használt inaktív sorokat is"
 
-#: ../src/preferences.cpp:149
+#: ../src/preferences.cpp:150
 msgid "Display Visual Options"
 msgstr "Vizuális megjelenítés beállításai"
 
-#: ../src/preferences.cpp:150
+#: ../src/preferences.cpp:151
 msgid "Keyframes in dialogue mode"
 msgstr "Kulcskockák jelzése párbeszéd módban"
 
-#: ../src/preferences.cpp:151
+#: ../src/preferences.cpp:152
 msgid "Keyframes in karaoke mode"
 msgstr "Kulcskockák jelzése karaoke módban"
 
-#: ../src/preferences.cpp:152
+#: ../src/preferences.cpp:153
 msgid "Cursor time"
 msgstr "Kurzoridő megjelenítése"
 
-#: ../src/preferences.cpp:153
+#: ../src/preferences.cpp:154
 msgid "Video position"
 msgstr "Videó helyzetének berajzolása"
 
-#: ../src/preferences.cpp:154 ../src/preferences.cpp:250
+#: ../src/preferences.cpp:155 ../src/preferences.cpp:251
 msgid "Seconds boundaries"
 msgstr "Másodperc határvonal berajzolása"
 
-#: ../src/preferences.cpp:156
+#: ../src/preferences.cpp:157
 msgid "Waveform Style"
 msgstr "Hullámforma stílus"
 
-#: ../src/preferences.cpp:158
+#: ../src/preferences.cpp:159
 msgid "Audio labels"
 msgstr "Hangsáv feliratok"
 
-#: ../src/preferences.cpp:169
+#: ../src/preferences.cpp:170
 msgid "Show keyframes in slider"
 msgstr "Kulcskockák megjelenítése a keresősávban"
 
-#: ../src/preferences.cpp:171
+#: ../src/preferences.cpp:172
 msgid "Only show visual tools when mouse is over video"
 msgstr ""
 "Vizuális szerkesztő jelek kizárólagos megjelenítése, ha a kurzor a videó "
 "fölé ér"
 
-#: ../src/preferences.cpp:173
+#: ../src/preferences.cpp:174
 msgid "Seek video to line start on selection change"
 msgstr "A videó kövesse a kiválasztott sorokat"
 
-#: ../src/preferences.cpp:175
+#: ../src/preferences.cpp:176
 msgid "Automatically open audio when opening video"
 msgstr "Videó megnyitása hangsávval együtt"
 
-#: ../src/preferences.cpp:180
+#: ../src/preferences.cpp:181
 msgid "Default Zoom"
 msgstr "Alapértelmezett nagyítás"
 
-#: ../src/preferences.cpp:182
+#: ../src/preferences.cpp:183
 msgid "Fast jump step in frames"
 msgstr "Gyorstekerés lépésköz képkocka száma"
 
-#: ../src/preferences.cpp:186
+#: ../src/preferences.cpp:187
 msgid "Screenshot save path"
 msgstr "Képernyőkép mentési útvonala"
 
-#: ../src/preferences.cpp:188
+#: ../src/preferences.cpp:189
 msgid "Script Resolution"
 msgstr "Felirat felbontása"
 
-#: ../src/preferences.cpp:189
+#: ../src/preferences.cpp:190
 msgid "Use resolution of first video opened"
 msgstr "Elsőnek megnyitott videó felbontásának használata"
 
-#: ../src/preferences.cpp:192
+#: ../src/preferences.cpp:193
 msgid "Default width"
 msgstr "Alapértelmezett szélesség"
 
-#: ../src/preferences.cpp:194
+#: ../src/preferences.cpp:195
 msgid "Default height"
 msgstr "Alapértelmezett hosszúság"
 
-#: ../src/preferences.cpp:196
+#: ../src/preferences.cpp:197
 msgid "Always resample"
 msgstr "Mindig módosít"
 
-#: ../src/preferences.cpp:196
+#: ../src/preferences.cpp:197
 msgid "Always set"
 msgstr "Mindig beállít"
 
-#: ../src/preferences.cpp:198
+#: ../src/preferences.cpp:199
 msgid "Match video resolution on open"
 msgstr "Videó és felirat felbontásának egyezése"
 
-#: ../src/preferences.cpp:205
+#: ../src/preferences.cpp:206
 msgid "Interface"
 msgstr "Felhasználói felület"
 
-#: ../src/preferences.cpp:207
+#: ../src/preferences.cpp:208
 msgid "Edit Box"
 msgstr "Szerkesztőablak"
 
-#: ../src/preferences.cpp:208
+#: ../src/preferences.cpp:209
 msgid "Enable call tips"
 msgstr "Gyorstippek a címkék használatához"
 
-#: ../src/preferences.cpp:209
+#: ../src/preferences.cpp:210
 msgid "Overwrite in time boxes"
 msgstr "Időpont értékek felülírása"
 
 #: ../src/preferences.cpp:211
+msgid "Shift+Enter adds \\n"
+msgstr ""
+
+#: ../src/preferences.cpp:212
 msgid "Enable syntax highlighting"
 msgstr "Szintaxis kiemelés használata"
 
-#: ../src/preferences.cpp:212
+#: ../src/preferences.cpp:213
 msgid "Dictionaries path"
 msgstr "Szótárak útvonala"
 
-#: ../src/preferences.cpp:215
+#: ../src/preferences.cpp:216
 msgid "Character Counter"
 msgstr "Karakterszámláló"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Maximum characters per line"
 msgstr "Soronkénti maximális karakterszám"
 
-#: ../src/preferences.cpp:217
+#: ../src/preferences.cpp:218
 msgid "Characters Per Second Warning Threshold"
 msgstr "Másodpercenkénti karakterszám figyelmeztetésének határértéke"
 
-#: ../src/preferences.cpp:218
+#: ../src/preferences.cpp:219
 msgid "Characters Per Second Error Threshold"
 msgstr "Másodpercenkénti karakterszám hibájának határértéke"
 
-#: ../src/preferences.cpp:219
+#: ../src/preferences.cpp:220
 msgid "Ignore whitespace"
 msgstr "A szóközöket ne számolja"
 
-#: ../src/preferences.cpp:220
+#: ../src/preferences.cpp:221
 msgid "Ignore punctuation"
 msgstr "Az írásjeleket ne számolja"
 
-#: ../src/preferences.cpp:222
+#: ../src/preferences.cpp:223
 msgid "Grid"
 msgstr "Táblázat"
 
-#: ../src/preferences.cpp:223
+#: ../src/preferences.cpp:224
 msgid "Focus grid on click"
 msgstr "Kattintáskor a táblázat kerüljön fókuszba"
 
-#: ../src/preferences.cpp:224
+#: ../src/preferences.cpp:225
 msgid "Highlight visible subtitles"
 msgstr "A videóban látható sorok kiemelése"
 
-#: ../src/preferences.cpp:225
+#: ../src/preferences.cpp:226
 msgid "Hide overrides symbol"
 msgstr "Felülíró címke helyettesítője"
 
-#: ../src/preferences.cpp:229
+#: ../src/preferences.cpp:230
 msgid "Skip over whitespace"
 msgstr ""
 
-#: ../src/preferences.cpp:244
+#: ../src/preferences.cpp:245
 msgid "Audio Display"
 msgstr "Hangsáv megjelenítés"
 
-#: ../src/preferences.cpp:245
+#: ../src/preferences.cpp:246
 msgid "Play cursor"
 msgstr "Lejátszási kurzor"
 
-#: ../src/preferences.cpp:246
+#: ../src/preferences.cpp:247
 msgid "Line boundary start"
 msgstr "Sor kezdetének határvonala"
 
-#: ../src/preferences.cpp:247
+#: ../src/preferences.cpp:248
 msgid "Line boundary end"
 msgstr "Sor végének határvonala"
 
-#: ../src/preferences.cpp:248
+#: ../src/preferences.cpp:249
 msgid "Line boundary inactive line"
 msgstr "Inaktív sor határvonala"
 
-#: ../src/preferences.cpp:249
+#: ../src/preferences.cpp:250
 msgid "Syllable boundaries"
 msgstr "Szótag határvonala"
 
-#: ../src/preferences.cpp:252
+#: ../src/preferences.cpp:253
 msgid "Syntax Highlighting"
 msgstr "Szintaxis kiemelés"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:254
 msgid "Background"
 msgstr "Háttér"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:255
 msgid "Normal"
 msgstr "normál"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:256
 msgid "Comments"
 msgstr "Megjegyzések"
 
-#: ../src/preferences.cpp:256
-msgid "Drawings"
-msgstr "Rajzok"
-
 #: ../src/preferences.cpp:257
+msgid "Drawing Commands"
+msgstr ""
+
+#: ../src/preferences.cpp:258
+msgid "Drawing X Coords"
+msgstr ""
+
+#: ../src/preferences.cpp:259
+msgid "Drawing Y Coords"
+msgstr ""
+
+#: ../src/preferences.cpp:260
+msgid "Underline Spline Endpoints"
+msgstr ""
+
+#: ../src/preferences.cpp:262
 msgid "Brackets"
 msgstr "Kapcsos zárójel"
 
-#: ../src/preferences.cpp:258
+#: ../src/preferences.cpp:263
 msgid "Slashes and Parentheses"
 msgstr "Perjel és kerek zárójel"
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:264
 msgid "Tags"
 msgstr "Címke"
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:265
 msgid "Parameters"
 msgstr "Paraméter"
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:267
 msgid "Error Background"
 msgstr "Hiba háttere"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:268
 msgid "Line Break"
 msgstr "Sortörés"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:269
 msgid "Karaoke templates"
 msgstr "Karaoke sablon"
 
-#: ../src/preferences.cpp:265
+#: ../src/preferences.cpp:270
 msgid "Karaoke variables"
 msgstr "Karaoke változók"
 
-#: ../src/preferences.cpp:271
+#: ../src/preferences.cpp:276
 msgid "Audio Color Schemes"
 msgstr "Hangmegjelenítés színe"
 
-#: ../src/preferences.cpp:273 ../src/preferences.cpp:382
+#: ../src/preferences.cpp:278 ../src/preferences.cpp:387
 msgid "Spectrum"
 msgstr "Spektrum"
 
-#: ../src/preferences.cpp:274
+#: ../src/preferences.cpp:279
 msgid "Waveform"
 msgstr "Hullámforma"
 
-#: ../src/preferences.cpp:276
+#: ../src/preferences.cpp:281
 msgid "Subtitle Grid"
 msgstr "Feliratsor táblázat"
 
-#: ../src/preferences.cpp:277
+#: ../src/preferences.cpp:282
 msgid "Standard foreground"
 msgstr "Általános betűszín"
 
-#: ../src/preferences.cpp:278
+#: ../src/preferences.cpp:283
 msgid "Standard background"
 msgstr "Általános háttér"
 
-#: ../src/preferences.cpp:279
+#: ../src/preferences.cpp:284
 msgid "Selection foreground"
 msgstr "Kijelölés betűszíne"
 
-#: ../src/preferences.cpp:280
+#: ../src/preferences.cpp:285
 msgid "Selection background"
 msgstr "Kijelölés háttere"
 
-#: ../src/preferences.cpp:281
+#: ../src/preferences.cpp:286
 msgid "Collision foreground"
 msgstr "Sorütközés betűszíne"
 
-#: ../src/preferences.cpp:282
+#: ../src/preferences.cpp:287
 msgid "In frame background"
 msgstr "Adott képkockán megjelenő sor háttere"
 
-#: ../src/preferences.cpp:283
+#: ../src/preferences.cpp:288
 msgid "Comment background"
 msgstr "Megjegyzés háttere"
 
-#: ../src/preferences.cpp:284
+#: ../src/preferences.cpp:289
 msgid "Selected comment background"
 msgstr "Kijelölt megjegyzés háttere"
 
-#: ../src/preferences.cpp:285
+#: ../src/preferences.cpp:290
 msgid "Header background"
 msgstr "Fejléc háttere"
 
-#: ../src/preferences.cpp:286
+#: ../src/preferences.cpp:291
 msgid "Left Column"
 msgstr "Bal oldali oszlop"
 
-#: ../src/preferences.cpp:287
+#: ../src/preferences.cpp:292
 msgid "Active Line Border"
 msgstr "Aktív sor körvonala"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:293
 msgid "Lines"
 msgstr "Normál sor körvonala"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:294
 msgid "CPS Error"
 msgstr "Karakterszám hiba"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:296
 msgid "Visual Typesetting Tools"
 msgstr ""
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:297
 msgid "Primary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:298
 msgid "Secondary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:294
+#: ../src/preferences.cpp:299
 msgid "Primary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:295
+#: ../src/preferences.cpp:300
 msgid "Secondary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:303
 msgid "Visual Typesetting Tools Alpha"
 msgstr ""
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:304
 msgid "Shaded Area"
 msgstr ""
 
-#: ../src/preferences.cpp:308
+#: ../src/preferences.cpp:313
 msgid "Backup"
 msgstr "Biztonsági mentés"
 
-#: ../src/preferences.cpp:310
+#: ../src/preferences.cpp:315
 msgid "Automatic Save"
 msgstr "Automatikus mentés"
 
-#: ../src/preferences.cpp:311 ../src/preferences.cpp:319
+#: ../src/preferences.cpp:316 ../src/preferences.cpp:324
 msgid "Enable"
 msgstr "Bekapcsol"
 
-#: ../src/preferences.cpp:314
+#: ../src/preferences.cpp:319
 msgid "Interval in seconds"
 msgstr "Gyakoriság másodpercben"
 
-#: ../src/preferences.cpp:315 ../src/preferences.cpp:321
-#: ../src/preferences.cpp:380
+#: ../src/preferences.cpp:320 ../src/preferences.cpp:326
+#: ../src/preferences.cpp:385
 msgid "Path"
 msgstr "Útvonal"
 
-#: ../src/preferences.cpp:316
+#: ../src/preferences.cpp:321
 msgid "Autosave after every change"
 msgstr "Automatikus mentés minden változás után"
 
-#: ../src/preferences.cpp:318
+#: ../src/preferences.cpp:323
 msgid "Automatic Backup"
 msgstr "Biztonsági mentés"
 
-#: ../src/preferences.cpp:332
+#: ../src/preferences.cpp:337
 msgid "Base path"
 msgstr "Alap útvonal"
 
-#: ../src/preferences.cpp:333
+#: ../src/preferences.cpp:338
 msgid "Include path"
 msgstr "Include útvonal"
 
-#: ../src/preferences.cpp:334
+#: ../src/preferences.cpp:339
 msgid "Auto-load path"
 msgstr "Auto betöltés útvonala"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "0: Fatal"
 msgstr "0: Súlyos (fatal)"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "1: Error"
 msgstr "1: Hiba (error)"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "2: Warning"
 msgstr "2: Figyelmeztetés (warning)"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "3: Hint"
 msgstr "3: Útmutatás (hint)"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "4: Debug"
 msgstr "4: Hibakeresés (debug)"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:341
 msgid "5: Trace"
 msgstr "5: Nyomkövetés (trace)"
 
-#: ../src/preferences.cpp:338
+#: ../src/preferences.cpp:343
 msgid "Trace level"
 msgstr "Nyomkövetési szint"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:345
 msgid "All scripts"
 msgstr "Minden scriptet"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:345
 msgid "Global autoload scripts"
 msgstr "Automatikusan betöltődő globális scripteket"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:345
 msgid "No scripts"
 msgstr "Semmit"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:345
 msgid "Subtitle-local scripts"
 msgstr "Lokális feliratscripteket"
 
-#: ../src/preferences.cpp:342
+#: ../src/preferences.cpp:347
 msgid "Autoreload on Export"
 msgstr "Exportáláskor újratölt"
 
-#: ../src/preferences.cpp:349
+#: ../src/preferences.cpp:354
 msgid "Advanced"
 msgstr "Haladó"
 
-#: ../src/preferences.cpp:353
+#: ../src/preferences.cpp:358
 msgid ""
 "Changing these settings might result in bugs and/or crashes.  Do not touch "
 "these unless you know what you're doing."
@@ -5612,163 +5713,163 @@ msgstr ""
 "megszokott működést eredményezhet.\n"
 "Ne nyúljon ezekhez csak, ha tudja, mit csinál!"
 
-#: ../src/preferences.cpp:368 ../src/preferences.cpp:435
+#: ../src/preferences.cpp:373 ../src/preferences.cpp:440
 msgid "Expert"
 msgstr "Haladó"
 
-#: ../src/preferences.cpp:371
+#: ../src/preferences.cpp:376
 msgid "Audio provider"
 msgstr "Audió kimeneti vezérlő"
 
-#: ../src/preferences.cpp:374
+#: ../src/preferences.cpp:379
 msgid "Audio player"
 msgstr "Audió lejátszó"
 
-#: ../src/preferences.cpp:376
+#: ../src/preferences.cpp:381
 msgid "Cache"
 msgstr "Gyorsítótár"
 
-#: ../src/preferences.cpp:377
+#: ../src/preferences.cpp:382
 msgid "Hard Disk"
 msgstr "Merevlemez"
 
-#: ../src/preferences.cpp:377
+#: ../src/preferences.cpp:382
 msgid "None (NOT RECOMMENDED)"
 msgstr "Semmi (NEM AJÁNLOTT)"
 
-#: ../src/preferences.cpp:377
+#: ../src/preferences.cpp:382
 msgid "RAM"
 msgstr "Memória"
 
-#: ../src/preferences.cpp:379
+#: ../src/preferences.cpp:384
 msgid "Cache type"
 msgstr "Gyorsítótár típusa"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:389
 msgid "Better quality"
 msgstr "Jobb"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:389
 msgid "High quality"
 msgstr "Magas"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:389
 msgid "Insane quality"
 msgstr "Nagyon magas"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:389
 msgid "Regular quality"
 msgstr "Hagyományos"
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:391
 msgid "Quality"
 msgstr "Minőség"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Compressed"
 msgstr ""
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Extended"
 msgstr ""
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Linear"
 msgstr ""
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Logarithmic"
 msgstr ""
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:393
 msgid "Medium"
 msgstr ""
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:395
 msgid "Frequency mapping"
 msgstr ""
 
-#: ../src/preferences.cpp:392
+#: ../src/preferences.cpp:397
 msgid "Cache memory max (MB)"
 msgstr "Gyorsítótár max. memóriafoglalás (MB)"
 
-#: ../src/preferences.cpp:398
+#: ../src/preferences.cpp:403
 msgid "Avisynth down-mixer"
 msgstr "Avisynth hang lekeverő"
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:404
 msgid "Force sample rate"
 msgstr "Mintavételi sűrűség kényszerítése"
 
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:410
 msgid "Abort"
 msgstr "Leállítás"
 
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:410
 msgid "Ignore"
 msgstr "Mellőzés"
 
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:410
 msgid "Stop"
 msgstr "Stop"
 
-#: ../src/preferences.cpp:407
+#: ../src/preferences.cpp:412
 msgid "Audio indexing error handling mode"
 msgstr "Audió indexelés hibakezelési mód"
 
-#: ../src/preferences.cpp:409
+#: ../src/preferences.cpp:414
 msgid "Always index all audio tracks"
 msgstr "Minden hangsávot indexeljen"
 
-#: ../src/preferences.cpp:414
+#: ../src/preferences.cpp:419
 msgid "Portaudio device"
 msgstr "Portaudio eszköz"
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:424
 msgid "OSS Device"
 msgstr "OSS eszköz"
 
-#: ../src/preferences.cpp:424
+#: ../src/preferences.cpp:429
 msgid "Buffer latency"
 msgstr "Buffer késleltetés"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:430
 msgid "Buffer length"
 msgstr "Buffer hossz"
 
-#: ../src/preferences.cpp:438
+#: ../src/preferences.cpp:443
 msgid "Video provider"
 msgstr "Videó kimeneti vezérlő"
 
-#: ../src/preferences.cpp:441
+#: ../src/preferences.cpp:446
 msgid "Subtitles provider"
 msgstr "Felirat kimeneti vezérlő"
 
-#: ../src/preferences.cpp:445
+#: ../src/preferences.cpp:450
 msgid "Allow pre-2.56a Avisynth"
 msgstr "2.56a előtti Avisynth-ek engedélyezése"
 
-#: ../src/preferences.cpp:447
+#: ../src/preferences.cpp:452
 msgid "Avisynth memory limit"
 msgstr "Avisynth memóriakorlát"
 
-#: ../src/preferences.cpp:455
+#: ../src/preferences.cpp:460
 msgid "Debug log verbosity"
 msgstr "Hibakeresés részletessége"
 
-#: ../src/preferences.cpp:457
+#: ../src/preferences.cpp:462
 msgid "Decoding threads"
 msgstr "Dekódoló threadek"
 
-#: ../src/preferences.cpp:458
+#: ../src/preferences.cpp:463
 msgid "Enable unsafe seeking"
 msgstr "Nem megbízható videoléptetés engedése"
 
-#: ../src/preferences.cpp:590
+#: ../src/preferences.cpp:599
 msgid "Hotkeys"
 msgstr "Gyorsgombok"
 
-#: ../src/preferences.cpp:688
+#: ../src/preferences.cpp:697
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -5776,15 +5877,15 @@ msgstr ""
 "Biztos, hogy vissza akarja állítani az alapértelmezett értékeket? Minden "
 "mostani beállítás felül fog íródni."
 
-#: ../src/preferences.cpp:688
+#: ../src/preferences.cpp:697
 msgid "Restore defaults?"
 msgstr "Alapértelmezések visszaállítása?"
 
-#: ../src/preferences.cpp:706
+#: ../src/preferences.cpp:715
 msgid "Preferences"
 msgstr "Beállítások"
 
-#: ../src/preferences.cpp:734
+#: ../src/preferences.cpp:743
 msgid "&Restore Defaults"
 msgstr "&Alapértelmezések visszaállítása"
 
@@ -5875,7 +5976,7 @@ msgstr ""
 "\n"
 "Az alábbi kimeneti vezérlők kerültek kipróbálásra:\n"
 
-#: ../src/resolution_resampler.cpp:289
+#: ../src/resolution_resampler.cpp:288
 msgid "resolution resampling"
 msgstr "felbontás módosítás"
 
@@ -5916,32 +6017,32 @@ msgstr "Névtelen"
 msgid "untitled"
 msgstr "névtelen"
 
-#: ../src/subs_edit_box.cpp:116
+#: ../src/subs_edit_box.cpp:114
 msgid "&Comment"
 msgstr "&Megjegyzés"
 
-#: ../src/subs_edit_box.cpp:117
+#: ../src/subs_edit_box.cpp:115
 msgid "Comment this line out. Commented lines don't show up on screen."
 msgstr ""
 "Feliratsor megjegyzéssé alakítása. A megjegyzések nem jelennek meg a "
 "képernyőn."
 
-#: ../src/subs_edit_box.cpp:124
+#: ../src/subs_edit_box.cpp:122
 msgid "Style for this line"
 msgstr "Stílus beállítása a sorhoz"
 
-#: ../src/subs_edit_box.cpp:126 ../src/subs_edit_box.cpp:127
+#: ../src/subs_edit_box.cpp:124 ../src/subs_edit_box.cpp:125
 msgid "Edit"
 msgstr "Szerkeszt"
 
-#: ../src/subs_edit_box.cpp:137
+#: ../src/subs_edit_box.cpp:135
 msgid ""
 "Actor name for this speech. This is only for reference, and is mainly "
 "useless."
 msgstr ""
 "A sorhoz tartozó szereplő neve. Csak jelzésértéke van, nem fontos kitölteni."
 
-#: ../src/subs_edit_box.cpp:142
+#: ../src/subs_edit_box.cpp:140
 msgid ""
 "Effect for this line. This can be used to store extra information for "
 "karaoke scripts, or for the effects supported by the renderer."
@@ -5949,71 +6050,71 @@ msgstr ""
 "A sorhoz tartozó effekt. Extra adatokat tárol a karaoke scripteknek vagy a "
 "felirat megjelenítőnek."
 
-#: ../src/subs_edit_box.cpp:148
+#: ../src/subs_edit_box.cpp:147
 msgid "Number of characters in the longest line of this subtitle."
 msgstr "A feliratsoron belüli leghosszabb sor karakterszáma."
 
-#: ../src/subs_edit_box.cpp:155
+#: ../src/subs_edit_box.cpp:154
 msgid "Layer number"
 msgstr "Réteg száma"
 
-#: ../src/subs_edit_box.cpp:159
+#: ../src/subs_edit_box.cpp:158
 msgid "Start time"
 msgstr "Sor kezdete"
 
-#: ../src/subs_edit_box.cpp:160
+#: ../src/subs_edit_box.cpp:159
 msgid "End time"
 msgstr "Sor vége"
 
-#: ../src/subs_edit_box.cpp:162
+#: ../src/subs_edit_box.cpp:161
 msgid "Line duration"
 msgstr "Sor időtartama"
 
-#: ../src/subs_edit_box.cpp:165
+#: ../src/subs_edit_box.cpp:164
 msgid "Left Margin (0 = default from style)"
 msgstr "Bal margó (0 = stílus alapján)"
 
-#: ../src/subs_edit_box.cpp:165
+#: ../src/subs_edit_box.cpp:164
 msgid "left margin change"
 msgstr "bal margó változtatása"
 
-#: ../src/subs_edit_box.cpp:166
+#: ../src/subs_edit_box.cpp:165
 msgid "Right Margin (0 = default from style)"
 msgstr "Jobb margó (0 = stílus alapján)"
 
-#: ../src/subs_edit_box.cpp:166
+#: ../src/subs_edit_box.cpp:165
 msgid "right margin change"
 msgstr "jobb margó változtatása"
 
-#: ../src/subs_edit_box.cpp:167
+#: ../src/subs_edit_box.cpp:166
 msgid "Vertical Margin (0 = default from style)"
 msgstr "Függőleges margó (0 = stílus alapján)"
 
-#: ../src/subs_edit_box.cpp:167
+#: ../src/subs_edit_box.cpp:166
 msgid "vertical margin change"
 msgstr "függőleges margó változtatása"
 
-#: ../src/subs_edit_box.cpp:186
+#: ../src/subs_edit_box.cpp:185
 msgid "T&ime"
 msgstr "&Idő"
 
-#: ../src/subs_edit_box.cpp:186
+#: ../src/subs_edit_box.cpp:185
 msgid "Time by h:mm:ss.cs"
 msgstr "Idő óra:perc:másodperc.századmásodperc formában."
 
-#: ../src/subs_edit_box.cpp:187
+#: ../src/subs_edit_box.cpp:186
 msgid "F&rame"
 msgstr "&Képkocka"
 
-#: ../src/subs_edit_box.cpp:187
+#: ../src/subs_edit_box.cpp:186
 msgid "Time by frame number"
 msgstr "Idő képkockák alapján."
 
-#: ../src/subs_edit_box.cpp:190
+#: ../src/subs_edit_box.cpp:189
 msgid "Show Original"
 msgstr "Eredeti sor is látszik"
 
-#: ../src/subs_edit_box.cpp:191
+#: ../src/subs_edit_box.cpp:190
 msgid ""
 "Show the contents of the subtitle line when it was first selected above the "
 "edit box. This is sometimes useful when editing subtitles or translating "
@@ -6023,79 +6124,79 @@ msgstr ""
 "sorában. Fordításkor, módosításkor látható marad a korábbi feliratsor "
 "szövege."
 
-#: ../src/subs_edit_box.cpp:444
+#: ../src/subs_edit_box.cpp:445
 msgid "modify text"
 msgstr "szerkesztés"
 
-#: ../src/subs_edit_box.cpp:522
+#: ../src/subs_edit_box.cpp:523
 msgid "modify times"
 msgstr "idők módosítása"
 
-#: ../src/subs_edit_box.cpp:609
+#: ../src/subs_edit_box.cpp:610
 msgid "actor change"
 msgstr "színész változtatása"
 
-#: ../src/subs_edit_box.cpp:614
+#: ../src/subs_edit_box.cpp:615
 msgid "layer change"
 msgstr "réteg változtatása"
 
-#: ../src/subs_edit_box.cpp:619
+#: ../src/subs_edit_box.cpp:620
 msgid "effect change"
 msgstr "effekt változtatása"
 
-#: ../src/subs_edit_box.cpp:624
+#: ../src/subs_edit_box.cpp:625
 msgid "comment change"
 msgstr "megjegyzés változtatása"
 
-#: ../src/subs_edit_ctrl.cpp:373
+#: ../src/subs_edit_ctrl.cpp:378
 msgid "Spell checker language"
 msgstr "Helyesírás-ellenőrző nyelve"
 
-#: ../src/subs_edit_ctrl.cpp:383
+#: ../src/subs_edit_ctrl.cpp:388
 msgid "Cu&t"
 msgstr "&Kivágás"
 
-#: ../src/subs_edit_ctrl.cpp:385 ../src/timeedit_ctrl.cpp:210
+#: ../src/subs_edit_ctrl.cpp:390 ../src/timeedit_ctrl.cpp:210
 msgid "&Paste"
 msgstr "&Beillesztés"
 
-#: ../src/subs_edit_ctrl.cpp:420
+#: ../src/subs_edit_ctrl.cpp:425
 #, c-format
 msgid "Remove \"%s\" from dictionary"
 msgstr "\"%s\" elvtávolítása a szótárból"
 
-#: ../src/subs_edit_ctrl.cpp:425
+#: ../src/subs_edit_ctrl.cpp:430
 msgid "No spell checker suggestions"
 msgstr "Nincs helyesírás-ellenőrzői javaslat"
 
-#: ../src/subs_edit_ctrl.cpp:431
+#: ../src/subs_edit_ctrl.cpp:436
 #, c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr "Helyesírás-ellenőrző javaslatok erre: \"%s\""
 
-#: ../src/subs_edit_ctrl.cpp:436
+#: ../src/subs_edit_ctrl.cpp:441
 msgid "No correction suggestions"
 msgstr "Nincs javítási javaslat"
 
-#: ../src/subs_edit_ctrl.cpp:442
+#: ../src/subs_edit_ctrl.cpp:447
 #, c-format
 msgid "Add \"%s\" to dictionary"
 msgstr "\"%s\" hozzáadása a szótárhoz"
 
-#: ../src/subs_edit_ctrl.cpp:477
+#: ../src/subs_edit_ctrl.cpp:482
 #, c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr "Szókincstár javaslatok erre: \"%s\""
 
-#: ../src/subs_edit_ctrl.cpp:480
+#: ../src/subs_edit_ctrl.cpp:485
 msgid "No thesaurus suggestions"
 msgstr "Nincs szókincstár javaslat"
 
-#: ../src/subs_edit_ctrl.cpp:483
+#: ../src/subs_edit_ctrl.cpp:488
 msgid "Thesaurus language"
 msgstr "Szókincstár nyelve"
 
-#: ../src/subs_edit_ctrl.cpp:492
+#: ../src/subs_edit_ctrl.cpp:497
 msgid "Disable"
 msgstr "Kikapcsolva"
 
@@ -6195,73 +6296,13 @@ msgstr ""
 msgid "visual typesetting"
 msgstr "vizuális szerkesztés"
 
-#: ../src/visual_tool_cross.cpp:61 ../src/visual_tool_drag.cpp:330
+#: ../src/visual_tool_cross.cpp:61 ../src/visual_tool_drag.cpp:329
 msgid "positioning"
 msgstr "elhelyezés"
 
-#: ../src/visual_tool_drag.cpp:57
+#: ../src/visual_tool_drag.cpp:55
 msgid "Toggle between \\move and \\pos"
 msgstr "\\move és \\pos közt vált"
-
-#: ../src/visual_tool_vector_clip.cpp:58
-msgid "Drag control points"
-msgstr "Vezérlőpontok mozgatása"
-
-#: ../src/visual_tool_vector_clip.cpp:59
-msgid "Appends a line"
-msgstr "Egyenes beszúrása"
-
-#: ../src/visual_tool_vector_clip.cpp:59
-msgid "Line"
-msgstr "Egyenes"
-
-#: ../src/visual_tool_vector_clip.cpp:60
-msgid "Appends a bezier bicubic curve"
-msgstr "Ív beszúrása"
-
-#: ../src/visual_tool_vector_clip.cpp:60
-msgid "Bicubic"
-msgstr "Ív"
-
-#: ../src/visual_tool_vector_clip.cpp:62
-msgid "Convert"
-msgstr "Váltás"
-
-#: ../src/visual_tool_vector_clip.cpp:62
-msgid "Converts a segment between line and bicubic"
-msgstr "Egyenes és ív típusú szegmens közötti váltás"
-
-#: ../src/visual_tool_vector_clip.cpp:63
-msgid "Insert"
-msgstr "Beszúrás"
-
-#: ../src/visual_tool_vector_clip.cpp:63
-msgid "Inserts a control point"
-msgstr "Vezérlőpont beszúrása"
-
-#: ../src/visual_tool_vector_clip.cpp:64
-msgid "Remove"
-msgstr "Eltávolítás"
-
-#: ../src/visual_tool_vector_clip.cpp:64
-msgid "Removes a control point"
-msgstr "Vezérlőpont eltávolítása"
-
-#: ../src/visual_tool_vector_clip.cpp:66
-msgid "Draws a freehand shape"
-msgstr "Szabadkézi forma rajzolása"
-
-#: ../src/visual_tool_vector_clip.cpp:66
-msgid "Freehand"
-msgstr "Szabadkézi"
-
-#: ../src/visual_tool_vector_clip.cpp:67
-msgid "Draws a smoothed freehand shape"
-msgstr "Ívelt szabadkézi forma rajzolása"
-
-#: ../src/visual_tool_vector_clip.cpp:67
-msgid "Freehand smooth"
-msgstr "Szabadkézi ívelt"
 
 #: ../src/visual_tool_vector_clip.cpp:272
 msgid "delete control point"
@@ -6302,6 +6343,18 @@ msgstr "Idők folytonossá tétele (k&ezdet illesztése)"
 #: default_menu.json:0
 msgid "&Make times continuous (change end)"
 msgstr "Idők folytonossá tétele (&vége illesztése)"
+
+#: default_menu.json:0
+msgid "Make Times Continuous"
+msgstr "Sorok folytonossá tétele"
+
+#: default_menu.json:0
+msgid "Set &Zoom"
+msgstr "N&agyítás beállítása"
+
+#: default_menu.json:0
+msgid "Override &AR"
+msgstr "K&éparány felülbírálása"
 
 #: default_menu.json:0
 msgid "&File"
@@ -6350,18 +6403,6 @@ msgstr "Minden sor rendezése"
 #: default_menu.json:0
 msgid "Sort Selected Lines"
 msgstr "Kijelölt sorok rendezése"
-
-#: default_menu.json:0
-msgid "Make Times Continuous"
-msgstr "Sorok folytonossá tétele"
-
-#: default_menu.json:0
-msgid "Set &Zoom"
-msgstr "N&agyítás beállítása"
-
-#: default_menu.json:0
-msgid "Override &AR"
-msgstr "K&éparány felülbírálása"
 
 #: default_menu.json:0
 msgid "Window"
@@ -6465,6 +6506,14 @@ msgstr "Teljes szélességűvé alakítás"
 msgid "Convert Latin letters to SJIS fullwidth letters"
 msgstr "A latin betűket teljes szélességű SJIS betűkké alakítja."
 
+#: ../automation/autoload/select-overlaps.moon:17
+msgid "Select overlaps"
+msgstr ""
+
+#: ../automation/autoload/select-overlaps.moon:18
+msgid "Select lines which begin while another non-comment line is active"
+msgstr ""
+
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
 msgstr "Címkék eltávolítása"
@@ -6477,26 +6526,25 @@ msgstr "Eltávolít minden felülíró címkét a kijelölt sorból."
 msgid "strip tags"
 msgstr "címkék eltávolítása"
 
-#: ../packages/desktop/aegisub.desktop.in.in:5
+#: ../packages/desktop/aegisub.desktop.in.in:4
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:6
 msgid "Aegisub"
 msgstr "Aegisub"
 
-#: ../packages/desktop/aegisub.desktop.in.in:6
+#: ../packages/desktop/aegisub.desktop.in.in:5
 msgid "Subtitle Editor"
 msgstr "Feliratszerkesztő"
 
-#: ../packages/desktop/aegisub.desktop.in.in:7
+#: ../packages/desktop/aegisub.desktop.in.in:6
 msgid "Create and edit subtitles for film and videos."
 msgstr "Feliratok készítése filmekhez és videókhoz."
 
-#: ../packages/desktop/aegisub.desktop.in.in:13
+#: ../packages/desktop/aegisub.desktop.in.in:12
 msgid "subtitles;subtitle;captions;captioning;video;audio;"
 msgstr ""
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
-msgid ""
-"A free, cross-platform open source tool for creating and modifying subtitles"
+msgid "Create and modify subtitles"
 msgstr ""
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:9
@@ -6556,15 +6604,15 @@ msgstr ""
 msgid "Fully scriptable through the Automation module"
 msgstr ""
 
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:30
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:43
 msgid "Typesetting"
 msgstr ""
 
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:34
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:47
 msgid "Audio video"
 msgstr ""
 
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:38
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
 msgstr ""
 
@@ -6598,3 +6646,6 @@ msgstr ""
 "ingyenesen használhatja, viszont a fejlesztők semmiféle garanciát nem "
 "vállalnak a program működéséért.%n%nTovábbi információkért látogasson el az "
 "Aegisub weboldalára, ahol többek között beszerezheti a program forráskódját."
+
+#~ msgid "Drawings"
+#~ msgstr "Rajzok"

@@ -20,7 +20,7 @@ msgstr ""
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
-msgstr "Автоопределение направления написания текста (только libass)"
+msgstr "Автоопределение направления написания текста (только libass)
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
@@ -5505,6 +5505,7 @@ msgstr "Подсветка синтаксиса"
 
 #: ../src/preferences.cpp:254
 msgid "Background"
+
 msgstr "Фон поля редактирования субтитра"
 
 #: ../src/preferences.cpp:255
@@ -6563,6 +6564,14 @@ msgid "Select lines which begin while another non-comment line is active"
 msgstr ""
 "Выбрать строки, время начала которых пересекается одновременно с другой не "
 "закомментированной активной строкой"
+
+#: ../automation/autoload/select-overlaps.moon:17
+msgid "Select overlaps"
+msgstr ""
+
+#: ../automation/autoload/select-overlaps.moon:18
+msgid "Select lines which begin while another non-comment line is active"
+msgstr ""
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
