@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.4.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-02 21:53+0100\n"
-"PO-Revision-Date: 2025-05-28 17:33+0000\n"
+"PO-Revision-Date: 2025-05-29 21:33+0000\n"
 "Last-Translator: zlom\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
-msgstr "Автоопределение направления написания текста (только libass)
+msgstr "Автоопределение направления написания текста (только libass)"
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
@@ -5505,7 +5505,6 @@ msgstr "Подсветка синтаксиса"
 
 #: ../src/preferences.cpp:254
 msgid "Background"
-
 msgstr "Фон поля редактирования субтитра"
 
 #: ../src/preferences.cpp:255
@@ -5518,15 +5517,15 @@ msgstr "Комментарии"
 
 #: ../src/preferences.cpp:257
 msgid "Drawing Commands"
-msgstr "Команды маски"
+msgstr "Команды рисования"
 
 #: ../src/preferences.cpp:258
 msgid "Drawing X Coords"
-msgstr "Координаты X маски"
+msgstr "Координаты X рисунка"
 
 #: ../src/preferences.cpp:259
 msgid "Drawing Y Coords"
-msgstr "Координаты Y маски"
+msgstr "Координаты Y рисунка"
 
 #: ../src/preferences.cpp:260
 msgid "Underline Spline Endpoints"
@@ -6564,14 +6563,6 @@ msgid "Select lines which begin while another non-comment line is active"
 msgstr ""
 "Выбрать строки, время начала которых пересекается одновременно с другой не "
 "закомментированной активной строкой"
-
-#: ../automation/autoload/select-overlaps.moon:17
-msgid "Select overlaps"
-msgstr ""
-
-#: ../automation/autoload/select-overlaps.moon:18
-msgid "Select lines which begin while another non-comment line is active"
-msgstr ""
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
