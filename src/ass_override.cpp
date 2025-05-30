@@ -181,10 +181,12 @@ static void load_protos() {
 	// Longer tag names must appear before shorter tag names
 
 	proto[0].Set("\\alpha", VariableDataType::TEXT, AssParameterClass::ALPHA); // \alpha&H<aa>&
-	proto[++i].Set("\\bord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_XY); // \bord<depth>
+
+	// FIXME: convert \bord and \shad to \xbord\ybord and \xshad\yshad during anamorphic resampling
+	proto[++i].Set("\\bord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_Y); // \bord<depth>
 	proto[++i].Set("\\xbord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_X); // \xbord<depth>
 	proto[++i].Set("\\ybord", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_Y); // \ybord<depth>
-	proto[++i].Set("\\shad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_XY); // \shad<depth>
+	proto[++i].Set("\\shad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_Y); // \shad<depth>
 	proto[++i].Set("\\xshad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_X); // \xshad<depth>
 	proto[++i].Set("\\yshad", VariableDataType::FLOAT, AssParameterClass::ABSOLUTE_SIZE_Y); // \yshad<depth>
 
