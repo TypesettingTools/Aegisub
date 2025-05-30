@@ -185,8 +185,8 @@ namespace {
 
 	void resample_style(resample_state *state, AssStyle &style) {
 		style.fontsize = int(style.fontsize * state->ry + 0.5);
-		style.outline_w *= state->rm;
-		style.shadow_w *= state->rm;
+		style.outline_w *= state->ry;
+		style.shadow_w *= state->ry;
 		style.spacing *= state->ry;  // gets multiplied by scalex (and hence by ar) during rendering
 		style.scalex *= state->ar;
 		for (int i = 0; i < 3; i++)
