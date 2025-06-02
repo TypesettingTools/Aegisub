@@ -29,13 +29,13 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    with open(args.base) as bf:
+    with open(args.base, encoding="utf-8") as bf:
         base = json.load(bf)
 
-    with open(args.overrides) as of:
+    with open(args.overrides, encoding="utf-8") as of:
         over = json.load(of)
 
     override(base, over, diff=args.diff)
 
-    with open(args.out, "w") as of:
+    with open(args.out, "w", encoding="utf-8") as of:
         json.dump(base, of, ensure_ascii=False, indent=4 if args.pretty else None)
