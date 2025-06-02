@@ -140,7 +140,7 @@ public:
 	/// The playback end can not be changed in any other way.
 	void PlayPrimaryRange();
 
-	/// @brief Start or restart audio playback, playing from a point to the end of of the primary playback range
+	/// @brief Start or restart audio playback, playing from a point to the end of the primary playback range
 	/// @param start_ms Time in milliseconds to start playback at
 	///
 	/// This behaves like PlayPrimaryRange, but the start point can differ from
