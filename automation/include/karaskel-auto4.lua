@@ -272,10 +272,23 @@ function karaskel.preproc_line_size(meta, styles, line)
 	line.width, line.height, line.descent, line.extlead = aegisub.text_extents(line.styleref, line.text_stripped)
 	line.width = line.width * meta.video_x_correct_factor
 
+	local cur_style = line.styleref
+
 	-- Calculate syllable sizing
 	for s = 0, line.kara.n do
 		local syl = line.kara[s]
-		syl.style = line.styleref
+
+		syl.style = cur_style
+		-- Detect any reset style tags
+		local _, reset_end, style_reset_name = syl.text:find("%{.*\\%r([^}\\]+)")
+		if style_reset_name and styles[style_reset_name] then
+			cur_style = styles[style_reset_name]
+			-- match does not include final }
+			if reset_end + 1 < #syl.text then
+				syl.style = cur_style
+			end
+		end
+
 		syl.width, syl.height = aegisub.text_extents(syl.style, syl.text_spacestripped)
 		syl.width = syl.width * meta.video_x_correct_factor
 		syl.prespacewidth = aegisub.text_extents(syl.style, syl.prespace) * meta.video_x_correct_factor
@@ -293,6 +306,9 @@ function karaskel.preproc_line_size(meta, styles, line)
 		for f = 1, line.furi.n do
 			local furi = line.furi[f]
 			furi.style = line.furistyle
+			if styles[furi.syl.style.name .. "-furigana"] then
+				furi.style = styles[furi.syl.style.name .. "-furigana"]
+			end
 			furi.width, furi.height = aegisub.text_extents(furi.style, furi.text)
 			furi.width = furi.width * meta.video_x_correct_factor
 			furi.prespacewidth = 0
