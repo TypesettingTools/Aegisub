@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub [TR]\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-02 21:53+0100\n"
-"PO-Revision-Date: 2025-01-14 09:25+0300\n"
+"PO-Revision-Date: 2025-05-19 21:30+0300\n"
 "Last-Translator: Kerim Demirkaynak <kerim@post.com>\n"
 "Language-Team: Türkçe\n"
 "Language: tr\n"
@@ -12,12 +12,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 3.4.4\n"
+"X-Generator: Poedit 3.5\n"
 "X-Loco-Version: 2.6.10; wp-6.5.5\n"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
-msgstr ""
+msgstr "Temel yönü otomatik algıla (sadece libass)"
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
@@ -2300,7 +2300,7 @@ msgstr "Görüntülenmekte olan kareyi panoya kopyala"
 
 #: ../src/command/video.cpp:310 ../src/command/video.cpp:311
 msgid "Copy image to Clipboard (no subtitles)"
-msgstr "Resmi Pano'ya kopyala (altyazı yok)"
+msgstr "Resmi Pano'ya kopyala (altyazısız)"
 
 #: ../src/command/video.cpp:312
 msgid ""
@@ -2309,13 +2309,13 @@ msgstr "Görüntülenmekte olan kareyi altyazılar olmadan panoya kopyala"
 
 #: ../src/command/video.cpp:321 ../src/command/video.cpp:322
 msgid "Copy image to Clipboard (only subtitles)"
-msgstr ""
+msgstr "Resmi Pano'ya kopyala (sadece altyazı)"
 
 #: ../src/command/video.cpp:323
 msgid ""
 "Copy the currently displayed subtitles to the clipboard, with transparent "
 "background"
-msgstr ""
+msgstr "Geçerli altyazıları arka plan şeffaf olacak şekilde panoya kopyala"
 
 #: ../src/command/video.cpp:332 ../src/command/video.cpp:333
 msgid "Next Frame"
@@ -2386,7 +2386,7 @@ msgstr "Görüntülenen kareyi videonun dizinindeki bir PNG dosyasına kaydet"
 
 #: ../src/command/video.cpp:523 ../src/command/video.cpp:524
 msgid "Save PNG snapshot (no subtitles)"
-msgstr "Ekranı PNG olarak kaydet (altyazı yok)"
+msgstr "Ekranı PNG olarak kaydet (altyazısız)"
 
 #: ../src/command/video.cpp:525
 msgid ""
@@ -2398,13 +2398,15 @@ msgstr ""
 
 #: ../src/command/video.cpp:534 ../src/command/video.cpp:535
 msgid "Save PNG snapshot (only subtitles)"
-msgstr ""
+msgstr "Ekranı PNG olarak kaydet (sadece altyazı)"
 
 #: ../src/command/video.cpp:536
 msgid ""
 "Save the currently displayed subtitles with transparent background to a PNG "
 "file in the video's directory"
 msgstr ""
+"Geçerli altyazıları arka planı şeffaf olacak şekilde videonun dizinine PNG "
+"dosyası olarak kaydet"
 
 #: ../src/command/video.cpp:546
 msgid "&Jump to..."
@@ -3007,15 +3009,15 @@ msgstr "Dışarı aktar"
 
 #: ../src/dialog_export.cpp:121
 msgid "Move &Up"
-msgstr "Yukarı &taşı"
+msgstr "Yukarı &Taşı"
 
 #: ../src/dialog_export.cpp:122
 msgid "Move &Down"
-msgstr "Aşağı &taşı"
+msgstr "Aşağı &Taşı"
 
 #: ../src/dialog_export.cpp:124 ../src/dialog_selected_choices.cpp:33
 msgid "Select &None"
-msgstr "Hiçbirini &seçme"
+msgstr "Hiçbirini &Seçme"
 
 #: ../src/dialog_export.cpp:140
 msgid "Text encoding:"
@@ -3164,7 +3166,7 @@ msgstr "Ekran standardı"
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
 msgid "* An error occurred when enumerating the used fonts: %s.\n"
-msgstr ""
+msgstr "* Kullanılan fontlar listelenirken bir hata oluştu: %s.\n"
 
 #: ../src/dialog_fonts_collector.cpp:115
 msgid "Symlinking fonts to folder...\n"
@@ -4691,7 +4693,7 @@ msgstr "Versiyon Kontrol"
 
 #: ../src/dialog_version_check.cpp:115
 msgid "&Auto Check for Updates"
-msgstr "&Güncelleştirmeleri otomatik denetle"
+msgstr "&Güncelleştirmeleri Otomatik Denetle"
 
 #: ../src/dialog_version_check.cpp:120
 msgid "Remind me again in a &week"
@@ -5384,7 +5386,7 @@ msgstr "Zaman kutularının üzerine yaz"
 
 #: ../src/preferences.cpp:211
 msgid "Shift+Enter adds \\n"
-msgstr ""
+msgstr "Shift+Enter \\n ekler."
 
 #: ../src/preferences.cpp:212
 msgid "Enable syntax highlighting"
@@ -5480,19 +5482,19 @@ msgstr "Yorumlar"
 
 #: ../src/preferences.cpp:257
 msgid "Drawing Commands"
-msgstr ""
+msgstr "Çizim Komutları"
 
 #: ../src/preferences.cpp:258
 msgid "Drawing X Coords"
-msgstr ""
+msgstr "X Çizim Koordinatları"
 
 #: ../src/preferences.cpp:259
 msgid "Drawing Y Coords"
-msgstr ""
+msgstr "Y Çizim Koordinatları"
 
 #: ../src/preferences.cpp:260
 msgid "Underline Spline Endpoints"
-msgstr ""
+msgstr "Eğri Uç Noktalarının Altını Çiz"
 
 #: ../src/preferences.cpp:262
 msgid "Brackets"
@@ -6396,7 +6398,7 @@ msgstr "&Yardım"
 
 #: default_menu.json:0
 msgid "&Insert Lines"
-msgstr "&Satırları ekle"
+msgstr "&Satırları Ekle"
 
 #: default_menu.json:0
 msgid "Join Lines"
@@ -6516,11 +6518,11 @@ msgstr "Latin harflerini SJIS tam genişlikli harflere dönüştür"
 
 #: ../automation/autoload/select-overlaps.moon:17
 msgid "Select overlaps"
-msgstr ""
+msgstr "Çakışanları seç"
 
 #: ../automation/autoload/select-overlaps.moon:18
 msgid "Select lines which begin while another non-comment line is active"
-msgstr ""
+msgstr "Başka bir yorum olmayan satır aktifken başlayan satırları seç."
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
@@ -6553,7 +6555,7 @@ msgstr "altyazılar;altyazı;başlıklar;başlık;video;ses"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
 msgid "Create and modify subtitles"
-msgstr ""
+msgstr "Altyazı oluştur ve düzenle"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:9
 msgid ""
