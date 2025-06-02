@@ -34,7 +34,7 @@ class TextFileReader {
 public:
 	/// @brief Constructor
 	/// @param filename File to open
-	/// @param enc      Encoding to use, or empty to autodetect
+	/// @param encoding Encoding to use, or empty to autodetect
 	/// @param trim     Whether to trim whitespace from lines read
 	TextFileReader(agi::fs::path const& filename, const char *encoding, bool trim=true);
 	/// @brief Destructor
