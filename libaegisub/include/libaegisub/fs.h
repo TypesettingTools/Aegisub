@@ -200,7 +200,7 @@ void Rename(path const& from, path const& to);
 void Copy(path const& from, path const& to);
 
 /// Delete a file
-/// @param path Path to file to delete
+/// @param file Path to file to delete
 /// @throws agi::FileNotAccessibleError if file exists but could not be deleted
 bool Remove(path const& file);
 

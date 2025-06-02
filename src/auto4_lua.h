@@ -123,9 +123,9 @@ namespace Automation4 {
 		std::unique_ptr<AssEntry> LuaToTrackedAssEntry(lua_State *L);
 
 		/// @brief Signal that the script using this file is now done running
-		/// @param set_undo If there's any uncommitted changes to the file,
-		///                 they will be automatically committed with this
-		///                 description
+		/// @param undo_description If there's any uncommitted changes to the
+		///                         file, they will be automatically committed
+		///                         with this description
 		std::vector<AssEntry *> ProcessingComplete(wxString const& undo_description = wxString());
 
 		/// End processing without applying any changes made
