@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file menutool.cpp
+/// @file toolbar.cpp
 /// @brief Dynamic menu toolbar generator.
 /// @ingroup toolbar menu
 

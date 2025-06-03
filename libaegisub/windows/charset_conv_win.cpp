@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file charset_conv_win.h
+/// @file charset_conv_win.cpp
 /// @brief Windows-specific charset conversion stuff
 /// @ingroup libaegisub windows
 
