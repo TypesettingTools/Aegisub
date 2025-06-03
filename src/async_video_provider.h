@@ -120,7 +120,7 @@ public:
 	/// purposes like copying the current subtitles to the clipboard.
 	VideoFrame GetSubtitles(double time);
 
-	/// Ask the video provider to change YCbCr matricies
+	/// Ask the video provider to change YCbCr matrices
 	void SetColorSpace(std::string_view matrix);
 
 	int GetFrameCount() const             { return source_provider->GetFrameCount(); }

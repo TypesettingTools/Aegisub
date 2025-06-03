@@ -21,7 +21,7 @@
 /// bundles on Apple Macintosh OS X.
 ///
 /// The GetBundle*Directory functions return the paths of directories inside
-/// the appliaction bundle where the application can store static data and
+/// the application bundle where the application can store static data and
 /// shared libraries for its own use.
 /// (The bundle and its contents should be considered read-only.)
 ///
@@ -41,7 +41,7 @@ public:
 }
 
 namespace util {
-/// @brief Get the esources directory.
+/// @brief Get the resources directory.
 /// @return Resources directory.
 ///
 /// Mainly for user interface elements such as graphics and strings

@@ -120,7 +120,7 @@ DEFINE_FS_EXCEPTION(FileNotAccessible, FileSystemError, "File is not accessible:
 /// A file can't be accessed because there's no file by the given name
 DEFINE_FS_EXCEPTION(FileNotFound, FileNotAccessible, "File not found: ");
 
-/// An error of some unknown type has occured
+/// An error of some unknown type has occurred
 DEFINE_EXCEPTION(FileSystemUnknownError, FileSystemError);
 
 /// The path exists, but isn't a file
