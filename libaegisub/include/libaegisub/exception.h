@@ -41,7 +41,7 @@ namespace agi {
 	/// However, there are no public constructors for this class, it should
 	/// not be instantiated and thrown directly. Throw instances of a
 	/// relevant sub class, declare a new one if necessary. It is allowed to
-	/// declare sub classes of Exception and derivates in private headers
+	/// declare sub classes of Exception and derivatives in private headers
 	/// and even inside source files, as long as a caller has a chance to
 	/// catch the exception thrown.
 	///
