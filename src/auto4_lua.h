@@ -205,7 +205,7 @@ namespace Automation4 {
 		/// Does the dialog contain any buttons
 		bool use_buttons;
 
-		/// Id of the button pushed (once a button has been pushed)
+		/// ID of the button pushed (once a button has been pushed)
 		int button_pushed = -1;
 
 		wxWindow *window = nullptr;

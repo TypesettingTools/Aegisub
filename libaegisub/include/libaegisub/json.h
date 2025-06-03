@@ -24,7 +24,7 @@ json::UnknownElement parse(std::istream &stream);
 
 /// Parse a json stream, with default handler.
 /// @param file Path to JSON file.
-/// @param default_config Default config file to load incase of nonexistent file
+/// @param default_config Default config file to load in case of nonexistent file
 /// @return json::UnknownElement
 json::UnknownElement file(agi::fs::path const& file, std::string_view default_config);
 
