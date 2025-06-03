@@ -45,7 +45,7 @@ char *map(int64_t s_offset, uint64_t length, boost::interprocess::mode_t mode,
 		return static_cast<char *>(region->get_address()) + offset - mapping_start;
 
 	if (sizeof(size_t) == 4) {
-		mapping_start = offset & ~0xFFFFFULL; // Align to 1 MB bondary
+		mapping_start = offset & ~0xFFFFFULL; // Align to 1 MB boundary
 		length += static_cast<size_t>(offset - mapping_start);
 		// Map 16 MB or length rounded up to the next MB
 		length = std::min<uint64_t>(std::max<uint64_t>(0x1000000U, (length + 0xFFFFF) & ~0xFFFFF), file_size - mapping_start);

@@ -31,7 +31,7 @@ Comment: 0,0:00:35.00,0:00:40.00,Default,,0000,0000,0000,template line 2 notext,
 Comment: 0,0:00:40.00,0:00:40.00,Default,,0000,0000,0000,template line 2,{this appends more tags to each syllable in every line 2, the notext from previous line 2 template is automatically "carried over"}
 Comment: 0,0:00:40.00,0:00:40.00,Default,,0000,0000,0000,template line,{this generates an anonymous simple-k-replacer style template line}
 Comment: 0,0:00:40.00,0:00:40.00,Default,,0000,0000,0000,template line keeptags,{this creates another anonymous simple-k-replacer style template line, and also keeps all tags from the original text. the lines built by this template are separate from those built by the previous anonymous one}
-Comment: 0,0:00:40.00,0:00:45.00,Default,,0000,0000,0000,template syl,{each syllable genrates a line like this, with the syllable text appended}
+Comment: 0,0:00:40.00,0:00:45.00,Default,,0000,0000,0000,template syl,{each syllable generates a line like this, with the syllable text appended}
 Comment: 0,0:00:45.00,0:00:50.00,Default,,0000,0000,0000,template syl notext,{each syllable generates a line like this, syllable text not automatically appended}
 Comment: 0,0:00:50.00,0:00:55.00,Default,,0000,0000,0000,template syl repeat 10,{each syllable generates 10 lines like this, syllable text automatically appended, repeat counter in variable j}
 Comment: 0,0:00:55.00,0:01:00.00,Default,,0000,0000,0000,template syl all,{this template is used for any style, not just the one specified}
@@ -41,7 +41,7 @@ Comment: 0,0:00:55.00,0:01:00.00,Default,,0000,0000,0000,template syl notext loo
 Comment: 0,0:01:00.00,0:01:05.00,Default,,0000,0000,0000,template char,{each character generates a line like this, with the character appended. positioning variables matches the character and timing matches syllable}
 Comment: 0,0:01:05.00,0:01:10.00,Default,,0000,0000,0000,template char multi,{multi highlight also supported for char, as well as repeat and notext}
 Comment: 0,0:01:10.00,0:01:15.00,Default,,0000,0000,0000,template furi,{each furigana part generates a line like this, a new style with changed font size is automatically generated and applied}
-Comment: 0,0:01:15.00,0:01:20.00,Default,,0000,0000,0000,template syl furi,{this template generates both normal syllables and furigana, positionig/sizing info adjusted to match whatever the template produces at the time}
+Comment: 0,0:01:15.00,0:01:20.00,Default,,0000,0000,0000,template syl furi,{this template generates both normal syllables and furigana, positioning/sizing info adjusted to match whatever the template produces at the time}
 Dialogue: 0,0:01:20.00,0:01:25.00,Default,,0000,0000,0000,,for notext syl and char templates there are also variables $pretext and $posttext which hold the text before and after the syllable/character, to be able to create "build up" style effects
 Dialogue: 0,0:01:25.00,0:01:30.00,Default,,0000,0000,0000,,template line timing doesn't matter but layer does (layer is copied directly to the output lines)
 Dialogue: 0,0:01:30.00,0:01:35.00,Default,,0000,0000,0000,,style is used for matching again the text
@@ -59,5 +59,5 @@ Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,also, there is no gua
 Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,anonymous 'line' templates can't have 'pre-line' templates
 Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,while 'syl', 'char' and 'furi' can freely be combined in one line, 'line' and 'pre-line' can't live with any other class, not even each other (ie. you can't have 'line pre-line', 'line syl', 'syl pre-line' etc.)
 Dialogue: 0,0:02:05.00,0:02:05.00,Default,,0000,0000,0000,,'syl' is the default for templates with no other class specified, like 'once' is the default for code
-Comment: 0,0:02:05.00,0:02:10.00,Default,template,0000,0000,0000,,auto3 multi-template style is not supported, it'll need a different script (supporting it all in one will be more work than it's worth, probably, particularily because of differences in variables)
+Comment: 0,0:02:05.00,0:02:10.00,Default,template,0000,0000,0000,,auto3 multi-template style is not supported, it'll need a different script (supporting it all in one will be more work than it's worth, probably, particularly because of differences in variables)
 Dialogue: 0,0:02:10.00,0:02:15.00,Default,,0000,0000,0000,,
