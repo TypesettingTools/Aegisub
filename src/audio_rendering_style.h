@@ -30,7 +30,7 @@
 /// @brief Styles audio may be rendered in
 ///
 /// The constants are ordered by priority:
-/// Primary has highest priority and should overlap selected, which should
+/// Primary has the highest priority and should overlap selected, which should
 /// overlap inactive, which should overlap normal regions.
 enum AudioRenderingStyle {
 	/// Regular audio with no special properties

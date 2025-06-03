@@ -87,7 +87,7 @@ aegisub.log is preferred since its name is shorter and more general.
     4: Debug, some additional data only needed for development.
     5: Trace, extremely verbose data showing every tiny step during execution.
   The level can be used to let the user limit how severe messages will be
-  shown, so you eg. can leave trace messages in, yet the casual user of the
+  shown, so you e.g. can leave trace messages in, yet the casual user of the
   script won't see them unless he explicitly enables it.
   This argument is optional and can be left out, in which case the message
   will always be displayed, regardless of the current trace level set in
