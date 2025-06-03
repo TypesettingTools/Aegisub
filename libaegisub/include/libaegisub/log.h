@@ -95,7 +95,7 @@ public:
 	std::vector<SinkMessage> GetMessages() const;
 };
 
-/// An emitter to produce human readable output for a log sink.
+/// An emitter to produce human-readable output for a log sink.
 class Emitter {
 public:
 	/// Destructor

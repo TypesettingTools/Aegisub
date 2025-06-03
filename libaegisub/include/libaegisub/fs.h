@@ -154,7 +154,7 @@ bool DirectoryExists(path const& dir);
 /// Get the local-charset encoded shortname for a file
 ///
 /// This is purely for compatibility with external libraries which do
-/// not support unicode filenames on Windows. On all other platforms,
+/// not support Unicode filenames on Windows. On all other platforms,
 /// it is a no-op.
 std::string ShortName(path const& file_path);
 
