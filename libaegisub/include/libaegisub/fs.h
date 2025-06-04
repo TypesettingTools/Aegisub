@@ -105,7 +105,7 @@ public:
 		const char *GetName() const { return ""; } \
 	}
 
-/// @class agi::FileSystemError
+/// @class agi::fs::FileSystemError
 /// @extends agi::Exception
 /// @brief Base class for errors related to the file system
 ///
@@ -163,20 +163,20 @@ uintmax_t FreeSpace(path const& dir_path);
 
 /// Get the size in bytes of the file at path
 ///
-/// @throws agi::FileNotFound if path does not exist
-/// @throws agi::acs::NotAFile if path is a directory
-/// @throws agi::acs::Read if path exists but could not be read
+/// @throws agi::fs::FileNotFound if path does not exist
+/// @throws agi::fs::NotAFile if path is a directory
+/// @throws agi::fs::ReadDenied if path exists but could not be read
 uintmax_t Size(path const& file_path);
 
 /// Get the modification time of the file at path
 ///
-/// @throws agi::FileNotFound if path does not exist
-/// @throws agi::acs::NotAFile if path is a directory
-/// @throws agi::acs::Read if path exists but could not be read
+/// @throws agi::fs::FileNotFound if path does not exist
+/// @throws agi::fs::NotAFile if path is a directory
+/// @throws agi::fs::ReadDenied if path exists but could not be read
 std::filesystem::file_time_type ModifiedTime(path const& file_path);
 
 /// Create a directory and all required intermediate directories
-/// @throws agi::acs::Write if the directory could not be created.
+/// @throws agi::fs::WriteDenied if the directory could not be created.
 ///
 /// Trying to create a directory which already exists is not an error.
 bool CreateDirectory(path const& dir_path);
@@ -201,7 +201,7 @@ void Copy(path const& from, path const& to);
 
 /// Delete a file
 /// @param file Path to file to delete
-/// @throws agi::FileNotAccessibleError if file exists but could not be deleted
+/// @throws agi::fs::FileNotAccessible if file exists but could not be deleted
 bool Remove(path const& file);
 
 /// Check if the file has the given extension
