@@ -128,7 +128,7 @@ public:                                                        \
 	DEFINE_EXCEPTION(UserCancelException, Exception);
 
 	/// @class agi::InternalError
-	/// @extends agi:Exception
+	/// @extends agi::Exception
 	/// @brief Errors that should never happen and point to some invalid assumption in the code
 	///
 	/// Throw an internal error when a sanity check fails, and the insanity should have
@@ -139,7 +139,7 @@ public:                                                        \
 	DEFINE_EXCEPTION(InternalError, Exception);
 
 	/// @class agi::EnvironmentError
-	/// @extends agi:Exception
+	/// @extends agi::Exception
 	/// @brief The execution environment is broken in some fundamental way
 	///
 	/// Throw an environment error when a call to the platform API has failed
