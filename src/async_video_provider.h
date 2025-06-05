@@ -120,7 +120,7 @@ public:
 	/// purposes like copying the current subtitles to the clipboard.
 	VideoFrame GetSubtitles(double time);
 
-	/// Ask the video provider to change YCbCr matricies
+	/// Ask the video provider to change YCbCr matrices
 	void SetColorSpace(std::string_view matrix);
 
 	int GetFrameCount() const             { return source_provider->GetFrameCount(); }
@@ -137,9 +137,9 @@ public:
 	bool HasAudio() const                 { return source_provider->HasAudio(); }
 
 	/// @brief Constructor
-	/// @param videoFileName File to open
+	/// @param video_filename File to open
 	/// @param parent Event handler to send FrameReady events to
-	AsyncVideoProvider(agi::fs::path const& filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
+	AsyncVideoProvider(agi::fs::path const& video_filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
 	~AsyncVideoProvider();
 };
 

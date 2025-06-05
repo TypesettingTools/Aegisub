@@ -53,7 +53,7 @@
 #include <mutex>
 #include <thread>
 
-// X11 is the bestest
+// X11 is the best
 #undef None
 
 namespace {

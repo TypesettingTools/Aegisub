@@ -81,7 +81,7 @@ class DataBlockCache {
 	BlockFactoryT factory;
 
 	/// @brief Dispose of all blocks in a macroblock and mark it empty
-	/// @param mb_index Index of macroblock to clear
+	/// @param mb Index of macroblock to clear
 	void KillMacroBlock(MacroBlock &mb)
 	{
 		if (mb.blocks.empty())

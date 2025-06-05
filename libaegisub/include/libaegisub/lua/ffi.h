@@ -30,7 +30,7 @@ static void register_lib_functions(lua_State *) {
 
 template<typename Func, typename... Rest>
 void register_lib_functions(lua_State *L, const char *name, Func *func, Rest... rest) {
-	// This cast isn't legal, but LuaJIT internally requires that it work, so we can rely on it too
+	// This cast isn't legal, but LuaJIT internally requires it to work, so we can rely on it too
 	do_register_lib_function(L, name, type_name<Func*>::name().c_str(), (void *)func);
 	register_lib_functions(L, rest...);
 }

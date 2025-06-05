@@ -231,7 +231,7 @@ subs.insert(i, line[, line2, ...])
   Insert one or more lines before index i.
 
 
-Effeciency concerns
+Efficiency concerns
 
 Internally in Aegisub the subtitles are stored in a linked list, meaning
 random access runs in O(n) time rather than O(1), as the interface presented
@@ -239,7 +239,7 @@ here could make it seem like.
 
 Internally, a cursor to the last accessed item is kept, to make sequential or
 mostly-sequential access to items faster, but totally random access will
-still be somewhat ineffecient. Accessing items near the start or end of the
+still be somewhat inefficient. Accessing items near the start or end of the
 subtitle file can also be done reasonably fast however.
 
 After an item-by-item deletion, the cursor will be placed at the item that

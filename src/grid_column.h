@@ -20,10 +20,10 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <wx/string.h>
 
 class AssDialogue;
 class wxDC;
-class wxString;
 namespace agi { struct Context; }
 
 class WidthHelper {

@@ -161,7 +161,7 @@ public:
 	void SetResolution(size_t derivation_size, size_t derivation_dist);
 
 	/// @brief Set the vertical relative position of the reference frequency (1 kHz)
-	/// @param fref_pos_ Vertical position of the 1 kHz frequency. Between 0 and 1, boundaries excluded.
+	/// @param pos_fref_ Vertical position of the 1 kHz frequency. Between 0 and 1, boundaries excluded.
 	///
 	/// A value close to 0 gives a linear display, and close to 1 a logarithmic display.
 	void set_reference_frequency_position (float pos_fref_);

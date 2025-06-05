@@ -6,7 +6,7 @@ to implement the various features.
 
 ---
 
-Macro Registation Function
+Macro Registration Function
 
 This is a function called from top-level of an Automation script to register
 a new Macro Feature.
@@ -187,7 +187,7 @@ validate_macro.)
 
 @subtitles (user data)
   A Subtitles Object, that can be used to retrieve information about the
-  subtitle file the macro is to be be applied on.
+  subtitle file the macro is to be applied on.
 
 @selected_lines (table)
   An Array Table of numbers, each entry being an index into the file
@@ -293,7 +293,7 @@ write_format.)
   A Subtitles Object representing the subtitles to be exported.
 
 @output_file (user data)
-  An Ouput File Stream, representing the file the exported data should be
+  An Output File Stream, representing the file the exported data should be
   written to.
 
 Returns: Boolean.

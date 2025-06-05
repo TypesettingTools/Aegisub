@@ -115,7 +115,7 @@ struct format_parser {
 	void parse_flags() {
 		for (; ; ++s.fmt_cur) {
 			switch (*s.fmt_cur) {
-			// Not supported: ' ' (add a space before positive numers to align with negative)
+			// Not supported: ' ' (add a space before positive numbers to align with negative)
 			case '#':
 				s.out.setf(std::ios::showpoint | std::ios::showbase);
 				continue;

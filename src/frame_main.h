@@ -89,7 +89,7 @@ public:
 	/// @brief Set the video and audio display visibility
 	/// @param video -1: leave unchanged; 0: hide; 1: show
 	/// @param audio -1: leave unchanged; 0: hide; 1: show
-	void SetDisplayMode(int showVid,int showAudio);
+	void SetDisplayMode(int video, int audio);
 
 	bool IsVideoShown() const { return showVideo; }
 	bool IsAudioShown() const { return showAudio; }

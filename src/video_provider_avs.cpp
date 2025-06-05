@@ -324,4 +324,4 @@ namespace agi { class BackgroundRunner; }
 std::unique_ptr<VideoProvider> CreateAvisynthVideoProvider(agi::fs::path const& path, std::string_view colormatrix, agi::BackgroundRunner *) {
 	return std::make_unique<AvisynthVideoProvider>(path, colormatrix);
 }
-#endif // HAVE_AVISYNTH
+#endif // WITH_AVISYNTH

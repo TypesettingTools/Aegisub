@@ -27,7 +27,7 @@ namespace agi { struct Context; }
 /// @brief A manager for dialogs
 ///
 /// DialogManager keeps track of modal and modeless dialogs which have been
-/// created, so that commands can be send to the appropriate places and so that
+/// created, so that commands can be sent to the appropriate places and so that
 /// the same dialog can't be opened twice at once.
 class DialogManager {
 	using dialog_pair = std::pair<const std::type_info *, wxDialog *>;

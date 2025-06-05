@@ -46,8 +46,8 @@ private:
 	const OptionSetting setting;
 
 	/// @brief Load a config file into the Options object.
-	/// @param config Config to load.
-	/// @param ignore_errors Log invalid entires in the option file and continue rather than throwing an exception
+	/// @param stream Config to load.
+	/// @param ignore_errors Log invalid entries in the option file and continue rather than throwing an exception
 	void LoadConfig(std::istream& stream, bool ignore_errors = false);
 
 public:
@@ -65,7 +65,7 @@ public:
 	OptionValue *Get(std::string_view name);
 
 	/// @brief Next configuration file to load.
-	/// @param[in] src Stream to load from.
+	/// @param[in] stream Stream to load from.
 	/// Load next config which will supersede any values from previous configs
 	/// can be called as many times as required, but only after ConfigDefault() and
 	/// before ConfigUser()

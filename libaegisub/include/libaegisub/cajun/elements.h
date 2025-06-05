@@ -46,7 +46,7 @@ public:
 //  class to effectively contain a heterogeneous set of child elements.
 // The cast operators provide convenient implicit downcasting, while
 //  preserving dynamic type safety by throwing an exception during a
-//  a bad cast.
+//  bad cast.
 // The object & array element index operators (operators [std::string]
 //  and [size_t]) provide convenient, quick access to child elements.
 //  They are a logical extension of the cast operators. These child
