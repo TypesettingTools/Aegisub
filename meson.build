@@ -190,11 +190,21 @@ else
         wx.dependency('wxscintilla')
     ]
 
+    if get_option('wx_version').version_compare('>=3.3.0')
+        deps += [
+            wx.dependency('wxlexilla'),
+        ]
+    endif
+
     if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
         deps += [
             wx.dependency('wxpng'),
         ]
     endif
+
+    # if host_machine.system() == 'darwin' and get_option('wx_version').version_compare('>=3.3.0')
+    #     deps += dependency('libpng')
+    # endif
 
     if host_machine.system() == 'windows'
         deps += [
