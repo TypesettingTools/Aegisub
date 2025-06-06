@@ -34,6 +34,7 @@ jobs:
               -Dfribidi:tests=false
               -Dfribidi:docs=false
               -Dlibass:fontconfig=disabled
+              -Dwx_version='3.3.0'
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
@@ -55,13 +56,13 @@ jobs:
             name: macOS Debug,
             os: macos-13,
             buildtype: debugoptimized,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2 -Dwx_version='3.3.0'
           }
           - {
             name: macOS Release,
             os: macos-13,
             buildtype: release,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
+            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2 -Dwx_version='3.3.0'
           }
 
     steps:
