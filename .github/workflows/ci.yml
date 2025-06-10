@@ -154,6 +154,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev libportal-gtk3-dev
 
+      - name: Checkout gas-preprocessor (Windows ARM64)
+        if: matrix.config.os == 'windows-11-arm'
+        uses: actions/checkout@v4
+        with:
+          repository: FFmpeg/gas-preprocessor
+          path: gas-preprocessor
+
+      - name: Add gas-preprocessor to path (Windows ARM64)
+        if: matrix.config.os == 'windows-11-arm'
+        run: |
+          echo "$PWD\gas-preprocessor" | Out-File -FilePath $Env:GITHUB_PATH -Encoding utf8 -Append
+
       - name: Configure
         run: meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
