@@ -17,8 +17,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - name: Windows MSVC Release
+          - name: Windows MSVC x64 Release
             os: windows-latest
+            arch: x64
             msvc: true
             buildtype: release
             args: >-
@@ -35,6 +36,25 @@ jobs:
               -Dfribidi:tests=false
               -Dfribidi:docs=false
               -Dlibass:fontconfig=disabled
+          - name: Windows MSVC ARM64 Release
+            os: windows-11-arm
+            arch: arm64
+            msvc: true
+            buildtype: release
+            args: >-
+              -Ddefault_library=static
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              -Dfreetype2:harfbuzz=disabled
+              -Dharfbuzz:freetype=disabled
+              -Dharfbuzz:cairo=disabled
+              -Dharfbuzz:glib=disabled
+              -Dharfbuzz:gobject=disabled
+              -Dharfbuzz:tests=disabled
+              -Dharfbuzz:docs=disabled
+              -Dfribidi:tests=false
+              -Dfribidi:docs=false
+              -Dlibass:fontconfig=disabled
+              -Dlibass:asm=disabled
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
@@ -92,11 +112,13 @@ jobs:
           pip install meson==1.9.2
 
       - name: Setup MSVC
-        if: matrix.config.os == 'windows-latest' && matrix.config.msvc == true
+        if: startsWith(matrix.config.os, 'windows-') && matrix.config.msvc == true
         uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.config.arch }}
 
       - name: Install dependencies (Windows)
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         run: |
           choco install ninja innosetup
 
@@ -143,19 +165,19 @@ jobs:
 
       # Windows artifacts
       - name: Generate Windows installer
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
           meson compile win-installer -C build
 
       - name: Generate Windows portable installer
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         run: cd build && ninja win-portable
 
       - name: Upload artifacts - win_installer
         uses: actions/upload-artifact@v5
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
@@ -163,7 +185,7 @@ jobs:
 
       - name: Upload artifacts - portable.zip
         uses: actions/upload-artifact@v5
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         with:
           name: ${{ matrix.config.name }} - portable
           path: build/aegisub-portable-64.zip
