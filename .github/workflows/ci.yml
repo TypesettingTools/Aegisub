@@ -95,7 +95,7 @@ jobs:
           Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           popd
 
-          $gettexturl = "https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.21-v1.16/gettext0.21-iconv1.16-static-64.zip"
+          $gettexturl = "https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.26-v1.17/gettext0.26-iconv1.17-static-64.zip"
           Invoke-WebRequest -Uri $gettexturl -OutFile ".\gettext.zip"
           Expand-Archive ".\gettext.zip" -DestinationPath gettext
           pushd gettext/bin
