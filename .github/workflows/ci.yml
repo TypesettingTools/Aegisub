@@ -112,13 +112,13 @@ jobs:
           pip install meson==1.9.2
 
       - name: Setup MSVC
-        if: startsWith(matrix.config.os, 'windows-') && matrix.config.msvc == true
+        if: runner.os == 'Windows' && matrix.config.msvc == true
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.config.arch }}
 
       - name: Install dependencies (Windows)
-        if: startsWith(matrix.config.os, 'windows-')
+        if: runner.os == 'Windows'
         run: |
           choco install ninja innosetup
 
@@ -138,7 +138,7 @@ jobs:
           popd
 
       - name: Install dependencies (MacOS)
-        if: startsWith(matrix.config.os, 'macos-')
+        if: runner.os == 'macOS'
         run: |
           export HOMEBREW_NO_INSTALL_CLEANUP=1
           export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
@@ -149,7 +149,7 @@ jobs:
           brew install pulseaudio  # NO OpenAL in github CI
 
       - name: Install dependencies (Linux)
-        if: startsWith(matrix.config.os, 'ubuntu-')
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev libportal-gtk3-dev
@@ -177,19 +177,19 @@ jobs:
 
       # Windows artifacts
       - name: Generate Windows installer
-        if: startsWith(matrix.config.os, 'windows-')
+        if: runner.os == 'Windows'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run:
           meson compile win-installer -C build
 
       - name: Generate Windows portable installer
-        if: startsWith(matrix.config.os, 'windows-')
+        if: runner.os == 'Windows'
         run: cd build && ninja win-portable
 
       - name: Upload artifacts - win_installer
         uses: actions/upload-artifact@v5
-        if: startsWith(matrix.config.os, 'windows-')
+        if: runner.os == 'Windows'
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
@@ -197,21 +197,21 @@ jobs:
 
       - name: Upload artifacts - portable.zip
         uses: actions/upload-artifact@v5
-        if: startsWith(matrix.config.os, 'windows-')
+        if: runner.os == 'Windows'
         with:
           name: ${{ matrix.config.name }} - portable
           path: build/aegisub-portable-64.zip
 
       # macOS artifacts
       - name: Generate macOS installer
-        if: startsWith(matrix.config.os, 'macos-')
+        if: runner.os == 'macOS'
         run: |
           meson compile osx-bundle -C build
           meson compile osx-build-dmg -C build
 
       - name: Upload artifacts - macOS dmg
         uses: actions/upload-artifact@v5
-        if: startsWith(matrix.config.os, 'macos-')
+        if: runner.os == 'macOS'
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.dmg
@@ -219,7 +219,7 @@ jobs:
 
       # Tarball
       - name: Generate tarball
-        if: matrix.config.os == 'ubuntu-latest' && matrix.config.buildtype == 'release'
+        if: runner.os == 'Linux' && matrix.config.buildtype == 'release'
         run: |
           set -e
 
@@ -233,7 +233,7 @@ jobs:
 
       - name: Upload artifacts - tarball
         uses: actions/upload-artifact@v5
-        if: matrix.config.os == 'ubuntu-latest' && matrix.config.buildtype == 'release'
+        if: runner.os == 'Linux' && matrix.config.buildtype == 'release'
         with:
           name: Source Tarball
           path: build/meson-dist/*.tar.xz
