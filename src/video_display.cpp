@@ -80,13 +80,13 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 : wxGLCanvas(parent, -1, attribList)
 , autohideTools(OPT_GET("Tool/Visual/Autohide"))
 , con(c)
-, zoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
+, windowZoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
 , toolBar(toolbar)
 , zoomBox(zoomBox)
 , freeSize(freeSize)
 , scale_factor(GetContentScaleFactor())
 {
-	zoomBox->SetValue(fmt_wx("%g%%", zoomValue * 100.));
+	zoomBox->SetValue(fmt_wx("%g%%", windowZoomValue * 100.));
 	zoomBox->Bind(wxEVT_COMBOBOX, &VideoDisplay::SetZoomFromBox, this);
 	zoomBox->Bind(wxEVT_TEXT_ENTER, &VideoDisplay::SetZoomFromBoxText, this);
 
@@ -109,9 +109,9 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	Bind(wxEVT_MOUSEWHEEL, &VideoDisplay::OnMouseWheel, this);
 
 	Bind(wxEVT_DPI_CHANGED, [this] (wxDPIChangedEvent &e) {
-		double new_zoom = zoomValue * GetContentScaleFactor() / scale_factor;
+		double new_zoom = windowZoomValue * GetContentScaleFactor() / scale_factor;
 		scale_factor = GetContentScaleFactor();
-		SetZoom(new_zoom);
+		SetWindowZoom(new_zoom);
 		e.Skip();
 	});
 
@@ -307,7 +307,7 @@ void VideoDisplay::UpdateSize() {
 	if (!provider || !IsShownOnScreen()) return;
 
 	videoSize.Set(provider->GetWidth(), provider->GetHeight());
-	videoSize *= zoomValue;
+	videoSize *= windowZoomValue;
 	if (con->videoController->GetAspectRatioType() != AspectRatio::Default)
 		videoSize.SetWidth(videoSize.GetHeight() * con->videoController->GetAspectRatioValue());
 
@@ -335,9 +335,9 @@ void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
 	if (freeSize) {
 		videoSize = GetClientSize() * scale_factor;
 		PositionVideo();
-		zoomValue = double(viewport_height) / con->project->VideoProvider()->GetHeight();
-		zoomBox->ChangeValue(fmt_wx("%g%%", zoomValue * 100.));
-		con->ass->Properties.video_zoom = zoomValue;
+		windowZoomValue = double(viewport_height) / con->project->VideoProvider()->GetHeight();
+		zoomBox->ChangeValue(fmt_wx("%g%%", windowZoomValue * 100.));
+		con->ass->Properties.video_zoom = windowZoomValue;
 	}
 	else {
 		PositionVideo();
@@ -363,7 +363,7 @@ void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 	if (int wheel = event.GetWheelRotation()) {
 		if (ForwardMouseWheelEvent(this, event))
-			SetZoom(zoomValue + .125 * (wheel / event.GetWheelDelta()));
+			SetWindowZoom(windowZoomValue + .125 * (wheel / event.GetWheelDelta()));
 	}
 }
 
@@ -377,22 +377,22 @@ void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 	hotkey::check("Video", con, event);
 }
 
-void VideoDisplay::SetZoom(double value) {
+void VideoDisplay::SetWindowZoom(double value) {
 	if (value == 0) return;
-	zoomValue = std::max(value, .125);
-	size_t selIndex = zoomValue / .125 - 1;
+	windowZoomValue = std::max(value, .125);
+	size_t selIndex = windowZoomValue / .125 - 1;
 	if (selIndex < zoomBox->GetCount())
 		zoomBox->SetSelection(selIndex);
-	zoomBox->ChangeValue(fmt_wx("%g%%", zoomValue * 100.));
-	con->ass->Properties.video_zoom = zoomValue;
+	zoomBox->ChangeValue(fmt_wx("%g%%", windowZoomValue * 100.));
+	con->ass->Properties.video_zoom = windowZoomValue;
 	UpdateSize();
 }
 
 void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
 	int sel = zoomBox->GetSelection();
 	if (sel != wxNOT_FOUND) {
-		zoomValue = (sel + 1) * .125;
-		con->ass->Properties.video_zoom = zoomValue;
+		windowZoomValue = (sel + 1) * .125;
+		con->ass->Properties.video_zoom = windowZoomValue;
 		UpdateSize();
 	}
 }
@@ -404,7 +404,7 @@ void VideoDisplay::SetZoomFromBoxText(wxCommandEvent &) {
 
 	double value;
 	if (strValue.ToDouble(&value))
-		SetZoom(value / 100.);
+		SetWindowZoom(value / 100.);
 }
 
 void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {

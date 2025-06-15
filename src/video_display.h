@@ -85,7 +85,7 @@ class VideoDisplay final : public wxGLCanvas {
 	int viewport_height = 0;
 
 	/// The current zoom level, where 1.0 = 100%
-	double zoomValue;
+	double windowZoomValue;
 
 	/// The video renderer
 	std::unique_ptr<VideoOutGL> videoOut;
@@ -154,9 +154,9 @@ public:
 
 	/// @brief Set the zoom level
 	/// @param value The new zoom level
-	void SetZoom(double value);
+	void SetWindowZoom(double value);
 	/// @brief Get the current zoom level
-	double GetZoom() const { return zoomValue; }
+	double GetWindowZoom() const { return windowZoomValue; }
 
 	/// Get the last seen position of the mouse in script coordinates
 	Vector2D GetMousePosition() const;
