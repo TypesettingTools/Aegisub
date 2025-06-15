@@ -677,12 +677,12 @@ public:
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) override {
-		return c->videoDisplay->GetZoom() == 1.;
+		return c->videoDisplay->GetWindowZoom() == 1.;
 	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		c->videoDisplay->SetZoom(1.);
+		c->videoDisplay->SetWindowZoom(1.);
 	}
 };
 
@@ -708,12 +708,12 @@ public:
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) override {
-		return c->videoDisplay->GetZoom() == 2.;
+		return c->videoDisplay->GetWindowZoom() == 2.;
 	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		c->videoDisplay->SetZoom(2.);
+		c->videoDisplay->SetWindowZoom(2.);
 	}
 };
 
@@ -726,12 +726,12 @@ public:
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) override {
-		return c->videoDisplay->GetZoom() == .5;
+		return c->videoDisplay->GetWindowZoom() == .5;
 	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		c->videoDisplay->SetZoom(.5);
+		c->videoDisplay->SetWindowZoom(.5);
 	}
 };
 
@@ -743,7 +743,7 @@ struct video_zoom_in final : public validator_video_attached {
 	STR_HELP("Zoom video in")
 
 	void operator()(agi::Context *c) override {
-		c->videoDisplay->SetZoom(c->videoDisplay->GetZoom() + .125);
+		c->videoDisplay->SetWindowZoom(c->videoDisplay->GetWindowZoom() + .125);
 	}
 };
 
@@ -755,7 +755,7 @@ struct video_zoom_out final : public validator_video_attached {
 	STR_HELP("Zoom video out")
 
 	void operator()(agi::Context *c) override {
-		c->videoDisplay->SetZoom(c->videoDisplay->GetZoom() - .125);
+		c->videoDisplay->SetWindowZoom(c->videoDisplay->GetWindowZoom() - .125);
 	}
 };
 }
