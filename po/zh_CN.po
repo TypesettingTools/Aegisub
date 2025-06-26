@@ -571,7 +571,7 @@ msgstr "提交并在下一行使用默认的时轴"
 msgid ""
 "Commit any pending audio timing changes and reset the next line's times to "
 "the default"
-msgstr "提交所有挂起的音频时轴更改，并重置下一行的时间为默认"
+msgstr "提交所有在波形上对时轴的更改，并将下一行的时轴重置为默认"
 
 #: ../src/command/audio.cpp:369 ../src/command/audio.cpp:370
 msgid "Commit and move to next line"
@@ -579,7 +579,7 @@ msgstr "接受更改并移动到下一行"
 
 #: ../src/command/audio.cpp:371
 msgid "Commit any pending audio timing changes and move to the next line"
-msgstr "提交所有通过音频对时间的更改并移动到下一行"
+msgstr "提交所有在波形上对时轴的更改，并移动到下一行"
 
 #: ../src/command/audio.cpp:384 ../src/command/audio.cpp:385
 msgid "Commit and stay on current line"
@@ -587,7 +587,7 @@ msgstr "提交并留在当前行"
 
 #: ../src/command/audio.cpp:386
 msgid "Commit any pending audio timing changes and stay on the current line"
-msgstr "提交所有通过音频对时间的更改并留在当前行"
+msgstr "提交所有在波形上对时轴的更改，并留在当前行"
 
 #: ../src/command/audio.cpp:397 ../src/command/audio.cpp:398
 msgid "Go to selection"
@@ -833,15 +833,15 @@ msgstr "设置字体"
 
 #: ../src/command/edit.cpp:543
 msgid "Find and R&eplace..."
-msgstr "搜索替换(&E)…"
+msgstr "查找与替换(&E)…"
 
 #: ../src/command/edit.cpp:544
 msgid "Find and Replace"
-msgstr "搜索替换"
+msgstr "查找与替换"
 
 #: ../src/command/edit.cpp:545
 msgid "Find and replace words in subtitles"
-msgstr "在字幕中查找并替换字符串"
+msgstr "在字幕中查找与替换字符串"
 
 #: ../src/command/edit.cpp:606
 msgid "&Copy Lines"
@@ -1807,7 +1807,7 @@ msgstr "结束位置设为当前帧"
 
 #: ../src/command/time.cpp:184
 msgid "Set end of selected subtitles to current video frame"
-msgstr "将所选行的最后一帧设为当前帧"
+msgstr "将所选行的结束位置设为当前画面帧位置"
 
 #: ../src/command/time.cpp:194
 msgid "Snap to S&cene"
@@ -1910,7 +1910,7 @@ msgstr "开始位置设为当前帧"
 
 #: ../src/command/time.cpp:345
 msgid "Set start of selected subtitles to current video frame"
-msgstr "将所选行的第一帧设为当前帧"
+msgstr "将所选行的开始位置设为当前画面帧位置"
 
 #: ../src/command/time.cpp:357
 msgid "Next line or syllable"
@@ -5254,7 +5254,7 @@ msgstr "打开视频时自动加载音频"
 
 #: ../src/preferences.cpp:181
 msgid "Default Zoom"
-msgstr "视频默认缩放倍率"
+msgstr "默认缩放倍率"
 
 #: ../src/preferences.cpp:183
 msgid "Fast jump step in frames"
@@ -5390,7 +5390,7 @@ msgstr "音节边线"
 
 #: ../src/preferences.cpp:253
 msgid "Syntax Highlighting"
-msgstr "字幕编辑框语法高亮"
+msgstr "语法高亮"
 
 #: ../src/preferences.cpp:254
 msgid "Background"
