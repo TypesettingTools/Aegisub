@@ -22,7 +22,7 @@ msgstr ""
 "Project-Id-Version: arch1t3cht / Aegisub Feature Release 12+ \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-26 09:44+0800\n"
-"PO-Revision-Date: 2025-03-19 07:30+0800\n"
+"PO-Revision-Date: 2025-06-26 11:20+0800\n"
 "Last-Translator: op200 <None@None>\n"
 "Language-Team: None <None@None>\n"
 "Language: zh_CN\n"
@@ -722,7 +722,7 @@ msgstr "主要颜色"
 
 #: ../src/command/edit.cpp:393
 msgid "Set the primary fill color (\\c) at the cursor position"
-msgstr "在文本光标后插入并设置主要颜色标签(\\c)"
+msgstr "在文本输入光标后插入并设置主要颜色标签(\\c)"
 
 #: ../src/command/edit.cpp:403
 msgid "Secondary Color..."
@@ -734,7 +734,7 @@ msgstr "次要颜色"
 
 #: ../src/command/edit.cpp:405
 msgid "Set the secondary (karaoke) fill color (\\2c) at the cursor position"
-msgstr "在文本光标后插入并设置次要颜色标签(\\2c) (用于卡拉OK)"
+msgstr "在文本输入光标后插入并设置次要颜色标签(\\2c) (用于卡拉OK)"
 
 #: ../src/command/edit.cpp:415
 msgid "Outline Color..."
@@ -1001,19 +1001,19 @@ msgstr "粘贴字幕至选择字段内"
 
 #: ../src/command/edit.cpp:968
 msgid "Recom&bine Lines"
-msgstr "合并行(&B)"
+msgstr "重组行(&B)"
 
 #: ../src/command/edit.cpp:969
 msgid "Recombine Lines"
-msgstr "合并行"
+msgstr "重组行"
 
 #: ../src/command/edit.cpp:970
 msgid "Recombine subtitles which have been split and merged"
-msgstr "合并被分割的字幕 (只要文本内容相同则只保留最后一行)"
+msgstr "重新组合存在分割与合并的字幕行"
 
 #: ../src/command/edit.cpp:1040
 msgid "combining"
-msgstr "合并中"
+msgstr "组合中"
 
 #: ../src/command/edit.cpp:1046 ../src/command/edit.cpp:1047
 msgid "Split Lines (by karaoke)"
@@ -1030,34 +1030,34 @@ msgstr "分割"
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
 #: ../src/subs_edit_ctrl.cpp:398
 msgid "Split at cursor (estimate times)"
-msgstr "在文本光标处分割 (估算时轴)"
+msgstr "在文本输入光标处分割 (估算时轴)"
 
 #: ../src/command/edit.cpp:1116
 msgid ""
 "Split the current line at the cursor, dividing the original line's duration "
 "between the new ones"
-msgstr "在文本编辑光标处分割行，按字符数量计算分割位置的时间"
+msgstr "在文本输入光标处分割行，按字符数量计算分割位置的时轴"
 
 #: ../src/command/edit.cpp:1130 ../src/command/edit.cpp:1131
 #: ../src/subs_edit_ctrl.cpp:397
 msgid "Split at cursor (preserve times)"
-msgstr "在文本光标处分割 (时轴不变)"
+msgstr "在文本输入光标处分割 (时轴不变)"
 
 #: ../src/command/edit.cpp:1132
 msgid ""
 "Split the current line at the cursor, setting both lines to the original "
 "line's times"
-msgstr "在文本光标处分割行，新行的时轴与原行一致"
+msgstr "在文本输入光标处分割行，新行的时轴与原行一致"
 
 #: ../src/command/edit.cpp:1141 ../src/command/edit.cpp:1142
 msgid "Split at cursor (at video frame)"
-msgstr "在文本光标处分割 (以视频帧)"
+msgstr "在文本输入光标处分割 (以视频帧)"
 
 #: ../src/command/edit.cpp:1143
 msgid ""
 "Split the current line at the cursor, dividing the line's duration at the "
 "current video frame"
-msgstr "在文本光标处分割行，以当前帧的时间分割"
+msgstr "在文本输入光标处分割行，以当前帧的时轴分割"
 
 #: ../src/command/edit.cpp:1159
 msgid "Redo last undone action"
@@ -1799,11 +1799,11 @@ msgstr "按时间或帧平移字幕"
 
 #: ../src/command/time.cpp:182
 msgid "Snap &End to Video"
-msgstr "结束位置设为当前帧(&E)"
+msgstr "结束时轴对齐画面帧(&E)"
 
 #: ../src/command/time.cpp:183
 msgid "Snap End to Video"
-msgstr "结束位置设为当前帧"
+msgstr "结束时轴对齐画面帧"
 
 #: ../src/command/time.cpp:184
 msgid "Set end of selected subtitles to current video frame"
@@ -1811,20 +1811,20 @@ msgstr "将所选行的结束位置设为当前画面帧位置"
 
 #: ../src/command/time.cpp:194
 msgid "Snap to S&cene"
-msgstr "紧贴关键帧(&C)"
+msgstr "对齐关键帧(&C)"
 
 #: ../src/command/time.cpp:195
 msgid "Snap to Scene"
-msgstr "紧贴关键帧"
+msgstr "对齐关键帧"
 
 #: ../src/command/time.cpp:196
 msgid ""
 "Set start and end of subtitles to the keyframes around current video frame"
-msgstr "设置字幕的开始与结束分别紧贴至当前画面前后最近的关键帧"
+msgstr "开始与结束轴分别对齐当前画面前后最近的关键帧"
 
 #: ../src/command/time.cpp:233
 msgid "snap to scene"
-msgstr "紧贴关键帧"
+msgstr "对齐关键帧"
 
 #: ../src/command/time.cpp:239 ../src/command/time.cpp:240
 msgid "Add lead in and out"
@@ -1902,11 +1902,11 @@ msgstr "向后平移当前时间轴的开始时间"
 
 #: ../src/command/time.cpp:343
 msgid "Snap &Start to Video"
-msgstr "开始位置设为当前帧(&S)"
+msgstr "开始时轴对齐画面帧(&S)"
 
 #: ../src/command/time.cpp:344
 msgid "Snap Start to Video"
-msgstr "开始位置设为当前帧"
+msgstr "开始时轴对齐画面帧"
 
 #: ../src/command/time.cpp:345
 msgid "Set start of selected subtitles to current video frame"
@@ -4531,7 +4531,7 @@ msgstr " -> 结束"
 
 #: ../src/dialog_timing_processor.cpp:214
 msgid "Keyframe snapping"
-msgstr "紧贴关键帧"
+msgstr "对齐关键帧"
 
 #: ../src/dialog_timing_processor.cpp:217
 msgid "E&nable"
@@ -4541,7 +4541,7 @@ msgstr "启用(&N)"
 msgid ""
 "Enable snapping of subtitles to nearest keyframe, if distance is within "
 "threshold"
-msgstr "使字幕紧贴至最近的关键帧，如果距离在阈值之内"
+msgstr "使字幕对齐至最近的关键帧，如果距离在阈值之内"
 
 #: ../src/dialog_timing_processor.cpp:229
 msgid "Starts before thres.:"
@@ -4551,7 +4551,7 @@ msgstr "开始前阈:"
 msgid ""
 "Threshold for 'before start' distance, that is, how many milliseconds a "
 "subtitle must start before a keyframe to snap to it"
-msgstr "“开始之前”距离阈值，也就是，当字幕在距离关键帧多少帧之前开始则要紧贴。"
+msgstr "“开始之前”距离阈值，也就是，当字幕在距离关键帧多少帧之前开始则要对齐。"
 
 #: ../src/dialog_timing_processor.cpp:232
 msgid "Starts after thres.:"
@@ -4561,7 +4561,7 @@ msgstr "开始后阈:"
 msgid ""
 "Threshold for 'after start' distance, that is, how many milliseconds a "
 "subtitle must start after a keyframe to snap to it"
-msgstr "“开始之后”距离阈值，也就是，当字幕在距离关键帧多少帧之后开始则要紧贴。"
+msgstr "“开始之后”距离阈值，也就是，当字幕在距离关键帧多少帧之后开始则要对齐。"
 
 #: ../src/dialog_timing_processor.cpp:237
 msgid "Ends before thres.:"
@@ -4571,7 +4571,7 @@ msgstr "结束前阈:"
 msgid ""
 "Threshold for 'before end' distance, that is, how many milliseconds a "
 "subtitle must end before a keyframe to snap to it"
-msgstr "“结束之前”距离阈值，也就是，当字幕在距离关键帧多少帧之前结束则要紧贴。"
+msgstr "“结束之前”距离阈值，也就是，当字幕在距离关键帧多少帧之前结束则要对齐。"
 
 #: ../src/dialog_timing_processor.cpp:240
 msgid "Ends after thres.:"
@@ -4581,7 +4581,7 @@ msgstr "结束后阈:"
 msgid ""
 "Threshold for 'after end' distance, that is, how many milliseconds a "
 "subtitle must end after a keyframe to snap to it"
-msgstr "“结束之后”距离阈值，也就是，当字幕在距离关键帧多少帧之后结束则要紧贴。"
+msgstr "“结束之后”距离阈值，也就是，当字幕在距离关键帧多少帧之后结束则要对齐。"
 
 #: ../src/dialog_timing_processor.cpp:349
 #, c-format
