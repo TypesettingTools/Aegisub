@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-02 21:53+0100\n"
-"PO-Revision-Date: 2025-06-26 12:13-0300\n"
+"PO-Revision-Date: 2025-06-26 12:46-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary, Tenebris Magi\n"
 "Language: pt_BR\n"
@@ -3196,7 +3196,7 @@ msgstr "Padrão de tela"
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
 msgid "* An error occurred when enumerating the used fonts: %s.\n"
-msgstr "* Ocorreu um erro ao enumerar as fonts utilizadas: %s.\n"
+msgstr "* Ocorreu um erro ao enumerar as fontes utilizadas: %s.\n"
 
 #: ../src/dialog_fonts_collector.cpp:115
 msgid "Symlinking fonts to folder...\n"
@@ -5427,7 +5427,7 @@ msgstr "Sobrescrever nas caixas de tempo"
 
 #: ../src/preferences.cpp:211
 msgid "Shift+Enter adds \\n"
-msgstr "Shift+Enter adiciona \\n"
+msgstr "Shift+Enter insere \\n"
 
 #: ../src/preferences.cpp:212
 msgid "Enable syntax highlighting"
@@ -5479,7 +5479,7 @@ msgstr "Símbolo de tags na grade de linhas"
 
 #: ../src/preferences.cpp:230
 msgid "Skip over whitespace"
-msgstr "Pular espações em branco"
+msgstr "Pular espaços em branco"
 
 #: ../src/preferences.cpp:245
 msgid "Audio Display"
@@ -5639,7 +5639,7 @@ msgstr "Erro de CPS"
 
 #: ../src/preferences.cpp:296
 msgid "Visual Typesetting Tools"
-msgstr "Composição Visual"
+msgstr "Ferramentas de Composição Visual"
 
 #: ../src/preferences.cpp:297
 msgid "Primary Lines"
@@ -5659,7 +5659,7 @@ msgstr "Destaque Secundário"
 
 #: ../src/preferences.cpp:303
 msgid "Visual Typesetting Tools Alpha"
-msgstr "Transparência da Composição Visual"
+msgstr "Ferramentas de Composição Visual - Transparência"
 
 #: ../src/preferences.cpp:304
 msgid "Shaded Area"
@@ -6566,7 +6566,8 @@ msgstr "Selecionar sobrepostas"
 
 #: ../automation/autoload/select-overlaps.moon:18
 msgid "Select lines which begin while another non-comment line is active"
-msgstr "Seleciona as linhas cujos inícios coincidem com linhas não comentadas"
+msgstr ""
+"Seleciona as linhas cujos inícios coincidem com linhas não-comentadas ativas"
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
