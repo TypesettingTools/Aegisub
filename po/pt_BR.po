@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-02 21:53+0100\n"
-"PO-Revision-Date: 2024-12-25 20:26-0300\n"
+"PO-Revision-Date: 2025-06-26 11:13-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary, Tenebris Magi\n"
 "Language: pt_BR\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.6\n"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
@@ -453,11 +453,11 @@ msgstr "Exibe áudio como um espectrógrafo de frequência-potência"
 
 #: ../src/command/audio.cpp:148
 msgid "&Waveform Display"
-msgstr "Forma de &Onda"
+msgstr "&Onda"
 
 #: ../src/command/audio.cpp:149
 msgid "Waveform Display"
-msgstr "Forma de Onda"
+msgstr "Onda"
 
 #: ../src/command/audio.cpp:150
 msgid "Display audio as a linear amplitude graph"
@@ -1316,7 +1316,7 @@ msgstr "Alternar o Modo de Exibição de Tags"
 
 #: ../src/command/grid.cpp:255
 msgid "Cycle through tag hiding modes"
-msgstr "Alterne entre os modos de exibição de tags"
+msgstr "Alterna entre os modos de exibição de tags"
 
 #: ../src/command/grid.cpp:265
 msgid "ASS Override Tag mode set to show full tags."
@@ -1812,7 +1812,7 @@ msgstr "deslocar ao quadro"
 
 #: ../src/command/time.cpp:153
 msgid "S&hift Times..."
-msgstr "Deslocar &Sincronização..."
+msgstr "Ajustar &Sincronização..."
 
 #: ../src/command/time.cpp:154 ../src/dialog_shift_times.cpp:134
 msgid "Shift Times"
@@ -2025,11 +2025,11 @@ msgstr "Seleciona linhas baseado no critério definido"
 
 #: ../src/command/tool.cpp:93
 msgid "&Resample Resolution..."
-msgstr "&Redimensionar a Resolução..."
+msgstr "&Redimensionar Resolução..."
 
 #: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:90
 msgid "Resample Resolution"
-msgstr "Redimensionar a Resolução"
+msgstr "Redimensionar Resolução"
 
 #: ../src/command/tool.cpp:95
 msgid ""
@@ -3875,7 +3875,7 @@ msgstr "&Tempo: "
 
 #: ../src/dialog_shift_times.cpp:144
 msgid "Shift by time"
-msgstr "Deslocar por tempo"
+msgstr "Ajustar por tempo"
 
 #: ../src/dialog_shift_times.cpp:147
 msgid "&Frames: "
@@ -3883,7 +3883,7 @@ msgstr "&Quadros: "
 
 #: ../src/dialog_shift_times.cpp:148
 msgid "Shift by frames"
-msgstr "Deslocar por quadros"
+msgstr "Ajustar por quadros"
 
 #: ../src/dialog_shift_times.cpp:152
 msgid "Enter time in h:mm:ss.cs notation"
@@ -3891,11 +3891,11 @@ msgstr "Insira tempo em formato h:mm:ss.cs"
 
 #: ../src/dialog_shift_times.cpp:155
 msgid "Enter number of frames to shift by"
-msgstr "Insira a quantidade de quadros pelo qual deslocar"
+msgstr "Insira a quantidade de quadros pelo qual ajustar"
 
 #: ../src/dialog_shift_times.cpp:157
 msgid "For&ward"
-msgstr "Para &Frente"
+msgstr "&Avançar"
 
 #: ../src/dialog_shift_times.cpp:158
 msgid ""
@@ -3907,7 +3907,7 @@ msgstr ""
 
 #: ../src/dialog_shift_times.cpp:160
 msgid "&Backward"
-msgstr "Para &Trás"
+msgstr "&Retroceder"
 
 #: ../src/dialog_shift_times.cpp:161
 msgid ""
@@ -5575,7 +5575,7 @@ msgstr "Espectro"
 
 #: ../src/preferences.cpp:279
 msgid "Waveform"
-msgstr "Forma de Onda"
+msgstr "Onda"
 
 #: ../src/preferences.cpp:281
 msgid "Subtitle Grid"
@@ -5932,7 +5932,7 @@ msgstr "Restaurar padrões?"
 
 #: ../src/preferences.cpp:715
 msgid "Preferences"
-msgstr "Preferências"
+msgstr "Opções"
 
 #: ../src/preferences.cpp:743
 msgid "&Restore Defaults"
