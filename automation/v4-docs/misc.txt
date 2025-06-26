@@ -11,7 +11,7 @@ This function might later on be part of a full rendering-interface for
 creating actual bitmaps of text.
 
 This function does NOT attempt to handle line breaks, automatic line breaking,
-fomatting override tags, vector drawings or anything else to that effect.
+formatting override tags, vector drawings or anything else to that effect.
 If you need such functionality, you need to implement it yourself. (For now,
 at least.)
 

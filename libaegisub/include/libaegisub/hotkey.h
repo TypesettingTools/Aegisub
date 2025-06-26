@@ -27,7 +27,7 @@ namespace json {
 
 namespace agi::hotkey {
 /// @class Combo
-/// A Combo represents a linear sequence of characters set in an std::vector.
+/// A Combo represents a linear sequence of characters set in a std::vector.
 /// This makes up a single combination, or "Hotkey".
 class Combo {
 	std::string keys;

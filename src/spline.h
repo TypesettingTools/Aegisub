@@ -77,7 +77,7 @@ public:
 
 	/// Get t value and curve of the point closest to reference
 	void GetClosestParametricPoint(Vector2D reference, iterator& curve, float &t, Vector2D &point);
-	/// Get closest point on the curve to reference
+	/// Get the closest point on the curve to reference
 	Vector2D GetClosestPoint(Vector2D reference);
 	Vector2D GetClosestControlPoint(Vector2D reference);
 

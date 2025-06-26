@@ -97,9 +97,10 @@ public:
 
 	/// Override GetValue to return empty when in placeholder mode rather than the placeholder text
 	wxString GetValue() const override {
-		if (is_placeholder && !this->HasFocus())
+		auto baseValue = BaseCtrl::GetValue();
+		if (is_placeholder && !this->HasFocus() && baseValue == placeholder)
 			return "";
-		return BaseCtrl::GetValue();
+		return baseValue;
 	}
 #else
 public:

@@ -20,7 +20,7 @@ if test -e "${root_version_h_path}"; then
 fi
 
 # If no git repo try to read from the existing git_version.h, for building from tarballs
-if ! test -d "${srcdir}/.git"; then
+if ! test -d "${srcdir}/.git" -o -f "${srcdir}/.git"; then
   if test -f "${version_h_path}"; then
     while read line; do
       set -- $line

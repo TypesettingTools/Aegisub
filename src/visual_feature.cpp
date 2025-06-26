@@ -27,7 +27,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file visual_feature->cpp
+/// @file visual_feature.cpp
 /// @brief Feature on video the user can interact with using mouse
 /// @ingroup visual_ts
 ///

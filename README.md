@@ -103,9 +103,30 @@ sudo apt install build-essential pkg-config meson ninja-build gettext intltool l
 #### Build Aegisub
 
 ``` bash
-meson setup build --prefix=/usr/local --buildtype=release --strip -Dsystem_luajit=false
+meson setup build --prefix=/usr/local --buildtype=release --strip -Dsystem_luajit=false -Ddefault_library=static
 meson compile -C build
 meson install -C build --skip-subprojects luajit
+```
+
+#### Packaging
+If you are packaging Aegisub for a Linux distribution, here are a few things you may need to know:
+- Aegisub cannot be built with LTO (See: https://github.com/TypesettingTools/Aegisub/issues/290).
+- Aegisub depends on LuaJIT and *requires* LuaJIT to be build with Lua 5.2 compatibility enabled.
+  We are aware that most distributions do not compile LuaJIT with this flag, and that this complicates packaging for them, see https://github.com/TypesettingTools/Aegisub/issues/239 for a detailed discussion of the situation.
+
+  Like for its other dependencies, Aegisub includes a meson subproject for LuaJIT that can be used to statically link a version of LuaJIT with 5.2 compatibility.
+  For distributions that do not allow downloading additional sources at build time, the downloaded LuaJIT subproject is included in the source tarballs distributed with releases.
+
+The following commands are an example for how to build Aegisub with the goal of creating a distribution package:
+
+```bash
+meson subprojects download luajit              # Or use the tarball
+meson subprojects packagefiles --apply luajit
+
+meson setup builddir --wrap-mode=nodownload --prefix=/usr --buildtype=release -Dsystem_luajit=false -Ddefault_library=static -Dtests=false
+
+meson compile -C builddir
+meson install -C builddir --skip-subprojects luajit
 ```
 
 ## Updating Moonscript

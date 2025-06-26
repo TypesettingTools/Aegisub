@@ -146,7 +146,7 @@ void MRUManager::Load(std::string_view key, const json::Array& array) {
 				mru[idx].push_back(str);
 			} catch (const std::exception &e) {
 				// Discard values with invalid (non-UTF-8) encodings.
-				// The exceptions thrown by the std::filesystem::path constructur are implementation-defined
+				// The exceptions thrown by the std::filesystem::path constructor are implementation-defined
 				// so we have to do a catchall.
 			}
 		}

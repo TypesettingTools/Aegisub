@@ -42,14 +42,14 @@ if (!(Test-Path luajson)) {
 }
 
 # Avisynth
-if (!(Test-Path AviSynthPlus64)) {
-	$avsReleases = Invoke-WebRequest "https://api.github.com/repos/AviSynth/AviSynthPlus/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
-	$avsUrl = $avsReleases.assets[0].browser_download_url
-	Invoke-WebRequest $avsUrl -OutFile AviSynthPlus.7z -UseBasicParsing
-	7z x AviSynthPlus.7z
-	Rename-Item (Get-ChildItem -Filter "AviSynthPlus_*" -Directory) AviSynthPlus64
-	Remove-Item AviSynthPlus.7z
-}
+# if (!(Test-Path AviSynthPlus64)) {
+# 	$avsReleases = Invoke-WebRequest "https://api.github.com/repos/AviSynth/AviSynthPlus/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
+# 	$avsUrl = $avsReleases.assets[0].browser_download_url
+# 	Invoke-WebRequest $avsUrl -OutFile AviSynthPlus.7z -UseBasicParsing
+# 	7z x AviSynthPlus.7z
+# 	Rename-Item (Get-ChildItem -Filter "AviSynthPlus_*" -Directory) AviSynthPlus64
+# 	Remove-Item AviSynthPlus.7z
+# }
 
 # VSFilter
 if (!(Test-Path VSFilter)) {

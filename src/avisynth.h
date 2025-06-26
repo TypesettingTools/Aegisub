@@ -120,7 +120,7 @@ struct VideoInfo {
   int width, height;    // width=0 means no video
   unsigned fps_numerator, fps_denominator;
   int num_frames;
-  // This is more extensible than previous versions. More properties can be added seeminglesly.
+  // This is more extensible than previous versions. More properties can be added seamlessly.
 
   // Colorspace properties.
   enum {
