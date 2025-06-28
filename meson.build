@@ -110,6 +110,15 @@ if not get_option('local_boost')
                             modules: boost_modules,
                             required: false,
                             static: get_option('default_library') == 'static')
+
+    if boost_dep.version().version_compare('<1.77.0')
+        # boost regex is header-only since version 1.77.0, and some distributions have stopped shipping the stub module since then.
+        # So we need to require boost.regex for older versions but can't require it for newer versions.
+        boost_dep = dependency('boost', version: '>=1.70.0',
+                                modules: boost_modules + ['regex'],
+                                required: false,
+                                static: get_option('default_library') == 'static')
+    endif
 endif
 
 if get_option('local_boost') or not boost_dep.found()
