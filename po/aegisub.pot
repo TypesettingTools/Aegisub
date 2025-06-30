@@ -3512,10 +3512,6 @@ msgstr ""
 msgid "Margin offset"
 msgstr ""
 
-#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
-msgid "x"
-msgstr ""
-
 #: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
 msgid "YCbCr Matrix:"
 msgstr ""
@@ -4662,8 +4658,8 @@ msgid ""
 "The resolution of the loaded video and the resolution specified for the "
 "subtitles don't match.\n"
 "\n"
-"Video resolution:\t%d x %d\n"
-"Script resolution:\t%d x %d\n"
+"Video resolution:\t%d × %d\n"
+"Script resolution:\t%d × %d\n"
 "\n"
 "Change subtitles resolution to match video?"
 msgstr ""
