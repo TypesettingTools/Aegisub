@@ -151,6 +151,8 @@ class AudioKaraoke final : public wxWindow {
 	void OnScrollTimer();
 	void OnScrollTimer(wxTimerEvent& event);
 
+	void SetStyle();
+
 public:
 	/// Constructor
 	/// @param parent Parent window
