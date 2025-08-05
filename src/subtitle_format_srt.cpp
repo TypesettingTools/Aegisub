@@ -464,9 +464,9 @@ bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
 		for (auto ovr : blocks | agi::of_type<AssDialogueBlockOverride>()) {
 			// Verify that all overrides used are supported
 			for (auto const& tag : ovr->Tags) {
-				if (tag.Name.size() != 2)
+				if (tag.Name.size() != 2 && tag.Name != "\\an")
 					return false;
-				if (!strchr("bisu", tag.Name[1]))
+				if (tag.Name.size() == 2 && !strchr("bisu", tag.Name[1]))
 					return false;
 			}
 		}
@@ -489,7 +489,13 @@ std::string SRTSubtitleFormat::ConvertTags(const AssDialogue *diag) const {
 		switch (block->GetType()) {
 		case AssBlockType::OVERRIDE:
 			for (auto const& tag : static_cast<AssDialogueBlockOverride&>(*block).Tags) {
-				if (!tag.IsValid() || tag.Name.size() != 2)
+				if (!tag.IsValid())
+					continue;
+				if (tag.Name == "\\an") {
+					final += agi::format("{%s}", std::string(tag));
+					continue;
+				}
+				if (tag.Name.size() != 2)
 					continue;
 				for (auto& state : tag_states) {
 					if (state.tag != tag.Name[1]) continue;
