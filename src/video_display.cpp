@@ -295,9 +295,12 @@ void VideoDisplay::PositionVideo() {
 		}
 	}
 
-	if (tool)
+	if (tool) {
+		wxSize client_size = GetClientSize();
+		tool->SetCanvasSize(client_size.GetWidth(), client_size.GetHeight());
 		tool->SetDisplayArea(viewport_left / scale_factor, viewport_top / scale_factor,
 		                     viewport_width / scale_factor, viewport_height / scale_factor);
+	}
 
 	Render();
 }
@@ -422,8 +425,7 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 	else {
 		// UpdateSize fits the window to the video, which we don't want to do
 		GetGrandParent()->Layout();
-		tool->SetDisplayArea(viewport_left / scale_factor, viewport_top / scale_factor,
-		                     viewport_width / scale_factor, viewport_height / scale_factor);
+		PositionVideo();
 	}
 }
 
