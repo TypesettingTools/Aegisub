@@ -67,25 +67,33 @@ class VideoDisplay final : public wxGLCanvas {
 
 	std::unique_ptr<wxMenu> context_menu;
 
-	/// The size of the video in screen at the current zoom level, which may not
+	/// The size of the video canvas in physical pixels at the current zoom level
+	/// (including any letter- or pillarboxing if applicable), which may not
 	/// be the same as the actual client size of the display
 	wxSize videoSize;
 
 	Vector2D last_mouse_pos, mouse_pos;
 
-	/// Screen pixels between the left of the canvas and the left of the video
+	/// Physical (screen) pixels between the left of the canvas and the left of the video
 	int viewport_left = 0;
-	/// The width of the video in screen pixels
+	/// The width of the video in physical pixels
 	int viewport_width = 0;
-	/// Screen pixels between the bottom of the canvas and the bottom of the video; used for glViewport
+	/// Physical pixels between the bottom of the canvas and the bottom of the video; used for glViewport
 	int viewport_bottom = 0;
-	/// Screen pixels between the bottom of the canvas and the top of the video; used for coordinate space conversion
+	/// Physical pixels between the bottom of the canvas and the top of the video; used for coordinate space conversion
 	int viewport_top = 0;
-	/// The height of the video in screen pixels
+	/// The height of the video in physical pixels
 	int viewport_height = 0;
 
 	/// The current zoom level, where 1.0 = 100%
 	double windowZoomValue;
+
+	/// The zoom level of the video inside the video display.
+	double videoZoomValue = 1;
+
+	/// The video pan, relative to the unzoomed viewport's height.
+	double pan_x = 0;
+	double pan_y = 0;
 
 	/// The video renderer
 	std::unique_ptr<VideoOutGL> videoOut;
@@ -138,6 +146,8 @@ class VideoDisplay final : public wxGLCanvas {
 	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
 	void OnSizeEvent(wxSizeEvent &event);
 	void OnContextMenu(wxContextMenuEvent&);
+
+	void VideoZoom(int step, wxPoint zoomCenter);
 
 public:
 	/// @brief Constructor
