@@ -98,6 +98,7 @@ protected:
 	Vector2D mouse_pos; ///< Last seen mouse position
 	Vector2D drag_start; ///< Mouse position at the beginning of the last drag
 	Vector2D script_res; ///< Script resolution
+	Vector2D canvas_size; ///< The size of the display area
 	Vector2D video_pos; ///< Top-left corner of the video in the display area
 	Vector2D video_res; ///< Video resolution
 
@@ -140,6 +141,7 @@ public:
 	// Stuff called by VideoDisplay
 	virtual void OnMouseEvent(wxMouseEvent &event)=0;
 	virtual void Draw()=0;
+	virtual void SetCanvasSize(int w, int h);
 	virtual void SetDisplayArea(int x, int y, int w, int h);
 	virtual void SetToolbar(wxToolBar *) { }
 	virtual void SetSubTool(int subtool) { }
