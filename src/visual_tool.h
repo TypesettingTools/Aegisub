@@ -100,7 +100,7 @@ protected:
 	Vector2D script_res; ///< Script resolution
 	Vector2D canvas_size; ///< The size of the display area
 	Vector2D video_pos; ///< Top-left corner of the video in the display area
-	Vector2D video_res; ///< Video resolution
+	Vector2D video_size; ///< Size of the video on screen. Not necessarily equal to the video resolution
 
 	const agi::OptionValue *highlight_color_primary_opt;
 	const agi::OptionValue *highlight_color_secondary_opt;

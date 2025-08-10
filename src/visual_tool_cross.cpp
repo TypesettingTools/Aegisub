@@ -76,7 +76,7 @@ void VisualToolCross::Draw() {
 	gl.DrawLines(2, lines, 4);
 	gl.ClearInvert();
 
-	std::string mouse_text = Text(ToScriptCoords(shift_down ? 2 * video_pos + video_res - mouse_pos : mouse_pos));
+	std::string mouse_text = Text(ToScriptCoords(shift_down ? 2 * video_pos + video_size - mouse_pos : mouse_pos));
 
 	int tw, th;
 	gl_text->SetFont("Verdana", 12, true, false);
@@ -100,5 +100,5 @@ void VisualToolCross::Draw() {
 }
 
 std::string VisualToolCross::Text(Vector2D v) {
-	return video_res.X() > script_res.X() ? v.Str(',', 3) : v.DStr();
+	return video_size.X() > script_res.X() ? v.Str(',', 3) : v.DStr();
 }

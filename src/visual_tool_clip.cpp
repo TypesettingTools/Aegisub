@@ -33,7 +33,7 @@
 VisualToolClip::VisualToolClip(VideoDisplay *parent, agi::Context *context)
 : VisualTool<ClipCorner>(parent, context)
 , cur_1(0, 0)
-, cur_2(video_res)
+, cur_2(video_size)
 {
 	ClipCorner *feats[4];
 	for (auto& feat : feats) {
@@ -85,7 +85,7 @@ void VisualToolClip::Draw() {
 	}
 	else {
 		Vector2D v_min = video_pos;
-		Vector2D v_max = video_pos + video_res;
+		Vector2D v_max = video_pos + video_size;
 		Vector2D c_min = cur_1.Min(cur_2);
 		Vector2D c_max = cur_1.Max(cur_2);
 		gl.DrawRectangle(v_min,                  Vector2D(v_max, c_min));
@@ -101,8 +101,8 @@ bool VisualToolClip::InitializeHold() {
 
 void VisualToolClip::UpdateHold() {
 	// Limit to video area
-	cur_1 = video_pos.Max((video_pos + video_res).Min(drag_start));
-	cur_2 = video_pos.Max((video_pos + video_res).Min(mouse_pos));
+	cur_1 = video_pos.Max((video_pos + video_size).Min(drag_start));
+	cur_2 = video_pos.Max((video_pos + video_size).Min(mouse_pos));
 
 	SetFeaturePositions();
 	CommitHold();
