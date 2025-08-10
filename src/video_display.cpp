@@ -105,6 +105,8 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	Bind(wxEVT_LEFT_DCLICK, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_LEFT_DOWN, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_LEFT_UP, &VideoDisplay::OnMouseEvent, this);
+	Bind(wxEVT_MIDDLE_DOWN, &VideoDisplay::OnMouseEvent, this);
+	Bind(wxEVT_MIDDLE_UP, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_MOTION, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_MOUSEWHEEL, &VideoDisplay::OnMouseWheel, this);
 
@@ -189,12 +191,15 @@ void VideoDisplay::Render() try {
 	if (!viewport_height || !viewport_width)
 		PositionVideo();
 
+	wxSize client_size = GetClientSize();
+	client_size = wxSize(std::max(1, client_size.GetWidth()), std::max(1, client_size.GetHeight()));
+
 	videoOut->Render(viewport_left, viewport_bottom, viewport_width, viewport_height);
-	E(glViewport(0, std::min(viewport_bottom, 0), videoSize.GetWidth(), videoSize.GetHeight()));
+	E(glViewport(0, 0, client_size.GetWidth() * scale_factor, client_size.GetHeight() * scale_factor));
 
 	E(glMatrixMode(GL_PROJECTION));
 	E(glLoadIdentity());
-	E(glOrtho(0.0f, videoSize.GetWidth() / scale_factor, videoSize.GetHeight() / scale_factor, 0.0f, -1000.0f, 1000.0f));
+	E(glOrtho(0.0f, client_size.GetWidth(), client_size.GetHeight(), 0.0f, -1000.0f, 1000.0f));
 
 	if (OPT_GET("Video/Overscan Mask")->GetBool()) {
 		double ar = con->videoController->GetAspectRatioValue();
@@ -268,11 +273,11 @@ void VideoDisplay::PositionVideo() {
 	if (!provider || !IsShownOnScreen()) return;
 
 	viewport_left = 0;
-	viewport_bottom = GetClientSize().GetHeight() * scale_factor - videoSize.GetHeight();
 	viewport_top = 0;
 	viewport_width = videoSize.GetWidth();
 	viewport_height = videoSize.GetHeight();
 
+	// Center video in canvas if necessary
 	if (freeSize) {
 		int vidW = provider->GetWidth();
 		int vidH = provider->GetHeight();
@@ -290,10 +295,26 @@ void VideoDisplay::PositionVideo() {
 		// Video is wider than window, blackbox top/bottom
 		else if (videoAr - displayAr > 0.01) {
 			int delta = viewport_height - viewport_width / videoAr;
-			viewport_top = viewport_bottom = delta / 2;
+			viewport_top = delta / 2;
 			viewport_height -= delta;
 		}
 	}
+
+	// Apply video zoom
+	int viewport_center_x = viewport_left + viewport_width / 2;
+	int viewport_center_y = viewport_top + viewport_height / 2;
+
+	viewport_width *= videoZoomValue;
+	viewport_height *= videoZoomValue;
+
+	viewport_left = viewport_center_x - viewport_width / 2;
+	viewport_top = viewport_center_y - viewport_height / 2;
+
+	// Apply panning
+	viewport_left += pan_x * videoSize.GetHeight();
+	viewport_top += pan_y * videoSize.GetHeight();
+
+	viewport_bottom = GetClientSize().GetHeight() * scale_factor - viewport_height - viewport_top;
 
 	if (tool) {
 		wxSize client_size = GetClientSize();
@@ -351,6 +372,12 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 	if (event.ButtonDown())
 		SetFocus();
 
+	if (event.Dragging() && event.MiddleIsDown()) {
+		pan_x += (event.GetX() - last_mouse_pos.X()) * scale_factor / videoSize.GetHeight();
+		pan_y += (event.GetY() - last_mouse_pos.Y()) * scale_factor / videoSize.GetHeight();
+		PositionVideo();
+	}
+
 	last_mouse_pos = mouse_pos = event.GetPosition();
 
 	if (tool)
@@ -365,8 +392,13 @@ void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 
 void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 	if (int wheel = event.GetWheelRotation()) {
-		if (ForwardMouseWheelEvent(this, event))
-			SetWindowZoom(windowZoomValue + .125 * (wheel / event.GetWheelDelta()));
+		if (ForwardMouseWheelEvent(this, event)) {
+			if (event.ControlDown()) {
+				VideoZoom(wheel / event.GetWheelDelta(), event.GetPosition() * scale_factor);
+			} else {
+				SetWindowZoom(windowZoomValue + .125 * (wheel / event.GetWheelDelta()));
+			}
+		}
 	}
 }
 
@@ -389,6 +421,22 @@ void VideoDisplay::SetWindowZoom(double value) {
 	zoomBox->ChangeValue(fmt_wx("%g%%", windowZoomValue * 100.));
 	con->ass->Properties.video_zoom = windowZoomValue;
 	UpdateSize();
+}
+
+void VideoDisplay::VideoZoom(int step, wxPoint zoomCenter) {
+	double newZoomValue = videoZoomValue * (1 + 0.125 * step);
+	newZoomValue = std::max(0.125, std::min(10.0, newZoomValue));
+
+	Vector2D unpannedVideoCenter = Vector2D(viewport_left, viewport_top) + Vector2D(viewport_width, viewport_height) / 2;
+	Vector2D videoCenter = unpannedVideoCenter + Vector2D(pan_x, pan_y);
+	Vector2D zoomCenterToVideoCenter = videoCenter - zoomCenter;
+	Vector2D panDiff = Vector2D(zoomCenter) + newZoomValue / videoZoomValue * zoomCenterToVideoCenter - videoCenter;
+
+	pan_x += panDiff.X() / videoSize.GetHeight();
+	pan_y += panDiff.Y() / videoSize.GetHeight();
+	videoZoomValue = newZoomValue;
+
+	PositionVideo();
 }
 
 void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
