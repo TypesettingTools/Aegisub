@@ -134,10 +134,10 @@ void VisualToolBase::SetCanvasSize(int w, int h) {
 }
 
 void VisualToolBase::SetDisplayArea(int x, int y, int w, int h) {
-	if (x == video_pos.X() && y == video_pos.Y() && w == video_res.X() && h == video_res.Y()) return;
+	if (x == video_pos.X() && y == video_pos.Y() && w == video_size.X() && h == video_size.Y()) return;
 
 	video_pos = Vector2D(x, y);
-	video_res = Vector2D(w, h);
+	video_size = Vector2D(w, h);
 
 	holding = false;
 	dragging = false;
@@ -147,11 +147,11 @@ void VisualToolBase::SetDisplayArea(int x, int y, int w, int h) {
 }
 
 Vector2D VisualToolBase::ToScriptCoords(Vector2D point) const {
-	return (point - video_pos) * script_res / video_res;
+	return (point - video_pos) * script_res / video_size;
 }
 
 Vector2D VisualToolBase::FromScriptCoords(Vector2D point) const {
-	return (point * video_res / script_res) + video_pos;
+	return (point * video_size / script_res) + video_pos;
 }
 
 template<class FeatureType>
