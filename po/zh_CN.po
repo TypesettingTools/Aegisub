@@ -2666,6 +2666,7 @@ msgstr ""
 "旧版翻译来自: Vmoe字幕组\n"
 "    原始翻译: 芥末 & song_5007 & ……\n"
 "    电脑迷 修订更新翻译\n"
+"    Oborozuki 修订更新翻译\n"
 
 #: ../src/dialog_about.cpp:128
 msgid ""
@@ -3143,7 +3144,7 @@ msgstr "显示标准"
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
 msgid "* An error occurred when enumerating the used fonts: %s.\n"
-msgstr "* 枚举使用的字体错误: %s.\n"
+msgstr "* 枚举使用的字体时报错: %s.\n"
 
 #: ../src/dialog_fonts_collector.cpp:115
 msgid "Symlinking fonts to folder...\n"
@@ -3510,7 +3511,7 @@ msgstr "0: 智能换行，上行较宽"
 
 #: ../src/dialog_properties.cpp:150
 msgid "1: End-of-line word wrapping, only \\N breaks"
-msgstr "1: 于行尾词处换行，仅于\\N 断行"
+msgstr "1: 于行尾词处换行，仅于 \\N 断行"
 
 #: ../src/dialog_properties.cpp:151
 msgid "2: No word wrapping, both \\n and \\N break"
@@ -4646,7 +4647,7 @@ msgid "Curl could not be initialized."
 msgstr ""
 
 #: ../src/dialog_version_check.cpp:317
-#, fuzzy, c-format
+#, c-format
 msgid "Checking for updates failed: %s."
 msgstr "检查更新失败: %s。"
 
@@ -5905,7 +5906,7 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"没有可用的音频服务程序有可用于处理所选文件的解码器。\n"
+"所有音频服务程序均没有所选文件的解码器。\n"
 "\n"
 "已尝试下列服务程序: \n"
 
@@ -5979,7 +5980,7 @@ msgstr "该行的特效(Effect)。可用于储存卡拉OK脚本或渲染器可�
 
 #: ../src/subs_edit_box.cpp:147
 msgid "Number of characters in the longest line of this subtitle."
-msgstr "该字幕行的以换行符分割的最长行的字符数。"
+msgstr "该字幕行中，换行符分割后的最长字符数。"
 
 #: ../src/subs_edit_box.cpp:154
 msgid "Layer number"
