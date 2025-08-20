@@ -150,6 +150,7 @@ class VideoDisplay final : public wxGLCanvas {
 	void OnSizeEvent(wxSizeEvent &event);
 	void OnContextMenu(wxContextMenuEvent&);
 
+	void Pan(Vector2D delta);	// Takes delta in logical pixels
 	void VideoZoom(double newVideoZoom, wxPoint zoomCenter);
 	void ResetVideoZoom();
 

@@ -384,9 +384,7 @@ void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
 		SetFocus();
 
 	if (event.Dragging() && event.MiddleIsDown()) {
-		pan_x += (event.GetX() - last_mouse_pos.X()) * scale_factor / videoSize.GetHeight();
-		pan_y += (event.GetY() - last_mouse_pos.Y()) * scale_factor / videoSize.GetHeight();
-		PositionVideo();
+		Pan(Vector2D(event.GetPosition()) - last_mouse_pos);
 	}
 
 	last_mouse_pos = mouse_pos = event.GetPosition();
@@ -419,6 +417,12 @@ void VideoDisplay::OnGestureZoom(wxZoomGestureEvent& event) {
 		videoZoomAtGestureStart = videoZoomValue;
 	}
 	VideoZoom(videoZoomAtGestureStart * event.GetZoomFactor(), event.GetPosition() * scale_factor);
+}
+
+void VideoDisplay::Pan(Vector2D delta) {
+	pan_x += delta.X() * scale_factor / videoSize.GetHeight();
+	pan_y += delta.Y() * scale_factor / videoSize.GetHeight();
+	PositionVideo();
 }
 
 void VideoDisplay::OnContextMenu(wxContextMenuEvent&) {
