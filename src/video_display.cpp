@@ -34,6 +34,8 @@
 
 #include "video_display.h"
 
+#include "libaegisub/log.h"
+
 #include "ass_file.h"
 #include "async_video_provider.h"
 #include "command/command.h"
@@ -99,6 +101,10 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 		con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this),
 	});
 
+	if (!EnableTouchEvents(wxTOUCH_ZOOM_GESTURE)) {
+		LOG_E("video/display") << "Failed to enable touch events.";
+	}
+
 	Bind(wxEVT_PAINT, std::bind(&VideoDisplay::Render, this));
 	Bind(wxEVT_SIZE, &VideoDisplay::OnSizeEvent, this);
 	Bind(wxEVT_CONTEXT_MENU, &VideoDisplay::OnContextMenu, this);
@@ -112,6 +118,7 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	Bind(wxEVT_MIDDLE_UP, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_MOTION, &VideoDisplay::OnMouseEvent, this);
 	Bind(wxEVT_MOUSEWHEEL, &VideoDisplay::OnMouseWheel, this);
+	Bind(wxEVT_GESTURE_ZOOM, &VideoDisplay::OnGestureZoom, this);
 
 	Bind(wxEVT_DPI_CHANGED, [this] (wxDPIChangedEvent &e) {
 		double new_zoom = windowZoomValue * GetContentScaleFactor() / scale_factor;
@@ -398,12 +405,20 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 	if (int wheel = event.GetWheelRotation()) {
 		if (ForwardMouseWheelEvent(this, event)) {
 			if (event.ControlDown()) {
-				VideoZoom(wheel / event.GetWheelDelta(), event.GetPosition() * scale_factor);
+				double newZoomValue = videoZoomValue * (1 + 0.125 * wheel / event.GetWheelDelta());
+				VideoZoom(newZoomValue, event.GetPosition() * scale_factor);
 			} else {
 				SetWindowZoom(windowZoomValue + .125 * (wheel / event.GetWheelDelta()));
 			}
 		}
 	}
+}
+
+void VideoDisplay::OnGestureZoom(wxZoomGestureEvent& event) {
+	if (event.IsGestureStart()) {
+		videoZoomAtGestureStart = videoZoomValue;
+	}
+	VideoZoom(videoZoomAtGestureStart * event.GetZoomFactor(), event.GetPosition() * scale_factor);
 }
 
 void VideoDisplay::OnContextMenu(wxContextMenuEvent&) {
@@ -427,8 +442,7 @@ void VideoDisplay::SetWindowZoom(double value) {
 	UpdateSize();
 }
 
-void VideoDisplay::VideoZoom(int step, wxPoint zoomCenter) {
-	double newZoomValue = videoZoomValue * (1 + 0.125 * step);
+void VideoDisplay::VideoZoom(double newZoomValue, wxPoint zoomCenter) {
 	newZoomValue = std::max(0.125, std::min(10.0, newZoomValue));
 
 	Vector2D unpannedVideoCenter = Vector2D(viewport_left, viewport_top) + Vector2D(viewport_width, viewport_height) / 2;
