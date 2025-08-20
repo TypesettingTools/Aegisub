@@ -92,7 +92,10 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	connections = agi::signal::make_vector({
-		con->project->AddVideoProviderListener(&VideoDisplay::UpdateSize, this),
+		con->project->AddVideoProviderListener([this] (AsyncVideoProvider *provider) {
+			if (!provider) ResetVideoZoom();
+			UpdateSize();
+		}),
 		con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this),
 	});
 
@@ -328,6 +331,7 @@ void VideoDisplay::PositionVideo() {
 
 void VideoDisplay::UpdateSize() {
 	auto provider = con->project->VideoProvider();
+
 	if (!provider || !IsShownOnScreen()) return;
 
 	videoSize.Set(provider->GetWidth(), provider->GetHeight());
@@ -436,6 +440,13 @@ void VideoDisplay::VideoZoom(int step, wxPoint zoomCenter) {
 	pan_y += panDiff.Y() / videoSize.GetHeight();
 	videoZoomValue = newZoomValue;
 
+	PositionVideo();
+}
+
+void VideoDisplay::ResetVideoZoom() {
+	pan_x = 0;
+	pan_y = 0;
+	videoZoomValue = 1;
 	PositionVideo();
 }
 
