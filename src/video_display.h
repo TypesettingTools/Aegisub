@@ -91,6 +91,8 @@ class VideoDisplay final : public wxGLCanvas {
 	/// The zoom level of the video inside the video display.
 	double videoZoomValue = 1;
 
+	double videoZoomAtGestureStart = 1;
+
 	/// The video pan, relative to the unzoomed viewport's height.
 	double pan_x = 0;
 	double pan_y = 0;
@@ -143,11 +145,12 @@ class VideoDisplay final : public wxGLCanvas {
 	void OnMouseEvent(wxMouseEvent& event);
 	void OnMouseWheel(wxMouseEvent& event);
 	void OnMouseLeave(wxMouseEvent& event);
+	void OnGestureZoom(wxZoomGestureEvent& event);
 	/// @brief Recalculate video positioning and scaling when the available area or zoom changes
 	void OnSizeEvent(wxSizeEvent &event);
 	void OnContextMenu(wxContextMenuEvent&);
 
-	void VideoZoom(int step, wxPoint zoomCenter);
+	void VideoZoom(double newVideoZoom, wxPoint zoomCenter);
 	void ResetVideoZoom();
 
 public:
