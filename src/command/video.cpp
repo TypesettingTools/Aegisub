@@ -668,6 +668,17 @@ struct video_show_overscan final : public validator_video_loaded {
 	}
 };
 
+struct video_reset_pan final : public validator_video_loaded {
+       CMD_NAME("video/reset_pan")
+       STR_MENU("Reset Video &Pan")
+       STR_DISP("Reset Video Pan")
+       STR_HELP("Reset the video's position in the video display")
+
+       void operator()(agi::Context *c) override {
+		   c->videoDisplay->ResetVideoZoom();
+       }
+};
+
 class video_zoom_100: public validator_video_attached {
 public:
 	CMD_NAME("video/zoom/100")
@@ -796,6 +807,7 @@ namespace cmd {
 		reg(std::make_unique<video_play>());
 		reg(std::make_unique<video_play_line>());
 		reg(std::make_unique<video_show_overscan>());
+		reg(std::make_unique<video_reset_pan>());
 		reg(std::make_unique<video_stop>());
 		reg(std::make_unique<video_zoom_100>());
 		reg(std::make_unique<video_zoom_200>());
