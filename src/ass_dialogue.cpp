@@ -109,8 +109,23 @@ void AssDialogue::Parse(std::string const& raw) {
 	End = agi::Trim(tkn.next_tok());
 	Style = tkn.next_str_trim();
 	Actor = tkn.next_str_trim();
-	for (int& margin : Margin)
-		margin = mid(-9999, boost::lexical_cast<int>(tkn.next_tok()), 99999);
+	for (int& margin : Margin) {
+		int parsed_margin = 0;
+		auto tok = tkn.next_tok();
+		try {
+			parsed_margin = boost::lexical_cast<int>(tok);
+		}
+		catch (boost::bad_lexical_cast const&) {
+			try {
+				// Try parsing and rounding a floating point number if integer failed
+				parsed_margin = (int)(boost::lexical_cast<double>(tok)+0.5);
+			}
+			catch (...) {
+				// Just keep 0 if can not parse a number, eg. if field is empty
+			}
+		}
+		margin = mid(-9999, parsed_margin, 99999);
+	}
 	Effect = tkn.next_str_trim();
 
 	std::string text{tkn.next_tok().begin(), str.end()};
