@@ -122,7 +122,7 @@ void AssDialogue::Parse(std::string const& raw) {
 		else if (tok.starts_with("+")) {
 			tok.erase(0,1);
 		}
-		if (tok.starts_with("0x")) {// Hexadecimal value
+		if (tok.starts_with("0x") || tok.starts_with("0X")) {// Hexadecimal value
 			try {
 				std::size_t pos = 2;
 				parsed_margin = std::stoi(tok,&pos,16);
