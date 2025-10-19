@@ -651,6 +651,54 @@ struct video_play_line final : public validator_video_loaded {
 	}
 };
 
+struct video_play_line_end final : public validator_video_loaded {
+    CMD_NAME("video/play/line/end")
+    CMD_ICON(button_playline)
+    STR_MENU("Play last 500ms")
+    STR_DISP("Play last 500ms")
+    STR_HELP("Play last 500 milliseconds of current line")
+
+    void operator()(agi::Context *c) override {
+        c->videoController->PlayLineEnd();
+    }
+};
+
+struct video_play_line_begin final : public validator_video_loaded {
+    CMD_NAME("video/play/line/begin")
+    CMD_ICON(button_playline)
+    STR_MENU("Play first 500ms")
+    STR_DISP("Play first 500ms")
+    STR_HELP("Play first 500 milliseconds of current line")
+
+    void operator()(agi::Context *c) override {
+        c->videoController->PlayLineBegin();
+    }
+};
+
+struct video_play_line_before final : public validator_video_loaded {
+    CMD_NAME("video/play/line/before")
+    CMD_ICON(button_playline)
+    STR_MENU("Play 500ms before")
+    STR_DISP("Play 500ms before")
+    STR_HELP("Play 500 milliseconds before current line")
+
+    void operator()(agi::Context *c) override {
+        c->videoController->PlayLineBefore();
+    }
+};
+
+struct video_play_line_after final : public validator_video_loaded {
+    CMD_NAME("video/play/line/after")
+    CMD_ICON(button_playline)
+    STR_MENU("Play 500ms after")
+    STR_DISP("Play 500ms after")
+    STR_HELP("Play 500 milliseconds after current line")
+
+    void operator()(agi::Context *c) override {
+        c->videoController->PlayLineAfter();
+    }
+};
+
 struct video_show_overscan final : public validator_video_loaded {
 	CMD_NAME("video/show_overscan")
 	STR_MENU("Show &Overscan Mask")
@@ -795,6 +843,10 @@ namespace cmd {
 		reg(std::make_unique<video_opt_autoscroll>());
 		reg(std::make_unique<video_play>());
 		reg(std::make_unique<video_play_line>());
+		reg(std::make_unique<video_play_line_end>());
+		reg(std::make_unique<video_play_line_begin>());
+		reg(std::make_unique<video_play_line_before>());
+		reg(std::make_unique<video_play_line_after>());
 		reg(std::make_unique<video_show_overscan>());
 		reg(std::make_unique<video_stop>());
 		reg(std::make_unique<video_zoom_100>());

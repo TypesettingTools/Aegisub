@@ -2452,6 +2452,8 @@ msgstr "从该位置开始播放视频"
 msgid "Play line"
 msgstr "播放字幕行"
 
+
+
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
 msgstr "显示过扫描遮罩(&O)"
