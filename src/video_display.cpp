@@ -413,6 +413,15 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 }
 
 void VideoDisplay::OnGestureZoom(wxZoomGestureEvent& event) {
+#ifdef __WXGTK__
+	if (event.IsGestureEnd() && event.GetZoomFactor() == 1.0 && event.GetPosition() == wxPoint(0, 0)) {
+		return;
+		// On X11+wxGTK, right-clicking seems to generate a single false event of this form
+		// (without any preceding GestureStart event).
+		// TODO: report this upstream; last time I tried I couldn't reproduce this with a minimal sample.
+	}
+#endif
+
 	if (event.IsGestureStart()) {
 		videoZoomAtGestureStart = videoZoomValue;
 	}
