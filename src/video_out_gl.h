@@ -69,11 +69,13 @@ public:
 	void UploadFrameData(VideoFrame const& frame);
 
 	/// @brief Render a frame
+	/// @param width Width in physical pixels of client window
+	/// @param height Height in physical pixels of client window
 	/// @param x Bottom left x coordinate
 	/// @param y Bottom left y coordinate
 	/// @param width Width in pixels of viewport
 	/// @param height Height in pixels of viewport
-	void Render(int x, int y, int width, int height);
+	void Render(int client_width, int client_height, int x, int y, int width, int height);
 
 	VideoOutGL();
 	~VideoOutGL();

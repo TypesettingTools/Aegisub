@@ -204,7 +204,8 @@ void VideoDisplay::Render() try {
 	wxSize client_size = GetClientSize();
 	client_size = wxSize(std::max(1, client_size.GetWidth()), std::max(1, client_size.GetHeight()));
 
-	videoOut->Render(viewport_left, viewport_bottom, viewport_width, viewport_height);
+	videoOut->Render(client_size.GetWidth() * scale_factor, client_size.GetHeight() * scale_factor,
+		viewport_left, viewport_bottom, viewport_width, viewport_height);
 	E(glViewport(0, 0, client_size.GetWidth() * scale_factor, client_size.GetHeight() * scale_factor));
 
 	E(glMatrixMode(GL_PROJECTION));
