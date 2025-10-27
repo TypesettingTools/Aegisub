@@ -176,6 +176,12 @@ void Video(wxTreebook *book, Preferences *parent) {
 	p->OptionAdd(general, _("Automatically open audio when opening video"), "Video/Open Audio");
 	p->CellSkip(general);
 
+	const wxString cscroll_arr[] = {_("Resizes the video box"), _("Resizes the video box (reversed)"), _("Zooms the video"), _("Zooms the video (reversed)"), _("Pans the video"), _("Pans the video (X/Y swapped)"), _("Does nothing")};
+	wxArrayString choice_scroll(7, cscroll_arr);
+	p->OptionChoice(general, _("Scrolling on the video display"), choice_scroll, "Video/Scroll Action");
+	p->OptionChoice(general, _("Ctrl+Scrolling on the video display"), choice_scroll, "Video/Ctrl Scroll Action");
+	p->OptionChoice(general, _("Shift+Scrolling on the video display"), choice_scroll, "Video/Shift Scroll Action");
+
 	const wxString czoom_arr[24] = { "12.5%", "25%", "37.5%", "50%", "62.5%", "75%", "87.5%", "100%", "112.5%", "125%", "137.5%", "150%", "162.5%", "175%", "187.5%", "200%", "212.5%", "225%", "237.5%", "250%", "262.5%", "275%", "287.5%", "300%" };
 	wxArrayString choice_zoom(24, czoom_arr);
 	p->OptionChoice(general, _("Default Zoom"), choice_zoom, "Video/Default Zoom");

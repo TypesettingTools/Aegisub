@@ -78,6 +78,16 @@ public:
 
 #define E(cmd) cmd; if (GLenum err = glGetError()) throw OpenGlException(#cmd, err)
 
+enum {
+	SCALE_VIDEO,
+	SCALE_VIDEO_REV,
+	ZOOM_VIDEO,
+	ZOOM_VIDEO_REV,
+	PAN_VIDEO,
+	PAN_VIDEO_SWAP,
+	NOTHING,
+};
+
 VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBox, wxWindow *parent, agi::Context *c)
 : wxGLCanvas(parent, -1, attribList)
 , autohideTools(OPT_GET("Tool/Visual/Autohide"))
@@ -403,11 +413,48 @@ void VideoDisplay::OnMouseLeave(wxMouseEvent& event) {
 void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 	if (int wheel = event.GetWheelRotation()) {
 		if (ForwardMouseWheelEvent(this, event)) {
-			if (event.ControlDown()) {
-				double newZoomValue = videoZoomValue * (1 + 0.125 * wheel / event.GetWheelDelta());
-				VideoZoom(newZoomValue, event.GetPosition() * scale_factor);
-			} else {
-				SetWindowZoom(windowZoomValue + .125 * (wheel / event.GetWheelDelta()));
+			const char *opt = "Scroll Action";
+			if (event.CmdDown() && event.ShiftDown()) {
+				return;
+			} else if (event.CmdDown()) {
+				opt = "Ctrl Scroll Action";
+			} else if (event.ShiftDown()) {
+				opt = "Shift Scroll Action";
+			}
+
+			int action = OPT_GET(std::string("Video/") + opt)->GetInt();
+			int dir = 1;
+			bool swap = false;
+			switch (action) {
+				case SCALE_VIDEO_REV:
+					dir = -1;	// fallthrough
+				case SCALE_VIDEO:
+					SetWindowZoom(windowZoomValue + dir * .125 * (wheel / event.GetWheelDelta()));
+					break;
+
+				case ZOOM_VIDEO_REV:
+					dir = -1;	// fallthrough
+				case ZOOM_VIDEO:
+					{
+						double newZoomValue = videoZoomValue * (1 + dir * 0.125 * wheel / event.GetWheelDelta());
+						VideoZoom(newZoomValue, event.GetPosition() * scale_factor);
+					}
+					break;
+
+				case PAN_VIDEO_SWAP:
+					swap = true;	// Fallthrough
+				case PAN_VIDEO:
+					{
+						double distance = 5 * static_cast<double>(wheel) / event.GetWheelDelta();
+						Vector2D pan = event.GetWheelAxis() == wxMOUSE_WHEEL_HORIZONTAL ? Vector2D(-distance, 0) : Vector2D(0, distance);
+
+						Pan(swap ? Vector2D(pan.Y(), pan.X()) : pan);
+					}
+					break;
+
+				case NOTHING:
+				default:
+					break;
 			}
 		}
 	}
