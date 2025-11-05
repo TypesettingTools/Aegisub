@@ -169,6 +169,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	// Prepare control values
 	wxString EncodingValue = std::to_wstring(style->encoding);
 	wxString alignValues[9] = { "7", "8", "9", "4", "5", "6", "1", "2", "3" };
+	wxString borderStyleValues[3] = { "Outline", "Border boxes", "Shadow box (libass only)" };
 
 	// Encoding options
 	wxArrayString encodingStrings;
@@ -205,7 +206,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
 	auto Outline = num_text_ctrl(&work->outline_w, 0.0, 1000.0, 0.1, 2);
 	auto Shadow = num_text_ctrl(&work->shadow_w, 0.0, 1000.0, 0.1, 2);
-	OutlineType = new wxCheckBox(this, -1, _("&Opaque box"));
+	OutlineType = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 3, borderStyleValues, wxCB_READONLY);
 	auto ScaleX = num_text_ctrl(&work->scalex, 0.0, 10000.0, 1, 2);
 	auto ScaleY = num_text_ctrl(&work->scaley, 0.0, 10000.0, 1, 2);
 	auto Angle = num_text_ctrl(&work->angle, -360.0, 360.0, 1.0, 2);
@@ -223,7 +224,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	margin[0]->SetToolTip(_("Distance from left edge, in pixels"));
 	margin[1]->SetToolTip(_("Distance from right edge, in pixels"));
 	margin[2]->SetToolTip(_("Distance from top/bottom edge, in pixels"));
-	OutlineType->SetToolTip(_("When selected, display an opaque box behind the subtitles instead of an outline around the text"));
+	OutlineType->SetToolTip(_("Whether to draw a normal outline or opaque boxes around the text"));
 	Outline->SetToolTip(_("Outline width, in pixels"));
 	Shadow->SetToolTip(_("Shadow distance, in pixels"));
 	ScaleX->SetToolTip(_("Scale X, in percentage"));
@@ -238,7 +239,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	BoxItalic->SetValue(style->italic);
 	BoxUnderline->SetValue(style->underline);
 	BoxStrikeout->SetValue(style->strikeout);
-	OutlineType->SetValue(style->borderstyle == 3);
+	OutlineType->SetSelection(BorderStyleToControl(style->borderstyle));
 	Alignment->SetSelection(AlignToControl(style->alignment));
 	// Fill font face list box
 	FontName->Freeze();
@@ -313,7 +314,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	// Outline
 	add_with_label(OutlineBox, _("Outline:"), Outline);
 	add_with_label(OutlineBox, _("Shadow:"), Shadow);
-	OutlineBox->Add(OutlineType, 0, wxLEFT | wxALIGN_CENTER, 5);
+	add_with_label(OutlineBox, _("Border style:"), OutlineType);
 
 	// Misc
 	auto MiscBoxTop = new wxFlexGridSizer(2, 4, 5, 5);
@@ -484,7 +485,7 @@ void DialogStyleEditor::UpdateWorkStyle() {
 	encoding_num.ToLong(&templ);
 	work->encoding = templ;
 
-	work->borderstyle = OutlineType->IsChecked() ? 3 : 1;
+	work->borderstyle = ControlToBorderStyle(OutlineType->GetSelection());
 
 	work->alignment = ControlToAlign(Alignment->GetSelection());
 
@@ -551,5 +552,25 @@ int DialogStyleEditor::AlignToControl(int n) {
 		case 2: return 7;
 		case 3: return 8;
 		default: return 7;
+	}
+}
+
+int DialogStyleEditor::ControlToBorderStyle(int choice) {
+	switch (choice) {
+		case 1: return 3;
+		case 2: return 4;
+		case 0:
+		default:
+			return 1;
+	}
+}
+
+int DialogStyleEditor::BorderStyleToControl(int border_style) {
+	switch (border_style) {
+		case 3: return 1;
+		case 4: return 2;
+		case 1:
+		default:
+			return 0;
 	}
 }
