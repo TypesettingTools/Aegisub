@@ -149,6 +149,14 @@ public:
 	void NextFrame();
 	/// Play the previous frame then stop
 	void PrevFrame();
+	/// Play the last 500 milliseconds of the current line
+	void PlayLineEnd();
+	/// Play the first 500 milliseconds of the current line
+	void PlayLineBegin();
+	/// Play 500 milliseconds before the current line
+	void PlayLineBefore();
+	/// Play 500 milliseconds after the current line
+	void PlayLineAfter();
 	/// Seek to the beginning of the current line, then play to the end of it
 	void PlayLine();
 	/// Stop playing

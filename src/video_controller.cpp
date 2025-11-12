@@ -167,6 +167,90 @@ void VideoController::PlayLine() {
 	playback.Start(10);
 }
 
+void VideoController::PlayLineEnd() {
+    Stop();
+
+    AssDialogue *curline = context->selectionController->GetActiveLine();
+    if (!curline) return;
+
+    int end_time = curline->End;
+    int start_time = std::max(0, end_time - 500);
+    
+    context->audioController->PlayRange(TimeRange(start_time, end_time));
+
+    int startFrame = FrameAtTime(start_time, agi::vfr::START);
+    start_ms = TimeAtFrame(startFrame);
+    end_frame = FrameAtTime(end_time, agi::vfr::END) + 1;
+
+    JumpToFrame(startFrame);
+
+    playback_start_time = std::chrono::steady_clock::now();
+    playback.Start(10);
+}
+
+void VideoController::PlayLineBegin() {
+    Stop();
+
+    AssDialogue *curline = context->selectionController->GetActiveLine();
+    if (!curline) return;
+
+    int start_time = curline->Start;
+    int end_time = std::min(static_cast<int>(curline->End), start_time + 500);
+    
+    context->audioController->PlayRange(TimeRange(start_time, end_time));
+
+    int startFrame = FrameAtTime(start_time, agi::vfr::START);
+    start_ms = TimeAtFrame(startFrame);
+    end_frame = FrameAtTime(end_time, agi::vfr::END) + 1;
+
+    JumpToFrame(startFrame);
+
+    playback_start_time = std::chrono::steady_clock::now();
+    playback.Start(10);
+}
+
+void VideoController::PlayLineBefore() {
+    Stop();
+
+    AssDialogue *curline = context->selectionController->GetActiveLine();
+    if (!curline) return;
+
+    int end_time = curline->Start;
+    int start_time = std::max(0, end_time - 500);
+    
+    context->audioController->PlayRange(TimeRange(start_time, end_time));
+
+    int startFrame = FrameAtTime(start_time, agi::vfr::START);
+    start_ms = TimeAtFrame(startFrame);
+    end_frame = FrameAtTime(end_time, agi::vfr::END) + 1;
+
+    JumpToFrame(startFrame);
+
+    playback_start_time = std::chrono::steady_clock::now();
+    playback.Start(10);
+}
+
+void VideoController::PlayLineAfter() {
+    Stop();
+
+    AssDialogue *curline = context->selectionController->GetActiveLine();
+    if (!curline) return;
+
+    int start_time = curline->End;
+    int end_time = start_time + 500;
+    
+    context->audioController->PlayRange(TimeRange(start_time, end_time));
+
+    int startFrame = FrameAtTime(start_time, agi::vfr::START);
+    start_ms = TimeAtFrame(startFrame);
+    end_frame = FrameAtTime(end_time, agi::vfr::END) + 1;
+
+    JumpToFrame(startFrame);
+
+    playback_start_time = std::chrono::steady_clock::now();
+    playback.Start(10);
+}
+
 void VideoController::Stop() {
 	if (IsPlaying()) {
 		playback.Stop();
