@@ -20,6 +20,7 @@ tests_src = [
     'tests/cajun.cpp',
     'tests/calltip_provider.cpp',
     'tests/character_count.cpp',
+    'tests/cinecanvas.cpp',
     'tests/color.cpp',
     'tests/dialogue_lexer.cpp',
     'tests/format.cpp',
@@ -44,9 +45,12 @@ tests_src = [
     'tests/uuencode.cpp',
     'tests/vfr.cpp',
     'tests/word_split.cpp',
+
+    # Add CineCanvas source for testing
+    '../src/subtitle_format_cinecanvas.cpp',
 ]
 
-tests_inc = include_directories('support')
+tests_inc = include_directories('support', '../src')
 
 tests_args = []
 

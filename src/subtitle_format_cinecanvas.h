@@ -60,12 +60,6 @@ class CineCanvasSubtitleFormat final : public SubtitleFormat {
 	void WriteSubtitle(wxXmlNode *fontNode, const AssDialogue *line,
 	                   int spotNumber, const agi::vfr::Framerate &fps) const;
 
-	/// Convert ASS color to CineCanvas RRGGBBAA hex format
-	/// @param color ASS color object
-	/// @param alpha Alpha value (0-255)
-	/// @return 8-character hex string (RRGGBBAA)
-	std::string ConvertColorToRGBA(const agi::Color &color, uint8_t alpha = 255) const;
-
 	/// Generate RFC 4122 compliant UUID
 	/// @return UUID string in urn:uuid:xxx format
 	std::string GenerateUUID() const;
@@ -82,6 +76,13 @@ class CineCanvasSubtitleFormat final : public SubtitleFormat {
 
 public:
 	CineCanvasSubtitleFormat();
+
+	/// Convert ASS color to CineCanvas RRGGBBAA hex format
+	/// @param color ASS color object (stored internally as RGB)
+	/// @param alpha Alpha value in ASS format (0=opaque, 255=transparent)
+	/// @return 8-character hex string (RRGGBBAA) with inverted alpha
+	/// @note Made public for testing and potential reuse
+	std::string ConvertColorToRGBA(const agi::Color &color, uint8_t alpha = 255) const;
 
 	std::vector<std::string> GetReadWildcards() const override;
 	std::vector<std::string> GetWriteWildcards() const override;
