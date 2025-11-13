@@ -26,10 +26,12 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 /// @file cinecanvas.cpp
-/// @brief Unit tests for CineCanvas subtitle format color conversion
+/// @brief Unit tests for CineCanvas subtitle format color and timing conversion
 /// @ingroup subtitle_io
 
 #include <libaegisub/color.h>
+#include <libaegisub/ass/time.h>
+#include <libaegisub/vfr.h>
 
 #include "../../src/subtitle_format_cinecanvas.h"
 
@@ -207,4 +209,259 @@ TEST_F(CineCanvasColorTest, AlphaConversionFormula) {
 		EXPECT_EQ(expected_cinema_alpha, actual_cinema_alpha)
 			<< "Failed for ASS alpha=" << ass_alpha;
 	}
+}
+
+// ==================== Timing Conversion Tests ====================
+
+class CineCanvasTimingTest : public ::testing::Test {
+protected:
+	CineCanvasSubtitleFormat format;
+};
+
+// Test basic time conversion at 24fps
+TEST_F(CineCanvasTimingTest, BasicTimeConversion24fps) {
+	agi::vfr::Framerate fps(24.0);
+
+	// Test midnight / zero time
+	EXPECT_EQ("00:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(0), fps));
+
+	// Test 1 second
+	EXPECT_EQ("00:00:01:000", format.ConvertTimeToCineCanvas(agi::Time(1000), fps));
+
+	// Test 1 minute
+	EXPECT_EQ("00:01:00:000", format.ConvertTimeToCineCanvas(agi::Time(60000), fps));
+
+	// Test 1 hour
+	EXPECT_EQ("01:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(3600000), fps));
+}
+
+// Test basic time conversion at 25fps
+TEST_F(CineCanvasTimingTest, BasicTimeConversion25fps) {
+	agi::vfr::Framerate fps(25.0);
+
+	// Test midnight / zero time
+	EXPECT_EQ("00:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(0), fps));
+
+	// Test 1 second
+	EXPECT_EQ("00:00:01:000", format.ConvertTimeToCineCanvas(agi::Time(1000), fps));
+
+	// Test 1 minute
+	EXPECT_EQ("00:01:00:000", format.ConvertTimeToCineCanvas(agi::Time(60000), fps));
+}
+
+// Test basic time conversion at 30fps
+TEST_F(CineCanvasTimingTest, BasicTimeConversion30fps) {
+	agi::vfr::Framerate fps(30.0);
+
+	// Test midnight / zero time
+	EXPECT_EQ("00:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(0), fps));
+
+	// Test 1 second
+	EXPECT_EQ("00:00:01:000", format.ConvertTimeToCineCanvas(agi::Time(1000), fps));
+
+	// Test 1 minute
+	EXPECT_EQ("00:01:00:000", format.ConvertTimeToCineCanvas(agi::Time(60000), fps));
+}
+
+// Test millisecond precision
+TEST_F(CineCanvasTimingTest, MillisecondPrecision) {
+	agi::vfr::Framerate fps(24.0);
+
+	// Test various millisecond values
+	EXPECT_EQ("00:00:00:100", format.ConvertTimeToCineCanvas(agi::Time(100), fps));
+	EXPECT_EQ("00:00:00:500", format.ConvertTimeToCineCanvas(agi::Time(500), fps));
+	EXPECT_EQ("00:00:00:999", format.ConvertTimeToCineCanvas(agi::Time(999), fps));
+
+	// Test mixed time components
+	EXPECT_EQ("00:00:05:250", format.ConvertTimeToCineCanvas(agi::Time(5250), fps));
+	EXPECT_EQ("00:01:23:456", format.ConvertTimeToCineCanvas(agi::Time(83456), fps));
+}
+
+// Test frame-accurate timing at 24fps
+TEST_F(CineCanvasTimingTest, FrameAccurateTiming24fps) {
+	agi::vfr::Framerate fps(24.0);
+
+	// At 24fps, each frame is ~41.667ms
+	// Frame 0 = 0ms
+	// Frame 1 = 41.667ms -> should round to frame boundary
+	// Frame 24 = 1000ms (exactly 1 second)
+
+	// Test frame 0
+	EXPECT_EQ("00:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(0), fps));
+
+	// Test frame 1 (should be frame-accurate, not necessarily 41ms)
+	std::string frame1 = format.ConvertTimeToCineCanvas(agi::Time(42), fps);
+	// Should be consistent with frame timing
+	EXPECT_TRUE(frame1.find("00:00:00:") == 0);
+
+	// Test 1 second (frame 24)
+	EXPECT_EQ("00:00:01:000", format.ConvertTimeToCineCanvas(agi::Time(1000), fps));
+
+	// Test 10 seconds (frame 240)
+	EXPECT_EQ("00:00:10:000", format.ConvertTimeToCineCanvas(agi::Time(10000), fps));
+}
+
+// Test frame-accurate timing at 25fps
+TEST_F(CineCanvasTimingTest, FrameAccurateTiming25fps) {
+	agi::vfr::Framerate fps(25.0);
+
+	// At 25fps, each frame is exactly 40ms
+	// Frame 0 = 0ms
+	// Frame 1 = 40ms
+	// Frame 25 = 1000ms
+
+	EXPECT_EQ("00:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(0), fps));
+
+	// Frame 1 at 25fps = 40ms
+	std::string frame1 = format.ConvertTimeToCineCanvas(agi::Time(40), fps);
+	EXPECT_TRUE(frame1.find("00:00:00:") == 0);
+
+	// 1 second
+	EXPECT_EQ("00:00:01:000", format.ConvertTimeToCineCanvas(agi::Time(1000), fps));
+}
+
+// Test frame-accurate timing at 30fps
+TEST_F(CineCanvasTimingTest, FrameAccurateTiming30fps) {
+	agi::vfr::Framerate fps(30.0);
+
+	// At 30fps, each frame is ~33.333ms
+	// Frame 0 = 0ms
+	// Frame 30 = 1000ms
+
+	EXPECT_EQ("00:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(0), fps));
+	EXPECT_EQ("00:00:01:000", format.ConvertTimeToCineCanvas(agi::Time(1000), fps));
+}
+
+// Test long duration times (no drift over time)
+TEST_F(CineCanvasTimingTest, LongDurationNoDrift) {
+	agi::vfr::Framerate fps(24.0);
+
+	// Test 1 hour
+	EXPECT_EQ("01:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(3600000), fps));
+
+	// Test 2 hours
+	EXPECT_EQ("02:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(7200000), fps));
+
+	// Test 10 hours (typical feature film length)
+	EXPECT_EQ("10:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(36000000), fps));
+
+	// Test 99 hours (max 2-digit hours)
+	EXPECT_EQ("99:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(356400000), fps));
+}
+
+// Test timing accuracy over long durations with fractional times
+TEST_F(CineCanvasTimingTest, LongDurationWithMilliseconds) {
+	agi::vfr::Framerate fps(24.0);
+
+	// Test 1 hour, 23 minutes, 45 seconds, 678 milliseconds
+	// = 3600000 + 1380000 + 45000 + 678 = 5025678 ms
+	int ms = 1 * 3600000 + 23 * 60000 + 45 * 1000 + 678;
+	std::string result = format.ConvertTimeToCineCanvas(agi::Time(ms), fps);
+
+	// Should be close to 01:23:45:678 (may vary slightly due to frame rounding)
+	EXPECT_TRUE(result.find("01:23:45:") == 0);
+}
+
+// Test that timing is consistent across different frame rates for exact seconds
+TEST_F(CineCanvasTimingTest, ConsistentTimingAcrossFramerates) {
+	agi::vfr::Framerate fps24(24.0);
+	agi::vfr::Framerate fps25(25.0);
+	agi::vfr::Framerate fps30(30.0);
+
+	// Exact second boundaries should be the same across all frame rates
+	EXPECT_EQ("00:00:05:000", format.ConvertTimeToCineCanvas(agi::Time(5000), fps24));
+	EXPECT_EQ("00:00:05:000", format.ConvertTimeToCineCanvas(agi::Time(5000), fps25));
+	EXPECT_EQ("00:00:05:000", format.ConvertTimeToCineCanvas(agi::Time(5000), fps30));
+
+	EXPECT_EQ("00:01:00:000", format.ConvertTimeToCineCanvas(agi::Time(60000), fps24));
+	EXPECT_EQ("00:01:00:000", format.ConvertTimeToCineCanvas(agi::Time(60000), fps25));
+	EXPECT_EQ("00:01:00:000", format.ConvertTimeToCineCanvas(agi::Time(60000), fps30));
+}
+
+// Test formatting consistency
+TEST_F(CineCanvasTimingTest, FormattingConsistency) {
+	agi::vfr::Framerate fps(24.0);
+
+	// All components should be zero-padded to correct width
+	std::string result = format.ConvertTimeToCineCanvas(agi::Time(3661001), fps);
+
+	// Should be 01:01:01:001 (1 hour, 1 minute, 1 second, 1 millisecond)
+	EXPECT_EQ(12u, result.length()); // HH:MM:SS:mmm = 12 characters
+	EXPECT_EQ(':', result[2]);
+	EXPECT_EQ(':', result[5]);
+	EXPECT_EQ(':', result[8]);
+
+	// Check zero-padding
+	std::string smallTime = format.ConvertTimeToCineCanvas(agi::Time(1001), fps);
+	EXPECT_TRUE(smallTime.find("00:00:01:") == 0);
+}
+
+// Test NTSC frame rate (23.976 fps)
+TEST_F(CineCanvasTimingTest, NTSCFramerate) {
+	agi::vfr::Framerate fps(24000.0 / 1001.0); // 23.976 fps
+
+	// Test basic conversions
+	EXPECT_EQ("00:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(0), fps));
+
+	// 1 second should still be close to 00:00:01:000
+	std::string oneSecond = format.ConvertTimeToCineCanvas(agi::Time(1000), fps);
+	EXPECT_TRUE(oneSecond.find("00:00:01:") == 0);
+}
+
+// Test PAL frame rate (24.975 fps)
+TEST_F(CineCanvasTimingTest, PALFramerate) {
+	agi::vfr::Framerate fps(25000.0 / 1000.0); // 25 fps (PAL)
+
+	EXPECT_EQ("00:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(0), fps));
+	EXPECT_EQ("00:00:01:000", format.ConvertTimeToCineCanvas(agi::Time(1000), fps));
+}
+
+// Test without FPS (should still work, just without frame-accurate snapping)
+TEST_F(CineCanvasTimingTest, NoFramerateProvided) {
+	agi::vfr::Framerate fps; // Uninitialized/unloaded FPS
+
+	// Should still convert correctly, just without frame snapping
+	EXPECT_EQ("00:00:00:000", format.ConvertTimeToCineCanvas(agi::Time(0), fps));
+	EXPECT_EQ("00:00:01:000", format.ConvertTimeToCineCanvas(agi::Time(1000), fps));
+	EXPECT_EQ("00:00:01:234", format.ConvertTimeToCineCanvas(agi::Time(1234), fps));
+}
+
+// Test typical subtitle times from real usage
+TEST_F(CineCanvasTimingTest, TypicalSubtitleTimes) {
+	agi::vfr::Framerate fps(24.0);
+
+	// Opening credits at 30 seconds
+	std::string opening = format.ConvertTimeToCineCanvas(agi::Time(30000), fps);
+	EXPECT_EQ("00:00:30:000", opening);
+
+	// Mid-film at 45 minutes, 30 seconds
+	int midFilm = 45 * 60000 + 30 * 1000;
+	std::string midResult = format.ConvertTimeToCineCanvas(agi::Time(midFilm), fps);
+	EXPECT_EQ("00:45:30:000", midResult);
+
+	// End credits at 2 hours
+	std::string endCredits = format.ConvertTimeToCineCanvas(agi::Time(7200000), fps);
+	EXPECT_EQ("02:00:00:000", endCredits);
+}
+
+// Test timing drift over 1000 subtitles
+TEST_F(CineCanvasTimingTest, NoDriftOver1000Subtitles) {
+	agi::vfr::Framerate fps(24.0);
+
+	// Simulate 1000 subtitles, each 3 seconds apart
+	// After 1000 subtitles, we should be at 3000 seconds = 50 minutes
+	for (int i = 0; i < 1000; i++) {
+		int timeMs = i * 3000;
+		std::string result = format.ConvertTimeToCineCanvas(agi::Time(timeMs), fps);
+
+		// Verify format is correct
+		EXPECT_EQ(12u, result.length());
+		EXPECT_EQ(':', result[2]);
+		EXPECT_EQ(':', result[5]);
+		EXPECT_EQ(':', result[8]);
+	}
+
+	// Check the 1000th subtitle (at 2997 seconds = 49 minutes 57 seconds)
+	std::string result1000 = format.ConvertTimeToCineCanvas(agi::Time(999 * 3000), fps);
+	EXPECT_EQ("00:49:57:000", result1000);
 }

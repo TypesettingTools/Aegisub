@@ -74,6 +74,18 @@ class CineCanvasSubtitleFormat final : public SubtitleFormat {
 	/// @param textNode XML Text node to populate
 	void ParseTextPosition(const AssDialogue *line, wxXmlNode *textNode) const;
 
+	/// Convert ASS time to CineCanvas format (HH:MM:SS:mmm)
+	/// @param time ASS time object
+	/// @param fps Frame rate for frame-accurate timing
+	/// @return Time string in CineCanvas format
+	std::string ConvertTimeToCineCanvas(const agi::Time &time, const agi::vfr::Framerate &fps) const;
+
+	/// Calculate fade time in milliseconds based on style and configuration
+	/// @param line Dialogue line
+	/// @param isFadeIn True for fade in, false for fade out
+	/// @return Fade duration in milliseconds
+	int GetFadeTime(const AssDialogue *line, bool isFadeIn) const;
+
 public:
 	CineCanvasSubtitleFormat();
 

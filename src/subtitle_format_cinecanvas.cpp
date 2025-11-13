@@ -157,35 +157,18 @@ void CineCanvasSubtitleFormat::WriteSubtitle(wxXmlNode *fontNode, const AssDialo
 	wxXmlNode *subtitleNode = new wxXmlNode(wxXML_ELEMENT_NODE, "Subtitle");
 	subtitleNode->AddAttribute("SpotNumber", wxString::Format("%d", spotNumber));
 
-	// Convert timing to HH:MM:SS:mmm format
-	std::string timeIn = line->Start.GetAssFormatted(true);
-	std::string timeOut = line->End.GetAssFormatted(true);
-
-	// Convert from 0:00:00.00 to 00:00:00:000 format
-	if (timeIn[0] != '0' || timeIn[1] != '0') {
-		timeIn = "00" + timeIn.substr(1);
-	}
-	if (timeOut[0] != '0' || timeOut[1] != '0') {
-		timeOut = "00" + timeOut.substr(1);
-	}
-
-	// Replace . with : for milliseconds and ensure 3 digits
-	size_t dotPosIn = timeIn.find_last_of('.');
-	if (dotPosIn != std::string::npos) {
-		timeIn[dotPosIn] = ':';
-		timeIn += "0"; // Convert centiseconds to milliseconds
-	}
-
-	size_t dotPosOut = timeOut.find_last_of('.');
-	if (dotPosOut != std::string::npos) {
-		timeOut[dotPosOut] = ':';
-		timeOut += "0"; // Convert centiseconds to milliseconds
-	}
+	// Convert timing to CineCanvas format with frame-accurate timing
+	std::string timeIn = ConvertTimeToCineCanvas(line->Start, fps);
+	std::string timeOut = ConvertTimeToCineCanvas(line->End, fps);
 
 	subtitleNode->AddAttribute("TimeIn", to_wx(timeIn));
 	subtitleNode->AddAttribute("TimeOut", to_wx(timeOut));
-	subtitleNode->AddAttribute("FadeUpTime", "20");
-	subtitleNode->AddAttribute("FadeDownTime", "20");
+
+	// Calculate and set fade times
+	int fadeUpTime = GetFadeTime(line, true);
+	int fadeDownTime = GetFadeTime(line, false);
+	subtitleNode->AddAttribute("FadeUpTime", wxString::Format("%d", fadeUpTime));
+	subtitleNode->AddAttribute("FadeDownTime", wxString::Format("%d", fadeDownTime));
 
 	fontNode->AddChild(subtitleNode);
 
@@ -231,4 +214,42 @@ void CineCanvasSubtitleFormat::ParseFontAttributes(const AssStyle *style, wxXmlN
 void CineCanvasSubtitleFormat::ParseTextPosition(const AssDialogue *line, wxXmlNode *textNode) const {
 	// Position parsing will be implemented in later phases
 	// This is a placeholder for the basic structure
+}
+
+std::string CineCanvasSubtitleFormat::ConvertTimeToCineCanvas(const agi::Time &time, const agi::vfr::Framerate &fps) const {
+	// Get time in milliseconds
+	int ms = static_cast<int>(time);
+
+	// For frame-accurate timing, convert through frames if we have a valid FPS
+	if (fps.IsLoaded() && fps.FPS() > 0) {
+		// Convert time to frame number
+		int frame = fps.FrameAtTime(ms, agi::vfr::START);
+		// Convert frame back to time for frame-accurate timing
+		ms = fps.TimeAtFrame(frame, agi::vfr::START);
+	}
+
+	// Calculate time components
+	int hours = ms / 3600000;
+	ms %= 3600000;
+	int minutes = ms / 60000;
+	ms %= 60000;
+	int seconds = ms / 1000;
+	int milliseconds = ms % 1000;
+
+	// Format as HH:MM:SS:mmm
+	return (boost::format("%02d:%02d:%02d:%03d")
+		% hours
+		% minutes
+		% seconds
+		% milliseconds).str();
+}
+
+int CineCanvasSubtitleFormat::GetFadeTime(const AssDialogue *line, bool isFadeIn) const {
+	// Default fade duration (20ms is DCP standard)
+	// In future phases, this could parse ASS fade overrides (\fad or \fade tags)
+	// and extract actual fade times from the dialogue line
+
+	// For now, use 20ms standard
+	// Configuration option will be added in Phase 2.3
+	return 20;
 }
