@@ -89,6 +89,17 @@ if host_machine.system() == 'darwin'
     add_project_arguments('-DGL_SILENCE_DEPRECATION', language: 'cpp')
     # meson neither supports objcpp_std nor inherits cpp_std https://github.com/mesonbuild/meson/issues/5495
     add_project_arguments('-std=c++20', language: 'objcpp')
+
+    # Set macOS deployment target
+    # Default to 11.0 (Big Sur) for modern Cinema workflows
+    # Can be overridden via MACOS_X_DEPLOYMENT_TARGET environment variable
+    # Note: macOS 14.0+ recommended for Sequoia compatibility (color picker)
+    deployment_target = run_command('sh', '-c', 'echo $MACOS_X_DEPLOYMENT_TARGET', check: false).stdout().strip()
+    if deployment_target == ''
+        deployment_target = '11.0'
+    endif
+    message('macOS Deployment Target: ' + deployment_target)
+    add_project_arguments('-mmacosx-version-min=' + deployment_target, language: ['c', 'cpp', 'objc', 'objcpp'])
 elif host_machine.system() != 'windows'
     conf.set('WITH_FONTCONFIG', 1)
     deps += dependency('fontconfig')

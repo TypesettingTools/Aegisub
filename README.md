@@ -52,25 +52,53 @@ You can generate the installer with `ninja win-installer` after a successful bui
 
 You can generate the portable zip with `ninja win-portable` after a successful build.
 
-### OS X
+### macOS
 
-A vaguely recent version of Xcode and the corresponding command-line tools are required.
+**Requirements:**
+- macOS 11.0 (Big Sur) or later
+- Xcode and command-line tools
+- Supports both Apple Silicon (arm64) and Intel (x86_64)
+
+**macOS Deployment Target:**
+Aegisub Cinema defaults to macOS 11.0 as the minimum deployment target. You can override this:
+- For macOS 15.0+ (Sequoia) color picker compatibility: `export MACOS_X_DEPLOYMENT_TARGET=14.0`
+- For older systems: `export MACOS_X_DEPLOYMENT_TARGET=11.0` (default)
+
+**Install Dependencies:**
 
 For personal usage, you can use pip and homebrew to install almost all of Aegisub's dependencies:
 
     pip3 install meson      # or brew install meson if you installed Python via brew
-    brew install cmake ninja pkg-config  libass boost zlib ffms2 fftw hunspell uchardet
-    export LDFLAGS="-L/usr/local/opt/icu4c/lib"
-    export CPPFLAGS="-I/usr/local/opt/icu4c/include"
-    export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
+    brew install cmake ninja pkg-config libass boost zlib ffms2 fftw hunspell uchardet
 
-When compiling on Apple Silicon, replace `/usr/local` with `/opt/homebrew`.
-When compiling on macOS 15.0 (Sequoia) or later, you may also want to `export MACOS_X_DEPLOYMENT_TARGET=14.0` to make the color picker work.
+**Configure Paths:**
 
-Once the dependencies are installed, build Aegisub with `meson build && meson compile -C build`.
+On Intel Macs:
+```bash
+export LDFLAGS="-L/usr/local/opt/icu4c/lib"
+export CPPFLAGS="-I/usr/local/opt/icu4c/include"
+export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
+```
 
-#### Build dmg
+On Apple Silicon:
+```bash
+export LDFLAGS="-L/opt/homebrew/opt/icu4c/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/icu4c/include"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/icu4c/lib/pkgconfig"
+```
 
+**Build:**
+
+Once the dependencies are installed, build Aegisub Cinema with:
+```bash
+meson build && meson compile -C build
+```
+
+The resulting binary will be native to your system architecture (arm64 on Apple Silicon, x86_64 on Intel).
+
+#### Build Application Bundle and DMG
+
+**Standard Build (Native Architecture):**
 ```bash
 meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_osx_bundle=true -Dlocal_boost=true
 meson compile -C build_static
@@ -78,6 +106,31 @@ meson test -C build_static --verbose
 meson compile osx-bundle -C build_static
 meson compile osx-build-dmg -C build_static
 ```
+
+**Universal Binary Build (arm64 + x86_64):**
+
+To build a universal binary that runs natively on both Apple Silicon and Intel Macs, you need to cross-compile. This is typically done on an Apple Silicon Mac:
+
+```bash
+# Set deployment target (optional, defaults to 11.0)
+export MACOS_X_DEPLOYMENT_TARGET=11.0
+
+# Build for arm64 (native on Apple Silicon)
+meson build_arm64 -Ddefault_library=static -Dbuildtype=release -Dbuild_osx_bundle=true -Dlocal_boost=true
+meson compile -C build_arm64
+
+# Build for x86_64 (cross-compile on Apple Silicon)
+meson build_x86_64 --cross-file=cross/macos-x86_64.txt -Ddefault_library=static -Dbuildtype=release -Dbuild_osx_bundle=true -Dlocal_boost=true
+meson compile -C build_x86_64
+
+# Combine into universal binary using lipo
+lipo -create build_arm64/aegisub build_x86_64/aegisub -output aegisub_universal
+
+# Create bundle and DMG with universal binary
+# (Further steps depend on your distribution workflow)
+```
+
+**Note:** Cross-compilation for universal binaries requires additional configuration. For production builds, the standard native build is recommended for optimal performance.
 
 ### Linux or other
 
