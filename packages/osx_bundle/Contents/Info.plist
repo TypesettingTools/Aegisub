@@ -13,9 +13,9 @@
 	<key>CFBundleIconFile</key>
 	<string>Aegisub</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.aegisub.aegisub</string>
+	<string>com.loukmillher.aegisub-cinema</string>
 	<key>CFBundleName</key>
-	<string>Aegisub</string>
+	<string>Aegisub Cinema</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
@@ -33,18 +33,19 @@
     <string>@PLIST_VERSION@</string>
 
     <key>CFBundleLongVersionString</key>
-    <string>@PLIST_VERSION@, Copyright 2005-2014, aegisub https://aegisub.org/</string>
+    <string>@PLIST_VERSION@, Copyright 2005-2014 Aegisub Project, 2025 Aegisub Cinema Fork</string>
 
-    <!-- Values: i386, ppc, x86_65, ppc64 -->
+    <!-- Values: arm64, x86_64, i386, ppc, ppc64 -->
     <key>LSArchitecturePriority</key>
     <array>
+        <string>arm64</string>
         <string>x86_64</string>
         <string>i386</string>
     </array>
 
     <!-- Displayed in the 'Get Info' context menu dialogue -->
     <key>CFBundleGetInfoString</key>
-    <string>aegisub version @PLIST_VERSION@ built on @PLIST_BUILD_DATE@ https://aegisub.org/</string>
+    <string>Aegisub Cinema version @PLIST_VERSION@ built on @PLIST_BUILD_DATE@ - macOS fork with CineCanvas XML export for DCP workflows</string>
 
     <!-- Whether to allow multiple instances across user logins -->
     <key>LSMultipleInstancesProhibited</key>
