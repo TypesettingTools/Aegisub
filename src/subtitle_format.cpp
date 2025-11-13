@@ -39,6 +39,7 @@
 #include "compat.h"
 #include "format.h"
 #include "subtitle_format_ass.h"
+#include "subtitle_format_cinecanvas.h"
 #include "subtitle_format_ebu3264.h"
 #include "subtitle_format_encore.h"
 #include "subtitle_format_microdvd.h"
@@ -263,6 +264,7 @@ void SubtitleFormat::MergeIdentical(AssFile &file) {
 void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {
 		formats.emplace_back(std::make_unique<AssSubtitleFormat>());
+		formats.emplace_back(std::make_unique<CineCanvasSubtitleFormat>());
 		formats.emplace_back(std::make_unique<Ebu3264SubtitleFormat>());
 		formats.emplace_back(std::make_unique<EncoreSubtitleFormat>());
 		formats.emplace_back(std::make_unique<MKVSubtitleFormat>());
