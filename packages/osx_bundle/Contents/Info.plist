@@ -35,12 +35,12 @@
     <key>CFBundleLongVersionString</key>
     <string>@PLIST_VERSION@, Copyright 2005-2014 Aegisub Project, 2025 Aegisub Cinema Fork</string>
 
-    <!-- Values: arm64, x86_64, i386, ppc, ppc64 -->
+    <!-- Architecture priority for universal binary (Apple Silicon + Intel) -->
+    <!-- i386 and ppc removed as deprecated; macOS 11.0+ supports only x86_64 and arm64 -->
     <key>LSArchitecturePriority</key>
     <array>
         <string>arm64</string>
         <string>x86_64</string>
-        <string>i386</string>
     </array>
 
     <!-- Displayed in the 'Get Info' context menu dialogue -->
