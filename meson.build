@@ -1,4 +1,4 @@
-project('Aegisub', ['c', 'cpp'],
+project('Aegisub Cinema', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.60.0',
         default_options: [
@@ -12,7 +12,7 @@ project('Aegisub', ['c', 'cpp'],
             'luajit:lua52compat=true',
             'luajit:luajit=false',
         ],
-        version: '3.4.1')
+        version: '3.4.1-cinema')
 
 cmake = import('cmake')
 
@@ -48,7 +48,7 @@ version_h = custom_target('git_version.h',
 meson.add_dist_script(version_sh, meson.current_build_dir(), meson.current_source_dir(), 'dist')
 
 if host_machine.system() == 'darwin' and get_option('build_osx_bundle')
-    prefix = meson.current_build_dir() / 'Aegisub.app' / 'Contents'
+    prefix = meson.current_build_dir() / 'Aegisub Cinema.app' / 'Contents'
     bindir = prefix / 'MacOS'
     datadir = prefix / 'SharedSupport'
     localedir = prefix / 'Resources'

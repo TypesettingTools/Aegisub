@@ -1,10 +1,22 @@
-# Aegisub
+# Aegisub Cinema
 
-For binaries and general information [see the homepage](http://aegisub.org).
+**A macOS-focused fork of Aegisub with CineCanvas XML export for DCP workflows**
 
-The bug tracker can be found at https://github.com/TypesettingTools/Aegisub/issues.
+This is a fork of [Aegisub](https://github.com/Aegisub/Aegisub) (v3.4.1) that maintains all existing features while adding specialized support for exporting CineCanvas-style XML subtitles for Digital Cinema Package (DCP) workflows. This fork is optimized for macOS, including native Apple Silicon support.
 
-Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](irc://irc.rizon.net/aegisub).
+## What's New in Aegisub Cinema
+
+- **CineCanvas/Interop DCP subtitle export** (coming soon)
+- **macOS optimizations** including Apple Silicon (arm64) native support
+- **Cinema workflow focus** for professional DCP subtitle creation
+
+## About the Original Aegisub
+
+For binaries and general information about the original project, [see the homepage](http://aegisub.org).
+
+The upstream bug tracker can be found at https://github.com/TypesettingTools/Aegisub/issues.
+
+Support for the original Aegisub is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](irc://irc.rizon.net/aegisub).
 
 ## Building Aegisub
 
