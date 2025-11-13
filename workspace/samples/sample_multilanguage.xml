@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Multi-Language CineCanvas Subtitle Example -->
+<!-- Demonstrates various language scripts and special characters -->
+<DCSubtitle Version="1.0">
+  <SubtitleID>urn:uuid:d4e5f6a7-bcde-4321-9876-543210fedcba</SubtitleID>
+  <MovieTitle>Multi-Language Subtitle Demo</MovieTitle>
+  <ReelNumber>1</ReelNumber>
+  <Language>en</Language>
+  <LoadFont Id="UniversalFont" URI="NotoSans-Regular.ttf"/>
+  
+  <Font Id="UniversalFont" Size="42" Color="FFFFFFFF" Effect="border" EffectColor="000000FF">
+    
+    <!-- English -->
+    <Subtitle SpotNumber="1" TimeIn="00:00:05:000" TimeOut="00:00:09:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">Hello, World!</Text>
+    </Subtitle>
+    
+    <!-- Spanish -->
+    <Subtitle SpotNumber="2" TimeIn="00:00:10:000" TimeOut="00:00:14:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">¡Hola, Mundo!</Text>
+    </Subtitle>
+    
+    <!-- French -->
+    <Subtitle SpotNumber="3" TimeIn="00:00:15:000" TimeOut="00:00:19:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">Bonjour, le Monde!</Text>
+    </Subtitle>
+    
+    <!-- German -->
+    <Subtitle SpotNumber="4" TimeIn="00:00:20:000" TimeOut="00:00:24:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">Hallo, Welt!</Text>
+    </Subtitle>
+    
+    <!-- Italian -->
+    <Subtitle SpotNumber="5" TimeIn="00:00:25:000" TimeOut="00:00:29:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">Ciao, Mondo!</Text>
+    </Subtitle>
+    
+    <!-- Portuguese -->
+    <Subtitle SpotNumber="6" TimeIn="00:00:30:000" TimeOut="00:00:34:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">Olá, Mundo!</Text>
+    </Subtitle>
+    
+    <!-- Russian (Cyrillic) -->
+    <Subtitle SpotNumber="7" TimeIn="00:00:35:000" TimeOut="00:00:39:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">Привет, мир!</Text>
+    </Subtitle>
+    
+    <!-- Greek -->
+    <Subtitle SpotNumber="8" TimeIn="00:00:40:000" TimeOut="00:00:44:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">Γεια σου, κόσμε!</Text>
+    </Subtitle>
+    
+    <!-- Arabic (right-to-left) -->
+    <Subtitle SpotNumber="9" TimeIn="00:00:45:000" TimeOut="00:00:49:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0" Direction="rtl">مرحبا بالعالم!</Text>
+    </Subtitle>
+    
+    <!-- Hebrew (right-to-left) -->
+    <Subtitle SpotNumber="10" TimeIn="00:00:50:000" TimeOut="00:00:54:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0" Direction="rtl">!שלום עולם</Text>
+    </Subtitle>
+    
+    <!-- Chinese (Simplified) -->
+    <Subtitle SpotNumber="11" TimeIn="00:00:55:000" TimeOut="00:00:59:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">你好，世界！</Text>
+    </Subtitle>
+    
+    <!-- Chinese (Traditional) -->
+    <Subtitle SpotNumber="12" TimeIn="00:01:00:000" TimeOut="00:01:04:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">你好，世界！</Text>
+    </Subtitle>
+    
+    <!-- Japanese -->
+    <Subtitle SpotNumber="13" TimeIn="00:01:05:000" TimeOut="00:01:09:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">こんにちは、世界！</Text>
+    </Subtitle>
+    
+    <!-- Korean -->
+    <Subtitle SpotNumber="14" TimeIn="00:01:10:000" TimeOut="00:01:14:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">안녕하세요, 세계!</Text>
+    </Subtitle>
+    
+    <!-- Thai -->
+    <Subtitle SpotNumber="15" TimeIn="00:01:15:000" TimeOut="00:01:19:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">สวัสดีชาวโลก!</Text>
+    </Subtitle>
+    
+    <!-- Hindi (Devanagari) -->
+    <Subtitle SpotNumber="16" TimeIn="00:01:20:000" TimeOut="00:01:24:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">नमस्ते दुनिया!</Text>
+    </Subtitle>
+    
+    <!-- Special characters and symbols -->
+    <Subtitle SpotNumber="17" TimeIn="00:01:25:000" TimeOut="00:01:30:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">© 2025 • €100 → $120 ≈ £95</Text>
+    </Subtitle>
+    
+    <!-- Mathematical and technical symbols -->
+    <Subtitle SpotNumber="18" TimeIn="00:01:31:000" TimeOut="00:01:36:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">E = mc² • π ≈ 3.14159 • ∞</Text>
+    </Subtitle>
+    
+    <!-- Emoji and special Unicode -->
+    <Subtitle SpotNumber="19" TimeIn="00:01:37:000" TimeOut="00:01:42:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">★ ♪ ♥ ☀ ☁ ☂ ✓ ✗</Text>
+    </Subtitle>
+    
+    <!-- XML entities demonstration -->
+    <Subtitle SpotNumber="20" TimeIn="00:01:43:000" TimeOut="00:01:48:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        Smith &amp; Jones &lt;company&gt; "quoted" 'text'
+      </Text>
+    </Subtitle>
+    
+  </Font>
+</DCSubtitle>
+

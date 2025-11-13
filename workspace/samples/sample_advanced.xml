@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Advanced CineCanvas Subtitle Example -->
+<!-- Demonstrates multiple fonts, colors, effects, and positioning -->
+<DCSubtitle Version="1.0">
+  <SubtitleID>urn:uuid:a7b8c9d0-5678-4321-abcd-ef9876543210</SubtitleID>
+  <MovieTitle>Advanced Features Demo</MovieTitle>
+  <ReelNumber>1</ReelNumber>
+  <Language>en</Language>
+  <LoadFont Id="MainFont" URI="arial.ttf"/>
+  <LoadFont Id="ItalicFont" URI="arial_italic.ttf"/>
+  
+  <!-- Standard white subtitles with black border -->
+  <Font Id="MainFont" Size="42" Color="FFFFFFFF" Effect="border" EffectColor="000000FF">
+    
+    <!-- Top-positioned subtitle (forced narrative/sign translation) -->
+    <Subtitle SpotNumber="1" TimeIn="00:00:05:000" TimeOut="00:00:10:000" 
+              FadeUpTime="40" FadeDownTime="40">
+      <Text VAlign="top" VPosition="5.0" HAlign="center">POLICE STATION - DOWNTOWN</Text>
+    </Subtitle>
+    
+    <!-- Regular bottom subtitle -->
+    <Subtitle SpotNumber="2" TimeIn="00:00:08:000" TimeOut="00:00:12:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">What brings you here today?</Text>
+    </Subtitle>
+    
+    <!-- Italic subtitle for thoughts/whispers -->
+    <Subtitle SpotNumber="3" TimeIn="00:00:14:000" TimeOut="00:00:18:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Font Italic="yes">
+        <Text VAlign="bottom" VPosition="10.0">I shouldn't be here...</Text>
+      </Font>
+    </Subtitle>
+    
+    <!-- Yellow subtitle (alternate translation or special emphasis) -->
+    <Subtitle SpotNumber="4" TimeIn="00:00:20:000" TimeOut="00:00:25:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Font Color="FFFF00FF">
+        <Text VAlign="bottom" VPosition="10.0">[Speaking in French]</Text>
+      </Font>
+    </Subtitle>
+    
+    <!-- Dual speaker positioning - left speaker -->
+    <Subtitle SpotNumber="5" TimeIn="00:00:27:000" TimeOut="00:00:30:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0" HAlign="left" HPosition="20.0">
+        I'm innocent!
+      </Text>
+    </Subtitle>
+    
+    <!-- Dual speaker positioning - right speaker (simultaneous) -->
+    <Subtitle SpotNumber="6" TimeIn="00:00:27:000" TimeOut="00:00:30:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0" HAlign="right" HPosition="20.0">
+        That's what they all say.
+      </Text>
+    </Subtitle>
+    
+    <!-- Red subtitle for emphasis/warning -->
+    <Subtitle SpotNumber="7" TimeIn="00:00:32:000" TimeOut="00:00:36:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Font Color="FF0000FF" Effect="border" EffectColor="000000FF">
+        <Text VAlign="bottom" VPosition="10.0">DANGER! DO NOT PROCEED!</Text>
+      </Font>
+    </Subtitle>
+    
+    <!-- Multi-line with different styles -->
+    <Subtitle SpotNumber="8" TimeIn="00:00:38:000" TimeOut="00:00:44:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="15.0">Detective: "Tell me everything."</Text>
+      <Font Italic="yes">
+        <Text VAlign="bottom" VPosition="10.0">Suspect: "Where do I begin?"</Text>
+      </Font>
+    </Subtitle>
+    
+    <!-- Shadow effect instead of border -->
+    <Subtitle SpotNumber="9" TimeIn="00:00:46:000" TimeOut="00:00:50:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Font Effect="shadow" EffectColor="000000FF" Size="48">
+        <Text VAlign="bottom" VPosition="10.0">DRAMATIC REVELATION</Text>
+      </Font>
+    </Subtitle>
+    
+    <!-- Triple line subtitle (maximum recommended) -->
+    <Subtitle SpotNumber="10" TimeIn="00:00:52:000" TimeOut="00:00:58:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="20.0">The evidence clearly shows</Text>
+      <Text VAlign="bottom" VPosition="15.0">that you were at the scene</Text>
+      <Text VAlign="bottom" VPosition="10.0">at exactly 10:47 PM.</Text>
+    </Subtitle>
+    
+    <!-- Special characters and punctuation -->
+    <Subtitle SpotNumber="11" TimeIn="00:01:00:000" TimeOut="00:01:04:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        "Life is strange," she said, &amp; smiled.
+      </Text>
+    </Subtitle>
+    
+    <!-- Smaller font for song lyrics or captions -->
+    <Subtitle SpotNumber="12" TimeIn="00:01:06:000" TimeOut="00:01:11:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Font Size="36" Italic="yes">
+        <Text VAlign="bottom" VPosition="10.0">♪ Music playing softly ♪</Text>
+      </Font>
+    </Subtitle>
+    
+    <!-- Centered title card -->
+    <Subtitle SpotNumber="13" TimeIn="00:01:15:000" TimeOut="00:01:20:000" 
+              FadeUpTime="100" FadeDownTime="100">
+      <Font Size="56" Effect="shadow" EffectColor="00000080">
+        <Text VAlign="center" VPosition="50.0" HAlign="center" HPosition="50.0">
+          FIVE YEARS LATER
+        </Text>
+      </Font>
+    </Subtitle>
+    
+    <!-- Semi-transparent subtitle overlay -->
+    <Subtitle SpotNumber="14" TimeIn="00:01:22:000" TimeOut="00:01:28:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Font Color="FFFFFF80" Effect="border" EffectColor="000000CC">
+        <Text VAlign="top" VPosition="10.0">
+          Director's Note: Based on true events
+        </Text>
+      </Font>
+    </Subtitle>
+    
+  </Font>
+</DCSubtitle>
+

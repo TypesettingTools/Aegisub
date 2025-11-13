@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Japanese CineCanvas Subtitle Example with Ruby (Furigana) -->
+<!-- Demonstrates Japanese text with pronunciation guides -->
+<DCSubtitle Version="1.0">
+  <SubtitleID>urn:uuid:c1d2e3f4-9abc-4def-8765-fedcba987654</SubtitleID>
+  <MovieTitle>日本語字幕サンプル</MovieTitle>
+  <ReelNumber>1</ReelNumber>
+  <Language>ja</Language>
+  <LoadFont Id="JapaneseFont" URI="NotoSansJP-Regular.ttf"/>
+  
+  <Font Id="JapaneseFont" Size="48" Color="FFFFFFFF" Effect="border" EffectColor="000000FF">
+    
+    <!-- Basic Japanese subtitle without ruby -->
+    <Subtitle SpotNumber="1" TimeIn="00:00:05:000" TimeOut="00:00:09:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">こんにちは、世界！</Text>
+    </Subtitle>
+    
+    <!-- Japanese with Ruby annotations (furigana) for kanji -->
+    <Subtitle SpotNumber="2" TimeIn="00:00:11:000" TimeOut="00:00:16:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        <Ruby>
+          <Rb>映画</Rb>
+          <Rt Size="50" Position="before">えいが</Rt>
+        </Ruby>
+        が
+        <Ruby>
+          <Rb>始</Rb>
+          <Rt Size="50" Position="before">はじ</Rt>
+        </Ruby>
+        まります。
+      </Text>
+    </Subtitle>
+    
+    <!-- More complex sentence with multiple ruby annotations -->
+    <Subtitle SpotNumber="3" TimeIn="00:00:18:000" TimeOut="00:00:24:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        <Ruby>
+          <Rb>今日</Rb>
+          <Rt Size="50" Position="before">きょう</Rt>
+        </Ruby>
+        は
+        <Ruby>
+          <Rb>素晴</Rb>
+          <Rt Size="50" Position="before">すば</Rt>
+        </Ruby>
+        らしい
+        <Ruby>
+          <Rb>天気</Rb>
+          <Rt Size="50" Position="before">てんき</Rt>
+        </Ruby>
+        ですね。
+      </Text>
+    </Subtitle>
+    
+    <!-- Two-line Japanese subtitle -->
+    <Subtitle SpotNumber="4" TimeIn="00:00:26:000" TimeOut="00:00:32:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="15.0">
+        <Ruby>
+          <Rb>私</Rb>
+          <Rt Size="50" Position="before">わたし</Rt>
+        </Ruby>
+        は
+        <Ruby>
+          <Rb>学生</Rb>
+          <Rt Size="50" Position="before">がくせい</Rt>
+        </Ruby>
+        です。
+      </Text>
+      <Text VAlign="bottom" VPosition="10.0">
+        どうぞよろしくお
+        <Ruby>
+          <Rb>願</Rb>
+          <Rt Size="50" Position="before">ねが</Rt>
+        </Ruby>
+        いします。
+      </Text>
+    </Subtitle>
+    
+    <!-- Hiragana only (no ruby needed) -->
+    <Subtitle SpotNumber="5" TimeIn="00:00:34:000" TimeOut="00:00:38:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        ありがとうございます。
+      </Text>
+    </Subtitle>
+    
+    <!-- Katakana (foreign words) -->
+    <Subtitle SpotNumber="6" TimeIn="00:00:40:000" TimeOut="00:00:44:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        コーヒーを
+        <Ruby>
+          <Rb>飲</Rb>
+          <Rt Size="50" Position="before">の</Rt>
+        </Ruby>
+        みませんか？
+      </Text>
+    </Subtitle>
+    
+    <!-- Complex kanji with ruby -->
+    <Subtitle SpotNumber="7" TimeIn="00:00:46:000" TimeOut="00:00:52:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        <Ruby>
+          <Rb>彼</Rb>
+          <Rt Size="50" Position="before">かれ</Rt>
+        </Ruby>
+        は
+        <Ruby>
+          <Rb>有名</Rb>
+          <Rt Size="50" Position="before">ゆうめい</Rt>
+        </Ruby>
+        な
+        <Ruby>
+          <Rb>俳優</Rb>
+          <Rt Size="50" Position="before">はいゆう</Rt>
+        </Ruby>
+        です。
+      </Text>
+    </Subtitle>
+    
+    <!-- Question sentence -->
+    <Subtitle SpotNumber="8" TimeIn="00:00:54:000" TimeOut="00:00:58:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        これは
+        <Ruby>
+          <Rb>何</Rb>
+          <Rt Size="50" Position="before">なん</Rt>
+        </Ruby>
+        ですか？
+      </Text>
+    </Subtitle>
+    
+    <!-- Polite request -->
+    <Subtitle SpotNumber="9" TimeIn="00:01:00:000" TimeOut="00:01:05:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        <Ruby>
+          <Rb>少々</Rb>
+          <Rt Size="50" Position="before">しょうしょう</Rt>
+        </Ruby>
+        お
+        <Ruby>
+          <Rb>待</Rb>
+          <Rt Size="50" Position="before">ま</Rt>
+        </Ruby>
+        ちください。
+      </Text>
+    </Subtitle>
+    
+    <!-- Final greeting -->
+    <Subtitle SpotNumber="10" TimeIn="00:01:08:000" TimeOut="00:01:12:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        さようなら、また
+        <Ruby>
+          <Rb>会</Rb>
+          <Rt Size="50" Position="before">あ</Rt>
+        </Ruby>
+        いましょう！
+      </Text>
+    </Subtitle>
+    
+  </Font>
+</DCSubtitle>
+

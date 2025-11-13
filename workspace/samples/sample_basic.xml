@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Basic CineCanvas Subtitle Example -->
+<!-- Single-language subtitles with standard formatting -->
+<DCSubtitle Version="1.0">
+  <SubtitleID>urn:uuid:6a9c4f8e-1234-4567-89ab-cdef01234567</SubtitleID>
+  <MovieTitle>Basic Subtitle Example</MovieTitle>
+  <ReelNumber>1</ReelNumber>
+  <Language>en</Language>
+  <LoadFont Id="Arial" URI="arial.ttf"/>
+  
+  <Font Id="Arial" Size="42" Color="FFFFFFFF" Effect="border" EffectColor="000000FF">
+    <!-- Single line subtitle -->
+    <Subtitle SpotNumber="1" TimeIn="00:00:05:000" TimeOut="00:00:08:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">Welcome to the show.</Text>
+    </Subtitle>
+    
+    <!-- Two-line subtitle -->
+    <Subtitle SpotNumber="2" TimeIn="00:00:10:000" TimeOut="00:00:14:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="15.0">This is the first line.</Text>
+      <Text VAlign="bottom" VPosition="10.0">This is the second line.</Text>
+    </Subtitle>
+    
+    <!-- Centered subtitle -->
+    <Subtitle SpotNumber="3" TimeIn="00:00:16:000" TimeOut="00:00:20:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0" HAlign="center" HPosition="50.0">
+        Standard centered subtitle text.
+      </Text>
+    </Subtitle>
+    
+    <!-- Longer subtitle with proper reading time -->
+    <Subtitle SpotNumber="4" TimeIn="00:00:22:000" TimeOut="00:00:28:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">
+        This subtitle has more text to demonstrate proper timing.
+      </Text>
+    </Subtitle>
+    
+    <!-- Dialogue exchange -->
+    <Subtitle SpotNumber="5" TimeIn="00:00:30:000" TimeOut="00:00:33:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">Where are you going?</Text>
+    </Subtitle>
+    
+    <Subtitle SpotNumber="6" TimeIn="00:00:34:000" TimeOut="00:00:37:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">To the cinema, of course!</Text>
+    </Subtitle>
+    
+    <!-- Final subtitle -->
+    <Subtitle SpotNumber="7" TimeIn="00:00:40:000" TimeOut="00:00:45:000" 
+              FadeUpTime="20" FadeDownTime="20">
+      <Text VAlign="bottom" VPosition="10.0">The End</Text>
+    </Subtitle>
+  </Font>
+</DCSubtitle>
+
