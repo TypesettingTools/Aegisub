@@ -200,12 +200,20 @@ void CineCanvasSubtitleFormat::WriteSubtitle(wxXmlNode *fontNode, const AssDialo
 }
 
 std::string CineCanvasSubtitleFormat::ConvertColorToRGBA(const agi::Color &color, uint8_t alpha) const {
-	// Convert ASS BGR color to CineCanvas RRGGBBAA format
+	// ASS stores colors internally in RGB format (not BGR)
+	// The agi::Color struct uses r, g, b members in RGB order
+
+	// ASS alpha: 0x00 = opaque, 0xFF = transparent
+	// CineCanvas alpha: 0xFF = opaque, 0x00 = transparent
+	// Therefore, we must invert the alpha channel
+	uint8_t cinema_alpha = 255 - alpha;
+
+	// Format as RRGGBBAA for CineCanvas
 	return (boost::format("%02X%02X%02X%02X")
 		% static_cast<int>(color.r)
 		% static_cast<int>(color.g)
 		% static_cast<int>(color.b)
-		% static_cast<int>(alpha)).str();
+		% static_cast<int>(cinema_alpha)).str();
 }
 
 std::string CineCanvasSubtitleFormat::GenerateUUID() const {
