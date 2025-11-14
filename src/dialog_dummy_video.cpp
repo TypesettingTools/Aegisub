@@ -106,7 +106,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 
 	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	res_sizer->Add(spin_ctrl(&d, 1, 10000, &width), wxSizerFlags(1).Expand());
-	res_sizer->Add(new wxStaticText(&d, -1, _(L" \u00D7 ")), wxSizerFlags().Center());
+	res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), wxSizerFlags().Center().HorzBorder());
 	res_sizer->Add(spin_ctrl(&d, 1, 10000, &height), wxSizerFlags(1).Expand());
 
 	auto color_sizer = new wxBoxSizer(wxHORIZONTAL);
