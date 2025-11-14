@@ -3536,6 +3536,10 @@ msgstr ""
 msgid "Margin offset"
 msgstr "Margin"
 
+#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
+msgid "×"
+msgstr "×"
+
 #: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
 msgid "YCbCr Matrix:"
 msgstr ""

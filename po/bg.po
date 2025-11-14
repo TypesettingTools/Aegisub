@@ -3595,6 +3595,10 @@ msgstr "Съотношение на страните"
 msgid "Margin offset"
 msgstr "Преместване на границите на работната област"
 
+#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
+msgid "×"
+msgstr "×"
+
 #: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
 msgid "YCbCr Matrix:"
 msgstr "YCbCr Матрица:"

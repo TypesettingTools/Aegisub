@@ -3607,6 +3607,10 @@ msgstr "Ikuspegi Maila Kudeaketa"
 msgid "Margin offset"
 msgstr "Bazter oreka"
 
+#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
+msgid "×"
+msgstr "×"
+
 #: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
 msgid "YCbCr Matrix:"
 msgstr "YCbCr Matrizea:"
