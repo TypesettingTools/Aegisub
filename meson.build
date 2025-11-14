@@ -23,8 +23,8 @@ if host_machine.system() == 'windows'
         add_global_arguments('-DCSRI_NO_EXPORT', language: 'c')
     endif
 
-    sys_nasm = find_program('nasm', required: false)
-    if not sys_nasm.found()
+    if get_option('fallback_nasm') or \
+       not find_program('nasm', required: false).found()
         nasm = subproject('nasm').get_variable('nasm')
         meson.override_find_program('nasm', nasm)
     endif

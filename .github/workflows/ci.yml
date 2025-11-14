@@ -24,6 +24,7 @@ jobs:
             args: >-
               -Ddefault_library=static
               --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              -Dfallback_nasm=true
               -Dfreetype2:harfbuzz=disabled
               -Dharfbuzz:freetype=disabled
               -Dharfbuzz:cairo=disabled
@@ -76,7 +77,7 @@ jobs:
       - name: Setup Meson
         run: |
           python -m pip install --upgrade pip setuptools
-          pip install meson==1.7.2
+          pip install meson
 
       - name: Setup MSVC
         if: matrix.config.os == 'windows-latest' && matrix.config.msvc == true
@@ -95,7 +96,7 @@ jobs:
           Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           popd
 
-          $gettexturl = "https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.21-v1.16/gettext0.21-iconv1.16-static-64.zip"
+          $gettexturl = "https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.26-v1.17/gettext0.26-iconv1.17-static-64.zip"
           Invoke-WebRequest -Uri $gettexturl -OutFile ".\gettext.zip"
           Expand-Archive ".\gettext.zip" -DestinationPath gettext
           pushd gettext/bin
