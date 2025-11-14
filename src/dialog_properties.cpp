@@ -127,7 +127,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 
 	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	res_sizer->Add(ResX, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
-	res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), 0, wxALIGN_CENTER | wxRIGHT, 5);
+	res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), 0, wxALIGN_CENTER | wxRIGHT, 5); // U+00D7 multiplication sign
 	res_sizer->Add(ResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
 	res_sizer->Add(FromVideo, 1, 0, 0);
 

@@ -164,7 +164,7 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 
 	auto source_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	source_res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT));
+	source_res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT)); // U+00D7 multiplication sign
 	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	source_res_sizer->Add(from_script);
 

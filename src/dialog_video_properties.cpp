@@ -43,7 +43,11 @@ enum {
 int prompt(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
 	wxDialog d(parent, -1, _("Resolution mismatch"));
 
-	auto label_text = fmt_tl("The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\nVideo resolution:\t%d \u00D7 %d\nScript resolution:\t%d \u00D7 %d\n\nChange subtitles resolution to match video?", vx, vy, sx, sy);
+	auto label_text = fmt_tl(
+        "The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\n"
+        "Video resolution:\t%d \u00D7 %d\n"     // U+00D7 multiplication sign
+        "Script resolution:\t%d \u00D7 %d\n\n"
+        "Change subtitles resolution to match video?", vx, vy, sx, sy);
 
 	auto sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(new wxStaticText(&d, -1, label_text), wxSizerFlags().Border());

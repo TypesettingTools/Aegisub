@@ -68,7 +68,7 @@ struct ResolutionShortcut {
 };
 
 static ResolutionShortcut resolutions[] = {
-	{L"640\u00D7480 (SD fullscreen)", 640, 480},
+	{L"640\u00D7480 (SD fullscreen)", 640, 480},        // U+00D7 multiplication sign
 	{L"704\u00D7480 (SD anamorphic)", 704, 480},
 	{L"640\u00D7360 (SD widescreen)", 640, 360},
 	{L"704\u00D7396 (SD widescreen)", 704, 396},
@@ -106,7 +106,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 
 	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	res_sizer->Add(spin_ctrl(&d, 1, 10000, &width), wxSizerFlags(1).Expand());
-	res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), wxSizerFlags().Center().HorzBorder());
+	res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), wxSizerFlags().Center().Border());   // U+00D7 multiplication sign
 	res_sizer->Add(spin_ctrl(&d, 1, 10000, &height), wxSizerFlags(1).Expand());
 
 	auto color_sizer = new wxBoxSizer(wxHORIZONTAL);
