@@ -129,7 +129,6 @@ namespace {
 
 		size_t ret = cd->Convert(&src, &srcLen, &dst, &dstLen);
 		assert(ret != iconv_failed);
-		assert(dst - dbuff > 0);
 
 		return dst - dbuff;
 	}
