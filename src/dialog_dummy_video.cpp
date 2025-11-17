@@ -62,23 +62,23 @@ struct DialogDummyVideo {
 };
 
 struct ResolutionShortcut {
-	const char *name;
+	const wchar_t *name;
 	int width;
 	int height;
 };
 
 static ResolutionShortcut resolutions[] = {
-	{"640x480 (SD fullscreen)", 640, 480},
-	{"704x480 (SD anamorphic)", 704, 480},
-	{"640x360 (SD widescreen)", 640, 360},
-	{"704x396 (SD widescreen)", 704, 396},
-	{"640x352 (SD widescreen MOD16)", 640, 352},
-	{"704x400 (SD widescreen MOD16)", 704, 400},
-	{"1024x576 (SuperPAL widescreen)", 1024, 576},
-	{"1280x720 (HD 720p)", 1280, 720},
-	{"1920x1080 (FHD 1080p)", 1920, 1080},
-	{"2560x1440 (QHD 1440p)", 2560, 1440},
-	{"3840x2160 (4K UHD 2160p)", 3840, 2160},
+	{L"640\u00D7480 (SD fullscreen)", 640, 480},        // U+00D7 multiplication sign
+	{L"704\u00D7480 (SD anamorphic)", 704, 480},
+	{L"640\u00D7360 (SD widescreen)", 640, 360},
+	{L"704\u00D7396 (SD widescreen)", 704, 396},
+	{L"640\u00D7352 (SD widescreen MOD16)", 640, 352},
+	{L"704\u00D7400 (SD widescreen MOD16)", 704, 400},
+	{L"1024\u00D7576 (SuperPAL widescreen)", 1024, 576},
+	{L"1280\u00D7720 (HD 720p)", 1280, 720},
+	{L"1920\u00D71080 (FHD 1080p)", 1920, 1080},
+	{L"2560\u00D71440 (QHD 1440p)", 2560, 1440},
+	{L"3840\u00D72160 (4K UHD 2160p)", 3840, 2160},
 };
 
 wxSpinCtrl *spin_ctrl(wxWindow *parent, int min, int max, int *value) {
@@ -106,7 +106,7 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 
 	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	res_sizer->Add(spin_ctrl(&d, 1, 10000, &width), wxSizerFlags(1).Expand());
-	res_sizer->Add(new wxStaticText(&d, -1, " x "), wxSizerFlags().Center());
+	res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), wxSizerFlags().Center().Border());   // U+00D7 multiplication sign
 	res_sizer->Add(spin_ctrl(&d, 1, 10000, &height), wxSizerFlags(1).Expand());
 
 	auto color_sizer = new wxBoxSizer(wxHORIZONTAL);
