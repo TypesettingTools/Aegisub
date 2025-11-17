@@ -129,6 +129,13 @@ if get_option('local_boost') or not boost_dep.found()
     endforeach
 endif
 
+if cc.get_argument_syntax() == 'gcc'
+  # Work around compile error in Boost GIL, can be removed once
+  # https://github.com/boostorg/gil/commit/2956a0e9ef71f5c4f3163c8b8d675679e0fbaaff
+  # is in a boost release that's available everywhere
+  add_project_arguments(cc.get_supported_arguments(['-Wno-missing-template-arg-list-after-template-kw']), language: 'cpp')
+endif
+
 deps += boost_dep
 if host_machine.system() == 'windows'
     conf.set('BOOST_USE_WINDOWS_H', 1)
