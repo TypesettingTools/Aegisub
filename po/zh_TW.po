@@ -6,20 +6,20 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-02 21:53+0100\n"
-"PO-Revision-Date: 2014-06-28 18:38+0800\n"
-"Last-Translator: COMPUTERFAN <diannaomi97@gmail.com>\n"
-"Language-Team: Vmoe字幕組 <diannaomi97@gmail.com>\n"
+"PO-Revision-Date: 2025-11-18 21:22+0800\n"
+"Last-Translator: Howardisme <howard940114@gmail.com>\n"
+"Language-Team: None <None@None>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.8\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
-msgstr ""
+msgstr "自動偵測文字書寫方向（僅限 libass 引擎）"
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
@@ -357,27 +357,27 @@ msgstr "檢查是否有可用的新版Aegisub"
 
 #: ../src/command/app.cpp:270 ../src/command/app.cpp:271
 msgid "Minimize"
-msgstr ""
+msgstr "最小化"
 
 #: ../src/command/app.cpp:272
 msgid "Minimize the active window"
-msgstr ""
+msgstr "最小化當前視窗"
 
 #: ../src/command/app.cpp:281 ../src/command/app.cpp:282
 msgid "Zoom"
-msgstr ""
+msgstr "縮放"
 
 #: ../src/command/app.cpp:283
 msgid "Maximize the active window"
-msgstr ""
+msgstr "最大化當前視窗"
 
 #: ../src/command/app.cpp:292 ../src/command/app.cpp:293
 msgid "Bring All to Front"
-msgstr ""
+msgstr "全部移到最前端"
 
 #: ../src/command/app.cpp:294
 msgid "Bring forward all open documents to the front"
-msgstr ""
+msgstr "將所有開啟的文件移到最前端"
 
 #: ../src/command/audio.cpp:65
 msgid "&Close Audio"
@@ -2276,13 +2276,13 @@ msgstr "將目前顯示的畫面複製到剪貼簿，不帶字幕"
 
 #: ../src/command/video.cpp:321 ../src/command/video.cpp:322
 msgid "Copy image to Clipboard (only subtitles)"
-msgstr ""
+msgstr "複製圖像至剪貼簿（帶字幕）"
 
 #: ../src/command/video.cpp:323
 msgid ""
 "Copy the currently displayed subtitles to the clipboard, with transparent "
 "background"
-msgstr ""
+msgstr "複製目前顯示字幕（透明背景）到剪貼簿"
 
 #: ../src/command/video.cpp:332 ../src/command/video.cpp:333
 msgid "Next Frame"
@@ -2363,13 +2363,13 @@ msgstr "儲存目前顯示影格（不帶字幕）為PNG格式到視訊所在目
 
 #: ../src/command/video.cpp:534 ../src/command/video.cpp:535
 msgid "Save PNG snapshot (only subtitles)"
-msgstr ""
+msgstr "儲存 PNG 截圖（僅限字幕）"
 
 #: ../src/command/video.cpp:536
 msgid ""
 "Save the currently displayed subtitles with transparent background to a PNG "
 "file in the video's directory"
-msgstr ""
+msgstr "儲存目前顯示字幕（透明背景）為 PNG 格式到視訊所在目錄"
 
 #: ../src/command/video.cpp:546
 msgid "&Jump to..."
@@ -3127,7 +3127,7 @@ msgstr "顯示標準"
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
 msgid "* An error occurred when enumerating the used fonts: %s.\n"
-msgstr ""
+msgstr "列舉使用字型時發生錯誤： %s。 \n"
 
 #: ../src/dialog_fonts_collector.cpp:115
 msgid "Symlinking fonts to folder...\n"
@@ -4631,12 +4631,12 @@ msgstr "下個星期再將提醒我(&W)"
 
 #: ../src/dialog_version_check.cpp:295
 msgid "Curl could not be initialized."
-msgstr ""
+msgstr "無法初始化 Curl。"
 
 #: ../src/dialog_version_check.cpp:317
 #, c-format
 msgid "Checking for updates failed: %s."
-msgstr ""
+msgstr "檢查更新失敗：%s."
 
 #: ../src/dialog_version_check.cpp:345
 msgid "An update to Aegisub was found."
@@ -4835,7 +4835,7 @@ msgstr "樣式 '%s' 不存在\n"
 #: ../src/font_file_lister.cpp:154
 #, c-format
 msgid "Font '%s' is used in a drawing, but not in any text.\n"
-msgstr ""
+msgstr "字型 '%s' 僅用於繪圖，未用於任何文字。\n"
 
 #: ../src/font_file_lister.cpp:160
 #, c-format
@@ -4967,7 +4967,7 @@ msgid ""
 "\n"
 "Aegisub will now close."
 msgstr ""
-"喔唷，Aegisub娘崩潰啦！\n"
+"糟糕，Aegisub 當機了！\n"
 "\n"
 "已經將你的檔的副本儲存到了：\n"
 "\n"
@@ -5298,7 +5298,7 @@ msgstr "時間框內覆蓋寫入"
 
 #: ../src/preferences.cpp:211
 msgid "Shift+Enter adds \\n"
-msgstr ""
+msgstr "Shift+Enter 加入 \\n"
 
 #: ../src/preferences.cpp:212
 msgid "Enable syntax highlighting"
@@ -5350,7 +5350,7 @@ msgstr "隱藏特效標籤"
 
 #: ../src/preferences.cpp:230
 msgid "Skip over whitespace"
-msgstr ""
+msgstr "略過空格"
 
 #: ../src/preferences.cpp:245
 msgid "Audio Display"
@@ -5395,19 +5395,19 @@ msgstr "註解(&N)"
 
 #: ../src/preferences.cpp:257
 msgid "Drawing Commands"
-msgstr ""
+msgstr "繪圖指令"
 
 #: ../src/preferences.cpp:258
 msgid "Drawing X Coords"
-msgstr ""
+msgstr "繪圖 X 座標"
 
 #: ../src/preferences.cpp:259
 msgid "Drawing Y Coords"
-msgstr ""
+msgstr "繪圖 Y 座標"
 
 #: ../src/preferences.cpp:260
 msgid "Underline Spline Endpoints"
-msgstr ""
+msgstr "標示樣條端點"
 
 #: ../src/preferences.cpp:262
 msgid "Brackets"
@@ -5438,9 +5438,8 @@ msgid "Karaoke templates"
 msgstr "卡拉OK範本"
 
 #: ../src/preferences.cpp:270
-#, fuzzy
 msgid "Karaoke variables"
-msgstr "卡拉OK範本"
+msgstr "卡拉OK變數"
 
 #: ../src/preferences.cpp:276
 msgid "Audio Color Schemes"
@@ -5512,31 +5511,31 @@ msgstr "每秒字元數錯誤"
 
 #: ../src/preferences.cpp:296
 msgid "Visual Typesetting Tools"
-msgstr ""
+msgstr "視覺排版工具"
 
 #: ../src/preferences.cpp:297
 msgid "Primary Lines"
-msgstr ""
+msgstr "主要分隔線"
 
 #: ../src/preferences.cpp:298
 msgid "Secondary Lines"
-msgstr ""
+msgstr "次要分隔線"
 
 #: ../src/preferences.cpp:299
 msgid "Primary Highlight"
-msgstr ""
+msgstr "主要高亮"
 
 #: ../src/preferences.cpp:300
 msgid "Secondary Highlight"
-msgstr ""
+msgstr "次要高亮"
 
 #: ../src/preferences.cpp:303
 msgid "Visual Typesetting Tools Alpha"
-msgstr ""
+msgstr "視覺排版工具 Alpha"
 
 #: ../src/preferences.cpp:304
 msgid "Shaded Area"
-msgstr ""
+msgstr "陰影區域"
 
 #: ../src/preferences.cpp:313
 msgid "Backup"
@@ -5693,27 +5692,27 @@ msgstr "品質"
 
 #: ../src/preferences.cpp:393
 msgid "Compressed"
-msgstr ""
+msgstr "壓縮"
 
 #: ../src/preferences.cpp:393
 msgid "Extended"
-msgstr ""
+msgstr "延伸"
 
 #: ../src/preferences.cpp:393
 msgid "Linear"
-msgstr ""
+msgstr "線性"
 
 #: ../src/preferences.cpp:393
 msgid "Logarithmic"
-msgstr ""
+msgstr "對數"
 
 #: ../src/preferences.cpp:393
 msgid "Medium"
-msgstr ""
+msgstr "中等"
 
 #: ../src/preferences.cpp:395
 msgid "Frequency mapping"
-msgstr ""
+msgstr "頻率映射"
 
 #: ../src/preferences.cpp:397
 msgid "Cache memory max (MB)"
@@ -6321,27 +6320,27 @@ msgstr "排序選擇行"
 
 #: default_menu.json:0
 msgid "Window"
-msgstr ""
+msgstr "視窗"
 
 #: default_menu.json:0
 msgid "Open..."
-msgstr ""
+msgstr "開啟..."
 
 #: default_menu.json:0
 msgid "Open Recent"
-msgstr ""
+msgstr "開啟最近使用的檔案"
 
 #: default_menu.json:0
 msgid "Save"
-msgstr ""
+msgstr "儲存"
 
 #: default_menu.json:0
 msgid "Save As..."
-msgstr ""
+msgstr "另存新檔"
 
 #: default_menu.json:0
 msgid "Export As..."
-msgstr ""
+msgstr "匯出為..."
 
 #: default_hotkey.json:244:
 msgid "Subtitle Edit Box"
@@ -6418,11 +6417,12 @@ msgstr "轉換拉丁字母為SJIS全形字母"
 
 #: ../automation/autoload/select-overlaps.moon:17
 msgid "Select overlaps"
-msgstr ""
+msgstr "選取重疊"
 
 #: ../automation/autoload/select-overlaps.moon:18
+#, fuzzy
 msgid "Select lines which begin while another non-comment line is active"
-msgstr ""
+msgstr "選取開始時間落在其他行（非註解）運行期間內的行句"
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
@@ -6451,11 +6451,11 @@ msgstr "為電影和視訊建立和編輯字幕。"
 
 #: ../packages/desktop/aegisub.desktop.in.in:12
 msgid "subtitles;subtitle;captions;captioning;video;audio;"
-msgstr ""
+msgstr "subtitles;subtitle;captions;captioning;video;audio;"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
 msgid "Create and modify subtitles"
-msgstr ""
+msgstr "建立和修改字幕"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:9
 msgid ""
@@ -6464,6 +6464,8 @@ msgid ""
 "audio, and features many powerful tools for styling them, including a built-"
 "in real-time video preview."
 msgstr ""
+"Aegisub 是一款免費、跨平台的開源字幕製作與修改工具。Aegisub 能讓你快速又輕鬆"
+"地將字幕對齊音訊，並提供許多強大的字幕樣式編輯功能，包含內建的即時影片預覽。"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:10
 msgid ""
@@ -6475,6 +6477,10 @@ msgid ""
 "unrelated to Aegisub) many vital functions, or were too buggy and/or "
 "unreliable to be really useful."
 msgstr ""
+"Aegisub 最初的誕生，是為了讓排版工作變得不再那麼痛苦，特別是針對當時的動畫同"
+"人字幕製作流程。在專案開始之初，市面上許多支援 Advanced Substation Alpha 格式"
+"的程式，要麼缺乏許多必要功能（而且至今仍然如此；有些競爭的程式其後開發也因各"
+"種與 Aegisub 無關的理由而完全中止），要麼因錯誤過多或不夠穩定而無法真正實用。"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:11
 msgid ""
@@ -6485,46 +6491,50 @@ msgid ""
 "for creating karaoke effects, Automation can now be used much else, "
 "including creating macros and various other convenient tools)."
 msgstr ""
+"自那之後，Aegisub 已發展成一款功能完整且高度可自訂的字幕編輯器。它具備眾多便"
+"利工具，可用於字幕的對時、排版、編輯與翻譯，並提供名為 Automation 的強大腳本"
+"環境（Automation 最初主要用於製作卡拉 OK 特效如今也能用於建立巨集及其他多種便"
+"利工具）。"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:12
 msgid "Some highlights of Aegisub:"
-msgstr ""
+msgstr "Aegisub 的特色："
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:14
 msgid "Simple and intuitive yet powerful interface for editing subtitles"
-msgstr ""
+msgstr "簡潔直覺、功能強大的字幕編輯介面"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:15
 msgid "Support for many formats and character sets"
-msgstr ""
+msgstr "支援多種格式與字元編碼"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:16
 msgid "Powerful video mode"
-msgstr ""
+msgstr "強大的影片模式"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:17
 msgid "Visual typesetting tools"
-msgstr ""
+msgstr "視覺排版工具"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:18
 msgid "Intuitive and customizable audio timing mode"
-msgstr ""
+msgstr "直覺且可自訂的音訊對時模式"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:19
 msgid "Fully scriptable through the Automation module"
-msgstr ""
+msgstr "可透過 Automation 模組進行完整腳本化"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:43
 msgid "Typesetting"
-msgstr ""
+msgstr "排版"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:47
 msgid "Audio video"
-msgstr ""
+msgstr "音訊與影片"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
-msgstr ""
+msgstr "音訊對時"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Installing runtime libraries..."
