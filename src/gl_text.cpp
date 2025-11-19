@@ -240,6 +240,18 @@ void OpenGLText::SetFont(std::string const& face, int size, bool bold, bool ital
 	glyphs.clear();
 }
 
+void OpenGLText::SetFont(const wxFont& newFont) {
+	// No change required
+	if (font == newFont) return;
+
+	// Set font
+	font = newFont;
+
+	// Delete all old data
+	textures.clear();
+	glyphs.clear();
+}
+
 void OpenGLText::SetColour(agi::Color col) {
 	r = col.r / 255.f;
 	g = col.g / 255.f;
