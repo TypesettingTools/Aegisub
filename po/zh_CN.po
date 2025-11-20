@@ -2222,16 +2222,16 @@ msgstr "复制当前鼠标在视频上的坐标到剪贴板"
 
 #: ../src/command/video.cpp:220 ../src/command/video.cpp:221
 msgid "Cycle active subtitles provider"
-msgstr "切换字幕渲染器"
+msgstr "切换字幕服务后端"
 
 #: ../src/command/video.cpp:222
 msgid "Cycle through the available subtitles providers"
-msgstr "在可用的字幕渲染器中切换"
+msgstr "在可用的字幕服务后端中切换"
 
 #: ../src/command/video.cpp:233
 #, c-format
 msgid "Subtitles provider set to %s"
-msgstr "字幕渲染器设置为 %s"
+msgstr "字幕服务后端设置为 %s"
 
 #: ../src/command/video.cpp:240
 msgid "&Detach Video"
@@ -5656,11 +5656,11 @@ msgstr "专家设置"
 
 #: ../src/preferences.cpp:376
 msgid "Audio provider"
-msgstr "音频来自"
+msgstr "视频服务后端"
 
 #: ../src/preferences.cpp:379
 msgid "Audio player"
-msgstr "音频播放器"
+msgstr "音频服务后端"
 
 #: ../src/preferences.cpp:381
 msgid "Cache"
@@ -5776,11 +5776,11 @@ msgstr "缓冲长度"
 
 #: ../src/preferences.cpp:443
 msgid "Video provider"
-msgstr "视频来自"
+msgstr "视频服务后端"
 
 #: ../src/preferences.cpp:446
 msgid "Subtitles provider"
-msgstr "字幕来自"
+msgstr "字幕服务后端"
 
 #: ../src/preferences.cpp:450
 msgid "Allow pre-2.56a Avisynth"
@@ -5895,9 +5895,9 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"没有可用的音频服务程序能够将所选文件识别为包含音频的文件。\n"
+"可用的音频服务后端都无法将所选文件识别为包含音频的文件。\n"
 "\n"
-"已尝试下列服务程序: \n"
+"已尝试下列服务后端:\n"
 
 #: ../src/project.cpp:265
 msgid ""
@@ -5906,9 +5906,9 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"所有音频服务程序均没有所选文件的解码器。\n"
+"可用的音频服务后端都没有适配所选文件的解码器。\n"
 "\n"
-"已尝试下列服务程序: \n"
+"已尝试下列服务后端:\n"
 
 #: ../src/resolution_resampler.cpp:300
 msgid "resolution resampling"
@@ -6579,10 +6579,10 @@ msgstr ""
 #~ msgstr "启动 ASSDraw3 工具用于矢量绘图"
 
 #~ msgid "Reload active subtitles provider"
-#~ msgstr "重载字幕渲染器"
+#~ msgstr "重载字幕服务后端"
 
 #~ msgid "Reloads the current subtitles provider"
-#~ msgstr "重载当前的字幕渲染器"
+#~ msgstr "重载当前的字幕服务后端"
 
 #~ msgid "Reload Video"
 #~ msgstr "重载视频"
@@ -6874,7 +6874,7 @@ msgstr ""
 #~ "containing audio data:\n"
 #~ "\n"
 #~ msgstr ""
-#~ "没有可用的音频解码后端可以从所选文件中识别到音频数据:\n"
+#~ "可用的音频服务后端都无法从所选文件中识别到音频数据:\n"
 #~ "\n"
 
 #~ msgid ""
@@ -6882,7 +6882,7 @@ msgstr ""
 #~ "the selected file:\n"
 #~ "\n"
 #~ msgstr ""
-#~ "没有可用的音频解码后端拥有适配所选文件的解码器:\n"
+#~ "可用的音频服务后端都没有适配所选文件的解码器:\n"
 #~ "\n"
 
 #~ msgid ""
