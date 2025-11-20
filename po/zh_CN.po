@@ -22,9 +22,9 @@ msgstr ""
 "Project-Id-Version: arch1t3cht / Aegisub Feature Release 12+ \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-26 09:44+0800\n"
-"PO-Revision-Date: 2025-06-26 11:20+0800\n"
-"Last-Translator: op200 <None@None>\n"
-"Language-Team: None <None@None>\n"
+"PO-Revision-Date: 2025-11-20 14:24+0800\n"
+"Last-Translator: op200 <>\n"
+"Language-Team: \n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -167,11 +167,11 @@ msgstr "最大 + 平均"
 #: ../src/audio_timing_dialogue.cpp:514 ../src/audio_timing_dialogue.cpp:520
 #: ../src/command/time.cpp:176
 msgid "timing"
-msgstr ""
+msgstr "调整时轴"
 
 #: ../src/audio_timing_karaoke.cpp:240
 msgid "karaoke timing"
-msgstr ""
+msgstr "调整卡拉OK时轴"
 
 #: ../src/auto4_base.cpp:454
 #, c-format
@@ -179,8 +179,8 @@ msgid ""
 "Failed to load Automation script '%s':\n"
 "%s"
 msgstr ""
-"一个自动化脚本载入失败，文件名: '%s'，错误报告: \n"
-" %s"
+"一个自动化脚本载入失败，文件名: '%s'，错误报告:\n"
+"%s"
 
 #: ../src/auto4_base.cpp:461
 #, c-format
@@ -387,11 +387,11 @@ msgstr "最大化当前窗口"
 
 #: ../src/command/app.cpp:292 ../src/command/app.cpp:293
 msgid "Bring All to Front"
-msgstr ""
+msgstr "全部置顶"
 
 #: ../src/command/app.cpp:294
 msgid "Bring forward all open documents to the front"
-msgstr ""
+msgstr "置顶所有窗口"
 
 #: ../src/command/audio.cpp:65
 msgid "&Close Audio"
@@ -4644,7 +4644,7 @@ msgstr "下个星期再将提醒我(&W)"
 
 #: ../src/dialog_version_check.cpp:295
 msgid "Curl could not be initialized."
-msgstr ""
+msgstr "初始化 curl 库失败"
 
 #: ../src/dialog_version_check.cpp:317
 #, c-format
@@ -4653,15 +4653,15 @@ msgstr "检查更新失败: %s。"
 
 #: ../src/dialog_version_check.cpp:345
 msgid "An update to Aegisub was found."
-msgstr "发现Aegisub更新。"
+msgstr "Aegisub 有可用更新。"
 
 #: ../src/dialog_version_check.cpp:347
 msgid "Several possible updates to Aegisub were found."
-msgstr "发现几个Aegisub可用更新。"
+msgstr "Aegisub 有多个可用更新。"
 
 #: ../src/dialog_version_check.cpp:349
 msgid "There are no updates to Aegisub."
-msgstr "没有发现Aegisub更新。"
+msgstr "Aegisub 无可用更新。"
 
 #: ../src/dialog_version_check.cpp:377
 #, c-format
@@ -4701,7 +4701,7 @@ msgstr "分辨率:"
 #, c-format
 msgid "1 frame"
 msgid_plural "%d frames (%s)"
-msgstr[0] "%d 帧(%s)"
+msgstr[0] "%d 帧 (%s)"
 
 #: ../src/dialog_video_details.cpp:62
 msgid "Length:"
@@ -4770,7 +4770,7 @@ msgstr "修正样式"
 msgid ""
 "Fixes styles by replacing any style that isn't available on file with "
 "Default."
-msgstr "修正样式将文件中不存在的样式以默认样式 (Default) 替代。"
+msgstr "修正样式，将文件中不存在的样式替换为默认样式 (Default)。"
 
 #: ../src/export_framerate.cpp:52
 msgid "Transform Framerate"
@@ -4786,7 +4786,7 @@ msgid ""
 "It can also be used to convert subtitles to a different speed video, such as "
 "NTSC to PAL speedup."
 msgstr ""
-"将字幕时间（包括样式覆写标签中的时间）从输入帧率转换为输出帧率。\n"
+"将字幕时间 (包括样式覆写标签中的时间) 从输入帧率转换为输出帧率。\n"
 "\n"
 "转换标准字幕时间到VFRaC字幕时间是特别有用的。\n"
 "它也可以用来转换字幕到不同帧率的视频，例如应对NTSC到PAL的帧率提高。"
@@ -4813,11 +4813,11 @@ msgstr "输出: "
 
 #: ../src/ffmpegsource_common.cpp:77
 msgid "Indexing"
-msgstr "索引"
+msgstr "索引中"
 
 #: ../src/ffmpegsource_common.cpp:78
 msgid "Reading timecodes and frame/sample data"
-msgstr "正在读取时间码和帧/采样数据"
+msgstr "正在读取 时间码 和 帧/采样 数据"
 
 #: ../src/ffmpegsource_common.cpp:126
 #, c-format
@@ -4843,7 +4843,7 @@ msgstr "选择视频轨道"
 #: ../src/font_file_lister.cpp:67
 #, c-format
 msgid "Style '%s' does not exist\n"
-msgstr "样式 '%s' 不存在\n"
+msgstr "不存在样式 '%s'\n"
 
 #: ../src/font_file_lister.cpp:154
 #, c-format
@@ -4882,7 +4882,7 @@ msgstr "'%s' 缺少下列字形: %s\n"
 
 #: ../src/font_file_lister.cpp:193
 msgid "Used in styles:\n"
-msgstr "应用于样式: \n"
+msgstr "应用于样式:\n"
 
 #: ../src/font_file_lister.cpp:199
 msgid "Used on lines:"
@@ -4980,7 +4980,7 @@ msgid ""
 "\n"
 "Aegisub will now close."
 msgstr ""
-"喔唷，Aegisub娘崩溃啦!\n"
+"哎呀，Aegisub娘崩溃啦!\n"
 "\n"
 "已经将你的文件的副本保存到了: \n"
 "\n"
@@ -5035,11 +5035,11 @@ msgstr "发现多个字幕轨道"
 
 #: ../src/mkv_wrap.cpp:283
 msgid "Parsing Matroska"
-msgstr "正在分析Matroska(MKV)文件"
+msgstr "正在分析 Matroska(MKV) 文件"
 
 #: ../src/mkv_wrap.cpp:283
 msgid "Reading subtitles from Matroska file."
-msgstr "正在从Matroska(MKV)文件中读取字幕。"
+msgstr "正在从 Matroska(MKV) 文件中读取字幕。"
 
 #: ../src/preferences.cpp:63 ../src/preferences.cpp:65
 #: ../src/preferences.cpp:335 ../src/preferences.cpp:356
@@ -6429,11 +6429,11 @@ msgstr "转换拉丁字母为SJIS全角字母"
 #: ../automation/autoload/select-overlaps.moon:17
 #, fuzzy
 msgid "Select overlaps"
-msgstr "选择多行"
+msgstr "选择重叠行"
 
 #: ../automation/autoload/select-overlaps.moon:18
 msgid "Select lines which begin while another non-comment line is active"
-msgstr ""
+msgstr "在非注释字幕行中，选择每个时轴重叠段的非第一行"
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
