@@ -6429,7 +6429,7 @@ msgstr "转换拉丁字母为SJIS全角字母"
 #: ../automation/autoload/select-overlaps.moon:17
 #, fuzzy
 msgid "Select overlaps"
-msgstr "选择重叠行"
+msgstr "Select overlaps - 选择重叠行"
 
 #: ../automation/autoload/select-overlaps.moon:18
 msgid "Select lines which begin while another non-comment line is active"
