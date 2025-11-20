@@ -37,79 +37,79 @@ msgstr "自动检测文本的书写方向 (libass 特有扩展)"
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
-msgstr "ANSI编码"
+msgstr "ANSI"
 
 #: ../src/ass_style.cpp:198 ../src/command/video.cpp:144
 msgid "Default"
-msgstr "默认"
+msgstr "Default (默认)"
 
 #: ../src/ass_style.cpp:199
 msgid "Symbol"
-msgstr "符号编码"
+msgstr "Symbol"
 
 #: ../src/ass_style.cpp:200
 msgid "Mac"
-msgstr "Mac编码"
+msgstr "Mac"
 
 #: ../src/ass_style.cpp:201
 msgid "Shift_JIS"
-msgstr "日文Shift_JIS"
+msgstr "Shift_JIS (日文)"
 
 #: ../src/ass_style.cpp:202
 msgid "Hangeul"
-msgstr "韩文Hangeul"
+msgstr "Hangeul (韩文)"
 
 #: ../src/ass_style.cpp:203
 msgid "Johab"
-msgstr "韩文Johab"
+msgstr "Johab (韩文)"
 
 #: ../src/ass_style.cpp:204
 msgid "GB2312"
-msgstr "简体中文GB2312"
+msgstr "GB2312 (简体中文)"
 
 #: ../src/ass_style.cpp:205
 msgid "Chinese BIG5"
-msgstr "繁体中文BIG5"
+msgstr "Chinese BIG5 (繁体中文)"
 
 #: ../src/ass_style.cpp:206
 msgid "Greek"
-msgstr "希腊文"
+msgstr "Greek (希腊文)"
 
 #: ../src/ass_style.cpp:207
 msgid "Turkish"
-msgstr "土耳其文"
+msgstr "Turkish (土耳其文)"
 
 #: ../src/ass_style.cpp:208
 msgid "Vietnamese"
-msgstr "越南文"
+msgstr "Vietnamese (越南文)"
 
 #: ../src/ass_style.cpp:209
 msgid "Hebrew"
-msgstr "希伯来文"
+msgstr "Hebrew (希伯来文)"
 
 #: ../src/ass_style.cpp:210
 msgid "Arabic"
-msgstr "阿拉伯文"
+msgstr "Arabic (阿拉伯文)"
 
 #: ../src/ass_style.cpp:211
 msgid "Baltic"
-msgstr "波罗的海文"
+msgstr "Baltic (波罗的海文)"
 
 #: ../src/ass_style.cpp:212
 msgid "Russian"
-msgstr "俄文"
+msgstr "Russian (俄文)"
 
 #: ../src/ass_style.cpp:213
 msgid "Thai"
-msgstr "泰文"
+msgstr "Thai (泰文)"
 
 #: ../src/ass_style.cpp:214
 msgid "East European"
-msgstr "东欧语系"
+msgstr "East European (东欧语系)"
 
 #: ../src/ass_style.cpp:215
 msgid "OEM"
-msgstr "OEM编码"
+msgstr "OEM"
 
 #: ../src/audio_box.cpp:73
 msgid "Horizontal zoom"
@@ -217,7 +217,7 @@ msgstr "选择文字编码: "
 
 #: ../src/command/app.cpp:56
 msgid "&About"
-msgstr "关于(&A)…"
+msgstr "关于(&A)"
 
 #: ../src/command/app.cpp:57
 msgid "About"
@@ -993,7 +993,7 @@ msgstr "选择性粘贴…(&O)"
 
 #: ../src/command/edit.cpp:885
 msgid "Paste Lines Over"
-msgstr "选择性粘贴…"
+msgstr "选择性粘贴"
 
 #: ../src/command/edit.cpp:886
 msgid "Paste subtitles over others"
@@ -1406,7 +1406,7 @@ msgstr "帮助主题"
 
 #: ../src/command/help.cpp:80
 msgid "&IRC Channel"
-msgstr "IRC 频道(&I)…"
+msgstr "IRC 频道(&I)"
 
 #: ../src/command/help.cpp:81
 msgid "IRC Channel"
@@ -1479,7 +1479,7 @@ msgstr "保存当前的关键帧列表"
 
 #: ../src/command/keyframe.cpp:97
 msgid "Save keyframes file"
-msgstr "保存关键帧…"
+msgstr "保存关键帧文件"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1934,7 +1934,7 @@ msgstr "打开时间码文件…"
 
 #: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
 msgid "Open Timecodes File"
-msgstr "打开时间码文件…"
+msgstr "打开时间码文件"
 
 #: ../src/command/timecode.cpp:70
 msgid "Open a VFR timecodes v1 or v2 file"
@@ -1950,7 +1950,7 @@ msgstr "保存时间码文件"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
-msgstr "保存一个可变帧率时间码(VFR timecode)v1或v2文件"
+msgstr "保存一个可变帧率时间码(VFR timecode)v2文件"
 
 #: ../src/command/tool.cpp:56
 msgid "&Export Subtitles..."
@@ -2078,7 +2078,7 @@ msgstr "时轴后处理器"
 msgid ""
 "Post-process the subtitle timing to add lead-ins and lead-outs, snap timing "
 "to scene changes, etc."
-msgstr "运行时轴后处理器来处理时间开始提前、结束延后以及对齐转场等"
+msgstr "运行时轴后处理器来处理时间开始提前、结束延后以及对齐转场等。"
 
 #: ../src/command/tool.cpp:186
 msgid "&Translation Assistant..."
@@ -4524,7 +4524,7 @@ msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:204
 msgid "Bias: Start <- "
-msgstr "偏重: 开始 <- "
+msgstr "偏向: 开始 <- "
 
 #: ../src/dialog_timing_processor.cpp:206
 msgid " -> End"
@@ -4923,7 +4923,7 @@ msgstr[0] "有 %d 个已找到的字体缺少脚本中使用的字形。\n"
 
 #: ../src/font_file_lister_fontconfig.cpp:55
 msgid "Updating font cache\n"
-msgstr "正在更新字体缓存…\n"
+msgstr "正在更新字体缓存\n"
 
 #: ../src/grid_column.cpp:105
 msgid "#"
@@ -6427,7 +6427,6 @@ msgid "Convert Latin letters to SJIS fullwidth letters"
 msgstr "转换拉丁字母为SJIS全角字母"
 
 #: ../automation/autoload/select-overlaps.moon:17
-#, fuzzy
 msgid "Select overlaps"
 msgstr "Select overlaps - 选择重叠行"
 
@@ -6492,7 +6491,6 @@ msgstr ""
 "要支付费用，但同时也不会得到任何形式的担保。%n%n您可以到Aegisub官网获取源代码"
 "信息。"
 
-#, fuzzy
 #~ msgid "Creating cache... This can take a while!"
 #~ msgstr "正在索引文件... 这可能需要一定时间!"
 
@@ -6835,7 +6833,6 @@ msgstr ""
 #~ "地将字幕的时轴与音频同步，且拥有大量强大的样式处理工具，内置了实时视频预览"
 #~ "功能。"
 
-#, fuzzy
 #~ msgid "Visual typesetting tools"
 #~ msgstr "可视化绘图工具"
 
@@ -6918,7 +6915,7 @@ msgstr ""
 #~ msgstr "导出(&E)…"
 
 #~ msgid "&Forums"
-#~ msgstr "论坛(&F)…"
+#~ msgstr "论坛(&F)"
 
 #~ msgid "Are you sure you want to delete these %d styles?"
 #~ msgstr "您确定要删除这个 %d 样式?"
