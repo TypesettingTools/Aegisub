@@ -15,6 +15,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <libaegisub/fs.h>
+#include <libaegisub/io.h>
 #include <memory>
 #include <string>
 
@@ -24,7 +25,7 @@ namespace agi {
 }
 
 class TextFileWriter {
-	std::unique_ptr<agi::io::Save> file;
+	agi::io::Save file;
 	std::unique_ptr<agi::charset::IconvWrapper> conv;
 #ifdef _WIN32
 	std::string newline = "\r\n";
@@ -34,7 +35,7 @@ class TextFileWriter {
 
 public:
 	TextFileWriter(agi::fs::path const& filename, std::string encoding="");
-	~TextFileWriter();
+	~TextFileWriter() noexcept(false);	// ~Save() is noexcept(false)
 
 	void WriteLineToFile(std::string_view line, bool addLineBreak=true);
 };
