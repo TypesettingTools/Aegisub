@@ -116,8 +116,8 @@ If you are packaging Aegisub for a Linux distribution, here are a few things you
 
   Like for its other dependencies, Aegisub includes a meson subproject for LuaJIT that can be used to statically link a version of LuaJIT with 5.2 compatibility.
   For distributions that do not allow downloading additional sources at build time, the downloaded LuaJIT subproject is included in the source tarballs distributed with releases.
-- When compiled with gcc (or, more accurately, libstdc++), Aegisub needs gcc 12 or later due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95048.
-  Aegisub's tests will detect this bug, but if you're not running tests on packaging you'll need to make sure the gcc version is recent enough.
+- When linked against libstdc++, Aegisub needs libstdc++ 6.0.32 or later due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95048.
+  Aegisub's tests will detect this bug, but if you're not running tests on packaging you'll need to make sure the libstdc++ version is recent enough.
 
 The following commands are an example for how to build Aegisub with the goal of creating a distribution package:
 
