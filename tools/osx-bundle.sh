@@ -106,4 +106,15 @@ echo "---- Fixing libraries ----"
 sudo python3 "${SRC_DIR}/tools/osx-fix-libs.py" "${PKG_DIR}/Contents/MacOS/aegisub" || exit $?
 
 echo
+echo "---- Signing ----"
+# Even if the binaries were already ad-hoc signed during compilation,
+# they need to be resigned after bundling and rewriting dylib paths.
+if codesign -d "${PKG_DIR}/Contents/MacOS/aegisub"; then
+  for fname in "${PKG_DIR}/Contents/MacOS/"*; do
+    codesign -s ${AEGISUB_BUNDLE_SIGNATURE:--} -vf "${fname}"
+  done
+  codesign -s ${AEGISUB_BUNDLE_SIGNATURE:--} -vf "${PKG_DIR}/"
+fi
+
+echo
 echo "Done creating \"${PKG_DIR}\""
