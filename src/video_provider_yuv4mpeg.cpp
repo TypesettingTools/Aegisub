@@ -142,7 +142,7 @@ public:
 	YUV4MPEGVideoProvider(agi::fs::path const& filename);
 
 	void GetFrame(int n, VideoFrame &frame) override;
-	void SetColorSpace(std::string const&) override { }
+	void SetColorSpace(std::string_view) override { }
 
 	int GetFrameCount() const override             { return num_frames; }
 	int GetWidth() const override                  { return w; }

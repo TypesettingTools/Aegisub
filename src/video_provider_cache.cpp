@@ -54,7 +54,7 @@ public:
 
 	void GetFrame(int n, VideoFrame &frame) override;
 
-	void SetColorSpace(std::string const& m) override {
+	void SetColorSpace(std::string_view m) override {
 		cache.clear();
 		return master->SetColorSpace(m);
 	}

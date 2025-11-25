@@ -90,7 +90,7 @@ public:
 
 	void GetFrame(int n, VideoFrame &out) override;
 
-	void SetColorSpace(std::string const& matrix) override {
+	void SetColorSpace(std::string_view matrix) override {
 		if (matrix == ColorSpace) return;
 		if (matrix == RealColorSpace)
 			FFMS_SetInputFormatV(VideoSource, CS, CR, FFMS_GetPixFmt(""), nullptr);

@@ -52,7 +52,7 @@ public:
 	///
 	/// Providers are free to disregard this, and should if the requested
 	/// matrix makes no sense or the input isn't YCbCr.
-	virtual void SetColorSpace(std::string const& matrix)=0;
+	virtual void SetColorSpace(std::string_view matrix)=0;
 
 	// Override the following methods to get video information:
 	virtual int GetFrameCount() const=0;			///< Get total number of frames
