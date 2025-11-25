@@ -79,7 +79,7 @@ public:
 	/// @brief Disable this connection until Unblock is called
 	void Block() { if (token) token->blocked = true; }
 
-	/// @brief Reenable this connection after it was disabled by Block
+	/// @brief Re-enable this connection after it was disabled by Block
 	void Unblock() { if (token) token->blocked = false; }
 };
 

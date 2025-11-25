@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @file libaegisub_cajun.cpp
+/// @file cajun.cpp
 /// @brief Cajun/Json tests.
 /// @ingroup cajun
 

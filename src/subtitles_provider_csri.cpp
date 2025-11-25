@@ -98,7 +98,7 @@ void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {
 	}
 	frame.pixfmt = CSRI_F_BGR_;
 
-	csri_fmt format = { frame.pixfmt, dst.width, dst.height };
+	csri_fmt format = { frame.pixfmt, static_cast<unsigned>(dst.width), static_cast<unsigned>(dst.height) };
 
 	std::lock_guard<std::mutex> lock(csri_mutex);
 	if (!csri_request_fmt(instance.get(), &format))

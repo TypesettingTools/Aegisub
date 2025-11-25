@@ -70,7 +70,7 @@ class VisualToolBase {
 	virtual void OnLineChanged() { DoRefresh(); }
 
 	/// Generic refresh to simplify tools which have no interesting state and
-	/// can simply do do the same thing for any external change (i.e. most of
+	/// can simply do the same thing for any external change (i.e. most of
 	/// them). Called only by the above virtual methods.
 	virtual void DoRefresh() { }
 
@@ -98,8 +98,9 @@ protected:
 	Vector2D mouse_pos; ///< Last seen mouse position
 	Vector2D drag_start; ///< Mouse position at the beginning of the last drag
 	Vector2D script_res; ///< Script resolution
+	Vector2D canvas_size; ///< The size of the display area
 	Vector2D video_pos; ///< Top-left corner of the video in the display area
-	Vector2D video_res; ///< Video resolution
+	Vector2D video_size; ///< Size of the video on screen. Not necessarily equal to the video resolution
 
 	const agi::OptionValue *highlight_color_primary_opt;
 	const agi::OptionValue *highlight_color_secondary_opt;
@@ -140,6 +141,9 @@ public:
 	// Stuff called by VideoDisplay
 	virtual void OnMouseEvent(wxMouseEvent &event)=0;
 	virtual void Draw()=0;
+	// Called by VideoDisplay to set the canvas size in GL coordinates (i.e. logical wx coordinates)
+	virtual void SetCanvasSize(int w, int h);
+	// Called by VideoDisplay to set the video's position and size in the canvas in GL coordinates
 	virtual void SetDisplayArea(int x, int y, int w, int h);
 	virtual void SetToolbar(wxToolBar *) { }
 	virtual void SetSubTool(int subtool) { }

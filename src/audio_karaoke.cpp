@@ -79,9 +79,9 @@ AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 	main_sizer->Add(split_area, wxSizerFlags(1).Expand());
 	SetSizerAndFit(main_sizer);
 
-	/// @todo subscribe
-	split_font.SetFaceName(FontFace("Audio/Karaoke"));
-	split_font.SetPointSize(OPT_GET("Audio/Karaoke/Font Size")->GetInt());
+	SetStyle();
+	OPT_SUB("Audio/Karaoke/Font Face", &AudioKaraoke::SetStyle, this);
+	OPT_SUB("Audio/Karaoke/Font Size", &AudioKaraoke::SetStyle, this);
 
 	split_area->Bind(wxEVT_SIZE, &AudioKaraoke::OnSize, this);
 	split_area->Bind(wxEVT_PAINT, &AudioKaraoke::OnPaint, this);
@@ -421,4 +421,21 @@ void AudioKaraoke::AcceptSplit() {
 void AudioKaraoke::SetTagType(std::string_view new_tag) {
 	kara->SetTagType(new_tag);
 	AcceptSplit();
+}
+
+void AudioKaraoke::SetStyle() {
+	wxString fontname = FontFace("Audio/Karaoke");
+	if (!fontname.empty()) split_font.SetFaceName(fontname);
+	split_font.SetPointSize(OPT_GET("Audio/Karaoke/Font Size")->GetInt());
+
+	// Clear cached character metrics since font changed
+	char_widths.clear();
+	char_height = 0;
+	char_width = 0;
+
+	// Recalculate layout with new font
+	if (enabled && active_line) {
+		SetDisplayText();
+		split_area->Refresh(false);
+	}
 }

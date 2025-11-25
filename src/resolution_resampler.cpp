@@ -75,7 +75,6 @@ namespace {
 					val = (val + shift_x) * scale_x;
 				else
 					val = (val + shift_y) * scale_y;
-				val = round(val * 8) / 8.0; // round to eighth-pixels
 				final += float_to_string(val);
 				final += ' ';
 				is_x = !is_x;
@@ -99,6 +98,7 @@ namespace {
 		const int *margin;
 		double rx;
 		double ry;
+		double rm;
 		double ar;
 		agi::ycbcr_converter conv;
 		bool convert_colors;
@@ -111,8 +111,16 @@ namespace {
 		int shift = 0;
 
 		switch (cur->classification) {
-			case AssParameterClass::ABSOLUTE_SIZE:
+			case AssParameterClass::ABSOLUTE_SIZE_X:
+				resizer = state->rx;
+				break;
+
+			case AssParameterClass::ABSOLUTE_SIZE_Y:
 				resizer = state->ry;
+				break;
+
+			case AssParameterClass::ABSOLUTE_SIZE_XY:
+				resizer = state->rm;
 				break;
 
 			case AssParameterClass::ABSOLUTE_POS_X:
@@ -179,7 +187,7 @@ namespace {
 		style.fontsize = int(style.fontsize * state->ry + 0.5);
 		style.outline_w *= state->ry;
 		style.shadow_w *= state->ry;
-		style.spacing *= state->rx;
+		style.spacing *= state->ry;  // gets multiplied by scalex (and hence by ar) during rendering
 		style.scalex *= state->ar;
 		for (int i = 0; i < 3; i++)
 			style.Margin[i] = int((style.Margin[i] + state->margin[i]) * (i < 2 ? state->rx : state->ry) + 0.5);
@@ -261,10 +269,14 @@ void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 		settings.source_matrix != YCbCrMatrix::rgb &&
 		settings.dest_matrix != YCbCrMatrix::rgb;
 
+	double rx = double(settings.dest_x) / double(settings.source_x);
+	double ry = double(settings.dest_y) / double(settings.source_y);
+
 	resample_state state = {
 		settings.margin,
-		double(settings.dest_x) / double(settings.source_x),
-		double(settings.dest_y) / double(settings.source_y),
+		rx,
+		ry,
+		rx == ry ? rx : std::sqrt(rx * ry),
 		horizontal_stretch,
 		agi::ycbcr_converter{
 			matrix(settings.source_matrix),

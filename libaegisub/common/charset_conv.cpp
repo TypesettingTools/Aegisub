@@ -114,26 +114,6 @@ namespace {
 		}
 	}
 
-	// Calculate the size of NUL in the given character set
-	size_t nul_size(const char *encoding) {
-		// We need a character set to convert from with a known encoding of NUL
-		// UTF-8 seems like the obvious choice
-		auto cd = Converter::create(false, "UTF-8", encoding);
-
-		char dbuff[4];
-		char sbuff[] = "";
-		char* dst = dbuff;
-		const char* src = sbuff;
-		size_t dstLen = sizeof(dbuff);
-		size_t srcLen = 1;
-
-		size_t ret = cd->Convert(&src, &srcLen, &dst, &dstLen);
-		assert(ret != iconv_failed);
-		assert(dst - dbuff > 0);
-
-		return dst - dbuff;
-	}
-
 #ifdef ICONV_POSIX
 	class ConverterImpl final : public Converter {
 		size_t bomSize;
@@ -287,12 +267,7 @@ std::unique_ptr<Converter> Converter::create(bool subst, const char *src, const 
 
 IconvWrapper::IconvWrapper(const char *sourceEncoding, const char *destEncoding, bool enableSubst)
 : conv(Converter::create(enableSubst, sourceEncoding, destEncoding))
-{
-	// These need to be set only after we verify that the source and dest
-	// charsets are valid
-	toNulLen = nul_size(destEncoding);
-	fromNulLen = nul_size(sourceEncoding);
-}
+{ }
 
 IconvWrapper::~IconvWrapper() = default;
 

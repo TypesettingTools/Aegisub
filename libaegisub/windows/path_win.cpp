@@ -14,7 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file path.cpp
+/// @file path_win.cpp
 /// @brief Windows-specific path code
 /// @ingroup libaegisub windows
 

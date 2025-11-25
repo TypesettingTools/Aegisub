@@ -1,4 +1,4 @@
-project('Hunspell', 'cpp', version: '1.7.0', meson_version: '>=0.57.0')
+project('Hunspell', 'cpp', version: '1.7.2', meson_version: '>=0.57.0')
 
 subdir('src/hunspell')
 

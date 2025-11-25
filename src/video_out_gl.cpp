@@ -167,8 +167,6 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 
 	// Switch to video coordinates
 	CHECK_ERROR(glMatrixMode(GL_PROJECTION));
-	CHECK_ERROR(glLoadIdentity());
-	CHECK_ERROR(glPushMatrix());
 	if (frameFlipped) {
 		CHECK_ERROR(glOrtho(0.0f, frameWidth, 0.0f, frameHeight, -1000.0f, 1000.0f));
 	}
@@ -233,7 +231,6 @@ void VideoOutGL::InitTextures(int width, int height, GLenum format, int bpp, boo
 		}
 	}
 	CHECK_ERROR(glDisable(GL_TEXTURE_2D));
-	CHECK_ERROR(glPopMatrix());
 
 	glEndList();
 
@@ -267,9 +264,27 @@ void VideoOutGL::UploadFrameData(VideoFrame const& frame) {
 	CHECK_ERROR(glPixelStorei(GL_UNPACK_ROW_LENGTH, 0));
 }
 
-void VideoOutGL::Render(int dx1, int dy1, int dx2, int dy2) {
-	CHECK_ERROR(glViewport(dx1, dy1, dx2, dy2));
+void VideoOutGL::Render(int client_width, int client_height, int dx1, int dy1, int dx2, int dy2) {
+	CHECK_ERROR(glMatrixMode(GL_PROJECTION));
+	CHECK_ERROR(glLoadIdentity());
+	CHECK_ERROR(glPushMatrix());
+
+	float cw = static_cast<float>(client_width);
+	float ch = static_cast<float>(client_height);
+	// Transform (-1, -1) ~ (1, 1) rect to (-1, 1) + 2 * ( (dx1 / client_width, dx2 / client_height) ~ ((dx1 + dx2) / client_width, (dy1 + dy2) / client_height)) )) rect
+	// x = -1 goes to -1 + 2 * dx1 / cw
+	// x = +1 goes to -1 + 2 * (dx1 + dx2) / cw
+	float matrix[16] = {
+		dx2 / cw,		 0, 0, 0,
+		0,        dy2 / ch, 0, 0,
+		0, 0, 1, 0,
+		-1 + (2 * dx1 + dx2) / cw, -1 + (2 * dy1 + dy2) / ch, 0, 1,
+	};
+	CHECK_ERROR(glMultMatrixf(matrix));
+
 	CHECK_ERROR(glCallList(dl));
+
+	CHECK_ERROR(glPopMatrix());
 	CHECK_ERROR(glMatrixMode(GL_MODELVIEW));
 	CHECK_ERROR(glLoadIdentity());
 

@@ -32,9 +32,30 @@
 /// @ingroup subtitle_io
 ///
 
+#include <string>
+
 #include "subtitle_format.h"
 
+#include <boost/regex.hpp>
+
 class AssDialogue;
+
+class SrtTagParser {
+	struct FontAttribs {
+		std::string face;
+		std::string size;
+		std::string color;
+	};
+
+	const boost::regex tag_matcher;
+	const boost::regex attrib_matcher;
+	const boost::regex is_quoted;
+
+public:
+	SrtTagParser();
+
+	std::string ToAss(std::string srt);
+};
 
 class SRTSubtitleFormat final : public SubtitleFormat {
 	std::string ConvertTags(const AssDialogue *diag) const;

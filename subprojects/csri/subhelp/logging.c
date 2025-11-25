@@ -79,15 +79,17 @@ void subhelp_vlog(enum csri_logging_severity severity,
 	buffer = (char *)malloc(256);
 	while (buffer) {
 		n = vsnprintf(buffer, size, msg, args);
+		if (n < 0)
+			break; 	// Error
 		if (n >= 0 && (unsigned)n < size)
-			break;
-		size = n > 0 ? (size_t)n + 1 : size * 2;
+			break; 	// Done
+		size = (size_t)n + 1;
 		char* old_buffer = buffer;
 		buffer = (char *)realloc(old_buffer, size);
 		if (!buffer)
 			free(old_buffer);
 	}
-	final = buffer ? buffer : "<out of memory in logging function>";
+	final = buffer ? (n < 0 ? "<failed to format string in logging function>" : buffer) : "<out of memory in logging function>";
 	subhelp_slog(severity, final);
 	if (buffer)
 		free(buffer);

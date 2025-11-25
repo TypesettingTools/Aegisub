@@ -24,7 +24,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 
 TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
-: file(new agi::io::Save(filename, true))
+: file(filename, true)
 {
 	if (encoding.empty())
 		encoding = OPT_GET("App/Save Charset")->GetString();
@@ -43,16 +43,16 @@ TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encodi
 }
 
 // Explicit empty destructor required with a unique_ptr to an incomplete class
-TextFileWriter::~TextFileWriter() = default;
+TextFileWriter::~TextFileWriter() noexcept(false) = default;
 
 void TextFileWriter::WriteLineToFile(std::string_view line, bool addLineBreak) {
 	if (conv) {
 		auto converted = conv->Convert(line);
-		file->Get().write(converted.data(), converted.size());
+		file.Get().write(converted.data(), converted.size());
 	}
 	else
-		file->Get().write(line.data(), line.size());
+		file.Get().write(line.data(), line.size());
 
 	if (addLineBreak)
-		file->Get().write(newline.data(), newline.size());
+		file.Get().write(newline.data(), newline.size());
 }

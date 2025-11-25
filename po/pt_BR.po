@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-02 21:53+0100\n"
-"PO-Revision-Date: 2024-12-25 20:26-0300\n"
+"PO-Revision-Date: 2025-06-26 12:46-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary, Tenebris Magi\n"
 "Language: pt_BR\n"
@@ -12,11 +12,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 3.4.2\n"
+"X-Generator: Poedit 3.6\n"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
-msgstr ""
+msgstr "Detectar a direção automaticamente (libass apenas)"
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
@@ -355,27 +355,27 @@ msgstr "Verifique se existe uma nova versão do Aegisub disponível"
 
 #: ../src/command/app.cpp:270 ../src/command/app.cpp:271
 msgid "Minimize"
-msgstr ""
+msgstr "Minimizar"
 
 #: ../src/command/app.cpp:272
 msgid "Minimize the active window"
-msgstr ""
+msgstr "Minimiza a janela ativa"
 
 #: ../src/command/app.cpp:281 ../src/command/app.cpp:282
 msgid "Zoom"
-msgstr ""
+msgstr "Zoom"
 
 #: ../src/command/app.cpp:283
 msgid "Maximize the active window"
-msgstr ""
+msgstr "Maximiza a janela ativa"
 
 #: ../src/command/app.cpp:292 ../src/command/app.cpp:293
 msgid "Bring All to Front"
-msgstr ""
+msgstr "Trazer Todos para Frente"
 
 #: ../src/command/app.cpp:294
 msgid "Bring forward all open documents to the front"
-msgstr ""
+msgstr "Traz todos os documentos abertos para frente"
 
 #: ../src/command/audio.cpp:65
 msgid "&Close Audio"
@@ -453,11 +453,11 @@ msgstr "Exibe áudio como um espectrógrafo de frequência-potência"
 
 #: ../src/command/audio.cpp:148
 msgid "&Waveform Display"
-msgstr "Forma de &Onda"
+msgstr "&Onda"
 
 #: ../src/command/audio.cpp:149
 msgid "Waveform Display"
-msgstr "Forma de Onda"
+msgstr "Onda"
 
 #: ../src/command/audio.cpp:150
 msgid "Display audio as a linear amplitude graph"
@@ -1316,7 +1316,7 @@ msgstr "Alternar o Modo de Exibição de Tags"
 
 #: ../src/command/grid.cpp:255
 msgid "Cycle through tag hiding modes"
-msgstr "Alterne entre os modos de exibição de tags"
+msgstr "Alterna entre os modos de exibição de tags"
 
 #: ../src/command/grid.cpp:265
 msgid "ASS Override Tag mode set to show full tags."
@@ -1812,7 +1812,7 @@ msgstr "deslocar ao quadro"
 
 #: ../src/command/time.cpp:153
 msgid "S&hift Times..."
-msgstr "Deslocar &Sincronização..."
+msgstr "Ajustar &Sincronização..."
 
 #: ../src/command/time.cpp:154 ../src/dialog_shift_times.cpp:134
 msgid "Shift Times"
@@ -2025,11 +2025,11 @@ msgstr "Seleciona linhas baseado no critério definido"
 
 #: ../src/command/tool.cpp:93
 msgid "&Resample Resolution..."
-msgstr "&Redimensionar a Resolução..."
+msgstr "&Redimensionar Resolução..."
 
 #: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:90
 msgid "Resample Resolution"
-msgstr "Redimensionar a Resolução"
+msgstr "Redimensionar Resolução"
 
 #: ../src/command/tool.cpp:95
 msgid ""
@@ -2333,13 +2333,15 @@ msgstr ""
 
 #: ../src/command/video.cpp:321 ../src/command/video.cpp:322
 msgid "Copy image to Clipboard (only subtitles)"
-msgstr ""
+msgstr "Copiar imagem para a Área de Transferência (apenas legendas)"
 
 #: ../src/command/video.cpp:323
 msgid ""
 "Copy the currently displayed subtitles to the clipboard, with transparent "
 "background"
 msgstr ""
+"Copia as legendas exibidas atualmente para a área de transferência, com um "
+"fundo transparente"
 
 #: ../src/command/video.cpp:332 ../src/command/video.cpp:333
 msgid "Next Frame"
@@ -2423,13 +2425,15 @@ msgstr ""
 
 #: ../src/command/video.cpp:534 ../src/command/video.cpp:535
 msgid "Save PNG snapshot (only subtitles)"
-msgstr ""
+msgstr "Salvar imagem em PNG (apenas legendas)"
 
 #: ../src/command/video.cpp:536
 msgid ""
 "Save the currently displayed subtitles with transparent background to a PNG "
 "file in the video's directory"
 msgstr ""
+"Copia as legendas exibidas atualmente para um arquivo PNG no diretório do "
+"vídeo, com um fundo transparente"
 
 #: ../src/command/video.cpp:546
 msgid "&Jump to..."
@@ -3192,7 +3196,7 @@ msgstr "Padrão de tela"
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
 msgid "* An error occurred when enumerating the used fonts: %s.\n"
-msgstr ""
+msgstr "* Ocorreu um erro ao enumerar as fontes utilizadas: %s.\n"
 
 #: ../src/dialog_fonts_collector.cpp:115
 msgid "Symlinking fonts to folder...\n"
@@ -3631,8 +3635,8 @@ msgid "Margin offset"
 msgstr "Deslocamento de margens"
 
 #: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
-msgid "x"
-msgstr "x"
+msgid "×"
+msgstr "×"
 
 #: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
 msgid "YCbCr Matrix:"
@@ -3875,7 +3879,7 @@ msgstr "&Tempo: "
 
 #: ../src/dialog_shift_times.cpp:144
 msgid "Shift by time"
-msgstr "Deslocar por tempo"
+msgstr "Ajustar por tempo"
 
 #: ../src/dialog_shift_times.cpp:147
 msgid "&Frames: "
@@ -3883,7 +3887,7 @@ msgstr "&Quadros: "
 
 #: ../src/dialog_shift_times.cpp:148
 msgid "Shift by frames"
-msgstr "Deslocar por quadros"
+msgstr "Ajustar por quadros"
 
 #: ../src/dialog_shift_times.cpp:152
 msgid "Enter time in h:mm:ss.cs notation"
@@ -3891,11 +3895,11 @@ msgstr "Insira tempo em formato h:mm:ss.cs"
 
 #: ../src/dialog_shift_times.cpp:155
 msgid "Enter number of frames to shift by"
-msgstr "Insira a quantidade de quadros pelo qual deslocar"
+msgstr "Insira a quantidade de quadros pelo qual ajustar"
 
 #: ../src/dialog_shift_times.cpp:157
 msgid "For&ward"
-msgstr "Para &Frente"
+msgstr "&Avançar"
 
 #: ../src/dialog_shift_times.cpp:158
 msgid ""
@@ -3907,7 +3911,7 @@ msgstr ""
 
 #: ../src/dialog_shift_times.cpp:160
 msgid "&Backward"
-msgstr "Para &Trás"
+msgstr "&Retroceder"
 
 #: ../src/dialog_shift_times.cpp:161
 msgid ""
@@ -4735,12 +4739,12 @@ msgstr "Lembre-me novamente em uma &semana"
 
 #: ../src/dialog_version_check.cpp:295
 msgid "Curl could not be initialized."
-msgstr ""
+msgstr "Não foi possível inicializar o Curl."
 
 #: ../src/dialog_version_check.cpp:317
 #, c-format
 msgid "Checking for updates failed: %s."
-msgstr ""
+msgstr "A verificação de atualizações falhou: %s."
 
 #: ../src/dialog_version_check.cpp:345
 msgid "An update to Aegisub was found."
@@ -4820,15 +4824,15 @@ msgid ""
 "The resolution of the loaded video and the resolution specified for the "
 "subtitles don't match.\n"
 "\n"
-"Video resolution:\t%d x %d\n"
-"Script resolution:\t%d x %d\n"
+"Video resolution:\t%d × %d\n"
+"Script resolution:\t%d × %d\n"
 "\n"
 "Change subtitles resolution to match video?"
 msgstr ""
 "A resolução do vídeo e a das legendas não coincidem.\n"
 "\n"
-"Resolução do vídeo:\t%d x %d\n"
-"Resolução do script:\t%d x %d\n"
+"Resolução do vídeo:\t%d × %d\n"
+"Resolução do script:\t%d × %d\n"
 "\n"
 "Deseja ajustar a resolução das legendas para coincidir com a do vídeo?"
 
@@ -4951,7 +4955,7 @@ msgstr "Estilo '%s' não existe\n"
 #: ../src/font_file_lister.cpp:154
 #, c-format
 msgid "Font '%s' is used in a drawing, but not in any text.\n"
-msgstr ""
+msgstr "Fonte '%s' é utilizada em um desenho, mas não em texto.\n"
 
 #: ../src/font_file_lister.cpp:160
 #, c-format
@@ -4966,7 +4970,7 @@ msgstr "Encontrou '%s' em '%s'\n"
 #: ../src/font_file_lister.cpp:174
 #, c-format
 msgid "'%s' does not have a bold variant.\n"
-msgstr "A fonte '%s' não possui uma variação em negrito.\n"
+msgstr "'%s' não possui uma variação em negrito.\n"
 
 #: ../src/font_file_lister.cpp:176
 #, c-format
@@ -5423,7 +5427,7 @@ msgstr "Sobrescrever nas caixas de tempo"
 
 #: ../src/preferences.cpp:211
 msgid "Shift+Enter adds \\n"
-msgstr ""
+msgstr "Shift+Enter insere \\n"
 
 #: ../src/preferences.cpp:212
 msgid "Enable syntax highlighting"
@@ -5475,7 +5479,7 @@ msgstr "Símbolo de tags na grade de linhas"
 
 #: ../src/preferences.cpp:230
 msgid "Skip over whitespace"
-msgstr ""
+msgstr "Pular espaços em branco"
 
 #: ../src/preferences.cpp:245
 msgid "Audio Display"
@@ -5519,19 +5523,19 @@ msgstr "Comentários"
 
 #: ../src/preferences.cpp:257
 msgid "Drawing Commands"
-msgstr ""
+msgstr "Comandos de Desenho"
 
 #: ../src/preferences.cpp:258
 msgid "Drawing X Coords"
-msgstr ""
+msgstr "Desenho - Coordenadas X"
 
 #: ../src/preferences.cpp:259
 msgid "Drawing Y Coords"
-msgstr ""
+msgstr "Desenho - Coordenadas Y"
 
 #: ../src/preferences.cpp:260
 msgid "Underline Spline Endpoints"
-msgstr ""
+msgstr "Sublinhamento Pontos Finais de Spline"
 
 #: ../src/preferences.cpp:262
 msgid "Brackets"
@@ -5575,7 +5579,7 @@ msgstr "Espectro"
 
 #: ../src/preferences.cpp:279
 msgid "Waveform"
-msgstr "Forma de Onda"
+msgstr "Onda"
 
 #: ../src/preferences.cpp:281
 msgid "Subtitle Grid"
@@ -5635,31 +5639,31 @@ msgstr "Erro de CPS"
 
 #: ../src/preferences.cpp:296
 msgid "Visual Typesetting Tools"
-msgstr ""
+msgstr "Ferramentas de Composição Visual"
 
 #: ../src/preferences.cpp:297
 msgid "Primary Lines"
-msgstr ""
+msgstr "Linhas Primárias"
 
 #: ../src/preferences.cpp:298
 msgid "Secondary Lines"
-msgstr ""
+msgstr "Linhas Secundárias"
 
 #: ../src/preferences.cpp:299
 msgid "Primary Highlight"
-msgstr ""
+msgstr "Destaque Primário"
 
 #: ../src/preferences.cpp:300
 msgid "Secondary Highlight"
-msgstr ""
+msgstr "Destaque Secundário"
 
 #: ../src/preferences.cpp:303
 msgid "Visual Typesetting Tools Alpha"
-msgstr ""
+msgstr "Ferramentas de Composição Visual - Transparência"
 
 #: ../src/preferences.cpp:304
 msgid "Shaded Area"
-msgstr ""
+msgstr "Área de oclusão"
 
 #: ../src/preferences.cpp:313
 msgid "Backup"
@@ -5816,27 +5820,27 @@ msgstr "Qualidade"
 
 #: ../src/preferences.cpp:393
 msgid "Compressed"
-msgstr ""
+msgstr "Comprimido"
 
 #: ../src/preferences.cpp:393
 msgid "Extended"
-msgstr ""
+msgstr "Extendido"
 
 #: ../src/preferences.cpp:393
 msgid "Linear"
-msgstr ""
+msgstr "Linear"
 
 #: ../src/preferences.cpp:393
 msgid "Logarithmic"
-msgstr ""
+msgstr "Logarítmico"
 
 #: ../src/preferences.cpp:393
 msgid "Medium"
-msgstr ""
+msgstr "Médio"
 
 #: ../src/preferences.cpp:395
 msgid "Frequency mapping"
-msgstr ""
+msgstr "Mapeamento da frequência"
 
 #: ../src/preferences.cpp:397
 msgid "Cache memory max (MB)"
@@ -5932,7 +5936,7 @@ msgstr "Restaurar padrões?"
 
 #: ../src/preferences.cpp:715
 msgid "Preferences"
-msgstr "Preferências"
+msgstr "Opções"
 
 #: ../src/preferences.cpp:743
 msgid "&Restore Defaults"
@@ -6453,27 +6457,27 @@ msgstr "Organizar Linhas Selecionadas"
 
 #: default_menu.json:0
 msgid "Window"
-msgstr ""
+msgstr "Janela"
 
 #: default_menu.json:0
 msgid "Open..."
-msgstr ""
+msgstr "Abrir..."
 
 #: default_menu.json:0
 msgid "Open Recent"
-msgstr ""
+msgstr "Abrir Recente"
 
 #: default_menu.json:0
 msgid "Save"
-msgstr ""
+msgstr "Salvar"
 
 #: default_menu.json:0
 msgid "Save As..."
-msgstr ""
+msgstr "Salvar Como..."
 
 #: default_menu.json:0
 msgid "Export As..."
-msgstr ""
+msgstr "Exportar Como..."
 
 #: default_hotkey.json:244:
 msgid "Subtitle Edit Box"
@@ -6558,11 +6562,12 @@ msgstr "Converte letras em Latim em letras SJIS de largura total"
 
 #: ../automation/autoload/select-overlaps.moon:17
 msgid "Select overlaps"
-msgstr ""
+msgstr "Selecionar sobrepostas"
 
 #: ../automation/autoload/select-overlaps.moon:18
 msgid "Select lines which begin while another non-comment line is active"
 msgstr ""
+"Seleciona as linhas cujos inícios coincidem com linhas não-comentadas ativas"
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
@@ -6587,15 +6592,15 @@ msgstr "Editor de Legendas"
 
 #: ../packages/desktop/aegisub.desktop.in.in:6
 msgid "Create and edit subtitles for film and videos."
-msgstr "Cria e modifica legendas para filmes e vídeos."
+msgstr "Crie e modifique legendas para filmes e vídeos."
 
 #: ../packages/desktop/aegisub.desktop.in.in:12
 msgid "subtitles;subtitle;captions;captioning;video;audio;"
-msgstr ""
+msgstr "legendas;legenda;vídeo;áudio;"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
 msgid "Create and modify subtitles"
-msgstr ""
+msgstr "Crie e modifique legendas"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:9
 msgid ""
@@ -6604,6 +6609,11 @@ msgid ""
 "audio, and features many powerful tools for styling them, including a built-"
 "in real-time video preview."
 msgstr ""
+"O Aegisub é uma ferramenta gratuita, de código aberto e multiplataforma para "
+"criar e modificar legendas. Ele facilita e agiliza o processo de "
+"sincronização de legendas com áudio, oferecendo diversas ferramentas "
+"avançadas de estilização, incluindo uma pré-visualização de vídeo em tempo "
+"real integrada."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:10
 msgid ""
@@ -6615,6 +6625,14 @@ msgid ""
 "unrelated to Aegisub) many vital functions, or were too buggy and/or "
 "unreliable to be really useful."
 msgstr ""
+"O Aegisub foi criado originalmente como uma ferramenta para tornar o "
+"typesetting — especialmente em fansubs de anime — uma experiência menos "
+"trabalhosa. Na época em que o projeto começou, muitos outros programas que "
+"suportavam o formato Advanced Substation Alpha careciam de diversas funções "
+"essenciais (e, em muitos casos, ainda carecem; o desenvolvimento de vários "
+"programas concorrentes foi abandonado por motivos totalmente alheios ao "
+"Aegisub), ou eram instáveis e com muitos bugs, o que os tornava pouco úteis "
+"na prática."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:11
 msgid ""
@@ -6625,46 +6643,53 @@ msgid ""
 "for creating karaoke effects, Automation can now be used much else, "
 "including creating macros and various other convenient tools)."
 msgstr ""
+"Desde então, o Aegisub evoluiu para um editor de legendas completo e "
+"altamente personalizável. Ele oferece diversas ferramentas práticas para "
+"auxiliar na sincronização, composição visual, edição e tradução de legendas, "
+"além de um poderoso ambiente de scripts chamado Automação (originalmente "
+"criado principalmente para efeitos de karaokê, a Automação agora pode ser "
+"usado para muitas outras finalidades, incluindo a criação de macros e "
+"diversas ferramentas adicionais)."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:12
 msgid "Some highlights of Aegisub:"
-msgstr ""
+msgstr "Alguns destaques do Aegisub:"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:14
 msgid "Simple and intuitive yet powerful interface for editing subtitles"
-msgstr ""
+msgstr "Interface simples e intuitiva, mas poderosa, para edição de legendas"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:15
 msgid "Support for many formats and character sets"
-msgstr ""
+msgstr "Suporte a diversos formatos e conjuntos de caracteres"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:16
 msgid "Powerful video mode"
-msgstr ""
+msgstr "Modo de vídeo avançado"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:17
 msgid "Visual typesetting tools"
-msgstr ""
+msgstr "Ferramentas para composição visual"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:18
 msgid "Intuitive and customizable audio timing mode"
-msgstr ""
+msgstr "Modo de sincronização de áudio intuitivo e personalizável"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:19
 msgid "Fully scriptable through the Automation module"
-msgstr ""
+msgstr "Totalmente programável por meio do módulo de Automação"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:43
 msgid "Typesetting"
-msgstr ""
+msgstr "Composição visual"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:47
 msgid "Audio video"
-msgstr ""
+msgstr "Áudio vídeo"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
-msgstr ""
+msgstr "Sincronização de áudio"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Installing runtime libraries..."

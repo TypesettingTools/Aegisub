@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: ca\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-02-02 21:53+0100\n"
-"PO-Revision-Date: 2025-02-15 22:57+0100\n"
+"PO-Revision-Date: 2025-10-14 18:52+0000\n"
 "Last-Translator: Eduard Ereza Martínez <eduard@ereza.cat>\n"
 "Language-Team: \n"
 "Language: ca\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
-msgstr ""
+msgstr "Detecta automàticament la direcció base (només libass)"
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
@@ -253,7 +253,7 @@ msgstr "Visualització del &vídeo i els subtítols"
 
 #: ../src/command/app.cpp:124
 msgid "Video+Subs View"
-msgstr "Visualització dels vídeo i els subtítols"
+msgstr "Visualització del vídeo i els subtítols"
 
 #: ../src/command/app.cpp:125
 msgid "Display video and the subtitles grid only"
@@ -690,8 +690,8 @@ msgid ""
 "Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan "
 "autoload folder and reload all automation scripts"
 msgstr ""
-"Obre el gestor de l’automatització. Control: Torna a escanejar la carpeta de "
-"càrrega automàtica. Control+Maj: Torna a escanejar la carpeta de càrrega "
+"Obre el gestor de l’automatització. Ctrl: Torna a escanejar la carpeta de "
+"càrrega automàtica. Ctrl+Maj: Torna a escanejar la carpeta de càrrega "
 "automàtica i recarrega tots els scripts d’automatització"
 
 #: ../src/command/command.cpp:35
@@ -1140,7 +1140,7 @@ msgstr "Esborra el text de la línia actual"
 
 #: ../src/command/edit.cpp:1230 ../src/command/edit.cpp:1249
 msgid "clear line"
-msgstr "l’esborrat de la línia"
+msgstr "l’esborrament de la línia"
 
 #: ../src/command/edit.cpp:1237 ../src/command/edit.cpp:1238
 msgid "Clear Text"
@@ -1619,15 +1619,15 @@ msgstr ""
 
 #: ../src/command/subtitle.cpp:238
 msgid "&New Subtitles"
-msgstr "&Nous subtítols"
+msgstr "Subtítols &nous"
 
 #: ../src/command/subtitle.cpp:239
 msgid "New Subtitles"
-msgstr "Nous subtítols"
+msgstr "Subtítols nous"
 
 #: ../src/command/subtitle.cpp:240
 msgid "New subtitles"
-msgstr "Nous subtítols"
+msgstr "Subtítols nous"
 
 #: ../src/command/subtitle.cpp:255 ../src/command/subtitle.cpp:256
 #: ../src/command/subtitle.cpp:257 ../src/dialog_progress.cpp:175
@@ -2085,7 +2085,6 @@ msgid "Preview changes"
 msgstr "Previsualitza els canvis"
 
 #: ../src/command/tool.cpp:140 ../src/command/tool.cpp:224
-#, fuzzy
 msgid "Commit changes and stay on the current line"
 msgstr "Aplica els canvis i roman a la línia actual"
 
@@ -2345,13 +2344,15 @@ msgstr ""
 
 #: ../src/command/video.cpp:321 ../src/command/video.cpp:322
 msgid "Copy image to Clipboard (only subtitles)"
-msgstr ""
+msgstr "Copia la imatge al porta-retalls (només els subtítols)"
 
 #: ../src/command/video.cpp:323
 msgid ""
 "Copy the currently displayed subtitles to the clipboard, with transparent "
 "background"
 msgstr ""
+"Copia els subtítols que es mostren actualment al porta-retalls, amb un fons "
+"transparent"
 
 #: ../src/command/video.cpp:332 ../src/command/video.cpp:333
 msgid "Next Frame"
@@ -2436,13 +2437,15 @@ msgstr ""
 
 #: ../src/command/video.cpp:534 ../src/command/video.cpp:535
 msgid "Save PNG snapshot (only subtitles)"
-msgstr ""
+msgstr "Desa una captura PNG (només els subtítols)"
 
 #: ../src/command/video.cpp:536
 msgid ""
 "Save the currently displayed subtitles with transparent background to a PNG "
 "file in the video's directory"
 msgstr ""
+"Desa els subtítols que es mostren actualment amb un fons transparent en un "
+"fitxer PNG al directori del vídeo"
 
 #: ../src/command/video.cpp:546
 msgid "&Jump to..."
@@ -3203,7 +3206,7 @@ msgstr "Estàndard de visualització"
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
 msgid "* An error occurred when enumerating the used fonts: %s.\n"
-msgstr ""
+msgstr "* S’ha produït un error en enumerar les fonts utilitzades: %s.\n"
 
 #: ../src/dialog_fonts_collector.cpp:115
 msgid "Symlinking fonts to folder...\n"
@@ -3637,8 +3640,8 @@ msgid "Margin offset"
 msgstr "Compensació del marge"
 
 #: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
-msgid "x"
-msgstr "x"
+msgid "×"
+msgstr "×"
 
 #: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
 msgid "YCbCr Matrix:"
@@ -4009,7 +4012,7 @@ msgstr "L’Aegisub no ha trobat cap errada ortogràfica en aquest script."
 
 #: ../src/dialog_spellchecker.cpp:329 ../src/dialog_spellchecker.cpp:343
 msgid "spell check replace"
-msgstr "la substitució del correcció ortogràfic"
+msgstr "la substitució del corrector ortogràfic"
 
 #: ../src/dialog_style_editor.cpp:127
 msgid "Style Editor"
@@ -4061,7 +4064,7 @@ msgstr "Alineació"
 
 #: ../src/dialog_style_editor.cpp:208
 msgid "&Opaque box"
-msgstr "Capsa &opaca"
+msgstr "Caixa &opaca"
 
 #: ../src/dialog_style_editor.cpp:216
 msgid "Style name"
@@ -4101,14 +4104,14 @@ msgstr "Distància fins a la vora dreta, en píxels"
 
 #: ../src/dialog_style_editor.cpp:225
 msgid "Distance from top/bottom edge, in pixels"
-msgstr "Distància fins la vora superior/inferior, en píxels"
+msgstr "Distància fins a la vora superior/inferior, en píxels"
 
 #: ../src/dialog_style_editor.cpp:226
 msgid ""
 "When selected, display an opaque box behind the subtitles instead of an "
 "outline around the text"
 msgstr ""
-"Quan estigui seleccionat, es mostrarà una capsa opaca darrere dels subtítols "
+"Quan estigui seleccionat, es mostrarà una caixa opaca darrere dels subtítols "
 "en lloc d’un contorn al voltant del text"
 
 #: ../src/dialog_style_editor.cpp:227
@@ -4572,7 +4575,8 @@ msgid ""
 "Enable snapping of subtitles together if they are within a certain distance "
 "of each other"
 msgstr ""
-"Activa que els subtítols  si estan a una certa distància l’un de l’altre"
+"Activa que els subtítols s’ajustin si estan a una certa distància l’un de "
+"l’altre"
 
 #: ../src/dialog_timing_processor.cpp:195
 msgid "Max gap:"
@@ -4588,14 +4592,14 @@ msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:197
 msgid "Max overlap:"
-msgstr "Sobreposició màxima:"
+msgstr "Encavalcament màxim:"
 
 #: ../src/dialog_timing_processor.cpp:198
 msgid ""
 "Maximum overlap between the end and start time for two subtitles to be made "
 "continuous, in milliseconds"
 msgstr ""
-"Sobreposició màxima entre el temps de final i d’inici de dos subtítols "
+"Encavalcament màxim entre el temps de final i d’inici de dos subtítols "
 "perquè es facin continus, en mil·lisegons"
 
 #: ../src/dialog_timing_processor.cpp:201
@@ -4741,7 +4745,7 @@ msgstr "Recorda-m’ho d’aquí a una &setmana"
 
 #: ../src/dialog_version_check.cpp:295
 msgid "Curl could not be initialized."
-msgstr "No s’ha pogut initialitzar el Curl."
+msgstr "No s’ha pogut inicialitzar el Curl."
 
 #: ../src/dialog_version_check.cpp:317
 #, c-format
@@ -4827,16 +4831,16 @@ msgid ""
 "The resolution of the loaded video and the resolution specified for the "
 "subtitles don't match.\n"
 "\n"
-"Video resolution:\t%d x %d\n"
-"Script resolution:\t%d x %d\n"
+"Video resolution:\t%d × %d\n"
+"Script resolution:\t%d × %d\n"
 "\n"
 "Change subtitles resolution to match video?"
 msgstr ""
 "La resolució del vídeo carregat i la resolució especificada als subtítols no "
 "coincideixen.\n"
 "\n"
-"Resolució del vídeo: %d x %d\n"
-"Resolució de l’script: %d x %d\n"
+"Resolució del vídeo: %d × %d\n"
+"Resolució de l’script: %d × %d\n"
 "\n"
 "Voleu canviar la resolució dels subtítols perquè coincideixi amb la del "
 "vídeo?"
@@ -4875,7 +4879,7 @@ msgid ""
 "Default."
 msgstr ""
 "Arregla els estils substituint qualsevol estil que no estigui disponible al "
-"fitxer per Default."
+"fitxer per «Default»."
 
 #: ../src/export_framerate.cpp:52
 msgid "Transform Framerate"
@@ -4891,8 +4895,8 @@ msgid ""
 "It can also be used to convert subtitles to a different speed video, such as "
 "NTSC to PAL speedup."
 msgstr ""
-"Transforma els temps dels subtítols, incloent els de les etiquetes d’estils, "
-"d’una taxa de fotogrames a una altra.\n"
+"Transforma els temps dels subtítols, incloent-hi els de les etiquetes d’"
+"estils, d’una taxa de fotogrames a una altra.\n"
 "\n"
 "Això serveix si convertiu uns subtítols per temps normals a subtítols per "
 "temps VFRaC per a incrustar-los al vídeo.\n"
@@ -5174,7 +5178,7 @@ msgstr "Mostra la barra d’eines principal"
 
 #: ../src/preferences.cpp:68
 msgid "Save UI state in subtitles files"
-msgstr "Desa l’estat de la IU als fitxers de subtítols"
+msgstr "Desa l’estat de la interfície d’usuari als fitxers de subtítols"
 
 #: ../src/preferences.cpp:71
 msgid "Toolbar Icon Size"
@@ -5230,7 +5234,7 @@ msgstr ""
 
 #: ../src/preferences.cpp:116
 msgid "New files"
-msgstr "Nous fitxers"
+msgstr "Fitxers nous"
 
 #: ../src/preferences.cpp:117
 msgid "MicroDVD import"
@@ -5322,7 +5326,7 @@ msgstr "Mostra les línies inactives"
 
 #: ../src/preferences.cpp:148
 msgid "Include commented inactive lines"
-msgstr "Inclou les les línies inactives comentades"
+msgstr "Inclou les línies inactives comentades"
 
 #: ../src/preferences.cpp:150
 msgid "Display Visual Options"
@@ -5418,7 +5422,7 @@ msgstr "Interfície"
 
 #: ../src/preferences.cpp:208
 msgid "Edit Box"
-msgstr "Capsa d’edició"
+msgstr "Caixa d’edició"
 
 #: ../src/preferences.cpp:209
 msgid "Enable call tips"
@@ -5430,7 +5434,7 @@ msgstr "Sobreescriptura a les capses de temps"
 
 #: ../src/preferences.cpp:211
 msgid "Shift+Enter adds \\n"
-msgstr ""
+msgstr "Maj+Retorn afegeix \\n"
 
 #: ../src/preferences.cpp:212
 msgid "Enable syntax highlighting"
@@ -5526,19 +5530,19 @@ msgstr "Comentaris"
 
 #: ../src/preferences.cpp:257
 msgid "Drawing Commands"
-msgstr ""
+msgstr "Ordres de dibuix"
 
 #: ../src/preferences.cpp:258
 msgid "Drawing X Coords"
-msgstr ""
+msgstr "Coordenades X del dibuix"
 
 #: ../src/preferences.cpp:259
 msgid "Drawing Y Coords"
-msgstr ""
+msgstr "Coordenades Y del dibuix"
 
 #: ../src/preferences.cpp:260
 msgid "Underline Spline Endpoints"
-msgstr ""
+msgstr "Subratlla els extrems dels splines"
 
 #: ../src/preferences.cpp:262
 msgid "Brackets"
@@ -5666,7 +5670,7 @@ msgstr "Alfa de les eines de definició d’estils visuals"
 
 #: ../src/preferences.cpp:304
 msgid "Shaded Area"
-msgstr "Àrea d’ombrejat"
+msgstr "Àrea d’ombreig"
 
 #: ../src/preferences.cpp:313
 msgid "Backup"
@@ -5827,7 +5831,7 @@ msgstr "Comprimit"
 
 #: ../src/preferences.cpp:393
 msgid "Extended"
-msgstr "Extès"
+msgstr "Estès"
 
 #: ../src/preferences.cpp:393
 msgid "Linear"
@@ -6035,7 +6039,7 @@ msgstr ""
 
 #: ../src/resolution_resampler.cpp:288
 msgid "resolution resampling"
-msgstr "el reajust de resolució"
+msgstr "el reajustament de resolució"
 
 #: ../src/search_replace_engine.cpp:189 ../src/search_replace_engine.cpp:273
 msgid "replace"
@@ -6273,7 +6277,7 @@ msgstr "15,000 FPS"
 
 #: ../src/subtitle_format.cpp:111
 msgid "23.976 FPS (Decimated NTSC)"
-msgstr "23,976 FPS (NTSC decimat)"
+msgstr "23,976 FPS (NTSC amb reducció de camps)"
 
 #: ../src/subtitle_format.cpp:112
 msgid "24.000 FPS (FILM)"
@@ -6487,7 +6491,7 @@ msgstr "Exporta com a..."
 
 #: default_hotkey.json:244:
 msgid "Subtitle Edit Box"
-msgstr "Capsa d’edició dels subtítols"
+msgstr "Caixa d’edició dels subtítols"
 
 #: ../automation/autoload/cleantags-autoload.lua:31
 msgid "Clean Tags"
@@ -6568,11 +6572,13 @@ msgstr "Converteix les lletres llatines a lletres SJIS d’amplada completa"
 
 #: ../automation/autoload/select-overlaps.moon:17
 msgid "Select overlaps"
-msgstr ""
+msgstr "Selecciona els encavalcaments"
 
 #: ../automation/autoload/select-overlaps.moon:18
 msgid "Select lines which begin while another non-comment line is active"
 msgstr ""
+"Selecciona les línies que comencin mentre una altra línia que no sigui un "
+"comentari estigui activa"
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
@@ -6605,7 +6611,7 @@ msgstr "subtítols;subtítol;subtitulació;subtitular;vídeo;àudio;"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
 msgid "Create and modify subtitles"
-msgstr ""
+msgstr "Creeu i modifiqueu subtítols"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:9
 msgid ""
@@ -6634,7 +6640,7 @@ msgstr ""
 "començar el projecte, molts altres programes que admetien el format Advanced "
 "Substation Alpha no tenien (i en molts casos, encara és així: el "
 "desenvolupament de diversos programes competidors s’ha aturat per motius "
-"diversos i gens relacionts amb l’Aegisub) moltes funcions vitals, tenien "
+"diversos i gens relacionats amb l’Aegisub) moltes funcions vitals, tenien "
 "massa errors o no eren prou fiables per a ser útils."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:11
@@ -6720,19 +6726,9 @@ msgid ""
 "no warranties of any kind are given either.%n%nSee the Aegisub website for "
 "information on obtaining the source code."
 msgstr ""
-"S’instal·larà l’Aegisub {#BUILD_GIT_VERSION_STRING} al vostre ordinador."
-"%n%nL’Aegisub està cobert per la Llicència Pública General de GNU versió 2. "
-"Això vol dir que podeu utilitzar l’aplicació per a qualsevol propòsit sense "
-"càrrecs, però també que no es proporciona cap tipus de garantia.%n%nVegeu el "
-"lloc web de l’Aegisub per a obtenir informació sobre com obtenir-ne el codi "
-"font."
-
-#~ msgid "Drawings"
-#~ msgstr "Dibuixos"
-
-#~ msgid ""
-#~ "A free, cross-platform open source tool for creating and modifying "
-#~ "subtitles"
-#~ msgstr ""
-#~ "Una eina gratuïta, de codi lliure i multiplataforma per a crear i "
-#~ "modificar subtítols"
+"S’instal·larà l’Aegisub {#BUILD_GIT_VERSION_STRING} al vostre "
+"ordinador.%n%nL’Aegisub està cobert per la Llicència Pública General de GNU "
+"versió 2. Això vol dir que podeu utilitzar l’aplicació per a qualsevol "
+"propòsit sense càrrecs, però també que no es proporciona cap mena de "
+"garantia.%n%nVegeu el lloc web de l’Aegisub per a obtenir informació sobre "
+"com obtenir-ne el codi font."
