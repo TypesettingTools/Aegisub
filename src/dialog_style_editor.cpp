@@ -169,7 +169,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	// Prepare control values
 	wxString EncodingValue = std::to_wstring(style->encoding);
 	wxString alignValues[9] = { "7", "8", "9", "4", "5", "6", "1", "2", "3" };
-	wxString borderStyleValues[3] = { "Outline", "Border boxes", "Shadow box (libass only)" };
+	wxString borderStyleValues[3] = { _("Outline"), _("Border boxes"), _("Shadow box (libass only)") };
 
 	// Encoding options
 	wxArrayString encodingStrings;
