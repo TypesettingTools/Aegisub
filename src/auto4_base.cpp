@@ -330,10 +330,12 @@ namespace Automation4 {
 		}
 
 		int error_count = 0;
+		int warning_count = 0;		// Count of scripts that have warnings (as opposed to count of all warnings)
 		for (auto& future : script_futures) {
 			auto s = future.get();
 			if (s) {
 				if (!s->GetLoadedState()) ++error_count;
+				if (!s->GetWarnings().empty()) ++warning_count;
 				scripts.emplace_back(std::move(s));
 			}
 		}
@@ -343,6 +345,12 @@ namespace Automation4 {
 		}
 		else if (error_count > 1) {
 			wxLogWarning("Multiple scripts in the Automation autoload directory failed to load.\nPlease review the errors, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again.");
+		}
+		else if (warning_count == 1) {
+			wxLogWarning("A script in the Automation autoload directory loaded with warnings.\nPlease review the warnings, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again.");
+		}
+		else if (warning_count > 1) {
+			wxLogWarning("Multiple scripts in the Automation autoload directory loaded with warnings.\nPlease review the warnings, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again.");
 		}
 
 		ScriptsChanged();
@@ -452,6 +460,9 @@ namespace Automation4 {
 			if (s) {
 				if (!s->GetLoadedState()) {
 					wxLogError(_("Failed to load Automation script '%s':\n%s"), filename.wstring(), to_wx(s->GetDescription()));
+				}
+				for (auto const& warning : s->GetWarnings()) {
+					wxLogWarning(_("Warning when loading Automation script '%s':\n%s"), filename.wstring(), to_wx(warning));
 				}
 				return s;
 			}

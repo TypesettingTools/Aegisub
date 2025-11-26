@@ -44,6 +44,7 @@
 #include "audio_timing.h"
 #include "command/command.h"
 #include "compat.h"
+#include "format.h"
 #include "frame_main.h"
 #include "include/aegisub/context.h"
 #include "options.h"
@@ -54,7 +55,6 @@
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
-#include <libaegisub/format.h>
 #include <libaegisub/lua/ffi.h>
 #include <libaegisub/lua/modules.h>
 #include <libaegisub/lua/script_reader.h>
@@ -151,6 +151,34 @@ namespace {
 	{
 		agi::lua::register_lib_table(L, {}, "get", clipboard_get, "set", clipboard_set);
 		return 1;
+	}
+
+	int raise_warning_onload(lua_State *L)
+	{
+		lua_getfield(L, LUA_REGISTRYINDEX, "warnings");
+		if (lua_isnil(L, -1)) {
+			lua_pop(L, 1);
+			lua_newtable(L);
+			lua_pushvalue(L, -1);
+			lua_setfield(L, LUA_REGISTRYINDEX, "warnings");
+		}
+		lua_pushvalue(L, -2);
+		lua_rawseti(L, -2, lua_objlen(L, -2) + 1);
+		lua_pop(L, 2);
+		return 0;
+	}
+
+	int raise_warning_postload(lua_State *L)
+	{
+		std::string message = check_string(L, -1);
+		lua_pop(L, 1);
+
+		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
+		std::string filename = check_string(L, -1);
+		lua_pop(L, 1);
+
+		wxLogWarning(fmt_tl("Warning in Automation script '%s':\n%s", filename, message));
+		return 0;
 	}
 
 	int frame_from_ms(lua_State *L)
@@ -376,6 +404,8 @@ namespace {
 		std::string author;
 		std::string version;
 
+		std::vector<std::string> warnings;
+
 		std::vector<cmd::Command*> macros;
 		std::vector<std::unique_ptr<ExportFilter>> filters;
 
@@ -404,6 +434,7 @@ namespace {
 		std::string GetAuthor() const override { return author; }
 		std::string GetVersion() const override { return version; }
 		bool GetLoadedState() const override { return L != nullptr; }
+		std::vector<std::string> GetWarnings() const override { return warnings; }
 
 		std::vector<cmd::Command*> GetMacros() const override { return macros; }
 		std::vector<ExportFilter*> GetFilters() const override;
@@ -480,6 +511,7 @@ namespace {
 		set_field<cancel_script>(L, "cancel");
 		set_field(L, "lua_automation_version", 4);
 		set_field<clipboard_init>(L, "__init_clipboard");
+		set_field<raise_warning_onload>(L, "__raise_warning");
 		set_field<get_file_name>(L, "file_name");
 		set_field<get_translation>(L, "gettext");
 		set_field<project_properties>(L, "project_properties");
@@ -531,6 +563,21 @@ namespace {
 
 		lua_pop(L, 1);
 		stackcheck.check_stack(0);
+
+		lua_getfield(L, LUA_REGISTRYINDEX, "warnings");
+		if (!lua_isnil(L, -1)) {
+			lua_for_each(L, [this] {
+				this->warnings.push_back(check_string(L, -1));
+			});
+		} else {
+			lua_pop(L, 1);
+		}
+		lua_getfield(L, LUA_GLOBALSINDEX, "aegisub");
+		set_field<raise_warning_postload>(L, "__raise_warning");
+		lua_pop(L, 1);
+
+		stackcheck.check_stack(0);
+
 		// if we got this far, the script should be ready
 		loaded = true;
 	}
