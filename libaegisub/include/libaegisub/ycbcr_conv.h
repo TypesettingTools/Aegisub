@@ -21,15 +21,15 @@
 
 namespace agi {
 enum class ycbcr_matrix {
-	bt601,
-	bt709,
-	fcc,
-	smpte_240m
+	SMPTE170M,
+	BT709,
+	FCC,
+	SMPTE240M,
 };
 
 enum class ycbcr_range {
-	tv,
-	pc
+	MPEG,	// TV / Limited
+	JPEG,	// PC / Full
 };
 
 /// A converter between YCbCr colorspaces and RGB

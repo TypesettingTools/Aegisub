@@ -202,11 +202,11 @@ namespace {
 
 	agi::ycbcr_matrix matrix(YCbCrMatrix mat) {
 		switch (mat) {
-			case YCbCrMatrix::rgb: return agi::ycbcr_matrix::bt601;
-			case YCbCrMatrix::tv_601:  case YCbCrMatrix::pc_601:  return agi::ycbcr_matrix::bt601;
-			case YCbCrMatrix::tv_709:  case YCbCrMatrix::pc_709:  return agi::ycbcr_matrix::bt709;
-			case YCbCrMatrix::tv_fcc:  case YCbCrMatrix::pc_fcc:  return agi::ycbcr_matrix::fcc;
-			case YCbCrMatrix::tv_240m: case YCbCrMatrix::pc_240m: return agi::ycbcr_matrix::smpte_240m;
+			case YCbCrMatrix::rgb: return agi::ycbcr_matrix::SMPTE170M;
+			case YCbCrMatrix::tv_601:  case YCbCrMatrix::pc_601:  return agi::ycbcr_matrix::SMPTE170M;
+			case YCbCrMatrix::tv_709:  case YCbCrMatrix::pc_709:  return agi::ycbcr_matrix::BT709;
+			case YCbCrMatrix::tv_fcc:  case YCbCrMatrix::pc_fcc:  return agi::ycbcr_matrix::FCC;
+			case YCbCrMatrix::tv_240m: case YCbCrMatrix::pc_240m: return agi::ycbcr_matrix::SMPTE240M;
 		}
 		throw agi::InternalError("Invalid matrix");
 	}
@@ -218,12 +218,12 @@ namespace {
 			case YCbCrMatrix::tv_709:
 			case YCbCrMatrix::tv_fcc:
 			case YCbCrMatrix::tv_240m:
-				return agi::ycbcr_range::tv;
+				return agi::ycbcr_range::MPEG;
 			case YCbCrMatrix::pc_601:
 			case YCbCrMatrix::pc_709:
 			case YCbCrMatrix::pc_fcc:
 			case YCbCrMatrix::pc_240m:
-				return agi::ycbcr_range::pc;
+				return agi::ycbcr_range::JPEG;
 		}
 		throw agi::InternalError("Invalid matrix");
 	}
