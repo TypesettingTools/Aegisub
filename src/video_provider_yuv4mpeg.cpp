@@ -127,7 +127,7 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 
 	agi::vfr::Framerate fps;
 
-	agi::ycbcr_converter conv{agi::ycbcr_matrix::bt601, agi::ycbcr_range::tv};
+	agi::ycbcr_converter conv{agi::ycbcr_matrix::SMPTE170M, agi::ycbcr_range::MPEG};
 
 	/// a list of byte positions detailing where in the file
 	/// each frame header can be found

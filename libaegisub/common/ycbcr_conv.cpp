@@ -54,7 +54,7 @@ void ycbcr_converter::init_src(ycbcr_matrix src_mat, ycbcr_range src_range) {
 		1,          -Kg/(1-Kr), -Kb/(1-Kr),
 	}};
 
-	if (src_range == ycbcr_range::pc) {
+	if (src_range == ycbcr_range::JPEG) {
 		row_mult(to_ycbcr, {{1., .5, .5}});
 		shift_to = {{0, 128., 128.}};
 	}
@@ -75,7 +75,7 @@ void ycbcr_converter::init_dst(ycbcr_matrix dst_mat, ycbcr_range dst_range) {
 		1,  (1-Kb),        0,
 	}};
 
-	if (dst_range == ycbcr_range::pc) {
+	if (dst_range == ycbcr_range::JPEG) {
 		col_mult(from_ycbcr, {{1., 2., 2.}});
 		shift_from = {{0, -128., -128.}};
 	}
