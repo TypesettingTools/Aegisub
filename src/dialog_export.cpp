@@ -199,13 +199,13 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 	}
 	catch (agi::UserCancelException const&) { }
 	catch (agi::Exception const& err) {
-		wxMessageBox(to_wx(err.GetMessage()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
+		wxMessageBox(to_wx(err.GetMessage()), _("Error exporting subtitles"), wxOK | wxICON_ERROR | wxCENTER, &d);
 	}
 	catch (std::exception const& err) {
-		wxMessageBox(to_wx(err.what()), "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
+		wxMessageBox(to_wx(err.what()), _("Error exporting subtitles"), wxOK | wxICON_ERROR | wxCENTER, &d);
 	}
 	catch (...) {
-		wxMessageBox("Unknown error", "Error exporting subtitles", wxOK | wxICON_ERROR | wxCENTER, &d);
+		wxMessageBox(_("Unknown error"), _("Error exporting subtitles"), wxOK | wxICON_ERROR | wxCENTER, &d);
 	}
 
 	d.EndModal(0);

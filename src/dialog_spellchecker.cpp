@@ -140,13 +140,13 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	// List of supported spellchecker languages
 	{
 		if (!spellchecker) {
-			wxMessageBox("No spellchecker available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
+			wxMessageBox(_("No spellchecker available."), _("Error"), wxOK | wxICON_ERROR | wxCENTER);
 			throw agi::UserCancelException("No spellchecker available");
 		}
 
 		dictionary_lang_codes = to_wx(spellchecker->GetLanguageList());
 		if (dictionary_lang_codes.empty()) {
-			wxMessageBox("No spellchecker dictionaries available.", "Error", wxOK | wxICON_ERROR | wxCENTER);
+			wxMessageBox(_("No spellchecker dictionaries available."), _("Error"), wxOK | wxICON_ERROR | wxCENTER);
 			throw agi::UserCancelException("No spellchecker dictionaries available");
 		}
 

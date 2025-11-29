@@ -16,7 +16,7 @@ maybe_append() {
 
 find ../src ../src/command -name '*.cpp' -o -name '*.h' \
   | xgettext --files-from=- -o - --c++ --sort-by-file \
-             -k_ -kSTR_MENU -kSTR_DISP -kSTR_HELP -kCOMMAND_GROUP:5 \
+             -k_ -kwxTRANSLATE -kSTR_MENU -kSTR_DISP -kSTR_HELP -kCOMMAND_GROUP:5 \
              -kfmt_tl -kfmt_plural:2,3 \
   | sed 's/SOME DESCRIPTIVE TITLE./Aegisub 3.2/' \
   | sed 's/YEAR/2005-2014/' \

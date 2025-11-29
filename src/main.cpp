@@ -402,7 +402,7 @@ void AegisubApp::UnhandledException(bool stackWalk) {
 		wxMessageBox(agi::wxformat(exception_message, path), _("Program error"), wxOK | wxICON_ERROR | wxCENTER, nullptr);
 	}
 	else if (LastStartupState) {
-		wxMessageBox(fmt_wx("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR | wxCENTER);
+		wxMessageBox(fmt_tl("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR | wxCENTER);
 	}
 #endif
 }
@@ -417,7 +417,7 @@ void AegisubApp::OnFatalException() {
 
 #define SHOW_EXCEPTION(str) \
 	wxMessageBox(fmt_tl("An unexpected error has occurred. Please save your work and restart Aegisub.\n\nError Message: %s", str), \
-				"Exception in event handler", wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP)
+				_("Exception in event handler"), wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP)
 bool AegisubApp::OnExceptionInMainLoop() {
 	try {
 		throw;

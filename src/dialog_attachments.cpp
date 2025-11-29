@@ -136,7 +136,7 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& commit_ms
 void DialogAttachments::OnAttachFont(wxCommandEvent &) {
 	wxFileDialog diag(&d,
 		_("Choose file to be attached"),
-		to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()), "", "Font Files (*.ttf)|*.ttf",
+		to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()), "", _("Font Files") + " (*.ttf)|*.ttf",
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
 	AttachFile(diag, _("attach font file"));
@@ -146,7 +146,7 @@ void DialogAttachments::OnAttachGraphics(wxCommandEvent &) {
 	wxFileDialog diag(&d,
 		_("Choose file to be attached"),
 		"", "",
-		"Graphic Files (*.bmp, *.gif, *.jpg, *.ico, *.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf",
+		_("Graphic Files") + " (*.bmp, *.gif, *.jpg, *.ico, *.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf",
 		wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE);
 
 	AttachFile(diag, _("attach graphics file"));
@@ -167,7 +167,7 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 			_("Select the path to save the file to:"),
 			"Path/Fonts Collector Destination",
 			ass->Attachments[i].GetFileName(),
-			".ttf", "Font Files (*.ttf)|*.ttf",
+			"", from_wx(_("All Supported Formats") + " (*.bmp, *.gif, *.jpg, *.ico, *.ttf, *.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.ttf;*.wmf|" +  _("Font Files") + " (*.ttf)|*.ttf|" + _("Graphic Files") + " (*.bmp, *.gif, *.jpg, *.ico, *.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf"),
 			&d);
 		fullPath = true;
 	}

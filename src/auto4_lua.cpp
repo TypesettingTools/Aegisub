@@ -455,7 +455,7 @@ namespace {
 		// create lua environment
 		L = luaL_newstate();
 		if (!L) {
-			description = "Could not initialize Lua state";
+			description = from_wx(_("Could not initialize Lua state"));
 			return;
 		}
 
@@ -538,7 +538,7 @@ namespace {
 		// this is where features are registered
 		if (lua_pcall(L, 0, 0, -2)) {
 			// error occurred, assumed to be on top of Lua stack
-			description = agi::format("Error initialising Lua script \"%s\":\n\n%s", GetPrettyFilename().string(), get_string_or_default(L, -1));
+			description = from_wx(fmt_tl("Error initialising Lua script \"%s\":\n\n%s", GetPrettyFilename().string(), get_string_or_default(L, -1)));
 			lua_pop(L, 2); // error + error handler
 			return;
 		}
@@ -548,7 +548,7 @@ namespace {
 		lua_getglobal(L, "version");
 		if (lua_isnumber(L, -1) && lua_tointeger(L, -1) == 3) {
 			lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
-			description = "Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.";
+			description = from_wx(_("Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported."));
 			stackcheck.check_stack(0);
 			return;
 		}
