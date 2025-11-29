@@ -361,7 +361,7 @@ void Advanced(wxTreebook *book, Preferences *parent) {
 
 	auto general = p->PageSizer(_("General"));
 
-	auto warning = new wxStaticText(p, wxID_ANY ,_("Changing these settings might result in bugs and/or crashes.  Do not touch these unless you know what you're doing."));
+	auto warning = new wxStaticText(p, wxID_ANY ,_("Changing these settings might result in bugs and/or crashes. Do not touch these unless you know what you're doing."));
 	auto font = parent->GetFont().MakeBold();
 	font.SetPointSize(12);
 	warning->SetFont(font);
@@ -461,7 +461,7 @@ void Advanced_Video(wxTreebook *book, Preferences *parent) {
 #ifdef WITH_FFMS2
 	auto ffms = p->PageSizer("FFmpegSource");
 
-	const wxString log_levels[] = { "Quiet", "Panic", "Fatal", "Error", "Warning", "Info", "Verbose", "Debug" };
+	const wxString log_levels[] = { _("Quiet"), _("Panic"), _("Fatal"), _("Error"), _("Warning"), _("Info"), _("Verbose"), _("Debug") };
 	wxArrayString log_levels_choice(8, log_levels);
 	p->OptionChoice(ffms, _("Debug log verbosity"), log_levels_choice, "Provider/FFmpegSource/Log Level");
 
@@ -606,6 +606,8 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 , model(new HotkeyDataViewModel(parent))
 {
 	quick_search = new wxSearchCtrl(this, -1);
+	quick_search->SetDescriptiveText(_("Search"));
+
 	auto new_button = new wxButton(this, -1, _("&New"));
 	auto edit_button = new wxButton(this, -1, _("&Edit"));
 	auto delete_button = new wxButton(this, -1, _("&Delete"));
@@ -620,15 +622,15 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	dvc = new wxDataViewCtrl(this, -1);
 	dvc->AssociateModel(model.get());
 #ifndef __APPLE__
-	dvc->AppendColumn(new wxDataViewColumn("Hotkey", new HotkeyRenderer, 0, 125, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
-	dvc->AppendColumn(new wxDataViewColumn("Command", new CommandRenderer, 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
+	dvc->AppendColumn(new wxDataViewColumn(_("Hotkey"), new HotkeyRenderer, 0, 125, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
+	dvc->AppendColumn(new wxDataViewColumn(_("Command"), new CommandRenderer, 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
 #else
-	auto col = new wxDataViewColumn("Hotkey", new wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE), 0, 150, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
+	auto col = new wxDataViewColumn(_("Hotkey"), new wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE), 0, 150, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
 	col->SetMinWidth(150);
 	dvc->AppendColumn(col);
-	dvc->AppendColumn(new wxDataViewColumn("Command", new wxDataViewIconTextRenderer("wxDataViewIconText", wxDATAVIEW_CELL_EDITABLE), 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
+	dvc->AppendColumn(new wxDataViewColumn(_("Command"), new wxDataViewIconTextRenderer("wxDataViewIconText", wxDATAVIEW_CELL_EDITABLE), 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
 #endif
-	dvc->AppendTextColumn("Description", 2, wxDATAVIEW_CELL_INERT, 300, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
+	dvc->AppendTextColumn(_("Description"), 2, wxDATAVIEW_CELL_INERT, 300, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
 
 	wxSizer *buttons = new wxBoxSizer(wxHORIZONTAL);
 	buttons->Add(quick_search, wxSizerFlags(1).Expand().Border());

@@ -135,7 +135,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 		 wxDefaultPosition, wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
 
 	auto matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	matrix_sizer->Add(new wxStaticText(&d, -1, "YCbCr Matrix:"), wxSizerFlags().Center());
+	matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Center());
 	matrix_sizer->Add(YCbCrMatrix, wxSizerFlags(1).Expand().Border(wxLEFT));
 
 	auto res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Resolution"));

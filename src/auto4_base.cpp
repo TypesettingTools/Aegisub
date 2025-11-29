@@ -33,13 +33,13 @@
 #include "ass_style.h"
 #include "compat.h"
 #include "dialog_progress.h"
+#include "format.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "string_codec.h"
 #include "subs_controller.h"
 
 #include <libaegisub/dispatch.h>
-#include <libaegisub/format.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 #include <libaegisub/split.h>
@@ -341,16 +341,16 @@ namespace Automation4 {
 		}
 
 		if (error_count == 1) {
-			wxLogWarning("A script in the Automation autoload directory failed to load.\nPlease review the errors, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again.");
+			wxLogWarning(_("A script in the Automation autoload directory failed to load.\nPlease review the errors, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again."));
 		}
 		else if (error_count > 1) {
-			wxLogWarning("Multiple scripts in the Automation autoload directory failed to load.\nPlease review the errors, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again.");
+			wxLogWarning(_("Multiple scripts in the Automation autoload directory failed to load.\nPlease review the errors, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again."));
 		}
 		else if (warning_count == 1) {
-			wxLogWarning("A script in the Automation autoload directory loaded with warnings.\nPlease review the warnings, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again.");
+			wxLogWarning(_("A script in the Automation autoload directory loaded with warnings.\nPlease review the warnings, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again."));
 		}
 		else if (warning_count > 1) {
-			wxLogWarning("Multiple scripts in the Automation autoload directory loaded with warnings.\nPlease review the warnings, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again.");
+			wxLogWarning(_("Multiple scripts in the Automation autoload directory loaded with warnings.\nPlease review the warnings, fix them and use the Rescan Autoload Dir button in Automation Manager to load the scripts again."));
 		}
 
 		ScriptsChanged();
@@ -390,16 +390,16 @@ namespace Automation4 {
 				basepath = autobasefn;
 			} else if (first_char == '/') {
 			} else {
-				wxLogWarning("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %c\nFilename specified: %s",
-					first_char, to_wx(trimmed));
+				wxLogWarning(fmt_tl("Automation Script referenced with unknown location specifier character.\nLocation specifier found: %c\nFilename specified: %s",
+					first_char, to_wx(trimmed)));
 				continue;
 			}
 			auto sfname = basepath/trimmed;
 			if (agi::fs::FileExists(sfname))
 				scripts.emplace_back(Automation4::ScriptFactory::CreateFromFile(sfname, true));
 			else {
-				wxLogWarning("Automation Script referenced could not be found.\nFilename specified: %c%s\nSearched relative to: %s\nResolved filename: %s",
-					first_char, to_wx(trimmed), basepath.wstring(), sfname.wstring());
+				wxLogWarning(fmt_tl("Automation Script referenced could not be found.\nFilename specified: %c%s\nSearched relative to: %s\nResolved filename: %s",
+					first_char, to_wx(trimmed), basepath.wstring(), sfname.wstring()));
 			}
 		}
 

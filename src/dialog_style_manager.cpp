@@ -679,16 +679,16 @@ void DialogStyleManager::OnCurrentImport() {
 	try {
 		auto reader = SubtitleFormat::GetReader(filename, charset.c_str());
 		if (!reader) {
-			wxMessageBox("Unsupported subtitle format", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+			wxMessageBox(_("Unsupported subtitle format"), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 			return;
 		}
 		reader->ReadFile(&temp, filename, 0, charset.c_str());
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(to_wx(err.GetMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(to_wx(err.GetMessage()), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (...) {
-		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(_("Unknown error"), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 		return;
 	}
 

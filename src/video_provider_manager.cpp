@@ -16,6 +16,7 @@
 
 #include "video_provider_manager.h"
 
+#include "compat.h"
 #include "factory_manager.h"
 #include "include/aegisub/video_provider.h"
 #include "options.h"
@@ -23,6 +24,8 @@
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
 #include <libaegisub/string.h>
+
+#include <wx/translation.h>
 
 std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const&, std::string_view, agi::BackgroundRunner *);
 std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const&, std::string_view, agi::BackgroundRunner *);
@@ -72,13 +75,13 @@ std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path c
 			return provider->WantsCaching() ? CreateCacheVideoProvider(std::move(provider)) : std::move(provider);
 		}
 		catch (agi::fs::FileNotFound const&) {
-			err = "file not found.";
+			err = from_wx(_("file not found."));
 			// Keep trying other providers as this one may just not be able to
 			// open a valid path
 		}
 		catch (VideoNotSupported const&) {
 			found = true;
-			err = "video is not in a supported format.";
+			err = from_wx(_("video is not in a supported format."));
 		}
 		catch (VideoOpenError const& ex) {
 			supported = true;
@@ -95,7 +98,7 @@ std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path c
 
 	// No provider could open the file
 	LOG_E("manager/video/provider") << "Could not open " << filename;
-	std::string msg = "Could not open " + filename.string() + ":\n" + errors;
+	std::string msg = from_wx(_("Could not open ")) + filename.string() + ":\n" + errors;
 
 	if (!found) throw agi::fs::FileNotFound(filename.string());
 	if (!supported) throw VideoNotSupported(msg);

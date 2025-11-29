@@ -237,7 +237,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 		OPT_SET("Path/Last/Automation")->SetString(fnpath.parent_path().string());
 
 		if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {
-			wxLogError("Script '%s' is already loaded", fname);
+			wxLogError(fmt_tl("Script '%s' is already loaded", fname));
 			continue;
 		}
 
