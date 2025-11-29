@@ -632,7 +632,7 @@ struct video_play final : public validator_video_loaded {
 	CMD_ICON(button_play)
 	STR_MENU("Play")
 	STR_DISP("Play")
-	STR_HELP("Play video starting on this position")
+	STR_HELP("Play the video starting on this position")
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Play();
@@ -644,7 +644,7 @@ struct video_play_line final : public validator_video_loaded {
 	CMD_ICON(button_playline)
 	STR_MENU("Play line")
 	STR_DISP("Play line")
-	STR_HELP("Play current line")
+	STR_HELP("Play the video for the current line")
 
 	void operator()(agi::Context *c) override {
 		c->videoController->PlayLine();
