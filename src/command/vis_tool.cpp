@@ -138,49 +138,49 @@ namespace {
 		CMD_ICON(visual_vector_clip_line)
 		STR_MENU("Line")
 		STR_DISP("Line")
-		STR_HELP("Appends a line")
+		STR_HELP("Append a line")
 	};
 	struct visual_mode_vclip_bicubic final : public visual_tool_vclip_command<VCLIP_BICUBIC> {
 		CMD_NAME("video/tool/vclip/bicubic")
 		CMD_ICON(visual_vector_clip_bicubic)
 		STR_MENU("Bicubic")
 		STR_DISP("Bicubic")
-		STR_HELP("Appends a bezier bicubic curve")
+		STR_HELP("Append a bezier bicubic curve")
 	};
 	struct visual_mode_vclip_convert final : public visual_tool_vclip_command<VCLIP_CONVERT> {
 		CMD_NAME("video/tool/vclip/convert")
 		CMD_ICON(visual_vector_clip_convert)
 		STR_MENU("Convert")
 		STR_DISP("Convert")
-		STR_HELP("Converts a segment between line and bicubic")
+		STR_HELP("Convert a segment between line and bicubic")
 	};
 	struct visual_mode_vclip_insert final : public visual_tool_vclip_command<VCLIP_INSERT> {
 		CMD_NAME("video/tool/vclip/insert")
 		CMD_ICON(visual_vector_clip_insert)
 		STR_MENU("Insert")
 		STR_DISP("Insert")
-		STR_HELP("Inserts a control point")
+		STR_HELP("Insert a control point")
 	};
 	struct visual_mode_vclip_remove final : public visual_tool_vclip_command<VCLIP_REMOVE> {
 		CMD_NAME("video/tool/vclip/remove")
 		CMD_ICON(visual_vector_clip_remove)
 		STR_MENU("Remove")
 		STR_DISP("Remove")
-		STR_HELP("Removes a control point")
+		STR_HELP("Remove a control point")
 	};
 	struct visual_mode_vclip_freehand final : public visual_tool_vclip_command<VCLIP_FREEHAND> {
 		CMD_NAME("video/tool/vclip/freehand")
 		CMD_ICON(visual_vector_clip_freehand)
 		STR_MENU("Freehand")
 		STR_DISP("Freehand")
-		STR_HELP("Draws a freehand shape")
+		STR_HELP("Draw a freehand shape")
 	};
 	struct visual_mode_vclip_freehand_smooth final : public visual_tool_vclip_command<VCLIP_FREEHAND_SMOOTH> {
 		CMD_NAME("video/tool/vclip/freehand_smooth")
 		CMD_ICON(visual_vector_clip_freehand_smooth)
 		STR_MENU("Freehand smooth")
 		STR_DISP("Freehand smooth")
-		STR_HELP("Draws a smoothed freehand shape")
+		STR_HELP("Draw a smoothed freehand shape")
 	};
 }
 
