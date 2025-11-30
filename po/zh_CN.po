@@ -2452,6 +2452,38 @@ msgstr "从该位置开始播放视频"
 msgid "Play line"
 msgstr "播放字幕行"
 
+#: ../src/command/video.cpp:621
+msgid "Play last 500ms"
+msgstr "播放最后500毫秒"
+
+#: ../src/command/video.cpp:622
+msgid "Play last 500 milliseconds of current line"
+msgstr "播放当前行的最后500毫秒"
+
+#: ../src/command/video.cpp:630
+msgid "Play first 500ms"
+msgstr "播放开始500毫秒"
+
+#: ../src/command/video.cpp:631
+msgid "Play first 500 milliseconds of current line"
+msgstr "播放当前行的开始500毫秒"
+
+#: ../src/command/video.cpp:639
+msgid "Play 500ms before"
+msgstr "播放前500毫秒"
+
+#: ../src/command/video.cpp:640
+msgid "Play 500 milliseconds before current line"
+msgstr "播放当前行之前500毫秒"
+
+#: ../src/command/video.cpp:648
+msgid "Play 500ms after"
+msgstr "播放后500毫秒"
+
+#: ../src/command/video.cpp:649
+msgid "Play 500 milliseconds after current line"
+msgstr "播放当前行之后500毫秒"
+
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
 msgstr "显示过扫描遮罩(&O)"
