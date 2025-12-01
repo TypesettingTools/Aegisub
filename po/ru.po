@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.4.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-26 17:44+0000\n"
-"PO-Revision-Date: 2025-11-27 10:05+0000\n"
+"POT-Creation-Date: 2025-12-01 20:46+0100\n"
+"PO-Revision-Date: 2025-12-01 23:51+0000\n"
 "Last-Translator: zlom\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -17,6 +17,14 @@ msgstr ""
 "n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 3.8\n"
+
+#: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
+msgid "Language"
+msgstr "Язык (Language)"
+
+#: ../src/aegisublocale.cpp:113
+msgid "Please choose a language:"
+msgstr "Пожалуйста, выберите язык:"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
@@ -160,7 +168,79 @@ msgstr "тайминг"
 msgid "karaoke timing"
 msgstr "тайминг караоке"
 
-#: ../src/auto4_base.cpp:454
+#: ../src/auto4_base.cpp:344
+msgid ""
+"A script in the Automation autoload directory failed to load.\n"
+"Please review the errors, fix them and use the Rescan Autoload Dir button in "
+"Automation Manager to load the scripts again."
+msgstr ""
+"Не удалось загрузить скрипт из директории автозагрузки автоматизации.\n"
+"Пожалуйста, изучите ошибки, исправьте их и используйте кнопку «Обновить "
+"директорию автозагрузки» в Менеджере автоматизации, чтобы снова загрузить "
+"скрипты."
+
+#: ../src/auto4_base.cpp:347
+msgid ""
+"Multiple scripts in the Automation autoload directory failed to load.\n"
+"Please review the errors, fix them and use the Rescan Autoload Dir button in "
+"Automation Manager to load the scripts again."
+msgstr ""
+"Не удалось загрузить несколько скриптов из директории автозагрузки "
+"автоматизации.\n"
+"Пожалуйста, изучите ошибки, исправьте их и используйте кнопку «Обновить "
+"директорию автозагрузки» в Менеджере автоматизации, чтобы снова загрузить "
+"скрипты."
+
+#: ../src/auto4_base.cpp:350
+msgid ""
+"A script in the Automation autoload directory loaded with warnings.\n"
+"Please review the warnings, fix them and use the Rescan Autoload Dir button "
+"in Automation Manager to load the scripts again."
+msgstr ""
+"Cкрипт из директории автозагрузки автоматизации загружен с "
+"предупреждениями.\n"
+"Пожалуйста, рассмотрите предупреждения, исправьте их и используйте кнопку "
+"«Обновить директорию автозагрузки» в Менеджере автоматизации, чтобы снова "
+"загрузить скрипты."
+
+#: ../src/auto4_base.cpp:353
+msgid ""
+"Multiple scripts in the Automation autoload directory loaded with warnings.\n"
+"Please review the warnings, fix them and use the Rescan Autoload Dir button "
+"in Automation Manager to load the scripts again."
+msgstr ""
+"Несколько скриптов из директории автозагрузки автоматизации загружены с "
+"предупреждениями.\n"
+"Пожалуйста, изучите ошибки, исправьте их и используйте кнопку «Обновить "
+"директорию автозагрузки» в Менеджере автоматизации, чтобы снова загрузить "
+"скрипты."
+
+#: ../src/auto4_base.cpp:393
+#, c-format
+msgid ""
+"Automation Script referenced with unknown location specifier character.\n"
+"Location specifier found: %c\n"
+"Filename specified: %s"
+msgstr ""
+"Скрипт автоматизации упомянут с неизвестным символом спецификатора "
+"местоположения.\n"
+"Спецификатор местоположения: %c\n"
+"Имя файла: %s"
+
+#: ../src/auto4_base.cpp:401
+#, c-format
+msgid ""
+"Automation Script referenced could not be found.\n"
+"Filename specified: %c%s\n"
+"Searched relative to: %s\n"
+"Resolved filename: %s"
+msgstr ""
+"Упомянутый скрипт автоматизации не удалось найти.\n"
+"Имя файла: %c%s\n"
+"Искалось относительно: %s\n"
+"Разрешённое имя файла: %s"
+
+#: ../src/auto4_base.cpp:462
 #, c-format
 msgid ""
 "Failed to load Automation script '%s':\n"
@@ -169,26 +249,66 @@ msgstr ""
 "Не удалось загрузить скрипт автоматизации «%s»:\n"
 "%s"
 
-#: ../src/auto4_base.cpp:461
+#: ../src/auto4_base.cpp:465
+#, c-format
+msgid ""
+"Warning when loading Automation script '%s':\n"
+"%s"
+msgstr ""
+"Предупреждение при загрузке скрипта автоматизации «%s»:\n"
+"%s"
+
+#: ../src/auto4_base.cpp:472
 #, c-format
 msgid "The file was not recognised as an Automation script: %s"
 msgstr "Файл не распознан как скрипт автоматизации: %s"
 
-#: ../src/auto4_base.cpp:490 ../src/command/audio.cpp:84
+#: ../src/auto4_base.cpp:501 ../src/command/audio.cpp:84
 #: ../src/command/keyframe.cpp:76 ../src/command/timecode.cpp:73
 #: ../src/command/timecode.cpp:93 ../src/command/video.cpp:592
 msgid "All Files"
 msgstr "Все файлы"
 
-#: ../src/auto4_base.cpp:496 ../src/command/keyframe.cpp:74
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
-#: ../src/subtitle_format.cpp:318
+#: ../src/auto4_base.cpp:507 ../src/command/keyframe.cpp:74
+#: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "Все поддерживаемые форматы"
 
-#: ../src/auto4_base.cpp:502
+#: ../src/auto4_base.cpp:513
 msgid "File was not recognized as a script"
 msgstr "Файл не распознан как скрипт"
+
+#: ../src/auto4_lua.cpp:180
+#, c-format
+msgid ""
+"Warning in Automation script '%s':\n"
+"%s"
+msgstr ""
+"Предупреждение в скрипте автоматизации «%s»:\n"
+"%s"
+
+#: ../src/auto4_lua.cpp:458
+msgid "Could not initialize Lua state"
+msgstr "Не удалось инициализировать состояние Lua"
+
+#: ../src/auto4_lua.cpp:541
+#, c-format
+msgid ""
+"Error initialising Lua script \"%s\":\n"
+"\n"
+"%s"
+msgstr ""
+"Ошибка инициализирования Lua скрипта «%s»:\n"
+"\n"
+"%s"
+
+#: ../src/auto4_lua.cpp:551
+msgid ""
+"Attempted to load an Automation 3 script as an Automation 4 Lua script. "
+"Automation 3 is no longer supported."
+msgstr ""
+"Произведена попытка загрузки скрипта Automation 3 как Lua скрипта Automation "
+"4. Automation 3 больше не поддерживается."
 
 #: ../src/charset_detect.cpp:50
 msgid ""
@@ -277,10 +397,6 @@ msgstr "Выход из программы"
 #: ../src/command/app.cpp:155
 msgid "&Language..."
 msgstr "&Язык (Language)"
-
-#: ../src/command/app.cpp:156
-msgid "Language"
-msgstr "Язык"
 
 #: ../src/command/app.cpp:157
 msgid "Select Aegisub interface language"
@@ -488,7 +604,6 @@ msgstr ""
 "процессе проигрывания"
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "Воспроизвести текущую строку"
 
@@ -1568,11 +1683,11 @@ msgstr "Поиск по тексту в субтитрах"
 
 #: ../src/command/subtitle.cpp:105
 msgid "Find &Next"
-msgstr "Найти &следующее"
+msgstr "Найти &далее"
 
 #: ../src/command/subtitle.cpp:106
 msgid "Find Next"
-msgstr "Найти следующее"
+msgstr "Найти далее"
 
 #: ../src/command/subtitle.cpp:107
 msgid "Find next match of last search"
@@ -1974,6 +2089,10 @@ msgstr "Открыть файл с таймкодами"
 #: ../src/command/timecode.cpp:70
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Открытие файла с таймкодами с переменной частотой кадров v1 либо v2"
+
+#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+msgid "Text Files"
+msgstr "Текстовые документы"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
@@ -2509,12 +2628,16 @@ msgid "Play"
 msgstr "Воспроизвести"
 
 #: ../src/command/video.cpp:635
-msgid "Play video starting on this position"
+msgid "Play the video starting on this position"
 msgstr "Воспроизведение видео с этой позиции"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
 msgstr "Воспроизведение строки"
+
+#: ../src/command/video.cpp:647
+msgid "Play the video for the current line"
+msgstr "Воспроизведение видео текущей строки"
 
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
@@ -2670,56 +2793,56 @@ msgid "Line"
 msgstr "Прямая"
 
 #: ../src/command/vis_tool.cpp:141
-msgid "Appends a line"
-msgstr "Добавляет прямую"
+msgid "Append a line"
+msgstr "Добавление прямой"
 
 #: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
 msgid "Bicubic"
 msgstr "Кривая"
 
 #: ../src/command/vis_tool.cpp:148
-msgid "Appends a bezier bicubic curve"
-msgstr "Добавляет кубическую кривую Безье"
+msgid "Append a bezier bicubic curve"
+msgstr "Добавление кубической кривой Безье"
 
 #: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
 msgid "Convert"
 msgstr "Преобразовать"
 
 #: ../src/command/vis_tool.cpp:155
-msgid "Converts a segment between line and bicubic"
-msgstr "Преобразовывает сегмент из прямой в кубическую кривую Безье и обратно"
+msgid "Convert a segment between line and bicubic"
+msgstr "Преобразование сегмента из прямой в кубическую кривую Безье и обратно"
 
 #: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
 msgid "Insert"
 msgstr "Вставить"
 
 #: ../src/command/vis_tool.cpp:162
-msgid "Inserts a control point"
-msgstr "Вставляет узловую точку"
+msgid "Insert a control point"
+msgstr "Вставка узловой точки"
 
 #: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
 msgid "Remove"
 msgstr "Удалить"
 
 #: ../src/command/vis_tool.cpp:169
-msgid "Removes a control point"
-msgstr "Удаляет узловую точку"
+msgid "Remove a control point"
+msgstr "Удаление узловой точки"
 
 #: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
 msgid "Freehand"
 msgstr "От руки"
 
 #: ../src/command/vis_tool.cpp:176
-msgid "Draws a freehand shape"
-msgstr "Рисует контур от руки"
+msgid "Draw a freehand shape"
+msgstr "Рисование контура от руки"
 
 #: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
 msgid "Freehand smooth"
 msgstr "Сглажено от руки"
 
 #: ../src/command/vis_tool.cpp:183
-msgid "Draws a smoothed freehand shape"
-msgstr "Рисует сглаженный контур от руки"
+msgid "Draw a smoothed freehand shape"
+msgstr "Рисование сглаженного контура от руки"
 
 #: ../src/dialog_about.cpp:46
 msgid "Translated into LANGUAGE by PERSON\n"
@@ -2755,7 +2878,7 @@ msgid "E&xtract"
 msgstr "&Извлечь"
 
 #: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:204
-#: ../src/preferences.cpp:611
+#: ../src/preferences.cpp:613
 msgid "&Delete"
 msgstr "&Удалить"
 
@@ -2780,9 +2903,17 @@ msgstr "Группа"
 msgid "Choose file to be attached"
 msgstr "Выберите прикрепляемый файл"
 
+#: ../src/dialog_attachments.cpp:139 ../src/dialog_attachments.cpp:170
+msgid "Font Files"
+msgstr "Файлы шрифтов"
+
 #: ../src/dialog_attachments.cpp:142
 msgid "attach font file"
 msgstr "прикрепление шрифта"
+
+#: ../src/dialog_attachments.cpp:149 ../src/dialog_attachments.cpp:170
+msgid "Graphic Files"
+msgstr "Графические файлы"
 
 #: ../src/dialog_attachments.cpp:152
 msgid "attach graphics file"
@@ -2832,15 +2963,20 @@ msgstr "Имя"
 msgid "Filename"
 msgstr "Имя файла"
 
-#: ../src/dialog_automation.cpp:136
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:633
 msgid "Description"
 msgstr "Описание"
 
-#: ../src/dialog_automation.cpp:222
+#: ../src/dialog_automation.cpp:224
 msgid "Add Automation script"
 msgstr "Добавить скрипт автоматизации"
 
-#: ../src/dialog_automation.cpp:277
+#: ../src/dialog_automation.cpp:240
+#, c-format
+msgid "Script '%s' is already loaded"
+msgstr "Скрипт «%s» уже загружен"
+
+#: ../src/dialog_automation.cpp:279
 #, c-format
 msgid ""
 "Total scripts loaded: %d\n"
@@ -2851,11 +2987,11 @@ msgstr ""
 "Загружено глобальных скриптов: %d\n"
 "Загружено локальных скриптов: %d\n"
 
-#: ../src/dialog_automation.cpp:282
+#: ../src/dialog_automation.cpp:284
 msgid "Scripting engines installed:"
 msgstr "Установленные движки автоматизации:"
 
-#: ../src/dialog_automation.cpp:289
+#: ../src/dialog_automation.cpp:291
 #, c-format
 msgid ""
 "\n"
@@ -2866,8 +3002,6 @@ msgid ""
 "Version: %s\n"
 "Full path: %s\n"
 "State: %s\n"
-"\n"
-"Features provided by script:"
 msgstr ""
 "\n"
 "Информация о скрипте:\n"
@@ -2877,28 +3011,39 @@ msgstr ""
 "Версия: %s\n"
 "Полный путь: %s\n"
 "Состояние: %s\n"
-"\n"
-"Предоставляет следующий функционал:"
 
-#: ../src/dialog_automation.cpp:295
+#: ../src/dialog_automation.cpp:297
 msgid "Correctly loaded"
 msgstr "Корректно загружен"
 
-#: ../src/dialog_automation.cpp:295
+#: ../src/dialog_automation.cpp:297
 msgid "Failed to load"
 msgstr "Не удалось загрузить"
 
-#: ../src/dialog_automation.cpp:298
+#: ../src/dialog_automation.cpp:297
+msgid "Loaded with warnings"
+msgstr "Загружен с предупреждениями"
+
+#: ../src/dialog_automation.cpp:300
+#, c-format
+msgid "Warning: %s\n"
+msgstr "Предупреждение: %s\n"
+
+#: ../src/dialog_automation.cpp:303
+msgid "Features provided by script:\n"
+msgstr "Предоставляет следующий функционал:\n"
+
+#: ../src/dialog_automation.cpp:306
 #, c-format
 msgid "    Macro: %s (%s)"
 msgstr "    Макрос: %s (%s)"
 
-#: ../src/dialog_automation.cpp:301
+#: ../src/dialog_automation.cpp:309
 #, c-format
 msgid "    Export filter: %s"
 msgstr "    Фильтр экспорта: %s"
 
-#: ../src/dialog_automation.cpp:305
+#: ../src/dialog_automation.cpp:313
 msgid "Automation Script Info"
 msgstr "Информация о скрипте автоматизации"
 
@@ -3009,6 +3154,54 @@ msgstr "Знач.:"
 msgid "Video: %s"
 msgstr "Видео: %s"
 
+#: ../src/dialog_dummy_video.cpp:71
+msgid "640×480 (SD fullscreen)"
+msgstr "640×480 (полноэкранный SD)"
+
+#: ../src/dialog_dummy_video.cpp:72
+msgid "704×480 (SD anamorphic)"
+msgstr "704×480 (анаморфированный SD)"
+
+#: ../src/dialog_dummy_video.cpp:73
+msgid "640×360 (SD widescreen)"
+msgstr "640×360 (широкоэкранный SD)"
+
+#: ../src/dialog_dummy_video.cpp:74
+msgid "704×396 (SD widescreen)"
+msgstr "704×396 (широкоэкранный SD)"
+
+#: ../src/dialog_dummy_video.cpp:75
+msgid "640×352 (SD widescreen MOD16)"
+msgstr "640×352 (широкоэкранный MOD16 SD)"
+
+#: ../src/dialog_dummy_video.cpp:76
+msgid "704×400 (SD widescreen MOD16)"
+msgstr "704×400 (широкоэкранный MOD16 SD)"
+
+#: ../src/dialog_dummy_video.cpp:77
+msgid "1024×576 (SuperPAL widescreen)"
+msgstr "1024×576 (широкоэкранный SuperPAL)"
+
+#: ../src/dialog_dummy_video.cpp:78
+msgid "1280×720 (HD 720p)"
+msgstr "1280×720 (HD 720p)"
+
+#: ../src/dialog_dummy_video.cpp:79
+msgid "1920×1080 (FHD 1080p)"
+msgstr "1920×1080 (FHD 1080p)"
+
+#: ../src/dialog_dummy_video.cpp:80
+msgid "2560×1440 (QHD 1440p)"
+msgstr "2560×1440 (QHD 1440p)"
+
+#: ../src/dialog_dummy_video.cpp:81
+msgid "3840×2160 (4K UHD 2160p)"
+msgstr "3840×2160 (4K UHD 2160p)"
+
+#: ../src/dialog_dummy_video.cpp:82
+msgid "1080×1920 (FHD vertical)"
+msgstr "1080×1920 (FHD вертикальный)"
+
 #: ../src/dialog_dummy_video.cpp:104
 msgid "Dummy video options"
 msgstr "Свойства видеозаглушки"
@@ -3074,6 +3267,16 @@ msgstr "Экспортировать..."
 #: ../src/dialog_export.cpp:187
 msgid "Export subtitles file"
 msgstr "Экспорт файла субтитров"
+
+#: ../src/dialog_export.cpp:202 ../src/dialog_export.cpp:205
+#: ../src/dialog_export.cpp:208
+msgid "Error exporting subtitles"
+msgstr "Ошибка экспортирования субтитров"
+
+#: ../src/dialog_export.cpp:208 ../src/dialog_style_manager.cpp:691
+#: ../src/project.cpp:142
+msgid "Unknown error"
+msgstr "Неизвестная ошибка"
 
 #: ../src/dialog_export_ebu3264.cpp:83
 msgid "EBU STL export"
@@ -3311,7 +3514,10 @@ msgstr "&Старт!"
 #: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
 #: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
 #: ../src/dialog_kara_timing_copy.cpp:491
-#: ../src/dialog_kara_timing_copy.cpp:541 ../src/preferences.cpp:272
+#: ../src/dialog_kara_timing_copy.cpp:541 ../src/dialog_spellchecker.cpp:143
+#: ../src/dialog_spellchecker.cpp:149 ../src/dialog_style_manager.cpp:682
+#: ../src/dialog_style_manager.cpp:688 ../src/dialog_style_manager.cpp:691
+#: ../src/preferences.cpp:272 ../src/preferences.cpp:464
 msgid "Error"
 msgstr "Ошибка"
 
@@ -3566,6 +3772,11 @@ msgstr "Информация об обновлении:"
 msgid "From &video"
 msgstr "Из &видео"
 
+#: ../src/dialog_properties.cpp:138 ../src/dialog_resample.cpp:172
+#: ../src/dialog_resample.cpp:186
+msgid "YCbCr Matrix:"
+msgstr "YCbCr матрица:"
+
 #: ../src/dialog_properties.cpp:141
 msgid "Resolution"
 msgstr "Разрешение"
@@ -3638,10 +3849,6 @@ msgstr "Изменение соотношения сторон"
 msgid "Margin offset"
 msgstr "Отступы от границ"
 
-#: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
-msgid "YCbCr Matrix:"
-msgstr "YCbCr матрица:"
-
 #: ../src/dialog_resample.cpp:175
 msgid "Source Resolution"
 msgstr "Разрешение источника"
@@ -3652,7 +3859,7 @@ msgstr "Целевое разрешение"
 
 #: ../src/dialog_search_replace.cpp:47
 msgid "Replace"
-msgstr "Заменить"
+msgstr "Замена"
 
 #: ../src/dialog_search_replace.cpp:67
 msgid "Find what:"
@@ -3676,7 +3883,7 @@ msgstr "&Пропустить комментарии"
 
 #: ../src/dialog_search_replace.cpp:81
 msgid "S&kip Override Tags"
-msgstr "Пропустить &замещающие теги"
+msgstr "Пропустить &теги"
 
 #: ../src/dialog_search_replace.cpp:87 ../src/dialog_selection.cpp:137
 msgid "&Text"
@@ -3972,6 +4179,14 @@ msgstr "сдвиг"
 msgid "Misspelled word:"
 msgstr "Слово с опечаткой:"
 
+#: ../src/dialog_spellchecker.cpp:143
+msgid "No spellchecker available."
+msgstr "Нет доступного проверщика орфографии."
+
+#: ../src/dialog_spellchecker.cpp:149
+msgid "No spellchecker dictionaries available."
+msgstr "Нет доступных орфографических словарей."
+
 #: ../src/dialog_spellchecker.cpp:183
 msgid "Ignore &UPPERCASE words"
 msgstr "Игнорировать &ПРОПИСНЫЕ слова"
@@ -4261,11 +4476,11 @@ msgstr "Переместить стиль в самый низ"
 msgid "Sort styles alphabetically"
 msgstr "Сортировать стили по алфавиту"
 
-#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:609
+#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:611
 msgid "&New"
 msgstr "&Новый"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:610
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:612
 msgid "&Edit"
 msgstr "&Изменить"
 
@@ -4406,6 +4621,10 @@ msgstr "Подтверждение удаления из текущего фай
 #: ../src/dialog_style_manager.cpp:662
 msgid "style delete"
 msgstr "удаление стиля"
+
+#: ../src/dialog_style_manager.cpp:682
+msgid "Unsupported subtitle format"
+msgstr "Неподдерживаемый формат субтитров"
 
 #: ../src/dialog_style_manager.cpp:698
 msgid "Error Importing Styles"
@@ -5137,6 +5356,17 @@ msgstr ""
 msgid "Program error"
 msgstr "Программная ошибка"
 
+#: ../src/main.cpp:405
+#, c-format
+msgid ""
+"Aegisub has crashed while starting up!\n"
+"\n"
+"The last startup step attempted was: %s."
+msgstr ""
+"Aegisub завис при запуске!\n"
+"\n"
+"Последний предпринятый шаг запуска: %s."
+
 #: ../src/main.cpp:419
 #, c-format
 msgid ""
@@ -5149,6 +5379,10 @@ msgstr ""
 "перезапустите Aegisub.\n"
 "\n"
 "Сообщение об ошибке: %s"
+
+#: ../src/main.cpp:420
+msgid "Exception in event handler"
+msgstr "Исключение в обработчике событий"
 
 #: ../src/menu.cpp:96
 msgid "Empty"
@@ -5822,7 +6056,7 @@ msgstr "Расширеные настройки"
 
 #: ../src/preferences.cpp:364
 msgid ""
-"Changing these settings might result in bugs and/or crashes.  Do not touch "
+"Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
 msgstr ""
 "Изменение этих настроек может повлечь за собой некорректную работу "
@@ -5968,6 +6202,34 @@ msgstr "Разрешить Avisynth версии ниже 2.56a"
 msgid "Avisynth memory limit"
 msgstr "Выделение памяти для Avisynth (МБ)"
 
+#: ../src/preferences.cpp:464
+msgid "Debug"
+msgstr "Отладка"
+
+#: ../src/preferences.cpp:464
+msgid "Fatal"
+msgstr "Критический"
+
+#: ../src/preferences.cpp:464
+msgid "Info"
+msgstr "Информация"
+
+#: ../src/preferences.cpp:464
+msgid "Panic"
+msgstr "Паника"
+
+#: ../src/preferences.cpp:464
+msgid "Quiet"
+msgstr "Тихий"
+
+#: ../src/preferences.cpp:464
+msgid "Verbose"
+msgstr "Подробный"
+
+#: ../src/preferences.cpp:464 ../src/project.cpp:318
+msgid "Warning"
+msgstr "Предупреждение"
+
 #: ../src/preferences.cpp:466
 msgid "Debug log verbosity"
 msgstr "Подробность журнала отладки"
@@ -5984,7 +6246,19 @@ msgstr "Разрешить небезопасную перемотку"
 msgid "Hotkeys"
 msgstr "Горячие клавиши"
 
-#: ../src/preferences.cpp:703
+#: ../src/preferences.cpp:609
+msgid "Search"
+msgstr "Поиск"
+
+#: ../src/preferences.cpp:625 ../src/preferences.cpp:628
+msgid "Hotkey"
+msgstr "Горячие клавиши"
+
+#: ../src/preferences.cpp:626 ../src/preferences.cpp:631
+msgid "Command"
+msgstr "Команда"
+
+#: ../src/preferences.cpp:705
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -5992,15 +6266,15 @@ msgstr ""
 "Вы действительно хотите сбросить настройки? Все ваши настройки будут "
 "переопределены."
 
-#: ../src/preferences.cpp:703
+#: ../src/preferences.cpp:705
 msgid "Restore defaults?"
 msgstr "Сбросить настройки?"
 
-#: ../src/preferences.cpp:721
+#: ../src/preferences.cpp:723
 msgid "Preferences"
 msgstr "Настройки"
 
-#: ../src/preferences.cpp:749
+#: ../src/preferences.cpp:751
 msgid "&Restore Defaults"
 msgstr "Сбросить &настройки"
 
@@ -6019,6 +6293,15 @@ msgstr "Выбор..."
 #: ../src/preferences_base.cpp:251
 msgid "Font Size"
 msgstr "Размер шрифта"
+
+#: ../src/project.cpp:85
+msgid "Error loading file"
+msgstr "Ошибка загрузки файла"
+
+#: ../src/project.cpp:111 ../src/project.cpp:130
+#, c-format
+msgid "%s not found."
+msgstr "%s не найден."
 
 #: ../src/project.cpp:186
 msgid "Do you want to load/unload the associated files?"
@@ -6092,6 +6375,18 @@ msgstr ""
 "\n"
 "Были совершены попытки следующих поставщиков:\n"
 
+#: ../src/project.cpp:368
+msgid "Failed to parse timecodes file: "
+msgstr "Не удалось прочесть файл с таймкодами: "
+
+#: ../src/project.cpp:394
+msgid "Failed to parse keyframes file: "
+msgstr "Не удалось прочесть файл с ключевыми кадрами: "
+
+#: ../src/project.cpp:398
+msgid "Keyframes file in unknown format: "
+msgstr "Файл ключевых кадров в неизвестном формате: "
+
 #: ../src/resolution_resampler.cpp:300
 msgid "resolution resampling"
 msgstr "пересчёт разрешения"
@@ -6121,14 +6416,22 @@ msgstr "Вы хотите сохранить изменения в %s?"
 msgid "Unsaved changes"
 msgstr "Несохранённые изменения"
 
+#: ../src/subs_controller.cpp:265 ../src/subs_controller.cpp:404
+msgid "Untitled"
+msgstr "Безымянный"
+
 #: ../src/subs_controller.cpp:279
 #, c-format
 msgid "File backup saved as \"%s\"."
 msgstr "Резервная копия сохранена как: «%s»."
 
-#: ../src/subs_controller.cpp:404
-msgid "Untitled"
-msgstr "Безымянный"
+#: ../src/subs_controller.cpp:282
+msgid "Exception when attempting to autosave file: "
+msgstr "Исключение при попытке автосохранения: "
+
+#: ../src/subs_controller.cpp:285
+msgid "Unhandled exception when attempting to autosave file."
+msgstr "Необработанное исключение при попытке автосохранения."
 
 #: ../src/subs_controller.cpp:406
 msgid "untitled"
@@ -6317,6 +6620,18 @@ msgstr "Язык тезауруса"
 msgid "Disable"
 msgstr "Отключить"
 
+#: ../src/subs_preview.cpp:142
+msgid ""
+"Could not get any subtitles provider for the preview box. Make sure that you "
+"have a provider installed."
+msgstr ""
+"Не удалось подключить ни одного поставщика субтитров для окна предпросмотра. "
+"Убедитесь, что у вас есть установленный поставщик."
+
+#: ../src/subs_preview.cpp:143
+msgid "No subtitles provider"
+msgstr "Нет поставщика субтитров"
+
 #: ../src/subtitle_format.cpp:102
 #, c-format
 msgid "From video (%g)"
@@ -6406,6 +6721,18 @@ msgstr "Время и номер текущего кадра"
 #: ../src/video_box.cpp:65
 msgid "Time of this frame relative to start and end of current subs"
 msgstr "Время от текущего кадра до начала и конца текущих субтитров"
+
+#: ../src/video_provider_manager.cpp:78
+msgid "file not found."
+msgstr "файл не найден."
+
+#: ../src/video_provider_manager.cpp:84
+msgid "video is not in a supported format."
+msgstr "видео не в поддерживаемом формате."
+
+#: ../src/video_provider_manager.cpp:101
+msgid "Could not open "
+msgstr "Не удалось открыть "
 
 #: ../src/visual_tool.cpp:119
 msgid "visual typesetting"
@@ -6616,6 +6943,19 @@ msgstr ""
 msgid "Adds \\be1 tags to all selected lines"
 msgstr "Добавляет теги \\be1 ко всем выбранным строкам"
 
+#: ../automation/autoload/macro-2-mkfullwitdh.lua:6
+msgid "Make text fullwidth"
+msgstr "Преобразовать в формат полной ширины"
+
+#: ../automation/autoload/macro-2-mkfullwitdh.lua:7
+msgid ""
+"Shows how to use the unicode include to iterate over characters and a lookup "
+"table to convert those characters to something else."
+msgstr ""
+"Показывает, как использовать «unicode.lua» из папки «include» для перебора "
+"символов и заменяющую таблицу для конвертирования этих символов во что-то "
+"другое."
+
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 msgid "Make fullwidth"
 msgstr "Преобразовать в формат полной ширины"
@@ -6646,20 +6986,20 @@ msgstr "Удаление всех тегов из выбранных строк"
 msgid "strip tags"
 msgstr "удаление тегов"
 
-#: ../packages/desktop/aegisub.desktop.in.in:5
+#: ../packages/desktop/aegisub.desktop.in.in:4
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:6
 msgid "Aegisub"
 msgstr "Aegisub"
 
-#: ../packages/desktop/aegisub.desktop.in.in:6
+#: ../packages/desktop/aegisub.desktop.in.in:5
 msgid "Subtitle Editor"
 msgstr "Редактор субтитров"
 
-#: ../packages/desktop/aegisub.desktop.in.in:7
+#: ../packages/desktop/aegisub.desktop.in.in:6
 msgid "Create and edit subtitles for film and videos."
 msgstr "Создание и редактирование субтитров для фильмов и видео."
 
-#: ../packages/desktop/aegisub.desktop.in.in:13
+#: ../packages/desktop/aegisub.desktop.in.in:12
 msgid "subtitles;subtitle;captions;captioning;video;audio;"
 msgstr ""
 "субтитры;субтитр;создание субтитров;редактирование субтитров;видео;аудио;"
@@ -6746,22 +7086,6 @@ msgstr "Интуитивный и настраиваемый режим тайм
 msgid "Fully scriptable through the Automation module"
 msgstr "Полностью скриптуемый при помощи модуля Automation"
 
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:36
-msgid "anime"
-msgstr "аниме"
-
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:37
-msgid "movie"
-msgstr "фильм"
-
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:38
-msgid "subtitle"
-msgstr "субтитр"
-
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:39
-msgid "translate"
-msgstr "перевод"
-
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:43
 msgid "Typesetting"
 msgstr "Вёрстка"
@@ -6773,10 +7097,6 @@ msgstr "Аудио видео"
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
 msgstr "Тайминг аудио"
-
-#: ../packages/desktop/aegisub.metainfo.xml.in.in:56
-msgid "Aegisub Group"
-msgstr "Aegisub Group"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Installing runtime libraries..."
