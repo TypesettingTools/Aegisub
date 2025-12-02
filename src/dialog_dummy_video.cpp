@@ -79,7 +79,7 @@ static ResolutionShortcut resolutions[] = {
 	{wxTRANSLATE(L"1920\u00D71080 (FHD 1080p)"), 1920, 1080},
 	{wxTRANSLATE(L"2560\u00D71440 (QHD 1440p)"), 2560, 1440},
 	{wxTRANSLATE(L"3840\u00D72160 (4K UHD 2160p)"), 3840, 2160},
-    {wxTRANSLATE(L"1080\u00D71920 (FHD vertical)"), 1080, 1920},
+	{wxTRANSLATE(L"1080\u00D71920 (FHD vertical)"), 1080, 1920},
 };
 
 wxSpinCtrl *spin_ctrl(wxWindow *parent, int min, int max, int *value) {
