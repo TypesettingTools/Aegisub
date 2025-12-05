@@ -94,7 +94,7 @@ public:
 };
 
 FrameMain::FrameMain()
-: wxFrame(nullptr, -1, "", wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxCLIP_CHILDREN)
+: wxFrame(nullptr, -1, "")
 , context(std::make_unique<agi::Context>())
 {
 	StartupLog("Entering FrameMain constructor");
