@@ -461,9 +461,9 @@ void Advanced_Video(wxTreebook *book, Preferences *parent) {
 #ifdef WITH_FFMS2
 	auto ffms = p->PageSizer("FFmpegSource");
 
-	const wxString log_levels[] = { _("Quiet"), _("Panic"), _("Fatal"), _("Error"), _("Warning"), _("Info"), _("Verbose"), _("Debug") };
+	const wxString log_levels[] = { wxTRANSLATE("Quiet"), wxTRANSLATE("Panic"), wxTRANSLATE("Fatal"), wxTRANSLATE("Error"), wxTRANSLATE("Warning"), wxTRANSLATE("Info"), wxTRANSLATE("Verbose"), wxTRANSLATE("Debug") };
 	wxArrayString log_levels_choice(8, log_levels);
-	p->OptionChoice(ffms, _("Debug log verbosity"), log_levels_choice, "Provider/FFmpegSource/Log Level");
+	p->OptionChoice(ffms, _("Debug log verbosity"), log_levels_choice, "Provider/FFmpegSource/Log Level", true);
 
 	p->OptionAdd(ffms, _("Decoding threads"), "Provider/Video/FFmpegSource/Decoding Threads", -1);
 	p->OptionAdd(ffms, _("Enable unsafe seeking"), "Provider/Video/FFmpegSource/Unsafe Seeking");
