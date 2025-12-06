@@ -145,7 +145,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	auto add_with_label = [&](wxSizer *sizer, wxString const& label, wxWindow *ctrl) {
 		sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Border(wxLEFT | wxRIGHT));
-		sizer->Add(ctrl, wxSizerFlags(1).Left().Expand());
+		sizer->Add(ctrl, wxSizerFlags(ctrl->GetBestSize().GetWidth()).Left().Expand());
 	};
 
 	auto num_text_ctrl = [&](double *value, double min, double max, double step, int precision) -> wxSpinCtrlDouble * {
