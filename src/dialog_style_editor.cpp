@@ -53,6 +53,7 @@
 #include <libaegisub/of_type_adaptor.h>
 
 #include <algorithm>
+#include <numeric>
 
 #include <wx/bmpbuttn.h>
 #include <wx/checkbox.h>
@@ -93,11 +94,56 @@ class StyleRenamer {
 					found_any = true;
 			}
 
+			// This is old code with bugs. 
+			// TODO: Perhaps one day in the future, it can be repaired.
+			/*
 			auto blocks = diag.ParseTags();
 			for (auto block : blocks | agi::of_type<AssDialogueBlockOverride>())
 				block->ProcessParameters(&StyleRenamer::ProcessTag, this);
 			if (replace)
 				diag.UpdateText(blocks);
+			*/
+
+			// Bugfix: temporary solution
+			// Find and replace \r, only supports VSFilter syntax
+			std::vector<std::pair<bool, std::string>> blocks{{false, ""}}; // pair<is_comment, text>
+			for (char c : diag.Text.get()) {
+				if (c == '{') 
+					blocks.emplace_back(true, "{");
+				else if (c == '}' && blocks.back().first) {
+					blocks.back().second += "}";
+					blocks.emplace_back(false, "");
+				}
+				else 
+					blocks.back().second += c;
+			}
+
+			if (blocks.empty())
+				if (found_any) return;
+				else continue;
+
+			blocks.back().first = false; // The last one is definitely normal text.
+			if (replace)
+				diag.Text = std::transform_reduce(blocks.begin(), blocks.end(), std::string{}, std::plus<>(),
+					[this](const auto& block) -> std::string {
+						if (!block.first)
+							return block.second;
+
+						std::string processed = block.second;
+						std::string pattern = "\\r" + source_name;
+						std::string replacement = "\\r" + new_name;
+						
+						size_t pos = 0;
+						while ((pos = processed.find(pattern, pos)) != std::string::npos) {
+							processed.replace(pos, pattern.length(), replacement);
+							pos += replacement.length();
+						}
+						return processed;
+					});
+			else if (blocks.end() != std::find_if(blocks.begin(), blocks.end(),
+					[](const auto &block) -> bool {
+						return block.first && block.second.find("\\r") != std::string::npos; }))
+				found_any = true;
 
 			if (found_any) return;
 		}
