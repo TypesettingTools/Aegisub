@@ -104,7 +104,7 @@ deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
-boost_modules = ['chrono', 'thread', 'locale']
+boost_modules = ['chrono', 'locale']
 if not get_option('local_boost')
     boost_dep = dependency('boost', version: '>=1.70.0',
                             modules: boost_modules,
