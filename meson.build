@@ -379,7 +379,7 @@ if cc.has_function('alloca', prefix: '#include <stdlib.h>')
 elif cc.has_function('alloca', prefix: '#include <alloca.h>')
     conf.set('HAVE_ALLOCA_H', true)
 elif cc.has_header_symbol('malloc.h', '_alloca', prefix: '#include <stdlib.h>')
-    # cc.has_function() can't find _alloca() intrinsic on cl.exe, 
+    # cc.has_function() can't find _alloca() intrinsic on cl.exe,
     # so we use cc.has_header_symbol().
     conf.set('HAVE_MALLOC_H', true)
     conf.set('HAVE_UNDERLINE_ALLOCA', true)
