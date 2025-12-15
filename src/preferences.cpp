@@ -526,8 +526,7 @@ public:
 	wxSize GetSize() const override {
 		if (!value.GetText().empty()) {
 			wxSize size = GetTextExtent(value.GetText());
-			// FIXME does this need to be DPI scaled? If so, where do we get the scale from?
-			size.x += icon_width;
+			size.x += GetView()->FromDIP(icon_width);
 			return size;
 		}
 		return wxSize(80,20);
