@@ -564,7 +564,8 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 }
 
 bool VideoDisplay::ToolIsType(std::type_info const& type) const {
-	return tool && typeid(*tool) == type;
+	VisualToolBase *toolp = tool.get();		// This shuts up a compiler warning
+	return toolp && typeid(*toolp) == type;
 }
 
 Vector2D VideoDisplay::GetMousePosition() const {

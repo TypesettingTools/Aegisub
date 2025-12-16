@@ -268,11 +268,13 @@ namespace {
 		lua_pushvalue(L, 1);
 		std::unique_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
 		lua_pop(L, 1);
-		if (typeid(*et) != typeid(AssStyle))
+
+		AssEntry *etp = et.get();	// Shut up a compiler warning
+		if (typeid(*etp) != typeid(AssStyle))
 			return error(L, "Not a style entry");
 
 		double width, height, descent, extlead;
-		if (!Automation4::CalculateTextExtents(static_cast<AssStyle*>(et.get()),
+		if (!Automation4::CalculateTextExtents(static_cast<AssStyle*>(etp),
 				check_string(L, 2), width, height, descent, extlead))
 			return error(L, "Some internal error occurred calculating text_extents");
 
@@ -896,12 +898,13 @@ namespace {
 					throw LuaForEachBreak();
 				}
 
-				if (typeid(*lines[cur - 1]) != typeid(AssDialogue)) {
+				AssEntry *curline = lines[cur - 1];
+				if (typeid(*curline) != typeid(AssDialogue)) {
 					wxLogError("Selected row %d is not a dialogue line", cur);
 					throw LuaForEachBreak();
 				}
 
-				auto diag = static_cast<AssDialogue*>(lines[cur - 1]);
+				auto diag = static_cast<AssDialogue*>(curline);
 				sel.insert(diag);
 				if (!active_line || active_idx == cur)
 					active_line = diag;
