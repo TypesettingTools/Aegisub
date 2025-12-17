@@ -2,9 +2,10 @@ project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.60.0',
         default_options: [
-            'b_ndebug=if-release',
             'cpp_std=c++20',
             'buildtype=debugoptimized',
+            'b_ndebug=if-release',
+
             'harfbuzz:icu=disabled',
             'ffmpeg:libdav1d=enabled',
             'luajit:default_library=static',
