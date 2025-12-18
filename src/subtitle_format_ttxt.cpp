@@ -58,7 +58,7 @@ std::vector<std::string> TTXTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
+void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *) const {
 	target->LoadDefault(false, OPT_GET("Subtitle Format/TTXT/Default Style Catalog")->GetString());
 
 	// Load XML document
@@ -151,11 +151,11 @@ AssDialogue *TTXTSubtitleFormat::ProcessLine(wxXmlNode *node, AssDialogue *prev,
 	return diag;
 }
 
-void TTXTSubtitleFormat::ProcessHeader(wxXmlNode *node) const {
+void TTXTSubtitleFormat::ProcessHeader(wxXmlNode *) const {
 	// TODO
 }
 
-void TTXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
+void TTXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& , const char *) const {
 	// Convert to TTXT
 	AssFile copy(*src);
 	ConvertToTTXT(copy);

@@ -75,7 +75,7 @@ namespace {
 			return true;
 		}
 
-		bool Validate(wxWindow *parent) override {
+		bool Validate(wxWindow *) override {
 			wxTextCtrl *ctrl = GetCtrl();
 			if (!ctrl) return false;
 

@@ -198,9 +198,9 @@ void PortAudioPlayer::Stop() {
 	Pa_StopStream(stream);
 }
 
-int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
-	unsigned long framesPerBuffer, const PaStreamCallbackTimeInfo* timeInfo,
-	PaStreamCallbackFlags statusFlags, void *userData)
+int PortAudioPlayer::paCallback(const void *, void *outputBuffer,
+	unsigned long framesPerBuffer, [[maybe_unused]] const PaStreamCallbackTimeInfo* timeInfo,
+	[[maybe_unused]] PaStreamCallbackFlags statusFlags, void *userData)
 {
 	PortAudioPlayer *player = (PortAudioPlayer *)userData;
 
@@ -212,6 +212,7 @@ int PortAudioPlayer::paCallback(const void *inputBuffer, void *outputBuffer,
 		<< " currentTime: " << timeInfo->currentTime
 		<< " AdcTime: " << timeInfo->inputBufferAdcTime
 		<< " DacTime: " << timeInfo->outputBufferDacTime
+		<< " status: " << statusFlags
 		<< " framesPerBuffer: " << framesPerBuffer
 		<< " CPU: " << Pa_GetStreamCpuLoad(player->stream);
 #endif

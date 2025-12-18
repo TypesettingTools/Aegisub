@@ -83,7 +83,7 @@ class ColorPickerSpectrum final : public wxControl {
 	wxBitmap *background;
 	PickerDirection direction;
 
-	void OnPaint(wxPaintEvent &evt) {
+	void OnPaint(wxPaintEvent &) {
 		if (!background) return;
 
 		int height = background->GetHeight();
@@ -351,7 +351,7 @@ class ColorPickerScreenDropper final : public wxControl {
 		}
 	}
 
-	void OnPaint(wxPaintEvent &evt) {
+	void OnPaint(wxPaintEvent &) {
 		wxPaintDC(this).DrawBitmap(capture, 0, 0);
 	}
 

@@ -146,7 +146,7 @@ public:
 	// Called by VideoDisplay to set the video's position and size in the canvas in GL coordinates
 	virtual void SetDisplayArea(int x, int y, int w, int h);
 	virtual void SetToolbar(wxToolBar *) { }
-	virtual void SetSubTool(int subtool) { }
+	virtual void SetSubTool([[maybe_unused]] int subtool) { }
 	virtual int GetSubTool() { return 0; }
 	virtual ~VisualToolBase() = default;
 };
@@ -170,10 +170,10 @@ private:
 	/// @brief Called at the beginning of a drag
 	/// @param feature The visual feature clicked on
 	/// @return Should the drag happen?
-	virtual bool InitializeDrag(FeatureType *feature) { return true; }
+	virtual bool InitializeDrag([[maybe_unused]] FeatureType *feature) { return true; }
 	/// @brief Called on every mouse event during a drag
 	/// @param feature The current feature to process; not necessarily the one clicked on
-	virtual void UpdateDrag(FeatureType *feature) { }
+	virtual void UpdateDrag([[maybe_unused]] FeatureType *feature) { }
 
 protected:
 	std::set<FeatureType *> sel_features; ///< Currently selected visual features
