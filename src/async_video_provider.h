@@ -91,11 +91,11 @@ public:
 
 	/// @brief Update a previously loaded subtitle file
 	/// @param subs Subtitle file which was last passed to LoadSubtitles
-	/// @param changes Set of lines which have changed
+	/// @param changed Line that has changed
 	///
-	/// This function only supports changes to existing lines, and not
+	/// This function only supports changes to a single existing line, and not
 	/// insertions or deletions.
-	void UpdateSubtitles(const AssFile *subs, const AssDialogue *changes) throw();
+	void UpdateSubtitles(const AssFile *subs, const AssDialogue *changed) throw();
 
 	/// @brief Queue a request for a frame
 	/// @brief frame Frame number
