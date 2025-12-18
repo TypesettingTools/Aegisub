@@ -192,7 +192,7 @@ namespace Automation4 {
 		return nullptr;
 	}
 
-	void ExportFilter::LoadSettings(bool is_default, agi::Context *c) {
+	void ExportFilter::LoadSettings(bool, agi::Context *c) {
 		if (config_dialog)
 			c->ass->Properties.automation_settings[GetScriptSettingsIdentifier()] = config_dialog->Serialise();
 	}

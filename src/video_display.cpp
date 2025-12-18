@@ -377,7 +377,7 @@ void VideoDisplay::UpdateSize() {
 	PositionVideo();
 }
 
-void VideoDisplay::OnSizeEvent(wxSizeEvent &event) {
+void VideoDisplay::OnSizeEvent(wxSizeEvent &) {
 	if (freeSize) {
 		videoSize = GetClientSize() * scale_factor;
 		PositionVideo();

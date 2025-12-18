@@ -136,7 +136,7 @@ void AudioKaraoke::SetEnabled(bool en) {
 	}
 }
 
-void AudioKaraoke::OnSize(wxSizeEvent &evt) {
+void AudioKaraoke::OnSize(wxSizeEvent &) {
 	RenderText();
 	Refresh(false);
 }
