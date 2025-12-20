@@ -911,34 +911,61 @@ void AudioDisplay::PaintFoot(wxDC &dc, int marker_x, int dir)
 
 void AudioDisplay::PaintLabels(wxDC &dc, TimeRange updtime)
 {
-	std::vector<AudioLabelProvider::AudioLabel> labels;
-	controller->GetTimingController()->GetLabels(updtime, labels);
-	if (labels.empty()) return;
+    std::vector<AudioLabelProvider::AudioLabel> labels;
+    controller->GetTimingController()->GetLabels(updtime, labels);
+    if (labels.empty()) return;
 
-	wxDCFontChanger fc(dc);
-	wxFont font = dc.GetFont();
-	font.SetWeight(wxFONTWEIGHT_BOLD);
-	fc.Set(font);
-	dc.SetTextForeground(*wxWHITE);
-	for (auto const& label : labels)
-	{
-		wxSize extent = dc.GetTextExtent(label.text);
-		int left = RelativeXFromTime(label.range.begin());
-		int width = AbsoluteXFromTime(label.range.length());
+    wxDCFontChanger fc(dc);
+    wxFont font = dc.GetFont();
+    font.SetWeight(wxFONTWEIGHT_BOLD);
+    fc.Set(font);
+    dc.SetTextForeground(*wxWHITE);
 
-		// If it doesn't fit, truncate
-		if (width < extent.GetWidth())
-		{
-			dc.SetClippingRegion(left, audio_top + 4, width, extent.GetHeight());
-			dc.DrawText(label.text, left, audio_top + 4);
-			dc.DestroyClippingRegion();
-		}
-		// Otherwise center in the range
-		else
-		{
-			dc.DrawText(label.text, left + (width - extent.GetWidth()) / 2, audio_top + 4);
-		}
-	}
+    for (auto const& label : labels)
+    {
+        wxString text = label.text;
+        wxArrayString lines;
+
+        // Split the text into lines based on \n and \N
+        wxString current_line;
+        for (size_t i = 0; i < text.length(); ++i) {
+            if (text[i] == '\\' && (i + 1 < text.length()) && (text[i + 1] == 'n' || text[i + 1] == 'N')) {
+                lines.Add(current_line);
+                current_line.Clear();
+                i++; // Skip the 'n' or 'N'
+            } else {
+                current_line += text[i];
+            }
+        }
+        lines.Add(current_line);
+
+        int left = RelativeXFromTime(label.range.begin());
+        int width = AbsoluteXFromTime(label.range.length());
+        int current_y = audio_top + 4;
+        int line_height = dc.GetTextExtent("A").GetHeight(); // Approximate line height
+
+        for (size_t i = 0; i < lines.Count(); ++i) {
+            wxString line = lines[i];
+            wxSize line_extent = dc.GetTextExtent(line);
+
+            // Truncate if it doesn't fit
+            if (width < line_extent.GetWidth())
+            {
+                wxString truncated_line = line;
+                while (width < dc.GetTextExtent(truncated_line + "...").GetWidth() && truncated_line.length() > 0) {
+                    truncated_line = truncated_line.Left(truncated_line.length() - 1);
+                }
+                truncated_line += "...";
+                dc.DrawText(truncated_line, left, current_y);
+            }
+            else
+            {
+                // Center the line
+                dc.DrawText(line, left + (width - line_extent.GetWidth()) / 2, current_y);
+            }
+            current_y += line_height;
+        }
+    }
 }
 
 void AudioDisplay::PaintTrackCursor(wxDC &dc) {
