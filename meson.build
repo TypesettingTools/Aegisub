@@ -361,6 +361,8 @@ if not dep_gl.found()
 endif
 if host_machine.system() == 'darwin'
     conf.set('HAVE_OPENGL_GL_H', 1)
+else
+    conf.set('HAVE_GL_GLEXT_H', cc.has_header('GL/glext.h'))
 endif
 
 if not dep_gl.found()
