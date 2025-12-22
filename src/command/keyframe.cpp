@@ -94,7 +94,7 @@ struct keyframe_save final : public Command {
 	}
 
 	void operator()(agi::Context *c) override {
-		auto filename = SaveFileSelector(_("Save keyframes file"), "Path/Last/Keyframes", "", "*.key.txt", "Text files (*.txt)|*.txt", c->parent);
+		auto filename = SaveFileSelector(_("Save keyframes file"), "Path/Last/Keyframes", "", "*.key.txt", from_wx(_("Text files") + " (*.txt)|*.txt"), c->parent);
 		if (filename.empty()) return;
 
 		agi::keyframe::Save(filename, c->project->Keyframes());

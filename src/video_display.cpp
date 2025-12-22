@@ -198,18 +198,15 @@ void VideoDisplay::Render() try {
 	}
 	catch (const VideoOutInitException& err) {
 		wxLogError(
-			"Failed to initialize video display. Closing other running "
-			"programs and updating your video card drivers may fix this.\n"
-			"Error message reported: %s",
-			err.GetMessage());
+			fmt_tl("Failed to initialize video display. Closing other running programs and updating your video card drivers may fix this.\nError message reported: %s",
+			err.GetMessage()));
 		con->project->CloseVideo();
 		return;
 	}
 	catch (const VideoOutRenderException& err) {
 		wxLogError(
-			"Could not upload video frame to graphics card.\n"
-			"Error message reported: %s",
-			err.GetMessage());
+			fmt_tl("Could not upload video frame to graphics card.\nError message reported: %s",
+			err.GetMessage()));
 		return;
 	}
 
@@ -253,9 +250,8 @@ void VideoDisplay::Render() try {
 }
 catch (const agi::Exception &err) {
 	wxLogError(
-		"An error occurred trying to render the video frame on the screen.\n"
-		"Error message reported: %s",
-		err.GetMessage());
+		fmt_tl("An error occurred trying to render the video frame on the screen.\nError message reported: %s",
+		err.GetMessage()));
 	con->project->CloseVideo();
 }
 

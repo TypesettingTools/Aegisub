@@ -192,7 +192,7 @@ bool AegisubApp::OnInit() {
 		config::opt->ConfigUser();
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox("Configuration file is invalid. Error reported:\n" + to_wx(err.GetMessage()), "Error");
+		wxMessageBox(fmt_tl("Configuration file is invalid. Error reported:\n%s", err.GetMessage()), _("Error"));
 	}
 
 #ifdef _WIN32
@@ -291,7 +291,7 @@ bool AegisubApp::OnInit() {
 				config::opt->Flush();
 			}
 			catch (agi::fs::FileSystemError const& e) {
-				wxMessageBox(to_wx(e.GetMessage()), "Error saving config file", wxOK | wxICON_ERROR | wxCENTER);
+				wxMessageBox(to_wx(e.GetMessage()), _("Error saving config file"), wxOK | wxICON_ERROR | wxCENTER);
 			}
 #endif
 		}
@@ -307,16 +307,16 @@ bool AegisubApp::OnInit() {
 			OpenFiles(wxArrayStringsAdapter(args.size() - 1, &args[1]));
 	}
 	catch (agi::Exception const& e) {
-		wxMessageBox(to_wx(e.GetMessage()), "Fatal error while initializing");
+		wxMessageBox(to_wx(e.GetMessage()), _("Fatal error while initializing"));
 		return false;
 	}
 	catch (std::exception const& e) {
-		wxMessageBox(to_wx(e.what()), "Fatal error while initializing");
+		wxMessageBox(to_wx(e.what()), _("Fatal error while initializing"));
 		return false;
 	}
 #ifndef _DEBUG
 	catch (...) {
-		wxMessageBox("Unhandled exception","Fatal error while initializing");
+		wxMessageBox(_("Unhandled exception"), _("Fatal error while initializing"));
 		return false;
 	}
 #endif
