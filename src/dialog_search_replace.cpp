@@ -140,7 +140,7 @@ void DialogSearchReplace<has_replace>::FindReplace(bool (SearchReplaceEngine::*f
 		((*c->search).*func)();
 	}
 	catch (std::exception const& e) {
-		wxMessageBox(to_wx(e.what()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(to_wx(e.what()), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 		return;
 	}
 
