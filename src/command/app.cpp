@@ -164,7 +164,7 @@ struct app_language final : public Command {
 		OPT_SET("App/Language")->SetString(new_language);
 
 		// Ask to restart program
-		int result = wxMessageBox("Aegisub needs to be restarted so that the new language can be applied. Restart now?", "Restart Aegisub?", wxYES_NO | wxICON_QUESTION |  wxCENTER);
+		int result = wxMessageBox(_("Aegisub needs to be restarted so that the new language can be applied. Restart now?"), _("Restart Aegisub?"), wxYES_NO | wxICON_QUESTION |  wxCENTER);
 		if (result == wxYES) {
 			// Restart Aegisub
 			if (c->frame->Close()) {

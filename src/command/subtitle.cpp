@@ -354,10 +354,10 @@ static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 		c->subsController->Save(filename);
 	}
 	catch (const agi::Exception& err) {
-		wxMessageBox(to_wx(err.GetMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+		wxMessageBox(to_wx(err.GetMessage()), _("Error"), wxOK | wxICON_ERROR | wxCENTER, c->parent);
 	}
 	catch (...) {
-		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+		wxMessageBox(_("Unknown error"), _("Error"), wxOK | wxICON_ERROR | wxCENTER, c->parent);
 	}
 }
 

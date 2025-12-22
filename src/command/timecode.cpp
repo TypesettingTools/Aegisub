@@ -100,7 +100,7 @@ struct timecode_save final : public Command {
 			config::mru->Add("Timecodes", filename);
 		}
 		catch (agi::Exception const& err) {
-			wxMessageBox(to_wx(err.GetMessage()), "Error saving timecodes", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			wxMessageBox(to_wx(err.GetMessage()), _("Error saving timecodes"), wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };
