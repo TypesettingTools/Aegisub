@@ -382,7 +382,7 @@ public:
 };
 
 DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
-: wxDialog(c->parent, -1, _("Kanji timing"))
+: wxDialog(c->parent, -1, _("Kanji timer"))
 , subs(c->ass.get())
 {
 	SetIcons(GETICONS(kara_timing_copier));
@@ -399,7 +399,7 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	display = new KaraokeLineMatchDisplay(this);
 
 	//Checkbox
-	Interpolate = new wxCheckBox(this,-1,_("Attempt to &interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
+	Interpolate = new wxCheckBox(this,-1,_("Attempt to &interpolate kanji"),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
 	Interpolate->SetValue(OPT_GET("Tool/Kanji Timer/Interpolation")->GetBool());
 
 	wxArrayString styles = to_wx(subs->GetStyles());
