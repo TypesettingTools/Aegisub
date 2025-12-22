@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 20:46+0100\n"
+"POT-Creation-Date: 2025-12-21 07:07-0100\n"
 "PO-Revision-Date: 2005-2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -254,11 +254,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:458
+#: ../src/auto4_lua.cpp:460
 msgid "Could not initialize Lua state"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:541
+#: ../src/auto4_lua.cpp:543
 #, c-format
 msgid ""
 "Error initialising Lua script \"%s\":\n"
@@ -266,7 +266,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:551
+#: ../src/auto4_lua.cpp:553
 msgid ""
 "Attempted to load an Automation 3 script as an Automation 4 Lua script. "
 "Automation 3 is no longer supported."
@@ -360,6 +360,16 @@ msgstr ""
 
 #: ../src/command/app.cpp:157
 msgid "Select Aegisub interface language"
+msgstr ""
+
+#: ../src/command/app.cpp:167
+msgid ""
+"Aegisub needs to be restarted so that the new language can be applied. "
+"Restart now?"
+msgstr ""
+
+#: ../src/command/app.cpp:167
+msgid "Restart Aegisub?"
 msgstr ""
 
 #: ../src/command/app.cpp:180
@@ -879,7 +889,7 @@ msgstr ""
 msgid "Font Face..."
 msgstr ""
 
-#: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:250
+#: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:274
 msgid "Font Face"
 msgstr ""
 
@@ -1742,6 +1752,23 @@ msgstr ""
 msgid "Save subtitles file"
 msgstr ""
 
+#: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
+#: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
+#: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
+#: ../src/dialog_kara_timing_copy.cpp:491
+#: ../src/dialog_kara_timing_copy.cpp:541 ../src/dialog_search_replace.cpp:143
+#: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
+#: ../src/dialog_style_manager.cpp:682 ../src/dialog_style_manager.cpp:688
+#: ../src/dialog_style_manager.cpp:691 ../src/main.cpp:194
+#: ../src/preferences.cpp:272 ../src/preferences.cpp:464
+msgid "Error"
+msgstr ""
+
+#: ../src/command/subtitle.cpp:360 ../src/dialog_export.cpp:208
+#: ../src/dialog_style_manager.cpp:691 ../src/project.cpp:142
+msgid "Unknown error"
+msgstr ""
+
 #: ../src/command/subtitle.cpp:367
 msgid "&Save Subtitles"
 msgstr ""
@@ -2012,6 +2039,10 @@ msgstr ""
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
+msgstr ""
+
+#: ../src/command/timecode.cpp:103
+msgid "Error saving timecodes"
 msgstr ""
 
 #: ../src/command/tool.cpp:56
@@ -3149,11 +3180,6 @@ msgstr ""
 msgid "Error exporting subtitles"
 msgstr ""
 
-#: ../src/dialog_export.cpp:208 ../src/dialog_style_manager.cpp:691
-#: ../src/project.cpp:142
-msgid "Unknown error"
-msgstr ""
-
 #: ../src/dialog_export_ebu3264.cpp:83
 msgid "EBU STL export"
 msgstr ""
@@ -3382,16 +3408,6 @@ msgstr ""
 msgid "&Start!"
 msgstr ""
 
-#: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
-#: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
-#: ../src/dialog_kara_timing_copy.cpp:491
-#: ../src/dialog_kara_timing_copy.cpp:541 ../src/dialog_spellchecker.cpp:143
-#: ../src/dialog_spellchecker.cpp:149 ../src/dialog_style_manager.cpp:682
-#: ../src/dialog_style_manager.cpp:688 ../src/dialog_style_manager.cpp:691
-#: ../src/preferences.cpp:272 ../src/preferences.cpp:464
-msgid "Error"
-msgstr ""
-
 #: ../src/dialog_fonts_collector.cpp:310
 msgid "Invalid destination."
 msgstr ""
@@ -3406,6 +3422,10 @@ msgstr ""
 
 #: ../src/dialog_fonts_collector.cpp:343
 msgid "Select archive file name"
+msgstr ""
+
+#: ../src/dialog_fonts_collector.cpp:346
+msgid "Zip Archives"
 msgstr ""
 
 #: ../src/dialog_fonts_collector.cpp:350
@@ -3445,7 +3465,7 @@ msgid "Dest: "
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:385
-msgid "Kanji timing"
+msgid "Kanji timer"
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:390 ../src/dialog_paste_over.cpp:73
@@ -3466,7 +3486,7 @@ msgid "Commands"
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:402
-msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:409
@@ -3902,8 +3922,10 @@ msgstr ""
 
 #: ../src/dialog_shift_times.cpp:95
 #, c-format
-msgid "%s frames"
-msgstr ""
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../src/dialog_shift_times.cpp:97
 msgid "backward"
@@ -4840,7 +4862,7 @@ msgstr ""
 
 #: ../src/dialog_video_details.cpp:62
 #, c-format
-msgid "1 frame"
+msgid "1 frame (%s)"
 msgid_plural "%d frames (%s)"
 msgstr[0] ""
 msgstr[1] ""
@@ -5101,6 +5123,13 @@ msgstr ""
 msgid "Invalid command name for hotkey"
 msgstr ""
 
+#: ../src/main.cpp:194
+#, c-format
+msgid ""
+"Configuration file is invalid. Error reported:\n"
+"%s"
+msgstr ""
+
 #: ../src/main.cpp:258
 #, c-format
 msgid ""
@@ -5121,6 +5150,18 @@ msgstr ""
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
+msgstr ""
+
+#: ../src/main.cpp:291
+msgid "Error saving config file"
+msgstr ""
+
+#: ../src/main.cpp:307 ../src/main.cpp:311 ../src/main.cpp:316
+msgid "Fatal error while initializing"
+msgstr ""
+
+#: ../src/main.cpp:316
+msgid "Unhandled exception"
 msgstr ""
 
 #: ../src/main.cpp:402 ../src/main.cpp:405
@@ -6034,19 +6075,19 @@ msgstr ""
 msgid "&Restore Defaults"
 msgstr ""
 
-#: ../src/preferences_base.cpp:62
+#: ../src/preferences_base.cpp:77
 msgid "Please choose the folder:"
 msgstr ""
 
-#: ../src/preferences_base.cpp:208
+#: ../src/preferences_base.cpp:232
 msgid "Browse..."
 msgstr ""
 
-#: ../src/preferences_base.cpp:243
+#: ../src/preferences_base.cpp:267
 msgid "Choose..."
 msgstr ""
 
-#: ../src/preferences_base.cpp:251
+#: ../src/preferences_base.cpp:275
 msgid "Font Size"
 msgstr ""
 
@@ -6457,6 +6498,42 @@ msgstr ""
 
 #: ../src/video_box.cpp:65
 msgid "Time of this frame relative to start and end of current subs"
+msgstr ""
+
+#: ../src/video_controller.cpp:228
+#, c-format
+msgid ""
+"Failed seeking video. The video file may be corrupt or incomplete.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_controller.cpp:234
+#, c-format
+msgid ""
+"Failed rendering subtitles.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_display.cpp:193
+#, c-format
+msgid ""
+"Failed to initialize video display. Closing other running programs and "
+"updating your video card drivers may fix this.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_display.cpp:200
+#, c-format
+msgid ""
+"Could not upload video frame to graphics card.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_display.cpp:245
+#, c-format
+msgid ""
+"An error occurred trying to render the video frame on the screen.\n"
+"Error message reported: %s"
 msgstr ""
 
 #: ../src/video_provider_manager.cpp:78
