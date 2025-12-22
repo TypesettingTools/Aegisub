@@ -16,6 +16,7 @@
 
 #include "flyweight_hash.h"
 
+#include <cmath>
 #include <memory>
 #include <string>
 #include <vector>

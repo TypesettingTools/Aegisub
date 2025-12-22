@@ -221,10 +221,18 @@ void Interface(wxTreebook *book, Preferences *parent) {
 
 	auto character_count = p->PageSizer(_("Character Counter"));
 	p->OptionAdd(character_count, _("Maximum characters per line"), "Subtitle/Character Limit", 0, 1000);
-	p->OptionAdd(character_count, _("Characters Per Second Warning Threshold"), "Subtitle/Character Counter/CPS Warning Threshold", 0, 1000);
-	p->OptionAdd(character_count, _("Characters Per Second Error Threshold"), "Subtitle/Character Counter/CPS Error Threshold", 0, 1000);
+	p->OptionAdd(character_count, _("Characters Per Second Warning Threshold"), "Subtitle/Character Counter/CPS Warning Threshold", 0.1, 1000., 0.1);
+	p->OptionAdd(character_count, _("Characters Per Second Error Threshold"), "Subtitle/Character Counter/CPS Error Threshold", 0.1, 1000., 0.1);
 	p->OptionAdd(character_count, _("Ignore whitespace"), "Subtitle/Character Counter/Ignore Whitespace");
 	p->OptionAdd(character_count, _("Ignore punctuation"), "Subtitle/Character Counter/Ignore Punctuation");
+
+	const wxString ccpsf_arr[3] = {_("Nearest integer"), _("Nearest 0.1"), _("2 sig figs")};
+	wxArrayString cpsf_res(3, ccpsf_arr);
+	p->OptionChoice(character_count, _("CPS display format"), cpsf_res, "Subtitle/Character Counter/Display Format");
+
+	const wxString calign_arr[2] = {_("Center"), _("Center with virtual 0")};
+	wxArrayString calign_res(2, calign_arr);
+	p->OptionChoice(character_count, _("CPS column alignment"), calign_res, "Subtitle/Character Counter/Column Alignment");
 
 	auto grid = p->PageSizer(_("Grid"));
 	p->OptionAdd(grid, _("Focus grid on click"), "Subtitle/Grid/Focus Allow");

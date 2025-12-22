@@ -289,6 +289,8 @@ class GridColumnCPS final : public GridColumn {
 	const agi::OptionValue *cps_warn = OPT_GET("Subtitle/Character Counter/CPS Warning Threshold");
 	const agi::OptionValue *cps_error = OPT_GET("Subtitle/Character Counter/CPS Error Threshold");
 	const agi::OptionValue *bg_color = OPT_GET("Colour/Subtitle Grid/CPS Error");
+	const agi::OptionValue *disp_fmt = OPT_GET("Subtitle/Character Counter/Display Format");
+	const agi::OptionValue *col_align = OPT_GET("Subtitle/Character Counter/Column Alignment");
 
 public:
 	COLUMN_HEADER(_("CPS"))
@@ -300,7 +302,7 @@ public:
 		return wxS("");
 	}
 
-	int CPS(const AssDialogue *d) const {
+	double CPS(const AssDialogue *d) const {
 		int duration = d->End - d->Start;
 		auto const& text = d->Text.get();
 
@@ -313,25 +315,51 @@ public:
 		if (ignore_punctuation->GetBool())
 			ignore |= agi::IGNORE_PUNCTUATION;
 
-		return agi::CharacterCount(text, ignore) * 1000 / duration;
+		return agi::CharacterCount(text, ignore) * 1000. / duration;
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
-		return helper(wxS("999"));
+		return helper(wxS("99.9"));
 	}
 
 	void Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *) const override {
-		int cps = CPS(d);
-		if (cps < 0 || cps > 100) return;
+		double cps = CPS(d);
+		if (cps < 0) return;
 
-		wxString str = std::to_wstring(cps);
-		wxSize ext = dc.GetTextExtent(str);
+		double round_cps;
+		wxString str;
+		if (disp_fmt->GetInt() == 0 || (disp_fmt->GetInt() == 2 && cps >= 10)) {
+			round_cps = std::lround(cps);
+			if (round_cps >= 100) return;
+			str = std::to_wstring(int(round_cps));
+		} else {
+			round_cps = std::round(cps*10) / 10.0;
+			if (round_cps >= 100) return;
+			if (round_cps >= 10)
+				str = std::to_wstring(round_cps).substr(0, 4);
+			else
+				str = std::to_wstring(round_cps).substr(0, 3);
+		}
+
+		wxSize ext;
+		int w0 = dc.GetTextExtent(wxString(L"0")).GetWidth();
+		if (col_align->GetInt() == 0 || (disp_fmt->GetInt() != 2 && round_cps >= 10))
+			ext = dc.GetTextExtent(str);
+		else {
+			wxString str0;
+			if (cps >= 10)
+				str0 = str + wxString(L".0");
+			else
+				str0 = wxString(L"0") + str;
+			ext = dc.GetTextExtent(str0);
+		}
+
 		auto tc = dc.GetTextForeground();
 
-		int cps_min = cps_warn->GetInt();
-		int cps_max = std::max<int>(cps_min, cps_error->GetInt());
+		double cps_min = cps_warn->GetDouble();
+		double cps_max = std::max<float>(cps_min, cps_error->GetDouble());
 		if (cps > cps_min) {
-			double alpha = std::min((double)(cps - cps_min + 1) / (cps_max - cps_min + 1), 1.0);
+			double alpha = std::min((cps - cps_min + 1) / (cps_max - cps_min + 1), 1.0);
 			dc.SetBrush(wxBrush(blend(to_wx(bg_color->GetColor()), dc.GetBrush().GetColour(), alpha)));
 			dc.SetPen(*wxTRANSPARENT_PEN);
 			dc.DrawRectangle(x, y + 1, width, ext.GetHeight() + 3);
@@ -339,6 +367,8 @@ public:
 		}
 
 		x += (width + 2 - ext.GetWidth()) / 2;
+		if (col_align->GetInt() == 1 && round_cps < 10)
+			x += w0;
 		dc.DrawText(str, x, y + 2);
 		dc.SetTextForeground(tc);
 	}
