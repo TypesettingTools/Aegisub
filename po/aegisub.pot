@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-24 09:57-0100\n"
+"POT-Creation-Date: 2025-12-24 10:28-0100\n"
 "PO-Revision-Date: 2005-2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1585,8 +1585,9 @@ msgstr ""
 msgid "Save keyframes file"
 msgstr ""
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+msgid "Text Files"
 msgstr ""
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
@@ -2063,10 +2064,6 @@ msgstr ""
 
 #: ../src/command/timecode.cpp:70
 msgid "Open a VFR timecodes v1 or v2 file"
-msgstr ""
-
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
-msgid "Text Files"
 msgstr ""
 
 #: ../src/command/timecode.cpp:83
