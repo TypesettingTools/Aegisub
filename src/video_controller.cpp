@@ -231,6 +231,6 @@ void VideoController::OnVideoError(VideoProviderErrorEvent const& err) {
 
 void VideoController::OnSubtitlesError(SubtitlesProviderErrorEvent const& err) {
 	wxLogError(
-		fmt_tl("Failed rendering subtitles.\nError message reported: %s",
+		fmt_tl("Failed rendering subtitles. Error message reported: %s",
 		err.GetMessage()));
 }
