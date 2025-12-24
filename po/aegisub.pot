@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-21 07:07-0100\n"
+"POT-Creation-Date: 2025-12-24 09:57-0100\n"
 "PO-Revision-Date: 2005-2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -270,6 +270,42 @@ msgstr ""
 msgid ""
 "Attempted to load an Automation 3 script as an Automation 4 Lua script. "
 "Automation 3 is no longer supported."
+msgstr ""
+
+#: ../src/auto4_lua.cpp:827
+#, c-format
+msgid ""
+"Runtime error in Lua macro validation function:\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:881
+#, c-format
+msgid "Active row %d is out of bounds (must be 1-%u)"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:897
+#, c-format
+msgid "Selected row %d is out of bounds (must be 1-%u)"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:903
+#, c-format
+msgid "Selected row %d is not a dialogue line"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:969
+#, c-format
+msgid ""
+"Runtime error in Lua macro IsActive function:\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:1075
+#, c-format
+msgid ""
+"Runtime error in Lua config dialog function:\n"
+"%s"
 msgstr ""
 
 #: ../src/charset_detect.cpp:50
@@ -1549,6 +1585,10 @@ msgstr ""
 msgid "Save keyframes file"
 msgstr ""
 
+#: ../src/command/keyframe.cpp:97
+msgid "Text files"
+msgstr ""
+
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
 msgstr ""
@@ -2796,7 +2836,7 @@ msgid "E&xtract"
 msgstr ""
 
 #: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:204
-#: ../src/preferences.cpp:613
+#: ../src/preferences.cpp:612
 msgid "&Delete"
 msgstr ""
 
@@ -2881,7 +2921,7 @@ msgstr ""
 msgid "Filename"
 msgstr ""
 
-#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:633
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:632
 msgid "Description"
 msgstr ""
 
@@ -4345,11 +4385,11 @@ msgstr ""
 msgid "Sort styles alphabetically"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:611
+#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:610
 msgid "&New"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:612
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:611
 msgid "&Edit"
 msgstr ""
 
@@ -6041,37 +6081,37 @@ msgstr ""
 msgid "Enable unsafe seeking"
 msgstr ""
 
-#: ../src/preferences.cpp:605
+#: ../src/preferences.cpp:604
 msgid "Hotkeys"
 msgstr ""
 
-#: ../src/preferences.cpp:609
+#: ../src/preferences.cpp:608
 msgid "Search"
 msgstr ""
 
-#: ../src/preferences.cpp:625 ../src/preferences.cpp:628
+#: ../src/preferences.cpp:624 ../src/preferences.cpp:627
 msgid "Hotkey"
 msgstr ""
 
-#: ../src/preferences.cpp:626 ../src/preferences.cpp:631
+#: ../src/preferences.cpp:625 ../src/preferences.cpp:630
 msgid "Command"
 msgstr ""
 
-#: ../src/preferences.cpp:705
+#: ../src/preferences.cpp:704
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
 msgstr ""
 
-#: ../src/preferences.cpp:705
+#: ../src/preferences.cpp:704
 msgid "Restore defaults?"
 msgstr ""
 
-#: ../src/preferences.cpp:723
+#: ../src/preferences.cpp:722
 msgid "Preferences"
 msgstr ""
 
-#: ../src/preferences.cpp:751
+#: ../src/preferences.cpp:750
 msgid "&Restore Defaults"
 msgstr ""
 
@@ -6509,9 +6549,7 @@ msgstr ""
 
 #: ../src/video_controller.cpp:234
 #, c-format
-msgid ""
-"Failed rendering subtitles.\n"
-"Error message reported: %s"
+msgid "Failed rendering subtitles. Error message reported: %s"
 msgstr ""
 
 #: ../src/video_display.cpp:193
