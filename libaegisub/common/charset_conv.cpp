@@ -98,7 +98,7 @@ namespace {
 		return size;
 	}
 
-	void eat_bom(Iconv& cd, size_t bomSize, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+	void eat_bom(Iconv& cd, size_t bomSize, const char** inbuf, size_t* inbytesleft, char**, size_t* outbytesleft) {
 		// If this encoding has a forced BOM (i.e. it's UTF-16 or UTF-32 without
 		// a specified byte order), skip over it
 		if (bomSize > 0 && inbytesleft && *inbytesleft) {

@@ -148,8 +148,8 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 				bytesRead += res;
 
-				if (bytesRead >= uncompBuf.size())
-					uncompBuf.resize(2 * uncompBuf.size());
+				if (bytesRead >= std::ssize(uncompBuf))
+					uncompBuf.resize(2 * std::ssize(uncompBuf));
 			} while (res != 0);
 
 			readBuf = std::string_view(&uncompBuf[0], bytesRead);

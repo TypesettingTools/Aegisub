@@ -612,7 +612,7 @@ namespace Automation4 {
 		lines.insert(lines.begin() + before - 1, new_entries.begin(), new_entries.end());
 	}
 
-	void LuaAssFile::ObjectGarbageCollect(lua_State *L)
+	void LuaAssFile::ObjectGarbageCollect(lua_State *)
 	{
 		references--;
 		if (!references) delete this;

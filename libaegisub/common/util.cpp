@@ -192,7 +192,7 @@ void InitLocale() {
 
 #ifndef __APPLE__
 namespace osx {
-AppNapDisabler::AppNapDisabler(std::string reason) { }
+AppNapDisabler::AppNapDisabler(std::string) { }
 AppNapDisabler::~AppNapDisabler() { }
 }
 #endif

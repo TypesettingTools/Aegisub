@@ -42,7 +42,7 @@ class VisualToolClip final : public VisualTool<ClipCorner> {
 	void DoRefresh() override;
 	void SetFeaturePositions();
 
-	bool InitializeDrag(ClipCorner *feature) override { return true; }
+	bool InitializeDrag([[maybe_unused]] ClipCorner *feature) override { return true; }
 	void UpdateDrag(ClipCorner *feature) override;
 
 	void Draw() override;

@@ -91,7 +91,7 @@ namespace Automation4 {
 
 		/// Restore the values of the controls in this dialog from a string
 		/// stored in the subtitle script
-		virtual void Unserialise(std::string const& serialised) { }
+		virtual void Unserialise(std::string const& serialised) = 0;
 	};
 
 	class ProgressSink;

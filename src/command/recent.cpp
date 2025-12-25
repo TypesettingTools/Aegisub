@@ -74,7 +74,7 @@ struct recent_subtitle_entry : public Command {
 	STR_DISP("Recent")
 	STR_HELP("Open recent subtitles")
 
-	void operator()(agi::Context *c, int id) {
+	void operator()([[maybe_unused]] agi::Context *c, int id) {
 #ifdef __APPLE__
 		wxGetApp().NewProjectContext().project->LoadSubtitles(config::mru->GetEntry("Subtitle", id));
 #else

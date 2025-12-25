@@ -1053,7 +1053,7 @@ namespace {
 		}
 	}
 
-	std::unique_ptr<ScriptDialog> LuaExportFilter::GenerateConfigDialog(wxWindow *parent, agi::Context *c)
+	std::unique_ptr<ScriptDialog> LuaExportFilter::GenerateConfigDialog(wxWindow *, agi::Context *c)
 	{
 		if (!has_config)
 			return nullptr;

@@ -123,7 +123,7 @@ void DialogJumpTo::OnEditTime (wxCommandEvent &) {
 	}
 }
 
-void DialogJumpTo::OnEditFrame (wxCommandEvent &event) {
+void DialogJumpTo::OnEditFrame (wxCommandEvent &) {
 	JumpFrame->GetValue().ToLong(&jumpframe);
 	JumpTime->SetTime(c->videoController->TimeAtFrame(jumpframe));
 }

@@ -78,11 +78,11 @@ struct hotkey_visitor : json::ConstVisitor {
 		needs_backup = true;
 	}
 
-	void Visit(const json::Array& array) override { }
-	void Visit(int64_t number) override { }
-	void Visit(double number) override { }
-	void Visit(bool boolean) override { }
-	void Visit(const json::Null& null) override { }
+	void Visit(const json::Array&) override { }
+	void Visit(int64_t) override { }
+	void Visit(double) override { }
+	void Visit(bool) override { }
+	void Visit(const json::Null&) override { }
 };
 }
 

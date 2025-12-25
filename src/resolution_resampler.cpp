@@ -104,7 +104,7 @@ namespace {
 		bool convert_colors;
 	};
 
-	void resample_tags(std::string const& name, AssOverrideParameter *cur, void *ud) {
+	void resample_tags(std::string const&, AssOverrideParameter *cur, void *ud) {
 		resample_state *state = static_cast<resample_state *>(ud);
 
 		double resizer = 1.0;

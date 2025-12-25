@@ -1,6 +1,6 @@
 root = true
 
-[{src,libaegisub,automation,test,tools}/**.{c,cpp,h,hpp}]
+[{src,libaegisub,automation,tests,tools}/**.{c,cpp,h,hpp}]
 indent_style = tab
 indent_size = 4
 trim_trailing_whitespace = true

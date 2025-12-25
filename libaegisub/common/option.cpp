@@ -125,7 +125,7 @@ class ConfigVisitor final : public json::ConstVisitor {
 		values.push_back(std::make_unique<OptionValueBool>(name, boolean));
 	}
 
-	void Visit(const json::Null& null) override {
+	void Visit(const json::Null&) override {
 		Error("Attempt to read null value");
 	}
 

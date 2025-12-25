@@ -86,7 +86,7 @@ class AudioKaraoke final : public wxWindow {
 	wxBitmap rendered_line;
 
 	/// Indexes in spaced_text which are the beginning of syllables
-	std::vector<size_t> syl_start_points;
+	std::vector<int> syl_start_points;
 
 	/// x coordinate in pixels of the separator lines of each syllable
 	std::vector<int> syl_lines;

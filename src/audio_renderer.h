@@ -286,5 +286,5 @@ public:
 	///
 	/// Deriving classes should override this method if they implement any
 	/// kind of caching.
-	virtual void AgeCache(size_t max_size) { }
+	virtual void AgeCache([[maybe_unused]] size_t max_size) { }
 };

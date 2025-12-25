@@ -131,7 +131,7 @@ class WordSplitter {
 
 			auto token_type = dt::TEXT;
 
-			for (size_t i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++) {
 				if (rules[i] >= UBRK_WORD_LETTER && rules[i] < UBRK_WORD_IDEO_LIMIT) {
 					token_type = dt::WORD;
 					break;

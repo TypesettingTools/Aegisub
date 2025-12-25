@@ -2,9 +2,11 @@ project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.60.0',
         default_options: [
-            'b_ndebug=if-release',
             'cpp_std=c++20',
+            'warning_level=3',
             'buildtype=debugoptimized',
+            'b_ndebug=if-release',
+
             'harfbuzz:icu=disabled',
             'ffmpeg:libdav1d=enabled',
             'luajit:default_library=static',
@@ -359,6 +361,8 @@ if not dep_gl.found()
 endif
 if host_machine.system() == 'darwin'
     conf.set('HAVE_OPENGL_GL_H', 1)
+else
+    conf.set('HAVE_GL_GLEXT_H', cc.has_header('GL/glext.h'))
 endif
 
 if not dep_gl.found()

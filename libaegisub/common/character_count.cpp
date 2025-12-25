@@ -46,7 +46,7 @@ size_t count_in_range(std::string_view str, int mask) {
 		// Getting the character category only requires the first codepoint of a character
 		UChar32 c;
 		int i = 0;
-		U8_NEXT(bi.current().data(), i, bi.current().size(), c);
+		U8_NEXT(bi.current().data(), i, std::ssize(bi.current()), c);
 		UChar32 p = prev;
 		prev = c;
 

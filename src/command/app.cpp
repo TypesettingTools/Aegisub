@@ -222,11 +222,11 @@ struct app_toggle_global_hotkeys final : public Command {
 	STR_HELP("Toggle global hotkey overrides (Medusa Mode)")
 	CMD_TYPE(COMMAND_TOGGLE)
 
-	bool IsActive(const agi::Context *c) override {
+	bool IsActive(const agi::Context *) override {
 		return OPT_GET("Audio/Medusa Timing Hotkeys")->GetBool();
 	}
 
-	void operator()(agi::Context *c) override {
+	void operator()(agi::Context *) override {
 		agi::OptionValue *opt = OPT_SET("Audio/Medusa Timing Hotkeys");
 		opt->SetBool(!opt->GetBool());
 	}
@@ -237,17 +237,17 @@ struct app_toggle_toolbar final : public Command {
 	STR_HELP("Toggle the main toolbar")
 	CMD_TYPE(COMMAND_DYNAMIC_NAME)
 
-	wxString StrMenu(const agi::Context *c) const override {
+	wxString StrMenu(const agi::Context *) const override {
 		return OPT_GET("App/Show Toolbar")->GetBool() ?
 			_("Hide Toolbar") :
 			_("Show Toolbar");
 	}
 
-	wxString StrDisplay(const agi::Context *c) const override {
+	wxString StrDisplay(const agi::Context *) const override {
 		return StrMenu(nullptr);
 	}
 
-	void operator()(agi::Context *c) override {
+	void operator()(agi::Context *) override {
 		agi::OptionValue *opt = OPT_SET("App/Show Toolbar");
 		opt->SetBool(!opt->GetBool());
 	}
@@ -259,7 +259,7 @@ struct app_updates final : public Command {
 	STR_DISP("Check for Updates")
 	STR_HELP("Check to see if there is a new version of Aegisub available")
 
-	void operator()(agi::Context *c) override {
+	void operator()(agi::Context *) override {
 		PerformVersionCheck(true);
 	}
 };

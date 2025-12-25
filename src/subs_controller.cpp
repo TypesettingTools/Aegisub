@@ -161,8 +161,8 @@ SubsController::~SubsController() {
 }
 
 void SubsController::SetSelectionController(SelectionController *selection_controller) {
-	active_line_connection = context->selectionController->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
-	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
+	active_line_connection = selection_controller->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
+	selection_connection = selection_controller->AddSelectionListener(&SubsController::OnSelectionChanged, this);
 }
 
 ProjectProperties SubsController::Load(agi::fs::path const& filename, const char *charset) {

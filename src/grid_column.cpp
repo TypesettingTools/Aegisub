@@ -201,7 +201,7 @@ struct GridColumnStyle final : GridColumn {
 	COLUMN_DESCRIPTION(_("Style"))
 	bool Centered() const override { return false; }
 
-	wxString Value(const AssDialogue *d, const agi::Context *c) const override {
+	wxString Value(const AssDialogue *d, const agi::Context *) const override {
 		return to_wx(d->Style);
 	}
 
@@ -296,7 +296,7 @@ public:
 	bool Centered() const override { return true; }
 	bool RefreshOnTextChange() const override { return true; }
 
-	wxString Value(const AssDialogue *d, const agi::Context *) const override {
+	wxString Value(const AssDialogue *, const agi::Context *) const override {
 		return wxS("");
 	}
 
@@ -316,7 +316,7 @@ public:
 		return agi::CharacterCount(text, ignore) * 1000 / duration;
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper) const override {
+	int Width(const agi::Context *, WidthHelper &helper) const override {
 		return helper(wxS("999"));
 	}
 
@@ -394,7 +394,7 @@ public:
 		return str;
 	}
 
-	int Width(const agi::Context *c, WidthHelper &helper) const override {
+	int Width(const agi::Context *, WidthHelper &) const override {
 		return 5000;
 	}
 };

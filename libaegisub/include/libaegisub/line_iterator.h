@@ -85,10 +85,6 @@ public:
 	/// @brief Invalid iterator constructor; use for end iterator
 	line_iterator() = default;
 
-	/// @brief Copy constructor
-	/// @param that line_iterator to copy from
-	line_iterator(line_iterator<OutputType> const&) = default;
-
 	OutputType const& operator*() const { return value; }
 	OutputType const* operator->() const { return &value; }
 

@@ -375,7 +375,7 @@ void AegisubApp::CloseAll() {
 	}
 }
 
-void AegisubApp::UnhandledException(bool stackWalk) {
+void AegisubApp::UnhandledException([[maybe_unused]] bool stackWalk) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
 	bool any = false;
 	agi::fs::path path;

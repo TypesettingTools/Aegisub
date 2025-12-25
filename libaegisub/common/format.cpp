@@ -32,7 +32,7 @@ template class boost::interprocess::basic_vectorbuf<std::wstring>;
 
 namespace {
 template<typename Char>
-size_t actual_len(size_t max_len, const Char *value) {
+int actual_len(int max_len, const Char *value) {
 	int len = 0;
 	while (value[len] && (max_len <= 0 || len < max_len)) ++len;
 	return len;
