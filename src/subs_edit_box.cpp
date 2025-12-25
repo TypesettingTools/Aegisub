@@ -187,7 +187,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	by_frame->Enable(false);
 
 	split_box = new wxCheckBox(this,-1,_("Show Original"));
-	split_box->SetToolTip(_("Show the contents of the subtitle line when it was first selected above the edit box. This is sometimes useful when editing subtitles or translating subtitles into another language."));
+	split_box->SetToolTip(_("Show the contents of the subtitle line when the file was loaded. This is useful when translating subtitles into another language."));
 	split_box->Bind(wxEVT_CHECKBOX, &SubsEditBox::OnSplit, this);
 	middle_right_sizer->Add(split_box, wxSizerFlags().Center().Left());
 

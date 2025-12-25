@@ -15,21 +15,31 @@
 #include <libaegisub/signal.h>
 
 #include <string>
+#include <map>
 
-namespace agi { struct Context; }
+namespace agi { 
+	struct Context;
+	namespace fs { class path; }
+}
 class AssDialogue;
+class AssFile;
 
 class InitialLineState {
+	agi::Context *context;
 	agi::signal::Connection active_line_connection;
+	agi::signal::Connection file_open_connection;
 	std::string initial_text;
 	int line_id;
+	std::map<int, std::string> initial_texts_map;
 
 	agi::signal::Signal<std::string const&> InitialStateChanged;
 	void OnActiveLineChanged(AssDialogue *new_line);
+	void OnFileOpen(agi::fs::path const&);
 
 public:
 	InitialLineState(agi::Context *c);
 
-	std::string const& GetInitialText() const { return initial_text; }
+	std::string const& GetInitialText() const;
+	void SaveAllInitialTexts(AssFile *ass);
 	DEFINE_SIGNAL_ADDERS(InitialStateChanged, AddChangeListener)
 };
