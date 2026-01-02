@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-24 10:28-0100\n"
+"POT-Creation-Date: 2026-01-02 06:38-0100\n"
 "PO-Revision-Date: 2005-2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -518,7 +518,7 @@ msgstr ""
 msgid "&Open Audio File..."
 msgstr ""
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr ""
 
@@ -532,6 +532,10 @@ msgstr ""
 
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
+msgstr ""
+
+#: ../src/command/audio.cpp:85
+msgid "Open audio file"
 msgstr ""
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
@@ -2058,7 +2062,7 @@ msgstr ""
 msgid "Open Timecodes File..."
 msgstr ""
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr ""
 
@@ -2066,16 +2070,24 @@ msgstr ""
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr ""
 
+#: ../src/command/timecode.cpp:74
+msgid "Open timecodes file"
+msgstr ""
+
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr ""
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr ""
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
+msgstr ""
+
+#: ../src/command/timecode.cpp:94
+msgid "Save timecodes file"
 msgstr ""
 
 #: ../src/command/timecode.cpp:103
