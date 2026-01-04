@@ -222,7 +222,7 @@ void SubsTextEditCtrl::SetSyntaxStyle(int id, wxFont &font, std::string const& n
 }
 
 void SubsTextEditCtrl::SetStyles() {
-	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	wxFont font = *wxNORMAL_FONT;
 	font.SetEncoding(wxFONTENCODING_DEFAULT); // this solves problems with some fonts not working properly
 	wxString fontname = FontFace("Subtitle/Edit Box");
 	if (!fontname.empty()) font.SetFaceName(fontname);

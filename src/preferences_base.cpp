@@ -84,7 +84,7 @@ static void browse_button(wxTextCtrl *ctrl) {
 }
 
 static void font_button(Preferences *parent, wxTextCtrl *name, wxSpinCtrl *size) {
-	wxFont font;
+	wxFont font = *wxNORMAL_FONT;
 	font.SetFaceName(name->GetValue());
 	font.SetPointSize(size->GetValue());
 	font = wxGetFontFromUser(parent, font);
