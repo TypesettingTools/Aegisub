@@ -45,6 +45,7 @@
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
 #include <wx/sizer.h>
+#include <wx/statbox.h>
 #include <wx/textctrl.h>
 
 namespace {
@@ -139,25 +140,31 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 {
 	SetIcons(GETICONS(shift_times_toolbutton));
 
+	// Create static box sizers
+	wxStaticBoxSizer *shift_by_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Shift by"));
+	wxStaticBoxSizer *history_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Load from history"));
+	wxWindow *shift_by_static_box = shift_by_sizer->GetStaticBox();
+	wxWindow *history_static_box = history_sizer->GetStaticBox();
+
 	// Create controls
-	shift_by_time = new wxRadioButton(this, -1, _("&Time: "), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+	shift_by_time = new wxRadioButton(shift_by_static_box, -1, _("&Time: "), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
 	shift_by_time->SetToolTip(_("Shift by time"));
 	shift_by_time->Bind(wxEVT_RADIOBUTTON, &DialogShiftTimes::OnByTime, this);
 
-	shift_by_frames = new wxRadioButton(this, -1 , _("&Frames: "));
+	shift_by_frames = new wxRadioButton(shift_by_static_box, -1 , _("&Frames: "));
 	shift_by_frames->SetToolTip(_("Shift by frames"));
 	shift_by_frames->Bind(wxEVT_RADIOBUTTON, &DialogShiftTimes::OnByFrames, this);
 
-	shift_time = new TimeEdit(this, -1, context);
+	shift_time = new TimeEdit(shift_by_static_box, -1, context);
 	shift_time->SetToolTip(_("Enter time in h:mm:ss.cs notation"));
 
-	shift_frames = new wxTextCtrl(this, -1);
+	shift_frames = new wxTextCtrl(shift_by_static_box, -1);
 	shift_frames->SetToolTip(_("Enter number of frames to shift by"));
 
-	shift_forward = new wxRadioButton(this, -1, _("For&ward"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
+	shift_forward = new wxRadioButton(shift_by_static_box, -1, _("For&ward"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
 	shift_forward->SetToolTip(_("Shifts subs forward, making them appear later. Use if they are appearing too soon."));
 
-	shift_backward = new wxRadioButton(this, -1, _("&Backward"));
+	shift_backward = new wxRadioButton(shift_by_static_box, -1, _("&Backward"));
 	shift_backward->SetToolTip(_("Shifts subs backward, making them appear earlier. Use if they are appearing too late."));
 
 	wxString selection_mode_vals[] = { _("&All rows"), _("Selected &rows"), _("Selection &onward") };
@@ -166,9 +173,9 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	wxString time_field_vals[] = { _("Start a&nd End times"), _("&Start times only"), _("&End times only") };
 	time_fields = new wxRadioBox(this, -1, _("Times"), wxDefaultPosition, wxDefaultSize, 3, time_field_vals, 1);
 
-	history_box = new wxListBox(this, -1, wxDefaultPosition, wxSize(350, 100), 0, nullptr, wxLB_HSCROLL);
+	history_box = new wxListBox(history_static_box, -1, wxDefaultPosition, wxSize(350, 100), 0, nullptr, wxLB_HSCROLL);
 
-	wxButton *clear_button = new wxButton(this, -1, _("&Clear"));
+	wxButton *clear_button = new wxButton(history_static_box, -1, _("&Clear"));
 	clear_button->Bind(wxEVT_BUTTON, &DialogShiftTimes::OnClear, this);
 
 	// Set initial control states
@@ -200,7 +207,6 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	shift_direction_sizer->Add(shift_forward, wxSizerFlags(1).Expand());
 	shift_direction_sizer->Add(shift_backward, wxSizerFlags(1).Expand().Border(wxLEFT));
 
-	wxSizer *shift_by_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Shift by"));
 	shift_by_sizer->Add(shift_amount_sizer, wxSizerFlags().Expand());
 	shift_by_sizer->Add(shift_direction_sizer, wxSizerFlags().Expand().Border(wxTOP));
 
@@ -209,7 +215,6 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	left_sizer->Add(selection_mode, wxSizerFlags().Expand().Border(wxBOTTOM));
 	left_sizer->Add(time_fields, wxSizerFlags().Expand());
 
-	wxSizer *history_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Load from history"));
 	history_sizer->Add(history_box, wxSizerFlags(1).Expand());
 	history_sizer->Add(clear_button, wxSizerFlags().Expand().Border(wxTOP));
 

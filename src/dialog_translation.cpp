@@ -46,6 +46,7 @@
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/settings.h>
+#include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/stc/stc.h>
 
@@ -74,12 +75,12 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 
 	wxSizer *translation_sizer = new wxBoxSizer(wxVERTICAL);
 	{
-		wxSizer *original_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Original"));
+		wxStaticBoxSizer *original_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Original"));
 
-		line_number_display = new wxStaticText(this, -1, "");
+		line_number_display = new wxStaticText(original_box->GetStaticBox(), -1, "");
 		original_box->Add(line_number_display, 0, wxBOTTOM, 5);
 
-		original_text = new wxStyledTextCtrl(this, -1, wxDefaultPosition, wxSize(320, 80));
+		original_text = new wxStyledTextCtrl(original_box->GetStaticBox(), -1, wxDefaultPosition, wxSize(320, 80));
 		original_text->SetWrapMode(wxSTC_WRAP_WORD);
 		original_text->SetMarginWidth(1, 0);
 		original_text->StyleSetForeground(1, wxColour(10, 60, 200));
@@ -90,14 +91,15 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	}
 
 	{
-		translated_text = new SubsTextEditCtrl(this, wxSize(320, 80), 0, nullptr);
+		wxStaticBoxSizer *translated_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Translation"));
+
+		translated_text = new SubsTextEditCtrl(translated_box->GetStaticBox(), wxSize(320, 80), 0, nullptr);
 		translated_text->SetWrapMode(wxSTC_WRAP_WORD);
 		translated_text->SetMarginWidth(1, 0);
 		translated_text->SetFocus();
 		translated_text->Bind(wxEVT_CHAR_HOOK, &DialogTranslation::OnKeyDown, this);
 		translated_text->CmdKeyAssign(wxSTC_KEY_RETURN, wxSTC_KEYMOD_SHIFT, wxSTC_CMD_NEWLINE);
 
-		wxSizer *translated_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Translation"));
 		translated_box->Add(translated_text, 1, wxEXPAND, 0);
 		translation_sizer->Add(translated_box, 1, wxTOP|wxEXPAND, 5);
 	}
@@ -105,35 +107,36 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 
 	wxSizer *right_box = new wxBoxSizer(wxHORIZONTAL);
 	{
-		wxSizer *hotkey_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Keys"));
+		wxStaticBoxSizer *hotkey_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Keys"));
+		wxWindow *hotkey_sizer_box = hotkey_sizer->GetStaticBox();
 
 		wxSizer *hotkey_grid = new wxGridSizer(2, 0, 5);
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/commit", _("Accept changes"));
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/preview", _("Preview changes"));
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/prev", _("Previous line"));
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/next", _("Next line"));
-		add_hotkey(hotkey_grid, this, "tool/translation_assistant/insert_original", _("Insert original"));
-		add_hotkey(hotkey_grid, this, "video/play/line", _("Play video"));
-		add_hotkey(hotkey_grid, this, "audio/play/selection", _("Play audio"));
-		add_hotkey(hotkey_grid, this, "edit/line/delete", _("Delete line"));
-		hotkey_box->Add(hotkey_grid, 0, wxEXPAND, 0);
+		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/commit", _("Accept changes"));
+		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/preview", _("Preview changes"));
+		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/prev", _("Previous line"));
+		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/next", _("Next line"));
+		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/insert_original", _("Insert original"));
+		add_hotkey(hotkey_grid, hotkey_sizer_box, "video/play/line", _("Play video"));
+		add_hotkey(hotkey_grid, hotkey_sizer_box, "audio/play/selection", _("Play audio"));
+		add_hotkey(hotkey_grid, hotkey_sizer_box, "edit/line/delete", _("Delete line"));
+		hotkey_sizer->Add(hotkey_grid, 0, wxEXPAND, 0);
 
-		seek_video = new wxCheckBox(this, -1, _("Enable &preview"));
+		seek_video = new wxCheckBox(hotkey_sizer_box, -1, _("Enable &preview"));
 		seek_video->SetValue(true);
-		hotkey_box->Add(seek_video, 0, wxTOP, 5);
+		hotkey_sizer->Add(seek_video, 0, wxTOP, 5);
 
-		right_box->Add(hotkey_box, 1, wxRIGHT | wxEXPAND, 5);
+		right_box->Add(hotkey_sizer, 1, wxRIGHT | wxEXPAND, 5);
 	}
 
 	{
 		wxStaticBoxSizer *actions_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Actions"));
 
-		wxButton *play_audio = new wxButton(this, -1, _("Play &Audio"));
+		wxButton *play_audio = new wxButton(actions_box->GetStaticBox(), -1, _("Play &Audio"));
 		play_audio->Enable(!!c->project->AudioProvider());
 		play_audio->Bind(wxEVT_BUTTON, &DialogTranslation::OnPlayAudioButton, this);
 		actions_box->Add(play_audio, 0, wxALL, 5);
 
-		wxButton *play_video = new wxButton(this, -1, _("Play &Video"));
+		wxButton *play_video = new wxButton(actions_box->GetStaticBox(), -1, _("Play &Video"));
 		play_video->Enable(!!c->project->VideoProvider());
 		play_video->Bind(wxEVT_BUTTON, &DialogTranslation::OnPlayVideoButton, this);
 		actions_box->Add(play_video, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);

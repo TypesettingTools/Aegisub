@@ -98,6 +98,14 @@ namespace {
 int ShowEbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s) {
 	wxDialog d(owner, -1, _("Export to EBU STL format"));
 
+	wxStaticBoxSizer *text_formatting_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Text formatting"));
+	wxStaticBoxSizer *timecode_control_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Time codes"));
+	wxStaticBoxSizer *display_standard_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Display standard"));
+
+	wxWindow *text_formatting_box = text_formatting_sizer->GetStaticBox();
+	wxWindow *timecode_control_box = timecode_control_sizer->GetStaticBox();
+	wxWindow *display_standard_box = display_standard_sizer->GetStaticBox();
+
 	wxString tv_standards[] = {
 		_("23.976 fps (non-standard, STL24.01)"),
 		_("24 fps (non-standard, STL24.01)"),
@@ -108,9 +116,9 @@ int ShowEbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s) {
 	};
 	wxRadioBox *tv_standard_box = new wxRadioBox(&d, -1, _("TV standard"), wxDefaultPosition, wxDefaultSize, 6, tv_standards, 0, wxRA_SPECIFY_ROWS);
 
-	wxTextCtrl *timecode_offset_entry = new wxTextCtrl(&d, -1, "00:00:00:00");
+	wxTextCtrl *timecode_offset_entry = new wxTextCtrl(timecode_control_box, -1, "00:00:00:00");
 	timecode_offset_entry->SetInitialSize(timecode_offset_entry->GetSizeFromText(timecode_offset_entry->GetValue()));
-	wxCheckBox *inclusive_end_times_check = new wxCheckBox(&d, -1, _("Out-times are inclusive"));
+	wxCheckBox *inclusive_end_times_check = new wxCheckBox(timecode_control_box, -1, _("Out-times are inclusive"));
 
 	wxString text_encodings[] = {
 		_("ISO 6937-2 (Latin/Western Europe)"),
@@ -129,9 +137,9 @@ int ShowEbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s) {
 		_("Skip lines that are too long")
 	};
 
-	wxSpinCtrl *max_line_length_ctrl = new wxSpinCtrl(&d, -1, wxString(), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 10, 99);
-	wxComboBox *wrap_mode_ctrl = new wxComboBox(&d, -1, wrap_modes[0], wxDefaultPosition, wxDefaultSize, 4, wrap_modes, wxCB_DROPDOWN | wxCB_READONLY);
-	wxCheckBox *translate_alignments_check = new wxCheckBox(&d, -1, _("Translate alignments"));
+	wxSpinCtrl *max_line_length_ctrl = new wxSpinCtrl(text_formatting_box, -1, wxString(), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 10, 99);
+	wxComboBox *wrap_mode_ctrl = new wxComboBox(text_formatting_box, -1, wrap_modes[0], wxDefaultPosition, wxDefaultSize, 4, wrap_modes, wxCB_DROPDOWN | wxCB_READONLY);
+	wxCheckBox *translate_alignments_check = new wxCheckBox(text_formatting_box, -1, _("Translate alignments"));
 
 	wxString display_standards[] = {
 		_("Open subtitles"),
@@ -139,26 +147,23 @@ int ShowEbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s) {
 		_("Level-2 teletext")
 	};
 
-	wxComboBox *display_standard_ctrl = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize, 2, display_standards, wxCB_DROPDOWN | wxCB_READONLY);
+	wxComboBox *display_standard_ctrl = new wxComboBox(display_standard_box, -1, "", wxDefaultPosition, wxDefaultSize, 2, display_standards, wxCB_DROPDOWN | wxCB_READONLY);
 
 	wxSizer *max_line_length_labelled = new wxBoxSizer(wxHORIZONTAL);
-	max_line_length_labelled->Add(new wxStaticText(&d, -1, _("Max. line length:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
+	max_line_length_labelled->Add(new wxStaticText(text_formatting_box, -1, _("Max. line length:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
 	max_line_length_labelled->Add(max_line_length_ctrl, 0, 0, 0);
 
 	wxSizer *timecode_offset_labelled = new wxBoxSizer(wxHORIZONTAL);
-	timecode_offset_labelled->Add(new wxStaticText(&d, -1, _("Time code offset:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
+	timecode_offset_labelled->Add(new wxStaticText(timecode_control_box, -1, _("Time code offset:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
 	timecode_offset_labelled->Add(timecode_offset_entry, 0, 0, 0);
 
-	wxSizer *text_formatting_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Text formatting"));
 	text_formatting_sizer->Add(max_line_length_labelled, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 	text_formatting_sizer->Add(wrap_mode_ctrl, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 	text_formatting_sizer->Add(translate_alignments_check, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 
-	wxSizer *timecode_control_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Time codes"));
 	timecode_control_sizer->Add(timecode_offset_labelled, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 	timecode_control_sizer->Add(inclusive_end_times_check, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 
-	wxSizer *display_standard_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Display standard"));
 	display_standard_sizer->Add(display_standard_ctrl, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
 
 	wxSizer *left_column = new wxBoxSizer(wxVERTICAL);
