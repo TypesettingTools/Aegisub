@@ -85,7 +85,8 @@ static void browse_button(wxTextCtrl *ctrl) {
 
 static void font_button(Preferences *parent, wxTextCtrl *name, wxSpinCtrl *size) {
 	wxFont font = *wxNORMAL_FONT;
-	font.SetFaceName(name->GetValue());
+	wxString fontname = name->GetValue();
+	if (!fontname.empty()) font.SetFaceName(fontname);
 	font.SetPointSize(size->GetValue());
 	font = wxGetFontFromUser(parent, font);
 	if (font.IsOk()) {
@@ -261,6 +262,7 @@ void OptionPage::OptionFont(PageSection section, std::string opt_prefix) {
 	auto font_name = new wxTextCtrl(section.box, -1, to_wx(face_opt->GetString()));
 	font_name->SetMinSize(wxSize(160, -1));
 	font_name->Bind(wxEVT_TEXT, StringUpdater(face_opt->GetName().c_str(), parent));
+	font_name->SetHint(wxNORMAL_FONT->GetFaceName());
 
 	auto font_size = new wxSpinCtrl(section.box, -1, std::to_wstring((int)size_opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());
 	font_size->Bind(wxEVT_SPINCTRL, IntUpdater(size_opt->GetName().c_str(), parent));
