@@ -246,28 +246,30 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	if (c->path->Decode("?script") == "?script")
 		collection_mode->Enable(2, false);
 
-	wxStaticBoxSizer *destination_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));
+	wxStaticBoxSizer *destination_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Destination"));
+	wxWindow *destination_box = destination_sizer->GetStaticBox();
 
-	dest_label = new wxStaticText(this, -1, " ");
-	dest_ctrl = new wxTextCtrl(this, -1, to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()));
-	dest_browse_button = new wxButton(this, -1, _("&Browse..."));
+	dest_label = new wxStaticText(destination_box, -1, " ");
+	dest_ctrl = new wxTextCtrl(destination_box, -1, to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString()));
+	dest_browse_button = new wxButton(destination_box, -1, _("&Browse..."));
 
 	wxSizer *dest_browse_sizer = new wxBoxSizer(wxHORIZONTAL);
 	dest_browse_sizer->Add(dest_ctrl, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	dest_browse_sizer->Add(dest_browse_button, wxSizerFlags());
 
-	destination_box->Add(dest_label, wxSizerFlags().Border(wxBOTTOM));
-	destination_box->Add(dest_browse_sizer, wxSizerFlags().Expand());
+	destination_sizer->Add(dest_label, wxSizerFlags().Border(wxBOTTOM));
+	destination_sizer->Add(dest_browse_sizer, wxSizerFlags().Expand());
 
-	wxStaticBoxSizer *log_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Log"));
-	collection_log = new wxStyledTextCtrl(this, -1, wxDefaultPosition, wxSize(600, 300));
+	wxStaticBoxSizer *log_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Log"));
+	wxWindow *log_box = log_sizer->GetStaticBox();
+	collection_log = new wxStyledTextCtrl(log_box, -1, wxDefaultPosition, wxSize(600, 300));
 	collection_log->SetWrapMode(wxSTC_WRAP_WORD);
 	collection_log->SetMarginWidth(1, 0);
 	collection_log->SetReadOnly(true);
 	collection_log->StyleSetForeground(1, wxColour(0, 200, 0));
 	collection_log->StyleSetForeground(2, wxColour(200, 0, 0));
 	collection_log->StyleSetForeground(3, wxColour(200, 100, 0));
-	log_box->Add(collection_log, wxSizerFlags().Border());
+	log_sizer->Add(collection_log, wxSizerFlags().Border());
 
 	wxStdDialogButtonSizer *button_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	start_btn = button_sizer->GetAffirmativeButton();
@@ -277,8 +279,8 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->Add(collection_mode, wxSizerFlags().Expand().Border());
-	main_sizer->Add(destination_box, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
-	main_sizer->Add(log_box, wxSizerFlags().Border(wxALL & ~wxTOP));
+	main_sizer->Add(destination_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	main_sizer->Add(log_sizer, wxSizerFlags().Border(wxALL & ~wxTOP));
 	main_sizer->Add(button_sizer, wxSizerFlags().Right().Border(wxALL & ~wxTOP));
 
 	SetSizerAndFit(main_sizer);
