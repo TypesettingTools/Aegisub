@@ -279,7 +279,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	wxWindow *CurrentSizerBox = CurrentSizer->GetStaticBox();
 
 	// Catalog
-	CatalogList = new wxComboBox(CatalogSizerBox,-1, "", wxDefaultPosition, wxSize(-1,-1), 0, nullptr, wxCB_READONLY);
+	CatalogList = new wxComboBox(CatalogSizerBox,-1, "", wxDefaultPosition, wxDefaultSize, 0, nullptr, wxCB_READONLY);
 	wxButton *CatalogNew = new wxButton(CatalogSizerBox, -1, _("New"));
 	CatalogDelete = new wxButton(CatalogSizerBox, -1, _("Delete"));
 	CatalogSizer->Add(CatalogList, wxSizerFlags(1).Expand().Border(wxRIGHT));
