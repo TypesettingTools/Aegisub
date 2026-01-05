@@ -142,7 +142,7 @@ void ShowAboutDialog(wxWindow *parent) {
 	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), wxSizerFlags().Expand());
 	MainSizer->Add(textctrl, wxSizerFlags().Expand());
 	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), wxSizerFlags().Expand());
-	MainSizer->Add(d.CreateButtonSizer(wxOK), wxSizerFlags().Expand().Border(wxALL, 6));
+	MainSizer->Add(d.CreateButtonSizer(wxOK), wxSizerFlags().Expand().Border());
 
 	d.SetSizerAndFit(MainSizer);
 	d.CentreOnParent();
