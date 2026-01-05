@@ -79,18 +79,18 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 
 	auto TimesSizer = new wxGridSizer(2, 5, 5);
 
-	TimesSizer->Add(LabelFrame, 1, wxALIGN_CENTER_VERTICAL);
-	TimesSizer->Add(JumpFrame, wxEXPAND);
+	TimesSizer->Add(LabelFrame, wxSizerFlags(1).CenterVertical());
+	TimesSizer->Add(JumpFrame, wxSizerFlags().Expand());
 
-	TimesSizer->Add(LabelTime, 1, wxALIGN_CENTER_VERTICAL);
-	TimesSizer->Add(JumpTime, wxEXPAND);
+	TimesSizer->Add(LabelTime, wxSizerFlags(1).CenterVertical());
+	TimesSizer->Add(JumpTime, wxSizerFlags().Expand());
 
 	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL);
 
 	// General layout
 	auto MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TimesSizer, 0, wxALL | wxALIGN_CENTER, 5);
-	MainSizer->Add(ButtonSizer, 0, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 5);
+	MainSizer->Add(TimesSizer, wxSizerFlags().Center().Border());
+	MainSizer->Add(ButtonSizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	d.SetSizerAndFit(MainSizer);
 	d.CenterOnParent();
 

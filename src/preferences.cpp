@@ -86,18 +86,18 @@ void General_DefaultStyles(wxTreebook *book, Preferences *parent) {
 	auto p = new OptionPage(book, parent, _("Default styles"), OptionPage::PAGE_SUB);
 
 	auto staticbox = new wxStaticBoxSizer(wxVERTICAL, p, _("Default style catalogs"));
-	p->sizer->Add(staticbox, 0, wxEXPAND, 5);
+	p->sizer->Add(staticbox, wxSizerFlags().Expand());
 	p->sizer->AddSpacer(8);
 
 	auto instructions = new wxStaticText(staticbox->GetStaticBox(), wxID_ANY, _("The chosen style catalogs will be loaded when you start a new file or import files in the various formats.\n\nYou can set up style catalogs in the Style Manager."));
 	p->sizer->Fit(p);
 	instructions->Wrap(400);
-	staticbox->Add(instructions, 0, wxALL, 5);
+	staticbox->Add(instructions, wxSizerFlags().Border());
 	staticbox->AddSpacer(16);
 
 	auto general = new wxFlexGridSizer(2, 5, 5);
 	general->AddGrowableCol(0, 1);
-	staticbox->Add(general, 1, wxEXPAND, 5);
+	staticbox->Add(general, wxSizerFlags(1).Expand());
 
 	// Build a list of available style catalogs, and wished-available ones
 	auto const& avail_catalogs = AssStyleStorage::GetCatalogs();
@@ -249,7 +249,7 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
 
 	p->sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(p->sizer, wxEXPAND);
+	main_sizer->Add(p->sizer, 1);
 
 	auto audio = p->PageSizer(_("Audio Display"));
 	p->OptionAdd(audio, _("Play cursor"), "Colour/Audio Display/Play Cursor");
@@ -280,7 +280,7 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 
 	p->sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->AddSpacer(5);
-	main_sizer->Add(p->sizer, wxEXPAND);
+	main_sizer->Add(p->sizer, 1);
 
 	auto color_schemes = p->PageSizer(_("Audio Color Schemes"));
 	wxArrayString schemes = to_wx(OPT_GET("Audio/Colour Schemes")->GetListString());
@@ -370,7 +370,7 @@ void Advanced(wxTreebook *book, Preferences *parent) {
 	warning->SetFont(font);
 	p->sizer->Fit(p);
 	warning->Wrap(400);
-	general.sizer->Add(warning, 0, wxALL, 5);
+	general.sizer->Add(warning, wxSizerFlags().Border());
 
 	p->SetSizerAndFit(p->sizer);
 }
@@ -751,14 +751,14 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 	applyButton = stdButtonSizer->GetApplyButton();
 	wxSizer *buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	auto defaultButton = new wxButton(this, -1, _("&Restore Defaults"));
-	buttonSizer->Add(defaultButton, wxSizerFlags(0).Expand());
+	buttonSizer->Add(defaultButton, wxSizerFlags().Expand());
 	buttonSizer->AddStretchSpacer(1);
-	buttonSizer->Add(stdButtonSizer, wxSizerFlags(0).Expand());
+	buttonSizer->Add(stdButtonSizer, wxSizerFlags().Expand());
 
 	// Main Sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
 	mainSizer->Add(book, wxSizerFlags(1).Expand().Border());
-	mainSizer->Add(buttonSizer, wxSizerFlags(0).Expand().Border(wxALL & ~wxTOP));
+	mainSizer->Add(buttonSizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 
 	SetSizerAndFit(mainSizer);
 	CenterOnParent();

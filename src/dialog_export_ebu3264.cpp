@@ -150,45 +150,45 @@ int ShowEbuExportConfigurationDialog(wxWindow *owner, EbuExportSettings &s) {
 	wxComboBox *display_standard_ctrl = new wxComboBox(display_standard_box, -1, "", wxDefaultPosition, wxDefaultSize, 2, display_standards, wxCB_DROPDOWN | wxCB_READONLY);
 
 	wxSizer *max_line_length_labelled = new wxBoxSizer(wxHORIZONTAL);
-	max_line_length_labelled->Add(new wxStaticText(text_formatting_box, -1, _("Max. line length:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
-	max_line_length_labelled->Add(max_line_length_ctrl, 0, 0, 0);
+	max_line_length_labelled->Add(new wxStaticText(text_formatting_box, -1, _("Max. line length:")), wxSizerFlags(1).Center().Border(wxRIGHT, 12));
+	max_line_length_labelled->Add(max_line_length_ctrl);
 
 	wxSizer *timecode_offset_labelled = new wxBoxSizer(wxHORIZONTAL);
-	timecode_offset_labelled->Add(new wxStaticText(timecode_control_box, -1, _("Time code offset:")), 1, wxALIGN_CENTRE|wxRIGHT, 12);
-	timecode_offset_labelled->Add(timecode_offset_entry, 0, 0, 0);
+	timecode_offset_labelled->Add(new wxStaticText(timecode_control_box, -1, _("Time code offset:")), wxSizerFlags(1).Center().Border(wxRIGHT, 12));
+	timecode_offset_labelled->Add(timecode_offset_entry);
 
-	text_formatting_sizer->Add(max_line_length_labelled, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
-	text_formatting_sizer->Add(wrap_mode_ctrl, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
-	text_formatting_sizer->Add(translate_alignments_check, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
+	text_formatting_sizer->Add(max_line_length_labelled, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 6));
+	text_formatting_sizer->Add(wrap_mode_ctrl, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 6));
+	text_formatting_sizer->Add(translate_alignments_check, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 6));
 
-	timecode_control_sizer->Add(timecode_offset_labelled, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
-	timecode_control_sizer->Add(inclusive_end_times_check, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
+	timecode_control_sizer->Add(timecode_offset_labelled, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 6));
+	timecode_control_sizer->Add(inclusive_end_times_check, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 6));
 
-	display_standard_sizer->Add(display_standard_ctrl, 0, wxEXPAND | (wxALL & ~wxTOP), 6);
+	display_standard_sizer->Add(display_standard_ctrl, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 6));
 
 	wxSizer *left_column = new wxBoxSizer(wxVERTICAL);
-	left_column->Add(tv_standard_box, 0, wxEXPAND | wxBOTTOM, 6);
-	left_column->Add(timecode_control_sizer, 0, wxEXPAND | wxBOTTOM, 6);
-	left_column->Add(display_standard_sizer, 0, wxEXPAND, 0);
+	left_column->Add(tv_standard_box, wxSizerFlags().Expand().Border(wxBOTTOM, 6));
+	left_column->Add(timecode_control_sizer, wxSizerFlags().Expand().Border(wxBOTTOM, 6));
+	left_column->Add(display_standard_sizer, wxSizerFlags().Expand());
 
 	wxSizer *right_column = new wxBoxSizer(wxVERTICAL);
-	right_column->Add(text_encoding_box, 0, wxEXPAND|wxBOTTOM, 6);
-	right_column->Add(text_formatting_sizer, 0, wxEXPAND, 0);
+	right_column->Add(text_encoding_box, wxSizerFlags().Expand().Border(wxBOTTOM, 6));
+	right_column->Add(text_formatting_sizer, wxSizerFlags().Expand());
 
 	wxSizer *vertical_split_sizer = new wxBoxSizer(wxHORIZONTAL);
-	vertical_split_sizer->Add(left_column, 0, wxRIGHT, 6);
-	vertical_split_sizer->Add(right_column, 0, 0, 0);
+	vertical_split_sizer->Add(left_column, wxSizerFlags().Border(wxRIGHT, 6));
+	vertical_split_sizer->Add(right_column);
 
 	wxSizer *buttons_sizer = new wxBoxSizer(wxHORIZONTAL);
 	// Developers are requested to leave &d message in! Intentionally not translatable.
 	wxStaticText *sponsor_label = new wxStaticText(&d, -1, "EBU STL format writing sponsored by Bandai");
 	sponsor_label->Enable(false);
-	buttons_sizer->Add(sponsor_label, 1, wxALIGN_BOTTOM, 0);
-	buttons_sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL), 0, wxLEFT, 6);
+	buttons_sizer->Add(sponsor_label, wxSizerFlags(1).Bottom());
+	buttons_sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL), wxSizerFlags().Border(wxLEFT, 6));
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(vertical_split_sizer, 0, wxEXPAND|wxALL, 12);
-	main_sizer->Add(buttons_sizer, 0, wxEXPAND | (wxALL & ~wxTOP), 12);
+	main_sizer->Add(vertical_split_sizer, wxSizerFlags().Expand().Border(wxALL, 12));
+	main_sizer->Add(buttons_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 12));
 
 	d.SetSizerAndFit(main_sizer);
 	d.CenterOnParent();

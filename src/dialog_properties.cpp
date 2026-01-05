@@ -116,7 +116,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	AddProperty(TopSizerBox, TopSizerGrid, _("Update details:"), "Update Details");
 
 	TopSizerGrid->AddGrowableCol(1,1);
-	TopSizer->Add(TopSizerGrid,1,wxALL | wxEXPAND,0);
+	TopSizer->Add(TopSizerGrid, wxSizerFlags(1).Expand());
 
 	// Resolution box
 	wxStaticBoxSizer *res_box_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Resolution"));
@@ -132,10 +132,10 @@ DialogProperties::DialogProperties(agi::Context *c)
 		FromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetFromVideo, this);
 
 	auto res_sizer = new wxBoxSizer(wxHORIZONTAL);
-	res_sizer->Add(ResX, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
-	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), 0, wxALIGN_CENTER | wxRIGHT, 5); // U+00D7 multiplication sign
-	res_sizer->Add(ResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
-	res_sizer->Add(FromVideo, 1, 0, 0);
+	res_sizer->Add(ResX, wxSizerFlags(1).CenterVertical().Border(wxRIGHT));
+	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT)); // U+00D7 multiplication sign
+	res_sizer->Add(ResY, wxSizerFlags(1).CenterVertical().Border(wxRIGHT));
+	res_sizer->Add(FromVideo, 1);
 
 	YCbCrMatrix = new wxComboBox(res_box, -1, to_wx(c->ass->GetScriptInfo("YCbCr Matrix")),
 		 wxDefaultPosition, wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
@@ -159,23 +159,23 @@ DialogProperties::DialogProperties(agi::Context *c)
 	};
 	WrapStyle = new wxComboBox(optionsBox, -1, "", wxDefaultPosition, wxDefaultSize, 4, wrap_opts, wxCB_READONLY);
 	WrapStyle->SetSelection(c->ass->GetScriptInfoAsInt("WrapStyle"));
-	optionsGrid->Add(new wxStaticText(optionsBox,-1,_("Wrap Style: ")),0,wxALIGN_CENTER_VERTICAL,0);
-	optionsGrid->Add(WrapStyle,1,wxEXPAND,0);
+	optionsGrid->Add(new wxStaticText(optionsBox,-1,_("Wrap Style: ")), wxSizerFlags().CenterVertical());
+	optionsGrid->Add(WrapStyle, wxSizerFlags(1).Expand());
 
 	ScaleBorder = new wxCheckBox(optionsBox,-1,_("Scale Border and Shadow"));
 	ScaleBorder->SetToolTip(_("Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."));
 	ScaleBorder->SetValue(boost::iequals(c->ass->GetScriptInfo("ScaledBorderAndShadow"), "yes"));
 	optionsGrid->AddSpacer(0);
-	optionsGrid->Add(ScaleBorder,1,wxEXPAND,0);
+	optionsGrid->Add(ScaleBorder, wxSizerFlags(1).Expand());
 	optionsGrid->AddGrowableCol(1,1);
-	optionsSizer->Add(optionsGrid,1,wxEXPAND,0);
+	optionsSizer->Add(optionsGrid, wxSizerFlags(1).Expand());
 
 	// MainSizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TopSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(res_box_sizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(optionsSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(ButtonSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
+	MainSizer->Add(TopSizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	MainSizer->Add(res_box_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	MainSizer->Add(optionsSizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	MainSizer->Add(ButtonSizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 
 	d.SetSizerAndFit(MainSizer);
 	d.CenterOnParent();

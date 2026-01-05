@@ -71,7 +71,7 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 
 	// Set sizer
 	wxSizer *mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(videoBox,1,wxEXPAND);
+	mainSizer->Add(videoBox, wxSizerFlags(1).Expand());
 	SetSizerAndFit(mainSizer);
 
 	// Ensure we can grow smaller, without these the window is locked to at least the initial size

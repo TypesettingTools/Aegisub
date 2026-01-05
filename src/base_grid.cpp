@@ -72,7 +72,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 
 	auto scrollbarpositioner = new wxBoxSizer(wxHORIZONTAL);
 	scrollbarpositioner->AddStretchSpacer();
-	scrollbarpositioner->Add(scrollBar, 0, wxEXPAND, 0);
+	scrollbarpositioner->Add(scrollBar, wxSizerFlags().Expand());
 
 	SetSizerAndFit(scrollbarpositioner);
 

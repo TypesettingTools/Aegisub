@@ -76,24 +76,24 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	videoDisplay->MoveBeforeInTabOrder(videoSlider);
 
 	auto toolbarSizer = new wxBoxSizer(wxVERTICAL);
-	toolbarSizer->Add(visualToolBar, wxSizerFlags(1));
-	toolbarSizer->Add(visualSubToolBar, wxSizerFlags());
+	toolbarSizer->Add(visualToolBar, 1);
+	toolbarSizer->Add(visualSubToolBar);
 
 	auto topSizer = new wxBoxSizer(wxHORIZONTAL);
-	topSizer->Add(toolbarSizer, 0, wxEXPAND);
-	topSizer->Add(videoDisplay, isDetached, isDetached ? wxEXPAND : 0);
+	topSizer->Add(toolbarSizer, wxSizerFlags().Expand());
+	topSizer->Add(videoDisplay, isDetached ? wxSizerFlags(1).Expand() : wxSizerFlags());
 
 	auto videoBottomSizer = new wxBoxSizer(wxHORIZONTAL);
-	videoBottomSizer->Add(mainToolbar, wxSizerFlags(0).Center());
+	videoBottomSizer->Add(mainToolbar, wxSizerFlags().Center());
 	videoBottomSizer->Add(VideoPosition, wxSizerFlags(1).Center().Border(wxLEFT));
 	videoBottomSizer->Add(VideoSubsPos, wxSizerFlags(1).Center().Border(wxLEFT));
-	videoBottomSizer->Add(zoomBox, wxSizerFlags(0).Center().Border(wxLEFT | wxRIGHT));
+	videoBottomSizer->Add(zoomBox, wxSizerFlags().Center().HorzBorder());
 
 	auto VideoSizer = new wxBoxSizer(wxVERTICAL);
-	VideoSizer->Add(topSizer, 1, wxEXPAND, 0);
-	VideoSizer->Add(new wxStaticLine(this), 0, wxEXPAND, 0);
-	VideoSizer->Add(videoSlider, 0, wxEXPAND, 0);
-	VideoSizer->Add(videoBottomSizer, 0, wxEXPAND | wxBOTTOM, 5);
+	VideoSizer->Add(topSizer, wxSizerFlags(1).Expand());
+	VideoSizer->Add(new wxStaticLine(this), wxSizerFlags().Expand());
+	VideoSizer->Add(videoSlider, wxSizerFlags().Expand());
+	VideoSizer->Add(videoBottomSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
 	SetSizer(VideoSizer);
 
 	UpdateTimeBoxes();

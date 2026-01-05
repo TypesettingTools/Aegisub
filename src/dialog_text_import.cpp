@@ -51,15 +51,15 @@ bool ShowPlainTextImportDialog() {
 	};
 
 	auto fg = new wxFlexGridSizer(2, 5, 5);
-	fg->Add(new wxStaticText(&d, -1, _("Actor separator:")), 0, wxALIGN_CENTRE_VERTICAL);
-	fg->Add(make_text_ctrl(&seperator), 0, wxEXPAND);
-	fg->Add(new wxStaticText(&d, -1, _("Comment starter:")), 0, wxALIGN_CENTRE_VERTICAL);
-	fg->Add(make_text_ctrl(&comment), 0, wxEXPAND);
+	fg->Add(new wxStaticText(&d, -1, _("Actor separator:")), wxSizerFlags().CenterVertical());
+	fg->Add(make_text_ctrl(&seperator), wxSizerFlags().Expand());
+	fg->Add(new wxStaticText(&d, -1, _("Comment starter:")), wxSizerFlags().CenterVertical());
+	fg->Add(make_text_ctrl(&comment), wxSizerFlags().Expand());
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(fg, 1, wxALL|wxEXPAND, 5);
-	main_sizer->Add(new wxCheckBox(&d, -1, _("Include blank lines"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&include_blank)), 0, wxLEFT|wxRIGHT|wxALIGN_RIGHT, 5);
-	main_sizer->Add(d.CreateSeparatedButtonSizer(wxOK|wxCANCEL), 0, wxALL|wxEXPAND, 5);
+	main_sizer->Add(fg, wxSizerFlags(1).Expand().Border());
+	main_sizer->Add(new wxCheckBox(&d, -1, _("Include blank lines"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&include_blank)), wxSizerFlags().HorzBorder().Right());
+	main_sizer->Add(d.CreateSeparatedButtonSizer(wxOK|wxCANCEL), wxSizerFlags().Expand().Border());
 	d.SetSizerAndFit(main_sizer);
 
 	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) {

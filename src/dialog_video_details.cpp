@@ -57,8 +57,8 @@ void ShowVideoDetailsDialog(agi::Context *c) {
 
 	auto fg = new wxFlexGridSizer(2, 5, 10);
 	auto make_field = [&, video_sizer_box](wxString const& name, wxString const& value) {
-		fg->Add(new wxStaticText(video_sizer_box, -1, name), 0, wxALIGN_CENTRE_VERTICAL);
-		fg->Add(new wxTextCtrl(video_sizer_box, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
+		fg->Add(new wxStaticText(video_sizer_box, -1, name), wxSizerFlags().CenterVertical());
+		fg->Add(new wxTextCtrl(video_sizer_box, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), wxSizerFlags().CenterVertical().Expand());
 	};
 	make_field(_("File name:"), c->project->VideoName().wstring());
 	make_field(_("FPS:"), fmt_wx("%.3f", fps.FPS()));
@@ -70,8 +70,8 @@ void ShowVideoDetailsDialog(agi::Context *c) {
 	video_sizer->Add(fg);
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(video_sizer, 1, wxALL|wxEXPAND, 5);
-	main_sizer->Add(d.CreateSeparatedButtonSizer(wxOK), 0, wxALL|wxEXPAND, 5);
+	main_sizer->Add(video_sizer, wxSizerFlags(1).Expand().Border());
+	main_sizer->Add(d.CreateSeparatedButtonSizer(wxOK), wxSizerFlags().Expand().Border());
 	d.SetSizerAndFit(main_sizer);
 
 	d.CenterOnParent();

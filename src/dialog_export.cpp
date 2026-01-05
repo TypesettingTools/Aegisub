@@ -150,9 +150,9 @@ DialogExport::DialogExport(agi::Context *c)
 		charset_list->SetStringSelection("Unicode (UTF-8)");
 
 	top_sizer->Add(filter_list, wxSizerFlags(1).Expand());
-	top_sizer->Add(top_buttons, wxSizerFlags(0).Expand());
-	top_sizer->Add(filter_description, wxSizerFlags(0).Expand().Border(wxTOP));
-	top_sizer->Add(charset_list_sizer, wxSizerFlags(0).Expand().Border(wxTOP));
+	top_sizer->Add(top_buttons, wxSizerFlags().Expand());
+	top_sizer->Add(filter_description, wxSizerFlags().Expand().Border(wxTOP));
+	top_sizer->Add(charset_list_sizer, wxSizerFlags().Expand().Border(wxTOP));
 
 	auto btn_sizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 	btn_sizer->GetAffirmativeButton()->SetLabelText(_("Export..."));

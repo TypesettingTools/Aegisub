@@ -505,7 +505,7 @@ namespace Automation4 {
 		}
 
 		auto ms = new wxBoxSizer(wxVERTICAL);
-		ms->Add(s, 0, wxBOTTOM, 5);
+		ms->Add(s, wxSizerFlags().Border(wxBOTTOM));
 		ms->Add(bs);
 		window->SetSizerAndFit(ms);
 

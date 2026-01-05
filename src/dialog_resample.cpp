@@ -171,9 +171,9 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	margin_box_sizer->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
 
 	auto source_res_sizer = new wxBoxSizer(wxHORIZONTAL);
-	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
+	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).CenterVertical());
 	source_res_sizer->Add(new wxStaticText(source_res_box, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT)); // U+00D7 multiplication sign
-	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
+	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).CenterVertical());
 	source_res_sizer->Add(from_script);
 
 	auto source_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -184,9 +184,9 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	source_res_box_sizer->Add(source_matrix_sizer, wxSizerFlags(1).Expand());
 
 	auto dest_res_sizer = new wxBoxSizer(wxHORIZONTAL);
-	dest_res_sizer->Add(dest_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
+	dest_res_sizer->Add(dest_x, wxSizerFlags(1).Border(wxRIGHT).CenterVertical());
 	dest_res_sizer->Add(new wxStaticText(dest_res_box, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT));
-	dest_res_sizer->Add(dest_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
+	dest_res_sizer->Add(dest_y, wxSizerFlags(1).Border(wxRIGHT).CenterVertical());
 	dest_res_sizer->Add(from_video);
 
 	auto dest_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);

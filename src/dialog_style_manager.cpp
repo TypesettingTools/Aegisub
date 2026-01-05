@@ -282,38 +282,38 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	CatalogList = new wxComboBox(CatalogSizerBox,-1, "", wxDefaultPosition, wxSize(-1,-1), 0, nullptr, wxCB_READONLY);
 	wxButton *CatalogNew = new wxButton(CatalogSizerBox, -1, _("New"));
 	CatalogDelete = new wxButton(CatalogSizerBox, -1, _("Delete"));
-	CatalogSizer->Add(CatalogList,1,wxEXPAND | wxRIGHT,5);
-	CatalogSizer->Add(CatalogNew,0,wxRIGHT,5);
-	CatalogSizer->Add(CatalogDelete,0,0,0);
+	CatalogSizer->Add(CatalogList, wxSizerFlags(1).Expand().Border(wxRIGHT));
+	CatalogSizer->Add(CatalogNew, wxSizerFlags().Border(wxRIGHT));
+	CatalogSizer->Add(CatalogDelete);
 
 	// Storage styles list
 	wxSizer *StorageButtons = make_edit_buttons(StorageSizerBox, _("Copy to &current script ->"), &MoveToLocal, &StorageNew, &StorageEdit, &StorageCopy, &StorageDelete);
 
 	wxSizer *StorageListSizer = new wxBoxSizer(wxHORIZONTAL);
 	StorageList = new wxListBox(StorageSizerBox, -1, wxDefaultPosition, wxSize(240,250), 0, nullptr, wxLB_EXTENDED);
-	StorageListSizer->Add(StorageList,1,wxEXPAND | wxRIGHT,0);
+	StorageListSizer->Add(StorageList, wxSizerFlags(1).Expand());
 	StorageListSizer->Add(make_move_buttons(StorageSizerBox, &StorageMoveUp, &StorageMoveDown, &StorageMoveTop, &StorageMoveBottom, &StorageSort), wxSizerFlags().Expand());
 
-	StorageSizer->Add(StorageListSizer,1,wxEXPAND | wxBOTTOM,5);
-	StorageSizer->Add(MoveToLocal,0,wxEXPAND | wxBOTTOM,5);
-	StorageSizer->Add(StorageButtons,0,wxEXPAND | wxBOTTOM,0);
+	StorageSizer->Add(StorageListSizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	StorageSizer->Add(MoveToLocal, wxSizerFlags().Expand().Border(wxBOTTOM));
+	StorageSizer->Add(StorageButtons, wxSizerFlags().Expand());
 
 	// Local styles list
 	wxButton *CurrentImport = new wxButton(CurrentSizerBox, -1, _("&Import from script..."));
 	wxSizer *CurrentButtons = make_edit_buttons(CurrentSizerBox, _("<- Copy to &storage"), &MoveToStorage, &CurrentNew, &CurrentEdit, &CurrentCopy, &CurrentDelete);
 
 	wxSizer *MoveImportSizer = new wxBoxSizer(wxHORIZONTAL);
-	MoveImportSizer->Add(MoveToStorage,1,wxEXPAND | wxRIGHT,5);
-	MoveImportSizer->Add(CurrentImport,1,wxEXPAND,0);
+	MoveImportSizer->Add(MoveToStorage, wxSizerFlags(1).Expand().Border(wxRIGHT));
+	MoveImportSizer->Add(CurrentImport, wxSizerFlags(1).Expand());
 
 	wxSizer *CurrentListSizer = new wxBoxSizer(wxHORIZONTAL);
 	CurrentList = new wxListBox(CurrentSizerBox, -1, wxDefaultPosition, wxSize(240,250), 0, nullptr, wxLB_EXTENDED);
-	CurrentListSizer->Add(CurrentList,1,wxEXPAND | wxRIGHT,0);
+	CurrentListSizer->Add(CurrentList, wxSizerFlags(1).Expand());
 	CurrentListSizer->Add(make_move_buttons(CurrentSizerBox, &CurrentMoveUp, &CurrentMoveDown, &CurrentMoveTop, &CurrentMoveBottom, &CurrentSort), wxSizerFlags().Expand());
 
-	CurrentSizer->Add(CurrentListSizer,1,wxEXPAND | wxBOTTOM,5);
-	CurrentSizer->Add(MoveImportSizer,0,wxEXPAND | wxBOTTOM,5);
-	CurrentSizer->Add(CurrentButtons,0,wxEXPAND | wxBOTTOM,0);
+	CurrentSizer->Add(CurrentListSizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	CurrentSizer->Add(MoveImportSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
+	CurrentSizer->Add(CurrentButtons, wxSizerFlags().Expand());
 
 	// Buttons
 	wxStdDialogButtonSizer *buttonSizer = CreateStdDialogButtonSizer(wxCANCEL | wxHELP);
@@ -322,12 +322,12 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 
 	// General layout
 	wxSizer *StylesSizer = new wxBoxSizer(wxHORIZONTAL);
-	StylesSizer->Add(StorageSizer,0,wxRIGHT | wxEXPAND,5);
-	StylesSizer->Add(CurrentSizer,0,wxLEFT | wxEXPAND,0);
+	StylesSizer->Add(StorageSizer, wxSizerFlags().Expand().Border(wxRIGHT));
+	StylesSizer->Add(CurrentSizer, wxSizerFlags().Expand());
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(CatalogSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxTOP,5);
-	MainSizer->Add(StylesSizer,1,wxEXPAND | wxALL,5);
-	MainSizer->Add(buttonSizer,0,wxBOTTOM | wxEXPAND,5);
+	MainSizer->Add(CatalogSizer, wxSizerFlags().Expand().Border(wxALL & ~wxBOTTOM));
+	MainSizer->Add(StylesSizer, wxSizerFlags(1).Expand().Border());
+	MainSizer->Add(buttonSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
 
 	SetSizerAndFit(MainSizer);
 

@@ -138,16 +138,16 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 	// button layout
 	wxSizer *button_box = new wxBoxSizer(wxHORIZONTAL);
 	button_box->AddStretchSpacer(2);
-	button_box->Add(add_button, 0);
-	button_box->Add(remove_button, 0);
+	button_box->Add(add_button);
+	button_box->Add(remove_button);
 	button_box->AddSpacer(10);
-	button_box->Add(reload_button, 0);
-	button_box->Add(info_button, 0);
+	button_box->Add(reload_button);
+	button_box->Add(info_button);
 	button_box->AddSpacer(10);
-	button_box->Add(reload_autoload_button, 0);
+	button_box->Add(reload_autoload_button);
 	button_box->AddSpacer(10);
-	button_box->Add(new HelpButton(this,"Automation Manager"), 0);
-	button_box->Add(close_button, 0);
+	button_box->Add(new HelpButton(this,"Automation Manager"));
+	button_box->Add(close_button);
 	button_box->AddStretchSpacer(2);
 
 	// main layout

@@ -132,7 +132,7 @@ wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, cons
 	switch (opt->GetType()) {
 		case agi::OptionType::Bool: {
 			auto cb = new wxCheckBox(section.box, -1, name);
-			section.sizer->Add(cb, 1, wxEXPAND, 0);
+			section.sizer->Add(cb, wxSizerFlags(1).Expand());
 			cb->SetValue(opt->GetBool());
 			cb->Bind(wxEVT_CHECKBOX, BoolUpdater(opt_name, parent));
 			return cb;
@@ -211,10 +211,10 @@ void OptionPage::OptionChoice(PageSection section, const wxString &name, const w
 
 PageSection OptionPage::PageSizer(wxString name) {
 	auto tmp_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, name);
-	sizer->Add(tmp_sizer, 0,wxEXPAND, 5);
+	sizer->Add(tmp_sizer, wxSizerFlags().Expand());
 	auto flex = new wxFlexGridSizer(2,5,5);
 	flex->AddGrowableCol(0,1);
-	tmp_sizer->Add(flex, 1, wxEXPAND, 5);
+	tmp_sizer->Add(flex, wxSizerFlags(1).Expand());
 	sizer->AddSpacer(8);
 	return {flex, tmp_sizer->GetStaticBox()};
 }
