@@ -95,21 +95,21 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(wxString const& main_text
 
 	wxStaticText *text = new wxStaticText(this, -1, main_text);
 	text->Wrap(controls_width);
-	main_sizer->Add(text, wxSizerFlags().Expand().Border(wxBOTTOM, 6));
+	main_sizer->Add(text, wxSizerFlags().Expand().Border(wxBOTTOM));
 
 	for (auto const& update : updates) {
-		main_sizer->Add(new wxStaticLine(this), wxSizerFlags().Expand().Border(wxALL, 6));
+		main_sizer->Add(new wxStaticLine(this), wxSizerFlags().Expand().Border());
 
 		text = new wxStaticText(this, -1, to_wx(update.friendly_name));
 		wxFont boldfont = text->GetFont();
 		boldfont.SetWeight(wxFONTWEIGHT_BOLD);
 		text->SetFont(boldfont);
-		main_sizer->Add(text, wxSizerFlags().Expand().Border(wxBOTTOM, 6));
+		main_sizer->Add(text, wxSizerFlags().Expand().Border(wxBOTTOM));
 
 		wxTextCtrl *descbox = new wxTextCtrl(this, -1, to_wx(update.description), wxDefaultPosition, wxSize(controls_width,60), wxTE_MULTILINE|wxTE_READONLY);
-		main_sizer->Add(descbox, wxSizerFlags().Expand().Border(wxBOTTOM, 6));
+		main_sizer->Add(descbox, wxSizerFlags().Expand().Border(wxBOTTOM));
 
-		main_sizer->Add(new wxHyperlinkCtrl(this, -1, to_wx(update.url), to_wx(update.url)), wxSizerFlags().Left().Border(wxBOTTOM, 6));
+		main_sizer->Add(new wxHyperlinkCtrl(this, -1, to_wx(update.url), to_wx(update.url)), wxSizerFlags().Left().Border(wxBOTTOM));
 	}
 
 	automatic_check_checkbox = new wxCheckBox(this, -1, _("&Auto Check for Updates"));
@@ -124,8 +124,8 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(wxString const& main_text
 	SetEscapeId(wxID_OK);
 
 	if (updates.size())
-		main_sizer->Add(new wxStaticLine(this), wxSizerFlags().Expand().Border(wxALL, 6));
-	main_sizer->Add(automatic_check_checkbox, wxSizerFlags().Expand().Border(wxBOTTOM, 6));
+		main_sizer->Add(new wxStaticLine(this), wxSizerFlags().Expand().Border());
+	main_sizer->Add(automatic_check_checkbox, wxSizerFlags().Expand().Border(wxBOTTOM));
 
 	auto button_sizer = new wxStdDialogButtonSizer();
 	button_sizer->AddButton(close_button);
@@ -135,7 +135,7 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(wxString const& main_text
 	main_sizer->Add(button_sizer, wxSizerFlags().Expand());
 
 	wxSizer *outer_sizer = new wxBoxSizer(wxVERTICAL);
-	outer_sizer->Add(main_sizer, wxSizerFlags().Expand().Border(wxALL, 12));
+	outer_sizer->Add(main_sizer, wxSizerFlags().Expand().DoubleBorder());
 
 	SetSizerAndFit(outer_sizer);
 	Centre();
