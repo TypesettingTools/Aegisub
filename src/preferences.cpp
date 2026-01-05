@@ -91,7 +91,7 @@ void General_DefaultStyles(wxTreebook *book, Preferences *parent) {
 
 	auto instructions = new wxStaticText(staticbox->GetStaticBox(), wxID_ANY, _("The chosen style catalogs will be loaded when you start a new file or import files in the various formats.\n\nYou can set up style catalogs in the Style Manager."));
 	p->sizer->Fit(p);
-	instructions->Wrap(400);
+	instructions->Wrap(p->FromDIP(400));
 	staticbox->Add(instructions, wxSizerFlags().Border());
 	staticbox->AddSpacer(16);
 
@@ -371,7 +371,7 @@ void Advanced(wxTreebook *book, Preferences *parent) {
 	font.SetPointSize(12);
 	warning->SetFont(font);
 	p->sizer->Fit(p);
-	warning->Wrap(400);
+	warning->Wrap(p->FromDIP(400));
 	general.sizer->Add(warning, wxSizerFlags().Border());
 
 	p->SetSizerAndFit(p->sizer);
@@ -534,7 +534,7 @@ public:
 			size.x += GetView()->FromDIP(icon_width);
 			return size;
 		}
-		return wxSize(80,20);
+		return GetView()->FromDIP(wxSize(80, 20));
 	}
 
 	bool GetValueFromEditorCtrl(wxWindow* editor, wxVariant &var) override {
@@ -585,7 +585,7 @@ public:
 	}
 
 	bool GetValue(wxVariant &) const override { return false; }
-	wxSize GetSize() const override { return !value ? wxSize(80, 20) : GetTextExtent(value); }
+	wxSize GetSize() const override { return !value ? GetView()->FromDIP(wxSize(80, 20)) : GetTextExtent(value); }
 	bool HasEditorCtrl() const override { return true; }
 };
 
@@ -626,8 +626,8 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	dvc = new wxDataViewCtrl(this, -1);
 	dvc->AssociateModel(model.get());
 #ifndef __APPLE__
-	dvc->AppendColumn(new wxDataViewColumn(_("Hotkey"), new HotkeyRenderer, 0, 125, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
-	dvc->AppendColumn(new wxDataViewColumn(_("Command"), new CommandRenderer, 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
+	dvc->AppendColumn(new wxDataViewColumn(_("Hotkey"), new HotkeyRenderer, 0, FromDIP(125), wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
+	dvc->AppendColumn(new wxDataViewColumn(_("Command"), new CommandRenderer, 1, FromDIP(250), wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
 #else
 	auto col = new wxDataViewColumn(_("Hotkey"), new wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE), 0, 150, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
 	col->SetMinWidth(150);

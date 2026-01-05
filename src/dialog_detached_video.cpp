@@ -51,7 +51,7 @@
 #include <wx/display.h> /// Must be included last.
 
 DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
-: wxDialog(context->parent, -1, "Detached Video", wxDefaultPosition, wxSize(400,300), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
+: wxDialog(context->parent, -1, "Detached Video", wxDefaultPosition, FromDIP(wxSize(400,300)), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX | wxWANTS_CHARS)
 , context(context)
 , old_display(context->videoDisplay)
 , old_slider(context->videoSlider)
@@ -75,9 +75,9 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 	SetSizerAndFit(mainSizer);
 
 	// Ensure we can grow smaller, without these the window is locked to at least the initial size
-	context->videoDisplay->SetMinSize(wxSize(1,1));
-	videoBox->SetMinSize(wxSize(1,1));
-	SetMinSize(wxSize(1,1));
+	context->videoDisplay->SetMinSize(wxSize(1, 1));
+	videoBox->SetMinSize(wxSize(1, 1));
+	SetMinSize(wxSize(1, 1));
 
 	persist = std::make_unique<PersistLocation>(this, "Video/Detached");
 

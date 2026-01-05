@@ -62,14 +62,14 @@ DialogStyling::DialogStyling(agi::Context *context)
 
 	{
 		wxStaticBoxSizer *cur_line_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Current line"));
-		current_line_text = new wxTextCtrl(cur_line_box->GetStaticBox(), -1, _("Current line"), wxDefaultPosition, wxSize(300, 60), wxTE_MULTILINE | wxTE_READONLY);
+		current_line_text = new wxTextCtrl(cur_line_box->GetStaticBox(), -1, _("Current line"), wxDefaultPosition, FromDIP(wxSize(300, 60)), wxTE_MULTILINE | wxTE_READONLY);
 		cur_line_box->Add(current_line_text, wxSizerFlags(1).Expand());
 		main_sizer->Add(cur_line_box, wxSizerFlags().Expand().Border());
 	}
 
 	{
 		wxStaticBoxSizer *styles_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Styles available"));
-		style_list = new wxListBox(styles_box->GetStaticBox(), -1, wxDefaultPosition, wxSize(150, 180), to_wx(context->ass->GetStyles()));
+		style_list = new wxListBox(styles_box->GetStaticBox(), -1, wxDefaultPosition, FromDIP(wxSize(150, 180)), to_wx(context->ass->GetStyles()));
 		styles_box->Add(style_list, wxSizerFlags(1).Expand());
 		bottom_sizer->Add(styles_box, wxSizerFlags(1).Expand().Border(wxRIGHT));
 	}
@@ -77,7 +77,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 	wxSizer *right_sizer = new wxBoxSizer(wxVERTICAL);
 	{
 		wxStaticBoxSizer *style_text_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Set style"));
-		style_name = new wxTextCtrl(style_text_box->GetStaticBox(), -1, "", wxDefaultPosition, wxSize(180, -1), wxTE_PROCESS_ENTER);
+		style_name = new wxTextCtrl(style_text_box->GetStaticBox(), -1, "", wxDefaultPosition, FromDIP(wxSize(180, -1)), wxTE_PROCESS_ENTER);
 		style_text_box->Add(style_name, wxSizerFlags(1).Expand());
 		right_sizer->Add(style_text_box, wxSizerFlags().Expand().Border(wxBOTTOM));
 	}

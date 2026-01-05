@@ -59,7 +59,7 @@ void ShowVideoDetailsDialog(agi::Context *c) {
 	auto fg = new wxFlexGridSizer(2, gap, wxRound(2 * wxSizerFlags::GetDefaultBorderFractional()));
 	auto make_field = [&, video_sizer_box](wxString const& name, wxString const& value) {
 		fg->Add(new wxStaticText(video_sizer_box, -1, name), wxSizerFlags().CenterVertical());
-		fg->Add(new wxTextCtrl(video_sizer_box, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), wxSizerFlags().CenterVertical().Expand());
+		fg->Add(new wxTextCtrl(video_sizer_box, -1, value, wxDefaultPosition, d.FromDIP(wxSize(300,-1)), wxTE_READONLY), wxSizerFlags().CenterVertical().Expand());
 	};
 	make_field(_("File name:"), c->project->VideoName().wstring());
 	make_field(_("FPS:"), fmt_wx("%.3f", fps.FPS()));

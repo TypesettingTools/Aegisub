@@ -160,7 +160,7 @@ wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, cons
 		}
 
 		case agi::OptionType::Color: {
-			auto cb = new ColourButton(section.box, wxSize(40,10), false, opt->GetColor());
+			auto cb = new ColourButton(section.box, FromDIP(wxSize(40,10)), false, opt->GetColor());
 			cb->Bind(EVT_COLOR, ColourUpdater(opt_name, parent));
 			Add(section, name, cb);
 			return cb;
@@ -228,7 +228,7 @@ void OptionPage::OptionBrowse(PageSection section, const wxString &name, const c
 		throw agi::InternalError("Option must be agi::OptionType::String for BrowseButton.");
 
 	auto text = new wxTextCtrl(section.box, -1 , to_wx(opt->GetString()));
-	text->SetMinSize(wxSize(160, -1));
+	text->SetMinSize(FromDIP(wxSize(160, -1)));
 	text->Bind(wxEVT_TEXT, StringUpdater(opt_name, parent));
 
 	auto browse = new wxButton(section.box, -1, _("Browse..."));
@@ -260,7 +260,7 @@ void OptionPage::OptionFont(PageSection section, std::string opt_prefix) {
 	parent->AddChangeableOption(size_opt->GetName());
 
 	auto font_name = new wxTextCtrl(section.box, -1, to_wx(face_opt->GetString()));
-	font_name->SetMinSize(wxSize(160, -1));
+	font_name->SetMinSize(FromDIP(wxSize(160, -1)));
 	font_name->Bind(wxEVT_TEXT, StringUpdater(face_opt->GetName().c_str(), parent));
 
 	auto font_size = new wxSpinCtrl(section.box, -1, std::to_wstring((int)size_opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());

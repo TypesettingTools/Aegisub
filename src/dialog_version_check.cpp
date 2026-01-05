@@ -94,7 +94,7 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(wxString const& main_text
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
 	wxStaticText *text = new wxStaticText(this, -1, main_text);
-	text->Wrap(controls_width);
+	text->Wrap(FromDIP(controls_width));
 	main_sizer->Add(text, wxSizerFlags().Expand().Border(wxBOTTOM));
 
 	for (auto const& update : updates) {
@@ -106,7 +106,7 @@ VersionCheckerResultDialog::VersionCheckerResultDialog(wxString const& main_text
 		text->SetFont(boldfont);
 		main_sizer->Add(text, wxSizerFlags().Expand().Border(wxBOTTOM));
 
-		wxTextCtrl *descbox = new wxTextCtrl(this, -1, to_wx(update.description), wxDefaultPosition, wxSize(controls_width,60), wxTE_MULTILINE|wxTE_READONLY);
+		wxTextCtrl *descbox = new wxTextCtrl(this, -1, to_wx(update.description), wxDefaultPosition, FromDIP(wxSize(controls_width,60)), wxTE_MULTILINE|wxTE_READONLY);
 		main_sizer->Add(descbox, wxSizerFlags().Expand().Border(wxBOTTOM));
 
 		main_sizer->Add(new wxHyperlinkCtrl(this, -1, to_wx(update.url), to_wx(update.url)), wxSizerFlags().Left().Border(wxBOTTOM));
