@@ -99,10 +99,11 @@ void swap(wxCheckListBox *list, int idx, int sel_dir) {
 }
 
 DialogExport::DialogExport(agi::Context *c)
-: d(c->parent, -1, _("Export"), wxDefaultPosition, wxSize(200, 100), wxCAPTION | wxCLOSE_BOX)
+: d(c->parent, -1, _("Export"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX)
 , c(c)
 , exporter(c)
 {
+	d.SetSize(d.FromDIP(wxSize(200, 100)));
 	d.SetIcons(GETICONS(export_menu));
 	d.SetExtraStyle(wxWS_EX_VALIDATE_RECURSIVELY);
 
@@ -110,7 +111,7 @@ DialogExport::DialogExport(agi::Context *c)
 	wxWindow *top_sizer_box = top_sizer->GetStaticBox();
 
 	std::vector<std::string> filters = exporter.GetAllFilterNames();
-	filter_list = new wxCheckListBox(top_sizer_box, -1, wxDefaultPosition, wxSize(200, 100), to_wx(filters));
+	filter_list = new wxCheckListBox(top_sizer_box, -1, wxDefaultPosition, d.FromDIP(wxSize(200, 100)), to_wx(filters));
 	filter_list->Bind(wxEVT_CHECKLISTBOX, [this](wxCommandEvent&) { RefreshOptions(); });
 	filter_list->Bind(wxEVT_LISTBOX, &DialogExport::OnChange, this);
 
@@ -122,10 +123,10 @@ DialogExport::DialogExport(agi::Context *c)
 			filter_list->Check(distance(begin(filters), it));
 	}
 
-	wxButton *btn_up = new wxButton(top_sizer_box, -1, _("Move &Up"), wxDefaultPosition, wxSize(90, -1));
-	wxButton *btn_down = new wxButton(top_sizer_box, -1, _("Move &Down"), wxDefaultPosition, wxSize(90, -1));
-	wxButton *btn_all = new wxButton(top_sizer_box, -1, _("Select &All"), wxDefaultPosition, wxSize(80, -1));
-	wxButton *btn_none = new wxButton(top_sizer_box, -1, _("Select &None"), wxDefaultPosition, wxSize(80, -1));
+	wxButton *btn_up = new wxButton(top_sizer_box, -1, _("Move &Up"), wxDefaultPosition, d.FromDIP(wxSize(90, -1)));
+	wxButton *btn_down = new wxButton(top_sizer_box, -1, _("Move &Down"), wxDefaultPosition, d.FromDIP(wxSize(90, -1)));
+	wxButton *btn_all = new wxButton(top_sizer_box, -1, _("Select &All"), wxDefaultPosition, d.FromDIP(wxSize(80, -1)));
+	wxButton *btn_none = new wxButton(top_sizer_box, -1, _("Select &None"), wxDefaultPosition, d.FromDIP(wxSize(80, -1)));
 
 	btn_up->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection() - 1, 0); });
 	btn_down->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) { swap(filter_list, filter_list->GetSelection(), 1); });
@@ -138,7 +139,7 @@ DialogExport::DialogExport(agi::Context *c)
 	top_buttons->Add(btn_all, wxSizerFlags(1).Expand());
 	top_buttons->Add(btn_none, wxSizerFlags(1).Expand());
 
-	filter_description = new wxTextCtrl(top_sizer_box, -1, "", wxDefaultPosition, wxSize(200, 60), wxTE_MULTILINE | wxTE_READONLY);
+	filter_description = new wxTextCtrl(top_sizer_box, -1, "", wxDefaultPosition, d.FromDIP(wxSize(200, 60)), wxTE_MULTILINE | wxTE_READONLY);
 
 	// Charset dropdown list
 	wxStaticText *charset_list_label = new wxStaticText(top_sizer_box, -1, _("Text encoding:"));
