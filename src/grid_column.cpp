@@ -90,8 +90,8 @@ void GridColumn::UpdateWidth(const agi::Context *c, WidthHelper &helper) {
 void GridColumn::Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *c) const {
 	wxString str = Value(d, c);
 	if (Centered())
-		x += (width - 6 - dc.GetTextExtent(str).GetWidth()) / 2;
-	dc.DrawText(str, x + 4, y + 2);
+		x += (width - dc.FromDIP(6) - dc.GetTextExtent(str).GetWidth()) / 2;
+	dc.DrawText(str, x + dc.FromDIP(4), y + dc.FromDIP(2));
 }
 
 namespace {
@@ -335,12 +335,12 @@ public:
 			double alpha = std::min((double)(cps - cps_min + 1) / (cps_max - cps_min + 1), 1.0);
 			dc.SetBrush(wxBrush(blend(to_wx(bg_color->GetColor()), dc.GetBrush().GetColour(), alpha)));
 			dc.SetPen(*wxTRANSPARENT_PEN);
-			dc.DrawRectangle(x, y + 1, width, ext.GetHeight() + 3);
+			dc.DrawRectangle(x, y + 1, width, ext.GetHeight() + dc.FromDIP(4) - 1);
 			dc.SetTextForeground(blend(*wxBLACK, tc, alpha));
 		}
 
-		x += (width + 2 - ext.GetWidth()) / 2;
-		dc.DrawText(str, x, y + 2);
+		x += (width + dc.FromDIP(2) - ext.GetWidth()) / 2;
+		dc.DrawText(str, x, y + dc.FromDIP(2));
 		dc.SetTextForeground(tc);
 	}
 };
