@@ -115,7 +115,8 @@ DialogDummyVideo::DialogDummyVideo(wxWindow *parent)
 	color_sizer->Add(color_btn, wxSizerFlags().DoubleBorder(wxRIGHT));
 	color_sizer->Add(new wxCheckBox(&d, -1, _("Checkerboard &pattern"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&pattern)), wxSizerFlags(1).Center());
 
-	sizer = new wxFlexGridSizer(2, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	sizer = new wxFlexGridSizer(2, gap, gap);
 	AddCtrl(_("Video resolution:"), resolution_shortcuts(&d, width, height));
 	AddCtrl("", res_sizer);
 	AddCtrl(_("Color:"), color_sizer);

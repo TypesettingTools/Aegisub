@@ -86,7 +86,8 @@ DialogStyling::DialogStyling(agi::Context *context)
 		wxStaticBoxSizer *hotkey_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Keys"));
 		wxWindow *hotkey_sizer_box = hotkey_sizer->GetStaticBox();
 
-		wxSizer *hotkey_grid = new wxGridSizer(2, 0, 5);
+		int gap = wxSizerFlags::GetDefaultBorder();
+		wxSizer *hotkey_grid = new wxGridSizer(2, 0, gap);
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/styling_assistant/commit", _("Accept changes"));
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/styling_assistant/preview", _("Preview changes"));
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "grid/line/prev", _("Previous line"));

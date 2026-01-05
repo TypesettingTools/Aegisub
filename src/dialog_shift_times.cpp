@@ -196,7 +196,8 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 		shift_frames->Disable();
 
 	// Position controls
-	wxFlexGridSizer* shift_amount_sizer = new wxFlexGridSizer(2, 2, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto shift_amount_sizer = new wxFlexGridSizer(2, 2, gap, gap);
 	shift_amount_sizer->AddGrowableCol(1, 1);
 	shift_amount_sizer->Add(shift_by_time, wxSizerFlags().CenterVertical());
 	shift_amount_sizer->Add(shift_time, wxSizerFlags().Expand());

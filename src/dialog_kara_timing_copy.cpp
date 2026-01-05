@@ -390,7 +390,8 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 
 	wxStaticBoxSizer *DisplayBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Text"));
 	wxStaticBoxSizer *StylesBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles"));
-	auto StylesGridSizer = new wxFlexGridSizer(2, 2, 6, 6);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto StylesGridSizer = new wxFlexGridSizer(2, 2, gap, gap);
 	wxStaticBoxSizer *HelpBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Shortcut Keys"));
 	wxStaticBoxSizer *ButtonsBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Commands"));
 	wxSizer *MainStackSizer = new wxBoxSizer(wxVERTICAL);

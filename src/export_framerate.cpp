@@ -112,7 +112,8 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 	OutputSizer->Add(OutputSizerBottom, wxSizerFlags().Border(wxLEFT));
 
 	// Main window
-	auto MainSizer = new wxFlexGridSizer(3,2,5,10);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto MainSizer = new wxFlexGridSizer(3, 2, gap, wxRound(2 * wxSizerFlags::GetDefaultBorderFractional()));
 	MainSizer->Add(new wxStaticText(base,-1,_("Input framerate: ")), wxSizerFlags().Expand().CenterVertical());
 	MainSizer->Add(InputSizer, wxSizerFlags().Expand());
 	MainSizer->Add(new wxStaticText(base,-1,_("Output: ")), wxSizerFlags().CenterVertical());

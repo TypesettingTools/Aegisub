@@ -108,7 +108,7 @@ struct DialogTimingProcessor {
 wxTextCtrl *make_ctrl(wxWindow *parent, wxSizer *sizer, wxString const& desc, int *value, wxCheckBox *cb, wxString const& tooltip) {
 	wxIntegerValidator<int> validator(value);
 	validator.SetMin(0);
-	wxTextCtrl *ctrl = new wxTextCtrl(parent, -1, "", wxDefaultPosition, wxSize(60,-1), 0, validator);
+	wxTextCtrl *ctrl = new wxTextCtrl(parent, -1, "", wxDefaultPosition, parent->FromDIP(wxSize(60,-1)), 0, validator);
 	ctrl->SetToolTip(tooltip);
 	if (!desc.empty())
 		sizer->Add(new wxStaticText(parent, -1, desc), wxSizerFlags().Center().Border(wxRIGHT));
@@ -156,7 +156,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	// Styles box
 	auto LeftSizer = new wxStaticBoxSizer(wxVERTICAL,&d,_("Apply to styles"));
 	wxWindow *LeftSizerBox = LeftSizer->GetStaticBox();
-	StyleList = new wxCheckListBox(LeftSizerBox, -1, wxDefaultPosition, wxSize(150,150), to_wx(c->ass->GetStyles()));
+	StyleList = new wxCheckListBox(LeftSizerBox, -1, wxDefaultPosition, d.FromDIP(wxSize(150, 150)), to_wx(c->ass->GetStyles()));
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
 
 	auto all = new wxButton(LeftSizerBox,-1,_("&All"));
@@ -215,7 +215,8 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	// Keyframes sizer
 	auto KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL, &d, _("Keyframe snapping"));
 	wxWindow *KeyframesSizerBox = KeyframesSizer->GetStaticBox();
-	auto KeyframesFlexSizer = new wxFlexGridSizer(2,5,5,0);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto KeyframesFlexSizer = new wxFlexGridSizer(2, 5, gap, 0);
 
 	keysEnable = new wxCheckBox(KeyframesSizerBox, -1, _("E&nable"));
 	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold"));
