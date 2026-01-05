@@ -50,7 +50,8 @@ bool ShowPlainTextImportDialog() {
 		return new wxTextCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, 0, StringBinder(var));
 	};
 
-	auto fg = new wxFlexGridSizer(2, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto fg = new wxFlexGridSizer(2, gap, gap);
 	fg->Add(new wxStaticText(&d, -1, _("Actor separator:")), wxSizerFlags().CenterVertical());
 	fg->Add(make_text_ctrl(&seperator), wxSizerFlags().Expand());
 	fg->Add(new wxStaticText(&d, -1, _("Comment starter:")), wxSizerFlags().CenterVertical());

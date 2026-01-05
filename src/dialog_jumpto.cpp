@@ -77,7 +77,8 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	JumpFrame->SetMaxLength(std::to_string(c->project->VideoProvider()->GetFrameCount() - 1).size());
 	JumpTime = new TimeEdit(&d, -1, c, agi::Time(c->videoController->TimeAtFrame(jumpframe)).GetAssFormatted(), wxSize(-1,-1));
 
-	auto TimesSizer = new wxGridSizer(2, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto TimesSizer = new wxGridSizer(2, gap, gap);
 
 	TimesSizer->Add(LabelFrame, wxSizerFlags(1).CenterVertical());
 	TimesSizer->Add(JumpFrame, wxSizerFlags().Expand());

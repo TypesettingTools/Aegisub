@@ -108,7 +108,8 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
-	auto current_word_sizer = new wxFlexGridSizer(2, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto current_word_sizer = new wxFlexGridSizer(2, gap, gap);
 	main_sizer->Add(current_word_sizer, wxSizerFlags().Expand().Border());
 
 	wxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);

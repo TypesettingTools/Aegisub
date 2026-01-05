@@ -55,7 +55,8 @@ void ShowVideoDetailsDialog(agi::Context *c) {
 	auto video_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Video"));
 	wxWindow *video_sizer_box = video_sizer->GetStaticBox();
 
-	auto fg = new wxFlexGridSizer(2, 5, 10);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto fg = new wxFlexGridSizer(2, gap, wxRound(2 * wxSizerFlags::GetDefaultBorderFractional()));
 	auto make_field = [&, video_sizer_box](wxString const& name, wxString const& value) {
 		fg->Add(new wxStaticText(video_sizer_box, -1, name), wxSizerFlags().CenterVertical());
 		fg->Add(new wxTextCtrl(video_sizer_box, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), wxSizerFlags().CenterVertical().Expand());

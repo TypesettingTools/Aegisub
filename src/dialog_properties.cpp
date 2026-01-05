@@ -104,7 +104,8 @@ DialogProperties::DialogProperties(agi::Context *c)
 	// Script details crap
 	wxStaticBoxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Script"));
 	wxWindow *TopSizerBox = TopSizer->GetStaticBox();
-	auto TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto TopSizerGrid = new wxFlexGridSizer(0, 2, gap, gap);
 
 	AddProperty(TopSizerBox, TopSizerGrid, _("Title:"), "Title");
 	AddProperty(TopSizerBox, TopSizerGrid, _("Original script:"), "Original Script");
@@ -150,7 +151,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	// Options
 	wxStaticBoxSizer *optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Options"));
 	wxWindow *optionsBox = optionsSizer->GetStaticBox();
-	auto optionsGrid = new wxFlexGridSizer(3,2,5,5);
+	auto optionsGrid = new wxFlexGridSizer(3, 2, gap, gap);
 	wxString wrap_opts[] = {
 		_("0: Smart wrapping, top line is wider"),
 		_("1: End-of-line word wrapping, only \\N breaks"),
@@ -165,7 +166,6 @@ DialogProperties::DialogProperties(agi::Context *c)
 	ScaleBorder = new wxCheckBox(optionsBox,-1,_("Scale Border and Shadow"));
 	ScaleBorder->SetToolTip(_("Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."));
 	ScaleBorder->SetValue(boost::iequals(c->ass->GetScriptInfo("ScaledBorderAndShadow"), "yes"));
-	optionsGrid->AddSpacer(0);
 	optionsGrid->Add(ScaleBorder, wxSizerFlags(1).Expand());
 	optionsGrid->AddGrowableCol(1,1);
 	optionsSizer->Add(optionsGrid, wxSizerFlags(1).Expand());

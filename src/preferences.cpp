@@ -95,7 +95,8 @@ void General_DefaultStyles(wxTreebook *book, Preferences *parent) {
 	staticbox->Add(instructions, wxSizerFlags().Border());
 	staticbox->AddSpacer(16);
 
-	auto general = new wxFlexGridSizer(2, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto general = new wxFlexGridSizer(2, gap, gap);
 	general->AddGrowableCol(0, 1);
 	staticbox->Add(general, wxSizerFlags(1).Expand());
 
@@ -279,7 +280,8 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 	p->OptionAdd(syntax, _("Karaoke variables"), "Colour/Subtitle/Syntax/Karaoke Variable");
 
 	p->sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->AddSpacer(5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	main_sizer->AddSpacer(gap);
 	main_sizer->Add(p->sizer, 1);
 
 	auto color_schemes = p->PageSizer(_("Audio Color Schemes"));

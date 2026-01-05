@@ -109,6 +109,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	using std::bind;
 
 	// Top controls
+	int gap = wxSizerFlags::GetDefaultBorder();
 	top_sizer = new wxBoxSizer(wxHORIZONTAL);
 
 	comment_box = new wxCheckBox(this,-1,_("&Comment"));
@@ -153,18 +154,18 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	layer = new wxSpinCtrl(this,-1,"",wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS | wxTE_PROCESS_ENTER,0,999,0);
 	layer->SetToolTip(_("Layer number"));
 	middle_left_sizer->Add(layer, wxSizerFlags().Center());
-	middle_left_sizer->AddSpacer(5);
+	middle_left_sizer->AddSpacer(gap);
 
 	start_time = MakeTimeCtrl(_("Start time"), TIME_START);
 	end_time   = MakeTimeCtrl(_("End time"), TIME_END);
-	middle_left_sizer->AddSpacer(5);
+	middle_left_sizer->AddSpacer(gap);
 	duration   = MakeTimeCtrl(_("Line duration"), TIME_DURATION);
-	middle_left_sizer->AddSpacer(5);
+	middle_left_sizer->AddSpacer(gap);
 
 	margin[0] = MakeMarginCtrl(_("Left Margin (0 = default from style)"), 0, _("left margin change"));
 	margin[1] = MakeMarginCtrl(_("Right Margin (0 = default from style)"), 1, _("right margin change"));
 	margin[2] = MakeMarginCtrl(_("Vertical Margin (0 = default from style)"), 2, _("vertical margin change"));
-	middle_left_sizer->AddSpacer(5);
+	middle_left_sizer->AddSpacer(gap);
 
 	// Middle-bottom controls
 	middle_right_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -173,14 +174,14 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	MakeButton("edit/style/underline");
 	MakeButton("edit/style/strikeout");
 	MakeButton("edit/font");
-	middle_right_sizer->AddSpacer(5);
+	middle_right_sizer->AddSpacer(gap);
 	MakeButton("edit/color/primary");
 	MakeButton("edit/color/secondary");
 	MakeButton("edit/color/outline");
 	MakeButton("edit/color/shadow");
-	middle_right_sizer->AddSpacer(5);
+	middle_right_sizer->AddSpacer(gap);
 	MakeButton("grid/line/next/create");
-	middle_right_sizer->AddSpacer(10);
+	middle_right_sizer->AddSpacer(2 * gap);
 
 	by_time = MakeRadio(_("T&ime"), true, _("Time by h:mm:ss.cs"));
 	by_frame = MakeRadio(_("F&rame"), false, _("Time by frame number"));

@@ -212,7 +212,8 @@ void OptionPage::OptionChoice(PageSection section, const wxString &name, const w
 PageSection OptionPage::PageSizer(wxString name) {
 	auto tmp_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, name);
 	sizer->Add(tmp_sizer, wxSizerFlags().Expand());
-	auto flex = new wxFlexGridSizer(2,5,5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto flex = new wxFlexGridSizer(2, gap, gap);
 	flex->AddGrowableCol(0,1);
 	tmp_sizer->Add(flex, wxSizerFlags(1).Expand());
 	sizer->AddSpacer(8);

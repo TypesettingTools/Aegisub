@@ -326,7 +326,8 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	add_with_label(OutlineSizerBox, OutlineSizer, _("Border style:"), OutlineType);
 
 	// Misc
-	auto MiscBoxTop = new wxFlexGridSizer(2, 4, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto MiscBoxTop = new wxFlexGridSizer(2, 4, gap, gap);
 	add_with_label(MiscSizerBox, MiscBoxTop, _("Scale X%:"), ScaleX);
 	add_with_label(MiscSizerBox, MiscBoxTop, _("Scale Y%:"), ScaleY);
 	add_with_label(MiscSizerBox, MiscBoxTop, _("Rotation:"), Angle);

@@ -157,7 +157,8 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 		wxDefaultSize, std::size(ar_modes), ar_modes, 1, 4, MakeEnumBinder(&settings.ar_mode));
 
 	// Position the controls
-	auto margin_sizer = new wxGridSizer(3, 3, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto margin_sizer = new wxGridSizer(3, 3, gap, gap);
 	margin_sizer->AddSpacer(1);
 	margin_sizer->Add(margin_ctrl[TOP], wxSizerFlags(1).Expand());
 	margin_sizer->AddSpacer(1);

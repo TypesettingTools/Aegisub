@@ -110,6 +110,7 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 , global_manager(config::global_scripts)
 , global_scripts_changed(global_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))
 {
+	int gap = wxSizerFlags::GetDefaultBorder();
 	SetIcons(GETICONS(automation_toolbutton));
 
 	// create main controls
@@ -140,12 +141,12 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 	button_box->AddStretchSpacer(2);
 	button_box->Add(add_button);
 	button_box->Add(remove_button);
-	button_box->AddSpacer(10);
+	button_box->AddSpacer(2 * gap);
 	button_box->Add(reload_button);
 	button_box->Add(info_button);
-	button_box->AddSpacer(10);
+	button_box->AddSpacer(2 * gap);
 	button_box->Add(reload_autoload_button);
-	button_box->AddSpacer(10);
+	button_box->AddSpacer(2 * gap);
 	button_box->Add(new HelpButton(this,"Automation Manager"));
 	button_box->Add(close_button);
 	button_box->AddStretchSpacer(2);

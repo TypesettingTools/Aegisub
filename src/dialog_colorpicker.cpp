@@ -599,10 +599,11 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	wxSizer *spectop_sizer = new wxBoxSizer(wxHORIZONTAL);
 	spectop_sizer->Add(new wxStaticText(spectrum_box, -1, _("Spectrum mode:")), wxSizerFlags().CenterVertical().Left().Border(wxRIGHT));
 	spectop_sizer->Add(colorspace_choice, wxSizerFlags().CenterVertical().Left());
-	spectop_sizer->Add(5, 5, wxSizerFlags(1).Expand());
+	int gap = wxSizerFlags::GetDefaultBorder();
+	spectop_sizer->Add(gap, gap, wxSizerFlags(1).Expand());
 	spectop_sizer->Add(preview_box, wxSizerFlags().CenterVertical());
 
-	wxSizer *spectrum_sizer = new wxFlexGridSizer(3, 5, 5);
+	wxSizer *spectrum_sizer = new wxFlexGridSizer(3, gap, gap);
 	spectrum_sizer->Add(spectop_sizer, wxSizerFlags().Expand());
 	spectrum_sizer->AddStretchSpacer(1);
 	spectrum_sizer->AddStretchSpacer(1);
@@ -632,7 +633,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	wxSizer *hsx_sizer = new wxBoxSizer(wxHORIZONTAL);
 	hsx_sizer->Add(hsl_box_sizer);
-	hsx_sizer->AddSpacer(5);
+	hsx_sizer->AddSpacer(gap);
 	hsx_sizer->Add(hsv_box_sizer);
 
 	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -647,7 +648,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
 	input_sizer->Add(rgb_box_sizer, wxSizerFlags().Expand());
-	input_sizer->AddSpacer(5);
+	input_sizer->AddSpacer(gap);
 	input_sizer->Add(hsx_sizer, wxSizerFlags().Expand());
 	input_sizer->AddStretchSpacer(1);
 	input_sizer->Add(picker_sizer, wxSizerFlags().Expand());
@@ -704,7 +705,8 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 template<int N, class Control>
 wxSizer *DialogColorPicker::MakeColorInputSizer(wxWindow *parent, wxString (&labels)[N], Control *(&inputs)[N]) {
-	auto sizer = new wxFlexGridSizer(2, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto sizer = new wxFlexGridSizer(2, gap, gap);
 	for (int i = 0; i < N; ++i) {
 		sizer->Add(new wxStaticText(parent, -1, labels[i]), wxSizerFlags(1).Center().Left());
 		sizer->Add(inputs[i], wxSizerFlags().Expand());
