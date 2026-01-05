@@ -724,7 +724,7 @@ void Preferences::OnResetDefault(wxCommandEvent&) {
 	EndModal(-1);
 }
 
-Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, -1), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER) {
+Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER) {
 	SetIcons(GETICONS(options_button));
 
 	book = new wxTreebook(this, -1, wxDefaultPosition, wxDefaultSize);
