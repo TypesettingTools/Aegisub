@@ -107,9 +107,9 @@ DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 void DialogAttachments::UpdateList() {
 	listView->ClearAll();
 
-	listView->InsertColumn(0, _("Attachment name"), wxLIST_FORMAT_LEFT, 280);
-	listView->InsertColumn(1, _("Size"), wxLIST_FORMAT_LEFT, 100);
-	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 100);
+	listView->InsertColumn(0, _("Attachment name"), wxLIST_FORMAT_LEFT, d.FromDIP(280));
+	listView->InsertColumn(1, _("Size"), wxLIST_FORMAT_LEFT, d.FromDIP(100));
+	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, d.FromDIP(100));
 
 	for (auto& attach : ass->Attachments) {
 		int row = listView->GetItemCount();

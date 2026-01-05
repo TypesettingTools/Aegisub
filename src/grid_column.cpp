@@ -26,6 +26,7 @@
 #include <libaegisub/character_count.h>
 
 #include <wx/dc.h>
+#include <wx/window.h>
 
 void WidthHelper::Age() {
 	for (auto it = begin(widths), e = end(widths); it != e; ) {
@@ -83,7 +84,7 @@ void GridColumn::UpdateWidth(const agi::Context *c, WidthHelper &helper) {
 
 	width = Width(c, helper);
 	if (width) // 10 is an arbitrary amount of padding
-		width = 10 + std::max(width, helper(Header()));
+		width = c->parent->FromDIP(10) + std::max(width, helper(Header()));
 }
 
 void GridColumn::Paint(wxDC &dc, int x, int y, const AssDialogue *d, const agi::Context *c) const {
