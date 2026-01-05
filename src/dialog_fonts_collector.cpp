@@ -262,7 +262,7 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 
 	wxStaticBoxSizer *log_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Log"));
 	wxWindow *log_box = log_sizer->GetStaticBox();
-	collection_log = new wxStyledTextCtrl(log_box, -1, wxDefaultPosition, wxSize(600, 300));
+	collection_log = new wxStyledTextCtrl(log_box, -1, wxDefaultPosition, FromDIP(wxSize(600, 300)));
 	collection_log->SetWrapMode(wxSTC_WRAP_WORD);
 	collection_log->SetMarginWidth(1, 0);
 	collection_log->SetReadOnly(true);
