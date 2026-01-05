@@ -85,12 +85,12 @@ DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
 	buttonSizer->Add(attachGraphics, 1);
 	buttonSizer->Add(extractButton, 1);
 	buttonSizer->Add(deleteButton, 1);
-	buttonSizer->Add(new HelpButton(&d, "Attachment Manager"), 1, wxLEFT, 5);
+	buttonSizer->Add(new HelpButton(&d, "Attachment Manager"), wxSizerFlags(1).Border(wxLEFT));
 	buttonSizer->Add(new wxButton(&d, wxID_CANCEL, _("&Close")), 1);
 
 	auto mainSizer = new wxBoxSizer(wxVERTICAL);
-	mainSizer->Add(listView, 1, wxTOP | wxLEFT | wxRIGHT | wxEXPAND, 5);
-	mainSizer->Add(buttonSizer, 0, wxALL | wxEXPAND, 5);
+	mainSizer->Add(listView, wxSizerFlags(1).Expand().Border(wxALL & ~wxBOTTOM));
+	mainSizer->Add(buttonSizer, wxSizerFlags().Expand().Border());
 	d.SetSizerAndFit(mainSizer);
 	d.CenterOnParent();
 

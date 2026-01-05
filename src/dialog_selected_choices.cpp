@@ -38,7 +38,7 @@ int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const&
 	buttonSizer->Add(selNone);
 
 	auto sizer = dialog.GetSizer();
-	sizer->Insert(2, buttonSizer, wxSizerFlags(0).Center());
+	sizer->Insert(2, buttonSizer, wxSizerFlags().Center());
 	sizer->Fit(&dialog);
 
 	dialog.SetSelections(selections);

@@ -109,22 +109,22 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
 
 	auto current_word_sizer = new wxFlexGridSizer(2, 5, 5);
-	main_sizer->Add(current_word_sizer, wxSizerFlags().Expand().Border(wxALL, 5));
+	main_sizer->Add(current_word_sizer, wxSizerFlags().Expand().Border());
 
 	wxSizer *bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
-	main_sizer->Add(bottom_sizer, wxSizerFlags().Expand().Border(~wxTOP & wxALL, 5));
+	main_sizer->Add(bottom_sizer, wxSizerFlags().Expand().Border(~wxTOP & wxALL));
 
 	wxSizer *bottom_left_sizer = new wxBoxSizer(wxVERTICAL);
-	bottom_sizer->Add(bottom_left_sizer, wxSizerFlags().Expand().Border(wxRIGHT, 5));
+	bottom_sizer->Add(bottom_left_sizer, wxSizerFlags().Expand().Border(wxRIGHT));
 
 	wxSizer *actions_sizer = new wxBoxSizer(wxVERTICAL);
 	bottom_sizer->Add(actions_sizer, wxSizerFlags().Expand());
 
 	// Misspelled word and currently selected correction
 	current_word_sizer->AddGrowableCol(1, 1);
-	current_word_sizer->Add(new wxStaticText(this, -1, _("Misspelled word:")), 0, wxALIGN_CENTER_VERTICAL);
+	current_word_sizer->Add(new wxStaticText(this, -1, _("Misspelled word:")), wxSizerFlags().CenterVertical());
 	current_word_sizer->Add(orig_word = new wxTextCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_READONLY), wxSizerFlags(1).Expand());
-	current_word_sizer->Add(new wxStaticText(this, -1, _("Replace with:")), 0, wxALIGN_CENTER_VERTICAL);
+	current_word_sizer->Add(new wxStaticText(this, -1, _("Replace with:")), wxSizerFlags().CenterVertical());
 	current_word_sizer->Add(replace_word = new wxTextCtrl(this, -1, ""), wxSizerFlags(1).Expand());
 
 	replace_word->Bind(wxEVT_TEXT, [this](wxCommandEvent&) {
@@ -165,11 +165,11 @@ DialogSpellChecker::DialogSpellChecker(agi::Context *context)
 		language->SetSelection(cur_lang_index);
 		language->Bind(wxEVT_COMBOBOX, &DialogSpellChecker::OnChangeLanguage, this);
 
-		bottom_left_sizer->Add(language, wxSizerFlags().Expand().Border(wxTOP, 5));
+		bottom_left_sizer->Add(language, wxSizerFlags().Expand().Border(wxTOP));
 	}
 
 	{
-		wxSizerFlags button_flags = wxSizerFlags().Expand().Border(wxBOTTOM, 5);
+		wxSizerFlags button_flags = wxSizerFlags().Expand().Border(wxBOTTOM);
 
 		auto make_checkbox = [&](wxString const& text, const char *opt) {
 			auto checkbox = new wxCheckBox(this, -1, text);

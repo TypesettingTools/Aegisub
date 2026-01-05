@@ -198,9 +198,9 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	// Position controls
 	wxFlexGridSizer* shift_amount_sizer = new wxFlexGridSizer(2, 2, 5, 5);
 	shift_amount_sizer->AddGrowableCol(1, 1);
-	shift_amount_sizer->Add(shift_by_time, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL));
+	shift_amount_sizer->Add(shift_by_time, wxSizerFlags().CenterVertical());
 	shift_amount_sizer->Add(shift_time, wxSizerFlags().Expand());
-	shift_amount_sizer->Add(shift_by_frames, wxSizerFlags(0).Align(wxALIGN_CENTER_VERTICAL));
+	shift_amount_sizer->Add(shift_by_frames, wxSizerFlags().CenterVertical());
 	shift_amount_sizer->Add(shift_frames, wxSizerFlags().Expand());
 
 	wxSizer *shift_direction_sizer = new wxBoxSizer(wxHORIZONTAL);
