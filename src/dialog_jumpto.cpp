@@ -78,12 +78,12 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	JumpTime = new TimeEdit(&d, -1, c, agi::Time(c->videoController->TimeAtFrame(jumpframe)).GetAssFormatted(), wxDefaultSize);
 
 	int gap = wxSizerFlags::GetDefaultBorder();
-	auto TimesSizer = new wxGridSizer(2, gap, gap);
+	auto TimesSizer = new wxFlexGridSizer(2, gap, gap);
 
-	TimesSizer->Add(LabelFrame, wxSizerFlags(1).CenterVertical());
+	TimesSizer->Add(LabelFrame, wxSizerFlags().CenterVertical());
 	TimesSizer->Add(JumpFrame, wxSizerFlags().Expand());
 
-	TimesSizer->Add(LabelTime, wxSizerFlags(1).CenterVertical());
+	TimesSizer->Add(LabelTime, wxSizerFlags().CenterVertical());
 	TimesSizer->Add(JumpTime, wxSizerFlags().Expand());
 
 	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL);
