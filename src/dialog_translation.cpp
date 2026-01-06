@@ -111,7 +111,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		wxWindow *hotkey_sizer_box = hotkey_sizer->GetStaticBox();
 
 		int gap = wxSizerFlags::GetDefaultBorder();
-		wxSizer *hotkey_grid = new wxGridSizer(2, 0, gap);
+		wxSizer *hotkey_grid = new wxGridSizer(2, gap, gap);
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/commit", _("Accept changes"));
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/preview", _("Preview changes"));
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/prev", _("Previous line"));
