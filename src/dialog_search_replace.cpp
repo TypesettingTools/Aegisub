@@ -92,13 +92,13 @@ DialogSearchReplace<has_replace>::DialogSearchReplace(agi::Context* c)
 	auto options_grid = new wxFlexGridSizer(2, 2, gap, gap);
 	options_grid->Add(new wxCheckBox(this, -1, _("&Match case"), 
 		wxDefaultPosition, wxDefaultSize, 0, 
-		wxGenericValidator(&settings->match_case)), wxSizerFlags().Border(wxRIGHT));
+		wxGenericValidator(&settings->match_case)), wxSizerFlags().Border(wxBOTTOM | wxRIGHT));
 	options_grid->Add(new wxCheckBox(this, -1, _("&Use regular expressions"), 
 		wxDefaultPosition, wxDefaultSize, 0, 
 		wxGenericValidator(&settings->use_regex)));
 	options_grid->Add(new wxCheckBox(this, -1, _("&Skip Comments"), 
 		wxDefaultPosition, wxDefaultSize, 0, 
-		wxGenericValidator(&settings->ignore_comments)), wxSizerFlags().Border(wxRIGHT));
+		wxGenericValidator(&settings->ignore_comments)), wxSizerFlags().Border(wxBOTTOM | wxRIGHT));
 	options_grid->Add(new wxCheckBox(this, -1, _("S&kip Override Tags"), 
 		wxDefaultPosition, wxDefaultSize, 0, 
 		wxGenericValidator(&settings->skip_tags)));
@@ -139,6 +139,7 @@ DialogSearchReplace<has_replace>::DialogSearchReplace(agi::Context* c)
 	main_sizer->Add(limit_radio, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	main_sizer->Add(button_sizer, wxSizerFlags().Center().Border(wxALL & ~wxTOP));
 	SetSizerAndFit(main_sizer);
+	SetSize(GetSize().GetHeight() * 4 / 3, -1);
 	CenterOnParent();
 
 	TransferDataToWindow();
