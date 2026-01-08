@@ -57,7 +57,7 @@ template<> std::string AssOverrideParameter::Get<std::string>() const {
 	if (block.get()) {
 		std::string str(block->GetText());
 		if (str.starts_with("{")) str.erase(begin(str));
-		if (str.starts_with("}")) str.erase(end(str) - 1);
+		if (str.ends_with("}")) str.erase(end(str) - 1);
 		return str;
 	}
 	return value;

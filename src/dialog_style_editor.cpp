@@ -59,6 +59,7 @@
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
+#include <wx/statbox.h>
 #include <wx/stattext.h>
 
 /// Style rename helper that walks a file searching for a style and optionally
@@ -143,13 +144,13 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	SetIcons(GETICONS(style_toolbutton));
 
-	auto add_with_label = [&](wxSizer *sizer, wxString const& label, wxWindow *ctrl) {
-		sizer->Add(new wxStaticText(this, -1, label), wxSizerFlags().Center().Border(wxLEFT | wxRIGHT));
+	auto add_with_label = [&](wxWindow *labelParent, wxSizer *sizer, wxString const& label, wxWindow *ctrl) {
+		sizer->Add(new wxStaticText(labelParent, -1, label), wxSizerFlags().Center().Border(wxLEFT | wxRIGHT));
 		sizer->Add(ctrl, wxSizerFlags(ctrl->GetBestSize().GetWidth()).Left().Expand());
 	};
 
-	auto num_text_ctrl = [&](double *value, double min, double max, double step, int precision) -> wxSpinCtrlDouble * {
-		auto scd = new wxSpinCtrlDouble(this, -1, "", wxDefaultPosition,
+	auto num_text_ctrl = [&](wxWindow *parent, double *value, double min, double max, double step, int precision) -> wxSpinCtrlDouble * {
+		auto scd = new wxSpinCtrlDouble(parent, -1, "", wxDefaultPosition,
 			wxDefaultSize, wxSP_ARROW_KEYS, min, max, *value, step);
 		scd->SetDigits(precision);
 		scd->SetValidator(DoubleSpinValidator(value));
@@ -176,42 +177,50 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	AssStyle::GetEncodings(encodingStrings);
 
 	// Create sizers
-	wxSizer *NameSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Style Name"));
-	wxSizer *FontSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Font"));
-	wxSizer *ColorsSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Colors"));
-	wxSizer *MarginSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Margins"));
-	wxSizer *OutlineBox = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Outline"));
-	wxSizer *MiscBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Miscellaneous"));
-	wxSizer *PreviewBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Preview"));
+	wxStaticBoxSizer *NameSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Style Name"));
+	wxStaticBoxSizer *FontSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Font"));
+	wxStaticBoxSizer *ColorsSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Colors"));
+	wxStaticBoxSizer *MarginSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Margins"));
+	wxStaticBoxSizer *OutlineSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Outline"));
+	wxStaticBoxSizer *MiscSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Miscellaneous"));
+	wxStaticBoxSizer *PreviewSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Preview"));
+
+	wxWindow *NameSizerBox = NameSizer->GetStaticBox();
+	wxWindow *FontSizerBox = FontSizer->GetStaticBox();
+	wxWindow *ColorsSizerBox = ColorsSizer->GetStaticBox();
+	wxWindow *MarginSizerBox = MarginSizer->GetStaticBox();
+	wxWindow *OutlineSizerBox = OutlineSizer->GetStaticBox();
+	wxWindow *MiscSizerBox = MiscSizer->GetStaticBox();
+	wxWindow *PreviewSizerBox = PreviewSizer->GetStaticBox();
 
 	// Create controls
-	StyleName = new wxTextCtrl(this, -1, to_wx(style->name));
-	FontName = new wxComboBox(this, -1, to_wx(style->font), wxDefaultPosition, wxSize(150, -1), 0, nullptr, wxCB_DROPDOWN);
-	auto FontSize = num_text_ctrl(&work->fontsize, 0, 10000.0, 1.0, 0);
-	BoxBold = new wxCheckBox(this, -1, _("&Bold"));
-	BoxItalic = new wxCheckBox(this, -1, _("&Italic"));
-	BoxUnderline = new wxCheckBox(this, -1, _("&Underline"));
-	BoxStrikeout = new wxCheckBox(this, -1, _("&Strikeout"));
+	StyleName = new wxTextCtrl(NameSizerBox, -1, to_wx(style->name));
+	FontName = new wxComboBox(FontSizerBox, -1, to_wx(style->font), wxDefaultPosition, wxSize(150, -1), 0, nullptr, wxCB_DROPDOWN);
+	auto FontSize = num_text_ctrl(FontSizerBox, &work->fontsize, 0, 10000.0, 1.0, 0);
+	BoxBold = new wxCheckBox(FontSizerBox, -1, _("&Bold"));
+	BoxItalic = new wxCheckBox(FontSizerBox, -1, _("&Italic"));
+	BoxUnderline = new wxCheckBox(FontSizerBox, -1, _("&Underline"));
+	BoxStrikeout = new wxCheckBox(FontSizerBox, -1, _("&Strikeout"));
 	ColourButton *colorButton[] = {
-		new ColourButton(this, wxSize(55, 16), true, style->primary, ColorValidator(&work->primary)),
-		new ColourButton(this, wxSize(55, 16), true, style->secondary, ColorValidator(&work->secondary)),
-		new ColourButton(this, wxSize(55, 16), true, style->outline, ColorValidator(&work->outline)),
-		new ColourButton(this, wxSize(55, 16), true, style->shadow, ColorValidator(&work->shadow))
+		new ColourButton(ColorsSizerBox, wxSize(55, 16), true, style->primary, ColorValidator(&work->primary)),
+		new ColourButton(ColorsSizerBox, wxSize(55, 16), true, style->secondary, ColorValidator(&work->secondary)),
+		new ColourButton(ColorsSizerBox, wxSize(55, 16), true, style->outline, ColorValidator(&work->outline)),
+		new ColourButton(ColorsSizerBox, wxSize(55, 16), true, style->shadow, ColorValidator(&work->shadow))
 	};
 	for (int i = 0; i < 3; i++)
-		margin[i] = new wxSpinCtrl(this, -1, std::to_wstring(style->Margin[i]),
+		margin[i] = new wxSpinCtrl(MarginSizerBox, -1, std::to_wstring(style->Margin[i]),
 		                           wxDefaultPosition, wxDefaultSize,
 		                           wxSP_ARROW_KEYS, -9999, 99999, style->Margin[i]);
 
 	Alignment = new wxRadioBox(this, -1, _("Alignment"), wxDefaultPosition, wxDefaultSize, 9, alignValues, 3, wxRA_SPECIFY_COLS);
-	auto Outline = num_text_ctrl(&work->outline_w, 0.0, 1000.0, 0.1, 2);
-	auto Shadow = num_text_ctrl(&work->shadow_w, 0.0, 1000.0, 0.1, 2);
-	OutlineType = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, 3, borderStyleValues, wxCB_READONLY);
-	auto ScaleX = num_text_ctrl(&work->scalex, 0.0, 10000.0, 1, 2);
-	auto ScaleY = num_text_ctrl(&work->scaley, 0.0, 10000.0, 1, 2);
-	auto Angle = num_text_ctrl(&work->angle, -360.0, 360.0, 1.0, 2);
-	auto Spacing = num_text_ctrl(&work->spacing, 0.0, 1000.0, 0.1, 3);
-	Encoding = new wxComboBox(this, -1, "", wxDefaultPosition, wxDefaultSize, encodingStrings, wxCB_READONLY);
+	auto Outline = num_text_ctrl(OutlineSizerBox, &work->outline_w, 0.0, 1000.0, 0.1, 2);
+	auto Shadow = num_text_ctrl(OutlineSizerBox, &work->shadow_w, 0.0, 1000.0, 0.1, 2);
+	OutlineType = new wxComboBox(OutlineSizerBox, -1, "", wxDefaultPosition, wxDefaultSize, 3, borderStyleValues, wxCB_READONLY);
+	auto ScaleX = num_text_ctrl(MiscSizerBox, &work->scalex, 0.0, 10000.0, 1, 2);
+	auto ScaleY = num_text_ctrl(MiscSizerBox, &work->scaley, 0.0, 10000.0, 1, 2);
+	auto Angle = num_text_ctrl(MiscSizerBox, &work->angle, -360.0, 360.0, 1.0, 2);
+	auto Spacing = num_text_ctrl(MiscSizerBox, &work->spacing, 0.0, 1000.0, 0.1, 3);
+	Encoding = new wxComboBox(MiscSizerBox, -1, "", wxDefaultPosition, wxDefaultSize, encodingStrings, wxCB_READONLY);
 
 	// Set control tooltips
 	StyleName->SetToolTip(_("Style name"));
@@ -287,7 +296,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	ColorsSizer->AddStretchSpacer(1);
 	for (int i = 0; i < 4; ++i) {
 		auto sizer = new wxBoxSizer(wxVERTICAL);
-		sizer->Add(new wxStaticText(this, -1, colorLabels[i]), 0, wxBOTTOM | wxALIGN_CENTER, 5);
+		sizer->Add(new wxStaticText(ColorsSizerBox, -1, colorLabels[i]), 0, wxBOTTOM | wxALIGN_CENTER, 5);
 		sizer->Add(colorButton[i], 0, wxBOTTOM | wxALIGN_CENTER, 5);
 		ColorsSizer->Add(sizer, 0, wxLEFT, i?5:0);
 	}
@@ -299,7 +308,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	for (int i=0;i<3;i++) {
 		auto sizer = new wxBoxSizer(wxVERTICAL);
 		sizer->AddStretchSpacer(1);
-		sizer->Add(new wxStaticText(this, -1, marginLabels[i]), 0, wxCENTER, 0);
+		sizer->Add(new wxStaticText(MarginSizerBox, -1, marginLabels[i]), 0, wxCENTER, 0);
 		sizer->Add(margin[i], 0, wxTOP | wxCENTER, 5);
 		sizer->AddStretchSpacer(1);
 		MarginSizer->Add(sizer, 0, wxEXPAND | wxLEFT, i?5:0);
@@ -312,27 +321,27 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	MarginAlign->Add(Alignment, 0, wxLEFT | wxEXPAND, 5);
 
 	// Outline
-	add_with_label(OutlineBox, _("Outline:"), Outline);
-	add_with_label(OutlineBox, _("Shadow:"), Shadow);
-	add_with_label(OutlineBox, _("Border style:"), OutlineType);
+	add_with_label(OutlineSizerBox, OutlineSizer, _("Outline:"), Outline);
+	add_with_label(OutlineSizerBox, OutlineSizer, _("Shadow:"), Shadow);
+	add_with_label(OutlineSizerBox, OutlineSizer, _("Border style:"), OutlineType);
 
 	// Misc
 	auto MiscBoxTop = new wxFlexGridSizer(2, 4, 5, 5);
-	add_with_label(MiscBoxTop, _("Scale X%:"), ScaleX);
-	add_with_label(MiscBoxTop, _("Scale Y%:"), ScaleY);
-	add_with_label(MiscBoxTop, _("Rotation:"), Angle);
-	add_with_label(MiscBoxTop, _("Spacing:"), Spacing);
+	add_with_label(MiscSizerBox, MiscBoxTop, _("Scale X%:"), ScaleX);
+	add_with_label(MiscSizerBox, MiscBoxTop, _("Scale Y%:"), ScaleY);
+	add_with_label(MiscSizerBox, MiscBoxTop, _("Rotation:"), Angle);
+	add_with_label(MiscSizerBox, MiscBoxTop, _("Spacing:"), Spacing);
 
 	wxSizer *MiscBoxBottom = new wxBoxSizer(wxHORIZONTAL);
-	add_with_label(MiscBoxBottom, _("Encoding:"), Encoding);
+	add_with_label(MiscSizerBox, MiscBoxBottom, _("Encoding:"), Encoding);
 
-	MiscBox->Add(MiscBoxTop, wxSizerFlags().Expand());
-	MiscBox->Add(MiscBoxBottom, wxSizerFlags().Expand().Border(wxTOP));
+	MiscSizer->Add(MiscBoxTop, wxSizerFlags().Expand());
+	MiscSizer->Add(MiscBoxBottom, wxSizerFlags().Expand().Border(wxTOP));
 
 	// Preview
-	auto previewButton = new ColourButton(this, wxSize(45, 16), false, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
-	PreviewText = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
-	SubsPreview = new SubtitlesPreview(this, wxSize(100, 60), wxSUNKEN_BORDER, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
+	auto previewButton = new ColourButton(PreviewSizerBox, wxSize(45, 16), false, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
+	PreviewText = new wxTextCtrl(PreviewSizerBox, -1, to_wx(OPT_GET("Tool/Style Editor/Preview Text")->GetString()));
+	SubsPreview = new SubtitlesPreview(PreviewSizerBox, wxSize(100, 60), wxSUNKEN_BORDER, OPT_GET("Colour/Style Editor/Background/Preview")->GetColor());
 
 	SubsPreview->SetToolTip(_("Preview of current style"));
 	SubsPreview->SetStyle(*style);
@@ -343,8 +352,8 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	wxSizer *PreviewBottomSizer = new wxBoxSizer(wxHORIZONTAL);
 	PreviewBottomSizer->Add(PreviewText, 1, wxEXPAND | wxRIGHT, 5);
 	PreviewBottomSizer->Add(previewButton, 0, wxEXPAND, 0);
-	PreviewBox->Add(SubsPreview, 1, wxEXPAND | wxBOTTOM, 5);
-	PreviewBox->Add(PreviewBottomSizer, 0, wxEXPAND | wxBOTTOM, 0);
+	PreviewSizer->Add(SubsPreview, 1, wxEXPAND | wxBOTTOM, 5);
+	PreviewSizer->Add(PreviewBottomSizer, 0, wxEXPAND | wxBOTTOM, 0);
 
 	// Buttons
 	auto ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY | wxHELP);
@@ -358,9 +367,9 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	// Right side sizer
 	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
-	RightSizer->Add(OutlineBox, wxSizerFlags().Expand().Border(wxBOTTOM));
-	RightSizer->Add(MiscBox, wxSizerFlags().Expand().Border(wxBOTTOM));
-	RightSizer->Add(PreviewBox, wxSizerFlags(1).Expand());
+	RightSizer->Add(OutlineSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
+	RightSizer->Add(MiscSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
+	RightSizer->Add(PreviewSizer, wxSizerFlags(1).Expand());
 
 	// Controls Sizer
 	wxSizer *ControlSizer = new wxBoxSizer(wxHORIZONTAL);

@@ -54,6 +54,7 @@
 #include <wx/srchctrl.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
+#include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/treebook.h>
 
@@ -88,7 +89,7 @@ void General_DefaultStyles(wxTreebook *book, Preferences *parent) {
 	p->sizer->Add(staticbox, 0, wxEXPAND, 5);
 	p->sizer->AddSpacer(8);
 
-	auto instructions = new wxStaticText(p, wxID_ANY, _("The chosen style catalogs will be loaded when you start a new file or import files in the various formats.\n\nYou can set up style catalogs in the Style Manager."));
+	auto instructions = new wxStaticText(staticbox->GetStaticBox(), wxID_ANY, _("The chosen style catalogs will be loaded when you start a new file or import files in the various formats.\n\nYou can set up style catalogs in the Style Manager."));
 	p->sizer->Fit(p);
 	instructions->Wrap(400);
 	staticbox->Add(instructions, 0, wxALL, 5);
@@ -113,11 +114,13 @@ void General_DefaultStyles(wxTreebook *book, Preferences *parent) {
 		catalogs.Add(to_wx(cn));
 	catalogs.Sort();
 
-	p->OptionChoice(general, _("New files"), catalogs, "Subtitle Format/ASS/Default Style Catalog");
-	p->OptionChoice(general, _("MicroDVD import"), catalogs, "Subtitle Format/MicroDVD/Default Style Catalog");
-	p->OptionChoice(general, _("SRT import"), catalogs, "Subtitle Format/SRT/Default Style Catalog");
-	p->OptionChoice(general, _("TTXT import"), catalogs, "Subtitle Format/TTXT/Default Style Catalog");
-	p->OptionChoice(general, _("Plain text import"), catalogs, "Subtitle Format/TXT/Default Style Catalog");
+	PageSection section = {general, staticbox->GetStaticBox()};
+
+	p->OptionChoice(section, _("New files"), catalogs, "Subtitle Format/ASS/Default Style Catalog");
+	p->OptionChoice(section, _("MicroDVD import"), catalogs, "Subtitle Format/MicroDVD/Default Style Catalog");
+	p->OptionChoice(section, _("SRT import"), catalogs, "Subtitle Format/SRT/Default Style Catalog");
+	p->OptionChoice(section, _("TTXT import"), catalogs, "Subtitle Format/TTXT/Default Style Catalog");
+	p->OptionChoice(section, _("Plain text import"), catalogs, "Subtitle Format/TXT/Default Style Catalog");
 
 	p->SetSizerAndFit(p->sizer);
 }
@@ -361,13 +364,13 @@ void Advanced(wxTreebook *book, Preferences *parent) {
 
 	auto general = p->PageSizer(_("General"));
 
-	auto warning = new wxStaticText(p, wxID_ANY ,_("Changing these settings might result in bugs and/or crashes. Do not touch these unless you know what you're doing."));
+	auto warning = new wxStaticText(general.box, wxID_ANY ,_("Changing these settings might result in bugs and/or crashes. Do not touch these unless you know what you're doing."));
 	auto font = parent->GetFont().MakeBold();
 	font.SetPointSize(12);
 	warning->SetFont(font);
 	p->sizer->Fit(p);
 	warning->Wrap(400);
-	general->Add(warning, 0, wxALL, 5);
+	general.sizer->Add(warning, 0, wxALL, 5);
 
 	p->SetSizerAndFit(p->sizer);
 }

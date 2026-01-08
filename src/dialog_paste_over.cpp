@@ -35,6 +35,7 @@
 #include <wx/dialog.h>
 #include <wx/checklst.h>
 #include <wx/sizer.h>
+#include <wx/statbox.h>
 #include <wx/stattext.h>
 
 namespace {
@@ -55,8 +56,9 @@ DialogPasteOver::DialogPasteOver(wxWindow *parent)
 : d(parent, -1, _("Select Fields to Paste Over"))
 {
 	// Label and list sizer
-	wxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Fields"));
-	ListSizer->Add(new wxStaticText(&d, -1, _("Please select the fields that you want to paste over:")), wxSizerFlags());
+	wxStaticBoxSizer *ListSizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Fields"));
+	wxWindow *ListSizerBox = ListSizer->GetStaticBox();
+	ListSizer->Add(new wxStaticText(ListSizerBox, -1, _("Please select the fields that you want to paste over:")), wxSizerFlags());
 
 	// List box
 	wxArrayString choices;
@@ -71,7 +73,7 @@ DialogPasteOver::DialogPasteOver(wxWindow *parent)
 	choices.Add(_("Margin Vertical"));
 	choices.Add(_("Effect"));
 	choices.Add(_("Text"));
-	ListBox = new wxCheckListBox(&d, -1, wxDefaultPosition, wxDefaultSize, choices);
+	ListBox = new wxCheckListBox(ListSizerBox, -1, wxDefaultPosition, wxDefaultSize, choices);
 	ListSizer->Add(ListBox, wxSizerFlags(0).Expand().Border(wxTOP));
 
 	std::vector<bool> options = OPT_GET("Tool/Paste Lines Over/Fields")->GetListBool();

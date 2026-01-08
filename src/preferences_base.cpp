@@ -36,6 +36,7 @@
 #include <wx/listctrl.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
+#include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/treebook.h>
 
@@ -115,53 +116,53 @@ OptionPage::OptionPage(wxTreebook *book, Preferences *parent, wxString name, int
 }
 
 template<class T>
-void OptionPage::Add(wxSizer *sizer, wxString const& label, T *control) {
-	sizer->Add(new wxStaticText(this, -1, label), 1, wxALIGN_CENTRE_VERTICAL);
-	sizer->Add(control, wxSizerFlags().Expand());
+void OptionPage::Add(PageSection section, wxString const& label, T *control) {
+	section.sizer->Add(new wxStaticText(section.box, -1, label), 1, wxALIGN_CENTRE_VERTICAL);
+	section.sizer->Add(control, wxSizerFlags().Expand());
 }
 
-void OptionPage::CellSkip(wxFlexGridSizer *flex) {
-	flex->AddStretchSpacer();
+void OptionPage::CellSkip(PageSection section) {
+	section.sizer->AddStretchSpacer();
 }
 
-wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, double min, double max, double inc) {
+wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, const char *opt_name, double min, double max, double inc) {
 	parent->AddChangeableOption(opt_name);
 	const auto opt = OPT_GET(opt_name);
 
 	switch (opt->GetType()) {
 		case agi::OptionType::Bool: {
-			auto cb = new wxCheckBox(this, -1, name);
-			flex->Add(cb, 1, wxEXPAND, 0);
+			auto cb = new wxCheckBox(section.box, -1, name);
+			section.sizer->Add(cb, 1, wxEXPAND, 0);
 			cb->SetValue(opt->GetBool());
 			cb->Bind(wxEVT_CHECKBOX, BoolUpdater(opt_name, parent));
 			return cb;
 		}
 
 		case agi::OptionType::Int: {
-			auto sc = new wxSpinCtrl(this, -1, std::to_wstring((int)opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
+			auto sc = new wxSpinCtrl(section.box, -1, std::to_wstring((int)opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
 			sc->Bind(wxEVT_SPINCTRL, IntUpdater(opt_name, parent));
-			Add(flex, name, sc);
+			Add(section, name, sc);
 			return sc;
 		}
 
 		case agi::OptionType::Double: {
-			auto scd = new wxSpinCtrlDouble(this, -1, std::to_wstring(opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
+			auto scd = new wxSpinCtrlDouble(section.box, -1, std::to_wstring(opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
 			scd->Bind(wxEVT_SPINCTRLDOUBLE, DoubleUpdater(opt_name, parent));
-			Add(flex, name, scd);
+			Add(section, name, scd);
 			return scd;
 		}
 
 		case agi::OptionType::String: {
-			auto text = new wxTextCtrl(this, -1 , to_wx(opt->GetString()));
+			auto text = new wxTextCtrl(section.box, -1 , to_wx(opt->GetString()));
 			text->Bind(wxEVT_TEXT, StringUpdater(opt_name, parent));
-			Add(flex, name, text);
+			Add(section, name, text);
 			return text;
 		}
 
 		case agi::OptionType::Color: {
-			auto cb = new ColourButton(this, wxSize(40,10), false, opt->GetColor());
+			auto cb = new ColourButton(section.box, wxSize(40,10), false, opt->GetColor());
 			cb->Bind(EVT_COLOR, ColourUpdater(opt_name, parent));
-			Add(flex, name, cb);
+			Add(section, name, cb);
 			return cb;
 		}
 
@@ -170,7 +171,7 @@ wxControl *OptionPage::OptionAdd(wxFlexGridSizer *flex, const wxString &name, co
 	}
 }
 
-void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const wxArrayString &choices, const char *opt_name, bool translate) {
+void OptionPage::OptionChoice(PageSection section, const wxString &name, const wxArrayString &choices, const char *opt_name, bool translate) {
 	parent->AddChangeableOption(opt_name);
 	const auto opt = OPT_GET(opt_name);
 
@@ -180,8 +181,8 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 		std::transform(choices.begin(), choices.end(), std::back_inserter(choices_translated), [](const wxString &s) { return wxGetTranslation(s); });
 	}
 
-	auto cb = new wxComboBox(this, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, translate ? choices_translated : choices, wxCB_READONLY | wxCB_DROPDOWN);
-	Add(flex, name, cb);
+	auto cb = new wxComboBox(section.box, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, translate ? choices_translated : choices, wxCB_READONLY | wxCB_DROPDOWN);
+	Add(section, name, cb);
 
 	switch (opt->GetType()) {
 		case agi::OptionType::Int: {
@@ -208,35 +209,35 @@ void OptionPage::OptionChoice(wxFlexGridSizer *flex, const wxString &name, const
 	}
 }
 
-wxFlexGridSizer* OptionPage::PageSizer(wxString name) {
+PageSection OptionPage::PageSizer(wxString name) {
 	auto tmp_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, name);
 	sizer->Add(tmp_sizer, 0,wxEXPAND, 5);
 	auto flex = new wxFlexGridSizer(2,5,5);
 	flex->AddGrowableCol(0,1);
 	tmp_sizer->Add(flex, 1, wxEXPAND, 5);
 	sizer->AddSpacer(8);
-	return flex;
+	return {flex, tmp_sizer->GetStaticBox()};
 }
 
-void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const char *opt_name, wxControl *enabler, bool do_enable) {
+void OptionPage::OptionBrowse(PageSection section, const wxString &name, const char *opt_name, wxControl *enabler, bool do_enable) {
 	parent->AddChangeableOption(opt_name);
 	const auto opt = OPT_GET(opt_name);
 
 	if (opt->GetType() != agi::OptionType::String)
 		throw agi::InternalError("Option must be agi::OptionType::String for BrowseButton.");
 
-	auto text = new wxTextCtrl(this, -1 , to_wx(opt->GetString()));
+	auto text = new wxTextCtrl(section.box, -1 , to_wx(opt->GetString()));
 	text->SetMinSize(wxSize(160, -1));
 	text->Bind(wxEVT_TEXT, StringUpdater(opt_name, parent));
 
-	auto browse = new wxButton(this, -1, _("Browse..."));
+	auto browse = new wxButton(section.box, -1, _("Browse..."));
 	browse->Bind(wxEVT_BUTTON, std::bind(browse_button, text));
 
 	auto button_sizer = new wxBoxSizer(wxHORIZONTAL);
 	button_sizer->Add(text, wxSizerFlags(1).Expand());
 	button_sizer->Add(browse, wxSizerFlags().Expand());
 
-	Add(flex, name, button_sizer);
+	Add(section, name, button_sizer);
 
 	if (enabler) {
 		if (do_enable) {
@@ -250,29 +251,29 @@ void OptionPage::OptionBrowse(wxFlexGridSizer *flex, const wxString &name, const
 	}
 }
 
-void OptionPage::OptionFont(wxSizer *sizer, std::string opt_prefix) {
+void OptionPage::OptionFont(PageSection section, std::string opt_prefix) {
 	const auto face_opt = OPT_GET(opt_prefix + "Font Face");
 	const auto size_opt = OPT_GET(opt_prefix + "Font Size");
 
 	parent->AddChangeableOption(face_opt->GetName());
 	parent->AddChangeableOption(size_opt->GetName());
 
-	auto font_name = new wxTextCtrl(this, -1, to_wx(face_opt->GetString()));
+	auto font_name = new wxTextCtrl(section.box, -1, to_wx(face_opt->GetString()));
 	font_name->SetMinSize(wxSize(160, -1));
 	font_name->Bind(wxEVT_TEXT, StringUpdater(face_opt->GetName().c_str(), parent));
 
-	auto font_size = new wxSpinCtrl(this, -1, std::to_wstring((int)size_opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());
+	auto font_size = new wxSpinCtrl(section.box, -1, std::to_wstring((int)size_opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 3, 42, size_opt->GetInt());
 	font_size->Bind(wxEVT_SPINCTRL, IntUpdater(size_opt->GetName().c_str(), parent));
 
-	auto pick_btn = new wxButton(this, -1, _("Choose..."));
+	auto pick_btn = new wxButton(section.box, -1, _("Choose..."));
 	pick_btn->Bind(wxEVT_BUTTON, std::bind(font_button, parent, font_name, font_size));
 
 	auto button_sizer = new wxBoxSizer(wxHORIZONTAL);
 	button_sizer->Add(font_name, wxSizerFlags(1).Expand());
 	button_sizer->Add(pick_btn, wxSizerFlags().Expand());
 
-	Add(sizer, _("Font Face"), button_sizer);
-	Add(sizer, _("Font Size"), font_size);
+	Add(section, _("Font Face"), button_sizer);
+	Add(section, _("Font Size"), font_size);
 }
 
 void OptionPage::EnableIfChecked(wxControl *cbx, wxControl *ctrl) {
