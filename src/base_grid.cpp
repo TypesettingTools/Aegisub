@@ -72,7 +72,7 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 
 	auto scrollbarpositioner = new wxBoxSizer(wxHORIZONTAL);
 	scrollbarpositioner->AddStretchSpacer();
-	scrollbarpositioner->Add(scrollBar, 0, wxEXPAND, 0);
+	scrollbarpositioner->Add(scrollBar, wxSizerFlags().Expand());
 
 	SetSizerAndFit(scrollbarpositioner);
 
@@ -181,7 +181,7 @@ void BaseGrid::UpdateStyle() {
 	dc.SetFont(font);
 
 	// Set line height
-	lineHeight = dc.GetCharHeight() + 4;
+	lineHeight = dc.GetCharHeight() + FromDIP(4);
 
 	// Set row brushes
 	row_colors.Default.SetColour(to_wx(OPT_GET("Colour/Subtitle Grid/Background/Background")->GetColor()));
@@ -319,13 +319,13 @@ void BaseGrid::OnPaint(wxPaintEvent &) {
 	dc.SetPen(*wxTRANSPARENT_PEN);
 
 	auto paint_text = [&](wxString const& str, int x, int y, int col) {
-		int left = x + 4;
+		int left = x + FromDIP(4);
 		if (columns[col]->Centered()) {
 			wxSize ext = dc.GetTextExtent(str);
-			left += (columns[col]->Width() - 6 - ext.GetWidth()) / 2;
+			left += (columns[col]->Width() - FromDIP(6) - ext.GetWidth()) / 2;
 		}
 
-		dc.DrawText(str, left, y + 2);
+		dc.DrawText(str, left, y + FromDIP(2));
 	};
 
 	// Paint header

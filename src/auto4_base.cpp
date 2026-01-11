@@ -213,7 +213,7 @@ namespace Automation4 {
 			w.Create(bsr->GetParentWindow(), -1, to_wx(bsr->GetTitle()));
 			auto s = new wxBoxSizer(wxHORIZONTAL); // sizer for putting contents in
 			wxWindow *ww = config_dialog->CreateWindow(&w); // generate actual dialog contents
-			s->Add(ww, 0, wxALL, 5); // add contents to dialog
+			s->Add(ww, wxSizerFlags().Border()); // add contents to dialog
 			w.SetSizerAndFit(s);
 			w.SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
 			w.CenterOnParent();

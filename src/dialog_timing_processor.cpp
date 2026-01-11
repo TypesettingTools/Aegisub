@@ -108,7 +108,7 @@ struct DialogTimingProcessor {
 wxTextCtrl *make_ctrl(wxWindow *parent, wxSizer *sizer, wxString const& desc, int *value, wxCheckBox *cb, wxString const& tooltip) {
 	wxIntegerValidator<int> validator(value);
 	validator.SetMin(0);
-	wxTextCtrl *ctrl = new wxTextCtrl(parent, -1, "", wxDefaultPosition, wxSize(60,-1), 0, validator);
+	wxTextCtrl *ctrl = new wxTextCtrl(parent, -1, "", wxDefaultPosition, parent->FromDIP(wxSize(60,-1)), 0, validator);
 	ctrl->SetToolTip(tooltip);
 	if (!desc.empty())
 		sizer->Add(new wxStaticText(parent, -1, desc), wxSizerFlags().Center().Border(wxRIGHT));
@@ -156,7 +156,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	// Styles box
 	auto LeftSizer = new wxStaticBoxSizer(wxVERTICAL,&d,_("Apply to styles"));
 	wxWindow *LeftSizerBox = LeftSizer->GetStaticBox();
-	StyleList = new wxCheckListBox(LeftSizerBox, -1, wxDefaultPosition, wxSize(150,150), to_wx(c->ass->GetStyles()));
+	StyleList = new wxCheckListBox(LeftSizerBox, -1, wxDefaultPosition, d.FromDIP(wxSize(150, 150)), to_wx(c->ass->GetStyles()));
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
 
 	auto all = new wxButton(LeftSizerBox,-1,_("&All"));
@@ -169,7 +169,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	auto optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Options"));
 	onlySelection = new wxCheckBox(optionsSizer->GetStaticBox(),-1,_("Affect &selection only"));
 	onlySelection->SetValue(OPT_GET("Tool/Timing Post Processor/Only Selection")->GetBool());
-	optionsSizer->Add(onlySelection,1,wxALL,0);
+	optionsSizer->Add(onlySelection, 1);
 
 	// Lead-in/out box
 	auto LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL, &d, _("Lead-in/Lead-out"));
@@ -215,12 +215,13 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	// Keyframes sizer
 	auto KeyframesSizer = new wxStaticBoxSizer(wxHORIZONTAL, &d, _("Keyframe snapping"));
 	wxWindow *KeyframesSizerBox = KeyframesSizer->GetStaticBox();
-	auto KeyframesFlexSizer = new wxFlexGridSizer(2,5,5,0);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto KeyframesFlexSizer = new wxFlexGridSizer(2, 5, gap, 0);
 
 	keysEnable = new wxCheckBox(KeyframesSizerBox, -1, _("E&nable"));
 	keysEnable->SetToolTip(_("Enable snapping of subtitles to nearest keyframe, if distance is within threshold"));
 	keysEnable->SetValue(OPT_GET("Tool/Timing Post Processor/Enable/Keyframe")->GetBool());
-	KeyframesFlexSizer->Add(keysEnable,0,wxRIGHT|wxEXPAND,10);
+	KeyframesFlexSizer->Add(keysEnable, wxSizerFlags().Expand().DoubleBorder(wxRIGHT));
 
 	// Keyframes are only available if timecodes are loaded
 	bool keysAvailable = !c->project->Keyframes().empty() && c->project->Timecodes().IsLoaded();
@@ -243,7 +244,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	make_ctrl(KeyframesSizerBox, KeyframesFlexSizer, _("Ends after thres.:"), &afterEnd, keysEnable,
 		_("Threshold for 'after end' distance, that is, how many milliseconds a subtitle must end after a keyframe to snap to it"));
 
-	KeyframesSizer->Add(KeyframesFlexSizer,0,wxEXPAND);
+	KeyframesSizer->Add(KeyframesFlexSizer, wxSizerFlags().Expand());
 	KeyframesSizer->AddStretchSpacer(1);
 
 	// Button sizer
@@ -253,17 +254,17 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 
 	// Right Sizer
 	auto RightSizer = new wxBoxSizer(wxVERTICAL);
-	RightSizer->Add(optionsSizer,0,wxBOTTOM|wxEXPAND,5);
-	RightSizer->Add(LeadSizer,0,wxBOTTOM|wxEXPAND,5);
-	RightSizer->Add(AdjacentSizer,0,wxBOTTOM|wxEXPAND,5);
-	RightSizer->Add(KeyframesSizer,0,wxBOTTOM|wxEXPAND,5);
+	RightSizer->Add(optionsSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
+	RightSizer->Add(LeadSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
+	RightSizer->Add(AdjacentSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
+	RightSizer->Add(KeyframesSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
 	RightSizer->AddStretchSpacer(1);
-	RightSizer->Add(ButtonSizer,0,wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND,0);
+	RightSizer->Add(ButtonSizer, wxSizerFlags().Expand());
 
 	// Style buttons sizer
 	auto StyleButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
-	StyleButtonsSizer->Add(all,1,0,0);
-	StyleButtonsSizer->Add(none,1,0,0);
+	StyleButtonsSizer->Add(all, 1);
+	StyleButtonsSizer->Add(none, 1);
 
 	// Left sizer
 	LeftSizer->Add(StyleList, wxSizerFlags(1).Border(wxBOTTOM));
@@ -271,12 +272,12 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 
 	// Top Sizer
 	auto TopSizer = new wxBoxSizer(wxHORIZONTAL);
-	TopSizer->Add(LeftSizer,0,wxRIGHT|wxEXPAND,5);
-	TopSizer->Add(RightSizer,1,wxALL|wxEXPAND,0);
+	TopSizer->Add(LeftSizer, wxSizerFlags().Expand().Border(wxRIGHT));
+	TopSizer->Add(RightSizer, wxSizerFlags(1).Expand());
 
 	// Main Sizer
 	auto MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TopSizer,1,wxALL|wxEXPAND,5);
+	MainSizer->Add(TopSizer, wxSizerFlags(1).Expand().Border());
 	d.SetSizerAndFit(MainSizer);
 	d.CenterOnParent();
 
