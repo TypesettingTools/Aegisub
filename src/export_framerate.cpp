@@ -79,8 +79,8 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 		FromVideo->Enable(false);
 	}
 	InputFramerate = new wxTextCtrl(base,-1,initialInput);
-	InputSizer->Add(InputFramerate,0,wxEXPAND | wxLEFT,5);
-	InputSizer->Add(FromVideo,0,wxEXPAND | wxLEFT,5);
+	InputSizer->Add(InputFramerate, wxSizerFlags().Expand().Border(wxLEFT));
+	InputSizer->Add(FromVideo, wxSizerFlags().Expand().Border(wxLEFT));
 	InputSizer->AddStretchSpacer(1);
 
 	// Output sizers
@@ -90,7 +90,7 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 
 	// Output top line
 	RadioOutputVFR = new wxRadioButton(base,-1,_("V&ariable"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP);
-	OutputSizerTop->Add(RadioOutputVFR,0,wxEXPAND,0);
+	OutputSizerTop->Add(RadioOutputVFR, wxSizerFlags().Expand());
 
 	// Output bottom line
 	RadioOutputCFR = new wxRadioButton(base,-1,_("&Constant: "));
@@ -100,24 +100,25 @@ wxWindow *AssTransformFramerateFilter::GetConfigDialogWindow(wxWindow *parent, a
 		RadioOutputCFR->SetValue(true);
 	}
 	OutputFramerate = new wxTextCtrl(base,-1,initialOutput);
-	OutputSizerBottom->Add(RadioOutputCFR,0,wxEXPAND,0);
-	OutputSizerBottom->Add(OutputFramerate,0,wxEXPAND | wxLEFT,5);
+	OutputSizerBottom->Add(RadioOutputCFR, wxSizerFlags().Expand());
+	OutputSizerBottom->Add(OutputFramerate, wxSizerFlags().Expand().Border(wxLEFT));
 	OutputSizerBottom->AddStretchSpacer(1);
 
 	// Reverse checkbox
 	Reverse = new wxCheckBox(base,-1,_("&Reverse transformation"));
 
 	// Output final
-	OutputSizer->Add(OutputSizerTop,0,wxLEFT,5);
-	OutputSizer->Add(OutputSizerBottom,0,wxLEFT,5);
+	OutputSizer->Add(OutputSizerTop, wxSizerFlags().Border(wxLEFT));
+	OutputSizer->Add(OutputSizerBottom, wxSizerFlags().Border(wxLEFT));
 
 	// Main window
-	auto MainSizer = new wxFlexGridSizer(3,2,5,10);
-	MainSizer->Add(new wxStaticText(base,-1,_("Input framerate: ")),0,wxEXPAND | wxALIGN_CENTER_VERTICAL,0);
-	MainSizer->Add(InputSizer,0,wxEXPAND,0);
-	MainSizer->Add(new wxStaticText(base,-1,_("Output: ")),0,wxALIGN_CENTER_VERTICAL,0);
-	MainSizer->Add(OutputSizer,0,wxEXPAND,0);
-	MainSizer->Add(Reverse,0,wxTOP|wxEXPAND,5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto MainSizer = new wxFlexGridSizer(3, 2, gap, wxRound(2 * wxSizerFlags::GetDefaultBorderFractional()));
+	MainSizer->Add(new wxStaticText(base,-1,_("Input framerate: ")), wxSizerFlags().Expand().CenterVertical());
+	MainSizer->Add(InputSizer, wxSizerFlags().Expand());
+	MainSizer->Add(new wxStaticText(base,-1,_("Output: ")), wxSizerFlags().CenterVertical());
+	MainSizer->Add(OutputSizer, wxSizerFlags().Expand());
+	MainSizer->Add(Reverse, wxSizerFlags().Expand().Border(wxTOP));
 
 	// Window
 	base->SetSizerAndFit(MainSizer);
