@@ -80,7 +80,7 @@ fontconfig:  libfontconfig1-dev
 libass:      libass-dev
 boost:       libboost-chrono-dev libboost-locale-dev libboost-regex-dev libboost-system-dev libboost-thread-dev
 zlib:        zlib1g-dev
-WxWidgets:   wx3.2-headers libwxgtk3.2-dev  or  wx3.0-headers libwxgtk3.0-dev
+WxWidgets:   wx3.2-headers libwxgtk3.2-dev
 ICU:         icu-devtools libicu-dev
 pulse-audio: libpulse-dev
 ALSA:        libasound2-dev
