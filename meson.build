@@ -106,12 +106,18 @@ deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
+boost_static = get_option('prefer_static')    # boost dependencies do not respect prefer_static https://github.com/mesonbuild/meson/issues/15458
 boost_modules = ['chrono', 'locale']
+
+if boost_static
+    boost_modules += 'thread'   # static boost dependencies do not include transitive dependencies https://github.com/mesonbuild/meson/issues/15457
+endif
+
 if not get_option('local_boost')
     boost_dep = dependency('boost', version: '>=1.70.0',
                             modules: boost_modules,
                             required: false,
-                            static: get_option('default_library') == 'static')
+                            static: boost_static)
 
     if boost_dep.version().version_compare('<1.77.0')
         # boost regex is header-only since version 1.77.0, and some distributions have stopped shipping the stub module since then.
@@ -119,7 +125,7 @@ if not get_option('local_boost')
         boost_dep = dependency('boost', version: '>=1.70.0',
                                 modules: boost_modules + ['regex'],
                                 required: false,
-                                static: get_option('default_library') == 'static')
+                                static: boost_static)
     endif
 endif
 
