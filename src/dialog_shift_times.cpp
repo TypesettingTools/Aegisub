@@ -93,7 +93,7 @@ static wxString get_history_string(json::Object &obj) {
 
 	auto shift_amount = to_wx(obj["amount"]);
 	if (!obj["is by time"])
-		shift_amount = fmt_tl("%s frames", shift_amount);
+		shift_amount = fmt_plural(wxAtoi(shift_amount), "1 frame", "%s frames", shift_amount);
 
 	wxString shift_direction = obj["is backward"] ? _("backward") : _("forward");
 
