@@ -136,6 +136,15 @@ static wxString get_history_string(json::Object &obj) {
 	return fmt_wx("%s, %s %s, %s, %s", filename, shift_amount, shift_direction, fields, lines);
 }
 
+static int selection_start_time(agi::Context *context) {
+	int sel_start = INT_MAX;
+	auto const& sel = context->selectionController->GetSelectedSet();
+	for (auto line : sel) {
+		sel_start = std::min((int) line->Start, sel_start);
+	}
+	return sel_start;
+}
+
 DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 : wxDialog(context->parent, -1, _("Shift Times"))
 , context(context)
@@ -423,12 +432,16 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	if (reverse)
 		shift = -shift;
 
+	int sel_start = selection_start_time(context);
 	// Track which rows were shifted for the log
 	int block_start = 0;
 	json::Array shifted_blocks;
 
 	for (auto& line : context->ass->Events) {
-		if (!sel.count(&line)) {
+		if (mode == 2) { // Shift all lines starting after the selection does
+			if (line.Start < sel_start) continue;
+		}
+		else if (!sel.count(&line)) {
 			if (block_start) {
 				json::Object block;
 				block["start"] = block_start;
@@ -437,7 +450,6 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 				block_start = 0;
 			}
 			if (mode == 1) continue;
-			if (mode == 2 && shifted_blocks.empty()) continue;
 		}
 		else if (!block_start)
 			block_start = line.Row + 1;
@@ -471,11 +483,7 @@ int DialogShiftTimes::Shift(int initial_time, int shift, bool by_time, agi::vfr:
 void DialogShiftTimes::SetTimeFromSelectionMatch() {
 	long shift = 0;
 	int start_from_audio = context->audioController->GetPrimaryPlaybackRange().begin();
-	int sel_start = INT_MAX;
-	auto const& sel = context->selectionController->GetSelectedSet();
-	for (auto line : sel) {
-		sel_start = std::min((int) line->Start, sel_start);
-	}
+	int sel_start = selection_start_time(context);
 	if (sel_start < INT_MAX) {
 		shift = start_from_audio - sel_start;
 	}
