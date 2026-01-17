@@ -138,7 +138,7 @@ a subtitle file.
 Autoloading of scripts happens by placing the master script file into the
 "automation/autoload" directory under the Aegisub installation directory.
 
-Assining scripts to a subtitle file is done through the Automation Manager
+Assigning scripts to a subtitle file is done through the Automation Manager
 GUI. Scripts assigned to a subtitle file are stored in the ASS Script Info
 line "Automation Scripts", using a pipe character as separator between the
 master script filenames.
@@ -161,7 +161,7 @@ Here's a quick history of the scripting interface:
 
 Version 1
   Using Lua as engine.
-  The scripts used in the Karaoke Effector application, avaible at:
+  The scripts used in the Karaoke Effector application, available at:
   <http://www.animereactor.dk/aegisub/>
 
 Version 2

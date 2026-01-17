@@ -46,7 +46,7 @@ void VisualToolScale::Draw() {
 	// Ensure that the scaling UI is comfortably visible on screen
 	Vector2D base_point = pos
 		.Max(Vector2D(base_len / 2 + guide_size, base_len / 2 + guide_size))
-		.Min(video_res - base_len / 2 - guide_size * 3);
+		.Min(canvas_size - base_len / 2 - guide_size * 3);
 
 	// Set the origin to the base point and apply the line's rotation
 	gl.SetOrigin(base_point);

@@ -103,7 +103,7 @@ void VisualToolVectorClip::Draw() {
 	gl.SetFillColour(*wxBLACK, shaded_alpha);
 
 	// draw the shade over clipped out areas and line showing the clip
-	gl.DrawMultiPolygon(points, start, count, video_pos, video_res, !inverse);
+	gl.DrawMultiPolygon(points, start, count, video_pos, video_size, !inverse);
 
 	if (mode == VCLIP_DRAG && holding && drag_start && mouse_pos) {
 		// Draw drag-select box

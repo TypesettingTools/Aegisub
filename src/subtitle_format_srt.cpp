@@ -48,7 +48,6 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/regex.hpp>
 
 DEFINE_EXCEPTION(SRTParseError, SubtitleFormatParseError);
 
@@ -119,169 +118,154 @@ struct ToggleTag {
 	}
 };
 
-class SrtTagParser {
-	struct FontAttribs {
-		std::string face;
-		std::string size;
-		std::string color;
-	};
-
-	const boost::regex tag_matcher;
-	const boost::regex attrib_matcher;
-	const boost::regex is_quoted;
-
-public:
-	SrtTagParser()
-	: tag_matcher("^(.*?)<(/?b|/?i|/?u|/?s|/?font)([^>]*)>(.*)$", boost::regex::icase)
-	, attrib_matcher(R"(^[[:space:]]+(face|size|color)=('[^']*'|"[^"]*"|[^[:space:]]+))", boost::regex::icase)
-	, is_quoted(R"(^(['"]).*\1$)")
-	{
-	}
-
-	std::string ToAss(std::string srt)
-	{
-		ToggleTag bold('b');
-		ToggleTag italic('i');
-		ToggleTag underline('u');
-		ToggleTag strikeout('s');
-		std::vector<FontAttribs> font_stack;
-
-		std::string ass; // result to be built
-
-		while (!srt.empty())
-		{
-			boost::smatch result;
-			if (!regex_match(srt, result, tag_matcher))
-			{
-				// no more tags could be matched, end of string
-				ass.append(srt);
-				break;
-			}
-
-			// we found a tag, translate it
-			std::string pre_text  = result.str(1);
-			std::string tag_name  = result.str(2);
-			std::string tag_attrs = result.str(3);
-			std::string post_text = result.str(4);
-
-			// the text before the tag goes through unchanged
-			ass.append(pre_text);
-			// the text after the tag is the input for next iteration
-			srt = post_text;
-
-			boost::to_lower(tag_name);
-			switch (type_from_name(tag_name))
-			{
-			case TagType::BOLD_OPEN:       bold.Open(ass);       break;
-			case TagType::BOLD_CLOSE:      bold.Close(ass);      break;
-			case TagType::ITALICS_OPEN:    italic.Open(ass);     break;
-			case TagType::ITALICS_CLOSE:   italic.Close(ass);    break;
-			case TagType::UNDERLINE_OPEN:  underline.Open(ass);  break;
-			case TagType::UNDERLINE_CLOSE: underline.Close(ass); break;
-			case TagType::STRIKEOUT_OPEN:  strikeout.Open(ass);  break;
-			case TagType::STRIKEOUT_CLOSE: strikeout.Close(ass); break;
-			case TagType::FONT_OPEN:
-				{
-					// new attributes to fill in
-					FontAttribs new_attribs;
-					FontAttribs old_attribs;
-					// start out with any previous ones on stack
-					if (font_stack.size() > 0)
-						old_attribs = font_stack.back();
-					new_attribs = old_attribs;
-					// now find all attributes on this font tag
-					boost::smatch result;
-					while (regex_search(tag_attrs, result, attrib_matcher))
-					{
-						// get attribute name and values
-						std::string attr_name = result.str(1);
-						std::string attr_value = result.str(2);
-
-						// clean them
-						boost::to_lower(attr_name);
-						if (regex_match(attr_value, is_quoted))
-							attr_value = attr_value.substr(1, attr_value.size() - 2);
-
-						// handle the attributes
-						if (attr_name == "face")
-							new_attribs.face = agi::format("{\\fn%s}", attr_value);
-						else if (attr_name == "size")
-							new_attribs.size = agi::format("{\\fs%s}", attr_value);
-						else if (attr_name == "color")
-							new_attribs.color = agi::format("{\\c%s}", agi::Color(attr_value).GetAssOverrideFormatted());
-
-						// remove this attribute to prepare for the next
-						tag_attrs = result.suffix().str();
-					}
-
-					// the attributes changed from old are then written out
-					if (new_attribs.face != old_attribs.face)
-						ass.append(new_attribs.face);
-					if (new_attribs.size != old_attribs.size)
-						ass.append(new_attribs.size);
-					if (new_attribs.color != old_attribs.color)
-						ass.append(new_attribs.color);
-
-					// lastly dump the new attributes state onto the stack
-					font_stack.push_back(new_attribs);
-				}
-				break;
-			case TagType::FONT_CLOSE:
-				{
-					// this requires a font stack entry
-					if (font_stack.empty())
-						break;
-					// get the current attribs
-					FontAttribs cur_attribs = font_stack.back();
-					// remove them from the stack
-					font_stack.pop_back();
-					// grab the old attributes if there are any
-					FontAttribs old_attribs;
-					if (font_stack.size() > 0)
-						old_attribs = font_stack.back();
-					// then restore the attributes to previous settings
-					if (cur_attribs.face != old_attribs.face)
-					{
-						if (old_attribs.face.empty())
-							ass.append("{\\fn}");
-						else
-							ass.append(old_attribs.face);
-					}
-					if (cur_attribs.size != old_attribs.size)
-					{
-						if (old_attribs.size.empty())
-							ass.append("{\\fs}");
-						else
-							ass.append(old_attribs.size);
-					}
-					if (cur_attribs.color != old_attribs.color)
-					{
-						if (old_attribs.color.empty())
-							ass.append("{\\c}");
-						else
-							ass.append(old_attribs.color);
-					}
-				}
-				break;
-			default:
-				// unknown tag, replicate it in the output
-				ass.append("<").append(tag_name).append(tag_attrs).append(">");
-				break;
-			}
-		}
-
-		// make it a little prettier, join tag groups
-		boost::replace_all(ass, "}{", "");
-
-		return ass;
-	}
-};
-
 std::string WriteSRTTime(agi::Time const& ts)
 {
 	return ts.GetSrtFormatted();
 }
 
+}
+
+SrtTagParser::SrtTagParser()
+: tag_matcher("^(.*?)<(/?b|/?i|/?u|/?s|/?font)([^>]*)>(.*)$", boost::regex::icase)
+, attrib_matcher(R"(^[[:space:]]+(face|size|color)=('[^']*'|"[^"]*"|[^[:space:]]+))", boost::regex::icase)
+, is_quoted(R"(^(['"]).*\1$)")
+{}
+
+std::string SrtTagParser::ToAss(std::string srt) {
+	ToggleTag bold('b');
+	ToggleTag italic('i');
+	ToggleTag underline('u');
+	ToggleTag strikeout('s');
+	std::vector<FontAttribs> font_stack;
+
+	std::string ass; // result to be built
+
+	while (!srt.empty())
+	{
+		boost::smatch result;
+		if (!regex_match(srt, result, tag_matcher))
+		{
+			// no more tags could be matched, end of string
+			ass.append(srt);
+			break;
+		}
+
+		// we found a tag, translate it
+		std::string pre_text  = result.str(1);
+		std::string tag_name  = result.str(2);
+		std::string tag_attrs = result.str(3);
+		std::string post_text = result.str(4);
+
+		// the text before the tag goes through unchanged
+		ass.append(pre_text);
+		// the text after the tag is the input for next iteration
+		srt = post_text;
+
+		boost::to_lower(tag_name);
+		switch (type_from_name(tag_name))
+		{
+		case TagType::BOLD_OPEN:       bold.Open(ass);       break;
+		case TagType::BOLD_CLOSE:      bold.Close(ass);      break;
+		case TagType::ITALICS_OPEN:    italic.Open(ass);     break;
+		case TagType::ITALICS_CLOSE:   italic.Close(ass);    break;
+		case TagType::UNDERLINE_OPEN:  underline.Open(ass);  break;
+		case TagType::UNDERLINE_CLOSE: underline.Close(ass); break;
+		case TagType::STRIKEOUT_OPEN:  strikeout.Open(ass);  break;
+		case TagType::STRIKEOUT_CLOSE: strikeout.Close(ass); break;
+		case TagType::FONT_OPEN:
+			{
+				// new attributes to fill in
+				FontAttribs new_attribs;
+				FontAttribs old_attribs;
+				// start out with any previous ones on stack
+				if (font_stack.size() > 0)
+					old_attribs = font_stack.back();
+				new_attribs = old_attribs;
+				// now find all attributes on this font tag
+				boost::smatch result;
+				while (regex_search(tag_attrs, result, attrib_matcher))
+				{
+					// get attribute name and values
+					std::string attr_name = result.str(1);
+					std::string attr_value = result.str(2);
+
+					// clean them
+					boost::to_lower(attr_name);
+					if (regex_match(attr_value, is_quoted))
+						attr_value = attr_value.substr(1, attr_value.size() - 2);
+
+					// handle the attributes
+					if (attr_name == "face")
+						new_attribs.face = agi::format("{\\fn%s}", attr_value);
+					else if (attr_name == "size")
+						new_attribs.size = agi::format("{\\fs%s}", attr_value);
+					else if (attr_name == "color")
+						new_attribs.color = agi::format("{\\c%s}", agi::Color(attr_value).GetAssOverrideFormatted());
+
+					// remove this attribute to prepare for the next
+					tag_attrs = result.suffix().str();
+				}
+
+				// the attributes changed from old are then written out
+				if (new_attribs.face != old_attribs.face)
+					ass.append(new_attribs.face);
+				if (new_attribs.size != old_attribs.size)
+					ass.append(new_attribs.size);
+				if (new_attribs.color != old_attribs.color)
+					ass.append(new_attribs.color);
+
+				// lastly dump the new attributes state onto the stack
+				font_stack.push_back(new_attribs);
+			}
+			break;
+		case TagType::FONT_CLOSE:
+			{
+				// this requires a font stack entry
+				if (font_stack.empty())
+					break;
+				// get the current attribs
+				FontAttribs cur_attribs = font_stack.back();
+				// remove them from the stack
+				font_stack.pop_back();
+				// grab the old attributes if there are any
+				FontAttribs old_attribs;
+				if (font_stack.size() > 0)
+					old_attribs = font_stack.back();
+				// then restore the attributes to previous settings
+				if (cur_attribs.face != old_attribs.face)
+				{
+					if (old_attribs.face.empty())
+						ass.append("{\\fn}");
+					else
+						ass.append(old_attribs.face);
+				}
+				if (cur_attribs.size != old_attribs.size)
+				{
+					if (old_attribs.size.empty())
+						ass.append("{\\fs}");
+					else
+						ass.append(old_attribs.size);
+				}
+				if (cur_attribs.color != old_attribs.color)
+				{
+					if (old_attribs.color.empty())
+						ass.append("{\\c}");
+					else
+						ass.append(old_attribs.color);
+				}
+			}
+			break;
+		default:
+			// unknown tag, replicate it in the output
+			ass.append("<").append(tag_name).append(tag_attrs).append(">");
+			break;
+		}
+	}
+
+	// make it a little prettier, join tag groups
+	boost::replace_all(ass, "}{", "");
+
+	return ass;
 }
 
 SRTSubtitleFormat::SRTSubtitleFormat()
@@ -305,7 +289,7 @@ enum class ParseState {
 	LAST_WAS_BLANK
 };
 
-void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
+void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	using namespace std;
 
 	TextFileReader file(filename, encoding);
@@ -426,7 +410,7 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 		line->Text = tag_parser.ToAss(text);
 }
 
-void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
+void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	TextFileWriter file(filename, encoding);
 
 	// Convert to SRT

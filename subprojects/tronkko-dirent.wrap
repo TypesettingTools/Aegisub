@@ -5,6 +5,6 @@ source_url = https://github.com/tronkko/dirent/archive/1.23.2.tar.gz
 source_filename = dirent-1.23.2.tar.gz
 source_hash = f72d39e3c39610b6901e391b140aa69b51e0eb99216939ed5e547b5dad03afb1
 
-patch_url = https://wrapdb.mesonbuild.com/v1/projects/tronkko-dirent/1.23.2/1/get_zip
+patch_url = https://wrapdb.mesonbuild.com/v2/tronkko-dirent_1.23.2-1/get_patch
 patch_filename = tronkko-dirent-1.23.2-1-wrap.zip
 patch_hash = 036957f6dee31d0b92f14cf3676d13baf44e9a1be950c248468440ffc40c78a4

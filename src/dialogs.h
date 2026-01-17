@@ -18,6 +18,7 @@
 
 #include <functional>
 #include <string>
+#include <wx/string.h>
 
 class AssFile;
 class AsyncVideoProvider;

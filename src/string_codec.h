@@ -35,7 +35,7 @@
 /// a simple encoding-form used for encoding strings that can't contain control codes and a few other special characters,
 /// so they can be stored as part of a field in an ASS line
 ///
-/// Even though the encoding will handle unicode strings, it can only encode ASCII characters.
+/// Even though the encoding will handle Unicode strings, it can only encode ASCII characters.
 /// This is not a problem, since only ASCII characters are used for the special purposes.
 ///
 /// The encoding is based on an escape-character followed by a two-digit hexadecimal number, the number being the
@@ -47,7 +47,7 @@
 ///         0x23 -- Sharp (the escape character itself must be escaped to appear in the literal)
 ///         0x2C -- Comma (used for field separator in standard ASS lines)
 ///         0x3A -- Colon (used in some custom list formats for name:value pairs)
-///         0x7C -- Pipe (used in some custom lists, as item separator, eg. itemA|itemB)
+///         0x7C -- Pipe (used in some custom lists, as item separator, e.g. itemA|itemB)
 /// @endverbatim
 ///
 /// The encoded string should be usable in any kind of field in an ASS file.

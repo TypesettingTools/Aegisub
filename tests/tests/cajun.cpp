@@ -14,7 +14,7 @@
 //
 // $Id$
 
-/// @file libaegisub_cajun.cpp
+/// @file cajun.cpp
 /// @brief Cajun/Json tests.
 /// @ingroup cajun
 
@@ -35,19 +35,19 @@ TEST(lagi_cajun, CastNonConst) {
 	auto Array   = json::UnknownElement{json::Array{}};
 	auto Object  = json::UnknownElement{json::Object{}};
 
-	EXPECT_NO_THROW(static_cast<json::Integer&>(Integer));
-	EXPECT_NO_THROW(static_cast<json::Double&>(Double));
-	EXPECT_NO_THROW(static_cast<json::String&>(String));
-	EXPECT_NO_THROW(static_cast<json::Boolean&>(Boolean));
-	EXPECT_NO_THROW(static_cast<json::Array&>(Array));
-	EXPECT_NO_THROW(static_cast<json::Object&>(Object));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Integer&>(Integer));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Double&>(Double));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::String&>(String));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Boolean&>(Boolean));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Array&>(Array));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Object&>(Object));
 
-	EXPECT_NO_THROW(static_cast<json::Integer const&>(Integer));
-	EXPECT_NO_THROW(static_cast<json::Double const&>(Double));
-	EXPECT_NO_THROW(static_cast<json::String const&>(String));
-	EXPECT_NO_THROW(static_cast<json::Boolean const&>(Boolean));
-	EXPECT_NO_THROW(static_cast<json::Array const&>(Array));
-	EXPECT_NO_THROW(static_cast<json::Object const&>(Object));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Integer const&>(Integer));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Double const&>(Double));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::String const&>(String));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Boolean const&>(Boolean));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Array const&>(Array));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Object const&>(Object));
 }
 
 TEST(lagi_cajun, CastConst) {
@@ -59,20 +59,20 @@ TEST(lagi_cajun, CastConst) {
 	const auto Object  = json::UnknownElement{json::Object{}};
 
 	/* these shouldn't compile
-	EXPECT_NO_THROW(static_cast<json::Integer&>(Integer));
-	EXPECT_NO_THROW(static_cast<json::Double&>(Double));
-	EXPECT_NO_THROW(static_cast<json::String&>(String));
-	EXPECT_NO_THROW(static_cast<json::Boolean&>(Boolean));
-	EXPECT_NO_THROW(static_cast<json::Array&>(Array));
-	EXPECT_NO_THROW(static_cast<json::Object&>(Object));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Integer&>(Integer));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Double&>(Double));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::String&>(String));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Boolean&>(Boolean));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Array&>(Array));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Object&>(Object));
 	*/
 
-	EXPECT_NO_THROW(static_cast<json::Integer const&>(Integer));
-	EXPECT_NO_THROW(static_cast<json::Double const&>(Double));
-	EXPECT_NO_THROW(static_cast<json::String const&>(String));
-	EXPECT_NO_THROW(static_cast<json::Boolean const&>(Boolean));
-	EXPECT_NO_THROW(static_cast<json::Array const&>(Array));
-	EXPECT_NO_THROW(static_cast<json::Object const&>(Object));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Integer const&>(Integer));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Double const&>(Double));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::String const&>(String));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Boolean const&>(Boolean));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Array const&>(Array));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Object const&>(Object));
 
 	EXPECT_EQ(10, static_cast<json::Integer const&>(Integer));
 	EXPECT_EQ(10, static_cast<json::Double const&>(Double));
@@ -87,11 +87,11 @@ TEST(lagi_cajun, ObjectStoreInteger) {
 	obj["Integer"] = 1;
 	EXPECT_EQ(1, static_cast<json::Integer>(obj["Integer"]));
 
-	EXPECT_THROW(static_cast<json::String const&>(obj["Integer"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Boolean>(obj["Integer"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Null>(obj["Integer"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Array const&>(obj["Integer"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Object const&>(obj["Integer"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::String const&>(obj["Integer"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Boolean>(obj["Integer"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Null>(obj["Integer"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Array const&>(obj["Integer"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Object const&>(obj["Integer"]), json::Exception);
 }
 
 TEST(lagi_cajun, ObjectStoreDouble) {
@@ -99,11 +99,11 @@ TEST(lagi_cajun, ObjectStoreDouble) {
 	obj["Double"] = 1.0;
 	EXPECT_EQ(1.0, static_cast<json::Double>(obj["Double"]));
 
-	EXPECT_THROW(static_cast<json::String const&>(obj["Double"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Boolean>(obj["Double"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Null>(obj["Double"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Array const&>(obj["Double"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Object const&>(obj["Double"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::String const&>(obj["Double"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Boolean>(obj["Double"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Null>(obj["Double"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Array const&>(obj["Double"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Object const&>(obj["Double"]), json::Exception);
 }
 
 TEST(lagi_cajun, ObjectStoreString) {
@@ -111,11 +111,11 @@ TEST(lagi_cajun, ObjectStoreString) {
 	obj["String"] = "test";
 	EXPECT_STREQ("test", static_cast<std::string>(obj["String"]).c_str());
 
-	EXPECT_THROW(static_cast<json::Integer>(obj["String"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Boolean>(obj["String"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Null>(obj["String"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Array const&>(obj["String"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Object const&>(obj["String"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Integer>(obj["String"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Boolean>(obj["String"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Null>(obj["String"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Array const&>(obj["String"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Object const&>(obj["String"]), json::Exception);
 }
 
 TEST(lagi_cajun, ObjectStoreBoolean) {
@@ -123,39 +123,39 @@ TEST(lagi_cajun, ObjectStoreBoolean) {
 	obj["Boolean"] = true;
 	EXPECT_TRUE(static_cast<json::Boolean>(obj["Boolean"]));
 
-	EXPECT_THROW(static_cast<json::String const&>(obj["Boolean"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Integer>(obj["Boolean"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Null>(obj["Boolean"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Array const&>(obj["Boolean"]), json::Exception);
-	EXPECT_THROW(static_cast<json::Object const&>(obj["Boolean"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::String const&>(obj["Boolean"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Integer>(obj["Boolean"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Null>(obj["Boolean"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Array const&>(obj["Boolean"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Object const&>(obj["Boolean"]), json::Exception);
 }
 
 TEST(lagi_cajun, ObjectStoreNull) {
 	json::Object obj;
 	obj["Null"] = json::Null();
 
-	EXPECT_NO_THROW(static_cast<json::Null>(obj["Null"]));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Null>(obj["Null"]));
 
 	// null is implicitly convertible to everything
-	EXPECT_NO_THROW(static_cast<json::String const&>(obj["Null"]));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::String const&>(obj["Null"]));
 
 	obj["Null"] = json::Null();
-	EXPECT_NO_THROW(static_cast<json::Integer>(obj["Null"]));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Integer>(obj["Null"]));
 
 	obj["Null"] = json::Null();
-	EXPECT_NO_THROW(static_cast<json::Double>(obj["Null"]));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Double>(obj["Null"]));
 
 	obj["Null"] = json::Null();
-	EXPECT_NO_THROW(static_cast<json::Boolean>(obj["Null"]));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Boolean>(obj["Null"]));
 
 	obj["Null"] = json::Null();
-	EXPECT_NO_THROW(static_cast<json::Array const&>(obj["Null"]));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Array const&>(obj["Null"]));
 
 	obj["Null"] = json::Null();
-	EXPECT_NO_THROW(static_cast<json::Object const&>(obj["Null"]));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Object const&>(obj["Null"]));
 
 	// obj["Null"] should no longer be of type Null
-	EXPECT_THROW(static_cast<json::Null>(obj["Null"]), json::Exception);
+	EXPECT_THROW(std::ignore = static_cast<json::Null>(obj["Null"]), json::Exception);
 }
 
 TEST(lagi_cajun, ObjectCreateArray) {
@@ -175,7 +175,7 @@ TEST(lagi_cajun, Read) {
 	EXPECT_NO_THROW(obj["String"]);
 	EXPECT_STREQ("This is a test", static_cast<std::string>(obj["String"]).c_str());
 	EXPECT_FALSE(static_cast<json::Boolean>(obj["Boolean"]));
-	EXPECT_NO_THROW(static_cast<json::Null>(obj["Null"]));
+	EXPECT_NO_THROW(std::ignore = static_cast<json::Null>(obj["Null"]));
 }
 
 TEST(lagi_cajun, Write) {

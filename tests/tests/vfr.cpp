@@ -33,7 +33,7 @@ using namespace util;
 
 TEST(lagi_vfr, constructors_good) {
 	EXPECT_NO_THROW(Framerate(1.));
-	EXPECT_NO_THROW(Framerate(Framerate(1.)));
+	EXPECT_NO_THROW(std::ignore = Framerate(Framerate(1.)));
 	EXPECT_NO_THROW(Framerate({ 0, 10 }));
 
 	EXPECT_NO_THROW(Framerate("data/vfr/in/v1_start_equals_end.txt"));

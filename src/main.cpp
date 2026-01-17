@@ -95,6 +95,18 @@ void AegisubApp::OnAssertFailure(const wxChar *file, int line, const wxChar *fun
 AegisubApp::AegisubApp() {
 	// http://trac.wxwidgets.org/ticket/14302
 	wxSetEnv("UBUNTU_MENUPROXY", "0");
+
+	// Fallback to X11 if wxGTK implementation is build without Wayland EGL support
+	// Fix https://github.com/TypesettingTools/Aegisub/issues/233
+	#if defined(__WXGTK__) && !wxUSE_GLCANVAS_EGL
+		wxString xdg_session_type = wxGetenv("XDG_SESSION_TYPE");
+		wxString wayland_display  = wxGetenv("WAYLAND_DISPLAY");
+
+		if (xdg_session_type == "wayland" || wayland_display.Contains("wayland")) {
+			wxSetEnv("GDK_BACKEND", "x11");
+		}
+	#endif
+
 }
 
 namespace {
@@ -363,7 +375,7 @@ void AegisubApp::CloseAll() {
 	}
 }
 
-void AegisubApp::UnhandledException(bool stackWalk) {
+void AegisubApp::UnhandledException([[maybe_unused]] bool stackWalk) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
 	bool any = false;
 	agi::fs::path path;
@@ -390,7 +402,7 @@ void AegisubApp::UnhandledException(bool stackWalk) {
 		wxMessageBox(agi::wxformat(exception_message, path), _("Program error"), wxOK | wxICON_ERROR | wxCENTER, nullptr);
 	}
 	else if (LastStartupState) {
-		wxMessageBox(fmt_wx("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR | wxCENTER);
+		wxMessageBox(fmt_tl("Aegisub has crashed while starting up!\n\nThe last startup step attempted was: %s.", LastStartupState), _("Program error"), wxOK | wxICON_ERROR | wxCENTER);
 	}
 #endif
 }
@@ -405,7 +417,7 @@ void AegisubApp::OnFatalException() {
 
 #define SHOW_EXCEPTION(str) \
 	wxMessageBox(fmt_tl("An unexpected error has occurred. Please save your work and restart Aegisub.\n\nError Message: %s", str), \
-				"Exception in event handler", wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP)
+				_("Exception in event handler"), wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP)
 bool AegisubApp::OnExceptionInMainLoop() {
 	try {
 		throw;

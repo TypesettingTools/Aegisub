@@ -184,6 +184,8 @@ void DialogAutomation::SetScriptInfo(int i, Automation4::Script *script)
 	list->SetItem(i, 3, to_wx(script->GetDescription()));
 	if (!script->GetLoadedState())
 		list->SetItemBackgroundColour(i, wxColour(255,128,128));
+	else if (!script->GetWarnings().empty())
+		list->SetItemBackgroundColour(i, wxColour(255,255,128));
 	else
 		list->SetItemBackgroundColour(i, list->GetBackgroundColour());
 }
@@ -235,7 +237,7 @@ void DialogAutomation::OnAdd(wxCommandEvent &)
 		OPT_SET("Path/Last/Automation")->SetString(fnpath.parent_path().string());
 
 		if (has_file(local_manager->GetScripts(), fnpath) || has_file(global_manager->GetScripts(), fnpath)) {
-			wxLogError("Script '%s' is already loaded", fname);
+			wxLogError(fmt_tl("Script '%s' is already loaded", fname));
 			continue;
 		}
 
@@ -286,13 +288,19 @@ void DialogAutomation::OnInfo(wxCommandEvent &)
 		});
 
 	if (ei) {
-		info.push_back(fmt_tl("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n\nFeatures provided by script:",
+		info.push_back(fmt_tl("\nScript info:\nName: %s\nDescription: %s\nAuthor: %s\nVersion: %s\nFull path: %s\nState: %s\n",
 			ei->script->GetName(),
 			ei->script->GetDescription(),
 			ei->script->GetAuthor(),
 			ei->script->GetVersion(),
 			ei->script->GetFilename().wstring(),
-			ei->script->GetLoadedState() ? _("Correctly loaded") : _("Failed to load")));
+			ei->script->GetLoadedState() ? (ei->script->GetWarnings().empty() ? _("Correctly loaded") : _("Loaded with warnings")) : _("Failed to load")));
+
+		boost::transform(ei->script->GetWarnings(), append_info, [](std::string s) {
+			return fmt_tl("Warning: %s\n", s);
+		});
+
+		info.push_back(_("Features provided by script:\n"));
 
 		boost::transform(ei->script->GetMacros(), append_info, [this](const cmd::Command *f) {
 			return fmt_tl("    Macro: %s (%s)", f->StrDisplay(context), f->name());

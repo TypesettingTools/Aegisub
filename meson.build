@@ -2,9 +2,11 @@ project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.60.0',
         default_options: [
-            'b_ndebug=if-release',
             'cpp_std=c++20',
+            'warning_level=3',
             'buildtype=debugoptimized',
+            'b_ndebug=if-release',
+
             'harfbuzz:icu=disabled',
             'ffmpeg:libdav1d=enabled',
             'luajit:default_library=static',
@@ -17,14 +19,14 @@ project('Aegisub', ['c', 'cpp'],
 cmake = import('cmake')
 
 if host_machine.system() == 'windows'
-    add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
+    add_project_arguments('-DUNICODE', '-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
 
     if not get_option('csri').disabled()
         add_global_arguments('-DCSRI_NO_EXPORT', language: 'c')
     endif
 
-    sys_nasm = find_program('nasm', required: false)
-    if not sys_nasm.found()
+    if get_option('fallback_nasm') or \
+       not find_program('nasm', required: false).found()
         nasm = subproject('nasm').get_variable('nasm')
         meson.override_find_program('nasm', nasm)
     endif
@@ -104,20 +106,42 @@ deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
-boost_modules = ['chrono', 'thread', 'locale', 'regex']
+boost_static = get_option('prefer_static')    # boost dependencies do not respect prefer_static https://github.com/mesonbuild/meson/issues/15458
+boost_modules = ['chrono', 'locale']
+
+if boost_static
+    boost_modules += 'thread'   # static boost dependencies do not include transitive dependencies https://github.com/mesonbuild/meson/issues/15457
+endif
+
 if not get_option('local_boost')
     boost_dep = dependency('boost', version: '>=1.70.0',
-                            modules: boost_modules + ['system'],
+                            modules: boost_modules,
                             required: false,
-                            static: get_option('default_library') == 'static')
+                            static: boost_static)
+
+    if boost_dep.version().version_compare('<1.77.0')
+        # boost regex is header-only since version 1.77.0, and some distributions have stopped shipping the stub module since then.
+        # So we need to require boost.regex for older versions but can't require it for newer versions.
+        boost_dep = dependency('boost', version: '>=1.70.0',
+                                modules: boost_modules + ['regex'],
+                                required: false,
+                                static: boost_static)
+    endif
 endif
 
 if get_option('local_boost') or not boost_dep.found()
     boost_dep = []
     boost = subproject('boost')
-    foreach module: boost_modules
+    foreach module: (boost_modules + ['regex'])
         boost_dep += boost.get_variable('boost_' + module + '_dep')
     endforeach
+endif
+
+if cc.get_argument_syntax() == 'gcc'
+  # Work around compile error in Boost GIL, can be removed once
+  # https://github.com/boostorg/gil/commit/2956a0e9ef71f5c4f3163c8b8d675679e0fbaaff
+  # is in a boost release that's available everywhere
+  add_project_arguments(cc.get_supported_arguments(['-Wno-missing-template-arg-list-after-template-kw']), language: 'cpp')
 endif
 
 deps += boost_dep
@@ -146,6 +170,8 @@ else
     opt_var = cmake.subproject_options()
     opt_var.set_override_option('cpp_std', 'c++20')
     opt_var.add_cmake_defines({
+        'CMAKE_POLICY_VERSION_MINIMUM': '3.31',
+
         'wxBUILD_INSTALL': false,
         'wxBUILD_PRECOMP': 'OFF',       # otherwise breaks project generation w/ meson
         'wxBUILD_SHARED': build_shared,
@@ -341,6 +367,8 @@ if not dep_gl.found()
 endif
 if host_machine.system() == 'darwin'
     conf.set('HAVE_OPENGL_GL_H', 1)
+else
+    conf.set('HAVE_GL_GLEXT_H', cc.has_header('GL/glext.h'))
 endif
 
 if not dep_gl.found()
@@ -361,7 +389,7 @@ if cc.has_function('alloca', prefix: '#include <stdlib.h>')
 elif cc.has_function('alloca', prefix: '#include <alloca.h>')
     conf.set('HAVE_ALLOCA_H', true)
 elif cc.has_header_symbol('malloc.h', '_alloca', prefix: '#include <stdlib.h>')
-    # cc.has_function() can't find _alloca() intrinsic on cl.exe, 
+    # cc.has_function() can't find _alloca() intrinsic on cl.exe,
     # so we use cc.has_header_symbol().
     conf.set('HAVE_MALLOC_H', true)
     conf.set('HAVE_UNDERLINE_ALLOCA', true)
@@ -400,7 +428,9 @@ subdir('libaegisub')
 subdir('packages')
 subdir('po')
 subdir('src')
-subdir('tests')
+if get_option('tests')
+    subdir('tests')
+endif
 
 aegisub_cpp_pch = ['src/include/agi_pre.h']
 aegisub_c_pch = ['src/include/agi_pre_c.h']

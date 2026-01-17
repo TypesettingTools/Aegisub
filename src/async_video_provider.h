@@ -90,12 +90,11 @@ public:
 	void LoadSubtitles(const AssFile *subs) throw();
 
 	/// @brief Update a previously loaded subtitle file
-	/// @param subs Subtitle file which was last passed to LoadSubtitles
-	/// @param changes Set of lines which have changed
+	/// @param changed Line that has changed
 	///
-	/// This function only supports changes to existing lines, and not
+	/// This function only supports changes to a single existing line, and not
 	/// insertions or deletions.
-	void UpdateSubtitles(const AssFile *subs, const AssDialogue *changes) throw();
+	void UpdateSubtitles(const AssDialogue *changed) throw();
 
 	/// @brief Queue a request for a frame
 	/// @brief frame Frame number
@@ -120,7 +119,7 @@ public:
 	/// purposes like copying the current subtitles to the clipboard.
 	VideoFrame GetSubtitles(double time);
 
-	/// Ask the video provider to change YCbCr matricies
+	/// Ask the video provider to change YCbCr matrices
 	void SetColorSpace(std::string_view matrix);
 
 	int GetFrameCount() const             { return source_provider->GetFrameCount(); }
@@ -137,9 +136,9 @@ public:
 	bool HasAudio() const                 { return source_provider->HasAudio(); }
 
 	/// @brief Constructor
-	/// @param videoFileName File to open
+	/// @param video_filename File to open
 	/// @param parent Event handler to send FrameReady events to
-	AsyncVideoProvider(agi::fs::path const& filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
+	AsyncVideoProvider(agi::fs::path const& video_filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
 	~AsyncVideoProvider();
 };
 

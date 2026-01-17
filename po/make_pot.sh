@@ -16,7 +16,7 @@ maybe_append() {
 
 find ../src ../src/command -name '*.cpp' -o -name '*.h' \
   | xgettext --files-from=- -o - --c++ --sort-by-file \
-             -k_ -kSTR_MENU -kSTR_DISP -kSTR_HELP -kCOMMAND_GROUP:5 \
+             -k_ -kwxTRANSLATE -kSTR_MENU -kSTR_DISP -kSTR_HELP -kCOMMAND_GROUP:5 \
              -kfmt_tl -kfmt_plural:2,3 \
   | sed 's/SOME DESCRIPTIVE TITLE./Aegisub 3.2/' \
   | sed 's/YEAR/2005-2014/' \
@@ -39,7 +39,7 @@ grep '"[A-Za-z ]\+" : {' -n ../src/libresrc/default_hotkey.json \
   | sed 's/^\([0-9]\+:\).*\("[^"]\+"\).*$/default_hotkey.json|\1|\2/' \
   | maybe_append
 
-find ../automation -name '*.lua' \
+find ../automation -name '*.lua' -o -name '*.moon' \
   | LC_ALL=C sort \
   | xargs grep 'tr"[^"]*"' -o -n \
   | sed 's/\(.*\):\([0-9]\+\):tr\(".*"\)/\1|\2|\3/' \

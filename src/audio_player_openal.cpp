@@ -71,7 +71,7 @@ class OpenALPlayer final : public AudioPlayer, wxTimer {
 	ALsizei samplerate; ///< Sample rate of the audio
 	int bpf; ///< Bytes per frame
 
-	int64_t start_frame = 0; ///< First frame of playbacka
+	int64_t start_frame = 0; ///< First frame of playback
 	int64_t cur_frame = 0; ///< Next frame to write to playback buffers
 	int64_t end_frame = 0; ///< Last frame to play
 

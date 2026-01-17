@@ -83,7 +83,7 @@ class ColorPickerSpectrum final : public wxControl {
 	wxBitmap *background;
 	PickerDirection direction;
 
-	void OnPaint(wxPaintEvent &evt) {
+	void OnPaint(wxPaintEvent &) {
 		if (!background) return;
 
 		int height = background->GetHeight();
@@ -351,7 +351,7 @@ class ColorPickerScreenDropper final : public wxControl {
 		}
 	}
 
-	void OnPaint(wxPaintEvent &evt) {
+	void OnPaint(wxPaintEvent &) {
 		wxPaintDC(this).DrawBitmap(capture, 0, 0);
 	}
 
@@ -495,7 +495,7 @@ class DialogColorPicker final : public wxDialog {
 
 	/// Constructor helper function for making the color input box sizers
 	template<int N, class Control>
-	wxSizer *MakeColorInputSizer(wxString (&labels)[N], Control *(&inputs)[N]);
+	wxSizer *MakeColorInputSizer(wxWindow *parent, wxString (&labels)[N], Control *(&inputs)[N]);
 
 	void OnChangeMode(wxCommandEvent &evt);
 	void OnSpectrumChange(wxCommandEvent &evt);
@@ -554,35 +554,41 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	hsv_slider = make_slider([](int y, unsigned char *rgb) { hsv_to_rgb(y, 255, 255, rgb, rgb + 1, rgb + 2); });
 
 	// Create the controls for the dialog
-	wxSizer *spectrum_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Color spectrum"));
-	spectrum = new ColorPickerSpectrum(this, PickerDirection::HorzVert, wxSize(256, 256));
-	slider = new ColorPickerSpectrum(this, PickerDirection::Vert, wxSize(slider_width, 256));
-	alpha_slider = new ColorPickerSpectrum(this, PickerDirection::Vert, wxSize(slider_width, 256));
-	wxString modes[] = { _("RGB/R"), _("RGB/G"), _("RGB/B"), _("HSL/L"), _("HSV/H") };
-	colorspace_choice = new wxChoice(this, -1, wxDefaultPosition, wxDefaultSize, 5, modes);
+	wxStaticBoxSizer *spectrum_box_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Color spectrum"));
+	wxWindow *spectrum_box = spectrum_box_sizer->GetStaticBox();
 
-	wxSizer *rgb_box = new wxStaticBoxSizer(wxHORIZONTAL, this, _("RGB color"));
-	wxSizer *hsl_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSL color"));
-	wxSizer *hsv_box = new wxStaticBoxSizer(wxVERTICAL, this, _("HSV color"));
+	spectrum = new ColorPickerSpectrum(spectrum_box, PickerDirection::HorzVert, wxSize(256, 256));
+	slider = new ColorPickerSpectrum(spectrum_box, PickerDirection::Vert, wxSize(slider_width, 256));
+	alpha_slider = new ColorPickerSpectrum(spectrum_box, PickerDirection::Vert, wxSize(slider_width, 256));
+	wxString modes[] = { _("RGB/R"), _("RGB/G"), _("RGB/B"), _("HSL/L"), _("HSV/H") };
+	colorspace_choice = new wxChoice(spectrum_box, -1, wxDefaultPosition, wxDefaultSize, 5, modes);
+
+	wxStaticBoxSizer *rgb_box_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("RGB color"));
+	wxStaticBoxSizer *hsl_box_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("HSL color"));
+	wxStaticBoxSizer *hsv_box_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("HSV color"));
+
+	wxWindow *rgb_box = rgb_box_sizer->GetStaticBox();
+	wxWindow *hsl_box = hsl_box_sizer->GetStaticBox();
+	wxWindow *hsv_box = hsv_box_sizer->GetStaticBox();
 
 	for (auto& elem : rgb_input)
-		elem = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 255);
+		elem = new wxSpinCtrl(rgb_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 255);
 
 	auto dummy = new wxTextCtrl(this, -1);
 	wxSize colorinput_size = dummy->GetSizeFromText("&H000000&");
 	dummy->Destroy();
 
-	ass_input = new wxTextCtrl(this, -1, "", wxDefaultPosition, colorinput_size);
-	html_input = new wxTextCtrl(this, -1, "", wxDefaultPosition, colorinput_size);
-	alpha_input = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 255);
+	ass_input = new wxTextCtrl(rgb_box, -1, "", wxDefaultPosition, colorinput_size);
+	html_input = new wxTextCtrl(rgb_box, -1, "", wxDefaultPosition, colorinput_size);
+	alpha_input = new wxSpinCtrl(rgb_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 255);
 
 	for (auto& elem : hsl_input)
-		elem = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 255);
+		elem = new wxSpinCtrl(hsl_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 255);
 
 	for (auto& elem : hsv_input)
-		elem = new wxSpinCtrl(this, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 255);
+		elem = new wxSpinCtrl(hsv_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 255);
 
-	preview_box = new wxStaticBitmap(this, -1, wxBitmap(40, 40, 24), wxDefaultPosition, wxSize(40, 40), STATIC_BORDER_FLAG);
+	preview_box = new wxStaticBitmap(spectrum_box, -1, wxBitmap(40, 40, 24), wxDefaultPosition, wxSize(40, 40), STATIC_BORDER_FLAG);
 	recent_box = new ColorPickerRecent(this, 8, 4, 16);
 
 	eyedropper_bitmap = GETBUNDLE(eyedropper_tool, 24);
@@ -591,7 +597,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	// Arrange the controls in a nice way
 	wxSizer *spectop_sizer = new wxBoxSizer(wxHORIZONTAL);
-	spectop_sizer->Add(new wxStaticText(this, -1, _("Spectrum mode:")), 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxRIGHT, 5);
+	spectop_sizer->Add(new wxStaticText(spectrum_box, -1, _("Spectrum mode:")), 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxRIGHT, 5);
 	spectop_sizer->Add(colorspace_choice, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT);
 	spectop_sizer->Add(5, 5, 1, wxEXPAND);
 	spectop_sizer->Add(preview_box, 0, wxALIGN_CENTER_VERTICAL);
@@ -606,28 +612,28 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	if (!alpha)
 		spectrum_sizer->Hide(alpha_slider);
 
-	spectrum_box->Add(spectrum_sizer, 0, wxALL, 3);
+	spectrum_box_sizer->Add(spectrum_sizer, 0, wxALL, 3);
 
 	wxString rgb_labels[] = { _("Red:"), _("Green:"), _("Blue:") };
-	rgb_box->Add(MakeColorInputSizer(rgb_labels, rgb_input), 1, wxALL|wxEXPAND, 3);
+	rgb_box_sizer->Add(MakeColorInputSizer(rgb_box, rgb_labels, rgb_input), 1, wxALL|wxEXPAND, 3);
 
 	wxString ass_labels[] = { "ASS:", "HTML:", _("Alpha:") };
 	wxControl *ass_ctrls[] = { ass_input, html_input, alpha_input };
-	auto ass_colors_sizer = MakeColorInputSizer(ass_labels, ass_ctrls);
+	auto ass_colors_sizer = MakeColorInputSizer(rgb_box, ass_labels, ass_ctrls);
 	if (!alpha)
 		ass_colors_sizer->Hide(alpha_input);
-	rgb_box->Add(ass_colors_sizer, 0, wxALL|wxCENTER|wxEXPAND, 3);
+	rgb_box_sizer->Add(ass_colors_sizer, 0, wxALL|wxCENTER|wxEXPAND, 3);
 
 	wxString hsl_labels[] = { _("Hue:"), _("Sat.:"), _("Lum.:") };
-	hsl_box->Add(MakeColorInputSizer(hsl_labels, hsl_input), 0, wxALL|wxEXPAND, 3);
+	hsl_box_sizer->Add(MakeColorInputSizer(hsl_box, hsl_labels, hsl_input), 0, wxALL|wxEXPAND, 3);
 
 	wxString hsv_labels[] = { _("Hue:"), _("Sat.:"), _("Value:") };
-	hsv_box->Add(MakeColorInputSizer(hsv_labels, hsv_input), 0, wxALL|wxEXPAND, 3);
+	hsv_box_sizer->Add(MakeColorInputSizer(hsv_box, hsv_labels, hsv_input), 0, wxALL|wxEXPAND, 3);
 
 	wxSizer *hsx_sizer = new wxBoxSizer(wxHORIZONTAL);
-	hsx_sizer->Add(hsl_box);
+	hsx_sizer->Add(hsl_box_sizer);
 	hsx_sizer->AddSpacer(5);
-	hsx_sizer->Add(hsv_box);
+	hsx_sizer->Add(hsv_box_sizer);
 
 	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
 	picker_sizer->AddStretchSpacer();
@@ -640,7 +646,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	wxStdDialogButtonSizer *button_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 
 	wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
-	input_sizer->Add(rgb_box, 0, wxEXPAND);
+	input_sizer->Add(rgb_box_sizer, 0, wxEXPAND);
 	input_sizer->AddSpacer(5);
 	input_sizer->Add(hsx_sizer, 0, wxEXPAND);
 	input_sizer->AddStretchSpacer(1);
@@ -649,7 +655,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	input_sizer->Add(button_sizer, 0, wxALIGN_RIGHT);
 
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
-	main_sizer->Add(spectrum_box, 1, wxALL | wxEXPAND, 5);
+	main_sizer->Add(spectrum_box_sizer, 1, wxALL | wxEXPAND, 5);
 	main_sizer->Add(input_sizer, 0, (wxALL&~wxLEFT)|wxEXPAND, 5);
 
 	SetSizerAndFit(main_sizer);
@@ -697,10 +703,10 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 }
 
 template<int N, class Control>
-wxSizer *DialogColorPicker::MakeColorInputSizer(wxString (&labels)[N], Control *(&inputs)[N]) {
+wxSizer *DialogColorPicker::MakeColorInputSizer(wxWindow *parent, wxString (&labels)[N], Control *(&inputs)[N]) {
 	auto sizer = new wxFlexGridSizer(2, 5, 5);
 	for (int i = 0; i < N; ++i) {
-		sizer->Add(new wxStaticText(this, -1, labels[i]), wxSizerFlags(1).Center().Left());
+		sizer->Add(new wxStaticText(parent, -1, labels[i]), wxSizerFlags(1).Center().Left());
 		sizer->Add(inputs[i], wxSizerFlags().Expand());
 	}
 	sizer->AddGrowableCol(0,1);

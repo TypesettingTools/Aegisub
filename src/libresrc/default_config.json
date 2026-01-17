@@ -598,6 +598,9 @@
 
 	"Video" : {
 		"Default Zoom" : 7,
+		"Scroll Action": 0,
+		"Ctrl Scroll Action": 2,
+		"Shift Scroll Action": 4,
 		"Detached" : {
 			"Enabled" : false,
 			"Last" : {

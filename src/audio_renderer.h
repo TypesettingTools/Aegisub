@@ -274,7 +274,7 @@ public:
 	void SetProvider(agi::AudioProvider *provider);
 
 	/// @brief Change horizontal zoom
-	/// @param pixel_ms Milliseconds per pixel to zoom to
+	/// @param new_pixel_ms Milliseconds per pixel to zoom to
 	void SetMillisecondsPerPixel(double new_pixel_ms);
 
 	/// @brief Change vertical zoom
@@ -286,5 +286,5 @@ public:
 	///
 	/// Deriving classes should override this method if they implement any
 	/// kind of caching.
-	virtual void AgeCache(size_t max_size) { }
+	virtual void AgeCache([[maybe_unused]] size_t max_size) { }
 };

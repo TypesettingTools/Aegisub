@@ -258,7 +258,7 @@ int64_t PulseAudioPlayer::GetCurrentPosition()
 	if (!is_playing) return 0;
 
 	// FIXME: this should be based on not duration played but actual sample being heard
-	// (during vidoeo playback, cur_frame might get changed to resync)
+	// (during video playback, cur_frame might get changed to resync)
 
 	// Calculation duration we have played, in microseconds
 	pa_usec_t play_cur_time;
@@ -269,14 +269,14 @@ int64_t PulseAudioPlayer::GetCurrentPosition()
 }
 
 /// @brief Called by PA to notify about other context-related stuff
-void PulseAudioPlayer::pa_context_notify(pa_context *c, PulseAudioPlayer *thread)
+void PulseAudioPlayer::pa_context_notify(pa_context *, PulseAudioPlayer *thread)
 {
 	thread->cstate = pa_context_get_state(thread->context);
 	thread->context_notify.Post();
 }
 
 /// @brief Called by PA when an operation completes
-void PulseAudioPlayer::pa_stream_success(pa_stream *p, int success, PulseAudioPlayer *thread)
+void PulseAudioPlayer::pa_stream_success(pa_stream *, int success, PulseAudioPlayer *thread)
 {
 	thread->stream_success_val = success;
 	thread->stream_success.Post();
@@ -313,7 +313,7 @@ void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPl
 }
 
 /// @brief Called by PA to notify about other stuff
-void PulseAudioPlayer::pa_stream_notify(pa_stream *p, PulseAudioPlayer *thread)
+void PulseAudioPlayer::pa_stream_notify(pa_stream *, PulseAudioPlayer *thread)
 {
 	thread->sstate = pa_stream_get_state(thread->stream);
 	thread->stream_notify.Post();

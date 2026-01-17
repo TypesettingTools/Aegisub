@@ -27,8 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file visual_feature->h
-/// @see visual_feature->cpp
+/// @file visual_feature.h
+/// @see visual_feature.cpp
 /// @ingroup visual_ts
 ///
 

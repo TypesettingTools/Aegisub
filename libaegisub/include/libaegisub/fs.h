@@ -80,7 +80,7 @@ public:
 #define WRAP_SFP(name) \
 	inline path name() const { \
 		return path(std::filesystem::path::name()); \
-	};
+	}
 
 	WRAP_SFP(root_name);
 	WRAP_SFP(root_directory);
@@ -105,7 +105,7 @@ public:
 		const char *GetName() const { return ""; } \
 	}
 
-/// @class agi::FileSystemError
+/// @class agi::fs::FileSystemError
 /// @extends agi::Exception
 /// @brief Base class for errors related to the file system
 ///
@@ -120,7 +120,7 @@ DEFINE_FS_EXCEPTION(FileNotAccessible, FileSystemError, "File is not accessible:
 /// A file can't be accessed because there's no file by the given name
 DEFINE_FS_EXCEPTION(FileNotFound, FileNotAccessible, "File not found: ");
 
-/// An error of some unknown type has occured
+/// An error of some unknown type has occurred
 DEFINE_EXCEPTION(FileSystemUnknownError, FileSystemError);
 
 /// The path exists, but isn't a file
@@ -154,7 +154,7 @@ bool DirectoryExists(path const& dir);
 /// Get the local-charset encoded shortname for a file
 ///
 /// This is purely for compatibility with external libraries which do
-/// not support unicode filenames on Windows. On all other platforms,
+/// not support Unicode filenames on Windows. On all other platforms,
 /// it is a no-op.
 std::string ShortName(path const& file_path);
 
@@ -163,20 +163,20 @@ uintmax_t FreeSpace(path const& dir_path);
 
 /// Get the size in bytes of the file at path
 ///
-/// @throws agi::FileNotFound if path does not exist
-/// @throws agi::acs::NotAFile if path is a directory
-/// @throws agi::acs::Read if path exists but could not be read
+/// @throws agi::fs::FileNotFound if path does not exist
+/// @throws agi::fs::NotAFile if path is a directory
+/// @throws agi::fs::ReadDenied if path exists but could not be read
 uintmax_t Size(path const& file_path);
 
 /// Get the modification time of the file at path
 ///
-/// @throws agi::FileNotFound if path does not exist
-/// @throws agi::acs::NotAFile if path is a directory
-/// @throws agi::acs::Read if path exists but could not be read
+/// @throws agi::fs::FileNotFound if path does not exist
+/// @throws agi::fs::NotAFile if path is a directory
+/// @throws agi::fs::ReadDenied if path exists but could not be read
 std::filesystem::file_time_type ModifiedTime(path const& file_path);
 
 /// Create a directory and all required intermediate directories
-/// @throws agi::acs::Write if the directory could not be created.
+/// @throws agi::fs::WriteDenied if the directory could not be created.
 ///
 /// Trying to create a directory which already exists is not an error.
 bool CreateDirectory(path const& dir_path);
@@ -200,8 +200,8 @@ void Rename(path const& from, path const& to);
 void Copy(path const& from, path const& to);
 
 /// Delete a file
-/// @param path Path to file to delete
-/// @throws agi::FileNotAccessibleError if file exists but could not be deleted
+/// @param file Path to file to delete
+/// @throws agi::fs::FileNotAccessible if file exists but could not be deleted
 bool Remove(path const& file);
 
 /// Check if the file has the given extension

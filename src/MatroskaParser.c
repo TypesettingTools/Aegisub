@@ -1169,7 +1169,7 @@ static void parseVideoInfo(MatroskaFile *mf,uint64_t toplen,struct TrackInfo *ti
       break;
     case 0x54b2: // DisplayUnit
       v = readUInt(mf,(unsigned)len);
-      if (v>2)
+      if (v>4)
 	errorjmp(mf,"Invalid DisplayUnit: %d",(int)v);
       ti->AV.Video.DisplayUnit = (unsigned char)v;
       break;
@@ -2418,13 +2418,14 @@ static int  readMoreBlocks(MatroskaFile *mf) {
 	  readUInt(mf,(unsigned)len);
 	  break;
 	case 0x5854: { // SilentTracks
-	  unsigned  stmask = 0, i, trk;
+	  // unsigned  stmask = 0;
+	  unsigned  i, trk;
 	  FOREACH(mf, len)
 	    case 0x58d7: // SilentTrackNumber
 	      trk = (unsigned)readUInt(mf, (unsigned)len);
 	      for (i = 0; i < mf->nTracks; ++i)
 		if (mf->Tracks[i]->Number == trk) {
-		  stmask |= 1 << i;
+		  // stmask |= 1 << i;
 		  break;
 		}
 	      break;

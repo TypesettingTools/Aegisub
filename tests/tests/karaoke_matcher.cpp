@@ -274,7 +274,8 @@ protected:
 				.start_time = start,
 				.duration = syl.first,
 				.text = syl.second,
-				.tag_type = tag
+				.tag_type = tag,
+				.ovr_tags = {},
 			});
 			start += syl.first;
 		}
@@ -291,7 +292,8 @@ std::vector<KaraokeSyllable> make_syllables(const char *tag, int start, std::ini
 			.start_time = start,
 			.duration = syl.first,
 			.text = syl.second,
-			.tag_type = tag
+			.tag_type = tag,
+			.ovr_tags = {}
 		});
 		start += syl.first;
 	}

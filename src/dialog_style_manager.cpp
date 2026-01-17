@@ -69,6 +69,7 @@
 #include <wx/radiobox.h>
 #include <wx/sizer.h>
 #include <wx/spinctrl.h>
+#include <wx/statbox.h>
 #include <wx/textctrl.h>
 #include <wx/textdlg.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
@@ -268,45 +269,51 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	using std::bind;
 	SetIcons(GETICONS(style_toolbutton));
 
+	// Static box sizers
+	wxStaticBoxSizer *CatalogSizer = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Catalog of available storages"));
+	wxStaticBoxSizer *StorageSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Storage"));
+	wxStaticBoxSizer *CurrentSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Current script"));
+
+	wxWindow *CatalogSizerBox = CatalogSizer->GetStaticBox();
+	wxWindow *StorageSizerBox = StorageSizer->GetStaticBox();
+	wxWindow *CurrentSizerBox = CurrentSizer->GetStaticBox();
+
 	// Catalog
-	wxSizer *CatalogBox = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Catalog of available storages"));
-	CatalogList = new wxComboBox(this,-1, "", wxDefaultPosition, wxSize(-1,-1), 0, nullptr, wxCB_READONLY);
-	wxButton *CatalogNew = new wxButton(this, -1, _("New"));
-	CatalogDelete = new wxButton(this, -1, _("Delete"));
-	CatalogBox->Add(CatalogList,1,wxEXPAND | wxRIGHT,5);
-	CatalogBox->Add(CatalogNew,0,wxRIGHT,5);
-	CatalogBox->Add(CatalogDelete,0,0,0);
+	CatalogList = new wxComboBox(CatalogSizerBox,-1, "", wxDefaultPosition, wxSize(-1,-1), 0, nullptr, wxCB_READONLY);
+	wxButton *CatalogNew = new wxButton(CatalogSizerBox, -1, _("New"));
+	CatalogDelete = new wxButton(CatalogSizerBox, -1, _("Delete"));
+	CatalogSizer->Add(CatalogList,1,wxEXPAND | wxRIGHT,5);
+	CatalogSizer->Add(CatalogNew,0,wxRIGHT,5);
+	CatalogSizer->Add(CatalogDelete,0,0,0);
 
 	// Storage styles list
-	wxSizer *StorageButtons = make_edit_buttons(this, _("Copy to &current script ->"), &MoveToLocal, &StorageNew, &StorageEdit, &StorageCopy, &StorageDelete);
+	wxSizer *StorageButtons = make_edit_buttons(StorageSizerBox, _("Copy to &current script ->"), &MoveToLocal, &StorageNew, &StorageEdit, &StorageCopy, &StorageDelete);
 
 	wxSizer *StorageListSizer = new wxBoxSizer(wxHORIZONTAL);
-	StorageList = new wxListBox(this, -1, wxDefaultPosition, wxSize(240,250), 0, nullptr, wxLB_EXTENDED);
+	StorageList = new wxListBox(StorageSizerBox, -1, wxDefaultPosition, wxSize(240,250), 0, nullptr, wxLB_EXTENDED);
 	StorageListSizer->Add(StorageList,1,wxEXPAND | wxRIGHT,0);
-	StorageListSizer->Add(make_move_buttons(this, &StorageMoveUp, &StorageMoveDown, &StorageMoveTop, &StorageMoveBottom, &StorageSort), wxSizerFlags().Expand());
+	StorageListSizer->Add(make_move_buttons(StorageSizerBox, &StorageMoveUp, &StorageMoveDown, &StorageMoveTop, &StorageMoveBottom, &StorageSort), wxSizerFlags().Expand());
 
-	wxSizer *StorageBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Storage"));
-	StorageBox->Add(StorageListSizer,1,wxEXPAND | wxBOTTOM,5);
-	StorageBox->Add(MoveToLocal,0,wxEXPAND | wxBOTTOM,5);
-	StorageBox->Add(StorageButtons,0,wxEXPAND | wxBOTTOM,0);
+	StorageSizer->Add(StorageListSizer,1,wxEXPAND | wxBOTTOM,5);
+	StorageSizer->Add(MoveToLocal,0,wxEXPAND | wxBOTTOM,5);
+	StorageSizer->Add(StorageButtons,0,wxEXPAND | wxBOTTOM,0);
 
 	// Local styles list
-	wxButton *CurrentImport = new wxButton(this, -1, _("&Import from script..."));
-	wxSizer *CurrentButtons = make_edit_buttons(this, _("<- Copy to &storage"), &MoveToStorage, &CurrentNew, &CurrentEdit, &CurrentCopy, &CurrentDelete);
+	wxButton *CurrentImport = new wxButton(CurrentSizerBox, -1, _("&Import from script..."));
+	wxSizer *CurrentButtons = make_edit_buttons(CurrentSizerBox, _("<- Copy to &storage"), &MoveToStorage, &CurrentNew, &CurrentEdit, &CurrentCopy, &CurrentDelete);
 
 	wxSizer *MoveImportSizer = new wxBoxSizer(wxHORIZONTAL);
 	MoveImportSizer->Add(MoveToStorage,1,wxEXPAND | wxRIGHT,5);
 	MoveImportSizer->Add(CurrentImport,1,wxEXPAND,0);
 
 	wxSizer *CurrentListSizer = new wxBoxSizer(wxHORIZONTAL);
-	CurrentList = new wxListBox(this, -1, wxDefaultPosition, wxSize(240,250), 0, nullptr, wxLB_EXTENDED);
+	CurrentList = new wxListBox(CurrentSizerBox, -1, wxDefaultPosition, wxSize(240,250), 0, nullptr, wxLB_EXTENDED);
 	CurrentListSizer->Add(CurrentList,1,wxEXPAND | wxRIGHT,0);
-	CurrentListSizer->Add(make_move_buttons(this, &CurrentMoveUp, &CurrentMoveDown, &CurrentMoveTop, &CurrentMoveBottom, &CurrentSort), wxSizerFlags().Expand());
+	CurrentListSizer->Add(make_move_buttons(CurrentSizerBox, &CurrentMoveUp, &CurrentMoveDown, &CurrentMoveTop, &CurrentMoveBottom, &CurrentSort), wxSizerFlags().Expand());
 
-	wxSizer *CurrentBox = new wxStaticBoxSizer(wxVERTICAL, this, _("Current script"));
-	CurrentBox->Add(CurrentListSizer,1,wxEXPAND | wxBOTTOM,5);
-	CurrentBox->Add(MoveImportSizer,0,wxEXPAND | wxBOTTOM,5);
-	CurrentBox->Add(CurrentButtons,0,wxEXPAND | wxBOTTOM,0);
+	CurrentSizer->Add(CurrentListSizer,1,wxEXPAND | wxBOTTOM,5);
+	CurrentSizer->Add(MoveImportSizer,0,wxEXPAND | wxBOTTOM,5);
+	CurrentSizer->Add(CurrentButtons,0,wxEXPAND | wxBOTTOM,0);
 
 	// Buttons
 	wxStdDialogButtonSizer *buttonSizer = CreateStdDialogButtonSizer(wxCANCEL | wxHELP);
@@ -315,10 +322,10 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 
 	// General layout
 	wxSizer *StylesSizer = new wxBoxSizer(wxHORIZONTAL);
-	StylesSizer->Add(StorageBox,0,wxRIGHT | wxEXPAND,5);
-	StylesSizer->Add(CurrentBox,0,wxLEFT | wxEXPAND,0);
+	StylesSizer->Add(StorageSizer,0,wxRIGHT | wxEXPAND,5);
+	StylesSizer->Add(CurrentSizer,0,wxLEFT | wxEXPAND,0);
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(CatalogBox,0,wxEXPAND | wxLEFT | wxRIGHT | wxTOP,5);
+	MainSizer->Add(CatalogSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxTOP,5);
 	MainSizer->Add(StylesSizer,1,wxEXPAND | wxALL,5);
 	MainSizer->Add(buttonSizer,0,wxBOTTOM | wxEXPAND,5);
 
@@ -679,16 +686,16 @@ void DialogStyleManager::OnCurrentImport() {
 	try {
 		auto reader = SubtitleFormat::GetReader(filename, charset.c_str());
 		if (!reader) {
-			wxMessageBox("Unsupported subtitle format", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+			wxMessageBox(_("Unsupported subtitle format"), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 			return;
 		}
 		reader->ReadFile(&temp, filename, 0, charset.c_str());
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(to_wx(err.GetMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(to_wx(err.GetMessage()), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 	}
 	catch (...) {
-		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, this);
+		wxMessageBox(_("Unknown error"), _("Error"), wxOK | wxICON_ERROR | wxCENTER, this);
 		return;
 	}
 

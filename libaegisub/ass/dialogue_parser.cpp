@@ -131,7 +131,7 @@ class WordSplitter {
 
 			auto token_type = dt::TEXT;
 
-			for (size_t i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++) {
 				if (rules[i] >= UBRK_WORD_LETTER && rules[i] < UBRK_WORD_IDEO_LIMIT) {
 					token_type = dt::WORD;
 					break;
@@ -266,7 +266,7 @@ void MarkDrawings(std::string_view str, std::vector<DialogueToken> &tokens) {
 					for (size_t j = i + 2; j < tokens.size(); j++) {
 						if (tokens[j].type == dt::ARG_SEP) {
 							if (drawing_start) {
-								break; 	// More than two arguents - this is a rectangular clip
+								break; 	// More than two arguments - this is a rectangular clip
 							}
 							drawing_start = j + 1;
 						} else if (tokens[j].type == dt::CLOSE_PAREN) {

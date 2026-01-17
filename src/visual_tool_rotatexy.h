@@ -29,6 +29,7 @@ class VisualToolRotateXY final : public VisualTool<VisualDraggableFeature> {
 
 	float fax = 0.f;
 	float fay = 0.f;
+	Vector2D fsc;
 
 	float orig_x = 0.f; ///< x rotation at the beginning of the current hold
 	float orig_y = 0.f; ///< y rotation at the beginning of the current hold

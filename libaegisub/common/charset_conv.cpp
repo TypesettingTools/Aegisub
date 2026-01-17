@@ -98,7 +98,7 @@ namespace {
 		return size;
 	}
 
-	void eat_bom(Iconv& cd, size_t bomSize, const char** inbuf, size_t* inbytesleft, char** outbuf, size_t* outbytesleft) {
+	void eat_bom(Iconv& cd, size_t bomSize, const char** inbuf, size_t* inbytesleft, char**, size_t* outbytesleft) {
 		// If this encoding has a forced BOM (i.e. it's UTF-16 or UTF-32 without
 		// a specified byte order), skip over it
 		if (bomSize > 0 && inbytesleft && *inbytesleft) {
@@ -112,26 +112,6 @@ namespace {
 			size_t srcSize = *inbytesleft;
 			cd(&src, &srcSize, &dst, &dstSize);
 		}
-	}
-
-	// Calculate the size of NUL in the given character set
-	size_t nul_size(const char *encoding) {
-		// We need a character set to convert from with a known encoding of NUL
-		// UTF-8 seems like the obvious choice
-		auto cd = Converter::create(false, "UTF-8", encoding);
-
-		char dbuff[4];
-		char sbuff[] = "";
-		char* dst = dbuff;
-		const char* src = sbuff;
-		size_t dstLen = sizeof(dbuff);
-		size_t srcLen = 1;
-
-		size_t ret = cd->Convert(&src, &srcLen, &dst, &dstLen);
-		assert(ret != iconv_failed);
-		assert(dst - dbuff > 0);
-
-		return dst - dbuff;
 	}
 
 #ifdef ICONV_POSIX
@@ -287,12 +267,7 @@ std::unique_ptr<Converter> Converter::create(bool subst, const char *src, const 
 
 IconvWrapper::IconvWrapper(const char *sourceEncoding, const char *destEncoding, bool enableSubst)
 : conv(Converter::create(enableSubst, sourceEncoding, destEncoding))
-{
-	// These need to be set only after we verify that the source and dest
-	// charsets are valid
-	toNulLen = nul_size(destEncoding);
-	fromNulLen = nul_size(sourceEncoding);
-}
+{ }
 
 IconvWrapper::~IconvWrapper() = default;
 

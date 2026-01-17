@@ -50,7 +50,7 @@ public:
 	/// Strip override tags
 	static void StripTags(AssFile &file);
 	/// Convert newlines to the specified character(s)
-	/// @param lineEnd newline character(s)
+	/// @param newline newline character(s)
 	/// @param mergeLineBreaks Should multiple consecutive line breaks be merged into one?
 	static void ConvertNewlines(AssFile &file, std::string_view newline, bool mergeLineBreaks = true);
 	/// Remove All commented and empty lines
@@ -68,7 +68,7 @@ public:
 	static agi::vfr::Framerate AskForFPS(bool allow_vfr, bool show_smpte, agi::vfr::Framerate const& fps);
 
 	/// Constructor
-	/// @param Subtitle format name
+	/// @param name format name
 	SubtitleFormat(std::string_view name);
 	/// Destructor
 	virtual ~SubtitleFormat() = default;
@@ -98,13 +98,13 @@ public:
 	/// @param[out] target Destination to read lines into
 	/// @param filename File to load
 	/// @param encoding Encoding to use. May be ignored by the reader.
-	virtual void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const { }
+	virtual void ReadFile([[maybe_unused]] AssFile *target, [[maybe_unused]] agi::fs::path const& filename, [[maybe_unused]] agi::vfr::Framerate const& fps, [[maybe_unused]] const char *encoding) const { }
 
 	/// Save a subtitle file
 	/// @param src Data to write
 	/// @param filename File to write to
-	/// @param forceEncoding Encoding to use or empty string for default
-	virtual void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding="") const { }
+	/// @param encoding Encoding to use or empty string for default
+	virtual void WriteFile([[maybe_unused]] const AssFile *src, [[maybe_unused]] agi::fs::path const& filename, [[maybe_unused]] agi::vfr::Framerate const& fps, [[maybe_unused]] const char *encoding="") const { }
 
 	/// Export a subtitle file
 	///

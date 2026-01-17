@@ -12,7 +12,7 @@
 // ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 // OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-/// @file libaegisub_keyframe.cpp
+/// @file keyframe.cpp
 /// @brief agi::keyframe tests
 /// @ingroup video_input
 
