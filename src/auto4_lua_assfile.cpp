@@ -298,7 +298,7 @@ namespace Automation4 {
 			sty->UpdateData();
 		}
 		else if (lclass == "dialogue") {
-			assert(ass != 0); // since we need AssFile::AddExtradata
+			assert(ass != nullptr); // since we need AssFile::AddExtradata
 			auto dia = new AssDialogue;
 			result.reset(dia);
 

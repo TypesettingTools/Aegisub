@@ -263,7 +263,7 @@ wxArrayString PortAudioPlayer::GetOutputDevices() {
 	list.push_back("Default");
 
 	try {
-		PortAudioPlayer player(0);
+		PortAudioPlayer player(nullptr);
 
 		for (auto it = player.devices.begin(); it != player.devices.end(); ++it)
 			list.push_back(to_wx(it->first));
