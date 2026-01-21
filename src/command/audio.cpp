@@ -174,7 +174,7 @@ struct audio_save_clip final : public Command {
 		auto const& sel = c->selectionController->GetSelectedSet();
 		if (sel.empty()) return;
 
-		auto filename = SaveFileSelector(_("Save audio clip"), "", "", "wav", "", c->parent);
+		auto filename = SaveFileSelector(_("Save Audio Clip"), "", "", "wav", "", c->parent);
 		if (filename.empty()) return;
 
 		agi::Time start = INT_MAX, end = 0;
