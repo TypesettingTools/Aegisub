@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-02 21:53+0100\n"
-"PO-Revision-Date: 2025-08-12 15:03+0900\n"
+"POT-Creation-Date: 2025-12-01 20:46+0100\n"
+"PO-Revision-Date: 2026-01-23 00:00+0900\n"
 "Last-Translator: Hack茶ん\n"
 "Language-Team: TNC\n"
 "Language: ko_KR\n"
@@ -11,7 +11,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.8\n"
+
+#: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
+msgid "Language"
+msgstr "언어"
+
+#: ../src/aegisublocale.cpp:113
+msgid "Please choose a language:"
+msgstr "언어 선택 :"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
@@ -155,7 +163,73 @@ msgstr "타이밍"
 msgid "karaoke timing"
 msgstr "카라오케 타이밍"
 
-#: ../src/auto4_base.cpp:454
+#: ../src/auto4_base.cpp:344
+msgid ""
+"A script in the Automation autoload directory failed to load.\n"
+"Please review the errors, fix them and use the Rescan Autoload Dir button in "
+"Automation Manager to load the scripts again."
+msgstr ""
+"자동화 자동 불러오기 디렉터리에 있는 스크립트를 불러오지 않았습니다.\n"
+"오류를 검토하고 수정한 후, 자동화 관리자에서 '자동 불러오기 디렉터리 다시 스"
+"캔' 버튼을 사용하여 스크립트를 다시 불러오십시오."
+
+#: ../src/auto4_base.cpp:347
+msgid ""
+"Multiple scripts in the Automation autoload directory failed to load.\n"
+"Please review the errors, fix them and use the Rescan Autoload Dir button in "
+"Automation Manager to load the scripts again."
+msgstr ""
+"자동화 자동 불러오기 디렉터리에 있는 여러 스크립트를 불러오지 못했습니다.\n"
+"오류를 검토하고 수정하신 후, 자동화 관리자에서 '자동 불러오기 디렉터리 다시 "
+"스캔' 버튼을 사용하여 스크립트를 다시 불러오십시오."
+
+#: ../src/auto4_base.cpp:350
+msgid ""
+"A script in the Automation autoload directory loaded with warnings.\n"
+"Please review the warnings, fix them and use the Rescan Autoload Dir button "
+"in Automation Manager to load the scripts again."
+msgstr ""
+"자동화 자동 불러오기 디렉터리에 있는 스크립트가 경고와 함께 불러오게 되었습니"
+"다.\n"
+"경고 메시지를 검토하고 수정한 후, 자동화 관리자에서 '자동 불러오기 디렉터리 "
+"다시 스캔' 버튼을 사용하여 스크립트를 다시 불러오십시오."
+
+#: ../src/auto4_base.cpp:353
+msgid ""
+"Multiple scripts in the Automation autoload directory loaded with warnings.\n"
+"Please review the warnings, fix them and use the Rescan Autoload Dir button "
+"in Automation Manager to load the scripts again."
+msgstr ""
+"자동화 자동 불러오기 디렉터리에 있는 여러 스크립트를 경고와 함께 불러왔습니"
+"다.\n"
+"경고 메시지를 검토하고 수정한 후, 자동화 관리자에서 '자동 불러오기 디렉터리 "
+"다시 스캔' 버튼을 사용하여 스크립트를 다시 불러오십시오."
+
+#: ../src/auto4_base.cpp:393
+#, c-format
+msgid ""
+"Automation Script referenced with unknown location specifier character.\n"
+"Location specifier found: %c\n"
+"Filename specified: %s"
+msgstr ""
+"알 수 없는 위치 지정 문자로 참조된 자동화 스크립트입니다.\n"
+"위치 지정 문자 발견 : %c\n"
+"지정된 파일 이름 : %s"
+
+#: ../src/auto4_base.cpp:401
+#, c-format
+msgid ""
+"Automation Script referenced could not be found.\n"
+"Filename specified: %c%s\n"
+"Searched relative to: %s\n"
+"Resolved filename: %s"
+msgstr ""
+"참조된 자동화 스크립트를 찾을 수 없습니다.\n"
+"지정된 파일 이름 : %c%s\n"
+"상대 위치 : %s\n"
+"확인된 파일 이름 : %s"
+
+#: ../src/auto4_base.cpp:462
 #, c-format
 msgid ""
 "Failed to load Automation script '%s':\n"
@@ -164,26 +238,66 @@ msgstr ""
 "스크립트 자동화 '%s' 불러오기 실패 :\n"
 "%s"
 
-#: ../src/auto4_base.cpp:461
+#: ../src/auto4_base.cpp:465
+#, c-format
+msgid ""
+"Warning when loading Automation script '%s':\n"
+"%s"
+msgstr ""
+"스크립트 자동화 '%s' 불러오기 중 경고 :\n"
+"%s"
+
+#: ../src/auto4_base.cpp:472
 #, c-format
 msgid "The file was not recognised as an Automation script: %s"
 msgstr "파일을 스크립트 자동화로 인식되지 않음 : %s"
 
-#: ../src/auto4_base.cpp:490 ../src/command/audio.cpp:84
+#: ../src/auto4_base.cpp:501 ../src/command/audio.cpp:84
 #: ../src/command/keyframe.cpp:76 ../src/command/timecode.cpp:73
 #: ../src/command/timecode.cpp:93 ../src/command/video.cpp:592
 msgid "All Files"
 msgstr "모든 파일"
 
-#: ../src/auto4_base.cpp:496 ../src/command/keyframe.cpp:74
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
-#: ../src/subtitle_format.cpp:318
+#: ../src/auto4_base.cpp:507 ../src/command/keyframe.cpp:74
+#: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "모든 지원 형식"
 
-#: ../src/auto4_base.cpp:502
+#: ../src/auto4_base.cpp:513
 msgid "File was not recognized as a script"
 msgstr "파일이 스크립트로 인식되지 않음"
+
+#: ../src/auto4_lua.cpp:180
+#, c-format
+msgid ""
+"Warning in Automation script '%s':\n"
+"%s"
+msgstr ""
+"자동화 스크립트 '%s'에서 경고 발생 :\n"
+"%s"
+
+#: ../src/auto4_lua.cpp:458
+msgid "Could not initialize Lua state"
+msgstr "Lua 상태를 초기화할 수 없음"
+
+#: ../src/auto4_lua.cpp:541
+#, c-format
+msgid ""
+"Error initialising Lua script \"%s\":\n"
+"\n"
+"%s"
+msgstr ""
+"Lua 스크립트 \"%s\" 초기화 중 오류 발생 :\n"
+"\n"
+"%s"
+
+#: ../src/auto4_lua.cpp:551
+msgid ""
+"Attempted to load an Automation 3 script as an Automation 4 Lua script. "
+"Automation 3 is no longer supported."
+msgstr ""
+"자동화 3 스크립트를 자동화 4 Lua 스크립트로 불러오기를 시도했습니다. 자동화 3"
+"은 더 이상 지원되지 않습니다."
 
 #: ../src/charset_detect.cpp:50
 msgid ""
@@ -272,10 +386,6 @@ msgstr "응용프로그램 종료"
 #: ../src/command/app.cpp:155
 msgid "&Language..."
 msgstr "언어(&L)"
-
-#: ../src/command/app.cpp:156
-msgid "Language"
-msgstr "언어"
 
 #: ../src/command/app.cpp:157
 msgid "Select Aegisub interface language"
@@ -480,7 +590,6 @@ msgid "Play the current audio selection, ignoring changes made while playing"
 msgstr "현재 음향 선택 영역을 재생하는 동안 변경된 내용은 무시하고 재생"
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "현재 라인 재생"
 
@@ -667,7 +776,7 @@ msgid "&Automation..."
 msgstr "자동화(&A)..."
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:333
+#: ../src/preferences.cpp:339
 msgid "Automation"
 msgstr "자동화"
 
@@ -1104,7 +1213,7 @@ msgid "revert line"
 msgstr "라인 되돌리기"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:416
 msgid "Clear"
 msgstr "지우기"
 
@@ -1267,7 +1376,7 @@ msgid "St&yle Name"
 msgstr "스타일 이름(&Y)"
 
 #: ../src/command/grid.cpp:229 ../src/command/grid.cpp:241
-#: ../src/dialog_style_editor.cpp:178
+#: ../src/dialog_style_editor.cpp:179
 msgid "Style Name"
 msgstr "스타일 이름"
 
@@ -1928,6 +2037,10 @@ msgstr "타임코드 파일 열기"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "VFR 타임코드 v1 또는 v2 파일 열기"
 
+#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+msgid "Text Files"
+msgstr "텍스트 파일"
+
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "타임코드 파일 저장..."
@@ -2075,7 +2188,7 @@ msgid "&Translation Assistant..."
 msgstr "번역 도우미(&T)..."
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:64
-#: ../src/preferences.cpp:229
+#: ../src/preferences.cpp:235
 msgid "Translation Assistant"
 msgstr "번역 도우미"
 
@@ -2451,12 +2564,16 @@ msgid "Play"
 msgstr "재생"
 
 #: ../src/command/video.cpp:635
-msgid "Play video starting on this position"
+msgid "Play the video starting on this position"
 msgstr "이 위치에서 영상 재생"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
 msgstr "라인 재생"
+
+#: ../src/command/video.cpp:647
+msgid "Play the video for the current line"
+msgstr "현재 라인의 영상 재생"
 
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
@@ -2474,63 +2591,75 @@ msgstr ""
 "영상 위에 마스크를 표시하여 텔레비전의 오버스캔으로 인해 잘릴 수 있는 영역을 "
 "표시"
 
+#: ../src/command/video.cpp:673
+msgid "Reset Video &Pan"
+msgstr "영상 팬 초기화(&P)"
+
 #: ../src/command/video.cpp:674
+msgid "Reset Video Pan"
+msgstr "영상 팬 초기화"
+
+#: ../src/command/video.cpp:675
+msgid "Reset the video's position in the video display"
+msgstr "화면 영상 위치 초기화"
+
+#: ../src/command/video.cpp:685
 msgid "&100%"
 msgstr "&100%"
 
-#: ../src/command/video.cpp:675
+#: ../src/command/video.cpp:686
 msgid "100%"
 msgstr "100%"
 
-#: ../src/command/video.cpp:676
+#: ../src/command/video.cpp:687
 msgid "Set zoom to 100%"
 msgstr "확대/축소를 100%로 설정"
 
-#: ../src/command/video.cpp:693 ../src/command/video.cpp:694
+#: ../src/command/video.cpp:704 ../src/command/video.cpp:705
 msgid "Stop video"
 msgstr "영상 중지"
 
-#: ../src/command/video.cpp:695
+#: ../src/command/video.cpp:706
 msgid "Stop video playback"
 msgstr "영상 재생 중지"
 
-#: ../src/command/video.cpp:705
+#: ../src/command/video.cpp:716
 msgid "&200%"
 msgstr "&200%"
 
-#: ../src/command/video.cpp:706
+#: ../src/command/video.cpp:717
 msgid "200%"
 msgstr "200%"
 
-#: ../src/command/video.cpp:707
+#: ../src/command/video.cpp:718
 msgid "Set zoom to 200%"
 msgstr "확대/축소를 200%로 설정"
 
-#: ../src/command/video.cpp:723
+#: ../src/command/video.cpp:734
 msgid "&50%"
 msgstr "&50%"
 
-#: ../src/command/video.cpp:724
+#: ../src/command/video.cpp:735
 msgid "50%"
 msgstr "50%"
 
-#: ../src/command/video.cpp:725
+#: ../src/command/video.cpp:736
 msgid "Set zoom to 50%"
 msgstr "확대/축소를 50%로 설정"
 
-#: ../src/command/video.cpp:741 ../src/command/video.cpp:742
+#: ../src/command/video.cpp:752 ../src/command/video.cpp:753
 msgid "Zoom In"
 msgstr "확대"
 
-#: ../src/command/video.cpp:743
+#: ../src/command/video.cpp:754
 msgid "Zoom video in"
 msgstr "영상 확대"
 
-#: ../src/command/video.cpp:753 ../src/command/video.cpp:754
+#: ../src/command/video.cpp:764 ../src/command/video.cpp:765
 msgid "Zoom Out"
 msgstr "축소"
 
-#: ../src/command/video.cpp:755
+#: ../src/command/video.cpp:766
 msgid "Zoom video out"
 msgstr "영상 축소"
 
@@ -2600,7 +2729,7 @@ msgid "Line"
 msgstr "라인"
 
 #: ../src/command/vis_tool.cpp:141
-msgid "Appends a line"
+msgid "Append a line"
 msgstr "라인 추가"
 
 #: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
@@ -2608,48 +2737,48 @@ msgid "Bicubic"
 msgstr "바이큐빅"
 
 #: ../src/command/vis_tool.cpp:148
-msgid "Appends a bezier bicubic curve"
-msgstr "베지어 바이큐빅 커브 추가"
+msgid "Append a bezier bicubic curve"
+msgstr "베지어 이중 3차 곡선 추가"
 
 #: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
 msgid "Convert"
 msgstr "변환"
 
 #: ../src/command/vis_tool.cpp:155
-msgid "Converts a segment between line and bicubic"
-msgstr "라인과 바이큐빅 사이의 세그먼트를 변환"
+msgid "Convert a segment between line and bicubic"
+msgstr "선형 보간과 3차 보간 사이의 구간 변환"
 
 #: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
 msgid "Insert"
 msgstr "삽입"
 
 #: ../src/command/vis_tool.cpp:162
-msgid "Inserts a control point"
-msgstr "컨트롤 포인트 삽입"
+msgid "Insert a control point"
+msgstr "제어점 삽입"
 
 #: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
 msgid "Remove"
 msgstr "제거"
 
 #: ../src/command/vis_tool.cpp:169
-msgid "Removes a control point"
-msgstr "컨트롤 포인트 제거"
+msgid "Remove a control point"
+msgstr "제어점 제거"
 
 #: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
 msgid "Freehand"
 msgstr "프리핸드"
 
 #: ../src/command/vis_tool.cpp:176
-msgid "Draws a freehand shape"
-msgstr "프리핸드 셰이프 그리기"
+msgid "Draw a freehand shape"
+msgstr "자유형 도형 그리기"
 
 #: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
 msgid "Freehand smooth"
 msgstr "프리핸드 스무스"
 
 #: ../src/command/vis_tool.cpp:183
-msgid "Draws a smoothed freehand shape"
-msgstr "스무스한 프리핸드 셰이프 그리기"
+msgid "Draw a smoothed freehand shape"
+msgstr "매끄러운 자유형 도형 그리기"
 
 #: ../src/dialog_about.cpp:46
 msgid "Translated into LANGUAGE by PERSON\n"
@@ -2685,7 +2814,7 @@ msgid "E&xtract"
 msgstr "추출(&X)"
 
 #: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:204
-#: ../src/preferences.cpp:605
+#: ../src/preferences.cpp:613
 msgid "&Delete"
 msgstr "삭제(&D)"
 
@@ -2710,9 +2839,17 @@ msgstr "그룹"
 msgid "Choose file to be attached"
 msgstr "첨부할 파일 선택"
 
+#: ../src/dialog_attachments.cpp:139 ../src/dialog_attachments.cpp:170
+msgid "Font Files"
+msgstr "글꼴 파일"
+
 #: ../src/dialog_attachments.cpp:142
 msgid "attach font file"
 msgstr "글꼴 파일 첨부"
+
+#: ../src/dialog_attachments.cpp:149 ../src/dialog_attachments.cpp:170
+msgid "Graphic Files"
+msgstr "그래픽 파일"
 
 #: ../src/dialog_attachments.cpp:152
 msgid "attach graphics file"
@@ -2762,15 +2899,20 @@ msgstr "이름"
 msgid "Filename"
 msgstr "파일 이름"
 
-#: ../src/dialog_automation.cpp:136
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:633
 msgid "Description"
 msgstr "설명"
 
-#: ../src/dialog_automation.cpp:222
+#: ../src/dialog_automation.cpp:224
 msgid "Add Automation script"
 msgstr "스크립트 자동화 추가"
 
-#: ../src/dialog_automation.cpp:277
+#: ../src/dialog_automation.cpp:240
+#, c-format
+msgid "Script '%s' is already loaded"
+msgstr "스크립트 '%s'이(가) 이미 불러와져 있습니다."
+
+#: ../src/dialog_automation.cpp:279
 #, c-format
 msgid ""
 "Total scripts loaded: %d\n"
@@ -2781,11 +2923,11 @@ msgstr ""
 "불러온 전역 스크립트 : %d\n"
 "불러온 로컬 스크립트 : %d\n"
 
-#: ../src/dialog_automation.cpp:282
+#: ../src/dialog_automation.cpp:284
 msgid "Scripting engines installed:"
 msgstr "스크립팅 엔진 설치됨 :"
 
-#: ../src/dialog_automation.cpp:289
+#: ../src/dialog_automation.cpp:291
 #, c-format
 msgid ""
 "\n"
@@ -2796,8 +2938,6 @@ msgid ""
 "Version: %s\n"
 "Full path: %s\n"
 "State: %s\n"
-"\n"
-"Features provided by script:"
 msgstr ""
 "\n"
 "스크립트 정보 :\n"
@@ -2807,28 +2947,39 @@ msgstr ""
 "버전 : %s\n"
 "전체 경로 : %s\n"
 "상태 : %s\n"
-"\n"
-"스크립트에서 제공하는 기능 :"
 
-#: ../src/dialog_automation.cpp:295
+#: ../src/dialog_automation.cpp:297
 msgid "Correctly loaded"
 msgstr "불러오기 완료"
 
-#: ../src/dialog_automation.cpp:295
+#: ../src/dialog_automation.cpp:297
 msgid "Failed to load"
 msgstr "불러오기 실패"
 
-#: ../src/dialog_automation.cpp:298
+#: ../src/dialog_automation.cpp:297
+msgid "Loaded with warnings"
+msgstr "경고 메시지 누적"
+
+#: ../src/dialog_automation.cpp:300
+#, c-format
+msgid "Warning: %s\n"
+msgstr "경고 : %s\n"
+
+#: ../src/dialog_automation.cpp:303
+msgid "Features provided by script:\n"
+msgstr "스크립트에서 제공하는 기능:\n"
+
+#: ../src/dialog_automation.cpp:306
 #, c-format
 msgid "    Macro: %s (%s)"
 msgstr "    매크로 : %s(%s)"
 
-#: ../src/dialog_automation.cpp:301
+#: ../src/dialog_automation.cpp:309
 #, c-format
 msgid "    Export filter: %s"
 msgstr "    필터 내보내기 : %s"
 
-#: ../src/dialog_automation.cpp:305
+#: ../src/dialog_automation.cpp:313
 msgid "Automation Script Info"
 msgstr "스크립트 자동화 정보"
 
@@ -2939,31 +3090,84 @@ msgstr "값 :"
 msgid "Video: %s"
 msgstr "영상 : %s"
 
-#: ../src/dialog_dummy_video.cpp:103
+#: ../src/dialog_dummy_video.cpp:71
+msgid "640×480 (SD fullscreen)"
+msgstr "640×480(SD 전체 화면)"
+
+#: ../src/dialog_dummy_video.cpp:72
+msgid "704×480 (SD anamorphic)"
+msgstr "704×480(SD 아나모픽)"
+
+#: ../src/dialog_dummy_video.cpp:73
+msgid "640×360 (SD widescreen)"
+msgstr "640×360(SD 와이드스크린)"
+
+#: ../src/dialog_dummy_video.cpp:74
+msgid "704×396 (SD widescreen)"
+msgstr "704×396(SD 와이드스크린)"
+
+#: ../src/dialog_dummy_video.cpp:75
+msgid "640×352 (SD widescreen MOD16)"
+msgstr "640×352(SD 와이드스크린 MOD16)"
+
+#: ../src/dialog_dummy_video.cpp:76
+msgid "704×400 (SD widescreen MOD16)"
+msgstr "704×400(SD 와이드스크린 MOD16)"
+
+#: ../src/dialog_dummy_video.cpp:77
+msgid "1024×576 (SuperPAL widescreen)"
+msgstr "1024×576(슈퍼PAL 와이드스크린)"
+
+#: ../src/dialog_dummy_video.cpp:78
+msgid "1280×720 (HD 720p)"
+msgstr "1280×720(HD 720p)"
+
+#: ../src/dialog_dummy_video.cpp:79
+msgid "1920×1080 (FHD 1080p)"
+msgstr "1920×1080(FHD 1080p)"
+
+#: ../src/dialog_dummy_video.cpp:80
+msgid "2560×1440 (QHD 1440p)"
+msgstr "2560×1440(QHD 1440p)"
+
+#: ../src/dialog_dummy_video.cpp:81
+msgid "3840×2160 (4K UHD 2160p)"
+msgstr "3840×2160(4K UHD 2160p)"
+
+#: ../src/dialog_dummy_video.cpp:82
+msgid "1080×1920 (FHD vertical)"
+msgstr "1080×1920(FHD 세로)"
+
+#: ../src/dialog_dummy_video.cpp:104
 msgid "Dummy video options"
 msgstr "더미 영상 옵션"
 
-#: ../src/dialog_dummy_video.cpp:115
+#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:130
+#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
+msgid "×"
+msgstr "×"
+
+#: ../src/dialog_dummy_video.cpp:116
 msgid "Checkerboard &pattern"
 msgstr "체커보드 패턴(&P)"
 
-#: ../src/dialog_dummy_video.cpp:118
+#: ../src/dialog_dummy_video.cpp:119
 msgid "Video resolution:"
 msgstr "영상 해상도 :"
 
-#: ../src/dialog_dummy_video.cpp:120
+#: ../src/dialog_dummy_video.cpp:121
 msgid "Color:"
 msgstr "색 :"
 
-#: ../src/dialog_dummy_video.cpp:123
+#: ../src/dialog_dummy_video.cpp:124
 msgid "Frame rate (fps):"
 msgstr "프레임 속도(fps) :"
 
-#: ../src/dialog_dummy_video.cpp:124
+#: ../src/dialog_dummy_video.cpp:125
 msgid "Duration (frames):"
 msgstr "총 재생(프레임) :"
 
-#: ../src/dialog_dummy_video.cpp:179
+#: ../src/dialog_dummy_video.cpp:180
 #, c-format
 msgid "Resulting duration: %s"
 msgstr "총 재생 시간 : %s"
@@ -2999,6 +3203,16 @@ msgstr "내보내기..."
 #: ../src/dialog_export.cpp:187
 msgid "Export subtitles file"
 msgstr "자막 파일 내보내기"
+
+#: ../src/dialog_export.cpp:202 ../src/dialog_export.cpp:205
+#: ../src/dialog_export.cpp:208
+msgid "Error exporting subtitles"
+msgstr "자막 내보내기 오류"
+
+#: ../src/dialog_export.cpp:208 ../src/dialog_style_manager.cpp:691
+#: ../src/project.cpp:142
+msgid "Unknown error"
+msgstr "알 수 없는 오류"
 
 #: ../src/dialog_export_ebu3264.cpp:83
 msgid "EBU STL export"
@@ -3238,7 +3452,10 @@ msgstr "시작(&S)!"
 #: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
 #: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
 #: ../src/dialog_kara_timing_copy.cpp:491
-#: ../src/dialog_kara_timing_copy.cpp:541 ../src/preferences.cpp:266
+#: ../src/dialog_kara_timing_copy.cpp:541 ../src/dialog_spellchecker.cpp:143
+#: ../src/dialog_spellchecker.cpp:149 ../src/dialog_style_manager.cpp:682
+#: ../src/dialog_style_manager.cpp:688 ../src/dialog_style_manager.cpp:691
+#: ../src/preferences.cpp:272 ../src/preferences.cpp:464
 msgid "Error"
 msgstr "오류"
 
@@ -3492,6 +3709,11 @@ msgstr "업데이트 상세 내역 :"
 msgid "From &video"
 msgstr "동영상에서(&V)"
 
+#: ../src/dialog_properties.cpp:138 ../src/dialog_resample.cpp:172
+#: ../src/dialog_resample.cpp:186
+msgid "YCbCr Matrix:"
+msgstr "YCbCr 매트릭스 :"
+
 #: ../src/dialog_properties.cpp:141
 msgid "Resolution"
 msgstr "해상도"
@@ -3563,14 +3785,6 @@ msgstr "종횡비 처리"
 #: ../src/dialog_resample.cpp:162
 msgid "Margin offset"
 msgstr "여백 오프셋"
-
-#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
-msgid "x"
-msgstr "x"
-
-#: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
-msgid "YCbCr Matrix:"
-msgstr "YCbCr 매트릭스 :"
 
 #: ../src/dialog_resample.cpp:175
 msgid "Source Resolution"
@@ -3896,6 +4110,14 @@ msgstr "시프팅"
 msgid "Misspelled word:"
 msgstr "맞춤법이 틀린 단어 :"
 
+#: ../src/dialog_spellchecker.cpp:143
+msgid "No spellchecker available."
+msgstr "맞춤법 검사 기능이 없습니다."
+
+#: ../src/dialog_spellchecker.cpp:149
+msgid "No spellchecker dictionaries available."
+msgstr "맞춤법 검사 사전이 없습니다."
+
 #: ../src/dialog_spellchecker.cpp:183
 msgid "Ignore &UPPERCASE words"
 msgstr "대문자 무시(&I)"
@@ -3940,219 +4162,226 @@ msgstr "맞춤법 검사 교체"
 msgid "Style Editor"
 msgstr "스타일 편집기"
 
-#: ../src/dialog_style_editor.cpp:179
-msgid "Font"
-msgstr "글꼴"
+#: ../src/dialog_style_editor.cpp:172
+msgid "Border boxes"
+msgstr "테두리 상자"
 
-#: ../src/dialog_style_editor.cpp:180 ../src/preferences.cpp:237
-msgid "Colors"
-msgstr "색상"
-
-#: ../src/dialog_style_editor.cpp:181
-msgid "Margins"
-msgstr "여백"
-
-#: ../src/dialog_style_editor.cpp:182 ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:172 ../src/dialog_style_editor.cpp:183
+#: ../src/dialog_style_editor.cpp:286
 msgid "Outline"
 msgstr "외곽선"
 
-#: ../src/dialog_style_editor.cpp:183
+#: ../src/dialog_style_editor.cpp:172
+msgid "Shadow box (libass only)"
+msgstr "섀도우 박스(libass 전용)"
+
+#: ../src/dialog_style_editor.cpp:180
+msgid "Font"
+msgstr "글꼴"
+
+#: ../src/dialog_style_editor.cpp:181 ../src/preferences.cpp:243
+msgid "Colors"
+msgstr "색상"
+
+#: ../src/dialog_style_editor.cpp:182
+msgid "Margins"
+msgstr "여백"
+
+#: ../src/dialog_style_editor.cpp:184
 msgid "Miscellaneous"
 msgstr "기타"
 
-#: ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:185
 msgid "Preview"
 msgstr "미리 보기"
 
-#: ../src/dialog_style_editor.cpp:190
+#: ../src/dialog_style_editor.cpp:191
 msgid "&Bold"
 msgstr "굵게(&B)"
 
-#: ../src/dialog_style_editor.cpp:191
+#: ../src/dialog_style_editor.cpp:192
 msgid "&Italic"
 msgstr "기울임꼴(&I)"
 
-#: ../src/dialog_style_editor.cpp:192
+#: ../src/dialog_style_editor.cpp:193
 msgid "&Underline"
 msgstr "밑줄(&U)"
 
-#: ../src/dialog_style_editor.cpp:193
+#: ../src/dialog_style_editor.cpp:194
 msgid "&Strikeout"
 msgstr "취소선(&S)"
 
-#: ../src/dialog_style_editor.cpp:205
+#: ../src/dialog_style_editor.cpp:206
 msgid "Alignment"
 msgstr "정렬"
 
-#: ../src/dialog_style_editor.cpp:208
-msgid "&Opaque box"
-msgstr "불투명 상자(&O)"
-
-#: ../src/dialog_style_editor.cpp:216
+#: ../src/dialog_style_editor.cpp:217
 msgid "Style name"
 msgstr "스타일 이름"
 
-#: ../src/dialog_style_editor.cpp:217
+#: ../src/dialog_style_editor.cpp:218
 msgid "Font face"
 msgstr "글꼴 서체"
 
-#: ../src/dialog_style_editor.cpp:218
+#: ../src/dialog_style_editor.cpp:219
 msgid "Font size"
 msgstr "글꼴 크기"
 
-#: ../src/dialog_style_editor.cpp:219
+#: ../src/dialog_style_editor.cpp:220
 msgid "Choose primary color"
 msgstr "기본색 선택"
 
-#: ../src/dialog_style_editor.cpp:220
+#: ../src/dialog_style_editor.cpp:221
 msgid "Choose secondary color"
 msgstr "보조색 선택"
 
-#: ../src/dialog_style_editor.cpp:221
+#: ../src/dialog_style_editor.cpp:222
 msgid "Choose outline color"
 msgstr "외곽선 색 선택"
 
-#: ../src/dialog_style_editor.cpp:222
+#: ../src/dialog_style_editor.cpp:223
 msgid "Choose shadow color"
 msgstr "그림자 색 선택"
 
-#: ../src/dialog_style_editor.cpp:223
+#: ../src/dialog_style_editor.cpp:224
 msgid "Distance from left edge, in pixels"
 msgstr "왼쪽 가장자리로부터의 거리(픽셀)"
 
-#: ../src/dialog_style_editor.cpp:224
+#: ../src/dialog_style_editor.cpp:225
 msgid "Distance from right edge, in pixels"
 msgstr "오른쪽 가장자리로부터의 거리(픽셀)"
 
-#: ../src/dialog_style_editor.cpp:225
+#: ../src/dialog_style_editor.cpp:226
 msgid "Distance from top/bottom edge, in pixels"
 msgstr "상단/하단 가장자리로부터의 거리(픽셀)"
 
-#: ../src/dialog_style_editor.cpp:226
-msgid ""
-"When selected, display an opaque box behind the subtitles instead of an "
-"outline around the text"
-msgstr ""
-"이 옵션을 선택하면 텍스트 주위의 외곽선 대신 자막 뒤에 불투명 상자를 표시"
-
 #: ../src/dialog_style_editor.cpp:227
+msgid "Whether to draw a normal outline or opaque boxes around the text"
+msgstr ""
+"텍스트 주위에 일반적인 윤곽선을 그릴지, 아니면 불투명한 상자를 그릴지 여부"
+
+#: ../src/dialog_style_editor.cpp:228
 msgid "Outline width, in pixels"
 msgstr "외곽선 너비(픽셀)"
 
-#: ../src/dialog_style_editor.cpp:228
+#: ../src/dialog_style_editor.cpp:229
 msgid "Shadow distance, in pixels"
 msgstr "그림자 거리(픽셀)"
 
-#: ../src/dialog_style_editor.cpp:229
+#: ../src/dialog_style_editor.cpp:230
 msgid "Scale X, in percentage"
 msgstr "스케일 X(%)"
 
-#: ../src/dialog_style_editor.cpp:230
+#: ../src/dialog_style_editor.cpp:231
 msgid "Scale Y, in percentage"
 msgstr "스케일 Y(%)"
 
-#: ../src/dialog_style_editor.cpp:231
+#: ../src/dialog_style_editor.cpp:232
 msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Z축에서 회전할 각도(\\xB0)"
 
-#: ../src/dialog_style_editor.cpp:232
+#: ../src/dialog_style_editor.cpp:233
 msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping"
 msgstr "인코딩, 글꼴에 적절한 유니코드 매핑이 없는 경우에만 유용"
 
-#: ../src/dialog_style_editor.cpp:233
+#: ../src/dialog_style_editor.cpp:234
 msgid "Character spacing, in pixels"
 msgstr "문자 간격(픽셀)"
 
-#: ../src/dialog_style_editor.cpp:234
+#: ../src/dialog_style_editor.cpp:235
 msgid "Alignment in screen, in numpad style"
 msgstr "화면에서 숫자 패드 스타일로 정렬"
 
-#: ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:286
 msgid "Primary"
 msgstr "기본"
 
-#: ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:286
 msgid "Secondary"
 msgstr "보조"
 
-#: ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:286
 msgid "Shadow"
 msgstr "그림자"
 
-#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:263
+#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:263
 msgid "Left"
 msgstr "←"
 
-#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:269
+#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:269
 msgid "Right"
 msgstr "→"
 
-#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:275
+#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:275
 msgid "Vert"
 msgstr "↕"
 
-#: ../src/dialog_style_editor.cpp:314
+#: ../src/dialog_style_editor.cpp:315
 msgid "Outline:"
 msgstr "외곽선 :"
 
-#: ../src/dialog_style_editor.cpp:315
+#: ../src/dialog_style_editor.cpp:316
 msgid "Shadow:"
 msgstr "그림자 :"
 
-#: ../src/dialog_style_editor.cpp:320
+#: ../src/dialog_style_editor.cpp:317
+msgid "Border style:"
+msgstr "테두리 스타일 :"
+
+#: ../src/dialog_style_editor.cpp:321
 msgid "Scale X%:"
 msgstr "배율 X% :"
 
-#: ../src/dialog_style_editor.cpp:321
+#: ../src/dialog_style_editor.cpp:322
 msgid "Scale Y%:"
 msgstr "배율 Y% :"
 
-#: ../src/dialog_style_editor.cpp:322
+#: ../src/dialog_style_editor.cpp:323
 msgid "Rotation:"
 msgstr "회전 :"
 
-#: ../src/dialog_style_editor.cpp:323
+#: ../src/dialog_style_editor.cpp:324
 msgid "Spacing:"
 msgstr "간격 :"
 
-#: ../src/dialog_style_editor.cpp:326
+#: ../src/dialog_style_editor.cpp:327
 msgid "Encoding:"
 msgstr "인코딩 :"
 
-#: ../src/dialog_style_editor.cpp:336
+#: ../src/dialog_style_editor.cpp:337
 msgid "Preview of current style"
 msgstr "현재 스타일 미리 보기"
 
-#: ../src/dialog_style_editor.cpp:339
+#: ../src/dialog_style_editor.cpp:340
 msgid "Text to be used for the preview"
 msgstr "미리 보기에 사용할 텍스트"
 
-#: ../src/dialog_style_editor.cpp:340
+#: ../src/dialog_style_editor.cpp:341
 msgid "Color of preview background"
 msgstr "미리 보기 배경 색상"
 
-#: ../src/dialog_style_editor.cpp:421
+#: ../src/dialog_style_editor.cpp:422
 msgid "Style name conflict"
 msgstr "스타일 이름 충돌"
 
-#: ../src/dialog_style_editor.cpp:421
+#: ../src/dialog_style_editor.cpp:422
 msgid "There is already a style with this name. Please choose another name."
 msgstr "이 이름을 가진 스타일이 이미 있습니다. 다른 이름을 선택해 주세요."
 
-#: ../src/dialog_style_editor.cpp:433
+#: ../src/dialog_style_editor.cpp:434
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
 msgstr ""
 "스크립트에서 이 스타일의 모든 인스턴스를 이 새 이름으로 변경하시겠습니까?"
 
-#: ../src/dialog_style_editor.cpp:434
+#: ../src/dialog_style_editor.cpp:435
 msgid "Update script?"
 msgstr "스크립트를 업데이트하시겠습니까?"
 
-#: ../src/dialog_style_editor.cpp:461 ../src/subs_edit_box.cpp:604
+#: ../src/dialog_style_editor.cpp:462 ../src/subs_edit_box.cpp:604
 msgid "style change"
 msgstr "스타일 변경"
 
@@ -4176,11 +4405,11 @@ msgstr "스타일 하단으로 이동"
 msgid "Sort styles alphabetically"
 msgstr "알파벳순으로 스타일 정렬"
 
-#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:603
+#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:611
 msgid "&New"
 msgstr "새로 만들기(&N)"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:604
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:612
 msgid "&Edit"
 msgstr "편집(&E)"
 
@@ -4321,6 +4550,10 @@ msgstr "현재 항목에서 삭제 확인"
 #: ../src/dialog_style_manager.cpp:662
 msgid "style delete"
 msgstr "스타일 삭제"
+
+#: ../src/dialog_style_manager.cpp:682
+msgid "Unsupported subtitle format"
+msgstr "지원하지 않는 자막 형식"
 
 #: ../src/dialog_style_manager.cpp:698
 msgid "Error Importing Styles"
@@ -4723,7 +4956,7 @@ msgid "Decoder:"
 msgstr "디코더 :"
 
 #: ../src/dialog_video_details.cpp:66 ../src/preferences.cpp:167
-#: ../src/preferences.cpp:438
+#: ../src/preferences.cpp:444
 msgid "Video"
 msgstr "영상"
 
@@ -4731,14 +4964,14 @@ msgstr "영상"
 msgid "Resolution mismatch"
 msgstr "해상도 불일치"
 
-#: ../src/dialog_video_properties.cpp:46
+#: ../src/dialog_video_properties.cpp:47
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
 "subtitles don't match.\n"
 "\n"
-"Video resolution:\t%d x %d\n"
-"Script resolution:\t%d x %d\n"
+"Video resolution:\t%d × %d\n"
+"Script resolution:\t%d × %d\n"
 "\n"
 "Change subtitles resolution to match video?"
 msgstr ""
@@ -4749,27 +4982,27 @@ msgstr ""
 "\n"
 "영상과 일치하도록 자막 해상도를 수정하시겠습니까?"
 
-#: ../src/dialog_video_properties.cpp:54 ../src/dialog_video_properties.cpp:63
+#: ../src/dialog_video_properties.cpp:58 ../src/dialog_video_properties.cpp:67
 msgid "Set to video resolution"
 msgstr "영상 해상도로 설정"
 
-#: ../src/dialog_video_properties.cpp:55
+#: ../src/dialog_video_properties.cpp:59
 msgid "Resample script (stretch to new aspect ratio)"
 msgstr "스크립트 재표본화(새 종횡비로 늘이기)"
 
-#: ../src/dialog_video_properties.cpp:56
+#: ../src/dialog_video_properties.cpp:60
 msgid "Resample script (add borders)"
 msgstr "스크립트 재표본화(테두리 추가)"
 
-#: ../src/dialog_video_properties.cpp:57
+#: ../src/dialog_video_properties.cpp:61
 msgid "Resample script (remove borders)"
 msgstr "스크립트 재표본화(테두리 제거)"
 
-#: ../src/dialog_video_properties.cpp:64
+#: ../src/dialog_video_properties.cpp:68
 msgid "Resample script"
 msgstr "스크립트 재표본화"
 
-#: ../src/dialog_video_properties.cpp:163
+#: ../src/dialog_video_properties.cpp:167
 msgid "change script resolution"
 msgstr "스크립트 해상도 변경"
 
@@ -4984,7 +5217,7 @@ msgstr "초당 문자수"
 msgid "Invalid command name for hotkey"
 msgstr "단축키에 잘못된 명령어 이름"
 
-#: ../src/main.cpp:246
+#: ../src/main.cpp:258
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -5003,11 +5236,11 @@ msgstr ""
 "\n"
 "Aegisub가 종료됩니다."
 
-#: ../src/main.cpp:273
+#: ../src/main.cpp:285
 msgid "Check for updates?"
 msgstr "업데이트를 확인하시겠습니까?"
 
-#: ../src/main.cpp:273
+#: ../src/main.cpp:285
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
@@ -5015,11 +5248,22 @@ msgstr ""
 "Aegisub가 시작될 때마다 업데이트를 확인하도록 하시겠습니까? 계속 도움말 메뉴"
 "를 통해 수동으로 확인할 수 있습니다."
 
-#: ../src/main.cpp:390 ../src/main.cpp:393
+#: ../src/main.cpp:402 ../src/main.cpp:405
 msgid "Program error"
 msgstr "프로그램 오류"
 
-#: ../src/main.cpp:407
+#: ../src/main.cpp:405
+#, c-format
+msgid ""
+"Aegisub has crashed while starting up!\n"
+"\n"
+"The last startup step attempted was: %s."
+msgstr ""
+"Aegisub이 시작 중에 충돌했습니다!\n"
+"\n"
+"마지막으로 시도한 시작 단계 : %s."
+
+#: ../src/main.cpp:419
 #, c-format
 msgid ""
 "An unexpected error has occurred. Please save your work and restart "
@@ -5030,6 +5274,10 @@ msgstr ""
 "예기치 않은 오류가 발생했습니다. 작업을 저장하고 Aegisub를 다시 시작하세요.\n"
 "\n"
 "오류 메시지 : %s"
+
+#: ../src/main.cpp:420
+msgid "Exception in event handler"
+msgstr "이벤트 핸들러에서 예외 발생"
 
 #: ../src/menu.cpp:96
 msgid "Empty"
@@ -5043,24 +5291,24 @@ msgstr "최근 항목(&R)"
 msgid "No Automation macros loaded"
 msgstr "불러온 매크로 자동화 없음"
 
-#: ../src/mkv_wrap.cpp:238
+#: ../src/mkv_wrap.cpp:241
 msgid "Choose which track to read:"
 msgstr "읽을 트랙을 선택 :"
 
-#: ../src/mkv_wrap.cpp:238
+#: ../src/mkv_wrap.cpp:241
 msgid "Multiple subtitle tracks found"
 msgstr "여러 자막 트랙 발견"
 
-#: ../src/mkv_wrap.cpp:283
+#: ../src/mkv_wrap.cpp:286
 msgid "Parsing Matroska"
 msgstr "마트로스카(MKV) 구문 분석"
 
-#: ../src/mkv_wrap.cpp:283
+#: ../src/mkv_wrap.cpp:286
 msgid "Reading subtitles from Matroska file."
 msgstr "마트로스카(MKV) 파일에서 자막을 읽습니다."
 
 #: ../src/preferences.cpp:63 ../src/preferences.cpp:65
-#: ../src/preferences.cpp:335 ../src/preferences.cpp:356
+#: ../src/preferences.cpp:341 ../src/preferences.cpp:362
 msgid "General"
 msgstr "일반"
 
@@ -5084,11 +5332,11 @@ msgstr "도구 모음 아이콘 크기"
 msgid "Always"
 msgstr "항상"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
+#: ../src/preferences.cpp:72 ../src/preferences.cpp:203
 msgid "Ask"
 msgstr "표시"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
+#: ../src/preferences.cpp:72 ../src/preferences.cpp:203
 msgid "Never"
 msgstr "표시 안 함"
 
@@ -5148,7 +5396,7 @@ msgstr "TTXT 가져오기"
 msgid "Plain text import"
 msgstr "일반 문서 가져오기"
 
-#: ../src/preferences.cpp:127 ../src/preferences.cpp:371
+#: ../src/preferences.cpp:127 ../src/preferences.cpp:377
 msgid "Audio"
 msgstr "음향"
 
@@ -5244,7 +5492,7 @@ msgstr "커서 시간"
 msgid "Video position"
 msgstr "영상 위치"
 
-#: ../src/preferences.cpp:155 ../src/preferences.cpp:251
+#: ../src/preferences.cpp:155 ../src/preferences.cpp:257
 msgid "Seconds boundaries"
 msgstr "초 단위 경계"
 
@@ -5272,574 +5520,654 @@ msgstr "선택 변경 시, 영상에서 라인 시작 찾기"
 msgid "Automatically open audio when opening video"
 msgstr "영상를 열 때, 음향 자동 열기"
 
+#: ../src/preferences.cpp:179
+msgid "Does nothing"
+msgstr "아무것도 하지 않음"
+
+#: ../src/preferences.cpp:179
+msgid "Pans the video"
+msgstr "영상 좌우 반전"
+
+#: ../src/preferences.cpp:179
+msgid "Pans the video (X/Y swapped)"
+msgstr "영상 좌우 반전(X/Y 축 전환)"
+
+#: ../src/preferences.cpp:179
+msgid "Resizes the video box"
+msgstr "영상 상자 크기 조정"
+
+#: ../src/preferences.cpp:179
+msgid "Resizes the video box (reversed)"
+msgstr "영상 박스 크기 조정(반전)"
+
+#: ../src/preferences.cpp:179
+msgid "Zooms the video"
+msgstr "영상 확대"
+
+#: ../src/preferences.cpp:179
+msgid "Zooms the video (reversed)"
+msgstr "영상 확대(반전)"
+
 #: ../src/preferences.cpp:181
+msgid "Scrolling on the video display"
+msgstr "영상 화면에서 스크롤하기"
+
+#: ../src/preferences.cpp:182
+msgid "Ctrl+Scrolling on the video display"
+msgstr "Ctrl 키를 누른 채 영상 화면을 스크롤하기"
+
+#: ../src/preferences.cpp:183
+msgid "Shift+Scrolling on the video display"
+msgstr "영상 화면에서 Shift 키를 누른 채 스크롤하기"
+
+#: ../src/preferences.cpp:187
 msgid "Default Zoom"
 msgstr "기본 확대/축소"
 
-#: ../src/preferences.cpp:183
+#: ../src/preferences.cpp:189
 msgid "Fast jump step in frames"
 msgstr "프레임간 빠른 이동"
 
-#: ../src/preferences.cpp:187
+#: ../src/preferences.cpp:193
 msgid "Screenshot save path"
 msgstr "스크린샷 저장 경로"
 
-#: ../src/preferences.cpp:189
+#: ../src/preferences.cpp:195
 msgid "Script Resolution"
 msgstr "스크립트 해상도"
 
-#: ../src/preferences.cpp:190
+#: ../src/preferences.cpp:196
 msgid "Use resolution of first video opened"
 msgstr "처음 연 영상 해상도 사용"
 
-#: ../src/preferences.cpp:193
+#: ../src/preferences.cpp:199
 msgid "Default width"
 msgstr "기본 폭"
 
-#: ../src/preferences.cpp:195
+#: ../src/preferences.cpp:201
 msgid "Default height"
 msgstr "기본 높이"
 
-#: ../src/preferences.cpp:197
+#: ../src/preferences.cpp:203
 msgid "Always resample"
 msgstr "항상 재표본화"
 
-#: ../src/preferences.cpp:197
+#: ../src/preferences.cpp:203
 msgid "Always set"
 msgstr "항상 설정"
 
-#: ../src/preferences.cpp:199
+#: ../src/preferences.cpp:205
 msgid "Match video resolution on open"
 msgstr "영상 해상도 맞추기"
 
-#: ../src/preferences.cpp:206
+#: ../src/preferences.cpp:212
 msgid "Interface"
 msgstr "인터페이스"
 
-#: ../src/preferences.cpp:208
+#: ../src/preferences.cpp:214
 msgid "Edit Box"
 msgstr "편집 상자"
 
-#: ../src/preferences.cpp:209
+#: ../src/preferences.cpp:215
 msgid "Enable call tips"
 msgstr "팁 기능 사용"
 
-#: ../src/preferences.cpp:210
+#: ../src/preferences.cpp:216
 msgid "Overwrite in time boxes"
 msgstr "타임박스에 덮어쓰기"
 
-#: ../src/preferences.cpp:211
+#: ../src/preferences.cpp:217
 msgid "Shift+Enter adds \\n"
 msgstr "Shift+Enter 누르면 \\n 추가"
 
-#: ../src/preferences.cpp:212
+#: ../src/preferences.cpp:218
 msgid "Enable syntax highlighting"
 msgstr "구문 강조 표시 활성화"
 
-#: ../src/preferences.cpp:213
+#: ../src/preferences.cpp:219
 msgid "Dictionaries path"
 msgstr "사전 경로"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:222
 msgid "Character Counter"
 msgstr "글자 수"
 
-#: ../src/preferences.cpp:217
+#: ../src/preferences.cpp:223
 msgid "Maximum characters per line"
 msgstr "라인당 최대 글자 수"
 
-#: ../src/preferences.cpp:218
+#: ../src/preferences.cpp:224
 msgid "Characters Per Second Warning Threshold"
 msgstr "초당 문자 수 경고 임계값"
 
-#: ../src/preferences.cpp:219
+#: ../src/preferences.cpp:225
 msgid "Characters Per Second Error Threshold"
 msgstr "초당 문자 오류 임계값"
 
-#: ../src/preferences.cpp:220
+#: ../src/preferences.cpp:226
 msgid "Ignore whitespace"
 msgstr "공백 무시"
 
-#: ../src/preferences.cpp:221
+#: ../src/preferences.cpp:227
 msgid "Ignore punctuation"
 msgstr "문장 부호 무시"
 
-#: ../src/preferences.cpp:223
+#: ../src/preferences.cpp:229
 msgid "Grid"
 msgstr "그리드"
 
-#: ../src/preferences.cpp:224
+#: ../src/preferences.cpp:230
 msgid "Focus grid on click"
 msgstr "클릭 시, 초점 그리드"
 
-#: ../src/preferences.cpp:225
+#: ../src/preferences.cpp:231
 msgid "Highlight visible subtitles"
 msgstr "보이는 자막 강조 표시"
 
-#: ../src/preferences.cpp:226
+#: ../src/preferences.cpp:232
 msgid "Hide overrides symbol"
 msgstr "재정의 기호 숨기기"
 
-#: ../src/preferences.cpp:230
+#: ../src/preferences.cpp:236
 msgid "Skip over whitespace"
 msgstr "공백 건너뛰기"
 
-#: ../src/preferences.cpp:245
+#: ../src/preferences.cpp:251
 msgid "Audio Display"
 msgstr "음향 화면"
 
-#: ../src/preferences.cpp:246
+#: ../src/preferences.cpp:252
 msgid "Play cursor"
 msgstr "커서 재생"
 
-#: ../src/preferences.cpp:247
+#: ../src/preferences.cpp:253
 msgid "Line boundary start"
 msgstr "라인 경계 시작"
 
-#: ../src/preferences.cpp:248
+#: ../src/preferences.cpp:254
 msgid "Line boundary end"
 msgstr "라인 경계 끝"
 
-#: ../src/preferences.cpp:249
+#: ../src/preferences.cpp:255
 msgid "Line boundary inactive line"
 msgstr "라인 경계 비활성 라인"
 
-#: ../src/preferences.cpp:250
+#: ../src/preferences.cpp:256
 msgid "Syllable boundaries"
 msgstr "음절 경계"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:259
 msgid "Syntax Highlighting"
 msgstr "구문 강조 표시"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:260
 msgid "Background"
 msgstr "배경"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:261
 msgid "Normal"
 msgstr "보통"
 
-#: ../src/preferences.cpp:256
+#: ../src/preferences.cpp:262
 msgid "Comments"
 msgstr "설명"
 
-#: ../src/preferences.cpp:257
+#: ../src/preferences.cpp:263
 msgid "Drawing Commands"
 msgstr "그리기 명령"
 
-#: ../src/preferences.cpp:258
+#: ../src/preferences.cpp:264
 msgid "Drawing X Coords"
 msgstr "X 좌표 그리기"
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:265
 msgid "Drawing Y Coords"
 msgstr "Y 좌표 그리기"
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:266
 msgid "Underline Spline Endpoints"
 msgstr "스플라인 엔드포인트 밑줄"
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:268
 msgid "Brackets"
 msgstr "브라켓"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:269
 msgid "Slashes and Parentheses"
 msgstr "슬래시 및 괄호"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:270
 msgid "Tags"
 msgstr "태그"
 
-#: ../src/preferences.cpp:265
+#: ../src/preferences.cpp:271
 msgid "Parameters"
 msgstr "매개 변수"
 
-#: ../src/preferences.cpp:267
+#: ../src/preferences.cpp:273
 msgid "Error Background"
 msgstr "오류 배경"
 
-#: ../src/preferences.cpp:268
+#: ../src/preferences.cpp:274
 msgid "Line Break"
 msgstr "줄 바꿈"
 
-#: ../src/preferences.cpp:269
+#: ../src/preferences.cpp:275
 msgid "Karaoke templates"
 msgstr "가라오케 템플릿"
 
-#: ../src/preferences.cpp:270
+#: ../src/preferences.cpp:276
 msgid "Karaoke variables"
 msgstr "가라오케 변수"
 
-#: ../src/preferences.cpp:276
+#: ../src/preferences.cpp:282
 msgid "Audio Color Schemes"
 msgstr "음향 색 구성표"
 
-#: ../src/preferences.cpp:278 ../src/preferences.cpp:387
+#: ../src/preferences.cpp:284 ../src/preferences.cpp:393
 msgid "Spectrum"
 msgstr "스펙트럼"
 
-#: ../src/preferences.cpp:279
+#: ../src/preferences.cpp:285
 msgid "Waveform"
 msgstr "파형"
 
-#: ../src/preferences.cpp:281
+#: ../src/preferences.cpp:287
 msgid "Subtitle Grid"
 msgstr "자막 그리드"
 
-#: ../src/preferences.cpp:282
+#: ../src/preferences.cpp:288
 msgid "Standard foreground"
 msgstr "표준 전경"
 
-#: ../src/preferences.cpp:283
+#: ../src/preferences.cpp:289
 msgid "Standard background"
 msgstr "표준 배경"
 
-#: ../src/preferences.cpp:284
+#: ../src/preferences.cpp:290
 msgid "Selection foreground"
 msgstr "선택 전경"
 
-#: ../src/preferences.cpp:285
+#: ../src/preferences.cpp:291
 msgid "Selection background"
 msgstr "선택 배경"
 
-#: ../src/preferences.cpp:286
+#: ../src/preferences.cpp:292
 msgid "Collision foreground"
 msgstr "충돌 전경"
 
-#: ../src/preferences.cpp:287
+#: ../src/preferences.cpp:293
 msgid "In frame background"
 msgstr "프레임 배경 내"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:294
 msgid "Comment background"
 msgstr "설명 배경"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:295
 msgid "Selected comment background"
 msgstr "선택한 설명 배경"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:296
 msgid "Header background"
 msgstr "머리글 배경"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:297
 msgid "Left Column"
 msgstr "좌측 열"
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:298
 msgid "Active Line Border"
 msgstr "활성 라인 테두리"
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:299
 msgid "Lines"
 msgstr "라인"
 
-#: ../src/preferences.cpp:294
+#: ../src/preferences.cpp:300
 msgid "CPS Error"
 msgstr "CPS 오류"
 
-#: ../src/preferences.cpp:296
+#: ../src/preferences.cpp:302
 msgid "Visual Typesetting Tools"
 msgstr "시각 서체 도구"
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:303
 msgid "Primary Lines"
 msgstr "기본 라인"
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:304
 msgid "Secondary Lines"
 msgstr "보조 라인"
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:305
 msgid "Primary Highlight"
 msgstr "주요 특징"
 
-#: ../src/preferences.cpp:300
+#: ../src/preferences.cpp:306
 msgid "Secondary Highlight"
 msgstr "추가 특징"
 
-#: ../src/preferences.cpp:303
+#: ../src/preferences.cpp:309
 msgid "Visual Typesetting Tools Alpha"
 msgstr "시각 서체 도구 알파"
 
-#: ../src/preferences.cpp:304
+#: ../src/preferences.cpp:310
 msgid "Shaded Area"
 msgstr "음영 영역"
 
-#: ../src/preferences.cpp:313
+#: ../src/preferences.cpp:319
 msgid "Backup"
 msgstr "백업"
 
-#: ../src/preferences.cpp:315
+#: ../src/preferences.cpp:321
 msgid "Automatic Save"
 msgstr "자동 저장"
 
-#: ../src/preferences.cpp:316 ../src/preferences.cpp:324
+#: ../src/preferences.cpp:322 ../src/preferences.cpp:330
 msgid "Enable"
 msgstr "활성화"
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:325
 msgid "Interval in seconds"
 msgstr "간격(초)"
 
-#: ../src/preferences.cpp:320 ../src/preferences.cpp:326
-#: ../src/preferences.cpp:385
+#: ../src/preferences.cpp:326 ../src/preferences.cpp:332
+#: ../src/preferences.cpp:391
 msgid "Path"
 msgstr "경로"
 
-#: ../src/preferences.cpp:321
+#: ../src/preferences.cpp:327
 msgid "Autosave after every change"
 msgstr "변경할 때마다 자동 저장"
 
-#: ../src/preferences.cpp:323
+#: ../src/preferences.cpp:329
 msgid "Automatic Backup"
 msgstr "자동 백업"
 
-#: ../src/preferences.cpp:337
+#: ../src/preferences.cpp:343
 msgid "Base path"
 msgstr "기본 경로"
 
-#: ../src/preferences.cpp:338
+#: ../src/preferences.cpp:344
 msgid "Include path"
 msgstr "경로 포함"
 
-#: ../src/preferences.cpp:339
+#: ../src/preferences.cpp:345
 msgid "Auto-load path"
 msgstr "자동 불러오기 경로"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "0: Fatal"
 msgstr "0 : 치명적"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "1: Error"
 msgstr "1 : 오류"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "2: Warning"
 msgstr "2 : 주의"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "3: Hint"
 msgstr "3 : 힌트"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "4: Debug"
 msgstr "4 : 디버그"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "5: Trace"
 msgstr "5 : 추적"
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:349
 msgid "Trace level"
 msgstr "추적 레벨"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:351
 msgid "All scripts"
 msgstr "모든 스크립트"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:351
 msgid "Global autoload scripts"
 msgstr "전역 자동 장전 스크립트"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:351
 msgid "No scripts"
 msgstr "스크립트 없음"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:351
 msgid "Subtitle-local scripts"
 msgstr "자막-로컬 스크립트"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:353
 msgid "Autoreload on Export"
 msgstr "내보내기 시, 자동 불러오기"
 
-#: ../src/preferences.cpp:354
+#: ../src/preferences.cpp:360
 msgid "Advanced"
 msgstr "고급"
 
-#: ../src/preferences.cpp:358
+#: ../src/preferences.cpp:364
 msgid ""
-"Changing these settings might result in bugs and/or crashes.  Do not touch "
+"Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
 msgstr ""
-"이 설정을 변경하면 버그나 충돌이 발생할 수 있습니다.  사용법을 잘 모르면 이 "
-"설정을 건드리지 마세요."
+"이 설정을 변경하면 버그나 오류가 발생할 수 있습니다. 사용법을 잘 모르면 이 설"
+"정을 건드리지 마세요."
 
-#: ../src/preferences.cpp:373 ../src/preferences.cpp:440
+#: ../src/preferences.cpp:379 ../src/preferences.cpp:446
 msgid "Expert"
 msgstr "전문"
 
-#: ../src/preferences.cpp:376
+#: ../src/preferences.cpp:382
 msgid "Audio provider"
 msgstr "음향 렌더러"
 
-#: ../src/preferences.cpp:379
+#: ../src/preferences.cpp:385
 msgid "Audio player"
 msgstr "음향 재생기"
 
-#: ../src/preferences.cpp:381
+#: ../src/preferences.cpp:387
 msgid "Cache"
 msgstr "캐시"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:388
 msgid "Hard Disk"
 msgstr "하드 디스크"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:388
 msgid "None (NOT RECOMMENDED)"
 msgstr "없음(추천하지 않음)"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:388
 msgid "RAM"
 msgstr "램"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:390
 msgid "Cache type"
 msgstr "캐시 유형"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:395
 msgid "Better quality"
 msgstr "최적 품질"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:395
 msgid "High quality"
 msgstr "고품질"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:395
 msgid "Insane quality"
 msgstr "최고 품질"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:395
 msgid "Regular quality"
 msgstr "일반 품질"
 
-#: ../src/preferences.cpp:391
+#: ../src/preferences.cpp:397
 msgid "Quality"
 msgstr "품질"
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Compressed"
 msgstr "압축"
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Extended"
 msgstr "확장"
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Linear"
 msgstr "선형"
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Logarithmic"
 msgstr "대수"
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Medium"
 msgstr "중간"
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:401
 msgid "Frequency mapping"
 msgstr "빈도 매핑"
 
-#: ../src/preferences.cpp:397
+#: ../src/preferences.cpp:403
 msgid "Cache memory max (MB)"
 msgstr "캐시 메모리 최대 용량(MB)"
 
-#: ../src/preferences.cpp:403
+#: ../src/preferences.cpp:409
 msgid "Avisynth down-mixer"
 msgstr "Avisynth 다운믹서"
 
-#: ../src/preferences.cpp:404
+#: ../src/preferences.cpp:410
 msgid "Force sample rate"
 msgstr "샘플 속도 강제"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:416
 msgid "Abort"
 msgstr "정보"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:416
 msgid "Ignore"
 msgstr "무시"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:416
 msgid "Stop"
 msgstr "중지"
 
-#: ../src/preferences.cpp:412
+#: ../src/preferences.cpp:418
 msgid "Audio indexing error handling mode"
 msgstr "음향 색인 오류 처리 모드"
 
-#: ../src/preferences.cpp:414
+#: ../src/preferences.cpp:420
 msgid "Always index all audio tracks"
 msgstr "항상 모든 음향 트랙 색인화"
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:425
 msgid "Portaudio device"
 msgstr "PortAudio 장치"
 
-#: ../src/preferences.cpp:424
+#: ../src/preferences.cpp:430
 msgid "OSS Device"
 msgstr "OSS 장치"
 
-#: ../src/preferences.cpp:429
+#: ../src/preferences.cpp:435
 msgid "Buffer latency"
 msgstr "버퍼 대기 시간"
 
-#: ../src/preferences.cpp:430
+#: ../src/preferences.cpp:436
 msgid "Buffer length"
 msgstr "버퍼 길이"
 
-#: ../src/preferences.cpp:443
+#: ../src/preferences.cpp:449
 msgid "Video provider"
 msgstr "영상 렌더러"
 
-#: ../src/preferences.cpp:446
+#: ../src/preferences.cpp:452
 msgid "Subtitles provider"
 msgstr "자막 렌더러"
 
-#: ../src/preferences.cpp:450
+#: ../src/preferences.cpp:456
 msgid "Allow pre-2.56a Avisynth"
 msgstr "2.56a 이전 버전 Avisynth 허용"
 
-#: ../src/preferences.cpp:452
+#: ../src/preferences.cpp:458
 msgid "Avisynth memory limit"
 msgstr "Avisynth 메모리 제한"
 
-#: ../src/preferences.cpp:460
+#: ../src/preferences.cpp:464
+msgid "Debug"
+msgstr "디버그"
+
+#: ../src/preferences.cpp:464
+msgid "Fatal"
+msgstr "치명적"
+
+#: ../src/preferences.cpp:464
+msgid "Info"
+msgstr "정보"
+
+#: ../src/preferences.cpp:464
+msgid "Panic"
+msgstr "공황"
+
+#: ../src/preferences.cpp:464
+msgid "Quiet"
+msgstr "고요"
+
+#: ../src/preferences.cpp:464
+msgid "Verbose"
+msgstr "상세"
+
+#: ../src/preferences.cpp:464 ../src/project.cpp:318
+msgid "Warning"
+msgstr "경고"
+
+#: ../src/preferences.cpp:466
 msgid "Debug log verbosity"
 msgstr "디버그 로그 상세 정보"
 
-#: ../src/preferences.cpp:462
+#: ../src/preferences.cpp:468
 msgid "Decoding threads"
 msgstr "디코딩 스레드"
 
-#: ../src/preferences.cpp:463
+#: ../src/preferences.cpp:469
 msgid "Enable unsafe seeking"
 msgstr "안전하지 않은 검색 활성화"
 
-#: ../src/preferences.cpp:599
+#: ../src/preferences.cpp:605
 msgid "Hotkeys"
 msgstr "단축키"
 
-#: ../src/preferences.cpp:697
+#: ../src/preferences.cpp:609
+msgid "Search"
+msgstr "찾기"
+
+#: ../src/preferences.cpp:625 ../src/preferences.cpp:628
+msgid "Hotkey"
+msgstr "단축키"
+
+#: ../src/preferences.cpp:626 ../src/preferences.cpp:631
+msgid "Command"
+msgstr "설명"
+
+#: ../src/preferences.cpp:705
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
 msgstr "기본값으로 되돌리시겠습니까? 모든 설정이 재정의됩니다."
 
-#: ../src/preferences.cpp:697
+#: ../src/preferences.cpp:705
 msgid "Restore defaults?"
 msgstr "기본값으로 되돌리시겠습니까?"
 
-#: ../src/preferences.cpp:715
+#: ../src/preferences.cpp:723
 msgid "Preferences"
 msgstr "기본 설정"
 
-#: ../src/preferences.cpp:743
+#: ../src/preferences.cpp:751
 msgid "&Restore Defaults"
 msgstr "기본값으로 되돌리기(&R)"
 
@@ -5858,6 +6186,15 @@ msgstr "선택..."
 #: ../src/preferences_base.cpp:251
 msgid "Font Size"
 msgstr "글꼴 크기"
+
+#: ../src/project.cpp:85
+msgid "Error loading file"
+msgstr "파일 불러오기 오류"
+
+#: ../src/project.cpp:111 ../src/project.cpp:130
+#, c-format
+msgid "%s not found."
+msgstr "%s을(를) 찾을 수 없습니다."
 
 #: ../src/project.cpp:186
 msgid "Do you want to load/unload the associated files?"
@@ -5930,7 +6267,19 @@ msgstr ""
 "\n"
 "다음 렌더러를 사용 :\n"
 
-#: ../src/resolution_resampler.cpp:288
+#: ../src/project.cpp:368
+msgid "Failed to parse timecodes file: "
+msgstr "타임코드 파일 구문 분석 실패 : "
+
+#: ../src/project.cpp:394
+msgid "Failed to parse keyframes file: "
+msgstr "키프레임 파일 구문 분석 실패 : "
+
+#: ../src/project.cpp:398
+msgid "Keyframes file in unknown format: "
+msgstr "알 수 없는 형식의 키프레임 파일 : "
+
+#: ../src/resolution_resampler.cpp:300
 msgid "resolution resampling"
 msgstr "해상도 재표본화"
 
@@ -5957,14 +6306,22 @@ msgstr "변경 사항을 %s에 저장하시겠습니까?"
 msgid "Unsaved changes"
 msgstr "저장하지 않은 변경 사항"
 
+#: ../src/subs_controller.cpp:265 ../src/subs_controller.cpp:404
+msgid "Untitled"
+msgstr "제목 없음"
+
 #: ../src/subs_controller.cpp:279
 #, c-format
 msgid "File backup saved as \"%s\"."
 msgstr "파일 백업이 \"%s\"로 저장되었습니다."
 
-#: ../src/subs_controller.cpp:404
-msgid "Untitled"
-msgstr "제목 없음"
+#: ../src/subs_controller.cpp:282
+msgid "Exception when attempting to autosave file: "
+msgstr "자동 저장 시도 중 예외 발생 : "
+
+#: ../src/subs_controller.cpp:285
+msgid "Unhandled exception when attempting to autosave file."
+msgstr ""
 
 #: ../src/subs_controller.cpp:406
 msgid "untitled"
@@ -6150,6 +6507,16 @@ msgstr "동의어 언어"
 msgid "Disable"
 msgstr "비활성화"
 
+#: ../src/subs_preview.cpp:142
+msgid ""
+"Could not get any subtitles provider for the preview box. Make sure that you "
+"have a provider installed."
+msgstr ""
+
+#: ../src/subs_preview.cpp:143
+msgid "No subtitles provider"
+msgstr "자막 제공처 없음"
+
 #: ../src/subtitle_format.cpp:102
 #, c-format
 msgid "From video (%g)"
@@ -6239,6 +6606,18 @@ msgstr "현재 프레임 시간 및 번호"
 #: ../src/video_box.cpp:65
 msgid "Time of this frame relative to start and end of current subs"
 msgstr "현재 자막의 시작과 끝을 기준으로 한 이 프레임의 시간"
+
+#: ../src/video_provider_manager.cpp:78
+msgid "file not found."
+msgstr "파일을 찾을 수 없습니다."
+
+#: ../src/video_provider_manager.cpp:84
+msgid "video is not in a supported format."
+msgstr ""
+
+#: ../src/video_provider_manager.cpp:101
+msgid "Could not open "
+msgstr "열 수 없음 "
 
 #: ../src/visual_tool.cpp:119
 msgid "visual typesetting"
@@ -6442,6 +6821,18 @@ msgstr "자동화4에서 간단한 라인 수정을 수행하는 방법을 보�
 msgid "Adds \\be1 tags to all selected lines"
 msgstr "선택한 모든 라인에 \\be1 태그 추가"
 
+#: ../automation/autoload/macro-2-mkfullwitdh.lua:6
+msgid "Make text fullwidth"
+msgstr "텍스트 전폭 만들기"
+
+#: ../automation/autoload/macro-2-mkfullwitdh.lua:7
+msgid ""
+"Shows how to use the unicode include to iterate over characters and a lookup "
+"table to convert those characters to something else."
+msgstr ""
+"유니코드 포함을 사용하여 문자를 반복하고 조회 테이블을 사용하여 해당 문자를 "
+"다른 문자로 변환하는 방법을 보여 줍니다."
+
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 msgid "Make fullwidth"
 msgstr "전폭 만들기"
@@ -6603,6 +6994,18 @@ msgstr ""
 "로 애플리케이션을 사용할 수 있지만 어떠한 종류의 보증도 제공되지 않습니다."
 "%n%n소스 코드 입수에 대한 자세한 내용은 Aegisub 웹사이트를 참조하세요."
 
+#~ msgid "x"
+#~ msgstr "x"
+
+#~ msgid "&Opaque box"
+#~ msgstr "불투명 상자(&O)"
+
+#~ msgid ""
+#~ "When selected, display an opaque box behind the subtitles instead of an "
+#~ "outline around the text"
+#~ msgstr ""
+#~ "이 옵션을 선택하면 텍스트 주위의 외곽선 대신 자막 뒤에 불투명 상자를 표시"
+
 #~ msgid ""
 #~ "A free, cross-platform open source tool for creating and modifying "
 #~ "subtitles"
@@ -6709,12 +7112,6 @@ msgstr ""
 
 #~ msgid "Reload the current video file"
 #~ msgstr "현재 영상 파일 다시 불러오기"
-
-#~ msgid "Reset Video Pan"
-#~ msgstr "영상 팬 초기화"
-
-#~ msgid "Reset the video pan to the original value"
-#~ msgstr "영상 팬을 원래 값으로 초기화"
 
 #~ msgid "Apply 3D Perspective"
 #~ msgstr "3D 관점 적용"
@@ -6952,9 +7349,6 @@ msgstr ""
 #~ msgid "&Apply"
 #~ msgstr "적용(&A)"
 
-#~ msgid "Reset video pan"
-#~ msgstr "영상 팬 재설정"
-
 #~ msgid "Apply karaoke template with modified script"
 #~ msgstr "수정된 스크립트로 가라오케 템플릿 적용"
 
@@ -6963,16 +7357,6 @@ msgstr ""
 
 #~ msgid "Karaoke Templater mod"
 #~ msgstr "가라오케 탬플렛 모드"
-
-#~ msgid "Make text fullwidth"
-#~ msgstr "텍스트 전폭 만들기"
-
-#~ msgid ""
-#~ "Shows how to use the unicode include to iterate over characters and a "
-#~ "lookup table to convert those characters to something else."
-#~ msgstr ""
-#~ "유니코드 포함을 사용하여 문자를 반복하고 조회 테이블을 사용하여 해당 문자"
-#~ "를 다른 문자로 변환하는 방법을 보여 줍니다."
 
 #~ msgid "DependencyControl"
 #~ msgstr "종속 제어"
@@ -7623,9 +8007,6 @@ msgstr ""
 #~ msgid "DON'T PANIC!"
 #~ msgstr "당황하지 마세요!"
 
-#~ msgid "Debug: "
-#~ msgstr "디버그 : "
-
 #~ msgid "Default All"
 #~ msgstr "모두 기본값"
 
@@ -8127,9 +8508,6 @@ msgstr ""
 
 #~ msgid "Not enough parameters for Aegisub::text_extents()"
 #~ msgstr "Aegisub::text_extents()에 대한 매개변수가 충분하지 않음"
-
-#~ msgid "Not found.\n"
-#~ msgstr "찾을 수 없습니다.\n"
 
 #~ msgid "OK.\n"
 #~ msgstr "OK.\n"
@@ -8817,9 +9195,6 @@ msgstr ""
 #~ msgid "Undoes last action"
 #~ msgstr "마지막 작업 실행 취소"
 
-#~ msgid "Unknown"
-#~ msgstr "알 수 없음 "
-
 #~ msgid "Unlink"
 #~ msgstr "연결 해제"
 
@@ -8882,12 +9257,6 @@ msgstr ""
 #~ "경고 : 이러한 설정을 변경하면 버그,\n"
 #~ "충돌, 결함 및/또는 이동이 발생할 수 있습니다.\n"
 #~ "잘 모르면 이 설정을 건드리지 마세요."
-
-#~ msgid "Warning"
-#~ msgstr "경고"
-
-#~ msgid "Warning: "
-#~ msgstr "경고 : "
 
 #~ msgid "Waveform - inactive"
 #~ msgstr "파형 - 비활성"
