@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2013-07-22 14:32+0300\n"
 "Last-Translator: safa\n"
 "Language-Team: Arabic <kde-i18n-doc@kde.org>\n"
@@ -523,7 +523,7 @@ msgstr ""
 msgid "&Open Audio File..."
 msgstr "&فتح ملف صوت..."
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "فتح ملف صوت..."
 
@@ -538,6 +538,13 @@ msgstr "هيئات الوقت"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "هيئات الفيديو"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "فتح ملف صوت..."
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -600,7 +607,9 @@ msgid "Save an audio clip of the selected line"
 msgstr ""
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "حفظ قصاصة الصوت"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1573,7 +1582,9 @@ msgid "Open a keyframe list file"
 msgstr ""
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "فتح ملف إطارات مفتاحية"
 
 #: ../src/command/keyframe.cpp:87
@@ -1589,12 +1600,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr ""
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "حفظ ملف الإطارات المفتاحية"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "الملفات"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1736,7 +1751,9 @@ msgstr ""
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "فتح ملف ترجمات"
 
 #: ../src/command/subtitle.cpp:282
@@ -1796,7 +1813,9 @@ msgid "Open script properties window"
 msgstr "يفتح نافذة خصائص السكرِبت"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "حفظ ملف الترجمات"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2064,7 +2083,7 @@ msgstr ""
 msgid "Open Timecodes File..."
 msgstr "فتح ملف شِفرات الوقت..."
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "فتح ملف شِفرات الوقت"
 
@@ -2072,22 +2091,31 @@ msgstr "فتح ملف شِفرات الوقت"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr ""
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#: ../src/command/timecode.cpp:74
 #, fuzzy
-msgid "Text Files"
-msgstr "الملفات"
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "فتح ملف شِفرات الوقت"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "حفظ ملف شِفرات الوقت..."
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "حفظ ملف شِفرات الوقت"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr ""
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "حفظ ملف شِفرات الوقت"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2574,7 +2602,9 @@ msgid "Open a video file"
 msgstr ""
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "فتح ملف فيديو"
 
 #: ../src/command/video.cpp:602
@@ -3235,7 +3265,9 @@ msgid "Export..."
 msgstr "تصدير..."
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "تصدير ملف الترجمات"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3532,7 +3564,9 @@ msgid "Dest: "
 msgstr "الوجهة: "
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
 msgstr "مؤقت الكانجي"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
@@ -3553,7 +3587,7 @@ msgid "Commands"
 msgstr "الأوامر"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4001,8 +4035,14 @@ msgstr "غير محفوظ"
 
 #: ../src/dialog_shift_times.cpp:96
 #, c-format
-msgid "%s frames"
-msgstr "%s من الإطارات"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -4962,15 +5002,16 @@ msgid "Resolution:"
 msgstr "الدقة:"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "%s من الإطارات"
+msgstr[1] "%s من الإطارات"
+msgstr[2] "%s من الإطارات"
+msgstr[3] "%s من الإطارات"
+msgstr[4] "%s من الإطارات"
+msgstr[5] "%s من الإطارات"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7027,6 +7068,9 @@ msgid ""
 "no warranties of any kind are given either.%n%nSee the Aegisub website for "
 "information on obtaining the source code."
 msgstr ""
+
+#~ msgid "Kanji timing"
+#~ msgstr "مؤقت الكانجي"
 
 #, c-format
 #~ msgid ""

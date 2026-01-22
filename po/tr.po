@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub [TR]\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2025-12-05 15:08+0300\n"
 "Last-Translator: Kerim Demirkaynak <kerim@post.com>\n"
 "Language-Team: Türkçe\n"
@@ -552,7 +552,7 @@ msgstr "Geçerli açık sesi kapat"
 msgid "&Open Audio File..."
 msgstr "&Ses Dosyası Aç"
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Ses Dosyası Aç"
 
@@ -567,6 +567,13 @@ msgstr "Ses Formatları"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Video Formatları"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Ses Dosyası Aç"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -629,7 +636,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "Seçilen satırın ses klibini kaydet"
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "Ses klibi kaydet"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1628,7 +1637,9 @@ msgid "Open a keyframe list file"
 msgstr "Anahtar kare listesi dosyası aç"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "Anahtar kare dosyası aç"
 
 #: ../src/command/keyframe.cpp:87
@@ -1644,12 +1655,15 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Geçerli anahtar kare listesini bir dosyaya kaydet"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "Anahtar kare dosyasını kaydet"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+msgid "Text Files"
+msgstr "Metin Dosyaları"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1791,7 +1805,9 @@ msgstr "Altyazı dosyası aç"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "Altyazı dosyası aç"
 
 #: ../src/command/subtitle.cpp:282
@@ -1852,7 +1868,9 @@ msgid "Open script properties window"
 msgstr "Betik özellikleri penceresini aç"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "Altyazı dosyasını kaydet"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2125,7 +2143,7 @@ msgstr "Geçerli zamankodu dosyalarını kapat"
 msgid "Open Timecodes File..."
 msgstr "Zamankodu Dosyası Aç"
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "Zamankodları Dosyasını Aç"
 
@@ -2133,21 +2151,31 @@ msgstr "Zamankodları Dosyasını Aç"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "VFR zamankodu v1 veya v2 dosyası açar"
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
-msgid "Text Files"
-msgstr "Metin Dosyaları"
+#: ../src/command/timecode.cpp:74
+#, fuzzy
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Zamankodları Dosyasını Aç"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Zamankodu Dosyası Kaydet"
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "Zamankodları dosyasını kaydet"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "VFR zamankodu v2 dosyası kaydet"
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "Zamankodları dosyasını kaydet"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2644,7 +2672,9 @@ msgid "Open a video file"
 msgstr "Video dosyası aç"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "Video dosyası aç"
 
 #: ../src/command/video.cpp:602
@@ -3311,7 +3341,9 @@ msgid "Export..."
 msgstr "Dışarı aktar"
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "Altyazı dosyalarını dışarı aktar"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3612,8 +3644,10 @@ msgid "Dest: "
 msgstr "Hedef: "
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
-msgstr "Kanji zamanlama"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
+msgstr "Kanji Zamanlama"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
@@ -3633,7 +3667,9 @@ msgid "Commands"
 msgstr "Komutlar"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "Kanjiye interpole &etmeye çalış."
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4078,9 +4114,13 @@ msgid "unsaved"
 msgstr "kayıt edilmedi"
 
 #: ../src/dialog_shift_times.cpp:96
-#, c-format
-msgid "%s frames"
-msgstr "%s kare"
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 kare"
+msgstr[1] "%d kare (%s)"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -5058,11 +5098,12 @@ msgid "Resolution:"
 msgstr "Çözünürlük:"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 kare"
-msgstr[1] "%d kare (%s)"
+msgstr[0] "%s kare"
+msgstr[1] "%s kare"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7186,6 +7227,9 @@ msgstr ""
 "uygulamayı herhangi bir amaçla ücretsiz olarak kullanabileceğiniz anlamına "
 "gelir, ancak herhangi bir garanti verilmemektedir.%n%nKaynak koda nasıl "
 "erişileceği hakkında bilgi için Aegisub web sitesine bakın."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Kanji zamanlama"
 
 #~ msgid "OK"
 #~ msgstr "Tamam"

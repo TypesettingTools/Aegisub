@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub Hungarian translation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2014-11-08 13:56+0100\n"
 "Last-Translator: Yuri <yurielvtars@gmail.com>\n"
 "Language-Team: Yuri <yurielvtars@gmail.com>\n"
@@ -518,7 +518,7 @@ msgstr "Bezárja a megnyitott hangsávot."
 msgid "&Open Audio File..."
 msgstr "Audió meg&nyitása..."
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Audió megnyitása"
 
@@ -533,6 +533,13 @@ msgstr "Audió formátumok"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Videó formátumok"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Audió megnyitása"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -597,7 +604,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "Audioklipet készít a kiválasztott sorhoz."
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "Audioklip mentése"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1589,7 +1598,9 @@ msgid "Open a keyframe list file"
 msgstr "Megnyit egy kulcskocka listát tartalmazó fájlt."
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "Kulcskocka fájl megnyitása"
 
 #: ../src/command/keyframe.cpp:87
@@ -1605,12 +1616,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Lementi a jelenlegi kulcskocka listát."
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "Kulcskocka fájl mentése"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "Mostanában megnyitott fájlok"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1752,7 +1767,9 @@ msgstr "Megnyit egy feliratfájlt."
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "Feliratfájl megnyitása"
 
 #: ../src/command/subtitle.cpp:282
@@ -1813,7 +1830,9 @@ msgid "Open script properties window"
 msgstr "Feliratfájl adatainak megnyitása."
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "Feliratfájl mentése"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2086,7 +2105,7 @@ msgstr "Bezárja a megnyitott időkód fájlt."
 msgid "Open Timecodes File..."
 msgstr "Időkód megnyitása..."
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "Időkód megnyitása"
 
@@ -2094,22 +2113,31 @@ msgstr "Időkód megnyitása"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Megnyit egy VFR időkódokat tartalmazó fájlt (v1 vagy v2)."
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#: ../src/command/timecode.cpp:74
 #, fuzzy
-msgid "Text Files"
-msgstr "Mostanában megnyitott fájlok"
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Időkód megnyitása"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Időkód mentése..."
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "Időkód mentése"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "Elmenti a VFR időkódokat tartalmazó fájlt v2-es formátumban."
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "Időkód mentése"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2603,7 +2631,9 @@ msgid "Open a video file"
 msgstr "Megnyit egy videofájlt."
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "Videofájl megnyitása"
 
 #: ../src/command/video.cpp:602
@@ -3269,7 +3299,9 @@ msgid "Export..."
 msgstr "Exportálás..."
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "Feliratfájl exportálása"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3571,7 +3603,9 @@ msgid "Dest: "
 msgstr "Cél:"
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
 msgstr "Kandzsi időzítő"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
@@ -3592,7 +3626,9 @@ msgid "Commands"
 msgstr "Parancsok"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "Kandzsi i&nterpolálása"
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4038,9 +4074,13 @@ msgid "unsaved"
 msgstr "nincs elmentve"
 
 #: ../src/dialog_shift_times.cpp:96
-#, c-format
-msgid "%s frames"
-msgstr "%s képkocka"
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 képkocka"
+msgstr[1] "%d képkocka (%s)"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -5012,11 +5052,12 @@ msgid "Resolution:"
 msgstr "Felbontás:"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 képkocka"
-msgstr[1] "%d képkocka (%s)"
+msgstr[0] "%s képkocka"
+msgstr[1] "%s képkocka"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7115,6 +7156,9 @@ msgstr ""
 "ingyenesen használhatja, viszont a fejlesztők semmiféle garanciát nem "
 "vállalnak a program működéséért.%n%nTovábbi információkért látogasson el az "
 "Aegisub weboldalára, ahol többek között beszerezheti a program forráskódját."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Kandzsi időzítő"
 
 #, c-format
 #~ msgid ""

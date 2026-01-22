@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub (unofficial)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2018-09-26 07:39+0000\n"
 "Last-Translator: Viktar Lieškievič <vityay.leshkevich@yandex.ru>, 2019\n"
 "Language-Team: Belarusian (https://www.transifex.com/byplay/teams/91944/"
@@ -529,7 +529,7 @@ msgstr "Закрыць бягучы адкрыты аўдыяфайл"
 msgid "&Open Audio File..."
 msgstr "&Адкрыць аўдыяфайл..."
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Адкрыць аўдыяфайл"
 
@@ -544,6 +544,13 @@ msgstr "Фарматы аўдыя"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Фарматы відэа"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Адкрыць аўдыяфайл"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -606,7 +613,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "Стварыць адрэзак аўдыя на аснове вылучаных радкоў"
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "Захаваць адрэзак аўдыя"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1612,7 +1621,9 @@ msgid "Open a keyframe list file"
 msgstr "Адкрыць файл са спісам ключкадраў"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "Адкрыць файл з ключкадрамі"
 
 #: ../src/command/keyframe.cpp:87
@@ -1628,12 +1639,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Захаваць бягучы спіс ключкадраў у файл"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "Захаваць файл з ключкадрамі"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "Файлы"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1775,7 +1790,9 @@ msgstr "Адкрыць файл субтытраў"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "Адкрыць файл субтытраў"
 
 #: ../src/command/subtitle.cpp:282
@@ -1835,7 +1852,9 @@ msgid "Open script properties window"
 msgstr "Адкрыць акно ўласцівасцяў скрыпта"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "Захаваць файл субтытраў"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2107,7 +2126,7 @@ msgstr "Закрыць бягучы адкрыты файл таймкодаў"
 msgid "Open Timecodes File..."
 msgstr "Адкрыць файл таймкодаў..."
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "Адкрыць файл таймкодаў"
 
@@ -2115,22 +2134,31 @@ msgstr "Адкрыць файл таймкодаў"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Адкрыць файл таймкодаў у фармаце v1 або v2"
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#: ../src/command/timecode.cpp:74
 #, fuzzy
-msgid "Text Files"
-msgstr "Файлы"
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Адкрыць файл таймкодаў"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Захаваць файл таймкодаў..."
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "Захаваць файл таймкодаў"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "Захаваць файл таймкодаў у фармаце v2"
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "Захаваць файл таймкодаў"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2623,7 +2651,9 @@ msgid "Open a video file"
 msgstr "Адкрыць відэафайл"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "Адкрыць відэафайл"
 
 #: ../src/command/video.cpp:602
@@ -3289,7 +3319,9 @@ msgid "Export..."
 msgstr "Экспарт..."
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "Экспарт файла субтытраў"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3589,8 +3621,10 @@ msgid "Dest: "
 msgstr "Вынік:"
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
-msgstr "Кандзі-таймер"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
+msgstr "Таймер кандзі"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
@@ -3610,7 +3644,9 @@ msgid "Commands"
 msgstr "Каманды"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "&Спрабаваць прадугадаць кандзі"
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4062,9 +4098,15 @@ msgid "unsaved"
 msgstr "незахаваны"
 
 #: ../src/dialog_shift_times.cpp:96
-#, c-format
-msgid "%s frames"
-msgstr "%s кадраў"
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 кадр"
+msgstr[1] "%d кадры (%s)"
+msgstr[2] "%d кадраў (%s)"
+msgstr[3] "%d кадраў (%s)"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -5040,13 +5082,14 @@ msgid "Resolution:"
 msgstr "Разрозненне:"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 кадр"
-msgstr[1] "%d кадры (%s)"
-msgstr[2] "%d кадраў (%s)"
-msgstr[3] "%d кадраў (%s)"
+msgstr[0] "%s кадраў"
+msgstr[1] "%s кадраў"
+msgstr[2] "%s кадраў"
+msgstr[3] "%s кадраў"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7143,6 +7186,9 @@ msgstr ""
 "2. Гэта азначае, што вы можаце выкарыстоўваць гэту праграму для любых мэт, "
 "але без якіх-небудзь гарантый.%n%nКаб даведацца пра атрыманне зыходнага "
 "кода, перайдзіце на сайт Aegisub."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Кандзі-таймер"
 
 #, c-format
 #~ msgid ""

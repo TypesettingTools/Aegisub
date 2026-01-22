@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2014-11-23 02:19+0200\n"
 "Last-Translator: Lasse Liehu <lasse.liehu@gmail.com>\n"
 "Language-Team: Finnish <lokalisointi@lists.coss.fi>\n"
@@ -529,7 +529,7 @@ msgstr "Sulje avattu ääniraita"
 msgid "&Open Audio File..."
 msgstr "&Avaa äänitiedosto…"
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Avaa äänitiedosto"
 
@@ -544,6 +544,13 @@ msgstr "Äänimuodot"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Videomuodot"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Avaa äänitiedosto"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -606,7 +613,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "Tallenna ääniraita valitun rivin ajoituksesta"
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "Tallenna ääniraita"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1620,7 +1629,9 @@ msgid "Open a keyframe list file"
 msgstr "Avaa avainkuvalista"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "Avaa avainkuvatiedosto"
 
 #: ../src/command/keyframe.cpp:87
@@ -1636,12 +1647,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Tallenna nykyinen avainkuvalista tiedostoon"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "Tallenna avainkuvatiedosto"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "Tiedostoluettelot"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1783,7 +1798,9 @@ msgstr "Avaa tekstitystiedosto"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "Avaa tekstitystiedosto"
 
 #: ../src/command/subtitle.cpp:282
@@ -1843,7 +1860,9 @@ msgid "Open script properties window"
 msgstr "Avaa tekstitystiedoston tekijät ja asetukset"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "Tallenna tekstitystiedosto"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2115,7 +2134,7 @@ msgstr "Sulje avattu aikakooditiedosto"
 msgid "Open Timecodes File..."
 msgstr "Avaa aikakoodit…"
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "Avaa aikakoodit"
 
@@ -2123,22 +2142,31 @@ msgstr "Avaa aikakoodit"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Avaa VFR aikakoodit v1 tai v2 tiedosto"
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#: ../src/command/timecode.cpp:74
 #, fuzzy
-msgid "Text Files"
-msgstr "Tiedostoluettelot"
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Avaa aikakoodit"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Tallenna aikakoodit…"
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "Tallenna aikakoodit"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "Tallenna VFR aikakoodi v2 tiedosto"
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "Tallenna aikakoodit"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2633,7 +2661,9 @@ msgid "Open a video file"
 msgstr "Avaa videotiedosto"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "Avaa videotiedosto"
 
 #: ../src/command/video.cpp:602
@@ -3301,7 +3331,9 @@ msgid "Export..."
 msgstr "Tallenna nimellä…"
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "Tallentaa nimellä toisessa tekstitysmuodossa"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3606,8 +3638,10 @@ msgid "Dest: "
 msgstr "Kohde:"
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
-msgstr "Kanjiajoitus"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
+msgstr "Kanjiajoitin"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
@@ -3627,7 +3661,9 @@ msgid "Commands"
 msgstr "Komennot"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "&Yritä interpoloida kanjia."
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4075,9 +4111,13 @@ msgid "unsaved"
 msgstr "tallentamaton"
 
 #: ../src/dialog_shift_times.cpp:96
-#, c-format
-msgid "%s frames"
-msgstr "%s kuvaa"
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 kuva"
+msgstr[1] "%d kuvaa (%s)"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -5082,11 +5122,12 @@ msgid "Resolution:"
 msgstr "Tarkkuus:"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 kuva"
-msgstr[1] "%d kuvaa (%s)"
+msgstr[0] "%s kuvaa"
+msgstr[1] "%s kuvaa"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7207,6 +7248,9 @@ msgstr ""
 "tarkoittaa, että voit käyttää ohjelmaa veloituksetta kaikkiin tarkoituksiin, "
 "mutta että ohjelmalle ei myöskään anneta minkäänlaista takuuta%n%nKatso "
 "Aegisubin verkkosivuilta tietoa lähdekoodin saamisesta."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Kanjiajoitus"
 
 #, c-format
 #~ msgid ""

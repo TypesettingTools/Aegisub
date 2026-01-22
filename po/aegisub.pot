@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2005-2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -518,7 +518,7 @@ msgstr ""
 msgid "&Open Audio File..."
 msgstr ""
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr ""
 
@@ -532,6 +532,11 @@ msgstr ""
 
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
+msgstr ""
+
+#: ../src/command/audio.cpp:85
+msgctxt "dialog title"
+msgid "Open Audio File"
 msgstr ""
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
@@ -595,7 +600,7 @@ msgid "Save an audio clip of the selected line"
 msgstr ""
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr ""
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1566,7 +1571,7 @@ msgid "Open a keyframe list file"
 msgstr ""
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr ""
 
 #: ../src/command/keyframe.cpp:87
@@ -1582,11 +1587,12 @@ msgid "Save the current list of keyframes to a file"
 msgstr ""
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr ""
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+msgid "Text Files"
 msgstr ""
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
@@ -1729,7 +1735,7 @@ msgstr ""
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr ""
 
 #: ../src/command/subtitle.cpp:282
@@ -1789,7 +1795,7 @@ msgid "Open script properties window"
 msgstr ""
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr ""
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2057,7 +2063,7 @@ msgstr ""
 msgid "Open Timecodes File..."
 msgstr ""
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr ""
 
@@ -2065,20 +2071,26 @@ msgstr ""
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr ""
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
-msgid "Text Files"
+#: ../src/command/timecode.cpp:74
+msgctxt "dialog title"
+msgid "Open Timecodes File"
 msgstr ""
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr ""
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr ""
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
+msgstr ""
+
+#: ../src/command/timecode.cpp:94
+msgctxt "dialog title"
+msgid "Save Timecodes File"
 msgstr ""
 
 #: ../src/command/timecode.cpp:103
@@ -2562,7 +2574,7 @@ msgid "Open a video file"
 msgstr ""
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+msgid "Open Video File"
 msgstr ""
 
 #: ../src/command/video.cpp:602
@@ -3212,7 +3224,7 @@ msgid "Export..."
 msgstr ""
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr ""
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3505,7 +3517,7 @@ msgid "Dest: "
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
+msgid "Kanji timer"
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
@@ -3526,7 +3538,7 @@ msgid "Commands"
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -3962,8 +3974,10 @@ msgstr ""
 
 #: ../src/dialog_shift_times.cpp:96
 #, c-format
-msgid "%s frames"
-msgstr ""
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -4905,7 +4919,7 @@ msgstr ""
 
 #: ../src/dialog_video_details.cpp:66
 #, c-format
-msgid "1 frame"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
 msgstr[0] ""
 msgstr[1] ""

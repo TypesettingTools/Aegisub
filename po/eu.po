@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2014-07-15 14:58+0100\n"
 "Last-Translator: Xabier Aramendi <azpidatziak@gmail.com>\n"
 "Language-Team: (EUS_Xabier Aramendi) <azpidatziak@gmail.com>\n"
@@ -523,7 +523,7 @@ msgstr "Itxi orain irekita dagoen audio agiria"
 msgid "&Open Audio File..."
 msgstr "&Ireki Audio Agiria..."
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Ireki Audio Agiria"
 
@@ -538,6 +538,13 @@ msgstr "Audio Heuskarriak"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Bideo Heuskarriak"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Ireki Audio Agiria"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -600,7 +607,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "Gorde hautaturiko lerroaren audio ebakin bat "
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "Gode audio ebakina"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1607,7 +1616,9 @@ msgid "Open a keyframe list file"
 msgstr "Ireki giltzaframe zerrenda agiri bat"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "Ireki giltzaframe agiria"
 
 #: ../src/command/keyframe.cpp:87
@@ -1623,12 +1634,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Gorde oraingo giltzaframe zerrenda agiri batean"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "Gorde Giltzaframe agiria"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "Agiriak"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1770,7 +1785,9 @@ msgstr "Ireki azpidatzi agiri bat"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "Ireki azpidatzi agiria"
 
 #: ../src/command/subtitle.cpp:282
@@ -1830,7 +1847,9 @@ msgid "Open script properties window"
 msgstr "Ireki eskriptaren ezaugarri leihoa"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "Gorde azpidatzi agiria"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2101,7 +2120,7 @@ msgstr "Itxi orain irekita dagoen denbora-kode agiria"
 msgid "Open Timecodes File..."
 msgstr "Ireki &Denbora-kode Agiria..."
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "Ireki Denbora-kode Agiria"
 
@@ -2109,22 +2128,31 @@ msgstr "Ireki Denbora-kode Agiria"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Ireki VFR denbora-kode v1 edo v2 agiria"
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#: ../src/command/timecode.cpp:74
 #, fuzzy
-msgid "Text Files"
-msgstr "Agiriak"
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Ireki Denbora-kode Agiria"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "G&orde Denbora-kode Agiria..."
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "Gorde Denbora-kode Agiria"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "Gorde VFR denbora-kode v2 agiria"
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "Gorde Denbora-kode Agiria"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2621,7 +2649,9 @@ msgid "Open a video file"
 msgstr "Ireki bideo agiri bat"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "Ireki bideo agiria"
 
 #: ../src/command/video.cpp:602
@@ -3288,7 +3318,9 @@ msgid "Export..."
 msgstr "Esportatu..."
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "Esportatu azpidatzi agiria"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3588,8 +3620,10 @@ msgid "Dest: "
 msgstr "Helmuga:"
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
-msgstr "Kanji denborapena"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
+msgstr "Kanji Denboragailua"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
@@ -3609,7 +3643,9 @@ msgid "Commands"
 msgstr "Komandoak"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "&Kanji interpolazio saiakera."
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4055,9 +4091,13 @@ msgid "unsaved"
 msgstr "gordegabe"
 
 #: ../src/dialog_shift_times.cpp:96
-#, c-format
-msgid "%s frames"
-msgstr "%s frame"
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 frame"
+msgstr[1] "%d frame (%s)"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -5036,11 +5076,12 @@ msgid "Resolution:"
 msgstr "Bereizmena:"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 frame"
-msgstr[1] "%d frame (%s)"
+msgstr[0] "%s frame"
+msgstr[1] "%s frame"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7137,6 +7178,9 @@ msgstr ""
 "Honek esanahi du aplikazio hau edozein asmotarako erabili dezakezula "
 "ordaindu behar izan gabe, baina ez da inolako berme motarik ematen.%n%nIkusi "
 "Aegisub webgunea iturburu kodea lortzeko argibideetarako."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Kanji denborapena"
 
 #, c-format
 #~ msgid ""

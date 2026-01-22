@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ca\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2025-10-14 18:52+0000\n"
 "Last-Translator: Eduard Ereza Martínez <eduard@ereza.cat>\n"
 "Language-Team: \n"
@@ -519,7 +519,7 @@ msgstr "Tanca el fitxer d’àudio obert actualment"
 msgid "&Open Audio File..."
 msgstr "&Obre un fitxer d’àudio..."
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Obre un fitxer d’àudio"
 
@@ -534,6 +534,13 @@ msgstr "Formats d’àudio"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Formats de vídeo"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Obre un fitxer d’àudio"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -596,7 +603,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "Desa una peça d’àudio de la línia seleccionada"
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "Desa una peça d’àudio"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1613,7 +1622,9 @@ msgid "Open a keyframe list file"
 msgstr "Obre el fitxer d’una llista de fotogrames clau"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "Obre el fitxer de fotogrames clau"
 
 #: ../src/command/keyframe.cpp:87
@@ -1629,12 +1640,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Desa la llista actual de fotogrames clau en un fitxer"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "Desa el fitxer de fotogrames clau"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "Fitxers"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1778,7 +1793,9 @@ msgstr "Obre el fitxer de subtítols"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "Obre el fitxer de subtítols"
 
 #: ../src/command/subtitle.cpp:282
@@ -1840,7 +1857,9 @@ msgid "Open script properties window"
 msgstr "Obre la finestra de propietats de l’script"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "Desa el fitxer de subtítols"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2120,7 +2139,7 @@ msgstr "Tanca el fitxer de codis de temps obert actualment"
 msgid "Open Timecodes File..."
 msgstr "Obre el fitxer de codis de temps..."
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "Obre el fitxer de codis de temps"
 
@@ -2128,22 +2147,31 @@ msgstr "Obre el fitxer de codis de temps"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Obre el fitxer de codis de temps VFR v1 o v2"
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#: ../src/command/timecode.cpp:74
 #, fuzzy
-msgid "Text Files"
-msgstr "Fitxers"
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Obre el fitxer de codis de temps"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Desa el fitxer de codis de temps..."
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "Desa el fitxer de codis de temps"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "Desa el fitxer de codis de temps VFR v2"
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "Desa el fitxer de codis de temps"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2651,7 +2679,9 @@ msgid "Open a video file"
 msgstr "Obre el fitxer de vídeo"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "Obre el fitxer de vídeo"
 
 #: ../src/command/video.cpp:602
@@ -3319,7 +3349,9 @@ msgid "Export..."
 msgstr "Exporta..."
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "Exporta el fitxer de subtítols"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3620,8 +3652,10 @@ msgid "Dest: "
 msgstr "Destinació: "
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
-msgstr "Creació de temps per a kanjis"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
+msgstr "Creador de temps per a kanjis"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
@@ -3641,7 +3675,9 @@ msgid "Commands"
 msgstr "Ordres"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "Mira d’inter&polar els kanjis."
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4087,9 +4123,13 @@ msgid "unsaved"
 msgstr "no desat"
 
 #: ../src/dialog_shift_times.cpp:96
-#, c-format
-msgid "%s frames"
-msgstr "%s fotogrames"
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 fotograma"
+msgstr[1] "%d fotogrames (%s)"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -5070,11 +5110,12 @@ msgid "Resolution:"
 msgstr "Resolució:"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 fotograma"
-msgstr[1] "%d fotogrames (%s)"
+msgstr[0] "%s fotogrames"
+msgstr[1] "%s fotogrames"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7201,6 +7242,9 @@ msgstr ""
 "càrrecs, però també que no es proporciona cap mena de garantia.%n%nVegeu el "
 "lloc web de l’Aegisub per a obtenir informació sobre com obtenir-ne el codi "
 "font."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Creació de temps per a kanjis"
 
 #, c-format
 #~ msgid ""

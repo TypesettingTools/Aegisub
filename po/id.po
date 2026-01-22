@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2014-07-02 23:34+0700\n"
 "Last-Translator: doplank <doplank@gmx.com>\n"
 "Language-Team:  <doplank@gmx.com>\n"
@@ -523,7 +523,7 @@ msgstr "Tutup berkas audio yang sedang terbuka"
 msgid "&Open Audio File..."
 msgstr "&Buka Berkas Audio..."
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Buka Berkas Audio"
 
@@ -538,6 +538,13 @@ msgstr "Format Audio"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Format Video"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Buka Berkas Audio"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -600,7 +607,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "Simpan klip audio dari baris yang terpilih"
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "Simpan klip audio"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1597,7 +1606,9 @@ msgid "Open a keyframe list file"
 msgstr "Buka daftar berkas keyframe"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "Buka berkas Keyframe"
 
 #: ../src/command/keyframe.cpp:87
@@ -1613,12 +1624,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Simpan daftar keyframe saat ini ke berkas"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "Simpan berkas Keyframe"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "Berkas"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1760,7 +1775,9 @@ msgstr "Buka berkas takarir"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "Buka berkas takarir"
 
 #: ../src/command/subtitle.cpp:282
@@ -1820,7 +1837,9 @@ msgid "Open script properties window"
 msgstr "Buka informasi dasar skrip"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "Simpan berkas takarir "
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2091,7 +2110,7 @@ msgstr "Tutup berkas timecode yang saat ini sedang dibuka"
 msgid "Open Timecodes File..."
 msgstr "Buka Berkas Timecode..."
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "Buka Berkas Timecode"
 
@@ -2099,22 +2118,31 @@ msgstr "Buka Berkas Timecode"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Buka berkas timecode VFR v1 atau v2"
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#: ../src/command/timecode.cpp:74
 #, fuzzy
-msgid "Text Files"
-msgstr "Berkas"
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Buka Berkas Timecode"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Simpan Berkas Timecode..."
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "Simpan Berkas Timecode"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "Simpan berkas timecode VFR v2"
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "Simpan Berkas Timecode"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2608,7 +2636,9 @@ msgid "Open a video file"
 msgstr "Buka berkas video"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "Buka berkas vdeo"
 
 #: ../src/command/video.cpp:602
@@ -3274,7 +3304,9 @@ msgid "Export..."
 msgstr "Mengekspor..."
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "Ekspor berkas takarir "
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3572,7 +3604,9 @@ msgid "Dest: "
 msgstr "Tujuan:"
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
 msgstr "Tempo Kanji"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
@@ -3593,7 +3627,9 @@ msgid "Commands"
 msgstr "Perintah"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "Sisipkan ke kanji."
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4039,9 +4075,13 @@ msgid "unsaved"
 msgstr "belum disimpan"
 
 #: ../src/dialog_shift_times.cpp:96
-#, c-format
-msgid "%s frames"
-msgstr "%s frame"
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 frame"
+msgstr[1] "%d frame (%s)"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -5014,11 +5054,12 @@ msgid "Resolution:"
 msgstr "Resolusi:"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 frame"
-msgstr[1] "%d frame (%s)"
+msgstr[0] "%s frame"
+msgstr[1] "%s frame"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7109,6 +7150,9 @@ msgstr ""
 "bisa menggunakan aplikasi ini untuk tujuan apa pun tanpad dipungut biaya, "
 "tapi tidak ada jaminan yang bisa diberikan.%n%nLihat laman situs Aegisub "
 "untuk memperoleh informasi sumber kode."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Tempo Kanji"
 
 #, c-format
 #~ msgid ""

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2025-11-18 21:22+0800\n"
 "Last-Translator: Howardisme <howard940114@gmail.com>\n"
 "Language-Team: None <None@None>\n"
@@ -521,7 +521,7 @@ msgstr "關閉目前開啟的音訊檔案"
 msgid "&Open Audio File..."
 msgstr "打開音訊檔案(&O)…"
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "打開音訊檔案"
 
@@ -536,6 +536,13 @@ msgstr "音訊格式"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "視訊格式"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "打開音訊檔案"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -598,7 +605,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "建立所選行的音訊剪輯"
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "儲存音訊剪輯"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1576,7 +1585,9 @@ msgid "Open a keyframe list file"
 msgstr "打開一個關鍵影格列表檔"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "打開一個關鍵影格列表檔"
 
 #: ../src/command/keyframe.cpp:87
@@ -1592,12 +1603,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr "儲存目前的關鍵影格列表"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "儲存關鍵影格…"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "檔案"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1739,7 +1754,9 @@ msgstr "打開字幕檔案"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "打開字幕檔案"
 
 #: ../src/command/subtitle.cpp:282
@@ -1799,7 +1816,9 @@ msgid "Open script properties window"
 msgstr "打開腳本屬性視窗"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "儲存字幕檔"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2067,7 +2086,7 @@ msgstr "關閉目前打開的時間碼檔"
 msgid "Open Timecodes File..."
 msgstr "打開時間碼檔…"
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "打開時間碼檔…"
 
@@ -2075,22 +2094,31 @@ msgstr "打開時間碼檔…"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "打開一個可變影格時間碼(VFR timecode)v1或v2檔"
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#: ../src/command/timecode.cpp:74
 #, fuzzy
-msgid "Text Files"
-msgstr "檔案"
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "打開時間碼檔…"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "儲存時間碼檔…"
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "儲存時間碼檔"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "儲存一個可變影格時間碼(VFR timecode)v1或v2檔"
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "儲存時間碼檔"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2575,7 +2603,9 @@ msgid "Open a video file"
 msgstr "打開一個視訊檔案"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "打開視訊檔案"
 
 #: ../src/command/video.cpp:602
@@ -3242,7 +3272,9 @@ msgid "Export..."
 msgstr "匯出…"
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "匯出字幕檔案"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3538,7 +3570,9 @@ msgid "Dest: "
 msgstr "目標："
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
 msgstr "漢字計時器"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
@@ -3559,7 +3593,9 @@ msgid "Commands"
 msgstr "指令"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "嘗試插入漢字。(&I)"
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4001,9 +4037,12 @@ msgid "unsaved"
 msgstr "未儲存"
 
 #: ../src/dialog_shift_times.cpp:96
-#, c-format
-msgid "%s frames"
-msgstr "影格 %s"
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "%d 影格(%s)"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -4955,10 +4994,11 @@ msgid "Resolution:"
 msgstr "解析度"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "%d 影格(%s)"
+msgstr[0] "影格 %s"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7035,6 +7075,9 @@ msgstr ""
 "GNU通用公共許可證第二版(GPLv2)，這意味著您可以將該應用程式用於任何目的而不需"
 "要支付費用，但同時也不會得到任何形式的擔保。%n%n您可以到Aegisub官網取得原始程"
 "式碼資訊。"
+
+#~ msgid "Kanji timing"
+#~ msgstr "漢字計時器"
 
 #, c-format
 #~ msgid ""

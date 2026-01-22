@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub Tiếng Việt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-21 23:37+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: NGUY?N M?nh Hùng <loveleeyoungae@yahoo.com>\n"
 "Language-Team: OnEsChi <oneschi@yahoo.com>\n"
@@ -517,7 +517,7 @@ msgstr "Đóng tệp âm thanh hiện đang mở"
 msgid "&Open Audio File..."
 msgstr "&Mở tệp Âm thanh..."
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Mở tệp âm thanh"
 
@@ -532,6 +532,13 @@ msgstr "Định dạng Âm thanh"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Định dạng video"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Mở tệp âm thanh"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -594,7 +601,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "Lưu đoạn âm thanh của dòng đang chọn"
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "Lưu đoạn âm thanh"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -1601,7 +1610,9 @@ msgid "Open a keyframe list file"
 msgstr "Mở tệp danh sách khung chính"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "Mở tệp khung chính"
 
 #: ../src/command/keyframe.cpp:87
@@ -1617,12 +1628,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Lưu danh sách các khung chính hiện tại thành một tệp"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "Lưu tệp khung chính"
 
-#: ../src/command/keyframe.cpp:97
-msgid "Text files"
-msgstr ""
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "Tệp"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1766,7 +1781,9 @@ msgstr "Mở một tệp phụ đề"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-msgid "Open subtitles file"
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "Mở tệp phụ đề"
 
 #: ../src/command/subtitle.cpp:282
@@ -1826,7 +1843,9 @@ msgid "Open script properties window"
 msgstr "Mở cửa sổ thuộc tính của phụ đề"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "Lưu tệp phụ đề"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
@@ -2109,7 +2128,7 @@ msgstr "Đóng tệp Mã thời g&ian hiện đang mở"
 msgid "Open Timecodes File..."
 msgstr "Mở tệp Mã thời gi&an..."
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "Mở tệp Mã thời g&ian"
 
@@ -2117,22 +2136,31 @@ msgstr "Mở tệp Mã thời g&ian"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Mở tệp Mã thời g&ian VFR v1 hoặc v2"
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#: ../src/command/timecode.cpp:74
 #, fuzzy
-msgid "Text Files"
-msgstr "Tệp"
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Mở tệp Mã thời g&ian"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "&Lưu tệp Mã thời gian..."
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "&Lưu tệp Mã thời gian"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "Lưu tệp Mã Thời gian VFR v2"
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "&Lưu tệp Mã thời gian"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2631,7 +2659,9 @@ msgid "Open a video file"
 msgstr "Mở một tệp video"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "Mở tệp video"
 
 #: ../src/command/video.cpp:602
@@ -3297,7 +3327,9 @@ msgid "Export..."
 msgstr "Xuất..."
 
 #: ../src/dialog_export.cpp:190
-msgid "Export subtitles file"
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "Xuất tệp phụ đề"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
@@ -3599,8 +3631,10 @@ msgid "Dest: "
 msgstr "Đích:"
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-msgid "Kanji timing"
-msgstr "Căn thời gian Kanji"
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
+msgstr "Trình căn thời gian Kanji"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
@@ -3620,7 +3654,9 @@ msgid "Commands"
 msgstr "Lệnh"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-msgid "Attempt to &interpolate kanji."
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "Xen kanji."
 
 #: ../src/dialog_kara_timing_copy.cpp:415
@@ -4066,9 +4102,13 @@ msgid "unsaved"
 msgstr "không lưu"
 
 #: ../src/dialog_shift_times.cpp:96
-#, c-format
-msgid "%s frames"
-msgstr "%s khung hình"
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 khung hình"
+msgstr[1] "%d khung hình (%s)"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -5045,11 +5085,12 @@ msgid "Resolution:"
 msgstr "Độ phân giải:"
 
 #: ../src/dialog_video_details.cpp:66
-#, c-format
-msgid "1 frame"
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 khung hình"
-msgstr[1] "%d khung hình (%s)"
+msgstr[0] "%s khung hình"
+msgstr[1] "%s khung hình"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
@@ -7151,6 +7192,9 @@ msgstr ""
 "Có nghĩa là bạn có thể dùng ứng dụng này cho bất kì mục đích nào mà không "
 "cần có phí, nhưng sẽ không có bảo hành hoặc bất kì những cái tương tự. %n%n "
 "Xem website của Aegisub để có thêm thông tin về việc tải về mã nguồn."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Căn thời gian Kanji"
 
 #, c-format
 #~ msgid ""
