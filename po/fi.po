@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 20:46+0100\n"
+"POT-Creation-Date: 2026-01-21 23:37+0100\n"
 "PO-Revision-Date: 2014-11-23 02:19+0200\n"
 "Last-Translator: Lasse Liehu <lasse.liehu@gmail.com>\n"
 "Language-Team: Finnish <lokalisointi@lists.coss.fi>\n"
@@ -258,11 +258,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:458
+#: ../src/auto4_lua.cpp:460
 msgid "Could not initialize Lua state"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:541
+#: ../src/auto4_lua.cpp:543
 #, c-format
 msgid ""
 "Error initialising Lua script \"%s\":\n"
@@ -270,10 +270,46 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:551
+#: ../src/auto4_lua.cpp:553
 msgid ""
 "Attempted to load an Automation 3 script as an Automation 4 Lua script. "
 "Automation 3 is no longer supported."
+msgstr ""
+
+#: ../src/auto4_lua.cpp:827
+#, c-format
+msgid ""
+"Runtime error in Lua macro validation function:\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:881
+#, c-format
+msgid "Active row %d is out of bounds (must be 1-%u)"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:897
+#, c-format
+msgid "Selected row %d is out of bounds (must be 1-%u)"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:903
+#, c-format
+msgid "Selected row %d is not a dialogue line"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:969
+#, c-format
+msgid ""
+"Runtime error in Lua macro IsActive function:\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:1075
+#, c-format
+msgid ""
+"Runtime error in Lua config dialog function:\n"
+"%s"
 msgstr ""
 
 #: ../src/charset_detect.cpp:50
@@ -368,6 +404,16 @@ msgstr "&Kieli (Language)…"
 msgid "Select Aegisub interface language"
 msgstr "Valitse Aegisubin kieli"
 
+#: ../src/command/app.cpp:167
+msgid ""
+"Aegisub needs to be restarted so that the new language can be applied. "
+"Restart now?"
+msgstr ""
+
+#: ../src/command/app.cpp:167
+msgid "Restart Aegisub?"
+msgstr ""
+
 #: ../src/command/app.cpp:180
 msgid "&Log window"
 msgstr "&Loki-ikkuna"
@@ -398,9 +444,9 @@ msgstr "Avaa uuden ohjelmaikkunan"
 msgid "&Options..."
 msgstr "&Asetukset…"
 
-#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:146
-#: ../src/dialog_timing_processor.cpp:168 ../src/preferences.cpp:129
-#: ../src/preferences.cpp:169
+#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:151
+#: ../src/dialog_timing_processor.cpp:169 ../src/preferences.cpp:132
+#: ../src/preferences.cpp:172
 msgid "Options"
 msgstr "Asetukset"
 
@@ -763,7 +809,7 @@ msgid "&Automation..."
 msgstr "&Automaatio…"
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:339
+#: ../src/preferences.cpp:342
 msgid "Automation"
 msgstr "Automaatio"
 
@@ -905,7 +951,7 @@ msgstr "yliviivauksen muuttaminen"
 msgid "Font Face..."
 msgstr "Fontti…"
 
-#: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:250
+#: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:275
 msgid "Font Face"
 msgstr "Fontti"
 
@@ -1221,7 +1267,7 @@ msgid "revert line"
 msgstr "rivin palautus"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:416
+#: ../src/preferences.cpp:419
 msgid "Clear"
 msgstr "Tyhjennä"
 
@@ -1316,7 +1362,7 @@ msgid "&Effect"
 msgstr "Te&hoste"
 
 #: ../src/command/grid.cpp:133 ../src/command/grid.cpp:145
-#: ../src/dialog_paste_over.cpp:72 ../src/grid_column.cpp:214
+#: ../src/dialog_paste_over.cpp:74 ../src/grid_column.cpp:214
 #: ../src/grid_column.cpp:215 ../src/subs_edit_box.cpp:140
 msgid "Effect"
 msgstr "Tehoste"
@@ -1334,7 +1380,7 @@ msgid "&End Time"
 msgstr "&Loppuaika"
 
 #: ../src/command/grid.cpp:157 ../src/command/grid.cpp:169
-#: ../src/dialog_paste_over.cpp:66 ../src/grid_column.cpp:170
+#: ../src/dialog_paste_over.cpp:68 ../src/grid_column.cpp:170
 msgid "End Time"
 msgstr "Loppuaika"
 
@@ -1351,7 +1397,7 @@ msgid "&Layer"
 msgstr "Ta&so"
 
 #: ../src/command/grid.cpp:181 ../src/command/grid.cpp:193
-#: ../src/dialog_paste_over.cpp:64 ../src/grid_column.cpp:130
+#: ../src/dialog_paste_over.cpp:66 ../src/grid_column.cpp:130
 msgid "Layer"
 msgstr "Taso"
 
@@ -1368,7 +1414,7 @@ msgid "&Start Time"
 msgstr "&Alkuaika"
 
 #: ../src/command/grid.cpp:205 ../src/command/grid.cpp:217
-#: ../src/dialog_paste_over.cpp:65 ../src/grid_column.cpp:152
+#: ../src/dialog_paste_over.cpp:67 ../src/grid_column.cpp:152
 msgid "Start Time"
 msgstr "Alkuaika"
 
@@ -1385,7 +1431,7 @@ msgid "St&yle Name"
 msgstr "T&yylin nimi"
 
 #: ../src/command/grid.cpp:229 ../src/command/grid.cpp:241
-#: ../src/dialog_style_editor.cpp:179
+#: ../src/dialog_style_editor.cpp:180
 msgid "Style Name"
 msgstr "Tyylin nimi"
 
@@ -1593,6 +1639,10 @@ msgstr "Tallenna nykyinen avainkuvalista tiedostoon"
 msgid "Save keyframes file"
 msgstr "Tallenna avainkuvatiedosto"
 
+#: ../src/command/keyframe.cpp:97
+msgid "Text files"
+msgstr ""
+
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
 msgstr "Avaa äskettäinen äänitiedosto"
@@ -1715,7 +1765,7 @@ msgstr "Uusi tekstitystiedosto"
 
 #: ../src/command/subtitle.cpp:255 ../src/command/subtitle.cpp:256
 #: ../src/command/subtitle.cpp:257 ../src/dialog_progress.cpp:175
-#: ../src/dialog_style_manager.cpp:313
+#: ../src/dialog_style_manager.cpp:320
 msgid "Close"
 msgstr "Sulje"
 
@@ -1732,7 +1782,7 @@ msgid "Open a subtitles file"
 msgstr "Avaa tekstitystiedosto"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
-#: ../src/dialog_style_manager.cpp:667
+#: ../src/dialog_style_manager.cpp:674
 msgid "Open subtitles file"
 msgstr "Avaa tekstitystiedosto"
 
@@ -1796,6 +1846,23 @@ msgstr "Avaa tekstitystiedoston tekijät ja asetukset"
 msgid "Save subtitles file"
 msgstr "Tallenna tekstitystiedosto"
 
+#: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
+#: ../src/dialog_fonts_collector.cpp:312 ../src/dialog_fonts_collector.cpp:317
+#: ../src/dialog_fonts_collector.cpp:322 ../src/dialog_kara_timing_copy.cpp:495
+#: ../src/dialog_kara_timing_copy.cpp:497
+#: ../src/dialog_kara_timing_copy.cpp:547 ../src/dialog_search_replace.cpp:143
+#: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
+#: ../src/dialog_style_manager.cpp:689 ../src/dialog_style_manager.cpp:695
+#: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:194
+#: ../src/preferences.cpp:275 ../src/preferences.cpp:467
+msgid "Error"
+msgstr "Virhe"
+
+#: ../src/command/subtitle.cpp:360 ../src/dialog_export.cpp:211
+#: ../src/dialog_style_manager.cpp:698 ../src/project.cpp:142
+msgid "Unknown error"
+msgstr ""
+
 #: ../src/command/subtitle.cpp:367
 msgid "&Save Subtitles"
 msgstr "&Tallenna tekstitys"
@@ -1820,7 +1887,7 @@ msgstr "Tallenna tekstitys nimellä"
 msgid "Save subtitles with another name"
 msgstr "Tallenna tekstitystiedosto toisella nimellä"
 
-#: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:123
+#: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:127
 #: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:392
 msgid "Select &All"
 msgstr "Valitse &kaikki"
@@ -1902,7 +1969,7 @@ msgstr "siirrä kuvaan"
 msgid "S&hift Times..."
 msgstr "Siirrä &aikoja…"
 
-#: ../src/command/time.cpp:154 ../src/dialog_shift_times.cpp:134
+#: ../src/command/time.cpp:154 ../src/dialog_shift_times.cpp:135
 msgid "Shift Times"
 msgstr "Siirrä aikoja"
 
@@ -2058,7 +2125,6 @@ msgstr "Avaa VFR aikakoodit v1 tai v2 tiedosto"
 
 #: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
 #, fuzzy
-#| msgid "Files"
 msgid "Text Files"
 msgstr "Tiedostoluettelot"
 
@@ -2073,6 +2139,10 @@ msgstr "Tallenna aikakoodit"
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "Tallenna VFR aikakoodi v2 tiedosto"
+
+#: ../src/command/timecode.cpp:103
+msgid "Error saving timecodes"
+msgstr ""
 
 #: ../src/command/tool.cpp:56
 msgid "&Export Subtitles..."
@@ -2132,7 +2202,7 @@ msgstr ""
 msgid "St&yling Assistant..."
 msgstr "T&yyliavustaja…"
 
-#: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:53
+#: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:54
 msgid "Styling Assistant"
 msgstr "Tyyliavustaja"
 
@@ -2145,7 +2215,7 @@ msgid "&Accept changes"
 msgstr "&Hyväksy muutokset"
 
 #: ../src/command/tool.cpp:128 ../src/command/tool.cpp:212
-#: ../src/dialog_styling_assistant.cpp:88 ../src/dialog_translation.cpp:111
+#: ../src/dialog_styling_assistant.cpp:90 ../src/dialog_translation.cpp:114
 msgid "Accept changes"
 msgstr "Hyväksy muutokset"
 
@@ -2158,7 +2228,7 @@ msgid "&Preview changes"
 msgstr "&Esikatsele muutokset"
 
 #: ../src/command/tool.cpp:139 ../src/command/tool.cpp:223
-#: ../src/dialog_styling_assistant.cpp:89 ../src/dialog_translation.cpp:112
+#: ../src/dialog_styling_assistant.cpp:91 ../src/dialog_translation.cpp:115
 msgid "Preview changes"
 msgstr "Esikatsele muutokset"
 
@@ -2170,7 +2240,7 @@ msgstr "Hyväksy muutokset ja pysy nykyisellä rivillä"
 msgid "&Styles Manager..."
 msgstr "&Tyylien hallinta…"
 
-#: ../src/command/tool.cpp:151 ../src/dialog_style_manager.cpp:258
+#: ../src/command/tool.cpp:151 ../src/dialog_style_manager.cpp:259
 msgid "Styles Manager"
 msgstr "Tyylien hallinta"
 
@@ -2210,8 +2280,8 @@ msgstr ""
 msgid "&Translation Assistant..."
 msgstr "&Käännösavustaja…"
 
-#: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:64
-#: ../src/preferences.cpp:235
+#: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
+#: ../src/preferences.cpp:238
 msgid "Translation Assistant"
 msgstr "Käännösavustaja"
 
@@ -2593,7 +2663,6 @@ msgstr "Toista"
 
 #: ../src/command/video.cpp:635
 #, fuzzy
-#| msgid "Play video starting on this position"
 msgid "Play the video starting on this position"
 msgstr "Toista video"
 
@@ -2603,7 +2672,6 @@ msgstr "Toista rivi"
 
 #: ../src/command/video.cpp:647
 #, fuzzy
-#| msgid "Play the audio for the current line"
 msgid "Play the video for the current line"
 msgstr "Toista nykyisen rivin ääni"
 
@@ -2762,7 +2830,6 @@ msgstr "Viiva"
 
 #: ../src/command/vis_tool.cpp:141
 #, fuzzy
-#| msgid "Appends a line"
 msgid "Append a line"
 msgstr "Kaartaa viivaa"
 
@@ -2772,7 +2839,6 @@ msgstr "Kolmiokäyrä"
 
 #: ../src/command/vis_tool.cpp:148
 #, fuzzy
-#| msgid "Appends a bezier bicubic curve"
 msgid "Append a bezier bicubic curve"
 msgstr "Muodostaa kolmion kahden pisteen välille Bézier-käyrän"
 
@@ -2782,7 +2848,6 @@ msgstr "Muunna"
 
 #: ../src/command/vis_tool.cpp:155
 #, fuzzy
-#| msgid "Converts a segment between line and bicubic"
 msgid "Convert a segment between line and bicubic"
 msgstr "Muotoilee kahden pisteen välistä viivaa"
 
@@ -2792,7 +2857,6 @@ msgstr "Lisää"
 
 #: ../src/command/vis_tool.cpp:162
 #, fuzzy
-#| msgid "Inserts a control point"
 msgid "Insert a control point"
 msgstr "Lisää ohjauspisteen"
 
@@ -2802,7 +2866,6 @@ msgstr "Poista"
 
 #: ../src/command/vis_tool.cpp:169
 #, fuzzy
-#| msgid "Removes a control point"
 msgid "Remove a control point"
 msgstr "Poistaa ohjauspisteen"
 
@@ -2812,7 +2875,6 @@ msgstr "Vapaalla kädellä"
 
 #: ../src/command/vis_tool.cpp:176
 #, fuzzy
-#| msgid "Draws a freehand shape"
 msgid "Draw a freehand shape"
 msgstr "Vapaalla kädellä piirtäen kulmikas muoto"
 
@@ -2822,7 +2884,6 @@ msgstr "Vapaalla kädellä pyöristetty"
 
 #: ../src/command/vis_tool.cpp:183
 #, fuzzy
-#| msgid "Draws a smoothed freehand shape"
 msgid "Draw a smoothed freehand shape"
 msgstr "Vapaalla kädellä piirtäen pyöristetty muoto"
 
@@ -2859,13 +2920,13 @@ msgstr "Liitä &grafiikkaa"
 msgid "E&xtract"
 msgstr "P&oimi kovalevylle"
 
-#: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:204
-#: ../src/preferences.cpp:613
+#: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:205
+#: ../src/preferences.cpp:615
 msgid "&Delete"
 msgstr "&Poista"
 
 #: ../src/dialog_attachments.cpp:89 ../src/dialog_automation.cpp:122
-#: ../src/dialog_kara_timing_copy.cpp:419 ../src/dialog_version_check.cpp:122
+#: ../src/dialog_kara_timing_copy.cpp:425 ../src/dialog_version_check.cpp:122
 msgid "&Close"
 msgstr "&Sulje"
 
@@ -2945,7 +3006,7 @@ msgstr "Nimi"
 msgid "Filename"
 msgstr "Nimi"
 
-#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:633
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:635
 msgid "Description"
 msgstr "Kuvaus"
 
@@ -3022,28 +3083,28 @@ msgstr "    Vientisuodatin: %s"
 msgid "Automation Script Info"
 msgstr "Skriptitiedot"
 
-#: ../src/dialog_autosave.cpp:66
+#: ../src/dialog_autosave.cpp:67
 msgid "Open autosave file"
 msgstr "Avaa automaattitallennus"
 
-#: ../src/dialog_autosave.cpp:70 ../src/preferences.cpp:78
+#: ../src/dialog_autosave.cpp:71 ../src/preferences.cpp:79
 msgid "Files"
 msgstr "Tiedostoluettelot"
 
-#: ../src/dialog_autosave.cpp:75
+#: ../src/dialog_autosave.cpp:76
 msgid "Versions"
 msgstr "Versiot"
 
-#: ../src/dialog_autosave.cpp:85
+#: ../src/dialog_autosave.cpp:86
 msgid "Open"
 msgstr "Avaa"
 
-#: ../src/dialog_autosave.cpp:94
+#: ../src/dialog_autosave.cpp:95
 #, c-format
 msgid "%s [ORIGINAL BACKUP]"
 msgstr "%s [ALKUPERÄINEN VARMUUSKOPIO]"
 
-#: ../src/dialog_autosave.cpp:95
+#: ../src/dialog_autosave.cpp:96
 #, c-format
 msgid "%s [RECOVERED]"
 msgstr "%s [PALAUTETTU]"
@@ -3056,71 +3117,71 @@ msgstr "Valitse väri"
 msgid "Color spectrum"
 msgstr "Väriavaruus"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "HSL/L"
 msgstr "HSL/L"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "HSV/H"
 msgstr "HSV/H"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "RGB/B"
 msgstr "RGB/B"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "RGB/G"
 msgstr "RGB/G"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "RGB/R"
 msgstr "RGB/R"
 
-#: ../src/dialog_colorpicker.cpp:564
+#: ../src/dialog_colorpicker.cpp:566
 msgid "RGB color"
 msgstr "RGB-väri"
 
-#: ../src/dialog_colorpicker.cpp:565
+#: ../src/dialog_colorpicker.cpp:567
 msgid "HSL color"
 msgstr "HSL-väri"
 
-#: ../src/dialog_colorpicker.cpp:566
+#: ../src/dialog_colorpicker.cpp:568
 msgid "HSV color"
 msgstr "HSV-väri"
 
-#: ../src/dialog_colorpicker.cpp:594
+#: ../src/dialog_colorpicker.cpp:600
 msgid "Spectrum mode:"
 msgstr "Aallon taajuusmoodi:"
 
-#: ../src/dialog_colorpicker.cpp:611
+#: ../src/dialog_colorpicker.cpp:617
 msgid "Blue:"
 msgstr "Sininen:"
 
-#: ../src/dialog_colorpicker.cpp:611
+#: ../src/dialog_colorpicker.cpp:617
 msgid "Green:"
 msgstr "Vihreä:"
 
-#: ../src/dialog_colorpicker.cpp:611
+#: ../src/dialog_colorpicker.cpp:617
 msgid "Red:"
 msgstr "Punainen:"
 
-#: ../src/dialog_colorpicker.cpp:614
+#: ../src/dialog_colorpicker.cpp:620
 msgid "Alpha:"
 msgstr "Alfa:"
 
-#: ../src/dialog_colorpicker.cpp:621 ../src/dialog_colorpicker.cpp:624
+#: ../src/dialog_colorpicker.cpp:627 ../src/dialog_colorpicker.cpp:630
 msgid "Hue:"
 msgstr "Sävy:"
 
-#: ../src/dialog_colorpicker.cpp:621
+#: ../src/dialog_colorpicker.cpp:627
 msgid "Lum.:"
 msgstr "Valoisuus:"
 
-#: ../src/dialog_colorpicker.cpp:621 ../src/dialog_colorpicker.cpp:624
+#: ../src/dialog_colorpicker.cpp:627 ../src/dialog_colorpicker.cpp:630
 msgid "Sat.:"
 msgstr "Kylläisyys:"
 
-#: ../src/dialog_colorpicker.cpp:624
+#: ../src/dialog_colorpicker.cpp:630
 msgid "Value:"
 msgstr "Arvo:"
 
@@ -3181,8 +3242,8 @@ msgstr ""
 msgid "Dummy video options"
 msgstr "Tyhjän kuvan valinnat"
 
-#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:130
-#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
+#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:136
+#: ../src/dialog_resample.cpp:175 ../src/dialog_resample.cpp:188
 msgid "×"
 msgstr "×"
 
@@ -3211,46 +3272,41 @@ msgstr "Kesto (kuvia):"
 msgid "Resulting duration: %s"
 msgstr "Kokonaiskesto: %s"
 
-#: ../src/dialog_export.cpp:101
+#: ../src/dialog_export.cpp:102
 msgid "Export"
 msgstr "Vienti"
 
-#: ../src/dialog_export.cpp:121
-msgid "Move &Up"
-msgstr "Siirrä &ylemmäs"
-
-#: ../src/dialog_export.cpp:122
-msgid "Move &Down"
-msgstr "&Siirrä alemmas"
-
-#: ../src/dialog_export.cpp:124 ../src/dialog_selected_choices.cpp:33
-msgid "Select &None"
-msgstr "&Poista valinnat"
-
-#: ../src/dialog_export.cpp:140
-msgid "Text encoding:"
-msgstr "Tekstin merkistö:"
-
-#: ../src/dialog_export.cpp:148
+#: ../src/dialog_export.cpp:109
 msgid "Filters"
 msgstr "Suodattimet"
 
-#: ../src/dialog_export.cpp:155
+#: ../src/dialog_export.cpp:125
+msgid "Move &Up"
+msgstr "Siirrä &ylemmäs"
+
+#: ../src/dialog_export.cpp:126
+msgid "Move &Down"
+msgstr "&Siirrä alemmas"
+
+#: ../src/dialog_export.cpp:128 ../src/dialog_selected_choices.cpp:33
+msgid "Select &None"
+msgstr "&Poista valinnat"
+
+#: ../src/dialog_export.cpp:144
+msgid "Text encoding:"
+msgstr "Tekstin merkistö:"
+
+#: ../src/dialog_export.cpp:158
 msgid "Export..."
 msgstr "Tallenna nimellä…"
 
-#: ../src/dialog_export.cpp:187
+#: ../src/dialog_export.cpp:190
 msgid "Export subtitles file"
 msgstr "Tallentaa nimellä toisessa tekstitysmuodossa"
 
-#: ../src/dialog_export.cpp:202 ../src/dialog_export.cpp:205
-#: ../src/dialog_export.cpp:208
+#: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
+#: ../src/dialog_export.cpp:211
 msgid "Error exporting subtitles"
-msgstr ""
-
-#: ../src/dialog_export.cpp:208 ../src/dialog_style_manager.cpp:691
-#: ../src/project.cpp:142
-msgid "Unknown error"
 msgstr ""
 
 #: ../src/dialog_export_ebu3264.cpp:83
@@ -3269,119 +3325,119 @@ msgstr ""
 msgid "Export to EBU STL format"
 msgstr "Vie EBU STL -muotoon"
 
+#: ../src/dialog_export_ebu3264.cpp:101
+msgid "Text formatting"
+msgstr "Tekstin muotoilu"
+
 #: ../src/dialog_export_ebu3264.cpp:102
+msgid "Time codes"
+msgstr "Aikakoodit"
+
+#: ../src/dialog_export_ebu3264.cpp:103
+msgid "Display standard"
+msgstr "Näyttöstandardi"
+
+#: ../src/dialog_export_ebu3264.cpp:110
 msgid "23.976 fps (non-standard, STL24.01)"
 msgstr "23,976 kuvaa/s (epästandardi, STL24.01)"
 
-#: ../src/dialog_export_ebu3264.cpp:103
+#: ../src/dialog_export_ebu3264.cpp:111
 msgid "24 fps (non-standard, STL24.01)"
 msgstr "24 kuvaa/s (epästandardi, STL24.01)"
 
-#: ../src/dialog_export_ebu3264.cpp:104
+#: ../src/dialog_export_ebu3264.cpp:112
 msgid "25 fps (STL25.01)"
 msgstr "25 kuvaa/s (STL25.01)"
 
-#: ../src/dialog_export_ebu3264.cpp:105
+#: ../src/dialog_export_ebu3264.cpp:113
 msgid "29.97 fps (non-dropframe, STL30.01)"
 msgstr "29,97 kuvaa/s (ei-dropframe, STL30.01)"
 
-#: ../src/dialog_export_ebu3264.cpp:106
+#: ../src/dialog_export_ebu3264.cpp:114
 msgid "29.97 fps (dropframe, STL30.01)"
 msgstr "29,97 kuvaa/s (dropframe, STL30.01)"
 
-#: ../src/dialog_export_ebu3264.cpp:107
+#: ../src/dialog_export_ebu3264.cpp:115
 msgid "30 fps (STL30.01)"
 msgstr "30 kuvaa/s (STL30.01)"
 
-#: ../src/dialog_export_ebu3264.cpp:109
+#: ../src/dialog_export_ebu3264.cpp:117
 msgid "TV standard"
 msgstr "TV-standardi"
 
-#: ../src/dialog_export_ebu3264.cpp:113
+#: ../src/dialog_export_ebu3264.cpp:121
 msgid "Out-times are inclusive"
 msgstr "Loppuajat ovat inklusiivisia"
 
-#: ../src/dialog_export_ebu3264.cpp:116
+#: ../src/dialog_export_ebu3264.cpp:124
 msgid "ISO 6937-2 (Latin/Western Europe)"
 msgstr "ISO 6937-2 (latinalainen/läntinen Eurooppa)"
 
-#: ../src/dialog_export_ebu3264.cpp:117
+#: ../src/dialog_export_ebu3264.cpp:125
 msgid "ISO 8859-5 (Cyrillic)"
 msgstr "ISO 8859-5 (kyrillinen)"
 
-#: ../src/dialog_export_ebu3264.cpp:118
+#: ../src/dialog_export_ebu3264.cpp:126
 msgid "ISO 8859-6 (Arabic)"
 msgstr "ISO 8859-6 (arabialainen)"
 
-#: ../src/dialog_export_ebu3264.cpp:119
+#: ../src/dialog_export_ebu3264.cpp:127
 msgid "ISO 8859-7 (Greek)"
 msgstr "ISO 8859-7 (kreikkalainen)"
 
-#: ../src/dialog_export_ebu3264.cpp:120
+#: ../src/dialog_export_ebu3264.cpp:128
 msgid "ISO 8859-8 (Hebrew)"
 msgstr "ISO 8859-8 (heprealainen)"
 
-#: ../src/dialog_export_ebu3264.cpp:121
+#: ../src/dialog_export_ebu3264.cpp:129
 msgid "UTF-8 Unicode (non-standard)"
 msgstr "UTF-8 Unicode (epästandardi)"
 
-#: ../src/dialog_export_ebu3264.cpp:123
+#: ../src/dialog_export_ebu3264.cpp:131
 msgid "Text encoding"
 msgstr "Tekstin merkistö"
 
-#: ../src/dialog_export_ebu3264.cpp:126
+#: ../src/dialog_export_ebu3264.cpp:134
 msgid "Automatically wrap long lines (ASS)"
 msgstr "Rivitä pitkät rivit automaattisesti (ASS)"
 
-#: ../src/dialog_export_ebu3264.cpp:127
+#: ../src/dialog_export_ebu3264.cpp:135
 msgid "Automatically wrap long lines (Balanced)"
 msgstr "Rivitä pitkät rivit automaattisesti (tasapainotettu)"
 
-#: ../src/dialog_export_ebu3264.cpp:128
+#: ../src/dialog_export_ebu3264.cpp:136
 msgid "Abort if any lines are too long"
 msgstr "Keskeytä, jos yksikin riveistä on liian pitkä"
 
-#: ../src/dialog_export_ebu3264.cpp:129
+#: ../src/dialog_export_ebu3264.cpp:137
 msgid "Skip lines that are too long"
 msgstr "Ohita liian pitkät rivit"
 
 # CHECK Tämän merkitys on yhtä hepreaa.
-#: ../src/dialog_export_ebu3264.cpp:134
+#: ../src/dialog_export_ebu3264.cpp:142
 msgid "Translate alignments"
 msgstr "Käännä tasausohjeet"
 
 # CHECK Ks. open vs closed captions. Mikä olisi ymmärrettävämpi suomennosta?
-#: ../src/dialog_export_ebu3264.cpp:137
+#: ../src/dialog_export_ebu3264.cpp:145
 msgid "Open subtitles"
 msgstr "Avoin tekstitys"
 
-#: ../src/dialog_export_ebu3264.cpp:138
+#: ../src/dialog_export_ebu3264.cpp:146
 msgid "Level-1 teletext"
 msgstr "Tason 1 teksti-TV"
 
-#: ../src/dialog_export_ebu3264.cpp:139
+#: ../src/dialog_export_ebu3264.cpp:147
 msgid "Level-2 teletext"
 msgstr "Tason 2 teksti-TV"
 
-#: ../src/dialog_export_ebu3264.cpp:145
+#: ../src/dialog_export_ebu3264.cpp:153
 msgid "Max. line length:"
 msgstr "Rivin enimmäispituus:"
 
-#: ../src/dialog_export_ebu3264.cpp:149
+#: ../src/dialog_export_ebu3264.cpp:157
 msgid "Time code offset:"
 msgstr "Aikakoodien siirtymä:"
-
-#: ../src/dialog_export_ebu3264.cpp:152
-msgid "Text formatting"
-msgstr "Tekstin muotoilu"
-
-#: ../src/dialog_export_ebu3264.cpp:157
-msgid "Time codes"
-msgstr "Aikakoodit"
-
-#: ../src/dialog_export_ebu3264.cpp:161
-msgid "Display standard"
-msgstr "Näyttöstandardi"
 
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
@@ -3468,7 +3524,7 @@ msgstr "Kopioi fontit zip-arkistoon"
 msgid "Symlink fonts to folder"
 msgstr "Luo fonteista symboliset linkit kansioon"
 
-#: ../src/dialog_fonts_collector.cpp:243 ../src/dialog_selection.cpp:150
+#: ../src/dialog_fonts_collector.cpp:243 ../src/dialog_selection.cpp:153
 msgid "Action"
 msgstr "Toiminto"
 
@@ -3476,54 +3532,48 @@ msgstr "Toiminto"
 msgid "Destination"
 msgstr "Kohde"
 
-#: ../src/dialog_fonts_collector.cpp:253
+#: ../src/dialog_fonts_collector.cpp:254
 msgid "&Browse..."
 msgstr "&Selaa…"
 
-#: ../src/dialog_fonts_collector.cpp:262
+#: ../src/dialog_fonts_collector.cpp:263
 msgid "Log"
 msgstr "Loki"
 
 # Huutomerkki jätetty pois, koska ei yleensä hyvää tyyliä ilman erityistä syytä.
-#: ../src/dialog_fonts_collector.cpp:275
+#: ../src/dialog_fonts_collector.cpp:277
 msgid "&Start!"
 msgstr "&Aloita"
 
-#: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
-#: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
-#: ../src/dialog_kara_timing_copy.cpp:491
-#: ../src/dialog_kara_timing_copy.cpp:541 ../src/dialog_spellchecker.cpp:143
-#: ../src/dialog_spellchecker.cpp:149 ../src/dialog_style_manager.cpp:682
-#: ../src/dialog_style_manager.cpp:688 ../src/dialog_style_manager.cpp:691
-#: ../src/preferences.cpp:272 ../src/preferences.cpp:464
-msgid "Error"
-msgstr "Virhe"
-
-#: ../src/dialog_fonts_collector.cpp:310
+#: ../src/dialog_fonts_collector.cpp:312
 msgid "Invalid destination."
 msgstr "Virheellinen kohde."
 
-#: ../src/dialog_fonts_collector.cpp:315
+#: ../src/dialog_fonts_collector.cpp:317
 msgid "Could not create destination folder."
 msgstr "Ei voitu luoda kohdekansiota."
 
-#: ../src/dialog_fonts_collector.cpp:320
+#: ../src/dialog_fonts_collector.cpp:322
 msgid "Invalid path for .zip file."
 msgstr "Virheellinen .zip-tiedoston polku."
 
-#: ../src/dialog_fonts_collector.cpp:343
+#: ../src/dialog_fonts_collector.cpp:345
 msgid "Select archive file name"
 msgstr "Valitse tiedoston nimi"
 
-#: ../src/dialog_fonts_collector.cpp:350
+#: ../src/dialog_fonts_collector.cpp:348
+msgid "Zip Archives"
+msgstr ""
+
+#: ../src/dialog_fonts_collector.cpp:352
 msgid "Select folder to save fonts on"
 msgstr "Valitse fonttien tallennuskansio"
 
-#: ../src/dialog_fonts_collector.cpp:369
+#: ../src/dialog_fonts_collector.cpp:371
 msgid "N/A"
 msgstr "Ei valittavissa"
 
-#: ../src/dialog_fonts_collector.cpp:377
+#: ../src/dialog_fonts_collector.cpp:379
 msgid ""
 "Choose the folder where the fonts will be collected to. It will be created "
 "if it doesn't exist."
@@ -3531,7 +3581,7 @@ msgstr ""
 "Valitse kansio, johon fontit kerätään. Kansio luodaan, jos sitä ei ole "
 "olemassa."
 
-#: ../src/dialog_fonts_collector.cpp:384
+#: ../src/dialog_fonts_collector.cpp:386
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to. If a "
 "folder is entered, a default name will be used."
@@ -3547,40 +3597,40 @@ msgstr "Kuva:"
 msgid "Time: "
 msgstr "Aika:"
 
-#: ../src/dialog_kara_timing_copy.cpp:58
+#: ../src/dialog_kara_timing_copy.cpp:59
 msgid "Source: "
 msgstr "Lähde:"
 
-#: ../src/dialog_kara_timing_copy.cpp:59
+#: ../src/dialog_kara_timing_copy.cpp:60
 msgid "Dest: "
 msgstr "Kohde:"
 
-#: ../src/dialog_kara_timing_copy.cpp:385
+#: ../src/dialog_kara_timing_copy.cpp:386
 msgid "Kanji timing"
 msgstr "Kanjiajoitus"
 
-#: ../src/dialog_kara_timing_copy.cpp:390 ../src/dialog_paste_over.cpp:73
+#: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
 msgid "Text"
 msgstr "Teksti"
 
-#: ../src/dialog_kara_timing_copy.cpp:391
+#: ../src/dialog_kara_timing_copy.cpp:392
 msgid "Styles"
 msgstr "Tyylit"
 
-#: ../src/dialog_kara_timing_copy.cpp:393
+#: ../src/dialog_kara_timing_copy.cpp:394
 msgid "Shortcut Keys"
 msgstr "Pikanäppäimet"
 
-#: ../src/dialog_kara_timing_copy.cpp:394
+#: ../src/dialog_kara_timing_copy.cpp:395
 msgid "Commands"
 msgstr "Komennot"
 
-#: ../src/dialog_kara_timing_copy.cpp:402
+#: ../src/dialog_kara_timing_copy.cpp:408
 msgid "Attempt to &interpolate kanji."
 msgstr "&Yritä interpoloida kanjia."
 
-#: ../src/dialog_kara_timing_copy.cpp:409
+#: ../src/dialog_kara_timing_copy.cpp:415
 msgid ""
 "When the destination textbox has focus, use the following keys:\n"
 "\n"
@@ -3601,101 +3651,101 @@ msgstr ""
 "Askelpalautin: Poista viimeinen tallennus"
 
 # Huutomerkki jätetty pois, koska ei yleensä hyvää tyyliä ilman erityistä syytä.
-#: ../src/dialog_kara_timing_copy.cpp:412
+#: ../src/dialog_kara_timing_copy.cpp:418
 msgid "S&tart!"
 msgstr "&Aloita"
 
-#: ../src/dialog_kara_timing_copy.cpp:413
+#: ../src/dialog_kara_timing_copy.cpp:419
 msgid "&Link"
 msgstr "&Kiinnitä"
 
-#: ../src/dialog_kara_timing_copy.cpp:414
+#: ../src/dialog_kara_timing_copy.cpp:420
 msgid "&Unlink"
 msgstr "&Irrota"
 
-#: ../src/dialog_kara_timing_copy.cpp:415
+#: ../src/dialog_kara_timing_copy.cpp:421
 msgid "Skip &Source Line"
 msgstr "&Ohita lähderivi"
 
-#: ../src/dialog_kara_timing_copy.cpp:416
+#: ../src/dialog_kara_timing_copy.cpp:422
 msgid "Skip &Dest Line"
 msgstr "Ohita &kohderivi"
 
-#: ../src/dialog_kara_timing_copy.cpp:417
+#: ../src/dialog_kara_timing_copy.cpp:423
 msgid "&Go Back a Line"
 msgstr "&Rivi taaksepäin"
 
-#: ../src/dialog_kara_timing_copy.cpp:418
+#: ../src/dialog_kara_timing_copy.cpp:424
 msgid "&Accept Line"
 msgstr "&Hyväksy rivi"
 
-#: ../src/dialog_kara_timing_copy.cpp:481
+#: ../src/dialog_kara_timing_copy.cpp:487
 msgid "kanji timing"
 msgstr "kanjiajoitus"
 
-#: ../src/dialog_kara_timing_copy.cpp:489
+#: ../src/dialog_kara_timing_copy.cpp:495
 msgid "Select source and destination styles first."
 msgstr "Valitse ensin lähde- ja kohdetyylit."
 
-#: ../src/dialog_kara_timing_copy.cpp:491
+#: ../src/dialog_kara_timing_copy.cpp:497
 msgid "The source and destination styles must be different."
 msgstr "Lähde- ja kohde tyylit pitää olla erilaisia."
 
-#: ../src/dialog_kara_timing_copy.cpp:541
+#: ../src/dialog_kara_timing_copy.cpp:547
 msgid "Group all of the source text."
 msgstr "Ryhmitä kaikki lähdetekstistä."
 
-#: ../src/dialog_paste_over.cpp:55
+#: ../src/dialog_paste_over.cpp:56
 msgid "Select Fields to Paste Over"
 msgstr "Valitse korvaten liitettävät kentät"
 
-#: ../src/dialog_paste_over.cpp:58
+#: ../src/dialog_paste_over.cpp:59
 msgid "Fields"
 msgstr "Kentät"
 
-#: ../src/dialog_paste_over.cpp:59
+#: ../src/dialog_paste_over.cpp:61
 msgid "Please select the fields that you want to paste over:"
 msgstr "Valitse korvaten liitettävät kentät"
 
-#: ../src/dialog_paste_over.cpp:63
+#: ../src/dialog_paste_over.cpp:65
 msgid "Comment"
 msgstr "Kommentti"
 
-#: ../src/dialog_paste_over.cpp:67 ../src/grid_column.cpp:200
+#: ../src/dialog_paste_over.cpp:69 ../src/grid_column.cpp:200
 #: ../src/grid_column.cpp:201
 msgid "Style"
 msgstr "Tyyli"
 
-#: ../src/dialog_paste_over.cpp:68 ../src/grid_column.cpp:228
+#: ../src/dialog_paste_over.cpp:70 ../src/grid_column.cpp:228
 #: ../src/grid_column.cpp:229 ../src/subs_edit_box.cpp:135
 msgid "Actor"
 msgstr "Näyttelijä"
 
-#: ../src/dialog_paste_over.cpp:69
+#: ../src/dialog_paste_over.cpp:71
 msgid "Margin Left"
 msgstr "Vasen reunus"
 
-#: ../src/dialog_paste_over.cpp:70
+#: ../src/dialog_paste_over.cpp:72
 msgid "Margin Right"
 msgstr "Oikea reunus"
 
-#: ../src/dialog_paste_over.cpp:71
+#: ../src/dialog_paste_over.cpp:73
 msgid "Margin Vertical"
 msgstr "Pystyreunus"
 
-#: ../src/dialog_paste_over.cpp:88 ../src/dialog_timing_processor.cpp:161
+#: ../src/dialog_paste_over.cpp:90 ../src/dialog_timing_processor.cpp:162
 msgid "&All"
 msgstr "&Kaikki"
 
-#: ../src/dialog_paste_over.cpp:90 ../src/dialog_timing_processor.cpp:164
+#: ../src/dialog_paste_over.cpp:92 ../src/dialog_timing_processor.cpp:165
 msgid "&None"
 msgstr "&Ei yhtään"
 
-#: ../src/dialog_paste_over.cpp:92
+#: ../src/dialog_paste_over.cpp:94
 msgid "&Times"
 msgstr "&Ajat"
 
-#: ../src/dialog_paste_over.cpp:94
+#: ../src/dialog_paste_over.cpp:96
 msgid "T&ext"
 msgstr "&Teksti"
 
@@ -3707,85 +3757,85 @@ msgstr "Peru"
 msgid "Cancelling..."
 msgstr "Perutaan…"
 
-#: ../src/dialog_properties.cpp:89
+#: ../src/dialog_properties.cpp:91
 msgid "Script Properties"
 msgstr "Tekstitystiedoston ominaisuudet"
 
-#: ../src/dialog_properties.cpp:103
+#: ../src/dialog_properties.cpp:105
 msgid "Script"
 msgstr "Tekstitystiedosto"
 
-#: ../src/dialog_properties.cpp:106
+#: ../src/dialog_properties.cpp:109
 msgid "Title:"
 msgstr "Nimi:"
 
-#: ../src/dialog_properties.cpp:107
+#: ../src/dialog_properties.cpp:110
 msgid "Original script:"
 msgstr "Alkuperäinen tekstitys:"
 
-#: ../src/dialog_properties.cpp:108
+#: ../src/dialog_properties.cpp:111
 msgid "Translation:"
 msgstr "Käännös:"
 
-#: ../src/dialog_properties.cpp:109
+#: ../src/dialog_properties.cpp:112
 msgid "Editing:"
 msgstr "Muokkaus:"
 
-#: ../src/dialog_properties.cpp:110
+#: ../src/dialog_properties.cpp:113
 msgid "Timing:"
 msgstr "Ajoitus:"
 
-#: ../src/dialog_properties.cpp:111
+#: ../src/dialog_properties.cpp:114
 msgid "Synch point:"
 msgstr "Synkronointipiste:"
 
-#: ../src/dialog_properties.cpp:112
+#: ../src/dialog_properties.cpp:115
 msgid "Updated by:"
 msgstr "Päivittänyt:"
 
-#: ../src/dialog_properties.cpp:113
+#: ../src/dialog_properties.cpp:116
 msgid "Update details:"
 msgstr "Päivityksen tiedot:"
 
-#: ../src/dialog_properties.cpp:122 ../src/dialog_resample.cpp:141
+#: ../src/dialog_properties.cpp:122
+msgid "Resolution"
+msgstr "Tarkkuus"
+
+#: ../src/dialog_properties.cpp:128 ../src/dialog_resample.cpp:150
 #: ../src/export_framerate.cpp:70
 msgid "From &video"
 msgstr "&Videosta"
 
-#: ../src/dialog_properties.cpp:138 ../src/dialog_resample.cpp:172
-#: ../src/dialog_resample.cpp:186
+#: ../src/dialog_properties.cpp:144 ../src/dialog_resample.cpp:180
+#: ../src/dialog_resample.cpp:193
 msgid "YCbCr Matrix:"
 msgstr "YCbCr-matriisi:"
 
-#: ../src/dialog_properties.cpp:141
-msgid "Resolution"
-msgstr "Tarkkuus"
-
-#: ../src/dialog_properties.cpp:149
+#: ../src/dialog_properties.cpp:155
 msgid "0: Smart wrapping, top line is wider"
 msgstr "0: Älykäs rivitys, ylempi rivi on leveämpi"
 
-#: ../src/dialog_properties.cpp:150
+#: ../src/dialog_properties.cpp:156
 msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: Rivin loppuun rivitys, vain \\N vaihtaa riviä"
 
-#: ../src/dialog_properties.cpp:151
+#: ../src/dialog_properties.cpp:157
 msgid "2: No word wrapping, both \\n and \\N break"
 msgstr "2. Ei rivitystä, niin \\n kuin \\N vaihtaa riviä"
 
-#: ../src/dialog_properties.cpp:152
+#: ../src/dialog_properties.cpp:158
 msgid "3: Smart wrapping, bottom line is wider"
 msgstr "3: Älykäs rivitys, alempi rivi on leveämpi"
 
-#: ../src/dialog_properties.cpp:156
+#: ../src/dialog_properties.cpp:162
 msgid "Wrap Style: "
 msgstr "Rivitys:"
 
-#: ../src/dialog_properties.cpp:159
+#: ../src/dialog_properties.cpp:165
 msgid "Scale Border and Shadow"
 msgstr "Skaalaa reunaviivaa ja varjoa"
 
-#: ../src/dialog_properties.cpp:160
+#: ../src/dialog_properties.cpp:166
 msgid ""
 "Scale border and shadow together with script/render resolution. If this is "
 "unchecked, relative border and shadow size will depend on renderer."
@@ -3794,49 +3844,49 @@ msgstr ""
 "Jos tämä asetus ei ole valittu, suhteellinen reunaviivan ja varjon koko "
 "riippuu renderöijästä."
 
-#: ../src/dialog_properties.cpp:196
+#: ../src/dialog_properties.cpp:202
 msgid "property changes"
 msgstr "ominaisuuksien muutokset"
 
-#: ../src/dialog_resample.cpp:119
-msgid "&Symmetrical"
-msgstr "&Symmetrinen"
-
-#: ../src/dialog_resample.cpp:143
-msgid "From s&cript"
-msgstr "&Tekstityksestä"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Add borders"
-msgstr "Lisää reunat"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Manual"
-msgstr "Manuaalinen"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Remove borders"
-msgstr "Poista reunat"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Stretch"
-msgstr "Venytä"
-
-#: ../src/dialog_resample.cpp:147
-msgid "Aspect Ratio Handling"
-msgstr "Kuvasuhteen käsittely"
-
-#: ../src/dialog_resample.cpp:162
-msgid "Margin offset"
-msgstr "Reunuksen siirtymä"
-
-#: ../src/dialog_resample.cpp:175
+#: ../src/dialog_resample.cpp:114
 msgid "Source Resolution"
 msgstr "Lähdetarkkuus"
 
-#: ../src/dialog_resample.cpp:189
+#: ../src/dialog_resample.cpp:115
 msgid "Destination Resolution"
 msgstr "Kohdetarkkuus"
+
+#: ../src/dialog_resample.cpp:116
+msgid "Margin offset"
+msgstr "Reunuksen siirtymä"
+
+#: ../src/dialog_resample.cpp:128
+msgid "&Symmetrical"
+msgstr "&Symmetrinen"
+
+#: ../src/dialog_resample.cpp:152
+msgid "From s&cript"
+msgstr "&Tekstityksestä"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Add borders"
+msgstr "Lisää reunat"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Manual"
+msgstr "Manuaalinen"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Remove borders"
+msgstr "Poista reunat"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Stretch"
+msgstr "Venytä"
+
+#: ../src/dialog_resample.cpp:156
+msgid "Aspect Ratio Handling"
+msgstr "Kuvasuhteen käsittely"
 
 #: ../src/dialog_search_replace.cpp:47
 msgid "Replace"
@@ -3866,7 +3916,7 @@ msgstr "&Ohita kommentit"
 msgid "S&kip Override Tags"
 msgstr "Oh&ita korvaustagit"
 
-#: ../src/dialog_search_replace.cpp:87 ../src/dialog_selection.cpp:137
+#: ../src/dialog_search_replace.cpp:87 ../src/dialog_selection.cpp:139
 msgid "&Text"
 msgstr "&Teksti"
 
@@ -3883,11 +3933,11 @@ msgid "A&ll rows"
 msgstr "Kaikkiin &riveihin"
 
 # CONTEXT: Continuation of group box title "Affect"
-#: ../src/dialog_search_replace.cpp:88 ../src/dialog_shift_times.cpp:163
+#: ../src/dialog_search_replace.cpp:88 ../src/dialog_shift_times.cpp:170
 msgid "Selected &rows"
 msgstr "&Valittuihin riveihin"
 
-#: ../src/dialog_search_replace.cpp:90 ../src/dialog_selection.cpp:138
+#: ../src/dialog_search_replace.cpp:90 ../src/dialog_selection.cpp:140
 msgid "In Field"
 msgstr "Hae kentästä"
 
@@ -3907,198 +3957,206 @@ msgstr "&Korvaa seuraava"
 msgid "Replace &all"
 msgstr "Korvaa k&aikki"
 
-#: ../src/dialog_selection.cpp:106
+#: ../src/dialog_selection.cpp:107
 msgid "Select"
 msgstr "Valitse"
 
-#: ../src/dialog_selection.cpp:117
+#: ../src/dialog_selection.cpp:118
 msgid "Match"
 msgstr "Hakusana"
 
-#: ../src/dialog_selection.cpp:121
+#: ../src/dialog_selection.cpp:123
 msgid "&Matches"
 msgstr "&Vastaa"
 
-#: ../src/dialog_selection.cpp:122
+#: ../src/dialog_selection.cpp:124
 msgid "&Doesn't Match"
 msgstr "&Ei vastaa"
 
-#: ../src/dialog_selection.cpp:123
+#: ../src/dialog_selection.cpp:125
 msgid "Match c&ase"
 msgstr "&Erota suur- ja pienaakkoset"
 
-#: ../src/dialog_selection.cpp:132
+#: ../src/dialog_selection.cpp:134
 msgid "&Contains"
 msgstr "&Sisältää vastineen"
 
-#: ../src/dialog_selection.cpp:132
+#: ../src/dialog_selection.cpp:134
 msgid "&Exact match"
 msgstr "Vastaa &täsmälleen"
 
-#: ../src/dialog_selection.cpp:132
+#: ../src/dialog_selection.cpp:134
 msgid "&Regular Expression match"
 msgstr "&Säännöllinen lauseke"
 
-#: ../src/dialog_selection.cpp:133
+#: ../src/dialog_selection.cpp:135
 msgid "Mode"
 msgstr "Vastaamistapa"
 
-#: ../src/dialog_selection.cpp:137
+#: ../src/dialog_selection.cpp:139
 msgid "&Style"
 msgstr "T&yyli"
 
-#: ../src/dialog_selection.cpp:137
+#: ../src/dialog_selection.cpp:139
 msgid "Act&or"
 msgstr "&Näyttelijä"
 
-#: ../src/dialog_selection.cpp:137
+#: ../src/dialog_selection.cpp:139
 msgid "E&ffect"
 msgstr "Te&hoste"
 
-#: ../src/dialog_selection.cpp:142
+#: ../src/dialog_selection.cpp:144
 msgid "Match dialogues/comments"
 msgstr "Vastaa tekstiä/kommentteja"
 
-#: ../src/dialog_selection.cpp:143
+#: ../src/dialog_selection.cpp:146
 msgid "D&ialogues"
 msgstr "Tek&sti"
 
-#: ../src/dialog_selection.cpp:144
+#: ../src/dialog_selection.cpp:147
 msgid "Comme&nts"
 msgstr "&Kommentit"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "&Add to selection"
 msgstr "&Lisää valintaan"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "Intersect &with selection"
 msgstr "L&eikkaa valinnan kanssa"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "S&ubtract from selection"
 msgstr "&Poista valinnasta"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "Set se&lection"
 msgstr "&Aseta valinta"
 
-#: ../src/dialog_selection.cpp:212
+#: ../src/dialog_selection.cpp:215
 #, c-format
 msgid "Selection was set to one line"
 msgid_plural "Selection was set to %u lines"
 msgstr[0] "Valinta asetettiin yhteen riviin"
 msgstr[1] "Valinta asetettiin %u riviin"
 
-#: ../src/dialog_selection.cpp:213
+#: ../src/dialog_selection.cpp:216
 msgid "Selection was set to no lines"
 msgstr "Valinta asetettiin tyhjäksi"
 
-#: ../src/dialog_selection.cpp:219
+#: ../src/dialog_selection.cpp:222
 #, c-format
 msgid "One line was added to selection"
 msgid_plural "%u lines were added to selection"
 msgstr[0] "Yksi rivi lisättiin valintaan"
 msgstr[1] "%u riviä lisättiin valintaan"
 
-#: ../src/dialog_selection.cpp:220
+#: ../src/dialog_selection.cpp:223
 msgid "No lines were added to selection"
 msgstr "Yhtään riviä ei lisätty valintaan"
 
-#: ../src/dialog_selection.cpp:231
+#: ../src/dialog_selection.cpp:234
 #, c-format
 msgid "One line was removed from selection"
 msgid_plural "%u lines were removed from selection"
 msgstr[0] "Yksi rivi poistettiin valinnasta"
 msgstr[1] "%u riviä poistettiin valinnasta"
 
-#: ../src/dialog_selection.cpp:232
+#: ../src/dialog_selection.cpp:235
 msgid "No lines were removed from selection"
 msgstr "Yhtään riviä ei poistettu valinnasta"
 
-#: ../src/dialog_selection.cpp:237
+#: ../src/dialog_selection.cpp:240
 msgid "Selection"
 msgstr "Valinta"
 
-#: ../src/dialog_shift_times.cpp:91
+#: ../src/dialog_shift_times.cpp:92
 msgid "unsaved"
 msgstr "tallentamaton"
 
-#: ../src/dialog_shift_times.cpp:95
+#: ../src/dialog_shift_times.cpp:96
 #, c-format
 msgid "%s frames"
 msgstr "%s kuvaa"
 
-#: ../src/dialog_shift_times.cpp:97
+#: ../src/dialog_shift_times.cpp:98
 msgid "backward"
 msgstr "taakse"
 
-#: ../src/dialog_shift_times.cpp:97
+#: ../src/dialog_shift_times.cpp:98
 msgid "forward"
 msgstr "eteen"
 
 # CONTEXT: s as in start, e as in end
-#: ../src/dialog_shift_times.cpp:101
+#: ../src/dialog_shift_times.cpp:102
 msgid "s+e"
 msgstr "a+l"
 
 # CONTEXT: s as in start
-#: ../src/dialog_shift_times.cpp:102
+#: ../src/dialog_shift_times.cpp:103
 msgid "s"
 msgstr "a"
 
 # CONTEXT: e as in end
-#: ../src/dialog_shift_times.cpp:103
+#: ../src/dialog_shift_times.cpp:104
 msgid "e"
 msgstr "l"
 
 # CONTEXT: short for all lines
-#: ../src/dialog_shift_times.cpp:110
+#: ../src/dialog_shift_times.cpp:111
 msgid "all"
 msgstr "kaikki"
 
-#: ../src/dialog_shift_times.cpp:113
+#: ../src/dialog_shift_times.cpp:114
 #, c-format
 msgid "from %d onward"
 msgstr "%d:stä eteenpäin"
 
 # CONTEXT: short for selected lines
-#: ../src/dialog_shift_times.cpp:116
+#: ../src/dialog_shift_times.cpp:117
 msgid "sel "
 msgstr "valittuna "
 
+#: ../src/dialog_shift_times.cpp:144
+msgid "Shift by"
+msgstr "Siirrä"
+
+#: ../src/dialog_shift_times.cpp:145
+msgid "Load from history"
+msgstr "Lataa historiasta"
+
 # CONTEXT: Continuation of group box title "Shift by"
-#: ../src/dialog_shift_times.cpp:143
+#: ../src/dialog_shift_times.cpp:150
 msgid "&Time: "
 msgstr "&Ajan mukaan: "
 
-#: ../src/dialog_shift_times.cpp:144
+#: ../src/dialog_shift_times.cpp:151
 msgid "Shift by time"
 msgstr "Siirrä ajan mukaan"
 
 # CONTEXT: Continuation of group box title "Shift by"
-#: ../src/dialog_shift_times.cpp:147
+#: ../src/dialog_shift_times.cpp:154
 msgid "&Frames: "
 msgstr "&Kuvien mukaan: "
 
-#: ../src/dialog_shift_times.cpp:148
+#: ../src/dialog_shift_times.cpp:155
 msgid "Shift by frames"
 msgstr "Siirrä kuvien mukaan"
 
-#: ../src/dialog_shift_times.cpp:152
+#: ../src/dialog_shift_times.cpp:159
 msgid "Enter time in h:mm:ss.cs notation"
 msgstr "Kirjoita aika muodossa h:mm:ss.cs"
 
 # Kirjoita kuvien lukumäärä -alulla en saanut yksinkertaista rakennetta.
-#: ../src/dialog_shift_times.cpp:155
+#: ../src/dialog_shift_times.cpp:162
 msgid "Enter number of frames to shift by"
 msgstr "Kirjoita monellako kuvalla siirretään"
 
-#: ../src/dialog_shift_times.cpp:157
+#: ../src/dialog_shift_times.cpp:164
 msgid "For&ward"
 msgstr "&Eteenpäin"
 
-#: ../src/dialog_shift_times.cpp:158
+#: ../src/dialog_shift_times.cpp:165
 msgid ""
 "Shifts subs forward, making them appear later. Use if they are appearing too "
 "soon."
@@ -4106,11 +4164,11 @@ msgstr ""
 "Siirtää rivejä eteenpäin, jolloin ne näkyvät myöhemmin. Käytä, jos ne "
 "tulevat ruutuun liian aikaisin."
 
-#: ../src/dialog_shift_times.cpp:160
+#: ../src/dialog_shift_times.cpp:167
 msgid "&Backward"
 msgstr "&Taaksepäin"
 
-#: ../src/dialog_shift_times.cpp:161
+#: ../src/dialog_shift_times.cpp:168
 msgid ""
 "Shifts subs backward, making them appear earlier. Use if they are appearing "
 "too late."
@@ -4119,50 +4177,42 @@ msgstr ""
 "tulevat ruutuun lian myöhään."
 
 # CONTEXT: Continuation of group box title "Affect"
-#: ../src/dialog_shift_times.cpp:163
+#: ../src/dialog_shift_times.cpp:170
 msgid "&All rows"
 msgstr "K&aikkiin riveihin"
 
 # CONTEXT: Continuation of group box title "Affect"
-#: ../src/dialog_shift_times.cpp:163
+#: ../src/dialog_shift_times.cpp:170
 msgid "Selection &onward"
 msgstr "Valinnasta e&teenpäin"
 
-#: ../src/dialog_shift_times.cpp:164
+#: ../src/dialog_shift_times.cpp:171
 msgid "Affect"
 msgstr "Vaikuta"
 
-#: ../src/dialog_shift_times.cpp:166
+#: ../src/dialog_shift_times.cpp:173
 msgid "&End times only"
 msgstr "Vain &loppuajat"
 
-#: ../src/dialog_shift_times.cpp:166
+#: ../src/dialog_shift_times.cpp:173
 msgid "&Start times only"
 msgstr "Vai&n alkuajat"
 
-#: ../src/dialog_shift_times.cpp:166
+#: ../src/dialog_shift_times.cpp:173
 msgid "Start a&nd End times"
 msgstr "Alku- ja lo&ppuajat"
 
-#: ../src/dialog_shift_times.cpp:167
+#: ../src/dialog_shift_times.cpp:174
 msgid "Times"
 msgstr "Ajat"
 
 # CHECK: Tässä "&Clear" -> "T&yhjennä", mutta käyttöliittymässä "&Tyhjennä".
-#: ../src/dialog_shift_times.cpp:171
+#: ../src/dialog_shift_times.cpp:178
 msgid "&Clear"
 msgstr "&Tyhjennä"
 
-#: ../src/dialog_shift_times.cpp:203
-msgid "Shift by"
-msgstr "Siirrä"
-
-#: ../src/dialog_shift_times.cpp:212
-msgid "Load from history"
-msgstr "Lataa historiasta"
-
 # CONTEXT: Name in undo history
-#: ../src/dialog_shift_times.cpp:410
+#: ../src/dialog_shift_times.cpp:415
 msgid "shifting"
 msgstr "siirto"
 
@@ -4218,223 +4268,223 @@ msgstr "Aegisub on löytänyt kielioppivirheitä tästä tekstityksestä."
 msgid "spell check replace"
 msgstr "oikoluvun korvaus"
 
-#: ../src/dialog_style_editor.cpp:127
+#: ../src/dialog_style_editor.cpp:128
 msgid "Style Editor"
 msgstr "Tyylieditori"
 
-#: ../src/dialog_style_editor.cpp:172
+#: ../src/dialog_style_editor.cpp:173
 msgid "Border boxes"
 msgstr ""
 
-#: ../src/dialog_style_editor.cpp:172 ../src/dialog_style_editor.cpp:183
-#: ../src/dialog_style_editor.cpp:286
+#: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:295
 msgid "Outline"
 msgstr "Reunaviiva"
 
-#: ../src/dialog_style_editor.cpp:172
+#: ../src/dialog_style_editor.cpp:173
 msgid "Shadow box (libass only)"
 msgstr ""
 
-#: ../src/dialog_style_editor.cpp:180
+#: ../src/dialog_style_editor.cpp:181
 msgid "Font"
 msgstr "Fontti"
 
-#: ../src/dialog_style_editor.cpp:181 ../src/preferences.cpp:243
+#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:246
 msgid "Colors"
 msgstr "Värit"
 
-#: ../src/dialog_style_editor.cpp:182
+#: ../src/dialog_style_editor.cpp:183
 msgid "Margins"
 msgstr "Reunukset"
 
-#: ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:185
 msgid "Miscellaneous"
 msgstr "Sekalaisia"
 
-#: ../src/dialog_style_editor.cpp:185
+#: ../src/dialog_style_editor.cpp:186
 msgid "Preview"
 msgstr "Esikatselu"
 
-#: ../src/dialog_style_editor.cpp:191
+#: ../src/dialog_style_editor.cpp:200
 msgid "&Bold"
 msgstr "&Lihavoitu"
 
-#: ../src/dialog_style_editor.cpp:192
+#: ../src/dialog_style_editor.cpp:201
 msgid "&Italic"
 msgstr "&Kursivoitu"
 
-#: ../src/dialog_style_editor.cpp:193
+#: ../src/dialog_style_editor.cpp:202
 msgid "&Underline"
 msgstr "&Alleviivattu"
 
-#: ../src/dialog_style_editor.cpp:194
+#: ../src/dialog_style_editor.cpp:203
 msgid "&Strikeout"
 msgstr "&Yliviivattu"
 
-#: ../src/dialog_style_editor.cpp:206
+#: ../src/dialog_style_editor.cpp:215
 msgid "Alignment"
 msgstr "Sijoitus"
 
-#: ../src/dialog_style_editor.cpp:217
+#: ../src/dialog_style_editor.cpp:226
 msgid "Style name"
 msgstr "Tyylin nimi"
 
-#: ../src/dialog_style_editor.cpp:218
+#: ../src/dialog_style_editor.cpp:227
 msgid "Font face"
 msgstr "Fontti"
 
-#: ../src/dialog_style_editor.cpp:219
+#: ../src/dialog_style_editor.cpp:228
 msgid "Font size"
 msgstr "Fontin koko"
 
-#: ../src/dialog_style_editor.cpp:220
+#: ../src/dialog_style_editor.cpp:229
 msgid "Choose primary color"
 msgstr "Valitse ensisijainen väri"
 
-#: ../src/dialog_style_editor.cpp:221
+#: ../src/dialog_style_editor.cpp:230
 msgid "Choose secondary color"
 msgstr "Valitse toissijainen väri"
 
-#: ../src/dialog_style_editor.cpp:222
+#: ../src/dialog_style_editor.cpp:231
 msgid "Choose outline color"
 msgstr "Valitse reunaviivan väri"
 
-#: ../src/dialog_style_editor.cpp:223
+#: ../src/dialog_style_editor.cpp:232
 msgid "Choose shadow color"
 msgstr "Valitse varjon väri"
 
-#: ../src/dialog_style_editor.cpp:224
+#: ../src/dialog_style_editor.cpp:233
 msgid "Distance from left edge, in pixels"
 msgstr "Etäisyys vasemmasta reunasta, pikseleissä"
 
-#: ../src/dialog_style_editor.cpp:225
+#: ../src/dialog_style_editor.cpp:234
 msgid "Distance from right edge, in pixels"
 msgstr "Etäisyys oikeasta reunasta, pikseleissä"
 
-#: ../src/dialog_style_editor.cpp:226
+#: ../src/dialog_style_editor.cpp:235
 msgid "Distance from top/bottom edge, in pixels"
 msgstr "Etäisyys ylä-/alareunasta, pikseleissä"
 
-#: ../src/dialog_style_editor.cpp:227
+#: ../src/dialog_style_editor.cpp:236
 msgid "Whether to draw a normal outline or opaque boxes around the text"
 msgstr ""
 
-#: ../src/dialog_style_editor.cpp:228
+#: ../src/dialog_style_editor.cpp:237
 msgid "Outline width, in pixels"
 msgstr "Reunan leveys, pikseleissä"
 
-#: ../src/dialog_style_editor.cpp:229
+#: ../src/dialog_style_editor.cpp:238
 msgid "Shadow distance, in pixels"
 msgstr "Varjon etäisyys, pikseleissä"
 
-#: ../src/dialog_style_editor.cpp:230
+#: ../src/dialog_style_editor.cpp:239
 msgid "Scale X, in percentage"
 msgstr "Skaalaus X-akselin suhteen ilmaistuna prosentteina"
 
-#: ../src/dialog_style_editor.cpp:231
+#: ../src/dialog_style_editor.cpp:240
 msgid "Scale Y, in percentage"
 msgstr "Skaalaus Y-akselin suhteen ilmaistuna prosentteina"
 
-#: ../src/dialog_style_editor.cpp:232
+#: ../src/dialog_style_editor.cpp:241
 msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Pyörityskulma Z akselilla, asteissa"
 
-#: ../src/dialog_style_editor.cpp:233
+#: ../src/dialog_style_editor.cpp:242
 msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping"
 msgstr ""
 "Koodaus. Hyödyllinen vain, jos fontilla ei ole kelvollista unicode-kuvausta"
 
-#: ../src/dialog_style_editor.cpp:234
+#: ../src/dialog_style_editor.cpp:243
 msgid "Character spacing, in pixels"
 msgstr "Kirjainten väli, pikseleissä"
 
-#: ../src/dialog_style_editor.cpp:235
+#: ../src/dialog_style_editor.cpp:244
 msgid "Alignment in screen, in numpad style"
 msgstr "Sijoitus ruudulla, numeronäppäimistön tyylisesti"
 
-#: ../src/dialog_style_editor.cpp:286
+#: ../src/dialog_style_editor.cpp:295
 msgid "Primary"
 msgstr "Ensisijainen"
 
-#: ../src/dialog_style_editor.cpp:286
+#: ../src/dialog_style_editor.cpp:295
 msgid "Secondary"
 msgstr "Toissijainen"
 
-#: ../src/dialog_style_editor.cpp:286
+#: ../src/dialog_style_editor.cpp:295
 msgid "Shadow"
 msgstr "Varjo"
 
 # CONTEXT: Left margin
-#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:263
+#: ../src/dialog_style_editor.cpp:306 ../src/grid_column.cpp:263
 msgid "Left"
 msgstr "Vasen"
 
 # CONTEXT: Right margin
 # Tässä "Right" -> "Oikea", mutta käyttöliittymässä "Oikealle". Voi johtua wxWidgetsin suomennoksesta, mutta en tiedä miten i18n on tehty.
-#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:269
+#: ../src/dialog_style_editor.cpp:306 ../src/grid_column.cpp:269
 msgid "Right"
 msgstr "Oikea"
 
 # CONTEXT: Vertical margin
-#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:275
+#: ../src/dialog_style_editor.cpp:306 ../src/grid_column.cpp:275
 msgid "Vert"
 msgstr "Pysty"
 
-#: ../src/dialog_style_editor.cpp:315
+#: ../src/dialog_style_editor.cpp:324
 msgid "Outline:"
 msgstr "Reunaviiva:"
 
-#: ../src/dialog_style_editor.cpp:316
+#: ../src/dialog_style_editor.cpp:325
 msgid "Shadow:"
 msgstr "Varjo:"
 
-#: ../src/dialog_style_editor.cpp:317
+#: ../src/dialog_style_editor.cpp:326
 msgid "Border style:"
 msgstr ""
 
-#: ../src/dialog_style_editor.cpp:321
+#: ../src/dialog_style_editor.cpp:330
 msgid "Scale X%:"
 msgstr "X-skaalaus %:"
 
-#: ../src/dialog_style_editor.cpp:322
+#: ../src/dialog_style_editor.cpp:331
 msgid "Scale Y%:"
 msgstr "Y-skaalaus %:"
 
-#: ../src/dialog_style_editor.cpp:323
+#: ../src/dialog_style_editor.cpp:332
 msgid "Rotation:"
 msgstr "Pyöritys:"
 
-#: ../src/dialog_style_editor.cpp:324
+#: ../src/dialog_style_editor.cpp:333
 msgid "Spacing:"
 msgstr "Välit:"
 
-#: ../src/dialog_style_editor.cpp:327
+#: ../src/dialog_style_editor.cpp:336
 msgid "Encoding:"
 msgstr "Merkistö:"
 
-#: ../src/dialog_style_editor.cpp:337
+#: ../src/dialog_style_editor.cpp:346
 msgid "Preview of current style"
 msgstr "Esikatsele nykyistä tyyliä"
 
-#: ../src/dialog_style_editor.cpp:340
+#: ../src/dialog_style_editor.cpp:349
 msgid "Text to be used for the preview"
 msgstr "Teksti esikatselua varten"
 
-#: ../src/dialog_style_editor.cpp:341
+#: ../src/dialog_style_editor.cpp:350
 msgid "Color of preview background"
 msgstr "Esikatselun taustan väri"
 
-#: ../src/dialog_style_editor.cpp:422
+#: ../src/dialog_style_editor.cpp:431
 msgid "Style name conflict"
 msgstr "Päällekkäinen tyylin nimi"
 
-#: ../src/dialog_style_editor.cpp:422
+#: ../src/dialog_style_editor.cpp:431
 msgid "There is already a style with this name. Please choose another name."
 msgstr "Samanniminen tyyli on jo olemassa. Valitse toinen nimi."
 
-#: ../src/dialog_style_editor.cpp:434
+#: ../src/dialog_style_editor.cpp:443
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
@@ -4442,118 +4492,118 @@ msgstr ""
 "Haluatko muuttaa kaikki tapaukset tästä tyylistä skriptissä tähän uuteen "
 "nimeen?"
 
-#: ../src/dialog_style_editor.cpp:435
+#: ../src/dialog_style_editor.cpp:444
 msgid "Update script?"
 msgstr "Päivitetäänkö skripti?"
 
 # CONTEXT: Name in undo history
-#: ../src/dialog_style_editor.cpp:462 ../src/subs_edit_box.cpp:604
+#: ../src/dialog_style_editor.cpp:471 ../src/subs_edit_box.cpp:604
 msgid "style change"
 msgstr "tyylin muuttaminen"
 
-#: ../src/dialog_style_manager.cpp:187
+#: ../src/dialog_style_manager.cpp:188
 msgid "Move style up"
 msgstr "Siirrä ylemmäs"
 
-#: ../src/dialog_style_manager.cpp:188
+#: ../src/dialog_style_manager.cpp:189
 msgid "Move style down"
 msgstr "Siirrä alemmas"
 
-#: ../src/dialog_style_manager.cpp:189
+#: ../src/dialog_style_manager.cpp:190
 msgid "Move style to top"
 msgstr "Siirrä ylimmäksi"
 
-#: ../src/dialog_style_manager.cpp:190
+#: ../src/dialog_style_manager.cpp:191
 msgid "Move style to bottom"
 msgstr "Siirrä alimmaksi"
 
-#: ../src/dialog_style_manager.cpp:191
+#: ../src/dialog_style_manager.cpp:192
 msgid "Sort styles alphabetically"
 msgstr "Järjestä alkukirjaimen mukaan"
 
-#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:611
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:613
 msgid "&New"
 msgstr "&Uusi"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:612
+#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:614
 msgid "&Edit"
 msgstr "&Muokkaa"
 
-#: ../src/dialog_style_manager.cpp:203 ../src/subs_edit_ctrl.cpp:389
+#: ../src/dialog_style_manager.cpp:204 ../src/subs_edit_ctrl.cpp:389
 #: ../src/timeedit_ctrl.cpp:209
 msgid "&Copy"
 msgstr "&Kopioi"
 
-#: ../src/dialog_style_manager.cpp:217
+#: ../src/dialog_style_manager.cpp:218
 #, c-format
 msgid "%s - Copy"
 msgstr "%s – kopio"
 
-#: ../src/dialog_style_manager.cpp:219
+#: ../src/dialog_style_manager.cpp:220
 #, c-format
 msgid "%s - Copy (%d)"
 msgstr "%s – kopio (%d)"
 
-#: ../src/dialog_style_manager.cpp:242
+#: ../src/dialog_style_manager.cpp:243
 msgid "Could not parse style"
 msgstr "Tyylin jäsentäminen epäonnistui"
 
-#: ../src/dialog_style_manager.cpp:247
+#: ../src/dialog_style_manager.cpp:248
 #, c-format
 msgid "Are you sure you want to delete this style?"
 msgid_plural "Are you sure you want to delete these %d styles?"
 msgstr[0] "Haluatko varmasti poistaa tämän tyylin?"
 msgstr[1] "Haluatko varmasti poistaa nämä %d tyyliä?"
 
-#: ../src/dialog_style_manager.cpp:272
+#: ../src/dialog_style_manager.cpp:273
 msgid "Catalog of available storages"
 msgstr "Tallennuskansioiden luettelo"
 
 #: ../src/dialog_style_manager.cpp:274
-msgid "New"
-msgstr "Uusi"
-
-#: ../src/dialog_style_manager.cpp:275
-msgid "Delete"
-msgstr "Poista"
-
-#: ../src/dialog_style_manager.cpp:281
-msgid "Copy to &current script ->"
-msgstr "Kopioi &nykyiseen tekstitystiedostoon ->"
-
-#: ../src/dialog_style_manager.cpp:288
 msgid "Storage"
 msgstr "Tallennuskansio"
 
-#: ../src/dialog_style_manager.cpp:294
-msgid "&Import from script..."
-msgstr "&Tuo tekstitystiedostosta…"
-
-#: ../src/dialog_style_manager.cpp:295
-msgid "<- Copy to &storage"
-msgstr "<- Kopioi &tallennuskansioon"
-
-#: ../src/dialog_style_manager.cpp:306
+#: ../src/dialog_style_manager.cpp:275
 msgid "Current script"
 msgstr "Nykyinen tekstitystiedosto"
 
-#: ../src/dialog_style_manager.cpp:453
+#: ../src/dialog_style_manager.cpp:283
+msgid "New"
+msgstr "Uusi"
+
+#: ../src/dialog_style_manager.cpp:284
+msgid "Delete"
+msgstr "Poista"
+
+#: ../src/dialog_style_manager.cpp:290
+msgid "Copy to &current script ->"
+msgstr "Kopioi &nykyiseen tekstitystiedostoon ->"
+
+#: ../src/dialog_style_manager.cpp:302
+msgid "&Import from script..."
+msgstr "&Tuo tekstitystiedostosta…"
+
+#: ../src/dialog_style_manager.cpp:303
+msgid "<- Copy to &storage"
+msgstr "<- Kopioi &tallennuskansioon"
+
+#: ../src/dialog_style_manager.cpp:460
 msgid "New catalog entry"
 msgstr "Uusi tallennuskansio"
 
-#: ../src/dialog_style_manager.cpp:453
+#: ../src/dialog_style_manager.cpp:460
 msgid "New storage name:"
 msgstr "Uusi tallennuskansion nimi:"
 
-#: ../src/dialog_style_manager.cpp:468
+#: ../src/dialog_style_manager.cpp:475
 msgid "A catalog with that name already exists."
 msgstr "Samanniminen tallennuskansio on jo olemassa."
 
-#: ../src/dialog_style_manager.cpp:468
+#: ../src/dialog_style_manager.cpp:475
 msgid "Catalog name conflict"
 msgstr "Päällekkäinen tallennuskansion nimi"
 
-#: ../src/dialog_style_manager.cpp:475
+#: ../src/dialog_style_manager.cpp:482
 #, c-format
 msgid ""
 "The specified catalog name contains one or more illegal characters. They "
@@ -4564,27 +4614,27 @@ msgstr ""
 "merkin. Ne korvattiin alaviivalla.\n"
 "Tallennuskansion nimeksi muuetttiin ”%s”."
 
-#: ../src/dialog_style_manager.cpp:476
+#: ../src/dialog_style_manager.cpp:483
 msgid "Invalid characters"
 msgstr "Virheellisiä merkkejä"
 
-#: ../src/dialog_style_manager.cpp:489
+#: ../src/dialog_style_manager.cpp:496
 #, c-format
 msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
 msgstr "Haluatko varmasti poistaa tallennuskansion ”%s”?"
 
-#: ../src/dialog_style_manager.cpp:490
+#: ../src/dialog_style_manager.cpp:497
 msgid "Confirm delete"
 msgstr "Hyväksy poisto"
 
 # CONTEXT: Window title
 # Suomennettu vapaasti, mutta merkitys säilyy ja on paremmin ymmärrettävissä kuin ”Tyylin nimen törmäys” tai vastaava.
-#: ../src/dialog_style_manager.cpp:508 ../src/dialog_style_manager.cpp:535
-#: ../src/dialog_style_manager.cpp:714
+#: ../src/dialog_style_manager.cpp:515 ../src/dialog_style_manager.cpp:542
+#: ../src/dialog_style_manager.cpp:721
 msgid "Style name collision"
 msgstr "Samanniminen tyyli on jo olemassa"
 
-#: ../src/dialog_style_manager.cpp:508
+#: ../src/dialog_style_manager.cpp:515
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current storage. "
@@ -4592,7 +4642,7 @@ msgid ""
 msgstr ""
 "Nykyisessä tallennuskansiossa on jo tyyli nimeltä ”%s”. Korvataanko se?"
 
-#: ../src/dialog_style_manager.cpp:535 ../src/dialog_style_manager.cpp:713
+#: ../src/dialog_style_manager.cpp:542 ../src/dialog_style_manager.cpp:720
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current script. "
@@ -4601,123 +4651,123 @@ msgstr ""
 "Nykyisessä tekstitystiedostossa on jo tyyli nimeltä ”%s”. Korvataanko se?"
 
 # CONTEXT: Name in undo history
-#: ../src/dialog_style_manager.cpp:546
+#: ../src/dialog_style_manager.cpp:553
 msgid "style copy"
 msgstr "tyylin kopiointi"
 
 # CONTEXT: Name in undo history
-#: ../src/dialog_style_manager.cpp:575
+#: ../src/dialog_style_manager.cpp:582
 msgid "style paste"
 msgstr "tyylin liittäminen"
 
-#: ../src/dialog_style_manager.cpp:619
+#: ../src/dialog_style_manager.cpp:626
 msgid "Confirm delete from storage"
 msgstr "Hyväksy poisto tallennuskansiosta"
 
-#: ../src/dialog_style_manager.cpp:658
+#: ../src/dialog_style_manager.cpp:665
 msgid "Confirm delete from current"
 msgstr "Hyväksy poisto nykyisestä"
 
-#: ../src/dialog_style_manager.cpp:662
+#: ../src/dialog_style_manager.cpp:669
 msgid "style delete"
 msgstr "tyylin poisto"
 
-#: ../src/dialog_style_manager.cpp:682
+#: ../src/dialog_style_manager.cpp:689
 msgid "Unsupported subtitle format"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:698
+#: ../src/dialog_style_manager.cpp:705
 msgid "Error Importing Styles"
 msgstr "Virhe tuodessa Tyylejä"
 
-#: ../src/dialog_style_manager.cpp:698
+#: ../src/dialog_style_manager.cpp:705
 msgid "The selected file has no available styles."
 msgstr "Valittu tiedostolla ei ole tyylejä."
 
-#: ../src/dialog_style_manager.cpp:704
+#: ../src/dialog_style_manager.cpp:711
 msgid "Choose styles to import:"
 msgstr "Valitse tuotava tyyli:"
 
-#: ../src/dialog_style_manager.cpp:704
+#: ../src/dialog_style_manager.cpp:711
 msgid "Import Styles"
 msgstr "Tuo tyylejä"
 
-#: ../src/dialog_style_manager.cpp:730
+#: ../src/dialog_style_manager.cpp:737
 msgid "style import"
 msgstr "tuo tyylejä"
 
-#: ../src/dialog_style_manager.cpp:839
+#: ../src/dialog_style_manager.cpp:846
 msgid "Are you sure? This cannot be undone!"
 msgstr "Oletko varma? Tätä ei voi kumota!"
 
-#: ../src/dialog_style_manager.cpp:839
+#: ../src/dialog_style_manager.cpp:846
 msgid "Sort styles"
 msgstr "Lajittele tyylejä"
 
-#: ../src/dialog_style_manager.cpp:880
+#: ../src/dialog_style_manager.cpp:887
 msgid "style move"
 msgstr "liikuta tyyliä"
 
-#: ../src/dialog_styling_assistant.cpp:63
 #: ../src/dialog_styling_assistant.cpp:64
+#: ../src/dialog_styling_assistant.cpp:65
 msgid "Current line"
 msgstr "Nykyinen rivi"
 
-#: ../src/dialog_styling_assistant.cpp:70
+#: ../src/dialog_styling_assistant.cpp:71
 msgid "Styles available"
 msgstr "Tyylejä saatavilla"
 
-#: ../src/dialog_styling_assistant.cpp:78
+#: ../src/dialog_styling_assistant.cpp:79
 msgid "Set style"
 msgstr "Aseta tyyli"
 
-#: ../src/dialog_styling_assistant.cpp:85 ../src/dialog_translation.cpp:108
+#: ../src/dialog_styling_assistant.cpp:86 ../src/dialog_translation.cpp:110
 msgid "Keys"
 msgstr "Näppäimet"
 
-#: ../src/dialog_styling_assistant.cpp:90 ../src/dialog_translation.cpp:113
+#: ../src/dialog_styling_assistant.cpp:92 ../src/dialog_translation.cpp:116
 msgid "Previous line"
 msgstr "Edellinen rivi"
 
-#: ../src/dialog_styling_assistant.cpp:91 ../src/dialog_translation.cpp:114
+#: ../src/dialog_styling_assistant.cpp:93 ../src/dialog_translation.cpp:117
 msgid "Next line"
 msgstr "Seuraava rivi"
 
 # Tässä video tarkoittaa kuvaa ja ääntä.
-#: ../src/dialog_styling_assistant.cpp:92 ../src/dialog_translation.cpp:116
+#: ../src/dialog_styling_assistant.cpp:94 ../src/dialog_translation.cpp:119
 msgid "Play video"
 msgstr "Toista video"
 
-#: ../src/dialog_styling_assistant.cpp:93 ../src/dialog_translation.cpp:117
+#: ../src/dialog_styling_assistant.cpp:95 ../src/dialog_translation.cpp:120
 msgid "Play audio"
 msgstr "Toista ääni"
 
-#: ../src/dialog_styling_assistant.cpp:94
+#: ../src/dialog_styling_assistant.cpp:96
 msgid "Click on list"
 msgstr "Napsautus listalta"
 
-#: ../src/dialog_styling_assistant.cpp:95
+#: ../src/dialog_styling_assistant.cpp:97
 msgid "Select style"
 msgstr "Valitse tyyli"
 
-#: ../src/dialog_styling_assistant.cpp:99
+#: ../src/dialog_styling_assistant.cpp:101
 msgid "&Seek video to line start time"
 msgstr "&Siirrä video rivin alkuun"
 
-#: ../src/dialog_styling_assistant.cpp:108 ../src/dialog_translation.cpp:129
+#: ../src/dialog_styling_assistant.cpp:110 ../src/dialog_translation.cpp:132
 msgid "Actions"
 msgstr "Toiminnot"
 
-#: ../src/dialog_styling_assistant.cpp:111 ../src/dialog_translation.cpp:131
+#: ../src/dialog_styling_assistant.cpp:113 ../src/dialog_translation.cpp:134
 msgid "Play &Audio"
 msgstr "Toista &ääni"
 
-#: ../src/dialog_styling_assistant.cpp:115 ../src/dialog_translation.cpp:136
+#: ../src/dialog_styling_assistant.cpp:117 ../src/dialog_translation.cpp:139
 msgid "Play &Video"
 msgstr "Toista &video"
 
 # CONTEXT: Name in undo history
-#: ../src/dialog_styling_assistant.cpp:173
+#: ../src/dialog_styling_assistant.cpp:175
 msgid "styling assistant"
 msgstr "tyyliavustaja"
 
@@ -4741,59 +4791,59 @@ msgstr "Myös tyhjät rivit"
 msgid "Apply to styles"
 msgstr "Hyväksy tyyleihin"
 
-#: ../src/dialog_timing_processor.cpp:159
+#: ../src/dialog_timing_processor.cpp:160
 msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Valitse käsiteltävät tyylit. Valitsemattomille ei tehdä mitään."
 
-#: ../src/dialog_timing_processor.cpp:162
+#: ../src/dialog_timing_processor.cpp:163
 msgid "Select all styles"
 msgstr "Valitse kaikki tyylit"
 
-#: ../src/dialog_timing_processor.cpp:165
+#: ../src/dialog_timing_processor.cpp:166
 msgid "Deselect all styles"
 msgstr "Poista kaikkien tyylin valinta"
 
-#: ../src/dialog_timing_processor.cpp:169
+#: ../src/dialog_timing_processor.cpp:170
 msgid "Affect &selection only"
 msgstr "&Vaikuta vain valintaan"
 
-#: ../src/dialog_timing_processor.cpp:174
+#: ../src/dialog_timing_processor.cpp:175
 msgid "Lead-in/Lead-out"
 msgstr "Etu-/jälkiaika"
 
-#: ../src/dialog_timing_processor.cpp:176
+#: ../src/dialog_timing_processor.cpp:177
 msgid "Add lead &in:"
 msgstr "Lisää &etuaikaa:"
 
-#: ../src/dialog_timing_processor.cpp:178
+#: ../src/dialog_timing_processor.cpp:179
 msgid "Enable adding of lead-ins to lines"
 msgstr "Mahdollista lisätä jälkiaikaa riveille"
 
-#: ../src/dialog_timing_processor.cpp:179
+#: ../src/dialog_timing_processor.cpp:180
 msgid "Lead in to be added, in milliseconds"
 msgstr "Jälkiaika, joka lisätään, millisekunneissa"
 
-#: ../src/dialog_timing_processor.cpp:181
+#: ../src/dialog_timing_processor.cpp:182
 msgid "Add lead &out:"
 msgstr "Lisää j&älkiaikaa:"
 
-#: ../src/dialog_timing_processor.cpp:183
+#: ../src/dialog_timing_processor.cpp:184
 msgid "Enable adding of lead-outs to lines"
 msgstr "Mahdollista lisätä jälkiaikaa riveille"
 
-#: ../src/dialog_timing_processor.cpp:184
+#: ../src/dialog_timing_processor.cpp:185
 msgid "Lead out to be added, in milliseconds"
 msgstr "Jälkiaika, joka lisätään, millisekunneissa"
 
-#: ../src/dialog_timing_processor.cpp:189
+#: ../src/dialog_timing_processor.cpp:190
 msgid "Make adjacent subtitles continuous"
 msgstr "Jaksota läheiset rivit yhtäjaksoisiksi"
 
-#: ../src/dialog_timing_processor.cpp:190
+#: ../src/dialog_timing_processor.cpp:192
 msgid "&Enable"
 msgstr "&Käytössä"
 
-#: ../src/dialog_timing_processor.cpp:192
+#: ../src/dialog_timing_processor.cpp:194
 msgid ""
 "Enable snapping of subtitles together if they are within a certain distance "
 "of each other"
@@ -4802,11 +4852,11 @@ msgstr ""
 "toisistaan"
 
 # CHECK: Onko liian pitkä?
-#: ../src/dialog_timing_processor.cpp:195
+#: ../src/dialog_timing_processor.cpp:197
 msgid "Max gap:"
 msgstr "Enimmäisväli:"
 
-#: ../src/dialog_timing_processor.cpp:196
+#: ../src/dialog_timing_processor.cpp:198
 msgid ""
 "Maximum difference between start and end time for two subtitles to be made "
 "continuous, in milliseconds"
@@ -4815,11 +4865,11 @@ msgstr ""
 "yhtäjaksotetaan (millisekunteina)"
 
 # CHECK: Onko liian pitkä?
-#: ../src/dialog_timing_processor.cpp:197
+#: ../src/dialog_timing_processor.cpp:199
 msgid "Max overlap:"
 msgstr "Enimmäispäällekkäisyys:"
 
-#: ../src/dialog_timing_processor.cpp:198
+#: ../src/dialog_timing_processor.cpp:200
 msgid ""
 "Maximum overlap between the end and start time for two subtitles to be made "
 "continuous, in milliseconds"
@@ -4827,7 +4877,7 @@ msgstr ""
 "Kahden rivin loppu- ja alkuaikojen suurin mahdollinen päällekkäisyys, jolla "
 "rivit yhtäjaksotetaan (millisekunteina)"
 
-#: ../src/dialog_timing_processor.cpp:201
+#: ../src/dialog_timing_processor.cpp:203
 msgid ""
 "Sets how to set the adjoining of lines. If set totally to left, it will "
 "extend or shrink start time of the second line; if totally to right, it will "
@@ -4838,23 +4888,23 @@ msgstr ""
 "asetettu täysin oikeaan laitaan, ensimmäistä riviä pidennetään tai "
 "lyhennetään säätämällä sen loppuaikaa."
 
-#: ../src/dialog_timing_processor.cpp:204
+#: ../src/dialog_timing_processor.cpp:206
 msgid "Bias: Start <- "
 msgstr "Vaikutus: Alku <-"
 
-#: ../src/dialog_timing_processor.cpp:206
+#: ../src/dialog_timing_processor.cpp:208
 msgid " -> End"
 msgstr "-> Loppu"
 
-#: ../src/dialog_timing_processor.cpp:214
+#: ../src/dialog_timing_processor.cpp:216
 msgid "Keyframe snapping"
 msgstr "Avainkuviin kiinnitys"
 
-#: ../src/dialog_timing_processor.cpp:217
+#: ../src/dialog_timing_processor.cpp:220
 msgid "E&nable"
 msgstr "Kä&ytössä"
 
-#: ../src/dialog_timing_processor.cpp:218
+#: ../src/dialog_timing_processor.cpp:221
 msgid ""
 "Enable snapping of subtitles to nearest keyframe, if distance is within "
 "threshold"
@@ -4862,11 +4912,11 @@ msgstr ""
 "Mahdollista aikojen kiinnityksen avainkuviin, jos etäisyys on alarajan "
 "sisällä"
 
-#: ../src/dialog_timing_processor.cpp:229
+#: ../src/dialog_timing_processor.cpp:232
 msgid "Starts before thres.:"
 msgstr "Alkaa ennen:"
 
-#: ../src/dialog_timing_processor.cpp:230
+#: ../src/dialog_timing_processor.cpp:233
 msgid ""
 "Threshold for 'before start' distance, that is, how many milliseconds a "
 "subtitle must start before a keyframe to snap to it"
@@ -4874,11 +4924,11 @@ msgstr ""
 "Alkaa ennen -raja-arvo eli kuinka monta millisekuntia ennen avainkehystä "
 "tekstitysrivi saa korkeintaan alkaa, jotta se kiinnitetään avainkuvaan."
 
-#: ../src/dialog_timing_processor.cpp:232
+#: ../src/dialog_timing_processor.cpp:235
 msgid "Starts after thres.:"
 msgstr "Alkaa jälkeen -raja-arvo:"
 
-#: ../src/dialog_timing_processor.cpp:233
+#: ../src/dialog_timing_processor.cpp:236
 msgid ""
 "Threshold for 'after start' distance, that is, how many milliseconds a "
 "subtitle must start after a keyframe to snap to it"
@@ -4887,11 +4937,11 @@ msgstr ""
 "jälkeen tekstitysrivi saa korkeintaan alkaa, jotta se kiinnitetään "
 "avainkuvaan."
 
-#: ../src/dialog_timing_processor.cpp:237
+#: ../src/dialog_timing_processor.cpp:240
 msgid "Ends before thres.:"
 msgstr "Loppuu ennen -raja-arvo:"
 
-#: ../src/dialog_timing_processor.cpp:238
+#: ../src/dialog_timing_processor.cpp:241
 msgid ""
 "Threshold for 'before end' distance, that is, how many milliseconds a "
 "subtitle must end before a keyframe to snap to it"
@@ -4899,11 +4949,11 @@ msgstr ""
 "Loppuu ennen -raja-arvo eli kuinka monta millisekuntia ennen avainkehystä "
 "tekstitysrivi saa korkeintaan loppua, jotta se kiinnitetään avainkuvaan."
 
-#: ../src/dialog_timing_processor.cpp:240
+#: ../src/dialog_timing_processor.cpp:243
 msgid "Ends after thres.:"
 msgstr "Loppuu jälkeen -raja-arvo:"
 
-#: ../src/dialog_timing_processor.cpp:241
+#: ../src/dialog_timing_processor.cpp:244
 msgid ""
 "Threshold for 'after end' distance, that is, how many milliseconds a "
 "subtitle must end after a keyframe to snap to it"
@@ -4912,49 +4962,49 @@ msgstr ""
 "jälkeen tekstitysrivi saa korkeintaan loppua, jotta se kiinnitetään "
 "avainkuvaan."
 
-#: ../src/dialog_timing_processor.cpp:349
+#: ../src/dialog_timing_processor.cpp:352
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
 msgstr "Yhdellä tekstitysrivillä (%i) on negatiivinen kesto. Keskeytetään."
 
-#: ../src/dialog_timing_processor.cpp:350
+#: ../src/dialog_timing_processor.cpp:353
 msgid "Invalid script"
 msgstr "Virheellinen skripti"
 
-#: ../src/dialog_timing_processor.cpp:445
+#: ../src/dialog_timing_processor.cpp:448
 msgid "timing processor"
 msgstr "ajoituksen käsittely"
 
-#: ../src/dialog_translation.cpp:77
+#: ../src/dialog_translation.cpp:78
 msgid "Original"
 msgstr "Alkuteksti"
 
-#: ../src/dialog_translation.cpp:100
+#: ../src/dialog_translation.cpp:94
 msgid "Translation"
 msgstr "Käännös"
 
-#: ../src/dialog_translation.cpp:115
+#: ../src/dialog_translation.cpp:118
 msgid "Insert original"
 msgstr "Lisää alkuteksti"
 
-#: ../src/dialog_translation.cpp:118
+#: ../src/dialog_translation.cpp:121
 msgid "Delete line"
 msgstr "Poista rivi"
 
-#: ../src/dialog_translation.cpp:121
+#: ../src/dialog_translation.cpp:124
 msgid "Enable &preview"
 msgstr "&Käytä esikatselua"
 
-#: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:278
+#: ../src/dialog_translation.cpp:181 ../src/dialog_translation.cpp:281
 msgid "No more lines to translate."
 msgstr "Ei enää rivejä käännettävänä."
 
-#: ../src/dialog_translation.cpp:186 ../src/dialog_translation.cpp:236
+#: ../src/dialog_translation.cpp:189 ../src/dialog_translation.cpp:239
 #, c-format
 msgid "Current line: %d/%d"
 msgstr "Nykyinen rivi: %d/%d"
 
-#: ../src/dialog_translation.cpp:273
+#: ../src/dialog_translation.cpp:276
 msgid "translation assistant"
 msgstr "käännösavustaja"
 
@@ -5010,41 +5060,41 @@ msgstr ""
 msgid "An unknown error occurred while checking for updates to Aegisub."
 msgstr "Aegisubin päivitysten tarkistuksessa ilmaantui tuntematon virhe."
 
-#: ../src/dialog_video_details.cpp:45
+#: ../src/dialog_video_details.cpp:46
 msgid "Video Details"
 msgstr "Videon tiedot"
 
-#: ../src/dialog_video_details.cpp:59
+#: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:170
+#: ../src/preferences.cpp:447
+msgid "Video"
+msgstr "Video"
+
+#: ../src/dialog_video_details.cpp:63
 msgid "File name:"
 msgstr "Tiedostonimi:"
 
-#: ../src/dialog_video_details.cpp:60
+#: ../src/dialog_video_details.cpp:64
 msgid "FPS:"
 msgstr "Kuvaa/s:"
 
-#: ../src/dialog_video_details.cpp:61
+#: ../src/dialog_video_details.cpp:65
 msgid "Resolution:"
 msgstr "Tarkkuus:"
 
-#: ../src/dialog_video_details.cpp:62
+#: ../src/dialog_video_details.cpp:66
 #, c-format
 msgid "1 frame"
 msgid_plural "%d frames (%s)"
 msgstr[0] "1 kuva"
 msgstr[1] "%d kuvaa (%s)"
 
-#: ../src/dialog_video_details.cpp:62
+#: ../src/dialog_video_details.cpp:66
 msgid "Length:"
 msgstr "Pituus:"
 
-#: ../src/dialog_video_details.cpp:64
+#: ../src/dialog_video_details.cpp:68
 msgid "Decoder:"
 msgstr "Dekooderi:"
-
-#: ../src/dialog_video_details.cpp:66 ../src/preferences.cpp:167
-#: ../src/preferences.cpp:444
-msgid "Video"
-msgstr "Video"
 
 #: ../src/dialog_video_properties.cpp:44
 msgid "Resolution mismatch"
@@ -5317,6 +5367,13 @@ msgstr "Merkkiä sekunnissa"
 msgid "Invalid command name for hotkey"
 msgstr "Virheellinen komennon nimi pikanäppäimelle"
 
+#: ../src/main.cpp:194
+#, c-format
+msgid ""
+"Configuration file is invalid. Error reported:\n"
+"%s"
+msgstr ""
+
 #: ../src/main.cpp:258
 #, c-format
 msgid ""
@@ -5347,6 +5404,18 @@ msgid ""
 msgstr ""
 "Haluatko, että Aegisub tarkistaa päivitykset käynnistyksen yhteydessä? Voit "
 "edelleen tarkistaa ne itse Ohje-valikon kautta."
+
+#: ../src/main.cpp:291
+msgid "Error saving config file"
+msgstr ""
+
+#: ../src/main.cpp:307 ../src/main.cpp:311 ../src/main.cpp:316
+msgid "Fatal error while initializing"
+msgstr ""
+
+#: ../src/main.cpp:316
+msgid "Unhandled exception"
+msgstr ""
 
 #: ../src/main.cpp:402 ../src/main.cpp:405
 msgid "Program error"
@@ -5405,64 +5474,64 @@ msgid "Reading subtitles from Matroska file."
 msgstr "Luetaan tekstityksiä Matroska-tiedostosta."
 
 # CONTEXT: Name of a preferences page and group
-#: ../src/preferences.cpp:63 ../src/preferences.cpp:65
-#: ../src/preferences.cpp:341 ../src/preferences.cpp:362
+#: ../src/preferences.cpp:64 ../src/preferences.cpp:66
+#: ../src/preferences.cpp:344 ../src/preferences.cpp:365
 msgid "General"
 msgstr "Yleisasetukset"
 
-#: ../src/preferences.cpp:66
+#: ../src/preferences.cpp:67
 msgid "Check for updates on startup"
 msgstr "Tarkista päivitykset käynnistyksen yhteydessä"
 
-#: ../src/preferences.cpp:67
+#: ../src/preferences.cpp:68
 msgid "Show main toolbar"
 msgstr "Näytä päätyökalurivi"
 
-#: ../src/preferences.cpp:68
+#: ../src/preferences.cpp:69
 msgid "Save UI state in subtitles files"
 msgstr "Tallenna käyttöliittymän tila tekstitystiedostoihin"
 
-#: ../src/preferences.cpp:71
+#: ../src/preferences.cpp:72
 msgid "Toolbar Icon Size"
 msgstr "Työkalurivin kuvakekoko"
 
-#: ../src/preferences.cpp:72
+#: ../src/preferences.cpp:73
 msgid "Always"
 msgstr "Aina"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:203
+#: ../src/preferences.cpp:73 ../src/preferences.cpp:206
 msgid "Ask"
 msgstr "Kysy"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:203
+#: ../src/preferences.cpp:73 ../src/preferences.cpp:206
 msgid "Never"
 msgstr "Ei koskaan"
 
-#: ../src/preferences.cpp:74
+#: ../src/preferences.cpp:75
 msgid "Automatically load linked files"
 msgstr "Avaa liitetyt tiedostot automaattisesti"
 
-#: ../src/preferences.cpp:75
+#: ../src/preferences.cpp:76
 msgid "Undo Levels"
 msgstr "Kumoustasoja"
 
-#: ../src/preferences.cpp:77
+#: ../src/preferences.cpp:78
 msgid "Recently Used Lists"
 msgstr "Viimeksi käytetyt -luetteloiden koot"
 
-#: ../src/preferences.cpp:79
+#: ../src/preferences.cpp:80
 msgid "Find/Replace"
 msgstr "Etsi ja korvaa -luettelot"
 
-#: ../src/preferences.cpp:85
+#: ../src/preferences.cpp:86
 msgid "Default styles"
 msgstr "Oletustyylit"
 
-#: ../src/preferences.cpp:87
+#: ../src/preferences.cpp:88
 msgid "Default style catalogs"
 msgstr "Tyylien oletustallennuskansiot"
 
-#: ../src/preferences.cpp:91
+#: ../src/preferences.cpp:92
 msgid ""
 "The chosen style catalogs will be loaded when you start a new file or import "
 "files in the various formats.\n"
@@ -5474,784 +5543,784 @@ msgstr ""
 "\n"
 "Voit muokata tyylien tallennuskansioita Tyylien hallinnassa."
 
-#: ../src/preferences.cpp:116
+#: ../src/preferences.cpp:119
 msgid "New files"
 msgstr "Uudet tiedostot"
 
-#: ../src/preferences.cpp:117
+#: ../src/preferences.cpp:120
 msgid "MicroDVD import"
 msgstr "MicroDVD-tuonti"
 
-#: ../src/preferences.cpp:118
+#: ../src/preferences.cpp:121
 msgid "SRT import"
 msgstr "SRT-tuonti"
 
-#: ../src/preferences.cpp:119
+#: ../src/preferences.cpp:122
 msgid "TTXT import"
 msgstr "TTXT-tuonti"
 
-#: ../src/preferences.cpp:120
+#: ../src/preferences.cpp:123
 msgid "Plain text import"
 msgstr "Pelkän tekstin tuonti"
 
-#: ../src/preferences.cpp:127 ../src/preferences.cpp:377
+#: ../src/preferences.cpp:130 ../src/preferences.cpp:380
 msgid "Audio"
 msgstr "Ääniraita"
 
-#: ../src/preferences.cpp:130
+#: ../src/preferences.cpp:133
 msgid "Default mouse wheel to zoom"
 msgstr "Hiiren rulla tarkentaa"
 
-#: ../src/preferences.cpp:131
+#: ../src/preferences.cpp:134
 msgid "Lock scroll on cursor"
 msgstr "Lukitse vieritys kohdistimeen"
 
-#: ../src/preferences.cpp:132
+#: ../src/preferences.cpp:135
 msgid "Snap markers by default"
 msgstr "Kiinnitä merkit oletusarvoisesti"
 
-#: ../src/preferences.cpp:133
+#: ../src/preferences.cpp:136
 msgid "Auto-focus on mouse over"
 msgstr "Aallokon automaattinen kohdistaminen hiiri päällä"
 
-#: ../src/preferences.cpp:134
+#: ../src/preferences.cpp:137
 msgid "Play audio when stepping in video"
 msgstr "Toista ääni askellettaessa videota"
 
-#: ../src/preferences.cpp:135
+#: ../src/preferences.cpp:138
 msgid "Left-click-drag moves end marker"
 msgstr "Vetäminen hiiren vasemmalla painikkeella siirtää loppumerkkiä"
 
-#: ../src/preferences.cpp:136
+#: ../src/preferences.cpp:139
 msgid "Default timing length (ms)"
 msgstr "Ajoituksen oletuspituus (ms)"
 
-#: ../src/preferences.cpp:137
+#: ../src/preferences.cpp:140
 msgid "Default lead-in length (ms)"
 msgstr "Etuajan oletuspituus (ms)"
 
-#: ../src/preferences.cpp:138
+#: ../src/preferences.cpp:141
 msgid "Default lead-out length (ms)"
 msgstr "Jälkiajan oletuspituus (ms)"
 
-#: ../src/preferences.cpp:140
+#: ../src/preferences.cpp:143
 msgid "Marker drag-start sensitivity (px)"
 msgstr "Merkin vetämisen aloituksen herkkyys (px)"
 
-#: ../src/preferences.cpp:141
+#: ../src/preferences.cpp:144
 msgid "Line boundary thickness (px)"
 msgstr "Rivirajan paksuus (px)"
 
-#: ../src/preferences.cpp:142
+#: ../src/preferences.cpp:145
 msgid "Maximum snap distance (px)"
 msgstr "Kiinnityksen enimmäisetäisyys (px)"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Don't show"
 msgstr "Älä näytä"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Show all"
 msgstr "Näytä kaikki"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Show previous"
 msgstr "Näytä edellinen"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Show previous and next"
 msgstr "Näytä edellinen ja seuraava"
 
-#: ../src/preferences.cpp:146
+#: ../src/preferences.cpp:149
 msgid "Show inactive lines"
 msgstr "Näytä passiiviset rivit"
 
-#: ../src/preferences.cpp:148
+#: ../src/preferences.cpp:151
 msgid "Include commented inactive lines"
 msgstr "Näytä myös passiiviset kommenttirivit"
 
-#: ../src/preferences.cpp:150
+#: ../src/preferences.cpp:153
 msgid "Display Visual Options"
 msgstr "Näytettävät valinnaiset merkinnät"
 
-#: ../src/preferences.cpp:151
+#: ../src/preferences.cpp:154
 msgid "Keyframes in dialogue mode"
 msgstr "Avainkuvat vuorosanatilassa"
 
-#: ../src/preferences.cpp:152
+#: ../src/preferences.cpp:155
 msgid "Keyframes in karaoke mode"
 msgstr "Avainkuvat karaoketilassa"
 
-#: ../src/preferences.cpp:153
+#: ../src/preferences.cpp:156
 msgid "Cursor time"
 msgstr "Aika osoittimen kohdalla"
 
-#: ../src/preferences.cpp:154
+#: ../src/preferences.cpp:157
 msgid "Video position"
 msgstr "Videon sijainti"
 
-#: ../src/preferences.cpp:155 ../src/preferences.cpp:257
+#: ../src/preferences.cpp:158 ../src/preferences.cpp:260
 msgid "Seconds boundaries"
 msgstr "Sekuntirajat"
 
-#: ../src/preferences.cpp:157
+#: ../src/preferences.cpp:160
 msgid "Waveform Style"
 msgstr "Aaltomuodon tyyli"
 
-#: ../src/preferences.cpp:159
+#: ../src/preferences.cpp:162
 msgid "Audio labels"
 msgstr "Karaokenäytön teksti"
 
-#: ../src/preferences.cpp:170
+#: ../src/preferences.cpp:173
 msgid "Show keyframes in slider"
 msgstr "Näytä avainkuvat kuvaselaimessa"
 
-#: ../src/preferences.cpp:172
+#: ../src/preferences.cpp:175
 msgid "Only show visual tools when mouse is over video"
 msgstr "Näytä visuaaliset työkalut vain, kun hiiri on videon päällä"
 
-#: ../src/preferences.cpp:174
+#: ../src/preferences.cpp:177
 msgid "Seek video to line start on selection change"
 msgstr "Siirrä video rivin alkuun, kun valinta muuttuu"
 
-#: ../src/preferences.cpp:176
+#: ../src/preferences.cpp:179
 msgid "Automatically open audio when opening video"
 msgstr "Lataa ääniraita automaattisesti videota avattaessa"
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Does nothing"
 msgstr ""
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Pans the video"
 msgstr ""
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Pans the video (X/Y swapped)"
 msgstr ""
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Resizes the video box"
 msgstr ""
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Resizes the video box (reversed)"
 msgstr ""
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Zooms the video"
 msgstr ""
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Zooms the video (reversed)"
 msgstr ""
 
-#: ../src/preferences.cpp:181
+#: ../src/preferences.cpp:184
 msgid "Scrolling on the video display"
 msgstr ""
 
-#: ../src/preferences.cpp:182
+#: ../src/preferences.cpp:185
 msgid "Ctrl+Scrolling on the video display"
 msgstr ""
 
-#: ../src/preferences.cpp:183
+#: ../src/preferences.cpp:186
 msgid "Shift+Scrolling on the video display"
 msgstr ""
 
-#: ../src/preferences.cpp:187
+#: ../src/preferences.cpp:190
 msgid "Default Zoom"
 msgstr "Oletuskuvakoko"
 
-#: ../src/preferences.cpp:189
+#: ../src/preferences.cpp:192
 msgid "Fast jump step in frames"
 msgstr "Kuinka monta kuvaa/hyppyaskel"
 
-#: ../src/preferences.cpp:193
+#: ../src/preferences.cpp:196
 msgid "Screenshot save path"
 msgstr "Kuvankaappausten tallennuspolku"
 
-#: ../src/preferences.cpp:195
+#: ../src/preferences.cpp:198
 msgid "Script Resolution"
 msgstr "Tekstitystiedoston tarkkuus"
 
-#: ../src/preferences.cpp:196
+#: ../src/preferences.cpp:199
 msgid "Use resolution of first video opened"
 msgstr "Käytä ensimmäisen avatun videon tarkkuutta"
 
-#: ../src/preferences.cpp:199
+#: ../src/preferences.cpp:202
 msgid "Default width"
 msgstr "Oletusleveys"
 
-#: ../src/preferences.cpp:201
+#: ../src/preferences.cpp:204
 msgid "Default height"
 msgstr "Oletuskorkeus"
 
-#: ../src/preferences.cpp:203
+#: ../src/preferences.cpp:206
 msgid "Always resample"
 msgstr "Interpoloi aina"
 
-#: ../src/preferences.cpp:203
+#: ../src/preferences.cpp:206
 msgid "Always set"
 msgstr "Aseta aina"
 
-#: ../src/preferences.cpp:205
+#: ../src/preferences.cpp:208
 msgid "Match video resolution on open"
 msgstr "Muuta tekstitystiedoston tarkkuus videota avattaessa"
 
-#: ../src/preferences.cpp:212
+#: ../src/preferences.cpp:215
 msgid "Interface"
 msgstr "Käyttöliittymä"
 
-#: ../src/preferences.cpp:214
+#: ../src/preferences.cpp:217
 msgid "Edit Box"
 msgstr "Muokkauskenttä"
 
 # TARKISTA
-#: ../src/preferences.cpp:215
+#: ../src/preferences.cpp:218
 msgid "Enable call tips"
 msgstr "Osoitinneuvot"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:219
 msgid "Overwrite in time boxes"
 msgstr "Aikakenttien korvaustila"
 
-#: ../src/preferences.cpp:217
+#: ../src/preferences.cpp:220
 msgid "Shift+Enter adds \\n"
 msgstr ""
 
-#: ../src/preferences.cpp:218
+#: ../src/preferences.cpp:221
 msgid "Enable syntax highlighting"
 msgstr "Syntaksin korostus"
 
-#: ../src/preferences.cpp:219
+#: ../src/preferences.cpp:222
 msgid "Dictionaries path"
 msgstr "Sanakirjojen polku"
 
-#: ../src/preferences.cpp:222
+#: ../src/preferences.cpp:225
 msgid "Character Counter"
 msgstr "Merkkilaskuri"
 
-#: ../src/preferences.cpp:223
+#: ../src/preferences.cpp:226
 msgid "Maximum characters per line"
 msgstr "Merkkien enimmäismäärä rivillä"
 
-#: ../src/preferences.cpp:224
+#: ../src/preferences.cpp:227
 msgid "Characters Per Second Warning Threshold"
 msgstr "Merkkiä sekunnissa -varoitusraja"
 
-#: ../src/preferences.cpp:225
+#: ../src/preferences.cpp:228
 msgid "Characters Per Second Error Threshold"
 msgstr "Merkkiä sekunnissa -virheraja"
 
-#: ../src/preferences.cpp:226
+#: ../src/preferences.cpp:229
 msgid "Ignore whitespace"
 msgstr "Jätä tyhjät välit huomiotta"
 
-#: ../src/preferences.cpp:227
+#: ../src/preferences.cpp:230
 msgid "Ignore punctuation"
 msgstr "Jätä välimerkit huomiotta"
 
-#: ../src/preferences.cpp:229
+#: ../src/preferences.cpp:232
 msgid "Grid"
 msgstr "Rivistö"
 
-#: ../src/preferences.cpp:230
+#: ../src/preferences.cpp:233
 msgid "Focus grid on click"
 msgstr "Kohdista rivistöön napsauttamalla"
 
-#: ../src/preferences.cpp:231
+#: ../src/preferences.cpp:234
 msgid "Highlight visible subtitles"
 msgstr "Korosta näkyvät tekstitysrivit"
 
-#: ../src/preferences.cpp:232
+#: ../src/preferences.cpp:235
 msgid "Hide overrides symbol"
 msgstr "Piilotettujen korvausten symboli"
 
-#: ../src/preferences.cpp:236
+#: ../src/preferences.cpp:239
 msgid "Skip over whitespace"
 msgstr ""
 
-#: ../src/preferences.cpp:251
+#: ../src/preferences.cpp:254
 msgid "Audio Display"
 msgstr "Ääniraita"
 
-#: ../src/preferences.cpp:252
+#: ../src/preferences.cpp:255
 msgid "Play cursor"
 msgstr "Toistoviivan väri"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:256
 msgid "Line boundary start"
 msgstr "Rivin alun raja"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:257
 msgid "Line boundary end"
 msgstr "Rivin lopun raja"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:258
 msgid "Line boundary inactive line"
 msgstr "Passiivisen rivin raja"
 
-#: ../src/preferences.cpp:256
+#: ../src/preferences.cpp:259
 msgid "Syllable boundaries"
 msgstr "Karaoketavujen rajat"
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:262
 msgid "Syntax Highlighting"
 msgstr "Syntaksin korostus"
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:263
 msgid "Background"
 msgstr "Tausta"
 
-#: ../src/preferences.cpp:261
+#: ../src/preferences.cpp:264
 msgid "Normal"
 msgstr "Normaali"
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:265
 msgid "Comments"
 msgstr "Kommentit"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:266
 msgid "Drawing Commands"
 msgstr ""
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:267
 msgid "Drawing X Coords"
 msgstr ""
 
-#: ../src/preferences.cpp:265
+#: ../src/preferences.cpp:268
 msgid "Drawing Y Coords"
 msgstr ""
 
-#: ../src/preferences.cpp:266
+#: ../src/preferences.cpp:269
 msgid "Underline Spline Endpoints"
 msgstr ""
 
-#: ../src/preferences.cpp:268
+#: ../src/preferences.cpp:271
 msgid "Brackets"
 msgstr "Sulkeet"
 
-#: ../src/preferences.cpp:269
+#: ../src/preferences.cpp:272
 msgid "Slashes and Parentheses"
 msgstr "Kauttaviivat ja sulkumerkit"
 
-#: ../src/preferences.cpp:270
+#: ../src/preferences.cpp:273
 msgid "Tags"
 msgstr "Tagit"
 
-#: ../src/preferences.cpp:271
+#: ../src/preferences.cpp:274
 msgid "Parameters"
 msgstr "Parametrit"
 
-#: ../src/preferences.cpp:273
+#: ../src/preferences.cpp:276
 msgid "Error Background"
 msgstr "Virhe tausta-ajossa"
 
-#: ../src/preferences.cpp:274
+#: ../src/preferences.cpp:277
 msgid "Line Break"
 msgstr "Rivivaihto"
 
-#: ../src/preferences.cpp:275
+#: ../src/preferences.cpp:278
 msgid "Karaoke templates"
 msgstr "Karaokemallit"
 
-#: ../src/preferences.cpp:276
+#: ../src/preferences.cpp:279
 msgid "Karaoke variables"
 msgstr "Karaokemuuttujat"
 
-#: ../src/preferences.cpp:282
+#: ../src/preferences.cpp:285
 msgid "Audio Color Schemes"
 msgstr "Äänen väriteemat"
 
-#: ../src/preferences.cpp:284 ../src/preferences.cpp:393
+#: ../src/preferences.cpp:287 ../src/preferences.cpp:396
 msgid "Spectrum"
 msgstr "Spektri"
 
-#: ../src/preferences.cpp:285
+#: ../src/preferences.cpp:288
 msgid "Waveform"
 msgstr "Aallokon väri"
 
-#: ../src/preferences.cpp:287
+#: ../src/preferences.cpp:290
 msgid "Subtitle Grid"
 msgstr "Tekstitysrivistö"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:291
 msgid "Standard foreground"
 msgstr "Tavallinen teksti"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:292
 msgid "Standard background"
 msgstr "Tavallinen tausta"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:293
 msgid "Selection foreground"
 msgstr "Valitun rivin teksti"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:294
 msgid "Selection background"
 msgstr "Valitun rivin tausta"
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:295
 msgid "Collision foreground"
 msgstr "Päällekkäisten rivien teksti"
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:296
 msgid "In frame background"
 msgstr "Kuvassa näkyvän rivin tausta"
 
-#: ../src/preferences.cpp:294
+#: ../src/preferences.cpp:297
 msgid "Comment background"
 msgstr "Kommenttirivin tausta"
 
-#: ../src/preferences.cpp:295
+#: ../src/preferences.cpp:298
 msgid "Selected comment background"
 msgstr "Valitun kommenttirivin tausta"
 
-#: ../src/preferences.cpp:296
+#: ../src/preferences.cpp:299
 msgid "Header background"
 msgstr "Otsikkorivin tausta"
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:300
 msgid "Left Column"
 msgstr "Vasen sarake"
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:301
 msgid "Active Line Border"
 msgstr "Aktiivisen rivin reunaviiva"
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:302
 msgid "Lines"
 msgstr "Rivit"
 
-#: ../src/preferences.cpp:300
+#: ../src/preferences.cpp:303
 msgid "CPS Error"
 msgstr "m/s-virhe"
 
-#: ../src/preferences.cpp:302
+#: ../src/preferences.cpp:305
 msgid "Visual Typesetting Tools"
 msgstr ""
 
-#: ../src/preferences.cpp:303
+#: ../src/preferences.cpp:306
 msgid "Primary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:304
+#: ../src/preferences.cpp:307
 msgid "Secondary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:305
+#: ../src/preferences.cpp:308
 msgid "Primary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:306
+#: ../src/preferences.cpp:309
 msgid "Secondary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:309
+#: ../src/preferences.cpp:312
 msgid "Visual Typesetting Tools Alpha"
 msgstr ""
 
-#: ../src/preferences.cpp:310
+#: ../src/preferences.cpp:313
 msgid "Shaded Area"
 msgstr ""
 
 # CONTEXT: Name of a preferences page
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:322
 msgid "Backup"
 msgstr "Varmuuskopiointi"
 
-#: ../src/preferences.cpp:321
+#: ../src/preferences.cpp:324
 msgid "Automatic Save"
 msgstr "Automaattitallennus"
 
-#: ../src/preferences.cpp:322 ../src/preferences.cpp:330
+#: ../src/preferences.cpp:325 ../src/preferences.cpp:333
 msgid "Enable"
 msgstr "Käytössä"
 
-#: ../src/preferences.cpp:325
+#: ../src/preferences.cpp:328
 msgid "Interval in seconds"
 msgstr "Aikaväli sekunneissa"
 
-#: ../src/preferences.cpp:326 ../src/preferences.cpp:332
-#: ../src/preferences.cpp:391
+#: ../src/preferences.cpp:329 ../src/preferences.cpp:335
+#: ../src/preferences.cpp:394
 msgid "Path"
 msgstr "Polku"
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:330
 msgid "Autosave after every change"
 msgstr "Tallenna automaattisesti joka muutoksen jälkeen"
 
-#: ../src/preferences.cpp:329
+#: ../src/preferences.cpp:332
 msgid "Automatic Backup"
 msgstr "Automaattinen varmuuskopiointi"
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:346
 msgid "Base path"
 msgstr "Polku"
 
-#: ../src/preferences.cpp:344
+#: ../src/preferences.cpp:347
 msgid "Include path"
 msgstr "Sisällytyspolku"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:348
 msgid "Auto-load path"
 msgstr "Automaattilatauspolku"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "0: Fatal"
 msgstr "0: Kriittinen"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "1: Error"
 msgstr "1: Virhe"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "2: Warning"
 msgstr "2: Varoitus"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "3: Hint"
 msgstr "3: Vinkki"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "4: Debug"
 msgstr "4: Vianjäljitys"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "5: Trace"
 msgstr "5: Jäljitys"
 
-#: ../src/preferences.cpp:349
+#: ../src/preferences.cpp:352
 msgid "Trace level"
 msgstr "Jäljitystaso"
 
-#: ../src/preferences.cpp:351
+#: ../src/preferences.cpp:354
 msgid "All scripts"
 msgstr "Kaikki skriptit"
 
-#: ../src/preferences.cpp:351
+#: ../src/preferences.cpp:354
 msgid "Global autoload scripts"
 msgstr "Globaalit automaattiladattavat skriptit"
 
-#: ../src/preferences.cpp:351
+#: ../src/preferences.cpp:354
 msgid "No scripts"
 msgstr "Ei skriptejä"
 
-#: ../src/preferences.cpp:351
+#: ../src/preferences.cpp:354
 msgid "Subtitle-local scripts"
 msgstr "Tekstitysrivistön skriptit"
 
-#: ../src/preferences.cpp:353
+#: ../src/preferences.cpp:356
 msgid "Autoreload on Export"
 msgstr "Lataa uudelleen viennin yhteydessä"
 
-#: ../src/preferences.cpp:360
+#: ../src/preferences.cpp:363
 msgid "Advanced"
 msgstr "Lisäasetukset"
 
-#: ../src/preferences.cpp:364
+#: ../src/preferences.cpp:367
 msgid ""
 "Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
 msgstr ""
 
-#: ../src/preferences.cpp:379 ../src/preferences.cpp:446
+#: ../src/preferences.cpp:382 ../src/preferences.cpp:449
 msgid "Expert"
 msgstr "Asiantuntijalle"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:385
 msgid "Audio provider"
 msgstr "Ääniraidan avaaja"
 
-#: ../src/preferences.cpp:385
+#: ../src/preferences.cpp:388
 msgid "Audio player"
 msgstr "Ääniraidan toistaja"
 
-#: ../src/preferences.cpp:387
+#: ../src/preferences.cpp:390
 msgid "Cache"
 msgstr "Välimuisti"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:391
 msgid "Hard Disk"
 msgstr "Kovalevy"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:391
 msgid "None (NOT RECOMMENDED)"
 msgstr "Ei välimuistia (EI SUOSITELLA)"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:391
 msgid "RAM"
 msgstr "Muisti"
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:393
 msgid "Cache type"
 msgstr "Välimuistin tyyppi"
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:398
 msgid "Better quality"
 msgstr "Parempi"
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:398
 msgid "High quality"
 msgstr "Korkea"
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:398
 msgid "Insane quality"
 msgstr "Älytön"
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:398
 msgid "Regular quality"
 msgstr "Normaali"
 
-#: ../src/preferences.cpp:397
+#: ../src/preferences.cpp:400
 msgid "Quality"
 msgstr "Laatu"
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Compressed"
 msgstr ""
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Extended"
 msgstr ""
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Linear"
 msgstr ""
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Logarithmic"
 msgstr ""
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Medium"
 msgstr ""
 
-#: ../src/preferences.cpp:401
+#: ../src/preferences.cpp:404
 msgid "Frequency mapping"
 msgstr ""
 
-#: ../src/preferences.cpp:403
+#: ../src/preferences.cpp:406
 msgid "Cache memory max (MB)"
 msgstr "Välimuistin muistinkulutuksen enimmäisarvo (Mt)"
 
-#: ../src/preferences.cpp:409
+#: ../src/preferences.cpp:412
 msgid "Avisynth down-mixer"
 msgstr "Avisynthin alaspäin muuntaja"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:413
 msgid "Force sample rate"
 msgstr "Pakota näytetaajuus"
 
-#: ../src/preferences.cpp:416
+#: ../src/preferences.cpp:419
 msgid "Abort"
 msgstr "Keskeytä"
 
-#: ../src/preferences.cpp:416
+#: ../src/preferences.cpp:419
 msgid "Ignore"
 msgstr "Hylkää"
 
-#: ../src/preferences.cpp:416
+#: ../src/preferences.cpp:419
 msgid "Stop"
 msgstr "Pysäytä"
 
-#: ../src/preferences.cpp:418
+#: ../src/preferences.cpp:421
 msgid "Audio indexing error handling mode"
 msgstr "Äänen indeksointivirheiden käsittelytapa"
 
-#: ../src/preferences.cpp:420
+#: ../src/preferences.cpp:423
 msgid "Always index all audio tracks"
 msgstr "Indeksoi aina kaikki ääniraidat"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:428
 msgid "Portaudio device"
 msgstr "Portaudio-laite"
 
-#: ../src/preferences.cpp:430
+#: ../src/preferences.cpp:433
 msgid "OSS Device"
 msgstr "OSS-laite"
 
-#: ../src/preferences.cpp:435
+#: ../src/preferences.cpp:438
 msgid "Buffer latency"
 msgstr "Puskurin latenssi"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:439
 msgid "Buffer length"
 msgstr "Puskurin kesto"
 
-#: ../src/preferences.cpp:449
+#: ../src/preferences.cpp:452
 msgid "Video provider"
 msgstr "Videon avaaja"
 
-#: ../src/preferences.cpp:452
+#: ../src/preferences.cpp:455
 msgid "Subtitles provider"
 msgstr "Tekstitysten avaaja"
 
-#: ../src/preferences.cpp:456
+#: ../src/preferences.cpp:459
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Salli pre-2.56a Avisynth"
 
-#: ../src/preferences.cpp:458
+#: ../src/preferences.cpp:461
 msgid "Avisynth memory limit"
 msgstr "Avisynthin muistiraja"
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Debug"
 msgstr ""
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Fatal"
 msgstr ""
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Info"
 msgstr ""
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Panic"
 msgstr ""
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Quiet"
 msgstr ""
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Verbose"
 msgstr ""
 
-#: ../src/preferences.cpp:464 ../src/project.cpp:318
+#: ../src/preferences.cpp:467 ../src/project.cpp:318
 msgid "Warning"
 msgstr ""
 
-#: ../src/preferences.cpp:466
+#: ../src/preferences.cpp:469
 msgid "Debug log verbosity"
 msgstr "Vianjäljityslokin taso"
 
-#: ../src/preferences.cpp:468
+#: ../src/preferences.cpp:471
 msgid "Decoding threads"
 msgstr "Dekoodaavia säikeitä"
 
-#: ../src/preferences.cpp:469
+#: ../src/preferences.cpp:472
 msgid "Enable unsafe seeking"
 msgstr "Käytä epäturvallista videon selaamista"
 
-#: ../src/preferences.cpp:605
+#: ../src/preferences.cpp:607
 msgid "Hotkeys"
 msgstr "Pikanäppäimet"
 
-#: ../src/preferences.cpp:609
+#: ../src/preferences.cpp:611
 msgid "Search"
 msgstr ""
 
-#: ../src/preferences.cpp:625 ../src/preferences.cpp:628
+#: ../src/preferences.cpp:627 ../src/preferences.cpp:630
 msgid "Hotkey"
 msgstr ""
 
-#: ../src/preferences.cpp:626 ../src/preferences.cpp:631
+#: ../src/preferences.cpp:628 ../src/preferences.cpp:633
 msgid "Command"
 msgstr ""
 
-#: ../src/preferences.cpp:705
+#: ../src/preferences.cpp:707
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -6259,31 +6328,31 @@ msgstr ""
 "Haluatko varmasti palauttaa oletukset? Kaikki omat asetuksesi kirjoitetaan "
 "yli."
 
-#: ../src/preferences.cpp:705
+#: ../src/preferences.cpp:707
 msgid "Restore defaults?"
 msgstr "Palautetaanko oletukset?"
 
-#: ../src/preferences.cpp:723
+#: ../src/preferences.cpp:725
 msgid "Preferences"
 msgstr "Asetukset"
 
-#: ../src/preferences.cpp:751
+#: ../src/preferences.cpp:753
 msgid "&Restore Defaults"
 msgstr "&Palauta oletukset"
 
-#: ../src/preferences_base.cpp:62
+#: ../src/preferences_base.cpp:78
 msgid "Please choose the folder:"
 msgstr "Valitse kansio:"
 
-#: ../src/preferences_base.cpp:208
+#: ../src/preferences_base.cpp:233
 msgid "Browse..."
 msgstr "Selaa…"
 
-#: ../src/preferences_base.cpp:243
+#: ../src/preferences_base.cpp:268
 msgid "Choose..."
 msgstr "Valitse…"
 
-#: ../src/preferences_base.cpp:251
+#: ../src/preferences_base.cpp:276
 msgid "Font Size"
 msgstr "Fontin koko"
 
@@ -6719,6 +6788,42 @@ msgstr "Nykyisen kuvan aika ja numero"
 #: ../src/video_box.cpp:65
 msgid "Time of this frame relative to start and end of current subs"
 msgstr "Etäisyydet valitun rivin alkuajasta ja loppuajasta"
+
+#: ../src/video_controller.cpp:228
+#, c-format
+msgid ""
+"Failed seeking video. The video file may be corrupt or incomplete.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_controller.cpp:234
+#, c-format
+msgid ""
+"Failed rendering subtitles.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_display.cpp:193
+#, c-format
+msgid ""
+"Failed to initialize video display. Closing other running programs and "
+"updating your video card drivers may fix this.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_display.cpp:200
+#, c-format
+msgid ""
+"Could not upload video frame to graphics card.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_display.cpp:245
+#, c-format
+msgid ""
+"An error occurred trying to render the video frame on the screen.\n"
+"Error message reported: %s"
+msgstr ""
 
 #: ../src/video_provider_manager.cpp:78
 msgid "file not found."
