@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub Tiếng Việt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-02 21:53+0100\n"
+"POT-Creation-Date: 2025-12-01 21:36+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: NGUY?N M?nh Hùng <loveleeyoungae@yahoo.com>\n"
 "Language-Team: OnEsChi <oneschi@yahoo.com>\n"
@@ -12,6 +12,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Poedit 1.8.3\n"
+
+#: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
+msgid "Language"
+msgstr "Ngôn ngữ"
+
+#: ../src/aegisublocale.cpp:113
+msgid "Please choose a language:"
+msgstr ""
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
@@ -155,7 +163,52 @@ msgstr "căn thời gian"
 msgid "karaoke timing"
 msgstr "căn thời gian Karaoke"
 
-#: ../src/auto4_base.cpp:454
+#: ../src/auto4_base.cpp:344
+msgid ""
+"A script in the Automation autoload directory failed to load.\n"
+"Please review the errors, fix them and use the Rescan Autoload Dir button in "
+"Automation Manager to load the scripts again."
+msgstr ""
+
+#: ../src/auto4_base.cpp:347
+msgid ""
+"Multiple scripts in the Automation autoload directory failed to load.\n"
+"Please review the errors, fix them and use the Rescan Autoload Dir button in "
+"Automation Manager to load the scripts again."
+msgstr ""
+
+#: ../src/auto4_base.cpp:350
+msgid ""
+"A script in the Automation autoload directory loaded with warnings.\n"
+"Please review the warnings, fix them and use the Rescan Autoload Dir button "
+"in Automation Manager to load the scripts again."
+msgstr ""
+
+#: ../src/auto4_base.cpp:353
+msgid ""
+"Multiple scripts in the Automation autoload directory loaded with warnings.\n"
+"Please review the warnings, fix them and use the Rescan Autoload Dir button "
+"in Automation Manager to load the scripts again."
+msgstr ""
+
+#: ../src/auto4_base.cpp:393
+#, c-format
+msgid ""
+"Automation Script referenced with unknown location specifier character.\n"
+"Location specifier found: %c\n"
+"Filename specified: %s"
+msgstr ""
+
+#: ../src/auto4_base.cpp:401
+#, c-format
+msgid ""
+"Automation Script referenced could not be found.\n"
+"Filename specified: %c%s\n"
+"Searched relative to: %s\n"
+"Resolved filename: %s"
+msgstr ""
+
+#: ../src/auto4_base.cpp:462
 #, c-format
 msgid ""
 "Failed to load Automation script '%s':\n"
@@ -164,26 +217,58 @@ msgstr ""
 "Nạp thất bại mã Tự động hóa '%s':\n"
 "%s"
 
-#: ../src/auto4_base.cpp:461
+#: ../src/auto4_base.cpp:465
+#, c-format
+msgid ""
+"Warning when loading Automation script '%s':\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_base.cpp:472
 #, c-format
 msgid "The file was not recognised as an Automation script: %s"
 msgstr "Tệp không được nhận diện là một mã Tự động hóa: %s"
 
-#: ../src/auto4_base.cpp:490 ../src/command/audio.cpp:84
+#: ../src/auto4_base.cpp:501 ../src/command/audio.cpp:84
 #: ../src/command/keyframe.cpp:76 ../src/command/timecode.cpp:73
 #: ../src/command/timecode.cpp:93 ../src/command/video.cpp:592
 msgid "All Files"
 msgstr "Tất cả Tệp"
 
-#: ../src/auto4_base.cpp:496 ../src/command/keyframe.cpp:74
+#: ../src/auto4_base.cpp:507 ../src/command/keyframe.cpp:74
 #: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
-#: ../src/subtitle_format.cpp:318
+#: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "Tất cả Định dạng Được hỗ trợ"
 
-#: ../src/auto4_base.cpp:502
+#: ../src/auto4_base.cpp:513
 msgid "File was not recognized as a script"
 msgstr "Tệp không được nhận diện như là một script"
+
+#: ../src/auto4_lua.cpp:180
+#, c-format
+msgid ""
+"Warning in Automation script '%s':\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:458
+msgid "Could not initialize Lua state"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:541
+#, c-format
+msgid ""
+"Error initialising Lua script \"%s\":\n"
+"\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:551
+msgid ""
+"Attempted to load an Automation 3 script as an Automation 4 Lua script. "
+"Automation 3 is no longer supported."
+msgstr ""
 
 #: ../src/charset_detect.cpp:50
 msgid ""
@@ -272,10 +357,6 @@ msgstr "Thoát chương trình"
 #: ../src/command/app.cpp:155
 msgid "&Language..."
 msgstr "&Ngôn ngữ"
-
-#: ../src/command/app.cpp:156
-msgid "Language"
-msgstr "Ngôn ngữ"
 
 #: ../src/command/app.cpp:157
 msgid "Select Aegisub interface language"
@@ -673,7 +754,7 @@ msgid "&Automation..."
 msgstr "Tự độ&ng hóa..."
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:333
+#: ../src/preferences.cpp:339
 msgid "Automation"
 msgstr "Tự động hóa"
 
@@ -1128,7 +1209,7 @@ msgid "revert line"
 msgstr "đảo ngược dòng"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:416
 msgid "Clear"
 msgstr "Xóa"
 
@@ -1291,7 +1372,7 @@ msgid "St&yle Name"
 msgstr "Tên K&ểu dáng"
 
 #: ../src/command/grid.cpp:229 ../src/command/grid.cpp:241
-#: ../src/dialog_style_editor.cpp:178
+#: ../src/dialog_style_editor.cpp:179
 msgid "Style Name"
 msgstr "Tên Kiểu dáng"
 
@@ -2122,7 +2203,7 @@ msgid "&Translation Assistant..."
 msgstr "Trợ &lí Dịch thuật..."
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:64
-#: ../src/preferences.cpp:229
+#: ../src/preferences.cpp:235
 msgid "Translation Assistant"
 msgstr "Trợ lí Dịch thuật"
 
@@ -2527,63 +2608,75 @@ msgstr ""
 "Hiện một mặt nạ trên video, xác định các vùng có thể bị cắt mất bởi kĩ thuật "
 "chồng lấn trên tivi"
 
+#: ../src/command/video.cpp:673
+msgid "Reset Video &Pan"
+msgstr ""
+
 #: ../src/command/video.cpp:674
+msgid "Reset Video Pan"
+msgstr ""
+
+#: ../src/command/video.cpp:675
+msgid "Reset the video's position in the video display"
+msgstr ""
+
+#: ../src/command/video.cpp:685
 msgid "&100%"
 msgstr "&100%"
 
-#: ../src/command/video.cpp:675
+#: ../src/command/video.cpp:686
 msgid "100%"
 msgstr "100%"
 
-#: ../src/command/video.cpp:676
+#: ../src/command/video.cpp:687
 msgid "Set zoom to 100%"
 msgstr "Đặt mức thu phóng tới 100%"
 
-#: ../src/command/video.cpp:693 ../src/command/video.cpp:694
+#: ../src/command/video.cpp:704 ../src/command/video.cpp:705
 msgid "Stop video"
 msgstr "Dừng video"
 
-#: ../src/command/video.cpp:695
+#: ../src/command/video.cpp:706
 msgid "Stop video playback"
 msgstr "Dừng phát video"
 
-#: ../src/command/video.cpp:705
+#: ../src/command/video.cpp:716
 msgid "&200%"
 msgstr "&200%"
 
-#: ../src/command/video.cpp:706
+#: ../src/command/video.cpp:717
 msgid "200%"
 msgstr "200%"
 
-#: ../src/command/video.cpp:707
+#: ../src/command/video.cpp:718
 msgid "Set zoom to 200%"
 msgstr "Đặt mức thu phóng tới 200%"
 
-#: ../src/command/video.cpp:723
+#: ../src/command/video.cpp:734
 msgid "&50%"
 msgstr "&50%"
 
-#: ../src/command/video.cpp:724
+#: ../src/command/video.cpp:735
 msgid "50%"
 msgstr "50%"
 
-#: ../src/command/video.cpp:725
+#: ../src/command/video.cpp:736
 msgid "Set zoom to 50%"
 msgstr "Đặt mức thu phóng tới 50%"
 
-#: ../src/command/video.cpp:741 ../src/command/video.cpp:742
+#: ../src/command/video.cpp:752 ../src/command/video.cpp:753
 msgid "Zoom In"
 msgstr "Thu nhỏ"
 
-#: ../src/command/video.cpp:743
+#: ../src/command/video.cpp:754
 msgid "Zoom video in"
 msgstr "Phóng to video"
 
-#: ../src/command/video.cpp:753 ../src/command/video.cpp:754
+#: ../src/command/video.cpp:764 ../src/command/video.cpp:765
 msgid "Zoom Out"
 msgstr "Phóng to"
 
-#: ../src/command/video.cpp:755
+#: ../src/command/video.cpp:766
 msgid "Zoom video out"
 msgstr "Thu nhỏ video"
 
@@ -2738,7 +2831,7 @@ msgid "E&xtract"
 msgstr "Trích x&uất"
 
 #: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:204
-#: ../src/preferences.cpp:605
+#: ../src/preferences.cpp:613
 msgid "&Delete"
 msgstr "&Xóa"
 
@@ -2763,9 +2856,17 @@ msgstr "Nhóm"
 msgid "Choose file to be attached"
 msgstr "Chọn tệp để đính kèm"
 
+#: ../src/dialog_attachments.cpp:139 ../src/dialog_attachments.cpp:170
+msgid "Font Files"
+msgstr ""
+
 #: ../src/dialog_attachments.cpp:142
 msgid "attach font file"
 msgstr "đính kèm tệp phông"
+
+#: ../src/dialog_attachments.cpp:149 ../src/dialog_attachments.cpp:170
+msgid "Graphic Files"
+msgstr ""
 
 #: ../src/dialog_attachments.cpp:152
 msgid "attach graphics file"
@@ -2815,15 +2916,20 @@ msgstr "Tên"
 msgid "Filename"
 msgstr "Tên tệp"
 
-#: ../src/dialog_automation.cpp:136
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:633
 msgid "Description"
 msgstr "Mô tả"
 
-#: ../src/dialog_automation.cpp:222
+#: ../src/dialog_automation.cpp:224
 msgid "Add Automation script"
 msgstr "Thêm mã Tự động hóa"
 
-#: ../src/dialog_automation.cpp:277
+#: ../src/dialog_automation.cpp:240
+#, c-format
+msgid "Script '%s' is already loaded"
+msgstr ""
+
+#: ../src/dialog_automation.cpp:279
 #, c-format
 msgid ""
 "Total scripts loaded: %d\n"
@@ -2834,11 +2940,11 @@ msgstr ""
 "Số script toàn cục đã được nạp: %d\n"
 "Số script cục bộ đã được nạp: %d\n"
 
-#: ../src/dialog_automation.cpp:282
+#: ../src/dialog_automation.cpp:284
 msgid "Scripting engines installed:"
 msgstr "Số động cơ script được cài đặt:"
 
-#: ../src/dialog_automation.cpp:289
+#: ../src/dialog_automation.cpp:291
 #, c-format
 msgid ""
 "\n"
@@ -2849,39 +2955,40 @@ msgid ""
 "Version: %s\n"
 "Full path: %s\n"
 "State: %s\n"
-"\n"
-"Features provided by script:"
 msgstr ""
-"\n"
-"Thông tin script:\n"
-"Tên: %s\n"
-"Mô tả: %s\n"
-"Tác giả: %s\n"
-"Phiên bản: %s\n"
-"Đường dẫn: %s\n"
-"Trạng thái: %s\n"
-"\n"
-"Tính năng của script này:"
 
-#: ../src/dialog_automation.cpp:295
+#: ../src/dialog_automation.cpp:297
 msgid "Correctly loaded"
 msgstr "Nạp đúng"
 
-#: ../src/dialog_automation.cpp:295
+#: ../src/dialog_automation.cpp:297
 msgid "Failed to load"
 msgstr "Thất bại khi nạp"
 
-#: ../src/dialog_automation.cpp:298
+#: ../src/dialog_automation.cpp:297
+msgid "Loaded with warnings"
+msgstr ""
+
+#: ../src/dialog_automation.cpp:300
+#, c-format
+msgid "Warning: %s\n"
+msgstr ""
+
+#: ../src/dialog_automation.cpp:303
+msgid "Features provided by script:\n"
+msgstr ""
+
+#: ../src/dialog_automation.cpp:306
 #, c-format
 msgid "    Macro: %s (%s)"
 msgstr "    Số Macro: %s (%s)"
 
-#: ../src/dialog_automation.cpp:301
+#: ../src/dialog_automation.cpp:309
 #, c-format
 msgid "    Export filter: %s"
 msgstr "    Số bộ lọc đã được xuất: %s"
 
-#: ../src/dialog_automation.cpp:305
+#: ../src/dialog_automation.cpp:313
 msgid "Automation Script Info"
 msgstr "Thông tin về Mã Tự động hóa"
 
@@ -2992,31 +3099,84 @@ msgstr "Giá trị:"
 msgid "Video: %s"
 msgstr "Video: %s"
 
-#: ../src/dialog_dummy_video.cpp:103
+#: ../src/dialog_dummy_video.cpp:71
+msgid "640×480 (SD fullscreen)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:72
+msgid "704×480 (SD anamorphic)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:73
+msgid "640×360 (SD widescreen)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:74
+msgid "704×396 (SD widescreen)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:75
+msgid "640×352 (SD widescreen MOD16)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:76
+msgid "704×400 (SD widescreen MOD16)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:77
+msgid "1024×576 (SuperPAL widescreen)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:78
+msgid "1280×720 (HD 720p)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:79
+msgid "1920×1080 (FHD 1080p)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:80
+msgid "2560×1440 (QHD 1440p)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:81
+msgid "3840×2160 (4K UHD 2160p)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:82
+msgid "1080×1920 (FHD vertical)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:104
 msgid "Dummy video options"
 msgstr "Tùy chọn video giả"
 
-#: ../src/dialog_dummy_video.cpp:115
+#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:130
+#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
+msgid "×"
+msgstr "×"
+
+#: ../src/dialog_dummy_video.cpp:116
 msgid "Checkerboard &pattern"
 msgstr "Hình bàn cờ đam"
 
-#: ../src/dialog_dummy_video.cpp:118
+#: ../src/dialog_dummy_video.cpp:119
 msgid "Video resolution:"
 msgstr "Độ phân giải video:"
 
-#: ../src/dialog_dummy_video.cpp:120
+#: ../src/dialog_dummy_video.cpp:121
 msgid "Color:"
 msgstr "Màu:"
 
-#: ../src/dialog_dummy_video.cpp:123
+#: ../src/dialog_dummy_video.cpp:124
 msgid "Frame rate (fps):"
 msgstr "Tốc độ khung hình (fps):"
 
-#: ../src/dialog_dummy_video.cpp:124
+#: ../src/dialog_dummy_video.cpp:125
 msgid "Duration (frames):"
 msgstr "Thời lượng (khung hình):"
 
-#: ../src/dialog_dummy_video.cpp:179
+#: ../src/dialog_dummy_video.cpp:180
 #, c-format
 msgid "Resulting duration: %s"
 msgstr "Kết quả thời lượng: %s"
@@ -3052,6 +3212,16 @@ msgstr "Xuất..."
 #: ../src/dialog_export.cpp:187
 msgid "Export subtitles file"
 msgstr "Xuất tệp phụ đề"
+
+#: ../src/dialog_export.cpp:202 ../src/dialog_export.cpp:205
+#: ../src/dialog_export.cpp:208
+msgid "Error exporting subtitles"
+msgstr ""
+
+#: ../src/dialog_export.cpp:208 ../src/dialog_style_manager.cpp:691
+#: ../src/project.cpp:142
+msgid "Unknown error"
+msgstr ""
 
 #: ../src/dialog_export_ebu3264.cpp:83
 msgid "EBU STL export"
@@ -3289,7 +3459,10 @@ msgstr "&Bắt đầu!"
 #: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
 #: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
 #: ../src/dialog_kara_timing_copy.cpp:491
-#: ../src/dialog_kara_timing_copy.cpp:541 ../src/preferences.cpp:266
+#: ../src/dialog_kara_timing_copy.cpp:541 ../src/dialog_spellchecker.cpp:143
+#: ../src/dialog_spellchecker.cpp:149 ../src/dialog_style_manager.cpp:682
+#: ../src/dialog_style_manager.cpp:688 ../src/dialog_style_manager.cpp:691
+#: ../src/preferences.cpp:272 ../src/preferences.cpp:464
 msgid "Error"
 msgstr "Lỗi"
 
@@ -3545,6 +3718,11 @@ msgstr "Chi tiết cập nhật:"
 msgid "From &video"
 msgstr "Từ &Video"
 
+#: ../src/dialog_properties.cpp:138 ../src/dialog_resample.cpp:172
+#: ../src/dialog_resample.cpp:186
+msgid "YCbCr Matrix:"
+msgstr "Ma trận YCbCr"
+
 #: ../src/dialog_properties.cpp:141
 msgid "Resolution"
 msgstr "Độ phân giải"
@@ -3617,14 +3795,6 @@ msgstr "Xử lí tỉ lệ khung hình"
 #: ../src/dialog_resample.cpp:162
 msgid "Margin offset"
 msgstr "Khoảng bù lề"
-
-#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
-msgid "×"
-msgstr "×"
-
-#: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
-msgid "YCbCr Matrix:"
-msgstr "Ma trận YCbCr"
 
 #: ../src/dialog_resample.cpp:175
 msgid "Source Resolution"
@@ -3953,6 +4123,14 @@ msgstr "dịch chuyển"
 msgid "Misspelled word:"
 msgstr "Từ bị đánh vần sai:"
 
+#: ../src/dialog_spellchecker.cpp:143
+msgid "No spellchecker available."
+msgstr ""
+
+#: ../src/dialog_spellchecker.cpp:149
+msgid "No spellchecker dictionaries available."
+msgstr ""
+
 #: ../src/dialog_spellchecker.cpp:183
 msgid "Ignore &UPPERCASE words"
 msgstr "Bỏ qua các từ VIẾT HOA"
@@ -3997,209 +4175,215 @@ msgstr "thay thế khi kiểm tra chính tả"
 msgid "Style Editor"
 msgstr "Trình chỉnh sửa kiểu dáng"
 
-#: ../src/dialog_style_editor.cpp:179
-msgid "Font"
-msgstr "Phông chữ"
+#: ../src/dialog_style_editor.cpp:172
+msgid "Border boxes"
+msgstr ""
 
-#: ../src/dialog_style_editor.cpp:180 ../src/preferences.cpp:237
-msgid "Colors"
-msgstr "Màu"
-
-#: ../src/dialog_style_editor.cpp:181
-msgid "Margins"
-msgstr "Lề"
-
-#: ../src/dialog_style_editor.cpp:182 ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:172 ../src/dialog_style_editor.cpp:183
+#: ../src/dialog_style_editor.cpp:286
 msgid "Outline"
 msgstr "Viền"
 
-#: ../src/dialog_style_editor.cpp:183
+#: ../src/dialog_style_editor.cpp:172
+msgid "Shadow box (libass only)"
+msgstr ""
+
+#: ../src/dialog_style_editor.cpp:180
+msgid "Font"
+msgstr "Phông chữ"
+
+#: ../src/dialog_style_editor.cpp:181 ../src/preferences.cpp:243
+msgid "Colors"
+msgstr "Màu"
+
+#: ../src/dialog_style_editor.cpp:182
+msgid "Margins"
+msgstr "Lề"
+
+#: ../src/dialog_style_editor.cpp:184
 msgid "Miscellaneous"
 msgstr "Linh tinh"
 
-#: ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:185
 msgid "Preview"
 msgstr "Xem trước"
 
-#: ../src/dialog_style_editor.cpp:190
+#: ../src/dialog_style_editor.cpp:191
 msgid "&Bold"
 msgstr "&Chữ đậm"
 
-#: ../src/dialog_style_editor.cpp:191
+#: ../src/dialog_style_editor.cpp:192
 msgid "&Italic"
 msgstr "&Chữ nghiêng"
 
-#: ../src/dialog_style_editor.cpp:192
+#: ../src/dialog_style_editor.cpp:193
 msgid "&Underline"
 msgstr "&Gạch dưới"
 
-#: ../src/dialog_style_editor.cpp:193
+#: ../src/dialog_style_editor.cpp:194
 msgid "&Strikeout"
 msgstr "&Gạch ngang"
 
-#: ../src/dialog_style_editor.cpp:205
+#: ../src/dialog_style_editor.cpp:206
 msgid "Alignment"
 msgstr "Căn hàng"
 
-#: ../src/dialog_style_editor.cpp:208
-msgid "&Opaque box"
-msgstr "&Hộp nền"
-
-#: ../src/dialog_style_editor.cpp:216
+#: ../src/dialog_style_editor.cpp:217
 msgid "Style name"
 msgstr "Tên kiểu dáng"
 
-#: ../src/dialog_style_editor.cpp:217
+#: ../src/dialog_style_editor.cpp:218
 msgid "Font face"
 msgstr "Tên phông"
 
-#: ../src/dialog_style_editor.cpp:218
+#: ../src/dialog_style_editor.cpp:219
 msgid "Font size"
 msgstr "Cỡ phông"
 
-#: ../src/dialog_style_editor.cpp:219
+#: ../src/dialog_style_editor.cpp:220
 msgid "Choose primary color"
 msgstr "Chọn màu chính"
 
-#: ../src/dialog_style_editor.cpp:220
+#: ../src/dialog_style_editor.cpp:221
 msgid "Choose secondary color"
 msgstr "Chọn màu thứ cấp"
 
-#: ../src/dialog_style_editor.cpp:221
+#: ../src/dialog_style_editor.cpp:222
 msgid "Choose outline color"
 msgstr "Chọn màu viền"
 
-#: ../src/dialog_style_editor.cpp:222
+#: ../src/dialog_style_editor.cpp:223
 msgid "Choose shadow color"
 msgstr "Chọn màu của bóng đổ"
 
-#: ../src/dialog_style_editor.cpp:223
+#: ../src/dialog_style_editor.cpp:224
 msgid "Distance from left edge, in pixels"
 msgstr "Khoảng cách từ đỉnh trái, tính bằng pixel"
 
-#: ../src/dialog_style_editor.cpp:224
+#: ../src/dialog_style_editor.cpp:225
 msgid "Distance from right edge, in pixels"
 msgstr "Khoảng cách từ đỉnh phải, tính bằng pixel"
 
-#: ../src/dialog_style_editor.cpp:225
+#: ../src/dialog_style_editor.cpp:226
 msgid "Distance from top/bottom edge, in pixels"
 msgstr "Khoảng cách từ đỉnh trên cùng/dưới cùng, tính bằng pixel"
 
-#: ../src/dialog_style_editor.cpp:226
-msgid ""
-"When selected, display an opaque box behind the subtitles instead of an "
-"outline around the text"
-msgstr ""
-"Khi được chọn, một hộp nền sẽ hiển thị sau phụ đề thay cho viền xung quanh"
-
 #: ../src/dialog_style_editor.cpp:227
+msgid "Whether to draw a normal outline or opaque boxes around the text"
+msgstr ""
+
+#: ../src/dialog_style_editor.cpp:228
 msgid "Outline width, in pixels"
 msgstr "Độ dày viền, tính bằng pixel"
 
-#: ../src/dialog_style_editor.cpp:228
+#: ../src/dialog_style_editor.cpp:229
 msgid "Shadow distance, in pixels"
 msgstr "Khoảng cách bóng đổ, tính bằng pixel"
 
-#: ../src/dialog_style_editor.cpp:229
+#: ../src/dialog_style_editor.cpp:230
 msgid "Scale X, in percentage"
 msgstr "Chỉnh tỉ lệ X, theo phần trăm"
 
-#: ../src/dialog_style_editor.cpp:230
+#: ../src/dialog_style_editor.cpp:231
 msgid "Scale Y, in percentage"
 msgstr "Chỉnh tỉ lệ Y, theo phần trăm"
 
-#: ../src/dialog_style_editor.cpp:231
+#: ../src/dialog_style_editor.cpp:232
 msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Góc để quay theo trục Z, tính bằng độ"
 
-#: ../src/dialog_style_editor.cpp:232
+#: ../src/dialog_style_editor.cpp:233
 msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping"
 msgstr ""
 "Mã hóa, chỉ có ích trong unicode nếu phông chữ không có gán unicode phù hợp"
 
-#: ../src/dialog_style_editor.cpp:233
+#: ../src/dialog_style_editor.cpp:234
 msgid "Character spacing, in pixels"
 msgstr "Khoảng cách giữa các kí tự, tính bằng pixel"
 
-#: ../src/dialog_style_editor.cpp:234
+#: ../src/dialog_style_editor.cpp:235
 msgid "Alignment in screen, in numpad style"
 msgstr "Căn hàng trên màn hình, theo kiểu numpad"
 
-#: ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:286
 msgid "Primary"
 msgstr "Chính"
 
-#: ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:286
 msgid "Secondary"
 msgstr "Thứ cấp"
 
-#: ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:286
 msgid "Shadow"
 msgstr "Bóng đổ"
 
-#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:263
+#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:263
 msgid "Left"
 msgstr "Trái"
 
-#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:269
+#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:269
 msgid "Right"
 msgstr "Phải"
 
-#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:275
+#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:275
 msgid "Vert"
 msgstr "Dọc"
 
-#: ../src/dialog_style_editor.cpp:314
+#: ../src/dialog_style_editor.cpp:315
 msgid "Outline:"
 msgstr "Viền: "
 
-#: ../src/dialog_style_editor.cpp:315
+#: ../src/dialog_style_editor.cpp:316
 msgid "Shadow:"
 msgstr "Bóng đổ:"
 
-#: ../src/dialog_style_editor.cpp:320
+#: ../src/dialog_style_editor.cpp:317
+msgid "Border style:"
+msgstr ""
+
+#: ../src/dialog_style_editor.cpp:321
 msgid "Scale X%:"
 msgstr "Tỉ lệ X%:"
 
-#: ../src/dialog_style_editor.cpp:321
+#: ../src/dialog_style_editor.cpp:322
 msgid "Scale Y%:"
 msgstr "Tỉ lệ Y%:"
 
-#: ../src/dialog_style_editor.cpp:322
+#: ../src/dialog_style_editor.cpp:323
 msgid "Rotation:"
 msgstr "Xoay:"
 
-#: ../src/dialog_style_editor.cpp:323
+#: ../src/dialog_style_editor.cpp:324
 msgid "Spacing:"
 msgstr "Khoảng cách:"
 
-#: ../src/dialog_style_editor.cpp:326
+#: ../src/dialog_style_editor.cpp:327
 msgid "Encoding:"
 msgstr "Mã hóa:"
 
-#: ../src/dialog_style_editor.cpp:336
+#: ../src/dialog_style_editor.cpp:337
 msgid "Preview of current style"
 msgstr "Xem trước kiểu dáng hiện tại"
 
-#: ../src/dialog_style_editor.cpp:339
+#: ../src/dialog_style_editor.cpp:340
 msgid "Text to be used for the preview"
 msgstr "Văn bản được dùng để xem trước"
 
-#: ../src/dialog_style_editor.cpp:340
+#: ../src/dialog_style_editor.cpp:341
 msgid "Color of preview background"
 msgstr "Màu nền của phần xem trước"
 
-#: ../src/dialog_style_editor.cpp:421
+#: ../src/dialog_style_editor.cpp:422
 msgid "Style name conflict"
 msgstr "Xung đột tên kiểu dáng"
 
-#: ../src/dialog_style_editor.cpp:421
+#: ../src/dialog_style_editor.cpp:422
 msgid "There is already a style with this name. Please choose another name."
 msgstr "Đã có một kiểu dáng với tên này. Vui lòng chọn một tên khác"
 
-#: ../src/dialog_style_editor.cpp:433
+#: ../src/dialog_style_editor.cpp:434
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
@@ -4207,11 +4391,11 @@ msgstr ""
 "Bạn có muốn thay đổi tất cả các kiểu dáng loại này trong phụ đề sang tên mới "
 "hay không?"
 
-#: ../src/dialog_style_editor.cpp:434
+#: ../src/dialog_style_editor.cpp:435
 msgid "Update script?"
 msgstr "Cập nhật phụ đề?"
 
-#: ../src/dialog_style_editor.cpp:461 ../src/subs_edit_box.cpp:604
+#: ../src/dialog_style_editor.cpp:462 ../src/subs_edit_box.cpp:604
 msgid "style change"
 msgstr "thay đổi kiểu dáng"
 
@@ -4235,11 +4419,11 @@ msgstr "Di chuyển kiểu dáng xuống dưới cùng"
 msgid "Sort styles alphabetically"
 msgstr "Sắp xếp kiểu dáng theo abc"
 
-#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:603
+#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:611
 msgid "&New"
 msgstr "&Mới"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:604
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:612
 msgid "&Edit"
 msgstr "&Sửa"
 
@@ -4380,6 +4564,10 @@ msgstr "Xác nhận xóa khỏi hiện hành"
 #: ../src/dialog_style_manager.cpp:662
 msgid "style delete"
 msgstr "xóa kiểu dáng"
+
+#: ../src/dialog_style_manager.cpp:682
+msgid "Unsupported subtitle format"
+msgstr ""
 
 #: ../src/dialog_style_manager.cpp:698
 msgid "Error Importing Styles"
@@ -4791,7 +4979,7 @@ msgid "Decoder:"
 msgstr "Bộ giải mã:"
 
 #: ../src/dialog_video_details.cpp:66 ../src/preferences.cpp:167
-#: ../src/preferences.cpp:438
+#: ../src/preferences.cpp:444
 msgid "Video"
 msgstr "Video"
 
@@ -4799,7 +4987,7 @@ msgstr "Video"
 msgid "Resolution mismatch"
 msgstr "Độ phân giải không khớp"
 
-#: ../src/dialog_video_properties.cpp:46
+#: ../src/dialog_video_properties.cpp:47
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
@@ -4817,27 +5005,27 @@ msgstr ""
 "\n"
 "Thay đổi độ phân giải của phụ đề để khớp với video?"
 
-#: ../src/dialog_video_properties.cpp:54 ../src/dialog_video_properties.cpp:63
+#: ../src/dialog_video_properties.cpp:58 ../src/dialog_video_properties.cpp:67
 msgid "Set to video resolution"
 msgstr "Đặt tới độ phân giải của video"
 
-#: ../src/dialog_video_properties.cpp:55
+#: ../src/dialog_video_properties.cpp:59
 msgid "Resample script (stretch to new aspect ratio)"
 msgstr "Lấy lại mẫu phụ đề (Phóng to nó đến một tỉ lệ khung hình mới)"
 
-#: ../src/dialog_video_properties.cpp:56
+#: ../src/dialog_video_properties.cpp:60
 msgid "Resample script (add borders)"
 msgstr "Lấy lại mẫu phụ đề (Thêm viền)"
 
-#: ../src/dialog_video_properties.cpp:57
+#: ../src/dialog_video_properties.cpp:61
 msgid "Resample script (remove borders)"
 msgstr "Lấy lại mẫu phụ đề (Xóa viền)"
 
-#: ../src/dialog_video_properties.cpp:64
+#: ../src/dialog_video_properties.cpp:68
 msgid "Resample script"
 msgstr "Lấy lại mẫu phụ đề"
 
-#: ../src/dialog_video_properties.cpp:163
+#: ../src/dialog_video_properties.cpp:167
 msgid "change script resolution"
 msgstr "thay đổi độ phân giải của phụ đề"
 
@@ -5061,7 +5249,7 @@ msgstr "Số kí tự một giây"
 msgid "Invalid command name for hotkey"
 msgstr "Lệnh không hợp lệ cho phím tắt"
 
-#: ../src/main.cpp:246
+#: ../src/main.cpp:258
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -5080,11 +5268,11 @@ msgstr ""
 "\n"
 "Aegisub sẽ đóng ngay"
 
-#: ../src/main.cpp:273
+#: ../src/main.cpp:285
 msgid "Check for updates?"
 msgstr "Kiểm tra cập nhật?"
 
-#: ../src/main.cpp:273
+#: ../src/main.cpp:285
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
@@ -5092,11 +5280,19 @@ msgstr ""
 "Bạn có muốn Aegisub kiểm tra cập nhật mỗi khi khởi động không? Bạn vẫn có "
 "thể tự làm việc này thông qua menu Trợ giúp."
 
-#: ../src/main.cpp:390 ../src/main.cpp:393
+#: ../src/main.cpp:402 ../src/main.cpp:405
 msgid "Program error"
 msgstr "Lỗi chương trình"
 
-#: ../src/main.cpp:407
+#: ../src/main.cpp:405
+#, c-format
+msgid ""
+"Aegisub has crashed while starting up!\n"
+"\n"
+"The last startup step attempted was: %s."
+msgstr ""
+
+#: ../src/main.cpp:419
 #, c-format
 msgid ""
 "An unexpected error has occurred. Please save your work and restart "
@@ -5108,6 +5304,10 @@ msgstr ""
 "động lại Aegisub.\n"
 "\n"
 "Thông báo lỗi: %s"
+
+#: ../src/main.cpp:420
+msgid "Exception in event handler"
+msgstr ""
 
 #: ../src/menu.cpp:96
 msgid "Empty"
@@ -5121,24 +5321,24 @@ msgstr "&Gần đây"
 msgid "No Automation macros loaded"
 msgstr "Không có macro Tự động hóa nào được nạp"
 
-#: ../src/mkv_wrap.cpp:238
+#: ../src/mkv_wrap.cpp:241
 msgid "Choose which track to read:"
 msgstr "Chọn track nào để đọc"
 
-#: ../src/mkv_wrap.cpp:238
+#: ../src/mkv_wrap.cpp:241
 msgid "Multiple subtitle tracks found"
 msgstr "Tìm thấy nhiều track phụ đề"
 
-#: ../src/mkv_wrap.cpp:283
+#: ../src/mkv_wrap.cpp:286
 msgid "Parsing Matroska"
 msgstr "Đang phân tích Matroska"
 
-#: ../src/mkv_wrap.cpp:283
+#: ../src/mkv_wrap.cpp:286
 msgid "Reading subtitles from Matroska file."
 msgstr "Đang đọc phụ đề từ tệp Matroska."
 
 #: ../src/preferences.cpp:63 ../src/preferences.cpp:65
-#: ../src/preferences.cpp:335 ../src/preferences.cpp:356
+#: ../src/preferences.cpp:341 ../src/preferences.cpp:362
 msgid "General"
 msgstr "Tổng quát"
 
@@ -5162,11 +5362,11 @@ msgstr "Kích cỡ Icon thanh công cụ"
 msgid "Always"
 msgstr "Luôn luôn"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
+#: ../src/preferences.cpp:72 ../src/preferences.cpp:203
 msgid "Ask"
 msgstr "Hỏi"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
+#: ../src/preferences.cpp:72 ../src/preferences.cpp:203
 msgid "Never"
 msgstr "Không bao giờ"
 
@@ -5226,7 +5426,7 @@ msgstr "Nhập tệp TTXT"
 msgid "Plain text import"
 msgstr "Nhập tệp văn bản thô"
 
-#: ../src/preferences.cpp:127 ../src/preferences.cpp:371
+#: ../src/preferences.cpp:127 ../src/preferences.cpp:377
 msgid "Audio"
 msgstr "Âm thanh"
 
@@ -5322,7 +5522,7 @@ msgstr "Con trỏ thời gian"
 msgid "Video position"
 msgstr "Vị trí video"
 
-#: ../src/preferences.cpp:155 ../src/preferences.cpp:251
+#: ../src/preferences.cpp:155 ../src/preferences.cpp:257
 msgid "Seconds boundaries"
 msgstr "Phân giới thứ hai"
 
@@ -5350,560 +5550,638 @@ msgstr "Tua video tới điểm bắt đầu của dòng  "
 msgid "Automatically open audio when opening video"
 msgstr "Tự động mở âm thanh khi mở video"
 
+#: ../src/preferences.cpp:179
+msgid "Does nothing"
+msgstr ""
+
+#: ../src/preferences.cpp:179
+msgid "Pans the video"
+msgstr ""
+
+#: ../src/preferences.cpp:179
+msgid "Pans the video (X/Y swapped)"
+msgstr ""
+
+#: ../src/preferences.cpp:179
+msgid "Resizes the video box"
+msgstr ""
+
+#: ../src/preferences.cpp:179
+msgid "Resizes the video box (reversed)"
+msgstr ""
+
+#: ../src/preferences.cpp:179
+msgid "Zooms the video"
+msgstr ""
+
+#: ../src/preferences.cpp:179
+msgid "Zooms the video (reversed)"
+msgstr ""
+
 #: ../src/preferences.cpp:181
+msgid "Scrolling on the video display"
+msgstr ""
+
+#: ../src/preferences.cpp:182
+msgid "Ctrl+Scrolling on the video display"
+msgstr ""
+
+#: ../src/preferences.cpp:183
+msgid "Shift+Scrolling on the video display"
+msgstr ""
+
+#: ../src/preferences.cpp:187
 msgid "Default Zoom"
 msgstr "Thu phóng Mặc định"
 
-#: ../src/preferences.cpp:183
+#: ../src/preferences.cpp:189
 msgid "Fast jump step in frames"
 msgstr "Bước nhảy nhanh trong khung hình"
 
-#: ../src/preferences.cpp:187
+#: ../src/preferences.cpp:193
 msgid "Screenshot save path"
 msgstr "Đường dẫn lưu ảnh chụp màn hình"
 
-#: ../src/preferences.cpp:189
+#: ../src/preferences.cpp:195
 msgid "Script Resolution"
 msgstr "Độ phân giải phụ đề"
 
-#: ../src/preferences.cpp:190
+#: ../src/preferences.cpp:196
 msgid "Use resolution of first video opened"
 msgstr "Sử dụng độ phân giải của video được mở đầu tiên"
 
-#: ../src/preferences.cpp:193
+#: ../src/preferences.cpp:199
 msgid "Default width"
 msgstr "Chiều rộng mặc định"
 
-#: ../src/preferences.cpp:195
+#: ../src/preferences.cpp:201
 msgid "Default height"
 msgstr "Chiều cao mặc định"
 
-#: ../src/preferences.cpp:197
+#: ../src/preferences.cpp:203
 msgid "Always resample"
 msgstr "Luôn luôn lấy mẫu lại"
 
-#: ../src/preferences.cpp:197
+#: ../src/preferences.cpp:203
 msgid "Always set"
 msgstr "Luôn luôn thiết đặt"
 
-#: ../src/preferences.cpp:199
+#: ../src/preferences.cpp:205
 msgid "Match video resolution on open"
 msgstr "Khớp độ phân giải video khi mở"
 
-#: ../src/preferences.cpp:206
+#: ../src/preferences.cpp:212
 msgid "Interface"
 msgstr "Giao diện"
 
-#: ../src/preferences.cpp:208
+#: ../src/preferences.cpp:214
 msgid "Edit Box"
 msgstr "Hộp biên tập"
 
-#: ../src/preferences.cpp:209
+#: ../src/preferences.cpp:215
 msgid "Enable call tips"
 msgstr "Bật mẹo gọi"
 
-#: ../src/preferences.cpp:210
+#: ../src/preferences.cpp:216
 msgid "Overwrite in time boxes"
 msgstr "Thẻ trong hộp thời gian"
 
-#: ../src/preferences.cpp:211
+#: ../src/preferences.cpp:217
 msgid "Shift+Enter adds \\n"
 msgstr ""
 
-#: ../src/preferences.cpp:212
+#: ../src/preferences.cpp:218
 msgid "Enable syntax highlighting"
 msgstr "Bật tô sáng cú pháp"
 
-#: ../src/preferences.cpp:213
+#: ../src/preferences.cpp:219
 msgid "Dictionaries path"
 msgstr "Đường dẫn đến từ điển"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:222
 msgid "Character Counter"
 msgstr "Bộ đếm kí tự"
 
-#: ../src/preferences.cpp:217
+#: ../src/preferences.cpp:223
 msgid "Maximum characters per line"
 msgstr "Số kí tự tối đa mỗi dòng"
 
-#: ../src/preferences.cpp:218
+#: ../src/preferences.cpp:224
 msgid "Characters Per Second Warning Threshold"
 msgstr "Ngưỡng cảnh báo số kí tự mỗi giây"
 
-#: ../src/preferences.cpp:219
+#: ../src/preferences.cpp:225
 msgid "Characters Per Second Error Threshold"
 msgstr "Ngưỡng báo lỗi số kí tự mỗi giây"
 
-#: ../src/preferences.cpp:220
+#: ../src/preferences.cpp:226
 msgid "Ignore whitespace"
 msgstr "Bỏ qua dấu cách"
 
-#: ../src/preferences.cpp:221
+#: ../src/preferences.cpp:227
 msgid "Ignore punctuation"
 msgstr "Bỏ qua dấu chấm câu"
 
-#: ../src/preferences.cpp:223
+#: ../src/preferences.cpp:229
 msgid "Grid"
 msgstr "Danh sách"
 
-#: ../src/preferences.cpp:224
+#: ../src/preferences.cpp:230
 msgid "Focus grid on click"
 msgstr "Tập trung danh sách vào khi nhấp chuột"
 
-#: ../src/preferences.cpp:225
+#: ../src/preferences.cpp:231
 msgid "Highlight visible subtitles"
 msgstr "Tô sáng các dòng phụ đề khả kiến"
 
-#: ../src/preferences.cpp:226
+#: ../src/preferences.cpp:232
 msgid "Hide overrides symbol"
 msgstr "Biểu tượng ẩn thẻ"
 
-#: ../src/preferences.cpp:230
+#: ../src/preferences.cpp:236
 msgid "Skip over whitespace"
 msgstr ""
 
-#: ../src/preferences.cpp:245
+#: ../src/preferences.cpp:251
 msgid "Audio Display"
 msgstr "Hiển thị âm thanh"
 
-#: ../src/preferences.cpp:246
+#: ../src/preferences.cpp:252
 msgid "Play cursor"
 msgstr "Con trỏ phát"
 
-#: ../src/preferences.cpp:247
+#: ../src/preferences.cpp:253
 msgid "Line boundary start"
 msgstr "Phân giới bắt đầu của dòng"
 
-#: ../src/preferences.cpp:248
+#: ../src/preferences.cpp:254
 msgid "Line boundary end"
 msgstr "Phân giới kết thúc của dòng"
 
-#: ../src/preferences.cpp:249
+#: ../src/preferences.cpp:255
 msgid "Line boundary inactive line"
 msgstr "Phân giới của dòng không hoạt động"
 
-#: ../src/preferences.cpp:250
+#: ../src/preferences.cpp:256
 msgid "Syllable boundaries"
 msgstr "Phân giới âm"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:259
 msgid "Syntax Highlighting"
 msgstr "Tô sáng cú pháp"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:260
 msgid "Background"
 msgstr "Nền"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:261
 msgid "Normal"
 msgstr "Bình thường"
 
-#: ../src/preferences.cpp:256
+#: ../src/preferences.cpp:262
 msgid "Comments"
 msgstr "Chú giải"
 
-#: ../src/preferences.cpp:257
+#: ../src/preferences.cpp:263
 msgid "Drawing Commands"
 msgstr ""
 
-#: ../src/preferences.cpp:258
+#: ../src/preferences.cpp:264
 msgid "Drawing X Coords"
 msgstr ""
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:265
 msgid "Drawing Y Coords"
 msgstr ""
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:266
 msgid "Underline Spline Endpoints"
 msgstr ""
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:268
 msgid "Brackets"
 msgstr "Ngoặc"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:269
 msgid "Slashes and Parentheses"
 msgstr "Gạch chéo và Ngoặc tròn"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:270
 msgid "Tags"
 msgstr "Thẻ"
 
-#: ../src/preferences.cpp:265
+#: ../src/preferences.cpp:271
 msgid "Parameters"
 msgstr "Tham số"
 
-#: ../src/preferences.cpp:267
+#: ../src/preferences.cpp:273
 msgid "Error Background"
 msgstr "Nền khi lỗi"
 
-#: ../src/preferences.cpp:268
+#: ../src/preferences.cpp:274
 msgid "Line Break"
 msgstr "Ngắt dòng"
 
-#: ../src/preferences.cpp:269
+#: ../src/preferences.cpp:275
 msgid "Karaoke templates"
 msgstr "Khuôn mẫu Karaoke"
 
-#: ../src/preferences.cpp:270
+#: ../src/preferences.cpp:276
 msgid "Karaoke variables"
 msgstr "Biến Karaoke"
 
-#: ../src/preferences.cpp:276
+#: ../src/preferences.cpp:282
 msgid "Audio Color Schemes"
 msgstr "Màu đồ thị âm thanh"
 
-#: ../src/preferences.cpp:278 ../src/preferences.cpp:387
+#: ../src/preferences.cpp:284 ../src/preferences.cpp:393
 msgid "Spectrum"
 msgstr "Quang phổ"
 
-#: ../src/preferences.cpp:279
+#: ../src/preferences.cpp:285
 msgid "Waveform"
 msgstr "Đồ thị sóng"
 
-#: ../src/preferences.cpp:281
+#: ../src/preferences.cpp:287
 msgid "Subtitle Grid"
 msgstr "Danh sách dòng phụ đề"
 
-#: ../src/preferences.cpp:282
+#: ../src/preferences.cpp:288
 msgid "Standard foreground"
 msgstr "Tiền cảnh chuẩn"
 
-#: ../src/preferences.cpp:283
+#: ../src/preferences.cpp:289
 msgid "Standard background"
 msgstr "Nền chuẩn"
 
-#: ../src/preferences.cpp:284
+#: ../src/preferences.cpp:290
 msgid "Selection foreground"
 msgstr "Tiền cảnh của phần được chọn"
 
-#: ../src/preferences.cpp:285
+#: ../src/preferences.cpp:291
 msgid "Selection background"
 msgstr "Nền của phần được chọn"
 
-#: ../src/preferences.cpp:286
+#: ../src/preferences.cpp:292
 msgid "Collision foreground"
 msgstr "Tiền cảnh của dòng bị trùng nhau"
 
-#: ../src/preferences.cpp:287
+#: ../src/preferences.cpp:293
 msgid "In frame background"
 msgstr "Nền trong khung hình"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:294
 msgid "Comment background"
 msgstr "Nền của dòng chú giải"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:295
 msgid "Selected comment background"
 msgstr "Nền của dòng chú giải được chọn"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:296
 msgid "Header background"
 msgstr "Nền của thanh tiêu đề"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:297
 msgid "Left Column"
 msgstr "Cột trái"
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:298
 msgid "Active Line Border"
 msgstr "Biên của Dòng đang hoạt động"
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:299
 msgid "Lines"
 msgstr "Dòng"
 
-#: ../src/preferences.cpp:294
+#: ../src/preferences.cpp:300
 msgid "CPS Error"
 msgstr "Lỗi CPS"
 
-#: ../src/preferences.cpp:296
+#: ../src/preferences.cpp:302
 msgid "Visual Typesetting Tools"
 msgstr ""
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:303
 msgid "Primary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:304
 msgid "Secondary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:305
 msgid "Primary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:300
+#: ../src/preferences.cpp:306
 msgid "Secondary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:303
+#: ../src/preferences.cpp:309
 msgid "Visual Typesetting Tools Alpha"
 msgstr ""
 
-#: ../src/preferences.cpp:304
+#: ../src/preferences.cpp:310
 msgid "Shaded Area"
 msgstr ""
 
-#: ../src/preferences.cpp:313
+#: ../src/preferences.cpp:319
 msgid "Backup"
 msgstr "Sao lưu"
 
-#: ../src/preferences.cpp:315
+#: ../src/preferences.cpp:321
 msgid "Automatic Save"
 msgstr "Tự động lưu"
 
-#: ../src/preferences.cpp:316 ../src/preferences.cpp:324
+#: ../src/preferences.cpp:322 ../src/preferences.cpp:330
 msgid "Enable"
 msgstr "Bật"
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:325
 msgid "Interval in seconds"
 msgstr "Khoảng thời gian tính bằng giây"
 
-#: ../src/preferences.cpp:320 ../src/preferences.cpp:326
-#: ../src/preferences.cpp:385
+#: ../src/preferences.cpp:326 ../src/preferences.cpp:332
+#: ../src/preferences.cpp:391
 msgid "Path"
 msgstr "Đường dẫn"
 
-#: ../src/preferences.cpp:321
+#: ../src/preferences.cpp:327
 msgid "Autosave after every change"
 msgstr "Tự động lưu sau mỗi thay đổi"
 
-#: ../src/preferences.cpp:323
+#: ../src/preferences.cpp:329
 msgid "Automatic Backup"
 msgstr "Tự động sao lưu"
 
-#: ../src/preferences.cpp:337
+#: ../src/preferences.cpp:343
 msgid "Base path"
 msgstr "Đường dẫn Cơ sở"
 
-#: ../src/preferences.cpp:338
+#: ../src/preferences.cpp:344
 msgid "Include path"
 msgstr "Đường dẫn Bao gồm"
 
-#: ../src/preferences.cpp:339
+#: ../src/preferences.cpp:345
 msgid "Auto-load path"
 msgstr "Đường dẫn Tự động nạp"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "0: Fatal"
 msgstr "0: Nặng"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "1: Error"
 msgstr "1: Lỗi"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "2: Warning"
 msgstr "2: Cảnh báo"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "3: Hint"
 msgstr "3: Gợi ý"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "4: Debug"
 msgstr "4: Gỡ lỗi"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:347
 msgid "5: Trace"
 msgstr "5: Truy dấu"
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:349
 msgid "Trace level"
 msgstr "Cấp độ truy dấu"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:351
 msgid "All scripts"
 msgstr "Tất cả script"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:351
 msgid "Global autoload scripts"
 msgstr "Mã tự động nạp toàn cục"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:351
 msgid "No scripts"
 msgstr "Không script"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:351
 msgid "Subtitle-local scripts"
 msgstr "Phụ đề nội bộ"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:353
 msgid "Autoreload on Export"
 msgstr "Tự động nạp lại khi Xuất"
 
-#: ../src/preferences.cpp:354
+#: ../src/preferences.cpp:360
 msgid "Advanced"
 msgstr "Nâng cao"
 
-#: ../src/preferences.cpp:358
+#: ../src/preferences.cpp:364
 msgid ""
-"Changing these settings might result in bugs and/or crashes.  Do not touch "
+"Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
 msgstr ""
-"Thay đổi những cài đặt này có thể dẫn đến lỗi và/hoặc sập chương trình. "
-"Không nên chỉnh trừ khi bạn biết bạn đang làm gì."
 
-#: ../src/preferences.cpp:373 ../src/preferences.cpp:440
+#: ../src/preferences.cpp:379 ../src/preferences.cpp:446
 msgid "Expert"
 msgstr "Nguồn"
 
-#: ../src/preferences.cpp:376
+#: ../src/preferences.cpp:382
 msgid "Audio provider"
 msgstr "Trình cung cấp âm thanh"
 
-#: ../src/preferences.cpp:379
+#: ../src/preferences.cpp:385
 msgid "Audio player"
 msgstr "Trình phát âm thanh"
 
-#: ../src/preferences.cpp:381
+#: ../src/preferences.cpp:387
 msgid "Cache"
 msgstr "Bộ đệm"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:388
 msgid "Hard Disk"
 msgstr "Đĩa cứng"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:388
 msgid "None (NOT RECOMMENDED)"
 msgstr "Không (KHÔNG KHUYẾN NGHỊ)"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:388
 msgid "RAM"
 msgstr "RAM"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:390
 msgid "Cache type"
 msgstr "Đệm trên"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:395
 msgid "Better quality"
 msgstr "Chất lượng tốt hơn"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:395
 msgid "High quality"
 msgstr "Chất lượng cao"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:395
 msgid "Insane quality"
 msgstr "Chất lượng cực cao"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:395
 msgid "Regular quality"
 msgstr "Chất lượng bình thường"
 
-#: ../src/preferences.cpp:391
+#: ../src/preferences.cpp:397
 msgid "Quality"
 msgstr "Chất lượng"
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Compressed"
 msgstr ""
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Extended"
 msgstr ""
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Linear"
 msgstr ""
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Logarithmic"
 msgstr ""
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:399
 msgid "Medium"
 msgstr ""
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:401
 msgid "Frequency mapping"
 msgstr ""
 
-#: ../src/preferences.cpp:397
+#: ../src/preferences.cpp:403
 msgid "Cache memory max (MB)"
 msgstr "Lượng bộ nhớ đệm tối đa (MB)"
 
-#: ../src/preferences.cpp:403
+#: ../src/preferences.cpp:409
 msgid "Avisynth down-mixer"
 msgstr "Down-mix âm thanh bằng Avisynth "
 
-#: ../src/preferences.cpp:404
+#: ../src/preferences.cpp:410
 msgid "Force sample rate"
 msgstr "Tốc độ lấy mẫu bắt buộc"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:416
 msgid "Abort"
 msgstr "Hủy"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:416
 msgid "Ignore"
 msgstr "Bỏ qua"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:416
 msgid "Stop"
 msgstr "Dừng "
 
-#: ../src/preferences.cpp:412
+#: ../src/preferences.cpp:418
 msgid "Audio indexing error handling mode"
 msgstr "Chế độ xử lí lỗi nhập chỉ mục âm thanh"
 
-#: ../src/preferences.cpp:414
+#: ../src/preferences.cpp:420
 msgid "Always index all audio tracks"
 msgstr "Luôn nhập chỉ mục cho tất cả track âm thanh"
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:425
 msgid "Portaudio device"
 msgstr "Thiết bị âm thanh ngoại vi"
 
-#: ../src/preferences.cpp:424
+#: ../src/preferences.cpp:430
 msgid "OSS Device"
 msgstr "Thiết bị OSS"
 
-#: ../src/preferences.cpp:429
+#: ../src/preferences.cpp:435
 msgid "Buffer latency"
 msgstr "Độ trễ của bộ đệm"
 
-#: ../src/preferences.cpp:430
+#: ../src/preferences.cpp:436
 msgid "Buffer length"
 msgstr "Độ dài của bộ đệm"
 
-#: ../src/preferences.cpp:443
+#: ../src/preferences.cpp:449
 msgid "Video provider"
 msgstr "Trình cung cấp video"
 
-#: ../src/preferences.cpp:446
+#: ../src/preferences.cpp:452
 msgid "Subtitles provider"
 msgstr "Trình cung cấp phụ đề"
 
-#: ../src/preferences.cpp:450
+#: ../src/preferences.cpp:456
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Cho phép dùng Avisynth bản 2.56a"
 
-#: ../src/preferences.cpp:452
+#: ../src/preferences.cpp:458
 msgid "Avisynth memory limit"
 msgstr "Giới hạn bộ nhớ Avisynth"
 
-#: ../src/preferences.cpp:460
+#: ../src/preferences.cpp:464
+msgid "Debug"
+msgstr ""
+
+#: ../src/preferences.cpp:464
+msgid "Fatal"
+msgstr ""
+
+#: ../src/preferences.cpp:464
+msgid "Info"
+msgstr ""
+
+#: ../src/preferences.cpp:464
+msgid "Panic"
+msgstr ""
+
+#: ../src/preferences.cpp:464
+msgid "Quiet"
+msgstr ""
+
+#: ../src/preferences.cpp:464
+msgid "Verbose"
+msgstr ""
+
+#: ../src/preferences.cpp:464 ../src/project.cpp:318
+msgid "Warning"
+msgstr ""
+
+#: ../src/preferences.cpp:466
 msgid "Debug log verbosity"
 msgstr "Nhật kí gỡ lỗi"
 
-#: ../src/preferences.cpp:462
+#: ../src/preferences.cpp:468
 msgid "Decoding threads"
 msgstr "Luồng giải mã"
 
-#: ../src/preferences.cpp:463
+#: ../src/preferences.cpp:469
 msgid "Enable unsafe seeking"
 msgstr "Bật tua không an toàn"
 
-#: ../src/preferences.cpp:599
+#: ../src/preferences.cpp:605
 msgid "Hotkeys"
 msgstr "Phím tắt"
 
-#: ../src/preferences.cpp:697
+#: ../src/preferences.cpp:609
+msgid "Search"
+msgstr ""
+
+#: ../src/preferences.cpp:625 ../src/preferences.cpp:628
+msgid "Hotkey"
+msgstr ""
+
+#: ../src/preferences.cpp:626 ../src/preferences.cpp:631
+msgid "Command"
+msgstr ""
+
+#: ../src/preferences.cpp:705
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -5911,15 +6189,15 @@ msgstr ""
 "Bạn có thật sự muốn khôi phục các tùy chọn mặc định không? Tất cả các thiết "
 "lập của bạn sẽ bị ghi đè."
 
-#: ../src/preferences.cpp:697
+#: ../src/preferences.cpp:705
 msgid "Restore defaults?"
 msgstr "Khôi phục mặc định?"
 
-#: ../src/preferences.cpp:715
+#: ../src/preferences.cpp:723
 msgid "Preferences"
 msgstr "Cài đặt"
 
-#: ../src/preferences.cpp:743
+#: ../src/preferences.cpp:751
 msgid "&Restore Defaults"
 msgstr "&Khôi phục mặc định"
 
@@ -5938,6 +6216,15 @@ msgstr "Chọn..."
 #: ../src/preferences_base.cpp:251
 msgid "Font Size"
 msgstr "Kích cỡ phông"
+
+#: ../src/project.cpp:85
+msgid "Error loading file"
+msgstr ""
+
+#: ../src/project.cpp:111 ../src/project.cpp:130
+#, c-format
+msgid "%s not found."
+msgstr ""
 
 #: ../src/project.cpp:186
 msgid "Do you want to load/unload the associated files?"
@@ -6011,7 +6298,19 @@ msgstr ""
 "\n"
 "Những trình cung cấp sau đây đã được thử:\n"
 
-#: ../src/resolution_resampler.cpp:288
+#: ../src/project.cpp:368
+msgid "Failed to parse timecodes file: "
+msgstr ""
+
+#: ../src/project.cpp:394
+msgid "Failed to parse keyframes file: "
+msgstr ""
+
+#: ../src/project.cpp:398
+msgid "Keyframes file in unknown format: "
+msgstr ""
+
+#: ../src/resolution_resampler.cpp:300
 msgid "resolution resampling"
 msgstr "tạo lại mẫu độ phân giải"
 
@@ -6039,14 +6338,22 @@ msgstr "Bạn có muốn lưu các thay đổi vào %s không?"
 msgid "Unsaved changes"
 msgstr "Các thay đổi chưa được lưu"
 
+#: ../src/subs_controller.cpp:265 ../src/subs_controller.cpp:404
+msgid "Untitled"
+msgstr "Không đề"
+
 #: ../src/subs_controller.cpp:279
 #, c-format
 msgid "File backup saved as \"%s\"."
 msgstr "Tệp đã được sao lưu là \"%s\"."
 
-#: ../src/subs_controller.cpp:404
-msgid "Untitled"
-msgstr "Không đề"
+#: ../src/subs_controller.cpp:282
+msgid "Exception when attempting to autosave file: "
+msgstr ""
+
+#: ../src/subs_controller.cpp:285
+msgid "Unhandled exception when attempting to autosave file."
+msgstr ""
 
 #: ../src/subs_controller.cpp:406
 msgid "untitled"
@@ -6236,6 +6543,16 @@ msgstr "Ngôn ngữ cho từ điển đồng nghĩa"
 msgid "Disable"
 msgstr "Vô hiệu hóa"
 
+#: ../src/subs_preview.cpp:142
+msgid ""
+"Could not get any subtitles provider for the preview box. Make sure that you "
+"have a provider installed."
+msgstr ""
+
+#: ../src/subs_preview.cpp:143
+msgid "No subtitles provider"
+msgstr ""
+
 #: ../src/subtitle_format.cpp:102
 #, c-format
 msgid "From video (%g)"
@@ -6327,6 +6644,18 @@ msgid "Time of this frame relative to start and end of current subs"
 msgstr ""
 "Thời gian của khung hình này tương đối với thời gian bắt đầu và kết thúc của "
 "phụ đề hiện tại"
+
+#: ../src/video_provider_manager.cpp:78
+msgid "file not found."
+msgstr ""
+
+#: ../src/video_provider_manager.cpp:84
+msgid "video is not in a supported format."
+msgstr ""
+
+#: ../src/video_provider_manager.cpp:101
+msgid "Could not open "
+msgstr ""
 
 #: ../src/visual_tool.cpp:119
 msgid "visual typesetting"
@@ -6534,6 +6863,16 @@ msgstr ""
 msgid "Adds \\be1 tags to all selected lines"
 msgstr "Thêm thẻ \\be1 cho tất cả các dòng"
 
+#: ../automation/autoload/macro-2-mkfullwitdh.lua:6
+msgid "Make text fullwidth"
+msgstr ""
+
+#: ../automation/autoload/macro-2-mkfullwitdh.lua:7
+msgid ""
+"Shows how to use the unicode include to iterate over characters and a lookup "
+"table to convert those characters to something else."
+msgstr ""
+
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 msgid "Make fullwidth"
 msgstr "Tạo kí tự fullwidth"
@@ -6681,6 +7020,46 @@ msgstr ""
 "Có nghĩa là bạn có thể dùng ứng dụng này cho bất kì mục đích nào mà không "
 "cần có phí, nhưng sẽ không có bảo hành hoặc bất kì những cái tương tự. %n%n "
 "Xem website của Aegisub để có thêm thông tin về việc tải về mã nguồn."
+
+#, c-format
+#~ msgid ""
+#~ "\n"
+#~ "Script info:\n"
+#~ "Name: %s\n"
+#~ "Description: %s\n"
+#~ "Author: %s\n"
+#~ "Version: %s\n"
+#~ "Full path: %s\n"
+#~ "State: %s\n"
+#~ "\n"
+#~ "Features provided by script:"
+#~ msgstr ""
+#~ "\n"
+#~ "Thông tin script:\n"
+#~ "Tên: %s\n"
+#~ "Mô tả: %s\n"
+#~ "Tác giả: %s\n"
+#~ "Phiên bản: %s\n"
+#~ "Đường dẫn: %s\n"
+#~ "Trạng thái: %s\n"
+#~ "\n"
+#~ "Tính năng của script này:"
+
+#~ msgid "&Opaque box"
+#~ msgstr "&Hộp nền"
+
+#~ msgid ""
+#~ "When selected, display an opaque box behind the subtitles instead of an "
+#~ "outline around the text"
+#~ msgstr ""
+#~ "Khi được chọn, một hộp nền sẽ hiển thị sau phụ đề thay cho viền xung quanh"
+
+#~ msgid ""
+#~ "Changing these settings might result in bugs and/or crashes.  Do not "
+#~ "touch these unless you know what you're doing."
+#~ msgstr ""
+#~ "Thay đổi những cài đặt này có thể dẫn đến lỗi và/hoặc sập chương trình. "
+#~ "Không nên chỉnh trừ khi bạn biết bạn đang làm gì."
 
 #~ msgid "Drawings"
 #~ msgstr "Mã hình vẽ"
