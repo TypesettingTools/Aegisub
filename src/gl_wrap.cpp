@@ -28,7 +28,11 @@
 #include <OpenGL/glext.h>
 #else
 #include <GL/gl.h>
+#ifdef HAVE_GL_GLEXT_H
+#include <GL/glext.h>
+#else
 #include "gl/glext.h"
+#endif
 #endif
 
 static const float deg2rad = 3.1415926536f / 180.f;

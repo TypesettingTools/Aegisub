@@ -110,7 +110,7 @@ std::string AegisubLocale::PickLanguage() {
 	if (!active_language.empty())
 		style |= wxCANCEL;
 
-	wxSingleChoiceDialog dialog(nullptr, "Please choose a language:", "Language", langNames,
+	wxSingleChoiceDialog dialog(nullptr, _("Please choose a language:"), _("Language"), langNames,
 			(void **)nullptr,
 			style);
 	if (dialog.ShowModal() == wxID_OK) {

@@ -77,7 +77,7 @@ void change_value(wxTextCtrl *ctrl, wxString const& value) {
 		ctrl->ChangeValue(value);
 }
 
-wxString new_value(wxComboBox *ctrl, wxCommandEvent &evt) {
+wxString new_value([[maybe_unused]] wxComboBox *ctrl, [[maybe_unused]] wxCommandEvent &evt) {
 #ifdef __WXGTK__
 	return ctrl->GetValue();
 #else

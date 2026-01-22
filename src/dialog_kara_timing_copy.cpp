@@ -51,6 +51,7 @@
 #include <wx/msgdlg.h>
 #include <wx/settings.h>
 #include <wx/sizer.h>
+#include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/string.h>
 
@@ -387,44 +388,49 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 {
 	SetIcons(GETICONS(kara_timing_copier));
 
-	wxSizer *DisplayBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Text"));
-	wxSizer *StylesBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles"));
+	wxStaticBoxSizer *DisplayBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Text"));
+	wxStaticBoxSizer *StylesBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles"));
 	auto StylesGridSizer = new wxFlexGridSizer(2, 2, 6, 6);
-	wxSizer *HelpBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Shortcut Keys"));
-	wxSizer *ButtonsBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Commands"));
+	wxStaticBoxSizer *HelpBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Shortcut Keys"));
+	wxStaticBoxSizer *ButtonsBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Commands"));
 	wxSizer *MainStackSizer = new wxBoxSizer(wxVERTICAL);
 	wxSizer *BottomShelfSizer = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *BottomLeftStackSizer = new wxBoxSizer(wxVERTICAL);
 
-	display = new KaraokeLineMatchDisplay(this);
+	wxWindow *DisplayBox = DisplayBoxSizer->GetStaticBox();
+	wxWindow *StylesBox = StylesBoxSizer->GetStaticBox();
+	wxWindow *HelpBox = HelpBoxSizer->GetStaticBox();
+	wxWindow *ButtonsBox = ButtonsBoxSizer->GetStaticBox();
+
+	display = new KaraokeLineMatchDisplay(DisplayBox);
 
 	//Checkbox
-	Interpolate = new wxCheckBox(this,-1,_("Attempt to &interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
+	Interpolate = new wxCheckBox(DisplayBox,-1,_("Attempt to &interpolate kanji."),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT);
 	Interpolate->SetValue(OPT_GET("Tool/Kanji Timer/Interpolation")->GetBool());
 
 	wxArrayString styles = to_wx(subs->GetStyles());
-	SourceStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(160, -1), styles, wxCB_READONLY);
-	DestStyle = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(160, -1), styles, wxCB_READONLY);
+	SourceStyle = new wxComboBox(StylesBox, -1, "", wxDefaultPosition, wxSize(160, -1), styles, wxCB_READONLY);
+	DestStyle = new wxComboBox(StylesBox, -1, "", wxDefaultPosition, wxSize(160, -1), styles, wxCB_READONLY);
 
-	wxStaticText *ShortcutKeys = new wxStaticText(this,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
+	wxStaticText *ShortcutKeys = new wxStaticText(HelpBox,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
 
 	//Buttons
-	wxButton *Start = new wxButton(this, -1,_("S&tart!"));
-	wxButton *Link = new wxButton(this, -1,_("&Link"));
-	wxButton *Unlink = new wxButton(this, -1,_("&Unlink"));
-	wxButton *SkipSourceLine = new wxButton(this, -1,_("Skip &Source Line"));
-	wxButton *SkipDestLine = new wxButton(this, -1,_("Skip &Dest Line"));
-	wxButton *GoBackLine = new wxButton(this, -1,_("&Go Back a Line"));
-	wxButton *AcceptLine = new wxButton(this, -1,_("&Accept Line"));
+	wxButton *Start = new wxButton(ButtonsBox, -1,_("S&tart!"));
+	wxButton *Link = new wxButton(ButtonsBox, -1,_("&Link"));
+	wxButton *Unlink = new wxButton(ButtonsBox, -1,_("&Unlink"));
+	wxButton *SkipSourceLine = new wxButton(ButtonsBox, -1,_("Skip &Source Line"));
+	wxButton *SkipDestLine = new wxButton(ButtonsBox, -1,_("Skip &Dest Line"));
+	wxButton *GoBackLine = new wxButton(ButtonsBox, -1,_("&Go Back a Line"));
+	wxButton *AcceptLine = new wxButton(ButtonsBox, -1,_("&Accept Line"));
 	wxButton *CloseKT = new wxButton(this,wxID_CLOSE,_("&Close"));
 
 	//Frame: Text
 	DisplayBoxSizer->Add(display, 0, wxEXPAND|wxALL, 6);
 	DisplayBoxSizer->Add(Interpolate, 0, wxEXPAND|wxALL, 6);
 	//Frame: Styles
-	StylesGridSizer->Add(new wxStaticText(this, -1, TEXT_LABEL_SOURCE), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	StylesGridSizer->Add(new wxStaticText(StylesBox, -1, TEXT_LABEL_SOURCE), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
 	StylesGridSizer->Add(SourceStyle, 1, wxEXPAND);
-	StylesGridSizer->Add(new wxStaticText(this, -1, TEXT_LABEL_DEST), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
+	StylesGridSizer->Add(new wxStaticText(StylesBox, -1, TEXT_LABEL_DEST), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
 	StylesGridSizer->Add(DestStyle, 1, wxEXPAND);
 	StylesBoxSizer->Add(StylesGridSizer, 1, wxEXPAND|wxALL, 6);
 	//Frame: Shortcut Keys

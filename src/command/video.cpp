@@ -632,7 +632,7 @@ struct video_play final : public validator_video_loaded {
 	CMD_ICON(button_play)
 	STR_MENU("Play")
 	STR_DISP("Play")
-	STR_HELP("Play video starting on this position")
+	STR_HELP("Play the video starting on this position")
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Play();
@@ -644,7 +644,7 @@ struct video_play_line final : public validator_video_loaded {
 	CMD_ICON(button_playline)
 	STR_MENU("Play line")
 	STR_DISP("Play line")
-	STR_HELP("Play current line")
+	STR_HELP("Play the video for the current line")
 
 	void operator()(agi::Context *c) override {
 		c->videoController->PlayLine();
@@ -668,6 +668,17 @@ struct video_show_overscan final : public validator_video_loaded {
 	}
 };
 
+struct video_reset_pan final : public validator_video_loaded {
+       CMD_NAME("video/reset_pan")
+       STR_MENU("Reset Video &Pan")
+       STR_DISP("Reset Video Pan")
+       STR_HELP("Reset the video's position in the video display")
+
+       void operator()(agi::Context *c) override {
+		   c->videoDisplay->ResetVideoZoom();
+       }
+};
+
 class video_zoom_100: public validator_video_attached {
 public:
 	CMD_NAME("video/zoom/100")
@@ -677,12 +688,12 @@ public:
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) override {
-		return c->videoDisplay->GetZoom() == 1.;
+		return c->videoDisplay->GetWindowZoom() == 1.;
 	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		c->videoDisplay->SetZoom(1.);
+		c->videoDisplay->SetWindowZoom(1.);
 	}
 };
 
@@ -708,12 +719,12 @@ public:
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) override {
-		return c->videoDisplay->GetZoom() == 2.;
+		return c->videoDisplay->GetWindowZoom() == 2.;
 	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		c->videoDisplay->SetZoom(2.);
+		c->videoDisplay->SetWindowZoom(2.);
 	}
 };
 
@@ -726,12 +737,12 @@ public:
 	CMD_TYPE(COMMAND_VALIDATE | COMMAND_RADIO)
 
 	bool IsActive(const agi::Context *c) override {
-		return c->videoDisplay->GetZoom() == .5;
+		return c->videoDisplay->GetWindowZoom() == .5;
 	}
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		c->videoDisplay->SetZoom(.5);
+		c->videoDisplay->SetWindowZoom(.5);
 	}
 };
 
@@ -743,7 +754,7 @@ struct video_zoom_in final : public validator_video_attached {
 	STR_HELP("Zoom video in")
 
 	void operator()(agi::Context *c) override {
-		c->videoDisplay->SetZoom(c->videoDisplay->GetZoom() + .125);
+		c->videoDisplay->SetWindowZoom(c->videoDisplay->GetWindowZoom() + .125);
 	}
 };
 
@@ -755,7 +766,7 @@ struct video_zoom_out final : public validator_video_attached {
 	STR_HELP("Zoom video out")
 
 	void operator()(agi::Context *c) override {
-		c->videoDisplay->SetZoom(c->videoDisplay->GetZoom() - .125);
+		c->videoDisplay->SetWindowZoom(c->videoDisplay->GetWindowZoom() - .125);
 	}
 };
 }
@@ -796,6 +807,7 @@ namespace cmd {
 		reg(std::make_unique<video_play>());
 		reg(std::make_unique<video_play_line>());
 		reg(std::make_unique<video_show_overscan>());
+		reg(std::make_unique<video_reset_pan>());
 		reg(std::make_unique<video_stop>());
 		reg(std::make_unique<video_zoom_100>());
 		reg(std::make_unique<video_zoom_200>());

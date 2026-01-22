@@ -31,6 +31,7 @@
 #include <wx/filename.h>
 #include <wx/listbox.h>
 #include <wx/sizer.h>
+#include <wx/statbox.h>
 #include <wx/string.h>
 
 namespace {
@@ -67,13 +68,13 @@ DialogAutosave::DialogAutosave(wxWindow *parent)
 {
 	d.SetIcons(GETICONS(open_toolbutton));
 
-	wxSizer *files_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Files"));
-	file_list = new wxListBox(&d, -1);
+	wxStaticBoxSizer *files_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Files"));
+	file_list = new wxListBox(files_box->GetStaticBox(), -1);
 	file_list->Bind(wxEVT_LISTBOX, &DialogAutosave::OnSelectFile, this);
 	files_box->Add(file_list, wxSizerFlags(1).Expand().Border());
 
-	wxSizer *versions_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Versions"));
-	version_list = new wxListBox(&d, -1);
+	wxStaticBoxSizer *versions_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Versions"));
+	version_list = new wxListBox(versions_box->GetStaticBox(), -1);
 	version_list->Bind(wxEVT_LISTBOX_DCLICK, [this](wxCommandEvent&) { d.EndModal(wxID_OK); });
 	versions_box->Add(version_list, wxSizerFlags(1).Expand().Border());
 
@@ -143,7 +144,7 @@ void DialogAutosave::Populate(std::map<wxString, AutosaveFile> &files_map, std::
 
 		auto it = files_map.find(name);
 		if (it == files_map.end())
-			it = files_map.insert({name, AutosaveFile{name}}).first;
+			it = files_map.insert({name, AutosaveFile{name, {}}}).first;
 		it->second.versions.push_back(Version{wxFileName(directory, fn).GetFullPath(), date, agi::wxformat(name_fmt, date.Format())});
 	} while (dir.GetNext(&fn));
 }

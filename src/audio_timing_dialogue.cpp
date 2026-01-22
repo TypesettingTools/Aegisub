@@ -389,7 +389,7 @@ public:
 
 	// AudioTimingController interface
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const override;
-	void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const override { }
+	void GetLabels(TimeRange const&, std::vector<AudioLabel> &) const override { }
 	void Next(NextMode mode) override;
 	void Prev() override;
 	void Revert() override;
@@ -635,7 +635,7 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 	return ret;
 }
 
-std::vector<AudioMarker*> AudioTimingControllerDialogue::OnRightClick(int ms, bool, int sensitivity, int snap_range)
+std::vector<AudioMarker*> AudioTimingControllerDialogue::OnRightClick(int ms, bool, int, int snap_range)
 {
 	clicked_ms = INT_MIN;
 	std::vector<AudioMarker*> ret = GetRightMarkers();

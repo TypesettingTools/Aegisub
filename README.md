@@ -80,7 +80,7 @@ fontconfig:  libfontconfig1-dev
 libass:      libass-dev
 boost:       libboost-chrono-dev libboost-locale-dev libboost-regex-dev libboost-system-dev libboost-thread-dev
 zlib:        zlib1g-dev
-WxWidgets:   wx3.2-headers libwxgtk3.2-dev  or  wx3.0-headers libwxgtk3.0-dev
+WxWidgets:   wx3.2-headers libwxgtk3.2-dev
 ICU:         icu-devtools libicu-dev
 pulse-audio: libpulse-dev
 ALSA:        libasound2-dev
@@ -116,6 +116,8 @@ If you are packaging Aegisub for a Linux distribution, here are a few things you
 
   Like for its other dependencies, Aegisub includes a meson subproject for LuaJIT that can be used to statically link a version of LuaJIT with 5.2 compatibility.
   For distributions that do not allow downloading additional sources at build time, the downloaded LuaJIT subproject is included in the source tarballs distributed with releases.
+- When linked against libstdc++, Aegisub needs libstdc++ 6.0.32 or later due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95048.
+  Aegisub's tests will detect this bug, but if you're not running tests on packaging you'll need to make sure the libstdc++ version is recent enough.
 
 The following commands are an example for how to build Aegisub with the goal of creating a distribution package:
 

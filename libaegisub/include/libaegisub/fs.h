@@ -80,7 +80,7 @@ public:
 #define WRAP_SFP(name) \
 	inline path name() const { \
 		return path(std::filesystem::path::name()); \
-	};
+	}
 
 	WRAP_SFP(root_name);
 	WRAP_SFP(root_directory);

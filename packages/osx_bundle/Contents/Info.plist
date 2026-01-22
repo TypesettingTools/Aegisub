@@ -33,7 +33,7 @@
     <string>@PLIST_VERSION@</string>
 
     <key>CFBundleLongVersionString</key>
-    <string>@PLIST_VERSION@, Copyright 2005-2014, aegisub http://www.aegisub.org/</string>
+    <string>@PLIST_VERSION@, Copyright 2005-2014, aegisub https://aegisub.org/</string>
 
     <!-- Values: i386, ppc, x86_65, ppc64 -->
     <key>LSArchitecturePriority</key>
@@ -42,9 +42,15 @@
         <string>i386</string>
     </array>
 
+	<!-- Target platform -->
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
+
     <!-- Displayed in the 'Get Info' context menu dialogue -->
     <key>CFBundleGetInfoString</key>
-    <string>aegisub version @PLIST_VERSION@ built on @PLIST_BUILD_DATE@ http://www.aegisub.org/</string>
+    <string>aegisub version @PLIST_VERSION@ built on @PLIST_BUILD_DATE@ https://aegisub.org/</string>
 
     <!-- Whether to allow multiple instances across user logins -->
     <key>LSMultipleInstancesProhibited</key>

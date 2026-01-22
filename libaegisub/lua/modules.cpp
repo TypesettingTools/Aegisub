@@ -28,6 +28,17 @@ extern "C" int luaopen_lpeg(lua_State *L);
 namespace agi::lua {
 int regex_init(lua_State *L);
 
+int wrap_luaopen_luabins(lua_State *L) {
+	lua_getfield(L, LUA_GLOBALSINDEX, "aegisub");
+	lua_getfield(L, -1, "__raise_warning");
+	lua_remove(L, -2);
+
+	push_value(L, "This automation script uses the library luabins. This library is deprecated and will be removed in a future version of Aegisub. If your script critically depends on luabins and cannot be adapted to work without it, please let us know at https://github.com/TypesettingTools/Aegisub/issues/382 .");
+	lua_call(L, 1, 0);
+
+	return luaopen_luabins(L);
+}
+
 void preload_modules(lua_State *L) {
 	luaL_openlibs(L);
 
@@ -38,7 +49,7 @@ void preload_modules(lua_State *L) {
 	set_field(L, "aegisub.__unicode_impl", luaopen_unicode_impl);
 	set_field(L, "aegisub.__lfs_impl", luaopen_lfs_impl);
 	set_field(L, "lpeg", luaopen_lpeg);
-	set_field(L, "luabins", luaopen_luabins);
+	set_field(L, "luabins", wrap_luaopen_luabins);
 
 	lua_pop(L, 2);
 

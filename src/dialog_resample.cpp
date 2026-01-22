@@ -110,25 +110,34 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 		video_mat = YCbCrMatrix::rgb;
 	}
 
+	// Create static box sizers
+	auto source_res_box_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Source Resolution"));
+	auto dest_res_box_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Destination Resolution"));
+	auto margin_box_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Margin offset"));
+
+	wxWindow *source_res_box = source_res_box_sizer->GetStaticBox();
+	wxWindow *dest_res_box = dest_res_box_sizer->GetStaticBox();
+	wxWindow *margin_box = margin_box_sizer->GetStaticBox();
+
 	// Create all controls and set validators
 	for (size_t i = 0; i < 4; ++i) {
-		margin_ctrl[i] = new wxSpinCtrl(&d, -1, "0", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -9999, 9999, 0);
+		margin_ctrl[i] = new wxSpinCtrl(margin_box, -1, "0", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -9999, 9999, 0);
 		margin_ctrl[i]->SetValidator(wxGenericValidator(&settings.margin[i]));
 	}
 
-	symmetrical = new wxCheckBox(&d, -1, _("&Symmetrical"));
+	symmetrical = new wxCheckBox(margin_box, -1, _("&Symmetrical"));
 	symmetrical->SetValue(true);
 
 	margin_ctrl[RIGHT]->Enable(false);
 	margin_ctrl[BOTTOM]->Enable(false);
 
-	source_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
-	source_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
-	source_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition,
+	source_x = new wxSpinCtrl(source_res_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	source_y = new wxSpinCtrl(source_res_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	source_matrix = new wxComboBox(source_res_box, -1, "", wxDefaultPosition,
 		wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
-	dest_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
-	dest_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
-	dest_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize,
+	dest_x = new wxSpinCtrl(dest_res_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	dest_y = new wxSpinCtrl(dest_res_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	dest_matrix = new wxComboBox(dest_res_box, -1, "", wxDefaultPosition, wxDefaultSize,
 		to_wx(MatrixNames()), wxCB_READONLY);
 
 	source_x->SetValidator(wxGenericValidator(&settings.source_x));
@@ -138,9 +147,9 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	dest_y->SetValidator(wxGenericValidator(&settings.dest_y));
 	dest_matrix->SetValidator(MakeEnumBinder(&settings.dest_matrix));
 
-	from_video = new wxButton(&d, -1, _("From &video"));
+	from_video = new wxButton(dest_res_box, -1, _("From &video"));
 	from_video->Enable(false);
-	from_script = new wxButton(&d, -1, _("From s&cript"));
+	from_script = new wxButton(source_res_box, -1, _("From s&cript"));
 	from_script->Enable(false);
 
 	wxString ar_modes[] = {_("Stretch"), _("Add borders"), _("Remove borders"), _("Manual")};
@@ -159,42 +168,39 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	margin_sizer->Add(margin_ctrl[BOTTOM], wxSizerFlags(1).Expand());
 	margin_sizer->AddSpacer(1);
 
-	auto margin_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Margin offset"));
-	margin_box->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	margin_box_sizer->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
 
 	auto source_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	source_res_sizer->Add(new wxStaticText(&d, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
+	source_res_sizer->Add(new wxStaticText(source_res_box, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT)); // U+00D7 multiplication sign
 	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	source_res_sizer->Add(from_script);
 
 	auto source_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	source_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
+	source_matrix_sizer->Add(new wxStaticText(source_res_box, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
 	source_matrix_sizer->Add(source_matrix, wxSizerFlags(1).Center());
 
-	auto source_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Source Resolution"));
-	source_res_box->Add(source_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
-	source_res_box->Add(source_matrix_sizer, wxSizerFlags(1).Expand());
+	source_res_box_sizer->Add(source_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	source_res_box_sizer->Add(source_matrix_sizer, wxSizerFlags(1).Expand());
 
 	auto dest_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	dest_res_sizer->Add(dest_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	dest_res_sizer->Add(new wxStaticText(&d, -1, _("x")), wxSizerFlags().Center().Border(wxRIGHT));
+	dest_res_sizer->Add(new wxStaticText(dest_res_box, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT));
 	dest_res_sizer->Add(dest_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	dest_res_sizer->Add(from_video);
 
 	auto dest_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	dest_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
+	dest_matrix_sizer->Add(new wxStaticText(dest_res_box, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
 	dest_matrix_sizer->Add(dest_matrix, wxSizerFlags(1).Center());
 
-	auto dest_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Destination Resolution"));
-	dest_res_box->Add(dest_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
-	dest_res_box->Add(dest_matrix_sizer, wxSizerFlags(1).Expand());
+	dest_res_box_sizer->Add(dest_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	dest_res_box_sizer->Add(dest_matrix_sizer, wxSizerFlags(1).Expand());
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(source_res_box, wxSizerFlags().Expand().Border());
-	main_sizer->Add(dest_res_box, wxSizerFlags().Expand().Border());
+	main_sizer->Add(source_res_box_sizer, wxSizerFlags().Expand().Border());
+	main_sizer->Add(dest_res_box_sizer, wxSizerFlags().Expand().Border());
 	main_sizer->Add(ar_mode, wxSizerFlags().Expand().Border());
-	main_sizer->Add(margin_box, wxSizerFlags(1).Expand().Border());
+	main_sizer->Add(margin_box_sizer, wxSizerFlags(1).Expand().Border());
 	main_sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	d.SetSizerAndFit(main_sizer);
 	d.CenterOnParent();

@@ -166,7 +166,7 @@ void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
 	});
 }
 
-void AsyncVideoProvider::UpdateSubtitles(const AssFile *new_subs, const AssDialogue *changed) throw() {
+void AsyncVideoProvider::UpdateSubtitles(const AssDialogue *changed) throw() {
 	uint_fast32_t req_version = ++version;
 
 	// Copy just the line which were changed, then replace the line at the

@@ -161,8 +161,8 @@ SubsController::~SubsController() {
 }
 
 void SubsController::SetSelectionController(SelectionController *selection_controller) {
-	active_line_connection = context->selectionController->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
-	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
+	active_line_connection = selection_controller->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
+	selection_connection = selection_controller->AddSelectionListener(&SubsController::OnSelectionChanged, this);
 }
 
 ProjectProperties SubsController::Load(agi::fs::path const& filename, const char *charset) {
@@ -262,7 +262,7 @@ void SubsController::AutoSave() {
 
 	auto name = filename.filename();
 	if (name.empty())
-		name = "Untitled";
+		name = from_wx(_("Untitled"));
 
 	autosaved_commit_id = commit_id;
 	auto frame = context->frame;
@@ -279,10 +279,10 @@ void SubsController::AutoSave() {
 			msg = fmt_tl("File backup saved as \"%s\".", path);
 		}
 		catch (const agi::Exception& err) {
-			msg = to_wx("Exception when attempting to autosave file: " + err.GetMessage());
+			msg = _("Exception when attempting to autosave file: ") + to_wx(err.GetMessage());
 		}
 		catch (...) {
-			msg = "Unhandled exception when attempting to autosave file.";
+			msg = _("Unhandled exception when attempting to autosave file.");
 		}
 
 		agi::dispatch::Main().Async([frame, msg] {

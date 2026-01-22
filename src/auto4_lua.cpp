@@ -44,6 +44,7 @@
 #include "audio_timing.h"
 #include "command/command.h"
 #include "compat.h"
+#include "format.h"
 #include "frame_main.h"
 #include "include/aegisub/context.h"
 #include "options.h"
@@ -54,7 +55,6 @@
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
-#include <libaegisub/format.h>
 #include <libaegisub/lua/ffi.h>
 #include <libaegisub/lua/modules.h>
 #include <libaegisub/lua/script_reader.h>
@@ -153,6 +153,34 @@ namespace {
 		return 1;
 	}
 
+	int raise_warning_onload(lua_State *L)
+	{
+		lua_getfield(L, LUA_REGISTRYINDEX, "warnings");
+		if (lua_isnil(L, -1)) {
+			lua_pop(L, 1);
+			lua_newtable(L);
+			lua_pushvalue(L, -1);
+			lua_setfield(L, LUA_REGISTRYINDEX, "warnings");
+		}
+		lua_pushvalue(L, -2);
+		lua_rawseti(L, -2, lua_objlen(L, -2) + 1);
+		lua_pop(L, 2);
+		return 0;
+	}
+
+	int raise_warning_postload(lua_State *L)
+	{
+		std::string message = check_string(L, -1);
+		lua_pop(L, 1);
+
+		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
+		std::string filename = check_string(L, -1);
+		lua_pop(L, 1);
+
+		wxLogWarning(fmt_tl("Warning in Automation script '%s':\n%s", filename, message));
+		return 0;
+	}
+
 	int frame_from_ms(lua_State *L)
 	{
 		const agi::Context *c = get_context(L);
@@ -240,11 +268,13 @@ namespace {
 		lua_pushvalue(L, 1);
 		std::unique_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
 		lua_pop(L, 1);
-		if (typeid(*et) != typeid(AssStyle))
+
+		AssEntry *etp = et.get();	// Shut up a compiler warning
+		if (typeid(*etp) != typeid(AssStyle))
 			return error(L, "Not a style entry");
 
 		double width, height, descent, extlead;
-		if (!Automation4::CalculateTextExtents(static_cast<AssStyle*>(et.get()),
+		if (!Automation4::CalculateTextExtents(static_cast<AssStyle*>(etp),
 				check_string(L, 2), width, height, descent, extlead))
 			return error(L, "Some internal error occurred calculating text_extents");
 
@@ -376,6 +406,8 @@ namespace {
 		std::string author;
 		std::string version;
 
+		std::vector<std::string> warnings;
+
 		std::vector<cmd::Command*> macros;
 		std::vector<std::unique_ptr<ExportFilter>> filters;
 
@@ -404,6 +436,7 @@ namespace {
 		std::string GetAuthor() const override { return author; }
 		std::string GetVersion() const override { return version; }
 		bool GetLoadedState() const override { return L != nullptr; }
+		std::vector<std::string> GetWarnings() const override { return warnings; }
 
 		std::vector<cmd::Command*> GetMacros() const override { return macros; }
 		std::vector<ExportFilter*> GetFilters() const override;
@@ -424,7 +457,7 @@ namespace {
 		// create lua environment
 		L = luaL_newstate();
 		if (!L) {
-			description = "Could not initialize Lua state";
+			description = from_wx(_("Could not initialize Lua state"));
 			return;
 		}
 
@@ -480,6 +513,7 @@ namespace {
 		set_field<cancel_script>(L, "cancel");
 		set_field(L, "lua_automation_version", 4);
 		set_field<clipboard_init>(L, "__init_clipboard");
+		set_field<raise_warning_onload>(L, "__raise_warning");
 		set_field<get_file_name>(L, "file_name");
 		set_field<get_translation>(L, "gettext");
 		set_field<project_properties>(L, "project_properties");
@@ -506,7 +540,7 @@ namespace {
 		// this is where features are registered
 		if (lua_pcall(L, 0, 0, -2)) {
 			// error occurred, assumed to be on top of Lua stack
-			description = agi::format("Error initialising Lua script \"%s\":\n\n%s", GetPrettyFilename().string(), get_string_or_default(L, -1));
+			description = from_wx(fmt_tl("Error initialising Lua script \"%s\":\n\n%s", GetPrettyFilename().string(), get_string_or_default(L, -1)));
 			lua_pop(L, 2); // error + error handler
 			return;
 		}
@@ -516,7 +550,7 @@ namespace {
 		lua_getglobal(L, "version");
 		if (lua_isnumber(L, -1) && lua_tointeger(L, -1) == 3) {
 			lua_pop(L, 1); // just to avoid tripping the stackcheck in debug
-			description = "Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported.";
+			description = from_wx(_("Attempted to load an Automation 3 script as an Automation 4 Lua script. Automation 3 is no longer supported."));
 			stackcheck.check_stack(0);
 			return;
 		}
@@ -531,6 +565,21 @@ namespace {
 
 		lua_pop(L, 1);
 		stackcheck.check_stack(0);
+
+		lua_getfield(L, LUA_REGISTRYINDEX, "warnings");
+		if (!lua_isnil(L, -1)) {
+			lua_for_each(L, [this] {
+				this->warnings.push_back(check_string(L, -1));
+			});
+		} else {
+			lua_pop(L, 1);
+		}
+		lua_getfield(L, LUA_GLOBALSINDEX, "aegisub");
+		set_field<raise_warning_postload>(L, "__raise_warning");
+		lua_pop(L, 1);
+
+		stackcheck.check_stack(0);
+
 		// if we got this far, the script should be ready
 		loaded = true;
 	}
@@ -849,12 +898,13 @@ namespace {
 					throw LuaForEachBreak();
 				}
 
-				if (typeid(*lines[cur - 1]) != typeid(AssDialogue)) {
+				AssEntry *curline = lines[cur - 1];
+				if (typeid(*curline) != typeid(AssDialogue)) {
 					wxLogError("Selected row %d is not a dialogue line", cur);
 					throw LuaForEachBreak();
 				}
 
-				auto diag = static_cast<AssDialogue*>(lines[cur - 1]);
+				auto diag = static_cast<AssDialogue*>(curline);
 				sel.insert(diag);
 				if (!active_line || active_idx == cur)
 					active_line = diag;
@@ -1003,7 +1053,7 @@ namespace {
 		}
 	}
 
-	std::unique_ptr<ScriptDialog> LuaExportFilter::GenerateConfigDialog(wxWindow *parent, agi::Context *c)
+	std::unique_ptr<ScriptDialog> LuaExportFilter::GenerateConfigDialog(wxWindow *, agi::Context *c)
 	{
 		if (!has_config)
 			return nullptr;

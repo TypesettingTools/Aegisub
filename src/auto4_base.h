@@ -91,7 +91,7 @@ namespace Automation4 {
 
 		/// Restore the values of the controls in this dialog from a string
 		/// stored in the subtitle script
-		virtual void Unserialise(std::string const& serialised) { }
+		virtual void Unserialise(std::string const& serialised) = 0;
 	};
 
 	class ProgressSink;
@@ -163,6 +163,8 @@ namespace Automation4 {
 		virtual std::string GetVersion() const=0;
 		/// Did the script load correctly?
 		virtual bool GetLoadedState() const=0;
+		/// Did loading the script raise any warnings?
+		virtual std::vector<std::string> GetWarnings() const=0;
 
 		/// Get a list of commands provided by this script
 		virtual std::vector<cmd::Command*> GetMacros() const=0;
@@ -277,6 +279,7 @@ namespace Automation4 {
 		std::string GetAuthor() const override { return ""; }
 		std::string GetVersion() const override { return ""; }
 		bool GetLoadedState() const override { return false; }
+		std::vector<std::string> GetWarnings() const override { return {}; }
 
 		std::vector<cmd::Command*> GetMacros() const override { return {}; }
 		std::vector<ExportFilter*> GetFilters() const override { return {}; }

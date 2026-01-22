@@ -40,6 +40,7 @@
 #include "dialog_progress.h"
 #include "MatroskaParser.h"
 #include "options.h"
+#include "subtitle_format_srt.h"
 
 #include <libaegisub/ass/time.h>
 #include <libaegisub/file_mapping.h>
@@ -123,6 +124,8 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 	std::vector<char> uncompBuf(cs ? 256 : 0);
 
+	SrtTagParser srtParser;
+
 	while (mkv_ReadFrame(file, 0, &rt, &startTime, &endTime, &filePos, &frameSize, &frameFlags) == 0) {
 		if (ps->IsCancelled()) return true;
 		if (frameSize == 0) continue;
@@ -145,8 +148,8 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 				bytesRead += res;
 
-				if (bytesRead >= uncompBuf.size())
-					uncompBuf.resize(2 * uncompBuf.size());
+				if (bytesRead >= std::ssize(uncompBuf))
+					uncompBuf.resize(2 * std::ssize(uncompBuf));
 			} while (res != 0);
 
 			readBuf = std::string_view(&uncompBuf[0], bytesRead);
@@ -179,7 +182,7 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 			auto line = agi::format("Dialogue: 0,%s,%s,Default,,0,0,0,,%s"
 				, subStart.GetAssFormatted()
 				, subEnd.GetAssFormatted()
-				, readBuf);
+				, srtParser.ToAss(std::string(readBuf)));
 			boost::replace_all(line, "\r\n", "\\N");
 			boost::replace_all(line, "\r", "\\N");
 			boost::replace_all(line, "\n", "\\N");

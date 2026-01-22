@@ -175,7 +175,7 @@ public:
 	// Convenience wrapper for a callable which does not use any signal args
 	template<typename Thunk, typename = decltype((*(Thunk *)0)())>
 	UnscopedConnection Connect(Thunk&& func) {
-		return DoConnect([=](Args... args) mutable { func(); });
+		return DoConnect([=](Args...) mutable { func(); });
 	}
 
 	// Convenience wrapper for a member function which does not use any signal
@@ -183,7 +183,7 @@ public:
 	// same signature when the signal has no args.
 	template<typename T, typename MemberThunk>
 	UnscopedConnection Connect(MemberThunk func, T* obj) {
-		return DoConnect([=](Args... args) { (obj->*func)(); });
+		return DoConnect([=](Args...) { (obj->*func)(); });
 	}
 
 	// Convenience wrapper for a member function which uses only the first
