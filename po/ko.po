@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub-korea\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 21:36+0100\n"
+"POT-Creation-Date: 2025-12-01 20:46+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: FreeTime\n"
 "Language-Team: None\n"
@@ -235,7 +235,6 @@ msgid "All Files"
 msgstr "모든 파일"
 
 #: ../src/auto4_base.cpp:507 ../src/command/keyframe.cpp:74
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
 #: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "전체 지원 형식"
@@ -560,7 +559,6 @@ msgid "Play the current audio selection, ignoring changes made while playing"
 msgstr ""
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "현재 라인 재생"
 
@@ -1998,6 +1996,12 @@ msgstr ""
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr ""
 
+#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#, fuzzy
+#| msgid "All Files"
+msgid "Text Files"
+msgstr "모든 파일"
+
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "타임코드 파일 저장"
@@ -2515,12 +2519,20 @@ msgid "Play"
 msgstr ""
 
 #: ../src/command/video.cpp:635
-msgid "Play video starting on this position"
+#, fuzzy
+#| msgid "Play video starting on this position"
+msgid "Play the video starting on this position"
 msgstr "현재 위치에서 비디오 시작 재생"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
 msgstr ""
+
+#: ../src/command/video.cpp:647
+#, fuzzy
+#| msgid "Play current line"
+msgid "Play the video for the current line"
+msgstr "현재 라인 재생"
 
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
@@ -2674,7 +2686,9 @@ msgid "Line"
 msgstr "라인"
 
 #: ../src/command/vis_tool.cpp:141
-msgid "Appends a line"
+#, fuzzy
+#| msgid "Appends a line"
+msgid "Append a line"
 msgstr "라인에 설명를 첨부"
 
 #: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
@@ -2682,7 +2696,9 @@ msgid "Bicubic"
 msgstr "Bicubic"
 
 #: ../src/command/vis_tool.cpp:148
-msgid "Appends a bezier bicubic curve"
+#, fuzzy
+#| msgid "Appends a bezier bicubic curve"
+msgid "Append a bezier bicubic curve"
 msgstr " a bezier bicubic 곡선에 설명 첨부"
 
 #: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
@@ -2690,7 +2706,9 @@ msgid "Convert"
 msgstr "변환"
 
 #: ../src/command/vis_tool.cpp:155
-msgid "Converts a segment between line and bicubic"
+#, fuzzy
+#| msgid "Converts a segment between line and bicubic"
+msgid "Convert a segment between line and bicubic"
 msgstr "라인과 bicubic의 세그먼트를 변환한다"
 
 #: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
@@ -2698,7 +2716,9 @@ msgid "Insert"
 msgstr "삽입"
 
 #: ../src/command/vis_tool.cpp:162
-msgid "Inserts a control point"
+#, fuzzy
+#| msgid "Inserts a control point"
+msgid "Insert a control point"
 msgstr "제어점 삽입"
 
 #: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
@@ -2706,7 +2726,9 @@ msgid "Remove"
 msgstr "제거"
 
 #: ../src/command/vis_tool.cpp:169
-msgid "Removes a control point"
+#, fuzzy
+#| msgid "Removes a control point"
+msgid "Remove a control point"
 msgstr "제어점 제거"
 
 #: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
@@ -2714,7 +2736,9 @@ msgid "Freehand"
 msgstr "프리핸드"
 
 #: ../src/command/vis_tool.cpp:176
-msgid "Draws a freehand shape"
+#, fuzzy
+#| msgid "Draws a freehand shape"
+msgid "Draw a freehand shape"
 msgstr "프리핸드 쉐입 그리기"
 
 #: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
@@ -2722,7 +2746,9 @@ msgid "Freehand smooth"
 msgstr "프리핸드 스무스"
 
 #: ../src/command/vis_tool.cpp:183
-msgid "Draws a smoothed freehand shape"
+#, fuzzy
+#| msgid "Draws a smoothed freehand shape"
+msgid "Draw a smoothed freehand shape"
 msgstr "스무스 프리핸드 쉐입 그리기"
 
 #: ../src/dialog_about.cpp:46

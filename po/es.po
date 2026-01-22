@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 21:36+0100\n"
+"POT-Creation-Date: 2025-12-01 20:46+0100\n"
 "PO-Revision-Date: 2014-09-14 19:11-0430\n"
 "Last-Translator: Tom Maneiro <tomman@tsdx.net.ve>\n"
 "Language-Team: TSDX Dubs LTDA. <tomman@tsdx.net.ve>\n"
@@ -238,7 +238,6 @@ msgid "All Files"
 msgstr "Todos los archivos"
 
 #: ../src/auto4_base.cpp:507 ../src/command/keyframe.cpp:74
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
 #: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "Todos los formatos soportados"
@@ -566,7 +565,6 @@ msgstr ""
 "reproducir"
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "Reproducir línea actual"
 
@@ -2073,6 +2071,12 @@ msgstr "Abrir archivo de códigos de tiempo"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Abre un archivo de códigos de tiempo VFR v1 o v2"
 
+#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#, fuzzy
+#| msgid "Files"
+msgid "Text Files"
+msgstr "Archivos"
+
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Guardar archivo de códigos de tiempo..."
@@ -2612,12 +2616,20 @@ msgid "Play"
 msgstr "Reproducir"
 
 #: ../src/command/video.cpp:635
-msgid "Play video starting on this position"
+#, fuzzy
+#| msgid "Play video starting on this position"
+msgid "Play the video starting on this position"
 msgstr "Reproducir video comenzando en esta posición"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
 msgstr "Reproducir línea"
+
+#: ../src/command/video.cpp:647
+#, fuzzy
+#| msgid "Play the audio for the current line"
+msgid "Play the video for the current line"
+msgstr "Reproduce el audio para la línea actual"
 
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
@@ -2773,7 +2785,9 @@ msgid "Line"
 msgstr "Línea"
 
 #: ../src/command/vis_tool.cpp:141
-msgid "Appends a line"
+#, fuzzy
+#| msgid "Appends a line"
+msgid "Append a line"
 msgstr "Anexa una línea"
 
 #: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
@@ -2781,7 +2795,9 @@ msgid "Bicubic"
 msgstr "Bicúbica"
 
 #: ../src/command/vis_tool.cpp:148
-msgid "Appends a bezier bicubic curve"
+#, fuzzy
+#| msgid "Appends a bezier bicubic curve"
+msgid "Append a bezier bicubic curve"
 msgstr "Anexa una curva Bezier bicúbica"
 
 #: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
@@ -2789,7 +2805,9 @@ msgid "Convert"
 msgstr "Convertir"
 
 #: ../src/command/vis_tool.cpp:155
-msgid "Converts a segment between line and bicubic"
+#, fuzzy
+#| msgid "Converts a segment between line and bicubic"
+msgid "Convert a segment between line and bicubic"
 msgstr "Convierte un segmento entre línea y bicúbica"
 
 #: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
@@ -2797,7 +2815,9 @@ msgid "Insert"
 msgstr "Insertar"
 
 #: ../src/command/vis_tool.cpp:162
-msgid "Inserts a control point"
+#, fuzzy
+#| msgid "Inserts a control point"
+msgid "Insert a control point"
 msgstr "Insertar un punto de control"
 
 #: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
@@ -2805,7 +2825,9 @@ msgid "Remove"
 msgstr "Quitar"
 
 #: ../src/command/vis_tool.cpp:169
-msgid "Removes a control point"
+#, fuzzy
+#| msgid "Removes a control point"
+msgid "Remove a control point"
 msgstr "Quitar un punto de control"
 
 #: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
@@ -2813,7 +2835,9 @@ msgid "Freehand"
 msgstr "Mano alzada"
 
 #: ../src/command/vis_tool.cpp:176
-msgid "Draws a freehand shape"
+#, fuzzy
+#| msgid "Draws a freehand shape"
+msgid "Draw a freehand shape"
 msgstr "Dibujar una forma a mano alzada"
 
 #: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
@@ -2821,7 +2845,9 @@ msgid "Freehand smooth"
 msgstr "Mano alzada suavizada"
 
 #: ../src/command/vis_tool.cpp:183
-msgid "Draws a smoothed freehand shape"
+#, fuzzy
+#| msgid "Draws a smoothed freehand shape"
+msgid "Draw a smoothed freehand shape"
 msgstr "Dibujar una forma a mano alzada suavizada"
 
 #: ../src/dialog_about.cpp:46

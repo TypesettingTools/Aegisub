@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 21:36+0100\n"
+"POT-Creation-Date: 2025-12-01 20:46+0100\n"
 "PO-Revision-Date: 2012-10-10 22:10+0100\n"
 "Last-Translator: Adam Rambousek <rambousek@gmail.com>\n"
 "Language-Team:  <en@li.org>\n"
@@ -236,7 +236,6 @@ msgid "All Files"
 msgstr "Všechny soubory"
 
 #: ../src/auto4_base.cpp:507 ../src/command/keyframe.cpp:74
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
 #: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "Všechny podporované formáty"
@@ -562,7 +561,6 @@ msgstr ""
 "Přehrát aktuální audio výběr, ignorovat změny provedené během přehrávání"
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "Přehrát řádek"
 
@@ -2008,6 +2006,12 @@ msgstr "Načíst soubor časových kódů"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr ""
 
+#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#, fuzzy
+#| msgid "Files"
+msgid "Text Files"
+msgstr "Soubory"
+
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Uložit časový kód..."
@@ -2530,11 +2534,19 @@ msgid "Play"
 msgstr "Přehrát"
 
 #: ../src/command/video.cpp:635
-msgid "Play video starting on this position"
+#, fuzzy
+#| msgid "Play video starting on this position"
+msgid "Play the video starting on this position"
 msgstr "Přehrát video od této pozice"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
+msgstr "Přehrát řádek"
+
+#: ../src/command/video.cpp:647
+#, fuzzy
+#| msgid "Play current line"
+msgid "Play the video for the current line"
 msgstr "Přehrát řádek"
 
 #: ../src/command/video.cpp:656
@@ -2691,7 +2703,9 @@ msgid "Line"
 msgstr "čára"
 
 #: ../src/command/vis_tool.cpp:141
-msgid "Appends a line"
+#, fuzzy
+#| msgid "Appends a line"
+msgid "Append a line"
 msgstr "Přidá čáru"
 
 #: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
@@ -2699,7 +2713,9 @@ msgid "Bicubic"
 msgstr "Bikubická křivka"
 
 #: ../src/command/vis_tool.cpp:148
-msgid "Appends a bezier bicubic curve"
+#, fuzzy
+#| msgid "Appends a bezier bicubic curve"
+msgid "Append a bezier bicubic curve"
 msgstr "Přidá Bézierovu bikubickou křivku"
 
 #: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
@@ -2707,7 +2723,9 @@ msgid "Convert"
 msgstr "Převést"
 
 #: ../src/command/vis_tool.cpp:155
-msgid "Converts a segment between line and bicubic"
+#, fuzzy
+#| msgid "Converts a segment between line and bicubic"
+msgid "Convert a segment between line and bicubic"
 msgstr "Převede úsek na čáru nebo kubickou křivku"
 
 #: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
@@ -2715,7 +2733,9 @@ msgid "Insert"
 msgstr "Vložit"
 
 #: ../src/command/vis_tool.cpp:162
-msgid "Inserts a control point"
+#, fuzzy
+#| msgid "Inserts a control point"
+msgid "Insert a control point"
 msgstr "Vloží řídící bód"
 
 #: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
@@ -2723,7 +2743,9 @@ msgid "Remove"
 msgstr "Odebrat"
 
 #: ../src/command/vis_tool.cpp:169
-msgid "Removes a control point"
+#, fuzzy
+#| msgid "Removes a control point"
+msgid "Remove a control point"
 msgstr "Odebere řídící bod"
 
 #: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
@@ -2731,7 +2753,9 @@ msgid "Freehand"
 msgstr "Kresba"
 
 #: ../src/command/vis_tool.cpp:176
-msgid "Draws a freehand shape"
+#, fuzzy
+#| msgid "Draws a freehand shape"
+msgid "Draw a freehand shape"
 msgstr "Nakreslí libovolný tvar"
 
 #: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
@@ -2739,7 +2763,9 @@ msgid "Freehand smooth"
 msgstr "Vyhlazená kresba"
 
 #: ../src/command/vis_tool.cpp:183
-msgid "Draws a smoothed freehand shape"
+#, fuzzy
+#| msgid "Draws a smoothed freehand shape"
+msgid "Draw a smoothed freehand shape"
 msgstr "Nakreslí vyhlazený tvar"
 
 #: ../src/dialog_about.cpp:46

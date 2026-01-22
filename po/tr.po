@@ -6245,9 +6245,6 @@ msgstr "Gözat"
 msgid "Choose..."
 msgstr "Seç"
 
-msgid "OK"
-msgstr "Tamam"
-
 #: ../src/preferences_base.cpp:251
 msgid "Font Size"
 msgstr "Font Boyutu"
@@ -6887,10 +6884,6 @@ msgstr ""
 msgid "Add edgeblur"
 msgstr "Kenar bulanıklığı ekle"
 
-msgctxt "standard Windows menu"
-msgid "&Help"
-msgstr "&Yardım"
-
 #: ../automation/autoload/macro-1-edgeblur.lua:7
 msgid "A demo macro showing how to do simple line modification in Automation 4"
 msgstr ""
@@ -6940,9 +6933,6 @@ msgstr "Seçili satırlardan tüm geçersiz kılma etiketlerini kaldır"
 #: ../automation/autoload/strip-tags.lua:28
 msgid "strip tags"
 msgstr "etiketleri kaldır"
-
-msgid "&Apply"
-msgstr "&Uygula"
 
 #: ../packages/desktop/aegisub.desktop.in.in:4
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:6
@@ -7081,6 +7071,16 @@ msgstr ""
 "uygulamayı herhangi bir amaçla ücretsiz olarak kullanabileceğiniz anlamına "
 "gelir, ancak herhangi bir garanti verilmemektedir.%n%nKaynak koda nasıl "
 "erişileceği hakkında bilgi için Aegisub web sitesine bakın."
+
+#~ msgid "OK"
+#~ msgstr "Tamam"
+
+#~ msgctxt "standard Windows menu"
+#~ msgid "&Help"
+#~ msgstr "&Yardım"
+
+#~ msgid "&Apply"
+#~ msgstr "&Uygula"
 
 #~ msgid "anime"
 #~ msgstr "anime"

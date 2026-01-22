@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 21:36+0100\n"
+"POT-Creation-Date: 2025-12-01 20:46+0100\n"
 "PO-Revision-Date: 2025-02-25 11:52+0200\n"
 "Last-Translator: Matey Krastev <matey.krastev@outlook.com>\n"
 "Language-Team: Илиян Илиев a.k.a Chep92 <bache_kiko18@abv.bg>; Matey Krastev "
@@ -238,7 +238,6 @@ msgid "All Files"
 msgstr "Всички файлове"
 
 #: ../src/auto4_base.cpp:507 ../src/command/keyframe.cpp:74
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
 #: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "Всички поддържани формати"
@@ -565,7 +564,6 @@ msgstr ""
 "изпълнението"
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "Пусни текущия ред"
 
@@ -2037,6 +2035,12 @@ msgstr "Отвори файла на времевите тагове"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Отваря VFR файла на времевите тагове във формат v1 или v2"
 
+#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#, fuzzy
+#| msgid "Files"
+msgid "Text Files"
+msgstr "Файлове"
+
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Запази файла с времените тагове..."
@@ -2564,12 +2568,20 @@ msgid "Play"
 msgstr "Пусни"
 
 #: ../src/command/video.cpp:635
-msgid "Play video starting on this position"
+#, fuzzy
+#| msgid "Play video starting on this position"
+msgid "Play the video starting on this position"
 msgstr "Пусни видеото от текущата позиция"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
 msgstr "Пусни от този ред"
+
+#: ../src/command/video.cpp:647
+#, fuzzy
+#| msgid "Play the audio for the current line"
+msgid "Play the video for the current line"
+msgstr "Отвори аудиото от текущия ред"
 
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
@@ -2723,7 +2735,9 @@ msgid "Line"
 msgstr "Права"
 
 #: ../src/command/vis_tool.cpp:141
-msgid "Appends a line"
+#, fuzzy
+#| msgid "Appends a line"
+msgid "Append a line"
 msgstr "Добави права"
 
 #: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
@@ -2731,7 +2745,9 @@ msgid "Bicubic"
 msgstr "Крива"
 
 #: ../src/command/vis_tool.cpp:148
-msgid "Appends a bezier bicubic curve"
+#, fuzzy
+#| msgid "Appends a bezier bicubic curve"
+msgid "Append a bezier bicubic curve"
 msgstr "Добавяне на кубична Безие крива"
 
 #: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
@@ -2739,7 +2755,9 @@ msgid "Convert"
 msgstr "Преобразувай"
 
 #: ../src/command/vis_tool.cpp:155
-msgid "Converts a segment between line and bicubic"
+#, fuzzy
+#| msgid "Converts a segment between line and bicubic"
+msgid "Convert a segment between line and bicubic"
 msgstr "Преобразувай сегмент от правата в кубична безие крива и обратно"
 
 #: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
@@ -2747,7 +2765,9 @@ msgid "Insert"
 msgstr "Постави"
 
 #: ../src/command/vis_tool.cpp:162
-msgid "Inserts a control point"
+#, fuzzy
+#| msgid "Inserts a control point"
+msgid "Insert a control point"
 msgstr "Постави контролна точка"
 
 #: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
@@ -2755,7 +2775,9 @@ msgid "Remove"
 msgstr "Премахни"
 
 #: ../src/command/vis_tool.cpp:169
-msgid "Removes a control point"
+#, fuzzy
+#| msgid "Removes a control point"
+msgid "Remove a control point"
 msgstr "Премахни контролна точка"
 
 #: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
@@ -2763,7 +2785,9 @@ msgid "Freehand"
 msgstr "От ръка"
 
 #: ../src/command/vis_tool.cpp:176
-msgid "Draws a freehand shape"
+#, fuzzy
+#| msgid "Draws a freehand shape"
+msgid "Draw a freehand shape"
 msgstr "Чертае контур с ръка"
 
 #: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
@@ -2771,7 +2795,9 @@ msgid "Freehand smooth"
 msgstr "Гладко от ръка"
 
 #: ../src/command/vis_tool.cpp:183
-msgid "Draws a smoothed freehand shape"
+#, fuzzy
+#| msgid "Draws a smoothed freehand shape"
+msgid "Draw a smoothed freehand shape"
 msgstr "Чертае гладък контур от ръка"
 
 #: ../src/dialog_about.cpp:46

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 21:36+0100\n"
+"POT-Creation-Date: 2025-12-01 20:46+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Jan Ekstrom <jeebjp@gmail.com>\n"
 "Language-Team: G-MARK <http://g-mark.jpn.org/>\n"
@@ -237,7 +237,6 @@ msgid "All Files"
 msgstr "すべてのファイル"
 
 #: ../src/auto4_base.cpp:507 ../src/command/keyframe.cpp:74
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
 #: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "サポートされているすべての形式"
@@ -562,7 +561,6 @@ msgid "Play the current audio selection, ignoring changes made while playing"
 msgstr ""
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "選択した字幕行を再生"
 
@@ -2001,6 +1999,12 @@ msgstr ""
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr ""
 
+#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
+#, fuzzy
+#| msgid "All Files"
+msgid "Text Files"
+msgstr "すべてのファイル"
+
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "タイムコードファイルを保存"
@@ -2518,12 +2522,20 @@ msgid "Play"
 msgstr ""
 
 #: ../src/command/video.cpp:635
-msgid "Play video starting on this position"
+#, fuzzy
+#| msgid "Play video starting on this position"
+msgid "Play the video starting on this position"
 msgstr "現在のポジションから再生"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
 msgstr ""
+
+#: ../src/command/video.cpp:647
+#, fuzzy
+#| msgid "Play current line"
+msgid "Play the video for the current line"
+msgstr "選択した字幕行を再生"
 
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
@@ -2680,7 +2692,9 @@ msgid "Line"
 msgstr "直線"
 
 #: ../src/command/vis_tool.cpp:141
-msgid "Appends a line"
+#, fuzzy
+#| msgid "Appends a line"
+msgid "Append a line"
 msgstr "直線を引きます"
 
 #: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
@@ -2688,7 +2702,9 @@ msgid "Bicubic"
 msgstr "3次曲線"
 
 #: ../src/command/vis_tool.cpp:148
-msgid "Appends a bezier bicubic curve"
+#, fuzzy
+#| msgid "Appends a bezier bicubic curve"
+msgid "Append a bezier bicubic curve"
 msgstr "3次曲線を引きます"
 
 #: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
@@ -2696,7 +2712,9 @@ msgid "Convert"
 msgstr "変換"
 
 #: ../src/command/vis_tool.cpp:155
-msgid "Converts a segment between line and bicubic"
+#, fuzzy
+#| msgid "Converts a segment between line and bicubic"
+msgid "Convert a segment between line and bicubic"
 msgstr "頂点数を変更して直線と曲線を変換します"
 
 #: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
@@ -2704,7 +2722,9 @@ msgid "Insert"
 msgstr "挿入"
 
 #: ../src/command/vis_tool.cpp:162
-msgid "Inserts a control point"
+#, fuzzy
+#| msgid "Inserts a control point"
+msgid "Insert a control point"
 msgstr "頂点を追加します"
 
 #: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
@@ -2712,7 +2732,9 @@ msgid "Remove"
 msgstr "削除"
 
 #: ../src/command/vis_tool.cpp:169
-msgid "Removes a control point"
+#, fuzzy
+#| msgid "Removes a control point"
+msgid "Remove a control point"
 msgstr "頂点を削除します"
 
 #: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
@@ -2720,7 +2742,9 @@ msgid "Freehand"
 msgstr "フリーハンド - 直線"
 
 #: ../src/command/vis_tool.cpp:176
-msgid "Draws a freehand shape"
+#, fuzzy
+#| msgid "Draws a freehand shape"
+msgid "Draw a freehand shape"
 msgstr "フリーハンドで多角形を描きます"
 
 #: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
@@ -2728,7 +2752,9 @@ msgid "Freehand smooth"
 msgstr "フリーハンド - 3次曲線"
 
 #: ../src/command/vis_tool.cpp:183
-msgid "Draws a smoothed freehand shape"
+#, fuzzy
+#| msgid "Draws a smoothed freehand shape"
+msgid "Draw a smoothed freehand shape"
 msgstr "フリーハンドで曲線の図形を描きます"
 
 #: ../src/dialog_about.cpp:46
