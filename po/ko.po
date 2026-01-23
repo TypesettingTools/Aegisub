@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-12-01 20:46+0100\n"
-"PO-Revision-Date: 2026-01-23 00:00+0900\n"
+"PO-Revision-Date: 2026-01-24 05:35+0900\n"
 "Last-Translator: Hack茶ん\n"
 "Language-Team: TNC\n"
 "Language: ko_KR\n"
@@ -2910,7 +2910,7 @@ msgstr "스크립트 자동화 추가"
 #: ../src/dialog_automation.cpp:240
 #, c-format
 msgid "Script '%s' is already loaded"
-msgstr "스크립트 '%s'이(가) 이미 불러와져 있습니다."
+msgstr "스크립트 '%s'이(가) 이미 불러와져 있음"
 
 #: ../src/dialog_automation.cpp:279
 #, c-format
