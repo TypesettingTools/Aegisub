@@ -92,7 +92,7 @@
 * -- All entries are always key and value.
 * -- Minimum value size is one byte for nil and boolean,
 *    but that is two keys maximum (nil can'be the key).
-* -- All the rest of key types are mimimum of LUABINS_MINLARGEVALUELEN
+* -- All the rest of key types are minimum of LUABINS_MINLARGEVALUELEN
 *    bytes (type byte plus data bytes).
 * -- All values in the table may be booleans.
 *

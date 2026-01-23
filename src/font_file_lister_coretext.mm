@@ -76,7 +76,7 @@ FontMatch process_descriptor(NSFontDescriptor *desc, NSString *name) {
 	// Some fonts have different family names for OS X and Windows, with all of
 	// the styles in a single family on OS X, but only bold/italic variants in
 	// the main family with different families for the other variants on Windows.
-	// For VSFilter compatiblity we want to match based on the Windows name.
+	// For VSFilter compatibility we want to match based on the Windows name.
 	if (ret.family_match) {
 		auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)font, kCTFontTableName, 0);
 		auto bytes = static_cast<const uint8_t *>(data.bytes);

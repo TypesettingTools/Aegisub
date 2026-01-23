@@ -27,7 +27,7 @@
      int to_wchar;
      int transliterate;
      int discard_ilseq;
-   Jumps to 'invalid' in case of errror.
+   Jumps to 'invalid' in case of error.
  */
 {
   char buf[MAX_WORD_LENGTH+10+1];

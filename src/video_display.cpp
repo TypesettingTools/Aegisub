@@ -548,7 +548,7 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 	// Set the tool first to prevent repeated initialization from VideoDisplay::Render
 	tool = std::move(new_tool);
 
-	// Hide the tool bar first to eliminate unecessary size changes
+	// Hide the tool bar first to eliminate unnecessary size changes
 	toolBar->Show(false);
 	toolBar->ClearTools();
 	tool->SetToolbar(toolBar);

@@ -164,7 +164,7 @@ function karaskel.preproc_line_text(meta, styles, line)
 		worksyl.highlights[worksyl.highlights.n] = hl
 		
 		-- Detect furigana (both regular and fullwidth pipes work)
-		-- Furigana is stored independantly from syllables
+		-- Furigana is stored independently from syllables
 		if syltext:find("|") or syltext:find("｜") then
 			-- Replace fullwidth pipes, they aren't regex friendly
 			syltext = syltext:gsub("｜", "|")
@@ -195,7 +195,7 @@ function karaskel.preproc_line_text(meta, styles, line)
 				furitext = furitext:sub(unicode.charwidth(furitext,1)+1)
 			end
 			
-			-- Some of these may seem superflous, but a furi should ideally have the same "interface" as a syllable
+			-- Some of these may seem superfluous, but a furi should ideally have the same "interface" as a syllable
 			furi.start_time = syl.start_time
 			furi.end_time = syl.end_time
 			furi.duration = syl.duration

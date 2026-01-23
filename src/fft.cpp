@@ -32,7 +32,7 @@
 /// @ingroup utility
 ///
 /// Most of this code was taken from http://www.codeproject.com/audio/waveInFFT.asp
-/// And rewriten by Rodrigo Braz Monteiro
+/// And rewritten by Rodrigo Braz Monteiro
 
 #include "fft.h"
 

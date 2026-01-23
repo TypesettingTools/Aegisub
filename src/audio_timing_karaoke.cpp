@@ -103,7 +103,7 @@ class AudioTimingControllerKaraoke final : public AudioTimingController {
 	/// Labels containing the stripped text of each syllable
 	std::vector<AudioLabel> labels;
 
-	 /// Should changes be automatically commited?
+	 /// Should changes be automatically committed?
 	bool auto_commit = OPT_GET("Audio/Auto/Commit")->GetBool();
 	int commit_id = -1;   ///< Last commit id used for an autocommit
 	bool pending_changes; ///< Are there any pending changes to be committed?

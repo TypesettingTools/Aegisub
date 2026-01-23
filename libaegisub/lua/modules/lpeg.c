@@ -1199,7 +1199,7 @@ static Instruction *fix_l (lua_State *L, int t) {
     totalsize += l;
   }
   lua_pushvalue(L, base + 2);  /* get initial rule */
-  lua_gettable(L, base + 1);  /* get its position in postions table */
+  lua_gettable(L, base + 1);  /* get its position in positions table */
   i = lua_tointeger(L, -1);  /* convert to number */
   lua_pop(L, 1);
   if (i == 0)  /* is it defined? */
@@ -1477,7 +1477,7 @@ static int nofail (Instruction *p, int l) {
 
 static int interfere (Instruction *p1, int l1, CharsetTag *st2) {
   if (nofail(p1, l1))  /* p1 cannot fail? */
-    return 0;  /* nothing can intefere with it */
+    return 0;  /* nothing can interfere with it */
   if (st2->tag == NOINFO) return 1;
   assert(p1->i.offset != 0);
   switch (p1->i.code) {

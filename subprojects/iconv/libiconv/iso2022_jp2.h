@@ -311,7 +311,7 @@ iso2022_jp2_wctomb (conv_t conv, unsigned char *r, ucs4_t wc, int n)
   unsigned char buf[2];
   int ret;
   /* This defines the conversion preferences depending on the current
-     langauge tag. */
+     language tag. */
   enum conversion { none = 0, european, japanese, chinese, korean, other };
   static const unsigned int conversion_lists[STATE_TAG_LANGUAGE] = {
     /* STATE_TAG_NONE */

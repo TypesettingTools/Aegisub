@@ -13,7 +13,7 @@ This function has been removed. A progress dialog is always shown.
 
 Setting the progress bar position
 
-function aegisub.progress.set(precent)
+function aegisub.progress.set(percent)
 
 @percent (number)
   The percentage completed.
