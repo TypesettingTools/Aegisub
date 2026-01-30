@@ -33,6 +33,7 @@
 #include "ass_file.h"
 #include "audio_controller.h"
 #include "compat.h"
+#include "format.h"
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "project.h"
@@ -224,13 +225,12 @@ int VideoController::FrameAtTime(int time, agi::vfr::Time type) const {
 
 void VideoController::OnVideoError(VideoProviderErrorEvent const& err) {
 	wxLogError(
-		"Failed seeking video. The video file may be corrupt or incomplete.\n"
-		"Error message reported: %s",
-		to_wx(err.GetMessage()));
+		fmt_tl("Failed seeking video. The video file may be corrupt or incomplete.\nError message reported: %s",
+		err.GetMessage()));
 }
 
 void VideoController::OnSubtitlesError(SubtitlesProviderErrorEvent const& err) {
 	wxLogError(
-		"Failed rendering subtitles. Error message reported: %s",
-		to_wx(err.GetMessage()));
+		fmt_tl("Failed rendering subtitles.\nError message reported: %s",
+		err.GetMessage()));
 }
