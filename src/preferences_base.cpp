@@ -133,7 +133,7 @@ wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, cons
 	switch (opt->GetType()) {
 		case agi::OptionType::Bool: {
 			auto cb = new wxCheckBox(section.box, -1, name);
-			section.sizer->Add(cb, 1, wxEXPAND, 0);
+			section.sizer->Add(cb, wxSizerFlags(1).Expand());
 			cb->SetValue(opt->GetBool());
 			cb->Bind(wxEVT_CHECKBOX, BoolUpdater(opt_name, parent));
 			return cb;
@@ -161,7 +161,7 @@ wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, cons
 		}
 
 		case agi::OptionType::Color: {
-			auto cb = new ColourButton(section.box, wxSize(40,10), false, opt->GetColor());
+			auto cb = new ColourButton(section.box, FromDIP(wxSize(40,10)), false, opt->GetColor());
 			cb->Bind(EVT_COLOR, ColourUpdater(opt_name, parent));
 			Add(section, name, cb);
 			return cb;
@@ -212,10 +212,11 @@ void OptionPage::OptionChoice(PageSection section, const wxString &name, const w
 
 PageSection OptionPage::PageSizer(wxString name) {
 	auto tmp_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, name);
-	sizer->Add(tmp_sizer, 0,wxEXPAND, 5);
-	auto flex = new wxFlexGridSizer(2,5,5);
+	sizer->Add(tmp_sizer, wxSizerFlags().Expand());
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto flex = new wxFlexGridSizer(2, gap, gap);
 	flex->AddGrowableCol(0,1);
-	tmp_sizer->Add(flex, 1, wxEXPAND, 5);
+	tmp_sizer->Add(flex, wxSizerFlags(1).Expand());
 	sizer->AddSpacer(8);
 	return {flex, tmp_sizer->GetStaticBox()};
 }
@@ -228,7 +229,7 @@ void OptionPage::OptionBrowse(PageSection section, const wxString &name, const c
 		throw agi::InternalError("Option must be agi::OptionType::String for BrowseButton.");
 
 	auto text = new wxTextCtrl(section.box, -1 , to_wx(opt->GetString()));
-	text->SetMinSize(wxSize(160, -1));
+	text->SetMinSize(FromDIP(wxSize(160, -1)));
 	text->Bind(wxEVT_TEXT, StringUpdater(opt_name, parent));
 
 	auto browse = new wxButton(section.box, -1, _("Browse..."));
@@ -260,7 +261,7 @@ void OptionPage::OptionFont(PageSection section, std::string opt_prefix) {
 	parent->AddChangeableOption(size_opt->GetName());
 
 	auto font_name = new wxTextCtrl(section.box, -1, to_wx(face_opt->GetString()));
-	font_name->SetMinSize(wxSize(160, -1));
+	font_name->SetMinSize(FromDIP(wxSize(160, -1)));
 	font_name->Bind(wxEVT_TEXT, StringUpdater(face_opt->GetName().c_str(), parent));
 	font_name->SetHint(wxNORMAL_FONT->GetFaceName());
 

@@ -73,24 +73,25 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	auto LabelFrame = new wxStaticText(&d, -1, _("Frame: "));
 	auto LabelTime = new wxStaticText(&d, -1, _("Time: "));
 
-	JumpFrame = new wxTextCtrl(&d,-1,"",wxDefaultPosition,wxSize(-1,-1),wxTE_PROCESS_ENTER, IntValidator((int)jumpframe));
+	JumpFrame = new wxTextCtrl(&d,-1,"",wxDefaultPosition,wxDefaultSize,wxTE_PROCESS_ENTER, IntValidator((int)jumpframe));
 	JumpFrame->SetMaxLength(std::to_string(c->project->VideoProvider()->GetFrameCount() - 1).size());
-	JumpTime = new TimeEdit(&d, -1, c, agi::Time(c->videoController->TimeAtFrame(jumpframe)).GetAssFormatted(), wxSize(-1,-1));
+	JumpTime = new TimeEdit(&d, -1, c, agi::Time(c->videoController->TimeAtFrame(jumpframe)).GetAssFormatted(), wxDefaultSize);
 
-	auto TimesSizer = new wxGridSizer(2, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto TimesSizer = new wxFlexGridSizer(2, gap, gap);
 
-	TimesSizer->Add(LabelFrame, 1, wxALIGN_CENTER_VERTICAL);
-	TimesSizer->Add(JumpFrame, wxEXPAND);
+	TimesSizer->Add(LabelFrame, wxSizerFlags().CenterVertical());
+	TimesSizer->Add(JumpFrame, wxSizerFlags().Expand());
 
-	TimesSizer->Add(LabelTime, 1, wxALIGN_CENTER_VERTICAL);
-	TimesSizer->Add(JumpTime, wxEXPAND);
+	TimesSizer->Add(LabelTime, wxSizerFlags().CenterVertical());
+	TimesSizer->Add(JumpTime, wxSizerFlags().Expand());
 
 	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL);
 
 	// General layout
 	auto MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TimesSizer, 0, wxALL | wxALIGN_CENTER, 5);
-	MainSizer->Add(ButtonSizer, 0, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 5);
+	MainSizer->Add(TimesSizer, wxSizerFlags().Center().Border());
+	MainSizer->Add(ButtonSizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	d.SetSizerAndFit(MainSizer);
 	d.CenterOnParent();
 
