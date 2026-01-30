@@ -199,20 +199,20 @@ void test_api()
   /* Sanity check */
   check(L, base, 0);
 
-  /* Save error: inexistent index */
+  /* Save error: inexistant index */
   if (luabins_save(L, lua_gettop(L) + 1, lua_gettop(L) + 1) == 0)
   {
     fatal(L, "save should fail");
   }
 
-  checkerr(L, base, "can't save: inexistent indices");
+  checkerr(L, base, "can't save: inexistant indices");
 
   if (luabins_save(L, -1, -1) == 0)
   {
     fatal(L, "save should fail");
   }
 
-  checkerr(L, base, "can't save: inexistent indices");
+  checkerr(L, base, "can't save: inexistant indices");
 
   /* Assuming other save errors to be tested in test.lua */
 

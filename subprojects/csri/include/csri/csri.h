@@ -145,7 +145,7 @@ struct csri_info {
 	 * - MUST match the regular expression
 	 *   \code ^[a-zA-Z]([a-zA-Z0-9_]*[a-zA-Z0-9])? \endcode
 	 *   i.e. consists only of letters, numbers and underscores;
-	 *   must start with a letter and doesn't have an underscore
+	 *   must start with a letter and doesnt have an underscore
 	 *   as the last character.
 	 */
 	const char *name;
@@ -272,7 +272,7 @@ CSRIAPI void csri_render(csri_inst *inst, struct csri_frame *frame,
  * \return NULL if the extension is not supported,
  *   a pointer to extension-specific data otherwise
  *
- * The data pointed to by the return value does not necessarily need to
+ * The data pointed to by the return value does not neccessarily need to
  * have any meaning; An extension that does not need to return data
  * can return a pointer to whatever it wants, as long as that pointer is
  * not NULL.
@@ -292,7 +292,7 @@ CSRIAPI void *csri_query_ext(csri_rend *rend, csri_ext_id extname);
  *
  * They are used by the library to grab renderer information
  * from a shared object; and also this way a single renderer
- * can be linked directly into an application.
+ * can be linked directly into an appliaction.
  */
 /*@{*/
 

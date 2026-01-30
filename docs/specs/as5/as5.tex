@@ -125,7 +125,7 @@ such ignored lines in the file after re-saving it. Note that the space after the
 There are two sections which are required, \emph{[AS5]} and \emph{[Events]}, the former being
 the equivalent of \emph{[Script Info]} in previous formats. If either of those sections is
 missing, the file is invalid and \must\ be rejected by the parser. Any other section
-can be omitted from the file, and need not be implemented by all parsers.
+can be ommitted from the file, and need not be implemented by all parsers.
 
 Finally, there is a special type of undefined group, \emph{[Private:PROGNAME]}, which 
 \must\ be \emph{ENTIRELY} preserved by other programs when re-saving it. This is used to
@@ -147,8 +147,8 @@ In general, malformed lines in AS5 (such as unrecognized lines, lines with missi
 with invalid data for its type (for example, malformed timestamps) or unrecognized section headers)
 are not considered fatal syntax errors. If nothing else is explicitly specified, the renderer \must\
 ignore such lines completely, and the parser \should\ emit a warning describing the syntax error. The
-spirit of this rule to be forgiving; something that doesn't make the entire file unusable or dangerously
-ambiguous should not be a fatal syntax error. It is usually better to render the valid parts of the file
+spirit of this rule to be forgiving; something that doesn't make the entire file unuseable or dangerously
+ambigous should not be a fatal syntax error. It is usually better to render the valid parts of the file
 correctly and tell the user about the problematic lines by the way of warning messages. Under certain
 circumstances it may be desirable to suppress warning messages; a well-behaved parser \should\ include
 an option to do so, but in general it is probably more useful to let the user know about the problem
@@ -262,9 +262,9 @@ on override tags for more information.
 
 The timestamp format is h...h:mm:ss[.s...], that is, it begins with an integer of arbitrary length
 (up to a maximum of 4 digits) representing the number of hours, followed by a one-digit or two-digit integer
-representing minutes, and a floating point number representing seconds. Leading zeroes \may\ be omitted.
+representing minutes, and a floating point number representing seconds. Leading zeroes \may\ be ommitted.
 Localization is irrelevant: a period (``.'') is always used to separate the decimal point. This way,
-0:21:42.5 and 0000:21:42.5000 are equivalent, and both represent 0 hours, 21 minutes, 42 seconds and 500 milliseconds.
+0:21:42.5 and 0000:21:42.5000 are equivalent, and both represent 0 hours, 21 minutes, 42 seconds and 500 miliseconds.
 
 Spaces between each field \must\ be ignored by the parser. Any spaces at the beginning of the
 content line \should\ be stripped by any editing program. A hard space (see the overrides section) or empty
@@ -331,7 +331,7 @@ one is still used for style definitions.)
 
 The third and fourth styles are based on the second, and simply assign different colours to it. They
 will both have all properties of Speech, and only differ in primary colour. Finally, the last example
-shows how to derive from the overridden default. In this case, font size would be 20 points, regardless
+shows how to derive from the overriden default. In this case, font size would be 20 points, regardless
 of renderer's default.
 
 The two Actor styles could have been defined without a parent style as follows:
@@ -413,7 +413,7 @@ Where:
 \begin{itemize}
 \item Type: Must be either ``font'' or ``image''. Any other types \must\ be ignored by the parser.
 \item Name: An unique name identifying this resource. For fonts, it must correspond to the font
-name, e.g., ``Verdana''. For images, it's the name that the file will be referred as in the rest
+name, e.g., ``Verdana''. For images, it's the name that the file will be reffered as in the rest
 of the script. If there is already a resource with this same name, the parser \must\ abort the
 parsing.
 \item Path: The location of the file relative to the subtitles. This \must\ be a relative path
@@ -435,7 +435,7 @@ behavior changed or properly defined. Also, AS5 defines many new tags in additio
 All tags must be inserted between a pair of curly brackets (\emph{\{\}}), except on style definitions.
 A pair can contain any number of override tags inside it. They should be listed one after the other,
 with no spaces or any other kind of separator between them. Tags then affect all text that follows
-it, unless re-overridden or reset by the \emph{\textbackslash r} tag. For example:
+it, unless re-overriden or reset by the \emph{\textbackslash r} tag. For example:
 
 \begin{verbatim}
 {\fn(Verdana)\fs26\c#FFA040}Welcome to {\b1}AS5{\b0}!
@@ -468,12 +468,12 @@ the next two the green component, and the last two the blue component (\#RRGGBB)
 style (Visual Basic hexadecimal) is not supported.
 
 In the tag specification in this document, optional parameters are denoted by being enclosed by square
-brackets (``[]''), and may be omitted. For example, \emph{\textbackslash baseline(curve1[,curve2])}
+brackets (``[]''), and may be ommitted. For example, \emph{\textbackslash baseline(curve1[,curve2])}
 means that the second parameter is entirely optional. It's also possible that the entire parameter set
 is enclosed in square brackets, e.g. \emph{\textbackslash vc[(c1,c2,c3,c4)]}.
 
-The parameters of a tag \must\ be enclosed within parentheses, with exception for tags with only one numerical
-parameter, for which the parentheses \may\ be omitted.
+The parameters of a tag \must\ be enclosed within parantheses, with exception for tags with only one numerical
+parameter, for which the parantheses \may\ be omitted.
 
 All tags \must\ start with a backslash (\textbackslash ). If an override block (a pair of curly brackets)
 or any tag starts with anything else than a backslash, it is considered a syntax error and the parser \must\
@@ -496,7 +496,7 @@ Any override tag (excluding the special character escape) that meets any of the 
 misspelled variants of existing tags)
 \item - does not start with a backslash
 \item - is found outside an override block (that is, not within curly braces)
-\item - is missing parentheses where they should be present, or is missing a matching opening/closing paranthesis
+\item - is missing parantheses where they should be present, or is missing a matching opening/closing paranthesis
 \item - has arguments not matching those expected by the parser
 \end{itemize}
 is considered \emph{invalid} or \emph{malformed}. Invalid or malformed tags are syntax errors, and the renderer
@@ -792,7 +792,7 @@ Set font alpha channel (transparency) in hexadecimal RGB.
 
 \textbf{Description:}
 Margins are the distance between the subtitle text and the edge of the frame. They are used for
-improved aesthetics, readability, and to avoid issues with overscan. Unless manually overridden
+improved aesthetics, readability, and to avoid issues with overscan. Unless manually overriden
 by another tag (such as \textbackslash pos), the text should always be contained inside the box
 defined by the script area minus the four borders, as long as automatic line breaking mode is
 set (see the section on [AS5]).
@@ -894,7 +894,7 @@ This sets the baseline shift, that is, the vertical spacing between each charact
 in which it is supposed to be sitting on. The default value is 0, and the parameter is given in
 script coordinates.
 
-This tag can be animated with \textbackslash t, and can be reverted to style default by omitting
+This tag can be animated with \textbackslash t, and can be reverted to style default by ommitting
 its parameter.
 
 \subsubsection{\textbackslash frx, \textbackslash fry, \textbackslash frz}
@@ -967,7 +967,7 @@ The following picture illustrates how this tag works:\\
 \includegraphics[width=0.7\textwidth]{./distort}
 \end{center}
 
-If the parameter list is omitted, the distort reverts to the style's default (none by default).
+If the parameter list is ommitted, the distort reverts to the style's default (none by default).
 This tag can be animated with \textbackslash t.
 
 \textbf{Implementation:}
@@ -990,7 +990,7 @@ $\displaystyle \begin{bmatrix}
 That is, $\displaystyle u = \frac{P_x - P_{0x}}{bl}; v = \frac{P_y - P_{0y}}{h}$.
 \item Apply the following formula: $P = P_0 + (P_1-P_0) u + (P_3-P_0) v + (P_0+P_2-P_1-P_3) u v$.\\
 This can be interpreted as simple vector operations, that is, apply that once using the x coordinates
-and another using the y coordinates. Since the four points are constant, the coefficients can be
+and another using the y coordinates. Since the four points are constant, the coeficients can be
 precalculated, resulting in a very fast transformation.\\
 \end{enumerate}
 

@@ -201,7 +201,7 @@ A: libiconv, as an internationalization library, supports those character
        We implement this because it's in the RFCs, but I don't think it is
        really used.
      * U90, S90
-       We DON'T implement this because I have no information about what it
+       We DON'T implement this because I have no informations about what it
        is or who uses it.
    Simplified Chinese
      * EUC-CN = GB2312

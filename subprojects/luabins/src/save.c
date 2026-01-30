@@ -179,7 +179,7 @@ int luabins_save(lua_State * L, int index_from, int index_to)
         index_to < 0 || index_to > base
       )
     {
-      lua_pushliteral(L, "can't save: inexistent indices");
+      lua_pushliteral(L, "can't save: inexistant indices");
       return LUABINS_EFAILURE;
     }
 

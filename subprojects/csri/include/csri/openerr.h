@@ -75,7 +75,7 @@ enum csri_openerr_flags {
 struct csri_openerr_flag {
 	/** bitfield of valid information */
 	enum csri_openerr_flags flags;
-	/** posix errno value indicating the error occurred */
+	/** posix errno value indicating the error occured */
 	int posixerrno;
 	/** Windows GetLastError value */
 	unsigned winerr;
@@ -85,7 +85,7 @@ struct csri_openerr_flag {
 	 */
 	union csri_vardata custerr;
 	/** warning count.
-	 * The number of (renderer-specific) warnings that occurred
+	 * The number of (renderer-specific) warnings that occured
 	 * during loading the script. The content of these warnings
 	 * should be retrievable via a renderer-specific extension.
 	 */
