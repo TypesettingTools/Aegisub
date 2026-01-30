@@ -307,7 +307,7 @@ void DirectSoundPlayer2Thread::Run()
 	// Create DirectSound object
 	IDirectSound8 *ds_raw = nullptr;
 	if (FAILED(DirectSoundCreate8(&DSDEVID_DefaultPlayback, &ds_raw, nullptr)))
-		REPORT_ERROR("Cound not create DirectSound object")
+		REPORT_ERROR("Could not create DirectSound object")
 
 	COMObjectRetainer<IDirectSound8> ds(ds_raw);
 

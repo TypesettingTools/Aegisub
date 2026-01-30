@@ -140,7 +140,7 @@ void AssFile::GetResolution(int &sw, int &sh) const {
 	sh = GetScriptInfoAsInt("PlayResY");
 
 	// Gabest logic: default is 384x288, assume 1280x1024 if either height or
-	// width are that, otherwise assume 4:3 if only heigh or width are set.
+	// width are that, otherwise assume 4:3 if only height or width are set.
 	// Why 1280x1024? Who the fuck knows. Clearly just Gabest trolling everyone.
 	if (sw == 0 && sh == 0) {
 		sw = 384;

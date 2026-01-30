@@ -141,7 +141,7 @@ do_replace_fun = (re, func, str, max) ->
       break
   table.concat(acc, '') .. str\sub pos
 
--- Compiled regular expression type protoype
+-- Compiled regular expression type prototype
 class RegEx
   -- Verify that a valid value was passed for self
   _check_self: =>

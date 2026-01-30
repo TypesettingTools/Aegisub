@@ -89,7 +89,7 @@ s/@PLIST_BUILD_DATE@/${build_date}/g
 }"
 
 # Write it only if it's changed to avoid spurious rebuilds
-# This bizzare comparison method is due to that newlines in shell variables are very exciting
+# This bizarre comparison method is due to that newlines in shell variables are very exciting
 case "$(cat ${version_h_path} 2> /dev/null)"
 in
   "${new_version_h}");;
