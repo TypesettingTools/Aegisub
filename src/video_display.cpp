@@ -70,7 +70,7 @@ namespace {
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
 wxGLAttributes buildGLAttributes() {
 	wxGLAttributes attrs;
-	attrs.RGBA().DoubleBuffer().Stencil(8).EndList();
+	attrs.RGBA().MinRGBA(8, 8, 8, 0).DoubleBuffer().Stencil(8).EndList();
 	return attrs;
 }
 
