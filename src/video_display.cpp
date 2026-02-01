@@ -65,8 +65,16 @@
 #include <GL/gl.h>
 #endif
 
+namespace {
+
 /// Attribute list for gl canvases; set the canvases to doublebuffered rgba with an 8 bit stencil buffer
-int attribList[] = { WX_GL_RGBA , WX_GL_DOUBLEBUFFER, WX_GL_STENCIL_SIZE, 8, 0 };
+wxGLAttributes buildGLAttributes() {
+	wxGLAttributes attrs;
+	attrs.RGBA().DoubleBuffer().Stencil(8).EndList();
+	return attrs;
+}
+
+}
 
 /// An OpenGL error occurred while uploading or displaying a frame
 class OpenGlException final : public agi::Exception {
@@ -89,7 +97,7 @@ enum {
 };
 
 VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBox, wxWindow *parent, agi::Context *c)
-: wxGLCanvas(parent, -1, attribList)
+: wxGLCanvas(parent, buildGLAttributes())
 , autohideTools(OPT_GET("Tool/Visual/Autohide"))
 , con(c)
 , windowZoomValue(OPT_GET("Video/Default Zoom")->GetInt() * .125 + .125)
