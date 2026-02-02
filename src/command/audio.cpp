@@ -403,6 +403,28 @@ struct audio_go_to final : public validate_audio_open {
 	}
 };
 
+struct audio_go_to_start final : public validate_audio_open {
+	CMD_NAME("audio/go_to/start")
+	STR_MENU("Go to selection start")
+	STR_DISP("Go to selection start")
+	STR_HELP("Scroll the audio display to center on the start of current audio selection")
+
+	void operator()(agi::Context *c) override {
+		c->audioBox->ScrollToActiveLine(AudioBox::ScrollMode::Start);
+	}
+};
+
+struct audio_go_to_end final : public validate_audio_open {
+	CMD_NAME("audio/go_to/end")
+	STR_MENU("Go to selection end")
+	STR_DISP("Go to selection end")
+	STR_HELP("Scroll the audio display to center on the end of current audio selection")
+
+	void operator()(agi::Context *c) override {
+		c->audioBox->ScrollToActiveLine(AudioBox::ScrollMode::End);
+	}
+};
+
 struct audio_scroll_left final : public validate_audio_open {
 	CMD_NAME("audio/scroll/left")
 		STR_MENU("Scroll left")
@@ -543,6 +565,8 @@ namespace cmd {
 		reg(std::make_unique<audio_commit_next>());
 		reg(std::make_unique<audio_commit_stay>());
 		reg(std::make_unique<audio_go_to>());
+		reg(std::make_unique<audio_go_to_start>());
+		reg(std::make_unique<audio_go_to_end>());
 		reg(std::make_unique<audio_karaoke>());
 		reg(std::make_unique<audio_open>());
 		reg(std::make_unique<audio_open_blank>());

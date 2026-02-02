@@ -632,6 +632,14 @@ void AudioDisplay::ScrollPixelToLeft(int pixel_position)
 	Refresh();
 }
 
+void AudioDisplay::ScrollTimeToCenter(int time)
+{
+	const int client_width = GetClientRect().GetWidth();
+	const int pixel_position = AbsoluteXFromTime(time);
+
+	ScrollPixelToLeft(pixel_position - client_width / 2);
+}
+
 void AudioDisplay::ScrollTimeRangeInView(const TimeRange &range)
 {
 	int client_width = GetClientRect().GetWidth();
