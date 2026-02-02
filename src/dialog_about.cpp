@@ -142,9 +142,9 @@ void ShowAboutDialog(wxWindow *parent) {
 
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(new wxStaticBitmap(&d, -1, GETIMAGE(splash)), 0, wxCENTER, 0);
-	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), 0, wxEXPAND | wxALL, 0);
-	MainSizer->Add(textctrl, 0, wxEXPAND | wxALL, 0);
-	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), 0, wxEXPAND | wxALL, 0);
+	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), 0, wxEXPAND, 0);
+	MainSizer->Add(textctrl, 0, wxEXPAND, 0);
+	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), 0, wxEXPAND, 0);
 	MainSizer->Add(d.CreateButtonSizer(wxOK), 0, wxEXPAND | wxALL, 6);
 
 	d.SetSizerAndFit(MainSizer);

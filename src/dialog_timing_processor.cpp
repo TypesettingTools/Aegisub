@@ -169,7 +169,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	auto optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Options"));
 	onlySelection = new wxCheckBox(optionsSizer->GetStaticBox(),-1,_("Affect &selection only"));
 	onlySelection->SetValue(OPT_GET("Tool/Timing Post Processor/Only Selection")->GetBool());
-	optionsSizer->Add(onlySelection,1,wxALL,0);
+	optionsSizer->Add(onlySelection,1,0,0);
 
 	// Lead-in/out box
 	auto LeadSizer = new wxStaticBoxSizer(wxHORIZONTAL, &d, _("Lead-in/Lead-out"));
@@ -258,7 +258,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	RightSizer->Add(AdjacentSizer,0,wxBOTTOM|wxEXPAND,5);
 	RightSizer->Add(KeyframesSizer,0,wxBOTTOM|wxEXPAND,5);
 	RightSizer->AddStretchSpacer(1);
-	RightSizer->Add(ButtonSizer,0,wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND,0);
+	RightSizer->Add(ButtonSizer,0,wxEXPAND,0);
 
 	// Style buttons sizer
 	auto StyleButtonsSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -272,7 +272,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	// Top Sizer
 	auto TopSizer = new wxBoxSizer(wxHORIZONTAL);
 	TopSizer->Add(LeftSizer,0,wxRIGHT|wxEXPAND,5);
-	TopSizer->Add(RightSizer,1,wxALL|wxEXPAND,0);
+	TopSizer->Add(RightSizer,1,wxEXPAND,0);
 
 	// Main Sizer
 	auto MainSizer = new wxBoxSizer(wxVERTICAL);

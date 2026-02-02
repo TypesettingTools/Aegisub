@@ -275,12 +275,12 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	}
 
 	// Style name sizer
-	NameSizer->Add(StyleName, 1, wxALL, 0);
+	NameSizer->Add(StyleName, 1, 0, 0);
 
 	// Font sizer
 	wxSizer *FontSizerTop = new wxBoxSizer(wxHORIZONTAL);
 	wxSizer *FontSizerBottom = new wxBoxSizer(wxHORIZONTAL);
-	FontSizerTop->Add(FontName, 1, wxALL, 0);
+	FontSizerTop->Add(FontName, 1, 0, 0);
 	FontSizerTop->Add(FontSize, 0, wxLEFT, 5);
 	FontSizerBottom->AddStretchSpacer(1);
 	FontSizerBottom->Add(BoxBold, 0, 0, 0);
@@ -288,7 +288,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	FontSizerBottom->Add(BoxUnderline, 0, wxLEFT, 5);
 	FontSizerBottom->Add(BoxStrikeout, 0, wxLEFT, 5);
 	FontSizerBottom->AddStretchSpacer(1);
-	FontSizer->Add(FontSizerTop, 1, wxALL | wxEXPAND, 0);
+	FontSizer->Add(FontSizerTop, 1, wxEXPAND, 0);
 	FontSizer->Add(FontSizerBottom, 1, wxTOP | wxEXPAND, 5);
 
 	// Colors sizer
@@ -317,7 +317,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 
 	// Margins+Alignment
 	wxSizer *MarginAlign = new wxBoxSizer(wxHORIZONTAL);
-	MarginAlign->Add(MarginSizer, 1, wxLEFT | wxEXPAND, 0);
+	MarginAlign->Add(MarginSizer, 1, wxEXPAND, 0);
 	MarginAlign->Add(Alignment, 0, wxLEFT | wxEXPAND, 5);
 
 	// Outline
@@ -353,7 +353,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	PreviewBottomSizer->Add(PreviewText, 1, wxEXPAND | wxRIGHT, 5);
 	PreviewBottomSizer->Add(previewButton, 0, wxEXPAND, 0);
 	PreviewSizer->Add(SubsPreview, 1, wxEXPAND | wxBOTTOM, 5);
-	PreviewSizer->Add(PreviewBottomSizer, 0, wxEXPAND | wxBOTTOM, 0);
+	PreviewSizer->Add(PreviewBottomSizer, 0, wxEXPAND, 0);
 
 	// Buttons
 	auto ButtonSizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxAPPLY | wxHELP);
@@ -363,7 +363,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	LeftSizer->Add(NameSizer, 0, wxBOTTOM | wxEXPAND, 5);
 	LeftSizer->Add(FontSizer, 0, wxBOTTOM | wxEXPAND, 5);
 	LeftSizer->Add(ColorsSizer, 0, wxBOTTOM | wxEXPAND, 5);
-	LeftSizer->Add(MarginAlign, 0, wxBOTTOM | wxEXPAND, 0);
+	LeftSizer->Add(MarginAlign, 0, wxEXPAND, 0);
 
 	// Right side sizer
 	wxSizer *RightSizer = new wxBoxSizer(wxVERTICAL);
