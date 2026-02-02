@@ -230,7 +230,18 @@ void AudioBox::ScrollAudioBy(int pixel_amount) {
 	audioDisplay->ScrollBy(pixel_amount);
 }
 
-void AudioBox::ScrollToActiveLine() {
-	if (controller->GetTimingController())
-		audioDisplay->ScrollTimeRangeInView(controller->GetTimingController()->GetIdealVisibleTimeRange());
+void AudioBox::ScrollToActiveLine(ScrollMode mode) {
+	if (controller->GetTimingController()) {
+		switch (mode) {
+			case ScrollMode::Range:
+				audioDisplay->ScrollTimeRangeInView(controller->GetTimingController()->GetIdealVisibleTimeRange());
+				break;
+			case ScrollMode::Start:
+				audioDisplay->ScrollTimeToCenter(controller->GetTimingController()->GetActiveLineRange().begin());
+				break;
+			case ScrollMode::End:
+				audioDisplay->ScrollTimeToCenter(controller->GetTimingController()->GetActiveLineRange().end());
+				break;
+		}
+	}
 }

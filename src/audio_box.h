@@ -92,8 +92,18 @@ public:
 	/// A positive amount moves the display to the right, making later parts of the audio visible.
 	void ScrollAudioBy(int pixel_amount);
 
-	/// Make the currently active line visible in the audio display
-	void ScrollToActiveLine();
+	enum class ScrollMode {
+		/// Try to make the whole line visible
+		Range,
+		/// Center the start point in the audio display
+		Start,
+		/// Center the end point in the audio display
+		End,
+	 };
+
+	/// @brief Make the currently active line visible in the audio display
+	/// @param mode What part of the line shoud be made visible
+	void ScrollToActiveLine(ScrollMode mode = ScrollMode::Range);
 
 	DECLARE_EVENT_TABLE()
 };
