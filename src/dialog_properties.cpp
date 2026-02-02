@@ -116,7 +116,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	AddProperty(TopSizerBox, TopSizerGrid, _("Update details:"), "Update Details");
 
 	TopSizerGrid->AddGrowableCol(1,1);
-	TopSizer->Add(TopSizerGrid,1,wxALL | wxEXPAND,0);
+	TopSizer->Add(TopSizerGrid,1,wxEXPAND,0);
 
 	// Resolution box
 	wxStaticBoxSizer *res_box_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Resolution"));
