@@ -14,6 +14,4 @@
 
 #include <gtest/gtest.h>
 
-namespace {
 class libagi : public ::testing::Test { };
-}

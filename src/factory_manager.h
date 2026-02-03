@@ -17,7 +17,6 @@
 #include <string>
 #include <vector>
 
-namespace {
 template<typename Container>
 std::vector<std::string> GetClasses(Container const& c) {
 	std::vector<std::string> list;
@@ -49,5 +48,4 @@ auto GetSorted(Container const& c, std::string const& preferred) {
 			sorted.push_back(&provider);
 	}
 	return sorted;
-}
 }

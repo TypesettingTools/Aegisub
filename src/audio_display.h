@@ -48,10 +48,8 @@ class AudioRendererBitmapProvider;
 class TimeRange;
 
 // Helper classes used in implementation of the audio display
-namespace {
-	class AudioDisplayScrollbar;
-	class AudioDisplayTimeline;
-}
+class AudioDisplayScrollbar;
+class AudioDisplayTimeline;
 class AudioDisplayInteractionObject;
 class AudioMarkerInteractionObject;
 

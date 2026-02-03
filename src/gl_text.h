@@ -34,10 +34,8 @@
 
 #include <wx/font.h>
 
-namespace {
 struct OpenGLTextGlyph;
 class OpenGLTextTexture;
-}
 
 namespace agi { struct Color; }
 

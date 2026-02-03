@@ -128,6 +128,8 @@ public:
 	wxColour Selection() const { return focused ? sel_focused_colour : sel_colour; }
 };
 
+}
+
 class AudioDisplayScrollbar final : public AudioDisplayInteractionObject {
 	static const int height = 15;
 	static const int min_width = 10;
@@ -476,6 +478,8 @@ public:
 		} while (next_scale_mark_pos < bounds.width);
 	}
 };
+
+namespace {
 
 class AudioStyleRangeMerger final : public AudioRenderingStyleRanges {
 	typedef std::map<int, AudioRenderingStyle> style_map;
