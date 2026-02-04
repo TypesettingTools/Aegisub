@@ -58,7 +58,7 @@ namespace {
 		auto hk_map = hotkey::inst->GetHotkeyMap();
 		bool changed = false;
 
-		for (size_t i = 0; added[i] && added[i][0]; ++i) {
+		for (size_t i = 0; added[i][0]; ++i) {
 			agi::hotkey::Combo combo(added[i][1], added[i][0], added[i][2]);
 
 			if (hotkey::inst->HasHotkey(combo.Context(), combo.Str()))
