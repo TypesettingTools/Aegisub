@@ -111,6 +111,8 @@ struct GridColumnLineNumber final : GridColumn {
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
+		if (c->ass->Events.empty())
+			return helper("1");
 		return helper(Value(&c->ass->Events.back()));
 	}
 };
