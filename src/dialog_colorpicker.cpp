@@ -589,13 +589,14 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	// Arrange the controls in a nice way
 	wxSizer *spectop_sizer = new wxBoxSizer(wxHORIZONTAL);
-	spectop_sizer->Add(new wxStaticText(spectrum_box, -1, _("Spectrum mode:")), 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT|wxRIGHT, 5);
-	spectop_sizer->Add(colorspace_choice, 0, wxALIGN_CENTER_VERTICAL|wxALIGN_LEFT);
-	spectop_sizer->Add(5, 5, 1, wxEXPAND);
-	spectop_sizer->Add(preview_box, 0, wxALIGN_CENTER_VERTICAL);
+	spectop_sizer->Add(new wxStaticText(spectrum_box, -1, _("Spectrum mode:")), wxSizerFlags().CenterVertical().Left().Border(wxRIGHT));
+	spectop_sizer->Add(colorspace_choice, wxSizerFlags().CenterVertical().Left());
+	int gap = wxSizerFlags::GetDefaultBorder();
+	spectop_sizer->Add(gap, gap, wxSizerFlags(1).Expand());
+	spectop_sizer->Add(preview_box, wxSizerFlags().CenterVertical());
 
-	wxSizer *spectrum_sizer = new wxFlexGridSizer(3, 5, 5);
-	spectrum_sizer->Add(spectop_sizer, wxEXPAND);
+	wxSizer *spectrum_sizer = new wxFlexGridSizer(3, gap, gap);
+	spectrum_sizer->Add(spectop_sizer, wxSizerFlags().Expand());
 	spectrum_sizer->AddStretchSpacer(1);
 	spectrum_sizer->AddStretchSpacer(1);
 	spectrum_sizer->Add(spectrum);
@@ -604,51 +605,51 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	if (!alpha)
 		spectrum_sizer->Hide(alpha_slider);
 
-	spectrum_box_sizer->Add(spectrum_sizer, 0, wxALL, 3);
+	spectrum_box_sizer->Add(spectrum_sizer, wxSizerFlags().Border(wxALL, 3));
 
 	wxString rgb_labels[] = { _("Red:"), _("Green:"), _("Blue:") };
-	rgb_box_sizer->Add(MakeColorInputSizer(rgb_box, rgb_labels, rgb_input), 1, wxALL|wxEXPAND, 3);
+	rgb_box_sizer->Add(MakeColorInputSizer(rgb_box, rgb_labels, rgb_input), wxSizerFlags(1).Expand().Border(wxALL, 3));
 
 	wxString ass_labels[] = { "ASS:", "HTML:", _("Alpha:") };
 	wxControl *ass_ctrls[] = { ass_input, html_input, alpha_input };
 	auto ass_colors_sizer = MakeColorInputSizer(rgb_box, ass_labels, ass_ctrls);
 	if (!alpha)
 		ass_colors_sizer->Hide(alpha_input);
-	rgb_box_sizer->Add(ass_colors_sizer, 0, wxALL|wxCENTER|wxEXPAND, 3);
+	rgb_box_sizer->Add(ass_colors_sizer, wxSizerFlags().Expand().Border(wxALL, 3));
 
 	wxString hsl_labels[] = { _("Hue:"), _("Sat.:"), _("Lum.:") };
-	hsl_box_sizer->Add(MakeColorInputSizer(hsl_box, hsl_labels, hsl_input), 0, wxALL|wxEXPAND, 3);
+	hsl_box_sizer->Add(MakeColorInputSizer(hsl_box, hsl_labels, hsl_input), wxSizerFlags().Expand().Border(wxALL, 3));
 
 	wxString hsv_labels[] = { _("Hue:"), _("Sat.:"), _("Value:") };
-	hsv_box_sizer->Add(MakeColorInputSizer(hsv_box, hsv_labels, hsv_input), 0, wxALL|wxEXPAND, 3);
+	hsv_box_sizer->Add(MakeColorInputSizer(hsv_box, hsv_labels, hsv_input), wxSizerFlags().Expand().Border(wxALL, 3));
 
 	wxSizer *hsx_sizer = new wxBoxSizer(wxHORIZONTAL);
 	hsx_sizer->Add(hsl_box_sizer);
-	hsx_sizer->AddSpacer(5);
+	hsx_sizer->AddSpacer(gap);
 	hsx_sizer->Add(hsv_box_sizer);
 
 	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
 	picker_sizer->AddStretchSpacer();
-	picker_sizer->Add(screen_dropper_icon, 0, wxALIGN_CENTER|wxRIGHT, 5);
-	picker_sizer->Add(screen_dropper, 0, wxALIGN_CENTER);
+	picker_sizer->Add(screen_dropper_icon, wxSizerFlags().Center().Border(wxRIGHT));
+	picker_sizer->Add(screen_dropper, wxSizerFlags().Center());
 	picker_sizer->AddStretchSpacer();
-	picker_sizer->Add(recent_box, 0, wxALIGN_CENTER);
+	picker_sizer->Add(recent_box, wxSizerFlags().Center());
 	picker_sizer->AddStretchSpacer();
 
 	wxStdDialogButtonSizer *button_sizer = CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP);
 
 	wxSizer *input_sizer = new wxBoxSizer(wxVERTICAL);
-	input_sizer->Add(rgb_box_sizer, 0, wxEXPAND);
-	input_sizer->AddSpacer(5);
-	input_sizer->Add(hsx_sizer, 0, wxEXPAND);
+	input_sizer->Add(rgb_box_sizer, wxSizerFlags().Expand());
+	input_sizer->AddSpacer(gap);
+	input_sizer->Add(hsx_sizer, wxSizerFlags().Expand());
 	input_sizer->AddStretchSpacer(1);
-	input_sizer->Add(picker_sizer, 0, wxEXPAND);
+	input_sizer->Add(picker_sizer, wxSizerFlags().Expand());
 	input_sizer->AddStretchSpacer(2);
-	input_sizer->Add(button_sizer, 0, wxALIGN_RIGHT);
+	input_sizer->Add(button_sizer, wxSizerFlags().Right());
 
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
-	main_sizer->Add(spectrum_box_sizer, 1, wxALL | wxEXPAND, 5);
-	main_sizer->Add(input_sizer, 0, (wxALL&~wxLEFT)|wxEXPAND, 5);
+	main_sizer->Add(spectrum_box_sizer, wxSizerFlags(1).Expand().Border());
+	main_sizer->Add(input_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxLEFT));
 
 	SetSizerAndFit(main_sizer);
 
@@ -696,7 +697,8 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 template<int N, class Control>
 wxSizer *DialogColorPicker::MakeColorInputSizer(wxWindow *parent, wxString (&labels)[N], Control *(&inputs)[N]) {
-	auto sizer = new wxFlexGridSizer(2, 5, 5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto sizer = new wxFlexGridSizer(2, gap, gap);
 	for (int i = 0; i < N; ++i) {
 		sizer->Add(new wxStaticText(parent, -1, labels[i]), wxSizerFlags(1).Center().Left());
 		sizer->Add(inputs[i], wxSizerFlags().Expand());

@@ -55,8 +55,8 @@ void AssExporter::DrawSettings(wxWindow *parent, wxSizer *target_sizer) {
 		auto box = new wxStaticBoxSizer(wxVERTICAL, parent, to_wx(filter.GetName()));
 		wxWindow *window = filter.GetConfigDialogWindow(box->GetStaticBox(), c);
 		if (window) {
-			box->Add(window, 0, wxEXPAND, 0);
-			target_sizer->Add(box, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
+			box->Add(window, wxSizerFlags().Expand());
+			target_sizer->Add(box, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 			target_sizer->Show(box, false);
 			Sizers[filter.GetName()] = box;
 		}
