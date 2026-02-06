@@ -330,20 +330,20 @@ static void   myvsnprintf(char *dest,unsigned dsize,const char *fmt,va_list ap) 
 	}
 	if (*fmt == '0')
 	  zero = 1;
-	state = 2;
+	state = 2; // fallthrough
       case 2:
 	if (*fmt >= '0' && *fmt <= '9') {
 	  width = width * 10 + *fmt++ - '0';
 	  break;
 	}
-	state = 3;
+	state = 3; // fallthrough
       case 3:
 	if (*fmt == 'l') {
 	  ++ll;
 	  ++fmt;
 	  break;
 	}
-	state = 4;
+	state = 4; // fallthrough
       case 4:
 	switch (*fmt) {
 	  case 's':
@@ -2143,6 +2143,7 @@ static void parseBlockGroup(MatroskaFile *mf,uint64_t toplen,uint64_t timecode, 
 blockex:
       cur = start = filepos(mf);
       len = tmplen = toplen;
+      // fallthrough
     case 0xa1: // Block
       have_block = 1;
 
