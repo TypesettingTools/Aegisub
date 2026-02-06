@@ -55,6 +55,7 @@
 #include "utils.h"
 #include "value_event.h"
 #include "version.h"
+#include "xdg_desktop_portal_utils.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/format_path.h>
@@ -257,6 +258,8 @@ bool AegisubApp::OnInit() {
 
 		exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
+		agi::xdp_utils::Initialize();
+
 		// Load plugins
 		Automation4::ScriptFactory::Register(std::make_unique<Automation4::LuaScriptFactory>());
 		libass::CacheFonts();
@@ -343,6 +346,8 @@ int AegisubApp::OnExit() {
 	delete config::global_scripts;
 
 	AssExportFilterChain::Clear();
+
+	agi::xdp_utils::Cleanup();
 
 	// Keep this last!
 	delete agi::log::log;
