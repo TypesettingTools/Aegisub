@@ -435,13 +435,15 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 			bool swap = false;
 			switch (action) {
 				case SCALE_VIDEO_REV:
-					dir = -1;	// fallthrough
+					dir = -1;
+					[[fallthrough]];
 				case SCALE_VIDEO:
 					SetWindowZoom(windowZoomValue + dir * .125 * (wheel / event.GetWheelDelta()));
 					break;
 
 				case ZOOM_VIDEO_REV:
-					dir = -1;	// fallthrough
+					dir = -1;
+					[[fallthrough]];
 				case ZOOM_VIDEO:
 					{
 						double newZoomValue = videoZoomValue * (1 + dir * 0.125 * wheel / event.GetWheelDelta());
@@ -450,7 +452,8 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 					break;
 
 				case PAN_VIDEO_SWAP:
-					swap = true;	// Fallthrough
+					swap = true;
+					[[fallthrough]];
 				case PAN_VIDEO:
 					{
 						double distance = 5 * static_cast<double>(wheel) / event.GetWheelDelta();

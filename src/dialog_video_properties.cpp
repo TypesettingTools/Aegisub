@@ -145,6 +145,7 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 			});
 			return true;
 		}
+		[[fallthrough]];
 
 	case MISMATCH_PROMPT:
 		int res = prompt(parent, ar_changed, sx, sy, vx, vy);
