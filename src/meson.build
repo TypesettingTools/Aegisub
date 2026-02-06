@@ -242,6 +242,8 @@ opt_src = [
                'ffmpegsource_common.cpp']],
 
     ['Hunspell', 'spellchecker_hunspell.cpp'],
+
+    ['libportal', 'xdg_desktop_portal_utils.cpp'],
 ]
 
 foreach opt: opt_src
