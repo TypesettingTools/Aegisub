@@ -218,8 +218,7 @@ endif
 deps += dependency('icu-uc', version: '>=4.8.1.1')
 deps += dependency('icu-i18n', version: '>=4.8.1.1')
 
-dep_avail = []
-foreach dep: [
+check_deps = [
     # audio, in order of precedence
     ['libpulse', [], 'PulseAudio', [], []],
     ['alsa', [], 'ALSA', [], []],
@@ -232,6 +231,17 @@ foreach dep: [
     ['hunspell', [], 'Hunspell', ['hunspell', 'hunspell_dep'], []],
     ['uchardet', [], 'uchardet', ['uchardet', 'uchardet_dep'], []],
 ]
+
+if host_machine.system() == 'linux'
+    if cc.get_define('__WXGTK3__', dependencies: wx_dep, prefix: '#include <wx/defs.h>') != ''
+        check_deps += [['libportal-gtk3', [], 'libportal', [], []]]
+    else
+        check_deps += [['libportal', [], 'libportal', [], []]]
+    endif
+endif
+
+dep_avail = []
+foreach dep: check_deps
     optname = dep[0].split('-')[0]
     if not get_option(optname).disabled()
         # [provide] section is ignored if required is false;

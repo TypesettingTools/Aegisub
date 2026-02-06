@@ -35,14 +35,18 @@
 #include "persist_location.h"
 #include "utils.h"
 #include "value_event.h"
+#include "xdg_desktop_portal_utils.h"
 
+#include <libaegisub/log.h>
 #include <libaegisub/scoped_ptr.h>
 
 #include <algorithm>
+#include <cmath>
 #include <memory>
 #include <vector>
 
 #include <wx/bitmap.h>
+#include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/choice.h>
 #include <wx/dcbuffer.h>
@@ -75,7 +79,14 @@ enum class PickerDirection {
 
 static const int spectrum_horz_vert_arrow_size = 4;
 
+#ifdef WITH_LIBPORTAL
+// this could be made configurable
+static constexpr bool enable_os_eyedropper = true;
+static constexpr bool enable_screenshot_eyedropper = false;
+#else
+static constexpr bool enable_os_eyedropper = false;
 static constexpr bool enable_screenshot_eyedropper = true;
+#endif
 
 wxDEFINE_EVENT(EVT_SPECTRUM_CHANGE, wxCommandEvent);
 
@@ -417,6 +428,8 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
 	Refresh(false);
 }
 
+wxDEFINE_EVENT(EVT_OS_SELECT, ValueEvent<agi::Color>);
+
 class DialogColorPicker final : public wxDialog {
 	std::unique_ptr<PersistLocation> persist;
 
@@ -461,6 +474,8 @@ class DialogColorPicker final : public wxDialog {
 	ColorPickerScreenDropper *screenshot_screen_dropper = nullptr;
 	wxStaticBitmap *screenshot_screen_dropper_icon = nullptr;
 
+	wxBitmapButton *os_screen_dropper_button = nullptr;
+
 	/// Update all other controls as a result of modifying an RGB control
 	void UpdateFromRGB(bool dirty = true);
 	/// Update all other controls as a result of modifying an HSL control
@@ -498,6 +513,7 @@ class DialogColorPicker final : public wxDialog {
 	void OnDropperMouse(wxMouseEvent &evt);
 	void OnMouse(wxMouseEvent &evt);
 	void OnCaptureLost(wxMouseCaptureLostEvent&);
+	void OnOsDropperClick(wxCommandEvent&);
 
 	std::function<void (agi::Color)> callback;
 
@@ -585,6 +601,9 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	recent_box = new ColorPickerRecent(this, 8, 4, 16);
 
 	eyedropper_bitmap = GETBUNDLE(eyedropper_tool, 24);
+	if (enable_os_eyedropper) {
+		os_screen_dropper_button = new wxBitmapButton(this, wxID_ANY, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxBORDER_DEFAULT);
+	}
 	if (enable_screenshot_eyedropper) {
 		screenshot_screen_dropper_icon = new wxStaticBitmap(this, -1, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
 		screenshot_screen_dropper = new ColorPickerScreenDropper(this, 7, 7, 8);
@@ -632,6 +651,10 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
 	picker_sizer->AddStretchSpacer();
+	if (os_screen_dropper_button) {
+		picker_sizer->Add(os_screen_dropper_button, 0, wxALIGN_CENTER);
+		picker_sizer->AddStretchSpacer();
+	}
 	if (screenshot_screen_dropper) {
 		picker_sizer->Add(screenshot_screen_dropper_icon, 0, wxALIGN_CENTER|wxRIGHT, 5);
 		picker_sizer->Add(screenshot_screen_dropper, 0, wxALIGN_CENTER);
@@ -690,12 +713,16 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 		Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnMouse, this);
 	}
 
+	if (os_screen_dropper_button)
+		os_screen_dropper_button->Bind(wxEVT_BUTTON, &DialogColorPicker::OnOsDropperClick, this);
+
 	spectrum->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnSpectrumChange, this);
 	slider->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnSliderChange, this);
 	alpha_slider->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnAlphaSliderChange, this);
 	recent_box->Bind(EVT_RECENT_SELECT, &DialogColorPicker::OnRecentSelect, this);
 	if (screenshot_screen_dropper)
 		screenshot_screen_dropper->Bind(EVT_DROPPER_SELECT, &DialogColorPicker::OnRecentSelect, this);
+	Bind(EVT_OS_SELECT, &DialogColorPicker::OnRecentSelect, this);
 
 	colorspace_choice->Bind(wxEVT_CHOICE, &DialogColorPicker::OnChangeMode, this);
 
@@ -1108,6 +1135,56 @@ void DialogColorPicker::OnCaptureLost(wxMouseCaptureLostEvent&) {
 	screenshot_screen_dropper_icon->SetCursor(wxNullCursor);
 	screenshot_screen_dropper_icon->SetBitmap(eyedropper_bitmap);
 }
+
+#ifdef WITH_LIBPORTAL
+
+namespace {
+unsigned char float_to_byte(double x) {
+	if (std::isnan(x) || x <= 0.0) return 0;
+	if (x >= 1.0) return 255;
+	return static_cast<unsigned char>(x * 255 + 0.5);
+	// NOTE: I have encountered cases where the returned value was off by one,
+	//       probably due to incorrect rounding. However, I am unable to reproduce it.
+}
+
+void PortalPickColorCallback(GObject *source, GAsyncResult *res, gpointer data) {
+	// this will be called from GLib main loop, which likely runs on wxWidgets main thread (at least on wxGTK), but don't rely on it
+	wxEvtHandler *event_target = static_cast<wxEvtHandler *>(data);
+	GError *raw_error = nullptr;
+	std::unique_ptr<GVariant, decltype(&g_variant_unref)> color_result{xdp_portal_pick_color_finish(XDP_PORTAL(source), res, &raw_error), g_variant_unref};
+	// FIXME: Use out_ptr here once we can use C++23
+	std::unique_ptr<GError, decltype(&g_error_free)> error{raw_error, g_error_free};
+
+	if (error) {
+		if (g_error_matches(error.get(), G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+			LOG_D("dialog_colorpicker") << "XDG Desktop Portal PickColor cancelled";
+		} else {
+			LOG_W("dialog_colorpicker") << "XDG Desktop Portal PickColor failed: " << error->message;
+			// TODO inform the user about the error
+		}
+		return;
+	}
+
+	gdouble r, g, b;
+	g_variant_get(color_result.get(), "(ddd)", &r, &g, &b);
+	agi::Color color(float_to_byte(r), float_to_byte(g), float_to_byte(b), 0);
+	// FIXME what if event_target has been destroyed in the meantime? (unlikely, but cannot be completely ruled out)
+	event_target->QueueEvent(new ValueEvent<agi::Color>(EVT_OS_SELECT, 0, color));
+}
+}
+
+void DialogColorPicker::OnOsDropperClick(wxCommandEvent&) {
+	auto parent = agi::xdp_utils::GetXdpParent(this);
+	xdp_portal_pick_color(agi::xdp_utils::portal, parent.get(), nullptr, PortalPickColorCallback, static_cast<wxEvtHandler *>(this));
+}
+
+#else // WITH_LIBPORTAL
+
+void DialogColorPicker::OnOsDropperClick(wxCommandEvent&) {
+	throw agi::InternalError("unimplemented");
+}
+
+#endif // WITH_LIBPORTAL
 
 }
 
