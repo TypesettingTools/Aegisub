@@ -240,6 +240,7 @@ void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 		switch (settings.ar_mode) {
 		case ResampleARMode::RemoveBorder:
 			border_horizontally = !border_horizontally;
+			[[fallthrough]];
 		case ResampleARMode::AddBorder:
 			if (border_horizontally) // Wider/Shorter
 				settings.margin[LEFT] = settings.margin[RIGHT] = (settings.source_y * new_ar - settings.source_x) / 2;
