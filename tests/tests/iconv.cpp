@@ -88,7 +88,7 @@ TEST(lagi_iconv, Conversions) {
 TEST(lagi_iconv, Buffer) {
 	IconvWrapper conv("UTF-8", "UTF-16LE", false);
 	std::array<char, 4> buff;
-	buff.fill(0xFF);
+	buff.fill('\xFF');
 	std::span<char> sbuff(buff);
 	std::string_view src("", 1);
 
