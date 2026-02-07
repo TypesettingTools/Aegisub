@@ -35,14 +35,18 @@
 #include "persist_location.h"
 #include "utils.h"
 #include "value_event.h"
+#include "xdg_desktop_portal_utils.h"
 
+#include <libaegisub/log.h>
 #include <libaegisub/scoped_ptr.h>
 
 #include <algorithm>
+#include <cmath>
 #include <memory>
 #include <vector>
 
 #include <wx/bitmap.h>
+#include <wx/bmpbuttn.h>
 #include <wx/button.h>
 #include <wx/choice.h>
 #include <wx/dcbuffer.h>
@@ -74,6 +78,15 @@ enum class PickerDirection {
 };
 
 static const int spectrum_horz_vert_arrow_size = 4;
+
+#ifdef WITH_LIBPORTAL
+// this could be made configurable
+static constexpr bool enable_os_eyedropper = true;
+static constexpr bool enable_custom_eyedropper = false;
+#else
+static constexpr bool enable_os_eyedropper = false;
+static constexpr bool enable_custom_eyedropper = true;
+#endif
 
 wxDEFINE_EVENT(EVT_SPECTRUM_CHANGE, wxCommandEvent);
 
@@ -415,6 +428,8 @@ void ColorPickerScreenDropper::DropFromScreenXY(int x, int y) {
 	Refresh(false);
 }
 
+wxDEFINE_EVENT(EVT_OS_SELECT, ValueEvent<agi::Color>);
+
 class DialogColorPicker final : public wxDialog {
 	std::unique_ptr<PersistLocation> persist;
 
@@ -456,9 +471,10 @@ class DialogColorPicker final : public wxDialog {
 	wxStaticBitmap *preview_box; ///< A box which simply shows the current color
 	ColorPickerRecent *recent_box; ///< A grid of recently used colors
 
-	ColorPickerScreenDropper *screen_dropper;
+	ColorPickerScreenDropper *screen_dropper = nullptr;
+	wxStaticBitmap *screen_dropper_icon = nullptr;
 
-	wxStaticBitmap *screen_dropper_icon;
+	wxBitmapButton *os_screen_dropper_button = nullptr;
 
 	/// Update all other controls as a result of modifying an RGB control
 	void UpdateFromRGB(bool dirty = true);
@@ -497,6 +513,7 @@ class DialogColorPicker final : public wxDialog {
 	void OnDropperMouse(wxMouseEvent &evt);
 	void OnMouse(wxMouseEvent &evt);
 	void OnCaptureLost(wxMouseCaptureLostEvent&);
+	void OnOsDropperClick(wxCommandEvent&);
 
 	std::function<void (agi::Color)> callback;
 
@@ -584,8 +601,13 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	recent_box = new ColorPickerRecent(this, 8, 4, 16);
 
 	eyedropper_bitmap = GETBUNDLE(eyedropper_tool, 24);
-	screen_dropper_icon = new wxStaticBitmap(this, -1, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
-	screen_dropper = new ColorPickerScreenDropper(this, 7, 7, 8);
+	if (enable_os_eyedropper) {
+		os_screen_dropper_button = new wxBitmapButton(this, wxID_ANY, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxBORDER_DEFAULT);
+	}
+	if (enable_custom_eyedropper) {
+		screen_dropper_icon = new wxStaticBitmap(this, -1, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
+		screen_dropper = new ColorPickerScreenDropper(this, 7, 7, 8);
+	}
 
 	// Arrange the controls in a nice way
 	wxSizer *spectop_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -629,9 +651,15 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
 	picker_sizer->AddStretchSpacer();
-	picker_sizer->Add(screen_dropper_icon, 0, wxALIGN_CENTER|wxRIGHT, 5);
-	picker_sizer->Add(screen_dropper, 0, wxALIGN_CENTER);
-	picker_sizer->AddStretchSpacer();
+	if (os_screen_dropper_button) {
+		picker_sizer->Add(os_screen_dropper_button, 0, wxALIGN_CENTER);
+		picker_sizer->AddStretchSpacer();
+	}
+	if (screen_dropper) {
+		picker_sizer->Add(screen_dropper_icon, 0, wxALIGN_CENTER|wxRIGHT, 5);
+		picker_sizer->Add(screen_dropper, 0, wxALIGN_CENTER);
+		picker_sizer->AddStretchSpacer();
+	}
 	picker_sizer->Add(recent_box, 0, wxALIGN_CENTER);
 	picker_sizer->AddStretchSpacer();
 
@@ -675,19 +703,26 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	alpha_input->Bind(wxEVT_SPINCTRL, bind(&DialogColorPicker::UpdateFromAlpha, this));
 	alpha_input->Bind(wxEVT_TEXT, bind(&DialogColorPicker::UpdateFromAlpha, this));
 
-	screen_dropper_icon->Bind(wxEVT_MOTION, &DialogColorPicker::OnDropperMouse, this);
-	screen_dropper_icon->Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnDropperMouse, this);
-	screen_dropper_icon->Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnDropperMouse, this);
-	screen_dropper_icon->Bind(wxEVT_MOUSE_CAPTURE_LOST, &DialogColorPicker::OnCaptureLost, this);
-	Bind(wxEVT_MOTION, &DialogColorPicker::OnMouse, this);
-	Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnMouse, this);
-	Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnMouse, this);
+	if (screen_dropper) {
+		screen_dropper_icon->Bind(wxEVT_MOTION, &DialogColorPicker::OnDropperMouse, this);
+		screen_dropper_icon->Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnDropperMouse, this);
+		screen_dropper_icon->Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnDropperMouse, this);
+		screen_dropper_icon->Bind(wxEVT_MOUSE_CAPTURE_LOST, &DialogColorPicker::OnCaptureLost, this);
+		Bind(wxEVT_MOTION, &DialogColorPicker::OnMouse, this);
+		Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnMouse, this);
+		Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnMouse, this);
+	}
+
+	if (os_screen_dropper_button)
+		os_screen_dropper_button->Bind(wxEVT_BUTTON, &DialogColorPicker::OnOsDropperClick, this);
 
 	spectrum->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnSpectrumChange, this);
 	slider->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnSliderChange, this);
 	alpha_slider->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnAlphaSliderChange, this);
 	recent_box->Bind(EVT_RECENT_SELECT, &DialogColorPicker::OnRecentSelect, this);
-	screen_dropper->Bind(EVT_DROPPER_SELECT, &DialogColorPicker::OnRecentSelect, this);
+	if (screen_dropper)
+		screen_dropper->Bind(EVT_DROPPER_SELECT, &DialogColorPicker::OnRecentSelect, this);
+	Bind(EVT_OS_SELECT, &DialogColorPicker::OnRecentSelect, this);
 
 	colorspace_choice->Bind(wxEVT_CHOICE, &DialogColorPicker::OnChangeMode, this);
 
@@ -706,7 +741,7 @@ wxSizer *DialogColorPicker::MakeColorInputSizer(wxWindow *parent, wxString (&lab
 }
 
 DialogColorPicker::~DialogColorPicker() {
-	if (screen_dropper_icon->HasCapture()) screen_dropper_icon->ReleaseMouse();
+	if (screen_dropper && screen_dropper_icon->HasCapture()) screen_dropper_icon->ReleaseMouse();
 }
 
 static void change_value(wxSpinCtrl *ctrl, int value) {
@@ -1083,6 +1118,7 @@ void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt) {
 
 /// @brief Hack to redirect events to the screen dropper icon
 void DialogColorPicker::OnMouse(wxMouseEvent &evt) {
+	// this handler is only registered if screen_dropper is enabled
 	if (!screen_dropper_icon->HasCapture()) {
 		evt.Skip();
 		return;
@@ -1099,6 +1135,49 @@ void DialogColorPicker::OnCaptureLost(wxMouseCaptureLostEvent&) {
 	screen_dropper_icon->SetCursor(wxNullCursor);
 	screen_dropper_icon->SetBitmap(eyedropper_bitmap);
 }
+
+#ifdef WITH_LIBPORTAL
+
+static unsigned char float_to_byte(double x) {
+	if (std::isnan(x) || x <= 0.0) return 0;
+	if (x >= 1.0) return 255;
+	return static_cast<unsigned char>(x * 255 + 0.5);
+	// NOTE: I have encountered cases where the returned value was off by one,
+	//       probably due to incorrect rounding. However, I am unable to reproduce it.
+}
+
+static void PortalPickColorCallback(GObject *source, GAsyncResult *res, gpointer data) {
+	// this will be called from GLib main loop, which likely runs on wxWidgets main thread, but don't rely on it
+	wxEvtHandler *event_target = static_cast<wxEvtHandler *>(data);
+	GError *error = nullptr;
+	GVariant *color_result = xdp_portal_pick_color_finish(XDP_PORTAL(source), res, &error);
+	if (error) {
+		LOG_W("dialog_colorpicker") << "XDG Desktop Portal PickColor failed: " << error->message;
+		// TODO inform the user about the error, except for user cancellation
+		g_error_free(error);
+		return;
+	}
+	gdouble r, g, b;
+	g_variant_get(color_result, "(ddd)", &r, &g, &b);
+	g_variant_unref(color_result);
+	agi::Color color(float_to_byte(r), float_to_byte(g), float_to_byte(b), 0);
+	// FIXME what if event_target has been destroyed in the meantime? (unlikely, but cannot be completely ruled out)
+	wxQueueEvent(event_target, new ValueEvent<agi::Color>(EVT_OS_SELECT, 0, color));
+}
+
+void DialogColorPicker::OnOsDropperClick(wxCommandEvent&) {
+	XdpParent *parent = agi::xdp_utils::xdp_parent_new_wx(this);
+	xdp_portal_pick_color(agi::xdp_utils::portal, parent, nullptr, PortalPickColorCallback, static_cast<wxEvtHandler *>(this));
+	xdp_parent_free(parent);
+}
+
+#else // WITH_LIBPORTAL
+
+void DialogColorPicker::OnOsDropperClick(wxCommandEvent&) {
+	throw agi::InternalError("unimplemented");
+}
+
+#endif // WITH_LIBPORTAL
 
 }
 
