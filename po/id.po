@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-02 21:53+0100\n"
+"POT-Creation-Date: 2026-01-22 00:06+0100\n"
 "PO-Revision-Date: 2014-07-02 23:34+0700\n"
 "Last-Translator: doplank <doplank@gmx.com>\n"
 "Language-Team:  <doplank@gmx.com>\n"
@@ -18,6 +18,14 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 1.6.5\n"
 "Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n"
+
+#: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
+msgid "Language"
+msgstr "Bahasa"
+
+#: ../src/aegisublocale.cpp:113
+msgid "Please choose a language:"
+msgstr ""
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
@@ -161,7 +169,52 @@ msgstr "tempo"
 msgid "karaoke timing"
 msgstr "tempo karaoke"
 
-#: ../src/auto4_base.cpp:454
+#: ../src/auto4_base.cpp:344
+msgid ""
+"A script in the Automation autoload directory failed to load.\n"
+"Please review the errors, fix them and use the Rescan Autoload Dir button in "
+"Automation Manager to load the scripts again."
+msgstr ""
+
+#: ../src/auto4_base.cpp:347
+msgid ""
+"Multiple scripts in the Automation autoload directory failed to load.\n"
+"Please review the errors, fix them and use the Rescan Autoload Dir button in "
+"Automation Manager to load the scripts again."
+msgstr ""
+
+#: ../src/auto4_base.cpp:350
+msgid ""
+"A script in the Automation autoload directory loaded with warnings.\n"
+"Please review the warnings, fix them and use the Rescan Autoload Dir button "
+"in Automation Manager to load the scripts again."
+msgstr ""
+
+#: ../src/auto4_base.cpp:353
+msgid ""
+"Multiple scripts in the Automation autoload directory loaded with warnings.\n"
+"Please review the warnings, fix them and use the Rescan Autoload Dir button "
+"in Automation Manager to load the scripts again."
+msgstr ""
+
+#: ../src/auto4_base.cpp:393
+#, c-format
+msgid ""
+"Automation Script referenced with unknown location specifier character.\n"
+"Location specifier found: %c\n"
+"Filename specified: %s"
+msgstr ""
+
+#: ../src/auto4_base.cpp:401
+#, c-format
+msgid ""
+"Automation Script referenced could not be found.\n"
+"Filename specified: %c%s\n"
+"Searched relative to: %s\n"
+"Resolved filename: %s"
+msgstr ""
+
+#: ../src/auto4_base.cpp:462
 #, c-format
 msgid ""
 "Failed to load Automation script '%s':\n"
@@ -170,26 +223,93 @@ msgstr ""
 "Gagal memuat skrip Otomatisasi '%s':\n"
 "%s"
 
-#: ../src/auto4_base.cpp:461
+#: ../src/auto4_base.cpp:465
+#, c-format
+msgid ""
+"Warning when loading Automation script '%s':\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_base.cpp:472
 #, c-format
 msgid "The file was not recognised as an Automation script: %s"
 msgstr "Berkas tidak dikenali sebagai skrip otomatisasi: %s"
 
-#: ../src/auto4_base.cpp:490 ../src/command/audio.cpp:84
+#: ../src/auto4_base.cpp:501 ../src/command/audio.cpp:84
 #: ../src/command/keyframe.cpp:76 ../src/command/timecode.cpp:73
 #: ../src/command/timecode.cpp:93 ../src/command/video.cpp:592
 msgid "All Files"
 msgstr "Semua Berkas"
 
-#: ../src/auto4_base.cpp:496 ../src/command/keyframe.cpp:74
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
-#: ../src/subtitle_format.cpp:318
+#: ../src/auto4_base.cpp:507 ../src/command/keyframe.cpp:74
+#: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "Semua format yang didukung"
 
-#: ../src/auto4_base.cpp:502
+#: ../src/auto4_base.cpp:513
 msgid "File was not recognized as a script"
 msgstr "Berkas tidak dikenali sebagai skrip"
+
+#: ../src/auto4_lua.cpp:180
+#, c-format
+msgid ""
+"Warning in Automation script '%s':\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:460
+msgid "Could not initialize Lua state"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:543
+#, c-format
+msgid ""
+"Error initialising Lua script \"%s\":\n"
+"\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:553
+msgid ""
+"Attempted to load an Automation 3 script as an Automation 4 Lua script. "
+"Automation 3 is no longer supported."
+msgstr ""
+
+#: ../src/auto4_lua.cpp:827
+#, c-format
+msgid ""
+"Runtime error in Lua macro validation function:\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:881
+#, c-format
+msgid "Active row %d is out of bounds (must be 1-%u)"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:897
+#, c-format
+msgid "Selected row %d is out of bounds (must be 1-%u)"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:903
+#, c-format
+msgid "Selected row %d is not a dialogue line"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:969
+#, c-format
+msgid ""
+"Runtime error in Lua macro IsActive function:\n"
+"%s"
+msgstr ""
+
+#: ../src/auto4_lua.cpp:1075
+#, c-format
+msgid ""
+"Runtime error in Lua config dialog function:\n"
+"%s"
+msgstr ""
 
 #: ../src/charset_detect.cpp:50
 msgid ""
@@ -279,13 +399,19 @@ msgstr "Keluar dari aplikasi"
 msgid "&Language..."
 msgstr "&Bahasa... (Language)"
 
-#: ../src/command/app.cpp:156
-msgid "Language"
-msgstr "Bahasa"
-
 #: ../src/command/app.cpp:157
 msgid "Select Aegisub interface language"
 msgstr "Pilih bahasa tatap muka Aegisub"
+
+#: ../src/command/app.cpp:167
+msgid ""
+"Aegisub needs to be restarted so that the new language can be applied. "
+"Restart now?"
+msgstr ""
+
+#: ../src/command/app.cpp:167
+msgid "Restart Aegisub?"
+msgstr ""
 
 #: ../src/command/app.cpp:180
 msgid "&Log window"
@@ -315,9 +441,9 @@ msgstr "Buka jendela aplikasi baru"
 msgid "&Options..."
 msgstr "&Pengaturan..."
 
-#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:146
-#: ../src/dialog_timing_processor.cpp:168 ../src/preferences.cpp:129
-#: ../src/preferences.cpp:169
+#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:151
+#: ../src/dialog_timing_processor.cpp:169 ../src/preferences.cpp:132
+#: ../src/preferences.cpp:172
 msgid "Options"
 msgstr "Pengaturan"
 
@@ -397,7 +523,7 @@ msgstr "Tutup berkas audio yang sedang terbuka"
 msgid "&Open Audio File..."
 msgstr "&Buka Berkas Audio..."
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Buka Berkas Audio"
 
@@ -412,6 +538,13 @@ msgstr "Format Audio"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Format Video"
+
+#: ../src/command/audio.cpp:85
+#, fuzzy
+#| msgid "Open Audio File"
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Buka Berkas Audio"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -474,7 +607,9 @@ msgid "Save an audio clip of the selected line"
 msgstr "Simpan klip audio dari baris yang terpilih"
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
+#, fuzzy
+#| msgid "Save audio clip"
+msgid "Save Audio Clip"
 msgstr "Simpan klip audio"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
@@ -486,7 +621,6 @@ msgid "Play the current audio selection, ignoring changes made while playing"
 msgstr "Jalankan audio saat ini dan abaikan perubahan yang dibuat terakhir"
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
-#: ../src/command/video.cpp:647
 msgid "Play current line"
 msgstr "Putar video dibaris ini"
 
@@ -672,7 +806,7 @@ msgid "&Automation..."
 msgstr "&Otomatisasi..."
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:333
+#: ../src/preferences.cpp:342
 msgid "Automation"
 msgstr "Otomatisasi"
 
@@ -815,7 +949,7 @@ msgstr "alihkan coret"
 msgid "Font Face..."
 msgstr "Rupa Huruf..."
 
-#: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:250
+#: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:275
 msgid "Font Face"
 msgstr "Rupa Huruf"
 
@@ -1124,7 +1258,7 @@ msgid "revert line"
 msgstr "salin teks"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:419
 msgid "Clear"
 msgstr "Bersihkan"
 
@@ -1218,7 +1352,7 @@ msgid "&Effect"
 msgstr "&Efek"
 
 #: ../src/command/grid.cpp:133 ../src/command/grid.cpp:145
-#: ../src/dialog_paste_over.cpp:72 ../src/grid_column.cpp:214
+#: ../src/dialog_paste_over.cpp:74 ../src/grid_column.cpp:214
 #: ../src/grid_column.cpp:215 ../src/subs_edit_box.cpp:140
 msgid "Effect"
 msgstr "Efek"
@@ -1236,7 +1370,7 @@ msgid "&End Time"
 msgstr "&Waktu Akhir"
 
 #: ../src/command/grid.cpp:157 ../src/command/grid.cpp:169
-#: ../src/dialog_paste_over.cpp:66 ../src/grid_column.cpp:170
+#: ../src/dialog_paste_over.cpp:68 ../src/grid_column.cpp:170
 msgid "End Time"
 msgstr "Waktu Akhir"
 
@@ -1253,7 +1387,7 @@ msgid "&Layer"
 msgstr "&Layar "
 
 #: ../src/command/grid.cpp:181 ../src/command/grid.cpp:193
-#: ../src/dialog_paste_over.cpp:64 ../src/grid_column.cpp:130
+#: ../src/dialog_paste_over.cpp:66 ../src/grid_column.cpp:130
 msgid "Layer"
 msgstr "Layar "
 
@@ -1270,7 +1404,7 @@ msgid "&Start Time"
 msgstr "&Waktu Awal"
 
 #: ../src/command/grid.cpp:205 ../src/command/grid.cpp:217
-#: ../src/dialog_paste_over.cpp:65 ../src/grid_column.cpp:152
+#: ../src/dialog_paste_over.cpp:67 ../src/grid_column.cpp:152
 msgid "Start Time"
 msgstr "Waktu Awal"
 
@@ -1287,7 +1421,7 @@ msgid "St&yle Name"
 msgstr "Nama Ga&ya"
 
 #: ../src/command/grid.cpp:229 ../src/command/grid.cpp:241
-#: ../src/dialog_style_editor.cpp:178
+#: ../src/dialog_style_editor.cpp:180
 msgid "Style Name"
 msgstr "Nama Gaya"
 
@@ -1472,7 +1606,9 @@ msgid "Open a keyframe list file"
 msgstr "Buka daftar berkas keyframe"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
+#, fuzzy
+#| msgid "Open keyframes file"
+msgid "Open Keyframes File"
 msgstr "Buka berkas Keyframe"
 
 #: ../src/command/keyframe.cpp:87
@@ -1488,8 +1624,16 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Simpan daftar keyframe saat ini ke berkas"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
+#, fuzzy
+#| msgid "Save keyframes file"
+msgid "Save Keyframes File"
 msgstr "Simpan berkas Keyframe"
+
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+#, fuzzy
+msgid "Text Files"
+msgstr "Berkas"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1613,7 +1757,7 @@ msgstr "Takarir baru"
 
 #: ../src/command/subtitle.cpp:255 ../src/command/subtitle.cpp:256
 #: ../src/command/subtitle.cpp:257 ../src/dialog_progress.cpp:175
-#: ../src/dialog_style_manager.cpp:313
+#: ../src/dialog_style_manager.cpp:320
 msgid "Close"
 msgstr "Tutup"
 
@@ -1630,8 +1774,10 @@ msgid "Open a subtitles file"
 msgstr "Buka berkas takarir"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
-#: ../src/dialog_style_manager.cpp:667
-msgid "Open subtitles file"
+#: ../src/dialog_style_manager.cpp:674
+#, fuzzy
+#| msgid "Open subtitles file"
+msgid "Open Subtitles File"
 msgstr "Buka berkas takarir"
 
 #: ../src/command/subtitle.cpp:282
@@ -1691,8 +1837,27 @@ msgid "Open script properties window"
 msgstr "Buka informasi dasar skrip"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
+#, fuzzy
+#| msgid "Save subtitles file"
+msgid "Save Subtitles File"
 msgstr "Simpan berkas takarir "
+
+#: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
+#: ../src/dialog_fonts_collector.cpp:312 ../src/dialog_fonts_collector.cpp:317
+#: ../src/dialog_fonts_collector.cpp:322 ../src/dialog_kara_timing_copy.cpp:495
+#: ../src/dialog_kara_timing_copy.cpp:497
+#: ../src/dialog_kara_timing_copy.cpp:547 ../src/dialog_search_replace.cpp:143
+#: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
+#: ../src/dialog_style_manager.cpp:689 ../src/dialog_style_manager.cpp:695
+#: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:194
+#: ../src/preferences.cpp:275 ../src/preferences.cpp:467
+msgid "Error"
+msgstr "Galat"
+
+#: ../src/command/subtitle.cpp:360 ../src/dialog_export.cpp:211
+#: ../src/dialog_style_manager.cpp:698 ../src/project.cpp:142
+msgid "Unknown error"
+msgstr ""
 
 #: ../src/command/subtitle.cpp:367
 msgid "&Save Subtitles"
@@ -1718,7 +1883,7 @@ msgstr "Simpan Takarir sebagai"
 msgid "Save subtitles with another name"
 msgstr "Simpan takarir dengan nama lain"
 
-#: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:123
+#: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:127
 #: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:392
 msgid "Select &All"
 msgstr "Pilih &Semua"
@@ -1799,7 +1964,7 @@ msgstr "geser seleksi ke frame"
 msgid "S&hift Times..."
 msgstr "G&eser Waktu..."
 
-#: ../src/command/time.cpp:154 ../src/dialog_shift_times.cpp:134
+#: ../src/command/time.cpp:154 ../src/dialog_shift_times.cpp:135
 msgid "Shift Times"
 msgstr "Geser Waktu"
 
@@ -1945,7 +2110,7 @@ msgstr "Tutup berkas timecode yang saat ini sedang dibuka"
 msgid "Open Timecodes File..."
 msgstr "Buka Berkas Timecode..."
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
 msgstr "Buka Berkas Timecode"
 
@@ -1953,17 +2118,35 @@ msgstr "Buka Berkas Timecode"
 msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "Buka berkas timecode VFR v1 atau v2"
 
+#: ../src/command/timecode.cpp:74
+#, fuzzy
+#| msgid "Open Timecodes File"
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Buka Berkas Timecode"
+
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
 msgstr "Simpan Berkas Timecode..."
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
 msgstr "Simpan Berkas Timecode"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
 msgstr "Simpan berkas timecode VFR v2"
+
+#: ../src/command/timecode.cpp:94
+#, fuzzy
+#| msgid "Save Timecodes File"
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "Simpan Berkas Timecode"
+
+#: ../src/command/timecode.cpp:103
+msgid "Error saving timecodes"
+msgstr ""
 
 #: ../src/command/tool.cpp:56
 msgid "&Export Subtitles..."
@@ -2023,7 +2206,7 @@ msgstr ""
 msgid "St&yling Assistant..."
 msgstr "Asisten Pen&gaya..."
 
-#: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:53
+#: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:54
 msgid "Styling Assistant"
 msgstr "Asisten Pengaya"
 
@@ -2036,7 +2219,7 @@ msgid "&Accept changes"
 msgstr "&Terapkan perubahan"
 
 #: ../src/command/tool.cpp:128 ../src/command/tool.cpp:212
-#: ../src/dialog_styling_assistant.cpp:88 ../src/dialog_translation.cpp:111
+#: ../src/dialog_styling_assistant.cpp:90 ../src/dialog_translation.cpp:114
 msgid "Accept changes"
 msgstr "Terapkan perubahan"
 
@@ -2049,7 +2232,7 @@ msgid "&Preview changes"
 msgstr "&Pratinjau perubahan"
 
 #: ../src/command/tool.cpp:139 ../src/command/tool.cpp:223
-#: ../src/dialog_styling_assistant.cpp:89 ../src/dialog_translation.cpp:112
+#: ../src/dialog_styling_assistant.cpp:91 ../src/dialog_translation.cpp:115
 msgid "Preview changes"
 msgstr "Pratinjau perubahan"
 
@@ -2061,7 +2244,7 @@ msgstr "Terapkan perubahan dan tetap dibaris saat ini"
 msgid "&Styles Manager..."
 msgstr "&Pengelola Gaya..."
 
-#: ../src/command/tool.cpp:151 ../src/dialog_style_manager.cpp:258
+#: ../src/command/tool.cpp:151 ../src/dialog_style_manager.cpp:259
 msgid "Styles Manager"
 msgstr "Pengelola Gaya"
 
@@ -2101,8 +2284,8 @@ msgstr ""
 msgid "&Translation Assistant..."
 msgstr "&Asisten Penterjemah..."
 
-#: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:64
-#: ../src/preferences.cpp:229
+#: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
+#: ../src/preferences.cpp:238
 msgid "Translation Assistant"
 msgstr "Asisten Penterjemah"
 
@@ -2453,7 +2636,9 @@ msgid "Open a video file"
 msgstr "Buka berkas video"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
+#, fuzzy
+#| msgid "Open video file"
+msgid "Open Video File"
 msgstr "Buka berkas vdeo"
 
 #: ../src/command/video.cpp:602
@@ -2481,12 +2666,18 @@ msgid "Play"
 msgstr "Putar"
 
 #: ../src/command/video.cpp:635
-msgid "Play video starting on this position"
+#, fuzzy
+msgid "Play the video starting on this position"
 msgstr "Putar video dimulai pada posisi ini"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
 msgstr "Putar baris"
+
+#: ../src/command/video.cpp:647
+#, fuzzy
+msgid "Play the video for the current line"
+msgstr "Putar audio di baris saat ini"
 
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
@@ -2504,63 +2695,75 @@ msgstr ""
 "Tampilkan pembatas video, menunjukkan area di video sebagai batas aman "
 "penempatan teks"
 
+#: ../src/command/video.cpp:673
+msgid "Reset Video &Pan"
+msgstr ""
+
 #: ../src/command/video.cpp:674
+msgid "Reset Video Pan"
+msgstr ""
+
+#: ../src/command/video.cpp:675
+msgid "Reset the video's position in the video display"
+msgstr ""
+
+#: ../src/command/video.cpp:685
 msgid "&100%"
 msgstr "&100%"
 
-#: ../src/command/video.cpp:675
+#: ../src/command/video.cpp:686
 msgid "100%"
 msgstr "100%"
 
-#: ../src/command/video.cpp:676
+#: ../src/command/video.cpp:687
 msgid "Set zoom to 100%"
 msgstr "Atur pembesaran ke 100%"
 
-#: ../src/command/video.cpp:693 ../src/command/video.cpp:694
+#: ../src/command/video.cpp:704 ../src/command/video.cpp:705
 msgid "Stop video"
 msgstr "Hentikan video"
 
-#: ../src/command/video.cpp:695
+#: ../src/command/video.cpp:706
 msgid "Stop video playback"
 msgstr "Hentikan pemutar video"
 
-#: ../src/command/video.cpp:705
+#: ../src/command/video.cpp:716
 msgid "&200%"
 msgstr "&200%"
 
-#: ../src/command/video.cpp:706
+#: ../src/command/video.cpp:717
 msgid "200%"
 msgstr "200%"
 
-#: ../src/command/video.cpp:707
+#: ../src/command/video.cpp:718
 msgid "Set zoom to 200%"
 msgstr "Atur pembesaran ke 200%"
 
-#: ../src/command/video.cpp:723
+#: ../src/command/video.cpp:734
 msgid "&50%"
 msgstr "&50%"
 
-#: ../src/command/video.cpp:724
+#: ../src/command/video.cpp:735
 msgid "50%"
 msgstr "50%"
 
-#: ../src/command/video.cpp:725
+#: ../src/command/video.cpp:736
 msgid "Set zoom to 50%"
 msgstr "Atur pembesaran ke 50%"
 
-#: ../src/command/video.cpp:741 ../src/command/video.cpp:742
+#: ../src/command/video.cpp:752 ../src/command/video.cpp:753
 msgid "Zoom In"
 msgstr "Besarkan"
 
-#: ../src/command/video.cpp:743
+#: ../src/command/video.cpp:754
 msgid "Zoom video in"
 msgstr "Besarkan video"
 
-#: ../src/command/video.cpp:753 ../src/command/video.cpp:754
+#: ../src/command/video.cpp:764 ../src/command/video.cpp:765
 msgid "Zoom Out"
 msgstr "Kecilkan"
 
-#: ../src/command/video.cpp:755
+#: ../src/command/video.cpp:766
 msgid "Zoom video out"
 msgstr "Kecilkan video"
 
@@ -2630,7 +2833,8 @@ msgid "Line"
 msgstr "Garis Lurus"
 
 #: ../src/command/vis_tool.cpp:141
-msgid "Appends a line"
+#, fuzzy
+msgid "Append a line"
 msgstr "Buat garis lurus"
 
 #: ../src/command/vis_tool.cpp:146 ../src/command/vis_tool.cpp:147
@@ -2638,7 +2842,8 @@ msgid "Bicubic"
 msgstr "Lengkung"
 
 #: ../src/command/vis_tool.cpp:148
-msgid "Appends a bezier bicubic curve"
+#, fuzzy
+msgid "Append a bezier bicubic curve"
 msgstr "Buat garis melengkung."
 
 #: ../src/command/vis_tool.cpp:153 ../src/command/vis_tool.cpp:154
@@ -2646,7 +2851,8 @@ msgid "Convert"
 msgstr "Ubah"
 
 #: ../src/command/vis_tool.cpp:155
-msgid "Converts a segment between line and bicubic"
+#, fuzzy
+msgid "Convert a segment between line and bicubic"
 msgstr "Ubah antara garis lurus dan garis melengkung"
 
 #: ../src/command/vis_tool.cpp:160 ../src/command/vis_tool.cpp:161
@@ -2654,7 +2860,8 @@ msgid "Insert"
 msgstr "Sisipkan"
 
 #: ../src/command/vis_tool.cpp:162
-msgid "Inserts a control point"
+#, fuzzy
+msgid "Insert a control point"
 msgstr "Sisipkan poin kontrol"
 
 #: ../src/command/vis_tool.cpp:167 ../src/command/vis_tool.cpp:168
@@ -2662,7 +2869,8 @@ msgid "Remove"
 msgstr "Hapus"
 
 #: ../src/command/vis_tool.cpp:169
-msgid "Removes a control point"
+#, fuzzy
+msgid "Remove a control point"
 msgstr "Hapus poin kontrol"
 
 #: ../src/command/vis_tool.cpp:174 ../src/command/vis_tool.cpp:175
@@ -2670,7 +2878,8 @@ msgid "Freehand"
 msgstr "Gambar bebas"
 
 #: ../src/command/vis_tool.cpp:176
-msgid "Draws a freehand shape"
+#, fuzzy
+msgid "Draw a freehand shape"
 msgstr "Buat garis lurus bebas"
 
 #: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
@@ -2678,7 +2887,8 @@ msgid "Freehand smooth"
 msgstr "Gambar bebas yang halus"
 
 #: ../src/command/vis_tool.cpp:183
-msgid "Draws a smoothed freehand shape"
+#, fuzzy
+msgid "Draw a smoothed freehand shape"
 msgstr "Buat garis lurus bebas yang halus"
 
 #: ../src/dialog_about.cpp:46
@@ -2714,13 +2924,13 @@ msgstr "Lampirkan &Grafis"
 msgid "E&xtract"
 msgstr "E&kstrak"
 
-#: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:204
-#: ../src/preferences.cpp:605
+#: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:205
+#: ../src/preferences.cpp:615
 msgid "&Delete"
 msgstr "&Hapus"
 
 #: ../src/dialog_attachments.cpp:89 ../src/dialog_automation.cpp:122
-#: ../src/dialog_kara_timing_copy.cpp:419 ../src/dialog_version_check.cpp:122
+#: ../src/dialog_kara_timing_copy.cpp:425 ../src/dialog_version_check.cpp:122
 msgid "&Close"
 msgstr "&Keluar"
 
@@ -2740,9 +2950,17 @@ msgstr "Grup"
 msgid "Choose file to be attached"
 msgstr "Pilih berkas yang ingin dilampirkan"
 
+#: ../src/dialog_attachments.cpp:139 ../src/dialog_attachments.cpp:170
+msgid "Font Files"
+msgstr ""
+
 #: ../src/dialog_attachments.cpp:142
 msgid "attach font file"
 msgstr "lampirkan berkas huruf"
+
+#: ../src/dialog_attachments.cpp:149 ../src/dialog_attachments.cpp:170
+msgid "Graphic Files"
+msgstr ""
 
 #: ../src/dialog_attachments.cpp:152
 msgid "attach graphics file"
@@ -2792,15 +3010,20 @@ msgstr "Nama"
 msgid "Filename"
 msgstr "Nama berkas"
 
-#: ../src/dialog_automation.cpp:136
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:635
 msgid "Description"
 msgstr "Deskripsi"
 
-#: ../src/dialog_automation.cpp:222
+#: ../src/dialog_automation.cpp:224
 msgid "Add Automation script"
 msgstr "Tambahkan skrip otomatisasi"
 
-#: ../src/dialog_automation.cpp:277
+#: ../src/dialog_automation.cpp:240
+#, c-format
+msgid "Script '%s' is already loaded"
+msgstr ""
+
+#: ../src/dialog_automation.cpp:279
 #, c-format
 msgid ""
 "Total scripts loaded: %d\n"
@@ -2811,11 +3034,11 @@ msgstr ""
 "Global skrip yang dimuat: %d\n"
 "Skrip lokal yang dimuat: %d\n"
 
-#: ../src/dialog_automation.cpp:282
+#: ../src/dialog_automation.cpp:284
 msgid "Scripting engines installed:"
 msgstr "Skrip yang terpasang:"
 
-#: ../src/dialog_automation.cpp:289
+#: ../src/dialog_automation.cpp:291
 #, c-format
 msgid ""
 "\n"
@@ -2826,64 +3049,65 @@ msgid ""
 "Version: %s\n"
 "Full path: %s\n"
 "State: %s\n"
-"\n"
-"Features provided by script:"
 msgstr ""
-"\n"
-"Informasi skrip:\n"
-"Nama: %s\n"
-"Deskripsi: %s\n"
-"Penulis: %s\n"
-"Versi: %s\n"
-"Lokasi berkas: %s\n"
-"Status: %s\n"
-"\n"
-"Fitur disediakan oleh skrip:"
 
-#: ../src/dialog_automation.cpp:295
+#: ../src/dialog_automation.cpp:297
 msgid "Correctly loaded"
 msgstr "Sedang dimuat"
 
-#: ../src/dialog_automation.cpp:295
+#: ../src/dialog_automation.cpp:297
 msgid "Failed to load"
 msgstr "Gagal dimuat"
 
-#: ../src/dialog_automation.cpp:298
+#: ../src/dialog_automation.cpp:297
+msgid "Loaded with warnings"
+msgstr ""
+
+#: ../src/dialog_automation.cpp:300
+#, c-format
+msgid "Warning: %s\n"
+msgstr ""
+
+#: ../src/dialog_automation.cpp:303
+msgid "Features provided by script:\n"
+msgstr ""
+
+#: ../src/dialog_automation.cpp:306
 #, c-format
 msgid "    Macro: %s (%s)"
 msgstr "    Makro: %s (%s)"
 
-#: ../src/dialog_automation.cpp:301
+#: ../src/dialog_automation.cpp:309
 #, c-format
 msgid "    Export filter: %s"
 msgstr "    Filter ekspor: %s"
 
-#: ../src/dialog_automation.cpp:305
+#: ../src/dialog_automation.cpp:313
 msgid "Automation Script Info"
 msgstr "Info skrip otomatisasi"
 
-#: ../src/dialog_autosave.cpp:66
+#: ../src/dialog_autosave.cpp:67
 msgid "Open autosave file"
 msgstr "Buka berkas penyimpanan otomatis"
 
-#: ../src/dialog_autosave.cpp:70 ../src/preferences.cpp:78
+#: ../src/dialog_autosave.cpp:71 ../src/preferences.cpp:79
 msgid "Files"
 msgstr "Berkas"
 
-#: ../src/dialog_autosave.cpp:75
+#: ../src/dialog_autosave.cpp:76
 msgid "Versions"
 msgstr "Versi (Tanggal dan Jam)"
 
-#: ../src/dialog_autosave.cpp:85
+#: ../src/dialog_autosave.cpp:86
 msgid "Open"
 msgstr "Buka"
 
-#: ../src/dialog_autosave.cpp:94
+#: ../src/dialog_autosave.cpp:95
 #, c-format
 msgid "%s [ORIGINAL BACKUP]"
 msgstr "%s [ORIGINAL BACKUP]"
 
-#: ../src/dialog_autosave.cpp:95
+#: ../src/dialog_autosave.cpp:96
 #, c-format
 msgid "%s [RECOVERED]"
 msgstr "%s [RECOVERED]"
@@ -2896,71 +3120,71 @@ msgstr "Pilih Warna"
 msgid "Color spectrum"
 msgstr "Warna spektrum"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "HSL/L"
 msgstr "HSL/L"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "HSV/H"
 msgstr "HSV/H"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "RGB/B"
 msgstr "RGB/B"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "RGB/G"
 msgstr "RGB/G"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:563
 msgid "RGB/R"
 msgstr "RGB/R"
 
-#: ../src/dialog_colorpicker.cpp:564
+#: ../src/dialog_colorpicker.cpp:566
 msgid "RGB color"
 msgstr "Warna RGB"
 
-#: ../src/dialog_colorpicker.cpp:565
+#: ../src/dialog_colorpicker.cpp:567
 msgid "HSL color"
 msgstr "Warna HSL "
 
-#: ../src/dialog_colorpicker.cpp:566
+#: ../src/dialog_colorpicker.cpp:568
 msgid "HSV color"
 msgstr "Warna HSV"
 
-#: ../src/dialog_colorpicker.cpp:594
+#: ../src/dialog_colorpicker.cpp:600
 msgid "Spectrum mode:"
 msgstr "Mode Spektrum:"
 
-#: ../src/dialog_colorpicker.cpp:611
+#: ../src/dialog_colorpicker.cpp:617
 msgid "Blue:"
 msgstr "Biru:"
 
-#: ../src/dialog_colorpicker.cpp:611
+#: ../src/dialog_colorpicker.cpp:617
 msgid "Green:"
 msgstr "Hijau:"
 
-#: ../src/dialog_colorpicker.cpp:611
+#: ../src/dialog_colorpicker.cpp:617
 msgid "Red:"
 msgstr "Merah:"
 
-#: ../src/dialog_colorpicker.cpp:614
+#: ../src/dialog_colorpicker.cpp:620
 msgid "Alpha:"
 msgstr "Alfa:"
 
-#: ../src/dialog_colorpicker.cpp:621 ../src/dialog_colorpicker.cpp:624
+#: ../src/dialog_colorpicker.cpp:627 ../src/dialog_colorpicker.cpp:630
 msgid "Hue:"
 msgstr "Hue:"
 
-#: ../src/dialog_colorpicker.cpp:621
+#: ../src/dialog_colorpicker.cpp:627
 msgid "Lum.:"
 msgstr "Lum.:"
 
-#: ../src/dialog_colorpicker.cpp:621 ../src/dialog_colorpicker.cpp:624
+#: ../src/dialog_colorpicker.cpp:627 ../src/dialog_colorpicker.cpp:630
 msgid "Sat.:"
 msgstr "Sat.:"
 
-#: ../src/dialog_colorpicker.cpp:624
+#: ../src/dialog_colorpicker.cpp:630
 msgid "Value:"
 msgstr "Value:"
 
@@ -2969,66 +3193,126 @@ msgstr "Value:"
 msgid "Video: %s"
 msgstr "Video: %s"
 
-#: ../src/dialog_dummy_video.cpp:103
+#: ../src/dialog_dummy_video.cpp:71
+msgid "640×480 (SD fullscreen)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:72
+msgid "704×480 (SD anamorphic)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:73
+msgid "640×360 (SD widescreen)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:74
+msgid "704×396 (SD widescreen)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:75
+msgid "640×352 (SD widescreen MOD16)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:76
+msgid "704×400 (SD widescreen MOD16)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:77
+msgid "1024×576 (SuperPAL widescreen)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:78
+msgid "1280×720 (HD 720p)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:79
+msgid "1920×1080 (FHD 1080p)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:80
+msgid "2560×1440 (QHD 1440p)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:81
+msgid "3840×2160 (4K UHD 2160p)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:82
+msgid "1080×1920 (FHD vertical)"
+msgstr ""
+
+#: ../src/dialog_dummy_video.cpp:104
 msgid "Dummy video options"
 msgstr "Pengaturan video tiruan"
 
-#: ../src/dialog_dummy_video.cpp:115
+#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:136
+#: ../src/dialog_resample.cpp:175 ../src/dialog_resample.cpp:188
+msgid "×"
+msgstr "×"
+
+#: ../src/dialog_dummy_video.cpp:116
 msgid "Checkerboard &pattern"
 msgstr "Model &Papan Catur"
 
-#: ../src/dialog_dummy_video.cpp:118
+#: ../src/dialog_dummy_video.cpp:119
 msgid "Video resolution:"
 msgstr "Resolusi Video:"
 
-#: ../src/dialog_dummy_video.cpp:120
+#: ../src/dialog_dummy_video.cpp:121
 msgid "Color:"
 msgstr "Warna:"
 
-#: ../src/dialog_dummy_video.cpp:123
+#: ../src/dialog_dummy_video.cpp:124
 msgid "Frame rate (fps):"
 msgstr "Laju Frame (fps):"
 
-#: ../src/dialog_dummy_video.cpp:124
+#: ../src/dialog_dummy_video.cpp:125
 msgid "Duration (frames):"
 msgstr "Durasi (frame):"
 
-#: ../src/dialog_dummy_video.cpp:179
+#: ../src/dialog_dummy_video.cpp:180
 #, c-format
 msgid "Resulting duration: %s"
 msgstr "Durasi: %s"
 
-#: ../src/dialog_export.cpp:101
+#: ../src/dialog_export.cpp:102
 msgid "Export"
 msgstr "Ekspor"
 
-#: ../src/dialog_export.cpp:121
-msgid "Move &Up"
-msgstr "Ke &Atas"
-
-#: ../src/dialog_export.cpp:122
-msgid "Move &Down"
-msgstr "Ke &Bawah"
-
-#: ../src/dialog_export.cpp:124 ../src/dialog_selected_choices.cpp:33
-msgid "Select &None"
-msgstr "T&idak semua"
-
-#: ../src/dialog_export.cpp:140
-msgid "Text encoding:"
-msgstr "Pengkodean teks:"
-
-#: ../src/dialog_export.cpp:148
+#: ../src/dialog_export.cpp:109
 msgid "Filters"
 msgstr "Filter-filter"
 
-#: ../src/dialog_export.cpp:155
+#: ../src/dialog_export.cpp:125
+msgid "Move &Up"
+msgstr "Ke &Atas"
+
+#: ../src/dialog_export.cpp:126
+msgid "Move &Down"
+msgstr "Ke &Bawah"
+
+#: ../src/dialog_export.cpp:128 ../src/dialog_selected_choices.cpp:33
+msgid "Select &None"
+msgstr "T&idak semua"
+
+#: ../src/dialog_export.cpp:144
+msgid "Text encoding:"
+msgstr "Pengkodean teks:"
+
+#: ../src/dialog_export.cpp:158
 msgid "Export..."
 msgstr "Mengekspor..."
 
-#: ../src/dialog_export.cpp:187
-msgid "Export subtitles file"
+#: ../src/dialog_export.cpp:190
+#, fuzzy
+#| msgid "Export subtitles file"
+msgid "Export Subtitles File"
 msgstr "Ekspor berkas takarir "
+
+#: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
+#: ../src/dialog_export.cpp:211
+msgid "Error exporting subtitles"
+msgstr ""
 
 #: ../src/dialog_export_ebu3264.cpp:83
 msgid "EBU STL export"
@@ -3046,117 +3330,117 @@ msgstr ""
 msgid "Export to EBU STL format"
 msgstr "Ekspor ke format EBU STL"
 
-#: ../src/dialog_export_ebu3264.cpp:102
-msgid "23.976 fps (non-standard, STL24.01)"
-msgstr "23.976 fps (tidak-standar, STL24.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:103
-msgid "24 fps (non-standard, STL24.01)"
-msgstr "24 fps (tidak-standar, STL24.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:104
-msgid "25 fps (STL25.01)"
-msgstr "25 fps (STL25.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:105
-msgid "29.97 fps (non-dropframe, STL30.01)"
-msgstr "29.97 fps (tidak-dropframe, STL30.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:106
-msgid "29.97 fps (dropframe, STL30.01)"
-msgstr "29.97 fps (dropframe, STL30.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:107
-msgid "30 fps (STL30.01)"
-msgstr "30 fps (STL30.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:109
-msgid "TV standard"
-msgstr "Standar TV"
-
-#: ../src/dialog_export_ebu3264.cpp:113
-msgid "Out-times are inclusive"
-msgstr "Waktu akhir sudah inklusif"
-
-#: ../src/dialog_export_ebu3264.cpp:116
-msgid "ISO 6937-2 (Latin/Western Europe)"
-msgstr "ISO 6937-2 (Latin/Eropa Barat)"
-
-#: ../src/dialog_export_ebu3264.cpp:117
-msgid "ISO 8859-5 (Cyrillic)"
-msgstr "ISO 8859-5 (Sirilik/Eropa Timur)"
-
-#: ../src/dialog_export_ebu3264.cpp:118
-msgid "ISO 8859-6 (Arabic)"
-msgstr "ISO 8859-6 (Arab)"
-
-#: ../src/dialog_export_ebu3264.cpp:119
-msgid "ISO 8859-7 (Greek)"
-msgstr "ISO 8859-7 (Yunani)"
-
-#: ../src/dialog_export_ebu3264.cpp:120
-msgid "ISO 8859-8 (Hebrew)"
-msgstr "ISO 8859-8 (Ibrani/Yahudi)"
-
-#: ../src/dialog_export_ebu3264.cpp:121
-msgid "UTF-8 Unicode (non-standard)"
-msgstr "UTF-8 Unicode (tidak-standar)"
-
-#: ../src/dialog_export_ebu3264.cpp:123
-msgid "Text encoding"
-msgstr "Pengkodean teks"
-
-#: ../src/dialog_export_ebu3264.cpp:126
-msgid "Automatically wrap long lines (ASS)"
-msgstr "Otomatis pisahkan baris kalimat yang panjang (ASS)"
-
-#: ../src/dialog_export_ebu3264.cpp:127
-msgid "Automatically wrap long lines (Balanced)"
-msgstr "Otomatis pisahkan baris kalimat yang panjang (Seimbang)"
-
-#: ../src/dialog_export_ebu3264.cpp:128
-msgid "Abort if any lines are too long"
-msgstr "Batalkan jika baris terlalu panjang"
-
-#: ../src/dialog_export_ebu3264.cpp:129
-msgid "Skip lines that are too long"
-msgstr "Abaikan baris yang terlalu panjang"
-
-#: ../src/dialog_export_ebu3264.cpp:134
-msgid "Translate alignments"
-msgstr "Penjajaran terjemahan"
-
-#: ../src/dialog_export_ebu3264.cpp:137
-msgid "Open subtitles"
-msgstr "Buka Takarir"
-
-#: ../src/dialog_export_ebu3264.cpp:138
-msgid "Level-1 teletext"
-msgstr "Level-1 teletext"
-
-#: ../src/dialog_export_ebu3264.cpp:139
-msgid "Level-2 teletext"
-msgstr "Level-2 teletext"
-
-#: ../src/dialog_export_ebu3264.cpp:145
-msgid "Max. line length:"
-msgstr "Maks. panjang baris"
-
-#: ../src/dialog_export_ebu3264.cpp:149
-msgid "Time code offset:"
-msgstr "Imbangi kode waktu:"
-
-#: ../src/dialog_export_ebu3264.cpp:152
+#: ../src/dialog_export_ebu3264.cpp:101
 msgid "Text formatting"
 msgstr "Format teks"
 
-#: ../src/dialog_export_ebu3264.cpp:157
+#: ../src/dialog_export_ebu3264.cpp:102
 msgid "Time codes"
 msgstr "Kode waktu"
 
-#: ../src/dialog_export_ebu3264.cpp:161
+#: ../src/dialog_export_ebu3264.cpp:103
 msgid "Display standard"
 msgstr "Tampilan standar"
+
+#: ../src/dialog_export_ebu3264.cpp:110
+msgid "23.976 fps (non-standard, STL24.01)"
+msgstr "23.976 fps (tidak-standar, STL24.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:111
+msgid "24 fps (non-standard, STL24.01)"
+msgstr "24 fps (tidak-standar, STL24.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:112
+msgid "25 fps (STL25.01)"
+msgstr "25 fps (STL25.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:113
+msgid "29.97 fps (non-dropframe, STL30.01)"
+msgstr "29.97 fps (tidak-dropframe, STL30.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:114
+msgid "29.97 fps (dropframe, STL30.01)"
+msgstr "29.97 fps (dropframe, STL30.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:115
+msgid "30 fps (STL30.01)"
+msgstr "30 fps (STL30.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:117
+msgid "TV standard"
+msgstr "Standar TV"
+
+#: ../src/dialog_export_ebu3264.cpp:121
+msgid "Out-times are inclusive"
+msgstr "Waktu akhir sudah inklusif"
+
+#: ../src/dialog_export_ebu3264.cpp:124
+msgid "ISO 6937-2 (Latin/Western Europe)"
+msgstr "ISO 6937-2 (Latin/Eropa Barat)"
+
+#: ../src/dialog_export_ebu3264.cpp:125
+msgid "ISO 8859-5 (Cyrillic)"
+msgstr "ISO 8859-5 (Sirilik/Eropa Timur)"
+
+#: ../src/dialog_export_ebu3264.cpp:126
+msgid "ISO 8859-6 (Arabic)"
+msgstr "ISO 8859-6 (Arab)"
+
+#: ../src/dialog_export_ebu3264.cpp:127
+msgid "ISO 8859-7 (Greek)"
+msgstr "ISO 8859-7 (Yunani)"
+
+#: ../src/dialog_export_ebu3264.cpp:128
+msgid "ISO 8859-8 (Hebrew)"
+msgstr "ISO 8859-8 (Ibrani/Yahudi)"
+
+#: ../src/dialog_export_ebu3264.cpp:129
+msgid "UTF-8 Unicode (non-standard)"
+msgstr "UTF-8 Unicode (tidak-standar)"
+
+#: ../src/dialog_export_ebu3264.cpp:131
+msgid "Text encoding"
+msgstr "Pengkodean teks"
+
+#: ../src/dialog_export_ebu3264.cpp:134
+msgid "Automatically wrap long lines (ASS)"
+msgstr "Otomatis pisahkan baris kalimat yang panjang (ASS)"
+
+#: ../src/dialog_export_ebu3264.cpp:135
+msgid "Automatically wrap long lines (Balanced)"
+msgstr "Otomatis pisahkan baris kalimat yang panjang (Seimbang)"
+
+#: ../src/dialog_export_ebu3264.cpp:136
+msgid "Abort if any lines are too long"
+msgstr "Batalkan jika baris terlalu panjang"
+
+#: ../src/dialog_export_ebu3264.cpp:137
+msgid "Skip lines that are too long"
+msgstr "Abaikan baris yang terlalu panjang"
+
+#: ../src/dialog_export_ebu3264.cpp:142
+msgid "Translate alignments"
+msgstr "Penjajaran terjemahan"
+
+#: ../src/dialog_export_ebu3264.cpp:145
+msgid "Open subtitles"
+msgstr "Buka Takarir"
+
+#: ../src/dialog_export_ebu3264.cpp:146
+msgid "Level-1 teletext"
+msgstr "Level-1 teletext"
+
+#: ../src/dialog_export_ebu3264.cpp:147
+msgid "Level-2 teletext"
+msgstr "Level-2 teletext"
+
+#: ../src/dialog_export_ebu3264.cpp:153
+msgid "Max. line length:"
+msgstr "Maks. panjang baris"
+
+#: ../src/dialog_export_ebu3264.cpp:157
+msgid "Time code offset:"
+msgstr "Imbangi kode waktu:"
 
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
@@ -3243,7 +3527,7 @@ msgstr "Salin huruf ke arsip zip"
 msgid "Symlink fonts to folder"
 msgstr "Tautan simbolis huruf ke map"
 
-#: ../src/dialog_fonts_collector.cpp:243 ../src/dialog_selection.cpp:150
+#: ../src/dialog_fonts_collector.cpp:243 ../src/dialog_selection.cpp:153
 msgid "Action"
 msgstr "Aksi"
 
@@ -3251,56 +3535,53 @@ msgstr "Aksi"
 msgid "Destination"
 msgstr "Tujuan"
 
-#: ../src/dialog_fonts_collector.cpp:253
+#: ../src/dialog_fonts_collector.cpp:254
 msgid "&Browse..."
 msgstr "&Lihat..."
 
-#: ../src/dialog_fonts_collector.cpp:262
+#: ../src/dialog_fonts_collector.cpp:263
 msgid "Log"
 msgstr "Catatan"
 
-#: ../src/dialog_fonts_collector.cpp:275
+#: ../src/dialog_fonts_collector.cpp:277
 msgid "&Start!"
 msgstr "&Mulai!"
 
-#: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
-#: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
-#: ../src/dialog_kara_timing_copy.cpp:491
-#: ../src/dialog_kara_timing_copy.cpp:541 ../src/preferences.cpp:266
-msgid "Error"
-msgstr "Galat"
-
-#: ../src/dialog_fonts_collector.cpp:310
+#: ../src/dialog_fonts_collector.cpp:312
 msgid "Invalid destination."
 msgstr "Salah destinasi."
 
-#: ../src/dialog_fonts_collector.cpp:315
+#: ../src/dialog_fonts_collector.cpp:317
 msgid "Could not create destination folder."
 msgstr "Tidak dapat membuat map."
 
-#: ../src/dialog_fonts_collector.cpp:320
+#: ../src/dialog_fonts_collector.cpp:322
 msgid "Invalid path for .zip file."
 msgstr "Salah lokasi untuk berkas.zip"
 
-#: ../src/dialog_fonts_collector.cpp:343
+#: ../src/dialog_fonts_collector.cpp:345
 msgid "Select archive file name"
 msgstr "Pilih nama arsip"
 
-#: ../src/dialog_fonts_collector.cpp:350
+#: ../src/dialog_fonts_collector.cpp:348
+msgid "Zip Archives"
+msgstr ""
+
+#: ../src/dialog_fonts_collector.cpp:352
 msgid "Select folder to save fonts on"
 msgstr "Pilih map untuk menyimpan huruf-huruf di"
 
-#: ../src/dialog_fonts_collector.cpp:369
+#: ../src/dialog_fonts_collector.cpp:371
 msgid "N/A"
 msgstr "Tidak tersedia"
 
-#: ../src/dialog_fonts_collector.cpp:377
+#: ../src/dialog_fonts_collector.cpp:379
 msgid ""
 "Choose the folder where the fonts will be collected to. It will be created "
 "if it doesn't exist."
 msgstr "Pilih map dimana huruf akan ditempatkan. Akan dibuat jika tidak ada."
 
-#: ../src/dialog_fonts_collector.cpp:384
+#: ../src/dialog_fonts_collector.cpp:386
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to. If a "
 "folder is entered, a default name will be used."
@@ -3314,40 +3595,44 @@ msgstr "Frame:"
 msgid "Time: "
 msgstr "Waktu:"
 
-#: ../src/dialog_kara_timing_copy.cpp:58
+#: ../src/dialog_kara_timing_copy.cpp:59
 msgid "Source: "
 msgstr "Sumber:"
 
-#: ../src/dialog_kara_timing_copy.cpp:59
+#: ../src/dialog_kara_timing_copy.cpp:60
 msgid "Dest: "
 msgstr "Tujuan:"
 
-#: ../src/dialog_kara_timing_copy.cpp:385
-msgid "Kanji timing"
+#: ../src/dialog_kara_timing_copy.cpp:386
+#, fuzzy
+#| msgid "Kanji Timer"
+msgid "Kanji timer"
 msgstr "Tempo Kanji"
 
-#: ../src/dialog_kara_timing_copy.cpp:390 ../src/dialog_paste_over.cpp:73
+#: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
 msgid "Text"
 msgstr "Teks"
 
-#: ../src/dialog_kara_timing_copy.cpp:391
+#: ../src/dialog_kara_timing_copy.cpp:392
 msgid "Styles"
 msgstr "Gaya"
 
-#: ../src/dialog_kara_timing_copy.cpp:393
+#: ../src/dialog_kara_timing_copy.cpp:394
 msgid "Shortcut Keys"
 msgstr "Tombol Cepat"
 
-#: ../src/dialog_kara_timing_copy.cpp:394
+#: ../src/dialog_kara_timing_copy.cpp:395
 msgid "Commands"
 msgstr "Perintah"
 
-#: ../src/dialog_kara_timing_copy.cpp:402
-msgid "Attempt to &interpolate kanji."
+#: ../src/dialog_kara_timing_copy.cpp:408
+#, fuzzy
+#| msgid "Attempt to &interpolate kanji."
+msgid "Attempt to &interpolate kanji"
 msgstr "Sisipkan ke kanji."
 
-#: ../src/dialog_kara_timing_copy.cpp:409
+#: ../src/dialog_kara_timing_copy.cpp:415
 msgid ""
 "When the destination textbox has focus, use the following keys:\n"
 "\n"
@@ -3367,101 +3652,101 @@ msgstr ""
 "Enter: Sambung, terapkan baris ketika selesai\n"
 "Backspace: Putuskan akhir baris"
 
-#: ../src/dialog_kara_timing_copy.cpp:412
+#: ../src/dialog_kara_timing_copy.cpp:418
 msgid "S&tart!"
 msgstr "M&ulai!"
 
-#: ../src/dialog_kara_timing_copy.cpp:413
+#: ../src/dialog_kara_timing_copy.cpp:419
 msgid "&Link"
 msgstr "&Sambung"
 
-#: ../src/dialog_kara_timing_copy.cpp:414
+#: ../src/dialog_kara_timing_copy.cpp:420
 msgid "&Unlink"
 msgstr "&Putus"
 
-#: ../src/dialog_kara_timing_copy.cpp:415
+#: ../src/dialog_kara_timing_copy.cpp:421
 msgid "Skip &Source Line"
 msgstr "Abaikan &Sumber Baris"
 
-#: ../src/dialog_kara_timing_copy.cpp:416
+#: ../src/dialog_kara_timing_copy.cpp:422
 msgid "Skip &Dest Line"
 msgstr "Abaikan &Tujuan Bariis"
 
-#: ../src/dialog_kara_timing_copy.cpp:417
+#: ../src/dialog_kara_timing_copy.cpp:423
 msgid "&Go Back a Line"
 msgstr "&Kembali ke baris"
 
-#: ../src/dialog_kara_timing_copy.cpp:418
+#: ../src/dialog_kara_timing_copy.cpp:424
 msgid "&Accept Line"
 msgstr "&Terapkan Baris"
 
-#: ../src/dialog_kara_timing_copy.cpp:481
+#: ../src/dialog_kara_timing_copy.cpp:487
 msgid "kanji timing"
 msgstr "tempo kanji"
 
-#: ../src/dialog_kara_timing_copy.cpp:489
+#: ../src/dialog_kara_timing_copy.cpp:495
 msgid "Select source and destination styles first."
 msgstr "Pilih sumber dan tujuan gaya terdahulu."
 
-#: ../src/dialog_kara_timing_copy.cpp:491
+#: ../src/dialog_kara_timing_copy.cpp:497
 msgid "The source and destination styles must be different."
 msgstr "Sumber dan tujuan gaya harus berbeda."
 
-#: ../src/dialog_kara_timing_copy.cpp:541
+#: ../src/dialog_kara_timing_copy.cpp:547
 msgid "Group all of the source text."
 msgstr "Grup semua sumber teks"
 
-#: ../src/dialog_paste_over.cpp:55
+#: ../src/dialog_paste_over.cpp:56
 msgid "Select Fields to Paste Over"
 msgstr "Pilih Daerah yang Ingin di Timpa"
 
-#: ../src/dialog_paste_over.cpp:58
+#: ../src/dialog_paste_over.cpp:59
 msgid "Fields"
 msgstr "Daerah"
 
-#: ../src/dialog_paste_over.cpp:59
+#: ../src/dialog_paste_over.cpp:61
 msgid "Please select the fields that you want to paste over:"
 msgstr "Tolong pilih lokasi yang ingin Anda tempel:"
 
-#: ../src/dialog_paste_over.cpp:63
+#: ../src/dialog_paste_over.cpp:65
 msgid "Comment"
 msgstr "Komentar"
 
-#: ../src/dialog_paste_over.cpp:67 ../src/grid_column.cpp:200
+#: ../src/dialog_paste_over.cpp:69 ../src/grid_column.cpp:200
 #: ../src/grid_column.cpp:201
 msgid "Style"
 msgstr "Gaya"
 
-#: ../src/dialog_paste_over.cpp:68 ../src/grid_column.cpp:228
+#: ../src/dialog_paste_over.cpp:70 ../src/grid_column.cpp:228
 #: ../src/grid_column.cpp:229 ../src/subs_edit_box.cpp:135
 msgid "Actor"
 msgstr "Aktor"
 
-#: ../src/dialog_paste_over.cpp:69
+#: ../src/dialog_paste_over.cpp:71
 msgid "Margin Left"
 msgstr "Batas Kiri"
 
-#: ../src/dialog_paste_over.cpp:70
+#: ../src/dialog_paste_over.cpp:72
 msgid "Margin Right"
 msgstr "Batas Kanan"
 
-#: ../src/dialog_paste_over.cpp:71
+#: ../src/dialog_paste_over.cpp:73
 msgid "Margin Vertical"
 msgstr "Batas Vertikal"
 
-#: ../src/dialog_paste_over.cpp:88 ../src/dialog_timing_processor.cpp:161
+#: ../src/dialog_paste_over.cpp:90 ../src/dialog_timing_processor.cpp:162
 msgid "&All"
 msgstr "&Semua"
 
-#: ../src/dialog_paste_over.cpp:90 ../src/dialog_timing_processor.cpp:164
+#: ../src/dialog_paste_over.cpp:92 ../src/dialog_timing_processor.cpp:165
 msgid "&None"
 msgstr "&Tidak semua"
 
-#: ../src/dialog_paste_over.cpp:92
+#: ../src/dialog_paste_over.cpp:94
 msgid "&Times"
 msgstr "&Waktu"
 
-#: ../src/dialog_paste_over.cpp:94
+#: ../src/dialog_paste_over.cpp:96
 msgid "T&ext"
 msgstr "T&eks"
 
@@ -3473,81 +3758,86 @@ msgstr "Batal"
 msgid "Cancelling..."
 msgstr "Batalkan..."
 
-#: ../src/dialog_properties.cpp:89
+#: ../src/dialog_properties.cpp:91
 msgid "Script Properties"
 msgstr "Informasi Dasar Skrip"
 
-#: ../src/dialog_properties.cpp:103
+#: ../src/dialog_properties.cpp:105
 msgid "Script"
 msgstr "Skrip"
 
-#: ../src/dialog_properties.cpp:106
+#: ../src/dialog_properties.cpp:109
 msgid "Title:"
 msgstr "Judul:"
 
-#: ../src/dialog_properties.cpp:107
+#: ../src/dialog_properties.cpp:110
 msgid "Original script:"
 msgstr "Skrip asli:"
 
-#: ../src/dialog_properties.cpp:108
+#: ../src/dialog_properties.cpp:111
 msgid "Translation:"
 msgstr "Penterjemah:"
 
-#: ../src/dialog_properties.cpp:109
+#: ../src/dialog_properties.cpp:112
 msgid "Editing:"
 msgstr "Penyunting:"
 
-#: ../src/dialog_properties.cpp:110
+#: ../src/dialog_properties.cpp:113
 msgid "Timing:"
 msgstr "Tempo:"
 
-#: ../src/dialog_properties.cpp:111
+#: ../src/dialog_properties.cpp:114
 msgid "Synch point:"
 msgstr "Titik sinkron"
 
-#: ../src/dialog_properties.cpp:112
+#: ../src/dialog_properties.cpp:115
 msgid "Updated by:"
 msgstr "Dimutakhirkan oleh:"
 
-#: ../src/dialog_properties.cpp:113
+#: ../src/dialog_properties.cpp:116
 msgid "Update details:"
 msgstr "Detil pemutakhiran:"
 
-#: ../src/dialog_properties.cpp:122 ../src/dialog_resample.cpp:141
+#: ../src/dialog_properties.cpp:122
+msgid "Resolution"
+msgstr "Resolusi"
+
+#: ../src/dialog_properties.cpp:128 ../src/dialog_resample.cpp:150
 #: ../src/export_framerate.cpp:70
 msgid "From &video"
 msgstr "Dari &video"
 
-#: ../src/dialog_properties.cpp:141
-msgid "Resolution"
-msgstr "Resolusi"
+#: ../src/dialog_properties.cpp:144 ../src/dialog_resample.cpp:180
+#: ../src/dialog_resample.cpp:193
+msgid "YCbCr Matrix:"
+msgstr "YCbCr Matrix:"
 
-#: ../src/dialog_properties.cpp:149
+#: ../src/dialog_properties.cpp:155
 msgid "0: Smart wrapping, top line is wider"
 msgstr "0: Pemisahan baris kalimat di atas lebih panjang"
 
-#: ../src/dialog_properties.cpp:150
+#: ../src/dialog_properties.cpp:156
 msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr ""
 "1: Pisah baris kalimat sampai akhir batas panjang video, dengan label \\N"
 
-#: ../src/dialog_properties.cpp:151
+#: ../src/dialog_properties.cpp:157
 msgid "2: No word wrapping, both \\n and \\N break"
 msgstr "2: Tidak ada pemisahan baris kalimat, baik label \\n dan \\N"
 
-#: ../src/dialog_properties.cpp:152
+#: ../src/dialog_properties.cpp:158
 msgid "3: Smart wrapping, bottom line is wider"
 msgstr "3: Pemisahan baris kalimat di bawah lebih panjang"
 
-#: ../src/dialog_properties.cpp:156
+#: ../src/dialog_properties.cpp:162
 msgid "Wrap Style: "
 msgstr "Gaya Penulisan: "
 
-#: ../src/dialog_properties.cpp:159
+#: ../src/dialog_properties.cpp:165
 msgid "Scale Border and Shadow"
 msgstr "Perbesar Garis luar dan Bayangan"
 
-#: ../src/dialog_properties.cpp:160
+#: ../src/dialog_properties.cpp:166
 msgid ""
 "Scale border and shadow together with script/render resolution. If this is "
 "unchecked, relative border and shadow size will depend on renderer."
@@ -3555,57 +3845,49 @@ msgstr ""
 "Perbesar garis luar dan bayangan sesuai dengan skrip/render resolusi. Jika "
 "tidak dicentang, ukuran garis luar dan bayangan tidak berpengaruh."
 
-#: ../src/dialog_properties.cpp:196
+#: ../src/dialog_properties.cpp:202
 msgid "property changes"
 msgstr "informasi dasar telah diubah"
 
-#: ../src/dialog_resample.cpp:119
-msgid "&Symmetrical"
-msgstr "&Simetrikal"
-
-#: ../src/dialog_resample.cpp:143
-msgid "From s&cript"
-msgstr "Dari s&krip"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Add borders"
-msgstr "Tambah garis luar"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Manual"
-msgstr "Manual"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Remove borders"
-msgstr "Hapus garis luar"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Stretch"
-msgstr "Regangkan"
-
-#: ../src/dialog_resample.cpp:147
-msgid "Aspect Ratio Handling"
-msgstr "Pengendali Asperk Rasio"
-
-#: ../src/dialog_resample.cpp:162
-msgid "Margin offset"
-msgstr "Imbangi penjajaran"
-
-#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
-msgid "×"
-msgstr "×"
-
-#: ../src/dialog_resample.cpp:172 ../src/dialog_resample.cpp:186
-msgid "YCbCr Matrix:"
-msgstr "YCbCr Matrix:"
-
-#: ../src/dialog_resample.cpp:175
+#: ../src/dialog_resample.cpp:114
 msgid "Source Resolution"
 msgstr "SSumber Resolusi"
 
-#: ../src/dialog_resample.cpp:189
+#: ../src/dialog_resample.cpp:115
 msgid "Destination Resolution"
 msgstr "Tujuan Resolusi"
+
+#: ../src/dialog_resample.cpp:116
+msgid "Margin offset"
+msgstr "Imbangi penjajaran"
+
+#: ../src/dialog_resample.cpp:128
+msgid "&Symmetrical"
+msgstr "&Simetrikal"
+
+#: ../src/dialog_resample.cpp:152
+msgid "From s&cript"
+msgstr "Dari s&krip"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Add borders"
+msgstr "Tambah garis luar"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Manual"
+msgstr "Manual"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Remove borders"
+msgstr "Hapus garis luar"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Stretch"
+msgstr "Regangkan"
+
+#: ../src/dialog_resample.cpp:156
+msgid "Aspect Ratio Handling"
+msgstr "Pengendali Asperk Rasio"
 
 #: ../src/dialog_search_replace.cpp:47
 msgid "Replace"
@@ -3635,7 +3917,7 @@ msgstr "&Lewati Komentar"
 msgid "S&kip Override Tags"
 msgstr "L&ewati Label ASS"
 
-#: ../src/dialog_search_replace.cpp:87 ../src/dialog_selection.cpp:137
+#: ../src/dialog_search_replace.cpp:87 ../src/dialog_selection.cpp:139
 msgid "&Text"
 msgstr "&Teks"
 
@@ -3651,11 +3933,11 @@ msgstr "G&aya"
 msgid "A&ll rows"
 msgstr "S&emua baris"
 
-#: ../src/dialog_search_replace.cpp:88 ../src/dialog_shift_times.cpp:163
+#: ../src/dialog_search_replace.cpp:88 ../src/dialog_shift_times.cpp:170
 msgid "Selected &rows"
 msgstr "Baris yang &terpilih"
 
-#: ../src/dialog_search_replace.cpp:90 ../src/dialog_selection.cpp:138
+#: ../src/dialog_search_replace.cpp:90 ../src/dialog_selection.cpp:140
 msgid "In Field"
 msgstr "Di Daerah"
 
@@ -3675,190 +3957,202 @@ msgstr "Ganti sela&njutnya"
 msgid "Replace &all"
 msgstr "Ganti semu&a"
 
-#: ../src/dialog_selection.cpp:106
+#: ../src/dialog_selection.cpp:107
 msgid "Select"
 msgstr "Pilih"
 
-#: ../src/dialog_selection.cpp:117
+#: ../src/dialog_selection.cpp:118
 msgid "Match"
 msgstr "Cocok"
 
-#: ../src/dialog_selection.cpp:121
+#: ../src/dialog_selection.cpp:123
 msgid "&Matches"
 msgstr "&Cocok"
 
-#: ../src/dialog_selection.cpp:122
+#: ../src/dialog_selection.cpp:124
 msgid "&Doesn't Match"
 msgstr "&Tidak cocok"
 
-#: ../src/dialog_selection.cpp:123
+#: ../src/dialog_selection.cpp:125
 msgid "Match c&ase"
 msgstr "Co&cokkan kapital"
 
-#: ../src/dialog_selection.cpp:132
+#: ../src/dialog_selection.cpp:134
 msgid "&Contains"
 msgstr "&Berisi"
 
-#: ../src/dialog_selection.cpp:132
+#: ../src/dialog_selection.cpp:134
 msgid "&Exact match"
 msgstr "&Yang cocok"
 
-#: ../src/dialog_selection.cpp:132
+#: ../src/dialog_selection.cpp:134
 msgid "&Regular Expression match"
 msgstr "Cocok dengan Ekspresi &Reguler"
 
-#: ../src/dialog_selection.cpp:133
+#: ../src/dialog_selection.cpp:135
 msgid "Mode"
 msgstr "Mode"
 
-#: ../src/dialog_selection.cpp:137
+#: ../src/dialog_selection.cpp:139
 msgid "&Style"
 msgstr "&Gaya"
 
-#: ../src/dialog_selection.cpp:137
+#: ../src/dialog_selection.cpp:139
 msgid "Act&or"
 msgstr "Akt&or"
 
-#: ../src/dialog_selection.cpp:137
+#: ../src/dialog_selection.cpp:139
 msgid "E&ffect"
 msgstr "E&fek"
 
-#: ../src/dialog_selection.cpp:142
+#: ../src/dialog_selection.cpp:144
 msgid "Match dialogues/comments"
 msgstr "Cocokkan dialog/komentar"
 
-#: ../src/dialog_selection.cpp:143
+#: ../src/dialog_selection.cpp:146
 msgid "D&ialogues"
 msgstr "D&ialog-dialog"
 
-#: ../src/dialog_selection.cpp:144
+#: ../src/dialog_selection.cpp:147
 msgid "Comme&nts"
 msgstr "Kome&ntar"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "&Add to selection"
 msgstr "Tamb&ah ke seleksi"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "Intersect &with selection"
 msgstr "Silang &demgan seleksi"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "S&ubtract from selection"
 msgstr "Pilih baris s&ebaliknya dari seleksi"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "Set se&lection"
 msgstr "Pi&lih baris"
 
-#: ../src/dialog_selection.cpp:212
+#: ../src/dialog_selection.cpp:215
 #, c-format
 msgid "Selection was set to one line"
 msgid_plural "Selection was set to %u lines"
 msgstr[0] "Seleksi diatur ke satu baris"
 msgstr[1] "Seleksi diatur ke %u baris"
 
-#: ../src/dialog_selection.cpp:213
+#: ../src/dialog_selection.cpp:216
 msgid "Selection was set to no lines"
 msgstr "Seleksi diatur tanpa baris"
 
-#: ../src/dialog_selection.cpp:219
+#: ../src/dialog_selection.cpp:222
 #, c-format
 msgid "One line was added to selection"
 msgid_plural "%u lines were added to selection"
 msgstr[0] "Satu baris telah ditambahkan ke seleksi"
 msgstr[1] "%u baris telah ditambahkan ke seleksi"
 
-#: ../src/dialog_selection.cpp:220
+#: ../src/dialog_selection.cpp:223
 msgid "No lines were added to selection"
 msgstr "Tidak ada baris yang ditambahkan ke seleksi"
 
-#: ../src/dialog_selection.cpp:231
+#: ../src/dialog_selection.cpp:234
 #, c-format
 msgid "One line was removed from selection"
 msgid_plural "%u lines were removed from selection"
 msgstr[0] "Satu baris telah dihapus dari seleksi"
 msgstr[1] "%u baris telah dihapus dari seleksi"
 
-#: ../src/dialog_selection.cpp:232
+#: ../src/dialog_selection.cpp:235
 msgid "No lines were removed from selection"
 msgstr "Tidak ada baris yang dihapus dari seleksi"
 
-#: ../src/dialog_selection.cpp:237
+#: ../src/dialog_selection.cpp:240
 msgid "Selection"
 msgstr "Seleksi"
 
-#: ../src/dialog_shift_times.cpp:91
+#: ../src/dialog_shift_times.cpp:92
 msgid "unsaved"
 msgstr "belum disimpan"
 
-#: ../src/dialog_shift_times.cpp:95
-#, c-format
-msgid "%s frames"
-msgstr "%s frame"
+#: ../src/dialog_shift_times.cpp:96
+#, fuzzy, c-format
+#| msgid "1 frame"
+#| msgid_plural "%d frames (%s)"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 frame"
+msgstr[1] "%d frame (%s)"
 
-#: ../src/dialog_shift_times.cpp:97
+#: ../src/dialog_shift_times.cpp:98
 msgid "backward"
 msgstr "mundur"
 
-#: ../src/dialog_shift_times.cpp:97
+#: ../src/dialog_shift_times.cpp:98
 msgid "forward"
 msgstr "maju"
 
-#: ../src/dialog_shift_times.cpp:101
+#: ../src/dialog_shift_times.cpp:102
 msgid "s+e"
 msgstr "awal & akhir"
 
-#: ../src/dialog_shift_times.cpp:102
+#: ../src/dialog_shift_times.cpp:103
 msgid "s"
 msgstr "awal"
 
-#: ../src/dialog_shift_times.cpp:103
+#: ../src/dialog_shift_times.cpp:104
 msgid "e"
 msgstr "akhir"
 
-#: ../src/dialog_shift_times.cpp:110
+#: ../src/dialog_shift_times.cpp:111
 msgid "all"
 msgstr "semua"
 
-#: ../src/dialog_shift_times.cpp:113
+#: ../src/dialog_shift_times.cpp:114
 #, c-format
 msgid "from %d onward"
 msgstr "dari %d kedepan"
 
-#: ../src/dialog_shift_times.cpp:116
+#: ../src/dialog_shift_times.cpp:117
 msgid "sel "
 msgstr "baris "
 
-#: ../src/dialog_shift_times.cpp:143
+#: ../src/dialog_shift_times.cpp:144
+msgid "Shift by"
+msgstr "Geser dengan"
+
+#: ../src/dialog_shift_times.cpp:145
+msgid "Load from history"
+msgstr "Muat dari riwayat"
+
+#: ../src/dialog_shift_times.cpp:150
 msgid "&Time: "
 msgstr "&Waktu: "
 
-#: ../src/dialog_shift_times.cpp:144
+#: ../src/dialog_shift_times.cpp:151
 msgid "Shift by time"
 msgstr "Geser dengan waktu"
 
-#: ../src/dialog_shift_times.cpp:147
+#: ../src/dialog_shift_times.cpp:154
 msgid "&Frames: "
 msgstr "&Frame: "
 
-#: ../src/dialog_shift_times.cpp:148
+#: ../src/dialog_shift_times.cpp:155
 msgid "Shift by frames"
 msgstr "Geser dengan frame"
 
-#: ../src/dialog_shift_times.cpp:152
+#: ../src/dialog_shift_times.cpp:159
 msgid "Enter time in h:mm:ss.cs notation"
 msgstr "Masukkan waktu ke dalam h:mm:ss:cs "
 
-#: ../src/dialog_shift_times.cpp:155
+#: ../src/dialog_shift_times.cpp:162
 msgid "Enter number of frames to shift by"
 msgstr "Masukkan nomor frame untuk digeser"
 
-#: ../src/dialog_shift_times.cpp:157
+#: ../src/dialog_shift_times.cpp:164
 msgid "For&ward"
 msgstr "Ma&ju"
 
-#: ../src/dialog_shift_times.cpp:158
+#: ../src/dialog_shift_times.cpp:165
 msgid ""
 "Shifts subs forward, making them appear later. Use if they are appearing too "
 "soon."
@@ -3866,11 +4160,11 @@ msgstr ""
 "Majukan takarir, buat takarir muncul lebih lambat. Gunakan jika takarir "
 "muncul lebih cepat"
 
-#: ../src/dialog_shift_times.cpp:160
+#: ../src/dialog_shift_times.cpp:167
 msgid "&Backward"
 msgstr "&Mundur"
 
-#: ../src/dialog_shift_times.cpp:161
+#: ../src/dialog_shift_times.cpp:168
 msgid ""
 "Shifts subs backward, making them appear earlier. Use if they are appearing "
 "too late."
@@ -3878,53 +4172,53 @@ msgstr ""
 "Mundurkan takarir, buat takarir muncul lebih cepat. Gunakan jika takarir "
 "muncul lebih lambat"
 
-#: ../src/dialog_shift_times.cpp:163
+#: ../src/dialog_shift_times.cpp:170
 msgid "&All rows"
 msgstr "&Semua baris"
 
-#: ../src/dialog_shift_times.cpp:163
+#: ../src/dialog_shift_times.cpp:170
 msgid "Selection &onward"
 msgstr "Seleksi &selanjutnya"
 
-#: ../src/dialog_shift_times.cpp:164
+#: ../src/dialog_shift_times.cpp:171
 msgid "Affect"
 msgstr "Pengaruh"
 
-#: ../src/dialog_shift_times.cpp:166
+#: ../src/dialog_shift_times.cpp:173
 msgid "&End times only"
 msgstr "&Hanya akhir waktu"
 
-#: ../src/dialog_shift_times.cpp:166
+#: ../src/dialog_shift_times.cpp:173
 msgid "&Start times only"
 msgstr "&Hanya awal waktu"
 
-#: ../src/dialog_shift_times.cpp:166
+#: ../src/dialog_shift_times.cpp:173
 msgid "Start a&nd End times"
 msgstr "Awal d&an akhir waktu"
 
-#: ../src/dialog_shift_times.cpp:167
+#: ../src/dialog_shift_times.cpp:174
 msgid "Times"
 msgstr "Waktu"
 
-#: ../src/dialog_shift_times.cpp:171
+#: ../src/dialog_shift_times.cpp:178
 msgid "&Clear"
 msgstr "&Bersihkan"
 
-#: ../src/dialog_shift_times.cpp:203
-msgid "Shift by"
-msgstr "Geser dengan"
-
-#: ../src/dialog_shift_times.cpp:212
-msgid "Load from history"
-msgstr "Muat dari riwayat"
-
-#: ../src/dialog_shift_times.cpp:410
+#: ../src/dialog_shift_times.cpp:415
 msgid "shifting"
 msgstr "penggeseran"
 
 #: ../src/dialog_spellchecker.cpp:125
 msgid "Misspelled word:"
 msgstr "Kesalahan kata:"
+
+#: ../src/dialog_spellchecker.cpp:143
+msgid "No spellchecker available."
+msgstr ""
+
+#: ../src/dialog_spellchecker.cpp:149
+msgid "No spellchecker dictionaries available."
+msgstr ""
 
 #: ../src/dialog_spellchecker.cpp:183
 msgid "Ignore &UPPERCASE words"
@@ -3966,127 +4260,128 @@ msgstr "Aegisub tidak menemukan kesalahan pengejaan di skrip ini."
 msgid "spell check replace"
 msgstr "ganti pemeriksa ejaan"
 
-#: ../src/dialog_style_editor.cpp:127
+#: ../src/dialog_style_editor.cpp:128
 msgid "Style Editor"
 msgstr "Penyunting Gaya"
 
-#: ../src/dialog_style_editor.cpp:179
-msgid "Font"
-msgstr "Huruf"
+#: ../src/dialog_style_editor.cpp:173
+msgid "Border boxes"
+msgstr ""
 
-#: ../src/dialog_style_editor.cpp:180 ../src/preferences.cpp:237
-msgid "Colors"
-msgstr "Warna"
-
-#: ../src/dialog_style_editor.cpp:181
-msgid "Margins"
-msgstr "Batas"
-
-#: ../src/dialog_style_editor.cpp:182 ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:295
 msgid "Outline"
 msgstr "Garis luar"
 
+#: ../src/dialog_style_editor.cpp:173
+msgid "Shadow box (libass only)"
+msgstr ""
+
+#: ../src/dialog_style_editor.cpp:181
+msgid "Font"
+msgstr "Huruf"
+
+#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:246
+msgid "Colors"
+msgstr "Warna"
+
 #: ../src/dialog_style_editor.cpp:183
+msgid "Margins"
+msgstr "Batas"
+
+#: ../src/dialog_style_editor.cpp:185
 msgid "Miscellaneous"
 msgstr "Lain-lain"
 
-#: ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:186
 msgid "Preview"
 msgstr "Pratinjau"
 
-#: ../src/dialog_style_editor.cpp:190
+#: ../src/dialog_style_editor.cpp:200
 msgid "&Bold"
 msgstr "&Huruf Tebal"
 
-#: ../src/dialog_style_editor.cpp:191
+#: ../src/dialog_style_editor.cpp:201
 msgid "&Italic"
 msgstr "&Miring"
 
-#: ../src/dialog_style_editor.cpp:192
+#: ../src/dialog_style_editor.cpp:202
 msgid "&Underline"
 msgstr "&Garis bawah"
 
-#: ../src/dialog_style_editor.cpp:193
+#: ../src/dialog_style_editor.cpp:203
 msgid "&Strikeout"
 msgstr "&Coretan"
 
-#: ../src/dialog_style_editor.cpp:205
+#: ../src/dialog_style_editor.cpp:215
 msgid "Alignment"
 msgstr "Penjajaran"
 
-#: ../src/dialog_style_editor.cpp:208
-msgid "&Opaque box"
-msgstr "K&otak buram"
-
-#: ../src/dialog_style_editor.cpp:216
+#: ../src/dialog_style_editor.cpp:226
 msgid "Style name"
 msgstr "Nama gaya"
 
-#: ../src/dialog_style_editor.cpp:217
+#: ../src/dialog_style_editor.cpp:227
 msgid "Font face"
 msgstr "Rupa huruf."
 
-#: ../src/dialog_style_editor.cpp:218
+#: ../src/dialog_style_editor.cpp:228
 msgid "Font size"
 msgstr "Ukuran huruf"
 
-#: ../src/dialog_style_editor.cpp:219
+#: ../src/dialog_style_editor.cpp:229
 msgid "Choose primary color"
 msgstr "Pilih warna primer"
 
-#: ../src/dialog_style_editor.cpp:220
+#: ../src/dialog_style_editor.cpp:230
 msgid "Choose secondary color"
 msgstr "Pilih warna sekunder"
 
-#: ../src/dialog_style_editor.cpp:221
+#: ../src/dialog_style_editor.cpp:231
 msgid "Choose outline color"
 msgstr "Pilih warna garis luar"
 
-#: ../src/dialog_style_editor.cpp:222
+#: ../src/dialog_style_editor.cpp:232
 msgid "Choose shadow color"
 msgstr "Pilih warna bayangan"
 
-#: ../src/dialog_style_editor.cpp:223
+#: ../src/dialog_style_editor.cpp:233
 msgid "Distance from left edge, in pixels"
 msgstr "Jarak dari tepi kiri, dalam pixel."
 
-#: ../src/dialog_style_editor.cpp:224
+#: ../src/dialog_style_editor.cpp:234
 msgid "Distance from right edge, in pixels"
 msgstr "Jarak dari tepi kanan, dalam pixel."
 
-#: ../src/dialog_style_editor.cpp:225
+#: ../src/dialog_style_editor.cpp:235
 msgid "Distance from top/bottom edge, in pixels"
 msgstr "Jarak dari tepi atas/bawah, dalam pixel."
 
-#: ../src/dialog_style_editor.cpp:226
-msgid ""
-"When selected, display an opaque box behind the subtitles instead of an "
-"outline around the text"
+#: ../src/dialog_style_editor.cpp:236
+msgid "Whether to draw a normal outline or opaque boxes around the text"
 msgstr ""
-"Ketika dipilih, tampilan kotak buram akan berada di belakang takarir, bukan "
-"disekitar garis luar teks."
 
-#: ../src/dialog_style_editor.cpp:227
+#: ../src/dialog_style_editor.cpp:237
 msgid "Outline width, in pixels"
 msgstr "Lebar garis luar, dalam pixel."
 
-#: ../src/dialog_style_editor.cpp:228
+#: ../src/dialog_style_editor.cpp:238
 msgid "Shadow distance, in pixels"
 msgstr "Jarak bayangan, dalam pixel."
 
-#: ../src/dialog_style_editor.cpp:229
+#: ../src/dialog_style_editor.cpp:239
 msgid "Scale X, in percentage"
 msgstr "Skala X, dalam persentase."
 
-#: ../src/dialog_style_editor.cpp:230
+#: ../src/dialog_style_editor.cpp:240
 msgid "Scale Y, in percentage"
 msgstr "Skala Y, dalam persentase."
 
-#: ../src/dialog_style_editor.cpp:231
+#: ../src/dialog_style_editor.cpp:241
 msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Sudut rotasi sumbu Z, dalam derajat."
 
-#: ../src/dialog_style_editor.cpp:232
+#: ../src/dialog_style_editor.cpp:242
 msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping"
@@ -4094,87 +4389,91 @@ msgstr ""
 "Pengkodean hanya berguna untuk unicode, jika huruf nya tidak memiliki "
 "pemetaan unicode yang benar"
 
-#: ../src/dialog_style_editor.cpp:233
+#: ../src/dialog_style_editor.cpp:243
 msgid "Character spacing, in pixels"
 msgstr "Spasi karakter, dalam pixel."
 
-#: ../src/dialog_style_editor.cpp:234
+#: ../src/dialog_style_editor.cpp:244
 msgid "Alignment in screen, in numpad style"
 msgstr "Penjajaran di video,gunnakan posisi Numpad Keyboard"
 
-#: ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:295
 msgid "Primary"
 msgstr "Primer"
 
-#: ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:295
 msgid "Secondary"
 msgstr "Sekunder"
 
-#: ../src/dialog_style_editor.cpp:285
+#: ../src/dialog_style_editor.cpp:295
 msgid "Shadow"
 msgstr "Bayangan"
 
-#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:263
+#: ../src/dialog_style_editor.cpp:306 ../src/grid_column.cpp:263
 msgid "Left"
 msgstr "Kiri"
 
-#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:269
+#: ../src/dialog_style_editor.cpp:306 ../src/grid_column.cpp:269
 msgid "Right"
 msgstr "Kanan"
 
-#: ../src/dialog_style_editor.cpp:296 ../src/grid_column.cpp:275
+#: ../src/dialog_style_editor.cpp:306 ../src/grid_column.cpp:275
 msgid "Vert"
 msgstr "Vertikal"
 
-#: ../src/dialog_style_editor.cpp:314
+#: ../src/dialog_style_editor.cpp:324
 msgid "Outline:"
 msgstr "Garis luar:"
 
-#: ../src/dialog_style_editor.cpp:315
+#: ../src/dialog_style_editor.cpp:325
 msgid "Shadow:"
 msgstr "Bayangan:"
 
-#: ../src/dialog_style_editor.cpp:320
+#: ../src/dialog_style_editor.cpp:326
+msgid "Border style:"
+msgstr ""
+
+#: ../src/dialog_style_editor.cpp:330
 msgid "Scale X%:"
 msgstr "Skala X%:"
 
-#: ../src/dialog_style_editor.cpp:321
+#: ../src/dialog_style_editor.cpp:331
 msgid "Scale Y%:"
 msgstr "Skala Y%:"
 
-#: ../src/dialog_style_editor.cpp:322
+#: ../src/dialog_style_editor.cpp:332
 msgid "Rotation:"
 msgstr "Rotasi:"
 
-#: ../src/dialog_style_editor.cpp:323
+#: ../src/dialog_style_editor.cpp:333
 msgid "Spacing:"
 msgstr "Spasi:"
 
-#: ../src/dialog_style_editor.cpp:326
+#: ../src/dialog_style_editor.cpp:336
 msgid "Encoding:"
 msgstr "Pengkodean Teks:"
 
-#: ../src/dialog_style_editor.cpp:336
+#: ../src/dialog_style_editor.cpp:346
 msgid "Preview of current style"
 msgstr "Pratinjau gaya saat ini."
 
-#: ../src/dialog_style_editor.cpp:339
+#: ../src/dialog_style_editor.cpp:349
 msgid "Text to be used for the preview"
 msgstr "Teks yang digunakan dalam pratinjau."
 
-#: ../src/dialog_style_editor.cpp:340
+#: ../src/dialog_style_editor.cpp:350
 msgid "Color of preview background"
 msgstr "Warna background pratinjau."
 
-#: ../src/dialog_style_editor.cpp:421
+#: ../src/dialog_style_editor.cpp:431
 msgid "Style name conflict"
 msgstr "Nama gaya konflik"
 
-#: ../src/dialog_style_editor.cpp:421
+#: ../src/dialog_style_editor.cpp:431
 msgid "There is already a style with this name. Please choose another name."
 msgstr "Nama gaya sudah ada. Mohon pilih nama yang lain."
 
-#: ../src/dialog_style_editor.cpp:433
+#: ../src/dialog_style_editor.cpp:443
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
@@ -4182,117 +4481,117 @@ msgstr ""
 "Apakah Anda ingin mengubah semua contoh dari gaya ini dalam skrip untuk nama "
 "baru ini?"
 
-#: ../src/dialog_style_editor.cpp:434
+#: ../src/dialog_style_editor.cpp:444
 msgid "Update script?"
 msgstr "Perbaharui skrip?"
 
-#: ../src/dialog_style_editor.cpp:461 ../src/subs_edit_box.cpp:604
+#: ../src/dialog_style_editor.cpp:471 ../src/subs_edit_box.cpp:604
 msgid "style change"
 msgstr "pengubahan gaya"
 
-#: ../src/dialog_style_manager.cpp:187
+#: ../src/dialog_style_manager.cpp:188
 msgid "Move style up"
 msgstr "Pindah gaya ke atas"
 
-#: ../src/dialog_style_manager.cpp:188
+#: ../src/dialog_style_manager.cpp:189
 msgid "Move style down"
 msgstr "Pindah gaya ke bawah"
 
-#: ../src/dialog_style_manager.cpp:189
+#: ../src/dialog_style_manager.cpp:190
 msgid "Move style to top"
 msgstr "Pindah gaya ke paling atas"
 
-#: ../src/dialog_style_manager.cpp:190
+#: ../src/dialog_style_manager.cpp:191
 msgid "Move style to bottom"
 msgstr "Pindah gaya ke paling bawah"
 
-#: ../src/dialog_style_manager.cpp:191
+#: ../src/dialog_style_manager.cpp:192
 msgid "Sort styles alphabetically"
 msgstr "Sortir gaya secara alfabet"
 
-#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:603
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:613
 msgid "&New"
 msgstr "&Baru"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:604
+#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:614
 msgid "&Edit"
 msgstr "&Sunting"
 
-#: ../src/dialog_style_manager.cpp:203 ../src/subs_edit_ctrl.cpp:389
+#: ../src/dialog_style_manager.cpp:204 ../src/subs_edit_ctrl.cpp:389
 #: ../src/timeedit_ctrl.cpp:209
 msgid "&Copy"
 msgstr "&Salin"
 
-#: ../src/dialog_style_manager.cpp:217
+#: ../src/dialog_style_manager.cpp:218
 #, c-format
 msgid "%s - Copy"
 msgstr "%s - Salin"
 
-#: ../src/dialog_style_manager.cpp:219
+#: ../src/dialog_style_manager.cpp:220
 #, c-format
 msgid "%s - Copy (%d)"
 msgstr "%s - Salin (%d)"
 
-#: ../src/dialog_style_manager.cpp:242
+#: ../src/dialog_style_manager.cpp:243
 msgid "Could not parse style"
 msgstr "Tidak dapat mengurai gaya"
 
-#: ../src/dialog_style_manager.cpp:247
+#: ../src/dialog_style_manager.cpp:248
 #, c-format
 msgid "Are you sure you want to delete this style?"
 msgid_plural "Are you sure you want to delete these %d styles?"
 msgstr[0] "Apakah Anda yakin ingin menghapus gaya ini?"
 msgstr[1] "Apakah Anda yakin ingin menghapus %d gaya ini?"
 
-#: ../src/dialog_style_manager.cpp:272
+#: ../src/dialog_style_manager.cpp:273
 msgid "Catalog of available storages"
 msgstr "Katalog dari penyimpanan yang tersedia"
 
 #: ../src/dialog_style_manager.cpp:274
-msgid "New"
-msgstr "Baru"
-
-#: ../src/dialog_style_manager.cpp:275
-msgid "Delete"
-msgstr "Hapus"
-
-#: ../src/dialog_style_manager.cpp:281
-msgid "Copy to &current script ->"
-msgstr "Salin ke &skrip ->"
-
-#: ../src/dialog_style_manager.cpp:288
 msgid "Storage"
 msgstr "Penyimpanan"
 
-#: ../src/dialog_style_manager.cpp:294
-msgid "&Import from script..."
-msgstr "&Impor dari skrip..."
-
-#: ../src/dialog_style_manager.cpp:295
-msgid "<- Copy to &storage"
-msgstr "<- &Salin ke penyimpanan"
-
-#: ../src/dialog_style_manager.cpp:306
+#: ../src/dialog_style_manager.cpp:275
 msgid "Current script"
 msgstr "Skrip saat ini"
 
-#: ../src/dialog_style_manager.cpp:453
+#: ../src/dialog_style_manager.cpp:283
+msgid "New"
+msgstr "Baru"
+
+#: ../src/dialog_style_manager.cpp:284
+msgid "Delete"
+msgstr "Hapus"
+
+#: ../src/dialog_style_manager.cpp:290
+msgid "Copy to &current script ->"
+msgstr "Salin ke &skrip ->"
+
+#: ../src/dialog_style_manager.cpp:302
+msgid "&Import from script..."
+msgstr "&Impor dari skrip..."
+
+#: ../src/dialog_style_manager.cpp:303
+msgid "<- Copy to &storage"
+msgstr "<- &Salin ke penyimpanan"
+
+#: ../src/dialog_style_manager.cpp:460
 msgid "New catalog entry"
 msgstr "Masukkan katalog baru"
 
-#: ../src/dialog_style_manager.cpp:453
+#: ../src/dialog_style_manager.cpp:460
 msgid "New storage name:"
 msgstr "Nama penyimpanan baru:"
 
-#: ../src/dialog_style_manager.cpp:468
+#: ../src/dialog_style_manager.cpp:475
 msgid "A catalog with that name already exists."
 msgstr "Katalog dengan nama itu sudah ada."
 
-#: ../src/dialog_style_manager.cpp:468
+#: ../src/dialog_style_manager.cpp:475
 msgid "Catalog name conflict"
 msgstr "Nama katalog konflik"
 
-#: ../src/dialog_style_manager.cpp:475
+#: ../src/dialog_style_manager.cpp:482
 #, c-format
 msgid ""
 "The specified catalog name contains one or more illegal characters. They "
@@ -4303,148 +4602,152 @@ msgstr ""
 "tersebut telah diganti dengan garis bawah.\n"
 "Nama katalog diubah menjadi \"%s\"."
 
-#: ../src/dialog_style_manager.cpp:476
+#: ../src/dialog_style_manager.cpp:483
 msgid "Invalid characters"
 msgstr "Karakter tidak sah"
 
-#: ../src/dialog_style_manager.cpp:489
+#: ../src/dialog_style_manager.cpp:496
 #, c-format
 msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
 msgstr "Apakah Anda yakin ingin menghapus \"%s\" dari katalog?"
 
-#: ../src/dialog_style_manager.cpp:490
+#: ../src/dialog_style_manager.cpp:497
 msgid "Confirm delete"
 msgstr "Konfirmasi penghapusan?"
 
-#: ../src/dialog_style_manager.cpp:508 ../src/dialog_style_manager.cpp:535
-#: ../src/dialog_style_manager.cpp:714
+#: ../src/dialog_style_manager.cpp:515 ../src/dialog_style_manager.cpp:542
+#: ../src/dialog_style_manager.cpp:721
 msgid "Style name collision"
 msgstr "Nama gaya sama."
 
-#: ../src/dialog_style_manager.cpp:508
+#: ../src/dialog_style_manager.cpp:515
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current storage. "
 "Overwrite?"
 msgstr "Gaya \"%s\" sudah ada di tempat penyimpanan. Apakah ingin ditimpa?"
 
-#: ../src/dialog_style_manager.cpp:535 ../src/dialog_style_manager.cpp:713
+#: ../src/dialog_style_manager.cpp:542 ../src/dialog_style_manager.cpp:720
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current script. "
 "Overwrite?"
 msgstr "Gaya \"%s\" sudah ada di dalam skrip. Apakah ingin ditimpa?"
 
-#: ../src/dialog_style_manager.cpp:546
+#: ../src/dialog_style_manager.cpp:553
 msgid "style copy"
 msgstr "salin gaya"
 
-#: ../src/dialog_style_manager.cpp:575
+#: ../src/dialog_style_manager.cpp:582
 msgid "style paste"
 msgstr "tempel gaya"
 
-#: ../src/dialog_style_manager.cpp:619
+#: ../src/dialog_style_manager.cpp:626
 msgid "Confirm delete from storage"
 msgstr "Konfirmasi penghapusan dari tempat penyimpanan"
 
-#: ../src/dialog_style_manager.cpp:658
+#: ../src/dialog_style_manager.cpp:665
 msgid "Confirm delete from current"
 msgstr "Konfirmasi penghapusan"
 
-#: ../src/dialog_style_manager.cpp:662
+#: ../src/dialog_style_manager.cpp:669
 msgid "style delete"
 msgstr "hapus gaya"
 
-#: ../src/dialog_style_manager.cpp:698
+#: ../src/dialog_style_manager.cpp:689
+msgid "Unsupported subtitle format"
+msgstr ""
+
+#: ../src/dialog_style_manager.cpp:705
 msgid "Error Importing Styles"
 msgstr "Gagal Mengimpor Gaya."
 
-#: ../src/dialog_style_manager.cpp:698
+#: ../src/dialog_style_manager.cpp:705
 msgid "The selected file has no available styles."
 msgstr "Berkas yang terpilih tidak mempunyai gaya."
 
-#: ../src/dialog_style_manager.cpp:704
+#: ../src/dialog_style_manager.cpp:711
 msgid "Choose styles to import:"
 msgstr "Pilih gaya yang ingin diimpor:"
 
-#: ../src/dialog_style_manager.cpp:704
+#: ../src/dialog_style_manager.cpp:711
 msgid "Import Styles"
 msgstr "Impor Gaya"
 
-#: ../src/dialog_style_manager.cpp:730
+#: ../src/dialog_style_manager.cpp:737
 msgid "style import"
 msgstr "gaya telah di impor"
 
-#: ../src/dialog_style_manager.cpp:839
+#: ../src/dialog_style_manager.cpp:846
 msgid "Are you sure? This cannot be undone!"
 msgstr "Apakah Anda yakin? Ini tidak dapat diurungkan!"
 
-#: ../src/dialog_style_manager.cpp:839
+#: ../src/dialog_style_manager.cpp:846
 msgid "Sort styles"
 msgstr "Sortir gaya"
 
-#: ../src/dialog_style_manager.cpp:880
+#: ../src/dialog_style_manager.cpp:887
 msgid "style move"
 msgstr "pindah gaya"
 
-#: ../src/dialog_styling_assistant.cpp:63
 #: ../src/dialog_styling_assistant.cpp:64
+#: ../src/dialog_styling_assistant.cpp:65
 msgid "Current line"
 msgstr "Baris saat ini"
 
-#: ../src/dialog_styling_assistant.cpp:70
+#: ../src/dialog_styling_assistant.cpp:71
 msgid "Styles available"
 msgstr "Gaya yang tersedia"
 
-#: ../src/dialog_styling_assistant.cpp:78
+#: ../src/dialog_styling_assistant.cpp:79
 msgid "Set style"
 msgstr "Atur gaya"
 
-#: ../src/dialog_styling_assistant.cpp:85 ../src/dialog_translation.cpp:108
+#: ../src/dialog_styling_assistant.cpp:86 ../src/dialog_translation.cpp:110
 msgid "Keys"
 msgstr "Tombol-tombol"
 
-#: ../src/dialog_styling_assistant.cpp:90 ../src/dialog_translation.cpp:113
+#: ../src/dialog_styling_assistant.cpp:92 ../src/dialog_translation.cpp:116
 msgid "Previous line"
 msgstr "Baris sebelumnya"
 
-#: ../src/dialog_styling_assistant.cpp:91 ../src/dialog_translation.cpp:114
+#: ../src/dialog_styling_assistant.cpp:93 ../src/dialog_translation.cpp:117
 msgid "Next line"
 msgstr "Baris selanjutnya"
 
-#: ../src/dialog_styling_assistant.cpp:92 ../src/dialog_translation.cpp:116
+#: ../src/dialog_styling_assistant.cpp:94 ../src/dialog_translation.cpp:119
 msgid "Play video"
 msgstr "Putar video"
 
-#: ../src/dialog_styling_assistant.cpp:93 ../src/dialog_translation.cpp:117
+#: ../src/dialog_styling_assistant.cpp:95 ../src/dialog_translation.cpp:120
 msgid "Play audio"
 msgstr "Putar audio"
 
-#: ../src/dialog_styling_assistant.cpp:94
+#: ../src/dialog_styling_assistant.cpp:96
 msgid "Click on list"
 msgstr "Klik di daftar"
 
-#: ../src/dialog_styling_assistant.cpp:95
+#: ../src/dialog_styling_assistant.cpp:97
 msgid "Select style"
 msgstr "Pilih gaya"
 
-#: ../src/dialog_styling_assistant.cpp:99
+#: ../src/dialog_styling_assistant.cpp:101
 msgid "&Seek video to line start time"
 msgstr "&Lompat video ke awal baris"
 
-#: ../src/dialog_styling_assistant.cpp:108 ../src/dialog_translation.cpp:129
+#: ../src/dialog_styling_assistant.cpp:110 ../src/dialog_translation.cpp:132
 msgid "Actions"
 msgstr "Aksi"
 
-#: ../src/dialog_styling_assistant.cpp:111 ../src/dialog_translation.cpp:131
+#: ../src/dialog_styling_assistant.cpp:113 ../src/dialog_translation.cpp:134
 msgid "Play &Audio"
 msgstr "Putar &Audio"
 
-#: ../src/dialog_styling_assistant.cpp:115 ../src/dialog_translation.cpp:136
+#: ../src/dialog_styling_assistant.cpp:117 ../src/dialog_translation.cpp:139
 msgid "Play &Video"
 msgstr "Putar &Video"
 
-#: ../src/dialog_styling_assistant.cpp:173
+#: ../src/dialog_styling_assistant.cpp:175
 msgid "styling assistant"
 msgstr "asisten pengaya"
 
@@ -4468,69 +4771,69 @@ msgstr "Termasuk baris kosong"
 msgid "Apply to styles"
 msgstr "Terapkan ke gaya"
 
-#: ../src/dialog_timing_processor.cpp:159
+#: ../src/dialog_timing_processor.cpp:160
 msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "Pilih gaya untuk diproses. Yang tidak dicentang akan dibiarkan."
 
-#: ../src/dialog_timing_processor.cpp:162
+#: ../src/dialog_timing_processor.cpp:163
 msgid "Select all styles"
 msgstr "Pilih semua gaya"
 
-#: ../src/dialog_timing_processor.cpp:165
+#: ../src/dialog_timing_processor.cpp:166
 msgid "Deselect all styles"
 msgstr "Tidak pilih semua gaya"
 
-#: ../src/dialog_timing_processor.cpp:169
+#: ../src/dialog_timing_processor.cpp:170
 msgid "Affect &selection only"
 msgstr "Hanya &seleksi yang dipengaruhi"
 
-#: ../src/dialog_timing_processor.cpp:174
+#: ../src/dialog_timing_processor.cpp:175
 msgid "Lead-in/Lead-out"
 msgstr "Transisi awal/akhir"
 
-#: ../src/dialog_timing_processor.cpp:176
+#: ../src/dialog_timing_processor.cpp:177
 msgid "Add lead &in:"
 msgstr "Tambah transisi &awal:"
 
-#: ../src/dialog_timing_processor.cpp:178
+#: ../src/dialog_timing_processor.cpp:179
 msgid "Enable adding of lead-ins to lines"
 msgstr "Aktifkan transisi awal ke baris."
 
-#: ../src/dialog_timing_processor.cpp:179
+#: ../src/dialog_timing_processor.cpp:180
 msgid "Lead in to be added, in milliseconds"
 msgstr "Transisi awal yang akan ditambahkan, dalam milidetik."
 
-#: ../src/dialog_timing_processor.cpp:181
+#: ../src/dialog_timing_processor.cpp:182
 msgid "Add lead &out:"
 msgstr "Tambah transisi &akhir:"
 
-#: ../src/dialog_timing_processor.cpp:183
+#: ../src/dialog_timing_processor.cpp:184
 msgid "Enable adding of lead-outs to lines"
 msgstr "Aktifkan penambah transisi akhir ke baris."
 
-#: ../src/dialog_timing_processor.cpp:184
+#: ../src/dialog_timing_processor.cpp:185
 msgid "Lead out to be added, in milliseconds"
 msgstr "Transisi akhir yang akan ditambahkan, dalam milidetik."
 
-#: ../src/dialog_timing_processor.cpp:189
+#: ../src/dialog_timing_processor.cpp:190
 msgid "Make adjacent subtitles continuous"
 msgstr "Buat takarir berkesinambungan"
 
-#: ../src/dialog_timing_processor.cpp:190
+#: ../src/dialog_timing_processor.cpp:192
 msgid "&Enable"
 msgstr "&Aktifkan"
 
-#: ../src/dialog_timing_processor.cpp:192
+#: ../src/dialog_timing_processor.cpp:194
 msgid ""
 "Enable snapping of subtitles together if they are within a certain distance "
 "of each other"
 msgstr "Aktifkan pengait takarir jika mereka berada diposisi yang dekat"
 
-#: ../src/dialog_timing_processor.cpp:195
+#: ../src/dialog_timing_processor.cpp:197
 msgid "Max gap:"
 msgstr "Maks. celah:"
 
-#: ../src/dialog_timing_processor.cpp:196
+#: ../src/dialog_timing_processor.cpp:198
 msgid ""
 "Maximum difference between start and end time for two subtitles to be made "
 "continuous, in milliseconds"
@@ -4538,11 +4841,11 @@ msgstr ""
 "Maksimum jarak waktu antara dua baris pada takarir yang berkesinambungan, "
 "dalam milikdetik"
 
-#: ../src/dialog_timing_processor.cpp:197
+#: ../src/dialog_timing_processor.cpp:199
 msgid "Max overlap:"
 msgstr "Maks. timpaan:"
 
-#: ../src/dialog_timing_processor.cpp:198
+#: ../src/dialog_timing_processor.cpp:200
 msgid ""
 "Maximum overlap between the end and start time for two subtitles to be made "
 "continuous, in milliseconds"
@@ -4550,7 +4853,7 @@ msgstr ""
 "Maksimum jarak timpaan antara dua baris pada takarir yang berkesinambungan, "
 "dalam milidetik"
 
-#: ../src/dialog_timing_processor.cpp:201
+#: ../src/dialog_timing_processor.cpp:203
 msgid ""
 "Sets how to set the adjoining of lines. If set totally to left, it will "
 "extend or shrink start time of the second line; if totally to right, it will "
@@ -4560,23 +4863,23 @@ msgstr ""
 "waktu awal dari dibaris kedua, jika diatur ke kanan, maka akan menambah "
 "waktu akhir dibaris pertama."
 
-#: ../src/dialog_timing_processor.cpp:204
+#: ../src/dialog_timing_processor.cpp:206
 msgid "Bias: Start <- "
 msgstr "Bias: Mulai <-"
 
-#: ../src/dialog_timing_processor.cpp:206
+#: ../src/dialog_timing_processor.cpp:208
 msgid " -> End"
 msgstr " -> Akhir"
 
-#: ../src/dialog_timing_processor.cpp:214
+#: ../src/dialog_timing_processor.cpp:216
 msgid "Keyframe snapping"
 msgstr "Pengait keyframe"
 
-#: ../src/dialog_timing_processor.cpp:217
+#: ../src/dialog_timing_processor.cpp:220
 msgid "E&nable"
 msgstr "A&ktifkan"
 
-#: ../src/dialog_timing_processor.cpp:218
+#: ../src/dialog_timing_processor.cpp:221
 msgid ""
 "Enable snapping of subtitles to nearest keyframe, if distance is within "
 "threshold"
@@ -4584,11 +4887,11 @@ msgstr ""
 "Aktifkan pengait takarir pada keyframe terdekat, jika jarak berada diambang "
 "batas"
 
-#: ../src/dialog_timing_processor.cpp:229
+#: ../src/dialog_timing_processor.cpp:232
 msgid "Starts before thres.:"
 msgstr "Mulai sebelum ambang:"
 
-#: ../src/dialog_timing_processor.cpp:230
+#: ../src/dialog_timing_processor.cpp:233
 msgid ""
 "Threshold for 'before start' distance, that is, how many milliseconds a "
 "subtitle must start before a keyframe to snap to it"
@@ -4596,11 +4899,11 @@ msgstr ""
 "Batas jarak ambang 'sebelum mulai', adalah, seberapa banyak milidetik pada "
 "takarir harus dimulai sebelum keyframe dikait"
 
-#: ../src/dialog_timing_processor.cpp:232
+#: ../src/dialog_timing_processor.cpp:235
 msgid "Starts after thres.:"
 msgstr "Mulai setelah ambang:"
 
-#: ../src/dialog_timing_processor.cpp:233
+#: ../src/dialog_timing_processor.cpp:236
 msgid ""
 "Threshold for 'after start' distance, that is, how many milliseconds a "
 "subtitle must start after a keyframe to snap to it"
@@ -4608,11 +4911,11 @@ msgstr ""
 "Batas jarak ambang 'seteleh dimulai', adalah, seberapa banyak milidetik pada "
 "takarir harus dimulai sebelum keyframe dikait"
 
-#: ../src/dialog_timing_processor.cpp:237
+#: ../src/dialog_timing_processor.cpp:240
 msgid "Ends before thres.:"
 msgstr "Akhiri sebelum ambang:"
 
-#: ../src/dialog_timing_processor.cpp:238
+#: ../src/dialog_timing_processor.cpp:241
 msgid ""
 "Threshold for 'before end' distance, that is, how many milliseconds a "
 "subtitle must end before a keyframe to snap to it"
@@ -4620,11 +4923,11 @@ msgstr ""
 "Batas jarak ambang 'sebelum akhir', adalah, seberapa banyak milidetik pada "
 "takarir harus berakhir sebelum keyframe dikait"
 
-#: ../src/dialog_timing_processor.cpp:240
+#: ../src/dialog_timing_processor.cpp:243
 msgid "Ends after thres.:"
 msgstr "Akhiri setelah ambang:"
 
-#: ../src/dialog_timing_processor.cpp:241
+#: ../src/dialog_timing_processor.cpp:244
 msgid ""
 "Threshold for 'after end' distance, that is, how many milliseconds a "
 "subtitle must end after a keyframe to snap to it"
@@ -4632,49 +4935,49 @@ msgstr ""
 "Batas jarak ambang 'setelah akhir', adalah, seberapa banyak milidetik pada "
 "takarir harus berakhir sebelum keyframe dikait"
 
-#: ../src/dialog_timing_processor.cpp:349
+#: ../src/dialog_timing_processor.cpp:352
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
 msgstr "Salah satu baris dari berkas (%i) berisi durasi negatif. Gagal."
 
-#: ../src/dialog_timing_processor.cpp:350
+#: ../src/dialog_timing_processor.cpp:353
 msgid "Invalid script"
 msgstr "Skrip rusak"
 
-#: ../src/dialog_timing_processor.cpp:445
+#: ../src/dialog_timing_processor.cpp:448
 msgid "timing processor"
 msgstr "proses tempo"
 
-#: ../src/dialog_translation.cpp:77
+#: ../src/dialog_translation.cpp:78
 msgid "Original"
 msgstr "Orisinil"
 
-#: ../src/dialog_translation.cpp:100
+#: ../src/dialog_translation.cpp:94
 msgid "Translation"
 msgstr "Penterjemah"
 
-#: ../src/dialog_translation.cpp:115
+#: ../src/dialog_translation.cpp:118
 msgid "Insert original"
 msgstr "Sisip orisinil"
 
-#: ../src/dialog_translation.cpp:118
+#: ../src/dialog_translation.cpp:121
 msgid "Delete line"
 msgstr "Hapus baris"
 
-#: ../src/dialog_translation.cpp:121
+#: ../src/dialog_translation.cpp:124
 msgid "Enable &preview"
 msgstr "Aktifkan &pratinjau"
 
-#: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:278
+#: ../src/dialog_translation.cpp:181 ../src/dialog_translation.cpp:281
 msgid "No more lines to translate."
 msgstr "Tidak ada baris untuk diterjemahkan"
 
-#: ../src/dialog_translation.cpp:186 ../src/dialog_translation.cpp:236
+#: ../src/dialog_translation.cpp:189 ../src/dialog_translation.cpp:239
 #, c-format
 msgid "Current line: %d/%d"
 msgstr "Baris saat ini: %d/%d"
 
-#: ../src/dialog_translation.cpp:273
+#: ../src/dialog_translation.cpp:276
 msgid "translation assistant"
 msgstr "asisten penterjemah"
 
@@ -4729,47 +5032,48 @@ msgstr ""
 msgid "An unknown error occurred while checking for updates to Aegisub."
 msgstr "Terjadi galat ketika melakukan pemeriksaan versi Aegisub."
 
-#: ../src/dialog_video_details.cpp:45
+#: ../src/dialog_video_details.cpp:46
 msgid "Video Details"
 msgstr "Detil Video"
 
-#: ../src/dialog_video_details.cpp:59
+#: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:170
+#: ../src/preferences.cpp:447
+msgid "Video"
+msgstr "Video"
+
+#: ../src/dialog_video_details.cpp:63
 msgid "File name:"
 msgstr "Nama Berkas:"
 
-#: ../src/dialog_video_details.cpp:60
+#: ../src/dialog_video_details.cpp:64
 msgid "FPS:"
 msgstr "FPS:"
 
-#: ../src/dialog_video_details.cpp:61
+#: ../src/dialog_video_details.cpp:65
 msgid "Resolution:"
 msgstr "Resolusi:"
 
-#: ../src/dialog_video_details.cpp:62
-#, c-format
-msgid "1 frame"
+#: ../src/dialog_video_details.cpp:66
+#, fuzzy, c-format
+#| msgid "%s frames"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 frame"
-msgstr[1] "%d frame (%s)"
+msgstr[0] "%s frame"
+msgstr[1] "%s frame"
 
-#: ../src/dialog_video_details.cpp:62
+#: ../src/dialog_video_details.cpp:66
 msgid "Length:"
 msgstr "Durasi:"
 
-#: ../src/dialog_video_details.cpp:64
+#: ../src/dialog_video_details.cpp:68
 msgid "Decoder:"
 msgstr "Dekoder:"
-
-#: ../src/dialog_video_details.cpp:66 ../src/preferences.cpp:167
-#: ../src/preferences.cpp:438
-msgid "Video"
-msgstr "Video"
 
 #: ../src/dialog_video_properties.cpp:44
 msgid "Resolution mismatch"
 msgstr "Resolusi tidak cocok"
 
-#: ../src/dialog_video_properties.cpp:46
+#: ../src/dialog_video_properties.cpp:47
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
@@ -4787,27 +5091,27 @@ msgstr ""
 "\n"
 "Ubah resolusi skrip sesuai dengan resolusi video?"
 
-#: ../src/dialog_video_properties.cpp:54 ../src/dialog_video_properties.cpp:63
+#: ../src/dialog_video_properties.cpp:58 ../src/dialog_video_properties.cpp:67
 msgid "Set to video resolution"
 msgstr "Atur ke resolusi video"
 
-#: ../src/dialog_video_properties.cpp:55
+#: ../src/dialog_video_properties.cpp:59
 msgid "Resample script (stretch to new aspect ratio)"
 msgstr "Reka ulang skrip (regangkan ke aspek rasio baru)"
 
-#: ../src/dialog_video_properties.cpp:56
+#: ../src/dialog_video_properties.cpp:60
 msgid "Resample script (add borders)"
 msgstr "Atur ulang skrip (tambahkan garis luar)"
 
-#: ../src/dialog_video_properties.cpp:57
+#: ../src/dialog_video_properties.cpp:61
 msgid "Resample script (remove borders)"
 msgstr "Reka ulang skrip (hapus garis luar)"
 
-#: ../src/dialog_video_properties.cpp:64
+#: ../src/dialog_video_properties.cpp:68
 msgid "Resample script"
 msgstr "Reka ulang skrip"
 
-#: ../src/dialog_video_properties.cpp:163
+#: ../src/dialog_video_properties.cpp:167
 msgid "change script resolution"
 msgstr "ubah resolusi skrip"
 
@@ -5027,7 +5331,14 @@ msgstr "Kecepatan Membaca"
 msgid "Invalid command name for hotkey"
 msgstr "Nama perintah tombol cepat tidak valid"
 
-#: ../src/main.cpp:246
+#: ../src/main.cpp:194
+#, c-format
+msgid ""
+"Configuration file is invalid. Error reported:\n"
+"%s"
+msgstr ""
+
+#: ../src/main.cpp:258
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -5046,11 +5357,11 @@ msgstr ""
 "\n"
 "Aegisub akan keluar."
 
-#: ../src/main.cpp:273
+#: ../src/main.cpp:285
 msgid "Check for updates?"
 msgstr "Periksa pemutakhiran?"
 
-#: ../src/main.cpp:273
+#: ../src/main.cpp:285
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
@@ -5058,11 +5369,31 @@ msgstr ""
 "Apakah Anda ingin Aegisub melakukan pemutakhiran setiap kali diluncunrkan? "
 "Anda bisa melakukannya secara manual melalui menu Bantuan."
 
-#: ../src/main.cpp:390 ../src/main.cpp:393
+#: ../src/main.cpp:291
+msgid "Error saving config file"
+msgstr ""
+
+#: ../src/main.cpp:307 ../src/main.cpp:311 ../src/main.cpp:316
+msgid "Fatal error while initializing"
+msgstr ""
+
+#: ../src/main.cpp:316
+msgid "Unhandled exception"
+msgstr ""
+
+#: ../src/main.cpp:402 ../src/main.cpp:405
 msgid "Program error"
 msgstr "Program galat"
 
-#: ../src/main.cpp:407
+#: ../src/main.cpp:405
+#, c-format
+msgid ""
+"Aegisub has crashed while starting up!\n"
+"\n"
+"The last startup step attempted was: %s."
+msgstr ""
+
+#: ../src/main.cpp:419
 #, c-format
 msgid ""
 "An unexpected error has occurred. Please save your work and restart "
@@ -5073,6 +5404,10 @@ msgstr ""
 "Galat telah terjad. Mohon simpan pekerjaan Anda dan jalankan ulang Aegisub.\n"
 "\n"
 "Pesan Galat: %s"
+
+#: ../src/main.cpp:420
+msgid "Exception in event handler"
+msgstr ""
 
 #: ../src/menu.cpp:96
 msgid "Empty"
@@ -5086,80 +5421,80 @@ msgstr "&Riwayat"
 msgid "No Automation macros loaded"
 msgstr "Tidak ada makro otomatisasi yang dimuat"
 
-#: ../src/mkv_wrap.cpp:238
+#: ../src/mkv_wrap.cpp:241
 msgid "Choose which track to read:"
 msgstr "Pilih trek yang ingin dibaca:"
 
-#: ../src/mkv_wrap.cpp:238
+#: ../src/mkv_wrap.cpp:241
 msgid "Multiple subtitle tracks found"
 msgstr "Ditemukan lebih dari satu takarir"
 
-#: ../src/mkv_wrap.cpp:283
+#: ../src/mkv_wrap.cpp:286
 msgid "Parsing Matroska"
 msgstr "Mengurai Matroska"
 
-#: ../src/mkv_wrap.cpp:283
+#: ../src/mkv_wrap.cpp:286
 msgid "Reading subtitles from Matroska file."
 msgstr "Membaca takarir dari berkas Matroska."
 
-#: ../src/preferences.cpp:63 ../src/preferences.cpp:65
-#: ../src/preferences.cpp:335 ../src/preferences.cpp:356
+#: ../src/preferences.cpp:64 ../src/preferences.cpp:66
+#: ../src/preferences.cpp:344 ../src/preferences.cpp:365
 msgid "General"
 msgstr "Umum"
 
-#: ../src/preferences.cpp:66
+#: ../src/preferences.cpp:67
 msgid "Check for updates on startup"
 msgstr "Selalu periksa pemutakhiran"
 
-#: ../src/preferences.cpp:67
+#: ../src/preferences.cpp:68
 msgid "Show main toolbar"
 msgstr "Tampilkan Toolbar Utama"
 
-#: ../src/preferences.cpp:68
+#: ../src/preferences.cpp:69
 msgid "Save UI state in subtitles files"
 msgstr "Simpan status UI di berkas takarir"
 
-#: ../src/preferences.cpp:71
+#: ../src/preferences.cpp:72
 msgid "Toolbar Icon Size"
 msgstr "Ukuran Ikon Toolbar"
 
-#: ../src/preferences.cpp:72
+#: ../src/preferences.cpp:73
 msgid "Always"
 msgstr "Selalu"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
+#: ../src/preferences.cpp:73 ../src/preferences.cpp:206
 msgid "Ask"
 msgstr "Tanya"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:197
+#: ../src/preferences.cpp:73 ../src/preferences.cpp:206
 msgid "Never"
 msgstr "Tidak"
 
-#: ../src/preferences.cpp:74
+#: ../src/preferences.cpp:75
 msgid "Automatically load linked files"
 msgstr "Otomatis muat berkas yang berhubungan"
 
-#: ../src/preferences.cpp:75
+#: ../src/preferences.cpp:76
 msgid "Undo Levels"
 msgstr "Tingkat Urungkan"
 
-#: ../src/preferences.cpp:77
+#: ../src/preferences.cpp:78
 msgid "Recently Used Lists"
 msgstr "Daftar Riwayat"
 
-#: ../src/preferences.cpp:79
+#: ../src/preferences.cpp:80
 msgid "Find/Replace"
 msgstr "Cari/Ganti"
 
-#: ../src/preferences.cpp:85
+#: ../src/preferences.cpp:86
 msgid "Default styles"
 msgstr "Standar gaya"
 
-#: ../src/preferences.cpp:87
+#: ../src/preferences.cpp:88
 msgid "Default style catalogs"
 msgstr "Standar katalog gaya"
 
-#: ../src/preferences.cpp:91
+#: ../src/preferences.cpp:92
 msgid ""
 "The chosen style catalogs will be loaded when you start a new file or import "
 "files in the various formats.\n"
@@ -5171,704 +5506,782 @@ msgstr ""
 "\n"
 "Anda bisa mengatur katalog gaya di Pengelola Gaya."
 
-#: ../src/preferences.cpp:116
+#: ../src/preferences.cpp:119
 msgid "New files"
 msgstr "Berkas baru"
 
-#: ../src/preferences.cpp:117
+#: ../src/preferences.cpp:120
 msgid "MicroDVD import"
 msgstr "Impor MicroDVD"
 
-#: ../src/preferences.cpp:118
+#: ../src/preferences.cpp:121
 msgid "SRT import"
 msgstr "Impor SRT"
 
-#: ../src/preferences.cpp:119
+#: ../src/preferences.cpp:122
 msgid "TTXT import"
 msgstr "Impor TTXT"
 
-#: ../src/preferences.cpp:120
+#: ../src/preferences.cpp:123
 msgid "Plain text import"
 msgstr "Impor teks biasa"
 
-#: ../src/preferences.cpp:127 ../src/preferences.cpp:371
+#: ../src/preferences.cpp:130 ../src/preferences.cpp:380
 msgid "Audio"
 msgstr "Audio"
 
-#: ../src/preferences.cpp:130
+#: ../src/preferences.cpp:133
 msgid "Default mouse wheel to zoom"
 msgstr "Perbesar grafik ketika di gulir"
 
-#: ../src/preferences.cpp:131
+#: ../src/preferences.cpp:134
 msgid "Lock scroll on cursor"
 msgstr "Kunci gulir pada kursor"
 
-#: ../src/preferences.cpp:132
+#: ../src/preferences.cpp:135
 msgid "Snap markers by default"
 msgstr "Kaitkan marker secara otomatis"
 
-#: ../src/preferences.cpp:133
+#: ../src/preferences.cpp:136
 msgid "Auto-focus on mouse over"
 msgstr "Otomatis fokus ketika mouse geser"
 
-#: ../src/preferences.cpp:134
+#: ../src/preferences.cpp:137
 msgid "Play audio when stepping in video"
 msgstr "Putar audio ketika menekan tombol panah kiri dan kanan"
 
-#: ../src/preferences.cpp:135
+#: ../src/preferences.cpp:138
 msgid "Left-click-drag moves end marker"
 msgstr "Klik kiri dan drag ke akhir marker"
 
-#: ../src/preferences.cpp:136
+#: ../src/preferences.cpp:139
 msgid "Default timing length (ms)"
 msgstr "Panjang durasi tempo (milidetik)"
 
-#: ../src/preferences.cpp:137
+#: ../src/preferences.cpp:140
 msgid "Default lead-in length (ms)"
 msgstr "Panjang durasi transisi awal (milidetik)"
 
-#: ../src/preferences.cpp:138
+#: ../src/preferences.cpp:141
 msgid "Default lead-out length (ms)"
 msgstr "Panjang durasi transisi akhir (milidetik)"
 
-#: ../src/preferences.cpp:140
+#: ../src/preferences.cpp:143
 msgid "Marker drag-start sensitivity (px)"
 msgstr "Kepekaan penggeser marker (piksel)"
 
-#: ../src/preferences.cpp:141
+#: ../src/preferences.cpp:144
 msgid "Line boundary thickness (px)"
 msgstr "Tebal garis (piksel)"
 
-#: ../src/preferences.cpp:142
+#: ../src/preferences.cpp:145
 msgid "Maximum snap distance (px)"
 msgstr "Jarak maksimum pengait (piksel)"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Don't show"
 msgstr "Jangan tampilkan"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Show all"
 msgstr "Tampilkan semuanya"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Show previous"
 msgstr "Tampilkan sebelumnya"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Show previous and next"
 msgstr "Tampilkan sebelumnya dan lanjut"
 
-#: ../src/preferences.cpp:146
+#: ../src/preferences.cpp:149
 msgid "Show inactive lines"
 msgstr "Tampilkan baris yang tidak aktif"
 
-#: ../src/preferences.cpp:148
+#: ../src/preferences.cpp:151
 msgid "Include commented inactive lines"
 msgstr "Masukkan baris komentar tidak aktif"
 
-#: ../src/preferences.cpp:150
+#: ../src/preferences.cpp:153
 msgid "Display Visual Options"
 msgstr "Pengaturan Tampilan Visual"
 
-#: ../src/preferences.cpp:151
+#: ../src/preferences.cpp:154
 msgid "Keyframes in dialogue mode"
 msgstr "Keyframe di mode dialog"
 
-#: ../src/preferences.cpp:152
+#: ../src/preferences.cpp:155
 msgid "Keyframes in karaoke mode"
 msgstr "Keyframe di mode karaoke"
 
-#: ../src/preferences.cpp:153
+#: ../src/preferences.cpp:156
 msgid "Cursor time"
 msgstr "Waktu kursor"
 
-#: ../src/preferences.cpp:154
+#: ../src/preferences.cpp:157
 msgid "Video position"
 msgstr "Posisi video"
 
-#: ../src/preferences.cpp:155 ../src/preferences.cpp:251
+#: ../src/preferences.cpp:158 ../src/preferences.cpp:260
 msgid "Seconds boundaries"
 msgstr "Garis waktu"
 
-#: ../src/preferences.cpp:157
+#: ../src/preferences.cpp:160
 msgid "Waveform Style"
 msgstr "Mode Gelombang"
 
-#: ../src/preferences.cpp:159
+#: ../src/preferences.cpp:162
 msgid "Audio labels"
 msgstr "Label audio"
 
-#: ../src/preferences.cpp:170
+#: ../src/preferences.cpp:173
 msgid "Show keyframes in slider"
 msgstr "Tampilkan keyframe"
 
-#: ../src/preferences.cpp:172
+#: ../src/preferences.cpp:175
 msgid "Only show visual tools when mouse is over video"
 msgstr "Tampilkan selalu alat visual ketika mouse di area video"
 
-#: ../src/preferences.cpp:174
+#: ../src/preferences.cpp:177
 msgid "Seek video to line start on selection change"
 msgstr "Geser video ke awal baris dari seleksi"
 
-#: ../src/preferences.cpp:176
+#: ../src/preferences.cpp:179
 msgid "Automatically open audio when opening video"
 msgstr "Otomatis buka audio setelah buka video"
 
-#: ../src/preferences.cpp:181
+#: ../src/preferences.cpp:182
+msgid "Does nothing"
+msgstr ""
+
+#: ../src/preferences.cpp:182
+msgid "Pans the video"
+msgstr ""
+
+#: ../src/preferences.cpp:182
+msgid "Pans the video (X/Y swapped)"
+msgstr ""
+
+#: ../src/preferences.cpp:182
+msgid "Resizes the video box"
+msgstr ""
+
+#: ../src/preferences.cpp:182
+msgid "Resizes the video box (reversed)"
+msgstr ""
+
+#: ../src/preferences.cpp:182
+msgid "Zooms the video"
+msgstr ""
+
+#: ../src/preferences.cpp:182
+msgid "Zooms the video (reversed)"
+msgstr ""
+
+#: ../src/preferences.cpp:184
+msgid "Scrolling on the video display"
+msgstr ""
+
+#: ../src/preferences.cpp:185
+msgid "Ctrl+Scrolling on the video display"
+msgstr ""
+
+#: ../src/preferences.cpp:186
+msgid "Shift+Scrolling on the video display"
+msgstr ""
+
+#: ../src/preferences.cpp:190
 msgid "Default Zoom"
 msgstr "Standar Pembesar:"
 
-#: ../src/preferences.cpp:183
+#: ../src/preferences.cpp:192
 msgid "Fast jump step in frames"
 msgstr "Lompatan frame"
 
-#: ../src/preferences.cpp:187
+#: ../src/preferences.cpp:196
 msgid "Screenshot save path"
 msgstr "Lokasi penyimpanan gambar"
 
-#: ../src/preferences.cpp:189
+#: ../src/preferences.cpp:198
 msgid "Script Resolution"
 msgstr "Resolusi Skrip"
 
-#: ../src/preferences.cpp:190
+#: ../src/preferences.cpp:199
 msgid "Use resolution of first video opened"
 msgstr "Gunakan resolusi video pada saat pertama kali dibuka"
 
-#: ../src/preferences.cpp:193
+#: ../src/preferences.cpp:202
 msgid "Default width"
 msgstr "Lebar standar"
 
-#: ../src/preferences.cpp:195
+#: ../src/preferences.cpp:204
 msgid "Default height"
 msgstr "Panjang standar"
 
-#: ../src/preferences.cpp:197
+#: ../src/preferences.cpp:206
 msgid "Always resample"
 msgstr "Selalu reka ulang"
 
-#: ../src/preferences.cpp:197
+#: ../src/preferences.cpp:206
 msgid "Always set"
 msgstr "Selalu set"
 
-#: ../src/preferences.cpp:199
+#: ../src/preferences.cpp:208
 msgid "Match video resolution on open"
 msgstr "Sesuaikan resolusi video ketika dibuka:"
 
-#: ../src/preferences.cpp:206
+#: ../src/preferences.cpp:215
 msgid "Interface"
 msgstr "Tatap muka"
 
-#: ../src/preferences.cpp:208
+#: ../src/preferences.cpp:217
 msgid "Edit Box"
 msgstr "Kotak Sunting"
 
-#: ../src/preferences.cpp:209
+#: ../src/preferences.cpp:218
 msgid "Enable call tips"
 msgstr "Aktifkan petunjuk"
 
-#: ../src/preferences.cpp:210
+#: ../src/preferences.cpp:219
 msgid "Overwrite in time boxes"
 msgstr "Sunting mudah di kotak waktu"
 
-#: ../src/preferences.cpp:211
+#: ../src/preferences.cpp:220
 msgid "Shift+Enter adds \\n"
 msgstr ""
 
-#: ../src/preferences.cpp:212
+#: ../src/preferences.cpp:221
 msgid "Enable syntax highlighting"
 msgstr "Aktifkan sorot sintaks"
 
-#: ../src/preferences.cpp:213
+#: ../src/preferences.cpp:222
 msgid "Dictionaries path"
 msgstr "Lokasi kamus"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:225
 msgid "Character Counter"
 msgstr "Batas Karakter"
 
-#: ../src/preferences.cpp:217
+#: ../src/preferences.cpp:226
 msgid "Maximum characters per line"
 msgstr "Batas maksimum karakter per baris"
 
-#: ../src/preferences.cpp:218
+#: ../src/preferences.cpp:227
 msgid "Characters Per Second Warning Threshold"
 msgstr "Batas Ambang Peringatan Karakter Per Detik"
 
-#: ../src/preferences.cpp:219
+#: ../src/preferences.cpp:228
 msgid "Characters Per Second Error Threshold"
 msgstr "Batas Ambang Galat Karakter Per Detik"
 
-#: ../src/preferences.cpp:220
+#: ../src/preferences.cpp:229
 msgid "Ignore whitespace"
 msgstr "Abaikan spasi"
 
-#: ../src/preferences.cpp:221
+#: ../src/preferences.cpp:230
 msgid "Ignore punctuation"
 msgstr "Abaikan tanda baca"
 
-#: ../src/preferences.cpp:223
+#: ../src/preferences.cpp:232
 msgid "Grid"
 msgstr "Garis"
 
-#: ../src/preferences.cpp:224
+#: ../src/preferences.cpp:233
 msgid "Focus grid on click"
 msgstr "Fokus garis saat di klik"
 
-#: ../src/preferences.cpp:225
+#: ../src/preferences.cpp:234
 msgid "Highlight visible subtitles"
 msgstr "Sorot takarir yang terlihat"
 
-#: ../src/preferences.cpp:226
+#: ../src/preferences.cpp:235
 msgid "Hide overrides symbol"
 msgstr "Sembunyikan label simbol"
 
-#: ../src/preferences.cpp:230
+#: ../src/preferences.cpp:239
 msgid "Skip over whitespace"
 msgstr ""
 
-#: ../src/preferences.cpp:245
+#: ../src/preferences.cpp:254
 msgid "Audio Display"
 msgstr "Tampilkan Audio"
 
-#: ../src/preferences.cpp:246
+#: ../src/preferences.cpp:255
 msgid "Play cursor"
 msgstr "Putar kursor"
 
-#: ../src/preferences.cpp:247
+#: ../src/preferences.cpp:256
 msgid "Line boundary start"
 msgstr "Batas baris awal"
 
-#: ../src/preferences.cpp:248
+#: ../src/preferences.cpp:257
 msgid "Line boundary end"
 msgstr "Batas baris akhir"
 
-#: ../src/preferences.cpp:249
+#: ../src/preferences.cpp:258
 msgid "Line boundary inactive line"
 msgstr "Batas baris tidak aktif"
 
-#: ../src/preferences.cpp:250
+#: ../src/preferences.cpp:259
 msgid "Syllable boundaries"
 msgstr "Batas suku kata"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:262
 msgid "Syntax Highlighting"
 msgstr "Sorotan Sintaks"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:263
 msgid "Background"
 msgstr "Latar belakang"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:264
 msgid "Normal"
 msgstr "Normal"
 
-#: ../src/preferences.cpp:256
+#: ../src/preferences.cpp:265
 msgid "Comments"
 msgstr "Komentar"
 
-#: ../src/preferences.cpp:257
+#: ../src/preferences.cpp:266
 msgid "Drawing Commands"
 msgstr ""
 
-#: ../src/preferences.cpp:258
+#: ../src/preferences.cpp:267
 msgid "Drawing X Coords"
 msgstr ""
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:268
 msgid "Drawing Y Coords"
 msgstr ""
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:269
 msgid "Underline Spline Endpoints"
 msgstr ""
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:271
 msgid "Brackets"
 msgstr "Kurung kurva"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:272
 msgid "Slashes and Parentheses"
 msgstr "Garis miring dan tanda kurung"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:273
 msgid "Tags"
 msgstr "Label-label"
 
-#: ../src/preferences.cpp:265
+#: ../src/preferences.cpp:274
 msgid "Parameters"
 msgstr "Parameter"
 
-#: ../src/preferences.cpp:267
+#: ../src/preferences.cpp:276
 msgid "Error Background"
 msgstr "Galat di belakang"
 
-#: ../src/preferences.cpp:268
+#: ../src/preferences.cpp:277
 msgid "Line Break"
 msgstr "Pisah baris"
 
-#: ../src/preferences.cpp:269
+#: ../src/preferences.cpp:278
 msgid "Karaoke templates"
 msgstr "Template karaoke"
 
-#: ../src/preferences.cpp:270
+#: ../src/preferences.cpp:279
 msgid "Karaoke variables"
 msgstr "Variabel Karaoke"
 
-#: ../src/preferences.cpp:276
+#: ../src/preferences.cpp:285
 msgid "Audio Color Schemes"
 msgstr "Warna Audio"
 
-#: ../src/preferences.cpp:278 ../src/preferences.cpp:387
+#: ../src/preferences.cpp:287 ../src/preferences.cpp:396
 msgid "Spectrum"
 msgstr "Spektrum"
 
-#: ../src/preferences.cpp:279
+#: ../src/preferences.cpp:288
 msgid "Waveform"
 msgstr "Gelombang "
 
-#: ../src/preferences.cpp:281
+#: ../src/preferences.cpp:290
 msgid "Subtitle Grid"
 msgstr "Garis Takarir"
 
-#: ../src/preferences.cpp:282
+#: ../src/preferences.cpp:291
 msgid "Standard foreground"
 msgstr "Standar latar depan"
 
-#: ../src/preferences.cpp:283
+#: ../src/preferences.cpp:292
 msgid "Standard background"
 msgstr "Standar latar belakang"
 
-#: ../src/preferences.cpp:284
+#: ../src/preferences.cpp:293
 msgid "Selection foreground"
 msgstr "Seleksi latar depan"
 
-#: ../src/preferences.cpp:285
+#: ../src/preferences.cpp:294
 msgid "Selection background"
 msgstr "Seleksi latar belakang"
 
-#: ../src/preferences.cpp:286
+#: ../src/preferences.cpp:295
 msgid "Collision foreground"
 msgstr "Latar depan kolusi"
 
-#: ../src/preferences.cpp:287
+#: ../src/preferences.cpp:296
 msgid "In frame background"
 msgstr "Baris dilatar belakang frame"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:297
 msgid "Comment background"
 msgstr "Komentar latar belakang"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:298
 msgid "Selected comment background"
 msgstr "Pilih latar belakang komentar"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:299
 msgid "Header background"
 msgstr "Depan latar belakang"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:300
 msgid "Left Column"
 msgstr "Kolom kanan"
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:301
 msgid "Active Line Border"
 msgstr "Aktif batas baris"
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:302
 msgid "Lines"
 msgstr "Baris"
 
-#: ../src/preferences.cpp:294
+#: ../src/preferences.cpp:303
 msgid "CPS Error"
 msgstr "Kec. Mbc. Galat"
 
-#: ../src/preferences.cpp:296
+#: ../src/preferences.cpp:305
 msgid "Visual Typesetting Tools"
 msgstr ""
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:306
 msgid "Primary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:307
 msgid "Secondary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:308
 msgid "Primary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:300
+#: ../src/preferences.cpp:309
 msgid "Secondary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:303
+#: ../src/preferences.cpp:312
 msgid "Visual Typesetting Tools Alpha"
 msgstr ""
 
-#: ../src/preferences.cpp:304
+#: ../src/preferences.cpp:313
 msgid "Shaded Area"
 msgstr ""
 
-#: ../src/preferences.cpp:313
+#: ../src/preferences.cpp:322
 msgid "Backup"
 msgstr "Cadangan"
 
-#: ../src/preferences.cpp:315
+#: ../src/preferences.cpp:324
 msgid "Automatic Save"
 msgstr "Penyimpanan Otomatis"
 
-#: ../src/preferences.cpp:316 ../src/preferences.cpp:324
+#: ../src/preferences.cpp:325 ../src/preferences.cpp:333
 msgid "Enable"
 msgstr "Aktif"
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:328
 msgid "Interval in seconds"
 msgstr "Selang dalam beberapa detik"
 
-#: ../src/preferences.cpp:320 ../src/preferences.cpp:326
-#: ../src/preferences.cpp:385
+#: ../src/preferences.cpp:329 ../src/preferences.cpp:335
+#: ../src/preferences.cpp:394
 msgid "Path"
 msgstr "Lokasi"
 
-#: ../src/preferences.cpp:321
+#: ../src/preferences.cpp:330
 msgid "Autosave after every change"
 msgstr "Otomatis simpan setiap ada perubahan"
 
-#: ../src/preferences.cpp:323
+#: ../src/preferences.cpp:332
 msgid "Automatic Backup"
 msgstr "Otomatis Simpan Cadangan"
 
-#: ../src/preferences.cpp:337
+#: ../src/preferences.cpp:346
 msgid "Base path"
 msgstr "Dasar Lokasi"
 
-#: ../src/preferences.cpp:338
+#: ../src/preferences.cpp:347
 msgid "Include path"
 msgstr "Lokasi Include"
 
-#: ../src/preferences.cpp:339
+#: ../src/preferences.cpp:348
 msgid "Auto-load path"
 msgstr "Lokasi Auto-load"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:350
 msgid "0: Fatal"
 msgstr "0: Fatal"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:350
 msgid "1: Error"
 msgstr "1: Kesalahan"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:350
 msgid "2: Warning"
 msgstr "2: Peringatan"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:350
 msgid "3: Hint"
 msgstr "3: Petunjuk"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:350
 msgid "4: Debug"
 msgstr "4: Debug"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:350
 msgid "5: Trace"
 msgstr "5: Jejak"
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:352
 msgid "Trace level"
 msgstr "Level jejak"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:354
 msgid "All scripts"
 msgstr "Semua skrip"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:354
 msgid "Global autoload scripts"
 msgstr "Skrip global autoload"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:354
 msgid "No scripts"
 msgstr "Tanpa Skrip"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:354
 msgid "Subtitle-local scripts"
 msgstr "Skrip lokal-takarir"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:356
 msgid "Autoreload on Export"
 msgstr "Otomatis memuat ulang ketika diekspor"
 
-#: ../src/preferences.cpp:354
+#: ../src/preferences.cpp:363
 msgid "Advanced"
 msgstr "Tingkat Lanjut"
 
-#: ../src/preferences.cpp:358
+#: ../src/preferences.cpp:367
 msgid ""
-"Changing these settings might result in bugs and/or crashes.  Do not touch "
+"Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
 msgstr ""
-"Mengubah pengaturan ini dapat mengakibatkan kerusakan fatal atau galat! "
-"Jangan sentuh kecuali Anda tahu apa yang Anda lakukan."
 
-#: ../src/preferences.cpp:373 ../src/preferences.cpp:440
+#: ../src/preferences.cpp:382 ../src/preferences.cpp:449
 msgid "Expert"
 msgstr "Tingkat lanjut"
 
-#: ../src/preferences.cpp:376
+#: ../src/preferences.cpp:385
 msgid "Audio provider"
 msgstr "Penyedia Audio"
 
-#: ../src/preferences.cpp:379
+#: ../src/preferences.cpp:388
 msgid "Audio player"
 msgstr "Pemutar Audio"
 
-#: ../src/preferences.cpp:381
+#: ../src/preferences.cpp:390
 msgid "Cache"
 msgstr "Cache"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:391
 msgid "Hard Disk"
 msgstr "Hard Disk"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:391
 msgid "None (NOT RECOMMENDED)"
 msgstr "Tidak ada (TIDAK DIANJURKAN)"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:391
 msgid "RAM"
 msgstr "RAM"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:393
 msgid "Cache type"
 msgstr "Tipe cache"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:398
 msgid "Better quality"
 msgstr "Kualitas baik"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:398
 msgid "High quality"
 msgstr "Kualitas tinggi"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:398
 msgid "Insane quality"
 msgstr "Kualitas lebih tinggi"
 
-#: ../src/preferences.cpp:389
+#: ../src/preferences.cpp:398
 msgid "Regular quality"
 msgstr "Kualitas biasa"
 
-#: ../src/preferences.cpp:391
+#: ../src/preferences.cpp:400
 msgid "Quality"
 msgstr "Kualitas"
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:402
 msgid "Compressed"
 msgstr ""
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:402
 msgid "Extended"
 msgstr ""
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:402
 msgid "Linear"
 msgstr ""
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:402
 msgid "Logarithmic"
 msgstr ""
 
-#: ../src/preferences.cpp:393
+#: ../src/preferences.cpp:402
 msgid "Medium"
 msgstr ""
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:404
 msgid "Frequency mapping"
 msgstr ""
 
-#: ../src/preferences.cpp:397
+#: ../src/preferences.cpp:406
 msgid "Cache memory max (MB)"
 msgstr "Maksimum cache memori (MB)"
 
-#: ../src/preferences.cpp:403
+#: ../src/preferences.cpp:412
 msgid "Avisynth down-mixer"
 msgstr "Mixer audio Avisynth"
 
-#: ../src/preferences.cpp:404
+#: ../src/preferences.cpp:413
 msgid "Force sample rate"
 msgstr "Paksa sample rate"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:419
 msgid "Abort"
 msgstr "Batal"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:419
 msgid "Ignore"
 msgstr "Abaikan"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:419
 msgid "Stop"
 msgstr "Berhenti"
 
-#: ../src/preferences.cpp:412
+#: ../src/preferences.cpp:421
 msgid "Audio indexing error handling mode"
 msgstr "Mode pengendali kesalahan indeksing audio"
 
-#: ../src/preferences.cpp:414
+#: ../src/preferences.cpp:423
 msgid "Always index all audio tracks"
 msgstr "Selalu indeks semua trek audio"
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:428
 msgid "Portaudio device"
 msgstr "Port audio"
 
-#: ../src/preferences.cpp:424
+#: ../src/preferences.cpp:433
 msgid "OSS Device"
 msgstr "Alat OSS"
 
-#: ../src/preferences.cpp:429
+#: ../src/preferences.cpp:438
 msgid "Buffer latency"
 msgstr "Latensi buffer"
 
-#: ../src/preferences.cpp:430
+#: ../src/preferences.cpp:439
 msgid "Buffer length"
 msgstr "Panjang buffer"
 
-#: ../src/preferences.cpp:443
+#: ../src/preferences.cpp:452
 msgid "Video provider"
 msgstr "Penyedia video"
 
-#: ../src/preferences.cpp:446
+#: ../src/preferences.cpp:455
 msgid "Subtitles provider"
 msgstr "Penyedia takarir"
 
-#: ../src/preferences.cpp:450
+#: ../src/preferences.cpp:459
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Izinkan pra-2-56a Avisynth"
 
-#: ../src/preferences.cpp:452
+#: ../src/preferences.cpp:461
 msgid "Avisynth memory limit"
 msgstr "Batas memori Avisynth:"
 
-#: ../src/preferences.cpp:460
+#: ../src/preferences.cpp:467
+msgid "Debug"
+msgstr ""
+
+#: ../src/preferences.cpp:467
+msgid "Fatal"
+msgstr ""
+
+#: ../src/preferences.cpp:467
+msgid "Info"
+msgstr ""
+
+#: ../src/preferences.cpp:467
+msgid "Panic"
+msgstr ""
+
+#: ../src/preferences.cpp:467
+msgid "Quiet"
+msgstr ""
+
+#: ../src/preferences.cpp:467
+msgid "Verbose"
+msgstr ""
+
+#: ../src/preferences.cpp:467 ../src/project.cpp:318
+msgid "Warning"
+msgstr ""
+
+#: ../src/preferences.cpp:469
 msgid "Debug log verbosity"
 msgstr "Catatan debug"
 
-#: ../src/preferences.cpp:462
+#: ../src/preferences.cpp:471
 msgid "Decoding threads"
 msgstr "Thread Dekoding"
 
-#: ../src/preferences.cpp:463
+#: ../src/preferences.cpp:472
 msgid "Enable unsafe seeking"
 msgstr "Aktifkan pencarian tak aman"
 
-#: ../src/preferences.cpp:599
+#: ../src/preferences.cpp:607
 msgid "Hotkeys"
 msgstr "Tombol cepat"
 
-#: ../src/preferences.cpp:697
+#: ../src/preferences.cpp:611
+msgid "Search"
+msgstr ""
+
+#: ../src/preferences.cpp:627 ../src/preferences.cpp:630
+msgid "Hotkey"
+msgstr ""
+
+#: ../src/preferences.cpp:628 ../src/preferences.cpp:633
+msgid "Command"
+msgstr ""
+
+#: ../src/preferences.cpp:707
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -5876,33 +6289,42 @@ msgstr ""
 "Apakah Anda yakin ingin kembali ke awal? Semua pengaturan Anda akan diatur "
 "ulang."
 
-#: ../src/preferences.cpp:697
+#: ../src/preferences.cpp:707
 msgid "Restore defaults?"
 msgstr "Atur ulang?"
 
-#: ../src/preferences.cpp:715
+#: ../src/preferences.cpp:725
 msgid "Preferences"
 msgstr "Preferensi"
 
-#: ../src/preferences.cpp:743
+#: ../src/preferences.cpp:753
 msgid "&Restore Defaults"
 msgstr "&Atur ulang"
 
-#: ../src/preferences_base.cpp:62
+#: ../src/preferences_base.cpp:78
 msgid "Please choose the folder:"
 msgstr "Silahkan pilih map:"
 
-#: ../src/preferences_base.cpp:208
+#: ../src/preferences_base.cpp:233
 msgid "Browse..."
 msgstr "Lihat..."
 
-#: ../src/preferences_base.cpp:243
+#: ../src/preferences_base.cpp:268
 msgid "Choose..."
 msgstr "Pilih..."
 
-#: ../src/preferences_base.cpp:251
+#: ../src/preferences_base.cpp:276
 msgid "Font Size"
 msgstr "Ukuran Huruf"
+
+#: ../src/project.cpp:85
+msgid "Error loading file"
+msgstr ""
+
+#: ../src/project.cpp:111 ../src/project.cpp:130
+#, c-format
+msgid "%s not found."
+msgstr ""
 
 #: ../src/project.cpp:186
 msgid "Do you want to load/unload the associated files?"
@@ -5977,7 +6399,19 @@ msgstr ""
 "\n"
 "Penyedia yang telah mencoba:\n"
 
-#: ../src/resolution_resampler.cpp:288
+#: ../src/project.cpp:368
+msgid "Failed to parse timecodes file: "
+msgstr ""
+
+#: ../src/project.cpp:394
+msgid "Failed to parse keyframes file: "
+msgstr ""
+
+#: ../src/project.cpp:398
+msgid "Keyframes file in unknown format: "
+msgstr ""
+
+#: ../src/resolution_resampler.cpp:300
 msgid "resolution resampling"
 msgstr "reka ulang resolusi"
 
@@ -6005,14 +6439,22 @@ msgstr "Apakah Anda ingin menyimpan berkas %s ini?"
 msgid "Unsaved changes"
 msgstr "Perubahan yang belum disimpan"
 
+#: ../src/subs_controller.cpp:265 ../src/subs_controller.cpp:404
+msgid "Untitled"
+msgstr "Tanpa judul"
+
 #: ../src/subs_controller.cpp:279
 #, c-format
 msgid "File backup saved as \"%s\"."
 msgstr "Berkas cadangan disimpan di \"%s\"."
 
-#: ../src/subs_controller.cpp:404
-msgid "Untitled"
-msgstr "Tanpa judul"
+#: ../src/subs_controller.cpp:282
+msgid "Exception when attempting to autosave file: "
+msgstr ""
+
+#: ../src/subs_controller.cpp:285
+msgid "Unhandled exception when attempting to autosave file."
+msgstr ""
 
 #: ../src/subs_controller.cpp:406
 msgid "untitled"
@@ -6199,6 +6641,16 @@ msgstr "Bahasa Thesaurus"
 msgid "Disable"
 msgstr "Di non aktifkan"
 
+#: ../src/subs_preview.cpp:142
+msgid ""
+"Could not get any subtitles provider for the preview box. Make sure that you "
+"have a provider installed."
+msgstr ""
+
+#: ../src/subs_preview.cpp:143
+msgid "No subtitles provider"
+msgstr ""
+
 #: ../src/subtitle_format.cpp:102
 #, c-format
 msgid "From video (%g)"
@@ -6288,6 +6740,54 @@ msgstr "Nomor frame dan waktu saat ini"
 #: ../src/video_box.cpp:65
 msgid "Time of this frame relative to start and end of current subs"
 msgstr "Waktu dari frame ini relatif dengan waktu awal dan akhir takarir ini."
+
+#: ../src/video_controller.cpp:228
+#, c-format
+msgid ""
+"Failed seeking video. The video file may be corrupt or incomplete.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_controller.cpp:234
+#, c-format
+msgid ""
+"Failed rendering subtitles.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_display.cpp:193
+#, c-format
+msgid ""
+"Failed to initialize video display. Closing other running programs and "
+"updating your video card drivers may fix this.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_display.cpp:200
+#, c-format
+msgid ""
+"Could not upload video frame to graphics card.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_display.cpp:245
+#, c-format
+msgid ""
+"An error occurred trying to render the video frame on the screen.\n"
+"Error message reported: %s"
+msgstr ""
+
+#: ../src/video_provider_manager.cpp:78
+msgid "file not found."
+msgstr ""
+
+#: ../src/video_provider_manager.cpp:84
+msgid "video is not in a supported format."
+msgstr ""
+
+#: ../src/video_provider_manager.cpp:101
+msgid "Could not open "
+msgstr ""
 
 #: ../src/visual_tool.cpp:119
 msgid "visual typesetting"
@@ -6493,6 +6993,16 @@ msgstr ""
 msgid "Adds \\be1 tags to all selected lines"
 msgstr "Adds \\be1 tags to all selected lines"
 
+#: ../automation/autoload/macro-2-mkfullwitdh.lua:6
+msgid "Make text fullwidth"
+msgstr ""
+
+#: ../automation/autoload/macro-2-mkfullwitdh.lua:7
+msgid ""
+"Shows how to use the unicode include to iterate over characters and a lookup "
+"table to convert those characters to something else."
+msgstr ""
+
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 msgid "Make fullwidth"
 msgstr "Make fullwidth"
@@ -6640,6 +7150,50 @@ msgstr ""
 "bisa menggunakan aplikasi ini untuk tujuan apa pun tanpad dipungut biaya, "
 "tapi tidak ada jaminan yang bisa diberikan.%n%nLihat laman situs Aegisub "
 "untuk memperoleh informasi sumber kode."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Tempo Kanji"
+
+#, c-format
+#~ msgid ""
+#~ "\n"
+#~ "Script info:\n"
+#~ "Name: %s\n"
+#~ "Description: %s\n"
+#~ "Author: %s\n"
+#~ "Version: %s\n"
+#~ "Full path: %s\n"
+#~ "State: %s\n"
+#~ "\n"
+#~ "Features provided by script:"
+#~ msgstr ""
+#~ "\n"
+#~ "Informasi skrip:\n"
+#~ "Nama: %s\n"
+#~ "Deskripsi: %s\n"
+#~ "Penulis: %s\n"
+#~ "Versi: %s\n"
+#~ "Lokasi berkas: %s\n"
+#~ "Status: %s\n"
+#~ "\n"
+#~ "Fitur disediakan oleh skrip:"
+
+#~ msgid "&Opaque box"
+#~ msgstr "K&otak buram"
+
+#~ msgid ""
+#~ "When selected, display an opaque box behind the subtitles instead of an "
+#~ "outline around the text"
+#~ msgstr ""
+#~ "Ketika dipilih, tampilan kotak buram akan berada di belakang takarir, "
+#~ "bukan disekitar garis luar teks."
+
+#~ msgid ""
+#~ "Changing these settings might result in bugs and/or crashes.  Do not "
+#~ "touch these unless you know what you're doing."
+#~ msgstr ""
+#~ "Mengubah pengaturan ini dapat mengakibatkan kerusakan fatal atau galat! "
+#~ "Jangan sentuh kecuali Anda tahu apa yang Anda lakukan."
 
 #~ msgid "Drawings"
 #~ msgstr "Gambar-gambar"
