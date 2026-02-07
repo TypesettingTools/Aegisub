@@ -234,3 +234,13 @@ void AudioBox::ScrollToActiveLine() {
 	if (controller->GetTimingController())
 		audioDisplay->ScrollTimeRangeInView(controller->GetTimingController()->GetIdealVisibleTimeRange());
 }
+
+void AudioBox::ScrollToActiveLineStart() {
+	if (controller->GetTimingController())
+		audioDisplay->ScrollTimeToCenter(controller->GetTimingController()->GetActiveLineRange().begin());
+}
+
+void AudioBox::ScrollToActiveLineEnd() {
+	if (controller->GetTimingController())
+		audioDisplay->ScrollTimeToCenter(controller->GetTimingController()->GetActiveLineRange().end());
+}

@@ -219,6 +219,10 @@ public:
 	void ScrollPixelToLeft(int pixel_position);
 
 	/// @brief Scroll the audio display
+	/// @param time Time in milliseconds to put at the center of the audio display
+	void ScrollTimeToCenter(int time);
+
+	/// @brief Scroll the audio display
 	/// @param range Time range to ensure is in view
 	///
 	/// If the entire range is already visible inside the display, nothing is

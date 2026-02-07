@@ -95,5 +95,11 @@ public:
 	/// Make the currently active line visible in the audio display
 	void ScrollToActiveLine();
 
+	/// Center the start of the currently active line in the audio display
+	void ScrollToActiveLineStart();
+
+	/// Center the end of the currently active line in the audio display
+	void ScrollToActiveLineEnd();
+
 	DECLARE_EVENT_TABLE()
 };
