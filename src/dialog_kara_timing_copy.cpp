@@ -390,7 +390,8 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 
 	wxStaticBoxSizer *DisplayBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Text"));
 	wxStaticBoxSizer *StylesBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Styles"));
-	auto StylesGridSizer = new wxFlexGridSizer(2, 2, 6, 6);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto StylesGridSizer = new wxFlexGridSizer(2, 2, gap, gap);
 	wxStaticBoxSizer *HelpBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Shortcut Keys"));
 	wxStaticBoxSizer *ButtonsBoxSizer = new wxStaticBoxSizer(wxVERTICAL,this,_("Commands"));
 	wxSizer *MainStackSizer = new wxBoxSizer(wxVERTICAL);
@@ -409,8 +410,8 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	Interpolate->SetValue(OPT_GET("Tool/Kanji Timer/Interpolation")->GetBool());
 
 	wxArrayString styles = to_wx(subs->GetStyles());
-	SourceStyle = new wxComboBox(StylesBox, -1, "", wxDefaultPosition, wxSize(160, -1), styles, wxCB_READONLY);
-	DestStyle = new wxComboBox(StylesBox, -1, "", wxDefaultPosition, wxSize(160, -1), styles, wxCB_READONLY);
+	SourceStyle = new wxComboBox(StylesBox, -1, "", wxDefaultPosition, FromDIP(wxSize(160, -1)), styles, wxCB_READONLY);
+	DestStyle = new wxComboBox(StylesBox, -1, "", wxDefaultPosition, FromDIP(wxSize(160, -1)), styles, wxCB_READONLY);
 
 	wxStaticText *ShortcutKeys = new wxStaticText(HelpBox,-1,_("When the destination textbox has focus, use the following keys:\n\nRight Arrow: Increase dest. selection length\nLeft Arrow: Decrease dest. selection length\nUp Arrow: Increase source selection length\nDown Arrow: Decrease source selection length\nEnter: Link, accept line when done\nBackspace: Unlink last"));
 
@@ -425,25 +426,25 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	wxButton *CloseKT = new wxButton(this,wxID_CLOSE,_("&Close"));
 
 	//Frame: Text
-	DisplayBoxSizer->Add(display, 0, wxEXPAND|wxALL, 6);
-	DisplayBoxSizer->Add(Interpolate, 0, wxEXPAND|wxALL, 6);
+	DisplayBoxSizer->Add(display, wxSizerFlags().Expand().Border());
+	DisplayBoxSizer->Add(Interpolate, wxSizerFlags().Expand().Border());
 	//Frame: Styles
-	StylesGridSizer->Add(new wxStaticText(StylesBox, -1, TEXT_LABEL_SOURCE), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
-	StylesGridSizer->Add(SourceStyle, 1, wxEXPAND);
-	StylesGridSizer->Add(new wxStaticText(StylesBox, -1, TEXT_LABEL_DEST), 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL);
-	StylesGridSizer->Add(DestStyle, 1, wxEXPAND);
-	StylesBoxSizer->Add(StylesGridSizer, 1, wxEXPAND|wxALL, 6);
+	StylesGridSizer->Add(new wxStaticText(StylesBox, -1, TEXT_LABEL_SOURCE), wxSizerFlags().Left().CenterVertical());
+	StylesGridSizer->Add(SourceStyle, wxSizerFlags(1).Expand());
+	StylesGridSizer->Add(new wxStaticText(StylesBox, -1, TEXT_LABEL_DEST), wxSizerFlags().Left().CenterVertical());
+	StylesGridSizer->Add(DestStyle, wxSizerFlags(1).Expand());
+	StylesBoxSizer->Add(StylesGridSizer, wxSizerFlags(1).Expand().Border());
 	//Frame: Shortcut Keys
-	HelpBoxSizer->Add(ShortcutKeys, 1, wxALIGN_CENTER_HORIZONTAL|wxRIGHT, 6);
+	HelpBoxSizer->Add(ShortcutKeys, wxSizerFlags(1).CenterHorizontal().Border(wxRIGHT));
 	//Frame: Commands
 	ButtonsBoxSizer->AddStretchSpacer(1);
-	ButtonsBoxSizer->Add(Start, 0, wxEXPAND|wxALL, 6);
-	ButtonsBoxSizer->Add(Link, 0, wxEXPAND|(wxALL&~wxTOP), 6);
-	ButtonsBoxSizer->Add(Unlink, 0, wxEXPAND|(wxALL&~wxTOP), 6);
-	ButtonsBoxSizer->Add(SkipSourceLine, 0, wxEXPAND|(wxALL&~wxTOP), 6);
-	ButtonsBoxSizer->Add(SkipDestLine, 0, wxEXPAND|(wxALL&~wxTOP), 6);
-	ButtonsBoxSizer->Add(GoBackLine, 0, wxEXPAND|(wxALL&~wxTOP), 6);
-	ButtonsBoxSizer->Add(AcceptLine, 0, wxEXPAND|(wxALL&~wxTOP), 6);
+	ButtonsBoxSizer->Add(Start, wxSizerFlags().Expand().Border());
+	ButtonsBoxSizer->Add(Link, wxSizerFlags().Expand().Border(wxALL&~wxTOP));
+	ButtonsBoxSizer->Add(Unlink, wxSizerFlags().Expand().Border(wxALL&~wxTOP));
+	ButtonsBoxSizer->Add(SkipSourceLine, wxSizerFlags().Expand().Border(wxALL&~wxTOP));
+	ButtonsBoxSizer->Add(SkipDestLine, wxSizerFlags().Expand().Border(wxALL&~wxTOP));
+	ButtonsBoxSizer->Add(GoBackLine, wxSizerFlags().Expand().Border(wxALL&~wxTOP));
+	ButtonsBoxSizer->Add(AcceptLine, wxSizerFlags().Expand().Border(wxALL&~wxTOP));
 	ButtonsBoxSizer->AddStretchSpacer(1);
 
 	// Button sizer
@@ -453,13 +454,13 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 	buttonSizer->Realize();
 
 	// Layout it all
-	BottomLeftStackSizer->Add(StylesBoxSizer, 0, wxEXPAND|wxBOTTOM, 6);
-	BottomLeftStackSizer->Add(HelpBoxSizer, 1, wxEXPAND, 6);
-	BottomShelfSizer->Add(BottomLeftStackSizer, 1, wxEXPAND|wxRIGHT, 6);
-	BottomShelfSizer->Add(ButtonsBoxSizer, 0, wxEXPAND, 6);
-	MainStackSizer->Add(DisplayBoxSizer, 0, wxEXPAND|wxALL, 6);
-	MainStackSizer->Add(BottomShelfSizer, 1, wxEXPAND|wxLEFT|wxRIGHT, 6);
-	MainStackSizer->Add(buttonSizer, 0, wxEXPAND|wxALL, 6);
+	BottomLeftStackSizer->Add(StylesBoxSizer, wxSizerFlags().Expand().Border(wxBOTTOM));
+	BottomLeftStackSizer->Add(HelpBoxSizer, wxSizerFlags(1).Expand());
+	BottomShelfSizer->Add(BottomLeftStackSizer, wxSizerFlags(1).Expand().Border(wxRIGHT));
+	BottomShelfSizer->Add(ButtonsBoxSizer, wxSizerFlags().Expand());
+	MainStackSizer->Add(DisplayBoxSizer, wxSizerFlags().Expand().Border());
+	MainStackSizer->Add(BottomShelfSizer, wxSizerFlags(1).Expand().HorzBorder());
+	MainStackSizer->Add(buttonSizer, wxSizerFlags().Expand().Border());
 
 	SetSizerAndFit(MainStackSizer);
 	CenterOnParent();

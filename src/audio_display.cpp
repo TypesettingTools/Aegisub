@@ -585,7 +585,7 @@ AudioDisplay::AudioDisplay(wxWindow *parent, AudioController *controller, agi::C
 	audio_renderer->SetAmplitudeScale(scale_amplitude);
 	SetZoomLevel(0);
 
-	SetMinClientSize(wxSize(-1, 70));
+	SetMinClientSize(FromDIP(wxSize(-1, 70)));
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 	SetThemeEnabled(false);
 

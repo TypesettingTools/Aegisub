@@ -109,6 +109,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	using std::bind;
 
 	// Top controls
+	int gap = wxSizerFlags::GetDefaultBorder();
 	top_sizer = new wxBoxSizer(wxHORIZONTAL);
 
 	comment_box = new wxCheckBox(this,-1,_("&Comment"));
@@ -117,12 +118,12 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	// Only supported in wxgtk
 	comment_box->SetCanFocus(false);
 #endif
-	top_sizer->Add(comment_box, 0, wxRIGHT | wxALIGN_CENTER, 5);
+	top_sizer->Add(comment_box, wxSizerFlags().Center().Border(wxRIGHT));
 
 	style_box = MakeComboBox("Default", wxCB_READONLY, &SubsEditBox::OnStyleChange, _("Style for this line"));
 
 	style_edit_button = new wxButton(this, -1, _("Edit"), wxDefaultPosition,
-		wxSize(GetTextExtent(_("Edit")).GetWidth() + 20, -1));
+		wxSize(GetTextExtent(_("Edit")).GetWidth() + FromDIP(20), -1));
 	style_edit_button->Bind(wxEVT_BUTTON, [this](wxCommandEvent&) {
 		if (active_style) {
 			wxArrayString font_list = wxFontEnumerator::GetFacenames();
@@ -132,20 +133,20 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	});
 	top_sizer->Add(style_edit_button, wxSizerFlags().Center().Border(wxRIGHT));
 
-	actor_box = new Placeholder<wxComboBox>(this, _("Actor"), wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
+	actor_box = new Placeholder<wxComboBox>(this, _("Actor"), FromDIP(wxSize(110, -1)), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
 	Bind(wxEVT_TEXT, &SubsEditBox::OnActorChange, this, actor_box->GetId());
 	Bind(wxEVT_COMBOBOX, &SubsEditBox::OnActorChange, this, actor_box->GetId());
 	top_sizer->Add(actor_box, wxSizerFlags(2).Center().Border(wxRIGHT));
 
-	effect_box = new Placeholder<wxComboBox>(this, _("Effect"), wxSize(80,-1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	effect_box = new Placeholder<wxComboBox>(this, _("Effect"), FromDIP(wxSize(80,-1)), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
 	Bind(wxEVT_TEXT, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
 	Bind(wxEVT_COMBOBOX, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
-	top_sizer->Add(effect_box, 3, wxALIGN_CENTER, 5);
+	top_sizer->Add(effect_box, wxSizerFlags(3).Center());
 
 	char_count = new wxTextCtrl(this, -1, "0", wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_CENTER);
 	char_count->SetInitialSize(char_count->GetSizeFromText(wxS("000")));
 	char_count->SetToolTip(_("Number of characters in the longest line of this subtitle."));
-	top_sizer->Add(char_count, 0, wxALIGN_CENTER, 5);
+	top_sizer->Add(char_count, wxSizerFlags().Center());
 
 	// Middle controls
 	middle_left_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -153,18 +154,18 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	layer = new wxSpinCtrl(this,-1,"",wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS | wxTE_PROCESS_ENTER,0,999,0);
 	layer->SetToolTip(_("Layer number"));
 	middle_left_sizer->Add(layer, wxSizerFlags().Center());
-	middle_left_sizer->AddSpacer(5);
+	middle_left_sizer->AddSpacer(gap);
 
 	start_time = MakeTimeCtrl(_("Start time"), TIME_START);
 	end_time   = MakeTimeCtrl(_("End time"), TIME_END);
-	middle_left_sizer->AddSpacer(5);
+	middle_left_sizer->AddSpacer(gap);
 	duration   = MakeTimeCtrl(_("Line duration"), TIME_DURATION);
-	middle_left_sizer->AddSpacer(5);
+	middle_left_sizer->AddSpacer(gap);
 
 	margin[0] = MakeMarginCtrl(_("Left Margin (0 = default from style)"), 0, _("left margin change"));
 	margin[1] = MakeMarginCtrl(_("Right Margin (0 = default from style)"), 1, _("right margin change"));
 	margin[2] = MakeMarginCtrl(_("Vertical Margin (0 = default from style)"), 2, _("vertical margin change"));
-	middle_left_sizer->AddSpacer(5);
+	middle_left_sizer->AddSpacer(gap);
 
 	// Middle-bottom controls
 	middle_right_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -173,14 +174,14 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	MakeButton("edit/style/underline");
 	MakeButton("edit/style/strikeout");
 	MakeButton("edit/font");
-	middle_right_sizer->AddSpacer(5);
+	middle_right_sizer->AddSpacer(gap);
 	MakeButton("edit/color/primary");
 	MakeButton("edit/color/secondary");
 	MakeButton("edit/color/outline");
 	MakeButton("edit/color/shadow");
-	middle_right_sizer->AddSpacer(5);
+	middle_right_sizer->AddSpacer(gap);
 	MakeButton("grid/line/next/create");
-	middle_right_sizer->AddSpacer(10);
+	middle_right_sizer->AddSpacer(2 * gap);
 
 	by_time = MakeRadio(_("T&ime"), true, _("Time by h:mm:ss.cs"));
 	by_frame = MakeRadio(_("F&rame"), false, _("Time by frame number"));
@@ -193,9 +194,9 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	// Main sizer
 	wxSizer *main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(top_sizer,0,wxEXPAND | wxALL,3);
-	main_sizer->Add(middle_left_sizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
-	main_sizer->Add(middle_right_sizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+	main_sizer->Add(top_sizer, wxSizerFlags().Expand().Border(wxALL, 3));
+	main_sizer->Add(middle_left_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 3));
+	main_sizer->Add(middle_right_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 3));
 
 	// Text editor
 	edit_ctrl = new SubsTextEditCtrl(this, FromDIP(wxSize(300,50)), wxBORDER_SUNKEN, c);
@@ -203,8 +204,8 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 
 	secondary_editor = new wxTextCtrl(this, -1, "", wxDefaultPosition, FromDIP(wxSize(300,50)), wxBORDER_SUNKEN | wxTE_MULTILINE | wxTE_READONLY);
 
-	main_sizer->Add(secondary_editor,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
-	main_sizer->Add(edit_ctrl,1,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+	main_sizer->Add(secondary_editor, wxSizerFlags(1).Expand().Border(wxALL & ~wxTOP, 3));
+	main_sizer->Add(edit_ctrl, wxSizerFlags(1).Expand().Border(wxALL & ~wxTOP, 3));
 	main_sizer->Hide(secondary_editor);
 
 	bottom_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -299,7 +300,7 @@ wxButton *SubsEditBox::MakeBottomButton(const char *cmd_name) {
 
 wxComboBox *SubsEditBox::MakeComboBox(wxString const& initial_text, int style, void (SubsEditBox::*handler)(wxCommandEvent&), wxString const& tooltip) {
 	wxString styles[] = { "Default" };
-	wxComboBox *ctrl = new wxComboBox(this, -1, initial_text, wxDefaultPosition, wxSize(110,-1), 1, styles, style | wxTE_PROCESS_ENTER);
+	wxComboBox *ctrl = new wxComboBox(this, -1, initial_text, wxDefaultPosition, FromDIP(wxSize(110, -1)), 1, styles, style | wxTE_PROCESS_ENTER);
 	ctrl->SetToolTip(tooltip);
 	top_sizer->Add(ctrl, wxSizerFlags(2).Center().Border(wxRIGHT));
 	Bind(wxEVT_COMBOBOX, handler, this, ctrl->GetId());
@@ -542,14 +543,14 @@ void SubsEditBox::OnSize(wxSizeEvent &evt) {
 	if (button_bar_split) {
 		if (availableWidth > midMin + botMin) {
 			GetSizer()->Detach(middle_right_sizer);
-			middle_left_sizer->Add(middle_right_sizer,0,wxALIGN_CENTER_VERTICAL);
+			middle_left_sizer->Add(middle_right_sizer, wxSizerFlags().CenterVertical());
 			button_bar_split = false;
 		}
 	}
 	else {
 		if (availableWidth < midMin) {
 			middle_left_sizer->Detach(middle_right_sizer);
-			GetSizer()->Insert(2,middle_right_sizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
+			GetSizer()->Insert(2, middle_right_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP, 3));
 			button_bar_split = true;
 		}
 	}

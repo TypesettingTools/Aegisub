@@ -78,39 +78,40 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		wxStaticBoxSizer *original_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Original"));
 
 		line_number_display = new wxStaticText(original_box->GetStaticBox(), -1, "");
-		original_box->Add(line_number_display, 0, wxBOTTOM, 5);
+		original_box->Add(line_number_display, wxSizerFlags().Border(wxBOTTOM));
 
-		original_text = new wxStyledTextCtrl(original_box->GetStaticBox(), -1, wxDefaultPosition, wxSize(320, 80));
+		original_text = new wxStyledTextCtrl(original_box->GetStaticBox(), -1, wxDefaultPosition, FromDIP(wxSize(320, 80)));
 		original_text->SetWrapMode(wxSTC_WRAP_WORD);
 		original_text->SetMarginWidth(1, 0);
 		original_text->StyleSetForeground(1, wxColour(10, 60, 200));
 		original_text->SetReadOnly(true);
-		original_box->Add(original_text, 1, wxEXPAND, 0);
+		original_box->Add(original_text, wxSizerFlags(1).Expand());
 
-		translation_sizer->Add(original_box, 1, wxEXPAND, 0);
+		translation_sizer->Add(original_box, wxSizerFlags(1).Expand());
 	}
 
 	{
 		wxStaticBoxSizer *translated_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Translation"));
 
-		translated_text = new SubsTextEditCtrl(translated_box->GetStaticBox(), wxSize(320, 80), 0, nullptr);
+		translated_text = new SubsTextEditCtrl(translated_box->GetStaticBox(), FromDIP(wxSize(320, 80)), 0, nullptr);
 		translated_text->SetWrapMode(wxSTC_WRAP_WORD);
 		translated_text->SetMarginWidth(1, 0);
 		translated_text->SetFocus();
 		translated_text->Bind(wxEVT_CHAR_HOOK, &DialogTranslation::OnKeyDown, this);
 		translated_text->CmdKeyAssign(wxSTC_KEY_RETURN, wxSTC_KEYMOD_SHIFT, wxSTC_CMD_NEWLINE);
 
-		translated_box->Add(translated_text, 1, wxEXPAND, 0);
-		translation_sizer->Add(translated_box, 1, wxTOP|wxEXPAND, 5);
+		translated_box->Add(translated_text, wxSizerFlags(1).Expand());
+		translation_sizer->Add(translated_box, wxSizerFlags(1).Expand().Border(wxTOP));
 	}
-	main_sizer->Add(translation_sizer, 1, wxALL | wxEXPAND, 5);
+	main_sizer->Add(translation_sizer, wxSizerFlags(1).Expand().Border());
 
 	wxSizer *right_box = new wxBoxSizer(wxHORIZONTAL);
 	{
 		wxStaticBoxSizer *hotkey_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Keys"));
 		wxWindow *hotkey_sizer_box = hotkey_sizer->GetStaticBox();
 
-		wxSizer *hotkey_grid = new wxGridSizer(2, 0, 5);
+		int gap = wxSizerFlags::GetDefaultBorder();
+		wxSizer *hotkey_grid = new wxGridSizer(2, 0, gap);
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/commit", _("Accept changes"));
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/preview", _("Preview changes"));
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "tool/translation_assistant/prev", _("Previous line"));
@@ -119,13 +120,13 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "video/play/line", _("Play video"));
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "audio/play/selection", _("Play audio"));
 		add_hotkey(hotkey_grid, hotkey_sizer_box, "edit/line/delete", _("Delete line"));
-		hotkey_sizer->Add(hotkey_grid, 0, wxEXPAND, 0);
+		hotkey_sizer->Add(hotkey_grid, wxSizerFlags().Expand());
 
 		seek_video = new wxCheckBox(hotkey_sizer_box, -1, _("Enable &preview"));
 		seek_video->SetValue(true);
-		hotkey_sizer->Add(seek_video, 0, wxTOP, 5);
+		hotkey_sizer->Add(seek_video, wxSizerFlags().Border(wxTOP));
 
-		right_box->Add(hotkey_sizer, 1, wxRIGHT | wxEXPAND, 5);
+		right_box->Add(hotkey_sizer, wxSizerFlags(1).Expand().Border(wxRIGHT));
 	}
 
 	{
@@ -134,23 +135,23 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 		wxButton *play_audio = new wxButton(actions_box->GetStaticBox(), -1, _("Play &Audio"));
 		play_audio->Enable(!!c->project->AudioProvider());
 		play_audio->Bind(wxEVT_BUTTON, &DialogTranslation::OnPlayAudioButton, this);
-		actions_box->Add(play_audio, 0, wxALL, 5);
+		actions_box->Add(play_audio, wxSizerFlags().Border());
 
 		wxButton *play_video = new wxButton(actions_box->GetStaticBox(), -1, _("Play &Video"));
 		play_video->Enable(!!c->project->VideoProvider());
 		play_video->Bind(wxEVT_BUTTON, &DialogTranslation::OnPlayVideoButton, this);
-		actions_box->Add(play_video, 0, wxLEFT | wxRIGHT | wxBOTTOM, 5);
+		actions_box->Add(play_video, wxSizerFlags().Border(wxALL & ~wxTOP));
 
-		right_box->Add(actions_box, 0);
+		right_box->Add(actions_box);
 	}
-	main_sizer->Add(right_box, 0, wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND, 5);
+	main_sizer->Add(right_box, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 
 	{
 		auto standard_buttons = new wxStdDialogButtonSizer();
 		standard_buttons->AddButton(new wxButton(this, wxID_CANCEL));
 		standard_buttons->AddButton(new HelpButton(this, "Translation Assistant"));
 		standard_buttons->Realize();
-		main_sizer->Add(standard_buttons, 0, wxALIGN_RIGHT | wxLEFT | wxBOTTOM | wxRIGHT, 5);
+		main_sizer->Add(standard_buttons, wxSizerFlags().Right().Border(wxALL & ~wxTOP));
 	}
 
 	SetSizerAndFit(main_sizer);

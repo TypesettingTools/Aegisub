@@ -201,15 +201,15 @@ void FrameMain::InitContents() {
 
 	StartupLog("Arrange main sizers");
 	ToolsSizer = new wxBoxSizer(wxVERTICAL);
-	ToolsSizer->Add(audioBox, 0, wxEXPAND);
-	ToolsSizer->Add(EditBox, 1, wxEXPAND);
+	ToolsSizer->Add(audioBox, wxSizerFlags().Expand());
+	ToolsSizer->Add(EditBox, wxSizerFlags(1).Expand());
 	TopSizer = new wxBoxSizer(wxHORIZONTAL);
-	TopSizer->Add(videoBox, 0, wxEXPAND, 0);
-	TopSizer->Add(ToolsSizer, 1, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 5);
+	TopSizer->Add(videoBox, wxSizerFlags().Expand());
+	TopSizer->Add(ToolsSizer, wxSizerFlags(1).Expand().Border(wxALL & ~wxTOP));
 	MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(new wxStaticLine(Panel),0,wxEXPAND | wxALL,0);
-	MainSizer->Add(TopSizer,0,wxEXPAND | wxALL,0);
-	MainSizer->Add(context->subsGrid,1,wxEXPAND | wxALL,0);
+	MainSizer->Add(new wxStaticLine(Panel), wxSizerFlags().Expand());
+	MainSizer->Add(TopSizer, wxSizerFlags().Expand());
+	MainSizer->Add(context->subsGrid, wxSizerFlags(1).Expand());
 	Panel->SetSizer(MainSizer);
 
 	StartupLog("Perform layout");

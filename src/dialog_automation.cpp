@@ -110,10 +110,11 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 , global_manager(config::global_scripts)
 , global_scripts_changed(global_manager->AddScriptChangeListener(&DialogAutomation::RebuildList, this))
 {
+	int gap = wxSizerFlags::GetDefaultBorder();
 	SetIcons(GETICONS(automation_toolbutton));
 
 	// create main controls
-	list = new wxListView(this, -1, wxDefaultPosition, wxSize(600, 175), wxLC_REPORT|wxLC_SINGLE_SEL);
+	list = new wxListView(this, -1, wxDefaultPosition, FromDIP(wxSize(600, 175)), wxLC_REPORT|wxLC_SINGLE_SEL);
 	wxButton *add_button = new wxButton(this, -1, _("&Add"));
 	remove_button = new wxButton(this, -1, _("&Remove"));
 	reload_button = new wxButton(this, -1, _("Re&load"));
@@ -130,24 +131,24 @@ DialogAutomation::DialogAutomation(agi::Context *c)
 	reload_autoload_button->Bind(wxEVT_BUTTON, &DialogAutomation::OnReloadAutoload, this);
 
 	// add headers to list view
-	list->InsertColumn(0, "", wxLIST_FORMAT_CENTER, 20);
-	list->InsertColumn(1, _("Name"), wxLIST_FORMAT_LEFT, 140);
-	list->InsertColumn(2, _("Filename"), wxLIST_FORMAT_LEFT, 90);
-	list->InsertColumn(3, _("Description"), wxLIST_FORMAT_LEFT, 330);
+	list->InsertColumn(0, "", wxLIST_FORMAT_CENTER, FromDIP(20));
+	list->InsertColumn(1, _("Name"), wxLIST_FORMAT_LEFT, FromDIP(140));
+	list->InsertColumn(2, _("Filename"), wxLIST_FORMAT_LEFT, FromDIP(90));
+	list->InsertColumn(3, _("Description"), wxLIST_FORMAT_LEFT, FromDIP(330));
 
 	// button layout
 	wxSizer *button_box = new wxBoxSizer(wxHORIZONTAL);
 	button_box->AddStretchSpacer(2);
-	button_box->Add(add_button, 0);
-	button_box->Add(remove_button, 0);
-	button_box->AddSpacer(10);
-	button_box->Add(reload_button, 0);
-	button_box->Add(info_button, 0);
-	button_box->AddSpacer(10);
-	button_box->Add(reload_autoload_button, 0);
-	button_box->AddSpacer(10);
-	button_box->Add(new HelpButton(this,"Automation Manager"), 0);
-	button_box->Add(close_button, 0);
+	button_box->Add(add_button);
+	button_box->Add(remove_button);
+	button_box->AddSpacer(2 * gap);
+	button_box->Add(reload_button);
+	button_box->Add(info_button);
+	button_box->AddSpacer(2 * gap);
+	button_box->Add(reload_autoload_button);
+	button_box->AddSpacer(2 * gap);
+	button_box->Add(new HelpButton(this,"Automation Manager"));
+	button_box->Add(close_button);
 	button_box->AddStretchSpacer(2);
 
 	// main layout

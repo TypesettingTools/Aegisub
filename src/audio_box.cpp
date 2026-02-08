@@ -82,34 +82,34 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 
 	// VertVol sider
 	wxSizer *VertVol = new wxBoxSizer(wxHORIZONTAL);
-	VertVol->Add(VerticalZoom,1,wxEXPAND,0);
-	VertVol->Add(VolumeBar,1,wxEXPAND,0);
+	VertVol->Add(VerticalZoom, wxSizerFlags(1).Expand());
+	VertVol->Add(VolumeBar, wxSizerFlags(1).Expand());
 	wxSizer *VertVolArea = new wxBoxSizer(wxVERTICAL);
-	VertVolArea->Add(VertVol,1,wxEXPAND,0);
+	VertVolArea->Add(VertVol, wxSizerFlags(1).Expand());
 
 	auto link_btn = new ToggleBitmap(panel, context, "audio/opt/vertical_link", 16, "Audio", FromDIP(wxSize(20, -1)));
 	link_btn->SetMaxSize(wxDefaultSize);
-	VertVolArea->Add(link_btn, 0, wxRIGHT | wxEXPAND, 0);
+	VertVolArea->Add(link_btn, wxSizerFlags().Expand());
 	OPT_SUB("Audio/Link", &AudioBox::OnVerticalLink, this);
 
 	// Top sizer
 	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
-	TopSizer->Add(audioDisplay,1,wxEXPAND,0);
-	TopSizer->Add(HorizontalZoom,0,wxEXPAND,0);
-	TopSizer->Add(VertVolArea,0,wxEXPAND,0);
+	TopSizer->Add(audioDisplay, wxSizerFlags(1).Expand());
+	TopSizer->Add(HorizontalZoom, wxSizerFlags().Expand());
+	TopSizer->Add(VertVolArea, wxSizerFlags().Expand());
 
 	context->karaoke = new AudioKaraoke(panel, context);
 
 	// Main sizer
 	auto MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TopSizer,1,wxEXPAND|wxALL,3);
-	MainSizer->Add(toolbar::GetToolbar(panel, "audio", context, "Audio"),0,wxEXPAND|wxLEFT|wxRIGHT,3);
-	MainSizer->Add(context->karaoke,0,wxEXPAND|wxALL,3);
+	MainSizer->Add(TopSizer, wxSizerFlags(1).Expand().Border(wxALL, 3));
+	MainSizer->Add(toolbar::GetToolbar(panel, "audio", context, "Audio"), wxSizerFlags().Expand().Border(wxLEFT | wxRIGHT, 3));
+	MainSizer->Add(context->karaoke, wxSizerFlags().Expand().Border(wxALL, 3));
 	MainSizer->Show(context->karaoke, false);
 	panel->SetSizer(MainSizer);
 
 	wxSizer *audioSashSizer = new wxBoxSizer(wxHORIZONTAL);
-	audioSashSizer->Add(panel, 1, wxEXPAND);
+	audioSashSizer->Add(panel, wxSizerFlags(1).Expand());
 	SetSizerAndFit(audioSashSizer);
 	SetMinSize(wxSize(-1, OPT_GET("Audio/Display Height")->GetInt()));
 	SetMinimumSizeY(panel->GetSize().GetHeight());
