@@ -75,6 +75,8 @@ enum class PickerDirection {
 
 static const int spectrum_horz_vert_arrow_size = 4;
 
+static constexpr bool enable_screenshot_eyedropper = true;
+
 wxDEFINE_EVENT(EVT_SPECTRUM_CHANGE, wxCommandEvent);
 
 class ColorPickerSpectrum final : public wxControl {
@@ -456,9 +458,8 @@ class DialogColorPicker final : public wxDialog {
 	wxStaticBitmap *preview_box; ///< A box which simply shows the current color
 	ColorPickerRecent *recent_box; ///< A grid of recently used colors
 
-	ColorPickerScreenDropper *screen_dropper;
-
-	wxStaticBitmap *screen_dropper_icon;
+	ColorPickerScreenDropper *screenshot_screen_dropper = nullptr;
+	wxStaticBitmap *screenshot_screen_dropper_icon = nullptr;
 
 	/// Update all other controls as a result of modifying an RGB control
 	void UpdateFromRGB(bool dirty = true);
@@ -584,8 +585,10 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	recent_box = new ColorPickerRecent(this, 8, 4, 16);
 
 	eyedropper_bitmap = GETBUNDLE(eyedropper_tool, 24);
-	screen_dropper_icon = new wxStaticBitmap(this, -1, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
-	screen_dropper = new ColorPickerScreenDropper(this, 7, 7, 8);
+	if (enable_screenshot_eyedropper) {
+		screenshot_screen_dropper_icon = new wxStaticBitmap(this, -1, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
+		screenshot_screen_dropper = new ColorPickerScreenDropper(this, 7, 7, 8);
+	}
 
 	// Arrange the controls in a nice way
 	wxSizer *spectop_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -629,9 +632,11 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 
 	wxSizer *picker_sizer = new wxBoxSizer(wxHORIZONTAL);
 	picker_sizer->AddStretchSpacer();
-	picker_sizer->Add(screen_dropper_icon, 0, wxALIGN_CENTER|wxRIGHT, 5);
-	picker_sizer->Add(screen_dropper, 0, wxALIGN_CENTER);
-	picker_sizer->AddStretchSpacer();
+	if (screenshot_screen_dropper) {
+		picker_sizer->Add(screenshot_screen_dropper_icon, 0, wxALIGN_CENTER|wxRIGHT, 5);
+		picker_sizer->Add(screenshot_screen_dropper, 0, wxALIGN_CENTER);
+		picker_sizer->AddStretchSpacer();
+	}
 	picker_sizer->Add(recent_box, 0, wxALIGN_CENTER);
 	picker_sizer->AddStretchSpacer();
 
@@ -675,19 +680,22 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	alpha_input->Bind(wxEVT_SPINCTRL, bind(&DialogColorPicker::UpdateFromAlpha, this));
 	alpha_input->Bind(wxEVT_TEXT, bind(&DialogColorPicker::UpdateFromAlpha, this));
 
-	screen_dropper_icon->Bind(wxEVT_MOTION, &DialogColorPicker::OnDropperMouse, this);
-	screen_dropper_icon->Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnDropperMouse, this);
-	screen_dropper_icon->Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnDropperMouse, this);
-	screen_dropper_icon->Bind(wxEVT_MOUSE_CAPTURE_LOST, &DialogColorPicker::OnCaptureLost, this);
-	Bind(wxEVT_MOTION, &DialogColorPicker::OnMouse, this);
-	Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnMouse, this);
-	Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnMouse, this);
+	if (screenshot_screen_dropper) {
+		screenshot_screen_dropper_icon->Bind(wxEVT_MOTION, &DialogColorPicker::OnDropperMouse, this);
+		screenshot_screen_dropper_icon->Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnDropperMouse, this);
+		screenshot_screen_dropper_icon->Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnDropperMouse, this);
+		screenshot_screen_dropper_icon->Bind(wxEVT_MOUSE_CAPTURE_LOST, &DialogColorPicker::OnCaptureLost, this);
+		Bind(wxEVT_MOTION, &DialogColorPicker::OnMouse, this);
+		Bind(wxEVT_LEFT_DOWN, &DialogColorPicker::OnMouse, this);
+		Bind(wxEVT_LEFT_UP, &DialogColorPicker::OnMouse, this);
+	}
 
 	spectrum->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnSpectrumChange, this);
 	slider->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnSliderChange, this);
 	alpha_slider->Bind(EVT_SPECTRUM_CHANGE, &DialogColorPicker::OnAlphaSliderChange, this);
 	recent_box->Bind(EVT_RECENT_SELECT, &DialogColorPicker::OnRecentSelect, this);
-	screen_dropper->Bind(EVT_DROPPER_SELECT, &DialogColorPicker::OnRecentSelect, this);
+	if (screenshot_screen_dropper)
+		screenshot_screen_dropper->Bind(EVT_DROPPER_SELECT, &DialogColorPicker::OnRecentSelect, this);
 
 	colorspace_choice->Bind(wxEVT_CHOICE, &DialogColorPicker::OnChangeMode, this);
 
@@ -706,7 +714,7 @@ wxSizer *DialogColorPicker::MakeColorInputSizer(wxWindow *parent, wxString (&lab
 }
 
 DialogColorPicker::~DialogColorPicker() {
-	if (screen_dropper_icon->HasCapture()) screen_dropper_icon->ReleaseMouse();
+	if (screenshot_screen_dropper && screenshot_screen_dropper_icon->HasCapture()) screenshot_screen_dropper_icon->ReleaseMouse();
 }
 
 static void change_value(wxSpinCtrl *ctrl, int value) {
@@ -1050,14 +1058,14 @@ void DialogColorPicker::OnRecentSelect(ValueEvent<agi::Color> &evt) {
 }
 
 void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt) {
-	if (evt.LeftDown() && !screen_dropper_icon->HasCapture()) {
+	if (evt.LeftDown() && !screenshot_screen_dropper_icon->HasCapture()) {
 #ifdef WIN32
-		screen_dropper_icon->SetCursor(wxCursor("eyedropper_cursor"));
+		screenshot_screen_dropper_icon->SetCursor(wxCursor("eyedropper_cursor"));
 #else
-		screen_dropper_icon->SetCursor(*wxCROSS_CURSOR);
+		screenshot_screen_dropper_icon->SetCursor(*wxCROSS_CURSOR);
 #endif
-		screen_dropper_icon->SetBitmap(wxNullBitmap);
-		screen_dropper_icon->CaptureMouse();
+		screenshot_screen_dropper_icon->SetBitmap(wxNullBitmap);
+		screenshot_screen_dropper_icon->CaptureMouse();
 		eyedropper_grab_point = evt.GetPosition();
 		eyedropper_is_grabbed = false;
 	}
@@ -1066,38 +1074,39 @@ void DialogColorPicker::OnDropperMouse(wxMouseEvent &evt) {
 		wxPoint ptdiff = evt.GetPosition() - eyedropper_grab_point;
 		bool release_now = eyedropper_is_grabbed || abs(ptdiff.x) + abs(ptdiff.y) > 7;
 		if (release_now) {
-			screen_dropper_icon->ReleaseMouse();
+			screenshot_screen_dropper_icon->ReleaseMouse();
 			eyedropper_is_grabbed = false;
-			screen_dropper_icon->SetCursor(wxNullCursor);
-			screen_dropper_icon->SetBitmap(eyedropper_bitmap);
+			screenshot_screen_dropper_icon->SetCursor(wxNullCursor);
+			screenshot_screen_dropper_icon->SetBitmap(eyedropper_bitmap);
 		}
 		else
 			eyedropper_is_grabbed = true;
 	}
 
-	if (screen_dropper_icon->HasCapture()) {
-		wxPoint scrpos = screen_dropper_icon->ClientToScreen(evt.GetPosition());
-		screen_dropper->DropFromScreenXY(scrpos.x, scrpos.y);
+	if (screenshot_screen_dropper_icon->HasCapture()) {
+		wxPoint scrpos = screenshot_screen_dropper_icon->ClientToScreen(evt.GetPosition());
+		screenshot_screen_dropper->DropFromScreenXY(scrpos.x, scrpos.y);
 	}
 }
 
 /// @brief Hack to redirect events to the screen dropper icon
 void DialogColorPicker::OnMouse(wxMouseEvent &evt) {
-	if (!screen_dropper_icon->HasCapture()) {
+	// this handler is only registered if screenshot_screen_dropper is enabled
+	if (!screenshot_screen_dropper_icon->HasCapture()) {
 		evt.Skip();
 		return;
 	}
 
-	wxPoint dropper_pos = screen_dropper_icon->ScreenToClient(ClientToScreen(evt.GetPosition()));
+	wxPoint dropper_pos = screenshot_screen_dropper_icon->ScreenToClient(ClientToScreen(evt.GetPosition()));
 	evt.m_x = dropper_pos.x;
 	evt.m_y = dropper_pos.y;
-	screen_dropper_icon->GetEventHandler()->ProcessEvent(evt);
+	screenshot_screen_dropper_icon->GetEventHandler()->ProcessEvent(evt);
 }
 
 void DialogColorPicker::OnCaptureLost(wxMouseCaptureLostEvent&) {
 	eyedropper_is_grabbed = false;
-	screen_dropper_icon->SetCursor(wxNullCursor);
-	screen_dropper_icon->SetBitmap(eyedropper_bitmap);
+	screenshot_screen_dropper_icon->SetCursor(wxNullCursor);
+	screenshot_screen_dropper_icon->SetBitmap(eyedropper_bitmap);
 }
 
 }
