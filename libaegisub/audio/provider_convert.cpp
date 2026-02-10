@@ -16,14 +16,33 @@
 
 #include "libaegisub/audio/provider.h"
 
+#include <libaegisub/endian.h>
 #include <libaegisub/log.h>
 
+#include <cstddef>
 #include <limits>
+#include <numeric>
+#include <ranges>
+#include <span>
 
 using namespace agi;
 
 /// Anything integral -> 16 bit signed machine-endian audio converter
 namespace {
+int64_t AssembleSample(std::span<std::byte> data) {
+	const auto accumulate_bytes = [](auto view) {
+		return std::accumulate(view.begin(), view.end(), int64_t{0},
+			[](int64_t acc, std::byte value) {
+				return (acc << 8) + std::to_integer<uint8_t>(value);
+			});
+	};
+
+	if (endian::IsBigEndian)
+		return accumulate_bytes(data);
+
+	return accumulate_bytes(data | std::views::reverse);
+}
+
 template<class Target>
 class BitdepthConvertAudioProvider final : public AudioProviderWrapper {
 	int src_bytes_per_sample;
@@ -52,10 +71,7 @@ public:
 			if (src_bytes_per_sample == 1)
 				sample = src_buf[i] - 128;
 			else {
-				for (int j = src_bytes_per_sample; j > 0; --j) {
-					sample <<= 8;
-					sample += src_buf[i * src_bytes_per_sample + j - 1];
-				}
+				sample = AssembleSample(std::as_writable_bytes(std::span(src_buf.data() + i * src_bytes_per_sample, src_bytes_per_sample)));
 			}
 
 			if (src_bytes_per_sample > static_cast<int>(sizeof(Target)))
