@@ -26,8 +26,8 @@ namespace agi::endian {
 	constexpr bool IsLittleEndian = std::endian::native == std::endian::little;
 
 	inline void SwapBytesInPlace(std::span<std::byte> data) {
-		for (size_t i = 0; i < data.size() / 2; ++i) {
-			std::swap(data[i], data[data.size() - 1 - i]);
+		for (int i = 0; i < std::ssize(data) / 2; ++i) {
+			std::swap(data[i], data[std::ssize(data) - 1 - i]);
 		}
 	}
 }

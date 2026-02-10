@@ -19,7 +19,6 @@
 #include <libaegisub/endian.h>
 #include <libaegisub/log.h>
 
-#include <cstddef>
 #include <limits>
 #include <numeric>
 #include <ranges>
@@ -29,11 +28,11 @@ using namespace agi;
 
 /// Anything integral -> 16 bit signed machine-endian audio converter
 namespace {
-int64_t AssembleSample(std::span<std::byte> data) {
+int64_t AssembleSample(std::span<uint8_t> data) {
 	const auto accumulate_bytes = [](auto view) {
 		return std::accumulate(view.begin(), view.end(), int64_t{0},
-			[](int64_t acc, std::byte value) {
-				return (acc << 8) + std::to_integer<uint8_t>(value);
+			[](int64_t acc, uint8_t value) {
+				return (acc << 8) + value;
 			});
 	};
 
@@ -71,7 +70,7 @@ public:
 			if (src_bytes_per_sample == 1)
 				sample = src_buf[i] - 128;
 			else {
-				sample = AssembleSample(std::as_writable_bytes(std::span(src_buf.data() + i * src_bytes_per_sample, src_bytes_per_sample)));
+				sample = AssembleSample(std::span(src_buf.data() + i * src_bytes_per_sample, src_bytes_per_sample));
 			}
 
 			if (src_bytes_per_sample > static_cast<int>(sizeof(Target)))

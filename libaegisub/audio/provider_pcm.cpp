@@ -86,18 +86,12 @@ protected:
 		file_pos += sizeof(T);
 		*data_left -= sizeof(T);
 
-		if constexpr (!LittleEndian) {
-			T ret;
-			memcpy(&ret, data, sizeof(T));
-			return ret;
+		T ret{};
+		memcpy(&ret, data, sizeof(T));
+		if constexpr (LittleEndian && endian::IsBigEndian) {
+			endian::SwapBytesInPlace(std::as_writable_bytes(std::span(&ret, 1)));
 		}
-		else {
-			T value{};
-			memcpy(&value, data, sizeof(T));
-			if (endian::IsBigEndian)
-				endian::SwapBytesInPlace(std::as_writable_bytes(std::span(&value, 1)));
-			return value;
-		}
+		return ret;
 	}
 
 	std::vector<IndexPoint> index_points;
