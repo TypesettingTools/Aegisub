@@ -102,6 +102,7 @@ class VideoDisplay final : public wxGLCanvas {
 	double contentZoomValue = 1;
 
 	double contentZoomAtGestureStart = 1;
+	Vector2D zoomGestureAnchorPoint = {0, 0};
 
 	/// The video pan, in units relative to the viewport height.
 	/// @see viewportSize
@@ -168,7 +169,31 @@ class VideoDisplay final : public wxGLCanvas {
 	/// @brief Pan the video by delta
 	/// @param delta Delta in logical pixels
 	void Pan(Vector2D delta);
-	void VideoZoom(double newVideoZoom, wxPoint zoomCenter);
+
+	/// @brief Transforms a client position into a zoom anchor point
+	///
+	/// The anchor point is a position in the video frame that should always be anchored to the center
+	/// of the zoom gesture. This function returns the anchor point in a video-relative coordinate system,
+	/// which ensures we can accurately track the anchor point as the video is zoomed and panned.
+	///
+	/// @param position Client position in logical pixels
+	/// @return An anchor point that can be used with @ref ZoomAndPan()
+	Vector2D GetZoomAnchorPoint(wxPoint position);
+
+	/// @brief Zooms and pans the video using an anchor point
+	///
+	/// To use this function, you need to first obtain an anchor point with @ref GetZoomAnchorPoint().
+	///
+	/// If @p newPosition is equal to the current position of the anchor point, the video will be zoomed
+	/// with the anchor point as the fixed point of the scaling transformation.
+	///
+	/// If @p newPosition differs from the current position of the anchor point, the video will additionally
+	/// be panned to move the anchor point to the new position.
+	///
+	/// @param newZoomValue The new zoom value
+	/// @param anchorPoint An anchor point obtained from @ref GetZoomAnchorPoint()
+	/// @param newPosition New client position of the anchor point in logical pixels
+	void ZoomAndPan(double newZoomValue, Vector2D anchorPoint, wxPoint newPosition);
 
 public:
 	/// @brief Constructor
