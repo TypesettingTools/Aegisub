@@ -71,10 +71,10 @@ public:
 	/// @brief Render a frame
 	/// @param client_width Width in physical pixels of client window
 	/// @param client_height Height in physical pixels of client window
-	/// @param x Bottom left x coordinate
-	/// @param y Bottom left y coordinate
-	/// @param width Width in pixels of viewport
-	/// @param height Height in pixels of viewport
+	/// @param x Bottom left x coordinate of the target area
+	/// @param y Bottom left y coordinate of the target area
+	/// @param width Width in pixels of the target area
+	/// @param height Height in pixels of the target area
 	void Render(int client_width, int client_height, int x, int y, int width, int height);
 
 	VideoOutGL();

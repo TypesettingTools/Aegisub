@@ -107,13 +107,13 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 , scale_factor(GetContentScaleFactor())
 {
 	zoomBox->SetValue(fmt_wx("%g%%", windowZoomValue * 100.));
-	zoomBox->Bind(wxEVT_COMBOBOX, &VideoDisplay::SetZoomFromBox, this);
-	zoomBox->Bind(wxEVT_TEXT_ENTER, &VideoDisplay::SetZoomFromBoxText, this);
+	zoomBox->Bind(wxEVT_COMBOBOX, &VideoDisplay::SetWindowZoomFromBox, this);
+	zoomBox->Bind(wxEVT_TEXT_ENTER, &VideoDisplay::SetWindowZoomFromBoxText, this);
 
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	connections = agi::signal::make_vector({
 		con->project->AddVideoProviderListener([this] (AsyncVideoProvider *provider) {
-			if (!provider) ResetVideoZoom();
+			if (!provider) ResetContentZoom();
 			UpdateSize();
 		}),
 		con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this),
@@ -210,17 +210,17 @@ void VideoDisplay::Render() try {
 		return;
 	}
 
-	if (videoSize.GetWidth() == 0) videoSize.SetWidth(1);
-	if (videoSize.GetHeight() == 0) videoSize.SetHeight(1);
+	if (viewportSize.GetWidth() == 0) viewportSize.SetWidth(1);
+	if (viewportSize.GetHeight() == 0) viewportSize.SetHeight(1);
 
-	if (!viewport_height || !viewport_width)
+	if (!content_height || !content_width)
 		PositionVideo();
 
 	wxSize client_size = GetClientSize();
 	client_size = wxSize(std::max(1, client_size.GetWidth()), std::max(1, client_size.GetHeight()));
 
 	videoOut->Render(client_size.GetWidth() * scale_factor, client_size.GetHeight() * scale_factor,
-		viewport_left, viewport_bottom, viewport_width, viewport_height);
+		content_left, content_bottom, content_width, content_height);
 	E(glViewport(0, 0, client_size.GetWidth() * scale_factor, client_size.GetHeight() * scale_factor));
 
 	E(glMatrixMode(GL_PROJECTION));
@@ -256,19 +256,19 @@ catch (const agi::Exception &err) {
 }
 
 void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_percent) const {
-	Vector2D v = Vector2D(viewport_width, viewport_height) / scale_factor;
+	Vector2D v = Vector2D(content_width, content_height) / scale_factor;
 	Vector2D size = Vector2D(horizontal_percent, vertical_percent) * v;
 
 	// Clockwise from top-left
 	Vector2D corners[] = {
 		size,
-		Vector2D(viewport_width / scale_factor - size.X(), size),
+		Vector2D(content_width / scale_factor - size.X(), size),
 		v - size,
-		Vector2D(size, viewport_height  / scale_factor - size.Y())
+		Vector2D(size, content_height  / scale_factor - size.Y())
 	};
 
 	// Shift to compensate for black bars
-	Vector2D pos = Vector2D(viewport_left, viewport_top) / scale_factor;
+	Vector2D pos = Vector2D(content_left, content_top) / scale_factor;
 	for (auto& corner : corners)
 		corner = corner + pos;
 
@@ -297,10 +297,10 @@ void VideoDisplay::PositionVideo() {
 	auto provider = con->project->VideoProvider();
 	if (!provider || !IsShownOnScreen()) return;
 
-	viewport_left = 0;
-	viewport_top = 0;
-	viewport_width = videoSize.GetWidth();
-	viewport_height = videoSize.GetHeight();
+	content_left = 0;
+	content_top = 0;
+	content_width = viewportSize.GetWidth();
+	content_height = viewportSize.GetHeight();
 
 	// Center video in canvas if necessary
 	if (freeSize) {
@@ -308,44 +308,44 @@ void VideoDisplay::PositionVideo() {
 		int vidH = provider->GetHeight();
 
 		AspectRatio arType = con->videoController->GetAspectRatioType();
-		double displayAr = double(viewport_width) / viewport_height;
+		double displayAr = double(content_width) / content_height;
 		double videoAr = arType == AspectRatio::Default ? double(vidW) / vidH : con->videoController->GetAspectRatioValue();
 
 		// Window is wider than video, blackbox left/right
 		if (displayAr - videoAr > 0.01) {
-			int delta = viewport_width - videoAr * viewport_height;
-			viewport_left = delta / 2;
-			viewport_width -= delta;
+			int delta = content_width - videoAr * content_height;
+			content_left = delta / 2;
+			content_width -= delta;
 		}
 		// Video is wider than window, blackbox top/bottom
 		else if (videoAr - displayAr > 0.01) {
-			int delta = viewport_height - viewport_width / videoAr;
-			viewport_top = delta / 2;
-			viewport_height -= delta;
+			int delta = content_height - content_width / videoAr;
+			content_top = delta / 2;
+			content_height -= delta;
 		}
 	}
 
-	// Apply video zoom
-	int viewport_center_x = viewport_left + viewport_width / 2;
-	int viewport_center_y = viewport_top + viewport_height / 2;
+	// Apply content zoom
+	int viewport_center_x = content_left + content_width / 2;
+	int viewport_center_y = content_top + content_height / 2;
 
-	viewport_width *= videoZoomValue;
-	viewport_height *= videoZoomValue;
+	content_width *= contentZoomValue;
+	content_height *= contentZoomValue;
 
-	viewport_left = viewport_center_x - viewport_width / 2;
-	viewport_top = viewport_center_y - viewport_height / 2;
+	content_left = viewport_center_x - content_width / 2;
+	content_top = viewport_center_y - content_height / 2;
 
 	// Apply panning
-	viewport_left += pan_x * videoSize.GetHeight();
-	viewport_top += pan_y * videoSize.GetHeight();
+	content_left += pan_x * viewportSize.GetHeight();
+	content_top += pan_y * viewportSize.GetHeight();
 
-	viewport_bottom = GetClientSize().GetHeight() * scale_factor - viewport_height - viewport_top;
+	content_bottom = GetClientSize().GetHeight() * scale_factor - content_height - content_top;
 
 	if (tool) {
 		wxSize client_size = GetClientSize();
 		tool->SetCanvasSize(client_size.GetWidth(), client_size.GetHeight());
-		tool->SetDisplayArea(viewport_left / scale_factor, viewport_top / scale_factor,
-		                     viewport_width / scale_factor, viewport_height / scale_factor);
+		tool->SetDisplayArea(content_left / scale_factor, content_top / scale_factor,
+		                     content_width / scale_factor, content_height / scale_factor);
 	}
 
 	Render();
@@ -356,10 +356,10 @@ void VideoDisplay::UpdateSize() {
 
 	if (!provider || !IsShownOnScreen()) return;
 
-	videoSize.Set(provider->GetWidth(), provider->GetHeight());
-	videoSize *= windowZoomValue;
+	viewportSize.Set(provider->GetWidth(), provider->GetHeight());
+	viewportSize *= windowZoomValue;
 	if (con->videoController->GetAspectRatioType() != AspectRatio::Default)
-		videoSize.SetWidth(videoSize.GetHeight() * con->videoController->GetAspectRatioValue());
+		viewportSize.SetWidth(viewportSize.GetHeight() * con->videoController->GetAspectRatioValue());
 
 	wxEventBlocker blocker(this);
 	if (freeSize) {
@@ -368,12 +368,12 @@ void VideoDisplay::UpdateSize() {
 
 		wxSize cs = GetClientSize();
 		wxSize oldSize = top->GetSize();
-		top->SetSize(top->GetSize() + videoSize / scale_factor - cs);
+		top->SetSize(top->GetSize() + viewportSize / scale_factor - cs);
 		SetClientSize(cs + top->GetSize() - oldSize);
 	}
 	else {
-		SetMinClientSize(videoSize / scale_factor);
-		SetMaxClientSize(videoSize / scale_factor);
+		SetMinClientSize(viewportSize / scale_factor);
+		SetMaxClientSize(viewportSize / scale_factor);
 
 		GetGrandParent()->Layout();
 	}
@@ -383,9 +383,9 @@ void VideoDisplay::UpdateSize() {
 
 void VideoDisplay::OnSizeEvent(wxSizeEvent &) {
 	if (freeSize) {
-		videoSize = GetClientSize() * scale_factor;
+		viewportSize = GetClientSize() * scale_factor;
 		PositionVideo();
-		windowZoomValue = double(viewport_height) / con->project->VideoProvider()->GetHeight();
+		windowZoomValue = double(content_height) / con->project->VideoProvider()->GetHeight();
 		zoomBox->ChangeValue(fmt_wx("%g%%", windowZoomValue * 100.));
 		con->ass->Properties.video_zoom = windowZoomValue;
 	}
@@ -442,7 +442,7 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 					[[fallthrough]];
 				case ZOOM_VIDEO:
 					{
-						double newZoomValue = videoZoomValue * (1 + dir * 0.125 * wheel / event.GetWheelDelta());
+						double newZoomValue = contentZoomValue * (1 + dir * 0.125 * wheel / event.GetWheelDelta());
 						VideoZoom(newZoomValue, event.GetPosition() * scale_factor);
 					}
 					break;
@@ -478,14 +478,14 @@ void VideoDisplay::OnGestureZoom(wxZoomGestureEvent& event) {
 #endif
 
 	if (event.IsGestureStart()) {
-		videoZoomAtGestureStart = videoZoomValue;
+		contentZoomAtGestureStart = contentZoomValue;
 	}
-	VideoZoom(videoZoomAtGestureStart * event.GetZoomFactor(), event.GetPosition() * scale_factor);
+	VideoZoom(contentZoomAtGestureStart * event.GetZoomFactor(), event.GetPosition() * scale_factor);
 }
 
 void VideoDisplay::Pan(Vector2D delta) {
-	pan_x += delta.X() * scale_factor / videoSize.GetHeight();
-	pan_y += delta.Y() * scale_factor / videoSize.GetHeight();
+	pan_x += delta.X() * scale_factor / viewportSize.GetHeight();
+	pan_y += delta.Y() * scale_factor / viewportSize.GetHeight();
 	PositionVideo();
 }
 
@@ -513,26 +513,26 @@ void VideoDisplay::SetWindowZoom(double value) {
 void VideoDisplay::VideoZoom(double newZoomValue, wxPoint zoomCenter) {
 	newZoomValue = std::max(0.125, std::min(10.0, newZoomValue));
 
-	Vector2D unpannedVideoCenter = Vector2D(viewport_left, viewport_top) + Vector2D(viewport_width, viewport_height) / 2;
+	Vector2D unpannedVideoCenter = Vector2D(content_left, content_top) + Vector2D(content_width, content_height) / 2;
 	Vector2D videoCenter = unpannedVideoCenter + Vector2D(pan_x, pan_y);
 	Vector2D zoomCenterToVideoCenter = videoCenter - zoomCenter;
-	Vector2D panDiff = Vector2D(zoomCenter) + newZoomValue / videoZoomValue * zoomCenterToVideoCenter - videoCenter;
+	Vector2D panDiff = Vector2D(zoomCenter) + newZoomValue / contentZoomValue * zoomCenterToVideoCenter - videoCenter;
 
-	pan_x += panDiff.X() / videoSize.GetHeight();
-	pan_y += panDiff.Y() / videoSize.GetHeight();
-	videoZoomValue = newZoomValue;
+	pan_x += panDiff.X() / viewportSize.GetHeight();
+	pan_y += panDiff.Y() / viewportSize.GetHeight();
+	contentZoomValue = newZoomValue;
 
 	PositionVideo();
 }
 
-void VideoDisplay::ResetVideoZoom() {
+void VideoDisplay::ResetContentZoom() {
 	pan_x = 0;
 	pan_y = 0;
-	videoZoomValue = 1;
+	contentZoomValue = 1;
 	PositionVideo();
 }
 
-void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
+void VideoDisplay::SetWindowZoomFromBox(wxCommandEvent &) {
 	int sel = zoomBox->GetSelection();
 	if (sel != wxNOT_FOUND) {
 		windowZoomValue = (sel + 1) * .125;
@@ -541,7 +541,7 @@ void VideoDisplay::SetZoomFromBox(wxCommandEvent &) {
 	}
 }
 
-void VideoDisplay::SetZoomFromBoxText(wxCommandEvent &) {
+void VideoDisplay::SetWindowZoomFromBoxText(wxCommandEvent &) {
 	wxString strValue = zoomBox->GetValue();
 	if (strValue.EndsWith("%"))
 		strValue.RemoveLast();
