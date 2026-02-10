@@ -153,7 +153,7 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 
 	SetLayoutDirection(wxLayout_LeftToRight);
 
-	UpdateViewportSize(wxSize(1, 1));
+	UpdateViewportSize(false, wxSize(1, 1));
 }
 
 VideoDisplay::~VideoDisplay () {
@@ -292,7 +292,7 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 	gl.DrawMultiPolygon(points, vstart, vcount, pos, v, true);
 }
 
-void VideoDisplay::UpdateViewportSize(wxSize newSize) {
+void VideoDisplay::UpdateViewportSize(bool rescalePan, wxSize newSize) {
 	// In free size mode, we ignore the argument and use the client size
 	// to avoid the viewport and client sizes getting out of sync
 	if (freeSize)
@@ -300,7 +300,7 @@ void VideoDisplay::UpdateViewportSize(wxSize newSize) {
 	assert(newSize != wxDefaultSize);
 	if (newSize.GetWidth() < 1) newSize.SetWidth(1);
 	if (newSize.GetHeight() < 1) newSize.SetHeight(1);
-	if (viewportSize.GetHeight() >= 1) {
+	if (rescalePan && viewportSize.GetHeight() >= 1) {
 		double ratio = double(newSize.GetHeight()) / viewportSize.GetHeight();
 		pan_x *= ratio;
 		pan_y *= ratio;
@@ -308,9 +308,11 @@ void VideoDisplay::UpdateViewportSize(wxSize newSize) {
 	viewportSize = newSize;
 }
 
-void VideoDisplay::PositionVideo() {
+void VideoDisplay::PositionVideo(bool preserveContentSize) {
 	auto provider = con->project->VideoProvider();
 	if (!provider || !IsShownOnScreen()) return;
+
+	int old_content_height = content_height;
 
 	content_width = viewportSize.GetWidth();
 	content_height = viewportSize.GetHeight();
@@ -339,6 +341,9 @@ void VideoDisplay::PositionVideo() {
 		zoomBox->ChangeValue(fmt_wx("%g%%", windowZoomValue * 100.));
 		con->ass->Properties.video_zoom = windowZoomValue;
 	}
+
+	if (preserveContentSize)
+		contentZoomValue = double(old_content_height) / content_height;
 
 	// Apply content zoom
 	content_width *= contentZoomValue;
@@ -399,13 +404,14 @@ void VideoDisplay::FitClientSizeToVideo() {
 		GetGrandParent()->Layout();
 	}
 
-	UpdateViewportSize(newViewportSize); // must be called after setting the client size
+	UpdateViewportSize(true, newViewportSize); // must be called after setting the client size
 	PositionVideo();
 }
 
 void VideoDisplay::OnSizeEvent(wxSizeEvent &) {
-	if (freeSize) UpdateViewportSize();
-	PositionVideo();
+	bool preserveContentSize = freeSize && IsContentZoomActive();
+	if (freeSize) UpdateViewportSize(false);
+	PositionVideo(preserveContentSize);
 }
 
 void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
@@ -611,7 +617,7 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 		// FitClientSizeToVideo fits the window to the video, which we don't want to do
 		GetGrandParent()->Layout();
 		// TODO Is the following really necessary? Wouldn't it be taken care of by OnSizeEvent?
-		UpdateViewportSize();
+		UpdateViewportSize(true);
 		PositionVideo();
 	}
 }
