@@ -297,12 +297,10 @@ void VideoDisplay::PositionVideo() {
 	auto provider = con->project->VideoProvider();
 	if (!provider || !IsShownOnScreen()) return;
 
-	content_left = 0;
-	content_top = 0;
 	content_width = viewportSize.GetWidth();
 	content_height = viewportSize.GetHeight();
 
-	// Center video in canvas if necessary
+	// Adjust aspect ratio if necessary
 	if (freeSize) {
 		int vidW = provider->GetWidth();
 		int vidH = provider->GetHeight();
@@ -313,27 +311,21 @@ void VideoDisplay::PositionVideo() {
 
 		// Window is wider than video, blackbox left/right
 		if (displayAr - videoAr > 0.01) {
-			int delta = content_width - videoAr * content_height;
-			content_left = delta / 2;
-			content_width -= delta;
+			content_width = content_height * videoAr;
 		}
 		// Video is wider than window, blackbox top/bottom
 		else if (videoAr - displayAr > 0.01) {
-			int delta = content_height - content_width / videoAr;
-			content_top = delta / 2;
-			content_height -= delta;
+			content_height = content_width / videoAr;
 		}
 	}
 
 	// Apply content zoom
-	int viewport_center_x = content_left + content_width / 2;
-	int viewport_center_y = content_top + content_height / 2;
-
 	content_width *= contentZoomValue;
 	content_height *= contentZoomValue;
 
-	content_left = viewport_center_x - content_width / 2;
-	content_top = viewport_center_y - content_height / 2;
+	// Center video in viewport
+	content_left = (viewportSize.GetWidth() - content_width) / 2;
+	content_top = (viewportSize.GetHeight() - content_height) / 2;
 
 	// Apply panning
 	content_left += pan_x * viewportSize.GetHeight();
