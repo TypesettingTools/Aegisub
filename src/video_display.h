@@ -67,31 +67,31 @@ class VideoDisplay final : public wxGLCanvas {
 
 	std::unique_ptr<wxMenu> context_menu;
 
-	/// The size of the video canvas in physical pixels at the current zoom level
+	/// The size of the video canvas in physical pixels at the current window zoom level
 	/// (including any letter- or pillarboxing if applicable), which may not
 	/// be the same as the actual client size of the display
-	wxSize videoSize;
+	wxSize viewportSize;
 
 	Vector2D last_mouse_pos, mouse_pos;
 
 	/// Physical (screen) pixels between the left of the canvas and the left of the video
-	int viewport_left = 0;
+	int content_left = 0;
 	/// The width of the video in physical pixels
-	int viewport_width = 0;
+	int content_width = 0;
 	/// Physical pixels between the bottom of the canvas and the bottom of the video; used for glViewport
-	int viewport_bottom = 0;
+	int content_bottom = 0;
 	/// Physical pixels between the bottom of the canvas and the top of the video; used for coordinate space conversion
-	int viewport_top = 0;
+	int content_top = 0;
 	/// The height of the video in physical pixels
-	int viewport_height = 0;
+	int content_height = 0;
 
-	/// The current zoom level, where 1.0 = 100%
+	/// The current window zoom level, where 1.0 = 100%
 	double windowZoomValue;
 
 	/// The zoom level of the video inside the video display.
-	double videoZoomValue = 1;
+	double contentZoomValue = 1;
 
-	double videoZoomAtGestureStart = 1;
+	double contentZoomAtGestureStart = 1;
 
 	/// The video pan, relative to the unzoomed viewport's height.
 	double pan_x = 0;
@@ -108,7 +108,7 @@ class VideoDisplay final : public wxGLCanvas {
 	/// The OpenGL context for this display
 	std::unique_ptr<wxGLContext> glContext;
 
-	/// The dropdown box for selecting zoom levels
+	/// The dropdown box for selecting window zoom levels
 	wxComboBox *zoomBox;
 
 	/// Whether the display can be freely resized by the user
@@ -131,13 +131,13 @@ class VideoDisplay final : public wxGLCanvas {
 	/// @return Could the context be set?
 	bool InitContext();
 
-	/// @brief Set the size of the display based on the current zoom and video resolution
+	/// @brief Set the size of the viewport based on the current window zoom and video resolution
 	void UpdateSize();
 	void PositionVideo();
-	/// Set the zoom level to that indicated by the dropdown
-	void SetZoomFromBox(wxCommandEvent&);
-	/// Set the zoom level to that indicated by the text
-	void SetZoomFromBoxText(wxCommandEvent&);
+	/// Set the window zoom level to that indicated by the dropdown
+	void SetWindowZoomFromBox(wxCommandEvent&);
+	/// Set the window zoom level to that indicated by the text
+	void SetWindowZoomFromBoxText(wxCommandEvent&);
 
 	/// @brief Key event handler
 	void OnKeyDown(wxKeyEvent &event);
@@ -166,13 +166,13 @@ public:
 	/// @brief Render the currently visible frame
 	void Render();
 
-	/// @brief Set the zoom level
+	/// @brief Set the window zoom level
 	/// @param value The new zoom level
 	void SetWindowZoom(double value);
-	/// @brief Get the current zoom level
+	/// @brief Get the current window zoom level
 	double GetWindowZoom() const { return windowZoomValue; }
 
-	void ResetVideoZoom();
+	void ResetContentZoom();
 
 	/// Get the last seen position of the mouse in script coordinates
 	Vector2D GetMousePosition() const;
