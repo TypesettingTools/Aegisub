@@ -74,15 +74,15 @@ class VideoDisplay final : public wxGLCanvas {
 
 	Vector2D last_mouse_pos, mouse_pos;
 
-	/// Physical (screen) pixels between the left of the canvas and the left of the video
+	/// Distance rightward from the left edge of the canvas to the left edge of the video in physical (screen) pixels
 	int content_left = 0;
-	/// The width of the video in physical pixels
+	/// The width of the video in physical (screen) pixels
 	int content_width = 0;
-	/// Physical pixels between the bottom of the canvas and the bottom of the video; used for glViewport
+	/// Distance upward from the bottom edge of the canvas to the bottom edge of the video in physical pixels; used for glViewport
 	int content_bottom = 0;
-	/// Physical pixels between the bottom of the canvas and the top of the video; used for coordinate space conversion
+	/// Distance downward from the top edge of the canvas to the top edge of the video
 	int content_top = 0;
-	/// The height of the video in physical pixels
+	/// The height of the video in physical (screen) pixels
 	int content_height = 0;
 
 	/// The current window zoom level, where 1.0 = 100%
@@ -93,7 +93,8 @@ class VideoDisplay final : public wxGLCanvas {
 
 	double contentZoomAtGestureStart = 1;
 
-	/// The video pan, relative to the unzoomed viewport's height.
+	/// The video pan, relative to the viewport height.
+	/// @see viewportSize
 	double pan_x = 0;
 	double pan_y = 0;
 
@@ -133,6 +134,8 @@ class VideoDisplay final : public wxGLCanvas {
 
 	/// @brief Set the size of the viewport based on the current window zoom and video resolution
 	void UpdateSize();
+	/// @brief Update content size and position based on the current viewport size, content zoom and pan
+	/// Updates @ref content_left, @ref content_width, @ref content_bottom, @ref content_top and @ref content_height
 	void PositionVideo();
 	/// Set the window zoom level to that indicated by the dropdown
 	void SetWindowZoomFromBox(wxCommandEvent&);
@@ -150,7 +153,9 @@ class VideoDisplay final : public wxGLCanvas {
 	void OnSizeEvent(wxSizeEvent &event);
 	void OnContextMenu(wxContextMenuEvent&);
 
-	void Pan(Vector2D delta);	// Takes delta in logical pixels
+	/// @brief Pan the video by delta
+	/// @param delta Delta in logical pixels
+	void Pan(Vector2D delta);
 	void VideoZoom(double newVideoZoom, wxPoint zoomCenter);
 
 public:
@@ -172,6 +177,7 @@ public:
 	/// @brief Get the current window zoom level
 	double GetWindowZoom() const { return windowZoomValue; }
 
+	/// @brief Reset content zoom and pan
 	void ResetContentZoom();
 
 	/// Get the last seen position of the mouse in script coordinates
