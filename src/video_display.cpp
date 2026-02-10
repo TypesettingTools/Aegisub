@@ -327,6 +327,12 @@ void VideoDisplay::PositionVideo() {
 	double content_left_exact = double(viewportSize.GetWidth() - content_width) / 2;
 	double content_top_exact = double(viewportSize.GetHeight() - content_height) / 2;
 
+	// Don't allow panning too far out of bounds
+	double max_pan_x = (0.5 * content_width + 0.4 * viewportSize.GetWidth()) / viewportSize.GetHeight();
+	double max_pan_y = (0.5 * content_height + 0.4 * viewportSize.GetHeight()) / viewportSize.GetHeight();
+	pan_x = mid(-max_pan_x, pan_x, max_pan_x);
+	pan_y = mid(-max_pan_y, pan_y, max_pan_y);
+
 	// Apply panning
 	content_left_exact += pan_x * viewportSize.GetHeight();
 	content_top_exact += pan_y * viewportSize.GetHeight();
