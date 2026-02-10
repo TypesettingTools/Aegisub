@@ -92,6 +92,7 @@ class VideoDisplay final : public wxGLCanvas {
 	double contentZoomValue = 1;
 
 	double contentZoomAtGestureStart = 1;
+	Vector2D zoomGestureAnchorPoint = {0, 0};
 
 	/// The video pan, relative to the viewport height.
 	/// @see viewportSize
@@ -156,7 +157,15 @@ class VideoDisplay final : public wxGLCanvas {
 	/// @brief Pan the video by delta
 	/// @param delta Delta in logical pixels
 	void Pan(Vector2D delta);
-	void VideoZoom(double newVideoZoom, wxPoint zoomCenter);
+	/// Transforms a canvas position into a zoom anchor point
+	/// @param position Position in logical pixels
+	/// @return An anchor point that can be used with @ref ZoomAndPan()
+	Vector2D GetZoomAnchorPoint(wxPoint position);
+	/// Zooms and pans a video using an anchor point
+	/// @param newZoomValue The new zoom value
+	/// @param anchorPoint An anchor point obtained from @ref GetZoomAnchorPoint()
+	/// @param newPosition New position of the anchor point in logical pixels
+	void ZoomAndPan(double newZoomValue, Vector2D anchorPoint, wxPoint newPosition);
 
 public:
 	/// @brief Constructor

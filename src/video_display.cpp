@@ -441,7 +441,8 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 				case ZOOM_VIDEO:
 					{
 						double newZoomValue = contentZoomValue * (1 + dir * 0.125 * wheel / event.GetWheelDelta());
-						VideoZoom(newZoomValue, event.GetPosition() * scale_factor);
+						wxPoint scaled_position = event.GetPosition() * scale_factor;
+						ZoomAndPan(newZoomValue, GetZoomAnchorPoint(scaled_position), scaled_position);
 					}
 					break;
 
@@ -475,10 +476,12 @@ void VideoDisplay::OnGestureZoom(wxZoomGestureEvent& event) {
 	}
 #endif
 
+	wxPoint scaled_position = event.GetPosition() * scale_factor;
 	if (event.IsGestureStart()) {
 		contentZoomAtGestureStart = contentZoomValue;
+		zoomGestureAnchorPoint = GetZoomAnchorPoint(scaled_position);
 	}
-	VideoZoom(contentZoomAtGestureStart * event.GetZoomFactor(), event.GetPosition() * scale_factor);
+	ZoomAndPan(contentZoomAtGestureStart * event.GetZoomFactor(), zoomGestureAnchorPoint, scaled_position);
 }
 
 void VideoDisplay::Pan(Vector2D delta) {
@@ -508,16 +511,21 @@ void VideoDisplay::SetWindowZoom(double value) {
 	FitSizeToVideo();
 }
 
-void VideoDisplay::VideoZoom(double newZoomValue, wxPoint zoomCenter) {
+Vector2D VideoDisplay::GetZoomAnchorPoint(wxPoint position) {
+	// position = viewportSize / 2 + pan * viewportHeight + anchorPoint * contentZoomValue
+	Vector2D viewportCenter = Vector2D(viewportSize.GetWidth(), viewportSize.GetHeight()) / 2;
+	Vector2D scaledPan = Vector2D(pan_x, pan_y) * viewportSize.GetHeight();
+	return (Vector2D(position) - viewportCenter - scaledPan) / contentZoomValue;
+}
+
+void VideoDisplay::ZoomAndPan(double newZoomValue, Vector2D anchorPoint, wxPoint newPosition) {
 	newZoomValue = std::max(0.125, std::min(10.0, newZoomValue));
 
-	Vector2D unpannedVideoCenter = Vector2D(content_left, content_top) + Vector2D(content_width, content_height) / 2;
-	Vector2D videoCenter = unpannedVideoCenter + Vector2D(pan_x, pan_y);
-	Vector2D zoomCenterToVideoCenter = videoCenter - zoomCenter;
-	Vector2D panDiff = Vector2D(zoomCenter) + newZoomValue / contentZoomValue * zoomCenterToVideoCenter - videoCenter;
+	Vector2D viewportCenter = Vector2D(viewportSize.GetWidth(), viewportSize.GetHeight()) / 2;
+	Vector2D newScaledPan = Vector2D(newPosition) - viewportCenter - anchorPoint * newZoomValue;
 
-	pan_x += panDiff.X() / viewportSize.GetHeight();
-	pan_y += panDiff.Y() / viewportSize.GetHeight();
+	pan_x = newScaledPan.X() / viewportSize.GetHeight();
+	pan_y = newScaledPan.Y() / viewportSize.GetHeight();
 	contentZoomValue = newZoomValue;
 
 	PositionVideo();
