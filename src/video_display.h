@@ -133,7 +133,7 @@ class VideoDisplay final : public wxGLCanvas {
 	bool InitContext();
 
 	/// @brief Set the size of the viewport based on the current window zoom and video resolution
-	void UpdateSize();
+	void FitSizeToVideo();
 	/// @brief Update content size and position based on the current viewport size, content zoom and pan
 	/// Updates @ref content_left, @ref content_width, @ref content_bottom, @ref content_top and @ref content_height
 	void PositionVideo();
