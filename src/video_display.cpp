@@ -324,13 +324,15 @@ void VideoDisplay::PositionVideo() {
 	content_height *= contentZoomValue;
 
 	// Center video in viewport
-	content_left = (viewportSize.GetWidth() - content_width) / 2;
-	content_top = (viewportSize.GetHeight() - content_height) / 2;
+	double content_left_exact = double(viewportSize.GetWidth() - content_width) / 2;
+	double content_top_exact = double(viewportSize.GetHeight() - content_height) / 2;
 
 	// Apply panning
-	content_left += pan_x * viewportSize.GetHeight();
-	content_top += pan_y * viewportSize.GetHeight();
+	content_left_exact += pan_x * viewportSize.GetHeight();
+	content_top_exact += pan_y * viewportSize.GetHeight();
 
+	content_left = std::round(content_left_exact);
+	content_top = std::round(content_top_exact);
 	content_bottom = GetClientSize().GetHeight() * scale_factor - content_height - content_top;
 
 	if (tool) {
