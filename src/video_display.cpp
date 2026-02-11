@@ -114,9 +114,9 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	connections = agi::signal::make_vector({
 		con->project->AddVideoProviderListener([this] (AsyncVideoProvider *provider) {
 			if (!provider) ResetContentZoom();
-			UpdateSize();
+			FitClientSizeToVideo();
 		}),
-		con->videoController->AddARChangeListener(&VideoDisplay::UpdateSize, this),
+		con->videoController->AddARChangeListener(&VideoDisplay::FitClientSizeToVideo, this),
 	});
 
 	if (!EnableTouchEvents(wxTOUCH_ZOOM_GESTURE)) {
@@ -351,7 +351,7 @@ void VideoDisplay::PositionVideo() {
 	Render();
 }
 
-void VideoDisplay::UpdateSize() {
+void VideoDisplay::FitClientSizeToVideo() {
 	auto provider = con->project->VideoProvider();
 
 	if (!provider || !IsShownOnScreen()) return;
@@ -507,7 +507,7 @@ void VideoDisplay::SetWindowZoom(double value) {
 		zoomBox->SetSelection(selIndex);
 	zoomBox->ChangeValue(fmt_wx("%g%%", windowZoomValue * 100.));
 	con->ass->Properties.video_zoom = windowZoomValue;
-	UpdateSize();
+	FitClientSizeToVideo();
 }
 
 void VideoDisplay::VideoZoom(double newZoomValue, wxPoint zoomCenter) {
@@ -537,7 +537,7 @@ void VideoDisplay::SetWindowZoomFromBox(wxCommandEvent &) {
 	if (sel != wxNOT_FOUND) {
 		windowZoomValue = (sel + 1) * .125;
 		con->ass->Properties.video_zoom = windowZoomValue;
-		UpdateSize();
+		FitClientSizeToVideo();
 	}
 }
 
@@ -562,9 +562,9 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 
 	// Update size as the new typesetting tool may have changed the subtoolbar size
 	if (!freeSize)
-		UpdateSize();
+		FitClientSizeToVideo();
 	else {
-		// UpdateSize fits the window to the video, which we don't want to do
+		// FitClientSizeToVideo fits the window to the video, which we don't want to do
 		GetGrandParent()->Layout();
 		PositionVideo();
 	}
