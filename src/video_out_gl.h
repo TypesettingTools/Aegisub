@@ -69,8 +69,8 @@ public:
 	void UploadFrameData(VideoFrame const& frame);
 
 	/// @brief Render a frame
-	/// @param width Width in physical pixels of client window
-	/// @param height Height in physical pixels of client window
+	/// @param client_width Width in physical pixels of client window
+	/// @param client_height Height in physical pixels of client window
 	/// @param x Bottom left x coordinate
 	/// @param y Bottom left y coordinate
 	/// @param width Width in pixels of viewport
