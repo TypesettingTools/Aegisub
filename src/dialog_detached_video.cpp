@@ -74,10 +74,28 @@ DialogDetachedVideo::DialogDetachedVideo(agi::Context *context)
 	mainSizer->Add(videoBox,1,wxEXPAND);
 	SetSizerAndFit(mainSizer);
 
-	// Ensure we can grow smaller, without these the window is locked to at least the initial size
-	context->videoDisplay->SetMinSize(wxSize(1,1));
-	videoBox->SetMinSize(wxSize(1,1));
-	SetMinSize(wxSize(1,1));
+
+	// Ensure that the user can shrink the window below its initial size
+	//
+	// This is a bit tricky due to the following hack in wxGTK:
+	// When SetSizerAndFit() is called before the window is shown, the computed
+	// fitting size may be wrong because GTK style cache hasn't been updated yet. To
+	// work around this, wxGTK recomputes the size when the window becomes visible.
+	// This is done by setting an internal flag when SetSizerAndFit() is called, then
+	// checking for this flag and triggering a new fit when the window is shown.
+	//
+	// This means we need to keep the minimum size until the window
+	// is shown; otherwise, we could end up with a tiny window.
+	Bind(wxEVT_SHOW, [this, videoBox](wxShowEvent &evt) {
+		// The Show() method dispatches the event before fitting the size,
+		// so wait for the next iteration of the main loop
+		if (evt.IsShown()) CallAfter([this, videoBox]() {
+			// Without these, the window is locked to at least the initial size
+			this->context->videoDisplay->SetMinSize(wxSize(1,1));
+			videoBox->SetMinSize(wxSize(1,1));
+			SetMinSize(wxSize(1,1));
+		});
+	});
 
 	persist = std::make_unique<PersistLocation>(this, "Video/Detached");
 
