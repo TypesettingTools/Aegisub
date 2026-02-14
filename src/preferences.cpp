@@ -635,7 +635,7 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	dvc->AppendTextColumn(_("Description"), 2, wxDATAVIEW_CELL_INERT, 300, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
 
 	wxSizer *buttons = new wxBoxSizer(wxHORIZONTAL);
-	buttons->Add(quick_search, wxSizerFlags(1).Expand().Border());
+	buttons->Add(quick_search, wxSizerFlags(1).CenterVertical().Border());
 	buttons->Add(new_button, wxSizerFlags().Border());
 	buttons->Add(edit_button, wxSizerFlags().Border());
 	buttons->Add(delete_button, wxSizerFlags().Border());
