@@ -53,6 +53,59 @@ struct PAThreadedMainloopDeleter {
 
 using PAThreadedMainloop = std::unique_ptr<pa_threaded_mainloop, PAThreadedMainloopDeleter>;
 
+// We cannot use std::unique_ptr for these since the mainloop needs to be locked
+// during the destructor.
+class PAContext {
+	pa_context *context = nullptr;
+	pa_threaded_mainloop *mainloop = nullptr;
+	bool connected = false;
+
+public:
+	PAContext() = default;
+
+	PAContext(const PAContext&) = delete;
+	PAContext& operator=(const PAContext&) = delete;
+	PAContext(PAContext&&) = delete;
+	PAContext& operator=(PAContext&&) = delete;
+
+	void reset(pa_context *context, pa_threaded_mainloop *mainloop) {
+		this->context = context;
+		this->mainloop = mainloop;
+	}
+
+	template<typename ...Args>
+	[[nodiscard]] int connect(Args&&... args) {
+		assert(!connected);
+		pa_threaded_mainloop_lock(mainloop);
+		int error = pa_context_connect(context, std::forward<Args>(args)...);
+		pa_threaded_mainloop_unlock(mainloop);
+		if (error >= 0)
+			connected = true;
+
+		return error;
+	}
+
+	[[nodiscard]] int get_errno() {
+		pa_threaded_mainloop_lock(mainloop);
+		int result = pa_context_errno(context);
+		pa_threaded_mainloop_unlock(mainloop);
+		return result;
+	}
+
+	pa_context *get() { return context; }
+
+	~PAContext() {
+		if (context) {
+			pa_threaded_mainloop_lock(mainloop);
+			if (connected)
+				pa_context_disconnect(context);
+
+			pa_context_unref(context);
+			pa_threaded_mainloop_unlock(mainloop);
+		}
+	}
+};
+
 class PulseAudioPlayer final : public AudioPlayer {
 	float volume = 1.f;
 	bool is_playing = false;
@@ -69,7 +122,7 @@ class PulseAudioPlayer final : public AudioPlayer {
 	volatile int stream_success_val;
 
 	PAThreadedMainloop mainloop; // pulseaudio mainloop handle
-	pa_context *context = nullptr; // connection context
+	PAContext context; // connection context
 	volatile pa_context_state_t cstate;
 
 	pa_stream *stream = nullptr;
@@ -112,14 +165,15 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 	pa_threaded_mainloop_start(mainloop.get());
 
 	// Create context
-	context = pa_context_new(pa_threaded_mainloop_get_api(mainloop.get()), "Aegisub");
-	if (!context) {
+	context.reset(pa_context_new(pa_threaded_mainloop_get_api(mainloop.get()), "Aegisub"), mainloop.get());
+	if (!context.get())
 		throw AudioPlayerOpenError("Failed to create PulseAudio context");
-	}
-	pa_context_set_state_callback(context, (pa_context_notify_cb_t)pa_context_notify, this);
+
+	pa_context_set_state_callback(context.get(), (pa_context_notify_cb_t)pa_context_notify, this);
 
 	// Connect the context
-	pa_context_connect(context, nullptr, PA_CONTEXT_NOAUTOSPAWN, nullptr);
+	if (context.connect(nullptr, PA_CONTEXT_NOAUTOSPAWN, nullptr) < 0)
+		throw AudioPlayerOpenError("Failed to connect PulseAudio context");
 
 	// Wait for connection
 	while (true) {
@@ -128,8 +182,7 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 			break;
 		} else if (cstate == PA_CONTEXT_FAILED) {
 			// eww
-			paerror = pa_context_errno(context);
-			pa_context_unref(context);
+			paerror = context.get_errno();
 			throw AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror));
 		}
 		// otherwise loop once more
@@ -144,11 +197,9 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 	pa_channel_map map;
 	pa_channel_map_init_auto(&map, ss.channels, PA_CHANNEL_MAP_DEFAULT);
 
-	stream = pa_stream_new(context, "Sound", &ss, &map);
+	stream = pa_stream_new(context.get(), "Sound", &ss, &map);
 	if (!stream) {
 		// argh!
-		pa_context_disconnect(context);
-		pa_context_unref(context);
 		throw AudioPlayerOpenError("PulseAudio could not create stream");
 	}
 	pa_stream_set_state_callback(stream, (pa_stream_notify_cb_t)pa_stream_notify, this);
@@ -165,7 +216,7 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 		if (sstate == PA_STREAM_READY) {
 			break;
 		} else if (sstate == PA_STREAM_FAILED) {
-			paerror = pa_context_errno(context);
+			paerror = context.get_errno();
 			LOG_E("audio/player/pulse") << "Stream connection failed: " << pa_strerror(paerror) << "(" << paerror << ")";
 			throw AudioPlayerOpenError("PulseAudio player: Something went wrong connecting the stream");
 		}
@@ -179,8 +230,6 @@ PulseAudioPlayer::~PulseAudioPlayer()
 	// Hope for the best and just do things as quickly as possible
 	pa_stream_disconnect(stream);
 	pa_stream_unref(stream);
-	pa_context_disconnect(context);
-	pa_context_unref(context);
 }
 
 void PulseAudioPlayer::Play(int64_t start,int64_t count)
@@ -195,7 +244,7 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 		stream_success.Wait();
 		pa_operation_unref(op);
 		if (!stream_success_val) {
-			paerror = pa_context_errno(context);
+			paerror = context.get_errno();
 			LOG_E("audio/player/pulse") << "Error flushing stream: " << pa_strerror(paerror) << "(" << paerror << ")";
 		}
 	}
@@ -221,7 +270,7 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 	stream_success.Wait();
 	pa_operation_unref(op);
 	if (!stream_success_val) {
-		paerror = pa_context_errno(context);
+		paerror = context.get_errno();
 		LOG_E("audio/player/pulse") << "Error triggering stream: " << pa_strerror(paerror) << "(" << paerror << ")";
 	}
 }
@@ -243,7 +292,7 @@ void PulseAudioPlayer::Stop()
 	stream_success.Wait();
 	pa_operation_unref(op);
 	if (!stream_success_val) {
-		paerror = pa_context_errno(context);
+		paerror = context.get_errno();
 		LOG_E("audio/player/pulse") << "Error flushing stream: " << pa_strerror(paerror) << "(" << paerror << ")";
 	}
 }
@@ -271,7 +320,7 @@ int64_t PulseAudioPlayer::GetCurrentPosition()
 /// @brief Called by PA to notify about other context-related stuff
 void PulseAudioPlayer::pa_context_notify(pa_context *, PulseAudioPlayer *thread)
 {
-	thread->cstate = pa_context_get_state(thread->context);
+	thread->cstate = pa_context_get_state(thread->context.get());
 	thread->context_notify.Post();
 }
 
