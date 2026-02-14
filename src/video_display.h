@@ -101,6 +101,7 @@ class VideoDisplay final : public wxGLCanvas {
 	/// The zoom level of the video inside the viewport.
 	double contentZoomValue = 1;
 
+	bool isZoomGestureActive = false;
 	double contentZoomAtGestureStart = 1;
 	Vector2D zoomGestureAnchorPoint = {0, 0};
 

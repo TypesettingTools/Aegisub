@@ -469,19 +469,23 @@ void VideoDisplay::OnMouseWheel(wxMouseEvent& event) {
 }
 
 void VideoDisplay::OnGestureZoom(wxZoomGestureEvent& event) {
-#ifdef __WXGTK__
-	if (event.IsGestureEnd() && event.GetZoomFactor() == 1.0 && event.GetPosition() == wxPoint(0, 0)) {
+	if (!isZoomGestureActive && !event.IsGestureStart()) {
+		// On wxGTK, right-clicking generates a false GestureEnd event (without any preceding GestureStart event).
+		// See https://github.com/wxWidgets/wxWidgets/issues/26211
+		// Getting any other event before a GestureStart event is not valid, so ignore them.
+		LOG_W("video/display") << "Ignoring zoom gesture event when gesture isn't active"
+			<< " (ZoomFactor " << event.GetZoomFactor() << ", Position " << event.GetPosition().x << " " << event.GetPosition().y
+			<< (event.IsGestureEnd() ? ", GestureEnd)" : ")");
 		return;
-		// On X11+wxGTK, right-clicking seems to generate a single false event of this form
-		// (without any preceding GestureStart event).
-		// TODO: report this upstream; last time I tried I couldn't reproduce this with a minimal sample.
 	}
-#endif
 
 	wxPoint scaled_position = event.GetPosition() * scale_factor;
 	if (event.IsGestureStart()) {
+		isZoomGestureActive = true;
 		contentZoomAtGestureStart = contentZoomValue;
 		zoomGestureAnchorPoint = GetZoomAnchorPoint(scaled_position);
+	} else if (event.IsGestureEnd()) {
+		isZoomGestureActive = false;
 	}
 	ZoomAndPan(contentZoomAtGestureStart * event.GetZoomFactor(), zoomGestureAnchorPoint, scaled_position);
 }
