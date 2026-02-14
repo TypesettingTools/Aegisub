@@ -22,7 +22,7 @@ namespace agi {
 /// Class for handling everything path-related in Aegisub
 class Path {
 	/// Token -> Path map
-	std::array<fs::path, 8> paths;
+	std::array<fs::path, 9> paths;
 
 	/// Platform-specific code to fill in the default paths, called in the constructor
 	void FillPlatformSpecificPaths();
