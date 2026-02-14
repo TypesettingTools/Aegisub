@@ -107,7 +107,12 @@ void RestartAegisub() {
 }
 #endif
 
-bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt) {
+bool ForwardMouseWheelEvent([[maybe_unused]] wxWindow *source, [[maybe_unused]] wxMouseEvent &evt) {
+	// ForwardMouseWheelEvent is needed on Windows 8 and earlier because mouse wheel events
+	// are sent to the focused window rather than the window under the cursor on these versions.
+	// However, it breaks scrolling on other platforms, in particular on Wayland.
+	// After the next stable release we will drop support for Windows 8, but for now we just restrict this logic to Windows.
+#ifdef __WXMSW__
 	wxWindow *target = wxFindWindowAtPoint(wxGetMousePosition());
 	if (!target || target == source) return true;
 
@@ -121,6 +126,9 @@ bool ForwardMouseWheelEvent(wxWindow *source, wxMouseEvent &evt) {
 	target->GetEventHandler()->ProcessEvent(evt);
 	evt.Skip(false);
 	return false;
+#else
+	return true;
+#endif
 }
 
 std::string GetClipboard() {
