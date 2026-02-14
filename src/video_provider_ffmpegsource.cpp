@@ -194,6 +194,13 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 			Index = nullptr;
 	}
 
+	int64_t FirstPTS;
+	int FirstTimebase;
+	bool FirstTimeSucceeded = false;
+#if FFMS_VERSION >= 0x5010200
+	FirstTimeSucceeded = FFMS_GetContainerFirstTimeI(Indexer, &FirstPTS, &FirstTimebase);
+#endif
+
 	// moment of truth
 	if (!Index) {
 		auto TrackMask = TrackSelection::None;
@@ -281,6 +288,10 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 		throw VideoOpenError("failed to get track time base");
 
 	// build list of keyframes and timecodes
+	double Offset = 0.0;
+	if (FirstTimeSucceeded)
+		Offset = 1000.0 * FirstPTS / FirstTimebase;
+
 	std::vector<int> TimecodesVector;
 	for (int CurFrameNum = 0; CurFrameNum < VideoInfo->NumFrames; CurFrameNum++) {
 		const FFMS_FrameInfo *CurFrameData = FFMS_GetFrameInfo(FrameData, CurFrameNum);
@@ -292,7 +303,7 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 			KeyFramesList.push_back(CurFrameNum);
 
 		// calculate timestamp and add to timecodes vector
-		int Timestamp = (int)((CurFrameData->PTS * TimeBase->Num) / TimeBase->Den);
+		int Timestamp = (int)((CurFrameData->PTS * TimeBase->Num) / TimeBase->Den - Offset);
 		TimecodesVector.push_back(Timestamp);
 	}
 	if (TimecodesVector.size() < 2)
