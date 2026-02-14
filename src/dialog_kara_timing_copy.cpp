@@ -454,9 +454,9 @@ DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 
 	// Layout it all
 	BottomLeftStackSizer->Add(StylesBoxSizer, 0, wxEXPAND|wxBOTTOM, 6);
-	BottomLeftStackSizer->Add(HelpBoxSizer, 1, wxEXPAND, 6);
+	BottomLeftStackSizer->Add(HelpBoxSizer, 1, wxEXPAND, 0);
 	BottomShelfSizer->Add(BottomLeftStackSizer, 1, wxEXPAND|wxRIGHT, 6);
-	BottomShelfSizer->Add(ButtonsBoxSizer, 0, wxEXPAND, 6);
+	BottomShelfSizer->Add(ButtonsBoxSizer, 0, wxEXPAND, 0);
 	MainStackSizer->Add(DisplayBoxSizer, 0, wxEXPAND|wxALL, 6);
 	MainStackSizer->Add(BottomShelfSizer, 1, wxEXPAND|wxLEFT|wxRIGHT, 6);
 	MainStackSizer->Add(buttonSizer, 0, wxEXPAND|wxALL, 6);

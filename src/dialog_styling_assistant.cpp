@@ -119,7 +119,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 		actions_box->Add(play_video, 0, wxBOTTOM | wxRIGHT, 5);
 
 		actions_box->AddStretchSpacer(1);
-		right_sizer->Add(actions_box, 0, wxEXPAND, 5);
+		right_sizer->Add(actions_box, 0, wxEXPAND, 0);
 	}
 	bottom_sizer->Add(right_sizer);
 	main_sizer->Add(bottom_sizer, 1, wxEXPAND | wxLEFT | wxBOTTOM | wxRIGHT, 5);
