@@ -235,8 +235,8 @@ void OptionPage::OptionBrowse(PageSection section, const wxString &name, const c
 	browse->Bind(wxEVT_BUTTON, std::bind(browse_button, text));
 
 	auto button_sizer = new wxBoxSizer(wxHORIZONTAL);
-	button_sizer->Add(text, wxSizerFlags(1).Expand());
-	button_sizer->Add(browse, wxSizerFlags().Expand());
+	button_sizer->Add(text, wxSizerFlags(1).CenterVertical());
+	button_sizer->Add(browse, wxSizerFlags().CenterVertical());
 
 	Add(section, name, button_sizer);
 
@@ -271,8 +271,8 @@ void OptionPage::OptionFont(PageSection section, std::string opt_prefix) {
 	pick_btn->Bind(wxEVT_BUTTON, std::bind(font_button, parent, font_name, font_size));
 
 	auto button_sizer = new wxBoxSizer(wxHORIZONTAL);
-	button_sizer->Add(font_name, wxSizerFlags(1).Expand());
-	button_sizer->Add(pick_btn, wxSizerFlags().Expand());
+	button_sizer->Add(font_name, wxSizerFlags(1).CenterVertical());
+	button_sizer->Add(pick_btn, wxSizerFlags().CenterVertical());
 
 	Add(section, _("Font Face"), button_sizer);
 	Add(section, _("Font Size"), font_size);
