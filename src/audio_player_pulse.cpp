@@ -291,13 +291,11 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 		// If we're already playing, do a quick "reset"
 		is_playing = false;
 
-		pa_operation *op = nullptr;
 		{
 			PAThreadedMainloopLock lock{mainloop.get()};
-			op = pa_stream_flush(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this);
+			pa_operation_unref(pa_stream_flush(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this));
 		}
 		stream_success.Wait();
-		pa_operation_unref(op);
 		if (!stream_success_val) {
 			paerror = context.get_errno();
 			LOG_E("audio/player/pulse") << "Error flushing stream: " << pa_strerror(paerror) << "(" << paerror << ")";
@@ -320,13 +318,11 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 
 	PulseAudioPlayer::pa_stream_write(stream.get(), pa_stream_writable_size(stream.get()), this);
 
-	pa_operation *op = nullptr;
 	{
 		PAThreadedMainloopLock lock{mainloop.get()};
-		op = pa_stream_trigger(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this);
+		pa_operation_unref(pa_stream_trigger(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this));
 	}
 	stream_success.Wait();
-	pa_operation_unref(op);
 	if (!stream_success_val) {
 		paerror = context.get_errno();
 		LOG_E("audio/player/pulse") << "Error triggering stream: " << pa_strerror(paerror) << "(" << paerror << ")";
@@ -344,13 +340,11 @@ void PulseAudioPlayer::Stop()
 	end_frame = 0;
 
 	// Flush the stream of data
-	pa_operation *op = nullptr;
 	{
 		PAThreadedMainloopLock lock{mainloop.get()};
-		op = pa_stream_flush(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this);
+		pa_operation_unref(pa_stream_flush(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this));
 	}
 	stream_success.Wait();
-	pa_operation_unref(op);
 	if (!stream_success_val) {
 		paerror = context.get_errno();
 		LOG_E("audio/player/pulse") << "Error flushing stream: " << pa_strerror(paerror) << "(" << paerror << ")";
@@ -399,8 +393,7 @@ void PulseAudioPlayer::pa_stream_write(pa_stream *p, size_t length, PulseAudioPl
 	if (thread->cur_frame >= thread->end_frame + thread->provider->GetSampleRate()) {
 		// More than a second past end of stream
 		thread->is_playing = false;
-		pa_operation *op = pa_stream_drain(p, nullptr, nullptr);
-		pa_operation_unref(op);
+		pa_operation_unref(pa_stream_drain(p, nullptr, nullptr));
 		return;
 
 	} else if (thread->cur_frame >= thread->end_frame) {
