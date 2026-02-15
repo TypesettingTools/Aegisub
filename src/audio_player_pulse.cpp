@@ -219,7 +219,8 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 	if (!mainloop)
 		throw AudioPlayerOpenError("Failed to initialise PulseAudio threaded mainloop object");
 
-	pa_threaded_mainloop_start(mainloop.get());
+	if (pa_threaded_mainloop_start(mainloop.get()))
+		throw AudioPlayerOpenError("Failed to start PulseAudio threaded mainloop");
 
 	// Create context
 	context.reset(pa_context_new(pa_threaded_mainloop_get_api(mainloop.get()), "Aegisub"), mainloop.get());
@@ -252,7 +253,8 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 	ss.rate = provider->GetSampleRate();
 	ss.channels = provider->GetChannels();
 	pa_channel_map map;
-	pa_channel_map_init_auto(&map, ss.channels, PA_CHANNEL_MAP_DEFAULT);
+	if (!pa_channel_map_init_auto(&map, ss.channels, PA_CHANNEL_MAP_DEFAULT))
+		throw AudioPlayerOpenError("Failed to initialize PulseAudio channel map");
 
 	stream.reset(pa_stream_new(context.get(), "Sound", &ss, &map), mainloop.get());
 	if (!stream.get()) {
@@ -365,7 +367,9 @@ int64_t PulseAudioPlayer::GetCurrentPosition()
 
 	// Calculation duration we have played, in microseconds
 	pa_usec_t play_cur_time;
-	pa_stream_get_time(stream.get(), &play_cur_time);
+	paerror = pa_stream_get_time(stream.get(), &play_cur_time);
+	if (paerror)
+		LOG_E("audio/player/pulse") << "Error getting stream time: " << pa_strerror(paerror) << "(" << paerror << ")";
 	pa_usec_t playtime = play_cur_time - play_start_time;
 
 	return start_frame + playtime * provider->GetSampleRate() / (1000*1000);
@@ -399,7 +403,8 @@ void PulseAudioPlayer::PAStreamWriteCB(pa_stream *p, size_t length, PulseAudioPl
 	} else if (thread->cur_frame >= thread->end_frame) {
 		// Past end of stream, but not a full second, add some silence
 		void *buf = calloc(length, 1);
-		pa_stream_write(p, buf, length, free, 0, PA_SEEK_RELATIVE);
+		if (pa_stream_write(p, buf, length, free, 0, PA_SEEK_RELATIVE))
+			LOG_E("audio/player/pulse") << "Error writing to stream";
 		thread->cur_frame += length / thread->bpf;
 		return;
 	}
@@ -410,7 +415,8 @@ void PulseAudioPlayer::PAStreamWriteCB(pa_stream *p, size_t length, PulseAudioPl
 	if (frames > maxframes) frames = maxframes;
 	void *buf = malloc(frames * bpf);
 	thread->provider->GetAudioWithVolume(buf, thread->cur_frame, frames, thread->volume);
-	pa_stream_write(p, buf, frames*bpf, free, 0, PA_SEEK_RELATIVE);
+	if (pa_stream_write(p, buf, frames*bpf, free, 0, PA_SEEK_RELATIVE))
+		LOG_E("audio/player/pulse") << "Error writing to stream";
 	thread->cur_frame += frames;
 }
 
