@@ -219,6 +219,8 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 	if (pa_threaded_mainloop_start(mainloop.get()))
 		throw AudioPlayerOpenError("Failed to start PulseAudio threaded mainloop");
 
+	PAThreadedMainloopLock lock{mainloop.get()};
+
 	// Create context
 	context.reset(pa_context_new(pa_threaded_mainloop_get_api(mainloop.get()), "Aegisub"), mainloop.get());
 	if (!context.get())
@@ -283,14 +285,15 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 
 PulseAudioPlayer::~PulseAudioPlayer()
 {
+	PAThreadedMainloopLock lock{mainloop.get()};
 	if (is_playing) Stop();
 }
 
 void PulseAudioPlayer::Play(int64_t start,int64_t count)
 {
+	PAThreadedMainloopLock lock{mainloop.get()};
 	if (is_playing) {
 		// If we're already playing, do a quick "reset"
-		PAThreadedMainloopLock lock{mainloop.get()};
 		is_playing = false;
 
 		PAOperation op{pa_stream_flush(stream.get(), (pa_stream_success_cb_t)PAStreamSuccessCB, this)};
@@ -311,15 +314,11 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 	is_playing = true;
 
 	play_start_time = 0;
-	{
-		PAThreadedMainloopLock lock{mainloop.get()};
-		if (int paerror = pa_stream_get_time(stream.get(), (pa_usec_t*) &play_start_time))
-			LOG_E("audio/player/pulse") << "Error getting stream time: " << pa_strerror(paerror) << "(" << paerror << ")";
-	}
+	if (int paerror = pa_stream_get_time(stream.get(), (pa_usec_t*) &play_start_time))
+		LOG_E("audio/player/pulse") << "Error getting stream time: " << pa_strerror(paerror) << "(" << paerror << ")";
 
 	PulseAudioPlayer::PAStreamWriteCB(stream.get(), pa_stream_writable_size(stream.get()), this);
 
-	PAThreadedMainloopLock lock{mainloop.get()};
 	PAOperation op{pa_stream_trigger(stream.get(), (pa_stream_success_cb_t)PAStreamSuccessCB, this)};
 
 	while (pa_operation_get_state(op.get()) == PA_OPERATION_RUNNING)
@@ -333,6 +332,7 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 
 void PulseAudioPlayer::Stop()
 {
+	PAThreadedMainloopLock lock{mainloop.get()};
 	if (!is_playing) return;
 
 	is_playing = false;
@@ -342,7 +342,6 @@ void PulseAudioPlayer::Stop()
 	end_frame = 0;
 
 	// Flush the stream of data
-	PAThreadedMainloopLock lock{mainloop.get()};
 	PAOperation op{pa_stream_flush(stream.get(), (pa_stream_success_cb_t)PAStreamSuccessCB, this)};
 
 	while (pa_operation_get_state(op.get()) == PA_OPERATION_RUNNING)
@@ -356,11 +355,14 @@ void PulseAudioPlayer::Stop()
 
 void PulseAudioPlayer::SetEndPosition(int64_t pos)
 {
+	PAThreadedMainloopLock lock{mainloop.get()};
 	end_frame = pos;
 }
 
 int64_t PulseAudioPlayer::GetCurrentPosition()
 {
+	PAThreadedMainloopLock lock{mainloop.get()};
+
 	if (!is_playing) return 0;
 
 	// FIXME: this should be based on not duration played but actual sample being heard
