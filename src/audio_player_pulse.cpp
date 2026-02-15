@@ -95,7 +95,7 @@ public:
 	template<typename ...Args>
 	[[nodiscard]] int connect(Args&&... args) {
 		assert(!connected);
-		PAThreadedMainloopLock lock(mainloop);
+		PAThreadedMainloopLock lock{mainloop};
 		int error = pa_context_connect(context, std::forward<Args>(args)...);
 		if (error >= 0)
 			connected = true;
@@ -112,7 +112,7 @@ public:
 
 	~PAContext() {
 		if (context) {
-			PAThreadedMainloopLock lock(mainloop);
+			PAThreadedMainloopLock lock{mainloop};
 			if (connected)
 				pa_context_disconnect(context);
 
@@ -142,7 +142,7 @@ public:
 	template<typename ...Args>
 	[[nodiscard]] int connect(Args&& ...args) {
 		assert(!connected);
-		PAThreadedMainloopLock lock(mainloop);
+		PAThreadedMainloopLock lock{mainloop};
 		int error = pa_stream_connect_playback(stream, std::forward<Args>(args)...);
 		if (!error)
 			connected = true;
@@ -154,7 +154,7 @@ public:
 
 	~PAStream() {
 		if (stream) {
-			PAThreadedMainloopLock lock(mainloop);
+			PAThreadedMainloopLock lock{mainloop};
 			if (connected)
 				pa_stream_disconnect(stream);
 
