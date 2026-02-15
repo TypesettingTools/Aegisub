@@ -1,4 +1,5 @@
 // Copyright (c) 2007, Niels Martin Hansen
+// Copyright (c) 2026, arch1t3cht
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
