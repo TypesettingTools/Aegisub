@@ -187,8 +187,6 @@ class PulseAudioPlayer final : public AudioPlayer {
 
 	volatile pa_usec_t play_start_time; // timestamp when playback was started
 
-	int paerror = 0;
-
 	/// Called by PA to notify about other context-related stuff
 	static void PAContextNotifyCB(pa_context *c, PulseAudioPlayer *thread);
 	/// Called by PA when a stream operation completes
@@ -240,7 +238,7 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 			break;
 		} else if (cstate == PA_CONTEXT_FAILED) {
 			// eww
-			paerror = context.get_errno();
+			int paerror = context.get_errno();
 			throw AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror));
 		}
 		// otherwise loop once more
@@ -265,8 +263,7 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 	pa_stream_set_write_callback(stream.get(), (pa_stream_request_cb_t)PAStreamWriteCB, this);
 
 	// Connect stream
-	paerror = stream.connect(nullptr, nullptr, (pa_stream_flags_t)(PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_NOT_MONOTONOUS|PA_STREAM_AUTO_TIMING_UPDATE), nullptr, nullptr);
-	if (paerror) {
+	if (int paerror = stream.connect(nullptr, nullptr, (pa_stream_flags_t)(PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_NOT_MONOTONOUS|PA_STREAM_AUTO_TIMING_UPDATE), nullptr, nullptr)) {
 		LOG_E("audio/player/pulse") << "Stream connection failed: " << pa_strerror(paerror) << "(" << paerror << ")";
 		throw AudioPlayerOpenError(std::string("PulseAudio reported error: ") + pa_strerror(paerror));
 	}
@@ -275,7 +272,7 @@ PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(p
 		if (sstate == PA_STREAM_READY) {
 			break;
 		} else if (sstate == PA_STREAM_FAILED) {
-			paerror = context.get_errno();
+			int paerror = context.get_errno();
 			LOG_E("audio/player/pulse") << "Stream connection failed: " << pa_strerror(paerror) << "(" << paerror << ")";
 			throw AudioPlayerOpenError("PulseAudio player: Something went wrong connecting the stream");
 		}
@@ -299,7 +296,7 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 		}
 		stream_success.Wait();
 		if (!stream_success_val) {
-			paerror = context.get_errno();
+			int paerror = context.get_errno();
 			LOG_E("audio/player/pulse") << "Error flushing stream: " << pa_strerror(paerror) << "(" << paerror << ")";
 		}
 	}
@@ -313,10 +310,9 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 	play_start_time = 0;
 	{
 		PAThreadedMainloopLock lock{mainloop.get()};
-		paerror = pa_stream_get_time(stream.get(), (pa_usec_t*) &play_start_time);
+		if (int paerror = pa_stream_get_time(stream.get(), (pa_usec_t*) &play_start_time))
+			LOG_E("audio/player/pulse") << "Error getting stream time: " << pa_strerror(paerror) << "(" << paerror << ")";
 	}
-	if (paerror)
-		LOG_E("audio/player/pulse") << "Error getting stream time: " << pa_strerror(paerror) << "(" << paerror << ")";
 
 	PulseAudioPlayer::PAStreamWriteCB(stream.get(), pa_stream_writable_size(stream.get()), this);
 
@@ -326,7 +322,7 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 	}
 	stream_success.Wait();
 	if (!stream_success_val) {
-		paerror = context.get_errno();
+		int paerror = context.get_errno();
 		LOG_E("audio/player/pulse") << "Error triggering stream: " << pa_strerror(paerror) << "(" << paerror << ")";
 	}
 }
@@ -348,7 +344,7 @@ void PulseAudioPlayer::Stop()
 	}
 	stream_success.Wait();
 	if (!stream_success_val) {
-		paerror = context.get_errno();
+		int paerror = context.get_errno();
 		LOG_E("audio/player/pulse") << "Error flushing stream: " << pa_strerror(paerror) << "(" << paerror << ")";
 	}
 }
@@ -367,8 +363,7 @@ int64_t PulseAudioPlayer::GetCurrentPosition()
 
 	// Calculation duration we have played, in microseconds
 	pa_usec_t play_cur_time;
-	paerror = pa_stream_get_time(stream.get(), &play_cur_time);
-	if (paerror)
+	if (int paerror = pa_stream_get_time(stream.get(), &play_cur_time))
 		LOG_E("audio/player/pulse") << "Error getting stream time: " << pa_strerror(paerror) << "(" << paerror << ")";
 	pa_usec_t playtime = play_cur_time - play_start_time;
 
