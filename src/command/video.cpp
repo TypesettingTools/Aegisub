@@ -675,7 +675,7 @@ struct video_reset_pan final : public validator_video_loaded {
        STR_HELP("Reset the video's position in the video display")
 
        void operator()(agi::Context *c) override {
-		   c->videoDisplay->ResetVideoZoom();
+		   c->videoDisplay->ResetContentZoom();
        }
 };
 
