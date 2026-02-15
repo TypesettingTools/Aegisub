@@ -171,20 +171,20 @@ class PulseAudioPlayer final : public AudioPlayer {
 	float volume = 1.f;
 	bool is_playing = false;
 
-	volatile unsigned long start_frame = 0;
-	volatile unsigned long cur_frame = 0;
-	volatile unsigned long end_frame = 0;
+	unsigned long start_frame = 0;
+	unsigned long cur_frame = 0;
+	unsigned long end_frame = 0;
 
 	unsigned long bpf = 0; // bytes per frame
 
-	volatile int stream_success_val;
+	int stream_success_val;
 
 	PAThreadedMainloop mainloop; // pulseaudio mainloop handle
 	PAContext context; // connection context
 
 	PAStream stream;
 
-	volatile pa_usec_t play_start_time; // timestamp when playback was started
+	pa_usec_t play_start_time; // timestamp when playback was started
 
 	/// Called by PA to notify about other context-related stuff
 	static void PAContextNotifyCB(pa_context *c, pa_threaded_mainloop *mainloop);
