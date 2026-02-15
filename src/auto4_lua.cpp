@@ -274,8 +274,12 @@ namespace {
 			return error(L, "Not a style entry");
 
 		double width, height, descent, extlead;
-		if (!Automation4::CalculateTextExtents(static_cast<AssStyle*>(etp),
-				check_string(L, 2), width, height, descent, extlead))
+		int result;
+
+		agi::dispatch::Main().Sync([&]() {
+			result = Automation4::CalculateTextExtents(static_cast<AssStyle*>(etp), check_string(L, 2), width, height, descent, extlead);
+		});
+		if (!result)
 			return error(L, "Some internal error occurred calculating text_extents");
 
 		push_value(L, width);
