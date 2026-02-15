@@ -53,6 +53,25 @@ struct PAThreadedMainloopDeleter {
 
 using PAThreadedMainloop = std::unique_ptr<pa_threaded_mainloop, PAThreadedMainloopDeleter>;
 
+class PAThreadedMainloopLock {
+	pa_threaded_mainloop *mainloop = nullptr;
+public:
+	[[nodiscard]] PAThreadedMainloopLock(pa_threaded_mainloop *mainloop) : mainloop(mainloop) {
+		if (mainloop)
+			pa_threaded_mainloop_lock(mainloop);
+	}
+
+	PAThreadedMainloopLock(const PAThreadedMainloopLock&) = delete;
+	PAThreadedMainloopLock& operator=(const PAThreadedMainloopLock&) = delete;
+	PAThreadedMainloopLock(PAThreadedMainloopLock&&) = delete;
+	PAThreadedMainloopLock& operator=(PAThreadedMainloopLock&&) = delete;
+
+	~PAThreadedMainloopLock() {
+		if (mainloop)
+			pa_threaded_mainloop_unlock(mainloop);
+	}
+};
+
 // We cannot use std::unique_ptr for these since the mainloop needs to be locked
 // during the destructor.
 class PAContext {
@@ -76,9 +95,8 @@ public:
 	template<typename ...Args>
 	[[nodiscard]] int connect(Args&&... args) {
 		assert(!connected);
-		pa_threaded_mainloop_lock(mainloop);
+		PAThreadedMainloopLock lock{mainloop};
 		int error = pa_context_connect(context, std::forward<Args>(args)...);
-		pa_threaded_mainloop_unlock(mainloop);
 		if (error >= 0)
 			connected = true;
 
@@ -86,22 +104,19 @@ public:
 	}
 
 	[[nodiscard]] int get_errno() {
-		pa_threaded_mainloop_lock(mainloop);
-		int result = pa_context_errno(context);
-		pa_threaded_mainloop_unlock(mainloop);
-		return result;
+		PAThreadedMainloopLock lock(mainloop);
+		return pa_context_errno(context);
 	}
 
 	pa_context *get() { return context; }
 
 	~PAContext() {
 		if (context) {
-			pa_threaded_mainloop_lock(mainloop);
+			PAThreadedMainloopLock lock{mainloop};
 			if (connected)
 				pa_context_disconnect(context);
 
 			pa_context_unref(context);
-			pa_threaded_mainloop_unlock(mainloop);
 		}
 	}
 };
@@ -127,9 +142,8 @@ public:
 	template<typename ...Args>
 	[[nodiscard]] int connect(Args&& ...args) {
 		assert(!connected);
-		pa_threaded_mainloop_lock(mainloop);
+		PAThreadedMainloopLock lock{mainloop};
 		int error = pa_stream_connect_playback(stream, std::forward<Args>(args)...);
-		pa_threaded_mainloop_unlock(mainloop);
 		if (!error)
 			connected = true;
 
@@ -140,12 +154,11 @@ public:
 
 	~PAStream() {
 		if (stream) {
-			pa_threaded_mainloop_lock(mainloop);
+			PAThreadedMainloopLock lock{mainloop};
 			if (connected)
 				pa_stream_disconnect(stream);
 
 			pa_stream_unref(stream);
-			pa_threaded_mainloop_unlock(mainloop);
 		}
 	}
 };
@@ -278,9 +291,11 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 		// If we're already playing, do a quick "reset"
 		is_playing = false;
 
-		pa_threaded_mainloop_lock(mainloop.get());
-		pa_operation *op = pa_stream_flush(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this);
-		pa_threaded_mainloop_unlock(mainloop.get());
+		pa_operation *op = nullptr;
+		{
+			PAThreadedMainloopLock lock{mainloop.get()};
+			op = pa_stream_flush(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this);
+		}
 		stream_success.Wait();
 		pa_operation_unref(op);
 		if (!stream_success_val) {
@@ -296,17 +311,20 @@ void PulseAudioPlayer::Play(int64_t start,int64_t count)
 	is_playing = true;
 
 	play_start_time = 0;
-	pa_threaded_mainloop_lock(mainloop.get());
-	paerror = pa_stream_get_time(stream.get(), (pa_usec_t*) &play_start_time);
-	pa_threaded_mainloop_unlock(mainloop.get());
+	{
+		PAThreadedMainloopLock lock{mainloop.get()};
+		paerror = pa_stream_get_time(stream.get(), (pa_usec_t*) &play_start_time);
+	}
 	if (paerror)
 		LOG_E("audio/player/pulse") << "Error getting stream time: " << pa_strerror(paerror) << "(" << paerror << ")";
 
 	PulseAudioPlayer::pa_stream_write(stream.get(), pa_stream_writable_size(stream.get()), this);
 
-	pa_threaded_mainloop_lock(mainloop.get());
-	pa_operation *op = pa_stream_trigger(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this);
-	pa_threaded_mainloop_unlock(mainloop.get());
+	pa_operation *op = nullptr;
+	{
+		PAThreadedMainloopLock lock{mainloop.get()};
+		op = pa_stream_trigger(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this);
+	}
 	stream_success.Wait();
 	pa_operation_unref(op);
 	if (!stream_success_val) {
@@ -326,9 +344,11 @@ void PulseAudioPlayer::Stop()
 	end_frame = 0;
 
 	// Flush the stream of data
-	pa_threaded_mainloop_lock(mainloop.get());
-	pa_operation *op = pa_stream_flush(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this);
-	pa_threaded_mainloop_unlock(mainloop.get());
+	pa_operation *op = nullptr;
+	{
+		PAThreadedMainloopLock lock{mainloop.get()};
+		op = pa_stream_flush(stream.get(), (pa_stream_success_cb_t)pa_stream_success, this);
+	}
 	stream_success.Wait();
 	pa_operation_unref(op);
 	if (!stream_success_val) {
