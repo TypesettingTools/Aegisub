@@ -91,6 +91,7 @@ class VideoDisplay final : public wxGLCanvas {
 	/// The zoom level of the video inside the video display.
 	double videoZoomValue = 1;
 
+	bool isZoomGestureActive = false;
 	double videoZoomAtGestureStart = 1;
 
 	/// The video pan, relative to the unzoomed viewport's height.
