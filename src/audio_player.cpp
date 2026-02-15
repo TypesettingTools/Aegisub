@@ -33,6 +33,7 @@
 #include "factory_manager.h"
 #include "options.h"
 
+#include <libaegisub/log.h>
 #include <libaegisub/string.h>
 
 std::unique_ptr<AudioPlayer> CreateAlsaPlayer(agi::AudioProvider *providers, wxWindow *window);
@@ -87,9 +88,12 @@ std::unique_ptr<AudioPlayer> AudioPlayerFactory::GetAudioPlayer(agi::AudioProvid
 	std::string error;
 	for (auto factory : sorted) {
 		try {
-			return factory->create(provider, window);
+			auto player = factory->create(provider, window);
+			LOG_I("audio/player") << "Using audio player: " << factory->name;
+			return player;
 		}
 		catch (AudioPlayerOpenError const& err) {
+			LOG_E("audio/player") << "Failed to create audio player " << factory->name << ": " << err.GetMessage();
 			agi::AppendStr(error, factory->name, " factory: ", err.GetMessage(), "\n");
 		}
 	}
