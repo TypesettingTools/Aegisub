@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub [TR]\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 20:46+0100\n"
-"PO-Revision-Date: 2025-12-05 15:08+0300\n"
+"POT-Creation-Date: 2026-02-16 22:57+0100\n"
+"PO-Revision-Date: 2026-02-18 10:51+0300\n"
 "Last-Translator: Kerim Demirkaynak <kerim@post.com>\n"
 "Language-Team: Türkçe\n"
 "Language: tr\n"
@@ -11,9 +11,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 "X-Generator: Poedit 3.5\n"
 "X-Loco-Version: 2.6.10; wp-6.5.5\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
 msgid "Language"
@@ -115,7 +115,7 @@ msgstr "Dikey yakınlaştırma"
 msgid "Audio Volume"
 msgstr "Ses seviyesi"
 
-#: ../src/audio_display.cpp:706
+#: ../src/audio_display.cpp:718
 #, c-format
 msgid "%d%%, %d pixel/second"
 msgstr "%d%%, %d piksel/saniye"
@@ -281,11 +281,11 @@ msgstr ""
 "'%s' Otomasyon betiğinde uyarı:\n"
 "%s"
 
-#: ../src/auto4_lua.cpp:458
+#: ../src/auto4_lua.cpp:460
 msgid "Could not initialize Lua state"
 msgstr "Lua durumu başlatılamadı"
 
-#: ../src/auto4_lua.cpp:541
+#: ../src/auto4_lua.cpp:543
 #, c-format
 msgid ""
 "Error initialising Lua script \"%s\":\n"
@@ -296,13 +296,55 @@ msgstr ""
 "\n"
 "%s"
 
-#: ../src/auto4_lua.cpp:551
+#: ../src/auto4_lua.cpp:553
 msgid ""
 "Attempted to load an Automation 3 script as an Automation 4 Lua script. "
 "Automation 3 is no longer supported."
 msgstr ""
 "Bir Otomasyon 3 betiği Otomasyon 4 Lua betiği olarak yüklenmeye çalışıldı. "
 "Otomasyon 3 artık desteklenmemektedir."
+
+#: ../src/auto4_lua.cpp:827
+#, c-format
+msgid ""
+"Runtime error in Lua macro validation function:\n"
+"%s"
+msgstr ""
+"Lua makrosu doğrulama işlevinde çalışma zamanı hatası:\n"
+"%s"
+
+#: ../src/auto4_lua.cpp:881
+#, c-format
+msgid "Active row %d is out of bounds (must be 1-%u)"
+msgstr "Aktif %d. satır sınırların dışında (1-%u aralığında olmalı)"
+
+#: ../src/auto4_lua.cpp:897
+#, c-format
+msgid "Selected row %d is out of bounds (must be 1-%u)"
+msgstr "Seçilen %d. satır sınırların dışında (1-%u aralığında olmalı)"
+
+#: ../src/auto4_lua.cpp:903
+#, c-format
+msgid "Selected row %d is not a dialogue line"
+msgstr "Seçilen %d. satır bir diyalog satırı değil"
+
+#: ../src/auto4_lua.cpp:969
+#, c-format
+msgid ""
+"Runtime error in Lua macro IsActive function:\n"
+"%s"
+msgstr ""
+"Lua makrosu IsActive işlevinde çalışma zamanı hatası:\n"
+"%s"
+
+#: ../src/auto4_lua.cpp:1075
+#, c-format
+msgid ""
+"Runtime error in Lua config dialog function:\n"
+"%s"
+msgstr ""
+"Lua yapılandırma diyaloğu işlevinde çalışma zamanı hatası:\n"
+"%s"
 
 #: ../src/charset_detect.cpp:50
 msgid ""
@@ -396,13 +438,25 @@ msgstr "&Dil"
 msgid "Select Aegisub interface language"
 msgstr "Aegisub arayüz dilini seç"
 
+#: ../src/command/app.cpp:167
+msgid ""
+"Aegisub needs to be restarted so that the new language can be applied. "
+"Restart now?"
+msgstr ""
+"Yeni dilin uygulanabilmesi için Aegisub'ın yeniden başlatılması gerekiyor. "
+"Şimdi yeniden başlatılsın mı?"
+
+#: ../src/command/app.cpp:167
+msgid "Restart Aegisub?"
+msgstr "Aegisub yeniden başlatılsın mı?"
+
 #: ../src/command/app.cpp:180
 msgid "&Log window"
-msgstr "&Kütük penceresi"
+msgstr "&Günlük penceresi"
 
 #: ../src/command/app.cpp:181 ../src/dialog_log.cpp:100
 msgid "Log window"
-msgstr "Kütük penceresi"
+msgstr "Günlük penceresi"
 
 #: ../src/command/app.cpp:182
 msgid "View the event log"
@@ -422,11 +476,11 @@ msgstr "Yeni bir program penceresi aç"
 
 #: ../src/command/app.cpp:204
 msgid "&Options..."
-msgstr "&Ayarlar"
+msgstr "A&yarlar"
 
-#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:146
-#: ../src/dialog_timing_processor.cpp:168 ../src/preferences.cpp:129
-#: ../src/preferences.cpp:169
+#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:151
+#: ../src/dialog_timing_processor.cpp:169 ../src/preferences.cpp:132
+#: ../src/preferences.cpp:172
 msgid "Options"
 msgstr "Ayarlar"
 
@@ -456,7 +510,7 @@ msgstr "Araç Çubuğunu Göster"
 
 #: ../src/command/app.cpp:258
 msgid "&Check for Updates..."
-msgstr "&Güncelleştirmeleri denetle"
+msgstr "G&üncelleştirmeleri denetle"
 
 #: ../src/command/app.cpp:259
 msgid "Check for Updates"
@@ -492,7 +546,7 @@ msgstr "Tüm açık belgeleri öne getir"
 
 #: ../src/command/audio.cpp:65
 msgid "&Close Audio"
-msgstr "&Ses Kapat"
+msgstr "Sesi &Kapat"
 
 #: ../src/command/audio.cpp:66
 msgid "Close Audio"
@@ -506,7 +560,7 @@ msgstr "Geçerli açık sesi kapat"
 msgid "&Open Audio File..."
 msgstr "&Ses Dosyası Aç"
 
-#: ../src/command/audio.cpp:78 ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:78
 msgid "Open Audio File"
 msgstr "Ses Dosyası Aç"
 
@@ -521,6 +575,11 @@ msgstr "Ses Formatları"
 #: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "Video Formatları"
+
+#: ../src/command/audio.cpp:85
+msgctxt "dialog title"
+msgid "Open Audio File"
+msgstr "Ses Dosyası Aç"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -540,7 +599,7 @@ msgstr "Hata ayıklama için 150 dakikalık gürültü dolu bir ses klibi aç"
 
 #: ../src/command/audio.cpp:116
 msgid "Open Audio from &Video"
-msgstr "Videodan ses dosyası aç"
+msgstr "&Videodan ses dosyası aç"
 
 #: ../src/command/audio.cpp:117
 msgid "Open Audio from Video"
@@ -552,7 +611,7 @@ msgstr "Geçerli video dosyasındaki sesi aç"
 
 #: ../src/command/audio.cpp:132
 msgid "&Spectrum Display"
-msgstr "&Spektrum Ekranı"
+msgstr "S&pektrum Ekranı"
 
 #: ../src/command/audio.cpp:133
 msgid "Spectrum Display"
@@ -583,8 +642,8 @@ msgid "Save an audio clip of the selected line"
 msgstr "Seçilen satırın ses klibini kaydet"
 
 #: ../src/command/audio.cpp:177
-msgid "Save audio clip"
-msgstr "Ses klibi kaydet"
+msgid "Save Audio Clip"
+msgstr "Ses Klibi Kaydet"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
 msgid "Play current audio selection"
@@ -684,7 +743,7 @@ msgstr ""
 
 #: ../src/command/audio.cpp:384 ../src/command/audio.cpp:385
 msgid "Commit and stay on current line"
-msgstr "Değişiklikleri onayla ve mevcut satırda kal"
+msgstr "Değişiklikleri onayla ve geçerli satırda kal"
 
 #: ../src/command/audio.cpp:386
 msgid "Commit any pending audio timing changes and stay on the current line"
@@ -700,51 +759,69 @@ msgid "Scroll the audio display to center on the current audio selection"
 msgstr "Ses görüntüsünü geçerli ses seçimine odaklanacak şekilde kaydır"
 
 #: ../src/command/audio.cpp:408 ../src/command/audio.cpp:409
+msgid "Go to selection start"
+msgstr "Seçilen başlangıca git"
+
+#: ../src/command/audio.cpp:410
+msgid ""
+"Scroll the audio display to center on the start of current audio selection"
+msgstr "Ses görünümünü geçerli ses seçiminin başlangıcına ortala"
+
+#: ../src/command/audio.cpp:419 ../src/command/audio.cpp:420
+msgid "Go to selection end"
+msgstr "Seçilen bitişe git"
+
+#: ../src/command/audio.cpp:421
+msgid ""
+"Scroll the audio display to center on the end of current audio selection"
+msgstr "Ses görünümünü geçerli ses seçiminin bitişine ortala"
+
+#: ../src/command/audio.cpp:430 ../src/command/audio.cpp:431
 msgid "Scroll left"
 msgstr "Sola kaydır"
 
-#: ../src/command/audio.cpp:410
+#: ../src/command/audio.cpp:432
 msgid "Scroll the audio display left"
 msgstr "Ses ekranını sola kaydır"
 
-#: ../src/command/audio.cpp:419 ../src/command/audio.cpp:420
+#: ../src/command/audio.cpp:441 ../src/command/audio.cpp:442
 msgid "Scroll right"
 msgstr "Sağa kaydır"
 
-#: ../src/command/audio.cpp:421
+#: ../src/command/audio.cpp:443
 msgid "Scroll the audio display right"
 msgstr "Ses ekranını sağa kaydır"
 
-#: ../src/command/audio.cpp:435 ../src/command/audio.cpp:436
-#: ../src/command/audio.cpp:437
+#: ../src/command/audio.cpp:457 ../src/command/audio.cpp:458
+#: ../src/command/audio.cpp:459
 msgid "Auto scroll audio display to selected line"
 msgstr "Ses ekranını seçilen satıra otomatik kaydır"
 
-#: ../src/command/audio.cpp:452 ../src/command/audio.cpp:453
-#: ../src/command/audio.cpp:454
+#: ../src/command/audio.cpp:474 ../src/command/audio.cpp:475
+#: ../src/command/audio.cpp:476
 msgid "Automatically commit all changes"
 msgstr "Otomatik tüm değişikleri uygula"
 
-#: ../src/command/audio.cpp:469 ../src/command/audio.cpp:470
+#: ../src/command/audio.cpp:491 ../src/command/audio.cpp:492
 msgid "Auto go to next line on commit"
 msgstr "Uygulama işlemi sonrası sonraki satıra otomatik geç"
 
-#: ../src/command/audio.cpp:471
+#: ../src/command/audio.cpp:493
 msgid "Automatically go to next line on commit"
 msgstr "Uygulama işlemi sonrası sonraki satıra otomatik olarak geç"
 
-#: ../src/command/audio.cpp:486 ../src/command/audio.cpp:487
-#: ../src/command/audio.cpp:488
+#: ../src/command/audio.cpp:508 ../src/command/audio.cpp:509
+#: ../src/command/audio.cpp:510
 msgid "Spectrum analyzer mode"
 msgstr "Spektrum analiz modu"
 
-#: ../src/command/audio.cpp:503 ../src/command/audio.cpp:504
-#: ../src/command/audio.cpp:505
+#: ../src/command/audio.cpp:525 ../src/command/audio.cpp:526
+#: ../src/command/audio.cpp:527
 msgid "Link vertical zoom and volume sliders"
 msgstr "Dikey yakınlaştırma ve ses düzeyi kaydırıcılarına bağlantı"
 
-#: ../src/command/audio.cpp:520 ../src/command/audio.cpp:521
-#: ../src/command/audio.cpp:522
+#: ../src/command/audio.cpp:542 ../src/command/audio.cpp:543
+#: ../src/command/audio.cpp:544
 msgid "Toggle karaoke mode"
 msgstr "Karaoke moduna geç"
 
@@ -784,10 +861,10 @@ msgstr "Otomasyon betikleri otoyüklemeyi tekrar yükle"
 
 #: ../src/command/automation.cpp:73 ../src/command/automation.cpp:85
 msgid "&Automation..."
-msgstr "&Otomasyon"
+msgstr "Oto&masyon"
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:339
+#: ../src/preferences.cpp:342
 msgid "Automation"
 msgstr "Otomasyon"
 
@@ -924,7 +1001,7 @@ msgstr "üstçizgiyi değiştir"
 msgid "Font Face..."
 msgstr "Font Adı"
 
-#: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:250
+#: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:277
 msgid "Font Face"
 msgstr "Font Adı"
 
@@ -950,7 +1027,7 @@ msgstr "Altyazılarda kelimeleri bul ve değiştir"
 
 #: ../src/command/edit.cpp:606
 msgid "&Copy Lines"
-msgstr "&Satırları Kopyala"
+msgstr "Satırları &Kopyala"
 
 #: ../src/command/edit.cpp:607
 msgid "Copy Lines"
@@ -978,7 +1055,7 @@ msgstr "satırları kes"
 
 #: ../src/command/edit.cpp:646
 msgid "De&lete Lines"
-msgstr "Sa&tırları Sil"
+msgstr "&Satırları Sil"
 
 #: ../src/command/edit.cpp:647
 msgid "Delete Lines"
@@ -1002,7 +1079,7 @@ msgstr "böl"
 
 #: ../src/command/edit.cpp:723
 msgid "&Duplicate Lines"
-msgstr "&Satırları Çoğalt"
+msgstr "Satırları &Çoğalt"
 
 #: ../src/command/edit.cpp:724
 msgid "Duplicate Lines"
@@ -1010,7 +1087,7 @@ msgstr "Satırları Çoğalt"
 
 #: ../src/command/edit.cpp:725
 msgid "Duplicate the selected lines"
-msgstr "Seçili satırları çoğaltır"
+msgstr "Seçili satırları çoğalt"
 
 #: ../src/command/edit.cpp:734 ../src/command/edit.cpp:735
 msgid "Split lines after current frame"
@@ -1062,7 +1139,7 @@ msgstr "Bitiştir"
 
 #: ../src/command/edit.cpp:801
 msgid "Join selected lines in a single one, concatenating text together"
-msgstr "Seçili satırları tek hale getirir, metinleri birleştirir"
+msgstr "Seçili satırları tek satırda birleştir, metinleri uca ekle"
 
 #: ../src/command/edit.cpp:804 ../src/command/edit.cpp:815
 msgid "join lines"
@@ -1070,7 +1147,7 @@ msgstr "satırları birleştir"
 
 #: ../src/command/edit.cpp:810
 msgid "Keep &First"
-msgstr "İlkini &Koru"
+msgstr "&İlkini Koru"
 
 #: ../src/command/edit.cpp:811
 msgid "Keep First"
@@ -1086,7 +1163,7 @@ msgstr ""
 
 #: ../src/command/edit.cpp:853
 msgid "&Paste Lines"
-msgstr "&Satırları Yapıştır"
+msgstr "Satırları &Yapıştır"
 
 #: ../src/command/edit.cpp:854
 msgid "Paste Lines"
@@ -1098,7 +1175,7 @@ msgstr "Altyazıları yapıştır"
 
 #: ../src/command/edit.cpp:884
 msgid "Paste Lines &Over..."
-msgstr "Satırları Üzerine &Yapıştır"
+msgstr "S&atırları Üzerine Yapıştır"
 
 #: ../src/command/edit.cpp:885
 msgid "Paste Lines Over"
@@ -1110,7 +1187,7 @@ msgstr "Altyazıları diğerlerinin üzerine yapıştır"
 
 #: ../src/command/edit.cpp:968
 msgid "Recom&bine Lines"
-msgstr "Satırları Tekrar Kom&bine Et"
+msgstr "Sat&ırları Tekrar Kombine Et"
 
 #: ../src/command/edit.cpp:969
 msgid "Recombine Lines"
@@ -1140,7 +1217,7 @@ msgstr "bölme"
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
 #: ../src/subs_edit_ctrl.cpp:398
 msgid "Split at cursor (estimate times)"
-msgstr "İmleçte böl (zamanları biçimlendir)"
+msgstr "İmleçte böl (süreleri tahmin et)"
 
 #: ../src/command/edit.cpp:1116
 msgid ""
@@ -1202,7 +1279,7 @@ msgstr "Son eylemi geri al"
 
 #: ../src/command/edit.cpp:1190
 msgid "Nothing to &undo"
-msgstr "Geri alınan öge &mevcut değil"
+msgstr "G&eri alınan öge mevcut değil"
 
 #: ../src/command/edit.cpp:1191
 #, c-format
@@ -1231,7 +1308,7 @@ msgid "revert line"
 msgstr "satırı geri al"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:416
+#: ../src/preferences.cpp:419
 msgid "Clear"
 msgstr "Temizle"
 
@@ -1325,8 +1402,8 @@ msgid "&Effect"
 msgstr "&Efekt"
 
 #: ../src/command/grid.cpp:133 ../src/command/grid.cpp:145
-#: ../src/dialog_paste_over.cpp:72 ../src/grid_column.cpp:214
-#: ../src/grid_column.cpp:215 ../src/subs_edit_box.cpp:140
+#: ../src/dialog_paste_over.cpp:74 ../src/grid_column.cpp:216
+#: ../src/grid_column.cpp:217 ../src/subs_edit_box.cpp:140
 msgid "Effect"
 msgstr "Efekt"
 
@@ -1343,7 +1420,7 @@ msgid "&End Time"
 msgstr "&Bitiş Zamanı"
 
 #: ../src/command/grid.cpp:157 ../src/command/grid.cpp:169
-#: ../src/dialog_paste_over.cpp:66 ../src/grid_column.cpp:170
+#: ../src/dialog_paste_over.cpp:68 ../src/grid_column.cpp:172
 msgid "End Time"
 msgstr "Bitiş Zamanı"
 
@@ -1360,7 +1437,7 @@ msgid "&Layer"
 msgstr "&Katman"
 
 #: ../src/command/grid.cpp:181 ../src/command/grid.cpp:193
-#: ../src/dialog_paste_over.cpp:64 ../src/grid_column.cpp:130
+#: ../src/dialog_paste_over.cpp:66 ../src/grid_column.cpp:132
 msgid "Layer"
 msgstr "Katman"
 
@@ -1374,16 +1451,16 @@ msgstr "Seçilen altyazıları katman numaralarına göre sırala"
 
 #: ../src/command/grid.cpp:204 ../src/command/grid.cpp:216
 msgid "&Start Time"
-msgstr "&Başlangıç Zamanı"
+msgstr "Ba&şlangıç Zamanı"
 
 #: ../src/command/grid.cpp:205 ../src/command/grid.cpp:217
-#: ../src/dialog_paste_over.cpp:65 ../src/grid_column.cpp:152
+#: ../src/dialog_paste_over.cpp:67 ../src/grid_column.cpp:154
 msgid "Start Time"
 msgstr "Başlangıç Zamanı"
 
 #: ../src/command/grid.cpp:206
 msgid "Sort all subtitles by their start times"
-msgstr "Tüm altyazıları başlangıç zamanlarına göre kaydır"
+msgstr "Tüm altyazıları başlangıç zamanlarına göre sırala"
 
 #: ../src/command/grid.cpp:218
 msgid "Sort selected subtitles by their start times"
@@ -1394,7 +1471,7 @@ msgid "St&yle Name"
 msgstr "St&il Adı"
 
 #: ../src/command/grid.cpp:229 ../src/command/grid.cpp:241
-#: ../src/dialog_style_editor.cpp:179
+#: ../src/dialog_style_editor.cpp:180
 msgid "Style Name"
 msgstr "Stil adı"
 
@@ -1428,7 +1505,7 @@ msgstr "ASS Şekillendirme Etiket modunu etiketleri gizlemeye ayarla."
 
 #: ../src/command/grid.cpp:277
 msgid "&Hide Tags"
-msgstr "&Etiketleri gizle"
+msgstr "E&tiketleri gizle"
 
 #: ../src/command/grid.cpp:278
 msgid "Hide Tags"
@@ -1440,7 +1517,7 @@ msgstr "Altyazı ızgarasında geçersiz kılma etiketlerini gizler"
 
 #: ../src/command/grid.cpp:293
 msgid "Sh&ow Tags"
-msgstr "Et&iketleri göster"
+msgstr "Etiket&leri göster"
 
 #: ../src/command/grid.cpp:294
 msgid "Show Tags"
@@ -1452,7 +1529,7 @@ msgstr "Altyazı kılavuzunda tam geçersiz kılma etiketlerini gösterir"
 
 #: ../src/command/grid.cpp:309
 msgid "S&implify Tags"
-msgstr "B&asitleştirilmiş Etiketler"
+msgstr "Ba&sitleştirilmiş Etiketler"
 
 #: ../src/command/grid.cpp:310
 msgid "Simplify Tags"
@@ -1503,7 +1580,7 @@ msgstr "&Hata Takip"
 
 #: ../src/command/help.cpp:48
 msgid "Bug Tracker"
-msgstr "&Hata Takip"
+msgstr "H&ata Takip"
 
 #: ../src/command/help.cpp:49
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
@@ -1522,6 +1599,10 @@ msgstr "İçerikler"
 #: ../src/command/help.cpp:70
 msgid "Help topics"
 msgstr "Yardım başlıkları"
+
+msgctxt "standard Windows menu"
+msgid "&Help"
+msgstr "&Yardım"
 
 #: ../src/command/help.cpp:80
 msgid "&IRC Channel"
@@ -1582,8 +1663,8 @@ msgid "Open a keyframe list file"
 msgstr "Anahtar kare listesi dosyası aç"
 
 #: ../src/command/keyframe.cpp:72
-msgid "Open keyframes file"
-msgstr "Anahtar kare dosyası aç"
+msgid "Open Keyframes File"
+msgstr "Anahtar Kare Dosyası Aç"
 
 #: ../src/command/keyframe.cpp:87
 msgid "Save Keyframes..."
@@ -1598,8 +1679,13 @@ msgid "Save the current list of keyframes to a file"
 msgstr "Geçerli anahtar kare listesini bir dosyaya kaydet"
 
 #: ../src/command/keyframe.cpp:97
-msgid "Save keyframes file"
-msgstr "Anahtar kare dosyasını kaydet"
+msgid "Save Keyframes File"
+msgstr "Anahtar Kare Dosyasını Kaydet"
+
+#: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
+#: ../src/command/timecode.cpp:93
+msgid "Text Files"
+msgstr "Metin Dosyaları"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
@@ -1659,7 +1745,7 @@ msgstr "Altyazılarda metin ara"
 
 #: ../src/command/subtitle.cpp:105
 msgid "Find &Next"
-msgstr "Sonrakini &Bul"
+msgstr "&Sonrakini Bul"
 
 #: ../src/command/subtitle.cpp:106
 msgid "Find Next"
@@ -1671,7 +1757,7 @@ msgstr "Son aramanın bir sonraki eşleşmesini bul"
 
 #: ../src/command/subtitle.cpp:134
 msgid "&After Current"
-msgstr "&Seçiliden Sonra"
+msgstr "S&eçiliden Sonra"
 
 #: ../src/command/subtitle.cpp:135
 msgid "After Current"
@@ -1691,7 +1777,7 @@ msgstr "Video zamanından başlayarak geçerli satırdan sonra yeni bir satır e
 
 #: ../src/command/subtitle.cpp:179
 msgid "&Before Current"
-msgstr "&Seçiliden Önce"
+msgstr "Se&çiliden Önce"
 
 #: ../src/command/subtitle.cpp:180
 msgid "Before Current"
@@ -1723,7 +1809,7 @@ msgstr "Yeni altyazı"
 
 #: ../src/command/subtitle.cpp:255 ../src/command/subtitle.cpp:256
 #: ../src/command/subtitle.cpp:257 ../src/dialog_progress.cpp:175
-#: ../src/dialog_style_manager.cpp:313
+#: ../src/dialog_style_manager.cpp:320
 msgid "Close"
 msgstr "Kapat"
 
@@ -1740,9 +1826,9 @@ msgid "Open a subtitles file"
 msgstr "Altyazı dosyası aç"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
-#: ../src/dialog_style_manager.cpp:667
-msgid "Open subtitles file"
-msgstr "Altyazı dosyası aç"
+#: ../src/dialog_style_manager.cpp:674
+msgid "Open Subtitles File"
+msgstr "Altyazı Dosyası Aç"
 
 #: ../src/command/subtitle.cpp:282
 msgid "Open A&utosaved Subtitles..."
@@ -1759,7 +1845,7 @@ msgstr ""
 
 #: ../src/command/subtitle.cpp:297
 msgid "Open Subtitles with &Charset..."
-msgstr "Altyazıyı karakter &seti ile aç"
+msgstr "Al&tyazıyı karakter seti ile aç"
 
 #: ../src/command/subtitle.cpp:298
 msgid "Open Subtitles with Charset"
@@ -1779,7 +1865,7 @@ msgstr "Karakter seti kodu seç:"
 
 #: ../src/command/subtitle.cpp:316
 msgid "Open Subtitles from &Video"
-msgstr "Altyazıyı Videodan &Aç"
+msgstr "Altyazıyı &Videodan Aç"
 
 #: ../src/command/subtitle.cpp:317
 msgid "Open Subtitles from Video"
@@ -1802,12 +1888,29 @@ msgid "Open script properties window"
 msgstr "Betik özellikleri penceresini aç"
 
 #: ../src/command/subtitle.cpp:347
-msgid "Save subtitles file"
-msgstr "Altyazı dosyasını kaydet"
+msgid "Save Subtitles File"
+msgstr "Altyazı Dosyasını Kaydet"
+
+#: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
+#: ../src/dialog_fonts_collector.cpp:312 ../src/dialog_fonts_collector.cpp:317
+#: ../src/dialog_fonts_collector.cpp:322 ../src/dialog_kara_timing_copy.cpp:495
+#: ../src/dialog_kara_timing_copy.cpp:497
+#: ../src/dialog_kara_timing_copy.cpp:547 ../src/dialog_search_replace.cpp:143
+#: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
+#: ../src/dialog_style_manager.cpp:689 ../src/dialog_style_manager.cpp:695
+#: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:195
+#: ../src/preferences.cpp:275 ../src/preferences.cpp:467
+msgid "Error"
+msgstr "Hata"
+
+#: ../src/command/subtitle.cpp:360 ../src/dialog_export.cpp:211
+#: ../src/dialog_style_manager.cpp:698 ../src/project.cpp:142
+msgid "Unknown error"
+msgstr "Bilinmeyen hata"
 
 #: ../src/command/subtitle.cpp:367
 msgid "&Save Subtitles"
-msgstr "&Altyazıyı Kaydet"
+msgstr "Altya&zıyı Kaydet"
 
 #: ../src/command/subtitle.cpp:368
 msgid "Save Subtitles"
@@ -1819,7 +1922,7 @@ msgstr "Geçerli altyazıları kaydet"
 
 #: ../src/command/subtitle.cpp:384
 msgid "Save Subtitles &as..."
-msgstr "Altyazıyı farklı &kaydet"
+msgstr "Altyaz&ıyı farklı kaydet"
 
 #: ../src/command/subtitle.cpp:385
 msgid "Save Subtitles as"
@@ -1829,10 +1932,10 @@ msgstr "Altyazıyı Farklı Kaydet"
 msgid "Save subtitles with another name"
 msgstr "Altyazıyı başka isimle kaydet"
 
-#: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:123
+#: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:127
 #: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:392
 msgid "Select &All"
-msgstr "Tümünü &Seç"
+msgstr "T&ümünü Seç"
 
 #: ../src/command/subtitle.cpp:396
 msgid "Select All"
@@ -1881,7 +1984,7 @@ msgstr ""
 
 #: ../src/command/time.cpp:116
 msgid "Change &Start"
-msgstr "Başlangıcı &Değiştir"
+msgstr "&Başlangıcı Değiştir"
 
 #: ../src/command/time.cpp:117
 msgid "Change Start"
@@ -1912,7 +2015,7 @@ msgstr "kareye kaydır"
 msgid "S&hift Times..."
 msgstr "Z&amanı Kaydır"
 
-#: ../src/command/time.cpp:154 ../src/dialog_shift_times.cpp:134
+#: ../src/command/time.cpp:154 ../src/dialog_shift_times.cpp:135
 msgid "Shift Times"
 msgstr "Zamanı Kaydır"
 
@@ -1922,7 +2025,7 @@ msgstr "Altyazıları zamana veya kareye göre kaydır"
 
 #: ../src/command/time.cpp:182
 msgid "Snap &End to Video"
-msgstr "Sonunu &videoya yasla"
+msgstr "Sonunu videoya yas&la"
 
 #: ../src/command/time.cpp:183
 msgid "Snap End to Video"
@@ -1934,7 +2037,7 @@ msgstr "Seçili altyazıların sonunu geçerli video karesine ayarla"
 
 #: ../src/command/time.cpp:194
 msgid "Snap to S&cene"
-msgstr "Ekrana Y&asla"
+msgstr "Sa&hneye Yasla"
 
 #: ../src/command/time.cpp:195
 msgid "Snap to Scene"
@@ -2048,39 +2151,49 @@ msgstr "Önceki satır veya hece"
 
 #: ../src/command/timecode.cpp:51 ../src/command/timecode.cpp:52
 msgid "Close Timecodes File"
-msgstr "Zamankodu Dosyalarını Kapat"
+msgstr "Zaman Kodu Dosyalarını Kapat"
 
 #: ../src/command/timecode.cpp:53
 msgid "Close the currently open timecodes file"
-msgstr "Geçerli zamankodu dosyalarını kapat"
+msgstr "Geçerli zaman kodu dosyalarını kapat"
 
 #: ../src/command/timecode.cpp:68
 msgid "Open Timecodes File..."
-msgstr "Zamankodu Dosyası Aç"
+msgstr "Zaman Kodu Dosyası Aç"
 
-#: ../src/command/timecode.cpp:69 ../src/command/timecode.cpp:74
+#: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
-msgstr "Zamankodları Dosyasını Aç"
+msgstr "Zaman Kodu Dosyası Aç"
 
 #: ../src/command/timecode.cpp:70
 msgid "Open a VFR timecodes v1 or v2 file"
-msgstr "VFR zamankodu v1 veya v2 dosyası açar"
+msgstr "VFR zaman kodu v1 veya v2 dosyası aç"
 
-#: ../src/command/timecode.cpp:73 ../src/command/timecode.cpp:93
-msgid "Text Files"
-msgstr "Metin Dosyaları"
+#: ../src/command/timecode.cpp:74
+msgctxt "dialog title"
+msgid "Open Timecodes File"
+msgstr "Zaman Kodu Dosyası Aç"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
-msgstr "Zamankodu Dosyası Kaydet"
+msgstr "Zaman Kodu Dosyasını Kaydet"
 
-#: ../src/command/timecode.cpp:84 ../src/command/timecode.cpp:94
+#: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
-msgstr "Zamankodları dosyasını kaydet"
+msgstr "Zaman Kodu Dosyasını Kaydet"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
-msgstr "VFR zamankodu v2 dosyası kaydet"
+msgstr "VFR zaman kodu v2 dosyasını kaydet"
+
+#: ../src/command/timecode.cpp:94
+msgctxt "dialog title"
+msgid "Save Timecodes File"
+msgstr "Zaman Kodu Dosyasını Kaydet"
+
+#: ../src/command/timecode.cpp:103
+msgid "Error saving timecodes"
+msgstr "Zaman kodları kaydedilirken hata oluştu"
 
 #: ../src/command/tool.cpp:56
 msgid "&Export Subtitles..."
@@ -2112,7 +2225,7 @@ msgstr "Font kolektörünü aç"
 
 #: ../src/command/tool.cpp:81
 msgid "S&elect Lines..."
-msgstr "S&atırları Seç"
+msgstr "&Satırları Seç"
 
 #: ../src/command/tool.cpp:82
 msgid "Select Lines"
@@ -2124,7 +2237,7 @@ msgstr "Belirlenen kriterlere göre satırları seç"
 
 #: ../src/command/tool.cpp:93
 msgid "&Resample Resolution..."
-msgstr "&Çözünürlüğü Düzenle"
+msgstr "&Çözünürlüğü Yeniden Örnekle"
 
 #: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:90
 msgid "Resample Resolution"
@@ -2135,14 +2248,14 @@ msgid ""
 "Resample subtitles to maintain their current appearance at a different "
 "script resolution"
 msgstr ""
-"Altyazıların mevcut görünümünü farklı bir betik çözünürlüğünde koruyacak "
+"Altyazıların geçerli görünümünü farklı bir betik çözünürlüğünde koruyacak "
 "şekilde yeniden örnekle"
 
 #: ../src/command/tool.cpp:108
 msgid "St&yling Assistant..."
 msgstr "St&il Asistanı"
 
-#: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:53
+#: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:54
 msgid "Styling Assistant"
 msgstr "Stil Asistanı"
 
@@ -2155,7 +2268,7 @@ msgid "&Accept changes"
 msgstr "&Değişiklikleri kabul et"
 
 #: ../src/command/tool.cpp:128 ../src/command/tool.cpp:212
-#: ../src/dialog_styling_assistant.cpp:88 ../src/dialog_translation.cpp:111
+#: ../src/dialog_styling_assistant.cpp:90 ../src/dialog_translation.cpp:114
 msgid "Accept changes"
 msgstr "Değişiklikleri kabul et"
 
@@ -2165,10 +2278,10 @@ msgstr "Değişiklikleri uygula ve bir sonraki satıra geç"
 
 #: ../src/command/tool.cpp:138 ../src/command/tool.cpp:222
 msgid "&Preview changes"
-msgstr "&Değişiklikleri önizle"
+msgstr "D&eğişiklikleri önizle"
 
 #: ../src/command/tool.cpp:139 ../src/command/tool.cpp:223
-#: ../src/dialog_styling_assistant.cpp:89 ../src/dialog_translation.cpp:112
+#: ../src/dialog_styling_assistant.cpp:91 ../src/dialog_translation.cpp:115
 msgid "Preview changes"
 msgstr "Değişiklikleri önizle"
 
@@ -2178,9 +2291,9 @@ msgstr "Değişiklikleri uygula ve geçerli satırda kal"
 
 #: ../src/command/tool.cpp:150
 msgid "&Styles Manager..."
-msgstr "&Stil Yönetimi"
+msgstr "S&til Yönetimi"
 
-#: ../src/command/tool.cpp:151 ../src/dialog_style_manager.cpp:258
+#: ../src/command/tool.cpp:151 ../src/dialog_style_manager.cpp:259
 msgid "Styles Manager"
 msgstr "Stil Yönetimi"
 
@@ -2202,7 +2315,7 @@ msgstr "Kanji zamanlayıcı kopyalayıcısını aç"
 
 #: ../src/command/tool.cpp:174
 msgid "&Timing Post-Processor..."
-msgstr "&Destek-İşlemci Zamanlama"
+msgstr "Destek-&İşlemci Zamanlama"
 
 #: ../src/command/tool.cpp:175 ../src/dialog_timing_processor.cpp:139
 msgid "Timing Post-Processor"
@@ -2218,10 +2331,10 @@ msgstr ""
 
 #: ../src/command/tool.cpp:186
 msgid "&Translation Assistant..."
-msgstr "&Çeviri Asistanı"
+msgstr "Çe&viri Asistanı"
 
-#: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:64
-#: ../src/preferences.cpp:235
+#: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
+#: ../src/preferences.cpp:238
 msgid "Translation Assistant"
 msgstr "Çeviri Asistanı"
 
@@ -2235,7 +2348,7 @@ msgstr "Dosyada çevrilecek hiçbir şey yok."
 
 #: ../src/command/tool.cpp:233
 msgid "&Next Line"
-msgstr "&Sonraki Satır"
+msgstr "S&onraki Satır"
 
 #: ../src/command/tool.cpp:235
 msgid "Move to the next line without committing changes"
@@ -2251,7 +2364,7 @@ msgstr "Değişiklikleri uygulamadan önceki satıra geç"
 
 #: ../src/command/tool.cpp:255
 msgid "&Insert Original"
-msgstr "&Orijinali yerleştir"
+msgstr "O&rijinali yerleştir"
 
 #: ../src/command/tool.cpp:257
 msgid "Insert the untranslated text"
@@ -2267,7 +2380,7 @@ msgstr "Sinematik (2.35)"
 
 #: ../src/command/video.cpp:84
 msgid "Force video to 2.35 aspect ratio"
-msgstr "Videoyu 2.35 ebatına uyarla"
+msgstr "Videoyu 2.35 en-boy oranına uyarla"
 
 #: ../src/command/video.cpp:100
 msgid "C&ustom..."
@@ -2279,7 +2392,7 @@ msgstr "Özel"
 
 #: ../src/command/video.cpp:102
 msgid "Force video to a custom aspect ratio"
-msgstr "Videoyu özel ebata uyarla"
+msgstr "Videoyu özel en-boy oranına uyarla"
 
 #: ../src/command/video.cpp:113
 msgid ""
@@ -2295,15 +2408,15 @@ msgstr ""
 
 #: ../src/command/video.cpp:114
 msgid "Enter aspect ratio"
-msgstr "Ebat giriniz"
+msgstr "En-boy oranı girin"
 
 #: ../src/command/video.cpp:133
 msgid "Invalid Aspect Ratio"
-msgstr "Geçersiz Ebat"
+msgstr "Geçersiz En-Boy Oranı"
 
 #: ../src/command/video.cpp:133
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
-msgstr "Geçersiz değer! Ebat 0.5 ve 5.0 arasında olmalı."
+msgstr "Geçersiz değer! En-boy oranı 0.5 ve 5.0 arasında olmalı."
 
 #: ../src/command/video.cpp:143
 msgid "&Default"
@@ -2311,7 +2424,7 @@ msgstr "&Varsayılan"
 
 #: ../src/command/video.cpp:145
 msgid "Use video's original aspect ratio"
-msgstr "Videoyu orijinal ebatta kullan"
+msgstr "Videoyu orijinal en-boy oranında kullan"
 
 #: ../src/command/video.cpp:161
 msgid "&Fullscreen (4:3)"
@@ -2323,7 +2436,7 @@ msgstr "Tam Ekran (4:3)"
 
 #: ../src/command/video.cpp:163
 msgid "Force video to 4:3 aspect ratio"
-msgstr "Videoyu 4:3 ebatına uyarla"
+msgstr "Videoyu 4:3 en-boy oranına uyarla"
 
 #: ../src/command/video.cpp:179
 msgid "&Widescreen (16:9)"
@@ -2335,11 +2448,11 @@ msgstr "Geniş Ekran (16:9)"
 
 #: ../src/command/video.cpp:181
 msgid "Force video to 16:9 aspect ratio"
-msgstr "Videoyu 16:9 ebatına uyarla"
+msgstr "Videoyu 16:9 en-boy oranına uyarla"
 
 #: ../src/command/video.cpp:198
 msgid "&Close Video"
-msgstr "&Videoyu Kapat"
+msgstr "Videoy&u Kapat"
 
 #: ../src/command/video.cpp:199
 msgid "Close Video"
@@ -2356,7 +2469,7 @@ msgstr "Kordinatları Pano'ya kopyala"
 #: ../src/command/video.cpp:211
 msgid ""
 "Copy the current coordinates of the mouse over the video to the clipboard"
-msgstr "Farenin mevcut koordinatlarını videonun üzerinde panoya kopyala"
+msgstr "Farenin geçerli koordinatlarını videonun üzerinde panoya kopyala"
 
 #: ../src/command/video.cpp:220 ../src/command/video.cpp:221
 msgid "Cycle active subtitles provider"
@@ -2373,7 +2486,7 @@ msgstr "Altyazı sağlayıcısını %s olarak ayarla"
 
 #: ../src/command/video.cpp:240
 msgid "&Detach Video"
-msgstr "&Videoyu Ayır"
+msgstr "Videoyu A&yır"
 
 #: ../src/command/video.cpp:241
 msgid "Detach Video"
@@ -2387,7 +2500,7 @@ msgstr "Video görüntüsünü ana pencereden ayırıp ayrı bir pencerede gör�
 
 #: ../src/command/video.cpp:260
 msgid "Show &Video Details"
-msgstr "Video &Detaylarını Göster"
+msgstr "V&ideo Detaylarını Göster"
 
 #: ../src/command/video.cpp:261
 msgid "Show Video Details"
@@ -2526,7 +2639,7 @@ msgstr ""
 
 #: ../src/command/video.cpp:546
 msgid "&Jump to..."
-msgstr "&Sıçra"
+msgstr "S&ıçra"
 
 #: ../src/command/video.cpp:547 ../src/dialog_jumpto.cpp:67
 msgid "Jump to"
@@ -2538,7 +2651,7 @@ msgstr "Kare veya zamana sıçra"
 
 #: ../src/command/video.cpp:560
 msgid "Jump Video to &End"
-msgstr "Video sonuna &sıçra"
+msgstr "Vi&deo sonuna sıçra"
 
 #: ../src/command/video.cpp:561
 msgid "Jump Video to End"
@@ -2550,7 +2663,7 @@ msgstr "Videoyu geçerli altyazının son karesine sıçrat"
 
 #: ../src/command/video.cpp:573
 msgid "Jump Video to &Start"
-msgstr "Video başlangıcına &sıçra"
+msgstr "Vid&eo başlangıcına sıçra"
 
 #: ../src/command/video.cpp:574
 msgid "Jump Video to Start"
@@ -2562,7 +2675,7 @@ msgstr "Videoyu geçerli altyazının başlangıç karesine sıçrat"
 
 #: ../src/command/video.cpp:586
 msgid "&Open Video..."
-msgstr "&Video Aç"
+msgstr "Vide&o Aç"
 
 #: ../src/command/video.cpp:587
 msgid "Open Video"
@@ -2573,12 +2686,12 @@ msgid "Open a video file"
 msgstr "Video dosyası aç"
 
 #: ../src/command/video.cpp:593
-msgid "Open video file"
-msgstr "Video dosyası aç"
+msgid "Open Video File"
+msgstr "Video Dosyası Aç"
 
 #: ../src/command/video.cpp:602
 msgid "&Use Dummy Video..."
-msgstr "&Sahte Video Kullan"
+msgstr "S&ahte Video Kullan"
 
 #: ../src/command/video.cpp:603
 msgid "Use Dummy Video"
@@ -2614,11 +2727,11 @@ msgstr "Videoyu geçerli satır için oynat"
 
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
-msgstr "Üsttarama &Maskesini Göster"
+msgstr "Taşma &Payı Maskesini Göster"
 
 #: ../src/command/video.cpp:657
 msgid "Show Overscan Mask"
-msgstr "Üsttarama Maskesini Göster"
+msgstr "Taşma Payı Maskesini Göster"
 
 #: ../src/command/video.cpp:658
 msgid ""
@@ -2823,7 +2936,7 @@ msgstr ""
 "Kerim Demirkaynak ve Türk Anime çevirmenleri tarafından Türkçeye "
 "çevrilmiştir\n"
 
-#: ../src/dialog_about.cpp:128
+#: ../src/dialog_about.cpp:131
 msgid ""
 "\n"
 "See the help file for full credits.\n"
@@ -2831,7 +2944,7 @@ msgstr ""
 "\n"
 "Tüm liste için yardım dosyasına bakınız.\n"
 
-#: ../src/dialog_about.cpp:130
+#: ../src/dialog_about.cpp:133
 #, c-format
 msgid "Built by %s on %s."
 msgstr "Bu sürüm %s tarafından %s tarihinde oluşturuldu."
@@ -2852,13 +2965,13 @@ msgstr "Ek &Grafik"
 msgid "E&xtract"
 msgstr "Ç&ıkart"
 
-#: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:204
-#: ../src/preferences.cpp:613
+#: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:205
+#: ../src/preferences.cpp:615
 msgid "&Delete"
 msgstr "&Sil"
 
 #: ../src/dialog_attachments.cpp:89 ../src/dialog_automation.cpp:122
-#: ../src/dialog_kara_timing_copy.cpp:419 ../src/dialog_version_check.cpp:122
+#: ../src/dialog_kara_timing_copy.cpp:425 ../src/dialog_version_check.cpp:122
 msgid "&Close"
 msgstr "&Kapat"
 
@@ -2938,7 +3051,7 @@ msgstr "Adı"
 msgid "Filename"
 msgstr "Dosya adı"
 
-#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:633
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:635
 msgid "Description"
 msgstr "Açıklama"
 
@@ -3022,109 +3135,109 @@ msgstr "    Dışa aktarma filtresi: %s"
 msgid "Automation Script Info"
 msgstr "Otomasyon Betik Bilgisi"
 
-#: ../src/dialog_autosave.cpp:66
+#: ../src/dialog_autosave.cpp:67
 msgid "Open autosave file"
 msgstr "Otokayıt dosyasını aç"
 
-#: ../src/dialog_autosave.cpp:70 ../src/preferences.cpp:78
+#: ../src/dialog_autosave.cpp:71 ../src/preferences.cpp:79
 msgid "Files"
 msgstr "Dosyalar"
 
-#: ../src/dialog_autosave.cpp:75
+#: ../src/dialog_autosave.cpp:76
 msgid "Versions"
 msgstr "Sürümler"
 
-#: ../src/dialog_autosave.cpp:85
+#: ../src/dialog_autosave.cpp:86
 msgid "Open"
 msgstr "Aç"
 
-#: ../src/dialog_autosave.cpp:94
+#: ../src/dialog_autosave.cpp:95
 #, c-format
 msgid "%s [ORIGINAL BACKUP]"
 msgstr "%s [ORİJİNAL YEDEK]"
 
-#: ../src/dialog_autosave.cpp:95
+#: ../src/dialog_autosave.cpp:96
 #, c-format
 msgid "%s [RECOVERED]"
 msgstr "%s [KURTARILDI]"
 
-#: ../src/dialog_colorpicker.cpp:543
+#: ../src/dialog_colorpicker.cpp:552
 msgid "Select Color"
 msgstr "Renk Seçimi"
 
-#: ../src/dialog_colorpicker.cpp:557
+#: ../src/dialog_colorpicker.cpp:566
 msgid "Color spectrum"
 msgstr "Spektrum rengi"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:572
 msgid "HSL/L"
 msgstr "HSL/L"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:572
 msgid "HSV/H"
 msgstr "HSV/H"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:572
 msgid "RGB/B"
 msgstr "RGB/B"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:572
 msgid "RGB/G"
 msgstr "RGB/G"
 
-#: ../src/dialog_colorpicker.cpp:561
+#: ../src/dialog_colorpicker.cpp:572
 msgid "RGB/R"
 msgstr "RGB/R"
 
-#: ../src/dialog_colorpicker.cpp:564
+#: ../src/dialog_colorpicker.cpp:575
 msgid "RGB color"
 msgstr "RGB rengi"
 
-#: ../src/dialog_colorpicker.cpp:565
+#: ../src/dialog_colorpicker.cpp:576
 msgid "HSL color"
 msgstr "HSL rengi"
 
-#: ../src/dialog_colorpicker.cpp:566
+#: ../src/dialog_colorpicker.cpp:577
 msgid "HSV color"
 msgstr "HSV rengi"
 
-#: ../src/dialog_colorpicker.cpp:594
+#: ../src/dialog_colorpicker.cpp:614
 msgid "Spectrum mode:"
 msgstr "Spektrum modu:"
 
-#: ../src/dialog_colorpicker.cpp:611
+#: ../src/dialog_colorpicker.cpp:631
 msgid "Blue:"
 msgstr "Mavi:"
 
-#: ../src/dialog_colorpicker.cpp:611
+#: ../src/dialog_colorpicker.cpp:631
 msgid "Green:"
 msgstr "Yeşil:"
 
-#: ../src/dialog_colorpicker.cpp:611
+#: ../src/dialog_colorpicker.cpp:631
 msgid "Red:"
 msgstr "Kırmızı:"
 
-#: ../src/dialog_colorpicker.cpp:614
+#: ../src/dialog_colorpicker.cpp:634
 msgid "Alpha:"
 msgstr "Alfa:"
 
-#: ../src/dialog_colorpicker.cpp:621 ../src/dialog_colorpicker.cpp:624
+#: ../src/dialog_colorpicker.cpp:641 ../src/dialog_colorpicker.cpp:644
 msgid "Hue:"
 msgstr "Ton:"
 
-#: ../src/dialog_colorpicker.cpp:621
+#: ../src/dialog_colorpicker.cpp:641
 msgid "Lum.:"
 msgstr "Par.:"
 
-#: ../src/dialog_colorpicker.cpp:621 ../src/dialog_colorpicker.cpp:624
+#: ../src/dialog_colorpicker.cpp:641 ../src/dialog_colorpicker.cpp:644
 msgid "Sat.:"
 msgstr "Doy.:"
 
-#: ../src/dialog_colorpicker.cpp:624
+#: ../src/dialog_colorpicker.cpp:644
 msgid "Value:"
 msgstr "Değer:"
 
-#: ../src/dialog_detached_video.cpp:63 ../src/dialog_detached_video.cpp:131
+#: ../src/dialog_detached_video.cpp:63 ../src/dialog_detached_video.cpp:149
 #, c-format
 msgid "Video: %s"
 msgstr "Video: %s"
@@ -3181,8 +3294,8 @@ msgstr "1080×1920 (FHD dikey)"
 msgid "Dummy video options"
 msgstr "Sahte video ayarları"
 
-#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:130
-#: ../src/dialog_resample.cpp:167 ../src/dialog_resample.cpp:181
+#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:136
+#: ../src/dialog_resample.cpp:175 ../src/dialog_resample.cpp:188
 msgid "×"
 msgstr "×"
 
@@ -3211,47 +3324,42 @@ msgstr "Süre (karelerin):"
 msgid "Resulting duration: %s"
 msgstr "Süre: %s"
 
-#: ../src/dialog_export.cpp:101
+#: ../src/dialog_export.cpp:102
 msgid "Export"
 msgstr "Dışarı aktar"
 
-#: ../src/dialog_export.cpp:121
-msgid "Move &Up"
-msgstr "Yukarı &Taşı"
-
-#: ../src/dialog_export.cpp:122
-msgid "Move &Down"
-msgstr "Aşağı &Taşı"
-
-#: ../src/dialog_export.cpp:124 ../src/dialog_selected_choices.cpp:33
-msgid "Select &None"
-msgstr "Hiçbirini &Seçme"
-
-#: ../src/dialog_export.cpp:140
-msgid "Text encoding:"
-msgstr "Metin kodlama:"
-
-#: ../src/dialog_export.cpp:148
+#: ../src/dialog_export.cpp:109
 msgid "Filters"
 msgstr "Filtreler"
 
-#: ../src/dialog_export.cpp:155
+#: ../src/dialog_export.cpp:125
+msgid "Move &Up"
+msgstr "Yukarı &Taşı"
+
+#: ../src/dialog_export.cpp:126
+msgid "Move &Down"
+msgstr "&Aşağı Taşı"
+
+#: ../src/dialog_export.cpp:128 ../src/dialog_selected_choices.cpp:33
+msgid "Select &None"
+msgstr "Hiçbirini &Seçme"
+
+#: ../src/dialog_export.cpp:144
+msgid "Text encoding:"
+msgstr "Metin kodlama:"
+
+#: ../src/dialog_export.cpp:158
 msgid "Export..."
 msgstr "Dışarı aktar"
 
-#: ../src/dialog_export.cpp:187
-msgid "Export subtitles file"
-msgstr "Altyazı dosyalarını dışarı aktar"
+#: ../src/dialog_export.cpp:190
+msgid "Export Subtitles File"
+msgstr "Altyazı Dosyalarını Dışarı Aktar"
 
-#: ../src/dialog_export.cpp:202 ../src/dialog_export.cpp:205
-#: ../src/dialog_export.cpp:208
+#: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
+#: ../src/dialog_export.cpp:211
 msgid "Error exporting subtitles"
 msgstr "Altyazılar dışa aktarılırken hata oluştu"
-
-#: ../src/dialog_export.cpp:208 ../src/dialog_style_manager.cpp:691
-#: ../src/project.cpp:142
-msgid "Unknown error"
-msgstr "Bilinmeyen hata"
 
 #: ../src/dialog_export_ebu3264.cpp:83
 msgid "EBU STL export"
@@ -3269,117 +3377,117 @@ msgstr ""
 msgid "Export to EBU STL format"
 msgstr "EBU STL formatında dışa aktar"
 
-#: ../src/dialog_export_ebu3264.cpp:102
-msgid "23.976 fps (non-standard, STL24.01)"
-msgstr "23.976 fps (standart dışı, STL24.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:103
-msgid "24 fps (non-standard, STL24.01)"
-msgstr "24 fps (standart dışı, STL24.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:104
-msgid "25 fps (STL25.01)"
-msgstr "25 fps (STL25.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:105
-msgid "29.97 fps (non-dropframe, STL30.01)"
-msgstr "29,97 fps (dropframe olmayan, STL30.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:106
-msgid "29.97 fps (dropframe, STL30.01)"
-msgstr "29.97 fps (dropframe, STL30.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:107
-msgid "30 fps (STL30.01)"
-msgstr "30 fps (STL30.01)"
-
-#: ../src/dialog_export_ebu3264.cpp:109
-msgid "TV standard"
-msgstr "TV standardı"
-
-#: ../src/dialog_export_ebu3264.cpp:113
-msgid "Out-times are inclusive"
-msgstr "Bitiş zamanları dahildir"
-
-#: ../src/dialog_export_ebu3264.cpp:116
-msgid "ISO 6937-2 (Latin/Western Europe)"
-msgstr "ISO 6937-2 (Latin/Batı Avrupa)"
-
-#: ../src/dialog_export_ebu3264.cpp:117
-msgid "ISO 8859-5 (Cyrillic)"
-msgstr "ISO 8859-5 (Kiril)"
-
-#: ../src/dialog_export_ebu3264.cpp:118
-msgid "ISO 8859-6 (Arabic)"
-msgstr "ISO 8859-6 (Arapça)"
-
-#: ../src/dialog_export_ebu3264.cpp:119
-msgid "ISO 8859-7 (Greek)"
-msgstr "ISO 8859-7 (Yunanca)"
-
-#: ../src/dialog_export_ebu3264.cpp:120
-msgid "ISO 8859-8 (Hebrew)"
-msgstr "ISO 8859-8 (İbranice)"
-
-#: ../src/dialog_export_ebu3264.cpp:121
-msgid "UTF-8 Unicode (non-standard)"
-msgstr "UTF-8 Unicode (standart dışı)"
-
-#: ../src/dialog_export_ebu3264.cpp:123
-msgid "Text encoding"
-msgstr "Metin kodlama"
-
-#: ../src/dialog_export_ebu3264.cpp:126
-msgid "Automatically wrap long lines (ASS)"
-msgstr "Uzun satırları otomatik olarak sar (ASS)"
-
-#: ../src/dialog_export_ebu3264.cpp:127
-msgid "Automatically wrap long lines (Balanced)"
-msgstr "Uzun satırları otomatik olarak sar (Dengeli)"
-
-#: ../src/dialog_export_ebu3264.cpp:128
-msgid "Abort if any lines are too long"
-msgstr "Herhangi bir satır çok uzunsa iptal et"
-
-#: ../src/dialog_export_ebu3264.cpp:129
-msgid "Skip lines that are too long"
-msgstr "Çok uzun olan sıraları atla"
-
-#: ../src/dialog_export_ebu3264.cpp:134
-msgid "Translate alignments"
-msgstr "Hizalamaları çevir"
-
-#: ../src/dialog_export_ebu3264.cpp:137
-msgid "Open subtitles"
-msgstr "Altyazı aç"
-
-#: ../src/dialog_export_ebu3264.cpp:138
-msgid "Level-1 teletext"
-msgstr "Seviye-1 teletekst"
-
-#: ../src/dialog_export_ebu3264.cpp:139
-msgid "Level-2 teletext"
-msgstr "Seviye-2 teletekst"
-
-#: ../src/dialog_export_ebu3264.cpp:145
-msgid "Max. line length:"
-msgstr "Maks. satır uzunluğu:"
-
-#: ../src/dialog_export_ebu3264.cpp:149
-msgid "Time code offset:"
-msgstr "Zaman kodu kaydırması"
-
-#: ../src/dialog_export_ebu3264.cpp:152
+#: ../src/dialog_export_ebu3264.cpp:101
 msgid "Text formatting"
 msgstr "Metin biçimlendirme"
 
-#: ../src/dialog_export_ebu3264.cpp:157
+#: ../src/dialog_export_ebu3264.cpp:102
 msgid "Time codes"
 msgstr "Zaman kodları"
 
-#: ../src/dialog_export_ebu3264.cpp:161
+#: ../src/dialog_export_ebu3264.cpp:103
 msgid "Display standard"
 msgstr "Ekran standardı"
+
+#: ../src/dialog_export_ebu3264.cpp:110
+msgid "23.976 fps (non-standard, STL24.01)"
+msgstr "23.976 fps (standart dışı, STL24.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:111
+msgid "24 fps (non-standard, STL24.01)"
+msgstr "24 fps (standart dışı, STL24.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:112
+msgid "25 fps (STL25.01)"
+msgstr "25 fps (STL25.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:113
+msgid "29.97 fps (non-dropframe, STL30.01)"
+msgstr "29,97 fps (dropframe olmayan, STL30.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:114
+msgid "29.97 fps (dropframe, STL30.01)"
+msgstr "29.97 fps (dropframe, STL30.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:115
+msgid "30 fps (STL30.01)"
+msgstr "30 fps (STL30.01)"
+
+#: ../src/dialog_export_ebu3264.cpp:117
+msgid "TV standard"
+msgstr "TV standardı"
+
+#: ../src/dialog_export_ebu3264.cpp:121
+msgid "Out-times are inclusive"
+msgstr "Bitiş zamanları dahildir"
+
+#: ../src/dialog_export_ebu3264.cpp:124
+msgid "ISO 6937-2 (Latin/Western Europe)"
+msgstr "ISO 6937-2 (Latin/Batı Avrupa)"
+
+#: ../src/dialog_export_ebu3264.cpp:125
+msgid "ISO 8859-5 (Cyrillic)"
+msgstr "ISO 8859-5 (Kiril)"
+
+#: ../src/dialog_export_ebu3264.cpp:126
+msgid "ISO 8859-6 (Arabic)"
+msgstr "ISO 8859-6 (Arapça)"
+
+#: ../src/dialog_export_ebu3264.cpp:127
+msgid "ISO 8859-7 (Greek)"
+msgstr "ISO 8859-7 (Yunanca)"
+
+#: ../src/dialog_export_ebu3264.cpp:128
+msgid "ISO 8859-8 (Hebrew)"
+msgstr "ISO 8859-8 (İbranice)"
+
+#: ../src/dialog_export_ebu3264.cpp:129
+msgid "UTF-8 Unicode (non-standard)"
+msgstr "UTF-8 Unicode (standart dışı)"
+
+#: ../src/dialog_export_ebu3264.cpp:131
+msgid "Text encoding"
+msgstr "Metin kodlama"
+
+#: ../src/dialog_export_ebu3264.cpp:134
+msgid "Automatically wrap long lines (ASS)"
+msgstr "Uzun satırları otomatik olarak sar (ASS)"
+
+#: ../src/dialog_export_ebu3264.cpp:135
+msgid "Automatically wrap long lines (Balanced)"
+msgstr "Uzun satırları otomatik olarak sar (Dengeli)"
+
+#: ../src/dialog_export_ebu3264.cpp:136
+msgid "Abort if any lines are too long"
+msgstr "Herhangi bir satır çok uzunsa iptal et"
+
+#: ../src/dialog_export_ebu3264.cpp:137
+msgid "Skip lines that are too long"
+msgstr "Çok uzun olan sıraları atla"
+
+#: ../src/dialog_export_ebu3264.cpp:142
+msgid "Translate alignments"
+msgstr "Hizalamaları çevir"
+
+#: ../src/dialog_export_ebu3264.cpp:145
+msgid "Open subtitles"
+msgstr "Altyazı aç"
+
+#: ../src/dialog_export_ebu3264.cpp:146
+msgid "Level-1 teletext"
+msgstr "Seviye-1 teletekst"
+
+#: ../src/dialog_export_ebu3264.cpp:147
+msgid "Level-2 teletext"
+msgstr "Seviye-2 teletekst"
+
+#: ../src/dialog_export_ebu3264.cpp:153
+msgid "Max. line length:"
+msgstr "Maks. satır uzunluğu:"
+
+#: ../src/dialog_export_ebu3264.cpp:157
+msgid "Time code offset:"
+msgstr "Zaman kodu kaydırması"
 
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
@@ -3466,7 +3574,7 @@ msgstr "Fontları ziplenmiş arşive kopyala"
 msgid "Symlink fonts to folder"
 msgstr "Fontları klasöre bağla"
 
-#: ../src/dialog_fonts_collector.cpp:243 ../src/dialog_selection.cpp:150
+#: ../src/dialog_fonts_collector.cpp:243 ../src/dialog_selection.cpp:153
 msgid "Action"
 msgstr "Eylem"
 
@@ -3474,60 +3582,54 @@ msgstr "Eylem"
 msgid "Destination"
 msgstr "Hedef"
 
-#: ../src/dialog_fonts_collector.cpp:253
+#: ../src/dialog_fonts_collector.cpp:254
 msgid "&Browse..."
 msgstr "&Gözat"
 
-#: ../src/dialog_fonts_collector.cpp:262
+#: ../src/dialog_fonts_collector.cpp:263
 msgid "Log"
-msgstr "Kayıt"
+msgstr "Günlük"
 
-#: ../src/dialog_fonts_collector.cpp:275
+#: ../src/dialog_fonts_collector.cpp:277
 msgid "&Start!"
 msgstr "&Başlat!"
 
-#: ../src/dialog_fonts_collector.cpp:310 ../src/dialog_fonts_collector.cpp:315
-#: ../src/dialog_fonts_collector.cpp:320 ../src/dialog_kara_timing_copy.cpp:489
-#: ../src/dialog_kara_timing_copy.cpp:491
-#: ../src/dialog_kara_timing_copy.cpp:541 ../src/dialog_spellchecker.cpp:143
-#: ../src/dialog_spellchecker.cpp:149 ../src/dialog_style_manager.cpp:682
-#: ../src/dialog_style_manager.cpp:688 ../src/dialog_style_manager.cpp:691
-#: ../src/preferences.cpp:272 ../src/preferences.cpp:464
-msgid "Error"
-msgstr "Hata"
-
-#: ../src/dialog_fonts_collector.cpp:310
+#: ../src/dialog_fonts_collector.cpp:312
 msgid "Invalid destination."
 msgstr "Geçersiz hedef."
 
-#: ../src/dialog_fonts_collector.cpp:315
+#: ../src/dialog_fonts_collector.cpp:317
 msgid "Could not create destination folder."
 msgstr "Hedef klasör oluşturulamıyor."
 
-#: ../src/dialog_fonts_collector.cpp:320
+#: ../src/dialog_fonts_collector.cpp:322
 msgid "Invalid path for .zip file."
 msgstr ".zip dosyası için geçersiz yol."
 
-#: ../src/dialog_fonts_collector.cpp:343
+#: ../src/dialog_fonts_collector.cpp:345
 msgid "Select archive file name"
 msgstr "Arşiv dosya adı seç"
 
-#: ../src/dialog_fonts_collector.cpp:350
+#: ../src/dialog_fonts_collector.cpp:348
+msgid "Zip Archives"
+msgstr "Zip Arşivleri"
+
+#: ../src/dialog_fonts_collector.cpp:352
 msgid "Select folder to save fonts on"
 msgstr "Fontların kaydedileceği klasörü seçin"
 
-#: ../src/dialog_fonts_collector.cpp:369
+#: ../src/dialog_fonts_collector.cpp:371
 msgid "N/A"
 msgstr "Bilinmiyor"
 
-#: ../src/dialog_fonts_collector.cpp:377
+#: ../src/dialog_fonts_collector.cpp:379
 msgid ""
 "Choose the folder where the fonts will be collected to. It will be created "
 "if it doesn't exist."
 msgstr ""
 "Fontların toplanacağı klasörü seçin. Eğer bulunmuyorsa oluşturulacaktır."
 
-#: ../src/dialog_fonts_collector.cpp:384
+#: ../src/dialog_fonts_collector.cpp:386
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to. If a "
 "folder is entered, a default name will be used."
@@ -3543,40 +3645,40 @@ msgstr "Kare: "
 msgid "Time: "
 msgstr "Zaman: "
 
-#: ../src/dialog_kara_timing_copy.cpp:58
+#: ../src/dialog_kara_timing_copy.cpp:59
 msgid "Source: "
 msgstr "Kaynak: "
 
-#: ../src/dialog_kara_timing_copy.cpp:59
+#: ../src/dialog_kara_timing_copy.cpp:60
 msgid "Dest: "
 msgstr "Hedef: "
 
-#: ../src/dialog_kara_timing_copy.cpp:385
-msgid "Kanji timing"
-msgstr "Kanji zamanlama"
+#: ../src/dialog_kara_timing_copy.cpp:386
+msgid "Kanji timer"
+msgstr "Kanji zamanlayıcı"
 
-#: ../src/dialog_kara_timing_copy.cpp:390 ../src/dialog_paste_over.cpp:73
-#: ../src/grid_column.cpp:362 ../src/grid_column.cpp:363
+#: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
+#: ../src/grid_column.cpp:364 ../src/grid_column.cpp:365
 msgid "Text"
 msgstr "Metin"
 
-#: ../src/dialog_kara_timing_copy.cpp:391
+#: ../src/dialog_kara_timing_copy.cpp:392
 msgid "Styles"
 msgstr "Stiller"
 
-#: ../src/dialog_kara_timing_copy.cpp:393
+#: ../src/dialog_kara_timing_copy.cpp:394
 msgid "Shortcut Keys"
 msgstr "Kısayollar"
 
-#: ../src/dialog_kara_timing_copy.cpp:394
+#: ../src/dialog_kara_timing_copy.cpp:395
 msgid "Commands"
 msgstr "Komutlar"
 
-#: ../src/dialog_kara_timing_copy.cpp:402
-msgid "Attempt to &interpolate kanji."
-msgstr "Kanjiye interpole &etmeye çalış."
+#: ../src/dialog_kara_timing_copy.cpp:408
+msgid "Attempt to &interpolate kanji"
+msgstr "Kanji &enterpolasyonu yapmaya çalış"
 
-#: ../src/dialog_kara_timing_copy.cpp:409
+#: ../src/dialog_kara_timing_copy.cpp:415
 msgid ""
 "When the destination textbox has focus, use the following keys:\n"
 "\n"
@@ -3596,101 +3698,101 @@ msgstr ""
 "Enter: Link, accept line when done\n"
 "Backspace: Unlink last"
 
-#: ../src/dialog_kara_timing_copy.cpp:412
+#: ../src/dialog_kara_timing_copy.cpp:418
 msgid "S&tart!"
 msgstr "B&aşlat!"
 
-#: ../src/dialog_kara_timing_copy.cpp:413
+#: ../src/dialog_kara_timing_copy.cpp:419
 msgid "&Link"
 msgstr "&Bağlantı"
 
-#: ../src/dialog_kara_timing_copy.cpp:414
+#: ../src/dialog_kara_timing_copy.cpp:420
 msgid "&Unlink"
-msgstr "&Bağlantı kaldır"
+msgstr "Ba&ğlantı kaldır"
 
-#: ../src/dialog_kara_timing_copy.cpp:415
+#: ../src/dialog_kara_timing_copy.cpp:421
 msgid "Skip &Source Line"
 msgstr "Kaynak &Satırı Atla"
 
-#: ../src/dialog_kara_timing_copy.cpp:416
+#: ../src/dialog_kara_timing_copy.cpp:422
 msgid "Skip &Dest Line"
-msgstr "Hedef &Satırı Geç"
+msgstr "&Hedef Satırı Geç"
 
-#: ../src/dialog_kara_timing_copy.cpp:417
+#: ../src/dialog_kara_timing_copy.cpp:423
 msgid "&Go Back a Line"
-msgstr "&Satıra Geri Dön"
+msgstr "Sa&tıra Geri Dön"
 
-#: ../src/dialog_kara_timing_copy.cpp:418
+#: ../src/dialog_kara_timing_copy.cpp:424
 msgid "&Accept Line"
-msgstr "&Satırı Kabul Et"
+msgstr "Sat&ırı Kabul Et"
 
-#: ../src/dialog_kara_timing_copy.cpp:481
+#: ../src/dialog_kara_timing_copy.cpp:487
 msgid "kanji timing"
 msgstr "kanji zamanlama"
 
-#: ../src/dialog_kara_timing_copy.cpp:489
+#: ../src/dialog_kara_timing_copy.cpp:495
 msgid "Select source and destination styles first."
 msgstr "Önce kaynak ve hedef stilleri seçin."
 
-#: ../src/dialog_kara_timing_copy.cpp:491
+#: ../src/dialog_kara_timing_copy.cpp:497
 msgid "The source and destination styles must be different."
 msgstr "Kaynak ve hedef stili birbirinden farklı olmalı."
 
-#: ../src/dialog_kara_timing_copy.cpp:541
+#: ../src/dialog_kara_timing_copy.cpp:547
 msgid "Group all of the source text."
 msgstr "Tüm kaynak yazıyı gruplandır."
 
-#: ../src/dialog_paste_over.cpp:55
+#: ../src/dialog_paste_over.cpp:56
 msgid "Select Fields to Paste Over"
 msgstr "Üzerine Yapıştırılacak Alanları Seç"
 
-#: ../src/dialog_paste_over.cpp:58
+#: ../src/dialog_paste_over.cpp:59
 msgid "Fields"
 msgstr "Alanlar"
 
-#: ../src/dialog_paste_over.cpp:59
+#: ../src/dialog_paste_over.cpp:61
 msgid "Please select the fields that you want to paste over:"
 msgstr "Lütfen üzerine yapıştırmak istediğiniz alanları seçiniz:"
 
-#: ../src/dialog_paste_over.cpp:63
+#: ../src/dialog_paste_over.cpp:65
 msgid "Comment"
 msgstr "Yorum"
 
-#: ../src/dialog_paste_over.cpp:67 ../src/grid_column.cpp:200
-#: ../src/grid_column.cpp:201
+#: ../src/dialog_paste_over.cpp:69 ../src/grid_column.cpp:202
+#: ../src/grid_column.cpp:203
 msgid "Style"
 msgstr "Stil"
 
-#: ../src/dialog_paste_over.cpp:68 ../src/grid_column.cpp:228
-#: ../src/grid_column.cpp:229 ../src/subs_edit_box.cpp:135
+#: ../src/dialog_paste_over.cpp:70 ../src/grid_column.cpp:230
+#: ../src/grid_column.cpp:231 ../src/subs_edit_box.cpp:135
 msgid "Actor"
 msgstr "Aktör"
 
-#: ../src/dialog_paste_over.cpp:69
+#: ../src/dialog_paste_over.cpp:71
 msgid "Margin Left"
 msgstr "Sol Kenar Boşluğu"
 
-#: ../src/dialog_paste_over.cpp:70
+#: ../src/dialog_paste_over.cpp:72
 msgid "Margin Right"
 msgstr "Sağ Kenar Boşluğu"
 
-#: ../src/dialog_paste_over.cpp:71
+#: ../src/dialog_paste_over.cpp:73
 msgid "Margin Vertical"
 msgstr "Dikey Kenar Boşluğu"
 
-#: ../src/dialog_paste_over.cpp:88 ../src/dialog_timing_processor.cpp:161
+#: ../src/dialog_paste_over.cpp:90 ../src/dialog_timing_processor.cpp:162
 msgid "&All"
 msgstr "&Tümü"
 
-#: ../src/dialog_paste_over.cpp:90 ../src/dialog_timing_processor.cpp:164
+#: ../src/dialog_paste_over.cpp:92 ../src/dialog_timing_processor.cpp:165
 msgid "&None"
 msgstr "&Hiçbiri"
 
-#: ../src/dialog_paste_over.cpp:92
+#: ../src/dialog_paste_over.cpp:94
 msgid "&Times"
 msgstr "&Süre"
 
-#: ../src/dialog_paste_over.cpp:94
+#: ../src/dialog_paste_over.cpp:96
 msgid "T&ext"
 msgstr "M&etin"
 
@@ -3702,85 +3804,85 @@ msgstr "İptal"
 msgid "Cancelling..."
 msgstr "İptal ediliyor..."
 
-#: ../src/dialog_properties.cpp:89
+#: ../src/dialog_properties.cpp:91
 msgid "Script Properties"
-msgstr "Betik Özellikleri"
+msgstr "Dosya Özellikleri"
 
-#: ../src/dialog_properties.cpp:103
+#: ../src/dialog_properties.cpp:105
 msgid "Script"
 msgstr "Betik"
 
-#: ../src/dialog_properties.cpp:106
+#: ../src/dialog_properties.cpp:109
 msgid "Title:"
 msgstr "Başlık:"
 
-#: ../src/dialog_properties.cpp:107
+#: ../src/dialog_properties.cpp:110
 msgid "Original script:"
-msgstr "Orijinal betik:"
+msgstr "Orijinal dosya:"
 
-#: ../src/dialog_properties.cpp:108
+#: ../src/dialog_properties.cpp:111
 msgid "Translation:"
 msgstr "Çeviri:"
 
-#: ../src/dialog_properties.cpp:109
+#: ../src/dialog_properties.cpp:112
 msgid "Editing:"
 msgstr "Düzenleme:"
 
-#: ../src/dialog_properties.cpp:110
+#: ../src/dialog_properties.cpp:113
 msgid "Timing:"
-msgstr "Zamanla:"
+msgstr "Zamanlama:"
 
-#: ../src/dialog_properties.cpp:111
+#: ../src/dialog_properties.cpp:114
 msgid "Synch point:"
 msgstr "Senkron noktası:"
 
-#: ../src/dialog_properties.cpp:112
+#: ../src/dialog_properties.cpp:115
 msgid "Updated by:"
 msgstr "Güncelleyen:"
 
-#: ../src/dialog_properties.cpp:113
+#: ../src/dialog_properties.cpp:116
 msgid "Update details:"
 msgstr "Güncelleme detayları:"
 
-#: ../src/dialog_properties.cpp:122 ../src/dialog_resample.cpp:141
-#: ../src/export_framerate.cpp:70
-msgid "From &video"
-msgstr "Video&dan"
-
-#: ../src/dialog_properties.cpp:138 ../src/dialog_resample.cpp:172
-#: ../src/dialog_resample.cpp:186
-msgid "YCbCr Matrix:"
-msgstr "YCbCr Matrisi:"
-
-#: ../src/dialog_properties.cpp:141
+#: ../src/dialog_properties.cpp:122
 msgid "Resolution"
 msgstr "Çözünürlük"
 
-#: ../src/dialog_properties.cpp:149
+#: ../src/dialog_properties.cpp:128 ../src/dialog_resample.cpp:150
+#: ../src/export_framerate.cpp:70
+msgid "From &video"
+msgstr "&Videodan"
+
+#: ../src/dialog_properties.cpp:144 ../src/dialog_resample.cpp:180
+#: ../src/dialog_resample.cpp:193
+msgid "YCbCr Matrix:"
+msgstr "YCbCr Matrisi:"
+
+#: ../src/dialog_properties.cpp:155
 msgid "0: Smart wrapping, top line is wider"
 msgstr "0: Şık bölme, üst satır geniştir"
 
-#: ../src/dialog_properties.cpp:150
+#: ../src/dialog_properties.cpp:156
 msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: Satır sonu bölmesi, sadece \\N böler"
 
-#: ../src/dialog_properties.cpp:151
+#: ../src/dialog_properties.cpp:157
 msgid "2: No word wrapping, both \\n and \\N break"
 msgstr "2: Bölme yok, sadece \\n ve \\N böler"
 
-#: ../src/dialog_properties.cpp:152
+#: ../src/dialog_properties.cpp:158
 msgid "3: Smart wrapping, bottom line is wider"
 msgstr "3: Şık bölme, alt satır geniştir"
 
-#: ../src/dialog_properties.cpp:156
+#: ../src/dialog_properties.cpp:162
 msgid "Wrap Style: "
 msgstr "Bölme Stili: "
 
-#: ../src/dialog_properties.cpp:159
+#: ../src/dialog_properties.cpp:165
 msgid "Scale Border and Shadow"
 msgstr "Kenar ve Gölge Boyutlandır"
 
-#: ../src/dialog_properties.cpp:160
+#: ../src/dialog_properties.cpp:166
 msgid ""
 "Scale border and shadow together with script/render resolution. If this is "
 "unchecked, relative border and shadow size will depend on renderer."
@@ -3788,49 +3890,49 @@ msgstr ""
 "Betik çözünürlüğü ile beraber dışhat ve gölgeyi boyutlandır. Eğer seçili "
 "değilse, ilgili dışhat ve gölge boyutlandırılacaktır."
 
-#: ../src/dialog_properties.cpp:196
+#: ../src/dialog_properties.cpp:202
 msgid "property changes"
 msgstr "özellik değişir"
 
-#: ../src/dialog_resample.cpp:119
-msgid "&Symmetrical"
-msgstr "&Simetrik"
-
-#: ../src/dialog_resample.cpp:143
-msgid "From s&cript"
-msgstr "B&etikten"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Add borders"
-msgstr "Kenarlık ekle"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Manual"
-msgstr "Manüel"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Remove borders"
-msgstr "Kenarlıkları kaldır"
-
-#: ../src/dialog_resample.cpp:146
-msgid "Stretch"
-msgstr "Esnetme"
-
-#: ../src/dialog_resample.cpp:147
-msgid "Aspect Ratio Handling"
-msgstr "En-boy oranı yönetimi"
-
-#: ../src/dialog_resample.cpp:162
-msgid "Margin offset"
-msgstr "Kenar boşluğu konumu"
-
-#: ../src/dialog_resample.cpp:175
+#: ../src/dialog_resample.cpp:114
 msgid "Source Resolution"
 msgstr "Kaynak Çözünürlüğü"
 
-#: ../src/dialog_resample.cpp:189
+#: ../src/dialog_resample.cpp:115
 msgid "Destination Resolution"
 msgstr "Hedef Çözünürlüğü"
+
+#: ../src/dialog_resample.cpp:116
+msgid "Margin offset"
+msgstr "Kenar boşluğu konumu"
+
+#: ../src/dialog_resample.cpp:128
+msgid "&Symmetrical"
+msgstr "&Simetrik"
+
+#: ../src/dialog_resample.cpp:152
+msgid "From s&cript"
+msgstr "B&etikten"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Add borders"
+msgstr "Kenarlık ekle"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Manual"
+msgstr "Manüel"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Remove borders"
+msgstr "Kenarlıkları kaldır"
+
+#: ../src/dialog_resample.cpp:155
+msgid "Stretch"
+msgstr "Esnetme"
+
+#: ../src/dialog_resample.cpp:156
+msgid "Aspect Ratio Handling"
+msgstr "En-boy oranı yönetimi"
 
 #: ../src/dialog_search_replace.cpp:47
 msgid "Replace"
@@ -3860,7 +3962,7 @@ msgstr "&Yorumları atla"
 msgid "S&kip Override Tags"
 msgstr "G&eçersiz Kılma Etiketlerini Atla"
 
-#: ../src/dialog_search_replace.cpp:87 ../src/dialog_selection.cpp:137
+#: ../src/dialog_search_replace.cpp:87 ../src/dialog_selection.cpp:139
 msgid "&Text"
 msgstr "&Metin"
 
@@ -3876,11 +3978,11 @@ msgstr "St&il"
 msgid "A&ll rows"
 msgstr "T&üm satırlar"
 
-#: ../src/dialog_search_replace.cpp:88 ../src/dialog_shift_times.cpp:163
+#: ../src/dialog_search_replace.cpp:88 ../src/dialog_shift_times.cpp:170
 msgid "Selected &rows"
 msgstr "Seçili &satırlar"
 
-#: ../src/dialog_search_replace.cpp:90 ../src/dialog_selection.cpp:138
+#: ../src/dialog_search_replace.cpp:90 ../src/dialog_selection.cpp:140
 msgid "In Field"
 msgstr "Bölge"
 
@@ -3890,7 +3992,7 @@ msgstr "Limit"
 
 #: ../src/dialog_search_replace.cpp:93
 msgid "&Find next"
-msgstr "&Sonrakini bul"
+msgstr "S&onrakini bul"
 
 #: ../src/dialog_search_replace.cpp:94
 msgid "Replace &next"
@@ -3898,192 +4000,202 @@ msgstr "Sonrakini &değiştir"
 
 #: ../src/dialog_search_replace.cpp:95 ../src/dialog_spellchecker.cpp:190
 msgid "Replace &all"
-msgstr "Tümünü &Değiştir"
+msgstr "&Tümünü Değiştir"
 
-#: ../src/dialog_selection.cpp:106
+#: ../src/dialog_selection.cpp:107
 msgid "Select"
 msgstr "Seçim"
 
-#: ../src/dialog_selection.cpp:117
+#: ../src/dialog_selection.cpp:118
 msgid "Match"
 msgstr "Eşleştir"
 
-#: ../src/dialog_selection.cpp:121
+#: ../src/dialog_selection.cpp:123
 msgid "&Matches"
 msgstr "&Eşleştir"
 
-#: ../src/dialog_selection.cpp:122
+#: ../src/dialog_selection.cpp:124
 msgid "&Doesn't Match"
-msgstr "&Eşleştirme"
+msgstr "E&şleştirme"
 
-#: ../src/dialog_selection.cpp:123
+#: ../src/dialog_selection.cpp:125
 msgid "Match c&ase"
-msgstr "Boyutu e&şleştir"
+msgstr "&Boyutu eşleştir"
 
-#: ../src/dialog_selection.cpp:132
+#: ../src/dialog_selection.cpp:134
 msgid "&Contains"
 msgstr "&İçerenleri"
 
-#: ../src/dialog_selection.cpp:132
+#: ../src/dialog_selection.cpp:134
 msgid "&Exact match"
 msgstr "&Tam eşleştir"
 
-#: ../src/dialog_selection.cpp:132
+#: ../src/dialog_selection.cpp:134
 msgid "&Regular Expression match"
 msgstr "&Normal şekilde eşleştir"
 
-#: ../src/dialog_selection.cpp:133
+#: ../src/dialog_selection.cpp:135
 msgid "Mode"
 msgstr "Mod"
 
-#: ../src/dialog_selection.cpp:137
+#: ../src/dialog_selection.cpp:139
 msgid "&Style"
 msgstr "&Stil"
 
-#: ../src/dialog_selection.cpp:137
+#: ../src/dialog_selection.cpp:139
 msgid "Act&or"
 msgstr "Akt&ör"
 
-#: ../src/dialog_selection.cpp:137
+#: ../src/dialog_selection.cpp:139
 msgid "E&ffect"
 msgstr "E&fekt"
 
-#: ../src/dialog_selection.cpp:142
+#: ../src/dialog_selection.cpp:144
 msgid "Match dialogues/comments"
 msgstr "Yorumları/diyalogları eşleştir"
 
-#: ../src/dialog_selection.cpp:143
+#: ../src/dialog_selection.cpp:146
 msgid "D&ialogues"
 msgstr "D&iyaloglar"
 
-#: ../src/dialog_selection.cpp:144
+#: ../src/dialog_selection.cpp:147
 msgid "Comme&nts"
 msgstr "Yorum&lar"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "&Add to selection"
-msgstr "&Seçime ekle"
+msgstr "Se&çime ekle"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "Intersect &with selection"
 msgstr "Seçimden &kes"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "S&ubtract from selection"
-msgstr "S&eçimden çıkar"
+msgstr "Seçi&mden çıkar"
 
-#: ../src/dialog_selection.cpp:149
+#: ../src/dialog_selection.cpp:152
 msgid "Set se&lection"
-msgstr "Seçimi be&lirle"
+msgstr "Seçimi beli&rle"
 
-#: ../src/dialog_selection.cpp:212
+#: ../src/dialog_selection.cpp:215
 #, c-format
 msgid "Selection was set to one line"
 msgid_plural "Selection was set to %u lines"
 msgstr[0] "Seçim satıra ayarlandı"
 msgstr[1] "Seçim %u satırlarına ayarlandı"
 
-#: ../src/dialog_selection.cpp:213
+#: ../src/dialog_selection.cpp:216
 msgid "Selection was set to no lines"
 msgstr "Seçim satıra ayarlandı"
 
-#: ../src/dialog_selection.cpp:219
+#: ../src/dialog_selection.cpp:222
 #, c-format
 msgid "One line was added to selection"
 msgid_plural "%u lines were added to selection"
 msgstr[0] "Seçime bir satır eklendi"
 msgstr[1] "Seçime %u satırları eklendi"
 
-#: ../src/dialog_selection.cpp:220
+#: ../src/dialog_selection.cpp:223
 msgid "No lines were added to selection"
 msgstr "Seçime hiçbir satır eklenmedi"
 
-#: ../src/dialog_selection.cpp:231
+#: ../src/dialog_selection.cpp:234
 #, c-format
 msgid "One line was removed from selection"
 msgid_plural "%u lines were removed from selection"
 msgstr[0] "Seçimden bir satır çıkarıldı"
 msgstr[1] "%u satırları seçimden çıkarıldı"
 
-#: ../src/dialog_selection.cpp:232
+#: ../src/dialog_selection.cpp:235
 msgid "No lines were removed from selection"
 msgstr "Hiçbir satır seçimden çıkarılmadı"
 
-#: ../src/dialog_selection.cpp:237
+#: ../src/dialog_selection.cpp:240
 msgid "Selection"
 msgstr "Seçim"
 
-#: ../src/dialog_shift_times.cpp:91
+#: ../src/dialog_shift_times.cpp:92
 msgid "unsaved"
 msgstr "kayıt edilmedi"
 
-#: ../src/dialog_shift_times.cpp:95
+#: ../src/dialog_shift_times.cpp:96
 #, c-format
-msgid "%s frames"
-msgstr "%s kare"
+msgid "1 frame"
+msgid_plural "%s frames"
+msgstr[0] "1 kare"
+msgstr[1] "%s kare"
 
-#: ../src/dialog_shift_times.cpp:97
+#: ../src/dialog_shift_times.cpp:98
 msgid "backward"
 msgstr "geri"
 
-#: ../src/dialog_shift_times.cpp:97
+#: ../src/dialog_shift_times.cpp:98
 msgid "forward"
 msgstr "ileri"
 
-#: ../src/dialog_shift_times.cpp:101
+#: ../src/dialog_shift_times.cpp:102
 msgid "s+e"
 msgstr "s+e"
 
-#: ../src/dialog_shift_times.cpp:102
+#: ../src/dialog_shift_times.cpp:103
 msgid "s"
 msgstr "s"
 
-#: ../src/dialog_shift_times.cpp:103
+#: ../src/dialog_shift_times.cpp:104
 msgid "e"
 msgstr "e"
 
-#: ../src/dialog_shift_times.cpp:110
+#: ../src/dialog_shift_times.cpp:111
 msgid "all"
 msgstr "tümü"
 
-#: ../src/dialog_shift_times.cpp:113
+#: ../src/dialog_shift_times.cpp:114
 #, c-format
 msgid "from %d onward"
 msgstr "%d'dan beri"
 
-#: ../src/dialog_shift_times.cpp:116
+#: ../src/dialog_shift_times.cpp:117
 msgid "sel "
 msgstr "seç "
 
-#: ../src/dialog_shift_times.cpp:143
+#: ../src/dialog_shift_times.cpp:144
+msgid "Shift by"
+msgstr "Kaydır"
+
+#: ../src/dialog_shift_times.cpp:145
+msgid "Load from history"
+msgstr "Geçmişten yükle"
+
+#: ../src/dialog_shift_times.cpp:150
 msgid "&Time: "
 msgstr "&Zaman: "
 
-#: ../src/dialog_shift_times.cpp:144
+#: ../src/dialog_shift_times.cpp:151
 msgid "Shift by time"
 msgstr "Zamanla kaydır"
 
-#: ../src/dialog_shift_times.cpp:147
+#: ../src/dialog_shift_times.cpp:154
 msgid "&Frames: "
 msgstr "&Kareler: "
 
-#: ../src/dialog_shift_times.cpp:148
+#: ../src/dialog_shift_times.cpp:155
 msgid "Shift by frames"
 msgstr "Kareyle kaydır"
 
-#: ../src/dialog_shift_times.cpp:152
+#: ../src/dialog_shift_times.cpp:159
 msgid "Enter time in h:mm:ss.cs notation"
 msgstr "Zamanı gir h:mm:ss.cs olarak"
 
-#: ../src/dialog_shift_times.cpp:155
+#: ../src/dialog_shift_times.cpp:162
 msgid "Enter number of frames to shift by"
 msgstr "Kaydırmak istediğiniz kare sayısını giriniz"
 
-#: ../src/dialog_shift_times.cpp:157
+#: ../src/dialog_shift_times.cpp:164
 msgid "For&ward"
 msgstr "İ&leri"
 
-#: ../src/dialog_shift_times.cpp:158
+#: ../src/dialog_shift_times.cpp:165
 msgid ""
 "Shifts subs forward, making them appear later. Use if they are appearing too "
 "soon."
@@ -4091,11 +4203,11 @@ msgstr ""
 "Altyazıları ileri kaydırır, sonradan görünmelerini sağlar. Erken "
 "çıkıyorlarsa kullanın."
 
-#: ../src/dialog_shift_times.cpp:160
+#: ../src/dialog_shift_times.cpp:167
 msgid "&Backward"
 msgstr "&Geri"
 
-#: ../src/dialog_shift_times.cpp:161
+#: ../src/dialog_shift_times.cpp:168
 msgid ""
 "Shifts subs backward, making them appear earlier. Use if they are appearing "
 "too late."
@@ -4103,47 +4215,39 @@ msgstr ""
 "Altyazıları geri kaydırır, önceden görünmelerini sağlar. Geç çıkıyorlarsa "
 "kullanın."
 
-#: ../src/dialog_shift_times.cpp:163
+#: ../src/dialog_shift_times.cpp:170
 msgid "&All rows"
 msgstr "&Tüm satırlar"
 
-#: ../src/dialog_shift_times.cpp:163
+#: ../src/dialog_shift_times.cpp:170
 msgid "Selection &onward"
 msgstr "İleri &seçim"
 
-#: ../src/dialog_shift_times.cpp:164
+#: ../src/dialog_shift_times.cpp:171
 msgid "Affect"
 msgstr "Değiştir"
 
-#: ../src/dialog_shift_times.cpp:166
+#: ../src/dialog_shift_times.cpp:173
 msgid "&End times only"
-msgstr "&Sadece bitiş süresinde"
+msgstr "S&adece bitiş süresinde"
 
-#: ../src/dialog_shift_times.cpp:166
+#: ../src/dialog_shift_times.cpp:173
 msgid "&Start times only"
-msgstr "&Sadece başlangıç süresinde"
+msgstr "Sa&dece başlangıç süresinde"
 
-#: ../src/dialog_shift_times.cpp:166
+#: ../src/dialog_shift_times.cpp:173
 msgid "Start a&nd End times"
 msgstr "Başlangıç v&e Bitiş süresinde"
 
-#: ../src/dialog_shift_times.cpp:167
+#: ../src/dialog_shift_times.cpp:174
 msgid "Times"
 msgstr "Süre"
 
-#: ../src/dialog_shift_times.cpp:171
+#: ../src/dialog_shift_times.cpp:178
 msgid "&Clear"
-msgstr "&Temizle"
+msgstr "Te&mizle"
 
-#: ../src/dialog_shift_times.cpp:203
-msgid "Shift by"
-msgstr "Kaydır"
-
-#: ../src/dialog_shift_times.cpp:212
-msgid "Load from history"
-msgstr "Geçmişten yükle"
-
-#: ../src/dialog_shift_times.cpp:410
+#: ../src/dialog_shift_times.cpp:415
 msgid "shifting"
 msgstr "kaydırma"
 
@@ -4199,129 +4303,129 @@ msgstr "Aegisub bu betikte hatalı kelime bulamadı."
 msgid "spell check replace"
 msgstr "yazı denetimi değiştir"
 
-#: ../src/dialog_style_editor.cpp:127
+#: ../src/dialog_style_editor.cpp:128
 msgid "Style Editor"
 msgstr "Stil Editörü"
 
-#: ../src/dialog_style_editor.cpp:172
+#: ../src/dialog_style_editor.cpp:173
 msgid "Border boxes"
 msgstr "Çerçeve Kutusu"
 
-#: ../src/dialog_style_editor.cpp:172 ../src/dialog_style_editor.cpp:183
-#: ../src/dialog_style_editor.cpp:286
+#: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:295
 msgid "Outline"
 msgstr "Kontur"
 
-#: ../src/dialog_style_editor.cpp:172
+#: ../src/dialog_style_editor.cpp:173
 msgid "Shadow box (libass only)"
 msgstr "Gölge Kutusu (sadece libass)"
 
-#: ../src/dialog_style_editor.cpp:180
+#: ../src/dialog_style_editor.cpp:181
 msgid "Font"
 msgstr "Font"
 
-#: ../src/dialog_style_editor.cpp:181 ../src/preferences.cpp:243
+#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:246
 msgid "Colors"
 msgstr "Renkler"
 
-#: ../src/dialog_style_editor.cpp:182
+#: ../src/dialog_style_editor.cpp:183
 msgid "Margins"
 msgstr "Kenar Boşluğu"
 
-#: ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:185
 msgid "Miscellaneous"
 msgstr "Diğer"
 
-#: ../src/dialog_style_editor.cpp:185
+#: ../src/dialog_style_editor.cpp:186
 msgid "Preview"
 msgstr "Önizleme"
 
-#: ../src/dialog_style_editor.cpp:191
+#: ../src/dialog_style_editor.cpp:200
 msgid "&Bold"
 msgstr "&Kalın"
 
-#: ../src/dialog_style_editor.cpp:192
+#: ../src/dialog_style_editor.cpp:201
 msgid "&Italic"
 msgstr "&İtalik"
 
-#: ../src/dialog_style_editor.cpp:193
+#: ../src/dialog_style_editor.cpp:202
 msgid "&Underline"
 msgstr "&Altıçizili"
 
-#: ../src/dialog_style_editor.cpp:194
+#: ../src/dialog_style_editor.cpp:203
 msgid "&Strikeout"
 msgstr "&Üstüçizili"
 
-#: ../src/dialog_style_editor.cpp:206
+#: ../src/dialog_style_editor.cpp:215
 msgid "Alignment"
 msgstr "Hizalama"
 
-#: ../src/dialog_style_editor.cpp:217
+#: ../src/dialog_style_editor.cpp:226
 msgid "Style name"
 msgstr "Stil adı"
 
-#: ../src/dialog_style_editor.cpp:218
+#: ../src/dialog_style_editor.cpp:227
 msgid "Font face"
 msgstr "Font adı"
 
-#: ../src/dialog_style_editor.cpp:219
+#: ../src/dialog_style_editor.cpp:228
 msgid "Font size"
 msgstr "Font boyutu"
 
-#: ../src/dialog_style_editor.cpp:220
+#: ../src/dialog_style_editor.cpp:229
 msgid "Choose primary color"
 msgstr "Birincil rengi seç"
 
-#: ../src/dialog_style_editor.cpp:221
+#: ../src/dialog_style_editor.cpp:230
 msgid "Choose secondary color"
 msgstr "İkincil rengi seç"
 
-#: ../src/dialog_style_editor.cpp:222
+#: ../src/dialog_style_editor.cpp:231
 msgid "Choose outline color"
 msgstr "Kontur rengi seç"
 
-#: ../src/dialog_style_editor.cpp:223
+#: ../src/dialog_style_editor.cpp:232
 msgid "Choose shadow color"
 msgstr "Gölge rengini seç"
 
-#: ../src/dialog_style_editor.cpp:224
+#: ../src/dialog_style_editor.cpp:233
 msgid "Distance from left edge, in pixels"
 msgstr "Sol kenardan uzaklık, piksel"
 
-#: ../src/dialog_style_editor.cpp:225
+#: ../src/dialog_style_editor.cpp:234
 msgid "Distance from right edge, in pixels"
 msgstr "Sağ kenardan uzaklık, piksel"
 
-#: ../src/dialog_style_editor.cpp:226
+#: ../src/dialog_style_editor.cpp:235
 msgid "Distance from top/bottom edge, in pixels"
 msgstr "Üst/Alt kenarından uzaklık, piksel"
 
-#: ../src/dialog_style_editor.cpp:227
+#: ../src/dialog_style_editor.cpp:236
 msgid "Whether to draw a normal outline or opaque boxes around the text"
 msgstr ""
 "Metnin etrafına normal bir kenarlık mı yoksa opak kutular mı çizileceği"
 
-#: ../src/dialog_style_editor.cpp:228
+#: ../src/dialog_style_editor.cpp:237
 msgid "Outline width, in pixels"
 msgstr "Kontur uzunluğu, piksel"
 
-#: ../src/dialog_style_editor.cpp:229
+#: ../src/dialog_style_editor.cpp:238
 msgid "Shadow distance, in pixels"
 msgstr "Gölge uzaklığı, piksel"
 
-#: ../src/dialog_style_editor.cpp:230
+#: ../src/dialog_style_editor.cpp:239
 msgid "Scale X, in percentage"
 msgstr "Boyutlandır X, yüzdelik"
 
-#: ../src/dialog_style_editor.cpp:231
+#: ../src/dialog_style_editor.cpp:240
 msgid "Scale Y, in percentage"
 msgstr "Boyutlandır Y, yüzdelik"
 
-#: ../src/dialog_style_editor.cpp:232
+#: ../src/dialog_style_editor.cpp:241
 msgid "Angle to rotate in Z axis, in degrees"
 msgstr "Z aksında çevir, derece"
 
-#: ../src/dialog_style_editor.cpp:233
+#: ../src/dialog_style_editor.cpp:242
 msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping"
@@ -4329,91 +4433,91 @@ msgstr ""
 "Kodlama, eğer font uygun unicode kodlamaya sahip değilse, sadece unicode'da "
 "etkilidir"
 
-#: ../src/dialog_style_editor.cpp:234
+#: ../src/dialog_style_editor.cpp:243
 msgid "Character spacing, in pixels"
 msgstr "Karakter boşluğu, piksel"
 
-#: ../src/dialog_style_editor.cpp:235
+#: ../src/dialog_style_editor.cpp:244
 msgid "Alignment in screen, in numpad style"
 msgstr "Ekrandaki hizalaması, numpad stili"
 
-#: ../src/dialog_style_editor.cpp:286
+#: ../src/dialog_style_editor.cpp:295
 msgid "Primary"
 msgstr "Birincil"
 
-#: ../src/dialog_style_editor.cpp:286
+#: ../src/dialog_style_editor.cpp:295
 msgid "Secondary"
 msgstr "İkincil"
 
-#: ../src/dialog_style_editor.cpp:286
+#: ../src/dialog_style_editor.cpp:295
 msgid "Shadow"
 msgstr "Gölge"
 
-#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:263
+#: ../src/dialog_style_editor.cpp:306 ../src/grid_column.cpp:265
 msgid "Left"
 msgstr "Sol"
 
-#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:269
+#: ../src/dialog_style_editor.cpp:306 ../src/grid_column.cpp:271
 msgid "Right"
 msgstr "Sağ"
 
-#: ../src/dialog_style_editor.cpp:297 ../src/grid_column.cpp:275
+#: ../src/dialog_style_editor.cpp:306 ../src/grid_column.cpp:277
 msgid "Vert"
 msgstr "Dikey"
 
-#: ../src/dialog_style_editor.cpp:315
+#: ../src/dialog_style_editor.cpp:324
 msgid "Outline:"
 msgstr "Kontur:"
 
-#: ../src/dialog_style_editor.cpp:316
+#: ../src/dialog_style_editor.cpp:325
 msgid "Shadow:"
 msgstr "Gölge:"
 
-#: ../src/dialog_style_editor.cpp:317
+#: ../src/dialog_style_editor.cpp:326
 msgid "Border style:"
 msgstr "Çerçeve stili:"
 
-#: ../src/dialog_style_editor.cpp:321
+#: ../src/dialog_style_editor.cpp:330
 msgid "Scale X%:"
 msgstr "Boyutlandır X%:"
 
-#: ../src/dialog_style_editor.cpp:322
+#: ../src/dialog_style_editor.cpp:331
 msgid "Scale Y%:"
 msgstr "Boyutlandır Y%:"
 
-#: ../src/dialog_style_editor.cpp:323
+#: ../src/dialog_style_editor.cpp:332
 msgid "Rotation:"
 msgstr "Rotasyon:"
 
-#: ../src/dialog_style_editor.cpp:324
+#: ../src/dialog_style_editor.cpp:333
 msgid "Spacing:"
 msgstr "Boşluk:"
 
-#: ../src/dialog_style_editor.cpp:327
+#: ../src/dialog_style_editor.cpp:336
 msgid "Encoding:"
 msgstr "Kodlama:"
 
-#: ../src/dialog_style_editor.cpp:337
+#: ../src/dialog_style_editor.cpp:346
 msgid "Preview of current style"
 msgstr "Stilin önizlemesi"
 
-#: ../src/dialog_style_editor.cpp:340
+#: ../src/dialog_style_editor.cpp:349
 msgid "Text to be used for the preview"
 msgstr "Önizleme için kullanılacak yazı"
 
-#: ../src/dialog_style_editor.cpp:341
+#: ../src/dialog_style_editor.cpp:350
 msgid "Color of preview background"
 msgstr "Önizleme arkaplan rengi"
 
-#: ../src/dialog_style_editor.cpp:422
+#: ../src/dialog_style_editor.cpp:431
 msgid "Style name conflict"
 msgstr "Stil adı çakışması"
 
-#: ../src/dialog_style_editor.cpp:422
+#: ../src/dialog_style_editor.cpp:431
 msgid "There is already a style with this name. Please choose another name."
 msgstr "Bu isimde bir stil zaten var. Lütfen başka bir isim seçin."
 
-#: ../src/dialog_style_editor.cpp:434
+#: ../src/dialog_style_editor.cpp:443
 msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
@@ -4421,117 +4525,117 @@ msgstr ""
 "Betikteki bu stile ait tüm örneklerin adını yenisiyle değiştirmek ister "
 "misiniz?"
 
-#: ../src/dialog_style_editor.cpp:435
+#: ../src/dialog_style_editor.cpp:444
 msgid "Update script?"
 msgstr "Betiği güncelle?"
 
-#: ../src/dialog_style_editor.cpp:462 ../src/subs_edit_box.cpp:604
+#: ../src/dialog_style_editor.cpp:471 ../src/subs_edit_box.cpp:604
 msgid "style change"
 msgstr "stil değiştir"
 
-#: ../src/dialog_style_manager.cpp:187
+#: ../src/dialog_style_manager.cpp:188
 msgid "Move style up"
 msgstr "Stili yukarı taşı"
 
-#: ../src/dialog_style_manager.cpp:188
+#: ../src/dialog_style_manager.cpp:189
 msgid "Move style down"
 msgstr "Stili aşağı taşı"
 
-#: ../src/dialog_style_manager.cpp:189
+#: ../src/dialog_style_manager.cpp:190
 msgid "Move style to top"
 msgstr "Stili en yukarı taşı"
 
-#: ../src/dialog_style_manager.cpp:190
+#: ../src/dialog_style_manager.cpp:191
 msgid "Move style to bottom"
 msgstr "Stili en aşağı taşı"
 
-#: ../src/dialog_style_manager.cpp:191
+#: ../src/dialog_style_manager.cpp:192
 msgid "Sort styles alphabetically"
 msgstr "Stilleri alfabetik sırala"
 
-#: ../src/dialog_style_manager.cpp:201 ../src/preferences.cpp:611
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:613
 msgid "&New"
 msgstr "&Yeni"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:612
+#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:614
 msgid "&Edit"
 msgstr "&Düzenle"
 
-#: ../src/dialog_style_manager.cpp:203 ../src/subs_edit_ctrl.cpp:389
+#: ../src/dialog_style_manager.cpp:204 ../src/subs_edit_ctrl.cpp:389
 #: ../src/timeedit_ctrl.cpp:209
 msgid "&Copy"
 msgstr "&Kopyala"
 
-#: ../src/dialog_style_manager.cpp:217
+#: ../src/dialog_style_manager.cpp:218
 #, c-format
 msgid "%s - Copy"
 msgstr "%s - Kopyala"
 
-#: ../src/dialog_style_manager.cpp:219
+#: ../src/dialog_style_manager.cpp:220
 #, c-format
 msgid "%s - Copy (%d)"
 msgstr "%s - Kopyala (%d)"
 
-#: ../src/dialog_style_manager.cpp:242
+#: ../src/dialog_style_manager.cpp:243
 msgid "Could not parse style"
 msgstr "Stil ayrıştırılamadı"
 
-#: ../src/dialog_style_manager.cpp:247
+#: ../src/dialog_style_manager.cpp:248
 #, c-format
 msgid "Are you sure you want to delete this style?"
 msgid_plural "Are you sure you want to delete these %d styles?"
 msgstr[0] "Bu stili silmek istediğinizden emin misiniz?"
 msgstr[1] "%d stillerini silmek istediğinizden emin misiniz?"
 
-#: ../src/dialog_style_manager.cpp:272
+#: ../src/dialog_style_manager.cpp:273
 msgid "Catalog of available storages"
 msgstr "Kullanılır bellek kataloğu"
 
 #: ../src/dialog_style_manager.cpp:274
-msgid "New"
-msgstr "Yeni"
-
-#: ../src/dialog_style_manager.cpp:275
-msgid "Delete"
-msgstr "Sil"
-
-#: ../src/dialog_style_manager.cpp:281
-msgid "Copy to &current script ->"
-msgstr "Geçerli &betiklere kopyala ->"
-
-#: ../src/dialog_style_manager.cpp:288
 msgid "Storage"
 msgstr "Bellek"
 
-#: ../src/dialog_style_manager.cpp:294
-msgid "&Import from script..."
-msgstr "&Betikten içeri aktar"
-
-#: ../src/dialog_style_manager.cpp:295
-msgid "<- Copy to &storage"
-msgstr "Belleğe kopyala"
-
-#: ../src/dialog_style_manager.cpp:306
+#: ../src/dialog_style_manager.cpp:275
 msgid "Current script"
 msgstr "Geçerli betik"
 
-#: ../src/dialog_style_manager.cpp:453
+#: ../src/dialog_style_manager.cpp:283
+msgid "New"
+msgstr "Yeni"
+
+#: ../src/dialog_style_manager.cpp:284
+msgid "Delete"
+msgstr "Sil"
+
+#: ../src/dialog_style_manager.cpp:290
+msgid "Copy to &current script ->"
+msgstr "Geçerli &betiklere kopyala ->"
+
+#: ../src/dialog_style_manager.cpp:302
+msgid "&Import from script..."
+msgstr "B&etikten içeri aktar"
+
+#: ../src/dialog_style_manager.cpp:303
+msgid "<- Copy to &storage"
+msgstr "Belleğe kopyala"
+
+#: ../src/dialog_style_manager.cpp:460
 msgid "New catalog entry"
 msgstr "Yeni katalog girişi"
 
-#: ../src/dialog_style_manager.cpp:453
+#: ../src/dialog_style_manager.cpp:460
 msgid "New storage name:"
 msgstr "Yeni bellek adı:"
 
-#: ../src/dialog_style_manager.cpp:468
+#: ../src/dialog_style_manager.cpp:475
 msgid "A catalog with that name already exists."
 msgstr "Girilen adda bir katalog zaten var."
 
-#: ../src/dialog_style_manager.cpp:468
+#: ../src/dialog_style_manager.cpp:475
 msgid "Catalog name conflict"
 msgstr "Katalog adı çakışması"
 
-#: ../src/dialog_style_manager.cpp:475
+#: ../src/dialog_style_manager.cpp:482
 #, c-format
 msgid ""
 "The specified catalog name contains one or more illegal characters. They "
@@ -4542,25 +4646,25 @@ msgstr ""
 "Bulunanlar altçizgi ile değiştirildi.\n"
 "Kataloğun yeni adı \"%s\"."
 
-#: ../src/dialog_style_manager.cpp:476
+#: ../src/dialog_style_manager.cpp:483
 msgid "Invalid characters"
 msgstr "Geçersiz karakterler"
 
-#: ../src/dialog_style_manager.cpp:489
+#: ../src/dialog_style_manager.cpp:496
 #, c-format
 msgid "Are you sure you want to delete the storage \"%s\" from the catalog?"
 msgstr "Katalogtan \"%s\" belleğini silmek istediğinizden emin misiniz?"
 
-#: ../src/dialog_style_manager.cpp:490
+#: ../src/dialog_style_manager.cpp:497
 msgid "Confirm delete"
 msgstr "Silmeyi onayla"
 
-#: ../src/dialog_style_manager.cpp:508 ../src/dialog_style_manager.cpp:535
-#: ../src/dialog_style_manager.cpp:714
+#: ../src/dialog_style_manager.cpp:515 ../src/dialog_style_manager.cpp:542
+#: ../src/dialog_style_manager.cpp:721
 msgid "Style name collision"
 msgstr "Stil adı çakışması"
 
-#: ../src/dialog_style_manager.cpp:508
+#: ../src/dialog_style_manager.cpp:515
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current storage. "
@@ -4568,7 +4672,7 @@ msgid ""
 msgstr ""
 "Mevcut depolamada zaten \"%s\" adında bir stil var. Üzerine yazılsın mı?"
 
-#: ../src/dialog_style_manager.cpp:535 ../src/dialog_style_manager.cpp:713
+#: ../src/dialog_style_manager.cpp:542 ../src/dialog_style_manager.cpp:720
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current script. "
@@ -4577,120 +4681,120 @@ msgstr ""
 "Geçerli betik dosyasında zaten \"%s\" adında bir stil var. Üzerine yazılsın "
 "mı?"
 
-#: ../src/dialog_style_manager.cpp:546
+#: ../src/dialog_style_manager.cpp:553
 msgid "style copy"
 msgstr "stil kopyala"
 
-#: ../src/dialog_style_manager.cpp:575
+#: ../src/dialog_style_manager.cpp:582
 msgid "style paste"
 msgstr "stil yapıştır"
 
-#: ../src/dialog_style_manager.cpp:619
+#: ../src/dialog_style_manager.cpp:626
 msgid "Confirm delete from storage"
 msgstr "Bellekten silmeyi onayla"
 
-#: ../src/dialog_style_manager.cpp:658
+#: ../src/dialog_style_manager.cpp:665
 msgid "Confirm delete from current"
 msgstr "Geçerliden silmeyi onayla"
 
-#: ../src/dialog_style_manager.cpp:662
+#: ../src/dialog_style_manager.cpp:669
 msgid "style delete"
 msgstr "stil sil"
 
-#: ../src/dialog_style_manager.cpp:682
+#: ../src/dialog_style_manager.cpp:689
 msgid "Unsupported subtitle format"
 msgstr "Desteklenmeyen altyazı formatı"
 
-#: ../src/dialog_style_manager.cpp:698
+#: ../src/dialog_style_manager.cpp:705
 msgid "Error Importing Styles"
 msgstr "Stilleri Aktarmada Hata"
 
-#: ../src/dialog_style_manager.cpp:698
+#: ../src/dialog_style_manager.cpp:705
 msgid "The selected file has no available styles."
 msgstr "Seçili dosya hiçbir stil içermiyor."
 
-#: ../src/dialog_style_manager.cpp:704
+#: ../src/dialog_style_manager.cpp:711
 msgid "Choose styles to import:"
 msgstr "İçeri aktarılacak stilleri seç:"
 
-#: ../src/dialog_style_manager.cpp:704
+#: ../src/dialog_style_manager.cpp:711
 msgid "Import Styles"
 msgstr "Stilleri İçeri Aktar"
 
-#: ../src/dialog_style_manager.cpp:730
+#: ../src/dialog_style_manager.cpp:737
 msgid "style import"
 msgstr "stili içeri aktar"
 
-#: ../src/dialog_style_manager.cpp:839
+#: ../src/dialog_style_manager.cpp:846
 msgid "Are you sure? This cannot be undone!"
 msgstr "Emin misiniz? Bu eylem geri alınamaz!"
 
-#: ../src/dialog_style_manager.cpp:839
+#: ../src/dialog_style_manager.cpp:846
 msgid "Sort styles"
 msgstr "Stilleri sırala"
 
-#: ../src/dialog_style_manager.cpp:880
+#: ../src/dialog_style_manager.cpp:887
 msgid "style move"
 msgstr "stil taşı"
 
-#: ../src/dialog_styling_assistant.cpp:63
 #: ../src/dialog_styling_assistant.cpp:64
+#: ../src/dialog_styling_assistant.cpp:65
 msgid "Current line"
 msgstr "Geçerli satır"
 
-#: ../src/dialog_styling_assistant.cpp:70
+#: ../src/dialog_styling_assistant.cpp:71
 msgid "Styles available"
 msgstr "Mevcut stiller"
 
-#: ../src/dialog_styling_assistant.cpp:78
+#: ../src/dialog_styling_assistant.cpp:79
 msgid "Set style"
 msgstr "Stil belirle"
 
-#: ../src/dialog_styling_assistant.cpp:85 ../src/dialog_translation.cpp:108
+#: ../src/dialog_styling_assistant.cpp:86 ../src/dialog_translation.cpp:110
 msgid "Keys"
 msgstr "Tuşlar"
 
-#: ../src/dialog_styling_assistant.cpp:90 ../src/dialog_translation.cpp:113
+#: ../src/dialog_styling_assistant.cpp:92 ../src/dialog_translation.cpp:116
 msgid "Previous line"
 msgstr "Önceki satır"
 
-#: ../src/dialog_styling_assistant.cpp:91 ../src/dialog_translation.cpp:114
+#: ../src/dialog_styling_assistant.cpp:93 ../src/dialog_translation.cpp:117
 msgid "Next line"
 msgstr "Sonraki satır"
 
-#: ../src/dialog_styling_assistant.cpp:92 ../src/dialog_translation.cpp:116
+#: ../src/dialog_styling_assistant.cpp:94 ../src/dialog_translation.cpp:119
 msgid "Play video"
 msgstr "Videoyu oynat"
 
-#: ../src/dialog_styling_assistant.cpp:93 ../src/dialog_translation.cpp:117
+#: ../src/dialog_styling_assistant.cpp:95 ../src/dialog_translation.cpp:120
 msgid "Play audio"
 msgstr "Sesi oynat"
 
-#: ../src/dialog_styling_assistant.cpp:94
+#: ../src/dialog_styling_assistant.cpp:96
 msgid "Click on list"
 msgstr "Liste tıkla"
 
-#: ../src/dialog_styling_assistant.cpp:95
+#: ../src/dialog_styling_assistant.cpp:97
 msgid "Select style"
 msgstr "Stil seç"
 
-#: ../src/dialog_styling_assistant.cpp:99
+#: ../src/dialog_styling_assistant.cpp:101
 msgid "&Seek video to line start time"
 msgstr "Başlangıç zamanı satırı için videoyu ara"
 
-#: ../src/dialog_styling_assistant.cpp:108 ../src/dialog_translation.cpp:129
+#: ../src/dialog_styling_assistant.cpp:110 ../src/dialog_translation.cpp:132
 msgid "Actions"
 msgstr "Eylemler"
 
-#: ../src/dialog_styling_assistant.cpp:111 ../src/dialog_translation.cpp:131
+#: ../src/dialog_styling_assistant.cpp:113 ../src/dialog_translation.cpp:134
 msgid "Play &Audio"
 msgstr "Sesi &Oynat"
 
-#: ../src/dialog_styling_assistant.cpp:115 ../src/dialog_translation.cpp:136
+#: ../src/dialog_styling_assistant.cpp:117 ../src/dialog_translation.cpp:139
 msgid "Play &Video"
-msgstr "Videoyu &Oynat"
+msgstr "&Videoyu Oynat"
 
-#: ../src/dialog_styling_assistant.cpp:173
+#: ../src/dialog_styling_assistant.cpp:175
 msgid "styling assistant"
 msgstr "stil asistanı"
 
@@ -4714,69 +4818,69 @@ msgstr "Boş satırları dahil et"
 msgid "Apply to styles"
 msgstr "Stillere uygula"
 
-#: ../src/dialog_timing_processor.cpp:159
+#: ../src/dialog_timing_processor.cpp:160
 msgid "Select styles to process. Unchecked ones will be ignored."
 msgstr "İşlenecek stilleri seçiniz. Seçili olmayanlar yoksayılacak."
 
-#: ../src/dialog_timing_processor.cpp:162
+#: ../src/dialog_timing_processor.cpp:163
 msgid "Select all styles"
 msgstr "Tüm stilleri seç"
 
-#: ../src/dialog_timing_processor.cpp:165
+#: ../src/dialog_timing_processor.cpp:166
 msgid "Deselect all styles"
 msgstr "Tüm stillerden seçimi kaldır"
 
-#: ../src/dialog_timing_processor.cpp:169
+#: ../src/dialog_timing_processor.cpp:170
 msgid "Affect &selection only"
 msgstr "Sadece &seçimi düzenle"
 
-#: ../src/dialog_timing_processor.cpp:174
+#: ../src/dialog_timing_processor.cpp:175
 msgid "Lead-in/Lead-out"
 msgstr "Başlangıç/Bitiş"
 
-#: ../src/dialog_timing_processor.cpp:176
+#: ../src/dialog_timing_processor.cpp:177
 msgid "Add lead &in:"
 msgstr "Başlangıç &ekle:"
 
-#: ../src/dialog_timing_processor.cpp:178
+#: ../src/dialog_timing_processor.cpp:179
 msgid "Enable adding of lead-ins to lines"
 msgstr "Satırlara başlangıç eklemeyi etkinleştir"
 
-#: ../src/dialog_timing_processor.cpp:179
+#: ../src/dialog_timing_processor.cpp:180
 msgid "Lead in to be added, in milliseconds"
-msgstr "Eklenecek başlangıç, mikrosaniye"
+msgstr "Eklenecek başlangıç süresi (milisaniye)"
 
-#: ../src/dialog_timing_processor.cpp:181
+#: ../src/dialog_timing_processor.cpp:182
 msgid "Add lead &out:"
-msgstr "Bitiş &ekle:"
+msgstr "&Bitiş ekle:"
 
-#: ../src/dialog_timing_processor.cpp:183
+#: ../src/dialog_timing_processor.cpp:184
 msgid "Enable adding of lead-outs to lines"
 msgstr "Satırlara bitiş eklemeyi etkinleştir"
 
-#: ../src/dialog_timing_processor.cpp:184
+#: ../src/dialog_timing_processor.cpp:185
 msgid "Lead out to be added, in milliseconds"
-msgstr "Eklenecek bitiş, mikrosaniye"
+msgstr "Eklenecek bitiş süresi (milisaniye)"
 
-#: ../src/dialog_timing_processor.cpp:189
+#: ../src/dialog_timing_processor.cpp:190
 msgid "Make adjacent subtitles continuous"
 msgstr "Bitişik altyazıları devamlı yap"
 
-#: ../src/dialog_timing_processor.cpp:190
-msgid "&Enable"
-msgstr "&Etkinleştir"
-
 #: ../src/dialog_timing_processor.cpp:192
+msgid "&Enable"
+msgstr "E&tkinleştir"
+
+#: ../src/dialog_timing_processor.cpp:194
 msgid ""
 "Enable snapping of subtitles together if they are within a certain distance "
 "of each other"
 msgstr "Eğer farklı uzaklıktalarsa, altyazıları yaslamayı etkinleştir"
 
-#: ../src/dialog_timing_processor.cpp:195
+#: ../src/dialog_timing_processor.cpp:197
 msgid "Max gap:"
 msgstr "Maks boşluk:"
 
-#: ../src/dialog_timing_processor.cpp:196
+#: ../src/dialog_timing_processor.cpp:198
 msgid ""
 "Maximum difference between start and end time for two subtitles to be made "
 "continuous, in milliseconds"
@@ -4784,11 +4888,11 @@ msgstr ""
 "İki altyazıyı devamlı yapmak için maksimumu başlangıç ve bitiş zaman farkı, "
 "milisaniye"
 
-#: ../src/dialog_timing_processor.cpp:197
+#: ../src/dialog_timing_processor.cpp:199
 msgid "Max overlap:"
 msgstr "Maks örtüşme:"
 
-#: ../src/dialog_timing_processor.cpp:198
+#: ../src/dialog_timing_processor.cpp:200
 msgid ""
 "Maximum overlap between the end and start time for two subtitles to be made "
 "continuous, in milliseconds"
@@ -4796,7 +4900,7 @@ msgstr ""
 "İki altyazıyı devamlı yapmak için maksimum başlangıç ve bitiş zaman "
 "örtüşmesi, milisaniye"
 
-#: ../src/dialog_timing_processor.cpp:201
+#: ../src/dialog_timing_processor.cpp:203
 msgid ""
 "Sets how to set the adjoining of lines. If set totally to left, it will "
 "extend or shrink start time of the second line; if totally to right, it will "
@@ -4806,23 +4910,23 @@ msgstr ""
 "ayarlarsanır, ikinci satırın başlangıç zamanını genişletecek; eğer tamamen "
 "sağa ayarlarsanız, birinci satırın bitiş zamanını genişletecek."
 
-#: ../src/dialog_timing_processor.cpp:204
+#: ../src/dialog_timing_processor.cpp:206
 msgid "Bias: Start <- "
 msgstr "Taraf: Başlangıç <- "
 
-#: ../src/dialog_timing_processor.cpp:206
+#: ../src/dialog_timing_processor.cpp:208
 msgid " -> End"
 msgstr " -> Son"
 
-#: ../src/dialog_timing_processor.cpp:214
+#: ../src/dialog_timing_processor.cpp:216
 msgid "Keyframe snapping"
 msgstr "Anahtar kare yaslama"
 
-#: ../src/dialog_timing_processor.cpp:217
+#: ../src/dialog_timing_processor.cpp:220
 msgid "E&nable"
-msgstr "E&tkinleştir"
+msgstr "Et&kinleştir"
 
-#: ../src/dialog_timing_processor.cpp:218
+#: ../src/dialog_timing_processor.cpp:221
 msgid ""
 "Enable snapping of subtitles to nearest keyframe, if distance is within "
 "threshold"
@@ -4830,11 +4934,11 @@ msgstr ""
 "En yakın anahtar kareye altyazıları yaslamayı etkinleştir, eğer uzaklık "
 "sınırın içindeyse"
 
-#: ../src/dialog_timing_processor.cpp:229
+#: ../src/dialog_timing_processor.cpp:232
 msgid "Starts before thres.:"
 msgstr "Sınırdan önceki başlangıç:"
 
-#: ../src/dialog_timing_processor.cpp:230
+#: ../src/dialog_timing_processor.cpp:233
 msgid ""
 "Threshold for 'before start' distance, that is, how many milliseconds a "
 "subtitle must start before a keyframe to snap to it"
@@ -4842,11 +4946,11 @@ msgstr ""
 "'başlangıçtan önceki' uzaklık için sınır, kaç adet karenin bir altyazıda bir "
 "anahtar kareye yaslanacağından önce başlamalı"
 
-#: ../src/dialog_timing_processor.cpp:232
+#: ../src/dialog_timing_processor.cpp:235
 msgid "Starts after thres.:"
 msgstr "Sınırdan sonraki başlangıç:"
 
-#: ../src/dialog_timing_processor.cpp:233
+#: ../src/dialog_timing_processor.cpp:236
 msgid ""
 "Threshold for 'after start' distance, that is, how many milliseconds a "
 "subtitle must start after a keyframe to snap to it"
@@ -4854,11 +4958,11 @@ msgstr ""
 "'başlangıçtan önceki' uzaklık için sınır, kaç adet karenin bir altyazıda bir "
 "anahtar kareye yaslanacağından sonra başlamalı"
 
-#: ../src/dialog_timing_processor.cpp:237
+#: ../src/dialog_timing_processor.cpp:240
 msgid "Ends before thres.:"
 msgstr "Sınırdan önceki bitiş:"
 
-#: ../src/dialog_timing_processor.cpp:238
+#: ../src/dialog_timing_processor.cpp:241
 msgid ""
 "Threshold for 'before end' distance, that is, how many milliseconds a "
 "subtitle must end before a keyframe to snap to it"
@@ -4866,11 +4970,11 @@ msgstr ""
 "'bitişten önceki' uzaklık için sınır, kaç adet karenin bir altyazıda bir "
 "anahtar kareye yaslanacağından önce bitmeli"
 
-#: ../src/dialog_timing_processor.cpp:240
+#: ../src/dialog_timing_processor.cpp:243
 msgid "Ends after thres.:"
 msgstr "Sınırdan sonraki bitiş:"
 
-#: ../src/dialog_timing_processor.cpp:241
+#: ../src/dialog_timing_processor.cpp:244
 msgid ""
 "Threshold for 'after end' distance, that is, how many milliseconds a "
 "subtitle must end after a keyframe to snap to it"
@@ -4878,49 +4982,49 @@ msgstr ""
 "'bitiştensonraki' uzaklık için sınır, kaç adet karenin bir altyazıda bir "
 "anahtar kareye yaslanacağından sonra bitmeli"
 
-#: ../src/dialog_timing_processor.cpp:349
+#: ../src/dialog_timing_processor.cpp:352
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
 msgstr "(%i) dosyasındaki satırlardan biri negarif süreye sahip. Durduruluyor."
 
-#: ../src/dialog_timing_processor.cpp:350
+#: ../src/dialog_timing_processor.cpp:353
 msgid "Invalid script"
 msgstr "Geçersiz betik"
 
-#: ../src/dialog_timing_processor.cpp:445
+#: ../src/dialog_timing_processor.cpp:448
 msgid "timing processor"
 msgstr "zamanlama işlemcisi"
 
-#: ../src/dialog_translation.cpp:77
+#: ../src/dialog_translation.cpp:78
 msgid "Original"
 msgstr "Orijinal"
 
-#: ../src/dialog_translation.cpp:100
+#: ../src/dialog_translation.cpp:94
 msgid "Translation"
 msgstr "Çeviri"
 
-#: ../src/dialog_translation.cpp:115
+#: ../src/dialog_translation.cpp:118
 msgid "Insert original"
 msgstr "Orijinali yerleştir"
 
-#: ../src/dialog_translation.cpp:118
+#: ../src/dialog_translation.cpp:121
 msgid "Delete line"
 msgstr "Satırı sil"
 
-#: ../src/dialog_translation.cpp:121
+#: ../src/dialog_translation.cpp:124
 msgid "Enable &preview"
 msgstr "Önizlemeyi &etkinleştir"
 
-#: ../src/dialog_translation.cpp:178 ../src/dialog_translation.cpp:278
+#: ../src/dialog_translation.cpp:181 ../src/dialog_translation.cpp:281
 msgid "No more lines to translate."
 msgstr "Çevirecek başka satır yok."
 
-#: ../src/dialog_translation.cpp:186 ../src/dialog_translation.cpp:236
+#: ../src/dialog_translation.cpp:189 ../src/dialog_translation.cpp:239
 #, c-format
 msgid "Current line: %d/%d"
 msgstr "Geçerli satır: %d/%d"
 
-#: ../src/dialog_translation.cpp:273
+#: ../src/dialog_translation.cpp:276
 msgid "translation assistant"
 msgstr "çeviri asistanı"
 
@@ -4976,41 +5080,41 @@ msgstr ""
 msgid "An unknown error occurred while checking for updates to Aegisub."
 msgstr "Aegisub güncelleştirmeleri denetlenirken bilinmeyen bir hata oluştu."
 
-#: ../src/dialog_video_details.cpp:45
+#: ../src/dialog_video_details.cpp:46
 msgid "Video Details"
 msgstr "Video Detayları"
 
-#: ../src/dialog_video_details.cpp:59
+#: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:170
+#: ../src/preferences.cpp:447
+msgid "Video"
+msgstr "Video"
+
+#: ../src/dialog_video_details.cpp:63
 msgid "File name:"
 msgstr "Dosya adı:"
 
-#: ../src/dialog_video_details.cpp:60
+#: ../src/dialog_video_details.cpp:64
 msgid "FPS:"
 msgstr "FPS:"
 
-#: ../src/dialog_video_details.cpp:61
+#: ../src/dialog_video_details.cpp:65
 msgid "Resolution:"
 msgstr "Çözünürlük:"
 
-#: ../src/dialog_video_details.cpp:62
+#: ../src/dialog_video_details.cpp:66
 #, c-format
-msgid "1 frame"
+msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "1 kare"
+msgstr[0] "%d kare (%s)"
 msgstr[1] "%d kare (%s)"
 
-#: ../src/dialog_video_details.cpp:62
+#: ../src/dialog_video_details.cpp:66
 msgid "Length:"
 msgstr "Süre:"
 
-#: ../src/dialog_video_details.cpp:64
+#: ../src/dialog_video_details.cpp:68
 msgid "Decoder:"
 msgstr "Dekoder:"
-
-#: ../src/dialog_video_details.cpp:66 ../src/preferences.cpp:167
-#: ../src/preferences.cpp:444
-msgid "Video"
-msgstr "Video"
 
 #: ../src/dialog_video_properties.cpp:44
 msgid "Resolution mismatch"
@@ -5040,7 +5144,7 @@ msgstr "Video çözünürlüğüne ayarla"
 
 #: ../src/dialog_video_properties.cpp:59
 msgid "Resample script (stretch to new aspect ratio)"
-msgstr "Yeniden örnekleme betiği (yeni en boy oranına esnetme)"
+msgstr "Yeniden örnekleme betiği (yeni en-boy oranına esnetme)"
 
 #: ../src/dialog_video_properties.cpp:60
 msgid "Resample script (add borders)"
@@ -5054,7 +5158,7 @@ msgstr "Betiği yeniden örnekle (kenarlıkları kaldır)"
 msgid "Resample script"
 msgstr "Betiği yeniden örnekle"
 
-#: ../src/dialog_video_properties.cpp:167
+#: ../src/dialog_video_properties.cpp:168
 msgid "change script resolution"
 msgstr "betik çözünürlüğünü değiştir"
 
@@ -5070,7 +5174,7 @@ msgstr "Dosyada stilleri onarmak için herhangi bir varsayılan stil bulunmuyor.
 
 #: ../src/export_framerate.cpp:52
 msgid "Transform Framerate"
-msgstr "Karehızını değiştir"
+msgstr "Kare Hızını Dönüştür"
 
 #: ../src/export_framerate.cpp:53
 msgid ""
@@ -5086,13 +5190,13 @@ msgstr ""
 "başlangıç kare hızından bitiş kare hızına dönüştür.\n"
 "\n"
 "Bu, normal zamanlı altyazıları VFRaC zamanlı altyazılara dönüştürmek için "
-"kullanışlıdır ve hardsubbing işlemi için gereklidir..\n"
+"kullanışlıdır ve gömülü altyazı (hardsub) işlemi için gereklidir..\n"
 "Ayrıca, altyazıları farklı hızda bir videoya dönüştürmek için "
 "kullanılabilir, örneğin NTSC'den PAL hızlandırması."
 
 #: ../src/export_framerate.cpp:92
 msgid "V&ariable"
-msgstr "D&eğer"
+msgstr "D&eğişken"
 
 #: ../src/export_framerate.cpp:96
 msgid "&Constant: "
@@ -5100,7 +5204,7 @@ msgstr "&Sabit: "
 
 #: ../src/export_framerate.cpp:108
 msgid "&Reverse transformation"
-msgstr "&Çeviriyi terse çevir"
+msgstr "&Dönüşümü tersine çevir"
 
 #: ../src/export_framerate.cpp:116
 msgid "Input framerate: "
@@ -5116,7 +5220,7 @@ msgstr "Dizinleme"
 
 #: ../src/ffmpegsource_common.cpp:78
 msgid "Reading timecodes and frame/sample data"
-msgstr "Zaman kodlarını ve kare/sample verilerini okuma"
+msgstr "Zaman kodları ve kare/örnek verileri okunuyor"
 
 #: ../src/ffmpegsource_common.cpp:126
 #, c-format
@@ -5223,10 +5327,8 @@ msgstr[1] "%d fontları bulunamadı.\n"
 msgid "One font was found, but was missing glyphs used in the script.\n"
 msgid_plural ""
 "%d fonts were found, but were missing glyphs used in the script.\n"
-msgstr[0] ""
-"Uma fonte foi encontrada, mas não possui glifos utilizados no script.\n"
-msgstr[1] ""
-"%d fontes foram encontradas, mas não possuem glifos utilizados no script.\n"
+msgstr[0] "Bir font bulundu, ancak betikte kullanılan glifler eksik.\n"
+msgstr[1] "%d font bulundu, ancak betikte kullanılan glifler eksik.\n"
 
 #: ../src/font_file_lister_fontconfig.cpp:55
 msgid "Updating font cache\n"
@@ -5240,35 +5342,35 @@ msgstr "#"
 msgid "Line Number"
 msgstr "Satır Numarası"
 
-#: ../src/grid_column.cpp:129
+#: ../src/grid_column.cpp:131
 msgid "L"
 msgstr "L"
 
-#: ../src/grid_column.cpp:151
+#: ../src/grid_column.cpp:153
 msgid "Start"
 msgstr "Başlangıç"
 
-#: ../src/grid_column.cpp:169
+#: ../src/grid_column.cpp:171
 msgid "End"
 msgstr "Bitiş"
 
-#: ../src/grid_column.cpp:264
+#: ../src/grid_column.cpp:266
 msgid "Left Margin"
 msgstr "Sol Kenar Boşluğu"
 
-#: ../src/grid_column.cpp:270
+#: ../src/grid_column.cpp:272
 msgid "Right Margin"
 msgstr "Sağ Kenar Boşluğu"
 
-#: ../src/grid_column.cpp:276
+#: ../src/grid_column.cpp:278
 msgid "Vertical Margin"
 msgstr "Dikey Kenar Boşluğu"
 
-#: ../src/grid_column.cpp:294
+#: ../src/grid_column.cpp:296
 msgid "CPS"
 msgstr "CPS"
 
-#: ../src/grid_column.cpp:295
+#: ../src/grid_column.cpp:297
 msgid "Characters Per Second"
 msgstr "Saniye Başına Karakter"
 
@@ -5276,7 +5378,16 @@ msgstr "Saniye Başına Karakter"
 msgid "Invalid command name for hotkey"
 msgstr "Kısayol tuşu için geçersiz komut adı"
 
-#: ../src/main.cpp:258
+#: ../src/main.cpp:195
+#, c-format
+msgid ""
+"Configuration file is invalid. Error reported:\n"
+"%s"
+msgstr ""
+"Yapılandırma dosyası geçersiz. Bildirilen hata:\n"
+"%s"
+
+#: ../src/main.cpp:259
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -5295,11 +5406,11 @@ msgstr ""
 "\n"
 "Aegisub şimdi kapanacak."
 
-#: ../src/main.cpp:285
+#: ../src/main.cpp:288
 msgid "Check for updates?"
 msgstr "Güncelleştirmeler denetlensin mi?"
 
-#: ../src/main.cpp:285
+#: ../src/main.cpp:288
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
@@ -5307,11 +5418,23 @@ msgstr ""
 "Aegisub'ın başlangıçta güncelleştirmeleri denetlemesini ister misiniz? "
 "Yardım menüsünden elle sizde yapabilirsiniz."
 
-#: ../src/main.cpp:402 ../src/main.cpp:405
+#: ../src/main.cpp:294
+msgid "Error saving config file"
+msgstr "Yapılandırma dosyası kaydedilirken hata oluştu"
+
+#: ../src/main.cpp:310 ../src/main.cpp:314 ../src/main.cpp:319
+msgid "Fatal error while initializing"
+msgstr "Başlatma sırasında kritik hata oluştu"
+
+#: ../src/main.cpp:319
+msgid "Unhandled exception"
+msgstr "Ele alınmamış özel durum"
+
+#: ../src/main.cpp:407 ../src/main.cpp:410
 msgid "Program error"
 msgstr "Program hatası"
 
-#: ../src/main.cpp:405
+#: ../src/main.cpp:410
 #, c-format
 msgid ""
 "Aegisub has crashed while starting up!\n"
@@ -5322,7 +5445,7 @@ msgstr ""
 "\n"
 "Denenen son başlangıç adımı: %s."
 
-#: ../src/main.cpp:419
+#: ../src/main.cpp:424
 #, c-format
 msgid ""
 "An unexpected error has occurred. Please save your work and restart "
@@ -5335,7 +5458,7 @@ msgstr ""
 "\n"
 "Hata Mesajı: %s"
 
-#: ../src/main.cpp:420
+#: ../src/main.cpp:425
 msgid "Exception in event handler"
 msgstr "Olay işleyicisinde istisna"
 
@@ -5367,64 +5490,67 @@ msgstr "Matroska Ayrıştırma"
 msgid "Reading subtitles from Matroska file."
 msgstr "Matroska dosyasından altyazıları oku."
 
-#: ../src/preferences.cpp:63 ../src/preferences.cpp:65
-#: ../src/preferences.cpp:341 ../src/preferences.cpp:362
+#: ../src/preferences.cpp:64 ../src/preferences.cpp:66
+#: ../src/preferences.cpp:344 ../src/preferences.cpp:365
 msgid "General"
 msgstr "Genel"
 
-#: ../src/preferences.cpp:66
+msgid "OK"
+msgstr "Tamam"
+
+#: ../src/preferences.cpp:67
 msgid "Check for updates on startup"
 msgstr "Açılışta güncelleştirmeleri denetle"
 
-#: ../src/preferences.cpp:67
+#: ../src/preferences.cpp:68
 msgid "Show main toolbar"
 msgstr "Ana araç çubuğunu göster"
 
-#: ../src/preferences.cpp:68
+#: ../src/preferences.cpp:69
 msgid "Save UI state in subtitles files"
 msgstr "Kullanıcı arayüzü durumunu altyazı dosyalarında kaydet"
 
-#: ../src/preferences.cpp:71
+#: ../src/preferences.cpp:72
 msgid "Toolbar Icon Size"
 msgstr "Araç Çubuğu Simge Boyutu"
 
-#: ../src/preferences.cpp:72
+#: ../src/preferences.cpp:73
 msgid "Always"
 msgstr "Her Zaman"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:203
+#: ../src/preferences.cpp:73 ../src/preferences.cpp:206
 msgid "Ask"
 msgstr "Sor"
 
-#: ../src/preferences.cpp:72 ../src/preferences.cpp:203
+#: ../src/preferences.cpp:73 ../src/preferences.cpp:206
 msgid "Never"
 msgstr "Asla"
 
-#: ../src/preferences.cpp:74
+#: ../src/preferences.cpp:75
 msgid "Automatically load linked files"
 msgstr "Bağlantılı dosyaları otomatik olarak yükle"
 
-#: ../src/preferences.cpp:75
+#: ../src/preferences.cpp:76
 msgid "Undo Levels"
 msgstr "Geri alma sayısı"
 
-#: ../src/preferences.cpp:77
+#: ../src/preferences.cpp:78
 msgid "Recently Used Lists"
 msgstr "Son Kullanılanlar Listesi"
 
-#: ../src/preferences.cpp:79
+#: ../src/preferences.cpp:80
 msgid "Find/Replace"
 msgstr "Bul/Değiştir"
 
-#: ../src/preferences.cpp:85
+#: ../src/preferences.cpp:86
 msgid "Default styles"
 msgstr "Varsayılan stiller"
 
-#: ../src/preferences.cpp:87
+#: ../src/preferences.cpp:88
 msgid "Default style catalogs"
 msgstr "Varsayılan stil katalogları"
 
-#: ../src/preferences.cpp:91
+#: ../src/preferences.cpp:92
 msgid ""
 "The chosen style catalogs will be loaded when you start a new file or import "
 "files in the various formats.\n"
@@ -5436,580 +5562,583 @@ msgstr ""
 "\n"
 "Stil kataloglarını Stil Yöneticisi'nde ayarlayabilirsiniz."
 
-#: ../src/preferences.cpp:116
+#: ../src/preferences.cpp:119
 msgid "New files"
 msgstr "Yeni dosya"
 
-#: ../src/preferences.cpp:117
+#: ../src/preferences.cpp:120
 msgid "MicroDVD import"
 msgstr "MicroDVD içe aktarma"
 
-#: ../src/preferences.cpp:118
+#: ../src/preferences.cpp:121
 msgid "SRT import"
 msgstr "SRT içe aktarma"
 
-#: ../src/preferences.cpp:119
+#: ../src/preferences.cpp:122
 msgid "TTXT import"
 msgstr "TTXT içe aktarma"
 
-#: ../src/preferences.cpp:120
+#: ../src/preferences.cpp:123
 msgid "Plain text import"
 msgstr "Düz metin içe aktarma"
 
-#: ../src/preferences.cpp:127 ../src/preferences.cpp:377
+#: ../src/preferences.cpp:130 ../src/preferences.cpp:380
 msgid "Audio"
 msgstr "Ses"
 
-#: ../src/preferences.cpp:130
+#: ../src/preferences.cpp:133
 msgid "Default mouse wheel to zoom"
 msgstr "Varsayılan fare tekeri yakınlaştırması"
 
-#: ../src/preferences.cpp:131
+#: ../src/preferences.cpp:134
 msgid "Lock scroll on cursor"
 msgstr "Kaydırmayı imleçe kilitle"
 
-#: ../src/preferences.cpp:132
+#: ../src/preferences.cpp:135
 msgid "Snap markers by default"
 msgstr "İşaretçileri varsayılan olarak hizala"
 
-#: ../src/preferences.cpp:133
+#: ../src/preferences.cpp:136
 msgid "Auto-focus on mouse over"
 msgstr "Fare üzerindeyken oto-odakla"
 
-#: ../src/preferences.cpp:134
+#: ../src/preferences.cpp:137
 msgid "Play audio when stepping in video"
 msgstr "Videoda adım adım ilerlerken sesi oynat"
 
-#: ../src/preferences.cpp:135
+#: ../src/preferences.cpp:138
 msgid "Left-click-drag moves end marker"
 msgstr "Sol tıklayıp sürükleme bitiş işaretçisini taşır"
 
-#: ../src/preferences.cpp:136
+#: ../src/preferences.cpp:139
 msgid "Default timing length (ms)"
 msgstr "Varsayılan zamanlama uzunluğu (ms)"
 
-#: ../src/preferences.cpp:137
+#: ../src/preferences.cpp:140
 msgid "Default lead-in length (ms)"
 msgstr "Varsayılan başlangıç uzunluğu (ms)"
 
-#: ../src/preferences.cpp:138
+#: ../src/preferences.cpp:141
 msgid "Default lead-out length (ms)"
 msgstr "Varsayılan bitiş uzunluğu (ms)"
 
-#: ../src/preferences.cpp:140
+#: ../src/preferences.cpp:143
 msgid "Marker drag-start sensitivity (px)"
 msgstr "İşaretçi sürükleme başlatma hassasiyeti (piksel)"
 
-#: ../src/preferences.cpp:141
+#: ../src/preferences.cpp:144
 msgid "Line boundary thickness (px)"
 msgstr "Çizgi sınır kalınlığı (piksel)"
 
-#: ../src/preferences.cpp:142
+#: ../src/preferences.cpp:145
 msgid "Maximum snap distance (px)"
 msgstr "Maksimum hizalama mesafesi (piksel)"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Don't show"
 msgstr "Gösterme"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Show all"
 msgstr "Tümünü göster"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Show previous"
 msgstr "Öncekini göster"
 
-#: ../src/preferences.cpp:144
+#: ../src/preferences.cpp:147
 msgid "Show previous and next"
 msgstr "Önceki ve sonrakini göster"
 
-#: ../src/preferences.cpp:146
+#: ../src/preferences.cpp:149
 msgid "Show inactive lines"
 msgstr "Aktif olmayan satırları göster"
 
-#: ../src/preferences.cpp:148
+#: ../src/preferences.cpp:151
 msgid "Include commented inactive lines"
 msgstr "Yorumlanmış aktif olmayan satırları göster"
 
-#: ../src/preferences.cpp:150
+#: ../src/preferences.cpp:153
 msgid "Display Visual Options"
 msgstr "Görsel Ayar Ekranı"
 
-#: ../src/preferences.cpp:151
+#: ../src/preferences.cpp:154
 msgid "Keyframes in dialogue mode"
 msgstr "Diyalog modunda anahtar kare"
 
-#: ../src/preferences.cpp:152
+#: ../src/preferences.cpp:155
 msgid "Keyframes in karaoke mode"
 msgstr "Karaoke modunda anahtar kareler"
 
-#: ../src/preferences.cpp:153
+#: ../src/preferences.cpp:156
 msgid "Cursor time"
 msgstr "İmleç zamanı"
 
-#: ../src/preferences.cpp:154
+#: ../src/preferences.cpp:157
 msgid "Video position"
 msgstr "Video pozisyonu"
 
-#: ../src/preferences.cpp:155 ../src/preferences.cpp:257
+#: ../src/preferences.cpp:158 ../src/preferences.cpp:260
 msgid "Seconds boundaries"
 msgstr "Saniye sınırları"
 
-#: ../src/preferences.cpp:157
+#: ../src/preferences.cpp:160
 msgid "Waveform Style"
 msgstr "Dalga Formu Stili"
 
-#: ../src/preferences.cpp:159
+#: ../src/preferences.cpp:162
 msgid "Audio labels"
 msgstr "Ses etiketleri"
 
-#: ../src/preferences.cpp:170
+#: ../src/preferences.cpp:173
 msgid "Show keyframes in slider"
 msgstr "Anahtar kareyi kaydırıcıda göster"
 
-#: ../src/preferences.cpp:172
+#: ../src/preferences.cpp:175
 msgid "Only show visual tools when mouse is over video"
 msgstr "Görsel araçları yalnızca fare videonun üzerindeyken göster"
 
-#: ../src/preferences.cpp:174
+#: ../src/preferences.cpp:177
 msgid "Seek video to line start on selection change"
 msgstr "Seçim değiştiğinde video'da satır başlangıcına atla"
 
-#: ../src/preferences.cpp:176
+#: ../src/preferences.cpp:179
 msgid "Automatically open audio when opening video"
 msgstr "Video açarken sesi otomatik olarak aç"
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Does nothing"
 msgstr "Hiçbir şey yapmaz"
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Pans the video"
 msgstr "Videoyu kaydırır"
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Pans the video (X/Y swapped)"
 msgstr "Videoyu kaydırır (X/Y ters)"
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Resizes the video box"
 msgstr "Video kutusunu boyutlandırır"
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Resizes the video box (reversed)"
 msgstr "Video kutusunu boyutlandırır (ters)"
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Zooms the video"
 msgstr "Videoyu yakınlaştırır"
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:182
 msgid "Zooms the video (reversed)"
 msgstr "Videoyu yakınlaştırır (ters)"
 
-#: ../src/preferences.cpp:181
+#: ../src/preferences.cpp:184
 msgid "Scrolling on the video display"
 msgstr "Video ekranında kaydırma (TEKERLEK)"
 
-#: ../src/preferences.cpp:182
+#: ../src/preferences.cpp:185
 msgid "Ctrl+Scrolling on the video display"
 msgstr "Video ekranında Ctrl+TEKERLEK (Kaydırma)"
 
-#: ../src/preferences.cpp:183
+#: ../src/preferences.cpp:186
 msgid "Shift+Scrolling on the video display"
 msgstr "Video ekranında Shift+TEKERLEK (Kaydırma)"
 
-#: ../src/preferences.cpp:187
+#: ../src/preferences.cpp:190
 msgid "Default Zoom"
 msgstr "Varsayılan yakınlaştırma"
 
-#: ../src/preferences.cpp:189
+#: ../src/preferences.cpp:192
 msgid "Fast jump step in frames"
 msgstr "Kareler arası hızlı sıçrama"
 
-#: ../src/preferences.cpp:193
+#: ../src/preferences.cpp:196
 msgid "Screenshot save path"
 msgstr "Ekran görüntüsü yolu"
 
-#: ../src/preferences.cpp:195
+#: ../src/preferences.cpp:198
 msgid "Script Resolution"
 msgstr "Betik Çözünürlüğü"
 
-#: ../src/preferences.cpp:196
+#: ../src/preferences.cpp:199
 msgid "Use resolution of first video opened"
 msgstr "İlk açılan videonun çözünürlüğünü kullan"
 
-#: ../src/preferences.cpp:199
+#: ../src/preferences.cpp:202
 msgid "Default width"
 msgstr "Varsayılan genişlik"
 
-#: ../src/preferences.cpp:201
+#: ../src/preferences.cpp:204
 msgid "Default height"
 msgstr "Varsayılan yükseklik"
 
-#: ../src/preferences.cpp:203
+#: ../src/preferences.cpp:206
 msgid "Always resample"
 msgstr "Her zaman yeniden örnekle"
 
-#: ../src/preferences.cpp:203
+#: ../src/preferences.cpp:206
 msgid "Always set"
 msgstr "Her zaman etkinleştir"
 
-#: ../src/preferences.cpp:205
+#: ../src/preferences.cpp:208
 msgid "Match video resolution on open"
 msgstr "Açılışta video çözünürlüğünü eşleştir"
 
-#: ../src/preferences.cpp:212
+#: ../src/preferences.cpp:215
 msgid "Interface"
 msgstr "Arayüz"
 
-#: ../src/preferences.cpp:214
+#: ../src/preferences.cpp:217
 msgid "Edit Box"
 msgstr "Düzenleme Kutusu"
 
-#: ../src/preferences.cpp:215
+#: ../src/preferences.cpp:218
 msgid "Enable call tips"
 msgstr "Yardım balonunu etkinleştir"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:219
 msgid "Overwrite in time boxes"
 msgstr "Zaman kutularının üzerine yaz"
 
-#: ../src/preferences.cpp:217
+#: ../src/preferences.cpp:220
 msgid "Shift+Enter adds \\n"
 msgstr "Shift+Enter \\n ekler."
 
-#: ../src/preferences.cpp:218
+#: ../src/preferences.cpp:221
 msgid "Enable syntax highlighting"
 msgstr "Sözdizim vurgulamayı etkinleştir"
 
-#: ../src/preferences.cpp:219
+#: ../src/preferences.cpp:222
 msgid "Dictionaries path"
 msgstr "Sözlüklerin yolu"
 
-#: ../src/preferences.cpp:222
+#: ../src/preferences.cpp:225
 msgid "Character Counter"
 msgstr "Karakter Sayacı"
 
-#: ../src/preferences.cpp:223
+#: ../src/preferences.cpp:226
 msgid "Maximum characters per line"
 msgstr "Satır başına maksimum karakter"
 
-#: ../src/preferences.cpp:224
+#: ../src/preferences.cpp:227
 msgid "Characters Per Second Warning Threshold"
 msgstr "Saniye Başına Karakter Uyarı Eşiği"
 
-#: ../src/preferences.cpp:225
+#: ../src/preferences.cpp:228
 msgid "Characters Per Second Error Threshold"
 msgstr "Saniye Başına Karakter Hata Eşiği"
 
-#: ../src/preferences.cpp:226
+#: ../src/preferences.cpp:229
 msgid "Ignore whitespace"
 msgstr "Boşlukları yoksay"
 
-#: ../src/preferences.cpp:227
+#: ../src/preferences.cpp:230
 msgid "Ignore punctuation"
 msgstr "Noktalama işaretlerini yoksay"
 
-#: ../src/preferences.cpp:229
+#: ../src/preferences.cpp:232
 msgid "Grid"
 msgstr "Izgara"
 
-#: ../src/preferences.cpp:230
+#: ../src/preferences.cpp:233
 msgid "Focus grid on click"
 msgstr "Tıklamada ızgaraya odaklan"
 
-#: ../src/preferences.cpp:231
+#: ../src/preferences.cpp:234
 msgid "Highlight visible subtitles"
 msgstr "Görünen altyazıları vurgula"
 
-#: ../src/preferences.cpp:232
+#: ../src/preferences.cpp:235
 msgid "Hide overrides symbol"
 msgstr "Geçersiz kılma sembolünü gizle"
 
-#: ../src/preferences.cpp:236
+#: ../src/preferences.cpp:239
 msgid "Skip over whitespace"
 msgstr "Boşlukları atla"
 
-#: ../src/preferences.cpp:251
+#: ../src/preferences.cpp:254
 msgid "Audio Display"
 msgstr "Ses Ekranı"
 
-#: ../src/preferences.cpp:252
+#: ../src/preferences.cpp:255
 msgid "Play cursor"
 msgstr "Oynatma imleci"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:256
 msgid "Line boundary start"
 msgstr "Satır sınırı başlangıcı"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:257
 msgid "Line boundary end"
 msgstr "Satır sınırı sonu"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:258
 msgid "Line boundary inactive line"
 msgstr "Aktif olmayan satır sınırı"
 
-#: ../src/preferences.cpp:256
+#: ../src/preferences.cpp:259
 msgid "Syllable boundaries"
 msgstr "Hece sınırları"
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:262
 msgid "Syntax Highlighting"
 msgstr "Sözdizim vurgulama"
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:263
 msgid "Background"
 msgstr "Arkaplan"
 
-#: ../src/preferences.cpp:261
+#: ../src/preferences.cpp:264
 msgid "Normal"
 msgstr "Normal"
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:265
 msgid "Comments"
 msgstr "Yorumlar"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:266
 msgid "Drawing Commands"
 msgstr "Çizim Komutları"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:267
 msgid "Drawing X Coords"
 msgstr "X Çizim Koordinatları"
 
-#: ../src/preferences.cpp:265
+#: ../src/preferences.cpp:268
 msgid "Drawing Y Coords"
 msgstr "Y Çizim Koordinatları"
 
-#: ../src/preferences.cpp:266
+#: ../src/preferences.cpp:269
 msgid "Underline Spline Endpoints"
 msgstr "Eğri Uç Noktalarının Altını Çiz"
 
-#: ../src/preferences.cpp:268
+#: ../src/preferences.cpp:271
 msgid "Brackets"
 msgstr "Köşeli Parantezler"
 
-#: ../src/preferences.cpp:269
+#: ../src/preferences.cpp:272
 msgid "Slashes and Parentheses"
 msgstr "Eğik Çizgi ve Parentezler"
 
-#: ../src/preferences.cpp:270
+#: ../src/preferences.cpp:273
 msgid "Tags"
 msgstr "Etiketler"
 
-#: ../src/preferences.cpp:271
+#: ../src/preferences.cpp:274
 msgid "Parameters"
 msgstr "Parametreler"
 
-#: ../src/preferences.cpp:273
+#: ../src/preferences.cpp:276
 msgid "Error Background"
 msgstr "Arkaplan Hatası"
 
-#: ../src/preferences.cpp:274
+#: ../src/preferences.cpp:277
 msgid "Line Break"
 msgstr "Boş Satır"
 
-#: ../src/preferences.cpp:275
+#: ../src/preferences.cpp:278
 msgid "Karaoke templates"
 msgstr "Karaoke şablonları"
 
-#: ../src/preferences.cpp:276
+#: ../src/preferences.cpp:279
 msgid "Karaoke variables"
 msgstr "Karaoke değişkenleri"
 
-#: ../src/preferences.cpp:282
+#: ../src/preferences.cpp:285
 msgid "Audio Color Schemes"
 msgstr "Ses Ekranı Renkleri"
 
-#: ../src/preferences.cpp:284 ../src/preferences.cpp:393
+#: ../src/preferences.cpp:287 ../src/preferences.cpp:396
 msgid "Spectrum"
 msgstr "Spektrum"
 
-#: ../src/preferences.cpp:285
+#: ../src/preferences.cpp:288
 msgid "Waveform"
 msgstr "Dalga formu"
 
-#: ../src/preferences.cpp:287
+#: ../src/preferences.cpp:290
 msgid "Subtitle Grid"
 msgstr "Altyazı Izgarası"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:291
 msgid "Standard foreground"
 msgstr "Standart önplan"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:292
 msgid "Standard background"
 msgstr "Standart arkaplan"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:293
 msgid "Selection foreground"
 msgstr "Seçili önplan"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:294
 msgid "Selection background"
 msgstr "Seçili arkaplan"
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:295
 msgid "Collision foreground"
 msgstr "Çatışık önplan"
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:296
 msgid "In frame background"
 msgstr "Karedeki satır arkaplanı"
 
-#: ../src/preferences.cpp:294
+#: ../src/preferences.cpp:297
 msgid "Comment background"
 msgstr "Yorum arkaplanı"
 
-#: ../src/preferences.cpp:295
+#: ../src/preferences.cpp:298
 msgid "Selected comment background"
 msgstr "Seçili yorum arkaplanı"
 
-#: ../src/preferences.cpp:296
+#: ../src/preferences.cpp:299
 msgid "Header background"
 msgstr "Başlık arka planı"
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:300
 msgid "Left Column"
 msgstr "Sol sütun"
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:301
 msgid "Active Line Border"
 msgstr "Aktif satır çerçevesi"
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:302
 msgid "Lines"
 msgstr "Satırlar"
 
-#: ../src/preferences.cpp:300
+#: ../src/preferences.cpp:303
 msgid "CPS Error"
 msgstr "CPS Hatası"
 
-#: ../src/preferences.cpp:302
+#: ../src/preferences.cpp:305
 msgid "Visual Typesetting Tools"
 msgstr "Görsel Dizgi Araçları"
 
-#: ../src/preferences.cpp:303
+#: ../src/preferences.cpp:306
 msgid "Primary Lines"
 msgstr "Birincil Satırlar"
 
-#: ../src/preferences.cpp:304
+#: ../src/preferences.cpp:307
 msgid "Secondary Lines"
 msgstr "İkincil Satırlar"
 
-#: ../src/preferences.cpp:305
+#: ../src/preferences.cpp:308
 msgid "Primary Highlight"
 msgstr "Birincil Vurgulama"
 
-#: ../src/preferences.cpp:306
+#: ../src/preferences.cpp:309
 msgid "Secondary Highlight"
 msgstr "İkincil Vurgulama"
 
-#: ../src/preferences.cpp:309
+#: ../src/preferences.cpp:312
 msgid "Visual Typesetting Tools Alpha"
 msgstr "Görsel Dizgi Araçları Alfa"
 
-#: ../src/preferences.cpp:310
+#: ../src/preferences.cpp:313
 msgid "Shaded Area"
 msgstr "Shaded Area"
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:322
 msgid "Backup"
 msgstr "Yedek"
 
-#: ../src/preferences.cpp:321
+#: ../src/preferences.cpp:324
 msgid "Automatic Save"
 msgstr "Otomatik Kayıt"
 
-#: ../src/preferences.cpp:322 ../src/preferences.cpp:330
+#: ../src/preferences.cpp:325 ../src/preferences.cpp:333
 msgid "Enable"
 msgstr "Etkinleştir"
 
-#: ../src/preferences.cpp:325
+#: ../src/preferences.cpp:328
 msgid "Interval in seconds"
 msgstr "Saniye cinsinden aralık"
 
-#: ../src/preferences.cpp:326 ../src/preferences.cpp:332
-#: ../src/preferences.cpp:391
+#: ../src/preferences.cpp:329 ../src/preferences.cpp:335
+#: ../src/preferences.cpp:394
 msgid "Path"
 msgstr "Ana yol"
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:330
 msgid "Autosave after every change"
 msgstr "Her değişiklikten sonra otomatik kaydet"
 
-#: ../src/preferences.cpp:329
+#: ../src/preferences.cpp:332
 msgid "Automatic Backup"
 msgstr "Otomatik Yedekleme"
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:346
 msgid "Base path"
 msgstr "Ana yol"
 
-#: ../src/preferences.cpp:344
+#: ../src/preferences.cpp:347
 msgid "Include path"
 msgstr "Aktarma yolu"
 
-#: ../src/preferences.cpp:345
+#: ../src/preferences.cpp:348
 msgid "Auto-load path"
 msgstr "Oto-yükleme yolu"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "0: Fatal"
 msgstr "0: Önemli Hata"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "1: Error"
 msgstr "1: Hata"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "2: Warning"
 msgstr "2: Uyarı"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "3: Hint"
 msgstr "3: İpucu"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "4: Debug"
 msgstr "4: Hata ayıklama"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:350
 msgid "5: Trace"
 msgstr "5: İzleme"
 
-#: ../src/preferences.cpp:349
+#: ../src/preferences.cpp:352
 msgid "Trace level"
 msgstr "İzleme seviyesi"
 
-#: ../src/preferences.cpp:351
+#: ../src/preferences.cpp:354
 msgid "All scripts"
 msgstr "Tüm betikler"
 
-#: ../src/preferences.cpp:351
+#: ../src/preferences.cpp:354
 msgid "Global autoload scripts"
 msgstr "Genel betik oto yükleme"
 
-#: ../src/preferences.cpp:351
+#: ../src/preferences.cpp:354
 msgid "No scripts"
 msgstr "Betik yok"
 
-#: ../src/preferences.cpp:351
+msgid "&Apply"
+msgstr "&Uygula"
+
+#: ../src/preferences.cpp:354
 msgid "Subtitle-local scripts"
 msgstr "Yerel-altyazı betikleri"
 
-#: ../src/preferences.cpp:353
+#: ../src/preferences.cpp:356
 msgid "Autoreload on Export"
 msgstr "Dışarı aktarmada otomatik yenile"
 
-#: ../src/preferences.cpp:360
+#: ../src/preferences.cpp:363
 msgid "Advanced"
 msgstr "Gelişmiş"
 
-#: ../src/preferences.cpp:364
+#: ../src/preferences.cpp:367
 msgid ""
 "Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
@@ -6017,203 +6146,203 @@ msgstr ""
 "Bu ayarları değiştirmek hatalara ve/veya çökmelere neden olabilir. Ne "
 "yaptığınızı bilmiyorsanız bunlara dokunmayın."
 
-#: ../src/preferences.cpp:379 ../src/preferences.cpp:446
+#: ../src/preferences.cpp:382 ../src/preferences.cpp:449
 msgid "Expert"
 msgstr "Gelişmiş"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:385
 msgid "Audio provider"
 msgstr "Ses sağlayıcı"
 
-#: ../src/preferences.cpp:385
+#: ../src/preferences.cpp:388
 msgid "Audio player"
 msgstr "Ses oynatıcısı"
 
-#: ../src/preferences.cpp:387
+#: ../src/preferences.cpp:390
 msgid "Cache"
 msgstr "Önbellek"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:391
 msgid "Hard Disk"
 msgstr "Hard Disk"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:391
 msgid "None (NOT RECOMMENDED)"
 msgstr "Hiçbiri (ÖNERİLMEZ)"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:391
 msgid "RAM"
 msgstr "RAM"
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:393
 msgid "Cache type"
 msgstr "Önbellek tipi"
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:398
 msgid "Better quality"
 msgstr "Daha iyi kalite"
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:398
 msgid "High quality"
 msgstr "Yüksek kalite"
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:398
 msgid "Insane quality"
 msgstr "Maksimum kalite"
 
-#: ../src/preferences.cpp:395
+#: ../src/preferences.cpp:398
 msgid "Regular quality"
 msgstr "Normal kalite"
 
-#: ../src/preferences.cpp:397
+#: ../src/preferences.cpp:400
 msgid "Quality"
 msgstr "Kalite"
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Compressed"
 msgstr "Sıkıştırılmış"
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Extended"
 msgstr "Genişletilmiş"
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Linear"
 msgstr "Doğrusal"
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Logarithmic"
 msgstr "Logaritmik"
 
-#: ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402
 msgid "Medium"
 msgstr "Orta"
 
-#: ../src/preferences.cpp:401
+#: ../src/preferences.cpp:404
 msgid "Frequency mapping"
 msgstr "Frekans haritalaması"
 
-#: ../src/preferences.cpp:403
+#: ../src/preferences.cpp:406
 msgid "Cache memory max (MB)"
 msgstr "Maksimum önbellek hafızası (MB)"
 
-#: ../src/preferences.cpp:409
+#: ../src/preferences.cpp:412
 msgid "Avisynth down-mixer"
 msgstr "Avisynth alt-mikser"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:413
 msgid "Force sample rate"
 msgstr "Örnekleme hızını zorla"
 
-#: ../src/preferences.cpp:416
+#: ../src/preferences.cpp:419
 msgid "Abort"
 msgstr "İptal"
 
-#: ../src/preferences.cpp:416
+#: ../src/preferences.cpp:419
 msgid "Ignore"
 msgstr "Yoksay"
 
-#: ../src/preferences.cpp:416
+#: ../src/preferences.cpp:419
 msgid "Stop"
 msgstr "Dur"
 
-#: ../src/preferences.cpp:418
+#: ../src/preferences.cpp:421
 msgid "Audio indexing error handling mode"
 msgstr "Ses dizini hata işleme modu"
 
-#: ../src/preferences.cpp:420
+#: ../src/preferences.cpp:423
 msgid "Always index all audio tracks"
 msgstr "Her zaman tüm ses parçalarını dizinle"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:428
 msgid "Portaudio device"
 msgstr "Portaudio aygıtı"
 
-#: ../src/preferences.cpp:430
+#: ../src/preferences.cpp:433
 msgid "OSS Device"
 msgstr "OSS Aygıtı"
 
-#: ../src/preferences.cpp:435
+#: ../src/preferences.cpp:438
 msgid "Buffer latency"
 msgstr "Arabellek gecikmesi"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:439
 msgid "Buffer length"
 msgstr "Arabellek uzunluğu"
 
-#: ../src/preferences.cpp:449
+#: ../src/preferences.cpp:452
 msgid "Video provider"
 msgstr "Video sağlayıcısı"
 
-#: ../src/preferences.cpp:452
+#: ../src/preferences.cpp:455
 msgid "Subtitles provider"
 msgstr "Altyazı sağlayıcısı"
 
-#: ../src/preferences.cpp:456
+#: ../src/preferences.cpp:459
 msgid "Allow pre-2.56a Avisynth"
 msgstr "pre-2.56a Avisynth'a izin ver"
 
-#: ../src/preferences.cpp:458
+#: ../src/preferences.cpp:461
 msgid "Avisynth memory limit"
 msgstr "Avisynth hafıza limiti"
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Debug"
 msgstr "Hata Ayıklama"
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Fatal"
 msgstr "Önemli Hata"
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Info"
 msgstr "Bilgi"
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Panic"
 msgstr "Panik"
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Quiet"
 msgstr "Sessiz"
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:467
 msgid "Verbose"
 msgstr "Ayrıntılı"
 
-#: ../src/preferences.cpp:464 ../src/project.cpp:318
+#: ../src/preferences.cpp:467 ../src/project.cpp:318
 msgid "Warning"
 msgstr "Uyarı"
 
-#: ../src/preferences.cpp:466
+#: ../src/preferences.cpp:469
 msgid "Debug log verbosity"
 msgstr "Hata ayıklama günlüğü ayrıntı seviyesi"
 
-#: ../src/preferences.cpp:468
+#: ../src/preferences.cpp:471
 msgid "Decoding threads"
 msgstr "Çözümleme iş parçacıkları"
 
-#: ../src/preferences.cpp:469
+#: ../src/preferences.cpp:472
 msgid "Enable unsafe seeking"
 msgstr "Güvensiz aramayı etkinleştir"
 
-#: ../src/preferences.cpp:605
+#: ../src/preferences.cpp:607
 msgid "Hotkeys"
 msgstr "Kısayollar"
 
-#: ../src/preferences.cpp:609
+#: ../src/preferences.cpp:611
 msgid "Search"
 msgstr "Arama"
 
-#: ../src/preferences.cpp:625 ../src/preferences.cpp:628
+#: ../src/preferences.cpp:627 ../src/preferences.cpp:630
 msgid "Hotkey"
 msgstr "Kısayollar"
 
-#: ../src/preferences.cpp:626 ../src/preferences.cpp:631
+#: ../src/preferences.cpp:628 ../src/preferences.cpp:633
 msgid "Command"
 msgstr "Komutlar"
 
-#: ../src/preferences.cpp:705
+#: ../src/preferences.cpp:707
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -6221,34 +6350,31 @@ msgstr ""
 "Varsayılanlara geri dönmek istediğinizden emin misiniz? Tüm ayarlar "
 "sıfırlanacak."
 
-#: ../src/preferences.cpp:705
+#: ../src/preferences.cpp:707
 msgid "Restore defaults?"
 msgstr "Varsayılana geri dön?"
 
-#: ../src/preferences.cpp:723
+#: ../src/preferences.cpp:725
 msgid "Preferences"
 msgstr "Tercihler"
 
-#: ../src/preferences.cpp:751
+#: ../src/preferences.cpp:753
 msgid "&Restore Defaults"
 msgstr "&Varsayılana Geri Dön"
 
-#: ../src/preferences_base.cpp:62
+#: ../src/preferences_base.cpp:78
 msgid "Please choose the folder:"
 msgstr "Lütfen bir klasör seçiniz:"
 
-#: ../src/preferences_base.cpp:208
+#: ../src/preferences_base.cpp:234
 msgid "Browse..."
 msgstr "Gözat"
 
-#: ../src/preferences_base.cpp:243
+#: ../src/preferences_base.cpp:270
 msgid "Choose..."
 msgstr "Seç"
 
-msgid "OK"
-msgstr "Tamam"
-
-#: ../src/preferences_base.cpp:251
+#: ../src/preferences_base.cpp:278
 msgid "Font Size"
 msgstr "Font Boyutu"
 
@@ -6263,7 +6389,7 @@ msgstr "%s bulunamadı."
 
 #: ../src/project.cpp:186
 msgid "Do you want to load/unload the associated files?"
-msgstr "Bağlı dosyaları yüklemek/boşaltmak ister misiniz?"
+msgstr "Bağlı dosyaları yüklemek/kaldırmak ister misiniz?"
 
 #: ../src/project.cpp:197
 #, c-format
@@ -6272,7 +6398,7 @@ msgstr "Ses dosyası yükle: %s"
 
 #: ../src/project.cpp:197
 msgid "Unload audio"
-msgstr "Sesi kapat"
+msgstr "Sesi kaldır"
 
 #: ../src/project.cpp:199
 #, c-format
@@ -6281,16 +6407,16 @@ msgstr "Video dosyasını yükle: %s"
 
 #: ../src/project.cpp:199
 msgid "Unload video"
-msgstr "Videoyu kapat"
+msgstr "Videoyu kaldır"
 
 #: ../src/project.cpp:201
 #, c-format
 msgid "Load timecodes file: %s"
-msgstr "Zamankodları dosyasını yükle: %s"
+msgstr "Zaman kodu dosyasını yükle: %s"
 
 #: ../src/project.cpp:201
 msgid "Unload timecodes"
-msgstr "Zamankodlarını boşalt"
+msgstr "Zaman kodlarını kaldır"
 
 #: ../src/project.cpp:203
 #, c-format
@@ -6299,11 +6425,11 @@ msgstr "Anahtar kare dosyasını yükle: %s"
 
 #: ../src/project.cpp:203
 msgid "Unload keyframes"
-msgstr "Anahtar kareyi kapat"
+msgstr "Anahtar kareyi kaldır"
 
 #: ../src/project.cpp:205
 msgid "(Un)Load files?"
-msgstr "Dosyaları (Boşalt)Yükle?"
+msgstr "Dosyaları Yükle/Kaldır?"
 
 #: ../src/project.cpp:254
 msgid "The audio file was not found: "
@@ -6335,7 +6461,7 @@ msgstr ""
 
 #: ../src/project.cpp:368
 msgid "Failed to parse timecodes file: "
-msgstr "Zaman kodları dosyası ayrıştırılamadı: "
+msgstr "Zaman kodu dosyası ayrıştırılamadı: "
 
 #: ../src/project.cpp:394
 msgid "Failed to parse keyframes file: "
@@ -6345,7 +6471,7 @@ msgstr "Anahtar kare dosyası ayrıştırılamadı: "
 msgid "Keyframes file in unknown format: "
 msgstr "Bilinmeyen formatta anahtar kare dosyası: "
 
-#: ../src/resolution_resampler.cpp:300
+#: ../src/resolution_resampler.cpp:301
 msgid "resolution resampling"
 msgstr "çözünürlük düzenleniyor"
 
@@ -6478,7 +6604,7 @@ msgstr "h:mm:ss.cs olarak zaman"
 
 #: ../src/subs_edit_box.cpp:186
 msgid "F&rame"
-msgstr "K&are"
+msgstr "&Kare"
 
 #: ../src/subs_edit_box.cpp:186
 msgid "Time by frame number"
@@ -6617,7 +6743,7 @@ msgstr "29.970 FPS (NTSC)"
 
 #: ../src/subtitle_format.cpp:116
 msgid "29.970 FPS (NTSC with SMPTE dropframe)"
-msgstr "29.970 FPS (NTSC)"
+msgstr "29.970 FPS (NTSC, SMPTE kare düşürmeli)"
 
 #: ../src/subtitle_format.cpp:117
 msgid "30.000 FPS"
@@ -6676,6 +6802,53 @@ msgstr "Geçerli kare zamanı ve numarası"
 msgid "Time of this frame relative to start and end of current subs"
 msgstr "Bu karenin zamanı geçerli altyazının başlangıç ve bitişine bağlıdır"
 
+#: ../src/video_controller.cpp:228
+#, c-format
+msgid ""
+"Failed seeking video. The video file may be corrupt or incomplete.\n"
+"Error message reported: %s"
+msgstr ""
+"Videoda ilerleme başarısız oldu. Video dosyası bozuk veya eksik olabilir.\n"
+"Bildirilen hata mesajı: %s"
+
+#: ../src/video_controller.cpp:234
+#, c-format
+msgid ""
+"Failed rendering subtitles.\n"
+"Error message reported: %s"
+msgstr ""
+"Altyazılar oluşturulamadı.\n"
+"Bildirilen hata mesajı: %s"
+
+#: ../src/video_display.cpp:201
+#, c-format
+msgid ""
+"Failed to initialize video display. Closing other running programs and "
+"updating your video card drivers may fix this.\n"
+"Error message reported: %s"
+msgstr ""
+"Video görüntüsü başlatılamadı. Çalışan diğer programları kapatmanız ve ekran "
+"kartı sürücülerinizi güncellemeniz bu sorunu çözebilir.\n"
+"Bildirilen hata mesajı: %s"
+
+#: ../src/video_display.cpp:208
+#, c-format
+msgid ""
+"Could not upload video frame to graphics card.\n"
+"Error message reported: %s"
+msgstr ""
+"Video karesi ekran kartına yüklenemedi.\n"
+"Bildirilen hata mesajı: %s"
+
+#: ../src/video_display.cpp:253
+#, c-format
+msgid ""
+"An error occurred trying to render the video frame on the screen.\n"
+"Error message reported: %s"
+msgstr ""
+"Video karesi ekranda oluşturulurken bir hata oluştu.\n"
+"Bildirilen hata mesajı: %s"
+
 #: ../src/video_provider_manager.cpp:78
 msgid "file not found."
 msgstr "dosya bulunamadı."
@@ -6714,15 +6887,15 @@ msgstr "Ekle (sonra)"
 
 #: default_menu.json:0
 msgid "Insert at video time (before)"
-msgstr "Video zamanı ekle (önce)"
+msgstr "Video zamanında ekle (öncesine)"
 
 #: default_menu.json:0
 msgid "Insert at video time (after)"
-msgstr "Video zamanı ekle (sonra)"
+msgstr "Video zamanında ekle (sonrasına)"
 
 #: default_menu.json:0
 msgid "&Join (concatenate)"
-msgstr "&Birleştir (bitiştirmek)"
+msgstr "&Birleştir (bitiştir)"
 
 #: default_menu.json:0
 msgid "Join (keep first)"
@@ -6738,7 +6911,7 @@ msgstr "&Zamanları devamlı yap (başlangıcı değiştir)"
 
 #: default_menu.json:0
 msgid "&Make times continuous (change end)"
-msgstr "&Zamanları devamlı yap (bitişi değiştir)"
+msgstr "Z&amanları devamlı yap (bitişi değiştir)"
 
 #: default_menu.json:0
 msgid "Make Times Continuous"
@@ -6746,11 +6919,11 @@ msgstr "Zamanı Devamlı Yap"
 
 #: default_menu.json:0
 msgid "Set &Zoom"
-msgstr "Yakınlaştırmayı &Ayarla"
+msgstr "&Yakınlaştırmayı Ayarla"
 
 #: default_menu.json:0
 msgid "Override &AR"
-msgstr "Geçersiz &kıl"
+msgstr "EBO'yu &Geçersiz Kıl"
 
 #: default_menu.json:0
 msgid "&File"
@@ -6758,11 +6931,11 @@ msgstr "&Dosya"
 
 #: default_menu.json:0
 msgid "&Subtitle"
-msgstr "&Altyazı"
+msgstr "A&ltyazı"
 
 #: default_menu.json:0
 msgid "&Timing"
-msgstr "&Zamanlama"
+msgstr "Za&manlama"
 
 #: default_menu.json:0
 msgid "&Video"
@@ -6778,15 +6951,15 @@ msgstr "O&tomasyon"
 
 #: default_menu.json:0
 msgid "Vie&w"
-msgstr "Görünü&m"
+msgstr "G&örünüm"
 
 #: default_menu.json:0
 msgid "&Help"
-msgstr "&Yardım"
+msgstr "Ya&rdım"
 
 #: default_menu.json:0
 msgid "&Insert Lines"
-msgstr "&Satırları Ekle"
+msgstr "Sat&ırları Ekle"
 
 #: default_menu.json:0
 msgid "Join Lines"
@@ -6887,10 +7060,6 @@ msgstr ""
 msgid "Add edgeblur"
 msgstr "Kenar bulanıklığı ekle"
 
-msgctxt "standard Windows menu"
-msgid "&Help"
-msgstr "&Yardım"
-
 #: ../automation/autoload/macro-1-edgeblur.lua:7
 msgid "A demo macro showing how to do simple line modification in Automation 4"
 msgstr ""
@@ -6940,9 +7109,6 @@ msgstr "Seçili satırlardan tüm geçersiz kılma etiketlerini kaldır"
 #: ../automation/autoload/strip-tags.lua:28
 msgid "strip tags"
 msgstr "etiketleri kaldır"
-
-msgid "&Apply"
-msgstr "&Uygula"
 
 #: ../packages/desktop/aegisub.desktop.in.in:4
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:6
@@ -7081,6 +7247,9 @@ msgstr ""
 "uygulamayı herhangi bir amaçla ücretsiz olarak kullanabileceğiniz anlamına "
 "gelir, ancak herhangi bir garanti verilmemektedir.%n%nKaynak koda nasıl "
 "erişileceği hakkında bilgi için Aegisub web sitesine bakın."
+
+#~ msgid "Kanji timing"
+#~ msgstr "Kanji zamanlama"
 
 #~ msgid "anime"
 #~ msgstr "anime"
