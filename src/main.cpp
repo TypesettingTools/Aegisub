@@ -104,6 +104,7 @@ AegisubApp::AegisubApp() {
 		wxString wayland_display  = wxGetenv("WAYLAND_DISPLAY");
 
 		if (xdg_session_type == "wayland" || wayland_display.Contains("wayland")) {
+			printf("Warning: Running on Wayland, but wxWidgets is not compiled with EGL support. Falling back to X11.\n");
 			wxSetEnv("GDK_BACKEND", "x11");
 		}
 	#endif
