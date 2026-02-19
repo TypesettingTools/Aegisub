@@ -154,7 +154,7 @@ jobs:
         run: cd build && ninja win-portable
 
       - name: Upload artifacts - win_installer
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }} - installer
@@ -162,7 +162,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload artifacts - portable.zip
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }} - portable
@@ -176,7 +176,7 @@ jobs:
           meson compile osx-build-dmg -C build
 
       - name: Upload artifacts - macOS dmg
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: startsWith(matrix.config.os, 'macos-')
         with:
           name: ${{ matrix.config.name }} - installer
@@ -198,7 +198,7 @@ jobs:
           test -e distcheck/*/subprojects/LuaJIT*/meson.build
 
       - name: Upload artifacts - tarball
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.buildtype == 'release'
         with:
           name: Source Tarball
