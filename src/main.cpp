@@ -99,7 +99,7 @@ AegisubApp::AegisubApp() {
 
 	// Fallback to X11 if wxGTK implementation is build without Wayland EGL support
 	// Fix https://github.com/TypesettingTools/Aegisub/issues/233
-	#if defined(__WXGTK__) && !wxUSE_GLCANVAS_EGL
+	#if defined(__WXGTK__) && !wxUSE_GLCANVAS_EGL && !wxHAS_EGL
 		wxString xdg_session_type = wxGetenv("XDG_SESSION_TYPE");
 		wxString wayland_display  = wxGetenv("WAYLAND_DISPLAY");
 
