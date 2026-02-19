@@ -102,10 +102,17 @@ AegisubApp::AegisubApp() {
 	#if defined(__WXGTK__) && !wxUSE_GLCANVAS_EGL && !wxHAS_EGL
 		wxString xdg_session_type = wxGetenv("XDG_SESSION_TYPE");
 		wxString wayland_display  = wxGetenv("WAYLAND_DISPLAY");
+		wxString gdk_backend  = wxGetenv("GDK_BACKEND");	// Do not override GDK_BACKEND if it's already manually set
 
-		if (xdg_session_type == "wayland" || wayland_display.Contains("wayland")) {
-			printf("Warning: Running on Wayland, but wxWidgets is not compiled with EGL support. Falling back to X11.\n");
-			wxSetEnv("GDK_BACKEND", "x11");
+		if ((xdg_session_type == "wayland" || wayland_display.Contains("wayland")) && gdk_backend != "x11") {
+			printf("Warning: Running on Wayland, but wxWidgets is not compiled with EGL support.");
+			if (gdk_backend.empty()) {
+				printf(" Falling back to X11.");
+				wxSetEnv("GDK_BACKEND", "x11");
+			} else {
+				printf(" Set GDK_BACKEND=x11 to run Aegisub under X11.");
+			}
+			printf("\n");
 		}
 	#endif
 
