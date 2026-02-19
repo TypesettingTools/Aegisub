@@ -99,7 +99,10 @@
         {},
         { "command" : "video/jump" },
         { "command" : "video/jump/start" },
-        { "command" : "video/jump/end" }
+        { "command" : "video/jump/end" },
+        {},
+        { "command" : "video/jump/audio_selection/start" },
+        { "command" : "video/jump/audio_selection/end" }
     ],
     "main/video/set zoom" : [
         { "command" : "video/zoom/50" },
