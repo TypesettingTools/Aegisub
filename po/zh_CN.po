@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-16 22:57+0100\n"
-"PO-Revision-Date: 2024-12-18 17:29+0800\n"
+"PO-Revision-Date: 2026-02-19 19:47+0800\n"
 "Last-Translator: Oborozuki <oborozuk1@qq.com>\n"
 "Language-Team: Vmoe Fansub <vmoe@vmoe.info>\n"
 "Language: zh_CN\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.5\n"
+"X-Generator: Poedit 3.8\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
@@ -291,10 +291,9 @@ msgid "Selected row %d is out of bounds (must be 1-%u)"
 msgstr ""
 
 #: ../src/auto4_lua.cpp:903
-#, fuzzy, c-format
-#| msgid "Select all dialogue lines"
+#, c-format
 msgid "Selected row %d is not a dialogue line"
-msgstr "选择所有行"
+msgstr ""
 
 #: ../src/auto4_lua.cpp:969
 #, c-format
@@ -409,10 +408,8 @@ msgid ""
 msgstr ""
 
 #: ../src/command/app.cpp:167
-#, fuzzy
-#| msgid "About Aegisub"
 msgid "Restart Aegisub?"
-msgstr "关于 Aegisub"
+msgstr ""
 
 #: ../src/command/app.cpp:180
 msgid "&Log window"
@@ -541,8 +538,6 @@ msgid "Video Formats"
 msgstr "视频格式"
 
 #: ../src/command/audio.cpp:85
-#, fuzzy
-#| msgid "Open Audio File"
 msgctxt "dialog title"
 msgid "Open Audio File"
 msgstr "打开音频文件"
@@ -608,7 +603,6 @@ msgid "Save an audio clip of the selected line"
 msgstr "创建所选行的音频剪辑"
 
 #: ../src/command/audio.cpp:177
-#, fuzzy
 #| msgid "Save audio clip"
 msgid "Save Audio Clip"
 msgstr "保存音频剪辑"
@@ -721,30 +715,22 @@ msgid "Scroll the audio display to center on the current audio selection"
 msgstr "卷动音频使所选部分显示在中间"
 
 #: ../src/command/audio.cpp:408 ../src/command/audio.cpp:409
-#, fuzzy
-#| msgid "Go to selection"
 msgid "Go to selection start"
-msgstr "转至所选部分"
+msgstr ""
 
 #: ../src/command/audio.cpp:410
-#, fuzzy
-#| msgid "Scroll the audio display to center on the current audio selection"
 msgid ""
 "Scroll the audio display to center on the start of current audio selection"
-msgstr "卷动音频使所选部分显示在中间"
+msgstr ""
 
 #: ../src/command/audio.cpp:419 ../src/command/audio.cpp:420
-#, fuzzy
-#| msgid "Go to selection"
 msgid "Go to selection end"
-msgstr "转至所选部分"
+msgstr ""
 
 #: ../src/command/audio.cpp:421
-#, fuzzy
-#| msgid "Scroll the audio display to center on the current audio selection"
 msgid ""
 "Scroll the audio display to center on the end of current audio selection"
-msgstr "卷动音频使所选部分显示在中间"
+msgstr ""
 
 #: ../src/command/audio.cpp:430 ../src/command/audio.cpp:431
 msgid "Scroll left"
@@ -1611,8 +1597,6 @@ msgid "Open a keyframe list file"
 msgstr "打开一个关键帧列表文件"
 
 #: ../src/command/keyframe.cpp:72
-#, fuzzy
-#| msgid "Open keyframes file"
 msgid "Open Keyframes File"
 msgstr "打开一个关键帧列表文件"
 
@@ -1629,8 +1613,6 @@ msgid "Save the current list of keyframes to a file"
 msgstr "保存当前的关键帧列表"
 
 #: ../src/command/keyframe.cpp:97
-#, fuzzy
-#| msgid "Save keyframes file"
 msgid "Save Keyframes File"
 msgstr "保存关键帧…"
 
@@ -1779,8 +1761,6 @@ msgstr "打开字幕文件"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-#, fuzzy
-#| msgid "Open subtitles file"
 msgid "Open Subtitles File"
 msgstr "打开字幕文件"
 
@@ -1841,8 +1821,6 @@ msgid "Open script properties window"
 msgstr "打开脚本配置窗口"
 
 #: ../src/command/subtitle.cpp:347
-#, fuzzy
-#| msgid "Save subtitles file"
 msgid "Save Subtitles File"
 msgstr "保存字幕文件"
 
@@ -2120,8 +2098,6 @@ msgid "Open a VFR timecodes v1 or v2 file"
 msgstr "打开一个可变帧率时间码(VFR timecode)v1或v2文件"
 
 #: ../src/command/timecode.cpp:74
-#, fuzzy
-#| msgid "Open Timecodes File"
 msgctxt "dialog title"
 msgid "Open Timecodes File"
 msgstr "打开时间码文件…"
@@ -2139,17 +2115,13 @@ msgid "Save a VFR timecodes v2 file"
 msgstr "保存一个可变帧率时间码(VFR timecode)v1或v2文件"
 
 #: ../src/command/timecode.cpp:94
-#, fuzzy
-#| msgid "Save Timecodes File"
 msgctxt "dialog title"
 msgid "Save Timecodes File"
 msgstr "保存时间码文件"
 
 #: ../src/command/timecode.cpp:103
-#, fuzzy
-#| msgid "Unload timecodes"
 msgid "Error saving timecodes"
-msgstr "关闭时间码"
+msgstr ""
 
 #: ../src/command/tool.cpp:56
 msgid "&Export Subtitles..."
@@ -2630,8 +2602,6 @@ msgid "Open a video file"
 msgstr "打开一个视频文件"
 
 #: ../src/command/video.cpp:593
-#, fuzzy
-#| msgid "Open video file"
 msgid "Open Video File"
 msgstr "打开视频文件"
 
@@ -3299,8 +3269,6 @@ msgid "Export..."
 msgstr "导出…"
 
 #: ../src/dialog_export.cpp:190
-#, fuzzy
-#| msgid "Export subtitles file"
 msgid "Export Subtitles File"
 msgstr "导出字幕文件"
 
@@ -3599,8 +3567,6 @@ msgid "Dest: "
 msgstr "目标："
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-#, fuzzy
-#| msgid "Kanji Timer"
 msgid "Kanji timer"
 msgstr "汉字K值配对"
 
@@ -3622,10 +3588,8 @@ msgid "Commands"
 msgstr "指令"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
-#, fuzzy
-#| msgid "Attempt to &interpolate kanji."
 msgid "Attempt to &interpolate kanji"
-msgstr "尝试识别汉字(&I)。"
+msgstr "尝试识别汉字(&I)"
 
 #: ../src/dialog_kara_timing_copy.cpp:415
 msgid ""
@@ -4066,12 +4030,10 @@ msgid "unsaved"
 msgstr "未保存"
 
 #: ../src/dialog_shift_times.cpp:96
-#, fuzzy, c-format
-#| msgid "1 frame"
-#| msgid_plural "%d frames (%s)"
+#, c-format
 msgid "1 frame"
 msgid_plural "%s frames"
-msgstr[0] "%d 帧(%s)"
+msgstr[0] "%s 帧"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
@@ -5019,11 +4981,10 @@ msgid "Resolution:"
 msgstr "分辨率："
 
 #: ../src/dialog_video_details.cpp:66
-#, fuzzy, c-format
-#| msgid "%s frames"
+#, c-format
 msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] "帧 %s"
+msgstr[0] "%d 帧(%s)"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
