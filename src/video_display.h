@@ -147,6 +147,14 @@ class VideoDisplay final : public wxGLCanvas {
 	/// @brief Recompute the size of the viewport based on the current window zoom and video resolution,
 	///        then resize the client area to match the viewport
 	void FitClientSizeToVideo();
+	/// @brief Set the viewport size to @p newSize
+	///
+	/// You should call @ref PositionVideo() after this.
+	///
+	/// In free size mode, the @p newSize argument is ignored and client size is used instead.
+	///
+	/// @param newSize The new size, ignored in free size mode
+	void UpdateViewportSize(wxSize newSize = wxDefaultSize);
 	/// @brief Update content size and position based on the current viewport size, content zoom and pan
 	///
 	/// Updates @ref content_left, @ref content_width, @ref content_bottom, @ref content_top and @ref content_height
