@@ -249,7 +249,7 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
 
 	p->sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(p->sizer, wxEXPAND);
+	main_sizer->Add(p->sizer, 1);
 
 	auto audio = p->PageSizer(_("Audio Display"));
 	p->OptionAdd(audio, _("Play cursor"), "Colour/Audio Display/Play Cursor");
@@ -280,7 +280,7 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 
 	p->sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->AddSpacer(5);
-	main_sizer->Add(p->sizer, wxEXPAND);
+	main_sizer->Add(p->sizer, 1);
 
 	auto color_schemes = p->PageSizer(_("Audio Color Schemes"));
 	wxArrayString schemes = to_wx(OPT_GET("Audio/Colour Schemes")->GetListString());

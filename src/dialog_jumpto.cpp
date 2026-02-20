@@ -80,10 +80,10 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	auto TimesSizer = new wxGridSizer(2, 5, 5);
 
 	TimesSizer->Add(LabelFrame, 1, wxALIGN_CENTER_VERTICAL);
-	TimesSizer->Add(JumpFrame, wxEXPAND);
+	TimesSizer->Add(JumpFrame);
 
 	TimesSizer->Add(LabelTime, 1, wxALIGN_CENTER_VERTICAL);
-	TimesSizer->Add(JumpTime, wxEXPAND);
+	TimesSizer->Add(JumpTime);
 
 	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL);
 
