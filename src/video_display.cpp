@@ -152,6 +152,8 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	con->videoController->JumpToFrame(con->videoController->GetFrameN());
 
 	SetLayoutDirection(wxLayout_LeftToRight);
+
+	UpdateViewportSize(wxSize(1, 1));
 }
 
 VideoDisplay::~VideoDisplay () {
@@ -209,9 +211,6 @@ void VideoDisplay::Render() try {
 			err.GetMessage()));
 		return;
 	}
-
-	if (viewportSize.GetWidth() == 0) viewportSize.SetWidth(1);
-	if (viewportSize.GetHeight() == 0) viewportSize.SetHeight(1);
 
 	if (!content_height || !content_width)
 		PositionVideo();
@@ -293,6 +292,17 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 	gl.DrawMultiPolygon(points, vstart, vcount, pos, v, true);
 }
 
+void VideoDisplay::UpdateViewportSize(wxSize newSize) {
+	// In free size mode, we ignore the argument and use the client size
+	// to avoid the viewport and client sizes getting out of sync
+	if (freeSize)
+		newSize = GetClientSize() * scale_factor;
+	assert(newSize != wxDefaultSize);
+	if (newSize.GetWidth() < 1) newSize.SetWidth(1);
+	if (newSize.GetHeight() < 1) newSize.SetHeight(1);
+	viewportSize = newSize;
+}
+
 void VideoDisplay::PositionVideo() {
 	auto provider = con->project->VideoProvider();
 	if (!provider || !IsShownOnScreen()) return;
@@ -356,10 +366,10 @@ void VideoDisplay::FitClientSizeToVideo() {
 
 	if (!provider || !IsShownOnScreen()) return;
 
-	viewportSize.Set(provider->GetWidth(), provider->GetHeight());
-	viewportSize *= windowZoomValue;
+	wxSize newViewportSize(provider->GetWidth(), provider->GetHeight());
+	newViewportSize *= windowZoomValue;
 	if (con->videoController->GetAspectRatioType() != AspectRatio::Default)
-		viewportSize.SetWidth(viewportSize.GetHeight() * con->videoController->GetAspectRatioValue());
+		newViewportSize.SetWidth(newViewportSize.GetHeight() * con->videoController->GetAspectRatioValue());
 
 	wxEventBlocker blocker(this);
 	if (freeSize) {
@@ -368,22 +378,23 @@ void VideoDisplay::FitClientSizeToVideo() {
 
 		wxSize cs = GetClientSize();
 		wxSize oldSize = top->GetSize();
-		top->SetSize(top->GetSize() + viewportSize / scale_factor - cs);
+		top->SetSize(top->GetSize() + newViewportSize / scale_factor - cs);
 		SetClientSize(cs + top->GetSize() - oldSize);
 	}
 	else {
-		SetMinClientSize(viewportSize / scale_factor);
-		SetMaxClientSize(viewportSize / scale_factor);
+		SetMinClientSize(newViewportSize / scale_factor);
+		SetMaxClientSize(newViewportSize / scale_factor);
 
 		GetGrandParent()->Layout();
 	}
 
+	UpdateViewportSize(newViewportSize); // must be called after setting the client size
 	PositionVideo();
 }
 
 void VideoDisplay::OnSizeEvent(wxSizeEvent &) {
 	if (freeSize) {
-		viewportSize = GetClientSize() * scale_factor;
+		UpdateViewportSize();
 		PositionVideo();
 		windowZoomValue = double(content_height) / con->project->VideoProvider()->GetHeight();
 		zoomBox->ChangeValue(fmt_wx("%g%%", windowZoomValue * 100.));
@@ -597,6 +608,8 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 	else {
 		// FitClientSizeToVideo fits the window to the video, which we don't want to do
 		GetGrandParent()->Layout();
+		// TODO Is the following really necessary? Wouldn't it be taken care of by OnSizeEvent?
+		UpdateViewportSize();
 		PositionVideo();
 	}
 }
