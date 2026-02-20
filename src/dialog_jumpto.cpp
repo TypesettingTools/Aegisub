@@ -77,12 +77,12 @@ DialogJumpTo::DialogJumpTo(agi::Context *c)
 	JumpFrame->SetMaxLength(std::to_string(c->project->VideoProvider()->GetFrameCount() - 1).size());
 	JumpTime = new TimeEdit(&d, -1, c, agi::Time(c->videoController->TimeAtFrame(jumpframe)).GetAssFormatted(), wxSize(-1,-1));
 
-	auto TimesSizer = new wxGridSizer(2, 5, 5);
+	auto TimesSizer = new wxFlexGridSizer(2, 5, 5);
 
-	TimesSizer->Add(LabelFrame, 1, wxALIGN_CENTER_VERTICAL);
+	TimesSizer->Add(LabelFrame, wxSizerFlags().CenterVertical());
 	TimesSizer->Add(JumpFrame);
 
-	TimesSizer->Add(LabelTime, 1, wxALIGN_CENTER_VERTICAL);
+	TimesSizer->Add(LabelTime, wxSizerFlags().CenterVertical());
 	TimesSizer->Add(JumpTime);
 
 	auto ButtonSizer = d.CreateStdDialogButtonSizer(wxOK | wxCANCEL);
