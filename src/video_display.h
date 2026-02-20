@@ -147,7 +147,7 @@ class VideoDisplay final : public wxGLCanvas {
 	/// @brief Recompute the size of the viewport based on the current window zoom and video resolution,
 	///        then resize the client area to match the viewport
 	void FitClientSizeToVideo();
-	/// @brief Set the viewport size to @p newSize
+	/// @brief Set the viewport size to @p newSize and rescale the pan values
 	///
 	/// You should call @ref PositionVideo() after this.
 	///

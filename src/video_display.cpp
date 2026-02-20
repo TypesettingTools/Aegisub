@@ -300,6 +300,11 @@ void VideoDisplay::UpdateViewportSize(wxSize newSize) {
 	assert(newSize != wxDefaultSize);
 	if (newSize.GetWidth() < 1) newSize.SetWidth(1);
 	if (newSize.GetHeight() < 1) newSize.SetHeight(1);
+	if (viewportSize.GetHeight() >= 1) {
+		double ratio = double(newSize.GetHeight()) / viewportSize.GetHeight();
+		pan_x *= ratio;
+		pan_y *= ratio;
+	}
 	viewportSize = newSize;
 }
 
@@ -338,14 +343,14 @@ void VideoDisplay::PositionVideo() {
 	double content_top_exact = double(viewportSize.GetHeight() - content_height) / 2;
 
 	// Don't allow panning too far out of bounds
-	double max_pan_x = (0.5 * content_width + 0.4 * viewportSize.GetWidth()) / viewportSize.GetHeight();
-	double max_pan_y = (0.5 * content_height + 0.4 * viewportSize.GetHeight()) / viewportSize.GetHeight();
+	double max_pan_x = 0.5 * content_width + 0.4 * viewportSize.GetWidth();
+	double max_pan_y = 0.5 * content_height + 0.4 * viewportSize.GetHeight();
 	pan_x = mid(-max_pan_x, pan_x, max_pan_x);
 	pan_y = mid(-max_pan_y, pan_y, max_pan_y);
 
 	// Apply panning
-	content_left_exact += pan_x * viewportSize.GetHeight();
-	content_top_exact += pan_y * viewportSize.GetHeight();
+	content_left_exact += pan_x;
+	content_top_exact += pan_y;
 
 	content_left = std::round(content_left_exact);
 	content_top = std::round(content_top_exact);
@@ -502,8 +507,8 @@ void VideoDisplay::OnGestureZoom(wxZoomGestureEvent& event) {
 }
 
 void VideoDisplay::Pan(Vector2D delta) {
-	pan_x += delta.X() * scale_factor / viewportSize.GetHeight();
-	pan_y += delta.Y() * scale_factor / viewportSize.GetHeight();
+	pan_x += delta.X() * scale_factor;
+	pan_y += delta.Y() * scale_factor;
 	PositionVideo();
 }
 
@@ -539,18 +544,17 @@ Vector2D VideoDisplay::GetZoomAnchorPoint(wxPoint position) {
 	//
 	//     position = viewportSize / 2 + anchorPoint
 	//
-	// Panning shifts the video center by `pan * viewportHeight`, so we have to add that to the viewport center:
+	// Panning shifts the video center by `pan`, so we have to add that to the viewport center:
 	//
-	//     position = viewportSize / 2 + pan * viewportHeight + anchorPoint
+	//     position = viewportSize / 2 + pan + anchorPoint
 	//
 	// Finally, to apply scaling, we need to multiply the offset from the video center by the zoom value, so the final formula is
 	//
-	//     position = viewportSize / 2 + pan * viewportHeight + anchorPoint * contentZoomValue
+	//     position = viewportSize / 2 + pan + anchorPoint * contentZoomValue
 	//
 	// Now, to obtain the anchor point from the position, we have to invert the formula.
 	Vector2D viewportCenter = Vector2D(viewportSize.GetWidth(), viewportSize.GetHeight()) / 2;
-	Vector2D scaledPan = Vector2D(pan_x, pan_y) * viewportSize.GetHeight();
-	return (Vector2D(position) - viewportCenter - scaledPan) / contentZoomValue;
+	return (Vector2D(position) - viewportCenter - Vector2D(pan_x, pan_y)) / contentZoomValue;
 }
 
 void VideoDisplay::ZoomAndPan(double newZoomValue, Vector2D anchorPoint, wxPoint newPosition) {
@@ -558,10 +562,10 @@ void VideoDisplay::ZoomAndPan(double newZoomValue, Vector2D anchorPoint, wxPoint
 
 	// Compute a pan value to maintain the formula derived above
 	Vector2D viewportCenter = Vector2D(viewportSize.GetWidth(), viewportSize.GetHeight()) / 2;
-	Vector2D newScaledPan = Vector2D(newPosition) - viewportCenter - anchorPoint * newZoomValue;
+	Vector2D newPan = Vector2D(newPosition) - viewportCenter - anchorPoint * newZoomValue;
 
-	pan_x = newScaledPan.X() / viewportSize.GetHeight();
-	pan_y = newScaledPan.Y() / viewportSize.GetHeight();
+	pan_x = newPan.X();
+	pan_y = newPan.Y();
 	contentZoomValue = newZoomValue;
 
 	PositionVideo();
