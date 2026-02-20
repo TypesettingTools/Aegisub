@@ -105,7 +105,7 @@ class VideoDisplay final : public wxGLCanvas {
 	double contentZoomAtGestureStart = 1;
 	Vector2D zoomGestureAnchorPoint = {0, 0};
 
-	/// The video pan, in units relative to the viewport height.
+	/// The video pan, in physical pixels
 	/// @see viewportSize
 	double pan_x = 0;
 	double pan_y = 0;
@@ -147,7 +147,7 @@ class VideoDisplay final : public wxGLCanvas {
 	/// @brief Recompute the size of the viewport based on the current window zoom and video resolution,
 	///        then resize the client area to match the viewport
 	void FitClientSizeToVideo();
-	/// @brief Set the viewport size to @p newSize
+	/// @brief Set the viewport size to @p newSize and rescale the pan values
 	///
 	/// You should call @ref PositionVideo() after this.
 	///
