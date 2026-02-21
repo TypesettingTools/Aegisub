@@ -291,12 +291,12 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 
 	wxSizer *StorageListSizer = new wxBoxSizer(wxHORIZONTAL);
 	StorageList = new wxListBox(StorageSizerBox, -1, wxDefaultPosition, wxSize(240,250), 0, nullptr, wxLB_EXTENDED);
-	StorageListSizer->Add(StorageList,1,wxEXPAND | wxRIGHT,0);
+	StorageListSizer->Add(StorageList,1,wxEXPAND,0);
 	StorageListSizer->Add(make_move_buttons(StorageSizerBox, &StorageMoveUp, &StorageMoveDown, &StorageMoveTop, &StorageMoveBottom, &StorageSort), wxSizerFlags().Expand());
 
 	StorageSizer->Add(StorageListSizer,1,wxEXPAND | wxBOTTOM,5);
 	StorageSizer->Add(MoveToLocal,0,wxEXPAND | wxBOTTOM,5);
-	StorageSizer->Add(StorageButtons,0,wxEXPAND | wxBOTTOM,0);
+	StorageSizer->Add(StorageButtons,0,wxEXPAND,0);
 
 	// Local styles list
 	wxButton *CurrentImport = new wxButton(CurrentSizerBox, -1, _("&Import from script..."));
@@ -308,12 +308,12 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 
 	wxSizer *CurrentListSizer = new wxBoxSizer(wxHORIZONTAL);
 	CurrentList = new wxListBox(CurrentSizerBox, -1, wxDefaultPosition, wxSize(240,250), 0, nullptr, wxLB_EXTENDED);
-	CurrentListSizer->Add(CurrentList,1,wxEXPAND | wxRIGHT,0);
+	CurrentListSizer->Add(CurrentList,1,wxEXPAND,0);
 	CurrentListSizer->Add(make_move_buttons(CurrentSizerBox, &CurrentMoveUp, &CurrentMoveDown, &CurrentMoveTop, &CurrentMoveBottom, &CurrentSort), wxSizerFlags().Expand());
 
 	CurrentSizer->Add(CurrentListSizer,1,wxEXPAND | wxBOTTOM,5);
 	CurrentSizer->Add(MoveImportSizer,0,wxEXPAND | wxBOTTOM,5);
-	CurrentSizer->Add(CurrentButtons,0,wxEXPAND | wxBOTTOM,0);
+	CurrentSizer->Add(CurrentButtons,0,wxEXPAND,0);
 
 	// Buttons
 	wxStdDialogButtonSizer *buttonSizer = CreateStdDialogButtonSizer(wxCANCEL | wxHELP);
@@ -323,7 +323,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	// General layout
 	wxSizer *StylesSizer = new wxBoxSizer(wxHORIZONTAL);
 	StylesSizer->Add(StorageSizer,0,wxRIGHT | wxEXPAND,5);
-	StylesSizer->Add(CurrentSizer,0,wxLEFT | wxEXPAND,0);
+	StylesSizer->Add(CurrentSizer,0,wxEXPAND,0);
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(CatalogSizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxTOP,5);
 	MainSizer->Add(StylesSizer,1,wxEXPAND | wxALL,5);
