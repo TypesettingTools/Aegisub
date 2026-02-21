@@ -73,8 +73,8 @@ class KaraokeLineMatchDisplay final : public wxControl {
 
 	void OnPaint(wxPaintEvent &event);
 
-	wxString const& label_source = TEXT_LABEL_SOURCE;
-	wxString const& label_destination = TEXT_LABEL_DEST;
+	wxString label_source = TEXT_LABEL_SOURCE;
+	wxString label_destination = TEXT_LABEL_DEST;
 
 public:
 	/// Start processing a new line pair
