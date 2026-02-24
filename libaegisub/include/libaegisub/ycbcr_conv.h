@@ -18,35 +18,9 @@
 #include <cstdint>
 
 #include <libaegisub/color.h>
+#include <libaegisub/ycbcr.h>
 
 namespace agi {
-
-/// Color matrix constants matching the constants in ffmpeg
-/// (specifically libavutil's AVColorSpace) and/or H.273.
-enum class ycbcr_matrix {
-	RGB = 0,
-	BT709 = 1,
-	Unspecified = 2,
-	FCC = 4,
-	BT470BG = 5,
-	SMPTE170M = 6,
-	SMPTE240M = 7,
-	YCoCg = 8,
-	BT2020_NCL = 9,
-	BT2020_CL = 10,
-	SMPTE2085 = 11,
-	ChromacityDerivedNCL = 12,
-	ChromacityDerivedCL = 13,
-	ICtCp = 14,
-};
-
-/// Color matrix constants matching the constants in ffmpeg
-/// (specifically libavutil's AVColorRange) and/or H.273.
-enum class ycbcr_range {
-	Unspecified = 0,
-	MPEG = 1,	// TV / Limited
-	JPEG = 2,	// PC / Full
-};
 
 /// A converter between YCbCr colorspaces and RGB
 class ycbcr_converter {

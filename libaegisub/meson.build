@@ -38,6 +38,7 @@ libaegisub_src = [
     'common/unicode.cpp',
     'common/util.cpp',
     'common/vfr.cpp',
+    'common/ycbcr.cpp',
     'common/ycbcr_conv.cpp',
     'common/cajun/elements.cpp',
     'common/cajun/reader.cpp',
