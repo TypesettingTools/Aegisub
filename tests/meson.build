@@ -46,6 +46,7 @@ tests_src = [
     'tests/uuencode.cpp',
     'tests/vfr.cpp',
     'tests/word_split.cpp',
+    'tests/ycbcr.cpp',
 ]
 
 tests_inc = include_directories('support')
