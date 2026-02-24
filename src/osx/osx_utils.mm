@@ -83,4 +83,16 @@ bool activate_top_window_other_than(wxFrame *wx) {
 void bring_to_front() {
 	[NSApp arrangeInFront:nil];
 }
+
+void hide_aegisub() {
+    [NSApp hide:nil];
+}
+
+void hide_others() {
+    [NSApp hideOtherApplications:nil];
+}
+
+void show_all() {
+    [NSApp unhideAllApplications:nil];
+}
 }

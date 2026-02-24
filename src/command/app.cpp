@@ -297,6 +297,39 @@ struct app_bring_to_front final : public Command {
 		osx::bring_to_front();
 	}
 };
+
+struct app_hide final : public Command {
+	CMD_NAME("app/hide")
+	STR_MENU("Hide")
+	STR_DISP("Hide")
+	STR_HELP("Hide the application")
+
+	void operator()(agi::Context *) override {
+		osx::hide_aegisub();
+	}
+};
+
+struct app_hide_others final : public Command {
+	CMD_NAME("app/hide_others")
+	STR_MENU("Hide others")
+	STR_DISP("Hide others")
+	STR_HELP("Hide all other applications")
+
+	void operator()(agi::Context *) override {
+		osx::hide_others();
+	}
+};
+
+struct app_show_all final : public Command {
+	CMD_NAME("app/show_all")
+	STR_MENU("Show all")
+	STR_DISP("Show all")
+	STR_HELP("Show all applications")
+
+	void operator()(agi::Context *) override {
+		osx::show_all();
+	}
+};
 #endif
 
 }
@@ -319,6 +352,9 @@ namespace cmd {
 		reg(std::make_unique<app_minimize>());
 		reg(std::make_unique<app_maximize>());
 		reg(std::make_unique<app_bring_to_front>());
+		reg(std::make_unique<app_hide>());
+		reg(std::make_unique<app_hide_others>());
+		reg(std::make_unique<app_show_all>());
 #endif
 #ifdef WITH_UPDATE_CHECKER
 		reg(std::make_unique<app_updates>());
