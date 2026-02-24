@@ -16,9 +16,9 @@
 
 impl = require 'aegisub.__lfs_impl'
 
-check = require 'aegisub.argcheck'
+check = require 'aegisub.internal.argcheck'
 ffi = require 'ffi'
-ffi_util = require 'aegisub.ffi'
+ffi_util = require 'aegisub.internal.ffi'
 
 for k, v in pairs impl
   impl[k] = ffi_util.err_arg_to_multiple_return v
