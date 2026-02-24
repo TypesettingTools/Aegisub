@@ -20,7 +20,7 @@ sformat  = string.format
 tonumber = tonumber
 type     = type
 
-check = require 'aegisub.argcheck'
+check = require 'aegisub.internal.argcheck'
 
 local *
 

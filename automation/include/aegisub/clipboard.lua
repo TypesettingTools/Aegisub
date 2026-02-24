@@ -12,8 +12,8 @@
 -- ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-local check = require 'aegisub.argcheck'
-local ffi_util = require 'aegisub.ffi'
+local check = require 'aegisub.internal.argcheck'
+local ffi_util = require 'aegisub.internal.ffi'
 local impl = aegisub.__init_clipboard()
 
 return {
