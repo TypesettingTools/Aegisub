@@ -106,6 +106,12 @@ namespace osx {
 	bool activate_top_window_other_than(wxFrame *wx);
 	// Bring all windows to the front, maintaining relative z-order
 	void bring_to_front();
+	// Hide the application
+	void hide_aegisub();
+	// Hide all other applications
+	void hide_others();
+	// Unhide all applications
+	void show_all();
 
 namespace ime {
 	/// Inject the IME helper into the given wxSTC
