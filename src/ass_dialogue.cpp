@@ -36,6 +36,7 @@
 #include <libaegisub/string.h>
 
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
 #include <boost/spirit/include/karma_generate.hpp>
@@ -109,8 +110,41 @@ void AssDialogue::Parse(std::string const& raw) {
 	End = agi::Trim(tkn.next_tok());
 	Style = tkn.next_str_trim();
 	Actor = tkn.next_str_trim();
-	for (int& margin : Margin)
-		margin = mid(-9999, boost::lexical_cast<int>(tkn.next_tok()), 99999);
+	for (int& margin : Margin) {
+		int parsed_margin = 0;
+		int sign = 1;
+		std::string tok{tkn.next_tok()};
+		boost::trim(tok);
+		if (tok.starts_with("-")) {// Handling sign
+			sign = -1;
+			tok.erase(0,1);
+		}
+		else if (tok.starts_with("+")) {
+			tok.erase(0,1);
+		}
+		if (tok.starts_with("0x") || tok.starts_with("0X")) {// Hexadecimal value
+			try {
+				std::size_t pos = 2;
+				parsed_margin = std::stoi(tok,&pos,16);
+			}
+			catch (boost::bad_lexical_cast const&) {}
+		}
+		else {
+			try {
+				parsed_margin = boost::lexical_cast<int>(tok);
+			}
+			catch (boost::bad_lexical_cast const&) {
+				try {
+					// Try parsing and rounding a floating point number if integer failed
+					parsed_margin = (int)(boost::lexical_cast<double>(tok)+0.5);
+				}
+				catch (boost::bad_lexical_cast const&) {
+					// Just keep 0 if can not parse a number, eg. if field is empty
+				}
+			}
+		}
+		margin = mid(-9999, parsed_margin*sign, 99999);
+	}
 	Effect = tkn.next_str_trim();
 
 	std::string text{tkn.next_tok().begin(), str.end()};
