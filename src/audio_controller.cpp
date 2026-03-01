@@ -121,7 +121,9 @@ void AudioController::SetTimingController(std::unique_ptr<AudioTimingController>
 {
 	timing_controller = std::move(new_controller);
 	if (timing_controller)
-		timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
+		timing_controller_connection = timing_controller->AddUpdatedPrimaryRangeListener(&AudioController::OnTimingControllerUpdatedPrimaryRange, this);
+	else
+		timing_controller_connection = agi::signal::Connection();
 
 	AnnounceTimingControllerChanged();
 }
