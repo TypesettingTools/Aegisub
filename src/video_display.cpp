@@ -152,6 +152,8 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	con->videoController->JumpToFrame(con->videoController->GetFrameN());
 
 	SetLayoutDirection(wxLayout_LeftToRight);
+
+	UpdateViewportSize(false, wxSize(1, 1));
 }
 
 VideoDisplay::~VideoDisplay () {
@@ -209,9 +211,6 @@ void VideoDisplay::Render() try {
 			err.GetMessage()));
 		return;
 	}
-
-	if (viewportSize.GetWidth() == 0) viewportSize.SetWidth(1);
-	if (viewportSize.GetHeight() == 0) viewportSize.SetHeight(1);
 
 	if (!content_height || !content_width)
 		PositionVideo();
@@ -293,15 +292,33 @@ void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_per
 	gl.DrawMultiPolygon(points, vstart, vcount, pos, v, true);
 }
 
-void VideoDisplay::PositionVideo() {
+void VideoDisplay::UpdateViewportSize(bool rescalePan, wxSize newSize) {
+	// In free size mode, we ignore the argument and use the client size
+	// to avoid the viewport and client sizes getting out of sync
+	if (freeSize)
+		newSize = GetClientSize() * scale_factor;
+	assert(newSize != wxDefaultSize);
+	if (newSize.GetWidth() < 1) newSize.SetWidth(1);
+	if (newSize.GetHeight() < 1) newSize.SetHeight(1);
+	if (rescalePan && viewportSize.GetHeight() >= 1) {
+		double ratio = double(newSize.GetHeight()) / viewportSize.GetHeight();
+		pan_x *= ratio;
+		pan_y *= ratio;
+	}
+	viewportSize = newSize;
+}
+
+void VideoDisplay::PositionVideo(bool preserveContentSize) {
 	auto provider = con->project->VideoProvider();
 	if (!provider || !IsShownOnScreen()) return;
+
+	int old_content_height = content_height;
 
 	content_width = viewportSize.GetWidth();
 	content_height = viewportSize.GetHeight();
 
-	// Adjust aspect ratio if necessary
 	if (freeSize) {
+		// Adjust aspect ratio if necessary
 		int vidW = provider->GetWidth();
 		int vidH = provider->GetHeight();
 
@@ -317,7 +334,16 @@ void VideoDisplay::PositionVideo() {
 		else if (videoAr - displayAr > 0.01) {
 			content_height = content_width / videoAr;
 		}
+
+		// Update windowZoomValue
+		// We must use content_height before content zoom has been applied to it
+		windowZoomValue = double(content_height) / vidH;
+		zoomBox->ChangeValue(fmt_wx("%g%%", windowZoomValue * 100.));
+		con->ass->Properties.video_zoom = windowZoomValue;
 	}
+
+	if (preserveContentSize)
+		contentZoomValue = double(old_content_height) / content_height;
 
 	// Apply content zoom
 	content_width *= contentZoomValue;
@@ -328,14 +354,14 @@ void VideoDisplay::PositionVideo() {
 	double content_top_exact = double(viewportSize.GetHeight() - content_height) / 2;
 
 	// Don't allow panning too far out of bounds
-	double max_pan_x = (0.5 * content_width + 0.4 * viewportSize.GetWidth()) / viewportSize.GetHeight();
-	double max_pan_y = (0.5 * content_height + 0.4 * viewportSize.GetHeight()) / viewportSize.GetHeight();
+	double max_pan_x = 0.5 * content_width + 0.4 * viewportSize.GetWidth();
+	double max_pan_y = 0.5 * content_height + 0.4 * viewportSize.GetHeight();
 	pan_x = mid(-max_pan_x, pan_x, max_pan_x);
 	pan_y = mid(-max_pan_y, pan_y, max_pan_y);
 
 	// Apply panning
-	content_left_exact += pan_x * viewportSize.GetHeight();
-	content_top_exact += pan_y * viewportSize.GetHeight();
+	content_left_exact += pan_x;
+	content_top_exact += pan_y;
 
 	content_left = std::round(content_left_exact);
 	content_top = std::round(content_top_exact);
@@ -356,10 +382,10 @@ void VideoDisplay::FitClientSizeToVideo() {
 
 	if (!provider || !IsShownOnScreen()) return;
 
-	viewportSize.Set(provider->GetWidth(), provider->GetHeight());
-	viewportSize *= windowZoomValue;
+	wxSize newViewportSize(provider->GetWidth(), provider->GetHeight());
+	newViewportSize *= windowZoomValue;
 	if (con->videoController->GetAspectRatioType() != AspectRatio::Default)
-		viewportSize.SetWidth(viewportSize.GetHeight() * con->videoController->GetAspectRatioValue());
+		newViewportSize.SetWidth(newViewportSize.GetHeight() * con->videoController->GetAspectRatioValue());
 
 	wxEventBlocker blocker(this);
 	if (freeSize) {
@@ -368,30 +394,24 @@ void VideoDisplay::FitClientSizeToVideo() {
 
 		wxSize cs = GetClientSize();
 		wxSize oldSize = top->GetSize();
-		top->SetSize(top->GetSize() + viewportSize / scale_factor - cs);
+		top->SetSize(top->GetSize() + newViewportSize / scale_factor - cs);
 		SetClientSize(cs + top->GetSize() - oldSize);
 	}
 	else {
-		SetMinClientSize(viewportSize / scale_factor);
-		SetMaxClientSize(viewportSize / scale_factor);
+		SetMinClientSize(newViewportSize / scale_factor);
+		SetMaxClientSize(newViewportSize / scale_factor);
 
 		GetGrandParent()->Layout();
 	}
 
+	UpdateViewportSize(true, newViewportSize); // must be called after setting the client size
 	PositionVideo();
 }
 
 void VideoDisplay::OnSizeEvent(wxSizeEvent &) {
-	if (freeSize) {
-		viewportSize = GetClientSize() * scale_factor;
-		PositionVideo();
-		windowZoomValue = double(content_height) / con->project->VideoProvider()->GetHeight();
-		zoomBox->ChangeValue(fmt_wx("%g%%", windowZoomValue * 100.));
-		con->ass->Properties.video_zoom = windowZoomValue;
-	}
-	else {
-		PositionVideo();
-	}
+	bool preserveContentSize = freeSize && IsContentZoomActive();
+	if (freeSize) UpdateViewportSize(false);
+	PositionVideo(preserveContentSize);
 }
 
 void VideoDisplay::OnMouseEvent(wxMouseEvent& event) {
@@ -491,8 +511,8 @@ void VideoDisplay::OnGestureZoom(wxZoomGestureEvent& event) {
 }
 
 void VideoDisplay::Pan(Vector2D delta) {
-	pan_x += delta.X() * scale_factor / viewportSize.GetHeight();
-	pan_y += delta.Y() * scale_factor / viewportSize.GetHeight();
+	pan_x += delta.X() * scale_factor;
+	pan_y += delta.Y() * scale_factor;
 	PositionVideo();
 }
 
@@ -528,18 +548,17 @@ Vector2D VideoDisplay::GetZoomAnchorPoint(wxPoint position) {
 	//
 	//     position = viewportSize / 2 + anchorPoint
 	//
-	// Panning shifts the video center by `pan * viewportHeight`, so we have to add that to the viewport center:
+	// Panning shifts the video center by `pan`, so we have to add that to the viewport center:
 	//
-	//     position = viewportSize / 2 + pan * viewportHeight + anchorPoint
+	//     position = viewportSize / 2 + pan + anchorPoint
 	//
 	// Finally, to apply scaling, we need to multiply the offset from the video center by the zoom value, so the final formula is
 	//
-	//     position = viewportSize / 2 + pan * viewportHeight + anchorPoint * contentZoomValue
+	//     position = viewportSize / 2 + pan + anchorPoint * contentZoomValue
 	//
 	// Now, to obtain the anchor point from the position, we have to invert the formula.
 	Vector2D viewportCenter = Vector2D(viewportSize.GetWidth(), viewportSize.GetHeight()) / 2;
-	Vector2D scaledPan = Vector2D(pan_x, pan_y) * viewportSize.GetHeight();
-	return (Vector2D(position) - viewportCenter - scaledPan) / contentZoomValue;
+	return (Vector2D(position) - viewportCenter - Vector2D(pan_x, pan_y)) / contentZoomValue;
 }
 
 void VideoDisplay::ZoomAndPan(double newZoomValue, Vector2D anchorPoint, wxPoint newPosition) {
@@ -547,10 +566,10 @@ void VideoDisplay::ZoomAndPan(double newZoomValue, Vector2D anchorPoint, wxPoint
 
 	// Compute a pan value to maintain the formula derived above
 	Vector2D viewportCenter = Vector2D(viewportSize.GetWidth(), viewportSize.GetHeight()) / 2;
-	Vector2D newScaledPan = Vector2D(newPosition) - viewportCenter - anchorPoint * newZoomValue;
+	Vector2D newPan = Vector2D(newPosition) - viewportCenter - anchorPoint * newZoomValue;
 
-	pan_x = newScaledPan.X() / viewportSize.GetHeight();
-	pan_y = newScaledPan.Y() / viewportSize.GetHeight();
+	pan_x = newPan.X();
+	pan_y = newPan.Y();
 	contentZoomValue = newZoomValue;
 
 	PositionVideo();
@@ -597,6 +616,8 @@ void VideoDisplay::SetTool(std::unique_ptr<VisualToolBase> new_tool) {
 	else {
 		// FitClientSizeToVideo fits the window to the video, which we don't want to do
 		GetGrandParent()->Layout();
+		// TODO Is the following really necessary? Wouldn't it be taken care of by OnSizeEvent?
+		UpdateViewportSize(true);
 		PositionVideo();
 	}
 }
