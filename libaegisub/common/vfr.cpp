@@ -45,13 +45,6 @@ void validate_timecodes(std::vector<int> const& timecodes) {
 		throw InvalidFramerate("Timecodes are all identical");
 }
 
-/// @brief Shift timecodes so that frame 0 starts at time 0
-/// @param timecodes List of timecodes to normalize
-void normalize_timecodes(std::vector<int> &timecodes) {
-	if (int front = timecodes.front())
-		boost::for_each(timecodes, [=](int &tc) { tc -= front; });
-}
-
 // A "start,end,fps" line in a v1 timecode file
 struct TimecodeRange {
 	int start;
@@ -153,9 +146,8 @@ Framerate::Framerate(int64_t numerator, int64_t denominator, bool drop)
 
 void Framerate::SetFromTimecodes() {
 	validate_timecodes(timecodes);
-	normalize_timecodes(timecodes);
 	denominator = default_denominator;
-	numerator = (timecodes.size() - 1) * denominator * 1000 / timecodes.back();
+	numerator = (timecodes.size() - 1) * denominator * 1000 / (timecodes.back() - timecodes.front());
 	last = (timecodes.size() - 1) * denominator * 1000;
 }
 
@@ -221,8 +213,8 @@ int Framerate::FrameAtTime(int ms, Time type) const {
 	if (type == END)
 		return FrameAtTime(ms - 1);
 
-	if (ms < 0)
-		return int((ms * numerator / denominator - 999) / 1000);
+	if (ms < timecodes.front())
+		return int(((ms - timecodes.front()) * numerator / denominator - 999) / 1000);
 
 	if (ms > timecodes.back())
 		return ((ms + 1) * numerator - last - numerator / 2 + (1000 * denominator - 1)) / (1000 * denominator) + timecodes.size() - 2;
@@ -245,7 +237,7 @@ int Framerate::TimeAtFrame(int frame, Time type) const {
 	}
 
 	if (frame < 0)
-		return (int)(frame * denominator * 1000 / numerator);
+		return (int)(frame * denominator * 1000 / numerator) + timecodes.front();
 
 	if (frame >= (signed)timecodes.size()) {
 		int64_t frames_past_end = frame - (int)timecodes.size() + 1;
