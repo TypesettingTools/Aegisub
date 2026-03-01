@@ -17,6 +17,7 @@
 #include <boost/config.hpp>
 #include <functional>
 #include <memory>
+#include <utility>
 #include <vector>
 
 namespace agi::signal {
@@ -199,6 +200,19 @@ public:
 inline std::vector<Connection> make_vector(std::initializer_list<UnscopedConnection> connections) {
 	return std::vector<Connection>(std::begin(connections), std::end(connections));
 }
+
+/// Helper class that basically just holds a vector of Connections, to be used
+/// as a private/protected base class
+class ConnectionScope {
+private:
+	std::vector<Connection> connections;
+public:
+	/// Binds a signal connection to the lifetime of this object
+	template<typename T>
+	void BindConnection(T&& arg) {
+		connections.emplace_back(std::forward<T>(arg));
+	}
+};
 
 }
 
