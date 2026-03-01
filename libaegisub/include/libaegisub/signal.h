@@ -43,15 +43,12 @@ namespace detail {
 
 /// A connection which is not automatically closed
 ///
-/// Connections initially start out owned by the signal. If a slot knows that it
-/// will outlive a signal and does not need to be able to block a connection, it
-/// can simply ignore the return value of Connect.
+/// Connections initially start out owned by the signal.
 ///
-/// If a slot needs to be able to disconnect from a signal, it should store the
-/// returned connection in a Connection, which transfers ownership of the
-/// connection to the slot. If there is any chance that the signal will outlive
-/// the slot, this must be done.
-class UnscopedConnection {
+/// To make sure a slot properly disconnects from the signal, it must store the
+/// returned connection in a @ref Connection, which transfers ownership of the
+/// connection to the slot.
+class [[nodiscard("Unscoped connections are almost always a bug. Store the connection in a Connection object.")]] UnscopedConnection {
 	friend class Connection;
 	detail::ConnectionToken *token;
 public:
