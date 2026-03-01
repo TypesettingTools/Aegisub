@@ -19,8 +19,8 @@ type   = type
 
 bit = require 'bit'
 ffi = require 'ffi'
-ffi_util = require 'aegisub.ffi'
-check = require 'aegisub.argcheck'
+ffi_util = require 'aegisub.internal.ffi'
+check = require 'aegisub.internal.argcheck'
 
 ffi.cdef[[
   typedef struct agi_re_flag {
