@@ -164,6 +164,7 @@ wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, cons
 			auto cb = new ColourButton(section.box, wxSize(40,10), false, opt->GetColor());
 			cb->Bind(EVT_COLOR, ColourUpdater(opt_name, parent));
 			Add(section, name, cb);
+            parent->RegisterControl(opt_name, cb);
 			return cb;
 		}
 
