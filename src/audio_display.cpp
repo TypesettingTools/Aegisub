@@ -1272,13 +1272,19 @@ void AudioDisplay::OnTimingController()
 	AudioTimingController *timing_controller = controller->GetTimingController();
 	if (timing_controller)
 	{
-		timing_controller->AddMarkerMovedListener(&AudioDisplay::OnMarkerMoved, this);
-		timing_controller->AddUpdatedPrimaryRangeListener(&AudioDisplay::OnSelectionChanged, this);
-		timing_controller->AddUpdatedStyleRangesListener(&AudioDisplay::OnStyleRangesChanged, this);
+		timing_controller_connections = agi::signal::make_vector({
+			timing_controller->AddMarkerMovedListener(&AudioDisplay::OnMarkerMoved, this),
+			timing_controller->AddUpdatedPrimaryRangeListener(&AudioDisplay::OnSelectionChanged, this),
+			timing_controller->AddUpdatedStyleRangesListener(&AudioDisplay::OnStyleRangesChanged, this),
+		});
 
 		OnStyleRangesChanged();
 		OnMarkerMoved();
 		OnSelectionChanged();
+	}
+	else
+	{
+		timing_controller_connections.clear();
 	}
 }
 

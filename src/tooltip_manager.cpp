@@ -57,6 +57,7 @@ void ToolTipManager::Bind(wxWindow *window, wxString tooltip, const char *contex
 
 	static std::list<ToolTipBinding> tips;
 	tips.push_back(tip);
+	// FIXME: lifetime of the connection?
 	hotkey::inst->AddHotkeyChangeListener(&ToolTipBinding::Update, &tips.back());
 }
 
