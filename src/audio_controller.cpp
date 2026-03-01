@@ -51,7 +51,7 @@ AudioController::AudioController(agi::Context *context)
 	Bind(wxEVT_POWER_RESUME, &AudioController::OnComputerResuming, this);
 #endif
 
-	OPT_SUB("Audio/Player", &AudioController::OnAudioPlayerChanged, this);
+	BindConnection(OPT_SUB("Audio/Player", &AudioController::OnAudioPlayerChanged, this));
 }
 
 AudioController::~AudioController()
