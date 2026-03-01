@@ -514,7 +514,7 @@
 		},
 		"Shift Times" : {
 			"Affect" : 0,
-			"ByTime" : true,
+			"By" : 0,
 			"Direction" : true,
 			"Frames" : 0,
 			"Time" : 0,

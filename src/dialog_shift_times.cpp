@@ -16,16 +16,18 @@
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
+#include "audio_controller.h"
 #include "compat.h"
 #include "dialog_manager.h"
 #include "format.h"
-#include "include/aegisub/context.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "project.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
+#include "time_range.h"
 #include "timeedit_ctrl.h"
 
 #include <libaegisub/ass/time.h>
@@ -62,6 +64,7 @@ class DialogShiftTimes final : public wxDialog {
 	wxTextCtrl *shift_frames;
 	wxRadioButton *shift_by_time;
 	wxRadioButton *shift_by_frames;
+	wxRadioButton *shift_to_match_selection;
 	wxRadioButton *shift_forward;
 	wxRadioButton *shift_backward;
 	wxRadioBox *selection_mode;
@@ -72,10 +75,12 @@ class DialogShiftTimes final : public wxDialog {
 	void LoadHistory();
 	void Process(wxCommandEvent&);
 	int Shift(int initial_time, int shift, bool by_time, agi::vfr::Time type);
+	void SetTimeFromSelectionMatch();
 
 	void OnClear(wxCommandEvent&);
 	void OnByTime(wxCommandEvent&);
 	void OnByFrames(wxCommandEvent&);
+	void OnToMatchSelection(wxCommandEvent&);
 	void OnHistoryClick(wxCommandEvent&);
 
 	void OnSelectedSetChanged();
@@ -131,6 +136,15 @@ static wxString get_history_string(json::Object &obj) {
 	return fmt_wx("%s, %s %s, %s, %s", filename, shift_amount, shift_direction, fields, lines);
 }
 
+static int selection_start_time(agi::Context *context) {
+	int sel_start = INT_MAX;
+	auto const& sel = context->selectionController->GetSelectedSet();
+	for (auto line : sel) {
+		sel_start = std::min((int) line->Start, sel_start);
+	}
+	return sel_start;
+}
+
 DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 : wxDialog(context->parent, -1, _("Shift Times"))
 , context(context)
@@ -154,6 +168,10 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	shift_by_frames = new wxRadioButton(shift_by_static_box, -1 , _("&Frames: "));
 	shift_by_frames->SetToolTip(_("Shift by frames"));
 	shift_by_frames->Bind(wxEVT_RADIOBUTTON, &DialogShiftTimes::OnByFrames, this);
+
+	shift_to_match_selection = new wxRadioButton(shift_by_static_box, -1 , _("To match &selection"));
+	shift_to_match_selection->SetToolTip(_("Shift start times to match that of audio selection"));
+	shift_to_match_selection->Bind(wxEVT_RADIOBUTTON, &DialogShiftTimes::OnToMatchSelection, this);
 
 	shift_time = new TimeEdit(shift_by_static_box, -1, context);
 	shift_time->SetToolTip(_("Enter time in h:mm:ss.cs notation"));
@@ -185,7 +203,13 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 
 	shift_time->SetTime(OPT_GET("Tool/Shift Times/Time")->GetInt());
 	*shift_frames << (int)OPT_GET("Tool/Shift Times/Frames")->GetInt();
-	shift_by_frames->SetValue(!OPT_GET("Tool/Shift Times/ByTime")->GetBool() && shift_by_frames->IsEnabled());
+	int shift_by_opt = OPT_GET("Tool/Shift Times/By")->GetInt();
+	if(shift_by_opt == 0)
+		shift_by_time->SetValue(true);
+	else if(shift_by_opt == 1 && shift_by_frames->IsEnabled())
+		shift_by_frames->SetValue(true);
+	else if(shift_by_opt == 2)
+		shift_to_match_selection->SetValue(true);
 	time_fields->SetSelection(OPT_GET("Tool/Shift Times/Type")->GetInt());
 	selection_mode->SetSelection(OPT_GET("Tool/Shift Times/Affect")->GetInt());
 	shift_backward->SetValue(OPT_GET("Tool/Shift Times/Direction")->GetBool());
@@ -208,6 +232,7 @@ DialogShiftTimes::DialogShiftTimes(agi::Context *context)
 	shift_direction_sizer->Add(shift_backward, wxSizerFlags(1).Expand().Border(wxLEFT));
 
 	shift_by_sizer->Add(shift_amount_sizer, wxSizerFlags().Expand());
+	shift_by_sizer->Add(shift_to_match_selection, wxSizerFlags().Border(wxTOP));
 	shift_by_sizer->Add(shift_direction_sizer, wxSizerFlags().Expand().Border(wxTOP));
 
 	wxSizer *left_sizer = new wxBoxSizer(wxVERTICAL);
@@ -240,7 +265,10 @@ DialogShiftTimes::~DialogShiftTimes() {
 
 	OPT_SET("Tool/Shift Times/Time")->SetInt(shift_time->GetTime());
 	OPT_SET("Tool/Shift Times/Frames")->SetInt(shift);
-	OPT_SET("Tool/Shift Times/ByTime")->SetBool(shift_by_time->GetValue());
+	OPT_SET("Tool/Shift Times/By")->SetInt(
+		shift_by_time->GetValue() ? 0 :
+		shift_by_frames->GetValue() ? 1 :
+		shift_to_match_selection->GetValue() ? 2 : 0);
 	OPT_SET("Tool/Shift Times/Type")->SetInt(time_fields->GetSelection());
 	OPT_SET("Tool/Shift Times/Affect")->SetInt(selection_mode->GetSelection());
 	OPT_SET("Tool/Shift Times/Direction")->SetBool(shift_backward->GetValue());
@@ -280,11 +308,23 @@ void DialogShiftTimes::OnClear(wxCommandEvent &) {
 void DialogShiftTimes::OnByTime(wxCommandEvent &) {
 	shift_time->Enable(true);
 	shift_frames->Enable(false);
+	shift_forward->Enable(true);
+	shift_backward->Enable(true);
 }
 
 void DialogShiftTimes::OnByFrames(wxCommandEvent &) {
 	shift_time->Enable(false);
 	shift_frames->Enable(true);
+	shift_forward->Enable(true);
+	shift_backward->Enable(true);
+}
+
+void DialogShiftTimes::OnToMatchSelection(wxCommandEvent &) {
+	shift_time->Enable(false);
+	shift_frames->Enable(false);
+	shift_forward->Enable(false);
+	shift_backward->Enable(false);
+	SetTimeFromSelectionMatch();
 }
 
 void DialogShiftTimes::OnHistoryClick(wxCommandEvent &evt) {
@@ -367,6 +407,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	int type = time_fields->GetSelection();
 	bool reverse = shift_backward->GetValue();
 	bool by_time = shift_by_time->GetValue();
+	bool to_match_selection = shift_to_match_selection->GetValue();
 
 	bool start = type != 2;
 	bool end = type != 1;
@@ -374,6 +415,10 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	auto const& sel = context->selectionController->GetSelectedSet();
 
 	long shift;
+	if (to_match_selection) {
+		SetTimeFromSelectionMatch();
+		by_time = true;
+	}
 	if (by_time) {
 		shift = shift_time->GetTime();
 		if (shift == 0) {
@@ -387,12 +432,16 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	if (reverse)
 		shift = -shift;
 
+	int sel_start = selection_start_time(context);
 	// Track which rows were shifted for the log
 	int block_start = 0;
 	json::Array shifted_blocks;
 
 	for (auto& line : context->ass->Events) {
-		if (!sel.count(&line)) {
+		if (mode == 2) { // Shift all lines starting after the selection does
+			if (line.Start < sel_start) continue;
+		}
+		else if (!sel.count(&line)) {
 			if (block_start) {
 				json::Object block;
 				block["start"] = block_start;
@@ -401,7 +450,6 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 				block_start = 0;
 			}
 			if (mode == 1) continue;
-			if (mode == 2 && shifted_blocks.empty()) continue;
 		}
 		else if (!block_start)
 			block_start = line.Row + 1;
@@ -430,6 +478,20 @@ int DialogShiftTimes::Shift(int initial_time, int shift, bool by_time, agi::vfr:
 		return initial_time + shift;
 	else
 		return fps.TimeAtFrame(shift + fps.FrameAtTime(initial_time, type), type);
+}
+
+void DialogShiftTimes::SetTimeFromSelectionMatch() {
+	long shift = 0;
+	int start_from_audio = context->audioController->GetPrimaryPlaybackRange().begin();
+	int sel_start = selection_start_time(context);
+	if (sel_start < INT_MAX) {
+		shift = start_from_audio - sel_start;
+	}
+	shift_time->SetTime(std::abs(shift));
+	if (shift < 0)
+		shift_backward->SetValue(true);
+	else
+		shift_forward->SetValue(true);
 }
 }
 
