@@ -46,7 +46,7 @@ namespace agi { struct Context; }
 ///
 /// AudioController owns an AudioPlayer and uses it to play audio from the
 /// project's current audio provider.
-class AudioController final : public wxEvtHandler {
+class AudioController final : public wxEvtHandler, protected agi::signal::ConnectionScope {
 	/// Project context this controller belongs to
 	agi::Context *context;
 

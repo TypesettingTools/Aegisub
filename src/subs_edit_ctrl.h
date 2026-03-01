@@ -27,6 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <libaegisub/signal.h>
+
 #include <memory>
 #include <string>
 #include <vector>
@@ -41,7 +43,7 @@ namespace agi {
 
 /// @class SubsTextEditCtrl
 /// @brief A Scintilla control with spell checking and syntax highlighting
-class SubsTextEditCtrl final : public wxStyledTextCtrl {
+class SubsTextEditCtrl final : public wxStyledTextCtrl, protected agi::signal::ConnectionScope {
 	/// Backend spellchecker to use
 	std::unique_ptr<agi::SpellChecker> spellchecker;
 

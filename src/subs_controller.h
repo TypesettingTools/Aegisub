@@ -30,7 +30,7 @@ namespace agi {
 struct AssFileCommit;
 struct ProjectProperties;
 
-class SubsController {
+class SubsController : protected agi::signal::ConnectionScope {
 	agi::Context *context;
 	agi::signal::Connection undo_connection;
 	agi::signal::Connection active_line_connection;

@@ -28,7 +28,7 @@ namespace agi { class AudioProvider; }
 namespace agi { struct Context; }
 struct ProjectProperties;
 
-class Project {
+class Project : protected agi::signal::ConnectionScope {
 	std::unique_ptr<agi::AudioProvider> audio_provider;
 	std::unique_ptr<AsyncVideoProvider> video_provider;
 	agi::vfr::Framerate timecodes;

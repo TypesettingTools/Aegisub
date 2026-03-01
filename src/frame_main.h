@@ -27,6 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <libaegisub/signal.h>
+
 #include <memory>
 #include <wx/frame.h>
 #include <wx/timer.h>
@@ -38,7 +40,7 @@ class VideoBox;
 namespace agi { class AudioProvider; }
 namespace agi { struct Context; class OptionValue; }
 
-class FrameMain : public wxFrame {
+class FrameMain : public wxFrame, protected agi::signal::ConnectionScope {
 	friend class AegisubApp;
 
 	std::unique_ptr<agi::Context> context;
