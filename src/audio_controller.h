@@ -71,6 +71,8 @@ class AudioController final : public wxEvtHandler, private agi::signal::Connecti
 	/// The current timing mode, if any; owned by the audio controller
 	std::unique_ptr<AudioTimingController> timing_controller;
 
+	agi::signal::Connection timing_controller_connection;
+
 	enum PlaybackMode {
 		PM_NotPlaying,
 		PM_Range,
