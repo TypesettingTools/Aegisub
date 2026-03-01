@@ -33,6 +33,7 @@
 
 #include "../ass_dialogue.h"
 #include "../async_video_provider.h"
+#include "../audio_controller.h"
 #include "../compat.h"
 #include "../dialog_detached_video.h"
 #include "../dialog_manager.h"
@@ -45,6 +46,7 @@
 #include "../options.h"
 #include "../project.h"
 #include "../selection_controller.h"
+#include "../time_range.h"
 #include "../utils.h"
 #include "../video_controller.h"
 #include "../video_display.h"
@@ -580,6 +582,32 @@ struct video_jump_start final : public validator_video_loaded {
 	}
 };
 
+struct video_jump_audio_selection_start final : public validator_video_loaded {
+	CMD_NAME("video/jump/audio_selection/start")
+	STR_MENU("Jump Video to Audio Selection S&tart")
+	STR_DISP("Jump Video to Audio Selection Start")
+	STR_HELP("Jump the video to the start of the current audio selection")
+
+	void operator()(agi::Context *c) override {
+		if (c->project->AudioProvider())
+			c->videoController->JumpToTime(
+				c->audioController->GetPrimaryPlaybackRange().begin());
+	}
+};
+
+struct video_jump_audio_selection_end final : public validator_video_loaded {
+	CMD_NAME("video/jump/audio_selection/end")
+	STR_MENU("Jump Video to Audio Selection E&nd")
+	STR_DISP("Jump Video to Audio Selection End")
+	STR_HELP("Jump the video to the end of the current audio selection")
+
+	void operator()(agi::Context *c) override {
+		if (c->project->AudioProvider())
+			c->videoController->JumpToTime(
+				c->audioController->GetPrimaryPlaybackRange().end());
+	}
+};
+
 struct video_open final : public Command {
 	CMD_NAME("video/open")
 	CMD_ICON(open_video_menu)
@@ -801,6 +829,8 @@ namespace cmd {
 		reg(std::make_unique<video_jump>());
 		reg(std::make_unique<video_jump_end>());
 		reg(std::make_unique<video_jump_start>());
+		reg(std::make_unique<video_jump_audio_selection_start>());
+		reg(std::make_unique<video_jump_audio_selection_end>());
 		reg(std::make_unique<video_open>());
 		reg(std::make_unique<video_open_dummy>());
 		reg(std::make_unique<video_opt_autoscroll>());
