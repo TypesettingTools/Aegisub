@@ -636,7 +636,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 	auto ass_colors_sizer = MakeColorInputSizer(rgb_box, ass_labels, ass_ctrls);
 	if (!alpha)
 		ass_colors_sizer->Hide(alpha_input);
-	rgb_box_sizer->Add(ass_colors_sizer, 0, wxALL|wxCENTER|wxEXPAND, 3);
+	rgb_box_sizer->Add(ass_colors_sizer, 0, wxALL|wxEXPAND, 3);
 
 	wxString hsl_labels[] = { _("Hue:"), _("Sat.:"), _("Lum.:") };
 	hsl_box_sizer->Add(MakeColorInputSizer(hsl_box, hsl_labels, hsl_input), 0, wxALL|wxEXPAND, 3);
