@@ -49,7 +49,7 @@ class wxSlider;
 
 /// @class AudioBox
 /// @brief Panel with audio playback and timing controls, also containing an AudioDisplay
-class AudioBox final : public wxSashWindow {
+class AudioBox final : public wxSashWindow, protected agi::signal::ConnectionScope {
 	/// The controller controlling this audio box
 	AudioController *controller;
 

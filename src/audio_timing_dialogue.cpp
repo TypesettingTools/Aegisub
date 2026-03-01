@@ -287,7 +287,7 @@ void DialogueTimingMarker::SetPosition(int new_position) {
 /// addition, any markers for inactive lines that start/end at the same time
 /// as the active line starts/ends can optionally be dragged along with the
 /// active line's markers, updating those lines as well.
-class AudioTimingControllerDialogue final : public AudioTimingController {
+class AudioTimingControllerDialogue final : public AudioTimingController, protected agi::signal::ConnectionScope {
 	/// The rendering style for the active line's start marker
 	Pen style_left{"Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness"};
 	/// The rendering style for the active line's end marker
@@ -425,9 +425,9 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , active_line_connection(c->selectionController->AddActiveLineListener(&AudioTimingControllerDialogue::Revert, this))
 , selection_connection(c->selectionController->AddSelectionListener(&AudioTimingControllerDialogue::OnSelectedSetChanged, this))
 {
-	keyframes_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
-	video_position_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
-	seconds_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
+	BindConnection(keyframes_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
+	BindConnection(video_position_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
+	BindConnection(seconds_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
 
 	Revert();
 }

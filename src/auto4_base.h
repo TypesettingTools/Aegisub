@@ -205,9 +205,8 @@ namespace Automation4 {
 	};
 
 	/// Manager for scripts specified by a subtitle file
-	class LocalScriptManager final : public ScriptManager {
+	class LocalScriptManager final : public ScriptManager, protected agi::signal::ConnectionScope {
 		agi::Context *context;
-		agi::signal::Connection file_open_connection;
 
 		void SaveLoadedList();
 	public:

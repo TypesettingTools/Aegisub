@@ -111,11 +111,11 @@ FrameMain::FrameMain()
 #endif
 
 	StartupLog("Initializing context controls");
-	context->ass->AddCommitListener(&FrameMain::UpdateTitle, this);
-	context->subsController->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this);
-	context->subsController->AddFileSaveListener(&FrameMain::UpdateTitle, this);
-	context->project->AddAudioProviderListener(&FrameMain::OnAudioOpen, this);
-	context->project->AddVideoProviderListener(&FrameMain::OnVideoOpen, this);
+	BindConnection(context->ass->AddCommitListener(&FrameMain::UpdateTitle, this));
+	BindConnection(context->subsController->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this));
+	BindConnection(context->subsController->AddFileSaveListener(&FrameMain::UpdateTitle, this));
+	BindConnection(context->project->AddAudioProviderListener(&FrameMain::OnAudioOpen, this));
+	BindConnection(context->project->AddVideoProviderListener(&FrameMain::OnVideoOpen, this));
 
 	StartupLog("Initializing context frames");
 	context->parent = this;
@@ -126,7 +126,7 @@ FrameMain::FrameMain()
 
 	StartupLog("Initialize toolbar");
 	wxSystemOptions::SetOption("msw.remap", 0);
-	OPT_SUB("App/Show Toolbar", &FrameMain::EnableToolBar, this);
+	BindConnection(OPT_SUB("App/Show Toolbar", &FrameMain::EnableToolBar, this));
 	EnableToolBar(*OPT_GET("App/Show Toolbar"));
 
 	StartupLog("Initialize menu bar");
@@ -146,7 +146,7 @@ FrameMain::FrameMain()
 
 	StartupLog("Create views and inner main window controls");
 	InitContents();
-	OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this);
+	BindConnection(OPT_SUB("Video/Detached/Enabled", &FrameMain::OnVideoDetach, this));
 
 	StartupLog("Set up drag/drop target");
 	SetDropTarget(new AegisubFileDropTarget(context.get()));

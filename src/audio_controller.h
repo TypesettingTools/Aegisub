@@ -46,7 +46,7 @@ namespace agi { struct Context; }
 ///
 /// AudioController owns an AudioPlayer and uses it to play audio from the
 /// project's current audio provider.
-class AudioController final : public wxEvtHandler {
+class AudioController final : public wxEvtHandler, protected agi::signal::ConnectionScope {
 	/// Project context this controller belongs to
 	agi::Context *context;
 
@@ -70,6 +70,8 @@ class AudioController final : public wxEvtHandler {
 
 	/// The current timing mode, if any; owned by the audio controller
 	std::unique_ptr<AudioTimingController> timing_controller;
+
+	agi::signal::Connection timing_controller_connection;
 
 	enum PlaybackMode {
 		PM_NotPlaying,

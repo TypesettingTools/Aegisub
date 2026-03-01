@@ -70,7 +70,7 @@ public:
 ///
 /// This does not support \kt, as it inherently requires that the end time of
 /// one syllable be the same as the start time of the next one.
-class AudioTimingControllerKaraoke final : public AudioTimingController {
+class AudioTimingControllerKaraoke final : public AudioTimingController, protected agi::signal::ConnectionScope {
 	std::vector<agi::signal::Connection> connections;
 	agi::signal::Connection& file_changed_slot;
 
@@ -156,8 +156,8 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, agi:
 	connections.push_back(kara->AddSyllablesChangedListener(&AudioTimingControllerKaraoke::Revert, this));
 	connections.push_back(OPT_SUB("Audio/Auto/Commit", [this](agi::OptionValue const& opt) { auto_commit = opt.GetBool(); }));
 
-	keyframes_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
-	video_position_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
+	BindConnection(keyframes_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
+	BindConnection(video_position_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
 
 	Revert();
 }

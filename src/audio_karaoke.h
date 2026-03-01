@@ -67,7 +67,7 @@ struct StringHash {
 /// actually updated until the line is committed (which if auto-commit timing
 /// changes is on, will happen as soon as the user adjusts the timing of the
 /// new syllable).
-class AudioKaraoke final : public wxWindow {
+class AudioKaraoke final : public wxWindow, protected agi::signal::ConnectionScope {
 	agi::Context *c; ///< Project context
 	agi::signal::Connection file_changed; ///< File changed slot
 	agi::signal::Connection audio_opened; ///< Audio opened connection
