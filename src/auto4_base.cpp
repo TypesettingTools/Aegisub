@@ -360,7 +360,7 @@ namespace Automation4 {
 	: context(c)
 	, file_open_connection(c->subsController->AddFileOpenListener(&LocalScriptManager::Reload, this))
 	{
-		AddScriptChangeListener(&LocalScriptManager::SaveLoadedList, this);
+		BindConnection(AddScriptChangeListener(&LocalScriptManager::SaveLoadedList, this));
 	}
 
 	void LocalScriptManager::Reload()
