@@ -2250,7 +2250,7 @@ found:
 
       // we want to still load these bytes into cache
       for (v = filepos(mf) & ~0x3fff; v < len + dpos; v += 0x4000)
-	mf->cache->read(mf->cache,v,NULL,0); // touch page
+	mf->cache->read(mf->cache,v,NULL,0); // touch page (FIXME this doesn't really do anything)
 
       skipbytes(mf,len - filepos(mf) + dpos);
 
