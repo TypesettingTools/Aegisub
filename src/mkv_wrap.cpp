@@ -69,8 +69,13 @@ struct MkvStdIO final : InputStream {
 		if (remaining < INT_MAX)
 			count = std::min(static_cast<int>(remaining), count);
 
+		if (count <= 0)
+			return 0;
+
 		try {
-			memcpy(buffer, self->file.read(pos, count), count);
+			auto data = self->file.read(pos, count);
+			if (buffer)
+				memcpy(buffer, data, count);
 		}
 		catch (agi::Exception const& e) {
 			self->error = e.GetMessage();
