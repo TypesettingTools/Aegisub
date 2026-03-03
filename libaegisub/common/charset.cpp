@@ -15,10 +15,15 @@
 #include "libaegisub/charset.h"
 
 #include "libaegisub/file_mapping.h"
+#include "libaegisub/log.h"
 #include "libaegisub/scoped_ptr.h"
+
+#include <array>
+#include <memory>
 
 #ifdef WITH_UCHARDET
 #include <uchardet.h>
+#include <unicode/ucnv.h>
 #endif
 
 namespace agi::charset {
@@ -51,12 +56,36 @@ std::string Detect(agi::fs::path const& file) {
 
 #ifdef WITH_UCHARDET
 	agi::scoped_holder<uchardet_t> ud(uchardet_new(), uchardet_delete);
+
+	UErrorCode utf8Status = U_ZERO_ERROR;
+	std::unique_ptr<UConverter, decltype(&ucnv_close)> conv = {ucnv_open("UTF-8", &utf8Status), ucnv_close};
+	if (conv)
+		ucnv_setToUCallBack(conv.get(), UCNV_TO_U_CALLBACK_STOP, nullptr, nullptr, nullptr, &utf8Status);
+	if (utf8Status != U_ZERO_ERROR)
+		LOG_W("charset/detect") << "Unexpected ICU error: " << u_errorName(utf8Status);
+	std::array<UChar, 2048> convBuffer;
+
 	for (uint64_t offset = 0; offset < fp.size(); ) {
 		auto read = std::min<uint64_t>(4096, fp.size() - offset);
 		auto buf = fp.read(offset, read);
 		uchardet_handle_data(ud, buf, read);
 
 		offset += read;
+
+		const char *source = buf;
+		const char *sourceLimit = source + read;
+		bool flush = offset >= fp.size();
+		while (U_SUCCESS(utf8Status)) {
+			UChar *target = convBuffer.data();
+			UChar *targetLimit = target + convBuffer.size();
+			ucnv_toUnicode(conv.get(), &target, targetLimit, &source, sourceLimit, nullptr, flush, &utf8Status);
+			if (utf8Status == U_BUFFER_OVERFLOW_ERROR) {
+				// result didn't fit in target buffer, try again
+				utf8Status = U_ZERO_ERROR;
+			} else if (source == sourceLimit) {
+				break;
+			}
+		}
 
 		// A dumb heuristic to detect binary files
 		for (size_t i = 0; i < read; ++i) {
@@ -67,6 +96,9 @@ std::string Detect(agi::fs::path const& file) {
 		if (binaryish > offset / 8)
 			return "binary";
 	}
+	LOG_D("charset/detect") << "UTF-8 detection result: " << u_errorName(utf8Status);
+	if (U_SUCCESS(utf8Status))
+		return "utf-8";
 	uchardet_data_end(ud);
 	return uchardet_get_charset(ud);
 #else
