@@ -106,7 +106,7 @@ deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
-boost_static = get_option('prefer_static')    # boost dependencies do not respect prefer_static https://github.com/mesonbuild/meson/issues/15458
+boost_static = meson.version().version_compare('>=0.63.0') and get_option('prefer_static')    # boost dependencies do not respect prefer_static https://github.com/mesonbuild/meson/issues/15458
 boost_modules = ['chrono', 'locale']
 
 if boost_static
