@@ -184,11 +184,12 @@ else
 
     wx = cmake.subproject('wxWidgets', options: opt_var)
 
-    deps += [
-        wx.dependency('wxmono'),
-        wx.dependency('wxregex'),
-        wx.dependency('wxscintilla')
-    ]
+    deps += wx.dependency('wxmono')
+    foreach cmake_target: ['wxregex', 'wxscintilla', 'wxlexilla']
+        if wx.target_list().contains(cmake_target)
+            deps += wx.dependency(cmake_target)
+        endif
+    endforeach
 
     if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
         deps += [
