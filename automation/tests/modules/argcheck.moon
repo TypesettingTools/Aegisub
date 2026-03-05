@@ -14,7 +14,7 @@
 --
 -- Aegisub Project http://www.aegisub.org/
 
-check = require 'aegisub.argcheck'
+check = require 'aegisub.internal.argcheck'
 
 describe 'argcheck', ->
   it 'should permit simple valid calls', ->

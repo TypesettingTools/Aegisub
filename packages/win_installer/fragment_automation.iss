@@ -10,9 +10,10 @@ DestDir: {app}\automation\autoload; Source: {#SOURCE_ROOT}\automation\autoload\s
 DestDir: {app}\automation\demos; Source: {#SOURCE_ROOT}\automation\demos\future-windy-blur.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: macros\demos
 DestDir: {app}\automation\demos; Source: {#SOURCE_ROOT}\automation\demos\raytracer.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: macros\demos
 
-DestDir: {app}\automation\include\aegisub; Source: {#SOURCE_ROOT}\automation\include\aegisub\argcheck.moon; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: main
+DestDir: {app}\automation\include\aegisub\internal; Source: {#SOURCE_ROOT}\automation\include\aegisub\internal\argcheck.moon; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: main
+DestDir: {app}\automation\include\aegisub\internal; Source: {#SOURCE_ROOT}\automation\include\aegisub\internal\ffi.moon; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: main
+
 DestDir: {app}\automation\include\aegisub; Source: {#SOURCE_ROOT}\automation\include\aegisub\clipboard.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: main
-DestDir: {app}\automation\include\aegisub; Source: {#SOURCE_ROOT}\automation\include\aegisub\ffi.moon; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: main
 DestDir: {app}\automation\include\aegisub; Source: {#SOURCE_ROOT}\automation\include\aegisub\lfs.moon; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: main
 DestDir: {app}\automation\include\aegisub; Source: {#SOURCE_ROOT}\automation\include\aegisub\re.moon; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: main
 DestDir: {app}\automation\include\aegisub; Source: {#SOURCE_ROOT}\automation\include\aegisub\unicode.moon; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: main
