@@ -157,6 +157,7 @@ wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
 
 if wx_dep.found()
     deps += wx_dep
+    wx_defines_dep = wx_dep
 else
     build_shared = true
     if get_option('default_library') == 'static'
@@ -190,6 +191,10 @@ else
             deps += wx.dependency(cmake_target)
         endif
     endforeach
+
+    # meson doesn't let you get defines from a library that has sources which need to be built,
+    # but allows it if you use partial_dependency() to get only includes and compile args.
+    wx_defines_dep = wx.dependency('wxmono').partial_dependency(compile_args: true, includes: true)
 
     if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
         deps += [
@@ -234,7 +239,7 @@ check_deps = [
 ]
 
 if host_machine.system() == 'linux'
-    if cc.get_define('__WXGTK3__', dependencies: wx_dep, prefix: '#include <wx/defs.h>') != ''
+    if cc.get_define('__WXGTK3__', dependencies: wx_defines_dep, prefix: '#include <wx/defs.h>') != ''
         check_deps += [['libportal-gtk3', [], 'libportal', [], []]]
     else
         check_deps += [['libportal', [], 'libportal', [], []]]
