@@ -35,7 +35,6 @@
 #include "toggle_bitmap.h"
 
 #include "command/command.h"
-#include "tooltip_manager.h"
 
 #include <wx/dcbuffer.h>
 #include <wx/settings.h>
@@ -46,6 +45,7 @@ ToggleBitmap::ToggleBitmap(wxWindow *parent, agi::Context *context, const char *
 , context(context)
 , command(*cmd::get(cmd_name))
 , imgs(command.Icon(icon_size))
+, tool_tip_binding(this, command.StrHelp(), ht_ctx, cmd_name)
 {
 	wxBitmap img = imgs.GetBitmapFor(this);
 	int w = size.GetWidth() != -1 ? size.GetWidth() : img.GetLogicalWidth();
@@ -55,7 +55,6 @@ ToggleBitmap::ToggleBitmap(wxWindow *parent, agi::Context *context, const char *
 	SetSizeHints(w, h, w, h);
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
 
-	ToolTipManager::Bind(this, command.StrHelp(), ht_ctx, cmd_name);
 	Bind(wxEVT_PAINT, &ToggleBitmap::OnPaint, this);
 	Bind(wxEVT_LEFT_DOWN, &ToggleBitmap::OnMouseEvent, this);
 }

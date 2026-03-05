@@ -27,38 +27,23 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file tooltip_manager.cpp
+/// @file tooltip_binding.cpp
 /// @brief Generate tooltips for controls by combining a base text and any hotkeys found for the function
 /// @ingroup custom_control
 ///
 
-#include "tooltip_manager.h"
+#include "tooltip_binding.h"
 
 #include "compat.h"
 #include "include/aegisub/hotkey.h"
 
 #include <libaegisub/hotkey.h>
 
-#include <list>
-#include <wx/weakref.h>
-#include <wx/window.h>
-
-struct ToolTipBinding {
-	wxWeakRef<wxWindow> window;
-	wxString toolTip;
-	const char *command;
-	const char *context;
-	void Update();
-};
-
-void ToolTipManager::Bind(wxWindow *window, wxString tooltip, const char *context, const char *command) {
-	ToolTipBinding tip{window, tooltip, command, context};
-	tip.Update();
-
-	static std::list<ToolTipBinding> tips;
-	tips.push_back(tip);
-	// FIXME: lifetime of the connection?
-	hotkey::inst->AddHotkeyChangeListener(&ToolTipBinding::Update, &tips.back());
+ToolTipBinding::ToolTipBinding(wxWindow *window, wxString tooltip, const char *context, const char *command)
+: window(window), toolTip(tooltip), context(context), command(command)
+, connection(hotkey::inst->AddHotkeyChangeListener(&ToolTipBinding::Update, this))
+{
+	Update();
 }
 
 void ToolTipBinding::Update() {

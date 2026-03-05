@@ -135,7 +135,7 @@ aegisub_src = files(
     'timeedit_ctrl.cpp',
     'toggle_bitmap.cpp',
     'toolbar.cpp',
-    'tooltip_manager.cpp',
+    'tooltip_binding.cpp',
     'utils.cpp',
     'validators.cpp',
     'vector2d.cpp',

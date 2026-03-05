@@ -51,7 +51,6 @@
 #include "subs_edit_ctrl.h"
 #include "text_selection_controller.h"
 #include "timeedit_ctrl.h"
-#include "tooltip_manager.h"
 #include "validators.h"
 
 #include <libaegisub/character_count.h>
@@ -282,7 +281,7 @@ TimeEdit *SubsEditBox::MakeTimeCtrl(wxString const& tooltip, TimeField field) {
 void SubsEditBox::MakeButton(const char *cmd_name) {
 	cmd::Command *command = cmd::get(cmd_name);
 	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon());
-	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
+	tool_tip_bindings.emplace_back(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
 	middle_right_sizer->Add(btn, wxSizerFlags().Expand());
 	btn->Bind(wxEVT_BUTTON, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
@@ -291,7 +290,7 @@ void SubsEditBox::MakeButton(const char *cmd_name) {
 wxButton *SubsEditBox::MakeBottomButton(const char *cmd_name) {
 	cmd::Command *command = cmd::get(cmd_name);
 	wxButton *btn = new wxButton(this, -1, command->StrDisplay(c));
-	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
+	tool_tip_bindings.emplace_back(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
 	btn->Bind(wxEVT_BUTTON, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
 	return btn;
