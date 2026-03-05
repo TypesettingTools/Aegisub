@@ -249,7 +249,7 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 	wxSizer *main_sizer = new wxBoxSizer(wxHORIZONTAL);
 
 	p->sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(p->sizer, wxEXPAND);
+	main_sizer->Add(p->sizer, 1);
 
 	auto audio = p->PageSizer(_("Audio Display"));
 	p->OptionAdd(audio, _("Play cursor"), "Colour/Audio Display/Play Cursor");
@@ -280,7 +280,7 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 
 	p->sizer = new wxBoxSizer(wxVERTICAL);
 	main_sizer->AddSpacer(5);
-	main_sizer->Add(p->sizer, wxEXPAND);
+	main_sizer->Add(p->sizer, 1);
 
 	auto color_schemes = p->PageSizer(_("Audio Color Schemes"));
 	wxArrayString schemes = to_wx(OPT_GET("Audio/Colour Schemes")->GetListString());
@@ -635,7 +635,7 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	dvc->AppendTextColumn(_("Description"), 2, wxDATAVIEW_CELL_INERT, 300, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
 
 	wxSizer *buttons = new wxBoxSizer(wxHORIZONTAL);
-	buttons->Add(quick_search, wxSizerFlags(1).Expand().Border());
+	buttons->Add(quick_search, wxSizerFlags(1).CenterVertical().Border());
 	buttons->Add(new_button, wxSizerFlags().Border());
 	buttons->Add(edit_button, wxSizerFlags().Border());
 	buttons->Add(delete_button, wxSizerFlags().Border());
