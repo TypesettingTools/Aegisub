@@ -48,15 +48,15 @@
 #include <wx/msgdlg.h>
 
 Project::Project(agi::Context *c) : context(c) {
-	OPT_SUB("Audio/Cache/Type", &Project::ReloadAudio, this);
-	OPT_SUB("Audio/Provider", &Project::ReloadAudio, this);
-	OPT_SUB("Provider/Audio/FFmpegSource/Decode Error Handling", &Project::ReloadAudio, this);
-	OPT_SUB("Provider/Avisynth/Allow Ancient", &Project::ReloadVideo, this);
-	OPT_SUB("Provider/Avisynth/Memory Max", &Project::ReloadVideo, this);
-	OPT_SUB("Provider/Video/FFmpegSource/Decoding Threads", &Project::ReloadVideo, this);
-	OPT_SUB("Provider/Video/FFmpegSource/Unsafe Seeking", &Project::ReloadVideo, this);
-	OPT_SUB("Subtitle/Provider", &Project::ReloadVideo, this);
-	OPT_SUB("Video/Provider", &Project::ReloadVideo, this);
+	BindConnection(OPT_SUB("Audio/Cache/Type", &Project::ReloadAudio, this));
+	BindConnection(OPT_SUB("Audio/Provider", &Project::ReloadAudio, this));
+	BindConnection(OPT_SUB("Provider/Audio/FFmpegSource/Decode Error Handling", &Project::ReloadAudio, this));
+	BindConnection(OPT_SUB("Provider/Avisynth/Allow Ancient", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Provider/Avisynth/Memory Max", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Provider/Video/FFmpegSource/Decoding Threads", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Provider/Video/FFmpegSource/Unsafe Seeking", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Subtitle/Provider", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Video/Provider", &Project::ReloadVideo, this));
 }
 
 Project::~Project() { }

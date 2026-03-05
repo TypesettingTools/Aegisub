@@ -63,6 +63,7 @@ class AudioDisplay: public wxWindow {
 	agi::signal::Connection audio_open_connection;
 
 	std::vector<agi::signal::Connection> connections;
+	std::vector<agi::signal::Connection> timing_controller_connections;
 	agi::Context *context;
 
 	/// The audio renderer manager

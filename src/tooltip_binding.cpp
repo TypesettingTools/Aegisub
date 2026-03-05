@@ -27,10 +27,39 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-class wxString;
-class wxWindow;
+/// @file tooltip_binding.cpp
+/// @brief Generate tooltips for controls by combining a base text and any hotkeys found for the function
+/// @ingroup custom_control
+///
 
-class ToolTipManager {
-public:
-	static void Bind(wxWindow *window, wxString tooltip, const char *context, const char *command);
-};
+#include "tooltip_binding.h"
+
+#include "compat.h"
+#include "include/aegisub/hotkey.h"
+
+#include <libaegisub/hotkey.h>
+
+ToolTipBinding::ToolTipBinding(wxWindow *window, wxString tooltip, const char *context, const char *command)
+: window(window), toolTip(tooltip), context(context), command(command)
+, connection(hotkey::inst->AddHotkeyChangeListener(&ToolTipBinding::Update, this))
+{
+	Update();
+}
+
+void ToolTipBinding::Update() {
+	if (!window) return;
+
+	std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(context, command);
+
+	std::string str;
+	for (size_t i = 0; i < hotkeys.size(); ++i) {
+		if (i > 0) str += "/";
+		str += hotkeys[i];
+	}
+	if (str.empty()) {
+		window->SetToolTip(toolTip);
+	}
+	else {
+		window->SetToolTip(toolTip + to_wx(" (" + str + ")"));
+	}
+}
