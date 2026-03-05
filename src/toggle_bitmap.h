@@ -32,6 +32,8 @@
 /// @ingroup custom_control
 ///
 
+#include "tooltip_binding.h"
+
 #include <wx/bmpbndl.h>
 #include <wx/control.h>
 
@@ -42,6 +44,7 @@ class ToggleBitmap final : public wxControl {
 	agi::Context *context;
 	cmd::Command &command;
 	wxBitmapBundle imgs;
+	ToolTipBinding tool_tip_binding;
 
 	void OnMouseEvent(wxMouseEvent &evt);
 	void OnPaint(wxPaintEvent &evt);

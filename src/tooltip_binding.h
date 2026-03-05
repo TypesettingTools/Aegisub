@@ -27,10 +27,29 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-class wxString;
-class wxWindow;
+#pragma once
 
-class ToolTipManager {
+#include <libaegisub/signal.h>
+
+#include <wx/weakref.h>
+#include <wx/window.h>
+
+class ToolTipBinding {
+private:
+	wxWeakRef<wxWindow> window;
+	wxString toolTip;
+	const char *context;
+	const char *command;
+	agi::signal::Connection connection;
+
+	void Update();
+
 public:
-	static void Bind(wxWindow *window, wxString tooltip, const char *context, const char *command);
+	ToolTipBinding(wxWindow *window, wxString tooltip, const char *context, const char *command);
+
+	ToolTipBinding(const ToolTipBinding&) = delete;
+	ToolTipBinding& operator=(const ToolTipBinding&) = delete;
+
+	ToolTipBinding(ToolTipBinding&&) = delete;
+	ToolTipBinding& operator=(ToolTipBinding&&) = delete;
 };
