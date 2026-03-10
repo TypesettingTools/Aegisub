@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-16 22:57+0100\n"
-"PO-Revision-Date: 2026-02-27 17:30+0900\n"
+"PO-Revision-Date: 2026-03-11 00:20+0900\n"
 "Last-Translator: Hack茶ん\n"
 "Language-Team: TNC\n"
 "Language: ko_KR\n"
@@ -128,7 +128,7 @@ msgstr "분할 적용"
 
 #: ../src/audio_karaoke.cpp:234
 msgid "Karaoke tag"
-msgstr "카라오케 태그"
+msgstr "가라오케 태그"
 
 #: ../src/audio_karaoke.cpp:237
 msgid "Change karaoke tag to \\k"
@@ -144,7 +144,7 @@ msgstr "가라오케 태그를 \\ko로 변경"
 
 #: ../src/audio_karaoke.cpp:414
 msgid "karaoke split"
-msgstr "카라오케 분할"
+msgstr "가라오케 분할"
 
 #: ../src/audio_renderer_waveform.cpp:155
 msgid "Maximum"
@@ -161,7 +161,7 @@ msgstr "타이밍"
 
 #: ../src/audio_timing_karaoke.cpp:240
 msgid "karaoke timing"
-msgstr "카라오케 타이밍"
+msgstr "가라오케 타이밍"
 
 #: ../src/auto4_base.cpp:344
 msgid ""
