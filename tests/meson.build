@@ -27,6 +27,7 @@ tests_src = [
     'tests/hotkey.cpp',
     'tests/iconv.cpp',
     'tests/ifind.cpp',
+    'tests/inline_string_encoding.cpp',
     'tests/karaoke_matcher.cpp',
     'tests/keyframe.cpp',
     'tests/line_iterator.cpp',
