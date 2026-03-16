@@ -68,9 +68,6 @@ runner = executable(
     link_with: libaegisub,
 )
 
-test('gtest main', runner, env: {'AEGISUB_TEST_DATA_DIR': meson.current_source_dir()})
-test('luajit-52', executable('luajit-52', 'tests/luajit_52.c', dependencies: luajit))
-
 # setup test env
 if host_machine.system() == 'windows'
     setup_sh = find_program('setup.bat')
@@ -78,9 +75,10 @@ else
     setup_sh = find_program('setup.sh')
 endif
 
-custom_target('setup-test-data',
-    input: runner,
+test_setup = custom_target('setup-test-data',
     output: 'applied_test_setup',
     command: setup_sh,
-    build_by_default: true
 )
+
+test('gtest main', runner, env: {'AEGISUB_TEST_DATA_DIR': meson.current_source_dir()}, depends: test_setup)
+test('luajit-52', executable('luajit-52', 'tests/luajit_52.c', dependencies: luajit))
