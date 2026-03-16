@@ -57,10 +57,10 @@ std::string inline_string_decode(std::string_view input) {
 	std::string output;
 	output.reserve(input.size());
 	for (size_t i = 0; i < input.size(); ++i) {
-		if (input[i] != '#' || i + 2 > input.size())
+		if (input[i] != '#' || i + 2 >= input.size())
 			output += input[i];
 		else {
-			char buff[] = {input[i], input[i + 1], 0};
+			char buff[] = {input[i + 1], input[i + 2], 0};
 			output += (char)strtol(buff, nullptr, 16);
 			i += 2;
 		}
