@@ -44,9 +44,9 @@ namespace agi::ass {
 std::string inline_string_encode(std::string_view input) {
 	std::string output;
 	output.reserve(input.size());
-	for (char c : input) {
+	for (unsigned char c : input) {
 		if (c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C)
-			output += agi::format("#%02X", (unsigned char)c);
+			output += agi::format("#%02X", c);
 		else
 			output += c;
 	}
