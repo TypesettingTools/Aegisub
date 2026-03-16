@@ -144,6 +144,16 @@ Open the newly created `bin/moonscript.lua`, and within it make the following ch
 
 The file is now ready for use, to be placed in `automation/include` within the Aegisub repo.
 
+## Running Doxygen
+
+You can run Doxygen with the following command:
+
+```bash
+doxygen docs/doxygen.cfg
+```
+
+This will generate API documentation in `docs/generated/api/html/`.
+
 ## License
 
 All files in this repository are licensed under various GPL-compatible BSD-style licenses; see LICENCE and the individual source files for more information.
