@@ -26,7 +26,7 @@ static const char *test_cases[][2] = {
 	{"\1", "#01"},
 	{"ab\2cd", "ab#02cd"},
 	{"#,:|", "#23#2C#3A#7C"},
-	{"č あ", "#C4#8D #E3#81#82"},
+	{"č あ", "č あ"},
 };
 
 TEST(lagi_inline_string_encoding, encode) {
@@ -48,6 +48,7 @@ TEST(lagi_inline_string_encoding, decode_extra) {
 
 	// unnecessary escape
 	EXPECT_EQ("abc", inline_string_decode("a#62c"));
+	EXPECT_EQ("č あ", inline_string_decode("#C4#8D #E3#81#82"));
 }
 
 TEST(lagi_inline_string_encoding, random_blobs_roundtrip) {
