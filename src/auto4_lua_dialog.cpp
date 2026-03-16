@@ -36,9 +36,9 @@
 
 #include "colour_button.h"
 #include "compat.h"
-#include "string_codec.h"
 #include "validators.h"
 
+#include <libaegisub/ass/string_codec.h>
 #include <libaegisub/log.h>
 #include <libaegisub/lua/utils.h>
 #include <libaegisub/split.h>
@@ -171,8 +171,8 @@ namespace Automation4 {
 			}
 
 			bool CanSerialiseValue() const override { return true; }
-			std::string SerialiseValue() const override { return inline_string_encode(text); }
-			void UnserialiseValue(std::string_view serialised) override { text = inline_string_decode(serialised); }
+			std::string SerialiseValue() const override { return agi::ass::inline_string_encode(text); }
+			void UnserialiseValue(std::string_view serialised) override { text = agi::ass::inline_string_decode(serialised); }
 
 			wxControl *Create(wxWindow *parent) override {
 				cw = new wxTextCtrl(parent, -1, to_wx(text));
@@ -201,9 +201,9 @@ namespace Automation4 {
 			}
 
 			bool CanSerialiseValue() const override { return true; }
-			std::string SerialiseValue() const override { return inline_string_encode(color.GetHexFormatted(alpha)); }
+			std::string SerialiseValue() const override { return agi::ass::inline_string_encode(color.GetHexFormatted(alpha)); }
 			void UnserialiseValue(std::string_view serialised) override {
-				color = std::string_view(inline_string_decode(serialised));
+				color = std::string_view(agi::ass::inline_string_decode(serialised));
 			}
 
 			wxControl *Create(wxWindow *parent) override {
@@ -339,8 +339,8 @@ namespace Automation4 {
 			}
 
 			bool CanSerialiseValue() const override { return true; }
-			std::string SerialiseValue() const override { return inline_string_encode(value); }
-			void UnserialiseValue(std::string_view serialised) override { value = inline_string_decode(serialised); }
+			std::string SerialiseValue() const override { return agi::ass::inline_string_encode(value); }
+			void UnserialiseValue(std::string_view serialised) override { value = agi::ass::inline_string_decode(serialised); }
 
 			wxControl *Create(wxWindow *parent) override {
 				cw = new wxComboBox(parent, -1, to_wx(value), wxDefaultPosition, wxDefaultSize, to_wx(items), wxCB_READONLY, StringBinder(&value));
@@ -539,7 +539,7 @@ namespace Automation4 {
 			if (control->CanSerialiseValue()) {
 				if (!res.empty())
 					res += "|";
-				agi::AppendStr(res, inline_string_encode(control->name), ":", control->SerialiseValue());
+				agi::AppendStr(res, agi::ass::inline_string_encode(control->name), ":", control->SerialiseValue());
 			}
 		}
 
@@ -551,7 +551,7 @@ namespace Automation4 {
 			auto pos = tok.find(':');
 			if (pos == tok.npos) continue;
 
-			std::string name = inline_string_decode(tok.substr(0, pos));
+			std::string name = agi::ass::inline_string_decode(tok.substr(0, pos));
 
 			// Hand value to all controls matching name
 			for (auto& control : controls) {

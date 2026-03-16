@@ -36,9 +36,9 @@
 #include "format.h"
 #include "include/aegisub/context.h"
 #include "options.h"
-#include "string_codec.h"
 #include "subs_controller.h"
 
+#include <libaegisub/ass/string_codec.h>
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
@@ -176,7 +176,7 @@ namespace Automation4 {
 
 	std::string ExportFilter::GetScriptSettingsIdentifier()
 	{
-		return inline_string_encode(GetName());
+		return agi::ass::inline_string_encode(GetName());
 	}
 
 	wxWindow* ExportFilter::GetConfigDialogWindow(wxWindow *parent, agi::Context *c) {

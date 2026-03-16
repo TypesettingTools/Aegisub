@@ -23,11 +23,11 @@
 #include "ass_style.h"
 #include "ass_parser.h"
 #include "options.h"
-#include "string_codec.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "version.h"
 
+#include <libaegisub/ass/string_codec.h>
 #include <libaegisub/ass/uuencode.h>
 #include <libaegisub/fs.h>
 
@@ -133,9 +133,9 @@ struct Writer {
 			std::string line = "Data: ";
 			line += std::to_string(edi.id);
 			line += ",";
-			line += inline_string_encode(edi.key);
+			line += agi::ass::inline_string_encode(edi.key);
 			line += ",";
-			std::string encoded_data = inline_string_encode(edi.value);
+			std::string encoded_data = agi::ass::inline_string_encode(edi.value);
 			if (4*edi.value.size() < 3*encoded_data.size()) {
 				// the inline_string encoding grew the data by more than uuencoding would
 				// so base64 encode it instead
