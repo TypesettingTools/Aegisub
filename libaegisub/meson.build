@@ -1,6 +1,7 @@
 libaegisub_src = [
     'ass/dialogue_parser.cpp',
     'ass/karaoke.cpp',
+    'ass/string_codec.cpp',
     'ass/time.cpp',
     'ass/uuencode.cpp',
 

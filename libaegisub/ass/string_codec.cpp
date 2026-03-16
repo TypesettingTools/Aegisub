@@ -35,9 +35,11 @@
 // Functions for inline string encoding.
 // See header file for details.
 
-#include "string_codec.h"
+#include <libaegisub/ass/string_codec.h>
 
 #include <libaegisub/format.h>
+
+namespace agi::ass {
 
 std::string inline_string_encode(std::string_view input) {
 	std::string output;
@@ -64,4 +66,6 @@ std::string inline_string_decode(std::string_view input) {
 		}
 	}
 	return output;
+}
+
 }

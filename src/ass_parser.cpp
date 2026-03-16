@@ -19,9 +19,9 @@
 #include "ass_file.h"
 #include "ass_info.h"
 #include "ass_style.h"
-#include "string_codec.h"
 #include "subtitle_format.h"
 
+#include <libaegisub/ass/string_codec.h>
 #include <libaegisub/ass/uuencode.h>
 #include <libaegisub/util.h>
 
@@ -199,12 +199,12 @@ void AssParser::ParseExtradataLine(std::string const &data) {
 
 	if (boost::regex_match(data, mr, matcher)) {
 		auto id = boost::lexical_cast<uint32_t>(mr.str(1));
-		auto key = inline_string_decode(mr.str(2));
+		auto key = agi::ass::inline_string_decode(mr.str(2));
 		auto valuetype = mr.str(3);
 		auto value = mr.str(4);
 		if (valuetype == "e") {
 			// escaped/inline_string encoded
-			value = inline_string_decode(value);
+			value = agi::ass::inline_string_decode(value);
 		} else if (valuetype == "u") {
 			// ass uuencoded
 			auto valuedata = agi::ass::UUDecode(value.c_str(), value.c_str() + value.size());

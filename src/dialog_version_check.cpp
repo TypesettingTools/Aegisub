@@ -32,9 +32,9 @@
 #include "compat.h"
 #include "format.h"
 #include "options.h"
-#include "string_codec.h"
 #include "version.h"
 
+#include <libaegisub/ass/string_codec.h>
 #include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/line_iterator.h>
@@ -332,9 +332,9 @@ void DoCheck(bool interactive) {
 
 		// 0 and 2 being things that never got used
 		results.push_back(AegisubUpdateDescription{
-			inline_string_decode(parsed[3]),
-			inline_string_decode(parsed[4]),
-			inline_string_decode(parsed[5])
+			agi::ass::inline_string_decode(parsed[3]),
+			agi::ass::inline_string_decode(parsed[4]),
+			agi::ass::inline_string_decode(parsed[5])
 		});
 	}
 
