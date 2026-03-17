@@ -68,7 +68,7 @@ public:
 	static std::optional<agi::vfr::Framerate> TryParseFramerate(std::string fps_string);
 
 	void GetFrame(int n, VideoFrame &frame) override;
-	void SetColorSpace(std::string const&) override { }
+	void SetColorSpace(agi::ycbcr::Header) override { }
 
 	int GetFrameCount()             const override { return framecount; }
 	int GetWidth()                  const override { return width; }
@@ -76,7 +76,7 @@ public:
 	double GetDAR()                 const override { return 0; }
 	agi::vfr::Framerate GetFPS()    const override { return fps; }
 	std::vector<int> GetKeyFrames() const override { return {}; }
-	std::string GetColorSpace()     const override { return "None"; }
+	agi::ycbcr::header_colorspace GetColorSpace()     const override { return {agi::ycbcr_matrix::RGB, agi::ycbcr_range::JPEG}; }
 	std::string GetDecoderName()    const override { return "Dummy Video Provider"; }
 	bool ShouldSetVideoProperties() const override { return false; }
 };
