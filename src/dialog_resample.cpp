@@ -71,7 +71,7 @@ struct DialogResample {
 	agi::ycbcr::Header script_mat;
 	int video_w = 0;
 	int video_h = 0;
-	std::string video_mat;
+	agi::ycbcr::header_colorspace video_mat;
 
 	wxSpinCtrl *source_x;
 	wxSpinCtrl *source_y;

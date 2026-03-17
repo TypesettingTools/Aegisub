@@ -300,8 +300,7 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 		progress = new DialogProgress(context->parent);
 
 	try {
-		auto old_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
-		video_provider = std::make_unique<AsyncVideoProvider>(path, old_matrix, context->videoController.get(), progress);
+		video_provider = std::make_unique<AsyncVideoProvider>(path, context->ass->GetYCbCrMatrix(), context->videoController.get(), progress);
 	}
 	catch (agi::UserCancelException const&) { return false; }
 	catch (agi::fs::FileSystemError const& err) {

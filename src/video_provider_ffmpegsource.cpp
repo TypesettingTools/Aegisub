@@ -41,12 +41,12 @@
 #include "video_frame.h"
 
 #include <libaegisub/fs.h>
-#include <libaegisub/ycbcr.h>
 
 #include <string_view>
 
 using agi::ycbcr_matrix;
 using agi::ycbcr_range;
+namespace ycbcr = agi::ycbcr;
 
 namespace {
 /// @class FFmpegSourceVideoProvider
@@ -58,33 +58,31 @@ class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvid
 
 	int Width = -1;                 ///< width in pixels
 	int Height = -1;                ///< height in pixels
-	ycbcr_matrix VideoCM = ycbcr_matrix::Unspecified;  ///< Reported colorspace of first frame (or guessed if unspecified)
-	ycbcr_range VideoCR = ycbcr_range::Unspecified;    ///< Reported colorrange of first frame (or guessed if unspecified)
+	ycbcr::header_colorspace VideoColorSpace = ycbcr::header_colorspace::unspecified();
 	double DAR;                     ///< display aspect ratio
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object
-	std::string ColorSpace;         ///< Colorspace name
+	ycbcr::header_colorspace ColorSpace;   ///< color space currently used to convert the video to RGB
 
 	char FFMSErrMsg[1024];          ///< FFMS error message
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
 	bool has_audio = false;
 
-	void LoadVideo(agi::fs::path const& filename, std::string_view colormatrix);
+	void LoadVideo(agi::fs::path const& filename, ycbcr::Header colormatrix);
 
 public:
-	FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string_view colormatrix, agi::BackgroundRunner *br);
+	FFmpegSourceVideoProvider(agi::fs::path const& filename, ycbcr::Header colormatrix, agi::BackgroundRunner *br);
 
 	void GetFrame(int n, VideoFrame &out) override;
 
-	void SetColorSpace(std::string const& matrix) override {
-		ycbcr_matrix CM = VideoCM;
-		ycbcr_range CR = VideoCR;
-		agi::ycbcr::Header(matrix).override_colorspace(CM, CR, Width, Height);
+	void SetColorSpace(ycbcr::Header matrix) override {
+		auto [CM, CR] = VideoColorSpace;
+		matrix.override_colorspace(CM, CR, Width, Height);
 
 		if (FFMS_SetInputFormatV(VideoSource, static_cast<int>(CM), static_cast<int>(CR), FFMS_GetPixFmt(""), &ErrInfo))
 			throw VideoOpenError(std::string("Failed to set input format: ") + ErrInfo.Buffer);
 
-		ColorSpace = matrix;
+		ColorSpace = {CM, CR};
 	}
 
 	int GetFrameCount() const override             { return VideoInfo->NumFrames; }
@@ -94,17 +92,15 @@ public:
 	double GetDAR() const override { return (VideoInfo->Rotation % 180 == 90 || VideoInfo->Rotation % 180 == -90) ? 1 / DAR : DAR; }
 
 	agi::vfr::Framerate GetFPS() const override    { return Timecodes; }
-	std::string GetColorSpace() const override     { return ColorSpace; }
-	std::string GetRealColorSpace() const override {
-		return agi::ycbcr::Header(VideoCM, VideoCR).to_existing_string();
-	}
+	ycbcr::header_colorspace GetColorSpace() const override     { return ColorSpace; }
+	ycbcr::header_colorspace GetRealColorSpace() const override { return VideoColorSpace; }
 	std::vector<int> GetKeyFrames() const override { return KeyFramesList; };
 	std::string GetDecoderName() const override    { return "FFmpegSource"; }
 	bool WantsCaching() const override             { return true; }
 	bool HasAudio() const override                 { return has_audio; }
 };
 
-FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename, std::string_view colormatrix, agi::BackgroundRunner *br) try
+FFmpegSourceVideoProvider::FFmpegSourceVideoProvider(agi::fs::path const& filename, ycbcr::Header colormatrix, agi::BackgroundRunner *br) try
 : FFmpegSourceProvider(br)
 , VideoSource(nullptr, FFMS_DestroyVideoSource)
 {
@@ -121,7 +117,7 @@ catch (agi::EnvironmentError const& err) {
 	throw VideoOpenError(err.GetMessage());
 }
 
-void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::string_view colormatrix) {
+void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, ycbcr::Header colormatrix) {
 	FFMS_Indexer *Indexer = FFMS_CreateIndexer(filename.string().c_str(), &ErrInfo);
 	if (!Indexer) {
 		if (ErrInfo.SubType == FFMS_ERROR_FILE_READ)
@@ -218,10 +214,9 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, std::st
 	else
 		DAR = double(Width) / Height;
 
-	VideoCM = static_cast<ycbcr_matrix>(TempFrame->ColorSpace);
-	VideoCR = static_cast<ycbcr_range>(TempFrame->ColorRange);
+	VideoColorSpace = {static_cast<ycbcr_matrix>(TempFrame->ColorSpace), static_cast<ycbcr_range>(TempFrame->ColorRange)};
 
-	SetColorSpace(std::string(colormatrix));
+	SetColorSpace(colormatrix);
 
 	const int TargetFormat[] = { FFMS_GetPixFmt("bgra"), -1 };
 	if (FFMS_SetOutputFormatV2(VideoSource, TargetFormat, Width, Height, FFMS_RESIZER_BICUBIC, &ErrInfo))
@@ -317,7 +312,7 @@ void FFmpegSourceVideoProvider::GetFrame(int n, VideoFrame &out) {
 }
 }
 
-std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const& path, std::string_view colormatrix, agi::BackgroundRunner *br) {
+std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const& path, ycbcr::Header colormatrix, agi::BackgroundRunner *br) {
 	return std::make_unique<FFmpegSourceVideoProvider>(path, colormatrix, br);
 }
 

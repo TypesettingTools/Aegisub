@@ -120,7 +120,7 @@ public:
 	VideoFrame GetSubtitles(double time);
 
 	/// Ask the video provider to change YCbCr matrices
-	void SetColorSpace(std::string_view matrix);
+	void SetColorSpace(agi::ycbcr::Header matrix);
 
 	int GetFrameCount() const             { return source_provider->GetFrameCount(); }
 	int GetWidth() const                  { return source_provider->GetWidth(); }
@@ -128,8 +128,8 @@ public:
 	double GetDAR() const                 { return source_provider->GetDAR(); }
 	agi::vfr::Framerate GetFPS() const    { return source_provider->GetFPS(); }
 	std::vector<int> GetKeyFrames() const { return source_provider->GetKeyFrames(); }
-	std::string GetColorSpace() const     { return source_provider->GetColorSpace(); }
-	std::string GetRealColorSpace() const { return source_provider->GetRealColorSpace(); }
+	agi::ycbcr::header_colorspace GetColorSpace() const     { return source_provider->GetColorSpace(); }
+	agi::ycbcr::header_colorspace GetRealColorSpace() const { return source_provider->GetRealColorSpace(); }
 	std::string GetWarning() const        { return source_provider->GetWarning(); }
 	std::string GetDecoderName() const    { return source_provider->GetDecoderName(); }
 	bool ShouldSetVideoProperties() const { return source_provider->ShouldSetVideoProperties(); }
@@ -138,7 +138,7 @@ public:
 	/// @brief Constructor
 	/// @param video_filename File to open
 	/// @param parent Event handler to send FrameReady events to
-	AsyncVideoProvider(agi::fs::path const& video_filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
+	AsyncVideoProvider(agi::fs::path const& video_filename, agi::ycbcr::Header colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br);
 	~AsyncVideoProvider();
 };
 
