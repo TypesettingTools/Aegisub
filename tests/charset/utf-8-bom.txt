@@ -1,0 +1,1 @@
+﻿This is a utf-8 encoded file with a byte order mark.

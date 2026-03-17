@@ -20,6 +20,7 @@ tests_src = [
     'tests/cajun.cpp',
     'tests/calltip_provider.cpp',
     'tests/character_count.cpp',
+    'tests/charset.cpp',
     'tests/color.cpp',
     'tests/dialogue_lexer.cpp',
     'tests/format.cpp',
