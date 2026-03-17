@@ -31,7 +31,6 @@
 #include <libaegisub/vfr.h>
 
 #include <chrono>
-#include <set>
 
 #include <wx/timer.h>
 
