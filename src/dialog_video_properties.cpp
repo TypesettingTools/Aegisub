@@ -92,9 +92,9 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 	// they were previously unset
 	bool set_properties = new_provider->ShouldSetVideoProperties();
 
-	auto matrix = new_provider->GetColorSpace();
-	if (set_properties && matrix != file->GetScriptInfo("YCbCr Matrix")) {
-		file->SetScriptInfo("YCbCr Matrix", matrix);
+	agi::ycbcr::Header video_matrix(new_provider->GetColorSpace());
+	if (set_properties && video_matrix != file->GetYCbCrMatrix()) {
+		file->SetScriptInfo("YCbCr Matrix", video_matrix.to_existing_string());
 		commit_subs = true;
 	}
 

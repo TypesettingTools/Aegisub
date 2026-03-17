@@ -29,8 +29,10 @@
 
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
+#include <libaegisub/ycbcr.h>
 
 #include <chrono>
+#include <optional>
 
 #include <wx/timer.h>
 
@@ -66,7 +68,7 @@ class VideoController final : public wxEvtHandler {
 	AsyncVideoProvider *provider = nullptr;
 
 	/// Last seen script color matrix
-	std::string color_matrix;
+	std::optional<agi::ycbcr::Header> color_matrix;
 
 	/// Playback timer used to periodically check if we should go to the next
 	/// frame while playing video
