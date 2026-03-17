@@ -71,7 +71,6 @@ struct header_colorspace {
 	ycbcr_range range;
 
 	static header_colorspace unspecified() { return {ycbcr_matrix::Unspecified, ycbcr_range::Unspecified}; }
-
 	EQOP(header_colorspace);
 };
 

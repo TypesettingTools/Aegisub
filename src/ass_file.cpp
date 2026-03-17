@@ -138,6 +138,10 @@ void AssFile::SetScriptInfo(std::string_view key, std::string_view value) {
 		Info.emplace_back(key, value);
 }
 
+agi::ycbcr::Header AssFile::GetYCbCrMatrix() const {
+	return agi::ycbcr::Header(std::string(GetScriptInfo("YCbCr Matrix")));
+}
+
 void AssFile::GetResolution(int &sw, int &sh) const {
 	sw = GetScriptInfoAsInt("PlayResX");
 	sh = GetScriptInfoAsInt("PlayResY");
