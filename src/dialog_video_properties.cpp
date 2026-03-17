@@ -141,7 +141,7 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 				{0, 0, 0, 0},
 				sx, sy, vx, vy,
 				ResampleARMode::Stretch,
-				YCbCrMatrix::rgb, YCbCrMatrix::rgb
+				std::nullopt,
 			});
 			return true;
 		}
@@ -156,7 +156,7 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 			{0, 0, 0, 0},
 			sx, sy, vx, vy,
 			static_cast<ResampleARMode>(res - FIX_RESAMPLE),
-			YCbCrMatrix::rgb, YCbCrMatrix::rgb
+			std::nullopt,
 		});
 		return true;
 	}
