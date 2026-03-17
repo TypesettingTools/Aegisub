@@ -18,6 +18,7 @@
 
 #include <optional>
 #include <string>
+#include <string_view>
 #include <variant>
 
 namespace agi {
@@ -50,6 +51,15 @@ enum class ycbcr_range : char {
 };
 
 namespace ycbcr {
+
+inline constexpr std::string_view valid_header_strings[] = {
+	"None",
+	"TV.601", "PC.601",
+	"TV.709", "PC.709",
+	"TV.FCC", "PC.FCC",
+	"TV.240M", "PC.240M",
+};
+
 
 #define EQOP(structname) bool operator==(const structname &) const = default
 
