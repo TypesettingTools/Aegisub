@@ -35,6 +35,7 @@
 #include "options.h"
 #include "project.h"
 
+#include <libaegisub/audio/playback.h>
 #include <libaegisub/audio/provider.h>
 
 #include <algorithm>
@@ -43,6 +44,7 @@ AudioController::AudioController(agi::Context *context)
 : context(context)
 , playback_timer(this)
 , provider_connection(context->project->AddAudioProviderListener(&AudioController::OnAudioProvider, this))
+, playback_rate(agi::audio::ClampPlaybackRate(OPT_GET("Audio/Playback Rate")->GetDouble()))
 {
 	Bind(wxEVT_TIMER, &AudioController::OnPlaybackTimer, this, playback_timer.GetId());
 
@@ -52,6 +54,7 @@ AudioController::AudioController(agi::Context *context)
 #endif
 
 	BindConnection(OPT_SUB("Audio/Player", &AudioController::OnAudioPlayerChanged, this));
+	BindConnection(OPT_SUB("Audio/Playback Rate", &AudioController::OnPlaybackRateChanged, this));
 }
 
 AudioController::~AudioController()
@@ -115,6 +118,19 @@ void AudioController::OnAudioProvider(agi::AudioProvider *new_provider)
 	Stop();
 	player.reset();
 	OnAudioPlayerChanged();
+}
+
+void AudioController::OnPlaybackRateChanged(agi::OptionValue const& option)
+{
+	double clamped = agi::audio::ClampPlaybackRate(option.GetDouble());
+	if (clamped != option.GetDouble()) {
+		OPT_SET("Audio/Playback Rate")->SetDouble(clamped);
+		return;
+	}
+
+	if (playback_rate == clamped) return;
+	playback_rate = clamped;
+	AnnouncePlaybackRateChanged(playback_rate);
 }
 
 void AudioController::SetTimingController(std::unique_ptr<AudioTimingController> new_controller)
@@ -214,14 +230,19 @@ void AudioController::SetVolume(double volume)
 	player->SetVolume(volume);
 }
 
+void AudioController::SetPlaybackRate(double rate)
+{
+	OPT_SET("Audio/Playback Rate")->SetDouble(agi::audio::ClampPlaybackRate(rate));
+}
+
 int64_t AudioController::SamplesFromMilliseconds(int64_t ms) const
 {
 	if (!provider) return 0;
-	return (ms * provider->GetSampleRate() + 999) / 1000;
+	return agi::audio::SourceSamplesFromMilliseconds(ms, provider->GetSampleRate());
 }
 
 int64_t AudioController::MillisecondsFromSamples(int64_t samples) const
 {
 	if (!provider) return 0;
-	return samples * 1000 / provider->GetSampleRate();
+	return agi::audio::MillisecondsFromSourceSamples(samples, provider->GetSampleRate());
 }
