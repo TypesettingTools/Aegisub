@@ -194,14 +194,25 @@ void SubsTextEditCtrl::OnLoseFocus(wxFocusEvent &event) {
 void SubsTextEditCtrl::OnKeyDown(wxKeyEvent &event) {
 	event.Skip();
 
+	bool linebreak = event.GetKeyCode() == WXK_RETURN && event.GetModifiers() == wxMOD_SHIFT;
+#ifndef __WXMAC__
+	bool hardspace = event.GetKeyCode() == WXK_SPACE && event.GetModifiers() == (wxMOD_CMD | wxMOD_SHIFT);
+#else
+	bool hardspace = event.GetKeyCode() == WXK_SPACE && event.GetModifiers() == wxMOD_ALT;
+#endif
+
 	// Workaround for wxSTC eating tabs.
 	if (event.GetKeyCode() == WXK_TAB)
 		Navigate(event.ShiftDown() ? wxNavigationKeyEvent::IsBackward : wxNavigationKeyEvent::IsForward);
-	else if (event.GetKeyCode() == WXK_RETURN && event.GetModifiers() == wxMOD_SHIFT) {
+	else if (linebreak || hardspace) {
 		auto sel_start = GetSelectionStart(), sel_end = GetSelectionEnd();
 		wxCharBuffer old = GetTextRaw();
 		std::string data(old.data(), sel_start);
-		data.append(OPT_GET("Subtitle/Edit Box/Soft Line Break")->GetBool() ? "\\n" : "\\N");
+		if (linebreak) {
+			data.append(OPT_GET("Subtitle/Edit Box/Soft Line Break")->GetBool() ? "\\n" : "\\N");
+		} else if (hardspace) {
+			data.append("\\h");
+		}
 		data.append(old.data() + sel_end, old.length() - sel_end);
 		SetTextRaw(data.c_str());
 
