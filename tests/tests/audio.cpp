@@ -201,10 +201,10 @@ TEST(lagi_audio, volume_should_clamp_rather_than_wrap) {
 TEST(lagi_audio, playback_rate_clamps_to_supported_range) {
 	EXPECT_DOUBLE_EQ(1.0, agi::audio::ClampPlaybackRate(std::numeric_limits<double>::quiet_NaN()));
 	EXPECT_DOUBLE_EQ(1.0, agi::audio::ClampPlaybackRate(std::numeric_limits<double>::infinity()));
-	EXPECT_DOUBLE_EQ(0.5, agi::audio::ClampPlaybackRate(0.1));
-	EXPECT_DOUBLE_EQ(0.5, agi::audio::ClampPlaybackRate(0.5));
+	EXPECT_DOUBLE_EQ(0.1, agi::audio::ClampPlaybackRate(0.01));
+	EXPECT_DOUBLE_EQ(0.1, agi::audio::ClampPlaybackRate(0.1));
 	EXPECT_DOUBLE_EQ(1.25, agi::audio::ClampPlaybackRate(1.25));
-	EXPECT_DOUBLE_EQ(2.0, agi::audio::ClampPlaybackRate(2.5));
+	EXPECT_DOUBLE_EQ(3.0, agi::audio::ClampPlaybackRate(3.5));
 }
 
 TEST(lagi_audio, source_time_sample_helpers_use_source_domain) {
@@ -237,6 +237,35 @@ TEST(lagi_audio, playback_sample_conversion_helpers_cover_fractional_rates) {
 	EXPECT_EQ(48099, agi::audio::SourceSamplesFromPlaybackSamplesFloor(32066, 1.5));
 	EXPECT_EQ(48099, agi::audio::SourceSamplesFromPlaybackSamplesCeil(32066, 1.5));
 	EXPECT_EQ(48100, agi::audio::SourceSamplesFromPlaybackSamplesCeil(24050, 2.0));
+}
+
+TEST(lagi_audio, playback_provider_adjusts_length_for_rate) {
+	TestAudioProvider<> source;
+	auto provider = agi::CreatePlaybackAudioProvider(&source, 0.5);
+	EXPECT_EQ(source.GetSampleRate(), provider->GetSampleRate());
+	EXPECT_EQ(source.GetNumSamples() * 2, provider->GetNumSamples());
+
+	provider = agi::CreatePlaybackAudioProvider(&source, 2.0);
+	EXPECT_EQ(source.GetNumSamples() / 2, provider->GetNumSamples());
+}
+
+TEST(lagi_audio, playback_provider_resamples_audio) {
+	TestAudioProvider<> source;
+	auto provider = agi::CreatePlaybackAudioProvider(&source, 2.0);
+
+	int16_t buff[4];
+	provider->GetAudio(buff, 0, 4);
+	EXPECT_EQ(0, buff[0]);
+	EXPECT_EQ(2, buff[1]);
+	EXPECT_EQ(4, buff[2]);
+	EXPECT_EQ(6, buff[3]);
+
+	provider = agi::CreatePlaybackAudioProvider(&source, 0.5);
+	provider->GetAudio(buff, 0, 4);
+	EXPECT_EQ(0, buff[0]);
+	EXPECT_EQ(1, buff[1]);
+	EXPECT_EQ(1, buff[2]);
+	EXPECT_EQ(2, buff[3]);
 }
 
 TEST(lagi_audio, ram_cache) {

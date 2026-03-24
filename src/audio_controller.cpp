@@ -34,6 +34,7 @@
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "project.h"
+#include "video_controller.h"
 
 #include <libaegisub/audio/playback.h>
 #include <libaegisub/audio/provider.h>
@@ -62,6 +63,28 @@ AudioController::~AudioController()
 	Stop();
 }
 
+agi::AudioProvider *AudioController::GetPlayerProvider() const {
+	return playback_provider ? playback_provider.get() : provider;
+}
+
+void AudioController::RecreatePlaybackProvider() {
+	playback_provider.reset();
+	if (!provider || playback_rate == 1.0) return;
+	playback_provider = agi::CreatePlaybackAudioProvider(provider, playback_rate);
+}
+
+int64_t AudioController::PlaybackSamplesFromSourceSamples(int64_t samples, bool end) const {
+	if (!playback_provider) return samples;
+	return end
+		? agi::audio::PlaybackSamplesFromSourceSamplesCeil(samples, playback_rate)
+		: agi::audio::PlaybackSamplesFromSourceSamplesFloor(samples, playback_rate);
+}
+
+int64_t AudioController::SourceSamplesFromPlaybackSamples(int64_t samples) const {
+	if (!playback_provider) return samples;
+	return agi::audio::SourceSamplesFromPlaybackSamplesFloor(samples, playback_rate);
+}
+
 void AudioController::OnPlaybackTimer(wxTimerEvent &)
 {
 	if (!player) return;
@@ -76,7 +99,7 @@ void AudioController::OnPlaybackTimer(wxTimerEvent &)
 	}
 	else
 	{
-		AnnouncePlaybackPosition(MillisecondsFromSamples(pos));
+		AnnouncePlaybackPosition(MillisecondsFromSamples(SourceSamplesFromPlaybackSamples(pos)));
 	}
 }
 
@@ -102,7 +125,7 @@ void AudioController::OnAudioPlayerChanged()
 
 	try
 	{
-		player = AudioPlayerFactory::GetAudioPlayer(provider, context->parent);
+		player = AudioPlayerFactory::GetAudioPlayer(GetPlayerProvider(), context->parent);
 	}
 	catch (...)
 	{
@@ -116,8 +139,59 @@ void AudioController::OnAudioProvider(agi::AudioProvider *new_provider)
 {
 	provider = new_provider;
 	Stop();
+	RecreatePlaybackProvider();
 	player.reset();
 	OnAudioPlayerChanged();
+}
+
+void AudioController::ApplyPlaybackRate(double rate)
+{
+	double clamped = agi::audio::ClampPlaybackRate(rate);
+	if (playback_rate == clamped) return;
+
+	double old_rate = playback_rate;
+	bool was_playing = IsPlaying();
+	bool video_was_playing = context->videoController && context->videoController->IsPlaying();
+	PlaybackMode old_mode = playback_mode;
+	int current_ms = was_playing ? GetPlaybackPosition() : 0;
+	int end_ms = 0;
+	if (was_playing && player) {
+		if (old_mode == PM_ToEnd)
+			end_ms = GetDuration();
+		else if (old_mode == PM_PrimaryRange)
+			end_ms = GetPrimaryPlaybackRange().end();
+		else
+			end_ms = MillisecondsFromSamples(SourceSamplesFromPlaybackSamples(player->GetEndPosition()));
+	}
+
+	Stop();
+	playback_rate = clamped;
+	RecreatePlaybackProvider();
+	player.reset();
+	OnAudioPlayerChanged();
+
+	if (was_playing && !video_was_playing) {
+		switch (old_mode) {
+			case PM_PrimaryRange:
+				if (current_ms < end_ms) {
+					PlayRange(TimeRange(current_ms, end_ms));
+					playback_mode = PM_PrimaryRange;
+				}
+				break;
+			case PM_Range:
+				if (current_ms < end_ms)
+					PlayRange(TimeRange(current_ms, end_ms));
+				break;
+			case PM_ToEnd:
+				if (current_ms < GetDuration())
+					PlayToEnd(current_ms);
+				break;
+			case PM_NotPlaying:
+				break;
+		}
+	}
+
+	AnnouncePlaybackRateChanged(old_rate, playback_rate, current_ms);
 }
 
 void AudioController::OnPlaybackRateChanged(agi::OptionValue const& option)
@@ -127,10 +201,7 @@ void AudioController::OnPlaybackRateChanged(agi::OptionValue const& option)
 		OPT_SET("Audio/Playback Rate")->SetDouble(clamped);
 		return;
 	}
-
-	if (playback_rate == clamped) return;
-	playback_rate = clamped;
-	AnnouncePlaybackRateChanged(playback_rate);
+	ApplyPlaybackRate(clamped);
 }
 
 void AudioController::SetTimingController(std::unique_ptr<AudioTimingController> new_controller)
@@ -147,14 +218,16 @@ void AudioController::SetTimingController(std::unique_ptr<AudioTimingController>
 void AudioController::OnTimingControllerUpdatedPrimaryRange()
 {
 	if (playback_mode == PM_PrimaryRange)
-		player->SetEndPosition(SamplesFromMilliseconds(timing_controller->GetPrimaryPlaybackRange().end()));
+		player->SetEndPosition(PlaybackSamplesFromSourceSamples(SamplesFromMilliseconds(timing_controller->GetPrimaryPlaybackRange().end()), true));
 }
 
 void AudioController::PlayRange(const TimeRange &range)
 {
 	if (!player) return;
 
-	player->Play(SamplesFromMilliseconds(range.begin()), SamplesFromMilliseconds(range.length()));
+	int64_t start = PlaybackSamplesFromSourceSamples(SamplesFromMilliseconds(range.begin()), false);
+	int64_t end = PlaybackSamplesFromSourceSamples(SamplesFromMilliseconds(range.end()), true);
+	player->Play(start, end - start);
 	playback_mode = PM_Range;
 	playback_timer.Start(20);
 
@@ -179,8 +252,8 @@ void AudioController::PlayToEnd(int start_ms)
 {
 	if (!player) return;
 
-	int64_t start_sample = SamplesFromMilliseconds(start_ms);
-	player->Play(start_sample, provider->GetNumSamples()-start_sample);
+	int64_t start_sample = PlaybackSamplesFromSourceSamples(SamplesFromMilliseconds(start_ms), false);
+	player->Play(start_sample, GetPlayerProvider()->GetNumSamples() - start_sample);
 	playback_mode = PM_ToEnd;
 	playback_timer.Start(20);
 
@@ -207,7 +280,7 @@ int AudioController::GetPlaybackPosition()
 {
 	if (!IsPlaying()) return 0;
 
-	return MillisecondsFromSamples(player->GetCurrentPosition());
+	return MillisecondsFromSamples(SourceSamplesFromPlaybackSamples(player->GetCurrentPosition()));
 }
 
 int AudioController::GetDuration() const
@@ -232,7 +305,7 @@ void AudioController::SetVolume(double volume)
 
 void AudioController::SetPlaybackRate(double rate)
 {
-	OPT_SET("Audio/Playback Rate")->SetDouble(agi::audio::ClampPlaybackRate(rate));
+	ApplyPlaybackRate(rate);
 }
 
 int64_t AudioController::SamplesFromMilliseconds(int64_t ms) const

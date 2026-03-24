@@ -36,6 +36,7 @@
 #include <wx/timer.h>
 
 class AssDialogue;
+class AudioController;
 class AsyncVideoProvider;
 struct SubtitlesProviderErrorEvent;
 struct VideoProviderErrorEvent;
@@ -82,6 +83,14 @@ class VideoController final : public wxEvtHandler {
 
 	/// The last frame to play if video is currently playing
 	int end_frame = 0;
+	int playback_end_ms = 0;
+
+	enum PlaybackMode {
+		PM_NotPlaying,
+		PM_ToEnd,
+		PM_Line,
+	};
+	PlaybackMode playback_mode = PM_NotPlaying;
 
 	/// The frame number which was last requested from the video provider,
 	/// which may not be the same thing as the currently displayed frame
@@ -98,6 +107,7 @@ class VideoController final : public wxEvtHandler {
 	const agi::OptionValue* playAudioOnStep;
 
 	std::vector<agi::signal::Connection> connections;
+	agi::signal::Connection playback_rate_connection;
 
 	void OnPlayTimer(wxTimerEvent &event);
 
@@ -107,11 +117,14 @@ class VideoController final : public wxEvtHandler {
 	void OnSubtitlesCommit(int type, const AssDialogue *changed);
 	void OnNewVideoProvider(AsyncVideoProvider *provider);
 	void OnActiveLineChanged(AssDialogue *line);
+	void OnPlaybackRateChanged(double old_rate, double new_rate, int current_ms);
+	void RestartPlaybackFrom(int ms);
 
 	void RequestFrame();
 
 public:
 	VideoController(agi::Context *context);
+	void SetAudioController(AudioController *audio_controller);
 
 	/// Is the video currently playing?
 	bool IsPlaying() const { return playback.IsRunning(); }
