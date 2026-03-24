@@ -1,4 +1,4 @@
-// Copyright (c) 2026, Aegisub contributors
+// Copyright (c) 2026, Matrew File
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -19,8 +19,8 @@
 #include <cstdint>
 
 namespace agi::audio {
-inline constexpr double MinPlaybackRate = 0.5;
-inline constexpr double MaxPlaybackRate = 2.0;
+inline constexpr double MinPlaybackRate = 0.1;
+inline constexpr double MaxPlaybackRate = 3.0;
 
 inline double ClampPlaybackRate(double rate) {
 	if (!std::isfinite(rate)) return 1.0;

@@ -169,8 +169,8 @@ void Audio(wxTreebook *book, Preferences *parent) {
 	p->OptionAdd(general, _("Snap markers by default"), "Audio/Snap/Enable");
 	p->OptionAdd(general, _("Auto-focus on mouse over"), "Audio/Auto/Focus");
 	p->OptionAdd(general, _("Play audio when stepping in video"), "Audio/Plays When Stepping Video");
-	p->OptionAdd(general, _("Default playback rate"), "Audio/Playback Rate", 0.5, 2.0, 0.25);
 	p->OptionAdd(general, _("Left-click-drag moves end marker"), "Audio/Drag Timing");
+	p->OptionAdd(general, _("Default playback rate"), "Audio/Playback Rate", {.min = 0.1, .max = 3.0, .inc = 0.05});
 	p->OptionAdd(general, _("Default timing length (ms)"), "Timing/Default Duration", {.min = 0, .max = 36000});
 	p->OptionAdd(general, _("Default lead-in length (ms)"), "Audio/Lead/IN", {.min = 0, .max = 36000});
 	p->OptionAdd(general, _("Default lead-out length (ms)"), "Audio/Lead/OUT", {.min = 0, .max = 36000});

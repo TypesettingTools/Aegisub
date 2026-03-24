@@ -47,6 +47,7 @@ Context::Context()
 , dialog(std::make_unique<DialogManager>())
 {
 	subsController->SetSelectionController(selectionController.get());
+	videoController->SetAudioController(audioController.get());
 }
 
 Context::~Context() = default;

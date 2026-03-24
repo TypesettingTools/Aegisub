@@ -69,8 +69,8 @@ class AudioController final : public wxEvtHandler, private agi::signal::Connecti
 	/// A new audio player was created
 	agi::signal::Signal<> AnnounceAudioPlayerOpened;
 
-	/// Playback rate changed
-	agi::signal::Signal<double> AnnouncePlaybackRateChanged;
+	/// Playback rate changed (old rate, new rate, source position in ms)
+	agi::signal::Signal<double, double, int> AnnouncePlaybackRateChanged;
 
 	/// The audio output object
 	std::unique_ptr<AudioPlayer> player;
@@ -94,10 +94,17 @@ class AudioController final : public wxEvtHandler, private agi::signal::Connecti
 
 	/// The audio provider
 	agi::AudioProvider *provider = nullptr;
+	std::unique_ptr<agi::AudioProvider> playback_provider;
 	agi::signal::Connection provider_connection;
 	double playback_rate = 1.0;
 
+	agi::AudioProvider *GetPlayerProvider() const;
+	void RecreatePlaybackProvider();
+	int64_t PlaybackSamplesFromSourceSamples(int64_t samples, bool end) const;
+	int64_t SourceSamplesFromPlaybackSamples(int64_t samples) const;
+
 	void OnAudioProvider(agi::AudioProvider *new_provider);
+	void ApplyPlaybackRate(double rate);
 
 	/// Event handler for the playback timer
 	void OnPlaybackTimer(wxTimerEvent &event);
