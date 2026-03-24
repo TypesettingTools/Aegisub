@@ -47,10 +47,45 @@
 #include "../video_controller.h"
 
 #include <libaegisub/audio/provider.h>
+#include <libaegisub/audio/playback.h>
 #include <libaegisub/io.h>
+
+#include <array>
+#include <cmath>
 
 namespace {
 	using cmd::Command;
+
+	constexpr std::array<double, 24> playback_rate_presets{{
+		0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 1.0,
+		1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 1.875, 2.0,
+		2.125, 2.25, 2.375, 2.5, 2.625, 2.75, 2.875, 3.0,
+	}};
+
+	bool IsPlaybackRateActive(const agi::Context *c, double rate) {
+		return std::abs(c->audioController->GetPlaybackRate() - rate) < 0.0001;
+	}
+
+	void StepPlaybackRate(agi::Context *c, int direction) {
+		double current = agi::audio::ClampPlaybackRate(c->audioController->GetPlaybackRate());
+		auto it = std::lower_bound(playback_rate_presets.begin(), playback_rate_presets.end(), current);
+
+		if (direction < 0) {
+			if (it == playback_rate_presets.end() || *it >= current - 0.0001) {
+				if (it == playback_rate_presets.begin()) return;
+				--it;
+			}
+		}
+		else if (direction > 0) {
+			if (it == playback_rate_presets.end()) return;
+			if (*it <= current + 0.0001) {
+				if (std::next(it) == playback_rate_presets.end()) return;
+				++it;
+			}
+		}
+
+		c->audioController->SetPlaybackRate(*it);
+	}
 
 	struct validate_audio_open : public Command {
 		CMD_TYPE(COMMAND_VALIDATE)
@@ -332,6 +367,65 @@ struct audio_play_to_end final : public validate_audio_open {
 	}
 };
 
+template<int Percent>
+struct audio_playback_rate_preset final : public Command {
+	CMD_NAME(Percent == 50  ? "audio/playback/rate/50" :
+			 Percent == 100 ? "audio/playback/rate/100" :
+			 Percent == 150 ? "audio/playback/rate/150" :
+							  "audio/playback/rate/200")
+	STR_MENU(Percent == 50  ? "50%" :
+			 Percent == 100 ? "100%" :
+			 Percent == 150 ? "150%" :
+							  "200%")
+	STR_DISP(Percent == 50  ? "Set playback rate to 50%" :
+			 Percent == 100 ? "Set playback rate to 100%" :
+			 Percent == 150 ? "Set playback rate to 150%" :
+							  "Set playback rate to 200%")
+	STR_HELP("Set the shared audio/video playback rate")
+	CMD_TYPE(COMMAND_RADIO)
+
+	bool IsActive(const agi::Context *c) override {
+		return IsPlaybackRateActive(c, Percent / 100.0);
+	}
+
+	void operator()(agi::Context *c) override {
+		c->audioController->SetPlaybackRate(Percent / 100.0);
+	}
+};
+
+struct audio_playback_rate_decrease final : public Command {
+	CMD_NAME("audio/playback/rate/decrease")
+	STR_MENU("Decrease playback rate")
+	STR_DISP("Decrease playback rate")
+	STR_HELP("Select the next lower shared audio/video playback rate preset")
+
+	void operator()(agi::Context *c) override {
+		StepPlaybackRate(c, -1);
+	}
+};
+
+struct audio_playback_rate_increase final : public Command {
+	CMD_NAME("audio/playback/rate/increase")
+	STR_MENU("Increase playback rate")
+	STR_DISP("Increase playback rate")
+	STR_HELP("Select the next higher shared audio/video playback rate preset")
+
+	void operator()(agi::Context *c) override {
+		StepPlaybackRate(c, 1);
+	}
+};
+
+struct audio_playback_rate_reset final : public Command {
+	CMD_NAME("audio/playback/rate/reset")
+	STR_MENU("Reset playback rate")
+	STR_DISP("Reset playback rate")
+	STR_HELP("Reset the shared audio/video playback rate to normal speed")
+
+	void operator()(agi::Context *c) override {
+		c->audioController->SetPlaybackRate(OPT_GET("Audio/Playback Rate")->GetDouble());
+	}
+};
+
 struct audio_commit final : public validate_audio_open {
 	CMD_NAME("audio/commit")
 	CMD_ICON(button_audio_commit)
@@ -576,6 +670,13 @@ namespace cmd {
 		reg(std::make_unique<audio_play_before>());
 		reg(std::make_unique<audio_play_begin>());
 		reg(std::make_unique<audio_play_end>());
+		reg(std::make_unique<audio_playback_rate_decrease>());
+		reg(std::make_unique<audio_playback_rate_increase>());
+		reg(std::make_unique<audio_playback_rate_preset<50>>());
+		reg(std::make_unique<audio_playback_rate_preset<100>>());
+		reg(std::make_unique<audio_playback_rate_preset<150>>());
+		reg(std::make_unique<audio_playback_rate_preset<200>>());
+		reg(std::make_unique<audio_playback_rate_reset>());
 		reg(std::make_unique<audio_play_current_selection>());
 		reg(std::make_unique<audio_play_current_line>());
 		reg(std::make_unique<audio_play_selection>());
