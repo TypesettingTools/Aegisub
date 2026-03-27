@@ -20,6 +20,7 @@ tests_src = [
     'tests/cajun.cpp',
     'tests/calltip_provider.cpp',
     'tests/character_count.cpp',
+    'tests/charset.cpp',
     'tests/color.cpp',
     'tests/dialogue_lexer.cpp',
     'tests/format.cpp',
@@ -67,7 +68,7 @@ runner = executable(
     link_with: libaegisub,
 )
 
-test('gtest main', runner)
+test('gtest main', runner, env: {'TEST_DATA_DIR': meson.current_source_dir()})
 test('luajit-52', executable('luajit-52', 'tests/luajit_52.c', dependencies: luajit))
 
 # setup test env
