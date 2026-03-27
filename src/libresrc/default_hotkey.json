@@ -107,6 +107,15 @@
 		]
 	},
 	"Default" : {
+		"audio/playback/rate/decrease" : [
+			"Ctrl-Alt--"
+		],
+		"audio/playback/rate/increase" : [
+			"Ctrl-Alt-="
+		],
+		"audio/playback/rate/reset" : [
+			"Ctrl-Alt-/"
+		],
 		"app/exit" : [
 			"Ctrl-Q"
 		],
