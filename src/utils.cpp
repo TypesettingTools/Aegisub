@@ -222,6 +222,15 @@ void AddFullScreenButton(wxWindow *) { }
 void SetFloatOnParent(wxWindow *) { }
 #endif
 
+#if !defined(__WXOSX_COCOA__) || !defined(WITH_INTERNAL_WXWIDGETS)
+// Proper implementation in scintilla_ime.mm
+namespace osx { namespace ime {
+	void inject(wxStyledTextCtrl *) { }
+	void invalidate(wxStyledTextCtrl *) { }
+	bool process_key_event(wxStyledTextCtrl *, wxKeyEvent&) { return false; }
+} }
+#endif
+
 wxString FontFace(std::string opt_prefix) {
 	opt_prefix += "/Font Face";
 	auto value = OPT_GET(opt_prefix)->GetString();
