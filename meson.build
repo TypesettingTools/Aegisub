@@ -219,6 +219,8 @@ else
             error('Missing Windows SDK Common Controls Library (commctrl.h / comctl32.lib)')
         endif
     endif
+
+    conf.set('WITH_INTERNAL_WXWIDGETS', 1)
 endif
 
 deps += dependency('icu-uc', version: '>=4.8.1.1')
