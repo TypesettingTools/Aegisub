@@ -27,10 +27,13 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <libaegisub/exception.h>
 #include <libaegisub/signal.h>
 
 #include <cstdint>
+#include <memory>
 #include <wx/event.h>
 #include <wx/power.h>
 #include <wx/timer.h>
@@ -39,6 +42,7 @@ class AudioPlayer;
 class AudioTimingController;
 class TimeRange;
 namespace agi { class AudioProvider; }
+namespace agi { class OptionValue; }
 namespace agi { struct Context; }
 
 /// @class AudioController
@@ -65,6 +69,9 @@ class AudioController final : public wxEvtHandler, private agi::signal::Connecti
 	/// A new audio player was created
 	agi::signal::Signal<> AnnounceAudioPlayerOpened;
 
+	/// Playback rate changed (old rate, new rate, source position in ms)
+	agi::signal::Signal<double, double, int> AnnouncePlaybackRateChanged;
+
 	/// The audio output object
 	std::unique_ptr<AudioPlayer> player;
 
@@ -87,9 +94,17 @@ class AudioController final : public wxEvtHandler, private agi::signal::Connecti
 
 	/// The audio provider
 	agi::AudioProvider *provider = nullptr;
+	std::unique_ptr<agi::AudioProvider> playback_provider;
 	agi::signal::Connection provider_connection;
+	double playback_rate = 1.0;
+
+	agi::AudioProvider *GetPlayerProvider() const;
+	void RecreatePlaybackProvider();
+	int64_t PlaybackSamplesFromSourceSamples(int64_t samples, bool end) const;
+	int64_t SourceSamplesFromPlaybackSamples(int64_t samples) const;
 
 	void OnAudioProvider(agi::AudioProvider *new_provider);
+	void ApplyPlaybackRate(double rate);
 
 	/// Event handler for the playback timer
 	void OnPlaybackTimer(wxTimerEvent &event);
@@ -102,6 +117,7 @@ class AudioController final : public wxEvtHandler, private agi::signal::Connecti
 
 	/// Handler for the current audio player changing
 	void OnAudioPlayerChanged();
+	void OnPlaybackRateChanged(agi::OptionValue const& option);
 
 #ifdef wxHAS_POWER_EVENTS
 	/// Handle computer going into suspend mode by stopping audio and closing device
@@ -178,6 +194,15 @@ public:
 	/// @param volume The new amplification factor for the audio
 	void SetVolume(double volume);
 
+	/// @brief Set the shared playback rate used for audio/video transport
+	/// @param rate The new playback rate, clamped to the supported range
+	void SetPlaybackRate(double rate);
+
+	/// @brief Get the shared playback rate used for audio/video transport
+	/// Subscribers should read the current value once on initialization, as
+	/// the change signal only announces subsequent updates.
+	double GetPlaybackRate() const { return playback_rate; }
+
 	/// @brief Return the current timing controller
 	/// @return The current timing controller or 0
 	AudioTimingController *GetTimingController() const { return timing_controller.get(); }
@@ -190,4 +215,5 @@ public:
 	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackStop,            AddPlaybackStopListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceTimingControllerChanged, AddTimingControllerListener)
 	DEFINE_SIGNAL_ADDERS(AnnounceAudioPlayerOpened,       AddAudioPlayerOpenListener)
+	DEFINE_SIGNAL_ADDERS(AnnouncePlaybackRateChanged,     AddPlaybackRateListener)
 };

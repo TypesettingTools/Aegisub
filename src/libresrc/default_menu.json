@@ -94,6 +94,7 @@
         { "command" : "video/detach" },
         { "submenu" : "main/video/set zoom", "text" : "Set &Zoom" },
         { "submenu" : "main/video/override ar", "text" : "Override &AR" },
+        { "submenu" : "main/video/playback rate", "text" : "Playback &Rate" },
         { "command" : "video/show_overscan" },
         { "command" : "video/reset_pan" },
         {},
@@ -123,6 +124,16 @@
         { "command" : "audio/view/waveform" },
         { "command" : "audio/open/blank" },
         { "command" : "audio/open/noise" }
+    ],
+    "main/video/playback rate" : [
+        { "command" : "audio/playback/rate/decrease" },
+        { "command" : "audio/playback/rate/increase" },
+        { "command" : "audio/playback/rate/reset" },
+        {},
+        { "command" : "audio/playback/rate/50" },
+        { "command" : "audio/playback/rate/100" },
+        { "command" : "audio/playback/rate/150" },
+        { "command" : "audio/playback/rate/200" }
     ],
     "main/view" : [
         { "command" : "app/language" },

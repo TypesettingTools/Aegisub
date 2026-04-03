@@ -16,6 +16,7 @@
 
 #include <main.h>
 
+#include <libaegisub/audio/playback.h>
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
@@ -195,6 +196,76 @@ TEST(lagi_audio, volume_should_clamp_rather_than_wrap) {
 	uint16_t buff[1];
 	provider.GetAudioWithVolume(buff, 30000, 1, 2.0);
 	EXPECT_EQ(SHRT_MAX, buff[0]);
+}
+
+TEST(lagi_audio, playback_rate_clamps_to_supported_range) {
+	EXPECT_DOUBLE_EQ(1.0, agi::audio::ClampPlaybackRate(std::numeric_limits<double>::quiet_NaN()));
+	EXPECT_DOUBLE_EQ(1.0, agi::audio::ClampPlaybackRate(std::numeric_limits<double>::infinity()));
+	EXPECT_DOUBLE_EQ(0.1, agi::audio::ClampPlaybackRate(0.01));
+	EXPECT_DOUBLE_EQ(0.1, agi::audio::ClampPlaybackRate(0.1));
+	EXPECT_DOUBLE_EQ(1.25, agi::audio::ClampPlaybackRate(1.25));
+	EXPECT_DOUBLE_EQ(3.0, agi::audio::ClampPlaybackRate(3.5));
+}
+
+TEST(lagi_audio, source_time_sample_helpers_use_source_domain) {
+	EXPECT_EQ(48000, agi::audio::SourceSamplesFromMilliseconds(1000, 48000));
+	EXPECT_EQ(1, agi::audio::SourceSamplesFromMilliseconds(1, 1000));
+	EXPECT_EQ(1000, agi::audio::MillisecondsFromSourceSamples(48000, 48000));
+	EXPECT_EQ(0, agi::audio::MillisecondsFromSourceSamples(47, 48000));
+}
+
+TEST(lagi_audio, playback_sample_conversion_helpers_cover_fractional_rates) {
+	EXPECT_DOUBLE_EQ(96000.0, agi::audio::PlaybackSamplesFromSourceSamplesExact(48000, 0.5));
+	EXPECT_DOUBLE_EQ(64000.0, agi::audio::PlaybackSamplesFromSourceSamplesExact(48000, 0.75));
+	EXPECT_DOUBLE_EQ(38400.0, agi::audio::PlaybackSamplesFromSourceSamplesExact(48000, 1.25));
+	EXPECT_DOUBLE_EQ(32000.0, agi::audio::PlaybackSamplesFromSourceSamplesExact(48000, 1.5));
+	EXPECT_DOUBLE_EQ(24000.0, agi::audio::PlaybackSamplesFromSourceSamplesExact(48000, 2.0));
+
+	EXPECT_EQ(96198, agi::audio::PlaybackSamplesFromSourceSamplesFloor(48099, 0.5));
+	EXPECT_EQ(96198, agi::audio::PlaybackSamplesFromSourceSamplesCeil(48099, 0.5));
+	EXPECT_EQ(64132, agi::audio::PlaybackSamplesFromSourceSamplesFloor(48099, 0.75));
+	EXPECT_EQ(64132, agi::audio::PlaybackSamplesFromSourceSamplesCeil(48099, 0.75));
+	EXPECT_EQ(38479, agi::audio::PlaybackSamplesFromSourceSamplesFloor(48099, 1.25));
+	EXPECT_EQ(38480, agi::audio::PlaybackSamplesFromSourceSamplesCeil(48099, 1.25));
+	EXPECT_EQ(32066, agi::audio::PlaybackSamplesFromSourceSamplesFloor(48099, 1.5));
+	EXPECT_EQ(32066, agi::audio::PlaybackSamplesFromSourceSamplesCeil(48099, 1.5));
+	EXPECT_EQ(24049, agi::audio::PlaybackSamplesFromSourceSamplesFloor(48099, 2.0));
+	EXPECT_EQ(24050, agi::audio::PlaybackSamplesFromSourceSamplesCeil(48099, 2.0));
+
+	EXPECT_EQ(48098, agi::audio::SourceSamplesFromPlaybackSamplesFloor(38479, 1.25));
+	EXPECT_EQ(48100, agi::audio::SourceSamplesFromPlaybackSamplesCeil(38480, 1.25));
+	EXPECT_EQ(48099, agi::audio::SourceSamplesFromPlaybackSamplesFloor(32066, 1.5));
+	EXPECT_EQ(48099, agi::audio::SourceSamplesFromPlaybackSamplesCeil(32066, 1.5));
+	EXPECT_EQ(48100, agi::audio::SourceSamplesFromPlaybackSamplesCeil(24050, 2.0));
+}
+
+TEST(lagi_audio, playback_provider_adjusts_length_for_rate) {
+	TestAudioProvider<> source;
+	auto provider = agi::CreatePlaybackAudioProvider(&source, 0.5);
+	EXPECT_EQ(source.GetSampleRate(), provider->GetSampleRate());
+	EXPECT_EQ(source.GetNumSamples() * 2, provider->GetNumSamples());
+
+	provider = agi::CreatePlaybackAudioProvider(&source, 2.0);
+	EXPECT_EQ(source.GetNumSamples() / 2, provider->GetNumSamples());
+}
+
+TEST(lagi_audio, playback_provider_resamples_audio) {
+	TestAudioProvider<> source;
+	auto provider = agi::CreatePlaybackAudioProvider(&source, 2.0);
+
+	int16_t buff[4];
+	provider->GetAudio(buff, 0, 4);
+	EXPECT_EQ(0, buff[0]);
+	EXPECT_EQ(2, buff[1]);
+	EXPECT_EQ(4, buff[2]);
+	EXPECT_EQ(6, buff[3]);
+
+	provider = agi::CreatePlaybackAudioProvider(&source, 0.5);
+	provider->GetAudio(buff, 0, 4);
+	EXPECT_EQ(0, buff[0]);
+	EXPECT_EQ(1, buff[1]);
+	EXPECT_EQ(1, buff[2]);
+	EXPECT_EQ(2, buff[3]);
 }
 
 TEST(lagi_audio, ram_cache) {
