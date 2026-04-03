@@ -6930,7 +6930,7 @@ msgstr "자막 편집 상자"
 
 #: ../automation/autoload/cleantags-autoload.lua:31
 msgid "Clean Tags"
-msgstr "태그 지우기"
+msgstr "태그 정리"
 
 #: ../automation/autoload/cleantags-autoload.lua:32
 msgid ""
@@ -7020,7 +7020,7 @@ msgstr "다른 비주석 행이 활성화된 상태에서 시작되는 행을 �
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
-msgstr "스트립 태그"
+msgstr "태그 비우기"
 
 #: ../automation/autoload/strip-tags.lua:18
 msgid "Remove all override tags from selected lines"
@@ -7028,7 +7028,7 @@ msgstr "선택한 라인에서 모든 재정의 태그 제거"
 
 #: ../automation/autoload/strip-tags.lua:28
 msgid "strip tags"
-msgstr "스트립 태그"
+msgstr "태그 비우기"
 
 #: ../packages/desktop/aegisub.desktop.in.in:4
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:6
