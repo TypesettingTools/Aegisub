@@ -29,8 +29,8 @@ namespace osx {
 namespace {
 
 void CopyToDC(CGImageRef img, wxMemoryDC &capdc, int resx, int resy, int magnification) {
-	size_t width = CGImageGetWidth(img);
-	size_t height = CGImageGetHeight(img);
+	int width = CGImageGetWidth(img);
+	int height = CGImageGetHeight(img);
 	std::vector<uint8_t> imgdata(height * width * 4);
 
 	agi::scoped_holder<CGColorSpaceRef> colorspace(CGColorSpaceCreateDeviceRGB(), CGColorSpaceRelease);
@@ -38,8 +38,8 @@ void CopyToDC(CGImageRef img, wxMemoryDC &capdc, int resx, int resy, int magnifi
 
 	CGContextDrawImage(bmp_context, CGRectMake(0, 0, width, height), img);
 
-	for (int x = 0; x < resx; x++) {
-		for (int y = 0; y < resy; y++) {
+	for (int x = 0; x < resx && x < width; x++) {
+		for (int y = 0; y < resy && y < height; y++) {
 			uint8_t *pixel = &imgdata[y * width * 4 + x * 4];
 			capdc.SetBrush(wxBrush(wxColour(pixel[0], pixel[1], pixel[2])));
 			capdc.DrawRectangle(x * magnification, y * magnification, magnification, magnification);
