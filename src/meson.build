@@ -164,6 +164,7 @@ if host_machine.system() == 'darwin'
     aegisub_src += files(
         'font_file_lister_coretext.mm',
         'osx/osx_utils.mm',
+        'osx/screenpicker.mm',
     )
 
     if conf.get('WITH_INTERNAL_WXWIDGETS', 0) != 0
