@@ -617,7 +617,7 @@
 			},
 			"Pattern" : false
 		},
-		"Last Script Resolution Mismatch Choice" : 2,
+		"Last Script Resolution Mismatch Choice" : 1,
 		"Open Audio" : true,
 		"Overscan Mask" : false,
 		"Provider" : "ffmpegsource",
