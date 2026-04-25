@@ -440,7 +440,8 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		".srt",
 		".ssa",
 		".sub",
-		".ttxt"
+		".ttxt",
+		".lrc"
 	};
 
 	// Audio formats
