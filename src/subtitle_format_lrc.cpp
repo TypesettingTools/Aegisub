@@ -105,8 +105,6 @@ std::vector<std::string> LRCSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 void LRCSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *forceEncoding) const {
-	using namespace std;
-
 	TextFileReader file(filename, forceEncoding);
 	target->LoadDefault(false, OPT_GET("Subtitle Format/LRC/Default Style Catalog")->GetString());
 
