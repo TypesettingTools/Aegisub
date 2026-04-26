@@ -62,7 +62,7 @@ namespace {
 
 		return agi::Time{(minutes * 60 + seconds) * 1000 + milliseconds};
 	}
-	std::string ParseAgi(agi::Time time){
+	std::string StringifyTime(agi::Time time){
 		int milliseconds = time;
 
 		int seconds = milliseconds / 1000;
@@ -132,7 +132,7 @@ void LRCSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 
 	for(auto it = src->Events.cbegin(); it != src->Events.cend(); ++it){
 		const auto &dialog = *it;
-		std::string out_line = ParseAgi(dialog.Start);
+		std::string out_line = StringifyTime(dialog.Start);
 
 		// Add the LRC spacing
 		if(!dialog.Text->empty()){
@@ -146,7 +146,7 @@ void LRCSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 
 		// If last lyric, write end
 		if(it == std::prev(src->Events.cend())){
-			out_line = ParseAgi(dialog.End);
+			out_line = StringifyTime(dialog.End);
 			file.WriteLineToFile(out_line, false);
 		}
 	}
