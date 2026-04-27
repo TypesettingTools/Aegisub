@@ -35,117 +35,137 @@
 #include <boost/algorithm/string/trim.hpp>
 
 #include <format>
+#include <optional>
 #include <sstream>
 
 DEFINE_EXCEPTION(LRCParseError, SubtitleFormatParseError);
 
 namespace {
-	struct LRCLine {
-		agi::Time start_time;
-		std::string lyric;
-	};
+struct LRCLine {
+  agi::Time start_time;
+  std::string lyric;
+};
 
-	agi::Time ParseTime(std::string time){
-		char delim;
-		int minutes{0};
-		int seconds{0};
-		int milliseconds{0};
+agi::Time ParseTime(std::string time) {
+  char delim;
+  int minutes{0};
+  int seconds{0};
+  int milliseconds{0};
 
-		// Remove the '[' and ']'
-		time.erase(0, 1);
-		time.pop_back();
+  // Remove the '[' and ']'
+  time.erase(0, 1);
+  time.pop_back();
 
-		std::istringstream ss{time};
-		ss >> minutes >> delim >> seconds >> delim >> milliseconds;
+  std::istringstream ss{time};
+  ss >> minutes >> delim >> seconds >> delim >> milliseconds;
 
-		milliseconds *= 10;
+  milliseconds *= 10;
 
-		return agi::Time{(minutes * 60 + seconds) * 1000 + milliseconds};
-	}
-	std::string StringifyTime(agi::Time time){
-		int milliseconds = time;
+  return agi::Time{(minutes * 60 + seconds) * 1000 + milliseconds};
+}
+std::string StringifyTime(agi::Time time) {
+  int milliseconds = time;
 
-		int seconds = milliseconds / 1000;
-		milliseconds -= seconds * 1000;
+  int seconds = milliseconds / 1000;
+  milliseconds -= seconds * 1000;
 
-		int minutes = seconds / 60;
-		seconds -= minutes * 60;
+  int minutes = seconds / 60;
+  seconds -= minutes * 60;
 
-		// Reduce to 2 digits
-		milliseconds /= 10;
+  // Reduce to 2 digits
+  milliseconds /= 10;
 
-		return std::format("[{:0>2}:{:0>2}.{:0>2}]", minutes, seconds, milliseconds);
-	}
-
-	LRCLine ParseLine(std::string line, int line_num){
-		// "[mm:ss.ff]" eg.("[01:53.21]")
-		static const boost::regex timestamp_regex("^\\[([0-9]{1,2}:[0-9]{1,2}.[0-9]{1,2})\\]");
-
-		boost::smatch timestamp_match;
-		if(!boost::regex_search(line, timestamp_match, timestamp_regex)){
-			throw LRCParseError(std::format("Parsing LRC: Expected timestamp at line {}", line_num));
-		}
-
-		std::string timestamp = timestamp_match[0];
-		line.erase(0, timestamp.size());
-		// There is always a space between end of timestamp and lyric text
-		boost::trim_left(line);
-
-		return LRCLine{ParseTime(timestamp), line};
-	}
+  return std::format("[{:0>2}:{:0>2}.{:0>2}]", minutes, seconds, milliseconds);
 }
 
-LRCSubtitleFormat::LRCSubtitleFormat(): SubtitleFormat("Lyric"){
+std::optional<LRCLine> ParseLine(std::string line, int line_num) {
+  // "[mm:ss.ff]" eg.("[01:53.21]")
+  static const boost::regex timestamp_regex(
+      "^\\[([0-9]{1,2}:[0-9]{1,2}.[0-9]{1,2})\\]");
+  static const boost::regex tag_regex("^\\[[a-zA-Z#].+\\]");
 
+  boost::smatch regex_match;
+  if (!boost::regex_search(line, regex_match, timestamp_regex)) {
+    if (boost::regex_search(line, regex_match, tag_regex)) {
+      return std::nullopt;
+    }
+    throw LRCParseError(
+        std::format("Parsing LRC: Expected timestamp at line {}", line_num));
+  }
+
+  std::string timestamp = regex_match[0];
+  line.erase(0, timestamp.size());
+  // There is always a space between end of timestamp and lyric text
+  boost::trim_left(line);
+
+  return LRCLine{ParseTime(timestamp), line};
 }
+} // namespace
+
+LRCSubtitleFormat::LRCSubtitleFormat() : SubtitleFormat("Lyric") {}
 std::vector<std::string> LRCSubtitleFormat::GetReadWildcards() const {
-	return {"lrc"};
+  return {"lrc"};
 }
 std::vector<std::string> LRCSubtitleFormat::GetWriteWildcards() const {
-	return GetReadWildcards();
+  return GetReadWildcards();
 }
-void LRCSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *forceEncoding) const {
-	TextFileReader file(filename, forceEncoding);
-	target->LoadDefault(false, OPT_GET("Subtitle Format/LRC/Default Style Catalog")->GetString());
+void LRCSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const &filename,
+                                 agi::vfr::Framerate const &,
+                                 const char *forceEncoding) const {
+  TextFileReader file(filename, forceEncoding);
+  target->LoadDefault(
+      false, OPT_GET("Subtitle Format/LRC/Default Style Catalog")->GetString());
 
-	AssDialogue *line{nullptr};
-	int line_num = 0;
-	LRCLine currentLine{ParseLine(file.ReadLineFromFile(), line_num++)};
-	while(file.HasMoreLines()){
-		LRCLine nextLine{ParseLine(file.ReadLineFromFile(), line_num++)};
-		
-		// New line
-		line = new AssDialogue{};
-		line->Start = currentLine.start_time;
-		// LRC contains only start time, not the end, so have to take the end from next line
-		line->End = nextLine.start_time;
-		line->Text = currentLine.lyric;
-		target->Events.push_back(*line);
+  AssDialogue *line{nullptr};
+  int line_num = 0;
+  std::optional<LRCLine> currentLine;
+  while (file.HasMoreLines() &&
+         !(currentLine = ParseLine(file.ReadLineFromFile(), line_num++)))
+    ;
 
-		currentLine = std::move(nextLine);
-	}
+  while (file.HasMoreLines()) {
+    std::optional<LRCLine> nextLine{
+        ParseLine(file.ReadLineFromFile(), line_num++)};
+    if (!nextLine) {
+      continue;
+    }
+
+    // New line
+    line = new AssDialogue{};
+    line->Start = currentLine->start_time;
+    // LRC contains only start time, not the end, so have to take the end from
+    // next line
+    line->End = nextLine->start_time;
+    line->Text = currentLine->lyric;
+    target->Events.push_back(*line);
+
+    currentLine = std::move(nextLine);
+  }
 }
-void LRCSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
-	TextFileWriter file(filename, encoding);
+void LRCSubtitleFormat::WriteFile(const AssFile *src,
+                                  agi::fs::path const &filename,
+                                  agi::vfr::Framerate const &,
+                                  const char *encoding) const {
+  TextFileWriter file(filename, encoding);
 
-	for(auto it = src->Events.cbegin(); it != src->Events.cend(); ++it){
-		const auto &dialog = *it;
-		std::string out_line = StringifyTime(dialog.Start);
+  for (auto it = src->Events.cbegin(); it != src->Events.cend(); ++it) {
+    const auto &dialog = *it;
+    std::string out_line = StringifyTime(dialog.Start);
 
-		// Add the LRC spacing
-		if(!dialog.Text->empty()){
-			out_line += " ";
-			out_line += dialog.Text;
-		}
+    // Add the LRC spacing
+    if (!dialog.Text->empty()) {
+      out_line += " ";
+      out_line += dialog.Text;
+    }
 
-		if(out_line.size()){
-			file.WriteLineToFile(out_line);
-		}
+    if (out_line.size()) {
+      file.WriteLineToFile(out_line);
+    }
 
-		// If last lyric, write end
-		if(it == std::prev(src->Events.cend())){
-			out_line = StringifyTime(dialog.End);
-			file.WriteLineToFile(out_line, false);
-		}
-	}
+    // If last lyric, write end
+    if (it == std::prev(src->Events.cend())) {
+      out_line = StringifyTime(dialog.End);
+      file.WriteLineToFile(out_line, false);
+    }
+  }
 }
