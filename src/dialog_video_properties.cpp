@@ -38,7 +38,24 @@ enum {
 	FIX_RESAMPLE
 };
 
-int prompt(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
+
+bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *) {
+	// When opening dummy video only want to set the script properties if
+	// they were previously unset
+	if (!new_provider->ShouldSetVideoProperties()) {
+		return false;
+	}
+
+	agi::ycbcr::Header video_matrix(new_provider->GetColorSpace());
+	if (video_matrix != file->GetYCbCrMatrix()) {
+		file->SetScriptInfo("YCbCr Matrix", video_matrix.to_existing_string());
+		return true;
+	}
+
+	return false;
+}
+
+int prompt_play_res(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
 	wxDialog d(parent, -1, _("Resolution mismatch"));
 
 	auto label_text = fmt_tl(
@@ -83,19 +100,7 @@ int prompt(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
 	return d.ShowModal();
 }
 
-bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
-	bool commit_subs = false;
-
-	// When opening dummy video only want to set the script properties if
-	// they were previously unset
-	bool set_properties = new_provider->ShouldSetVideoProperties();
-
-	agi::ycbcr::Header video_matrix(new_provider->GetColorSpace());
-	if (set_properties && video_matrix != file->GetYCbCrMatrix()) {
-		file->SetScriptInfo("YCbCr Matrix", video_matrix.to_existing_string());
-		commit_subs = true;
-	}
-
+bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	// Check that the script resolution matches the video resolution
 	int sx = file->GetScriptInfoAsInt("PlayResX");
 	int sy = file->GetScriptInfoAsInt("PlayResY");
@@ -110,14 +115,16 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 		return true;
 	}
 
-	if (!set_properties)
+	// When opening dummy video only want to set the script properties if
+	// they were previously unset
+	if (!new_provider->ShouldSetVideoProperties())
 		return false;
 
 	// Treat exact multiples of the video resolution as equaling the resolution
 	// for the people who use that for subpixel precision (which is mostly
 	// pointless these days due to decimals being supported almost everywhere)
 	if (sx % vx == 0 && sy % vy == 0)
-		return commit_subs;
+		return false;
 
 	auto sar = double(sx) / sy;
 	auto var = double(vx) / vy;
@@ -125,7 +132,7 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 
 	switch (OPT_GET("Video/PlayRes Mismatch")->GetInt()) {
 	case MISMATCH_IGNORE: default:
-		return commit_subs;
+		return false;
 
 	case MISMATCH_RESAMPLE:
 		// Fallthrough to prompt if the AR changed
@@ -141,8 +148,8 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 		[[fallthrough]];
 
 	case MISMATCH_PROMPT:
-		int res = prompt(parent, ar_changed, sx, sy, vx, vy);
-		if (res == FIX_IGNORE) return commit_subs;
+		int res = prompt_play_res(parent, ar_changed, sx, sy, vx, vy);
+		if (res == FIX_IGNORE) return false;
 		OPT_SET("Video/Last PlayRes Mismatch Choice")->SetInt(res);
 
 		ResampleResolution(file, {
@@ -157,6 +164,9 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 }
 
 void UpdateVideoProperties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
-	if (update_video_properties(file, new_provider, parent))
+	if (update_ycbcr_matrix(file, new_provider, parent))
+		file->Commit(_("change ycbcr matrix"), AssFile::COMMIT_SCRIPTINFO);
+
+	if (update_play_res(file, new_provider, parent))
 		file->Commit(_("change script resolution"), AssFile::COMMIT_SCRIPTINFO);
 }
