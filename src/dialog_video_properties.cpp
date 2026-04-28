@@ -23,6 +23,7 @@
 
 #include <wx/dialog.h>
 #include <wx/intl.h>
+#include <wx/msgdlg.h>
 #include <wx/radiobox.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
@@ -44,6 +45,29 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 	// they were previously unset
 	if (!new_provider->ShouldSetVideoProperties()) {
 		return false;
+	}
+
+	auto VideoCS = new_provider->GetRealColorSpace();
+	auto [guessCM, guessCR] = VideoCS;
+	agi::ycbcr::guess_colorspace(guessCM, guessCR, new_provider->GetWidth(), new_provider->GetHeight());
+
+	if (VideoCS.matrix == agi::ycbcr_matrix::Unspecified && OPT_GET("Video/Untagged Matrix Warning")->GetBool()) {
+		wxString title = _("Untagged video");
+
+		// Warn on an untagged matrix but not on an untagged range:
+		// No sane player will ever guess a full range, so an untagged range is not really an issue in practice.
+		wxMessageBox(
+#ifdef __WXMSW__
+			// On Windows, wxMessageBoxes containing new lines highlight the first line as a title.
+			title + "\n" +
+#endif
+			fmt_tl(
+			"The video you have loaded has no specified color matrix. "
+			"Aegisub will guess the color matrix to be %s, but there is no guarantee that other programs will guess the same matrix. "
+			"This may make the video appear with different colors in different media players and can prevent subtitle colors from matching video colors."
+			"\n\n"
+			"Consider tagging your video with a color matrix to ensure that your video displays consistently in all players and that subtitle colors can reliably match video colors."
+			, agi::ycbcr::matrix_to_string(guessCM)), title, wxICON_WARNING | wxOK | wxCENTER);
 	}
 
 	agi::ycbcr::Header video_matrix(new_provider->GetColorSpace());

@@ -619,6 +619,7 @@
 		},
 		"PlayRes Mismatch" : 1,
 		"Last PlayRes Mismatch Choice" : 1,
+		"Untagged Matrix Warning" : true,
 		"Open Audio" : true,
 		"Overscan Mask" : false,
 		"Provider" : "ffmpegsource",
