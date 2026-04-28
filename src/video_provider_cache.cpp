@@ -69,6 +69,7 @@ public:
 	std::string GetDecoderName() const override    { return master->GetDecoderName(); }
 	agi::ycbcr::header_colorspace GetColorSpace() const override     { return master->GetColorSpace(); }
 	agi::ycbcr::header_colorspace GetRealColorSpace() const override { return master->GetRealColorSpace(); }
+	bool IsHDRorWCG() const override { return master->IsHDRorWCG(); }
 	bool ShouldSetVideoProperties() const override { return master->ShouldSetVideoProperties(); }
 	bool HasAudio() const override                 { return master->HasAudio(); }
 };
