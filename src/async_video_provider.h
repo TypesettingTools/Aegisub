@@ -130,6 +130,7 @@ public:
 	std::vector<int> GetKeyFrames() const { return source_provider->GetKeyFrames(); }
 	agi::ycbcr::header_colorspace GetColorSpace() const     { return source_provider->GetColorSpace(); }
 	agi::ycbcr::header_colorspace GetRealColorSpace() const { return source_provider->GetRealColorSpace(); }
+	bool IsHDRorWCG() const { return source_provider->IsHDRorWCG(); }
 	std::string GetWarning() const        { return source_provider->GetWarning(); }
 	std::string GetDecoderName() const    { return source_provider->GetDecoderName(); }
 	bool ShouldSetVideoProperties() const { return source_provider->ShouldSetVideoProperties(); }

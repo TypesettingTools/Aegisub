@@ -49,6 +49,31 @@ using agi::ycbcr_range;
 namespace ycbcr = agi::ycbcr;
 
 namespace {
+bool IsHDRFrame(const FFMS_Frame *frame) {
+	switch (frame->TransferCharateristics) {
+		case 16:	// SMPTE ST 2084 (PQ)
+		case 18:	// ARIB_STD_B67 (HLG)
+			return true;
+		default:
+			break;
+	}
+
+	switch (frame->ColorPrimaries) {
+		case 9:		// BT.2020
+		case 11:	// SMPTE ST 431-2 (2011) (DCI P3)
+		case 12:	// SMPTE ST 432-1 (2010) (Display P3)
+			return true;
+		default:
+			break;
+	}
+
+	if (frame->DolbyVisionRPUSize) {
+		return true;
+	}
+
+	return false;
+}
+
 /// @class FFmpegSourceVideoProvider
 /// @brief Implements video loading through the FFMS library.
 class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvider {
@@ -63,6 +88,8 @@ class FFmpegSourceVideoProvider final : public VideoProvider, FFmpegSourceProvid
 	std::vector<int> KeyFramesList; ///< list of keyframes
 	agi::vfr::Framerate Timecodes;  ///< vfr object
 	ycbcr::header_colorspace ColorSpace;   ///< color space currently used to convert the video to RGB
+
+	bool HDR = false;
 
 	char FFMSErrMsg[1024];          ///< FFMS error message
 	FFMS_ErrorInfo ErrInfo;         ///< FFMS error codes/messages
@@ -94,6 +121,7 @@ public:
 	agi::vfr::Framerate GetFPS() const override    { return Timecodes; }
 	ycbcr::header_colorspace GetColorSpace() const override     { return ColorSpace; }
 	ycbcr::header_colorspace GetRealColorSpace() const override { return VideoColorSpace; }
+	bool IsHDRorWCG() const override { return HDR; }
 	std::vector<int> GetKeyFrames() const override { return KeyFramesList; };
 	std::string GetDecoderName() const override    { return "FFmpegSource"; }
 	bool WantsCaching() const override             { return true; }
@@ -215,6 +243,7 @@ void FFmpegSourceVideoProvider::LoadVideo(agi::fs::path const& filename, ycbcr::
 		DAR = double(Width) / Height;
 
 	VideoColorSpace = {static_cast<ycbcr_matrix>(TempFrame->ColorSpace), static_cast<ycbcr_range>(TempFrame->ColorRange)};
+	HDR = IsHDRFrame(TempFrame);
 
 	SetColorSpace(colormatrix);
 

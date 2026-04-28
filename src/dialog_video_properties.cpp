@@ -70,6 +70,14 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 			, agi::ycbcr::matrix_to_string(guessCM)), title, wxICON_WARNING | wxOK | wxCENTER);
 	}
 
+	if (new_provider->IsHDRorWCG() && OPT_GET("Video/HDR Video Warning")->GetBool()) {
+		wxMessageBox(_(
+			"The video you have loaded has HDR and/or WCG colors. "
+			"While ordinary dialogue subtitles will work fine on such videos, "
+			"matching video colors using subtitles will not be possible on HDR and/or WCG footage."
+			), _("HDR and/or WCG video"), wxICON_WARNING | wxOK | wxCENTER);
+	}
+
 	agi::ycbcr::Header video_matrix(new_provider->GetColorSpace());
 	if (video_matrix != file->GetYCbCrMatrix()) {
 		file->SetScriptInfo("YCbCr Matrix", video_matrix.to_existing_string());
