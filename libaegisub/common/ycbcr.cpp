@@ -66,6 +66,57 @@ header_variant parse_ycbcr_header(std::string const& matrix) {
 
 }
 
+const char *matrix_to_string(ycbcr_matrix matrix) {
+	using enum ycbcr_matrix;
+	switch (matrix) {
+		case RGB:
+			return "RGB";
+		case BT709:
+			return "BT.709";
+		case Unspecified:
+			return "Unspecified";
+		case FCC:
+			return "FCC";
+		case BT470BG:
+			return "BT.470-BG";
+		case SMPTE170M:
+			return "SMPTE ST 170M";
+		case SMPTE240M:
+			return "SMPTE ST 240M";
+		case YCoCg:
+			return "YCoCg";
+		case BT2020_NCL:
+			return "BT.2020 NCL";
+		case BT2020_CL:
+			return "BT.2020 CL";
+		case SMPTE2085:
+			return "SMPTE 2085";
+		case ChromacityDerivedNCL:
+			return "Chromacity-derived NCL";
+		case ChromacityDerivedCL:
+			return "Chromacity-derived CL";
+		case ICtCp:
+			return "ICtCp";
+		default:
+			return "<Unknown or invalid matrix>";
+	}
+}
+
+const char *range_to_string(ycbcr_range range) {
+	using enum ycbcr_range;
+	switch (range) {
+		case Unspecified:
+			return "Unspecified";
+		case MPEG:
+			return "Limited";
+		case JPEG:
+			return "Full";
+		default:
+			return "<Unknown or invalid range>";
+	}
+}
+
+
 Header::Header(header_variant v) : header_variant(v) {
 	if (auto *cs = std::get_if<header_colorspace>(this)) {
 		if (cs->matrix == ycbcr_matrix::BT470BG)
