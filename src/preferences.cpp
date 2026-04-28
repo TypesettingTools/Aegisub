@@ -209,6 +209,7 @@ void Video(wxTreebook *book, Preferences *parent) {
 
 	auto ycbcr = p->PageSizer(_("YCbCr Matrix"));
 	p->OptionAdd(ycbcr, _("Warn on untagged video color matrix"), "Video/Untagged Matrix Warning");
+	p->OptionAdd(ycbcr, _("Warn on HDR/WCG video"), "Video/HDR Video Warning");
 
 	p->SetSizerAndFit(p->sizer);
 }

@@ -67,6 +67,8 @@ public:
 	virtual agi::ycbcr::header_colorspace GetColorSpace() const = 0;
 	virtual agi::ycbcr::header_colorspace GetRealColorSpace() const { return GetColorSpace(); }
 
+	virtual bool IsHDRorWCG() const { return false; };
+
 	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
 	virtual std::string GetWarning() const { return ""; }
 
