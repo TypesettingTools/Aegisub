@@ -207,6 +207,9 @@ void Video(wxTreebook *book, Preferences *parent) {
 	wxArrayString choice_res(3, cres_arr);
 	p->OptionChoice(resolution, _("Match video resolution on open"), choice_res, "Video/PlayRes Mismatch");
 
+	auto ycbcr = p->PageSizer(_("YCbCr Matrix"));
+	p->OptionAdd(ycbcr, _("Warn on untagged video color matrix"), "Video/Untagged Matrix Warning");
+
 	p->SetSizerAndFit(p->sizer);
 }
 
