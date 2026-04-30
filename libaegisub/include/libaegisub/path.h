@@ -36,6 +36,10 @@ public:
 	/// @return Absolute path
 	fs::path Decode(std::string_view path) const;
 
+	/// @return Whether the given path points to a dummy video or audio
+	/// Such paths will not be modified by MakeAbsolute or MakeRelative.
+	static bool IsDummyPath(fs::path const& path);
+
 	/// If path is relative, make it absolute relative to the token's path
 	/// @param path A possibly relative path
 	/// @param token Token containing base path for resolving relative paths

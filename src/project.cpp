@@ -179,6 +179,19 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 	auto timecodes = context->path->MakeAbsolute(properties.timecodes_file, "?script");
 	auto keyframes = context->path->MakeAbsolute(properties.keyframes_file, "?script");
 
+	// There are TOCTOU races here but they should not cause any actual harm.
+	if (!agi::fs::Exists(audio) && !context->path->IsDummyPath(audio))
+		audio = "";
+
+	if (!agi::fs::Exists(video) && !context->path->IsDummyPath(video))
+		video = "";
+
+	if (!agi::fs::Exists(timecodes))
+		timecodes = "";
+
+	if (!agi::fs::Exists(keyframes))
+		keyframes = "";
+
 	if (video == video_file && audio == audio_file && keyframes == keyframes_file && timecodes == timecodes_file)
 		return;
 
