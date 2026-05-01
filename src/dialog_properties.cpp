@@ -44,7 +44,7 @@
 #include <wx/checkbox.h>
 #include <wx/combobox.h>
 #include <wx/dialog.h>
-#include <wx/sizer.h>
+#include <wx/gbsizer.h>
 #include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
@@ -72,6 +72,8 @@ class DialogProperties {
 	void OnSetFromVideo(wxCommandEvent &event);
 	/// Set layout resolution to video resolution button
 	void OnSetLayoutResFromVideo(wxCommandEvent &event);
+	/// Set YCbCr Matrix to recommended matrix for video button
+	void OnSetYCbCrMatrixFromVideo(wxCommandEvent &event);
 	/// Set a script info field
 	/// @param key Name of field
 	/// @param value New value
@@ -139,14 +141,15 @@ DialogProperties::DialogProperties(agi::Context *c)
 	else
 		FromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetFromVideo, this);
 
-	auto res_sizer = new wxFlexGridSizer(5, 5, 5);
+	auto res_sizer = new wxGridBagSizer(5, 5);
+	res_sizer->SetCols(5);
 	res_sizer->AddGrowableCol(1, 1);
 	res_sizer->AddGrowableCol(3, 1);
-	res_sizer->Add(new wxStaticText(res_box, -1, _("Script: ")), wxSizerFlags().Center().Left());
-	res_sizer->Add(ResX, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
-	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), 0, wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
-	res_sizer->Add(ResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
-	res_sizer->Add(FromVideo, 1, 0, 0);
+	res_sizer->Add(new wxStaticText(res_box, -1, _("Script: ")), wxGBPosition(0, 0), wxGBSpan(1, 1), wxSizerFlags().Center().Left().GetFlags());
+	res_sizer->Add(ResX, wxGBPosition(0, 1), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
+	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), wxGBPosition(0, 2), wxGBSpan(1, 1), wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
+	res_sizer->Add(ResY, wxGBPosition(0, 3), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
+	res_sizer->Add(FromVideo, wxGBPosition(0, 4), wxGBSpan(1, 1));
 
 	wxButton *LayoutResFromVideo = new wxButton(res_box,-1,_("From video"));
 	if (!c->project->VideoProvider())
@@ -154,21 +157,26 @@ DialogProperties::DialogProperties(agi::Context *c)
 	else
 		LayoutResFromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetLayoutResFromVideo, this);
 
-	res_sizer->Add(new wxStaticText(res_box, -1, _("Layout: ")), wxSizerFlags().Center().Left());
-	res_sizer->Add(LayoutResX, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
-	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), 0, wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
-	res_sizer->Add(LayoutResY, 1, wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
-	res_sizer->Add(LayoutResFromVideo, 1, 0, 0);
+	res_sizer->Add(new wxStaticText(res_box, -1, _("Layout: ")), wxGBPosition(1, 0), wxGBSpan(1, 1), wxSizerFlags().Center().Left().GetFlags());
+	res_sizer->Add(LayoutResX, wxGBPosition(1, 1), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
+	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), wxGBPosition(1, 2), wxGBSpan(1, 1), wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
+	res_sizer->Add(LayoutResY, wxGBPosition(1, 3), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
+	res_sizer->Add(LayoutResFromVideo, wxGBPosition(1, 4), wxGBSpan(1, 1));
 
 	YCbCrMatrix = new wxComboBox(res_box, -1, to_wx(c->ass->GetScriptInfo("YCbCr Matrix")),
 		 wxDefaultPosition, wxDefaultSize, to_wx(agi::ycbcr::valid_header_strings), wxCB_READONLY);
 
-	auto matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	matrix_sizer->Add(new wxStaticText(res_box, -1, _("YCbCr Matrix:")), wxSizerFlags().Center());
-	matrix_sizer->Add(YCbCrMatrix, wxSizerFlags(1).Expand().Border(wxLEFT));
+	wxButton *YCbCrMatrixFromVideo = new wxButton(res_box,-1,_("From video"));
+	if (!c->project->VideoProvider())
+		YCbCrMatrixFromVideo->Enable(false);
+	else
+		YCbCrMatrixFromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetYCbCrMatrixFromVideo, this);
+
+	res_sizer->Add(new wxStaticText(res_box, -1, _("YCbCr Matrix:")), wxGBPosition(2, 0), wxGBSpan(1, 1), wxSizerFlags().Center().GetFlags());
+	res_sizer->Add(YCbCrMatrix, wxGBPosition(2, 1), wxGBSpan(1, 3), wxSizerFlags(1).Expand().Border(wxLEFT).GetFlags());
+	res_sizer->Add(YCbCrMatrixFromVideo, wxGBPosition(2, 4), wxGBSpan(1, 1), wxSizerFlags().Expand().GetFlags());
 
 	res_box_sizer->Add(res_sizer, wxSizerFlags().Expand());
-	res_box_sizer->Add(matrix_sizer, wxSizerFlags().Border(wxTOP).Expand());
 
 	// Options
 	wxStaticBoxSizer *optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Options"));
@@ -262,6 +270,10 @@ void DialogProperties::OnSetLayoutResFromVideo(wxCommandEvent &) {
 	auto [width, height] = GetVideoDisplayResolution(c);
 	LayoutResX->SetValue(std::to_wstring(width));
 	LayoutResY->SetValue(std::to_wstring(height));
+}
+
+void DialogProperties::OnSetYCbCrMatrixFromVideo(wxCommandEvent &) {
+	YCbCrMatrix->SetValue(agi::ycbcr::Header(c->project->VideoProvider()->GetRealColorSpace()).to_best_practice_string());
 }
 }
 
