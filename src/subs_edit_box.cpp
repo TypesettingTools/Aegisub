@@ -45,7 +45,6 @@
 #include "include/aegisub/hotkey.h"
 #include "initial_line_state.h"
 #include "options.h"
-#include "placeholder_ctrl.h"
 #include "project.h"
 #include "selection_controller.h"
 #include "subs_edit_ctrl.h"
@@ -132,12 +131,16 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	});
 	top_sizer->Add(style_edit_button, wxSizerFlags().Center().Border(wxRIGHT));
 
-	actor_box = new Placeholder<wxComboBox>(this, _("Actor"), wxSize(110, -1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Actor name for this speech. This is only for reference, and is mainly useless."));
+	actor_box = new wxComboBox(this, -1, _("Actor"), wxDefaultPosition, wxSize(110, -1), 0, nullptr, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	actor_box->SetToolTip(_("Actor name for this speech. This is only for reference, and is mainly useless."));
+	actor_box->SetHint(_("Actor"));
 	Bind(wxEVT_TEXT, &SubsEditBox::OnActorChange, this, actor_box->GetId());
 	Bind(wxEVT_COMBOBOX, &SubsEditBox::OnActorChange, this, actor_box->GetId());
 	top_sizer->Add(actor_box, wxSizerFlags(2).Center().Border(wxRIGHT));
 
-	effect_box = new Placeholder<wxComboBox>(this, _("Effect"), wxSize(80,-1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	effect_box = new wxComboBox(this, -1, _("Effect"), wxDefaultPosition, wxSize(80, -1), 0, nullptr, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	effect_box->SetToolTip(_("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
+	effect_box->SetHint(_("Effect"));
 	Bind(wxEVT_TEXT, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
 	Bind(wxEVT_COMBOBOX, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
 	top_sizer->Add(effect_box, 3, wxALIGN_CENTER, 5);
