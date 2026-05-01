@@ -29,14 +29,15 @@
 #include <wx/stattext.h>
 
 namespace {
-enum {
-	MISMATCH_IGNORE,
-	MISMATCH_PROMPT,
-	MISMATCH_RESAMPLE,
+enum class ResolutionMismatchAction {
+	Ignore,
+	Prompt,
+	Resample,
 };
-enum {
-	FIX_IGNORE,
-	FIX_RESAMPLE
+
+enum class ResolutionMismatchFix {
+	Ignore,
+	Resample,
 };
 
 
@@ -87,7 +88,7 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 	return false;
 }
 
-int prompt_play_res(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
+ResolutionMismatchFix prompt_play_res(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
 	wxDialog d(parent, -1, _("Resolution mismatch"));
 
 	auto label_text = fmt_tl(
@@ -129,7 +130,7 @@ int prompt_play_res(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, i
 	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(0); }, wxID_CANCEL);
 	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { HelpButton::OpenPage("Resolution mismatch"); }, wxID_HELP);
 
-	return d.ShowModal();
+	return static_cast<ResolutionMismatchFix>(d.ShowModal());
 }
 
 bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
@@ -162,11 +163,11 @@ bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWi
 	auto var = double(vx) / vy;
 	bool ar_changed = std::abs(sar - var) / var > .01;
 
-	switch (OPT_GET("Video/PlayRes Mismatch")->GetInt()) {
-	case MISMATCH_IGNORE: default:
+	switch (static_cast<ResolutionMismatchAction>(OPT_GET("Video/PlayRes Mismatch")->GetInt())) {
+	case ResolutionMismatchAction::Ignore: default:
 		return false;
 
-	case MISMATCH_RESAMPLE:
+	case ResolutionMismatchAction::Resample:
 		// Fallthrough to prompt if the AR changed
 		if (!ar_changed) {
 			ResampleResolution(file, {
@@ -179,15 +180,15 @@ bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWi
 		}
 		[[fallthrough]];
 
-	case MISMATCH_PROMPT:
-		int res = prompt_play_res(parent, ar_changed, sx, sy, vx, vy);
-		if (res == FIX_IGNORE) return false;
-		OPT_SET("Video/Last PlayRes Mismatch Choice")->SetInt(res);
+	case ResolutionMismatchAction::Prompt:
+		auto res = prompt_play_res(parent, ar_changed, sx, sy, vx, vy);
+		if (res == ResolutionMismatchFix::Ignore) return false;
+		OPT_SET("Video/Last PlayRes Mismatch Choice")->SetInt(static_cast<int>(res));
 
 		ResampleResolution(file, {
 			{0, 0, 0, 0},
 			sx, sy, vx, vy,
-			static_cast<ResampleARMode>(res - FIX_RESAMPLE),
+			static_cast<ResampleARMode>(static_cast<int>(res) - static_cast<int>(ResolutionMismatchFix::Resample)),
 			std::nullopt,
 		});
 		return true;
