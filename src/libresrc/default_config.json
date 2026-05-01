@@ -617,11 +617,11 @@
 			},
 			"Pattern" : false
 		},
-		"Last Script Resolution Mismatch Choice" : 1,
+		"PlayRes Mismatch" : 1,
+		"Last PlayRes Mismatch Choice" : 1,
 		"Open Audio" : true,
 		"Overscan Mask" : false,
 		"Provider" : "ffmpegsource",
-		"Script Resolution Mismatch" : 1,
 		"Slider" : {
 			"Fast Jump Step" : 10,
 			"Show Keyframes" : true

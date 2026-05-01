@@ -32,7 +32,6 @@ enum {
 	MISMATCH_IGNORE,
 	MISMATCH_PROMPT,
 	MISMATCH_RESAMPLE,
-	MISMATCH_SET
 };
 enum {
 	FIX_IGNORE,
@@ -71,7 +70,7 @@ int prompt(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
 	sizer->Add(rb, wxSizerFlags().Border(wxALL & ~wxTOP).Expand());
 	sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Border().Expand());
 
-	unsigned int sel = OPT_GET("Video/Last Script Resolution Mismatch Choice")->GetInt();
+	unsigned int sel = OPT_GET("Video/Last PlayRes Mismatch Choice")->GetInt();
 	rb->SetSelection(std::min(sel, rb->GetCount()));
 
 	d.SetSizerAndFit(sizer);
@@ -124,14 +123,9 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 	auto var = double(vx) / vy;
 	bool ar_changed = std::abs(sar - var) / var > .01;
 
-	switch (OPT_GET("Video/Script Resolution Mismatch")->GetInt()) {
+	switch (OPT_GET("Video/PlayRes Mismatch")->GetInt()) {
 	case MISMATCH_IGNORE: default:
 		return commit_subs;
-
-	case MISMATCH_SET:
-		file->SetScriptInfo("PlayResX", std::to_string(vx));
-		file->SetScriptInfo("PlayResY", std::to_string(vy));
-		return true;
 
 	case MISMATCH_RESAMPLE:
 		// Fallthrough to prompt if the AR changed
@@ -149,7 +143,7 @@ bool update_video_properties(AssFile *file, const AsyncVideoProvider *new_provid
 	case MISMATCH_PROMPT:
 		int res = prompt(parent, ar_changed, sx, sy, vx, vy);
 		if (res == FIX_IGNORE) return commit_subs;
-		OPT_SET("Video/Last Script Resolution Mismatch Choice")->SetInt(res);
+		OPT_SET("Video/Last PlayRes Mismatch Choice")->SetInt(res);
 
 		ResampleResolution(file, {
 			{0, 0, 0, 0},
