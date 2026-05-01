@@ -21,12 +21,15 @@
 #include "options.h"
 #include "resolution_resampler.h"
 
+#include <wx/choicdlg.h>
 #include <wx/dialog.h>
 #include <wx/intl.h>
 #include <wx/msgdlg.h>
 #include <wx/radiobox.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
+
+namespace ycbcr = agi::ycbcr;
 
 namespace {
 enum class ResolutionMismatchAction {
@@ -41,7 +44,19 @@ enum class ResolutionMismatchFix {
 };
 
 
-bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *) {
+enum class MissingYCbCrMatrixAction {
+	Ignore,
+	Prompt,
+	Set,
+};
+
+enum class MissingYCbCrMatrixFix {
+	Ignore,
+	Set,
+};
+
+
+bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	// When opening dummy video only want to set the script properties if
 	// they were previously unset
 	if (!new_provider->ShouldSetVideoProperties()) {
@@ -50,25 +65,22 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 
 	auto VideoCS = new_provider->GetRealColorSpace();
 	auto [guessCM, guessCR] = VideoCS;
-	agi::ycbcr::guess_colorspace(guessCM, guessCR, new_provider->GetWidth(), new_provider->GetHeight());
+	ycbcr::guess_colorspace(guessCM, guessCR, new_provider->GetWidth(), new_provider->GetHeight());
 
 	if (VideoCS.matrix == agi::ycbcr_matrix::Unspecified && OPT_GET("Video/Untagged Matrix Warning")->GetBool()) {
-		wxString title = _("Untagged video");
-
 		// Warn on an untagged matrix but not on an untagged range:
 		// No sane player will ever guess a full range, so an untagged range is not really an issue in practice.
+
 		wxMessageBox(
-#ifdef __WXMSW__
-			// On Windows, wxMessageBoxes containing new lines highlight the first line as a title.
-			title + "\n" +
-#endif
 			fmt_tl(
+			/* TRANSLATORS: Keep the space between the two line breaks; it's required for the message
+			                to display correctly on Windows. */
 			"The video you have loaded has no specified color matrix. "
 			"Aegisub will guess the color matrix to be %s, but there is no guarantee that other programs will guess the same matrix. "
 			"This may make the video appear with different colors in different media players and can prevent subtitle colors from matching video colors."
-			"\n\n"
+			"\n \n"
 			"Consider tagging your video with a color matrix to ensure that your video displays consistently in all players and that subtitle colors can reliably match video colors."
-			, agi::ycbcr::matrix_to_string(guessCM)), title, wxICON_WARNING | wxOK | wxCENTER);
+			, ycbcr::matrix_to_string(guessCM)), _("Untagged video"), wxICON_WARNING | wxOK | wxCENTER);
 	}
 
 	if (new_provider->IsHDRorWCG() && OPT_GET("Video/HDR Video Warning")->GetBool()) {
@@ -79,7 +91,53 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 			), _("HDR and/or WCG video"), wxICON_WARNING | wxOK | wxCENTER);
 	}
 
-	agi::ycbcr::Header video_matrix(new_provider->GetColorSpace());
+	auto script_matrix = file->GetYCbCrMatrix();
+
+	if (std::holds_alternative<ycbcr::header_missing>(script_matrix) || std::holds_alternative<ycbcr::header_invalid>(script_matrix)) {
+		// Script has no proper matrix set yet, so find out if the user wants to set one
+		auto recommended_matrix = ycbcr::Header(guessCM, guessCR).to_best_practice();
+
+		auto action = static_cast<MissingYCbCrMatrixAction>(OPT_GET("Video/No YCbCr Matrix in Script")->GetInt());
+
+		if (action == MissingYCbCrMatrixAction::Prompt) {
+			int Choice = wxGetSingleChoiceIndex(
+				fmt_tl(
+					"The current subtitle file has no YCbCr Matrix set.\n\n"
+					"If you plan to use this subtitle file on this newly loaded video file,\nyou should set the subtitle file's YCbCr Matrix to the video's color space (\"%s\").\n\n"
+					"If you plan to use a different video file, you may want to\nleave the YCbCr Matrix unset until you load the correct video file.\n\n"
+					"This prompt can be configured in the preferences.",
+				recommended_matrix.to_string().value()),
+				_("Set script's YCbCr Matrix?"),
+				{_("Leave YCbCr Matrix unset"), fmt_tl("Set script's YCbCr Matrix to the video's (\"%s\")", recommended_matrix.to_string().value())},
+				OPT_GET("Video/Last No YCbCr Matrix in Script Choice")->GetInt(),
+				parent
+			);
+
+			if (Choice == -1) {
+				Choice = static_cast<int>(MissingYCbCrMatrixFix::Ignore);
+			} else {
+				OPT_SET("Video/Last No YCbCr Matrix in Script Choice")->SetInt(Choice);
+			}
+
+			switch (static_cast<MissingYCbCrMatrixFix>(Choice)) {
+				case MissingYCbCrMatrixFix::Ignore:
+					action = MissingYCbCrMatrixAction::Ignore;
+					break;
+				case MissingYCbCrMatrixFix::Set:
+					action = MissingYCbCrMatrixAction::Set;
+					break;
+			}
+		}
+
+		if (action == MissingYCbCrMatrixAction::Set) {
+			file->SetScriptInfo("YCbCr Matrix", recommended_matrix.to_string().value());
+			return true;
+		}
+
+		return false;
+	}
+
+	ycbcr::Header video_matrix(new_provider->GetColorSpace());
 	if (video_matrix != file->GetYCbCrMatrix()) {
 		file->SetScriptInfo("YCbCr Matrix", video_matrix.to_existing_string());
 		return true;
