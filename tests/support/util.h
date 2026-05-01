@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include <libaegisub/fs.h>
+
 #include <string>
 
 namespace util {
@@ -21,4 +23,6 @@ bool compare(std::string const& file1, std::string const& file2);
 
 int write_rand(const char *path);
 int read_written_rand(const char *path);
+
+agi::fs::path test_data_dir();
 }

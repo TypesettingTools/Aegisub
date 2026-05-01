@@ -19,6 +19,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 namespace util {
 bool compare(const std::string &file1, const std::string &file2) {
@@ -43,4 +44,10 @@ int read_written_rand(const char *path) {
 	return value;
 }
 
+agi::fs::path test_data_dir() {
+	const char *path = std::getenv("TEST_DATA_DIR");
+	if (!path)
+		throw std::runtime_error("TEST_DATA_DIR not set in environment");
+	return path;
+}
 }
