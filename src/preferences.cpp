@@ -211,6 +211,10 @@ void Video(wxTreebook *book, Preferences *parent) {
 	p->OptionAdd(ycbcr, _("Warn on untagged video color matrix"), "Video/Untagged Matrix Warning");
 	p->OptionAdd(ycbcr, _("Warn on HDR/WCG video"), "Video/HDR Video Warning");
 
+	const wxString cnoycbcr_arr[] = {_("Never"), _("Ask"), _("Always set")};
+	wxArrayString choice_noycbcr(3, cnoycbcr_arr);
+	p->OptionChoice(ycbcr, _("Use video's YCbCr Matrix when script has no matrix set"), choice_noycbcr, "Video/No YCbCr Matrix in Script");
+
 	p->SetSizerAndFit(p->sizer);
 }
 
