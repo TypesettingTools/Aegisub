@@ -215,6 +215,10 @@ void Video(wxTreebook *book, Preferences *parent) {
 	wxArrayString choice_noycbcr(3, cnoycbcr_arr);
 	p->OptionChoice(ycbcr, _("Use video's YCbCr Matrix when script has no matrix set"), choice_noycbcr, "Video/No YCbCr Matrix in Script");
 
+	const wxString cmisycbcr_arr[] = {_("Never"), _("Ask"), _("Always set")};
+	wxArrayString choice_misycbcr(3, cnoycbcr_arr);
+	p->OptionChoice(ycbcr, _("Match video's YCbCr Matrix on open"), choice_misycbcr, "Video/YCbCr Matrix Mismatch");
+
 	p->SetSizerAndFit(p->sizer);
 }
 

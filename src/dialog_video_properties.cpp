@@ -56,6 +56,18 @@ enum class MissingYCbCrMatrixFix {
 };
 
 
+enum class YCbCrMatrixMismatchAction {
+	Ignore,
+	Prompt,
+	Set,
+};
+
+enum class YCbCrMatrixMismatchFix {
+	Ignore,
+	Set,
+};
+
+
 bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	// When opening dummy video only want to set the script properties if
 	// they were previously unset
@@ -92,11 +104,10 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 	}
 
 	auto script_matrix = file->GetYCbCrMatrix();
+	auto recommended_matrix = ycbcr::Header(guessCM, guessCR).to_best_practice();
 
 	if (std::holds_alternative<ycbcr::header_missing>(script_matrix) || std::holds_alternative<ycbcr::header_invalid>(script_matrix)) {
 		// Script has no proper matrix set yet, so find out if the user wants to set one
-		auto recommended_matrix = ycbcr::Header(guessCM, guessCR).to_best_practice();
-
 		auto action = static_cast<MissingYCbCrMatrixAction>(OPT_GET("Video/No YCbCr Matrix in Script")->GetInt());
 
 		if (action == MissingYCbCrMatrixAction::Prompt) {
@@ -133,14 +144,65 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 			file->SetScriptInfo("YCbCr Matrix", recommended_matrix.to_string().value());
 			return true;
 		}
+	} else if (std::holds_alternative<ycbcr::header_colorspace>(script_matrix) && script_matrix != recommended_matrix) {
+		// If the script's YCbCr Matrix is None, we assume that the user opts out of all color mangling
+		// and do not attempt (or ask) to change the YCbCr Matrix further.
+		//
+		// If the script's YCbCr Matrix is some actual color space, see if the video's color space is different from it.
+		auto action = static_cast<YCbCrMatrixMismatchAction>(OPT_GET("Video/No YCbCr Matrix in Script")->GetInt());
 
-		return false;
-	}
+		// This may be the most complicated case of all the video property mismatches.
+		// There are the following relevant cases:
+		// 1. The opened video is not a video on which the subtitles are meant to be played back. (Say, it's some test video or the user selected the wrong video by mistake.)
+		//	  This is the easy case, there the user can just leave the script unchanged.
+		// 2. The script was originally authored on (say) a BT.601 encode of some RGB video, and the user is now loading a (say) BT.709 encode of the same RGB video.
+		//	  In this case, the RGB colors in the subtitle file remain accurate to the new video (decoded with its tagged matrix), so the correct action is to set the new YCbCr Matrix header without changing colors.
+		// 3. The video the script was initially authored for was actually (say) BT.601 but mistagged as (say) BT.709 (or untagged and wrongly guessed),
+		//	  and the user is now loading the same YCbCr stream, but this time correctly tagged as BT.601.
+		//    In this case, the RGB colors in the subtitle file are *not* accurate to the video, so the correct action is to either leave the YCbCr Matrix unchanged or resample the colors to the new YCbCr Matrix.
+		//
+		//    We imagine that this case is the rarer one. (At least when exclusively working with new files, where Aegisub will also no longer force BT.601 and will warn on untagged videos.
+		//    Old, mistagged subtitle files are a different story.)
+		//
+		// (In all of these cases the base assumption is that the script looked correct on whatever video it was originally authored on.
+		// If this is not the case, all bets are off and the user will need to manually fix the matrix in the script properties dialog.)
 
-	ycbcr::Header video_matrix(new_provider->GetColorSpace());
-	if (video_matrix != file->GetYCbCrMatrix()) {
-		file->SetScriptInfo("YCbCr Matrix", video_matrix.to_existing_string());
-		return true;
+		// FIXME: Also offer a "resample" option here. The added difficulty here is that not all color spaces can be resampled to (see dialog_resample.cpp).
+		//		  As explained above, in the cases where this is necessary the YCbCr Matrix can also be left unchanged, so it's left as a lower priority for now.
+
+		if (action == YCbCrMatrixMismatchAction::Prompt) {
+			int Choice = wxGetSingleChoiceIndex(
+				fmt_tl(
+					"This video's recommended YCbCr Matrix (\"%s\") differs from the subtitle file's YCbCr Matrix (\"%s\").\n\n"
+					"If this new video's colors look identical to the video the subtitle file was originally authored for,\n"
+					"then the subtitle file's YCbCr Matrix should be set to the video's YCbCr Matrix.",
+				recommended_matrix.to_string().value(), script_matrix.to_string().value()),
+				_("YCbCr Matrix mismatch"),
+				{fmt_tl("Leave script's YCbCr Matrix as it is (\"%s\")", script_matrix.to_string().value()), fmt_tl("Set script's YCbCr Matrix to the video's (\"%s\")", recommended_matrix.to_string().value())},
+				OPT_GET("Video/Last YCbCr Matrix Mismatch Choice")->GetInt(),
+				parent
+			);
+
+			if (Choice == -1) {
+				Choice = static_cast<int>(MissingYCbCrMatrixFix::Ignore);
+			} else {
+				OPT_SET("Video/Last YCbCr Matrix Mismatch Choice")->SetInt(Choice);
+			}
+
+			switch (static_cast<YCbCrMatrixMismatchFix>(Choice)) {
+				case YCbCrMatrixMismatchFix::Ignore:
+					action = YCbCrMatrixMismatchAction::Ignore;
+					break;
+				case YCbCrMatrixMismatchFix::Set:
+					action = YCbCrMatrixMismatchAction::Set;
+					break;
+			}
+		}
+
+		if (action == YCbCrMatrixMismatchAction::Set) {
+			file->SetScriptInfo("YCbCr Matrix", recommended_matrix.to_string().value());
+			return true;
+		}
 	}
 
 	return false;
