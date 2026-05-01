@@ -621,6 +621,8 @@
 		"Last PlayRes Mismatch Choice" : 1,
 		"Untagged Matrix Warning" : true,
 		"HDR Video Warning" : true,
+		"No YCbCr Matrix in Script" : 1,
+		"Last No YCbCr Matrix in Script Choice" : 1,
 		"Open Audio" : true,
 		"Overscan Mask" : false,
 		"Provider" : "ffmpegsource",
