@@ -132,6 +132,21 @@ VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
 	return frame_black;
 }
 
+std::pair<int, int> AsyncVideoProvider::GetDisplayResolution() const {
+	int width = GetWidth();
+	int height = GetHeight();
+	double sar = double(width) / double(height);
+
+	double dar = GetDAR();
+	if (dar == 0)
+		dar = sar;
+
+	return std::make_pair(
+		std::round(width * std::max(1., dar / sar)),
+		std::round(height * std::max(1., sar / dar))
+	);
+}
+
 static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_handler, agi::BackgroundRunner *br) {
 	try {
 		return SubtitlesProviderFactory::GetProvider(br);

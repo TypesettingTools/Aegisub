@@ -207,6 +207,16 @@ void Video(wxTreebook *book, Preferences *parent) {
 	wxArrayString choice_res(3, cres_arr);
 	p->OptionChoice(resolution, _("Match video resolution on open"), choice_res, "Video/PlayRes Mismatch");
 
+	auto layoutres = p->PageSizer(_("Layout Resolution"));
+
+	const wxString cnolayoutres_arr[] = {_("Never"), _("Ask"), _("Always set"), _("Always set from script resolution")};
+	wxArrayString choice_nolayoutres(4, cnolayoutres_arr);
+	p->OptionChoice(layoutres, _("Set layout resolution from video on open"), choice_nolayoutres, "Video/No LayoutRes in Script");
+
+	const wxString clayoutresmismatch_arr[] = {_("Never"), _("When aspect ratio changes"), _("Always")};
+	wxArrayString choice_layoutresmismatch(3, clayoutresmismatch_arr);
+	p->OptionChoice(layoutres, _("Prompt on layout resolution mismatch"), choice_layoutresmismatch, "Video/LayoutRes Mismatch");
+
 	auto ycbcr = p->PageSizer(_("YCbCr Matrix"));
 	p->OptionAdd(ycbcr, _("Warn on untagged video color matrix"), "Video/Untagged Matrix Warning");
 	p->OptionAdd(ycbcr, _("Warn on HDR/WCG video"), "Video/HDR Video Warning");

@@ -126,6 +126,7 @@ public:
 	int GetWidth() const                  { return source_provider->GetWidth(); }
 	int GetHeight() const                 { return source_provider->GetHeight(); }
 	double GetDAR() const                 { return source_provider->GetDAR(); }
+	std::pair<int, int> GetDisplayResolution() const;
 	agi::vfr::Framerate GetFPS() const    { return source_provider->GetFPS(); }
 	std::vector<int> GetKeyFrames() const { return source_provider->GetKeyFrames(); }
 	agi::ycbcr::header_colorspace GetColorSpace() const     { return source_provider->GetColorSpace(); }

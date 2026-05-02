@@ -1,4 +1,5 @@
 // Copyright (c) 2014, Thomas Goyne <plorkyeran@aegisub.org>
+// Copyright (c) 2026, arch1t3cht
 //
 // Permission to use, copy, modify, and distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -16,9 +17,11 @@
 
 #include "ass_file.h"
 #include "async_video_provider.h"
+#include "include/aegisub/context.h"
 #include "format.h"
 #include "help_button.h"
 #include "options.h"
+#include "project.h"
 #include "resolution_resampler.h"
 
 #include <wx/choicdlg.h>
@@ -32,6 +35,12 @@
 namespace ycbcr = agi::ycbcr;
 
 namespace {
+
+// This may look a bit silly with there being five copies of almost the same enum,
+// (as well as very copies of very similar-looking code below), but the different
+// mismatch cases are intentionally kept separate here so it's easier to reason about them
+// and to adjust individual cases separately.
+
 enum class ResolutionMismatchAction {
 	Ignore,
 	Prompt,
@@ -41,6 +50,20 @@ enum class ResolutionMismatchAction {
 enum class ResolutionMismatchFix {
 	Ignore,
 	Resample,
+};
+
+
+enum class MissingLayoutResAction {
+	Ignore,
+	Prompt,
+	Set,
+	SetToPlayRes,
+};
+
+enum class MissingLayoutResFix {
+	Ignore,
+	Set,
+	SetToPlayRes,
 };
 
 
@@ -56,6 +79,18 @@ enum class MissingYCbCrMatrixFix {
 };
 
 
+enum class LayoutResMismatchPromptCondition {
+	Never,
+	OnARMismatch,
+	Always,
+};
+
+enum class LayoutResMismatchFix {
+	Ignore,
+	Set,
+};
+
+
 enum class YCbCrMatrixMismatchAction {
 	Ignore,
 	Prompt,
@@ -66,6 +101,13 @@ enum class YCbCrMatrixMismatchFix {
 	Ignore,
 	Set,
 };
+
+
+bool check_ar_changed(int sx, int sy, int vx, int vy) {
+	auto sar = double(sx) / sy;
+	auto var = double(vx) / vy;
+	return std::abs(sar - var) / var > .01;
+}
 
 
 bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
@@ -279,9 +321,7 @@ bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWi
 	if (sx % vx == 0 && sy % vy == 0)
 		return false;
 
-	auto sar = double(sx) / sy;
-	auto var = double(vx) / vy;
-	bool ar_changed = std::abs(sar - var) / var > .01;
+	bool ar_changed = check_ar_changed(sx, sy, vx, vy);
 
 	switch (static_cast<ResolutionMismatchAction>(OPT_GET("Video/PlayRes Mismatch")->GetInt())) {
 	case ResolutionMismatchAction::Ignore: default:
@@ -314,6 +354,144 @@ bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWi
 		return true;
 	}
 }
+
+bool update_layout_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
+	// When opening dummy video only want to set the script properties if
+	// they were previously unset
+	if (!new_provider->ShouldSetVideoProperties())
+		return false;
+
+	int spx = file->GetScriptInfoAsInt("PlayResX");
+	int spy = file->GetScriptInfoAsInt("PlayResY");
+
+	int sx = file->GetScriptInfoAsInt("LayoutResX");
+	int sy = file->GetScriptInfoAsInt("LayoutResY");
+
+	auto [vx, vy] = new_provider->GetDisplayResolution();
+
+	if (sx == 0 || sy == 0) {
+		// Script has no LayoutRes set yet, so find out if the user wants to set one
+		auto action = static_cast<MissingLayoutResAction>(OPT_GET("Video/No LayoutRes in Script")->GetInt());
+
+		if (action == MissingLayoutResAction::Prompt) {
+			int Choice = wxGetSingleChoiceIndex(
+				fmt_tl(
+					"The current subtitle file has no layout resolution set.\n\n"
+					"If you plan to use this subtitle file on this newly loaded video file,\n"
+					"you should set the subtitle file's layout resolution to the video's display resolution.\n"
+					"\n"
+					"If you plan to use a different video file, you may want to leave\n"
+					"the layout resolution unset until you load the correct video file.\n"
+					"\n"
+					"If you are adapting an existing old subtitle file that does not yet have\n"
+					"a layout resolution set, you should set its layout resolution to the resolution\n"
+					"of the video the subtitle file was intended to be played back on.\n"
+					"Often, this is the same as the file's script resolution. (%s \u00D7 %s)\n"
+					"\n"
+					"This prompt can be configured in the preferences."
+				, spx, spy),
+				_("Set script's layout resolution?"),
+				{_("Leave layout resolution unset"),
+				 fmt_tl("Set script's layout resolution to the video's (%d \u00D7 %d)", vx, vy), // U+00D7 multiplication sign
+				 fmt_tl("Set script's layout resolution to its script resolution (%d \u00D7 %d)", spx, spy)},
+				OPT_GET("Video/Last No LayoutRes in Script Choice")->GetInt(),
+				parent
+			);
+
+			if (Choice == -1) {
+				Choice = static_cast<int>(MissingLayoutResFix::Ignore);
+			} else {
+				OPT_SET("Video/Last No LayoutRes in Script Choice")->SetInt(Choice);
+			}
+
+			switch (static_cast<MissingLayoutResFix>(Choice)) {
+				case MissingLayoutResFix::Ignore:
+					action = MissingLayoutResAction::Ignore;
+					break;
+				case MissingLayoutResFix::Set:
+					action = MissingLayoutResAction::Set;
+					break;
+				case MissingLayoutResFix::SetToPlayRes:
+					action = MissingLayoutResAction::SetToPlayRes;
+					break;
+			}
+		}
+
+		switch (action) {
+			case MissingLayoutResAction::Set:
+				file->SetScriptInfo("LayoutResX", std::to_string(vx));
+				file->SetScriptInfo("LayoutResY", std::to_string(vy));
+				return true;
+			case MissingLayoutResAction::SetToPlayRes:
+				file->SetScriptInfo("LayoutResX", std::to_string(spx));
+				file->SetScriptInfo("LayoutResY", std::to_string(spy));
+				return true;
+			default:
+				break;
+		}
+	} else if (sx != vx || sx != vy) {
+		// The video's (display) resolution differs from the LayoutRes.
+		//
+		// If the aspect ratio stays the same this is usually not a problem
+		// (after all, the entire point of LayoutRes is that subtitle files will correctly display
+		// on all video resolutions), so we do not show any alert here by default.
+		// However, if the user wants to be prompted in these cases, they can enable this in the settings.
+		//
+		// If the aspect ratio changes, we definitely need user intervention here.
+
+		auto condition = static_cast<LayoutResMismatchPromptCondition>(OPT_GET("Video/LayoutRes Mismatch")->GetInt());
+
+		if (condition == LayoutResMismatchPromptCondition::Never)
+			return false;
+
+		bool ar_changed = check_ar_changed(sx, sy, vx, vy);
+
+		if (!ar_changed && condition == LayoutResMismatchPromptCondition::OnARMismatch)
+			return false;
+
+		wxString prompt = !ar_changed ?
+			fmt_tl(
+				"The resolution of the loaded video and the layout resolution specified for the subtitles don't match.\n\n"
+				"Video resolution:\t%d \u00D7 %d\n"     // U+00D7 multiplication sign
+				"Subtitle layout resolution:\t%d \u00D7 %d\n\n"
+				"Usually, this is not an issue, and you may leave the subtitle file's layout resolution as it is.\n"
+				"If your subtitle file does not contain any significant formatting and you now intend to perform\n"
+				"formatting on the newly loaded video, you may want to set the script's layout resolution\n"
+				"to the video's display resolution."
+			, vx, vy, sx, sy)
+			:
+			// FIXME: offer more options in this case, like cropping or resampling to the new aspect ratio
+			fmt_tl(
+				"The resolution of the loaded video and the layout resolution specified for the subtitles differ in aspect ratios.\n\n"
+				"Video resolution:\t%d \u00D7 %d\n"     // U+00D7 multiplication sign
+				"Subtitle layout resolution:\t%d \u00D7 %d\n\n"
+				"Change layout resolution of subtitles to match video?"
+			, vx, vy, sx, sy);
+
+		int Choice = wxGetSingleChoiceIndex(
+			prompt,
+			_("Layout resolution mismatch"),
+			{fmt_tl("Leave layout resolution as it is (%s \u00D7 %s)", sx, sy), fmt_tl("Set script's layout resolution to the video's (%d \u00D7 %d)", vx, vy)}, // U+00D7 multiplication sign
+			OPT_GET("Video/Last LayoutRes Mismatch Choice")->GetInt(),
+			parent
+		);
+
+		if (Choice == -1) {
+			Choice = static_cast<int>(LayoutResMismatchFix::Ignore);
+		} else {
+			OPT_SET("Video/Last LayoutRes Mismatch Choice")->SetInt(Choice);
+		}
+
+		if (static_cast<LayoutResMismatchFix>(Choice) == LayoutResMismatchFix::Set) {
+			file->SetScriptInfo("LayoutResX", std::to_string(vx));
+			file->SetScriptInfo("LayoutResY", std::to_string(vy));
+			return true;
+		}
+	}
+
+	return false;
+}
+
 }
 
 void UpdateVideoProperties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
@@ -322,4 +500,7 @@ void UpdateVideoProperties(AssFile *file, const AsyncVideoProvider *new_provider
 
 	if (update_play_res(file, new_provider, parent))
 		file->Commit(_("change script resolution"), AssFile::COMMIT_SCRIPTINFO);
+
+	if (update_layout_res(file, new_provider, parent))
+		file->Commit(_("change layout resolution"), AssFile::COMMIT_SCRIPTINFO);
 }
