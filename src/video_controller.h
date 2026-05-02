@@ -136,6 +136,8 @@ public:
 	/// Get the current aspect ratio of the video
 	double GetAspectRatioValue() const { return ar_value; }
 
+	std::pair<int, int> GetDisplayResolution() const;
+
 	/// @brief Jump to the beginning of a frame
 	/// @param n Frame number to jump to
 	void JumpToFrame(int n);

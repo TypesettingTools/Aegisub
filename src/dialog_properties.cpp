@@ -245,29 +245,14 @@ int DialogProperties::SetInfoIfDifferent(std::string_view key, std::string_view 
 	return 0;
 }
 
-std::pair<int, int> GetVideoDisplayResolution(agi::Context *c) {
-	int width = c->project->VideoProvider()->GetWidth();
-	int height = c->project->VideoProvider()->GetHeight();
-	double sar = double(width) / double(height);
-
-	double dar = c->project->VideoProvider()->GetDAR();
-	if (dar == 0)
-		dar = sar;
-
-	return std::make_pair(
-		std::round(width * std::max(1., dar / sar)),
-		std::round(height * std::max(1., sar / dar))
-	);
-}
-
 void DialogProperties::OnSetFromVideo(wxCommandEvent &) {
-	auto [width, height] = GetVideoDisplayResolution(c);
+	auto [width, height] = c->project->VideoProvider()->GetDisplayResolution();
 	ResX->SetValue(std::to_wstring(width));
 	ResY->SetValue(std::to_wstring(height));
 }
 
 void DialogProperties::OnSetLayoutResFromVideo(wxCommandEvent &) {
-	auto [width, height] = GetVideoDisplayResolution(c);
+	auto [width, height] = c->project->VideoProvider()->GetDisplayResolution();
 	LayoutResX->SetValue(std::to_wstring(width));
 	LayoutResY->SetValue(std::to_wstring(height));
 }
