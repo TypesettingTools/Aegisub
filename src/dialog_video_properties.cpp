@@ -299,8 +299,8 @@ bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWi
 	// Check that the script resolution matches the video resolution
 	int sx = file->GetScriptInfoAsInt("PlayResX");
 	int sy = file->GetScriptInfoAsInt("PlayResY");
-	int vx = new_provider->GetWidth();
-	int vy = new_provider->GetHeight();
+
+	auto [vx, vy] = new_provider->GetDisplayResolution();
 
 	// If the script resolution hasn't been set at all just force it to the
 	// video resolution
