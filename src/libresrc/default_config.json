@@ -617,8 +617,8 @@
 			},
 			"Pattern" : false
 		},
-		"PlayRes Mismatch" : 1,
-		"Last PlayRes Mismatch Choice" : 1,
+		"PlayRes Mismatch" : 0,
+		"Last PlayRes Mismatch Choice" : 0,
 		"Untagged Matrix Warning" : true,
 		"HDR Video Warning" : true,
 		"No YCbCr Matrix in Script" : 1,
