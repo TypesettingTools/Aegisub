@@ -49,7 +49,6 @@ void AssFile::LoadDefault(bool include_dialogue_line, std::string const& style_c
 		Info.emplace_back("PlayResX", std::to_string(OPT_GET("Subtitle/Default Resolution/Width")->GetInt()));
 		Info.emplace_back("PlayResY", std::to_string(OPT_GET("Subtitle/Default Resolution/Height")->GetInt()));
 	}
-	Info.emplace_back("YCbCr Matrix", "None");
 
 	// Add default style
 	Styles.push_back(*new AssStyle);
