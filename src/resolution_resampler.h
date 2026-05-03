@@ -14,8 +14,9 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include <string>
-#include <vector>
+#include <optional>
+
+#include <libaegisub/ycbcr.h>
 
 class AssFile;
 
@@ -26,32 +27,15 @@ enum class ResampleARMode {
 	Manual
 };
 
-enum class YCbCrMatrix : int {
-	rgb,
-	tv_601,
-	pc_601,
-	tv_709,
-	pc_709,
-	tv_fcc,
-	pc_fcc,
-	tv_240m,
-	pc_240m
-};
-
-YCbCrMatrix MatrixFromString(std::string_view str);
-std::string_view MatrixToString(YCbCrMatrix mat);
-std::vector<std::string> MatrixNames();
-
 /// Configuration parameters for a resample
 struct ResampleSettings {
-	int margin[4];  ///< Amount to add to each margin
-	int source_x;   ///< Original  X resolution
-	int source_y;   ///< Original Y resolution
-	int dest_x;     ///< New X resolution
-	int dest_y;     ///< New Y resolution
-	ResampleARMode ar_mode; ///< What to do if the old AR and new AR don't match
-	YCbCrMatrix source_matrix;
-	YCbCrMatrix dest_matrix;
+	int margin[4] = {};  ///< Amount to add to each margin
+	int source_x = 0;    ///< Original  X resolution
+	int source_y = 0;    ///< Original Y resolution
+	int dest_x = 0;      ///< New X resolution
+	int dest_y = 0;      ///< New Y resolution
+	ResampleARMode ar_mode = ResampleARMode::Stretch;   ///< What to do if the old AR and new AR don't match
+	std::optional<std::pair<agi::ycbcr::header_colorspace, agi::ycbcr::header_colorspace>> matrix_conversion;
 };
 
 /// Resample the subtitles in the project

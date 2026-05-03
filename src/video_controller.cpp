@@ -63,15 +63,15 @@ VideoController::VideoController(agi::Context *c)
 void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 	Stop();
 	provider = new_provider;
-	color_matrix = provider ? provider->GetColorSpace() : "";
+	color_matrix = std::nullopt;;
 }
 
 void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 	if (!provider) return;
 
 	if ((type & AssFile::COMMIT_SCRIPTINFO) || type == AssFile::COMMIT_NEW) {
-		auto new_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
-		if (!new_matrix.empty() && new_matrix != color_matrix) {
+		auto new_matrix = context->ass->GetYCbCrMatrix();
+		if (new_matrix != color_matrix) {
 			color_matrix = new_matrix;
 			provider->SetColorSpace(new_matrix);
 		}

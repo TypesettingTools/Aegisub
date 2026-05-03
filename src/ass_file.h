@@ -31,6 +31,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/signal.h>
+#include <libaegisub/ycbcr.h>
 
 #include <boost/intrusive/list.hpp>
 #include <map>
@@ -42,6 +43,7 @@ class AssDialogue;
 class AssInfo;
 class AssStyle;
 class wxString;
+namespace agi { struct Context; }
 
 template<typename T>
 using EntryList = typename boost::intrusive::make_list<T, boost::intrusive::constant_time_size<false>, boost::intrusive::base_hook<AssEntryListHook>>::type;
@@ -119,12 +121,22 @@ public:
 	/// @param[out] w Width
 	/// @param[in] h Height
 	void GetResolution(int &w,int &h) const;
+	/// @brief Get the specified layout resolution, if present, or 0 if it is not present
+	/// @param[out] w Width
+	/// @param[in] h Height
+	void GetLayoutResolution(int &w,int &h) const;
+	/// @brief Get the effective layout resolution (i.e. falling back to the video resolution, if present)
+	/// @param[out] w Width
+	/// @param[in] h Height
+	void GetEffectiveLayoutResolution(agi::Context *c, int &w,int &h) const;
 	/// Get the value in a [Script Info] key as int, or 0 if it is not present
 	int GetScriptInfoAsInt(std::string_view key) const;
 	/// Get the value in a [Script Info] key as string.
 	std::string_view GetScriptInfo(std::string_view key) const;
 	/// Set the value of a [Script Info] key. Adds it if it doesn't exist.
 	void SetScriptInfo(std::string_view key, std::string_view value);
+	/// Get the parsed value of the YCbCr Matrix header
+	agi::ycbcr::Header GetYCbCrMatrix() const;
 
 	/// @brief Add a new extradata entry
 	/// @param key Class identifier/owner for the extradata

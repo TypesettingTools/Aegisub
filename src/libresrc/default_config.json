@@ -617,11 +617,21 @@
 			},
 			"Pattern" : false
 		},
-		"Last Script Resolution Mismatch Choice" : 2,
+		"PlayRes Mismatch" : 0,
+		"Last PlayRes Mismatch Choice" : 0,
+		"Untagged Matrix Warning" : true,
+		"HDR Video Warning" : true,
+		"No YCbCr Matrix in Script" : 1,
+		"Last No YCbCr Matrix in Script Choice" : 1,
+		"YCbCr Matrix Mismatch" : 1,
+		"Last YCbCr Matrix Mismatch Choice" : 1,
+		"No LayoutRes in Script" : 1,
+		"Last No LayoutRes in Script Choice" : 1,
+		"LayoutRes Mismatch" : 1,
+		"Last LayoutRes Mismatch Choice" : 0,
 		"Open Audio" : true,
 		"Overscan Mask" : false,
 		"Provider" : "ffmpegsource",
-		"Script Resolution Mismatch" : 1,
 		"Slider" : {
 			"Fast Jump Step" : 10,
 			"Show Keyframes" : true

@@ -18,19 +18,9 @@
 #include <cstdint>
 
 #include <libaegisub/color.h>
+#include <libaegisub/ycbcr.h>
 
 namespace agi {
-enum class ycbcr_matrix {
-	bt601,
-	bt709,
-	fcc,
-	smpte_240m
-};
-
-enum class ycbcr_range {
-	tv,
-	pc
-};
 
 /// A converter between YCbCr colorspaces and RGB
 class ycbcr_converter {
@@ -40,8 +30,8 @@ class ycbcr_converter {
 	std::array<double, 3> shift_from;
 	std::array<double, 3> shift_to;
 
-	void init_dst(ycbcr_matrix dst_mat, ycbcr_range dst_range);
-	void init_src(ycbcr_matrix src_mat, ycbcr_range src_range);
+	void init_dst(ycbcr::header_colorspace dst);
+	void init_src(ycbcr::header_colorspace src);
 
 	template<typename T>
 	static std::array<double, 3> prod(std::array<double, 9> m, std::array<T, 3> v) {
@@ -68,8 +58,8 @@ class ycbcr_converter {
 	}
 
 public:
-	ycbcr_converter(ycbcr_matrix mat, ycbcr_range range);
-	ycbcr_converter(ycbcr_matrix src_mat, ycbcr_range src_range, ycbcr_matrix dst_mat, ycbcr_range dst_range);
+	ycbcr_converter(ycbcr::header_colorspace srcdst);
+	ycbcr_converter(ycbcr::header_colorspace src, ycbcr::header_colorspace dst);
 
 	/// Convert from rgb to dst_mat/dst_range
 	std::array<uint8_t, 3> rgb_to_ycbcr(std::array<uint8_t, 3> input) const {

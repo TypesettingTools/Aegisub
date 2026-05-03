@@ -36,6 +36,7 @@
 
 #include <libaegisub/exception.h>
 #include <libaegisub/vfr.h>
+#include <libaegisub/ycbcr.h>
 
 #include <string>
 
@@ -52,7 +53,7 @@ public:
 	///
 	/// Providers are free to disregard this, and should if the requested
 	/// matrix makes no sense or the input isn't YCbCr.
-	virtual void SetColorSpace(std::string const& matrix)=0;
+	virtual void SetColorSpace(agi::ycbcr::Header matrix)=0;
 
 	// Override the following methods to get video information:
 	virtual int GetFrameCount() const=0;			///< Get total number of frames
@@ -62,11 +63,11 @@ public:
 	virtual agi::vfr::Framerate GetFPS() const=0;	///< Get frame rate
 	virtual std::vector<int> GetKeyFrames() const=0;///< Returns list of keyframes
 
-	/// Get the source colorspace of the video before it was converted to RGB
-	/// @return A string describing the source colorspace or "None" if it is
-	///         unknown or meaningless
-	virtual std::string GetColorSpace() const = 0;
-	virtual std::string GetRealColorSpace() const { return GetColorSpace(); }
+	/// Get the ycbcr matrix and range of the video, which may be unspecified
+	virtual agi::ycbcr::header_colorspace GetColorSpace() const = 0;
+	virtual agi::ycbcr::header_colorspace GetRealColorSpace() const { return GetColorSpace(); }
+
+	virtual bool IsHDRorWCG() const { return false; };
 
 	/// @brief Use this to set any post-loading warnings, such as "being loaded with unreliable seeking"
 	virtual std::string GetWarning() const { return ""; }

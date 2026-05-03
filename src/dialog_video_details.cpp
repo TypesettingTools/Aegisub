@@ -65,6 +65,10 @@ void ShowVideoDetailsDialog(agi::Context *c) {
 	make_field(_("Resolution:"), fmt_wx("%dx%d (%d:%d)", width, height, ar.numerator(), ar.denominator()));
 	make_field(_("Length:"), fmt_plural(framecount, "%d frame (%s)", "%d frames (%s)",
 		framecount, agi::Time(fps.TimeAtFrame(framecount - 1)).GetAssFormatted(true)));
+	make_field(_("Actual color matrix:"), agi::ycbcr::matrix_to_string(provider->GetRealColorSpace().matrix));
+	make_field(_("Forced color matrix:"), agi::ycbcr::matrix_to_string(provider->GetColorSpace().matrix));
+	make_field(_("Actual color range:"), agi::ycbcr::range_to_string(provider->GetRealColorSpace().range));
+	make_field(_("Forced color range:"), agi::ycbcr::range_to_string(provider->GetColorSpace().range));
 	make_field(_("Decoder:"), to_wx(provider->GetDecoderName()));
 
 	video_sizer->Add(fg);

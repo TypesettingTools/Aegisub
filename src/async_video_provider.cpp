@@ -132,6 +132,21 @@ VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
 	return frame_black;
 }
 
+std::pair<int, int> AsyncVideoProvider::GetDisplayResolution() const {
+	int width = GetWidth();
+	int height = GetHeight();
+	double sar = double(width) / double(height);
+
+	double dar = GetDAR();
+	if (dar == 0)
+		dar = sar;
+
+	return std::make_pair(
+		std::round(width * std::max(1., dar / sar)),
+		std::round(height * std::max(1., sar / dar))
+	);
+}
+
 static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_handler, agi::BackgroundRunner *br) {
 	try {
 		return SubtitlesProviderFactory::GetProvider(br);
@@ -142,7 +157,7 @@ static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_ha
 	}
 }
 
-AsyncVideoProvider::AsyncVideoProvider(agi::fs::path const& video_filename, std::string_view colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
+AsyncVideoProvider::AsyncVideoProvider(agi::fs::path const& video_filename, agi::ycbcr::Header colormatrix, wxEvtHandler *parent, agi::BackgroundRunner *br)
 : worker(agi::dispatch::Create())
 , subs_provider(get_subs_provider(parent, br))
 , source_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix, br))
@@ -259,8 +274,8 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::GetFrame(int frame, double time,
 	return ret;
 }
 
-void AsyncVideoProvider::SetColorSpace(std::string_view matrix) {
-	worker->Async([this, matrix = std::string(matrix)]() {
+void AsyncVideoProvider::SetColorSpace(agi::ycbcr::Header matrix) {
+	worker->Async([this, matrix]() {
 		source_provider->SetColorSpace(matrix);
 	});
 }
