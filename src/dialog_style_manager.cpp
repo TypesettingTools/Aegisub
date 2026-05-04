@@ -199,8 +199,8 @@ wxSizer *make_edit_buttons(wxWindow *parent, wxString move_label, wxButton **mov
 	wxSizer *sizer = new wxBoxSizer(wxHORIZONTAL);
 
 	*move = new wxButton(parent, -1, move_label);
-	*nw = new wxButton(parent, -1, _("&New"));
-	*edit = new wxButton(parent, -1, _("&Edit"));
+	*nw = new wxButton(parent, -1, wxGETTEXT_IN_CONTEXT("Button's text, as in [creating a] new [style]", "&New"));
+	*edit = new wxButton(parent, -1, wxGETTEXT_IN_CONTEXT("Button's text", "&Edit"));
 	*copy = new wxButton(parent, -1, _("&Copy"));
 	*del = new wxButton(parent, -1, _("&Delete"));
 
@@ -287,7 +287,7 @@ DialogStyleManager::DialogStyleManager(agi::Context *context)
 	CatalogSizer->Add(CatalogDelete,0,0,0);
 
 	// Storage styles list
-	wxSizer *StorageButtons = make_edit_buttons(StorageSizerBox, _("Copy to &current script ->"), &MoveToLocal, &StorageNew, &StorageEdit, &StorageCopy, &StorageDelete);
+	wxSizer *StorageButtons = make_edit_buttons(StorageSizerBox, _("Copy &to current script ->"), &MoveToLocal, &StorageNew, &StorageEdit, &StorageCopy, &StorageDelete);
 
 	wxSizer *StorageListSizer = new wxBoxSizer(wxHORIZONTAL);
 	StorageList = new wxListBox(StorageSizerBox, -1, wxDefaultPosition, wxSize(240,250), 0, nullptr, wxLB_EXTENDED);
