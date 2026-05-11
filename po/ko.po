@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-16 22:57+0100\n"
-"PO-Revision-Date: 2026-03-11 00:20+0900\n"
+"PO-Revision-Date: 2026-05-12 00:00+0900\n"
 "Last-Translator: Hack茶ん\n"
 "Language-Team: TNC\n"
 "Language: ko_KR\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Poedit 3.9\n"
 
 #: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
 msgid "Language"
@@ -423,7 +423,7 @@ msgstr "종료"
 
 #: ../src/command/app.cpp:145
 msgid "Exit the application"
-msgstr "응용프로그램 종료"
+msgstr "앱 종료"
 
 #: ../src/command/app.cpp:155
 msgid "&Language..."
@@ -467,7 +467,7 @@ msgstr "새 창"
 
 #: ../src/command/app.cpp:194
 msgid "Open a new application window"
-msgstr "새 응용프로그램 창 열기"
+msgstr "새 앱 창 열기"
 
 #: ../src/command/app.cpp:204
 msgid "&Options..."
@@ -1927,7 +1927,7 @@ msgstr "현재 영상 프레임에 표시되는 모든 대화 대사를 선택"
 
 #: ../src/command/subtitle.cpp:441
 msgid "Spell &Checker..."
-msgstr "맞춤법 검사기(&)..."
+msgstr "맞춤법 검사기(&C)..."
 
 #: ../src/command/subtitle.cpp:442 ../src/dialog_spellchecker.cpp:103
 msgid "Spell Checker"
@@ -5017,8 +5017,8 @@ msgstr ""
 "Aegisub 업데이트를 확인하는 동안 오류가 발생 :\n"
 "%s\n"
 "\n"
-"다른 응용프로그램이 인터넷에 정상적으로 액세스할 수 있다면 이는 일시적인 서"
-"버 문제일 수 있습니다."
+"다른 앱이 인터넷에 정상적으로 액세스할 수 있다면 이는 일시적인 서버 문제일 "
+"수 있습니다."
 
 #: ../src/dialog_version_check.cpp:381
 msgid "An unknown error occurred while checking for updates to Aegisub."
@@ -7160,5 +7160,5 @@ msgid ""
 msgstr ""
 "그러면 컴퓨터에 Aegisub {#BUILD_GIT_VERSION_STRING}이 설치됩니다.%n%nAegisub"
 "는 GNU 일반 공중 사용 허가서 버전 2의 적용을 받습니다. 즉, 어떤 용도로든 무료"
-"로 애플리케이션을 사용할 수 있지만 어떠한 종류의 보증도 제공되지 않습니다."
-"%n%n소스 코드 입수에 대한 자세한 내용은 Aegisub 웹사이트를 참조하세요."
+"로 앱을 사용할 수 있지만 어떠한 종류의 보증도 제공되지 않습니다.%n%n소스 코"
+"드 입수에 대한 자세한 내용은 Aegisub 웹사이트를 참조하세요."
