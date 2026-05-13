@@ -103,6 +103,10 @@ enum class YCbCrMatrixMismatchFix {
 
 
 bool check_ar_changed(int sx, int sy, int vx, int vy) {
+	if (sy == 0 || vy == 0)
+		// This should be checked by the caller, but check it here for safety to avoid a division by zero crash.
+		return (sy == 0) != (vy == 0);
+
 	auto sar = double(sx) / sy;
 	auto var = double(vx) / vy;
 	return std::abs(sar - var) / var > .01;
@@ -458,8 +462,8 @@ bool update_layout_res(AssFile *file, const AsyncVideoProvider *new_provider, wx
 		wxString prompt = !ar_changed ?
 			fmt_tl(
 				"The resolution of the loaded video and the layout resolution specified for the subtitles don't match.\n\n"
-				"Video resolution:\t%d \u00D7 %d\n"     // U+00D7 multiplication sign
-				"Subtitle layout resolution:\t%d \u00D7 %d\n\n"
+				"Video resolution:    %d \u00D7 %d\n"     // U+00D7 multiplication sign
+				"Subtitle layout resolution:    %d \u00D7 %d\n\n"
 				"Usually, this is not an issue, and you may leave the subtitle file's layout resolution as it is.\n"
 				"If your subtitle file does not contain any significant formatting and you now intend to perform\n"
 				"formatting on the newly loaded video, you may want to set the script's layout resolution\n"
@@ -469,8 +473,8 @@ bool update_layout_res(AssFile *file, const AsyncVideoProvider *new_provider, wx
 			// FIXME: offer more options in this case, like cropping or resampling to the new aspect ratio
 			fmt_tl(
 				"The resolution of the loaded video and the layout resolution specified for the subtitles differ in aspect ratios.\n\n"
-				"Video resolution:\t%d \u00D7 %d\n"     // U+00D7 multiplication sign
-				"Subtitle layout resolution:\t%d \u00D7 %d\n\n"
+				"Video resolution:    %d \u00D7 %d\n"     // U+00D7 multiplication sign
+				"Subtitle layout resolution:    %d \u00D7 %d\n\n"
 				"Change layout resolution of subtitles to match video?"
 			, vx, vy, sx, sy);
 
