@@ -72,7 +72,7 @@ int prompt(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
 	sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Border().Expand());
 
 	unsigned int sel = OPT_GET("Video/Last Script Resolution Mismatch Choice")->GetInt();
-	rb->SetSelection(std::min(sel, rb->GetCount()));
+	rb->SetSelection(std::min(sel, rb->GetCount() - 1));
 
 	d.SetSizerAndFit(sizer);
 	d.CenterOnParent();
