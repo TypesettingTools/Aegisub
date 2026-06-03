@@ -416,6 +416,19 @@ elif cc.has_header_symbol('malloc.h', 'alloca', prefix: '#include <stdlib.h>')
     conf.set('HAVE_MALLOC_H', true)
 endif
 
+# the configuration_data as compiler flags
+conf_defines = []
+foreach key : conf.keys()
+    # Some hacks since meson apparently can't give you the type of a variable
+    if '@0@'.format(conf.get(key)) == 'true'
+        assert(conf.get(key) == true)
+        conf_defines += '-D@0@'.format(key)
+    elif '@0@'.format(conf.get(key)) != 'false'
+        # conf.set() with a string quotes the string so conf.get(key) can't be the actual string 'false'
+        conf_defines += '-D@0@=@1@'.format(key, conf.get(key))
+    endif
+endforeach
+
 aegisub_order_dep = []
 aegisub_defines = []
 
@@ -424,16 +437,7 @@ if get_option('b_pch')
     aegisub_order_dep += configure_file(output: 'acconf.h', configuration: conf)
 else
     # Manually pass the feature flags as compiler args
-    foreach key : conf.keys()
-        # Some hacks since meson apparently can't give you the type of a variable
-        if '@0@'.format(conf.get(key)) == 'true'
-            assert(conf.get(key) == true)
-            aegisub_defines += '-D@0@'.format(key)
-        elif '@0@'.format(conf.get(key)) != 'false'
-            # conf.set() with a string quotes the string so conf.get(key) can't be the actual string 'false'
-            aegisub_defines += '-D@0@=@1@'.format(key, conf.get(key))
-        endif
-    endforeach
+    aegisub_defines += conf_defines
 
     if host_machine.system() == 'windows'
         # This is also part of all the PCHs
