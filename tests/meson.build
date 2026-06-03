@@ -67,7 +67,7 @@ runner = executable(
     link_with: libaegisub,
 )
 
-test('gtest main', runner)
+test('gtest main', runner, env: {'AEGISUB_TEST_DATA_DIR': meson.current_source_dir()})
 test('luajit-52', executable('luajit-52', 'tests/luajit_52.c', dependencies: luajit))
 
 # setup test env
@@ -77,10 +77,9 @@ else
     setup_sh = find_program('setup.sh')
 endif
 
-tests_data_des = meson.project_build_root()
 custom_target('setup-test-data',
     input: runner,
     output: 'applied_test_setup',
-    command: [setup_sh, tests_data_des],
+    command: setup_sh,
     build_by_default: true
 )

@@ -39,10 +39,10 @@ static const char all_types[] = R"raw({
 
 class lagi_option : public libagi {
 protected:
-	std::string conf_ok;
+	agi::fs::path conf_ok;
 
 	void SetUp() override {
-		conf_ok = "data/options/string.json";
+		conf_ok = util::test_data_dir() / "options/string.json";
 	}
 };
 
@@ -67,25 +67,25 @@ TEST_F(lagi_option, get_nonexistant_option) {
 }
 
 TEST_F(lagi_option, flush_skip) {
-	agi::fs::Copy("data/options/string.json", "data/options/tmp");
+	agi::fs::Copy(util::test_data_dir() / "options/string.json", "data/options/tmp");
 	{
 		agi::Options opt("data/options/tmp", default_opt, agi::Options::FLUSH_SKIP);
 		ASSERT_NO_THROW(opt.Get("Valid")->SetString(""));
 	}
-	EXPECT_TRUE(util::compare("data/options/string.json", "data/options/tmp"));
+	EXPECT_TRUE(util::compare(util::test_data_dir() / "options/string.json", "data/options/tmp"));
 }
 
 TEST_F(lagi_option, flush_no_skip) {
-	agi::fs::Copy("data/options/string.json", "data/options/tmp");
+	agi::fs::Copy(util::test_data_dir() / "options/string.json", "data/options/tmp");
 	{
 		agi::Options opt("data/options/tmp", default_opt);
 		ASSERT_NO_THROW(opt.Get("Valid")->SetString(""));
 	}
-	EXPECT_FALSE(util::compare("data/options/string.json", "data/options/tmp"));
+	EXPECT_FALSE(util::compare(util::test_data_dir() / "options/string.json", "data/options/tmp"));
 }
 
 TEST_F(lagi_option, existent_but_invalid_file_uses_default) {
-	agi::Options opt("data/options/null.json", default_opt, agi::Options::FLUSH_SKIP);
+	agi::Options opt(util::test_data_dir() / "options/null.json", default_opt, agi::Options::FLUSH_SKIP);
 	EXPECT_NO_THROW(opt.Get("Valid")->GetString());
 	EXPECT_THROW(opt.Get("Null"), agi::Exception);
 }
@@ -172,7 +172,7 @@ TEST_F(lagi_option, flush_roundtrip) {
 
 TEST_F(lagi_option, mixed_valid_and_invalid_in_user_conf_loads_all_valid) {
 	const char def[] = "{\"1\" : false, \"2\" : 1, \"3\" : false }";
-	agi::Options opt("data/options/all_bool.json", def, agi::Options::FLUSH_SKIP);
+	agi::Options opt(util::test_data_dir() / "options/all_bool.json", def, agi::Options::FLUSH_SKIP);
 	ASSERT_NO_THROW(opt.ConfigUser());
 	EXPECT_EQ(true, opt.Get("1")->GetBool());
 	EXPECT_EQ(1, opt.Get("2")->GetInt());

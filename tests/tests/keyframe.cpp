@@ -40,10 +40,12 @@ TEST(lagi_keyframe, save) {
 }
 
 TEST(lagi_keyframe, bad_files) {
+	auto dir = util::test_data_dir() / "keyframe";
+
 	EXPECT_THROW(Load(""), agi::fs::FileSystemError);
 	// TODO: use more clearly error type
-	EXPECT_THROW(Load("data/keyframe/empty.txt"), agi::InvalidInputException);
-	EXPECT_THROW(Load("data/keyframe/garbage.txt"), agi::InvalidInputException);
+	EXPECT_THROW(Load(dir / "empty.txt"), agi::InvalidInputException);
+	EXPECT_THROW(Load(dir / "garbage.txt"), agi::InvalidInputException);
 }
 
 TEST(lagi_keyframe, xvid) {
@@ -116,7 +118,7 @@ TEST(lagi_keyframe, xvid) {
 	};
 
 	std::vector<int> res;
-	ASSERT_NO_THROW(res = Load("data/keyframe/xvid.txt"));
+	ASSERT_NO_THROW(res = Load(util::test_data_dir() / "keyframe/xvid.txt"));
 
 	EXPECT_TRUE(expected == res);
 }
@@ -126,7 +128,7 @@ TEST(lagi_keyframe, x264) {
 	for (size_t i = 0; i < 41; ++i) expected[i] = i * 250;
 
 	std::vector<int> res;
-	ASSERT_NO_THROW(res = Load("data/keyframe/x264.log"));
+	ASSERT_NO_THROW(res = Load(util::test_data_dir() / "keyframe/x264.log"));
 
 	EXPECT_TRUE(expected == res);
 }
@@ -136,7 +138,7 @@ TEST(lagi_keyframe, aegi) {
 	for (size_t i = 0; i < 135; ++i) expected[i] = i * 250;
 
 	std::vector<int> res;
-	ASSERT_NO_THROW(res = Load("data/keyframe/aegi.txt"));
+	ASSERT_NO_THROW(res = Load(util::test_data_dir() / "keyframe/aegi.txt"));
 
 	EXPECT_TRUE(expected == res);
 }

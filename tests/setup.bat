@@ -21,15 +21,10 @@ copy nul data\dir_iterator\1.b
 copy nul data\dir_iterator\2.b
 
 mkdir data\options
-xcopy "%~dp0\options" data\options
 
 mkdir data\vfr
-mkdir data\vfr\in
 mkdir data\vfr\out
 
-xcopy "%~dp0\vfr" data\vfr\in
-
 mkdir data\keyframe
-xcopy "%~dp0\keyframe" data\keyframe
 
 ping -n 2 127.0.0.1 > nul
