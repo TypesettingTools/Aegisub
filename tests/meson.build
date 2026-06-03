@@ -63,7 +63,7 @@ runner = executable(
     tests_src,
     include_directories: [tests_inc, libaegisub_inc],
     dependencies: [tests_deps, deps],
-    cpp_args: tests_args,
+    cpp_args: tests_args + conf_defines,
     link_with: libaegisub,
 )
 
