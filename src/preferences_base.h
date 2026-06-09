@@ -37,6 +37,7 @@ struct OptionAddArgs {
 	double min = 0;
 	double max = INT_MAX;
 	double inc = 1;
+	bool alpha = false;
 };
 
 class OptionPage : public wxScrolled<wxPanel> {
