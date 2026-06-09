@@ -881,11 +881,14 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 	}
 
 	int snap_distance = INT_MAX;
-	auto check = [&](int marker, int pos)
+	int snap_move = 0;
+	auto check = [&](int markerpos, int snappos, int pos)
 	{
-		auto dist = marker - pos;
-		if (tabs(dist) < tabs(snap_distance))
+		auto dist = markerpos - pos;
+		if (tabs(dist) < tabs(snap_distance)) {
 			snap_distance = dist;
+			snap_move = snappos - pos;
+		}
 	};
 
 	int prev = -1;
@@ -902,14 +905,14 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 
 		for (const auto marker : snap_markers)
 		{
-			check(marker->GetPosition(), pos);
-			if (snap_distance == 0) return 0;
+			check(marker->GetPosition(), marker->GetSnapPosition(), pos);
+			if (snap_distance == 0 && snap_move == 0) return 0;
 		}
 
 		for (auto it = boost::lower_bound(inactive_markers, range.begin()); it != end(inactive_markers); ++it)
 		{
-			check(*it, pos);
-			if (snap_distance == 0) return 0;
+			check(*it, *it, pos);
+			if (snap_distance == 0 && snap_move == 0) return 0;
 			if (*it > pos) break;
 		}
 	}
@@ -918,8 +921,8 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 		return 0;
 
 	for (auto m : active)
-		static_cast<DialogueTimingMarker *>(m)->SetPosition(m->GetPosition() + snap_distance);
-	return snap_distance;
+		static_cast<DialogueTimingMarker *>(m)->SetPosition(m->GetPosition() + snap_move);
+	return snap_move;
 }
 
 } // namespace {
