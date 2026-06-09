@@ -253,6 +253,8 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 
 	auto audio = p->PageSizer(_("Audio Display"));
 	p->OptionAdd(audio, _("Play cursor"), "Colour/Audio Display/Play Cursor");
+	p->OptionAdd(audio, _("Current frame range"), "Colour/Audio Display/Current Frame Range", {.alpha = true});
+	p->OptionAdd(audio, _("Previous frame range"), "Colour/Audio Display/Previous Frame Range", {.alpha = true});
 	p->OptionAdd(audio, _("Line boundary start"), "Colour/Audio Display/Line boundary Start");
 	p->OptionAdd(audio, _("Line boundary end"), "Colour/Audio Display/Line boundary End");
 	p->OptionAdd(audio, _("Line boundary inactive line"), "Colour/Audio Display/Line Boundary Inactive Line");

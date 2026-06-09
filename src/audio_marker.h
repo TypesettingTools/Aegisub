@@ -28,6 +28,8 @@ class AudioMarkerKeyframe;
 class Pen;
 class Project;
 class VideoPositionMarker;
+class VideoPositionRange;
+class VideoPositionSnapPoint;
 class wxPen;
 
 namespace agi {
@@ -53,6 +55,10 @@ public:
 	/// @return The marker's position in milliseconds
 	virtual int GetPosition() const = 0;
 
+	/// @brief Get the marker's width
+	/// @return The marker's width if the marker should be a rectangle, or 0 if the marker should be drawn as a line (with the thickness specified by the style)
+	virtual int GetWidth() const { return 0; }
+
 	/// @brief Get the marker's drawing style
 	/// @return A pen object describing the marker's drawing style
 	virtual wxPen GetStyle() const = 0;
@@ -72,8 +78,11 @@ protected:
 
 	~AudioMarkerProvider() = default;
 public:
-	/// @brief Return markers in a time range
+	/// @brief Return markers in a time range to render in audio display
 	virtual void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const = 0;
+
+	/// @brief Return markers in a time range to snap timed lines to
+	virtual void GetSnapMarkers(const TimeRange &range, AudioMarkerVector &out) const { GetMarkers(range, out); };
 
 	DEFINE_SIGNAL_ADDERS(AnnounceMarkerMoved, AddMarkerMovedListener)
 };
@@ -141,12 +150,16 @@ public:
 class VideoPositionMarkerProvider final : public AudioMarkerProvider {
 	agi::Context *c;
 
+	std::unique_ptr<VideoPositionRange> range1;
+	std::unique_ptr<VideoPositionRange> range2;
 	std::unique_ptr<VideoPositionMarker> marker;
+	std::unique_ptr<VideoPositionSnapPoint> snap1;
+	std::unique_ptr<VideoPositionSnapPoint> snap2;
 
 	agi::signal::Connection video_seek_slot;
 	agi::signal::Connection enable_opt_changed_slot;
 
-	void SetPosition(int frame_number);
+	void SetPositions(int frame_number);
 	void Update(int frame_number);
 	void OptChanged(agi::OptionValue const& opt);
 
@@ -155,6 +168,7 @@ public:
 	~VideoPositionMarkerProvider();
 
 	void GetMarkers(const TimeRange &range, AudioMarkerVector &out) const override;
+	void GetSnapMarkers(const TimeRange &range, AudioMarkerVector &out) const override;
 };
 
 /// Marker provider for lines every second

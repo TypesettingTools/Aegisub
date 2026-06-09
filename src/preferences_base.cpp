@@ -161,7 +161,7 @@ wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, cons
 		}
 
 		case agi::OptionType::Color: {
-			auto cb = new ColourButton(section.box, wxSize(40,10), false, opt->GetColor());
+			auto cb = new ColourButton(section.box, wxSize(40,10), kwargs.alpha, opt->GetColor());
 			cb->Bind(EVT_COLOR, ColourUpdater(opt_name, parent));
 			Add(section, name, cb);
 			return cb;
