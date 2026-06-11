@@ -105,8 +105,12 @@ VideoPositionMarkerProvider::VideoPositionMarkerProvider(agi::Context *c)
 
 VideoPositionMarkerProvider::~VideoPositionMarkerProvider() { }
 
-void VideoPositionMarkerProvider::Update(int frame_number) {
+void VideoPositionMarkerProvider::SetPosition(int frame_number) {
 	marker->SetPosition(vc->TimeAtFrame(frame_number));
+}
+
+void VideoPositionMarkerProvider::Update(int frame_number) {
+	SetPosition(frame_number);
 	AnnounceMarkerMoved();
 }
 
@@ -114,7 +118,7 @@ void VideoPositionMarkerProvider::OptChanged(agi::OptionValue const& opt) {
 	if (opt.GetBool()) {
 		video_seek_slot.Unblock();
 		marker = std::make_unique<VideoPositionMarker>();
-		marker->SetPosition(vc->GetFrameN());
+		SetPosition(vc->GetFrameN());
 	}
 	else {
 		video_seek_slot.Block();
