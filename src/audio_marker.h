@@ -147,6 +147,7 @@ class VideoPositionMarkerProvider final : public AudioMarkerProvider {
 	agi::signal::Connection video_seek_slot;
 	agi::signal::Connection enable_opt_changed_slot;
 
+	void SetPosition(int frame_number);
 	void Update(int frame_number);
 	void OptChanged(agi::OptionValue const& opt);
 
