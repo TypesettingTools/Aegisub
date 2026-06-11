@@ -87,7 +87,9 @@ class VideoPositionMarker final : public AudioMarker {
 	int position = -1;
 
 public:
-	void SetPosition(int new_pos) { position = new_pos; }
+	void SetPosition(int new_pos, const VideoController *vc) {
+		position = vc->TimeAtFrame(new_pos);
+	}
 
 	int GetPosition() const override { return position; }
 	FeetStyle GetFeet() const override { return Feet_None; }
@@ -106,7 +108,7 @@ VideoPositionMarkerProvider::VideoPositionMarkerProvider(agi::Context *c)
 VideoPositionMarkerProvider::~VideoPositionMarkerProvider() { }
 
 void VideoPositionMarkerProvider::Update(int frame_number) {
-	marker->SetPosition(vc->TimeAtFrame(frame_number));
+	marker->SetPosition(frame_number, vc);
 	AnnounceMarkerMoved();
 }
 
@@ -114,7 +116,7 @@ void VideoPositionMarkerProvider::OptChanged(agi::OptionValue const& opt) {
 	if (opt.GetBool()) {
 		video_seek_slot.Unblock();
 		marker = std::make_unique<VideoPositionMarker>();
-		marker->SetPosition(vc->GetFrameN());
+		marker->SetPosition(vc->GetFrameN(), vc);
 	}
 	else {
 		video_seek_slot.Block();
