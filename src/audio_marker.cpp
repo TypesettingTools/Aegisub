@@ -85,16 +85,13 @@ void AudioMarkerProviderKeyframes::GetMarkers(TimeRange const& range, AudioMarke
 class VideoPositionMarker final : public AudioMarker {
 	Pen style{"Colour/Audio Display/Play Cursor"};
 	int position = -1;
-	int snap_position = -1;
 
 public:
 	void SetPosition(int new_pos, const VideoController *vc) {
 		position = vc->TimeAtFrame(new_pos);
-		snap_position = vc->TimeAtFrame(new_pos, agi::vfr::START);
 	}
 
 	int GetPosition() const override { return position; }
-	int GetSnapPosition() const override { return snap_position; }
 	FeetStyle GetFeet() const override { return Feet_None; }
 	wxPen GetStyle() const override { return style; }
 	operator int() const { return position; }
