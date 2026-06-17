@@ -51,12 +51,8 @@ public:
 	};
 
 	/// @brief Get the marker's position
-	/// @return The marker's visual position in milliseconds
+	/// @return The marker's position in milliseconds
 	virtual int GetPosition() const = 0;
-
-	/// @brief Get the marker's snap position
-	/// @return The millisecond to which times should be snapped when snapping to this marker
-	virtual int GetSnapPosition() const { return GetPosition(); };
 
 	/// @brief Get the marker's drawing style
 	/// @return A pen object describing the marker's drawing style
