@@ -33,6 +33,12 @@ struct PageSection {
 	wxWindow *box;
 };
 
+struct OptionAddArgs {
+	double min = 0;
+	double max = INT_MAX;
+	double inc = 1;
+};
+
 class OptionPage : public wxScrolled<wxPanel> {
 	template<class T>
 	void Add(PageSection section, wxString const& label, T *control);
@@ -48,7 +54,8 @@ public:
 	PageSection PageSizer(wxString name);
 
 	void CellSkip(PageSection section);
-	wxControl *OptionAdd(PageSection section, const wxString &name, const char *opt_name, double min=0, double max=INT_MAX, double inc=1);
+
+	wxControl *OptionAdd(PageSection section, const wxString &name, const char *opt_name, OptionAddArgs kwargs = {});
 	void OptionChoice(PageSection section, const wxString &name, const wxArrayString &choices, const char *opt_name, bool translate = false);
 	void OptionBrowse(PageSection section, const wxString &name, const char *opt_name, wxControl *enabler = nullptr, bool do_enable = false);
 	void OptionFont(PageSection section, std::string opt_prefix);

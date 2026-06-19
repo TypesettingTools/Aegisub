@@ -126,7 +126,7 @@ void OptionPage::CellSkip(PageSection section) {
 	section.sizer->AddStretchSpacer();
 }
 
-wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, const char *opt_name, double min, double max, double inc) {
+wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, const char *opt_name, OptionAddArgs kwargs) {
 	parent->AddChangeableOption(opt_name);
 	const auto opt = OPT_GET(opt_name);
 
@@ -140,14 +140,14 @@ wxControl *OptionPage::OptionAdd(PageSection section, const wxString &name, cons
 		}
 
 		case agi::OptionType::Int: {
-			auto sc = new wxSpinCtrl(section.box, -1, std::to_wstring((int)opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetInt());
+			auto sc = new wxSpinCtrl(section.box, -1, std::to_wstring((int)opt->GetInt()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, kwargs.min, kwargs.max, opt->GetInt());
 			sc->Bind(wxEVT_SPINCTRL, IntUpdater(opt_name, parent));
 			Add(section, name, sc);
 			return sc;
 		}
 
 		case agi::OptionType::Double: {
-			auto scd = new wxSpinCtrlDouble(section.box, -1, std::to_wstring(opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, min, max, opt->GetDouble(), inc);
+			auto scd = new wxSpinCtrlDouble(section.box, -1, std::to_wstring(opt->GetDouble()), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, kwargs.min, kwargs.max, opt->GetDouble(), kwargs.inc);
 			scd->Bind(wxEVT_SPINCTRLDOUBLE, DoubleUpdater(opt_name, parent));
 			Add(section, name, scd);
 			return scd;

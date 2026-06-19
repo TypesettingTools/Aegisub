@@ -73,10 +73,10 @@ void General(wxTreebook *book, Preferences *parent) {
 	wxString autoload_modes[] = { _("Never"), _("Always"), _("Ask") };
 	wxArrayString autoload_modes_arr(3, autoload_modes);
 	p->OptionChoice(general, _("Automatically load linked files"), autoload_modes_arr, "App/Auto/Load Linked Files");
-	p->OptionAdd(general, _("Undo Levels"), "Limits/Undo Levels", 2, 10000);
+	p->OptionAdd(general, _("Undo Levels"), "Limits/Undo Levels", {.min = 2, .max = 10000});
 
 	auto recent = p->PageSizer(_("Recently Used Lists"));
-	p->OptionAdd(recent, _("Files"), "Limits/MRU", 0, 16);
+	p->OptionAdd(recent, _("Files"), "Limits/MRU", {.min = 0, .max = 16});
 	p->OptionAdd(recent, _("Find/Replace"), "Limits/Find Replace");
 
 	p->SetSizerAndFit(p->sizer);
@@ -136,13 +136,13 @@ void Audio(wxTreebook *book, Preferences *parent) {
 	p->OptionAdd(general, _("Auto-focus on mouse over"), "Audio/Auto/Focus");
 	p->OptionAdd(general, _("Play audio when stepping in video"), "Audio/Plays When Stepping Video");
 	p->OptionAdd(general, _("Left-click-drag moves end marker"), "Audio/Drag Timing");
-	p->OptionAdd(general, _("Default timing length (ms)"), "Timing/Default Duration", 0, 36000);
-	p->OptionAdd(general, _("Default lead-in length (ms)"), "Audio/Lead/IN", 0, 36000);
-	p->OptionAdd(general, _("Default lead-out length (ms)"), "Audio/Lead/OUT", 0, 36000);
+	p->OptionAdd(general, _("Default timing length (ms)"), "Timing/Default Duration", {.min = 0, .max = 36000});
+	p->OptionAdd(general, _("Default lead-in length (ms)"), "Audio/Lead/IN", {.min = 0, .max = 36000});
+	p->OptionAdd(general, _("Default lead-out length (ms)"), "Audio/Lead/OUT", {.min = 0, .max = 36000});
 
-	p->OptionAdd(general, _("Marker drag-start sensitivity (px)"), "Audio/Start Drag Sensitivity", 1, 15);
-	p->OptionAdd(general, _("Line boundary thickness (px)"), "Audio/Line Boundaries Thickness", 1, 5);
-	p->OptionAdd(general, _("Maximum snap distance (px)"), "Audio/Snap/Distance", 0, 25);
+	p->OptionAdd(general, _("Marker drag-start sensitivity (px)"), "Audio/Start Drag Sensitivity", {.min = 1, .max = 15});
+	p->OptionAdd(general, _("Line boundary thickness (px)"), "Audio/Line Boundaries Thickness", {.min = 1, .max = 5});
+	p->OptionAdd(general, _("Maximum snap distance (px)"), "Audio/Snap/Distance", {.min = 0, .max = 25});
 
 	const wxString dtl_arr[] = { _("Don't show"), _("Show previous"), _("Show previous and next"), _("Show all") };
 	wxArrayString choice_dtl(4, dtl_arr);
@@ -223,9 +223,9 @@ void Interface(wxTreebook *book, Preferences *parent) {
 	p->OptionFont(edit_box, "Subtitle/Edit Box/");
 
 	auto character_count = p->PageSizer(_("Character Counter"));
-	p->OptionAdd(character_count, _("Maximum characters per line"), "Subtitle/Character Limit", 0, 1000);
-	p->OptionAdd(character_count, _("Characters Per Second Warning Threshold"), "Subtitle/Character Counter/CPS Warning Threshold", 0, 1000);
-	p->OptionAdd(character_count, _("Characters Per Second Error Threshold"), "Subtitle/Character Counter/CPS Error Threshold", 0, 1000);
+	p->OptionAdd(character_count, _("Maximum characters per line"), "Subtitle/Character Limit", {.min = 0, .max = 1000});
+	p->OptionAdd(character_count, _("Characters Per Second Warning Threshold"), "Subtitle/Character Counter/CPS Warning Threshold", {.min = 0, .max = 1000});
+	p->OptionAdd(character_count, _("Characters Per Second Error Threshold"), "Subtitle/Character Counter/CPS Error Threshold", {.min = 0, .max = 1000});
 	p->OptionAdd(character_count, _("Ignore whitespace"), "Subtitle/Character Counter/Ignore Whitespace");
 	p->OptionAdd(character_count, _("Ignore punctuation"), "Subtitle/Character Counter/Ignore Punctuation");
 
@@ -310,7 +310,7 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 
 	// Separate sizer to prevent the colors in the visual tools section from getting resized
 	auto visual_tools_alpha = p->PageSizer(_("Visual Typesetting Tools Alpha"));
-	p->OptionAdd(visual_tools_alpha, _("Shaded Area"), "Colour/Visual Tools/Shaded Area Alpha", 0, 1, 0.1);
+	p->OptionAdd(visual_tools_alpha, _("Shaded Area"), "Colour/Visual Tools/Shaded Area Alpha", {.min = 0, .max = 1, .inc = 0.1});
 
 	p->sizer = main_sizer;
 
@@ -325,7 +325,7 @@ void Backup(wxTreebook *book, Preferences *parent) {
 	wxControl *cb = p->OptionAdd(save, _("Enable"), "App/Auto/Save");
 	p->CellSkip(save);
 	p->EnableIfChecked(cb,
-		p->OptionAdd(save, _("Interval in seconds"), "App/Auto/Save Every Seconds", 1));
+		p->OptionAdd(save, _("Interval in seconds"), "App/Auto/Save Every Seconds", {.min = 1}));
 	p->OptionBrowse(save, _("Path"), "Path/Auto/Save", cb, true);
 	p->OptionAdd(save, _("Autosave after every change"), "App/Auto/Save on Every Change");
 
@@ -403,7 +403,7 @@ void Advanced_Audio(wxTreebook *book, Preferences *parent) {
 	wxArrayString sc_choice(5, sc_arr);
 	p->OptionChoice(spectrum, _("Frequency mapping"), sc_choice, "Audio/Renderer/Spectrum/FreqCurve");
 
-	p->OptionAdd(spectrum, _("Cache memory max (MB)"), "Audio/Renderer/Spectrum/Memory Max", 2, 1024);
+	p->OptionAdd(spectrum, _("Cache memory max (MB)"), "Audio/Renderer/Spectrum/Memory Max", {.min = 2, .max = 1024});
 
 #ifdef WITH_AVISYNTH
 	auto avisynth = p->PageSizer("Avisynth");
@@ -435,8 +435,8 @@ void Advanced_Audio(wxTreebook *book, Preferences *parent) {
 
 #ifdef WITH_DIRECTSOUND
 	auto dsound = p->PageSizer("DirectSound");
-	p->OptionAdd(dsound, _("Buffer latency"), "Player/Audio/DirectSound/Buffer Latency", 1, 1000);
-	p->OptionAdd(dsound, _("Buffer length"), "Player/Audio/DirectSound/Buffer Length", 1, 100);
+	p->OptionAdd(dsound, _("Buffer latency"), "Player/Audio/DirectSound/Buffer Latency", {.min = 1, .max = 1000});
+	p->OptionAdd(dsound, _("Buffer length"), "Player/Audio/DirectSound/Buffer Length", {.min = 1, .max = 100});
 #endif
 
 	p->SetSizerAndFit(p->sizer);
@@ -468,7 +468,7 @@ void Advanced_Video(wxTreebook *book, Preferences *parent) {
 	wxArrayString log_levels_choice(8, log_levels);
 	p->OptionChoice(ffms, _("Debug log verbosity"), log_levels_choice, "Provider/FFmpegSource/Log Level", true);
 
-	p->OptionAdd(ffms, _("Decoding threads"), "Provider/Video/FFmpegSource/Decoding Threads", -1);
+	p->OptionAdd(ffms, _("Decoding threads"), "Provider/Video/FFmpegSource/Decoding Threads", {.min = -1});
 	p->OptionAdd(ffms, _("Enable unsafe seeking"), "Provider/Video/FFmpegSource/Unsafe Seeking");
 #endif
 
