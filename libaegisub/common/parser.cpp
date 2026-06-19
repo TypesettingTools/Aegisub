@@ -88,6 +88,7 @@ struct color_grammar : qi::grammar<Iterator, agi::Color()> {
 
 		css_color
 			= "rgb(" >> blank >> rgb_component >> comma >> rgb_component >> comma >> rgb_component >> blank >> ')'
+			| "rgba(" >> blank >> rgb_component >> comma >> rgb_component >> comma >> rgb_component >> comma >> rgb_component >> blank >> ')'
 			| '#' >> hex_byte >> hex_byte >> hex_byte
 			| '#' >> hex_char >> hex_char >> hex_char
 			;

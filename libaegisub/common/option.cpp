@@ -113,6 +113,7 @@ class ConfigVisitor final : public json::ConstVisitor {
 		if ((size == 4 && string[0] == '#') ||
 			(size == 7 && string[0] == '#') ||
 			(size >= 10 && string.starts_with("rgb(")) ||
+			(size >= 13 && string.starts_with("rgba(")) ||
 			((size == 9 || size == 10) && string.starts_with("&H")))
 		{
 			values.push_back(std::make_unique<OptionValueColor>(name, agi::Color(string)));

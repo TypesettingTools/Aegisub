@@ -47,7 +47,10 @@ std::string Color::GetHexFormatted(bool rgba) const {
 }
 
 std::string Color::GetRgbFormatted() const {
-	return agi::format("rgb(%d, %d, %d)", r, g, b);
+	if (a)
+		return agi::format("rgba(%d, %d, %d, %d)", r, g, b, a);
+	else
+		return agi::format("rgb(%d, %d, %d)", r, g, b);
 }
 
 }
