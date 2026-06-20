@@ -39,6 +39,7 @@ tests_src = [
     'tests/signals.cpp',
     'tests/split.cpp',
     'tests/syntax_highlight.cpp',
+    'tests/text_file_reader.cpp',
     'tests/thesaurus.cpp',
     'tests/time.cpp',
     'tests/type_name.cpp',
@@ -46,9 +47,12 @@ tests_src = [
     'tests/uuencode.cpp',
     'tests/vfr.cpp',
     'tests/word_split.cpp',
+
+    '../src/text_file_reader.cpp',
 ]
 
 tests_inc = include_directories('support')
+src_inc = include_directories('../src')
 
 tests_args = []
 
@@ -62,7 +66,7 @@ endif
 runner = executable(
     'gtest-main',
     tests_src,
-    include_directories: [tests_inc, libaegisub_inc],
+    include_directories: [tests_inc, libaegisub_inc, src_inc],
     dependencies: [tests_deps, deps],
     cpp_args: tests_args + conf_defines,
     link_with: libaegisub,
