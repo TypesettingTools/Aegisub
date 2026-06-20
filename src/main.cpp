@@ -156,7 +156,6 @@ bool AegisubApp::OnInit() {
 	});
 
 	config::path = new agi::Path;
-	crash_writer::Initialize(config::path->Decode("?user"));
 
 	agi::log::log = new agi::log::LogSink;
 #ifdef _DEBUG
@@ -175,12 +174,12 @@ bool AegisubApp::OnInit() {
 		// Local config, make ?user mean ?data so all user settings are placed in install dir
 		config::path->SetToken("?user", config::path->Decode("?data"));
 		config::path->SetToken("?local", config::path->Decode("?data"));
-		crash_writer::Initialize(config::path->Decode("?user"));
 	} catch (agi::fs::FileSystemError const&) {
 		// File doesn't exist or we can't read it
 		// Might be worth displaying an error in the second case
 	}
 #endif
+	crash_writer::Initialize(config::path->Decode("?user"));
 
 	StartupLog("Create log writer");
 	auto path_log = config::path->Decode("?user/log/");
