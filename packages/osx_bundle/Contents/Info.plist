@@ -39,7 +39,7 @@
     <key>LSArchitecturePriority</key>
     <array>
         <string>arm64</string>
-		<string>x86_64</string>
+        <string>x86_64</string>
     </array>
 
 	<!-- Target platform -->
