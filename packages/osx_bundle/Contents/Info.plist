@@ -35,11 +35,10 @@
     <key>CFBundleLongVersionString</key>
     <string>@PLIST_VERSION@, Copyright 2005-2014, aegisub https://aegisub.org/</string>
 
-    <!-- Values: i386, ppc, x86_65, ppc64 -->
+    <!-- Values: i386, x86_64, arm64, arm64e -->
     <key>LSArchitecturePriority</key>
     <array>
-        <string>x86_64</string>
-        <string>i386</string>
+        <string>arm64</string>
     </array>
 
 	<!-- Target platform -->
