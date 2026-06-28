@@ -27,7 +27,6 @@
 class AudioMarkerKeyframe;
 class Pen;
 class Project;
-class VideoController;
 class VideoPositionMarker;
 class wxPen;
 
@@ -140,7 +139,7 @@ public:
 
 /// Marker provider for the current video playback position
 class VideoPositionMarkerProvider final : public AudioMarkerProvider {
-	VideoController *vc;
+	agi::Context *c;
 
 	std::unique_ptr<VideoPositionMarker> marker;
 
