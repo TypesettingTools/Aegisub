@@ -96,8 +96,8 @@ public:
 };
 
 VideoPositionMarkerProvider::VideoPositionMarkerProvider(agi::Context *c)
-: vc(c->videoController.get())
-, video_seek_slot(vc->AddSeekListener(&VideoPositionMarkerProvider::Update, this))
+: c(c)
+, video_seek_slot(c->videoController->AddSeekListener(&VideoPositionMarkerProvider::Update, this))
 , enable_opt_changed_slot(OPT_SUB("Audio/Display/Draw/Video Position", &VideoPositionMarkerProvider::OptChanged, this))
 {
 	OptChanged(*OPT_GET("Audio/Display/Draw/Video Position"));
@@ -106,7 +106,7 @@ VideoPositionMarkerProvider::VideoPositionMarkerProvider(agi::Context *c)
 VideoPositionMarkerProvider::~VideoPositionMarkerProvider() { }
 
 void VideoPositionMarkerProvider::SetPosition(int frame_number) {
-	marker->SetPosition(vc->TimeAtFrame(frame_number));
+	marker->SetPosition(c->videoController->TimeAtFrame(frame_number));
 }
 
 void VideoPositionMarkerProvider::Update(int frame_number) {
@@ -118,7 +118,7 @@ void VideoPositionMarkerProvider::OptChanged(agi::OptionValue const& opt) {
 	if (opt.GetBool()) {
 		video_seek_slot.Unblock();
 		marker = std::make_unique<VideoPositionMarker>();
-		SetPosition(vc->GetFrameN());
+		SetPosition(c->videoController->GetFrameN());
 	}
 	else {
 		video_seek_slot.Block();
@@ -127,6 +127,9 @@ void VideoPositionMarkerProvider::OptChanged(agi::OptionValue const& opt) {
 }
 
 void VideoPositionMarkerProvider::GetMarkers(const TimeRange &range, AudioMarkerVector &out) const {
+	if (!c->project->VideoProvider())
+		return;
+
 	if (marker && range.contains(*marker))
 		out.push_back(marker.get());
 }
