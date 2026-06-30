@@ -94,6 +94,8 @@ jobs:
       - name: Setup MSVC
         if: matrix.config.os == 'windows-latest' && matrix.config.msvc == true
         uses: TheMrMilchmann/setup-msvc-dev@v4
+        with:
+          arch: x64
 
       - name: Install dependencies (Windows)
         if: matrix.config.os == 'windows-latest'
