@@ -93,7 +93,7 @@ jobs:
 
       - name: Setup MSVC
         if: matrix.config.os == 'windows-latest' && matrix.config.msvc == true
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: TheMrMilchmann/setup-msvc-dev@v4
 
       - name: Install dependencies (Windows)
         if: matrix.config.os == 'windows-latest'
