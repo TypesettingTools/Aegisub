@@ -173,7 +173,18 @@ jobs:
         if: startsWith(matrix.config.os, 'macos-')
         run: |
           meson compile osx-bundle -C build
-          meson compile osx-build-dmg -C build
+
+          # Run osx-build-dmg but retry up to 10 times if it fails since hdiutil can be unreliable
+          # See: https://github.com/actions/runner-images/issues/7522
+          max_tries=10
+          i=0
+          until meson compile osx-build-dmg -C build ; do
+            if [ $i -eq $max_tries ]; then
+              echo "Error: osx-build-dmg failed after ${max_tries} tries."
+              exit 1
+            fi
+            i=$((i+1))
+          done
 
       - name: Upload artifacts - macOS dmg
         uses: actions/upload-artifact@v6
