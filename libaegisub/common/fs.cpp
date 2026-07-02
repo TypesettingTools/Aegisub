@@ -106,7 +106,7 @@ void check_error(std::error_code ec, const char *exp, path const& src_path, path
 	}
 
 	bool HasExtension(path const& p, std::string const& ext) {
-		auto filename = p.filename().string();
+		std::string filename = p.filename().string().c_str();	// Be consistent with std::filesystem functions which use C strings internally
 		if (filename.size() < ext.size() + 1) return false;
 		if (filename[filename.size() - ext.size() - 1] != '.') return false;
 		return boost::iends_with(filename, ext);
