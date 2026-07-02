@@ -47,9 +47,11 @@
 
 #include <boost/algorithm/string/replace.hpp>
 #include <future>
+#include <ranges>
 
 #include <wx/dcmemory.h>
 #include <wx/log.h>
+#include <wx/msgdlg.h>
 #include <wx/sizer.h>
 
 #ifdef __WINDOWS__
@@ -369,11 +371,10 @@ namespace Automation4 {
 		scripts.clear();
 
 		auto const& local_scripts = context->ass->Properties.automation_scripts;
-		if (local_scripts.empty()) {
-			if (!was_empty)
-				ScriptsChanged();
-			return;
-		}
+
+		// Tuples of (raw script path, base path, resolved path)
+		using PathTuple = std::tuple<std::string, agi::fs::path, agi::fs::path>;
+		std::vector<PathTuple> resolvedpaths;
 
 		auto autobasefn(OPT_GET("Path/Automation/Base")->GetString());
 
@@ -395,11 +396,46 @@ namespace Automation4 {
 				continue;
 			}
 			auto sfname = basepath/trimmed;
+
+			resolvedpaths.emplace_back(tok, basepath, sfname);
+		}
+
+		if (resolvedpaths.empty()) {
+			if (!was_empty)
+				ScriptsChanged();
+			return;
+		}
+
+		wxMessageDialog dlg(
+				nullptr,
+				fmt_tl(
+					"The subtitle file you have opened contains local automation scripts. "
+					"Do you want to load the associated automation scripts?\n"
+					"\n"
+					"List of scripts:\n\n%s\n\n"
+					"You should only load associated automation scripts if you trust their authors! "
+					"They are not required to view or edit the subtitle file."
+					, agi::Join("\n", std::views::transform(resolvedpaths, [](PathTuple const& paths) {return from_wx(fmt_tl("    %s (%s)", to_wx(std::get<0>(paths)), std::get<2>(paths).wstring()));})))
+				, _("Load associated automation scripts?")
+				, wxICON_WARNING | wxOK | wxCANCEL | wxCANCEL_DEFAULT | wxCENTRE
+			);
+		dlg.SetOKCancelLabels(_("Trust the authors && load scripts"), _("No"));
+		auto response = dlg.ShowModal();
+
+		if (response != wxID_OK) {
+			if (!was_empty)
+				ScriptsChanged();
+			else
+				SaveLoadedList();
+			return;
+		}
+
+		for (auto const& [tok, basepath, sfname] : resolvedpaths) {
 			if (agi::fs::FileExists(sfname))
 				scripts.emplace_back(Automation4::ScriptFactory::CreateFromFile(sfname, true));
 			else {
-				wxLogWarning(fmt_tl("Automation Script referenced could not be found.\nFilename specified: %c%s\nSearched relative to: %s\nResolved filename: %s",
-					first_char, to_wx(trimmed), basepath.wstring(), sfname.wstring()));
+				wxLogWarning(fmt_tl("Automation Script referenced could not be found.\nFilename specified: %s\nSearched relative to: %s\nResolved filename: %s",
+					to_wx(tok), basepath.wstring(), sfname.wstring()));
 			}
 		}
 
