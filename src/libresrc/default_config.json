@@ -294,8 +294,8 @@
 
 	"Path" : {
 		"Auto" : {
-			"Backup" : "?user/autoback",
-			"Save" : "?user/autosave"
+			"Backup" : "?state/autoback",
+			"Save" : "?state/autosave"
 		},
 		"Automation" : {
 			"Autoload" : "?user/automation/autoload/|?data/automation/autoload/",
