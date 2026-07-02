@@ -120,6 +120,8 @@ jobs:
         run: |
           export HOMEBREW_NO_INSTALL_CLEANUP=1
           export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
+          # Untap aws to silence Homebrew trust warnings
+          brew untap aws/tap
           # Skip brew update for now, see https://github.com/actions/setup-python/issues/577
           # brew update
           brew install ninja
