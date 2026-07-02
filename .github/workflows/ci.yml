@@ -118,10 +118,7 @@ jobs:
       - name: Install dependencies (MacOS)
         if: startsWith(matrix.config.os, 'macos-')
         run: |
-          export HOMEBREW_NO_INSTALL_CLEANUP=1
-          export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-          # Skip brew update for now, see https://github.com/actions/setup-python/issues/577
-          # brew update
+          brew update
           brew install ninja
           brew install libass zlib ffms2 fftw hunspell
           brew install pulseaudio  # NO OpenAL in github CI
