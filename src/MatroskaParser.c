@@ -554,9 +554,13 @@ static inline uint64_t	filepos(MatroskaFile *mf) {
   return mf->bufbase + mf->bufpos;
 }
 
-static void   readbytes(MatroskaFile *mf,void *buffer,int len) {
+static void   readbytes(MatroskaFile *mf,void *buffer,uint64_t len) {
   char	*cp = buffer;
-  int	nb = mf->buflen - mf->bufpos;
+
+  if (mf->buflen < mf->bufpos)
+      errorjmp(mf,"Unreachable: buffer position larger than buffer length : %d > %d",mf->buflen,mf->bufpos);
+
+  uint64_t	nb = mf->buflen - mf->bufpos;
 
   if (nb > len)
     nb = len;
@@ -580,10 +584,13 @@ static void   readbytes(MatroskaFile *mf,void *buffer,int len) {
 }
 
 static void   skipbytes(MatroskaFile *mf,uint64_t len) {
-  unsigned int	    nb = mf->buflen - mf->bufpos;
+  if (mf->buflen < mf->bufpos)
+      errorjmp(mf,"Unreachable: buffer position larger than buffer length : %d > %d",mf->buflen,mf->bufpos);
+
+  uint64_t    nb = mf->buflen - mf->bufpos;
 
   if (nb > len)
-    nb = (int)len;
+    nb = len;
 
   mf->bufpos += nb;
   len -= nb;
@@ -859,7 +866,7 @@ static void readString(MatroskaFile *mf,uint64_t len,char *buffer,int buflen) {
   nread = buflen - 1;
 
   if (nread > len)
-    nread = (int)len;
+    nread = len;
 
   readbytes(mf,buffer,nread);
   len -= nread;
@@ -871,7 +878,7 @@ static void readString(MatroskaFile *mf,uint64_t len,char *buffer,int buflen) {
 }
 
 static void readLangCC(MatroskaFile *mf, uint64_t len, char lcc[4]) {
-  unsigned  todo = len > 3 ? 3 : (int)len;
+  uint64_t  todo = len > 3 ? 3 : len;
 
   lcc[0] = lcc[1] = lcc[2] = lcc[3] = 0;
   readbytes(mf, lcc, todo);
@@ -1351,7 +1358,7 @@ static void parseTrackEntry(MatroskaFile *mf,uint64_t toplen) {
       }
       else
 	cp = alloca(cplen);
-      readbytes(mf,cp,(int)cplen);
+      readbytes(mf,cp,cplen);
       break;
     case 0x258688: // CodecName
       skipbytes(mf,len);
@@ -1421,7 +1428,7 @@ static void parseTrackEntry(MatroskaFile *mf,uint64_t toplen) {
 		    return;
 		  cslen = (unsigned)len;
 		  cs = alloca(cslen);
-		  readbytes(mf, cs, (int)cslen);
+		  readbytes(mf, cs, cslen);
 		  break;
 	      ENDFOR(mf);
 	      break;
