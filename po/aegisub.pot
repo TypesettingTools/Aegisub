@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-16 22:57+0100\n"
+"POT-Creation-Date: 2026-05-04 12:30+0000\n"
 "PO-Revision-Date: 2005-2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -254,11 +254,11 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:460
+#: ../src/auto4_lua.cpp:464
 msgid "Could not initialize Lua state"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:543
+#: ../src/auto4_lua.cpp:547
 #, c-format
 msgid ""
 "Error initialising Lua script \"%s\":\n"
@@ -266,42 +266,42 @@ msgid ""
 "%s"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:553
+#: ../src/auto4_lua.cpp:557
 msgid ""
 "Attempted to load an Automation 3 script as an Automation 4 Lua script. "
 "Automation 3 is no longer supported."
 msgstr ""
 
-#: ../src/auto4_lua.cpp:827
+#: ../src/auto4_lua.cpp:831
 #, c-format
 msgid ""
 "Runtime error in Lua macro validation function:\n"
 "%s"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:881
+#: ../src/auto4_lua.cpp:885
 #, c-format
 msgid "Active row %d is out of bounds (must be 1-%u)"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:897
+#: ../src/auto4_lua.cpp:901
 #, c-format
 msgid "Selected row %d is out of bounds (must be 1-%u)"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:903
+#: ../src/auto4_lua.cpp:907
 #, c-format
 msgid "Selected row %d is not a dialogue line"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:969
+#: ../src/auto4_lua.cpp:973
 #, c-format
 msgid ""
 "Runtime error in Lua macro IsActive function:\n"
 "%s"
 msgstr ""
 
-#: ../src/auto4_lua.cpp:1075
+#: ../src/auto4_lua.cpp:1079
 #, c-format
 msgid ""
 "Runtime error in Lua config dialog function:\n"
@@ -1155,7 +1155,7 @@ msgid "splitting"
 msgstr ""
 
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
-#: ../src/subs_edit_ctrl.cpp:398
+#: ../src/subs_edit_ctrl.cpp:417
 msgid "Split at cursor (estimate times)"
 msgstr ""
 
@@ -1166,7 +1166,7 @@ msgid ""
 msgstr ""
 
 #: ../src/command/edit.cpp:1130 ../src/command/edit.cpp:1131
-#: ../src/subs_edit_ctrl.cpp:397
+#: ../src/subs_edit_ctrl.cpp:416
 msgid "Split at cursor (preserve times)"
 msgstr ""
 
@@ -1823,7 +1823,7 @@ msgstr ""
 #: ../src/dialog_kara_timing_copy.cpp:547 ../src/dialog_search_replace.cpp:143
 #: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
 #: ../src/dialog_style_manager.cpp:689 ../src/dialog_style_manager.cpp:695
-#: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:195
+#: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:203
 #: ../src/preferences.cpp:275 ../src/preferences.cpp:467
 msgid "Error"
 msgstr ""
@@ -1858,7 +1858,7 @@ msgid "Save subtitles with another name"
 msgstr ""
 
 #: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:127
-#: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:392
+#: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:411
 msgid "Select &All"
 msgstr ""
 
@@ -3050,79 +3050,79 @@ msgstr ""
 msgid "%s [RECOVERED]"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:552
+#: ../src/dialog_colorpicker.cpp:527
 msgid "Select Color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:566
+#: ../src/dialog_colorpicker.cpp:541
 msgid "Color spectrum"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:572
+#: ../src/dialog_colorpicker.cpp:547
 msgid "HSL/L"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:572
+#: ../src/dialog_colorpicker.cpp:547
 msgid "HSV/H"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:572
+#: ../src/dialog_colorpicker.cpp:547
 msgid "RGB/B"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:572
+#: ../src/dialog_colorpicker.cpp:547
 msgid "RGB/G"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:572
+#: ../src/dialog_colorpicker.cpp:547
 msgid "RGB/R"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:575
+#: ../src/dialog_colorpicker.cpp:550
 msgid "RGB color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:576
+#: ../src/dialog_colorpicker.cpp:551
 msgid "HSL color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:577
+#: ../src/dialog_colorpicker.cpp:552
 msgid "HSV color"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:614
+#: ../src/dialog_colorpicker.cpp:589
 msgid "Spectrum mode:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:631
+#: ../src/dialog_colorpicker.cpp:606
 msgid "Blue:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:631
+#: ../src/dialog_colorpicker.cpp:606
 msgid "Green:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:631
+#: ../src/dialog_colorpicker.cpp:606
 msgid "Red:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:634
+#: ../src/dialog_colorpicker.cpp:609
 msgid "Alpha:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:641 ../src/dialog_colorpicker.cpp:644
+#: ../src/dialog_colorpicker.cpp:616 ../src/dialog_colorpicker.cpp:619
 msgid "Hue:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:641
+#: ../src/dialog_colorpicker.cpp:616
 msgid "Lum.:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:641 ../src/dialog_colorpicker.cpp:644
+#: ../src/dialog_colorpicker.cpp:616 ../src/dialog_colorpicker.cpp:619
 msgid "Sat.:"
 msgstr ""
 
-#: ../src/dialog_colorpicker.cpp:644
+#: ../src/dialog_colorpicker.cpp:619
 msgid "Value:"
 msgstr ""
 
@@ -4391,7 +4391,7 @@ msgstr ""
 msgid "Update script?"
 msgstr ""
 
-#: ../src/dialog_style_editor.cpp:471 ../src/subs_edit_box.cpp:604
+#: ../src/dialog_style_editor.cpp:471 ../src/subs_edit_box.cpp:605
 msgid "style change"
 msgstr ""
 
@@ -4415,15 +4415,17 @@ msgstr ""
 msgid "Sort styles alphabetically"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:613
+#: ../src/dialog_style_manager.cpp:202
+msgctxt "Button's text, as in [creating a] new [style]"
 msgid "&New"
 msgstr ""
 
 #: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:614
+msgctxt "Button's text"
 msgid "&Edit"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:204 ../src/subs_edit_ctrl.cpp:389
+#: ../src/dialog_style_manager.cpp:204 ../src/subs_edit_ctrl.cpp:408
 #: ../src/timeedit_ctrl.cpp:209
 msgid "&Copy"
 msgstr ""
@@ -4470,7 +4472,7 @@ msgid "Delete"
 msgstr ""
 
 #: ../src/dialog_style_manager.cpp:290
-msgid "Copy to &current script ->"
+msgid "Copy &to current script ->"
 msgstr ""
 
 #: ../src/dialog_style_manager.cpp:302
@@ -5193,14 +5195,14 @@ msgstr ""
 msgid "Invalid command name for hotkey"
 msgstr ""
 
-#: ../src/main.cpp:195
+#: ../src/main.cpp:203
 #, c-format
 msgid ""
 "Configuration file is invalid. Error reported:\n"
 "%s"
 msgstr ""
 
-#: ../src/main.cpp:259
+#: ../src/main.cpp:267
 #, c-format
 msgid ""
 "Oops, Aegisub has crashed!\n"
@@ -5212,33 +5214,33 @@ msgid ""
 "Aegisub will now close."
 msgstr ""
 
-#: ../src/main.cpp:288
+#: ../src/main.cpp:296
 msgid "Check for updates?"
 msgstr ""
 
-#: ../src/main.cpp:288
+#: ../src/main.cpp:296
 msgid ""
 "Do you want Aegisub to check for updates whenever it starts? You can still "
 "do it manually via the Help menu."
 msgstr ""
 
-#: ../src/main.cpp:294
+#: ../src/main.cpp:302
 msgid "Error saving config file"
 msgstr ""
 
-#: ../src/main.cpp:310 ../src/main.cpp:314 ../src/main.cpp:319
+#: ../src/main.cpp:318 ../src/main.cpp:322 ../src/main.cpp:327
 msgid "Fatal error while initializing"
 msgstr ""
 
-#: ../src/main.cpp:319
+#: ../src/main.cpp:327
 msgid "Unhandled exception"
 msgstr ""
 
-#: ../src/main.cpp:407 ../src/main.cpp:410
+#: ../src/main.cpp:415 ../src/main.cpp:418
 msgid "Program error"
 msgstr ""
 
-#: ../src/main.cpp:410
+#: ../src/main.cpp:418
 #, c-format
 msgid ""
 "Aegisub has crashed while starting up!\n"
@@ -5246,7 +5248,7 @@ msgid ""
 "The last startup step attempted was: %s."
 msgstr ""
 
-#: ../src/main.cpp:424
+#: ../src/main.cpp:432
 #, c-format
 msgid ""
 "An unexpected error has occurred. Please save your work and restart "
@@ -5255,7 +5257,7 @@ msgid ""
 "Error Message: %s"
 msgstr ""
 
-#: ../src/main.cpp:425
+#: ../src/main.cpp:433
 msgid "Exception in event handler"
 msgstr ""
 
@@ -5271,19 +5273,19 @@ msgstr ""
 msgid "No Automation macros loaded"
 msgstr ""
 
-#: ../src/mkv_wrap.cpp:241
+#: ../src/mkv_wrap.cpp:246
 msgid "Choose which track to read:"
 msgstr ""
 
-#: ../src/mkv_wrap.cpp:241
+#: ../src/mkv_wrap.cpp:246
 msgid "Multiple subtitle tracks found"
 msgstr ""
 
-#: ../src/mkv_wrap.cpp:286
+#: ../src/mkv_wrap.cpp:291
 msgid "Parsing Matroska"
 msgstr ""
 
-#: ../src/mkv_wrap.cpp:286
+#: ../src/mkv_wrap.cpp:291
 msgid "Reading subtitles from Matroska file."
 msgstr ""
 
@@ -6095,7 +6097,7 @@ msgstr ""
 msgid "Verbose"
 msgstr ""
 
-#: ../src/preferences.cpp:467 ../src/project.cpp:318
+#: ../src/preferences.cpp:467 ../src/project.cpp:331
 msgid "Warning"
 msgstr ""
 
@@ -6117,6 +6119,11 @@ msgstr ""
 
 #: ../src/preferences.cpp:611
 msgid "Search"
+msgstr ""
+
+#: ../src/preferences.cpp:613
+msgctxt "Button's text, as in [adding a] new [command]"
+msgid "&New"
 msgstr ""
 
 #: ../src/preferences.cpp:627 ../src/preferences.cpp:630
@@ -6170,55 +6177,55 @@ msgstr ""
 msgid "%s not found."
 msgstr ""
 
-#: ../src/project.cpp:186
+#: ../src/project.cpp:199
 msgid "Do you want to load/unload the associated files?"
 msgstr ""
 
-#: ../src/project.cpp:197
+#: ../src/project.cpp:210
 #, c-format
 msgid "Load audio file: %s"
 msgstr ""
 
-#: ../src/project.cpp:197
+#: ../src/project.cpp:210
 msgid "Unload audio"
 msgstr ""
 
-#: ../src/project.cpp:199
+#: ../src/project.cpp:212
 #, c-format
 msgid "Load video file: %s"
 msgstr ""
 
-#: ../src/project.cpp:199
+#: ../src/project.cpp:212
 msgid "Unload video"
 msgstr ""
 
-#: ../src/project.cpp:201
+#: ../src/project.cpp:214
 #, c-format
 msgid "Load timecodes file: %s"
 msgstr ""
 
-#: ../src/project.cpp:201
+#: ../src/project.cpp:214
 msgid "Unload timecodes"
 msgstr ""
 
-#: ../src/project.cpp:203
+#: ../src/project.cpp:216
 #, c-format
 msgid "Load keyframes file: %s"
 msgstr ""
 
-#: ../src/project.cpp:203
+#: ../src/project.cpp:216
 msgid "Unload keyframes"
 msgstr ""
 
-#: ../src/project.cpp:205
+#: ../src/project.cpp:218
 msgid "(Un)Load files?"
 msgstr ""
 
-#: ../src/project.cpp:254
+#: ../src/project.cpp:267
 msgid "The audio file was not found: "
 msgstr ""
 
-#: ../src/project.cpp:262
+#: ../src/project.cpp:275
 msgid ""
 "None of the available audio providers recognised the selected file as "
 "containing audio data.\n"
@@ -6226,7 +6233,7 @@ msgid ""
 "The following providers were tried:\n"
 msgstr ""
 
-#: ../src/project.cpp:265
+#: ../src/project.cpp:278
 msgid ""
 "None of the available audio providers have a codec available to handle the "
 "selected file.\n"
@@ -6234,15 +6241,15 @@ msgid ""
 "The following providers were tried:\n"
 msgstr ""
 
-#: ../src/project.cpp:368
+#: ../src/project.cpp:381
 msgid "Failed to parse timecodes file: "
 msgstr ""
 
-#: ../src/project.cpp:394
+#: ../src/project.cpp:407
 msgid "Failed to parse keyframes file: "
 msgstr ""
 
-#: ../src/project.cpp:398
+#: ../src/project.cpp:411
 msgid "Keyframes file in unknown format: "
 msgstr ""
 
@@ -6394,79 +6401,79 @@ msgid ""
 "subtitles into another language."
 msgstr ""
 
-#: ../src/subs_edit_box.cpp:445
+#: ../src/subs_edit_box.cpp:446
 msgid "modify text"
 msgstr ""
 
-#: ../src/subs_edit_box.cpp:523
+#: ../src/subs_edit_box.cpp:524
 msgid "modify times"
 msgstr ""
 
-#: ../src/subs_edit_box.cpp:610
+#: ../src/subs_edit_box.cpp:611
 msgid "actor change"
 msgstr ""
 
-#: ../src/subs_edit_box.cpp:615
+#: ../src/subs_edit_box.cpp:616
 msgid "layer change"
 msgstr ""
 
-#: ../src/subs_edit_box.cpp:620
+#: ../src/subs_edit_box.cpp:621
 msgid "effect change"
 msgstr ""
 
-#: ../src/subs_edit_box.cpp:625
+#: ../src/subs_edit_box.cpp:626
 msgid "comment change"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:378
+#: ../src/subs_edit_ctrl.cpp:397
 msgid "Spell checker language"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:388
+#: ../src/subs_edit_ctrl.cpp:407
 msgid "Cu&t"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:390 ../src/timeedit_ctrl.cpp:210
+#: ../src/subs_edit_ctrl.cpp:409 ../src/timeedit_ctrl.cpp:210
 msgid "&Paste"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:425
+#: ../src/subs_edit_ctrl.cpp:444
 #, c-format
 msgid "Remove \"%s\" from dictionary"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:430
+#: ../src/subs_edit_ctrl.cpp:449
 msgid "No spell checker suggestions"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:436
+#: ../src/subs_edit_ctrl.cpp:455
 #, c-format
 msgid "Spell checker suggestions for \"%s\""
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:441
+#: ../src/subs_edit_ctrl.cpp:460
 msgid "No correction suggestions"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:447
+#: ../src/subs_edit_ctrl.cpp:466
 #, c-format
 msgid "Add \"%s\" to dictionary"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:482
+#: ../src/subs_edit_ctrl.cpp:501
 #, c-format
 msgid "Thesaurus suggestions for \"%s\""
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:485
+#: ../src/subs_edit_ctrl.cpp:504
 msgid "No thesaurus suggestions"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:488
+#: ../src/subs_edit_ctrl.cpp:507
 msgid "Thesaurus language"
 msgstr ""
 
-#: ../src/subs_edit_ctrl.cpp:497
+#: ../src/subs_edit_ctrl.cpp:516
 msgid "Disable"
 msgstr ""
 
@@ -6684,6 +6691,10 @@ msgstr ""
 
 #: default_menu.json:0
 msgid "&File"
+msgstr ""
+
+#: default_menu.json:0
+msgid "&Eԁit"
 msgstr ""
 
 #: default_menu.json:0
@@ -6948,23 +6959,18 @@ msgstr ""
 msgid "Installing runtime libraries..."
 msgstr ""
 
-
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Create a start menu icon"
 msgstr ""
-
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Automatically check for new versions of Aegisub"
 msgstr ""
 
-
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Update Checker:"
 msgstr ""
 
-
 #: packages/win_installer/fragment_strings.iss:1
 msgid "This will install Aegisub {#BUILD_GIT_VERSION_STRING} on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code."
 msgstr ""
-

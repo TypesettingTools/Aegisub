@@ -8,7 +8,7 @@ maybe_append() {
     msgid=$(printf '%s' "$msg" | cut -d'|' -f3-)
 
     if ! grep -Fq "msgid $msgid" aegisub.pot; then
-      printf "\n#: %s:%s\nmsgid %s\nmsgstr \"\"\n\n" \
+      printf "\n#: %s:%s\nmsgid %s\nmsgstr \"\"\n" \
         "$msgfile" "$msgline" "$msgid" >> aegisub.pot
     fi
   done

@@ -1,7 +1,7 @@
 {
     "main" : [
         { "submenu" : "main/file",     "text" : "&File" },
-        { "submenu" : "main/edit",     "text" : "&Edit" },
+        { "submenu" : "main/edit",     "text" : "&Eԁit" },
         { "submenu" : "main/subtitle", "text" : "&Subtitle" },
         { "submenu" : "main/timing",   "text" : "&Timing" },
         { "submenu" : "main/video",    "text" : "&Video" },

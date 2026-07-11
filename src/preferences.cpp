@@ -610,8 +610,8 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	quick_search = new wxSearchCtrl(this, -1);
 	quick_search->SetDescriptiveText(_("Search"));
 
-	auto new_button = new wxButton(this, -1, _("&New"));
-	auto edit_button = new wxButton(this, -1, _("&Edit"));
+	auto new_button = new wxButton(this, -1, wxGETTEXT_IN_CONTEXT("Button's text, as in [adding a] new [command]", "&New"));
+	auto edit_button = new wxButton(this, -1, wxGETTEXT_IN_CONTEXT("Button's text", "&Edit"));
 	auto delete_button = new wxButton(this, -1, _("&Delete"));
 
 	new_button->Bind(wxEVT_BUTTON, &Interface_Hotkeys::OnNewButton, this);
