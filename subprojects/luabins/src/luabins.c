@@ -82,7 +82,10 @@ LUALIB_API int luaopen_luabins(lua_State * L)
   /*
   * Register module
   */
-  luaL_register(L, "luabins", R);
+  lua_newtable(L);
+  luaL_setfuncs(L, R, 0);
+  lua_pushvalue(L, -1);
+  lua_setglobal(L, "mylib");
 
   /*
   * Register module information
