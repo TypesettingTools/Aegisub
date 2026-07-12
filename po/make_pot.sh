@@ -26,18 +26,18 @@ find ../src ../src/command -name '*.cpp' -o -name '*.h' \
   > aegisub.pot
 
 for f in default_menu.json default_menu_platform.json osx/default_menu.json; do
-    sed '/"text"/!d;s/^.*"text" : \("[^"]\+"\).*$/default_menu.json|0|\1/' ../src/libresrc/"$f" \
+    sed '/"text"/!d;s/^.*"text" : \("[^"]*"\).*$/default_menu.json|0|\1/' ../src/libresrc/"$f" \
       | append_str
 done
 
-grep '"[A-Za-z ]\+" : {' -n ../src/libresrc/default_hotkey.json \
-  | sed 's/^\([0-9]\+:\).*\("[^"]\+"\).*$/default_hotkey.json|\1|\2/' \
+grep '"[A-Za-z ]*" : {' -n ../src/libresrc/default_hotkey.json \
+  | sed 's/^\([0-9]*:\).*\("[^"]*"\).*$/default_hotkey.json|\1|\2/' \
   | append_str
 
 find ../automation -name '*.lua' -o -name '*.moon' \
   | LC_ALL=C sort \
   | xargs grep 'tr"[^"]*"' -o -n \
-  | sed 's/\(.*\):\([0-9]\+\):tr\(".*"\)/\1|\2|\3/' \
+  | sed 's/\(.*\):\([0-9]*\):tr\(".*"\)/\1|\2|\3/' \
   | append_str
 
 grep '^_[A-Za-z0-9]*=.*' ../packages/win_installer/fragment_strings.iss.in | while read line
