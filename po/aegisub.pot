@@ -35,6 +35,7 @@ msgid "ANSI"
 msgstr ""
 
 #: ../src/ass_style.cpp:198 ../src/command/video.cpp:144
+#: default_hotkey.json:109:
 msgid "Default"
 msgstr ""
 
@@ -2203,6 +2204,7 @@ msgid "St&yling Assistant..."
 msgstr ""
 
 #: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:54
+#: default_hotkey.json:223:
 msgid "Styling Assistant"
 msgstr ""
 
@@ -2279,7 +2281,7 @@ msgid "&Translation Assistant..."
 msgstr ""
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
-#: ../src/preferences.cpp:238
+#: ../src/preferences.cpp:238 default_hotkey.json:291:
 msgid "Translation Assistant"
 msgstr ""
 
@@ -4451,6 +4453,7 @@ msgid "&New"
 msgstr ""
 
 #: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:614
+#: default_menu.json:0
 msgid "&Edit"
 msgstr ""
 
@@ -4492,7 +4495,7 @@ msgstr ""
 msgid "Current script"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:283
+#: ../src/dialog_style_manager.cpp:283 default_menu.json:0
 msgid "New"
 msgstr ""
 
@@ -4950,7 +4953,7 @@ msgid "Video Details"
 msgstr ""
 
 #: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:170
-#: ../src/preferences.cpp:447
+#: ../src/preferences.cpp:447 default_hotkey.json:315:
 msgid "Video"
 msgstr ""
 
@@ -5339,7 +5342,7 @@ msgstr ""
 msgid "Toolbar Icon Size"
 msgstr ""
 
-#: ../src/preferences.cpp:73
+#: ../src/preferences.cpp:73 default_hotkey.json:2:
 msgid "Always"
 msgstr ""
 
@@ -5404,6 +5407,7 @@ msgid "Plain text import"
 msgstr ""
 
 #: ../src/preferences.cpp:130 ../src/preferences.cpp:380
+#: default_hotkey.json:37:
 msgid "Audio"
 msgstr ""
 
@@ -5779,7 +5783,7 @@ msgstr ""
 msgid "Waveform"
 msgstr ""
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:290 default_hotkey.json:262:
 msgid "Subtitle Grid"
 msgstr ""
 
@@ -6858,6 +6862,7 @@ msgid ""
 msgstr ""
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
+#: ../automation/autoload/macro-2-mkfullwitdh.lua:80
 msgid "Make fullwidth"
 msgstr ""
 
