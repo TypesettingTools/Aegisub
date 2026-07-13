@@ -45,15 +45,17 @@ find ../automation -name '*.lua' -o -name '*.moon' \
   | sed 's/\(.*\):\([0-9]\+\):tr\(".*"\)/\1|\2|\3/' \
   | maybe_append
 
-xgettext ../packages/desktop/aegisub.desktop.in.in \
-  --language=Desktop --join-existing --omit-header -o aegisub.pot
-
-xgettext ../packages/desktop/aegisub.metainfo.xml.in.in \
-  --language=AppData --join-existing --omit-header -o aegisub.pot
-
 grep '^_[A-Za-z0-9]*=.*' ../packages/win_installer/fragment_strings.iss.in | while read line
 do
   printf '%s\n' "$line" \
     | sed 's/[^=]*=\(.*\)/packages\/win_installer\/fragment_strings.iss|1|"\1"/' \
     | maybe_append
 done
+
+# Keep the xgettext calls last so that they normalize the format after our manual patching
+
+xgettext ../packages/desktop/aegisub.desktop.in.in \
+  --language=Desktop --join-existing --omit-header -o aegisub.pot
+
+xgettext ../packages/desktop/aegisub.metainfo.xml.in.in \
+  --language=AppData --join-existing --omit-header -o aegisub.pot
