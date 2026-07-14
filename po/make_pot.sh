@@ -32,9 +32,6 @@ for f in default_menu.json default_menu_platform.json osx/default_menu.json; do
       | maybe_append
 done
 
-sed '/"text"/!d;s/^.*"text" : \("[^"]\+"\).*$/default_menu.json|0|\1/' ../src/libresrc/osx/default_menu.json \
-  | maybe_append
-
 grep '"[A-Za-z ]\+" : {' -n ../src/libresrc/default_hotkey.json \
   | sed 's/^\([0-9]\+:\).*\("[^"]\+"\).*$/default_hotkey.json|\1|\2/' \
   | maybe_append
