@@ -98,7 +98,7 @@ Message::~Message() {
 }
 
 JsonEmitter::JsonEmitter(agi::fs::path const& directory)
-: fp(new std::ofstream(directory/util::strftime("%Y-%m-%d-%H-%M-%S.json")))
+: fp(new std::ofstream((directory/util::strftime("%Y-%m-%d-%H-%M-%S.json")).string()))
 {
 }
 
