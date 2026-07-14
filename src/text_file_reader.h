@@ -29,6 +29,7 @@ class TextFileReader {
 	std::unique_ptr<agi::read_file_mapping> file;
 	std::unique_ptr<std::istream> stream;
 	bool trim;
+	bool first_line;
 	agi::line_iterator<std::string> iter;
 
 public:
