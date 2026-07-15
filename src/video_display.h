@@ -147,10 +147,21 @@ class VideoDisplay final : public wxGLCanvas {
 	/// @brief Recompute the size of the viewport based on the current window zoom and video resolution,
 	///        then resize the client area to match the viewport
 	void FitClientSizeToVideo();
+	/// @brief Set the viewport size to @p newSize and rescale the pan values
+	///
+	/// You should call @ref PositionVideo() after this.
+	///
+	/// In free size mode, the @p newSize argument is ignored and client size is used instead.
+	///
+	/// @param rescalePan Should the current pan be rescaled for the new viewport?
+	/// @param newSize The new size, ignored in free size mode
+	void UpdateViewportSize(bool rescalePan, wxSize newSize = wxDefaultSize);
 	/// @brief Update content size and position based on the current viewport size, content zoom and pan
 	///
 	/// Updates @ref content_left, @ref content_width, @ref content_bottom, @ref content_top and @ref content_height
-	void PositionVideo();
+	///
+	/// @param preserveContentSize Should content zoom be adjusted to maintain current content size?
+	void PositionVideo(bool preserveContentSize = false);
 	/// Set the window zoom level to that indicated by the dropdown
 	void SetWindowZoomFromBox(wxCommandEvent&);
 	/// Set the window zoom level to that indicated by the text
@@ -217,6 +228,7 @@ public:
 
 	/// @brief Reset content zoom and pan
 	void ResetContentZoom();
+	bool IsContentZoomActive() { return contentZoomValue != 1 || pan_x != 0 || pan_y != 0; }
 
 	/// Get the last seen position of the mouse in script coordinates
 	Vector2D GetMousePosition() const;
