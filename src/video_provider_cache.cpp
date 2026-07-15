@@ -54,7 +54,7 @@ public:
 
 	void GetFrame(int n, VideoFrame &frame) override;
 
-	void SetColorSpace(std::string const& m) override {
+	void SetColorSpace(agi::ycbcr::Header m) override {
 		cache.clear();
 		return master->SetColorSpace(m);
 	}
@@ -67,8 +67,9 @@ public:
 	std::vector<int> GetKeyFrames() const override { return master->GetKeyFrames(); }
 	std::string GetWarning() const override        { return master->GetWarning(); }
 	std::string GetDecoderName() const override    { return master->GetDecoderName(); }
-	std::string GetColorSpace() const override     { return master->GetColorSpace(); }
-	std::string GetRealColorSpace() const override { return master->GetRealColorSpace(); }
+	agi::ycbcr::header_colorspace GetColorSpace() const override     { return master->GetColorSpace(); }
+	agi::ycbcr::header_colorspace GetRealColorSpace() const override { return master->GetRealColorSpace(); }
+	bool IsHDRorWCG() const override { return master->IsHDRorWCG(); }
 	bool ShouldSetVideoProperties() const override { return master->ShouldSetVideoProperties(); }
 	bool HasAudio() const override                 { return master->HasAudio(); }
 };

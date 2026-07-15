@@ -29,9 +29,10 @@
 
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
+#include <libaegisub/ycbcr.h>
 
 #include <chrono>
-#include <set>
+#include <optional>
 
 #include <wx/timer.h>
 
@@ -67,7 +68,7 @@ class VideoController final : public wxEvtHandler {
 	AsyncVideoProvider *provider = nullptr;
 
 	/// Last seen script color matrix
-	std::string color_matrix;
+	std::optional<agi::ycbcr::Header> color_matrix;
 
 	/// Playback timer used to periodically check if we should go to the next
 	/// frame while playing video
@@ -134,6 +135,8 @@ public:
 
 	/// Get the current aspect ratio of the video
 	double GetAspectRatioValue() const { return ar_value; }
+
+	std::pair<int, int> GetDisplayResolution() const;
 
 	/// @brief Jump to the beginning of a frame
 	/// @param n Frame number to jump to
