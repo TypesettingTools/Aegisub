@@ -106,6 +106,8 @@
 			"Line boundary End" : "rgb(0, 0, 216)",
 			"Line boundary Start" : "rgb(216, 0, 0)",
 			"Play Cursor" : "rgb(255,255,255)",
+			"Current Frame Range" : "rgba(255,255,255,160)",
+			"Previous Frame Range" : "rgba(255,255,255,200)",
 			"Seconds Line" : "rgb(0,100,255)",
 			"Spectrum" : "Icy Blue",
 			"Syllable Boundaries" : "rgb(255,255,0)",
