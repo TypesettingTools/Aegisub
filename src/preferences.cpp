@@ -105,7 +105,7 @@ void General_DefaultStyles(wxTreebook *book, Preferences *parent) {
 	// Always include one named "Default" even if it doesn't exist (ensure there is at least one on the list)
 	catalogs_set.insert("Default");
 	// Include all catalogs named in the existing configuration
-	static const char *formats[] = { "ASS", "MicroDVD", "SRT", "TTXT", "TXT" };
+	static const char *formats[] = { "ASS", "MicroDVD", "SRT", "TTXT", "TXT", "LRC" };
 	for (auto formatname : formats)
 		catalogs_set.insert(OPT_GET("Subtitle Format/" + std::string(formatname) + "/Default Style Catalog")->GetString());
 	// Sorted version
@@ -121,6 +121,7 @@ void General_DefaultStyles(wxTreebook *book, Preferences *parent) {
 	p->OptionChoice(section, _("SRT import"), catalogs, "Subtitle Format/SRT/Default Style Catalog");
 	p->OptionChoice(section, _("TTXT import"), catalogs, "Subtitle Format/TTXT/Default Style Catalog");
 	p->OptionChoice(section, _("Plain text import"), catalogs, "Subtitle Format/TXT/Default Style Catalog");
+	p->OptionChoice(section, _("LRC import"), catalogs, "Subtitle Format/LRC/Default Style Catalog");
 
 	p->SetSizerAndFit(p->sizer);
 }
