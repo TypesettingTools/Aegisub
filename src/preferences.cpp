@@ -238,6 +238,9 @@ void Interface(wxTreebook *book, Preferences *parent) {
 	auto tl_assistant = p->PageSizer(_("Translation Assistant"));
 	p->OptionAdd(tl_assistant, _("Skip over whitespace"), "Tool/Translation Assistant/Skip Whitespace");
 
+	auto visual_tools = p->PageSizer(_("Visual Tools"));
+	p->OptionFont(visual_tools, "Tool/Visual/");
+
 	p->SetSizerAndFit(p->sizer);
 }
 

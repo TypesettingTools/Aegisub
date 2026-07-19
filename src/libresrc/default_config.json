@@ -586,6 +586,8 @@
 			"Skip Whitespace" : true
 		},
 		"Visual" : {
+			"Font Face": "Verdana",
+			"Font Size": 12,
 			"Autohide": false
 		}
 	},
