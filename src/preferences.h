@@ -25,6 +25,7 @@
 #include <wx/dialog.h>
 
 class wxButton;
+class wxControl;
 class wxTreebook;
 namespace agi { class OptionValue; }
 
@@ -36,6 +37,7 @@ private:
 	wxButton *applyButton;
 
 	std::map<std::string, std::unique_ptr<agi::OptionValue>> pending_changes;
+	std::map<std::string, wxControl*> option_controls;
 	std::vector<Thunk> pending_callbacks;
 	std::vector<std::string> option_names;
 
@@ -62,4 +64,16 @@ public:
 	/// simply revert to the default config file as a bunch of things other than
 	/// user options are stored in it. Perhaps that should change in the future.
 	void AddChangeableOption(std::string const& name);
+
+	/// Refresh the UI control for an option
+	/// @param name Name of the option to refresh
+	void RefreshControl(std::string const& name);
+
+	/// Add a control to the list of controls for an option
+	/// @param name Name of the option
+	/// @param control Control to add
+	void RegisterControl(std::string const& name, wxControl *control);
+
+    /// Reset all color options to their default values
+    void ResetColors();
 };

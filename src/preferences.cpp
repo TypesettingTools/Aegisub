@@ -15,7 +15,6 @@
 /// @file preferences.cpp
 /// @brief Preferences dialogue
 /// @ingroup configuration_ui
-
 #include "preferences.h"
 
 #include "ass_style_storage.h"
@@ -41,7 +40,10 @@
 #include <ffms.h>
 #endif
 
+#include "colour_button.h"
+#include <libaegisub/cajun/visitor.h>
 #include <libaegisub/hotkey.h>
+#include <libaegisub/json.h>
 
 #include <unordered_set>
 
@@ -49,6 +51,7 @@
 #include <wx/combobox.h>
 #include <wx/dc.h>
 #include <wx/event.h>
+#include <wx/filedlg.h>
 #include <wx/listctrl.h>
 #include <wx/msgdlg.h>
 #include <wx/srchctrl.h>
@@ -241,6 +244,95 @@ void Interface(wxTreebook *book, Preferences *parent) {
 	p->SetSizerAndFit(p->sizer);
 }
 
+struct ThemeImportVisitor final : json::ConstVisitor {
+    std::string prefix;
+    Preferences* parent;
+    ThemeImportVisitor(std::string prefix, Preferences* parent)
+        : prefix(std::move(prefix))
+        , parent(parent)
+    {
+    }
+
+    void Visit(const json::Object& obj) override
+    {
+        for (auto const& pair : obj) {
+            std::string path = prefix;
+            if (!path.empty())
+                path += "/";
+            path += pair.first;
+
+            ThemeImportVisitor sub(path, parent);
+            pair.second.Accept(sub);
+        }
+    }
+
+    void Visit(const json::Array&) override { }
+    void Visit(int64_t val) override
+    {
+        try {
+            if (config::opt->Get(prefix)) {
+                parent->SetOption(std::make_unique<agi::OptionValueInt>(prefix, val));
+                parent->RefreshControl(prefix);
+            }
+        } catch (...) {
+        }
+    }
+    void Visit(double val) override
+    {
+        try {
+            if (config::opt->Get(prefix)) {
+                parent->SetOption(std::make_unique<agi::OptionValueDouble>(prefix, val));
+                parent->RefreshControl(prefix);
+            }
+        } catch (...) {
+        }
+    }
+    void Visit(const json::String& val) override
+    {
+        try {
+            auto opt = config::opt->Get(prefix);
+            if (opt->GetType() == agi::OptionType::Color) {
+                parent->SetOption(std::make_unique<agi::OptionValueColor>(prefix, agi::Color(val)));
+            } else {
+                parent->SetOption(std::make_unique<agi::OptionValueString>(prefix, val));
+            }
+            parent->RefreshControl(prefix);
+            wxSafeYield(); // Update UI during loop
+        } catch (...) {
+        }
+    }
+    void Visit(bool val) override
+    {
+        try {
+            if (config::opt->Get(prefix)) {
+                parent->SetOption(std::make_unique<agi::OptionValueBool>(prefix, val));
+                parent->RefreshControl(prefix);
+            }
+        } catch (...) {
+        }
+    }
+    void Visit(const json::Null&) override { }
+};
+
+void OnImportTheme(wxWindow* parent) {
+    wxFileDialog dlg(parent, _("Select Theme File"), "", "", "JSON files (*.json)|*.json", wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+    if (dlg.ShowModal() == wxID_CANCEL)
+        return;
+
+    try {
+        auto root = agi::json_util::file(agi::fs::path(dlg.GetPath().ToStdString()), "{}");
+        ThemeImportVisitor tv("Colour", static_cast<Preferences*>(parent));
+        root.Accept(tv);
+
+        parent->Refresh();
+        parent->Update();
+    } catch (agi::Exception const& e) {
+        wxMessageBox(to_wx(e.GetMessage()), _("Error importing theme"), wxOK | wxICON_ERROR);
+    } catch (...) {
+        wxMessageBox(_("Unknown error importing theme"), _("Error importing theme"), wxOK | wxICON_ERROR);
+    }
+}
+
 /// Interface Colours preferences subpage
 void Interface_Colours(wxTreebook *book, Preferences *parent) {
 	auto p = new OptionPage(book, parent, _("Colors"), OptionPage::PAGE_SCROLL|OptionPage::PAGE_SUB);
@@ -314,7 +406,19 @@ void Interface_Colours(wxTreebook *book, Preferences *parent) {
 
 	p->sizer = main_sizer;
 
-	p->SetSizerAndFit(p->sizer);
+    auto btn_sizer = new wxBoxSizer(wxHORIZONTAL);
+    auto import_btn = new wxButton(p, -1, _("Import Theme..."));
+    import_btn->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { OnImportTheme(parent); });
+    btn_sizer->Add(import_btn, 0, wxALL, 5);
+    auto reset_btn = new wxButton(p, -1, _("Reset Colors"));
+    reset_btn->Bind(wxEVT_BUTTON, [=](wxCommandEvent&) { parent->ResetColors(); });
+    btn_sizer->Add(reset_btn, 0, wxALL, 5);
+    auto wrapper = new wxBoxSizer(wxVERTICAL);
+    wrapper->Add(main_sizer, 1, wxEXPAND);
+    wrapper->Add(btn_sizer, 0, wxALIGN_CENTER);
+    p->sizer = wrapper;
+    p->SetSizerAndFit(p->sizer);
+
 }
 
 /// Backup preferences page
@@ -722,6 +826,78 @@ void Preferences::OnResetDefault(wxCommandEvent&) {
 	EndModal(-1);
 }
 
+void Preferences::RefreshControl(std::string const& name)
+{
+    auto it = option_controls.find(name);
+    if (it == option_controls.end())
+        return;
+
+    agi::OptionValue* opt = nullptr;
+    auto pending_it = pending_changes.find(name);
+    if (pending_it != pending_changes.end())
+        opt = pending_it->second.get();
+    else {
+        try {
+            opt = config::opt->Get(name);
+        } catch (...) {
+            return;
+        }
+    }
+
+    if (!opt)
+        return;
+
+    wxControl* ctrl = it->second;
+    switch (opt->GetType()) {
+    case agi::OptionType::Bool:
+        if (auto cb = dynamic_cast<wxCheckBox*>(ctrl))
+            cb->SetValue(opt->GetBool());
+        break;
+    case agi::OptionType::Int:
+        if (auto sc = dynamic_cast<wxSpinCtrl*>(ctrl))
+            sc->SetValue((int)opt->GetInt());
+        else if (auto cb = dynamic_cast<wxComboBox*>(ctrl))
+            cb->SetSelection((int)opt->GetInt());
+        break;
+    case agi::OptionType::Double:
+        if (auto scd = dynamic_cast<wxSpinCtrlDouble*>(ctrl))
+            scd->SetValue(opt->GetDouble());
+        break;
+    case agi::OptionType::String:
+        if (auto tc = dynamic_cast<wxTextCtrl*>(ctrl))
+            tc->SetValue(to_wx(opt->GetString()));
+        else if (auto cb = dynamic_cast<wxComboBox*>(ctrl))
+            cb->SetStringSelection(to_wx(opt->GetString()));
+        break;
+    case agi::OptionType::Color:
+        if (auto cb = dynamic_cast<ColourButton*>(ctrl)) {
+            cb->SetColor(opt->GetColor());
+            cb->Update();
+        }
+        break;
+    default:
+        break;
+    }
+}
+
+void Preferences::RegisterControl(std::string const& name, wxControl* control) { option_controls[name] = control; }
+
+void Preferences::ResetColors()
+{
+    if (wxYES != wxMessageBox(_("Are you sure you want to reset all colors to their default values?"), _("Reset colors?"), wxYES_NO | wxICON_QUESTION, this))
+        return;
+    for (auto const& opt_name : option_names) {
+        if (opt_name.compare(0, 7, "Colour/") == 0) {
+            agi::OptionValue* opt = OPT_SET(opt_name);
+            if (!opt->IsDefault()) {
+                opt->Reset();
+                RefreshControl(opt_name);
+            }
+        }
+    }
+    applyButton->Enable(true);
+    
+}
 Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"), wxDefaultPosition, wxSize(-1, -1), wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER) {
 	SetIcons(GETICONS(options_button));
 
@@ -773,4 +949,5 @@ Preferences::Preferences(wxWindow *parent): wxDialog(parent, -1, _("Preferences"
 
 void ShowPreferences(wxWindow *parent) {
 	while (Preferences(parent).ShowModal() < 0);
+
 }
