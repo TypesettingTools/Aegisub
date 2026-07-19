@@ -109,8 +109,33 @@ std::map<int, std::string> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *I
 
 	for (int i=0; i<NumTracks; i++) {
 		if (FFMS_GetTrackTypeI(Indexer, i) == Type) {
-			if (auto CodecName = FFMS_GetCodecNameI(Indexer, i))
-				TrackList[i] = CodecName;
+			std::string TrackDescription = "";
+
+			bool FirstEntry = true;
+			auto Append = [&](const std::string& part) {
+				if (!FirstEntry)
+					TrackDescription += " - ";
+				TrackDescription += part;
+				FirstEntry = false;
+			};
+
+			const char* CodecName = FFMS_GetCodecNameI(Indexer, i);
+			const char* Language = NULL;
+			const char* Title = NULL;
+
+#if FFMS_VERSION >= 0x5010200
+			Language = FFMS_GetTrackMetadataI(Indexer, i, "language");
+			Title = FFMS_GetTrackMetadataI(Indexer, i, "title");
+#endif
+
+			if (CodecName)
+				Append(CodecName);
+			if (Language)
+				Append("[" + std::string(Language) + "]");
+			if (Title)
+				Append(Title);
+
+			TrackList[i] = TrackDescription;
 		}
 	}
 	return TrackList;
