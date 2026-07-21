@@ -147,7 +147,14 @@ public:
 	void Delete(wxDataViewItem const& item) {
 		for (auto it = children.begin(); it != children.end(); ++it) {
 			if (&*it == item.GetID()) {
-				model->ItemDeleted(wxDataViewItem(this), wxDataViewItem((void*)&*it));
+				wxDataViewItem deleted_item((void*)&*it);
+				for (auto visible_it = visible_items.begin(); visible_it != visible_items.end(); ++visible_it) {
+					if (visible_it->GetID() == deleted_item.GetID()) {
+						visible_items.erase(visible_it);
+						break;
+					}
+				}
+				model->ItemDeleted(wxDataViewItem(this), deleted_item);
 				children.erase(it);
 				return;
 			}
