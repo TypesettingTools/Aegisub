@@ -65,6 +65,34 @@ wxArrayString get_registered_commands() {
 	return commands;
 }
 
+#ifdef __APPLE__
+void add_current_hotkey_commands(wxArrayString& commands, HotkeyDataViewModel *model, wxDataViewItem const& parent) {
+	wxDataViewItemArray children;
+	model->GetChildren(parent, children);
+
+	for (auto const& child : children) {
+		wxVariant value;
+		model->GetValue(value, child, 1);
+		wxString command = value.GetString();
+		if (commands.Index(command) == wxNOT_FOUND)
+			commands.Add(command);
+
+		if (model->IsContainer(child))
+			add_current_hotkey_commands(commands, model, child);
+	}
+}
+
+wxArrayString get_hotkey_command_choices(HotkeyDataViewModel *model) {
+	wxArrayString commands = get_registered_commands();
+	if (commands.Index("") == wxNOT_FOUND)
+		commands.Add("");
+
+	add_current_hotkey_commands(commands, model, wxDataViewItem(nullptr));
+	commands.Sort();
+	return commands;
+}
+#endif
+
 /// General preferences page
 void General(wxTreebook *book, Preferences *parent) {
 	auto p = new OptionPage(book, parent, _("General"));
@@ -655,7 +683,7 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	auto col = new wxDataViewColumn(_("Hotkey"), new wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE), 0, 150, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
 	col->SetMinWidth(150);
 	dvc->AppendColumn(col);
-	dvc->AppendColumn(new wxDataViewColumn(_("Command"), new wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE), 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
+	dvc->AppendColumn(new wxDataViewColumn(_("Command"), new wxDataViewChoiceRenderer(get_hotkey_command_choices(model.get()), wxDATAVIEW_CELL_EDITABLE), 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
 #endif
 	dvc->AppendTextColumn(_("Description"), 2, wxDATAVIEW_CELL_INERT, 300, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
 
