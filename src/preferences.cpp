@@ -59,6 +59,12 @@
 #include <wx/treebook.h>
 
 namespace {
+wxArrayString get_registered_commands() {
+	wxArrayString commands = to_wx(cmd::get_registered_commands());
+	commands.Sort();
+	return commands;
+}
+
 /// General preferences page
 void General(wxTreebook *book, Preferences *parent) {
 	auto p = new OptionPage(book, parent, _("General"));
@@ -481,18 +487,34 @@ class CommandRenderer final : public wxDataViewCustomRenderer {
 	wxDataViewIconText value;
 	static const int icon_width = 20;
 
+	wxDataViewIconText MakeValue(wxString const& text) const {
+		wxBitmapBundle icon;
+		try {
+			icon = cmd::get(from_wx(text))->Icon();
+		}
+		catch (agi::Exception const&) {
+			// Invalid command names are reported in the description column.
+		}
+		return wxDataViewIconText(text, icon);
+	}
+
 public:
 	CommandRenderer()
-	: wxDataViewCustomRenderer("wxDataViewIconText", wxDATAVIEW_CELL_EDITABLE)
-	, autocomplete(to_wx(cmd::get_registered_commands()))
+	: wxDataViewCustomRenderer("string", wxDATAVIEW_CELL_EDITABLE)
+	, autocomplete(get_registered_commands())
 	{
 	}
 
 	wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect label_rect, wxVariant const& value) override {
-		wxDataViewIconText iconText;
-		iconText << value;
-
-		wxString text = iconText.GetText();
+		wxString text;
+		if (value.GetType() == "wxDataViewIconText") {
+			wxDataViewIconText iconText;
+			iconText << value;
+			text = iconText.GetText();
+		}
+		else {
+			text = value.GetString();
+		}
 
 		// adjust the label rect to take the width of the icon into account
 		label_rect.x += parent->FromDIP(icon_width);
@@ -508,6 +530,10 @@ public:
 	bool SetValue(wxVariant const& var) override {
 		if (var.GetType() == "wxDataViewIconText") {
 			value << var;
+			return true;
+		}
+		if (var.GetType() == "string") {
+			value = MakeValue(var.GetString());
 			return true;
 		}
 		return false;
@@ -537,8 +563,7 @@ public:
 
 	bool GetValueFromEditorCtrl(wxWindow* editor, wxVariant &var) override {
 		wxTextCtrl *text = static_cast<wxTextCtrl*>(editor);
-		wxDataViewIconText iconText(text->GetValue(), value.GetIcon());
-		var << iconText;
+		var = text->GetValue();
 		return true;
 	}
 
@@ -630,7 +655,7 @@ Interface_Hotkeys::Interface_Hotkeys(wxTreebook *book, Preferences *parent)
 	auto col = new wxDataViewColumn(_("Hotkey"), new wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE), 0, 150, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
 	col->SetMinWidth(150);
 	dvc->AppendColumn(col);
-	dvc->AppendColumn(new wxDataViewColumn(_("Command"), new wxDataViewIconTextRenderer("wxDataViewIconText", wxDATAVIEW_CELL_EDITABLE), 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
+	dvc->AppendColumn(new wxDataViewColumn(_("Command"), new wxDataViewTextRenderer("string", wxDATAVIEW_CELL_EDITABLE), 1, 250, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE));
 #endif
 	dvc->AppendTextColumn(_("Description"), 2, wxDATAVIEW_CELL_INERT, 300, wxALIGN_LEFT, wxCOL_SORTABLE | wxCOL_RESIZABLE);
 
