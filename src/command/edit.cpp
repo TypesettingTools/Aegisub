@@ -112,6 +112,13 @@ std::unique_ptr<AssDialogue> get_dialogue(String data) {
 	}
 }
 
+enum class JoinDialogueFormat {
+    DashSecondLineWithSpace,
+    DashSecondLineWithoutSpace,
+    DashBothLinesWithSpace,
+    DashBothLinesWithoutSpace
+};
+
 template<typename Paster>
 void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 	std::string data = GetClipboard();
@@ -781,7 +788,55 @@ static void combine_concat(AssDialogue *first, AssDialogue *second) {
 		first->Text = agi::Str(first->Text.get(), " ", second->Text.get());
 }
 
+
+static void combine_dialogue(AssDialogue *first, AssDialogue *second) {
+    if (second) {
+        auto format_option = OPT_GET("Subtitle/Grid/Join as Dialogue Format");
+        JoinDialogueFormat format = JoinDialogueFormat::DashSecondLineWithSpace;
+
+        if (format_option) {
+            format = static_cast<JoinDialogueFormat>(format_option->GetInt());
+        }
+
+        std::string first_text = first->Text.get();
+        std::string second_text = second ? second->Text.get() : "";
+        std::string newline = OPT_GET("Subtitle/Edit Box/Soft Line Break")->GetBool() ? "\\n" : "\\N";
+
+        // Remove newlines from the lines to be merged
+        boost::replace_all(first_text, newline, " ");
+        boost::replace_all(second_text, newline, " ");
+
+        std::string combined_text = "";
+        switch (format) {
+        case JoinDialogueFormat::DashSecondLineWithSpace:
+            combined_text = first_text + newline + "- " + second_text;
+            break;
+        case JoinDialogueFormat::DashSecondLineWithoutSpace:
+            combined_text = first_text + newline + "-" + second_text;
+            break;
+        case JoinDialogueFormat::DashBothLinesWithSpace:
+            combined_text = "- " + first_text + newline + "- " + second_text;
+            break;
+        case JoinDialogueFormat::DashBothLinesWithoutSpace:
+            combined_text = "-" + first_text + newline + "-" + second_text;
+            break;
+        }
+        first->Text = combined_text;
+    }
+}
+
 static void combine_drop(AssDialogue *, AssDialogue *) { }
+
+struct edit_line_join_dialogue final : public validate_sel_multiple {
+    CMD_NAME("edit/line/join/dialogue")
+    STR_MENU("Join &Dialogue")
+    STR_DISP("Join Dialogue")
+    STR_HELP("Join selected lines in a single one, concatenating dialogue together")
+
+    void operator()(agi::Context *c) override {
+        combine_lines(c, combine_dialogue, _("join dialogue"));
+    }
+};
 
 struct edit_line_join_as_karaoke final : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/as_karaoke")
@@ -1283,6 +1338,7 @@ namespace cmd {
 		reg(std::make_unique<edit_line_duplicate_shift>());
 		reg(std::make_unique<edit_line_duplicate_shift_back>());
 		reg(std::make_unique<edit_line_join_as_karaoke>());
+        reg(std::make_unique<edit_line_join_dialogue>());
 		reg(std::make_unique<edit_line_join_concatenate>());
 		reg(std::make_unique<edit_line_join_keep_first>());
 		reg(std::make_unique<edit_line_paste>());
