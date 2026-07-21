@@ -84,14 +84,7 @@ public:
 		if (col == 0)
 			variant = to_wx(combo.Str());
 		else if (col == 1) {
-			wxBitmapBundle icon;
-			try {
-				icon = cmd::get(combo.CmdName())->Icon();
-			}
-			catch (agi::Exception const&) {
-				// Just use no icon; error is reported in the description column
-			}
-			variant << wxDataViewIconText(to_wx(combo.CmdName()), icon);
+			variant = to_wx(combo.CmdName());
 		}
 		else if (col == 2) {
 			try {
@@ -112,9 +105,17 @@ public:
 			return true;
 		}
 		else if (col == 1) {
-			wxDataViewIconText text;
-			text << variant;
-			cmd_name = from_wx(text.GetText());
+			if (variant.GetType() == "wxDataViewIconText") {
+				wxDataViewIconText text;
+				text << variant;
+				cmd_name = from_wx(text.GetText());
+			}
+			else if (variant.GetType() == "string") {
+				cmd_name = from_wx(variant.GetString());
+			}
+			else {
+				return false;
+			}
 			combo = Combo(combo.Context(), cmd_name, combo.Str());
 			return true;
 		}
@@ -200,11 +201,8 @@ public:
 	wxDataViewItem GetParent() const override { return wxDataViewItem(nullptr); }
 	bool IsContainer() const override { return true; }
 	bool SetValue(wxVariant const&, unsigned int) override { return false; }
-	void GetValue(wxVariant &variant, unsigned int col) const override {
-		if (col == 1)
-			variant << wxDataViewIconText(translated_name);
-		else
-			variant = translated_name;
+	void GetValue(wxVariant &variant, unsigned int) const override {
+		variant = translated_name;
 	}
 
 	unsigned int GetChildren(wxDataViewItemArray &out) const override {
