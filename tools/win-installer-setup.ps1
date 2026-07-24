@@ -23,22 +23,22 @@ if (Test-Path 'Env:GITHUB_TOKEN') {
 	$GitHeaders = @{ 'Authorization' = 'Bearer ' + $Env:GITHUB_TOKEN }
 }
 
+# Yutils, luajson and the ffi-experiments libraries are no longer fetched: DependencyControl
+# installs Yutils from its own feed and ships equivalents of json, BadMutex, PreciseTimer and
+# DownloadManager, so it pulls each of them in on demand.
+
 # DepCtrl
+# Taken from the release bundle rather than a clone: the repository arranges its sources for its own
+# tooling, while the bundle already carries Aegisub's automation directory layout.
+$DepCtrlVersion = "v0.8.0"
 if (!(Test-Path DependencyControl)) {
-	git clone https://github.com/TypesettingTools/DependencyControl.git
-	Set-Location DependencyControl
-	git checkout v0.6.3-alpha
+	$depCtrlDir = New-Item -ItemType Directory DependencyControl
+	Set-Location $depCtrlDir
+	$depCtrlUrl = "https://github.com/TypesettingTools/DependencyControl/releases/download/$DepCtrlVersion/DependencyControl-$DepCtrlVersion.zip"
+	Invoke-WebRequest $depCtrlUrl -OutFile DependencyControl.zip -UseBasicParsing
+	7z x DependencyControl.zip
+	Remove-Item DependencyControl.zip
 	Set-Location $DepsDir
-}
-
-# YUtils
-if (!(Test-Path YUtils)) {
-	git clone https://github.com/TypesettingTools/YUtils.git
-}
-
-# luajson
-if (!(Test-Path luajson)) {
-	git clone https://github.com/harningt/luajson.git
 }
 
 # Avisynth
@@ -60,18 +60,6 @@ if (!(Test-Path VSFilter)) {
 	Invoke-WebRequest $vsFilterUrl -OutFile VSFilter.7z -UseBasicParsing
 	7z x VSFilter.7z
 	Remove-Item VSFilter.7z
-	Set-Location $DepsDir
-}
-
-# ffi-experiments
-if (!(Test-Path ffi-experiments)) {
-	Get-Command "moonc" # check to ensure Moonscript is present
-	git clone https://github.com/TypesettingTools/ffi-experiments.git
-	Set-Location ffi-experiments
-	meson build -Ddefault_library=static
-	if(!$?) { Exit $LASTEXITCODE }
-	meson compile -C build
-	if(!$?) { Exit $LASTEXITCODE }
 	Set-Location $DepsDir
 }
 

@@ -12,8 +12,6 @@ Name: "macros\demos"; Description: "Example macros/Demos"; Types: full basic
 #ifdef DEPCTRL
 Name: "macros\modules"; Description: "Modules"; Types: full
 Name: "macros\modules\depctrl"; Description: "DependencyControl"; Types: full
-Name: "macros\modules\yutils"; Description: "YUtils"; Types: full
-Name: "macros\modules\luajson"; Description: "LuaJSON"; Types: full
 #endif
 Name: "dictionaries"; Description: "Spellcheck Dictionaries"; Types: full basic
 Name: "dictionaries\en_US"; Description: "English (US)"; Types: full basic

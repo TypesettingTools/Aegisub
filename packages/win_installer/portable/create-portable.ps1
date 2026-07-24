@@ -67,18 +67,12 @@ Copy-New-Item $InstallerDepsDir\VC_redist\VC_redist.x64.exe $PortableOutputDir\M
 Write-Output 'Copying - automation'
 Copy-New-Items "$InstallerDir\share\aegisub\automation\*"  "$PortableOutputDir\automation\"  -Recurse
 Write-Output 'Copying - automation\DEPCTRL'
-Copy-New-Items "$InstallerDepsDir\DependencyControl\modules\*"  "$PortableOutputDir\automation\include\l0\"  -Recurse
-Copy-New-Items "$InstallerDepsDir\DependencyControl\macros\*"  "$PortableOutputDir\automation\autoload\"  -Recurse
-Copy-New-Item $InstallerDepsDir\Yutils\src\Yutils.lua  $PortableOutputDir\automation\include
-Copy-New-Items "$InstallerDepsDir\luajson\lua\*"  "$PortableOutputDir\automation\include\"  -Recurse
 
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\requireffi\requireffi.lua  $PortableOutputDir\automation\include\requireffi
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\bad-mutex\BadMutex.dll  $PortableOutputDir\automation\include\BM\BadMutex
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\bad-mutex\BadMutex.lua  $PortableOutputDir\automation\include\BM
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\precise-timer\PreciseTimer.dll  $PortableOutputDir\automation\include\PT\PreciseTimer
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\precise-timer\PreciseTimer.lua  $PortableOutputDir\automation\include\PT
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\download-manager\DownloadManager.dll  $PortableOutputDir\automation\include\DM\DownloadManager
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\download-manager\DownloadManager.lua  $PortableOutputDir\automation\include\DM
+# DepCtrl's release bundle already has the files arranged for Aegisub's automation directory layout.
+# Yutils, luajson and the ffi-experiments libraries are no longer bundled. DependencyControl
+# installs Yutils from its own feed and ships internal replacements for json, BadMutex, PreciseTimer and
+# DownloadManager.
+Copy-New-Items "$InstallerDepsDir\DependencyControl\automation\*"  "$PortableOutputDir\automation\"  -Recurse
 
 Write-Output 'Copying - portable-config'
 Copy-New-Item $SourceRoot\packages\win_installer\portable\config.json  $PortableOutputDir
