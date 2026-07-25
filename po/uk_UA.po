@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2014-09-18 19:57+0200\n"
 "Last-Translator: kotobenko <aniguysubs@gmail.com>\n"
 "Language-Team: LANGUAGE <aniguysubs@gmail.com>\n"
@@ -5562,7 +5562,7 @@ msgstr "Пусто"
 msgid "&Recent"
 msgstr "&Останні"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Не завантажено жоден макрос автоматизації"
 
@@ -7036,8 +7036,73 @@ msgid "Override &AR"
 msgstr "Змінити &співвідношення сторін"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Файл"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Редагувати"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Субтитри"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Таймінґ"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Відео"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Аудіо"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "Авт&оматизація"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "В&игляд"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Довідка"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Додати рядок"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "З'єднати рядки"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Сортувати всі рядки за полем"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Сортувати виділені рядки за полем"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Файл"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "В&игляд"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7060,32 +7125,12 @@ msgid "A&utomation"
 msgstr "Авт&оматизація"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "В&игляд"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Довідка"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Додати рядок"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "З'єднати рядки"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Сортувати всі рядки за полем"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Сортувати виділені рядки за полем"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

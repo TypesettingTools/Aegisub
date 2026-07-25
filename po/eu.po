@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2014-07-15 14:58+0100\n"
 "Last-Translator: Xabier Aramendi <azpidatziak@gmail.com>\n"
 "Language-Team: (EUS_Xabier Aramendi) <azpidatziak@gmail.com>\n"
@@ -5573,7 +5573,7 @@ msgstr "Hutsik"
 msgid "&Recent"
 msgstr "Az&kenak"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Ez dago Berezgaitasun makrorik gertatuta"
 
@@ -7049,8 +7049,73 @@ msgid "Override &AR"
 msgstr "Ezezt&atu IM"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Agiria"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "E&ditatu"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "A&zpidatzia"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Denborapena"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Bideoa"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "A&udioa"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "Be&rezgaitasuna"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&Ikusi"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Laguntza"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "T&xertatu Lerroak"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "B&atu Lerroak"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Antolatu Lerro G&uztiak"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Antolatu Hautatutako Lerr&oak"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Agiria"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&Ikusi"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7073,32 +7138,12 @@ msgid "A&utomation"
 msgstr "Be&rezgaitasuna"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&Ikusi"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Laguntza"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "T&xertatu Lerroak"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "B&atu Lerroak"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Antolatu Lerro G&uztiak"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Antolatu Hautatutako Lerr&oak"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

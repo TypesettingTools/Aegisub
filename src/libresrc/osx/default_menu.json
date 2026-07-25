@@ -1,15 +1,15 @@
 {
     "main" : [
-        { "submenu" : "main/file",     "text" : "&File" },
-        { "submenu" : "main/edit",     "text" : "&Edit" },
-        { "submenu" : "main/view",     "text" : "Vie&w" },
-        { "submenu" : "main/subtitle", "text" : "&Subtitle" },
-        { "submenu" : "main/timing",   "text" : "&Timing" },
-        { "submenu" : "main/video",    "text" : "&Video" },
-        { "submenu" : "main/audio",    "text" : "&Audio" },
-        { "special" : "automation",    "text" : "A&utomation" },
-        { "submenu" : "main/window",   "text" : "Window" },
-        { "submenu" : "main/help",     "text" : "&Help", "special" : "help" }
+        { "submenu" : "main/file",     "tlcontext": "Menu bar", "text" : "&File" },
+        { "submenu" : "main/edit",     "tlcontext": "Menu bar", "text" : "&Edit" },
+        { "submenu" : "main/view",     "tlcontext": "Menu bar", "text" : "Vie&w" },
+        { "submenu" : "main/subtitle", "tlcontext": "Menu bar", "text" : "&Subtitle" },
+        { "submenu" : "main/timing",   "tlcontext": "Menu bar", "text" : "&Timing" },
+        { "submenu" : "main/video",    "tlcontext": "Menu bar", "text" : "&Video" },
+        { "submenu" : "main/audio",    "tlcontext": "Menu bar", "text" : "&Audio" },
+        { "special" : "automation",    "tlcontext": "Menu bar", "text" : "A&utomation" },
+        { "submenu" : "main/window",   "tlcontext": "Menu bar", "text" : "Window" },
+        { "submenu" : "main/help",     "tlcontext": "Menu bar", "text" : "&Help", "special" : "help" }
     ],
     "main/file" : [
         { "command" : "subtitle/new", "text" : "New" },

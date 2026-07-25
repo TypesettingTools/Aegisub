@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2025-11-18 21:22+0800\n"
 "Last-Translator: Howardisme <howard940114@gmail.com>\n"
 "Language-Team: None <None@None>\n"
@@ -5476,7 +5476,7 @@ msgstr "空白"
 msgid "&Recent"
 msgstr "最近打開(&R)"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "沒有自動化巨集被載入"
 
@@ -6943,8 +6943,73 @@ msgid "Override &AR"
 msgstr "更改長寬比(&A)"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "檔案(&F)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "編輯(&E)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "字幕(&S)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "計時(&T)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "視訊(&V)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "音訊(&A)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "自動化(&U)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "檢視(&W)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "幫助(&H)"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "插入行(&I)"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "合併行"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "排序所有行"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "排序選擇行"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "檔案(&F)"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "檢視(&W)"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6967,32 +7032,12 @@ msgid "A&utomation"
 msgstr "自動化(&U)"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "檢視(&W)"
+msgid "Window"
+msgstr "視窗"
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "幫助(&H)"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "插入行(&I)"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "合併行"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "排序所有行"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "排序選擇行"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr "視窗"
 
 #: default_menu.json:0
 msgid "Open..."

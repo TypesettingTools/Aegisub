@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2014-05-23 16:08+0200\n"
 "Last-Translator: Arslanoglou Georgios <arslanoglou.georgios@gmail.com>\n"
 "Language-Team: Gpower2, Madarb <gpower2@yahoo.com, madarbwot@hotmail.com>\n"
@@ -5622,7 +5622,7 @@ msgstr "Καθαρισμός"
 msgid "&Recent"
 msgstr "Πρόσφατα"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Δεν έχουν φορτωθεί μακροεντολές Αυτοματοποίησης"
 
@@ -7106,8 +7106,73 @@ msgid "Override &AR"
 msgstr "Παράκαμψη Αναλογίας Εικόνας"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "Α&ρχείο"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Επεξεργασία"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Υπότιτλοι"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Συγχρονισμός"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Βίντεο"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "Ή&χος"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "Αυτοματοποίηση"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&Προβολή"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Βοήθεια"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Εισαγωγή Γραμμών"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Ένωση Γραμμών"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Ταξινόμηση όλων των γραμμών"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Ταξινόμηση των επιλεγμένων γραμμών"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "Α&ρχείο"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&Προβολή"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7130,32 +7195,12 @@ msgid "A&utomation"
 msgstr "Αυτοματοποίηση"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&Προβολή"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Βοήθεια"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Εισαγωγή Γραμμών"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Ένωση Γραμμών"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Ταξινόμηση όλων των γραμμών"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Ταξινόμηση των επιλεγμένων γραμμών"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

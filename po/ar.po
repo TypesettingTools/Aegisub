@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2013-07-22 14:32+0300\n"
 "Last-Translator: safa\n"
 "Language-Team: Arabic <kde-i18n-doc@kde.org>\n"
@@ -5475,7 +5475,7 @@ msgstr ""
 msgid "&Recent"
 msgstr "الأ&خيرة"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "لم تحمّل أية وحدات ماكرو للأتمتة"
 
@@ -6934,8 +6934,73 @@ msgid "Override &AR"
 msgstr ""
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&ملف"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "ت&حرير"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&ترجمة"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "ت&وقيت"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&فيديو"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&صوت"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "أتمت&ة"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&عرض"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "م&ساعدة"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "إد&راج أسطر"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "جمع الأسطر"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "فرز كل الأسطر"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "فرز الأسطر المحددة"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&ملف"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&عرض"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6958,32 +7023,12 @@ msgid "A&utomation"
 msgstr "أتمت&ة"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&عرض"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "م&ساعدة"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "إد&راج أسطر"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "جمع الأسطر"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "فرز كل الأسطر"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "فرز الأسطر المحددة"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

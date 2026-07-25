@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2025-06-26 12:46-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary, Tenebris Magi\n"
@@ -5602,7 +5602,7 @@ msgstr "Esvaziar"
 msgid "&Recent"
 msgstr "&Recente"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Macros de automação não foram carregadas"
 
@@ -7079,8 +7079,73 @@ msgid "Override &AR"
 msgstr "Forçar &Proporção de Imagem"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Arquivo"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "E&ditar"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Legendas"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Sincronização"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Vídeo"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Áudio"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "A&utomação"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "E&xibir"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Ajuda"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Inserir Linhas"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Unir Linhas"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Organizar Todas Linhas"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Organizar Linhas Selecionadas"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Arquivo"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "E&xibir"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7103,32 +7168,12 @@ msgid "A&utomation"
 msgstr "A&utomação"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "E&xibir"
+msgid "Window"
+msgstr "Janela"
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Ajuda"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Inserir Linhas"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Unir Linhas"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Organizar Todas Linhas"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Organizar Linhas Selecionadas"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr "Janela"
 
 #: default_menu.json:0
 msgid "Open..."

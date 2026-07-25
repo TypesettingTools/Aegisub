@@ -177,8 +177,8 @@ public:
 		context = c;
 	}
 
-	int AddCommand(cmd::Command *co, wxMenu *parent, std::string const& text = "") {
-		return AddCommand(co, parent, text.empty() ? co->StrMenu(context) : wxGetTranslation(to_wx(text)));
+	int AddCommand(cmd::Command *co, wxMenu *parent, std::string const& text = "", std::string const& tl_context = "") {
+		return AddCommand(co, parent, text.empty() ? co->StrMenu(context) : wxGetTranslation(to_wx(text), {}, to_wx(tl_context)));
 	}
 
 	// because wxString doesn't have a move constructor
@@ -342,8 +342,9 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 		return;
 	}
 
-	std::string submenu, recent, command, text, special;
+	std::string submenu, recent, command, text, context, special;
 	read_entry(ele, "special", &special);
+	read_entry(ele, "tlcontext", &context);
 
 #ifdef __WXMAC__
 	if (special == "window")
@@ -351,7 +352,7 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 #endif
 
 	if (read_entry(ele, "submenu", &submenu) && read_entry(ele, "text", &text)) {
-		wxString tl_text = wxGetTranslation(to_wx(text));
+		wxString tl_text = wxGetTranslation(to_wx(text), wxString(), to_wx(context));
 		parent->AppendSubMenu(build_menu(submenu, c, cm), tl_text);
 #ifdef __WXMAC__
 		if (special == "help")
@@ -371,7 +372,7 @@ void process_menu_item(wxMenu *parent, agi::Context *c, json::Object const& ele,
 	read_entry(ele, "text", &text);
 
 	try {
-		int id = cm->AddCommand(cmd::get(command), parent, text);
+		int id = cm->AddCommand(cmd::get(command), parent, text, context);
 #ifdef __WXMAC__
 		if (!special.empty()) {
 			if (special == "about")
@@ -518,16 +519,17 @@ namespace menu {
 
 		auto menu = std::make_unique<CommandMenuBar>(id_base, c);
 		for (auto const& item : get_menu(name)) {
-			std::string submenu, disp;
+			std::string submenu, disp, context;
 			read_entry(item, "submenu", &submenu);
 			read_entry(item, "text", &disp);
+			read_entry(item, "tlcontext", &context);
 			if (!submenu.empty()) {
-				menu->Append(build_menu(submenu, c, &menu->cm), wxGetTranslation(to_wx(disp)));
+				menu->Append(build_menu(submenu, c, &menu->cm), wxGetTranslation(to_wx(disp), {}, to_wx(context)));
 			}
 			else {
 				read_entry(item, "special", &submenu);
 				if (submenu == "automation")
-					menu->Append(new AutomationMenu(c, &menu->cm), wxGetTranslation(to_wx(disp)));
+					menu->Append(new AutomationMenu(c, &menu->cm), wxGetTranslation(to_wx(disp), {}, to_wx(context)));
 			}
 		}
 

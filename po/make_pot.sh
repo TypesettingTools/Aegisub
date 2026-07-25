@@ -5,10 +5,16 @@ append_str() {
   while read -r msg; do
     msgfile=$(printf '%s' "$msg" | cut -d'|' -f1)
     msgline=$(printf '%s' "$msg" | cut -d'|' -f2)
-    msgid=$(printf '%s' "$msg" | cut -d'|' -f3-)
+    msgctxt=$(printf '%s' "$msg" | cut -d'|' -f3)
+    msgid=$(printf '%s' "$msg" | cut -d'|' -f4-)
 
-    printf "\n#: %s:%s\nmsgid %s\nmsgstr \"\"\n\n" \
-      "$msgfile" "$msgline" "$msgid" >> aegisub.pot
+    if [ -z "$msgctxt" ]; then
+        printf "\n#: %s:%s\nmsgid %s\nmsgstr \"\"\n\n" \
+          "$msgfile" "$msgline" "$msgid" >> aegisub.pot
+    else
+        printf "\n#: %s:%s\nmsgctxt %s\nmsgid %s\nmsgstr \"\"\n\n" \
+          "$msgfile" "$msgline" "$msgctxt" "$msgid" >> aegisub.pot
+    fi
   done
 }
 
@@ -26,24 +32,24 @@ find ../src ../src/command -name '*.cpp' -o -name '*.h' \
   > aegisub.pot
 
 for f in default_menu.json default_menu_platform.json osx/default_menu.json; do
-    sed '/"text"/!d;s/^.*"text" : \("[^"]*"\).*$/default_menu.json|0|\1/' ../src/libresrc/"$f" \
+    sed '/"text"/!d;s/^.*"tlcontext" : \("[^"]*"\).*"text" : \("[^"]*"\).*$/default_menu.json|0|\1|\2/;s/^.*"text" : \("[^"]*"\).*$/default_menu.json|0||\1/' ../src/libresrc/"$f" \
       | append_str
 done
 
 grep '"[A-Za-z ]*" : {' -n ../src/libresrc/default_hotkey.json \
-  | sed 's/^\([0-9]*\):.*\("[^"]*"\).*$/default_hotkey.json|\1|\2/' \
+  | sed 's/^\([0-9]*\):.*\("[^"]*"\).*$/default_hotkey.json|\1||\2/' \
   | append_str
 
 find ../automation -name '*.lua' -o -name '*.moon' \
   | LC_ALL=C sort \
   | xargs grep 'tr"[^"]*"' -o -n \
-  | sed 's/\(.*\):\([0-9]*\):tr\(".*"\)/\1|\2|\3/' \
+  | sed 's/\(.*\):\([0-9]*\):tr\(".*"\)/\1|\2||\3/' \
   | append_str
 
 grep '^_[A-Za-z0-9]*=.*' ../packages/win_installer/fragment_strings.iss.in | while read line
 do
   printf '%s\n' "$line" \
-    | sed 's/[^=]*=\(.*\)/packages\/win_installer\/fragment_strings.iss|1|"\1"/' \
+    | sed 's/[^=]*=\(.*\)/packages\/win_installer\/fragment_strings.iss|1||"\1"/' \
     | append_str
 done
 

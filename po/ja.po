@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Jan Ekstrom <jeebjp@gmail.com>\n"
 "Language-Team: G-MARK <http://g-mark.jpn.org/>\n"
@@ -5433,7 +5433,7 @@ msgstr "空"
 msgid "&Recent"
 msgstr ""
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "オートメーション用マクロは読み込みできません"
 
@@ -6878,8 +6878,73 @@ msgid "Override &AR"
 msgstr ""
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "ファイル (&F)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "編集 (&E)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "新規作成 (&N)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "タイミング (&T)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "映像 (&V)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "音声 (&A)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "オートメーション"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "設定 (&W)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "ヘルプ (&H)"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "字幕行の挿入 ( &I )"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "字幕行の連結"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "ファイル (&F)"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "設定 (&W)"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6902,32 +6967,12 @@ msgid "A&utomation"
 msgstr ""
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "設定 (&W)"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "ヘルプ (&H)"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "字幕行の挿入 ( &I )"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "字幕行の連結"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

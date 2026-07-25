@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2026-07-22 17:03+0300\n"
 "Last-Translator: MantasB <mantasb2199@gmail.com>\n"
 "Language-Team: \n"
@@ -5528,7 +5528,7 @@ msgstr "Tuščia"
 msgid "&Recent"
 msgstr "&Paskiausiai naudoti"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Neįkelta jokių automatizacijos makrokomandų"
 
@@ -6984,8 +6984,73 @@ msgid "Override &AR"
 msgstr "Pakeisti p&roporciją"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Failas"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Redaguoti"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Subtitrai"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "S&inchronizavimas"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Vaizdas"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Garsas"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "&Automatizacija"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "R&odymas"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Pagalba"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Įterpti eilutes"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Sujungti eilutes"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Rūšiuoti visas eilutes"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Rūšiuoti pasirinktas eilutes"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Failas"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "R&odymas"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7008,32 +7073,12 @@ msgid "A&utomation"
 msgstr "&Automatizacija"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "R&odymas"
+msgid "Window"
+msgstr "Langas"
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Pagalba"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Įterpti eilutes"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Sujungti eilutes"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Rūšiuoti visas eilutes"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Rūšiuoti pasirinktas eilutes"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr "Langas"
 
 #: default_menu.json:0
 msgid "Open..."

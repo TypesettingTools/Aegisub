@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub [TR]\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2026-07-15 20:08+0300\n"
 "Last-Translator: Kerim Demirkaynak <kerim@post.com>\n"
 "Language-Team: Türkçe\n"
@@ -5509,7 +5509,7 @@ msgstr "Boş"
 msgid "&Recent"
 msgstr "&Son kullanılanlar"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Otomasyon makrosu yüklenmedi"
 
@@ -6959,8 +6959,73 @@ msgid "Override &AR"
 msgstr "EBO'yu &Geçersiz Kıl"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Dosya"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Düzenle"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "A&ltyazı"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "Za&manlama"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Video"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Ses"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "O&tomasyon"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "G&örünüm"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "Ya&rdım"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "Sat&ırları Ekle"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Satırları Birleştir"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Tüm Satırları Sırala"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Seçilen Satırları Sırala"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Dosya"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "G&örünüm"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6983,32 +7048,12 @@ msgid "A&utomation"
 msgstr "O&tomasyon"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "G&örünüm"
+msgid "Window"
+msgstr "Pencere"
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "Ya&rdım"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "Sat&ırları Ekle"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Satırları Birleştir"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Tüm Satırları Sırala"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Seçilen Satırları Sırala"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr "Pencere"
 
 #: default_menu.json:0
 msgid "Open..."

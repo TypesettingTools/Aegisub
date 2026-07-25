@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub Hungarian translation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2014-11-08 13:56+0100\n"
 "Last-Translator: Yuri <yurielvtars@gmail.com>\n"
 "Language-Team: Yuri <yurielvtars@gmail.com>\n"
@@ -5548,7 +5548,7 @@ msgstr "Üres"
 msgid "&Recent"
 msgstr "&Mostanában megnyitott"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Automatizációs makrók nem kerültek betöltésre."
 
@@ -7029,8 +7029,73 @@ msgid "Override &AR"
 msgstr "K&éparány felülbírálása"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Fájl"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "S&zerkesztés"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "F&elirat"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "I&dőzítés"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Videó"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Audió"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "A&utomatizáció"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&Nézet"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Súgó"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "Sor &beszúrása"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Sorok összeillesztése"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Minden sor rendezése"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Kijelölt sorok rendezése"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Fájl"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&Nézet"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7053,32 +7118,12 @@ msgid "A&utomation"
 msgstr "A&utomatizáció"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&Nézet"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Súgó"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "Sor &beszúrása"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Sorok összeillesztése"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Minden sor rendezése"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Kijelölt sorok rendezése"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

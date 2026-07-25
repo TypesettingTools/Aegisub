@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cs\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2012-10-10 22:10+0100\n"
 "Last-Translator: Adam Rambousek <rambousek@gmail.com>\n"
 "Language-Team:  <en@li.org>\n"
@@ -5515,7 +5515,7 @@ msgstr "Prázdný"
 msgid "&Recent"
 msgstr "Naposledy otevřené"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Žádná makra Automatizace nebyla načtena"
 
@@ -6976,8 +6976,73 @@ msgid "Override &AR"
 msgstr "Přebít AR"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Soubor"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "Úpr&avy"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Titulek"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "Časo&vání"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Video"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Audio"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "Automatizace"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "Zobra&zit"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "Nápověda"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "Vlož&it řádky"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Spojit řádky"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Seřadit všechny řádky"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Seřadit vybrané řádky"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Soubor"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "Zobra&zit"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7000,32 +7065,12 @@ msgid "A&utomation"
 msgstr "Automatizace"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "Zobra&zit"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "Nápověda"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "Vlož&it řádky"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Spojit řádky"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Seřadit všechny řádky"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Seřadit vybrané řádky"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

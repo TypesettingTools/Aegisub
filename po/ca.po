@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ca\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2026-04-06 09:28+0000\n"
 "Last-Translator: Eduard Ereza Martínez <eduard@ereza.cat>\n"
 "Language-Team: \n"
@@ -5565,7 +5565,7 @@ msgstr "Buit"
 msgid "&Recent"
 msgstr "&Recents"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "No s’han carregat macros d’automatització"
 
@@ -7026,8 +7026,73 @@ msgid "Override &AR"
 msgstr "Imposa la relació d’as&pecte"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Fitxer"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Edita"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Subtítol"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Temps"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Vídeo"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "À&udio"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "&Automatització"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "V&isualitza"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "A&juda"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Insereix línies"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Uneix les línies"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Ordena totes les línies"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Ordena les línies seleccionades"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Fitxer"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "V&isualitza"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7050,32 +7115,12 @@ msgid "A&utomation"
 msgstr "&Automatització"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "V&isualitza"
+msgid "Window"
+msgstr "Finestra"
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "A&juda"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Insereix línies"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Uneix les línies"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Ordena totes les línies"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Ordena les línies seleccionades"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr "Finestra"
 
 #: default_menu.json:0
 msgid "Open..."

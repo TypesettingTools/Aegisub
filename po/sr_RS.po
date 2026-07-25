@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 2.1.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2012-09-23 06:00+0100\n"
 "Last-Translator: Rancher <theranchcowboy@gmail.com>\n"
 "Language-Team: Serbian\n"
@@ -5486,7 +5486,7 @@ msgstr "празно"
 msgid "&Recent"
 msgstr "Исто&рија"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Аутоматизациони макрои нису учитани."
 
@@ -6950,8 +6950,73 @@ msgid "Override &AR"
 msgstr "Зао&биђи размеру"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Датотека"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Уређивање"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Титл"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Време"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "В&идео"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Звук"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "&Аутоматизација"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "П&риказ"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Помоћ"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "Убаци &титл"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "&Спој титлове"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Поређај све титлове"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Поређај изабране титлове"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Датотека"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "П&риказ"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6974,32 +7039,12 @@ msgid "A&utomation"
 msgstr "&Аутоматизација"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "П&риказ"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Помоћ"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "Убаци &титл"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "&Спој титлове"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Поређај све титлове"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Поређај изабране титлове"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

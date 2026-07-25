@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2021-05-23 22:24+0200\n"
 "Last-Translator: clr134\n"
 "Language-Team: Invi <adii__17@o2.pl>\n"
@@ -5429,7 +5429,7 @@ msgstr "Puste"
 msgid "&Recent"
 msgstr ""
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Brak załadowanych makr automatyzacji"
 
@@ -6871,8 +6871,73 @@ msgid "Override &AR"
 msgstr ""
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Plik"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Edycja"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Nowe napisy"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Timing"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "Wi&deo"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Audio"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "Automatyzacja"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&Widok"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "P&omoc"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Wstaw linie"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Połącz linie"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Plik"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&Widok"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6895,32 +6960,12 @@ msgid "A&utomation"
 msgstr ""
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&Widok"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "P&omoc"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Wstaw linie"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Połącz linie"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

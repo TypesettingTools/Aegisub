@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Meysam <meysam.ar@gmail.com>\n"
 "Language-Team: \n"
@@ -5413,7 +5413,7 @@ msgstr "خالی"
 msgid "&Recent"
 msgstr ""
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "هیچ ماکروی عملیات خودکاری بارگذاری نشده است"
 
@@ -6854,8 +6854,73 @@ msgid "Override &AR"
 msgstr ""
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "فایل"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "ویرایش"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "زیرنویس جدید"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "زمانبندی"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "ویدیو"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "صدا"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "عملیات خودکار"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "نمایش"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "راهنما"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "افزودن خطوط"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "پیوستن خطوط به هم"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "فایل"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "نمایش"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6878,32 +6943,12 @@ msgid "A&utomation"
 msgstr ""
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "نمایش"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "راهنما"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "افزودن خطوط"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "پیوستن خطوط به هم"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

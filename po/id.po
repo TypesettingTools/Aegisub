@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2014-07-02 23:34+0700\n"
 "Last-Translator: doplank <doplank@gmx.com>\n"
 "Language-Team:  <doplank@gmx.com>\n"
@@ -5549,7 +5549,7 @@ msgstr "Kosong"
 msgid "&Recent"
 msgstr "&Riwayat"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Tidak ada makro otomatisasi yang dimuat"
 
@@ -7025,8 +7025,73 @@ msgid "Override &AR"
 msgstr "Paksa &Aspek Rasio"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Berkas"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Sunting"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Takarir"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Tempo"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Video"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Audio"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "O&tomatisasi"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "Liha&t"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Bantuan"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Sisipkan Baris"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Gabungkan Baris"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Sortir Semua Baris"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Sortir Baris yang Terpilih"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Berkas"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "Liha&t"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7049,32 +7114,12 @@ msgid "A&utomation"
 msgstr "O&tomatisasi"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "Liha&t"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Bantuan"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Sisipkan Baris"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Gabungkan Baris"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Sortir Semua Baris"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Sortir Baris yang Terpilih"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

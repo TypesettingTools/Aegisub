@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2026-05-12 00:00+0900\n"
 "Last-Translator: Hack茶ん\n"
 "Language-Team: TNC\n"
@@ -5451,7 +5451,7 @@ msgstr "비어 있음"
 msgid "&Recent"
 msgstr "최근 항목(&R)"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "불러온 매크로 자동화 없음"
 
@@ -6897,8 +6897,73 @@ msgid "Override &AR"
 msgstr "&AR 재정의"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "파일(&F)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "편집(&E)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "자막(&S)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "타이밍(&T)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "영상(&V)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "음향(&A)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "자동화(&U)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "보기(&W)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "도움말(&H)"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "라인 삽입(&I)"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "라인 합치기"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "모든 라인 정렬"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "선택한 라인 정렬"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "파일(&F)"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "보기(&W)"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6921,32 +6986,12 @@ msgid "A&utomation"
 msgstr "자동화(&U)"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "보기(&W)"
+msgid "Window"
+msgstr "창"
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "도움말(&H)"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "라인 삽입(&I)"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "라인 합치기"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "모든 라인 정렬"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "선택한 라인 정렬"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr "창"
 
 #: default_menu.json:0
 msgid "Open..."
