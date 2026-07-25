@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub Tiếng Việt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: NGUY?N M?nh Hùng <loveleeyoungae@yahoo.com>\n"
 "Language-Team: OnEsChi <oneschi@yahoo.com>\n"
@@ -5585,7 +5585,7 @@ msgstr "Rỗng"
 msgid "&Recent"
 msgstr "&Gần đây"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Không có macro Tự động hóa nào được nạp"
 
@@ -7065,8 +7065,73 @@ msgid "Override &AR"
 msgstr "Điều chỉnh &AR"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Tệp"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Sửa"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Phụ đề"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "Căn thời g&ian"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "V&ideo"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "Âm th&anh"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "&Tự động hóa"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&Hiển thị"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "T&rợ giúp"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Chèn dòng"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "&Ghép dòng"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Sắp xếp tất cả các dòng"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Sắp xếp các dòng đã chọn"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Tệp"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&Hiển thị"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7089,32 +7154,12 @@ msgid "A&utomation"
 msgstr "&Tự động hóa"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&Hiển thị"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "T&rợ giúp"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Chèn dòng"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "&Ghép dòng"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Sắp xếp tất cả các dòng"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Sắp xếp các dòng đã chọn"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

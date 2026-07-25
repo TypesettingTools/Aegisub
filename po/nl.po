@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2013-05-09 12:56+0100\n"
 "Last-Translator: Thomas De Rocker <thomasderocker@hotmail.com>\n"
 "Language-Team: Dutch (nl)\n"
@@ -5537,7 +5537,7 @@ msgstr "Leeg"
 msgid "&Recent"
 msgstr "&Recent"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Geen automatisatiemacro's geladen"
 
@@ -7002,8 +7002,73 @@ msgid "Override &AR"
 msgstr "Beeldverhouding overschrijven"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Bestand"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "B&ewerken"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Ondertitels"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Timing"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Video"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Audio"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "A&utomatisatie"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&Beeld"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Help"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "Regels &invoegen"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Regels samenvoegen"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Alle regels sorteren"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Geselecteerde regels sorteren"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Bestand"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&Beeld"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7026,32 +7091,12 @@ msgid "A&utomation"
 msgstr "A&utomatisatie"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&Beeld"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Help"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "Regels &invoegen"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Regels samenvoegen"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Alle regels sorteren"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Geselecteerde regels sorteren"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

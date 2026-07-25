@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub (unofficial)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2018-09-26 07:39+0000\n"
 "Last-Translator: Viktar Lieškievič <vityay.leshkevich@yandex.ru>, 2019\n"
 "Language-Team: Belarusian (https://www.transifex.com/byplay/teams/91944/"
@@ -5586,7 +5586,7 @@ msgstr "Пуста"
 msgid "&Recent"
 msgstr "&Нядаўнія"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Няма загружаных макрасаў аўтаматызацыі"
 
@@ -7062,8 +7062,73 @@ msgid "Override &AR"
 msgstr "Змяніць &суадносіны бакоў"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Файл"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Праўка"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Субтытры"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Таймінг"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Відэа"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Аўдыя"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "&Аўтаматызацыя"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "Выгля&д"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Дапамога"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Уставіць радкі"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Аб'яднаць радкі"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Сартаваць усе радкі"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Сартаваць выбраныя радкі"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Файл"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "Выгля&д"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7086,32 +7151,12 @@ msgid "A&utomation"
 msgstr "&Аўтаматызацыя"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "Выгля&д"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Дапамога"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Уставіць радкі"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Аб'яднаць радкі"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Сартаваць усе радкі"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Сартаваць выбраныя радкі"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

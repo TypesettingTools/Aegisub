@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: da\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Niels Martin Hansen <nielsm@indvikleren.dk>\n"
 "Language-Team: Niels Martin Hansen <nielsm@aegisub.org>\n"
@@ -5437,7 +5437,7 @@ msgstr "Tom"
 msgid "&Recent"
 msgstr ""
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Ingen Automatisering-makroer indlæst"
 
@@ -6881,8 +6881,73 @@ msgid "Override &AR"
 msgstr ""
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Fil"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Rediger"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Ny undertekstfil"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Synkronisering"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Video"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Lyd"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "Automatisering"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "V&is"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Hjælp"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Indsæt linjer"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Sammen&føj linjer"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Fil"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "V&is"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6905,32 +6970,12 @@ msgid "A&utomation"
 msgstr ""
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "V&is"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Hjælp"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Indsæt linjer"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Sammen&føj linjer"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

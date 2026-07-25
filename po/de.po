@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2024-12-18 21:47+0100\n"
 "Last-Translator: arch1t3cht <arch1t3cht@gmail.com>\n"
 "Language-Team: Pantsu ga daisuki <erokawaii@yandex.ru>\n"
@@ -5587,7 +5587,7 @@ msgstr "Leer"
 msgid "&Recent"
 msgstr "Zuletzt geöffnet"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Keine Automatisierungsmakros geladen"
 
@@ -7067,8 +7067,73 @@ msgid "Override &AR"
 msgstr "Seitenverhältnis ändern"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Datei"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Bearbeiten"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Untertitel"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Timing"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Video"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Audio"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "Automatisierung"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&Ansicht"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Hilfe"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "Zeilen einfügen"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Zeilen zusammenfügen"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Sortiere alle Zeilen"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Sortiere ausgewählte Zeilen"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Datei"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&Ansicht"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7091,32 +7156,12 @@ msgid "A&utomation"
 msgstr "Automatisierung"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&Ansicht"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Hilfe"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "Zeilen einfügen"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Zeilen zusammenfügen"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Sortiere alle Zeilen"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Sortiere ausgewählte Zeilen"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

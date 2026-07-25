@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2005-2014-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5301,7 +5301,7 @@ msgstr ""
 msgid "&Recent"
 msgstr ""
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr ""
 
@@ -6717,7 +6717,72 @@ msgid "Override &AR"
 msgstr ""
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
+msgstr ""
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr ""
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr ""
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr ""
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr ""
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr ""
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr ""
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr ""
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr ""
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr ""
+
+#: default_menu.json:0
+msgid "&File"
+msgstr ""
+
+#: default_menu.json:0
+msgid "Vie&w"
 msgstr ""
 
 #: default_menu.json:0
@@ -6741,31 +6806,11 @@ msgid "A&utomation"
 msgstr ""
 
 #: default_menu.json:0
-msgid "Vie&w"
+msgid "Window"
 msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
-msgstr ""
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr ""
-
-#: default_menu.json:0
-msgid "Window"
 msgstr ""
 
 #: default_menu.json:0

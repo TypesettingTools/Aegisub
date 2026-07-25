@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2026-02-19 19:47+0800\n"
 "Last-Translator: Oborozuki <oborozuk1@qq.com>\n"
 "Language-Team: Vmoe Fansub <vmoe@vmoe.info>\n"
@@ -5368,7 +5368,7 @@ msgstr "空白"
 msgid "&Recent"
 msgstr "最近打开(&R)"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "没有自动化宏被加载"
 
@@ -6797,8 +6797,73 @@ msgid "Override &AR"
 msgstr "更改宽高比(&A)"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "文件(&F)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "编辑(&E)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "字幕(&S)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "时间轴(&T)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "视频(&V)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "音频(&A)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "自动化(&U)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "查看(&W)"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "帮助(&H)"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "插入行(&I)"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "合并行"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "排序所有行"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "排序选择行"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "文件(&F)"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "查看(&W)"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6821,32 +6886,12 @@ msgid "A&utomation"
 msgstr "自动化(&U)"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "查看(&W)"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "帮助(&H)"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "插入行(&I)"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "合并行"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "排序所有行"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "排序选择行"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

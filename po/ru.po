@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2012-10-04 22:11+0200\n"
 "Last-Translator: Igor Urazov <z0rc3r@gmail.com>\n"
 "Language-Team: \n"
@@ -5509,7 +5509,7 @@ msgstr "Пусто"
 msgid "&Recent"
 msgstr "&Недавние"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Нет загруженных макросов"
 
@@ -6969,8 +6969,73 @@ msgid "Override &AR"
 msgstr "Изменить &соотношение сторон"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "Файл"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Правка"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Субтитры"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Тайминг"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Видео"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Aудио"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "&Автоматизация"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&Вид"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Помощь"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Вставить строки"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Объединить строки"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Сортировать все"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Сортировать выбранные"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "Файл"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&Вид"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -6993,32 +7058,12 @@ msgid "A&utomation"
 msgstr "&Автоматизация"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&Вид"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Помощь"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Вставить строки"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Объединить строки"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Сортировать все"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Сортировать выбранные"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

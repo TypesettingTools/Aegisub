@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub Italian Translation\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: giafe <ocarinaoftime@live.it>\n"
@@ -5515,7 +5515,7 @@ msgstr "Vuoto"
 msgid "&Recent"
 msgstr "&Recenti"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Nessuna macro Automation caricata"
 
@@ -6977,8 +6977,73 @@ msgid "Override &AR"
 msgstr "Ignora &Aspect Ratio"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&File"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Modifica"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "&Sottotitoli"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Timing"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Video"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Audio"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "A&utomazione"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "Visua&lizza"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "&Aiuto"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Inserisci Righe"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Unisci Righe"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Ordina tutte le Righe"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Ordina Righe Selezionate"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&File"
+
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "Visua&lizza"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7001,32 +7066,12 @@ msgid "A&utomation"
 msgstr "A&utomazione"
 
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "Visua&lizza"
+msgid "Window"
+msgstr ""
 
 #: default_menu.json:0
 msgid "&Help"
 msgstr "&Aiuto"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Inserisci Righe"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Unisci Righe"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Ordina tutte le Righe"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Ordina Righe Selezionate"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."

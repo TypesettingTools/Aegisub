@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 14:12+0200\n"
+"POT-Creation-Date: 2026-07-25 16:15+0200\n"
 "PO-Revision-Date: 2014-11-23 02:19+0200\n"
 "Last-Translator: Lasse Liehu <lasse.liehu@gmail.com>\n"
 "Language-Team: Finnish <lokalisointi@lists.coss.fi>\n"
@@ -5626,7 +5626,7 @@ msgstr "Tyhjä"
 msgid "&Recent"
 msgstr "&Äskettäiset"
 
-#: ../src/menu.cpp:466
+#: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
 msgstr "Automation-makroja ei ladattu"
 
@@ -7117,8 +7117,78 @@ msgid "Override &AR"
 msgstr "&Pakota kuvasuhde"
 
 #: default_menu.json:0
+msgctxt "Menu bar"
 msgid "&File"
 msgstr "&Tiedosto"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Edit"
+msgstr "&Muokkaa"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Subtitle"
+msgstr "T&ekstitys"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Timing"
+msgstr "&Ajoitus"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Video"
+msgstr "&Video"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Audio"
+msgstr "&Ääniraita"
+
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "A&utomation"
+msgstr "Aut&omaatio"
+
+# CONTEXT: Name of a menu.
+# Valitsin substantiivimuodon, koska se sopii paremmin valikon pääasiassa verbimuotoisten kohteiden kanssa.
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "Vie&w"
+msgstr "&Näkymä"
+
+# CHECK: Tässä "&Help" -> "O&hje", mutta käyttöliittymässä "&Ohje". Aiheuttaa hankalasti ratkaistavan valintanäppäinkonfliktin.
+#: default_menu.json:0
+msgctxt "Menu bar"
+msgid "&Help"
+msgstr "O&hje"
+
+#: default_menu.json:0
+msgid "&Insert Lines"
+msgstr "&Lisää rivi"
+
+#: default_menu.json:0
+msgid "Join Lines"
+msgstr "Yhdistä"
+
+#: default_menu.json:0
+msgid "Sort All Lines"
+msgstr "Järjestä kaikki rivit"
+
+#: default_menu.json:0
+msgid "Sort Selected Lines"
+msgstr "Järjestä valitut rivit"
+
+#: default_menu.json:0
+msgid "&File"
+msgstr "&Tiedosto"
+
+# CONTEXT: Name of a menu.
+# Valitsin substantiivimuodon, koska se sopii paremmin valikon pääasiassa verbimuotoisten kohteiden kanssa.
+#: default_menu.json:0
+msgid "Vie&w"
+msgstr "&Näkymä"
 
 #: default_menu.json:0
 msgid "&Subtitle"
@@ -7140,36 +7210,14 @@ msgstr "&Ääniraita"
 msgid "A&utomation"
 msgstr "Aut&omaatio"
 
-# CONTEXT: Name of a menu.
-# Valitsin substantiivimuodon, koska se sopii paremmin valikon pääasiassa verbimuotoisten kohteiden kanssa.
 #: default_menu.json:0
-msgid "Vie&w"
-msgstr "&Näkymä"
+msgid "Window"
+msgstr ""
 
 # CHECK: Tässä "&Help" -> "O&hje", mutta käyttöliittymässä "&Ohje". Aiheuttaa hankalasti ratkaistavan valintanäppäinkonfliktin.
 #: default_menu.json:0
 msgid "&Help"
 msgstr "O&hje"
-
-#: default_menu.json:0
-msgid "&Insert Lines"
-msgstr "&Lisää rivi"
-
-#: default_menu.json:0
-msgid "Join Lines"
-msgstr "Yhdistä"
-
-#: default_menu.json:0
-msgid "Sort All Lines"
-msgstr "Järjestä kaikki rivit"
-
-#: default_menu.json:0
-msgid "Sort Selected Lines"
-msgstr "Järjestä valitut rivit"
-
-#: default_menu.json:0
-msgid "Window"
-msgstr ""
 
 #: default_menu.json:0
 msgid "Open..."
