@@ -35,7 +35,7 @@ msgid "ANSI"
 msgstr ""
 
 #: ../src/ass_style.cpp:198 ../src/command/video.cpp:144
-#: default_hotkey.json:109:
+#: default_hotkey.json:109
 msgid "Default"
 msgstr ""
 
@@ -2204,7 +2204,7 @@ msgid "St&yling Assistant..."
 msgstr ""
 
 #: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:54
-#: default_hotkey.json:223:
+#: default_hotkey.json:223
 msgid "Styling Assistant"
 msgstr ""
 
@@ -2281,7 +2281,7 @@ msgid "&Translation Assistant..."
 msgstr ""
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
-#: ../src/preferences.cpp:272 default_hotkey.json:291:
+#: ../src/preferences.cpp:272 default_hotkey.json:291
 msgid "Translation Assistant"
 msgstr ""
 
@@ -4953,7 +4953,7 @@ msgid "Video Details"
 msgstr ""
 
 #: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:204
-#: ../src/preferences.cpp:481 default_hotkey.json:315:
+#: ../src/preferences.cpp:481 default_hotkey.json:315
 msgid "Video"
 msgstr ""
 
@@ -5342,7 +5342,7 @@ msgstr ""
 msgid "Toolbar Icon Size"
 msgstr ""
 
-#: ../src/preferences.cpp:107 default_hotkey.json:2:
+#: ../src/preferences.cpp:107 default_hotkey.json:2
 msgid "Always"
 msgstr ""
 
@@ -5406,8 +5406,7 @@ msgstr ""
 msgid "Plain text import"
 msgstr ""
 
-#: ../src/preferences.cpp:164 ../src/preferences.cpp:414
-#: default_hotkey.json:37:
+#: ../src/preferences.cpp:164 ../src/preferences.cpp:414 default_hotkey.json:37
 msgid "Audio"
 msgstr ""
 
@@ -5783,7 +5782,7 @@ msgstr ""
 msgid "Waveform"
 msgstr ""
 
-#: ../src/preferences.cpp:324 default_hotkey.json:262:
+#: ../src/preferences.cpp:324 default_hotkey.json:262
 msgid "Subtitle Grid"
 msgstr ""
 
@@ -6789,7 +6788,7 @@ msgstr ""
 msgid "Export As..."
 msgstr ""
 
-#: default_hotkey.json:244:
+#: default_hotkey.json:244
 msgid "Subtitle Edit Box"
 msgstr ""
 
