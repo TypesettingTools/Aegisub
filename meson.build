@@ -14,7 +14,7 @@ project('Aegisub', ['c', 'cpp'],
             'luajit:lua52compat=true',
             'luajit:luajit=false',
         ],
-        version: '3.4.1')
+        version: '3.5.0')
 
 cmake = import('cmake')
 

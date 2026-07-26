@@ -22,11 +22,11 @@ find ../src ../src/command -name '*.cpp' -o -name '*.h' \
   | xgettext --files-from=- -o - --c++ --sort-by-file \
              -k_ -kwxTRANSLATE -kwxGETTEXT_IN_CONTEXT:1c,2 -kSTR_MENU -kSTR_DISP -kSTR_HELP -kCOMMAND_GROUP:5 \
              -kfmt_tl -kfmt_plural:2,3 \
-  | sed 's/SOME DESCRIPTIVE TITLE./Aegisub 3.2/' \
+  | sed 's/SOME DESCRIPTIVE TITLE./Aegisub 3.5/' \
   | sed 's/YEAR/2005-2014/' \
   | sed "s/THE PACKAGE'S COPYRIGHT HOLDER/Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et. al./" \
   | sed 's/PACKAGE/Aegisub/' \
-  | sed 's/VERSION/3.2.0/' \
+  | sed 's/VERSION/3.5.0/' \
   | sed 's/FIRST AUTHOR <EMAIL@ADDRESS>/Niels Martin Hansen <nielsm@aegisub.org>/' \
   | sed 's/CHARSET/UTF-8/' \
   > aegisub.pot
