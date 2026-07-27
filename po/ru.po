@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 12:45+0000\n"
-"PO-Revision-Date: 2026-07-27 07:40+0000\n"
+"PO-Revision-Date: 2026-07-27 16:27+0000\n"
 "Last-Translator: zlom\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -626,7 +626,7 @@ msgstr "Форматы видео"
 #: ../src/command/audio.cpp:85
 msgctxt "dialog title"
 msgid "Open Audio File"
-msgstr "Открытие аудиофайла"
+msgstr "Выберите аудиофайл"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
@@ -928,7 +928,7 @@ msgstr "Автоматизация"
 
 #: ../src/command/automation.cpp:75
 msgid "Open automation manager"
-msgstr "Открыть менеджер автоматизации"
+msgstr "Открытие менеджер автоматизации"
 
 #: ../src/command/automation.cpp:87
 msgid ""
@@ -954,27 +954,27 @@ msgstr "установку цвета"
 
 #: ../src/command/edit.cpp:391
 msgid "Primary Color..."
-msgstr "Основной цвет..."
+msgstr "Первичный цвет..."
 
 #: ../src/command/edit.cpp:392
 msgid "Primary Color"
-msgstr "Основной цвет"
+msgstr "Первичный цвет"
 
 #: ../src/command/edit.cpp:393
 msgid "Set the primary fill color (\\c) at the cursor position"
-msgstr "Установка основного цвета (\\c) по позиции курсора"
+msgstr "Установка первичного цвета (\\c) по позиции курсора"
 
 #: ../src/command/edit.cpp:403
 msgid "Secondary Color..."
-msgstr "Цвет караоке..."
+msgstr "Вторичный цвет..."
 
 #: ../src/command/edit.cpp:404
 msgid "Secondary Color"
-msgstr "Цвет караоке"
+msgstr "Вторичный цвет"
 
 #: ../src/command/edit.cpp:405
 msgid "Set the secondary (karaoke) fill color (\\2c) at the cursor position"
-msgstr "Установка цвета караоке (\\2c) по позиции курсора"
+msgstr "Установка вторичного цвета (\\2c) по позиции курсора"
 
 #: ../src/command/edit.cpp:415
 msgid "Outline Color..."
@@ -1065,11 +1065,11 @@ msgstr "переключение зачёркивания"
 
 #: ../src/command/edit.cpp:487
 msgid "Font Face..."
-msgstr "Название шрифта..."
+msgstr "Имя шрифта..."
 
 #: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:277
 msgid "Font Face"
-msgstr "Название шрифта"
+msgstr "Имя шрифта"
 
 #: ../src/command/edit.cpp:489
 msgid "Select a font face and size"
@@ -1734,7 +1734,7 @@ msgstr "Открытие файла со списком ключевых кад�
 
 #: ../src/command/keyframe.cpp:72
 msgid "Open Keyframes File"
-msgstr "Открытие файла с ключевыми кадрами"
+msgstr "Выберите файл с ключевыми кадрами"
 
 #: ../src/command/keyframe.cpp:87
 msgid "Save Keyframes..."
@@ -1898,7 +1898,7 @@ msgstr "Открытие файла субтитров"
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
 msgid "Open Subtitles File"
-msgstr "Открытие файла субтитров"
+msgstr "Выберите файл субтитров"
 
 #: ../src/command/subtitle.cpp:282
 msgid "Open A&utosaved Subtitles..."
@@ -2242,7 +2242,7 @@ msgstr "Открытие файла с таймкодами с переменн�
 #: ../src/command/timecode.cpp:74
 msgctxt "dialog title"
 msgid "Open Timecodes File"
-msgstr "Открытие файла с таймкодами"
+msgstr "Выберите файл с таймкодами"
 
 #: ../src/command/timecode.cpp:83
 msgid "Save Timecodes File..."
@@ -2472,7 +2472,7 @@ msgid ""
 "  fractional (e.g. 16:9)\n"
 "  specific resolution (e.g. 853x480)"
 msgstr ""
-"Введите отношение сторон как:\n"
+"Введите соотношение сторон, как:\n"
 "  десятичный вид (например, 2.35)\n"
 "  дробный вид (например, 16:9)\n"
 "  точное разрешение (например, 853х480)"
@@ -2600,7 +2600,7 @@ msgstr "Копировать изображение в буфер обмена"
 
 #: ../src/command/video.cpp:301
 msgid "Copy the currently displayed frame to the clipboard"
-msgstr "Копирование текущего кадра в буфер обмена"
+msgstr "Копирование текущего отображённого кадра в буфер обмена"
 
 #: ../src/command/video.cpp:310 ../src/command/video.cpp:311
 msgid "Copy image to Clipboard (no subtitles)"
@@ -2609,7 +2609,7 @@ msgstr "Копировать изображение в буфер обмена (
 #: ../src/command/video.cpp:312
 msgid ""
 "Copy the currently displayed frame to the clipboard, without the subtitles"
-msgstr "Копирование текущего отображаемого кадра в буфер обмена; без субтитров"
+msgstr "Копирование текущего отображённого кадра в буфер обмена; без субтитров"
 
 #: ../src/command/video.cpp:321 ../src/command/video.cpp:322
 msgid "Copy image to Clipboard (only subtitles)"
@@ -2620,7 +2620,7 @@ msgid ""
 "Copy the currently displayed subtitles to the clipboard, with transparent "
 "background"
 msgstr ""
-"Копирование текущих отображаемых субтитров в буфер обмена; с прозрачным фоном"
+"Копирование текущих отображённых субтитров в буфер обмена; с прозрачным фоном"
 
 #: ../src/command/video.cpp:332 ../src/command/video.cpp:333
 msgid "Next Frame"
@@ -2687,7 +2687,7 @@ msgstr "Сохранить кадр в PNG"
 #: ../src/command/video.cpp:514
 msgid ""
 "Save the currently displayed frame to a PNG file in the video's directory"
-msgstr "Сохранение текущего кадра в файл PNG в директорию видео"
+msgstr "Сохранение текущего отображённого кадра в файл PNG в директорию видео"
 
 #: ../src/command/video.cpp:523 ../src/command/video.cpp:524
 msgid "Save PNG snapshot (no subtitles)"
@@ -2697,7 +2697,9 @@ msgstr "Сохранить кадр в PNG (без субтитров)"
 msgid ""
 "Save the currently displayed frame without the subtitles to a PNG file in "
 "the video's directory"
-msgstr "Сохранение текущего кадра без субтитров в файл PNG в директорию видео"
+msgstr ""
+"Сохранение текущего отображённого кадра без субтитров в файл PNG в "
+"директорию видео"
 
 #: ../src/command/video.cpp:534 ../src/command/video.cpp:535
 msgid "Save PNG snapshot (only subtitles)"
@@ -2708,7 +2710,8 @@ msgid ""
 "Save the currently displayed subtitles with transparent background to a PNG "
 "file in the video's directory"
 msgstr ""
-"Сохранение текущего кадра с прозрачным фоном в файл PNG в директорию видео"
+"Сохранение текущих отображённых субтитров с прозрачным фоном в файл PNG в "
+"директорию видео"
 
 #: ../src/command/video.cpp:546
 msgid "&Jump to..."
@@ -2732,7 +2735,7 @@ msgstr "Перейти к концу видео"
 
 #: ../src/command/video.cpp:562
 msgid "Jump the video to the end frame of current subtitle"
-msgstr "Переход к последнему кадру текущей строки"
+msgstr "Переход к последнему кадру текущего субтитра"
 
 #: ../src/command/video.cpp:573
 msgid "Jump Video to &Start"
@@ -2744,7 +2747,7 @@ msgstr "Перейти к началу видео"
 
 #: ../src/command/video.cpp:575
 msgid "Jump the video to the start frame of current subtitle"
-msgstr "Переход к первому кадру текущей строки"
+msgstr "Переход к первому кадру текущего субтитра"
 
 #: ../src/command/video.cpp:586
 msgid "&Open Video..."
@@ -2760,7 +2763,7 @@ msgstr "Открытие видеофайла"
 
 #: ../src/command/video.cpp:593
 msgid "Open Video File"
-msgstr "Открытие видеофайла"
+msgstr "Выберите видеофайл"
 
 #: ../src/command/video.cpp:602
 msgid "&Use Dummy Video..."
@@ -2926,7 +2929,7 @@ msgstr "Масштабировать"
 
 #: ../src/command/vis_tool.cpp:107
 msgid "Scale subtitles on X and Y axes"
-msgstr "Масштабирование субтиров по осям X и Y"
+msgstr "Масштабирование субтитров по осям X и Y"
 
 #: ../src/command/vis_tool.cpp:113 ../src/command/vis_tool.cpp:114
 msgid "Clip"
@@ -3877,7 +3880,7 @@ msgstr "Отмена"
 
 #: ../src/dialog_progress.cpp:241
 msgid "Cancelling..."
-msgstr "Отменяется..."
+msgstr "Отмена..."
 
 #: ../src/dialog_properties.cpp:98
 msgid "Script Properties"
@@ -3930,7 +3933,7 @@ msgstr "Из &видео"
 
 #: ../src/dialog_properties.cpp:148
 msgid "Script: "
-msgstr "Сценарий: "
+msgstr "Разрешение сценария: "
 
 #: ../src/dialog_properties.cpp:154 ../src/dialog_properties.cpp:169
 msgid "From video"
@@ -4457,7 +4460,7 @@ msgstr "Имя стиля"
 
 #: ../src/dialog_style_editor.cpp:227
 msgid "Font face"
-msgstr "Название шрифта"
+msgstr "Имя шрифта"
 
 #: ../src/dialog_style_editor.cpp:228
 msgid "Font size"
@@ -4465,11 +4468,11 @@ msgstr "Размер шрифта"
 
 #: ../src/dialog_style_editor.cpp:229
 msgid "Choose primary color"
-msgstr "Выбор основного цвета"
+msgstr "Выбор первичного цвета"
 
 #: ../src/dialog_style_editor.cpp:230
 msgid "Choose secondary color"
-msgstr "Выбор цвета караоке"
+msgstr "Выбор вторичного цвета"
 
 #: ../src/dialog_style_editor.cpp:231
 msgid "Choose outline color"
@@ -4535,11 +4538,11 @@ msgstr "Выравнивание текста на экране; в стиле �
 
 #: ../src/dialog_style_editor.cpp:295
 msgid "Primary"
-msgstr "Основной"
+msgstr "Первичный"
 
 #: ../src/dialog_style_editor.cpp:295
 msgid "Secondary"
-msgstr "Караоке"
+msgstr "Вторичный"
 
 #: ../src/dialog_style_editor.cpp:295
 msgid "Shadow"
@@ -6311,7 +6314,7 @@ msgstr "Цвет текста"
 
 #: ../src/preferences.cpp:323
 msgid "Comments"
-msgstr "Комментарии"
+msgstr "Цвет текста комментариев"
 
 #: ../src/preferences.cpp:324
 msgid "Drawing Commands"
@@ -6383,15 +6386,15 @@ msgstr "Цвет текста"
 
 #: ../src/preferences.cpp:350
 msgid "Standard background"
-msgstr "Фон"
+msgstr "Цвет фона"
 
 #: ../src/preferences.cpp:351
 msgid "Selection foreground"
-msgstr "Цвет выделения"
+msgstr "Цвет выбора"
 
 #: ../src/preferences.cpp:352
 msgid "Selection background"
-msgstr "Фон выделения"
+msgstr "Цвет фона выбора"
 
 #: ../src/preferences.cpp:353
 msgid "Collision foreground"
@@ -6423,7 +6426,7 @@ msgstr "Граница активной строки"
 
 #: ../src/preferences.cpp:360
 msgid "Lines"
-msgstr "Строки"
+msgstr "Цвет обводки границ строк таблицы"
 
 #: ../src/preferences.cpp:361
 msgid "CPS Error"
@@ -6845,7 +6848,7 @@ msgstr "Загрузить/выгрузить файлы?"
 
 #: ../src/project.cpp:267
 msgid "The audio file was not found: "
-msgstr "Аудиофайл не найден: "
+msgstr "Аудиофайл не был найден: "
 
 #: ../src/project.cpp:275
 msgid ""
@@ -7652,7 +7655,7 @@ msgid ""
 "unrelated to Aegisub) many vital functions, or were too buggy and/or "
 "unreliable to be really useful."
 msgstr ""
-"Изначально Aegisub был разработан как инструмент для вёрстки текста (в "
+"Изначально Aegisub был разработан, как инструмент для вёрстки текста (в "
 "особенности для аниме фансабов), предоставляя менее болезненный опыт работы. "
 "На момент создания данного проекта множество прочих программ, поддерживающих "
 "формат Advanced Substation Alpha, не имели (и, в большинстве случаев, не "
