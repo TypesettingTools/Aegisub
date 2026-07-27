@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ca\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 16:15+0200\n"
-"PO-Revision-Date: 2026-04-06 09:28+0000\n"
+"POT-Creation-Date: 2026-07-26 14:45+0200\n"
+"PO-Revision-Date: 2026-07-27 23:35+0000\n"
 "Last-Translator: Eduard Ereza Martínez <eduard@ereza.cat>\n"
 "Language-Team: \n"
 "Language: ca\n"
@@ -116,7 +116,7 @@ msgstr "Ampliació vertical"
 msgid "Audio Volume"
 msgstr "Volum de l’àudio"
 
-#: ../src/audio_display.cpp:718
+#: ../src/audio_display.cpp:719
 #, c-format
 msgid "%d%%, %d pixel/second"
 msgstr "%d%%, %d píxels/segon"
@@ -239,36 +239,36 @@ msgid ""
 "You should only load associated automation scripts if you trust their "
 "authors! They are not required to view or edit the subtitle file."
 msgstr ""
+"El fitxer de subtítols que heu obert conté scripts d’automatització locals. "
+"Voleu carregar els scripts d’automatització associats?\n"
+"\n"
+"Llista de scripts:\n"
+"\n"
+"%s\n"
+"\n"
+"Només hauríeu de carregar els scripts d’automatització associats si confieu "
+"en el seus autors! No són necessaris per a visualitzar o editar el fitxer de "
+"subtítols."
 
 #: ../src/auto4_base.cpp:418
-#, fuzzy, c-format
-#| msgid "    Macro: %s (%s)"
+#, c-format
 msgid "    %s (%s)"
-msgstr "    Macro: %s (%s)"
+msgstr "    %s (%s)"
 
 #: ../src/auto4_base.cpp:419
-#, fuzzy
-#| msgid "Reload autoload Automation scripts"
 msgid "Load associated automation scripts?"
-msgstr "Recarrega tots els scripts d’automatització de càrrega automàtica"
+msgstr "Voleu carregar els scripts d’automatització associats?"
 
 #: ../src/auto4_base.cpp:422
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: ../src/auto4_base.cpp:422
-#, fuzzy
-#| msgid "Global autoload scripts"
 msgid "Trust the authors && load scripts"
-msgstr "Scripts globals de càrrega automàtica"
+msgstr "Confia en els autors i carrega els scripts"
 
 #: ../src/auto4_base.cpp:437
-#, fuzzy, c-format
-#| msgid ""
-#| "Automation Script referenced could not be found.\n"
-#| "Filename specified: %c%s\n"
-#| "Searched relative to: %s\n"
-#| "Resolved filename: %s"
+#, c-format
 msgid ""
 "Automation Script referenced could not be found.\n"
 "Filename specified: %s\n"
@@ -276,7 +276,7 @@ msgid ""
 "Resolved filename: %s"
 msgstr ""
 "No s’ha pogut trobar l’script d’automatització referenciat.\n"
-"Nom de fitxer especificat: %c%s\n"
+"Nom de fitxer especificat: %s\n"
 "S’ha cercat de manera relativa a: %s\n"
 "Nom de fitxer resolt: %s"
 
@@ -294,7 +294,9 @@ msgstr ""
 msgid ""
 "Warning when loading Automation script '%s':\n"
 "%s"
-msgstr "Advertència en carregar l’script d’automatització «%s»: %s"
+msgstr ""
+"Advertència en carregar l’script d’automatització «%s»:\n"
+"%s"
 
 #: ../src/auto4_base.cpp:508
 #, c-format
@@ -321,7 +323,9 @@ msgstr "El fitxer no s’ha reconegut com a script"
 msgid ""
 "Warning in Automation script '%s':\n"
 "%s"
-msgstr "Advertència a l’script d’automatització «%s»: %s"
+msgstr ""
+"Advertència a l’script d’automatització «%s»:\n"
+"%s"
 
 #: ../src/auto4_lua.cpp:464
 msgid "Could not initialize Lua state"
@@ -523,7 +527,7 @@ msgstr "Obre una nova finestra de l’aplicació"
 msgid "&Options..."
 msgstr "&Opcions..."
 
-#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:151
+#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:182
 #: ../src/dialog_timing_processor.cpp:169 ../src/preferences.cpp:166
 #: ../src/preferences.cpp:206
 msgid "Options"
@@ -915,7 +919,7 @@ msgid "&Automation..."
 msgstr "&Automatització..."
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:376
+#: ../src/preferences.cpp:400
 msgid "Automation"
 msgstr "Automatització"
 
@@ -1368,7 +1372,7 @@ msgid "revert line"
 msgstr "la reversió de la línia"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Clear"
 msgstr "Esborra"
 
@@ -1965,7 +1969,7 @@ msgstr "Desa el fitxer de subtítols"
 #: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
 #: ../src/dialog_style_manager.cpp:689 ../src/dialog_style_manager.cpp:695
 #: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:202
-#: ../src/preferences.cpp:309 ../src/preferences.cpp:501
+#: ../src/preferences.cpp:333 ../src/preferences.cpp:525
 msgid "Error"
 msgstr "Error"
 
@@ -2312,7 +2316,7 @@ msgstr "Selecciona línies basant-se en criteris definits"
 msgid "&Resample Resolution..."
 msgstr "&Reajusta la resolució..."
 
-#: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:90
+#: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:114
 msgid "Resample Resolution"
 msgstr "Reajusta la resolució"
 
@@ -2408,7 +2412,7 @@ msgid "&Translation Assistant..."
 msgstr "Assistent de &traducció..."
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
-#: ../src/preferences.cpp:272 default_hotkey.json:291
+#: ../src/preferences.cpp:294 default_hotkey.json:291
 msgid "Translation Assistant"
 msgstr "Assistent de traducció"
 
@@ -3051,7 +3055,7 @@ msgid "E&xtract"
 msgstr "E&xtreu"
 
 #: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:205
-#: ../src/preferences.cpp:668
+#: ../src/preferences.cpp:692
 msgid "&Delete"
 msgstr "&Suprimeix"
 
@@ -3136,7 +3140,7 @@ msgstr "Nom"
 msgid "Filename"
 msgstr "Nom del fitxer"
 
-#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:688
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:712
 msgid "Description"
 msgstr "Descripció"
 
@@ -3379,8 +3383,9 @@ msgstr "1080×1920 (FHD vertical)"
 msgid "Dummy video options"
 msgstr "Opcions de vídeo fictici"
 
-#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:136
-#: ../src/dialog_resample.cpp:175 ../src/dialog_resample.cpp:188
+#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:150
+#: ../src/dialog_properties.cpp:162 ../src/dialog_resample.cpp:195
+#: ../src/dialog_resample.cpp:208
 msgid "×"
 msgstr "×"
 
@@ -3890,85 +3895,97 @@ msgstr "Cancel·la"
 msgid "Cancelling..."
 msgstr "S’està cancel·lant..."
 
-#: ../src/dialog_properties.cpp:91
+#: ../src/dialog_properties.cpp:98
 msgid "Script Properties"
 msgstr "Propietats de l’script"
 
-#: ../src/dialog_properties.cpp:105
+#: ../src/dialog_properties.cpp:112
 msgid "Script"
 msgstr "Script"
 
-#: ../src/dialog_properties.cpp:109
+#: ../src/dialog_properties.cpp:116
 msgid "Title:"
 msgstr "Títol:"
 
-#: ../src/dialog_properties.cpp:110
+#: ../src/dialog_properties.cpp:117
 msgid "Original script:"
 msgstr "Script original:"
 
-#: ../src/dialog_properties.cpp:111
+#: ../src/dialog_properties.cpp:118
 msgid "Translation:"
 msgstr "Traducció:"
 
-#: ../src/dialog_properties.cpp:112
+#: ../src/dialog_properties.cpp:119
 msgid "Editing:"
 msgstr "Edició:"
 
-#: ../src/dialog_properties.cpp:113
+#: ../src/dialog_properties.cpp:120
 msgid "Timing:"
 msgstr "Temps:"
 
-#: ../src/dialog_properties.cpp:114
+#: ../src/dialog_properties.cpp:121
 msgid "Synch point:"
 msgstr "Punt de sincronització:"
 
-#: ../src/dialog_properties.cpp:115
+#: ../src/dialog_properties.cpp:122
 msgid "Updated by:"
 msgstr "Actualitzat per:"
 
-#: ../src/dialog_properties.cpp:116
+#: ../src/dialog_properties.cpp:123
 msgid "Update details:"
 msgstr "Detalls de l’actualització:"
 
-#: ../src/dialog_properties.cpp:122
+#: ../src/dialog_properties.cpp:129
 msgid "Resolution"
 msgstr "Resolució"
 
-#: ../src/dialog_properties.cpp:128 ../src/dialog_resample.cpp:150
+#: ../src/dialog_properties.cpp:138 ../src/dialog_resample.cpp:170
 #: ../src/export_framerate.cpp:70
 msgid "From &video"
 msgstr "Del &vídeo"
 
-#: ../src/dialog_properties.cpp:144 ../src/dialog_resample.cpp:180
-#: ../src/dialog_resample.cpp:193
+#: ../src/dialog_properties.cpp:148
+msgid "Script: "
+msgstr "Script: "
+
+#: ../src/dialog_properties.cpp:154 ../src/dialog_properties.cpp:169
+msgid "From video"
+msgstr "Del vídeo"
+
+#: ../src/dialog_properties.cpp:160
+msgid "Layout: "
+msgstr "Maquetació: "
+
+#: ../src/dialog_properties.cpp:175 ../src/dialog_resample.cpp:200
+#: ../src/dialog_resample.cpp:213
 msgid "YCbCr Matrix:"
 msgstr "Matriu YCbCr:"
 
-#: ../src/dialog_properties.cpp:155
+#: ../src/dialog_properties.cpp:186
 msgid "0: Smart wrapping, top line is wider"
 msgstr "0: Ajustament intel·ligent, la línia de dalt és més llarga"
 
-#: ../src/dialog_properties.cpp:156
+#: ../src/dialog_properties.cpp:187
 msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: Ajustament de paraules a final de línia, només \\N salta de línia"
 
-#: ../src/dialog_properties.cpp:157
+#: ../src/dialog_properties.cpp:188
 msgid "2: No word wrapping, both \\n and \\N break"
 msgstr "2: Sense ajustament de paraules, tant \\n com \\N salten de línia"
 
-#: ../src/dialog_properties.cpp:158
+#: ../src/dialog_properties.cpp:189
 msgid "3: Smart wrapping, bottom line is wider"
 msgstr "3: Ajustament intel·ligent, la línia de sota és més llarga"
 
-#: ../src/dialog_properties.cpp:162
+#: ../src/dialog_properties.cpp:193
 msgid "Wrap Style: "
 msgstr "Estil d’ajustament: "
 
-#: ../src/dialog_properties.cpp:165
+#: ../src/dialog_properties.cpp:196
 msgid "Scale Border and Shadow"
 msgstr "Escala la vora i l’ombra"
 
-#: ../src/dialog_properties.cpp:166
+#: ../src/dialog_properties.cpp:197
 msgid ""
 "Scale border and shadow together with script/render resolution. If this is "
 "unchecked, relative border and shadow size will depend on renderer."
@@ -3976,47 +3993,47 @@ msgstr ""
 "Escala la vora i l’ombra juntament amb la resolució de l’script. Si està "
 "desmarcat, la vora i l’ombra relatives dependran del renderitzador."
 
-#: ../src/dialog_properties.cpp:202
+#: ../src/dialog_properties.cpp:235
 msgid "property changes"
 msgstr "els canvis a les propietats"
 
-#: ../src/dialog_resample.cpp:114
+#: ../src/dialog_resample.cpp:136
 msgid "Source Resolution"
 msgstr "Resolució d’origen"
 
-#: ../src/dialog_resample.cpp:115
+#: ../src/dialog_resample.cpp:137
 msgid "Destination Resolution"
 msgstr "Resolució de destinació"
 
-#: ../src/dialog_resample.cpp:116
+#: ../src/dialog_resample.cpp:138
 msgid "Margin offset"
 msgstr "Compensació del marge"
 
-#: ../src/dialog_resample.cpp:128
+#: ../src/dialog_resample.cpp:150
 msgid "&Symmetrical"
 msgstr "&Simètric"
 
-#: ../src/dialog_resample.cpp:152
+#: ../src/dialog_resample.cpp:172
 msgid "From s&cript"
 msgstr "De l’s&cript"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Add borders"
 msgstr "Afegeix vores"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Manual"
 msgstr "Manual"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Remove borders"
 msgstr "Suprimeix vores"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Stretch"
 msgstr "Estira"
 
-#: ../src/dialog_resample.cpp:156
+#: ../src/dialog_resample.cpp:176
 msgid "Aspect Ratio Handling"
 msgstr "Gestió de la relació d’aspecte"
 
@@ -4410,7 +4427,7 @@ msgstr "Caixa d’ombra (només libass)"
 msgid "Font"
 msgstr "Font"
 
-#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:280
+#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:302
 msgid "Colors"
 msgstr "Colors"
 
@@ -4639,11 +4656,11 @@ msgstr "Mou l’estil a baix de tot"
 msgid "Sort styles alphabetically"
 msgstr "Ordena els estils alfabèticament"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:666
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:690
 msgid "&New"
 msgstr "&Nou"
 
-#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:667
+#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:691
 #: default_menu.json:0
 msgid "&Edit"
 msgstr "&Edita"
@@ -5176,7 +5193,7 @@ msgid "Video Details"
 msgstr "Detalls del vídeo"
 
 #: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:204
-#: ../src/preferences.cpp:481 default_hotkey.json:315
+#: ../src/preferences.cpp:505 default_hotkey.json:315
 msgid "Video"
 msgstr "Vídeo"
 
@@ -5204,14 +5221,142 @@ msgid "Length:"
 msgstr "Durada:"
 
 #: ../src/dialog_video_details.cpp:68
+msgid "Actual color matrix:"
+msgstr "Matriu de colors actual:"
+
+#: ../src/dialog_video_details.cpp:69
+msgid "Forced color matrix:"
+msgstr "Matriu de colors forçada:"
+
+#: ../src/dialog_video_details.cpp:70
+msgid "Actual color range:"
+msgstr "Rang de colors actual:"
+
+#: ../src/dialog_video_details.cpp:71
+msgid "Forced color range:"
+msgstr "Rang de colors forçat:"
+
+#: ../src/dialog_video_details.cpp:72
 msgid "Decoder:"
 msgstr "Descodificador:"
 
-#: ../src/dialog_video_properties.cpp:44
+#: ../src/dialog_video_properties.cpp:135
+#, c-format
+msgid ""
+"The video you have loaded has no specified color matrix. Aegisub will guess "
+"the color matrix to be %s, but there is no guarantee that other programs "
+"will guess the same matrix. This may make the video appear with different "
+"colors in different media players and can prevent subtitle colors from "
+"matching video colors.\n"
+" \n"
+"Consider tagging your video with a color matrix to ensure that your video "
+"displays consistently in all players and that subtitle colors can reliably "
+"match video colors."
+msgstr ""
+"El vídeo que heu carregat no té cap matriu de colors especificada. L’Aegisub "
+"assumirà que la matriu de colors és %s, però no hi ha cap garantia que "
+"altres programes assumeixin la mateixa matriu. Això pot fer que el vídeo es "
+"mostri amb colors diferents en diferents reproductors de mitjans i pot fer "
+"que els colors dels subtítols no coincideixin amb els colors del vídeo.\n"
+"\n"
+"Considereu etiquetar el vídeo amb una matriu de colors per a assegurar que "
+"el vídeo es mostri de manera consistent en tots els reproductors i que els "
+"colors dels subtítols coincideixin de manera fiable amb els colors del vídeo."
+
+#: ../src/dialog_video_properties.cpp:140
+msgid "Untagged video"
+msgstr "Vídeo sense etiquetar"
+
+#: ../src/dialog_video_properties.cpp:145
+msgid ""
+"The video you have loaded has HDR and/or WCG colors. While ordinary dialogue "
+"subtitles will work fine on such videos, matching video colors using "
+"subtitles will not be possible on HDR and/or WCG footage."
+msgstr ""
+"El vídeo que heu carregat té colors HDR i/o WCG. Malgrat que els subtítols "
+"de diàlegs normals funcionaran correctament en aquests vídeos, no serà "
+"possible fer coincidir els colors dels subtítols amb els del vídeo en "
+"metratge HDR i/o WCG."
+
+#: ../src/dialog_video_properties.cpp:148
+msgid "HDR and/or WCG video"
+msgstr "Vídeo HDR i/o WCG"
+
+#: ../src/dialog_video_properties.cpp:161
+#, c-format
+msgid ""
+"The current subtitle file has no YCbCr Matrix set.\n"
+"\n"
+"If you plan to use this subtitle file on this newly loaded video file,\n"
+"you should set the subtitle file's YCbCr Matrix to the video's color space "
+"(\"%s\").\n"
+"\n"
+"If you plan to use a different video file, you may want to\n"
+"leave the YCbCr Matrix unset until you load the correct video file.\n"
+"\n"
+"This prompt can be configured in the preferences."
+msgstr ""
+"El fitxers de subtítols actual no té cap matriu YCbCr definida.\n"
+"\n"
+"Si teniu previst utilitzar aquest fitxer de subtítols amb el fitxer de vídeo "
+"que heu carregat,\n"
+"hauríeu de definir la matriu YCbCr del fitxer de subtítols a l’espai de "
+"colors del vídeo («%s»).\n"
+"\n"
+"Si teniu previst utilitzar un fitxer de vídeo diferent, és possible que "
+"vulgueu deixar\n"
+"sense definir la matriu YCbCr fins que carregueu el fitxer de vídeo correcte."
+"\n"
+"\n"
+"Podeu configurar aquesta petició d’acció a les preferències."
+
+#: ../src/dialog_video_properties.cpp:166
+msgid "Set script's YCbCr Matrix?"
+msgstr "Voleu definir la matriu YCbCr de l’script?"
+
+#: ../src/dialog_video_properties.cpp:167
+msgid "Leave YCbCr Matrix unset"
+msgstr "Deixa sense definir la matriu YCbCr"
+
+#: ../src/dialog_video_properties.cpp:167
+#: ../src/dialog_video_properties.cpp:226
+#, c-format
+msgid "Set script's YCbCr Matrix to the video's (\"%s\")"
+msgstr "Defineix la matriu YCbCr de l’script a la del vídeo («%s»)"
+
+#: ../src/dialog_video_properties.cpp:221
+#, c-format
+msgid ""
+"This video's recommended YCbCr Matrix (\"%s\") differs from the subtitle "
+"file's YCbCr Matrix (\"%s\").\n"
+"\n"
+"If this new video's colors look identical to the video the subtitle file was "
+"originally authored for,\n"
+"then the subtitle file's YCbCr Matrix should be set to the video's YCbCr "
+"Matrix."
+msgstr ""
+"La matriu YCbCr recomanada d’aquest vídeo («%s») és diferent de la matriu "
+"YCbCr del fitxer de subtítols («%s»).\n"
+"\n"
+"Si els colors d’aquest vídeo es veuen idèntics als del vídeo per al qual es "
+"va crear originalment el fitxer de subtítols,\n"
+"llavors hauríeu de definir la matriu YCbCr del fitxer de subtítols a la "
+"matriu YCbCr del vídeo."
+
+#: ../src/dialog_video_properties.cpp:225
+msgid "YCbCr Matrix mismatch"
+msgstr "Matriu YCbCr no coincident"
+
+#: ../src/dialog_video_properties.cpp:226
+#, c-format
+msgid "Leave script's YCbCr Matrix as it is (\"%s\")"
+msgstr "Deixa la matriu YCbCr de l’script com està («%s»)"
+
+#: ../src/dialog_video_properties.cpp:257
 msgid "Resolution mismatch"
 msgstr "Resolució no coincident"
 
-#: ../src/dialog_video_properties.cpp:47
+#: ../src/dialog_video_properties.cpp:260
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
@@ -5231,29 +5376,162 @@ msgstr ""
 "Voleu canviar la resolució dels subtítols perquè coincideixi amb la del "
 "vídeo?"
 
-#: ../src/dialog_video_properties.cpp:58 ../src/dialog_video_properties.cpp:67
-msgid "Set to video resolution"
-msgstr "Defineix a la resolució del vídeo"
+#: ../src/dialog_video_properties.cpp:271
+#: ../src/dialog_video_properties.cpp:280
+msgid "Leave resolution as it is"
+msgstr "Deixa la resolució com està"
 
-#: ../src/dialog_video_properties.cpp:59
+#: ../src/dialog_video_properties.cpp:272
 msgid "Resample script (stretch to new aspect ratio)"
 msgstr "Reajusta l’script (estira a una nova relació d’aspecte)"
 
-#: ../src/dialog_video_properties.cpp:60
+#: ../src/dialog_video_properties.cpp:273
 msgid "Resample script (add borders)"
 msgstr "Reajusta l’script (afegeix vores)"
 
-#: ../src/dialog_video_properties.cpp:61
+#: ../src/dialog_video_properties.cpp:274
 msgid "Resample script (remove borders)"
 msgstr "Reajusta l’script (suprimeix vores)"
 
-#: ../src/dialog_video_properties.cpp:68
+#: ../src/dialog_video_properties.cpp:281
 msgid "Resample script"
 msgstr "Reajusta l’script"
 
-#: ../src/dialog_video_properties.cpp:168
+#: ../src/dialog_video_properties.cpp:389
+#, c-format
+msgid ""
+"The current subtitle file has no layout resolution set.\n"
+"\n"
+"If you plan to use this subtitle file on this newly loaded video file,\n"
+"you should set the subtitle file's layout resolution to the video's display "
+"resolution.\n"
+"\n"
+"If you plan to use a different video file, you may want to leave\n"
+"the layout resolution unset until you load the correct video file.\n"
+"\n"
+"If you are adapting an existing old subtitle file that does not yet have\n"
+"a layout resolution set, you should set its layout resolution to the "
+"resolution\n"
+"of the video the subtitle file was intended to be played back on.\n"
+"Often, this is the same as the file's script resolution. (%d × %d)\n"
+"\n"
+"This prompt can be configured in the preferences."
+msgstr ""
+"El fitxers de subtítols actual no té cap resolució de maquetació definida.\n"
+"\n"
+"Si teniu previst utilitzar aquest fitxer de subtítols amb el fitxer de vídeo "
+"que heu carregat,\n"
+"hauríeu de definir la resolució de maquetació del fitxer de subtítols a la "
+"resolució de visualització del vídeo.\n"
+"\n"
+"Si teniu previst utilitzar un fitxer de vídeo diferent, és possible que "
+"vulgueu deixar\n"
+"sense definir la resolució de maquetació fins que carregueu el fitxer de "
+"vídeo correcte.\n"
+"\n"
+"Si esteu adaptant un fitxer de subtítols antic ja existent que encara no té "
+"definida una\n"
+"resolució de maquetació, hauríeu de definir la resolució de maquetació a la "
+"resolució\n"
+"del vídeo amb el qual es pretenia reproduir el fitxer de subtítols.\n"
+"Sovint, aquest valor és el mateix que la resolució de l’script del fitxer ("
+"%d × %d).\n"
+"\n"
+"Podeu configurar aquesta petició d’acció a les preferències."
+
+#: ../src/dialog_video_properties.cpp:403
+msgid "Set script's layout resolution?"
+msgstr "Voleu definir la resolució de maquetació de l’script?"
+
+#: ../src/dialog_video_properties.cpp:404
+msgid "Leave layout resolution unset"
+msgstr "Deixa sense definir la resolució de maquetació"
+
+#: ../src/dialog_video_properties.cpp:405
+#: ../src/dialog_video_properties.cpp:484
+#, c-format
+msgid "Set script's layout resolution to the video's (%d × %d)"
+msgstr ""
+"Defineix la resolució de maquetació de l’script a la del vídeo (%d × %d)"
+
+#: ../src/dialog_video_properties.cpp:406
+#, c-format
+msgid "Set script's layout resolution to its script resolution (%d × %d)"
+msgstr ""
+"Defineix la resolució de maquetació de l’script a la seva resolució de l’"
+"script (%d × %d)"
+
+#: ../src/dialog_video_properties.cpp:464
+#, c-format
+msgid ""
+"The resolution of the loaded video and the layout resolution specified for "
+"the subtitles don't match.\n"
+"\n"
+"Video resolution:    %d × %d\n"
+"Subtitle layout resolution:    %d × %d\n"
+"\n"
+"Usually, this is not an issue, and you may leave the subtitle file's layout "
+"resolution as it is.\n"
+"If your subtitle file does not contain any significant formatting and you "
+"now intend to perform\n"
+"formatting on the newly loaded video, you may want to set the script's "
+"layout resolution\n"
+"to the video's display resolution."
+msgstr ""
+"La resolució del vídeo carregat i la resolució de maquetació especificada "
+"als subtítols no coincideixen.\n"
+"\n"
+"Resolució del vídeo:    %d × %d\n"
+"Resolució de maquetació dels subtítols:    %d × %d\n"
+"\n"
+"Normalment, això no és un problema, i podeu deixar la resolució de "
+"maquetació del fitxer de subtítols com està.\n"
+"Si el fitxer de subtítols no conté formatació important i teniu previst fer "
+"la formatació amb el vídeo que heu\n"
+"carregat, és possible que vulgueu definir la resolució de maquetació de l’"
+"script a la\n"
+"resolució de visualització del vídeo."
+
+#: ../src/dialog_video_properties.cpp:475
+#, c-format
+msgid ""
+"The resolution of the loaded video and the layout resolution specified for "
+"the subtitles differ in aspect ratios.\n"
+"\n"
+"Video resolution:    %d × %d\n"
+"Subtitle layout resolution:    %d × %d\n"
+"\n"
+"Change layout resolution of subtitles to match video?"
+msgstr ""
+"La resolució del vídeo carregat i la resolució de maquetació especificada "
+"als subtítols tenen relacions d’aspecte diferents.\n"
+"\n"
+"Resolució del vídeo:    %d × %d\n"
+"Resolució de maquetació dels subtítols:    %d × %d\n"
+"\n"
+"Voleu canviar la resolució de maquetació dels subtítols perquè coincideixi "
+"amb la del vídeo?"
+
+#: ../src/dialog_video_properties.cpp:483
+msgid "Layout resolution mismatch"
+msgstr "Resolució de maquetació no coincident"
+
+#: ../src/dialog_video_properties.cpp:484
+#, c-format
+msgid "Leave layout resolution as it is (%d × %d)"
+msgstr "Deixa la resolució de maquetació com està (%d × %d)"
+
+#: ../src/dialog_video_properties.cpp:509
+msgid "change ycbcr matrix"
+msgstr "el canvi de matriu YCbCr"
+
+#: ../src/dialog_video_properties.cpp:512
 msgid "change script resolution"
 msgstr "el canvi de resolució de l’script"
+
+#: ../src/dialog_video_properties.cpp:515
+msgid "change layout resolution"
+msgstr "el canvi de resolució de maquetació"
 
 #: ../src/export_fixstyle.cpp:46
 msgid "Fix Styles"
@@ -5586,7 +5864,7 @@ msgid "Reading subtitles from Matroska file."
 msgstr "S’estan llegint els subtítols del fitxer Matroska."
 
 #: ../src/preferences.cpp:98 ../src/preferences.cpp:100
-#: ../src/preferences.cpp:378 ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402 ../src/preferences.cpp:423
 msgid "General"
 msgstr "General"
 
@@ -5606,15 +5884,19 @@ msgstr "Desa l’estat de la interfície d’usuari als fitxers de subtítols"
 msgid "Toolbar Icon Size"
 msgstr "Mida de les icones de la barra d’eines"
 
-#: ../src/preferences.cpp:107 default_hotkey.json:2
+#: ../src/preferences.cpp:107 ../src/preferences.cpp:250 default_hotkey.json:2
 msgid "Always"
 msgstr "Sempre"
 
 #: ../src/preferences.cpp:107 ../src/preferences.cpp:240
+#: ../src/preferences.cpp:246 ../src/preferences.cpp:258
+#: ../src/preferences.cpp:262
 msgid "Ask"
 msgstr "Demana"
 
 #: ../src/preferences.cpp:107 ../src/preferences.cpp:240
+#: ../src/preferences.cpp:246 ../src/preferences.cpp:250
+#: ../src/preferences.cpp:258 ../src/preferences.cpp:262
 msgid "Never"
 msgstr "Mai"
 
@@ -5674,7 +5956,7 @@ msgstr "Importació de TTXT"
 msgid "Plain text import"
 msgstr "Importació de text pla"
 
-#: ../src/preferences.cpp:164 ../src/preferences.cpp:414 default_hotkey.json:37
+#: ../src/preferences.cpp:164 ../src/preferences.cpp:438 default_hotkey.json:37
 msgid "Audio"
 msgstr "Àudio"
 
@@ -5770,7 +6052,7 @@ msgstr "Temps del cursor"
 msgid "Video position"
 msgstr "Posició del vídeo"
 
-#: ../src/preferences.cpp:192 ../src/preferences.cpp:294
+#: ../src/preferences.cpp:192 ../src/preferences.cpp:318
 msgid "Seconds boundaries"
 msgstr "Límits dels segons"
 
@@ -5870,364 +6152,415 @@ msgstr "Alçada per defecte"
 msgid "Always resample"
 msgstr "Reajusta sempre"
 
-#: ../src/preferences.cpp:240
-msgid "Always set"
-msgstr "Defineix sempre"
-
 #: ../src/preferences.cpp:242
 msgid "Match video resolution on open"
 msgstr "Compara la resolució del vídeo en obrir"
 
-#: ../src/preferences.cpp:249
+#: ../src/preferences.cpp:244
+msgid "Layout Resolution"
+msgstr "Resolució de maquetació"
+
+#: ../src/preferences.cpp:246 ../src/preferences.cpp:258
+#: ../src/preferences.cpp:262
+msgid "Always set"
+msgstr "Defineix sempre"
+
+#: ../src/preferences.cpp:246
+msgid "Always set from script resolution"
+msgstr "Defineix sempre a partir de la resolució de l’script"
+
+#: ../src/preferences.cpp:248
+msgid "Set layout resolution from video on open"
+msgstr "Defineix la resolució de maquetació a partir del vídeo en obrir"
+
+#: ../src/preferences.cpp:250
+msgid "When aspect ratio changes"
+msgstr "Quan canviï la relació d’aspecte"
+
+#: ../src/preferences.cpp:252
+msgid "Prompt on layout resolution mismatch"
+msgstr "Demana quan la resolució de maquetació no coincideixi"
+
+#: ../src/preferences.cpp:254
+msgid "YCbCr Matrix"
+msgstr "Matriu YCbCr"
+
+#: ../src/preferences.cpp:255
+msgid "Warn on untagged video color matrix"
+msgstr "Avisa si la matriu de color del vídeo no està etiquetada"
+
+#: ../src/preferences.cpp:256
+msgid "Warn on HDR/WCG video"
+msgstr "Avisa si el vídeo és HDR/WCG"
+
+#: ../src/preferences.cpp:260
+msgid "Use video's YCbCr Matrix when script has no matrix set"
+msgstr ""
+"Utilitza la matriu YCbCr del vídeo quan l’script no tingui cap matriu "
+"definida"
+
+#: ../src/preferences.cpp:264
+msgid "Match video's YCbCr Matrix on open"
+msgstr "Fes coincidir la matriu YCbCr del vídeo en obrir"
+
+#: ../src/preferences.cpp:271
 msgid "Interface"
 msgstr "Interfície"
 
-#: ../src/preferences.cpp:251
+#: ../src/preferences.cpp:273
 msgid "Edit Box"
 msgstr "Caixa d’edició"
 
-#: ../src/preferences.cpp:252
+#: ../src/preferences.cpp:274
 msgid "Enable call tips"
 msgstr "Activa els consells de crida"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:275
 msgid "Overwrite in time boxes"
 msgstr "Sobreescriptura a les capses de temps"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:276
 msgid "Shift+Enter adds \\n"
 msgstr "Maj+Retorn afegeix \\n"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:277
 msgid "Enable syntax highlighting"
 msgstr "Activa el ressaltat de sintaxi"
 
-#: ../src/preferences.cpp:256
+#: ../src/preferences.cpp:278
 msgid "Dictionaries path"
 msgstr "Camí dels diccionaris"
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:281
 msgid "Character Counter"
 msgstr "Comptador de caràcters"
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:282
 msgid "Maximum characters per line"
 msgstr "Màxim de caràcters per línia"
 
-#: ../src/preferences.cpp:261
+#: ../src/preferences.cpp:283
 msgid "Characters Per Second Warning Threshold"
 msgstr "Límit d’advertència de caràcters per segon"
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:284
 msgid "Characters Per Second Error Threshold"
 msgstr "Límit d’error de caràcters per segon"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:285
 msgid "Ignore whitespace"
 msgstr "Ignora els espais en blanc"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:286
 msgid "Ignore punctuation"
 msgstr "Ignora la puntuació"
 
-#: ../src/preferences.cpp:266
+#: ../src/preferences.cpp:288
 msgid "Grid"
 msgstr "Graella"
 
-#: ../src/preferences.cpp:267
+#: ../src/preferences.cpp:289
 msgid "Focus grid on click"
 msgstr "Posa el focus a la graella en fer-hi clic"
 
-#: ../src/preferences.cpp:268
+#: ../src/preferences.cpp:290
 msgid "Highlight visible subtitles"
 msgstr "Ressalta els subtítols visibles"
 
-#: ../src/preferences.cpp:269
+#: ../src/preferences.cpp:291
 msgid "Hide overrides symbol"
 msgstr "Símbol per a amagar les etiquetes d’estil"
 
-#: ../src/preferences.cpp:273
+#: ../src/preferences.cpp:295
 msgid "Skip over whitespace"
 msgstr "Omet les línies en blanc"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:310
 msgid "Audio Display"
 msgstr "Visualització d’àudio"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:311
 msgid "Play cursor"
 msgstr "Cursor de reproducció"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:312
+msgid "Current frame range"
+msgstr "Rang del fotograma actual"
+
+#: ../src/preferences.cpp:313
+msgid "Previous frame range"
+msgstr "Rang del fotograma anterior"
+
+#: ../src/preferences.cpp:314
 msgid "Line boundary start"
 msgstr "Línia del límit d’inici"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:315
 msgid "Line boundary end"
 msgstr "Línia del límit de final"
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:316
 msgid "Line boundary inactive line"
 msgstr "Línia del límit de línia inactiva"
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:317
 msgid "Syllable boundaries"
 msgstr "Límits de síl·laba"
 
-#: ../src/preferences.cpp:296
+#: ../src/preferences.cpp:320
 msgid "Syntax Highlighting"
 msgstr "Ressaltat de sintaxi"
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:321
 msgid "Background"
 msgstr "Fons"
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:322
 msgid "Normal"
 msgstr "Normal"
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:323
 msgid "Comments"
 msgstr "Comentaris"
 
-#: ../src/preferences.cpp:300
+#: ../src/preferences.cpp:324
 msgid "Drawing Commands"
 msgstr "Ordres de dibuix"
 
-#: ../src/preferences.cpp:301
+#: ../src/preferences.cpp:325
 msgid "Drawing X Coords"
 msgstr "Coordenades X del dibuix"
 
-#: ../src/preferences.cpp:302
+#: ../src/preferences.cpp:326
 msgid "Drawing Y Coords"
 msgstr "Coordenades Y del dibuix"
 
-#: ../src/preferences.cpp:303
+#: ../src/preferences.cpp:327
 msgid "Underline Spline Endpoints"
 msgstr "Subratlla els extrems dels splines"
 
-#: ../src/preferences.cpp:305
+#: ../src/preferences.cpp:329
 msgid "Brackets"
 msgstr "Claudàtors"
 
-#: ../src/preferences.cpp:306
+#: ../src/preferences.cpp:330
 msgid "Slashes and Parentheses"
 msgstr "Barres i parèntesis"
 
-#: ../src/preferences.cpp:307
+#: ../src/preferences.cpp:331
 msgid "Tags"
 msgstr "Etiquetes"
 
-#: ../src/preferences.cpp:308
+#: ../src/preferences.cpp:332
 msgid "Parameters"
 msgstr "Paràmetres"
 
-#: ../src/preferences.cpp:310
+#: ../src/preferences.cpp:334
 msgid "Error Background"
 msgstr "Fons d’error"
 
-#: ../src/preferences.cpp:311
+#: ../src/preferences.cpp:335
 msgid "Line Break"
 msgstr "Salt de línia"
 
-#: ../src/preferences.cpp:312
+#: ../src/preferences.cpp:336
 msgid "Karaoke templates"
 msgstr "Plantilles de karaoke"
 
-#: ../src/preferences.cpp:313
+#: ../src/preferences.cpp:337
 msgid "Karaoke variables"
 msgstr "Variables de karaoke"
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:343
 msgid "Audio Color Schemes"
 msgstr "Esquemes de color d’àudio"
 
-#: ../src/preferences.cpp:321 ../src/preferences.cpp:430
+#: ../src/preferences.cpp:345 ../src/preferences.cpp:454
 msgid "Spectrum"
 msgstr "Espectre"
 
-#: ../src/preferences.cpp:322
+#: ../src/preferences.cpp:346
 msgid "Waveform"
 msgstr "Forma d’ona"
 
-#: ../src/preferences.cpp:324 default_hotkey.json:262
+#: ../src/preferences.cpp:348 default_hotkey.json:262
 msgid "Subtitle Grid"
 msgstr "Graella dels subtítols"
 
-#: ../src/preferences.cpp:325
+#: ../src/preferences.cpp:349
 msgid "Standard foreground"
 msgstr "Primer pla estàndard"
 
-#: ../src/preferences.cpp:326
+#: ../src/preferences.cpp:350
 msgid "Standard background"
 msgstr "Fons estàndard"
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:351
 msgid "Selection foreground"
 msgstr "Primer pla seleccionat"
 
-#: ../src/preferences.cpp:328
+#: ../src/preferences.cpp:352
 msgid "Selection background"
 msgstr "Fons seleccionat"
 
-#: ../src/preferences.cpp:329
+#: ../src/preferences.cpp:353
 msgid "Collision foreground"
 msgstr "Primer pla de col·lisió"
 
-#: ../src/preferences.cpp:330
+#: ../src/preferences.cpp:354
 msgid "In frame background"
 msgstr "Fons dins del fotograma"
 
-#: ../src/preferences.cpp:331
+#: ../src/preferences.cpp:355
 msgid "Comment background"
 msgstr "Fons de comentari"
 
-#: ../src/preferences.cpp:332
+#: ../src/preferences.cpp:356
 msgid "Selected comment background"
 msgstr "Fons de comentari seleccionat"
 
-#: ../src/preferences.cpp:333
+#: ../src/preferences.cpp:357
 msgid "Header background"
 msgstr "Fons de capçalera"
 
-#: ../src/preferences.cpp:334
+#: ../src/preferences.cpp:358
 msgid "Left Column"
 msgstr "Columna esquerra"
 
-#: ../src/preferences.cpp:335
+#: ../src/preferences.cpp:359
 msgid "Active Line Border"
 msgstr "Vora de la línia activa"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:360
 msgid "Lines"
 msgstr "Línies"
 
-#: ../src/preferences.cpp:337
+#: ../src/preferences.cpp:361
 msgid "CPS Error"
 msgstr "Error de CPS"
 
-#: ../src/preferences.cpp:339
+#: ../src/preferences.cpp:363
 msgid "Visual Typesetting Tools"
 msgstr "Eines de definició d’estils visuals"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:364
 msgid "Primary Lines"
 msgstr "Línies principals"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:365
 msgid "Secondary Lines"
 msgstr "Línies secundàries"
 
-#: ../src/preferences.cpp:342
+#: ../src/preferences.cpp:366
 msgid "Primary Highlight"
 msgstr "Destacat principal"
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:367
 msgid "Secondary Highlight"
 msgstr "Destacat secundari"
 
-#: ../src/preferences.cpp:346
+#: ../src/preferences.cpp:370
 msgid "Visual Typesetting Tools Alpha"
 msgstr "Alfa de les eines de definició d’estils visuals"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:371
 msgid "Shaded Area"
 msgstr "Àrea d’ombreig"
 
-#: ../src/preferences.cpp:356
+#: ../src/preferences.cpp:380
 msgid "Backup"
 msgstr "Còpia de seguretat"
 
-#: ../src/preferences.cpp:358
+#: ../src/preferences.cpp:382
 msgid "Automatic Save"
 msgstr "Desament automàtic"
 
-#: ../src/preferences.cpp:359 ../src/preferences.cpp:367
+#: ../src/preferences.cpp:383 ../src/preferences.cpp:391
 msgid "Enable"
 msgstr "Activa"
 
-#: ../src/preferences.cpp:362
+#: ../src/preferences.cpp:386
 msgid "Interval in seconds"
 msgstr "Interval en segons"
 
-#: ../src/preferences.cpp:363 ../src/preferences.cpp:369
-#: ../src/preferences.cpp:428
+#: ../src/preferences.cpp:387 ../src/preferences.cpp:393
+#: ../src/preferences.cpp:452
 msgid "Path"
 msgstr "Camí"
 
-#: ../src/preferences.cpp:364
+#: ../src/preferences.cpp:388
 msgid "Autosave after every change"
 msgstr "Desa automàticament després de cada canvi"
 
-#: ../src/preferences.cpp:366
+#: ../src/preferences.cpp:390
 msgid "Automatic Backup"
 msgstr "Còpia de seguretat automàtica"
 
-#: ../src/preferences.cpp:380
+#: ../src/preferences.cpp:404
 msgid "Base path"
 msgstr "Camí base"
 
-#: ../src/preferences.cpp:381
+#: ../src/preferences.cpp:405
 msgid "Include path"
 msgstr "Camí d’inclusió"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:406
 msgid "Auto-load path"
 msgstr "Camí de càrrega automàtica"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "0: Fatal"
 msgstr "0: Fatal"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "1: Error"
 msgstr "1: Error"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "2: Warning"
 msgstr "2: Advertència"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "3: Hint"
 msgstr "3: Pista"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "4: Debug"
 msgstr "4: Depuració"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "5: Trace"
 msgstr "5: Traça"
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:410
 msgid "Trace level"
 msgstr "Nivell de traça"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "All scripts"
 msgstr "Tots els scripts"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "Global autoload scripts"
 msgstr "Scripts globals de càrrega automàtica"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "No scripts"
 msgstr "Cap script"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "Subtitle-local scripts"
 msgstr "Scripts del subtítol local"
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:414
 msgid "Autoreload on Export"
 msgstr "Recarrega automàticament en exportar"
 
-#: ../src/preferences.cpp:397
+#: ../src/preferences.cpp:421
 msgid "Advanced"
 msgstr "Avançades"
 
-#: ../src/preferences.cpp:401
+#: ../src/preferences.cpp:425
 msgid ""
 "Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
@@ -6235,203 +6568,203 @@ msgstr ""
 "Si canvieu aquesta configuració, podeu provocar errades i/o bloquejos. No la "
 "modifiqueu si no sabeu què feu."
 
-#: ../src/preferences.cpp:416 ../src/preferences.cpp:483
+#: ../src/preferences.cpp:440 ../src/preferences.cpp:507
 msgid "Expert"
 msgstr "Per a usuaris experts"
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:443
 msgid "Audio provider"
 msgstr "Proveïdor d’àudio"
 
-#: ../src/preferences.cpp:422
+#: ../src/preferences.cpp:446
 msgid "Audio player"
 msgstr "Reproductor d’àudio"
 
-#: ../src/preferences.cpp:424
+#: ../src/preferences.cpp:448
 msgid "Cache"
 msgstr "Memòria cau"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:449
 msgid "Hard Disk"
 msgstr "Disc dur"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:449
 msgid "None (NOT RECOMMENDED)"
 msgstr "Cap (NO RECOMANAT)"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:449
 msgid "RAM"
 msgstr "RAM"
 
-#: ../src/preferences.cpp:427
+#: ../src/preferences.cpp:451
 msgid "Cache type"
 msgstr "Tipus de memòria cau"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "Better quality"
 msgstr "Millor qualitat"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "High quality"
 msgstr "Alta qualitat"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "Insane quality"
 msgstr "Qualitat exagerada"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "Regular quality"
 msgstr "Qualitat regular"
 
-#: ../src/preferences.cpp:434
+#: ../src/preferences.cpp:458
 msgid "Quality"
 msgstr "Qualitat"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Compressed"
 msgstr "Comprimit"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Extended"
 msgstr "Estès"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Linear"
 msgstr "Linear"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Logarithmic"
 msgstr "Logarítmic"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Medium"
 msgstr "Mitjà"
 
-#: ../src/preferences.cpp:438
+#: ../src/preferences.cpp:462
 msgid "Frequency mapping"
 msgstr "Mapatge de la freqüència"
 
-#: ../src/preferences.cpp:440
+#: ../src/preferences.cpp:464
 msgid "Cache memory max (MB)"
 msgstr "Màxim de memòria cau (MB)"
 
-#: ../src/preferences.cpp:446
+#: ../src/preferences.cpp:470
 msgid "Avisynth down-mixer"
 msgstr "Mesclador a la baixa de l’Avisynth"
 
-#: ../src/preferences.cpp:447
+#: ../src/preferences.cpp:471
 msgid "Force sample rate"
 msgstr "Força la taxa de mostreig"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Abort"
 msgstr "Avorta"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Ignore"
 msgstr "Ignora"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Stop"
 msgstr "Atura"
 
-#: ../src/preferences.cpp:455
+#: ../src/preferences.cpp:479
 msgid "Audio indexing error handling mode"
 msgstr "Mode de gestió d’errors en la indexació d’àudio"
 
-#: ../src/preferences.cpp:457
+#: ../src/preferences.cpp:481
 msgid "Always index all audio tracks"
 msgstr "Indexa sempre totes les pistes d’àudio"
 
-#: ../src/preferences.cpp:462
+#: ../src/preferences.cpp:486
 msgid "Portaudio device"
 msgstr "Dispositiu Portaudio"
 
-#: ../src/preferences.cpp:467
+#: ../src/preferences.cpp:491
 msgid "OSS Device"
 msgstr "Dispositiu OSS"
 
-#: ../src/preferences.cpp:472
+#: ../src/preferences.cpp:496
 msgid "Buffer latency"
 msgstr "Latència de la memòria intermèdia"
 
-#: ../src/preferences.cpp:473
+#: ../src/preferences.cpp:497
 msgid "Buffer length"
 msgstr "Llargada de la memòria intermèdia"
 
-#: ../src/preferences.cpp:486
+#: ../src/preferences.cpp:510
 msgid "Video provider"
 msgstr "Proveïdor de vídeo"
 
-#: ../src/preferences.cpp:489
+#: ../src/preferences.cpp:513
 msgid "Subtitles provider"
 msgstr "Proveïdor de subtítols"
 
-#: ../src/preferences.cpp:493
+#: ../src/preferences.cpp:517
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Permet l’Avisynth anterior a 2.56a"
 
-#: ../src/preferences.cpp:495
+#: ../src/preferences.cpp:519
 msgid "Avisynth memory limit"
 msgstr "Límit de memòria de l’Avisynth"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Debug"
 msgstr "Depuració"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Fatal"
 msgstr "Fatal"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Info"
 msgstr "Informació"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Panic"
 msgstr "Pànic"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Quiet"
 msgstr "Silenciós"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Verbose"
 msgstr "Detallat"
 
-#: ../src/preferences.cpp:501 ../src/project.cpp:331
+#: ../src/preferences.cpp:525 ../src/project.cpp:330
 msgid "Warning"
 msgstr "Advertència"
 
-#: ../src/preferences.cpp:503
+#: ../src/preferences.cpp:527
 msgid "Debug log verbosity"
 msgstr "Nivell de detall del registre de depuració"
 
-#: ../src/preferences.cpp:505
+#: ../src/preferences.cpp:529
 msgid "Decoding threads"
 msgstr "Fils de descodificació"
 
-#: ../src/preferences.cpp:506
+#: ../src/preferences.cpp:530
 msgid "Enable unsafe seeking"
 msgstr "Activa la visualització insegura"
 
-#: ../src/preferences.cpp:660
+#: ../src/preferences.cpp:684
 msgid "Hotkeys"
 msgstr "Dreceres del teclat"
 
-#: ../src/preferences.cpp:664
+#: ../src/preferences.cpp:688
 msgid "Search"
 msgstr "Cerca"
 
-#: ../src/preferences.cpp:680 ../src/preferences.cpp:683
+#: ../src/preferences.cpp:704 ../src/preferences.cpp:707
 msgid "Hotkey"
 msgstr "Drecera del teclat"
 
-#: ../src/preferences.cpp:681 ../src/preferences.cpp:686
+#: ../src/preferences.cpp:705 ../src/preferences.cpp:710
 msgid "Command"
 msgstr "Ordre"
 
-#: ../src/preferences.cpp:760
+#: ../src/preferences.cpp:784
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -6439,15 +6772,15 @@ msgstr ""
 "Segur que voleu restaurar els valors per defecte? Tota la vostra "
 "configuració se sobreescriurà."
 
-#: ../src/preferences.cpp:760
+#: ../src/preferences.cpp:784
 msgid "Restore defaults?"
 msgstr "Voleu restaurar els valors per defecte?"
 
-#: ../src/preferences.cpp:778
+#: ../src/preferences.cpp:802
 msgid "Preferences"
 msgstr "Preferències"
 
-#: ../src/preferences.cpp:806
+#: ../src/preferences.cpp:830
 msgid "&Restore Defaults"
 msgstr "&Restaura els valors per defecte"
 
@@ -6548,19 +6881,19 @@ msgstr ""
 "\n"
 "S’han provat els següents proveïdors:\n"
 
-#: ../src/project.cpp:381
+#: ../src/project.cpp:380
 msgid "Failed to parse timecodes file: "
 msgstr "No s’ha pogut analitzar el fitxer de codis de temps: "
 
-#: ../src/project.cpp:407
+#: ../src/project.cpp:406
 msgid "Failed to parse keyframes file: "
 msgstr "No s’ha pogut analitzar el fitxer de fotogrames clau: "
 
-#: ../src/project.cpp:411
+#: ../src/project.cpp:410
 msgid "Keyframes file in unknown format: "
 msgstr "El fitxer de fotogrames clau té un format desconegut: "
 
-#: ../src/resolution_resampler.cpp:301
+#: ../src/resolution_resampler.cpp:241
 msgid "resolution resampling"
 msgstr "el reajustament de resolució"
 
@@ -6961,7 +7294,7 @@ msgstr "el vídeo no té un format admès."
 msgid "Could not open "
 msgstr "No s’ha pogut obrir "
 
-#: ../src/visual_tool.cpp:119
+#: ../src/visual_tool.cpp:123
 msgid "visual typesetting"
 msgstr "la definició d’estils visual"
 
