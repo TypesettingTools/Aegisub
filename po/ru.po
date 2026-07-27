@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 12:45+0000\n"
-"PO-Revision-Date: 2026-07-26 19:17+0000\n"
+"PO-Revision-Date: 2026-07-27 07:40+0000\n"
 "Last-Translator: zlom\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -2813,7 +2813,7 @@ msgid ""
 "overscan on televisions"
 msgstr ""
 "Отображение маски поверх видео, указывающей на области, которые могут быть "
-"обрезаны из-за вылетов развёртки («overscan») на телевизорах"
+"обрезаны из-за вылетов развёртки (overscan) на телевизорах"
 
 #: ../src/command/video.cpp:673
 msgid "Reset Video &Pan"
@@ -4433,7 +4433,7 @@ msgstr "Предпросмотр"
 
 #: ../src/dialog_style_editor.cpp:200
 msgid "&Bold"
-msgstr "&Жирный"
+msgstr "Полу&жирный"
 
 #: ../src/dialog_style_editor.cpp:201
 msgid "&Italic"
@@ -5328,7 +5328,7 @@ msgstr ""
 "Рекомендованная YCbCr матрица этого видео (\"%s\") отличается от YCbCr "
 "матрицы файла субтитров (\"%s\").\n"
 "\n"
-"Если цветовая палитра нового видео выглядят точно так же, как у видео, для "
+"Если цветовая палитра нового видео выглядит точно так же, как у видео, для "
 "которого изначально был создан файл субтитров,\n"
 "то YCbCr матрицу файла субтитров стоит задать по YCbCr матрице видео."
 
@@ -5627,7 +5627,7 @@ msgstr "Найден «%s» в «%s»\n"
 #: ../src/font_file_lister.cpp:174
 #, c-format
 msgid "'%s' does not have a bold variant.\n"
-msgstr "«%s» не имеет жирного варианта.\n"
+msgstr "«%s» не имеет полужирного варианта.\n"
 
 #: ../src/font_file_lister.cpp:176
 #, c-format
@@ -6555,7 +6555,7 @@ msgid ""
 "Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
 msgstr ""
-"Изменение этих настроек может повлечь за собой баги или/и вылеты. Не "
+"Изменение этих настроек может повлечь за собой баги и/или вылеты. Не "
 "изменяйте их, если точно не уверены в том, что делаете."
 
 #: ../src/preferences.cpp:440 ../src/preferences.cpp:507
