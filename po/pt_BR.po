@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 14:45+0200\n"
-"PO-Revision-Date: 2026-07-27 13:07-0300\n"
+"PO-Revision-Date: 2026-07-27 13:34-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary, Tenebris Magi\n"
 "Language: pt_BR\n"
@@ -871,7 +871,7 @@ msgstr ""
 
 #: ../src/command/automation.cpp:54
 msgid "Reloaded all Automation scripts"
-msgstr "Recarregar todos os script de Automação"
+msgstr "Recarregar todos os scripts de Automação"
 
 #: ../src/command/automation.cpp:60
 msgid "R&eload autoload Automation scripts"
@@ -2307,16 +2307,16 @@ msgstr ""
 
 #: ../src/command/tool.cpp:108
 msgid "St&yling Assistant..."
-msgstr "Assistente de Es&tilos..."
+msgstr "Assistente de Es&tilização..."
 
 #: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:54
 #: default_hotkey.json:223
 msgid "Styling Assistant"
-msgstr "Assistente de Estilos"
+msgstr "Assistente de Estilização"
 
 #: ../src/command/tool.cpp:110
 msgid "Open styling assistant"
-msgstr "Abre o assistente de estilos"
+msgstr "Abre o assistente de estilização"
 
 #: ../src/command/tool.cpp:127 ../src/command/tool.cpp:211
 msgid "&Accept changes"
@@ -2456,18 +2456,18 @@ msgid ""
 "  fractional (e.g. 16:9)\n"
 "  specific resolution (e.g. 853x480)"
 msgstr ""
-"Digite uma proporção de imagem em:\n"
+"Digite uma proporção de tela em:\n"
 "  decimal (ex. 2.35)\n"
 "  fração (ex. 16:9)\n"
 "  resolução específica (ex. 853x480)"
 
 #: ../src/command/video.cpp:114
 msgid "Enter aspect ratio"
-msgstr "Digite a proporção de imagem"
+msgstr "Digite a proporção de tela"
 
 #: ../src/command/video.cpp:133
 msgid "Invalid Aspect Ratio"
-msgstr "Proporção de imagem inválida"
+msgstr "Proporção de tela inválida"
 
 #: ../src/command/video.cpp:133
 msgid "Invalid value! Aspect ratio must be between 0.5 and 5.0."
@@ -2555,7 +2555,7 @@ msgid ""
 "Window"
 msgstr ""
 "Destaca a tela de exibição de vídeo da janela principal, mostrando-a em uma "
-"janela seda"
+"janela separada"
 
 #: ../src/command/video.cpp:260
 msgid "Show &Video Details"
@@ -3810,12 +3810,12 @@ msgstr ""
 "Quando a caixa de texto de destino estiver em foco, use as seguintes "
 "teclas:\n"
 "\n"
-"Seta para direita: Aumenta a seleção de destino\n"
-"Seta para esquerda: Diminui a seleção de destino\n"
-"Seta para cima: Aumenta a seleção de origem\n"
-"Seta para baixo: Diminui a seleção de origem\n"
-"Enter: Vincular; aceita a linha quando pronta\n"
-"Backspace: Desvincula último"
+"Seta para direita: aumenta a seleção de destino\n"
+"Seta para esquerda: diminui a seleção de destino\n"
+"Seta para cima: aumenta a seleção de origem\n"
+"Seta para baixo: diminui a seleção de origem\n"
+"Enter: vincular; aceita a linha quando pronta\n"
+"Backspace: desvincula último"
 
 #: ../src/dialog_kara_timing_copy.cpp:418
 msgid "S&tart!"
@@ -4070,7 +4070,7 @@ msgstr "Esticar"
 
 #: ../src/dialog_resample.cpp:176
 msgid "Aspect Ratio Handling"
-msgstr "Manipulação de Proporção de Imagem"
+msgstr "Manipulação de Proporção de Tela"
 
 #: ../src/dialog_search_replace.cpp:47
 msgid "Replace"
@@ -4352,7 +4352,7 @@ msgid ""
 "Shifts subs backward, making them appear earlier. Use if they are appearing "
 "too late."
 msgstr ""
-"Atrasa as legendas, fazendo-as aparecer mais cedo. Use caso estiverem "
+"Adianta as legendas, fazendo-as aparecer mais cedo. Use caso estiverem "
 "aparecendo tarde demais."
 
 #: ../src/dialog_shift_times.cpp:170
@@ -4852,7 +4852,7 @@ msgstr "Exportar arquivo de legendas"
 
 #: ../src/dialog_style_manager.cpp:705
 msgid "Error Importing Styles"
-msgstr "Erro importando Estilos"
+msgstr "Erro Importando Estilos"
 
 #: ../src/dialog_style_manager.cpp:705
 msgid "The selected file has no available styles."
@@ -4941,7 +4941,7 @@ msgstr "Reproduzir &Vídeo"
 
 #: ../src/dialog_styling_assistant.cpp:175
 msgid "styling assistant"
-msgstr "assistente de estilos"
+msgstr "assistente de estilização"
 
 #: ../src/dialog_text_import.cpp:47
 msgid "Text import options"
@@ -5027,7 +5027,7 @@ msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:197
 msgid "Max gap:"
-msgstr "Distancia máx.:"
+msgstr "Intervalo máx.:"
 
 #: ../src/dialog_timing_processor.cpp:198
 msgid ""
@@ -5261,7 +5261,7 @@ msgstr[1] "%s quadros"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
-msgstr "Comprimento:"
+msgstr "Duração:"
 
 #: ../src/dialog_video_details.cpp:68
 msgid "Actual color matrix:"
@@ -5401,7 +5401,7 @@ msgstr ""
 
 #: ../src/dialog_video_properties.cpp:272
 msgid "Resample script (stretch to new aspect ratio)"
-msgstr "Redimensionar script (ajustar à nova proporção de imagem)"
+msgstr "Redimensionar script (ajustar à nova proporção de tela)"
 
 #: ../src/dialog_video_properties.cpp:273
 msgid "Resample script (add borders)"
@@ -6182,10 +6182,8 @@ msgid "Set layout resolution from video on open"
 msgstr "Usar a resolução do primeiro vídeo aberto"
 
 #: ../src/preferences.cpp:250
-#, fuzzy
-#| msgid "Enter aspect ratio"
 msgid "When aspect ratio changes"
-msgstr "Digite a proporção de imagem"
+msgstr "Digite a proporção de tela"
 
 #: ../src/preferences.cpp:252
 #, fuzzy
@@ -7379,7 +7377,7 @@ msgstr "Definir &Zoom"
 
 #: default_menu.json:0
 msgid "Override &AR"
-msgstr "Forçar &Proporção de Imagem"
+msgstr "Forçar &Proporção de Tela"
 
 #: default_menu.json:0
 msgctxt "Menu bar"
