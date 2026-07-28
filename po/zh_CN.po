@@ -19,10 +19,10 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: arch1t3cht / Aegisub Feature Release 12+ \n"
+"Project-Id-Version: Aegisub 3.5.0-beta\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 14:45+0200\n"
-"PO-Revision-Date: 2026-07-28 10:30+0800\n"
+"PO-Revision-Date: 2026-07-28 15:00+0800\n"
 "Last-Translator: op200 <op200_reek@qq.com>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -4099,7 +4099,7 @@ msgstr[0] "%u 行已被移出所选"
 
 #: ../src/dialog_selection.cpp:235
 msgid "No lines were removed from selection"
-msgstr "0 行已被移出所选"
+msgstr "没有行被移出所选"
 
 #: ../src/dialog_selection.cpp:240
 msgid "Selection"
@@ -4824,7 +4824,7 @@ msgstr "将各行开始时间都提前"
 
 #: ../src/dialog_timing_processor.cpp:180
 msgid "Lead in to be added, in milliseconds"
-msgstr "增加开始时间 (毫秒)"
+msgstr "增加开始时间 (ms)"
 
 #: ../src/dialog_timing_processor.cpp:182
 msgid "Add lead &out:"
@@ -4836,7 +4836,7 @@ msgstr "将各行结束时间都延后"
 
 #: ../src/dialog_timing_processor.cpp:185
 msgid "Lead out to be added, in milliseconds"
-msgstr "增加结束时间 (毫秒)"
+msgstr "增加结束时间 (ms)"
 
 #: ../src/dialog_timing_processor.cpp:190
 msgid "Make adjacent subtitles continuous"
@@ -4860,7 +4860,7 @@ msgstr "最大间隙:"
 msgid ""
 "Maximum difference between start and end time for two subtitles to be made "
 "continuous, in milliseconds"
-msgstr "两条连续字幕的起止时间间隔的最大差值 (毫秒)"
+msgstr "两条连续字幕的起止时间间隔的最大差值 (ms)"
 
 #: ../src/dialog_timing_processor.cpp:199
 msgid "Max overlap:"
@@ -4870,7 +4870,7 @@ msgstr "最大重叠:"
 msgid ""
 "Maximum overlap between the end and start time for two subtitles to be made "
 "continuous, in milliseconds"
-msgstr "两条连续字幕的起止时间间隔的最大差值 (毫秒)"
+msgstr "两条连续字幕的起止时间间隔的最大差值 (ms)"
 
 #: ../src/dialog_timing_processor.cpp:203
 msgid ""
@@ -5998,7 +5998,7 @@ msgstr "启用"
 
 #: ../src/preferences.cpp:362
 msgid "Interval in seconds"
-msgstr "保存间隔 (秒)"
+msgstr "保存间隔 (s)"
 
 #: ../src/preferences.cpp:363 ../src/preferences.cpp:369
 #: ../src/preferences.cpp:428
@@ -7145,10 +7145,10 @@ msgid ""
 "unrelated to Aegisub) many vital functions, or were too buggy and/or "
 "unreliable to be really useful."
 msgstr ""
-"Aegisub 最初被创建为一种工具，旨在让排版工作（尤其是在动漫字幕组中）不再那么痛"
+"Aegisub 最初被创建为一种工具，旨在让排版工作 (尤其是在动漫字幕组中) 不再那么痛"
 "苦。在项目启动之时，许多其他支持 Advanced Substation Alpha 格式的程序缺少许多"
-"关键功能（而且在很多情况下仍然缺少；此后几个竞争程序的开发因各种与 Aegisub 完"
-"全无关的原因而被放弃），或者过于不稳定 和/或 不可靠，以至于无法真正实用。"
+"关键功能 (而且在很多情况下仍然缺少；此后几个竞争程序的开发因各种与 Aegisub 完"
+"全无关的原因而被放弃)，或者过于不稳定 和/或 不可靠，以至于无法真正实用。"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:11
 msgid ""
@@ -7161,8 +7161,8 @@ msgid ""
 msgstr ""
 "从那时起，Aegisub 已成长为一个功能完备、高度可定制的字幕编辑器。它拥有大量便"
 "捷工具，可帮助您进行时轴调整、排版、编辑和翻译字幕，以及一个名为 Automation 的"
-"强大脚本环境（最初主要设计用于创建卡拉OK特效，现在 Automation 还可用于更多"
-"方面，包括创建宏和各种其他便捷工具）。"
+"强大脚本环境 (最初主要设计用于创建卡拉OK特效，现在 Automation 还可用于更多"
+"方面，包括创建宏和各种其他便捷工具)。"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:12
 msgid "Some highlights of Aegisub:"
@@ -7287,15 +7287,6 @@ msgstr "音频时轴"
 
 #~ msgid "Align subtitle to video by key points"
 #~ msgstr "以关键像素对齐时轴"
-
-#~ msgid "ASSDraw3..."
-#~ msgstr "ASSDraw3..."
-
-#~ msgid "ASSDraw3"
-#~ msgstr "ASSDraw3"
-
-#~ msgid "Launch the ASSDraw3 tool for vector drawing"
-#~ msgstr "启动 ASSDraw3 工具用于矢量绘图"
 
 #~ msgid "Reload active subtitles provider"
 #~ msgstr "重载字幕服务后端"
