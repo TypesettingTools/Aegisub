@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 14:45+0200\n"
-"PO-Revision-Date: 2026-07-28 12:27-0300\n"
+"PO-Revision-Date: 2026-07-28 12:46-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary, Tenebris Magi\n"
 "Language: pt_BR\n"
@@ -1931,7 +1931,7 @@ msgstr "Propriedades"
 
 #: ../src/command/subtitle.cpp:336
 msgid "Open script properties window"
-msgstr "Abre a janela de propriedades do script"
+msgstr "Abre a janela de propriedades do arquivo de legendas"
 
 #: ../src/command/subtitle.cpp:347
 msgid "Save Subtitles File"
@@ -2297,7 +2297,7 @@ msgid ""
 "script resolution"
 msgstr ""
 "Redimensiona as legendas para preservar sua aparência atual em uma resolução "
-"de script diferente"
+"diferente"
 
 #: ../src/command/tool.cpp:108
 msgid "St&yling Assistant..."
@@ -3871,7 +3871,7 @@ msgstr "Cancelando..."
 
 #: ../src/dialog_properties.cpp:98
 msgid "Script Properties"
-msgstr "Propriedades do Script"
+msgstr "Propriedades do Arquivo"
 
 #: ../src/dialog_properties.cpp:112
 msgid "Script"
@@ -3966,9 +3966,9 @@ msgid ""
 "Scale border and shadow together with script/render resolution. If this is "
 "unchecked, relative border and shadow size will depend on renderer."
 msgstr ""
-"Dimensiona as bordas e sombras junto com a resolução do script/rasterizador. "
-"Se desmarcado, o tamanho relativo das bordas e sombras dependerá do "
-"rasterizador."
+"Dimensiona as bordas e sombras junto com a resolução do arquivo/"
+"rasterizador. Se desmarcado, o tamanho relativo das bordas e sombras "
+"dependerá do rasterizador."
 
 #: ../src/dialog_properties.cpp:235
 msgid "property changes"
@@ -3992,7 +3992,7 @@ msgstr "&Simétrico"
 
 #: ../src/dialog_resample.cpp:172
 msgid "From s&cript"
-msgstr "Do s&cript"
+msgstr "Do ar&quivo"
 
 #: ../src/dialog_resample.cpp:175
 msgid "Add borders"
@@ -4369,7 +4369,7 @@ msgstr "&Remover do dicionário"
 
 #: ../src/dialog_spellchecker.cpp:279
 msgid "Aegisub has finished checking spelling of this script."
-msgstr "Aegisub concluiu a verificação ortográfica deste script."
+msgstr "Aegisub concluiu a verificação ortográfica destas legendas."
 
 #: ../src/dialog_spellchecker.cpp:279 ../src/dialog_spellchecker.cpp:283
 msgid "Spell checking complete."
@@ -4377,7 +4377,7 @@ msgstr "Correção ortográfica concluída."
 
 #: ../src/dialog_spellchecker.cpp:283
 msgid "Aegisub has found no spelling mistakes in this script."
-msgstr "Aegisub não identificou erros ortográficos neste script."
+msgstr "Aegisub não identificou erros ortográficos nestas legendas."
 
 #: ../src/dialog_spellchecker.cpp:329 ../src/dialog_spellchecker.cpp:343
 msgid "spell check replace"
@@ -4602,11 +4602,12 @@ msgid ""
 "Do you want to change all instances of this style in the script to this new "
 "name?"
 msgstr ""
-"Deseja alterar todas as instâncias deste estilo no script para o novo nome?"
+"Deseja alterar todas as instâncias deste estilo nas legendas para o novo "
+"nome?"
 
 #: ../src/dialog_style_editor.cpp:444
 msgid "Update script?"
-msgstr "Atualizar script?"
+msgstr "Atualizar legendas?"
 
 #: ../src/dialog_style_editor.cpp:471 ../src/subs_edit_box.cpp:605
 msgid "style change"
@@ -4677,7 +4678,7 @@ msgstr "Armazenamento"
 
 #: ../src/dialog_style_manager.cpp:275
 msgid "Current script"
-msgstr "Script atual"
+msgstr "Arquivo aberto"
 
 #: ../src/dialog_style_manager.cpp:283 default_menu.json:0
 msgid "New"
@@ -4689,11 +4690,11 @@ msgstr "Excluir"
 
 #: ../src/dialog_style_manager.cpp:290
 msgid "Copy to &current script ->"
-msgstr "Copiar para script &atual ->"
+msgstr "Copiar para arquivo &atual ->"
 
 #: ../src/dialog_style_manager.cpp:302
 msgid "&Import from script..."
-msgstr "&Importar do script..."
+msgstr "&Importar do arquivo..."
 
 #: ../src/dialog_style_manager.cpp:303
 msgid "<- Copy to &storage"
@@ -4758,7 +4759,7 @@ msgstr ""
 msgid ""
 "There is already a style with the name \"%s\" in the current script. "
 "Overwrite?"
-msgstr "Já existe um estilo com o nome \"%s\" no script. Deseja substituí-lo?"
+msgstr "Já existe um estilo com o nome \"%s\" no arquivo. Deseja substituí-lo?"
 
 #: ../src/dialog_style_manager.cpp:553
 msgid "style copy"
@@ -4774,7 +4775,7 @@ msgstr "Confirmar exclusão do armazenamento"
 
 #: ../src/dialog_style_manager.cpp:665
 msgid "Confirm delete from current"
-msgstr "Confirmar exclusão do script atual"
+msgstr "Confirmar exclusão do arquivo atual"
 
 #: ../src/dialog_style_manager.cpp:669
 msgid "style delete"
@@ -5068,11 +5069,11 @@ msgstr ""
 #: ../src/dialog_timing_processor.cpp:352
 #, c-format
 msgid "One of the lines in the file (%i) has negative duration. Aborting."
-msgstr "Uma das linhas do script (%i) possui duração negativa. Abortando."
+msgstr "Uma das linhas no arquivo (%i) possui duração negativa. Abortando."
 
 #: ../src/dialog_timing_processor.cpp:353
 msgid "Invalid script"
-msgstr "Script inválido"
+msgstr "Arquivo de legendas inválido"
 
 #: ../src/dialog_timing_processor.cpp:448
 msgid "timing processor"
@@ -5284,7 +5285,7 @@ msgstr ""
 
 #: ../src/dialog_video_properties.cpp:166
 msgid "Set script's YCbCr Matrix?"
-msgstr "Definir a matriz YCbCr do script?"
+msgstr "Definir a matriz YCbCr do arquivo de legendas?"
 
 #: ../src/dialog_video_properties.cpp:167
 msgid "Leave YCbCr Matrix unset"
@@ -5342,7 +5343,7 @@ msgstr ""
 "A resolução do vídeo e a das legendas não coincidem.\n"
 "\n"
 "Resolução do vídeo:\t%d × %d\n"
-"Resolução do script:\t%d × %d\n"
+"Resolução do arquivo:\t%d × %d\n"
 "\n"
 "Deseja ajustar a resolução das legendas para coincidir com a do vídeo?"
 
@@ -5353,19 +5354,19 @@ msgstr "Manter a resolução como está"
 
 #: ../src/dialog_video_properties.cpp:272
 msgid "Resample script (stretch to new aspect ratio)"
-msgstr "Redimensionar script (ajustar à nova proporção de tela)"
+msgstr "Redimensionar legendas (ajustar à nova proporção de tela)"
 
 #: ../src/dialog_video_properties.cpp:273
 msgid "Resample script (add borders)"
-msgstr "Redimensionar script (adicionar bordas)"
+msgstr "Redimensionar legendas (adicionar bordas)"
 
 #: ../src/dialog_video_properties.cpp:274
 msgid "Resample script (remove borders)"
-msgstr "Redimensionar script (remover bordas)"
+msgstr "Redimensionar legendas (remover bordas)"
 
 #: ../src/dialog_video_properties.cpp:281
 msgid "Resample script"
-msgstr "Redimensionar script"
+msgstr "Redimensionar legendas"
 
 #: ../src/dialog_video_properties.cpp:389
 #, c-format
@@ -5398,8 +5399,7 @@ msgstr ""
 "Se você estiver adaptando um arquivo de legendas antigo que ainda não tenha "
 "uma resolução de layout definida, defina a resolução de layout para a "
 "resolução do vídeo para o qual o arquivo de legendas foi criado. "
-"Frequentemente, ela é a mesma que a resolução de script do arquivo. (%d × "
-"%d)\n"
+"Frequentemente, ela é a mesma que a resolução do arquivo. (%d × %d)\n"
 "\n"
 "Este aviso pode ser configurado nas opções."
 
@@ -5664,7 +5664,8 @@ msgid "One font was found, but was missing glyphs used in the script.\n"
 msgid_plural ""
 "%d fonts were found, but were missing glyphs used in the script.\n"
 msgstr[0] ""
-"Uma fonte foi encontrada, mas não possui glifos utilizados no script.\n"
+"Uma fonte foi encontrada, mas não possui glifos utilizados no arquivo de "
+"legendas.\n"
 msgstr[1] ""
 "%d fontes foram encontradas, mas não possuem glifos utilizados no script.\n"
 
@@ -6099,7 +6100,7 @@ msgstr "Caminho para salvar as capturas de tela"
 
 #: ../src/preferences.cpp:232
 msgid "Script Resolution"
-msgstr "Resolução do Script"
+msgstr "Resolução do Arquivo de Legendas"
 
 #: ../src/preferences.cpp:233
 msgid "Use resolution of first video opened"
