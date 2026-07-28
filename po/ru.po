@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 14:45+0200\n"
-"PO-Revision-Date: 2026-07-28 18:35+0000\n"
+"PO-Revision-Date: 2026-07-28 18:38+0000\n"
 "Last-Translator: zlom\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1291,8 +1291,8 @@ msgid ""
 "Split the current line at the cursor, dividing the original line's duration "
 "between the new ones"
 msgstr ""
-"Разделение текущей строки по позиции курсора с разделением время "
-"продолжительности исходной строки между двумя новыми"
+"Разделение текущей строки по позиции курсора с разделением продолжительности "
+"исходной строки между двумя новыми"
 
 #: ../src/command/edit.cpp:1130 ../src/command/edit.cpp:1131
 #: ../src/subs_edit_ctrl.cpp:416
@@ -1316,7 +1316,7 @@ msgid ""
 "Split the current line at the cursor, dividing the line's duration at the "
 "current video frame"
 msgstr ""
-"Разделение текущей строки по позиции курсора с расщеплением времени "
+"Разделение текущей строки по позиции курсора с расщеплением "
 "продолжительности строки по текущему видеокадру"
 
 #: ../src/command/edit.cpp:1159
