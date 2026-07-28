@@ -1,4 +1,4 @@
-# Aegisub 3.2
+# Aegisub 3.5
 # Copyright (C) 2005-2014 Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et. al.
 # This file is distributed under the same license as the Aegisub package.
 # Niels Martin Hansen <nielsm@aegisub.org>, 2005-2014.
@@ -6,10 +6,10 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Aegisub 3.2.0\n"
+"Project-Id-Version: Aegisub 3.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 16:15+0200\n"
-"PO-Revision-Date: 2026-07-22 17:03+0300\n"
+"POT-Creation-Date: 2026-07-26 14:45+0200\n"
+"PO-Revision-Date: 2026-07-28 10:30+0300\n"
 "Last-Translator: MantasB <mantasb2199@gmail.com>\n"
 "Language-Team: \n"
 "Language: lt\n"
@@ -121,7 +121,7 @@ msgstr "Vertikalus mastelio keitimas"
 msgid "Audio Volume"
 msgstr "Garsis"
 
-#: ../src/audio_display.cpp:718
+#: ../src/audio_display.cpp:719
 #, c-format
 msgid "%d%%, %d pixel/second"
 msgstr "%d%%, %d pikseliai/sekundės"
@@ -526,7 +526,7 @@ msgstr "Atidaryti naują programos langą"
 msgid "&Options..."
 msgstr "P&arinktys..."
 
-#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:151
+#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:182
 #: ../src/dialog_timing_processor.cpp:169 ../src/preferences.cpp:166
 #: ../src/preferences.cpp:206
 msgid "Options"
@@ -916,7 +916,7 @@ msgid "&Automation..."
 msgstr "&Automatizacija..."
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:376
+#: ../src/preferences.cpp:400
 msgid "Automation"
 msgstr "Automatizacija"
 
@@ -1369,7 +1369,7 @@ msgid "revert line"
 msgstr "sugrąžinti eilutę"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Clear"
 msgstr "Išvalyti"
 
@@ -1954,7 +1954,7 @@ msgstr "Išsaugoti subtitrų failą"
 #: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
 #: ../src/dialog_style_manager.cpp:689 ../src/dialog_style_manager.cpp:695
 #: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:202
-#: ../src/preferences.cpp:309 ../src/preferences.cpp:501
+#: ../src/preferences.cpp:333 ../src/preferences.cpp:525
 msgid "Error"
 msgstr "Klaida"
 
@@ -2290,7 +2290,7 @@ msgstr "Pasirinkti eilutes pagal nustatytą kriterijų"
 msgid "&Resample Resolution..."
 msgstr "&Iš naujo nustatyti raišką..."
 
-#: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:90
+#: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:114
 msgid "Resample Resolution"
 msgstr "Iš naujo nustatyti raišką"
 
@@ -2386,7 +2386,7 @@ msgid "&Translation Assistant..."
 msgstr "Vertimo &padėjėjas..."
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
-#: ../src/preferences.cpp:272 default_hotkey.json:291
+#: ../src/preferences.cpp:294 default_hotkey.json:291
 msgid "Translation Assistant"
 msgstr "Vertimo padėjėjas"
 
@@ -3017,7 +3017,7 @@ msgid "E&xtract"
 msgstr "I&šskleisti"
 
 #: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:205
-#: ../src/preferences.cpp:668
+#: ../src/preferences.cpp:692
 msgid "&Delete"
 msgstr "&Ištrinti"
 
@@ -3102,7 +3102,7 @@ msgstr "Pavadinimas"
 msgid "Filename"
 msgstr "Failo pavadinimas"
 
-#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:688
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:712
 msgid "Description"
 msgstr "Aprašymas"
 
@@ -3345,8 +3345,9 @@ msgstr "1080×1920 (FHD vertikalus)"
 msgid "Dummy video options"
 msgstr "Netikro vaizdo parinktys"
 
-#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:136
-#: ../src/dialog_resample.cpp:175 ../src/dialog_resample.cpp:188
+#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:150
+#: ../src/dialog_properties.cpp:162 ../src/dialog_resample.cpp:195
+#: ../src/dialog_resample.cpp:208
 msgid "×"
 msgstr "×"
 
@@ -3856,85 +3857,98 @@ msgstr "Atšaukti"
 msgid "Cancelling..."
 msgstr "Atšaukiama..."
 
-#: ../src/dialog_properties.cpp:91
+#: ../src/dialog_properties.cpp:98
 msgid "Script Properties"
 msgstr "Skripto parametrai"
 
-#: ../src/dialog_properties.cpp:105
+#: ../src/dialog_properties.cpp:112
 msgid "Script"
 msgstr "Skriptas"
 
-#: ../src/dialog_properties.cpp:109
+#: ../src/dialog_properties.cpp:116
 msgid "Title:"
 msgstr "Pavadinimas:"
 
-#: ../src/dialog_properties.cpp:110
+#: ../src/dialog_properties.cpp:117
 msgid "Original script:"
 msgstr "Originalus skriptas:"
 
-#: ../src/dialog_properties.cpp:111
+#: ../src/dialog_properties.cpp:118
 msgid "Translation:"
 msgstr "Vertimas:"
 
-#: ../src/dialog_properties.cpp:112
+#: ../src/dialog_properties.cpp:119
 msgid "Editing:"
 msgstr "Redagavimas:"
 
-#: ../src/dialog_properties.cpp:113
+#: ../src/dialog_properties.cpp:120
 msgid "Timing:"
 msgstr "Sinchronizavimas:"
 
-#: ../src/dialog_properties.cpp:114
+#: ../src/dialog_properties.cpp:121
 msgid "Synch point:"
 msgstr "Sinchronizavimo taškas:"
 
-#: ../src/dialog_properties.cpp:115
+#: ../src/dialog_properties.cpp:122
 msgid "Updated by:"
 msgstr "Atnaujino:"
 
-#: ../src/dialog_properties.cpp:116
+#: ../src/dialog_properties.cpp:123
 msgid "Update details:"
 msgstr "Atnaujinimo informacija:"
 
-#: ../src/dialog_properties.cpp:122
+#: ../src/dialog_properties.cpp:129
 msgid "Resolution"
 msgstr "Raiška"
 
-#: ../src/dialog_properties.cpp:128 ../src/dialog_resample.cpp:150
+#: ../src/dialog_properties.cpp:138 ../src/dialog_resample.cpp:170
 #: ../src/export_framerate.cpp:70
 msgid "From &video"
 msgstr "Iš &vaizdo"
 
-#: ../src/dialog_properties.cpp:144 ../src/dialog_resample.cpp:180
-#: ../src/dialog_resample.cpp:193
+#: ../src/dialog_properties.cpp:148
+#| msgid "Script"
+msgid "Script: "
+msgstr "Skriptas: "
+
+#: ../src/dialog_properties.cpp:154 ../src/dialog_properties.cpp:169
+msgid "From video"
+msgstr "Iš vaizdo"
+
+#: ../src/dialog_properties.cpp:160
+msgid "Layout: "
+msgstr "Išdėstymas: "
+
+#: ../src/dialog_properties.cpp:175 ../src/dialog_resample.cpp:200
+#: ../src/dialog_resample.cpp:213
 msgid "YCbCr Matrix:"
 msgstr "YCbCr matrica:"
 
-#: ../src/dialog_properties.cpp:155
+#: ../src/dialog_properties.cpp:186
 msgid "0: Smart wrapping, top line is wider"
 msgstr "0: Išmanus skaidymas, viršutinė eilutė ilgesnė"
 
-#: ../src/dialog_properties.cpp:156
+#: ../src/dialog_properties.cpp:187
 msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: Skaidymas eilutės pabaigoje, kurį pertraukia tik \\N"
 
-#: ../src/dialog_properties.cpp:157
+#: ../src/dialog_properties.cpp:188
 msgid "2: No word wrapping, both \\n and \\N break"
 msgstr "2: Jokio skaidymo, kurį pertraukia \\n ir \\N"
 
-#: ../src/dialog_properties.cpp:158
+#: ../src/dialog_properties.cpp:189
 msgid "3: Smart wrapping, bottom line is wider"
 msgstr "3: Išmanus skaidymas, apatinė eilutė ilgesnė"
 
-#: ../src/dialog_properties.cpp:162
+#: ../src/dialog_properties.cpp:193
 msgid "Wrap Style: "
 msgstr "Skaidymo stilius: "
 
-#: ../src/dialog_properties.cpp:165
+#: ../src/dialog_properties.cpp:196
 msgid "Scale Border and Shadow"
 msgstr "Keisti apvado ir šešėlio mastelį"
 
-#: ../src/dialog_properties.cpp:166
+#: ../src/dialog_properties.cpp:197
 msgid ""
 "Scale border and shadow together with script/render resolution. If this is "
 "unchecked, relative border and shadow size will depend on renderer."
@@ -3942,47 +3956,47 @@ msgstr ""
 "Keisti apvado ir šešėlio mastelį kartu su skripto/atvaizdavimo raiška. "
 "Neuždėjus varnelės apvado ir šešėlio dydis priklausys nuo atvaizduotojo."
 
-#: ../src/dialog_properties.cpp:202
+#: ../src/dialog_properties.cpp:235
 msgid "property changes"
 msgstr "parametrų pakeitimai"
 
-#: ../src/dialog_resample.cpp:114
+#: ../src/dialog_resample.cpp:136
 msgid "Source Resolution"
 msgstr "Šaltinio raiška"
 
-#: ../src/dialog_resample.cpp:115
+#: ../src/dialog_resample.cpp:137
 msgid "Destination Resolution"
 msgstr "Paskirties raiška"
 
-#: ../src/dialog_resample.cpp:116
+#: ../src/dialog_resample.cpp:138
 msgid "Margin offset"
 msgstr "Paraščių poslinkis"
 
-#: ../src/dialog_resample.cpp:128
+#: ../src/dialog_resample.cpp:150
 msgid "&Symmetrical"
 msgstr "&Simetriškas"
 
-#: ../src/dialog_resample.cpp:152
+#: ../src/dialog_resample.cpp:172
 msgid "From s&cript"
 msgstr "Iš s&kripto"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Add borders"
 msgstr "Pridėti apvadus"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Manual"
 msgstr "Vadovas"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Remove borders"
 msgstr "Pašalinti apvadus"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Stretch"
 msgstr "Ištempti"
 
-#: ../src/dialog_resample.cpp:156
+#: ../src/dialog_resample.cpp:176
 msgid "Aspect Ratio Handling"
 msgstr "Proporcijos apdorojimas"
 
@@ -4380,7 +4394,7 @@ msgstr "Šešėlio dėžutė (tik libass)"
 msgid "Font"
 msgstr "Šriftas"
 
-#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:280
+#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:302
 msgid "Colors"
 msgstr "Spalvos"
 
@@ -4607,11 +4621,11 @@ msgstr "Nuleisti stilių į apačią"
 msgid "Sort styles alphabetically"
 msgstr "Rūšiuoti stilius abėcėlės tvarka"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:666
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:690
 msgid "&New"
 msgstr "&Naujas"
 
-#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:667
+#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:691
 #: default_menu.json:0
 msgid "&Edit"
 msgstr "&Redaguoti"
@@ -5141,7 +5155,7 @@ msgid "Video Details"
 msgstr "Vaizdo ypatybės"
 
 #: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:204
-#: ../src/preferences.cpp:481 default_hotkey.json:315
+#: ../src/preferences.cpp:505 default_hotkey.json:315
 msgid "Video"
 msgstr "Vaizdas"
 
@@ -5170,14 +5184,140 @@ msgid "Length:"
 msgstr "Ilgis:"
 
 #: ../src/dialog_video_details.cpp:68
+msgid "Actual color matrix:"
+msgstr "Faktinė spalvų matrica:"
+
+#: ../src/dialog_video_details.cpp:69
+msgid "Forced color matrix:"
+msgstr "Priverstinė spalvų matrica:"
+
+#: ../src/dialog_video_details.cpp:70
+msgid "Actual color range:"
+msgstr "Faktinis spalvų diapazonas:"
+
+#: ../src/dialog_video_details.cpp:71
+msgid "Forced color range:"
+msgstr "Priverstinis spalvų diapazonas:"
+
+#: ../src/dialog_video_details.cpp:72
 msgid "Decoder:"
 msgstr "Dekoduotojas:"
 
-#: ../src/dialog_video_properties.cpp:44
+#: ../src/dialog_video_properties.cpp:135
+#, c-format
+msgid ""
+"The video you have loaded has no specified color matrix. Aegisub will guess "
+"the color matrix to be %s, but there is no guarantee that other programs "
+"will guess the same matrix. This may make the video appear with different "
+"colors in different media players and can prevent subtitle colors from "
+"matching video colors.\n"
+" \n"
+"Consider tagging your video with a color matrix to ensure that your video "
+"displays consistently in all players and that subtitle colors can reliably "
+"match video colors."
+msgstr ""
+"Jūsų įkeltame vaizde nėra nurodyta spalvų matrica. Aegisub spėjimu tai %s "
+"spalvų matrica, bet neužtikriname, jog kitose programose bus nuspėta ta pati "
+"matrica. Taigi, vaizdas skirtinguose grotuvuose galimai bus atkuriamas "
+"skirtingomis spalvomis, o tai neleis subtitrų spalvoms atitikti vaizdo "
+"spalvų.\n"
+" \n"
+"Jei norite užtikrinti, kad vaizdas visuose grotuvuose būtų atkuriamas taip "
+"pat, o subtitrų spalvos patikimai atitiktų vaizdo spalvas, tuomet pažymėkite "
+"spalvų matricą."
+
+#: ../src/dialog_video_properties.cpp:140
+msgid "Untagged video"
+msgstr "Nepažymėtas vaizdas"
+
+#: ../src/dialog_video_properties.cpp:145
+msgid ""
+"The video you have loaded has HDR and/or WCG colors. While ordinary dialogue "
+"subtitles will work fine on such videos, matching video colors using "
+"subtitles will not be possible on HDR and/or WCG footage."
+msgstr ""
+"Jūsų įkeltame vaizde yra HDR ir/ar WCG spalvų. Nors tokiuose vaizduose "
+"įprastiniai dialogo subtitrai veiks be trikdžių, tačiau subtitrais atitikti "
+"vaizdo spalvas HDR ir/ar WCG medžiagoje yra neįmanoma."
+
+#: ../src/dialog_video_properties.cpp:148
+msgid "HDR and/or WCG video"
+msgstr "HDR ir/ar WCG vaizdas"
+
+#: ../src/dialog_video_properties.cpp:161
+#, c-format
+msgid ""
+"The current subtitle file has no YCbCr Matrix set.\n"
+"\n"
+"If you plan to use this subtitle file on this newly loaded video file,\n"
+"you should set the subtitle file's YCbCr Matrix to the video's color space "
+"(\"%s\").\n"
+"\n"
+"If you plan to use a different video file, you may want to\n"
+"leave the YCbCr Matrix unset until you load the correct video file.\n"
+"\n"
+"This prompt can be configured in the preferences."
+msgstr ""
+"Dabartiniame subtitrų faile nenustatyta YCbCr matrica.\n"
+"\n"
+"Jei ruošiatės dirbti su šiuo subtitrų failu pagal naujai įkeltą vaizdo "
+"failą,\n"
+"tuomet subtitrų failo YCbCr matricą reikėtų nustatyti pagal vaizdo spalvų "
+"erdvę („%s“).\n"
+"\n"
+"Jei ruošiatės dirbti su kitu vaizdo failu, tuomet patartina\n"
+"nenustatyti YCbCr matricos, kol neįkėlėte tinkamo vaizdo failo.\n"
+"\n"
+"Šis paraginimas konfigūruojamas nuostatose."
+
+#: ../src/dialog_video_properties.cpp:166
+#| msgid "YCbCr Matrix:"
+msgid "Set script's YCbCr Matrix?"
+msgstr "Nustatyti skripto YCbCr matricą?"
+
+#: ../src/dialog_video_properties.cpp:167
+msgid "Leave YCbCr Matrix unset"
+msgstr "Palikti YCbCr matricą nenustatytą"
+
+#: ../src/dialog_video_properties.cpp:167
+#: ../src/dialog_video_properties.cpp:226
+#, c-format
+msgid "Set script's YCbCr Matrix to the video's (\"%s\")"
+msgstr "Nustatyti skripto YCbCr matricą pagal vaizdo („%s“)"
+
+#: ../src/dialog_video_properties.cpp:221
+#, c-format
+msgid ""
+"This video's recommended YCbCr Matrix (\"%s\") differs from the subtitle "
+"file's YCbCr Matrix (\"%s\").\n"
+"\n"
+"If this new video's colors look identical to the video the subtitle file was "
+"originally authored for,\n"
+"then the subtitle file's YCbCr Matrix should be set to the video's YCbCr "
+"Matrix."
+msgstr ""
+"Šio vaizdo rekomenduojama YCbCr matrica („%s“) neatitinka subtitrų failo "
+"YCbCr matricos („%s“).\n"
+"\n"
+"Jei šio naujo vaizdo spalvos tokios pat, kaip pirminio vaizdo, pagal kurį "
+"buvo parengti subtitrai,\n"
+"tuomet reikėtų nustatyti subtitrų failo YCbCr matricą pagal vaizdo YCbCr "
+"matricą."
+
+#: ../src/dialog_video_properties.cpp:225
+msgid "YCbCr Matrix mismatch"
+msgstr "YCbCr matricos neatitikimas"
+
+#: ../src/dialog_video_properties.cpp:226
+#, c-format
+msgid "Leave script's YCbCr Matrix as it is (\"%s\")"
+msgstr "Palikti skripto YCbCr matricą tokią, kokia yra („%s“)"
+
+#: ../src/dialog_video_properties.cpp:257
 msgid "Resolution mismatch"
 msgstr "Raiškos neatitikimas"
 
-#: ../src/dialog_video_properties.cpp:47
+#: ../src/dialog_video_properties.cpp:260
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
@@ -5195,29 +5335,160 @@ msgstr ""
 "\n"
 "Ar sulyginti subtitrų raišką su vaizdo?"
 
-#: ../src/dialog_video_properties.cpp:58 ../src/dialog_video_properties.cpp:67
-msgid "Set to video resolution"
-msgstr "Atitikti vaizdo raišką"
+#: ../src/dialog_video_properties.cpp:271
+#: ../src/dialog_video_properties.cpp:280
+msgid "Leave resolution as it is"
+msgstr "Palikti raišką tokią, kokia yra"
 
-#: ../src/dialog_video_properties.cpp:59
+#: ../src/dialog_video_properties.cpp:272
 msgid "Resample script (stretch to new aspect ratio)"
 msgstr "Iš naujo nustatyti skriptą (ištempti naujai proporcijai)"
 
-#: ../src/dialog_video_properties.cpp:60
+#: ../src/dialog_video_properties.cpp:273
 msgid "Resample script (add borders)"
 msgstr "Iš naujo nustatyti skriptą (pridėti apvadus)"
 
-#: ../src/dialog_video_properties.cpp:61
+#: ../src/dialog_video_properties.cpp:274
 msgid "Resample script (remove borders)"
 msgstr "Iš naujo nustatyti skriptą (pašalinti apvadus)"
 
-#: ../src/dialog_video_properties.cpp:68
+#: ../src/dialog_video_properties.cpp:281
 msgid "Resample script"
 msgstr "Iš naujo nustatyti skriptą"
 
-#: ../src/dialog_video_properties.cpp:168
+#: ../src/dialog_video_properties.cpp:389
+#, c-format
+msgid ""
+"The current subtitle file has no layout resolution set.\n"
+"\n"
+"If you plan to use this subtitle file on this newly loaded video file,\n"
+"you should set the subtitle file's layout resolution to the video's display "
+"resolution.\n"
+"\n"
+"If you plan to use a different video file, you may want to leave\n"
+"the layout resolution unset until you load the correct video file.\n"
+"\n"
+"If you are adapting an existing old subtitle file that does not yet have\n"
+"a layout resolution set, you should set its layout resolution to the "
+"resolution\n"
+"of the video the subtitle file was intended to be played back on.\n"
+"Often, this is the same as the file's script resolution. (%d × %d)\n"
+"\n"
+"This prompt can be configured in the preferences."
+msgstr ""
+"Dabartiniame subtitrų faile nenustatyta išdėstymo raiška.\n"
+"\n"
+"Jei ruošiatės dirbti su šiuo subtitrų failu pagal naujai įkeltą vaizdo "
+"failą,\n"
+"tuomet subtitrų failo išdėstymo raišką reikėtų nustatyti pagal vaizdo "
+"raišką.\n"
+"\n"
+"Jei ruošiatės dirbti su kitu vaizdo failu, tuomet patartina\n"
+"nenustatyti išdėstymo raiškos, kol neįkėlėte tinkamo vaizdo failo.\n"
+"\n"
+"Jei pritaikote jau esamą senesnį subtitrų failą, kuriame dar nėra\n"
+"nustatyta išdėstymo raiška, turėtume ją nustatyti pagal tą vaizdo raišką,\n"
+"pagal kurią turėjo būti atkuriamas subtitrų failas.\n"
+"Dažnu atveju ji tokia pat, kaip failo skripto raiška. (%d × %d)\n"
+"\n"
+"Šis paraginimas konfigūruojamas nuostatose."
+
+#: ../src/dialog_video_properties.cpp:403
+msgid "Set script's layout resolution?"
+msgstr "Nustatyti skripto išdėstymo raišką?"
+
+#: ../src/dialog_video_properties.cpp:404
+msgid "Leave layout resolution unset"
+msgstr "Palikti išdėstymo raišką nenustatytą"
+
+#: ../src/dialog_video_properties.cpp:405
+#: ../src/dialog_video_properties.cpp:484
+#, c-format
+msgid "Set script's layout resolution to the video's (%d × %d)"
+msgstr "Nustatyti skripto išdėstymo raišką pagal vaizdo (%d × %d)"
+
+#: ../src/dialog_video_properties.cpp:406
+#, c-format
+msgid "Set script's layout resolution to its script resolution (%d × %d)"
+msgstr "Nustatyti skripto išdėstymo raišką pagal skripto raišką (%d × %d)"
+
+#: ../src/dialog_video_properties.cpp:464
+#, c-format
+msgid ""
+"The resolution of the loaded video and the layout resolution specified for "
+"the subtitles don't match.\n"
+"\n"
+"Video resolution:    %d × %d\n"
+"Subtitle layout resolution:    %d × %d\n"
+"\n"
+"Usually, this is not an issue, and you may leave the subtitle file's layout "
+"resolution as it is.\n"
+"If your subtitle file does not contain any significant formatting and you "
+"now intend to perform\n"
+"formatting on the newly loaded video, you may want to set the script's "
+"layout resolution\n"
+"to the video's display resolution."
+msgstr ""
+"Nesutampa įkelto vaizdo raiška ir subtitrams nustatyta išdėstymo raiška.\n"
+"\n"
+"Vaizdo raiška:    %d × %d\n"
+"Subtitrų išdėstymo raiška:    %d × %d\n"
+"\n"
+"Įprastai tai nėra bėda, tad galite palikti subtitrų failo išdėstymo raišką "
+"tokią, kokia yra.\n"
+"Jei subtitrų faile nėra jokių reikšmingų formatavimų ir ruošiatės tvarkyti "
+"formatavimą\n"
+"pagal naujai įkeltą vaizdą, tuomet patartina nustatyti skripto išdėstymo "
+"raišką\n"
+"pagal vaizdo raišką."
+
+#: ../src/dialog_video_properties.cpp:475
+#, c-format
+#| msgid ""
+#| "The resolution of the loaded video and the resolution specified for the "
+#| "subtitles don't match.\n"
+#| "\n"
+#| "Video resolution:\t%d × %d\n"
+#| "Script resolution:\t%d × %d\n"
+#| "\n"
+#| "Change subtitles resolution to match video?"
+msgid ""
+"The resolution of the loaded video and the layout resolution specified for "
+"the subtitles differ in aspect ratios.\n"
+"\n"
+"Video resolution:    %d × %d\n"
+"Subtitle layout resolution:    %d × %d\n"
+"\n"
+"Change layout resolution of subtitles to match video?"
+msgstr ""
+"Skiriasi įkelto vaizdo ir subtitrams nurodytos išdėstymo raiškos "
+"proporcijos.\n"
+"\n"
+"Vaizdo raiška:    %d × %d\n"
+"Subtitrų išdėstymo raiška:    %d × %d\n"
+"\n"
+"Ar sulyginti subtitrų išdėstymo raišką su vaizdo?"
+
+#: ../src/dialog_video_properties.cpp:483
+msgid "Layout resolution mismatch"
+msgstr "Išdėstymo raiškos neatitikimas"
+
+#: ../src/dialog_video_properties.cpp:484
+#, c-format
+msgid "Leave layout resolution as it is (%d × %d)"
+msgstr "Palikti išdėstymo raišką tokią, kokia yra (%d × %d)"
+
+#: ../src/dialog_video_properties.cpp:509
+msgid "change ycbcr matrix"
+msgstr "keisti ycbcr matricą"
+
+#: ../src/dialog_video_properties.cpp:512
 msgid "change script resolution"
 msgstr "keisti skripto raišką"
+
+#: ../src/dialog_video_properties.cpp:515
+msgid "change layout resolution"
+msgstr "keisti išdėstymo raišką"
 
 #: ../src/export_fixstyle.cpp:46
 msgid "Fix Styles"
@@ -5549,7 +5820,7 @@ msgid "Reading subtitles from Matroska file."
 msgstr "Nuskaitomi subtitrai iš Matroska failo."
 
 #: ../src/preferences.cpp:98 ../src/preferences.cpp:100
-#: ../src/preferences.cpp:378 ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402 ../src/preferences.cpp:423
 msgid "General"
 msgstr "Bendri"
 
@@ -5569,15 +5840,19 @@ msgstr "Išsaugoti naudotojo sąsajos būseną subtitrų faile"
 msgid "Toolbar Icon Size"
 msgstr "Įrankių juostos piktogramų dydis"
 
-#: ../src/preferences.cpp:107 default_hotkey.json:2
+#: ../src/preferences.cpp:107 ../src/preferences.cpp:250 default_hotkey.json:2
 msgid "Always"
 msgstr "Visada"
 
 #: ../src/preferences.cpp:107 ../src/preferences.cpp:240
+#: ../src/preferences.cpp:246 ../src/preferences.cpp:258
+#: ../src/preferences.cpp:262
 msgid "Ask"
 msgstr "Klausti"
 
 #: ../src/preferences.cpp:107 ../src/preferences.cpp:240
+#: ../src/preferences.cpp:246 ../src/preferences.cpp:250
+#: ../src/preferences.cpp:258 ../src/preferences.cpp:262
 msgid "Never"
 msgstr "Niekada"
 
@@ -5637,7 +5912,7 @@ msgstr "TTXT importavimas"
 msgid "Plain text import"
 msgstr "Grynojo teksto importavimas"
 
-#: ../src/preferences.cpp:164 ../src/preferences.cpp:414 default_hotkey.json:37
+#: ../src/preferences.cpp:164 ../src/preferences.cpp:438 default_hotkey.json:37
 msgid "Audio"
 msgstr "Garsas"
 
@@ -5733,7 +6008,7 @@ msgstr "Žymeklio laikas"
 msgid "Video position"
 msgstr "Vaizdo padėtis"
 
-#: ../src/preferences.cpp:192 ../src/preferences.cpp:294
+#: ../src/preferences.cpp:192 ../src/preferences.cpp:318
 msgid "Seconds boundaries"
 msgstr "Sekundžių ribos"
 
@@ -5833,364 +6108,413 @@ msgstr "Numatytas aukštis"
 msgid "Always resample"
 msgstr "Visada iš naujo nustatyti"
 
-#: ../src/preferences.cpp:240
-msgid "Always set"
-msgstr "Visada nustatyti"
-
 #: ../src/preferences.cpp:242
 msgid "Match video resolution on open"
 msgstr "Atidarius atitikti vaizdo raišką"
 
-#: ../src/preferences.cpp:249
+#: ../src/preferences.cpp:244
+msgid "Layout Resolution"
+msgstr "Išdėstymo raiška"
+
+#: ../src/preferences.cpp:246 ../src/preferences.cpp:258
+#: ../src/preferences.cpp:262
+msgid "Always set"
+msgstr "Visada nustatyti"
+
+#: ../src/preferences.cpp:246
+msgid "Always set from script resolution"
+msgstr "Visada nustatyti pagal skripto raišką"
+
+#: ../src/preferences.cpp:248
+msgid "Set layout resolution from video on open"
+msgstr "Atidarant nustatyti išdėstymo raišką pagal vaizdo"
+
+#: ../src/preferences.cpp:250
+msgid "When aspect ratio changes"
+msgstr "Kai pasikeičia proporcija"
+
+#: ../src/preferences.cpp:252
+msgid "Prompt on layout resolution mismatch"
+msgstr "Paraginti, kai nesutampa išdėstymo raiška"
+
+#: ../src/preferences.cpp:254
+msgid "YCbCr Matrix"
+msgstr "YCbCr matrica"
+
+#: ../src/preferences.cpp:255
+msgid "Warn on untagged video color matrix"
+msgstr "Perspėti, kai nepažymėta vaizdo spalvų matrica"
+
+#: ../src/preferences.cpp:256
+msgid "Warn on HDR/WCG video"
+msgstr "Perspėti, kai vaizdas HDR/WCG"
+
+#: ../src/preferences.cpp:260
+msgid "Use video's YCbCr Matrix when script has no matrix set"
+msgstr "Naudoti vaizdo YCbCr matricą, kai skripte nenustatyta matrica"
+
+#: ../src/preferences.cpp:264
+msgid "Match video's YCbCr Matrix on open"
+msgstr "Atidarius atitikti vaizdo YCbCr matricą"
+
+#: ../src/preferences.cpp:271
 msgid "Interface"
 msgstr "Sąsaja"
 
-#: ../src/preferences.cpp:251
+#: ../src/preferences.cpp:273
 msgid "Edit Box"
 msgstr "Redagavimo dėžutė"
 
-#: ../src/preferences.cpp:252
+#: ../src/preferences.cpp:274
 msgid "Enable call tips"
 msgstr "Įjungti kreipinių patarimus"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:275
 msgid "Overwrite in time boxes"
 msgstr "Perrašyti laiko dėžutėse"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:276
 msgid "Shift+Enter adds \\n"
 msgstr "Shift+Enter prideda \\n"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:277
 msgid "Enable syntax highlighting"
 msgstr "Įjungti sintaksės paryškinimą"
 
-#: ../src/preferences.cpp:256
+#: ../src/preferences.cpp:278
 msgid "Dictionaries path"
 msgstr "Žodynų kelias"
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:281
 msgid "Character Counter"
 msgstr "Rašmenų skaitiklis"
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:282
 msgid "Maximum characters per line"
 msgstr "Maksimalus rašmenų skaičius eilutėje"
 
-#: ../src/preferences.cpp:261
+#: ../src/preferences.cpp:283
 msgid "Characters Per Second Warning Threshold"
 msgstr "Rašmenų per sekundę perspėjimo riba"
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:284
 msgid "Characters Per Second Error Threshold"
 msgstr "Rašmenų per sekundę klaidos riba"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:285
 msgid "Ignore whitespace"
 msgstr "Nepaisyti matomų tarpų"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:286
 msgid "Ignore punctuation"
 msgstr "Nepaisyti skyrybos ženklų"
 
-#: ../src/preferences.cpp:266
+#: ../src/preferences.cpp:288
 msgid "Grid"
 msgstr "Tinklelis"
 
-#: ../src/preferences.cpp:267
+#: ../src/preferences.cpp:289
 msgid "Focus grid on click"
 msgstr "Paspaudus nustatyti židinį tinklelyje"
 
-#: ../src/preferences.cpp:268
+#: ../src/preferences.cpp:290
 msgid "Highlight visible subtitles"
 msgstr "Paryškinti matomus subtitrus"
 
-#: ../src/preferences.cpp:269
+#: ../src/preferences.cpp:291
 msgid "Hide overrides symbol"
 msgstr "Slėpti žymių simbolį"
 
-#: ../src/preferences.cpp:273
+#: ../src/preferences.cpp:295
 msgid "Skip over whitespace"
 msgstr "Praleisti matomus tarpus"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:310
 msgid "Audio Display"
 msgstr "Garso rodinys"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:311
 msgid "Play cursor"
 msgstr "Grojimo žymeklis"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:312
+msgid "Current frame range"
+msgstr "Dabartinis kadrų rėžis"
+
+#: ../src/preferences.cpp:313
+msgid "Previous frame range"
+msgstr "Ankstesnis kadrų rėžis"
+
+#: ../src/preferences.cpp:314
 msgid "Line boundary start"
 msgstr "Eilutės ribos pradžia"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:315
 msgid "Line boundary end"
 msgstr "Eilutės ribos pabaiga"
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:316
 msgid "Line boundary inactive line"
 msgstr "Eilutės ribos neaktyvi eilutė"
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:317
 msgid "Syllable boundaries"
 msgstr "Skiemenų ribos"
 
-#: ../src/preferences.cpp:296
+#: ../src/preferences.cpp:320
 msgid "Syntax Highlighting"
 msgstr "Sintaksės paryškinimas"
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:321
 msgid "Background"
 msgstr "Fonas"
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:322
 msgid "Normal"
 msgstr "Normalus"
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:323
 msgid "Comments"
 msgstr "Komentarai"
 
-#: ../src/preferences.cpp:300
+#: ../src/preferences.cpp:324
 msgid "Drawing Commands"
 msgstr "Piešinio komandos"
 
-#: ../src/preferences.cpp:301
+#: ../src/preferences.cpp:325
 msgid "Drawing X Coords"
 msgstr "Piešinio X koordinatės"
 
-#: ../src/preferences.cpp:302
+#: ../src/preferences.cpp:326
 msgid "Drawing Y Coords"
 msgstr "Piešinio Y koordinatės"
 
-#: ../src/preferences.cpp:303
+#: ../src/preferences.cpp:327
 msgid "Underline Spline Endpoints"
 msgstr "Pabraukti glodžiosios kreivės galutinį tašką"
 
-#: ../src/preferences.cpp:305
+#: ../src/preferences.cpp:329
 msgid "Brackets"
 msgstr "Skliaustai"
 
-#: ../src/preferences.cpp:306
+#: ../src/preferences.cpp:330
 msgid "Slashes and Parentheses"
 msgstr "Pasvirieji brūkšniai ir skliaustai"
 
-#: ../src/preferences.cpp:307
+#: ../src/preferences.cpp:331
 msgid "Tags"
 msgstr "Žymės"
 
-#: ../src/preferences.cpp:308
+#: ../src/preferences.cpp:332
 msgid "Parameters"
 msgstr "Parametrai"
 
-#: ../src/preferences.cpp:310
+#: ../src/preferences.cpp:334
 msgid "Error Background"
 msgstr "Klaidos fonas"
 
-#: ../src/preferences.cpp:311
+#: ../src/preferences.cpp:335
 msgid "Line Break"
 msgstr "Eilutės lūžis"
 
-#: ../src/preferences.cpp:312
+#: ../src/preferences.cpp:336
 msgid "Karaoke templates"
 msgstr "Karaokės šablonai"
 
-#: ../src/preferences.cpp:313
+#: ../src/preferences.cpp:337
 msgid "Karaoke variables"
 msgstr "Karaokės kintamieji"
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:343
 msgid "Audio Color Schemes"
 msgstr "Garso spalvų schemos"
 
-#: ../src/preferences.cpp:321 ../src/preferences.cpp:430
+#: ../src/preferences.cpp:345 ../src/preferences.cpp:454
 msgid "Spectrum"
 msgstr "Spektras"
 
-#: ../src/preferences.cpp:322
+#: ../src/preferences.cpp:346
 msgid "Waveform"
 msgstr "Bangų forma"
 
-#: ../src/preferences.cpp:324 default_hotkey.json:262
+#: ../src/preferences.cpp:348 default_hotkey.json:262
 msgid "Subtitle Grid"
 msgstr "Subtitrų tinklelis"
 
-#: ../src/preferences.cpp:325
+#: ../src/preferences.cpp:349
 msgid "Standard foreground"
 msgstr "Standartinis priekinis planas"
 
-#: ../src/preferences.cpp:326
+#: ../src/preferences.cpp:350
 msgid "Standard background"
 msgstr "Standartinis fonas"
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:351
 msgid "Selection foreground"
 msgstr "Pasirinkimo priekinis planas"
 
-#: ../src/preferences.cpp:328
+#: ../src/preferences.cpp:352
 msgid "Selection background"
 msgstr "Pasirinkimo fonas"
 
-#: ../src/preferences.cpp:329
+#: ../src/preferences.cpp:353
 msgid "Collision foreground"
 msgstr "Konflikto priekinis planas"
 
-#: ../src/preferences.cpp:330
+#: ../src/preferences.cpp:354
 msgid "In frame background"
 msgstr "Kadre fonas"
 
-#: ../src/preferences.cpp:331
+#: ../src/preferences.cpp:355
 msgid "Comment background"
 msgstr "Komentaro fonas"
 
-#: ../src/preferences.cpp:332
+#: ../src/preferences.cpp:356
 msgid "Selected comment background"
 msgstr "Pasirinkto komentaro fonas"
 
-#: ../src/preferences.cpp:333
+#: ../src/preferences.cpp:357
 msgid "Header background"
 msgstr "Antraštės fonas"
 
-#: ../src/preferences.cpp:334
+#: ../src/preferences.cpp:358
 msgid "Left Column"
 msgstr "Kairys stulpelis"
 
-#: ../src/preferences.cpp:335
+#: ../src/preferences.cpp:359
 msgid "Active Line Border"
 msgstr "Aktyvios eilutės apvadas"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:360
 msgid "Lines"
 msgstr "Eilutės"
 
-#: ../src/preferences.cpp:337
+#: ../src/preferences.cpp:361
 msgid "CPS Error"
 msgstr "RPS klaida"
 
-#: ../src/preferences.cpp:339
+#: ../src/preferences.cpp:363
 msgid "Visual Typesetting Tools"
 msgstr "Vaizdinio komponavimo įrankiai"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:364
 msgid "Primary Lines"
 msgstr "Pirminės eilutės"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:365
 msgid "Secondary Lines"
 msgstr "Antrinės eilutės"
 
-#: ../src/preferences.cpp:342
+#: ../src/preferences.cpp:366
 msgid "Primary Highlight"
 msgstr "Pirminis paryškinimas"
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:367
 msgid "Secondary Highlight"
 msgstr "Antrinis paryškinimas"
 
-#: ../src/preferences.cpp:346
+#: ../src/preferences.cpp:370
 msgid "Visual Typesetting Tools Alpha"
 msgstr "Vaizdinio komponavimo įrankių alfa"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:371
 msgid "Shaded Area"
 msgstr "Šešėlinė zona"
 
-#: ../src/preferences.cpp:356
+#: ../src/preferences.cpp:380
 msgid "Backup"
 msgstr "Atsarginė kopija"
 
-#: ../src/preferences.cpp:358
+#: ../src/preferences.cpp:382
 msgid "Automatic Save"
 msgstr "Automatinis išsaugojimas"
 
-#: ../src/preferences.cpp:359 ../src/preferences.cpp:367
+#: ../src/preferences.cpp:383 ../src/preferences.cpp:391
 msgid "Enable"
 msgstr "Įjungti"
 
-#: ../src/preferences.cpp:362
+#: ../src/preferences.cpp:386
 msgid "Interval in seconds"
 msgstr "Sekundžių intervalas"
 
-#: ../src/preferences.cpp:363 ../src/preferences.cpp:369
-#: ../src/preferences.cpp:428
+#: ../src/preferences.cpp:387 ../src/preferences.cpp:393
+#: ../src/preferences.cpp:452
 msgid "Path"
 msgstr "Kelias"
 
-#: ../src/preferences.cpp:364
+#: ../src/preferences.cpp:388
 msgid "Autosave after every change"
 msgstr "Automatiškai išsaugoti po kiekvieno pakeitimo"
 
-#: ../src/preferences.cpp:366
+#: ../src/preferences.cpp:390
 msgid "Automatic Backup"
 msgstr "Automatinis atsarginės kopijos kūrimas"
 
-#: ../src/preferences.cpp:380
+#: ../src/preferences.cpp:404
 msgid "Base path"
 msgstr "Bazinis kelias"
 
-#: ../src/preferences.cpp:381
+#: ../src/preferences.cpp:405
 msgid "Include path"
 msgstr "Įtraukiamas kelias"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:406
 msgid "Auto-load path"
 msgstr "Automatinio įkėlimo kelias"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "0: Fatal"
 msgstr "0: Lemtingoji"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "1: Error"
 msgstr "1: Klaida"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "2: Warning"
 msgstr "2: Perspėjimas"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "3: Hint"
 msgstr "3: Užuomina"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "4: Debug"
 msgstr "4: Derinti"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "5: Trace"
 msgstr "5: Sekti"
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:410
 msgid "Trace level"
 msgstr "Sekimo lygis"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "All scripts"
 msgstr "Visus skriptus"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "Global autoload scripts"
 msgstr "Visuotinius automatiškai įkeliamus skriptus"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "No scripts"
 msgstr "Jokių skriptų"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "Subtitle-local scripts"
 msgstr "Subtitrų vietinius skriptus"
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:414
 msgid "Autoreload on Export"
 msgstr "Eksportavus automatiškai įkelti iš naujo"
 
-#: ../src/preferences.cpp:397
+#: ../src/preferences.cpp:421
 msgid "Advanced"
 msgstr "Išplėstinės"
 
-#: ../src/preferences.cpp:401
+#: ../src/preferences.cpp:425
 msgid ""
 "Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
@@ -6198,203 +6522,203 @@ msgstr ""
 "Pakeitus šias nuostatas gali atsirasti klaidų ir/ar užstrigimų. Nelieskite "
 "jų, nebent žinote, ką darote."
 
-#: ../src/preferences.cpp:416 ../src/preferences.cpp:483
+#: ../src/preferences.cpp:440 ../src/preferences.cpp:507
 msgid "Expert"
 msgstr "Ekspertas"
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:443
 msgid "Audio provider"
 msgstr "Garso teikėjas"
 
-#: ../src/preferences.cpp:422
+#: ../src/preferences.cpp:446
 msgid "Audio player"
 msgstr "Garso grotuvas"
 
-#: ../src/preferences.cpp:424
+#: ../src/preferences.cpp:448
 msgid "Cache"
 msgstr "Podėlis"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:449
 msgid "Hard Disk"
 msgstr "Kietasis diskas"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:449
 msgid "None (NOT RECOMMENDED)"
 msgstr "Jokio (NEPATARTINA)"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:449
 msgid "RAM"
 msgstr "Operatyvioji atmintis"
 
-#: ../src/preferences.cpp:427
+#: ../src/preferences.cpp:451
 msgid "Cache type"
 msgstr "Podėlio tipas"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "Better quality"
 msgstr "Geresnė kokybė"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "High quality"
 msgstr "Aukšta kokybė"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "Insane quality"
 msgstr "Aukščiausia kokybė"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "Regular quality"
 msgstr "Įprastinė kokybė"
 
-#: ../src/preferences.cpp:434
+#: ../src/preferences.cpp:458
 msgid "Quality"
 msgstr "Kokybė"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Compressed"
 msgstr "Suglaudintas"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Extended"
 msgstr "Išplėstasis"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Linear"
 msgstr "Linijinis"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Logarithmic"
 msgstr "Logaritmiškas"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Medium"
 msgstr "Vidutinis"
 
-#: ../src/preferences.cpp:438
+#: ../src/preferences.cpp:462
 msgid "Frequency mapping"
 msgstr "Dažnių atvaizdavimas"
 
-#: ../src/preferences.cpp:440
+#: ../src/preferences.cpp:464
 msgid "Cache memory max (MB)"
 msgstr "Maksimali podėlio atmintis (MB)"
 
-#: ../src/preferences.cpp:446
+#: ../src/preferences.cpp:470
 msgid "Avisynth down-mixer"
 msgstr "Avisynth atgalinis maišiklis"
 
-#: ../src/preferences.cpp:447
+#: ../src/preferences.cpp:471
 msgid "Force sample rate"
 msgstr "Priverstinai taikyti skaitmeninimo dažnį"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Abort"
 msgstr "Nutraukti"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Ignore"
 msgstr "Nepaisyti"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Stop"
 msgstr "Sustabdyti"
 
-#: ../src/preferences.cpp:455
+#: ../src/preferences.cpp:479
 msgid "Audio indexing error handling mode"
 msgstr "Garso indeksavimo klaidų tvarkymo režimas"
 
-#: ../src/preferences.cpp:457
+#: ../src/preferences.cpp:481
 msgid "Always index all audio tracks"
 msgstr "Visada indeksuoti visus garso takelius"
 
-#: ../src/preferences.cpp:462
+#: ../src/preferences.cpp:486
 msgid "Portaudio device"
 msgstr "PortAudio prietaisas"
 
-#: ../src/preferences.cpp:467
+#: ../src/preferences.cpp:491
 msgid "OSS Device"
 msgstr "OSS prietaisas"
 
-#: ../src/preferences.cpp:472
+#: ../src/preferences.cpp:496
 msgid "Buffer latency"
 msgstr "Buferio delsa"
 
-#: ../src/preferences.cpp:473
+#: ../src/preferences.cpp:497
 msgid "Buffer length"
 msgstr "Buferio ilgis"
 
-#: ../src/preferences.cpp:486
+#: ../src/preferences.cpp:510
 msgid "Video provider"
 msgstr "Vaizdo teikėjas"
 
-#: ../src/preferences.cpp:489
+#: ../src/preferences.cpp:513
 msgid "Subtitles provider"
 msgstr "Subtitrų teikėjas"
 
-#: ../src/preferences.cpp:493
+#: ../src/preferences.cpp:517
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Leisti ankstesnę nei 2.56a Avisynth versiją"
 
-#: ../src/preferences.cpp:495
+#: ../src/preferences.cpp:519
 msgid "Avisynth memory limit"
 msgstr "Avisynth atminties riba"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Debug"
 msgstr "Derinimas"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Fatal"
 msgstr "Lemtingoji"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Info"
 msgstr "Informacija"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Panic"
 msgstr "Panika"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Quiet"
 msgstr "Tylus"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Verbose"
 msgstr "Daugiažodis"
 
-#: ../src/preferences.cpp:501 ../src/project.cpp:331
+#: ../src/preferences.cpp:525 ../src/project.cpp:330
 msgid "Warning"
 msgstr "Perspėjimas"
 
-#: ../src/preferences.cpp:503
+#: ../src/preferences.cpp:527
 msgid "Debug log verbosity"
 msgstr "Derinimo žurnalo daugiažodiškumas"
 
-#: ../src/preferences.cpp:505
+#: ../src/preferences.cpp:529
 msgid "Decoding threads"
 msgstr "Dekodavimo gijos"
 
-#: ../src/preferences.cpp:506
+#: ../src/preferences.cpp:530
 msgid "Enable unsafe seeking"
 msgstr "Įjungti nesaugų perėjimą"
 
-#: ../src/preferences.cpp:660
+#: ../src/preferences.cpp:684
 msgid "Hotkeys"
 msgstr "Spartieji klavišai"
 
-#: ../src/preferences.cpp:664
+#: ../src/preferences.cpp:688
 msgid "Search"
 msgstr "Paieška"
 
-#: ../src/preferences.cpp:680 ../src/preferences.cpp:683
+#: ../src/preferences.cpp:704 ../src/preferences.cpp:707
 msgid "Hotkey"
 msgstr "Spartusis klavišas"
 
-#: ../src/preferences.cpp:681 ../src/preferences.cpp:686
+#: ../src/preferences.cpp:705 ../src/preferences.cpp:710
 msgid "Command"
 msgstr "Komanda"
 
-#: ../src/preferences.cpp:760
+#: ../src/preferences.cpp:784
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -6402,15 +6726,15 @@ msgstr ""
 "Ar tikrai norite atkurti numatytąsias reikšmes? Tai pakeis visas jūsų "
 "nuostatas."
 
-#: ../src/preferences.cpp:760
+#: ../src/preferences.cpp:784
 msgid "Restore defaults?"
 msgstr "Atkurti numatytąsias reikšmes?"
 
-#: ../src/preferences.cpp:778
+#: ../src/preferences.cpp:802
 msgid "Preferences"
 msgstr "Nuostatos"
 
-#: ../src/preferences.cpp:806
+#: ../src/preferences.cpp:830
 msgid "&Restore Defaults"
 msgstr "&Atkurti numatytąsias reikšmes"
 
@@ -6511,19 +6835,19 @@ msgstr ""
 "\n"
 "Išbandyti šie teikėjai:\n"
 
-#: ../src/project.cpp:381
+#: ../src/project.cpp:380
 msgid "Failed to parse timecodes file: "
 msgstr "Nepavyko išanalizuoti laiko kodų failo: "
 
-#: ../src/project.cpp:407
+#: ../src/project.cpp:406
 msgid "Failed to parse keyframes file: "
 msgstr "Nepavyko išanalizuoti bazinių kadrų failo: "
 
-#: ../src/project.cpp:411
+#: ../src/project.cpp:410
 msgid "Keyframes file in unknown format: "
 msgstr "Bazinių kadrų failo formatas nežinomas: "
 
-#: ../src/resolution_resampler.cpp:301
+#: ../src/resolution_resampler.cpp:241
 msgid "resolution resampling"
 msgstr "raiškos nustatymas iš naujo"
 
@@ -6919,7 +7243,7 @@ msgstr "vaizdo formatas nepalaikomas."
 msgid "Could not open "
 msgstr "Nepavyko atidaryti "
 
-#: ../src/visual_tool.cpp:119
+#: ../src/visual_tool.cpp:123
 msgid "visual typesetting"
 msgstr "vaizdinis komponavimas"
 
@@ -7349,3 +7673,6 @@ msgstr "Garsas vaizdas"
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
 msgstr "Garso sinchronizavimas"
+
+#~ msgid "Set to video resolution"
+#~ msgstr "Atitikti vaizdo raišką"
