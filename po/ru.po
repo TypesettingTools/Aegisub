@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub 3.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-26 12:45+0000\n"
-"PO-Revision-Date: 2026-07-27 16:27+0000\n"
+"POT-Creation-Date: 2026-07-26 14:45+0200\n"
+"PO-Revision-Date: 2026-07-28 18:35+0000\n"
 "Last-Translator: zlom\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -223,7 +223,7 @@ msgid ""
 "Location specifier found: %c\n"
 "Filename specified: %s"
 msgstr ""
-"Скрипт автоматизации упомянут с неизвестным символом спецификатора "
+"Скрипт автоматизации указан с неизвестным символом спецификатора "
 "местоположения.\n"
 "Спецификатор местоположения: %c\n"
 "Имя файла: %s"
@@ -276,7 +276,7 @@ msgid ""
 "Searched relative to: %s\n"
 "Resolved filename: %s"
 msgstr ""
-"Упомянутый скрипт автоматизации не удалось найти.\n"
+"Указанный скрипт автоматизации не удалось найти.\n"
 "Имя файла: %s\n"
 "Искалось относительно: %s\n"
 "Решённое имя файла: %s"
@@ -798,7 +798,7 @@ msgstr "Подтвердить и остаться на текущей стро�
 #: ../src/command/audio.cpp:386
 msgid "Commit any pending audio timing changes and stay on the current line"
 msgstr ""
-"Подтверждение всех отложенные изменений тайминга звука и остановка на "
+"Подтверждение всех отложенных изменений тайминга аудио и остановка на "
 "текущей строке"
 
 #: ../src/command/audio.cpp:397 ../src/command/audio.cpp:398
@@ -1224,8 +1224,8 @@ msgid ""
 "Join selected lines in a single one, keeping text of first and discarding "
 "remaining"
 msgstr ""
-"Объединение выбранных строк в одну, сохраняя текст первой строки и удаляя "
-"остающиеся"
+"Объединение выбранных строк в одну с сохранением текста первой строки и "
+"удалением остающихся"
 
 #: ../src/command/edit.cpp:853
 msgid "&Paste Lines"
@@ -1241,11 +1241,11 @@ msgstr "Вставка субтитров"
 
 #: ../src/command/edit.cpp:884
 msgid "Paste Lines &Over..."
-msgstr "Вставить &поверх строк..."
+msgstr "Вставить строки &поверх..."
 
 #: ../src/command/edit.cpp:885
 msgid "Paste Lines Over"
-msgstr "Вставить поверх строк"
+msgstr "Вставить строки поверх"
 
 #: ../src/command/edit.cpp:886
 msgid "Paste subtitles over others"
@@ -1274,7 +1274,8 @@ msgstr "Разбить строки (по тегам караоке)"
 #: ../src/command/edit.cpp:1048
 msgid "Use karaoke timing to split line into multiple smaller lines"
 msgstr ""
-"Разбиение строки на несколько новых меньших строк, используя тайминги караоке"
+"Разбиение строки на несколько новых меньших строк с использованием тайминга "
+"караоке"
 
 #: ../src/command/edit.cpp:1082
 msgid "splitting"
@@ -1283,39 +1284,39 @@ msgstr "разбиение"
 #: ../src/command/edit.cpp:1114 ../src/command/edit.cpp:1115
 #: ../src/subs_edit_ctrl.cpp:417
 msgid "Split at cursor (estimate times)"
-msgstr "Разделить по позиции курсора (рассчитать время)"
+msgstr "Разделить по позиции курсора (рассчитать времена)"
 
 #: ../src/command/edit.cpp:1116
 msgid ""
 "Split the current line at the cursor, dividing the original line's duration "
 "between the new ones"
 msgstr ""
-"Разделение текущей строки по позиции курсора, разделяя время "
+"Разделение текущей строки по позиции курсора с разделением время "
 "продолжительности исходной строки между двумя новыми"
 
 #: ../src/command/edit.cpp:1130 ../src/command/edit.cpp:1131
 #: ../src/subs_edit_ctrl.cpp:416
 msgid "Split at cursor (preserve times)"
-msgstr "Разделить по позиции курсора (оставить время)"
+msgstr "Разделить по позиции курсора (оставить времена)"
 
 #: ../src/command/edit.cpp:1132
 msgid ""
 "Split the current line at the cursor, setting both lines to the original "
 "line's times"
 msgstr ""
-"Разделение текущей строки по позиции курсора, сохраняя время обеих строк, "
-"совпадающего со временем исходной строки"
+"Разделение текущей строки по позиции курсора с установкой времён обеих строк "
+"по временам исходной строки"
 
 #: ../src/command/edit.cpp:1141 ../src/command/edit.cpp:1142
 msgid "Split at cursor (at video frame)"
-msgstr "Разделить по позиции курсора (по текущему видеокадру)"
+msgstr "Разделить по позиции курсора (по видеокадру)"
 
 #: ../src/command/edit.cpp:1143
 msgid ""
 "Split the current line at the cursor, dividing the line's duration at the "
 "current video frame"
 msgstr ""
-"Разделение текущей строки по позиции курсора, разделяя время "
+"Разделение текущей строки по позиции курсора с расщеплением времени "
 "продолжительности строки по текущему видеокадру"
 
 #: ../src/command/edit.cpp:1159
@@ -1379,11 +1380,11 @@ msgstr "откат строки"
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
 #: ../src/preferences.cpp:477
 msgid "Clear"
-msgstr "Стереть"
+msgstr "Стереть всё"
 
 #: ../src/command/edit.cpp:1225
 msgid "Clear the current line's text"
-msgstr "Стирание всего текста текущей строки"
+msgstr "Удаление всего текста текущей строки"
 
 #: ../src/command/edit.cpp:1230 ../src/command/edit.cpp:1249
 msgid "clear line"
@@ -1395,7 +1396,7 @@ msgstr "Стереть текст"
 
 #: ../src/command/edit.cpp:1239
 msgid "Clear the current line's text, leaving override tags"
-msgstr "Стирание текста текущей строки, оставляя теги переопределения"
+msgstr "Удаление текста текущей строки с сохранением тегов переопределения"
 
 #: ../src/command/edit.cpp:1255 ../src/command/edit.cpp:1256
 #: ../src/command/tool.cpp:256
@@ -1423,7 +1424,8 @@ msgstr "Переход к следующей строке субтитров"
 
 #: ../src/command/grid.cpp:64
 msgid "Move to the next subtitle line, creating a new one if needed"
-msgstr "Переход к следующей строке субтитров, создавая новую при необходимости"
+msgstr ""
+"Переход к следующей строке субтитров с созданием новой при необходимости"
 
 #: ../src/command/grid.cpp:81 ../src/command/subtitle.cpp:127
 #: ../src/command/subtitle.cpp:161 ../src/command/subtitle.cpp:203
@@ -1495,11 +1497,11 @@ msgstr "Время конца"
 
 #: ../src/command/grid.cpp:158
 msgid "Sort all subtitles by their end times"
-msgstr "Сортировка всех субтитров по времени их конца"
+msgstr "Сортировка всех субтитров по временам их конца"
 
 #: ../src/command/grid.cpp:170
 msgid "Sort selected subtitles by their end times"
-msgstr "Сортировка выбранных субтитров по времени их конца"
+msgstr "Сортировка выбранных субтитров по временам их конца"
 
 #: ../src/command/grid.cpp:180 ../src/command/grid.cpp:192
 msgid "&Layer"
@@ -1529,11 +1531,11 @@ msgstr "Время начала"
 
 #: ../src/command/grid.cpp:206
 msgid "Sort all subtitles by their start times"
-msgstr "Сортировка всех субтитров по времени их начала"
+msgstr "Сортировка всех субтитров по временам их начала"
 
 #: ../src/command/grid.cpp:218
 msgid "Sort selected subtitles by their start times"
-msgstr "Сортировка выбранных субтитров по времени их начала"
+msgstr "Сортировка выбранных субтитров по временам их начала"
 
 #: ../src/command/grid.cpp:228 ../src/command/grid.cpp:240
 msgid "St&yle Name"
@@ -2049,7 +2051,7 @@ msgstr "Изменить конец"
 #: ../src/command/time.cpp:107
 msgid "Change end times of lines to the next line's start time"
 msgstr ""
-"Изменение времени конца строк впритык ко времени начала следующей строки"
+"Изменение времён конца строк впритык ко времени начала следующей строки"
 
 #: ../src/command/time.cpp:116
 msgid "Change &Start"
@@ -2062,7 +2064,7 @@ msgstr "Изменить начало"
 #: ../src/command/time.cpp:118
 msgid "Change start times of lines to the previous line's end time"
 msgstr ""
-"Изменение времени начала строк впритык ко времени конца предыдущей строки"
+"Изменение времён начала строк впритык ко времени конца предыдущей строки"
 
 #: ../src/command/time.cpp:128
 msgid "Shift to &Current Frame"
@@ -2075,8 +2077,8 @@ msgstr "Сместить к текущему кадру"
 #: ../src/command/time.cpp:130
 msgid "Shift selection so that the active line starts at current frame"
 msgstr ""
-"Смещение выбора таким образом, чтобы время начала активной строки приняло "
-"значение текущего кадра"
+"Смещение выбора таким образом, чтобы активная строка появлялась на текущем "
+"кадре"
 
 #: ../src/command/time.cpp:146
 msgid "shift to frame"
@@ -2118,8 +2120,8 @@ msgstr "Привязать к сцене"
 msgid ""
 "Set start and end of subtitles to the keyframes around current video frame"
 msgstr ""
-"Установка времени начала и конца субтитров по ключевым кадрам вокруг "
-"текущего видеокадра"
+"Установка начала и конца субтитров по ключевым кадрам вокруг текущего "
+"видеокадра"
 
 #: ../src/command/time.cpp:233
 msgid "snap to scene"
@@ -2259,7 +2261,7 @@ msgstr "Сохранение файла с таймкодами с переме�
 #: ../src/command/timecode.cpp:94
 msgctxt "dialog title"
 msgid "Save Timecodes File"
-msgstr "Сохранение файла с таймкодами"
+msgstr "Выберите, куда сохранить файл с таймкодами"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
@@ -2710,7 +2712,7 @@ msgid ""
 "Save the currently displayed subtitles with transparent background to a PNG "
 "file in the video's directory"
 msgstr ""
-"Сохранение текущих отображённых субтитров с прозрачным фоном в файл PNG в "
+"Сохранение текущих отображённых субтитров в файл PNG с прозрачным фоном в "
 "директорию видео"
 
 #: ../src/command/video.cpp:546
@@ -2775,7 +2777,7 @@ msgstr "Использовать видеозаглушку"
 
 #: ../src/command/video.cpp:604
 msgid "Open a placeholder video clip with solid color"
-msgstr "Открытие видеозаглушки со сплошным цветом"
+msgstr "Открытие видеозаглушки со сплошной заливкой"
 
 #: ../src/command/video.cpp:616 ../src/command/video.cpp:617
 msgid "Toggle autoscroll of video"
@@ -2792,7 +2794,7 @@ msgstr "Воспроизвести"
 
 #: ../src/command/video.cpp:635
 msgid "Play the video starting on this position"
-msgstr "Воспроизведение видео с этой позиции"
+msgstr "Воспроизведение видео, начинающегося с этой позиции"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
@@ -2816,7 +2818,7 @@ msgid ""
 "overscan on televisions"
 msgstr ""
 "Отображение маски поверх видео, указывающей на области, которые могут быть "
-"обрезаны из-за вылетов развёртки (overscan) на телевизорах"
+"обрезаны из-за вылетов развёртки (см. overscan) на телевизорах"
 
 #: ../src/command/video.cpp:673
 msgid "Reset Video &Pan"
@@ -2901,11 +2903,11 @@ msgstr "Стандартный режим; двойной клик устана�
 #: ../src/command/vis_tool.cpp:81 ../src/command/vis_tool.cpp:82
 #: ../src/command/vis_tool.cpp:131 ../src/command/vis_tool.cpp:132
 msgid "Drag"
-msgstr "Переместить"
+msgstr "Перетащить"
 
 #: ../src/command/vis_tool.cpp:83
 msgid "Drag subtitles"
-msgstr "Перемещение субтитров"
+msgstr "Перетаскивание субтитров"
 
 #: ../src/command/vis_tool.cpp:89 ../src/command/vis_tool.cpp:90
 msgid "Rotate Z"
@@ -2937,7 +2939,7 @@ msgstr "Обрезать"
 
 #: ../src/command/vis_tool.cpp:115
 msgid "Clip subtitles to a rectangle"
-msgstr "Обрезка субтитров прямоугольником"
+msgstr "Обрезка субтитров до прямоугольника"
 
 #: ../src/command/vis_tool.cpp:121 ../src/command/vis_tool.cpp:122
 msgid "Vector Clip"
@@ -2945,11 +2947,11 @@ msgstr "Обрезать вектором"
 
 #: ../src/command/vis_tool.cpp:123
 msgid "Clip subtitles to a vectorial area"
-msgstr "Обрезка субтитров векторной областью"
+msgstr "Обрезка субтитров до векторной области"
 
 #: ../src/command/vis_tool.cpp:133
 msgid "Drag control points"
-msgstr "Перемещение узловых точек"
+msgstr "Перетаскивание узловых точек"
 
 #: ../src/command/vis_tool.cpp:139 ../src/command/vis_tool.cpp:140
 msgid "Line"
@@ -2998,7 +3000,7 @@ msgstr "От руки"
 
 #: ../src/command/vis_tool.cpp:176
 msgid "Draw a freehand shape"
-msgstr "Рисование контура от руки"
+msgstr "Рисование фигуры от руки"
 
 #: ../src/command/vis_tool.cpp:181 ../src/command/vis_tool.cpp:182
 msgid "Freehand smooth"
@@ -3006,12 +3008,36 @@ msgstr "Сглажено от руки"
 
 #: ../src/command/vis_tool.cpp:183
 msgid "Draw a smoothed freehand shape"
-msgstr "Рисование сглаженного контура от руки"
+msgstr "Рисование сглаженной фигуры от руки"
 
 #: ../src/dialog_about.cpp:46
 msgid "Translated into LANGUAGE by PERSON\n"
 msgstr ""
-"Оригинальный перевод на русский: Kaens, z0rc. Дополнил и довёл до ума: zlom\n"
+"Переводчик Aegisub 1.10 (~2006 - коммит не в истории):\n"
+"  thrash-sensei\n"
+"\n"
+"Переводчики Aegisub 2 (2009-02-13 - 426f4f):\n"
+"  z0rc\n"
+"  команда «#FT & Kuroyami»\n"
+"\n"
+"Переводчики Aegisub 3.0.1 (2012-10-08 - коммит не в истории):\n"
+"  Kaens\n"
+"  z0rc\n"
+"\n"
+"--- 3.5.0 ---\n"
+"\n"
+"Помощь с контекстом/Assistance concerning context:\n"
+"  astiob\n"
+"  petzku\n"
+"Не имеющая себе равных, распрекрасная, чуть более, чем полностью "
+"монструозная, фантасмагорическая, комплиментарная, симпатическая, "
+"башнесносная, bis dat, qui cito dat помощь в работе с gettext и оказание "
+"добровольно-принудительного споспешествования в расширении списка доступных "
+"для перевода переменных (шаблоны видеозаглушек, логи и имена меню)/They "
+"helped a little i think:\n"
+"  arch1t3cht\n"
+"Перевод для Aegisub 3.5.0 (stub):\n"
+"  zlom\n"
 
 #: ../src/dialog_about.cpp:131
 msgid ""
@@ -3028,7 +3054,7 @@ msgstr "Собрано %s %s."
 
 #: ../src/dialog_attachments.cpp:68
 msgid "Attachment List"
-msgstr "Прикреплённые файлы"
+msgstr "Список прикреплённых файлов"
 
 #: ../src/dialog_attachments.cpp:76
 msgid "Attach &Font"
@@ -3066,7 +3092,7 @@ msgstr "Группа"
 
 #: ../src/dialog_attachments.cpp:138 ../src/dialog_attachments.cpp:147
 msgid "Choose file to be attached"
-msgstr "Выбор прикрепляемого файла"
+msgstr "Выберите файл для прикрепления"
 
 #: ../src/dialog_attachments.cpp:139 ../src/dialog_attachments.cpp:170
 msgid "Font Files"
@@ -3148,13 +3174,13 @@ msgid ""
 "Global scripts loaded: %d\n"
 "Local scripts loaded: %d\n"
 msgstr ""
-"Всего загружено скриптов: %d\n"
+"Загружено скриптов всего: %d\n"
 "Загружено глобальных скриптов: %d\n"
 "Загружено локальных скриптов: %d\n"
 
 #: ../src/dialog_automation.cpp:284
 msgid "Scripting engines installed:"
-msgstr "Установленные движки автоматизации:"
+msgstr "Установленные движки для создания скриптов:"
 
 #: ../src/dialog_automation.cpp:291
 #, c-format
@@ -3236,7 +3262,7 @@ msgstr "%s [ИСХОДНАЯ РЕЗЕРВНАЯ КОПИЯ]"
 #: ../src/dialog_autosave.cpp:96
 #, c-format
 msgid "%s [RECOVERED]"
-msgstr "%s [ВОССТАНОВЛЕННО]"
+msgstr "%s [ВОССТАНОВЛЕНО]"
 
 #: ../src/dialog_colorpicker.cpp:527
 msgid "Select Color"
@@ -3634,7 +3660,7 @@ msgstr ""
 
 #: ../src/dialog_fonts_collector.cpp:233
 msgid "Check fonts for availability"
-msgstr "Проверить наличие шрифтов"
+msgstr "Проверить доступность шрифтов"
 
 #: ../src/dialog_fonts_collector.cpp:234
 msgid "Copy fonts to folder"
@@ -3674,11 +3700,11 @@ msgstr "&Старт!"
 
 #: ../src/dialog_fonts_collector.cpp:312
 msgid "Invalid destination."
-msgstr "Указан неверный путь."
+msgstr "Неверный адрес."
 
 #: ../src/dialog_fonts_collector.cpp:317
 msgid "Could not create destination folder."
-msgstr "Не удалось создать папку назначения."
+msgstr "Не удалось создать адресную папку."
 
 #: ../src/dialog_fonts_collector.cpp:322
 msgid "Invalid path for .zip file."
@@ -3694,7 +3720,7 @@ msgstr "Архивы ZIP"
 
 #: ../src/dialog_fonts_collector.cpp:352
 msgid "Select folder to save fonts on"
-msgstr "Выбор папки для сохранения шрифтов"
+msgstr "Выберите папку для сохранения шрифтов"
 
 #: ../src/dialog_fonts_collector.cpp:371
 msgid "N/A"
@@ -3711,8 +3737,8 @@ msgid ""
 "Enter the name of the destination zip file to collect the fonts to. If a "
 "folder is entered, a default name will be used."
 msgstr ""
-"Укажите имя целевого ZIP архива для сбора шрифтов. Если указана папка, будет "
-"использовано имя по умолчанию."
+"Укажите имя адресного ZIP архива для сбора шрифтов. Если указана папка, "
+"будет использовано имя по умолчанию."
 
 #: ../src/dialog_jumpto.cpp:73
 msgid "Frame: "
@@ -3880,7 +3906,7 @@ msgstr "Отмена"
 
 #: ../src/dialog_progress.cpp:241
 msgid "Cancelling..."
-msgstr "Отмена..."
+msgstr "Отменяется..."
 
 #: ../src/dialog_properties.cpp:98
 msgid "Script Properties"
@@ -3946,7 +3972,7 @@ msgstr "Разрешение вёрстки: "
 #: ../src/dialog_properties.cpp:175 ../src/dialog_resample.cpp:200
 #: ../src/dialog_resample.cpp:213
 msgid "YCbCr Matrix:"
-msgstr "YCbCr матрица:"
+msgstr "YCbCr-матрица:"
 
 #: ../src/dialog_properties.cpp:186
 msgid "0: Smart wrapping, top line is wider"
@@ -4403,7 +4429,7 @@ msgstr "Редактор стиля"
 
 #: ../src/dialog_style_editor.cpp:173
 msgid "Border boxes"
-msgstr "Граничащие прямоугольники"
+msgstr "Границы-прямоугольники"
 
 #: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
 #: ../src/dialog_style_editor.cpp:295
@@ -4412,7 +4438,7 @@ msgstr "Контур"
 
 #: ../src/dialog_style_editor.cpp:173
 msgid "Shadow box (libass only)"
-msgstr "Теневой прямоугольник (только libass)"
+msgstr "Тень-прямоуг. (только libass)"
 
 #: ../src/dialog_style_editor.cpp:181
 msgid "Font"
@@ -4497,12 +4523,12 @@ msgstr "Расстояние в пикселях от верхнего/нижн�
 #: ../src/dialog_style_editor.cpp:236
 msgid "Whether to draw a normal outline or opaque boxes around the text"
 msgstr ""
-"Отрисовка либо обычной обводки, либо непрозрачных прямоугольников вокруг "
+"Отрисовка либо обычного контура, либо непрозрачных прямоугольников вокруг "
 "текста"
 
 #: ../src/dialog_style_editor.cpp:237
 msgid "Outline width, in pixels"
-msgstr "Размер обводки в пикселях"
+msgstr "Размер контура в пикселях"
 
 #: ../src/dialog_style_editor.cpp:238
 msgid "Shadow distance, in pixels"
@@ -4525,7 +4551,7 @@ msgid ""
 "Encoding, only useful in unicode if the font doesn't have the proper unicode "
 "mapping"
 msgstr ""
-"Кодировка; полезно только в юникоде, если шрифт не имеет надлежащего "
+"Кодировка; полезно только в Юникоде, если шрифт не имеет надлежащего "
 "отображения юникода"
 
 #: ../src/dialog_style_editor.cpp:243
@@ -4663,16 +4689,16 @@ msgstr "&Копировать"
 #: ../src/dialog_style_manager.cpp:218
 #, c-format
 msgid "%s - Copy"
-msgstr "%s - Копировать"
+msgstr "%s - Копия"
 
 #: ../src/dialog_style_manager.cpp:220
 #, c-format
 msgid "%s - Copy (%d)"
-msgstr "%s - Копировать (%d)"
+msgstr "%s - Копия (%d)"
 
 #: ../src/dialog_style_manager.cpp:243
 msgid "Could not parse style"
-msgstr "Не удалось прочитать стиль"
+msgstr "Не удалось прочесть стиль"
 
 #: ../src/dialog_style_manager.cpp:248
 #, c-format
@@ -4728,7 +4754,7 @@ msgstr "Каталог с таким именем уже существует."
 
 #: ../src/dialog_style_manager.cpp:475
 msgid "Catalog name conflict"
-msgstr "Существующее имя каталога"
+msgstr "Конфликтующее имя каталога"
 
 #: ../src/dialog_style_manager.cpp:482
 #, c-format
@@ -4743,7 +4769,7 @@ msgstr ""
 
 #: ../src/dialog_style_manager.cpp:483
 msgid "Invalid characters"
-msgstr "Некорректные символы"
+msgstr "Недопустимые символы"
 
 #: ../src/dialog_style_manager.cpp:496
 #, c-format
@@ -4757,21 +4783,21 @@ msgstr "Подтверждение удаления"
 #: ../src/dialog_style_manager.cpp:515 ../src/dialog_style_manager.cpp:542
 #: ../src/dialog_style_manager.cpp:721
 msgid "Style name collision"
-msgstr "Существующее имя стиля"
+msgstr "Идентичное имя стиля"
 
 #: ../src/dialog_style_manager.cpp:515
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current storage. "
 "Overwrite?"
-msgstr "В текущем наборе уже есть стиль с именем «%s». Обновить его?"
+msgstr "В текущем наборе уже есть стиль с именем «%s». Перезаписать его?"
 
 #: ../src/dialog_style_manager.cpp:542 ../src/dialog_style_manager.cpp:720
 #, c-format
 msgid ""
 "There is already a style with the name \"%s\" in the current script. "
 "Overwrite?"
-msgstr "В текущем сценарии уже есть стиль с именем «%s». Обновить его?"
+msgstr "В текущем сценарии уже есть стиль с именем «%s». Перезаписать его?"
 
 #: ../src/dialog_style_manager.cpp:553
 msgid "style copy"
@@ -4803,7 +4829,7 @@ msgstr "Ошибка импортирования стилей"
 
 #: ../src/dialog_style_manager.cpp:705
 msgid "The selected file has no available styles."
-msgstr "В выбранном файле нет доступных стилей."
+msgstr "Выбранный файл не имеет доступных стилей."
 
 #: ../src/dialog_style_manager.cpp:711
 msgid "Choose styles to import:"
@@ -4900,7 +4926,7 @@ msgstr "Разделитель актёров:"
 
 #: ../src/dialog_text_import.cpp:56
 msgid "Comment starter:"
-msgstr "Начало комментариев:"
+msgstr "Начало каждого комментария:"
 
 #: ../src/dialog_text_import.cpp:61
 msgid "Include blank lines"
@@ -4936,11 +4962,11 @@ msgstr "Добавить &вступление:"
 
 #: ../src/dialog_timing_processor.cpp:179
 msgid "Enable adding of lead-ins to lines"
-msgstr "Добавление вступлений к строкам"
+msgstr "Переключение добавления вступлений для строк"
 
 #: ../src/dialog_timing_processor.cpp:180
 msgid "Lead in to be added, in milliseconds"
-msgstr "Вступление в миллисекундах"
+msgstr "Продолжительность вступления; в миллисекундах"
 
 #: ../src/dialog_timing_processor.cpp:182
 msgid "Add lead &out:"
@@ -4948,11 +4974,11 @@ msgstr "Добавить &окончание:"
 
 #: ../src/dialog_timing_processor.cpp:184
 msgid "Enable adding of lead-outs to lines"
-msgstr "Добавление окончаний к строкам"
+msgstr "Переключение добавления окончаний для строк"
 
 #: ../src/dialog_timing_processor.cpp:185
 msgid "Lead out to be added, in milliseconds"
-msgstr "Окончание в миллисекундах"
+msgstr "Продолжительность окончания; в миллисекундах"
 
 #: ../src/dialog_timing_processor.cpp:190
 msgid "Make adjacent subtitles continuous"
@@ -4972,7 +4998,7 @@ msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:197
 msgid "Max gap:"
-msgstr "Максимальная разница:"
+msgstr "Макс. разница:"
 
 #: ../src/dialog_timing_processor.cpp:198
 msgid ""
@@ -4984,7 +5010,7 @@ msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:199
 msgid "Max overlap:"
-msgstr "Максимальное перекрытие:"
+msgstr "Макс. перекрытие:"
 
 #: ../src/dialog_timing_processor.cpp:200
 msgid ""
@@ -5139,7 +5165,7 @@ msgstr "Автоматически проверять &обновления"
 
 #: ../src/dialog_version_check.cpp:120
 msgid "Remind me again in a &week"
-msgstr "Напомнить через &неделю"
+msgstr "Напомните мне через &неделю"
 
 #: ../src/dialog_version_check.cpp:295
 msgid "Curl could not be initialized."
@@ -5160,7 +5186,7 @@ msgstr "Было найдено несколько возможных обнов
 
 #: ../src/dialog_version_check.cpp:349
 msgid "There are no updates to Aegisub."
-msgstr "Не найдено обновлений для Aegisub."
+msgstr "Обновления для Aegisub отсутствуют."
 
 #: ../src/dialog_version_check.cpp:377
 #, c-format
@@ -5171,7 +5197,7 @@ msgid ""
 "If other applications can access the Internet fine, this is probably a "
 "temporary server problem on our end."
 msgstr ""
-"Произошла ошибка при проверке обновлений Aegisub:\n"
+"Произошла ошибка при проверке обновлений для Aegisub:\n"
 "%s\n"
 "\n"
 "Если у других программ нет проблем с доступом к интернету, то это, вероятно, "
@@ -5179,7 +5205,7 @@ msgstr ""
 
 #: ../src/dialog_version_check.cpp:381
 msgid "An unknown error occurred while checking for updates to Aegisub."
-msgstr "Произошла неизвестная ошибка при проверке обновлений Aegisub."
+msgstr "Произошла неизвестная ошибка при проверке обновлений для Aegisub."
 
 #: ../src/dialog_video_details.cpp:46
 msgid "Video Details"
@@ -5196,7 +5222,7 @@ msgstr "Имя файла:"
 
 #: ../src/dialog_video_details.cpp:64
 msgid "FPS:"
-msgstr "Кадры/с:"
+msgstr "Частота кадров:"
 
 #: ../src/dialog_video_details.cpp:65
 msgid "Resolution:"
@@ -5212,7 +5238,7 @@ msgstr[2] "%d кадров (%s)"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
-msgstr "Длительность:"
+msgstr "Продолжительность:"
 
 #: ../src/dialog_video_details.cpp:68
 msgid "Actual color matrix:"
@@ -5224,15 +5250,15 @@ msgstr "Принудительная цветовая матрица:"
 
 #: ../src/dialog_video_details.cpp:70
 msgid "Actual color range:"
-msgstr "Фактическая цветовая палитра:"
+msgstr "Фактический цветовой диапазон:"
 
 #: ../src/dialog_video_details.cpp:71
 msgid "Forced color range:"
-msgstr "Принудительная цветовая палитра:"
+msgstr "Принудительный цветовой диапазон:"
 
 #: ../src/dialog_video_details.cpp:72
 msgid "Decoder:"
-msgstr "Декодер:"
+msgstr "Декодеровщик:"
 
 #: ../src/dialog_video_properties.cpp:135
 #, c-format
@@ -5247,7 +5273,7 @@ msgid ""
 "displays consistently in all players and that subtitle colors can reliably "
 "match video colors."
 msgstr ""
-"Видео, которое вы загрузили, не имеет заданной цветовой матрицы. Aegisub "
+"Видео, которое вы загрузили, не имеет конкретной цветовой матрицы. Aegisub "
 "предположит, что цветовая матрица — %s, но нет никаких гарантий, что "
 "остальные программы подберут такую же матрицу. Из-за этого цвета видео могут "
 "отличаться в различных медиаплеерах, а цвета субтитров могут не совпадать с "
@@ -5267,10 +5293,9 @@ msgid ""
 "subtitles will work fine on such videos, matching video colors using "
 "subtitles will not be possible on HDR and/or WCG footage."
 msgstr ""
-"Видео, которое вы загрузили, имеет цветовую палитру HDR и/или WCG. Хотя "
-"обычные диалоговые субтитры будут нормально отображаться на таких видео, "
-"настройка цветов видео, используя субтитры, станет невозможной с HDR и/или "
-"WCG футажом."
+"Видео, которое вы загрузили, имеет HDR и/или WCG цвета. Хоть обычные "
+"диалоговые субтитры и будут нормально отображаться на таких видео, подбор "
+"цветов видео при помощи субтитров станет невозможным с HDR и/или WCG футажом."
 
 #: ../src/dialog_video_properties.cpp:148
 msgid "HDR and/or WCG video"
@@ -5290,32 +5315,32 @@ msgid ""
 "\n"
 "This prompt can be configured in the preferences."
 msgstr ""
-"Текущий файл субтитров не имеет заданной YCbCr матрицы.\n"
+"Текущий файл субтитров не имеет заданной YCbCr-матрицы.\n"
 "\n"
 "Если вы планируете использовать этот файл субтитров на только что "
 "загруженном видеофайле,\n"
-"вам стоит задать YCbCr матрицу файла субтитра по цветовой пространству видео "
-"(\"%s\").\n"
+"вам стоит задать YCbCr-матрицу файла субтитра по цветовому пространству "
+"видео («%s»).\n"
 "\n"
-"Если вы планируете использовать другой видеофайл, вам, возможно, стоит "
+"Если вы планируете использовать другой видеофайл, вам, вероятно, стоит "
 "оставить\n"
-"YCbCr матрицу незаданной, пока вы не загрузите корректный видеофайл.\n"
+"YCbCr-матрицу незаданной, пока вы не загрузите корректный видеофайл.\n"
 "\n"
 "Это сообщение можно отрегулировать в настройках."
 
 #: ../src/dialog_video_properties.cpp:166
 msgid "Set script's YCbCr Matrix?"
-msgstr "Задать YCbCr матрицу сценария?"
+msgstr "Задать YCbCr-матрицу сценария?"
 
 #: ../src/dialog_video_properties.cpp:167
 msgid "Leave YCbCr Matrix unset"
-msgstr "Оставить YCbCr матрицу незаданной"
+msgstr "Оставить YCbCr-матрицу незаданной"
 
 #: ../src/dialog_video_properties.cpp:167
 #: ../src/dialog_video_properties.cpp:226
 #, c-format
 msgid "Set script's YCbCr Matrix to the video's (\"%s\")"
-msgstr "Задать YCbCr матрицу сценария по видео (\"%s\")"
+msgstr "Задать YCbCr-матрицу сценария по видео («%s»)"
 
 #: ../src/dialog_video_properties.cpp:221
 #, c-format
@@ -5328,21 +5353,21 @@ msgid ""
 "then the subtitle file's YCbCr Matrix should be set to the video's YCbCr "
 "Matrix."
 msgstr ""
-"Рекомендованная YCbCr матрица этого видео (\"%s\") отличается от YCbCr "
-"матрицы файла субтитров (\"%s\").\n"
+"Рекомендованная YCbCr-матрица этого видео («%s») отличается от YCbCr-матрицы "
+"файла субтитров («%s»).\n"
 "\n"
 "Если цветовая палитра нового видео выглядит точно так же, как у видео, для "
 "которого изначально был создан файл субтитров,\n"
-"то YCbCr матрицу файла субтитров стоит задать по YCbCr матрице видео."
+"то YCbCr-матрицу файла субтитров стоит задать по YCbCr-матрице видео."
 
 #: ../src/dialog_video_properties.cpp:225
 msgid "YCbCr Matrix mismatch"
-msgstr "Несовпадение YCbCr матрицы"
+msgstr "Несовпадение YCbCr-матрицы"
 
 #: ../src/dialog_video_properties.cpp:226
 #, c-format
 msgid "Leave script's YCbCr Matrix as it is (\"%s\")"
-msgstr "Оставить YCbCr матрицу сценария, как оно есть (\"%s\")"
+msgstr "Оставить YCbCr-матрицу сценария, как оно есть («%s»)"
 
 #: ../src/dialog_video_properties.cpp:257
 msgid "Resolution mismatch"
@@ -5415,7 +5440,7 @@ msgstr ""
 "загруженном видеофайле,\n"
 "вам стоит задать разрешение вёрстки файла субтитра по разрешению видео.\n"
 "\n"
-"Если вы планируете использовать другой видеофайл, вам, возможно, стоит "
+"Если вы планируете использовать другой видеофайл, вам, вероятно, стоит "
 "оставить\n"
 "разрешение вёрстки незаданным, пока вы не загрузите корректный видеофайл.\n"
 "\n"
@@ -5423,7 +5448,7 @@ msgstr ""
 "имеет\n"
 "заданного разрешения вёрстки, вам следует задать его разрешение вёрстки по "
 "разрешению\n"
-"видео, которому для воспроизведения был предназначен этот файл субтитров.\n"
+"видео, для воспроизведения которого был предназначен этот файл субтитров.\n"
 "Часто оказывается, что оно совпадает с разрешением файла сценария. (%d × "
 "%d)\n"
 "\n"
@@ -5441,7 +5466,7 @@ msgstr "Оставить разрешение вёрстки незаданны�
 #: ../src/dialog_video_properties.cpp:484
 #, c-format
 msgid "Set script's layout resolution to the video's (%d × %d)"
-msgstr "Задать разрешение вёрстки сценария по видео (%d × %d)"
+msgstr "Задать разрешение вёрстки сценария по разрешению видео (%d × %d)"
 
 #: ../src/dialog_video_properties.cpp:406
 #, c-format
@@ -5510,11 +5535,11 @@ msgstr "Оставить разрешение вёрстки, как оно ес
 
 #: ../src/dialog_video_properties.cpp:509
 msgid "change ycbcr matrix"
-msgstr "изменение YCbCr матрицы"
+msgstr "изменение YCbCr-матрицы"
 
 #: ../src/dialog_video_properties.cpp:512
 msgid "change script resolution"
-msgstr "пересчёт разрешения сценария"
+msgstr "изменение разрешения сценария"
 
 #: ../src/dialog_video_properties.cpp:515
 msgid "change layout resolution"
@@ -5530,7 +5555,7 @@ msgid ""
 "Default."
 msgstr ""
 "Исправляет стили, заменяя недоступные стили в файле на стиль по умолчанию "
-"(Default)."
+"(«Default»)."
 
 #: ../src/export_framerate.cpp:52
 msgid "Transform Framerate"
@@ -5767,7 +5792,7 @@ msgid ""
 msgstr ""
 "Упс, Aegisub завис!\n"
 "\n"
-"Совершена попытка сохранения копии вашего файла субтитров в:\n"
+"Была совершена попытка сохранения копии вашего файла субтитров в:\n"
 "\n"
 "%s\n"
 "\n"
@@ -5820,7 +5845,7 @@ msgid ""
 "\n"
 "Error Message: %s"
 msgstr ""
-"Возникла непредвиденная ошибка. Пожалуйста, сохраните внесённые изменения и "
+"Возникла непредвиденная ошибка. Пожалуйста, сохраните свою работу и "
 "перезапустите Aegisub.\n"
 "\n"
 "Сообщение об ошибке: %s"
@@ -5872,7 +5897,7 @@ msgstr "Показать главную панель инструментов"
 
 #: ../src/preferences.cpp:103
 msgid "Save UI state in subtitles files"
-msgstr "Сохранять положение интерфейса в файлах субтитров"
+msgstr "Сохранять состояние интерфейса в файлах субтитров"
 
 #: ../src/preferences.cpp:106
 msgid "Toolbar Icon Size"
@@ -5948,7 +5973,7 @@ msgstr "При импортировании TTXT"
 
 #: ../src/preferences.cpp:157
 msgid "Plain text import"
-msgstr "При импортировании текстовых документов"
+msgstr "При импортировании текстовых документов (.txt)"
 
 #: ../src/preferences.cpp:164 ../src/preferences.cpp:438 default_hotkey.json:37
 msgid "Audio"
@@ -6024,7 +6049,7 @@ msgstr "Показывать неактивные строки"
 
 #: ../src/preferences.cpp:185
 msgid "Include commented inactive lines"
-msgstr "Включать неактивные закомментированные строки"
+msgstr "Также показывать неакт. закоммент. строки"
 
 #: ../src/preferences.cpp:187
 msgid "Display Visual Options"
@@ -6060,7 +6085,7 @@ msgstr "Метки аудио"
 
 #: ../src/preferences.cpp:207
 msgid "Show keyframes in slider"
-msgstr "Показывать ключевые кадры на полосе прокрутки"
+msgstr "Показывать ключевые кадры на видеослайдере"
 
 #: ../src/preferences.cpp:209
 msgid "Only show visual tools when mouse is over video"
@@ -6072,7 +6097,7 @@ msgstr "При изменении выбора перематывать виде
 
 #: ../src/preferences.cpp:213
 msgid "Automatically open audio when opening video"
-msgstr "Автоматически открывать аудио при открытии видео"
+msgstr "Автоматически открывать аудио, когда открывается видео"
 
 #: ../src/preferences.cpp:216
 msgid "Does nothing"
@@ -6177,7 +6202,7 @@ msgstr "Выводить сообщение при несовпадении ра
 
 #: ../src/preferences.cpp:254
 msgid "YCbCr Matrix"
-msgstr "YCbCr матрица"
+msgstr "YCbCr-матрица"
 
 #: ../src/preferences.cpp:255
 msgid "Warn on untagged video color matrix"
@@ -6189,12 +6214,11 @@ msgstr "Предупреждать при HDR/WCG видео"
 
 #: ../src/preferences.cpp:260
 msgid "Use video's YCbCr Matrix when script has no matrix set"
-msgstr ""
-"Использовать YCbCr матрицу из видео, когда сценарий не имеет заданной матрицы"
+msgstr "Заимствовать YCbCr-матрицу у видео, когда её нет у сценария"
 
 #: ../src/preferences.cpp:264
 msgid "Match video's YCbCr Matrix on open"
-msgstr "Подгонять YCbCr матрицу видео при открытии"
+msgstr "Подбирать YCbCr-матрицу видео при открытии"
 
 #: ../src/preferences.cpp:271
 msgid "Interface"
@@ -6230,7 +6254,7 @@ msgstr "Счётчик символов"
 
 #: ../src/preferences.cpp:282
 msgid "Maximum characters per line"
-msgstr "Максимальное количество символов на строку"
+msgstr "Максимальное количество символов на каждую строчку"
 
 #: ../src/preferences.cpp:283
 msgid "Characters Per Second Warning Threshold"
@@ -6763,7 +6787,7 @@ msgid ""
 "be overridden."
 msgstr ""
 "Вы действительно хотите сбросить настройки? Все ваши настройки будут "
-"переопределены."
+"перезаписаны."
 
 #: ../src/preferences.cpp:784
 msgid "Restore defaults?"
@@ -6869,8 +6893,8 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
-"Ни один из доступных поставщиков аудио не имеет кодека, способного "
-"обработать выбранный файл.\n"
+"Ни один из доступных поставщиков аудио не имеет доступного кодека, "
+"способного обработать выбранный файл.\n"
 "\n"
 "Были совершены попытки следующих поставщиков:\n"
 
@@ -6904,7 +6928,7 @@ msgstr[2] "%d совпадений были заменены."
 
 #: ../src/search_replace_engine.cpp:277
 msgid "No matches found."
-msgstr "Совпадения не найдены."
+msgstr "Совпадений не найдено."
 
 #: ../src/subs_controller.cpp:246
 #, c-format
@@ -6926,11 +6950,11 @@ msgstr "Резервная копия файла сохранена как «%s�
 
 #: ../src/subs_controller.cpp:282
 msgid "Exception when attempting to autosave file: "
-msgstr "Исключение при попытке автосохранения файла: "
+msgstr "Исключение во время попытки автосохранения файла: "
 
 #: ../src/subs_controller.cpp:285
 msgid "Unhandled exception when attempting to autosave file."
-msgstr "Необработанное исключение при попытке автосохранения файла."
+msgstr "Необработанное исключение во время попытки автосохранения файла."
 
 #: ../src/subs_controller.cpp:406
 msgid "untitled"
@@ -7042,8 +7066,8 @@ msgid ""
 "subtitles into another language."
 msgstr ""
 "Отображение содержимого строки субтитра на тот момент, когда она была "
-"выбрана в таблице в последний раз. Иногда может быть полезно при "
-"редактировании субтитров или при переводе текста на другой язык."
+"выбрана в таблице в первый раз, над полем редактирования. Иногда может быть "
+"полезно при редактировании субтитров, или при переводе их на другой язык."
 
 #: ../src/subs_edit_box.cpp:446
 msgid "modify text"
@@ -7192,7 +7216,7 @@ msgstr "120,000 кадров/с"
 
 #: ../src/subtitle_format.cpp:126
 msgid "FPS"
-msgstr "Кадры/с"
+msgstr "Частота кадров"
 
 #: ../src/subtitle_format.cpp:126
 msgid "Please choose the appropriate FPS for the subtitles:"
@@ -7229,8 +7253,7 @@ msgid ""
 "Failed seeking video. The video file may be corrupt or incomplete.\n"
 "Error message reported: %s"
 msgstr ""
-"Не удалось перемотать видео. Видеофайл может быть повреждён или он "
-"неполный.\n"
+"Не удалось перемотать видео. Видеофайл может быть повреждён или неполный.\n"
 "Сообщение об ошибке: %s"
 
 #: ../src/video_controller.cpp:234
@@ -7547,8 +7570,8 @@ msgid ""
 "table to convert those characters to something else."
 msgstr ""
 "Показывает, как использовать «unicode.lua» из папки «include» для перебора "
-"символов, и заменяющую таблицу для конвертирования этих символов во что-то "
-"другое."
+"символов, а также таблицу-словарь для конвертирования этих символов во что-"
+"то другое."
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:80
@@ -7608,8 +7631,8 @@ msgstr ""
 "Эта программа установит Aegisub {#BUILD_GIT_VERSION_STRING} на ваш компьютер."
 "%n%nAegisub использует лицензию GNU General Public License version 2. Это "
 "означает, что вы вольны использовать данную программу для любых целей, но "
-"так, что не предоставляется никаких гарантий.%n%nПерейдите на сайт Aegisub, "
-"чтобы узнать, как получить исходный код."
+"так, что вам не предоставляется никаких гарантий.%n%nПерейдите на сайт "
+"Aegisub, чтобы узнать, как получить исходный код."
 
 #: ../packages/desktop/aegisub.desktop.in.in:4
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:6
