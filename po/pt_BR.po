@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 14:45+0200\n"
-"PO-Revision-Date: 2026-07-28 12:25-0300\n"
+"PO-Revision-Date: 2026-07-28 12:27-0300\n"
 "Last-Translator: witchymary <witchymary34@gmail.com>\n"
 "Language-Team: Rodrigo Braz Monteiro, witchymary, Tenebris Magi\n"
 "Language: pt_BR\n"
@@ -7686,22 +7686,3 @@ msgstr "Áudio vídeo"
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
 msgstr "Sincronização de áudio"
-
-#~ msgid "Set to video resolution"
-#~ msgstr "Ajustar para a resolução do vídeo"
-
-#~ msgid "Kanji timing"
-#~ msgstr "Sincronização de kanji"
-
-#~ msgid "&Opaque box"
-#~ msgstr "Caixa &opaca"
-
-#~ msgid ""
-#~ "When selected, display an opaque box behind the subtitles instead of an "
-#~ "outline around the text"
-#~ msgstr ""
-#~ "Quando selecionado, utiliza uma caixa opaca atrás das legendas em vez da "
-#~ "borda em volta do texto"
-
-#~ msgid "Drawings"
-#~ msgstr "Desenhos"
