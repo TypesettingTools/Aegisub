@@ -22,7 +22,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.5.0-beta\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 14:45+0200\n"
-"PO-Revision-Date: 2026-07-28 15:00+0800\n"
+"PO-Revision-Date: 2026-07-28 21:00+0800\n"
 "Last-Translator: op200 <op200_reek@qq.com>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -54,7 +54,7 @@ msgstr "Default (默认)"
 
 #: ../src/ass_style.cpp:199
 msgid "Symbol"
-msgstr "Symbol"
+msgstr "Symbol (符号字符集)"
 
 #: ../src/ass_style.cpp:200
 msgid "Mac"
@@ -507,7 +507,7 @@ msgstr "日志窗口"
 
 #: ../src/command/app.cpp:182
 msgid "View the event log"
-msgstr "查看事件记录"
+msgstr "查看事件日志"
 
 #: ../src/command/app.cpp:192
 msgid "New &Window"
@@ -533,7 +533,7 @@ msgstr "选项"
 
 #: ../src/command/app.cpp:206
 msgid "Configure Aegisub"
-msgstr "配置Aegisub"
+msgstr "配置 Aegisub"
 
 #: ../src/command/app.cpp:220 ../src/command/app.cpp:221
 msgid "Toggle global hotkey overrides"
@@ -577,7 +577,7 @@ msgstr "最小化当前窗口"
 
 #: ../src/command/app.cpp:281 ../src/command/app.cpp:282
 msgid "Zoom"
-msgstr "缩放"
+msgstr "最大化"
 
 #: ../src/command/app.cpp:283
 msgid "Maximize the active window"
@@ -773,7 +773,7 @@ msgstr "提交所有在波形上对时轴的更改，并将下一行的时轴重
 
 #: ../src/command/audio.cpp:369 ../src/command/audio.cpp:370
 msgid "Commit and move to next line"
-msgstr "接受更改并移动到下一行"
+msgstr "提交并移动到下一行"
 
 #: ../src/command/audio.cpp:371
 msgid "Commit any pending audio timing changes and move to the next line"
@@ -962,7 +962,7 @@ msgstr "边框颜色"
 
 #: ../src/command/edit.cpp:417
 msgid "Set the outline color (\\3c) at the cursor position"
-msgstr "设置边框填充色标签(\\3c)，应用于光标的位置之后"
+msgstr "设置边框颜色标签(\\3c)，应用于光标的位置之后"
 
 #: ../src/command/edit.cpp:427
 msgid "Shadow Color..."
@@ -974,7 +974,7 @@ msgstr "阴影颜色"
 
 #: ../src/command/edit.cpp:429
 msgid "Set the shadow color (\\4c) at the cursor position"
-msgstr "设置阴影填充色标签(\\4c)，应用于光标的位置之后"
+msgstr "设置阴影颜色标签(\\4c)，应用于光标的位置之后"
 
 #: ../src/command/edit.cpp:439 ../src/command/edit.cpp:440
 msgid "Toggle Bold"
@@ -1277,7 +1277,7 @@ msgstr "在文本输入光标处分割行，以当前帧的时轴分割"
 
 #: ../src/command/edit.cpp:1159
 msgid "Redo last undone action"
-msgstr "重做上次撤消的操作"
+msgstr "重做上次撤销的操作"
 
 #: ../src/command/edit.cpp:1164
 msgid "Nothing to &redo"
@@ -1458,7 +1458,7 @@ msgstr "按结束时间排序所选行"
 
 #: ../src/command/grid.cpp:180 ../src/command/grid.cpp:192
 msgid "&Layer"
-msgstr "层(&L)"
+msgstr "层级(&L)"
 
 #: ../src/command/grid.cpp:181 ../src/command/grid.cpp:193
 #: ../src/dialog_paste_over.cpp:66 ../src/grid_column.cpp:132
@@ -2124,19 +2124,19 @@ msgstr "减少当前时轴的长度并平移后续项目"
 
 #: ../src/command/time.cpp:320 ../src/command/time.cpp:321
 msgid "Shift start time forward"
-msgstr "向前平移开始时间"
+msgstr "延后开始时间"
 
 #: ../src/command/time.cpp:322
 msgid "Shift the start time of the current timing unit forward"
-msgstr "向前平移当前时轴的开始时间"
+msgstr "延后当前时轴的开始时间"
 
 #: ../src/command/time.cpp:331 ../src/command/time.cpp:332
 msgid "Shift start time backward"
-msgstr "向后平移开始时间"
+msgstr "提前开始时间"
 
 #: ../src/command/time.cpp:333
 msgid "Shift the start time of the current timing unit backward"
-msgstr "向后平移当前时轴的开始时间"
+msgstr "提前当前时轴的开始时间"
 
 #: ../src/command/time.cpp:343
 msgid "Snap &Start to Video"
@@ -2272,7 +2272,7 @@ msgstr "接受更改"
 
 #: ../src/command/tool.cpp:129 ../src/command/tool.cpp:213
 msgid "Commit changes and move to the next line"
-msgstr "接受更改并移动到下一行"
+msgstr "提交更改并移动到下一行"
 
 #: ../src/command/tool.cpp:138 ../src/command/tool.cpp:222
 msgid "&Preview changes"
@@ -2285,7 +2285,7 @@ msgstr "预览更改"
 
 #: ../src/command/tool.cpp:140 ../src/command/tool.cpp:224
 msgid "Commit changes and stay on the current line"
-msgstr "接受更改并停留在当前行"
+msgstr "提交更改并停留在当前行"
 
 #: ../src/command/tool.cpp:150
 msgid "&Styles Manager..."
@@ -2625,7 +2625,7 @@ msgstr "保存截图为 PNG (仅字幕)"
 msgid ""
 "Save the currently displayed subtitles with transparent background to a PNG "
 "file in the video's directory"
-msgstr "保存当前显示的字幕为 PNG 格式到视频所在目录"
+msgstr "以透明背景保存当前显示的字幕为 PNG 到视频所在目录"
 
 #: ../src/command/video.cpp:546
 msgid "&Jump to..."
@@ -3411,27 +3411,27 @@ msgstr "TV 标准"
 
 #: ../src/dialog_export_ebu3264.cpp:121
 msgid "Out-times are inclusive"
-msgstr "偏移结束时间"
+msgstr "结束时间为包含式 (含末帧)"
 
 #: ../src/dialog_export_ebu3264.cpp:124
 msgid "ISO 6937-2 (Latin/Western Europe)"
-msgstr "ISO 6937-2 (拉丁/西欧字符)"
+msgstr "ISO 6937-2 (拉丁/西欧)"
 
 #: ../src/dialog_export_ebu3264.cpp:125
 msgid "ISO 8859-5 (Cyrillic)"
-msgstr "ISO 8859-5 (斯拉夫语系字符)"
+msgstr "ISO 8859-5 (西里尔)"
 
 #: ../src/dialog_export_ebu3264.cpp:126
 msgid "ISO 8859-6 (Arabic)"
-msgstr "ISO 8859-6 (阿拉伯语系字符)"
+msgstr "ISO 8859-6 (阿拉伯)"
 
 #: ../src/dialog_export_ebu3264.cpp:127
 msgid "ISO 8859-7 (Greek)"
-msgstr "ISO 8859-7 (希腊字符)"
+msgstr "ISO 8859-7 (希腊)"
 
 #: ../src/dialog_export_ebu3264.cpp:128
 msgid "ISO 8859-8 (Hebrew)"
-msgstr "ISO 8859-8 (西伯莱字符)"
+msgstr "ISO 8859-8 (希伯来)"
 
 #: ../src/dialog_export_ebu3264.cpp:129
 msgid "UTF-8 Unicode (non-standard)"
@@ -3580,7 +3580,7 @@ msgstr "浏览(&B)…"
 
 #: ../src/dialog_fonts_collector.cpp:263
 msgid "Log"
-msgstr "记录"
+msgstr "日志"
 
 #: ../src/dialog_fonts_collector.cpp:277
 msgid "&Start!"
@@ -3644,7 +3644,7 @@ msgstr "目标: "
 
 #: ../src/dialog_kara_timing_copy.cpp:386
 msgid "Kanji timer"
-msgstr "汉字K值配对"
+msgstr "汉字K值配对器"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:364 ../src/grid_column.cpp:365
@@ -3909,19 +3909,19 @@ msgstr "从脚本获得(&C)"
 
 #: ../src/dialog_resample.cpp:155
 msgid "Add borders"
-msgstr "适应视频"
+msgstr "添加边框 (等比适应)"
 
 #: ../src/dialog_resample.cpp:155
 msgid "Manual"
-msgstr "自定义"
+msgstr "手动调整"
 
 #: ../src/dialog_resample.cpp:155
 msgid "Remove borders"
-msgstr "裁切黑边"
+msgstr "移除边框 (等比铺满)"
 
 #: ../src/dialog_resample.cpp:155
 msgid "Stretch"
-msgstr "拉伸"
+msgstr "拉伸 (适应目标比例)"
 
 #: ../src/dialog_resample.cpp:156
 msgid "Aspect Ratio Handling"
@@ -3953,7 +3953,7 @@ msgstr "忽略注释(&S)"
 
 #: ../src/dialog_search_replace.cpp:81
 msgid "S&kip Override Tags"
-msgstr "忽略样式覆写标签"
+msgstr "忽略样式覆写标签(&K)"
 
 #: ../src/dialog_search_replace.cpp:87 ../src/dialog_selection.cpp:139
 msgid "&Text"
@@ -4057,53 +4057,53 @@ msgstr "注释(&N)"
 
 #: ../src/dialog_selection.cpp:152
 msgid "&Add to selection"
-msgstr "加入所选(&A)"
+msgstr "加入选中(&A)"
 
 #: ../src/dialog_selection.cpp:152
 msgid "Intersect &with selection"
-msgstr "选中与所选之交集(&W)"
+msgstr "与所选之交集(&W)"
 
 #: ../src/dialog_selection.cpp:152
 msgid "S&ubtract from selection"
-msgstr "移出所选(&U)"
+msgstr "取消选中(&U)"
 
 #: ../src/dialog_selection.cpp:152
 msgid "Set se&lection"
-msgstr "设为所选(&L)"
+msgstr "设为选中(&L)"
 
 #: ../src/dialog_selection.cpp:215
 #, c-format
 msgid "Selection was set to one line"
 msgid_plural "Selection was set to %u lines"
-msgstr[0] "所选被设为 %u 行"
+msgstr[0] "设为 %u 行选中"
 
 #: ../src/dialog_selection.cpp:216
 msgid "Selection was set to no lines"
-msgstr "所选被设为 0 行"
+msgstr "设为 0 行选中"
 
 #: ../src/dialog_selection.cpp:222
 #, c-format
 msgid "One line was added to selection"
 msgid_plural "%u lines were added to selection"
-msgstr[0] "%u 行已被加入所选"
+msgstr[0] "加入 %u 行选中"
 
 #: ../src/dialog_selection.cpp:223
 msgid "No lines were added to selection"
-msgstr "0 行已被加入所选"
+msgstr "加入 0 行选中"
 
 #: ../src/dialog_selection.cpp:234
 #, c-format
 msgid "One line was removed from selection"
 msgid_plural "%u lines were removed from selection"
-msgstr[0] "%u 行已被移出所选"
+msgstr[0] "取消 %u 行选中"
 
 #: ../src/dialog_selection.cpp:235
 msgid "No lines were removed from selection"
-msgstr "没有行被移出所选"
+msgstr "取消 0 行选中"
 
 #: ../src/dialog_selection.cpp:240
 msgid "Selection"
-msgstr "所选"
+msgstr "选中"
 
 #: ../src/dialog_shift_times.cpp:92
 msgid "unsaved"
@@ -4824,7 +4824,7 @@ msgstr "将各行开始时间都提前"
 
 #: ../src/dialog_timing_processor.cpp:180
 msgid "Lead in to be added, in milliseconds"
-msgstr "增加开始时间 (ms)"
+msgstr "提前的时长 (ms)"
 
 #: ../src/dialog_timing_processor.cpp:182
 msgid "Add lead &out:"
@@ -4836,7 +4836,7 @@ msgstr "将各行结束时间都延后"
 
 #: ../src/dialog_timing_processor.cpp:185
 msgid "Lead out to be added, in milliseconds"
-msgstr "增加结束时间 (ms)"
+msgstr "延后的时长 (ms)"
 
 #: ../src/dialog_timing_processor.cpp:190
 msgid "Make adjacent subtitles continuous"
@@ -4850,7 +4850,7 @@ msgstr "启用(&E)"
 msgid ""
 "Enable snapping of subtitles together if they are within a certain distance "
 "of each other"
-msgstr "启用字幕紧贴功能，当彼此距离小于指定间隔时"
+msgstr "启用字幕紧贴功能，使彼此距离小于指定间隔时长"
 
 #: ../src/dialog_timing_processor.cpp:197
 msgid "Max gap:"
@@ -4860,7 +4860,7 @@ msgstr "最大间隙:"
 msgid ""
 "Maximum difference between start and end time for two subtitles to be made "
 "continuous, in milliseconds"
-msgstr "两条连续字幕的起止时间间隔的最大差值 (ms)"
+msgstr "两行相邻字幕的起止时轴间隙的最大值 (ms)"
 
 #: ../src/dialog_timing_processor.cpp:199
 msgid "Max overlap:"
@@ -4870,7 +4870,7 @@ msgstr "最大重叠:"
 msgid ""
 "Maximum overlap between the end and start time for two subtitles to be made "
 "continuous, in milliseconds"
-msgstr "两条连续字幕的起止时间间隔的最大差值 (ms)"
+msgstr "两行相邻字幕的起止时轴重叠的最大值 (ms)"
 
 #: ../src/dialog_timing_processor.cpp:203
 msgid ""
@@ -4901,7 +4901,7 @@ msgstr "启用(&N)"
 msgid ""
 "Enable snapping of subtitles to nearest keyframe, if distance is within "
 "threshold"
-msgstr "使字幕对齐至最近的关键帧，如果距离在阈值之内"
+msgstr "启用字幕时轴对齐至最近的关键帧，根据距离阈值判断是否对齐"
 
 #: ../src/dialog_timing_processor.cpp:232
 msgid "Starts before thres.:"
@@ -4954,7 +4954,7 @@ msgstr "无效脚本"
 
 #: ../src/dialog_timing_processor.cpp:448
 msgid "timing processor"
-msgstr "时间处理器"
+msgstr "时轴后处理器"
 
 #: ../src/dialog_translation.cpp:78
 msgid "Original"
@@ -5622,7 +5622,7 @@ msgstr "显示视频位置"
 
 #: ../src/preferences.cpp:192 ../src/preferences.cpp:294
 msgid "Seconds boundaries"
-msgstr "次要边线"
+msgstr "秒刻度线"
 
 #: ../src/preferences.cpp:194
 msgid "Waveform Style"
@@ -5638,7 +5638,7 @@ msgstr "进度条上显示关键帧"
 
 #: ../src/preferences.cpp:209
 msgid "Only show visual tools when mouse is over video"
-msgstr "只有当鼠标处在视频上时才显示可视化编辑工具"
+msgstr "只有当鼠标处在视频上时才显示可视化工具"
 
 #: ../src/preferences.cpp:211
 msgid "Seek video to line start on selection change"
@@ -5882,7 +5882,7 @@ msgstr "换行符"
 
 #: ../src/preferences.cpp:312
 msgid "Karaoke templates"
-msgstr "卡拉OK模版"
+msgstr "卡拉OK模板"
 
 #: ../src/preferences.cpp:313
 msgid "Karaoke variables"
@@ -5978,7 +5978,7 @@ msgstr "次要高亮"
 
 #: ../src/preferences.cpp:346
 msgid "Visual Typesetting Tools Alpha"
-msgstr "可视化绘图工具透明度"
+msgstr "可视化排版工具透明度"
 
 #: ../src/preferences.cpp:347
 msgid "Shaded Area"
@@ -6400,7 +6400,7 @@ msgstr "解析时间码文件失败: "
 
 #: ../src/project.cpp:407
 msgid "Failed to parse keyframes file: "
-msgstr "解析关键帧文件失败: %s"
+msgstr "解析关键帧文件失败: "
 
 #: ../src/project.cpp:411
 msgid "Keyframes file in unknown format: "
@@ -6612,20 +6612,20 @@ msgstr "没有改正建议"
 #: ../src/subs_edit_ctrl.cpp:466
 #, c-format
 msgid "Add \"%s\" to dictionary"
-msgstr "添加 \"%s\" 至词典"
+msgstr "添加 \"%s\" 至同义词词典"
 
 #: ../src/subs_edit_ctrl.cpp:501
 #, c-format
 msgid "Thesaurus suggestions for \"%s\""
-msgstr "词典建议对于 \"%s\""
+msgstr "同义词建议对于 \"%s\""
 
 #: ../src/subs_edit_ctrl.cpp:504
 msgid "No thesaurus suggestions"
-msgstr "没有词典建议"
+msgstr "没有同义词建议"
 
 #: ../src/subs_edit_ctrl.cpp:507
 msgid "Thesaurus language"
-msgstr "词典语言"
+msgstr "同义词词典语言"
 
 #: ../src/subs_edit_ctrl.cpp:516
 msgid "Disable"
@@ -6986,20 +6986,20 @@ msgstr "通过对行内重新排列ASS标签以及覆盖模块，来清理字幕
 
 #: ../automation/autoload/kara-templater.lua:36
 msgid "Karaoke Templater"
-msgstr "卡拉OK模版执行器"
+msgstr "卡拉OK模板执行器"
 
 #: ../automation/autoload/kara-templater.lua:37
 msgid ""
 "Macro and export filter to apply karaoke effects using the template language"
-msgstr "宏和导出滤镜通过模版语言来应用卡拉OK特效"
+msgstr "宏和导出滤镜通过模板语言来应用卡拉OK特效"
 
 #: ../automation/autoload/kara-templater.lua:860
 msgid "Apply karaoke template"
-msgstr "Apply karaoke template - 应用卡拉OK模版"
+msgstr "Apply karaoke template - 应用卡拉OK模板"
 
 #: ../automation/autoload/kara-templater.lua:860
 msgid "Applies karaoke effects from templates"
-msgstr "通过已有模版套用卡拉OK特效"
+msgstr "通过已有模板套用卡拉OK特效"
 
 #: ../automation/autoload/kara-templater.lua:861
 msgid "Karaoke template"
@@ -7011,7 +7011,7 @@ msgid ""
 "\n"
 "See the help file for information on how to use this."
 msgstr ""
-"为字幕应用卡拉OK特效模版。\n"
+"为字幕应用卡拉OK特效模板。\n"
 "\n"
 "请阅读帮助文件来了解如何使用它。"
 
@@ -7328,7 +7328,7 @@ msgstr "音频时轴"
 #~ msgstr "显示网格"
 
 #~ msgid "Toggles showing a 3D grid in the visual perspective tool"
-#~ msgstr "在可视化透视工具中切换显示三维网格"
+#~ msgstr "在可视化工具中切换显示三维网格"
 
 #~ msgid "\\org Mode: Center"
 #~ msgstr "\\org 模式: 中心"
@@ -7537,7 +7537,7 @@ msgstr "音频时轴"
 #~ msgstr "布局: "
 
 #~ msgid "Visual Tools"
-#~ msgstr "可视化绘图工具"
+#~ msgstr "可视化工具"
 
 #~ msgid "Shape handle size"
 #~ msgstr "控制点大小"
@@ -7572,17 +7572,6 @@ msgstr "音频时轴"
 #~ msgstr ""
 #~ "可用的音频服务后端都没有适配所选文件的解码器:\n"
 #~ "\n"
-
-#~ msgid ""
-#~ "Decoding the full track to ensure perfect frame accuracy. This will take "
-#~ "a while!"
-#~ msgstr "正在解码整个轨道以确保帧精度完美。这可能需要一定时间!"
-
-#~ msgid "    Subtitle format handler: %s"
-#~ msgstr "    字幕格式处理器: %s"
-
-#~ msgid "%d frames (%s)"
-#~ msgstr "%d 帧  (%s)"
 
 #~ msgid "%u lines were added to selection"
 #~ msgstr "%u 行已被加入所选"
