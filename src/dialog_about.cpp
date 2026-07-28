@@ -49,7 +49,7 @@ void ShowAboutDialog(wxWindow *parent) {
 
 	// Generate about string
 	wxString aboutString = wxString("Aegisub ") + GetAegisubShortVersionString() + ".\n"
-		"Copyright (c) 2005-2025 Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et al.\n\n"
+		"Copyright (c) 2005-2026 Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et al.\n\n"
 		"Programmers:\n"
 		"    Alysson Souza e Silva\n"
 		"    Amar Takhar\n"
@@ -125,6 +125,9 @@ void ShowAboutDialog(wxWindow *parent) {
 #ifdef WITH_UPDATE_CHECKER
 		"    libcurl - Copyright (c) Daniel Stenberg et al;\n"
 #endif
+#ifdef WITH_LIBPORTAL
+		"    libportal - Copyright (c) libportal authors;\n"
+#endif
 		+ _("\nSee the help file for full credits.\n")
 #ifdef BUILD_CREDIT
 		+ fmt_tl("Built by %s on %s.", GetAegisubBuildCredit(), GetAegisubBuildTime())
@@ -139,9 +142,9 @@ void ShowAboutDialog(wxWindow *parent) {
 
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(new wxStaticBitmap(&d, -1, GETIMAGE(splash)), 0, wxCENTER, 0);
-	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), 0, wxEXPAND | wxALL, 0);
-	MainSizer->Add(textctrl, 0, wxEXPAND | wxALL, 0);
-	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), 0, wxEXPAND | wxALL, 0);
+	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), 0, wxEXPAND, 0);
+	MainSizer->Add(textctrl, 0, wxEXPAND, 0);
+	MainSizer->Add(new wxStaticLine(&d, wxID_ANY), 0, wxEXPAND, 0);
 	MainSizer->Add(d.CreateButtonSizer(wxOK), 0, wxEXPAND | wxALL, 6);
 
 	d.SetSizerAndFit(MainSizer);

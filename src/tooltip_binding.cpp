@@ -1,4 +1,4 @@
-// Copyright (c) 2005, Niels Martin Hansen
+// Copyright (c) 2007, Rodrigo Braz Monteiro, Niels Martin Hansen
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,41 +27,39 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file string_codec.cpp
-/// @brief Encode and decode strings so they can safely be stored inside fields in SSA/ASS files
-/// @ingroup utility
+/// @file tooltip_binding.cpp
+/// @brief Generate tooltips for controls by combining a base text and any hotkeys found for the function
+/// @ingroup custom_control
 ///
 
-// Functions for inline string encoding.
-// See header file for details.
+#include "tooltip_binding.h"
 
-#include "string_codec.h"
+#include "compat.h"
+#include "include/aegisub/hotkey.h"
 
-#include <libaegisub/format.h>
+#include <libaegisub/hotkey.h>
 
-std::string inline_string_encode(std::string_view input) {
-	std::string output;
-	output.reserve(input.size());
-	for (char c : input) {
-		if (c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C)
-			output += agi::format("#%02X", (unsigned char)c);
-		else
-			output += c;
-	}
-	return output;
+ToolTipBinding::ToolTipBinding(wxWindow *window, wxString tooltip, const char *context, const char *command)
+: window(window), toolTip(tooltip), context(context), command(command)
+, connection(hotkey::inst->AddHotkeyChangeListener(&ToolTipBinding::Update, this))
+{
+	Update();
 }
 
-std::string inline_string_decode(std::string_view input) {
-	std::string output;
-	output.reserve(input.size());
-	for (size_t i = 0; i < input.size(); ++i) {
-		if (input[i] != '#' || i + 2 > input.size())
-			output += input[i];
-		else {
-			char buff[] = {input[i], input[i + 1], 0};
-			output += (char)strtol(buff, nullptr, 16);
-			i += 2;
-		}
+void ToolTipBinding::Update() {
+	if (!window) return;
+
+	std::vector<std::string> hotkeys = hotkey::get_hotkey_strs(context, command);
+
+	std::string str;
+	for (size_t i = 0; i < hotkeys.size(); ++i) {
+		if (i > 0) str += "/";
+		str += hotkeys[i];
 	}
-	return output;
+	if (str.empty()) {
+		window->SetToolTip(toolTip);
+	}
+	else {
+		window->SetToolTip(toolTip + to_wx(" (" + str + ")"));
+	}
 }

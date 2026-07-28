@@ -67,33 +67,46 @@ class VideoDisplay final : public wxGLCanvas {
 
 	std::unique_ptr<wxMenu> context_menu;
 
-	/// The size of the video canvas in physical pixels at the current zoom level
-	/// (including any letter- or pillarboxing if applicable), which may not
-	/// be the same as the actual client size of the display
-	wxSize videoSize;
+	/// The size in physical pixels of the ideal viewport at the current window zoom level.
+	/// Includes any letter- or pillarboxing if applicable and is unaffected by content
+	/// zoom level and panning.
+	///
+	/// This is usually equal to the client size (multiplied by @ref scale_factor), but
+	/// the actual client size is controlled by window layout and may be smaller or larger
+	/// than the ideal viewport size.
+	///
+	/// In free size mode, the window zoom level is adjusted when the client size changes,
+	/// so the viewport size should always be the same as the client size.
+	///
+	/// Most code refers to the ideal viewport as simply "the viewport" and
+	/// "client size" is used to refer to the actual size of the canvas.
+	wxSize viewportSize;
 
 	Vector2D last_mouse_pos, mouse_pos;
 
-	/// Physical (screen) pixels between the left of the canvas and the left of the video
-	int viewport_left = 0;
-	/// The width of the video in physical pixels
-	int viewport_width = 0;
-	/// Physical pixels between the bottom of the canvas and the bottom of the video; used for glViewport
-	int viewport_bottom = 0;
-	/// Physical pixels between the bottom of the canvas and the top of the video; used for coordinate space conversion
-	int viewport_top = 0;
-	/// The height of the video in physical pixels
-	int viewport_height = 0;
+	/// Distance rightward from the left edge of the viewport to the left edge of the video in physical (screen) pixels
+	int content_left = 0;
+	/// The width in physical (screen) pixels that the video would occupy after scaling, ignoring viewport cropping
+	int content_width = 0;
+	/// Distance upward from the bottom edge of the viewport to the bottom edge of the video in physical pixels; passed to @ref VideoOutGL::Render
+	int content_bottom = 0;
+	/// Distance downward from the top edge of the viewport to the top edge of the video in physical (screen) pixels
+	int content_top = 0;
+	/// The height in physical (screen) pixels that the video would occupy after scaling, ignoring viewport cropping
+	int content_height = 0;
 
-	/// The current zoom level, where 1.0 = 100%
+	/// The current window zoom level, that is, the ratio of the viewport size to the original video resolution.
 	double windowZoomValue;
 
-	/// The zoom level of the video inside the video display.
-	double videoZoomValue = 1;
+	/// The zoom level of the video inside the viewport.
+	double contentZoomValue = 1;
 
-	double videoZoomAtGestureStart = 1;
+	bool isZoomGestureActive = false;
+	double contentZoomAtGestureStart = 1;
+	Vector2D zoomGestureAnchorPoint = {0, 0};
 
-	/// The video pan, relative to the unzoomed viewport's height.
+	/// The video pan, in physical pixels
+	/// @see viewportSize
 	double pan_x = 0;
 	double pan_y = 0;
 
@@ -108,7 +121,7 @@ class VideoDisplay final : public wxGLCanvas {
 	/// The OpenGL context for this display
 	std::unique_ptr<wxGLContext> glContext;
 
-	/// The dropdown box for selecting zoom levels
+	/// The dropdown box for selecting window zoom levels
 	wxComboBox *zoomBox;
 
 	/// Whether the display can be freely resized by the user
@@ -131,13 +144,28 @@ class VideoDisplay final : public wxGLCanvas {
 	/// @return Could the context be set?
 	bool InitContext();
 
-	/// @brief Set the size of the display based on the current zoom and video resolution
-	void UpdateSize();
-	void PositionVideo();
-	/// Set the zoom level to that indicated by the dropdown
-	void SetZoomFromBox(wxCommandEvent&);
-	/// Set the zoom level to that indicated by the text
-	void SetZoomFromBoxText(wxCommandEvent&);
+	/// @brief Recompute the size of the viewport based on the current window zoom and video resolution,
+	///        then resize the client area to match the viewport
+	void FitClientSizeToVideo();
+	/// @brief Set the viewport size to @p newSize and rescale the pan values
+	///
+	/// You should call @ref PositionVideo() after this.
+	///
+	/// In free size mode, the @p newSize argument is ignored and client size is used instead.
+	///
+	/// @param rescalePan Should the current pan be rescaled for the new viewport?
+	/// @param newSize The new size, ignored in free size mode
+	void UpdateViewportSize(bool rescalePan, wxSize newSize = wxDefaultSize);
+	/// @brief Update content size and position based on the current viewport size, content zoom and pan
+	///
+	/// Updates @ref content_left, @ref content_width, @ref content_bottom, @ref content_top and @ref content_height
+	///
+	/// @param preserveContentSize Should content zoom be adjusted to maintain current content size?
+	void PositionVideo(bool preserveContentSize = false);
+	/// Set the window zoom level to that indicated by the dropdown
+	void SetWindowZoomFromBox(wxCommandEvent&);
+	/// Set the window zoom level to that indicated by the text
+	void SetWindowZoomFromBoxText(wxCommandEvent&);
 
 	/// @brief Key event handler
 	void OnKeyDown(wxKeyEvent &event);
@@ -150,8 +178,34 @@ class VideoDisplay final : public wxGLCanvas {
 	void OnSizeEvent(wxSizeEvent &event);
 	void OnContextMenu(wxContextMenuEvent&);
 
-	void Pan(Vector2D delta);	// Takes delta in logical pixels
-	void VideoZoom(double newVideoZoom, wxPoint zoomCenter);
+	/// @brief Pan the video by delta
+	/// @param delta Delta in logical pixels
+	void Pan(Vector2D delta);
+
+	/// @brief Transforms a client position into a zoom anchor point
+	///
+	/// The anchor point is a position in the video frame that should always be anchored to the center
+	/// of the zoom gesture. This function returns the anchor point in a video-relative coordinate system,
+	/// which ensures we can accurately track the anchor point as the video is zoomed and panned.
+	///
+	/// @param position Client position in logical pixels
+	/// @return An anchor point that can be used with @ref ZoomAndPan()
+	Vector2D GetZoomAnchorPoint(wxPoint position);
+
+	/// @brief Zooms and pans the video using an anchor point
+	///
+	/// To use this function, you need to first obtain an anchor point with @ref GetZoomAnchorPoint().
+	///
+	/// If @p newPosition is equal to the current position of the anchor point, the video will be zoomed
+	/// with the anchor point as the fixed point of the scaling transformation.
+	///
+	/// If @p newPosition differs from the current position of the anchor point, the video will additionally
+	/// be panned to move the anchor point to the new position.
+	///
+	/// @param newZoomValue The new zoom value
+	/// @param anchorPoint An anchor point obtained from @ref GetZoomAnchorPoint()
+	/// @param newPosition New client position of the anchor point in logical pixels
+	void ZoomAndPan(double newZoomValue, Vector2D anchorPoint, wxPoint newPosition);
 
 public:
 	/// @brief Constructor
@@ -166,13 +220,15 @@ public:
 	/// @brief Render the currently visible frame
 	void Render();
 
-	/// @brief Set the zoom level
+	/// @brief Set the window zoom level
 	/// @param value The new zoom level
 	void SetWindowZoom(double value);
-	/// @brief Get the current zoom level
+	/// @brief Get the current window zoom level
 	double GetWindowZoom() const { return windowZoomValue; }
 
-	void ResetVideoZoom();
+	/// @brief Reset content zoom and pan
+	void ResetContentZoom();
+	bool IsContentZoomActive() { return contentZoomValue != 1 || pan_x != 0 || pan_y != 0; }
 
 	/// Get the last seen position of the mouse in script coordinates
 	Vector2D GetMousePosition() const;

@@ -102,7 +102,8 @@ void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {
 
 	std::lock_guard<std::mutex> lock(csri_mutex);
 	if (!csri_request_fmt(instance.get(), &format))
-		csri_render(instance.get(), &frame, time);
+		// Add 1e-9 to guard against floating point imprecision errors on int -> float -> *1000 -> int round trips
+		csri_render(instance.get(), &frame, time + 1e-9);
 }
 }
 

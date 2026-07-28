@@ -1,6 +1,7 @@
 libaegisub_src = [
     'ass/dialogue_parser.cpp',
     'ass/karaoke.cpp',
+    'ass/string_codec.cpp',
     'ass/time.cpp',
     'ass/uuencode.cpp',
 
@@ -38,6 +39,7 @@ libaegisub_src = [
     'common/unicode.cpp',
     'common/util.cpp',
     'common/vfr.cpp',
+    'common/ycbcr.cpp',
     'common/ycbcr_conv.cpp',
     'common/cajun/elements.cpp',
     'common/cajun/reader.cpp',

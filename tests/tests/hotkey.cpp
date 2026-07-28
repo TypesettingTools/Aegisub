@@ -16,6 +16,7 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/hotkey.h>
+#include <libaegisub/signal.h>
 
 #include <fstream>
 
@@ -171,7 +172,7 @@ TEST(lagi_hotkey, set_hotkey_map) {
 		insert_combo(hm, "Default", "cmd2", "Shift-C");
 
 		bool listener_called = false;
-		h.AddHotkeyChangeListener([&] { listener_called = true; });
+		agi::signal::Connection c(h.AddHotkeyChangeListener([&] { listener_called = true; }));
 
 		h.SetHotkeyMap(hm);
 		EXPECT_TRUE(listener_called);

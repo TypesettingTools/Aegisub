@@ -96,7 +96,7 @@ function cleantags(text)
 		end
 	end
 
-	--[[ Remove any spaces within parenteses within override blocks except for \clip tags ]]
+	--[[ Remove any spaces within parentheses within override blocks except for \clip tags ]]
 	local comb = function(a,b,c,d,e)
 		if (c ~= "\\clip" and c ~= "\\iclip") or d:sub(-1):find("[,%({]") or e:sub(1,1):find("[,%)}]") then return a..b..d..e
 		else return a..b..d..string.char(2)..e end

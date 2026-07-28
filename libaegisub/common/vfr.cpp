@@ -244,6 +244,9 @@ int Framerate::TimeAtFrame(int frame, Time type) const {
 		return cur + (next - cur + 1) / 2;
 	}
 
+	if (numerator == 0)
+		return 0;
+
 	if (frame < 0)
 		return (int)(frame * denominator * 1000 / numerator);
 

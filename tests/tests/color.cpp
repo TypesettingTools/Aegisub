@@ -56,11 +56,13 @@ TEST(lagi_color, rgb) {
 	EXPECT_EQ(agi::Color(255, 255, 255), agi::Color("rgb(255,255,255)"));
 	EXPECT_EQ(agi::Color(255, 0, 127), agi::Color("rgb(255, 0, 127)"));
 	EXPECT_EQ(agi::Color(16, 32, 48), agi::Color("rgb(  16  , 32  , 48  )"));
+	EXPECT_EQ(agi::Color(16, 32, 48, 64), agi::Color("rgba(  16  , 32  , 48  , 64  )"));
 
 	EXPECT_EQ("rgb(0, 0, 0)", agi::Color(0, 0, 0).GetRgbFormatted());
 	EXPECT_EQ("rgb(255, 255, 255)", agi::Color(255, 255, 255).GetRgbFormatted());
 	EXPECT_EQ("rgb(255, 0, 127)", agi::Color(255, 0, 127).GetRgbFormatted());
 	EXPECT_EQ("rgb(16, 32, 48)", agi::Color(16, 32, 48).GetRgbFormatted());
+	EXPECT_EQ("rgba(16, 32, 48, 64)", agi::Color(16, 32, 48, 64).GetRgbFormatted());
 }
 
 TEST(lagi_color, ass_ovr) {

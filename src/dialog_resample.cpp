@@ -35,6 +35,27 @@
 #include <wx/valgen.h>
 
 namespace {
+
+// Intentionally kept separate from agi::ycbcr::valid_header_strings:
+// Resampling to or from "None" does not immediately make sense as the
+// behavior of "None" depends on the (real) color space of the loaded video.
+// Instead, allow choosing either explicit matrices for source and destination
+// or a blank option to opt out of resampling the matrix.
+constexpr std::string_view MatrixOptions[] = {
+	"",
+	"TV.601", "PC.601",
+	"TV.709", "PC.709",
+	"TV.FCC", "PC.FCC",
+	"TV.240M", "PC.240M",
+};
+
+int MatrixOptionFromHeader(agi::ycbcr::Header header) {
+	std::string header_string = header.to_existing_string();
+	if (auto pos = std::ranges::find(MatrixOptions, header_string); pos != std::end(MatrixOptions))
+		return std::distance(std::begin(MatrixOptions), pos);
+	return 0;
+}
+
 /// @class DialogResample
 /// @brief Configuration dialog for resolution resampling
 ///
@@ -43,12 +64,14 @@ struct DialogResample {
 	wxDialog d;
 	agi::Context *c; ///< Project context
 
+	ResampleSettings &settings;
+
 	int script_w;
 	int script_h;
-	YCbCrMatrix script_mat;
+	agi::ycbcr::Header script_mat;
 	int video_w = 0;
 	int video_h = 0;
-	YCbCrMatrix video_mat;
+	agi::ycbcr::header_colorspace video_mat;
 
 	wxSpinCtrl *source_x;
 	wxSpinCtrl *source_y;
@@ -63,6 +86,7 @@ struct DialogResample {
 	wxButton *from_script;
 	wxButton *from_video;
 
+	void OnMatrixChange();
 	void SetSourceFromScript(wxCommandEvent &);
 	/// Set the destination resolution to the video's resolution
 	void SetDestFromVideo(wxCommandEvent &);
@@ -89,58 +113,63 @@ enum {
 DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 : d(c->parent, -1, _("Resample Resolution"))
 , c(c)
+, settings(settings)
+, script_mat(agi::ycbcr::Header(std::string(c->ass->GetScriptInfo("YCbCr Matrix"))).to_effective())
 {
 	d.SetIcons(GETICONS(resample_toolbutton));
 
-	memset(&settings, 0, sizeof(settings));
 	c->ass->GetResolution(script_w, script_h);
 	settings.source_x = script_w;
 	settings.source_y = script_h;
-	settings.source_matrix = script_mat = MatrixFromString(c->ass->GetScriptInfo("YCbCr Matrix"));
 
 	if (auto provider = c->project->VideoProvider()) {
 		settings.dest_x = video_w = provider->GetWidth();
 		settings.dest_y = video_h = provider->GetHeight();
-		settings.dest_matrix = video_mat = MatrixFromString(provider->GetRealColorSpace());
+		video_mat = provider->GetRealColorSpace();
 	}
 	else {
 		settings.dest_x = script_w;
 		settings.dest_y = script_h;
-		settings.dest_matrix = script_mat;
-		video_mat = YCbCrMatrix::rgb;
 	}
+
+	// Create static box sizers
+	auto source_res_box_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Source Resolution"));
+	auto dest_res_box_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Destination Resolution"));
+	auto margin_box_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Margin offset"));
+
+	wxWindow *source_res_box = source_res_box_sizer->GetStaticBox();
+	wxWindow *dest_res_box = dest_res_box_sizer->GetStaticBox();
+	wxWindow *margin_box = margin_box_sizer->GetStaticBox();
 
 	// Create all controls and set validators
 	for (size_t i = 0; i < 4; ++i) {
-		margin_ctrl[i] = new wxSpinCtrl(&d, -1, "0", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -9999, 9999, 0);
+		margin_ctrl[i] = new wxSpinCtrl(margin_box, -1, "0", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, -9999, 9999, 0);
 		margin_ctrl[i]->SetValidator(wxGenericValidator(&settings.margin[i]));
 	}
 
-	symmetrical = new wxCheckBox(&d, -1, _("&Symmetrical"));
+	symmetrical = new wxCheckBox(margin_box, -1, _("&Symmetrical"));
 	symmetrical->SetValue(true);
 
 	margin_ctrl[RIGHT]->Enable(false);
 	margin_ctrl[BOTTOM]->Enable(false);
 
-	source_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
-	source_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
-	source_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition,
-		wxDefaultSize, to_wx(MatrixNames()), wxCB_READONLY);
-	dest_x = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
-	dest_y = new wxSpinCtrl(&d, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
-	dest_matrix = new wxComboBox(&d, -1, "", wxDefaultPosition, wxDefaultSize,
-		to_wx(MatrixNames()), wxCB_READONLY);
+	source_x = new wxSpinCtrl(source_res_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	source_y = new wxSpinCtrl(source_res_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	source_matrix = new wxComboBox(source_res_box, -1, "", wxDefaultPosition,
+		wxDefaultSize, to_wx(MatrixOptions), wxCB_READONLY);
+	dest_x = new wxSpinCtrl(dest_res_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	dest_y = new wxSpinCtrl(dest_res_box, -1, "", wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 999999);
+	dest_matrix = new wxComboBox(dest_res_box, -1, "", wxDefaultPosition, wxDefaultSize,
+		to_wx(MatrixOptions), wxCB_READONLY);
 
 	source_x->SetValidator(wxGenericValidator(&settings.source_x));
 	source_y->SetValidator(wxGenericValidator(&settings.source_y));
-	source_matrix->SetValidator(MakeEnumBinder(&settings.source_matrix));
 	dest_x->SetValidator(wxGenericValidator(&settings.dest_x));
 	dest_y->SetValidator(wxGenericValidator(&settings.dest_y));
-	dest_matrix->SetValidator(MakeEnumBinder(&settings.dest_matrix));
 
-	from_video = new wxButton(&d, -1, _("From &video"));
+	from_video = new wxButton(dest_res_box, -1, _("From &video"));
 	from_video->Enable(false);
-	from_script = new wxButton(&d, -1, _("From s&cript"));
+	from_script = new wxButton(source_res_box, -1, _("From s&cript"));
 	from_script->Enable(false);
 
 	wxString ar_modes[] = {_("Stretch"), _("Add borders"), _("Remove borders"), _("Manual")};
@@ -159,42 +188,39 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	margin_sizer->Add(margin_ctrl[BOTTOM], wxSizerFlags(1).Expand());
 	margin_sizer->AddSpacer(1);
 
-	auto margin_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Margin offset"));
-	margin_box->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	margin_box_sizer->Add(margin_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
 
 	auto source_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	source_res_sizer->Add(source_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	source_res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT)); // U+00D7 multiplication sign
+	source_res_sizer->Add(new wxStaticText(source_res_box, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT)); // U+00D7 multiplication sign
 	source_res_sizer->Add(source_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	source_res_sizer->Add(from_script);
 
 	auto source_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	source_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
+	source_matrix_sizer->Add(new wxStaticText(source_res_box, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
 	source_matrix_sizer->Add(source_matrix, wxSizerFlags(1).Center());
 
-	auto source_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Source Resolution"));
-	source_res_box->Add(source_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
-	source_res_box->Add(source_matrix_sizer, wxSizerFlags(1).Expand());
+	source_res_box_sizer->Add(source_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	source_res_box_sizer->Add(source_matrix_sizer, wxSizerFlags(1).Expand());
 
 	auto dest_res_sizer = new wxBoxSizer(wxHORIZONTAL);
 	dest_res_sizer->Add(dest_x, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	dest_res_sizer->Add(new wxStaticText(&d, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT));
+	dest_res_sizer->Add(new wxStaticText(dest_res_box, -1, _(L"\u00D7")), wxSizerFlags().Center().Border(wxRIGHT));
 	dest_res_sizer->Add(dest_y, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
 	dest_res_sizer->Add(from_video);
 
 	auto dest_matrix_sizer = new wxBoxSizer(wxHORIZONTAL);
-	dest_matrix_sizer->Add(new wxStaticText(&d, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
+	dest_matrix_sizer->Add(new wxStaticText(dest_res_box, -1, _("YCbCr Matrix:")), wxSizerFlags().Border(wxRIGHT).Center());
 	dest_matrix_sizer->Add(dest_matrix, wxSizerFlags(1).Center());
 
-	auto dest_res_box = new wxStaticBoxSizer(wxVERTICAL, &d, _("Destination Resolution"));
-	dest_res_box->Add(dest_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
-	dest_res_box->Add(dest_matrix_sizer, wxSizerFlags(1).Expand());
+	dest_res_box_sizer->Add(dest_res_sizer, wxSizerFlags(1).Expand().Border(wxBOTTOM));
+	dest_res_box_sizer->Add(dest_matrix_sizer, wxSizerFlags(1).Expand());
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(source_res_box, wxSizerFlags().Expand().Border());
-	main_sizer->Add(dest_res_box, wxSizerFlags().Expand().Border());
+	main_sizer->Add(source_res_box_sizer, wxSizerFlags().Expand().Border());
+	main_sizer->Add(dest_res_box_sizer, wxSizerFlags().Expand().Border());
 	main_sizer->Add(ar_mode, wxSizerFlags().Expand().Border());
-	main_sizer->Add(margin_box, wxSizerFlags(1).Expand().Border());
+	main_sizer->Add(margin_box_sizer, wxSizerFlags(1).Expand().Border());
 	main_sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 	d.SetSizerAndFit(main_sizer);
 	d.CenterOnParent();
@@ -212,18 +238,52 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	symmetrical->Bind(wxEVT_CHECKBOX, &DialogResample::OnSymmetrical, this);
 	margin_ctrl[LEFT]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this, margin_ctrl[LEFT], margin_ctrl[RIGHT]));
 	margin_ctrl[TOP]->Bind(wxEVT_SPINCTRL, bind(&DialogResample::OnMarginChange, this, margin_ctrl[TOP], margin_ctrl[BOTTOM]));
+
+	source_matrix->Bind(wxEVT_COMBOBOX, [this](wxCommandEvent&) { OnMatrixChange(); });
+	dest_matrix->Bind(wxEVT_COMBOBOX, [this](wxCommandEvent&) { OnMatrixChange(); });
+
+	// Find out if we want to suggest resampling colors.
+	// If the script matrix is None, we do not know what matrix to resample from, so we don't suggest to resample.
+	// If the video matrix is unspecified or does not correspond to a valid YCbCr Header value, we cannot currently resample to it.
+	// -> FIXME: The latter is not a theoretical reason but only due to the fact that resampling is not currently implemented for any other matrices in ycbcr_conv.h:
+	//    We could in theory have a situation where a script with no YCbCr Header (so effectively TV.601) was authored on a BT.2020 video using color matching,
+	//    and the user now wants to adjust the colors so that they can set the matrix to None instead.
+	// Otherwise, i.e. if e.g. the script has a TV.601 header but the video uses TV.709, we suggest to resample.
+	// (The assumption here being that, just like when resampling PlayRes, the user only uses the resample dialog when the script *currently* looks correct on the current video.)
+	agi::ycbcr::Header video_mat_header(video_mat);
+	if (video_mat_header != script_mat
+			&& video_mat_header.valid()		//< (Not necessary in theory, see FIXME above)
+			&& script_mat.valid()			//< (Should always be true since we use to_effective() above)
+			&& std::holds_alternative<agi::ycbcr::header_colorspace>(video_mat_header)
+			&& std::holds_alternative<agi::ycbcr::header_colorspace>(script_mat)
+	) {
+		source_matrix->SetSelection(MatrixOptionFromHeader(script_mat));
+		dest_matrix->SetSelection(MatrixOptionFromHeader(video_mat_header));
+	}
+	OnMatrixChange();
+}
+
+void DialogResample::OnMatrixChange() {
+	agi::ycbcr::Header src_mat(from_wx(source_matrix->GetValue()));
+	agi::ycbcr::Header dst_mat(from_wx(dest_matrix->GetValue()));
+
+	if (std::holds_alternative<agi::ycbcr::header_colorspace>(src_mat) && std::holds_alternative<agi::ycbcr::header_colorspace>(dst_mat)) {
+		settings.matrix_conversion = std::make_pair(std::get<agi::ycbcr::header_colorspace>(src_mat), std::get<agi::ycbcr::header_colorspace>(dst_mat));
+	} else {
+		settings.matrix_conversion = std::nullopt;
+	}
 }
 
 void DialogResample::SetDestFromVideo(wxCommandEvent &) {
 	dest_x->SetValue(video_w);
 	dest_y->SetValue(video_h);
-	dest_matrix->SetSelection((int)video_mat);
+	dest_matrix->SetSelection(MatrixOptionFromHeader(agi::ycbcr::Header(video_mat)));
 }
 
 void DialogResample::SetSourceFromScript(wxCommandEvent&) {
 	source_x->SetValue(script_w);
 	source_y->SetValue(script_h);
-	source_matrix->SetSelection((int)script_mat);
+	source_matrix->SetSelection(MatrixOptionFromHeader(script_mat));
 }
 
 void DialogResample::UpdateButtons() {

@@ -70,7 +70,7 @@ public:
 ///
 /// This does not support \kt, as it inherently requires that the end time of
 /// one syllable be the same as the start time of the next one.
-class AudioTimingControllerKaraoke final : public AudioTimingController {
+class AudioTimingControllerKaraoke final : public AudioTimingController, private agi::signal::ConnectionScope {
 	std::vector<agi::signal::Connection> connections;
 	agi::signal::Connection& file_changed_slot;
 
@@ -78,7 +78,7 @@ class AudioTimingControllerKaraoke final : public AudioTimingController {
 	AssDialogue *active_line; ///< Currently active line
 	agi::ass::Karaoke *kara;         ///< Parsed karaoke model provided by karaoke controller
 
-	size_t cur_syl = 0; ///< Index of currently selected syllable in the line
+	int cur_syl = 0; ///< Index of currently selected syllable in the line
 
 	/// Pen used for the mid-syllable markers
 	Pen separator_pen{"Colour/Audio Display/Syllable Boundaries", "Audio/Line Boundaries Thickness", wxPENSTYLE_DOT};
@@ -103,7 +103,7 @@ class AudioTimingControllerKaraoke final : public AudioTimingController {
 	/// Labels containing the stripped text of each syllable
 	std::vector<AudioLabel> labels;
 
-	 /// Should changes be automatically commited?
+	 /// Should changes be automatically committed?
 	bool auto_commit = OPT_GET("Audio/Auto/Commit")->GetBool();
 	int commit_id = -1;   ///< Last commit id used for an autocommit
 	bool pending_changes; ///< Are there any pending changes to be committed?
@@ -156,8 +156,8 @@ AudioTimingControllerKaraoke::AudioTimingControllerKaraoke(agi::Context *c, agi:
 	connections.push_back(kara->AddSyllablesChangedListener(&AudioTimingControllerKaraoke::Revert, this));
 	connections.push_back(OPT_SUB("Audio/Auto/Commit", [this](agi::OptionValue const& opt) { auto_commit = opt.GetBool(); }));
 
-	keyframes_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
-	video_position_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
+	BindConnection(keyframes_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
+	BindConnection(video_position_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
 
 	Revert();
 }
@@ -166,10 +166,10 @@ void AudioTimingControllerKaraoke::Next(NextMode mode) {
 	// Don't create new lines since it's almost never useful to k-time a line
 	// before dialogue timing it
 	if (mode != TIMING_UNIT)
-		cur_syl = markers.size();
+		cur_syl = std::ssize(markers);
 
 	++cur_syl;
-	if (cur_syl > markers.size()) {
+	if (cur_syl > std::ssize(markers)) {
 		--cur_syl;
 		c->selectionController->NextLine();
 	}
@@ -186,7 +186,7 @@ void AudioTimingControllerKaraoke::Prev() {
 		AssDialogue *old_line = active_line;
 		c->selectionController->PrevLine();
 		if (old_line != active_line) {
-			cur_syl = markers.size();
+			cur_syl = std::ssize(markers);
 			AnnounceUpdatedPrimaryRange();
 			AnnounceUpdatedStyleRanges();
 		}
@@ -210,7 +210,7 @@ void AudioTimingControllerKaraoke::GetRenderingStyles(AudioRenderingStyleRanges 
 TimeRange AudioTimingControllerKaraoke::GetPrimaryPlaybackRange() const {
 	return TimeRange(
 		cur_syl > 0 ? markers[cur_syl - 1] : start_marker,
-		cur_syl < markers.size() ? markers[cur_syl] : end_marker);
+		cur_syl < std::ssize(markers) ? markers[cur_syl] : end_marker);
 }
 
 TimeRange AudioTimingControllerKaraoke::GetActiveLineRange() const {
@@ -283,7 +283,7 @@ void AudioTimingControllerKaraoke::AddLeadIn() {
 void AudioTimingControllerKaraoke::AddLeadOut() {
 	end_marker.Move(end_marker + OPT_GET("Audio/Lead/OUT")->GetInt());
 	labels.back().range = TimeRange(labels.back().range.begin(), end_marker);
-	ApplyLead(cur_syl == markers.size());
+	ApplyLead(cur_syl == std::ssize(markers));
 }
 
 void AudioTimingControllerKaraoke::ApplyLead(bool announce_primary) {
@@ -296,16 +296,16 @@ void AudioTimingControllerKaraoke::ApplyLead(bool announce_primary) {
 }
 
 void AudioTimingControllerKaraoke::ModifyLength(int delta, bool shift_following) {
-	if (cur_syl == markers.size()) return;
+	if (cur_syl == std::ssize(markers)) return;
 
 	int cur, end, step;
 	if (delta < 0) {
 		cur = cur_syl;
-		end = shift_following ? markers.size() : cur_syl + 1;
+		end = shift_following ? std::ssize(markers) : cur_syl + 1;
 		step = 1;
 	}
 	else {
-		cur = shift_following ? markers.size() - 1 : cur_syl;
+		cur = shift_following ? std::ssize(markers) - 1 : cur_syl;
 		end = cur_syl - 1;
 		step = -1;
 	}

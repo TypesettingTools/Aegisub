@@ -25,14 +25,14 @@ namespace agi {
 class BreakIterator {
 	std::unique_ptr<icu::BreakIterator> bi;
 	std::string_view str;
-	size_t begin = 0, end = 0;
+	int32_t begin = 0, end = 0;
 
 public:
 	BreakIterator();
 
 	void set_text(std::string_view new_str);
-	bool done() const noexcept { return begin >= str.size(); }
-	bool is_last() const noexcept { return end >= str.size(); }
+	bool done() const noexcept { return begin == UBRK_DONE || begin >= std::ssize(str); }
+	bool is_last() const noexcept { return end == UBRK_DONE || end >= std::ssize(str); }
 
 	void next() noexcept {
 		begin = end;

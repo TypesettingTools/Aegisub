@@ -28,7 +28,11 @@
 #include <OpenGL/glext.h>
 #else
 #include <GL/gl.h>
+#ifdef HAVE_GL_GLEXT_H
+#include <GL/glext.h>
+#else
 #include "gl/glext.h"
+#endif
 #endif
 
 static const float deg2rad = 3.1415926536f / 180.f;
@@ -401,11 +405,11 @@ void OpenGLWrapper::SetScale(Vector2D scale) {
 	glScalef(scale.X() / 100.f, scale.Y() / 100.f, 1.f);
 }
 
-void OpenGLWrapper::SetRotation(float x, float y, float z) {
+void OpenGLWrapper::SetRotation(float x, float y, float z, float zScale) {
 	PrepareTransform();
 	float matrix[16] = { 2500, 0, 0, 0, 0, 2500, 0, 0, 0, 0, 1, 1, 0, 0, 2500, 2500 };
 	glMultMatrixf(matrix);
-	glScalef(1.f, 1.f, 8.f);
+	glScalef(1.f, 1.f, 8.f / zScale);
 	glRotatef(y, 0.f, -1.f, 0.f);
 	glRotatef(x, -1.f, 0.f, 0.f);
 	glRotatef(z, 0.f, 0.f, -1.f);

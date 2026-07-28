@@ -48,13 +48,13 @@ char *strerror(int errnum);
 
 local function widen(ch)
 	local size = ffi.C.MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, ch, #ch, nil, 0)
-	if size == 0 then
-		error(fname .. ": invalid character sequence")
+	if size == 0 and #ch > 0 then
+		error(ch .. ": invalid character sequence")
 	end
 
 	local buf = ffi.new("wchar_t[?]", size + 1)
-	if ffi.C.MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, ch, #ch, buf, size) == 0 then
-		error(fname .. ": char conversion error")
+	if ffi.C.MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, ch, #ch, buf, size) == 0 and #ch > 0 then
+		error(ch .. ": char conversion error")
 	end
 
 	return buf

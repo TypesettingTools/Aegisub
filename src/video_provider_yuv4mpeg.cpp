@@ -127,7 +127,7 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 
 	agi::vfr::Framerate fps;
 
-	agi::ycbcr_converter conv{agi::ycbcr_matrix::bt601, agi::ycbcr_range::tv};
+	agi::ycbcr_converter conv{{agi::ycbcr_matrix::SMPTE170M, agi::ycbcr_range::MPEG}};
 
 	/// a list of byte positions detailing where in the file
 	/// each frame header can be found
@@ -142,7 +142,7 @@ public:
 	YUV4MPEGVideoProvider(agi::fs::path const& filename);
 
 	void GetFrame(int n, VideoFrame &frame) override;
-	void SetColorSpace(std::string const&) override { }
+	void SetColorSpace(agi::ycbcr::Header) override { }
 
 	int GetFrameCount() const override             { return num_frames; }
 	int GetWidth() const override                  { return w; }
@@ -150,7 +150,7 @@ public:
 	double GetDAR() const override                 { return 0; }
 	agi::vfr::Framerate GetFPS() const override    { return fps; }
 	std::vector<int> GetKeyFrames() const override { return {}; }
-	std::string GetColorSpace() const override     { return "TV.601"; }
+	agi::ycbcr::header_colorspace GetColorSpace() const override     { return {agi::ycbcr_matrix::SMPTE170M, agi::ycbcr_range::MPEG}; }
 	std::string GetDecoderName() const override    { return "YU4MPEG"; }
 	bool WantsCaching() const override             { return true; }
 };
@@ -426,6 +426,6 @@ void YUV4MPEGVideoProvider::GetFrame(int n, VideoFrame &frame) {
 }
 
 namespace agi { class BackgroundRunner; }
-std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const& path, std::string_view, agi::BackgroundRunner *) {
+std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const& path, agi::ycbcr::Header, agi::BackgroundRunner *) {
 	return std::make_unique<YUV4MPEGVideoProvider>(path);
 }

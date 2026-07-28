@@ -19,14 +19,15 @@
 #include "ass_file.h"
 #include "ass_info.h"
 #include "ass_style.h"
-#include "string_codec.h"
 #include "subtitle_format.h"
 
+#include <libaegisub/ass/string_codec.h>
 #include <libaegisub/ass/uuencode.h>
 #include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
@@ -162,7 +163,9 @@ void AssParser::ParseScriptInfoLine(std::string const& data) {
 		target->Info.push_back(*new AssInfo(std::move(key), std::move(value)));
 }
 
-void AssParser::ParseMetadataLine(std::string const& data) {
+void AssParser::ParseMetadataLine(std::string const& rawdata) {
+	std::string data = SanitizeLine(rawdata);
+
 	size_t pos = data.find(':');
 	if (pos == data.npos) return;
 
@@ -193,18 +196,20 @@ void AssParser::ParseGraphicsLine(std::string const& data) {
 		attach = std::make_unique<AssAttachment>(data, AssEntryGroup::GRAPHIC);
 }
 
-void AssParser::ParseExtradataLine(std::string const &data) {
+void AssParser::ParseExtradataLine(std::string const &rawdata) {
+	std::string data = SanitizeLine(rawdata);
+
 	static const boost::regex matcher("Data:[[:space:]]*(\\d+),([^,]+),(.)(.*)");
 	boost::match_results<std::string::const_iterator> mr;
 
 	if (boost::regex_match(data, mr, matcher)) {
 		auto id = boost::lexical_cast<uint32_t>(mr.str(1));
-		auto key = inline_string_decode(mr.str(2));
+		auto key = agi::ass::inline_string_decode(mr.str(2));
 		auto valuetype = mr.str(3);
 		auto value = mr.str(4);
 		if (valuetype == "e") {
 			// escaped/inline_string encoded
-			value = inline_string_decode(value);
+			value = agi::ass::inline_string_decode(value);
 		} else if (valuetype == "u") {
 			// ass uuencoded
 			auto valuedata = agi::ass::UUDecode(value.c_str(), value.c_str() + value.size());
@@ -218,6 +223,12 @@ void AssParser::ParseExtradataLine(std::string const &data) {
 		target->next_extradata_id = std::max(id+1, target->next_extradata_id);
 		target->Extradata.push_back(ExtradataEntry{id, std::move(key), std::move(value)});
 	}
+}
+
+std::string AssParser::SanitizeLine(std::string const& data) {
+	std::string result = data;
+	boost::replace_all(result, std::string("\0", 1), "\uFFFD");		// Unicode replacement character
+	return result;
 }
 
 void AssParser::AddLine(std::string const& data) {

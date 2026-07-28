@@ -5,7 +5,7 @@ blocks and redundant/duplicate tags
 writing) @ http://www.malakith.net/aegiwiki
 * Requires cleantags.lua to be available in automation's include folder
 * The changes performed on your subtitles are guaranteed to be undo-able provided that Aegisub's undo 
-mechanism works. Even so, I am not resposible if it damages your subtitles permanently, so please 
+mechanism works. Even so, I am not responsible if it damages your subtitles permanently, so please 
 back up your subtitle file before applying the cleaning up
 
 Copyright (c) 2007-2009 Muhammad Lukman Nasaruddin (aka ai-chan, Aegisub's forum member)

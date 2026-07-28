@@ -74,12 +74,12 @@ public:
 	/// Draw setup controls
 	/// @param parent Parent window to add controls to
 	/// @param c Project context
-	virtual wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c) { return nullptr; }
+	virtual wxWindow *GetConfigDialogWindow([[maybe_unused]] wxWindow *parent, [[maybe_unused]] agi::Context *c) { return nullptr; }
 
 	/// Load settings to use from the configuration dialog
 	/// @param is_default If true use default settings instead
 	/// @param c Project context
-	virtual void LoadSettings(bool is_default, agi::Context *c) { }
+	virtual void LoadSettings([[maybe_unused]] bool is_default, [[maybe_unused]] agi::Context *c) { }
 };
 
 typedef boost::intrusive::make_list<AssExportFilter, boost::intrusive::constant_time_size<false>>::type FilterList;

@@ -287,7 +287,7 @@ void DialogueTimingMarker::SetPosition(int new_position) {
 /// addition, any markers for inactive lines that start/end at the same time
 /// as the active line starts/ends can optionally be dragged along with the
 /// active line's markers, updating those lines as well.
-class AudioTimingControllerDialogue final : public AudioTimingController {
+class AudioTimingControllerDialogue final : public AudioTimingController, private agi::signal::ConnectionScope {
 	/// The rendering style for the active line's start marker
 	Pen style_left{"Colour/Audio Display/Line boundary Start", "Audio/Line Boundaries Thickness"};
 	/// The rendering style for the active line's end marker
@@ -389,7 +389,7 @@ public:
 
 	// AudioTimingController interface
 	void GetRenderingStyles(AudioRenderingStyleRanges &ranges) const override;
-	void GetLabels(TimeRange const& range, std::vector<AudioLabel> &out) const override { }
+	void GetLabels(TimeRange const&, std::vector<AudioLabel> &) const override { }
 	void Next(NextMode mode) override;
 	void Prev() override;
 	void Revert() override;
@@ -425,9 +425,9 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , active_line_connection(c->selectionController->AddActiveLineListener(&AudioTimingControllerDialogue::Revert, this))
 , selection_connection(c->selectionController->AddSelectionListener(&AudioTimingControllerDialogue::OnSelectedSetChanged, this))
 {
-	keyframes_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
-	video_position_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
-	seconds_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); });
+	BindConnection(keyframes_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
+	BindConnection(video_position_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
+	BindConnection(seconds_provider.AddMarkerMovedListener([this]{ AnnounceMarkerMoved(); }));
 
 	Revert();
 }
@@ -445,8 +445,8 @@ void AudioTimingControllerDialogue::GetMarkers(const TimeRange &range, AudioMark
 		boost::upper_bound(markers, range.end(), marker_ptr_cmp()),
 		back_inserter(out_markers));
 
-	keyframes_provider.GetMarkers(range, out_markers);
 	video_position_provider.GetMarkers(range, out_markers);
+	keyframes_provider.GetMarkers(range, out_markers);
 }
 
 void AudioTimingControllerDialogue::OnSelectedSetChanged()
@@ -635,7 +635,7 @@ std::vector<AudioMarker*> AudioTimingControllerDialogue::OnLeftClick(int ms, boo
 	return ret;
 }
 
-std::vector<AudioMarker*> AudioTimingControllerDialogue::OnRightClick(int ms, bool, int sensitivity, int snap_range)
+std::vector<AudioMarker*> AudioTimingControllerDialogue::OnRightClick(int ms, bool, int, int snap_range)
 {
 	clicked_ms = INT_MIN;
 	std::vector<AudioMarker*> ret = GetRightMarkers();
@@ -897,8 +897,8 @@ int AudioTimingControllerDialogue::SnapMarkers(int snap_range, std::vector<Audio
 
 		snap_markers.clear();
 		TimeRange range(pos - snap_range, pos + snap_range);
-		keyframes_provider.GetMarkers(range, snap_markers);
-		video_position_provider.GetMarkers(range, snap_markers);
+		keyframes_provider.GetSnapMarkers(range, snap_markers);
+		video_position_provider.GetSnapMarkers(range, snap_markers);
 
 		for (const auto marker : snap_markers)
 		{

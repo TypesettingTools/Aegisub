@@ -361,3 +361,20 @@ BEGIN
 	10110 "Berkas Video Aegisub"
 END
 
+// by Kerim Demirkaynak
+LANGUAGE LANG_TURKISH, SUBLANG_DEFAULT
+STRINGTABLE
+BEGIN
+	10000 "Aegisub"
+	10001 "Aegisub ile biçimlendirilmiş altyazılar oluştur ve düzenle."
+	10101 "Aegisub altyazı dosyası"
+	10102 "Aegisub Advanced SSA altyazısı"
+	10103 "Aegisub SubStation Alpha altyazısı"
+	10104 "Aegisub SubRip metin altyazısı"
+	10105 "Aegisub MPEG-4 zamanlanmış metni"
+	10106 "Aegisub Matroska altyazısı"
+	10107 "Aegisub düz metin dosyası"
+	10108 "Aegisub medya dosyası"
+	10109 "Aegisub ses dosyası"
+	10110 "Aegisub video dosyası"
+END

@@ -17,12 +17,13 @@
 #include <libaegisub/format.h>
 
 #include <libaegisub/charset_conv.h>
+#include <libaegisub/endian.h>
 #include <libaegisub/fs.h>
 
 #ifdef _MSC_VER
-#define WCHAR_T_ENC "utf-16le"
+constexpr const char *WCharEnc = "utf-16le";
 #else
-#define WCHAR_T_ENC "utf-32le"
+constexpr const char *WCharEnc = agi::endian::IsBigEndian ? "utf-32be" : "utf-32le";
 #endif
 
 template class boost::interprocess::basic_vectorstream<std::string>;
@@ -32,7 +33,7 @@ template class boost::interprocess::basic_vectorbuf<std::wstring>;
 
 namespace {
 template<typename Char>
-size_t actual_len(size_t max_len, const Char *value) {
+int actual_len(int max_len, const Char *value) {
 	int len = 0;
 	while (value[len] && (max_len <= 0 || len < max_len)) ++len;
 	return len;
@@ -69,11 +70,11 @@ void convert_and_write(std::basic_ostream<Dst>& out, const Src *str, int len, co
 }
 
 void do_write_str(std::ostream& out, const wchar_t *str, int len) {
-	convert_and_write(out, str, len, WCHAR_T_ENC, "utf-8");
+	convert_and_write(out, str, len, WCharEnc, "utf-8");
 }
 
 void do_write_str(std::wostream& out, const char *str, int len) {
-	convert_and_write(out, str, len, "utf-8", WCHAR_T_ENC);
+	convert_and_write(out, str, len, "utf-8", WCharEnc);
 }
 
 template<typename Char>
@@ -310,4 +311,3 @@ template class formatter<char>;
 template class formatter<wchar_t>;
 
 } }
-

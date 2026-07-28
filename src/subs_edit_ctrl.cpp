@@ -87,6 +87,8 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 , thesaurus(std::make_unique<Thesaurus>())
 , context(context)
 {
+	osx::ime::inject(this);
+
 	// Set properties
 	SetWrapMode(wxSTC_WRAP_WORD);
 	SetMarginWidth(1,0);
@@ -134,14 +136,14 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 		UpdateStyle();
 	});
 
-	OPT_SUB("Subtitle/Edit Box/Font Face", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Subtitle/Edit Box/Font Size", &SubsTextEditCtrl::SetStyles, this);
+	BindConnection(OPT_SUB("Subtitle/Edit Box/Font Face", &SubsTextEditCtrl::SetStyles, this));
+	BindConnection(OPT_SUB("Subtitle/Edit Box/Font Size", &SubsTextEditCtrl::SetStyles, this));
 	Subscribe("Normal");
 	Subscribe("Comment");
 	Subscribe("Drawing Command");
 	Subscribe("Drawing X");
 	Subscribe("Drawing Y");
-	OPT_SUB("Colour/Subtitle/Syntax/Underline/Drawing Endpoint", &SubsTextEditCtrl::SetStyles, this);
+	BindConnection(OPT_SUB("Colour/Subtitle/Syntax/Underline/Drawing Endpoint", &SubsTextEditCtrl::SetStyles, this));
 	Subscribe("Brackets");
 	Subscribe("Slashes");
 	Subscribe("Tags");
@@ -151,9 +153,9 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	Subscribe("Karaoke Template");
 	Subscribe("Karaoke Variable");
 
-	OPT_SUB("Colour/Subtitle/Background", &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this);
-	OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this);
+	BindConnection(OPT_SUB("Colour/Subtitle/Background", &SubsTextEditCtrl::SetStyles, this));
+	BindConnection(OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this));
+	BindConnection(OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this));
 
 	Bind(wxEVT_MENU, [this](wxCommandEvent&) {
 		if (spellchecker) spellchecker->AddWord(currentWord);
@@ -172,9 +174,9 @@ SubsTextEditCtrl::~SubsTextEditCtrl() {
 }
 
 void SubsTextEditCtrl::Subscribe(std::string const& name) {
-	OPT_SUB("Colour/Subtitle/Syntax/" + name, &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Background/" + name, &SubsTextEditCtrl::SetStyles, this);
-	OPT_SUB("Colour/Subtitle/Syntax/Bold/" + name, &SubsTextEditCtrl::SetStyles, this);
+	BindConnection(OPT_SUB("Colour/Subtitle/Syntax/" + name, &SubsTextEditCtrl::SetStyles, this));
+	BindConnection(OPT_SUB("Colour/Subtitle/Syntax/Background/" + name, &SubsTextEditCtrl::SetStyles, this));
+	BindConnection(OPT_SUB("Colour/Subtitle/Syntax/Bold/" + name, &SubsTextEditCtrl::SetStyles, this));
 }
 
 BEGIN_EVENT_TABLE(SubsTextEditCtrl,wxStyledTextCtrl)
@@ -192,16 +194,28 @@ void SubsTextEditCtrl::OnLoseFocus(wxFocusEvent &event) {
 }
 
 void SubsTextEditCtrl::OnKeyDown(wxKeyEvent &event) {
+	if (osx::ime::process_key_event(this, event)) return;
 	event.Skip();
+
+	bool linebreak = event.GetKeyCode() == WXK_RETURN && event.GetModifiers() == wxMOD_SHIFT;
+#ifndef __WXMAC__
+	bool hardspace = event.GetKeyCode() == WXK_SPACE && event.GetModifiers() == (wxMOD_CMD | wxMOD_SHIFT);
+#else
+	bool hardspace = event.GetKeyCode() == WXK_SPACE && event.GetModifiers() == wxMOD_ALT;
+#endif
 
 	// Workaround for wxSTC eating tabs.
 	if (event.GetKeyCode() == WXK_TAB)
 		Navigate(event.ShiftDown() ? wxNavigationKeyEvent::IsBackward : wxNavigationKeyEvent::IsForward);
-	else if (event.GetKeyCode() == WXK_RETURN && event.GetModifiers() == wxMOD_SHIFT) {
+	else if (linebreak || hardspace) {
 		auto sel_start = GetSelectionStart(), sel_end = GetSelectionEnd();
 		wxCharBuffer old = GetTextRaw();
 		std::string data(old.data(), sel_start);
-		data.append(OPT_GET("Subtitle/Edit Box/Soft Line Break")->GetBool() ? "\\n" : "\\N");
+		if (linebreak) {
+			data.append(OPT_GET("Subtitle/Edit Box/Soft Line Break")->GetBool() ? "\\n" : "\\N");
+		} else if (hardspace) {
+			data.append("\\h");
+		}
 		data.append(old.data() + sel_end, old.length() - sel_end);
 		SetTextRaw(data.c_str());
 
@@ -222,7 +236,7 @@ void SubsTextEditCtrl::SetSyntaxStyle(int id, wxFont &font, std::string const& n
 }
 
 void SubsTextEditCtrl::SetStyles() {
-	wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	wxFont font = *wxNORMAL_FONT;
 	font.SetEncoding(wxFONTENCODING_DEFAULT); // this solves problems with some fonts not working properly
 	wxString fontname = FontFace("Subtitle/Edit Box");
 	if (!fontname.empty()) font.SetFaceName(fontname);
@@ -255,6 +269,10 @@ void SubsTextEditCtrl::SetStyles() {
 	// Misspelling indicator
 	IndicatorSetStyle(0,wxSTC_INDIC_SQUIGGLE);
 	IndicatorSetForeground(0,wxColour(255,0,0));
+
+	// IME pending text indicator
+	IndicatorSetStyle(1, wxSTC_INDIC_PLAIN);
+	IndicatorSetUnder(1, true);
 }
 
 void SubsTextEditCtrl::UpdateStyle() {
@@ -315,6 +333,7 @@ void SubsTextEditCtrl::UpdateCallTip() {
 }
 
 void SubsTextEditCtrl::SetTextTo(std::string const& text) {
+	osx::ime::invalidate(this);
 	SetEvtHandlerEnabled(false);
 	Freeze();
 

@@ -168,7 +168,8 @@ void LibassSubtitlesProvider::DrawSubtitles(VideoFrame &frame,double time) {
 	// Note: this relies on Aegisub always rendering at video storage res
 	ass_set_storage_size(renderer(), frame.width, frame.height);
 
-	ASS_Image* img = ass_render_frame(renderer(), ass_track, int(time * 1000), nullptr);
+	// Add 1e-6 to guard against floating point imprecision errors on int -> float -> *1000 -> int round trips
+	ASS_Image* img = ass_render_frame(renderer(), ass_track, floor(time * 1000 + 1e-6), nullptr);
 
 	// libass actually returns several alpha-masked monochrome images.
 	// Here, we loop through their linked list, get the colour of the current, and blend into the frame.

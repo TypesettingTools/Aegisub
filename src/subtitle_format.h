@@ -98,13 +98,13 @@ public:
 	/// @param[out] target Destination to read lines into
 	/// @param filename File to load
 	/// @param encoding Encoding to use. May be ignored by the reader.
-	virtual void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const { }
+	virtual void ReadFile([[maybe_unused]] AssFile *target, [[maybe_unused]] agi::fs::path const& filename, [[maybe_unused]] agi::vfr::Framerate const& fps, [[maybe_unused]] const char *encoding) const { }
 
 	/// Save a subtitle file
 	/// @param src Data to write
 	/// @param filename File to write to
 	/// @param encoding Encoding to use or empty string for default
-	virtual void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding="") const { }
+	virtual void WriteFile([[maybe_unused]] const AssFile *src, [[maybe_unused]] agi::fs::path const& filename, [[maybe_unused]] agi::vfr::Framerate const& fps, [[maybe_unused]] const char *encoding="") const { }
 
 	/// Export a subtitle file
 	///

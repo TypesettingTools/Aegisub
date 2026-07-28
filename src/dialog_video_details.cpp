@@ -38,6 +38,7 @@
 #include <boost/rational.hpp>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
+#include <wx/statbox.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 
@@ -51,19 +52,25 @@ void ShowVideoDetailsDialog(agi::Context *c) {
 	auto fps = provider->GetFPS();
 	boost::rational<int> ar(width, height);
 
+	auto video_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Video"));
+	wxWindow *video_sizer_box = video_sizer->GetStaticBox();
+
 	auto fg = new wxFlexGridSizer(2, 5, 10);
-	auto make_field = [&](wxString const& name, wxString const& value) {
-		fg->Add(new wxStaticText(&d, -1, name), 0, wxALIGN_CENTRE_VERTICAL);
-		fg->Add(new wxTextCtrl(&d, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
+	auto make_field = [&, video_sizer_box](wxString const& name, wxString const& value) {
+		fg->Add(new wxStaticText(video_sizer_box, -1, name), 0, wxALIGN_CENTRE_VERTICAL);
+		fg->Add(new wxTextCtrl(video_sizer_box, -1, value, wxDefaultPosition, wxSize(300,-1), wxTE_READONLY), 0, wxALIGN_CENTRE_VERTICAL | wxEXPAND);
 	};
 	make_field(_("File name:"), c->project->VideoName().wstring());
 	make_field(_("FPS:"), fmt_wx("%.3f", fps.FPS()));
 	make_field(_("Resolution:"), fmt_wx("%dx%d (%d:%d)", width, height, ar.numerator(), ar.denominator()));
-	make_field(_("Length:"), fmt_plural(framecount, "1 frame", "%d frames (%s)",
+	make_field(_("Length:"), fmt_plural(framecount, "%d frame (%s)", "%d frames (%s)",
 		framecount, agi::Time(fps.TimeAtFrame(framecount - 1)).GetAssFormatted(true)));
+	make_field(_("Actual color matrix:"), agi::ycbcr::matrix_to_string(provider->GetRealColorSpace().matrix));
+	make_field(_("Forced color matrix:"), agi::ycbcr::matrix_to_string(provider->GetColorSpace().matrix));
+	make_field(_("Actual color range:"), agi::ycbcr::range_to_string(provider->GetRealColorSpace().range));
+	make_field(_("Forced color range:"), agi::ycbcr::range_to_string(provider->GetColorSpace().range));
 	make_field(_("Decoder:"), to_wx(provider->GetDecoderName()));
 
-	auto video_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Video"));
 	video_sizer->Add(fg);
 
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);

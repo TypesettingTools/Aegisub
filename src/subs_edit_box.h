@@ -27,9 +27,12 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#include "tooltip_binding.h"
+
 #include <array>
 #include <boost/container/map.hpp>
 #include <boost/flyweight/flyweight_fwd.hpp>
+#include <list>
 #include <vector>
 
 #include <wx/combobox.h>
@@ -68,6 +71,7 @@ class SubsEditBox final : public wxPanel {
 	};
 
 	std::vector<agi::signal::Connection> connections;
+	std::list<ToolTipBinding> tool_tip_bindings;
 
 	/// Currently active dialogue line
 	AssDialogue *line = nullptr;

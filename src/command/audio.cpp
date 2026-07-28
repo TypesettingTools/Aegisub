@@ -82,7 +82,7 @@ struct audio_open final : public Command {
 		auto str = from_wx(_("Audio Formats") + " (*.aac,*.ac3,*.ape,*.dts,*.eac3,*.flac,*.m4a,*.mka,*.mp3,*.mp4,*.ogg,*.opus,*.w64,*.wav,*.wma)|*.aac;*.ac3;*.ape;*.dts;*.eac3;*.flac;*.m4a;*.mka;*.mp3;*.mp4;*.ogg;*.opus;*.w64;*.wav;*.wma|"
 					+ _("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts)|*.asf;*.avi;*.avs;*.d2v;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts|"
 					+ _("All Files") + " (*.*)|*.*");
-		auto filename = OpenFileSelector(_("Open Audio File"), "Path/Last/Audio", "", "", str, c->parent);
+		auto filename = OpenFileSelector(wxGETTEXT_IN_CONTEXT("dialog title", "Open Audio File"), "Path/Last/Audio", "", "", str, c->parent);
 		if (!filename.empty())
 			c->project->LoadAudio(filename);
 	}
@@ -174,7 +174,7 @@ struct audio_save_clip final : public Command {
 		auto const& sel = c->selectionController->GetSelectedSet();
 		if (sel.empty()) return;
 
-		auto filename = SaveFileSelector(_("Save audio clip"), "", "", "wav", "", c->parent);
+		auto filename = SaveFileSelector(_("Save Audio Clip"), "", "", "wav", "", c->parent);
 		if (filename.empty()) return;
 
 		agi::Time start = INT_MAX, end = 0;
@@ -403,6 +403,28 @@ struct audio_go_to final : public validate_audio_open {
 	}
 };
 
+struct audio_go_to_start final : public validate_audio_open {
+	CMD_NAME("audio/go_to/start")
+	STR_MENU("Go to selection start")
+	STR_DISP("Go to selection start")
+	STR_HELP("Scroll the audio display to center on the start of current audio selection")
+
+	void operator()(agi::Context *c) override {
+		c->audioBox->ScrollToActiveLine(AudioBox::ScrollMode::Start);
+	}
+};
+
+struct audio_go_to_end final : public validate_audio_open {
+	CMD_NAME("audio/go_to/end")
+	STR_MENU("Go to selection end")
+	STR_DISP("Go to selection end")
+	STR_HELP("Scroll the audio display to center on the end of current audio selection")
+
+	void operator()(agi::Context *c) override {
+		c->audioBox->ScrollToActiveLine(AudioBox::ScrollMode::End);
+	}
+};
+
 struct audio_scroll_left final : public validate_audio_open {
 	CMD_NAME("audio/scroll/left")
 		STR_MENU("Scroll left")
@@ -543,6 +565,8 @@ namespace cmd {
 		reg(std::make_unique<audio_commit_next>());
 		reg(std::make_unique<audio_commit_stay>());
 		reg(std::make_unique<audio_go_to>());
+		reg(std::make_unique<audio_go_to_start>());
+		reg(std::make_unique<audio_go_to_end>());
 		reg(std::make_unique<audio_karaoke>());
 		reg(std::make_unique<audio_open>());
 		reg(std::make_unique<audio_open_blank>());

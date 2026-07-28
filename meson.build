@@ -2,9 +2,11 @@ project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
         meson_version: '>=0.60.0',
         default_options: [
-            'b_ndebug=if-release',
             'cpp_std=c++20',
+            'warning_level=3',
             'buildtype=debugoptimized',
+            'b_ndebug=if-release',
+
             'harfbuzz:icu=disabled',
             'ffmpeg:libdav1d=enabled',
             'luajit:default_library=static',
@@ -12,12 +14,12 @@ project('Aegisub', ['c', 'cpp'],
             'luajit:lua52compat=true',
             'luajit:luajit=false',
         ],
-        version: '3.4.1')
+        version: '3.5.0')
 
 cmake = import('cmake')
 
 if host_machine.system() == 'windows'
-    add_project_arguments('-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
+    add_project_arguments('-DUNICODE', '-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
 
     if not get_option('csri').disabled()
         add_global_arguments('-DCSRI_NO_EXPORT', language: 'c')
@@ -104,12 +106,18 @@ deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
-boost_modules = ['chrono', 'thread', 'locale']
+boost_static = meson.version().version_compare('>=0.63.0') and get_option('prefer_static')    # boost dependencies do not respect prefer_static https://github.com/mesonbuild/meson/issues/15458
+boost_modules = ['chrono', 'locale']
+
+if boost_static
+    boost_modules += 'thread'   # static boost dependencies do not include transitive dependencies https://github.com/mesonbuild/meson/issues/15457
+endif
+
 if not get_option('local_boost')
     boost_dep = dependency('boost', version: '>=1.70.0',
                             modules: boost_modules,
                             required: false,
-                            static: get_option('default_library') == 'static')
+                            static: boost_static)
 
     if boost_dep.version().version_compare('<1.77.0')
         # boost regex is header-only since version 1.77.0, and some distributions have stopped shipping the stub module since then.
@@ -117,7 +125,7 @@ if not get_option('local_boost')
         boost_dep = dependency('boost', version: '>=1.70.0',
                                 modules: boost_modules + ['regex'],
                                 required: false,
-                                static: get_option('default_library') == 'static')
+                                static: boost_static)
     endif
 endif
 
@@ -149,6 +157,7 @@ wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
 
 if wx_dep.found()
     deps += wx_dep
+    wx_defines_dep = wx_dep
 else
     build_shared = true
     if get_option('default_library') == 'static'
@@ -176,11 +185,16 @@ else
 
     wx = cmake.subproject('wxWidgets', options: opt_var)
 
-    deps += [
-        wx.dependency('wxmono'),
-        wx.dependency('wxregex'),
-        wx.dependency('wxscintilla')
-    ]
+    deps += wx.dependency('wxmono')
+    foreach cmake_target: ['wxregex', 'wxscintilla', 'wxlexilla']
+        if wx.target_list().contains(cmake_target)
+            deps += wx.dependency(cmake_target)
+        endif
+    endforeach
+
+    # meson doesn't let you get defines from a library that has sources which need to be built,
+    # but allows it if you use partial_dependency() to get only includes and compile args.
+    wx_defines_dep = wx.dependency('wxmono').partial_dependency(compile_args: true, includes: true)
 
     if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
         deps += [
@@ -205,13 +219,14 @@ else
             error('Missing Windows SDK Common Controls Library (commctrl.h / comctl32.lib)')
         endif
     endif
+
+    conf.set('WITH_INTERNAL_WXWIDGETS', 1)
 endif
 
 deps += dependency('icu-uc', version: '>=4.8.1.1')
 deps += dependency('icu-i18n', version: '>=4.8.1.1')
 
-dep_avail = []
-foreach dep: [
+check_deps = [
     # audio, in order of precedence
     ['libpulse', [], 'PulseAudio', [], []],
     ['alsa', [], 'ALSA', [], []],
@@ -224,6 +239,17 @@ foreach dep: [
     ['hunspell', [], 'Hunspell', ['hunspell', 'hunspell_dep'], []],
     ['uchardet', [], 'uchardet', ['uchardet', 'uchardet_dep'], []],
 ]
+
+if host_machine.system() == 'linux'
+    if cc.get_define('__WXGTK3__', dependencies: wx_defines_dep, prefix: '#include <wx/defs.h>') != ''
+        check_deps += [['libportal-gtk3', [], 'libportal', [], []]]
+    else
+        check_deps += [['libportal', [], 'libportal', [], []]]
+    endif
+endif
+
+dep_avail = []
+foreach dep: check_deps
     optname = dep[0].split('-')[0]
     if not get_option(optname).disabled()
         # [provide] section is ignored if required is false;
@@ -277,8 +303,8 @@ if host_machine.system() == 'windows' and cc.has_header('dwrite_3.h')
 endif
 
 if host_machine.system() == 'darwin'
-    frameworks_dep = dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon', 'IOKit', 'QuartzCore'])
-    deps += frameworks_dep
+    deps += dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon', 'IOKit', 'QuartzCore'])
+    deps += dependency('appleframeworks', modules : ['ScreenCaptureKit'], required : false)
 endif
 
 # TODO: OSS
@@ -359,6 +385,8 @@ if not dep_gl.found()
 endif
 if host_machine.system() == 'darwin'
     conf.set('HAVE_OPENGL_GL_H', 1)
+else
+    conf.set('HAVE_GL_GLEXT_H', cc.has_header('GL/glext.h'))
 endif
 
 if not dep_gl.found()
@@ -379,7 +407,7 @@ if cc.has_function('alloca', prefix: '#include <stdlib.h>')
 elif cc.has_function('alloca', prefix: '#include <alloca.h>')
     conf.set('HAVE_ALLOCA_H', true)
 elif cc.has_header_symbol('malloc.h', '_alloca', prefix: '#include <stdlib.h>')
-    # cc.has_function() can't find _alloca() intrinsic on cl.exe, 
+    # cc.has_function() can't find _alloca() intrinsic on cl.exe,
     # so we use cc.has_header_symbol().
     conf.set('HAVE_MALLOC_H', true)
     conf.set('HAVE_UNDERLINE_ALLOCA', true)
@@ -387,6 +415,19 @@ elif cc.has_header_symbol('malloc.h', 'alloca', prefix: '#include <stdlib.h>')
     # clang-cl.exe has the wrong name for cl.exe's _alloca()
     conf.set('HAVE_MALLOC_H', true)
 endif
+
+# the configuration_data as compiler flags
+conf_defines = []
+foreach key : conf.keys()
+    # Some hacks since meson apparently can't give you the type of a variable
+    if '@0@'.format(conf.get(key)) == 'true'
+        assert(conf.get(key) == true)
+        conf_defines += '-D@0@'.format(key)
+    elif '@0@'.format(conf.get(key)) != 'false'
+        # conf.set() with a string quotes the string so conf.get(key) can't be the actual string 'false'
+        conf_defines += '-D@0@=@1@'.format(key, conf.get(key))
+    endif
+endforeach
 
 aegisub_order_dep = []
 aegisub_defines = []
@@ -396,16 +437,7 @@ if get_option('b_pch')
     aegisub_order_dep += configure_file(output: 'acconf.h', configuration: conf)
 else
     # Manually pass the feature flags as compiler args
-    foreach key : conf.keys()
-        # Some hacks since meson apparently can't give you the type of a variable
-        if '@0@'.format(conf.get(key)) == 'true'
-            assert(conf.get(key) == true)
-            aegisub_defines += '-D@0@'.format(key)
-        elif '@0@'.format(conf.get(key)) != 'false'
-            # conf.set() with a string quotes the string so conf.get(key) can't be the actual string 'false'
-            aegisub_defines += '-D@0@=@1@'.format(key, conf.get(key))
-        endif
-    endforeach
+    aegisub_defines += conf_defines
 
     if host_machine.system() == 'windows'
         # This is also part of all the PCHs

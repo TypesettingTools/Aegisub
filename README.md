@@ -53,7 +53,6 @@ For personal usage, you can use pip and homebrew to install almost all of Aegisu
     export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
 
 When compiling on Apple Silicon, replace `/usr/local` with `/opt/homebrew`.
-When compiling on macOS 15.0 (Sequoia) or later, you may also want to `export MACOS_X_DEPLOYMENT_TARGET=14.0` to make the color picker work.
 
 Once the dependencies are installed, build Aegisub with `meson build && meson compile -C build`.
 
@@ -80,7 +79,7 @@ fontconfig:  libfontconfig1-dev
 libass:      libass-dev
 boost:       libboost-chrono-dev libboost-locale-dev libboost-regex-dev libboost-system-dev libboost-thread-dev
 zlib:        zlib1g-dev
-WxWidgets:   wx3.2-headers libwxgtk3.2-dev  or  wx3.0-headers libwxgtk3.0-dev
+WxWidgets:   wx3.2-headers libwxgtk3.2-dev
 ICU:         icu-devtools libicu-dev
 pulse-audio: libpulse-dev
 ALSA:        libasound2-dev
@@ -93,11 +92,12 @@ libcurl:     libcurl4-openssl-dev  or  libcurl4-gnutls-dev
 opengl:      libgl1-mesa-dev
 gtest:       libgtest-dev
 gmock:       libgmock-dev
+libportal:   libportal-gtk3-dev
 ```
 
 I.e. to install on Ubuntu 24.04 run this command:
 ``` bash
-sudo apt install build-essential pkg-config meson ninja-build gettext intltool libfontconfig1-dev libass-dev libboost-chrono-dev libboost-locale-dev libboost-regex-dev libboost-system-dev libboost-thread-dev zlib1g-dev wx3.2-headers libwxgtk3.2-dev icu-devtools libicu-dev libpulse-dev libasound2-dev libopenal-dev libffms2-dev libfftw3-dev libhunspell-dev libuchardet-dev libcurl4-gnutls-dev libgl1-mesa-dev libgtest-dev libgmock-dev
+sudo apt install build-essential pkg-config meson ninja-build gettext intltool libfontconfig1-dev libass-dev libboost-chrono-dev libboost-locale-dev libboost-regex-dev libboost-system-dev libboost-thread-dev zlib1g-dev wx3.2-headers libwxgtk3.2-dev icu-devtools libicu-dev libpulse-dev libasound2-dev libopenal-dev libffms2-dev libfftw3-dev libhunspell-dev libuchardet-dev libcurl4-gnutls-dev libgl1-mesa-dev libgtest-dev libgmock-dev libportal-gtk3-dev
 ```
 
 #### Build Aegisub
@@ -118,6 +118,8 @@ If you are packaging Aegisub for a Linux distribution, here are a few things you
   For distributions that do not allow downloading additional sources at build time, the downloaded LuaJIT subproject is included in the source tarballs distributed with releases.
 - When linked against libstdc++, Aegisub needs libstdc++ 6.0.32 or later due to https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95048.
   Aegisub's tests will detect this bug, but if you're not running tests on packaging you'll need to make sure the libstdc++ version is recent enough.
+- Aegisub uses OpenGL through wxWidgets. For Aegisub to work directly on Wayland (as opposed to Xwayland), wxWidgets needs to be built with EGL enabled.
+  Aegisub will automatically fall back to X11 when it detects missing EGL support.
 
 The following commands are an example for how to build Aegisub with the goal of creating a distribution package:
 
@@ -131,16 +133,8 @@ meson compile -C builddir
 meson install -C builddir --skip-subprojects luajit
 ```
 
-## Updating Moonscript
-
-From within the Moonscript repository, run `bin/moon bin/splat.moon -l moonscript moonscript/ > bin/moonscript.lua`.
-Open the newly created `bin/moonscript.lua`, and within it make the following changes:
-
-1. Prepend the final line of the file, `package.preload["moonscript"]()`, with a `return`, producing `return package.preload["moonscript"]()`.
-2. Within the function at `package.preload['moonscript.base']`, remove references to `moon_loader`, `insert_loader`, and `remove_loader`. This means removing their declarations, definitions, and entries in the returned table.
-3. Within the function at `package.preload['moonscript']`, remove the line `_with_0.insert_loader()`.
-
-The file is now ready for use, to be placed in `automation/include` within the Aegisub repo.
+## Developer Documenation
+Some documentation for developers is available in [docs/developer_docs.md](docs/developer_docs.md).
 
 ## License
 

@@ -19,11 +19,12 @@
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
+#include <stdexcept>
 
 namespace util {
-bool compare(const std::string &file1, const std::string &file2) {
+bool compare(agi::fs::path const& file1, agi::fs::path const& file2) {
 	std::stringstream ss1, ss2;
-	std::ifstream if1(file1.c_str(), std::ios::binary), if2(file2.c_str(), std::ios::binary);
+	std::ifstream if1(file1, std::ios::binary), if2(file2, std::ios::binary);
 	ss1 << if1.rdbuf();
 	ss2 << if2.rdbuf();
 	return ss1.str() == ss2.str();
@@ -43,4 +44,10 @@ int read_written_rand(const char *path) {
 	return value;
 }
 
+agi::fs::path test_data_dir() {
+	const char *path = std::getenv("AEGISUB_TEST_DATA_DIR");
+	if (!path)
+		throw std::runtime_error("AEGISUB_TEST_DATA_DIR not set in environment");
+	return path;
+}
 }

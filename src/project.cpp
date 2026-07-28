@@ -48,15 +48,15 @@
 #include <wx/msgdlg.h>
 
 Project::Project(agi::Context *c) : context(c) {
-	OPT_SUB("Audio/Cache/Type", &Project::ReloadAudio, this);
-	OPT_SUB("Audio/Provider", &Project::ReloadAudio, this);
-	OPT_SUB("Provider/Audio/FFmpegSource/Decode Error Handling", &Project::ReloadAudio, this);
-	OPT_SUB("Provider/Avisynth/Allow Ancient", &Project::ReloadVideo, this);
-	OPT_SUB("Provider/Avisynth/Memory Max", &Project::ReloadVideo, this);
-	OPT_SUB("Provider/Video/FFmpegSource/Decoding Threads", &Project::ReloadVideo, this);
-	OPT_SUB("Provider/Video/FFmpegSource/Unsafe Seeking", &Project::ReloadVideo, this);
-	OPT_SUB("Subtitle/Provider", &Project::ReloadVideo, this);
-	OPT_SUB("Video/Provider", &Project::ReloadVideo, this);
+	BindConnection(OPT_SUB("Audio/Cache/Type", &Project::ReloadAudio, this));
+	BindConnection(OPT_SUB("Audio/Provider", &Project::ReloadAudio, this));
+	BindConnection(OPT_SUB("Provider/Audio/FFmpegSource/Decode Error Handling", &Project::ReloadAudio, this));
+	BindConnection(OPT_SUB("Provider/Avisynth/Allow Ancient", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Provider/Avisynth/Memory Max", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Provider/Video/FFmpegSource/Decoding Threads", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Provider/Video/FFmpegSource/Unsafe Seeking", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Subtitle/Provider", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Video/Provider", &Project::ReloadVideo, this));
 }
 
 Project::~Project() { }
@@ -179,6 +179,19 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 	auto timecodes = context->path->MakeAbsolute(properties.timecodes_file, "?script");
 	auto keyframes = context->path->MakeAbsolute(properties.keyframes_file, "?script");
 
+	// There are TOCTOU races here but they should not cause any actual harm.
+	if (!agi::fs::Exists(audio) && !context->path->IsDummyPath(audio))
+		audio = "";
+
+	if (!agi::fs::Exists(video) && !context->path->IsDummyPath(video))
+		video = "";
+
+	if (!agi::fs::Exists(timecodes))
+		timecodes = "";
+
+	if (!agi::fs::Exists(keyframes))
+		keyframes = "";
+
 	if (video == video_file && audio == audio_file && keyframes == keyframes_file && timecodes == timecodes_file)
 		return;
 
@@ -287,8 +300,7 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 		progress = new DialogProgress(context->parent);
 
 	try {
-		auto old_matrix = context->ass->GetScriptInfo("YCbCr Matrix");
-		video_provider = std::make_unique<AsyncVideoProvider>(path, old_matrix, context->videoController.get(), progress);
+		video_provider = std::make_unique<AsyncVideoProvider>(path, context->ass->GetYCbCrMatrix(), context->videoController.get(), progress);
 	}
 	catch (agi::UserCancelException const&) { return false; }
 	catch (agi::fs::FileSystemError const& err) {

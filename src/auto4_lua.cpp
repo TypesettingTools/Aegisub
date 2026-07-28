@@ -268,12 +268,18 @@ namespace {
 		lua_pushvalue(L, 1);
 		std::unique_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
 		lua_pop(L, 1);
-		if (typeid(*et) != typeid(AssStyle))
+
+		AssEntry *etp = et.get();	// Shut up a compiler warning
+		if (typeid(*etp) != typeid(AssStyle))
 			return error(L, "Not a style entry");
 
 		double width, height, descent, extlead;
-		if (!Automation4::CalculateTextExtents(static_cast<AssStyle*>(et.get()),
-				check_string(L, 2), width, height, descent, extlead))
+		int result;
+
+		agi::dispatch::Main().Sync([&]() {
+			result = Automation4::CalculateTextExtents(static_cast<AssStyle*>(etp), check_string(L, 2), width, height, descent, extlead);
+		});
+		if (!result)
 			return error(L, "Some internal error occurred calculating text_extents");
 
 		push_value(L, width);
@@ -822,7 +828,7 @@ namespace {
 		subsobj->ProcessingComplete();
 
 		if (err) {
-			wxLogWarning("Runtime error in Lua macro validation function:\n%s", get_wxstring(L, -1));
+			wxLogWarning(fmt_tl("Runtime error in Lua macro validation function:\n%s", get_wxstring(L, -1)));
 			lua_pop(L, 2);
 			return false;
 		}
@@ -876,7 +882,7 @@ namespace {
 		if (lua_isnumber(L, -1)) {
 			active_idx = lua_tointeger(L, -1);
 			if (active_idx < 1 || active_idx > (int)lines.size()) {
-				wxLogError("Active row %d is out of bounds (must be 1-%u)", active_idx, lines.size());
+				wxLogError(fmt_tl("Active row %d is out of bounds (must be 1-%u)", active_idx, lines.size()));
 				active_idx = original_active;
 			}
 		}
@@ -892,16 +898,17 @@ namespace {
 					return;
 				int cur = lua_tointeger(L, -1);
 				if (cur < 1 || cur > (int)lines.size()) {
-					wxLogError("Selected row %d is out of bounds (must be 1-%u)", cur, lines.size());
+					wxLogError(fmt_tl("Selected row %d is out of bounds (must be 1-%u)", cur, lines.size()));
 					throw LuaForEachBreak();
 				}
 
-				if (typeid(*lines[cur - 1]) != typeid(AssDialogue)) {
-					wxLogError("Selected row %d is not a dialogue line", cur);
+				AssEntry *curline = lines[cur - 1];
+				if (typeid(*curline) != typeid(AssDialogue)) {
+					wxLogError(fmt_tl("Selected row %d is not a dialogue line", cur));
 					throw LuaForEachBreak();
 				}
 
-				auto diag = static_cast<AssDialogue*>(lines[cur - 1]);
+				auto diag = static_cast<AssDialogue*>(curline);
 				sel.insert(diag);
 				if (!active_line || active_idx == cur)
 					active_line = diag;
@@ -963,7 +970,7 @@ namespace {
 
 		bool result = false;
 		if (err)
-			wxLogWarning("Runtime error in Lua macro IsActive function:\n%s", get_wxstring(L, -1));
+			wxLogWarning(fmt_tl("Runtime error in Lua macro IsActive function:\n%s", get_wxstring(L, -1)));
 		else
 			result = !!lua_toboolean(L, -1);
 
@@ -1050,7 +1057,7 @@ namespace {
 		}
 	}
 
-	std::unique_ptr<ScriptDialog> LuaExportFilter::GenerateConfigDialog(wxWindow *parent, agi::Context *c)
+	std::unique_ptr<ScriptDialog> LuaExportFilter::GenerateConfigDialog(wxWindow *, agi::Context *c)
 	{
 		if (!has_config)
 			return nullptr;
@@ -1069,7 +1076,7 @@ namespace {
 		subsobj->ProcessingComplete();
 
 		if (err) {
-			wxLogWarning("Runtime error in Lua config dialog function:\n%s", get_wxstring(L, -1));
+			wxLogWarning(fmt_tl("Runtime error in Lua config dialog function:\n%s", get_wxstring(L, -1)));
 			lua_pop(L, 1); // remove error message
 		} else {
 			// Create config dialogue from table on top of stack

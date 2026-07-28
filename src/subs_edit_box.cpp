@@ -51,7 +51,7 @@
 #include "subs_edit_ctrl.h"
 #include "text_selection_controller.h"
 #include "timeedit_ctrl.h"
-#include "tooltip_manager.h"
+#include "utils.h"
 #include "validators.h"
 
 #include <libaegisub/character_count.h>
@@ -77,7 +77,7 @@ void change_value(wxTextCtrl *ctrl, wxString const& value) {
 		ctrl->ChangeValue(value);
 }
 
-wxString new_value(wxComboBox *ctrl, wxCommandEvent &evt) {
+wxString new_value([[maybe_unused]] wxComboBox *ctrl, [[maybe_unused]] wxCommandEvent &evt) {
 #ifdef __WXGTK__
 	return ctrl->GetValue();
 #else
@@ -140,12 +140,12 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	effect_box = new Placeholder<wxComboBox>(this, _("Effect"), wxSize(80,-1), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, _("Effect for this line. This can be used to store extra information for karaoke scripts, or for the effects supported by the renderer."));
 	Bind(wxEVT_TEXT, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
 	Bind(wxEVT_COMBOBOX, &SubsEditBox::OnEffectChange, this, effect_box->GetId());
-	top_sizer->Add(effect_box, 3, wxALIGN_CENTER, 5);
+	top_sizer->Add(effect_box, 3, wxALIGN_CENTER, 0);
 
 	char_count = new wxTextCtrl(this, -1, "0", wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_CENTER);
 	char_count->SetInitialSize(char_count->GetSizeFromText(wxS("000")));
 	char_count->SetToolTip(_("Number of characters in the longest line of this subtitle."));
-	top_sizer->Add(char_count, 0, wxALIGN_CENTER, 5);
+	top_sizer->Add(char_count, 0, wxALIGN_CENTER, 0);
 
 	// Middle controls
 	middle_left_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -282,7 +282,7 @@ TimeEdit *SubsEditBox::MakeTimeCtrl(wxString const& tooltip, TimeField field) {
 void SubsEditBox::MakeButton(const char *cmd_name) {
 	cmd::Command *command = cmd::get(cmd_name);
 	wxBitmapButton *btn = new wxBitmapButton(this, -1, command->Icon());
-	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
+	tool_tip_bindings.emplace_back(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
 	middle_right_sizer->Add(btn, wxSizerFlags().Expand());
 	btn->Bind(wxEVT_BUTTON, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
@@ -291,7 +291,7 @@ void SubsEditBox::MakeButton(const char *cmd_name) {
 wxButton *SubsEditBox::MakeBottomButton(const char *cmd_name) {
 	cmd::Command *command = cmd::get(cmd_name);
 	wxButton *btn = new wxButton(this, -1, command->StrDisplay(c));
-	ToolTipManager::Bind(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
+	tool_tip_bindings.emplace_back(btn, command->StrHelp(), "Subtitle Edit Box", cmd_name);
 
 	btn->Bind(wxEVT_BUTTON, std::bind(&SubsEditBox::CallCommand, this, cmd_name));
 	return btn;
@@ -435,7 +435,8 @@ void SubsEditBox::UpdateFrameTiming(agi::vfr::Framerate const& fps) {
 }
 
 void SubsEditBox::OnKeyDown(wxKeyEvent &event) {
-	hotkey::check("Subtitle Edit Box", c, event);
+	if (!osx::ime::process_key_event(edit_ctrl, event))
+		hotkey::check("Subtitle Edit Box", c, event);
 }
 
 void SubsEditBox::OnChange(wxStyledTextEvent &event) {

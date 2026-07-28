@@ -30,9 +30,9 @@
 
 impl = require 'aegisub.__unicode_impl'
 
-check = require 'aegisub.argcheck'
+check = require 'aegisub.internal.argcheck'
 ffi = require 'ffi'
-ffi_util = require 'aegisub.ffi'
+ffi_util = require 'aegisub.internal.ffi'
 
 err_buff = ffi.new 'char *[1]'
 conv_func = (f) -> check'string' (str) ->

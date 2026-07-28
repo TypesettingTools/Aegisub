@@ -330,20 +330,20 @@ static void   myvsnprintf(char *dest,unsigned dsize,const char *fmt,va_list ap) 
 	}
 	if (*fmt == '0')
 	  zero = 1;
-	state = 2;
+	state = 2; // fallthrough
       case 2:
 	if (*fmt >= '0' && *fmt <= '9') {
 	  width = width * 10 + *fmt++ - '0';
 	  break;
 	}
-	state = 3;
+	state = 3; // fallthrough
       case 3:
 	if (*fmt == 'l') {
 	  ++ll;
 	  ++fmt;
 	  break;
 	}
-	state = 4;
+	state = 4; // fallthrough
       case 4:
 	switch (*fmt) {
 	  case 's':
@@ -554,9 +554,13 @@ static inline uint64_t	filepos(MatroskaFile *mf) {
   return mf->bufbase + mf->bufpos;
 }
 
-static void   readbytes(MatroskaFile *mf,void *buffer,int len) {
+static void   readbytes(MatroskaFile *mf,void *buffer,uint64_t len) {
   char	*cp = buffer;
-  int	nb = mf->buflen - mf->bufpos;
+
+  if (mf->buflen < mf->bufpos)
+      errorjmp(mf,"Unreachable: buffer position larger than buffer length : %d > %d",mf->buflen,mf->bufpos);
+
+  uint64_t	nb = mf->buflen - mf->bufpos;
 
   if (nb > len)
     nb = len;
@@ -580,10 +584,13 @@ static void   readbytes(MatroskaFile *mf,void *buffer,int len) {
 }
 
 static void   skipbytes(MatroskaFile *mf,uint64_t len) {
-  unsigned int	    nb = mf->buflen - mf->bufpos;
+  if (mf->buflen < mf->bufpos)
+      errorjmp(mf,"Unreachable: buffer position larger than buffer length : %d > %d",mf->buflen,mf->bufpos);
+
+  uint64_t    nb = mf->buflen - mf->bufpos;
 
   if (nb > len)
-    nb = (int)len;
+    nb = len;
 
   mf->bufpos += nb;
   len -= nb;
@@ -859,7 +866,7 @@ static void readString(MatroskaFile *mf,uint64_t len,char *buffer,int buflen) {
   nread = buflen - 1;
 
   if (nread > len)
-    nread = (int)len;
+    nread = len;
 
   readbytes(mf,buffer,nread);
   len -= nread;
@@ -871,7 +878,7 @@ static void readString(MatroskaFile *mf,uint64_t len,char *buffer,int buflen) {
 }
 
 static void readLangCC(MatroskaFile *mf, uint64_t len, char lcc[4]) {
-  unsigned  todo = len > 3 ? 3 : (int)len;
+  uint64_t  todo = len > 3 ? 3 : len;
 
   lcc[0] = lcc[1] = lcc[2] = lcc[3] = 0;
   readbytes(mf, lcc, todo);
@@ -1351,7 +1358,7 @@ static void parseTrackEntry(MatroskaFile *mf,uint64_t toplen) {
       }
       else
 	cp = alloca(cplen);
-      readbytes(mf,cp,(int)cplen);
+      readbytes(mf,cp,cplen);
       break;
     case 0x258688: // CodecName
       skipbytes(mf,len);
@@ -1421,7 +1428,7 @@ static void parseTrackEntry(MatroskaFile *mf,uint64_t toplen) {
 		    return;
 		  cslen = (unsigned)len;
 		  cs = alloca(cslen);
-		  readbytes(mf, cs, (int)cslen);
+		  readbytes(mf, cs, cslen);
 		  break;
 	      ENDFOR(mf);
 	      break;
@@ -2143,6 +2150,7 @@ static void parseBlockGroup(MatroskaFile *mf,uint64_t toplen,uint64_t timecode, 
 blockex:
       cur = start = filepos(mf);
       len = tmplen = toplen;
+      // fallthrough
     case 0xa1: // Block
       have_block = 1;
 
@@ -2249,7 +2257,7 @@ found:
 
       // we want to still load these bytes into cache
       for (v = filepos(mf) & ~0x3fff; v < len + dpos; v += 0x4000)
-	mf->cache->read(mf->cache,v,NULL,0); // touch page
+	mf->cache->read(mf->cache,v,NULL,0); // touch page (FIXME this doesn't really do anything)
 
       skipbytes(mf,len - filepos(mf) + dpos);
 
@@ -2418,13 +2426,14 @@ static int  readMoreBlocks(MatroskaFile *mf) {
 	  readUInt(mf,(unsigned)len);
 	  break;
 	case 0x5854: { // SilentTracks
-	  unsigned  stmask = 0, i, trk;
+	  // unsigned  stmask = 0;
+	  unsigned  i, trk;
 	  FOREACH(mf, len)
 	    case 0x58d7: // SilentTrackNumber
 	      trk = (unsigned)readUInt(mf, (unsigned)len);
 	      for (i = 0; i < mf->nTracks; ++i)
 		if (mf->Tracks[i]->Number == trk) {
-		  stmask |= 1 << i;
+		  // stmask |= 1 << i;
 		  break;
 		}
 	      break;

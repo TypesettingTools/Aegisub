@@ -52,7 +52,6 @@
 #include <GL/gl.h>
 #endif
 
-namespace {
 /// @class OpenGLTextGlyph
 /// @brief Struct storing the information needed to draw a glyph
 struct OpenGLTextGlyph {
@@ -216,8 +215,6 @@ public:
 		return TryToInsert(glyph);
 	}
 };
-
-}
 
 OpenGLText::OpenGLText() { }
 OpenGLText::~OpenGLText() { }

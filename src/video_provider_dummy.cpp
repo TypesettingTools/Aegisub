@@ -126,7 +126,7 @@ void DummyVideoProvider::GetFrame(int, VideoFrame &frame) {
 }
 
 namespace agi { class BackgroundRunner; }
-std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, std::string_view, agi::BackgroundRunner *) {
+std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const& filename, agi::ycbcr::Header, agi::BackgroundRunner *) {
 	// Use filename.generic_string here so forward slashes stay as they are
 	if (!filename.generic_string().starts_with("?dummy"))
 		return {};

@@ -33,7 +33,9 @@
 namespace agi {
 namespace osx {
 class AppNapDisabler {
+#ifdef __APPLE__
 	void *handle;
+#endif
 public:
 	AppNapDisabler(std::string reason);
 	~AppNapDisabler();

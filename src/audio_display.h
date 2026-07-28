@@ -48,10 +48,8 @@ class AudioRendererBitmapProvider;
 class TimeRange;
 
 // Helper classes used in implementation of the audio display
-namespace {
-	class AudioDisplayScrollbar;
-	class AudioDisplayTimeline;
-}
+class AudioDisplayScrollbar;
+class AudioDisplayTimeline;
 class AudioDisplayInteractionObject;
 class AudioMarkerInteractionObject;
 
@@ -65,6 +63,7 @@ class AudioDisplay: public wxWindow {
 	agi::signal::Connection audio_open_connection;
 
 	std::vector<agi::signal::Connection> connections;
+	std::vector<agi::signal::Connection> timing_controller_connections;
 	agi::Context *context;
 
 	/// The audio renderer manager
@@ -219,6 +218,10 @@ public:
 	/// @brief Scroll the audio display
 	/// @param pixel_position Absolute pixel to put at left edge of the audio display
 	void ScrollPixelToLeft(int pixel_position);
+
+	/// @brief Scroll the audio display
+	/// @param time Time in milliseconds to put at the center of the audio display
+	void ScrollTimeToCenter(int time);
 
 	/// @brief Scroll the audio display
 	/// @param range Time range to ensure is in view

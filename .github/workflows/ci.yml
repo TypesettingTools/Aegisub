@@ -20,6 +20,9 @@ jobs:
           - name: Windows MSVC Release
             os: windows-latest
             msvc: true
+            devenv: |
+              Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+              Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"
             buildtype: release
             args: >-
               -Ddefault_library=static
@@ -91,16 +94,22 @@ jobs:
           python -m pip install --upgrade pip setuptools
           pip install meson
 
-      - name: Setup MSVC
-        if: matrix.config.os == 'windows-latest' && matrix.config.msvc == true
-        uses: ilammy/msvc-dev-cmd@v1
+        # Taken from https://github.com/libass/libass/blob/0.17.5/.github/workflows/meson.yml#L118-L125
+      - name: Find Visual Studio
+        if: matrix.config.msvc
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (-not $vsPath) { throw "Could not find a Visual Studio installation" }
+          "VS=$vsPath"
+          "VS=$vsPath" >> $env:GITHUB_ENV
 
       - name: Install dependencies (Windows)
         if: matrix.config.os == 'windows-latest'
         run: |
           choco install ninja innosetup
 
-          $moonscripturl = "https://github.com/leafo/moonscript/releases/download/win32-v0.5.0/moonscript-187bac54ee5a7450013e9c38e005a0e671b76f45.zip"
+          $moonscripturl = "https://github.com/leafo/moonscript/releases/download/v0.6.0/moonscript-v0.6.0-windows-x86_64.zip"
           mkdir moonscript
           Invoke-WebRequest -Uri $moonscripturl -OutFile ".\moonscript\moonscript.zip"
           pushd moonscript
@@ -108,7 +117,7 @@ jobs:
           Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           popd
 
-          $gettexturl = "https://github.com/mlocati/gettext-iconv-windows/releases/download/v0.26-v1.17/gettext0.26-iconv1.17-static-64.zip"
+          $gettexturl = "https://github.com/mlocati/gettext-iconv-windows/releases/download/v1.0-v1.18-r3/gettext1.0-iconv1.18-static-64.zip"
           Invoke-WebRequest -Uri $gettexturl -OutFile ".\gettext.zip"
           Expand-Archive ".\gettext.zip" -DestinationPath gettext
           pushd gettext/bin
@@ -118,10 +127,7 @@ jobs:
       - name: Install dependencies (MacOS)
         if: startsWith(matrix.config.os, 'macos-')
         run: |
-          export HOMEBREW_NO_INSTALL_CLEANUP=1
-          export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
-          # Skip brew update for now, see https://github.com/actions/setup-python/issues/577
-          # brew update
+          brew update
           brew install ninja
           brew install libass zlib ffms2 fftw hunspell
           brew install pulseaudio  # NO OpenAL in github CI
@@ -130,31 +136,40 @@ jobs:
         if: startsWith(matrix.config.os, 'ubuntu-')
         run: |
           sudo apt-get update
-          sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev
+          sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev libportal-gtk3-dev
 
       - name: Configure
-        run: meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
+        run: |
+          ${{ matrix.config.devenv }}
+          meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
       - name: Build
-        run: meson compile -C build
+        run: |
+          ${{ matrix.config.devenv }}
+          meson compile -C build
 
       - name: Run test
-        run: meson test -C build --verbose "gtest main"
+        run: |
+          ${{ matrix.config.devenv }}
+          meson test -C build --verbose "gtest main"
 
       # Windows artifacts
       - name: Generate Windows installer
         if: matrix.config.os == 'windows-latest'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run:
+        run: |
+          ${{ matrix.config.devenv }}
           meson compile win-installer -C build
 
       - name: Generate Windows portable installer
         if: matrix.config.os == 'windows-latest'
-        run: cd build && ninja win-portable
+        run: |
+          ${{ matrix.config.devenv }}
+          cd build && ninja win-portable
 
       - name: Upload artifacts - win_installer
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }} - installer
@@ -162,7 +177,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload artifacts - portable.zip
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }} - portable
@@ -173,10 +188,21 @@ jobs:
         if: startsWith(matrix.config.os, 'macos-')
         run: |
           meson compile osx-bundle -C build
-          meson compile osx-build-dmg -C build
+
+          # Run osx-build-dmg but retry up to 10 times if it fails since hdiutil can be unreliable
+          # See: https://github.com/actions/runner-images/issues/7522
+          max_tries=10
+          i=0
+          until meson compile osx-build-dmg -C build ; do
+            if [ $i -eq $max_tries ]; then
+              echo "Error: osx-build-dmg failed after ${max_tries} tries."
+              exit 1
+            fi
+            i=$((i+1))
+          done
 
       - name: Upload artifacts - macOS dmg
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: startsWith(matrix.config.os, 'macos-')
         with:
           name: ${{ matrix.config.name }} - installer
@@ -198,7 +224,7 @@ jobs:
           test -e distcheck/*/subprojects/LuaJIT*/meson.build
 
       - name: Upload artifacts - tarball
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.buildtype == 'release'
         with:
           name: Source Tarball

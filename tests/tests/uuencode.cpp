@@ -18,8 +18,6 @@
 
 #include <main.h>
 
-#include <boost/algorithm/string/replace.hpp>
-
 using namespace agi::ass;
 
 TEST(lagi_uuencode, short_blobs) {

@@ -56,7 +56,10 @@ if ($gitVersionString -eq $version['BUILD_GIT_VERSION_STRING']) {
 if ($exactGitTag -match $semVerMatch) {
   $version['TAGGED_RELEASE'] = $true
   $version['RESOURCE_BASE_VERSION'] = $Matches[1..3]
-  $version['INSTALLER_VERSION'] = $gitVersionString = ($Matches[1..3] -join '.') + @("-$($Matches[4])",'')[!$Matches[4]]
+  $joinedVersion = $Matches[1..3] -join '.'
+
+  $gitVersionString = $joinedVersion + @("-$($Matches[4])",'')[!$Matches[4]]
+  $version['INSTALLER_VERSION'] = $joinedVersion
 } else {
   foreach ($rev in (git -C $repositoryRootPath rev-list --tags 2>$null)) {
     $tag = git -C $repositoryRootPath describe --exact-match --tags $rev 2>$null

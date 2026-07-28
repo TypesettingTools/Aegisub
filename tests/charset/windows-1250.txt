@@ -1,0 +1,1 @@
+Toto je text v èeském jazyce kódovaný pomocí znakové sady windows-1250.

@@ -16,14 +16,32 @@
 
 #include "libaegisub/audio/provider.h"
 
+#include <libaegisub/endian.h>
 #include <libaegisub/log.h>
 
 #include <limits>
+#include <numeric>
+#include <ranges>
+#include <span>
 
 using namespace agi;
 
 /// Anything integral -> 16 bit signed machine-endian audio converter
 namespace {
+int64_t AssembleSample(std::span<uint8_t> data) {
+	const auto accumulate_bytes = [](auto view) {
+		return std::accumulate(view.begin(), view.end(), int64_t{0},
+			[](int64_t acc, uint8_t value) {
+				return (acc << 8) + value;
+			});
+	};
+
+	if (endian::IsBigEndian)
+		return accumulate_bytes(data);
+
+	return accumulate_bytes(data | std::views::reverse);
+}
+
 template<class Target>
 class BitdepthConvertAudioProvider final : public AudioProviderWrapper {
 	int src_bytes_per_sample;
@@ -38,10 +56,7 @@ public:
 		bytes_per_sample = sizeof(Target);
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count64) const override {
-		auto count = static_cast<size_t>(count64);
-		assert(count == count64);
-
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		src_buf.resize(count * src_bytes_per_sample * channels);
 		source->GetAudio(src_buf.data(), start, count);
 
@@ -55,15 +70,12 @@ public:
 			if (src_bytes_per_sample == 1)
 				sample = src_buf[i] - 128;
 			else {
-				for (int j = src_bytes_per_sample; j > 0; --j) {
-					sample <<= 8;
-					sample += src_buf[i * src_bytes_per_sample + j - 1];
-				}
+				sample = AssembleSample(std::span(src_buf.data() + i * src_bytes_per_sample, src_bytes_per_sample));
 			}
 
-			if (static_cast<size_t>(src_bytes_per_sample) > sizeof(Target))
+			if (src_bytes_per_sample > static_cast<int>(sizeof(Target)))
 				sample /= 1LL << (src_bytes_per_sample - sizeof(Target)) * 8;
-			else if (static_cast<size_t>(src_bytes_per_sample) < sizeof(Target))
+			else if (src_bytes_per_sample < static_cast<int>(sizeof(Target)))
 				sample *=  1LL << (sizeof(Target) - src_bytes_per_sample ) * 8;
 
 			dest[i] = static_cast<Target>(sample);
@@ -82,16 +94,13 @@ public:
 		float_samples = false;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count64) const override {
-		auto count = static_cast<size_t>(count64);
-		assert(count == count64);
-
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		src_buf.resize(count * channels);
 		source->GetAudio(&src_buf[0], start, count);
 
 		auto dest = static_cast<Target*>(buf);
 
-		for (size_t i = 0; i < static_cast<size_t>(count * channels); ++i) {
+		for (int i = 0; i < count * channels; ++i) {
 			Source expanded;
 			if (src_buf[i] < 0)
 				expanded = static_cast<Target>(-src_buf[i] * std::numeric_limits<Target>::min() - 0.5);
@@ -116,10 +125,7 @@ public:
 		channels = 1;
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count64) const override {
-		auto count = static_cast<size_t>(count64);
-		assert(count == count64);
-
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		src_buf.resize(count * src_channels);
 		source->GetAudio(&src_buf[0], start, count);
 

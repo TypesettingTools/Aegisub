@@ -40,7 +40,7 @@
 using agi::dispatch::Main;
 
 namespace {
-	void set_taskbar_progress(int progress) {
+	void set_taskbar_progress([[maybe_unused]] int progress) {
 #ifdef _MSC_VER
 		ITaskbarList3 *taskbar;
 		auto hr = ::CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER,

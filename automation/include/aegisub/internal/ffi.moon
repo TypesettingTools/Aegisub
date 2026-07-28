@@ -26,7 +26,7 @@ char_ptr = ffi.typeof 'char *'
 string = (cdata) ->
   return nil if cdata == nil
   str = ffi.string cdata
-  if type(cdata) == char_ptr
+  if ffi.typeof(cdata) == char_ptr
     ffi.C.free cdata
   str
 

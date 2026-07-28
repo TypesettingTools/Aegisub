@@ -46,7 +46,5 @@ namespace address_of_detail {
 	}
 }
 
-namespace {
-	const auto address_of = address_of_detail::address_of_tag_type{};
-}
+const auto address_of = address_of_detail::address_of_tag_type{};
 }

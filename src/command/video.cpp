@@ -590,7 +590,7 @@ struct video_open final : public Command {
 	void operator()(agi::Context *c) override {
 		auto str = from_wx(_("Video Formats") + " (*.asf,*.avi,*.avs,*.d2v,*.h264,*.hevc,*.m2ts,*.m4v,*.mkv,*.mov,*.mp4,*.mpeg,*.mpg,*.ogm,*.webm,*.wmv,*.ts,*.y4m,*.yuv)|*.asf;*.avi;*.avs;*.d2v;*.h264;*.hevc;*.m2ts;*.m4v;*.mkv;*.mov;*.mp4;*.mpeg;*.mpg;*.ogm;*.webm;*.wmv;*.ts;*.y4m;*.yuv|"
 		         + _("All Files") + " (*.*)|*.*");
-		auto filename = OpenFileSelector(_("Open video file"), "Path/Last/Video", "", "", str, c->parent);
+		auto filename = OpenFileSelector(_("Open Video File"), "Path/Last/Video", "", "", str, c->parent);
 		if (!filename.empty())
 			c->project->LoadVideo(filename);
 	}
@@ -675,7 +675,7 @@ struct video_reset_pan final : public validator_video_loaded {
        STR_HELP("Reset the video's position in the video display")
 
        void operator()(agi::Context *c) override {
-		   c->videoDisplay->ResetVideoZoom();
+		   c->videoDisplay->ResetContentZoom();
        }
 };
 

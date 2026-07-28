@@ -513,7 +513,7 @@ struct edit_font final : public Command {
 		const wxFont font = wxGetFontFromUser(c->parent, initial);
 		if (!font.Ok() || font == initial) return;
 
-		update_lines(c, _("set font"), [&](AssDialogue *line, int sel_start, int sel_end, int norm_sel_start, int norm_sel_end) {
+		update_lines(c, _("set font"), [&](AssDialogue *line, int sel_start, int, int norm_sel_start, int) {
 			parsed_line parsed(line);
 			const wxFont startfont = font_for_line(parsed);
 			int shift = 0;

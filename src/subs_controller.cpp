@@ -150,8 +150,8 @@ SubsController::SubsController(agi::Context *context)
 , autosave_queue(agi::dispatch::Create())
 {
 	autosave_timer_changed(&autosave_timer);
-	OPT_SUB("App/Auto/Save", [this] { autosave_timer_changed(&autosave_timer); });
-	OPT_SUB("App/Auto/Save Every Seconds", [this] { autosave_timer_changed(&autosave_timer); });
+	BindConnection(OPT_SUB("App/Auto/Save", [this] { autosave_timer_changed(&autosave_timer); }));
+	BindConnection(OPT_SUB("App/Auto/Save Every Seconds", [this] { autosave_timer_changed(&autosave_timer); }));
 	autosave_timer.Bind(wxEVT_TIMER, [this](wxTimerEvent&) { AutoSave(); });
 }
 
@@ -161,8 +161,8 @@ SubsController::~SubsController() {
 }
 
 void SubsController::SetSelectionController(SelectionController *selection_controller) {
-	active_line_connection = context->selectionController->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
-	selection_connection = context->selectionController->AddSelectionListener(&SubsController::OnSelectionChanged, this);
+	active_line_connection = selection_controller->AddActiveLineListener(&SubsController::OnActiveLineChanged, this);
+	selection_connection = selection_controller->AddSelectionListener(&SubsController::OnSelectionChanged, this);
 }
 
 ProjectProperties SubsController::Load(agi::fs::path const& filename, const char *charset) {

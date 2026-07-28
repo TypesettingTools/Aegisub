@@ -89,8 +89,8 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 
 	auto link_btn = new ToggleBitmap(panel, context, "audio/opt/vertical_link", 16, "Audio", FromDIP(wxSize(20, -1)));
 	link_btn->SetMaxSize(wxDefaultSize);
-	VertVolArea->Add(link_btn, 0, wxRIGHT | wxEXPAND, 0);
-	OPT_SUB("Audio/Link", &AudioBox::OnVerticalLink, this);
+	VertVolArea->Add(link_btn, 0, wxEXPAND, 0);
+	BindConnection(OPT_SUB("Audio/Link", &AudioBox::OnVerticalLink, this));
 
 	// Top sizer
 	wxSizer *TopSizer = new wxBoxSizer(wxHORIZONTAL);
@@ -230,7 +230,18 @@ void AudioBox::ScrollAudioBy(int pixel_amount) {
 	audioDisplay->ScrollBy(pixel_amount);
 }
 
-void AudioBox::ScrollToActiveLine() {
-	if (controller->GetTimingController())
-		audioDisplay->ScrollTimeRangeInView(controller->GetTimingController()->GetIdealVisibleTimeRange());
+void AudioBox::ScrollToActiveLine(ScrollMode mode) {
+	if (controller->GetTimingController()) {
+		switch (mode) {
+			case ScrollMode::Range:
+				audioDisplay->ScrollTimeRangeInView(controller->GetTimingController()->GetIdealVisibleTimeRange());
+				break;
+			case ScrollMode::Start:
+				audioDisplay->ScrollTimeToCenter(controller->GetTimingController()->GetActiveLineRange().begin());
+				break;
+			case ScrollMode::End:
+				audioDisplay->ScrollTimeToCenter(controller->GetTimingController()->GetActiveLineRange().end());
+				break;
+		}
+	}
 }

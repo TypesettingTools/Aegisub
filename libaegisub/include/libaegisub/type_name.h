@@ -36,8 +36,6 @@ AGI_DEFINE_TYPE_NAME(unsigned long);
 AGI_DEFINE_TYPE_NAME(unsigned long long);
 AGI_DEFINE_TYPE_NAME(void);
 
-#undef AGI_TYPE_NAME_PRIMITIVE
-
 #define AGI_TYPE_NAME_MODIFIER(pre, type) \
 	template<typename T> \
 	struct type_name<T type> { \

@@ -111,7 +111,6 @@ aegisub_src = files(
     'spellchecker.cpp',
     'spline.cpp',
     'spline_curve.cpp',
-    'string_codec.cpp',
     'subs_controller.cpp',
     'subs_edit_box.cpp',
     'subs_edit_ctrl.cpp',
@@ -135,7 +134,7 @@ aegisub_src = files(
     'timeedit_ctrl.cpp',
     'toggle_bitmap.cpp',
     'toolbar.cpp',
-    'tooltip_manager.cpp',
+    'tooltip_binding.cpp',
     'utils.cpp',
     'validators.cpp',
     'vector2d.cpp',
@@ -165,7 +164,13 @@ if host_machine.system() == 'darwin'
     aegisub_src += files(
         'font_file_lister_coretext.mm',
         'osx/osx_utils.mm',
+        'osx/screenpicker.mm',
     )
+
+    if conf.get('WITH_INTERNAL_WXWIDGETS', 0) != 0
+        aegisub_src += files('osx/scintilla_ime.mm')
+    endif
+
 elif host_machine.system() == 'windows'
     aegisub_src += files(
         'avisynth_wrap.cpp',
@@ -242,6 +247,8 @@ opt_src = [
                'ffmpegsource_common.cpp']],
 
     ['Hunspell', 'spellchecker_hunspell.cpp'],
+
+    ['libportal', 'xdg_desktop_portal_utils.cpp'],
 ]
 
 foreach opt: opt_src

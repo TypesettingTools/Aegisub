@@ -55,6 +55,7 @@
 #include "utils.h"
 #include "value_event.h"
 #include "version.h"
+#include "xdg_desktop_portal_utils.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/format_path.h>
@@ -98,12 +99,20 @@ AegisubApp::AegisubApp() {
 
 	// Fallback to X11 if wxGTK implementation is build without Wayland EGL support
 	// Fix https://github.com/TypesettingTools/Aegisub/issues/233
-	#if defined(__WXGTK__) && !wxUSE_GLCANVAS_EGL
+	#if defined(__WXGTK__) && !wxUSE_GLCANVAS_EGL && !wxHAS_EGL
 		wxString xdg_session_type = wxGetenv("XDG_SESSION_TYPE");
 		wxString wayland_display  = wxGetenv("WAYLAND_DISPLAY");
+		wxString gdk_backend  = wxGetenv("GDK_BACKEND");	// Do not override GDK_BACKEND if it's already manually set
 
-		if (xdg_session_type == "wayland" || wayland_display.Contains("wayland")) {
-			wxSetEnv("GDK_BACKEND", "x11");
+		if ((xdg_session_type == "wayland" || wayland_display.Contains("wayland")) && gdk_backend != "x11") {
+			printf("Warning: Running on Wayland, but wxWidgets is not compiled with EGL support.");
+			if (gdk_backend.empty()) {
+				printf(" Falling back to X11.");
+				wxSetEnv("GDK_BACKEND", "x11");
+			} else {
+				printf(" Set GDK_BACKEND=x11 to run Aegisub under X11.");
+			}
+			printf("\n");
 		}
 	#endif
 
@@ -147,7 +156,6 @@ bool AegisubApp::OnInit() {
 	});
 
 	config::path = new agi::Path;
-	crash_writer::Initialize(config::path->Decode("?user"));
 
 	agi::log::log = new agi::log::LogSink;
 #ifdef _DEBUG
@@ -166,12 +174,12 @@ bool AegisubApp::OnInit() {
 		// Local config, make ?user mean ?data so all user settings are placed in install dir
 		config::path->SetToken("?user", config::path->Decode("?data"));
 		config::path->SetToken("?local", config::path->Decode("?data"));
-		crash_writer::Initialize(config::path->Decode("?user"));
 	} catch (agi::fs::FileSystemError const&) {
 		// File doesn't exist or we can't read it
 		// Might be worth displaying an error in the second case
 	}
 #endif
+	crash_writer::Initialize(config::path->Decode("?user"));
 
 	StartupLog("Create log writer");
 	auto path_log = config::path->Decode("?user/log/");
@@ -191,7 +199,7 @@ bool AegisubApp::OnInit() {
 		config::opt->ConfigUser();
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox("Configuration file is invalid. Error reported:\n" + to_wx(err.GetMessage()), "Error");
+		wxMessageBox(fmt_tl("Configuration file is invalid. Error reported:\n%s", err.GetMessage()), _("Error"));
 	}
 
 #ifdef _WIN32
@@ -257,6 +265,8 @@ bool AegisubApp::OnInit() {
 
 		exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
+		agi::xdp_utils::Initialize();
+
 		// Load plugins
 		Automation4::ScriptFactory::Register(std::make_unique<Automation4::LuaScriptFactory>());
 		libass::CacheFonts();
@@ -288,7 +298,7 @@ bool AegisubApp::OnInit() {
 				config::opt->Flush();
 			}
 			catch (agi::fs::FileSystemError const& e) {
-				wxMessageBox(to_wx(e.GetMessage()), "Error saving config file", wxOK | wxICON_ERROR | wxCENTER);
+				wxMessageBox(to_wx(e.GetMessage()), _("Error saving config file"), wxOK | wxICON_ERROR | wxCENTER);
 			}
 #endif
 		}
@@ -304,16 +314,16 @@ bool AegisubApp::OnInit() {
 			OpenFiles(wxArrayStringsAdapter(args.size() - 1, &args[1]));
 	}
 	catch (agi::Exception const& e) {
-		wxMessageBox(to_wx(e.GetMessage()), "Fatal error while initializing");
+		wxMessageBox(to_wx(e.GetMessage()), _("Fatal error while initializing"));
 		return false;
 	}
 	catch (std::exception const& e) {
-		wxMessageBox(to_wx(e.what()), "Fatal error while initializing");
+		wxMessageBox(to_wx(e.what()), _("Fatal error while initializing"));
 		return false;
 	}
 #ifndef _DEBUG
 	catch (...) {
-		wxMessageBox("Unhandled exception","Fatal error while initializing");
+		wxMessageBox(_("Unhandled exception"), _("Fatal error while initializing"));
 		return false;
 	}
 #endif
@@ -343,6 +353,8 @@ int AegisubApp::OnExit() {
 	delete config::global_scripts;
 
 	AssExportFilterChain::Clear();
+
+	agi::xdp_utils::Cleanup();
 
 	// Keep this last!
 	delete agi::log::log;
@@ -375,7 +387,7 @@ void AegisubApp::CloseAll() {
 	}
 }
 
-void AegisubApp::UnhandledException(bool stackWalk) {
+void AegisubApp::UnhandledException([[maybe_unused]] bool stackWalk) {
 #if (!defined(_DEBUG) || defined(WITH_EXCEPTIONS)) && (wxUSE_ON_FATAL_EXCEPTION+0)
 	bool any = false;
 	agi::fs::path path;

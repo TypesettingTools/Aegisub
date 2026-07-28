@@ -27,32 +27,45 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-/// @file string_codec.h
-/// @see string_codec.cpp
+/// @file string_codec.cpp
+/// @brief Encode and decode strings so they can safely be stored inside fields in SSA/ASS files
 /// @ingroup utility
 ///
-/// Functions for "inline string encoding" handling,
-/// a simple encoding-form used for encoding strings that can't contain control codes and a few other special characters,
-/// so they can be stored as part of a field in an ASS line
-///
-/// Even though the encoding will handle Unicode strings, it can only encode ASCII characters.
-/// This is not a problem, since only ASCII characters are used for the special purposes.
-///
-/// The encoding is based on an escape-character followed by a two-digit hexadecimal number, the number being the
-/// ASCII code for the encoded character. The escape character is # (ASCII 0x23).
-///
-/// @verbatim
-/// The following ASCII codes must be escaped:
-/// 0x00 .. 0x1F -- Control codes (nonprintable characters, including linebreaks)
-///         0x23 -- Sharp (the escape character itself must be escaped to appear in the literal)
-///         0x2C -- Comma (used for field separator in standard ASS lines)
-///         0x3A -- Colon (used in some custom list formats for name:value pairs)
-///         0x7C -- Pipe (used in some custom lists, as item separator, e.g. itemA|itemB)
-/// @endverbatim
-///
-/// The encoded string should be usable in any kind of field in an ASS file.
 
-#include <string_view>
+// Functions for inline string encoding.
+// See header file for details.
 
-std::string inline_string_encode(std::string_view input);
-std::string inline_string_decode(std::string_view input);
+#include <libaegisub/ass/string_codec.h>
+
+#include <libaegisub/format.h>
+
+namespace agi::ass {
+
+std::string inline_string_encode(std::string_view input) {
+	std::string output;
+	output.reserve(input.size());
+	for (unsigned char c : input) {
+		if (c <= 0x1F || c == 0x23 || c == 0x2C || c == 0x3A || c == 0x7C)
+			output += agi::format("#%02X", c);
+		else
+			output += c;
+	}
+	return output;
+}
+
+std::string inline_string_decode(std::string_view input) {
+	std::string output;
+	output.reserve(input.size());
+	for (size_t i = 0; i < input.size(); ++i) {
+		if (input[i] != '#' || i + 2 >= input.size())
+			output += input[i];
+		else {
+			char buff[] = {input[i + 1], input[i + 2], 0};
+			output += (char)strtol(buff, nullptr, 16);
+			i += 2;
+		}
+	}
+	return output;
+}
+
+}

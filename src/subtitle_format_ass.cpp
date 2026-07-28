@@ -23,17 +23,17 @@
 #include "ass_style.h"
 #include "ass_parser.h"
 #include "options.h"
-#include "string_codec.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
 #include "version.h"
 
+#include <libaegisub/ass/string_codec.h>
 #include <libaegisub/ass/uuencode.h>
 #include <libaegisub/fs.h>
 
 DEFINE_EXCEPTION(AssParseError, SubtitleFormatParseError);
 
-void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
+void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	int version = !agi::fs::HasExtension(filename, "ssa");
 
 	TextFileReader file(filename, encoding);
@@ -133,9 +133,9 @@ struct Writer {
 			std::string line = "Data: ";
 			line += std::to_string(edi.id);
 			line += ",";
-			line += inline_string_encode(edi.key);
+			line += agi::ass::inline_string_encode(edi.key);
 			line += ",";
-			std::string encoded_data = inline_string_encode(edi.value);
+			std::string encoded_data = agi::ass::inline_string_encode(edi.value);
 			if (4*edi.value.size() < 3*encoded_data.size()) {
 				// the inline_string encoding grew the data by more than uuencoding would
 				// so base64 encode it instead
@@ -151,7 +151,7 @@ struct Writer {
 };
 }
 
-void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
+void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	Writer writer(filename, encoding);
 	writer.Write(src->Info);
 	writer.Write(src->Properties);
@@ -161,7 +161,7 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	writer.WriteExtradata(src->Extradata);
 }
 
-void AssSubtitleFormat::ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const {
+void AssSubtitleFormat::ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	Writer writer(filename, encoding);
 	writer.Write(src->Info);
 	writer.Write(src->Styles);

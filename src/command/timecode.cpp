@@ -71,7 +71,7 @@ struct timecode_open final : public Command {
 
 	void operator()(agi::Context *c) override {
 		auto str = from_wx(_("Text Files") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*");
-		auto filename = OpenFileSelector(_("Open Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
+		auto filename = OpenFileSelector(wxGETTEXT_IN_CONTEXT("dialog title", "Open Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
 		if (!filename.empty())
 			c->project->LoadTimecodes(filename);
 	}
@@ -91,7 +91,7 @@ struct timecode_save final : public Command {
 
 	void operator()(agi::Context *c) override {
 		auto str = from_wx(_("Text Files") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*");
-		auto filename = SaveFileSelector(_("Save Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
+		auto filename = SaveFileSelector(wxGETTEXT_IN_CONTEXT("dialog title", "Save Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
 		if (filename.empty()) return;
 
 		try {
@@ -100,7 +100,7 @@ struct timecode_save final : public Command {
 			config::mru->Add("Timecodes", filename);
 		}
 		catch (agi::Exception const& err) {
-			wxMessageBox(to_wx(err.GetMessage()), "Error saving timecodes", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+			wxMessageBox(to_wx(err.GetMessage()), _("Error saving timecodes"), wxOK | wxICON_ERROR | wxCENTER, c->parent);
 		}
 	}
 };

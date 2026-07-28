@@ -21,7 +21,6 @@ class AssInfo final : public AssEntry {
 	std::string value;
 
 public:
-	AssInfo(AssInfo const& o) = default;
 	AssInfo(std::string_view key, std::string_view value) : key(key), value(value) { }
 
 	AssEntryGroup Group() const override { return AssEntryGroup::INFO; }

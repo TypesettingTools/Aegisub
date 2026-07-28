@@ -91,7 +91,7 @@ namespace Automation4 {
 
 		/// Restore the values of the controls in this dialog from a string
 		/// stored in the subtitle script
-		virtual void Unserialise(std::string const& serialised) { }
+		virtual void Unserialise(std::string const& serialised) = 0;
 	};
 
 	class ProgressSink;
@@ -205,9 +205,8 @@ namespace Automation4 {
 	};
 
 	/// Manager for scripts specified by a subtitle file
-	class LocalScriptManager final : public ScriptManager {
+	class LocalScriptManager final : public ScriptManager, private agi::signal::ConnectionScope {
 		agi::Context *context;
-		agi::signal::Connection file_open_connection;
 
 		void SaveLoadedList();
 	public:

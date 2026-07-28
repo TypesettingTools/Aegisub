@@ -187,7 +187,7 @@ namespace Automation4 {
 		virtual std::string SerialiseValue() const { return ""; }
 
 		/// Restore the control's value from a saved value in the script
-		virtual void UnserialiseValue(std::string_view serialised) { }
+		virtual void UnserialiseValue([[maybe_unused]] std::string_view serialised) { }
 
 		LuaDialogControl(lua_State *L);
 

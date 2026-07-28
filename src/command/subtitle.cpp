@@ -216,7 +216,7 @@ struct subtitle_insert_before_videotime final : public validate_nonempty_selecti
 	}
 };
 
-bool is_okay_to_close_subtitles(agi::Context *c) {
+bool is_okay_to_close_subtitles([[maybe_unused]] agi::Context *c) {
 #ifdef __APPLE__
 	return true;
 #else
@@ -224,7 +224,7 @@ bool is_okay_to_close_subtitles(agi::Context *c) {
 #endif
 }
 
-void load_subtitles(agi::Context *c, agi::fs::path const& path, std::string const& encoding="") {
+void load_subtitles([[maybe_unused]] agi::Context *c, agi::fs::path const& path, std::string const& encoding="") {
 #ifdef __APPLE__
 	wxGetApp().NewProjectContext().project->LoadSubtitles(path, encoding);
 #else
@@ -239,7 +239,7 @@ struct subtitle_new final : public Command {
 	STR_DISP("New Subtitles")
 	STR_HELP("New subtitles")
 
-	void operator()(agi::Context *c) override {
+	void operator()([[maybe_unused]] agi::Context *c) override {
 #ifdef __APPLE__
 		wxGetApp().NewProjectContext();
 #else
@@ -271,7 +271,7 @@ struct subtitle_open final : public Command {
 	void operator()(agi::Context *c) override {
 		if (!is_okay_to_close_subtitles(c)) return;
 
-		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
+		auto filename = OpenFileSelector(_("Open Subtitles File"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
 		if (!filename.empty())
 			load_subtitles(c, filename);
 	}
@@ -301,7 +301,7 @@ struct subtitle_open_charset final : public Command {
 	void operator()(agi::Context *c) override {
 		if (!is_okay_to_close_subtitles(c)) return;
 
-		auto filename = OpenFileSelector(_("Open subtitles file"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
+		auto filename = OpenFileSelector(_("Open Subtitles File"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
 		if (filename.empty()) return;
 
 		wxString charset = wxGetSingleChoice(_("Choose charset code:"), _("Charset"), agi::charset::GetEncodingsList<wxArrayString>(), c->parent, -1, -1, true, 250, 200);
@@ -344,7 +344,7 @@ struct subtitle_properties final : public Command {
 static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 	if (filename.empty()) {
 		c->videoController->Stop();
-		filename = SaveFileSelector(_("Save subtitles file"), "Path/Last/Subtitles",
+		filename = SaveFileSelector(_("Save Subtitles File"), "Path/Last/Subtitles",
 			c->subsController->Filename().stem().string() + ".ass", "ass",
 			"Advanced Substation Alpha (*.ass)|*.ass", c->parent);
 		if (filename.empty()) return;
@@ -354,10 +354,10 @@ static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 		c->subsController->Save(filename);
 	}
 	catch (const agi::Exception& err) {
-		wxMessageBox(to_wx(err.GetMessage()), "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+		wxMessageBox(to_wx(err.GetMessage()), _("Error"), wxOK | wxICON_ERROR | wxCENTER, c->parent);
 	}
 	catch (...) {
-		wxMessageBox("Unknown error", "Error", wxOK | wxICON_ERROR | wxCENTER, c->parent);
+		wxMessageBox(_("Unknown error"), _("Error"), wxOK | wxICON_ERROR | wxCENTER, c->parent);
 	}
 }
 

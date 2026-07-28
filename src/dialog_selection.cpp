@@ -36,6 +36,7 @@
 #include <wx/radiobox.h>
 #include <wx/radiobut.h>
 #include <wx/sizer.h>
+#include <wx/statbox.h>
 #include <wx/textctrl.h>
 
 namespace {
@@ -114,16 +115,17 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 
 	wxRadioButton *select_matching_lines = nullptr;
 	{
-		wxSizer *match_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Match"));
+		wxStaticBoxSizer *match_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Match"));
+		wxWindow *match_sizer_box = match_sizer->GetStaticBox();
 		{
 			wxSizerFlags radio_flags = wxSizerFlags().Border(wxLEFT | wxRIGHT);
 			wxSizer *match_radio_line = new wxBoxSizer(wxHORIZONTAL);
-			match_radio_line->Add(select_matching_lines = new wxRadioButton(this, -1, _("&Matches"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP), radio_flags);
-			match_radio_line->Add(select_unmatching_lines = new wxRadioButton(this, -1, _("&Doesn't Match")), radio_flags);
-			match_radio_line->Add(case_sensitive = new wxCheckBox(this, -1, _("Match c&ase")), radio_flags);
+			match_radio_line->Add(select_matching_lines = new wxRadioButton(match_sizer_box, -1, _("&Matches"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP), radio_flags);
+			match_radio_line->Add(select_unmatching_lines = new wxRadioButton(match_sizer_box, -1, _("&Doesn't Match")), radio_flags);
+			match_radio_line->Add(case_sensitive = new wxCheckBox(match_sizer_box, -1, _("Match c&ase")), radio_flags);
 			match_sizer->Add(match_radio_line);
 		}
-		match_sizer->Add(match_text = new wxTextCtrl(this, -1, to_wx(OPT_GET("Tool/Select Lines/Text")->GetString())), main_flags);
+		match_sizer->Add(match_text = new wxTextCtrl(match_sizer_box, -1, to_wx(OPT_GET("Tool/Select Lines/Text")->GetString())), main_flags);
 
 		main_sizer->Add(match_sizer, main_flags);
 	}
@@ -139,9 +141,10 @@ wxDialog (c->parent, -1, _("Select"), wxDefaultPosition, wxDefaultSize, wxCAPTIO
 	}
 
 	{
-		wxSizer *comment_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Match dialogues/comments"));
-		comment_sizer->Add(apply_to_dialogue = new wxCheckBox(this, -1, _("D&ialogues")), wxSizerFlags().Border());
-		comment_sizer->Add(apply_to_comments = new wxCheckBox(this, -1, _("Comme&nts")), wxSizerFlags().Border());
+		wxStaticBoxSizer *comment_sizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Match dialogues/comments"));
+		wxWindow *comment_sizer_box = comment_sizer->GetStaticBox();
+		comment_sizer->Add(apply_to_dialogue = new wxCheckBox(comment_sizer_box, -1, _("D&ialogues")), wxSizerFlags().Border());
+		comment_sizer->Add(apply_to_comments = new wxCheckBox(comment_sizer_box, -1, _("Comme&nts")), wxSizerFlags().Border());
 		main_sizer->Add(comment_sizer, main_flags);
 	}
 

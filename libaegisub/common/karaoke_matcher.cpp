@@ -158,7 +158,7 @@ agi::KaraokeMatchResult agi::AutoMatchKaraoke(std::vector<std::string_view> cons
 		if (cur.size() != 3 || cur[0] != '\xE3') continue;
 
 		std::vector<std::string_view> translit;
-		if (dest_string.size() >= cur.data() - dest_string.data() + 6)
+		if (std::ssize(dest_string) >= cur.data() - dest_string.data() + 6)
 			boost::copy(kana_to_romaji(std::string_view(cur.data(), 6)), back_inserter(translit));
 		boost::copy(kana_to_romaji(dst.current()), back_inserter(translit));
 

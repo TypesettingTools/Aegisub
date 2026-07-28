@@ -16,10 +16,16 @@
 
 #include "libaegisub/audio/provider.h"
 
+#include "libaegisub/endian.h"
 #include "libaegisub/fs.h"
 #include "libaegisub/io.h"
 #include "libaegisub/log.h"
 #include "libaegisub/util.h"
+
+#include <array>
+#include <span>
+#include <type_traits>
+#include <utility>
 
 namespace agi {
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const {
@@ -95,7 +101,11 @@ public:
 	template<typename Dest, typename Src>
 	void write(Src v) {
 		auto converted = static_cast<Dest>(v);
-		out.write(reinterpret_cast<char *>(&converted), sizeof(Dest));
+		std::array<char, sizeof(Dest)> bytes{};
+		memcpy(bytes.data(), &converted, sizeof(Dest));
+		if (endian::IsBigEndian)
+			endian::SwapBytesInPlace(std::as_writable_bytes(std::span(bytes)));
+		out.write(bytes.data(), bytes.size());
 	}
 };
 }
@@ -106,6 +116,7 @@ void SaveAudioClip(AudioProvider const& provider, fs::path const& path, int star
 	const auto end_sample = util::mid(start_sample, ((int64_t)end_time * provider.GetSampleRate() + 999) / 1000, max_samples);
 
 	const size_t bytes_per_sample = provider.GetBytesPerSample() * provider.GetChannels();
+	const size_t sample_bytes = provider.GetBytesPerSample();
 	const size_t bufsize = (end_sample - start_sample) * bytes_per_sample;
 
 	writer out{path};
@@ -131,6 +142,11 @@ void SaveAudioClip(AudioProvider const& provider, fs::path const& path, int star
 		spr = std::min<size_t>(spr, end_sample - i);
 		buf.resize(spr * bytes_per_sample);
 		provider.GetAudio(&buf[0], i, spr);
+		if (endian::IsBigEndian && sample_bytes > 1) {
+			auto total_samples = buf.size() / sample_bytes;
+			for (size_t s = 0; s < total_samples; ++s)
+				endian::SwapBytesInPlace(std::as_writable_bytes(std::span(buf.data() + s * sample_bytes, sample_bytes)));
+		}
 		out.write(buf);
 	}
 }
