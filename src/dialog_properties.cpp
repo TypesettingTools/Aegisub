@@ -149,7 +149,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	res_sizer->Add(ResX, wxGBPosition(0, 1), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
 	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), wxGBPosition(0, 2), wxGBSpan(1, 1), wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
 	res_sizer->Add(ResY, wxGBPosition(0, 3), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
-	res_sizer->Add(FromVideo, wxGBPosition(0, 4), wxGBSpan(1, 1));
+	res_sizer->Add(FromVideo, wxGBPosition(0, 4), wxGBSpan(1, 1), wxALIGN_CENTER_VERTICAL | wxEXPAND);
 
 	wxButton *LayoutResFromVideo = new wxButton(res_box,-1,_("From video"));
 	if (!c->project->VideoProvider())
@@ -161,7 +161,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	res_sizer->Add(LayoutResX, wxGBPosition(1, 1), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
 	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), wxGBPosition(1, 2), wxGBSpan(1, 1), wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
 	res_sizer->Add(LayoutResY, wxGBPosition(1, 3), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
-	res_sizer->Add(LayoutResFromVideo, wxGBPosition(1, 4), wxGBSpan(1, 1));
+	res_sizer->Add(LayoutResFromVideo, wxGBPosition(1, 4), wxGBSpan(1, 1), wxALIGN_CENTER_VERTICAL | wxEXPAND);
 
 	YCbCrMatrix = new wxComboBox(res_box, -1, to_wx(c->ass->GetScriptInfo("YCbCr Matrix")),
 		 wxDefaultPosition, wxDefaultSize, to_wx(agi::ycbcr::valid_header_strings), wxCB_READONLY);
@@ -173,8 +173,8 @@ DialogProperties::DialogProperties(agi::Context *c)
 		YCbCrMatrixFromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetYCbCrMatrixFromVideo, this);
 
 	res_sizer->Add(new wxStaticText(res_box, -1, _("YCbCr Matrix:")), wxGBPosition(2, 0), wxGBSpan(1, 1), wxSizerFlags().Center().GetFlags());
-	res_sizer->Add(YCbCrMatrix, wxGBPosition(2, 1), wxGBSpan(1, 3), wxSizerFlags(1).Expand().Border(wxLEFT).GetFlags());
-	res_sizer->Add(YCbCrMatrixFromVideo, wxGBPosition(2, 4), wxGBSpan(1, 1), wxSizerFlags().Expand().GetFlags());
+	res_sizer->Add(YCbCrMatrix, wxGBPosition(2, 1), wxGBSpan(1, 3), wxSizerFlags(1).Expand().CenterVertical().Border(wxLEFT).GetFlags());
+	res_sizer->Add(YCbCrMatrixFromVideo, wxGBPosition(2, 4), wxGBSpan(1, 1), wxSizerFlags().Expand().CenterVertical().GetFlags());
 
 	res_box_sizer->Add(res_sizer, wxSizerFlags().Expand());
 
