@@ -189,19 +189,21 @@ void FontCollector::ProcessChunk(std::pair<StyleInfo, UsageData> const& style) {
 }
 
 void FontCollector::PrintUsage(UsageData const& data) {
+	wxString usage;
 	if (data.styles.size()) {
-		status_callback(_("Used in styles:\n"), 2);
+		usage = _("Used in styles:\n");
 		for (auto const& style : data.styles)
-			status_callback(fmt_wx("  - %s\n", style), 2);
+			usage += fmt_wx("  - %s\n", style);
 	}
 
 	if (data.lines.size()) {
-		status_callback(_("Used on lines:"), 2);
+		usage += _("Used on lines:");
 		for (int line : data.lines)
-			status_callback(fmt_wx(" %d", line), 2);
-		status_callback("\n", 2);
+			usage += fmt_wx(" %d", line);
+		usage += "\n";
 	}
-	status_callback("\n", 2);
+	usage += "\n";
+	status_callback(std::move(usage), 2);
 }
 
 std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
