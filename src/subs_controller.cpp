@@ -209,7 +209,7 @@ void SubsController::Save(agi::fs::path const& filename, const char *encoding) {
 		// Have to set this now for the sake of things that want to save paths
 		// relative to the script in the header
 		this->filename = filename;
-		context->path->SetToken("?script", filename.parent_path());
+		context->project->SetSubtitlesFilename(filename);
 
 		context->ass->CleanExtradata();
 		writer->WriteFile(context->ass.get(), filename, 0, encoding);
