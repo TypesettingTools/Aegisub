@@ -162,6 +162,11 @@ void Project::LoadSubtitles(agi::fs::path path, std::string encoding, bool load_
 		LoadUnloadFiles(properties);
 }
 
+void Project::SetSubtitlesFilename(agi::fs::path path) {
+	context->path->SetToken("?script", path.parent_path());
+	UpdateRelativePaths();
+}
+
 void Project::CloseSubtitles() {
 	context->subsController->Close();
 	context->path->SetToken("?script", "");
