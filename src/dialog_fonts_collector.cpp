@@ -254,15 +254,15 @@ DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 	dest_browse_button = new wxButton(destination_box, -1, _("&Browse..."));
 
 	wxSizer *dest_browse_sizer = new wxBoxSizer(wxHORIZONTAL);
-	dest_browse_sizer->Add(dest_ctrl, wxSizerFlags(1).Border(wxRIGHT).Align(wxALIGN_CENTER_VERTICAL));
-	dest_browse_sizer->Add(dest_browse_button, wxSizerFlags());
+	dest_browse_sizer->Add(dest_ctrl, wxSizerFlags(1).Border(wxRIGHT).CenterVertical());
+	dest_browse_sizer->Add(dest_browse_button);
 
 	destination_sizer->Add(dest_label, wxSizerFlags().Border(wxBOTTOM));
 	destination_sizer->Add(dest_browse_sizer, wxSizerFlags().Expand());
 
 	wxStaticBoxSizer *log_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Log"));
 	wxWindow *log_box = log_sizer->GetStaticBox();
-	collection_log = new wxStyledTextCtrl(log_box, -1, wxDefaultPosition, wxSize(600, 300));
+	collection_log = new wxStyledTextCtrl(log_box, -1, wxDefaultPosition, FromDIP(wxSize(600, 300)));
 	collection_log->SetWrapMode(wxSTC_WRAP_WORD);
 	collection_log->SetMarginWidth(1, 0);
 	collection_log->SetReadOnly(true);

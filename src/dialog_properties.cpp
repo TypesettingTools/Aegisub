@@ -111,7 +111,8 @@ DialogProperties::DialogProperties(agi::Context *c)
 	// Script details crap
 	wxStaticBoxSizer *TopSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Script"));
 	wxWindow *TopSizerBox = TopSizer->GetStaticBox();
-	auto TopSizerGrid = new wxFlexGridSizer(0,2,5,5);
+	int gap = wxSizerFlags::GetDefaultBorder();
+	auto TopSizerGrid = new wxFlexGridSizer(0, 2, gap, gap);
 
 	AddProperty(TopSizerBox, TopSizerGrid, _("Title:"), "Title");
 	AddProperty(TopSizerBox, TopSizerGrid, _("Original script:"), "Original Script");
@@ -123,7 +124,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	AddProperty(TopSizerBox, TopSizerGrid, _("Update details:"), "Update Details");
 
 	TopSizerGrid->AddGrowableCol(1,1);
-	TopSizer->Add(TopSizerGrid,1,wxEXPAND,0);
+	TopSizer->Add(TopSizerGrid, wxSizerFlags(1).Expand());
 
 	// Resolution box
 	wxStaticBoxSizer *res_box_sizer = new wxStaticBoxSizer(wxVERTICAL, &d, _("Resolution"));
@@ -146,9 +147,9 @@ DialogProperties::DialogProperties(agi::Context *c)
 	res_sizer->AddGrowableCol(1, 1);
 	res_sizer->AddGrowableCol(3, 1);
 	res_sizer->Add(new wxStaticText(res_box, -1, _("Script: ")), wxGBPosition(0, 0), wxGBSpan(1, 1), wxSizerFlags().Center().Left().GetFlags());
-	res_sizer->Add(ResX, wxGBPosition(0, 1), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
-	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), wxGBPosition(0, 2), wxGBSpan(1, 1), wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
-	res_sizer->Add(ResY, wxGBPosition(0, 3), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
+	res_sizer->Add(ResX, wxGBPosition(0, 1), wxGBSpan(1, 1), wxSizerFlags().Expand().CenterVertical().Border(wxRIGHT, 2).GetFlags());
+	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), wxGBPosition(0, 2), wxGBSpan(1, 1), wxSizerFlags().Center().Border(wxRIGHT, 2).GetFlags()); // U+00D7 multiplication sign
+	res_sizer->Add(ResY, wxGBPosition(0, 3), wxGBSpan(1, 1), wxSizerFlags().Expand().CenterVertical().Border(wxRIGHT, 2).GetFlags());
 	res_sizer->Add(FromVideo, wxGBPosition(0, 4), wxGBSpan(1, 1));
 
 	wxButton *LayoutResFromVideo = new wxButton(res_box,-1,_("From video"));
@@ -158,10 +159,10 @@ DialogProperties::DialogProperties(agi::Context *c)
 		LayoutResFromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetLayoutResFromVideo, this);
 
 	res_sizer->Add(new wxStaticText(res_box, -1, _("Layout: ")), wxGBPosition(1, 0), wxGBSpan(1, 1), wxSizerFlags().Center().Left().GetFlags());
-	res_sizer->Add(LayoutResX, wxGBPosition(1, 1), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
-	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), wxGBPosition(1, 2), wxGBSpan(1, 1), wxALIGN_CENTER | wxRIGHT, 2); // U+00D7 multiplication sign
-	res_sizer->Add(LayoutResY, wxGBPosition(1, 3), wxGBSpan(1, 1), wxRIGHT | wxALIGN_CENTER_VERTICAL | wxEXPAND, 2);
-	res_sizer->Add(LayoutResFromVideo, wxGBPosition(1, 4), wxGBSpan(1, 1));
+	res_sizer->Add(LayoutResX, wxGBPosition(1, 1), wxGBSpan(1, 1), wxSizerFlags().Expand().CenterVertical().Border(wxRIGHT, 2).GetFlags());
+	res_sizer->Add(new wxStaticText(res_box, -1, _(L"\u00D7")), wxGBPosition(1, 2), wxGBSpan(1, 1), wxSizerFlags().Center().Border(wxRIGHT, 2).GetFlags()); // U+00D7 multiplication sign
+	res_sizer->Add(LayoutResY, wxGBPosition(1, 3), wxGBSpan(1, 1), wxSizerFlags().Expand().CenterVertical().Border(wxRIGHT, 2).GetFlags());
+	res_sizer->Add(LayoutResFromVideo, wxGBPosition(1, 4), wxGBSpan(1, 1), wxSizerFlags().Expand().GetFlags());
 
 	YCbCrMatrix = new wxComboBox(res_box, -1, to_wx(c->ass->GetScriptInfo("YCbCr Matrix")),
 		 wxDefaultPosition, wxDefaultSize, to_wx(agi::ycbcr::valid_header_strings), wxCB_READONLY);
@@ -173,7 +174,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 		YCbCrMatrixFromVideo->Bind(wxEVT_BUTTON, &DialogProperties::OnSetYCbCrMatrixFromVideo, this);
 
 	res_sizer->Add(new wxStaticText(res_box, -1, _("YCbCr Matrix:")), wxGBPosition(2, 0), wxGBSpan(1, 1), wxSizerFlags().Center().GetFlags());
-	res_sizer->Add(YCbCrMatrix, wxGBPosition(2, 1), wxGBSpan(1, 3), wxSizerFlags(1).Expand().Border(wxLEFT).GetFlags());
+	res_sizer->Add(YCbCrMatrix, wxGBPosition(2, 1), wxGBSpan(1, 3), wxSizerFlags(1).Expand().CenterVertical().Border(wxLEFT).GetFlags());
 	res_sizer->Add(YCbCrMatrixFromVideo, wxGBPosition(2, 4), wxGBSpan(1, 1), wxSizerFlags().Expand().GetFlags());
 
 	res_box_sizer->Add(res_sizer, wxSizerFlags().Expand());
@@ -181,7 +182,7 @@ DialogProperties::DialogProperties(agi::Context *c)
 	// Options
 	wxStaticBoxSizer *optionsSizer = new wxStaticBoxSizer(wxHORIZONTAL,&d,_("Options"));
 	wxWindow *optionsBox = optionsSizer->GetStaticBox();
-	auto optionsGrid = new wxFlexGridSizer(3,2,5,5);
+	auto optionsGrid = new wxFlexGridSizer(3, 2, gap, gap);
 	wxString wrap_opts[] = {
 		_("0: Smart wrapping, top line is wider"),
 		_("1: End-of-line word wrapping, only \\N breaks"),
@@ -190,23 +191,22 @@ DialogProperties::DialogProperties(agi::Context *c)
 	};
 	WrapStyle = new wxComboBox(optionsBox, -1, "", wxDefaultPosition, wxDefaultSize, 4, wrap_opts, wxCB_READONLY);
 	WrapStyle->SetSelection(c->ass->GetScriptInfoAsInt("WrapStyle"));
-	optionsGrid->Add(new wxStaticText(optionsBox,-1,_("Wrap Style: ")),0,wxALIGN_CENTER_VERTICAL,0);
-	optionsGrid->Add(WrapStyle,1,wxEXPAND,0);
+	optionsGrid->Add(new wxStaticText(optionsBox,-1,_("Wrap Style: ")), wxSizerFlags().CenterVertical());
+	optionsGrid->Add(WrapStyle, wxSizerFlags(1).Expand());
 
 	ScaleBorder = new wxCheckBox(optionsBox,-1,_("Scale Border and Shadow"));
 	ScaleBorder->SetToolTip(_("Scale border and shadow together with script/render resolution. If this is unchecked, relative border and shadow size will depend on renderer."));
 	ScaleBorder->SetValue(boost::iequals(c->ass->GetScriptInfo("ScaledBorderAndShadow"), "yes"));
-	optionsGrid->AddSpacer(0);
-	optionsGrid->Add(ScaleBorder,1,wxEXPAND,0);
+	optionsGrid->Add(ScaleBorder, wxSizerFlags(1).Expand());
 	optionsGrid->AddGrowableCol(1,1);
-	optionsSizer->Add(optionsGrid,1,wxEXPAND,0);
+	optionsSizer->Add(optionsGrid, wxSizerFlags(1).Expand());
 
 	// MainSizer
 	wxSizer *MainSizer = new wxBoxSizer(wxVERTICAL);
-	MainSizer->Add(TopSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(res_box_sizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(optionsSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
-	MainSizer->Add(ButtonSizer,0,wxLEFT | wxRIGHT | wxBOTTOM | wxEXPAND,5);
+	MainSizer->Add(TopSizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	MainSizer->Add(res_box_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	MainSizer->Add(optionsSizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	MainSizer->Add(ButtonSizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
 
 	d.SetSizerAndFit(MainSizer);
 	d.CenterOnParent();

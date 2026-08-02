@@ -61,44 +61,69 @@ DialogSearchReplace<has_replace>::DialogSearchReplace(agi::Context* c)
 	settings->skip_tags = OPT_GET("Tool/Search Replace/Skip Tags")->GetBool();
 	settings->exact_match = false;
 
-	auto find_sizer = new wxFlexGridSizer(2, 2, 5, 15);
-	find_edit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), recent_find, wxCB_DROPDOWN | wxTE_PROCESS_ENTER, StringBinder(&settings->find));
+	int gap = wxSizerFlags::GetDefaultBorder();
+	
+	// Find/Replace inputs
+	auto find_sizer = new wxFlexGridSizer(2, 2, 
+		gap, wxRound(3 * wxSizerFlags::GetDefaultBorderFractional()));
+	find_sizer->AddGrowableCol(1, 1);
+	find_edit = new wxComboBox(this, -1, "", wxDefaultPosition,
+		wxDefaultSize,
+		recent_find, 
+		wxCB_DROPDOWN | wxTE_PROCESS_ENTER, 
+		StringBinder(&settings->find));
 	find_edit->SetMaxLength(0);
 	find_sizer->Add(new wxStaticText(this, -1, _("Find what:")), wxSizerFlags().Center().Left());
-	find_sizer->Add(find_edit);
+	find_sizer->Add(find_edit, wxSizerFlags().Expand());
 
 	if (has_replace) {
-		replace_edit = new wxComboBox(this, -1, "", wxDefaultPosition, wxSize(300, -1), lagi_MRU_wxAS("Replace"), wxCB_DROPDOWN | wxTE_PROCESS_ENTER, StringBinder(&settings->replace_with));
+		replace_edit = new wxComboBox(this, -1, "", wxDefaultPosition, 
+			wxDefaultSize,
+			lagi_MRU_wxAS("Replace"), 
+			wxCB_DROPDOWN | wxTE_PROCESS_ENTER, 
+			StringBinder(&settings->replace_with));
 		replace_edit->SetMaxLength(0);
 		find_sizer->Add(new wxStaticText(this, -1, _("Replace with:")), wxSizerFlags().Center().Left());
-		find_sizer->Add(replace_edit);
+		find_sizer->Add(replace_edit, wxSizerFlags().Expand());
 	}
 
-	auto options_sizer = new wxBoxSizer(wxVERTICAL);
-	options_sizer->Add(new wxCheckBox(this, -1, _("&Match case"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&settings->match_case)), wxSizerFlags().Border(wxBOTTOM));
-	options_sizer->Add(new wxCheckBox(this, -1, _("&Use regular expressions"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&settings->use_regex)), wxSizerFlags().Border(wxBOTTOM));
-	options_sizer->Add(new wxCheckBox(this, -1, _("&Skip Comments"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&settings->ignore_comments)), wxSizerFlags().Border(wxBOTTOM));
-	options_sizer->Add(new wxCheckBox(this, -1, _("S&kip Override Tags"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&settings->skip_tags)));
+	// Options in wxStaticBoxSizer
+	auto options_sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("Options"));
+	auto options_grid = new wxFlexGridSizer(2, 2, gap, gap);
+	options_grid->Add(new wxCheckBox(this, -1, _("&Match case"), 
+		wxDefaultPosition, wxDefaultSize, 0, 
+		wxGenericValidator(&settings->match_case)), wxSizerFlags().Border(wxBOTTOM | wxRIGHT));
+	options_grid->Add(new wxCheckBox(this, -1, _("&Use regular expressions"), 
+		wxDefaultPosition, wxDefaultSize, 0, 
+		wxGenericValidator(&settings->use_regex)));
+	options_grid->Add(new wxCheckBox(this, -1, _("&Skip Comments"), 
+		wxDefaultPosition, wxDefaultSize, 0, 
+		wxGenericValidator(&settings->ignore_comments)), wxSizerFlags().Border(wxBOTTOM | wxRIGHT));
+	options_grid->Add(new wxCheckBox(this, -1, _("S&kip Override Tags"), 
+		wxDefaultPosition, wxDefaultSize, 0, 
+		wxGenericValidator(&settings->skip_tags)));
+	options_sizer->Add(options_grid, wxSizerFlags().Expand().Border());
 
-	auto left_sizer = new wxBoxSizer(wxVERTICAL);
-	left_sizer->Add(find_sizer, wxSizerFlags().DoubleBorder(wxBOTTOM));
-	left_sizer->Add(options_sizer);
-
+	// Radio boxes for "In Field" and "Limit to"
 	wxString field[] = { _("&Text"), _("St&yle"), _("A&ctor"), _("&Effect") };
 	wxString affect[] = { _("A&ll rows"), _("Selected &rows") };
-	auto limit_sizer = new wxBoxSizer(wxHORIZONTAL);
-	limit_sizer->Add(new wxRadioBox(this, -1, _("In Field"), wxDefaultPosition, wxDefaultSize, std::size(field), field, 0, wxRA_SPECIFY_COLS, MakeEnumBinder(&settings->field)), wxSizerFlags().Border(wxRIGHT));
-	limit_sizer->Add(new wxRadioBox(this, -1, _("Limit to"), wxDefaultPosition, wxDefaultSize, std::size(affect), affect, 0, wxRA_SPECIFY_COLS, MakeEnumBinder(&settings->limit_to)));
+	auto field_radio = new wxRadioBox(this, -1, _("In Field"), 
+		wxDefaultPosition, wxDefaultSize, std::size(field), 
+		field, 0, wxRA_SPECIFY_COLS, MakeEnumBinder(&settings->field));
+	auto limit_radio = new wxRadioBox(this, -1, _("Limit to"), 
+		wxDefaultPosition, wxDefaultSize, std::size(affect), 
+		affect, 0, wxRA_SPECIFY_COLS, MakeEnumBinder(&settings->limit_to));
 
+	// Horizontal buttons
 	auto find_next = new wxButton(this, -1, _("&Find next"));
 	auto replace_next = new wxButton(this, -1, _("Replace &next"));
 	auto replace_all = new wxButton(this, -1, _("Replace &all"));
 	find_next->SetDefault();
 
-	auto button_sizer = new wxBoxSizer(wxVERTICAL);
-	button_sizer->Add(find_next, wxSizerFlags().Border(wxBOTTOM));
-	button_sizer->Add(replace_next, wxSizerFlags().Border(wxBOTTOM));
-	button_sizer->Add(replace_all, wxSizerFlags().Border(wxBOTTOM));
+	auto button_sizer = new wxBoxSizer(wxHORIZONTAL);
+	button_sizer->Add(find_next);
+	button_sizer->Add(replace_next);
+	button_sizer->Add(replace_all);
 	button_sizer->Add(new wxButton(this, wxID_CANCEL));
 
 	if (!has_replace) {
@@ -106,14 +131,15 @@ DialogSearchReplace<has_replace>::DialogSearchReplace(agi::Context* c)
 		button_sizer->Hide(replace_all);
 	}
 
-	auto top_sizer = new wxBoxSizer(wxHORIZONTAL);
-	top_sizer->Add(left_sizer, wxSizerFlags().Border());
-	top_sizer->Add(button_sizer, wxSizerFlags().Border());
-
+	// Main vertical sizer
 	auto main_sizer = new wxBoxSizer(wxVERTICAL);
-	main_sizer->Add(top_sizer);
-	main_sizer->Add(limit_sizer, wxSizerFlags().Border());
+	main_sizer->Add(find_sizer, wxSizerFlags().Expand().Border());
+	main_sizer->Add(options_sizer, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	main_sizer->Add(field_radio, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	main_sizer->Add(limit_radio, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	main_sizer->Add(button_sizer, wxSizerFlags().Center().Border(wxALL & ~wxTOP));
 	SetSizerAndFit(main_sizer);
+	SetSize(GetSize().GetHeight() * 4 / 3, -1);
 	CenterOnParent();
 
 	TransferDataToWindow();
