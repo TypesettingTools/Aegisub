@@ -35,6 +35,7 @@
 #include "aegisublocale.h"
 
 #include "compat.h"
+#include "language_match.h"
 #include "options.h"
 #include "utils.h"
 
@@ -96,9 +97,10 @@ std::string AegisubLocale::PickLanguage() {
 	// Check if user local language is available, if so, make it first
 	const int system_language = wxLocale::GetSystemLanguage();
 	if (system_language != wxLANGUAGE_UNKNOWN) {
+		const wxLanguageInfo *system_info = wxLocale::GetLanguageInfo(system_language);
 		auto it = std::find_if(langs.begin(), langs.end(), [=](wxString const& lang) {
 			const wxLanguageInfo *info = wxLocale::FindLanguageInfo(lang);
-			return info && info->Language == system_language;
+			return system_info && info && LanguagesMatch(*system_info, *info);
 		});
 		if (it != langs.end())
 			std::rotate(langs.begin(), it, it + 1);
