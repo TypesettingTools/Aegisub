@@ -1,34 +1,38 @@
+# Aegisub 3.5
+# Copyright (C) 2005-2014 Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et. al.
+# This file is distributed under the same license as the Aegisub package.
+# Niels Martin Hansen <nielsm@aegisub.org>, 2005-2014.
+#
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: aegisub\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 16:15+0200\n"
-"PO-Revision-Date: \n"
-"Last-Translator: Jan Ekstrom <jeebjp@gmail.com>\n"
+"POT-Creation-Date: 2026-07-26 14:45+0200\n"
+"PO-Revision-Date: 2026-08-03 18:29+0300\n"
+"Last-Translator: AkiraLabsHQ <akiralabshq@atomicmail.io>\n"
 "Language-Team: G-MARK <http://g-mark.jpn.org/>\n"
-"Language: \n"
+"Language: ja_JP\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Japanese\n"
-"X-Poedit-Country: JAPAN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Poedit-Basepath: F:\\Aegisub_project_and_binaries\\aegisub\n"
+"X-Poedit-Basepath: F:/Aegisub_project_and_binaries/aegisub\n"
 "X-Poedit-Bookmarks: 113,-1,-1,-1,-1,-1,-1,-1,-1,-1\n"
+"X-Generator: Poedit 3.5\n"
 
 #: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
 msgid "Language"
-msgstr ""
+msgstr "言語"
 
 #: ../src/aegisublocale.cpp:113
-#, fuzzy
-#| msgid "Please choose the folder:"
 msgid "Please choose a language:"
-msgstr "フォルダを選択してください :"
+msgstr "言語を選択してください:"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
-msgstr ""
+msgstr "基本方向を自動検出 (libassのみ)"
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
@@ -119,18 +123,18 @@ msgstr "垂直方向ズーム"
 msgid "Audio Volume"
 msgstr "音量"
 
-#: ../src/audio_display.cpp:718
+#: ../src/audio_display.cpp:719
 #, c-format
 msgid "%d%%, %d pixel/second"
-msgstr ""
+msgstr "%d%%, %d ピクセル/秒"
 
 #: ../src/audio_karaoke.cpp:67
 msgid "Discard all uncommitted splits"
-msgstr ""
+msgstr "未コミットの分割をすべて破棄"
 
 #: ../src/audio_karaoke.cpp:71
 msgid "Commit splits"
-msgstr ""
+msgstr "分割をコミット"
 
 #: ../src/audio_karaoke.cpp:234
 msgid "Karaoke tag"
@@ -150,15 +154,15 @@ msgstr "カラオケ タグ変更 \\ko"
 
 #: ../src/audio_karaoke.cpp:414
 msgid "karaoke split"
-msgstr ""
+msgstr "カラオケ分割"
 
 #: ../src/audio_renderer_waveform.cpp:155
 msgid "Maximum"
-msgstr ""
+msgstr "最大"
 
 #: ../src/audio_renderer_waveform.cpp:156
 msgid "Maximum + Average"
-msgstr ""
+msgstr "最大 + 平均"
 
 #: ../src/audio_timing_dialogue.cpp:514 ../src/audio_timing_dialogue.cpp:520
 #: ../src/command/time.cpp:176
@@ -167,7 +171,7 @@ msgstr "タイミング"
 
 #: ../src/audio_timing_karaoke.cpp:240
 msgid "karaoke timing"
-msgstr ""
+msgstr "カラオケタイミング"
 
 #: ../src/auto4_base.cpp:346
 msgid ""
@@ -175,6 +179,10 @@ msgid ""
 "Please review the errors, fix them and use the Rescan Autoload Dir button in "
 "Automation Manager to load the scripts again."
 msgstr ""
+"オートメーションの自動読み込みディレクトリにあるスクリプトの読み込みに失敗し"
+"ました。\n"
+"エラーを確認して修正し、オートメーションマネージャーの「自動読み込みディレク"
+"トリを再スキャン」ボタンを使用してスクリプトを再読み込みしてください。"
 
 #: ../src/auto4_base.cpp:349
 msgid ""
@@ -182,6 +190,10 @@ msgid ""
 "Please review the errors, fix them and use the Rescan Autoload Dir button in "
 "Automation Manager to load the scripts again."
 msgstr ""
+"オートメーションの自動読み込みディレクトリにある複数のスクリプトの読み込みに"
+"失敗しました。\n"
+"エラーを確認して修正し、オートメーションマネージャーの「自動読み込みディレク"
+"トリを再スキャン」ボタンを使用してスクリプトを再読み込みしてください。"
 
 #: ../src/auto4_base.cpp:352
 msgid ""
@@ -189,6 +201,10 @@ msgid ""
 "Please review the warnings, fix them and use the Rescan Autoload Dir button "
 "in Automation Manager to load the scripts again."
 msgstr ""
+"オートメーションの自動読み込みディレクトリにあるスクリプトが警告付きで読み込"
+"まれました。\n"
+"警告を確認して修正し、オートメーションマネージャーの「自動読み込みディレクト"
+"リを再スキャン」ボタンを使用してスクリプトを再読み込みしてください。"
 
 #: ../src/auto4_base.cpp:355
 msgid ""
@@ -196,6 +212,10 @@ msgid ""
 "Please review the warnings, fix them and use the Rescan Autoload Dir button "
 "in Automation Manager to load the scripts again."
 msgstr ""
+"オートメーションの自動読み込みディレクトリにある複数のスクリプトが警告付きで"
+"読み込まれました。\n"
+"警告を確認して修正し、オートメーションマネージャーの「自動読み込みディレクト"
+"リを再スキャン」ボタンを使用してスクリプトを再読み込みしてください。"
 
 #: ../src/auto4_base.cpp:394
 #, c-format
@@ -204,6 +224,9 @@ msgid ""
 "Location specifier found: %c\n"
 "Filename specified: %s"
 msgstr ""
+"参照されたオートメーションスクリプトに不明な場所指定文字が含まれています。\n"
+"見つかった場所指定子: %c\n"
+"指定されたファイル名: %s"
 
 #: ../src/auto4_base.cpp:412
 #, c-format
@@ -218,27 +241,32 @@ msgid ""
 "You should only load associated automation scripts if you trust their "
 "authors! They are not required to view or edit the subtitle file."
 msgstr ""
+"開いた字幕ファイルにはローカルのオートメーションスクリプトが含まれています。"
+"関連するオートメーションスクリプトを読み込みますか？\n"
+"\n"
+"スクリプトのリスト:\n"
+"\n"
+"%s\n"
+"\n"
+"関連するオートメーションスクリプトは、その作者を信頼できる場合にのみ読み込ん"
+"でください！字幕ファイルの表示や編集に必須ではありません。"
 
 #: ../src/auto4_base.cpp:418
 #, c-format
 msgid "    %s (%s)"
-msgstr ""
+msgstr "    %s (%s)"
 
 #: ../src/auto4_base.cpp:419
-#, fuzzy
-#| msgid "Reloaded autoload Automation scripts"
 msgid "Load associated automation scripts?"
-msgstr "自動処理スクリプトを自動再読込"
+msgstr "関連するオートメーションスクリプトを読み込みますか？"
 
 #: ../src/auto4_base.cpp:422
 msgid "No"
-msgstr ""
+msgstr "いいえ"
 
 #: ../src/auto4_base.cpp:422
-#, fuzzy
-#| msgid "Global autoload scripts"
 msgid "Trust the authors && load scripts"
-msgstr "オートロードスクリプト"
+msgstr "作者を信頼してスクリプトを読み込む (&&L)"
 
 #: ../src/auto4_base.cpp:437
 #, c-format
@@ -248,6 +276,10 @@ msgid ""
 "Searched relative to: %s\n"
 "Resolved filename: %s"
 msgstr ""
+"参照されたオートメーションスクリプトが見つかりませんでした。\n"
+"指定されたファイル名: %s\n"
+"相対検索先: %s\n"
+"解決されたファイル名: %s"
 
 #: ../src/auto4_base.cpp:498
 #, c-format
@@ -255,14 +287,17 @@ msgid ""
 "Failed to load Automation script '%s':\n"
 "%s"
 msgstr ""
+"オートメーションスクリプト '%s' の読み込みに失敗しました:\n"
+"%s"
 
 #: ../src/auto4_base.cpp:501
-#, fuzzy, c-format
-#| msgid "Reloaded autoload Automation scripts"
+#, c-format
 msgid ""
 "Warning when loading Automation script '%s':\n"
 "%s"
-msgstr "自動処理スクリプトを自動再読込"
+msgstr ""
+"オートメーションスクリプト '%s' を読み込む際の警告:\n"
+"%s"
 
 #: ../src/auto4_base.cpp:508
 #, c-format
@@ -285,18 +320,17 @@ msgid "File was not recognized as a script"
 msgstr "ファイルはスクリプトとして認識できません"
 
 #: ../src/auto4_lua.cpp:180
-#, fuzzy, c-format
-#| msgid "Add Automation script"
+#, c-format
 msgid ""
 "Warning in Automation script '%s':\n"
 "%s"
-msgstr "オートメーションスクリプトの追加"
+msgstr ""
+"オートメーションスクリプト '%s' の警告:\n"
+"%s"
 
 #: ../src/auto4_lua.cpp:464
-#, fuzzy
-#| msgid "Could not parse style"
 msgid "Could not initialize Lua state"
-msgstr "スタイルを解析できません"
+msgstr "Luaの状態を初期化できませんでした"
 
 #: ../src/auto4_lua.cpp:547
 #, c-format
@@ -305,12 +339,17 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Luaスクリプト \"%s\" の初期化エラー:\n"
+"\n"
+"%s"
 
 #: ../src/auto4_lua.cpp:557
 msgid ""
 "Attempted to load an Automation 3 script as an Automation 4 Lua script. "
 "Automation 3 is no longer supported."
 msgstr ""
+"Automation 3 スクリプトを Automation 4 Lua スクリプトとして読み込もうとしまし"
+"た。Automation 3 は現在サポートされていません。"
 
 #: ../src/auto4_lua.cpp:831
 #, c-format
@@ -318,21 +357,23 @@ msgid ""
 "Runtime error in Lua macro validation function:\n"
 "%s"
 msgstr ""
+"Luaマクロ検証関数の実行時エラー:\n"
+"%s"
 
 #: ../src/auto4_lua.cpp:885
 #, c-format
 msgid "Active row %d is out of bounds (must be 1-%u)"
-msgstr ""
+msgstr "アクティブな行 %d が範囲外です (1-%u でなければなりません)"
 
 #: ../src/auto4_lua.cpp:901
 #, c-format
 msgid "Selected row %d is out of bounds (must be 1-%u)"
-msgstr ""
+msgstr "選択された行 %d が範囲外です (1-%u でなければなりません)"
 
 #: ../src/auto4_lua.cpp:907
 #, c-format
 msgid "Selected row %d is not a dialogue line"
-msgstr ""
+msgstr "選択された行 %d はダイアログ行ではありません"
 
 #: ../src/auto4_lua.cpp:973
 #, c-format
@@ -340,6 +381,8 @@ msgid ""
 "Runtime error in Lua macro IsActive function:\n"
 "%s"
 msgstr ""
+"LuaマクロIsActive関数の実行時エラー:\n"
+"%s"
 
 #: ../src/auto4_lua.cpp:1079
 #, c-format
@@ -347,6 +390,8 @@ msgid ""
 "Runtime error in Lua config dialog function:\n"
 "%s"
 msgstr ""
+"Lua設定ダイアログ関数の実行時エラー:\n"
+"%s"
 
 #: ../src/charset_detect.cpp:50
 msgid ""
@@ -366,7 +411,7 @@ msgstr "Aegisub について (&A)"
 
 #: ../src/command/app.cpp:57
 msgid "About"
-msgstr ""
+msgstr "バージョン情報"
 
 #: ../src/command/app.cpp:58 ../src/dialog_about.cpp:44
 msgid "About Aegisub"
@@ -374,7 +419,7 @@ msgstr "Aegisub について"
 
 #: ../src/command/app.cpp:67
 msgid "&Audio+Subs View"
-msgstr ""
+msgstr "音声+字幕ビュー (&A)"
 
 #: ../src/command/app.cpp:68
 msgid "Audio+Subs View"
@@ -382,11 +427,11 @@ msgstr "字幕と音声ビュー"
 
 #: ../src/command/app.cpp:69
 msgid "Display audio and the subtitles grid only"
-msgstr ""
+msgstr "音声と字幕グリッドのみを表示します"
 
 #: ../src/command/app.cpp:87
 msgid "&Full view"
-msgstr ""
+msgstr "フルビュー (&F)"
 
 #: ../src/command/app.cpp:88
 msgid "Full view"
@@ -394,11 +439,11 @@ msgstr "すべてのビューを表示"
 
 #: ../src/command/app.cpp:89
 msgid "Display audio, video and then subtitles grid"
-msgstr ""
+msgstr "音声、映像、そして字幕グリッドを表示します"
 
 #: ../src/command/app.cpp:107
 msgid "S&ubs Only View"
-msgstr ""
+msgstr "字幕のみビュー (&U)"
 
 #: ../src/command/app.cpp:108
 msgid "Subs Only View"
@@ -406,11 +451,11 @@ msgstr "字幕ビュー"
 
 #: ../src/command/app.cpp:109
 msgid "Display the subtitles grid only"
-msgstr ""
+msgstr "字幕グリッドのみを表示します"
 
 #: ../src/command/app.cpp:123
 msgid "&Video+Subs View"
-msgstr ""
+msgstr "映像+字幕ビュー (&V)"
 
 #: ../src/command/app.cpp:124
 msgid "Video+Subs View"
@@ -418,7 +463,7 @@ msgstr "字幕と映像ビュー"
 
 #: ../src/command/app.cpp:125
 msgid "Display video and the subtitles grid only"
-msgstr ""
+msgstr "映像と字幕グリッドのみを表示します"
 
 #: ../src/command/app.cpp:143
 msgid "E&xit"
@@ -434,7 +479,7 @@ msgstr "Aegisubを終了します"
 
 #: ../src/command/app.cpp:155
 msgid "&Language..."
-msgstr ""
+msgstr "言語 (&L)..."
 
 #: ../src/command/app.cpp:157
 msgid "Select Aegisub interface language"
@@ -445,28 +490,28 @@ msgid ""
 "Aegisub needs to be restarted so that the new language can be applied. "
 "Restart now?"
 msgstr ""
+"新しい言語を適用するには Aegisub を再起動する必要があります。今すぐ再起動しま"
+"すか？"
 
 #: ../src/command/app.cpp:167
-#, fuzzy
-#| msgid "About Aegisub"
 msgid "Restart Aegisub?"
-msgstr "Aegisub について"
+msgstr "Aegisub を再起動しますか？"
 
 #: ../src/command/app.cpp:180
 msgid "&Log window"
-msgstr ""
+msgstr "ログウィンドウ (&L)"
 
 #: ../src/command/app.cpp:181 ../src/dialog_log.cpp:100
 msgid "Log window"
-msgstr ""
+msgstr "ログウィンドウ"
 
 #: ../src/command/app.cpp:182
 msgid "View the event log"
-msgstr ""
+msgstr "イベントログを表示します"
 
 #: ../src/command/app.cpp:192
 msgid "New &Window"
-msgstr ""
+msgstr "新しいウィンドウ (&W)"
 
 #: ../src/command/app.cpp:193
 msgid "New Window"
@@ -480,7 +525,7 @@ msgstr "新たにAegisubを起動します (※複数起動)"
 msgid "&Options..."
 msgstr "Aegisub 設定 (&O)"
 
-#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:151
+#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:182
 #: ../src/dialog_timing_processor.cpp:169 ../src/preferences.cpp:166
 #: ../src/preferences.cpp:206
 msgid "Options"
@@ -492,23 +537,23 @@ msgstr "Aegisubの設定を開きます"
 
 #: ../src/command/app.cpp:220 ../src/command/app.cpp:221
 msgid "Toggle global hotkey overrides"
-msgstr ""
+msgstr "グローバルホットキーのオーバーライドを切り替える"
 
 #: ../src/command/app.cpp:222
 msgid "Toggle global hotkey overrides (Medusa Mode)"
-msgstr ""
+msgstr "グローバルホットキーのオーバーライドを切り替える (Medusa モード)"
 
 #: ../src/command/app.cpp:237
 msgid "Toggle the main toolbar"
-msgstr ""
+msgstr "メインツールバーの表示/非表示を切り替える"
 
 #: ../src/command/app.cpp:242
 msgid "Hide Toolbar"
-msgstr ""
+msgstr "ツールバーを隠す"
 
 #: ../src/command/app.cpp:243
 msgid "Show Toolbar"
-msgstr ""
+msgstr "ツールバーを表示"
 
 #: ../src/command/app.cpp:258
 msgid "&Check for Updates..."
@@ -516,7 +561,7 @@ msgstr "最新バージョンをチェック (&C)"
 
 #: ../src/command/app.cpp:259
 msgid "Check for Updates"
-msgstr ""
+msgstr "更新の確認"
 
 #: ../src/command/app.cpp:260
 msgid "Check to see if there is a new version of Aegisub available"
@@ -524,27 +569,27 @@ msgstr "Aegisubの最新バージョンをチェックします"
 
 #: ../src/command/app.cpp:270 ../src/command/app.cpp:271
 msgid "Minimize"
-msgstr ""
+msgstr "最小化"
 
 #: ../src/command/app.cpp:272
 msgid "Minimize the active window"
-msgstr ""
+msgstr "アクティブなウィンドウを最小化します"
 
 #: ../src/command/app.cpp:281 ../src/command/app.cpp:282
 msgid "Zoom"
-msgstr ""
+msgstr "ズーム"
 
 #: ../src/command/app.cpp:283
 msgid "Maximize the active window"
-msgstr ""
+msgstr "アクティブなウィンドウを最大化します"
 
 #: ../src/command/app.cpp:292 ../src/command/app.cpp:293
 msgid "Bring All to Front"
-msgstr ""
+msgstr "すべてを最前面へ"
 
 #: ../src/command/app.cpp:294
 msgid "Bring forward all open documents to the front"
-msgstr ""
+msgstr "開いているすべてのドキュメントを最前面に移動します"
 
 #: ../src/command/audio.cpp:65
 msgid "&Close Audio"
@@ -552,11 +597,11 @@ msgstr "音声ファイルを閉じる (&C)"
 
 #: ../src/command/audio.cpp:66
 msgid "Close Audio"
-msgstr ""
+msgstr "音声を閉じる"
 
 #: ../src/command/audio.cpp:67
 msgid "Close the currently open audio file"
-msgstr ""
+msgstr "現在開いている音声ファイルを閉じます"
 
 #: ../src/command/audio.cpp:77
 msgid "&Open Audio File..."
@@ -564,11 +609,11 @@ msgstr "音声ファイルを開く (&O)"
 
 #: ../src/command/audio.cpp:78
 msgid "Open Audio File"
-msgstr ""
+msgstr "音声ファイルを開く"
 
 #: ../src/command/audio.cpp:79
 msgid "Open an audio file"
-msgstr ""
+msgstr "音声ファイルを開きます"
 
 #: ../src/command/audio.cpp:82
 msgid "Audio Formats"
@@ -579,27 +624,25 @@ msgid "Video Formats"
 msgstr "映像フォーマット"
 
 #: ../src/command/audio.cpp:85
-#, fuzzy
-#| msgid "&Open Audio File..."
 msgctxt "dialog title"
 msgid "Open Audio File"
-msgstr "音声ファイルを開く (&O)"
+msgstr "音声ファイルを開く"
 
 #: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
 msgid "Open 2h30 Blank Audio"
-msgstr ""
+msgstr "2時間30分の無音音声を開く"
 
 #: ../src/command/audio.cpp:95
 msgid "Open a 150 minutes blank audio clip, for debugging"
-msgstr ""
+msgstr "デバッグ用に150分の無音音声クリップを開きます"
 
 #: ../src/command/audio.cpp:104 ../src/command/audio.cpp:105
 msgid "Open 2h30 Noise Audio"
-msgstr ""
+msgstr "2時間30分のノイズ音声を開く"
 
 #: ../src/command/audio.cpp:106
 msgid "Open a 150 minutes noise-filled audio clip, for debugging"
-msgstr ""
+msgstr "デバッグ用に150分のノイズ音声クリップを開きます"
 
 #: ../src/command/audio.cpp:116
 msgid "Open Audio from &Video"
@@ -607,35 +650,35 @@ msgstr "映像ファイルから音声を読み込む (&V)"
 
 #: ../src/command/audio.cpp:117
 msgid "Open Audio from Video"
-msgstr ""
+msgstr "映像から音声を開く"
 
 #: ../src/command/audio.cpp:118
 msgid "Open the audio from the current video file"
-msgstr ""
+msgstr "現在の映像ファイルから音声を開きます"
 
 #: ../src/command/audio.cpp:132
 msgid "&Spectrum Display"
-msgstr ""
+msgstr "スペクトラム表示 (&S)"
 
 #: ../src/command/audio.cpp:133
 msgid "Spectrum Display"
-msgstr ""
+msgstr "スペクトラム表示"
 
 #: ../src/command/audio.cpp:134
 msgid "Display audio as a frequency-power spectrograph"
-msgstr ""
+msgstr "音声を周波数スペクトログラフとして表示します"
 
 #: ../src/command/audio.cpp:148
 msgid "&Waveform Display"
-msgstr ""
+msgstr "波形表示 (&W)"
 
 #: ../src/command/audio.cpp:149
 msgid "Waveform Display"
-msgstr ""
+msgstr "波形表示"
 
 #: ../src/command/audio.cpp:150
 msgid "Display audio as a linear amplitude graph"
-msgstr ""
+msgstr "音声を線形振幅グラフとして表示します"
 
 #: ../src/command/audio.cpp:164 ../src/command/audio.cpp:165
 msgid "Create audio clip"
@@ -643,21 +686,19 @@ msgstr "選択範囲の音声ファイル抽出"
 
 #: ../src/command/audio.cpp:166
 msgid "Save an audio clip of the selected line"
-msgstr ""
+msgstr "選択した行の音声クリップを保存します"
 
 #: ../src/command/audio.cpp:177
-#, fuzzy
-#| msgid "Save audio clip"
 msgid "Save Audio Clip"
-msgstr "音声ファイル保存"
+msgstr "音声クリップを保存"
 
 #: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
 msgid "Play current audio selection"
-msgstr ""
+msgstr "現在の音声選択範囲を再生"
 
 #: ../src/command/audio.cpp:194
 msgid "Play the current audio selection, ignoring changes made while playing"
-msgstr ""
+msgstr "現在の音声選択範囲を再生します（再生中の変更は無視されます）"
 
 #: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
 msgid "Play current line"
@@ -665,90 +706,92 @@ msgstr "選択した字幕行を再生"
 
 #: ../src/command/audio.cpp:207
 msgid "Play the audio for the current line"
-msgstr ""
+msgstr "現在の行の音声を再生します"
 
 #: ../src/command/audio.cpp:220 ../src/command/audio.cpp:221
 msgid "Play audio selection"
-msgstr ""
+msgstr "音声選択範囲を再生"
 
 #: ../src/command/audio.cpp:222
 msgid "Play audio until the end of the selection is reached"
-msgstr ""
+msgstr "選択範囲の最後まで音声を再生します"
 
 #: ../src/command/audio.cpp:232 ../src/command/audio.cpp:233
 msgid "Play audio selection or stop"
-msgstr ""
+msgstr "音声選択範囲を再生または停止"
 
 #: ../src/command/audio.cpp:234
 msgid "Play selection, or stop playback if it's already playing"
-msgstr ""
+msgstr "選択範囲を再生します（再生中の場合は停止します）"
 
 #: ../src/command/audio.cpp:249 ../src/command/audio.cpp:250
 msgid "Stop playing"
-msgstr ""
+msgstr "再生を停止"
 
 #: ../src/command/audio.cpp:251
 msgid "Stop audio and video playback"
-msgstr ""
+msgstr "音声と映像の再生を停止します"
 
 #: ../src/command/audio.cpp:267 ../src/command/audio.cpp:268
 #: ../src/command/audio.cpp:269
 msgid "Play 500 ms before selection"
-msgstr ""
+msgstr "選択範囲の500ミリ秒前を再生"
 
 #: ../src/command/audio.cpp:281 ../src/command/audio.cpp:282
 #: ../src/command/audio.cpp:283
 msgid "Play 500 ms after selection"
-msgstr ""
+msgstr "選択範囲の500ミリ秒後を再生"
 
 #: ../src/command/audio.cpp:295 ../src/command/audio.cpp:296
 #: ../src/command/audio.cpp:297
 msgid "Play last 500 ms of selection"
-msgstr ""
+msgstr "選択範囲の最後の500ミリ秒を再生"
 
 #: ../src/command/audio.cpp:309 ../src/command/audio.cpp:310
 #: ../src/command/audio.cpp:311
 msgid "Play first 500 ms of selection"
-msgstr ""
+msgstr "選択範囲の最初の500ミリ秒を再生"
 
 #: ../src/command/audio.cpp:325 ../src/command/audio.cpp:326
 #: ../src/command/audio.cpp:327
 msgid "Play from selection start to end of file"
-msgstr ""
+msgstr "選択範囲の開始位置からファイルの最後まで再生"
 
 #: ../src/command/audio.cpp:338 ../src/command/audio.cpp:339
 msgid "Commit"
-msgstr "Commit"
+msgstr "コミット"
 
 #: ../src/command/audio.cpp:340
 msgid "Commit any pending audio timing changes"
-msgstr ""
+msgstr "保留中の音声タイミングの変更をコミットします"
 
 #: ../src/command/audio.cpp:354 ../src/command/audio.cpp:355
 msgid "Commit and use default timing for next line"
-msgstr ""
+msgstr "コミットして次の行にデフォルトのタイミングを使用"
 
 #: ../src/command/audio.cpp:356
 msgid ""
 "Commit any pending audio timing changes and reset the next line's times to "
 "the default"
 msgstr ""
+"保留中の音声タイミングの変更をコミットし、次の行の時間をデフォルトにリセット"
+"します"
 
 #: ../src/command/audio.cpp:369 ../src/command/audio.cpp:370
 msgid "Commit and move to next line"
-msgstr ""
+msgstr "コミットして次の行へ移動"
 
 #: ../src/command/audio.cpp:371
 msgid "Commit any pending audio timing changes and move to the next line"
-msgstr ""
+msgstr "保留中の音声タイミングの変更をコミットし、次の行へ移動します"
 
 #: ../src/command/audio.cpp:384 ../src/command/audio.cpp:385
 msgid "Commit and stay on current line"
-msgstr ""
+msgstr "コミットして現在の行に留まる"
 
 #: ../src/command/audio.cpp:386
 msgid "Commit any pending audio timing changes and stay on the current line"
-msgstr ""
+msgstr "保留中の音声タイミングの変更をコミットし、現在の行に留まります"
 
 #: ../src/command/audio.cpp:397 ../src/command/audio.cpp:398
 msgid "Go to selection"
@@ -756,50 +799,48 @@ msgstr "選択範囲に移動"
 
 #: ../src/command/audio.cpp:399
 msgid "Scroll the audio display to center on the current audio selection"
-msgstr ""
+msgstr "現在の音声選択範囲が中央になるように音声表示をスクロールします"
 
 #: ../src/command/audio.cpp:408 ../src/command/audio.cpp:409
-#, fuzzy
-#| msgid "Go to selection"
 msgid "Go to selection start"
-msgstr "選択範囲に移動"
+msgstr "選択範囲の開始位置に移動"
 
 #: ../src/command/audio.cpp:410
 msgid ""
 "Scroll the audio display to center on the start of current audio selection"
 msgstr ""
+"現在の音声選択範囲の開始位置が中央になるように音声表示をスクロールします"
 
 #: ../src/command/audio.cpp:419 ../src/command/audio.cpp:420
-#, fuzzy
-#| msgid "Go to selection"
 msgid "Go to selection end"
-msgstr "選択範囲に移動"
+msgstr "選択範囲の終了位置に移動"
 
 #: ../src/command/audio.cpp:421
 msgid ""
 "Scroll the audio display to center on the end of current audio selection"
 msgstr ""
+"現在の音声選択範囲の終了位置が中央になるように音声表示をスクロールします"
 
 #: ../src/command/audio.cpp:430 ../src/command/audio.cpp:431
 msgid "Scroll left"
-msgstr ""
+msgstr "左にスクロール"
 
 #: ../src/command/audio.cpp:432
 msgid "Scroll the audio display left"
-msgstr ""
+msgstr "音声表示を左にスクロールします"
 
 #: ../src/command/audio.cpp:441 ../src/command/audio.cpp:442
 msgid "Scroll right"
-msgstr ""
+msgstr "右にスクロール"
 
 #: ../src/command/audio.cpp:443
 msgid "Scroll the audio display right"
-msgstr ""
+msgstr "音声表示を右にスクロールします"
 
 #: ../src/command/audio.cpp:457 ../src/command/audio.cpp:458
 #: ../src/command/audio.cpp:459
 msgid "Auto scroll audio display to selected line"
-msgstr ""
+msgstr "選択した行に音声表示を自動スクロール"
 
 #: ../src/command/audio.cpp:474 ../src/command/audio.cpp:475
 #: ../src/command/audio.cpp:476
@@ -808,11 +849,11 @@ msgstr "範囲選択をすぐに字幕行に反映する"
 
 #: ../src/command/audio.cpp:491 ../src/command/audio.cpp:492
 msgid "Auto go to next line on commit"
-msgstr ""
+msgstr "コミット時に自動で次の行へ移動"
 
 #: ../src/command/audio.cpp:493
 msgid "Automatically go to next line on commit"
-msgstr ""
+msgstr "コミット時に自動的に次の行へ移動します"
 
 #: ../src/command/audio.cpp:508 ../src/command/audio.cpp:509
 #: ../src/command/audio.cpp:510
@@ -831,15 +872,17 @@ msgstr "カラオケモードのON/OFF"
 
 #: ../src/command/automation.cpp:47
 msgid "&Reload Automation scripts"
-msgstr ""
+msgstr "オートメーションスクリプトを再読み込み (&R)"
 
 #: ../src/command/automation.cpp:48
 msgid "Reload Automation scripts"
-msgstr ""
+msgstr "オートメーションスクリプトを再読み込み"
 
 #: ../src/command/automation.cpp:49
 msgid "Reload all Automation scripts and rescan the autoload folder"
 msgstr ""
+"すべてのオートメーションスクリプトを再読み込みし、自動読み込みフォルダを再ス"
+"キャンします"
 
 #: ../src/command/automation.cpp:54
 msgid "Reloaded all Automation scripts"
@@ -847,15 +890,15 @@ msgstr "自動処理スクリプトを再読込"
 
 #: ../src/command/automation.cpp:60
 msgid "R&eload autoload Automation scripts"
-msgstr ""
+msgstr "自動読み込みオートメーションスクリプトを再読み込み (&E)"
 
 #: ../src/command/automation.cpp:61
 msgid "Reload autoload Automation scripts"
-msgstr ""
+msgstr "自動読み込みオートメーションスクリプトを再読み込み"
 
 #: ../src/command/automation.cpp:62
 msgid "Rescan the Automation autoload folder"
-msgstr ""
+msgstr "オートメーションの自動読み込みフォルダを再スキャンします"
 
 #: ../src/command/automation.cpp:66
 msgid "Reloaded autoload Automation scripts"
@@ -866,7 +909,7 @@ msgid "&Automation..."
 msgstr "オートメーションマネージャー (&A)"
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:376
+#: ../src/preferences.cpp:400
 msgid "Automation"
 msgstr "オートメーション"
 
@@ -879,11 +922,14 @@ msgid ""
 "Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan "
 "autoload folder and reload all automation scripts"
 msgstr ""
+"オートメーションマネージャーを開きます。Ctrl: 自動読み込みフォルダを再スキャ"
+"ンします。Ctrl+Shift: 自動読み込みフォルダを再スキャンし、すべてのオートメー"
+"ションスクリプトを再読み込みします"
 
 #: ../src/command/command.cpp:35
 #, c-format
 msgid "'%s' is not a valid command name"
-msgstr ""
+msgstr "'%s' は有効なコマンド名ではありません"
 
 #: ../src/command/edit.cpp:135 ../src/command/edit.cpp:844
 msgid "paste"
@@ -891,134 +937,135 @@ msgstr "貼り付け"
 
 #: ../src/command/edit.cpp:377
 msgid "set color"
-msgstr ""
+msgstr "色を設定"
 
 #: ../src/command/edit.cpp:391
 msgid "Primary Color..."
-msgstr ""
+msgstr "プライマリカラー..."
 
 #: ../src/command/edit.cpp:392
 msgid "Primary Color"
-msgstr ""
+msgstr "プライマリカラー"
 
 #: ../src/command/edit.cpp:393
 msgid "Set the primary fill color (\\c) at the cursor position"
-msgstr ""
+msgstr "カーソル位置にプライマリ塗りつぶし色 (\\c) を設定します"
 
 #: ../src/command/edit.cpp:403
 msgid "Secondary Color..."
-msgstr ""
+msgstr "セカンダリカラー..."
 
 #: ../src/command/edit.cpp:404
 msgid "Secondary Color"
-msgstr ""
+msgstr "セカンダリカラー"
 
 #: ../src/command/edit.cpp:405
 msgid "Set the secondary (karaoke) fill color (\\2c) at the cursor position"
-msgstr ""
+msgstr "カーソル位置にセカンダリ (カラオケ) 塗りつぶし色 (\\2c) を設定します"
 
 #: ../src/command/edit.cpp:415
 msgid "Outline Color..."
-msgstr ""
+msgstr "アウトラインカラー..."
 
 #: ../src/command/edit.cpp:416
 msgid "Outline Color"
-msgstr ""
+msgstr "アウトラインカラー"
 
 #: ../src/command/edit.cpp:417
 msgid "Set the outline color (\\3c) at the cursor position"
-msgstr ""
+msgstr "カーソル位置にアウトライン色 (\\3c) を設定します"
 
 #: ../src/command/edit.cpp:427
 msgid "Shadow Color..."
-msgstr ""
+msgstr "シャドウカラー..."
 
 #: ../src/command/edit.cpp:428
 msgid "Shadow Color"
-msgstr ""
+msgstr "シャドウカラー"
 
 #: ../src/command/edit.cpp:429
 msgid "Set the shadow color (\\4c) at the cursor position"
-msgstr ""
+msgstr "カーソル位置にシャドウ色 (\\4c) を設定します"
 
 #: ../src/command/edit.cpp:439 ../src/command/edit.cpp:440
 msgid "Toggle Bold"
-msgstr ""
+msgstr "太字を切り替える"
 
 #: ../src/command/edit.cpp:441
 msgid ""
 "Toggle bold (\\b) for the current selection or at the current cursor position"
-msgstr ""
+msgstr "現在の選択範囲または現在のカーソル位置で太字 (\\b) を切り替えます"
 
 #: ../src/command/edit.cpp:444
 msgid "toggle bold"
-msgstr ""
+msgstr "太字の切り替え"
 
 #: ../src/command/edit.cpp:451 ../src/command/edit.cpp:452
 msgid "Toggle Italics"
-msgstr ""
+msgstr "斜体を切り替える"
 
 #: ../src/command/edit.cpp:453
 msgid ""
 "Toggle italics (\\i) for the current selection or at the current cursor "
 "position"
-msgstr ""
+msgstr "現在の選択範囲または現在のカーソル位置で斜体 (\\i) を切り替えます"
 
 #: ../src/command/edit.cpp:456
 msgid "toggle italic"
-msgstr ""
+msgstr "斜体の切り替え"
 
 #: ../src/command/edit.cpp:463 ../src/command/edit.cpp:464
 msgid "Toggle Underline"
-msgstr ""
+msgstr "下線を切り替える"
 
 #: ../src/command/edit.cpp:465
 msgid ""
 "Toggle underline (\\u) for the current selection or at the current cursor "
 "position"
-msgstr ""
+msgstr "現在の選択範囲または現在のカーソル位置で下線 (\\u) を切り替えます"
 
 #: ../src/command/edit.cpp:468
 msgid "toggle underline"
-msgstr ""
+msgstr "下線の切り替え"
 
 #: ../src/command/edit.cpp:475 ../src/command/edit.cpp:476
 msgid "Toggle Strikeout"
-msgstr ""
+msgstr "取り消し線を切り替える"
 
 #: ../src/command/edit.cpp:477
 msgid ""
 "Toggle strikeout (\\s) for the current selection or at the current cursor "
 "position"
 msgstr ""
+"現在の選択範囲または現在のカーソル位置で取り消し線 (\\s) を切り替えます"
 
 #: ../src/command/edit.cpp:480
 msgid "toggle strikeout"
-msgstr ""
+msgstr "取り消し線の切り替え"
 
 #: ../src/command/edit.cpp:487
 msgid "Font Face..."
-msgstr ""
+msgstr "フォント..."
 
 #: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:277
 msgid "Font Face"
-msgstr ""
+msgstr "フォント"
 
 #: ../src/command/edit.cpp:489
 msgid "Select a font face and size"
-msgstr ""
+msgstr "フォントとサイズを選択します"
 
 #: ../src/command/edit.cpp:516
 msgid "set font"
-msgstr ""
+msgstr "フォントの設定"
 
 #: ../src/command/edit.cpp:543
 msgid "Find and R&eplace..."
-msgstr ""
+msgstr "検索と置換 (&E)..."
 
 #: ../src/command/edit.cpp:544
 msgid "Find and Replace"
-msgstr ""
+msgstr "検索と置換"
 
 #: ../src/command/edit.cpp:545
 msgid "Find and replace words in subtitles"
@@ -1026,7 +1073,7 @@ msgstr "字幕を指定した文字列で検索し、指定した文字列に置
 
 #: ../src/command/edit.cpp:606
 msgid "&Copy Lines"
-msgstr ""
+msgstr "行をコピー (&C)"
 
 #: ../src/command/edit.cpp:607
 msgid "Copy Lines"
@@ -1034,11 +1081,11 @@ msgstr "字幕行をコピー"
 
 #: ../src/command/edit.cpp:608
 msgid "Copy subtitles to the clipboard"
-msgstr ""
+msgstr "字幕をクリップボードにコピーします"
 
 #: ../src/command/edit.cpp:629
 msgid "Cu&t Lines"
-msgstr ""
+msgstr "行を切り取り (&T)"
 
 #: ../src/command/edit.cpp:630
 msgid "Cut Lines"
@@ -1050,11 +1097,11 @@ msgstr "字幕の選択行を切り取ります"
 
 #: ../src/command/edit.cpp:638
 msgid "cut lines"
-msgstr ""
+msgstr "行の切り取り"
 
 #: ../src/command/edit.cpp:646
 msgid "De&lete Lines"
-msgstr ""
+msgstr "行を削除 (&L)"
 
 #: ../src/command/edit.cpp:647
 msgid "Delete Lines"
@@ -1066,11 +1113,11 @@ msgstr "選択行の字幕を削除します"
 
 #: ../src/command/edit.cpp:651
 msgid "delete lines"
-msgstr ""
+msgstr "行の削除"
 
 #: ../src/command/edit.cpp:716
 msgid "duplicate lines"
-msgstr ""
+msgstr "行の複製"
 
 #: ../src/command/edit.cpp:716 ../src/command/edit.cpp:1109
 msgid "split"
@@ -1082,7 +1129,7 @@ msgstr "選択行を複製 (&D)"
 
 #: ../src/command/edit.cpp:724
 msgid "Duplicate Lines"
-msgstr ""
+msgstr "行を複製"
 
 #: ../src/command/edit.cpp:725
 msgid "Duplicate the selected lines"
@@ -1090,23 +1137,25 @@ msgstr "選択行の字幕を複製します"
 
 #: ../src/command/edit.cpp:734 ../src/command/edit.cpp:735
 msgid "Split lines after current frame"
-msgstr ""
+msgstr "現在のフレームの後で行を分割"
 
 #: ../src/command/edit.cpp:736
 msgid ""
 "Split the current line into a line which ends on the current frame and a "
 "line which starts on the next frame"
 msgstr ""
+"現在の行を、現在のフレームで終わる行と次のフレームから始まる行に分割します"
 
 #: ../src/command/edit.cpp:746 ../src/command/edit.cpp:747
 msgid "Split lines before current frame"
-msgstr ""
+msgstr "現在のフレームの前で行を分割"
 
 #: ../src/command/edit.cpp:748
 msgid ""
 "Split the current line into a line which ends on the previous frame and a "
 "line which starts on the current frame"
 msgstr ""
+"現在の行を、前のフレームで終わる行と現在のフレームから始まる行に分割します"
 
 #: ../src/command/edit.cpp:788
 msgid "As &Karaoke"
@@ -1114,15 +1163,15 @@ msgstr "Karaoke モード連結 (&K)"
 
 #: ../src/command/edit.cpp:789
 msgid "As Karaoke"
-msgstr ""
+msgstr "カラオケとして"
 
 #: ../src/command/edit.cpp:790
 msgid "Join selected lines in a single one, as karaoke"
-msgstr ""
+msgstr "選択した行をカラオケとして1行に連結します"
 
 #: ../src/command/edit.cpp:793
 msgid "join as karaoke"
-msgstr ""
+msgstr "カラオケとして連結"
 
 #: ../src/command/edit.cpp:799
 msgid "&Concatenate"
@@ -1130,15 +1179,15 @@ msgstr "単純連結 (&C)"
 
 #: ../src/command/edit.cpp:800
 msgid "Concatenate"
-msgstr ""
+msgstr "単純連結"
 
 #: ../src/command/edit.cpp:801
 msgid "Join selected lines in a single one, concatenating text together"
-msgstr ""
+msgstr "選択した行のテキストを1つにまとめて1行に連結します"
 
 #: ../src/command/edit.cpp:804 ../src/command/edit.cpp:815
 msgid "join lines"
-msgstr ""
+msgstr "行の連結"
 
 #: ../src/command/edit.cpp:810
 msgid "Keep &First"
@@ -1146,17 +1195,17 @@ msgstr "前行の文字列保持で連結 (&F)"
 
 #: ../src/command/edit.cpp:811
 msgid "Keep First"
-msgstr ""
+msgstr "前行の文字列保持で連結"
 
 #: ../src/command/edit.cpp:812
 msgid ""
 "Join selected lines in a single one, keeping text of first and discarding "
 "remaining"
-msgstr ""
+msgstr "選択した行を1行に連結し、最初のテキストを保持して残りは破棄します"
 
 #: ../src/command/edit.cpp:853
 msgid "&Paste Lines"
-msgstr ""
+msgstr "行を貼り付け (&P)"
 
 #: ../src/command/edit.cpp:854
 msgid "Paste Lines"
@@ -1168,7 +1217,7 @@ msgstr "選択行の直前に貼り付けます"
 
 #: ../src/command/edit.cpp:884
 msgid "Paste Lines &Over..."
-msgstr ""
+msgstr "上書き貼り付け (&O)..."
 
 #: ../src/command/edit.cpp:885
 msgid "Paste Lines Over"
@@ -1180,7 +1229,7 @@ msgstr "貼り付ける字幕の項目を選択するダイアログを開きま
 
 #: ../src/command/edit.cpp:968
 msgid "Recom&bine Lines"
-msgstr ""
+msgstr "行を再結合 (&B)"
 
 #: ../src/command/edit.cpp:969
 msgid "Recombine Lines"
@@ -1188,7 +1237,7 @@ msgstr "字幕行の再結合"
 
 #: ../src/command/edit.cpp:970
 msgid "Recombine subtitles which have been split and merged"
-msgstr ""
+msgstr "分割またはマージされた字幕を再結合します"
 
 #: ../src/command/edit.cpp:1040
 msgid "combining"
@@ -1200,7 +1249,7 @@ msgstr "Karaoke 字幕行の分割"
 
 #: ../src/command/edit.cpp:1048
 msgid "Use karaoke timing to split line into multiple smaller lines"
-msgstr ""
+msgstr "カラオケのタイミングを使用して、行を複数の小さな行に分割します"
 
 #: ../src/command/edit.cpp:1082
 msgid "splitting"
@@ -1215,7 +1264,7 @@ msgstr "カーソル位置で字幕を分割 (タイミングは文字数に合�
 msgid ""
 "Split the current line at the cursor, dividing the original line's duration "
 "between the new ones"
-msgstr ""
+msgstr "カーソル位置で現在の行を分割し、元の行の長さを新しい行の間で分割します"
 
 #: ../src/command/edit.cpp:1130 ../src/command/edit.cpp:1131
 #: ../src/subs_edit_ctrl.cpp:416
@@ -1226,122 +1275,123 @@ msgstr "カーソル位置で字幕を分割 (タイミングは複製)"
 msgid ""
 "Split the current line at the cursor, setting both lines to the original "
 "line's times"
-msgstr ""
+msgstr "カーソル位置で現在の行を分割し、両方の行に元の行の時間を設定します"
 
 #: ../src/command/edit.cpp:1141 ../src/command/edit.cpp:1142
 msgid "Split at cursor (at video frame)"
-msgstr ""
+msgstr "カーソル位置で分割 (映像フレームで)"
 
 #: ../src/command/edit.cpp:1143
 msgid ""
 "Split the current line at the cursor, dividing the line's duration at the "
 "current video frame"
 msgstr ""
+"カーソル位置で現在の行を分割し、現在の映像フレームで行の長さを分割します"
 
 #: ../src/command/edit.cpp:1159
 msgid "Redo last undone action"
-msgstr ""
+msgstr "最後に元に戻した操作をやり直します"
 
 #: ../src/command/edit.cpp:1164
 msgid "Nothing to &redo"
-msgstr ""
+msgstr "やり直す操作はありません (&R)"
 
 #: ../src/command/edit.cpp:1165
 #, c-format
 msgid "&Redo %s"
-msgstr ""
+msgstr "%s をやり直す (&R)"
 
 #: ../src/command/edit.cpp:1169
 msgid "Nothing to redo"
-msgstr ""
+msgstr "やり直す操作はありません"
 
 #: ../src/command/edit.cpp:1170
 #, c-format
 msgid "Redo %s"
-msgstr ""
+msgstr "%s をやり直す"
 
 #: ../src/command/edit.cpp:1185
 msgid "Undo last action"
-msgstr ""
+msgstr "最後のアクションを元に戻す"
 
 #: ../src/command/edit.cpp:1190
 msgid "Nothing to &undo"
-msgstr ""
+msgstr "元に戻す操作はありません (&U)"
 
 #: ../src/command/edit.cpp:1191
 #, c-format
 msgid "&Undo %s"
-msgstr ""
+msgstr "%s を元に戻す (&U)"
 
 #: ../src/command/edit.cpp:1195
 msgid "Nothing to undo"
-msgstr ""
+msgstr "元に戻す操作はありません"
 
 #: ../src/command/edit.cpp:1196
 #, c-format
 msgid "Undo %s"
-msgstr ""
+msgstr "%s を元に戻す"
 
 #: ../src/command/edit.cpp:1210 ../src/command/edit.cpp:1211
 msgid "Revert"
-msgstr ""
+msgstr "復帰"
 
 #: ../src/command/edit.cpp:1212
 msgid "Revert the active line to its initial state (shown in the upper editor)"
-msgstr ""
+msgstr "アクティブな行を初期状態に戻します（上部エディタに表示されます）"
 
 #: ../src/command/edit.cpp:1217
 msgid "revert line"
-msgstr ""
+msgstr "行を復帰"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Clear"
 msgstr "履歴のクリア"
 
 #: ../src/command/edit.cpp:1225
 msgid "Clear the current line's text"
-msgstr ""
+msgstr "現在の行のテキストをクリアします"
 
 #: ../src/command/edit.cpp:1230 ../src/command/edit.cpp:1249
 msgid "clear line"
-msgstr ""
+msgstr "行をクリア"
 
 #: ../src/command/edit.cpp:1237 ../src/command/edit.cpp:1238
 msgid "Clear Text"
-msgstr ""
+msgstr "テキストのクリア"
 
 #: ../src/command/edit.cpp:1239
 msgid "Clear the current line's text, leaving override tags"
-msgstr ""
+msgstr "オーバーライドタグを残して、現在の行のテキストをクリアします"
 
 #: ../src/command/edit.cpp:1255 ../src/command/edit.cpp:1256
 #: ../src/command/tool.cpp:256
 msgid "Insert Original"
-msgstr ""
+msgstr "オリジナルを挿入"
 
 #: ../src/command/edit.cpp:1257
 msgid "Insert the original line text at the cursor"
-msgstr ""
+msgstr "カーソル位置に元の行のテキストを挿入します"
 
 #: ../src/command/edit.cpp:1265
 msgid "insert original"
-msgstr ""
+msgstr "オリジナルの挿入"
 
 #: ../src/command/grid.cpp:50 ../src/command/grid.cpp:51
 #: ../src/command/grid.cpp:62 ../src/command/grid.cpp:63
 #: ../src/command/time.cpp:355 ../src/command/time.cpp:356
 #: ../src/command/tool.cpp:234
 msgid "Next Line"
-msgstr ""
+msgstr "次の行"
 
 #: ../src/command/grid.cpp:52
 msgid "Move to the next subtitle line"
-msgstr ""
+msgstr "次の字幕行に移動します"
 
 #: ../src/command/grid.cpp:64
 msgid "Move to the next subtitle line, creating a new one if needed"
-msgstr ""
+msgstr "次の字幕行に移動します（必要に応じて新しい行を作成します）"
 
 #: ../src/command/grid.cpp:81 ../src/command/subtitle.cpp:127
 #: ../src/command/subtitle.cpp:161 ../src/command/subtitle.cpp:203
@@ -1352,23 +1402,23 @@ msgstr "行の挿入"
 #: ../src/command/time.cpp:367 ../src/command/time.cpp:368
 #: ../src/command/tool.cpp:245
 msgid "Previous Line"
-msgstr ""
+msgstr "前の行"
 
 #: ../src/command/grid.cpp:91
 msgid "Move to the previous line"
-msgstr ""
+msgstr "前の行に移動します"
 
 #: ../src/command/grid.cpp:100 ../src/command/grid.cpp:120
 msgid "&Actor Name"
-msgstr ""
+msgstr "話者名 (&A)"
 
 #: ../src/command/grid.cpp:101 ../src/command/grid.cpp:121
 msgid "Actor Name"
-msgstr ""
+msgstr "話者名"
 
 #: ../src/command/grid.cpp:102
 msgid "Sort all subtitles by their actor names"
-msgstr ""
+msgstr "すべての字幕をアクター名でソートします"
 
 #: ../src/command/grid.cpp:106 ../src/command/grid.cpp:126
 #: ../src/command/grid.cpp:138 ../src/command/grid.cpp:150
@@ -1381,30 +1431,30 @@ msgstr "ソート"
 
 #: ../src/command/grid.cpp:122
 msgid "Sort selected subtitles by their actor names"
-msgstr ""
+msgstr "選択した字幕を話者名でソートします"
 
 #: ../src/command/grid.cpp:132 ../src/command/grid.cpp:144
 #: ../src/dialog_search_replace.cpp:87
 msgid "&Effect"
-msgstr ""
+msgstr "エフェクト (&E)"
 
 #: ../src/command/grid.cpp:133 ../src/command/grid.cpp:145
 #: ../src/dialog_paste_over.cpp:74 ../src/grid_column.cpp:216
 #: ../src/grid_column.cpp:217 ../src/subs_edit_box.cpp:140
 msgid "Effect"
-msgstr "Effect"
+msgstr "エフェクト"
 
 #: ../src/command/grid.cpp:134
 msgid "Sort all subtitles by their effects"
-msgstr ""
+msgstr "すべての字幕をエフェクトでソートします"
 
 #: ../src/command/grid.cpp:146
 msgid "Sort selected subtitles by their effects"
-msgstr ""
+msgstr "選択した字幕をエフェクトでソートします"
 
 #: ../src/command/grid.cpp:156 ../src/command/grid.cpp:168
 msgid "&End Time"
-msgstr ""
+msgstr "終了時刻 (&E)"
 
 #: ../src/command/grid.cpp:157 ../src/command/grid.cpp:169
 #: ../src/dialog_paste_over.cpp:68 ../src/grid_column.cpp:172
@@ -1413,15 +1463,15 @@ msgstr "終了時刻"
 
 #: ../src/command/grid.cpp:158
 msgid "Sort all subtitles by their end times"
-msgstr ""
+msgstr "すべての字幕を終了時刻でソートします"
 
 #: ../src/command/grid.cpp:170
 msgid "Sort selected subtitles by their end times"
-msgstr ""
+msgstr "選択した字幕を終了時刻でソートします"
 
 #: ../src/command/grid.cpp:180 ../src/command/grid.cpp:192
 msgid "&Layer"
-msgstr ""
+msgstr "レイヤー (&L)"
 
 #: ../src/command/grid.cpp:181 ../src/command/grid.cpp:193
 #: ../src/dialog_paste_over.cpp:66 ../src/grid_column.cpp:132
@@ -1430,15 +1480,15 @@ msgstr "Layer"
 
 #: ../src/command/grid.cpp:182
 msgid "Sort all subtitles by their layer number"
-msgstr ""
+msgstr "すべての字幕をレイヤー番号でソートします"
 
 #: ../src/command/grid.cpp:194
 msgid "Sort selected subtitles by their layer number"
-msgstr ""
+msgstr "選択した字幕をレイヤー番号でソートします"
 
 #: ../src/command/grid.cpp:204 ../src/command/grid.cpp:216
 msgid "&Start Time"
-msgstr ""
+msgstr "開始時刻 (&S)"
 
 #: ../src/command/grid.cpp:205 ../src/command/grid.cpp:217
 #: ../src/dialog_paste_over.cpp:67 ../src/grid_column.cpp:154
@@ -1451,24 +1501,24 @@ msgstr "開始時間でソートします"
 
 #: ../src/command/grid.cpp:218
 msgid "Sort selected subtitles by their start times"
-msgstr ""
+msgstr "選択した字幕を開始時刻でソートします"
 
 #: ../src/command/grid.cpp:228 ../src/command/grid.cpp:240
 msgid "St&yle Name"
-msgstr ""
+msgstr "スタイル名 (&Y)"
 
 #: ../src/command/grid.cpp:229 ../src/command/grid.cpp:241
 #: ../src/dialog_style_editor.cpp:180
 msgid "Style Name"
-msgstr ""
+msgstr "スタイル名"
 
 #: ../src/command/grid.cpp:230
 msgid "Sort all subtitles by their style names"
-msgstr ""
+msgstr "すべての字幕をスタイル名でソートします"
 
 #: ../src/command/grid.cpp:242
 msgid "Sort selected subtitles by their style names"
-msgstr ""
+msgstr "選択した字幕をスタイル名でソートします"
 
 #: ../src/command/grid.cpp:253 ../src/command/grid.cpp:254
 msgid "Cycle Tag Hiding Mode"
@@ -1480,72 +1530,74 @@ msgstr "字幕グリッドでのタグ省略表示切り替え"
 
 #: ../src/command/grid.cpp:265
 msgid "ASS Override Tag mode set to show full tags."
-msgstr ""
+msgstr "ASS オーバーライドタグモードを「すべてのタグを表示」に設定しました。"
 
 #: ../src/command/grid.cpp:266
 msgid "ASS Override Tag mode set to simplify tags."
-msgstr ""
+msgstr "ASS オーバーライドタグモードを「タグを簡略化して表示」に設定しました。"
 
 #: ../src/command/grid.cpp:267
 msgid "ASS Override Tag mode set to hide tags."
-msgstr ""
+msgstr "ASS オーバーライドタグモードを「タグを隠す」に設定しました。"
 
 #: ../src/command/grid.cpp:277
 msgid "&Hide Tags"
-msgstr ""
+msgstr "タグを隠す (&H)"
 
 #: ../src/command/grid.cpp:278
 msgid "Hide Tags"
-msgstr ""
+msgstr "タグを隠す"
 
 #: ../src/command/grid.cpp:279
 msgid "Hide override tags in the subtitle grid"
-msgstr ""
+msgstr "字幕グリッドでオーバーライドタグを隠します"
 
 #: ../src/command/grid.cpp:293
 msgid "Sh&ow Tags"
-msgstr ""
+msgstr "タグを表示 (&O)"
 
 #: ../src/command/grid.cpp:294
 msgid "Show Tags"
-msgstr ""
+msgstr "タグを表示"
 
 #: ../src/command/grid.cpp:295
 msgid "Show full override tags in the subtitle grid"
-msgstr ""
+msgstr "字幕グリッドでオーバーライドタグをすべて表示します"
 
 #: ../src/command/grid.cpp:309
 msgid "S&implify Tags"
-msgstr ""
+msgstr "タグを簡略化 (&I)"
 
 #: ../src/command/grid.cpp:310
 msgid "Simplify Tags"
-msgstr ""
+msgstr "タグを簡略化"
 
 #: ../src/command/grid.cpp:311
 msgid ""
 "Replace override tags in the subtitle grid with a simplified placeholder"
 msgstr ""
+"字幕グリッド内のオーバーライドタグを簡略化されたプレースホルダーに置き換えま"
+"す"
 
 #: ../src/command/grid.cpp:347 ../src/command/grid.cpp:348
 msgid "Move line up"
-msgstr ""
+msgstr "行を上に移動"
 
 #: ../src/command/grid.cpp:349
 msgid "Move the selected lines up one row"
-msgstr ""
+msgstr "選択した行を1つ上に移動します"
 
 #: ../src/command/grid.cpp:358 ../src/command/grid.cpp:375
 msgid "move lines"
-msgstr ""
+msgstr "行の移動"
 
 #: ../src/command/grid.cpp:364 ../src/command/grid.cpp:365
 msgid "Move line down"
-msgstr ""
+msgstr "行を下に移動"
 
 #: ../src/command/grid.cpp:366
 msgid "Move the selected lines down one row"
-msgstr ""
+msgstr "選択した行を1つ下に移動します"
 
 #: ../src/command/grid.cpp:382 ../src/command/grid.cpp:383
 msgid "Swap Lines"
@@ -1553,7 +1605,7 @@ msgstr "字幕行の入れ替え"
 
 #: ../src/command/grid.cpp:384
 msgid "Swap the two selected lines"
-msgstr ""
+msgstr "選択した2つの行を入れ替えます"
 
 #: ../src/command/grid.cpp:395
 msgid "swap lines"
@@ -1565,7 +1617,7 @@ msgstr "バグ管理サイト (&B)"
 
 #: ../src/command/help.cpp:48
 msgid "Bug Tracker"
-msgstr ""
+msgstr "バグ管理サイト"
 
 #: ../src/command/help.cpp:49
 msgid "Visit Aegisub's bug tracker to report bugs and request new features"
@@ -1577,7 +1629,7 @@ msgstr "ヘルプを開く (&C)"
 
 #: ../src/command/help.cpp:69
 msgid "Contents"
-msgstr ""
+msgstr "目次"
 
 #: ../src/command/help.cpp:70
 msgid "Help topics"
@@ -1589,7 +1641,7 @@ msgstr "IRC チャット (&I)"
 
 #: ../src/command/help.cpp:81
 msgid "IRC Channel"
-msgstr ""
+msgstr "IRC チャンネル"
 
 #: ../src/command/help.cpp:82
 msgid "Visit Aegisub's official IRC channel"
@@ -1597,15 +1649,15 @@ msgstr "AegisubのオフィシャルIRCチャンネルを開きます"
 
 #: ../src/command/help.cpp:92
 msgid "&Visual Typesetting"
-msgstr ""
+msgstr "視覚的組版 (&V)"
 
 #: ../src/command/help.cpp:93
 msgid "Visual Typesetting"
-msgstr ""
+msgstr "視覚的組版"
 
 #: ../src/command/help.cpp:94
 msgid "Open the manual page for Visual Typesetting"
-msgstr "映像効果についてのヘルプを開きます"
+msgstr "視覚的組版についてのヘルプを開きます"
 
 #: ../src/command/help.cpp:104
 msgid "&Website"
@@ -1613,7 +1665,7 @@ msgstr "オフィシャルサイト (&W)"
 
 #: ../src/command/help.cpp:105
 msgid "Website"
-msgstr ""
+msgstr "オフィシャルサイト"
 
 #: ../src/command/help.cpp:106
 msgid "Visit Aegisub's official website"
@@ -1627,6 +1679,8 @@ msgstr "キーフレームファイルを閉じる"
 msgid ""
 "Discard the currently loaded keyframes and use those from the video, if any"
 msgstr ""
+"現在読み込まれているキーフレームを破棄し、可能であれば映像のキーフレームを使"
+"用します"
 
 #: ../src/command/keyframe.cpp:66
 msgid "Open Keyframes..."
@@ -1634,15 +1688,13 @@ msgstr "キーフレームファイルを開く"
 
 #: ../src/command/keyframe.cpp:67
 msgid "Open Keyframes"
-msgstr ""
+msgstr "キーフレームを開く"
 
 #: ../src/command/keyframe.cpp:68
 msgid "Open a keyframe list file"
-msgstr ""
+msgstr "キーフレームリストファイルを開きます"
 
 #: ../src/command/keyframe.cpp:72
-#, fuzzy
-#| msgid "Open Keyframes..."
 msgid "Open Keyframes File"
 msgstr "キーフレームファイルを開く"
 
@@ -1652,44 +1704,40 @@ msgstr "キーフレームファイルを保存"
 
 #: ../src/command/keyframe.cpp:88
 msgid "Save Keyframes"
-msgstr ""
+msgstr "キーフレームを保存"
 
 #: ../src/command/keyframe.cpp:89
 msgid "Save the current list of keyframes to a file"
-msgstr ""
+msgstr "現在のキーフレームリストをファイルに保存します"
 
 #: ../src/command/keyframe.cpp:97
-#, fuzzy
-#| msgid "Save Keyframes..."
 msgid "Save Keyframes File"
 msgstr "キーフレームファイルを保存"
 
 #: ../src/command/keyframe.cpp:97 ../src/command/timecode.cpp:73
 #: ../src/command/timecode.cpp:93
-#, fuzzy
-#| msgid "All Files"
 msgid "Text Files"
-msgstr "すべてのファイル"
+msgstr "テキストファイル"
 
 #: ../src/command/recent.cpp:43 ../src/command/recent.cpp:53
 msgid "Open recent audio"
-msgstr ""
+msgstr "最近使用した音声を開く"
 
 #: ../src/command/recent.cpp:44 ../src/command/recent.cpp:64
 msgid "Open recent keyframes"
-msgstr ""
+msgstr "最近使用したキーフレームを開く"
 
 #: ../src/command/recent.cpp:45 ../src/command/recent.cpp:75
 msgid "Open recent subtitles"
-msgstr ""
+msgstr "最近使用した字幕を開く"
 
 #: ../src/command/recent.cpp:46 ../src/command/recent.cpp:91
 msgid "Open recent timecodes"
-msgstr ""
+msgstr "最近使用したタイムコードを開く"
 
 #: ../src/command/recent.cpp:47
 msgid "Open recent video"
-msgstr ""
+msgstr "最近使用した映像を開く"
 
 #: ../src/command/recent.cpp:51 ../src/command/recent.cpp:52
 #: ../src/command/recent.cpp:62 ../src/command/recent.cpp:63
@@ -1701,11 +1749,11 @@ msgstr "履歴"
 
 #: ../src/command/recent.cpp:102
 msgid "Open recent videos"
-msgstr ""
+msgstr "最近使用した映像を開く"
 
 #: ../src/command/subtitle.cpp:79
 msgid "A&ttachments..."
-msgstr ""
+msgstr "添付ファイル (&T)..."
 
 #: ../src/command/subtitle.cpp:80
 msgid "Attachments"
@@ -1713,7 +1761,7 @@ msgstr "添付ファイル"
 
 #: ../src/command/subtitle.cpp:81
 msgid "Open the attachment manager dialog"
-msgstr ""
+msgstr "添付ファイルマネージャーダイアログを開きます"
 
 #: ../src/command/subtitle.cpp:92
 msgid "&Find..."
@@ -1725,11 +1773,11 @@ msgstr "検索"
 
 #: ../src/command/subtitle.cpp:94
 msgid "Search for text in the subtitles"
-msgstr ""
+msgstr "字幕内のテキストを検索します"
 
 #: ../src/command/subtitle.cpp:105
 msgid "Find &Next"
-msgstr ""
+msgstr "次を検索 (&N)"
 
 #: ../src/command/subtitle.cpp:106
 msgid "Find Next"
@@ -1737,7 +1785,7 @@ msgstr "次を検索"
 
 #: ../src/command/subtitle.cpp:107
 msgid "Find next match of last search"
-msgstr ""
+msgstr "前回の検索の次の候補を検索します"
 
 #: ../src/command/subtitle.cpp:134
 msgid "&After Current"
@@ -1745,11 +1793,11 @@ msgstr "選択行の後に挿入 (&A)"
 
 #: ../src/command/subtitle.cpp:135
 msgid "After Current"
-msgstr ""
+msgstr "選択行の後に挿入"
 
 #: ../src/command/subtitle.cpp:136
 msgid "Insert a new line after the current one"
-msgstr ""
+msgstr "現在の行の後に新しい行を挿入します"
 
 #: ../src/command/subtitle.cpp:168 ../src/command/subtitle.cpp:169
 msgid "After Current, at Video Time"
@@ -1757,7 +1805,7 @@ msgstr "選択行の直後に挿入"
 
 #: ../src/command/subtitle.cpp:170
 msgid "Insert a new line after the current one, starting at video time"
-msgstr ""
+msgstr "現在の映像の時間から開始して、現在の行の後に新しい行を挿入します"
 
 #: ../src/command/subtitle.cpp:179
 msgid "&Before Current"
@@ -1765,11 +1813,11 @@ msgstr "選択行の前に挿入 (&B)"
 
 #: ../src/command/subtitle.cpp:180
 msgid "Before Current"
-msgstr ""
+msgstr "選択行の前に挿入"
 
 #: ../src/command/subtitle.cpp:181
 msgid "Insert a new line before the current one"
-msgstr ""
+msgstr "現在の行の前に新しい行を挿入します"
 
 #: ../src/command/subtitle.cpp:210 ../src/command/subtitle.cpp:211
 msgid "Before Current, at Video Time"
@@ -1777,7 +1825,7 @@ msgstr "選択行の直前に挿入"
 
 #: ../src/command/subtitle.cpp:212
 msgid "Insert a new line before the current one, starting at video time"
-msgstr ""
+msgstr "現在の映像の時間から開始して、現在の行の前に新しい行を挿入します"
 
 #: ../src/command/subtitle.cpp:238
 msgid "&New Subtitles"
@@ -1785,7 +1833,7 @@ msgstr "新規作成 (&N)"
 
 #: ../src/command/subtitle.cpp:239
 msgid "New Subtitles"
-msgstr ""
+msgstr "字幕の新規作成"
 
 #: ../src/command/subtitle.cpp:240
 msgid "New subtitles"
@@ -1803,42 +1851,40 @@ msgstr "字幕を開く (&O)"
 
 #: ../src/command/subtitle.cpp:268
 msgid "Open Subtitles"
-msgstr ""
+msgstr "字幕を開く"
 
 #: ../src/command/subtitle.cpp:269
 msgid "Open a subtitles file"
-msgstr ""
+msgstr "字幕ファイルを開きます"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
-#, fuzzy
-#| msgid "Open subtitles file"
 msgid "Open Subtitles File"
-msgstr "字幕を開く"
+msgstr "字幕ファイルを開く"
 
 #: ../src/command/subtitle.cpp:282
 msgid "Open A&utosaved Subtitles..."
-msgstr ""
+msgstr "自動保存された字幕を開く (&U)..."
 
 #: ../src/command/subtitle.cpp:283
 msgid "Open Autosaved Subtitles"
-msgstr ""
+msgstr "自動保存された字幕を開く"
 
 #: ../src/command/subtitle.cpp:284
 msgid "Open a previous version of a file which was autosaved by Aegisub"
-msgstr ""
+msgstr "Aegisubによって自動保存された以前のバージョンのファイルを開きます"
 
 #: ../src/command/subtitle.cpp:297
 msgid "Open Subtitles with &Charset..."
-msgstr ""
+msgstr "文字コードを指定して字幕を開く (&C)..."
 
 #: ../src/command/subtitle.cpp:298
 msgid "Open Subtitles with Charset"
-msgstr ""
+msgstr "文字コードを指定して字幕を開く"
 
 #: ../src/command/subtitle.cpp:299
 msgid "Open a subtitles file with a specific file encoding"
-msgstr ""
+msgstr "特定の文字エンコーディングで字幕ファイルを開きます"
 
 #: ../src/command/subtitle.cpp:307
 msgid "Charset"
@@ -1850,15 +1896,15 @@ msgstr "文字コードを選択 :"
 
 #: ../src/command/subtitle.cpp:316
 msgid "Open Subtitles from &Video"
-msgstr ""
+msgstr "映像から字幕を開く (&V)"
 
 #: ../src/command/subtitle.cpp:317
 msgid "Open Subtitles from Video"
-msgstr ""
+msgstr "映像から字幕を開く"
 
 #: ../src/command/subtitle.cpp:318
 msgid "Open the subtitles from the current video file"
-msgstr ""
+msgstr "現在の映像ファイルから字幕を開きます"
 
 #: ../src/command/subtitle.cpp:334
 msgid "&Properties..."
@@ -1873,10 +1919,8 @@ msgid "Open script properties window"
 msgstr "字幕のプロパティを開きます"
 
 #: ../src/command/subtitle.cpp:347
-#, fuzzy
-#| msgid "Save subtitles file"
 msgid "Save Subtitles File"
-msgstr "字幕を保存します"
+msgstr "字幕ファイルを保存"
 
 #: ../src/command/subtitle.cpp:357 ../src/command/subtitle.cpp:360
 #: ../src/dialog_fonts_collector.cpp:312 ../src/dialog_fonts_collector.cpp:317
@@ -1886,14 +1930,14 @@ msgstr "字幕を保存します"
 #: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
 #: ../src/dialog_style_manager.cpp:689 ../src/dialog_style_manager.cpp:695
 #: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:202
-#: ../src/preferences.cpp:309 ../src/preferences.cpp:501
+#: ../src/preferences.cpp:333 ../src/preferences.cpp:525
 msgid "Error"
 msgstr "エラー"
 
 #: ../src/command/subtitle.cpp:360 ../src/dialog_export.cpp:211
 #: ../src/dialog_style_manager.cpp:698 ../src/project.cpp:142
 msgid "Unknown error"
-msgstr ""
+msgstr "不明なエラー"
 
 #: ../src/command/subtitle.cpp:367
 msgid "&Save Subtitles"
@@ -1901,15 +1945,15 @@ msgstr "字幕を上書き保存 (&S)"
 
 #: ../src/command/subtitle.cpp:368
 msgid "Save Subtitles"
-msgstr ""
+msgstr "字幕を保存"
 
 #: ../src/command/subtitle.cpp:369
 msgid "Save the current subtitles"
-msgstr ""
+msgstr "現在の字幕を保存します"
 
 #: ../src/command/subtitle.cpp:384
 msgid "Save Subtitles &as..."
-msgstr ""
+msgstr "名前を付けて字幕を保存 (&A)..."
 
 #: ../src/command/subtitle.cpp:385
 msgid "Save Subtitles as"
@@ -1917,7 +1961,7 @@ msgstr "名前を付けて字幕を保存"
 
 #: ../src/command/subtitle.cpp:386
 msgid "Save subtitles with another name"
-msgstr ""
+msgstr "字幕を別の名前で保存します"
 
 #: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:127
 #: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:411
@@ -1926,23 +1970,23 @@ msgstr "すべて選択 (&A)"
 
 #: ../src/command/subtitle.cpp:396
 msgid "Select All"
-msgstr ""
+msgstr "すべて選択"
 
 #: ../src/command/subtitle.cpp:397
 msgid "Select all dialogue lines"
-msgstr ""
+msgstr "すべてのダイアログ行を選択します"
 
 #: ../src/command/subtitle.cpp:409 ../src/command/subtitle.cpp:410
 msgid "Select Visible"
-msgstr ""
+msgstr "表示されているものを選択"
 
 #: ../src/command/subtitle.cpp:411
 msgid "Select all dialogue lines that are visible on the current video frame"
-msgstr ""
+msgstr "現在の映像フレームに表示されているすべてのダイアログ行を選択します"
 
 #: ../src/command/subtitle.cpp:441
 msgid "Spell &Checker..."
-msgstr ""
+msgstr "スペルチェッカー (&C)..."
 
 #: ../src/command/subtitle.cpp:442 ../src/dialog_spellchecker.cpp:103
 msgid "Spell Checker"
@@ -1962,11 +2006,11 @@ msgstr "終了タイミングを遅らせる (&E)"
 
 #: ../src/command/time.cpp:106
 msgid "Change End"
-msgstr ""
+msgstr "終了タイミングを遅らせる"
 
 #: ../src/command/time.cpp:107
 msgid "Change end times of lines to the next line's start time"
-msgstr ""
+msgstr "行の終了時間を次の行の開始時間に変更します"
 
 #: ../src/command/time.cpp:116
 msgid "Change &Start"
@@ -1974,15 +2018,15 @@ msgstr "開始タイミングを早める (&S)"
 
 #: ../src/command/time.cpp:117
 msgid "Change Start"
-msgstr ""
+msgstr "開始タイミングを早める"
 
 #: ../src/command/time.cpp:118
 msgid "Change start times of lines to the previous line's end time"
-msgstr ""
+msgstr "行の開始時間を前の行の終了時間に変更します"
 
 #: ../src/command/time.cpp:128
 msgid "Shift to &Current Frame"
-msgstr ""
+msgstr "現在のフレームにシフト (&C)"
 
 #: ../src/command/time.cpp:129
 msgid "Shift to Current Frame"
@@ -1990,7 +2034,7 @@ msgstr "現在のフレームにシフト"
 
 #: ../src/command/time.cpp:130
 msgid "Shift selection so that the active line starts at current frame"
-msgstr ""
+msgstr "アクティブな行が現在のフレームから開始するように選択範囲をシフトします"
 
 #: ../src/command/time.cpp:146
 msgid "shift to frame"
@@ -2010,7 +2054,7 @@ msgstr "タイムシフト機能を開き、時間またはフレーム指定で
 
 #: ../src/command/time.cpp:182
 msgid "Snap &End to Video"
-msgstr ""
+msgstr "終了時間を映像に合わせる (&E)"
 
 #: ../src/command/time.cpp:183
 msgid "Snap End to Video"
@@ -2022,7 +2066,7 @@ msgstr "選択字幕行の表示終了時間を現在の映像に指定"
 
 #: ../src/command/time.cpp:194
 msgid "Snap to S&cene"
-msgstr ""
+msgstr "シーンに合わせる (&C)"
 
 #: ../src/command/time.cpp:195
 msgid "Snap to Scene"
@@ -2040,81 +2084,81 @@ msgstr "シーンに位置指定"
 
 #: ../src/command/time.cpp:239 ../src/command/time.cpp:240
 msgid "Add lead in and out"
-msgstr ""
+msgstr "リードインとリードアウトを追加"
 
 #: ../src/command/time.cpp:241
 msgid "Add both lead in and out to the selected lines"
-msgstr ""
+msgstr "選択した行にリードインとリードアウトの両方を追加します"
 
 #: ../src/command/time.cpp:253 ../src/command/time.cpp:254
 msgid "Add lead in"
-msgstr ""
+msgstr "リードインを追加"
 
 #: ../src/command/time.cpp:255
 msgid "Add the lead in time to the selected lines"
-msgstr ""
+msgstr "選択した行にリードイン時間を追加します"
 
 #: ../src/command/time.cpp:265 ../src/command/time.cpp:266
 msgid "Add lead out"
-msgstr ""
+msgstr "リードアウトを追加"
 
 #: ../src/command/time.cpp:267
 msgid "Add the lead out time to the selected lines"
-msgstr ""
+msgstr "選択した行にリードアウト時間を追加します"
 
 #: ../src/command/time.cpp:276 ../src/command/time.cpp:277
 msgid "Increase length"
-msgstr ""
+msgstr "長さを増やす"
 
 #: ../src/command/time.cpp:278
 msgid "Increase the length of the current timing unit"
-msgstr ""
+msgstr "現在のタイミングユニットの長さを増やします"
 
 #: ../src/command/time.cpp:287 ../src/command/time.cpp:288
 msgid "Increase length and shift"
-msgstr ""
+msgstr "長さを増やしてシフト"
 
 #: ../src/command/time.cpp:289
 msgid ""
 "Increase the length of the current timing unit and shift the following items"
-msgstr ""
+msgstr "現在のタイミングユニットの長さを増やし、以降の項目をシフトします"
 
 #: ../src/command/time.cpp:298 ../src/command/time.cpp:299
 msgid "Decrease length"
-msgstr ""
+msgstr "長さを減らす"
 
 #: ../src/command/time.cpp:300
 msgid "Decrease the length of the current timing unit"
-msgstr ""
+msgstr "現在のタイミングユニットの長さを減らします"
 
 #: ../src/command/time.cpp:309 ../src/command/time.cpp:310
 msgid "Decrease length and shift"
-msgstr ""
+msgstr "長さを減らしてシフト"
 
 #: ../src/command/time.cpp:311
 msgid ""
 "Decrease the length of the current timing unit and shift the following items"
-msgstr ""
+msgstr "現在のタイミングユニットの長さを減らし、以降の項目をシフトします"
 
 #: ../src/command/time.cpp:320 ../src/command/time.cpp:321
 msgid "Shift start time forward"
-msgstr ""
+msgstr "開始時間を前にシフト"
 
 #: ../src/command/time.cpp:322
 msgid "Shift the start time of the current timing unit forward"
-msgstr ""
+msgstr "現在のタイミングユニットの開始時間を前にシフトします"
 
 #: ../src/command/time.cpp:331 ../src/command/time.cpp:332
 msgid "Shift start time backward"
-msgstr ""
+msgstr "開始時間を後ろにシフト"
 
 #: ../src/command/time.cpp:333
 msgid "Shift the start time of the current timing unit backward"
-msgstr ""
+msgstr "現在のタイミングユニットの開始時間を後ろにシフトします"
 
 #: ../src/command/time.cpp:343
 msgid "Snap &Start to Video"
-msgstr ""
+msgstr "開始時間を映像に合わせる (&S)"
 
 #: ../src/command/time.cpp:344
 msgid "Snap Start to Video"
@@ -2126,11 +2170,11 @@ msgstr "選択字幕行の表示開始時間を現在の映像に指定"
 
 #: ../src/command/time.cpp:357
 msgid "Next line or syllable"
-msgstr ""
+msgstr "次の行またはシラブル"
 
 #: ../src/command/time.cpp:369
 msgid "Previous line or syllable"
-msgstr ""
+msgstr "前の行またはシラブル"
 
 #: ../src/command/timecode.cpp:51 ../src/command/timecode.cpp:52
 msgid "Close Timecodes File"
@@ -2138,7 +2182,7 @@ msgstr "タイムコードファイルを閉じる"
 
 #: ../src/command/timecode.cpp:53
 msgid "Close the currently open timecodes file"
-msgstr ""
+msgstr "現在開いているタイムコードファイルを閉じます"
 
 #: ../src/command/timecode.cpp:68
 msgid "Open Timecodes File..."
@@ -2146,15 +2190,13 @@ msgstr "タイムコードファイルを開く"
 
 #: ../src/command/timecode.cpp:69
 msgid "Open Timecodes File"
-msgstr ""
+msgstr "タイムコードファイルを開く"
 
 #: ../src/command/timecode.cpp:70
 msgid "Open a VFR timecodes v1 or v2 file"
-msgstr ""
+msgstr "VFRタイムコード v1 または v2 ファイルを開きます"
 
 #: ../src/command/timecode.cpp:74
-#, fuzzy
-#| msgid "Open Timecodes File..."
 msgctxt "dialog title"
 msgid "Open Timecodes File"
 msgstr "タイムコードファイルを開く"
@@ -2165,26 +2207,24 @@ msgstr "タイムコードファイルを保存"
 
 #: ../src/command/timecode.cpp:84
 msgid "Save Timecodes File"
-msgstr ""
+msgstr "タイムコードファイルを保存"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
-msgstr ""
+msgstr "VFRタイムコード v2 ファイルを保存します"
 
 #: ../src/command/timecode.cpp:94
-#, fuzzy
-#| msgid "Save Timecodes File..."
 msgctxt "dialog title"
 msgid "Save Timecodes File"
 msgstr "タイムコードファイルを保存"
 
 #: ../src/command/timecode.cpp:103
 msgid "Error saving timecodes"
-msgstr ""
+msgstr "タイムコードの保存エラー"
 
 #: ../src/command/tool.cpp:56
 msgid "&Export Subtitles..."
-msgstr ""
+msgstr "字幕をエクスポート (&E)..."
 
 #: ../src/command/tool.cpp:57
 msgid "Export Subtitles"
@@ -2194,7 +2234,7 @@ msgstr "字幕をエクスポート"
 msgid ""
 "Save a copy of subtitles in a different format or with processing applied to "
 "it"
-msgstr ""
+msgstr "異なる形式や処理を適用して字幕のコピーを保存します"
 
 #: ../src/command/tool.cpp:69
 msgid "&Fonts Collector..."
@@ -2210,7 +2250,7 @@ msgstr "フォントコレクターを開きます"
 
 #: ../src/command/tool.cpp:81
 msgid "S&elect Lines..."
-msgstr ""
+msgstr "字幕行を選択 (&E)..."
 
 #: ../src/command/tool.cpp:82
 msgid "Select Lines"
@@ -2218,13 +2258,13 @@ msgstr "字幕行を選択"
 
 #: ../src/command/tool.cpp:83
 msgid "Select lines based on defined criteria"
-msgstr ""
+msgstr "定義された基準に基づいて行を選択します"
 
 #: ../src/command/tool.cpp:93
 msgid "&Resample Resolution..."
-msgstr ""
+msgstr "解像度の設定 (&R)..."
 
-#: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:90
+#: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:114
 msgid "Resample Resolution"
 msgstr "解像度の設定"
 
@@ -2233,6 +2273,8 @@ msgid ""
 "Resample subtitles to maintain their current appearance at a different "
 "script resolution"
 msgstr ""
+"異なるスクリプト解像度でも現在の外観を維持するように字幕をリサンプリングしま"
+"す"
 
 #: ../src/command/tool.cpp:108
 msgid "St&yling Assistant..."
@@ -2249,7 +2291,7 @@ msgstr "スタイリングアシスタントを開きます"
 
 #: ../src/command/tool.cpp:127 ../src/command/tool.cpp:211
 msgid "&Accept changes"
-msgstr ""
+msgstr "変更を適用 (&A)"
 
 #: ../src/command/tool.cpp:128 ../src/command/tool.cpp:212
 #: ../src/dialog_styling_assistant.cpp:90 ../src/dialog_translation.cpp:114
@@ -2258,11 +2300,11 @@ msgstr "変更を適用"
 
 #: ../src/command/tool.cpp:129 ../src/command/tool.cpp:213
 msgid "Commit changes and move to the next line"
-msgstr ""
+msgstr "変更を適用して次の行に移動します"
 
 #: ../src/command/tool.cpp:138 ../src/command/tool.cpp:222
 msgid "&Preview changes"
-msgstr ""
+msgstr "変更をプレビュー (&P)"
 
 #: ../src/command/tool.cpp:139 ../src/command/tool.cpp:223
 #: ../src/dialog_styling_assistant.cpp:91 ../src/dialog_translation.cpp:115
@@ -2271,7 +2313,7 @@ msgstr "変更をプレビュー"
 
 #: ../src/command/tool.cpp:140 ../src/command/tool.cpp:224
 msgid "Commit changes and stay on the current line"
-msgstr ""
+msgstr "変更を適用して現在の行にとどまります"
 
 #: ../src/command/tool.cpp:150
 msgid "&Styles Manager..."
@@ -2283,11 +2325,11 @@ msgstr "スタイルマネージャー"
 
 #: ../src/command/tool.cpp:152
 msgid "Open the styles manager"
-msgstr ""
+msgstr "スタイルマネージャーを開きます"
 
 #: ../src/command/tool.cpp:162
 msgid "&Kanji Timer..."
-msgstr ""
+msgstr "漢字タイマー (&K)..."
 
 #: ../src/command/tool.cpp:163
 msgid "Kanji Timer"
@@ -2295,11 +2337,11 @@ msgstr "漢字タイマー"
 
 #: ../src/command/tool.cpp:164
 msgid "Open the Kanji timer copier"
-msgstr ""
+msgstr "漢字タイマーコピーを開きます"
 
 #: ../src/command/tool.cpp:174
 msgid "&Timing Post-Processor..."
-msgstr ""
+msgstr "タイミング ポストプロセッサー (&T)..."
 
 #: ../src/command/tool.cpp:175 ../src/dialog_timing_processor.cpp:139
 msgid "Timing Post-Processor"
@@ -2310,13 +2352,15 @@ msgid ""
 "Post-process the subtitle timing to add lead-ins and lead-outs, snap timing "
 "to scene changes, etc."
 msgstr ""
+"字幕のタイミングを後処理して、リードインとリードアウトの追加、シーンチェンジ"
+"へのタイミングのスナップなどを行います。"
 
 #: ../src/command/tool.cpp:186
 msgid "&Translation Assistant..."
 msgstr "翻訳アシスタント (&T)"
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
-#: ../src/preferences.cpp:272 default_hotkey.json:291
+#: ../src/preferences.cpp:294 default_hotkey.json:291
 msgid "Translation Assistant"
 msgstr "翻訳アシスタント"
 
@@ -2326,31 +2370,31 @@ msgstr "翻訳アシスタントを開きます"
 
 #: ../src/command/tool.cpp:196
 msgid "There is nothing to translate in the file."
-msgstr ""
+msgstr "ファイルに翻訳するものがありません。"
 
 #: ../src/command/tool.cpp:233
 msgid "&Next Line"
-msgstr ""
+msgstr "次の行 (&N)"
 
 #: ../src/command/tool.cpp:235
 msgid "Move to the next line without committing changes"
-msgstr ""
+msgstr "変更を適用せずに次の行に移動します"
 
 #: ../src/command/tool.cpp:244
 msgid "&Previous Line"
-msgstr ""
+msgstr "前の行 (&P)"
 
 #: ../src/command/tool.cpp:246
 msgid "Move to the previous line without committing changes"
-msgstr ""
+msgstr "変更を適用せずに前の行に移動します"
 
 #: ../src/command/tool.cpp:255
 msgid "&Insert Original"
-msgstr ""
+msgstr "原文を挿入 (&I)"
 
 #: ../src/command/tool.cpp:257
 msgid "Insert the untranslated text"
-msgstr ""
+msgstr "未翻訳のテキストを挿入します"
 
 #: ../src/command/video.cpp:82
 msgid "&Cinematic (2.35)"
@@ -2358,15 +2402,15 @@ msgstr "シネスコ アスペクト比 (2.35:1) (&C)"
 
 #: ../src/command/video.cpp:83
 msgid "Cinematic (2.35)"
-msgstr ""
+msgstr "シネスコ (2.35)"
 
 #: ../src/command/video.cpp:84
 msgid "Force video to 2.35 aspect ratio"
-msgstr ""
+msgstr "映像をアスペクト比 2.35 に強制します"
 
 #: ../src/command/video.cpp:100
 msgid "C&ustom..."
-msgstr ""
+msgstr "カスタム (&U)..."
 
 #: ../src/command/video.cpp:101
 msgid "Custom"
@@ -2374,7 +2418,7 @@ msgstr "カスタム アスペクト比"
 
 #: ../src/command/video.cpp:102
 msgid "Force video to a custom aspect ratio"
-msgstr ""
+msgstr "映像をカスタムアスペクト比に強制します"
 
 #: ../src/command/video.cpp:113
 msgid ""
@@ -2383,6 +2427,10 @@ msgid ""
 "  fractional (e.g. 16:9)\n"
 "  specific resolution (e.g. 853x480)"
 msgstr ""
+"アスペクト比を次のいずれかで入力します:\n"
+"  小数 (例: 2.35)\n"
+"  分数 (例: 16:9)\n"
+"  特定の解像度 (例: 853x480)"
 
 #: ../src/command/video.cpp:114
 msgid "Enter aspect ratio"
@@ -2402,7 +2450,7 @@ msgstr "デフォルトアスペクト比 (&D)"
 
 #: ../src/command/video.cpp:145
 msgid "Use video's original aspect ratio"
-msgstr ""
+msgstr "映像の元のアスペクト比を使用します"
 
 #: ../src/command/video.cpp:161
 msgid "&Fullscreen (4:3)"
@@ -2410,11 +2458,11 @@ msgstr "SDアスペクト比 (4:3) (&F)"
 
 #: ../src/command/video.cpp:162
 msgid "Fullscreen (4:3)"
-msgstr ""
+msgstr "フルスクリーン (4:3)"
 
 #: ../src/command/video.cpp:163
 msgid "Force video to 4:3 aspect ratio"
-msgstr ""
+msgstr "映像をアスペクト比 4:3 に強制します"
 
 #: ../src/command/video.cpp:179
 msgid "&Widescreen (16:9)"
@@ -2422,11 +2470,11 @@ msgstr "ワイドアスペクト比 (16:9) (&W)"
 
 #: ../src/command/video.cpp:180
 msgid "Widescreen (16:9)"
-msgstr ""
+msgstr "ワイドスクリーン (16:9)"
 
 #: ../src/command/video.cpp:181
 msgid "Force video to 16:9 aspect ratio"
-msgstr ""
+msgstr "映像をアスペクト比 16:9 に強制します"
 
 #: ../src/command/video.cpp:198
 msgid "&Close Video"
@@ -2434,11 +2482,11 @@ msgstr "映像を閉じる (&C)"
 
 #: ../src/command/video.cpp:199
 msgid "Close Video"
-msgstr ""
+msgstr "映像を閉じる"
 
 #: ../src/command/video.cpp:200
 msgid "Close the currently open video file"
-msgstr ""
+msgstr "現在開いている映像ファイルを閉じます"
 
 #: ../src/command/video.cpp:209 ../src/command/video.cpp:210
 msgid "Copy coordinates to Clipboard"
@@ -2447,24 +2495,24 @@ msgstr "クリップボードへ座標を取り込む"
 #: ../src/command/video.cpp:211
 msgid ""
 "Copy the current coordinates of the mouse over the video to the clipboard"
-msgstr ""
+msgstr "映像上のマウスの現在の座標をクリップボードにコピーします"
 
 #: ../src/command/video.cpp:220 ../src/command/video.cpp:221
 msgid "Cycle active subtitles provider"
-msgstr ""
+msgstr "アクティブな字幕プロバイダを切り替える"
 
 #: ../src/command/video.cpp:222
 msgid "Cycle through the available subtitles providers"
-msgstr ""
+msgstr "利用可能な字幕プロバイダを切り替えます"
 
 #: ../src/command/video.cpp:233
 #, c-format
 msgid "Subtitles provider set to %s"
-msgstr ""
+msgstr "字幕プロバイダを %s に設定しました"
 
 #: ../src/command/video.cpp:240
 msgid "&Detach Video"
-msgstr ""
+msgstr "映像を分離 (&D)"
 
 #: ../src/command/video.cpp:241
 msgid "Detach Video"
@@ -2475,10 +2523,11 @@ msgid ""
 "Detach the video display from the main window, displaying it in a separate "
 "Window"
 msgstr ""
+"映像ディスプレイをメインウィンドウから分離し、別のウィンドウに表示します"
 
 #: ../src/command/video.cpp:260
 msgid "Show &Video Details"
-msgstr ""
+msgstr "映像の詳細を表示 (&V)"
 
 #: ../src/command/video.cpp:261
 msgid "Show Video Details"
@@ -2486,16 +2535,17 @@ msgstr "映像ファイルの詳細"
 
 #: ../src/command/video.cpp:262
 msgid "Show video details"
-msgstr ""
+msgstr "映像の詳細を表示します"
 
 #: ../src/command/video.cpp:272 ../src/command/video.cpp:273
 msgid "Toggle video slider focus"
-msgstr ""
+msgstr "映像スライダーのフォーカスを切り替える"
 
 #: ../src/command/video.cpp:274
 msgid ""
 "Toggle focus between the video slider and the previous thing to have focus"
 msgstr ""
+"映像スライダーと直前にフォーカスがあったものの間でフォーカスを切り替えます"
 
 #: ../src/command/video.cpp:299 ../src/command/video.cpp:300
 msgid "Copy image to Clipboard"
@@ -2503,7 +2553,7 @@ msgstr "映像イメージをクリップボードに取り込む (字幕付き)
 
 #: ../src/command/video.cpp:301
 msgid "Copy the currently displayed frame to the clipboard"
-msgstr ""
+msgstr "現在表示されているフレームをクリップボードにコピーします"
 
 #: ../src/command/video.cpp:310 ../src/command/video.cpp:311
 msgid "Copy image to Clipboard (no subtitles)"
@@ -2512,75 +2562,75 @@ msgstr "映像イメージをクリップボードに取り込む (字幕無し)
 #: ../src/command/video.cpp:312
 msgid ""
 "Copy the currently displayed frame to the clipboard, without the subtitles"
-msgstr ""
+msgstr "現在表示されているフレームを字幕なしでクリップボードにコピーします"
 
 #: ../src/command/video.cpp:321 ../src/command/video.cpp:322
 msgid "Copy image to Clipboard (only subtitles)"
-msgstr ""
+msgstr "画像をクリップボードにコピー (字幕のみ)"
 
 #: ../src/command/video.cpp:323
 msgid ""
 "Copy the currently displayed subtitles to the clipboard, with transparent "
 "background"
-msgstr ""
+msgstr "現在表示されている字幕を透明な背景でクリップボードにコピーします"
 
 #: ../src/command/video.cpp:332 ../src/command/video.cpp:333
 msgid "Next Frame"
-msgstr ""
+msgstr "次のフレーム"
 
 #: ../src/command/video.cpp:334
 msgid "Seek to the next frame"
-msgstr ""
+msgstr "次のフレームにシークします"
 
 #: ../src/command/video.cpp:343 ../src/command/video.cpp:344
 msgid "Next Boundary"
-msgstr ""
+msgstr "次の境界"
 
 #: ../src/command/video.cpp:345
 msgid "Seek to the next beginning or end of a subtitle"
-msgstr ""
+msgstr "字幕の次の開始または終了にシークします"
 
 #: ../src/command/video.cpp:372 ../src/command/video.cpp:373
 msgid "Next Keyframe"
-msgstr ""
+msgstr "次のキーフレーム"
 
 #: ../src/command/video.cpp:374
 msgid "Seek to the next keyframe"
-msgstr ""
+msgstr "次のキーフレームにシークします"
 
 #: ../src/command/video.cpp:386 ../src/command/video.cpp:387
 #: ../src/command/video.cpp:388
 msgid "Fast jump forward"
-msgstr ""
+msgstr "前方へ高速ジャンプ"
 
 #: ../src/command/video.cpp:399 ../src/command/video.cpp:400
 msgid "Previous Frame"
-msgstr ""
+msgstr "前のフレーム"
 
 #: ../src/command/video.cpp:401
 msgid "Seek to the previous frame"
-msgstr ""
+msgstr "前のフレームにシークします"
 
 #: ../src/command/video.cpp:410 ../src/command/video.cpp:411
 msgid "Previous Boundary"
-msgstr ""
+msgstr "前の境界"
 
 #: ../src/command/video.cpp:412
 msgid "Seek to the previous beginning or end of a subtitle"
-msgstr ""
+msgstr "字幕の前の開始または終了にシークします"
 
 #: ../src/command/video.cpp:439 ../src/command/video.cpp:440
 msgid "Previous Keyframe"
-msgstr ""
+msgstr "前のキーフレーム"
 
 #: ../src/command/video.cpp:441
 msgid "Seek to the previous keyframe"
-msgstr ""
+msgstr "前のキーフレームにシークします"
 
 #: ../src/command/video.cpp:461 ../src/command/video.cpp:462
 #: ../src/command/video.cpp:463
 msgid "Fast jump backwards"
-msgstr ""
+msgstr "後方へ高速ジャンプ"
 
 #: ../src/command/video.cpp:512 ../src/command/video.cpp:513
 msgid "Save PNG snapshot"
@@ -2590,6 +2640,7 @@ msgstr "PNG形式でスナップショットを保存 (字幕付き)"
 msgid ""
 "Save the currently displayed frame to a PNG file in the video's directory"
 msgstr ""
+"現在表示されているフレームを映像のディレクトリにPNGファイルとして保存します"
 
 #: ../src/command/video.cpp:523 ../src/command/video.cpp:524
 msgid "Save PNG snapshot (no subtitles)"
@@ -2600,16 +2651,20 @@ msgid ""
 "Save the currently displayed frame without the subtitles to a PNG file in "
 "the video's directory"
 msgstr ""
+"現在表示されているフレームを字幕なしで映像のディレクトリにPNGファイルとして保"
+"存します"
 
 #: ../src/command/video.cpp:534 ../src/command/video.cpp:535
 msgid "Save PNG snapshot (only subtitles)"
-msgstr ""
+msgstr "PNGスナップショットを保存 (字幕のみ)"
 
 #: ../src/command/video.cpp:536
 msgid ""
 "Save the currently displayed subtitles with transparent background to a PNG "
 "file in the video's directory"
 msgstr ""
+"現在表示されている字幕を透明な背景で映像のディレクトリにPNGファイルとして保存"
+"します"
 
 #: ../src/command/video.cpp:546
 msgid "&Jump to..."
@@ -2625,7 +2680,7 @@ msgstr "時間またはフレームを指定して移動"
 
 #: ../src/command/video.cpp:560
 msgid "Jump Video to &End"
-msgstr ""
+msgstr "映像を最後にジャンプ (&E)"
 
 #: ../src/command/video.cpp:561
 msgid "Jump Video to End"
@@ -2633,11 +2688,11 @@ msgstr "最終フレームに移動"
 
 #: ../src/command/video.cpp:562
 msgid "Jump the video to the end frame of current subtitle"
-msgstr ""
+msgstr "映像を現在の字幕の終了フレームにジャンプします"
 
 #: ../src/command/video.cpp:573
 msgid "Jump Video to &Start"
-msgstr ""
+msgstr "映像を最初にジャンプ (&S)"
 
 #: ../src/command/video.cpp:574
 msgid "Jump Video to Start"
@@ -2645,7 +2700,7 @@ msgstr "開始フレームに移動"
 
 #: ../src/command/video.cpp:575
 msgid "Jump the video to the start frame of current subtitle"
-msgstr ""
+msgstr "映像を現在の字幕の開始フレームにジャンプします"
 
 #: ../src/command/video.cpp:586
 msgid "&Open Video..."
@@ -2653,21 +2708,19 @@ msgstr "映像を開く (&O)"
 
 #: ../src/command/video.cpp:587
 msgid "Open Video"
-msgstr ""
+msgstr "映像を開く"
 
 #: ../src/command/video.cpp:588
 msgid "Open a video file"
-msgstr ""
+msgstr "映像ファイルを開きます"
 
 #: ../src/command/video.cpp:593
-#, fuzzy
-#| msgid "Open video file"
 msgid "Open Video File"
 msgstr "映像ファイルを開く"
 
 #: ../src/command/video.cpp:602
 msgid "&Use Dummy Video..."
-msgstr ""
+msgstr "ダミー映像を使用 (&U)..."
 
 #: ../src/command/video.cpp:603
 msgid "Use Dummy Video"
@@ -2675,7 +2728,7 @@ msgstr "ダミー映像を使う"
 
 #: ../src/command/video.cpp:604
 msgid "Open a placeholder video clip with solid color"
-msgstr ""
+msgstr "単色のプレースホルダービデオクリップを開きます"
 
 #: ../src/command/video.cpp:616 ../src/command/video.cpp:617
 msgid "Toggle autoscroll of video"
@@ -2684,30 +2737,27 @@ msgstr "字幕行を選択した時に開始時間に映像を移動"
 #: ../src/command/video.cpp:618
 msgid "Toggle automatically seeking video to the start time of selected lines"
 msgstr ""
+"選択した行の開始時間に合わせて映像を自動的にシークする機能を切り替えます"
 
 #: ../src/command/video.cpp:633 ../src/command/video.cpp:634
 msgid "Play"
-msgstr ""
+msgstr "再生"
 
 #: ../src/command/video.cpp:635
-#, fuzzy
-#| msgid "Play video starting on this position"
 msgid "Play the video starting on this position"
-msgstr "現在のポジションから再生"
+msgstr "この位置から映像を再生します"
 
 #: ../src/command/video.cpp:645 ../src/command/video.cpp:646
 msgid "Play line"
-msgstr ""
+msgstr "行を再生"
 
 #: ../src/command/video.cpp:647
-#, fuzzy
-#| msgid "Play current line"
 msgid "Play the video for the current line"
-msgstr "選択した字幕行を再生"
+msgstr "現在の行の映像を再生します"
 
 #: ../src/command/video.cpp:656
 msgid "Show &Overscan Mask"
-msgstr ""
+msgstr "オーバースキャンマスクを表示 (&O)"
 
 #: ../src/command/video.cpp:657
 msgid "Show Overscan Mask"
@@ -2723,23 +2773,23 @@ msgstr ""
 
 #: ../src/command/video.cpp:673
 msgid "Reset Video &Pan"
-msgstr ""
+msgstr "映像のパンをリセット (&P)"
 
 #: ../src/command/video.cpp:674
 msgid "Reset Video Pan"
-msgstr ""
+msgstr "映像のパンをリセット"
 
 #: ../src/command/video.cpp:675
 msgid "Reset the video's position in the video display"
-msgstr ""
+msgstr "映像ディスプレイでの映像の位置をリセットします"
 
 #: ../src/command/video.cpp:685
 msgid "&100%"
-msgstr ""
+msgstr "100% (&1)"
 
 #: ../src/command/video.cpp:686
 msgid "100%"
-msgstr ""
+msgstr "100%"
 
 #: ../src/command/video.cpp:687
 msgid "Set zoom to 100%"
@@ -2747,7 +2797,7 @@ msgstr "表示等倍 100%"
 
 #: ../src/command/video.cpp:704 ../src/command/video.cpp:705
 msgid "Stop video"
-msgstr ""
+msgstr "映像を停止"
 
 #: ../src/command/video.cpp:706
 msgid "Stop video playback"
@@ -2755,11 +2805,11 @@ msgstr "再生を停止"
 
 #: ../src/command/video.cpp:716
 msgid "&200%"
-msgstr ""
+msgstr "200% (&2)"
 
 #: ../src/command/video.cpp:717
 msgid "200%"
-msgstr ""
+msgstr "200%"
 
 #: ../src/command/video.cpp:718
 msgid "Set zoom to 200%"
@@ -2767,11 +2817,11 @@ msgstr "表示拡大 200%"
 
 #: ../src/command/video.cpp:734
 msgid "&50%"
-msgstr ""
+msgstr "50% (&5)"
 
 #: ../src/command/video.cpp:735
 msgid "50%"
-msgstr ""
+msgstr "50%"
 
 #: ../src/command/video.cpp:736
 msgid "Set zoom to 50%"
@@ -2779,7 +2829,7 @@ msgstr "表示縮小 50%"
 
 #: ../src/command/video.cpp:752 ../src/command/video.cpp:753
 msgid "Zoom In"
-msgstr ""
+msgstr "ズームイン"
 
 #: ../src/command/video.cpp:754
 msgid "Zoom video in"
@@ -2787,7 +2837,7 @@ msgstr "映像をズームインします"
 
 #: ../src/command/video.cpp:764 ../src/command/video.cpp:765
 msgid "Zoom Out"
-msgstr ""
+msgstr "ズームアウト"
 
 #: ../src/command/video.cpp:766
 msgid "Zoom video out"
@@ -2860,8 +2910,6 @@ msgid "Line"
 msgstr "直線"
 
 #: ../src/command/vis_tool.cpp:141
-#, fuzzy
-#| msgid "Appends a line"
 msgid "Append a line"
 msgstr "直線を引きます"
 
@@ -2870,8 +2918,6 @@ msgid "Bicubic"
 msgstr "3次曲線"
 
 #: ../src/command/vis_tool.cpp:148
-#, fuzzy
-#| msgid "Appends a bezier bicubic curve"
 msgid "Append a bezier bicubic curve"
 msgstr "3次曲線を引きます"
 
@@ -2880,8 +2926,6 @@ msgid "Convert"
 msgstr "変換"
 
 #: ../src/command/vis_tool.cpp:155
-#, fuzzy
-#| msgid "Converts a segment between line and bicubic"
 msgid "Convert a segment between line and bicubic"
 msgstr "頂点数を変更して直線と曲線を変換します"
 
@@ -2890,8 +2934,6 @@ msgid "Insert"
 msgstr "挿入"
 
 #: ../src/command/vis_tool.cpp:162
-#, fuzzy
-#| msgid "Inserts a control point"
 msgid "Insert a control point"
 msgstr "頂点を追加します"
 
@@ -2900,8 +2942,6 @@ msgid "Remove"
 msgstr "削除"
 
 #: ../src/command/vis_tool.cpp:169
-#, fuzzy
-#| msgid "Removes a control point"
 msgid "Remove a control point"
 msgstr "頂点を削除します"
 
@@ -2910,8 +2950,6 @@ msgid "Freehand"
 msgstr "フリーハンド - 直線"
 
 #: ../src/command/vis_tool.cpp:176
-#, fuzzy
-#| msgid "Draws a freehand shape"
 msgid "Draw a freehand shape"
 msgstr "フリーハンドで多角形を描きます"
 
@@ -2920,14 +2958,13 @@ msgid "Freehand smooth"
 msgstr "フリーハンド - 3次曲線"
 
 #: ../src/command/vis_tool.cpp:183
-#, fuzzy
-#| msgid "Draws a smoothed freehand shape"
 msgid "Draw a smoothed freehand shape"
 msgstr "フリーハンドで曲線の図形を描きます"
 
 #: ../src/dialog_about.cpp:46
 msgid "Translated into LANGUAGE by PERSON\n"
-msgstr "日本語化ローカライズ Hiroshi, Hibiki, Elec, adachi,\n"
+msgstr ""
+"日本語化ローカライズ Hiroshi, Hibiki, Elec, adachi, Akira Mizuno, Shiori\n"
 
 #: ../src/dialog_about.cpp:131
 msgid ""
@@ -2959,7 +2996,7 @@ msgid "E&xtract"
 msgstr "抽出 (&X)"
 
 #: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:205
-#: ../src/preferences.cpp:668
+#: ../src/preferences.cpp:692
 msgid "&Delete"
 msgstr "削除 (&D)"
 
@@ -2985,20 +3022,16 @@ msgid "Choose file to be attached"
 msgstr "添付するファイルを選択"
 
 #: ../src/dialog_attachments.cpp:139 ../src/dialog_attachments.cpp:170
-#, fuzzy
-#| msgid "Font size"
 msgid "Font Files"
-msgstr "フォントサイズ"
+msgstr "フォントファイル"
 
 #: ../src/dialog_attachments.cpp:142
 msgid "attach font file"
 msgstr "フォントを添付"
 
 #: ../src/dialog_attachments.cpp:149 ../src/dialog_attachments.cpp:170
-#, fuzzy
-#| msgid "attach graphics file"
 msgid "Graphic Files"
-msgstr "画像を添付"
+msgstr "画像ファイル"
 
 #: ../src/dialog_attachments.cpp:152
 msgid "attach graphics file"
@@ -3034,7 +3067,7 @@ msgstr "リロード (&L)"
 
 #: ../src/dialog_automation.cpp:120
 msgid "Show &Info"
-msgstr "詳細表示"
+msgstr "詳細表示 (&I)"
 
 #: ../src/dialog_automation.cpp:121
 msgid "Re&scan Autoload Dir"
@@ -3048,7 +3081,7 @@ msgstr "スクリプト名"
 msgid "Filename"
 msgstr "ファイル名"
 
-#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:688
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:712
 msgid "Description"
 msgstr "記述"
 
@@ -3059,7 +3092,7 @@ msgstr "オートメーションスクリプトの追加"
 #: ../src/dialog_automation.cpp:240
 #, c-format
 msgid "Script '%s' is already loaded"
-msgstr ""
+msgstr "スクリプト '%s' はすでに読み込まれています"
 
 #: ../src/dialog_automation.cpp:279
 #, c-format
@@ -3068,10 +3101,13 @@ msgid ""
 "Global scripts loaded: %d\n"
 "Local scripts loaded: %d\n"
 msgstr ""
+"読み込まれたスクリプトの合計: %d\n"
+"グローバルスクリプトの読み込み数: %d\n"
+"ローカルスクリプトの読み込み数: %d\n"
 
 #: ../src/dialog_automation.cpp:284
 msgid "Scripting engines installed:"
-msgstr ""
+msgstr "インストールされているスクリプトエンジン:"
 
 #: ../src/dialog_automation.cpp:291
 #, c-format
@@ -3085,6 +3121,14 @@ msgid ""
 "Full path: %s\n"
 "State: %s\n"
 msgstr ""
+"\n"
+"スクリプト情報:\n"
+"名前: %s\n"
+"記述: %s\n"
+"作者: %s\n"
+"バージョン: %s\n"
+"フルパス: %s\n"
+"状態: %s\n"
 
 #: ../src/dialog_automation.cpp:297
 msgid "Correctly loaded"
@@ -3096,27 +3140,26 @@ msgstr "読み込みに失敗しました"
 
 #: ../src/dialog_automation.cpp:297
 msgid "Loaded with warnings"
-msgstr ""
+msgstr "警告付きで読み込まれました"
 
 #: ../src/dialog_automation.cpp:300
-#, fuzzy, c-format
-#| msgid "2: Warning"
+#, c-format
 msgid "Warning: %s\n"
-msgstr "2: 警告"
+msgstr "警告: %s\n"
 
 #: ../src/dialog_automation.cpp:303
 msgid "Features provided by script:\n"
-msgstr ""
+msgstr "スクリプトで提供される機能:\n"
 
 #: ../src/dialog_automation.cpp:306
 #, c-format
 msgid "    Macro: %s (%s)"
-msgstr ""
+msgstr "    マクロ: %s (%s)"
 
 #: ../src/dialog_automation.cpp:309
 #, c-format
 msgid "    Export filter: %s"
-msgstr ""
+msgstr "    エクスポートフィルター: %s"
 
 #: ../src/dialog_automation.cpp:313
 msgid "Automation Script Info"
@@ -3124,15 +3167,15 @@ msgstr "オートメーションスクリプトの詳細"
 
 #: ../src/dialog_autosave.cpp:67
 msgid "Open autosave file"
-msgstr ""
+msgstr "自動保存ファイルを開く"
 
 #: ../src/dialog_autosave.cpp:71 ../src/preferences.cpp:113
 msgid "Files"
-msgstr ""
+msgstr "ファイル"
 
 #: ../src/dialog_autosave.cpp:76
 msgid "Versions"
-msgstr ""
+msgstr "バージョン"
 
 #: ../src/dialog_autosave.cpp:86
 msgid "Open"
@@ -3141,12 +3184,12 @@ msgstr "開く"
 #: ../src/dialog_autosave.cpp:95
 #, c-format
 msgid "%s [ORIGINAL BACKUP]"
-msgstr ""
+msgstr "%s [オリジナルバックアップ]"
 
 #: ../src/dialog_autosave.cpp:96
 #, c-format
 msgid "%s [RECOVERED]"
-msgstr ""
+msgstr "%s [リカバリ済み]"
 
 #: ../src/dialog_colorpicker.cpp:527
 msgid "Select Color"
@@ -3206,7 +3249,7 @@ msgstr "Red:"
 
 #: ../src/dialog_colorpicker.cpp:609
 msgid "Alpha:"
-msgstr ""
+msgstr "アルファ:"
 
 #: ../src/dialog_colorpicker.cpp:616 ../src/dialog_colorpicker.cpp:619
 msgid "Hue:"
@@ -3231,64 +3274,65 @@ msgstr "映像 : %s"
 
 #: ../src/dialog_dummy_video.cpp:71
 msgid "640×480 (SD fullscreen)"
-msgstr ""
+msgstr "640×480 (SD フルスクリーン)"
 
 #: ../src/dialog_dummy_video.cpp:72
 msgid "704×480 (SD anamorphic)"
-msgstr ""
+msgstr "704×480 (SD アナモルフィック)"
 
 #: ../src/dialog_dummy_video.cpp:73
 msgid "640×360 (SD widescreen)"
-msgstr ""
+msgstr "640×360 (SD ワイドスクリーン)"
 
 #: ../src/dialog_dummy_video.cpp:74
 msgid "704×396 (SD widescreen)"
-msgstr ""
+msgstr "704×396 (SD ワイドスクリーン)"
 
 #: ../src/dialog_dummy_video.cpp:75
 msgid "640×352 (SD widescreen MOD16)"
-msgstr ""
+msgstr "640×352 (SD ワイドスクリーン MOD16)"
 
 #: ../src/dialog_dummy_video.cpp:76
 msgid "704×400 (SD widescreen MOD16)"
-msgstr ""
+msgstr "704×400 (SD ワイドスクリーン MOD16)"
 
 #: ../src/dialog_dummy_video.cpp:77
 msgid "1024×576 (SuperPAL widescreen)"
-msgstr ""
+msgstr "1024×576 (SuperPAL ワイドスクリーン)"
 
 #: ../src/dialog_dummy_video.cpp:78
 msgid "1280×720 (HD 720p)"
-msgstr ""
+msgstr "1280×720 (HD 720p)"
 
 #: ../src/dialog_dummy_video.cpp:79
 msgid "1920×1080 (FHD 1080p)"
-msgstr ""
+msgstr "1920×1080 (FHD 1080p)"
 
 #: ../src/dialog_dummy_video.cpp:80
 msgid "2560×1440 (QHD 1440p)"
-msgstr ""
+msgstr "2560×1440 (QHD 1440p)"
 
 #: ../src/dialog_dummy_video.cpp:81
 msgid "3840×2160 (4K UHD 2160p)"
-msgstr ""
+msgstr "3840×2160 (4K UHD 2160p)"
 
 #: ../src/dialog_dummy_video.cpp:82
 msgid "1080×1920 (FHD vertical)"
-msgstr ""
+msgstr "1080×1920 (FHD 縦長)"
 
 #: ../src/dialog_dummy_video.cpp:104
 msgid "Dummy video options"
 msgstr "ダミー映像の設定"
 
-#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:136
-#: ../src/dialog_resample.cpp:175 ../src/dialog_resample.cpp:188
+#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:150
+#: ../src/dialog_properties.cpp:162 ../src/dialog_resample.cpp:195
+#: ../src/dialog_resample.cpp:208
 msgid "×"
 msgstr "×"
 
 #: ../src/dialog_dummy_video.cpp:116
 msgid "Checkerboard &pattern"
-msgstr ""
+msgstr "市松模様パターン (&P)"
 
 #: ../src/dialog_dummy_video.cpp:119
 msgid "Video resolution:"
@@ -3311,7 +3355,7 @@ msgstr "ダミー映像の総フレーム数 (frames):"
 #: ../src/dialog_dummy_video.cpp:180
 #, c-format
 msgid "Resulting duration: %s"
-msgstr ""
+msgstr "結果のデュレーション: %s"
 
 #: ../src/dialog_export.cpp:102
 msgid "Export"
@@ -3323,15 +3367,15 @@ msgstr "フィルタ"
 
 #: ../src/dialog_export.cpp:125
 msgid "Move &Up"
-msgstr ""
+msgstr "上に移動 (&U)"
 
 #: ../src/dialog_export.cpp:126
 msgid "Move &Down"
-msgstr ""
+msgstr "下に移動 (&D)"
 
 #: ../src/dialog_export.cpp:128 ../src/dialog_selected_choices.cpp:33
 msgid "Select &None"
-msgstr ""
+msgstr "選択解除 (&N)"
 
 #: ../src/dialog_export.cpp:144
 msgid "Text encoding:"
@@ -3342,123 +3386,121 @@ msgid "Export..."
 msgstr "エクスポート"
 
 #: ../src/dialog_export.cpp:190
-#, fuzzy
-#| msgid "Export subtitles file"
 msgid "Export Subtitles File"
-msgstr "字幕のエクスポート"
+msgstr "字幕ファイルのエクスポート"
 
 #: ../src/dialog_export.cpp:205 ../src/dialog_export.cpp:208
 #: ../src/dialog_export.cpp:211
-#, fuzzy
-#| msgid "Error Importing Styles"
 msgid "Error exporting subtitles"
-msgstr "スタイルの取り込みに失敗しました"
+msgstr "字幕のエクスポートエラー"
 
 #: ../src/dialog_export_ebu3264.cpp:83
 msgid "EBU STL export"
-msgstr ""
+msgstr "EBU STL エクスポート"
 
 #: ../src/dialog_export_ebu3264.cpp:83
 msgid ""
 "Time code offset in incorrect format. Ensure it is entered as four groups of "
 "two digits separated by colons."
 msgstr ""
+"タイムコードオフセットの形式が正しくありません。コロンで区切られた2桁の数字4"
+"組で入力されていることを確認してください。"
 
 #: ../src/dialog_export_ebu3264.cpp:99
 msgid "Export to EBU STL format"
-msgstr ""
+msgstr "EBU STL 形式でエクスポート"
 
 #: ../src/dialog_export_ebu3264.cpp:101
 msgid "Text formatting"
-msgstr ""
+msgstr "テキストの書式設定"
 
 #: ../src/dialog_export_ebu3264.cpp:102
 msgid "Time codes"
-msgstr ""
+msgstr "タイムコード"
 
 #: ../src/dialog_export_ebu3264.cpp:103
 msgid "Display standard"
-msgstr ""
+msgstr "表示規格"
 
 #: ../src/dialog_export_ebu3264.cpp:110
 msgid "23.976 fps (non-standard, STL24.01)"
-msgstr ""
+msgstr "23.976 fps (非標準, STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:111
 msgid "24 fps (non-standard, STL24.01)"
-msgstr ""
+msgstr "24 fps (非標準, STL24.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:112
 msgid "25 fps (STL25.01)"
-msgstr ""
+msgstr "25 fps (STL25.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:113
 msgid "29.97 fps (non-dropframe, STL30.01)"
-msgstr ""
+msgstr "29.97 fps (ノンドロップフレーム, STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:114
 msgid "29.97 fps (dropframe, STL30.01)"
-msgstr ""
+msgstr "29.97 fps (ドロップフレーム, STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:115
 msgid "30 fps (STL30.01)"
-msgstr ""
+msgstr "30 fps (STL30.01)"
 
 #: ../src/dialog_export_ebu3264.cpp:117
 msgid "TV standard"
-msgstr ""
+msgstr "TV 規格"
 
 #: ../src/dialog_export_ebu3264.cpp:121
 msgid "Out-times are inclusive"
-msgstr ""
+msgstr "アウトタイムを含む"
 
 #: ../src/dialog_export_ebu3264.cpp:124
 msgid "ISO 6937-2 (Latin/Western Europe)"
-msgstr ""
+msgstr "ISO 6937-2 (ラテン/西ヨーロッパ)"
 
 #: ../src/dialog_export_ebu3264.cpp:125
 msgid "ISO 8859-5 (Cyrillic)"
-msgstr ""
+msgstr "ISO 8859-5 (キリル)"
 
 #: ../src/dialog_export_ebu3264.cpp:126
 msgid "ISO 8859-6 (Arabic)"
-msgstr ""
+msgstr "ISO 8859-6 (アラビア)"
 
 #: ../src/dialog_export_ebu3264.cpp:127
 msgid "ISO 8859-7 (Greek)"
-msgstr ""
+msgstr "ISO 8859-7 (ギリシャ)"
 
 #: ../src/dialog_export_ebu3264.cpp:128
 msgid "ISO 8859-8 (Hebrew)"
-msgstr ""
+msgstr "ISO 8859-8 (ヘブライ)"
 
 #: ../src/dialog_export_ebu3264.cpp:129
 msgid "UTF-8 Unicode (non-standard)"
-msgstr ""
+msgstr "UTF-8 Unicode (非標準)"
 
 #: ../src/dialog_export_ebu3264.cpp:131
 msgid "Text encoding"
-msgstr ""
+msgstr "文字コード"
 
 #: ../src/dialog_export_ebu3264.cpp:134
 msgid "Automatically wrap long lines (ASS)"
-msgstr ""
+msgstr "長い行を自動で折り返す (ASS)"
 
 #: ../src/dialog_export_ebu3264.cpp:135
 msgid "Automatically wrap long lines (Balanced)"
-msgstr ""
+msgstr "長い行を自動で折り返す (バランス)"
 
 #: ../src/dialog_export_ebu3264.cpp:136
 msgid "Abort if any lines are too long"
-msgstr ""
+msgstr "長すぎる行がある場合は中止"
 
 #: ../src/dialog_export_ebu3264.cpp:137
 msgid "Skip lines that are too long"
-msgstr ""
+msgstr "長すぎる行をスキップ"
 
 #: ../src/dialog_export_ebu3264.cpp:142
 msgid "Translate alignments"
-msgstr ""
+msgstr "配置を変換"
 
 #: ../src/dialog_export_ebu3264.cpp:145
 msgid "Open subtitles"
@@ -3466,28 +3508,28 @@ msgstr "字幕ファイルを開く"
 
 #: ../src/dialog_export_ebu3264.cpp:146
 msgid "Level-1 teletext"
-msgstr ""
+msgstr "レベル1 テレテキスト"
 
 #: ../src/dialog_export_ebu3264.cpp:147
 msgid "Level-2 teletext"
-msgstr ""
+msgstr "レベル2 テレテキスト"
 
 #: ../src/dialog_export_ebu3264.cpp:153
 msgid "Max. line length:"
-msgstr ""
+msgstr "最大行長:"
 
 #: ../src/dialog_export_ebu3264.cpp:157
 msgid "Time code offset:"
-msgstr ""
+msgstr "タイムコードオフセット:"
 
 #: ../src/dialog_fonts_collector.cpp:101
 #, c-format
 msgid "* An error occurred when enumerating the used fonts: %s.\n"
-msgstr ""
+msgstr "* 使用されているフォントの列挙中にエラーが発生しました: %s。\n"
 
 #: ../src/dialog_fonts_collector.cpp:115
 msgid "Symlinking fonts to folder...\n"
-msgstr ""
+msgstr "フォントをフォルダにシンボリックリンクしています...\n"
 
 #: ../src/dialog_fonts_collector.cpp:119
 msgid "Copying fonts to folder...\n"
@@ -3500,12 +3542,12 @@ msgstr "フォントのアーカイブをコピーしてます\n"
 #: ../src/dialog_fonts_collector.cpp:134
 #, c-format
 msgid "* Failed to create directory '%s': %s.\n"
-msgstr ""
+msgstr "* フォルダ '%s' の作成に失敗しました: %s。\n"
 
 #: ../src/dialog_fonts_collector.cpp:145
 #, c-format
 msgid "* Failed to open %s.\n"
-msgstr ""
+msgstr "* %s の読み込みに失敗しました。\n"
 
 #: ../src/dialog_fonts_collector.cpp:200
 #, c-format
@@ -3520,7 +3562,7 @@ msgstr "* %s は保存するフォルダにすでに存在します\n"
 #: ../src/dialog_fonts_collector.cpp:204
 #, c-format
 msgid "* Symlinked %s.\n"
-msgstr ""
+msgstr "* %s をシンボリックリンクしました。\n"
 
 #: ../src/dialog_fonts_collector.cpp:206
 #, c-format
@@ -3541,6 +3583,9 @@ msgid ""
 "Over 32 MB of fonts were copied. Some of the fonts may not be loaded by the "
 "player if they are all attached to a Matroska file."
 msgstr ""
+"\n"
+"32 MB 以上のフォントがコピーされました。Matroskaファイルにすべて添付された場"
+"合、プレイヤーによっては一部のフォントが読み込まれない可能性があります。"
 
 #: ../src/dialog_fonts_collector.cpp:233
 msgid "Check fonts for availability"
@@ -3552,7 +3597,7 @@ msgstr "フォントをフォルダに保存する"
 
 #: ../src/dialog_fonts_collector.cpp:235
 msgid "Copy fonts to subtitle file's folder"
-msgstr ""
+msgstr "フォントを字幕ファイルと同じフォルダにコピーする"
 
 #: ../src/dialog_fonts_collector.cpp:236
 msgid "Copy fonts to zipped archive"
@@ -3560,7 +3605,7 @@ msgstr "フォントをZIP圧縮で保存する"
 
 #: ../src/dialog_fonts_collector.cpp:238
 msgid "Symlink fonts to folder"
-msgstr ""
+msgstr "フォントをフォルダにシンボリックリンクする"
 
 #: ../src/dialog_fonts_collector.cpp:243 ../src/dialog_selection.cpp:153
 msgid "Action"
@@ -3600,7 +3645,7 @@ msgstr "圧縮ファイル名"
 
 #: ../src/dialog_fonts_collector.cpp:348
 msgid "Zip Archives"
-msgstr ""
+msgstr "ZIP アーカイブ"
 
 #: ../src/dialog_fonts_collector.cpp:352
 msgid "Select folder to save fonts on"
@@ -3608,19 +3653,22 @@ msgstr "フォントを保存するフォルダを選択してください"
 
 #: ../src/dialog_fonts_collector.cpp:371
 msgid "N/A"
-msgstr ""
+msgstr "N/A"
 
 #: ../src/dialog_fonts_collector.cpp:379
 msgid ""
 "Choose the folder where the fonts will be collected to. It will be created "
 "if it doesn't exist."
 msgstr ""
+"フォントを収集するフォルダを選択してください。存在しない場合は作成されます。"
 
 #: ../src/dialog_fonts_collector.cpp:386
 msgid ""
 "Enter the name of the destination zip file to collect the fonts to. If a "
 "folder is entered, a default name will be used."
 msgstr ""
+"フォントを収集する保存先のZIPファイル名を入力してください。フォルダが入力され"
+"た場合は、デフォルトの名前が使用されます。"
 
 #: ../src/dialog_jumpto.cpp:73
 msgid "Frame: "
@@ -3639,15 +3687,13 @@ msgid "Dest: "
 msgstr "日本語 : "
 
 #: ../src/dialog_kara_timing_copy.cpp:386
-#, fuzzy
-#| msgid "Kanji Timer"
 msgid "Kanji timer"
 msgstr "漢字タイマー"
 
 #: ../src/dialog_kara_timing_copy.cpp:391 ../src/dialog_paste_over.cpp:75
 #: ../src/grid_column.cpp:364 ../src/grid_column.cpp:365
 msgid "Text"
-msgstr "Text"
+msgstr "テキスト"
 
 #: ../src/dialog_kara_timing_copy.cpp:392
 msgid "Styles"
@@ -3663,7 +3709,7 @@ msgstr "コマンド"
 
 #: ../src/dialog_kara_timing_copy.cpp:408
 msgid "Attempt to &interpolate kanji"
-msgstr ""
+msgstr "漢字の補完を試みる (&I)"
 
 #: ../src/dialog_kara_timing_copy.cpp:415
 msgid ""
@@ -3687,31 +3733,31 @@ msgstr ""
 
 #: ../src/dialog_kara_timing_copy.cpp:418
 msgid "S&tart!"
-msgstr ""
+msgstr "スタート (&T)"
 
 #: ../src/dialog_kara_timing_copy.cpp:419
 msgid "&Link"
-msgstr ""
+msgstr "リンク (&L)"
 
 #: ../src/dialog_kara_timing_copy.cpp:420
 msgid "&Unlink"
-msgstr ""
+msgstr "リンク解除 (&U)"
 
 #: ../src/dialog_kara_timing_copy.cpp:421
 msgid "Skip &Source Line"
-msgstr ""
+msgstr "ローマ字行をスキップ (&S)"
 
 #: ../src/dialog_kara_timing_copy.cpp:422
 msgid "Skip &Dest Line"
-msgstr ""
+msgstr "日本語行をスキップ (&D)"
 
 #: ../src/dialog_kara_timing_copy.cpp:423
 msgid "&Go Back a Line"
-msgstr ""
+msgstr "1行戻る (&G)"
 
 #: ../src/dialog_kara_timing_copy.cpp:424
 msgid "&Accept Line"
-msgstr ""
+msgstr "行を反映 (&A)"
 
 #: ../src/dialog_kara_timing_copy.cpp:487
 msgid "kanji timing"
@@ -3748,12 +3794,12 @@ msgstr "コメント"
 #: ../src/dialog_paste_over.cpp:69 ../src/grid_column.cpp:202
 #: ../src/grid_column.cpp:203
 msgid "Style"
-msgstr "Style"
+msgstr "スタイル"
 
 #: ../src/dialog_paste_over.cpp:70 ../src/grid_column.cpp:230
 #: ../src/grid_column.cpp:231 ../src/subs_edit_box.cpp:135
 msgid "Actor"
-msgstr "Actor"
+msgstr "話者"
 
 #: ../src/dialog_paste_over.cpp:71
 msgid "Margin Left"
@@ -3769,107 +3815,119 @@ msgstr "上下余白"
 
 #: ../src/dialog_paste_over.cpp:90 ../src/dialog_timing_processor.cpp:162
 msgid "&All"
-msgstr ""
+msgstr "すべて (&A)"
 
 #: ../src/dialog_paste_over.cpp:92 ../src/dialog_timing_processor.cpp:165
 msgid "&None"
-msgstr ""
+msgstr "なし (&N)"
 
 #: ../src/dialog_paste_over.cpp:94
 msgid "&Times"
-msgstr ""
+msgstr "時間 (&T)"
 
 #: ../src/dialog_paste_over.cpp:96
 msgid "T&ext"
-msgstr ""
+msgstr "テキスト (&E)"
 
 #: ../src/dialog_progress.cpp:193
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 #: ../src/dialog_progress.cpp:241
 msgid "Cancelling..."
-msgstr ""
+msgstr "キャンセルしています..."
 
-#: ../src/dialog_properties.cpp:91
+#: ../src/dialog_properties.cpp:98
 msgid "Script Properties"
 msgstr "字幕のプロパティ"
 
-#: ../src/dialog_properties.cpp:105
+#: ../src/dialog_properties.cpp:112
 msgid "Script"
 msgstr "字幕スクリプト"
 
-#: ../src/dialog_properties.cpp:109
+#: ../src/dialog_properties.cpp:116
 msgid "Title:"
 msgstr "タイトル :"
 
-#: ../src/dialog_properties.cpp:110
+#: ../src/dialog_properties.cpp:117
 msgid "Original script:"
 msgstr "制作者 :"
 
-#: ../src/dialog_properties.cpp:111
+#: ../src/dialog_properties.cpp:118
 msgid "Translation:"
 msgstr "翻訳者 :"
 
-#: ../src/dialog_properties.cpp:112
+#: ../src/dialog_properties.cpp:119
 msgid "Editing:"
 msgstr "編集者 :"
 
-#: ../src/dialog_properties.cpp:113
+#: ../src/dialog_properties.cpp:120
 msgid "Timing:"
 msgstr "タイマー :"
 
-#: ../src/dialog_properties.cpp:114
+#: ../src/dialog_properties.cpp:121
 msgid "Synch point:"
 msgstr "同期ポイント :"
 
-#: ../src/dialog_properties.cpp:115
+#: ../src/dialog_properties.cpp:122
 msgid "Updated by:"
 msgstr "アップデート :"
 
-#: ../src/dialog_properties.cpp:116
+#: ../src/dialog_properties.cpp:123
 msgid "Update details:"
 msgstr "アップデート詳細 :"
 
-#: ../src/dialog_properties.cpp:122
+#: ../src/dialog_properties.cpp:129
 msgid "Resolution"
 msgstr "解像度"
 
-#: ../src/dialog_properties.cpp:128 ../src/dialog_resample.cpp:150
+#: ../src/dialog_properties.cpp:138 ../src/dialog_resample.cpp:170
 #: ../src/export_framerate.cpp:70
 msgid "From &video"
-msgstr ""
+msgstr "映像から (&V)"
 
-#: ../src/dialog_properties.cpp:144 ../src/dialog_resample.cpp:180
-#: ../src/dialog_resample.cpp:193
+#: ../src/dialog_properties.cpp:148
+msgid "Script: "
+msgstr "字幕スクリプト: "
+
+#: ../src/dialog_properties.cpp:154 ../src/dialog_properties.cpp:169
+msgid "From video"
+msgstr "映像から"
+
+#: ../src/dialog_properties.cpp:160
+msgid "Layout: "
+msgstr "レイアウト: "
+
+#: ../src/dialog_properties.cpp:175 ../src/dialog_resample.cpp:200
+#: ../src/dialog_resample.cpp:213
 msgid "YCbCr Matrix:"
-msgstr ""
+msgstr "YCbCr マトリックス:"
 
-#: ../src/dialog_properties.cpp:155
+#: ../src/dialog_properties.cpp:186
 msgid "0: Smart wrapping, top line is wider"
 msgstr "0: 自動改行する、上に多く割り付け"
 
-#: ../src/dialog_properties.cpp:156
+#: ../src/dialog_properties.cpp:187
 msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: 文末で改行する 改行には \\N を使います"
 
-#: ../src/dialog_properties.cpp:157
+#: ../src/dialog_properties.cpp:188
 msgid "2: No word wrapping, both \\n and \\N break"
 msgstr "2: 自動改行しない、改行には \\n と \\N を使います"
 
-#: ../src/dialog_properties.cpp:158
+#: ../src/dialog_properties.cpp:189
 msgid "3: Smart wrapping, bottom line is wider"
 msgstr "3: 自動改行する、下に多く割り付け"
 
-#: ../src/dialog_properties.cpp:162
+#: ../src/dialog_properties.cpp:193
 msgid "Wrap Style: "
 msgstr "自動改行について : "
 
-#: ../src/dialog_properties.cpp:165
+#: ../src/dialog_properties.cpp:196
 msgid "Scale Border and Shadow"
 msgstr "縁取りと影の太さを解像度に合わせる"
 
-#: ../src/dialog_properties.cpp:166
+#: ../src/dialog_properties.cpp:197
 msgid ""
 "Scale border and shadow together with script/render resolution. If this is "
 "unchecked, relative border and shadow size will depend on renderer."
@@ -3878,49 +3936,49 @@ msgstr ""
 "字幕の解像度が未チェックの場合に影と縁取りの太さはレンダリングエンジンに依存"
 "します"
 
-#: ../src/dialog_properties.cpp:202
+#: ../src/dialog_properties.cpp:235
 msgid "property changes"
 msgstr "字幕プロパティの変更"
 
-#: ../src/dialog_resample.cpp:114
+#: ../src/dialog_resample.cpp:136
 msgid "Source Resolution"
-msgstr ""
+msgstr "元の解像度"
 
-#: ../src/dialog_resample.cpp:115
+#: ../src/dialog_resample.cpp:137
 msgid "Destination Resolution"
-msgstr ""
+msgstr "変更後の解像度"
 
-#: ../src/dialog_resample.cpp:116
+#: ../src/dialog_resample.cpp:138
 msgid "Margin offset"
 msgstr "余白の設定"
 
-#: ../src/dialog_resample.cpp:128
+#: ../src/dialog_resample.cpp:150
 msgid "&Symmetrical"
-msgstr ""
+msgstr "対称 (&S)"
 
-#: ../src/dialog_resample.cpp:152
+#: ../src/dialog_resample.cpp:172
 msgid "From s&cript"
-msgstr ""
+msgstr "字幕スクリプトから (&C)"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Add borders"
-msgstr ""
+msgstr "境界線を追加"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Manual"
-msgstr ""
+msgstr "手動"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Remove borders"
-msgstr ""
+msgstr "境界線を削除"
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Stretch"
-msgstr ""
+msgstr "引き伸ばす"
 
-#: ../src/dialog_resample.cpp:156
+#: ../src/dialog_resample.cpp:176
 msgid "Aspect Ratio Handling"
-msgstr ""
+msgstr "アスペクト比の扱い"
 
 #: ../src/dialog_search_replace.cpp:47
 msgid "Replace"
@@ -3936,39 +3994,39 @@ msgstr "置換後の文字列 :"
 
 #: ../src/dialog_search_replace.cpp:78
 msgid "&Match case"
-msgstr ""
+msgstr "大文字と小文字を区別する (&M)"
 
 #: ../src/dialog_search_replace.cpp:79
 msgid "&Use regular expressions"
-msgstr ""
+msgstr "正規表現を使用する (&U)"
 
 #: ../src/dialog_search_replace.cpp:80 ../src/dialog_spellchecker.cpp:182
 msgid "&Skip Comments"
-msgstr ""
+msgstr "コメントをスキップ (&S)"
 
 #: ../src/dialog_search_replace.cpp:81
 msgid "S&kip Override Tags"
-msgstr ""
+msgstr "オーバーライドタグをスキップ (&K)"
 
 #: ../src/dialog_search_replace.cpp:87 ../src/dialog_selection.cpp:139
 msgid "&Text"
-msgstr ""
+msgstr "テキスト (&T)"
 
 #: ../src/dialog_search_replace.cpp:87
 msgid "A&ctor"
-msgstr ""
+msgstr "話者 (&C)"
 
 #: ../src/dialog_search_replace.cpp:87
 msgid "St&yle"
-msgstr ""
+msgstr "スタイル (&Y)"
 
 #: ../src/dialog_search_replace.cpp:88
 msgid "A&ll rows"
-msgstr ""
+msgstr "すべての行 (&L)"
 
 #: ../src/dialog_search_replace.cpp:88 ../src/dialog_shift_times.cpp:170
 msgid "Selected &rows"
-msgstr ""
+msgstr "選択された行 (&R)"
 
 #: ../src/dialog_search_replace.cpp:90 ../src/dialog_selection.cpp:140
 msgid "In Field"
@@ -3980,15 +4038,15 @@ msgstr "範囲指定"
 
 #: ../src/dialog_search_replace.cpp:93
 msgid "&Find next"
-msgstr ""
+msgstr "次を検索 (&F)"
 
 #: ../src/dialog_search_replace.cpp:94
 msgid "Replace &next"
-msgstr ""
+msgstr "次を置換 (&N)"
 
 #: ../src/dialog_search_replace.cpp:95 ../src/dialog_spellchecker.cpp:190
 msgid "Replace &all"
-msgstr ""
+msgstr "すべて置換 (&A)"
 
 #: ../src/dialog_selection.cpp:107
 msgid "Select"
@@ -4000,43 +4058,43 @@ msgstr "マッチ"
 
 #: ../src/dialog_selection.cpp:123
 msgid "&Matches"
-msgstr ""
+msgstr "一致 (&M)"
 
 #: ../src/dialog_selection.cpp:124
 msgid "&Doesn't Match"
-msgstr ""
+msgstr "一致しない (&D)"
 
 #: ../src/dialog_selection.cpp:125
 msgid "Match c&ase"
-msgstr ""
+msgstr "大文字と小文字を区別する (&A)"
 
 #: ../src/dialog_selection.cpp:134
 msgid "&Contains"
-msgstr ""
+msgstr "含む (&C)"
 
 #: ../src/dialog_selection.cpp:134
 msgid "&Exact match"
-msgstr ""
+msgstr "完全一致 (&E)"
 
 #: ../src/dialog_selection.cpp:134
 msgid "&Regular Expression match"
-msgstr ""
+msgstr "正規表現で一致 (&R)"
 
 #: ../src/dialog_selection.cpp:135
 msgid "Mode"
-msgstr ""
+msgstr "モード"
 
 #: ../src/dialog_selection.cpp:139
 msgid "&Style"
-msgstr ""
+msgstr "スタイル (&S)"
 
 #: ../src/dialog_selection.cpp:139
 msgid "Act&or"
-msgstr ""
+msgstr "話者 (&O)"
 
 #: ../src/dialog_selection.cpp:139
 msgid "E&ffect"
-msgstr ""
+msgstr "エフェクト (&F)"
 
 #: ../src/dialog_selection.cpp:144
 msgid "Match dialogues/comments"
@@ -4044,60 +4102,57 @@ msgstr "有効字幕行とコメント行の選択"
 
 #: ../src/dialog_selection.cpp:146
 msgid "D&ialogues"
-msgstr ""
+msgstr "ダイアログ (&I)"
 
 #: ../src/dialog_selection.cpp:147
 msgid "Comme&nts"
-msgstr ""
+msgstr "コメント (&N)"
 
 #: ../src/dialog_selection.cpp:152
 msgid "&Add to selection"
-msgstr ""
+msgstr "選択に追加 (&A)"
 
 #: ../src/dialog_selection.cpp:152
 msgid "Intersect &with selection"
-msgstr ""
+msgstr "現在の選択と交差 (&W)"
 
 #: ../src/dialog_selection.cpp:152
 msgid "S&ubtract from selection"
-msgstr ""
+msgstr "選択から除外 (&U)"
 
 #: ../src/dialog_selection.cpp:152
 msgid "Set se&lection"
-msgstr ""
+msgstr "選択を設定 (&L)"
 
 #: ../src/dialog_selection.cpp:215
 #, c-format
 msgid "Selection was set to one line"
 msgid_plural "Selection was set to %u lines"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "選択を %u 行に設定しました"
 
 #: ../src/dialog_selection.cpp:216
 msgid "Selection was set to no lines"
-msgstr ""
+msgstr "選択が解除されました"
 
 #: ../src/dialog_selection.cpp:222
 #, c-format
 msgid "One line was added to selection"
 msgid_plural "%u lines were added to selection"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%u 行を選択に追加しました"
 
 #: ../src/dialog_selection.cpp:223
 msgid "No lines were added to selection"
-msgstr ""
+msgstr "選択に追加された行はありません"
 
 #: ../src/dialog_selection.cpp:234
 #, c-format
 msgid "One line was removed from selection"
 msgid_plural "%u lines were removed from selection"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "選択から %u 行を除外しました"
 
 #: ../src/dialog_selection.cpp:235
 msgid "No lines were removed from selection"
-msgstr ""
+msgstr "選択から除外された行はありません"
 
 #: ../src/dialog_selection.cpp:240
 msgid "Selection"
@@ -4105,34 +4160,33 @@ msgstr "選択結果"
 
 #: ../src/dialog_shift_times.cpp:92
 msgid "unsaved"
-msgstr ""
+msgstr "未保存"
 
 #: ../src/dialog_shift_times.cpp:96
 #, c-format
 msgid "1 frame"
 msgid_plural "%s frames"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s フレーム"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "backward"
-msgstr ""
+msgstr "戻る"
 
 #: ../src/dialog_shift_times.cpp:98
 msgid "forward"
-msgstr ""
+msgstr "進む"
 
 #: ../src/dialog_shift_times.cpp:102
 msgid "s+e"
-msgstr ""
+msgstr "s+e"
 
 #: ../src/dialog_shift_times.cpp:103
 msgid "s"
-msgstr ""
+msgstr "s"
 
 #: ../src/dialog_shift_times.cpp:104
 msgid "e"
-msgstr ""
+msgstr "e"
 
 #: ../src/dialog_shift_times.cpp:111
 msgid "all"
@@ -4153,11 +4207,11 @@ msgstr "シフト時間の指定"
 
 #: ../src/dialog_shift_times.cpp:145
 msgid "Load from history"
-msgstr ""
+msgstr "履歴から読み込む"
 
 #: ../src/dialog_shift_times.cpp:150
 msgid "&Time: "
-msgstr ""
+msgstr "時間 (&T): "
 
 #: ../src/dialog_shift_times.cpp:151
 msgid "Shift by time"
@@ -4165,7 +4219,7 @@ msgstr "時間を指定してシフトします"
 
 #: ../src/dialog_shift_times.cpp:154
 msgid "&Frames: "
-msgstr ""
+msgstr "フレーム (&F): "
 
 #: ../src/dialog_shift_times.cpp:155
 msgid "Shift by frames"
@@ -4181,7 +4235,7 @@ msgstr "シフト時間をフレーム数で入力します"
 
 #: ../src/dialog_shift_times.cpp:164
 msgid "For&ward"
-msgstr ""
+msgstr "進む (&W)"
 
 #: ../src/dialog_shift_times.cpp:165
 msgid ""
@@ -4191,7 +4245,7 @@ msgstr "字幕タイミングを指定分だけ進めます"
 
 #: ../src/dialog_shift_times.cpp:167
 msgid "&Backward"
-msgstr ""
+msgstr "戻る (&B)"
 
 #: ../src/dialog_shift_times.cpp:168
 msgid ""
@@ -4201,11 +4255,11 @@ msgstr "字幕タイミングを指定分だけ戻します"
 
 #: ../src/dialog_shift_times.cpp:170
 msgid "&All rows"
-msgstr ""
+msgstr "すべての行 (&A)"
 
 #: ../src/dialog_shift_times.cpp:170
 msgid "Selection &onward"
-msgstr ""
+msgstr "選択行以降 (&O)"
 
 #: ../src/dialog_shift_times.cpp:171
 msgid "Affect"
@@ -4213,15 +4267,15 @@ msgstr "適用する範囲"
 
 #: ../src/dialog_shift_times.cpp:173
 msgid "&End times only"
-msgstr ""
+msgstr "終了時間のみ (&E)"
 
 #: ../src/dialog_shift_times.cpp:173
 msgid "&Start times only"
-msgstr ""
+msgstr "開始時間のみ (&S)"
 
 #: ../src/dialog_shift_times.cpp:173
 msgid "Start a&nd End times"
-msgstr ""
+msgstr "開始時間と終了時間 (&N)"
 
 #: ../src/dialog_shift_times.cpp:174
 msgid "Times"
@@ -4229,7 +4283,7 @@ msgstr "タイミング選択"
 
 #: ../src/dialog_shift_times.cpp:178
 msgid "&Clear"
-msgstr ""
+msgstr "クリア (&C)"
 
 #: ../src/dialog_shift_times.cpp:415
 msgid "shifting"
@@ -4240,40 +4294,36 @@ msgid "Misspelled word:"
 msgstr "ミスと思われる単語 :"
 
 #: ../src/dialog_spellchecker.cpp:143
-#, fuzzy
-#| msgid "No spell checker suggestions"
 msgid "No spellchecker available."
-msgstr "スペルチェッカーの補正はありません"
+msgstr "利用可能なスペルチェッカーがありません。"
 
 #: ../src/dialog_spellchecker.cpp:149
-#, fuzzy
-#| msgid "No spell checker suggestions"
 msgid "No spellchecker dictionaries available."
-msgstr "スペルチェッカーの補正はありません"
+msgstr "利用可能なスペルチェッカー辞書がありません。"
 
 #: ../src/dialog_spellchecker.cpp:183
 msgid "Ignore &UPPERCASE words"
-msgstr ""
+msgstr "大文字の単語を無視する (&U)"
 
 #: ../src/dialog_spellchecker.cpp:187
 msgid "&Replace"
-msgstr ""
+msgstr "置換 (&R)"
 
 #: ../src/dialog_spellchecker.cpp:197
 msgid "&Ignore"
-msgstr ""
+msgstr "無視 (&I)"
 
 #: ../src/dialog_spellchecker.cpp:200
 msgid "Ignore a&ll"
-msgstr ""
+msgstr "すべて無視 (&L)"
 
 #: ../src/dialog_spellchecker.cpp:206
 msgid "Add to &dictionary"
-msgstr ""
+msgstr "辞書に追加 (&D)"
 
 #: ../src/dialog_spellchecker.cpp:212
 msgid "Remove fro&m dictionary"
-msgstr ""
+msgstr "辞書から削除 (&M)"
 
 #: ../src/dialog_spellchecker.cpp:279
 msgid "Aegisub has finished checking spelling of this script."
@@ -4289,7 +4339,7 @@ msgstr "字幕内にスペルのミスを見つけることができませんで
 
 #: ../src/dialog_spellchecker.cpp:329 ../src/dialog_spellchecker.cpp:343
 msgid "spell check replace"
-msgstr ""
+msgstr "スペルチェックの置換"
 
 #: ../src/dialog_style_editor.cpp:128
 msgid "Style Editor"
@@ -4297,7 +4347,7 @@ msgstr "スタイルエディタ"
 
 #: ../src/dialog_style_editor.cpp:173
 msgid "Border boxes"
-msgstr ""
+msgstr "境界ボックス"
 
 #: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
 #: ../src/dialog_style_editor.cpp:295
@@ -4306,13 +4356,13 @@ msgstr "縁取り"
 
 #: ../src/dialog_style_editor.cpp:173
 msgid "Shadow box (libass only)"
-msgstr ""
+msgstr "シャドウボックス (libass のみ)"
 
 #: ../src/dialog_style_editor.cpp:181
 msgid "Font"
 msgstr "フォント"
 
-#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:280
+#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:302
 msgid "Colors"
 msgstr "色"
 
@@ -4330,19 +4380,19 @@ msgstr "プレビュー"
 
 #: ../src/dialog_style_editor.cpp:200
 msgid "&Bold"
-msgstr ""
+msgstr "太字 (&B)"
 
 #: ../src/dialog_style_editor.cpp:201
 msgid "&Italic"
-msgstr ""
+msgstr "斜体 (&I)"
 
 #: ../src/dialog_style_editor.cpp:202
 msgid "&Underline"
-msgstr ""
+msgstr "下線 (&U)"
 
 #: ../src/dialog_style_editor.cpp:203
 msgid "&Strikeout"
-msgstr ""
+msgstr "打ち消し線 (&S)"
 
 #: ../src/dialog_style_editor.cpp:215
 msgid "Alignment"
@@ -4390,7 +4440,7 @@ msgstr "上下余白をピクセルで指定"
 
 #: ../src/dialog_style_editor.cpp:236
 msgid "Whether to draw a normal outline or opaque boxes around the text"
-msgstr ""
+msgstr "テキストの周りに通常の輪郭を描くか、不透明なボックスを描くか"
 
 #: ../src/dialog_style_editor.cpp:237
 msgid "Outline width, in pixels"
@@ -4461,10 +4511,8 @@ msgid "Shadow:"
 msgstr "影 :"
 
 #: ../src/dialog_style_editor.cpp:326
-#, fuzzy
-#| msgid "Sort styles"
 msgid "Border style:"
-msgstr "スタイルのソート"
+msgstr "境界スタイル:"
 
 #: ../src/dialog_style_editor.cpp:330
 msgid "Scale X%:"
@@ -4502,11 +4550,11 @@ msgstr "スタイルプレビューの背景色を指定"
 
 #: ../src/dialog_style_editor.cpp:431
 msgid "Style name conflict"
-msgstr ""
+msgstr "スタイル名の競合"
 
 #: ../src/dialog_style_editor.cpp:431
 msgid "There is already a style with this name. Please choose another name."
-msgstr ""
+msgstr "この名前のスタイルはすでに存在します。別の名前を選択してください。"
 
 #: ../src/dialog_style_editor.cpp:443
 msgid ""
@@ -4546,11 +4594,11 @@ msgstr "最下部へ"
 msgid "Sort styles alphabetically"
 msgstr "ソート"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:666
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:690
 msgid "&New"
-msgstr ""
+msgstr "新規 (&N)"
 
-#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:667
+#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:691
 #: default_menu.json:0
 msgid "&Edit"
 msgstr "編集 (&E)"
@@ -4563,31 +4611,30 @@ msgstr "コピー (&C)"
 #: ../src/dialog_style_manager.cpp:218
 #, c-format
 msgid "%s - Copy"
-msgstr ""
+msgstr "%s - コピー"
 
 #: ../src/dialog_style_manager.cpp:220
 #, c-format
 msgid "%s - Copy (%d)"
-msgstr ""
+msgstr "%s - コピー (%d)"
 
 #: ../src/dialog_style_manager.cpp:243
 msgid "Could not parse style"
 msgstr "スタイルを解析できません"
 
 #: ../src/dialog_style_manager.cpp:248
-#, fuzzy, c-format
+#, c-format
 msgid "Are you sure you want to delete this style?"
 msgid_plural "Are you sure you want to delete these %d styles?"
-msgstr[0] "選択したスタイルを削除しますか？"
-msgstr[1] "選択したスタイルを削除しますか？"
+msgstr[0] "選択した %d 個のスタイルを削除してもよろしいですか？"
 
 #: ../src/dialog_style_manager.cpp:273
 msgid "Catalog of available storages"
-msgstr "読み込み可能なカタログ"
+msgstr "利用可能なストレージのカタログ"
 
 #: ../src/dialog_style_manager.cpp:274
 msgid "Storage"
-msgstr "カタログに保存されているスタイル"
+msgstr "ストレージ"
 
 #: ../src/dialog_style_manager.cpp:275
 msgid "Current script"
@@ -4603,15 +4650,15 @@ msgstr "削除"
 
 #: ../src/dialog_style_manager.cpp:290
 msgid "Copy to &current script ->"
-msgstr ""
+msgstr "現在の字幕スクリプトへコピー (&C) ->"
 
 #: ../src/dialog_style_manager.cpp:302
 msgid "&Import from script..."
-msgstr ""
+msgstr "字幕スクリプトからインポート (&I)..."
 
 #: ../src/dialog_style_manager.cpp:303
 msgid "<- Copy to &storage"
-msgstr ""
+msgstr "<- ストレージにコピー (&S)"
 
 #: ../src/dialog_style_manager.cpp:460
 msgid "New catalog entry"
@@ -4657,7 +4704,7 @@ msgstr "削除の確認"
 #: ../src/dialog_style_manager.cpp:515 ../src/dialog_style_manager.cpp:542
 #: ../src/dialog_style_manager.cpp:721
 msgid "Style name collision"
-msgstr ""
+msgstr "スタイル名の衝突"
 
 #: ../src/dialog_style_manager.cpp:515
 #, c-format
@@ -4665,6 +4712,8 @@ msgid ""
 "There is already a style with the name \"%s\" in the current storage. "
 "Overwrite?"
 msgstr ""
+"現在のストレージに \"%s\" という名前のスタイルがすでに存在します。上書きしま"
+"すか？"
 
 #: ../src/dialog_style_manager.cpp:542 ../src/dialog_style_manager.cpp:720
 #, c-format
@@ -4672,6 +4721,8 @@ msgid ""
 "There is already a style with the name \"%s\" in the current script. "
 "Overwrite?"
 msgstr ""
+"現在の字幕スクリプトに \"%s\" という名前のスタイルがすでに存在します。上書き"
+"しますか？"
 
 #: ../src/dialog_style_manager.cpp:553
 msgid "style copy"
@@ -4694,10 +4745,8 @@ msgid "style delete"
 msgstr "スタイルの削除"
 
 #: ../src/dialog_style_manager.cpp:689
-#, fuzzy
-#| msgid "Export subtitles file"
 msgid "Unsupported subtitle format"
-msgstr "字幕のエクスポート"
+msgstr "サポートされていない字幕形式"
 
 #: ../src/dialog_style_manager.cpp:705
 msgid "Error Importing Styles"
@@ -4761,15 +4810,15 @@ msgstr "次の字幕行へ移動"
 
 #: ../src/dialog_styling_assistant.cpp:94 ../src/dialog_translation.cpp:119
 msgid "Play video"
-msgstr ""
+msgstr "映像を再生"
 
 #: ../src/dialog_styling_assistant.cpp:95 ../src/dialog_translation.cpp:120
 msgid "Play audio"
-msgstr ""
+msgstr "音声を再生"
 
 #: ../src/dialog_styling_assistant.cpp:96
 msgid "Click on list"
-msgstr ""
+msgstr "リストをクリック"
 
 #: ../src/dialog_styling_assistant.cpp:97
 msgid "Select style"
@@ -4777,7 +4826,7 @@ msgstr "スタイルを選択"
 
 #: ../src/dialog_styling_assistant.cpp:101
 msgid "&Seek video to line start time"
-msgstr ""
+msgstr "映像を行の開始時間にシーク (&S)"
 
 #: ../src/dialog_styling_assistant.cpp:110 ../src/dialog_translation.cpp:132
 msgid "Actions"
@@ -4785,11 +4834,11 @@ msgstr "選択する動作"
 
 #: ../src/dialog_styling_assistant.cpp:113 ../src/dialog_translation.cpp:134
 msgid "Play &Audio"
-msgstr ""
+msgstr "音声を再生 (&A)"
 
 #: ../src/dialog_styling_assistant.cpp:117 ../src/dialog_translation.cpp:139
 msgid "Play &Video"
-msgstr ""
+msgstr "映像を再生 (&V)"
 
 #: ../src/dialog_styling_assistant.cpp:175
 msgid "styling assistant"
@@ -4809,7 +4858,7 @@ msgstr "コメント行の行頭文字 :"
 
 #: ../src/dialog_text_import.cpp:61
 msgid "Include blank lines"
-msgstr ""
+msgstr "空白行を含める"
 
 #: ../src/dialog_timing_processor.cpp:157
 msgid "Apply to styles"
@@ -4829,7 +4878,7 @@ msgstr "すべてのスタイルを解除"
 
 #: ../src/dialog_timing_processor.cpp:170
 msgid "Affect &selection only"
-msgstr ""
+msgstr "選択範囲のみ適用する (&S)"
 
 #: ../src/dialog_timing_processor.cpp:175
 msgid "Lead-in/Lead-out"
@@ -4837,7 +4886,7 @@ msgstr "リードイン/リードアウト"
 
 #: ../src/dialog_timing_processor.cpp:177
 msgid "Add lead &in:"
-msgstr ""
+msgstr "リードインを追加 (&I):"
 
 #: ../src/dialog_timing_processor.cpp:179
 msgid "Enable adding of lead-ins to lines"
@@ -4849,7 +4898,7 @@ msgstr "リードインに追加する時間を指定 単位ms(ミリセコン�
 
 #: ../src/dialog_timing_processor.cpp:182
 msgid "Add lead &out:"
-msgstr ""
+msgstr "リードアウトを追加 (&O):"
 
 #: ../src/dialog_timing_processor.cpp:184
 msgid "Enable adding of lead-outs to lines"
@@ -4865,7 +4914,7 @@ msgstr "隣接行の連続化"
 
 #: ../src/dialog_timing_processor.cpp:192
 msgid "&Enable"
-msgstr ""
+msgstr "有効にする (&E)"
 
 #: ../src/dialog_timing_processor.cpp:194
 msgid ""
@@ -4875,7 +4924,7 @@ msgstr "間隔の離れた隣り合う字幕行のタイミングを修正し字
 
 #: ../src/dialog_timing_processor.cpp:197
 msgid "Max gap:"
-msgstr ""
+msgstr "最大ギャップ:"
 
 #: ../src/dialog_timing_processor.cpp:198
 msgid ""
@@ -4887,13 +4936,14 @@ msgstr ""
 
 #: ../src/dialog_timing_processor.cpp:199
 msgid "Max overlap:"
-msgstr ""
+msgstr "最大オーバーラップ:"
 
 #: ../src/dialog_timing_processor.cpp:200
 msgid ""
 "Maximum overlap between the end and start time for two subtitles to be made "
 "continuous, in milliseconds"
 msgstr ""
+"2つの字幕を連続させるための終了時間と開始時間の最大オーバーラップ（ミリ秒）"
 
 #: ../src/dialog_timing_processor.cpp:203
 msgid ""
@@ -4901,6 +4951,8 @@ msgid ""
 "extend or shrink start time of the second line; if totally to right, it will "
 "extend or shrink the end time of the first line."
 msgstr ""
+"行の隣接の設定方法を設定します。完全に左に設定すると、2行目の開始時間を延長ま"
+"たは短縮します。完全に右に設定すると、1行目の終了時間を延長または短縮します。"
 
 #: ../src/dialog_timing_processor.cpp:206
 msgid "Bias: Start <- "
@@ -4916,7 +4968,7 @@ msgstr "キーフレームに同期"
 
 #: ../src/dialog_timing_processor.cpp:220
 msgid "E&nable"
-msgstr ""
+msgstr "有効にする (&N)"
 
 #: ../src/dialog_timing_processor.cpp:221
 msgid ""
@@ -4935,6 +4987,8 @@ msgid ""
 "Threshold for 'before start' distance, that is, how many milliseconds a "
 "subtitle must start before a keyframe to snap to it"
 msgstr ""
+"「開始前」距離のしきい値。つまり、字幕がキーフレームにスナップするためにキー"
+"フレームの何ミリ秒前に開始する必要があるか"
 
 #: ../src/dialog_timing_processor.cpp:235
 msgid "Starts after thres.:"
@@ -4945,6 +4999,8 @@ msgid ""
 "Threshold for 'after start' distance, that is, how many milliseconds a "
 "subtitle must start after a keyframe to snap to it"
 msgstr ""
+"「開始後」距離のしきい値。つまり、字幕がキーフレームにスナップするためにキー"
+"フレームの何ミリ秒後に開始する必要があるか"
 
 #: ../src/dialog_timing_processor.cpp:240
 msgid "Ends before thres.:"
@@ -4955,6 +5011,8 @@ msgid ""
 "Threshold for 'before end' distance, that is, how many milliseconds a "
 "subtitle must end before a keyframe to snap to it"
 msgstr ""
+"「終了前」距離のしきい値。つまり、字幕がキーフレームにスナップするためにキー"
+"フレームの何ミリ秒前に終了する必要があるか"
 
 #: ../src/dialog_timing_processor.cpp:243
 msgid "Ends after thres.:"
@@ -4965,6 +5023,8 @@ msgid ""
 "Threshold for 'after end' distance, that is, how many milliseconds a "
 "subtitle must end after a keyframe to snap to it"
 msgstr ""
+"「終了後」距離のしきい値。つまり、字幕がキーフレームにスナップするためにキー"
+"フレームの何ミリ秒後に終了する必要があるか"
 
 #: ../src/dialog_timing_processor.cpp:352
 #, c-format
@@ -4994,11 +5054,11 @@ msgstr "オリジナルをコピー"
 
 #: ../src/dialog_translation.cpp:121
 msgid "Delete line"
-msgstr ""
+msgstr "行を削除"
 
 #: ../src/dialog_translation.cpp:124
 msgid "Enable &preview"
-msgstr ""
+msgstr "プレビューを有効にする (&P)"
 
 #: ../src/dialog_translation.cpp:181 ../src/dialog_translation.cpp:281
 msgid "No more lines to translate."
@@ -5019,7 +5079,7 @@ msgstr "Aegisubバージョンチェッカー"
 
 #: ../src/dialog_version_check.cpp:115
 msgid "&Auto Check for Updates"
-msgstr ""
+msgstr "更新を自動的に確認する (&A)"
 
 #: ../src/dialog_version_check.cpp:120
 msgid "Remind me again in a &week"
@@ -5027,12 +5087,12 @@ msgstr "また一週間後に通知する (&W)"
 
 #: ../src/dialog_version_check.cpp:295
 msgid "Curl could not be initialized."
-msgstr ""
+msgstr "Curlを初期化できませんでした。"
 
 #: ../src/dialog_version_check.cpp:317
 #, c-format
 msgid "Checking for updates failed: %s."
-msgstr ""
+msgstr "更新の確認に失敗しました: %s。"
 
 #: ../src/dialog_version_check.cpp:345
 msgid "An update to Aegisub was found."
@@ -5070,7 +5130,7 @@ msgid "Video Details"
 msgstr "映像の詳細"
 
 #: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:204
-#: ../src/preferences.cpp:481 default_hotkey.json:315
+#: ../src/preferences.cpp:505 default_hotkey.json:315
 msgid "Video"
 msgstr "映像"
 
@@ -5090,22 +5150,144 @@ msgstr "解像度 :"
 #, c-format
 msgid "%d frame (%s)"
 msgid_plural "%d frames (%s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d フレーム (%s)"
 
 #: ../src/dialog_video_details.cpp:66
 msgid "Length:"
 msgstr "映像の長さ :"
 
 #: ../src/dialog_video_details.cpp:68
+msgid "Actual color matrix:"
+msgstr "実際のカラーマトリックス:"
+
+#: ../src/dialog_video_details.cpp:69
+msgid "Forced color matrix:"
+msgstr "強制されたカラーマトリックス:"
+
+#: ../src/dialog_video_details.cpp:70
+msgid "Actual color range:"
+msgstr "実際のカラーレンジ:"
+
+#: ../src/dialog_video_details.cpp:71
+msgid "Forced color range:"
+msgstr "強制されたカラーレンジ:"
+
+#: ../src/dialog_video_details.cpp:72
 msgid "Decoder:"
 msgstr "デコーダー :"
 
-#: ../src/dialog_video_properties.cpp:44
+#: ../src/dialog_video_properties.cpp:135
+#, c-format
+msgid ""
+"The video you have loaded has no specified color matrix. Aegisub will guess "
+"the color matrix to be %s, but there is no guarantee that other programs "
+"will guess the same matrix. This may make the video appear with different "
+"colors in different media players and can prevent subtitle colors from "
+"matching video colors.\n"
+" \n"
+"Consider tagging your video with a color matrix to ensure that your video "
+"displays consistently in all players and that subtitle colors can reliably "
+"match video colors."
+msgstr ""
+"読み込んだ映像にはカラーマトリックスが指定されていません。Aegisubはカラーマト"
+"リックスを %s と推測しますが、他のプログラムが同じマトリックスを推測する保証"
+"はありません。これにより、異なるメディアプレーヤーで映像の色が異なって見え、"
+"字幕の色が映像の色と一致しなくなる可能性があります。\n"
+" \n"
+"すべてのプレーヤーで映像が一貫して表示され、字幕の色が映像の色と確実に一致す"
+"るように、映像にカラーマトリックスをタグ付けすることを検討してください。"
+
+#: ../src/dialog_video_properties.cpp:140
+msgid "Untagged video"
+msgstr "タグ付けされていない映像"
+
+#: ../src/dialog_video_properties.cpp:145
+msgid ""
+"The video you have loaded has HDR and/or WCG colors. While ordinary dialogue "
+"subtitles will work fine on such videos, matching video colors using "
+"subtitles will not be possible on HDR and/or WCG footage."
+msgstr ""
+"読み込んだ映像にはHDRおよび/またはWCGカラーが含まれています。このような映像で"
+"も通常の会話字幕は機能しますが、字幕を使用して映像の色を合わせることは、HDRお"
+"よび/またはWCGフッテージでは不可能です。"
+
+#: ../src/dialog_video_properties.cpp:148
+msgid "HDR and/or WCG video"
+msgstr "HDRおよび/またはWCG映像"
+
+#: ../src/dialog_video_properties.cpp:161
+#, c-format
+msgid ""
+"The current subtitle file has no YCbCr Matrix set.\n"
+"\n"
+"If you plan to use this subtitle file on this newly loaded video file,\n"
+"you should set the subtitle file's YCbCr Matrix to the video's color space "
+"(\"%s\").\n"
+"\n"
+"If you plan to use a different video file, you may want to\n"
+"leave the YCbCr Matrix unset until you load the correct video file.\n"
+"\n"
+"This prompt can be configured in the preferences."
+msgstr ""
+"現在の字幕ファイルにはYCbCrマトリックスが設定されていません。\n"
+"\n"
+"この字幕ファイルを新しく読み込んだ映像ファイルで使用する予定がある場合は、\n"
+"字幕ファイルのYCbCrマトリックスを映像の色空間 (\"%s\") に設定する必要がありま"
+"す。\n"
+"\n"
+"別の映像ファイルを使用する予定がある場合は、\n"
+"正しい映像ファイルを読み込むまでYCbCrマトリックスを未設定のままにしておくとよ"
+"いでしょう。\n"
+"\n"
+"このプロンプトは設定で構成できます。"
+
+#: ../src/dialog_video_properties.cpp:166
+msgid "Set script's YCbCr Matrix?"
+msgstr "スクリプトのYCbCrマトリックスを設定しますか？"
+
+#: ../src/dialog_video_properties.cpp:167
+msgid "Leave YCbCr Matrix unset"
+msgstr "YCbCrマトリックスを未設定のままにする"
+
+#: ../src/dialog_video_properties.cpp:167
+#: ../src/dialog_video_properties.cpp:226
+#, c-format
+msgid "Set script's YCbCr Matrix to the video's (\"%s\")"
+msgstr "スクリプトのYCbCrマトリックスを映像のマトリックス (\"%s\") に設定する"
+
+#: ../src/dialog_video_properties.cpp:221
+#, c-format
+msgid ""
+"This video's recommended YCbCr Matrix (\"%s\") differs from the subtitle "
+"file's YCbCr Matrix (\"%s\").\n"
+"\n"
+"If this new video's colors look identical to the video the subtitle file was "
+"originally authored for,\n"
+"then the subtitle file's YCbCr Matrix should be set to the video's YCbCr "
+"Matrix."
+msgstr ""
+"この映像の推奨されるYCbCrマトリックス (\"%s\") は、字幕ファイルのYCbCrマト"
+"リックス (\"%s\") と異なります。\n"
+"\n"
+"この新しい映像の色が、字幕ファイルが元々作成された映像とまったく同じに見える"
+"場合は、\n"
+"字幕ファイルのYCbCrマトリックスを映像のYCbCrマトリックスに設定する必要があり"
+"ます。"
+
+#: ../src/dialog_video_properties.cpp:225
+msgid "YCbCr Matrix mismatch"
+msgstr "YCbCrマトリックスの不一致"
+
+#: ../src/dialog_video_properties.cpp:226
+#, c-format
+msgid "Leave script's YCbCr Matrix as it is (\"%s\")"
+msgstr "スクリプトのYCbCrマトリックスをそのままにしておく (\"%s\")"
+
+#: ../src/dialog_video_properties.cpp:257
 msgid "Resolution mismatch"
 msgstr "映像と字幕の解像度が違います"
 
-#: ../src/dialog_video_properties.cpp:47
+#: ../src/dialog_video_properties.cpp:260
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
@@ -5123,29 +5305,151 @@ msgstr ""
 "\n"
 "字幕ファイルの解像度を、動画ファイルから取得された解像度に置き換えますか？"
 
-#: ../src/dialog_video_properties.cpp:58 ../src/dialog_video_properties.cpp:67
-msgid "Set to video resolution"
-msgstr ""
+#: ../src/dialog_video_properties.cpp:271
+#: ../src/dialog_video_properties.cpp:280
+msgid "Leave resolution as it is"
+msgstr "解像度をそのままにしておく"
 
-#: ../src/dialog_video_properties.cpp:59
+#: ../src/dialog_video_properties.cpp:272
 msgid "Resample script (stretch to new aspect ratio)"
-msgstr ""
+msgstr "スクリプトをリサンプルする (新しいアスペクト比に合わせて引き伸ばす)"
 
-#: ../src/dialog_video_properties.cpp:60
+#: ../src/dialog_video_properties.cpp:273
 msgid "Resample script (add borders)"
-msgstr ""
+msgstr "スクリプトをリサンプルする (ボーダーを追加する)"
 
-#: ../src/dialog_video_properties.cpp:61
+#: ../src/dialog_video_properties.cpp:274
 msgid "Resample script (remove borders)"
-msgstr ""
+msgstr "スクリプトをリサンプルする (ボーダーを削除する)"
 
-#: ../src/dialog_video_properties.cpp:68
+#: ../src/dialog_video_properties.cpp:281
 msgid "Resample script"
-msgstr ""
+msgstr "スクリプトをリサンプルする"
 
-#: ../src/dialog_video_properties.cpp:168
-msgid "change script resolution"
+#: ../src/dialog_video_properties.cpp:389
+#, c-format
+msgid ""
+"The current subtitle file has no layout resolution set.\n"
+"\n"
+"If you plan to use this subtitle file on this newly loaded video file,\n"
+"you should set the subtitle file's layout resolution to the video's display "
+"resolution.\n"
+"\n"
+"If you plan to use a different video file, you may want to leave\n"
+"the layout resolution unset until you load the correct video file.\n"
+"\n"
+"If you are adapting an existing old subtitle file that does not yet have\n"
+"a layout resolution set, you should set its layout resolution to the "
+"resolution\n"
+"of the video the subtitle file was intended to be played back on.\n"
+"Often, this is the same as the file's script resolution. (%d × %d)\n"
+"\n"
+"This prompt can be configured in the preferences."
 msgstr ""
+"現在の字幕ファイルにはレイアウト解像度が設定されていません。\n"
+"\n"
+"この字幕ファイルを新しく読み込んだ映像ファイルで使用する予定がある場合は、\n"
+"字幕ファイルのレイアウト解像度を映像の表示解像度に設定する必要があります。\n"
+"\n"
+"別の映像ファイルを使用する予定がある場合は、\n"
+"正しい映像ファイルを読み込むまでレイアウト解像度を未設定のままにしておくこと"
+"をお勧めします。\n"
+"\n"
+"レイアウト解像度がまだ設定されていない既存の古い字幕ファイルを適応させている"
+"場合は、\n"
+"字幕ファイルを再生することを目的とした映像の解像度にレイアウト解像度を設定す"
+"る必要があります。\n"
+"多くの場合、これはファイルのスクリプト解像度と同じです。(%d × %d)\n"
+"\n"
+"このプロンプトは設定で構成できます。"
+
+#: ../src/dialog_video_properties.cpp:403
+msgid "Set script's layout resolution?"
+msgstr "スクリプトのレイアウト解像度を設定しますか？"
+
+#: ../src/dialog_video_properties.cpp:404
+msgid "Leave layout resolution unset"
+msgstr "レイアウト解像度を未設定のままにする"
+
+#: ../src/dialog_video_properties.cpp:405
+#: ../src/dialog_video_properties.cpp:484
+#, c-format
+msgid "Set script's layout resolution to the video's (%d × %d)"
+msgstr "スクリプトのレイアウト解像度を映像の解像度 (%d × %d) に設定する"
+
+#: ../src/dialog_video_properties.cpp:406
+#, c-format
+msgid "Set script's layout resolution to its script resolution (%d × %d)"
+msgstr "スクリプトのレイアウト解像度をスクリプト解像度 (%d × %d) に設定する"
+
+#: ../src/dialog_video_properties.cpp:464
+#, c-format
+msgid ""
+"The resolution of the loaded video and the layout resolution specified for "
+"the subtitles don't match.\n"
+"\n"
+"Video resolution:    %d × %d\n"
+"Subtitle layout resolution:    %d × %d\n"
+"\n"
+"Usually, this is not an issue, and you may leave the subtitle file's layout "
+"resolution as it is.\n"
+"If your subtitle file does not contain any significant formatting and you "
+"now intend to perform\n"
+"formatting on the newly loaded video, you may want to set the script's "
+"layout resolution\n"
+"to the video's display resolution."
+msgstr ""
+"読み込まれた映像の解像度と字幕に指定されたレイアウト解像度が一致しません。\n"
+"\n"
+"映像の解像度:    %d × %d\n"
+"字幕のレイアウト解像度:    %d × %d\n"
+"\n"
+"通常、これは問題ではなく、字幕ファイルのレイアウト解像度をそのままにしておく"
+"ことができます。\n"
+"字幕ファイルに重要なフォーマットが含まれておらず、新しく読み込まれた映像で"
+"フォーマットを\n"
+"実行する予定がある場合は、スクリプトのレイアウト解像度を映像の表示解像度に\n"
+"設定することをお勧めします。"
+
+#: ../src/dialog_video_properties.cpp:475
+#, c-format
+msgid ""
+"The resolution of the loaded video and the layout resolution specified for "
+"the subtitles differ in aspect ratios.\n"
+"\n"
+"Video resolution:    %d × %d\n"
+"Subtitle layout resolution:    %d × %d\n"
+"\n"
+"Change layout resolution of subtitles to match video?"
+msgstr ""
+"読み込まれた映像の解像度と字幕ファイルに指定されたレイアウト解像度のアスペク"
+"ト比が異なります。\n"
+"\n"
+"映像の解像度:    %d × %d\n"
+"字幕のレイアウト解像度:    %d × %d\n"
+"\n"
+"字幕のレイアウト解像度を映像に合わせて変更しますか？"
+
+#: ../src/dialog_video_properties.cpp:483
+msgid "Layout resolution mismatch"
+msgstr "レイアウト解像度の不一致"
+
+#: ../src/dialog_video_properties.cpp:484
+#, c-format
+msgid "Leave layout resolution as it is (%d × %d)"
+msgstr "レイアウト解像度をそのままにしておく (%d × %d)"
+
+#: ../src/dialog_video_properties.cpp:509
+msgid "change ycbcr matrix"
+msgstr "ycbcrマトリックスの変更"
+
+#: ../src/dialog_video_properties.cpp:512
+msgid "change script resolution"
+msgstr "スクリプト解像度の変更"
+
+#: ../src/dialog_video_properties.cpp:515
+msgid "change layout resolution"
+msgstr "レイアウト解像度の変更"
 
 #: ../src/export_fixstyle.cpp:46
 msgid "Fix Styles"
@@ -5181,15 +5485,15 @@ msgstr ""
 
 #: ../src/export_framerate.cpp:92
 msgid "V&ariable"
-msgstr ""
+msgstr "可変 (&A)"
 
 #: ../src/export_framerate.cpp:96
 msgid "&Constant: "
-msgstr ""
+msgstr "固定 (&C): "
 
 #: ../src/export_framerate.cpp:108
 msgid "&Reverse transformation"
-msgstr ""
+msgstr "変換を逆転 (&R)"
 
 #: ../src/export_framerate.cpp:116
 msgid "Input framerate: "
@@ -5215,91 +5519,95 @@ msgstr "トラック %02d: %s"
 #: ../src/ffmpegsource_common.cpp:131
 msgid "Multiple audio tracks detected, please choose the one you wish to load:"
 msgstr ""
+"複数の音声トラックが検出されました。読み込むトラックを選択してください:"
 
 #: ../src/ffmpegsource_common.cpp:131
 msgid "Multiple video tracks detected, please choose the one you wish to load:"
 msgstr ""
+"複数の映像トラックが検出されました。読み込むトラックを選択してください:"
 
 #: ../src/ffmpegsource_common.cpp:132
 msgid "Choose audio track"
-msgstr ""
+msgstr "音声トラックを選択"
 
 #: ../src/ffmpegsource_common.cpp:132
 msgid "Choose video track"
-msgstr ""
+msgstr "映像トラックを選択"
 
 #: ../src/font_file_lister.cpp:67
 #, c-format
 msgid "Style '%s' does not exist\n"
-msgstr ""
+msgstr "スタイル '%s' が存在しません\n"
 
 #: ../src/font_file_lister.cpp:154
 #, c-format
 msgid "Font '%s' is used in a drawing, but not in any text.\n"
 msgstr ""
+"フォント '%s' は描画で使用されていますが、テキストでは使用されていません。\n"
 
 #: ../src/font_file_lister.cpp:160
 #, c-format
 msgid "Could not find font '%s'\n"
-msgstr ""
+msgstr "フォント '%s' が見つかりませんでした\n"
 
 #: ../src/font_file_lister.cpp:168
 #, c-format
 msgid "Found '%s' at '%s'\n"
-msgstr ""
+msgstr "'%s' が '%s' で見つかりました\n"
 
 #: ../src/font_file_lister.cpp:174
 #, c-format
 msgid "'%s' does not have a bold variant.\n"
-msgstr ""
+msgstr "'%s' には太字のバリアントがありません。\n"
 
 #: ../src/font_file_lister.cpp:176
 #, c-format
 msgid "'%s' does not have an italic variant.\n"
-msgstr ""
+msgstr "'%s' には斜体のバリアントがありません。\n"
 
 #: ../src/font_file_lister.cpp:180
 #, c-format
 msgid "'%s' is missing %d glyphs used.\n"
-msgstr ""
+msgstr "'%s' には使用されている %d 個のグリフがありません。\n"
 
 #: ../src/font_file_lister.cpp:182
 #, c-format
 msgid "'%s' is missing the following glyphs used: %s\n"
-msgstr ""
+msgstr "'%s' には使用されている次のグリフがありません: %s\n"
 
 #: ../src/font_file_lister.cpp:193
 msgid "Used in styles:\n"
-msgstr ""
+msgstr "使用されているスタイル:\n"
 
 #: ../src/font_file_lister.cpp:199
 msgid "Used on lines:"
-msgstr ""
+msgstr "使用されている行:"
 
 #: ../src/font_file_lister.cpp:211
 msgid "Parsing file\n"
-msgstr ""
+msgstr "ファイルを解析中\n"
 
 #: ../src/font_file_lister.cpp:225
 msgid "Searching for font files\n"
-msgstr ""
+msgstr "フォントファイルを検索中\n"
 
 #: ../src/font_file_lister.cpp:227
 msgid ""
 "Done\n"
 "\n"
 msgstr ""
+"完了\n"
+"\n"
 
 #: ../src/font_file_lister.cpp:234
 msgid "All fonts found.\n"
-msgstr ""
+msgstr "すべてのフォントが見つかりました。\n"
 
 #: ../src/font_file_lister.cpp:236
 #, c-format
 msgid "One font could not be found\n"
 msgid_plural "%d fonts could not be found.\n"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 個のフォントが見つかりませんでした\n"
 
 #: ../src/font_file_lister.cpp:239
 #, c-format
@@ -5307,11 +5615,12 @@ msgid "One font was found, but was missing glyphs used in the script.\n"
 msgid_plural ""
 "%d fonts were found, but were missing glyphs used in the script.\n"
 msgstr[0] ""
-msgstr[1] ""
+"%d 個のフォントが見つかりましたが、スクリプトで使用されているグリフがありませ"
+"ん。\n"
 
 #: ../src/font_file_lister_fontconfig.cpp:55
 msgid "Updating font cache\n"
-msgstr ""
+msgstr "フォントキャッシュを更新中\n"
 
 #: ../src/grid_column.cpp:105
 msgid "#"
@@ -5327,35 +5636,35 @@ msgstr "L"
 
 #: ../src/grid_column.cpp:153
 msgid "Start"
-msgstr "Start"
+msgstr "開始"
 
 #: ../src/grid_column.cpp:171
 msgid "End"
-msgstr "End"
+msgstr "終了"
 
 #: ../src/grid_column.cpp:266
 msgid "Left Margin"
-msgstr ""
+msgstr "左マージン"
 
 #: ../src/grid_column.cpp:272
 msgid "Right Margin"
-msgstr ""
+msgstr "右マージン"
 
 #: ../src/grid_column.cpp:278
 msgid "Vertical Margin"
-msgstr ""
+msgstr "垂直マージン"
 
 #: ../src/grid_column.cpp:296
 msgid "CPS"
-msgstr ""
+msgstr "文字/秒"
 
 #: ../src/grid_column.cpp:297
 msgid "Characters Per Second"
-msgstr ""
+msgstr "1秒あたりの文字数"
 
 #: ../src/hotkey.cpp:261
 msgid "Invalid command name for hotkey"
-msgstr ""
+msgstr "ホットキーのコマンド名が無効です"
 
 #: ../src/main.cpp:202
 #, c-format
@@ -5363,6 +5672,8 @@ msgid ""
 "Configuration file is invalid. Error reported:\n"
 "%s"
 msgstr ""
+"設定ファイルが無効です。報告されたエラー:\n"
+"%s"
 
 #: ../src/main.cpp:266
 #, c-format
@@ -5375,6 +5686,13 @@ msgid ""
 "\n"
 "Aegisub will now close."
 msgstr ""
+"Aegisub がクラッシュしました！\n"
+"\n"
+"ファイルのコピーを以下の場所に保存しようとしました:\n"
+"\n"
+"%s\n"
+"\n"
+"Aegisub を終了します。"
 
 #: ../src/main.cpp:295
 msgid "Check for updates?"
@@ -5390,19 +5708,19 @@ msgstr ""
 
 #: ../src/main.cpp:301
 msgid "Error saving config file"
-msgstr ""
+msgstr "設定ファイルの保存中にエラーが発生しました"
 
 #: ../src/main.cpp:317 ../src/main.cpp:321 ../src/main.cpp:326
 msgid "Fatal error while initializing"
-msgstr ""
+msgstr "初期化中に致命的なエラーが発生しました"
 
 #: ../src/main.cpp:326
 msgid "Unhandled exception"
-msgstr ""
+msgstr "未処理の例外"
 
 #: ../src/main.cpp:414 ../src/main.cpp:417
 msgid "Program error"
-msgstr ""
+msgstr "プログラムエラー"
 
 #: ../src/main.cpp:417
 #, c-format
@@ -5411,6 +5729,9 @@ msgid ""
 "\n"
 "The last startup step attempted was: %s."
 msgstr ""
+"Aegisub の起動中にクラッシュしました！\n"
+"\n"
+"試行された最後の起動ステップ: %s。"
 
 #: ../src/main.cpp:431
 #, c-format
@@ -5420,10 +5741,14 @@ msgid ""
 "\n"
 "Error Message: %s"
 msgstr ""
+"予期しないエラーが発生しました。作業を保存して Aegisub を再起動してくださ"
+"い。\n"
+"\n"
+"エラーメッセージ: %s"
 
 #: ../src/main.cpp:432
 msgid "Exception in event handler"
-msgstr ""
+msgstr "イベントハンドラーの例外"
 
 #: ../src/menu.cpp:96
 msgid "Empty"
@@ -5431,7 +5756,7 @@ msgstr "空"
 
 #: ../src/menu.cpp:235
 msgid "&Recent"
-msgstr ""
+msgstr "最近開いたファイル (&R)"
 
 #: ../src/menu.cpp:467
 msgid "No Automation macros loaded"
@@ -5439,11 +5764,11 @@ msgstr "オートメーション用マクロは読み込みできません"
 
 #: ../src/mkv_wrap.cpp:246
 msgid "Choose which track to read:"
-msgstr ""
+msgstr "読み込むトラックを選択してください:"
 
 #: ../src/mkv_wrap.cpp:246
 msgid "Multiple subtitle tracks found"
-msgstr ""
+msgstr "複数の字幕トラックが見つかりました"
 
 #: ../src/mkv_wrap.cpp:291
 msgid "Parsing Matroska"
@@ -5454,61 +5779,65 @@ msgid "Reading subtitles from Matroska file."
 msgstr "Matroskaファイルから字幕データを読み込み中"
 
 #: ../src/preferences.cpp:98 ../src/preferences.cpp:100
-#: ../src/preferences.cpp:378 ../src/preferences.cpp:399
+#: ../src/preferences.cpp:402 ../src/preferences.cpp:423
 msgid "General"
 msgstr "一般"
 
 #: ../src/preferences.cpp:101
 msgid "Check for updates on startup"
-msgstr ""
+msgstr "起動時に更新を確認する"
 
 #: ../src/preferences.cpp:102
 msgid "Show main toolbar"
-msgstr ""
+msgstr "メインツールバーを表示する"
 
 #: ../src/preferences.cpp:103
 msgid "Save UI state in subtitles files"
-msgstr ""
+msgstr "字幕ファイルにUIの状態を保存する"
 
 #: ../src/preferences.cpp:106
 msgid "Toolbar Icon Size"
-msgstr ""
+msgstr "ツールバーのアイコンサイズ"
 
-#: ../src/preferences.cpp:107 default_hotkey.json:2
+#: ../src/preferences.cpp:107 ../src/preferences.cpp:250 default_hotkey.json:2
 msgid "Always"
 msgstr "いつも"
 
 #: ../src/preferences.cpp:107 ../src/preferences.cpp:240
+#: ../src/preferences.cpp:246 ../src/preferences.cpp:258
+#: ../src/preferences.cpp:262
 msgid "Ask"
 msgstr "問い合わせ"
 
 #: ../src/preferences.cpp:107 ../src/preferences.cpp:240
+#: ../src/preferences.cpp:246 ../src/preferences.cpp:250
+#: ../src/preferences.cpp:258 ../src/preferences.cpp:262
 msgid "Never"
 msgstr "しない"
 
 #: ../src/preferences.cpp:109
 msgid "Automatically load linked files"
-msgstr ""
+msgstr "リンクされたファイルを自動的に読み込む"
 
 #: ../src/preferences.cpp:110
 msgid "Undo Levels"
-msgstr ""
+msgstr "元に戻すのレベル"
 
 #: ../src/preferences.cpp:112
 msgid "Recently Used Lists"
-msgstr ""
+msgstr "最近使用したファイルのリスト"
 
 #: ../src/preferences.cpp:114
 msgid "Find/Replace"
-msgstr ""
+msgstr "検索/置換"
 
 #: ../src/preferences.cpp:120
 msgid "Default styles"
-msgstr ""
+msgstr "デフォルトスタイル"
 
 #: ../src/preferences.cpp:122
 msgid "Default style catalogs"
-msgstr ""
+msgstr "デフォルトスタイルカタログ"
 
 #: ../src/preferences.cpp:126
 msgid ""
@@ -5517,28 +5846,32 @@ msgid ""
 "\n"
 "You can set up style catalogs in the Style Manager."
 msgstr ""
+"選択したスタイルカタログは、新しいファイルを開始したり、さまざまな形式のファ"
+"イルをインポートしたりするときに読み込まれます。\n"
+"\n"
+"スタイルカタログはスタイルマネージャーで設定できます。"
 
 #: ../src/preferences.cpp:153
 msgid "New files"
-msgstr ""
+msgstr "新規ファイル"
 
 #: ../src/preferences.cpp:154
 msgid "MicroDVD import"
-msgstr ""
+msgstr "MicroDVD インポート"
 
 #: ../src/preferences.cpp:155
 msgid "SRT import"
-msgstr ""
+msgstr "SRT インポート"
 
 #: ../src/preferences.cpp:156
 msgid "TTXT import"
-msgstr ""
+msgstr "TTXT インポート"
 
 #: ../src/preferences.cpp:157
 msgid "Plain text import"
-msgstr ""
+msgstr "プレーンテキスト インポート"
 
-#: ../src/preferences.cpp:164 ../src/preferences.cpp:414 default_hotkey.json:37
+#: ../src/preferences.cpp:164 ../src/preferences.cpp:438 default_hotkey.json:37
 msgid "Audio"
 msgstr "音声"
 
@@ -5548,11 +5881,11 @@ msgstr "マウスホイールでズームする"
 
 #: ../src/preferences.cpp:168
 msgid "Lock scroll on cursor"
-msgstr ""
+msgstr "カーソル位置へのスクロールをロックする"
 
 #: ../src/preferences.cpp:169
 msgid "Snap markers by default"
-msgstr ""
+msgstr "デフォルトでマーカーをスナップする"
 
 #: ../src/preferences.cpp:170
 msgid "Auto-focus on mouse over"
@@ -5560,35 +5893,35 @@ msgstr "オートフォーカスにマウスを置く"
 
 #: ../src/preferences.cpp:171
 msgid "Play audio when stepping in video"
-msgstr ""
+msgstr "映像のステップ移動時に音声を再生する"
 
 #: ../src/preferences.cpp:172
 msgid "Left-click-drag moves end marker"
-msgstr ""
+msgstr "左クリックのドラッグで終了マーカーを移動する"
 
 #: ../src/preferences.cpp:173
 msgid "Default timing length (ms)"
-msgstr ""
+msgstr "デフォルトのタイミングの長さ (ミリ秒)"
 
 #: ../src/preferences.cpp:174
 msgid "Default lead-in length (ms)"
-msgstr ""
+msgstr "デフォルトのリードインの長さ (ミリ秒)"
 
 #: ../src/preferences.cpp:175
 msgid "Default lead-out length (ms)"
-msgstr ""
+msgstr "デフォルトのリードアウトの長さ (ミリ秒)"
 
 #: ../src/preferences.cpp:177
 msgid "Marker drag-start sensitivity (px)"
-msgstr ""
+msgstr "マーカーのドラッグ開始感度 (ピクセル)"
 
 #: ../src/preferences.cpp:178
 msgid "Line boundary thickness (px)"
-msgstr ""
+msgstr "行境界の太さ (ピクセル)"
 
 #: ../src/preferences.cpp:179
 msgid "Maximum snap distance (px)"
-msgstr ""
+msgstr "最大スナップ距離 (ピクセル)"
 
 #: ../src/preferences.cpp:181
 msgid "Don't show"
@@ -5604,7 +5937,7 @@ msgstr "直前の字幕行のみ"
 
 #: ../src/preferences.cpp:181
 msgid "Show previous and next"
-msgstr ""
+msgstr "前後の字幕行を表示"
 
 #: ../src/preferences.cpp:183
 msgid "Show inactive lines"
@@ -5612,39 +5945,39 @@ msgstr "非アクティブ行の範囲を表示"
 
 #: ../src/preferences.cpp:185
 msgid "Include commented inactive lines"
-msgstr ""
+msgstr "コメントアウトされた非アクティブ行を含める"
 
 #: ../src/preferences.cpp:187
 msgid "Display Visual Options"
-msgstr ""
+msgstr "視覚的オプションの表示"
 
 #: ../src/preferences.cpp:188
 msgid "Keyframes in dialogue mode"
-msgstr ""
+msgstr "ダイアログモードでのキーフレーム"
 
 #: ../src/preferences.cpp:189
 msgid "Keyframes in karaoke mode"
-msgstr ""
+msgstr "カラオケモードでのキーフレーム"
 
 #: ../src/preferences.cpp:190
 msgid "Cursor time"
-msgstr ""
+msgstr "カーソルの時間"
 
 #: ../src/preferences.cpp:191
 msgid "Video position"
-msgstr ""
+msgstr "映像の位置"
 
-#: ../src/preferences.cpp:192 ../src/preferences.cpp:294
+#: ../src/preferences.cpp:192 ../src/preferences.cpp:318
 msgid "Seconds boundaries"
-msgstr ""
+msgstr "秒の境界"
 
 #: ../src/preferences.cpp:194
 msgid "Waveform Style"
-msgstr ""
+msgstr "波形のスタイル"
 
 #: ../src/preferences.cpp:196
 msgid "Audio labels"
-msgstr ""
+msgstr "音声ラベル"
 
 #: ../src/preferences.cpp:207
 msgid "Show keyframes in slider"
@@ -5652,57 +5985,55 @@ msgstr "スライドバーにキーフレームの表示をする"
 
 #: ../src/preferences.cpp:209
 msgid "Only show visual tools when mouse is over video"
-msgstr ""
+msgstr "マウスが映像上にあるときのみ視覚的ツールを表示する"
 
 #: ../src/preferences.cpp:211
 msgid "Seek video to line start on selection change"
-msgstr ""
+msgstr "選択変更時に映像を行の開始位置にシークする"
 
 #: ../src/preferences.cpp:213
 msgid "Automatically open audio when opening video"
-msgstr ""
+msgstr "映像を開くときに自動的に音声を開く"
 
 #: ../src/preferences.cpp:216
 msgid "Does nothing"
-msgstr ""
+msgstr "何もしない"
 
 #: ../src/preferences.cpp:216
 msgid "Pans the video"
-msgstr ""
+msgstr "映像をパンする"
 
 #: ../src/preferences.cpp:216
 msgid "Pans the video (X/Y swapped)"
-msgstr ""
+msgstr "映像をパンする (X/Y を入れ替え)"
 
 #: ../src/preferences.cpp:216
 msgid "Resizes the video box"
-msgstr ""
+msgstr "映像ボックスのサイズを変更する"
 
 #: ../src/preferences.cpp:216
 msgid "Resizes the video box (reversed)"
-msgstr ""
+msgstr "映像ボックスのサイズを変更する (反転)"
 
 #: ../src/preferences.cpp:216
-#, fuzzy
-#| msgid "Zoom video in"
 msgid "Zooms the video"
-msgstr "映像をズームインします"
+msgstr "映像をズームする"
 
 #: ../src/preferences.cpp:216
 msgid "Zooms the video (reversed)"
-msgstr ""
+msgstr "映像をズームする (反転)"
 
 #: ../src/preferences.cpp:218
 msgid "Scrolling on the video display"
-msgstr ""
+msgstr "映像ディスプレイでのスクロール"
 
 #: ../src/preferences.cpp:219
 msgid "Ctrl+Scrolling on the video display"
-msgstr ""
+msgstr "映像ディスプレイでのCtrl+スクロール"
 
 #: ../src/preferences.cpp:220
 msgid "Shift+Scrolling on the video display"
-msgstr ""
+msgstr "映像ディスプレイでのShift+スクロール"
 
 #: ../src/preferences.cpp:224
 msgid "Default Zoom"
@@ -5718,594 +6049,637 @@ msgstr "スクリーンショット保存パス "
 
 #: ../src/preferences.cpp:232
 msgid "Script Resolution"
-msgstr ""
+msgstr "スクリプト解像度"
 
 #: ../src/preferences.cpp:233
 msgid "Use resolution of first video opened"
-msgstr ""
+msgstr "最初に開いた映像の解像度を使用する"
 
 #: ../src/preferences.cpp:236
 msgid "Default width"
-msgstr ""
+msgstr "デフォルトの幅"
 
 #: ../src/preferences.cpp:238
 msgid "Default height"
-msgstr ""
+msgstr "デフォルトの高さ"
 
 #: ../src/preferences.cpp:240
 msgid "Always resample"
-msgstr ""
-
-#: ../src/preferences.cpp:240
-msgid "Always set"
-msgstr ""
+msgstr "常にリサンプルする"
 
 #: ../src/preferences.cpp:242
 msgid "Match video resolution on open"
-msgstr ""
+msgstr "開くときに映像の解像度に合わせる"
 
-#: ../src/preferences.cpp:249
-msgid "Interface"
-msgstr ""
+#: ../src/preferences.cpp:244
+msgid "Layout Resolution"
+msgstr "レイアウト解像度"
 
-#: ../src/preferences.cpp:251
-msgid "Edit Box"
-msgstr ""
+#: ../src/preferences.cpp:246 ../src/preferences.cpp:258
+#: ../src/preferences.cpp:262
+msgid "Always set"
+msgstr "常に設定する"
+
+#: ../src/preferences.cpp:246
+msgid "Always set from script resolution"
+msgstr "常にスクリプト解像度から設定する"
+
+#: ../src/preferences.cpp:248
+msgid "Set layout resolution from video on open"
+msgstr "開くときに映像からレイアウト解像度を設定する"
+
+#: ../src/preferences.cpp:250
+msgid "When aspect ratio changes"
+msgstr "アスペクト比が変更されたとき"
 
 #: ../src/preferences.cpp:252
+msgid "Prompt on layout resolution mismatch"
+msgstr "レイアウト解像度の不一致時にプロンプトを表示する"
+
+#: ../src/preferences.cpp:254
+msgid "YCbCr Matrix"
+msgstr "YCbCrマトリックス"
+
+#: ../src/preferences.cpp:255
+msgid "Warn on untagged video color matrix"
+msgstr "タグ付けされていない映像カラーマトリックスで警告する"
+
+#: ../src/preferences.cpp:256
+msgid "Warn on HDR/WCG video"
+msgstr "HDR/WCG映像で警告する"
+
+#: ../src/preferences.cpp:260
+msgid "Use video's YCbCr Matrix when script has no matrix set"
+msgstr ""
+"スクリプトにマトリックスが設定されていない場合は映像のYCbCrマトリックスを使用"
+"する"
+
+#: ../src/preferences.cpp:264
+msgid "Match video's YCbCr Matrix on open"
+msgstr "開くときに映像のYCbCrマトリックスに合わせる"
+
+#: ../src/preferences.cpp:271
+msgid "Interface"
+msgstr "インターフェース"
+
+#: ../src/preferences.cpp:273
+msgid "Edit Box"
+msgstr "編集ボックス"
+
+#: ../src/preferences.cpp:274
 msgid "Enable call tips"
 msgstr "タグ入力補助を表示する"
 
-#: ../src/preferences.cpp:253
+#: ../src/preferences.cpp:275
 msgid "Overwrite in time boxes"
-msgstr ""
+msgstr "時間ボックスで上書きする"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:276
 msgid "Shift+Enter adds \\n"
-msgstr ""
+msgstr "Shift+Enter で \\n を追加する"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:277
 msgid "Enable syntax highlighting"
 msgstr "タグをハイライト表示する"
 
-#: ../src/preferences.cpp:256
+#: ../src/preferences.cpp:278
 msgid "Dictionaries path"
-msgstr ""
+msgstr "辞書のパス"
 
-#: ../src/preferences.cpp:259
+#: ../src/preferences.cpp:281
 msgid "Character Counter"
-msgstr ""
+msgstr "文字数カウンター"
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:282
 msgid "Maximum characters per line"
-msgstr ""
+msgstr "1行あたりの最大文字数"
 
-#: ../src/preferences.cpp:261
+#: ../src/preferences.cpp:283
 msgid "Characters Per Second Warning Threshold"
-msgstr ""
+msgstr "1秒あたりの文字数の警告しきい値"
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:284
 msgid "Characters Per Second Error Threshold"
-msgstr ""
+msgstr "1秒あたりの文字数のエラーしきい値"
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:285
 msgid "Ignore whitespace"
-msgstr ""
+msgstr "空白を無視する"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:286
 msgid "Ignore punctuation"
-msgstr ""
-
-#: ../src/preferences.cpp:266
-msgid "Grid"
-msgstr ""
-
-#: ../src/preferences.cpp:267
-msgid "Focus grid on click"
-msgstr ""
-
-#: ../src/preferences.cpp:268
-msgid "Highlight visible subtitles"
-msgstr ""
-
-#: ../src/preferences.cpp:269
-msgid "Hide overrides symbol"
-msgstr ""
-
-#: ../src/preferences.cpp:273
-msgid "Skip over whitespace"
-msgstr ""
+msgstr "句読点を無視する"
 
 #: ../src/preferences.cpp:288
-msgid "Audio Display"
-msgstr ""
+msgid "Grid"
+msgstr "グリッド"
 
 #: ../src/preferences.cpp:289
+msgid "Focus grid on click"
+msgstr "クリック時にグリッドにフォーカスする"
+
+#: ../src/preferences.cpp:290
+msgid "Highlight visible subtitles"
+msgstr "表示されている字幕をハイライトする"
+
+#: ../src/preferences.cpp:291
+msgid "Hide overrides symbol"
+msgstr "オーバーライドの記号を隠す"
+
+#: ../src/preferences.cpp:295
+msgid "Skip over whitespace"
+msgstr "空白をスキップする"
+
+#: ../src/preferences.cpp:310
+msgid "Audio Display"
+msgstr "音声表示"
+
+#: ../src/preferences.cpp:311
 msgid "Play cursor"
 msgstr "再生カーソル色"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:312
+msgid "Current frame range"
+msgstr "現在のフレーム範囲"
+
+#: ../src/preferences.cpp:313
+msgid "Previous frame range"
+msgstr "前のフレーム範囲"
+
+#: ../src/preferences.cpp:314
 msgid "Line boundary start"
-msgstr ""
+msgstr "行境界の開始"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:315
 msgid "Line boundary end"
-msgstr ""
+msgstr "行境界の終了"
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:316
 msgid "Line boundary inactive line"
-msgstr ""
+msgstr "非アクティブ行の行境界"
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:317
 msgid "Syllable boundaries"
-msgstr ""
+msgstr "シラブルの境界"
 
-#: ../src/preferences.cpp:296
+#: ../src/preferences.cpp:320
 msgid "Syntax Highlighting"
-msgstr ""
+msgstr "構文ハイライト"
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:321
 msgid "Background"
 msgstr "背景色"
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:322
 msgid "Normal"
 msgstr "Normal (標準)"
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:323
 msgid "Comments"
 msgstr "コメント"
 
-#: ../src/preferences.cpp:300
+#: ../src/preferences.cpp:324
 msgid "Drawing Commands"
-msgstr ""
+msgstr "描画コマンド"
 
-#: ../src/preferences.cpp:301
+#: ../src/preferences.cpp:325
 msgid "Drawing X Coords"
-msgstr ""
+msgstr "描画 X 座標"
 
-#: ../src/preferences.cpp:302
+#: ../src/preferences.cpp:326
 msgid "Drawing Y Coords"
-msgstr ""
+msgstr "描画 Y 座標"
 
-#: ../src/preferences.cpp:303
+#: ../src/preferences.cpp:327
 msgid "Underline Spline Endpoints"
-msgstr ""
+msgstr "スプラインの端点に下線を引く"
 
-#: ../src/preferences.cpp:305
+#: ../src/preferences.cpp:329
 msgid "Brackets"
 msgstr "波括弧"
 
-#: ../src/preferences.cpp:306
+#: ../src/preferences.cpp:330
 msgid "Slashes and Parentheses"
 msgstr "\\マークと丸括弧"
 
-#: ../src/preferences.cpp:307
+#: ../src/preferences.cpp:331
 msgid "Tags"
 msgstr "タグ"
 
-#: ../src/preferences.cpp:308
+#: ../src/preferences.cpp:332
 msgid "Parameters"
 msgstr "パラメーター(数値)"
 
-#: ../src/preferences.cpp:310
+#: ../src/preferences.cpp:334
 msgid "Error Background"
 msgstr "エラー時の背景"
 
-#: ../src/preferences.cpp:311
+#: ../src/preferences.cpp:335
 msgid "Line Break"
 msgstr "改行"
 
-#: ../src/preferences.cpp:312
+#: ../src/preferences.cpp:336
 msgid "Karaoke templates"
 msgstr "Karaoke テンプレート"
 
-#: ../src/preferences.cpp:313
+#: ../src/preferences.cpp:337
 msgid "Karaoke variables"
-msgstr ""
+msgstr "Karaoke 変数"
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:343
 msgid "Audio Color Schemes"
-msgstr ""
+msgstr "音声のカラースキーム"
 
-#: ../src/preferences.cpp:321 ../src/preferences.cpp:430
+#: ../src/preferences.cpp:345 ../src/preferences.cpp:454
 msgid "Spectrum"
-msgstr ""
+msgstr "スペクトラム"
 
-#: ../src/preferences.cpp:322
+#: ../src/preferences.cpp:346
 msgid "Waveform"
 msgstr "波形色"
 
-#: ../src/preferences.cpp:324 default_hotkey.json:262
+#: ../src/preferences.cpp:348 default_hotkey.json:262
 msgid "Subtitle Grid"
-msgstr ""
+msgstr "字幕グリッド"
 
-#: ../src/preferences.cpp:325
+#: ../src/preferences.cpp:349
 msgid "Standard foreground"
 msgstr "標準文字色"
 
-#: ../src/preferences.cpp:326
+#: ../src/preferences.cpp:350
 msgid "Standard background"
 msgstr "標準背景色"
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:351
 msgid "Selection foreground"
 msgstr "選択文字色"
 
-#: ../src/preferences.cpp:328
+#: ../src/preferences.cpp:352
 msgid "Selection background"
 msgstr "選択背景色"
 
-#: ../src/preferences.cpp:329
+#: ../src/preferences.cpp:353
 msgid "Collision foreground"
 msgstr "コリジョン文字色"
 
-#: ../src/preferences.cpp:330
+#: ../src/preferences.cpp:354
 msgid "In frame background"
-msgstr ""
+msgstr "フレーム内の背景色"
 
-#: ../src/preferences.cpp:331
+#: ../src/preferences.cpp:355
 msgid "Comment background"
 msgstr "コメント背景色"
 
-#: ../src/preferences.cpp:332
+#: ../src/preferences.cpp:356
 msgid "Selected comment background"
 msgstr "選択コメント背景色"
 
-#: ../src/preferences.cpp:333
+#: ../src/preferences.cpp:357
 msgid "Header background"
-msgstr ""
+msgstr "ヘッダーの背景色"
 
-#: ../src/preferences.cpp:334
+#: ../src/preferences.cpp:358
 msgid "Left Column"
 msgstr "行番号背景色"
 
-#: ../src/preferences.cpp:335
+#: ../src/preferences.cpp:359
 msgid "Active Line Border"
 msgstr "アクティブ行を囲う色"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:360
 msgid "Lines"
 msgstr "行間の区切り線"
 
-#: ../src/preferences.cpp:337
+#: ../src/preferences.cpp:361
 msgid "CPS Error"
-msgstr ""
+msgstr "文字/秒 エラー"
 
-#: ../src/preferences.cpp:339
+#: ../src/preferences.cpp:363
 msgid "Visual Typesetting Tools"
-msgstr ""
+msgstr "視覚的組版ツール"
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:364
 msgid "Primary Lines"
-msgstr ""
+msgstr "プライマリ線"
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:365
 msgid "Secondary Lines"
-msgstr ""
+msgstr "セカンダリ線"
 
-#: ../src/preferences.cpp:342
+#: ../src/preferences.cpp:366
 msgid "Primary Highlight"
-msgstr ""
+msgstr "プライマリハイライト"
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:367
 msgid "Secondary Highlight"
-msgstr ""
+msgstr "セカンダリハイライト"
 
-#: ../src/preferences.cpp:346
+#: ../src/preferences.cpp:370
 msgid "Visual Typesetting Tools Alpha"
-msgstr ""
+msgstr "視覚的組版ツールのアルファ値"
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:371
 msgid "Shaded Area"
-msgstr ""
+msgstr "網掛け領域"
 
-#: ../src/preferences.cpp:356
+#: ../src/preferences.cpp:380
 msgid "Backup"
-msgstr ""
+msgstr "バックアップ"
 
-#: ../src/preferences.cpp:358
+#: ../src/preferences.cpp:382
 msgid "Automatic Save"
-msgstr ""
+msgstr "自動保存"
 
-#: ../src/preferences.cpp:359 ../src/preferences.cpp:367
+#: ../src/preferences.cpp:383 ../src/preferences.cpp:391
 msgid "Enable"
 msgstr "有効"
 
-#: ../src/preferences.cpp:362
+#: ../src/preferences.cpp:386
 msgid "Interval in seconds"
-msgstr ""
+msgstr "間隔（秒）"
 
-#: ../src/preferences.cpp:363 ../src/preferences.cpp:369
-#: ../src/preferences.cpp:428
+#: ../src/preferences.cpp:387 ../src/preferences.cpp:393
+#: ../src/preferences.cpp:452
 msgid "Path"
-msgstr ""
+msgstr "パス"
 
-#: ../src/preferences.cpp:364
+#: ../src/preferences.cpp:388
 msgid "Autosave after every change"
-msgstr ""
+msgstr "変更のたびに自動保存する"
 
-#: ../src/preferences.cpp:366
+#: ../src/preferences.cpp:390
 msgid "Automatic Backup"
-msgstr ""
+msgstr "自動バックアップ"
 
-#: ../src/preferences.cpp:380
+#: ../src/preferences.cpp:404
 msgid "Base path"
 msgstr "基本的なパス"
 
-#: ../src/preferences.cpp:381
+#: ../src/preferences.cpp:405
 msgid "Include path"
 msgstr "含めるパス"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:406
 msgid "Auto-load path"
 msgstr "オートロードパス"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "0: Fatal"
 msgstr "0: 致命的"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "1: Error"
 msgstr "1: エラー"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "2: Warning"
 msgstr "2: 警告"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "3: Hint"
 msgstr "3: ヒント"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "4: Debug"
 msgstr "4: デバッグ"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:408
 msgid "5: Trace"
 msgstr "5: トレース"
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:410
 msgid "Trace level"
 msgstr "トレースレベル"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "All scripts"
 msgstr "すべてのスクリプト"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "Global autoload scripts"
 msgstr "オートロードスクリプト"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "No scripts"
 msgstr "読み込まない"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:412
 msgid "Subtitle-local scripts"
 msgstr "ローカル字幕スクリプト"
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:414
 msgid "Autoreload on Export"
 msgstr "エクスポート時のオートロード"
 
-#: ../src/preferences.cpp:397
+#: ../src/preferences.cpp:421
 msgid "Advanced"
 msgstr "高度な設定"
 
-#: ../src/preferences.cpp:401
+#: ../src/preferences.cpp:425
 msgid ""
 "Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
 msgstr ""
+"これらの設定を変更すると、バグやクラッシュが発生する可能性があります。内容を"
+"理解していない限り、触れないでください。"
 
-#: ../src/preferences.cpp:416 ../src/preferences.cpp:483
+#: ../src/preferences.cpp:440 ../src/preferences.cpp:507
 msgid "Expert"
-msgstr ""
+msgstr "エキスパート"
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:443
 msgid "Audio provider"
 msgstr "音声読み込みエンジン"
 
-#: ../src/preferences.cpp:422
+#: ../src/preferences.cpp:446
 msgid "Audio player"
 msgstr "音声再生デバイス"
 
-#: ../src/preferences.cpp:424
+#: ../src/preferences.cpp:448
 msgid "Cache"
-msgstr ""
+msgstr "キャッシュ"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:449
 msgid "Hard Disk"
 msgstr "ハードディスク"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:449
 msgid "None (NOT RECOMMENDED)"
 msgstr "しない (※非推奨※)"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:449
 msgid "RAM"
 msgstr "メモリー"
 
-#: ../src/preferences.cpp:427
+#: ../src/preferences.cpp:451
 msgid "Cache type"
 msgstr "キャッシュタイプ"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "Better quality"
 msgstr "最適品質"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "High quality"
 msgstr "高品質"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "Insane quality"
 msgstr "高精細品質"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:456
 msgid "Regular quality"
 msgstr "レギュラー品質"
 
-#: ../src/preferences.cpp:434
+#: ../src/preferences.cpp:458
 msgid "Quality"
-msgstr ""
+msgstr "品質"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Compressed"
-msgstr ""
+msgstr "圧縮"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Extended"
-msgstr ""
+msgstr "拡張"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Linear"
-msgstr ""
+msgstr "リニア"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Logarithmic"
-msgstr ""
+msgstr "対数"
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:460
 msgid "Medium"
-msgstr ""
+msgstr "中"
 
-#: ../src/preferences.cpp:438
+#: ../src/preferences.cpp:462
 msgid "Frequency mapping"
-msgstr ""
+msgstr "周波数マッピング"
 
-#: ../src/preferences.cpp:440
+#: ../src/preferences.cpp:464
 msgid "Cache memory max (MB)"
-msgstr ""
+msgstr "キャッシュメモリ最大 (MB)"
 
-#: ../src/preferences.cpp:446
+#: ../src/preferences.cpp:470
 msgid "Avisynth down-mixer"
 msgstr "音声ダウンミキサー"
 
-#: ../src/preferences.cpp:447
+#: ../src/preferences.cpp:471
 msgid "Force sample rate"
-msgstr ""
+msgstr "サンプルレートを強制"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Abort"
-msgstr ""
+msgstr "中止"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Ignore"
 msgstr "無視"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:477
 msgid "Stop"
-msgstr ""
+msgstr "停止"
 
-#: ../src/preferences.cpp:455
+#: ../src/preferences.cpp:479
 msgid "Audio indexing error handling mode"
-msgstr ""
+msgstr "音声インデックス作成エラーの処理モード"
 
-#: ../src/preferences.cpp:457
+#: ../src/preferences.cpp:481
 msgid "Always index all audio tracks"
-msgstr ""
-
-#: ../src/preferences.cpp:462
-msgid "Portaudio device"
-msgstr ""
-
-#: ../src/preferences.cpp:467
-msgid "OSS Device"
-msgstr ""
-
-#: ../src/preferences.cpp:472
-msgid "Buffer latency"
-msgstr ""
-
-#: ../src/preferences.cpp:473
-msgid "Buffer length"
-msgstr ""
+msgstr "常にすべての音声トラックのインデックスを作成する"
 
 #: ../src/preferences.cpp:486
+msgid "Portaudio device"
+msgstr "PortAudioデバイス"
+
+#: ../src/preferences.cpp:491
+msgid "OSS Device"
+msgstr "OSSデバイス"
+
+#: ../src/preferences.cpp:496
+msgid "Buffer latency"
+msgstr "バッファレイテンシ"
+
+#: ../src/preferences.cpp:497
+msgid "Buffer length"
+msgstr "バッファ長"
+
+#: ../src/preferences.cpp:510
 msgid "Video provider"
 msgstr "映像読み込みエンジン "
 
-#: ../src/preferences.cpp:489
+#: ../src/preferences.cpp:513
 msgid "Subtitles provider"
 msgstr "字幕レンダリングエンジン "
 
-#: ../src/preferences.cpp:493
+#: ../src/preferences.cpp:517
 msgid "Allow pre-2.56a Avisynth"
 msgstr "Avisynth Ver2.56a以前を使用"
 
-#: ../src/preferences.cpp:495
+#: ../src/preferences.cpp:519
 msgid "Avisynth memory limit"
 msgstr "Avisynth 最大使用メモリー量 (MB)"
 
-#: ../src/preferences.cpp:501
-#, fuzzy
-#| msgid "4: Debug"
+#: ../src/preferences.cpp:525
 msgid "Debug"
-msgstr "4: デバッグ"
+msgstr "デバッグ"
 
-#: ../src/preferences.cpp:501
-#, fuzzy
-#| msgid "0: Fatal"
+#: ../src/preferences.cpp:525
 msgid "Fatal"
-msgstr "0: 致命的"
+msgstr "致命的"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Info"
-msgstr ""
+msgstr "情報"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Panic"
-msgstr ""
+msgstr "パニック"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Quiet"
-msgstr ""
+msgstr "静か"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:525
 msgid "Verbose"
-msgstr ""
+msgstr "詳細"
 
-#: ../src/preferences.cpp:501 ../src/project.cpp:331
-#, fuzzy
-#| msgid "2: Warning"
+#: ../src/preferences.cpp:525 ../src/project.cpp:330
 msgid "Warning"
-msgstr "2: 警告"
+msgstr "警告"
 
-#: ../src/preferences.cpp:503
+#: ../src/preferences.cpp:527
 msgid "Debug log verbosity"
-msgstr ""
+msgstr "デバッグログの詳細度"
 
-#: ../src/preferences.cpp:505
+#: ../src/preferences.cpp:529
 msgid "Decoding threads"
-msgstr ""
+msgstr "デコードスレッド数"
 
-#: ../src/preferences.cpp:506
+#: ../src/preferences.cpp:530
 msgid "Enable unsafe seeking"
-msgstr ""
+msgstr "安全でないシークを有効にする"
 
-#: ../src/preferences.cpp:660
+#: ../src/preferences.cpp:684
 msgid "Hotkeys"
 msgstr "ショートカットキー"
 
-#: ../src/preferences.cpp:664
+#: ../src/preferences.cpp:688
 msgid "Search"
-msgstr ""
+msgstr "検索"
 
-#: ../src/preferences.cpp:680 ../src/preferences.cpp:683
-#, fuzzy
-#| msgid "Hotkeys"
+#: ../src/preferences.cpp:704 ../src/preferences.cpp:707
 msgid "Hotkey"
 msgstr "ショートカットキー"
 
-#: ../src/preferences.cpp:681 ../src/preferences.cpp:686
-#, fuzzy
-#| msgid "Commands"
+#: ../src/preferences.cpp:705 ../src/preferences.cpp:710
 msgid "Command"
 msgstr "コマンド"
 
-#: ../src/preferences.cpp:760
+#: ../src/preferences.cpp:784
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -6315,17 +6689,17 @@ msgstr ""
 "デフォルトに戻す場合は「はい」を、現在の設定を保持する場合は「いいえ」を押し"
 "てください"
 
-#: ../src/preferences.cpp:760
+#: ../src/preferences.cpp:784
 msgid "Restore defaults?"
 msgstr "すべての設定をデフォルトに戻していいですか？"
 
-#: ../src/preferences.cpp:778
+#: ../src/preferences.cpp:802
 msgid "Preferences"
-msgstr ""
+msgstr "設定"
 
-#: ../src/preferences.cpp:806
+#: ../src/preferences.cpp:830
 msgid "&Restore Defaults"
-msgstr ""
+msgstr "デフォルトに戻す (&R)"
 
 #: ../src/preferences_base.cpp:78
 msgid "Please choose the folder:"
@@ -6337,23 +6711,20 @@ msgstr "参照"
 
 #: ../src/preferences_base.cpp:270
 msgid "Choose..."
-msgstr ""
+msgstr "選択..."
 
 #: ../src/preferences_base.cpp:278
 msgid "Font Size"
-msgstr ""
+msgstr "フォントサイズ"
 
 #: ../src/project.cpp:85
-#, fuzzy
-#| msgid "Error Importing Styles"
 msgid "Error loading file"
-msgstr "スタイルの取り込みに失敗しました"
+msgstr "ファイルの読み込みエラー"
 
 #: ../src/project.cpp:111 ../src/project.cpp:130
-#, fuzzy, c-format
-#| msgid "No matches found."
+#, c-format
 msgid "%s not found."
-msgstr "見つかりませんでした"
+msgstr "%s が見つかりませんでした。"
 
 #: ../src/project.cpp:199
 msgid "Do you want to load/unload the associated files?"
@@ -6366,38 +6737,38 @@ msgstr ""
 #: ../src/project.cpp:210
 #, c-format
 msgid "Load audio file: %s"
-msgstr ""
+msgstr "音声ファイルの読み込み: %s"
 
 #: ../src/project.cpp:210
 msgid "Unload audio"
-msgstr ""
+msgstr "音声を閉じる"
 
 #: ../src/project.cpp:212
 #, c-format
 msgid "Load video file: %s"
-msgstr ""
+msgstr "映像ファイルの読み込み: %s"
 
 #: ../src/project.cpp:212
 msgid "Unload video"
-msgstr ""
+msgstr "映像を閉じる"
 
 #: ../src/project.cpp:214
 #, c-format
 msgid "Load timecodes file: %s"
-msgstr ""
+msgstr "タイムコードファイルの読み込み: %s"
 
 #: ../src/project.cpp:214
 msgid "Unload timecodes"
-msgstr ""
+msgstr "タイムコードを閉じる"
 
 #: ../src/project.cpp:216
 #, c-format
 msgid "Load keyframes file: %s"
-msgstr ""
+msgstr "キーフレームファイルの読み込み: %s"
 
 #: ../src/project.cpp:216
 msgid "Unload keyframes"
-msgstr ""
+msgstr "キーフレームを閉じる"
 
 #: ../src/project.cpp:218
 msgid "(Un)Load files?"
@@ -6405,7 +6776,7 @@ msgstr "関連ファイルを読み込みますか？"
 
 #: ../src/project.cpp:267
 msgid "The audio file was not found: "
-msgstr ""
+msgstr "音声ファイルが見つかりませんでした: "
 
 #: ../src/project.cpp:275
 msgid ""
@@ -6414,6 +6785,10 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
+"利用可能な音声読み込みエンジンは、選択されたファイルに音声データが含まれてい"
+"ると認識しませんでした。\n"
+"\n"
+"以下のエンジンが試行されました:\n"
 
 #: ../src/project.cpp:278
 msgid ""
@@ -6422,22 +6797,24 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
+"利用可能な音声読み込みエンジンは、選択されたファイルを処理できるコーデックを"
+"持っていません。\n"
+"\n"
+"以下のエンジンが試行されました:\n"
 
-#: ../src/project.cpp:381
-#, fuzzy
-#| msgid "Close Timecodes File"
+#: ../src/project.cpp:380
 msgid "Failed to parse timecodes file: "
-msgstr "タイムコードファイルを閉じる"
+msgstr "タイムコードファイルの解析に失敗しました: "
 
-#: ../src/project.cpp:407
+#: ../src/project.cpp:406
 msgid "Failed to parse keyframes file: "
-msgstr ""
+msgstr "キーフレームファイルの解析に失敗しました: "
 
-#: ../src/project.cpp:411
+#: ../src/project.cpp:410
 msgid "Keyframes file in unknown format: "
-msgstr ""
+msgstr "不明な形式のキーフレームファイル: "
 
-#: ../src/resolution_resampler.cpp:301
+#: ../src/resolution_resampler.cpp:241
 msgid "resolution resampling"
 msgstr "解像度の再取得"
 
@@ -6449,8 +6826,7 @@ msgstr "置換"
 #, c-format
 msgid "One match was replaced."
 msgid_plural "%d matches were replaced."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 個の条件が置換されました。"
 
 #: ../src/search_replace_engine.cpp:277
 msgid "No matches found."
@@ -6459,7 +6835,7 @@ msgstr "見つかりませんでした"
 #: ../src/subs_controller.cpp:246
 #, c-format
 msgid "Do you want to save changes to %s?"
-msgstr ""
+msgstr "%s への変更を保存しますか？"
 
 #: ../src/subs_controller.cpp:246
 msgid "Unsaved changes"
@@ -6472,15 +6848,15 @@ msgstr "無題の字幕ドキュメント"
 #: ../src/subs_controller.cpp:279
 #, c-format
 msgid "File backup saved as \"%s\"."
-msgstr ""
+msgstr "ファイルのバックアップが \"%s\" として保存されました。"
 
 #: ../src/subs_controller.cpp:282
 msgid "Exception when attempting to autosave file: "
-msgstr ""
+msgstr "ファイルの自動保存の試行中に例外が発生しました: "
 
 #: ../src/subs_controller.cpp:285
 msgid "Unhandled exception when attempting to autosave file."
-msgstr ""
+msgstr "ファイルの自動保存の試行中に未処理の例外が発生しました。"
 
 #: ../src/subs_controller.cpp:406
 msgid "untitled"
@@ -6488,7 +6864,7 @@ msgstr "無題の字幕ドキュメント"
 
 #: ../src/subs_edit_box.cpp:114
 msgid "&Comment"
-msgstr ""
+msgstr "コメント (&C)"
 
 #: ../src/subs_edit_box.cpp:115
 msgid "Comment this line out. Commented lines don't show up on screen."
@@ -6516,7 +6892,7 @@ msgstr "エフェクト指定"
 
 #: ../src/subs_edit_box.cpp:147
 msgid "Number of characters in the longest line of this subtitle."
-msgstr ""
+msgstr "この字幕の最も長い行の文字数。"
 
 #: ../src/subs_edit_box.cpp:154
 msgid "Layer number"
@@ -6536,31 +6912,31 @@ msgstr "表示してる時間"
 
 #: ../src/subs_edit_box.cpp:164
 msgid "Left Margin (0 = default from style)"
-msgstr ""
+msgstr "左余白 (0 = スタイルからデフォルト)"
 
 #: ../src/subs_edit_box.cpp:164
 msgid "left margin change"
-msgstr ""
+msgstr "左余白の変更"
 
 #: ../src/subs_edit_box.cpp:165
 msgid "Right Margin (0 = default from style)"
-msgstr ""
+msgstr "右余白 (0 = スタイルからデフォルト)"
 
 #: ../src/subs_edit_box.cpp:165
 msgid "right margin change"
-msgstr ""
+msgstr "右余白の変更"
 
 #: ../src/subs_edit_box.cpp:166
 msgid "Vertical Margin (0 = default from style)"
-msgstr ""
+msgstr "上下余白 (0 = スタイルからデフォルト)"
 
 #: ../src/subs_edit_box.cpp:166
 msgid "vertical margin change"
-msgstr ""
+msgstr "上下余白の変更"
 
 #: ../src/subs_edit_box.cpp:185
 msgid "T&ime"
-msgstr ""
+msgstr "時間 (&I)"
 
 #: ../src/subs_edit_box.cpp:185
 msgid "Time by h:mm:ss.cs"
@@ -6568,7 +6944,7 @@ msgstr "タイミングを時間形式 h:mm:ss.cs で表示"
 
 #: ../src/subs_edit_box.cpp:186
 msgid "F&rame"
-msgstr ""
+msgstr "フレーム (&R)"
 
 #: ../src/subs_edit_box.cpp:186
 msgid "Time by frame number"
@@ -6576,7 +6952,7 @@ msgstr "タイミングを映像フレーム番号で表示"
 
 #: ../src/subs_edit_box.cpp:189
 msgid "Show Original"
-msgstr ""
+msgstr "オリジナルを表示"
 
 #: ../src/subs_edit_box.cpp:190
 msgid ""
@@ -6584,10 +6960,12 @@ msgid ""
 "edit box. This is sometimes useful when editing subtitles or translating "
 "subtitles into another language."
 msgstr ""
+"字幕行が最初に選択されたときの元の内容を編集ボックスの上に表示します。これ"
+"は、字幕の編集や他の言語への翻訳時に役立つことがあります。"
 
 #: ../src/subs_edit_box.cpp:446
 msgid "modify text"
-msgstr ""
+msgstr "テキストの変更"
 
 #: ../src/subs_edit_box.cpp:524
 msgid "modify times"
@@ -6624,7 +7002,7 @@ msgstr "貼り付け (&P)"
 #: ../src/subs_edit_ctrl.cpp:444
 #, c-format
 msgid "Remove \"%s\" from dictionary"
-msgstr ""
+msgstr "辞書から \"%s\" を削除する"
 
 #: ../src/subs_edit_ctrl.cpp:449
 msgid "No spell checker suggestions"
@@ -6666,21 +7044,21 @@ msgid ""
 "Could not get any subtitles provider for the preview box. Make sure that you "
 "have a provider installed."
 msgstr ""
+"プレビューボックス用の字幕レンダリングエンジンを取得できませんでした。エンジ"
+"ンがインストールされているか確認してください。"
 
 #: ../src/subs_preview.cpp:143
-#, fuzzy
-#| msgid "Subtitles provider"
 msgid "No subtitles provider"
-msgstr "字幕レンダリングエンジン "
+msgstr "字幕レンダリングエンジンがありません"
 
 #: ../src/subtitle_format.cpp:102
 #, c-format
 msgid "From video (%g)"
-msgstr ""
+msgstr "映像から (%g)"
 
 #: ../src/subtitle_format.cpp:104
 msgid "From video (VFR)"
-msgstr ""
+msgstr "映像から (VFR)"
 
 #: ../src/subtitle_format.cpp:110
 msgid "15.000 FPS"
@@ -6741,15 +7119,15 @@ msgstr "字幕に適切なフレームレート(FPS)を選んでください :"
 #: ../src/subtitle_format_ebu3264.cpp:396
 #, c-format
 msgid "Line over maximum length: %s"
-msgstr ""
+msgstr "最大長を超える行: %s"
 
 #: ../src/subtitles_provider_libass.cpp:102
 msgid "Updating font index"
-msgstr ""
+msgstr "フォントインデックスの更新中"
 
 #: ../src/subtitles_provider_libass.cpp:103
 msgid "This may take several minutes"
-msgstr ""
+msgstr "これには数分かかる場合があります"
 
 #: ../src/video_box.cpp:57
 msgid "Seek video"
@@ -6769,6 +7147,9 @@ msgid ""
 "Failed seeking video. The video file may be corrupt or incomplete.\n"
 "Error message reported: %s"
 msgstr ""
+"映像のシークに失敗しました。映像ファイルが破損しているか、不完全である可能性"
+"があります。\n"
+"報告されたエラーメッセージ: %s"
 
 #: ../src/video_controller.cpp:234
 #, c-format
@@ -6776,6 +7157,8 @@ msgid ""
 "Failed rendering subtitles.\n"
 "Error message reported: %s"
 msgstr ""
+"字幕のレンダリングに失敗しました。\n"
+"報告されたエラーメッセージ: %s"
 
 #: ../src/video_display.cpp:203
 #, c-format
@@ -6784,6 +7167,9 @@ msgid ""
 "updating your video card drivers may fix this.\n"
 "Error message reported: %s"
 msgstr ""
+"映像表示の初期化に失敗しました。実行中の他のプログラムを閉じるか、ビデオカー"
+"ドのドライバーを更新すると解決する場合があります。\n"
+"報告されたエラーメッセージ: %s"
 
 #: ../src/video_display.cpp:210
 #, c-format
@@ -6791,6 +7177,8 @@ msgid ""
 "Could not upload video frame to graphics card.\n"
 "Error message reported: %s"
 msgstr ""
+"ビデオフレームをグラフィックスカードにアップロードできませんでした。\n"
+"報告されたエラーメッセージ: %s"
 
 #: ../src/video_display.cpp:252
 #, c-format
@@ -6798,22 +7186,22 @@ msgid ""
 "An error occurred trying to render the video frame on the screen.\n"
 "Error message reported: %s"
 msgstr ""
+"画面にビデオフレームをレンダリングしようとしてエラーが発生しました。\n"
+"報告されたエラーメッセージ: %s"
 
 #: ../src/video_provider_manager.cpp:78
 msgid "file not found."
-msgstr ""
+msgstr "ファイルが見つかりません。"
 
 #: ../src/video_provider_manager.cpp:84
 msgid "video is not in a supported format."
-msgstr ""
+msgstr "映像がサポートされている形式ではありません。"
 
 #: ../src/video_provider_manager.cpp:101
-#, fuzzy
-#| msgid "Could not parse style"
 msgid "Could not open "
-msgstr "スタイルを解析できません"
+msgstr "開けませんでした "
 
-#: ../src/visual_tool.cpp:119
+#: ../src/visual_tool.cpp:123
 msgid "visual typesetting"
 msgstr "移動/変形/図形モード"
 
@@ -6823,11 +7211,11 @@ msgstr "ポジション"
 
 #: ../src/visual_tool_drag.cpp:55
 msgid "Toggle between \\move and \\pos"
-msgstr ""
+msgstr "\\move と \\pos を切り替える"
 
 #: ../src/visual_tool_vector_clip.cpp:272
 msgid "delete control point"
-msgstr ""
+msgstr "コントロールポイントを削除"
 
 #: default_menu.json:0
 msgid "&Insert (before)"
@@ -6847,7 +7235,7 @@ msgstr "選択行の表示時間直後に挿入"
 
 #: default_menu.json:0
 msgid "&Join (concatenate)"
-msgstr "字幕行の単純連結"
+msgstr "字幕行の単純連結 (&J)"
 
 #: default_menu.json:0
 msgid "Join (keep first)"
@@ -6859,11 +7247,11 @@ msgstr "Karaoke モード連結"
 
 #: default_menu.json:0
 msgid "&Make times continuous (change start)"
-msgstr "字幕の連続、各字幕行の開始タイミングを早めます"
+msgstr "字幕の連続、各字幕行の開始タイミングを早めます (&S)"
 
 #: default_menu.json:0
 msgid "&Make times continuous (change end)"
-msgstr "字幕の連続、各字幕行の終了タイミングを遅らせる"
+msgstr "字幕の連続、各字幕行の終了タイミングを遅らせる (&E)"
 
 #: default_menu.json:0
 msgid "Make Times Continuous"
@@ -6871,11 +7259,11 @@ msgstr "字幕の連続"
 
 #: default_menu.json:0
 msgid "Set &Zoom"
-msgstr ""
+msgstr "ズームを設定 (&Z)"
 
 #: default_menu.json:0
 msgid "Override &AR"
-msgstr ""
+msgstr "アスペクト比を上書き (&A)"
 
 #: default_menu.json:0
 msgctxt "Menu bar"
@@ -6890,7 +7278,7 @@ msgstr "編集 (&E)"
 #: default_menu.json:0
 msgctxt "Menu bar"
 msgid "&Subtitle"
-msgstr "新規作成 (&N)"
+msgstr "字幕 (&S)"
 
 #: default_menu.json:0
 msgctxt "Menu bar"
@@ -6910,7 +7298,7 @@ msgstr "音声 (&A)"
 #: default_menu.json:0
 msgctxt "Menu bar"
 msgid "A&utomation"
-msgstr "オートメーション"
+msgstr "オートメーション (&U)"
 
 #: default_menu.json:0
 msgctxt "Menu bar"
@@ -6932,11 +7320,11 @@ msgstr "字幕行の連結"
 
 #: default_menu.json:0
 msgid "Sort All Lines"
-msgstr ""
+msgstr "すべての行をソート"
 
 #: default_menu.json:0
 msgid "Sort Selected Lines"
-msgstr ""
+msgstr "選択した行をソート"
 
 #: default_menu.json:0
 msgid "&File"
@@ -6948,7 +7336,7 @@ msgstr "設定 (&W)"
 
 #: default_menu.json:0
 msgid "&Subtitle"
-msgstr ""
+msgstr "字幕 (&S)"
 
 #: default_menu.json:0
 msgid "&Timing"
@@ -6964,11 +7352,11 @@ msgstr "音声 (&A)"
 
 #: default_menu.json:0
 msgid "A&utomation"
-msgstr ""
+msgstr "オートメーション (&U)"
 
 #: default_menu.json:0
 msgid "Window"
-msgstr ""
+msgstr "ウィンドウ"
 
 #: default_menu.json:0
 msgid "&Help"
@@ -6976,11 +7364,11 @@ msgstr "ヘルプ (&H)"
 
 #: default_menu.json:0
 msgid "Open..."
-msgstr ""
+msgstr "開く..."
 
 #: default_menu.json:0
 msgid "Open Recent"
-msgstr ""
+msgstr "最近開いたファイル"
 
 #: default_menu.json:0
 msgid "Save"
@@ -6988,46 +7376,50 @@ msgstr "保存"
 
 #: default_menu.json:0
 msgid "Save As..."
-msgstr ""
+msgstr "名前を付けて保存..."
 
 #: default_menu.json:0
 msgid "Export As..."
-msgstr ""
+msgstr "名前を付けてエクスポート..."
 
 #: default_hotkey.json:244
 msgid "Subtitle Edit Box"
-msgstr ""
+msgstr "字幕編集ボックス"
 
 #: ../automation/autoload/cleantags-autoload.lua:31
 msgid "Clean Tags"
-msgstr ""
+msgstr "タグのクリーンアップ"
 
 #: ../automation/autoload/cleantags-autoload.lua:32
 msgid ""
 "Clean subtitle lines by re-arranging ASS tags and override blocks within the "
 "lines"
 msgstr ""
+"行内のASSタグとオーバーライドブロックを再配置して、字幕行をクリーンアップしま"
+"す"
 
 #: ../automation/autoload/kara-templater.lua:36
 msgid "Karaoke Templater"
-msgstr ""
+msgstr "カラオケテンプレート"
 
 #: ../automation/autoload/kara-templater.lua:37
 msgid ""
 "Macro and export filter to apply karaoke effects using the template language"
 msgstr ""
+"テンプレート言語を使用してカラオケエフェクトを適用するマクロおよびエクスポー"
+"トフィルター"
 
 #: ../automation/autoload/kara-templater.lua:860
 msgid "Apply karaoke template"
-msgstr ""
+msgstr "カラオケテンプレートを適用"
 
 #: ../automation/autoload/kara-templater.lua:860
 msgid "Applies karaoke effects from templates"
-msgstr ""
+msgstr "テンプレートからカラオケエフェクトを適用します"
 
 #: ../automation/autoload/kara-templater.lua:861
 msgid "Karaoke template"
-msgstr ""
+msgstr "カラオケテンプレート"
 
 #: ../automation/autoload/kara-templater.lua:861
 msgid ""
@@ -7035,81 +7427,87 @@ msgid ""
 "\n"
 "See the help file for information on how to use this."
 msgstr ""
+"字幕にカラオケエフェクトのテンプレートを適用します。\n"
+"\n"
+"使用方法についてはヘルプファイルを参照してください。"
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:32
 msgid "Automatic karaoke lead-in"
-msgstr ""
+msgstr "自動カラオケリードイン"
 
 #: ../automation/autoload/karaoke-auto-leadin.lua:33
 msgid "Join up the ends of selected lines and add \\k tags to shift karaoke"
 msgstr ""
+"選択した行の末尾を結合し、カラオケをシフトするために \\k タグを追加します"
 
 #: ../automation/autoload/macro-1-edgeblur.lua:6
 msgid "Add edgeblur"
-msgstr ""
+msgstr "エッジブラーを追加"
 
 #: ../automation/autoload/macro-1-edgeblur.lua:7
 msgid "A demo macro showing how to do simple line modification in Automation 4"
-msgstr ""
+msgstr "Automation 4 で簡単な行の変更を行う方法を示すデモマクロ"
 
 #: ../automation/autoload/macro-1-edgeblur.lua:21
 msgid "Adds \\be1 tags to all selected lines"
-msgstr ""
+msgstr "選択したすべての行に \\be1 タグを追加します"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:6
 msgid "Make text fullwidth"
-msgstr ""
+msgstr "テキストを全角にする"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:7
 msgid ""
 "Shows how to use the unicode include to iterate over characters and a lookup "
 "table to convert those characters to something else."
 msgstr ""
+"unicode include を使用して文字を反復処理し、ルックアップテーブルを使用してそ"
+"れらの文字を他の文字に変換する方法を示します。"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:80
 msgid "Make fullwidth"
-msgstr ""
+msgstr "全角にする"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:80
 msgid "Convert Latin letters to SJIS fullwidth letters"
-msgstr ""
+msgstr "ラテン文字をSJISの全角文字に変換します"
 
 #: ../automation/autoload/select-overlaps.moon:17
 msgid "Select overlaps"
-msgstr ""
+msgstr "オーバーラップを選択"
 
 #: ../automation/autoload/select-overlaps.moon:18
 msgid "Select lines which begin while another non-comment line is active"
-msgstr ""
+msgstr "他のコメント以外の行がアクティブな間に開始する行を選択します"
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
-msgstr ""
+msgstr "タグを除去"
 
 #: ../automation/autoload/strip-tags.lua:18
 msgid "Remove all override tags from selected lines"
-msgstr ""
+msgstr "選択した行からすべてのオーバーライドタグを削除します"
 
 #: ../automation/autoload/strip-tags.lua:28
 msgid "strip tags"
-msgstr ""
+msgstr "タグの除去"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Installing runtime libraries..."
-msgstr ""
+msgstr "ランタイムライブラリをインストールしています..."
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Create a start menu icon"
-msgstr ""
+msgstr "スタートメニューアイコンを作成する"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Automatically check for new versions of Aegisub"
-msgstr ""
+msgstr "Aegisubの新しいバージョンを自動的に確認する"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Update Checker:"
-msgstr ""
+msgstr "アップデートチェッカー:"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid ""
@@ -7119,6 +7517,11 @@ msgid ""
 "no warranties of any kind are given either.%n%nSee the Aegisub website for "
 "information on obtaining the source code."
 msgstr ""
+"これにより、Aegisub {#BUILD_GIT_VERSION_STRING} がコンピューターにインストー"
+"ルされます。%n%nAegisubはGNU General Public Licenseバージョン2の対象です。つ"
+"まり、このアプリケーションは目的に関係なく無料で利用できますが、いかなる保証"
+"も提供されません。%n%nソースコードの取得に関する情報については、Aegisubのウェ"
+"ブサイトを参照してください。"
 
 #: ../packages/desktop/aegisub.desktop.in.in:4
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:6
@@ -7127,19 +7530,19 @@ msgstr "Aegisub"
 
 #: ../packages/desktop/aegisub.desktop.in.in:5
 msgid "Subtitle Editor"
-msgstr ""
+msgstr "字幕エディタ"
 
 #: ../packages/desktop/aegisub.desktop.in.in:6
 msgid "Create and edit subtitles for film and videos."
-msgstr ""
+msgstr "映画や映像のための字幕を作成および編集します。"
 
 #: ../packages/desktop/aegisub.desktop.in.in:12
 msgid "subtitles;subtitle;captions;captioning;video;audio;"
-msgstr ""
+msgstr "字幕;キャプション;映像;音声;ビデオ;オーディオ;"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
 msgid "Create and modify subtitles"
-msgstr ""
+msgstr "字幕の作成と編集"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:9
 msgid ""
@@ -7148,6 +7551,10 @@ msgid ""
 "audio, and features many powerful tools for styling them, including a built-"
 "in real-time video preview."
 msgstr ""
+"Aegisubは、字幕を作成および編集するための無料でクロスプラットフォームなオープ"
+"ンソースツールです。Aegisubを使用すると、字幕と音声のタイミング合わせをすばや"
+"く簡単に行うことができ、組み込みのリアルタイム映像プレビューなど、スタイルを"
+"設定するための強力なツールが多数備わっています。"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:10
 msgid ""
@@ -7159,6 +7566,12 @@ msgid ""
 "unrelated to Aegisub) many vital functions, or were too buggy and/or "
 "unreliable to be really useful."
 msgstr ""
+"Aegisubは当初、特にアニメのファンサブにおけるタイプセッティングをより快適な体"
+"験にするためのツールとして作成されました。プロジェクトの開始時、Advanced "
+"Substation Alpha形式をサポートする他の多くのプログラムには、多くの重要な機能"
+"が欠けていました (そして多くの場合、今でも欠けています。競合するいくつかのプ"
+"ログラムの開発は、Aegisubとは全く関係のない様々な理由で中止されました)。ま"
+"た、バグが多すぎたり、信頼性が低すぎて実際には使えないものもありました。"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:11
 msgid ""
@@ -7169,46 +7582,52 @@ msgid ""
 "for creating karaoke effects, Automation can now be used much else, "
 "including creating macros and various other convenient tools)."
 msgstr ""
+"それ以来、Aegisubは本格的で高度にカスタマイズ可能な字幕エディタへと成長しまし"
+"た。タイミング、タイプセッティング、編集、字幕の翻訳を支援する多数の便利な"
+"ツールに加えて、オートメーションと呼ばれる強力なスクリプト環境を備えています "
+"(当初は主にカラオケエフェクトを作成することを目的としていましたが、現在では"
+"オートメーションを使用してマクロやその他の様々な便利なツールを作成するなど、"
+"多くの用途に使用できます)。"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:12
 msgid "Some highlights of Aegisub:"
-msgstr ""
+msgstr "Aegisubの主な機能:"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:14
 msgid "Simple and intuitive yet powerful interface for editing subtitles"
-msgstr ""
+msgstr "シンプルで直感的かつ強力な字幕編集インターフェース"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:15
 msgid "Support for many formats and character sets"
-msgstr ""
+msgstr "多くのフォーマットと文字コードのサポート"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:16
 msgid "Powerful video mode"
-msgstr ""
+msgstr "強力な映像モード"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:17
 msgid "Visual typesetting tools"
-msgstr ""
+msgstr "視覚的組版ツール"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:18
 msgid "Intuitive and customizable audio timing mode"
-msgstr ""
+msgstr "直感的でカスタマイズ可能な音声タイミングモード"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:19
 msgid "Fully scriptable through the Automation module"
-msgstr ""
+msgstr "オートメーションモジュールによる完全なスクリプト制御"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:43
 msgid "Typesetting"
-msgstr ""
+msgstr "タイプセッティング"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:47
 msgid "Audio video"
-msgstr ""
+msgstr "音声・映像"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
-msgstr ""
+msgstr "音声タイミング"
 
 #~ msgid "Kanji timing"
 #~ msgstr "漢字タイマー"
