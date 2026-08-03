@@ -20,6 +20,8 @@ jobs:
           - name: Windows MSVC Release
             os: windows-latest
             msvc: true
+            arch: x64
+            vs_component: Microsoft.VisualStudio.Component.VC.Tools.x86.x64
             package: true
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
@@ -42,7 +44,9 @@ jobs:
           - name: Windows ARM64 MSVC Release
             os: windows-11-arm
             msvc: true
-            package: false
+            arch: arm64
+            vs_component: Microsoft.VisualStudio.Component.VC.Tools.ARM64
+            package: true
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
               Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=arm64 -host_arch=arm64"
@@ -61,6 +65,7 @@ jobs:
               -Dfribidi:tests=false
               -Dfribidi:docs=false
               -Dlibass:fontconfig=disabled
+              -Dcsri=disabled
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
@@ -122,7 +127,7 @@ jobs:
         if: matrix.config.msvc
         run: |
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          $vsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          $vsPath = & $vswhere -latest -products * -requires ${{ matrix.config.vs_component }} -property installationPath
           if (-not $vsPath) { throw "Could not find a Visual Studio installation" }
           "VS=$vsPath"
           "VS=$vsPath" >> $env:GITHUB_ENV
@@ -204,7 +209,7 @@ jobs:
         if: matrix.config.package
         with:
           name: ${{ matrix.config.name }} - portable
-          path: build/aegisub-portable-64.zip
+          path: build/aegisub-portable-${{ matrix.config.arch }}.zip
 
       # macOS artifacts
       - name: Generate macOS installer
