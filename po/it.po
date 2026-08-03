@@ -172,6 +172,9 @@ msgid ""
 "Please review the errors, fix them and use the Rescan Autoload Dir button in "
 "Automation Manager to load the scripts again."
 msgstr ""
+"Uno script nella cartella di caricamento automatico delle Automazioni ha fallito il caricamento.\n"
+"Controlla eventuali errori, sistemali e clicca sul pulsante Riscans. Cartella Autocaricata "
+"nel Manager Automation per ricaricare gli script."
 
 #: ../src/auto4_base.cpp:349
 msgid ""
@@ -179,6 +182,9 @@ msgid ""
 "Please review the errors, fix them and use the Rescan Autoload Dir button in "
 "Automation Manager to load the scripts again."
 msgstr ""
+"Più di uno script nella cartella di caricamento automatico delle Automazioni ha fallito il caricamento.\n"
+"Controlla eventuali errori, sistemali e clicca sul pulsante Riscans. Cartella Autocaricata "
+"nel Manager Automation per ricaricare gli script."
 
 #: ../src/auto4_base.cpp:352
 msgid ""
@@ -186,6 +192,9 @@ msgid ""
 "Please review the warnings, fix them and use the Rescan Autoload Dir button "
 "in Automation Manager to load the scripts again."
 msgstr ""
+"Uno script nella cartella di caricamento automatico delle Automazioni è stato caricato con dei problemi.\n"
+"Controlla i messaggi, sistema eventuali problemi e clicca sul pulsante Riscans. Cartella Autocaricata "
+"nel Manager Automation per ricaricare gli script."
 
 #: ../src/auto4_base.cpp:355
 msgid ""
@@ -193,6 +202,9 @@ msgid ""
 "Please review the warnings, fix them and use the Rescan Autoload Dir button "
 "in Automation Manager to load the scripts again."
 msgstr ""
+"Più di uno script nella cartella di caricamento automatico delle Automazioni è stato caricato con dei problemi.\n"
+"Controlla i messaggi, sistema eventuali problemi e clicca sul pulsante Riscans. Cartella Autocaricata "
+"nel Manager Automation per ricaricare gli script."
 
 #: ../src/auto4_base.cpp:394
 #, c-format
