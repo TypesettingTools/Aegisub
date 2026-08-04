@@ -61,7 +61,7 @@ compile = (pattern, flags) ->
   err_buff[0] = nil
   re = regex.compile pattern, flags, err_buff
   if err_buff[0] != nil
-    return ffi.string err_buff[0]
+    return ffi_util.string err_buff[0]
   ffi.gc re, regex.regex_free
 
 -- Return the first n elements from ...
