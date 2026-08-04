@@ -13,9 +13,12 @@
 -- OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 lfs = require 'aegisub.lfs'
-uuid = require 'uuid'
 
-uuid.randomseed os.time()
+-- os.tmpname creates the file on POSIX; we only want a unique name
+temp_name = ->
+  name = os.tmpname!
+  os.remove name
+  name
 
 get_pwd = ->
   pwd = io.popen 'pwd'
@@ -44,7 +47,7 @@ describe 'lfs', ->
       assert.is.equal get_pwd!, dir
 
     it 'should fail on an invalid path', ->
-      name = '/tmp/' .. uuid! .. '/' .. uuid!
+      name = temp_name! .. '/child'
       res, msg = lfs.chdir name
 
       assert.is.nil res
@@ -52,7 +55,7 @@ describe 'lfs', ->
 
   describe 'mkdir', ->
     it 'should be able to create new directories', ->
-      name = '/tmp/' .. uuid!
+      name = temp_name!
       lfs.mkdir name
       assert.is.equal lfs.attributes(name, 'mode'), 'directory'
 
@@ -61,7 +64,7 @@ describe 'lfs', ->
 
   describe 'touch', ->
     it 'should create files if given a nonexistent filename', ->
-      name = '/tmp/' .. uuid!
+      name = temp_name!
       lfs.touch name
       assert.is.equal lfs.attributes(name).mode, 'file'
 
