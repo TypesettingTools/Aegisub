@@ -4,7 +4,10 @@ param (
     [Parameter(Position = 0)]
     [string]$BuildRoot,
     [Parameter(Position = 1)]
-    [string]$SourceRoot
+    [string]$SourceRoot,
+    [Parameter(Position = 2)]
+    [ValidateSet('x64', 'arm64')]
+    [string]$Architecture = 'x64'
 )
 
 function Copy-New-Item {
@@ -85,5 +88,14 @@ Copy-New-Item $SourceRoot\packages\win_installer\portable\config.json  $Portable
 
 
 Write-Output 'Creating portable zip'
-Remove-Item aegisub-portable-64.zip
-7z a aegisub-portable-64.zip aegisub-portable\
+$GitVersionHeader = Join-Path $BuildRoot 'git_version.h'
+$GitVersionMatch = Select-String -Path $GitVersionHeader -Pattern '^#define BUILD_GIT_VERSION_STRING "(.+)"$' | Select-Object -First 1
+if (-not $GitVersionMatch) {
+    throw "Could not read BUILD_GIT_VERSION_STRING from $GitVersionHeader"
+}
+$GitVersion = $GitVersionMatch.Matches[0].Groups[1].Value
+$PortableArchive = "Aegisub-$GitVersion-$Architecture-portable.zip"
+if (Test-Path $PortableArchive) {
+    Remove-Item $PortableArchive
+}
+7z a $PortableArchive aegisub-portable\
