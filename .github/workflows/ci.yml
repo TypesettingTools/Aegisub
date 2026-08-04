@@ -196,7 +196,8 @@ jobs:
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }} - portable
-          path: build/aegisub-portable-64.zip
+          path: build/Aegisub-*-portable.zip
+          if-no-files-found: error
 
       # macOS artifacts
       - name: Generate macOS installer
@@ -216,11 +217,25 @@ jobs:
             i=$((i+1))
           done
 
+      - name: Archive macOS app for local signing
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release' && (github.ref_type == 'tag' || github.event_name == 'workflow_dispatch')
+        run: |
+          package_name="$(tools/osx-package-name.sh build/Aegisub.app)"
+          ditto -c -k --sequesterRsrc --keepParent build/Aegisub.app "build/${package_name}-signing-input.zip"
+
+      - name: Upload macOS local-signing input
+        uses: actions/upload-artifact@v6
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release' && (github.ref_type == 'tag' || github.event_name == 'workflow_dispatch')
+        with:
+          name: ${{ matrix.config.name }} - local signing input
+          path: build/Aegisub-*-signing-input.zip
+          if-no-files-found: error
+
       - name: Upload artifacts - macOS dmg
         uses: actions/upload-artifact@v6
         if: startsWith(matrix.config.os, 'macos-')
         with:
-          name: ${{ matrix.config.name }} - installer
+          name: ${{ matrix.config.name }} - ad-hoc installer
           path: build/Aegisub-*.dmg
           if-no-files-found: error
 

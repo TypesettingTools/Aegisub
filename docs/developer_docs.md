@@ -18,6 +18,12 @@ Follow the following steps to release a new Aegisub version:
 - Add the release to the update checking server
 - If needed, create a support branch for backports, keeping the master branch free for larger changes
 
+### macOS release signing
+
+Tagged and manually dispatched builds upload an ad-hoc-signed
+`-signing-input.zip`. Run `osx-sign.sh`, `osx-dmg.sh`, and `osx-notarize.sh`
+locally; publish only the resulting notarized DMG.
+
 ## Running Doxygen
 
 You can run Doxygen with the following command:
@@ -38,4 +44,3 @@ Open the newly created `bin/moonscript.lua`, and within it make the following ch
 3. Within the function at `package.preload['moonscript']`, remove the line `_with_0.insert_loader()`.
 
 The file is now ready for use, to be placed in `automation/include` within the Aegisub repo.
-

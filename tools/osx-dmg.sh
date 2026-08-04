@@ -1,5 +1,5 @@
 #!/bin/sh
-# USAGE: osx-dmg.sh [Bundle Directory] "[Package Name]"
+# USAGE: osx-dmg.sh [Source Directory] [Build Directory] [Version Override]
 #
 # Amar Takhar <verm@aegisub.org>
 #
@@ -17,28 +17,27 @@ set -e
 
 SRC_DIR="${1}"
 BUILD_DIR="${2}"
-AEGI_VER="${3}"
-
-PKG_NAME="Aegisub-${AEGI_VER}"
-PKG_NAME_VOLUME="${PKG_NAME}"
 
 PKG_DIR="${BUILD_DIR}/Aegisub.app"
+
+if ! test -d "${PKG_DIR}"; then
+  echo "\"${PKG_DIR}\" does not exist, please run 'meson compile osx-bundle'"
+  exit 1;
+fi
+
+PKG_NAME="$("${SRC_DIR}/tools/osx-package-name.sh" "${PKG_DIR}" "${3:-}")"
+PKG_NAME_VOLUME="${PKG_NAME}"
+
 DMG_TMP_DIR="${BUILD_DIR}/temp_dmg"
 DMG_PATH="${BUILD_DIR}/${PKG_NAME}.dmg"
 DMG_RW_PATH="${BUILD_DIR}/${PKG_NAME}_rw.dmg"
-
-
-if ! test -d "${PKG_DIR}"; then
-  echo "\"${PKG_DIR}\" does not exist, please run 'make osx-bundle'"
-  exit 1;
-fi
 
 echo
 echo "---- Removing old \"${DMG_TMP_DIR}\", \"${DMG_PATH}\", \"${DMG_RW_PATH}\" ----"
 rm -rf "${DMG_TMP_DIR}" "${DMG_PATH}" "${DMG_RW_PATH}"
 mkdir -v "${DMG_TMP_DIR}"
 echo
-echo "---- Copying ${AEGI_VER} into ${DMG_TMP_DIR}/ ----"
+echo "---- Copying ${PKG_NAME} into ${DMG_TMP_DIR}/ ----"
 cp -R "${PKG_DIR}" "${DMG_TMP_DIR}"
 
 echo
@@ -54,7 +53,7 @@ echo "---- Creating image ----"
 
 echo
 echo "---- Mounting image ----"
-DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${DMG_RW_PATH}" |awk '/GUID_partition_scheme/ {print $1}'`
+DEV_NAME="$(/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${DMG_RW_PATH}" | awk '/GUID_partition_scheme/ {print $1}')"
 echo "Device name: ${DEV_NAME}"
 
 echo
@@ -64,13 +63,13 @@ SetFile -a C "/Volumes/${PKG_NAME_VOLUME}"
 echo
 if test -n "${SET_STYLE}"; then
   echo "---- Running AppleScript to set style ----"
-  SCRIPT_TMP=`mktemp /tmp/aegisub_dmg_as.XXX`
+  SCRIPT_TMP="$(mktemp /tmp/aegisub_dmg_as.XXX)"
 
-  sed -f "${SRC_DIR}/scripts/osx-bundle.sed" "${SRC_DIR}/packages/osx_dmg/dmg_set_style.applescript" > ${SCRIPT_TMP}
+  sed -f "${SRC_DIR}/scripts/osx-bundle.sed" "${SRC_DIR}/packages/osx_dmg/dmg_set_style.applescript" > "${SCRIPT_TMP}"
 
-  /usr/bin/osacompile -o ${SCRIPT_TMP}.scpt ${SCRIPT_TMP}
+  /usr/bin/osacompile -o "${SCRIPT_TMP}.scpt" "${SCRIPT_TMP}"
 
-  /usr/bin/osascript ${SCRIPT_TMP}.scpt
+  /usr/bin/osascript "${SCRIPT_TMP}.scpt"
   open "/Volumes/${PKG_NAME_VOLUME}"
 
   echo "********************************************************"
@@ -80,18 +79,18 @@ if test -n "${SET_STYLE}"; then
   echo
   echo "PRESS ENTER WHEN DONE"
   open "/Volumes/${PKG_NAME_VOLUME}"
-  read -e DUMB
+  read -r _
 
   hdiutil detach "${DEV_NAME}"
 
-  DEV_NAME=`/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${DMG_RW_PATH}" |awk '/GUID_partition_scheme/ {print $1}'`
+  DEV_NAME="$(/usr/bin/hdiutil attach -readwrite -noverify -noautoopen "${DMG_RW_PATH}" | awk '/GUID_partition_scheme/ {print $1}')"
   echo "Device name: ${DEV_NAME}"
 
   cp -v "/Volumes/${PKG_NAME_VOLUME}/.DS_Store" "${SRC_DIR}/packages/osx_dmg/DS_Store"
   SetFile -a v "${SRC_DIR}/packages/osx_dmg/DS_Store"
   hdiutil detach "${DEV_NAME}"
 
-  rm -rf "${DMG_TMP_DIR}"  "${DMG_RW_PATH}" ${SCRIPT_TMP}.scpt ${SCRIPT_TMP}
+  rm -rf "${DMG_TMP_DIR}" "${DMG_RW_PATH}" "${SCRIPT_TMP}.scpt" "${SCRIPT_TMP}"
   exit 0
 else
   echo "---- Installing DS_Store ----"
@@ -110,5 +109,23 @@ echo "---- Compressing ----"
 echo "---- Removing temp dmg \"${DMG_RW_PATH}\" ----"
 rm -rf "${DMG_RW_PATH}"
 
+SIGN_IDENTITY="${AEGISUB_BUNDLE_SIGNATURE:--}"
+SIGN_KEYCHAIN="${AEGISUB_SIGNING_KEYCHAIN:-}"
+
+if test "${SIGN_IDENTITY}" != "-"; then
+  echo
+  echo "---- Signing image ----"
+  if test -n "${SIGN_KEYCHAIN}"; then
+    codesign --force --timestamp --keychain "${SIGN_KEYCHAIN}" --sign "${SIGN_IDENTITY}" "${DMG_PATH}"
+  else
+    codesign --force --timestamp --sign "${SIGN_IDENTITY}" "${DMG_PATH}"
+  fi
+  codesign --verify --strict --verbose=2 "${DMG_PATH}"
+fi
+
 echo
-echo "Done!"
+echo "---- Verifying image ----"
+/usr/bin/hdiutil verify "${DMG_PATH}"
+
+echo
+echo "Done creating \"${DMG_PATH}\""
