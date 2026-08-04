@@ -27,9 +27,10 @@ string_ret = (f) -> (...) ->
   res, err = f ...
   ffi_util.string(res), err
 
-number_ret = (f) -> (...) ->
+-- Convert the C bool returns to lfs's true-or-nil,err convention
+bool_ret = (f) -> (...) ->
   res, err = f ...
-  tonumber(res), err
+  if res then true else nil, err
 
 attributes = check'string ?string' (path, field) ->
   switch field
@@ -73,10 +74,10 @@ dir = check'string' (path) ->
 
 return {
   :attributes
-  chdir: check'string' number_ret impl.chdir
+  chdir: check'string' bool_ret impl.chdir
   currentdir: check'' string_ret impl.currentdir
   :dir
-  mkdir: check'string' number_ret impl.mkdir
-  rmdir: check'string'number_ret impl.rmdir
-  touch: check'string'number_ret impl.touch
+  mkdir: check'string' bool_ret impl.mkdir
+  rmdir: check'string'bool_ret impl.rmdir
+  touch: check'string'bool_ret impl.touch
 }
