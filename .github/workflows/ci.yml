@@ -174,6 +174,23 @@ jobs:
           sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
           sudo luarocks --lua-version=5.1 install busted
 
+      # dav1d's ARM assembly uses GNU syntax, which MSVC's armasm64 cannot
+      # consume directly. gas-preprocessor translates it during the build.
+      - name: Checkout gas-preprocessor (Windows ARM64)
+        if: matrix.config.msvc && matrix.config.arch == 'arm64'
+        uses: actions/checkout@v6
+        with:
+          repository: FFmpeg/gas-preprocessor
+          ref: ac1836309c2e77023c228b7184485597286289d3
+          path: gas-preprocessor
+
+      - name: Setup gas-preprocessor (Windows ARM64)
+        if: matrix.config.msvc && matrix.config.arch == 'arm64'
+        run: |
+          $gaspp = (Resolve-Path gas-preprocessor).Path
+          $gaspp | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          perl -c "$gaspp\gas-preprocessor.pl"
+
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
