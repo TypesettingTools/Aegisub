@@ -70,7 +70,7 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 	}
 
 	StyleInfo style = style_it->second;
-	StyleInfo initial = style;
+	StyleInfo reset = style;
 
 	bool overriden = false;
 
@@ -80,18 +80,21 @@ void FontCollector::ProcessDialogueLine(const AssDialogue *line, int index) {
 			for (auto const& tag : static_cast<AssDialogueBlockOverride&>(*block).Tags) {
 				if (tag.Name == "\\r") {
 					style = styles[tag.Params[0].Get(line->Style.get())];
+					reset = style;
 					overriden = false;
 				}
 				else if (tag.Name == "\\b") {
-					style.bold = tag.Params[0].Get(initial.bold);
+					style.bold = tag.Params[0].Get(reset.bold);
 					overriden = true;
 				}
 				else if (tag.Name == "\\i") {
-					style.italic = tag.Params[0].Get(initial.italic);
+					style.italic = tag.Params[0].Get(reset.italic);
 					overriden = true;
 				}
 				else if (tag.Name == "\\fn") {
-					style.facename = tag.Params[0].Get(initial.facename);
+					style.facename = tag.Params[0].Get(reset.facename);
+					if (style.facename == "0")
+						style.facename = reset.facename;
 					overriden = true;
 				}
 			}
