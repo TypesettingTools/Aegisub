@@ -59,7 +59,7 @@ Once the dependencies are installed, build Aegisub with `meson build && meson co
 #### Build dmg
 
 ```bash
-meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_osx_bundle=true -Dlocal_boost=true
+meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_osx_bundle=true --force-fallback-for=boost
 meson compile -C build_static
 meson test -C build_static --verbose
 meson compile osx-bundle -C build_static

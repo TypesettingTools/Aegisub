@@ -6,6 +6,7 @@ SRC_DIR="${1}"
 BUILD_DIR="${2}"
 DICT_DIR="${5}"
 MESON_BUILD_OSX_BUNDLE="${6}"
+MACOS_DEPLOYMENT_TARGET="${7}"
 
 if [ "${MESON_BUILD_OSX_BUNDLE}" != "TRUE" ]; then
   echo "Project not built with \`build_osx_bundle\`"
@@ -43,7 +44,8 @@ find "${SRC_DIR}/po" -name '*.po' | sed 's/.*\/\(.*\)\.po/        <string>\1<\/s
 
 #find "${SKEL_DIR}" -type f -not -regex ".*.svn.*"
 cp -v "${SKEL_DIR}"/Contents/Resources/*.icns "${PKG_DIR}/Contents/Resources"
-sed -f "${BUILD_DIR}/osx-bundle.sed" "${SKEL_DIR}/Contents/Info.plist" > "${PKG_DIR}/Contents/Info.plist"
+sed -e "s/@MACOS_DEPLOYMENT_TARGET@/${MACOS_DEPLOYMENT_TARGET}/g" \
+  -f "${BUILD_DIR}/osx-bundle.sed" "${SKEL_DIR}/Contents/Info.plist" > "${PKG_DIR}/Contents/Info.plist"
 
 rm "${BUILD_DIR}/languages"
 
@@ -51,7 +53,7 @@ echo
 echo "---- Installing files ----"
 (
   cd "${BUILD_DIR}"
-  meson install --skip-subprojects luajit
+  meson install --skip-subprojects
 )
 
 echo
@@ -102,6 +104,10 @@ mkdir -vp "${PKG_DIR}/Contents/Resources/en.lproj"
 echo
 echo "---- Fixing libraries ----"
 python3 "${SRC_DIR}/tools/osx-fix-libs.py" "${PKG_DIR}/Contents/MacOS/aegisub"
+
+echo
+echo "---- Verifying deployment target ----"
+python3 "${SRC_DIR}/tools/macos-verify-deployment-target.py" "${PKG_DIR}"
 
 echo
 echo "---- Ad-hoc signing ----"

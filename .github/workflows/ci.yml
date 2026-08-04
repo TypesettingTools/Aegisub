@@ -55,30 +55,49 @@ jobs:
             buildtype: release,
             args: -Db_pch=false
           }
-          - {
-            name: macOS x86_64 Debug,
-            os: macos-15-intel,
-            buildtype: debugoptimized,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
-          - {
-            name: macOS x86_64 Release,
-            os: macos-15-intel,
-            buildtype: release,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
-          - {
-            name: macOS arm64 Debug,
-            os: macos-15,
-            buildtype: debugoptimized,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
-          - {
-            name: macOS arm64 Release,
-            os: macos-15,
-            buildtype: release,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
+          - name: macOS x86_64 Debug
+            os: macos-15-intel
+            buildtype: debugoptimized
+            args: &macos_args >-
+              -Ddefault_library=static
+              -Dbuild_osx_bundle=true
+              -Dfftw3=disabled
+              -Dlibpulse=disabled
+              -Dopenal=enabled
+              -Dlibass:fontconfig=disabled
+              -Dlibass:libunibreak=disabled
+              -Dlibass:test=disabled
+              -Dfreetype2:bzip2=disabled
+              -Dfreetype2:brotli=disabled
+              -Dfreetype2:hvf=disabled
+              -Dfribidi:bin=false
+              -Dfribidi:docs=false
+              -Dfribidi:tests=false
+              -Dharfbuzz:gpu=disabled
+              -Dharfbuzz:raster=disabled
+              -Dharfbuzz:subset=disabled
+              -Dharfbuzz:tests=disabled
+              -Dharfbuzz:utilities=disabled
+              -Dharfbuzz:vector=disabled
+              -Dffmpeg:bzlib=disabled
+              -Dffmpeg:programs=disabled
+              -Dffmpeg:tests=disabled
+              -Ddav1d:enable_tests=false
+              -Ddav1d:enable_tools=false
+              -Dzlib:tests=disabled
+              --force-fallback-for=boost,wxWidgets,libass,zlib,freetype2,fribidi,harfbuzz,libpng,ffms2,libavformat,libavcodec,libswscale,libavutil,libswresample,dav1d,hunspell,uchardet,icu-uc,icu-i18n,libcurl
+          - name: macOS x86_64 Release
+            os: macos-15-intel
+            buildtype: release
+            args: *macos_args
+          - name: macOS arm64 Debug
+            os: macos-15
+            buildtype: debugoptimized
+            args: *macos_args
+          - name: macOS arm64 Release
+            os: macos-15
+            buildtype: release
+            args: *macos_args
 
     steps:
       - uses: actions/checkout@v6
@@ -127,10 +146,7 @@ jobs:
       - name: Install dependencies (MacOS)
         if: startsWith(matrix.config.os, 'macos-')
         run: |
-          brew update
-          brew install ninja
-          brew install libass zlib ffms2 fftw hunspell
-          brew install pulseaudio  # NO OpenAL in github CI
+          brew install ninja nasm
 
       - name: Install dependencies (Linux)
         if: startsWith(matrix.config.os, 'ubuntu-')
@@ -142,6 +158,14 @@ jobs:
         run: |
           ${{ matrix.config.devenv }}
           meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
+
+      - name: Build FFTW (MacOS)
+        if: startsWith(matrix.config.os, 'macos-')
+        run: |
+          tools/macos-build-fftw.sh build
+          meson setup --reconfigure --clearcache build \
+            -Dpkg_config_path="$PWD/build/fftw-prefix/lib/pkgconfig" \
+            -Dfftw3=enabled
 
       - name: Build
         run: |
