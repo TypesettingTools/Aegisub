@@ -70,3 +70,22 @@ describe 'lfs', ->
 
       os.remove(name)
       assert.is.nil lfs.attributes name, 'mode'
+
+  describe 'dir', ->
+    it 'should iterate over the files in a directory', ->
+      name = temp_name!
+      lfs.mkdir name
+      lfs.touch name .. '/a'
+      lfs.touch name .. '/b'
+
+      files = [f for f in lfs.dir name]
+      table.sort files
+      assert.is.same {'a', 'b'}, files
+
+      os.remove name .. '/a'
+      os.remove name .. '/b'
+      lfs.rmdir name
+
+    it 'should iterate nothing for a nonexistent path', ->
+      files = [f for f in lfs.dir temp_name!]
+      assert.is.same {}, files
