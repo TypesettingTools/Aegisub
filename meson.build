@@ -17,6 +17,21 @@ project('Aegisub', ['c', 'cpp'],
         version: '3.5.0')
 
 cmake = import('cmake')
+force_fallback_for = get_option('force_fallback_for')
+
+if host_machine.system() == 'darwin'
+    macos_deployment_target = get_option('macos_deployment_target')
+    if macos_deployment_target == ''
+        error('macos_deployment_target must not be empty')
+    endif
+
+    add_languages('objc', 'objcpp', native: false)
+    macos_deployment_flag = '-mmacosx-version-min=' + macos_deployment_target
+    foreach language : ['c', 'cpp', 'objc', 'objcpp']
+        add_global_arguments(macos_deployment_flag, language: language)
+        add_global_link_arguments(macos_deployment_flag, language: language)
+    endforeach
+endif
 
 if host_machine.system() == 'windows'
     # The CRT must be linked dynamically (the default): the automation code
@@ -90,7 +105,6 @@ endif
 deps = []
 
 if host_machine.system() == 'darwin'
-    add_languages('objc', 'objcpp')
     add_project_arguments('-DGL_SILENCE_DEPRECATION', language: 'cpp')
     # meson neither supports objcpp_std nor inherits cpp_std https://github.com/mesonbuild/meson/issues/5495
     add_project_arguments('-std=c++20', language: 'objcpp')
@@ -116,7 +130,9 @@ if boost_static
     boost_modules += 'thread'   # static boost dependencies do not include transitive dependencies https://github.com/mesonbuild/meson/issues/15457
 endif
 
-if not get_option('local_boost')
+use_bundled_boost = force_fallback_for.contains('boost')
+
+if not use_bundled_boost
     boost_dep = dependency('boost', version: '>=1.70.0',
                             modules: boost_modules,
                             required: false,
@@ -132,7 +148,7 @@ if not get_option('local_boost')
     endif
 endif
 
-if get_option('local_boost') or not boost_dep.found()
+if use_bundled_boost or not boost_dep.found()
     boost_dep = []
     boost = subproject('boost')
     foreach module: (boost_modules + ['regex'])
@@ -154,9 +170,13 @@ endif
 
 deps += dependency('zlib')
 
-wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
-                    required: false,
-                    modules: ['std', 'stc', 'gl'])
+if force_fallback_for.contains('wxWidgets')
+    wx_dep = dependency('', required: false)
+else
+    wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
+                        required: false,
+                        modules: ['std', 'stc', 'gl'])
+endif
 
 if wx_dep.found()
     deps += wx_dep
@@ -185,6 +205,12 @@ else
         'wxUSE_IMAGE': true,
         'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
     })
+
+    if host_machine.system() == 'darwin'
+        opt_var.add_cmake_defines({
+            'CMAKE_OSX_DEPLOYMENT_TARGET': macos_deployment_target,
+        })
+    endif
 
     wx = cmake.subproject('wxWidgets', options: opt_var)
 
@@ -327,7 +353,13 @@ conf_meson = configuration_data()
 conf_meson.set('DEFAULT_PLAYER_AUDIO', def_audio)
 
 if get_option('enable_update_checker')
-    curl_disable = ['tool', 'dict', 'file', 'ftp', 'gopher', 'imap', 'ldap', 'ldaps', 'mqtt', 'pop3', 'rtmp', 'rtsp', 'smb', 'smtp', 'telnet', 'tftp']
+    curl_disable = [
+        'tool', 'tests', 'unittests',
+        'dict', 'file', 'ftp', 'gopher', 'imap', 'ipfs', 'ldap', 'ldaps',
+        'mqtt', 'pop3', 'rtmp', 'rtsp', 'smb', 'smtp', 'telnet', 'tftp',
+        'brotli', 'gss-api', 'http2', 'idn', 'kerberos-auth', 'negotiate-auth',
+        'psl', 'ssh', 'tls-srp', 'websockets', 'zstd',
+    ]
     curl_options = []
     foreach opt : curl_disable
         curl_options += opt + '=disabled'
@@ -336,7 +368,7 @@ if get_option('enable_update_checker')
     if host_machine.system() == 'windows'
         curl_options += 'schannel=enabled'
     elif host_machine.system() == 'darwin'
-        curl_options += 'secure-transport=enabled'
+        curl_options += ['openssl=disabled', 'secure-transport=enabled']
     else
         curl_options += 'openssl=enabled'
     endif

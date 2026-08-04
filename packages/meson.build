@@ -17,7 +17,7 @@ elif host_machine.system() == 'darwin'
     bundle_app_sh = find_program(meson.project_source_root() / 'tools/osx-bundle.sh')
     run_target('osx-bundle',
                command: [bundle_app_sh, meson.project_source_root(), meson.project_build_root(), 'wx-config', fontconfig_conf, '',
-                         get_option('build_osx_bundle') ? 'TRUE' : 'FALSE'])
+                         get_option('build_osx_bundle') ? 'TRUE' : 'FALSE', get_option('macos_deployment_target')])
 
     sign_app_sh = find_program(meson.project_source_root() / 'tools/osx-sign.sh')
     run_target('osx-sign',
