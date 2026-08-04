@@ -19,6 +19,9 @@ project('Aegisub', ['c', 'cpp'],
 cmake = import('cmake')
 
 if host_machine.system() == 'windows'
+    # The CRT must be linked dynamically (the default): the automation code
+    # assumes the app and LuaJIT's ffi.C use the same CRT, which doesn't hold
+    # when the CRT is statically linked.
     add_project_arguments('-DUNICODE', '-DNOMINMAX', '-D_WIN32_WINNT=0x0601', language: 'cpp')
 
     if not get_option('csri').disabled()
