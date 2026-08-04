@@ -452,6 +452,7 @@ subdir('po')
 subdir('src')
 if get_option('tests')
     subdir('tests')
+    subdir('automation/tests')
 endif
 
 aegisub_cpp_pch = ['src/include/agi_pre.h']
