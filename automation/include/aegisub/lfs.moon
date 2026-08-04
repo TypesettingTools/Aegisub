@@ -68,7 +68,7 @@ class dir_iter
 dir = check'string' (path) ->
   obj, err = impl.dir_new path
   if err
-    error 2, err
+    error err, 2
   iter = dir_iter obj
   iter.next, iter
 
