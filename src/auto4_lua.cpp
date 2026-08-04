@@ -122,7 +122,7 @@ namespace {
 		return 1;
 	}
 
-	const char *clipboard_get()
+	char *clipboard_get()
 	{
 		std::string data;
 		agi::dispatch::Main().Sync([&] { data = GetClipboard(); });
