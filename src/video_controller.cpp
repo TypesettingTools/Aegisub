@@ -46,6 +46,10 @@
 
 #include <wx/log.h>
 
+namespace {
+constexpr int selection_sync_delay = 50;
+}
+
 VideoController::VideoController(agi::Context *c)
 : context(c)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
@@ -58,11 +62,15 @@ VideoController::VideoController(agi::Context *c)
 	Bind(EVT_VIDEO_ERROR, &VideoController::OnVideoError, this);
 	Bind(EVT_SUBTITLES_ERROR, &VideoController::OnSubtitlesError, this);
 	playback.Bind(wxEVT_TIMER, &VideoController::OnPlayTimer, this);
+	selection_sync.Bind(wxEVT_TIMER, &VideoController::OnSelectionSyncTimer, this);
 }
 
 void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 	Stop();
+	selection_sync.Stop();
+	pending_selection_frame.reset();
 	provider = new_provider;
+	last_requested_frame = -1;
 	color_matrix = std::nullopt;
 }
 
@@ -85,12 +93,33 @@ void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 
 void VideoController::OnActiveLineChanged(AssDialogue *line) {
 	if (line && provider && OPT_GET("Video/Subtitle Sync")->GetBool()) {
-		Stop();
-		JumpToTime(line->Start);
+		pending_selection_frame = FrameAtTime(line->Start);
+		selection_sync.StartOnce(selection_sync_delay);
+	}
+	else {
+		selection_sync.Stop();
+		pending_selection_frame.reset();
 	}
 }
 
+void VideoController::OnSelectionSyncTimer(wxTimerEvent &) {
+	if (!pending_selection_frame)
+		return;
+
+	int frame = *pending_selection_frame;
+	pending_selection_frame.reset();
+	if (!provider || !OPT_GET("Video/Subtitle Sync")->GetBool())
+		return;
+
+	Stop();
+	JumpToFrame(frame);
+}
+
 void VideoController::RequestFrame() {
+	if (last_requested_frame == frame_n)
+		return;
+
+	last_requested_frame = frame_n;
 	context->ass->Properties.video_position = frame_n;
 	provider->RequestFrame(frame_n, TimeAtFrame(frame_n));
 }
