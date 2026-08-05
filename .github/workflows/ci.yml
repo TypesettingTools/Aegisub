@@ -58,6 +58,7 @@ jobs:
           - name: macOS x86_64 Debug
             os: macos-15-intel
             buildtype: debugoptimized
+            arch_args: -Dffmpeg:lzma=disabled
             args: &macos_args >-
               -Ddefault_library=static
               -Dbuild_osx_bundle=true
@@ -89,14 +90,17 @@ jobs:
           - name: macOS x86_64 Release
             os: macos-15-intel
             buildtype: release
+            arch_args: -Dffmpeg:lzma=disabled
             args: *macos_args
           - name: macOS arm64 Debug
             os: macos-15
             buildtype: debugoptimized
+            arch_args: ''
             args: *macos_args
           - name: macOS arm64 Release
             os: macos-15
             buildtype: release
+            arch_args: ''
             args: *macos_args
 
     steps:
@@ -165,7 +169,7 @@ jobs:
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
-          meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
+          meson setup build ${{ matrix.config.args }} ${{ matrix.config.arch_args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
       - name: Build FFTW (MacOS)
         if: startsWith(matrix.config.os, 'macos-')
