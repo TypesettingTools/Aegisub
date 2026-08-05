@@ -93,6 +93,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	SetWrapMode(wxSTC_WRAP_WORD);
 	SetMarginWidth(1,0);
 	UsePopUp(wxSTC_POPUP_NEVER);
+	EnableStcBidirectional(this);
 	SetStyles();
 
 	// Set hotkeys
@@ -273,6 +274,9 @@ void SubsTextEditCtrl::SetStyles() {
 	// IME pending text indicator
 	IndicatorSetStyle(1, wxSTC_INDIC_PLAIN);
 	IndicatorSetUnder(1, true);
+
+	// Re-apply after style changes that may reset selection drawing.
+	EnableStcBidirectional(this);
 }
 
 void SubsTextEditCtrl::UpdateStyle() {
