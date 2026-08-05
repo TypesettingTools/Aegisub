@@ -94,6 +94,12 @@ void SetClipboard(wxBitmap const& new_value);
 
 wxString FontFace(std::string opt_prefix);
 
+/// Enable Scintilla bidirectional text layout for correct RTL selection/highlighting.
+/// On Windows this switches to DirectWrite, enables SC_BIDIRECTIONAL_L2R, and uses
+/// translucent selection (required for visual selection under BIDI). No-ops if the
+/// underlying Scintilla build lacks BIDI support.
+void EnableStcBidirectional(wxStyledTextCtrl *stc);
+
 agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent);
 agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent);
 
