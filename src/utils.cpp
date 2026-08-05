@@ -47,6 +47,7 @@
 #include <wx/clipbrd.h>
 #include <wx/filedlg.h>
 #include <wx/stdpaths.h>
+#include <wx/stc/stc.h>
 #include <wx/window.h>
 
 #ifdef __APPLE__
@@ -291,4 +292,32 @@ wxString LocalizedLanguageName(wxString const& lang) {
 	if (auto info = wxLocale::FindLanguageInfo(lang))
 		return info->Description;
 	return lang;
+}
+
+#ifndef SCI_SETBIDIRECTIONAL
+#define SCI_SETBIDIRECTIONAL 2709
+#define SCI_GETBIDIRECTIONAL 2708
+#define SC_BIDIRECTIONAL_DISABLED 0
+#define SC_BIDIRECTIONAL_L2R 1
+#define SC_BIDIRECTIONAL_R2L 2
+#endif
+
+void EnableStcBidirectional(wxStyledTextCtrl *stc) {
+#ifdef __WXMSW__
+	if (!stc)
+		return;
+
+	// Bidirectional layout on Win32 requires DirectWrite.
+	stc->SetTechnology(wxSTC_TECHNOLOGY_DIRECTWRITE);
+
+	// Opaque selection drawing does not handle BIDI runs; translucent does.
+	stc->SetSelAlpha(128);
+
+	// Default paragraph direction LTR keeps ASS override tags readable while
+	// still laying out RTL runs correctly. Message is a no-op on Scintilla
+	// builds that predate BIDI (e.g. wx 3.2's Scintilla 3.7.2).
+	stc->SendMsg(SCI_SETBIDIRECTIONAL, SC_BIDIRECTIONAL_L2R, 0);
+#else
+	(void)stc;
+#endif
 }
