@@ -22,7 +22,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.5.0-beta\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 14:45+0200\n"
-"PO-Revision-Date: 2026-07-28 21:00+0800\n"
+"PO-Revision-Date: 2026-08-07 13:25+0800\n"
 "Last-Translator: op200 <op200_reek@qq.com>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -4911,7 +4911,7 @@ msgstr "开始前阈:"
 msgid ""
 "Threshold for 'before start' distance, that is, how many milliseconds a "
 "subtitle must start before a keyframe to snap to it"
-msgstr "“开始之前”距离阈值，也就是，当字幕在距离关键帧多少帧之前开始则要对齐。"
+msgstr "“开始之前”距离阈值，即距离关键帧之前指定毫秒内的字幕时轴开始点，将与关键帧对齐。"
 
 #: ../src/dialog_timing_processor.cpp:235
 msgid "Starts after thres.:"
@@ -4921,7 +4921,7 @@ msgstr "开始后阈:"
 msgid ""
 "Threshold for 'after start' distance, that is, how many milliseconds a "
 "subtitle must start after a keyframe to snap to it"
-msgstr "“开始之后”距离阈值，也就是，当字幕在距离关键帧多少帧之后开始则要对齐。"
+msgstr "“开始之后”距离阈值，即距离关键帧之后指定毫秒内的字幕时轴开始点，将与关键帧对齐。"
 
 #: ../src/dialog_timing_processor.cpp:240
 msgid "Ends before thres.:"
@@ -4931,7 +4931,7 @@ msgstr "结束前阈:"
 msgid ""
 "Threshold for 'before end' distance, that is, how many milliseconds a "
 "subtitle must end before a keyframe to snap to it"
-msgstr "“结束之前”距离阈值，也就是，当字幕在距离关键帧多少帧之前结束则要对齐。"
+msgstr "“结束之前”距离阈值，即距离关键帧之前指定毫秒内的字幕时轴结束点，将与关键帧对齐。"
 
 #: ../src/dialog_timing_processor.cpp:243
 msgid "Ends after thres.:"
@@ -4941,7 +4941,7 @@ msgstr "结束后阈:"
 msgid ""
 "Threshold for 'after end' distance, that is, how many milliseconds a "
 "subtitle must end after a keyframe to snap to it"
-msgstr "“结束之后”距离阈值，也就是，当字幕在距离关键帧多少帧之后结束则要对齐。"
+msgstr "“结束之后”距离阈值，即距离关键帧之后指定毫秒内的字幕时轴结束点，将与关键帧对齐。"
 
 #: ../src/dialog_timing_processor.cpp:352
 #, c-format
@@ -5774,7 +5774,7 @@ msgstr "每秒字符数报错阈值"
 
 #: ../src/preferences.cpp:263
 msgid "Ignore whitespace"
-msgstr "忽略空格"
+msgstr "忽略空白字符"
 
 #: ../src/preferences.cpp:264
 msgid "Ignore punctuation"
@@ -5798,7 +5798,7 @@ msgstr "代替样式覆写标签的字符串"
 
 #: ../src/preferences.cpp:273
 msgid "Skip over whitespace"
-msgstr "跳过空行"
+msgstr "跳过空白字符"
 
 #: ../src/preferences.cpp:288
 msgid "Audio Display"
@@ -6612,7 +6612,7 @@ msgstr "没有改正建议"
 #: ../src/subs_edit_ctrl.cpp:466
 #, c-format
 msgid "Add \"%s\" to dictionary"
-msgstr "添加 \"%s\" 至同义词词典"
+msgstr "添加 \"%s\" 至词典"
 
 #: ../src/subs_edit_ctrl.cpp:501
 #, c-format
