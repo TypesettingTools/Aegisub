@@ -4,10 +4,9 @@ set -e
 
 SRC_DIR="${1}"
 BUILD_DIR="${2}"
-WX_PREFIX=""
-FONTCONFIG_CONF_DIR="${4}"
 DICT_DIR="${5}"
 MESON_BUILD_OSX_BUNDLE="${6}"
+MACOS_DEPLOYMENT_TARGET="${7}"
 
 if [ "${MESON_BUILD_OSX_BUNDLE}" != "TRUE" ]; then
   echo "Project not built with \`build_osx_bundle\`"
@@ -41,25 +40,26 @@ if ! test -f "${BUILD_DIR}/osx-bundle.sed"; then
 fi
 
 # used by osx-bundle.sed
-find "${SRC_DIR}/po" -name *.po | sed 's/.*\/\(.*\)\.po/        <string>\1<\/string>/; s/RS/YU/' > "${BUILD_DIR}/languages"
+find "${SRC_DIR}/po" -name '*.po' | sed 's/.*\/\(.*\)\.po/        <string>\1<\/string>/; s/RS/YU/' > "${BUILD_DIR}/languages"
 
 #find "${SKEL_DIR}" -type f -not -regex ".*.svn.*"
-cp -v ${SKEL_DIR}/Contents/Resources/*.icns "${PKG_DIR}/Contents/Resources"
-cat "${SKEL_DIR}/Contents/Info.plist" | sed -f "${BUILD_DIR}/osx-bundle.sed" > "${PKG_DIR}/Contents/Info.plist"
+cp -v "${SKEL_DIR}"/Contents/Resources/*.icns "${PKG_DIR}/Contents/Resources"
+sed -e "s/@MACOS_DEPLOYMENT_TARGET@/${MACOS_DEPLOYMENT_TARGET}/g" \
+  -f "${BUILD_DIR}/osx-bundle.sed" "${SKEL_DIR}/Contents/Info.plist" > "${PKG_DIR}/Contents/Info.plist"
 
 rm "${BUILD_DIR}/languages"
 
 echo
 echo "---- Installing files ----"
-CURRENT_DIR=`pwd`
-cd ${BUILD_DIR}
-meson install --skip-subprojects luajit
-cd ${CURRENT_DIR}
+(
+  cd "${BUILD_DIR}"
+  meson install --skip-subprojects
+)
 
 echo
 echo "---- Copying dictionaries ----"
-if test -f "${DICT_DIR}"; then
-  cp -v "${DICT_DIR}/*" "${PKG_DIR}/Contents/SharedSupport/dictionaries"
+if test -d "${DICT_DIR}"; then
+  cp -v "${DICT_DIR}"/* "${PKG_DIR}/Contents/SharedSupport/dictionaries"
 else
   mkdir -p "${BUILD_DIR}/dictionaries"
   if ! test -f "${BUILD_DIR}/dictionaries/en_US.aff"; then
@@ -103,18 +103,17 @@ mkdir -vp "${PKG_DIR}/Contents/Resources/en.lproj"
 
 echo
 echo "---- Fixing libraries ----"
-sudo python3 "${SRC_DIR}/tools/osx-fix-libs.py" "${PKG_DIR}/Contents/MacOS/aegisub" || exit $?
+python3 "${SRC_DIR}/tools/osx-fix-libs.py" "${PKG_DIR}/Contents/MacOS/aegisub"
 
 echo
-echo "---- Signing ----"
+echo "---- Verifying deployment target ----"
+python3 "${SRC_DIR}/tools/macos-verify-deployment-target.py" "${PKG_DIR}"
+
+echo
+echo "---- Ad-hoc signing ----"
 # Even if the binaries were already ad-hoc signed during compilation,
 # they need to be resigned after bundling and rewriting dylib paths.
-if codesign -d "${PKG_DIR}/Contents/MacOS/aegisub"; then
-  for fname in "${PKG_DIR}/Contents/MacOS/"*; do
-    codesign -s ${AEGISUB_BUNDLE_SIGNATURE:--} -vf "${fname}"
-  done
-  codesign -s ${AEGISUB_BUNDLE_SIGNATURE:--} -vf "${PKG_DIR}/"
-fi
+AEGISUB_BUNDLE_SIGNATURE=- "${SRC_DIR}/tools/osx-sign.sh" "${SRC_DIR}" "${PKG_DIR}"
 
 echo
 echo "Done creating \"${PKG_DIR}\""
