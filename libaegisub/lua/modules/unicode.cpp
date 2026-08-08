@@ -25,6 +25,7 @@ char *wrap(void (*fn)(icu::UnicodeString&), const char *str, char **err) {
 	auto ustr = icu::UnicodeString::fromUTF8(str);
 	if (ustr.isBogus()) {
 		*err = strdup((std::string("Converting \"") + str + "\" to a unicode string failed.").c_str());
+		return nullptr;
 	}
 	fn(ustr);
 	std::string out;

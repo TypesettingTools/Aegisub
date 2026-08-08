@@ -33,21 +33,35 @@ regex_flag = ffi.typeof 'agi_re_flag'
 -- Get the boost::eegex binding
 regex = require 'aegisub.__re_impl'
 
+err_buff = ffi.new 'char *[1]'
+
+-- Raise a Lua error if the last native call reported one
+check_err = ->
+  if err_buff[0] != nil
+    error ffi_util.string(err_buff[0]), 3
+
 -- Wrappers to convert returned values from C types to Lua types
 search = (re, str, start) ->
   return unless start <= str\len()
-  res = regex.search re, str, str\len(), start
+  err_buff[0] = nil
+  res = regex.search re, str, str\len(), start, err_buff
+  check_err!
   return unless res != nil
   first, last = res[0], res[1]
   ffi.gc(res, ffi.C.free)
   first, last
 
 replace = (re, replacement, str, max_count) ->
-  ffi_util.string regex.replace re, replacement, str, str\len(), max_count
+  err_buff[0] = nil
+  res = regex.replace re, replacement, str, str\len(), max_count, err_buff
+  check_err!
+  ffi_util.string res
 
 match = (re, str, start) ->
   assert start <= str\len()
-  m = regex.match re, str, str\len(), start
+  err_buff[0] = nil
+  m = regex.match re, str, str\len(), start, err_buff
+  check_err!
   return unless m != nil
   ffi.gc m, regex.match_free
 
@@ -56,12 +70,11 @@ get_match = (m, idx) ->
   return unless res != nil
   res[0], res[1] -- Result buffer is owned by match so no need to free
 
-err_buff = ffi.new 'char *[1]'
 compile = (pattern, flags) ->
   err_buff[0] = nil
   re = regex.compile pattern, flags, err_buff
   if err_buff[0] != nil
-    return ffi.string err_buff[0]
+    return ffi_util.string err_buff[0]
   ffi.gc re, regex.regex_free
 
 -- Return the first n elements from ...

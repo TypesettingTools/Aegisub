@@ -326,3 +326,14 @@ describe 'sub', ->
     assert.is.not.nil res
     assert.is.equal 'dadbdcd', res
 
+describe 'invalid UTF-8', ->
+  it 'should be reported as an error by find', ->
+    ok, err = pcall -> re.find 'abc\255def', 'd'
+    assert.is.false ok
+    assert.is.truthy err\find 'UTF-8', 1, true
+
+  it 'should be reported as an error by match', ->
+    ok, err = pcall -> re.match '\255', 'x'
+    assert.is.false ok
+    assert.is.truthy err\find 'UTF-8', 1, true
+
