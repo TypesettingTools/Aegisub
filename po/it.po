@@ -25,7 +25,7 @@ msgstr "Scegli una cartella:"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
-msgstr ""
+msgstr "Rileva automaticemente la direzione del testo (solo libass)"
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
@@ -213,6 +213,9 @@ msgid ""
 "Location specifier found: %c\n"
 "Filename specified: %s"
 msgstr ""
+"Uno script di automazione è stato referenziato con un carattere sconosciuto.\n"
+"carattere: %c\n"
+"File: %s"
 
 #: ../src/auto4_base.cpp:412
 #, c-format
@@ -227,6 +230,15 @@ msgid ""
 "You should only load associated automation scripts if you trust their "
 "authors! They are not required to view or edit the subtitle file."
 msgstr ""
+"Il file di sottotitoli aperto contiene degli script di automazione locali."
+"Vuoi caricare gli script di automazione associati?\n"
+"\n"
+"Lista degli script:\n"
+"\n"
+"%s\n"
+"\n"
+"È consigliato caricare gli script di automazione associati ad un file solamente "
+"se ti fidi dell'autore! Non sono essenziali a vedere o modificare un sottotitolo."
 
 #: ../src/auto4_base.cpp:418
 #, fuzzy, c-format
@@ -242,13 +254,14 @@ msgstr "Ricarica script Automation autocaricate"
 
 #: ../src/auto4_base.cpp:422
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: ../src/auto4_base.cpp:422
 #, fuzzy
 #| msgid "Global autoload scripts"
 msgid "Trust the authors && load scripts"
-msgstr "Script globale autocaricato"
+#|msgstr "Script globale autocaricato"
+msgstr "Carica gli script e fidati degli autori"
 
 #: ../src/auto4_base.cpp:437
 #, c-format
@@ -258,6 +271,10 @@ msgid ""
 "Searched relative to: %s\n"
 "Resolved filename: %s"
 msgstr ""
+"Lo script di automazione referenziato non è stato trovato.\n"
+"File specificato: %s\n"
+"Cercato rispetto a: %s\n"
+"File: %s"
 
 #: ../src/auto4_base.cpp:498
 #, c-format
@@ -265,6 +282,8 @@ msgid ""
 "Failed to load Automation script '%s':\n"
 "%s"
 msgstr ""
+"Errore nel caricamento dello script di automazione '%s':\n"
+"%s"
 
 #: ../src/auto4_base.cpp:501
 #, fuzzy, c-format
@@ -315,12 +334,17 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Errore nell'inizializzazione dello script Lua \"%s\":\n"
+"\n"
+"%s"
 
 #: ../src/auto4_lua.cpp:557
 msgid ""
 "Attempted to load an Automation 3 script as an Automation 4 Lua script. "
 "Automation 3 is no longer supported."
 msgstr ""
+"Uno script Lua di Automazione versione 3 è stato caricato come versione 4. "
+"Le versione 3 non è più supportata."
 
 #: ../src/auto4_lua.cpp:831
 #, c-format
@@ -328,21 +352,23 @@ msgid ""
 "Runtime error in Lua macro validation function:\n"
 "%s"
 msgstr ""
+"Errore di esecuzione nella funzione di validazione delle macro in Lua:\n"
+"%s"
 
 #: ../src/auto4_lua.cpp:885
 #, c-format
 msgid "Active row %d is out of bounds (must be 1-%u)"
-msgstr ""
+msgstr "La riga attiva %d è fuori limite (deve essere 1-%u)"
 
 #: ../src/auto4_lua.cpp:901
 #, c-format
 msgid "Selected row %d is out of bounds (must be 1-%u)"
-msgstr ""
+msgstr "La riga selezionata %d è fuori limite (deve essere 1-%u)"
 
 #: ../src/auto4_lua.cpp:907
 #, c-format
 msgid "Selected row %d is not a dialogue line"
-msgstr ""
+msgstr "La riga selezionata %d non è una riga di dialogo"
 
 #: ../src/auto4_lua.cpp:973
 #, c-format
@@ -350,6 +376,8 @@ msgid ""
 "Runtime error in Lua macro IsActive function:\n"
 "%s"
 msgstr ""
+"Errore di esecuzione nella funzione macro di Lua IsActive:\n"
+"%s"
 
 #: ../src/auto4_lua.cpp:1079
 #, c-format
@@ -357,6 +385,8 @@ msgid ""
 "Runtime error in Lua config dialog function:\n"
 "%s"
 msgstr ""
+"Errore di esecuzione nella funzione Lua di configurazione dei dialoghi:\n"
+"%s"
 
 #: ../src/charset_detect.cpp:50
 msgid ""
@@ -384,51 +414,51 @@ msgstr "Info su Aegisub"
 
 #: ../src/command/app.cpp:67
 msgid "&Audio+Subs View"
-msgstr "Visualizza &Audio+Sub"
+msgstr "Mostra &Audio+Sub"
 
 #: ../src/command/app.cpp:68
 msgid "Audio+Subs View"
-msgstr "Visualizza Audio+Sub"
+msgstr "Mostra Audio+Sub"
 
 #: ../src/command/app.cpp:69
 msgid "Display audio and the subtitles grid only"
-msgstr ""
+msgstr "Mostra solo l'audio e la griglia dei sottotitoli"
 
 #: ../src/command/app.cpp:87
 msgid "&Full view"
-msgstr "Visualizza tutto"
+msgstr "Mostra tutto"
 
 #: ../src/command/app.cpp:88
 msgid "Full view"
-msgstr "Visualizza tutto"
+msgstr "Mostra tutto"
 
 #: ../src/command/app.cpp:89
 msgid "Display audio, video and then subtitles grid"
-msgstr ""
+msgstr "Mostra audio, video e la griglia dei sottotitoli"
 
 #: ../src/command/app.cpp:107
 msgid "S&ubs Only View"
-msgstr "Visualizza Solo S&ub"
+msgstr "Mostra Solo S&ub"
 
 #: ../src/command/app.cpp:108
 msgid "Subs Only View"
-msgstr "Visualizza Solo Sub"
+msgstr "Mostra Solo Sub"
 
 #: ../src/command/app.cpp:109
 msgid "Display the subtitles grid only"
-msgstr ""
+msgstr "Mostra solo la griglia dei sottotitoli"
 
 #: ../src/command/app.cpp:123
 msgid "&Video+Subs View"
-msgstr "Visualizza &Video+Sub"
+msgstr "Mostra &Video+Sub"
 
 #: ../src/command/app.cpp:124
 msgid "Video+Subs View"
-msgstr "Visualizza Video+Sub"
+msgstr "Mostra Video+Sub"
 
 #: ../src/command/app.cpp:125
 msgid "Display video and the subtitles grid only"
-msgstr ""
+msgstr "Mostra solo il video e la griglia dei sottotitoli"
 
 #: ../src/command/app.cpp:143
 msgid "E&xit"
@@ -455,6 +485,8 @@ msgid ""
 "Aegisub needs to be restarted so that the new language can be applied. "
 "Restart now?"
 msgstr ""
+"Aegisub deve essere chiuso e riaperto affinché la nuova lingua possa essere applicata. "
+"Vuoi farlo adesso?"
 
 #: ../src/command/app.cpp:167
 #, fuzzy
@@ -506,7 +538,7 @@ msgstr "Hotkey globali override"
 
 #: ../src/command/app.cpp:222
 msgid "Toggle global hotkey overrides (Medusa Mode)"
-msgstr ""
+msgstr "Hotkey globali override (Medusa Mode)"
 
 #: ../src/command/app.cpp:237
 msgid "Toggle the main toolbar"
@@ -534,27 +566,27 @@ msgstr "Controlla se e disponibile una nuova versione di Aegisub"
 
 #: ../src/command/app.cpp:270 ../src/command/app.cpp:271
 msgid "Minimize"
-msgstr ""
+msgstr "Riduci ad icona"
 
 #: ../src/command/app.cpp:272
 msgid "Minimize the active window"
-msgstr ""
+msgstr "Minimizza la finestra attiva"
 
 #: ../src/command/app.cpp:281 ../src/command/app.cpp:282
 msgid "Zoom"
-msgstr ""
+msgstr "Zoom"
 
 #: ../src/command/app.cpp:283
 msgid "Maximize the active window"
-msgstr ""
+msgstr "Massimizza la finestra attiva"
 
 #: ../src/command/app.cpp:292 ../src/command/app.cpp:293
 msgid "Bring All to Front"
-msgstr ""
+msgstr "Porta tutto in primo piano"
 
 #: ../src/command/app.cpp:294
 msgid "Bring forward all open documents to the front"
-msgstr ""
+msgstr "Porta tutti i documenti aperti in primo piano"
 
 #: ../src/command/audio.cpp:65
 msgid "&Close Audio"
@@ -566,7 +598,7 @@ msgstr "Chiudi Audio"
 
 #: ../src/command/audio.cpp:67
 msgid "Close the currently open audio file"
-msgstr ""
+msgstr "Chiudi il file audio attualmente aperto"
 
 #: ../src/command/audio.cpp:77
 msgid "&Open Audio File..."
@@ -578,7 +610,7 @@ msgstr "Apri File Audio"
 
 #: ../src/command/audio.cpp:79
 msgid "Open an audio file"
-msgstr ""
+msgstr "Apri un file audio"
 
 #: ../src/command/audio.cpp:82
 msgid "Audio Formats"
@@ -621,7 +653,7 @@ msgstr "Apri Audio preso dal Video"
 
 #: ../src/command/audio.cpp:118
 msgid "Open the audio from the current video file"
-msgstr ""
+msgstr "Apri audio preso dal video attuale"
 
 #: ../src/command/audio.cpp:132
 msgid "&Spectrum Display"
@@ -637,11 +669,11 @@ msgstr "Mostra audio come spettrografo a frequenza di rete"
 
 #: ../src/command/audio.cpp:148
 msgid "&Waveform Display"
-msgstr "Mostra Forma dell'onda"
+msgstr "Mostra forma d'onda"
 
 #: ../src/command/audio.cpp:149
 msgid "Waveform Display"
-msgstr "Mostra Forma dell'onda"
+msgstr "Mostra forma d'onda"
 
 #: ../src/command/audio.cpp:150
 msgid "Display audio as a linear amplitude graph"
@@ -653,7 +685,7 @@ msgstr "Crea clip audio"
 
 #: ../src/command/audio.cpp:166
 msgid "Save an audio clip of the selected line"
-msgstr ""
+msgstr "Salva una clip audio della riga selezionata"
 
 #: ../src/command/audio.cpp:177
 #, fuzzy
@@ -677,7 +709,7 @@ msgstr "Riproduci riga corrente"
 
 #: ../src/command/audio.cpp:207
 msgid "Play the audio for the current line"
-msgstr ""
+msgstr "Riproduci l'audio della riga corrente"
 
 #: ../src/command/audio.cpp:220 ../src/command/audio.cpp:221
 msgid "Play audio selection"
@@ -693,7 +725,7 @@ msgstr "Riproduci la sezione audio o fermala"
 
 #: ../src/command/audio.cpp:234
 msgid "Play selection, or stop playback if it's already playing"
-msgstr ""
+msgstr "Riproduci la selezione o fermala se sta già playando"
 
 #: ../src/command/audio.cpp:249 ../src/command/audio.cpp:250
 msgid "Stop playing"
@@ -701,7 +733,7 @@ msgstr "Ferma riproduzione"
 
 #: ../src/command/audio.cpp:251
 msgid "Stop audio and video playback"
-msgstr ""
+msgstr "Ferma la riproduzione audio e video"
 
 #: ../src/command/audio.cpp:267 ../src/command/audio.cpp:268
 #: ../src/command/audio.cpp:269
@@ -754,8 +786,7 @@ msgstr "Conferma e sposta alla prossima riga"
 
 #: ../src/command/audio.cpp:371
 msgid "Commit any pending audio timing changes and move to the next line"
-msgstr ""
-"Conferma ogni modifica del tempo audio in sospeso e sposta alla prossima riga"
+msgstr "Conferma ogni modifica del tempo audio in sospeso e sposta alla prossima riga"
 
 #: ../src/command/audio.cpp:384 ../src/command/audio.cpp:385
 msgid "Commit and stay on current line"
@@ -763,8 +794,7 @@ msgstr "Conferma e rimani sulla riga corrente"
 
 #: ../src/command/audio.cpp:386
 msgid "Commit any pending audio timing changes and stay on the current line"
-msgstr ""
-"Conferma ogni modifica del tempo audio in sospeso e rimani su questa riga"
+msgstr "Conferma ogni modifica del tempo audio in sospeso e rimani su questa riga"
 
 #: ../src/command/audio.cpp:397 ../src/command/audio.cpp:398
 msgid "Go to selection"
@@ -772,18 +802,20 @@ msgstr "Vai alla selezione"
 
 #: ../src/command/audio.cpp:399
 msgid "Scroll the audio display to center on the current audio selection"
-msgstr ""
+msgstr "Scorri la visualizzazione dell'audio per centrarla sulla selezione audio corrente"
 
 #: ../src/command/audio.cpp:408 ../src/command/audio.cpp:409
 #, fuzzy
 #| msgid "Go to selection"
 msgid "Go to selection start"
-msgstr "Vai alla selezione"
+#| msgstr "Vai alla selezione"
+msgstr "Vai all'inizio della selezione"
 
 #: ../src/command/audio.cpp:410
 msgid ""
 "Scroll the audio display to center on the start of current audio selection"
 msgstr ""
+"Scorri la visualizzazione dell'audio per centrarla all'inizio della selezione audio corrente"
 
 #: ../src/command/audio.cpp:419 ../src/command/audio.cpp:420
 #, fuzzy
@@ -795,6 +827,7 @@ msgstr "Vai alla selezione"
 msgid ""
 "Scroll the audio display to center on the end of current audio selection"
 msgstr ""
+"Scorri la visualizzazione dell'audio per centrarla alla fine della selezione audio corrente"
 
 #: ../src/command/audio.cpp:430 ../src/command/audio.cpp:431
 msgid "Scroll left"
@@ -802,7 +835,7 @@ msgstr "Scorri a Sinistra"
 
 #: ../src/command/audio.cpp:432
 msgid "Scroll the audio display left"
-msgstr "Scorri display audio a sinistra"
+msgstr "Scorri la visualizzazione dell'audio a sinistra"
 
 #: ../src/command/audio.cpp:441 ../src/command/audio.cpp:442
 msgid "Scroll right"
@@ -810,12 +843,12 @@ msgstr "Scorri a Destra"
 
 #: ../src/command/audio.cpp:443
 msgid "Scroll the audio display right"
-msgstr "Scorri il display audio a destra"
+msgstr "Scorri la visualizzazione dell'audio a destra"
 
 #: ../src/command/audio.cpp:457 ../src/command/audio.cpp:458
 #: ../src/command/audio.cpp:459
 msgid "Auto scroll audio display to selected line"
-msgstr ""
+msgstr "Scorri automaticamente la visualizzazione dell'audio alla riga selezionata"
 
 #: ../src/command/audio.cpp:474 ../src/command/audio.cpp:475
 #: ../src/command/audio.cpp:476
@@ -824,11 +857,11 @@ msgstr "Conferma automaticamente ogni modifica"
 
 #: ../src/command/audio.cpp:491 ../src/command/audio.cpp:492
 msgid "Auto go to next line on commit"
-msgstr ""
+msgstr "Vai automaticamente alla riga successiva all'invio"
 
 #: ../src/command/audio.cpp:493
 msgid "Automatically go to next line on commit"
-msgstr ""
+msgstr "Vai automaticamente alla riga successiva all'invio"
 
 #: ../src/command/audio.cpp:508 ../src/command/audio.cpp:509
 #: ../src/command/audio.cpp:510
@@ -897,6 +930,8 @@ msgid ""
 "Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan "
 "autoload folder and reload all automation scripts"
 msgstr ""
+"Apre il manager delle automazioni. Ctrl: Scansiona la cartella di caricamento automatico." 
+"Ctrl+MAIUSC: Scansiona la cartella di caricamenteo automatico e ricarica tutti gli script di automazione"
 
 #: ../src/command/command.cpp:35
 #, c-format
@@ -913,110 +948,113 @@ msgstr "imposta colore"
 
 #: ../src/command/edit.cpp:391
 msgid "Primary Color..."
-msgstr ""
+msgstr "Colore Principale..."
 
 #: ../src/command/edit.cpp:392
 msgid "Primary Color"
-msgstr ""
+msgstr "Colore Principale"
 
 #: ../src/command/edit.cpp:393
 msgid "Set the primary fill color (\\c) at the cursor position"
-msgstr ""
+msgstr "Seleziona il colore del riempimento principale (\\c) alla posizione del cursore"
 
 #: ../src/command/edit.cpp:403
 msgid "Secondary Color..."
-msgstr ""
+msgstr "Colore Secondario..."
 
 #: ../src/command/edit.cpp:404
 msgid "Secondary Color"
-msgstr ""
+msgstr "Colore Secondario"
 
 #: ../src/command/edit.cpp:405
 msgid "Set the secondary (karaoke) fill color (\\2c) at the cursor position"
-msgstr ""
+msgstr "Seleziona il colore del riempimento secondario (karaoke) (\\2c) alla posizione del cursore"
 
 #: ../src/command/edit.cpp:415
 msgid "Outline Color..."
-msgstr ""
+msgstr "Colore del Contorno..."
 
 #: ../src/command/edit.cpp:416
 msgid "Outline Color"
-msgstr ""
+msgstr "Colore del Contorno"
 
 #: ../src/command/edit.cpp:417
 msgid "Set the outline color (\\3c) at the cursor position"
-msgstr ""
+msgstr "Seleziona il colore del contorno (\\3c) alla posizione del cursore"
 
 #: ../src/command/edit.cpp:427
 msgid "Shadow Color..."
-msgstr ""
+msgstr "Colore dell'Ombra..."
 
 #: ../src/command/edit.cpp:428
 msgid "Shadow Color"
-msgstr ""
+msgstr "Colore dell'Ombra"
 
 #: ../src/command/edit.cpp:429
 msgid "Set the shadow color (\\4c) at the cursor position"
-msgstr ""
+msgstr "Seleziona il colore dell'ombra (\\4c) alla posizione del cursore"
 
 #: ../src/command/edit.cpp:439 ../src/command/edit.cpp:440
 msgid "Toggle Bold"
-msgstr ""
+msgstr "Seleziona Grassetto"
 
 #: ../src/command/edit.cpp:441
 msgid ""
 "Toggle bold (\\b) for the current selection or at the current cursor position"
 msgstr ""
+"Seleziona grassetto (\\b) per la selezione attuale o alla posizione attuale del cursore"
 
 #: ../src/command/edit.cpp:444
 msgid "toggle bold"
-msgstr "grassetto"
+msgstr "seleziona grassetto"
 
 #: ../src/command/edit.cpp:451 ../src/command/edit.cpp:452
 msgid "Toggle Italics"
-msgstr ""
+msgstr "Seleziona Corsivo"
 
 #: ../src/command/edit.cpp:453
 msgid ""
 "Toggle italics (\\i) for the current selection or at the current cursor "
 "position"
 msgstr ""
+"Seleziona corsivo (\\i) per la selezione attuale o alla posizione attuale del cursore
 
 #: ../src/command/edit.cpp:456
 msgid "toggle italic"
-msgstr "corsivo"
+msgstr "seleziona corsivo"
 
 #: ../src/command/edit.cpp:463 ../src/command/edit.cpp:464
 msgid "Toggle Underline"
-msgstr ""
+msgstr "Seleziona Sottolineato"
 
 #: ../src/command/edit.cpp:465
 msgid ""
 "Toggle underline (\\u) for the current selection or at the current cursor "
 "position"
 msgstr ""
+"Seleziona sottolineato (\\u) per la selezione attuale o alla posizione attuale del cursore"
 
 #: ../src/command/edit.cpp:468
 msgid "toggle underline"
-msgstr "Sottolineato"
+msgstr "seleziona sottolineato"
 
 #: ../src/command/edit.cpp:475 ../src/command/edit.cpp:476
 msgid "Toggle Strikeout"
-msgstr ""
+msgstr "Seleziona Barrato"
 
 #: ../src/command/edit.cpp:477
 msgid ""
 "Toggle strikeout (\\s) for the current selection or at the current cursor "
 "position"
-msgstr ""
+msgstr "Seleziona cancellato (\\s) per la selezione attuale o alla posizione attuale del cursore"
 
 #: ../src/command/edit.cpp:480
 msgid "toggle strikeout"
-msgstr "Barrato"
+msgstr "seleziona barrato"
 
 #: ../src/command/edit.cpp:487
 msgid "Font Face..."
-msgstr ""
+msgstr "Tipo di font..."
 
 #: ../src/command/edit.cpp:488 ../src/preferences_base.cpp:277
 msgid "Font Face"
@@ -1024,7 +1062,7 @@ msgstr "Tipo di font"
 
 #: ../src/command/edit.cpp:489
 msgid "Select a font face and size"
-msgstr ""
+msgstr "Seleziona una tipologia di font e la grandezza"
 
 #: ../src/command/edit.cpp:516
 msgid "set font"
@@ -1052,7 +1090,7 @@ msgstr "Copia Righe"
 
 #: ../src/command/edit.cpp:608
 msgid "Copy subtitles to the clipboard"
-msgstr ""
+msgstr "Copia sottotitoli"
 
 #: ../src/command/edit.cpp:629
 msgid "Cu&t Lines"
@@ -1068,7 +1106,7 @@ msgstr "Taglia i sottotitoli"
 
 #: ../src/command/edit.cpp:638
 msgid "cut lines"
-msgstr ""
+msgstr "taglia riga"
 
 #: ../src/command/edit.cpp:646
 msgid "De&lete Lines"
@@ -1084,7 +1122,7 @@ msgstr "Cancella le righe selezionate"
 
 #: ../src/command/edit.cpp:651
 msgid "delete lines"
-msgstr ""
+msgstr "cancella righe"
 
 #: ../src/command/edit.cpp:716
 msgid "duplicate lines"
@@ -1108,23 +1146,27 @@ msgstr "Duplica le righe selezionate"
 
 #: ../src/command/edit.cpp:734 ../src/command/edit.cpp:735
 msgid "Split lines after current frame"
-msgstr ""
+msgstr "Dividi righe dopo il frame corrente"
 
 #: ../src/command/edit.cpp:736
 msgid ""
 "Split the current line into a line which ends on the current frame and a "
 "line which starts on the next frame"
 msgstr ""
+"Dividi la riga corrente in una riga che termina al frame corrente "
+"e una riga che inizia al prossimo frame"
 
 #: ../src/command/edit.cpp:746 ../src/command/edit.cpp:747
 msgid "Split lines before current frame"
-msgstr ""
+msgstr "Dividi righe prima del frame corrente"
 
 #: ../src/command/edit.cpp:748
 msgid ""
 "Split the current line into a line which ends on the previous frame and a "
 "line which starts on the current frame"
 msgstr ""
+"Dividi la riga corrente in una riga che termina sul frame precedente "
+"e una riga che inizia al frame corrente"
 
 #: ../src/command/edit.cpp:788
 msgid "As &Karaoke"
@@ -1136,7 +1178,7 @@ msgstr "Come Karaoke"
 
 #: ../src/command/edit.cpp:790
 msgid "Join selected lines in a single one, as karaoke"
-msgstr ""
+msgstr "Unisci righe selezionate in una sola riga, come karaoke"
 
 #: ../src/command/edit.cpp:793
 msgid "join as karaoke"
@@ -1152,7 +1194,7 @@ msgstr "Concatena"
 
 #: ../src/command/edit.cpp:801
 msgid "Join selected lines in a single one, concatenating text together"
-msgstr ""
+msgstr "Unisci le righe selezionate in una sola riga, concatenando il testo"
 
 #: ../src/command/edit.cpp:804 ../src/command/edit.cpp:815
 msgid "join lines"
@@ -1171,6 +1213,8 @@ msgid ""
 "Join selected lines in a single one, keeping text of first and discarding "
 "remaining"
 msgstr ""
+"Unisci le righe selezionate in una sola riga, mantenendo il testo della prima "
+"e ignorando il testo della seconda"
 
 #: ../src/command/edit.cpp:853
 msgid "&Paste Lines"
@@ -1206,7 +1250,7 @@ msgstr "Ricombina Righe"
 
 #: ../src/command/edit.cpp:970
 msgid "Recombine subtitles which have been split and merged"
-msgstr ""
+msgstr "Ricombina i sottotitoli che sono stati divisi ed uniti"
 
 #: ../src/command/edit.cpp:1040
 msgid "combining"
@@ -1218,7 +1262,7 @@ msgstr "Dividi Righe (per karaoke)"
 
 #: ../src/command/edit.cpp:1048
 msgid "Use karaoke timing to split line into multiple smaller lines"
-msgstr ""
+msgstr "Usa i timing del karaoke per dividere le righe attuali in righe più piccole"
 
 #: ../src/command/edit.cpp:1082
 msgid "splitting"
@@ -1234,6 +1278,8 @@ msgid ""
 "Split the current line at the cursor, dividing the original line's duration "
 "between the new ones"
 msgstr ""
+"Dividi la riga attuale al cursore, dividendo la durata della riga originale "
+"tra le nuove righe"
 
 #: ../src/command/edit.cpp:1130 ../src/command/edit.cpp:1131
 #: ../src/subs_edit_ctrl.cpp:416
@@ -1245,20 +1291,24 @@ msgid ""
 "Split the current line at the cursor, setting both lines to the original "
 "line's times"
 msgstr ""
+"Dividi la riga attuale al cursore, ponendo entrambe le righe al tempo "
+"della riga originale"
 
 #: ../src/command/edit.cpp:1141 ../src/command/edit.cpp:1142
 msgid "Split at cursor (at video frame)"
-msgstr ""
+msgstr "Dividi al cursore (al frame video)"
 
 #: ../src/command/edit.cpp:1143
 msgid ""
 "Split the current line at the cursor, dividing the line's duration at the "
 "current video frame"
 msgstr ""
+"Dividi la riga attuale al cursore, dividendo la durata della riga "
+"al frame video attuale"
 
 #: ../src/command/edit.cpp:1159
 msgid "Redo last undone action"
-msgstr ""
+msgstr "Ripristina l'ultima azione annullata"
 
 #: ../src/command/edit.cpp:1164
 msgid "Nothing to &redo"
@@ -1280,7 +1330,7 @@ msgstr "Ripristina %s"
 
 #: ../src/command/edit.cpp:1185
 msgid "Undo last action"
-msgstr ""
+msgstr "Ripristina l'ultima azione"
 
 #: ../src/command/edit.cpp:1190
 msgid "Nothing to &undo"
