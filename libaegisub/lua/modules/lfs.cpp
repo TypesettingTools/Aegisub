@@ -101,7 +101,10 @@ DirectoryIterator *dir_new(const char *path, char **err) {
 const char *get_mode(const char *path, char **err) {
 	return wrap(err, [=]() -> const char * {
 		using enum sfs::file_type;
-		switch (sfs::status(path).type()) {
+		// Not inlined into the switch because it causes an ICE in MSVC 19.44 and 19.51
+		// Bug tracked at https://developercommunity.visualstudio.com/t/C1001-in-msc1cpp:-filesystem::path-deri/11134321
+		auto st = sfs::status(agi::fs::path(path));
+		switch (st.type()) {
 			case not_found: return nullptr;
 			case regular:   return "file";
 			case directory: return "directory";
