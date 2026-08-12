@@ -19,6 +19,7 @@ project('Aegisub', ['c', 'cpp'],
 cmake = import('cmake')
 fs = import('fs')
 force_fallback_for = get_option('force_fallback_for')
+force_all_fallbacks = get_option('wrap_mode') == 'forcefallback'
 
 if host_machine.system() == 'darwin'
     macos_deployment_target = get_option('macos_deployment_target')
@@ -131,7 +132,7 @@ if boost_static
     boost_modules += 'thread'   # static boost dependencies do not include transitive dependencies https://github.com/mesonbuild/meson/issues/15457
 endif
 
-use_bundled_boost = force_fallback_for.contains('boost')
+use_bundled_boost = force_all_fallbacks or force_fallback_for.contains('boost')
 
 if not use_bundled_boost
     boost_dep = dependency('boost', version: '>=1.70.0',
@@ -172,7 +173,7 @@ endif
 zlib_dep = dependency('zlib')
 deps += zlib_dep
 
-if force_fallback_for.contains('wxWidgets')
+if force_all_fallbacks or force_fallback_for.contains('wxWidgets')
     wx_dep = dependency('', required: false)
 else
     wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),

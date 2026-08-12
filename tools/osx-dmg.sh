@@ -21,8 +21,8 @@ BUILD_DIR="${2}"
 PKG_DIR="${BUILD_DIR}/Aegisub.app"
 
 if ! test -d "${PKG_DIR}"; then
-  echo "\"${PKG_DIR}\" does not exist, please run 'meson compile osx-bundle'"
-  exit 1;
+  echo "\"${PKG_DIR}\" does not exist, please run 'meson compile osx-bundle'" >&2
+  exit 1
 fi
 
 if test -z "${AEGISUB_BUNDLE_SIGNATURE+x}" || test -z "${AEGISUB_BUNDLE_SIGNATURE}"; then
@@ -32,6 +32,17 @@ fi
 
 SIGN_IDENTITY="${AEGISUB_BUNDLE_SIGNATURE}"
 SIGN_KEYCHAIN="${AEGISUB_SIGNING_KEYCHAIN:-}"
+DEVELOPER_ID_REQUIREMENT='anchor apple generic and certificate leaf[field.1.2.840.113635.100.6.1.13] exists'
+
+if test "${SIGN_IDENTITY}" != "-"; then
+  # Do not create an apparently release-signed image around an ad-hoc app.
+  # The app must be signed separately because changing its signature after
+  # image creation would invalidate the image contents.
+  if ! codesign --verify --deep --strict --verbose=2 -R="${DEVELOPER_ID_REQUIREMENT}" "${PKG_DIR}"; then
+    echo "\"${PKG_DIR}\" is not Developer ID-signed; sign the app with tools/osx-sign.sh or the osx-sign Meson target first" >&2
+    exit 1
+  fi
+fi
 
 PKG_NAME="$("${SRC_DIR}/tools/osx-package-name.sh" "${PKG_DIR}" "${3:-}")"
 PKG_NAME_VOLUME="${PKG_NAME}"
