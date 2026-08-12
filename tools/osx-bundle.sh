@@ -110,10 +110,17 @@ echo "---- Verifying deployment target ----"
 python3 "${SRC_DIR}/tools/macos-verify-deployment-target.py" "${PKG_DIR}"
 
 echo
-echo "---- Ad-hoc signing ----"
+echo "---- Signing ----"
 # Even if the binaries were already ad-hoc signed during compilation,
 # they need to be resigned after bundling and rewriting dylib paths.
-AEGISUB_BUNDLE_SIGNATURE=- "${SRC_DIR}/tools/osx-sign.sh" "${SRC_DIR}" "${PKG_DIR}"
+# Preserve the historical ability to request a Developer ID-signed bundle,
+# while treating an unset identity as a development/ad-hoc operation. An
+# explicitly set but empty identity is still rejected by osx-sign.sh.
+if test -n "${AEGISUB_BUNDLE_SIGNATURE+x}"; then
+  "${SRC_DIR}/tools/osx-sign.sh" "${SRC_DIR}" "${PKG_DIR}"
+else
+  AEGISUB_BUNDLE_SIGNATURE=- "${SRC_DIR}/tools/osx-sign.sh" "${SRC_DIR}" "${PKG_DIR}"
+fi
 
 echo
 echo "Done creating \"${PKG_DIR}\""

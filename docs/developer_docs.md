@@ -33,17 +33,21 @@ export AEGISUB_NOTARY_PROFILE=aegisub-release
 xcrun notarytool store-credentials "${AEGISUB_NOTARY_PROFILE}"
 ```
 
-Check out the exact commit which produced the CI artifact, configure a build
+Check out the exact commit which produced the CI artifact, create a staging
 directory, and extract the artifact into it. The resulting path must be
 `build/Aegisub.app`:
 
 ```bash
-meson setup build -Dbuild_osx_bundle=true -Ddefault_library=static
+mkdir -p build
 ditto -x -k /path/to/Aegisub-*-signing-input.zip build
 ```
 
-Export the release identity and notary profile, then run the three release
-targets in order:
+This release-manager step does not rebuild or resolve Aegisub's dependencies.
+It requires the matching source checkout, Xcode command-line tools, the
+Developer ID certificate, the stored notary profile, and the extracted app;
+Meson, CMake, Ninja, Homebrew, and network access to the wrap sources are not
+required. Export the release identity and notary profile, then run the three
+scripts in order from the repository root:
 
 ```bash
 export AEGISUB_BUNDLE_SIGNATURE='Developer ID Application: Example (TEAMID)'
@@ -53,18 +57,25 @@ export AEGISUB_NOTARY_PROFILE=aegisub-release
 export AEGISUB_SIGNING_KEYCHAIN=/path/to/signing.keychain-db
 export AEGISUB_NOTARY_KEYCHAIN=/path/to/notary.keychain-db
 
-meson compile -C build osx-sign
-meson compile -C build osx-build-dmg
-meson compile -C build osx-notarize
+tools/osx-sign.sh "$PWD" "$PWD/build/Aegisub.app"
+tools/osx-dmg.sh "$PWD" "$PWD/build"
+tools/osx-notarize.sh "$PWD" "$PWD/build"
 ```
 
-The targets are wrappers around these direct script interfaces:
+The final notarization submission requires internet access to Apple's notary
+service.
+
+The complete script interfaces are:
 
 ```text
 tools/osx-sign.sh SOURCE_DIR AEGISUB_APP
 tools/osx-dmg.sh SOURCE_DIR BUILD_DIR [VERSION_OVERRIDE]
 tools/osx-notarize.sh SOURCE_DIR BUILD_DIR [VERSION_OVERRIDE]
 ```
+
+An existing, fully configured Meson build offers equivalent `osx-sign`,
+`osx-build-dmg`, and `osx-notarize` targets, but setting up a fresh build only
+to obtain these wrappers unnecessarily resolves the full dependency tree.
 
 `AEGISUB_BUNDLE_SIGNATURE` is mandatory. Set it to `-` only for an explicitly
 ad-hoc CI or development build; such an image cannot be notarized.
