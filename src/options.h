@@ -16,9 +16,16 @@
 
 #pragma once
 
+#include <libaegisub/fs.h>
 #include <libaegisub/mru.h>
 #include <libaegisub/option.h>
 #include <libaegisub/option_value.h>
+
+#include <list>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace agi { class Path; }
 namespace Automation4 { class AutoloadScriptManager; }
