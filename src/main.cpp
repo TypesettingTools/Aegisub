@@ -84,15 +84,24 @@ namespace config {
 	agi::Path *path = nullptr;
 	Automation4::AutoloadScriptManager *global_scripts;
 
-	bool hasGui = false;
-	bool hasInitializedWx = false;
-	bool loadGlobalAutomation = false;
+	// These default to the GUI behavior so that platforms which use wx's
+	// entry point (and thus never run our main()) work unchanged; CLI mode
+	// overrides them before initialization
+	bool hasGui = true;
+	bool hasInitializedWx = true;
+	bool loadGlobalAutomation = true;
 	std::map<std::string, std::vector<std::string>> choice_indices;
 	std::list<std::pair<int, std::string>> dialog_responses;
 	std::list<std::vector<agi::fs::path>> file_responses;
 }
 
+#ifdef __WXMSW__
+// A GUI-subsystem application's entry point on Windows is WinMain, which wx
+// provides; --cli mode is not available there yet
+wxIMPLEMENT_APP(AegisubApp);
+#else
 wxIMPLEMENT_APP_NO_MAIN(AegisubApp);
+#endif
 
 static const char *LastStartupState = nullptr;
 
@@ -294,6 +303,7 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 	return true;
 }
 
+#ifndef __WXMSW__
 std::unique_ptr<Automation4::Script> find_script(const std::string& file)
 {
 	auto absolute = agi::fs::path(file);
@@ -380,6 +390,9 @@ int main(int argc, char *argv[]) {
 	agi::util::InitLocale();
 
 	if (cli) {
+		config::hasInitializedWx = false;
+		config::loadGlobalAutomation = false;
+
 		// Scripts run on a worker thread while this thread pumps main-thread
 		// thunks, mirroring the GUI threading model (see cli::RunWithMainLoop)
 		cli::InitDispatch();
@@ -511,11 +524,10 @@ int main(int argc, char *argv[]) {
 			return 1;
 		}
 	} else {
-		config::loadGlobalAutomation = true;
-		config::hasInitializedWx = true;
 		return wxEntry(argc, argv);
 	}
 }
+#endif // !__WXMSW__
 
 
 /// @brief wx's initialization function. Called from main() to initialize the GUI-specific stuff and then call Initialize()
