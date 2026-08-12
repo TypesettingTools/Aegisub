@@ -12,6 +12,10 @@ jobs:
   build:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
+    env:
+      # Pull request checkouts use a detached merge commit. Preserve the source
+      # branch in generated non-release version and artifact names.
+      AEGISUB_BUILD_BRANCH: ${{ github.head_ref || github.ref_name }}
 
     strategy:
       fail-fast: false
@@ -170,6 +174,15 @@ jobs:
         run: |
           ${{ matrix.config.devenv }}
           meson setup build ${{ matrix.config.args }} ${{ matrix.config.arch_args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
+
+      - name: Cache FFTW (MacOS)
+        if: startsWith(matrix.config.os, 'macos-')
+        uses: actions/cache@v6
+        with:
+          path: build/fftw-prefix
+          # The script hash covers the FFTW version and build flags; the Meson
+          # options hash covers the configured deployment-target default.
+          key: ${{ runner.os }}-${{ runner.arch }}-fftw-${{ hashFiles('tools/macos-build-fftw.sh', 'meson_options.txt') }}
 
       - name: Build FFTW (MacOS)
         if: startsWith(matrix.config.os, 'macos-')

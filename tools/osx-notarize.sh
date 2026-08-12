@@ -39,12 +39,12 @@ verify_image() {
 }
 
 if test -z "${NOTARY_PROFILE}"; then
-  echo "AEGISUB_NOTARY_PROFILE must name a notarytool Keychain profile"
+  echo "AEGISUB_NOTARY_PROFILE must name a notarytool Keychain profile" >&2
   exit 1
 fi
 
 if ! test -f "${DMG_PATH}"; then
-  echo "\"${DMG_PATH}\" does not exist, please run 'meson compile osx-build-dmg'"
+  echo "\"${DMG_PATH}\" does not exist, please run 'meson compile osx-build-dmg'" >&2
   exit 1
 fi
 

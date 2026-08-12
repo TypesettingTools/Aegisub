@@ -4,9 +4,9 @@ set -e
 
 SRC_DIR="${1}"
 BUILD_DIR="${2}"
-DICT_DIR="${5}"
-MESON_BUILD_OSX_BUNDLE="${6}"
-MACOS_DEPLOYMENT_TARGET="${7}"
+DICT_DIR="${3}"
+MESON_BUILD_OSX_BUNDLE="${4}"
+MACOS_DEPLOYMENT_TARGET="${5}"
 
 if [ "${MESON_BUILD_OSX_BUNDLE}" != "TRUE" ]; then
   echo "Project not built with \`build_osx_bundle\`"

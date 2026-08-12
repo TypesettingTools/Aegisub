@@ -34,11 +34,25 @@ echo "---- Signing app bundle ----"
 
 # Sign each real Mach-O file once. Library aliases are symlinks to these files
 # and do not need (or want) their own signatures.
-find "${PKG_DIR}/Contents" -type f -print | while IFS= read -r fname; do
+SIGN_FILE_LIST="$(mktemp "${TMPDIR:-/tmp}/aegisub-sign.XXXXXX")"
+cleanup() {
+  rm -f "${SIGN_FILE_LIST}"
+}
+trap cleanup EXIT HUP INT TERM
+
+if ! find "${PKG_DIR}/Contents" -type f -print > "${SIGN_FILE_LIST}"; then
+  echo "Could not enumerate files in \"${PKG_DIR}\"" >&2
+  exit 1
+fi
+
+while IFS= read -r fname; do
   case "$(file -b "${fname}")" in
     Mach-O*) sign_file "${fname}" ;;
   esac
-done
+done < "${SIGN_FILE_LIST}"
+
+rm -f "${SIGN_FILE_LIST}"
+trap - EXIT HUP INT TERM
 
 if test "${SIGN_IDENTITY}" = "-"; then
   codesign --force --sign - "${PKG_DIR}"
