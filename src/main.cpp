@@ -70,7 +70,6 @@
 #include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
-#include <boost/filesystem/operations.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -293,7 +292,7 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 std::unique_ptr<Automation4::Script> find_script(const std::string& file)
 {
 	auto absolute = agi::fs::path(file);
-	auto relative = boost::filesystem::current_path() / file;
+	auto relative = agi::fs::path(std::filesystem::current_path()) / file;
 
 	agi::fs::path script;
 
@@ -305,7 +304,7 @@ std::unique_ptr<Automation4::Script> find_script(const std::string& file)
 		auto autodirs = OPT_GET("Path/Automation/Autoload")->GetString();
 
 		for (auto tok : agi::Split(autodirs, '|')) {
-			auto dirname = config::path->Decode(agi::str(tok));
+			auto dirname = config::path->Decode(std::string(tok));
 			if (!agi::fs::DirectoryExists(dirname)) continue;
 
 			auto scriptname = dirname / file;
@@ -388,21 +387,21 @@ int main(int argc, char *argv[]) {
 		agi::Context context;
 
 		LOG_D("main") << "Loading subtitles...";
-		context.project->LoadSubtitles(std::filesystem::absolute(vm["in-file"].as<std::string>()), "", false);
+		context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(vm["in-file"].as<std::string>())), "", false);
 
 		if (vm.count("video")) {
 			LOG_D("main") << "Loading video...";
-			context.project->LoadVideo(std::filesystem::absolute(vm["video"].as<std::string>()));
+			context.project->LoadVideo(agi::fs::path(std::filesystem::absolute(vm["video"].as<std::string>())));
 		}
 
 		if (vm.count("timecodes")) {
 			LOG_D("main") << "Loading timecodes...";
-			context.project->LoadTimecodes(std::filesystem::absolute(vm["timecodes"].as<std::string>()));
+			context.project->LoadTimecodes(agi::fs::path(std::filesystem::absolute(vm["timecodes"].as<std::string>())));
 		}
 
 		if (vm.count("keyframes")) {
 			LOG_D("main") << "Loading keyframes...";
-			context.project->LoadKeyframes(std::filesystem::absolute(vm["keyframes"].as<std::string>()));
+			context.project->LoadKeyframes(agi::fs::path(std::filesystem::absolute(vm["keyframes"].as<std::string>())));
 		}
 
 		auto active_index = vm["active-line"].as<int>();
@@ -491,7 +490,7 @@ int main(int argc, char *argv[]) {
 
 		// restore cwd for saving
 		std::filesystem::current_path(cwd);
-		context.subsController->Save(std::filesystem::absolute(vm["out-file"].as<std::string>()));
+		context.subsController->Save(agi::fs::path(std::filesystem::absolute(vm["out-file"].as<std::string>())));
 
 		if (config::hasInitializedWx) {
 			wxUninitialize();
