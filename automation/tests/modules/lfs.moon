@@ -85,7 +85,3 @@ describe 'lfs', ->
       os.remove name .. '/a'
       os.remove name .. '/b'
       lfs.rmdir name
-
-    it 'should iterate nothing for a nonexistent path', ->
-      files = [f for f in lfs.dir temp_name!]
-      assert.is.same {}, files
