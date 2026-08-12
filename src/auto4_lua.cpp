@@ -882,6 +882,11 @@ namespace {
 		catch (agi::UserCancelException const&) {
 			subsobj->Cancel();
 			stackcheck.check_stack(0);
+			// In CLI mode there is no user to cancel the run, so this either
+			// means the script threw an error or a dialog went unanswered;
+			// propagate it so the process can exit with an error
+			if (!config::hasGui)
+				throw;
 			return;
 		}
 
