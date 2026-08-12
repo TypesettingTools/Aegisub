@@ -6,7 +6,7 @@ if host_machine.system() == 'windows'
                        '-ExecutionPolicy', 'Bypass',
                        '-File', meson.project_source_root() / 'tools/win-installer-setup.ps1']
     run_target('win-installer',
-               command: [installer_setup, meson.project_build_root(), meson.project_source_root()])
+               command: [installer_setup, meson.project_build_root(), meson.project_source_root(), package_arch])
 
     portable_setup = [powershell_exe,
                       '-ExecutionPolicy', 'Bypass',

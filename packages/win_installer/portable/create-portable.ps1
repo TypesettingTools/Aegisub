@@ -73,10 +73,12 @@ Copy-ToDirectory $InstallerDepsDir\dictionaries\en_US.dic  $PortableOutputDir\di
 # Copy-ToDirectory $InstallerDepsDir\AvisynthPlus64\x64\Output\plugins\DirectShowSource.dll  $PortableOutputDir
 
 Write-Step 'Copying VSFilter'
-Copy-ToDirectory $InstallerDepsDir\VSFilter\x64\VSFilter.dll  $PortableOutputDir\csri
+if ($Architecture -eq 'x64') {
+    Copy-ToDirectory $InstallerDepsDir\VSFilter\x64\VSFilter.dll  $PortableOutputDir\csri
+}
 
 Write-Step 'Copying VC++ runtime'
-Copy-ToDirectory $InstallerDepsDir\VC_redist\VC_redist.x64.exe $PortableOutputDir\Microsoft.CRT
+Copy-ToDirectory "$InstallerDepsDir\VC_redist\VC_redist.$Architecture.exe" $PortableOutputDir\Microsoft.CRT
 
 Write-Step 'Copying automation'
 Copy-ToDirectory "$InstallerDir\share\aegisub\automation\*"  "$PortableOutputDir\automation\"  -Recurse
