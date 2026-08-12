@@ -20,11 +20,11 @@
 #include "dialog_progress.h"
 
 #include "compat.h"
+#include "options.h"
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
-#include <libaegisub/make_unique.h>
 #include <libaegisub/util_osx.h>
 
 #include <atomic>
