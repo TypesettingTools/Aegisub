@@ -25,6 +25,14 @@ if ! test -d "${PKG_DIR}"; then
   exit 1;
 fi
 
+if test -z "${AEGISUB_BUNDLE_SIGNATURE+x}" || test -z "${AEGISUB_BUNDLE_SIGNATURE}"; then
+  echo "AEGISUB_BUNDLE_SIGNATURE must be set to a Developer ID identity or '-' for an unsigned image" >&2
+  exit 1
+fi
+
+SIGN_IDENTITY="${AEGISUB_BUNDLE_SIGNATURE}"
+SIGN_KEYCHAIN="${AEGISUB_SIGNING_KEYCHAIN:-}"
+
 PKG_NAME="$("${SRC_DIR}/tools/osx-package-name.sh" "${PKG_DIR}" "${3:-}")"
 PKG_NAME_VOLUME="${PKG_NAME}"
 
@@ -108,9 +116,6 @@ echo "---- Compressing ----"
 
 echo "---- Removing temp dmg \"${DMG_RW_PATH}\" ----"
 rm -rf "${DMG_RW_PATH}"
-
-SIGN_IDENTITY="${AEGISUB_BUNDLE_SIGNATURE:--}"
-SIGN_KEYCHAIN="${AEGISUB_SIGNING_KEYCHAIN:-}"
 
 if test "${SIGN_IDENTITY}" != "-"; then
   echo

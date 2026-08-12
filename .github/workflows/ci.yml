@@ -230,6 +230,10 @@ jobs:
       # macOS artifacts
       - name: Generate macOS installer
         if: startsWith(matrix.config.os, 'macos-')
+        env:
+          # CI artifacts are intentionally ad-hoc signed. Release managers must
+          # explicitly replace this with a Developer ID signature before release.
+          AEGISUB_BUNDLE_SIGNATURE: '-'
         run: |
           meson compile osx-bundle -C build
 

@@ -21,7 +21,8 @@ if test -z "${SAFE_AEGI_VER}"; then
   exit 1
 fi
 
-APP_ARCHS="$(lipo -archs "${PKG_DIR}/Contents/MacOS/aegisub")"
+APP_EXECUTABLE="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleExecutable' "${PKG_DIR}/Contents/Info.plist")"
+APP_ARCHS="$(lipo -archs "${PKG_DIR}/Contents/MacOS/${APP_EXECUTABLE}")"
 case "${APP_ARCHS}" in
   'arm64 x86_64'|'x86_64 arm64') PKG_ARCH="universal2" ;;
   'x86_64') PKG_ARCH="x64" ;;
