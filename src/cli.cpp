@@ -33,7 +33,7 @@
 std::set<int> parse_range(const std::string& s) {
 	std::set<int> lines;
 	for (auto tok : agi::Split(s, ',')) {
-		auto item = agi::str(tok);
+		auto item = std::string(tok);
 		int i;
 
 		if (agi::util::try_parse(item, &i)) {
@@ -173,7 +173,7 @@ std::list<std::vector<agi::fs::path>> parse_file_responses(const std::vector<std
 		std::vector<agi::fs::path> paths;
 		std::stringstream ss;
 		for (const auto& tok : agi::Split(s, '|')) {
-			agi::fs::path p = std::filesystem::absolute(agi::str(tok));
+			agi::fs::path p(std::filesystem::absolute(std::string(tok)));
 			ss << p << " ";
 			paths.push_back(std::move(p));
 		}
