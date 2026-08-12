@@ -124,9 +124,12 @@ namespace Automation4 {
 
 #else // not WIN32
 		if (!config::hasInitializedWx) {
-			config::hasInitializedWx = true;
 			LOG_W("agi") << "Text extents were requested. Initializing wxWidgets. This requires a display server.";
-			wxInitialize();
+			if (!wxInitialize()) {
+				LOG_E("agi") << "Initializing wxWidgets failed (no display server?); text extents are unavailable.";
+				return false;
+			}
+			config::hasInitializedWx = true;
 		}
 
 		wxMemoryDC thedc;
