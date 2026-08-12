@@ -20,6 +20,7 @@
 #include <libaegisub/ass/string_codec.h>
 #include <libaegisub/cajun/elements.h>
 #include <libaegisub/color.h>
+#include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/json.h>
 #include <libaegisub/log.h>
@@ -27,8 +28,12 @@
 #include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
+#include <condition_variable>
+#include <deque>
 #include <filesystem>
+#include <mutex>
 #include <sstream>
+#include <thread>
 
 std::set<int> parse_range(const std::string& s) {
 	std::set<int> lines;
@@ -181,4 +186,64 @@ std::list<std::vector<agi::fs::path>> parse_file_responses(const std::vector<std
 		responses.push_back(std::move(paths));
 	}
 	return responses;
+}
+
+namespace {
+std::deque<agi::dispatch::Thunk> main_queue;
+std::mutex main_queue_mutex;
+std::condition_variable main_queue_cv;
+}
+
+namespace cli {
+void InitDispatch() {
+	agi::dispatch::Init([](agi::dispatch::Thunk f) {
+		{
+			std::lock_guard<std::mutex> lock(main_queue_mutex);
+			main_queue.push_back(std::move(f));
+		}
+		main_queue_cv.notify_all();
+	});
+}
+
+void RunWithMainLoop(std::function<void()> work) {
+	bool done = false;
+	std::exception_ptr err;
+
+	std::thread worker([&] {
+		try {
+			work();
+		} catch (...) {
+			err = std::current_exception();
+		}
+		{
+			std::lock_guard<std::mutex> lock(main_queue_mutex);
+			done = true;
+		}
+		main_queue_cv.notify_all();
+	});
+
+	std::unique_lock<std::mutex> lock(main_queue_mutex);
+	for (;;) {
+		main_queue_cv.wait(lock, [&] { return done || !main_queue.empty(); });
+		if (main_queue.empty()) {
+			if (done) break;
+			continue;
+		}
+		auto f = std::move(main_queue.front());
+		main_queue.pop_front();
+		lock.unlock();
+		try {
+			f();
+		} catch (agi::Exception const& e) {
+			LOG_E("main/cli") << "Unhandled exception on the main thread: " << e.GetMessage();
+		} catch (std::exception const& e) {
+			LOG_E("main/cli") << "Unhandled exception on the main thread: " << e.what();
+		}
+		lock.lock();
+	}
+	lock.unlock();
+
+	worker.join();
+	if (err) std::rethrow_exception(err);
+}
 }
