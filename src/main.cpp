@@ -168,6 +168,11 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 #endif
 	crash_writer::Initialize(config::path->Decode("?user"));
 
+	// The config machinery writes to ?user even in CLI mode (e.g. flushing
+	// the hotkey map), and the directory-creating GUI startup steps are
+	// skipped there, so make sure the directory exists
+	agi::fs::CreateDirectory(config::path->Decode("?user"));
+
 	if (config::hasGui) {
 		StartupLog("Create log writer");
 		auto path_log = config::path->Decode("?user/log/");
@@ -375,127 +380,136 @@ int main(int argc, char *argv[]) {
 	agi::util::InitLocale();
 
 	if (cli) {
-		// TODO force everything onto one thread or figure something else out here
-		agi::dispatch::Init([](agi::dispatch::Thunk f) {
-			f();
-		});
+		// Scripts run on a worker thread while this thread pumps main-thread
+		// thunks, mirroring the GUI threading model (see cli::RunWithMainLoop)
+		cli::InitDispatch();
 
 		if (!AegisubInitialize(nullptr, [&](std::string msg, std::string title) { std::cerr << title << ": " << msg << "\n"; })) {
 			return -1;
 		}
 
-		agi::Context context;
+		try {
+			agi::Context context;
 
-		LOG_D("main") << "Loading subtitles...";
-		context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(vm["in-file"].as<std::string>())), "", false);
+			LOG_D("main") << "Loading subtitles...";
+			context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(vm["in-file"].as<std::string>())), "", false);
 
-		if (vm.count("video")) {
-			LOG_D("main") << "Loading video...";
-			context.project->LoadVideo(agi::fs::path(std::filesystem::absolute(vm["video"].as<std::string>())));
-		}
-
-		if (vm.count("timecodes")) {
-			LOG_D("main") << "Loading timecodes...";
-			context.project->LoadTimecodes(agi::fs::path(std::filesystem::absolute(vm["timecodes"].as<std::string>())));
-		}
-
-		if (vm.count("keyframes")) {
-			LOG_D("main") << "Loading keyframes...";
-			context.project->LoadKeyframes(agi::fs::path(std::filesystem::absolute(vm["keyframes"].as<std::string>())));
-		}
-
-		auto active_index = vm["active-line"].as<int>();
-		AssDialogue* active_line = nullptr;
-
-		auto selected_indices = parse_range(vm["selected-lines"].as<std::string>());
-		Selection selected_lines;
-
-		int i = 0;
-		for (auto& line : context.ass->Events) {
-			if (i == active_index) {
-				active_line = &line;
+			if (vm.count("video")) {
+				LOG_D("main") << "Loading video...";
+				context.project->LoadVideo(agi::fs::path(std::filesystem::absolute(vm["video"].as<std::string>())));
 			}
 
-			if (selected_indices.empty() || selected_indices.count(i)) {
-				selected_lines.insert(&line);
-				if (active_line == nullptr) {
-					// assign first line in selection as a fallback
+			if (vm.count("timecodes")) {
+				LOG_D("main") << "Loading timecodes...";
+				context.project->LoadTimecodes(agi::fs::path(std::filesystem::absolute(vm["timecodes"].as<std::string>())));
+			}
+
+			if (vm.count("keyframes")) {
+				LOG_D("main") << "Loading keyframes...";
+				context.project->LoadKeyframes(agi::fs::path(std::filesystem::absolute(vm["keyframes"].as<std::string>())));
+			}
+
+			auto active_index = vm["active-line"].as<int>();
+			AssDialogue* active_line = nullptr;
+
+			auto selected_indices = parse_range(vm["selected-lines"].as<std::string>());
+			Selection selected_lines;
+
+			int i = 0;
+			for (auto& line : context.ass->Events) {
+				if (i == active_index) {
 					active_line = &line;
 				}
+
+				if (selected_indices.empty() || selected_indices.count(i)) {
+					selected_lines.insert(&line);
+					if (active_line == nullptr) {
+						// assign first line in selection as a fallback
+						active_line = &line;
+					}
+				}
+				i++;
 			}
-			i++;
-		}
 
-		if (active_line == nullptr) {
-			// selection was empty
-			active_line = &context.ass->Events.front();
-			selected_lines.insert(active_line);
-		}
+			if (active_line == nullptr) {
+				// selection was empty
+				active_line = &context.ass->Events.front();
+				selected_lines.insert(active_line);
+			}
 
-		context.selectionController->SetSelectionAndActive(
-			std::move(selected_lines), active_line);
+			context.selectionController->SetSelectionAndActive(
+				std::move(selected_lines), active_line);
 
-		if (vm.count("dialog"))
-			config::dialog_responses = parse_dialog_responses(vm["dialog"].as<std::vector<std::string>>());
+			if (vm.count("dialog"))
+				config::dialog_responses = parse_dialog_responses(vm["dialog"].as<std::vector<std::string>>());
 
-		if (vm.count("file"))
-			config::file_responses = parse_file_responses(vm["file"].as<std::vector<std::string>>());
+			if (vm.count("file"))
+				config::file_responses = parse_file_responses(vm["file"].as<std::vector<std::string>>());
 
-		// cache cwd in case automation changes it
-		auto cwd = std::filesystem::current_path();
+			// cache cwd in case automation changes it
+			auto cwd = std::filesystem::current_path();
 
-		std::vector<std::unique_ptr<Automation4::Script>> scripts;
-		if (vm.count("automation")) {
-			for (auto& s : vm["automation"].as<std::vector<std::string>>()) {
-				LOG_D("main") << "Loading " << s;
-				auto script = find_script(s);
-				if (!script) {
+			std::vector<std::unique_ptr<Automation4::Script>> scripts;
+			if (vm.count("automation")) {
+				for (auto& s : vm["automation"].as<std::vector<std::string>>()) {
+					LOG_D("main") << "Loading " << s;
+					auto script = find_script(s);
+					if (!script) {
+						return 1;
+					}
+					scripts.emplace_back(std::move(script));
+				}
+			}
+
+			auto macro = vm["macro"].as<std::string>();
+
+			cmd::Command *cmd = nullptr;
+
+			// Allow calling automation scripts by their display name
+			for (auto const& script : scripts) {
+				for (auto const& c: script->GetMacros()) {
+					if (c->StrMenu(&context) == to_wx(macro)) {
+						cmd = c;
+					}
+				}
+			}
+
+			// If we don't find one, try the command name instead
+			if (!cmd) {
+				try {
+					cmd = cmd::get(macro);
+				} catch (cmd::CommandNotFound const&) {
+					std::cerr << "Command not found: " << macro << std::endl;
+					LOG_E("main") << "Command not found: " << macro;
 					return 1;
 				}
-				scripts.emplace_back(std::move(script));
 			}
-		}
 
-		auto macro = vm["macro"].as<std::string>();
-
-		cmd::Command *cmd = nullptr;
-
-		// Allow calling automation scripts by their display name
-		for (auto const& script : scripts) {
-			for (auto const& c: script->GetMacros()) {
-				if (c->StrMenu(&context) == to_wx(macro)) {
-					cmd = c;
-				}
-			}
-		}
-
-		// If we don't find one, try the command name instead
-		if (!cmd) {
-			try {
-				cmd = cmd::get(macro);
-			} catch (cmd::CommandNotFound const&) {
-				std::cerr << "Command not found: " << macro << std::endl;
-				LOG_E("main") << "Command not found: " << macro;
+			if (!cmd->Validate(&context)) {
+				LOG_E("main") << "Skipping automation because validation function returned false";
 				return 1;
 			}
-		}
 
-		if (!cmd->Validate(&context)) {
-			LOG_E("main") << "Skipping automation because validation function returned false";
+			LOG_D("main") << "Calling " << cmd->name();
+			(*cmd)(&context);
+
+			// restore cwd for saving
+			std::filesystem::current_path(cwd);
+			context.subsController->Save(agi::fs::path(std::filesystem::absolute(vm["out-file"].as<std::string>())));
+
+			if (config::hasInitializedWx) {
+				wxUninitialize();
+			}
+			return 0;
+		}
+		catch (agi::Exception const& e) {
+			std::cerr << "Error: " << e.GetMessage() << std::endl;
 			return 1;
 		}
-
-		LOG_D("main") << "Calling " << cmd->name();
-		(*cmd)(&context);
-
-		// restore cwd for saving
-		std::filesystem::current_path(cwd);
-		context.subsController->Save(agi::fs::path(std::filesystem::absolute(vm["out-file"].as<std::string>())));
-
-		if (config::hasInitializedWx) {
-			wxUninitialize();
+		catch (std::exception const& e) {
+			std::cerr << "Error: " << e.what() << std::endl;
+			return 1;
 		}
-		return 0;
 	} else {
 		config::loadGlobalAutomation = true;
 		config::hasInitializedWx = true;

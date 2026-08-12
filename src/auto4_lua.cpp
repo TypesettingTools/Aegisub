@@ -137,10 +137,17 @@ namespace {
 		return 1;
 	}
 
+	// In CLI mode there is no system clipboard to talk to (and doing so would
+	// need a display server), so scripts get a process-local clipboard
+	std::string cli_clipboard;
+
 	char *clipboard_get()
 	{
 		std::string data;
-		agi::dispatch::Main().Sync([&] { data = GetClipboard(); });
+		if (config::hasGui)
+			agi::dispatch::Main().Sync([&] { data = GetClipboard(); });
+		else
+			data = cli_clipboard;
 		if (data.empty())
 			return nullptr;
 		return strndup(data);
@@ -148,6 +155,11 @@ namespace {
 
 	bool clipboard_set(const char *str)
 	{
+		if (!config::hasGui) {
+			cli_clipboard = str;
+			return true;
+		}
+
 		bool succeeded = false;
 
 		agi::dispatch::Main().Sync([&] {
