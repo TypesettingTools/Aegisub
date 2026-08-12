@@ -26,8 +26,27 @@
 #include <utility>
 #include <vector>
 
+#include <functional>
+
 std::set<int> parse_range(const std::string& s);
 
 std::list<std::pair<int, std::string>> parse_dialog_responses(const std::vector<std::string>& s);
 
 std::list<std::vector<agi::fs::path>> parse_file_responses(const std::vector<std::string>& s);
+
+namespace cli {
+	/// Install an agi::dispatch main-thread executor which queues up thunks
+	/// to be run by RunWithMainLoop. Must be called from the main thread
+	/// before anything uses agi::dispatch.
+	void InitDispatch();
+
+	/// Run work on a background thread while executing queued main-thread
+	/// thunks on the calling thread until the work completes, mirroring how
+	/// the GUI runs automation scripts on a worker thread while the main
+	/// thread pumps events. Without this, anything which does
+	/// agi::dispatch::Main().Sync() from the work function (text extents,
+	/// clipboard access, etc.) would deadlock in CLI mode.
+	///
+	/// Exceptions thrown by the work function are rethrown on this thread.
+	void RunWithMainLoop(std::function<void()> work);
+}

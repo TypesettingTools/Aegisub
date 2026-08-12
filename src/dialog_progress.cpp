@@ -19,6 +19,7 @@
 
 #include "dialog_progress.h"
 
+#include "cli.h"
 #include "compat.h"
 #include "options.h"
 #include "utils.h"
@@ -265,13 +266,19 @@ OptDialogProgress::OptDialogProgress(wxWindow *parent, wxString const& title, wx
 void OptDialogProgress::Run(std::function<void(agi::ProgressSink*)> task) {
 	if (impl) {
 		impl->Run(task);
-	} else {
-		agi::CLIProgressSink ps;
+		return;
+	}
+
+	// Mirror the GUI threading model: the task runs on a worker thread while
+	// this thread pumps the main-thread dispatch queue, so that the task can
+	// use agi::dispatch::Main().Sync() without deadlocking
+	agi::CLIProgressSink ps;
+	cli::RunWithMainLoop([&] {
 		try {
 			task(&ps);
 		}
 		catch (agi::Exception const& e) {
 			ps.Log(e.GetMessage());
 		}
-	}
+	});
 }
