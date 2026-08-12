@@ -219,32 +219,49 @@ else
     # CMake can't consume Meson dependency objects directly. When these are
     # fallback dependencies, give wx the exact libraries and headers Meson is
     # already building instead of allowing find_package() to select a second
-    # implementation.
+    # implementation. Meson does not yet provide a supported bridge for this:
+    # https://github.com/mesonbuild/meson/issues/8089
+    # https://github.com/mesonbuild/meson/issues/12451
+    #
+    # Use CMake-style paths even on Windows. add_cmake_defines() writes these
+    # values into a CMake preload file, where native backslashes can be parsed
+    # as escapes (for example, D:\a contains \a).
+    c_include_flag = cc.get_argument_syntax() == 'msvc' ? '/I' : '-I'
+    cpp_include_flag = cxx.get_argument_syntax() == 'msvc' ? '/I' : '-I'
+
     if zlib_dep.type_name() == 'internal'
         zlib = subproject('zlib').get_variable('zlib')
-        zlib_source_dir = meson.project_source_root() / 'subprojects/zlib-1.3.1'
+        zlib_source_dir = (meson.project_source_root() / 'subprojects/zlib-1.3.1').replace('\\', '/')
+        zlib_library = zlib.full_path().replace('\\', '/')
         opt_var.add_cmake_defines({
             'ZLIB_INCLUDE_DIR': zlib_source_dir,
-            'ZLIB_LIBRARY': zlib.full_path(),
+            'ZLIB_LIBRARY': zlib_library,
         })
-        opt_var.append_compile_args('c', '-I' + zlib_source_dir)
-        opt_var.append_compile_args('cpp', '-I' + zlib_source_dir)
+        opt_var.append_compile_args('c', c_include_flag + zlib_source_dir,
+                                     target: 'wxmono')
+        opt_var.append_compile_args('cpp', cpp_include_flag + zlib_source_dir,
+                                     target: 'wxmono')
     endif
 
     if libpng_dep.type_name() == 'internal'
         libpng = subproject('libpng').get_variable('libpng')
-        libpng_source_dir = meson.project_source_root() / 'subprojects/libpng-1.6.55'
-        libpng_build_dir = meson.project_build_root() / 'subprojects/libpng-1.6.55'
+        libpng_source_dir = (meson.project_source_root() / 'subprojects/libpng-1.6.55').replace('\\', '/')
+        libpng_build_dir = (meson.project_build_root() / 'subprojects/libpng-1.6.55').replace('\\', '/')
+        libpng_library = libpng.full_path().replace('\\', '/')
         opt_var.add_cmake_defines({
-            'PNG_LIBRARY': libpng.full_path(),
+            'PNG_LIBRARY': libpng_library,
             'PNG_PNG_INCLUDE_DIR': libpng_source_dir,
         })
         # pnglibconf.h is generated in the subproject build directory, while
         # FindPNG only exposes a single include directory to wx. Meson's CMake
         # converter also ignores include paths outside the CMake subproject,
         # so pass both directories explicitly as compiler arguments.
-        opt_var.append_compile_args('c', '-I' + libpng_source_dir, '-I' + libpng_build_dir)
-        opt_var.append_compile_args('cpp', '-I' + libpng_source_dir, '-I' + libpng_build_dir)
+        opt_var.append_compile_args('c', c_include_flag + libpng_source_dir,
+                                     c_include_flag + libpng_build_dir,
+                                     target: 'wxmono')
+        opt_var.append_compile_args('cpp', cpp_include_flag + libpng_source_dir,
+                                     cpp_include_flag + libpng_build_dir,
+                                     target: 'wxmono')
     endif
 
     if host_machine.system() == 'darwin'
