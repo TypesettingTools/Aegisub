@@ -10,7 +10,12 @@ if ! test -d "${PKG_DIR}"; then
   exit 1
 fi
 
-SIGN_IDENTITY="${AEGISUB_BUNDLE_SIGNATURE:--}"
+if test -z "${AEGISUB_BUNDLE_SIGNATURE+x}" || test -z "${AEGISUB_BUNDLE_SIGNATURE}"; then
+  echo "AEGISUB_BUNDLE_SIGNATURE must be set to a Developer ID identity or '-' for an ad-hoc build" >&2
+  exit 1
+fi
+
+SIGN_IDENTITY="${AEGISUB_BUNDLE_SIGNATURE}"
 SIGN_KEYCHAIN="${AEGISUB_SIGNING_KEYCHAIN:-}"
 ENTITLEMENTS="${AEGISUB_BUNDLE_ENTITLEMENTS:-${SRC_DIR}/packages/osx_bundle/aegisub.entitlements}"
 
@@ -29,7 +34,7 @@ echo "---- Signing app bundle ----"
 
 # Sign each real Mach-O file once. Library aliases are symlinks to these files
 # and do not need (or want) their own signatures.
-find "${PKG_DIR}/Contents/MacOS" -type f -print | while IFS= read -r fname; do
+find "${PKG_DIR}/Contents" -type f -print | while IFS= read -r fname; do
   case "$(file -b "${fname}")" in
     Mach-O*) sign_file "${fname}" ;;
   esac

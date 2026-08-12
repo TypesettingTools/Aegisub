@@ -21,8 +21,66 @@ Follow the following steps to release a new Aegisub version:
 ### macOS release signing
 
 Tagged and manually dispatched builds upload an ad-hoc-signed
-`-signing-input.zip`. Run `osx-sign.sh`, `osx-dmg.sh`, and `osx-notarize.sh`
-locally; publish only the resulting notarized DMG.
+`-signing-input.zip`. This is an input to the release process, not a
+distributable release artifact. Publish only the Developer ID-signed and
+notarized DMG produced below.
+
+Create a `notarytool` profile once. Add `--keychain PATH` if the profile
+should be stored in a keychain other than the login keychain:
+
+```bash
+export AEGISUB_NOTARY_PROFILE=aegisub-release
+xcrun notarytool store-credentials "${AEGISUB_NOTARY_PROFILE}"
+```
+
+Check out the exact commit which produced the CI artifact, configure a build
+directory, and extract the artifact into it. The resulting path must be
+`build/Aegisub.app`:
+
+```bash
+meson setup build -Dbuild_osx_bundle=true -Ddefault_library=static
+ditto -x -k /path/to/Aegisub-*-signing-input.zip build
+```
+
+Export the release identity and notary profile, then run the three release
+targets in order:
+
+```bash
+export AEGISUB_BUNDLE_SIGNATURE='Developer ID Application: Example (TEAMID)'
+export AEGISUB_NOTARY_PROFILE=aegisub-release
+
+# Optional when using non-default keychains:
+export AEGISUB_SIGNING_KEYCHAIN=/path/to/signing.keychain-db
+export AEGISUB_NOTARY_KEYCHAIN=/path/to/notary.keychain-db
+
+meson compile -C build osx-sign
+meson compile -C build osx-build-dmg
+meson compile -C build osx-notarize
+```
+
+The targets are wrappers around these direct script interfaces:
+
+```text
+tools/osx-sign.sh SOURCE_DIR AEGISUB_APP
+tools/osx-dmg.sh SOURCE_DIR BUILD_DIR [VERSION_OVERRIDE]
+tools/osx-notarize.sh SOURCE_DIR BUILD_DIR [VERSION_OVERRIDE]
+```
+
+`AEGISUB_BUNDLE_SIGNATURE` is mandatory. Set it to `-` only for an explicitly
+ad-hoc CI or development build; such an image cannot be notarized.
+`AEGISUB_BUNDLE_ENTITLEMENTS` optionally replaces the default entitlements
+file, and `AEGISUB_NOTARY_TIMEOUT` optionally replaces the default `30m`
+submission timeout.
+
+Hardened-runtime library validation deliberately remains enabled. Bundled and
+third-party native Automation modules must therefore be Apple-signed or signed
+with the same Team ID as Aegisub. Rebuild and sign controlled modules rather
+than disabling library validation for the whole application.
+
+The DMG is the outermost distributed container, so it is the item submitted to
+the notary service and stapled. This follows Apple's nested-container guidance;
+the app and every nested Mach-O file are still Developer ID-signed before the
+DMG is created.
 
 ## Running Doxygen
 
