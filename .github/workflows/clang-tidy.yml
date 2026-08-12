@@ -35,8 +35,9 @@ jobs:
         run: meson setup build -Db_pch=false
 
       - name: Check filesystem path operations
-        run: >-
-          run-clang-tidy-21
-          -p build
-          -j 2
-          -source-filter '^(?!.*libaegisub/(common/fs\.cpp|unix/access\.cpp)$).*'
+        run: |
+          echo "::add-matcher::.github/problem-matchers/clang-tidy.json"
+          run-clang-tidy-21 \
+            -p build \
+            -j 2 \
+            -source-filter '^(?!.*libaegisub/(common/fs\.cpp|unix/access\.cpp)$).*'
