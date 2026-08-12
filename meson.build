@@ -168,7 +168,8 @@ if host_machine.system() == 'windows'
     conf.set('BOOST_USE_WINDOWS_H', 1)
 endif
 
-deps += dependency('zlib')
+zlib_dep = dependency('zlib')
+deps += zlib_dep
 
 if force_fallback_for.contains('wxWidgets')
     wx_dep = dependency('', required: false)
@@ -182,6 +183,13 @@ if wx_dep.found()
     deps += wx_dep
     wx_defines_dep = wx_dep
 else
+    # wxWidgets, FreeType, and the other bundled dependencies must all use the
+    # same libpng implementation. In particular, wx's bundled libpng has
+    # partially-prefixed private symbols which can collide with another static
+    # libpng on ARM.
+    libpng_dep = dependency('libpng')
+    deps += libpng_dep
+
     build_shared = true
     if get_option('default_library') == 'static'
         build_shared = false
@@ -201,10 +209,43 @@ else
         'wxBUILD_SHARED': build_shared,
 
         'wxUSE_WEBVIEW': false,         # breaks build on linux
+        'wxUSE_LIBPNG': 'sys',          # supplied by Meson below
+        'wxUSE_ZLIB': 'sys',            # supplied by Meson below
         'CMAKE_BUILD_TYPE': build_type,
         'wxUSE_IMAGE': true,
         'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
     })
+
+    # CMake can't consume Meson dependency objects directly. When these are
+    # fallback dependencies, give wx the exact libraries and headers Meson is
+    # already building instead of allowing find_package() to select a second
+    # implementation.
+    if zlib_dep.type_name() == 'internal'
+        zlib = subproject('zlib').get_variable('zlib')
+        zlib_source_dir = meson.project_source_root() / 'subprojects/zlib-1.3.1'
+        opt_var.add_cmake_defines({
+            'ZLIB_INCLUDE_DIR': zlib_source_dir,
+            'ZLIB_LIBRARY': zlib.full_path(),
+        })
+        opt_var.append_compile_args('c', '-I' + zlib_source_dir)
+        opt_var.append_compile_args('cpp', '-I' + zlib_source_dir)
+    endif
+
+    if libpng_dep.type_name() == 'internal'
+        libpng = subproject('libpng').get_variable('libpng')
+        libpng_source_dir = meson.project_source_root() / 'subprojects/libpng-1.6.55'
+        libpng_build_dir = meson.project_build_root() / 'subprojects/libpng-1.6.55'
+        opt_var.add_cmake_defines({
+            'PNG_LIBRARY': libpng.full_path(),
+            'PNG_PNG_INCLUDE_DIR': libpng_source_dir,
+        })
+        # pnglibconf.h is generated in the subproject build directory, while
+        # FindPNG only exposes a single include directory to wx. Meson's CMake
+        # converter also ignores include paths outside the CMake subproject,
+        # so pass both directories explicitly as compiler arguments.
+        opt_var.append_compile_args('c', '-I' + libpng_source_dir, '-I' + libpng_build_dir)
+        opt_var.append_compile_args('cpp', '-I' + libpng_source_dir, '-I' + libpng_build_dir)
+    endif
 
     if host_machine.system() == 'darwin'
         opt_var.add_cmake_defines({
@@ -213,6 +254,13 @@ else
     endif
 
     wx = cmake.subproject('wxWidgets', options: opt_var)
+
+    foreach bundled_dependency: ['wxpng', 'wxzlib']
+        if wx.target_list().contains(bundled_dependency)
+            error('wxWidgets unexpectedly built ' + bundled_dependency +
+                  ' instead of using the dependency supplied by Meson')
+        endif
+    endforeach
 
     deps += wx.dependency('wxmono')
     foreach cmake_target: ['wxregex', 'wxscintilla', 'wxlexilla']
@@ -225,15 +273,8 @@ else
     # but allows it if you use partial_dependency() to get only includes and compile args.
     wx_defines_dep = wx.dependency('wxmono').partial_dependency(compile_args: true, includes: true)
 
-    if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
-        deps += [
-            wx.dependency('wxpng'),
-        ]
-    endif
-
     if host_machine.system() == 'windows'
         deps += [
-            wx.dependency('wxzlib'),
             wx.dependency('wxexpat'),
         ]
 
