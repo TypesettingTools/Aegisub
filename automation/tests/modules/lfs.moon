@@ -85,3 +85,16 @@ describe 'lfs', ->
       os.remove name .. '/a'
       os.remove name .. '/b'
       lfs.rmdir name
+
+    it 'should error for a nonexistent path like vanilla lfs', ->
+      ok, err = pcall -> lfs.dir temp_name!
+      assert.is.false ok
+      assert.is.truthy err\find 'cannot open', 1, true
+
+    it 'should error when given a file rather than a directory', ->
+      name = temp_name!
+      lfs.touch name
+      ok, err = pcall -> lfs.dir name
+      assert.is.false ok
+      assert.is.truthy err\find 'cannot open', 1, true
+      os.remove name

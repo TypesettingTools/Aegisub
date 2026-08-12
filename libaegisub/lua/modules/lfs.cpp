@@ -18,6 +18,8 @@
 #include "libaegisub/lua/ffi.h"
 
 #include <chrono>
+#include <stdexcept>
+#include <system_error>
 
 using namespace agi::fs;
 using namespace agi::lua;
@@ -94,6 +96,13 @@ void dir_free(DirectoryIterator *it, char **) {
 
 DirectoryIterator *dir_new(const char *path, char **err) {
 	return wrap(err, [=]{
+		// DirectoryIterator deliberately swallows open failures, so probe the
+		// path ourselves first: lfs.dir must raise when the directory can't
+		// be opened
+		std::error_code ec;
+		sfs::directory_iterator(agi::fs::path(path), ec);
+		if (ec)
+			throw std::runtime_error("cannot open " + std::string(path) + ": " + ec.message());
 		return new DirectoryIterator(path, "");
 	});
 }
