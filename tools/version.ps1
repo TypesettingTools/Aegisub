@@ -45,7 +45,10 @@ if (Test-Path $gitVersionHeaderPath) {
 
 $gitRevision = $lastSvnRevision + ((git -C $repositoryRootPath log --pretty=oneline "$($lastSvnHash)..HEAD" 2>$null | Measure-Object).Count)
 $gitBranch = [string](git -C $repositoryRootPath symbolic-ref --short HEAD 2>$null)
-$gitBranch = ($gitBranch -replace '[^A-Za-z0-9._-]', '-').Trim('-')
+if ([string]::IsNullOrEmpty($gitBranch)) {
+  $gitBranch = [Environment]::GetEnvironmentVariable('AEGISUB_BUILD_BRANCH')
+}
+$gitBranch = (($gitBranch -replace '[^A-Za-z0-9._-]', '-') -replace '-+', '-').Trim('-')
 if ([string]::IsNullOrEmpty($gitBranch)) {
   $gitBranch = 'unnamed-branch'
 }
