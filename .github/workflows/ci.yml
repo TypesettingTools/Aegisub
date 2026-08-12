@@ -156,11 +156,17 @@ jobs:
           ${{ matrix.config.devenv }}
           meson compile -C build
 
-      # The automation suite only runs on POSIX hosts with busted installed
+      # The automation suite is registered at configure time only if the
+      # busted probe succeeds, so make sure it can't silently drop out of CI
+      - name: Check automation tests are registered
+        if: ${{ !startsWith(matrix.config.os, 'windows-') }}
+        run: meson test -C build --list | grep automation
+
+      # --suite limits this to our own tests, excluding those of subproject deps
       - name: Run test
         run: |
           ${{ matrix.config.devenv }}
-          meson test -C build --verbose
+          meson test -C build --verbose --suite Aegisub
 
       # Windows artifacts
       - name: Generate Windows installer
