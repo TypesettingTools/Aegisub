@@ -17,6 +17,7 @@ project('Aegisub', ['c', 'cpp'],
         version: '3.5.0')
 
 cmake = import('cmake')
+fs = import('fs')
 force_fallback_for = get_option('force_fallback_for')
 
 if host_machine.system() == 'darwin'
@@ -194,6 +195,12 @@ else
     if get_option('default_library') == 'static'
         build_shared = false
     endif
+
+    if build_shared and (zlib_dep.type_name() == 'internal' or libpng_dep.type_name() == 'internal')
+        error('Shared fallback wxWidgets cannot consume Meson-built zlib/libpng safely: ' +
+              'Meson converts them to raw paths without Ninja dependency edges. ' +
+              'Use -Ddefault_library=static or provide system zlib and libpng.')
+    endif
     build_type = 'Release'
     if get_option('buildtype') == 'debug'
         build_type = 'Debug'
@@ -231,8 +238,9 @@ else
 
     if zlib_dep.type_name() == 'internal'
         zlib = subproject('zlib').get_variable('zlib')
-        zlib_source_dir = (meson.project_source_root() / 'subprojects/zlib-1.3.1').replace('\\', '/')
         zlib_library = zlib.full_path().replace('\\', '/')
+        zlib_build_dir = fs.parent(zlib_library).replace('\\', '/')
+        zlib_source_dir = (meson.project_source_root() / 'subprojects' / fs.name(zlib_build_dir)).replace('\\', '/')
         opt_var.add_cmake_defines({
             'ZLIB_INCLUDE_DIR': zlib_source_dir,
             'ZLIB_LIBRARY': zlib_library,
@@ -245,9 +253,9 @@ else
 
     if libpng_dep.type_name() == 'internal'
         libpng = subproject('libpng').get_variable('libpng')
-        libpng_source_dir = (meson.project_source_root() / 'subprojects/libpng-1.6.55').replace('\\', '/')
-        libpng_build_dir = (meson.project_build_root() / 'subprojects/libpng-1.6.55').replace('\\', '/')
         libpng_library = libpng.full_path().replace('\\', '/')
+        libpng_build_dir = fs.parent(libpng_library).replace('\\', '/')
+        libpng_source_dir = (meson.project_source_root() / 'subprojects' / fs.name(libpng_build_dir)).replace('\\', '/')
         opt_var.add_cmake_defines({
             'PNG_LIBRARY': libpng_library,
             'PNG_PNG_INCLUDE_DIR': libpng_source_dir,
