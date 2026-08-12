@@ -172,15 +172,6 @@ jobs:
           ${{ matrix.config.devenv }}
           meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
-      - name: Cache FFTW (MacOS)
-        if: startsWith(matrix.config.os, 'macos-')
-        uses: actions/cache@v6
-        with:
-          path: build/fftw-prefix
-          # The script hash covers the FFTW version and build flags; the Meson
-          # options hash covers the configured deployment-target default.
-          key: ${{ runner.os }}-${{ runner.arch }}-fftw-${{ hashFiles('tools/macos-build-fftw.sh', 'meson_options.txt') }}
-
       - name: Build FFTW (MacOS)
         if: startsWith(matrix.config.os, 'macos-')
         run: |
