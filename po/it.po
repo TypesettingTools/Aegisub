@@ -1352,15 +1352,15 @@ msgstr "Indietro %s"
 
 #: ../src/command/edit.cpp:1210 ../src/command/edit.cpp:1211
 msgid "Revert"
-msgstr ""
+msgstr "Ripristina"
 
 #: ../src/command/edit.cpp:1212
 msgid "Revert the active line to its initial state (shown in the upper editor)"
-msgstr ""
+msgstr "Ripristina la riga attiva al suo stato iniziale (mostrato nell'editor in alto)"
 
 #: ../src/command/edit.cpp:1217
 msgid "revert line"
-msgstr ""
+msgstr "ripristina riga"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
 #: ../src/preferences.cpp:453
@@ -1369,19 +1369,19 @@ msgstr "Azzera"
 
 #: ../src/command/edit.cpp:1225
 msgid "Clear the current line's text"
-msgstr ""
+msgstr "Cancella il testo della riga corrente"
 
 #: ../src/command/edit.cpp:1230 ../src/command/edit.cpp:1249
 msgid "clear line"
-msgstr ""
+msgstr "azzera riga"
 
 #: ../src/command/edit.cpp:1237 ../src/command/edit.cpp:1238
 msgid "Clear Text"
-msgstr ""
+msgstr "Azzera Testo"
 
 #: ../src/command/edit.cpp:1239
 msgid "Clear the current line's text, leaving override tags"
-msgstr ""
+msgstr "Cancella il testo della riga attuale, lasciando gli override tag"
 
 #: ../src/command/edit.cpp:1255 ../src/command/edit.cpp:1256
 #: ../src/command/tool.cpp:256
@@ -1390,11 +1390,11 @@ msgstr "Inserisci Originale"
 
 #: ../src/command/edit.cpp:1257
 msgid "Insert the original line text at the cursor"
-msgstr ""
+msgstr "Inserisci il testo della riga originale al cursore"
 
 #: ../src/command/edit.cpp:1265
 msgid "insert original"
-msgstr ""
+msgstr "inserisci originale"
 
 #: ../src/command/grid.cpp:50 ../src/command/grid.cpp:51
 #: ../src/command/grid.cpp:62 ../src/command/grid.cpp:63
@@ -1624,7 +1624,7 @@ msgstr "Scambia Righe"
 
 #: ../src/command/grid.cpp:384
 msgid "Swap the two selected lines"
-msgstr ""
+msgstr "Scambia le due righe selezionate"
 
 #: ../src/command/grid.cpp:395
 msgid "swap lines"
@@ -1699,7 +1699,8 @@ msgstr "Chiudi Keyframe"
 #: ../src/command/keyframe.cpp:51
 msgid ""
 "Discard the currently loaded keyframes and use those from the video, if any"
-msgstr ""
+msgstr 
+"Dimentica i keyframe attualmente caricati ed usa quelli del video, se disponibili"
 
 #: ../src/command/keyframe.cpp:66
 msgid "Open Keyframes..."
@@ -1711,7 +1712,7 @@ msgstr "Apri Keyframe"
 
 #: ../src/command/keyframe.cpp:68
 msgid "Open a keyframe list file"
-msgstr ""
+msgstr "Apri keyframe"
 
 #: ../src/command/keyframe.cpp:72
 #, fuzzy
@@ -1729,7 +1730,7 @@ msgstr "Salva Keyframe"
 
 #: ../src/command/keyframe.cpp:89
 msgid "Save the current list of keyframes to a file"
-msgstr ""
+msgstr "Salva i keyframe attuali in un file"
 
 #: ../src/command/keyframe.cpp:97
 #, fuzzy
@@ -1786,7 +1787,7 @@ msgstr "Allegati"
 
 #: ../src/command/subtitle.cpp:81
 msgid "Open the attachment manager dialog"
-msgstr ""
+msgstr "Apri la finestra di gestione degli allegati"
 
 #: ../src/command/subtitle.cpp:92
 msgid "&Find..."
@@ -1798,7 +1799,7 @@ msgstr "Trova"
 
 #: ../src/command/subtitle.cpp:94
 msgid "Search for text in the subtitles"
-msgstr ""
+msgstr "Cerca del testo nei sottotitoli"
 
 #: ../src/command/subtitle.cpp:105
 msgid "Find &Next"
@@ -1810,7 +1811,7 @@ msgstr "Trova Successivo"
 
 #: ../src/command/subtitle.cpp:107
 msgid "Find next match of last search"
-msgstr ""
+msgstr "Trova il risultato successivo dell'ultima ricerca"
 
 #: ../src/command/subtitle.cpp:134
 msgid "&After Current"
@@ -1822,7 +1823,7 @@ msgstr "Dopo la corrente"
 
 #: ../src/command/subtitle.cpp:136
 msgid "Insert a new line after the current one"
-msgstr ""
+msgstr "Inserisci una nuova riga dopo quella attuale"
 
 #: ../src/command/subtitle.cpp:168 ../src/command/subtitle.cpp:169
 msgid "After Current, at Video Time"
@@ -1830,7 +1831,7 @@ msgstr "Dopo la corrente, al Tempo Video"
 
 #: ../src/command/subtitle.cpp:170
 msgid "Insert a new line after the current one, starting at video time"
-msgstr ""
+msgstr "Inserisci una nuova riga dopo quella attuale, usando il tempo del video"
 
 #: ../src/command/subtitle.cpp:179
 msgid "&Before Current"
@@ -1842,7 +1843,7 @@ msgstr "Prima della corrente"
 
 #: ../src/command/subtitle.cpp:181
 msgid "Insert a new line before the current one"
-msgstr ""
+msgstr "Inserisci una nuova riga prima di quella attuale"
 
 #: ../src/command/subtitle.cpp:210 ../src/command/subtitle.cpp:211
 msgid "Before Current, at Video Time"
@@ -1850,7 +1851,7 @@ msgstr "Prima della corrente, al Tempo Video"
 
 #: ../src/command/subtitle.cpp:212
 msgid "Insert a new line before the current one, starting at video time"
-msgstr ""
+msgstr "Inserisci una nuova riga prima di quella attuale, usando il tempo del video"
 
 #: ../src/command/subtitle.cpp:238
 msgid "&New Subtitles"
@@ -1880,7 +1881,7 @@ msgstr "Apri sottotitoli"
 
 #: ../src/command/subtitle.cpp:269
 msgid "Open a subtitles file"
-msgstr ""
+msgstr "Apri un file di sottitoli"
 
 #: ../src/command/subtitle.cpp:274 ../src/command/subtitle.cpp:304
 #: ../src/dialog_style_manager.cpp:674
@@ -1891,15 +1892,15 @@ msgstr "Apri file sottotitoli"
 
 #: ../src/command/subtitle.cpp:282
 msgid "Open A&utosaved Subtitles..."
-msgstr ""
+msgstr "Apri sottotitoli salvati automaticamente..."
 
 #: ../src/command/subtitle.cpp:283
 msgid "Open Autosaved Subtitles"
-msgstr ""
+msgstr "Apri sottotitoli salvati automaticamente"
 
 #: ../src/command/subtitle.cpp:284
 msgid "Open a previous version of a file which was autosaved by Aegisub"
-msgstr ""
+msgstr "Apri una versione precedente di un file che è stato salvato automaticamente da Aegisub"
 
 #: ../src/command/subtitle.cpp:297
 msgid "Open Subtitles with &Charset..."
@@ -1911,7 +1912,7 @@ msgstr "Apri Sottititoli con Charset"
 
 #: ../src/command/subtitle.cpp:299
 msgid "Open a subtitles file with a specific file encoding"
-msgstr ""
+msgstr "Apri un file di sottotitoli con un encoding particolare"
 
 #: ../src/command/subtitle.cpp:307
 msgid "Charset"
@@ -1931,7 +1932,7 @@ msgstr "Apri Sottotitoli da Video"
 
 #: ../src/command/subtitle.cpp:318
 msgid "Open the subtitles from the current video file"
-msgstr ""
+msgstr "Apri sottotitoli dal video attuale"
 
 #: ../src/command/subtitle.cpp:334
 msgid "&Properties..."
@@ -1966,7 +1967,7 @@ msgstr "Errore"
 #: ../src/command/subtitle.cpp:360 ../src/dialog_export.cpp:211
 #: ../src/dialog_style_manager.cpp:698 ../src/project.cpp:142
 msgid "Unknown error"
-msgstr ""
+msgstr "Errore sconosciuto"
 
 #: ../src/command/subtitle.cpp:367
 msgid "&Save Subtitles"
@@ -1978,7 +1979,7 @@ msgstr "Salva Sottotitoli"
 
 #: ../src/command/subtitle.cpp:369
 msgid "Save the current subtitles"
-msgstr ""
+msgstr "Salva i sottotitoli attuali"
 
 #: ../src/command/subtitle.cpp:384
 msgid "Save Subtitles &as..."
@@ -1990,7 +1991,7 @@ msgstr "Salva Sottotitoli come"
 
 #: ../src/command/subtitle.cpp:386
 msgid "Save subtitles with another name"
-msgstr ""
+msgstr "Salva sottotitoli con un altro nome"
 
 #: ../src/command/subtitle.cpp:395 ../src/dialog_export.cpp:127
 #: ../src/dialog_selected_choices.cpp:26 ../src/subs_edit_ctrl.cpp:411
@@ -2003,7 +2004,7 @@ msgstr "Seleziona Tutto"
 
 #: ../src/command/subtitle.cpp:397
 msgid "Select all dialogue lines"
-msgstr ""
+msgstr "Seleziona tutte le righe di dialoghi"
 
 #: ../src/command/subtitle.cpp:409 ../src/command/subtitle.cpp:410
 msgid "Select Visible"
@@ -2011,7 +2012,7 @@ msgstr "Seleziona Visibile"
 
 #: ../src/command/subtitle.cpp:411
 msgid "Select all dialogue lines that are visible on the current video frame"
-msgstr ""
+msgstr "Seleziona tutte le righe di dialoghi visibili sul frame video attuale"
 
 #: ../src/command/subtitle.cpp:441
 msgid "Spell &Checker..."
@@ -2039,7 +2040,7 @@ msgstr "Cambia Fine"
 
 #: ../src/command/time.cpp:107
 msgid "Change end times of lines to the next line's start time"
-msgstr ""
+msgstr "Cambia i tempi di fine delle righe al tempo di inizio della riga successiva"
 
 #: ../src/command/time.cpp:116
 msgid "Change &Start"
@@ -2051,7 +2052,7 @@ msgstr "Cambia Inizio"
 
 #: ../src/command/time.cpp:118
 msgid "Change start times of lines to the previous line's end time"
-msgstr ""
+msgstr "Cambia i tempi di inizio delle righe al tempo di fine della riga precedente"
 
 #: ../src/command/time.cpp:128
 msgid "Shift to &Current Frame"
