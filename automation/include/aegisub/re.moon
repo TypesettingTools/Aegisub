@@ -247,7 +247,7 @@ real_compile = (pattern, level, flags, stored_level) ->
 
   re = compile pattern, flags
   if type(re) == 'string'
-    error regex, level + 1
+    error re, level + 1
 
   RegEx re, stored_level or level + 1
 

@@ -33,6 +33,11 @@ describe 'compile', ->
   it 'should throw an error when given an invalid regex', ->
     assert.is.error -> re.compile '('
 
+  it 'should throw the compile error message for an invalid regex', ->
+    ok, err = pcall -> re.compile '('
+    assert.is.false ok
+    assert.is.equal 'string', type err
+
   it 'should throw an error when given an empty regex', ->
     assert.is.error -> re.compile ''
 
