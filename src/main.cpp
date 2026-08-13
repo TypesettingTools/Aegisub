@@ -71,7 +71,7 @@
 #include <libaegisub/util.h>
 
 #include <boost/interprocess/streams/bufferstream.hpp>
-#include <boost/program_options.hpp>
+#include <CLI/CLI.hpp>
 #include <iostream>
 #include <wx/clipbrd.h>
 #include <wx/msgdlg.h>
@@ -341,79 +341,63 @@ std::unique_ptr<Automation4::Script> find_script(const std::string& file)
 int main(int argc, char *argv[]) {
 	wxDISABLE_DEBUG_SUPPORT();
 
-	boost::program_options::options_description cmdline("Options");
-	boost::program_options::options_description flags("Options");
-	boost::program_options::positional_options_description posdesc;
+	CLI::App app("Aegisub - Advanced Subtitle Editor");
 
-	cmdline.add_options()
-		("in-file", boost::program_options::value<std::string>(), "input file")
-		("out-file", boost::program_options::value<std::string>(), "output file")
-		("macro", boost::program_options::value<std::string>(), "macro to run")
-	;
+	bool cli = false;
+	std::string in_file, out_file, macro;
+	std::string video, timecodes, keyframes;
+	std::string selected_range;
+	int active_index = -1;
+	std::vector<std::string> automation_scripts, dialog_json, file_names;
 
-	flags.add_options()
-		("help", "produce help message")
-		("cli", "run in CLI mode, without a GUI window. Enables the other options")
-		("video", boost::program_options::value<std::string>(), "video to load")
-		("timecodes", boost::program_options::value<std::string>(), "timecodes to load")
-		("keyframes", boost::program_options::value<std::string>(), "keyframes to load")
-		("automation", boost::program_options::value<std::vector<std::string>>(), "an automation script to run")
-		("active-line", boost::program_options::value<int>()->default_value(-1), "the active line")
-		("selected-lines", boost::program_options::value<std::string>()->default_value(""), "the selected lines")
-		("dialog", boost::program_options::value<std::vector<std::string>>(), "response to a dialog, in JSON")
-		("file", boost::program_options::value<std::vector<std::string>>(), "filename to supply to an open/save call")
-	;
+	// The positionals can also be passed as named options
+	auto in_file_opt = app.add_option("in-file,--in-file", in_file, "input file");
+	auto out_file_opt = app.add_option("out-file,--out-file", out_file, "output file");
+	auto macro_opt = app.add_option("macro,--macro", macro, "macro to run");
 
-	//TODO figure this out properly
+	app.add_flag("--cli", cli, "run in CLI mode, without a GUI window. Enables the other options");
+	app.add_option("--video", video, "video to load");
+	app.add_option("--timecodes", timecodes, "timecodes to load");
+	app.add_option("--keyframes", keyframes, "keyframes to load");
+	// allow_extra_args(false) makes the repeatable options consume exactly
+	// one value per occurrence rather than greedily eating the positionals
+	app.add_option("--automation", automation_scripts, "an automation script to run")->allow_extra_args(false);
+	app.add_option("--active-line", active_index, "the active line")->capture_default_str();
+	app.add_option("--selected-lines", selected_range, "the selected lines");
+	app.add_option("--dialog", dialog_json, "response to a dialog, in JSON")->allow_extra_args(false);
+	app.add_option("--file", file_names, "filename to supply to an open/save call")->allow_extra_args(false);
 
-	cmdline.add(flags);
-	posdesc.add("in-file", 1);
-	posdesc.add("out-file", 1);
-	posdesc.add("macro", 1);
-	auto print_usage = [&](std::ostream& out) {
-		out << argv[0] << " [options] <input file> <output file> <macro>" << std::endl;
-		out << flags << std::endl;
-	};
+	// Extra arguments are collected rather than rejected so that GUI
+	// launches keep working with toolkit arguments (wx parses the original
+	// argv itself); CLI mode rejects them below
+	app.allow_extras();
 
-	boost::program_options::variables_map vm;
-	boost::program_options::parsed_options parsed(&cmdline);
 	try {
-		// Unregistered options are collected rather than rejected so that GUI
-		// launches keep working with toolkit arguments (wx parses the
-		// original argv itself); CLI mode rejects them below
-		parsed = boost::program_options::command_line_parser(argc, argv).
-			options(cmdline).positional(posdesc).allow_unregistered().run();
-		boost::program_options::store(parsed, vm);
-		boost::program_options::notify(vm);
+		app.parse(argc, argv);
 	}
-	catch (boost::program_options::error const& e) {
-		std::cerr << "Error: " << e.what() << std::endl;
-		print_usage(std::cerr);
+	catch (CLI::Success const& e) {
+		// --help and friends print and exit successfully
+		return app.exit(e);
+	}
+	catch (CLI::ParseError const& e) {
+		app.exit(e); // prints the error and a --help hint to stderr
 		return 1;
 	}
 
-	bool cli = vm.count("cli");
 	config::hasGui = !cli;
 
 	if (cli) {
-		auto unrecognized = boost::program_options::collect_unrecognized(
-			parsed.options, boost::program_options::exclude_positional);
-		if (!unrecognized.empty()) {
-			std::cerr << "Error: unrecognised option '" << unrecognized.front() << "'" << std::endl;
-			print_usage(std::cerr);
+		auto extras = app.remaining();
+		if (!extras.empty()) {
+			std::cerr << "Error: unrecognised option '" << extras.front() << "'" << std::endl;
 			return 1;
 		}
-	}
 
-	if (vm.count("help")) {
-		print_usage(std::cout);
-		return 0;
-	}
-
-	if (cli && !vm.count("macro")) {
-		std::cerr << "Too few arguments." << std::endl;
-		print_usage(std::cerr);
-		return 1;
+		if (!in_file_opt->count() || !out_file_opt->count() || !macro_opt->count()) {
+			std::cerr << "Too few arguments." << std::endl;
+			std::cerr << app.help() << std::endl;
+			return 1;
+		}
 	}
 
 	agi::util::InitLocale();
@@ -434,7 +418,7 @@ int main(int argc, char *argv[]) {
 			agi::Context context;
 
 			LOG_D("main") << "Loading subtitles...";
-			context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(vm["in-file"].as<std::string>())), "", false);
+			context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(in_file)), "", false);
 
 			// Project::LoadSubtitles reports failures through the GUI error
 			// path rather than throwing, leaving the context's blank document
@@ -442,29 +426,28 @@ int main(int argc, char *argv[]) {
 			// line (SubsController inserts one into empty files on commit),
 			// so an empty event list here means the file didn't load.
 			if (context.ass->Events.empty()) {
-				std::cerr << "Failed to load " << vm["in-file"].as<std::string>() << std::endl;
+				std::cerr << "Failed to load " << in_file << std::endl;
 				return 1;
 			}
 
-			if (vm.count("video")) {
+			if (!video.empty()) {
 				LOG_D("main") << "Loading video...";
-				context.project->LoadVideo(agi::fs::path(std::filesystem::absolute(vm["video"].as<std::string>())));
+				context.project->LoadVideo(agi::fs::path(std::filesystem::absolute(video)));
 			}
 
-			if (vm.count("timecodes")) {
+			if (!timecodes.empty()) {
 				LOG_D("main") << "Loading timecodes...";
-				context.project->LoadTimecodes(agi::fs::path(std::filesystem::absolute(vm["timecodes"].as<std::string>())));
+				context.project->LoadTimecodes(agi::fs::path(std::filesystem::absolute(timecodes)));
 			}
 
-			if (vm.count("keyframes")) {
+			if (!keyframes.empty()) {
 				LOG_D("main") << "Loading keyframes...";
-				context.project->LoadKeyframes(agi::fs::path(std::filesystem::absolute(vm["keyframes"].as<std::string>())));
+				context.project->LoadKeyframes(agi::fs::path(std::filesystem::absolute(keyframes)));
 			}
 
-			auto active_index = vm["active-line"].as<int>();
 			AssDialogue* active_line = nullptr;
 
-			auto selected_indices = parse_range(vm["selected-lines"].as<std::string>());
+			auto selected_indices = parse_range(selected_range);
 			Selection selected_lines;
 
 			int i = 0;
@@ -492,28 +475,24 @@ int main(int argc, char *argv[]) {
 			context.selectionController->SetSelectionAndActive(
 				std::move(selected_lines), active_line);
 
-			if (vm.count("dialog"))
-				config::dialog_responses = parse_dialog_responses(vm["dialog"].as<std::vector<std::string>>());
+			if (!dialog_json.empty())
+				config::dialog_responses = parse_dialog_responses(dialog_json);
 
-			if (vm.count("file"))
-				config::file_responses = parse_file_responses(vm["file"].as<std::vector<std::string>>());
+			if (!file_names.empty())
+				config::file_responses = parse_file_responses(file_names);
 
 			// cache cwd in case automation changes it
 			auto cwd = std::filesystem::current_path();
 
 			std::vector<std::unique_ptr<Automation4::Script>> scripts;
-			if (vm.count("automation")) {
-				for (auto& s : vm["automation"].as<std::vector<std::string>>()) {
-					LOG_D("main") << "Loading " << s;
-					auto script = find_script(s);
-					if (!script) {
-						return 1;
-					}
-					scripts.emplace_back(std::move(script));
+			for (auto& s : automation_scripts) {
+				LOG_D("main") << "Loading " << s;
+				auto script = find_script(s);
+				if (!script) {
+					return 1;
 				}
+				scripts.emplace_back(std::move(script));
 			}
-
-			auto macro = vm["macro"].as<std::string>();
 
 			cmd::Command *cmd = nullptr;
 
@@ -547,7 +526,7 @@ int main(int argc, char *argv[]) {
 
 			// restore cwd for saving
 			std::filesystem::current_path(cwd);
-			context.subsController->Save(agi::fs::path(std::filesystem::absolute(vm["out-file"].as<std::string>())));
+			context.subsController->Save(agi::fs::path(std::filesystem::absolute(out_file)));
 
 			if (config::hasInitializedWx) {
 				wxUninitialize();

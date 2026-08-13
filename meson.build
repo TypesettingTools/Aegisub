@@ -110,7 +110,7 @@ deps += dependency('libass', version: '>=0.9.7',
                    fallback: ['libass', 'libass_dep'])
 
 boost_static = meson.version().version_compare('>=0.63.0') and get_option('prefer_static')    # boost dependencies do not respect prefer_static https://github.com/mesonbuild/meson/issues/15458
-boost_modules = ['chrono', 'locale', 'program_options']
+boost_modules = ['chrono', 'locale']
 
 if boost_static
     boost_modules += 'thread'   # static boost dependencies do not include transitive dependencies https://github.com/mesonbuild/meson/issues/15457
@@ -153,6 +153,9 @@ if host_machine.system() == 'windows'
 endif
 
 deps += dependency('zlib')
+
+# Header-only; the wrap builds CLI11's own first-party meson support
+deps += dependency('CLI11', version: '>=2.0')
 
 wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
                     required: false,
