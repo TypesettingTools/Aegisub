@@ -132,11 +132,19 @@ jobs:
           brew install libass zlib ffms2 fftw hunspell
           brew install pulseaudio  # NO OpenAL in github CI
 
+          # busted for the automation test suite (LuaJIT is Lua 5.1 to luarocks)
+          brew install luajit luarocks
+          luarocks --lua-dir="$(brew --prefix luajit)" --lua-version=5.1 install busted
+
       - name: Install dependencies (Linux)
         if: startsWith(matrix.config.os, 'ubuntu-')
         run: |
           sudo apt-get update
           sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev libportal-gtk3-dev
+
+          # busted for the automation test suite (LuaJIT is Lua 5.1 to luarocks)
+          sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
+          sudo luarocks --lua-version=5.1 install busted
 
       - name: Configure
         run: |
@@ -148,10 +156,17 @@ jobs:
           ${{ matrix.config.devenv }}
           meson compile -C build
 
+      # The automation suite is registered at configure time only if the
+      # busted probe succeeds, so make sure it can't silently drop out of CI
+      - name: Check automation tests are registered
+        if: ${{ !startsWith(matrix.config.os, 'windows-') }}
+        run: meson test -C build --list | grep automation
+
+      # --suite limits this to our own tests, excluding those of subproject deps
       - name: Run test
         run: |
           ${{ matrix.config.devenv }}
-          meson test -C build --verbose "gtest main"
+          meson test -C build --verbose --suite Aegisub
 
       # Windows artifacts
       - name: Generate Windows installer

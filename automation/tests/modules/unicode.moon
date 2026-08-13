@@ -59,6 +59,8 @@ describe 'to_upper_case', ->
     assert.is.equal 'SS', unicode.to_upper_case 'ß'
   it 'should support ligatures', ->
     assert.is.equal 'FFI', unicode.to_upper_case 'ﬃ'
+  it 'should replace invalid UTF-8 with the replacement character', ->
+    assert.is.equal '�', unicode.to_upper_case '\255'
 
 describe 'to_lower_case', ->
   it 'should support plain ASCII', ->
