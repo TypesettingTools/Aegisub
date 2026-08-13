@@ -6,8 +6,12 @@ param (
   [string]$BuildRoot,
   [Parameter(Position = 1, Mandatory = $true)]
   [ValidateNotNullOrEmpty()]
-  [string]$SourceRoot
+  [string]$SourceRoot,
+  [ValidateNotNullOrEmpty()]
+  [string]$DepCtrlVersion = "0.8.1"
 )
+
+$ErrorActionPreference = 'Stop'
 
 $InstallerDir = Join-Path $SourceRoot "packages\win_installer" | Resolve-Path
 $DepsDir = Join-Path $BuildRoot "installer-deps"
@@ -24,10 +28,24 @@ if (Test-Path 'Env:GITHUB_TOKEN') {
 }
 
 # DependencyControl
-$DepCtrlVersion = "v0.8.1"
 $DepCtrlDir = Join-Path $DepsDir "DependencyControl"
-if (!(Test-Path $DepCtrlDir)) {
-	$depCtrlUrl = "https://github.com/TypesettingTools/DependencyControl/releases/download/$DepCtrlVersion/DependencyControl-$DepCtrlVersion.zip"
+
+function Get-CachedDepCtrlVersion {
+	param([Parameter(Mandatory = $true)][string]$Root)
+	$module = Join-Path $Root "automation\include\l0\DependencyControl.moon"
+	if (!(Test-Path -LiteralPath $module -PathType Leaf)) {
+		return $null
+	}
+	$marker = Select-String -LiteralPath $module -Pattern 'version:\s*"([^"]+)".*--\s*@\{l0\.DependencyControl:version\}' |
+		Select-Object -First 1
+	if (!$marker) {
+		return $null
+	}
+	$marker.Matches[0].Groups[1].Value
+}
+
+if ((Get-CachedDepCtrlVersion $DepCtrlDir) -ne $DepCtrlVersion) {
+	$depCtrlUrl = "https://github.com/TypesettingTools/DependencyControl/releases/download/v$DepCtrlVersion/DependencyControl-v$DepCtrlVersion.zip"
 	$depCtrlStagingDir = Join-Path $DepsDir ("DependencyControl-{0}" -f [guid]::NewGuid().ToString("N"))
 	$depCtrlZip = Join-Path $depCtrlStagingDir "DependencyControl.zip"
 
@@ -39,18 +57,27 @@ if (!(Test-Path $DepCtrlDir)) {
 			throw "Failed to extract DependencyControl (7z exited with code $LASTEXITCODE)"
 		}
 
-		$depCtrlModule = Join-Path $depCtrlStagingDir "automation\include\l0\DependencyControl.moon"
-		if (!(Test-Path -LiteralPath $depCtrlModule -PathType Leaf)) {
-			throw "DependencyControl archive did not contain $depCtrlModule"
+		$stagedVersion = Get-CachedDepCtrlVersion $depCtrlStagingDir
+		if (!$stagedVersion) {
+			throw "DependencyControl archive did not contain a versioned automation\include\l0\DependencyControl.moon"
+		}
+		if ($stagedVersion -ne $DepCtrlVersion) {
+			throw "DependencyControl archive contains version $stagedVersion, expected $DepCtrlVersion"
 		}
 
 		Remove-Item -LiteralPath $depCtrlZip
+		if (Test-Path -LiteralPath $DepCtrlDir) {
+			Remove-Item -LiteralPath $DepCtrlDir -Recurse -Force
+		}
 		Rename-Item -LiteralPath $depCtrlStagingDir -NewName (Split-Path $DepCtrlDir -Leaf)
+		Write-Host "DependencyControl v$DepCtrlVersion has been downloaded to $DepCtrlDir"
 	} finally {
 		if (Test-Path -LiteralPath $depCtrlStagingDir) {
-			Remove-Item -LiteralPath $depCtrlStagingDir -Recurse -Force
+			Remove-Item -LiteralPath $depCtrlStagingDir -Recurse -Force -ErrorAction SilentlyContinue
 		}
 	}
+} else {
+	Write-Host "DependencyControl v$DepCtrlVersion already cached at $DepCtrlDir"
 }
 
 # Avisynth
