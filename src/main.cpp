@@ -370,21 +370,50 @@ int main(int argc, char *argv[]) {
 	posdesc.add("in-file", 1);
 	posdesc.add("out-file", 1);
 	posdesc.add("macro", 1);
+	auto print_usage = [&](std::ostream& out) {
+		out << argv[0] << " [options] <input file> <output file> <macro>" << std::endl;
+		out << flags << std::endl;
+	};
+
 	boost::program_options::variables_map vm;
-	boost::program_options::store(
-		boost::program_options::command_line_parser(argc, argv).
-		options(cmdline).positional(posdesc).run(), vm);
-	boost::program_options::notify(vm);
+	boost::program_options::parsed_options parsed(&cmdline);
+	try {
+		// Unregistered options are collected rather than rejected so that GUI
+		// launches keep working with toolkit arguments (wx parses the
+		// original argv itself); CLI mode rejects them below
+		parsed = boost::program_options::command_line_parser(argc, argv).
+			options(cmdline).positional(posdesc).allow_unregistered().run();
+		boost::program_options::store(parsed, vm);
+		boost::program_options::notify(vm);
+	}
+	catch (boost::program_options::error const& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		print_usage(std::cerr);
+		return 1;
+	}
 
 	bool cli = vm.count("cli");
 	config::hasGui = !cli;
 
-	if (vm.count("help") || (cli && !vm.count("macro"))) {
-		if (!vm.count("help"))
-			std::cout << "Too few arguments." << std::endl;
-		std::cout << argv[0] << " [options] <input file> <output file> <macro>" << std::endl;
-		std::cout << flags << std::endl;
+	if (cli) {
+		auto unrecognized = boost::program_options::collect_unrecognized(
+			parsed.options, boost::program_options::exclude_positional);
+		if (!unrecognized.empty()) {
+			std::cerr << "Error: unrecognised option '" << unrecognized.front() << "'" << std::endl;
+			print_usage(std::cerr);
+			return 1;
+		}
+	}
+
+	if (vm.count("help")) {
+		print_usage(std::cout);
 		return 0;
+	}
+
+	if (cli && !vm.count("macro")) {
+		std::cerr << "Too few arguments." << std::endl;
+		print_usage(std::cerr);
+		return 1;
 	}
 
 	agi::util::InitLocale();
