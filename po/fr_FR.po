@@ -2836,11 +2836,11 @@ msgstr ""
 
 #: ../src/command/video.cpp:673
 msgid "Reset Video &Pan"
-msgstr "Réinitialiser le panoramique de la vidéo"
+msgstr "Recentrer &la vidéo"
 
 #: ../src/command/video.cpp:674
 msgid "Reset Video Pan"
-msgstr "Réinitialiser le déplacement vidéo"
+msgstr "Recentrer la vidéo"
 
 #: ../src/command/video.cpp:675
 msgid "Reset the video's position in the video display"
