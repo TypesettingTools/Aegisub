@@ -434,7 +434,10 @@ int main(int argc, char *argv[]) {
 			agi::Context context;
 
 			LOG_D("main") << "Loading subtitles...";
-			context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(vm["in-file"].as<std::string>())), "", false);
+			if (!context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(vm["in-file"].as<std::string>())), "", false)) {
+				std::cerr << "Failed to load " << vm["in-file"].as<std::string>() << std::endl;
+				return 1;
+			}
 
 			if (vm.count("video")) {
 				LOG_D("main") << "Loading video...";
