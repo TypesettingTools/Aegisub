@@ -84,15 +84,15 @@ void bring_to_front() {
 	[NSApp arrangeInFront:nil];
 }
 
-void hide_aegisub() {
+void hide_application() {
     [NSApp hide:nil];
 }
 
-void hide_others() {
+void hide_other_applications() {
     [NSApp hideOtherApplications:nil];
 }
 
-void show_all() {
+void show_all_applications() {
     [NSApp unhideAllApplications:nil];
 }
 }

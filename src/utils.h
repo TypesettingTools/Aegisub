@@ -107,11 +107,11 @@ namespace osx {
 	// Bring all windows to the front, maintaining relative z-order
 	void bring_to_front();
 	// Hide the application
-	void hide_aegisub();
+	void hide_application();
 	// Hide all other applications
-	void hide_others();
+	void hide_other_applications();
 	// Unhide all applications
-	void show_all();
+	void show_all_applications();
 
 namespace ime {
 	/// Inject the IME helper into the given wxSTC

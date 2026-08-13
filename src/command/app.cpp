@@ -305,7 +305,7 @@ struct app_hide final : public Command {
 	STR_HELP("Hide the application")
 
 	void operator()(agi::Context *) override {
-		osx::hide_aegisub();
+		osx::hide_application();
 	}
 };
 
@@ -316,7 +316,7 @@ struct app_hide_others final : public Command {
 	STR_HELP("Hide all other applications")
 
 	void operator()(agi::Context *) override {
-		osx::hide_others();
+		osx::hide_other_applications();
 	}
 };
 
@@ -327,7 +327,7 @@ struct app_show_all final : public Command {
 	STR_HELP("Show all applications")
 
 	void operator()(agi::Context *) override {
-		osx::show_all();
+		osx::show_all_applications();
 	}
 };
 #endif
