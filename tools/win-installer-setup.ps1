@@ -32,12 +32,30 @@ if (Test-Path 'Env:GITHUB_TOKEN') {
 $DepCtrlVersion = "v0.8.1"
 $DepCtrlDir = Join-Path $DepsDir "DependencyControl"
 if (!(Test-Path $DepCtrlDir)) {
-	New-Item -ItemType Directory -Path $DepCtrlDir | Out-Null
 	$depCtrlUrl = "https://github.com/TypesettingTools/DependencyControl/releases/download/$DepCtrlVersion/DependencyControl-$DepCtrlVersion.zip"
-	$depCtrlZip = Join-Path $DepCtrlDir "DependencyControl.zip"
-	Invoke-WebRequest $depCtrlUrl -OutFile $depCtrlZip -UseBasicParsing
-	7z x $depCtrlZip "-o$DepCtrlDir"
-	Remove-Item $depCtrlZip
+	$depCtrlStagingDir = Join-Path $DepsDir ("DependencyControl-{0}" -f [guid]::NewGuid().ToString("N"))
+	$depCtrlZip = Join-Path $depCtrlStagingDir "DependencyControl.zip"
+
+	try {
+		New-Item -ItemType Directory -Path $depCtrlStagingDir | Out-Null
+		Invoke-WebRequest $depCtrlUrl -OutFile $depCtrlZip -UseBasicParsing
+		7z x $depCtrlZip "-o$depCtrlStagingDir"
+		if ($LASTEXITCODE -ne 0) {
+			throw "Failed to extract DependencyControl (7z exited with code $LASTEXITCODE)"
+		}
+
+		$depCtrlModule = Join-Path $depCtrlStagingDir "automation\include\l0\DependencyControl.moon"
+		if (!(Test-Path -LiteralPath $depCtrlModule -PathType Leaf)) {
+			throw "DependencyControl archive did not contain $depCtrlModule"
+		}
+
+		Remove-Item -LiteralPath $depCtrlZip
+		Rename-Item -LiteralPath $depCtrlStagingDir -NewName (Split-Path $DepCtrlDir -Leaf)
+	} finally {
+		if (Test-Path -LiteralPath $depCtrlStagingDir) {
+			Remove-Item -LiteralPath $depCtrlStagingDir -Recurse -Force
+		}
+	}
 }
 
 # Avisynth
