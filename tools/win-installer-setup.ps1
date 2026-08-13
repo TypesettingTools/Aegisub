@@ -97,8 +97,6 @@ if (!(Test-Path innosetup-langs)) {
 	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/is-6_7_3/Files/Languages/Unofficial/Indonesian.isl -OutFile innosetup-langs/Indonesian.isl -UseBasicParsing
 	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/is-6_7_3/Files/Languages/Unofficial/SerbianCyrillic.isl -OutFile innosetup-langs/SerbianCyrillic.isl -UseBasicParsing
 	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/is-6_7_3/Files/Languages/Unofficial/SerbianLatin.isl -OutFile innosetup-langs/SerbianLatin.isl -UseBasicParsing
-	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/is-6_7_3/Files/Languages/Unofficial/ChineseSimplified.isl -OutFile innosetup-langs/ChineseSimplified.isl -UseBasicParsing
-	Invoke-WebRequest https://raw.github.com/jrsoftware/issrc/is-6_7_3/Files/Languages/Unofficial/ChineseTraditional.isl -OutFile innosetup-langs/ChineseTraditional.isl -UseBasicParsing
 }
 
 # Aegisub localization

@@ -60,6 +60,8 @@ Name: "pt_PT"; MessagesFile: "compiler:Languages\Portuguese.isl"
 Name: "ru"; MessagesFile: "compiler:Languages\Russian.isl"
 Name: "tr"; MessagesFile: "compiler:Languages\Turkish.isl"
 Name: "uk_UA"; MessagesFile: "compiler:Languages\Ukrainian.isl"
+Name: "zh_CN"; MessagesFile: "compiler:Languages\ChineseSimplified.isl"
+Name: "zh_TW"; MessagesFile: "compiler:Languages\ChineseTraditional.isl"
 #ifdef UNOFFICIAL_LANGUAGES
 ; These languages are not shipped with InnoSetup by default and would need to be fetched from https://jrsoftware.org/files/istrans/
 Name: "el"; MessagesFile: {#DEPS_DIR}\innosetup-langs\Greek.isl
@@ -68,8 +70,6 @@ Name: "gl"; MessagesFile: {#DEPS_DIR}\innosetup-langs\Galician.isl
 Name: "id"; MessagesFile: {#DEPS_DIR}\innosetup-langs\Indonesian.isl
 Name: "sr_RS"; MessagesFile: {#DEPS_DIR}\innosetup-langs\SerbianCyrillic.isl
 Name: "sr_RS_latin"; MessagesFile: {#DEPS_DIR}\innosetup-langs\SerbianLatin.isl
-Name: "zh_CN"; MessagesFile: {#DEPS_DIR}\innosetup-langs\ChineseSimplified.isl
-Name: "zh_TW"; MessagesFile: {#DEPS_DIR}\innosetup-langs\ChineseTraditional.isl
 #endif
 
 [Files]
