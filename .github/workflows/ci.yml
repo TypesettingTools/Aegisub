@@ -62,7 +62,16 @@ jobs:
           - name: macOS x86_64 Debug
             os: macos-15-intel
             buildtype: debugoptimized
-            args: &macos_args >-
+            args: &macos_debug_args >-
+              -Dmacos_deployment_target=15.0
+              -Dbuild_osx_bundle=false
+              -Dfftw3=enabled
+              -Dlibpulse=disabled
+              -Dopenal=enabled
+          - name: macOS x86_64 Release
+            os: macos-15-intel
+            buildtype: release
+            args: &macos_release_args >-
               -Ddefault_library=static
               -Dbuild_osx_bundle=true
               -Dfftw3=disabled
@@ -91,18 +100,14 @@ jobs:
               -Ddav1d:enable_tools=false
               -Dzlib:tests=disabled
               --force-fallback-for=boost,wxWidgets,libass,zlib,freetype2,fribidi,harfbuzz,libpng,ffms2,libavformat,libavcodec,libswscale,libavutil,libswresample,dav1d,hunspell,uchardet,icu-uc,icu-i18n,libcurl
-          - name: macOS x86_64 Release
-            os: macos-15-intel
-            buildtype: release
-            args: *macos_args
           - name: macOS arm64 Debug
             os: macos-15
             buildtype: debugoptimized
-            args: *macos_args
+            args: *macos_debug_args
           - name: macOS arm64 Release
             os: macos-15
             buildtype: release
-            args: *macos_args
+            args: *macos_release_args
 
     steps:
       - uses: actions/checkout@v6
@@ -148,8 +153,15 @@ jobs:
           Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
           popd
 
-      - name: Install dependencies (MacOS)
-        if: startsWith(matrix.config.os, 'macos-')
+      - name: Install dependencies (macOS Debug)
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'debugoptimized'
+        run: |
+          brew install ninja pkg-config libass boost zlib libpng ffms2 fftw hunspell uchardet icu4c wxwidgets
+
+          echo "PKG_CONFIG_PATH=$(brew --prefix icu4c)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig" >> "${GITHUB_ENV}"
+
+      - name: Install dependencies (macOS Release)
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
         run: |
           brew install ninja nasm
 
@@ -173,7 +185,7 @@ jobs:
           meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
       - name: Build FFTW (MacOS)
-        if: startsWith(matrix.config.os, 'macos-')
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
         run: |
           tools/macos-build-fftw.sh build
           meson setup --reconfigure --clearcache build \
@@ -230,7 +242,7 @@ jobs:
 
       # macOS artifacts
       - name: Generate macOS installer
-        if: startsWith(matrix.config.os, 'macos-')
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
         env:
           # CI artifacts are intentionally ad-hoc signed. Release managers must
           # explicitly replace this with a Developer ID signature before release.
@@ -266,7 +278,7 @@ jobs:
 
       - name: Upload artifacts - macOS dmg
         uses: actions/upload-artifact@v6
-        if: startsWith(matrix.config.os, 'macos-')
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
         with:
           name: ${{ matrix.config.name }} - ad-hoc installer
           path: build/Aegisub-*.dmg
