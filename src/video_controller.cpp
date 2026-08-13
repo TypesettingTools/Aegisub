@@ -93,7 +93,7 @@ void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 
 void VideoController::OnActiveLineChanged(AssDialogue *line) {
 	if (line && provider && OPT_GET("Video/Subtitle Sync")->GetBool()) {
-		pending_selection_frame = FrameAtTime(line->Start);
+		pending_selection_frame = FrameAtTime(line->Start, agi::vfr::START);
 		selection_sync.StartOnce(selection_sync_delay);
 	}
 	else {
@@ -115,13 +115,18 @@ void VideoController::OnSelectionSyncTimer(wxTimerEvent &) {
 	JumpToFrame(frame);
 }
 
-void VideoController::RequestFrame() {
-	if (last_requested_frame == frame_n)
+void VideoController::RequestFrame(bool force) {
+	if (!force && last_requested_frame == frame_n)
 		return;
 
 	last_requested_frame = frame_n;
 	context->ass->Properties.video_position = frame_n;
 	provider->RequestFrame(frame_n, TimeAtFrame(frame_n));
+}
+
+void VideoController::Refresh() {
+	if (provider)
+		RequestFrame(true);
 }
 
 void VideoController::JumpToFrame(int n) {

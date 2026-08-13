@@ -116,10 +116,13 @@ class VideoController final : public wxEvtHandler {
 	void OnNewVideoProvider(AsyncVideoProvider *provider);
 	void OnActiveLineChanged(AssDialogue *line);
 
-	void RequestFrame();
+	void RequestFrame(bool force = false);
 
 public:
 	VideoController(agi::Context *context);
+
+	/// Request the current frame again, even if it was already requested.
+	void Refresh();
 
 	/// Is the video currently playing?
 	bool IsPlaying() const { return playback.IsRunning(); }
