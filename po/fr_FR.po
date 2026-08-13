@@ -172,7 +172,7 @@ msgid ""
 "Please review the errors, fix them and use the Rescan Autoload Dir button in "
 "Automation Manager to load the scripts again."
 msgstr ""
-"Un script du dossier autoload des automatismes n’a pas pu être chargé.\n"
+"Un script du dossier autoload des automatismes n'a pas pu être chargé.\n"
 "Veuillez vérifier les erreurs, les corriger et utiliser le bouton "
 "« Rescanner le dossier autoload » dans le Gestionnaire d'automatismes pour "
 "recharger les scripts."
@@ -183,7 +183,7 @@ msgid ""
 "Please review the errors, fix them and use the Rescan Autoload Dir button in "
 "Automation Manager to load the scripts again."
 msgstr ""
-"Plusieurs scripts du dossier autoload des automatismes n’ont pas pu être "
+"Plusieurs scripts du dossier autoload des automatismes n'ont pas pu être "
 "chargés.\n"
 "Veuillez vérifier les erreurs, les corriger et utiliser le bouton "
 "« Rescanner le dossier autoload » dans le Gestionnaire d'automatismes pour "
@@ -220,7 +220,7 @@ msgid ""
 "Location specifier found: %c\n"
 "Filename specified: %s"
 msgstr ""
-"Le script d’automatisme utilise un caractère invalide dans son chemin "
+"Le script d'automatisme utilise un caractère invalide dans son chemin "
 "d'accès.\n"
 "Caractère en cause : %c\n"
 "Nom du fichier : %s"
@@ -239,7 +239,7 @@ msgid ""
 "authors! They are not required to view or edit the subtitle file."
 msgstr ""
 "Le fichier de sous-titres que vous avez ouvert contient des scripts "
-"d’automatisme locaux. Voulez-vous charger les scripts d’automatisme "
+"d'automatisme locaux. Voulez-vous charger les scripts d'automatisme "
 "associés ?\n"
 "\n"
 "Liste des scripts :\n"
@@ -257,7 +257,7 @@ msgstr "    %s (%s)"
 
 #: ../src/auto4_base.cpp:419
 msgid "Load associated automation scripts?"
-msgstr "Charger les scripts d’automatisme associés ?"
+msgstr "Charger les scripts d'automatisme associés ?"
 
 #: ../src/auto4_base.cpp:422
 msgid "No"
@@ -275,7 +275,7 @@ msgid ""
 "Searched relative to: %s\n"
 "Resolved filename: %s"
 msgstr ""
-"Le script d’automatisme référencé est introuvable.\n"
+"Le script d'automatisme référencé est introuvable.\n"
 "Nom du fichier : %s\n"
 "Recherché par rapport à : %s\n"
 "Fichier final recherché : %s"
@@ -286,7 +286,7 @@ msgid ""
 "Failed to load Automation script '%s':\n"
 "%s"
 msgstr ""
-"Échec du chargement du script d’automatisme « %s » :\n"
+"Échec du chargement du script d'automatisme « %s » :\n"
 "%s"
 
 #: ../src/auto4_base.cpp:501
@@ -295,7 +295,7 @@ msgid ""
 "Warning when loading Automation script '%s':\n"
 "%s"
 msgstr ""
-"Avertissement lors du chargement du script d’automatisme « %s » :\n"
+"Avertissement lors du chargement du script d'automatisme « %s » :\n"
 "%s"
 
 #: ../src/auto4_base.cpp:508
@@ -324,7 +324,7 @@ msgid ""
 "Warning in Automation script '%s':\n"
 "%s"
 msgstr ""
-"Avertissement dans le script d’automatisme « %s » :\n"
+"Avertissement dans le script d'automatisme « %s » :\n"
 "%s"
 
 #: ../src/auto4_lua.cpp:464
@@ -2626,7 +2626,7 @@ msgstr "Copier l'image affichée dans le presse-papier sans les sous-titres"
 
 #: ../src/command/video.cpp:321 ../src/command/video.cpp:322
 msgid "Copy image to Clipboard (only subtitles)"
-msgstr "Copier l’image dans le presse-papiers (sous-titres uniquement)"
+msgstr "Copier l'image dans le presse-papiers (sous-titres uniquement)"
 
 #: ../src/command/video.cpp:323
 msgid ""
@@ -4418,7 +4418,7 @@ msgstr "Aucun"
 
 #: ../src/dialog_style_editor.cpp:173
 msgid "Shadow box (libass only)"
-msgstr "Complet (libass only)"
+msgstr "Entier (libass only)"
 
 #: ../src/dialog_style_editor.cpp:181
 msgid "Font"
@@ -5489,7 +5489,7 @@ msgid ""
 "Configuration file is invalid. Error reported:\n"
 "%s"
 msgstr ""
-"Le fichier de configuration n’est pas valide. Erreur signalée :\n"
+"Le fichier de configuration n'est pas valide. Erreur signalée :\n"
 "%s"
 
 #: ../src/main.cpp:266
@@ -5525,11 +5525,11 @@ msgstr ""
 
 #: ../src/main.cpp:301
 msgid "Error saving config file"
-msgstr "Erreur lors de l’enregistrement du fichier de configuration"
+msgstr "Erreur lors de l'enregistrement du fichier de configuration"
 
 #: ../src/main.cpp:317 ../src/main.cpp:321 ../src/main.cpp:326
 msgid "Fatal error while initializing"
-msgstr "Erreur fatale lors de l’initialisation"
+msgstr "Erreur fatale lors de l'initialisation"
 
 #: ../src/main.cpp:326
 msgid "Unhandled exception"
@@ -5565,7 +5565,7 @@ msgstr ""
 
 #: ../src/main.cpp:432
 msgid "Exception in event handler"
-msgstr "Exception dans le gestionnaire d’événements"
+msgstr "Exception dans le gestionnaire d'événements"
 
 #: ../src/menu.cpp:96
 msgid "Empty"
@@ -5840,15 +5840,15 @@ msgstr "Agrandir la vidéo (sens inversé)"
 
 #: ../src/preferences.cpp:218
 msgid "Scrolling on the video display"
-msgstr "Défilement sur l’affichage vidéo"
+msgstr "Défilement sur l'affichage vidéo"
 
 #: ../src/preferences.cpp:219
 msgid "Ctrl+Scrolling on the video display"
-msgstr "Ctrl + défilement sur l’affichage vidéo"
+msgstr "Ctrl + défilement sur l'affichage vidéo"
 
 #: ../src/preferences.cpp:220
 msgid "Shift+Scrolling on the video display"
-msgstr "Maj + défilement sur l’affichage vidéo"
+msgstr "Maj + défilement sur l'affichage vidéo"
 
 #: ../src/preferences.cpp:224
 msgid "Default Zoom"
@@ -6244,7 +6244,7 @@ msgid ""
 "Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
 msgstr ""
-"Modifier ces paramètres peut provoquer des bogues et/ou des plantages. N’y "
+"Modifier ces paramètres peut provoquer des bogues et/ou des plantages. N'y "
 "touchez pas si vous ne savez pas ce que vous faites."
 
 #: ../src/preferences.cpp:416 ../src/preferences.cpp:483
@@ -6571,7 +6571,7 @@ msgstr "Impossible d'analyser le fichier des images clés : "
 
 #: ../src/project.cpp:411
 msgid "Keyframes file in unknown format: "
-msgstr "Fichier d’images clés dans un format inconnu : "
+msgstr "Fichier d'images clés dans un format inconnu : "
 
 #: ../src/resolution_resampler.cpp:301
 msgid "resolution resampling"
@@ -6613,12 +6613,12 @@ msgstr "Fichier sauvegardé sous « %s »."
 #: ../src/subs_controller.cpp:282
 msgid "Exception when attempting to autosave file: "
 msgstr ""
-"Exception lors de la tentative d’enregistrement automatique du fichier : "
+"Exception lors de la tentative d'enregistrement automatique du fichier : "
 
 #: ../src/subs_controller.cpp:285
 msgid "Unhandled exception when attempting to autosave file."
 msgstr ""
-"Exception non gérée lors de la tentative d’enregistrement automatique du "
+"Exception non gérée lors de la tentative d'enregistrement automatique du "
 "fichier."
 
 #: ../src/subs_controller.cpp:406
@@ -6816,8 +6816,8 @@ msgid ""
 "Could not get any subtitles provider for the preview box. Make sure that you "
 "have a provider installed."
 msgstr ""
-"Impossible d’obtenir un fournisseur de sous-titres pour la zone d’aperçu. "
-"Assurez-vous qu’un fournisseur est installé."
+"Impossible d'obtenir un fournisseur de sous-titres pour la zone d'aperçu. "
+"Assurez-vous qu'un fournisseur est installé."
 
 #: ../src/subs_preview.cpp:143
 msgid "No subtitles provider"
@@ -6940,8 +6940,8 @@ msgid ""
 "updating your video card drivers may fix this.\n"
 "Error message reported: %s"
 msgstr ""
-"Échec de l’initialisation de l’affichage vidéo. Fermez les autres programmes "
-"en cours d’exécution et mettez à jour les pilotes de votre carte graphique "
+"Échec de l'initialisation de l'affichage vidéo. Fermez les autres programmes "
+"en cours d'exécution et mettez à jour les pilotes de votre carte graphique "
 "pour résoudre le problème.\n"
 "Détails de l'erreur : %s"
 
@@ -6951,7 +6951,7 @@ msgid ""
 "Could not upload video frame to graphics card.\n"
 "Error message reported: %s"
 msgstr ""
-"Impossible de transférer l’image vidéo vers la carte graphique.\n"
+"Impossible de transférer l'image vidéo vers la carte graphique.\n"
 "Détails de l'erreur : %s"
 
 #: ../src/video_display.cpp:252
@@ -6960,7 +6960,7 @@ msgid ""
 "An error occurred trying to render the video frame on the screen.\n"
 "Error message reported: %s"
 msgstr ""
-"Une erreur est survenue lors de l’affichage de l’image vidéo à l’écran.\n"
+"Une erreur est survenue lors de l'affichage de l'image vidéo à l'écran.\n"
 "Détails de l'erreur : %s"
 
 #: ../src/video_provider_manager.cpp:78
@@ -6969,11 +6969,11 @@ msgstr "fichier introuvable."
 
 #: ../src/video_provider_manager.cpp:84
 msgid "video is not in a supported format."
-msgstr "la vidéo n’est pas dans un format pris en charge."
+msgstr "la vidéo n'est pas dans un format pris en charge."
 
 #: ../src/video_provider_manager.cpp:101
 msgid "Could not open "
-msgstr "Impossible d’ouvrir "
+msgstr "Impossible d'ouvrir "
 
 #: ../src/visual_tool.cpp:119
 msgid "visual typesetting"
@@ -7238,7 +7238,7 @@ msgid ""
 "Shows how to use the unicode include to iterate over characters and a lookup "
 "table to convert those characters to something else."
 msgstr ""
-"Montre comment utiliser l’inclusion Unicode pour parcourir les caractères et "
+"Montre comment utiliser l'inclusion Unicode pour parcourir les caractères et "
 "une table de correspondance pour les convertir en autre chose."
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
@@ -7257,7 +7257,7 @@ msgstr "Sélectionner les chevauchements"
 #: ../automation/autoload/select-overlaps.moon:18
 msgid "Select lines which begin while another non-comment line is active"
 msgstr ""
-"Sélectionner les lignes qui commencent alors qu’une autre ligne non "
+"Sélectionner les lignes qui commencent alors qu'une autre ligne non "
 "commentée est active"
 
 #: ../automation/autoload/strip-tags.lua:17
@@ -7374,11 +7374,11 @@ msgstr ""
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:12
 msgid "Some highlights of Aegisub:"
-msgstr "Quelques points forts d’Aegisub :"
+msgstr "Quelques points forts d'Aegisub :"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:14
 msgid "Simple and intuitive yet powerful interface for editing subtitles"
-msgstr "Interface d’édition de sous-titres simple et intuitive, mais puissante"
+msgstr "Interface d'édition de sous-titres simple et intuitive, mais puissante"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:15
 msgid "Support for many formats and character sets"
