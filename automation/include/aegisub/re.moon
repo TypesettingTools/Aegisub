@@ -36,32 +36,30 @@ regex = require 'aegisub.__re_impl'
 err_buff = ffi.new 'char *[1]'
 
 -- Raise a Lua error if the last native call reported one
-check_err = ->
+checked_call = (f, ...) ->
+  err_buff[0] = nil
+  res = f ...
+
   if err_buff[0] != nil
     error ffi_util.string(err_buff[0]), 3
+
+  return res
 
 -- Wrappers to convert returned values from C types to Lua types
 search = (re, str, start) ->
   return unless start <= str\len()
-  err_buff[0] = nil
-  res = regex.search re, str, str\len(), start, err_buff
-  check_err!
+  res = checked_call regex.search, re, str, str\len(), start, err_buff
   return unless res != nil
   first, last = res[0], res[1]
   ffi.gc(res, ffi.C.free)
   first, last
 
 replace = (re, replacement, str, max_count) ->
-  err_buff[0] = nil
-  res = regex.replace re, replacement, str, str\len(), max_count, err_buff
-  check_err!
-  ffi_util.string res
+  ffi_util.string (checked_call regex.replace, re, replacement, str, str\len(), max_count, err_buff)
 
 match = (re, str, start) ->
   assert start <= str\len()
-  err_buff[0] = nil
-  m = regex.match re, str, str\len(), start, err_buff
-  check_err!
+  m = checked_call regex.match, re, str, str\len(), start, err_buff
   return unless m != nil
   ffi.gc m, regex.match_free
 
