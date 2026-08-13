@@ -25,7 +25,7 @@ msgstr "Veuillez choisir une langue :"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
-msgstr "Autodétection de l'orientation du texte (libass uniquement)"
+msgstr "Détection automatique de l'orientation du texte (libass uniquement)"
 
 #: ../src/ass_style.cpp:197
 msgid "ANSI"
