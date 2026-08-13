@@ -45,6 +45,7 @@
 #include "../options.h"
 #include "../project.h"
 #include "../provider_file_formats.h"
+#include "../video_provider_manager.h"
 #include "../selection_controller.h"
 #include "../utils.h"
 #include "../video_controller.h"
@@ -589,7 +590,7 @@ struct video_open final : public Command {
 	STR_HELP("Open a video file")
 
 	void operator()(agi::Context *c) override {
-		auto formats = MakeWildcard(GetVideoFileExtensions());
+		auto formats = MakeWildcard(VideoProviderFactory::GetFileExtensions());
 		auto str = from_wx(_("Video Formats")) + " (" + formats + ")|" + formats + "|"
 		         + from_wx(_("All Files")) + " (*.*)|*.*";
 		auto filename = OpenFileSelector(_("Open Video File"), "Path/Last/Video", "", "", str, c->parent);

@@ -23,6 +23,7 @@
 #include "audio_provider_factory.h"
 #include "base_grid.h"
 #include "charset_detect.h"
+#include "audio_provider_factory.h"
 #include "compat.h"
 #include "dialog_progress.h"
 #include "dialogs.h"
@@ -441,8 +442,8 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		".ttxt"
 	};
 
-	auto video_formats = GetVideoFileExtensions();
-	auto audio_formats = GetAudioFileExtensions();
+	auto video_formats = VideoProviderFactory::GetFileExtensions();
+	auto audio_formats = GetAudioProviderFileExtensions();
 	auto search = [](auto const& formats, std::string const& str) {
 		return std::binary_search(formats.begin(), formats.end(), str);
 	};

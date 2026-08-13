@@ -42,6 +42,7 @@
 #include "../libresrc/libresrc.h"
 #include "../options.h"
 #include "../project.h"
+#include "../audio_provider_factory.h"
 #include "../provider_file_formats.h"
 #include "../selection_controller.h"
 #include "../utils.h"
@@ -80,7 +81,7 @@ struct audio_open final : public Command {
 	STR_HELP("Open an audio file")
 
 	void operator()(agi::Context *c) override {
-		auto formats = MakeWildcard(GetAudioFileExtensions());
+		auto formats = MakeWildcard(GetAudioProviderFileExtensions());
 		auto str = from_wx(_("Audio and Video Formats")) + " (" + formats + ")|" + formats + "|"
 		         + from_wx(_("All Files")) + " (*.*)|*.*";
 		auto filename = OpenFileSelector(wxGETTEXT_IN_CONTEXT("dialog title", "Open Audio File"), "Path/Last/Audio", "", "", str, c->parent);

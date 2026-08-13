@@ -7,9 +7,5 @@
 #include <string>
 #include <vector>
 
-/// File extensions (including the leading dot) handled by compiled providers.
-std::vector<std::string> GetAudioFileExtensions();
-std::vector<std::string> GetVideoFileExtensions();
-
 /// Turn an extension list into the pattern portion of a wx file-dialog filter.
 std::string MakeWildcard(std::vector<std::string> const& extensions);
