@@ -99,6 +99,8 @@ DirectoryIterator *dir_new(const char *path, char **err) {
 		// DirectoryIterator deliberately swallows open failures, so probe the
 		// path ourselves first: lfs.dir must raise when the directory can't
 		// be opened
+		//
+		// FIXME: TOCTOU race
 		std::error_code ec;
 		sfs::directory_iterator(agi::fs::path(path), ec);
 		if (ec)
