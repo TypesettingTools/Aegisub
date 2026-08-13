@@ -436,6 +436,16 @@ int main(int argc, char *argv[]) {
 			LOG_D("main") << "Loading subtitles...";
 			context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(vm["in-file"].as<std::string>())), "", false);
 
+			// Project::LoadSubtitles reports failures through the GUI error
+			// path rather than throwing, leaving the context's blank document
+			// in place. A successful load always has at least one dialogue
+			// line (SubsController inserts one into empty files on commit),
+			// so an empty event list here means the file didn't load.
+			if (context.ass->Events.empty()) {
+				std::cerr << "Failed to load " << vm["in-file"].as<std::string>() << std::endl;
+				return 1;
+			}
+
 			if (vm.count("video")) {
 				LOG_D("main") << "Loading video...";
 				context.project->LoadVideo(agi::fs::path(std::filesystem::absolute(vm["video"].as<std::string>())));
