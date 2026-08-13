@@ -23,12 +23,7 @@ if (Test-Path 'Env:GITHUB_TOKEN') {
 	$GitHeaders = @{ 'Authorization' = 'Bearer ' + $Env:GITHUB_TOKEN }
 }
 
-# Yutils, luajson and the ffi-experiments libraries are no longer fetched: DependencyControl
-# installs Yutils from its own feed and ships equivalents of json, BadMutex, PreciseTimer and
-# DownloadManager, so it pulls each of them in on demand.
-
 # DependencyControl
-# Unlike a git clone, DepCtrl's release bundle already has the files arranged for Aegisub's automation directory layout.
 $DepCtrlVersion = "v0.8.1"
 $DepCtrlDir = Join-Path $DepsDir "DependencyControl"
 if (!(Test-Path $DepCtrlDir)) {

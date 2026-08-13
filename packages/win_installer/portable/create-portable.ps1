@@ -73,7 +73,6 @@ Write-Step 'Copying automation'
 Copy-ToDirectory "$InstallerDir\share\aegisub\automation\*"  "$PortableOutputDir\automation\"  -Recurse
 
 Write-Step 'Copying DependencyControl'
-# DepCtrl's release bundle already has the files arranged for Aegisub's automation directory layout.
 Copy-ToDirectory "$InstallerDepsDir\DependencyControl\automation\*"  "$PortableOutputDir\automation\"  -Recurse
 
 Write-Step 'Copying portable config'

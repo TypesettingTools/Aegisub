@@ -32,11 +32,6 @@ DestDir: {app}\automation\include; Source: {#SOURCE_ROOT}\automation\include\uti
 DestDir: {app}\automation\include; Source: {#SOURCE_ROOT}\automation\include\utils-auto4.lua; Flags: ignoreversion overwritereadonly uninsremovereadonly; Attribs: readonly; Components: main
 
 #ifdef DEPCTRL
-; DepCtrl's release bundle already has the files arranged for Aegisub's automation directory layout.
-;
-; Yutils, luajson and the ffi-experiments libraries are no longer bundled. DependencyControl
-; installs Yutils from its own feed and ships internal replacements for json, BadMutex, PreciseTimer and
-; DownloadManager.
 DestDir: {userappdata}\Aegisub\automation; Source: {#DEPS_DIR}\DependencyControl\automation\*; Flags: ignoreversion recursesubdirs createallsubdirs; Components: macros\modules\depctrl
 #endif
 
