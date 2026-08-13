@@ -173,15 +173,15 @@ endif
 zlib_dep = dependency('zlib')
 deps += zlib_dep
 
-if force_all_fallbacks or force_fallback_for.contains('wxWidgets')
-    wx_dep = dependency('', required: false)
-else
+use_bundled_wx = force_all_fallbacks or force_fallback_for.contains('wxWidgets')
+if not use_bundled_wx
     wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
                         required: false,
                         modules: ['std', 'stc', 'gl'])
+    use_bundled_wx = not wx_dep.found()
 endif
 
-if wx_dep.found()
+if not use_bundled_wx
     deps += wx_dep
     wx_defines_dep = wx_dep
 else
