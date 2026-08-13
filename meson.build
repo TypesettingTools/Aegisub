@@ -218,6 +218,9 @@ else
 
         'wxUSE_WEBVIEW': false,         # breaks build on linux
         'wxUSE_LIBPNG': 'sys',          # supplied by Meson below
+        # Aegisub registers only wxPNGHandler. Avoid building the unused TIFF
+        # codec and its additional zlib/JPEG dependency plumbing.
+        'wxUSE_LIBTIFF': 'OFF',
         'wxUSE_ZLIB': 'sys',            # supplied by Meson below
         'CMAKE_BUILD_TYPE': build_type,
         'wxUSE_IMAGE': true,
@@ -280,6 +283,10 @@ else
     endif
 
     wx = cmake.subproject('wxWidgets', options: opt_var)
+
+    if wx.target_list().contains('wxtiff')
+        error('wxWidgets unexpectedly built wxtiff despite wxUSE_LIBTIFF=OFF')
+    endif
 
     foreach bundled_dependency: ['wxpng', 'wxzlib']
         if wx.target_list().contains(bundled_dependency)

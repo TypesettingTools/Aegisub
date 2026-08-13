@@ -33,13 +33,29 @@ export AEGISUB_NOTARY_PROFILE=aegisub-release
 xcrun notarytool store-credentials "${AEGISUB_NOTARY_PROFILE}"
 ```
 
-Check out the exact commit which produced the CI artifact, create a staging
-directory, and extract the artifact into it. The resulting path must be
-`build/Aegisub.app`:
+Check out the exact commit which produced the CI artifact. Downloads from the
+GitHub web UI are wrapper ZIPs containing the uploaded `-signing-input.zip`.
+Extract that wrapper first:
+
+```bash
+mkdir -p signing-artifact
+ditto -x -k /path/to/github-artifact-download.zip signing-artifact
+```
+
+Alternatively, GitHub CLI performs that outer extraction while downloading:
+
+```bash
+gh run download RUN_ID \
+  --name 'macOS arm64 Release - local signing input' \
+  --dir signing-artifact
+```
+
+Then extract the signing input into the staging directory. The resulting path
+must be `build/Aegisub.app`:
 
 ```bash
 mkdir -p build
-ditto -x -k /path/to/Aegisub-*-signing-input.zip build
+ditto -x -k signing-artifact/Aegisub-*-signing-input.zip build
 ```
 
 This release-manager step does not rebuild or resolve Aegisub's dependencies.
