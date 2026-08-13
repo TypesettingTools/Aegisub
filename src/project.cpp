@@ -38,6 +38,7 @@
 #include "utils.h"
 #include "video_controller.h"
 #include "video_display.h"
+#include "video_provider_manager.h"
 
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/format_path.h>
