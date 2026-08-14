@@ -21,6 +21,7 @@ jobs:
       AEGISUB_BUILD_BRANCH: ${{ github.head_ref || github.ref_name }}
       # Same condition as windows-sign-executable
       AEGISUB_SIGN_WINDOWS: ${{ matrix.config.os == 'windows-latest' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/ci/windows-signing') }}
+      SCCACHE_GHA_ENABLED: "true"
 
     strategy:
       fail-fast: false
@@ -29,6 +30,9 @@ jobs:
           - name: Windows MSVC Release
             os: windows-latest
             msvc: true
+            compilers: |
+              $env:CC = "sccache cl"
+              $env:CXX = "sccache cl"
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
               Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"
@@ -50,10 +54,12 @@ jobs:
           - name: Ubuntu Debug
             os: ubuntu-latest
             buildtype: debugoptimized
+            compilers: export CC="sccache gcc" CXX="sccache g++"
             args: -Db_pch=false
           - name: Ubuntu Release
             os: ubuntu-latest
             buildtype: release
+            compilers: export CC="sccache gcc" CXX="sccache g++"
             args: -Db_pch=false
           - name: macOS x86_64 Release
             os: macos-15
@@ -89,6 +95,7 @@ jobs:
           - name: macOS arm64 Debug
             os: macos-15
             buildtype: debugoptimized
+            compilers: export CC="sccache clang" CXX="sccache clang++"
             args: >-
               -Dmacos_deployment_target=15.0
               -Dbuild_osx_bundle=false
@@ -99,6 +106,7 @@ jobs:
             os: macos-15
             native_args: --native-file tools/macos-release.ini
             buildtype: release
+            compilers: export CC="sccache clang" CXX="sccache clang++"
             args: *macos_source_args
 
     steps:
@@ -109,6 +117,9 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
+
+      - name: Set up sccache
+        uses: mozilla-actions/sccache-action@v0.0.11
 
       - name: Setup Meson
         run: |
@@ -186,6 +197,7 @@ jobs:
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
+          ${{ matrix.config.compilers }}
           meson setup build ${{ matrix.config.native_args }} ${{ matrix.config.cross_args }} ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
       - name: Build FFTW (MacOS)
