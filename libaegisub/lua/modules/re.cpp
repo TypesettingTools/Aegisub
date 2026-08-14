@@ -47,11 +47,30 @@ bool search(u32regex& re, const char *str, size_t len, int start, boost::cmatch&
 		start > 0 ? boost::match_prev_avail | boost::match_not_bob : boost::match_default);
 }
 
-match *regex_match(u32regex& re, const char *str, size_t len, int start) {
-	auto result = std::make_unique<match>();
-	if (!search(re, str, len, start, result->m))
-		return nullptr;
-	return result.release();
+// boost::regex can throw (e.g. on invalid UTF-8), and exceptions must not
+// unwind through LuaJIT frames, so trap everything and report errors through
+// an out-param
+template<typename Func>
+auto wrap(char **err, Func f) -> decltype(f()) {
+	try {
+		return f();
+	}
+	catch (std::exception const& e) {
+		*err = strdup(e.what());
+	}
+	catch (...) {
+		*err = strdup("Unknown error");
+	}
+	return decltype(f()){};
+}
+
+match *regex_match(u32regex& re, const char *str, size_t len, int start, char **err) {
+	return wrap(err, [&]() -> match * {
+		auto result = std::make_unique<match>();
+		if (!search(re, str, len, start, result->m))
+			return nullptr;
+		return result.release();
+	});
 }
 
 int *regex_get_match(match& match, size_t idx) {
@@ -62,48 +81,49 @@ int *regex_get_match(match& match, size_t idx) {
 	return match.range;
 }
 
-int *regex_search(u32regex& re, const char *str, size_t len, size_t start) {
-	boost::cmatch result;
-	if (!search(re, str, len, start, result))
-		return nullptr;
+int *regex_search(u32regex& re, const char *str, size_t len, size_t start, char **err) {
+	return wrap(err, [&]() -> int * {
+		boost::cmatch result;
+		if (!search(re, str, len, start, result))
+			return nullptr;
 
-	auto ret = static_cast<int *>(malloc(sizeof(int) * 2));
-	ret[0] = start + result.position() + 1;
-	ret[1] = start + result.position() + result.length();
-	return ret;
+		auto ret = static_cast<int *>(malloc(sizeof(int) * 2));
+		if (!ret) return nullptr;
+		ret[0] = start + result.position() + 1;
+		ret[1] = start + result.position() + result.length();
+		return ret;
+	});
 }
 
-char *regex_replace(u32regex& re, const char *replacement, const char *str, size_t len, int max_count) {
-	// Can't just use regex_replace here since it can only do one or infinite replacements
-	auto match = boost::u32regex_iterator<const char *>(str, str + len, re);
-	auto end_it = boost::u32regex_iterator<const char *>();
+char *regex_replace(u32regex& re, const char *replacement, const char *str, size_t len, int max_count, char **err) {
+	return wrap(err, [&]() -> char * {
+		// Can't just use regex_replace here since it can only do one or infinite replacements
+		auto match = boost::u32regex_iterator<const char *>(str, str + len, re);
+		auto end_it = boost::u32regex_iterator<const char *>();
 
-	auto suffix = str;
+		auto suffix = str;
 
-	std::string ret;
-	auto out = back_inserter(ret);
-	while (match != end_it && max_count > 0) {
-		copy(suffix, match->prefix().second, out);
-		match->format(out, replacement);
-		suffix = match->suffix().first;
-		++match;
-		--max_count;
-	}
+		std::string ret;
+		auto out = back_inserter(ret);
+		while (match != end_it && max_count > 0) {
+			copy(suffix, match->prefix().second, out);
+			match->format(out, replacement);
+			suffix = match->suffix().first;
+			++match;
+			--max_count;
+		}
 
-	ret += suffix;
-	return agi::lua::strndup(ret);
+		ret += suffix;
+		return agi::lua::strndup(ret);
+	});
 }
 
 u32regex *regex_compile(const char *pattern, int flags, char **err) {
-	auto re = std::make_unique<u32regex>();
-	try {
+	return wrap(err, [&]() -> u32regex * {
+		auto re = std::make_unique<u32regex>();
 		*re = boost::make_u32regex(pattern, boost::u32regex::perl | flags);
 		return re.release();
-	}
-	catch (std::exception const& e) {
-		*err = strdup(e.what());
-		return nullptr;
-	}
+	});
 }
 
 void regex_free(u32regex *re) { delete re; }

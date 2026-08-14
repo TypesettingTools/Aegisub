@@ -18,6 +18,8 @@
 #include "libaegisub/lua/ffi.h"
 
 #include <chrono>
+#include <stdexcept>
+#include <system_error>
 
 using namespace agi::fs;
 using namespace agi::lua;
@@ -94,6 +96,15 @@ void dir_free(DirectoryIterator *it, char **) {
 
 DirectoryIterator *dir_new(const char *path, char **err) {
 	return wrap(err, [=]{
+		// DirectoryIterator deliberately swallows open failures, so probe the
+		// path ourselves first: lfs.dir must raise when the directory can't
+		// be opened
+		//
+		// FIXME: TOCTOU race
+		std::error_code ec;
+		sfs::directory_iterator(agi::fs::path(path), ec);
+		if (ec)
+			throw std::runtime_error("cannot open " + std::string(path) + ": " + ec.message());
 		return new DirectoryIterator(path, "");
 	});
 }
@@ -101,7 +112,10 @@ DirectoryIterator *dir_new(const char *path, char **err) {
 const char *get_mode(const char *path, char **err) {
 	return wrap(err, [=]() -> const char * {
 		using enum sfs::file_type;
-		switch (sfs::status(path).type()) {
+		// Not inlined into the switch because it causes an ICE in MSVC 19.44 and 19.51
+		// Bug tracked at https://developercommunity.visualstudio.com/t/C1001-in-msc1cpp:-filesystem::path-deri/11134321
+		auto st = sfs::status(agi::fs::path(path));
+		switch (st.type()) {
 			case not_found: return nullptr;
 			case regular:   return "file";
 			case directory: return "directory";

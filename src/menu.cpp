@@ -258,6 +258,15 @@ public:
 				case wxID_PREFERENCES:
 					cmd::call("app/options", context);
 					break;
+				case wxID_OSX_HIDE:
+					cmd::call("app/hide", context);
+					break;
+				case wxID_OSX_HIDEOTHERS:
+					cmd::call("app/hide_others", context);
+					break;
+				case wxID_OSX_SHOWALL:
+					cmd::call("app/show_all", context);
+					break;
 				case wxID_EXIT:
 					cmd::call("app/exit", context);
 					break;
