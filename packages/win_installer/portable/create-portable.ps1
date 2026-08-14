@@ -1,89 +1,100 @@
 #!/usr/bin/env powershell
 
 param (
-    [Parameter(Position = 0)]
+    [Parameter(Position = 0, Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
     [string]$BuildRoot,
-    [Parameter(Position = 1)]
+    [Parameter(Position = 1, Mandatory = $true)]
+    [ValidateNotNullOrEmpty()]
     [string]$SourceRoot
 )
 
-function Copy-New-Item {
-    $SourceFilePath = $args[0]
-    $DestinationFilePath = $args[1]
-  
-    If (-not (Test-Path $DestinationFilePath)) {
-        New-Item -ItemType Directory -Path $DestinationFilePath -Force
-    } 
-    Copy-Item -Path $SourceFilePath -Destination $DestinationFilePath
+$ErrorActionPreference = 'Stop'
+
+function Copy-ToDirectory {
+    param(
+        [Parameter(Mandatory)][string]$Path,
+        [Parameter(Mandatory)][string]$Destination,
+        [switch]$Recurse
+    )
+    New-Item -ItemType Directory -Path $Destination -Force | Out-Null
+    Copy-Item -Path $Path -Destination $Destination -Recurse:$Recurse -Force
 }
 
-function Copy-New-Items {
-    $SourceFilePath = $args[0]
-    $DestinationFilePath = $args[1]
-  
-    If (-not (Test-Path $DestinationFilePath)) {
-        New-Item -ItemType Directory -Path $DestinationFilePath -Force
-    } 
-    Copy-Item -Path $SourceFilePath -Destination $DestinationFilePath -Recurse
+# Keep in sync with the number of Write-Step calls below.
+$script:stepNum = 0
+$script:stepTotal = 11
+
+# Report progress both via an interactive bar and a textual trail for CI logs.
+function Write-Step {
+    param([Parameter(Mandatory)][string]$Status)
+    $script:stepNum++
+    Write-Progress -Activity 'Creating portable Aegisub' -Status $Status -PercentComplete (100 * $script:stepNum / $script:stepTotal)
+    Write-Host "[$script:stepNum/$script:stepTotal] $Status"
 }
 
-
-Write-Output BUILD_ROOT=$BuildRoot
-Write-Output SOURCE_ROOT=$SourceRoot
+Write-Host "BUILD_ROOT=$BuildRoot"
+Write-Host "SOURCE_ROOT=$SourceRoot"
 $InstallerDir = Join-Path $BuildRoot "install"
 $InstallerDepsDir = Join-Path $BuildRoot "installer-deps"
 $PortableOutputDir = Join-Path $BuildRoot "aegisub-portable"
+$PortableZipPath = Join-Path $BuildRoot "aegisub-portable-64.zip"
 
+Write-Step 'Removing previous output'
+Remove-Item -LiteralPath $PortableOutputDir -Force -Recurse -ErrorAction SilentlyContinue
+Remove-Item -LiteralPath $InstallerDir -Force -Recurse -ErrorAction SilentlyContinue
 
-Write-Output Goto building dir
-Set-Location $BuildRoot
+Write-Step 'Installing build output'
+meson install -C $BuildRoot --no-rebuild --destdir $InstallerDir
+if ($LASTEXITCODE -ne 0) { throw "meson install failed (exit $LASTEXITCODE)" }
 
+Write-Step 'Copying executable'
+Copy-ToDirectory $InstallerDir\bin\aegisub.exe  $PortableOutputDir
 
-Write-Output 'Removing old temp dir'
-Remove-Item -LiteralPath "$PortableOutputDir" -Force -Recurse
-Remove-Item -LiteralPath "install" -Force -Recurse
+Write-Step 'Copying translations'
+Copy-ToDirectory "$InstallerDir\share\locale\*"  "$PortableOutputDir\locale" -Recurse
 
+Write-Step 'Copying dictionaries'
+Copy-ToDirectory $InstallerDepsDir\dictionaries\en_US.aff  $PortableOutputDir\dictionaries
+Copy-ToDirectory $InstallerDepsDir\dictionaries\en_US.dic  $PortableOutputDir\dictionaries
 
-Write-Output 'Make install'
-meson install --no-rebuild --destdir $InstallerDir
-Write-Output 'Gathering files'
-Copy-New-Item $InstallerDir\bin\aegisub.exe  $PortableOutputDir
+# Write-Step 'AviSynth'
+# Copy-ToDirectory $InstallerDepsDir\AvisynthPlus64\x64\Output\system\DevIL.dll  $PortableOutputDir
+# Copy-ToDirectory $InstallerDepsDir\AvisynthPlus64\x64\Output\AviSynth.dll  $PortableOutputDir
+# Copy-ToDirectory $InstallerDepsDir\AvisynthPlus64\x64\Output\plugins\DirectShowSource.dll  $PortableOutputDir
 
-Write-Output 'Copying - translations'
-Copy-New-Items "$InstallerDir\share\locale\*"  "$PortableOutputDir\locale" -Recurse
-Write-Output 'Copying - dictionaries'
-Copy-New-Item $InstallerDepsDir\dictionaries\en_US.aff  $PortableOutputDir\dictionaries
-Copy-New-Item $InstallerDepsDir\dictionaries\en_US.dic  $PortableOutputDir\dictionaries
-Write-Output 'Copying - codecs'
-# Write-Output 'Copying - codecs\Avisynth'
-# Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x64\Output\system\DevIL.dll  $PortableOutputDir
-# Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x64\Output\AviSynth.dll  $PortableOutputDir
-# Copy-New-Item $InstallerDepsDir\AvisynthPlus64\x64\Output\plugins\DirectShowSource.dll  $PortableOutputDir
-Write-Output 'Copying - codecs\VSFilter'
-Copy-New-Item $InstallerDepsDir\VSFilter\x64\VSFilter.dll  $PortableOutputDir\csri
-Write-Output 'Copying - runtimes\MS-CRT'
-Copy-New-Item $InstallerDepsDir\VC_redist\VC_redist.x64.exe $PortableOutputDir\Microsoft.CRT
+Write-Step 'Copying VSFilter'
+Copy-ToDirectory $InstallerDepsDir\VSFilter\x64\VSFilter.dll  $PortableOutputDir\csri
 
-Write-Output 'Copying - automation'
-Copy-New-Items "$InstallerDir\share\aegisub\automation\*"  "$PortableOutputDir\automation\"  -Recurse
-Write-Output 'Copying - automation\DEPCTRL'
-Copy-New-Items "$InstallerDepsDir\DependencyControl\modules\*"  "$PortableOutputDir\automation\include\l0\"  -Recurse
-Copy-New-Items "$InstallerDepsDir\DependencyControl\macros\*"  "$PortableOutputDir\automation\autoload\"  -Recurse
-Copy-New-Item $InstallerDepsDir\Yutils\src\Yutils.lua  $PortableOutputDir\automation\include
-Copy-New-Items "$InstallerDepsDir\luajson\lua\*"  "$PortableOutputDir\automation\include\"  -Recurse
+Write-Step 'Copying VC++ runtime'
+Copy-ToDirectory $InstallerDepsDir\VC_redist\VC_redist.x64.exe $PortableOutputDir\Microsoft.CRT
 
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\requireffi\requireffi.lua  $PortableOutputDir\automation\include\requireffi
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\bad-mutex\BadMutex.dll  $PortableOutputDir\automation\include\BM\BadMutex
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\bad-mutex\BadMutex.lua  $PortableOutputDir\automation\include\BM
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\precise-timer\PreciseTimer.dll  $PortableOutputDir\automation\include\PT\PreciseTimer
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\precise-timer\PreciseTimer.lua  $PortableOutputDir\automation\include\PT
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\download-manager\DownloadManager.dll  $PortableOutputDir\automation\include\DM\DownloadManager
-Copy-New-Item $InstallerDepsDir\ffi-experiments\build\download-manager\DownloadManager.lua  $PortableOutputDir\automation\include\DM
+Write-Step 'Copying automation'
+Copy-ToDirectory "$InstallerDir\share\aegisub\automation\*"  "$PortableOutputDir\automation\"  -Recurse
 
-Write-Output 'Copying - portable-config'
-Copy-New-Item $SourceRoot\packages\win_installer\portable\config.json  $PortableOutputDir
+Write-Step 'Copying DependencyControl'
+Copy-ToDirectory "$InstallerDepsDir\DependencyControl\automation\*"  "$PortableOutputDir\automation\"  -Recurse
 
+Write-Step 'Copying portable config'
+Copy-ToDirectory $SourceRoot\packages\win_installer\portable\config.json  $PortableOutputDir
 
-Write-Output 'Creating portable zip'
-Remove-Item aegisub-portable-64.zip
-7z a aegisub-portable-64.zip aegisub-portable\
+Write-Step 'Creating portable zip'
+Remove-Item -LiteralPath $PortableZipPath -Force -ErrorAction SilentlyContinue
+
+# Build the zip in a way that avoids some PowerShell versions emitting backslashes in the entry names.
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$zipRoot = Split-Path $PortableOutputDir -Leaf
+$baseLen = $PortableOutputDir.Length + 1
+$zip = [System.IO.Compression.ZipFile]::Open($PortableZipPath, 'Create')
+try {
+    foreach ($file in Get-ChildItem -LiteralPath $PortableOutputDir -Recurse -File) {
+        $entryName = "$zipRoot/" + $file.FullName.Substring($baseLen).Replace('\', '/')
+        [void][System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $file.FullName, $entryName, [System.IO.Compression.CompressionLevel]::Optimal)
+    }
+}
+finally {
+    $zip.Dispose()
+}
+
+Write-Progress -Activity 'Creating portable Aegisub' -Completed
+Write-Host "Done: $PortableZipPath"
