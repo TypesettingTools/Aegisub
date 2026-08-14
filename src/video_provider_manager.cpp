@@ -40,9 +40,9 @@ std::unique_ptr<VideoProvider> CreateCacheVideoProvider(std::unique_ptr<VideoPro
 namespace {
 	struct factory {
 		const char *name;
-	std::unique_ptr<VideoProvider> (*create)(agi::fs::path const&, agi::ycbcr::Header, agi::BackgroundRunner *);
-	bool hidden;
-	std::vector<const char *> extensions;
+		std::unique_ptr<VideoProvider> (*create)(agi::fs::path const&, agi::ycbcr::Header, agi::BackgroundRunner *);
+		bool hidden;
+		std::vector<const char *> extensions;
 	};
 
 	const std::initializer_list<factory> providers = {
