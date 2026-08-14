@@ -16,6 +16,7 @@ jobs:
       SCCACHE_GHA_ENABLED: "true"
       SCCACHE_GHA_CACHE_TO: ${{ matrix.config['sccache-key'] }}
       SCCACHE_GHA_CACHE_FROM: ${{ matrix.config['sccache-key'] }}
+      SCCACHE_C_CUSTOM_CACHE_BUSTER: ${{ matrix.config['sccache-key'] }}
 
     strategy:
       fail-fast: false
