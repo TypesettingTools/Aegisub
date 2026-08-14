@@ -14,6 +14,8 @@ jobs:
     runs-on: ${{ matrix.config.os }}
     env:
       SCCACHE_GHA_ENABLED: "true"
+      SCCACHE_GHA_CACHE_TO: ${{ matrix.config['sccache-key'] }}
+      SCCACHE_GHA_CACHE_FROM: ${{ matrix.config['sccache-key'] }}
 
     strategy:
       fail-fast: false
@@ -21,6 +23,7 @@ jobs:
         config:
           - name: Windows MSVC Release
             os: windows-latest
+            sccache-key: windows-x86_64-msvc
             msvc: true
             compilers: |
               $env:CC = "sccache cl"
@@ -51,6 +54,7 @@ jobs:
           - {
             name: Ubuntu Debug,
             os: ubuntu-latest,
+            sccache-key: linux-x86_64-gcc,
             buildtype: debugoptimized,
             compilers: export CC="sccache gcc" CXX="sccache g++",
             args: -Db_pch=false
@@ -58,6 +62,7 @@ jobs:
           - {
             name: Ubuntu Release,
             os: ubuntu-latest,
+            sccache-key: linux-x86_64-gcc,
             buildtype: release,
             compilers: export CC="sccache gcc" CXX="sccache g++",
             args: -Db_pch=false
@@ -65,6 +70,7 @@ jobs:
           - {
             name: macOS x86_64 Debug,
             os: macos-15-intel,
+            sccache-key: macos-x86_64-clang,
             buildtype: debugoptimized,
             compilers: export CC="sccache clang" CXX="sccache clang++",
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
@@ -72,6 +78,7 @@ jobs:
           - {
             name: macOS x86_64 Release,
             os: macos-15-intel,
+            sccache-key: macos-x86_64-clang,
             buildtype: release,
             compilers: export CC="sccache clang" CXX="sccache clang++",
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
@@ -79,6 +86,7 @@ jobs:
           - {
             name: macOS arm64 Debug,
             os: macos-15,
+            sccache-key: macos-arm64-clang,
             buildtype: debugoptimized,
             compilers: export CC="sccache clang" CXX="sccache clang++",
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
@@ -86,6 +94,7 @@ jobs:
           - {
             name: macOS arm64 Release,
             os: macos-15,
+            sccache-key: macos-arm64-clang,
             buildtype: release,
             compilers: export CC="sccache clang" CXX="sccache clang++",
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
