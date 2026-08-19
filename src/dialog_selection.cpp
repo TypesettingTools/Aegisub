@@ -246,7 +246,7 @@ void DialogSelection::Process(wxCommandEvent& event) {
 		new_active = *new_sel.begin();
 	con->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
 
-	if (event.GetId() == wxID_OK) Close();
+	if (count && event.GetId() == wxID_OK) Close();
 }
 
 void DialogSelection::OnDialogueCheckbox(wxCheckBox *chk) {
