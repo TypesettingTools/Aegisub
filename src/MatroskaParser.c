@@ -74,7 +74,10 @@
 
 #define	MAX_STRING_LEN	      1023
 #define	QSEGSIZE	      512
-#define	MAX_TRACKS	      32
+// Sanity ceiling only - Tracks[] grows dynamically via AGET/ArrayAlloc,
+// and nothing else sizes an array off this anymore. Just bounds memory
+// a corrupt/malicious file can force us to commit to.
+#define	MAX_TRACKS	      65536
 #define	MAX_READAHEAD	      (256*1024)
 
 #define	MAXCLUSTER	      (64*1048576)
