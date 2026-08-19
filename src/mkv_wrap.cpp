@@ -131,7 +131,7 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 	SrtTagParser srtParser;
 
-	while (mkv_ReadFrame(file, 0, &rt, &startTime, &endTime, &filePos, &frameSize, &frameFlags) == 0) {
+	while (mkv_ReadFrame(file, -1, &rt, &startTime, &endTime, &filePos, &frameSize, &frameFlags) == 0) {
 		if (ps->IsCancelled()) return true;
 		if (frameSize == 0) continue;
 
@@ -251,7 +251,7 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 	}
 
 	// Picked track
-	mkv_SetTrackMask(file, ~(1 << trackToRead));
+	mkv_SetTrackMask(file, trackToRead);
 	auto trackInfo = mkv_GetTrackInfo(file, trackToRead);
 	std::string CodecID(trackInfo->CodecID);
 	bool srt = CodecID == "S_TEXT/UTF8";

@@ -203,7 +203,7 @@ struct MatroskaFile {
   struct QueueEntry **QBlocks;
   struct Queue	    *Queues;
   uint64_t	    readPosition;
-  unsigned int	    trackMask;
+  long		    selectedTrack; // -1 = no filter (keep all tracks), else the one kept track index
   uint64_t	    pSegmentTop;  // offset of next byte after the segment
   uint64_t	    tcCluster;    // current cluster timecode
 
@@ -2163,7 +2163,7 @@ blockex:
 
       for (tracknum=0;tracknum<mf->nTracks;++tracknum)
 	if (mf->Tracks[tracknum]->Number == trackid) {
-	  if (mf->trackMask & (1<<tracknum)) // ignore this block
+	  if (mf->selectedTrack >= 0 && mf->selectedTrack != (long)tracknum) // ignore this block
 	    break;
 	  goto found;
 	}
@@ -2657,7 +2657,7 @@ ok:
     mf->readPosition = mf->Cues[mf->nCues - 1].Position + mf->pSegment;
     mf->tcCluster = mf->Cues[mf->nCues - 1].Time / mf->Seg.TimecodeScale;
   }
-  mf->trackMask = ~(1 << vtrack);
+  mf->selectedTrack = vtrack;
 
   do
     while (mf->Queues[vtrack].head)
@@ -2670,7 +2670,7 @@ ok:
     }
   while (fillQueues(mf,NULL) != EOF);
 
-  mf->trackMask = 0;
+  mf->selectedTrack = -1;
 
   EmptyQueues(mf);
 
@@ -2803,6 +2803,7 @@ MatroskaFile  *mkv_OpenEx(InputStream *io,
 
   mf->cache = io;
   mf->flags = flags;
+  mf->selectedTrack = -1;
   io->progress(io,0,0);
 
   if (setjmp(mf->jb)==0) {
@@ -2949,7 +2950,7 @@ void  mkv_Seek(MatroskaFile *mf,uint64_t timecode,unsigned flags) {
       if (setjmp(mf->jb)!=0)
 	return;
 
-      mkv_SetTrackMask(mf,mf->trackMask);
+      mkv_SetTrackMask(mf,mf->selectedTrack);
 
       if (flags & (MKVF_SEEK_TO_PREV_KEYFRAME | MKVF_SEEK_TO_PREV_KEYFRAME_STRICT)) {
 	// we do this in two stages
@@ -3007,7 +3008,7 @@ void  mkv_Seek(MatroskaFile *mf,uint64_t timecode,unsigned flags) {
 found:
   
 	  for (n=0;n<mf->nTracks;++n)
-	    if (!(mf->trackMask & (1<<n)) && m_kftime[n]==MAXU64 &&
+	    if ((mf->selectedTrack < 0 || mf->selectedTrack == (long)n) && m_kftime[n]==MAXU64 &&
 		m_seendf[n] && j>0)
 	    {
 	      // we need to restart the search from prev cue
@@ -3127,21 +3128,21 @@ int	      mkv_TruncFloat(MKFLOAT f) {
 
 #define	FTRACK	0xffffffff
 
-void	      mkv_SetTrackMask(MatroskaFile *mf,unsigned int mask) {
+void	      mkv_SetTrackMask(MatroskaFile *mf,long selectedTrack) {
   unsigned int	  i;
 
   if (mf->flags & MPF_ERROR)
     return;
 
-  mf->trackMask = mask;
+  mf->selectedTrack = selectedTrack;
 
   for (i=0;i<mf->nTracks;++i)
-    if (mask & (1<<i))
+    if (selectedTrack >= 0 && selectedTrack != (long)i)
       ClearQueue(mf,&mf->Queues[i]);
 }
 
 int	      mkv_ReadFrame(MatroskaFile *mf,
-			    unsigned int mask,unsigned int *track,
+			    long selectedTrack,unsigned int *track,
 			    uint64_t *StartTime,uint64_t *EndTime,
 			    uint64_t *FilePos,unsigned int *FrameSize,
 			    unsigned int *FrameFlags)
@@ -3154,7 +3155,7 @@ int	      mkv_ReadFrame(MatroskaFile *mf,
     return -1;
 
   for (i=0;i<mf->nTracks;++i)
-    skip[i] = (i<32 && (mask & (1u<<i))) ? 1 : 0;
+    skip[i] = (selectedTrack >= 0 && selectedTrack != (long)i) ? 1 : 0;
 
   do {
     // extract required frame, use block with the lowest timecode
