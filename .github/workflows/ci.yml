@@ -12,6 +12,11 @@ jobs:
   build:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      SCCACHE_GHA_CACHE_TO: ${{ matrix.config['sccache-key'] }}
+      SCCACHE_GHA_CACHE_FROM: ${{ matrix.config['sccache-key'] }}
+      SCCACHE_C_CUSTOM_CACHE_BUSTER: ${{ matrix.config['sccache-key'] }}
 
     strategy:
       fail-fast: false
@@ -19,7 +24,11 @@ jobs:
         config:
           - name: Windows MSVC Release
             os: windows-latest
+            sccache-key: windows-x86_64-msvc
             msvc: true
+            compilers: |
+              $env:CC = "sccache cl"
+              $env:CXX = "sccache cl"
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
               Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"
@@ -46,37 +55,49 @@ jobs:
           - {
             name: Ubuntu Debug,
             os: ubuntu-latest,
+            sccache-key: linux-x86_64-gcc,
             buildtype: debugoptimized,
+            compilers: export CC="sccache gcc" CXX="sccache g++",
             args: -Db_pch=false
           }
           - {
             name: Ubuntu Release,
             os: ubuntu-latest,
+            sccache-key: linux-x86_64-gcc,
             buildtype: release,
+            compilers: export CC="sccache gcc" CXX="sccache g++",
             args: -Db_pch=false
           }
           - {
             name: macOS x86_64 Debug,
             os: macos-15-intel,
+            sccache-key: macos-x86_64-clang,
             buildtype: debugoptimized,
+            compilers: export CC="sccache clang" CXX="sccache clang++",
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
           - {
             name: macOS x86_64 Release,
             os: macos-15-intel,
+            sccache-key: macos-x86_64-clang,
             buildtype: release,
+            compilers: export CC="sccache clang" CXX="sccache clang++",
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
           - {
             name: macOS arm64 Debug,
             os: macos-15,
+            sccache-key: macos-arm64-clang,
             buildtype: debugoptimized,
+            compilers: export CC="sccache clang" CXX="sccache clang++",
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
           - {
             name: macOS arm64 Release,
             os: macos-15,
+            sccache-key: macos-arm64-clang,
             buildtype: release,
+            compilers: export CC="sccache clang" CXX="sccache clang++",
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           }
 
@@ -88,6 +109,9 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.x'
+
+      - name: Set up sccache
+        uses: mozilla-actions/sccache-action@v0.0.11
 
       - name: Setup Meson
         run: |
@@ -149,6 +173,7 @@ jobs:
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
+          ${{ matrix.config.compilers }}
           meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
       - name: Build
