@@ -145,6 +145,10 @@ struct Queue {
 };
 
 #define	MPF_ERROR 0x10000
+// Sticky: set when a file exceeds MAX_TRACKS. Unlike MPF_ERROR, this
+// survives parseSegment/parsePointers's tolerant local setjmp/longjmp
+// recovery, so parseFile can still report it after the fact.
+#define	MPF_TRACKLIMIT 0x20000
 #define	IBSZ	  1024
 
 #define	RBRESYNC  1
@@ -1278,8 +1282,10 @@ static void parseTrackEntry(MatroskaFile *mf,uint64_t toplen) {
   size_t	    cplen = 0, cslen = 0, cpadd = 0;
   unsigned	    CompScope, num_comp = 0;
 
-  if (mf->nTracks >= MAX_TRACKS)
+  if (mf->nTracks >= MAX_TRACKS) {
+    mf->flags |= MPF_TRACKLIMIT;
     errorjmp(mf,"Too many tracks.");
+  }
 
   // clear track info
   memset(&t,0,sizeof(t));
@@ -2733,6 +2739,14 @@ segment:
   } else
     mf->pSegmentTop = mf->pSegment + len;
   parseSegment(mf,len);
+
+  // parseSegment/parsePointers may have silently swallowed a "too many
+  // tracks" error while tolerating other recoverable errors around it;
+  // MPF_TRACKLIMIT survives that so we can still report it here, at a
+  // point with no local setjmp scope of our own, so this always reaches
+  // mkv_OpenEx's outer setjmp.
+  if (mf->flags & MPF_TRACKLIMIT)
+    errorjmp(mf,"File contains more than %u tracks.",(unsigned)MAX_TRACKS);
 
   // check if we got all data
   if (!mf->seen.SegmentInfo)
