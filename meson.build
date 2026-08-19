@@ -154,6 +154,9 @@ endif
 
 deps += dependency('zlib')
 
+# Header-only; the wrap builds CLI11's own first-party meson support
+deps += dependency('CLI11', version: '>=2.0')
+
 wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
                     required: false,
                     modules: ['std', 'stc', 'gl'])
@@ -482,3 +485,20 @@ aegisub = executable('aegisub', aegisub_src, version_h, resrc, aegisub_order_dep
                      install_dir: bindir,
                      dependencies: deps,
                      win_subsystem: 'windows')
+
+if get_option('tests') and host_machine.system() == 'linux'
+    # End-to-end test of --cli mode: runs an automation macro on a fixture
+    # file without a display server and checks the output. Linux-only for
+    # now: Windows keeps wx's entry point so there is no --cli there, and
+    # the macOS CI builds have not been vetted for running outside a bundle.
+    test('automation-cli',
+         find_program('python3', 'python'),
+         args: [
+             meson.current_source_dir() / 'automation' / 'tests' / 'cli' / 'run_test.py',
+             aegisub.full_path(),
+             meson.current_source_dir() / 'automation' / 'tests' / 'cli',
+         ],
+         suite: 'automation',
+         depends: aegisub,
+         timeout: 300)
+endif

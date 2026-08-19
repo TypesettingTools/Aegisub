@@ -66,3 +66,17 @@ public:
 	/// BackgroundWorker implementation
 	void Run(std::function<void(agi::ProgressSink *)> task) override;
 };
+
+/// @class OptDialogProgress
+/// @brief Background runner that uses DialogProgress in gui mode and runs the task directly otherwise
+class OptDialogProgress : public agi::BackgroundRunner {
+	std::unique_ptr<DialogProgress> impl;
+
+public:
+	OptDialogProgress(wxWindow *parent, wxString const& title="", wxString const& message="");
+
+	DialogProgress *getImpl() { return impl.get(); };
+
+	/// BackgroundWorker implementation
+	void Run(std::function<void(agi::ProgressSink *)> task) override;
+};
