@@ -2477,7 +2477,7 @@ ex:
 
 // this is almost the same as readMoreBlocks, except it ensures
 // there are no partial frames queued, however empty queues are ok
-static int  fillQueues(MatroskaFile *mf,unsigned int mask) {
+static int  fillQueues(MatroskaFile *mf,const unsigned char *skip) {
   unsigned    i,j;
   int	      ret = 0;
 
@@ -2485,7 +2485,7 @@ static int  fillQueues(MatroskaFile *mf,unsigned int mask) {
     j = 0;
 
     for (i=0;i<mf->nTracks;++i)
-      if (mf->Queues[i].head && !(mask & (1<<i)))
+      if (mf->Queues[i].head && (!skip || !skip[i]))
 	++j;
 
     if (j>0) // have at least some frames
@@ -2494,7 +2494,7 @@ static int  fillQueues(MatroskaFile *mf,unsigned int mask) {
     if ((ret = readMoreBlocks(mf)) < 0) {
       j = 0;
       for (i=0;i<mf->nTracks;++i)
-	if (mf->Queues[i].head && !(mask & (1<<i)))
+	if (mf->Queues[i].head && (!skip || !skip[i]))
 	  ++j;
       if (j) // we adjusted some blocks
 	return 0;
@@ -2668,7 +2668,7 @@ ok:
 	nd = tc;
       QFree(mf,QGet(&mf->Queues[vtrack]));
     }
-  while (fillQueues(mf,0) != EOF);
+  while (fillQueues(mf,NULL) != EOF);
 
   mf->trackMask = 0;
 
@@ -2914,9 +2914,10 @@ uint64_t     mkv_GetSegmentTop(MatroskaFile *mf) {
 
 void  mkv_Seek(MatroskaFile *mf,uint64_t timecode,unsigned flags) {
   int		i,j,m,ret;
-  unsigned	n,z,mask;
+  unsigned	n,z;
   uint64_t	*m_kftime = alloca(mf->nTracks * sizeof(*m_kftime));
   unsigned char	*m_seendf = alloca(mf->nTracks * sizeof(*m_seendf));
+  unsigned char	*m_done = alloca(mf->nTracks);
 
   if (mf->flags & MKVF_AVOID_SEEKS)
     return;
@@ -2968,7 +2969,7 @@ void  mkv_Seek(MatroskaFile *mf,uint64_t timecode,unsigned flags) {
 	  mf->tcCluster = mf->Cues[j].Time;
 
 	  for (;;) {
-	    if ((ret = fillQueues(mf,0)) < 0 || ret == RBRESYNC)
+	    if ((ret = fillQueues(mf,NULL)) < 0 || ret == RBRESYNC)
 	      return;
 
 	    // drain queues until we get to the required timecode
@@ -3027,8 +3028,9 @@ again:;
       mf->readPosition = mf->Cues[j].Position + mf->pSegment;
       mf->tcCluster = mf->Cues[j].Time;
 
-      for (mask=0;;) {
-	if ((ret = fillQueues(mf,mask)) < 0 || ret == RBRESYNC)
+      memset(m_done,0,mf->nTracks);
+      for (;;) {
+	if ((ret = fillQueues(mf,m_done)) < 0 || ret == RBRESYNC)
 	  return;
 
 	// drain queues until we get to the required timecode
@@ -3041,7 +3043,7 @@ again:;
 	for (n=z=0;n<mf->nTracks;++n)
 	  if (m_kftime[n]==MAXU64 || (mf->Queues[n].head && mf->Queues[n].head->Start>=m_kftime[n])) {
 	    ++z;
-	    mask |= 1<<n;
+	    m_done[n] = 1;
 	  }
 
 	if (z==mf->nTracks)
@@ -3069,7 +3071,7 @@ void  mkv_SkipToKeyframe(MatroskaFile *mf) {
   do {
     wait = 0;
 
-    if (fillQueues(mf,0)<0)
+    if (fillQueues(mf,NULL)<0)
       return;
 
     for (n=0;n<mf->nTracks;++n)
@@ -3088,7 +3090,7 @@ void  mkv_SkipToKeyframe(MatroskaFile *mf) {
   do {
     wait = 0;
 
-    if (fillQueues(mf,0)<0)
+    if (fillQueues(mf,NULL)<0)
       return;
 
     for (n=0;n<mf->nTracks;++n)
@@ -3146,21 +3148,25 @@ int	      mkv_ReadFrame(MatroskaFile *mf,
 {
   unsigned int	    i,j;
   struct QueueEntry *qe;
+  unsigned char	    *skip = alloca(mf->nTracks);
 
   if (setjmp(mf->jb)!=0)
     return -1;
 
+  for (i=0;i<mf->nTracks;++i)
+    skip[i] = (i<32 && (mask & (1u<<i))) ? 1 : 0;
+
   do {
     // extract required frame, use block with the lowest timecode
     for (j=FTRACK,i=0;i<mf->nTracks;++i)
-      if (!(mask & (1<<i)) && mf->Queues[i].head) {
+      if (!skip[i] && mf->Queues[i].head) {
 	j = i;
 	++i;
 	break;
       }
 
     for (;i<mf->nTracks;++i)
-      if (!(mask & (1<<i)) && mf->Queues[i].head &&
+      if (!skip[i] && mf->Queues[i].head &&
 	  mf->Queues[j].head->Start > mf->Queues[i].head->Start)
 	j = i;
 
@@ -3182,7 +3188,7 @@ int	      mkv_ReadFrame(MatroskaFile *mf,
     if (mf->flags & MPF_ERROR)
       return -1;
 
-  } while (fillQueues(mf,mask)>=0);
+  } while (fillQueues(mf,skip)>=0);
 
   return EOF;
 }
