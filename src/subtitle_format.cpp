@@ -48,6 +48,7 @@
 #include "subtitle_format_transtation.h"
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_txt.h"
+#include "subtitle_format_lrc.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/vfr.h>
@@ -272,6 +273,7 @@ void SubtitleFormat::LoadFormats() {
 		formats.emplace_back(std::make_unique<TTXTSubtitleFormat>());
 		formats.emplace_back(std::make_unique<TXTSubtitleFormat>());
 		formats.emplace_back(std::make_unique<TranStationSubtitleFormat>());
+		formats.emplace_back(std::make_unique<LRCSubtitleFormat>());
 	}
 }
 
