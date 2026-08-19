@@ -2915,8 +2915,8 @@ uint64_t     mkv_GetSegmentTop(MatroskaFile *mf) {
 void  mkv_Seek(MatroskaFile *mf,uint64_t timecode,unsigned flags) {
   int		i,j,m,ret;
   unsigned	n,z,mask;
-  uint64_t	m_kftime[MAX_TRACKS];
-  unsigned char	m_seendf[MAX_TRACKS];
+  uint64_t	*m_kftime = alloca(mf->nTracks * sizeof(*m_kftime));
+  unsigned char	*m_seendf = alloca(mf->nTracks * sizeof(*m_seendf));
 
   if (mf->flags & MKVF_AVOID_SEEKS)
     return;
