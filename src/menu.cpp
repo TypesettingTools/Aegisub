@@ -533,7 +533,17 @@ namespace menu {
 			read_entry(item, "text", &disp);
 			read_entry(item, "tlcontext", &context);
 			if (!submenu.empty()) {
-				menu->Append(build_menu(submenu, c, &menu->cm), wxGetTranslation(to_wx(disp), {}, to_wx(context)));
+				wxString tl_disp = wxGetTranslation(to_wx(disp), {}, to_wx(context));
+				menu->Append(build_menu(submenu, c, &menu->cm), tl_disp);
+#ifdef __WXMAC__
+				std::string special;
+				read_entry(item, "special", &special);
+				// wx finds the macOS Window menu by comparing menu titles, so it has to be
+				// given the translated one. Without this it fails to match a translated
+				// title and appends a second, untranslated "Window" menu of its own.
+				if (special == "window")
+					wxApp::s_macWindowMenuTitleName = tl_disp;
+#endif
 			}
 			else {
 				read_entry(item, "special", &submenu);
