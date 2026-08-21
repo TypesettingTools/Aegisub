@@ -18,7 +18,20 @@
 
 #include "libaegisub/exception.h"
 
+#include <unicode/uchar.h>
+#include <unicode/utf8.h>
+
 using namespace agi;
+
+bool agi::unicode::is_whitespace(std::string_view str) {
+	size_t i = 0;
+	while (i < str.size()) {
+		UChar32 c;
+		U8_NEXT(str.data(), i, str.size(), c);
+		if (!u_isUWhiteSpace(c)) return false;
+	}
+	return true;
+}
 
 BreakIterator::BreakIterator() {
 	UErrorCode err = U_ZERO_ERROR;
