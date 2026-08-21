@@ -139,7 +139,7 @@ void Write() {
 }
 
 void Write(std::string const& error) {
-	std::ofstream file(crashlog_path, std::ios::app);
+	std::ofstream file(crashlog_path.string(), std::ios::app);
 	if (file.is_open()) {
 		file << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");
 		agi::format(file, "VER - %s\n", GetAegisubLongVersionString());
