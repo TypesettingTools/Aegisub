@@ -165,7 +165,10 @@ jobs:
         run: |
           brew install ninja nasm
 
-          # busted for the automation test suite (LuaJIT is Lua 5.1 to luarocks)
+      - name: Install test dependencies (macOS)
+        if: startsWith(matrix.config.os, 'macos-')
+        run: |
+          # LuaJIT is Lua 5.1 to luarocks.
           brew install luajit luarocks
           luarocks --lua-dir="$(brew --prefix luajit)" --lua-version=5.1 install busted
 
