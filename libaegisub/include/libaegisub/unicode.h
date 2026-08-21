@@ -23,7 +23,6 @@
 namespace agi {
 
 namespace unicode {
-	/// Check if every UTF-8 code point in a string has the Unicode White_Space property
 	bool is_whitespace(std::string_view str);
 }
 
