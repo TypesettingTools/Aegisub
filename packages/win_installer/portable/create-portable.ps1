@@ -6,7 +6,10 @@ param (
     [string]$BuildRoot,
     [Parameter(Position = 1, Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string]$SourceRoot
+    [string]$SourceRoot,
+    [Parameter(Position = 2, Mandatory = $true)]
+    [ValidateSet('x64', 'arm64')]
+    [string]$Architecture
 )
 
 $ErrorActionPreference = 'Stop'
@@ -38,7 +41,7 @@ Write-Host "SOURCE_ROOT=$SourceRoot"
 $InstallerDir = Join-Path $BuildRoot "install"
 $InstallerDepsDir = Join-Path $BuildRoot "installer-deps"
 $PortableOutputDir = Join-Path $BuildRoot "aegisub-portable"
-$PortableZipPath = Join-Path $BuildRoot "aegisub-portable-64.zip"
+$PortableZipPath = Join-Path $BuildRoot "aegisub-portable-$Architecture.zip"
 
 Write-Step 'Removing previous output'
 Remove-Item -LiteralPath $PortableOutputDir -Force -Recurse -ErrorAction SilentlyContinue
@@ -63,11 +66,16 @@ Copy-ToDirectory $InstallerDepsDir\dictionaries\en_US.dic  $PortableOutputDir\di
 # Copy-ToDirectory $InstallerDepsDir\AvisynthPlus64\x64\Output\AviSynth.dll  $PortableOutputDir
 # Copy-ToDirectory $InstallerDepsDir\AvisynthPlus64\x64\Output\plugins\DirectShowSource.dll  $PortableOutputDir
 
-Write-Step 'Copying VSFilter'
-Copy-ToDirectory $InstallerDepsDir\VSFilter\x64\VSFilter.dll  $PortableOutputDir\csri
+if ($Architecture -eq 'x64') {
+    Write-Step 'Copying VSFilter'
+    Copy-ToDirectory $InstallerDepsDir\VSFilter\x64\VSFilter.dll $PortableOutputDir\csri
+}
+else {
+    Write-Step 'Skipping VSFilter (not available for ARM64)'
+}
 
 Write-Step 'Copying VC++ runtime'
-Copy-ToDirectory $InstallerDepsDir\VC_redist\VC_redist.x64.exe $PortableOutputDir\Microsoft.CRT
+Copy-ToDirectory (Join-Path $InstallerDepsDir "VC_redist\VC_redist.$Architecture.exe") $PortableOutputDir\Microsoft.CRT
 
 Write-Step 'Copying automation'
 Copy-ToDirectory "$InstallerDir\share\aegisub\automation\*"  "$PortableOutputDir\automation\"  -Recurse

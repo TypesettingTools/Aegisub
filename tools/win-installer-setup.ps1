@@ -7,6 +7,9 @@ param (
   [Parameter(Position = 1, Mandatory = $true)]
   [ValidateNotNullOrEmpty()]
   [string]$SourceRoot,
+  [Parameter(Position = 2, Mandatory = $true)]
+  [ValidateSet('x64', 'arm64')]
+  [string]$Architecture,
   [ValidateNotNullOrEmpty()]
   [string]$DepCtrlVersion = "0.8.1"
 )
@@ -92,9 +95,9 @@ if ((Get-CachedDepCtrlVersion $DepCtrlDir) -ne $DepCtrlVersion) {
 # 	Remove-Item $avsArchive
 # }
 
-# VSFilter
+# VSFilter has no ARM64 build; libass remains the subtitle renderer there.
 $VSFilterDir = Join-Path $DepsDir "VSFilter"
-if (!(Test-Path $VSFilterDir)) {
+if ($Architecture -eq 'x64' -and !(Test-Path $VSFilterDir)) {
 	New-Item -ItemType Directory -Path $VSFilterDir | Out-Null
 	$vsFilterReleases = Invoke-WebRequest "https://api.github.com/repos/pinterf/xy-VSFilter/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
 	$vsFilterUrl = $vsFilterReleases.assets[0].browser_download_url
@@ -108,7 +111,8 @@ if (!(Test-Path $VSFilterDir)) {
 $RedistDir = Join-Path $DepsDir "VC_redist"
 if (!(Test-Path $RedistDir)) {
 	New-Item -ItemType Directory -Path $RedistDir | Out-Null
-	Invoke-WebRequest https://aka.ms/vs/17/release/VC_redist.x64.exe -OutFile (Join-Path $RedistDir "VC_redist.x64.exe") -UseBasicParsing
+	$redistUrl = "https://aka.ms/vc14/vc_redist.$Architecture.exe"
+	Invoke-WebRequest $redistUrl -OutFile (Join-Path $RedistDir "VC_redist.$Architecture.exe") -UseBasicParsing
 }
 
 # Dictionaries
@@ -139,5 +143,8 @@ if(!$?) { Exit $LASTEXITCODE }
 
 # Invoke InnoSetup
 $IssUrl = Join-Path $InstallerDir "aegisub_depctrl.iss"
-iscc $IssUrl
+$isccArgs = @()
+if ($Architecture -eq 'arm64') { $isccArgs += '/DARM64' }
+$isccArgs += $IssUrl
+iscc @isccArgs
 if(!$?) { Exit $LASTEXITCODE }
