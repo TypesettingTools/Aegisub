@@ -27,6 +27,9 @@
 
 #include <wx/translation.h>
 
+#include <algorithm>
+#include <initializer_list>
+
 std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const&, agi::ycbcr::Header, agi::BackgroundRunner *);
 std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const&, agi::ycbcr::Header, agi::BackgroundRunner *);
 std::unique_ptr<VideoProvider> CreateFFmpegSourceVideoProvider(agi::fs::path const&, agi::ycbcr::Header, agi::BackgroundRunner *);
@@ -39,22 +42,34 @@ namespace {
 		const char *name;
 		std::unique_ptr<VideoProvider> (*create)(agi::fs::path const&, agi::ycbcr::Header, agi::BackgroundRunner *);
 		bool hidden;
+		std::vector<const char *> extensions;
 	};
 
 	const std::initializer_list<factory> providers = {
-		{"Dummy", CreateDummyVideoProvider, true},
-		{"YUV4MPEG", CreateYUV4MPEGVideoProvider, true},
+		{"Dummy", CreateDummyVideoProvider, true, {}},
+		{"YUV4MPEG", CreateYUV4MPEGVideoProvider, true, {".y4m", ".yuv"}},
 #ifdef WITH_FFMS2
-		{"FFmpegSource", CreateFFmpegSourceVideoProvider, false},
+		{"FFmpegSource", CreateFFmpegSourceVideoProvider, false,
+			{".asf", ".avi", ".avs", ".d2v", ".h264", ".hevc", ".m2ts", ".m4v", ".mkv", ".mov", ".mp4",
+			 ".mpeg", ".mpg", ".ogm", ".ts", ".webm", ".wmv"}},
 #endif
 #ifdef WITH_AVISYNTH
-		{"Avisynth", CreateAvisynthVideoProvider, false},
+		{"Avisynth", CreateAvisynthVideoProvider, false, {".avi", ".avs", ".d2v"}},
 #endif
 	};
 }
 
 std::vector<std::string> VideoProviderFactory::GetClasses() {
 	return ::GetClasses(providers);
+}
+
+std::vector<std::string> VideoProviderFactory::GetFileExtensions() {
+	std::vector<std::string> extensions;
+	for (auto const& provider : providers)
+		extensions.insert(extensions.end(), provider.extensions.begin(), provider.extensions.end());
+	std::sort(extensions.begin(), extensions.end());
+	extensions.erase(std::unique(extensions.begin(), extensions.end()), extensions.end());
+	return extensions;
 }
 
 std::unique_ptr<VideoProvider> VideoProviderFactory::GetProvider(agi::fs::path const& filename, agi::ycbcr::Header colormatrix, agi::BackgroundRunner *br) {
