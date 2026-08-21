@@ -1,4 +1,8 @@
-#define ARCH 64
+#ifdef ARM64
+#define ARCH "arm64"
+#else
+#define ARCH "x64"
+#endif
 
 #include "fragment_setupbase.iss"
 #include "fragment_strings.iss"
@@ -7,12 +11,20 @@
 AppID={{24BC8B57-716C-444F-B46B-A3349B9164C5}
 DefaultDirName={commonpf}\Aegisub
 PrivilegesRequired=poweruser
+#ifdef ARM64
+ArchitecturesInstallIn64BitMode=arm64
+ArchitecturesAllowed=arm64
+#else
 ArchitecturesInstallIn64BitMode=x64compatible
 ArchitecturesAllowed=x64compatible
+#endif
 
 #include "fragment_mainprogram.iss"
 #include "fragment_associations.iss"
+#ifndef ARM64
+; The bundled VSFilter binary is x64-only.
 #include "fragment_codecs.iss"
+#endif
 #include "fragment_automation.iss"
 #include "fragment_translations.iss"
 #include "fragment_spelling.iss"

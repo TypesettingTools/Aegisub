@@ -17,6 +17,23 @@ project('Aegisub', ['c', 'cpp'],
         version: '3.5.0')
 
 cmake = import('cmake')
+fs = import('fs')
+force_fallback_for = get_option('force_fallback_for')
+force_all_fallbacks = get_option('wrap_mode') == 'forcefallback'
+
+if host_machine.system() == 'darwin'
+    macos_deployment_target = get_option('macos_deployment_target')
+    if macos_deployment_target == ''
+        error('macos_deployment_target must not be empty')
+    endif
+
+    add_languages('objc', 'objcpp', native: false)
+    macos_deployment_flag = '-mmacosx-version-min=' + macos_deployment_target
+    foreach language : ['c', 'cpp', 'objc', 'objcpp']
+        add_global_arguments(macos_deployment_flag, language: language)
+        add_global_link_arguments(macos_deployment_flag, language: language)
+    endforeach
+endif
 
 if host_machine.system() == 'windows'
     # The CRT must be linked dynamically (the default): the automation code
@@ -90,7 +107,6 @@ endif
 deps = []
 
 if host_machine.system() == 'darwin'
-    add_languages('objc', 'objcpp')
     add_project_arguments('-DGL_SILENCE_DEPRECATION', language: 'cpp')
     # meson neither supports objcpp_std nor inherits cpp_std https://github.com/mesonbuild/meson/issues/5495
     add_project_arguments('-std=c++20', language: 'objcpp')
@@ -116,7 +132,9 @@ if boost_static
     boost_modules += 'thread'   # static boost dependencies do not include transitive dependencies https://github.com/mesonbuild/meson/issues/15457
 endif
 
-if not get_option('local_boost')
+use_bundled_boost = force_all_fallbacks or force_fallback_for.contains('boost')
+
+if not use_bundled_boost
     boost_dep = dependency('boost', version: '>=1.70.0',
                             modules: boost_modules,
                             required: false,
@@ -132,7 +150,7 @@ if not get_option('local_boost')
     endif
 endif
 
-if get_option('local_boost') or not boost_dep.found()
+if use_bundled_boost or not boost_dep.found()
     boost_dep = []
     boost = subproject('boost')
     foreach module: (boost_modules + ['regex'])
@@ -152,19 +170,37 @@ if host_machine.system() == 'windows'
     conf.set('BOOST_USE_WINDOWS_H', 1)
 endif
 
-deps += dependency('zlib')
+zlib_dep = dependency('zlib')
+deps += zlib_dep
 
-wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
-                    required: false,
-                    modules: ['std', 'stc', 'gl'])
+use_bundled_wx = force_all_fallbacks or force_fallback_for.contains('wxWidgets')
+if not use_bundled_wx
+    wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
+                        required: false,
+                        modules: ['std', 'stc', 'gl'])
+    use_bundled_wx = not wx_dep.found()
+endif
 
-if wx_dep.found()
+if not use_bundled_wx
     deps += wx_dep
     wx_defines_dep = wx_dep
 else
+    # wxWidgets, FreeType, and the other bundled dependencies must all use the
+    # same libpng implementation. In particular, wx's bundled libpng has
+    # partially-prefixed private symbols which can collide with another static
+    # libpng on ARM.
+    libpng_dep = dependency('libpng')
+    deps += libpng_dep
+
     build_shared = true
     if get_option('default_library') == 'static'
         build_shared = false
+    endif
+
+    if build_shared and (zlib_dep.type_name() == 'internal' or libpng_dep.type_name() == 'internal')
+        error('Shared fallback wxWidgets cannot consume Meson-built zlib/libpng safely: ' +
+              'Meson converts them to raw paths without Ninja dependency edges. ' +
+              'Use -Ddefault_library=static or provide system zlib and libpng.')
     endif
     build_type = 'Release'
     if get_option('buildtype') == 'debug'
@@ -181,12 +217,83 @@ else
         'wxBUILD_SHARED': build_shared,
 
         'wxUSE_WEBVIEW': false,         # breaks build on linux
+        'wxUSE_LIBPNG': 'sys',          # supplied by Meson below
+        # Aegisub registers only wxPNGHandler. Avoid building the unused TIFF
+        # codec and its additional zlib/JPEG dependency plumbing.
+        'wxUSE_LIBTIFF': 'OFF',
+        'wxUSE_ZLIB': 'sys',            # supplied by Meson below
         'CMAKE_BUILD_TYPE': build_type,
         'wxUSE_IMAGE': true,
         'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
     })
 
+    # CMake can't consume Meson dependency objects directly. When these are
+    # fallback dependencies, give wx the exact libraries and headers Meson is
+    # already building instead of allowing find_package() to select a second
+    # implementation. Meson does not yet provide a supported bridge for this:
+    # https://github.com/mesonbuild/meson/issues/8089
+    # https://github.com/mesonbuild/meson/issues/12451
+    #
+    # Use CMake-style paths even on Windows. add_cmake_defines() writes these
+    # values into a CMake preload file, where native backslashes can be parsed
+    # as escapes (for example, D:\a contains \a).
+    c_include_flag = cc.get_argument_syntax() == 'msvc' ? '/I' : '-I'
+    cpp_include_flag = cxx.get_argument_syntax() == 'msvc' ? '/I' : '-I'
+
+    if zlib_dep.type_name() == 'internal'
+        zlib = subproject('zlib').get_variable('zlib')
+        zlib_library = zlib.full_path().replace('\\', '/')
+        zlib_build_dir = fs.parent(zlib_library).replace('\\', '/')
+        zlib_source_dir = (meson.project_source_root() / 'subprojects' / fs.name(zlib_build_dir)).replace('\\', '/')
+        opt_var.add_cmake_defines({
+            'ZLIB_INCLUDE_DIR': zlib_source_dir,
+            'ZLIB_LIBRARY': zlib_library,
+        })
+        opt_var.append_compile_args('c', c_include_flag + zlib_source_dir,
+                                     target: 'wxmono')
+        opt_var.append_compile_args('cpp', cpp_include_flag + zlib_source_dir,
+                                     target: 'wxmono')
+    endif
+
+    if libpng_dep.type_name() == 'internal'
+        libpng = subproject('libpng').get_variable('libpng')
+        libpng_library = libpng.full_path().replace('\\', '/')
+        libpng_build_dir = fs.parent(libpng_library).replace('\\', '/')
+        libpng_source_dir = (meson.project_source_root() / 'subprojects' / fs.name(libpng_build_dir)).replace('\\', '/')
+        opt_var.add_cmake_defines({
+            'PNG_LIBRARY': libpng_library,
+            'PNG_PNG_INCLUDE_DIR': libpng_source_dir,
+        })
+        # pnglibconf.h is generated in the subproject build directory, while
+        # FindPNG only exposes a single include directory to wx. Meson's CMake
+        # converter also ignores include paths outside the CMake subproject,
+        # so pass both directories explicitly as compiler arguments.
+        opt_var.append_compile_args('c', c_include_flag + libpng_source_dir,
+                                     c_include_flag + libpng_build_dir,
+                                     target: 'wxmono')
+        opt_var.append_compile_args('cpp', cpp_include_flag + libpng_source_dir,
+                                     cpp_include_flag + libpng_build_dir,
+                                     target: 'wxmono')
+    endif
+
+    if host_machine.system() == 'darwin'
+        opt_var.add_cmake_defines({
+            'CMAKE_OSX_DEPLOYMENT_TARGET': macos_deployment_target,
+        })
+    endif
+
     wx = cmake.subproject('wxWidgets', options: opt_var)
+
+    if wx.target_list().contains('wxtiff')
+        error('wxWidgets unexpectedly built wxtiff despite wxUSE_LIBTIFF=OFF')
+    endif
+
+    foreach bundled_dependency: ['wxpng', 'wxzlib']
+        if wx.target_list().contains(bundled_dependency)
+            error('wxWidgets unexpectedly built ' + bundled_dependency +
+                  ' instead of using the dependency supplied by Meson')
+        endif
+    endforeach
 
     deps += wx.dependency('wxmono')
     foreach cmake_target: ['wxregex', 'wxscintilla', 'wxlexilla']
@@ -199,15 +306,8 @@ else
     # but allows it if you use partial_dependency() to get only includes and compile args.
     wx_defines_dep = wx.dependency('wxmono').partial_dependency(compile_args: true, includes: true)
 
-    if host_machine.system() == 'windows' or host_machine.system() == 'darwin'
-        deps += [
-            wx.dependency('wxpng'),
-        ]
-    endif
-
     if host_machine.system() == 'windows'
         deps += [
-            wx.dependency('wxzlib'),
             wx.dependency('wxexpat'),
         ]
 
@@ -327,7 +427,13 @@ conf_meson = configuration_data()
 conf_meson.set('DEFAULT_PLAYER_AUDIO', def_audio)
 
 if get_option('enable_update_checker')
-    curl_disable = ['tool', 'dict', 'file', 'ftp', 'gopher', 'imap', 'ldap', 'ldaps', 'mqtt', 'pop3', 'rtmp', 'rtsp', 'smb', 'smtp', 'telnet', 'tftp']
+    curl_disable = [
+        'tool', 'tests', 'unittests',
+        'dict', 'file', 'ftp', 'gopher', 'imap', 'ipfs', 'ldap', 'ldaps',
+        'mqtt', 'pop3', 'rtmp', 'rtsp', 'smb', 'smtp', 'telnet', 'tftp',
+        'brotli', 'gss-api', 'http2', 'idn', 'kerberos-auth', 'negotiate-auth',
+        'psl', 'ssh', 'tls-srp', 'websockets', 'zstd',
+    ]
     curl_options = []
     foreach opt : curl_disable
         curl_options += opt + '=disabled'
@@ -336,7 +442,7 @@ if get_option('enable_update_checker')
     if host_machine.system() == 'windows'
         curl_options += 'schannel=enabled'
     elif host_machine.system() == 'darwin'
-        curl_options += 'secure-transport=enabled'
+        curl_options += ['openssl=disabled', 'secure-transport=enabled']
     else
         curl_options += 'openssl=enabled'
     endif
