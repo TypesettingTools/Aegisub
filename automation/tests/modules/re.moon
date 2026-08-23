@@ -33,6 +33,11 @@ describe 'compile', ->
   it 'should throw an error when given an invalid regex', ->
     assert.is.error -> re.compile '('
 
+  it 'should throw the compile error message for an invalid regex', ->
+    ok, err = pcall -> re.compile '('
+    assert.is.false ok
+    assert.is.equal 'string', type err
+
   it 'should throw an error when given an empty regex', ->
     assert.is.error -> re.compile ''
 
@@ -325,4 +330,15 @@ describe 'sub', ->
     res = re.sub 'abc', 'e?', assert_empty_match_and_return_d
     assert.is.not.nil res
     assert.is.equal 'dadbdcd', res
+
+describe 'invalid UTF-8', ->
+  it 'should be reported as an error by find', ->
+    ok, err = pcall -> re.find 'abc\255def', 'd'
+    assert.is.false ok
+    assert.is.truthy err\find 'UTF-8', 1, true
+
+  it 'should be reported as an error by match', ->
+    ok, err = pcall -> re.match '\255', 'x'
+    assert.is.false ok
+    assert.is.truthy err\find 'UTF-8', 1, true
 

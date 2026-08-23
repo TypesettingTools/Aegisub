@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 	}
 
 	agi::util::InitLocale();
-	agi::dispatch::Init([](agi::dispatch::Thunk f) { });
+	agi::dispatch::Init([](agi::dispatch::Thunk) { });
 	agi::log::log = new agi::log::LogSink;
 
 	// Init lua state
