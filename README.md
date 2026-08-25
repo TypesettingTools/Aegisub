@@ -34,6 +34,27 @@ Building:
 
 You should now have a binary: `aegisub.exe`.
 
+Building with Visual Studio (MSVC)
+
+If you prefer to use Visual Studio for iterative development and debugging, Meson can generate a Visual Studio solution. Open the "x64 Native Tools Command Prompt" for the Visual Studio installation you want to use, then run:
+
+```
+# Generate a Visual Studio solution (backend 'vs')
+meson setup vsbuild --backend vs -Dwx_version=3.3.0 -Dwin32_target=0x0A00
+
+# Open the generated solution in Visual Studio
+# (the solution is at vsbuild\Aegisub.sln)
+```
+
+Notes:
+- Open the solution in Visual Studio and select the desired configuration (Debug/Release) and platform (x64). Building inside Visual Studio uses the same toolchain as Meson.
+- Ensure you run Meson from the same "x64 Native Tools Command Prompt" so the subprojects are configured with the same MSVC toolset (avoids CRT mismatch).
+- To build from CLI using the generated solution/builddir:
+```
+meson compile -C vsbuild
+```
+
+
 Installer:
 
 You can generate the installer with `ninja win-installer` after a successful build. This assumes a working internet connection and installation of the optional dependencies.

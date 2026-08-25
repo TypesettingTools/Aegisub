@@ -19,6 +19,7 @@ option('local_boost', type: 'boolean', value: false, description: 'Force using l
 option('fallback_nasm', type: 'boolean', value: false, description: 'Force using fallback nasm')
 
 option('wx_version', type: 'string', value: '3.3.0', description: 'The minimum wxWidgets version to use')
+option('win32_target', type: 'string', value: '0x0A00', description: 'Target _WIN32_WINNT value for Windows builds')
 
 option('credit', type: 'string', value: '', description: 'Build credit shown in program title')
 option('official_release', type: 'boolean', value: false, description: 'Set on official builds')
