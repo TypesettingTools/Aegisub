@@ -10,6 +10,8 @@ Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](i
 
 ### Windows
 
+Aegisub now targets 64-bit builds only (x86_64). 32-bit/x86 builds are no longer supported.
+
 Prerequisites:
 
 1. Visual Studio (Community edition of any recent version is fine, needs the Windows SDK included)
@@ -26,7 +28,7 @@ There are a few optional dependencies that must be installed and on your PATH:
 
 All other dependencies are either stored in the repository or are included as submodules.
 
-Building:
+Building (x64):
 
 1. Clone Aegisub's repository: `git clone https://github.com/TypesettingTools/Aegisub.git`
 2. From the Visual Studio "x64 Native Tools Command Prompt", generate the build directory: `meson build -Ddefault_library=static` (if building for release, add `--buildtype=release`)

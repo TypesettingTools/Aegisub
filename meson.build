@@ -18,6 +18,12 @@ project('Aegisub', ['c', 'cpp'],
 
 cmake = import('cmake')
 
+# Disallow 32-bit x86 builds — this project only supports 64-bit targets (x86_64/arm64)
+if host_machine.cpu_family() == 'x86' and host_machine.cpu() != 'x86_64'
+    error('32-bit x86 builds are not supported. Please target x86_64 (64-bit) or arm64.')
+endif
+
+
 if host_machine.system() == 'windows'
     # The CRT must be linked dynamically (the default): the automation code
     # assumes the app and LuaJIT's ffi.C use the same CRT, which doesn't hold
