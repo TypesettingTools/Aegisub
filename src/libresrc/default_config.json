@@ -16,7 +16,8 @@
 		"Save Charset" : "UTF-8",
 		"Save UI State" : true,
 		"Show Toolbar" : true,
-		"Toolbar Icon Size" : 16
+	"Toolbar Icon Size" : 16,
+	"Dark Mode" : false
 	},
 
 
