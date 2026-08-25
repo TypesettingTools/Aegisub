@@ -214,6 +214,12 @@ bool AegisubApp::OnInit() {
 	}
 #endif
 
+	#if defined(__WXMSW__) && wxVERSION_NUMBER >= 3300
+		if (OPT_GET("App/Dark Mode")->GetBool()) {
+			MSWEnableDarkMode(wxApp::DarkMode_Always);
+		}
+	#endif
+
 	// Init commands.
 	cmd::init_builtin_commands();
 
