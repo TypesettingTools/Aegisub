@@ -43,7 +43,7 @@ jobs:
             ${{ runner.os }}-meson-wrap-
 
       - name: Cache build directory
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: build
           key: ${{ runner.os }}-build-${{ hashFiles('meson.build', 'meson_options.txt') }}
