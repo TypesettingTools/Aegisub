@@ -25,11 +25,11 @@ The repository is being prepared to upstream support for Visual Studio 2026. To 
 2. Open the "x64 Native Tools" or Developer PowerShell for Visual Studio 2026.
 3. Use Meson to generate a Visual Studio solution and optionally specify the toolset (a new Meson option 'vs_toolset' is available):
 
-   meson setup vs_build --backend vs -Dvs_toolset=latest -Dwin32_target=0x0A00
+   meson setup vs_build --backend vs -Dvs_toolset=latest -Dwindows_target=0x0A00
 
    Notes:
    - Use -Dvs_toolset=vXYZ to request a specific toolset if desired (e.g., v143 for Visual Studio 2022). Use 'latest' to let Meson pick the installed toolset.
-   - If you need to target a specific Windows SDK version, adjust win32_target accordingly.
+   - If you need to target a specific Windows SDK version, adjust windows_target accordingly.
 
 If you need CI coverage for Visual Studio 2026 or a specific toolset, the GitHub Actions CI has a best-effort matrix entry that attempts to exercise the newer toolset when available on the runner.
 
@@ -92,7 +92,7 @@ If you prefer to use Visual Studio for iterative development and debugging, Meso
 
 ```
 # Generate a Visual Studio solution (backend 'vs')
-meson setup vsbuild --backend vs -Dwx_version=3.3.0 -Dwin32_target=0x0A00
+meson setup vsbuild --backend vs -Dwx_version=3.3.0 -Dwindows_target=0x0A00
 
 # Open the generated solution in Visual Studio
 # (the solution is at vsbuild\Aegisub.sln)

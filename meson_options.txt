@@ -19,7 +19,7 @@ option('local_boost', type: 'boolean', value: false, description: 'Force using l
 option('fallback_nasm', type: 'boolean', value: false, description: 'Force using fallback nasm')
 
 option('wx_version', type: 'string', value: '3.3.0', description: 'The minimum wxWidgets version to use')
-option('win32_target', type: 'string', value: '0x0A00', description: 'Target _WIN32_WINNT value for Windows builds')
+option('windows_target', type: 'string', value: '0x0A00', description: 'Target _WIN32_WINNT value for Windows builds (internal name: "windows_target"; end-users should not need to modify this)')
 
 option('vs_toolset', type: 'string', value: 'latest', description: 'Visual Studio toolset to use when generating Visual Studio solutions (e.g., v143). Use "latest" to let Meson pick the installed toolset.')
 

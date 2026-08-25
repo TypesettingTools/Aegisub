@@ -30,7 +30,7 @@ if host_machine.system() == 'windows'
     # when the CRT is statically linked.
     # Use a configurable WIN32 target value so modern toolchains can target
     # recent Windows SDKs (default is 0x0A00 = Windows 10).
-    add_project_arguments('-DUNICODE', '-DNOMINMAX', '-D_WIN32_WINNT=' + get_option('win32_target'), language: 'cpp')
+    add_project_arguments('-DUNICODE', '-DNOMINMAX', '-D_WIN32_WINNT=' + get_option('windows_target'), language: 'cpp')
 
     if not get_option('csri').disabled()
         add_global_arguments('-DCSRI_NO_EXPORT', language: 'c')
