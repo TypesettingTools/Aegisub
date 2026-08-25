@@ -36,6 +36,31 @@ Building (x64):
 
 You should now have a binary: `aegisub.exe`.
 
+Linux AppImage (x86_64)
+
+Aegisub supports creating a portable AppImage for x86_64 Linux hosts. A helper script is included at [tools/create_appimage.sh](C:/Users/Aura/Documents/GitHub/Aegisub/tools/create_appimage.sh).
+
+Prerequisites:
+
+- Meson, Ninja, and typical Linux build tools
+- x86_64 host (the script is x86_64-only)
+
+Build steps (recommended):
+
+1. From the repository root, run:
+
+   ./tools/create_appimage.sh build
+
+   The script will configure and build the project (static default_library), install into an AppDir, and then use appimagetool to produce `Aegisub-x86_64.AppImage`.
+
+Notes:
+- If you want to customize Meson options (for example to set -Dwx_version=3.3.0), pass them when running meson setup manually before running the script, e.g.:
+
+  meson setup build --reconfigure -Dwx_version=3.3.0 -Ddefault_library=static
+  ./tools/create_appimage.sh build
+
+- The script will try to locate an icon in `packages/icons` or convert `packages/osx_bundle/Contents/Resources/Aegisub.icns` if conversion tools are available. If you have a preferred PNG icon, place it at `packages/icons/aegisub.png` before running the script.
+
 Building with Visual Studio (MSVC)
 
 If you prefer to use Visual Studio for iterative development and debugging, Meson can generate a Visual Studio solution. Open the "x64 Native Tools Command Prompt" for the Visual Studio installation you want to use, then run:
