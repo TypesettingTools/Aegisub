@@ -35,11 +35,7 @@ UninstallDisplayIcon={app}\aegisub.exe
 WizardImageFile={#INSTALLER_DIR}\welcome-large.bmp
 WizardSmallImageFile={#INSTALLER_DIR}\aegisub-large.bmp
 
-#ifdef ARM64
-OutputBaseFilename=Aegisub-{#BUILD_GIT_VERSION_STRING}-arm64
-#else
-OutputBaseFilename=Aegisub-{#BUILD_GIT_VERSION_STRING}-x64
-#endif
+OutputBaseFilename=Aegisub-{#BUILD_GIT_VERSION_STRING}-{#ARCH}
 VersionInfoDescription=Aegisub {#BUILD_GIT_VERSION_STRING}
 
 [Languages]
