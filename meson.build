@@ -106,7 +106,7 @@ deps += cc.find_library('dl', required: false)
 
 deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 
-deps += dependency('libass', version: '>=0.9.7',
+deps += dependency('libass', version: '>=0.17.5',
                    fallback: ['libass', 'libass_dep'])
 
 boost_static = meson.version().version_compare('>=0.63.0') and get_option('prefer_static')    # boost dependencies do not respect prefer_static https://github.com/mesonbuild/meson/issues/15458

@@ -35,13 +35,14 @@
 #include "toggle_bitmap.h"
 
 #include "command/command.h"
+#include "theme.h"
 
 #include <wx/dcbuffer.h>
 #include <wx/settings.h>
 #include <wx/tglbtn.h>
 
 ToggleBitmap::ToggleBitmap(wxWindow *parent, agi::Context *context, const char *cmd_name, int icon_size, const char *ht_ctx, wxSize const& size)
-: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER)
+: wxControl(parent, -1, wxDefaultPosition, wxDefaultSize, Theme::BorderSunken())
 , context(context)
 , command(*cmd::get(cmd_name))
 , imgs(command.Icon(icon_size))

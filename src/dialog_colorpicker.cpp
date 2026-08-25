@@ -36,6 +36,7 @@
 #include "utils.h"
 #include "value_event.h"
 #include "xdg_desktop_portal_utils.h"
+#include "theme.h"
 
 #include <libaegisub/log.h>
 #include <libaegisub/scoped_ptr.h>
@@ -580,7 +581,7 @@ DialogColorPicker::DialogColorPicker(wxWindow *parent, agi::Color initial_color,
 		os_screen_dropper_button = new wxBitmapButton(this, wxID_ANY, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxBORDER_DEFAULT);
 	}
 	if (enable_screenshot_eyedropper) {
-		screenshot_screen_dropper_icon = new wxStaticBitmap(this, -1, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, wxRAISED_BORDER);
+		screenshot_screen_dropper_icon = new wxStaticBitmap(this, -1, eyedropper_bitmap, wxDefaultPosition, wxDefaultSize, Theme::BorderStaticOrRaised());
 		screenshot_screen_dropper = new ColorPickerScreenDropper(this, 7, 7, 8);
 	}
 
