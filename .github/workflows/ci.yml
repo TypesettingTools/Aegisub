@@ -20,6 +20,10 @@ jobs:
           - name: Windows MSVC Release
                       os: windows-2022
             msvc: true
+                    - name: Windows MSVC VS2026
+                      os: windows-2022
+                      msvc: true
+                      vs_toolset: v2026
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
               Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"
@@ -103,6 +107,15 @@ jobs:
           if (-not $vsPath) { throw "Could not find a Visual Studio installation" }
           "VS=$vsPath"
           "VS=$vsPath" >> $env:GITHUB_ENV
+          # If a matrix vs_toolset is provided, expose it to the environment for downstream steps
+          if ($Env:MATRIX_CONFIG_vs_toolset) {
+              "VS_TOOLSET=$Env:MATRIX_CONFIG_vs_toolset" >> $env:GITHUB_ENV
+          } else {
+              # fallback: try to read from matrix.config if runner exposes it
+              if (${[string]::IsNullOrEmpty('${{ matrix.config.vs_toolset }}')} -eq $false) {
+                "VS_TOOLSET=${{ matrix.config.vs_toolset }}" >> $env:GITHUB_ENV
+              }
+          }
 
       - name: Install dependencies (Windows)
         if: matrix.config.os == 'windows-latest'

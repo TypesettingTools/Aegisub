@@ -17,6 +17,24 @@ Supported platforms (policy update):
 - Windows: Windows 11 and newer (development and release builds target modern MSVC toolchains; Windows 10 is no longer supported).
 - Linux: Supported on modern distributions only. Recommended: Ubuntu 22.04 LTS or newer, Fedora 36 or newer, or Arch Linux (rolling). Ancient distributions with outdated glibc or old system libraries are not supported.
 
+Visual Studio 2026 (upstream target)
+
+The repository is being prepared to upstream support for Visual Studio 2026. To work with VS 2026 locally:
+
+1. Install Visual Studio 2026 with the C++ workload and the latest Windows SDK.
+2. Open the "x64 Native Tools" or Developer PowerShell for Visual Studio 2026.
+3. Use Meson to generate a Visual Studio solution and optionally specify the toolset (a new Meson option 'vs_toolset' is available):
+
+   meson setup vs_build --backend vs -Dvs_toolset=latest -Dwin32_target=0x0A00
+
+   Notes:
+   - Use -Dvs_toolset=vXYZ to request a specific toolset if desired (e.g., v143 for Visual Studio 2022). Use 'latest' to let Meson pick the installed toolset.
+   - If you need to target a specific Windows SDK version, adjust win32_target accordingly.
+
+If you need CI coverage for Visual Studio 2026 or a specific toolset, the GitHub Actions CI has a best-effort matrix entry that attempts to exercise the newer toolset when available on the runner.
+
+If you need help with a specific Visual Studio 2026 issue (toolset name, msbuild flags, or SDK differences), tell me what errors you see and I will make targeted changes.
+
 If you need longer compatibility (older distros or Windows 10), consider maintaining a separate compatibility branch or using containerized builds that pin older toolchains.
 
 Prerequisites:
