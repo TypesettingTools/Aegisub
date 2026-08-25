@@ -9,17 +9,65 @@ jobs:
   build-appimage:
     name: Build AppImage (ubuntu-latest)
     runs-on: ubuntu-latest
+    env:
+      # Let Meson pick up ccache wrappers
+      CC: ccache gcc
+      CXX: ccache g++
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install apt packages
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml', '**/requirements.txt', 'tools/create_appimage.sh') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-${{ hashFiles('meson.build', 'meson_options.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-ccache-
+
+      - name: Cache meson wraps and cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/meson
+          key: ${{ runner.os }}-meson-wrap-${{ hashFiles('subprojects/**', 'meson_options.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-meson-wrap-
+
+      - name: Cache build directory
+        uses: actions/cache@v4
+        with:
+          path: build
+          key: ${{ runner.os }}-build-${{ hashFiles('meson.build', 'meson_options.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-build-
+
+      - name: Install apt packages (non-interactive)
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential pkg-config cmake gcc g++ libgtk-3-dev libgl1-mesa-dev libpulse-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev libxcomposite-dev libxdamage-dev libgbm-dev libatk1.0-dev libgdk-pixbuf2.0-dev libfreetype6-dev libfontconfig1-dev libsqlite3-dev libssl-dev ninja-build curl
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+            build-essential pkg-config cmake gcc g++ ninja-build curl git ca-certificates \
+            libgtk-3-dev libgl1-mesa-dev libpulse-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev libxcomposite-dev libxdamage-dev libgbm-dev libatk1.0-dev libgdk-pixbuf2.0-dev libfreetype6-dev libfontconfig1-dev libsqlite3-dev libssl-dev ccache imagemagick librsvg2-bin
+          sudo apt-get clean
 
-      - name: Install Meson
-        run: python3 -m pip install --upgrade meson
+      - name: Configure ccache
+        run: |
+          ccache --max-size=2G
+          ccache -s || true
+
+      - name: Install Meson (pip)
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install Meson via pip
+        run: python -m pip install --upgrade meson
 
       - name: Make AppImage script executable
         run: chmod +x tools/create_appimage.sh
@@ -27,6 +75,8 @@ jobs:
       - name: Build AppImage
         run: |
           ./tools/create_appimage.sh build
+        env:
+          APPIMAGETOOL: ${{ runner.home }}/.cache/appimagetool/appimagetool-x86_64.AppImage
 
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@v4
