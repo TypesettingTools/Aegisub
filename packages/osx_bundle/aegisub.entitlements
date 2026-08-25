@@ -5,6 +5,5 @@
 	<!-- LuaJIT generates executable code without using MAP_JIT. -->
 	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
 	<true/>
-	<!-- Keep library validation enabled. -->
 </dict>
 </plist>

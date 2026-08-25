@@ -95,7 +95,7 @@ if ((Get-CachedDepCtrlVersion $DepCtrlDir) -ne $DepCtrlVersion) {
 # 	Remove-Item $avsArchive
 # }
 
-# VSFilter has no ARM64 build and must not be put in an ARM64 process.
+# VSFilter
 $VSFilterDir = Join-Path $DepsDir "VSFilter"
 if ($Architecture -eq 'x64' -and !(Test-Path $VSFilterDir)) {
 	New-Item -ItemType Directory -Path $VSFilterDir | Out-Null
