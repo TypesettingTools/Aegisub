@@ -38,6 +38,16 @@ verify_image() {
   verify_timestamp "${1}"
 }
 
+run_notarytool() {
+  command="${1}"
+  shift
+  if test -n "${AEGISUB_NOTARY_KEYCHAIN:-}"; then
+    xcrun notarytool "${command}" --keychain-profile "${NOTARY_PROFILE}" --keychain "${AEGISUB_NOTARY_KEYCHAIN}" "$@"
+  else
+    xcrun notarytool "${command}" --keychain-profile "${NOTARY_PROFILE}" "$@"
+  fi
+}
+
 if test -z "${NOTARY_PROFILE}"; then
   echo "AEGISUB_NOTARY_PROFILE must name a notarytool Keychain profile" >&2
   exit 1
@@ -73,11 +83,36 @@ trap - EXIT HUP INT TERM
 
 echo
 echo "---- Submitting image for notarization ----"
-if test -n "${AEGISUB_NOTARY_KEYCHAIN:-}"; then
-  xcrun notarytool submit "${DMG_PATH}" --keychain-profile "${NOTARY_PROFILE}" --keychain "${AEGISUB_NOTARY_KEYCHAIN}" --wait --timeout "${AEGISUB_NOTARY_TIMEOUT:-30m}"
+NOTARY_RESULT="$(mktemp "${TMPDIR:-/tmp}/aegisub-notary-result.XXXXXX")"
+cleanup_result() {
+  rm -f "${NOTARY_RESULT}"
+}
+trap cleanup_result EXIT HUP INT TERM
+
+if run_notarytool submit "${DMG_PATH}" --wait --timeout "${AEGISUB_NOTARY_TIMEOUT:-30m}" --output-format plist > "${NOTARY_RESULT}"; then
+  SUBMIT_EXIT=0
 else
-  xcrun notarytool submit "${DMG_PATH}" --keychain-profile "${NOTARY_PROFILE}" --wait --timeout "${AEGISUB_NOTARY_TIMEOUT:-30m}"
+  SUBMIT_EXIT=$?
 fi
+
+if test -s "${NOTARY_RESULT}"; then
+  plutil -p "${NOTARY_RESULT}" || cat "${NOTARY_RESULT}"
+fi
+
+SUBMISSION_ID="$(plutil -extract id raw -o - "${NOTARY_RESULT}" 2>/dev/null || true)"
+SUBMISSION_STATUS="$(plutil -extract status raw -o - "${NOTARY_RESULT}" 2>/dev/null || true)"
+if test "${SUBMIT_EXIT}" -ne 0 || test "${SUBMISSION_STATUS}" != "Accepted"; then
+  if test -n "${SUBMISSION_ID}"; then
+    echo
+    echo "---- Notarization log for ${SUBMISSION_ID} ----"
+    run_notarytool log "${SUBMISSION_ID}" || true
+  fi
+  echo "Notarization failed with status ${SUBMISSION_STATUS:-unknown}" >&2
+  exit 1
+fi
+
+rm -f "${NOTARY_RESULT}"
+trap - EXIT HUP INT TERM
 
 echo
 echo "---- Stapling notarization ticket ----"

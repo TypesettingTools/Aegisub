@@ -30,7 +30,7 @@ def version_tuple(version: str) -> tuple[int, ...]:
 
 def minimum_versions(binary: Path) -> list[str]:
     output = subprocess.run(
-        ["otool", "-l", binary],
+        ["otool", "-arch", "all", "-l", binary],
         check=True,
         capture_output=True,
         text=True,
