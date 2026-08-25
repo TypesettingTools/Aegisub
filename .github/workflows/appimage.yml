@@ -1,0 +1,35 @@
+name: Build AppImage
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch: {}
+
+jobs:
+  build-appimage:
+    name: Build AppImage (ubuntu-latest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install apt packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config cmake gcc g++ libgtk-3-dev libgl1-mesa-dev libpulse-dev libasound2-dev libxrandr-dev libxinerama-dev libxcursor-dev libxcomposite-dev libxdamage-dev libgbm-dev libatk1.0-dev libgdk-pixbuf2.0-dev libfreetype6-dev libfontconfig1-dev libsqlite3-dev libssl-dev ninja-build curl
+
+      - name: Install Meson
+        run: python3 -m pip install --upgrade meson
+
+      - name: Make AppImage script executable
+        run: chmod +x tools/create_appimage.sh
+
+      - name: Build AppImage
+        run: |
+          ./tools/create_appimage.sh build
+
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aegisub-appimage
+          path: Aegisub-x86_64.AppImage

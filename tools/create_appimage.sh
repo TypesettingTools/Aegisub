@@ -61,12 +61,12 @@ StartupWMClass=aegisub
 EOF
 fi
 
-# Try to find an icon png in repository (common locations), else try to extract from .icns
+# Try to find an icon source (png/svg/icns) in repository and convert to a 256x256 PNG for AppImage
 ICON_DEST="$APPDIR/usr/share/icons/hicolor/256x256/apps"
 mkdir -p "$ICON_DEST"
 ICON_SRC=""
-# Common locations
-for p in "packages/icons/aegisub.png" "packages/icons/256x256/apps/aegisub.png" "packages/osx_bundle/Contents/Resources/Aegisub.icns"; do
+# Common locations (png, svg, icns)
+for p in "packages/icons/aegisub.png" "packages/icons/aegisub.svg" "packages/icons/256x256/apps/aegisub.png" "packages/osx_bundle/Contents/Resources/aegisub.svg" "packages/osx_bundle/Contents/Resources/Aegisub.icns"; do
   if [ -f "$p" ]; then
     ICON_SRC="$p"
     break
@@ -77,6 +77,22 @@ if [ -n "$ICON_SRC" ]; then
   case "$ICON_SRC" in
     *.png)
       cp "$ICON_SRC" "$ICON_DEST/aegisub.png" || true
+      ;;
+    *.svg)
+      # Try to convert SVG to PNG using available tools
+      if command -v rsvg-convert >/dev/null 2>&1; then
+        echo "Converting SVG to PNG with rsvg-convert"
+        rsvg-convert -w 256 -h 256 "$ICON_SRC" -o "$ICON_DEST/aegisub.png" || true
+      elif command -v inkscape >/dev/null 2>&1; then
+        echo "Converting SVG to PNG with inkscape"
+        inkscape "$ICON_SRC" --export-type=png --export-filename="$ICON_DEST/aegisub.png" --export-width=256 --export-height=256 || true
+      elif command -v convert >/dev/null 2>&1; then
+        echo "Converting SVG to PNG with ImageMagick convert"
+        convert "$ICON_SRC" -resize 256x256 "$ICON_DEST/aegisub.png" || true
+      else
+        echo "SVG icon found but no SVG->PNG conversion tool available; copying raw SVG as fallback" >&2
+        cp "$ICON_SRC" "$ICON_DEST/aegisub.svg" || true
+      fi
       ;;
     *.icns)
       # Try to convert .icns to png if iconutil/convert present
