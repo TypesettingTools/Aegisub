@@ -13,12 +13,14 @@ jobs:
       # Let Meson pick up ccache wrappers
       CC: ccache gcc
       CXX: ccache g++
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Cache pip
-        uses: actions/cache@v4
+              uses: actions/cache@v5
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/pyproject.toml', '**/requirements.txt', 'tools/create_appimage.sh') }}
@@ -26,7 +28,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Cache ccache
-        uses: actions/cache@v4
+              uses: actions/cache@v5
         with:
           path: ~/.ccache
           key: ${{ runner.os }}-ccache-${{ hashFiles('meson.build', 'meson_options.txt') }}
@@ -34,7 +36,7 @@ jobs:
             ${{ runner.os }}-ccache-
 
       - name: Cache meson wraps and cache
-        uses: actions/cache@v4
+              uses: actions/cache@v5
         with:
           path: ~/.cache/meson
           key: ${{ runner.os }}-meson-wrap-${{ hashFiles('subprojects/**', 'meson_options.txt') }}
@@ -63,9 +65,9 @@ jobs:
           ccache -s || true
 
       - name: Install Meson (pip)
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
-          python-version: '3.x'
+                  python-version: '3.11'
       - name: Install Meson via pip
         run: python -m pip install --upgrade meson
 
@@ -79,7 +81,7 @@ jobs:
           APPIMAGETOOL: ${{ runner.home }}/.cache/appimagetool/appimagetool-x86_64.AppImage
 
       - name: Upload AppImage artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: aegisub-appimage
           path: Aegisub-x86_64.AppImage
