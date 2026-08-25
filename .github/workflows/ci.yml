@@ -20,10 +20,10 @@ jobs:
       matrix:
         config:
           - name: Windows MSVC Release
-                      os: windows-2022
+                      os: windows-latest
             msvc: true
                     - name: Windows MSVC VS2026
-                      os: windows-2022
+                      os: windows-latest
                       msvc: true
                       vs_toolset: v2026
             devenv: |
@@ -155,7 +155,7 @@ jobs:
         if: startsWith(matrix.config.os, 'ubuntu-')
         run: |
           sudo apt-get update
-          sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev libportal-gtk3-dev
+          sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-d[...]
 
           # busted for the automation test suite (LuaJIT is Lua 5.1 to luarocks)
           sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
