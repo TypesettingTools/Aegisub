@@ -20,12 +20,27 @@ jobs:
       matrix:
         config:
           - name: Windows MSVC Release
-                      os: windows-latest
+            os: windows-latest
             msvc: true
-                    - name: Windows MSVC VS2026
-                      os: windows-latest
-                      msvc: true
-                      vs_toolset: v2026
+            buildtype: release
+            args: >-
+              -Ddefault_library=static
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              -Dfallback_nasm=true
+              -Dfreetype2:harfbuzz=disabled
+              -Dharfbuzz:freetype=disabled
+              -Dharfbuzz:cairo=disabled
+              -Dharfbuzz:glib=disabled
+              -Dharfbuzz:gobject=disabled
+              -Dharfbuzz:tests=disabled
+              -Dharfbuzz:docs=disabled
+              -Dfribidi:tests=false
+              -Dfribidi:docs=false
+              -Dlibass:fontconfig=disabled
+          - name: Windows MSVC VS2026
+            os: windows-latest
+            msvc: true
+            vs_toolset: v2026
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
               Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"
@@ -44,47 +59,35 @@ jobs:
               -Dfribidi:tests=false
               -Dfribidi:docs=false
               -Dlibass:fontconfig=disabled
-          #- {
-          #  name: Windows MinGW,
-          #  os: windows-latest,
-          #  msvc: false
-          #}
-          - {
-            name: Ubuntu Debug,
-                      os: ubuntu-22.04,
-            buildtype: debugoptimized,
+          # - {
+          #   name: Windows MinGW,
+          #   os: windows-latest,
+          #   msvc: false
+          # }
+          - name: Ubuntu Debug
+            os: ubuntu-22.04
+            buildtype: debugoptimized
             args: -Db_pch=false
-          }
-          - {
-            name: Ubuntu Release,
-                      os: ubuntu-22.04,
-            buildtype: release,
+          - name: Ubuntu Release
+            os: ubuntu-22.04
+            buildtype: release
             args: -Db_pch=false
-          }
-          - {
-            name: macOS x86_64 Debug,
-            os: macos-15-intel,
-            buildtype: debugoptimized,
+          - name: macOS x86_64 Debug
+            os: macos-15-intel
+            buildtype: debugoptimized
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
-          - {
-            name: macOS x86_64 Release,
-            os: macos-15-intel,
-            buildtype: release,
+          - name: macOS x86_64 Release
+            os: macos-15-intel
+            buildtype: release
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
-          - {
-            name: macOS arm64 Debug,
-            os: macos-15,
-            buildtype: debugoptimized,
+          - name: macOS arm64 Debug
+            os: macos-15
+            buildtype: debugoptimized
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
-          - {
-            name: macOS arm64 Release,
-            os: macos-15,
-            buildtype: release,
+          - name: macOS arm64 Release
+            os: macos-15
+            buildtype: release
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
 
     steps:
       - uses: actions/checkout@v6
@@ -93,14 +96,17 @@ jobs:
 
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.11'
+          python-version: '3.x'
+
+      - name: Ensure Python >= 3.10
+        run: python -c "import sys; print(sys.version); sys.exit(0) if sys.version_info >= (3,10) else sys.exit(1)"
 
       - name: Setup Meson
         run: |
           python -m pip install --upgrade pip setuptools
           pip install meson
 
-        # Taken from https://github.com/libass/libass/blob/0.17.5/.github/workflows/meson.yml#L118-L125
+      # Taken from https://github.com/libass/libass/blob/0.17.5/.github/workflows/meson.yml#L118-L125
       - name: Find Visual Studio
         if: matrix.config.msvc
         run: |
@@ -120,7 +126,7 @@ jobs:
           }
 
       - name: Install dependencies (Windows)
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         run: |
           choco install ninja innosetup
 
@@ -185,7 +191,7 @@ jobs:
 
       # Windows artifacts
       - name: Generate Windows installer
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -193,14 +199,14 @@ jobs:
           meson compile win-installer -C build
 
       - name: Generate Windows portable installer
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         run: |
           ${{ matrix.config.devenv }}
           cd build && ninja win-portable
 
       - name: Upload artifacts - win_installer
         uses: actions/upload-artifact@v6
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
@@ -208,7 +214,7 @@ jobs:
 
       - name: Upload artifacts - portable.zip
         uses: actions/upload-artifact@v6
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         with:
           name: ${{ matrix.config.name }} - portable
           path: build/aegisub-portable-64.zip
