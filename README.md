@@ -12,6 +12,13 @@ Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](i
 
 Aegisub now targets 64-bit builds only (x86_64). 32-bit/x86 builds are no longer supported.
 
+Supported platforms (policy update):
+
+- Windows: Windows 11 and newer (development and release builds target modern MSVC toolchains; Windows 10 is no longer supported).
+- Linux: Supported on modern distributions only. Recommended: Ubuntu 22.04 LTS or newer, Fedora 36 or newer, or Arch Linux (rolling). Ancient distributions with outdated glibc or old system libraries are not supported.
+
+If you need longer compatibility (older distros or Windows 10), consider maintaining a separate compatibility branch or using containerized builds that pin older toolchains.
+
 Prerequisites:
 
 1. Visual Studio (Community edition of any recent version is fine, needs the Windows SDK included)

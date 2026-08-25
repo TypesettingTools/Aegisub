@@ -18,7 +18,7 @@ jobs:
       matrix:
         config:
           - name: Windows MSVC Release
-            os: windows-latest
+                      os: windows-2022
             msvc: true
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
@@ -45,13 +45,13 @@ jobs:
           #}
           - {
             name: Ubuntu Debug,
-            os: ubuntu-latest,
+                      os: ubuntu-22.04,
             buildtype: debugoptimized,
             args: -Db_pch=false
           }
           - {
             name: Ubuntu Release,
-            os: ubuntu-latest,
+                      os: ubuntu-22.04,
             buildtype: release,
             args: -Db_pch=false
           }
