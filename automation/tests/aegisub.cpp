@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 	}
 
 	preload_modules(L);
-	Install(L, {"include"});
+	Install(L, {"include"}, "include");
 
 	// Patch os.exit to close the lua state first since busted calls it when
 	// it's done

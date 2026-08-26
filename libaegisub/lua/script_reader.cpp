@@ -25,6 +25,18 @@
 #include <lauxlib.h>
 
 namespace agi::lua {
+	namespace {
+		bool load_support_file(lua_State *L, fs::path const& filename) {
+			try {
+				return LoadFile(L, filename);
+			}
+			catch (agi::Exception const& e) {
+				lua_pushstring(L, e.GetMessage().c_str());
+				return false;
+			}
+		}
+	}
+
 	bool LoadFile(lua_State *L, agi::fs::path const& raw_filename) {
 		auto filename = raw_filename;
 		try {
@@ -119,7 +131,8 @@ namespace agi::lua {
 		return lua_gettop(L) - pretop;
 	}
 
-	bool Install(lua_State *L, std::vector<fs::path> const& include_path) {
+	bool Install(lua_State *L, std::vector<fs::path> const& include_path,
+		fs::path const& support_path) {
 		// set the module load path to include_path
 		lua_getglobal(L, "package");
 		push_value(L, "path");
@@ -148,17 +161,41 @@ namespace agi::lua {
 
 #ifdef _WIN32
 		// Replace the default lua IO functions with our unicode compatible ones
-		luaL_loadstring(L, "require('unicode-monkeypatch')");
+		if (!load_support_file(L, support_path / "unicode-monkeypatch.lua"))
+			return false;
 		if (lua_pcall(L, 0, 0, 0)) {
 			return false; // leave error message
 		}
 #endif
 
-		luaL_loadstring(L, "return require('moonscript').loadstring");
+		// Load mandatory support by exact path. In particular, do not allow a
+		// moonscript.lua beside an approved subtitle-local script to run first.
+		if (!load_support_file(L, support_path / "moonscript.lua"))
+			return false;
 		if (lua_pcall(L, 0, 1, 0)) {
 			return false; // leave error message
 		}
+		if (!lua_istable(L, -1)) {
+			lua_pop(L, 1);
+			lua_pushliteral(L, "Bundled moonscript.lua did not return a module table");
+			return false;
+		}
+
+		lua_getfield(L, -1, "loadstring");
+		if (!lua_isfunction(L, -1)) {
+			lua_pop(L, 2);
+			lua_pushliteral(L, "Bundled moonscript.lua has no loadstring function");
+			return false;
+		}
 		lua_setfield(L, LUA_REGISTRYINDEX, "moonscript");
+
+		// Direct loading bypasses require(), so record the trusted module as
+		// loaded before user code gets control.
+		lua_getglobal(L, "package");
+		lua_getfield(L, -1, "loaded");
+		lua_pushvalue(L, -3);
+		lua_setfield(L, -2, "moonscript");
+		lua_pop(L, 3); // loaded, package, module
 
 		return true;
 	}
