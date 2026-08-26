@@ -34,19 +34,30 @@ char *map(int64_t s_offset, uint64_t length, boost::interprocess::mode_t mode,
 	std::unique_ptr<mapped_region>& region, uint64_t& mapping_start)
 {
 	static char dummy = 0;
-	if (length == 0) return &dummy;
+	if (s_offset < 0)
+		throw agi::InternalError("Attempted to map a negative file offset");
 
 	auto offset = static_cast<uint64_t>(s_offset);
-	if (offset + length > file_size)
+	if (offset > file_size || length > file_size - offset)
 		throw agi::InternalError("Attempted to map beyond end of file");
+	if (length == 0) return &dummy;
 
 	// Check if we can just use the current mapping
-	if (region && offset >= mapping_start && offset + length <= mapping_start + region->get_size())
-		return static_cast<char *>(region->get_address()) + offset - mapping_start;
+	if (region && offset >= mapping_start) {
+		auto relative_offset = offset - mapping_start;
+		auto region_size = region->get_size();
+		if (relative_offset <= region_size && length <= region_size - relative_offset)
+			return static_cast<char *>(region->get_address()) + relative_offset;
+	}
 
 	if (sizeof(size_t) == 4) {
 		mapping_start = offset & ~0xFFFFFULL; // Align to 1 MB boundary
-		length += static_cast<size_t>(offset - mapping_start);
+		auto prefix = offset - mapping_start;
+		if (length > std::numeric_limits<size_t>::max() - prefix)
+			throw std::bad_alloc();
+		length += prefix;
+		if (length > std::numeric_limits<size_t>::max() - 0xFFFFF)
+			throw std::bad_alloc();
 		// Map 16 MB or length rounded up to the next MB
 		length = std::min<uint64_t>(std::max<uint64_t>(0x1000000U, (length + 0xFFFFF) & ~0xFFFFF), file_size - mapping_start);
 	}
