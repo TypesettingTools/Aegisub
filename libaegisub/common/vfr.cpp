@@ -21,6 +21,7 @@
 #include "libaegisub/charset.h"
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
+#include "libaegisub/util.h"
 
 #include <algorithm>
 #include <boost/interprocess/streams/bufferstream.hpp>
@@ -28,9 +29,11 @@
 #include <cmath>
 #include <functional>
 #include <iterator>
+#include <limits>
 
 namespace {
 static const int64_t default_denominator = 1000000000;
+static const size_t max_timecodes = 10000000;
 using agi::line_iterator;
 using namespace agi::vfr;
 
@@ -40,6 +43,12 @@ int64_t checked_fps_numerator(double fps) {
 	if (fps > 1000.)
 		throw InvalidFramerate("FPS must not be greater than 1000");
 	return static_cast<int64_t>(fps * default_denominator);
+}
+
+void append_v1_timecode(std::vector<int>& timecodes, double time) {
+	if (!std::isfinite(time) || time < 0 || time > std::numeric_limits<int>::max() - .5)
+		throw InvalidFramerate("V1 timecode exceeds the supported timestamp range");
+	timecodes.push_back(static_cast<int>(time + .5));
 }
 
 /// @brief Verify that timecodes monotonically increase
@@ -84,7 +93,9 @@ TimecodeRange v1_parse_line(std::string const& str) {
 		throw InvalidFramerate("Cannot specify frame rate for negative frames.");
 	if (range.end < range.start)
 		throw InvalidFramerate("End frame must be greater than or equal to start frame");
-	if (range.fps <= 0.)
+	if (range.end > static_cast<int>(max_timecodes) - 2)
+		throw InvalidFramerate("V1 timecode range exceeds the 10000000 frame limit");
+	if (!std::isfinite(range.fps) || range.fps <= 0.)
 		throw InvalidFramerate("FPS must be greater than zero");
 	if (range.fps > 1000.)
 		// This is our limitation, not mkvmerge's
@@ -100,8 +111,14 @@ TimecodeRange v1_parse_line(std::string const& str) {
 /// @param[out] last      Unrounded time of the last frame
 /// @return Assumed fps times one million
 int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<int> &timecodes, int64_t &last) {
-	double fps = atof(line.substr(7).c_str());
-	if (fps <= 0.) throw InvalidFramerate("Assumed FPS must be greater than zero");
+	auto fps_string = line.substr(7);
+	auto first = fps_string.find_first_not_of(" \t\r\n\f\v");
+	auto last_char = fps_string.find_last_not_of(" \t\r\n\f\v");
+	if (first != std::string::npos)
+		fps_string = fps_string.substr(first, last_char - first + 1);
+	double fps;
+	if (!agi::util::try_parse(fps_string, &fps) || !std::isfinite(fps) || fps <= 0.)
+		throw InvalidFramerate("Assumed FPS must be greater than zero");
 	if (fps > 1000.) throw InvalidFramerate("Assumed FPS must not be greater than 1000");
 
 	std::vector<TimecodeRange> ranges;
@@ -124,16 +141,19 @@ int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<
 			throw InvalidFramerate("Override ranges must not overlap");
 		}
 		for (; frame < range.start; ++frame) {
-			timecodes.push_back(int(time + .5));
+			append_v1_timecode(timecodes, time);
 			time += 1000. / fps;
 		}
 		for (; frame <= range.end; ++frame) {
-			timecodes.push_back(int(time + .5));
+			append_v1_timecode(timecodes, time);
 			time += 1000. / range.fps;
 		}
 	}
-	timecodes.push_back(int(time + .5));
-	last = int64_t(time * fps * default_denominator);
+	append_v1_timecode(timecodes, time);
+	auto last_time = time * fps * default_denominator;
+	if (!std::isfinite(last_time) || last_time >= std::ldexp(1.0, 63))
+		throw InvalidFramerate("V1 timecode exceeds the supported timestamp range");
+	last = static_cast<int64_t>(last_time);
 	return int64_t(fps * default_denominator);
 }
 }
@@ -184,7 +204,11 @@ Framerate::Framerate(agi::fs::path const& filename)
 	auto encoding = agi::charset::Detect(filename);
 	auto line = *line_iterator<std::string>(*file, encoding.c_str());
 	if (line == "# timecode format v2") {
-		copy(line_iterator<int>(*file, encoding.c_str()), line_iterator<int>(), back_inserter(timecodes));
+		for (auto timecode : line_iterator<int>(*file, encoding.c_str())) {
+			if (timecodes.size() == max_timecodes)
+				throw InvalidFramerate("Timecode file exceeds the 10000000 entry limit");
+			timecodes.push_back(timecode);
+		}
 		SetFromTimecodes();
 		return;
 	}
