@@ -33,9 +33,6 @@ public:
 	/// Get the size of the attached file in bytes
 	size_t GetSize() const;
 
-	/// Add a line of data (without newline) read from a subtitle file
-	void AddData(std::string const& data) { entry_data = entry_data.get() + data + "\r\n"; }
-
 	/// Extract the contents of this attachment to a file
 	/// @param filename Path to save the attachment to
 	void Extract(agi::fs::path const& filename) const;
@@ -47,6 +44,6 @@ public:
 	std::string const& GetEntryData() const { return entry_data; }
 	AssEntryGroup Group() const override;
 
-	AssAttachment(std::string const& header, AssEntryGroup group);
+	AssAttachment(std::string const& data, AssEntryGroup group);
 	AssAttachment(agi::fs::path const& name, AssEntryGroup group);
 };
