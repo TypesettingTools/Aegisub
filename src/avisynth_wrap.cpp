@@ -51,11 +51,17 @@ namespace {
 typedef IScriptEnvironment* __stdcall FUNC(int);
 
 AviSynthWrapper::AviSynthWrapper() {
-	if (!avs_refcount++) {
-		hLib = LoadLibrary(L"avisynth.dll");
+	if (avs_refcount) {
+		++avs_refcount;
+		return;
+	}
+
+	try {
+		hLib = LoadLibraryExW(L"avisynth.dll", nullptr,
+			LOAD_LIBRARY_SEARCH_APPLICATION_DIR | LOAD_LIBRARY_SEARCH_SYSTEM32);
 
 		if (!hLib)
-			throw AvisynthError("Could not load avisynth.dll");
+			throw AvisynthError("Could not load avisynth.dll from the application or Windows system directory");
 
 		FUNC *CreateScriptEnv = (FUNC*)GetProcAddress(hLib, "CreateScriptEnvironment");
 		if (!CreateScriptEnv)
@@ -74,13 +80,25 @@ AviSynthWrapper::AviSynthWrapper() {
 		const int memoryMax = OPT_GET("Provider/Avisynth/Memory Max")->GetInt();
 		if (memoryMax)
 			env->SetMemoryMax(memoryMax);
+
+		avs_refcount = 1;
+	}
+	catch (...) {
+		delete env;
+		env = nullptr;
+		if (hLib)
+			FreeLibrary(hLib);
+		hLib = nullptr;
+		throw;
 	}
 }
 
 AviSynthWrapper::~AviSynthWrapper() {
 	if (!--avs_refcount) {
 		delete env;
+		env = nullptr;
 		FreeLibrary(hLib);
+		hLib = nullptr;
 	}
 }
 
