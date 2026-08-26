@@ -15,7 +15,8 @@
 #include <memory>
 #include <string>
 
-class AssAttachment;
+#include "ass_entry.h"
+
 class AssFile;
 
 class AssParser {
@@ -24,9 +25,16 @@ class AssParser {
 
 	AssFile *target;
 	int version;
-	std::unique_ptr<AssAttachment> attach;
+
+	struct {
+		bool active = false;
+		AssEntryGroup group;
+		std::string data;
+	} curr_attachment;
+
 	void (AssParser::*state)(std::string const&);
 
+	void FinishAttachment();
 	void ParseAttachmentLine(std::string const& data);
 	void ParseEventLine(std::string const& data);
 	void ParseStyleLine(std::string const& data);
