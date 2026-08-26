@@ -20,6 +20,7 @@
 #include <climits>
 #include <fstream>
 #include <iterator>
+#include <limits>
 
 #include <main.h>
 #include <util.h>
@@ -47,6 +48,9 @@ TEST(lagi_vfr, constructors_good) {
 TEST(lagi_vfr, constructors_bad_cfr) {
 	EXPECT_THROW(Framerate(-1.), InvalidFramerate);
 	EXPECT_THROW(Framerate(1000.1), InvalidFramerate);
+	EXPECT_THROW(std::ignore = Framerate(std::numeric_limits<double>::quiet_NaN()), InvalidFramerate);
+	EXPECT_THROW(std::ignore = Framerate(std::numeric_limits<double>::infinity()), InvalidFramerate);
+	EXPECT_THROW(std::ignore = Framerate(std::numeric_limits<double>::max()), InvalidFramerate);
 }
 
 TEST(lagi_vfr, constructors_bad_timecodes) {
