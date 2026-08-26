@@ -46,6 +46,7 @@
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <cmath>
 #include <wx/msgdlg.h>
 
 Project::Project(agi::Context *c) : context(c) {
@@ -342,10 +343,23 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 			vc->JumpToFrame(properties.video_position);
 
 			auto ar_mode = static_cast<AspectRatio>(properties.ar_mode);
-			if (ar_mode == AspectRatio::Custom)
-				vc->SetAspectRatio(properties.ar_value);
-			else
-				vc->SetAspectRatio(ar_mode);
+			switch (ar_mode) {
+				case AspectRatio::Default:
+				case AspectRatio::Fullscreen:
+				case AspectRatio::Widescreen:
+				case AspectRatio::Cinematic:
+					vc->SetAspectRatio(ar_mode);
+					break;
+				case AspectRatio::Custom:
+					if (std::isfinite(properties.ar_value))
+						vc->SetAspectRatio(properties.ar_value);
+					else
+						vc->SetAspectRatio(AspectRatio::Default);
+					break;
+				default:
+					vc->SetAspectRatio(AspectRatio::Default);
+					break;
+			}
 			context->videoDisplay->SetWindowZoom(properties.video_zoom);
 		}
 	}
