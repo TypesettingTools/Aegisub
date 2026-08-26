@@ -34,6 +34,14 @@ static const int64_t default_denominator = 1000000000;
 using agi::line_iterator;
 using namespace agi::vfr;
 
+int64_t checked_fps_numerator(double fps) {
+	if (!std::isfinite(fps) || fps < 0.)
+		throw InvalidFramerate("FPS must be greater than zero");
+	if (fps > 1000.)
+		throw InvalidFramerate("FPS must not be greater than 1000");
+	return static_cast<int64_t>(fps * default_denominator);
+}
+
 /// @brief Verify that timecodes monotonically increase
 /// @param timecodes List of timecodes to check
 void validate_timecodes(std::vector<int> const& timecodes) {
@@ -133,10 +141,8 @@ int64_t v1_parse(line_iterator<std::string> file, std::string line, std::vector<
 namespace agi::vfr {
 Framerate::Framerate(double fps)
 : denominator(default_denominator)
-, numerator(int64_t(fps * denominator))
+, numerator(checked_fps_numerator(fps))
 {
-	if (fps < 0.) throw InvalidFramerate("FPS must be greater than zero");
-	if (fps > 1000.) throw InvalidFramerate("FPS must not be greater than 1000");
 	timecodes.push_back(0);
 }
 
