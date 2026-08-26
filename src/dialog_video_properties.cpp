@@ -26,6 +26,7 @@
 #include <wx/choicdlg.h>
 #include <wx/dialog.h>
 #include <wx/intl.h>
+#include <wx/listbox.h>
 #include <wx/msgdlg.h>
 #include <wx/radiobox.h>
 #include <wx/sizer.h>
@@ -113,6 +114,32 @@ bool check_ar_changed(int sx, int sy, int vx, int vy) {
 }
 
 
+// Basically a wxGetSingleChoiceIndex that also shows a Help button
+int prompt_choice_dialog(const wxString& message, const wxString& caption, const wxArrayString& choices, int initialSelection, wxWindow *parent) {
+	wxDialog d(parent, -1, caption);
+
+	auto sizer = new wxBoxSizer(wxVERTICAL);
+	sizer->Add(new wxStaticText(&d, -1, message), wxSizerFlags().TripleBorder().Expand());
+
+	auto lb = new wxListBox(&d, -1, wxDefaultPosition, wxDefaultSize, choices, wxLB_ALWAYS_SB);
+
+	sizer->Add(lb, wxSizerFlags().TripleBorder(wxLEFT | wxRIGHT).Proportion(1).Expand());
+	sizer->Add(d.CreateSeparatedSizer(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP)), wxSizerFlags().DoubleBorder().Expand());
+
+	d.SetSizerAndFit(sizer);
+	d.CenterOnParent();
+
+	lb->SetSelection(initialSelection);
+
+	d.Bind(wxEVT_LISTBOX_DCLICK, [&](wxCommandEvent&) { d.EndModal(lb->GetSelection()); });
+	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(lb->GetSelection()); }, wxID_OK);
+	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(-1); }, wxID_CANCEL);
+	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { HelpButton::OpenPage("Resolution mismatch"); }, wxID_HELP);
+
+	return d.ShowModal();
+}
+
+
 bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	// When opening dummy video only want to set the script properties if
 	// they were previously unset
@@ -156,7 +183,7 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 		auto action = static_cast<MissingYCbCrMatrixAction>(OPT_GET("Video/No YCbCr Matrix in Script")->GetInt());
 
 		if (action == MissingYCbCrMatrixAction::Prompt) {
-			int Choice = wxGetSingleChoiceIndex(
+			int Choice = prompt_choice_dialog(
 				fmt_tl(
 					"The current subtitle file has no YCbCr Matrix set.\n\n"
 					"If you plan to use this subtitle file on this newly loaded video file,\nyou should set the subtitle file's YCbCr Matrix to the video's color space (\"%s\").\n\n"
@@ -216,7 +243,7 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 		//		  As explained above, in the cases where this is necessary the YCbCr Matrix can also be left unchanged, so it's left as a lower priority for now.
 
 		if (action == YCbCrMatrixMismatchAction::Prompt) {
-			int Choice = wxGetSingleChoiceIndex(
+			int Choice = prompt_choice_dialog(
 				fmt_tl(
 					"This video's recommended YCbCr Matrix (\"%s\") differs from the subtitle file's YCbCr Matrix (\"%s\").\n\n"
 					"If this new video's colors look identical to the video the subtitle file was originally authored for,\n"
@@ -251,51 +278,6 @@ bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, 
 	}
 
 	return false;
-}
-
-int prompt_play_res(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, int vy) {
-	wxDialog d(parent, -1, _("Resolution mismatch"));
-
-	auto label_text = fmt_tl(
-        "The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\n"
-        "Video resolution:\t%d \u00D7 %d\n"     // U+00D7 multiplication sign
-        "Script resolution:\t%d \u00D7 %d\n\n"
-        "Change subtitles resolution to match video?", vx, vy, sx, sy);
-
-	auto sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(new wxStaticText(&d, -1, label_text), wxSizerFlags().Border());
-
-	wxRadioBox *rb;
-	if (ar_changed) {
-		wxString choices[] = {
-			_("Leave resolution as it is"),
-			_("Resample script (stretch to new aspect ratio)"),
-			_("Resample script (add borders)"),
-			_("Resample script (remove borders)")
-		};
-		rb = new wxRadioBox(&d, -1, "", wxDefaultPosition, wxDefaultSize, 4, choices, 1);
-	}
-	else {
-		wxString choices[] = {
-			_("Leave resolution as it is"),
-			_("Resample script"),
-		};
-		rb = new wxRadioBox(&d, -1, "", wxDefaultPosition, wxDefaultSize, 2, choices, 1);
-	}
-	sizer->Add(rb, wxSizerFlags().Border(wxALL & ~wxTOP).Expand());
-	sizer->Add(d.CreateStdDialogButtonSizer(wxOK | wxCANCEL | wxHELP), wxSizerFlags().Border().Expand());
-
-	unsigned int sel = OPT_GET("Video/Last PlayRes Mismatch Choice")->GetInt();
-	rb->SetSelection(std::min(sel, rb->GetCount() - 1));
-
-	d.SetSizerAndFit(sizer);
-	d.CenterOnParent();
-
-	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(rb->GetSelection()); }, wxID_OK);
-	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(-1); }, wxID_CANCEL);
-	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { HelpButton::OpenPage("Resolution mismatch"); }, wxID_HELP);
-
-	return d.ShowModal();
 }
 
 bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
@@ -344,7 +326,33 @@ bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWi
 		[[fallthrough]];
 
 	case ResolutionMismatchAction::Prompt:
-		int res = prompt_play_res(parent, ar_changed, sx, sy, vx, vy);
+		wxArrayString choices;
+		if (ar_changed) {
+			choices = {
+				_("Leave resolution as it is"),
+				_("Resample script (stretch to new aspect ratio)"),
+				_("Resample script (add borders)"),
+				_("Resample script (remove borders)")
+			};
+		} else {
+			choices = {
+				_("Leave resolution as it is"),
+				_("Resample script"),
+			};
+		}
+
+		int res = prompt_choice_dialog(
+			fmt_tl(
+				"The resolution of the loaded video and the resolution specified for the subtitles don't match.\n\n"
+				"Video resolution:\t%d \u00D7 %d\n"     // U+00D7 multiplication sign
+				"Script resolution:\t%d \u00D7 %d\n\n"
+				"Change subtitles resolution to match video?", vx, vy, sx, sy),
+			_("Resolution mismatch"),
+			choices,
+			OPT_GET("Video/Last PlayRes Mismatch Choice")->GetInt(),
+			parent
+		);
+
 		if (res == -1) {
 			res = static_cast<int>(ResolutionMismatchFix::Ignore);
 		} else {
@@ -384,7 +392,7 @@ bool update_layout_res(AssFile *file, const AsyncVideoProvider *new_provider, wx
 		auto action = static_cast<MissingLayoutResAction>(OPT_GET("Video/No LayoutRes in Script")->GetInt());
 
 		if (action == MissingLayoutResAction::Prompt) {
-			int Choice = wxGetSingleChoiceIndex(
+			int Choice = prompt_choice_dialog(
 				fmt_tl(
 					"The current subtitle file has no layout resolution set.\n\n"
 					"If you plan to use this subtitle file on this newly loaded video file,\n"
@@ -478,7 +486,7 @@ bool update_layout_res(AssFile *file, const AsyncVideoProvider *new_provider, wx
 				"Change layout resolution of subtitles to match video?"
 			, vx, vy, sx, sy);
 
-		int Choice = wxGetSingleChoiceIndex(
+		int Choice = prompt_choice_dialog(
 			prompt,
 			_("Layout resolution mismatch"),
 			{fmt_tl("Leave layout resolution as it is (%d \u00D7 %d)", sx, sy), fmt_tl("Set script's layout resolution to the video's (%d \u00D7 %d)", vx, vy)}, // U+00D7 multiplication sign
