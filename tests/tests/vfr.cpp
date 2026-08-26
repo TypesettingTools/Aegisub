@@ -74,6 +74,9 @@ TEST(lagi_vfr, constructors_bad_v1) {
 	EXPECT_THROW(Framerate(input_dir / "v1_override_zero.txt"), InvalidFramerate);
 	EXPECT_THROW(Framerate(input_dir / "v1_negative_start_of_range.txt"), InvalidFramerate);
 	EXPECT_THROW(Framerate(input_dir / "v1_end_less_than_start.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate(input_dir / "v1_range_too_large.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate(input_dir / "v1_nan_fps.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate(input_dir / "v1_tiny_fps.txt"), InvalidFramerate);
 }
 
 TEST(lagi_vfr, constructors_bad_v2) {
