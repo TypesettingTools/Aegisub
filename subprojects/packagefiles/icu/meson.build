@@ -6,8 +6,8 @@ project('icu', 'c', 'cpp',
 cpp = meson.get_compiler('cpp')
 
 if host_machine.system() == 'windows'
-   add_project_arguments('-DWIN32', '-DWIN64', '-D_MBCS', '/utf-8', language : 'cpp')
-   add_project_arguments('-DWIN32', '-DWIN64', '-D_MBCS', '/utf-8', language : 'c')
+   add_project_arguments('-DWIN32', '-DWIN64', '-D_MBCS', '-utf-8', language : 'cpp')
+   add_project_arguments('-DWIN32', '-DWIN64', '-D_MBCS', '-utf-8', language : 'c')
 endif
 
 if cpp.has_header('elf.h')
