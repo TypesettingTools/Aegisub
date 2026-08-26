@@ -33,8 +33,8 @@ public:
 	/// Get the size of the attached file in bytes
 	size_t GetSize() const;
 
-	/// Add a line of data (without newline) read from a subtitle file
-	void AddData(std::string const& data) { entry_data = entry_data.get() + data + "\r\n"; }
+	/// Store entry data accumulated by the subtitle parser.
+	void SetEntryData(std::string data);
 
 	/// Extract the contents of this attachment to a file
 	/// @param filename Path to save the attachment to
