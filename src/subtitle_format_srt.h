@@ -49,12 +49,11 @@ class SrtTagParser {
 
 	const boost::regex tag_matcher;
 	const boost::regex attrib_matcher;
-	const boost::regex is_quoted;
 
 public:
 	SrtTagParser();
 
-	std::string ToAss(std::string srt);
+	std::string ToAss(std::string const& srt);
 };
 
 class SRTSubtitleFormat final : public SubtitleFormat {
