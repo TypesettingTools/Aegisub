@@ -18,10 +18,13 @@
 
 #include <libaegisub/fs.h>
 #include <libaegisub/lua/modules.h>
+#include <libaegisub/lua/script_reader.h>
 
 #include <lua.hpp>
 #include <optional>
 #include <string>
+
+#include <util.h>
 
 namespace {
 // The lfs entry points are static in lua/modules/lfs.cpp and are only reachable
@@ -101,4 +104,15 @@ TEST_F(lagi_lua_lfs, get_mode_reports_files_and_directories) {
 TEST_F(lagi_lua_lfs, get_mode_handles_non_ascii_paths) {
 	EXPECT_EQ("directory", get_mode(nonascii_dir));
 	EXPECT_EQ("file", get_mode(nonascii_file));
+}
+
+TEST_F(lagi_lua_lfs, mandatory_support_is_not_loaded_from_script_directory) {
+	auto sibling = util::test_data_dir() / "lua/sibling";
+	auto support = util::test_data_dir().parent_path() / "automation/include";
+
+	ASSERT_TRUE(agi::lua::Install(L, {sibling}, support)) << lua_tostring(L, -1);
+
+	lua_getglobal(L, "sibling_moonscript_loaded");
+	EXPECT_TRUE(lua_isnil(L, -1));
+	lua_pop(L, 1);
 }

@@ -41,6 +41,7 @@
 #include <libaegisub/ass/string_codec.h>
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
+#include <libaegisub/log.h>
 #include <libaegisub/path.h>
 #include <libaegisub/split.h>
 #include <libaegisub/string.h>
@@ -372,8 +373,8 @@ namespace Automation4 {
 
 		auto const& local_scripts = context->ass->Properties.automation_scripts;
 
-		// Tuples of (raw script path, base path, resolved path)
-		using PathTuple = std::tuple<std::string, agi::fs::path, agi::fs::path>;
+		// Tuples of (raw script path, base path, resolved path, canonical path)
+		using PathTuple = std::tuple<std::string, agi::fs::path, agi::fs::path, agi::fs::path>;
 		std::vector<PathTuple> resolvedpaths;
 
 		auto autobasefn(OPT_GET("Path/Automation/Base")->GetString());
@@ -397,7 +398,7 @@ namespace Automation4 {
 			}
 			auto sfname = basepath/trimmed;
 
-			resolvedpaths.emplace_back(tok, basepath, sfname);
+			resolvedpaths.emplace_back(tok, basepath, sfname, agi::fs::path());
 		}
 
 		if (resolvedpaths.empty()) {
@@ -430,13 +431,27 @@ namespace Automation4 {
 			return;
 		}
 
-		for (auto const& [tok, basepath, sfname] : resolvedpaths) {
-			if (agi::fs::FileExists(sfname))
-				scripts.emplace_back(Automation4::ScriptFactory::CreateFromFile(sfname, true));
-			else {
+		for (auto& [tok, basepath, sfname, canonical] : resolvedpaths) {
+			try {
+				canonical = agi::fs::Canonicalize(sfname);
+				if (!agi::fs::FileExists(canonical)) {
+					wxLogWarning(fmt_tl("Automation Script reference is not a file.\nFilename specified: %s\nResolved filename: %s",
+						to_wx(tok), canonical.wstring()));
+					canonical.clear();
+					continue;
+				}
+			}
+			catch (agi::Exception const& e) {
+				canonical.clear();
 				wxLogWarning(fmt_tl("Automation Script referenced could not be found.\nFilename specified: %s\nSearched relative to: %s\nResolved filename: %s",
 					to_wx(tok), basepath.wstring(), sfname.wstring()));
+				LOG_W("auto4") << "Could not canonicalize local script: " << e.GetMessage();
 			}
+		}
+
+		for (auto const& [tok, basepath, sfname, canonical] : resolvedpaths) {
+			if (!canonical.empty() && agi::fs::FileExists(canonical))
+				scripts.emplace_back(Automation4::ScriptFactory::CreateFromFile(canonical, true));
 		}
 
 		ScriptsChanged();
