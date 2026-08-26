@@ -54,6 +54,7 @@
 
 
 #include <algorithm>
+#include <cmath>
 #include <wx/combobox.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
@@ -527,8 +528,8 @@ void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 }
 
 void VideoDisplay::SetWindowZoom(double value) {
-	if (value == 0) return;
-	windowZoomValue = std::max(value, .125);
+	if (!std::isfinite(value) || value <= 0) return;
+	windowZoomValue = std::clamp(value, .125, 10.);
 	size_t selIndex = windowZoomValue / .125 - 1;
 	if (selIndex < zoomBox->GetCount())
 		zoomBox->SetSelection(selIndex);
