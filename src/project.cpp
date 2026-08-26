@@ -232,6 +232,43 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 			return;
 	}
 
+	auto is_linked_avisynth = [](agi::fs::path const& linked, agi::fs::path const& current) {
+		return linked != current && agi::fs::HasExtension(linked, "avs");
+	};
+	bool avisynth_audio = is_linked_avisynth(audio, audio_file);
+	bool avisynth_video = is_linked_avisynth(video, video_file);
+	if (avisynth_audio || avisynth_video) {
+		wxString script_list;
+		if (avisynth_audio) {
+			script_list += "\n    ";
+			script_list += audio.wstring();
+		}
+		if (avisynth_video && (!avisynth_audio || video != audio)) {
+			script_list += "\n    ";
+			script_list += video.wstring();
+		}
+
+		bool multiple_scripts = avisynth_audio && avisynth_video && audio != video;
+		wxString message = multiple_scripts
+			? _("The subtitle file references AviSynth scripts. AviSynth scripts can execute arbitrary code with your user permissions. Only load them if you trust the subtitle's author.\n\nScripts:")
+			: _("The subtitle file references an AviSynth script. AviSynth scripts can execute arbitrary code with your user permissions. Only load it if you trust the subtitle's author.\n\nScript:");
+		message += script_list;
+		message += multiple_scripts
+			? _("\n\nDo you want to load these scripts now?")
+			: _("\n\nDo you want to load this script now?");
+
+		wxMessageDialog dlg(
+			context->parent, message, _("Load linked AviSynth script?"),
+			wxYES_NO | wxNO_DEFAULT | wxICON_WARNING | wxCENTRE);
+		dlg.SetYesNoLabels(_("Trust author && load"), _("Do not load"));
+		if (dlg.ShowModal() != wxID_YES) {
+			if (avisynth_audio)
+				audio = audio_file;
+			if (avisynth_video)
+				video = video_file;
+		}
+	}
+
 	bool loaded_video = false;
 	if (video != video_file) {
 		if (video.empty())
