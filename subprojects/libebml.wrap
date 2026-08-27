@@ -1,0 +1,8 @@
+[wrap-git]
+url = https://github.com/Matroska-Org/libebml.git
+revision = release-1.4.5
+depth = 1
+patch_directory = libebml
+
+[provide]
+libebml = libebml_dep

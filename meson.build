@@ -179,8 +179,8 @@ endif
 
 zlib_dep = dependency('zlib')
 deps += zlib_dep
-libebml = dependency('libebml', version: '>=1.4.0')
-libmatroska = dependency('libmatroska', version: '>=1.6.0')
+libebml = dependency('libebml', version: '>=1.4.0', fallback: ['libebml', 'libebml_dep'])
+libmatroska = dependency('libmatroska', version: '>=1.6.0', fallback: ['libmatroska', 'libmatroska_dep'])
 deps += [libebml, libmatroska]
 
 use_bundled_wx = force_all_fallbacks or force_fallback_for.contains('wxWidgets')

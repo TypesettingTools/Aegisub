@@ -13,13 +13,15 @@ struct FileInput final : InputStream {
 	uint64_t size{};
 	explicit FileInput(char const *name) {
 		file = std::fopen(name, "rb");
-		if (!file)
-			return;
-		std::fseek(file, 0, SEEK_END);
-		size = std::ftell(file);
-		std::fseek(file, 0, SEEK_SET);
+		if (file) {
+			std::fseek(file, 0, SEEK_END);
+			size = std::ftell(file);
+			std::fseek(file, 0, SEEK_SET);
+		}
 		read = [](InputStream *s, uint64_t p, void *b, int n) {
 			auto &i = *static_cast<FileInput *>(s);
+			if (!i.file)
+				return 0;
 			if (p >= i.size)
 				return 0;
 			n = std::min<uint64_t>(n, i.size - p);

@@ -8,5 +8,5 @@ for case in cases:
  expected=case.with_suffix('.behavior').read_text()
  if got!=expected: raise SystemExit(f'{case.name}: Matroska behavior changed\n{got}')
 missing=subprocess.run([program,root/'does-not-exist.mkv'],text=True,stdout=subprocess.PIPE)
-if missing.stdout!='error\tinvalid Matroska input stream\n':
+if missing.returncode != 1 or missing.stdout != 'error\tEBML header not found\n':
  raise SystemExit(f'missing input: unsafe or unexpected result\n{missing.stdout}')
