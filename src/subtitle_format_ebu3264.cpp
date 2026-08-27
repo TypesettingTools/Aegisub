@@ -24,7 +24,7 @@
 #include "subtitle_format_ebu3264.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "compat.h"
 #include "dialog_export_ebu3264.h"
@@ -341,7 +341,7 @@ namespace
 		}
 	};
 
-	std::vector<EbuSubtitle> convert_subtitles(AssFile &copy, EbuExportSettings const& export_settings)
+	std::vector<EbuSubtitle> convert_subtitles(ProjectDocument &copy, EbuExportSettings const& export_settings)
 	{
 		SubtitleFormat::StripComments(copy);
 		copy.Sort();
@@ -536,7 +536,7 @@ namespace
 		memcpy(field, buf, fieldlen);
 	}
 
-	BlockGSI create_header(AssFile const& copy, EbuExportSettings const& export_settings)
+	BlockGSI create_header(ProjectDocument const& copy, EbuExportSettings const& export_settings)
 	{
 		std::string_view scriptinfo_title = copy.GetScriptInfo("Title");
 		std::string_view scriptinfo_translation = copy.GetScriptInfo("Original Translation");
@@ -622,11 +622,11 @@ Ebu3264SubtitleFormat::Ebu3264SubtitleFormat()
 {
 }
 
-void Ebu3264SubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *) const
+void Ebu3264SubtitleFormat::WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *) const
 {
 	// collect data from user
 	EbuExportSettings export_settings = get_export_config(nullptr);
-	AssFile copy(*src);
+	ProjectDocument copy(*src);
 
 	std::vector<EbuSubtitle> subs_list = convert_subtitles(copy, export_settings);
 	std::vector<BlockTTI> tti = create_blocks(subs_list, export_settings);

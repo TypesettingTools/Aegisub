@@ -19,7 +19,7 @@
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_info.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "ass_parser.h"
 #include "options.h"
@@ -33,7 +33,7 @@
 
 DEFINE_EXCEPTION(AssParseError, SubtitleFormatParseError);
 
-void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+void AssSubtitleFormat::ReadFile(ProjectDocument *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	int version = !agi::fs::HasExtension(filename, "ssa");
 
 	TextFileReader file(filename, encoding);
@@ -151,7 +151,7 @@ struct Writer {
 };
 }
 
-void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+void AssSubtitleFormat::WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	Writer writer(filename, encoding);
 	writer.Write(src->Info);
 	writer.Write(src->Properties);
@@ -161,10 +161,13 @@ void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	writer.WriteExtradata(src->Extradata);
 }
 
-void AssSubtitleFormat::ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+void AssSubtitleFormat::ExportFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+	ProjectDocument clean(*src);
+	for (auto& event : clean.Events)
+		event.ExtradataIds = std::vector<uint32_t>{};
 	Writer writer(filename, encoding);
-	writer.Write(src->Info);
-	writer.Write(src->Styles);
-	writer.Write(src->Attachments);
-	writer.Write(src->Events);
+	writer.Write(clean.Info);
+	writer.Write(clean.Styles);
+	writer.Write(clean.Attachments);
+	writer.Write(clean.Events);
 }

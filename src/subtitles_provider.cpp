@@ -18,7 +18,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_attachment.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_info.h"
 #include "ass_style.h"
 #include "factory_manager.h"
@@ -68,7 +68,7 @@ std::unique_ptr<SubtitlesProvider> SubtitlesProviderFactory::GetProvider(agi::Ba
 	throw error;
 }
 
-void SubtitlesProvider::LoadSubtitles(AssFile *subs, int time) {
+void SubtitlesProvider::LoadSubtitles(ProjectDocument *subs, int time) {
 	buffer.clear();
 
 	auto push_header = [&](const char *str) {

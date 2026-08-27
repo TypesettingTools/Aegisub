@@ -28,7 +28,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "ass_attachment.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "help_button.h"
 #include "libresrc/libresrc.h"
@@ -45,7 +45,7 @@
 namespace {
 struct DialogAttachments {
 	wxDialog d;
-	AssFile *ass;
+	ProjectDocument *ass;
 
 	wxListView *listView;
 	wxButton *extractButton;
@@ -61,10 +61,10 @@ struct DialogAttachments {
 	void AttachFile(wxFileDialog &diag, wxString const& commit_msg);
 
 public:
-	DialogAttachments(wxWindow *parent, AssFile *ass);
+	DialogAttachments(wxWindow *parent, ProjectDocument *ass);
 };
 
-DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
+DialogAttachments::DialogAttachments(wxWindow *parent, ProjectDocument *ass)
 : d(parent, -1, _("Attachment List"))
 , ass(ass)
 {
@@ -128,7 +128,7 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& commit_ms
 	for (auto const& fn : paths)
 		ass->InsertAttachment(agi::fs::path(fn.wx_str()));
 
-	ass->Commit(commit_msg, AssFile::COMMIT_ATTACHMENT);
+	ass->Commit(commit_msg, ProjectDocument::COMMIT_ATTACHMENT);
 
 	UpdateList();
 }
@@ -186,7 +186,7 @@ void DialogAttachments::OnDelete(wxCommandEvent &) {
 	for (auto i = listView->GetFirstSelected(); i != -1; i = listView->GetNextSelected(i))
 		ass->Attachments.erase(ass->Attachments.begin() + i - removed++);
 
-	ass->Commit(_("remove attachment"), AssFile::COMMIT_ATTACHMENT);
+	ass->Commit(_("remove attachment"), ProjectDocument::COMMIT_ATTACHMENT);
 
 	UpdateList();
 	extractButton->Enable(false);
@@ -200,6 +200,6 @@ void DialogAttachments::OnListClick(wxListEvent &) {
 }
 }
 
-void ShowAttachmentsDialog(wxWindow *parent, AssFile *file) {
+void ShowAttachmentsDialog(wxWindow *parent, ProjectDocument *file) {
 	DialogAttachments(parent, file).d.ShowModal();
 }

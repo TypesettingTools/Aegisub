@@ -17,7 +17,7 @@
 #include "font_file_lister.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "compat.h"
 #include "format.h"
@@ -209,7 +209,7 @@ void FontCollector::PrintUsage(UsageData const& data) {
 	status_callback(std::move(usage), 2);
 }
 
-std::vector<agi::fs::path> FontCollector::GetFontPaths(const AssFile *file) {
+std::vector<agi::fs::path> FontCollector::GetFontPaths(const ProjectDocument *file) {
 	missing = 0;
 	missing_glyphs = 0;
 

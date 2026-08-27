@@ -29,7 +29,7 @@
 
 #include "ass_style_storage.h"
 
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "options.h"
 
@@ -112,7 +112,7 @@ bool AssStyleStorage::CatalogExists(std::string_view catalogname) {
 	return agi::fs::FileExists(filename);
 }
 
-void AssStyleStorage::ReplaceIntoFile(AssFile &file) {
+void AssStyleStorage::ReplaceIntoFile(ProjectDocument &file) {
 	for (auto const& s : style) {
 		delete file.GetStyle(s->name);
 		file.Styles.push_back(*new AssStyle(*s));

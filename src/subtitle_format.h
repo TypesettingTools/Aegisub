@@ -35,7 +35,7 @@
 #include <string>
 #include <vector>
 
-class AssFile;
+class ProjectDocument;
 namespace agi::vfr { class Framerate; }
 
 class SubtitleFormat {
@@ -48,19 +48,19 @@ class SubtitleFormat {
 
 public:
 	/// Strip override tags
-	static void StripTags(AssFile &file);
+	static void StripTags(ProjectDocument &file);
 	/// Convert newlines to the specified character(s)
 	/// @param newline newline character(s)
 	/// @param mergeLineBreaks Should multiple consecutive line breaks be merged into one?
-	static void ConvertNewlines(AssFile &file, std::string_view newline, bool mergeLineBreaks = true);
+	static void ConvertNewlines(ProjectDocument &file, std::string_view newline, bool mergeLineBreaks = true);
 	/// Remove All commented and empty lines
-	static void StripComments(AssFile &file);
+	static void StripComments(ProjectDocument &file);
 	/// @brief Split and merge lines so there are no overlapping lines
 	///
 	/// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
-	static void RecombineOverlaps(AssFile &file);
+	static void RecombineOverlaps(ProjectDocument &file);
 	/// Merge sequential identical lines
-	static void MergeIdentical(AssFile &file);
+	static void MergeIdentical(ProjectDocument &file);
 
 	/// Prompt the user for a frame rate to use
 	/// @param allow_vfr Include video frame rate as an option even if it's vfr
@@ -92,26 +92,26 @@ public:
 	///
 	/// Default implementation rejects files with attachments, non-default
 	/// styles, and any overrides
-	virtual bool CanSave(const AssFile *file) const;
+	virtual bool CanSave(const ProjectDocument *file) const;
 
 	/// Load a subtitle file
 	/// @param[out] target Destination to read lines into
 	/// @param filename File to load
 	/// @param encoding Encoding to use. May be ignored by the reader.
-	virtual void ReadFile([[maybe_unused]] AssFile *target, [[maybe_unused]] agi::fs::path const& filename, [[maybe_unused]] agi::vfr::Framerate const& fps, [[maybe_unused]] const char *encoding) const { }
+	virtual void ReadFile([[maybe_unused]] ProjectDocument *target, [[maybe_unused]] agi::fs::path const& filename, [[maybe_unused]] agi::vfr::Framerate const& fps, [[maybe_unused]] const char *encoding) const { }
 
 	/// Save a subtitle file
 	/// @param src Data to write
 	/// @param filename File to write to
 	/// @param encoding Encoding to use or empty string for default
-	virtual void WriteFile([[maybe_unused]] const AssFile *src, [[maybe_unused]] agi::fs::path const& filename, [[maybe_unused]] agi::vfr::Framerate const& fps, [[maybe_unused]] const char *encoding="") const { }
+	virtual void WriteFile([[maybe_unused]] const ProjectDocument *src, [[maybe_unused]] agi::fs::path const& filename, [[maybe_unused]] agi::vfr::Framerate const& fps, [[maybe_unused]] const char *encoding="") const { }
 
 	/// Export a subtitle file
 	///
 	/// This is used when saving via Export As..., for subtitle formats which
 	/// want to distinguish between exporting a final version of a script and
 	/// saving a project.
-	virtual void ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding="") const {
+	virtual void ExportFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding="") const {
 		WriteFile(src, filename, fps, encoding);
 	}
 

@@ -19,7 +19,7 @@
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
 #include "ass_info.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "text_file_writer.h"
 #include "version.h"
@@ -42,7 +42,7 @@ std::string strip_newlines(std::string str) {
 }
 }
 
-void SsaSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+void SsaSubtitleFormat::WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	TextFileWriter file(filename, encoding);
 
 	file.WriteLineToFile("[Script Info]");

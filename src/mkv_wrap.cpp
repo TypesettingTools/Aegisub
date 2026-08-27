@@ -34,7 +34,7 @@
 
 #include "mkv_wrap.h"
 
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_parser.h"
 #include "compat.h"
 #include "dialog_progress.h"
@@ -205,7 +205,7 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 	return true;
 }
 
-void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *target) {
+void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, ProjectDocument *target) {
 	MkvStdIO input(filename);
 	char err[2048];
 	agi::scoped_holder<MatroskaFile*, decltype(&mkv_Close)> file(mkv_Open(&input, err, sizeof(err)), mkv_Close);

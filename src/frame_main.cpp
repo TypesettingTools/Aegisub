@@ -38,7 +38,7 @@
 #include "include/aegisub/toolbar.h"
 #include "include/aegisub/hotkey.h"
 
-#include "ass_file.h"
+#include "project_document.h"
 #include "async_video_provider.h"
 #include "audio_controller.h"
 #include "audio_box.h"
@@ -111,7 +111,7 @@ FrameMain::FrameMain()
 #endif
 
 	StartupLog("Initializing context controls");
-	BindConnection(context->ass->AddCommitListener(&FrameMain::UpdateTitle, this));
+	BindConnection(context->document->AddCommitListener(&FrameMain::UpdateTitle, this));
 	BindConnection(context->subsController->AddFileOpenListener(&FrameMain::OnSubtitlesOpen, this));
 	BindConnection(context->subsController->AddFileSaveListener(&FrameMain::UpdateTitle, this));
 	BindConnection(context->project->AddAudioProviderListener(&FrameMain::OnAudioOpen, this));

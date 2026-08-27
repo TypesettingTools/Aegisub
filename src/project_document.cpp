@@ -14,7 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "ass_file.h"
+#include "project_document.h"
 
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
@@ -33,14 +33,14 @@
 #include <unordered_map>
 #include <unordered_set>
 
-AssFile::AssFile() { }
+ProjectDocument::ProjectDocument() { }
 
-AssFile::~AssFile() {
+ProjectDocument::~ProjectDocument() {
 	Styles.clear_and_dispose([](AssStyle *e) { delete e; });
 	Events.clear_and_dispose([](AssDialogue *e) { delete e; });
 }
 
-void AssFile::LoadDefault(bool include_dialogue_line, std::string const& style_catalog) {
+void ProjectDocument::LoadDefault(bool include_dialogue_line, std::string const& style_catalog) {
 	Info.emplace_back("Title", "Default Aegisub file");
 	Info.emplace_back("ScriptType", "v4.00+");
 	Info.emplace_back("WrapStyle", "0");
@@ -64,10 +64,11 @@ void AssFile::LoadDefault(bool include_dialogue_line, std::string const& style_c
 		Events.push_back(*new AssDialogue);
 }
 
-AssFile::AssFile(const AssFile &from)
+ProjectDocument::ProjectDocument(const ProjectDocument &from)
 : Info(from.Info)
 , Attachments(from.Attachments)
 , Extradata(from.Extradata)
+, Properties(from.Properties)
 , next_extradata_id(from.next_extradata_id)
 {
 	Styles.clone_from(from.Styles,
@@ -78,7 +79,7 @@ AssFile::AssFile(const AssFile &from)
 		[](AssDialogue *e) { delete e; });
 }
 
-void AssFile::swap(AssFile& from) throw() {
+void ProjectDocument::swap(ProjectDocument& from) throw() {
 	Info.swap(from.Info);
 	Styles.swap(from.Styles);
 	Events.swap(from.Events);
@@ -88,18 +89,18 @@ void AssFile::swap(AssFile& from) throw() {
 	std::swap(next_extradata_id, from.next_extradata_id);
 }
 
-AssFile& AssFile::operator=(AssFile from) {
+ProjectDocument& ProjectDocument::operator=(ProjectDocument from) {
 	swap(from);
 	return *this;
 }
 
-EntryList<AssDialogue>::iterator AssFile::iterator_to(AssDialogue& line) {
+EntryList<AssDialogue>::iterator ProjectDocument::iterator_to(AssDialogue& line) {
 	using l = EntryList<AssDialogue>;
 	bool in_list = !l::node_algorithms::inited(l::value_traits::to_node_ptr(line));
 	return in_list ? Events.iterator_to(line) : Events.end();
 }
 
-void AssFile::InsertAttachment(agi::fs::path const& filename) {
+void ProjectDocument::InsertAttachment(agi::fs::path const& filename) {
 	AssEntryGroup group = AssEntryGroup::GRAPHIC;
 
 	auto ext = boost::to_lower_copy(filename.extension().string());
@@ -109,7 +110,7 @@ void AssFile::InsertAttachment(agi::fs::path const& filename) {
 	Attachments.emplace_back(filename, group);
 }
 
-std::string_view AssFile::GetScriptInfo(std::string_view key) const {
+std::string_view ProjectDocument::GetScriptInfo(std::string_view key) const {
 	for (auto const& info : Info) {
 		if (boost::iequals(key, info.Key()))
 			return info.Value();
@@ -118,11 +119,11 @@ std::string_view AssFile::GetScriptInfo(std::string_view key) const {
 	return "";
 }
 
-int AssFile::GetScriptInfoAsInt(std::string_view key) const {
+int ProjectDocument::GetScriptInfoAsInt(std::string_view key) const {
 	return atoi(std::string(GetScriptInfo(key)).c_str());
 }
 
-void AssFile::SetScriptInfo(std::string_view key, std::string_view value) {
+void ProjectDocument::SetScriptInfo(std::string_view key, std::string_view value) {
 	for (auto it = Info.begin(); it != Info.end(); ++it) {
 		if (boost::iequals(key, it->Key())) {
 			if (value.empty())
@@ -137,11 +138,11 @@ void AssFile::SetScriptInfo(std::string_view key, std::string_view value) {
 		Info.emplace_back(key, value);
 }
 
-agi::ycbcr::Header AssFile::GetYCbCrMatrix() const {
+agi::ycbcr::Header ProjectDocument::GetYCbCrMatrix() const {
 	return agi::ycbcr::Header(std::string(GetScriptInfo("YCbCr Matrix")));
 }
 
-void AssFile::GetResolution(int &sw, int &sh) const {
+void ProjectDocument::GetResolution(int &sw, int &sh) const {
 	sw = GetScriptInfoAsInt("PlayResX");
 	sh = GetScriptInfoAsInt("PlayResY");
 
@@ -158,12 +159,12 @@ void AssFile::GetResolution(int &sw, int &sh) const {
 		sh = sw == 1280 ? 1024 : sw * 3 / 4;
 }
 
-void AssFile::GetLayoutResolution(int &lw, int &lh) const {
+void ProjectDocument::GetLayoutResolution(int &lw, int &lh) const {
 	lw = GetScriptInfoAsInt("LayoutResX");
 	lh = GetScriptInfoAsInt("LayoutResY");
 }
 
-void AssFile::GetEffectiveLayoutResolution(agi::Context *c, int &lw, int &lh) const {
+void ProjectDocument::GetEffectiveLayoutResolution(agi::Context *c, int &lw, int &lh) const {
 	GetLayoutResolution(lw, lh);
 	if (lw == 0 || lh == 0) {
 		if (c->project->VideoProvider()) {
@@ -175,14 +176,14 @@ void AssFile::GetEffectiveLayoutResolution(agi::Context *c, int &lw, int &lh) co
 	}
 }
 
-std::vector<std::string> AssFile::GetStyles() const {
+std::vector<std::string> ProjectDocument::GetStyles() const {
 	std::vector<std::string> styles;
 	for (auto& style : Styles)
 		styles.push_back(style.name);
 	return styles;
 }
 
-AssStyle *AssFile::GetStyle(std::string const& name) {
+AssStyle *ProjectDocument::GetStyle(std::string const& name) {
 	for (auto& style : Styles) {
 		if (boost::iequals(style.name, name))
 			return &style;
@@ -190,7 +191,7 @@ AssStyle *AssFile::GetStyle(std::string const& name) {
 	return nullptr;
 }
 
-int AssFile::Commit(wxString const& desc, int type, int amend_id, AssDialogue *single_line) {
+int ProjectDocument::Commit(wxString const& desc, int type, int amend_id, AssDialogue *single_line) {
 	if (type == COMMIT_NEW || (type & COMMIT_DIAG_ADDREM) || (type & COMMIT_ORDER)) {
 		int i = 0;
 		for (auto& event : Events)
@@ -204,30 +205,30 @@ int AssFile::Commit(wxString const& desc, int type, int amend_id, AssDialogue *s
 	return amend_id;
 }
 
-bool AssFile::CompStart(AssDialogue const& lft, AssDialogue const& rgt) {
+bool ProjectDocument::CompStart(AssDialogue const& lft, AssDialogue const& rgt) {
 	return lft.Start < rgt.Start;
 }
-bool AssFile::CompEnd(AssDialogue const& lft, AssDialogue const& rgt) {
+bool ProjectDocument::CompEnd(AssDialogue const& lft, AssDialogue const& rgt) {
 	return lft.End < rgt.End;
 }
-bool AssFile::CompStyle(AssDialogue const& lft, AssDialogue const& rgt) {
+bool ProjectDocument::CompStyle(AssDialogue const& lft, AssDialogue const& rgt) {
 	return lft.Style < rgt.Style;
 }
-bool AssFile::CompActor(AssDialogue const& lft, AssDialogue const& rgt) {
+bool ProjectDocument::CompActor(AssDialogue const& lft, AssDialogue const& rgt) {
 	return lft.Actor < rgt.Actor;
 }
-bool AssFile::CompEffect(AssDialogue const& lft, AssDialogue const& rgt) {
+bool ProjectDocument::CompEffect(AssDialogue const& lft, AssDialogue const& rgt) {
 	return lft.Effect < rgt.Effect;
 }
-bool AssFile::CompLayer(AssDialogue const& lft, AssDialogue const& rgt) {
+bool ProjectDocument::CompLayer(AssDialogue const& lft, AssDialogue const& rgt) {
 	return lft.Layer < rgt.Layer;
 }
 
-void AssFile::Sort(CompFunc comp, std::set<AssDialogue*> const& limit) {
+void ProjectDocument::Sort(CompFunc comp, std::set<AssDialogue*> const& limit) {
 	Sort(Events, comp, limit);
 }
 
-void AssFile::Sort(EntryList<AssDialogue> &lst, CompFunc comp, std::set<AssDialogue*> const& limit) {
+void ProjectDocument::Sort(EntryList<AssDialogue> &lst, CompFunc comp, std::set<AssDialogue*> const& limit) {
 	if (limit.empty()) {
 		lst.sort(comp);
 		return;
@@ -249,7 +250,7 @@ void AssFile::Sort(EntryList<AssDialogue> &lst, CompFunc comp, std::set<AssDialo
 	}
 }
 
-uint32_t AssFile::AddExtradata(std::string_view key, std::string_view value) {
+uint32_t ProjectDocument::AddExtradata(std::string_view key, std::string_view value) {
 	for (auto const& data : Extradata) {
 		// perform brute-force deduplication by simple key and value comparison
 		if (key == data.key && value == data.value) {
@@ -286,7 +287,7 @@ template<typename K, typename V>
 using reference_map = std::unordered_map<std::reference_wrapper<const K>, V, std::hash<K>, std::equal_to<K>>;
 }
 
-std::vector<ExtradataEntry> AssFile::GetExtradata(std::vector<uint32_t> const& id_list) const {
+std::vector<ExtradataEntry> ProjectDocument::GetExtradata(std::vector<uint32_t> const& id_list) const {
 	std::vector<ExtradataEntry> result;
 	enumerate_extradata(Extradata, id_list, [&](ExtradataEntry const& e) {
 		result.push_back(e);
@@ -294,7 +295,7 @@ std::vector<ExtradataEntry> AssFile::GetExtradata(std::vector<uint32_t> const& i
 	return result;
 }
 
-void AssFile::CleanExtradata() {
+void ProjectDocument::CleanExtradata() {
 	if (Extradata.empty()) return;
 
 	std::unordered_set<uint32_t> ids_used;

@@ -25,7 +25,7 @@
 #include "include/aegisub/hotkey.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "command/command.h"
 #include "compat.h"
 #include "help_button.h"
@@ -69,7 +69,7 @@ DialogStyling::DialogStyling(agi::Context *context)
 
 	{
 		wxStaticBoxSizer *styles_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Styles available"));
-		style_list = new wxListBox(styles_box->GetStaticBox(), -1, wxDefaultPosition, wxSize(150, 180), to_wx(context->ass->GetStyles()));
+		style_list = new wxListBox(styles_box->GetStaticBox(), -1, wxDefaultPosition, wxSize(150, 180), to_wx(context->document->GetStyles()));
 		styles_box->Add(style_list, 1, wxEXPAND, 0);
 		bottom_sizer->Add(styles_box, 1, wxEXPAND | wxRIGHT, 5);
 	}
@@ -169,10 +169,10 @@ void DialogStyling::OnActiveLineChanged(AssDialogue *new_line) {
 }
 
 void DialogStyling::Commit(bool next) {
-	if (!c->ass->GetStyle(from_wx(style_name->GetValue()))) return;
+	if (!c->document->GetStyle(from_wx(style_name->GetValue()))) return;
 
 	active_line->Style = from_wx(style_name->GetValue());
-	c->ass->Commit(_("styling assistant"), AssFile::COMMIT_DIAG_META);
+	c->document->Commit(_("styling assistant"), ProjectDocument::COMMIT_DIAG_META);
 
 	if (next) cmd::call("grid/line/next", c);
 }
@@ -183,7 +183,7 @@ void DialogStyling::OnActivate(wxActivateEvent &) {
 	play_video->Enable(!!c->project->VideoProvider());
 	play_audio->Enable(!!c->project->AudioProvider());
 
-	style_list->Set(to_wx(c->ass->GetStyles()));
+	style_list->Set(to_wx(c->document->GetStyles()));
 
 	if (auto_seek->IsChecked())
 		c->videoController->JumpToTime(active_line->Start);

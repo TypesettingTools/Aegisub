@@ -35,7 +35,7 @@
 #include "auto4_lua.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_info.h"
 #include "ass_style.h"
 #include "async_video_provider.h"
@@ -255,7 +255,7 @@ namespace {
 		argcheck(L, !!lua_isstring(L, 2), 2, "");
 
 		// have to check that it looks like a style table before actually converting
-		// if it's a dialogue table then an active AssFile object is required
+		// if it's a dialogue table then an active ProjectDocument object is required
 		{
 			lua_getfield(L, 1, "class");
 			std::string actual_class{lua_tostring(L, -1)};
@@ -266,7 +266,7 @@ namespace {
 		}
 
 		lua_pushvalue(L, 1);
-		std::unique_ptr<AssEntry> et(Automation4::LuaAssFile::LuaToAssEntry(L));
+		std::unique_ptr<AssEntry> et(Automation4::LuaProjectDocument::LuaToAssEntry(L));
 		lua_pop(L, 1);
 
 		AssEntry *etp = et.get();	// Shut up a compiler warning
@@ -322,7 +322,7 @@ namespace {
 			lua_pushnil(L);
 		else {
 			lua_createtable(L, 0, 14);
-#define PUSH_FIELD(name) set_field(L, #name, c->ass->Properties.name)
+#define PUSH_FIELD(name) set_field(L, #name, c->document->Properties.name)
 			PUSH_FIELD(automation_scripts);
 			PUSH_FIELD(export_filters);
 			PUSH_FIELD(export_encoding);
@@ -334,10 +334,10 @@ namespace {
 			PUSH_FIELD(ar_mode);
 			PUSH_FIELD(video_position);
 #undef PUSH_FIELD
-			set_field(L, "audio_file", c->path->MakeAbsolute(c->ass->Properties.audio_file, "?script"));
-			set_field(L, "video_file", c->path->MakeAbsolute(c->ass->Properties.video_file, "?script"));
-			set_field(L, "timecodes_file", c->path->MakeAbsolute(c->ass->Properties.timecodes_file, "?script"));
-			set_field(L, "keyframes_file", c->path->MakeAbsolute(c->ass->Properties.keyframes_file, "?script"));
+			set_field(L, "audio_file", c->path->MakeAbsolute(c->document->Properties.audio_file, "?script"));
+			set_field(L, "video_file", c->path->MakeAbsolute(c->document->Properties.video_file, "?script"));
+			set_field(L, "timecodes_file", c->path->MakeAbsolute(c->document->Properties.timecodes_file, "?script"));
+			set_field(L, "keyframes_file", c->path->MakeAbsolute(c->document->Properties.keyframes_file, "?script"));
 		}
 		return 1;
 	}
@@ -400,7 +400,7 @@ namespace {
 		LuaExportFilter(lua_State *L);
 		static int LuaRegister(lua_State *L);
 
-		void ProcessSubs(AssFile *subs, wxWindow *export_dialog) override;
+		void ProcessSubs(ProjectDocument *subs, wxWindow *export_dialog) override;
 	};
 	class LuaScript final : public Script {
 		lua_State *L = nullptr;
@@ -797,7 +797,7 @@ namespace {
 	static std::vector<int> selected_rows(const agi::Context *c)
 	{
 		auto const& sel = c->selectionController->GetSelectedSet();
-		int offset = c->ass->Info.size() + c->ass->Styles.size();
+		int offset = c->document->Info.size() + c->document->Styles.size();
 		std::vector<int> rows;
 		rows.reserve(sel.size());
 		for (auto line : sel)
@@ -816,11 +816,11 @@ namespace {
 		lua_pushcclosure(L, add_stack_trace, 0);
 
 		GetFeatureFunction("validate");
-		auto subsobj = new LuaAssFile(L, c->ass.get());
+		auto subsobj = new LuaProjectDocument(L, c->document.get());
 
 		push_value(L, selected_rows(c));
 		if (auto active_line = c->selectionController->GetActiveLine())
-			push_value(L, active_line->Row + c->ass->Info.size() + c->ass->Styles.size() + 1);
+			push_value(L, active_line->Row + c->document->Info.size() + c->document->Styles.size() + 1);
 		else
 			lua_pushnil(L);
 
@@ -853,9 +853,9 @@ namespace {
 		stackcheck.check_stack(0);
 
 		GetFeatureFunction("run");
-		auto subsobj = new LuaAssFile(L, c->ass.get(), true, true);
+		auto subsobj = new LuaProjectDocument(L, c->document.get(), true, true);
 
-		int original_offset = c->ass->Info.size() + c->ass->Styles.size() + 1;
+		int original_offset = c->document->Info.size() + c->document->Styles.size() + 1;
 		auto original_sel = selected_rows(c);
 		int original_active = 0;
 		if (auto active_line = c->selectionController->GetActiveLine())
@@ -928,20 +928,20 @@ namespace {
 			AssDialogue *new_active = nullptr;
 
 			int prev = original_offset;
-			auto it = c->ass->Events.begin();
+			auto it = c->document->Events.begin();
 			for (int row : original_sel) {
-				while (row > prev && it != c->ass->Events.end()) {
+				while (row > prev && it != c->document->Events.end()) {
 					++prev;
 					++it;
 				}
-				if (it == c->ass->Events.end()) break;
+				if (it == c->document->Events.end()) break;
 				new_sel.insert(&*it);
 				if (row == original_active)
 					new_active = &*it;
 			}
 
-			if (new_sel.empty() && !c->ass->Events.empty())
-				new_sel.insert(&c->ass->Events.front());
+			if (new_sel.empty() && !c->document->Events.empty())
+				new_sel.insert(&c->document->Events.front());
 			if (!new_sel.count(new_active))
 				new_active = *new_sel.begin();
 			c->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
@@ -960,10 +960,10 @@ namespace {
 		stackcheck.check_stack(0);
 
 		GetFeatureFunction("isactive");
-		auto subsobj = new LuaAssFile(L, c->ass.get());
+		auto subsobj = new LuaProjectDocument(L, c->document.get());
 		push_value(L, selected_rows(c));
 		if (auto active_line = c->selectionController->GetActiveLine())
-			push_value(L, active_line->Row + c->ass->Info.size() + c->ass->Styles.size() + 1);
+			push_value(L, active_line->Row + c->document->Info.size() + c->document->Styles.size() + 1);
 
 		int err = lua_pcall(L, 3, 1, 0);
 		subsobj->ProcessingComplete();
@@ -1020,7 +1020,7 @@ namespace {
 		return 0;
 	}
 
-	void LuaExportFilter::ProcessSubs(AssFile *subs, wxWindow *export_dialog)
+	void LuaExportFilter::ProcessSubs(ProjectDocument *subs, wxWindow *export_dialog)
 	{
 		LuaStackcheck stackcheck(L);
 
@@ -1029,7 +1029,7 @@ namespace {
 
 		// The entire point of an export filter is to modify the file, but
 		// setting undo points makes no sense
-		auto subsobj = new LuaAssFile(L, subs, true);
+		auto subsobj = new LuaProjectDocument(L, subs, true);
 		assert(lua_isuserdata(L, -1));
 		stackcheck.check_stack(2);
 
@@ -1067,7 +1067,7 @@ namespace {
 		GetFeatureFunction("config");
 
 		// prepare function call
-		auto subsobj = new LuaAssFile(L, c->ass.get());
+		auto subsobj = new LuaProjectDocument(L, c->document.get());
 		// stored options
 		lua_newtable(L); // TODO, nothing for now
 

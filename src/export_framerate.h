@@ -61,7 +61,7 @@ class AssTransformFramerateFilter final : public AssExportFilter {
 
 	/// @brief Apply the transformation to a file
 	/// @param subs File to process
-	void TransformFrameRate(AssFile *subs);
+	void TransformFrameRate(ProjectDocument *subs);
 	/// @brief Transform a single tag
 	/// @param name Name of the tag
 	/// @param curParam Current parameter being processed
@@ -79,7 +79,7 @@ class AssTransformFramerateFilter final : public AssExportFilter {
 	int ConvertTime(int time);
 public:
 	AssTransformFramerateFilter();
-	void ProcessSubs(AssFile *subs, wxWindow *) override;
+	void ProcessSubs(ProjectDocument *subs, wxWindow *) override;
 	wxWindow *GetConfigDialogWindow(wxWindow *parent, agi::Context *c) override;
 	void LoadSettings(bool is_default, agi::Context *c) override;
 };

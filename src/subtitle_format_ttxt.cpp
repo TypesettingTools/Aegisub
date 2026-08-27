@@ -35,7 +35,7 @@
 #include "subtitle_format_ttxt.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "options.h"
 
@@ -58,7 +58,7 @@ std::vector<std::string> TTXTSubtitleFormat::GetWriteWildcards() const {
 	return GetReadWildcards();
 }
 
-void TTXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *) const {
+void TTXTSubtitleFormat::ReadFile(ProjectDocument *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *) const {
 	target->LoadDefault(false, OPT_GET("Subtitle Format/TTXT/Default Style Catalog")->GetString());
 
 	// Load XML document
@@ -155,9 +155,9 @@ void TTXTSubtitleFormat::ProcessHeader(wxXmlNode *) const {
 	// TODO
 }
 
-void TTXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& , const char *) const {
+void TTXTSubtitleFormat::WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const& , const char *) const {
 	// Convert to TTXT
-	AssFile copy(*src);
+	ProjectDocument copy(*src);
 	ConvertToTTXT(copy);
 
 	// Create XML structure
@@ -248,7 +248,7 @@ void TTXTSubtitleFormat::WriteLine(wxXmlNode *root, const AssDialogue *prev, con
 	node->AddChild(new wxXmlNode(wxXML_TEXT_NODE, "", to_wx(line->Text)));
 }
 
-void TTXTSubtitleFormat::ConvertToTTXT(AssFile &file) const {
+void TTXTSubtitleFormat::ConvertToTTXT(ProjectDocument &file) const {
 	file.Sort();
 	StripComments(file);
 	RecombineOverlaps(file);

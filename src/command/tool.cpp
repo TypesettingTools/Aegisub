@@ -98,7 +98,7 @@ struct tool_resampleres final : public Command {
 		c->videoController->Stop();
 		ResampleSettings settings;
 		if (PromptForResampleSettings(c, settings))
-			ResampleResolution(c->ass.get(), settings);
+			ResampleResolution(c->document.get(), settings);
 	}
 };
 

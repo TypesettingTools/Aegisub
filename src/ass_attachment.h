@@ -37,16 +37,20 @@ public:
 	void AddData(std::string const& data) { entry_data = entry_data.get() + data + "\r\n"; }
 
 	/// Extract the contents of this attachment to a file
-	/// @param filename Path to save the attachment to
-	void Extract(agi::fs::path const& filename) const;
+	/// @param destination Path to save the attachment to
+	void Extract(agi::fs::path const& destination) const;
 
 	/// Get the name of the attached file
 	/// @param raw If false, remove the SSA filename mangling
 	std::string GetFileName(bool raw=false) const;
 
 	std::string const& GetEntryData() const { return entry_data; }
+	/// Return the decoded bytes. Project files store these directly rather than
+	/// preserving ASS's uuencoded representation.
+	std::string GetData() const;
 	AssEntryGroup Group() const override;
 
 	AssAttachment(std::string const& header, AssEntryGroup group);
+	AssAttachment(std::string filename, AssEntryGroup group, std::string_view data);
 	AssAttachment(agi::fs::path const& name, AssEntryGroup group);
 };

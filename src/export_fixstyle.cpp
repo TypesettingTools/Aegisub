@@ -34,7 +34,7 @@
 
 #include "export_fixstyle.h"
 
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_dialogue.h"
 #include "compat.h"
 
@@ -47,7 +47,7 @@ AssFixStylesFilter::AssFixStylesFilter()
 {
 }
 
-void AssFixStylesFilter::ProcessSubs(AssFile *subs) {
+void AssFixStylesFilter::ProcessSubs(ProjectDocument *subs) {
 	auto styles = subs->GetStyles();
 	for (auto& str : styles) boost::to_lower(str);
 	sort(begin(styles), end(styles));

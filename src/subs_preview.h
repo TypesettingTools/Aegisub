@@ -39,7 +39,7 @@
 #include <wx/bitmap.h>
 
 class AssDialogue;
-class AssFile;
+class ProjectDocument;
 class AssStyle;
 class DialogProgress;
 class SubtitlesProvider;
@@ -58,7 +58,7 @@ class SubtitlesPreview final : public wxWindow {
 	/// Current background color
 	agi::Color back_color;
 	/// Subtitle file containing the style and displayed line
-	std::unique_ptr<AssFile> sub_file;
+	std::unique_ptr<ProjectDocument> sub_file;
 	/// Line used to render the specified text
 	AssDialogue* line;
 

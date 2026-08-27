@@ -16,13 +16,13 @@
 #include <string>
 
 class AssAttachment;
-class AssFile;
+class ProjectDocument;
 
 class AssParser {
 	class HeaderToProperty;
 	std::unique_ptr<HeaderToProperty> property_handler;
 
-	AssFile *target;
+	ProjectDocument *target;
 	int version;
 	std::unique_ptr<AssAttachment> attach;
 	void (AssParser::*state)(std::string const&);
@@ -39,7 +39,7 @@ class AssParser {
 
 	std::string SanitizeLine(std::string const& data);
 public:
-	AssParser(AssFile *target, int version);
+	AssParser(ProjectDocument *target, int version);
 	~AssParser();
 
 	void AddLine(std::string const& data);

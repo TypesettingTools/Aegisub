@@ -15,7 +15,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "ass_file.h"
+#include "project_document.h"
 #include "async_video_provider.h"
 #include "include/aegisub/context.h"
 #include "format.h"
@@ -113,7 +113,7 @@ bool check_ar_changed(int sx, int sy, int vx, int vy) {
 }
 
 
-bool update_ycbcr_matrix(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
+bool update_ycbcr_matrix(ProjectDocument *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	// When opening dummy video only want to set the script properties if
 	// they were previously unset
 	if (!new_provider->ShouldSetVideoProperties()) {
@@ -298,7 +298,7 @@ int prompt_play_res(wxWindow *parent, bool ar_changed, int sx, int sy, int vx, i
 	return d.ShowModal();
 }
 
-bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
+bool update_play_res(ProjectDocument *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	// Check that the script resolution matches the video resolution
 	int sx = file->GetScriptInfoAsInt("PlayResX");
 	int sy = file->GetScriptInfoAsInt("PlayResY");
@@ -365,7 +365,7 @@ bool update_play_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWi
 	}
 }
 
-bool update_layout_res(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
+bool update_layout_res(ProjectDocument *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	// When opening dummy video only want to set the script properties if
 	// they were previously unset
 	if (!new_provider->ShouldSetVideoProperties())
@@ -504,13 +504,13 @@ bool update_layout_res(AssFile *file, const AsyncVideoProvider *new_provider, wx
 
 }
 
-void UpdateVideoProperties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
+void UpdateVideoProperties(ProjectDocument *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
 	if (update_ycbcr_matrix(file, new_provider, parent))
-		file->Commit(_("change ycbcr matrix"), AssFile::COMMIT_SCRIPTINFO);
+		file->Commit(_("change ycbcr matrix"), ProjectDocument::COMMIT_SCRIPTINFO);
 
 	if (update_play_res(file, new_provider, parent))
-		file->Commit(_("change script resolution"), AssFile::COMMIT_SCRIPTINFO);
+		file->Commit(_("change script resolution"), ProjectDocument::COMMIT_SCRIPTINFO);
 
 	if (update_layout_res(file, new_provider, parent))
-		file->Commit(_("change layout resolution"), AssFile::COMMIT_SCRIPTINFO);
+		file->Commit(_("change layout resolution"), ProjectDocument::COMMIT_SCRIPTINFO);
 }

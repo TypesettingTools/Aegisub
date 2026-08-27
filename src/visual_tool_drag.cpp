@@ -21,7 +21,7 @@
 #include "visual_tool_drag.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -111,7 +111,7 @@ void VisualToolDrag::OnFileChanged() {
 	primary = nullptr;
 	active_feature = nullptr;
 
-	for (auto& diag : c->ass->Events) {
+	for (auto& diag : c->document->Events) {
 		if (IsDisplayed(&diag))
 			MakeFeatures(&diag);
 	}
@@ -126,7 +126,7 @@ void VisualToolDrag::OnFrameChanged() {
 	auto feat = features.begin();
 	auto end = features.end();
 
-	for (auto& diag : c->ass->Events) {
+	for (auto& diag : c->document->Events) {
 		if (IsDisplayed(&diag)) {
 			// Features don't exist and should
 			if (feat == end || feat->line != &diag)

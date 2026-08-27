@@ -38,7 +38,7 @@
 /// @brief Fixes styles by replacing any style that isn't available on file with Default
 class AssFixStylesFilter final : public AssExportFilter {
 public:
-	static void ProcessSubs(AssFile *subs);
-	void ProcessSubs(AssFile *subs, wxWindow *) override { ProcessSubs(subs); }
+	static void ProcessSubs(ProjectDocument *subs);
+	void ProcessSubs(ProjectDocument *subs, wxWindow *) override { ProcessSubs(subs); }
 	AssFixStylesFilter();
 };

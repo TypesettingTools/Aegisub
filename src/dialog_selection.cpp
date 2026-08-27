@@ -15,7 +15,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "dialog_manager.h"
 #include "format.h"
@@ -76,7 +76,7 @@ enum Mode {
 	REGEXP
 };
 
-std::set<AssDialogue*> process(std::string const& match_text, bool match_case, Mode mode, bool invert, bool comments, bool dialogue, int field_n, AssFile *ass) {
+std::set<AssDialogue*> process(std::string const& match_text, bool match_case, Mode mode, bool invert, bool comments, bool dialogue, int field_n, ProjectDocument *ass) {
 	SearchReplaceSettings settings = {
 		match_text,
 		std::string(),
@@ -193,7 +193,7 @@ void DialogSelection::Process(wxCommandEvent& event) {
 			from_wx(match_text->GetValue()), case_sensitive->IsChecked(),
 			static_cast<Mode>(match_mode->GetSelection()), select_unmatching_lines->GetValue(),
 			apply_to_comments->IsChecked(), apply_to_dialogue->IsChecked(),
-			dialogue_field->GetSelection(), con->ass.get());
+			dialogue_field->GetSelection(), con->document.get());
 	}
 	catch (agi::Exception const&) {
 		if (event.GetId() == wxID_OK) Close();

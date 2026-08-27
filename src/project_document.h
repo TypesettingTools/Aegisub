@@ -54,7 +54,7 @@ struct ExtradataEntry {
 	std::string value;
 };
 
-struct AssFileCommit {
+struct ProjectDocumentCommit {
 	wxString const& message;
 	int *commit_id;
 	AssDialogue *single_line;
@@ -80,10 +80,10 @@ struct ProjectProperties {
 	int video_position = 0;
 };
 
-class AssFile {
-	/// A set of changes has been committed to the file (AssFile::COMMITType)
+class ProjectDocument {
+	/// A set of changes has been committed to the file (ProjectDocument::COMMITType)
 	agi::signal::Signal<int, const AssDialogue*> AnnounceCommit;
-	agi::signal::Signal<AssFileCommit> PushState;
+	agi::signal::Signal<ProjectDocumentCommit> PushState;
 public:
 	/// The lines in the file
 	std::vector<AssInfo> Info;
@@ -95,10 +95,10 @@ public:
 
 	uint32_t next_extradata_id = 0;
 
-	AssFile();
-	AssFile(const AssFile &from);
-	AssFile& operator=(AssFile from);
-	~AssFile();
+	ProjectDocument();
+	ProjectDocument(const ProjectDocument &from);
+	ProjectDocument& operator=(ProjectDocument from);
+	~ProjectDocument();
 
 	EntryList<AssDialogue>::iterator iterator_to(AssDialogue& line);
 
@@ -115,7 +115,7 @@ public:
 	/// @return Pointer to style or nullptr
 	AssStyle *GetStyle(std::string const& name);
 
-	void swap(AssFile &) throw();
+	void swap(ProjectDocument &) throw();
 
 	/// @brief Get the script resolution
 	/// @param[out] w Width

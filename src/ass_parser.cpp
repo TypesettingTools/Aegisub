@@ -16,7 +16,7 @@
 
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_info.h"
 #include "ass_style.h"
 #include "subtitle_format.h"
@@ -68,7 +68,7 @@ public:
 	{
 	}
 
-	bool ProcessProperty(AssFile *target, std::string const& key, std::string const& value) {
+	bool ProcessProperty(ProjectDocument *target, std::string const& key, std::string const& value) {
 		auto it = fields.find(key);
 		if (it != end(fields)) {
 			using namespace agi::util;
@@ -93,7 +93,7 @@ public:
 	}
 };
 
-AssParser::AssParser(AssFile *target, int version)
+AssParser::AssParser(ProjectDocument *target, int version)
 : property_handler(std::make_unique<HeaderToProperty>())
 , target(target)
 , version(version)

@@ -27,7 +27,7 @@ namespace agi {
 	}
 	struct Context;
 }
-struct AssFileCommit;
+struct ProjectDocumentCommit;
 struct ProjectProperties;
 
 class SubsController : private agi::signal::ConnectionScope {
@@ -72,7 +72,7 @@ class SubsController : private agi::signal::ConnectionScope {
 	/// Autosave the file if there have been any chances since the last autosave
 	void AutoSave();
 
-	void OnCommit(AssFileCommit c);
+	void OnCommit(ProjectDocumentCommit c);
 	void OnActiveLineChanged();
 	void OnSelectionChanged();
 	void OnTextSelectionChanged();

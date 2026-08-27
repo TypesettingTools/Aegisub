@@ -30,7 +30,7 @@
 #include "subtitle_format_transtation.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "text_file_writer.h"
 
@@ -47,12 +47,12 @@ std::vector<std::string> TranStationSubtitleFormat::GetWriteWildcards() const {
 	return {"transtation.txt"};
 }
 
-void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, const char *encoding) const {
+void TranStationSubtitleFormat::WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, const char *encoding) const {
 	auto fps = AskForFPS(false, true, vfps);
 	if (!fps.IsLoaded()) return;
 
 	// Convert to TranStation
-	AssFile copy(*src);
+	ProjectDocument copy(*src);
 	copy.Sort();
 	StripComments(copy);
 	RecombineOverlaps(copy);
@@ -80,7 +80,7 @@ void TranStationSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path cons
 	file.WriteLineToFile("SUB[");
 }
 
-std::string TranStationSubtitleFormat::ConvertLine(AssFile *file, const AssDialogue *current, agi::vfr::Framerate const& fps, agi::SmpteFormatter const& ft, int nextl_start) const {
+std::string TranStationSubtitleFormat::ConvertLine(ProjectDocument *file, const AssDialogue *current, agi::vfr::Framerate const& fps, agi::SmpteFormatter const& ft, int nextl_start) const {
 	int valign = 0;
 	const char *halign = " "; // default is centered
 	const char *type = "N"; // no special style

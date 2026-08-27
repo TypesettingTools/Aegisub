@@ -26,7 +26,7 @@
 #include <wx/string.h>
 
 class AssDialogue;
-class AssFile;
+class ProjectDocument;
 
 typedef std::function<void (wxString, int)> FontCollectorStatusCallback;
 
@@ -166,5 +166,5 @@ public:
 	/// @param file Lines in the subtitle file to check
 	/// @param status Callback function for messages
 	/// @return List of paths to fonts
-	std::vector<agi::fs::path> GetFontPaths(const AssFile *file);
+	std::vector<agi::fs::path> GetFontPaths(const ProjectDocument *file);
 };

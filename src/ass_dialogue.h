@@ -174,5 +174,8 @@ public:
 	AssDialogue(AssDialogueBase const&);
 	AssDialogue(std::string const& data);
 	~AssDialogue();
-};
 
+	/// Ensure subsequently created lines receive an ID greater than this one.
+	/// Used when restoring stable IDs from a project file.
+	static void EnsureNextId(int id);
+};

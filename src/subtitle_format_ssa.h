@@ -21,6 +21,6 @@ public:
 	SsaSubtitleFormat() : SubtitleFormat("SubStation Alpha") { }
 	std::vector<std::string> GetWriteWildcards() const override { return {"ssa"}; }
 	/// @todo Not actually true
-	bool CanSave(const AssFile*) const override { return true; }
-	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
+	bool CanSave(const ProjectDocument*) const override { return true; }
+	void WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
 };

@@ -56,7 +56,7 @@ enum class FcMode {
 };
 
 class DialogFontsCollector final : public wxDialog {
-	AssFile *subs;
+	ProjectDocument *subs;
 	agi::Path &path;
 	FcMode mode = FcMode::CheckFontsOnly;
 
@@ -87,7 +87,7 @@ using color_str_pair = std::pair<int, wxString>;
 wxDEFINE_EVENT(EVT_ADD_TEXT, ValueEvent<color_str_pair>);
 wxDEFINE_EVENT(EVT_COLLECTION_DONE, wxThreadEvent);
 
-void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMode oper, wxEvtHandler *collector) {
+void FontsCollectorThread(ProjectDocument *subs, agi::fs::path const& destination, FcMode oper, wxEvtHandler *collector) {
 	agi::dispatch::Background().Async([=]{
 		auto AppendText = [&](wxString text, int colour) {
 			collector->AddPendingEvent(ValueEvent<color_str_pair>(EVT_ADD_TEXT, -1, {colour, text.Clone()}));
@@ -224,7 +224,7 @@ void FontsCollectorThread(AssFile *subs, agi::fs::path const& destination, FcMod
 
 DialogFontsCollector::DialogFontsCollector(agi::Context *c)
 : wxDialog(c->parent, -1, _("Fonts Collector"))
-, subs(c->ass.get())
+, subs(c->document.get())
 , path(*c->path)
 {
 	SetIcons(GETICONS(font_collector_button));

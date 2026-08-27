@@ -32,7 +32,7 @@
 #include "command.h"
 
 #include "../ass_dialogue.h"
-#include "../ass_file.h"
+#include "../project_document.h"
 #include "../async_video_provider.h"
 #include "../audio_controller.h"
 #include "../audio_timing.h"
@@ -61,7 +61,7 @@ struct validate_adjoinable : public Command {
 	bool Validate(const agi::Context *c) override {
 		size_t sel_size = c->selectionController->GetSelectedSet().size();
 		if (sel_size == 0) return false;
-		if (sel_size == 1 || sel_size == c->ass->Events.size()) return true;
+		if (sel_size == 1 || sel_size == c->document->Events.size()) return true;
 
 		auto sel = c->selectionController->GetSortedSelection();
 		for (size_t i = 1; i < sel_size; ++i) {
@@ -77,7 +77,7 @@ void adjoin_lines(agi::Context *c, bool set_start) {
 	AssDialogue *prev = nullptr;
 	size_t seen = 0;
 	bool prev_sel = false;
-	for (auto& diag : c->ass->Events) {
+	for (auto& diag : c->document->Events) {
 		bool cur_sel = !!sel.count(&diag);
 		if (prev) {
 			// One row selections act as if the previous or next line was selected
@@ -97,7 +97,7 @@ void adjoin_lines(agi::Context *c, bool set_start) {
 		prev_sel = cur_sel;
 	}
 
-	c->ass->Commit(_("adjoin"), AssFile::COMMIT_DIAG_TIME);
+	c->document->Commit(_("adjoin"), ProjectDocument::COMMIT_DIAG_TIME);
 }
 
 struct time_continuous_end final : public validate_adjoinable {
@@ -143,7 +143,7 @@ struct time_frame_current final : public validate_video_loaded {
 			line->End = line->End + shift_by;
 		}
 
-		c->ass->Commit(_("shift to frame"), AssFile::COMMIT_DIAG_TIME);
+		c->document->Commit(_("shift to frame"), ProjectDocument::COMMIT_DIAG_TIME);
 	}
 };
 
@@ -173,7 +173,7 @@ static void snap_subs_video(agi::Context *c, bool set_start) {
 			line->End = end;
 	}
 
-	c->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
+	c->document->Commit(_("timing"), ProjectDocument::COMMIT_DIAG_TIME);
 }
 
 struct time_snap_end_video final : public validate_video_loaded {
@@ -230,7 +230,7 @@ struct time_snap_scene final : public validate_video_loaded {
 			line->End = end_ms;
 		}
 
-		c->ass->Commit(_("snap to scene"), AssFile::COMMIT_DIAG_TIME);
+		c->document->Commit(_("snap to scene"), ProjectDocument::COMMIT_DIAG_TIME);
 	}
 };
 

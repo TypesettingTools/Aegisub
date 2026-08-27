@@ -30,7 +30,7 @@
 #include "video_box.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "format.h"
 #include "include/aegisub/context.h"
@@ -99,7 +99,7 @@ VideoBox::VideoBox(wxWindow *parent, bool isDetached, agi::Context *context)
 	UpdateTimeBoxes();
 
 	connections = agi::signal::make_vector({
-		context->ass->AddCommitListener(&VideoBox::UpdateTimeBoxes, this),
+		context->document->AddCommitListener(&VideoBox::UpdateTimeBoxes, this),
 		context->project->AddKeyframesListener(&VideoBox::UpdateTimeBoxes, this),
 		context->project->AddTimecodesListener(&VideoBox::UpdateTimeBoxes, this),
 		context->project->AddVideoProviderListener(&VideoBox::UpdateTimeBoxes, this),

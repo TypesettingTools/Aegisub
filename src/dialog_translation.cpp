@@ -26,7 +26,7 @@
 #include "libaegisub/unicode.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "command/command.h"
 #include "compat.h"
 #include "format.h"
@@ -64,10 +64,10 @@ static bool bad_block(std::unique_ptr<AssDialogueBlock> &block) {
 DialogTranslation::DialogTranslation(agi::Context *c)
 : wxDialog(c->parent, -1, _("Translation Assistant"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMINIMIZE_BOX)
 , c(c)
-, file_change_connection(c->ass->AddCommitListener(&DialogTranslation::OnExternalCommit, this))
+, file_change_connection(c->document->AddCommitListener(&DialogTranslation::OnExternalCommit, this))
 , active_line_connection(c->selectionController->AddActiveLineListener(&DialogTranslation::OnActiveLineChanged, this))
 , active_line(c->selectionController->GetActiveLine())
-, line_count(c->ass->Events.size())
+, line_count(c->document->Events.size())
 {
 	SetIcons(GETICONS(translation_toolbutton));
 
@@ -184,12 +184,12 @@ void DialogTranslation::OnActiveLineChanged(AssDialogue *new_line) {
 }
 
 void DialogTranslation::OnExternalCommit(int commit_type) {
-	if (commit_type == AssFile::COMMIT_NEW || commit_type & AssFile::COMMIT_DIAG_ADDREM) {
-		line_count = c->ass->Events.size();
+	if (commit_type == ProjectDocument::COMMIT_NEW || commit_type & ProjectDocument::COMMIT_DIAG_ADDREM) {
+		line_count = c->document->Events.size();
 		line_number_display->SetLabel(fmt_tl("Current line: %d/%d", active_line->Row + 1, line_count));
 	}
 
-	if (commit_type & AssFile::COMMIT_DIAG_TEXT)
+	if (commit_type & ProjectDocument::COMMIT_DIAG_TEXT)
 		OnActiveLineChanged(active_line);
 }
 
@@ -273,7 +273,7 @@ void DialogTranslation::Commit(bool next) {
 	active_line->UpdateText(blocks);
 
 	file_change_connection.Block();
-	c->ass->Commit(_("translation assistant"), AssFile::COMMIT_DIAG_TEXT);
+	c->document->Commit(_("translation assistant"), ProjectDocument::COMMIT_DIAG_TEXT);
 	file_change_connection.Unblock();
 
 	if (next) {

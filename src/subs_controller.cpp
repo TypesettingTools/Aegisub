@@ -18,7 +18,7 @@
 
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_info.h"
 #include "ass_style.h"
 #include "compat.h"
@@ -28,6 +28,7 @@
 #include "include/aegisub/context.h"
 #include "options.h"
 #include "project.h"
+#include "project_format.h"
 #include "selection_controller.h"
 #include "subtitle_format.h"
 #include "text_selection_controller.h"
@@ -67,18 +68,18 @@ struct SubsController::UndoInfo {
 	UndoInfo(const agi::Context *c, wxString const& d, int commit_id)
 	: undo_description(d)
 	, commit_id(commit_id)
-	, attachments(c->ass->Attachments)
-	, extradata(c->ass->Extradata)
+	, attachments(c->document->Attachments)
+	, extradata(c->document->Extradata)
 	{
-		script_info.reserve(c->ass->Info.size());
-		for (auto const& info : c->ass->Info)
+		script_info.reserve(c->document->Info.size());
+		for (auto const& info : c->document->Info)
 			script_info.emplace_back(info.Key(), info.Value());
 
-		styles.reserve(c->ass->Styles.size());
-		styles.assign(c->ass->Styles.begin(), c->ass->Styles.end());
+		styles.reserve(c->document->Styles.size());
+		styles.assign(c->document->Styles.begin(), c->document->Styles.end());
 
-		events.reserve(c->ass->Events.size());
-		events.assign(c->ass->Events.begin(), c->ass->Events.end());
+		events.reserve(c->document->Events.size());
+		events.assign(c->document->Events.begin(), c->document->Events.end());
 
 		UpdateActiveLine(c);
 		UpdateSelection(c);
@@ -88,12 +89,12 @@ struct SubsController::UndoInfo {
 	void Apply(agi::Context *c) const {
 		// Keep old dialogue lines alive until after the commit is complete
 		// since a bunch of stuff holds references to them
-		AssFile old;
-		old.Events.swap(c->ass->Events);
-		c->ass->Info.clear();
-		c->ass->Attachments.clear();
-		c->ass->Styles.clear();
-		c->ass->Extradata.clear();
+		ProjectDocument old;
+		old.Events.swap(c->document->Events);
+		c->document->Info.clear();
+		c->document->Attachments.clear();
+		c->document->Styles.clear();
+		c->document->Extradata.clear();
 
 		sort(begin(selection), end(selection));
 
@@ -101,21 +102,21 @@ struct SubsController::UndoInfo {
 		Selection new_sel;
 
 		for (auto const& info : script_info)
-			c->ass->Info.push_back(*new AssInfo(info.first, info.second));
+			c->document->Info.push_back(*new AssInfo(info.first, info.second));
 		for (auto const& style : styles)
-			c->ass->Styles.push_back(*new AssStyle(style));
-		c->ass->Attachments = attachments;
+			c->document->Styles.push_back(*new AssStyle(style));
+		c->document->Attachments = attachments;
 		for (auto const& event : events) {
 			auto copy = new AssDialogue(event);
-			c->ass->Events.push_back(*copy);
+			c->document->Events.push_back(*copy);
 			if (copy->Id == active_line_id)
 				active_line = copy;
 			if (binary_search(begin(selection), end(selection), copy->Id))
 				new_sel.insert(copy);
 		}
-		c->ass->Extradata = extradata;
+		c->document->Extradata = extradata;
 
-		c->ass->Commit("", AssFile::COMMIT_NEW);
+		c->document->Commit("", ProjectDocument::COMMIT_NEW);
 		c->selectionController->SetSelectionAndActive(std::move(new_sel), active_line);
 
 		c->textSelectionController->SetInsertionPoint(pos);
@@ -145,7 +146,7 @@ struct SubsController::UndoInfo {
 
 SubsController::SubsController(agi::Context *context)
 : context(context)
-, undo_connection(context->ass->AddUndoManager(&SubsController::OnCommit, this))
+, undo_connection(context->document->AddUndoManager(&SubsController::OnCommit, this))
 , text_selection_connection(context->textSelectionController->AddSelectionListener(&SubsController::OnTextSelectionChanged, this))
 , autosave_queue(agi::dispatch::Create())
 {
@@ -166,23 +167,33 @@ void SubsController::SetSelectionController(SelectionController *selection_contr
 }
 
 ProjectProperties SubsController::Load(agi::fs::path const& filename, const char *charset) {
-	AssFile temp;
+	ProjectDocument temp;
+	bool const is_project = agi::fs::HasExtension(filename, "aegi");
+	if (is_project)
+		ProjectFormat::Read(temp, filename);
+	else
+		SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
 
-	SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
+	context->document->swap(temp);
+	auto props = context->document->Properties;
 
-	context->ass->swap(temp);
-	auto props = context->ass->Properties;
-
-	SetFileName(filename);
+	if (is_project)
+		SetFileName(filename);
+	else {
+		this->filename.clear();
+		context->path->SetToken("?script", filename.parent_path());
+		config::mru->Add("Subtitle", filename);
+	}
 
 	// Push the initial state of the file onto the undo stack
 	undo_stack.clear();
 	redo_stack.clear();
-	autosaved_commit_id = saved_commit_id = commit_id + 1;
-	context->ass->Commit("", AssFile::COMMIT_NEW);
+	context->document->Commit("", ProjectDocument::COMMIT_NEW);
+	autosaved_commit_id = commit_id;
+	saved_commit_id = is_project ? commit_id : commit_id - 1; // Imports are new projects.
 
 	// Save backup of file
-	if (CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
+	if (is_project && OPT_GET("App/Auto/Backup")->GetBool()) {
 		auto path_str = OPT_GET("Path/Auto/Backup")->GetString();
 		agi::fs::path path;
 		if (path_str.empty())
@@ -198,9 +209,9 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, const char
 }
 
 void SubsController::Save(agi::fs::path const& filename, const char *encoding) {
-	const SubtitleFormat *writer = SubtitleFormat::GetWriter(filename);
-	if (!writer)
-		throw agi::InvalidInputException("Unknown file type.");
+	(void)encoding;
+	if (!agi::fs::HasExtension(filename, "aegi"))
+		throw agi::InvalidInputException("Aegisub projects must use the .aegi extension.");
 
 	int old_autosaved_commit_id = autosaved_commit_id, old_saved_commit_id = saved_commit_id;
 	try {
@@ -211,8 +222,8 @@ void SubsController::Save(agi::fs::path const& filename, const char *encoding) {
 		this->filename = filename;
 		context->project->SetSubtitlesFilename(filename);
 
-		context->ass->CleanExtradata();
-		writer->WriteFile(context->ass.get(), filename, 0, encoding);
+		context->document->CleanExtradata();
+		ProjectFormat::Write(*context->document, filename);
 		FileSave();
 	}
 	catch (...) {
@@ -229,10 +240,10 @@ void SubsController::Close() {
 	redo_stack.clear();
 	autosaved_commit_id = saved_commit_id = commit_id + 1;
 	filename.clear();
-	AssFile blank;
-	blank.swap(*context->ass);
-	context->ass->LoadDefault(true, OPT_GET("Subtitle Format/ASS/Default Style Catalog")->GetString());
-	context->ass->Commit("", AssFile::COMMIT_NEW);
+	ProjectDocument blank;
+	blank.swap(*context->document);
+	context->document->LoadDefault(true, OPT_GET("Subtitle Format/ASS/Default Style Catalog")->GetString());
+	context->document->Commit("", ProjectDocument::COMMIT_NEW);
 	FileOpen(filename);
 }
 
@@ -266,16 +277,16 @@ void SubsController::AutoSave() {
 
 	autosaved_commit_id = commit_id;
 	auto frame = context->frame;
-	auto subs_copy = new AssFile(*context->ass);
+	auto subs_copy = new ProjectDocument(*context->document);
 	autosave_queue->Async([subs_copy, name, directory, frame] {
 		wxString msg;
-		std::unique_ptr<AssFile> subs(subs_copy);
+		std::unique_ptr<ProjectDocument> subs(subs_copy);
 
 		try {
 			agi::fs::CreateDirectory(directory);
-			auto path = directory /  agi::format("%s.%s.AUTOSAVE.ass", name.string(),
+			auto path = directory / agi::format("%s.%s.AUTOSAVE.aegi", name.string(),
 			                                     agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
-			SubtitleFormat::GetWriter(path)->WriteFile(subs.get(), path, 0);
+			ProjectFormat::Write(*subs, path);
 			msg = fmt_tl("File backup saved as \"%s\".", path);
 		}
 		catch (const agi::Exception& err) {
@@ -292,12 +303,7 @@ void SubsController::AutoSave() {
 }
 
 bool SubsController::CanSave() const {
-	try {
-		return SubtitleFormat::GetWriter(filename)->CanSave(context->ass.get());
-	}
-	catch (...) {
-		return false;
-	}
+	return agi::fs::HasExtension(filename, "aegi");
 }
 
 void SubsController::SetFileName(agi::fs::path const& path) {
@@ -307,7 +313,7 @@ void SubsController::SetFileName(agi::fs::path const& path) {
 	OPT_SET("Path/Last/Subtitles")->SetString(filename.parent_path().string());
 }
 
-void SubsController::OnCommit(AssFileCommit c) {
+void SubsController::OnCommit(ProjectDocumentCommit c) {
 	if (c.message.empty() && !undo_stack.empty()) return;
 
 	commit_id = next_commit_id++;
@@ -330,11 +336,11 @@ void SubsController::OnCommit(AssFileCommit c) {
 	}
 
 	// Make sure the file has at least one style and one dialogue line
-	if (context->ass->Styles.empty())
-		context->ass->Styles.push_back(*new AssStyle);
-	if (context->ass->Events.empty()) {
-		context->ass->Events.push_back(*new AssDialogue);
-		context->ass->Events.back().Row = 0;
+	if (context->document->Styles.empty())
+		context->document->Styles.push_back(*new AssStyle);
+	if (context->document->Events.empty()) {
+		context->document->Events.push_back(*new AssDialogue);
+		context->document->Events.back().Row = 0;
 	}
 
 	redo_stack.clear();
