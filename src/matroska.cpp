@@ -1,10 +1,6 @@
 // Copyright (c) 2026 Aegisub contributors
 //
-// This is an unused comparison implementation. It deliberately delegates EBML
-// parsing to the current adapter while presenting an Aegisub-native C++
-// surface. It is not part of the production build and has no call sites.
-
-#include "matroska_proposed.h"
+#include "matroska.h"
 
 #include "MatroskaParser.h"
 
@@ -12,36 +8,25 @@
 #include <climits>
 #include <cstdlib>
 #include <cstring>
-#include <fstream>
+#include <libaegisub/file_mapping.h>
 #include <limits>
 #include <utility>
 
-namespace agi::matroska::proposed {
+namespace agi::matroska {
 namespace {
 class FileReader final : public Reader {
-  std::ifstream file;
-  uint64_t size = 0;
+  agi::read_file_mapping file;
 
 public:
   explicit FileReader(agi::fs::path const &filename)
-      : file(filename, std::ios::binary) {
-    if (!file)
-      throw ReadError("Failed to open Matroska input");
-    file.seekg(0, std::ios::end);
-    auto end = file.tellg();
-    if (end < 0)
-      throw ReadError("Failed to determine Matroska input size");
-    size = static_cast<uint64_t>(end);
-  }
-  uint64_t Size() const override { return size; }
+      : file(filename) {}
+  uint64_t Size() const override { return file.size(); }
   size_t Read(uint64_t position, void *buffer, size_t size) override {
-    if (position >= this->size)
+    if (position >= file.size())
       return 0;
-    size = std::min<uint64_t>(size, this->size - position);
-    file.clear();
-    file.seekg(position);
-    file.read(static_cast<char *>(buffer), size);
-    return static_cast<size_t>(file.gcount());
+    size = std::min<uint64_t>(size, file.size() - position);
+    memcpy(buffer, file.read(position, size), size);
+    return size;
   }
 };
 
@@ -59,12 +44,18 @@ SubtitleCodec codec_from_id(std::string const &id) {
 } // namespace
 
 std::unique_ptr<Reader> OpenFile(agi::fs::path const &filename) {
-  return std::make_unique<FileReader>(filename);
+  try {
+    return std::make_unique<FileReader>(filename);
+  }
+  catch (agi::Exception const& error) {
+    throw IoError(error.GetMessage());
+  }
 }
 
 class Demuxer::Impl final : public InputStream {
   std::unique_ptr<Reader> reader;
   CancelCheck cancelled;
+  Limits limits;
   std::string input_error;
   std::unique_ptr<MatroskaFile, decltype(&mkv_Close)> file{nullptr, mkv_Close};
   std::unique_ptr<CompressedStream, decltype(&cs_Destroy)> compressed{
@@ -78,42 +69,54 @@ class Demuxer::Impl final : public InputStream {
   static Impl *Self(InputStream *input) { return static_cast<Impl *>(input); }
 
   static int Read(InputStream *input, uint64_t position, void *buffer,
-                  int count) {
+                  int count) noexcept {
     if (count <= 0)
       return 0;
     try {
-      return static_cast<int>(
-          Self(input)->reader->Read(position, buffer, count));
-    } catch (agi::Exception const &error) {
-      Self(input)->input_error = error.GetMessage();
-      return -1;
-    } catch (std::exception const &error) {
-      Self(input)->input_error = error.what();
+      size_t total = 0;
+      while (total < static_cast<size_t>(count)) {
+        auto read = Self(input)->reader->Read(position + total,
+          static_cast<unsigned char *>(buffer) + total, count - total);
+        if (!read) break;
+        if (read > static_cast<size_t>(count) - total) return -1;
+        total += read;
+      }
+      return static_cast<int>(total);
+    } catch (...) {
+      try { Self(input)->input_error = "Matroska input read failed"; }
+      catch (...) {}
       return -1;
     }
   }
 
-  static int64_t Scan(InputStream *input, uint64_t start, unsigned signature) {
-    unsigned window = 0;
-    for (uint64_t position = start; position < Self(input)->reader->Size();
-         ++position) {
-      unsigned char byte;
-      if (Read(input, position, &byte, 1) != 1)
-        return -1;
-      window = (window << 8 | byte) & 0xffffffffU;
-      if (window == signature)
-        return position - 3;
-    }
+  static int64_t Scan(InputStream *input, uint64_t start, unsigned signature) noexcept {
+    try {
+      unsigned window = 0;
+      for (uint64_t position = start; position < Self(input)->reader->Size(); ++position) {
+        unsigned char byte;
+        if (Read(input, position, &byte, 1) != 1) return -1;
+        window = (window << 8 | byte) & 0xffffffffU;
+        if (window == signature) return position - 3;
+      }
+    } catch (...) {}
     return -1;
   }
 
-  static int64_t Size(InputStream *input) {
-    auto size = Self(input)->reader->Size();
-    return size > static_cast<uint64_t>(INT64_MAX) ? INT64_MAX : size;
+  static int64_t Size(InputStream *input) noexcept {
+    try {
+      auto size = Self(input)->reader->Size();
+      return size > static_cast<uint64_t>(INT64_MAX) ? INT64_MAX : size;
+    } catch (...) { return 0; }
+  }
+
+  bool IsCancelled() const noexcept {
+    if (!cancelled) return false;
+    try { return cancelled(); }
+    catch (...) { return true; }
   }
 
   void CheckCancelled() const {
-    if (cancelled && cancelled())
+    if (IsCancelled())
       throw agi::UserCancelException("Matroska read cancelled");
   }
 
@@ -145,19 +148,24 @@ class Demuxer::Impl final : public InputStream {
     if (count)
       attachment_locations.assign(legacy_attachments,
                                   legacy_attachments + count);
-    for (auto const &legacy : attachment_locations)
-      attachments.push_back({legacy.UID, copy_string(legacy.Name),
+    for (auto const &legacy : attachment_locations) {
+      if (std::find_if(attachments.begin(), attachments.end(), [&](auto const &item) {
+            return item.id.value == legacy.UID;
+          }) != attachments.end())
+        throw InvalidDataError("Duplicate Matroska attachment ID");
+      attachments.push_back({{legacy.UID}, copy_string(legacy.Name),
                              copy_string(legacy.Description),
                              copy_string(legacy.MimeType), legacy.Length});
+    }
 
     auto const *segment = mkv_GetFileInfo(file.get());
-    if (segment->Duration)
+    if (segment->Duration <= static_cast<uint64_t>(INT64_MAX))
       duration = Timestamp{static_cast<int64_t>(segment->Duration)};
   }
 
   std::vector<uint8_t> ReadBytes(uint64_t position, uint64_t size) {
     if (size > std::numeric_limits<size_t>::max())
-      throw ReadError("Matroska item is too large");
+      throw LimitError("Matroska item exceeds addressable memory");
     std::vector<uint8_t> result(static_cast<size_t>(size));
     size_t offset = 0;
     while (offset < result.size()) {
@@ -165,17 +173,19 @@ class Demuxer::Impl final : public InputStream {
       auto read = reader->Read(position + offset, result.data() + offset,
                                result.size() - offset);
       if (!read)
-        throw ReadError("Unexpected end of Matroska input");
+        throw TruncatedError("Unexpected end of Matroska input");
+      if (read > result.size() - offset)
+        throw IoError("Matroska reader returned more bytes than requested");
       offset += read;
     }
     return result;
   }
 
 public:
-  Impl(std::unique_ptr<Reader> input, CancelCheck cancel)
-      : reader(std::move(input)), cancelled(std::move(cancel)) {
+  Impl(std::unique_ptr<Reader> input, CancelCheck cancel, Limits configured_limits)
+      : reader(std::move(input)), cancelled(std::move(cancel)), limits(configured_limits) {
     if (!reader)
-      throw ReadError("Cannot open Matroska from a null reader");
+      throw InvalidDataError("Cannot open Matroska from a null reader");
     read = &Read;
     scan = &Scan;
     getfilesize = &Size;
@@ -188,9 +198,8 @@ public:
       return std::realloc(memory, size);
     };
     memfree = [](InputStream *, void *memory) { std::free(memory); };
-    progress = [](InputStream *input, uint64_t, uint64_t) {
-      auto self = Self(input);
-      return (!self->cancelled || !self->cancelled()) ? 1 : 0;
+    progress = [](InputStream *input, uint64_t, uint64_t) noexcept {
+      return Self(input)->IsCancelled() ? 0 : 1;
     };
 
     CheckCancelled();
@@ -198,7 +207,7 @@ public:
     file.reset(mkv_Open(this, error, sizeof error));
     if (!file) {
       CheckCancelled();
-      throw ReadError(error[0] ? error : "Failed to parse Matroska input");
+      throw InvalidDataError(error[0] ? error : "Failed to parse Matroska input");
     }
     ReadMetadata();
   }
@@ -210,13 +219,15 @@ public:
   void Select(TrackId track) {
     if (track.value >= mkv_GetNumTracks(file.get()) ||
         track.value >= sizeof(unsigned) * CHAR_BIT)
-      throw ReadError("Invalid Matroska subtitle track");
+      throw InvalidDataError("Invalid Matroska subtitle track");
     auto found =
         std::find_if(tracks.begin(), tracks.end(), [&](auto const &item) {
           return item.id.value == track.value;
         });
     if (found == tracks.end())
-      throw ReadError("Selected Matroska track is not a subtitle track");
+      throw InvalidDataError("Selected Matroska track is not a subtitle track");
+    if (found->codec == SubtitleCodec::unsupported)
+      throw UnsupportedError("Selected Matroska subtitle codec is unsupported");
 
     CheckCancelled();
     mkv_SetTrackMask(file.get(), ~(1U << track.value));
@@ -226,13 +237,13 @@ public:
       char error[2048]{};
       compressed.reset(cs_Create(file.get(), track.value, error, sizeof error));
       if (!compressed)
-        throw ReadError(error[0] ? error : "Unsupported subtitle compression");
+        throw UnsupportedError(error[0] ? error : "Unsupported subtitle compression");
     }
   }
 
   std::optional<SubtitlePacket> NextPacket() {
     if (!selected)
-      throw ReadError("No Matroska subtitle track has been selected");
+      throw InvalidDataError("No Matroska subtitle track has been selected");
     CheckCancelled();
     unsigned track, frame_size, flags;
     uint64_t start, end, position;
@@ -241,6 +252,8 @@ public:
       return std::nullopt;
 
     std::vector<uint8_t> data;
+    if (frame_size > limits.packet_size)
+      throw LimitError("Matroska subtitle packet exceeds configured limit");
     if (!compressed)
       data = ReadBytes(position, frame_size);
     else {
@@ -251,30 +264,40 @@ public:
         int count = cs_ReadData(
             compressed.get(), reinterpret_cast<char *>(buffer), sizeof buffer);
         if (count < 0)
-          throw ReadError(copy_string(cs_GetLastError(compressed.get())));
+          throw InvalidDataError(copy_string(cs_GetLastError(compressed.get())));
         if (!count)
           break;
+        if (data.size() + static_cast<size_t>(count) > limits.decompressed_size)
+          throw LimitError("Decompressed Matroska subtitle packet exceeds configured limit");
         data.insert(data.end(), buffer, buffer + count);
       }
     }
+    auto checked_time = [](uint64_t value, unsigned unknown_flag, unsigned flags) -> std::optional<Timestamp> {
+      if (flags & unknown_flag) return std::nullopt;
+      if (value > static_cast<uint64_t>(INT64_MAX))
+        throw InvalidDataError("Matroska timestamp is out of range");
+      return Timestamp{static_cast<int64_t>(value)};
+    };
     return SubtitlePacket{{track},
-                          {static_cast<int64_t>(start)},
-                          {static_cast<int64_t>(end)},
+                          checked_time(start, FRAME_UNKNOWN_START, flags),
+                          checked_time(end, FRAME_UNKNOWN_END, flags),
                           std::move(data)};
   }
 
-  std::vector<uint8_t> AttachmentBytes(uint64_t uid) {
+  std::vector<uint8_t> AttachmentBytes(AttachmentId id) {
     auto found =
         std::find_if(attachment_locations.begin(), attachment_locations.end(),
-                     [&](auto const &item) { return item.UID == uid; });
+                         [&](auto const &item) { return item.UID == id.value; });
     if (found == attachment_locations.end())
-      throw ReadError("Unknown Matroska attachment");
+      throw InvalidDataError("Unknown Matroska attachment");
+    if (found->Length > limits.attachment_size)
+      throw LimitError("Matroska attachment exceeds configured limit");
     return ReadBytes(found->Position, found->Length);
   }
 };
 
-Demuxer::Demuxer(std::unique_ptr<Reader> reader, CancelCheck cancelled)
-    : impl(std::make_unique<Impl>(std::move(reader), std::move(cancelled))) {}
+Demuxer::Demuxer(std::unique_ptr<Reader> reader, CancelCheck cancelled, Limits limits)
+    : impl(std::make_unique<Impl>(std::move(reader), std::move(cancelled), limits)) {}
 Demuxer::~Demuxer() = default;
 Demuxer::Demuxer(Demuxer &&) noexcept = default;
 Demuxer &Demuxer::operator=(Demuxer &&) noexcept = default;
@@ -289,8 +312,8 @@ void Demuxer::SelectTrack(TrackId track) { impl->Select(track); }
 std::optional<SubtitlePacket> Demuxer::ReadPacket() {
   return impl->NextPacket();
 }
-std::vector<uint8_t> Demuxer::ReadAttachment(uint64_t uid) {
-  return impl->AttachmentBytes(uid);
+std::vector<uint8_t> Demuxer::ReadAttachment(AttachmentId id) {
+  return impl->AttachmentBytes(id);
 }
 
-} // namespace agi::matroska::proposed
+} // namespace agi::matroska
