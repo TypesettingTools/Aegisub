@@ -134,7 +134,7 @@ int prompt_choice_dialog(const wxString& message, const wxString& caption, const
 	d.Bind(wxEVT_LISTBOX_DCLICK, [&](wxCommandEvent&) { d.EndModal(lb->GetSelection()); });
 	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(lb->GetSelection()); }, wxID_OK);
 	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { d.EndModal(-1); }, wxID_CANCEL);
-	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { HelpButton::OpenPage("Resolution mismatch"); }, wxID_HELP);
+	d.Bind(wxEVT_BUTTON, [&](wxCommandEvent&) { HelpButton::OpenPage("Resolution and Matrix"); }, wxID_HELP);
 
 	return d.ShowModal();
 }
