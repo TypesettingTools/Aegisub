@@ -36,9 +36,8 @@ follows:
 src/gl/
  - MIT license. See src/gl/glext.h
 
-src/MatroskaParser.(c|h)
+src/matroska_demux.h
  - Licensed to BSDL with permission from the author.
 
 universalchardet/
  - MPL 1.1
-

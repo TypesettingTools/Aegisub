@@ -1,9 +1,7 @@
 // Copyright (c) 2026 Aegisub contributors
-// Aegisub-owned Matroska demux adapter. The public ABI intentionally matches
-// MatroskaParser.h while EBML parsing and Matroska semantics come from the
-// maintained upstream libraries.
+// Native Matroska demux implementation backed by libebml and libmatroska.
 #include <cstddef>
-#include "MatroskaParser.h"
+#include "matroska_demux.h"
 
 #include <ebml/EbmlBinary.h>
 #include <ebml/EbmlFloat.h>
