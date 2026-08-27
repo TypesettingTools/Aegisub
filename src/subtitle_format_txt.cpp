@@ -35,7 +35,7 @@
 #include "subtitle_format_txt.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "dialogs.h"
 #include "options.h"
 #include "text_file_reader.h"
@@ -63,7 +63,7 @@ bool TXTSubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
 	return boost::iends_with(str, ".txt") && !(boost::iends_with(str, ".encore.txt") || boost::iends_with(str, ".transtation.txt"));
 }
 
-void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+void TXTSubtitleFormat::ReadFile(ProjectDocument *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	if (!ShowPlainTextImportDialog()) return;
 
 	TextFileReader file(filename, encoding, false);
@@ -119,7 +119,7 @@ void TXTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	}
 }
 
-void TXTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+void TXTSubtitleFormat::WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	size_t num_actor_names = 0, num_dialogue_lines = 0;
 
 	// Detect number of lines with Actor field filled out

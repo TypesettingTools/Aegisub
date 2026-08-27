@@ -36,7 +36,7 @@
 
 #include "ass_attachment.h"
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
@@ -289,7 +289,7 @@ enum class ParseState {
 	LAST_WAS_BLANK
 };
 
-void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+void SRTSubtitleFormat::ReadFile(ProjectDocument *target, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	using namespace std;
 
 	TextFileReader file(filename, encoding);
@@ -410,11 +410,11 @@ void SRTSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 		line->Text = tag_parser.ToAss(text);
 }
 
-void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
+void SRTSubtitleFormat::WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	TextFileWriter file(filename, encoding);
 
 	// Convert to SRT
-	AssFile copy(*src);
+	ProjectDocument copy(*src);
 	copy.Sort();
 	StripComments(copy);
 	RecombineOverlaps(copy);
@@ -435,7 +435,7 @@ void SRTSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filen
 	}
 }
 
-bool SRTSubtitleFormat::CanSave(const AssFile *file) const {
+bool SRTSubtitleFormat::CanSave(const ProjectDocument *file) const {
 	if (!file->Attachments.empty())
 		return false;
 

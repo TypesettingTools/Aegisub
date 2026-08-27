@@ -30,7 +30,7 @@
 #include "export_framerate.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "async_video_provider.h"
 #include "compat.h"
 #include "format.h"
@@ -55,7 +55,7 @@ AssTransformFramerateFilter::AssTransformFramerateFilter()
 {
 }
 
-void AssTransformFramerateFilter::ProcessSubs(AssFile *subs, wxWindow *) {
+void AssTransformFramerateFilter::ProcessSubs(ProjectDocument *subs, wxWindow *) {
 	TransformFrameRate(subs);
 }
 
@@ -190,7 +190,7 @@ void AssTransformFramerateFilter::TransformTimeTags(std::string const&, AssOverr
 	}
 }
 
-void AssTransformFramerateFilter::TransformFrameRate(AssFile *subs) {
+void AssTransformFramerateFilter::TransformFrameRate(ProjectDocument *subs) {
 	if (!Input.IsLoaded() || !Output.IsLoaded()) return;
 	for (auto& curDialogue : subs->Events) {
 		line = &curDialogue;

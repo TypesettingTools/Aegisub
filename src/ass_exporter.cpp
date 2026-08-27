@@ -35,7 +35,7 @@
 #include "ass_exporter.h"
 
 #include "ass_export_filter.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "project.h"
@@ -81,7 +81,7 @@ std::vector<std::string> AssExporter::GetAllFilterNames() const {
 }
 
 void AssExporter::Export(agi::fs::path const& filename, const char *charset, wxWindow *export_dialog) {
-	AssFile subs(*c->ass);
+	ProjectDocument subs(*c->document);
 
 	for (auto filter : filters) {
 		filter->LoadSettings(is_default, c);

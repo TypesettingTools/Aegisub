@@ -30,7 +30,7 @@
 #include "video_controller.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "audio_controller.h"
 #include "compat.h"
 #include "format.h"
@@ -50,7 +50,7 @@ VideoController::VideoController(agi::Context *c)
 : context(c)
 , playAudioOnStep(OPT_GET("Audio/Plays When Stepping Video"))
 , connections(agi::signal::make_vector({
-	context->ass->AddCommitListener(&VideoController::OnSubtitlesCommit, this),
+	context->document->AddCommitListener(&VideoController::OnSubtitlesCommit, this),
 	context->project->AddVideoProviderListener(&VideoController::OnNewVideoProvider, this),
 	context->selectionController->AddActiveLineListener(&VideoController::OnActiveLineChanged, this),
 }))
@@ -69,8 +69,8 @@ void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 	if (!provider) return;
 
-	if ((type & AssFile::COMMIT_SCRIPTINFO) || type == AssFile::COMMIT_NEW) {
-		auto new_matrix = context->ass->GetYCbCrMatrix();
+	if ((type & ProjectDocument::COMMIT_SCRIPTINFO) || type == ProjectDocument::COMMIT_NEW) {
+		auto new_matrix = context->document->GetYCbCrMatrix();
 		if (new_matrix != color_matrix) {
 			color_matrix = new_matrix;
 			provider->SetColorSpace(new_matrix);
@@ -78,7 +78,7 @@ void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 	}
 
 	if (!changed)
-		provider->LoadSubtitles(context->ass.get());
+		provider->LoadSubtitles(context->document.get());
 	else
 		provider->UpdateSubtitles(changed);
 }
@@ -91,7 +91,7 @@ void VideoController::OnActiveLineChanged(AssDialogue *line) {
 }
 
 void VideoController::RequestFrame() {
-	context->ass->Properties.video_position = frame_n;
+	context->document->Properties.video_position = frame_n;
 	provider->RequestFrame(frame_n, TimeAtFrame(frame_n));
 }
 
@@ -202,16 +202,16 @@ double VideoController::GetARFromType(AspectRatio type) const {
 void VideoController::SetAspectRatio(double value) {
 	ar_type = AspectRatio::Custom;
 	ar_value = mid(.5, value, 5.);
-	context->ass->Properties.ar_mode = (int)ar_type;
-	context->ass->Properties.ar_value = ar_value;
+	context->document->Properties.ar_mode = (int)ar_type;
+	context->document->Properties.ar_value = ar_value;
 	ARChange(ar_type, ar_value);
 }
 
 void VideoController::SetAspectRatio(AspectRatio type) {
 	ar_value = mid(.5, GetARFromType(type), 5.);
 	ar_type = type;
-	context->ass->Properties.ar_mode = (int)ar_type;
-	context->ass->Properties.ar_value = ar_value;
+	context->document->Properties.ar_mode = (int)ar_type;
+	context->document->Properties.ar_value = ar_value;
 	ARChange(ar_type, ar_value);
 }
 

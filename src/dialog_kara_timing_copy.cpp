@@ -29,7 +29,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_karaoke.h"
 #include "compat.h"
 #include "help_button.h"
@@ -350,7 +350,7 @@ bool KaraokeLineMatchDisplay::UndoMatch()
 }
 
 class DialogKanjiTimer final : public wxDialog {
-	AssFile *subs;
+	ProjectDocument *subs;
 
 	KaraokeLineMatchDisplay *display;
 
@@ -384,7 +384,7 @@ public:
 
 DialogKanjiTimer::DialogKanjiTimer(agi::Context *c)
 : wxDialog(c->parent, -1, _("Kanji timer"))
-, subs(c->ass.get())
+, subs(c->document.get())
 {
 	SetIcons(GETICONS(kara_timing_copier));
 
@@ -484,7 +484,7 @@ void DialogKanjiTimer::OnClose(wxCommandEvent &) {
 		line.first->Text = line.second;
 
 	if (LinesToChange.size()) {
-		subs->Commit(_("kanji timing"), AssFile::COMMIT_DIAG_TEXT);
+		subs->Commit(_("kanji timing"), ProjectDocument::COMMIT_DIAG_TEXT);
 		LinesToChange.clear();
 	}
 	Close();

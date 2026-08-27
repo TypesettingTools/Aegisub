@@ -24,11 +24,11 @@ public:
 	std::vector<std::string> GetWriteWildcards() const override { return {"ass"}; }
 
 	// Naturally the ASS subtitle format can save all ASS files
-	bool CanSave(const AssFile*) const override { return true; }
+	bool CanSave(const ProjectDocument*) const override { return true; }
 
-	void ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *forceEncoding) const override;
-	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
+	void ReadFile(ProjectDocument *target, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *forceEncoding) const override;
+	void WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
 
 	// Does not write [Aegisub Project Garbage] and [Aegisub Extradata] sections when exporting
-	void ExportFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
+	void ExportFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
 };

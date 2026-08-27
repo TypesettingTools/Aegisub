@@ -32,7 +32,7 @@
 #include "command.h"
 
 #include "../ass_dialogue.h"
-#include "../ass_file.h"
+#include "../project_document.h"
 #include "../compat.h"
 #include "../dialog_search_replace.h"
 #include "../dialogs.h"
@@ -82,7 +82,7 @@ struct subtitle_attachment final : public Command {
 
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
-		ShowAttachmentsDialog(c->parent, c->ass.get());
+		ShowAttachmentsDialog(c->parent, c->document.get());
 	}
 };
 
@@ -120,11 +120,11 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 	def->End = video_ms + OPT_GET("Timing/Default Duration")->GetInt();
 	def->Style = c->selectionController->GetActiveLine()->Style;
 
-	auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
+	auto pos = c->document->iterator_to(*c->selectionController->GetActiveLine());
 	if (after) ++pos;
 
-	c->ass->Events.insert(pos, *def);
-	c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
+	c->document->Events.insert(pos, *def);
+	c->document->Commit(_("line insertion"), ProjectDocument::COMMIT_DIAG_ADDREM);
 
 	c->selectionController->SetSelectionAndActive({ def }, def);
 }
@@ -143,7 +143,7 @@ struct subtitle_insert_after final : public validate_nonempty_selection {
 		new_line->Start = active_line->End;
 		new_line->End = new_line->Start + OPT_GET("Timing/Default Duration")->GetInt();
 
-		for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
+		for (auto it = c->document->Events.begin(); it != c->document->Events.end(); ++it) {
 			AssDialogue *diag = &*it;
 
 			// Limit the line to the available time
@@ -153,12 +153,12 @@ struct subtitle_insert_after final : public validate_nonempty_selection {
 			// If we just hit the active line, insert the new line after it
 			if (diag == active_line) {
 				++it;
-				c->ass->Events.insert(it, *new_line);
+				c->document->Events.insert(it, *new_line);
 				--it;
 			}
 		}
 
-		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
+		c->document->Commit(_("line insertion"), ProjectDocument::COMMIT_DIAG_ADDREM);
 		c->selectionController->SetSelectionAndActive({ new_line }, new_line);
 	}
 };
@@ -188,7 +188,7 @@ struct subtitle_insert_before final : public validate_nonempty_selection {
 		new_line->End = active_line->Start;
 		new_line->Start = new_line->End - OPT_GET("Timing/Default Duration")->GetInt();
 
-		for (auto it = c->ass->Events.begin(); it != c->ass->Events.end(); ++it) {
+		for (auto it = c->document->Events.begin(); it != c->document->Events.end(); ++it) {
 			auto diag = &*it;
 
 			// Limit the line to the available time
@@ -197,10 +197,10 @@ struct subtitle_insert_before final : public validate_nonempty_selection {
 
 			// If we just hit the active line, insert the new line before it
 			if (diag == active_line)
-				c->ass->Events.insert(it, *new_line);
+				c->document->Events.insert(it, *new_line);
 		}
 
-		c->ass->Commit(_("line insertion"), AssFile::COMMIT_DIAG_ADDREM);
+		c->document->Commit(_("line insertion"), ProjectDocument::COMMIT_DIAG_ADDREM);
 		c->selectionController->SetSelectionAndActive({ new_line }, new_line);
 	}
 };
@@ -271,7 +271,8 @@ struct subtitle_open final : public Command {
 	void operator()(agi::Context *c) override {
 		if (!is_okay_to_close_subtitles(c)) return;
 
-		auto filename = OpenFileSelector(_("Open Subtitles File"), "Path/Last/Subtitles", "","", SubtitleFormat::GetWildcards(0), c->parent);
+		auto filename = OpenFileSelector(_("Open Project or Import Subtitles"), "Path/Last/Subtitles", "","",
+			"Aegisub Project (*.aegi)|*.aegi|" + SubtitleFormat::GetWildcards(0), c->parent);
 		if (!filename.empty())
 			load_subtitles(c, filename);
 	}
@@ -344,9 +345,9 @@ struct subtitle_properties final : public Command {
 static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 	if (filename.empty()) {
 		c->videoController->Stop();
-		filename = SaveFileSelector(_("Save Subtitles File"), "Path/Last/Subtitles",
-			c->subsController->Filename().stem().string() + ".ass", "ass",
-			"Advanced Substation Alpha (*.ass)|*.ass", c->parent);
+		filename = SaveFileSelector(_("Save Aegisub Project"), "Path/Last/Subtitles",
+			c->subsController->Filename().stem().string() + ".aegi", "aegi",
+			"Aegisub Project (*.aegi)|*.aegi", c->parent);
 		if (filename.empty()) return;
 	}
 
@@ -364,9 +365,9 @@ static void save_subtitles(agi::Context *c, agi::fs::path filename) {
 struct subtitle_save final : public Command {
 	CMD_NAME("subtitle/save")
 	CMD_ICON(save_toolbutton)
-	STR_MENU("&Save Subtitles")
-	STR_DISP("Save Subtitles")
-	STR_HELP("Save the current subtitles")
+	STR_MENU("&Save Project")
+	STR_DISP("Save Project")
+	STR_HELP("Save the current Aegisub project")
 	CMD_TYPE(COMMAND_VALIDATE)
 
 	void operator()(agi::Context *c) override {
@@ -381,9 +382,9 @@ struct subtitle_save final : public Command {
 struct subtitle_save_as final : public Command {
 	CMD_NAME("subtitle/save/as")
 	CMD_ICON(save_as_toolbutton)
-	STR_MENU("Save Subtitles &as...")
-	STR_DISP("Save Subtitles as")
-	STR_HELP("Save subtitles with another name")
+	STR_MENU("Save Project &as...")
+	STR_DISP("Save Project as")
+	STR_HELP("Save the current project with another name")
 
 	void operator()(agi::Context *c) override {
 		save_subtitles(c, "");
@@ -398,7 +399,7 @@ struct subtitle_select_all final : public Command {
 
 	void operator()(agi::Context *c) override {
 		Selection sel;
-		boost::copy(c->ass->Events | agi::address_of, inserter(sel, sel.end()));
+		boost::copy(c->document->Events | agi::address_of, inserter(sel, sel.end()));
 		c->selectionController->SetSelectedSet(std::move(sel));
 	}
 };
@@ -417,7 +418,7 @@ struct subtitle_select_visible final : public Command {
 		Selection new_selection;
 		int frame = c->videoController->GetFrameN();
 
-		for (auto& diag : c->ass->Events) {
+		for (auto& diag : c->document->Events) {
 			if (c->videoController->FrameAtTime(diag.Start, agi::vfr::START) <= frame &&
 				c->videoController->FrameAtTime(diag.End, agi::vfr::END) >= frame)
 			{

@@ -181,7 +181,7 @@ class SubsEditBox final : public wxPanel {
 	void SetSelectedRows(T AssDialogueBase::*field, wxString const& value, wxString const& desc, int type, bool amend = false);
 
 	/// @brief Reload the current line from the file
-	/// @param type AssFile::COMMITType
+	/// @param type ProjectDocument::COMMITType
 	void OnCommit(int type);
 
 	void UpdateFields(int type, bool repopulate_lists);

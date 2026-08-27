@@ -39,9 +39,9 @@ class wxWindow;
 struct lua_State;
 
 namespace Automation4 {
-	/// @class LuaAssFile
-	/// @brief Object wrapping an AssFile object for modification through Lua
-	class LuaAssFile {
+	/// Object wrapping a ProjectDocument for modification through Lua while
+	/// preserving the Automation 4 subtitles userdata API.
+	class LuaProjectDocument {
 		struct PendingCommit {
 			wxString mesage;
 			int modification_type;
@@ -49,7 +49,7 @@ namespace Automation4 {
 		};
 
 		/// Pointer to file being modified
-		AssFile *ass;
+		ProjectDocument *ass;
 
 		/// Lua state the object exists in
 		lua_State *L;
@@ -110,15 +110,15 @@ namespace Automation4 {
 
 		void LuaSetUndoPoint(lua_State *L);
 
-		// LuaAssFile can only be deleted by the reference count hitting zero
-		~LuaAssFile();
+		// LuaProjectDocument can only be deleted by the reference count hitting zero
+		~LuaProjectDocument();
 	public:
-		static LuaAssFile *GetObjPointer(lua_State *L, int idx, bool allow_expired);
+		static LuaProjectDocument *GetObjPointer(lua_State *L, int idx, bool allow_expired);
 
 		/// makes a Lua representation of AssEntry and places on the top of the stack
 		void AssEntryToLua(lua_State *L, size_t idx);
 		/// assumes a Lua representation of AssEntry on the top of the stack, and creates an AssEntry object of it
-		static std::unique_ptr<AssEntry> LuaToAssEntry(lua_State *L, AssFile *ass=nullptr);
+		static std::unique_ptr<AssEntry> LuaToAssEntry(lua_State *L, ProjectDocument *ass=nullptr);
 
 		std::unique_ptr<AssEntry> LuaToTrackedAssEntry(lua_State *L);
 
@@ -136,7 +136,7 @@ namespace Automation4 {
 		/// @param ass File to wrap
 		/// @param can_modify Is modifying the file allowed?
 		/// @param can_set_undo Is setting undo points allowed?
-		LuaAssFile(lua_State *L, AssFile *ass, bool can_modify = false, bool can_set_undo = false);
+		LuaProjectDocument(lua_State *L, ProjectDocument *ass, bool can_modify = false, bool can_set_undo = false);
 	};
 
 	class LuaProgressSink {

@@ -19,7 +19,7 @@
 #include "include/aegisub/context.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_karaoke.h"
 #include "audio_box.h"
 #include "audio_controller.h"
@@ -56,7 +56,7 @@ static inline size_t last_lt_or_eq(Container const& c, Value const& v) {
 AudioKaraoke::AudioKaraoke(wxWindow *parent, agi::Context *c)
 : wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_SUNKEN)
 , c(c)
-, file_changed(c->ass->AddCommitListener(&AudioKaraoke::OnFileChanged, this))
+, file_changed(c->document->AddCommitListener(&AudioKaraoke::OnFileChanged, this))
 , audio_opened(c->project->AddAudioProviderListener(&AudioKaraoke::OnAudioOpened, this))
 , active_line_changed(c->selectionController->AddActiveLineListener(&AudioKaraoke::OnActiveLineChanged, this))
 , kara(std::make_unique<agi::ass::Karaoke>())
@@ -109,7 +109,7 @@ void AudioKaraoke::OnActiveLineChanged(AssDialogue *new_line) {
 }
 
 void AudioKaraoke::OnFileChanged(int type, const AssDialogue *changed) {
-	if (enabled && (type & AssFile::COMMIT_DIAG_FULL) && (!changed || changed == active_line)) {
+	if (enabled && (type & ProjectDocument::COMMIT_DIAG_FULL) && (!changed || changed == active_line)) {
 		LoadFromLine();
 		split_area->Refresh(false);
 	}
@@ -411,7 +411,7 @@ void AudioKaraoke::CancelSplit() {
 void AudioKaraoke::AcceptSplit() {
 	active_line->Text = kara->GetText();
 	file_changed.Block();
-	c->ass->Commit(_("karaoke split"), AssFile::COMMIT_DIAG_TEXT);
+	c->document->Commit(_("karaoke split"), ProjectDocument::COMMIT_DIAG_TEXT);
 	file_changed.Unblock();
 
 	accept_button->Enable(false);

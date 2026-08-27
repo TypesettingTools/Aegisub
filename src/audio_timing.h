@@ -32,7 +32,7 @@
 /// @ingroup audio_ui
 
 class AssDialogue;
-class AssFile;
+class ProjectDocument;
 class AudioRenderingStyleRanges;
 namespace agi { struct Context; }
 namespace agi::ass { class Karaoke; }

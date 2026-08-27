@@ -29,7 +29,7 @@
 
 #include "auto4_base.h"
 
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "compat.h"
 #include "dialog_progress.h"
@@ -185,7 +185,7 @@ namespace Automation4 {
 		config_dialog = GenerateConfigDialog(parent, c);
 
 		if (config_dialog) {
-			std::string const& val = c->ass->Properties.automation_settings[GetScriptSettingsIdentifier()];
+			std::string const& val = c->document->Properties.automation_settings[GetScriptSettingsIdentifier()];
 			if (!val.empty())
 				config_dialog->Unserialise(val);
 			return config_dialog->CreateWindow(parent);
@@ -196,7 +196,7 @@ namespace Automation4 {
 
 	void ExportFilter::LoadSettings(bool, agi::Context *c) {
 		if (config_dialog)
-			c->ass->Properties.automation_settings[GetScriptSettingsIdentifier()] = config_dialog->Serialise();
+			c->document->Properties.automation_settings[GetScriptSettingsIdentifier()] = config_dialog->Serialise();
 	}
 
 	// ProgressSink
@@ -370,7 +370,7 @@ namespace Automation4 {
 		bool was_empty = scripts.empty();
 		scripts.clear();
 
-		auto const& local_scripts = context->ass->Properties.automation_scripts;
+		auto const& local_scripts = context->document->Properties.automation_scripts;
 
 		// Tuples of (raw script path, base path, resolved path)
 		using PathTuple = std::tuple<std::string, agi::fs::path, agi::fs::path>;
@@ -471,7 +471,7 @@ namespace Automation4 {
 
 			scripts_string += scriptfn;
 		}
-		context->ass->Properties.automation_scripts = std::move(scripts_string);
+		context->document->Properties.automation_scripts = std::move(scripts_string);
 	}
 
 	// ScriptFactory

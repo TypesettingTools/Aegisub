@@ -15,7 +15,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "dialog_manager.h"
 #include "help_button.h"
@@ -258,15 +258,15 @@ bool DialogSpellChecker::FindNext() {
 	if (CheckLine(active_line, start_pos, &commit_id))
 		return true;
 
-	auto it = context->ass->iterator_to(*active_line);
+	auto it = context->document->iterator_to(*active_line);
 
 	// Note that it is deliberate that the start line is checked twice, as if
 	// the cursor is past the first misspelled word in the current line, that
 	// word should be hit last
 	while(!has_looped || active_line != start_line) {
 		// Wrap around to the beginning if we hit the end
-		if (++it == context->ass->Events.end()) {
-			it = context->ass->Events.begin();
+		if (++it == context->document->Events.end()) {
+			it = context->document->Events.begin();
 			has_looped = true;
 		}
 
@@ -326,7 +326,7 @@ bool DialogSpellChecker::CheckLine(AssDialogue *active_line, int start_pos, int 
 
 		text.replace(word_start, word_len, auto_rep->second);
 		active_line->Text = text;
-		*commit_id = context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT, *commit_id);
+		*commit_id = context->document->Commit(_("spell check replace"), ProjectDocument::COMMIT_DIAG_TEXT, *commit_id);
 		word_start += auto_rep->second.size();
 	}
 	return false;
@@ -340,7 +340,7 @@ void DialogSpellChecker::Replace() {
 		std::string text = active_line->Text;
 		text.replace(word_start, word_len, from_wx(replace_word->GetValue()));
 		active_line->Text = text;
-		context->ass->Commit(_("spell check replace"), AssFile::COMMIT_DIAG_TEXT);
+		context->document->Commit(_("spell check replace"), ProjectDocument::COMMIT_DIAG_TEXT);
 		context->textSelectionController->SetInsertionPoint(word_start + replace_word->GetValue().size());
 	}
 }

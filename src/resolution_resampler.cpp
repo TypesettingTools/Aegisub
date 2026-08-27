@@ -17,7 +17,7 @@
 #include "resolution_resampler.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "utils.h"
 
@@ -176,7 +176,7 @@ namespace {
 	}
 }
 
-void ResampleResolution(AssFile *ass, ResampleSettings settings) {
+void ResampleResolution(ProjectDocument *ass, ResampleSettings settings) {
 	auto horizontal_stretch = 1.0;
 	auto old_ar = double(settings.source_x) / settings.source_y;
 	auto new_ar = double(settings.dest_x) / settings.dest_y;
@@ -281,5 +281,5 @@ void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 		ass->SetScriptInfo("LayoutResY", std::to_string(new_lry));
 	}
 
-	ass->Commit(_("resolution resampling"), AssFile::COMMIT_SCRIPTINFO | AssFile::COMMIT_DIAG_FULL);
+	ass->Commit(_("resolution resampling"), ProjectDocument::COMMIT_SCRIPTINFO | ProjectDocument::COMMIT_DIAG_FULL);
 }

@@ -54,9 +54,22 @@ size_t AssAttachment::GetSize() const {
 }
 
 void AssAttachment::Extract(agi::fs::path const& filename) const {
+	auto decoded = GetData();
+	agi::io::Save(filename, true).Get().write(&decoded[0], decoded.size());
+}
+
+std::string AssAttachment::GetData() const {
 	auto header_end = entry_data.get().find('\n');
 	auto decoded = agi::ass::UUDecode(entry_data.get().c_str() + header_end + 1, &entry_data.get().back() + 1);
-	agi::io::Save(filename, true).Get().write(&decoded[0], decoded.size());
+	return {decoded.begin(), decoded.end()};
+}
+
+AssAttachment::AssAttachment(std::string name, AssEntryGroup group, std::string_view data)
+: filename(std::move(name))
+, group(group)
+{
+	entry_data = agi::Str(group == AssEntryGroup::FONT ? "fontname: " : "filename: ", filename.get(), "\r\n",
+		agi::ass::UUEncode(data.data(), data.data() + data.size()));
 }
 
 std::string AssAttachment::GetFileName(bool raw) const {

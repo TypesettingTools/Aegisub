@@ -38,7 +38,7 @@
 #include <memory>
 #include <string>
 
-class AssFile;
+class ProjectDocument;
 class AssExportFilterChain;
 class wxWindow;
 
@@ -69,7 +69,7 @@ public:
 	/// @param subs Subtitles to process
 	/// @param parent_window Window to use as the parent if the filter wishes
 	///                      to open a progress dialog
-	virtual void ProcessSubs(AssFile *subs, wxWindow *parent_window=nullptr)=0;
+	virtual void ProcessSubs(ProjectDocument *subs, wxWindow *parent_window=nullptr)=0;
 
 	/// Draw setup controls
 	/// @param parent Parent window to add controls to

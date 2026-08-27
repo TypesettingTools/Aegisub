@@ -28,7 +28,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "audio_marker.h"
 #include "audio_rendering_style.h"
 #include "audio_timing.h"
@@ -380,7 +380,7 @@ class AudioTimingControllerDialogue final : public AudioTimingController, privat
 
 	void OnSelectedSetChanged();
 
-	// AssFile events
+	// ProjectDocument events
 	void OnFileChanged(int type);
 
 public:
@@ -419,7 +419,7 @@ AudioTimingControllerDialogue::AudioTimingControllerDialogue(agi::Context *c)
 , keyframes_provider(c, "Audio/Display/Draw/Keyframes in Dialogue Mode")
 , video_position_provider(c)
 , context(c)
-, commit_connection(c->ass->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this))
+, commit_connection(c->document->AddCommitListener(&AudioTimingControllerDialogue::OnFileChanged, this))
 , inactive_line_mode_connection(OPT_SUB("Audio/Inactive Lines Display Mode", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
 , inactive_line_comment_connection(OPT_SUB("Audio/Display/Draw/Inactive Comments", &AudioTimingControllerDialogue::RegenerateInactiveLines, this))
 , active_line_connection(c->selectionController->AddActiveLineListener(&AudioTimingControllerDialogue::Revert, this))
@@ -456,9 +456,9 @@ void AudioTimingControllerDialogue::OnSelectedSetChanged()
 }
 
 void AudioTimingControllerDialogue::OnFileChanged(int type) {
-	if (type & AssFile::COMMIT_DIAG_TIME)
+	if (type & ProjectDocument::COMMIT_DIAG_TIME)
 		Revert();
-	else if (type & AssFile::COMMIT_DIAG_ADDREM)
+	else if (type & ProjectDocument::COMMIT_DIAG_ADDREM)
 		RegenerateInactiveLines();
 }
 
@@ -511,13 +511,13 @@ void AudioTimingControllerDialogue::DoCommit(bool user_triggered)
 		commit_connection.Block();
 		if (user_triggered)
 		{
-			context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME);
+			context->document->Commit(_("timing"), ProjectDocument::COMMIT_DIAG_TIME);
 			commit_id = -1; // never coalesce with a manually triggered commit
 		}
 		else
 		{
 			AssDialogue *amend = modified_lines.size() == 1 ? (*modified_lines.begin())->GetLine() : nullptr;
-			commit_id = context->ass->Commit(_("timing"), AssFile::COMMIT_DIAG_TIME, commit_id, amend);
+			commit_id = context->document->Commit(_("timing"), ProjectDocument::COMMIT_DIAG_TIME, commit_id, amend);
 		}
 
 		commit_connection.Unblock();
@@ -721,22 +721,22 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	case 2: // Previous and next lines
 		if (AssDialogue *line = context->selectionController->GetActiveLine())
 		{
-			auto current_line = context->ass->iterator_to(*line);
-			if (current_line == context->ass->Events.end())
+			auto current_line = context->document->iterator_to(*line);
+			if (current_line == context->document->Events.end())
 				break;
 
-			if (current_line != context->ass->Events.begin())
+			if (current_line != context->document->Events.begin())
 			{
 				auto prev = current_line;
-				while (--prev != context->ass->Events.begin() && !predicate(*prev)) ;
+				while (--prev != context->document->Events.begin() && !predicate(*prev)) ;
 				if (predicate(*prev))
 					AddInactiveLine(sel, &*prev);
 			}
 
 			if (mode == 2)
 			{
-				auto next = std::find_if(++current_line, context->ass->Events.end(), predicate);
-				if (next != context->ass->Events.end())
+				auto next = std::find_if(++current_line, context->document->Events.end(), predicate);
+				if (next != context->document->Events.end())
 					AddInactiveLine(sel, &*next);
 			}
 		}
@@ -744,7 +744,7 @@ void AudioTimingControllerDialogue::RegenerateInactiveLines()
 	case 3: // All inactive lines
 	{
 		AssDialogue *active_line = context->selectionController->GetActiveLine();
-		for (auto& line : context->ass->Events)
+		for (auto& line : context->document->Events)
 		{
 			if (&line != active_line && predicate(line))
 				AddInactiveLine(sel, &line);

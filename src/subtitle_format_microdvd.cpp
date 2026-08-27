@@ -35,7 +35,7 @@
 #include "subtitle_format_microdvd.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "options.h"
 #include "text_file_reader.h"
 #include "text_file_writer.h"
@@ -77,7 +77,7 @@ bool MicroDVDSubtitleFormat::CanReadFile(agi::fs::path const& filename, const ch
 	return false;
 }
 
-void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, const char *encoding) const {
+void MicroDVDSubtitleFormat::ReadFile(ProjectDocument *target, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, const char *encoding) const {
 	TextFileReader file(filename, encoding);
 
 	target->LoadDefault(false, OPT_GET("Subtitle Format/MicroDVD/Default Style Catalog")->GetString());
@@ -120,11 +120,11 @@ void MicroDVDSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& file
 	}
 }
 
-void MicroDVDSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, const char *encoding) const {
+void MicroDVDSubtitleFormat::WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const& vfps, const char *encoding) const {
 	agi::vfr::Framerate fps = AskForFPS(true, false, vfps);
 	if (!fps.IsLoaded()) return;
 
-	AssFile copy(*src);
+	ProjectDocument copy(*src);
 	copy.Sort();
 	StripComments(copy);
 	RecombineOverlaps(copy);

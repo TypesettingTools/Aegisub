@@ -17,7 +17,7 @@
 #include "visual_tool.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
@@ -45,7 +45,7 @@ VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
 , line_color_primary_opt(OPT_GET("Colour/Visual Tools/Lines Primary"))
 , line_color_secondary_opt(OPT_GET("Colour/Visual Tools/Lines Secondary"))
 , shaded_area_alpha_opt(OPT_GET("Colour/Visual Tools/Shaded Area Alpha"))
-, file_changed_connection(c->ass->AddCommitListener(&VisualToolBase::OnCommit, this))
+, file_changed_connection(c->document->AddCommitListener(&VisualToolBase::OnCommit, this))
 {
 	SetResolutions();
 	active_line = GetActiveDialogueLine();
@@ -56,8 +56,8 @@ VisualToolBase::VisualToolBase(VideoDisplay *parent, agi::Context *context)
 
 void VisualToolBase::SetResolutions() {
 	int script_w, script_h, layout_w, layout_h;
-	c->ass->GetResolution(script_w, script_h);
-	c->ass->GetEffectiveLayoutResolution(c, layout_w, layout_h);
+	c->document->GetResolution(script_w, script_h);
+	c->document->GetEffectiveLayoutResolution(c, layout_w, layout_h);
 	script_res = Vector2D(script_w, script_h);
 	layout_res = Vector2D(layout_w, layout_h);
 }
@@ -66,12 +66,12 @@ void VisualToolBase::OnCommit(int type) {
 	holding = false;
 	dragging = false;
 
-	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_SCRIPTINFO) {
+	if (type == ProjectDocument::COMMIT_NEW || type & ProjectDocument::COMMIT_SCRIPTINFO) {
 		SetResolutions();
 		OnCoordinateSystemsChanged();
 	}
 
-	if (type & AssFile::COMMIT_DIAG_FULL || type & AssFile::COMMIT_DIAG_ADDREM) {
+	if (type & ProjectDocument::COMMIT_DIAG_FULL || type & ProjectDocument::COMMIT_DIAG_ADDREM) {
 		active_line = GetActiveDialogueLine();
 		OnFileChanged();
 	}
@@ -122,7 +122,7 @@ void VisualToolBase::Commit(wxString message) {
 	if (message.empty())
 		message = _("visual typesetting");
 
-	commit_id = c->ass->Commit(message, AssFile::COMMIT_DIAG_TEXT, commit_id);
+	commit_id = c->document->Commit(message, ProjectDocument::COMMIT_DIAG_TEXT, commit_id);
 	file_changed_connection.Unblock();
 }
 
@@ -367,7 +367,7 @@ Vector2D VisualToolBase::GetLinePosition(AssDialogue *diag) {
 	auto margin = diag->Margin;
 	int align = 2;
 
-	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {
+	if (AssStyle *style = c->document->GetStyle(diag->Style)) {
 		align = style->alignment;
 		for (int i = 0; i < 3; i++) {
 			if (margin[i] == 0)
@@ -432,7 +432,7 @@ bool VisualToolBase::GetLineMove(AssDialogue *diag, Vector2D &p1, Vector2D &p2, 
 void VisualToolBase::GetLineRotation(AssDialogue *diag, float &rx, float &ry, float &rz) {
 	rx = ry = rz = 0.f;
 
-	if (AssStyle *style = c->ass->GetStyle(diag->Style))
+	if (AssStyle *style = c->document->GetStyle(diag->Style))
 		rz = style->angle;
 
 	auto blocks = diag->ParseTags();
@@ -461,7 +461,7 @@ void VisualToolBase::GetLineShear(AssDialogue *diag, float& fax, float& fay) {
 void VisualToolBase::GetLineScale(AssDialogue *diag, Vector2D &scale) {
 	float x = 100.f, y = 100.f;
 
-	if (AssStyle *style = c->ass->GetStyle(diag->Style)) {
+	if (AssStyle *style = c->document->GetStyle(diag->Style)) {
 		x = style->scalex;
 		y = style->scaley;
 	}

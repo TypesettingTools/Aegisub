@@ -28,7 +28,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "async_video_provider.h"
 #include "compat.h"
 #include "format.h"
@@ -156,7 +156,7 @@ DialogTimingProcessor::DialogTimingProcessor(agi::Context *c)
 	// Styles box
 	auto LeftSizer = new wxStaticBoxSizer(wxVERTICAL,&d,_("Apply to styles"));
 	wxWindow *LeftSizerBox = LeftSizer->GetStaticBox();
-	StyleList = new wxCheckListBox(LeftSizerBox, -1, wxDefaultPosition, wxSize(150,150), to_wx(c->ass->GetStyles()));
+	StyleList = new wxCheckListBox(LeftSizerBox, -1, wxDefaultPosition, wxSize(150,150), to_wx(c->document->GetStyles()));
 	StyleList->SetToolTip(_("Select styles to process. Unchecked ones will be ignored."));
 
 	auto all = new wxButton(LeftSizerBox,-1,_("&All"));
@@ -341,8 +341,8 @@ std::vector<AssDialogue*> DialogTimingProcessor::SortDialogues() {
 		boost::copy(c->selectionController->GetSelectedSet() | filtered(valid_line),
 		    back_inserter(sorted));
 	else {
-		sorted.reserve(c->ass->Events.size());
-		boost::push_back(sorted, c->ass->Events | agi::address_of | filtered(valid_line));
+		sorted.reserve(c->document->Events.size());
+		boost::push_back(sorted, c->document->Events | agi::address_of | filtered(valid_line));
 	}
 
 	// Check if rows are valid
@@ -445,7 +445,7 @@ void DialogTimingProcessor::Process() {
 		}
 	}
 
-	c->ass->Commit(_("timing processor"), AssFile::COMMIT_DIAG_TIME);
+	c->document->Commit(_("timing processor"), ProjectDocument::COMMIT_DIAG_TIME);
 }
 }
 

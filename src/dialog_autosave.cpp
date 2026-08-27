@@ -91,9 +91,9 @@ DialogAutosave::DialogAutosave(wxWindow *parent)
 	d.SetSizer(main_sizer);
 
 	std::map<wxString, AutosaveFile> files_map;
-	Populate(files_map, OPT_GET("Path/Auto/Save")->GetString(), ".AUTOSAVE.ass", "%s");
-	Populate(files_map, OPT_GET("Path/Auto/Backup")->GetString(), ".ORIGINAL.ass", _("%s [ORIGINAL BACKUP]"));
-	Populate(files_map, "?user/recovered", ".ass", _("%s [RECOVERED]"));
+	Populate(files_map, OPT_GET("Path/Auto/Save")->GetString(), ".AUTOSAVE.aegi", "%s");
+	Populate(files_map, OPT_GET("Path/Auto/Backup")->GetString(), ".ORIGINAL.aegi", _("%s [ORIGINAL BACKUP]"));
+	Populate(files_map, "?user/recovered", ".aegi", _("%s [RECOVERED]"));
 
 	for (auto& file : files_map | boost::adaptors::map_values)
 		files.emplace_back(std::move(file));

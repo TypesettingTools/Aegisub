@@ -18,7 +18,7 @@
 
 #include <libaegisub/ycbcr.h>
 
-class AssFile;
+class ProjectDocument;
 
 enum class ResampleARMode {
 	Stretch,
@@ -41,4 +41,4 @@ struct ResampleSettings {
 /// Resample the subtitles in the project
 /// @param file Subtitles to resample
 /// @param settings Resample configuration settings
-void ResampleResolution(AssFile *file, ResampleSettings settings);
+void ResampleResolution(ProjectDocument *file, ResampleSettings settings);

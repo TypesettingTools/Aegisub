@@ -35,7 +35,7 @@
 #include "subs_edit_box.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "base_grid.h"
 #include "command/command.h"
 #include "compat.h"
@@ -231,7 +231,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	wxSizeEvent evt;
 	OnSize(evt);
 
-	file_changed_slot = c->ass->AddCommitListener(&SubsEditBox::OnCommit, this);
+	file_changed_slot = c->document->AddCommitListener(&SubsEditBox::OnCommit, this);
 	connections = agi::signal::make_vector({
 		context->project->AddTimecodesListener(&SubsEditBox::UpdateFrameTiming, this),
 		context->selectionController->AddActiveLineListener(&SubsEditBox::OnActiveLineChanged, this),
@@ -263,7 +263,7 @@ wxTextCtrl *SubsEditBox::MakeMarginCtrl(wxString const& tooltip, int margin, wxS
 	Bind(wxEVT_TEXT, [=, this](wxCommandEvent&) {
 		int value = agi::util::mid(-9999, atoi(ctrl->GetValue().utf8_str()), 99999);
 		SetSelectedRows([&](AssDialogue *d) { d->Margin[margin] = value; },
-			commit_msg, AssFile::COMMIT_DIAG_META);
+			commit_msg, ProjectDocument::COMMIT_DIAG_META);
 	}, ctrl->GetId());
 
 	return ctrl;
@@ -320,23 +320,23 @@ void SubsEditBox::OnCommit(int type) {
 
 	initial_times.clear();
 
-	if (type == AssFile::COMMIT_NEW || type & AssFile::COMMIT_STYLES) {
+	if (type == ProjectDocument::COMMIT_NEW || type & ProjectDocument::COMMIT_STYLES) {
 		wxString style = style_box->GetValue();
 		style_box->Clear();
-		style_box->Append(to_wx(c->ass->GetStyles()));
+		style_box->Append(to_wx(c->document->GetStyles()));
 		style_box->Select(style_box->FindString(style));
-		active_style = line ? c->ass->GetStyle(line->Style) : nullptr;
+		active_style = line ? c->document->GetStyle(line->Style) : nullptr;
 	}
 
-	if (type == AssFile::COMMIT_NEW) {
+	if (type == ProjectDocument::COMMIT_NEW) {
 		PopulateList(effect_box, AssDialogue_Effect);
 		PopulateList(actor_box, AssDialogue_Actor);
 		return;
 	}
-	else if (type & AssFile::COMMIT_STYLES)
+	else if (type & ProjectDocument::COMMIT_STYLES)
 		style_box->Select(style_box->FindString(to_wx(line->Style)));
 
-	if (!(type ^ AssFile::COMMIT_ORDER)) return;
+	if (!(type ^ ProjectDocument::COMMIT_ORDER)) return;
 
 	SetControlsState(!!line);
 	UpdateFields(type, true);
@@ -345,24 +345,24 @@ void SubsEditBox::OnCommit(int type) {
 void SubsEditBox::UpdateFields(int type, bool repopulate_lists) {
 	if (!line) return;
 
-	if (type & AssFile::COMMIT_DIAG_TIME) {
+	if (type & ProjectDocument::COMMIT_DIAG_TIME) {
 		start_time->SetTime(line->Start);
 		end_time->SetTime(line->End);
 		SetDurationField();
 	}
 
-	if (type & AssFile::COMMIT_DIAG_TEXT) {
+	if (type & ProjectDocument::COMMIT_DIAG_TEXT) {
 		edit_ctrl->SetTextTo(line->Text);
 		UpdateCharacterCount(line->Text);
 	}
 
-	if (type & AssFile::COMMIT_DIAG_META) {
+	if (type & ProjectDocument::COMMIT_DIAG_META) {
 		layer->SetValue(line->Layer);
 		for (size_t i = 0; i < margin.size(); ++i)
 			change_value(margin[i], std::to_wstring(line->Margin[i]));
 		comment_box->SetValue(line->Comment);
 		style_box->Select(style_box->FindString(to_wx(line->Style)));
-		active_style = line ? c->ass->GetStyle(line->Style) : nullptr;
+		active_style = line ? c->document->GetStyle(line->Style) : nullptr;
 		style_edit_button->Enable(active_style != nullptr);
 
 		if (repopulate_lists) PopulateList(effect_box, AssDialogue_Effect);
@@ -379,7 +379,7 @@ void SubsEditBox::PopulateList(wxComboBox *combo, boost::flyweight<std::string> 
 	wxEventBlocker blocker(this);
 
 	std::unordered_set<boost::flyweight<std::string>> values;
-	for (auto const& line : c->ass->Events) {
+	for (auto const& line : c->document->Events) {
 		auto const& value = line.*field;
 		if (!value.get().empty())
 			values.insert(value);
@@ -408,7 +408,7 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 	line = new_line;
 	commit_id = -1;
 
-	UpdateFields(AssFile::COMMIT_DIAG_FULL, false);
+	UpdateFields(ProjectDocument::COMMIT_DIAG_FULL, false);
 }
 
 void SubsEditBox::OnSelectedSetChanged() {
@@ -450,7 +450,7 @@ void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 
 void SubsEditBox::Commit(wxString const& desc, int type, bool amend, AssDialogue *line) {
 	file_changed_slot.Block();
-	commit_id = c->ass->Commit(desc, type, (amend && desc == last_commit_type) ? commit_id : -1, line);
+	commit_id = c->document->Commit(desc, type, (amend && desc == last_commit_type) ? commit_id : -1, line);
 	file_changed_slot.Unblock();
 	last_commit_type = desc;
 	last_time_commit_type = -1;
@@ -478,7 +478,7 @@ void SubsEditBox::SetSelectedRows(T AssDialogueBase::*field, wxString const& val
 
 void SubsEditBox::CommitText(wxString const& desc) {
 	auto data = edit_ctrl->GetTextRaw();
-	SetSelectedRows(&AssDialogue::Text, boost::flyweight<std::string>(data.data(), data.length()), desc, AssFile::COMMIT_DIAG_TEXT, true);
+	SetSelectedRows(&AssDialogue::Text, boost::flyweight<std::string>(data.data(), data.length()), desc, ProjectDocument::COMMIT_DIAG_TEXT, true);
 }
 
 void SubsEditBox::CommitTimes(TimeField field) {
@@ -521,7 +521,7 @@ void SubsEditBox::CommitTimes(TimeField field) {
 
 	last_time_commit_type = field;
 	file_changed_slot.Block();
-	commit_id = c->ass->Commit(_("modify times"), AssFile::COMMIT_DIAG_TIME, commit_id, sel.size() == 1 ? *sel.begin() : nullptr);
+	commit_id = c->document->Commit(_("modify times"), ProjectDocument::COMMIT_DIAG_TIME, commit_id, sel.size() == 1 ? *sel.begin() : nullptr);
 	file_changed_slot.Unblock();
 }
 
@@ -602,28 +602,28 @@ void SubsEditBox::DoOnSplit(bool show_original) {
 }
 
 void SubsEditBox::OnStyleChange(wxCommandEvent &evt) {
-	SetSelectedRows(&AssDialogue::Style, new_value(style_box, evt), _("style change"), AssFile::COMMIT_DIAG_META);
-	active_style = c->ass->GetStyle(line->Style);
+	SetSelectedRows(&AssDialogue::Style, new_value(style_box, evt), _("style change"), ProjectDocument::COMMIT_DIAG_META);
+	active_style = c->document->GetStyle(line->Style);
 }
 
 void SubsEditBox::OnActorChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_TEXT;
-	SetSelectedRows(AssDialogue_Actor, new_value(actor_box, evt), _("actor change"), AssFile::COMMIT_DIAG_META, amend);
+	SetSelectedRows(AssDialogue_Actor, new_value(actor_box, evt), _("actor change"), ProjectDocument::COMMIT_DIAG_META, amend);
 	PopulateList(actor_box, AssDialogue_Actor);
 }
 
 void SubsEditBox::OnLayerEnter(wxCommandEvent &evt) {
-	SetSelectedRows(&AssDialogue::Layer, evt.GetInt(), _("layer change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(&AssDialogue::Layer, evt.GetInt(), _("layer change"), ProjectDocument::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::OnEffectChange(wxCommandEvent &evt) {
 	bool amend = evt.GetEventType() == wxEVT_TEXT;
-	SetSelectedRows(AssDialogue_Effect, new_value(effect_box, evt), _("effect change"), AssFile::COMMIT_DIAG_META, amend);
+	SetSelectedRows(AssDialogue_Effect, new_value(effect_box, evt), _("effect change"), ProjectDocument::COMMIT_DIAG_META, amend);
 	PopulateList(effect_box, AssDialogue_Effect);
 }
 
 void SubsEditBox::OnCommentChange(wxCommandEvent &evt) {
-	SetSelectedRows(&AssDialogue::Comment, !!evt.GetInt(), _("comment change"), AssFile::COMMIT_DIAG_META);
+	SetSelectedRows(&AssDialogue::Comment, !!evt.GetInt(), _("comment change"), ProjectDocument::COMMIT_DIAG_META);
 }
 
 void SubsEditBox::CallCommand(const char *cmd_name) {

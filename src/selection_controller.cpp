@@ -17,7 +17,7 @@
 #include "selection_controller.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "include/aegisub/context.h"
 #include "subs_controller.h"
 
@@ -34,7 +34,7 @@ void SelectionController::SetActiveLine(AssDialogue *new_line) {
 	if (new_line != active_line) {
 		active_line = new_line;
 		if (active_line)
-			context->ass->Properties.active_row = active_line->Row;
+			context->document->Properties.active_row = active_line->Row;
 		AnnounceActiveLineChanged(new_line);
 	}
 }
@@ -44,7 +44,7 @@ void SelectionController::SetSelectionAndActive(Selection new_selection, AssDial
 	selection = std::move(new_selection);
 	active_line = new_line;
 	if (active_line)
-		context->ass->Properties.active_row = active_line->Row;
+		context->document->Properties.active_row = active_line->Row;
 
 	AnnounceSelectedSetChanged();
 	if (active_line_changed)
@@ -59,8 +59,8 @@ std::vector<AssDialogue *> SelectionController::GetSortedSelection() const {
 
 void SelectionController::PrevLine() {
 	if (!active_line) return;
-	auto it = context->ass->iterator_to(*active_line);
-	if (it != context->ass->Events.begin()) {
+	auto it = context->document->iterator_to(*active_line);
+	if (it != context->document->Events.begin()) {
 		--it;
 		SetSelectionAndActive({&*it}, &*it);
 	}
@@ -68,7 +68,7 @@ void SelectionController::PrevLine() {
 
 void SelectionController::NextLine() {
 	if (!active_line) return;
-	auto it = context->ass->iterator_to(*active_line);
-	if (++it != context->ass->Events.end())
+	auto it = context->document->iterator_to(*active_line);
+	if (++it != context->document->Events.end())
 		SetSelectionAndActive({&*it}, &*it);
 }

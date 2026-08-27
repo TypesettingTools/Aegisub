@@ -17,7 +17,7 @@
 #include "async_video_provider.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "export_fixstyle.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
@@ -170,10 +170,10 @@ AsyncVideoProvider::~AsyncVideoProvider() {
 	worker->Sync([]{});
 }
 
-void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
+void AsyncVideoProvider::LoadSubtitles(const ProjectDocument *new_subs) throw() {
 	uint_fast32_t req_version = ++version;
 
-	auto copy = new AssFile(*new_subs);
+	auto copy = new ProjectDocument(*new_subs);
 	worker->Async([=, this]{
 		subs.reset(copy);
 		single_frame = NEW_SUBS_FILE;

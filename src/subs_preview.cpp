@@ -33,7 +33,7 @@
 ///
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "dialog_progress.h"
 #include "subs_preview.h"
@@ -49,7 +49,7 @@ SubtitlesPreview::SubtitlesPreview(wxWindow *parent, wxSize size, int winStyle, 
 : wxWindow(parent, -1, wxDefaultPosition, size, winStyle)
 , style(new AssStyle)
 , back_color(col)
-, sub_file(std::make_unique<AssFile>())
+, sub_file(std::make_unique<ProjectDocument>())
 , line(new AssDialogue)
 {
 	line->Text = "{\\q2}preview";

@@ -36,7 +36,7 @@
 
 #include "ass_dialogue.h"
 #include "ass_info.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_karaoke.h"
 #include "ass_style.h"
 #include "compat.h"
@@ -112,26 +112,26 @@ namespace {
 	}
 
 	using namespace Automation4;
-	template<int (LuaAssFile::*closure)(lua_State *)>
+	template<int (LuaProjectDocument::*closure)(lua_State *)>
 	int closure_wrapper(lua_State *L)
 	{
-		return (LuaAssFile::GetObjPointer(L, lua_upvalueindex(1), false)->*closure)(L);
+		return (LuaProjectDocument::GetObjPointer(L, lua_upvalueindex(1), false)->*closure)(L);
 	}
 
-	template<void (LuaAssFile::*closure)(lua_State *), bool allow_expired>
+	template<void (LuaProjectDocument::*closure)(lua_State *), bool allow_expired>
 	int closure_wrapper_v(lua_State *L)
 	{
-		(LuaAssFile::GetObjPointer(L, lua_upvalueindex(1), allow_expired)->*closure)(L);
+		(LuaProjectDocument::GetObjPointer(L, lua_upvalueindex(1), allow_expired)->*closure)(L);
 		return 0;
 	}
 
 	int modification_mask(AssEntry *e)
 	{
-		if (!e) return AssFile::COMMIT_SCRIPTINFO;
+		if (!e) return ProjectDocument::COMMIT_SCRIPTINFO;
 		switch (e->Group()) {
-			case AssEntryGroup::DIALOGUE: return AssFile::COMMIT_DIAG_ADDREM;
-			case AssEntryGroup::STYLE:    return AssFile::COMMIT_STYLES;
-			default:                      return AssFile::COMMIT_SCRIPTINFO;
+			case AssEntryGroup::DIALOGUE: return ProjectDocument::COMMIT_DIAG_ADDREM;
+			case AssEntryGroup::STYLE:    return ProjectDocument::COMMIT_STYLES;
+			default:                      return ProjectDocument::COMMIT_SCRIPTINFO;
 		}
 	}
 
@@ -142,21 +142,21 @@ namespace {
 }
 
 namespace Automation4 {
-	LuaAssFile::~LuaAssFile() = default;
+	LuaProjectDocument::~LuaProjectDocument() = default;
 
-	void LuaAssFile::CheckAllowModify()
+	void LuaProjectDocument::CheckAllowModify()
 	{
 		if (!can_modify)
 			error(L, "Attempt to modify subtitles in read-only feature context.");
 	}
 
-	void LuaAssFile::CheckBounds(int idx)
+	void LuaProjectDocument::CheckBounds(int idx)
 	{
 		if (idx <= 0 || idx > (int)lines.size())
 			error(L, "Requested out-of-range line from subtitle file: %d", idx);
 	}
 
-	void LuaAssFile::AssEntryToLua(lua_State *L, size_t idx)
+	void LuaProjectDocument::AssEntryToLua(lua_State *L, size_t idx)
 	{
 		lua_newtable(L);
 
@@ -249,7 +249,7 @@ namespace Automation4 {
 		}
 	}
 
-	std::unique_ptr<AssEntry> LuaAssFile::LuaToAssEntry(lua_State *L, AssFile *ass)
+	std::unique_ptr<AssEntry> LuaProjectDocument::LuaToAssEntry(lua_State *L, ProjectDocument *ass)
 	{
 		// assume an assentry table is on the top of the stack
 		// convert it to a real AssEntry object, and pop the table from the stack
@@ -298,7 +298,7 @@ namespace Automation4 {
 			sty->UpdateData();
 		}
 		else if (lclass == "dialogue") {
-			assert(ass != nullptr); // since we need AssFile::AddExtradata
+			assert(ass != nullptr); // since we need ProjectDocument::AddExtradata
 			auto dia = new AssDialogue;
 			result.reset(dia);
 
@@ -340,13 +340,13 @@ namespace Automation4 {
 		return result;
 	}
 
-	std::unique_ptr<AssEntry> LuaAssFile::LuaToTrackedAssEntry(lua_State *L) {
+	std::unique_ptr<AssEntry> LuaProjectDocument::LuaToTrackedAssEntry(lua_State *L) {
 		std::unique_ptr<AssEntry> e = LuaToAssEntry(L, ass);
 		allocated_lines.push_back(e.get());
 		return e;
 	}
 
-	int LuaAssFile::ObjectIndexRead(lua_State *L)
+	int LuaProjectDocument::ObjectIndexRead(lua_State *L)
 	{
 		switch (lua_type(L, 2)) {
 			case LUA_TNUMBER:
@@ -371,15 +371,15 @@ namespace Automation4 {
 
 				lua_pushvalue(L, 1);
 				if (strcmp(idx, "delete") == 0)
-					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectDelete, false>, 1);
+					lua_pushcclosure(L, closure_wrapper_v<&LuaProjectDocument::ObjectDelete, false>, 1);
 				else if (strcmp(idx, "deleterange") == 0)
-					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectDeleteRange, false>, 1);
+					lua_pushcclosure(L, closure_wrapper_v<&LuaProjectDocument::ObjectDeleteRange, false>, 1);
 				else if (strcmp(idx, "insert") == 0)
-					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectInsert, false>, 1);
+					lua_pushcclosure(L, closure_wrapper_v<&LuaProjectDocument::ObjectInsert, false>, 1);
 				else if (strcmp(idx, "append") == 0)
-					lua_pushcclosure(L, closure_wrapper_v<&LuaAssFile::ObjectAppend, false>, 1);
+					lua_pushcclosure(L, closure_wrapper_v<&LuaProjectDocument::ObjectAppend, false>, 1);
 				else if (strcmp(idx, "script_resolution") == 0)
-					lua_pushcclosure(L, closure_wrapper<&LuaAssFile::LuaGetScriptResolution>, 1);
+					lua_pushcclosure(L, closure_wrapper<&LuaProjectDocument::LuaGetScriptResolution>, 1);
 				else {
 					// idiot
 					lua_pop(L, 1);
@@ -398,7 +398,7 @@ namespace Automation4 {
 		return 0;
 	}
 
-	void LuaAssFile::InitScriptInfoIfNeeded()
+	void LuaProjectDocument::InitScriptInfoIfNeeded()
 	{
 		if (script_info_copied) return;
 		size_t i = 0;
@@ -412,7 +412,7 @@ namespace Automation4 {
 		script_info_copied = true;
 	}
 
-	void LuaAssFile::QueueLineForDeletion(size_t idx)
+	void LuaProjectDocument::QueueLineForDeletion(size_t idx)
 	{
 		if (!lines[idx] || lines[idx]->Group() == AssEntryGroup::INFO)
 			InitScriptInfoIfNeeded();
@@ -420,7 +420,7 @@ namespace Automation4 {
 			lines_to_delete.emplace_back(lines[idx]);
 	}
 
-	void LuaAssFile::AssignLine(size_t idx, std::unique_ptr<AssEntry> e)
+	void LuaProjectDocument::AssignLine(size_t idx, std::unique_ptr<AssEntry> e)
 	{
 		auto group = e->Group();
 		if (group == AssEntryGroup::INFO)
@@ -432,7 +432,7 @@ namespace Automation4 {
 			e.release();
 	}
 
-	void LuaAssFile::InsertLine(std::vector<AssEntry *> &vec, size_t idx, std::unique_ptr<AssEntry> e)
+	void LuaProjectDocument::InsertLine(std::vector<AssEntry *> &vec, size_t idx, std::unique_ptr<AssEntry> e)
 	{
 		auto group = e->Group();
 		if (group == AssEntryGroup::INFO)
@@ -444,7 +444,7 @@ namespace Automation4 {
 			e.release();
 	}
 
-	void LuaAssFile::ObjectIndexWrite(lua_State *L)
+	void LuaProjectDocument::ObjectIndexWrite(lua_State *L)
 	{
 		// instead of implementing everything twice, just call the other modification-functions from here
 		// after modifying the stack to match their expectations
@@ -485,13 +485,13 @@ namespace Automation4 {
 		}
 	}
 
-	int LuaAssFile::ObjectGetLen(lua_State *L)
+	int LuaProjectDocument::ObjectGetLen(lua_State *L)
 	{
 		lua_pushnumber(L, lines.size());
 		return 1;
 	}
 
-	void LuaAssFile::ObjectDelete(lua_State *L)
+	void LuaProjectDocument::ObjectDelete(lua_State *L)
 	{
 		CheckAllowModify();
 
@@ -535,7 +535,7 @@ namespace Automation4 {
 		lines.erase(lines.begin() + out, lines.end());
 	}
 
-	void LuaAssFile::ObjectDeleteRange(lua_State *L)
+	void LuaProjectDocument::ObjectDeleteRange(lua_State *L)
 	{
 		CheckAllowModify();
 
@@ -552,7 +552,7 @@ namespace Automation4 {
 		lines.erase(lines.begin() + a, lines.begin() + b);
 	}
 
-	void LuaAssFile::ObjectAppend(lua_State *L)
+	void LuaProjectDocument::ObjectAppend(lua_State *L)
 	{
 		CheckAllowModify();
 
@@ -583,7 +583,7 @@ namespace Automation4 {
 		}
 	}
 
-	void LuaAssFile::ObjectInsert(lua_State *L)
+	void LuaProjectDocument::ObjectInsert(lua_State *L)
 	{
 		CheckAllowModify();
 
@@ -612,23 +612,23 @@ namespace Automation4 {
 		lines.insert(lines.begin() + before - 1, new_entries.begin(), new_entries.end());
 	}
 
-	void LuaAssFile::ObjectGarbageCollect(lua_State *)
+	void LuaProjectDocument::ObjectGarbageCollect(lua_State *)
 	{
 		references--;
 		if (!references) delete this;
-		LOG_D("automation/lua") << "Garbage collected LuaAssFile";
+		LOG_D("automation/lua") << "Garbage collected LuaProjectDocument";
 	}
 
-	int LuaAssFile::ObjectIPairs(lua_State *L)
+	int LuaProjectDocument::ObjectIPairs(lua_State *L)
 	{
 		lua_pushvalue(L, lua_upvalueindex(1)); // push 'this' as userdata
-		lua_pushcclosure(L, closure_wrapper<&LuaAssFile::IterNext>, 1);
+		lua_pushcclosure(L, closure_wrapper<&LuaProjectDocument::IterNext>, 1);
 		lua_pushnil(L);
 		push_value(L, 0);
 		return 3;
 	}
 
-	int LuaAssFile::IterNext(lua_State *L)
+	int LuaProjectDocument::IterNext(lua_State *L)
 	{
 		size_t i = check_uint(L, 2);
 		if (i >= lines.size()) {
@@ -641,7 +641,7 @@ namespace Automation4 {
 		return 2;
 	}
 
-	int LuaAssFile::LuaParseKaraokeData(lua_State *L)
+	int LuaProjectDocument::LuaParseKaraokeData(lua_State *L)
 	{
 		auto e = LuaToAssEntry(L, ass);
 		auto dia = check_cast_constptr<AssDialogue>(e.get());
@@ -677,7 +677,7 @@ namespace Automation4 {
 		return 1;
 	}
 
-	int LuaAssFile::LuaGetScriptResolution(lua_State *L)
+	int LuaProjectDocument::LuaGetScriptResolution(lua_State *L)
 	{
 		int w, h;
 		ass->GetResolution(w, h);
@@ -686,7 +686,7 @@ namespace Automation4 {
 		return 2;
 	}
 
-	void LuaAssFile::LuaSetUndoPoint(lua_State *L)
+	void LuaProjectDocument::LuaSetUndoPoint(lua_State *L)
 	{
 		if (!can_set_undo)
 			error(L, "Attempt to set an undo point in a context where it makes no sense to do so.");
@@ -702,17 +702,17 @@ namespace Automation4 {
 		}
 	}
 
-	LuaAssFile *LuaAssFile::GetObjPointer(lua_State *L, int idx, bool allow_expired)
+	LuaProjectDocument *LuaProjectDocument::GetObjPointer(lua_State *L, int idx, bool allow_expired)
 	{
 		assert(lua_type(L, idx) == LUA_TUSERDATA);
 		auto ud = lua_touserdata(L, idx);
-		auto laf = *static_cast<LuaAssFile **>(ud);
+		auto laf = *static_cast<LuaProjectDocument **>(ud);
 		if (!allow_expired && laf->references < 2)
 			error(L, "Subtitles object is no longer valid");
 		return laf;
 	}
 
-	std::vector<AssEntry *> LuaAssFile::ProcessingComplete(wxString const& undo_description)
+	std::vector<AssEntry *> LuaProjectDocument::ProcessingComplete(wxString const& undo_description)
 	{
 		auto apply_lines = [&](std::vector<AssEntry *> const& lines) {
 			if (script_info_copied)
@@ -750,7 +750,7 @@ namespace Automation4 {
 		return ret;
 	}
 
-	void LuaAssFile::Cancel()
+	void LuaProjectDocument::Cancel()
 	{
 		for (auto& line : lines_to_delete) line.release();
 		for (AssEntry *line : allocated_lines) delete line;
@@ -758,7 +758,7 @@ namespace Automation4 {
 		if (!references) delete this;
 	}
 
-	LuaAssFile::LuaAssFile(lua_State *L, AssFile *ass, bool can_modify, bool can_set_undo)
+	LuaProjectDocument::LuaProjectDocument(lua_State *L, ProjectDocument *ass, bool can_modify, bool can_set_undo)
 	: ass(ass)
 	, L(L)
 	, can_modify(can_modify)
@@ -772,23 +772,23 @@ namespace Automation4 {
 			lines.push_back(&line);
 
 		// prepare userdata object
-		*static_cast<LuaAssFile**>(lua_newuserdata(L, sizeof(LuaAssFile*))) = this;
+		*static_cast<LuaProjectDocument**>(lua_newuserdata(L, sizeof(LuaProjectDocument*))) = this;
 
 		// make the metatable
 		lua_createtable(L, 0, 5);
-		set_field<closure_wrapper<&LuaAssFile::ObjectIndexRead>>(L, "__index");
-		set_field<closure_wrapper_v<&LuaAssFile::ObjectIndexWrite, false>>(L, "__newindex");
-		set_field<closure_wrapper<&LuaAssFile::ObjectGetLen>>(L, "__len");
-		set_field<closure_wrapper_v<&LuaAssFile::ObjectGarbageCollect, true>>(L, "__gc");
-		set_field<closure_wrapper<&LuaAssFile::ObjectIPairs>>(L, "__ipairs");
+		set_field<closure_wrapper<&LuaProjectDocument::ObjectIndexRead>>(L, "__index");
+		set_field<closure_wrapper_v<&LuaProjectDocument::ObjectIndexWrite, false>>(L, "__newindex");
+		set_field<closure_wrapper<&LuaProjectDocument::ObjectGetLen>>(L, "__len");
+		set_field<closure_wrapper_v<&LuaProjectDocument::ObjectGarbageCollect, true>>(L, "__gc");
+		set_field<closure_wrapper<&LuaProjectDocument::ObjectIPairs>>(L, "__ipairs");
 		lua_setmetatable(L, -2);
 
 		// register misc functions
 		// assume the "aegisub" global table exists
 		lua_getglobal(L, "aegisub");
 
-		set_field<closure_wrapper<&LuaAssFile::LuaParseKaraokeData>>(L, "parse_karaoke_data");
-		set_field<closure_wrapper_v<&LuaAssFile::LuaSetUndoPoint, false>>(L, "set_undo_point");
+		set_field<closure_wrapper<&LuaProjectDocument::LuaParseKaraokeData>>(L, "parse_karaoke_data");
+		set_field<closure_wrapper_v<&LuaProjectDocument::LuaSetUndoPoint, false>>(L, "set_undo_point");
 
 		lua_pop(L, 1); // pop "aegisub" table
 

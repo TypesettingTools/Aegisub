@@ -17,7 +17,7 @@
 #include "grid_column.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "options.h"
@@ -111,9 +111,9 @@ struct GridColumnLineNumber final : GridColumn {
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
-		if (c->ass->Events.empty())
+		if (c->document->Events.empty())
 			return helper("1");
-		return helper(Value(&c->ass->Events.back()));
+		return helper(Value(&c->document->Events.back()));
 	}
 };
 
@@ -137,7 +137,7 @@ struct GridColumnLayer final : GridColumn {
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
-		int max_layer = max_value(&AssDialogue::Layer, c->ass->Events);
+		int max_layer = max_value(&AssDialogue::Layer, c->document->Events);
 		return max_layer == 0 ? 0 : helper(std::to_wstring(max_layer));
 	}
 };
@@ -162,7 +162,7 @@ struct GridColumnStartTime final : GridColumnTime {
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		if (!by_frame)
 			return helper(wxS("0:00:00.00"));
-		int frame = c->videoController->FrameAtTime(max_value(&AssDialogue::Start, c->ass->Events), agi::vfr::START);
+		int frame = c->videoController->FrameAtTime(max_value(&AssDialogue::Start, c->document->Events), agi::vfr::START);
 		return helper(std::to_wstring(frame));
 	}
 };
@@ -180,7 +180,7 @@ struct GridColumnEndTime final : GridColumnTime {
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		if (!by_frame)
 			return helper(wxS("0:00:00.00"));
-		int frame = c->videoController->FrameAtTime(max_value(&AssDialogue::End, c->ass->Events), agi::vfr::END);
+		int frame = c->videoController->FrameAtTime(max_value(&AssDialogue::End, c->document->Events), agi::vfr::END);
 		return helper(std::to_wstring(frame));
 	}
 };
@@ -208,7 +208,7 @@ struct GridColumnStyle final : GridColumn {
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
-		return max_width(&AssDialogue::Style, c->ass->Events, helper);
+		return max_width(&AssDialogue::Style, c->document->Events, helper);
 	}
 };
 
@@ -222,7 +222,7 @@ struct GridColumnEffect final : GridColumn {
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
-		return max_width(&AssDialogue::Effect, c->ass->Events, helper);
+		return max_width(&AssDialogue::Effect, c->document->Events, helper);
 	}
 };
 
@@ -236,7 +236,7 @@ struct GridColumnActor final : GridColumn {
 	}
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
-		return max_width(&AssDialogue::Actor, c->ass->Events, helper);
+		return max_width(&AssDialogue::Actor, c->document->Events, helper);
 	}
 };
 
@@ -252,7 +252,7 @@ struct GridColumnMargin : GridColumn {
 
 	int Width(const agi::Context *c, WidthHelper &helper) const override {
 		int max = 0;
-		for (AssDialogue const& line : c->ass->Events) {
+		for (AssDialogue const& line : c->document->Events) {
 			if (line.Margin[index] > max)
 				max = line.Margin[index];
 		}

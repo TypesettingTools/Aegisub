@@ -16,7 +16,7 @@
 
 #include <memory>
 
-class AssFile;
+class ProjectDocument;
 class AudioBox;
 class AudioController;
 class AssDialogue;
@@ -41,7 +41,7 @@ class Path;
 struct Context {
 	// Note: order here matters quite a bit, as things need to be set up and
     // torn down in the correct order
-	std::unique_ptr<AssFile> ass;
+	std::unique_ptr<ProjectDocument> document;
 	std::unique_ptr<TextSelectionController> textSelectionController;
 	std::unique_ptr<SubsController> subsController;
 	std::unique_ptr<Project> project;

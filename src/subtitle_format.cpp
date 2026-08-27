@@ -35,7 +35,7 @@
 #include "subtitle_format.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "format.h"
 #include "subtitle_format_ass.h"
@@ -79,7 +79,7 @@ bool SubtitleFormat::CanWriteFile(agi::fs::path const& filename) const {
 		[&](std::string const& ext) { return agi::fs::HasExtension(filename, ext); });
 }
 
-bool SubtitleFormat::CanSave(const AssFile *subs) const {
+bool SubtitleFormat::CanSave(const ProjectDocument *subs) const {
 	if (!subs->Attachments.empty())
 		return false;
 
@@ -154,12 +154,12 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte, a
 	throw agi::InternalError("Out of bounds result from wxGetSingleChoiceIndex?");
 }
 
-void SubtitleFormat::StripTags(AssFile &file) {
+void SubtitleFormat::StripTags(ProjectDocument &file) {
 	for (auto& current : file.Events)
 		current.StripTags();
 }
 
-void SubtitleFormat::ConvertNewlines(AssFile &file, std::string_view newline, bool mergeLineBreaks) {
+void SubtitleFormat::ConvertNewlines(ProjectDocument &file, std::string_view newline, bool mergeLineBreaks) {
 	for (auto& current : file.Events) {
 		std::string repl = current.Text;
 		boost::replace_all(repl, "\\h", " ");
@@ -174,7 +174,7 @@ void SubtitleFormat::ConvertNewlines(AssFile &file, std::string_view newline, bo
 	}
 }
 
-void SubtitleFormat::StripComments(AssFile &file) {
+void SubtitleFormat::StripComments(ProjectDocument &file) {
 	file.Events.remove_and_dispose_if([](AssDialogue const& diag) {
 		return diag.Comment || diag.Text.get().empty();
 	}, [](AssDialogue *e) { delete e; });
@@ -183,7 +183,7 @@ void SubtitleFormat::StripComments(AssFile &file) {
 /// @brief Split and merge lines so there are no overlapping lines
 ///
 /// Algorithm described at http://devel.aegisub.org/wiki/Technical/SplitMerge
-void SubtitleFormat::RecombineOverlaps(AssFile &file) {
+void SubtitleFormat::RecombineOverlaps(ProjectDocument &file) {
 	auto cur = file.Events.begin();
 	for (auto next = std::next(cur); next != file.Events.end(); cur = std::prev(next)) {
 		if (next == file.Events.begin() || cur->End <= next->Start) {
@@ -244,7 +244,7 @@ void SubtitleFormat::RecombineOverlaps(AssFile &file) {
 }
 
 /// @brief Merge identical lines that follow each other
-void SubtitleFormat::MergeIdentical(AssFile &file) {
+void SubtitleFormat::MergeIdentical(ProjectDocument &file) {
 	auto next = file.Events.begin();
 	auto cur = next++;
 

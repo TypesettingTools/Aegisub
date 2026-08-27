@@ -35,7 +35,7 @@
 #include "dialog_style_editor.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_style.h"
 #include "ass_style_storage.h"
 #include "colour_button.h"
@@ -86,7 +86,7 @@ class StyleRenamer {
 		found_any = false;
 		do_replace = replace;
 
-		for (auto& diag : c->ass->Events) {
+		for (auto& diag : c->document->Events) {
 			if (diag.Style == source_name) {
 				if (replace)
 					diag.Style = new_name;
@@ -423,10 +423,10 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 		std::string new_name = from_wx(StyleName->GetValue());
 
 		// Get list of existing styles
-		std::vector<std::string> styles = store ? store->GetNames() : c->ass->GetStyles();
+		std::vector<std::string> styles = store ? store->GetNames() : c->document->GetStyles();
 
 		// Check if style name is unique
-		AssStyle *existing = store ? store->GetStyle(new_name) : c->ass->GetStyle(new_name);
+		AssStyle *existing = store ? store->GetStyle(new_name) : c->document->GetStyle(new_name);
 		if (existing && existing != style) {
 			wxMessageBox(_("There is already a style with this name. Please choose another name."), _("Style name conflict"), wxOK | wxICON_ERROR | wxCENTER);
 			return;
@@ -464,11 +464,11 @@ void DialogStyleEditor::Apply(bool apply, bool close) {
 			if (store)
 				store->push_back(std::unique_ptr<AssStyle>(style));
 			else
-				c->ass->Styles.push_back(*style);
+				c->document->Styles.push_back(*style);
 			is_new = false;
 		}
 		if (!store)
-			c->ass->Commit(_("style change"), AssFile::COMMIT_STYLES | (did_rename ? AssFile::COMMIT_DIAG_FULL : 0));
+			c->document->Commit(_("style change"), ProjectDocument::COMMIT_STYLES | (did_rename ? ProjectDocument::COMMIT_DIAG_FULL : 0));
 
 		// Update preview
 		if (!close) SubsPreview->SetStyle(*style);

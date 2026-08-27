@@ -32,7 +32,7 @@
 #include "command.h"
 
 #include "../ass_dialogue.h"
-#include "../ass_file.h"
+#include "../project_document.h"
 #include "../ass_karaoke.h"
 #include "../ass_style.h"
 #include "../compat.h"
@@ -132,7 +132,7 @@ void paste_lines(agi::Context *c, bool paste_over, Paster&& paste_line) {
 	}
 
 	if (first) {
-		c->ass->Commit(_("paste"), paste_over ? AssFile::COMMIT_DIAG_FULL : AssFile::COMMIT_DIAG_ADDREM);
+		c->document->Commit(_("paste"), paste_over ? ProjectDocument::COMMIT_DIAG_FULL : ProjectDocument::COMMIT_DIAG_ADDREM);
 
 		if (!paste_over)
 			c->selectionController->SetSelectionAndActive(std::move(newsel), first);
@@ -311,14 +311,14 @@ void update_lines(const agi::Context *c, wxString const& undo_msg, Func&& f) {
 	}
 
 	auto const& sel = c->selectionController->GetSelectedSet();
-	c->ass->Commit(undo_msg, AssFile::COMMIT_DIAG_TEXT, -1, sel.size() == 1 ? *sel.begin() : nullptr);
+	c->document->Commit(undo_msg, ProjectDocument::COMMIT_DIAG_TEXT, -1, sel.size() == 1 ? *sel.begin() : nullptr);
 	if (active_sel_shift != 0)
 		c->textSelectionController->SetSelection(sel_start + active_sel_shift, sel_end + active_sel_shift);
 }
 
 void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const char *tag, wxString const& undo_msg) {
 	update_lines(c, undo_msg, [&](AssDialogue *line, int sel_start, int sel_end, int norm_sel_start, int norm_sel_end) {
-		AssStyle const* const style = c->ass->GetStyle(line->Style);
+		AssStyle const* const style = c->document->GetStyle(line->Style);
 		bool state = style ? style->*field : AssStyle().*field;
 
 		parsed_line parsed(line);
@@ -344,7 +344,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 	using line_info = std::pair<agi::Color, parsed_line>;
 	std::vector<line_info> lines;
 	for (auto line : sel) {
-		AssStyle const* const style = c->ass->GetStyle(line->Style);
+		AssStyle const* const style = c->document->GetStyle(line->Style);
 		agi::Color color = (style ? style->*field : AssStyle().*field);
 
 		parsed_line parsed(line);
@@ -374,7 +374,7 @@ void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), con
 				active_shift = shift;
 		}
 
-		commit_id = c->ass->Commit(_("set color"), AssFile::COMMIT_DIAG_TEXT, commit_id, sel.size() == 1 ? *sel.begin() : nullptr);
+		commit_id = c->document->Commit(_("set color"), ProjectDocument::COMMIT_DIAG_TEXT, commit_id, sel.size() == 1 ? *sel.begin() : nullptr);
 		if (active_shift)
 			c->textSelectionController->SetSelection(sel_start + active_shift, sel_start + active_shift);
 	});
@@ -495,7 +495,7 @@ struct edit_font final : public Command {
 		auto font_for_line = [&](parsed_line const& line) -> wxFont {
 			const int blockn = line.block_at_pos(insertion_point);
 
-			const AssStyle *style = c->ass->GetStyle(line.line->Style);
+			const AssStyle *style = c->document->GetStyle(line.line->Style);
 			const AssStyle default_style;
 			if (!style)
 				style = &default_style;
@@ -564,7 +564,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	AssDialogue *post_sel = nullptr;
 	bool hit_selection = false;
 
-	for (auto& diag : c->ass->Events) {
+	for (auto& diag : c->document->Events) {
 		if (sel.count(&diag))
 			hit_selection = true;
 		else if (hit_selection && !post_sel) {
@@ -580,7 +580,7 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	// need to create a new dialogue line for it, and we can't select dialogue
 	// lines until after they're committed.
 	std::vector<std::unique_ptr<AssDialogue>> to_delete;
-	c->ass->Events.remove_and_dispose_if([&sel](AssDialogue const& e) {
+	c->document->Events.remove_and_dispose_if([&sel](AssDialogue const& e) {
 		return sel.count(const_cast<AssDialogue *>(&e));
 	}, [&](AssDialogue *e) {
 		to_delete.emplace_back(e);
@@ -593,10 +593,10 @@ static void delete_lines(agi::Context *c, wxString const& commit_message) {
 	// lines, so make a new one
 	if (!new_active) {
 		new_active = new AssDialogue;
-		c->ass->Events.push_back(*new_active);
+		c->document->Events.push_back(*new_active);
 	}
 
-	c->ass->Commit(commit_message, AssFile::COMMIT_DIAG_ADDREM);
+	c->document->Commit(commit_message, ProjectDocument::COMMIT_DIAG_ADDREM);
 	c->selectionController->SetSelectionAndActive({ new_active }, new_active);
 }
 
@@ -659,8 +659,8 @@ static void duplicate_lines(agi::Context *c, int shift) {
 	Selection new_sel;
 	AssDialogue *new_active = nullptr;
 
-	auto start = c->ass->Events.begin();
-	auto end = c->ass->Events.end();
+	auto start = c->document->Events.begin();
+	auto end = c->document->Events.end();
 	while (start != end) {
 		// Find the first line in the selection
 		start = std::find_if(start, end, in_selection);
@@ -676,7 +676,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 			auto old_diag = &*start;
 			auto new_diag = new AssDialogue(*old_diag);
 
-			c->ass->Events.insert(insert_pos, *new_diag);
+			c->document->Events.insert(insert_pos, *new_diag);
 			new_sel.insert(new_diag);
 			if (!new_active)
 				new_active = new_diag;
@@ -713,7 +713,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 
 	if (new_sel.empty()) return;
 
-	c->ass->Commit(shift ? _("split") : _("duplicate lines"), AssFile::COMMIT_DIAG_ADDREM);
+	c->document->Commit(shift ? _("split") : _("duplicate lines"), ProjectDocument::COMMIT_DIAG_ADDREM);
 
 	c->selectionController->SetSelectionAndActive(std::move(new_sel), new_active);
 }
@@ -766,7 +766,7 @@ static void combine_lines(agi::Context *c, void (*combiner)(AssDialogue *, AssDi
 
 	c->selectionController->SetSelectionAndActive({first}, first);
 
-	c->ass->Commit(message, AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
+	c->document->Commit(message, ProjectDocument::COMMIT_DIAG_ADDREM | ProjectDocument::COMMIT_DIAG_FULL);
 }
 
 static void combine_karaoke(AssDialogue *first, AssDialogue *second) {
@@ -839,9 +839,9 @@ static bool try_paste_lines(agi::Context *c) {
 	for (auto& line : parsed)
 		new_selection.insert(&line);
 
-	auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
-	c->ass->Events.splice(pos, parsed, parsed.begin(), parsed.end());
-	c->ass->Commit(_("paste"), AssFile::COMMIT_DIAG_ADDREM);
+	auto pos = c->document->iterator_to(*c->selectionController->GetActiveLine());
+	c->document->Events.splice(pos, parsed, parsed.begin(), parsed.end());
+	c->document->Commit(_("paste"), ProjectDocument::COMMIT_DIAG_ADDREM);
 	c->selectionController->SetSelectionAndActive(std::move(new_selection), new_active);
 
 	return true;
@@ -870,9 +870,9 @@ struct edit_line_paste final : public Command {
 				ctrl->Paste();
 		}
 		else {
-			auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
+			auto pos = c->document->iterator_to(*c->selectionController->GetActiveLine());
 			paste_lines(c, false, [=](std::unique_ptr<AssDialogue> new_line) -> AssDialogue * {
-				c->ass->Events.insert(pos, *new_line);
+				c->document->Events.insert(pos, *new_line);
 				return new_line.release();
 			});
 		}
@@ -901,10 +901,10 @@ struct edit_line_paste_over final : public Command {
 
 		// Only one line selected, so paste over downwards from the active line
 		if (sel.size() < 2) {
-			auto pos = c->ass->iterator_to(*c->selectionController->GetActiveLine());
+			auto pos = c->document->iterator_to(*c->selectionController->GetActiveLine());
 
 			paste_lines(c, true, [&](std::unique_ptr<AssDialogue> new_line) -> AssDialogue * {
-				if (pos == c->ass->Events.end()) return nullptr;
+				if (pos == c->document->Events.end()) return nullptr;
 
 				auto& old = *pos;
 				if (paste_over(c->parent, pasteOverOptions, *new_line, old))
@@ -1026,7 +1026,7 @@ struct edit_line_recombine final : public validate_sel_multiple {
 
 		// Remove now non-existent lines from the selection
 		Selection lines, new_sel;
-		boost::copy(c->ass->Events | agi::address_of, inserter(lines, lines.begin()));
+		boost::copy(c->document->Events | agi::address_of, inserter(lines, lines.begin()));
 		boost::set_intersection(lines, sel_set, inserter(new_sel, new_sel.begin()));
 
 		if (new_sel.empty())
@@ -1037,7 +1037,7 @@ struct edit_line_recombine final : public validate_sel_multiple {
 			active_line = *new_sel.begin();
 		c->selectionController->SetSelectionAndActive(std::move(new_sel), active_line);
 
-		c->ass->Commit(_("combining"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
+		c->document->Commit(_("combining"), ProjectDocument::COMMIT_DIAG_ADDREM | ProjectDocument::COMMIT_DIAG_FULL);
 	}
 };
 
@@ -1068,18 +1068,18 @@ struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 				new_line->End = syl.start_time + syl.duration;
 				new_line->Text = syl.GetText(false);
 
-				c->ass->Events.insert(c->ass->iterator_to(*line), *new_line);
+				c->document->Events.insert(c->document->iterator_to(*line), *new_line);
 
 				new_sel.insert(new_line);
 			}
 
-			c->ass->Events.erase(c->ass->iterator_to(*line));
+			c->document->Events.erase(c->document->iterator_to(*line));
 			to_delete.emplace_back(line);
 		}
 
 		if (to_delete.empty()) return;
 
-		c->ass->Commit(_("splitting"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
+		c->document->Commit(_("splitting"), ProjectDocument::COMMIT_DIAG_ADDREM | ProjectDocument::COMMIT_DIAG_FULL);
 
 		AssDialogue *new_active = c->selectionController->GetActiveLine();
 		if (!new_sel.count(c->selectionController->GetActiveLine()))
@@ -1093,7 +1093,7 @@ void split_lines(agi::Context *c, AssDialogue *&n1, AssDialogue *&n2) {
 
 	n1 = c->selectionController->GetActiveLine();
 	n2 = new AssDialogue(*n1);
-	c->ass->Events.insert(++c->ass->iterator_to(*n1), *n2);
+	c->document->Events.insert(++c->document->iterator_to(*n1), *n2);
 
 	std::string orig = n1->Text;
 	n1->Text = boost::trim_right_copy(orig.substr(0, pos));
@@ -1106,7 +1106,7 @@ void split_lines(agi::Context *c, Func&& set_time) {
 	split_lines(c, n1, n2);
 	set_time(n1, n2);
 
-	c->ass->Commit(_("split"), AssFile::COMMIT_DIAG_ADDREM | AssFile::COMMIT_DIAG_FULL);
+	c->document->Commit(_("split"), ProjectDocument::COMMIT_DIAG_ADDREM | ProjectDocument::COMMIT_DIAG_FULL);
 }
 
 struct edit_line_split_estimate final : public validate_video_and_sel_nonempty {
@@ -1214,7 +1214,7 @@ struct edit_revert final : public Command {
 	void operator()(agi::Context *c) override {
 		AssDialogue *line = c->selectionController->GetActiveLine();
 		line->Text = c->initialLineState->GetInitialText();
-		c->ass->Commit(_("revert line"), AssFile::COMMIT_DIAG_TEXT, -1, line);
+		c->document->Commit(_("revert line"), ProjectDocument::COMMIT_DIAG_TEXT, -1, line);
 	}
 };
 
@@ -1227,7 +1227,7 @@ struct edit_clear final : public Command {
 	void operator()(agi::Context *c) override {
 		AssDialogue *line = c->selectionController->GetActiveLine();
 		line->Text = "";
-		c->ass->Commit(_("clear line"), AssFile::COMMIT_DIAG_TEXT, -1, line);
+		c->document->Commit(_("clear line"), ProjectDocument::COMMIT_DIAG_TEXT, -1, line);
 	}
 };
 
@@ -1246,7 +1246,7 @@ struct edit_clear_text final : public Command {
 			| filtered([](AssDialogueBlock const& b) { return b.GetType() != AssBlockType::PLAIN; })
 			| transformed(get_text),
 			"");
-		c->ass->Commit(_("clear line"), AssFile::COMMIT_DIAG_TEXT, -1, line);
+		c->document->Commit(_("clear line"), ProjectDocument::COMMIT_DIAG_TEXT, -1, line);
 	}
 };
 
@@ -1262,7 +1262,7 @@ struct edit_insert_original final : public Command {
 		int sel_end = c->textSelectionController->GetSelectionEnd();
 
 		line->Text = line->Text.get().substr(0, sel_start) + c->initialLineState->GetInitialText() + line->Text.get().substr(sel_end);
-		c->ass->Commit(_("insert original"), AssFile::COMMIT_DIAG_TEXT, -1, line);
+		c->document->Commit(_("insert original"), ProjectDocument::COMMIT_DIAG_TEXT, -1, line);
 	}
 };
 

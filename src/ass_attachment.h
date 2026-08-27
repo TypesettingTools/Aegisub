@@ -45,8 +45,12 @@ public:
 	std::string GetFileName(bool raw=false) const;
 
 	std::string const& GetEntryData() const { return entry_data; }
+	/// Return the decoded bytes. Project files store these directly rather than
+	/// preserving ASS's uuencoded representation.
+	std::string GetData() const;
 	AssEntryGroup Group() const override;
 
 	AssAttachment(std::string const& header, AssEntryGroup group);
+	AssAttachment(std::string filename, AssEntryGroup group, std::string_view data);
 	AssAttachment(agi::fs::path const& name, AssEntryGroup group);
 };

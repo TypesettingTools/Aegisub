@@ -16,7 +16,7 @@
 
 #include "include/aegisub/context.h"
 
-#include "ass_file.h"
+#include "project_document.h"
 #include "audio_controller.h"
 #include "auto4_base.h"
 #include "dialog_manager.h"
@@ -33,7 +33,7 @@
 
 namespace agi {
 Context::Context()
-: ass(std::make_unique<AssFile>())
+: document(std::make_unique<ProjectDocument>())
 , textSelectionController(std::make_unique<TextSelectionController>())
 , subsController(std::make_unique<SubsController>(this))
 , project(std::make_unique<Project>(this))

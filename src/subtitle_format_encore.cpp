@@ -35,7 +35,7 @@
 #include "subtitle_format_encore.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "text_file_writer.h"
 
 #include <libaegisub/ass/smpte.h>
@@ -50,12 +50,12 @@ std::vector<std::string> EncoreSubtitleFormat::GetWriteWildcards() const {
 	return {"encore.txt"};
 }
 
-void EncoreSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& video_fps, const char *) const {
+void EncoreSubtitleFormat::WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const& video_fps, const char *) const {
 	agi::vfr::Framerate fps = AskForFPS(false, true, video_fps);
 	if (!fps.IsLoaded()) return;
 
 	// Convert to encore
-	AssFile copy(*src);
+	ProjectDocument copy(*src);
 	copy.Sort();
 	StripComments(copy);
 	RecombineOverlaps(copy);

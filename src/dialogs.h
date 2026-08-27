@@ -20,7 +20,7 @@
 #include <string>
 #include <wx/string.h>
 
-class AssFile;
+class ProjectDocument;
 class AsyncVideoProvider;
 class wxArrayInt;
 class wxArrayString;
@@ -51,7 +51,7 @@ void PerformVersionCheck(bool interactive);
 bool PromptForResampleSettings(agi::Context *c, ResampleSettings &settings);
 
 /// Update the video properties for a newly opened video, possibly prompting the user about what to do
-void UpdateVideoProperties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent);
+void UpdateVideoProperties(ProjectDocument *file, const AsyncVideoProvider *new_provider, wxWindow *parent);
 
 int GetSelectedChoices(wxWindow *parent, wxArrayInt& selections, wxString const& message, wxString const& caption, wxArrayString const& choices);
 
@@ -60,7 +60,7 @@ std::string CreateDummyVideo(wxWindow *parent);
 bool ShowPasteOverDialog(wxWindow *parent);
 bool ShowPlainTextImportDialog();
 void ShowAboutDialog(wxWindow *parent);
-void ShowAttachmentsDialog(wxWindow *parent, AssFile *file);
+void ShowAttachmentsDialog(wxWindow *parent, ProjectDocument *file);
 void ShowAutomationDialog(agi::Context *c);
 void ShowExportDialog(agi::Context *c);
 void ShowFontsCollectorDialog(agi::Context *c);

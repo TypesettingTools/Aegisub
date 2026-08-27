@@ -32,7 +32,7 @@
 #include <string>
 #include <vector>
 
-class AssFile;
+class ProjectDocument;
 class AssStyle;
 
 class AssStyleStorage {
@@ -85,5 +85,5 @@ public:
 
 	/// Insert all styles into a file, replacing existing styles with the same names
 	/// @param file File to replace styles in
-	void ReplaceIntoFile(AssFile &file);
+	void ReplaceIntoFile(ProjectDocument &file);
 };

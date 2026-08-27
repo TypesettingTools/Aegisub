@@ -15,7 +15,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "ass_karaoke.h"
 #include "audio_controller.h"
 #include "audio_marker.h"
@@ -237,7 +237,7 @@ void AudioTimingControllerKaraoke::GetMarkers(TimeRange const& range, AudioMarke
 void AudioTimingControllerKaraoke::DoCommit() {
 	active_line->Text = kara->GetText();
 	file_changed_slot.Block();
-	commit_id = c->ass->Commit(_("karaoke timing"), AssFile::COMMIT_DIAG_TEXT, commit_id, active_line);
+	commit_id = c->document->Commit(_("karaoke timing"), ProjectDocument::COMMIT_DIAG_TEXT, commit_id, active_line);
 	file_changed_slot.Unblock();
 	pending_changes = false;
 }

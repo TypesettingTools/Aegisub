@@ -28,7 +28,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "ass_exporter.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "include/aegisub/context.h"
 #include "help_button.h"
@@ -115,7 +115,7 @@ DialogExport::DialogExport(agi::Context *c)
 	filter_list->Bind(wxEVT_LISTBOX, &DialogExport::OnChange, this);
 
 	// Get selected filters
-	std::string const& selected = c->ass->Properties.export_filters;
+	std::string const& selected = c->document->Properties.export_filters;
 	for (auto token : agi::Split(selected, '|')) {
 		auto it = find(begin(filters), end(filters), token);
 		if (it != end(filters))
@@ -146,7 +146,7 @@ DialogExport::DialogExport(agi::Context *c)
 	wxSizer *charset_list_sizer = new wxBoxSizer(wxHORIZONTAL);
 	charset_list_sizer->Add(charset_list_label, wxSizerFlags().Center().Border(wxRIGHT));
 	charset_list_sizer->Add(charset_list, wxSizerFlags(1).Expand());
-	if (!charset_list->SetStringSelection(to_wx(c->ass->Properties.export_encoding)))
+	if (!charset_list->SetStringSelection(to_wx(c->document->Properties.export_encoding)))
 		charset_list->SetStringSelection("Unicode (UTF-8)");
 
 	top_sizer->Add(filter_list, wxSizerFlags(1).Expand());
@@ -174,12 +174,12 @@ DialogExport::DialogExport(agi::Context *c)
 }
 
 DialogExport::~DialogExport() {
-	c->ass->Properties.export_filters.clear();
+	c->document->Properties.export_filters.clear();
 	for (size_t i = 0; i < filter_list->GetCount(); ++i) {
 		if (filter_list->IsChecked(i)) {
-			if (!c->ass->Properties.export_filters.empty())
-				c->ass->Properties.export_filters += "|";
-			c->ass->Properties.export_filters += from_wx(filter_list->GetString(i));
+			if (!c->document->Properties.export_filters.empty())
+				c->document->Properties.export_filters += "|";
+			c->document->Properties.export_filters += from_wx(filter_list->GetString(i));
 		}
 	}
 }
@@ -197,7 +197,7 @@ void DialogExport::OnProcess(wxCommandEvent &) {
 
 	try {
 		wxBusyCursor busy;
-		c->ass->Properties.export_encoding = from_wx(charset_list->GetStringSelection());
+		c->document->Properties.export_encoding = from_wx(charset_list->GetStringSelection());
 		exporter.Export(filename, charset_list->GetStringSelection().utf8_str().data(), &d);
 	}
 	catch (agi::UserCancelException const&) { }

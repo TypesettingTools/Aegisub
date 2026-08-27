@@ -25,7 +25,7 @@
 #include <wx/event.h>
 
 class AssDialogue;
-class AssFile;
+class ProjectDocument;
 class SubtitlesProvider;
 class VideoProvider;
 class VideoProviderError;
@@ -52,7 +52,7 @@ class AsyncVideoProvider {
 	double time = -1.; ///< Time of the frame to pass to the subtitle renderer
 
 	/// Copy of the subtitles file to avoid having to touch the project context
-	std::unique_ptr<AssFile> subs;
+	std::unique_ptr<ProjectDocument> subs;
 
 	/// If >= 0, the subtitles provider current has just the lines visible on
 	/// that frame loaded. If -1, the entire file is loaded. If -2, the
@@ -87,7 +87,7 @@ public:
 	///
 	/// This function blocks until is it is safe for the calling thread to
 	/// modify subs
-	void LoadSubtitles(const AssFile *subs) throw();
+	void LoadSubtitles(const ProjectDocument *subs) throw();
 
 	/// @brief Update a previously loaded subtitle file
 	/// @param changed Line that has changed

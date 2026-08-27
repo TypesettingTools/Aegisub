@@ -17,7 +17,7 @@
 #include "project.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "async_video_provider.h"
 #include "audio_controller.h"
 #include "audio_provider_factory.h"
@@ -63,10 +63,10 @@ Project::~Project() { }
 
 void Project::UpdateRelativePaths() {
 	using namespace std::string_view_literals;
-	context->ass->Properties.audio_file     = context->path->MakeRelative(audio_file, "?script"sv).generic_string();
-	context->ass->Properties.video_file     = context->path->MakeRelative(video_file, "?script"sv).generic_string();
-	context->ass->Properties.timecodes_file = context->path->MakeRelative(timecodes_file, "?script"sv).generic_string();
-	context->ass->Properties.keyframes_file = context->path->MakeRelative(keyframes_file, "?script"sv).generic_string();
+	context->document->Properties.audio_file     = context->path->MakeRelative(audio_file, "?script"sv).generic_string();
+	context->document->Properties.video_file     = context->path->MakeRelative(video_file, "?script"sv).generic_string();
+	context->document->Properties.timecodes_file = context->path->MakeRelative(timecodes_file, "?script"sv).generic_string();
+	context->document->Properties.keyframes_file = context->path->MakeRelative(keyframes_file, "?script"sv).generic_string();
 }
 
 void Project::ReloadAudio() {
@@ -145,9 +145,9 @@ bool Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding, P
 
 	Selection sel;
 	AssDialogue *active_line = nullptr;
-	if (!context->ass->Events.empty()) {
-		int row = mid<int>(0, properties.active_row, context->ass->Events.size() - 1);
-		active_line = &*std::next(context->ass->Events.begin(), row);
+	if (!context->document->Events.empty()) {
+		int row = mid<int>(0, properties.active_row, context->document->Events.size() - 1);
+		active_line = &*std::next(context->document->Events.begin(), row);
 		sel.insert(active_line);
 	}
 	context->selectionController->SetSelectionAndActive(std::move(sel), active_line);
@@ -175,8 +175,8 @@ void Project::SetSubtitlesFilename(agi::fs::path path) {
 void Project::CloseSubtitles() {
 	context->subsController->Close();
 	context->path->SetToken("?script", "");
-	LoadUnloadFiles(context->ass->Properties);
-	auto line = &*context->ass->Events.begin();
+	LoadUnloadFiles(context->document->Properties);
+	auto line = &*context->document->Events.begin();
 	context->selectionController->SetSelectionAndActive({line}, line);
 }
 
@@ -313,7 +313,7 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 		progress = new DialogProgress(context->parent);
 
 	try {
-		video_provider = std::make_unique<AsyncVideoProvider>(path, context->ass->GetYCbCrMatrix(), context->videoController.get(), progress);
+		video_provider = std::make_unique<AsyncVideoProvider>(path, context->document->GetYCbCrMatrix(), context->videoController.get(), progress);
 	}
 	catch (agi::UserCancelException const&) { return false; }
 	catch (agi::fs::FileSystemError const& err) {
@@ -328,8 +328,8 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 
 	AnnounceVideoProviderModified(video_provider.get());
 
-	UpdateVideoProperties(context->ass.get(), video_provider.get(), context->parent);
-	video_provider->LoadSubtitles(context->ass.get());
+	UpdateVideoProperties(context->document.get(), video_provider.get(), context->parent);
+	video_provider->LoadSubtitles(context->document.get());
 
 	timecodes = video_provider->GetFPS();
 	keyframes = video_provider->GetKeyFrames();
@@ -370,9 +370,9 @@ void Project::CloseVideo() {
 	video_provider.reset();
 	SetPath(video_file, "?video", "", "");
 	video_has_subtitles = false;
-	context->ass->Properties.ar_mode = 0;
-	context->ass->Properties.ar_value = 0.0;
-	context->ass->Properties.video_position = 0;
+	context->document->Properties.ar_mode = 0;
+	context->document->Properties.ar_value = 0.0;
+	context->document->Properties.video_position = 0;
 }
 
 void Project::DoLoadTimecodes(agi::fs::path const& path) {

@@ -46,6 +46,10 @@ using namespace boost::adaptors;
 
 static int next_id = 0;
 
+void AssDialogue::EnsureNextId(int id) {
+	next_id = std::max(next_id, id);
+}
+
 AssDialogue::AssDialogue() {
 	Id = ++next_id;
 }

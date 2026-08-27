@@ -329,7 +329,7 @@ bool AegisubApp::OnInit() {
 #endif
 
 	StartupLog("Clean old autosave files");
-	CleanCache(config::path->Decode(OPT_GET("Path/Auto/Save")->GetString()), "*.AUTOSAVE.ass", 100, 1000);
+	CleanCache(config::path->Decode(OPT_GET("Path/Auto/Save")->GetString()), "*.AUTOSAVE.aegi", 100, 1000);
 
 	StartupLog("Initialization complete");
 	return true;
@@ -393,13 +393,13 @@ void AegisubApp::UnhandledException([[maybe_unused]] bool stackWalk) {
 	agi::fs::path path;
 	for (auto& frame : frames) {
 		auto c = frame->context.get();
-		if (!c || !c->ass || !c->subsController) continue;
+		if (!c || !c->document || !c->subsController) continue;
 
 		path = config::path->Decode("?user/recovered");
 		agi::fs::CreateDirectory(path);
 
 		auto filename = c->subsController->Filename().stem();
-		filename.replace_extension(agi::format("%s.ass", agi::util::strftime("%Y-%m-%d-%H-%M-%S")));
+		filename.replace_extension(agi::format("%s.aegi", agi::util::strftime("%Y-%m-%d-%H-%M-%S")));
 		path /= filename;
 		c->subsController->Save(path);
 

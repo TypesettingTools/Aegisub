@@ -15,7 +15,7 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "compat.h"
 #include "dialog_manager.h"
 #include "format.h"
@@ -391,7 +391,7 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 	int block_start = 0;
 	json::Array shifted_blocks;
 
-	for (auto& line : context->ass->Events) {
+	for (auto& line : context->document->Events) {
 		if (!sel.count(&line)) {
 			if (block_start) {
 				json::Object block;
@@ -412,12 +412,12 @@ void DialogShiftTimes::Process(wxCommandEvent &) {
 			line.End = Shift(line.End, shift, by_time, agi::vfr::END);
 	}
 
-	context->ass->Commit(_("shifting"), AssFile::COMMIT_DIAG_TIME);
+	context->document->Commit(_("shifting"), ProjectDocument::COMMIT_DIAG_TIME);
 
 	if (block_start) {
 		json::Object block;
 		block["start"] = block_start;
-		block["end"] = context->ass->Events.back().Row + 1;
+		block["end"] = context->document->Events.back().Row + 1;
 		shifted_blocks.push_back(std::move(block));
 	}
 

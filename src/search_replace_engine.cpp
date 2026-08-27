@@ -17,7 +17,7 @@
 #include "search_replace_engine.h"
 
 #include "ass_dialogue.h"
-#include "ass_file.h"
+#include "project_document.h"
 #include "format.h"
 #include "include/aegisub/context.h"
 #include "selection_controller.h"
@@ -170,7 +170,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 	auto matches = GetMatcher(settings);
 
 	AssDialogue *line = context->selectionController->GetActiveLine();
-	auto it = context->ass->iterator_to(*line);
+	auto it = context->document->iterator_to(*line);
 	size_t pos = 0;
 
 	auto replace_ms = bad_match;
@@ -186,7 +186,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 			if (end == bad_pos || (pos == replace_ms.start && end == replace_ms.end)) {
 				Replace(line, replace_ms);
 				pos = replace_ms.end;
-				context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
+				context->document->Commit(_("replace"), ProjectDocument::COMMIT_DIAG_TEXT);
 			}
 			else {
 				// The current line matches, but it wasn't already selected,
@@ -203,7 +203,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 	// For non-text fields we just look for matching lines rather than each
 	// match within the line, so move to the next line
 	else if (settings.field != SearchReplaceSettings::Field::TEXT)
-		it = circular_next(it, context->ass->Events);
+		it = circular_next(it, context->document->Events);
 
 	auto const& sel = context->selectionController->GetSelectedSet();
 	bool selection_only = sel.size() > 1 && settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
@@ -224,7 +224,7 @@ bool SearchReplaceEngine::FindReplace(bool replace) {
 
 			return true;
 		}
-	} while (pos = 0, &*(it = circular_next(it, context->ass->Events)) != line);
+	} while (pos = 0, &*(it = circular_next(it, context->document->Events)) != line);
 
 	// Replaced something and didn't find another match, so select the newly
 	// inserted text
@@ -245,7 +245,7 @@ bool SearchReplaceEngine::ReplaceAll() {
 	auto const& sel = context->selectionController->GetSelectedSet();
 	bool selection_only = settings.limit_to == SearchReplaceSettings::Limit::SELECTED;
 
-	for (auto& diag : context->ass->Events) {
+	for (auto& diag : context->document->Events) {
 		if (selection_only && !sel.count(&diag)) continue;
 		if (settings.ignore_comments && diag.Comment) continue;
 
@@ -270,7 +270,7 @@ bool SearchReplaceEngine::ReplaceAll() {
 	}
 
 	if (count > 0) {
-		context->ass->Commit(_("replace"), AssFile::COMMIT_DIAG_TEXT);
+		context->document->Commit(_("replace"), ProjectDocument::COMMIT_DIAG_TEXT);
 		wxMessageBox(fmt_plural(count, "One match was replaced.", "%d matches were replaced.", (int)count));
 	}
 	else {

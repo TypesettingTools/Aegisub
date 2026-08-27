@@ -33,10 +33,10 @@ class AssDialogue;
 namespace agi { class SmpteFormatter; }
 
 class TranStationSubtitleFormat final : public SubtitleFormat {
-	std::string ConvertLine(AssFile *file, const AssDialogue *line, agi::vfr::Framerate const& fps, agi::SmpteFormatter const& ft, int nextl_start) const;
+	std::string ConvertLine(ProjectDocument *file, const AssDialogue *line, agi::vfr::Framerate const& fps, agi::SmpteFormatter const& ft, int nextl_start) const;
 
 public:
 	TranStationSubtitleFormat();
 	std::vector<std::string> GetWriteWildcards() const override;
-	void WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
+	void WriteFile(const ProjectDocument *src, agi::fs::path const& filename, agi::vfr::Framerate const& fps, const char *encoding) const override;
 };
