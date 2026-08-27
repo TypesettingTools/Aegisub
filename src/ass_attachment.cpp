@@ -53,9 +53,9 @@ size_t AssAttachment::GetSize() const {
 	return entry_data.get().size() - header_end - 1;
 }
 
-void AssAttachment::Extract(agi::fs::path const& filename) const {
+void AssAttachment::Extract(agi::fs::path const& destination) const {
 	auto decoded = GetData();
-	agi::io::Save(filename, true).Get().write(&decoded[0], decoded.size());
+	agi::io::Save(destination, true).Get().write(&decoded[0], decoded.size());
 }
 
 std::string AssAttachment::GetData() const {

@@ -37,8 +37,8 @@ public:
 	void AddData(std::string const& data) { entry_data = entry_data.get() + data + "\r\n"; }
 
 	/// Extract the contents of this attachment to a file
-	/// @param filename Path to save the attachment to
-	void Extract(agi::fs::path const& filename) const;
+	/// @param destination Path to save the attachment to
+	void Extract(agi::fs::path const& destination) const;
 
 	/// Get the name of the attached file
 	/// @param raw If false, remove the SSA filename mangling
