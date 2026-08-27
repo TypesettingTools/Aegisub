@@ -153,6 +153,9 @@ if host_machine.system() == 'windows'
 endif
 
 deps += dependency('zlib')
+libebml = dependency('libebml', version: '>=1.4.0')
+libmatroska = dependency('libmatroska', version: '>=1.6.0')
+deps += [libebml, libmatroska]
 
 wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
                     required: false,

@@ -1,7 +1,7 @@
 subdir('libresrc')
 
 aegisub_src = files(
-    'MatroskaParser.c',
+    'matroska_demux.cpp',
     'aegisublocale.cpp',
     'ass_attachment.cpp',
     'ass_dialogue.cpp',

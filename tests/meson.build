@@ -85,3 +85,11 @@ test_setup = custom_target('setup-test-data',
 
 test('gtest main', runner, env: {'AEGISUB_TEST_DATA_DIR': meson.current_source_dir()}, depends: test_setup)
 test('luajit-52', executable('luajit-52', 'tests/luajit_52.c', dependencies: luajit))
+
+# Machine-readable behavioral seam used while replacing the Matroska backend.
+matroska_behavior = executable('matroska-behavior',
+    'matroska/behavior.cpp', '../src/matroska_demux.cpp',
+    include_directories: include_directories('../src'),
+    dependencies: [dependency('zlib'), libebml, libmatroska])
+test('matroska behavior', find_program('matroska/check-fixtures.py'),
+    args: [matroska_behavior, meson.current_source_dir() / 'matroska' / 'fixtures'])
