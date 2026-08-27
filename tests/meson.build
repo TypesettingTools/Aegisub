@@ -52,7 +52,7 @@ tests_src = [
     'tests/ycbcr.cpp',
 ]
 
-tests_inc = include_directories('support')
+tests_inc = include_directories('support', '../src')
 
 tests_args = []
 

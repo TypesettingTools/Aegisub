@@ -1,0 +1,8 @@
+[wrap-git]
+url = https://github.com/Matroska-Org/libmatroska.git
+revision = release-1.7.1
+depth = 1
+patch_directory = libmatroska
+
+[provide]
+libmatroska = libmatroska_dep
