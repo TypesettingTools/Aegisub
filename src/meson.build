@@ -2,6 +2,7 @@ subdir('libresrc')
 
 aegisub_src = files(
     'matroska_demux.cpp',
+    'matroska.cpp',
     'aegisublocale.cpp',
     'ass_attachment.cpp',
     'ass_dialogue.cpp',

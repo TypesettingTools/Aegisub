@@ -35,6 +35,7 @@ tests_src = [
     'tests/line_wrap.cpp',
     'tests/lua_lfs.cpp',
     'tests/mru.cpp',
+    'tests/matroska.cpp',
     'tests/option.cpp',
     'tests/path.cpp',
     'tests/signals.cpp',
@@ -64,7 +65,7 @@ endif
 
 runner = executable(
     'gtest-main',
-    tests_src,
+    tests_src, '../src/matroska.cpp', '../src/matroska_demux.cpp',
     include_directories: [tests_inc, libaegisub_inc],
     dependencies: [tests_deps, deps],
     cpp_args: tests_args + conf_defines,
