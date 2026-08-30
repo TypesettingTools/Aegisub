@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: Aegisub 3.5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 14:45+0200\n"
-"PO-Revision-Date: 2026-08-31 06:30+0800\n"
+"PO-Revision-Date: 2026-08-31 07:30+0800\n"
 "Last-Translator: op200 <op200_reek@qq.com>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -974,7 +974,7 @@ msgstr "加粗"
 #: ../src/command/edit.cpp:441
 msgid ""
 "Toggle bold (\\b) for the current selection or at the current cursor position"
-msgstr "在光标位置添加加粗标签(\\b)"
+msgstr "切换当前选区或当前光标位置的 粗体(\\b) 状态"
 
 #: ../src/command/edit.cpp:444
 msgid "toggle bold"
@@ -988,7 +988,7 @@ msgstr "斜体"
 msgid ""
 "Toggle italics (\\i) for the current selection or at the current cursor "
 "position"
-msgstr "在光标位置添加斜体标签(\\i)"
+msgstr "切换当前选区或当前光标位置的 斜体(\\i) 状态"
 
 #: ../src/command/edit.cpp:456
 msgid "toggle italic"
@@ -1002,7 +1002,7 @@ msgstr "下划线"
 msgid ""
 "Toggle underline (\\u) for the current selection or at the current cursor "
 "position"
-msgstr "在光标位置添加下划线标签(\\u)"
+msgstr "切换当前选区或当前光标位置的 下划线(\\u) 状态"
 
 #: ../src/command/edit.cpp:468
 msgid "toggle underline"
@@ -1016,7 +1016,7 @@ msgstr "删除线"
 msgid ""
 "Toggle strikeout (\\s) for the current selection or at the current cursor "
 "position"
-msgstr "在光标位置添加删除线标签(\\s)"
+msgstr "切换当前选区或当前光标位置的 删除线(\\s) 状态"
 
 #: ../src/command/edit.cpp:480
 msgid "toggle strikeout"
@@ -2167,7 +2167,7 @@ msgstr "打开时间码文件"
 
 #: ../src/command/timecode.cpp:70
 msgid "Open a VFR timecodes v1 or v2 file"
-msgstr "打开一个可变帧率时间码(VFR timecode)v1或v2文件"
+msgstr "打开一个可变帧率时间码 (VFR timecode) v1 或 v2 文件"
 
 #: ../src/command/timecode.cpp:74
 msgctxt "dialog title"
@@ -2184,7 +2184,7 @@ msgstr "保存时间码文件"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
-msgstr "保存一个可变帧率时间码(VFR timecode)v2文件"
+msgstr "保存一个可变帧率时间码 (VFR timecode) v2 文件"
 
 #: ../src/command/timecode.cpp:94
 msgctxt "dialog title"
@@ -3478,7 +3478,7 @@ msgstr "Level-2 图文电视"
 
 #: ../src/dialog_export_ebu3264.cpp:153
 msgid "Max. line length:"
-msgstr "最大行长度"
+msgstr "最大行长度:"
 
 #: ../src/dialog_export_ebu3264.cpp:157
 msgid "Time code offset:"
@@ -4261,7 +4261,7 @@ msgstr "没有可用的拼写检查词典。"
 
 #: ../src/dialog_spellchecker.cpp:183
 msgid "Ignore &UPPERCASE words"
-msgstr "忽略与大写的单词(&U)"
+msgstr "忽略全大写单词(&U)"
 
 #: ../src/dialog_spellchecker.cpp:187
 msgid "&Replace"
@@ -5125,7 +5125,7 @@ msgid ""
 msgstr ""
 "载入的视频未指定颜色矩阵。Aegisub 将猜测颜色矩阵为 %s，但无法保证其他程序也会猜测出相同的矩阵。这可能导致视频在不同媒体播放器中显示出不同的颜色，并可能使字幕颜色无法与视频颜色匹配。\n"
 " \n"
-"建议为视频的颜色矩阵标签，以确保视频在所有播放器中显示一致，并确保字幕颜色能够可靠地与视频颜色匹配。"
+"建议为视频添加颜色矩阵标签，以确保视频在所有播放器中显示一致，并确保字幕颜色能够可靠地与视频颜色匹配。"
 
 #: ../src/dialog_video_properties.cpp:140
 msgid "Untagged video"
@@ -5220,8 +5220,8 @@ msgid ""
 msgstr ""
 "载入视频的分辨率与脚本分辨率不匹配\n"
 "\n"
-"视频分辨率: \t%d × %d\n"
-"脚本分辨率: \t%d × %d\n"
+"视频分辨率:\t%d × %d\n"
+"脚本分辨率:\t%d × %d\n"
 "\n"
 "是否更改脚本分辨率以匹配视频?"
 
@@ -5339,8 +5339,8 @@ msgid ""
 msgstr ""
 "载入视频的分辨率与布局分辨率不匹配\n"
 "\n"
-"视频分辨率: \t%d × %d\n"
-"布局分辨率: \t%d × %d\n"
+"视频分辨率:    %d × %d\n"
+"布局分辨率:    %d × %d\n"
 "\n"
 "是否更改布局分辨率以匹配视频?"
 
