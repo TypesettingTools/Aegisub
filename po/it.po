@@ -5682,26 +5682,28 @@ msgid ""
 "\n"
 "You can set up style catalogs in the Style Manager."
 msgstr ""
+"Il catalogo degli stili scelto verrà caricato quando crei un nuovo file o importi "
+"dei file nei vari formati.\n"
 
 #: ../src/preferences.cpp:153
 msgid "New files"
-msgstr ""
+msgstr "Nuovi file"
 
 #: ../src/preferences.cpp:154
 msgid "MicroDVD import"
-msgstr ""
+msgstr "Importa MicroDVD"
 
 #: ../src/preferences.cpp:155
 msgid "SRT import"
-msgstr ""
+msgstr "Importa SRT"
 
 #: ../src/preferences.cpp:156
 msgid "TTXT import"
-msgstr ""
+msgstr "Importa TTXT"
 
 #: ../src/preferences.cpp:157
 msgid "Plain text import"
-msgstr ""
+msgstr "Importa plain text"
 
 #: ../src/preferences.cpp:164 ../src/preferences.cpp:414 default_hotkey.json:37
 msgid "Audio"
@@ -5829,7 +5831,7 @@ msgstr "Apre automaticamente l'audio quando si carica un video"
 
 #: ../src/preferences.cpp:216
 msgid "Does nothing"
-msgstr ""
+msgstr "Non fa nulla"
 
 #: ../src/preferences.cpp:216
 #, fuzzy
@@ -5839,15 +5841,15 @@ msgstr "Riproduci video"
 
 #: ../src/preferences.cpp:216
 msgid "Pans the video (X/Y swapped)"
-msgstr ""
+msgstr "Riproduci video (X/Y invertiti)"
 
 #: ../src/preferences.cpp:216
 msgid "Resizes the video box"
-msgstr ""
+msgstr "Ridimensiona il quadrante video"
 
 #: ../src/preferences.cpp:216
 msgid "Resizes the video box (reversed)"
-msgstr ""
+msgstr "Ridimensiona il quadrante video (invertito)"
 
 #: ../src/preferences.cpp:216
 #, fuzzy
@@ -5857,7 +5859,7 @@ msgstr "Zoom video avanti"
 
 #: ../src/preferences.cpp:216
 msgid "Zooms the video (reversed)"
-msgstr ""
+msgstr "Zoom video (invertito)"
 
 #: ../src/preferences.cpp:218
 #, fuzzy
@@ -5907,11 +5909,11 @@ msgstr "Altezza predefinita"
 
 #: ../src/preferences.cpp:240
 msgid "Always resample"
-msgstr ""
+msgstr "Ricampiona sempre"
 
 #: ../src/preferences.cpp:240
 msgid "Always set"
-msgstr ""
+msgstr "Imposta sempre"
 
 #: ../src/preferences.cpp:242
 msgid "Match video resolution on open"
@@ -5935,7 +5937,7 @@ msgstr "Sovrascrivi nei box del tempo"
 
 #: ../src/preferences.cpp:254
 msgid "Shift+Enter adds \\n"
-msgstr ""
+msgstr "MAIUSC+INVIO aggiunge \\n"
 
 #: ../src/preferences.cpp:255
 msgid "Enable syntax highlighting"
@@ -5947,27 +5949,27 @@ msgstr "Percorso dizionari"
 
 #: ../src/preferences.cpp:259
 msgid "Character Counter"
-msgstr ""
+msgstr "Contatore Caratteri"
 
 #: ../src/preferences.cpp:260
 msgid "Maximum characters per line"
-msgstr ""
+msgstr "Caratteri massimi per riga"
 
 #: ../src/preferences.cpp:261
 msgid "Characters Per Second Warning Threshold"
-msgstr ""
+msgstr "Limite Caratteri al Secondo (Warning)"
 
 #: ../src/preferences.cpp:262
 msgid "Characters Per Second Error Threshold"
-msgstr ""
+msgstr "Limite Caratteri al Secondo (Error)"
 
 #: ../src/preferences.cpp:263
 msgid "Ignore whitespace"
-msgstr ""
+msgstr "Ignora gli spazi"
 
 #: ../src/preferences.cpp:264
 msgid "Ignore punctuation"
-msgstr ""
+msgstr "Ignora la punteggiatura"
 
 #: ../src/preferences.cpp:266
 msgid "Grid"
@@ -5975,7 +5977,7 @@ msgstr "Griglia"
 
 #: ../src/preferences.cpp:267
 msgid "Focus grid on click"
-msgstr ""
+msgstr "Focus sulla griglia al click"
 
 #: ../src/preferences.cpp:268
 msgid "Highlight visible subtitles"
@@ -5987,7 +5989,7 @@ msgstr "Nascondi simbolo override"
 
 #: ../src/preferences.cpp:273
 msgid "Skip over whitespace"
-msgstr ""
+msgstr "Salta gli spazi"
 
 #: ../src/preferences.cpp:288
 msgid "Audio Display"
@@ -6019,7 +6021,7 @@ msgstr "Sottolineatura sintassi"
 
 #: ../src/preferences.cpp:297
 msgid "Background"
-msgstr ""
+msgstr "Sfondo"
 
 #: ../src/preferences.cpp:298
 msgid "Normal"
@@ -6027,23 +6029,23 @@ msgstr "Normale"
 
 #: ../src/preferences.cpp:299
 msgid "Comments"
-msgstr ""
+msgstr "Commenti"
 
 #: ../src/preferences.cpp:300
 msgid "Drawing Commands"
-msgstr ""
+msgstr "Comandi Disegno"
 
 #: ../src/preferences.cpp:301
 msgid "Drawing X Coords"
-msgstr ""
+msgstr "Coordinate X di Disegno"
 
 #: ../src/preferences.cpp:302
 msgid "Drawing Y Coords"
-msgstr ""
+msgstr "Coordinate Y di Disegno"
 
 #: ../src/preferences.cpp:303
 msgid "Underline Spline Endpoints"
-msgstr ""
+msgstr "Sottolinea gli Spline Endpoints"
 
 #: ../src/preferences.cpp:305
 msgid "Brackets"
@@ -6075,7 +6077,7 @@ msgstr "Template Karaoke"
 
 #: ../src/preferences.cpp:313
 msgid "Karaoke variables"
-msgstr ""
+msgstr "Variabili Karaoke"
 
 #: ../src/preferences.cpp:319
 msgid "Audio Color Schemes"
@@ -6143,35 +6145,35 @@ msgstr "Colore Linee"
 
 #: ../src/preferences.cpp:337
 msgid "CPS Error"
-msgstr ""
+msgstr "Errore CAS"
 
 #: ../src/preferences.cpp:339
 msgid "Visual Typesetting Tools"
-msgstr ""
+msgstr "Strumenti del Typesetting"
 
 #: ../src/preferences.cpp:340
 msgid "Primary Lines"
-msgstr ""
+msgstr "Righe Principali"
 
 #: ../src/preferences.cpp:341
 msgid "Secondary Lines"
-msgstr ""
+msgstr "Righe Secondarie"
 
 #: ../src/preferences.cpp:342
 msgid "Primary Highlight"
-msgstr ""
+msgstr "Highlight Principali"
 
 #: ../src/preferences.cpp:343
 msgid "Secondary Highlight"
-msgstr ""
+msgstr "Highlight Secondari"
 
 #: ../src/preferences.cpp:346
 msgid "Visual Typesetting Tools Alpha"
-msgstr ""
+msgstr "Strumenti del Typesetting Alpha"
 
 #: ../src/preferences.cpp:347
 msgid "Shaded Area"
-msgstr ""
+msgstr "Area con ombreggiatura"
 
 #: ../src/preferences.cpp:356
 msgid "Backup"
@@ -6300,7 +6302,7 @@ msgstr "Hard Disk"
 
 #: ../src/preferences.cpp:425
 msgid "None (NOT RECOMMENDED)"
-msgstr "Nessuna (NON RACCOMANDATO)"
+msgstr "Nessuna (NON CONSIGLIATO)"
 
 #: ../src/preferences.cpp:425
 msgid "RAM"
@@ -6320,7 +6322,7 @@ msgstr "Qualità alta"
 
 #: ../src/preferences.cpp:432
 msgid "Insane quality"
-msgstr "Qualità insana"
+msgstr "Qualità altissima"
 
 #: ../src/preferences.cpp:432
 msgid "Regular quality"
@@ -6332,27 +6334,27 @@ msgstr "Qualità"
 
 #: ../src/preferences.cpp:436
 msgid "Compressed"
-msgstr ""
+msgstr "Compressa"
 
 #: ../src/preferences.cpp:436
 msgid "Extended"
-msgstr ""
+msgstr "Estesa"
 
 #: ../src/preferences.cpp:436
 msgid "Linear"
-msgstr ""
+msgstr "Lineare"
 
 #: ../src/preferences.cpp:436
 msgid "Logarithmic"
-msgstr ""
+msgstr "Logaritmica"
 
 #: ../src/preferences.cpp:436
 msgid "Medium"
-msgstr ""
+msgstr "Media"
 
 #: ../src/preferences.cpp:438
 msgid "Frequency mapping"
-msgstr ""
+msgstr "Mapping in frequenza"
 
 #: ../src/preferences.cpp:440
 msgid "Cache memory max (MB)"
@@ -6422,35 +6424,35 @@ msgstr "Limite di memoria di Avisynth"
 #, fuzzy
 #| msgid "4: Debug"
 msgid "Debug"
-msgstr "4: Debug"
+msgstr "Debug"
 
 #: ../src/preferences.cpp:501
 #, fuzzy
 #| msgid "0: Fatal"
 msgid "Fatal"
-msgstr "0: Fatale"
+msgstr "Fatale"
 
 #: ../src/preferences.cpp:501
 msgid "Info"
-msgstr ""
+msgstr "Info"
 
 #: ../src/preferences.cpp:501
 msgid "Panic"
-msgstr ""
+msgstr "Molto dettagliato"
 
 #: ../src/preferences.cpp:501
 msgid "Quiet"
-msgstr ""
+msgstr "Generico"
 
 #: ../src/preferences.cpp:501
 msgid "Verbose"
-msgstr ""
+msgstr "Dettagliato"
 
 #: ../src/preferences.cpp:501 ../src/project.cpp:331
 #, fuzzy
 #| msgid "2: Warning"
 msgid "Warning"
-msgstr "2: Attenzione"
+msgstr "Attenzione"
 
 #: ../src/preferences.cpp:503
 msgid "Debug log verbosity"
@@ -6470,7 +6472,7 @@ msgstr "Hotkey"
 
 #: ../src/preferences.cpp:664
 msgid "Search"
-msgstr ""
+msgstr "Ricerca"
 
 #: ../src/preferences.cpp:680 ../src/preferences.cpp:683
 #, fuzzy
@@ -6482,7 +6484,7 @@ msgstr "Hotkey"
 #, fuzzy
 #| msgid "Commands"
 msgid "Command"
-msgstr "Comandi"
+msgstr "Comando"
 
 #: ../src/preferences.cpp:760
 msgid ""
@@ -6524,13 +6526,13 @@ msgstr "Grandezza font"
 #, fuzzy
 #| msgid "Error Importing Styles"
 msgid "Error loading file"
-msgstr "Errore nell'importazione degli stili"
+msgstr "Errore nel caricamento del file"
 
 #: ../src/project.cpp:111 ../src/project.cpp:130
 #, fuzzy, c-format
 #| msgid "All fonts found.\n"
 msgid "%s not found."
-msgstr "Tutti i font trovati.\n"
+msgstr "%s non trovato"
 
 #: ../src/project.cpp:199
 msgid "Do you want to load/unload the associated files?"
@@ -6539,38 +6541,38 @@ msgstr "Vuoi caricare/togliere i file associati?"
 #: ../src/project.cpp:210
 #, c-format
 msgid "Load audio file: %s"
-msgstr ""
+msgstr "Carica file audio: %s"
 
 #: ../src/project.cpp:210
 msgid "Unload audio"
-msgstr ""
+msgstr "Chiudi audio"
 
 #: ../src/project.cpp:212
 #, c-format
 msgid "Load video file: %s"
-msgstr ""
+msgstr "Carica file video: %s"
 
 #: ../src/project.cpp:212
 msgid "Unload video"
-msgstr ""
+msgstr "Chiudi video"
 
 #: ../src/project.cpp:214
 #, c-format
 msgid "Load timecodes file: %s"
-msgstr ""
+msgstr "Carica file di timecode: %s"
 
 #: ../src/project.cpp:214
 msgid "Unload timecodes"
-msgstr ""
+msgstr "Chiudi timecode"
 
 #: ../src/project.cpp:216
 #, c-format
 msgid "Load keyframes file: %s"
-msgstr ""
+msgstr "Carica file di keyframe: %s"
 
 #: ../src/project.cpp:216
 msgid "Unload keyframes"
-msgstr ""
+msgstr "Chiudi keyframe"
 
 #: ../src/project.cpp:218
 msgid "(Un)Load files?"
@@ -6578,7 +6580,7 @@ msgstr "Carica/Togli file?"
 
 #: ../src/project.cpp:267
 msgid "The audio file was not found: "
-msgstr ""
+msgstr "Il file audio non è stato trovato: "
 
 #: ../src/project.cpp:275
 msgid ""
@@ -6587,6 +6589,10 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
+"Nessuno dei provider audio disponibili ha riconosciuto il file selezionato "
+"come valido.\n"
+"\n"
+"Sono stati utilizzati i seguenti provider:\n"
 
 #: ../src/project.cpp:278
 msgid ""
@@ -6595,20 +6601,24 @@ msgid ""
 "\n"
 "The following providers were tried:\n"
 msgstr ""
+"Nessuno dei provider audio disponibili ha un codec per poter gestire "
+"il file audio selezionato.\n"
+"\n"
+"Sono stati utilizzati i seguenti provider:\n"
 
 #: ../src/project.cpp:381
 #, fuzzy
 #| msgid "Close Timecodes File"
 msgid "Failed to parse timecodes file: "
-msgstr "Chiudi File Timecode"
+msgstr "Errore nel parsing del file di timecode: "
 
 #: ../src/project.cpp:407
 msgid "Failed to parse keyframes file: "
-msgstr ""
+msgstr "Errore nel parsing del file di keyframe: "
 
 #: ../src/project.cpp:411
 msgid "Keyframes file in unknown format: "
-msgstr ""
+msgstr "File di keyframe in formato sconosciuto: "
 
 #: ../src/resolution_resampler.cpp:301
 msgid "resolution resampling"
@@ -6622,8 +6632,8 @@ msgstr "sostituisci"
 #, c-format
 msgid "One match was replaced."
 msgid_plural "%d matches were replaced."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "È stato sostituito un match."
+msgstr[1] "%d match sono stati sostituiti."
 
 #: ../src/search_replace_engine.cpp:277
 msgid "No matches found."
