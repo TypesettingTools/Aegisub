@@ -3,10 +3,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Aegisub 3.5.0-beta\n"
+"Project-Id-Version: Aegisub 3.5.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-26 14:45+0200\n"
-"PO-Revision-Date: 2026-08-07 13:25+0800\n"
+"PO-Revision-Date: 2026-08-31 07:30+0800\n"
 "Last-Translator: op200 <op200_reek@qq.com>\n"
 "Language-Team: \n"
 "Language: zh_CN\n"
@@ -611,8 +611,6 @@ msgid "Video Formats"
 msgstr "视频格式"
 
 #: ../src/command/audio.cpp:85
-#, fuzzy
-#| msgid "Open Audio File"
 msgctxt "dialog title"
 msgid "Open Audio File"
 msgstr "打开音频文件"
@@ -976,7 +974,7 @@ msgstr "加粗"
 #: ../src/command/edit.cpp:441
 msgid ""
 "Toggle bold (\\b) for the current selection or at the current cursor position"
-msgstr "在光标位置添加加粗标签(\\b)"
+msgstr "切换当前选区或当前光标位置的 粗体(\\b) 状态"
 
 #: ../src/command/edit.cpp:444
 msgid "toggle bold"
@@ -990,7 +988,7 @@ msgstr "斜体"
 msgid ""
 "Toggle italics (\\i) for the current selection or at the current cursor "
 "position"
-msgstr "在光标位置添加斜体标签(\\i)"
+msgstr "切换当前选区或当前光标位置的 斜体(\\i) 状态"
 
 #: ../src/command/edit.cpp:456
 msgid "toggle italic"
@@ -1004,7 +1002,7 @@ msgstr "下划线"
 msgid ""
 "Toggle underline (\\u) for the current selection or at the current cursor "
 "position"
-msgstr "在光标位置添加下划线标签(\\u)"
+msgstr "切换当前选区或当前光标位置的 下划线(\\u) 状态"
 
 #: ../src/command/edit.cpp:468
 msgid "toggle underline"
@@ -1018,7 +1016,7 @@ msgstr "删除线"
 msgid ""
 "Toggle strikeout (\\s) for the current selection or at the current cursor "
 "position"
-msgstr "在光标位置添加删除线标签(\\s)"
+msgstr "切换当前选区或当前光标位置的 删除线(\\s) 状态"
 
 #: ../src/command/edit.cpp:480
 msgid "toggle strikeout"
@@ -1687,8 +1685,6 @@ msgid "Save the current list of keyframes to a file"
 msgstr "保存当前的关键帧列表"
 
 #: ../src/command/keyframe.cpp:97
-#, fuzzy
-#| msgid "Save keyframes file"
 msgid "Save Keyframes File"
 msgstr "保存关键帧文件"
 
@@ -2171,11 +2167,9 @@ msgstr "打开时间码文件"
 
 #: ../src/command/timecode.cpp:70
 msgid "Open a VFR timecodes v1 or v2 file"
-msgstr "打开一个可变帧率时间码(VFR timecode)v1或v2文件"
+msgstr "打开一个可变帧率时间码 (VFR timecode) v1 或 v2 文件"
 
 #: ../src/command/timecode.cpp:74
-#, fuzzy
-#| msgid "Open Timecodes File"
 msgctxt "dialog title"
 msgid "Open Timecodes File"
 msgstr "打开时间码文件"
@@ -2190,11 +2184,9 @@ msgstr "保存时间码文件"
 
 #: ../src/command/timecode.cpp:85
 msgid "Save a VFR timecodes v2 file"
-msgstr "保存一个可变帧率时间码(VFR timecode)v2文件"
+msgstr "保存一个可变帧率时间码 (VFR timecode) v2 文件"
 
 #: ../src/command/timecode.cpp:94
-#, fuzzy
-#| msgid "Save Timecodes File"
 msgctxt "dialog title"
 msgid "Save Timecodes File"
 msgstr "保存时间码文件"
@@ -2925,12 +2917,15 @@ msgstr "平滑手绘"
 msgid "Draw a smoothed freehand shape"
 msgstr "画一个平滑的手绘形状"
 
+#  old:
+#    "Last-Translator: Oborozuki <oborozuk1@qq.com>\n"
+#    "Language-Team: Vmoe Fansub <vmoe@vmoe.info>\n"
 #: ../src/dialog_about.cpp:46
 msgid "Translated into LANGUAGE by PERSON\n"
 msgstr ""
 "简体中文翻译:\n"
 "    op200\n"
-"旧版翻译来自: Vmoe字幕组\n"
+"旧版(<=3.2)翻译来自: Vmoe 字幕组\n"
 "    原始翻译: 芥末 & song_5007 & ……\n"
 "    电脑迷 修订更新翻译\n"
 "    Oborozuki 修订更新翻译\n"
@@ -3483,7 +3478,7 @@ msgstr "Level-2 图文电视"
 
 #: ../src/dialog_export_ebu3264.cpp:153
 msgid "Max. line length:"
-msgstr "最大行长度"
+msgstr "最大行长度:"
 
 #: ../src/dialog_export_ebu3264.cpp:157
 msgid "Time code offset:"
@@ -4266,7 +4261,7 @@ msgstr "没有可用的拼写检查词典。"
 
 #: ../src/dialog_spellchecker.cpp:183
 msgid "Ignore &UPPERCASE words"
-msgstr "忽略与大写的单词(&U)"
+msgstr "忽略全大写单词(&U)"
 
 #: ../src/dialog_spellchecker.cpp:187
 msgid "&Replace"
@@ -5097,21 +5092,19 @@ msgstr "长度:"
 
 #: ../src/dialog_video_details.cpp:68
 msgid "Actual color matrix:"
-msgstr ""
+msgstr "实际颜色矩阵:"
 
 #: ../src/dialog_video_details.cpp:69
 msgid "Forced color matrix:"
-msgstr ""
+msgstr "强制颜色矩阵:"
 
 #: ../src/dialog_video_details.cpp:70
 msgid "Actual color range:"
-msgstr ""
+msgstr "实际颜色范围:"
 
 #: ../src/dialog_video_details.cpp:71
-#, fuzzy
-#| msgid "Force sample rate"
 msgid "Forced color range:"
-msgstr "强制转换采样率"
+msgstr "强制颜色范围:"
 
 #: ../src/dialog_video_details.cpp:72
 msgid "Decoder:"
@@ -5130,23 +5123,24 @@ msgid ""
 "displays consistently in all players and that subtitle colors can reliably "
 "match video colors."
 msgstr ""
+"载入的视频未指定颜色矩阵。Aegisub 将猜测颜色矩阵为 %s，但无法保证其他程序也会猜测出相同的矩阵。这可能导致视频在不同媒体播放器中显示出不同的颜色，并可能使字幕颜色无法与视频颜色匹配。\n"
+" \n"
+"建议为视频添加颜色矩阵标签，以确保视频在所有播放器中显示一致，并确保字幕颜色能够可靠地与视频颜色匹配。"
 
 #: ../src/dialog_video_properties.cpp:140
-#, fuzzy
-#| msgid "Unload video"
 msgid "Untagged video"
-msgstr "关闭视频"
+msgstr "无颜色矩阵标签的视频"
 
 #: ../src/dialog_video_properties.cpp:145
 msgid ""
 "The video you have loaded has HDR and/or WCG colors. While ordinary dialogue "
 "subtitles will work fine on such videos, matching video colors using "
 "subtitles will not be possible on HDR and/or WCG footage."
-msgstr ""
+msgstr "载入的视频包含 HDR 和/或 WCG 颜色。普通对白字幕在此类视频上可以正常显示，但无法使用字幕匹配 HDR 和/或 WCG 视频素材的颜色。"
 
 #: ../src/dialog_video_properties.cpp:148
 msgid "HDR and/or WCG video"
-msgstr ""
+msgstr "HDR 和/或 WCG 视频"
 
 #: ../src/dialog_video_properties.cpp:161
 #, c-format
@@ -5161,25 +5155,29 @@ msgid ""
 "leave the YCbCr Matrix unset until you load the correct video file.\n"
 "\n"
 "This prompt can be configured in the preferences."
-msgstr ""
+msgstr "当前字幕文件未设置 YCbCr 矩阵。\n"
+"\n"
+"如果你打算将此字幕文件用于刚刚载入的视频文件，\n"
+"应将字幕文件的 YCbCr 矩阵设置为视频的颜色空间 (\"%s\")。\n"
+"\n"
+"如果你打算使用其他视频文件，可能需要\n"
+"暂不设置 YCbCr 矩阵，直到载入正确的视频文件。\n"
+"\n"
+"可以在设置中设置此提示。"
 
 #: ../src/dialog_video_properties.cpp:166
-#, fuzzy
-#| msgid "YCbCr Matrix:"
 msgid "Set script's YCbCr Matrix?"
-msgstr "YCbCr 矩阵:"
+msgstr "设置脚本的 YCbCr 矩阵?"
 
 #: ../src/dialog_video_properties.cpp:167
-#, fuzzy
-#| msgid "YCbCr Matrix:"
 msgid "Leave YCbCr Matrix unset"
-msgstr "YCbCr 矩阵:"
+msgstr "不设置 YCbCr 矩阵"
 
 #: ../src/dialog_video_properties.cpp:167
 #: ../src/dialog_video_properties.cpp:226
 #, c-format
 msgid "Set script's YCbCr Matrix to the video's (\"%s\")"
-msgstr ""
+msgstr "将字幕脚本的 YCbCr 矩阵设置为视频的 (\"%s\")"
 
 #: ../src/dialog_video_properties.cpp:221
 #, c-format
@@ -5191,18 +5189,19 @@ msgid ""
 "originally authored for,\n"
 "then the subtitle file's YCbCr Matrix should be set to the video's YCbCr "
 "Matrix."
-msgstr ""
+msgstr "此视频推荐的 YCbCr 矩阵 (\"%s\") 与字幕文件的 YCbCr 矩阵 (\"%s\") 不同。\n"
+"\n"
+"如果这个新视频的颜色看起来与字幕文件最初制作所使用的视频完全相同，\n"
+"则应将字幕文件的 YCbCr 矩阵设置为此视频的 YCbCr 矩阵。"
 
 #: ../src/dialog_video_properties.cpp:225
-#, fuzzy
-#| msgid "YCbCr Matrix:"
 msgid "YCbCr Matrix mismatch"
-msgstr "YCbCr 矩阵:"
+msgstr "YCbCr 矩阵不匹配"
 
 #: ../src/dialog_video_properties.cpp:226
 #, c-format
 msgid "Leave script's YCbCr Matrix as it is (\"%s\")"
-msgstr ""
+msgstr "保留字幕脚本的 YCbCr 矩阵 (\"%s\")"
 
 #: ../src/dialog_video_properties.cpp:257
 msgid "Resolution mismatch"
@@ -5219,17 +5218,17 @@ msgid ""
 "\n"
 "Change subtitles resolution to match video?"
 msgstr ""
-"载入视频的分辨率与脚本指定的分辨率不匹配\n"
+"载入视频的分辨率与脚本分辨率不匹配\n"
 "\n"
-"视频分辨率: \t%d × %d\n"
-"脚本分辨率: \t%d × %d\n"
+"视频分辨率:\t%d × %d\n"
+"脚本分辨率:\t%d × %d\n"
 "\n"
 "是否更改脚本分辨率以匹配视频?"
 
 #: ../src/dialog_video_properties.cpp:271
 #: ../src/dialog_video_properties.cpp:280
 msgid "Leave resolution as it is"
-msgstr ""
+msgstr "保持分辨率不变"
 
 #: ../src/dialog_video_properties.cpp:272
 msgid "Resample script (stretch to new aspect ratio)"
@@ -5267,29 +5266,38 @@ msgid ""
 "\n"
 "This prompt can be configured in the preferences."
 msgstr ""
+"当前字幕文件未设置布局分辨率。\n"
+"\n"
+"如果你打算将此字幕文件用于刚刚载入的视频文件，\n"
+"应将字幕文件的布局分辨率设置为该视频的显示分辨率。\n"
+"\n"
+"如果你打算使用其他视频文件，可能需要暂不设置\n"
+"布局分辨率，直到载入正确的视频文件。\n"
+"\n"
+"如果你正在编辑一个未设置布局分辨率的旧字幕文件，\n"
+"应将其布局分辨率设为该字幕文件原本要播放在其上的视频分辨率。\n"
+"通常这与该文件的脚本分辨率相同。 (%d × %d)\n"
+"\n"
+"可以在设置中设置此提示。"
 
 #: ../src/dialog_video_properties.cpp:403
-#, fuzzy
-#| msgid "change script resolution"
 msgid "Set script's layout resolution?"
-msgstr "更改脚本分辨率"
+msgstr "设置脚本的布局分辨率?"
 
 #: ../src/dialog_video_properties.cpp:404
-#, fuzzy
-#| msgid "Match video resolution on open"
 msgid "Leave layout resolution unset"
-msgstr "在打开视频时匹配分辨率"
+msgstr "不设置布局分辨率"
 
 #: ../src/dialog_video_properties.cpp:405
 #: ../src/dialog_video_properties.cpp:484
 #, c-format
 msgid "Set script's layout resolution to the video's (%d × %d)"
-msgstr ""
+msgstr "将字幕脚本的布局分辨率设置为视频的 (%d × %d)"
 
 #: ../src/dialog_video_properties.cpp:406
 #, c-format
 msgid "Set script's layout resolution to its script resolution (%d × %d)"
-msgstr ""
+msgstr "将字幕脚本的布局分辨率设置为其脚本分辨率 (%d × %d)"
 
 #: ../src/dialog_video_properties.cpp:464
 #, c-format
@@ -5308,17 +5316,18 @@ msgid ""
 "layout resolution\n"
 "to the video's display resolution."
 msgstr ""
+"载入视频的分辨率与字幕指定的布局分辨率不匹配。\n"
+"\n"
+"视频分辨率:    %d × %d\n"
+"布局分辨率:    %d × %d\n"
+"\n"
+"通常这不是问题，可以保持字幕文件的布局分辨率不变。\n"
+"如果字幕文件不含重要的格式设置，而你现在打算在刚刚载入的视频上进行\n"
+"格式设置，可能需要将字幕脚本的布局分辨率\n"
+"设置为视频的显示分辨率。"
 
 #: ../src/dialog_video_properties.cpp:475
-#, fuzzy, c-format
-#| msgid ""
-#| "The resolution of the loaded video and the resolution specified for the "
-#| "subtitles don't match.\n"
-#| "\n"
-#| "Video resolution:\t%d × %d\n"
-#| "Script resolution:\t%d × %d\n"
-#| "\n"
-#| "Change subtitles resolution to match video?"
+#, c-format
 msgid ""
 "The resolution of the loaded video and the layout resolution specified for "
 "the subtitles differ in aspect ratios.\n"
@@ -5328,37 +5337,33 @@ msgid ""
 "\n"
 "Change layout resolution of subtitles to match video?"
 msgstr ""
-"载入视频的分辨率与脚本指定的分辨率不匹配\n"
+"载入视频的分辨率与布局分辨率不匹配\n"
 "\n"
-"视频分辨率: \t%d × %d\n"
-"脚本分辨率: \t%d × %d\n"
+"视频分辨率:    %d × %d\n"
+"布局分辨率:    %d × %d\n"
 "\n"
-"是否更改脚本分辨率以匹配视频?"
+"是否更改布局分辨率以匹配视频?"
 
 #: ../src/dialog_video_properties.cpp:483
-#, fuzzy
-#| msgid "Resolution mismatch"
 msgid "Layout resolution mismatch"
-msgstr "分辨率不匹配"
+msgstr "布局分辨率不匹配"
 
 #: ../src/dialog_video_properties.cpp:484
 #, c-format
 msgid "Leave layout resolution as it is (%d × %d)"
-msgstr ""
+msgstr "保持布局分辨率不变 (%d × %d)"
 
 #: ../src/dialog_video_properties.cpp:509
 msgid "change ycbcr matrix"
-msgstr ""
+msgstr "更改 YCbCr 矩阵"
 
 #: ../src/dialog_video_properties.cpp:512
 msgid "change script resolution"
 msgstr "更改脚本分辨率"
 
 #: ../src/dialog_video_properties.cpp:515
-#, fuzzy
-#| msgid "change script resolution"
 msgid "change layout resolution"
-msgstr "更改脚本分辨率"
+msgstr "更改布局分辨率"
 
 #: ../src/export_fixstyle.cpp:46
 msgid "Fix Styles"
@@ -5968,10 +5973,8 @@ msgid "Match video resolution on open"
 msgstr "在打开视频时匹配分辨率"
 
 #: ../src/preferences.cpp:244
-#, fuzzy
-#| msgid "Source Resolution"
 msgid "Layout Resolution"
-msgstr "原分辨率"
+msgstr "布局分辨率"
 
 #: ../src/preferences.cpp:246 ../src/preferences.cpp:258
 #: ../src/preferences.cpp:262
@@ -5979,52 +5982,40 @@ msgid "Always set"
 msgstr "使用视频分辨率"
 
 #: ../src/preferences.cpp:246
-#, fuzzy
-#| msgid "change script resolution"
 msgid "Always set from script resolution"
-msgstr "更改脚本分辨率"
+msgstr "始终根据脚本分辨率设置"
 
 #: ../src/preferences.cpp:248
-#, fuzzy
-#| msgid "Use resolution of first video opened"
 msgid "Set layout resolution from video on open"
-msgstr "使用第一次打开的视频的分辨率"
+msgstr "根据打开的视频设置布局分辨率"
 
 #: ../src/preferences.cpp:250
-#, fuzzy
-#| msgid "&Change aspect ratio"
 msgid "When aspect ratio changes"
-msgstr "更改宽高比(&C)"
+msgstr "宽高比变化时"
 
 #: ../src/preferences.cpp:252
-#, fuzzy
-#| msgid "Resolution mismatch"
 msgid "Prompt on layout resolution mismatch"
-msgstr "分辨率不匹配"
+msgstr "布局分辨率不匹配提示"
 
 #: ../src/preferences.cpp:254
-#, fuzzy
-#| msgid "YCbCr Matrix:"
 msgid "YCbCr Matrix"
-msgstr "YCbCr 矩阵:"
+msgstr "YCbCr 矩阵"
 
 #: ../src/preferences.cpp:255
 msgid "Warn on untagged video color matrix"
-msgstr ""
+msgstr "视频无颜色矩阵标签时发出警告"
 
 #: ../src/preferences.cpp:256
 msgid "Warn on HDR/WCG video"
-msgstr ""
+msgstr "视频为 HDR/WCG 时发出警告"
 
 #: ../src/preferences.cpp:260
 msgid "Use video's YCbCr Matrix when script has no matrix set"
-msgstr ""
+msgstr "脚本未设置 YCbCr 矩阵时使用视频的 YCbCr 矩阵"
 
 #: ../src/preferences.cpp:264
-#, fuzzy
-#| msgid "Match video resolution on open"
 msgid "Match video's YCbCr Matrix on open"
-msgstr "在打开视频时匹配分辨率"
+msgstr "在打开视频时匹配 YCbCr 矩阵"
 
 #: ../src/preferences.cpp:271
 msgid "Interface"
@@ -6107,16 +6098,12 @@ msgid "Play cursor"
 msgstr "播放游标"
 
 #: ../src/preferences.cpp:312
-#, fuzzy
-#| msgid "Current frame time and number"
 msgid "Current frame range"
-msgstr "当前帧时间和序号"
+msgstr "当前帧范围"
 
 #: ../src/preferences.cpp:313
-#, fuzzy
-#| msgid "Previous Frame"
 msgid "Previous frame range"
-msgstr "上一帧"
+msgstr "上一帧范围"
 
 #: ../src/preferences.cpp:314
 msgid "Line boundary start"
