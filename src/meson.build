@@ -1,5 +1,7 @@
 subdir('libresrc')
 
+aegisub_src_inc = include_directories('.')
+
 matroska_demux_src = files('matroska_demux.cpp')
 matroska_src = files('matroska.cpp') + matroska_demux_src
 
