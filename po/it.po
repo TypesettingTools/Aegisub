@@ -21,7 +21,7 @@ msgstr "Lingua"
 #, fuzzy
 #| msgid "Please choose the folder:"
 msgid "Please choose a language:"
-msgstr "Scegli una cartella:"
+msgstr "Scegli una lingua:"
 
 #: ../src/ass_style.cpp:196
 msgid "Auto-detect base direction (libass only)"
