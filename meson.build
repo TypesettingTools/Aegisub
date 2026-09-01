@@ -181,7 +181,6 @@ zlib_dep = dependency('zlib')
 deps += zlib_dep
 libebml = dependency('libebml', version: '>=1.4.0', fallback: ['libebml', 'libebml_dep'])
 libmatroska = dependency('libmatroska', version: '>=1.6.0', fallback: ['libmatroska', 'libmatroska_dep'])
-deps += [libebml, libmatroska]
 
 use_bundled_wx = force_all_fallbacks or force_fallback_for.contains('wxWidgets')
 if not use_bundled_wx
@@ -577,5 +576,5 @@ aegisub = executable('aegisub', aegisub_src, version_h, resrc, aegisub_order_dep
                      c_pch: aegisub_c_pch,
                      install: true,
                      install_dir: bindir,
-                     dependencies: deps,
+                    dependencies: [deps, matroska_dep],
                      win_subsystem: 'windows')
