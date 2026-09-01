@@ -48,7 +48,7 @@ static const char *pages[][2] = {
 	{"Paste Over", "Paste_Over"},
 	{"Properties", "Properties"},
 	{"Resample resolution", "Resolution_Resampler"},
-	{"Resolution mismatch", "Script_Resolution#automatic-resolution-change"},
+	{"Resolution and matrix", "Resolution_and_Matrix"},
 	{"Shift Times", "Shift_Times"},
 	{"Select Lines", "Select_Lines"},
 	{"Spell Checker", "Spell_Checker"},
@@ -81,7 +81,7 @@ void HelpButton::OpenPage(const char *pageID) {
 	auto page = url(pageID);
 	auto sep = strchr(page, '#');
 	if (sep)
-		wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.2/%.*s/%s", sep - page, page, sep));
+		wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.5/%.*s/%s", sep - page, page, sep));
 	else
-		wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.2/%s/", page));
+		wxLaunchDefaultBrowser(fmt_wx("http://docs.aegisub.org/3.5/%s/", page));
 }

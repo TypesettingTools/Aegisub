@@ -208,6 +208,44 @@ void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 		}
 	}
 
+	// Compute the updated LayoutRes. When cropping or stretching, LayoutRes needs to be cropped/stretched accordingly,
+	// so that:
+	// 1. The ratio of the LayoutRes AR to the PlayRes AR is not changed by the resampling process:
+	//    This ratio controls how much text is stretched relative to drawings, so it must stay the same.
+	//
+	//    (Note that this is not technically required, see the TODO note below, but it's the logic that's consistent with
+	//    the rest of the resolution resampler's current behavior.)
+	// 2. LayoutResY stays unchanged when stretching the video, but is changed proportionally when adding or removing top or bottom margins.
+	//    More precisely, the ratio between (newPlayResY / newLayoutResY) and (oldPlayResY / oldLayoutResY) should match
+	//    the vertical stretching factor (newPlayResY / (oldPlayResY + marginTop + marginBottom)).
+	//
+	//    This is because vertical \blur and the perspective focal length are given in LayoutResY units
+	//    (i.e. their values are converted to PlayRes units by multiplying them by PlayResY / LayoutResY), and
+	//    the values in PlayRes units should grow proportionally with the other values.
+	//
+	// Adjusting the LayoutRes according to these constraints allow preserving rendering exactly when adding or removing borders,
+	// or when stretching proportionally. However, when subtitles are stretched anamorphically, this is not possible:
+	// There, horizontal blur and perspective transformations will change in appearance.
+	//
+	// TODO: In theory, it should be possible to exactly preserve rendering even when stretching anamorphically. This would involve:
+	// - Scaling LayoutResX the same way LayoutResY is being scaled
+	// - Leaving \fscx unchanged in exchange
+	// - Scaling drawings horizontally by the stretching ratio
+	// - Splitting all \bord and \shad tags and into \xbord\ybord / \xshad\yshad and scaling \xbord/\xshad accordingly
+	//       (Note that this also requires injecting bord/shad tags into lines where the bord/shad is set via a style, as well as after \r)
+	// However, this also has the downside of generating files whose LayoutRes AR does not match the PlayRes AR (i.e. sacrificing point 1. above),
+	// which will result in unintuitive behavior and is probably badly supported in tooling.
+	// Since there is arguably no more actual use case for stretching PlayRes anyway, this is not implemented for now.
+	int lrx = 0, lry = 0;
+	int new_lrx = 0, new_lry = 0;
+	ass->GetLayoutResolution(lrx, lry);
+
+	if (lrx != 0 && lry != 0) {
+		new_lry = lry + std::round(lry * (settings.margin[TOP] + settings.margin[BOTTOM]) / double(settings.source_x));
+
+		new_lrx = std::round(lrx * (double(new_lry) / double(lry)) * (double(settings.dest_x) / double(settings.dest_y)) / (double(settings.source_x) / double(settings.source_y)));
+	}
+
 	// Add margins to original resolution
 	settings.source_x += settings.margin[LEFT] + settings.margin[RIGHT];
 	settings.source_y += settings.margin[TOP] + settings.margin[BOTTOM];
@@ -237,6 +275,11 @@ void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 	ass->SetScriptInfo("PlayResY", std::to_string(settings.dest_y));
 	if (settings.matrix_conversion)
 		ass->SetScriptInfo("YCbCr Matrix", agi::ycbcr::Header(settings.matrix_conversion->second).to_best_practice_string());
+
+	if (lrx != 0 && lry != 0) {
+		ass->SetScriptInfo("LayoutResX", std::to_string(new_lrx));
+		ass->SetScriptInfo("LayoutResY", std::to_string(new_lry));
+	}
 
 	ass->Commit(_("resolution resampling"), AssFile::COMMIT_SCRIPTINFO | AssFile::COMMIT_DIAG_FULL);
 }

@@ -22,6 +22,10 @@
 
 namespace agi {
 
+namespace unicode {
+	bool is_whitespace(std::string_view str);
+}
+
 class BreakIterator {
 	std::unique_ptr<icu::BreakIterator> bi;
 	std::string_view str;

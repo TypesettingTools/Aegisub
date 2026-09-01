@@ -23,6 +23,7 @@
 
 #include "include/aegisub/context.h"
 #include "include/aegisub/hotkey.h"
+#include "libaegisub/unicode.h"
 
 #include "ass_dialogue.h"
 #include "ass_file.h"
@@ -38,7 +39,6 @@
 #include "selection_controller.h"
 #include "video_controller.h"
 
-#include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
 
@@ -57,7 +57,7 @@ static void add_hotkey(wxSizer *sizer, wxWindow *parent, const char *command, wx
 
 // Skip over override blocks, comments, and whitespace between blocks
 static bool bad_block(std::unique_ptr<AssDialogueBlock> &block) {
-	bool is_whitespace = boost::all(block->GetText(), boost::is_space());
+	bool is_whitespace = agi::unicode::is_whitespace(block->GetText());
 	return block->GetType() != AssBlockType::PLAIN || (is_whitespace && OPT_GET("Tool/Translation Assistant/Skip Whitespace")->GetBool());
 }
 

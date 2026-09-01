@@ -905,9 +905,7 @@ msgid ""
 "Open automation manager. Ctrl: Rescan autoload folder. Ctrl+Shift: Rescan "
 "autoload folder and reload all automation scripts"
 msgstr ""
-"Automatisierungs-Manager öffnen\n"
-"Strg: Autom.-Laden neu prüfen\n"
-"\"\n"
+"Automatisierungs-Manager öffnen. Strg: Autom.-Laden neu prüfen. "
 "Strg+Shift: Zusätzlich alle Skripte neu laden"
 
 #: ../src/command/command.cpp:35

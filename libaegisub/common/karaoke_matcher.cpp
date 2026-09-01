@@ -19,26 +19,15 @@
 #include "libaegisub/ass/karaoke.h"
 #include "libaegisub/exception.h"
 #include "libaegisub/kana_table.h"
+#include "libaegisub/unicode.h"
 #include "libaegisub/util.h"
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/algorithm/copy.hpp>
 #include <unicode/brkiter.h>
 #include <unicode/coll.h>
-#include <unicode/uchar.h>
-#include <unicode/utf8.h>
 
 namespace {
-bool is_whitespace(std::string_view str) {
-	size_t i = 0;
-	while (i < str.size()) {
-		UChar32 c;
-		U8_NEXT(str.data(), i, str.size(), c);
-		if (!u_isUWhiteSpace(c)) return false;
-	}
-	return true;
-}
-
 // strcmp but ignoring case and accents
 int compare(std::string_view a, std::string_view b) {
 	UErrorCode err = U_ZERO_ERROR;
@@ -66,9 +55,9 @@ agi::KaraokeMatchResult agi::AutoMatchKaraoke(std::vector<std::string_view> cons
 	// Eat all the whitespace at the beginning of the source and destination
 	// syllables and exit if either ran out.
 	auto eat_whitespace = [&]() -> bool {
-		while (!src.done() && is_whitespace(src.current()))
+		while (!src.done() && agi::unicode::is_whitespace(src.current()))
 			src.next();
-		while (!dst.done() && is_whitespace(dst.current())) {
+		while (!dst.done() && agi::unicode::is_whitespace(dst.current())) {
 			dst.next();
 			++result.destination_length;
 		}
@@ -167,7 +156,7 @@ agi::KaraokeMatchResult agi::AutoMatchKaraoke(std::vector<std::string_view> cons
 		size_t src_lookahead_pos = 0;
 		for (auto const& syl : source_strings) {
 			// Don't count blank syllables in the max search distance
-			if (is_whitespace(syl)) continue;
+			if (agi::unicode::is_whitespace(syl)) continue;
 			if (++src_lookahead_pos == 1) continue;
 			if (src_lookahead_pos > src_lookahead_max) break;
 

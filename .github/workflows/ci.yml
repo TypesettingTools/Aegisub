@@ -128,6 +128,12 @@ jobs:
         if: startsWith(matrix.config.os, 'macos-')
         run: |
           brew update
+
+          if [ x"$(uname -m)" = x"x86_64" ]; then
+            # This is a dependency of pulseaudio that does not have a prebuilt x86_64 package.
+            brew install --build-from-source orc
+          fi
+
           brew install ninja
           brew install libass zlib ffms2 fftw hunspell
           brew install pulseaudio  # NO OpenAL in github CI
