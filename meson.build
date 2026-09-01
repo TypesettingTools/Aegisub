@@ -152,10 +152,9 @@ if host_machine.system() == 'windows'
     conf.set('BOOST_USE_WINDOWS_H', 1)
 endif
 
-deps += dependency('zlib')
+zlib_dep = dependency('zlib')
 libebml = dependency('libebml', version: '>=1.4.0', fallback: ['libebml', 'libebml_dep'])
 libmatroska = dependency('libmatroska', version: '>=1.6.0', fallback: ['libmatroska', 'libmatroska_dep'])
-deps += [libebml, libmatroska]
 
 wx_dep = dependency('wxWidgets', version: '>=' + get_option('wx_version'),
                     required: false,
@@ -483,5 +482,5 @@ aegisub = executable('aegisub', aegisub_src, version_h, resrc, aegisub_order_dep
                      c_pch: aegisub_c_pch,
                      install: true,
                      install_dir: bindir,
-                     dependencies: deps,
+                    dependencies: [deps, matroska_dep],
                      win_subsystem: 'windows')
