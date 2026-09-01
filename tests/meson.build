@@ -52,7 +52,7 @@ tests_src = [
     'tests/ycbcr.cpp',
 ]
 
-tests_inc = include_directories('support', '../src')
+tests_inc = include_directories('support')
 
 tests_args = []
 
@@ -66,7 +66,7 @@ endif
 runner = executable(
     'gtest-main',
     tests_src, matroska_src,
-    include_directories: [tests_inc, libaegisub_inc],
+    include_directories: [tests_inc, libaegisub_inc, aegisub_src_inc],
     dependencies: [tests_deps, deps],
     cpp_args: tests_args + conf_defines,
     link_with: libaegisub,
@@ -90,7 +90,7 @@ test('luajit-52', executable('luajit-52', 'tests/luajit_52.c', dependencies: lua
 # Deterministic integration test for Matroska demux metadata, attachments, frames, compression, and errors.
 matroska_behavior = executable('matroska-behavior',
     'matroska/behavior.cpp', matroska_demux_src,
-    include_directories: include_directories('../src'),
+    include_directories: aegisub_src_inc,
     dependencies: [dependency('zlib'), libebml, libmatroska])
 test('matroska behavior', find_program('matroska/check-fixtures.py'),
     args: [matroska_behavior, meson.current_source_dir() / 'matroska' / 'fixtures'])
