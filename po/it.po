@@ -6659,11 +6659,11 @@ msgstr "File di backup salvato come \"%s\"."
 
 #: ../src/subs_controller.cpp:282
 msgid "Exception when attempting to autosave file: "
-msgstr ""
+msgstr "Eccezione durante il tentativo di salvataggio automatico: "
 
 #: ../src/subs_controller.cpp:285
 msgid "Unhandled exception when attempting to autosave file."
-msgstr ""
+msgstr "Eccezione non gestita nel tentativo di salvataggio automatico."
 
 #: ../src/subs_controller.cpp:406
 msgid "untitled"
@@ -6705,7 +6705,7 @@ msgstr ""
 
 #: ../src/subs_edit_box.cpp:147
 msgid "Number of characters in the longest line of this subtitle."
-msgstr ""
+msgstr "Numero di caratteri nella riga più lunga di questo sottotitolo."
 
 #: ../src/subs_edit_box.cpp:154
 msgid "Layer number"
@@ -6725,31 +6725,31 @@ msgstr "Durata"
 
 #: ../src/subs_edit_box.cpp:164
 msgid "Left Margin (0 = default from style)"
-msgstr ""
+msgstr "Margine Sinistro (0 = default preso dallo stile)"
 
 #: ../src/subs_edit_box.cpp:164
 msgid "left margin change"
-msgstr ""
+msgstr "cambia margine sinistro"
 
 #: ../src/subs_edit_box.cpp:165
 msgid "Right Margin (0 = default from style)"
-msgstr ""
+msgstr "Margine Destro (0 = default preso dallo stile)"
 
 #: ../src/subs_edit_box.cpp:165
 msgid "right margin change"
-msgstr ""
+msgstr "cambia margine destro"
 
 #: ../src/subs_edit_box.cpp:166
 msgid "Vertical Margin (0 = default from style)"
-msgstr ""
+msgstr "Margine Verticale (0 = default preso dallo stile)"
 
 #: ../src/subs_edit_box.cpp:166
 msgid "vertical margin change"
-msgstr ""
+msgstr "cambia margine verticale"
 
 #: ../src/subs_edit_box.cpp:185
 msgid "T&ime"
-msgstr "Tempo"
+msgstr "T&empo"
 
 #: ../src/subs_edit_box.cpp:185
 msgid "Time by h:mm:ss.cs"
@@ -6765,7 +6765,7 @@ msgstr "Tempo dal numero del frame"
 
 #: ../src/subs_edit_box.cpp:189
 msgid "Show Original"
-msgstr ""
+msgstr "Mostra Originale"
 
 #: ../src/subs_edit_box.cpp:190
 msgid ""
@@ -6773,6 +6773,9 @@ msgid ""
 "edit box. This is sometimes useful when editing subtitles or translating "
 "subtitles into another language."
 msgstr ""
+"Mostra il contenuto della riga quando è stata selezionata sopra il "
+"l'edit box. Può essere utile quando si stanno editando o traducendo "
+"dei sottotitoli in un'altra lingua."
 
 #: ../src/subs_edit_box.cpp:446
 msgid "modify text"
@@ -6813,7 +6816,7 @@ msgstr "&Incolla"
 #: ../src/subs_edit_ctrl.cpp:444
 #, c-format
 msgid "Remove \"%s\" from dictionary"
-msgstr ""
+msgstr "Rimuovi \"%s\" dal dizionario"
 
 #: ../src/subs_edit_ctrl.cpp:449
 msgid "No spell checker suggestions"
@@ -6855,12 +6858,14 @@ msgid ""
 "Could not get any subtitles provider for the preview box. Make sure that you "
 "have a provider installed."
 msgstr ""
+"Non è stato possibile usare alcun provider di sottotitoli per la preview. Assicurati "
+"di aver almeno un provider installato."
 
 #: ../src/subs_preview.cpp:143
 #, fuzzy
 #| msgid "Subtitles provider"
 msgid "No subtitles provider"
-msgstr "Provider sottotitoli"
+msgstr "Nessun provider di sottotitoli"
 
 #: ../src/subtitle_format.cpp:102
 #, c-format
@@ -6934,11 +6939,11 @@ msgstr "Riga su lunghezza massima: %s"
 
 #: ../src/subtitles_provider_libass.cpp:102
 msgid "Updating font index"
-msgstr ""
+msgstr "Aggiornamento dell'index dei font"
 
 #: ../src/subtitles_provider_libass.cpp:103
 msgid "This may take several minutes"
-msgstr ""
+msgstr "Questa operazione potrebbe impiegare diversi minuti"
 
 #: ../src/video_box.cpp:57
 msgid "Seek video"
@@ -6959,6 +6964,8 @@ msgid ""
 "Failed seeking video. The video file may be corrupt or incomplete.\n"
 "Error message reported: %s"
 msgstr ""
+"Errore durante il seek del video. Il file video potrebbe essere corrotto o incompleto.\n"
+"Errore riscontrato: %s"
 
 #: ../src/video_controller.cpp:234
 #, c-format
@@ -6966,6 +6973,8 @@ msgid ""
 "Failed rendering subtitles.\n"
 "Error message reported: %s"
 msgstr ""
+"Errore nel rendering dei sottotitoli.\n"
+"Errore riscontrato: %s"
 
 #: ../src/video_display.cpp:203
 #, c-format
@@ -6974,6 +6983,9 @@ msgid ""
 "updating your video card drivers may fix this.\n"
 "Error message reported: %s"
 msgstr ""
+"Errore nell'inizializzazione del video. Prova a chiudere altri programmi aperti "
+"e nel caso aggiornare i driver della scheda video.\n"
+"Errore riscontrato: %s"
 
 #: ../src/video_display.cpp:210
 #, c-format
@@ -6981,6 +6993,8 @@ msgid ""
 "Could not upload video frame to graphics card.\n"
 "Error message reported: %s"
 msgstr ""
+"Non è stato possibile trasferire i frame alla scheda video.\n"
+"Errore riscontrato: %s"
 
 #: ../src/video_display.cpp:252
 #, c-format
@@ -6988,16 +7002,18 @@ msgid ""
 "An error occurred trying to render the video frame on the screen.\n"
 "Error message reported: %s"
 msgstr ""
+"Si è verificato un errore durante il rendering dei frame a schermo.\n"
+"Errore riscontrato: %s"
 
 #: ../src/video_provider_manager.cpp:78
 #, fuzzy
 #| msgid "All fonts found.\n"
 msgid "file not found."
-msgstr "Tutti i font trovati.\n"
+msgstr "file non trovato."
 
 #: ../src/video_provider_manager.cpp:84
 msgid "video is not in a supported format."
-msgstr ""
+msgstr "il video non è in un formato supportato."
 
 #: ../src/video_provider_manager.cpp:101
 #, fuzzy
@@ -7160,7 +7176,7 @@ msgstr "A&utomazione"
 
 #: default_menu.json:0
 msgid "Window"
-msgstr ""
+msgstr "Finestra"
 
 #: default_menu.json:0
 msgid "&Help"
@@ -7168,11 +7184,11 @@ msgstr "&Aiuto"
 
 #: default_menu.json:0
 msgid "Open..."
-msgstr ""
+msgstr "Apri..."
 
 #: default_menu.json:0
 msgid "Open Recent"
-msgstr ""
+msgstr "Apri Recenti"
 
 #: default_menu.json:0
 msgid "Save"
@@ -7180,11 +7196,11 @@ msgstr "Salva"
 
 #: default_menu.json:0
 msgid "Save As..."
-msgstr ""
+msgstr "Salva come..."
 
 #: default_menu.json:0
 msgid "Export As..."
-msgstr ""
+msgstr "Esporta come..."
 
 #: default_hotkey.json:244
 msgid "Subtitle Edit Box"
@@ -7263,13 +7279,15 @@ msgstr "Aggiunge tag \\be1 a tutte le righe selezionate"
 #, fuzzy
 #| msgid "Make fullwidth"
 msgid "Make text fullwidth"
-msgstr "Rendi fullwidth"
+msgstr "Rendi il testo fullwidth"
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:7
 msgid ""
 "Shows how to use the unicode include to iterate over characters and a lookup "
 "table to convert those characters to something else."
 msgstr ""
+"Mostra come utilizzare l'unicode per iterare i caratteri ed un lookup table "
+"per convertire questi caratteri in altri."
 
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:77
 #: ../automation/autoload/macro-2-mkfullwitdh.lua:80
@@ -7282,11 +7300,11 @@ msgstr "Converti caratteri Latini in caratteri fullwidth SJIS"
 
 #: ../automation/autoload/select-overlaps.moon:17
 msgid "Select overlaps"
-msgstr ""
+msgstr "Seleziona le sovrapposizioni"
 
 #: ../automation/autoload/select-overlaps.moon:18
 msgid "Select lines which begin while another non-comment line is active"
-msgstr ""
+msgstr "Seleziona le righe che cominciano mentre un'altra riga è attiva (esclusi i commenti)"
 
 #: ../automation/autoload/strip-tags.lua:17
 msgid "Strip tags"
@@ -7302,19 +7320,19 @@ msgstr "togli tag"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Installing runtime libraries..."
-msgstr ""
+msgstr "Installazione delle librerie runtime..."
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Create a start menu icon"
-msgstr ""
+msgstr "Crea un'icona nel menù start"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Automatically check for new versions of Aegisub"
-msgstr ""
+msgstr "Controlla automaticamente se è uscita una nuova versione di Aegisub"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid "Update Checker:"
-msgstr ""
+msgstr "Controllo Aggiornamenti:"
 
 #: packages/win_installer/fragment_strings.iss:1
 msgid ""
@@ -7324,6 +7342,11 @@ msgid ""
 "no warranties of any kind are given either.%n%nSee the Aegisub website for "
 "information on obtaining the source code."
 msgstr ""
+"Aegisub {#BUILD_GIT_VERSION_STRING} verrà installato sul computer."
+"%n%nAegisub è coperto dalla GNU General Public License versione 2. Questo "
+"significa che puoi usare l'applicazione per qualsiasi cosa gratis, ma "
+"senza pretendere un supporto.%n%n Per informazioni su come ottenere "
+"il source code, visita il sito di Aegisub."
 
 #: ../packages/desktop/aegisub.desktop.in.in:4
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:6
@@ -7340,11 +7363,11 @@ msgstr "Crea e modifica sottotitoli da film e video."
 
 #: ../packages/desktop/aegisub.desktop.in.in:12
 msgid "subtitles;subtitle;captions;captioning;video;audio;"
-msgstr ""
+msgstr "sottotitoli;sottotitolo;captions;captioning;video;audio;"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:7
 msgid "Create and modify subtitles"
-msgstr ""
+msgstr "Crea e modifica sottotitoli"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:9
 msgid ""
@@ -7353,6 +7376,9 @@ msgid ""
 "audio, and features many powerful tools for styling them, including a built-"
 "in real-time video preview."
 msgstr ""
+"Aegisub è un editor di sottotitoli gratuito, cross-platform ed open source. "
+"Sincronizzare i sottotitoli con l'audio è facilissimo e ti permette di creare "
+"sottotitoli con diversi stili e poterli vedere a video in tempo reale."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:10
 msgid ""
@@ -7364,6 +7390,12 @@ msgid ""
 "unrelated to Aegisub) many vital functions, or were too buggy and/or "
 "unreliable to be really useful."
 msgstr ""
+"Aegisub è stato originariamente creato per fare typesetting, in particolare "
+"per semplificare la vita ai vari fansub che subbavano gli anime. All'epoca "
+"molti altri programmi che supportavano il formato Advanced Substation Alpha "
+"non avevano (ed in molti casi tutt'ora non hanno visto che non sono più "
+"stati sviluppati) molte funzioni essenziali od erano buggati o comunque "
+"non erano usabili."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:11
 msgid ""
@@ -7374,46 +7406,52 @@ msgid ""
 "for creating karaoke effects, Automation can now be used much else, "
 "including creating macros and various other convenient tools)."
 msgstr ""
+"Da allora, Aegisub è cresciuto tanto ed è diventato un signor editor con "
+"diverse feature completamente customizzabili. Non solo ha un sacco di strumenti "
+"che aiutano a fare timing, typesetting, editing e tradurre i sottotitoli, ma "
+"ha anche uno scripting environment chiamato Automation (che all'inizio era "
+"stato creato per fare gli effetti sui karaoke ma che è diventato enorme "
+"e permette di creare macro e fare un sacco di cose)."
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:12
 msgid "Some highlights of Aegisub:"
-msgstr ""
+msgstr "Alcuni punti su Aegisub:"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:14
 msgid "Simple and intuitive yet powerful interface for editing subtitles"
-msgstr ""
+msgstr "Interfaccia per l'editing dei sottotitoli semplice ed intuitiva ma super potente"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:15
 msgid "Support for many formats and character sets"
-msgstr ""
+msgstr "Supporto per tantissimi formati e set di caratteri"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:16
 msgid "Powerful video mode"
-msgstr ""
+msgstr "Incredibile modalità video"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:17
 msgid "Visual typesetting tools"
-msgstr ""
+msgstr "Strumenti per il Typesetting"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:18
 msgid "Intuitive and customizable audio timing mode"
-msgstr ""
+msgstr "Modalità di timing con audio intuitiva e customizzabile"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:19
 msgid "Fully scriptable through the Automation module"
-msgstr ""
+msgstr "Completamente scriptabile tramite i moduli Automation"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:43
 msgid "Typesetting"
-msgstr ""
+msgstr "Typesetting"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:47
 msgid "Audio video"
-msgstr ""
+msgstr "Audio video"
 
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
-msgstr ""
+msgstr "Timing Audio"
 
 #~ msgid "Kanji timing"
 #~ msgstr "Kanji timing"
