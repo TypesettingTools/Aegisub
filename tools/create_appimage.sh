@@ -1,29 +1,43 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Simple AppImage creator for Aegisub (x86_64 Linux)
+# Simple AppImage creator for Aegisub (x86_64 or ARM64 Linux)
 # Usage: tools/create_appimage.sh [build-dir]
 # Requirements:
 #  - meson & ninja
-#  - linux x86_64 host
+#  - Linux x86_64 or ARM64 host
 #  - appimagetool (will be downloaded automatically if not found)
 
 BUILD_DIR=${1:-build}
 APPDIR=AppDir
 APPNAME=Aegisub
-OUTFILE=${APPNAME}-x86_64.AppImage
+case "${APPIMAGE_ARCH:-$(uname -m)}" in
+  x86_64|amd64)
+    APPIMAGE_ARCH=x86_64
+    APPIMAGETOOL_ARCH=x86_64
+    ;;
+  aarch64|arm64)
+    APPIMAGE_ARCH=arm64
+    APPIMAGETOOL_ARCH=aarch64
+    ;;
+  *)
+    echo "Unsupported AppImage architecture: $(uname -m). Use x86_64 or aarch64." >&2
+    exit 1
+    ;;
+esac
+OUTFILE=${APPNAME}-${APPIMAGE_ARCH}.AppImage
+MESON_CROSS_FILE=${MESON_CROSS_FILE:-}
 
 if [ "$(uname -s)" != "Linux" ]; then
   echo "This script must be run on Linux." >&2
   exit 1
 fi
-if [ "$(uname -m)" != "x86_64" ]; then
-  echo "Only x86_64 AppImage builds are supported by this script." >&2
-  exit 1
-fi
-
 # Configure and build (static default_library recommended for portable bundles)
-meson setup "$BUILD_DIR" --reconfigure -Ddefault_library=static || true
+MESON_ARGS=(--reconfigure -Ddefault_library=static)
+if [ -n "$MESON_CROSS_FILE" ]; then
+  MESON_ARGS+=(--cross-file "$MESON_CROSS_FILE")
+fi
+meson setup "$BUILD_DIR" "${MESON_ARGS[@]}"
 meson compile -C "$BUILD_DIR"
 
 # Install into AppDir using meson install with destdir
@@ -120,12 +134,12 @@ if [ -n "$ICON_SRC" ]; then
 fi
 
 # Ensure appimagetool available
-APPIMAGETOOL=${APPIMAGETOOL:-$HOME/.cache/appimagetool/appimagetool-x86_64.AppImage}
+APPIMAGETOOL=${APPIMAGETOOL:-$HOME/.cache/appimagetool/appimagetool-${APPIMAGETOOL_ARCH}.AppImage}
 if [ ! -x "$APPIMAGETOOL" ]; then
   echo "Downloading appimagetool..."
   mkdir -p "$(dirname "$APPIMAGETOOL")"
-  TMPDL="/tmp/appimagetool.AppImage"
-  curl -L -o "$TMPDL" "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
+  TMPDL="$(mktemp)"
+  curl -L --fail -o "$TMPDL" "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-${APPIMAGETOOL_ARCH}.AppImage"
   chmod +x "$TMPDL"
   mv "$TMPDL" "$APPIMAGETOOL"
 fi

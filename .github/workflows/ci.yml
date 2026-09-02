@@ -21,6 +21,7 @@ jobs:
         config:
           - name: Windows MSVC Release
             os: windows-latest
+            arch: x64
             msvc: true
             buildtype: release
             args: >-
@@ -39,11 +40,34 @@ jobs:
               -Dlibass:fontconfig=disabled
           - name: Windows MSVC VS2026
             os: windows-latest
+            arch: x64
             msvc: true
             vs_toolset: v2026
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
               Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"
+            buildtype: release
+            args: >-
+              -Ddefault_library=static
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              -Dfallback_nasm=true
+              -Dfreetype2:harfbuzz=disabled
+              -Dharfbuzz:freetype=disabled
+              -Dharfbuzz:cairo=disabled
+              -Dharfbuzz:glib=disabled
+              -Dharfbuzz:gobject=disabled
+              -Dharfbuzz:tests=disabled
+              -Dharfbuzz:docs=disabled
+              -Dfribidi:tests=false
+              -Dfribidi:docs=false
+              -Dlibass:fontconfig=disabled
+          - name: Windows MSVC ARM64
+            os: windows-latest
+            arch: arm64
+            msvc: true
+            devenv: |
+              Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+              Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=arm64 -host_arch=x64"
             buildtype: release
             args: >-
               -Ddefault_library=static
@@ -128,7 +152,7 @@ jobs:
       - name: Install dependencies (Windows)
         if: startsWith(matrix.config.os, 'windows-')
         run: |
-          choco install ninja innosetup
+          choco install ninja innosetup sed
 
           $moonscripturl = "https://github.com/leafo/moonscript/releases/download/v0.6.0/moonscript-v0.6.0-windows-x86_64.zip"
           mkdir moonscript
@@ -161,7 +185,7 @@ jobs:
         if: startsWith(matrix.config.os, 'ubuntu-')
         run: |
           sudo apt-get update
-          sudo apt-get install ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-d[...]
+          sudo apt-get install -y ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev libportal-gtk3-dev
 
           # busted for the automation test suite (LuaJIT is Lua 5.1 to luarocks)
           sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
@@ -185,6 +209,7 @@ jobs:
 
       # --suite limits this to our own tests, excluding those of subproject deps
       - name: Run test
+        if: matrix.config.arch != 'arm64'
         run: |
           ${{ matrix.config.devenv }}
           meson test -C build --verbose --suite Aegisub
@@ -278,9 +303,9 @@ jobs:
       actions: write
     steps:
       - name: Delete old workflow runs
-       uses: Mattraks/delete-workflow-runs@v2
-       with:
-         token: ${{ github.token }}
-         repository: ${{ github.repository }}
-         retain_days: 0
-         keep_minimum_runs: 10
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 10

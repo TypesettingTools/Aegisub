@@ -49,7 +49,7 @@ void Path::FillPlatformSpecificPaths() {
 	std::wstring filename(MAX_PATH + 1, L'\0');
 	while (static_cast<DWORD>(filename.size()) == GetModuleFileNameW(nullptr, &filename[0], filename.size()))
 		filename.resize(filename.size() * 2);
-	SetToken("?data", PathFromWString(filename));
+	SetToken("?data", PathFromWString(filename).parent_path());
 
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 }

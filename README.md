@@ -10,7 +10,7 @@ Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](i
 
 ### Windows
 
-Aegisub now targets 64-bit builds only (x86_64). 32-bit/x86 builds are no longer supported.
+Aegisub targets 64-bit builds only (Windows x86_64/ARM64 and Linux x86_64/ARM64). 32-bit/x86 builds are no longer supported.
 
 Supported platforms (policy update):
 
@@ -46,19 +46,36 @@ All other dependencies are either stored in the repository or are included as su
 Building (x64):
 
 1. Clone Aegisub's repository: `git clone https://github.com/TypesettingTools/Aegisub.git`
-2. From the Visual Studio "x64 Native Tools Command Prompt", generate the build directory: `meson build -Ddefault_library=static` (if building for release, add `--buildtype=release`)
+2. From the Visual Studio "x64 Native Tools Command Prompt", generate the build directory: `meson setup build -Ddefault_library=static` (if building for release, add `--buildtype=release`)
 3. Build with `cd build` and `ninja`
 
 You should now have a binary: `aegisub.exe`.
 
-Linux AppImage (x86_64)
+To build a Windows ARM64 binary from an x64 machine, install the Visual Studio ARM64
+build tools, open an x64 Native Tools prompt, and select the ARM64 target when
+initializing the developer environment:
 
-Aegisub supports creating a portable AppImage for x86_64 Linux hosts. A helper script is included at [tools/create_appimage.sh](C:/Users/Aura/Documents/GitHub/Aegisub/tools/create_appimage.sh).
+```powershell
+Enter-VsDevShell -VsInstallPath $env:VS -DevCmdArguments "-arch=arm64 -host_arch=x64"
+meson setup arm64-build -Ddefault_library=static
+meson compile -C arm64-build
+```
+
+For repeatable builds, the equivalent wrapper is:
+
+```powershell
+.\tools\build_windows.ps1 -Architecture x64
+.\tools\build_windows.ps1 -Architecture arm64
+```
+
+Linux AppImage (x86_64/ARM64)
+
+Aegisub supports creating a portable AppImage for x86_64 and ARM64 Linux hosts. A helper script is included at [tools/create_appimage.sh](C:/Users/Aura/Documents/GitHub/Aegisub/tools/create_appimage.sh).
 
 Prerequisites:
 
 - Meson, Ninja, and typical Linux build tools
-- x86_64 host (the script is x86_64-only)
+- x86_64 or ARM64 Linux host
 
 Build steps (recommended):
 
@@ -66,7 +83,23 @@ Build steps (recommended):
 
    ./tools/create_appimage.sh build
 
-   The script will configure and build the project (static default_library), install into an AppDir, and then use appimagetool to produce `Aegisub-x86_64.AppImage`.
+   The script will configure and build the project (static default_library), install into an AppDir, and then use the matching native appimagetool to produce `Aegisub-x86_64.AppImage` or `Aegisub-arm64.AppImage`.
+
+AppImages must be built in Linux (natively or through WSL2, a virtual machine, or a container); a Windows host cannot execute the Linux build toolchain directly. The GitHub Actions workflow builds both architectures on native Linux runners.
+
+The script also accepts `MESON_CROSS_FILE` for a Linux cross toolchain. For example,
+from an x86_64 Linux host with an installed AArch64 compiler, sysroot, and
+cross-pkg-config setup:
+
+```bash
+MESON_CROSS_FILE=cross/aarch64-linux-gnu.ini \
+  tools/create_appimage.sh build-arm64
+```
+
+Cross-compiling Linux dependencies requires a complete AArch64 sysroot. Native
+Linux runners are preferred for AppImages because they automatically provide the
+correct system libraries and avoid accidentally packaging host-architecture
+dependencies.
 
 Notes:
 - If you want to customize Meson options (for example to set -Dwx_version=3.3.0), pass them when running meson setup manually before running the script, e.g.:
@@ -99,9 +132,22 @@ meson compile -C vsbuild
 
 Installer:
 
-You can generate the installer with `ninja win-installer` after a successful build. This assumes a working internet connection and installation of the optional dependencies.
+You can generate the x64 installer with the wrapper (after installing Inno Setup,
+7-Zip, MoonScript, and gettext/msgfmt):
+
+```powershell
+.\tools\build_windows.ps1 -Architecture x64 -Installer
+```
+
+The installer is written to `build-x64\Aegisub-*.exe`. The lower-level equivalent
+is `meson compile -C build-x64 win-installer`.
 
 You can generate the portable zip with `ninja win-portable` after a successful build.
+
+The current installer dependency payload is x64-specific (including VSFilter and
+the bundled VC++ redistributable), so ARM64 binaries are not packaged by this
+wrapper yet. ARM64 installer support requires ARM64-compatible third-party
+payloads and an ARM64 redistributable.
 
 ### OS X
 

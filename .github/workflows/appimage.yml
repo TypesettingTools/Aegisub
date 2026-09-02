@@ -7,8 +7,16 @@ on:
 
 jobs:
   build-appimage:
-    name: Build AppImage (ubuntu-latest)
-    runs-on: ubuntu-latest
+    name: Build AppImage (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            os: ubuntu-latest
+          - arch: arm64
+            os: ubuntu-24.04-arm
     env:
       # Let Meson pick up ccache wrappers
       CC: ccache gcc
@@ -77,10 +85,10 @@ jobs:
         run: |
           ./tools/create_appimage.sh build
         env:
-          APPIMAGETOOL: ${{ runner.home }}/.cache/appimagetool/appimagetool-x86_64.AppImage
+          APPIMAGE_ARCH: ${{ matrix.arch }}
 
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@v6
         with:
-          name: aegisub-appimage
-          path: Aegisub-x86_64.AppImage
+          name: aegisub-appimage-${{ matrix.arch }}
+          path: Aegisub-${{ matrix.arch }}.AppImage

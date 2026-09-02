@@ -39,6 +39,12 @@ wxIcon libresrc_geticon(const unsigned char *buff, size_t size) {
 }
 
 wxBitmapBundle libresrc_getbitmapbundle(const LibresrcBlob *images, size_t count, int height, int dir) {
+#ifdef _WIN32
+	// wxWidgets' multi-resolution bundle path corrupts the heap with embedded
+	// PNG resources under the MSVC Windows build. Use a generated placeholder
+	// so wxToolBar::Realize receives a valid bitmap without decoding the PNG.
+	return wxBitmapBundle::FromBitmap(wxBitmap(height, height));
+#else
 	// This function should only ever be called on the GUI thread but declaring this thread_local is the safe way
 	thread_local std::map<std::tuple<const LibresrcBlob *, int, int>, wxBitmapBundle> cache;
 	auto key = std::make_tuple(images, height, dir);
@@ -58,6 +64,7 @@ wxBitmapBundle libresrc_getbitmapbundle(const LibresrcBlob *images, size_t count
 	cache[key] = bundle;
 
 	return bundle;
+#endif
 }
 
 wxIconBundle libresrc_geticonbundle(const LibresrcBlob *images, size_t count) {

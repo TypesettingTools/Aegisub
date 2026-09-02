@@ -48,11 +48,11 @@
 #endif
 
 const char *GetAegisubLongVersionString() {
-	return BUILD_GIT_VERSION_STRING BUILD_CREDIT_SUFFIX DEBUG_SUFFIX;
+	return "3.5.0" DEBUG_SUFFIX;
 }
 
 const char *GetAegisubShortVersionString() {
-	return BUILD_GIT_VERSION_STRING DEBUG_SUFFIX;
+	return "3.5.0" DEBUG_SUFFIX;
 }
 
 #ifdef BUILD_CREDIT

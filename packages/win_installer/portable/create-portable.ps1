@@ -52,7 +52,12 @@ Write-Step 'Copying executable'
 Copy-ToDirectory $InstallerDir\bin\aegisub.exe  $PortableOutputDir
 
 Write-Step 'Copying translations'
-Copy-ToDirectory "$InstallerDir\share\locale\*"  "$PortableOutputDir\locale" -Recurse
+$localeSource = Join-Path $InstallerDir 'share\locale'
+if (Test-Path -LiteralPath $localeSource -PathType Container) {
+    Copy-ToDirectory "$localeSource\*" "$PortableOutputDir\locale" -Recurse
+} else {
+    Write-Host 'No compiled translations found; continuing with the default locale.'
+}
 
 Write-Step 'Copying dictionaries'
 Copy-ToDirectory $InstallerDepsDir\dictionaries\en_US.aff  $PortableOutputDir\dictionaries
@@ -67,7 +72,31 @@ Write-Step 'Copying VSFilter'
 Copy-ToDirectory $InstallerDepsDir\VSFilter\x64\VSFilter.dll  $PortableOutputDir\csri
 
 Write-Step 'Copying VC++ runtime'
-Copy-ToDirectory $InstallerDepsDir\VC_redist\VC_redist.x64.exe $PortableOutputDir\Microsoft.CRT
+$crtFiles = @('concrt140.dll', 'msvcp140.dll', 'msvcp140_1.dll', 'msvcp140_2.dll', 'vcruntime140.dll', 'vcruntime140_1.dll')
+$crtRoots = @()
+if ($env:VCToolsRedistDir) {
+    $crtRoots += $env:VCToolsRedistDir
+}
+$crtRoots += 'C:\Program Files\Microsoft Visual Studio'
+$crtSource = $null
+foreach ($root in $crtRoots) {
+    if (Test-Path -LiteralPath $root) {
+        $crtSource = Get-ChildItem -LiteralPath $root -Recurse -File -Filter 'vcruntime140.dll' -ErrorAction SilentlyContinue |
+            Where-Object { $_.DirectoryName -match '\\x64\\Microsoft\.VC' } |
+            Select-Object -First 1
+        if ($crtSource) { break }
+    }
+}
+if (-not $crtSource) {
+    throw 'Could not locate the x64 MSVC runtime DLLs. Run from a Visual Studio developer environment.'
+}
+foreach ($file in $crtFiles) {
+    $source = Join-Path $crtSource.DirectoryName $file
+    if (-not (Test-Path -LiteralPath $source)) {
+        throw "Missing MSVC runtime file: $source"
+    }
+    Copy-Item -LiteralPath $source -Destination $PortableOutputDir -Force
+}
 
 Write-Step 'Copying automation'
 Copy-ToDirectory "$InstallerDir\share\aegisub\automation\*"  "$PortableOutputDir\automation\"  -Recurse
