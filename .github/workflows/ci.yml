@@ -20,6 +20,9 @@ jobs:
           - name: Windows MSVC Release
             os: windows-latest
             msvc: true
+            arch: x64
+            vs_component: Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+            package: true
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
               Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"
@@ -38,6 +41,31 @@ jobs:
               -Dfribidi:tests=false
               -Dfribidi:docs=false
               -Dlibass:fontconfig=disabled
+          - name: Windows ARM64 MSVC Release
+            os: windows-11-arm
+            msvc: true
+            arch: arm64
+            vs_component: Microsoft.VisualStudio.Component.VC.Tools.ARM64
+            package: true
+            devenv: |
+              Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
+              Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=arm64 -host_arch=arm64"
+            buildtype: release
+            args: >-
+              -Ddefault_library=static
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              -Dfallback_nasm=true
+              -Dfreetype2:harfbuzz=disabled
+              -Dharfbuzz:freetype=disabled
+              -Dharfbuzz:cairo=disabled
+              -Dharfbuzz:glib=disabled
+              -Dharfbuzz:gobject=disabled
+              -Dharfbuzz:tests=disabled
+              -Dharfbuzz:docs=disabled
+              -Dfribidi:tests=false
+              -Dfribidi:docs=false
+              -Dlibass:fontconfig=disabled
+              -Dcsri=disabled
           #- {
           #  name: Windows MinGW,
           #  os: windows-latest,
@@ -92,22 +120,22 @@ jobs:
       - name: Setup Meson
         run: |
           python -m pip install --upgrade pip setuptools
-          pip install meson
+          pip install meson ninja
 
         # Taken from https://github.com/libass/libass/blob/0.17.5/.github/workflows/meson.yml#L118-L125
       - name: Find Visual Studio
         if: matrix.config.msvc
         run: |
           $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          $vsPath = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          $vsPath = & $vswhere -latest -products * -requires ${{ matrix.config.vs_component }} -property installationPath
           if (-not $vsPath) { throw "Could not find a Visual Studio installation" }
           "VS=$vsPath"
           "VS=$vsPath" >> $env:GITHUB_ENV
 
       - name: Install dependencies (Windows)
-        if: matrix.config.os == 'windows-latest'
+        if: startsWith(matrix.config.os, 'windows-')
         run: |
-          choco install ninja innosetup
+          if ('${{ matrix.config.package }}' -eq 'true') { choco install innosetup }
 
           $moonscripturl = "https://github.com/leafo/moonscript/releases/download/v0.6.0/moonscript-v0.6.0-windows-x86_64.zip"
           mkdir moonscript
@@ -152,6 +180,23 @@ jobs:
           sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
           sudo luarocks --lua-version=5.1 install busted
 
+      # dav1d's ARM assembly uses GNU syntax, which MSVC's armasm64 cannot
+      # consume directly. gas-preprocessor translates it during the build.
+      - name: Checkout gas-preprocessor (Windows ARM64)
+        if: matrix.config.msvc && matrix.config.arch == 'arm64'
+        uses: actions/checkout@v6
+        with:
+          repository: FFmpeg/gas-preprocessor
+          ref: ac1836309c2e77023c228b7184485597286289d3
+          path: gas-preprocessor
+
+      - name: Setup gas-preprocessor (Windows ARM64)
+        if: matrix.config.msvc && matrix.config.arch == 'arm64'
+        run: |
+          $gaspp = (Resolve-Path gas-preprocessor).Path
+          $gaspp | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          perl -c "$gaspp\gas-preprocessor.pl"
+
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
@@ -176,7 +221,7 @@ jobs:
 
       # Windows artifacts
       - name: Generate Windows installer
-        if: matrix.config.os == 'windows-latest'
+        if: matrix.config.package
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -184,14 +229,14 @@ jobs:
           meson compile win-installer -C build
 
       - name: Generate Windows portable installer
-        if: matrix.config.os == 'windows-latest'
+        if: matrix.config.package
         run: |
           ${{ matrix.config.devenv }}
           cd build && ninja win-portable
 
       - name: Upload artifacts - win_installer
         uses: actions/upload-artifact@v6
-        if: matrix.config.os == 'windows-latest'
+        if: matrix.config.package
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
@@ -199,10 +244,10 @@ jobs:
 
       - name: Upload artifacts - portable.zip
         uses: actions/upload-artifact@v6
-        if: matrix.config.os == 'windows-latest'
+        if: matrix.config.package
         with:
           name: ${{ matrix.config.name }} - portable
-          path: build/aegisub-portable-64.zip
+          path: build/aegisub-portable-${{ matrix.config.arch }}.zip
 
       # macOS artifacts
       - name: Generate macOS installer
