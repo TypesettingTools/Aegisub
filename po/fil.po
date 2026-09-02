@@ -13,3 +13,27 @@ msgstr "Wika"
 
 msgid "Please choose a language:"
 msgstr "Pumili ng wika:"
+
+msgid "File"
+msgstr "File"
+
+msgid "Edit"
+msgstr "I-edit"
+
+msgid "View"
+msgstr "Tingnan"
+
+msgid "Help"
+msgstr "Tulong"
+
+msgid "Open"
+msgstr "Buksan"
+
+msgid "Save"
+msgstr "I-save"
+
+msgid "Cancel"
+msgstr "Kanselahin"
+
+msgid "OK"
+msgstr "OK"

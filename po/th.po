@@ -13,3 +13,27 @@ msgstr "ภาษา"
 
 msgid "Please choose a language:"
 msgstr "โปรดเลือกภาษา:"
+
+msgid "File"
+msgstr "ไฟล์"
+
+msgid "Edit"
+msgstr "แก้ไข"
+
+msgid "View"
+msgstr "มุมมอง"
+
+msgid "Help"
+msgstr "วิธีใช้"
+
+msgid "Open"
+msgstr "เปิด"
+
+msgid "Save"
+msgstr "บันทึก"
+
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+msgid "OK"
+msgstr "ตกลง"

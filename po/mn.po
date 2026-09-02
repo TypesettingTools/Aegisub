@@ -13,3 +13,27 @@ msgstr "Хэл"
 
 msgid "Please choose a language:"
 msgstr "Хэл сонгоно уу:"
+
+msgid "File"
+msgstr "Файл"
+
+msgid "Edit"
+msgstr "Засварлах"
+
+msgid "View"
+msgstr "Харах"
+
+msgid "Help"
+msgstr "Тусламж"
+
+msgid "Open"
+msgstr "Нээх"
+
+msgid "Save"
+msgstr "Хадгалах"
+
+msgid "Cancel"
+msgstr "Цуцлах"
+
+msgid "OK"
+msgstr "ОК"

@@ -13,3 +13,27 @@ msgstr "Bahasa"
 
 msgid "Please choose a language:"
 msgstr "Sila pilih bahasa:"
+
+msgid "File"
+msgstr "Fail"
+
+msgid "Edit"
+msgstr "Sunting"
+
+msgid "View"
+msgstr "Paparan"
+
+msgid "Help"
+msgstr "Bantuan"
+
+msgid "Open"
+msgstr "Buka"
+
+msgid "Save"
+msgstr "Simpan"
+
+msgid "Cancel"
+msgstr "Batal"
+
+msgid "OK"
+msgstr "OK"
