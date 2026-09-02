@@ -2,10 +2,10 @@ name: Meson CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     tags: [ 'v*' ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -88,25 +88,13 @@ jobs:
           #   os: windows-latest,
           #   msvc: false
           # }
-          - name: Ubuntu Debug
-            os: ubuntu-22.04
-            buildtype: debugoptimized
-            args: -Db_pch=false
           - name: Ubuntu Release
             os: ubuntu-22.04
             buildtype: release
             args: -Db_pch=false
-          - name: macOS x86_64 Debug
-            os: macos-15-intel
-            buildtype: debugoptimized
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           - name: macOS x86_64 Release
             os: macos-15-intel
             buildtype: release
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          - name: macOS arm64 Debug
-            os: macos-15
-            buildtype: debugoptimized
             args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
           - name: macOS arm64 Release
             os: macos-15
@@ -185,7 +173,7 @@ jobs:
         if: startsWith(matrix.config.os, 'ubuntu-')
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev libportal-gtk3-dev
+          sudo apt-get install -y ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.0-gtk3-dev libportal-gtk3-dev
 
           # busted for the automation test suite (LuaJIT is Lua 5.1 to luarocks)
           sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
@@ -272,7 +260,7 @@ jobs:
 
       # Tarball
       - name: Generate tarball
-        if: matrix.config.os == 'ubuntu-latest' && matrix.config.buildtype == 'release'
+        if: matrix.config.os == 'ubuntu-22.04' && matrix.config.buildtype == 'release'
         run: |
           set -e
 
@@ -286,7 +274,7 @@ jobs:
 
       - name: Upload artifacts - tarball
         uses: actions/upload-artifact@v6
-        if: matrix.config.os == 'ubuntu-latest' && matrix.config.buildtype == 'release'
+        if: matrix.config.os == 'ubuntu-22.04' && matrix.config.buildtype == 'release'
         with:
           name: Source Tarball
           path: build/meson-dist/*.tar.xz
