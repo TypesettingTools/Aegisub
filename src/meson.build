@@ -7,6 +7,7 @@ matroska_lib = static_library('aegisub-matroska',
     'matroska_demux.cpp',
     include_directories: libaegisub_inc,
     dependencies: [zlib_dep, libebml, libmatroska],
+    # Preserve separate archive members so matroska-behavior can link only the demux object without pulling in the libaegisub-dependent facade.
     override_options: ['unity=off'],
 )
 
