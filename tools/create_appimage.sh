@@ -33,8 +33,11 @@ if [ "$(uname -s)" != "Linux" ]; then
   echo "This script must be run on Linux." >&2
   exit 1
 fi
-# Configure and build (static default_library recommended for portable bundles)
-MESON_ARGS=(--reconfigure -Ddefault_library=static)
+# Configure and build (static default_library recommended for portable bundles).
+# Never reuse a cached Meson build: cached subproject state can refer to a
+# different wrap revision and leave FFMS2 without its packagefile patch.
+rm -rf "$BUILD_DIR"
+MESON_ARGS=(-Ddefault_library=static)
 if [ -n "$MESON_CROSS_FILE" ]; then
   MESON_ARGS+=(--cross-file "$MESON_CROSS_FILE")
 fi
