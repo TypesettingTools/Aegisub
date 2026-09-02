@@ -40,12 +40,14 @@
 #include "format.h"
 #include "subtitle_format_ass.h"
 #include "subtitle_format_ebu3264.h"
+#include "subtitle_format_lrc.h"
 #include "subtitle_format_encore.h"
 #include "subtitle_format_microdvd.h"
 #include "subtitle_format_mkv.h"
 #include "subtitle_format_srt.h"
 #include "subtitle_format_ssa.h"
 #include "subtitle_format_transtation.h"
+#include "subtitle_format_ttml.h"
 #include "subtitle_format_ttxt.h"
 #include "subtitle_format_txt.h"
 
@@ -264,6 +266,7 @@ void SubtitleFormat::LoadFormats() {
 	if (formats.empty()) {
 		formats.emplace_back(std::make_unique<AssSubtitleFormat>());
 		formats.emplace_back(std::make_unique<Ebu3264SubtitleFormat>());
+		formats.emplace_back(std::make_unique<LrcSubtitleFormat>());
 		formats.emplace_back(std::make_unique<EncoreSubtitleFormat>());
 		formats.emplace_back(std::make_unique<MKVSubtitleFormat>());
 		formats.emplace_back(std::make_unique<MicroDVDSubtitleFormat>());
@@ -272,6 +275,7 @@ void SubtitleFormat::LoadFormats() {
 		formats.emplace_back(std::make_unique<TTXTSubtitleFormat>());
 		formats.emplace_back(std::make_unique<TXTSubtitleFormat>());
 		formats.emplace_back(std::make_unique<TranStationSubtitleFormat>());
+		formats.emplace_back(std::make_unique<TTMLSubtitleFormat>());
 	}
 }
 
