@@ -37,8 +37,11 @@
 #include "command/command.h"
 #include "include/aegisub/hotkey.h"
 
+#include "ass_dialogue.h"
+#include "ass_file.h"
 #include "auto4_base.h"
 #include "auto4_lua_factory.h"
+#include "cli.h"
 #include "compat.h"
 #include "crash_writer.h"
 #include "dialogs.h"
@@ -50,6 +53,7 @@
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "project.h"
+#include "selection_controller.h"
 #include "subs_controller.h"
 #include "subtitles_provider_libass.h"
 #include "utils.h"
@@ -63,9 +67,12 @@
 #include <libaegisub/io.h>
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
+#include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
 #include <boost/interprocess/streams/bufferstream.hpp>
+#include <CLI/CLI.hpp>
+#include <iostream>
 #include <wx/clipbrd.h>
 #include <wx/msgdlg.h>
 #include <wx/stackwalk.h>
@@ -76,9 +83,25 @@ namespace config {
 	agi::MRUManager *mru = nullptr;
 	agi::Path *path = nullptr;
 	Automation4::AutoloadScriptManager *global_scripts;
+
+	// These default to the GUI behavior so that platforms which use wx's
+	// entry point (and thus never run our main()) work unchanged; CLI mode
+	// overrides them before initialization
+	bool hasGui = true;
+	bool hasInitializedWx = true;
+	bool loadGlobalAutomation = true;
+	std::map<std::string, std::vector<std::string>> choice_indices;
+	std::list<std::pair<int, std::string>> dialog_responses;
+	std::list<std::vector<agi::fs::path>> file_responses;
 }
 
+#ifdef __WXMSW__
+// A GUI-subsystem application's entry point on Windows is WinMain, which wx
+// provides; --cli mode is not available there yet
 wxIMPLEMENT_APP(AegisubApp);
+#else
+wxIMPLEMENT_APP_NO_MAIN(AegisubApp);
+#endif
 
 static const char *LastStartupState = nullptr;
 
@@ -125,36 +148,9 @@ wxDEFINE_EVENT(EVT_CALL_THUNK, ValueEvent<agi::dispatch::Thunk>);
 /// Message displayed when an exception has occurred.
 static wxString exception_message = "Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.";
 
-/// @brief Gets called when application starts.
-/// @return bool
-bool AegisubApp::OnInit() {
-	// App name (yeah, this is a little weird to get rid of an odd warning)
-#if defined(__WXMSW__) || defined(__WXMAC__)
-	SetAppName("Aegisub");
-#else
-	SetAppName("aegisub");
-#endif
-
-	// The logger isn't created on demand on background threads, so force it to
-	// be created now
-	(void)wxLog::GetActiveTarget();
-
-	agi::util::InitLocale();
-
-	agi::dispatch::Init([](agi::dispatch::Thunk f) {
-		auto evt = new ValueEvent<agi::dispatch::Thunk>(EVT_CALL_THUNK, -1, std::move(f));
-		wxTheApp->QueueEvent(evt);
-	});
-
-	wxTheApp->Bind(EVT_CALL_THUNK, [this](ValueEvent<agi::dispatch::Thunk>& evt) {
-		try {
-			evt.Get()();
-		}
-		catch (...) {
-			OnExceptionInMainLoop();
-		}
-	});
-
+/// @brief Non-GUI-specific initialization, shared between the GUI startup
+/// path and CLI mode. @a app is null when running without a wxApp.
+bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::string)> showError) {
 	config::path = new agi::Path;
 
 	agi::log::log = new agi::log::LogSink;
@@ -181,11 +177,18 @@ bool AegisubApp::OnInit() {
 #endif
 	crash_writer::Initialize(config::path->Decode("?user"));
 
-	StartupLog("Create log writer");
-	auto path_log = config::path->Decode("?user/log/");
-	agi::fs::CreateDirectory(path_log);
-	agi::log::log->Subscribe(std::make_unique<agi::log::JsonEmitter>(path_log));
-	CleanCache(path_log, "*.json", 10, 100);
+	// The config machinery writes to ?user even in CLI mode (e.g. flushing
+	// the hotkey map), and the directory-creating GUI startup steps are
+	// skipped there, so make sure the directory exists
+	agi::fs::CreateDirectory(config::path->Decode("?user"));
+
+	if (config::hasGui) {
+		StartupLog("Create log writer");
+		auto path_log = config::path->Decode("?user/log/");
+		agi::fs::CreateDirectory(path_log);
+		agi::log::log->Subscribe(std::make_unique<agi::log::JsonEmitter>(path_log));
+		CleanCache(path_log, "*.json", 10, 100);
+	}
 
 	StartupLog("Load user configuration");
 	try {
@@ -221,7 +224,7 @@ bool AegisubApp::OnInit() {
 	hotkey::init();
 
 	StartupLog("Load MRU");
-	config::mru = new agi::MRUManager(config::path->Decode("?user/mru.json"), GET_DEFAULT_CONFIG(default_mru), config::opt);
+	config::mru = new agi::MRUManager(config::hasGui ? config::path->Decode("?user/mru.json") : "", GET_DEFAULT_CONFIG(default_mru), config::opt);
 
 	agi::util::SetThreadName("AegiMain");
 
@@ -247,13 +250,14 @@ bool AegisubApp::OnInit() {
 
 		StartupLog("Initialize final locale");
 
-		// Set locale
-		auto lang = OPT_GET("App/Language")->GetString();
-		if (lang.empty() || (lang != "en_US" && !locale.HasLanguage(lang))) {
-			lang = locale.PickLanguage();
-			OPT_SET("App/Language")->SetString(lang);
+		if (app) {
+			auto lang = OPT_GET("App/Language")->GetString();
+			if (lang.empty() || (lang != "en_US" && !app->locale.HasLanguage(lang))) {
+				lang = app->locale.PickLanguage();
+				OPT_SET("App/Language")->SetString(lang);
+			}
+			app->locale.Init(lang);
 		}
-		locale.Init(lang);
 
 #ifdef __APPLE__
 		// When run from an app bundle, LC_CTYPE defaults to "C", which breaks on
@@ -272,14 +276,312 @@ bool AegisubApp::OnInit() {
 		libass::CacheFonts();
 
 		// Load Automation scripts
-		StartupLog("Load global Automation scripts");
-		config::global_scripts = new Automation4::AutoloadScriptManager(OPT_GET("Path/Automation/Autoload")->GetString());
+		if (config::loadGlobalAutomation) {
+			StartupLog("Load global Automation scripts");
+			config::global_scripts = new Automation4::AutoloadScriptManager(OPT_GET("Path/Automation/Autoload")->GetString());
 
-		// Load export filters
-		StartupLog("Register export filters");
-		AssExportFilterChain::Register(std::make_unique<AssFixStylesFilter>());
-		AssExportFilterChain::Register(std::make_unique<AssTransformFramerateFilter>());
+			// Load export filters
+			StartupLog("Register export filters");
+			AssExportFilterChain::Register(std::make_unique<AssFixStylesFilter>());
+			AssExportFilterChain::Register(std::make_unique<AssTransformFramerateFilter>());
+		}
+	}
+	catch (agi::Exception const& e) {
+		showError(e.GetMessage(), "Fatal error while initializing");
+		return false;
+	}
+	catch (std::exception const& e) {
+		showError(e.what(), "Fatal error while initializing");
+		return false;
+	}
+#ifndef _DEBUG
+	catch (...) {
+		showError("Fatal error while initializing", "Unhandled exception");
+		return false;
+	}
+#endif
+	return true;
+}
 
+#ifndef __WXMSW__
+std::unique_ptr<Automation4::Script> find_script(const std::string& file)
+{
+	auto absolute = agi::fs::path(file);
+	auto relative = agi::fs::path(std::filesystem::current_path()) / file;
+
+	agi::fs::path script;
+
+	if (agi::fs::FileExists(absolute)) {
+		script = absolute;
+	} else if (agi::fs::FileExists(relative)) {
+		script = relative;
+	} else {
+		auto autodirs = OPT_GET("Path/Automation/Autoload")->GetString();
+
+		for (auto tok : agi::Split(autodirs, '|')) {
+			auto dirname = config::path->Decode(std::string(tok));
+			if (!agi::fs::DirectoryExists(dirname)) continue;
+
+			auto scriptname = dirname / file;
+			if (agi::fs::FileExists(scriptname)) {
+				script = scriptname;
+			}
+		}
+	}
+
+	if (script.empty()) {
+		throw agi::InvalidInputException("Could not find script file: " + file);
+	}
+
+	return Automation4::ScriptFactory::CreateFromFile(script, true, false);
+}
+
+/// @brief Gets called when application starts.
+/// @return int
+int main(int argc, char *argv[]) {
+	wxDISABLE_DEBUG_SUPPORT();
+
+	CLI::App app("Aegisub - Advanced Subtitle Editor");
+
+	bool cli = false;
+	std::string in_file, out_file, macro;
+	std::string video, timecodes, keyframes;
+	std::string selected_range;
+	int active_index = -1;
+	std::vector<std::string> automation_scripts, dialog_json, file_names;
+
+	// The positionals can also be passed as named options
+	auto in_file_opt = app.add_option("in-file,--in-file", in_file, "input file");
+	auto out_file_opt = app.add_option("out-file,--out-file", out_file, "output file");
+	auto macro_opt = app.add_option("macro,--macro", macro, "macro to run");
+
+	app.add_flag("--cli", cli, "run in CLI mode, without a GUI window. Enables the other options");
+	app.add_option("--video", video, "video to load");
+	app.add_option("--timecodes", timecodes, "timecodes to load");
+	app.add_option("--keyframes", keyframes, "keyframes to load");
+	// allow_extra_args(false) makes the repeatable options consume exactly
+	// one value per occurrence rather than greedily eating the positionals
+	app.add_option("--automation", automation_scripts, "an automation script to run")->allow_extra_args(false);
+	app.add_option("--active-line", active_index, "the active line")->capture_default_str();
+	app.add_option("--selected-lines", selected_range, "the selected lines");
+	app.add_option("--dialog", dialog_json, "response to a dialog, in JSON")->allow_extra_args(false);
+	app.add_option("--file", file_names, "filename to supply to an open/save call")->allow_extra_args(false);
+
+	// Extra arguments are collected rather than rejected so that GUI
+	// launches keep working with toolkit arguments (wx parses the original
+	// argv itself); CLI mode rejects them below
+	app.allow_extras();
+
+	try {
+		app.parse(argc, argv);
+	}
+	catch (CLI::Success const& e) {
+		// --help and friends print and exit successfully
+		return app.exit(e);
+	}
+	catch (CLI::ParseError const& e) {
+		app.exit(e); // prints the error and a --help hint to stderr
+		return 1;
+	}
+
+	config::hasGui = !cli;
+
+	if (cli) {
+		auto extras = app.remaining();
+		if (!extras.empty()) {
+			std::cerr << "Error: unrecognised option '" << extras.front() << "'" << std::endl;
+			return 1;
+		}
+
+		if (!in_file_opt->count() || !out_file_opt->count() || !macro_opt->count()) {
+			std::cerr << "Too few arguments." << std::endl;
+			std::cerr << app.help() << std::endl;
+			return 1;
+		}
+	}
+
+	agi::util::InitLocale();
+
+	if (cli) {
+		config::hasInitializedWx = false;
+		config::loadGlobalAutomation = false;
+
+		// Scripts run on a worker thread while this thread pumps main-thread
+		// thunks, mirroring the GUI threading model (see cli::RunWithMainLoop)
+		cli::InitDispatch();
+
+		if (!AegisubInitialize(nullptr, [&](std::string msg, std::string title) { std::cerr << title << ": " << msg << "\n"; })) {
+			return -1;
+		}
+
+		try {
+			agi::Context context;
+
+			LOG_D("main") << "Loading subtitles...";
+			context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(in_file)), "", false);
+
+			// Project::LoadSubtitles reports failures through the GUI error
+			// path rather than throwing, leaving the context's blank document
+			// in place. A successful load always has at least one dialogue
+			// line (SubsController inserts one into empty files on commit),
+			// so an empty event list here means the file didn't load.
+			if (context.ass->Events.empty()) {
+				std::cerr << "Failed to load " << in_file << std::endl;
+				return 1;
+			}
+
+			if (!video.empty()) {
+				LOG_D("main") << "Loading video...";
+				context.project->LoadVideo(agi::fs::path(std::filesystem::absolute(video)));
+			}
+
+			if (!timecodes.empty()) {
+				LOG_D("main") << "Loading timecodes...";
+				context.project->LoadTimecodes(agi::fs::path(std::filesystem::absolute(timecodes)));
+			}
+
+			if (!keyframes.empty()) {
+				LOG_D("main") << "Loading keyframes...";
+				context.project->LoadKeyframes(agi::fs::path(std::filesystem::absolute(keyframes)));
+			}
+
+			AssDialogue* active_line = nullptr;
+
+			auto selected_indices = parse_range(selected_range);
+			Selection selected_lines;
+
+			int i = 0;
+			for (auto& line : context.ass->Events) {
+				if (i == active_index) {
+					active_line = &line;
+				}
+
+				if (selected_indices.empty() || selected_indices.count(i)) {
+					selected_lines.insert(&line);
+					if (active_line == nullptr) {
+						// assign first line in selection as a fallback
+						active_line = &line;
+					}
+				}
+				i++;
+			}
+
+			if (active_line == nullptr) {
+				// selection was empty
+				active_line = &context.ass->Events.front();
+				selected_lines.insert(active_line);
+			}
+
+			context.selectionController->SetSelectionAndActive(
+				std::move(selected_lines), active_line);
+
+			if (!dialog_json.empty())
+				config::dialog_responses = parse_dialog_responses(dialog_json);
+
+			if (!file_names.empty())
+				config::file_responses = parse_file_responses(file_names);
+
+			// cache cwd in case automation changes it
+			auto cwd = std::filesystem::current_path();
+
+			std::vector<std::unique_ptr<Automation4::Script>> scripts;
+			for (auto& s : automation_scripts) {
+				LOG_D("main") << "Loading " << s;
+				auto script = find_script(s);
+				if (!script) {
+					return 1;
+				}
+				scripts.emplace_back(std::move(script));
+			}
+
+			cmd::Command *cmd = nullptr;
+
+			// Allow calling automation scripts by their display name
+			for (auto const& script : scripts) {
+				for (auto const& c: script->GetMacros()) {
+					if (c->StrMenu(&context) == to_wx(macro)) {
+						cmd = c;
+					}
+				}
+			}
+
+			// If we don't find one, try the command name instead
+			if (!cmd) {
+				try {
+					cmd = cmd::get(macro);
+				} catch (cmd::CommandNotFound const&) {
+					std::cerr << "Command not found: " << macro << std::endl;
+					LOG_E("main") << "Command not found: " << macro;
+					return 1;
+				}
+			}
+
+			if (!cmd->Validate(&context)) {
+				LOG_E("main") << "Skipping automation because validation function returned false";
+				return 1;
+			}
+
+			LOG_D("main") << "Calling " << cmd->name();
+			(*cmd)(&context);
+
+			// restore cwd for saving
+			std::filesystem::current_path(cwd);
+			context.subsController->Save(agi::fs::path(std::filesystem::absolute(out_file)));
+
+			if (config::hasInitializedWx) {
+				wxUninitialize();
+			}
+			return 0;
+		}
+		catch (agi::Exception const& e) {
+			std::cerr << "Error: " << e.GetMessage() << std::endl;
+			return 1;
+		}
+		catch (std::exception const& e) {
+			std::cerr << "Error: " << e.what() << std::endl;
+			return 1;
+		}
+	} else {
+		return wxEntry(argc, argv);
+	}
+}
+#endif // !__WXMSW__
+
+
+/// @brief wx's initialization function. Called from main() to initialize the GUI-specific stuff and then call Initialize()
+/// @return bool
+bool AegisubApp::OnInit() {
+	// App name (yeah, this is a little weird to get rid of an odd warning)
+#if defined(__WXMSW__) || defined(__WXMAC__)
+	SetAppName("Aegisub");
+#else
+	SetAppName("aegisub");
+#endif
+
+	// The logger isn't created on demand on background threads, so force it to
+	// be created now
+	(void)wxLog::GetActiveTarget();
+
+	// Pointless `this` capture required due to http://gcc.gnu.org/bugzilla/show_bug.cgi?id=51494
+	agi::dispatch::Init([this](agi::dispatch::Thunk f) {
+		auto evt = new ValueEvent<agi::dispatch::Thunk>(EVT_CALL_THUNK, -1, std::move(f));
+		wxTheApp->QueueEvent(evt);
+	});
+
+	wxTheApp->Bind(EVT_CALL_THUNK, [this](ValueEvent<agi::dispatch::Thunk>& evt) {
+		try {
+			evt.Get()();
+		}
+		catch (...) {
+			OnExceptionInMainLoop();
+		}
+	});
+
+	if (!::AegisubInitialize(this, [](std::string msg, std::string title) { wxMessageBox(to_wx(msg), to_wx(title)); })) {
+		return false;
+	}
+
+	try {
 		StartupLog("Install PNG handler");
 		wxImage::AddHandler(new wxPNGHandler);
 

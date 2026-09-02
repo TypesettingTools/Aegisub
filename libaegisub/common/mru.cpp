@@ -68,6 +68,9 @@ MRUManager::MRUManager(agi::fs::path const& config, std::string_view default_con
 {
 	LOG_D("agi/mru") << "Loading MRU List";
 
+	// An empty config path means the MRU list is in-memory only (CLI mode)
+	if (config_name.empty()) return;
+
 	auto root = json_util::file(config, default_config);
 	for (auto const& it : static_cast<json::Object const&>(root))
 		Load(it.first.c_str(), it.second);
@@ -114,6 +117,9 @@ agi::fs::path const& MRUManager::GetEntry(std::string_view key, const size_t ent
 }
 
 void MRUManager::Flush() {
+	if (config_name.string().empty())
+		return;
+
 	json::Object out;
 
 	for (size_t i = 0; i < mru.size(); ++i) {

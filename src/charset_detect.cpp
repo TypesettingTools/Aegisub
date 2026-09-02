@@ -30,6 +30,7 @@
 #include "charset_detect.h"
 
 #include "compat.h"
+#include "gui_wrap.h"
 
 #include <libaegisub/charset.h>
 #include <libaegisub/charset_conv.h>
@@ -46,7 +47,8 @@ std::string GetEncoding(agi::fs::path const& filename) {
 		return encoding;
 
 	auto choices = agi::charset::GetEncodingsList<wxArrayString>();
-	int choice = wxGetSingleChoiceIndex(
+	int choice = wrapChoiceDialog(
+		"subtitle-charset",
 		_("Aegisub could not narrow down the character set to a single one.\nPlease pick one below:"),
 		_("Choose character set"),
 		choices);

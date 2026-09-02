@@ -19,7 +19,9 @@
 
 #include "dialog_progress.h"
 
+#include "cli.h"
 #include "compat.h"
+#include "options.h"
 #include "utils.h"
 
 #include <libaegisub/dispatch.h>
@@ -255,4 +257,28 @@ void DialogProgress::SetProgress(int target) {
 		progress_anim_duration = std::max<int>(100, duration_cast<milliseconds>(now - progress_anim_start_time).count() * 11 / 10);
 	progress_anim_start_time = now;
 	progress_target = target;
+}
+
+OptDialogProgress::OptDialogProgress(wxWindow *parent, wxString const& title, wxString const& message)
+: impl(config::hasGui ? new DialogProgress(parent, title, message) : nullptr)
+{ }
+
+void OptDialogProgress::Run(std::function<void(agi::ProgressSink*)> task) {
+	if (impl) {
+		impl->Run(task);
+		return;
+	}
+
+	// Mirror the GUI threading model: the task runs on a worker thread while
+	// this thread pumps the main-thread dispatch queue, so that the task can
+	// use agi::dispatch::Main().Sync() without deadlocking
+	agi::CLIProgressSink ps;
+	cli::RunWithMainLoop([&] {
+		try {
+			task(&ps);
+		}
+		catch (agi::Exception const& e) {
+			ps.Log(e.GetMessage());
+		}
+	});
 }

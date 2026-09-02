@@ -72,7 +72,7 @@ class VideoController final : public wxEvtHandler {
 
 	/// Playback timer used to periodically check if we should go to the next
 	/// frame while playing video
-	wxTimer playback;
+	std::unique_ptr<wxTimer> playback;
 
 	/// Time when playback was last started
 	std::chrono::steady_clock::time_point playback_start_time;
@@ -115,7 +115,7 @@ public:
 	VideoController(agi::Context *context);
 
 	/// Is the video currently playing?
-	bool IsPlaying() const { return playback.IsRunning(); }
+	bool IsPlaying() const;
 
 	/// Get the current frame number
 	int GetFrameN() const { return frame_n; }
