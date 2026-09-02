@@ -29,28 +29,10 @@
 
 #include <stdint.h>
 
-#ifndef MATROSKA_PARSER_H
-#define	MATROSKA_PARSER_H
+#ifndef AEGISUB_MATROSKA_DEMUX_H
+#define AEGISUB_MATROSKA_DEMUX_H
 
-/* Random notes:
- *
- * The parser does not process frame data in any way and does not read it into
- * the queue. The app should read it via mkv_ReadData if it is interested.
- *
- * The code here is 64-bit clean and was tested on FreeBSD/sparc 64-bit big endian
- * system
- */
-
-#ifdef MPDLLBUILD
-#define	X __declspec(dllexport)
-#else
-#ifdef MPDLL
-#define X __declspec(dllimport)
-#pragma comment(lib,"MatroskaParser")
-#else
-#define X
-#endif
-#endif
+// Internal interface between the native Matroska demuxer and its C++ owner.
 
 #define MATROSKA_COMPRESSION_SUPPORT
 
@@ -260,13 +242,13 @@ typedef struct Tag  Tag;
 /* Open a matroska file
  * io pointer is recorded inside MatroskaFile
  */
-X MatroskaFile  *mkv_Open(/* in */ InputStream *io,
+MatroskaFile  *mkv_Open(/* in */ InputStream *io,
 			/* out */ char *err_msg,
 			/* in */  unsigned msgsize);
 
 #define	MKVF_AVOID_SEEKS    1 /* use sequential reading only */
 
-X MatroskaFile  *mkv_OpenEx(/* in */  InputStream *io,
+MatroskaFile  *mkv_OpenEx(/* in */  InputStream *io,
 			  /* in */  uint64_t base,
 			  /* in */  unsigned flags,
 			  /* out */ char *err_msg,
@@ -275,30 +257,30 @@ X MatroskaFile  *mkv_OpenEx(/* in */  InputStream *io,
 /* Close and deallocate mf
  * NULL pointer is ok and is simply ignored
  */
-X void		mkv_Close(/* in */ MatroskaFile *mf);
+void		mkv_Close(/* in */ MatroskaFile *mf);
 
 /* Fetch the error message of the last failed operation */
-X const char    *mkv_GetLastError(/* in */ MatroskaFile *mf);
+const char    *mkv_GetLastError(/* in */ MatroskaFile *mf);
 
 /* Get file information */
-X SegmentInfo   *mkv_GetFileInfo(/* in */ MatroskaFile *mf);
+SegmentInfo   *mkv_GetFileInfo(/* in */ MatroskaFile *mf);
 
 /* Get track information */
-X unsigned int  mkv_GetNumTracks(/* in */ MatroskaFile *mf);
-X TrackInfo     *mkv_GetTrackInfo(/* in */ MatroskaFile *mf,/* in */ unsigned track);
+unsigned int  mkv_GetNumTracks(/* in */ MatroskaFile *mf);
+TrackInfo     *mkv_GetTrackInfo(/* in */ MatroskaFile *mf,/* in */ unsigned track);
 
 /* chapters, tags and attachments */
-X void	      mkv_GetAttachments(/* in */   MatroskaFile *mf,
+void	      mkv_GetAttachments(/* in */   MatroskaFile *mf,
 				 /* out */  Attachment **at,
 				 /* out */  unsigned *count);
-X void	      mkv_GetChapters(/* in */	MatroskaFile *mf,
+void	      mkv_GetChapters(/* in */	MatroskaFile *mf,
 			      /* out */	Chapter **ch,
 			      /* out */ unsigned *count);
-X void	      mkv_GetTags(/* in */  MatroskaFile *mf,
+void	      mkv_GetTags(/* in */  MatroskaFile *mf,
 			  /* out */ Tag **tag,
 			  /* out */ unsigned *count);
 
-X uint64_t   mkv_GetSegmentTop(MatroskaFile *mf);
+uint64_t   mkv_GetSegmentTop(MatroskaFile *mf);
 
 /* Seek to specified timecode,
  * if timecode is past end of file,
@@ -308,15 +290,15 @@ X uint64_t   mkv_GetSegmentTop(MatroskaFile *mf);
 #define	MKVF_SEEK_TO_PREV_KEYFRAME          1
 #define	MKVF_SEEK_TO_PREV_KEYFRAME_STRICT   2
 
-X void	      mkv_Seek(/* in */ MatroskaFile *mf,
+void	      mkv_Seek(/* in */ MatroskaFile *mf,
 		       /* in */	uint64_t timecode /* in ns */,
 		       /* in */ unsigned flags);
 
-X void	      mkv_SkipToKeyframe(MatroskaFile *mf);
+void	      mkv_SkipToKeyframe(MatroskaFile *mf);
 
-X uint64_t   mkv_GetLowestQTimecode(MatroskaFile *mf);
+uint64_t   mkv_GetLowestQTimecode(MatroskaFile *mf);
 
-X int	      mkv_TruncFloat(MKFLOAT f);
+int	      mkv_TruncFloat(MKFLOAT f);
 
 /*************************************************************************
  * reading data, pull model
@@ -335,14 +317,14 @@ X int	      mkv_TruncFloat(MKFLOAT f);
  *  will be ignored when reading file data.
  * This call discards all parsed and queued frames
  */
-X void	      mkv_SetTrackMask(/* in */ MatroskaFile *mf,/* in */ unsigned int mask);
+void	      mkv_SetTrackMask(/* in */ MatroskaFile *mf,/* in */ unsigned int mask);
 
 /* Read one frame from the queue.
  * mask specifies what tracks to ignore.
  * Returns -1 if there are no more frames in the specified
  * set of tracks, 0 on success
  */
-X int	      mkv_ReadFrame(/* in */  MatroskaFile *mf,
+int	      mkv_ReadFrame(/* in */  MatroskaFile *mf,
 			    /* in */  unsigned int mask,
 			    /* out */ unsigned int *track,
 			    /* out */ uint64_t *StartTime /* in ns */,
@@ -357,30 +339,30 @@ struct CompressedStream;
 
 typedef struct CompressedStream CompressedStream;
 
-X CompressedStream  *cs_Create(/* in */	MatroskaFile *mf,
+CompressedStream  *cs_Create(/* in */	MatroskaFile *mf,
 			     /* in */	unsigned tracknum,
 			     /* out */	char *errormsg,
 			     /* in */	unsigned msgsize);
-X void		  cs_Destroy(/* in */ CompressedStream *cs);
+void		  cs_Destroy(/* in */ CompressedStream *cs);
 
 /* advance to the next frame in matroska stream, you need to pass values returned
  * by mkv_ReadFrame */
-X void		  cs_NextFrame(/* in */ CompressedStream *cs,
+void		  cs_NextFrame(/* in */ CompressedStream *cs,
 			       /* in */ uint64_t pos,
-			       /* in */ unsigned size);
+				       /* in */ unsigned size);
+void		  cs_SetOutputLimit(/* in */ CompressedStream *cs, /* in */ uint64_t size);
 
 /* read and decode more data from current frame, return number of bytes decoded,
  * 0 on end of frame, or -1 on error */
-X int		  cs_ReadData(CompressedStream *cs,char *buffer,unsigned bufsize);
+int		  cs_ReadData(CompressedStream *cs,char *buffer,unsigned bufsize);
+int		  cs_OutputLimitExceeded(CompressedStream *cs);
 
 /* return error message for the last error */
-X const char	  *cs_GetLastError(CompressedStream *cs);
+const char	  *cs_GetLastError(CompressedStream *cs);
 #endif
 
 #ifdef __cplusplus
 }
 #endif
-
-#undef X
 
 #endif

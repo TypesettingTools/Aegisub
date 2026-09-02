@@ -1,7 +1,23 @@
 subdir('libresrc')
 
+aegisub_src_inc = include_directories('.')
+
+matroska_lib = static_library('aegisub-matroska',
+    'matroska.cpp',
+    'matroska_demux.cpp',
+    include_directories: libaegisub_inc,
+    dependencies: [boost_dep, zlib_dep, libebml, libmatroska],
+    # Keep objects separate so matroska-behavior does not require libaegisub.
+    override_options: ['unity=off'],
+)
+
+matroska_dep = declare_dependency(
+    link_with: matroska_lib,
+    include_directories: aegisub_src_inc,
+    dependencies: [zlib_dep, libebml, libmatroska],
+)
+
 aegisub_src = files(
-    'MatroskaParser.c',
     'aegisublocale.cpp',
     'ass_attachment.cpp',
     'ass_dialogue.cpp',

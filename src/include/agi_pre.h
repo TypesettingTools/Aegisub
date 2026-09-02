@@ -35,9 +35,6 @@
 /// insert it in every source file (under C/C++ -> Advanced -> Force Includes),
 /// then set stdwx.cpp to generate the precompiled header
 ///
-/// @note Make sure that you disable use of precompiled headers on md5.c and
-///       MatroskaParser.c, as well as any possible future .c files.
-
 #ifdef __cplusplus
 
 // Block msvc from complaining about not using msvc-specific versions for
