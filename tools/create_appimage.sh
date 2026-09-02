@@ -11,6 +11,7 @@ set -euo pipefail
 BUILD_DIR=${1:-build}
 APPDIR=AppDir
 APPNAME=Aegisub
+APP_VERSION=${APP_VERSION:-3.5.0}
 case "${APPIMAGE_ARCH:-$(uname -m)}" in
   x86_64|amd64)
     APPIMAGE_ARCH=x86_64
@@ -25,7 +26,7 @@ case "${APPIMAGE_ARCH:-$(uname -m)}" in
     exit 1
     ;;
 esac
-OUTFILE=${APPNAME}-${APPIMAGE_ARCH}.AppImage
+OUTFILE=${APPNAME}-v${APP_VERSION}-${APPIMAGE_ARCH}.AppImage
 MESON_CROSS_FILE=${MESON_CROSS_FILE:-}
 
 if [ "$(uname -s)" != "Linux" ]; then

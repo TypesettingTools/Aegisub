@@ -83,7 +83,7 @@ Build steps (recommended):
 
    ./tools/create_appimage.sh build
 
-   The script will configure and build the project (static default_library), install into an AppDir, and then use the matching native appimagetool to produce `Aegisub-x86_64.AppImage` or `Aegisub-arm64.AppImage`.
+   The script will configure and build the project (static default_library), install into an AppDir, and then use the matching native appimagetool to produce `Aegisub-v3.5.0-x86_64.AppImage` or `Aegisub-v3.5.0-arm64.AppImage`. Set `APP_VERSION` to override the release label.
 
 AppImages must be built in Linux (natively or through WSL2, a virtual machine, or a container); a Windows host cannot execute the Linux build toolchain directly. The GitHub Actions workflow builds both architectures on native Linux runners.
 

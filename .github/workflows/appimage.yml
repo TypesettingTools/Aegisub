@@ -91,4 +91,4 @@ jobs:
         uses: actions/upload-artifact@v6
         with:
           name: aegisub-appimage-${{ matrix.arch }}
-          path: Aegisub-${{ matrix.arch }}.AppImage
+          path: Aegisub-v3.5.0-${{ matrix.arch }}.AppImage
