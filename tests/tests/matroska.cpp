@@ -54,6 +54,14 @@ TEST(Matroska, CancellationCallbackExceptionsCannotCrossC) {
 	EXPECT_THROW(Demuxer(OpenFile(fixture("subtitle-attachment.mkv")), []() -> bool { throw 42; }), agi::UserCancelException);
 }
 
+TEST(Matroska, PacketScanCanBeCancelled) {
+	bool cancelled = false;
+	Demuxer demuxer(OpenFile(fixture("subtitle-attachment.mkv")), [&] { return cancelled; });
+	demuxer.SelectTrack(demuxer.SubtitleTracks()[0].id);
+	cancelled = true;
+	EXPECT_THROW((void)demuxer.ReadPacket(), agi::UserCancelException);
+}
+
 TEST(Matroska, RejectsUnsupportedTrackAndInvalidIds) {
 	Demuxer demuxer(OpenFile(fixture("video-only.mkv")));
 	EXPECT_TRUE(demuxer.SubtitleTracks().empty());

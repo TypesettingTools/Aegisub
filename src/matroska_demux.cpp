@@ -21,6 +21,7 @@
 #include <zlib.h>
 
 #include <algorithm>
+#include <climits>
 #include <cstring>
 #include <limits>
 #include <memory>
@@ -93,6 +94,7 @@ template <class T> std::string unicode_value(EbmlMaster &m) {
 
 struct TrackRecord {
 	TrackInfo info{};
+	uint64_t number{};
 	std::string name, codec, language = "und";
 	std::vector<unsigned char> priv, comp_private;
 	KaxTrackEntry *entry{};
@@ -101,6 +103,9 @@ struct Frame {
 	unsigned track{};
 	uint64_t start{}, end{}, pos{};
 	unsigned size{}, flags{};
+};
+struct ClusterLocation {
+	uint64_t data{}, size{};
 };
 struct AttachmentRecord {
 	Attachment info{};
@@ -117,10 +122,12 @@ struct MatroskaFile {
 	SegmentInfo info{};
 	std::vector<TrackRecord> tracks;
 	std::vector<Frame> frames;
+	std::vector<ClusterLocation> clusters;
 	std::vector<AttachmentRecord> attachments;
 	std::vector<Attachment> attachment_view;
 	std::unordered_map<uint64_t, unsigned> track_by_number;
 	size_t cursor{};
+	size_t cluster_cursor{};
 	unsigned mask{};
 	uint64_t segment_top{};
 	std::string error;
@@ -130,7 +137,8 @@ namespace {
 void parse_track(MatroskaFile &file, KaxTrackEntry &entry) {
 	TrackRecord track;
 	track.entry = &entry;
-	track.info.Number = static_cast<unsigned char>(uint_value<KaxTrackNumber>(entry));
+	track.number = uint_value<KaxTrackNumber>(entry);
+	track.info.Number = static_cast<unsigned char>(track.number);
 	track.info.UID = uint_value<KaxTrackUID>(entry);
 	track.info.Type = static_cast<unsigned char>(uint_value<KaxTrackType>(entry));
 	track.info.Enabled = uint_value<KaxTrackFlagEnabled>(entry, 1);
@@ -157,7 +165,8 @@ void parse_track(MatroskaFile &file, KaxTrackEntry &entry) {
 					track.comp_private.assign(settings->GetBuffer(), settings->GetBuffer() + settings->GetSize());
 			}
 		}
-	file.track_by_number[track.info.Number] = file.tracks.size();
+	if (!file.track_by_number.emplace(track.number, file.tracks.size()).second)
+		throw std::runtime_error("duplicate Matroska track number");
 	file.tracks.push_back(std::move(track));
 }
 
@@ -176,6 +185,167 @@ void parse_attachment(MatroskaFile &file, KaxAttached &element) {
 	}
 
 	file.attachments.push_back(std::move(attachment));
+}
+
+struct RawElement {
+	uint64_t id{}, data{}, size{}, end{};
+};
+
+void read_exact(MatroskaFile &file, uint64_t pos, void *buffer, size_t size) {
+	if (size > static_cast<size_t>(INT_MAX) || pos > static_cast<uint64_t>(INT64_MAX))
+		throw std::runtime_error("Matroska read is out of range");
+	int got = file.input->read(file.input, pos, buffer, static_cast<int>(size));
+	if (got != static_cast<int>(size)) throw std::runtime_error("truncated Matroska input");
+}
+
+uint8_t read_byte(MatroskaFile &file, uint64_t pos) {
+	uint8_t byte;
+	read_exact(file, pos, &byte, 1);
+	return byte;
+}
+
+RawElement raw_element(MatroskaFile &file, uint64_t pos, uint64_t parent_end) {
+	uint8_t first = read_byte(file, pos);
+	unsigned id_length = 1;
+	for (uint8_t mask = 0x80; id_length <= 4 && !(first & mask); mask >>= 1) ++id_length;
+	if (id_length > 4) throw std::runtime_error("invalid Matroska element ID");
+	uint64_t id = first;
+	for (unsigned i = 1; i < id_length; ++i) id = (id << 8) | read_byte(file, pos + i);
+
+	uint64_t size_pos = pos + id_length;
+	first = read_byte(file, size_pos);
+	unsigned size_length = 1;
+	uint8_t marker = 0x80;
+	while (size_length <= 8 && !(first & marker)) { marker >>= 1; ++size_length; }
+	if (size_length > 8) throw std::runtime_error("invalid Matroska element size");
+	uint64_t size = first & (marker - 1);
+	for (unsigned i = 1; i < size_length; ++i) size = (size << 8) | read_byte(file, size_pos + i);
+	uint64_t unknown = (uint64_t{1} << (7 * size_length)) - 1;
+	uint64_t data = size_pos + size_length;
+	if (size == unknown) size = parent_end - data;
+	if (data > parent_end || size > parent_end - data) throw std::runtime_error("Matroska element exceeds its parent");
+	return {id, data, size, data + size};
+}
+
+uint64_t raw_uint(MatroskaFile &file, RawElement const& element) {
+	if (!element.size || element.size > 8) throw std::runtime_error("invalid Matroska integer");
+	uint64_t value = 0;
+	for (uint64_t i = 0; i < element.size; ++i) value = (value << 8) | read_byte(file, element.data + i);
+	return value;
+}
+
+std::pair<uint64_t, unsigned> raw_vint(MatroskaFile &file, uint64_t pos, uint64_t end) {
+	if (pos >= end) throw std::runtime_error("truncated Matroska variable integer");
+	uint8_t first = read_byte(file, pos);
+	unsigned length = 1;
+	uint8_t marker = 0x80;
+	while (length <= 8 && !(first & marker)) { marker >>= 1; ++length; }
+	if (length > 8) throw std::runtime_error("invalid Matroska variable integer");
+	if (length > end - pos) throw std::runtime_error("truncated Matroska variable integer");
+	uint64_t value = first & (marker - 1);
+	for (unsigned i = 1; i < length; ++i) value = (value << 8) | read_byte(file, pos + i);
+	return {value, length};
+}
+
+uint64_t checked_add(uint64_t left, uint64_t right, char const *message) {
+	if (right > UINT64_MAX - left) throw std::runtime_error(message);
+	return left + right;
+}
+
+uint64_t checked_multiply(uint64_t left, uint64_t right, char const *message) {
+	if (left && right > UINT64_MAX / left) throw std::runtime_error(message);
+	return left * right;
+}
+
+void parse_raw_block(MatroskaFile &file, RawElement const& block, uint64_t cluster_time,
+	uint64_t duration, bool duration_known, bool keyframe) {
+	auto [track_number, track_bytes] = raw_vint(file, block.data, block.end);
+	auto found = file.track_by_number.find(track_number);
+	if (found == file.track_by_number.end()) return;
+	unsigned track_index = found->second;
+	if (track_index >= 32 || ((file.mask >> track_index) & 1)) return;
+	if (block.size < track_bytes + 3) throw std::runtime_error("truncated Matroska block header");
+	uint64_t cursor = checked_add(block.data, track_bytes, "Matroska block header is out of range");
+	int16_t relative = static_cast<int16_t>((read_byte(file, cursor) << 8) | read_byte(file, cursor + 1));
+	uint8_t flags = read_byte(file, cursor + 2);
+	cursor += 3;
+	unsigned lace = (flags >> 1) & 3;
+	if (lace && cursor >= block.end) throw std::runtime_error("truncated Matroska lacing header");
+	unsigned count = lace ? read_byte(file, cursor++) + 1 : 1;
+	std::vector<uint64_t> sizes(count);
+	uint64_t payload_end = block.end;
+	if (lace == 1) {
+		uint64_t sum = 0;
+		for (unsigned i = 0; i + 1 < count; ++i) {
+			uint64_t value = 0; uint8_t byte;
+			do {
+				if (cursor >= payload_end) throw std::runtime_error("truncated Xiph lacing");
+				byte = read_byte(file, cursor++); value += byte;
+			} while (byte == 255);
+			sizes[i] = value; sum += value;
+		}
+		if (cursor > payload_end || sum > payload_end - cursor) throw std::runtime_error("invalid Xiph lacing");
+		sizes.back() = payload_end - cursor - sum;
+	} else if (lace == 2) {
+		if ((payload_end - cursor) % count) throw std::runtime_error("invalid fixed lacing");
+		std::fill(sizes.begin(), sizes.end(), (payload_end - cursor) / count);
+	} else if (lace == 3) {
+		auto [first, used] = raw_vint(file, cursor, payload_end); cursor += used; sizes[0] = first;
+		uint64_t sum = first;
+		for (unsigned i = 1; i + 1 < count; ++i) {
+			auto [encoded, bytes] = raw_vint(file, cursor, payload_end); cursor += bytes;
+			int64_t bias = (int64_t{1} << (7 * bytes - 1)) - 1;
+			int64_t next = static_cast<int64_t>(sizes[i - 1]) + static_cast<int64_t>(encoded) - bias;
+			if (next < 0) throw std::runtime_error("invalid EBML lacing");
+			sizes[i] = static_cast<uint64_t>(next); sum += sizes[i];
+		}
+		if (cursor > payload_end || sum > payload_end - cursor) throw std::runtime_error("invalid EBML lacing");
+		sizes.back() = payload_end - cursor - sum;
+	} else sizes[0] = payload_end - cursor;
+
+	int64_t ticks = static_cast<int64_t>(cluster_time) + relative;
+	uint64_t scale = file.info.TimecodeScale;
+	uint64_t frame_duration = duration_known ?
+		checked_multiply(duration, scale, "Matroska block duration is out of range") / count :
+		file.tracks[track_index].info.DefaultDuration;
+	for (unsigned i = 0; i < count; ++i) {
+		Frame frame{};
+		frame.track = track_index;
+		if (ticks < 0 || static_cast<uint64_t>(ticks) > UINT64_MAX / scale) frame.flags |= FRAME_UNKNOWN_START;
+		else frame.start = checked_add(checked_multiply(static_cast<uint64_t>(ticks), scale,
+			"Matroska timestamp is out of range"), checked_multiply(i, frame_duration,
+			"Matroska laced timestamp is out of range"), "Matroska timestamp is out of range");
+		if (!duration_known && !frame_duration) frame.flags |= FRAME_UNKNOWN_END;
+		else frame.end = checked_add(frame.start, frame_duration, "Matroska timestamp is out of range");
+		frame.pos = cursor;
+		if (sizes[i] > UINT_MAX) throw std::runtime_error("Matroska frame is too large");
+		frame.size = static_cast<unsigned>(sizes[i]);
+		if (keyframe || (flags & 0x80)) frame.flags |= FRAME_KF;
+		file.frames.push_back(frame);
+		cursor = checked_add(cursor, sizes[i], "Matroska frame exceeds its block");
+	}
+}
+
+void parse_raw_cluster(MatroskaFile &file, ClusterLocation const& cluster) {
+	uint64_t cluster_time = 0;
+	uint64_t cluster_end = checked_add(cluster.data, cluster.size, "Matroska cluster is out of range");
+	for (uint64_t pos = cluster.data; pos < cluster_end;) {
+		auto element = raw_element(file, pos, cluster_end);
+		if (element.id == 0xE7) cluster_time = raw_uint(file, element);
+		else if (element.id == 0xA3) parse_raw_block(file, element, cluster_time, 0, false, false);
+		else if (element.id == 0xA0) {
+			RawElement block{}; uint64_t duration = 0; bool has_duration = false, keyframe = true;
+			for (uint64_t child_pos = element.data; child_pos < element.end;) {
+				auto child = raw_element(file, child_pos, element.end);
+				if (child.id == 0xA1) block = child;
+				else if (child.id == 0x9B) { duration = raw_uint(file, child); has_duration = true; }
+				else if (child.id == 0xFB) keyframe = false;
+				child_pos = child.end;
+			}
+			if (block.id) parse_raw_block(file, block, cluster_time, duration, has_duration, keyframe);
+		}
+		pos = element.end;
+	}
 }
 
 void parse_block(MatroskaFile &file, EbmlMaster &parent, KaxCluster *cluster, KaxInternalBlock &block) {
@@ -289,28 +459,52 @@ MatroskaFile *mkv_OpenEx(InputStream *input, uint64_t base, unsigned, char *msg,
 		while (next && upper <= 0) {
 			std::unique_ptr<EbmlElement> current(next);
 			next = nullptr;
-			bool subtitle_frames =
-				std::any_of(f->tracks.begin(), f->tracks.end(), [](auto const &t) { return t.info.Type == TT_SUB; });
-			if (dynamic_cast<KaxCluster *>(current.get()) && !subtitle_frames)
-				break;
+			if (input->progress && !input->progress(input, current->GetElementPosition(), static_cast<uint64_t>(input_size)))
+				throw std::runtime_error("Matroska parsing cancelled");
+			if (dynamic_cast<KaxCluster *>(current.get())) {
+				f->clusters.push_back({current->GetElementPosition() + current->HeadSize(), current->GetSize()});
+				current->SkipData(*f->stream, EBML_CONTEXT(segment));
+				if (!next)
+					next = f->stream->FindNextElement(EBML_CONTEXT(segment), upper, std::numeric_limits<uint64_t>::max(), true);
+				continue;
+			}
 			bool wanted = dynamic_cast<KaxInfo *>(current.get()) || dynamic_cast<KaxTracks *>(current.get()) ||
-						  (dynamic_cast<KaxCluster *>(current.get()) && subtitle_frames) ||
 						  dynamic_cast<KaxAttachments *>(current.get());
 			if (wanted) {
+				unsigned cap = input->getcachesize ? input->getcachesize(input) : 16U * 1024 * 1024;
+				auto *attachments = dynamic_cast<KaxAttachments *>(current.get());
+				if (!attachments && current->GetSize() > cap) {
+					current->SkipData(*f->stream, EBML_CONTEXT(segment));
+					throw std::runtime_error("Matroska metadata exceeds the configured read limit");
+				}
 				auto *master = dynamic_cast<EbmlMaster *>(current.get());
-				master->Read(*f->stream, EBML_CONTEXT(current.get()), upper, next, true, SCOPE_ALL_DATA);
+				master->Read(*f->stream, EBML_CONTEXT(current.get()), upper, next, true,
+					attachments ? SCOPE_PARTIAL_DATA : SCOPE_ALL_DATA);
 				if (auto *info = dynamic_cast<KaxInfo *>(master)) {
 					f->info.TimecodeScale = uint_value<KaxTimecodeScale>(*info, 1000000);
 					if (auto *d = child<KaxDuration>(*info))
 						f->info.Duration = static_cast<uint64_t>(static_cast<double>(*d) * f->info.TimecodeScale);
 				}
-				parse_master(*f, *master, dynamic_cast<KaxCluster *>(master));
+				parse_master(*f, *master);
 				f->top.push_back(std::move(current));
 			} else
 				current->SkipData(*f->stream, EBML_CONTEXT(segment));
 			if (!next)
 				next = f->stream->FindNextElement(EBML_CONTEXT(segment), upper, std::numeric_limits<uint64_t>::max(),
 												  true);
+		}
+		if (input->progress && !input->progress(input, static_cast<uint64_t>(input_size), static_cast<uint64_t>(input_size)))
+			throw std::runtime_error("Matroska parsing cancelled");
+		if (!f->info.Duration && std::any_of(f->tracks.begin(), f->tracks.end(), [](auto const& track) {
+			return track.info.Type == TT_SUB;
+		})) {
+			for (auto cluster = f->clusters.rbegin(); cluster != f->clusters.rend() && !f->info.Duration; ++cluster) {
+				f->frames.clear();
+				parse_raw_cluster(*f, *cluster);
+				for (auto const& frame : f->frames)
+					if (!(frame.flags & FRAME_UNKNOWN_END)) f->info.Duration = std::max(f->info.Duration, frame.end);
+			}
+			f->frames.clear();
 		}
 		finalize(*f);
 		return f.release();
@@ -361,27 +555,60 @@ uint64_t mkv_GetSegmentTop(MatroskaFile *f) {
 void mkv_SetTrackMask(MatroskaFile *f, unsigned m) {
 	f->mask = m;
 	f->cursor = 0;
+	f->cluster_cursor = 0;
+	f->frames.clear();
 }
 int mkv_ReadFrame(MatroskaFile *f, unsigned mask, unsigned *track, uint64_t *start, uint64_t *end, uint64_t *pos,
 				  unsigned *size, unsigned *flags) {
-	while (f->cursor < f->frames.size()) {
-		auto &r = f->frames[f->cursor++];
-		if (((mask | f->mask) >> r.track) & 1)
-			continue;
-		*track = r.track;
-		*start = r.start;
-		*end = r.end;
-		*pos = r.pos;
-		*size = r.size;
-		*flags = r.flags;
-		return 0;
+	try {
+		if (std::none_of(f->tracks.begin(), f->tracks.end(), [](auto const& item) { return item.info.Type == TT_SUB; })) return -1;
+		for (;;) {
+			while (f->cursor < f->frames.size()) {
+				auto &r = f->frames[f->cursor++];
+				if (r.track >= 32 || (((mask | f->mask) >> r.track) & 1)) continue;
+				*track = r.track;
+				*start = r.start;
+				*end = r.end;
+				*pos = r.pos;
+				*size = r.size;
+				*flags = r.flags;
+				return 0;
+			}
+			if (f->cluster_cursor >= f->clusters.size()) return -1;
+			auto const& cluster = f->clusters[f->cluster_cursor++];
+			if (f->input->progress && !f->input->progress(f->input, cluster.data, static_cast<uint64_t>(f->input->getfilesize(f->input)))) {
+				f->error = "Matroska parsing cancelled";
+				return -2;
+			}
+			f->frames.clear();
+			f->cursor = 0;
+			parse_raw_cluster(*f, cluster);
+		}
+	} catch (std::exception const& e) {
+		f->error = e.what();
+		return -2;
 	}
-	return -1;
 }
 void mkv_Seek(MatroskaFile *f, uint64_t t, unsigned) {
-	f->cursor =
-		std::lower_bound(f->frames.begin(), f->frames.end(), t, [](auto &a, uint64_t b) { return a.start < b; }) -
-		f->frames.begin();
+	try {
+		f->frames.clear();
+		f->cursor = 0;
+		f->cluster_cursor = 0;
+		while (f->cluster_cursor < f->clusters.size()) {
+			parse_raw_cluster(*f, f->clusters[f->cluster_cursor++]);
+			f->cursor = std::lower_bound(f->frames.begin(), f->frames.end(), t,
+				[](auto const& frame, uint64_t time) { return frame.start < time; }) - f->frames.begin();
+			if (f->cursor < f->frames.size()) return;
+			f->frames.clear();
+			f->cursor = 0;
+		}
+	}
+	catch (std::exception const& error) {
+		f->error = error.what();
+		f->frames.clear();
+		f->cursor = 0;
+		f->cluster_cursor = f->clusters.size();
+	}
 }
 void mkv_SkipToKeyframe(MatroskaFile *) {}
 uint64_t mkv_GetLowestQTimecode(MatroskaFile *f) {
@@ -400,6 +627,8 @@ struct CompressedStream {
 	std::vector<unsigned char> data;
 	size_t cursor{};
 	std::string error;
+	uint64_t output_limit = UINT64_MAX;
+	bool output_limit_exceeded = false;
 };
 
 namespace {
@@ -412,7 +641,7 @@ std::vector<unsigned char> read_frame(CompressedStream const &stream) {
 	return frame;
 }
 
-std::vector<unsigned char> inflate_frame(std::vector<unsigned char> const &input) {
+std::vector<unsigned char> inflate_frame(std::vector<unsigned char> const &input, uint64_t output_limit) {
 	z_stream zstream{};
 	if (inflateInit(&zstream) != Z_OK)
 		throw std::runtime_error("zlib initialization failed");
@@ -434,7 +663,10 @@ std::vector<unsigned char> inflate_frame(std::vector<unsigned char> const &input
 		zstream.next_out = buffer;
 		zstream.avail_out = sizeof buffer;
 		result = inflate(&zstream, Z_NO_FLUSH);
-		output.insert(output.end(), buffer, buffer + sizeof buffer - zstream.avail_out);
+		auto produced = sizeof buffer - zstream.avail_out;
+		if (produced > output_limit - std::min<uint64_t>(output.size(), output_limit))
+			throw std::runtime_error("decompressed Matroska frame exceeds configured limit");
+		output.insert(output.end(), buffer, buffer + produced);
 	} while (result == Z_OK);
 
 	if (result != Z_STREAM_END)
@@ -449,10 +681,12 @@ void decode_frame(CompressedStream &stream) {
 	if (!track.info.CompEnabled)
 		stream.data = std::move(raw_frame);
 	else if (track.info.CompMethod == COMP_PREPEND) {
+		if (track.comp_private.size() > stream.output_limit || raw_frame.size() > stream.output_limit - track.comp_private.size())
+			throw std::runtime_error("decompressed Matroska frame exceeds configured limit");
 		stream.data = track.comp_private;
 		stream.data.insert(stream.data.end(), raw_frame.begin(), raw_frame.end());
 	} else if (track.info.CompMethod == COMP_ZLIB)
-		stream.data = inflate_frame(raw_frame);
+		stream.data = inflate_frame(raw_frame, stream.output_limit);
 	else
 		throw std::runtime_error("unsupported Matroska compression method");
 }
@@ -461,11 +695,13 @@ void decode_frame(CompressedStream &stream) {
 extern "C" {
 CompressedStream *cs_Create(MatroskaFile *file, unsigned track, char *message, unsigned message_size) {
 	if (!file || track >= file->tracks.size()) {
-		if (message && message_size)
-			std::strncpy(message, "invalid track", message_size);
+		if (message && message_size) {
+			std::strncpy(message, "invalid track", message_size - 1);
+			message[message_size - 1] = 0;
+		}
 		return nullptr;
 	}
-	return new CompressedStream{file, track, 0, 0, {}, {}, {}};
+	return new CompressedStream{file, track, 0, 0, {}, {}, {}, UINT64_MAX};
 }
 void cs_Destroy(CompressedStream *c) {
 	delete c;
@@ -475,6 +711,10 @@ void cs_NextFrame(CompressedStream *stream, uint64_t position, unsigned size) {
 	stream->frame_size = size;
 	stream->data.clear();
 	stream->cursor = 0;
+	stream->output_limit_exceeded = false;
+}
+void cs_SetOutputLimit(CompressedStream *stream, uint64_t size) {
+	stream->output_limit = size;
 }
 int cs_ReadData(CompressedStream *stream, char *output, unsigned capacity) {
 	try {
@@ -487,8 +727,12 @@ int cs_ReadData(CompressedStream *stream, char *output, unsigned capacity) {
 		return bytes_to_copy;
 	} catch (std::exception const &e) {
 		stream->error = e.what();
+		stream->output_limit_exceeded = stream->error == "decompressed Matroska frame exceeds configured limit";
 		return -1;
 	}
+}
+int cs_OutputLimitExceeded(CompressedStream *stream) {
+	return stream->output_limit_exceeded;
 }
 const char *cs_GetLastError(CompressedStream *c) {
 	return c->error.c_str();

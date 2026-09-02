@@ -18,6 +18,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include <limits>
+#include <optional>
 #include <wx/choicdlg.h>
 
 namespace {
@@ -61,37 +62,43 @@ void read_subtitles(agi::ProgressSink *ps, agi::matroska::Demuxer& demuxer,
 }
 
 void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *target) {
-	DialogProgress progress(nullptr, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
+	DialogProgress metadata_progress(nullptr, _("Parsing Matroska"), _("Reading Matroska track information."));
+	std::optional<agi::matroska::Demuxer> demuxer;
+	metadata_progress.Run([&](agi::ProgressSink *ps) {
+		demuxer.emplace(agi::matroska::OpenFile(filename), [ps] { return ps->IsCancelled(); });
+	});
+	std::vector<agi::matroska::SubtitleTrack const *> tracks;
+	std::vector<std::string> names;
+	for (auto const& track : demuxer->SubtitleTracks()) if (track.codec != agi::matroska::SubtitleCodec::unsupported) {
+		tracks.push_back(&track);
+		names.emplace_back(agi::format("%d (%s %s)%s%s", track.id.value, track.codec_id, track.language, track.name.empty() ? "" : ": ", track.name));
+	}
+	if (tracks.empty()) throw MatroskaException("File has no recognised subtitle tracks.");
+	size_t choice = 0;
+	if (tracks.size() > 1) {
+		int selected = wxGetSingleChoiceIndex(_("Choose which track to read:"), _("Multiple subtitle tracks found"), to_wx(names));
+		if (selected < 0) throw agi::UserCancelException("cancelled");
+		choice = static_cast<size_t>(selected);
+	}
+	auto const& track = *tracks[choice];
+	demuxer->SelectTrack(track.id);
+	bool srt = track.codec == agi::matroska::SubtitleCodec::srt;
+	bool ssa = track.codec == agi::matroska::SubtitleCodec::ssa;
 	AssFile imported;
+	AssParser parser(&imported, !ssa);
+	if (!srt) {
+		std::string private_data(track.codec_private.begin(), track.codec_private.end());
+		boost::char_separator<char> separator("\r\n");
+		for (auto const& line : boost::tokenizer<boost::char_separator<char>>(private_data, separator)) parser.AddLine(line);
+	}
+	else imported.LoadDefault(false, OPT_GET("Subtitle Format/SRT/Default Style Catalog")->GetString());
+	parser.AddLine("[Events]");
+	double duration = demuxer->Duration() ? demuxer->Duration()->nanoseconds / 1000000.0 : 0.0;
+	DialogProgress progress(nullptr, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
 	std::exception_ptr failure;
 	progress.Run([&](agi::ProgressSink *ps) {
 		try {
-			agi::matroska::Demuxer demuxer(agi::matroska::OpenFile(filename), [ps] { return ps->IsCancelled(); });
-			std::vector<agi::matroska::SubtitleTrack const *> tracks;
-			std::vector<std::string> names;
-			for (auto const& track : demuxer.SubtitleTracks()) if (track.codec != agi::matroska::SubtitleCodec::unsupported) {
-				tracks.push_back(&track);
-				names.emplace_back(agi::format("%d (%s %s)%s%s", track.id.value, track.codec_id, track.language, track.name.empty() ? "" : ": ", track.name));
-			}
-			if (tracks.empty()) throw MatroskaException("File has no recognised subtitle tracks.");
-			size_t choice = 0;
-			if (tracks.size() > 1) {
-				int selected = wxGetSingleChoiceIndex(_("Choose which track to read:"), _("Multiple subtitle tracks found"), to_wx(names));
-				if (selected < 0) throw agi::UserCancelException("cancelled");
-				choice = static_cast<size_t>(selected);
-			}
-			auto const& track = *tracks[choice]; demuxer.SelectTrack(track.id);
-			bool srt = track.codec == agi::matroska::SubtitleCodec::srt;
-			AssParser parser(&imported, !srt);
-			if (!srt) {
-				std::string private_data(track.codec_private.begin(), track.codec_private.end());
-				boost::char_separator<char> separator("\r\n");
-				for (auto const& line : boost::tokenizer<boost::char_separator<char>>(private_data, separator)) parser.AddLine(line);
-			}
-			else imported.LoadDefault(false, OPT_GET("Subtitle Format/SRT/Default Style Catalog")->GetString());
-			parser.AddLine("[Events]");
-			double duration = demuxer.Duration() ? demuxer.Duration()->nanoseconds / 1000000.0 : 0.0;
-			read_subtitles(ps, demuxer, track, duration, &parser);
+			read_subtitles(ps, *demuxer, track, duration, &parser);
 		}
 		catch (...) { failure = std::current_exception(); }
 	});

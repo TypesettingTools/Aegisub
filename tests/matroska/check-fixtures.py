@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import pathlib,subprocess,sys
-program,root=sys.argv[1],pathlib.Path(sys.argv[2]); cases=sorted(root.glob('*.mkv'))
+program,root=sys.argv[1],pathlib.Path(sys.argv[2]); cases=sorted([*root.glob('*.mkv'), *root.glob('*.mka')])
 if not cases: raise SystemExit('Matroska fixtures missing; run fixtures/generate.py')
 for case in cases:
  result=subprocess.run([program,case],text=True,stdout=subprocess.PIPE)

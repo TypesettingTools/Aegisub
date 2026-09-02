@@ -349,11 +349,13 @@ void		  cs_Destroy(/* in */ CompressedStream *cs);
  * by mkv_ReadFrame */
 void		  cs_NextFrame(/* in */ CompressedStream *cs,
 			       /* in */ uint64_t pos,
-			       /* in */ unsigned size);
+				       /* in */ unsigned size);
+void		  cs_SetOutputLimit(/* in */ CompressedStream *cs, /* in */ uint64_t size);
 
 /* read and decode more data from current frame, return number of bytes decoded,
  * 0 on end of frame, or -1 on error */
 int		  cs_ReadData(CompressedStream *cs,char *buffer,unsigned bufsize);
+int		  cs_OutputLimitExceeded(CompressedStream *cs);
 
 /* return error message for the last error */
 const char	  *cs_GetLastError(CompressedStream *cs);
