@@ -9,6 +9,12 @@ set -euo pipefail
 #  - appimagetool (will be downloaded automatically if not found)
 
 BUILD_DIR=${1:-build}
+case "$BUILD_DIR" in
+  ""|"/"|"."|"..")
+    echo "Refusing to remove unsafe build directory: $BUILD_DIR" >&2
+    exit 1
+    ;;
+esac
 APPDIR=AppDir
 APPNAME=Aegisub
 APP_VERSION=${APP_VERSION:-3.5.0}
@@ -37,7 +43,7 @@ fi
 # Never reuse a cached Meson build: cached subproject state can refer to a
 # different wrap revision and leave FFMS2 without its packagefile patch.
 rm -rf "$BUILD_DIR"
-MESON_ARGS=(-Ddefault_library=static)
+MESON_ARGS=(-Ddefault_library=static --force-fallback-for=ffmpeg,ffms2)
 if [ -n "$MESON_CROSS_FILE" ]; then
   MESON_ARGS+=(--cross-file "$MESON_CROSS_FILE")
 fi

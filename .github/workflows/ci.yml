@@ -26,7 +26,7 @@ jobs:
             buildtype: release
             args: >-
               -Ddefault_library=static
-              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng,ffmpeg,ffms2
               -Dfallback_nasm=true
               -Dfreetype2:harfbuzz=disabled
               -Dharfbuzz:freetype=disabled
@@ -49,7 +49,7 @@ jobs:
             buildtype: release
             args: >-
               -Ddefault_library=static
-              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng,ffmpeg,ffms2
               -Dfallback_nasm=true
               -Dfreetype2:harfbuzz=disabled
               -Dharfbuzz:freetype=disabled
@@ -71,7 +71,8 @@ jobs:
             buildtype: release
             args: >-
               -Ddefault_library=static
-              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng,ffmpeg,ffms2
+              --cross-file=cross/windows-arm64-msvc.ini
               -Dfallback_nasm=true
               -Dfreetype2:harfbuzz=disabled
               -Dharfbuzz:freetype=disabled
@@ -91,7 +92,7 @@ jobs:
           - name: Ubuntu Release
             os: ubuntu-22.04
             buildtype: release
-            args: -Db_pch=false
+            args: -Db_pch=false -DwxWidgets:default_library=static --force-fallback-for=ffmpeg,ffms2
           - name: macOS x86_64 Release
             os: macos-15-intel
             buildtype: release
