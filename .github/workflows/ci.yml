@@ -9,6 +9,52 @@ on:
   workflow_dispatch:
 
 jobs:
+  clang-tidy:
+    name: Project clang-tidy checks
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install LLVM 21
+        run: |
+          wget -q https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+          sudo apt-get install -y clang-tidy-21 libclang-21-dev llvm-21-dev
+
+      - name: Build project checks
+        run: |
+          cmake -S tools/clang-tidy -B build/clang-tidy-checks \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_CXX_COMPILER=clang++-21 \
+            -DClang_DIR=/usr/lib/llvm-21/lib/cmake/clang
+          cmake --build build/clang-tidy-checks --parallel 2
+
+      - name: Test project checks
+        run: |
+          clang-tidy-21 \
+            --load=build/clang-tidy-checks/aegisub-clang-tidy.so \
+            --checks=-*,aegisub-filesystem-path \
+            tools/clang-tidy/test/filesystem-path.cpp -- -std=c++20 2>&1 \
+            | FileCheck-21 --check-prefix=CHECK-MESSAGES tools/clang-tidy/test/filesystem-path.cpp
+
+      - name: Configure Aegisub
+        run: |
+          python -m pip install --upgrade pip setuptools meson
+          sudo apt-get install -y ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev libportal-gtk3-dev
+          CC=clang-21 CXX=clang++-21 meson setup build/tidy -Db_pch=false
+
+      - name: Enforce project checks
+        run: |
+          run-clang-tidy-21 \
+            -clang-tidy-binary clang-tidy-21 \
+            -load build/clang-tidy-checks/aegisub-clang-tidy.so \
+            -checks=-*,aegisub-filesystem-path \
+            -warnings-as-errors=aegisub-* \
+            -p build/tidy \
+            -j 2
+
   build:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
