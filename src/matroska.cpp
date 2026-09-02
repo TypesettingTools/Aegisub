@@ -152,7 +152,7 @@ class Demuxer::Impl final : public InputStream {
       if (std::find_if(attachments.begin(), attachments.end(), [&](auto const &item) {
             return item.id.value == legacy.UID;
           }) != attachments.end())
-        throw InvalidDataError("Duplicate Matroska attachment ID");
+        continue;
       attachments.push_back({{legacy.UID}, copy_string(legacy.Name),
                              copy_string(legacy.Description),
                              copy_string(legacy.MimeType), legacy.Length});
@@ -238,6 +238,7 @@ public:
       compressed.reset(cs_Create(file.get(), track.value, error, sizeof error));
       if (!compressed)
         throw UnsupportedError(error[0] ? error : "Unsupported subtitle compression");
+      cs_SetOutputLimit(compressed.get(), limits.decompressed_size);
     }
   }
 
@@ -247,8 +248,14 @@ public:
     CheckCancelled();
     unsigned track, frame_size, flags;
     uint64_t start, end, position;
-    if (mkv_ReadFrame(file.get(), ~(1U << selected->value), &track, &start,
-                      &end, &position, &frame_size, &flags) < 0)
+    int read_result = mkv_ReadFrame(file.get(), ~(1U << selected->value), &track, &start,
+                                   &end, &position, &frame_size, &flags);
+    CheckCancelled();
+    if (read_result < -1 && !input_error.empty())
+      throw IoError(input_error);
+    if (read_result < -1)
+      throw InvalidDataError(copy_string(mkv_GetLastError(file.get())));
+    if (read_result < 0)
       return std::nullopt;
 
     std::vector<uint8_t> data;
@@ -263,6 +270,10 @@ public:
         CheckCancelled();
         int count = cs_ReadData(
             compressed.get(), reinterpret_cast<char *>(buffer), sizeof buffer);
+        if (count < 0 && cs_OutputLimitExceeded(compressed.get()))
+          throw LimitError("Decompressed Matroska subtitle packet exceeds configured limit");
+        if (count < 0 && !input_error.empty())
+          throw IoError(input_error);
         if (count < 0)
           throw InvalidDataError(copy_string(cs_GetLastError(compressed.get())));
         if (!count)
