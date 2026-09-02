@@ -1,0 +1,15 @@
+# Burmese translation for Aegisub.
+msgid ""
+msgstr ""
+"Project-Id-Version: Aegisub 3.5.0\n"
+"Language: my\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Language"
+msgstr "ဘာသာစကား"
+
+msgid "Please choose a language:"
+msgstr "ဘာသာစကားတစ်ခု ရွေးချယ်ပါ:"
