@@ -26,6 +26,9 @@
 #include <libaegisub/path.h>
 #include <libaegisub/string.h>
 
+#include <algorithm>
+#include <initializer_list>
+
 using namespace agi;
 
 std::unique_ptr<AudioProvider> CreateAvisynthAudioProvider(fs::path const& filename, BackgroundRunner *);
@@ -36,22 +39,35 @@ struct factory {
 	const char *name;
 	std::unique_ptr<AudioProvider> (*create)(fs::path const&, BackgroundRunner *);
 	bool hidden;
+	std::vector<const char *> extensions;
 };
 
 const std::initializer_list<factory> providers = {
-	{"Dummy", CreateDummyAudioProvider, true},
-	{"PCM", CreatePCMAudioProvider, true},
+	{"Dummy", CreateDummyAudioProvider, true, {}},
+	{"PCM", CreatePCMAudioProvider, true, {".w64", ".wav"}},
 #ifdef WITH_FFMS2
-	{"FFmpegSource", CreateFFmpegSourceAudioProvider, false},
+	{"FFmpegSource", CreateFFmpegSourceAudioProvider, false,
+		{".aac", ".ac3", ".ape", ".asf", ".avi", ".avs", ".d2v", ".dts", ".eac3", ".flac", ".m2ts",
+		 ".m4a", ".m4v", ".mka", ".mkv", ".mov", ".mp3", ".mp4", ".mpeg", ".mpg", ".ogg", ".ogm", ".opus",
+		 ".ts", ".w64", ".wav", ".webm", ".wma", ".wmv"}},
 #endif
 #ifdef WITH_AVISYNTH
-	{"Avisynth", CreateAvisynthAudioProvider, false},
+	{"Avisynth", CreateAvisynthAudioProvider, false, {".avi", ".avs"}},
 #endif
 };
 }
 
 std::vector<std::string> GetAudioProviderNames() {
 	return ::GetClasses(providers);
+}
+
+std::vector<std::string> GetAudioProviderFileExtensions() {
+	std::vector<std::string> extensions;
+	for (auto const& provider : providers)
+		extensions.insert(extensions.end(), provider.extensions.begin(), provider.extensions.end());
+	std::sort(extensions.begin(), extensions.end());
+	extensions.erase(std::unique(extensions.begin(), extensions.end()), extensions.end());
+	return extensions;
 }
 
 std::unique_ptr<agi::AudioProvider> GetAudioProvider(fs::path const& filename,
