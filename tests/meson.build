@@ -89,7 +89,7 @@ test('luajit-52', executable('luajit-52', 'tests/luajit_52.c', dependencies: lua
 
 # Deterministic integration test for Matroska demux metadata, attachments, frames, compression, and errors.
 matroska_behavior = executable('matroska-behavior',
-    'matroska/behavior.cpp',
-    dependencies: matroska_dep)
+                               'matroska/behavior.cpp',
+                               dependencies: matroska_dep)
 test('matroska behavior', find_program('matroska/check-fixtures.py'),
     args: [matroska_behavior, meson.current_source_dir() / 'matroska' / 'fixtures'])
