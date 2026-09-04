@@ -75,8 +75,9 @@ meson setup build_static \
   --force-fallback-for=boost
 meson compile -C build_static
 meson test -C build_static --verbose
+export AEGISUB_BUNDLE_SIGNATURE=-
 meson compile osx-bundle -C build_static
-AEGISUB_BUNDLE_SIGNATURE=- meson compile osx-build-dmg -C build_static
+meson compile osx-build-dmg -C build_static
 ```
 
 ### Linux or other
