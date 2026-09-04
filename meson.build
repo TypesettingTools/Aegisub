@@ -122,8 +122,15 @@ deps += cc.find_library('dl', required: false)
 
 deps += dependency('iconv', fallback: ['iconv', 'libiconv_dep'])
 
-deps += dependency('libass', version: '>=0.9.7',
-                   fallback: ['libass', 'libass_dep'])
+libass_dep = dependency('libass', version: '>=0.9.7',
+                        fallback: ['libass', 'libass_dep'],
+                        default_options: [
+                            'test=disabled',
+                            'compare=disabled',
+                            'freetype2:png=disabled',
+                            'harfbuzz:png=disabled',
+                        ])
+deps += libass_dep
 
 boost_static = meson.version().version_compare('>=0.63.0') and get_option('prefer_static')    # boost dependencies do not respect prefer_static https://github.com/mesonbuild/meson/issues/15458
 boost_modules = ['chrono', 'locale']
@@ -185,22 +192,22 @@ if not use_bundled_wx
     deps += wx_dep
     wx_defines_dep = wx_dep
 else
-    # wxWidgets, FreeType, and the other bundled dependencies must all use the
-    # same libpng implementation. In particular, wx's bundled libpng has
-    # partially-prefixed private symbols which can collide with another static
-    # libpng on ARM.
-    libpng_dep = dependency('libpng')
-    deps += libpng_dep
+    wx_libpng = 'sys'
+    if libass_dep.type_name() == 'internal'
+        # The bundled text stack has PNG support disabled, so wx can own the
+        # only libpng copy without bridging another Meson dependency to CMake.
+        wx_libpng = 'builtin'
+    endif
 
     build_shared = true
     if get_option('default_library') == 'static'
         build_shared = false
     endif
 
-    if build_shared and (zlib_dep.type_name() == 'internal' or libpng_dep.type_name() == 'internal')
-        error('Shared fallback wxWidgets cannot consume Meson-built zlib/libpng safely: ' +
-              'Meson converts them to raw paths without Ninja dependency edges. ' +
-              'Use -Ddefault_library=static or provide system zlib and libpng.')
+    if build_shared and zlib_dep.type_name() == 'internal'
+        error('Shared fallback wxWidgets cannot consume Meson-built zlib safely: ' +
+              'Meson converts it to a raw path without Ninja dependency edges. ' +
+              'Use -Ddefault_library=static or provide system zlib.')
     endif
     build_type = 'Release'
     if get_option('buildtype') == 'debug'
@@ -217,7 +224,7 @@ else
         'wxBUILD_SHARED': build_shared,
 
         'wxUSE_WEBVIEW': false,         # breaks build on linux
-        'wxUSE_LIBPNG': 'sys',          # supplied by Meson below
+        'wxUSE_LIBPNG': wx_libpng,
         # Aegisub registers only wxPNGHandler. Avoid building the unused TIFF
         # codec and its additional zlib/JPEG dependency plumbing.
         'wxUSE_LIBTIFF': 'OFF',
@@ -227,8 +234,8 @@ else
         'wxBUILD_MONOLITHIC': true      # otherwise breaks project generation w/ meson
     })
 
-    # CMake can't consume Meson dependency objects directly. When these are
-    # fallback dependencies, give wx the exact libraries and headers Meson is
+    # CMake can't consume Meson dependency objects directly. When zlib is a
+    # fallback dependency, give wx the exact library and headers Meson is
     # already building instead of allowing find_package() to select a second
     # implementation. Meson does not yet provide a supported bridge for this:
     # https://github.com/mesonbuild/meson/issues/8089
@@ -253,27 +260,8 @@ else
                                      target: 'wxmono')
         opt_var.append_compile_args('cpp', cpp_include_flag + zlib_source_dir,
                                      target: 'wxmono')
-    endif
-
-    if libpng_dep.type_name() == 'internal'
-        libpng = subproject('libpng').get_variable('libpng')
-        libpng_library = libpng.full_path().replace('\\', '/')
-        libpng_build_dir = fs.parent(libpng_library).replace('\\', '/')
-        libpng_source_dir = (meson.project_source_root() / 'subprojects' / fs.name(libpng_build_dir)).replace('\\', '/')
-        opt_var.add_cmake_defines({
-            'PNG_LIBRARY': libpng_library,
-            'PNG_PNG_INCLUDE_DIR': libpng_source_dir,
-        })
-        # pnglibconf.h is generated in the subproject build directory, while
-        # FindPNG only exposes a single include directory to wx. Meson's CMake
-        # converter also ignores include paths outside the CMake subproject,
-        # so pass both directories explicitly as compiler arguments.
-        opt_var.append_compile_args('c', c_include_flag + libpng_source_dir,
-                                     c_include_flag + libpng_build_dir,
-                                     target: 'wxmono')
-        opt_var.append_compile_args('cpp', cpp_include_flag + libpng_source_dir,
-                                     cpp_include_flag + libpng_build_dir,
-                                     target: 'wxmono')
+        opt_var.append_compile_args('c', c_include_flag + zlib_source_dir,
+                                     target: 'wxpng')
     endif
 
     if host_machine.system() == 'darwin'
@@ -288,12 +276,12 @@ else
         error('wxWidgets unexpectedly built wxtiff despite wxUSE_LIBTIFF=OFF')
     endif
 
-    foreach bundled_dependency: ['wxpng', 'wxzlib']
-        if wx.target_list().contains(bundled_dependency)
-            error('wxWidgets unexpectedly built ' + bundled_dependency +
-                  ' instead of using the dependency supplied by Meson')
-        endif
-    endforeach
+    if wx_libpng == 'builtin' and not wx.target_list().contains('wxpng')
+        error('wxWidgets unexpectedly omitted its bundled libpng')
+    endif
+    if wx.target_list().contains('wxzlib')
+        error('wxWidgets unexpectedly built wxzlib instead of using the dependency supplied by Meson')
+    endif
 
     deps += wx.dependency('wxmono')
     foreach cmake_target: ['wxregex', 'wxscintilla', 'wxlexilla']

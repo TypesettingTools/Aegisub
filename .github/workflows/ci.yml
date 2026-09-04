@@ -30,7 +30,7 @@ jobs:
             buildtype: release
             args: >-
               -Ddefault_library=static
-              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi
               -Dfallback_nasm=true
               -Dfreetype2:harfbuzz=disabled
               -Dharfbuzz:freetype=disabled
@@ -79,7 +79,6 @@ jobs:
               -Dopenal=enabled
               -Dlibass:fontconfig=disabled
               -Dlibass:libunibreak=disabled
-              -Dlibass:test=disabled
               -Dfreetype2:bzip2=disabled
               -Dfreetype2:brotli=disabled
               -Dfreetype2:hvf=disabled
@@ -99,7 +98,7 @@ jobs:
               -Ddav1d:enable_tests=false
               -Ddav1d:enable_tools=false
               -Dzlib:tests=disabled
-              --force-fallback-for=boost,wxWidgets,libass,zlib,freetype2,fribidi,harfbuzz,libpng,ffms2,libavformat,libavcodec,libswscale,libavutil,libswresample,dav1d,hunspell,uchardet,icu-uc,icu-i18n,libcurl
+              --force-fallback-for=boost,wxWidgets,libass,zlib,freetype2,fribidi,harfbuzz,ffms2,libavformat,libavcodec,libswscale,libavutil,libswresample,dav1d,hunspell,uchardet,icu-uc,icu-i18n,libcurl
           - name: macOS arm64 Debug
             os: macos-15
             buildtype: debugoptimized
@@ -156,7 +155,7 @@ jobs:
       - name: Install dependencies (macOS Debug)
         if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'debugoptimized'
         run: |
-          brew install ninja pkg-config libass boost zlib libpng ffms2 fftw hunspell uchardet icu4c wxwidgets
+          brew install ninja pkg-config libass boost zlib ffms2 fftw hunspell uchardet icu4c wxwidgets
 
           echo "PKG_CONFIG_PATH=$(brew --prefix icu4c)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig" >> "${GITHUB_ENV}"
 
