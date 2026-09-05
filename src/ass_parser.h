@@ -25,8 +25,10 @@ class AssParser {
 	AssFile *target;
 	int version;
 	std::unique_ptr<AssAttachment> attach;
+	std::string attachment_data;
 	void (AssParser::*state)(std::string const&);
 
+	void FinishAttachment();
 	void ParseAttachmentLine(std::string const& data);
 	void ParseEventLine(std::string const& data);
 	void ParseStyleLine(std::string const& data);

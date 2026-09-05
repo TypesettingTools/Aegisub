@@ -44,7 +44,9 @@
 #include <libaegisub/log.h>
 #include <libaegisub/path.h>
 
+#include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
+#include <cmath>
 #include <wx/msgdlg.h>
 
 Project::Project(agi::Context *c) : context(c) {
@@ -189,6 +191,69 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 	auto timecodes = context->path->MakeAbsolute(properties.timecodes_file, "?script");
 	auto keyframes = context->path->MakeAbsolute(properties.keyframes_file, "?script");
 
+#ifdef _WIN32
+	auto is_remote_or_device_path = [](agi::fs::path const& path) {
+		return path.generic_string().starts_with("//");
+	};
+	auto ordinary_unc_share = [](agi::fs::path const& path) {
+		auto value = path.generic_string();
+		if (!value.starts_with("//") || value.starts_with("//?/") || value.starts_with("//./"))
+			return std::string();
+
+		auto server_end = value.find('/', 2);
+		if (server_end == std::string::npos || server_end == 2)
+			return std::string();
+		auto share_end = value.find('/', server_end + 1);
+		if (share_end == server_end + 1)
+			return std::string();
+
+		auto share = value.substr(0, share_end);
+		boost::to_lower(share);
+		return share;
+	};
+
+	auto subtitle_share = ordinary_unc_share(context->subsController->Filename());
+	auto is_new_remote_or_device_path = [&](agi::fs::path const& linked, agi::fs::path const& current) {
+		if (linked == current || !is_remote_or_device_path(linked))
+			return false;
+
+		auto linked_share = ordinary_unc_share(linked);
+		return linked_share.empty() || linked_share != subtitle_share;
+	};
+
+	std::vector<agi::fs::path> paths_requiring_authorization;
+	auto add_path_requiring_authorization = [&](agi::fs::path const& linked, agi::fs::path const& current) {
+		if (is_new_remote_or_device_path(linked, current) &&
+			std::find(paths_requiring_authorization.begin(), paths_requiring_authorization.end(), linked) == paths_requiring_authorization.end())
+			paths_requiring_authorization.push_back(linked);
+	};
+	add_path_requiring_authorization(audio, audio_file);
+	add_path_requiring_authorization(video, video_file);
+	add_path_requiring_authorization(timecodes, timecodes_file);
+	add_path_requiring_authorization(keyframes, keyframes_file);
+
+	if (!paths_requiring_authorization.empty()) {
+		wxString message = _("The subtitle file references Windows network or device paths. Accessing a network path can expose your Windows credentials, and device paths can access special system objects. Only allow these paths if you trust the subtitle's author.\n\nPaths:");
+		for (auto const& linked : paths_requiring_authorization) {
+			message += "\n    ";
+			message += linked.wstring();
+		}
+		message += _("\n\nDo you want to allow access to these paths?");
+
+		if (wxMessageBox(message, _("Allow linked network paths?"),
+			wxYES_NO | wxNO_DEFAULT | wxICON_WARNING | wxCENTRE, context->parent) != wxYES) {
+			auto reject_remote_or_device_path = [&](agi::fs::path& linked, agi::fs::path const& current) {
+				if (is_new_remote_or_device_path(linked, current))
+					linked = current;
+			};
+			reject_remote_or_device_path(audio, audio_file);
+			reject_remote_or_device_path(video, video_file);
+			reject_remote_or_device_path(timecodes, timecodes_file);
+			reject_remote_or_device_path(keyframes, keyframes_file);
+		}
+	}
+#endif
+
 	if (video == video_file && audio == audio_file && keyframes == keyframes_file && timecodes == timecodes_file)
 		return;
 
@@ -232,6 +297,43 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 			return;
 	}
 
+	auto is_linked_avisynth = [](agi::fs::path const& linked, agi::fs::path const& current) {
+		return linked != current && agi::fs::HasExtension(linked, "avs");
+	};
+	bool avisynth_audio = is_linked_avisynth(audio, audio_file);
+	bool avisynth_video = is_linked_avisynth(video, video_file);
+	if (avisynth_audio || avisynth_video) {
+		wxString script_list;
+		if (avisynth_audio) {
+			script_list += "\n    ";
+			script_list += audio.wstring();
+		}
+		if (avisynth_video && (!avisynth_audio || video != audio)) {
+			script_list += "\n    ";
+			script_list += video.wstring();
+		}
+
+		bool multiple_scripts = avisynth_audio && avisynth_video && audio != video;
+		wxString message = multiple_scripts
+			? _("The subtitle file references AviSynth scripts. AviSynth scripts can execute arbitrary code with your user permissions. Only load them if you trust the subtitle's author.\n\nScripts:")
+			: _("The subtitle file references an AviSynth script. AviSynth scripts can execute arbitrary code with your user permissions. Only load it if you trust the subtitle's author.\n\nScript:");
+		message += script_list;
+		message += multiple_scripts
+			? _("\n\nDo you want to load these scripts now?")
+			: _("\n\nDo you want to load this script now?");
+
+		wxMessageDialog dlg(
+			context->parent, message, _("Load linked AviSynth script?"),
+			wxYES_NO | wxNO_DEFAULT | wxICON_WARNING | wxCENTRE);
+		dlg.SetYesNoLabels(_("Trust author && load"), _("Do not load"));
+		if (dlg.ShowModal() != wxID_YES) {
+			if (avisynth_audio)
+				audio = audio_file;
+			if (avisynth_video)
+				video = video_file;
+		}
+	}
+
 	bool loaded_video = false;
 	if (video != video_file) {
 		if (video.empty())
@@ -241,10 +343,23 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 			vc->JumpToFrame(properties.video_position);
 
 			auto ar_mode = static_cast<AspectRatio>(properties.ar_mode);
-			if (ar_mode == AspectRatio::Custom)
-				vc->SetAspectRatio(properties.ar_value);
-			else
-				vc->SetAspectRatio(ar_mode);
+			switch (ar_mode) {
+				case AspectRatio::Default:
+				case AspectRatio::Fullscreen:
+				case AspectRatio::Widescreen:
+				case AspectRatio::Cinematic:
+					vc->SetAspectRatio(ar_mode);
+					break;
+				case AspectRatio::Custom:
+					if (std::isfinite(properties.ar_value))
+						vc->SetAspectRatio(properties.ar_value);
+					else
+						vc->SetAspectRatio(AspectRatio::Default);
+					break;
+				default:
+					vc->SetAspectRatio(AspectRatio::Default);
+					break;
+			}
 			context->videoDisplay->SetWindowZoom(properties.video_zoom);
 		}
 	}

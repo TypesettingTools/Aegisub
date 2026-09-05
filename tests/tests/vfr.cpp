@@ -20,6 +20,7 @@
 #include <climits>
 #include <fstream>
 #include <iterator>
+#include <limits>
 
 #include <main.h>
 #include <util.h>
@@ -47,6 +48,9 @@ TEST(lagi_vfr, constructors_good) {
 TEST(lagi_vfr, constructors_bad_cfr) {
 	EXPECT_THROW(Framerate(-1.), InvalidFramerate);
 	EXPECT_THROW(Framerate(1000.1), InvalidFramerate);
+	EXPECT_THROW(std::ignore = Framerate(std::numeric_limits<double>::quiet_NaN()), InvalidFramerate);
+	EXPECT_THROW(std::ignore = Framerate(std::numeric_limits<double>::infinity()), InvalidFramerate);
+	EXPECT_THROW(std::ignore = Framerate(std::numeric_limits<double>::max()), InvalidFramerate);
 }
 
 TEST(lagi_vfr, constructors_bad_timecodes) {
@@ -70,6 +74,9 @@ TEST(lagi_vfr, constructors_bad_v1) {
 	EXPECT_THROW(Framerate(input_dir / "v1_override_zero.txt"), InvalidFramerate);
 	EXPECT_THROW(Framerate(input_dir / "v1_negative_start_of_range.txt"), InvalidFramerate);
 	EXPECT_THROW(Framerate(input_dir / "v1_end_less_than_start.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate(input_dir / "v1_range_too_large.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate(input_dir / "v1_nan_fps.txt"), InvalidFramerate);
+	EXPECT_THROW(Framerate(input_dir / "v1_tiny_fps.txt"), InvalidFramerate);
 }
 
 TEST(lagi_vfr, constructors_bad_v2) {

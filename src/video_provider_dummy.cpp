@@ -45,13 +45,36 @@
 #include <libaegisub/format.h>
 #include <boost/gil.hpp>
 
+#include <limits>
+
+namespace {
+constexpr size_t max_dummy_frame_bytes = 256U * 1024U * 1024U;
+
+size_t checked_frame_size(int width, int height) {
+	if (width <= 0 || height <= 0)
+		throw VideoOpenError("Dummy video resolution must be positive");
+	if (width > std::numeric_limits<int>::max() / 4)
+		throw VideoOpenError("Dummy video width is too large");
+
+	auto w = static_cast<size_t>(width);
+	auto h = static_cast<size_t>(height);
+	if (h > max_dummy_frame_bytes / 4 / w)
+		throw VideoOpenError("Dummy video frame is too large");
+
+	return w * h * 4;
+}
+}
+
 DummyVideoProvider::DummyVideoProvider(agi::vfr::Framerate fps, int frames, int width, int height, agi::Color colour, bool pattern)
 : framecount(frames)
 , fps(fps)
 , width(width)
 , height(height)
 {
-	data.resize(width * height * 4);
+	if (frames <= 0)
+		throw VideoOpenError("Dummy video frame count must be positive");
+
+	data.resize(checked_frame_size(width, height));
 
 	auto red = colour.r;
 	auto green = colour.g;
