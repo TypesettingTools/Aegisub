@@ -91,12 +91,6 @@ jobs:
               -Ddav1d:enable_tools=false
               -Dzlib:tests=disabled
               --force-fallback-for=boost,wxWidgets,libass,zlib,freetype2,fribidi,harfbuzz,ffms2,libavformat,libavcodec,libswscale,libavutil,libswresample,dav1d,hunspell,uchardet,icu-uc,icu-i18n,libcurl
-          - name: macOS x86_64 Debug
-            os: macos-15
-            buildtype: debugoptimized
-            cross_args: --cross-file tools/macos-x86_64.ini
-            args: *macos_source_args
-            extra_args: -Dbuild_osx_bundle=false
           - name: macOS arm64 Debug
             os: macos-15
             buildtype: debugoptimized
@@ -156,14 +150,14 @@ jobs:
           popd
 
       - name: Install dependencies (macOS Debug)
-        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'debugoptimized' && !matrix.config.cross_args
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'debugoptimized'
         run: |
           brew install ninja pkg-config libass boost zlib ffms2 fftw hunspell uchardet icu4c wxwidgets
 
           echo "PKG_CONFIG_PATH=$(brew --prefix icu4c)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig" >> "${GITHUB_ENV}"
 
       - name: Install build tools (macOS source dependencies)
-        if: startsWith(matrix.config.os, 'macos-') && (matrix.config.buildtype == 'release' || matrix.config.cross_args)
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
         run: |
           brew install ninja nasm
 
@@ -204,10 +198,10 @@ jobs:
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
-          meson setup build ${{ matrix.config.cross_args }} ${{ matrix.config.args }} ${{ matrix.config.extra_args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
+          meson setup build ${{ matrix.config.cross_args }} ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
       - name: Build FFTW (MacOS)
-        if: startsWith(matrix.config.os, 'macos-') && (matrix.config.buildtype == 'release' || matrix.config.cross_args)
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
         run: |
           tools/macos-build-fftw.sh build
           meson setup --reconfigure --clearcache build \

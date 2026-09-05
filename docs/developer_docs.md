@@ -111,17 +111,18 @@ DMG is created.
 
 ## Intel macOS cross builds
 
-The Intel CI lanes use Apple Silicon runners with
+The Intel Release CI lane uses an Apple Silicon runner with
 `--cross-file tools/macos-x86_64.ini`. Compilation uses native Apple Silicon
 tools targeting x86_64; Rosetta runs the resulting Intel test executables.
 This checks the Intel code path, but does not replace testing a release on
 real Intel hardware.
 
-Both Intel lanes build their target dependencies from source using the shared
+The Intel lane builds its target dependencies from source using the shared
 macOS release dependency options in `.github/workflows/ci.yml`. Homebrew is
 used for build tools, not target libraries: Apple Silicon bottles cannot be
 linked into an Intel executable. The native arm64 Debug lane still uses
-Homebrew libraries. Intel Debug builds are tested but not packaged.
+Homebrew libraries and is tested but not packaged. Intel coverage comes from
+the Release lane, including tests under Rosetta.
 
 For a local cross build, use the same dependency options and cross file as CI.
 After Meson setup, run `tools/macos-build-fftw.sh BUILD_DIR`, then reconfigure
