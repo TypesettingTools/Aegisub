@@ -56,12 +56,26 @@ When compiling on Apple Silicon, replace `/usr/local` with `/opt/homebrew`.
 
 Once the dependencies are installed, build Aegisub with `meson build && meson compile -C build`.
 
-#### Build dmg
+#### Build a local DMG
+
+Homebrew bottles target the macOS release they were built for, which may be
+newer than Aegisub's default deployment target. For a local package, target
+the current macOS major release and explicitly request an ad-hoc signature.
+The resulting DMG is for development and personal use on that macOS release;
+release packages use CI's source-built dependencies and the
+[macOS release-signing process](docs/developer_docs.md#macos-release-signing).
 
 ```bash
-meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_osx_bundle=true -Dlocal_boost=true
+deployment_target="$(sw_vers -productVersion)"
+meson setup build_static \
+  -Ddefault_library=static \
+  -Dbuildtype=debugoptimized \
+  -Dbuild_osx_bundle=true \
+  -Dmacos_deployment_target="${deployment_target}" \
+  --force-fallback-for=boost
 meson compile -C build_static
 meson test -C build_static --verbose
+export AEGISUB_BUNDLE_SIGNATURE=-
 meson compile osx-bundle -C build_static
 meson compile osx-build-dmg -C build_static
 ```
