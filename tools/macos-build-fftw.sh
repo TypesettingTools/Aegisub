@@ -38,7 +38,8 @@ if machine["system"] != "darwin":
     raise SystemExit("FFTW macOS bootstrap requires a Darwin host")
 print({"aarch64": "arm64", "x86_64": "x86_64"}.get(machine["cpu_family"], machine["cpu_family"]))
 ')"
-EXPECTED_STAMP="fftw=${FFTW_VERSION} arch=${ARCH} macos=${DEPLOYMENT_TARGET}"
+BUILD_ARCH="$(uname -m)"
+EXPECTED_STAMP="fftw=${FFTW_VERSION} arch=${ARCH} build=${BUILD_ARCH} macos=${DEPLOYMENT_TARGET}"
 
 if test -f "${FFTW_STAMP}" && test "$(cat "${FFTW_STAMP}")" = "${EXPECTED_STAMP}"; then
     echo "Using existing FFTW build: ${EXPECTED_STAMP}"
@@ -74,11 +75,15 @@ export CC=/usr/bin/clang
 export CFLAGS="-O3 -arch ${ARCH} -mmacosx-version-min=${DEPLOYMENT_TARGET}"
 export LDFLAGS="-arch ${ARCH} -mmacosx-version-min=${DEPLOYMENT_TARGET}"
 
+# Keep runtime probes enabled for native builds.
+set -- "--build=$(./config.guess)"
+if test "${ARCH}" != "${BUILD_ARCH}"; then
+    set -- "$@" "--host=${ARCH}-apple-darwin"
+fi
+
 # Aegisub only uses FFTW's single-threaded, double-precision API.
 # shellcheck disable=SC2086
-./configure \
-    --build="$(./config.guess)" \
-    --host="${ARCH}-apple-darwin" \
+./configure "$@" \
     --prefix="${FFTW_PREFIX}" \
     --disable-shared \
     --enable-static \
