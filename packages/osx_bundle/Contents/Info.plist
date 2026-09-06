@@ -40,6 +40,8 @@
 	<array>
 		<string>MacOSX</string>
 	</array>
+	<key>LSMinimumSystemVersion</key>
+	<string>@MACOS_DEPLOYMENT_TARGET@</string>
 
     <!-- Displayed in the 'Get Info' context menu dialogue -->
     <key>CFBundleGetInfoString</key>

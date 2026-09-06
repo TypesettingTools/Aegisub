@@ -7,6 +7,9 @@ param (
   [Parameter(Position = 1, Mandatory = $true)]
   [ValidateNotNullOrEmpty()]
   [string]$SourceRoot,
+  [Parameter(Position = 2)]
+  [ValidateSet('x64', 'arm64')]
+  [string]$Architecture = 'x64',
   [ValidateNotNullOrEmpty()]
   [string]$DepCtrlVersion = "0.8.1"
 )
@@ -94,7 +97,7 @@ if ((Get-CachedDepCtrlVersion $DepCtrlDir) -ne $DepCtrlVersion) {
 
 # VSFilter
 $VSFilterDir = Join-Path $DepsDir "VSFilter"
-if (!(Test-Path $VSFilterDir)) {
+if ($Architecture -eq 'x64' -and !(Test-Path $VSFilterDir)) {
 	New-Item -ItemType Directory -Path $VSFilterDir | Out-Null
 	$vsFilterReleases = Invoke-WebRequest "https://api.github.com/repos/pinterf/xy-VSFilter/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
 	$vsFilterUrl = $vsFilterReleases.assets[0].browser_download_url
@@ -106,9 +109,11 @@ if (!(Test-Path $VSFilterDir)) {
 
 # VC++ redistributable
 $RedistDir = Join-Path $DepsDir "VC_redist"
-if (!(Test-Path $RedistDir)) {
-	New-Item -ItemType Directory -Path $RedistDir | Out-Null
-	Invoke-WebRequest https://aka.ms/vs/17/release/VC_redist.x64.exe -OutFile (Join-Path $RedistDir "VC_redist.x64.exe") -UseBasicParsing
+$RedistName = "VC_redist.$Architecture.exe"
+$RedistPath = Join-Path $RedistDir $RedistName
+if (!(Test-Path $RedistPath)) {
+	New-Item -ItemType Directory -Path $RedistDir -Force | Out-Null
+	Invoke-WebRequest "https://aka.ms/vs/17/release/$RedistName" -OutFile $RedistPath -UseBasicParsing
 }
 
 # Dictionaries
@@ -139,5 +144,9 @@ if(!$?) { Exit $LASTEXITCODE }
 
 # Invoke InnoSetup
 $IssUrl = Join-Path $InstallerDir "aegisub_depctrl.iss"
-iscc $IssUrl
+if ($Architecture -eq 'arm64') {
+	iscc /DARM64 $IssUrl
+} else {
+	iscc $IssUrl
+}
 if(!$?) { Exit $LASTEXITCODE }

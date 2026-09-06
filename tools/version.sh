@@ -63,8 +63,14 @@ if test x$git_version_str != x; then
     resource_version=$(echo $git_version_str | sed 's/\./, /g')
   fi
 else
-  git_branch="$(git symbolic-ref HEAD 2> /dev/null)" || git_branch="(unnamed branch)"
-  git_branch="${git_branch##refs/heads/}"
+  if ! git_branch="$(git symbolic-ref --short HEAD 2> /dev/null)"; then
+    git_branch="${AEGISUB_BUILD_BRANCH:-}"
+  fi
+  # Keep the version safe for Info.plist's generated sed script and package filenames.
+  git_branch="$(printf '%s' "${git_branch}" | LC_ALL=C tr -c 'A-Za-z0-9._-' '-' | sed 's/--*/-/g; s/^-//; s/-$//')"
+  if test -z "${git_branch}"; then
+    git_branch="unnamed-branch"
+  fi
   git_hash=$(git rev-parse --short HEAD)
 
   git_version_str="${git_revision}-${git_branch}-${git_hash}"

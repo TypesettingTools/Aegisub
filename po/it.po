@@ -6,10 +6,11 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Community open source\n"
-"Language: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-Language: Italian\n"
 "X-Poedit-Country: ITALY\n"
 
@@ -260,7 +261,6 @@ msgstr "No"
 #, fuzzy
 #| msgid "Global autoload scripts"
 msgid "Trust the authors && load scripts"
-#|msgstr "Script globale autocaricato"
 msgstr "Carica gli script e fidati degli autori"
 
 #: ../src/auto4_base.cpp:437
@@ -808,7 +808,6 @@ msgstr "Scorri la visualizzazione dell'audio per centrarla sulla selezione audio
 #, fuzzy
 #| msgid "Go to selection"
 msgid "Go to selection start"
-#| msgstr "Vai alla selezione"
 msgstr "Vai all'inizio della selezione"
 
 #: ../src/command/audio.cpp:410
@@ -1017,7 +1016,7 @@ msgid ""
 "Toggle italics (\\i) for the current selection or at the current cursor "
 "position"
 msgstr ""
-"Seleziona corsivo (\\i) per la selezione attuale o alla posizione attuale del cursore
+"Seleziona corsivo (\\i) per la selezione attuale o alla posizione attuale del cursore"
 
 #: ../src/command/edit.cpp:456
 msgid "toggle italic"
@@ -5413,7 +5412,7 @@ msgstr "'%s' non ha %d caratteri usati.\n"
 #: ../src/font_file_lister.cpp:182
 #, c-format
 msgid "'%s' is missing the following glyphs used: %s\n"
-msgstr "'%s' non ha i seguenti caratteri usati:\n"
+msgstr "'%s' non ha i seguenti caratteri usati: %s\n"
 
 #: ../src/font_file_lister.cpp:193
 msgid "Used in styles:\n"
@@ -5684,6 +5683,8 @@ msgid ""
 msgstr ""
 "Il catalogo degli stili scelto verrà caricato quando crei un nuovo file o importi "
 "dei file nei vari formati.\n"
+"\n"
+"Puoi configurare i cataloghi degli stili nel Manager degli stili."
 
 #: ../src/preferences.cpp:153
 msgid "New files"
