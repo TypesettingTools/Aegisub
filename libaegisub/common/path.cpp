@@ -21,7 +21,7 @@
 #include <boost/range/distance.hpp>
 
 namespace {
-constexpr std::string_view tokens[] = {
+constexpr std::array<std::string_view, 9> tokens = {
 	"?audio",
 	"?data",
 	"?dictionary",
@@ -29,24 +29,16 @@ constexpr std::string_view tokens[] = {
 	"?script",
 	"?temp",
 	"?user",
-	"?video"
+	"?video",
+	"?state"
 };
 
 int find_token(std::string_view str) {
 	if (str.size() < 5 || str[0] != '?') return -1;
-	int idx;
-	switch (str[1] + str[4]) {
-	case 'a' + 'i': idx = 0; break;
-	case 'd' + 'a': idx = 1; break;
-	case 'd' + 't': idx = 2; break;
-	case 'l' + 'a': idx = 3; break;
-	case 's' + 'i': idx = 4; break;
-	case 't' + 'p': idx = 5; break;
-	case 'u' + 'r': idx = 6; break;
-	case 'v' + 'e': idx = 7; break;
-	default: return -1;
+	for (size_t i = 0; i < std::size(tokens); ++i) {
+		if (str.starts_with(tokens[i])) return static_cast<int>(i);
 	}
-	return str.starts_with(tokens[idx]) ? idx : -1;
+	return -1;
 }
 int checked_find_token(std::string_view str) {
 	int idx = find_token(str);
