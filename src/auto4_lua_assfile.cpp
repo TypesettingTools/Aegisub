@@ -331,6 +331,10 @@ namespace Automation4 {
 			else if (type != LUA_TNIL) {
 				error(L, "dialogue extradata must be a table");
 			}
+			else {
+				// rebalance the stack after lua_getfield pushed a nil onto it
+				lua_pop(L, 1);
+			}
 		}
 		else {
 			error(L, "Found line with unknown class: %s", lclass.c_str());
