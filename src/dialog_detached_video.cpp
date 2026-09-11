@@ -126,7 +126,7 @@ void DialogDetachedVideo::OnClose(wxCloseEvent &evt) {
 
 	OPT_SET("Video/Detached/Enabled")->SetBool(false);
 
-	context->videoController->JumpToFrame(context->videoController->GetFrameN());
+	context->videoController->Refresh();
 
 	evt.Skip();
 }

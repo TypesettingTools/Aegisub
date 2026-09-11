@@ -871,8 +871,10 @@ void AudioDisplay::OnPaint(wxPaintEvent&)
 
 void AudioDisplay::PaintAudio(wxDC &dc, const TimeRange updtime, const wxRect updrect)
 {
-	auto pt = begin(style_ranges), pe = end(style_ranges);
-	while (pt != pe && pt + 1 != pe && (pt + 1)->first < updtime.begin()) ++pt;
+	auto pe = end(style_ranges);
+	auto pt = std::upper_bound(begin(style_ranges), pe, updtime.begin(),
+		[](int time, auto const& range) { return time < range.first; });
+	if (pt != begin(style_ranges)) --pt;
 
 	while (pt != pe && pt->first < updtime.end())
 	{
@@ -1374,7 +1376,15 @@ void AudioDisplay::OnStyleRangesChanged()
 	controller->GetTimingController()->GetRenderingStyles(asrm);
 
 	style_ranges.clear();
-	for (auto pair : asrm) style_ranges.push_back(pair);
+	for (auto pair : asrm)
+	{
+		// The range merger retains boundaries even when they do not change the
+		// effective style. Keeping those boundaries makes frame-by-frame scripts
+		// issue a separate renderer call for every line, despite producing the
+		// same pixels as a single continuous range.
+		if (style_ranges.empty() || style_ranges.back().second != pair.second)
+			style_ranges.push_back(pair);
+	}
 
 	RefreshRect(wxRect(0, audio_top, GetClientSize().GetWidth(), audio_height), false);
 }

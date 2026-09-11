@@ -74,6 +74,10 @@ class VideoController final : public wxEvtHandler {
 	/// frame while playing video
 	wxTimer playback;
 
+	/// Coalesce rapid active-line changes before seeking the video
+	wxTimer selection_sync;
+	std::optional<int> pending_selection_frame;
+
 	/// Time when playback was last started
 	std::chrono::steady_clock::time_point playback_start_time;
 
@@ -87,6 +91,8 @@ class VideoController final : public wxEvtHandler {
 	/// The frame number which was last requested from the video provider,
 	/// which may not be the same thing as the currently displayed frame
 	int frame_n = 0;
+	/// Last frame submitted to the current provider
+	int last_requested_frame = -1;
 
 	/// The picture aspect ratio of the video if the aspect ratio has been
 	/// overridden by the user
@@ -101,6 +107,7 @@ class VideoController final : public wxEvtHandler {
 	std::vector<agi::signal::Connection> connections;
 
 	void OnPlayTimer(wxTimerEvent &event);
+	void OnSelectionSyncTimer(wxTimerEvent &event);
 
 	void OnVideoError(VideoProviderErrorEvent const& err);
 	void OnSubtitlesError(SubtitlesProviderErrorEvent const& err);
@@ -109,10 +116,13 @@ class VideoController final : public wxEvtHandler {
 	void OnNewVideoProvider(AsyncVideoProvider *provider);
 	void OnActiveLineChanged(AssDialogue *line);
 
-	void RequestFrame();
+	void RequestFrame(bool force = false);
 
 public:
 	VideoController(agi::Context *context);
+
+	/// Request the current frame again, even if it was already requested.
+	void Refresh();
 
 	/// Is the video currently playing?
 	bool IsPlaying() const { return playback.IsRunning(); }
