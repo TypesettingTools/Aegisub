@@ -23,6 +23,8 @@ namespace agi::lua {
 	/// Load a Lua or Moonscript file at the given path
 	bool LoadFile(lua_State *L, agi::fs::path const& filename);
 	/// Install our module loader and add include_path to the module search
-	/// path of the given lua state
-	bool Install(lua_State *L, std::vector<agi::fs::path> const& include_path);
+	/// path of the given lua state. Mandatory runtime support is loaded only
+	/// from support_path.
+	bool Install(lua_State *L, std::vector<agi::fs::path> const& include_path,
+		agi::fs::path const& support_path);
 }

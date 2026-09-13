@@ -43,6 +43,7 @@
 #include <libaegisub/ycbcr_conv.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <limits>
 #include <memory>
 #include <vector>
 
@@ -50,6 +51,8 @@
 #define YUV4MPEG_HEADER_MAXLEN 128
 
 namespace {
+
+constexpr size_t max_decoded_frame_bytes = 256U * 1024U * 1024U;
 
 /// @class YUV4MPEGVideoProvider
 /// @brief Implements reading of YUV4MPEG uncompressed video files
@@ -114,9 +117,10 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 
 	int w = 0, h = 0;	/// frame width/height
 	int num_frames = -1; /// length of file in frames
-	int frame_sz;	/// size of each frame in bytes
-	int luma_sz;	/// size of the luma plane of each frame, in bytes
-	int chroma_sz;	/// size of one of the two chroma planes of each frame, in bytes
+	size_t frame_sz = 0;	/// size of each frame in bytes
+	size_t luma_sz = 0;	/// size of the luma plane of each frame, in bytes
+	size_t chroma_sz = 0;	/// size of one of the two chroma planes of each frame, in bytes
+	size_t decoded_frame_sz = 0;	/// size of a decoded BGRA frame in bytes
 
 	Y4M_PixelFormat pixfmt = Y4M_PIXFMT_NONE;		/// colorspace/pixel format
 	Y4M_InterlacingMode imode = Y4M_ILACE_NOTSET;	/// interlacing mode (for the entire stream)
@@ -170,27 +174,38 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 
 	if (w <= 0 || h <= 0)
 		throw VideoOpenError("Invalid resolution");
+	if ((w & 1) || (h & 1))
+		throw VideoOpenError("YUV4MPEG 4:2:0 resolution must be even");
+	if (w > std::numeric_limits<int>::max() / 4)
+		throw VideoOpenError("YUV4MPEG width is too large");
 	if (fps_rat.num <= 0 || fps_rat.den <= 0) {
 		fps_rat.num = 25;
 		fps_rat.den = 1;
 		LOG_D("provider/video/yuv4mpeg") << "framerate info unavailable, assuming 25fps";
 	}
+	fps = double(fps_rat.num) / fps_rat.den;
 	if (pixfmt == Y4M_PIXFMT_NONE)
 		pixfmt = Y4M_PIXFMT_420JPEG;
 	if (imode == Y4M_ILACE_NOTSET)
 		imode = Y4M_ILACE_UNKNOWN;
 
-	luma_sz = w * h;
+	auto width = static_cast<size_t>(w);
+	auto height = static_cast<size_t>(h);
+	if (height > max_decoded_frame_bytes / 4 / width)
+		throw VideoOpenError("YUV4MPEG frame is too large");
+
+	luma_sz = width * height;
+	decoded_frame_sz = luma_sz * 4;
 	switch (pixfmt) {
 	case Y4M_PIXFMT_420JPEG:
 	case Y4M_PIXFMT_420MPEG2:
 	case Y4M_PIXFMT_420PALDV:
-		chroma_sz	= (w * h) >> 2; break;
+		chroma_sz = luma_sz / 4; break;
 	default:
 		/// @todo add support for more pixel formats
 		throw VideoOpenError("Unsupported pixel format");
 	}
-	frame_sz	= luma_sz + chroma_sz*2;
+	frame_sz = luma_sz + chroma_sz * 2;
 
 	num_frames = IndexFile(pos);
 	if (num_frames <= 0 || seek_table.empty())
@@ -332,7 +347,6 @@ void YUV4MPEGVideoProvider::ParseFileHeader(const std::vector<std::string>& tags
 		fps_rat.den = t_fps_den;
 		pixfmt		= t_pixfmt	!= Y4M_PIXFMT_NONE	? t_pixfmt	: Y4M_PIXFMT_420JPEG;
 		imode		= t_imode	!= Y4M_ILACE_NOTSET	? t_imode	: Y4M_ILACE_UNKNOWN;
-		fps = double(fps_rat.num) / fps_rat.den;
 		inited = true;
 	}
 }
@@ -372,8 +386,14 @@ int YUV4MPEGVideoProvider::IndexFile(uint64_t pos) {
 		}
 		else if (tags.front() == "FRAME")
 			flags = ParseFrameHeader(tags);
+		else
+			throw VideoOpenError("IndexFile: malformed frame header");
 
 		if (flags == Y4M_FFLAG_NONE) {
+			if (pos > file.size() || frame_sz > file.size() - pos)
+				throw VideoOpenError("IndexFile: truncated frame data");
+			if (framecount == std::numeric_limits<int>::max())
+				throw VideoOpenError("IndexFile: too many frames");
 			framecount++;
 			seek_table.push_back(pos);
 			pos += frame_sz;
@@ -391,11 +411,11 @@ void YUV4MPEGVideoProvider::GetFrame(int n, VideoFrame &frame) {
 
 	int uv_width = w / 2;
 
-	auto src_y = reinterpret_cast<const unsigned char *>(file.read(seek_table[n], luma_sz + chroma_sz * 2));
+	auto src_y = reinterpret_cast<const unsigned char *>(file.read(seek_table[n], frame_sz));
 	auto src_u = src_y + luma_sz;
 	auto src_v = src_u + chroma_sz;
-	frame.data.resize(w * h * 4);
-	unsigned char *dst = &frame.data[0];
+	frame.data.resize(decoded_frame_sz);
+	unsigned char *dst = frame.data.data();
 
 	for (int py = 0; py < h; ++py) {
 		for (int px = 0; px < w / 2; ++px) {

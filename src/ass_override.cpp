@@ -362,7 +362,12 @@ void parse_parameters(AssOverrideTag *tag, std::string_view text, AssOverrideTag
 	std::vector<std::string> paramList = tokenize(text);
 	size_t totalPars = paramList.size();
 
-	int parsFlag = 1 << (totalPars - 1); // Get optional parameters flag
+	// Optional-parameter masks only describe the supported 1-8 parameter
+	// forms. Avoid shifting by a negative or oversized count for malformed
+	// tags with no parameters or far too many of them.
+	unsigned parsFlag = totalPars > 0 && totalPars <= 8
+		? 1u << (totalPars - 1)
+		: 0;
 	// vector (i)clip is the second clip proto_ittype in the list
 	if ((tag->Name == "\\clip" || tag->Name == "\\iclip") && totalPars != 4) {
 		++proto_it;

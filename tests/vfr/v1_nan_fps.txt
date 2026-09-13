@@ -1,0 +1,3 @@
+# timecode format v1
+Assume nan
+0,1,24

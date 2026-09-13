@@ -109,10 +109,11 @@ line_iterator<T> end(line_iterator<T>&) { return agi::line_iterator<T>(); }
 template<class OutputType>
 void line_iterator<OutputType>::next() {
 	std::string str;
-	if (!getline(str))
-		return;
-	if (!convert(str))
-		next();
+	do {
+		str.clear();
+		if (!getline(str))
+			return;
+	} while (!convert(str));
 }
 
 template<>

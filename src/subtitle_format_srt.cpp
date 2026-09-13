@@ -126,12 +126,11 @@ std::string WriteSRTTime(agi::Time const& ts)
 }
 
 SrtTagParser::SrtTagParser()
-: tag_matcher("^(.*?)<(/?b|/?i|/?u|/?s|/?font)([^>]*)>(.*)$", boost::regex::icase)
-, attrib_matcher(R"(^[[:space:]]+(face|size|color)=('[^']*'|"[^"]*"|[^[:space:]]+))", boost::regex::icase)
-, is_quoted(R"(^(['"]).*\1$)")
+: tag_matcher("<(/?b|/?i|/?u|/?s|/?font)([^>]*)>", boost::regex::icase)
+, attrib_matcher(R"([[:space:]]+(face|size|color)=('[^']*'|"[^"]*"|[^[:space:]]+))", boost::regex::icase)
 {}
 
-std::string SrtTagParser::ToAss(std::string srt) {
+std::string SrtTagParser::ToAss(std::string const& srt) {
 	ToggleTag bold('b');
 	ToggleTag italic('i');
 	ToggleTag underline('u');
@@ -139,27 +138,26 @@ std::string SrtTagParser::ToAss(std::string srt) {
 	std::vector<FontAttribs> font_stack;
 
 	std::string ass; // result to be built
+	ass.reserve(srt.size());
 
-	while (!srt.empty())
+	auto cursor = srt.cbegin();
+	while (cursor != srt.cend())
 	{
-		boost::smatch result;
-		if (!regex_match(srt, result, tag_matcher))
+		boost::match_results<std::string::const_iterator> result;
+		if (!regex_search(cursor, srt.cend(), result, tag_matcher))
 		{
 			// no more tags could be matched, end of string
-			ass.append(srt);
+			ass.append(cursor, srt.cend());
 			break;
 		}
 
 		// we found a tag, translate it
-		std::string pre_text  = result.str(1);
-		std::string tag_name  = result.str(2);
-		std::string tag_attrs = result.str(3);
-		std::string post_text = result.str(4);
+		std::string tag_name  = result.str(1);
+		std::string tag_attrs = result.str(2);
 
 		// the text before the tag goes through unchanged
-		ass.append(pre_text);
-		// the text after the tag is the input for next iteration
-		srt = post_text;
+		ass.append(cursor, result[0].first);
+		cursor = result[0].second;
 
 		boost::to_lower(tag_name);
 		switch (type_from_name(tag_name))
@@ -182,8 +180,9 @@ std::string SrtTagParser::ToAss(std::string srt) {
 					old_attribs = font_stack.back();
 				new_attribs = old_attribs;
 				// now find all attributes on this font tag
-				boost::smatch result;
-				while (regex_search(tag_attrs, result, attrib_matcher))
+				auto attr_cursor = tag_attrs.cbegin();
+				boost::match_results<std::string::const_iterator> result;
+				while (regex_search(attr_cursor, tag_attrs.cend(), result, attrib_matcher, boost::match_continuous))
 				{
 					// get attribute name and values
 					std::string attr_name = result.str(1);
@@ -191,7 +190,7 @@ std::string SrtTagParser::ToAss(std::string srt) {
 
 					// clean them
 					boost::to_lower(attr_name);
-					if (regex_match(attr_value, is_quoted))
+					if (attr_value.size() >= 2 && (attr_value.front() == '\'' || attr_value.front() == '"') && attr_value.back() == attr_value.front())
 						attr_value = attr_value.substr(1, attr_value.size() - 2);
 
 					// handle the attributes
@@ -202,8 +201,7 @@ std::string SrtTagParser::ToAss(std::string srt) {
 					else if (attr_name == "color")
 						new_attribs.color = agi::format("{\\c%s}", agi::Color(attr_value).GetAssOverrideFormatted());
 
-					// remove this attribute to prepare for the next
-					tag_attrs = result.suffix().str();
+					attr_cursor = result[0].second;
 				}
 
 				// the attributes changed from old are then written out

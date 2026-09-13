@@ -103,6 +103,12 @@ AssParser::AssParser(AssFile *target, int version)
 
 AssParser::~AssParser() = default;
 
+void AssParser::FinishAttachment() {
+	attach->SetEntryData(std::move(attachment_data));
+	target->Attachments.push_back(std::move(*attach));
+	attach.reset();
+}
+
 void AssParser::ParseAttachmentLine(std::string const& data) {
 	bool is_filename = data.starts_with("fontname: ") || data.starts_with("filename: ");
 
@@ -116,19 +122,21 @@ void AssParser::ParseAttachmentLine(std::string const& data) {
 
 	// Data is over, add attachment to the file
 	if (!valid_data || is_filename) {
-		target->Attachments.push_back(*attach.release());
+		FinishAttachment();
 		AddLine(data);
 	}
 	else {
-		attach->AddData(data);
+		attachment_data.append(data).append("\r\n");
 
 		// Done building
 		if (data.size() < 80)
-			target->Attachments.push_back(*attach.release());
+			FinishAttachment();
 	}
 }
 
-void AssParser::ParseScriptInfoLine(std::string const& data) {
+void AssParser::ParseScriptInfoLine(std::string const& rawdata) {
+	std::string data = SanitizeLine(rawdata);
+
 	if (data.starts_with(";")) {
 		// Skip stupid comments added by other programs
 		// Of course, we'll add our own in place later... ;)
@@ -187,13 +195,17 @@ void AssParser::ParseStyleLine(std::string const& data) {
 }
 
 void AssParser::ParseFontLine(std::string const& data) {
-	if (data.starts_with("fontname: "))
+	if (data.starts_with("fontname: ")) {
 		attach = std::make_unique<AssAttachment>(data, AssEntryGroup::FONT);
+		attachment_data = data + "\r\n";
+	}
 }
 
 void AssParser::ParseGraphicsLine(std::string const& data) {
-	if (data.starts_with("filename: "))
+	if (data.starts_with("filename: ")) {
 		attach = std::make_unique<AssAttachment>(data, AssEntryGroup::GRAPHIC);
+		attachment_data = data + "\r\n";
+	}
 }
 
 void AssParser::ParseExtradataLine(std::string const &rawdata) {
