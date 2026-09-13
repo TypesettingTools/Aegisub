@@ -143,6 +143,71 @@
             <key>LSHandlerRank</key>
             <string>None</string>
 		</dict>
+
+        <!-- video files loadable by Project::LoadList -->
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>asf</string>
+				<string>avi</string>
+				<string>avs</string>
+				<string>d2v</string>
+				<string>h264</string>
+				<string>hevc</string>
+				<string>m2ts</string>
+				<string>m4v</string>
+				<string>mkv</string>
+				<string>mov</string>
+				<string>mp4</string>
+				<string>mpeg</string>
+				<string>mpg</string>
+				<string>ogm</string>
+				<string>rm</string>
+				<string>rmvb</string>
+				<string>ts</string>
+				<string>webm</string>
+				<string>wmv</string>
+				<string>y4m</string>
+				<string>yuv</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Video file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+            <key>LSHandlerRank</key>
+            <string>None</string>
+		</dict>
+
+        <!-- audio files loadable by Project::LoadList -->
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>aac</string>
+				<string>ac3</string>
+				<string>ape</string>
+				<string>dts</string>
+				<string>eac3</string>
+				<string>flac</string>
+				<string>m4a</string>
+				<string>mka</string>
+				<string>mp3</string>
+				<string>ogg</string>
+				<string>opus</string>
+				<string>w64</string>
+				<string>wav</string>
+				<string>wma</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Audio file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+            <key>LSHandlerRank</key>
+            <string>None</string>
+		</dict>
 	</array>
 
 </dict>
