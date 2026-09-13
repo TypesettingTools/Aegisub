@@ -59,19 +59,11 @@ jobs:
             buildtype: release,
             args: -Db_pch=false
           }
-          - name: macOS x86_64 Debug
-            os: macos-15-intel
-            buildtype: debugoptimized
-            args: &macos_debug_args >-
-              -Dmacos_deployment_target=15.0
-              -Dbuild_osx_bundle=false
-              -Dfftw3=enabled
-              -Dlibpulse=disabled
-              -Dopenal=enabled
           - name: macOS x86_64 Release
-            os: macos-15-intel
+            os: macos-15
+            cross_args: --cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini
             buildtype: release
-            args: &macos_release_args >-
+            args: &macos_source_args >-
               -Ddefault_library=static
               -Dbuild_osx_bundle=true
               -Dfftw3=disabled
@@ -102,11 +94,17 @@ jobs:
           - name: macOS arm64 Debug
             os: macos-15
             buildtype: debugoptimized
-            args: *macos_debug_args
+            args: >-
+              -Dmacos_deployment_target=15.0
+              -Dbuild_osx_bundle=false
+              -Dfftw3=enabled
+              -Dlibpulse=disabled
+              -Dopenal=enabled
           - name: macOS arm64 Release
             os: macos-15
+            native_args: --native-file tools/macos-release.ini
             buildtype: release
-            args: *macos_release_args
+            args: *macos_source_args
 
     steps:
       - uses: actions/checkout@v6
@@ -159,17 +157,34 @@ jobs:
 
           echo "PKG_CONFIG_PATH=$(brew --prefix icu4c)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig" >> "${GITHUB_ENV}"
 
-      - name: Install dependencies (macOS Release)
+      - name: Install build tools (macOS source dependencies)
         if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
         run: |
           brew install ninja nasm
 
+      - name: Check Rosetta (macOS cross builds)
+        if: matrix.config.cross_args
+        run: |
+          if ! /usr/bin/arch -x86_64 /usr/bin/true; then
+            sudo softwareupdate --install-rosetta --agree-to-license
+          fi
+          /usr/bin/arch -x86_64 /usr/bin/true
+
       - name: Install test dependencies (macOS)
         if: startsWith(matrix.config.os, 'macos-')
+        env:
+          CROSS_ARGS: ${{ matrix.config.cross_args }}
         run: |
           # LuaJIT is Lua 5.1 to luarocks.
           brew install luajit luarocks
-          luarocks --lua-dir="$(brew --prefix luajit)" --lua-version=5.1 install busted
+          if test -n "${CROSS_ARGS}"; then
+            # Busted's native modules are loaded by the Intel test executable.
+            luarocks --lua-dir="$(brew --prefix luajit)" --lua-version=5.1 install busted \
+              CC='/usr/bin/clang -arch x86_64' \
+              LD='/usr/bin/clang -arch x86_64'
+          else
+            luarocks --lua-dir="$(brew --prefix luajit)" --lua-version=5.1 install busted
+          fi
 
       - name: Install dependencies (Linux)
         if: startsWith(matrix.config.os, 'ubuntu-')
@@ -184,7 +199,7 @@ jobs:
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
-          meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
+          meson setup build ${{ matrix.config.native_args }} ${{ matrix.config.cross_args }} ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
       - name: Build FFTW (MacOS)
         if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
@@ -199,6 +214,14 @@ jobs:
           ${{ matrix.config.devenv }}
           meson compile -C build
 
+      - name: Verify Intel cross-build architecture
+        if: matrix.config.cross_args
+        run: |
+          test "$(lipo -archs build/aegisub)" = x86_64
+          test "$(lipo -archs build/tests/gtest-main)" = x86_64
+          test "$(lipo -archs build/tests/luajit-52)" = x86_64
+          test "$(lipo -archs build/automation/tests/aegisub-lua)" = x86_64
+
       # The automation suite is registered at configure time only if the
       # busted probe succeeds, so make sure it can't silently drop out of CI
       - name: Check automation tests are registered
@@ -210,6 +233,18 @@ jobs:
         run: |
           ${{ matrix.config.devenv }}
           meson test -C build --verbose --suite Aegisub
+
+      - name: Check cross-built tests executed
+        if: matrix.config.cross_args
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          results = [json.loads(line) for line in Path('build/meson-logs/testlog.json').read_text().splitlines()]
+          if not results or any(result['result'] != 'OK' for result in results):
+              raise SystemExit('Cross-built tests must pass under Rosetta, not be skipped')
+          PY
 
       # Windows artifacts
       - name: Generate Windows installer

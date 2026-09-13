@@ -109,6 +109,32 @@ the notary service and stapled. This follows Apple's nested-container guidance;
 the app and every nested Mach-O file are still Developer ID-signed before the
 DMG is created.
 
+## Intel macOS cross builds
+
+The Intel Release CI lane uses an Apple Silicon runner with
+`--cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini`.
+Compilation uses native Apple Silicon tools targeting x86_64; Rosetta runs
+the resulting Intel test executables.
+This checks the Intel code path, but does not replace testing a release on
+real Intel hardware.
+
+The Intel lane builds its target dependencies from source using the shared
+macOS release dependency options in `.github/workflows/ci.yml`. Both Release
+lanes use `tools/macos-release.ini` to restrict pkg-config and CMake dependency
+discovery away from Homebrew; arm64 loads it with `--native-file`. Homebrew is
+still used for build tools. The native arm64 Debug lane still uses
+Homebrew libraries and is tested but not packaged. Intel coverage comes from
+the Release lane, including tests under Rosetta.
+
+For a local cross build, use the same dependency options and cross files as CI.
+After Meson setup, run `tools/macos-build-fftw.sh BUILD_DIR`, then reconfigure
+with `-Dpkg_config_path="$PWD/BUILD_DIR/fftw-prefix/lib/pkgconfig"`
+and `-Dfftw3=enabled`. The bootstrap reads the target architecture from Meson
+and only passes Autoconf's `--host` option when it differs from the build CPU.
+Automation tests also need Intel builds of Busted's native Lua modules; the
+workflow shows the LuaRocks compiler overrides. Use a separate LuaRocks tree
+if native arm64 tests need to run on the same machine.
+
 ## Running Doxygen
 
 You can run Doxygen with the following command:

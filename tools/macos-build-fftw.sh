@@ -29,8 +29,17 @@ FFTW_SHA256="5630c24cdeb33b131612f7eb4b1a9934234754f9f388ff8617458d0be6f239a1"
 FFTW_URL="https://fftw.org/fftw-${FFTW_VERSION}.tar.gz"
 FFTW_PREFIX="${BUILD_DIR}/fftw-prefix"
 FFTW_STAMP="${FFTW_PREFIX}/.aegisub-build"
-ARCH="$(uname -m)"
-EXPECTED_STAMP="fftw=${FFTW_VERSION} arch=${ARCH} macos=${DEPLOYMENT_TARGET}"
+ARCH="$(meson introspect --machines "${BUILD_DIR}" | python3 -c '
+import json
+import sys
+
+machine = json.load(sys.stdin)["host"]
+if machine["system"] != "darwin":
+    raise SystemExit("FFTW macOS bootstrap requires a Darwin host")
+print({"aarch64": "arm64", "x86_64": "x86_64"}.get(machine["cpu_family"], machine["cpu_family"]))
+')"
+BUILD_ARCH="$(uname -m)"
+EXPECTED_STAMP="fftw=${FFTW_VERSION} arch=${ARCH} build=${BUILD_ARCH} macos=${DEPLOYMENT_TARGET}"
 
 if test -f "${FFTW_STAMP}" && test "$(cat "${FFTW_STAMP}")" = "${EXPECTED_STAMP}"; then
     echo "Using existing FFTW build: ${EXPECTED_STAMP}"
@@ -62,12 +71,19 @@ rm -rf "${FFTW_PREFIX}"
 mkdir -p "${FFTW_PREFIX}"
 
 cd "${WORK_DIR}/fftw-${FFTW_VERSION}"
-export CFLAGS="-O3 -mmacosx-version-min=${DEPLOYMENT_TARGET}"
-export LDFLAGS="-mmacosx-version-min=${DEPLOYMENT_TARGET}"
+export CC=/usr/bin/clang
+export CFLAGS="-O3 -arch ${ARCH} -mmacosx-version-min=${DEPLOYMENT_TARGET}"
+export LDFLAGS="-arch ${ARCH} -mmacosx-version-min=${DEPLOYMENT_TARGET}"
+
+# Keep runtime probes enabled for native builds.
+set -- "--build=$(./config.guess)"
+if test "${ARCH}" != "${BUILD_ARCH}"; then
+    set -- "$@" "--host=${ARCH}-apple-darwin"
+fi
 
 # Aegisub only uses FFTW's single-threaded, double-precision API.
 # shellcheck disable=SC2086
-./configure \
+./configure "$@" \
     --prefix="${FFTW_PREFIX}" \
     --disable-shared \
     --enable-static \
@@ -80,6 +96,10 @@ export LDFLAGS="-mmacosx-version-min=${DEPLOYMENT_TARGET}"
 
 make -s -j"$(sysctl -n hw.logicalcpu)"
 make -s install
+if test "$(lipo -archs "${FFTW_PREFIX}/lib/libfftw3.a")" != "${ARCH}"; then
+    echo "FFTW library architecture does not match Meson's host: ${ARCH}" >&2
+    exit 1
+fi
 printf '%s\n' "${EXPECTED_STAMP}" > "${FFTW_STAMP}"
 
 echo "Built FFTW ${FFTW_VERSION} for macOS ${DEPLOYMENT_TARGET} (${ARCH})"
