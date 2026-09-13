@@ -462,9 +462,12 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	// Subtitle formats
 	const char *subsList[] = {
 		".ass",
+		".dfxp",
+		".lrc",
 		".srt",
 		".ssa",
 		".sub",
+		".ttml",
 		".ttxt"
 	};
 
