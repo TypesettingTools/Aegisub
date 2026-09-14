@@ -23,6 +23,7 @@
 #include "audio_provider_factory.h"
 #include "base_grid.h"
 #include "charset_detect.h"
+#include "audio_provider_factory.h"
 #include "compat.h"
 #include "dialog_progress.h"
 #include "dialogs.h"
@@ -31,11 +32,13 @@
 #include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"
 #include "options.h"
+#include "provider_file_formats.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
 #include "utils.h"
 #include "video_controller.h"
 #include "video_display.h"
+#include "video_provider_manager.h"
 
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/format_path.h>
@@ -434,31 +437,6 @@ void Project::CloseKeyframes() {
 void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	// Keep these lists sorted
 
-	// Video formats
-	const char *videoList[] = {
-		".asf",
-		".avi",
-		".avs",
-		".d2v",
-		".h264",
-		".hevc",
-		".m2ts",
-		".m4v",
-		".mkv",
-		".mov",
-		".mp4",
-		".mpeg",
-		".mpg",
-		".ogm",
-		".rm",
-		".rmvb",
-		".ts",
-		".webm",
-		".wmv",
-		".y4m",
-		".yuv"
-	};
-
 	// Subtitle formats
 	const char *subsList[] = {
 		".ass",
@@ -468,28 +446,10 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		".ttxt"
 	};
 
-	// Audio formats
-	const char *audioList[] = {
-		".aac",
-		".ac3",
-		".ape",
-		".dts",
-		".eac3",
-		".flac",
-		".m4a",
-		".mka",
-		".mp3",
-		".ogg",
-		".opus",
-		".w64",
-		".wav",
-		".wma"
-	};
-
-	auto search = [](const char **begin, const char **end, std::string const& str) {
-		return std::binary_search(begin, end, str.c_str(), [](const char *a, const char *b) {
-			return strcmp(a, b) < 0;
-		});
+	auto video_formats = VideoProviderFactory::GetFileExtensions();
+	auto audio_formats = GetAudioProviderFileExtensions();
+	auto search = [](auto const& formats, std::string const& str) {
+		return std::binary_search(formats.begin(), formats.end(), str);
 	};
 
 	agi::fs::path audio, video, subs, timecodes, keyframes;
@@ -523,11 +483,11 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 			continue;
 		}
 
-		if (subs.empty() && search(std::begin(subsList), std::end(subsList), ext))
+		if (subs.empty() && std::binary_search(std::begin(subsList), std::end(subsList), ext.c_str(), [](const char *a, const char *b) { return strcmp(a, b) < 0; }))
 			subs = file;
-		if (video.empty() && search(std::begin(videoList), std::end(videoList), ext))
+		if (video.empty() && search(video_formats, ext))
 			video = file;
-		if (audio.empty() && search(std::begin(audioList), std::end(audioList), ext))
+		if (audio.empty() && search(audio_formats, ext))
 			audio = file;
 	}
 
