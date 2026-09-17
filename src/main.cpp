@@ -174,6 +174,7 @@ bool AegisubApp::OnInit() {
 		// Local config, make ?user mean ?data so all user settings are placed in install dir
 		config::path->SetToken("?user", config::path->Decode("?data"));
 		config::path->SetToken("?local", config::path->Decode("?data"));
+		config::path->SetToken("?state", config::path->Decode("?data"));
 	} catch (agi::fs::FileSystemError const&) {
 		// File doesn't exist or we can't read it
 		// Might be worth displaying an error in the second case
@@ -182,7 +183,7 @@ bool AegisubApp::OnInit() {
 	crash_writer::Initialize(config::path->Decode("?user"));
 
 	StartupLog("Create log writer");
-	auto path_log = config::path->Decode("?user/log/");
+	auto path_log = config::path->Decode("?state/log/");
 	agi::fs::CreateDirectory(path_log);
 	agi::log::log->Subscribe(std::make_unique<agi::log::JsonEmitter>(path_log));
 	CleanCache(path_log, "*.json", 10, 100);
@@ -395,7 +396,7 @@ void AegisubApp::UnhandledException([[maybe_unused]] bool stackWalk) {
 		auto c = frame->context.get();
 		if (!c || !c->ass || !c->subsController) continue;
 
-		path = config::path->Decode("?user/recovered");
+		path = config::path->Decode("?state/recovered");
 		agi::fs::CreateDirectory(path);
 
 		auto filename = c->subsController->Filename().stem();
