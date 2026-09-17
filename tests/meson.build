@@ -34,6 +34,22 @@ tests_src = [
     'tests/line_iterator.cpp',
     'tests/line_wrap.cpp',
     'tests/lua_lfs.cpp',
+    'tests/lua_parse_karaoke_data.cpp',
+
+    # parse_karaoke_data lives in src rather than libaegisub, so the pieces it needs are compiled
+    # into the test binary alongside it
+    '../src/ass_attachment.cpp',
+    '../src/ass_dialogue.cpp',
+    '../src/ass_entry.cpp',
+    '../src/ass_file.cpp',
+    '../src/ass_karaoke.cpp',
+    '../src/ass_override.cpp',
+    '../src/ass_style.cpp',
+    '../src/ass_style_storage.cpp',
+    '../src/auto4_lua_assfile.cpp',
+    '../src/compat.cpp',
+    '../src/utils.cpp',
+
     'tests/mru.cpp',
     'tests/option.cpp',
     'tests/path.cpp',
@@ -65,7 +81,7 @@ endif
 runner = executable(
     'gtest-main',
     tests_src,
-    include_directories: [tests_inc, libaegisub_inc],
+    include_directories: [tests_inc, libaegisub_inc, include_directories('../src')],
     dependencies: [tests_deps, deps],
     cpp_args: tests_args + conf_defines,
     link_with: libaegisub,
