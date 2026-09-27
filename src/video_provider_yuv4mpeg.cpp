@@ -139,8 +139,8 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 
 	void ParseFileHeader(const std::vector<std::string>& tags);
 	Y4M_FrameFlags ParseFrameHeader(const std::vector<std::string>& tags);
-	std::vector<std::string> ReadHeader(uint64_t &startpos);
-	int IndexFile(uint64_t pos);
+	std::vector<std::string> ReadHeader(int64_t &startpos);
+	int IndexFile(int64_t pos);
 
 public:
 	YUV4MPEGVideoProvider(agi::fs::path const& filename);
@@ -169,7 +169,7 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 	if (strncmp("YUV4MPEG2 ", file.read(0, 10), 10))
 		throw VideoNotSupported("File is not a YUV4MPEG file (bad magic)");
 
-	uint64_t pos = 0;
+	int64_t pos = 0;
 	ParseFileHeader(ReadHeader(pos));
 
 	if (w <= 0 || h <= 0)
@@ -213,9 +213,9 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 /// @brief Read a frame or file header at a given file position
 /// @param startpos		The byte offset at where to start reading
 /// @return				A list of parameters
-std::vector<std::string> YUV4MPEGVideoProvider::ReadHeader(uint64_t &pos) {
+std::vector<std::string> YUV4MPEGVideoProvider::ReadHeader(int64_t &pos) {
 	std::vector<std::string> tags;
-	if (pos >= file.size())
+	if (pos >= std::ssize(file))
 		return tags;
 
 	auto len = std::min<uint64_t>(YUV4MPEG_HEADER_MAXLEN, file.size() - pos);
@@ -366,7 +366,7 @@ YUV4MPEGVideoProvider::Y4M_FrameFlags YUV4MPEGVideoProvider::ParseFrameHeader(co
 /// This function goes through the file, finds and parses all file and frame headers,
 /// and creates a seek table that lists the byte positions of all frames so seeking
 /// can easily be done.
-int YUV4MPEGVideoProvider::IndexFile(uint64_t pos) {
+int YUV4MPEGVideoProvider::IndexFile(int64_t pos) {
 	int framecount = 0;
 
 	// the ParseFileHeader() call in LoadVideo() will already have read
@@ -388,7 +388,7 @@ int YUV4MPEGVideoProvider::IndexFile(uint64_t pos) {
 			throw VideoOpenError("IndexFile: malformed frame header");
 
 		if (flags == Y4M_FFLAG_NONE) {
-			if (pos > file.size() || frame_sz > file.size() - pos)
+			if (pos > std::ssize(file) || frame_sz > std::ssize(file) - pos)
 				throw VideoOpenError("IndexFile: truncated frame data");
 			if (framecount == std::numeric_limits<int>::max())
 				throw VideoOpenError("IndexFile: too many frames");
