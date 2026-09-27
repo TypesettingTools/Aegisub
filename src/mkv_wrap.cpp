@@ -120,12 +120,12 @@ struct MkvStdIO final : InputStream {
 	}
 };
 
-static constexpr size_t max_decompressed_subtitle_frame_bytes = 16U * 1024U * 1024U;
-static constexpr size_t max_total_subtitle_bytes = 64U * 1024U * 1024U;
+static constexpr ptrdiff_t max_decompressed_subtitle_frame_bytes = 16 * 1024 * 1024;
+static constexpr ptrdiff_t max_total_subtitle_bytes = 64 * 1024 * 1024;
 
 static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *input, bool srt, double totalTime, AssParser *parser, CompressedStream *cs) {
 	std::vector<std::pair<int, std::string>> subList;
-	size_t totalSubtitleBytes = 0;
+	ptrdiff_t totalSubtitleBytes = 0;
 
 	// Load blocks
 	uint64_t startTime, endTime, filePos;
@@ -143,18 +143,18 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 		if (cs) {
 			cs_NextFrame(cs, filePos, frameSize);
-			size_t bytesRead = 0;
+			ptrdiff_t bytesRead = 0;
 
 			while (true) {
-				if (bytesRead == uncompBuf.size()) {
+				if (bytesRead >= std::ssize(uncompBuf)) {
 					if (uncompBuf.size() >= max_decompressed_subtitle_frame_bytes) {
-						ps->Log("Decompressed subtitle frame exceeds the 16 MiB limit");
+						ps->Log(agi::format("Decompressed subtitle frame exceeds the %d MiB limit", max_decompressed_subtitle_frame_bytes / 1024 / 1024));
 						return false;
 					}
-					uncompBuf.resize(std::min(uncompBuf.size() * 2, max_decompressed_subtitle_frame_bytes));
+					uncompBuf.resize(std::min(std::ssize(uncompBuf) * 2, max_decompressed_subtitle_frame_bytes));
 				}
 
-				int res = cs_ReadData(cs, uncompBuf.data() + bytesRead, static_cast<unsigned>(uncompBuf.size() - bytesRead));
+				int res = cs_ReadData(cs, uncompBuf.data() + bytesRead, static_cast<unsigned>(std::ssize(uncompBuf) - bytesRead));
 				if (res < 0) {
 					const char *err = cs_GetLastError(cs);
 					if (!err) err = "Unknown error";
@@ -172,11 +172,11 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 			readBuf = std::string_view(input->file.read(filePos, frameSize), frameSize);
 		}
 
-		if (readBuf.size() > max_total_subtitle_bytes - totalSubtitleBytes) {
-			ps->Log("Matroska subtitle data exceeds the 64 MiB limit");
+		if (std::ssize(readBuf) > max_total_subtitle_bytes - totalSubtitleBytes) {
+			ps->Log(agi::format("Matroska subtitle data exceeds the %d MiB limit", max_total_subtitle_bytes / 1024 / 1024));
 			return false;
 		}
-		totalSubtitleBytes += readBuf.size();
+		totalSubtitleBytes += std::ssize(readBuf);
 
 		// Get start and end times
 		int64_t timecodeScaleLow = 1000000;
