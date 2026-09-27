@@ -315,8 +315,8 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 
 		bool multiple_scripts = avisynth_audio && avisynth_video && audio != video;
 		wxString message = multiple_scripts
-			? _("The subtitle file references AviSynth scripts. AviSynth scripts can execute arbitrary code with your user permissions. Only load them if you trust the subtitle's author.\n\nScripts:")
-			: _("The subtitle file references an AviSynth script. AviSynth scripts can execute arbitrary code with your user permissions. Only load it if you trust the subtitle's author.\n\nScript:");
+			? _("The subtitle file references AviSynth scripts. AviSynth scripts can execute arbitrary code with your user permissions. Only load them if you trust the subtitle's author. You do not need to load these scripts to view or edit this subtitle file.\n\nScripts:")
+			: _("The subtitle file references an AviSynth script. AviSynth scripts can execute arbitrary code with your user permissions. Only load it if you trust the subtitle's author. You do not need to load this script to view or edit this subtitle file.\n\nScript:");
 		message += script_list;
 		message += multiple_scripts
 			? _("\n\nDo you want to load these scripts now?")
