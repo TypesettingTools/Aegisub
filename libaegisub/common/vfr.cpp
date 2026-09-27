@@ -19,6 +19,7 @@
 #include "libaegisub/vfr.h"
 
 #include "libaegisub/charset.h"
+#include "libaegisub/format.h"
 #include "libaegisub/io.h"
 #include "libaegisub/line_iterator.h"
 #include "libaegisub/util.h"
@@ -33,7 +34,7 @@
 
 namespace {
 static const int64_t default_denominator = 1000000000;
-static const size_t max_timecodes = 10000000;
+static const int max_timecodes = 10000000;
 using agi::line_iterator;
 using namespace agi::vfr;
 
@@ -93,8 +94,8 @@ TimecodeRange v1_parse_line(std::string const& str) {
 		throw InvalidFramerate("Cannot specify frame rate for negative frames.");
 	if (range.end < range.start)
 		throw InvalidFramerate("End frame must be greater than or equal to start frame");
-	if (range.end > static_cast<int>(max_timecodes) - 2)
-		throw InvalidFramerate("V1 timecode range exceeds the 10000000 frame limit");
+	if (range.end > max_timecodes - 2)
+		throw InvalidFramerate(agi::format("V1 timecode range exceeds the %d frame limit", max_timecodes));
 	if (!std::isfinite(range.fps) || range.fps <= 0.)
 		throw InvalidFramerate("FPS must be greater than zero");
 	if (range.fps > 1000.)
@@ -205,7 +206,7 @@ Framerate::Framerate(agi::fs::path const& filename)
 	auto line = *line_iterator<std::string>(*file, encoding.c_str());
 	if (line == "# timecode format v2") {
 		for (auto timecode : line_iterator<int>(*file, encoding.c_str())) {
-			if (timecodes.size() == max_timecodes)
+			if (std::ssize(timecodes) >= max_timecodes)
 				throw InvalidFramerate("Timecode file exceeds the 10000000 entry limit");
 			timecodes.push_back(timecode);
 		}
