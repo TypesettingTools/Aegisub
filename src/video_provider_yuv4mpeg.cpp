@@ -52,7 +52,7 @@
 
 namespace {
 
-constexpr size_t max_decoded_frame_bytes = 256U * 1024U * 1024U;
+constexpr ptrdiff_t max_decoded_frame_bytes = 256 * 1024 * 1024;
 
 /// @class YUV4MPEGVideoProvider
 /// @brief Implements reading of YUV4MPEG uncompressed video files
@@ -117,10 +117,10 @@ class YUV4MPEGVideoProvider final : public VideoProvider {
 
 	int w = 0, h = 0;	/// frame width/height
 	int num_frames = -1; /// length of file in frames
-	size_t frame_sz = 0;	/// size of each frame in bytes
-	size_t luma_sz = 0;	/// size of the luma plane of each frame, in bytes
-	size_t chroma_sz = 0;	/// size of one of the two chroma planes of each frame, in bytes
-	size_t decoded_frame_sz = 0;	/// size of a decoded BGRA frame in bytes
+	ptrdiff_t frame_sz = 0;	/// size of each frame in bytes
+	ptrdiff_t luma_sz = 0;	/// size of the luma plane of each frame, in bytes
+	ptrdiff_t chroma_sz = 0;	/// size of one of the two chroma planes of each frame, in bytes
+	ptrdiff_t decoded_frame_sz = 0;	/// size of a decoded BGRA frame in bytes
 
 	Y4M_PixelFormat pixfmt = Y4M_PIXFMT_NONE;		/// colorspace/pixel format
 	Y4M_InterlacingMode imode = Y4M_ILACE_NOTSET;	/// interlacing mode (for the entire stream)
@@ -189,12 +189,10 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 	if (imode == Y4M_ILACE_NOTSET)
 		imode = Y4M_ILACE_UNKNOWN;
 
-	auto width = static_cast<size_t>(w);
-	auto height = static_cast<size_t>(h);
-	if (height > max_decoded_frame_bytes / 4 / width)
+	if (h > max_decoded_frame_bytes / 4 / w)
 		throw VideoOpenError("YUV4MPEG frame is too large");
 
-	luma_sz = width * height;
+	luma_sz = static_cast<ptrdiff_t>(w) * static_cast<ptrdiff_t>(h);
 	decoded_frame_sz = luma_sz * 4;
 	switch (pixfmt) {
 	case Y4M_PIXFMT_420JPEG:
