@@ -93,3 +93,4 @@ int main(int argc, char **argv) {
 	check(L, lua_pcall(L, argc - 2, LUA_MULTRET, base));
 	lua_close(L);
 }
+
