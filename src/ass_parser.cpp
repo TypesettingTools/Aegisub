@@ -133,9 +133,7 @@ void AssParser::ParseAttachmentLine(std::string const& data) {
 	}
 }
 
-void AssParser::ParseScriptInfoLine(std::string const& rawdata) {
-	std::string data = SanitizeLine(rawdata);
-
+void AssParser::ParseScriptInfoLine(std::string const& data) {
 	if (data.starts_with(";")) {
 		// Skip stupid comments added by other programs
 		// Of course, we'll add our own in place later... ;)
