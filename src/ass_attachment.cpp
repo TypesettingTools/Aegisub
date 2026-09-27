@@ -23,16 +23,19 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 
-#include <utility>
-
 // Out-of-line to anchor vtable
 AssEntryGroup AssAttachment::Group() const { return group; }
 
-AssAttachment::AssAttachment(std::string const& header, AssEntryGroup group)
-: entry_data(header + "\r\n")
-, filename(header.substr(10))
+AssAttachment::AssAttachment(std::string const& data, AssEntryGroup group)
+: entry_data(data)
 , group(group)
 {
+	std::string filename_str = data.substr(10);
+	const auto pos = filename_str.find("\r\n");
+	if (pos != std::string::npos)
+		filename_str.resize(pos);
+
+	filename = filename_str;
 }
 
 AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
@@ -48,10 +51,6 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 	auto buff = file.read();
 	entry_data = agi::Str(group == AssEntryGroup::FONT ? "fontname: " : "filename: ", filename.get(), "\r\n",
 		agi::ass::UUEncode(buff, buff + file.size()));
-}
-
-void AssAttachment::SetEntryData(std::string data) {
-	entry_data = std::move(data);
 }
 
 size_t AssAttachment::GetSize() const {

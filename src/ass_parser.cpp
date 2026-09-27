@@ -104,9 +104,8 @@ AssParser::AssParser(AssFile *target, int version)
 AssParser::~AssParser() = default;
 
 void AssParser::FinishAttachment() {
-	attach->SetEntryData(std::move(attachment_data));
-	target->Attachments.push_back(std::move(*attach));
-	attach.reset();
+	target->Attachments.emplace_back(std::move(curr_attachment.data), curr_attachment.group);
+	curr_attachment.active = false;
 }
 
 void AssParser::ParseAttachmentLine(std::string const& data) {
@@ -126,7 +125,7 @@ void AssParser::ParseAttachmentLine(std::string const& data) {
 		AddLine(data);
 	}
 	else {
-		attachment_data.append(data).append("\r\n");
+		curr_attachment.data.append(data).append("\r\n");
 
 		// Done building
 		if (data.size() < 80)
@@ -196,15 +195,21 @@ void AssParser::ParseStyleLine(std::string const& data) {
 
 void AssParser::ParseFontLine(std::string const& data) {
 	if (data.starts_with("fontname: ")) {
-		attach = std::make_unique<AssAttachment>(data, AssEntryGroup::FONT);
-		attachment_data = data + "\r\n";
+		curr_attachment = {
+			.active = true,
+			.group = AssEntryGroup::FONT,
+			.data = data + "\r\n",
+		};
 	}
 }
 
 void AssParser::ParseGraphicsLine(std::string const& data) {
 	if (data.starts_with("filename: ")) {
-		attach = std::make_unique<AssAttachment>(data, AssEntryGroup::GRAPHIC);
-		attachment_data = data + "\r\n";
+		curr_attachment = {
+			.active = true,
+			.group = AssEntryGroup::GRAPHIC,
+			.data = data + "\r\n",
+		};
 	}
 }
 
@@ -247,7 +252,7 @@ void AssParser::AddLine(std::string const& data) {
 	// Special-case for attachments since a line could theoretically be both a
 	// valid attachment data line and a valid section header, and if an
 	// attachment is in progress it needs to be treated as that
-	if (attach.get()) {
+	if (curr_attachment.active) {
 		ParseAttachmentLine(data);
 		return;
 	}
