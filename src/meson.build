@@ -2,6 +2,7 @@ subdir('libresrc')
 
 aegisub_src = files(
     'MatroskaParser.c',
+    'lyrics_import.cpp',
     'aegisublocale.cpp',
     'ass_attachment.cpp',
     'ass_dialogue.cpp',
@@ -119,10 +120,12 @@ aegisub_src = files(
     'subtitle_format_ass.cpp',
     'subtitle_format_ebu3264.cpp',
     'subtitle_format_encore.cpp',
+    'subtitle_format_lrc.cpp',
     'subtitle_format_microdvd.cpp',
     'subtitle_format_srt.cpp',
     'subtitle_format_ssa.cpp',
     'subtitle_format_transtation.cpp',
+    'subtitle_format_ttml.cpp',
     'subtitle_format_ttxt.cpp',
     'subtitle_format_txt.cpp',
     'subtitles_provider.cpp',
