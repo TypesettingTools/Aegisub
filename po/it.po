@@ -3582,7 +3582,7 @@ msgstr "Traduzione allineamenti"
 
 #: ../src/dialog_export_ebu3264.cpp:145
 msgid "Open subtitles"
-msgstr "Apri sottotitoli"
+msgstr "Open subtitles"
 
 #: ../src/dialog_export_ebu3264.cpp:146
 msgid "Level-1 teletext"
