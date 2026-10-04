@@ -64,7 +64,6 @@ jobs:
               -Dlibass:libunibreak=disabled
               -Dfreetype2:bzip2=disabled
               -Dfreetype2:brotli=disabled
-              -Dfreetype2:hvf=disabled
               -Dfribidi:bin=false
               -Dfribidi:docs=false
               -Dfribidi:tests=false
