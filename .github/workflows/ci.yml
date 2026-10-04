@@ -42,23 +42,14 @@ jobs:
               -Dfribidi:tests=false
               -Dfribidi:docs=false
               -Dlibass:fontconfig=disabled
-          #- {
-          #  name: Windows MinGW,
-          #  os: windows-latest,
-          #  msvc: false
-          #}
-          - {
-            name: Ubuntu Debug,
-            os: ubuntu-latest,
-            buildtype: debugoptimized,
+          - name: Ubuntu Debug
+            os: ubuntu-latest
+            buildtype: debugoptimized
             args: -Db_pch=false
-          }
-          - {
-            name: Ubuntu Release,
-            os: ubuntu-latest,
-            buildtype: release,
+          - name: Ubuntu Release
+            os: ubuntu-latest
+            buildtype: release
             args: -Db_pch=false
-          }
           - name: macOS x86_64 Release
             os: macos-15
             cross_args: --cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini
@@ -107,11 +98,11 @@ jobs:
             args: *macos_source_args
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: '0'
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
 
@@ -120,7 +111,7 @@ jobs:
           python -m pip install --upgrade pip setuptools
           pip install meson
 
-        # Taken from https://github.com/libass/libass/blob/0.17.5/.github/workflows/meson.yml#L118-L125
+      # Taken from https://github.com/libass/libass/blob/0.17.5/.github/workflows/meson.yml#L118-L125
       - name: Find Visual Studio
         if: matrix.config.msvc
         run: |
@@ -132,23 +123,15 @@ jobs:
 
       - name: Install dependencies (Windows)
         if: matrix.config.os == 'windows-latest'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           choco install ninja innosetup
 
-          $moonscripturl = "https://github.com/leafo/moonscript/releases/download/v0.6.0/moonscript-v0.6.0-windows-x86_64.zip"
-          mkdir moonscript
-          Invoke-WebRequest -Uri $moonscripturl -OutFile ".\moonscript\moonscript.zip"
-          pushd moonscript
-          7z e moonscript.zip
-          Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          popd
-
-          $gettexturl = "https://github.com/mlocati/gettext-iconv-windows/releases/download/v1.0-v1.18-r3/gettext1.0-iconv1.18-static-64.zip"
-          Invoke-WebRequest -Uri $gettexturl -OutFile ".\gettext.zip"
-          Expand-Archive ".\gettext.zip" -DestinationPath gettext
-          pushd gettext/bin
-          Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          popd
+          # msgfmt, to compile the translations
+          gh release download --repo mlocati/gettext-iconv-windows --pattern 'gettext*-static-64.zip' --output gettext.zip
+          Expand-Archive gettext.zip -DestinationPath gettext
+          "$PWD\gettext\bin" >> $env:GITHUB_PATH
 
       - name: Install dependencies (macOS Debug)
         if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'debugoptimized'
@@ -262,7 +245,7 @@ jobs:
           cd build && ninja win-portable
 
       - name: Upload artifacts - win_installer
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }} - installer
@@ -270,7 +253,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload artifacts - portable.zip
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: matrix.config.os == 'windows-latest'
         with:
           name: ${{ matrix.config.name }} - portable
@@ -306,7 +289,7 @@ jobs:
           ditto -c -k --sequesterRsrc --keepParent build/Aegisub.app "build/${package_name}-signing-input.zip"
 
       - name: Upload macOS local-signing input
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release' && (github.ref_type == 'tag' || github.event_name == 'workflow_dispatch')
         with:
           name: ${{ matrix.config.name }} - local signing input
@@ -314,7 +297,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload artifacts - macOS dmg
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
         with:
           name: ${{ matrix.config.name }} - ad-hoc installer
@@ -336,7 +319,7 @@ jobs:
           test -e distcheck/*/subprojects/LuaJIT*/meson.build
 
       - name: Upload artifacts - tarball
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.buildtype == 'release'
         with:
           name: Source Tarball
