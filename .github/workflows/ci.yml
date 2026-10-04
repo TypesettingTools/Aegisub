@@ -8,6 +8,9 @@ on:
     branches: [ master ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: ${{ matrix.config.name }}
@@ -16,6 +19,8 @@ jobs:
       # Pull request checkouts use a detached merge commit. Preserve the source
       # branch in generated non-release version and artifact names.
       AEGISUB_BUILD_BRANCH: ${{ github.head_ref || github.ref_name }}
+      # Same condition as windows-sign-executable
+      AEGISUB_SIGN_WINDOWS: ${{ matrix.config.os == 'windows-latest' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/ci/windows-signing') }}
 
     strategy:
       fail-fast: false
@@ -245,7 +250,7 @@ jobs:
 
       - name: Upload artifacts - win_installer
         uses: actions/upload-artifact@v7
-        if: matrix.config.os == 'windows-latest'
+        if: matrix.config.os == 'windows-latest' && env.AEGISUB_SIGN_WINDOWS != 'true'
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
@@ -253,10 +258,31 @@ jobs:
 
       - name: Upload artifacts - portable.zip
         uses: actions/upload-artifact@v7
-        if: matrix.config.os == 'windows-latest'
+        if: matrix.config.os == 'windows-latest' && env.AEGISUB_SIGN_WINDOWS != 'true'
         with:
           name: ${{ matrix.config.name }} - portable
           path: build/Aegisub-*-portable.zip
+          if-no-files-found: error
+
+      # Release builds are signed and packaged by the windows-* jobs below
+      - name: Upload Windows executable for signing
+        uses: actions/upload-artifact@v7
+        if: env.AEGISUB_SIGN_WINDOWS == 'true'
+        with:
+          name: Windows signing - unsigned executable
+          path: build/aegisub.exe
+          if-no-files-found: error
+
+      - name: Upload Windows packaging inputs
+        uses: actions/upload-artifact@v7
+        if: env.AEGISUB_SIGN_WINDOWS == 'true'
+        with:
+          name: Windows signing - packaging inputs
+          path: |
+            build/git_version.h
+            build/po/*/LC_MESSAGES/aegisub.mo
+            build/installer-deps/
+            build/Aegisub-*-portable.zip
           if-no-files-found: error
 
       # macOS artifacts
@@ -324,3 +350,63 @@ jobs:
           name: Source Tarball
           path: build/meson-dist/*.tar.xz
           if-no-files-found: error
+
+  # Signing is kept out of the build job; see sign-windows.yml
+  windows-sign-executable:
+    name: Windows - sign executable
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/ci/windows-signing'
+    permissions:
+      id-token: write
+    uses: ./.github/workflows/sign-windows.yml
+    with:
+      artifact: Windows signing - unsigned executable
+      signed-artifact: Windows signing - signed executable
+
+  windows-package:
+    name: Windows - package signed executable
+    needs: windows-sign-executable
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Inno Setup
+        run: choco install innosetup
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: Windows signing - packaging inputs
+          path: build
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: Windows signing - signed executable
+          path: signed
+
+      - name: Package signed executable
+        run: |
+          Copy-Item signed\aegisub.exe build\aegisub.exe -Force
+          tools\win-installer-setup.ps1 "$PWD\build" "$PWD" x64 -NoBuild
+          packages\win_installer\portable\replace-executable.ps1 (Get-Item build\Aegisub-*-portable.zip) build\aegisub.exe
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Windows signing - unsigned installer
+          path: build/Aegisub-*.exe
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Windows MSVC Release - portable
+          path: build/Aegisub-*-portable.zip
+          if-no-files-found: error
+
+  windows-sign-installer:
+    name: Windows - sign installer
+    needs: windows-package
+    permissions:
+      id-token: write
+    uses: ./.github/workflows/sign-windows.yml
+    with:
+      artifact: Windows signing - unsigned installer
+      signed-artifact: Windows MSVC Release - installer
