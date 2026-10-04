@@ -11,7 +11,9 @@ param (
   [ValidateSet('x64', 'arm64')]
   [string]$Architecture = 'x64',
   [ValidateNotNullOrEmpty()]
-  [string]$DepCtrlVersion = "0.8.1"
+  [string]$DepCtrlVersion = "0.8.1",
+  # Skip compiling translations, to package without a Meson build tree
+  [switch]$NoBuild
 )
 
 $ErrorActionPreference = 'Stop'
@@ -139,8 +141,10 @@ if (!(Test-Path $LangsDir)) {
 }
 
 # Aegisub localization
-meson compile -C $BuildRoot aegisub-gmo
-if(!$?) { Exit $LASTEXITCODE }
+if (!$NoBuild) {
+	meson compile -C $BuildRoot aegisub-gmo
+	if(!$?) { Exit $LASTEXITCODE }
+}
 
 # Invoke InnoSetup
 $IssUrl = Join-Path $InstallerDir "aegisub_depctrl.iss"
