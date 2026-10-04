@@ -75,6 +75,9 @@
   </provides>
   <releases>
     <!-- TODO: automatic replace at config time -->
+    <release version="3.5.0" date="2026-10-04">
+      <url>https://aegisub.org/changelog/3.5.0/</url>
+    </release>
     <release version="3.4.2" date="2025-01-12">
       <url>https://aegisub.org/changelog/3.4.2/</url>
     </release>
