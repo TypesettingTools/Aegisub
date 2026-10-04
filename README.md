@@ -22,7 +22,6 @@ There are a few optional dependencies that must be installed and on your PATH:
 1. msgfmt, to build the translations (installing from https://mlocati.github.io/articles/gettext-iconv-windows.html seems to be the easiest option)
 2. InnoSetup, to build the regular installer (iscc.exe on your PATH)
 3. 7zip, to build the regular installer (7z.exe on your PATH)
-4. Moonscript, to build the regular installer (moonc.exe on your PATH)
 
 All other dependencies are either stored in the repository or are included as submodules.
 
