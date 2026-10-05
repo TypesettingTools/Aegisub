@@ -373,14 +373,19 @@ struct audio_playback_rate_preset final : public Command {
 			 Percent == 100 ? "audio/playback/rate/100" :
 			 Percent == 150 ? "audio/playback/rate/150" :
 							  "audio/playback/rate/200")
-	STR_MENU(Percent == 50  ? "50%" :
-			 Percent == 100 ? "100%" :
-			 Percent == 150 ? "150%" :
-							  "200%")
-	STR_DISP(Percent == 50  ? "Set playback rate to 50%" :
-			 Percent == 100 ? "Set playback rate to 100%" :
-			 Percent == 150 ? "Set playback rate to 150%" :
-							  "Set playback rate to 200%")
+	wxString StrMenu(const agi::Context *) const override {
+		if constexpr (Percent == 50) return _("50%");
+		else if constexpr (Percent == 100) return _("100%");
+		else if constexpr (Percent == 150) return _("150%");
+		else return _("200%");
+	}
+
+	wxString StrDisplay(const agi::Context *) const override {
+		if constexpr (Percent == 50) return _("Set playback rate to 50%");
+		else if constexpr (Percent == 100) return _("Set playback rate to 100%");
+		else if constexpr (Percent == 150) return _("Set playback rate to 150%");
+		else return _("Set playback rate to 200%");
+	}
 	STR_HELP("Set the shared audio/video playback rate")
 	CMD_TYPE(COMMAND_RADIO)
 
