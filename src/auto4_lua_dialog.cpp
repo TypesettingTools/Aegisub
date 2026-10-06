@@ -47,6 +47,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm.hpp>
+#include <algorithm>
 #include <cfloat>
 #include <unordered_map>
 
@@ -225,7 +226,10 @@ namespace Automation4 {
 			// Same serialisation interface as single-line edit
 			wxControl *Create(wxWindow *parent) override {
 				cw = new wxTextCtrl(parent, -1, "", wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, StringBinder(&text));
-				cw->SetMinSize(wxSize(0, 30));
+		        // wxGridBagSizer used to give each row a minimum height of 20px
+				// even when the row was covered by a spanning control. 
+				// Now we have to request the height directly.				
+				cw->SetMinSize(wxSize(0, std::max(30, 20 * height)));
 				cw->SetToolTip(to_wx(hint));
 				return cw;
 			}
