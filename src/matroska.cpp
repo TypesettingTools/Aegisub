@@ -45,6 +45,7 @@
 #include <cmath>
 #include <cstring>
 #include <limits>
+#include <set>
 #include <unordered_map>
 
 namespace agi::matroska {
@@ -64,6 +65,27 @@ constexpr uint64_t id_file_description = 0x467E;
 constexpr uint64_t id_file_mime_type = 0x4660;
 constexpr uint64_t id_file_data = 0x465C;
 constexpr uint64_t id_file_uid = 0x46AE;
+constexpr uint64_t id_seek_head = 0x114D9B74;
+constexpr uint64_t id_seek = 0x4DBB;
+constexpr uint64_t id_seek_id = 0x53AB;
+constexpr uint64_t id_seek_position = 0x53AC;
+constexpr uint64_t id_info = 0x1549A966;
+constexpr uint64_t id_tracks = 0x1654AE6B;
+constexpr uint64_t id_attachments = 0x1941A469;
+constexpr uint64_t id_cluster = 0x1F43B675;
+constexpr uint64_t id_cues = 0x1C53BB6B;
+constexpr uint64_t id_chapters = 0x1043A770;
+constexpr uint64_t id_tags = 0x1254C367;
+
+bool is_top_level(uint64_t id) {
+	switch (id) {
+		case id_seek_head: case id_info: case id_tracks: case id_attachments:
+		case id_cluster: case id_cues: case id_chapters: case id_tags:
+			return true;
+		default:
+			return false;
+	}
+}
 
 constexpr uint64_t track_type_subtitle = 0x11;
 
@@ -320,9 +342,12 @@ struct Location {
 
 struct Element {
 	uint64_t id = 0;
+	/// Position of the element's ID
+	uint64_t position = 0;
 	uint64_t data = 0;
 	uint64_t size = 0;
 	uint64_t end = 0;
+	bool unknown_size = false;
 };
 } // namespace
 
@@ -341,18 +366,34 @@ class Demuxer::Impl {
 	Limits limits;
 
 	uint64_t timestamp_scale = 1000000;
-	/// Timestamp in ticks of the first block in the file, which is subtracted
-	/// from all block timestamps so that the file starts at zero, as the video
-	/// providers do for video frames
-	int64_t first_timestamp = 0;
+	/// Timestamp of the first block in the file, which is subtracted from all
+	/// block timestamps so that the file starts at zero, as the video providers
+	/// do for video frames. Kept as its parts so the difference is exact.
+	uint64_t first_cluster_time = 0;
+	int16_t first_relative = 0;
 	std::optional<Timestamp> duration;
+	bool duration_computed = false;
+
+	/// Data of the segment, clamped to the end of the input
+	uint64_t segment_start = 0;
+	uint64_t segment_end = 0;
+	/// Top-level elements already parsed, by position
+	std::set<uint64_t> parsed_elements;
+	/// Positions of the metadata elements listed by SeekHeads
+	std::vector<uint64_t> seek_targets;
+	bool seen_tracks = false;
 	std::vector<TrackState> all_tracks;
 	std::unordered_map<uint64_t, size_t> track_by_number;
 	std::vector<SubtitleTrack> tracks;
 	std::vector<Attachment> attachments;
 	/// Location of each attachment's data, parallel to attachments
 	std::vector<Location> attachment_data;
+
+	/// Clusters are indexed lazily, as finding them all means reading from
+	/// throughout the file
 	std::vector<Location> clusters;
+	uint64_t cluster_scan_position = 0;
+	bool clusters_complete = true;
 
 	/// Index into all_tracks of the selected track
 	std::optional<size_t> selected;
@@ -429,11 +470,12 @@ class Demuxer::Impl {
 		auto [size, size_length] = ReadVint(position + id_length, parent_end);
 		uint64_t data = position + id_length + size_length;
 		// All ones is an unknown size, which extends to the end of the parent
-		if (size == (uint64_t{1} << (7 * size_length)) - 1)
+		bool unknown_size = size == (uint64_t{1} << (7 * size_length)) - 1;
+		if (unknown_size)
 			size = parent_end - data;
 		if (data > parent_end || size > parent_end - data)
 			throw InvalidDataError("Matroska element exceeds its parent");
-		return {id, data, size, data + size};
+		return {id, position, data, size, data + size, unknown_size};
 	}
 
 	uint64_t ReadUInt(Element const& element) {
@@ -547,6 +589,119 @@ class Demuxer::Impl {
 		}
 	}
 
+	/// Read the top-level element at position, finding where it ends if its size is unknown
+	Element TopLevelElement(uint64_t position) {
+		auto element = ReadElement(position, segment_end);
+		if (element.unknown_size) {
+			// Only clusters are written with unknown sizes in practice. They
+			// end where the next top-level element starts.
+			for (uint64_t child_position = element.data; child_position < segment_end;) {
+				auto child = ReadElement(child_position, segment_end);
+				if (is_top_level(child.id)) {
+					element.end = child_position;
+					break;
+				}
+				child_position = child.end;
+			}
+			element.size = element.end - element.data;
+		}
+		return element;
+	}
+
+	/// Read a master element with libebml
+	template<class T>
+	std::unique_ptr<EbmlElement> ReadMaster(EbmlStream& stream, Element const& element) {
+		if (element.size > limits.metadata_size)
+			throw LimitError("Matroska metadata exceeds configured limit");
+		stream.I_O().setFilePointer(static_cast<int64_t>(element.position));
+		std::unique_ptr<EbmlElement> master(stream.FindNextID(EBML_INFO(T), UINT64_MAX));
+		if (!dynamic_cast<T *>(master.get()))
+			throw InvalidDataError("Unexpected Matroska element");
+		int upper = 0;
+		EbmlElement *found = nullptr;
+		static_cast<EbmlMaster&>(*master).Read(stream, EBML_CONTEXT(master.get()), upper, found, true);
+		delete found;
+		return master;
+	}
+
+	void ParseSeekHead(Element const& seek_head) {
+		if (seek_head.size > limits.metadata_size)
+			throw LimitError("Matroska metadata exceeds configured limit");
+		for (uint64_t position = seek_head.data; position < seek_head.end;) {
+			auto seek = ReadElement(position, seek_head.end);
+			position = seek.end;
+			if (seek.id != id_seek)
+				continue;
+
+			std::optional<uint64_t> id, offset;
+			for (uint64_t child_position = seek.data; child_position < seek.end;) {
+				auto child = ReadElement(child_position, seek.end);
+				child_position = child.end;
+				if (child.id == id_seek_id)
+					id = ReadUInt(child);
+				else if (child.id == id_seek_position)
+					offset = ReadUInt(child);
+			}
+			if (!id || !offset || *offset >= segment_end - segment_start)
+				continue;
+			if (*id == id_info || *id == id_tracks || *id == id_attachments || *id == id_seek_head)
+				seek_targets.push_back(segment_start + *offset);
+		}
+	}
+
+	void ParseMetadata(EbmlStream& stream, Element const& element) {
+		if (!is_top_level(element.id) || element.id == id_cluster)
+			return;
+		if (!parsed_elements.insert(element.position).second)
+			return;
+
+		if (element.id == id_info) {
+			auto info = ReadMaster<KaxInfo>(stream, element);
+			ParseInfo(static_cast<KaxInfo&>(*info));
+		}
+		else if (element.id == id_tracks) {
+			auto track_list = ReadMaster<KaxTracks>(stream, element);
+			for (auto child : static_cast<KaxTracks&>(*track_list).GetElementList()) {
+				if (auto entry = dynamic_cast<KaxTrackEntry *>(child))
+					ParseTrack(*entry);
+			}
+			seen_tracks = true;
+		}
+		else if (element.id == id_attachments)
+			ParseAttachments({element.data, element.size});
+		else if (element.id == id_seek_head)
+			ParseSeekHead(element);
+	}
+
+	/// Index the next cluster, returning false at the end of the segment. If
+	/// a stream is given, metadata found along the way is parsed too.
+	bool ScanNextCluster(EbmlStream *stream = nullptr) {
+		while (!clusters_complete && cluster_scan_position < segment_end) {
+			CheckCancelled();
+			Element element;
+			try {
+				element = TopLevelElement(cluster_scan_position);
+			}
+			// Treat damage after the last readable cluster as the end of the
+			// file, as truncated files are common
+			catch (InvalidDataError const&) {
+				break;
+			}
+			catch (TruncatedError const&) {
+				break;
+			}
+			cluster_scan_position = element.end;
+			if (element.id == id_cluster) {
+				clusters.push_back({element.data, element.size});
+				return true;
+			}
+			if (stream)
+				ParseMetadata(*stream, element);
+		}
+		clusters_complete = true;
+		return false;
+	}
+
 	void ParseSegment() {
 		ReaderCallback io(*reader);
 		EbmlStream stream(io);
@@ -570,57 +725,51 @@ class Demuxer::Impl {
 				throw InvalidDataError("Matroska segment not found");
 			segment->SkipData(stream, EBML_CONTEXT(segment.get()));
 		}
-		auto const& context = EBML_CONTEXT(segment.get());
 
-		int upper = 0;
-		std::unique_ptr<EbmlElement> current(stream.FindNextElement(context, upper, UINT64_MAX, true));
-		while (current && upper <= 0) {
+		segment_start = segment->GetElementPosition() + segment->HeadSize();
+		segment_end = reader->Size();
+		if (segment->IsFiniteSize() && segment->GetSize() < segment_end - std::min(segment_start, segment_end))
+			segment_end = segment_start + segment->GetSize();
+
+		// Metadata is normally before the first cluster
+		uint64_t position = segment_start;
+		while (position < segment_end) {
 			CheckCancelled();
-			std::unique_ptr<EbmlElement> next;
-			Location location{current->GetElementPosition() + current->HeadSize(), current->GetSize()};
-
-			auto info = dynamic_cast<KaxInfo *>(current.get());
-			auto track_list = dynamic_cast<KaxTracks *>(current.get());
-			if (info || track_list) {
-				if (current->GetSize() > limits.metadata_size)
-					throw LimitError("Matroska metadata exceeds configured limit");
-				EbmlElement *found = nullptr;
-				static_cast<EbmlMaster&>(*current).Read(stream, EBML_CONTEXT(current.get()), upper, found, true);
-				next.reset(found);
-				// A positive level means the element found belongs to an ancestor
-				if (upper > 0)
-					--upper;
-
-				if (info)
-					ParseInfo(*info);
-				else {
-					for (auto element : track_list->GetElementList()) {
-						if (auto entry = dynamic_cast<KaxTrackEntry *>(element))
-							ParseTrack(*entry);
-					}
-				}
+			auto element = TopLevelElement(position);
+			if (element.id == id_cluster) {
+				cluster_scan_position = position;
+				clusters_complete = false;
+				break;
 			}
-			else {
-				if (dynamic_cast<KaxCluster *>(current.get()))
-					clusters.push_back(location);
-				else if (dynamic_cast<KaxAttachments *>(current.get()))
-					ParseAttachments(location);
-				current->SkipData(stream, context);
-			}
+			ParseMetadata(stream, element);
+			position = element.end;
+		}
 
-			if (!next)
-				next.reset(stream.FindNextElement(context, upper, UINT64_MAX, true));
-			current = std::move(next);
+		// Anything after the clusters should be listed in a SeekHead. Nested
+		// SeekHeads append to seek_targets as it is iterated.
+		for (size_t i = 0; i < seek_targets.size(); ++i) {
+			CheckCancelled();
+			try {
+				ParseMetadata(stream, TopLevelElement(seek_targets[i]));
+			}
+			catch (InvalidDataError const&) { }
+			catch (TruncatedError const&) { }
+		}
+
+		// Otherwise the only way to find the tracks is to walk the entire file
+		if (!seen_tracks) {
+			while (ScanNextCluster(&stream))
+				;
 		}
 	}
 
 	/// Find the timestamp of the first block in the first cluster
 	void FindFirstTimestamp() {
-		if (clusters.empty())
+		if (clusters.empty() && !ScanNextCluster())
 			return;
 		auto const& cluster = clusters.front();
 		try {
-			uint64_t end = checked_add(cluster.position, cluster.size, "Matroska cluster is out of range");
+			uint64_t end = cluster.position + cluster.size;
 			uint64_t cluster_time = 0;
 			for (uint64_t position = cluster.position; position < end;) {
 				auto element = ReadElement(position, end);
@@ -641,14 +790,12 @@ class Demuxer::Impl {
 				if (!block)
 					continue;
 
-				if (cluster_time > static_cast<uint64_t>(INT64_MAX))
-					return;
 				auto track_bytes = ReadVint(block->data, block->end).second;
 				if (block->size < track_bytes + 2u)
 					return;
 				uint64_t cursor = block->data + track_bytes;
-				auto relative = static_cast<int16_t>((ReadByte(cursor) << 8) | ReadByte(cursor + 1));
-				first_timestamp = checked_add_signed(static_cast<int64_t>(cluster_time), relative, "Matroska timestamp is out of range");
+				first_cluster_time = cluster_time;
+				first_relative = static_cast<int16_t>((ReadByte(cursor) << 8) | ReadByte(cursor + 1));
 				return;
 			}
 		}
@@ -660,6 +807,8 @@ class Demuxer::Impl {
 	void ComputeDuration() {
 		if (duration || tracks.empty())
 			return;
+		while (ScanNextCluster())
+			;
 		for (auto cluster = clusters.rbegin(); cluster != clusters.rend(); ++cluster) {
 			CheckCancelled();
 			std::vector<Frame> cluster_frames;
@@ -683,6 +832,25 @@ class Demuxer::Impl {
 				return;
 			}
 		}
+	}
+
+	/// Get a block's timestamp in ticks relative to the first block
+	int64_t RelativeTicks(uint64_t cluster_time, int16_t relative) {
+		constexpr char const *out_of_range = "Matroska timestamp is out of range";
+		int64_t ticks;
+		if (cluster_time >= first_cluster_time) {
+			uint64_t difference = cluster_time - first_cluster_time;
+			if (difference > static_cast<uint64_t>(INT64_MAX))
+				throw InvalidDataError(out_of_range);
+			ticks = static_cast<int64_t>(difference);
+		}
+		else {
+			uint64_t difference = first_cluster_time - cluster_time;
+			if (difference > static_cast<uint64_t>(INT64_MAX))
+				throw InvalidDataError(out_of_range);
+			ticks = -static_cast<int64_t>(difference);
+		}
+		return checked_add_signed(ticks, int64_t{relative} - first_relative, out_of_range);
 	}
 
 	// Clusters
@@ -763,10 +931,7 @@ class Demuxer::Impl {
 			sizes[0] = end - cursor;
 
 		constexpr char const *out_of_range = "Matroska timestamp is out of range";
-		if (cluster_time > static_cast<uint64_t>(INT64_MAX))
-			throw InvalidDataError(out_of_range);
-		// first_timestamp is at least INT16_MIN, so negating it can't overflow
-		int64_t ticks = checked_add_signed(checked_add_signed(static_cast<int64_t>(cluster_time), -first_timestamp, out_of_range), relative, out_of_range);
+		int64_t ticks = RelativeTicks(cluster_time, relative);
 		auto const& track_state = all_tracks[track];
 		uint64_t frame_duration = block_duration
 			? checked_scale(checked_multiply(*block_duration, timestamp_scale, "Matroska block duration is out of range"),
@@ -857,12 +1022,17 @@ public:
 			throw InvalidDataError(e.what());
 		}
 		FindFirstTimestamp();
-		ComputeDuration();
 	}
 
 	std::vector<SubtitleTrack> const& Tracks() const { return tracks; }
 	std::vector<Attachment> const& AttachmentList() const { return attachments; }
-	std::optional<Timestamp> Duration() const { return duration; }
+	std::optional<Timestamp> Duration() {
+		if (!duration_computed) {
+			ComputeDuration();
+			duration_computed = true;
+		}
+		return duration;
+	}
 
 	void Select(TrackId id) {
 		auto track = std::find_if(tracks.begin(), tracks.end(), [&](SubtitleTrack const& track) {
@@ -889,7 +1059,7 @@ public:
 		CheckCancelled();
 
 		while (next_frame == frames.size()) {
-			if (next_cluster == clusters.size())
+			if (next_cluster == clusters.size() && !ScanNextCluster())
 				return std::nullopt;
 			// Clear first so that a cluster which fails to parse is skipped on retry
 			frames.clear();
@@ -933,7 +1103,7 @@ std::vector<Attachment> const& Demuxer::Attachments() const {
 	return impl->AttachmentList();
 }
 
-std::optional<Timestamp> Demuxer::Duration() const {
+std::optional<Timestamp> Demuxer::Duration() {
 	return impl->Duration();
 }
 

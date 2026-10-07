@@ -219,9 +219,10 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 
 	parser.AddLine("[Events]");
 
-	auto duration = demuxer->Duration();
-	int64_t totalTime = duration ? duration->nanoseconds / 1000000 : 0;
 	run_with_progress(_("Reading subtitles from Matroska file."), active_sink, [&](agi::ProgressSink *ps) {
+		// May need to find the last cluster, so do this inside the progress dialog
+		auto duration = demuxer->Duration();
+		int64_t totalTime = duration ? duration->nanoseconds / 1000000 : 0;
 		read_subtitles(ps, *demuxer, srt, totalTime, &parser);
 	});
 

@@ -130,8 +130,10 @@ public:
 
 	std::vector<SubtitleTrack> const& SubtitleTracks() const;
 	std::vector<Attachment> const& Attachments() const;
-	/// Segment duration, or nullopt if neither the header nor the last cluster gives one
-	std::optional<Timestamp> Duration() const;
+	/// Segment duration, or nullopt if neither the header nor the last cluster
+	/// gives one. If the header lacks one, the first call has to find the last
+	/// cluster, which reads from throughout the file and can be cancelled.
+	std::optional<Timestamp> Duration();
 
 	/// Select one subtitle track and rewind packet iteration to its beginning.
 	void SelectTrack(TrackId track);

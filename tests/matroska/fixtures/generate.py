@@ -63,7 +63,8 @@ attachments=element('1941a469',attached(b'a.txt',b'aaa')+attached(b'b.txt',b'bb'
 cluster=element('1f43b675',uint_element('e7',0)+element('a3',b'\x81\x00\x00\x80hi'))
 (r/'repeated-tracks.mkv').write_bytes(header+element('18538067',info+tracks+tracks+attachments+cluster))
 
-# A block whose timestamp overflows when added to the cluster's
+# A cluster timestamp which overflows int64 when the block's relative timestamp
+# is added. Only the offset from the first block matters, so this is fine.
 entry=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83',17)+element('86',b'S_TEXT/UTF8'))
 cluster=element('1f43b675',uint_element('e7',(1<<63)-1)+element('a3',b'\x81\x00\x01\x80x'))
 (r/'timestamp-overflow.mkv').write_bytes(header+element('18538067',info+element('1654ae6b',entry)+cluster))
@@ -78,3 +79,12 @@ scaled=element('ae',uint_element('d7',2)+uint_element('73c5',2)+uint_element('83
 group=element('a0',element('a1',b'\x82\x01\xf4\x00sub')+uint_element('9b',1000))
 cluster=element('1f43b675',uint_element('e7',10000)+element('a3',b'\x81\x00\x00\x80v')+group)
 (r/'timing.mkv').write_bytes(header+element('ec',bytes(14))+element('18538067',info+element('1654ae6b',video+scaled)+cluster))
+
+# A Void followed by CRC-prefixed Info and Tracks, as mkvmerge and ffmpeg
+# write. Losing the Info would show as the second packet being at 4ms rather
+# than 2ms.
+crc=element('bf',bytes(4))
+entry=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83',17)+element('86',b'S_TEXT/UTF8'))
+void_info=element('1549a966',crc+uint_element('2ad7b1',500000))
+clusters=element('1f43b675',uint_element('e7',0)+element('a3',b'\x81\x00\x00\x80a'))+element('1f43b675',uint_element('e7',4)+element('a3',b'\x81\x00\x00\x80b'))
+(r/'void-crc.mkv').write_bytes(header+element('18538067',element('ec',bytes(6))+void_info+element('ec',bytes(6))+element('1654ae6b',crc+entry)+clusters))
