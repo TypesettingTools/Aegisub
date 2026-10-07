@@ -179,8 +179,19 @@ endif
 
 zlib_dep = dependency('zlib')
 deps += zlib_dep
-libebml = dependency('libebml', version: '>=1.4.0', fallback: ['libebml', 'libebml_dep'])
-libmatroska = dependency('libmatroska', version: '>=1.6.0', fallback: ['libmatroska', 'libmatroska_dep'])
+# A system libmatroska needs the libebml it was built against, while the
+# bundled one needs a newer libebml than the minimum Aegisub supports, so
+# choose libebml based on which libmatroska is used.
+libmatroska = dependency('', required: false)
+if not (force_all_fallbacks or force_fallback_for.contains('libmatroska'))
+    libmatroska = dependency('libmatroska', version: '>=1.6.0', required: false, allow_fallback: false)
+endif
+if libmatroska.found()
+    libebml = dependency('libebml', version: '>=1.4.0', fallback: ['libebml', 'libebml_dep'])
+else
+    libebml = dependency('libebml', version: '>=1.4.4', fallback: ['libebml', 'libebml_dep'])
+    libmatroska = dependency('libmatroska', version: '>=1.6.0', fallback: ['libmatroska', 'libmatroska_dep'])
+endif
 
 use_bundled_wx = force_all_fallbacks or force_fallback_for.contains('wxWidgets')
 if not use_bundled_wx

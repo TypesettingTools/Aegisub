@@ -355,6 +355,15 @@ struct Location {
 	bool truncated = false;
 };
 
+/// Position within a cluster, for reading it one block at a time
+struct ClusterCursor {
+	Location cluster;
+	uint64_t position;
+	uint64_t cluster_time = 0;
+
+	explicit ClusterCursor(Location const& cluster) : cluster(cluster), position(cluster.position) { }
+};
+
 struct Element {
 	uint64_t id = 0;
 	/// Position of the element's ID
@@ -412,7 +421,9 @@ class Demuxer::Impl {
 	/// Index into all_tracks of the selected track
 	std::optional<size_t> selected;
 	size_t next_cluster = 0;
-	/// Frames of the selected track in the most recently parsed cluster
+	/// The cluster currently being read, if any
+	std::optional<ClusterCursor> cluster_cursor;
+	/// Frames of the selected track in the most recently read block
 	std::vector<Frame> frames;
 	size_t next_frame = 0;
 
@@ -806,21 +817,14 @@ class Demuxer::Impl {
 			return;
 		for (size_t i = 0; i < clusters.size() || ScanNextCluster(); ++i) {
 			CheckCancelled();
-			std::vector<Frame> cluster_frames;
 			try {
-				cluster_frames = ParseCluster(clusters[i], std::nullopt);
+				ForEachFrame(clusters[i], [&](Frame const& frame) {
+					if (IsAudioOrVideo(frame.track) && (!start_time || frame.start.nanoseconds < start_time->nanoseconds))
+						start_time = frame.start;
+				});
 			}
-			catch (InvalidDataError const&) {
-				continue;
-			}
-			catch (TruncatedError const&) {
-				continue;
-			}
-
-			for (auto const& frame : cluster_frames) {
-				if (IsAudioOrVideo(frame.track) && (!start_time || frame.start.nanoseconds < start_time->nanoseconds))
-					start_time = frame.start;
-			}
+			catch (InvalidDataError const&) { }
+			catch (TruncatedError const&) { }
 			if (start_time)
 				return;
 		}
@@ -834,22 +838,15 @@ class Demuxer::Impl {
 			;
 		for (auto cluster = clusters.rbegin(); cluster != clusters.rend(); ++cluster) {
 			CheckCancelled();
-			std::vector<Frame> cluster_frames;
-			try {
-				cluster_frames = ParseCluster(*cluster, std::nullopt);
-			}
-			catch (InvalidDataError const&) {
-				continue;
-			}
-			catch (TruncatedError const&) {
-				continue;
-			}
-
 			int64_t last_end = 0;
-			for (auto const& frame : cluster_frames) {
-				if (frame.end)
-					last_end = std::max(last_end, frame.end->nanoseconds);
+			try {
+				ForEachFrame(*cluster, [&](Frame const& frame) {
+					if (frame.end)
+						last_end = std::max(last_end, frame.end->nanoseconds);
+				});
 			}
+			catch (InvalidDataError const&) { }
+			catch (TruncatedError const&) { }
 			if (last_end > 0) {
 				duration = Timestamp{last_end};
 				return;
@@ -956,33 +953,39 @@ class Demuxer::Impl {
 		}
 	}
 
-	std::vector<Frame> ParseCluster(Location const& cluster, std::optional<size_t> only_track) {
-		std::vector<Frame> out;
-		uint64_t cluster_time = 0;
-		uint64_t end = checked_add(cluster.position, cluster.size, "Matroska cluster is out of range");
-		for (uint64_t position = cluster.position; position < end;) {
-			// Clusters have no size limit, so check per element rather than per cluster
+	/// Read the cluster's elements up to and including its next block,
+	/// appending that block's frames for only_track (or all tracks) to out.
+	/// Returns false at the end of the cluster. Going a block at a time keeps
+	/// memory use bounded, as clusters have no size limit.
+	bool ReadNextBlock(ClusterCursor& cursor, std::optional<size_t> only_track, std::vector<Frame>& out) {
+		uint64_t end = cursor.cluster.position + cursor.cluster.size;
+		while (cursor.position < end) {
 			CheckCancelled();
 			Element element;
 			try {
-				element = ReadElement(position, end);
+				element = ReadElement(cursor.position, end);
 			}
 			catch (InvalidDataError const&) {
 				// Everything after the first incomplete element is missing
-				if (cluster.truncated)
-					break;
-				throw;
+				if (!cursor.cluster.truncated)
+					throw;
+				cursor.position = end;
+				return false;
 			}
 			catch (TruncatedError const&) {
-				if (cluster.truncated)
-					break;
-				throw;
+				if (!cursor.cluster.truncated)
+					throw;
+				cursor.position = end;
+				return false;
 			}
-			position = element.end;
+			cursor.position = element.end;
+
 			if (element.id == id_cluster_timestamp)
-				cluster_time = ReadUInt(element);
-			else if (element.id == id_simple_block)
-				ParseBlock(element, cluster_time, std::nullopt, only_track, out);
+				cursor.cluster_time = ReadUInt(element);
+			else if (element.id == id_simple_block) {
+				ParseBlock(element, cursor.cluster_time, std::nullopt, only_track, out);
+				return true;
+			}
 			else if (element.id == id_block_group) {
 				std::optional<Element> block;
 				std::optional<uint64_t> block_duration;
@@ -994,11 +997,25 @@ class Demuxer::Impl {
 					else if (child.id == id_block_duration)
 						block_duration = ReadUInt(child);
 				}
-				if (block)
-					ParseBlock(*block, cluster_time, block_duration, only_track, out);
+				if (block) {
+					ParseBlock(*block, cursor.cluster_time, block_duration, only_track, out);
+					return true;
+				}
 			}
 		}
-		return out;
+		return false;
+	}
+
+	/// Call fn with each frame of every track in a cluster
+	template<class Fn>
+	void ForEachFrame(Location const& cluster, Fn&& fn) {
+		ClusterCursor cursor(cluster);
+		std::vector<Frame> block_frames;
+		while (ReadNextBlock(cursor, std::nullopt, block_frames)) {
+			for (auto const& frame : block_frames)
+				fn(frame);
+			block_frames.clear();
+		}
 	}
 
 	std::vector<uint8_t> Decode(TrackState const& track, std::vector<uint8_t> data) const {
@@ -1069,6 +1086,7 @@ public:
 		CheckCancelled();
 		selected = id.value;
 		next_cluster = 0;
+		cluster_cursor.reset();
 		frames.clear();
 		next_frame = 0;
 	}
@@ -1079,13 +1097,26 @@ public:
 		CheckCancelled();
 
 		while (next_frame == frames.size()) {
-			if (next_cluster == clusters.size() && !ScanNextCluster())
-				return std::nullopt;
-			// Clear first so that a cluster which fails to parse is skipped on retry
 			frames.clear();
 			next_frame = 0;
-			frames = ParseCluster(clusters[next_cluster++], selected);
-			CheckCancelled();
+			if (!cluster_cursor) {
+				if (next_cluster == clusters.size() && !ScanNextCluster())
+					return std::nullopt;
+				cluster_cursor.emplace(clusters[next_cluster++]);
+			}
+			bool more;
+			try {
+				more = ReadNextBlock(*cluster_cursor, selected, frames);
+			}
+			catch (...) {
+				// Skip the rest of a cluster which fails to parse, so that
+				// retrying moves on to the next one
+				cluster_cursor.reset();
+				frames.clear();
+				throw;
+			}
+			if (!more)
+				cluster_cursor.reset();
 		}
 
 		auto const& frame = frames[next_frame++];
