@@ -34,3 +34,18 @@ seek_entry=element('4dbb',element('53ab',bytes.fromhex('1654ae6b'))+uint_element
 seek_head=element('114d9b74',seek_entry)
 segment_payload=seek_head+info+cluster+tracks
 (r/'tracks-after-cluster.mkv').write_bytes(header+element('18538067',segment_payload))
+
+# Content encodings: a header-stripped track read via a BlockGroup with a
+# duration, and an encrypted track which should be reported as unsupported
+# without preventing the rest of the file from being read.
+def encoding(*children):
+ return element('6d80',element('6240',b''.join(children)))
+stripped=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83',17)+element('86',b'S_TEXT/UTF8')
+ +encoding(uint_element('5033',0)+element('5034',uint_element('4254',3)+element('4255',b'hel'))))
+encrypted=element('ae',uint_element('d7',2)+uint_element('73c5',2)+uint_element('83',17)+element('86',b'S_TEXT/UTF8')
+ +encoding(uint_element('5033',1)+element('5035',b'')))
+group=element('a0',element('a1',b'\x81\x00\x00\x00lo')+uint_element('9b',1500))
+encrypted_block=element('a3',b'\x82\x00\x00\x80xx')
+cluster=element('1f43b675',uint_element('e7',0)+group+encrypted_block)
+segment_payload=info+element('1654ae6b',stripped+encrypted)+cluster
+(r/'encodings.mkv').write_bytes(header+element('18538067',segment_payload))
