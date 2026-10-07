@@ -81,7 +81,8 @@ struct Attachment {
 
 struct SubtitlePacket {
 	TrackId track;
-	std::optional<Timestamp> start;
+	/// Timestamps as stored in the file, without subtracting StartTime()
+	Timestamp start;
 	std::optional<Timestamp> end;
 	std::vector<uint8_t> data;
 };
@@ -134,6 +135,10 @@ public:
 	/// gives one. If the header lacks one, the first call has to find the last
 	/// cluster, which reads from throughout the file and can be cancelled.
 	std::optional<Timestamp> Duration();
+	/// Earliest audio or video timestamp, which players treat as the start of
+	/// the file, or nullopt if the file has no audio or video. The first call
+	/// reads up to the first cluster with audio or video and can be cancelled.
+	std::optional<Timestamp> StartTime();
 
 	/// Select one subtitle track and rewind packet iteration to its beginning.
 	void SelectTrack(TrackId track);

@@ -63,8 +63,8 @@ attachments=element('1941a469',attached(b'a.txt',b'aaa')+attached(b'b.txt',b'bb'
 cluster=element('1f43b675',uint_element('e7',0)+element('a3',b'\x81\x00\x00\x80hi'))
 (r/'repeated-tracks.mkv').write_bytes(header+element('18538067',info+tracks+tracks+attachments+cluster))
 
-# A cluster timestamp which overflows int64 when the block's relative timestamp
-# is added. Only the offset from the first block matters, so this is fine.
+# A block timestamp which overflows int64 once the block's relative timestamp
+# is added to the cluster's
 entry=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83',17)+element('86',b'S_TEXT/UTF8'))
 cluster=element('1f43b675',uint_element('e7',(1<<63)-1)+element('a3',b'\x81\x00\x01\x80x'))
 (r/'timestamp-overflow.mkv').write_bytes(header+element('18538067',info+element('1654ae6b',entry)+cluster))
@@ -88,3 +88,11 @@ entry=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83'
 void_info=element('1549a966',crc+uint_element('2ad7b1',500000))
 clusters=element('1f43b675',uint_element('e7',0)+element('a3',b'\x81\x00\x00\x80a'))+element('1f43b675',uint_element('e7',4)+element('a3',b'\x81\x00\x00\x80b'))
 (r/'void-crc.mkv').write_bytes(header+element('18538067',element('ec',bytes(6))+void_info+element('ec',bytes(6))+element('1654ae6b',crc+entry)+clusters))
+
+# The start of the file is the earliest audio or video timestamp, ignoring a
+# subtitle line before it
+audio=element('ae',uint_element('d7',2)+uint_element('73c5',2)+uint_element('83',2)+element('86',b'A_TEST'))
+subtitle=element('ae',uint_element('d7',3)+uint_element('73c5',3)+uint_element('83',17)+element('86',b'S_TEXT/UTF8'))
+early=element('a0',element('a1',b'\x83\xfe\x0c\x00early')+uint_element('9b',1000))
+cluster=element('1f43b675',uint_element('e7',1000)+early+element('a3',b'\x82\x00\x00\x80a')+element('a3',b'\x81\x00\x53\x80v'))
+(r/'start-time.mkv').write_bytes(header+element('18538067',info+element('1654ae6b',video+audio+subtitle)+cluster))

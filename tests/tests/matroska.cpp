@@ -39,6 +39,7 @@ std::string describe(agi::fs::path const& path) {
 	try {
 		Demuxer demuxer(OpenFile(path));
 		out << "duration\t" << describe_time(demuxer.Duration()) << '\n';
+		out << "start\t" << describe_time(demuxer.StartTime()) << '\n';
 		for (auto const& track : demuxer.SubtitleTracks())
 			out << "track\t" << track.id.value << '\t' << track.uid << '\t' << track.codec_id << '\t'
 				<< track.language << '\t' << track.name << '\t' << track.codec_private.size() << '\t'
@@ -50,7 +51,7 @@ std::string describe(agi::fs::path const& path) {
 			if (track.codec == SubtitleCodec::unsupported) continue;
 			demuxer.SelectTrack(track.id);
 			while (auto packet = demuxer.ReadPacket())
-				out << "packet\t" << packet->track.value << '\t' << describe_time(packet->start) << '\t'
+				out << "packet\t" << packet->track.value << '\t' << packet->start.nanoseconds << '\t'
 					<< describe_time(packet->end) << '\t' << packet->data.size() << '\t'
 					<< std::hex << fnv1a(packet->data) << std::dec << '\n';
 		}
@@ -145,16 +146,6 @@ TEST(Matroska, DecompressionLimitAndFailedPacketConsumption) {
 	control->fail = false;
 	// The failed packet was already consumed before its payload read began.
 	EXPECT_NO_THROW((void)demuxer.ReadPacket());
-}
-
-TEST(Matroska, PacketsHaveCheckedOptionalTimestamps) {
-	Demuxer demuxer(OpenFile(fixture("compressed-zlib.mkv")));
-	ASSERT_FALSE(demuxer.SubtitleTracks().empty());
-	demuxer.SelectTrack(demuxer.SubtitleTracks()[0].id);
-	auto packet = demuxer.ReadPacket();
-	ASSERT_TRUE(packet);
-	ASSERT_TRUE(packet->start);
-	EXPECT_GE(packet->start->nanoseconds, 0);
 }
 
 // Each fixture's .behavior file records the expected describe() output. When a

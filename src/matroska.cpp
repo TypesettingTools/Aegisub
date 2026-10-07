@@ -87,6 +87,8 @@ bool is_top_level(uint64_t id) {
 	}
 }
 
+constexpr uint64_t track_type_video = 0x1;
+constexpr uint64_t track_type_audio = 0x2;
 constexpr uint64_t track_type_subtitle = 0x11;
 
 class FileReader final : public Reader {
@@ -228,6 +230,16 @@ uint64_t checked_multiply(uint64_t lhs, uint64_t rhs, char const *message) {
 	return lhs * rhs;
 }
 
+/// Convert a timestamp in ticks, which may be slightly negative, to nanoseconds
+int64_t ticks_to_nanoseconds(int64_t ticks, uint64_t timestamp_scale, double track_scale) {
+	constexpr char const *out_of_range = "Matroska timestamp is out of range";
+	uint64_t magnitude = checked_multiply(ticks < 0 ? static_cast<uint64_t>(-ticks) : static_cast<uint64_t>(ticks), timestamp_scale, out_of_range);
+	magnitude = checked_scale(magnitude, track_scale, out_of_range);
+	if (magnitude > static_cast<uint64_t>(INT64_MAX))
+		throw InvalidDataError(out_of_range);
+	return ticks < 0 ? -static_cast<int64_t>(magnitude) : static_cast<int64_t>(magnitude);
+}
+
 SubtitleCodec codec_from_id(std::string const& id) {
 	if (id == "S_TEXT/ASS")
 		return SubtitleCodec::ass;
@@ -319,6 +331,7 @@ std::vector<uint8_t> inflate_packet(std::vector<uint8_t> const& input, size_t li
 /// Demuxing state for every track in the file, not just subtitle tracks
 struct TrackState {
 	uint64_t uid = 0;
+	uint64_t type = 0;
 	uint64_t default_duration = 0;
 	/// Deprecated per-track multiplier applied to block timestamps and durations
 	double timestamp_scale = 1.0;
@@ -328,7 +341,7 @@ struct TrackState {
 
 struct Frame {
 	size_t track = 0;
-	std::optional<Timestamp> start;
+	Timestamp start;
 	std::optional<Timestamp> end;
 	uint64_t position = 0;
 	uint64_t size = 0;
@@ -366,13 +379,10 @@ class Demuxer::Impl {
 	Limits limits;
 
 	uint64_t timestamp_scale = 1000000;
-	/// Timestamp of the first block in the file, which is subtracted from all
-	/// block timestamps so that the file starts at zero, as the video providers
-	/// do for video frames. Kept as its parts so the difference is exact.
-	uint64_t first_cluster_time = 0;
-	int16_t first_relative = 0;
 	std::optional<Timestamp> duration;
 	bool duration_computed = false;
+	std::optional<Timestamp> start_time;
+	bool start_time_computed = false;
 
 	/// Data of the segment, clamped to the end of the input
 	uint64_t segment_start = 0;
@@ -520,6 +530,7 @@ class Demuxer::Impl {
 		}))
 			return;
 
+		state.type = uint_value<KaxTrackType>(entry);
 		state.default_duration = uint_value<KaxTrackDefaultDuration>(entry);
 		if (auto scale = child<KaxTrackTimecodeScale>(entry)) {
 			double value = static_cast<double>(*scale);
@@ -533,7 +544,7 @@ class Demuxer::Impl {
 		if (!track_by_number.emplace(uint_value<KaxTrackNumber>(entry), all_tracks.size()).second)
 			throw InvalidDataError("Duplicate Matroska track number");
 
-		if (uint_value<KaxTrackType>(entry) == track_type_subtitle) {
+		if (state.type == track_type_subtitle) {
 			SubtitleTrack track;
 			track.id.value = static_cast<uint32_t>(all_tracks.size());
 			track.uid = state.uid;
@@ -763,44 +774,39 @@ class Demuxer::Impl {
 		}
 	}
 
-	/// Find the timestamp of the first block in the first cluster
-	void FindFirstTimestamp() {
-		if (clusters.empty() && !ScanNextCluster())
-			return;
-		auto const& cluster = clusters.front();
-		try {
-			uint64_t end = cluster.position + cluster.size;
-			uint64_t cluster_time = 0;
-			for (uint64_t position = cluster.position; position < end;) {
-				auto element = ReadElement(position, end);
-				position = element.end;
-				std::optional<Element> block;
-				if (element.id == id_cluster_timestamp)
-					cluster_time = ReadUInt(element);
-				else if (element.id == id_simple_block)
-					block = element;
-				else if (element.id == id_block_group) {
-					for (uint64_t child_position = element.data; child_position < element.end && !block;) {
-						auto child = ReadElement(child_position, element.end);
-						child_position = child.end;
-						if (child.id == id_block)
-							block = child;
-					}
-				}
-				if (!block)
-					continue;
+	bool IsAudioOrVideo(size_t track) const {
+		return all_tracks[track].type == track_type_video || all_tracks[track].type == track_type_audio;
+	}
 
-				auto track_bytes = ReadVint(block->data, block->end).second;
-				if (block->size < track_bytes + 2u)
-					return;
-				uint64_t cursor = block->data + track_bytes;
-				first_cluster_time = cluster_time;
-				first_relative = static_cast<int16_t>((ReadByte(cursor) << 8) | ReadByte(cursor + 1));
-				return;
+	/// Find the earliest audio or video timestamp, which is what FFmpeg (and
+	/// so LAV) reports as the start time and what mpv uses for Matroska in
+	/// practice. Like FFmpeg, subtitle tracks don't count.
+	void ComputeStartTime() {
+		bool has_audio_or_video = false;
+		for (size_t track = 0; track < all_tracks.size(); ++track)
+			has_audio_or_video = has_audio_or_video || IsAudioOrVideo(track);
+		if (!has_audio_or_video)
+			return;
+		for (size_t i = 0; i < clusters.size() || ScanNextCluster(); ++i) {
+			CheckCancelled();
+			std::vector<Frame> cluster_frames;
+			try {
+				cluster_frames = ParseCluster(clusters[i], std::nullopt);
 			}
+			catch (InvalidDataError const&) {
+				continue;
+			}
+			catch (TruncatedError const&) {
+				continue;
+			}
+
+			for (auto const& frame : cluster_frames) {
+				if (IsAudioOrVideo(frame.track) && (!start_time || frame.start.nanoseconds < start_time->nanoseconds))
+					start_time = frame.start;
+			}
+			if (start_time)
+				return;
 		}
-		catch (InvalidDataError const&) { }
-		catch (TruncatedError const&) { }
 	}
 
 	/// Use the end of the last frame as the duration when the header lacks one
@@ -834,32 +840,7 @@ class Demuxer::Impl {
 		}
 	}
 
-	/// Get a block's timestamp in ticks relative to the first block
-	int64_t RelativeTicks(uint64_t cluster_time, int16_t relative) {
-		constexpr char const *out_of_range = "Matroska timestamp is out of range";
-		int64_t ticks;
-		if (cluster_time >= first_cluster_time) {
-			uint64_t difference = cluster_time - first_cluster_time;
-			if (difference > static_cast<uint64_t>(INT64_MAX))
-				throw InvalidDataError(out_of_range);
-			ticks = static_cast<int64_t>(difference);
-		}
-		else {
-			uint64_t difference = first_cluster_time - cluster_time;
-			if (difference > static_cast<uint64_t>(INT64_MAX))
-				throw InvalidDataError(out_of_range);
-			ticks = -static_cast<int64_t>(difference);
-		}
-		return checked_add_signed(ticks, int64_t{relative} - first_relative, out_of_range);
-	}
-
 	// Clusters
-
-	std::optional<Timestamp> MakeTimestamp(uint64_t nanoseconds) {
-		if (nanoseconds > static_cast<uint64_t>(INT64_MAX))
-			throw InvalidDataError("Matroska timestamp is out of range");
-		return Timestamp{static_cast<int64_t>(nanoseconds)};
-	}
 
 	/// Split a block into its frames, appending those for only_track (or all tracks) to frames
 	void ParseBlock(Element const& block, uint64_t cluster_time, std::optional<uint64_t> block_duration,
@@ -931,7 +912,9 @@ class Demuxer::Impl {
 			sizes[0] = end - cursor;
 
 		constexpr char const *out_of_range = "Matroska timestamp is out of range";
-		int64_t ticks = RelativeTicks(cluster_time, relative);
+		if (cluster_time > static_cast<uint64_t>(INT64_MAX))
+			throw InvalidDataError(out_of_range);
+		int64_t ticks = checked_add_signed(static_cast<int64_t>(cluster_time), relative, out_of_range);
 		auto const& track_state = all_tracks[track];
 		uint64_t frame_duration = block_duration
 			? checked_scale(checked_multiply(*block_duration, timestamp_scale, "Matroska block duration is out of range"),
@@ -943,15 +926,14 @@ class Demuxer::Impl {
 			frame.track = track;
 			frame.position = cursor;
 			frame.size = sizes[i];
-			if (ticks >= 0) {
-				uint64_t start = checked_add(
-					checked_scale(checked_multiply(static_cast<uint64_t>(ticks), timestamp_scale, out_of_range), track_state.timestamp_scale, out_of_range),
-					checked_multiply(i, frame_duration, out_of_range),
-					out_of_range);
-				frame.start = MakeTimestamp(start);
-				if (block_duration || frame_duration)
-					frame.end = MakeTimestamp(checked_add(start, frame_duration, out_of_range));
-			}
+			uint64_t lace_offset = checked_multiply(i, frame_duration, out_of_range);
+			if (lace_offset > static_cast<uint64_t>(INT64_MAX) || frame_duration > static_cast<uint64_t>(INT64_MAX))
+				throw InvalidDataError(out_of_range);
+			int64_t start = checked_add_signed(ticks_to_nanoseconds(ticks, timestamp_scale, track_state.timestamp_scale),
+				static_cast<int64_t>(lace_offset), out_of_range);
+			frame.start = Timestamp{start};
+			if (block_duration || frame_duration)
+				frame.end = Timestamp{checked_add_signed(start, static_cast<int64_t>(frame_duration), out_of_range)};
 			out.push_back(frame);
 			cursor = checked_add(cursor, sizes[i], "Matroska frame exceeds its block");
 		}
@@ -1021,7 +1003,6 @@ public:
 			// Our own errors are agi::Exceptions, so this is only libebml rejecting the file
 			throw InvalidDataError(e.what());
 		}
-		FindFirstTimestamp();
 	}
 
 	std::vector<SubtitleTrack> const& Tracks() const { return tracks; }
@@ -1032,6 +1013,14 @@ public:
 			duration_computed = true;
 		}
 		return duration;
+	}
+
+	std::optional<Timestamp> StartTime() {
+		if (!start_time_computed) {
+			ComputeStartTime();
+			start_time_computed = true;
+		}
+		return start_time;
 	}
 
 	void Select(TrackId id) {
@@ -1105,6 +1094,10 @@ std::vector<Attachment> const& Demuxer::Attachments() const {
 
 std::optional<Timestamp> Demuxer::Duration() {
 	return impl->Duration();
+}
+
+std::optional<Timestamp> Demuxer::StartTime() {
+	return impl->StartTime();
 }
 
 void Demuxer::SelectTrack(TrackId track) {

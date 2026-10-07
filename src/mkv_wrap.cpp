@@ -62,17 +62,22 @@ namespace mkv = agi::matroska;
 /// Limit on the total size of the subtitle data read from a file
 constexpr size_t max_total_subtitle_bytes = 64 * 1024 * 1024;
 
-agi::Time to_ass_time(std::optional<mkv::Timestamp> const& time) {
-	if (!time) return 0;
-	if (time->nanoseconds < 0)
-		throw MatroskaException("Negative Matroska subtitle timestamp");
-	auto milliseconds = time->nanoseconds / 1000000;
+/// Get a time in milliseconds relative to origin, which may be negative
+int64_t relative_ms(mkv::Timestamp time, int64_t origin) {
+	if ((origin < 0 && time.nanoseconds > INT64_MAX + origin) || (origin > 0 && time.nanoseconds < INT64_MIN + origin))
+		throw MatroskaException("Matroska subtitle timestamp is out of range");
+	return (time.nanoseconds - origin) / 1000000;
+}
+
+agi::Time to_ass_time(int64_t milliseconds) {
 	if (milliseconds > std::numeric_limits<int>::max())
 		throw MatroskaException("Matroska subtitle timestamp is out of range");
 	return static_cast<int>(milliseconds);
 }
 
-void read_subtitles(agi::ProgressSink *ps, mkv::Demuxer& demuxer, bool srt, int64_t total_time, AssParser *parser) {
+/// Read the selected track's events. origin is the time in the file which
+/// becomes time zero.
+void read_subtitles(agi::ProgressSink *ps, mkv::Demuxer& demuxer, bool srt, int64_t origin, int64_t total_time, AssParser *parser) {
 	std::vector<std::pair<int, std::string>> subList;
 	size_t total_bytes = 0;
 	SrtTagParser srtParser;
@@ -85,8 +90,13 @@ void read_subtitles(agi::ProgressSink *ps, mkv::Demuxer& demuxer, bool srt, int6
 			throw MatroskaException(agi::format("Matroska subtitle data exceeds the %d MiB limit", max_total_subtitle_bytes / 1024 / 1024));
 		total_bytes += packet->data.size();
 
-		agi::Time subStart = to_ass_time(packet->start);
-		agi::Time subEnd = packet->end ? to_ass_time(packet->end) : subStart;
+		int64_t start = relative_ms(packet->start, origin);
+		int64_t end = packet->end ? relative_ms(*packet->end, origin) : start;
+		// Lines entirely before the start of the file can't be shown
+		if (end < 0 || (end == 0 && start < 0))
+			continue;
+		agi::Time subStart = to_ass_time(std::max<int64_t>(start, 0));
+		agi::Time subEnd = to_ass_time(end);
 		std::string_view readBuf(reinterpret_cast<const char *>(packet->data.data()), packet->data.size());
 
 		// Process SSA/ASS
@@ -220,10 +230,20 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 	parser.AddLine("[Events]");
 
 	run_with_progress(_("Reading subtitles from Matroska file."), active_sink, [&](agi::ProgressSink *ps) {
-		// May need to find the last cluster, so do this inside the progress dialog
+		// Players such as mpv and MPC-HC treat the earliest audio or video
+		// timestamp as the start of the file, so make that time zero. Files
+		// with only subtitles are never played by themselves, so keep their
+		// timestamps as-is. Aegisub's video timeline instead makes the first
+		// video frame time zero (TypesettingTools/Aegisub#21), so in files
+		// where video starts after audio, imported lines currently appear late
+		// by that delay, but are exported with their original timing.
+		//
+		// These may need to read through the file, so are done in the progress dialog.
+		auto file_start = demuxer->StartTime();
+		int64_t origin = file_start ? file_start->nanoseconds : 0;
 		auto duration = demuxer->Duration();
 		int64_t totalTime = duration ? duration->nanoseconds / 1000000 : 0;
-		read_subtitles(ps, *demuxer, srt, totalTime, &parser);
+		read_subtitles(ps, *demuxer, srt, origin, totalTime, &parser);
 	});
 
 	target->swap(imported);

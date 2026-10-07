@@ -1,4 +1,5 @@
 duration	3000000000
+start	0
 track	1	2330455654525085584	S_TEXT/ASS	eng	ASS track	480	1	1
 track	2	7642018816776784136	S_TEXT/UTF8	jpn		0	1	0
 attachment	attachment.txt	text/plain	42	6e22e83d2777896d
