@@ -32,9 +32,6 @@ jobs:
             os: windows-latest
             sccache-key: windows-x86_64-msvc
             msvc: true
-            compilers: |
-              $env:CC = "sccache cl"
-              $env:CXX = "sccache cl"
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
               Enter-VsDevShell -VsInstallPath $env:VS -SkipAutomaticLocation -DevCmdArguments "-arch=x64 -host_arch=x64"
@@ -57,18 +54,16 @@ jobs:
             os: ubuntu-latest
             sccache-key: linux-x86_64-gcc
             buildtype: debugoptimized
-            compilers: export CC="sccache gcc" CXX="sccache g++"
             args: -Db_pch=false
           - name: Ubuntu Release
             os: ubuntu-latest
             sccache-key: linux-x86_64-gcc
             buildtype: release
-            compilers: export CC="sccache gcc" CXX="sccache g++"
             args: -Db_pch=false
           - name: macOS x86_64 Release
             os: macos-15
             sccache-key: macos-x86_64-clang
-            cross_args: --cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini
+            cross_args: --cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini --cross-file tools/sccache.ini
             buildtype: release
             args: &macos_source_args >-
               -Ddefault_library=static
@@ -101,7 +96,6 @@ jobs:
             os: macos-15
             sccache-key: macos-arm64-clang
             buildtype: debugoptimized
-            compilers: export CC="sccache clang" CXX="sccache clang++"
             args: >-
               -Dmacos_deployment_target=15.0
               -Dbuild_osx_bundle=false
@@ -113,7 +107,6 @@ jobs:
             sccache-key: macos-arm64-clang
             native_args: --native-file tools/macos-release.ini
             buildtype: release
-            compilers: export CC="sccache clang" CXX="sccache clang++"
             args: *macos_source_args
 
     steps:
@@ -204,7 +197,6 @@ jobs:
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
-          ${{ matrix.config.compilers }}
           meson setup build ${{ matrix.config.native_args }} ${{ matrix.config.cross_args }} ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
 
       - name: Build FFTW (MacOS)
