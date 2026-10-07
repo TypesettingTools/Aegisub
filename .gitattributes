@@ -9,3 +9,7 @@ subprojects/luabins/meson.build -linguist-vendored
 libaegisub/lua/modules/lpeg.*       linguist-vendored
 
 automation/include/moonscript.lua   linguist-vendored
+
+# Compared byte-for-byte by the Matroska tests
+tests/matroska/fixtures/*.behavior eol=lf
+tests/matroska/fixtures/*.mk[av]  binary
