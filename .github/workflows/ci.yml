@@ -22,6 +22,7 @@ jobs:
       # Same condition as windows-sign-executable
       AEGISUB_SIGN_WINDOWS: ${{ matrix.config.os == 'windows-latest' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/ci/windows-signing') }}
       SCCACHE_GHA_ENABLED: "true"
+      SCCACHE_C_CUSTOM_CACHE_BUSTER: ${{ matrix.config['sccache-key'] }}
 
     strategy:
       fail-fast: false
@@ -29,6 +30,7 @@ jobs:
         config:
           - name: Windows MSVC Release
             os: windows-latest
+            sccache-key: windows-x86_64-msvc
             msvc: true
             compilers: |
               $env:CC = "sccache cl"
@@ -53,16 +55,19 @@ jobs:
               -Dlibass:fontconfig=disabled
           - name: Ubuntu Debug
             os: ubuntu-latest
+            sccache-key: linux-x86_64-gcc
             buildtype: debugoptimized
             compilers: export CC="sccache gcc" CXX="sccache g++"
             args: -Db_pch=false
           - name: Ubuntu Release
             os: ubuntu-latest
+            sccache-key: linux-x86_64-gcc
             buildtype: release
             compilers: export CC="sccache gcc" CXX="sccache g++"
             args: -Db_pch=false
           - name: macOS x86_64 Release
             os: macos-15
+            sccache-key: macos-x86_64-clang
             cross_args: --cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini
             buildtype: release
             args: &macos_source_args >-
@@ -94,6 +99,7 @@ jobs:
               --force-fallback-for=boost,wxWidgets,libass,zlib,freetype2,fribidi,harfbuzz,ffms2,libavformat,libavcodec,libswscale,libavutil,libswresample,dav1d,hunspell,uchardet,icu-uc,icu-i18n,libcurl
           - name: macOS arm64 Debug
             os: macos-15
+            sccache-key: macos-arm64-clang
             buildtype: debugoptimized
             compilers: export CC="sccache clang" CXX="sccache clang++"
             args: >-
@@ -104,6 +110,7 @@ jobs:
               -Dopenal=enabled
           - name: macOS arm64 Release
             os: macos-15
+            sccache-key: macos-arm64-clang
             native_args: --native-file tools/macos-release.ini
             buildtype: release
             compilers: export CC="sccache clang" CXX="sccache clang++"
