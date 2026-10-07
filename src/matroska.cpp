@@ -42,6 +42,7 @@
 
 #include <algorithm>
 #include <climits>
+#include <cmath>
 #include <cstring>
 #include <limits>
 #include <unordered_map>
@@ -184,6 +185,21 @@ uint64_t checked_add(uint64_t lhs, uint64_t rhs, char const *message) {
 	return lhs + rhs;
 }
 
+int64_t checked_add_signed(int64_t lhs, int64_t rhs, char const *message) {
+	if ((rhs > 0 && lhs > INT64_MAX - rhs) || (rhs < 0 && lhs < INT64_MIN - rhs))
+		throw InvalidDataError(message);
+	return lhs + rhs;
+}
+
+uint64_t checked_scale(uint64_t value, double scale, char const *message) {
+	if (scale == 1.0)
+		return value;
+	double scaled = static_cast<double>(value) * scale;
+	if (!(scaled >= 0) || scaled >= 18446744073709551616.0)
+		throw InvalidDataError(message);
+	return static_cast<uint64_t>(scaled);
+}
+
 uint64_t checked_multiply(uint64_t lhs, uint64_t rhs, char const *message) {
 	if (lhs && rhs > UINT64_MAX / lhs)
 		throw InvalidDataError(message);
@@ -282,6 +298,8 @@ std::vector<uint8_t> inflate_packet(std::vector<uint8_t> const& input, size_t li
 struct TrackState {
 	uint64_t uid = 0;
 	uint64_t default_duration = 0;
+	/// Deprecated per-track multiplier applied to block timestamps and durations
+	double timestamp_scale = 1.0;
 	Compression compression = Compression::none;
 	std::vector<uint8_t> stripped_header;
 };
@@ -323,6 +341,10 @@ class Demuxer::Impl {
 	Limits limits;
 
 	uint64_t timestamp_scale = 1000000;
+	/// Timestamp in ticks of the first block in the file, which is subtracted
+	/// from all block timestamps so that the file starts at zero, as the video
+	/// providers do for video frames
+	int64_t first_timestamp = 0;
 	std::optional<Timestamp> duration;
 	std::vector<TrackState> all_tracks;
 	std::unordered_map<uint64_t, size_t> track_by_number;
@@ -457,6 +479,11 @@ class Demuxer::Impl {
 			return;
 
 		state.default_duration = uint_value<KaxTrackDefaultDuration>(entry);
+		if (auto scale = child<KaxTrackTimecodeScale>(entry)) {
+			double value = static_cast<double>(*scale);
+			if (value > 0 && std::isfinite(value))
+				state.timestamp_scale = value;
+		}
 		bool zlib_codec_private = false;
 		if (auto encodings = child<KaxContentEncodings>(entry))
 			state.compression = parse_encodings(*encodings, state.stripped_header, zlib_codec_private);
@@ -524,14 +551,25 @@ class Demuxer::Impl {
 		ReaderCallback io(*reader);
 		EbmlStream stream(io);
 
+		// FindNextID returns whatever element comes next, as an EbmlDummy if
+		// it isn't the requested one
 		std::unique_ptr<EbmlElement> head(stream.FindNextID(EBML_INFO(EbmlHead), UINT64_MAX));
-		if (!head)
+		if (!dynamic_cast<EbmlHead *>(head.get()))
 			throw InvalidDataError("EBML header not found");
 		head->SkipData(stream, EBML_CONTEXT(head.get()));
 
-		std::unique_ptr<EbmlElement> segment(stream.FindNextID(EBML_INFO(KaxSegment), UINT64_MAX));
-		if (!segment)
-			throw InvalidDataError("Matroska segment not found");
+		std::unique_ptr<EbmlElement> segment;
+		for (;;) {
+			segment.reset(stream.FindNextID(EBML_INFO(KaxSegment), UINT64_MAX));
+			if (!segment)
+				throw InvalidDataError("Matroska segment not found");
+			if (dynamic_cast<KaxSegment *>(segment.get()))
+				break;
+			// Skip anything else at the top level, such as Void
+			if (!segment->IsFiniteSize())
+				throw InvalidDataError("Matroska segment not found");
+			segment->SkipData(stream, EBML_CONTEXT(segment.get()));
+		}
 		auto const& context = EBML_CONTEXT(segment.get());
 
 		int upper = 0;
@@ -574,6 +612,48 @@ class Demuxer::Impl {
 				next.reset(stream.FindNextElement(context, upper, UINT64_MAX, true));
 			current = std::move(next);
 		}
+	}
+
+	/// Find the timestamp of the first block in the first cluster
+	void FindFirstTimestamp() {
+		if (clusters.empty())
+			return;
+		auto const& cluster = clusters.front();
+		try {
+			uint64_t end = checked_add(cluster.position, cluster.size, "Matroska cluster is out of range");
+			uint64_t cluster_time = 0;
+			for (uint64_t position = cluster.position; position < end;) {
+				auto element = ReadElement(position, end);
+				position = element.end;
+				std::optional<Element> block;
+				if (element.id == id_cluster_timestamp)
+					cluster_time = ReadUInt(element);
+				else if (element.id == id_simple_block)
+					block = element;
+				else if (element.id == id_block_group) {
+					for (uint64_t child_position = element.data; child_position < element.end && !block;) {
+						auto child = ReadElement(child_position, element.end);
+						child_position = child.end;
+						if (child.id == id_block)
+							block = child;
+					}
+				}
+				if (!block)
+					continue;
+
+				if (cluster_time > static_cast<uint64_t>(INT64_MAX))
+					return;
+				auto track_bytes = ReadVint(block->data, block->end).second;
+				if (block->size < track_bytes + 2u)
+					return;
+				uint64_t cursor = block->data + track_bytes;
+				auto relative = static_cast<int16_t>((ReadByte(cursor) << 8) | ReadByte(cursor + 1));
+				first_timestamp = checked_add_signed(static_cast<int64_t>(cluster_time), relative, "Matroska timestamp is out of range");
+				return;
+			}
+		}
+		catch (InvalidDataError const&) { }
+		catch (TruncatedError const&) { }
 	}
 
 	/// Use the end of the last frame as the duration when the header lacks one
@@ -682,12 +762,16 @@ class Demuxer::Impl {
 		else
 			sizes[0] = end - cursor;
 
-		if (cluster_time > static_cast<uint64_t>(INT64_MAX) || (relative > 0 && cluster_time > static_cast<uint64_t>(INT64_MAX - relative)))
-			throw InvalidDataError("Matroska timestamp is out of range");
-		int64_t ticks = static_cast<int64_t>(cluster_time) + relative;
+		constexpr char const *out_of_range = "Matroska timestamp is out of range";
+		if (cluster_time > static_cast<uint64_t>(INT64_MAX))
+			throw InvalidDataError(out_of_range);
+		// first_timestamp is at least INT16_MIN, so negating it can't overflow
+		int64_t ticks = checked_add_signed(checked_add_signed(static_cast<int64_t>(cluster_time), -first_timestamp, out_of_range), relative, out_of_range);
+		auto const& track_state = all_tracks[track];
 		uint64_t frame_duration = block_duration
-			? checked_multiply(*block_duration, timestamp_scale, "Matroska block duration is out of range") / count
-			: all_tracks[track].default_duration;
+			? checked_scale(checked_multiply(*block_duration, timestamp_scale, "Matroska block duration is out of range"),
+				track_state.timestamp_scale, "Matroska block duration is out of range") / count
+			: track_state.default_duration;
 
 		for (unsigned i = 0; i < count; ++i) {
 			Frame frame;
@@ -696,12 +780,12 @@ class Demuxer::Impl {
 			frame.size = sizes[i];
 			if (ticks >= 0) {
 				uint64_t start = checked_add(
-					checked_multiply(static_cast<uint64_t>(ticks), timestamp_scale, "Matroska timestamp is out of range"),
-					checked_multiply(i, frame_duration, "Matroska timestamp is out of range"),
-					"Matroska timestamp is out of range");
+					checked_scale(checked_multiply(static_cast<uint64_t>(ticks), timestamp_scale, out_of_range), track_state.timestamp_scale, out_of_range),
+					checked_multiply(i, frame_duration, out_of_range),
+					out_of_range);
 				frame.start = MakeTimestamp(start);
 				if (block_duration || frame_duration)
-					frame.end = MakeTimestamp(checked_add(start, frame_duration, "Matroska timestamp is out of range"));
+					frame.end = MakeTimestamp(checked_add(start, frame_duration, out_of_range));
 			}
 			out.push_back(frame);
 			cursor = checked_add(cursor, sizes[i], "Matroska frame exceeds its block");
@@ -772,6 +856,7 @@ public:
 			// Our own errors are agi::Exceptions, so this is only libebml rejecting the file
 			throw InvalidDataError(e.what());
 		}
+		FindFirstTimestamp();
 		ComputeDuration();
 	}
 

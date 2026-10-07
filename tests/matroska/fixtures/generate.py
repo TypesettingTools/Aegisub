@@ -67,3 +67,14 @@ cluster=element('1f43b675',uint_element('e7',0)+element('a3',b'\x81\x00\x00\x80h
 entry=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83',17)+element('86',b'S_TEXT/UTF8'))
 cluster=element('1f43b675',uint_element('e7',(1<<63)-1)+element('a3',b'\x81\x00\x01\x80x'))
 (r/'timestamp-overflow.mkv').write_bytes(header+element('18538067',info+element('1654ae6b',entry)+cluster))
+
+# Timing: a Void before the Segment, a first block at 10s which all block
+# timestamps are made relative to, and a subtitle track with a (deprecated)
+# TrackTimecodeScale of 2
+import struct
+video=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83',1)+element('86',b'V_TEST'))
+scaled=element('ae',uint_element('d7',2)+uint_element('73c5',2)+uint_element('83',17)+element('86',b'S_TEXT/UTF8')
+ +element('23314f',struct.pack('>d',2.0)))
+group=element('a0',element('a1',b'\x82\x01\xf4\x00sub')+uint_element('9b',1000))
+cluster=element('1f43b675',uint_element('e7',10000)+element('a3',b'\x81\x00\x00\x80v')+group)
+(r/'timing.mkv').write_bytes(header+element('ec',bytes(14))+element('18538067',info+element('1654ae6b',video+scaled)+cluster))
