@@ -69,9 +69,10 @@ entry=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83'
 cluster=element('1f43b675',uint_element('e7',(1<<63)-1)+element('a3',b'\x81\x00\x01\x80x'))
 (r/'timestamp-overflow.mkv').write_bytes(header+element('18538067',info+element('1654ae6b',entry)+cluster))
 
-# Timing: a Void before the Segment, a first block at 10s which all block
-# timestamps are made relative to, and a subtitle track with a (deprecated)
-# TrackTimecodeScale of 2
+# Timing: a Void before the Segment, a file which starts at 10s, and a
+# subtitle track with a (deprecated)
+# TrackTimecodeScale of 2, which applies to the block's relative timestamp and
+# duration but not the cluster's timestamp
 import struct
 video=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83',1)+element('86',b'V_TEST'))
 scaled=element('ae',uint_element('d7',2)+uint_element('73c5',2)+uint_element('83',17)+element('86',b'S_TEXT/UTF8')

@@ -230,11 +230,22 @@ uint64_t checked_multiply(uint64_t lhs, uint64_t rhs, char const *message) {
 	return lhs * rhs;
 }
 
-/// Convert a timestamp in ticks, which may be slightly negative, to nanoseconds
-int64_t ticks_to_nanoseconds(int64_t ticks, uint64_t timestamp_scale, double track_scale) {
+/// Get a block's timestamp in nanoseconds, which is
+/// (cluster timestamp + block timestamp * TrackTimestampScale) * TimestampScale
+/// as per RFC 9559 section 11.2. The result may be slightly negative.
+int64_t block_timestamp(uint64_t cluster_time, int16_t relative, uint64_t timestamp_scale, double track_scale) {
 	constexpr char const *out_of_range = "Matroska timestamp is out of range";
+	if (track_scale != 1.0) {
+		double nanoseconds = (static_cast<double>(cluster_time) + relative * track_scale) * static_cast<double>(timestamp_scale);
+		if (!(nanoseconds > -9.2e18 && nanoseconds < 9.2e18))
+			throw InvalidDataError(out_of_range);
+		return static_cast<int64_t>(nanoseconds);
+	}
+
+	if (cluster_time > static_cast<uint64_t>(INT64_MAX))
+		throw InvalidDataError(out_of_range);
+	int64_t ticks = checked_add_signed(static_cast<int64_t>(cluster_time), relative, out_of_range);
 	uint64_t magnitude = checked_multiply(ticks < 0 ? static_cast<uint64_t>(-ticks) : static_cast<uint64_t>(ticks), timestamp_scale, out_of_range);
-	magnitude = checked_scale(magnitude, track_scale, out_of_range);
 	if (magnitude > static_cast<uint64_t>(INT64_MAX))
 		throw InvalidDataError(out_of_range);
 	return ticks < 0 ? -static_cast<int64_t>(magnitude) : static_cast<int64_t>(magnitude);
@@ -333,7 +344,7 @@ struct TrackState {
 	uint64_t uid = 0;
 	uint64_t type = 0;
 	uint64_t default_duration = 0;
-	/// Deprecated per-track multiplier applied to block timestamps and durations
+	/// Deprecated multiplier for block-relative timestamps and block durations
 	double timestamp_scale = 1.0;
 	Compression compression = Compression::none;
 	std::vector<uint8_t> stripped_header;
@@ -926,10 +937,8 @@ class Demuxer::Impl {
 			sizes[0] = end - cursor;
 
 		constexpr char const *out_of_range = "Matroska timestamp is out of range";
-		if (cluster_time > static_cast<uint64_t>(INT64_MAX))
-			throw InvalidDataError(out_of_range);
-		int64_t ticks = checked_add_signed(static_cast<int64_t>(cluster_time), relative, out_of_range);
 		auto const& track_state = all_tracks[track];
+		int64_t block_start = block_timestamp(cluster_time, relative, timestamp_scale, track_state.timestamp_scale);
 		uint64_t frame_duration = block_duration
 			? checked_scale(checked_multiply(*block_duration, timestamp_scale, "Matroska block duration is out of range"),
 				track_state.timestamp_scale, "Matroska block duration is out of range") / count
@@ -943,8 +952,7 @@ class Demuxer::Impl {
 			uint64_t lace_offset = checked_multiply(i, frame_duration, out_of_range);
 			if (lace_offset > static_cast<uint64_t>(INT64_MAX) || frame_duration > static_cast<uint64_t>(INT64_MAX))
 				throw InvalidDataError(out_of_range);
-			int64_t start = checked_add_signed(ticks_to_nanoseconds(ticks, timestamp_scale, track_state.timestamp_scale),
-				static_cast<int64_t>(lace_offset), out_of_range);
+			int64_t start = checked_add_signed(block_start, static_cast<int64_t>(lace_offset), out_of_range);
 			frame.start = Timestamp{start};
 			if (block_duration || frame_duration)
 				frame.end = Timestamp{checked_add_signed(start, static_cast<int64_t>(frame_duration), out_of_range)};
