@@ -202,7 +202,9 @@ SubtitleCodec codec_from_id(std::string const& id) {
 
 enum class Compression { none, zlib, header_strip, unsupported };
 
-Compression parse_encodings(KaxContentEncodings& encodings, std::vector<uint8_t>& stripped_header) {
+/// Get the compression applied to a track's frames. zlib_codec_private is set
+/// if the track's CodecPrivate is zlib-compressed.
+Compression parse_encodings(KaxContentEncodings& encodings, std::vector<uint8_t>& stripped_header, bool& zlib_codec_private) {
 	KaxContentEncoding *encoding = nullptr;
 	for (auto element : encodings.GetElementList()) {
 		if (auto current = dynamic_cast<KaxContentEncoding *>(element)) {
@@ -220,7 +222,19 @@ Compression parse_encodings(KaxContentEncodings& encodings, std::vector<uint8_t>
 	auto compression = child<KaxContentCompression>(*encoding);
 	if (!compression)
 		return Compression::none;
-	switch (uint_value<KaxContentCompAlgo>(*compression)) {
+
+	// Bit 1 is the frame contents and bit 2 is CodecPrivate
+	auto scope = uint_value<KaxContentEncodingScope>(*encoding, 1);
+	auto algorithm = uint_value<KaxContentCompAlgo>(*compression);
+	if (scope & 2) {
+		if (algorithm != 0)
+			return Compression::unsupported;
+		zlib_codec_private = true;
+	}
+	if (!(scope & 1))
+		return Compression::none;
+
+	switch (algorithm) {
 		case 0:
 			return Compression::zlib;
 		case 3:
@@ -266,6 +280,7 @@ std::vector<uint8_t> inflate_packet(std::vector<uint8_t> const& input, size_t li
 
 /// Demuxing state for every track in the file, not just subtitle tracks
 struct TrackState {
+	uint64_t uid = 0;
 	uint64_t default_duration = 0;
 	Compression compression = Compression::none;
 	std::vector<uint8_t> stripped_header;
@@ -433,9 +448,18 @@ class Demuxer::Impl {
 
 	void ParseTrack(KaxTrackEntry& entry) {
 		TrackState state;
+		state.uid = uint_value<KaxTrackUID>(entry);
+		// Tracks may be repeated so that a reader joining a live stream can
+		// see them, so skip entries which were already seen
+		if (state.uid && std::any_of(all_tracks.begin(), all_tracks.end(), [&](TrackState const& track) {
+			return track.uid == state.uid;
+		}))
+			return;
+
 		state.default_duration = uint_value<KaxTrackDefaultDuration>(entry);
+		bool zlib_codec_private = false;
 		if (auto encodings = child<KaxContentEncodings>(entry))
-			state.compression = parse_encodings(*encodings, state.stripped_header);
+			state.compression = parse_encodings(*encodings, state.stripped_header, zlib_codec_private);
 
 		if (!track_by_number.emplace(uint_value<KaxTrackNumber>(entry), all_tracks.size()).second)
 			throw InvalidDataError("Duplicate Matroska track number");
@@ -443,7 +467,7 @@ class Demuxer::Impl {
 		if (uint_value<KaxTrackType>(entry) == track_type_subtitle) {
 			SubtitleTrack track;
 			track.id.value = static_cast<uint32_t>(all_tracks.size());
-			track.uid = uint_value<KaxTrackUID>(entry);
+			track.uid = state.uid;
 			track.codec_id = string_value<KaxCodecID>(entry);
 			track.codec = state.compression == Compression::unsupported ? SubtitleCodec::unsupported : codec_from_id(track.codec_id);
 			track.name = unicode_value<KaxTrackName>(entry);
@@ -452,6 +476,14 @@ class Demuxer::Impl {
 			track.is_default = uint_value<KaxTrackFlagDefault>(entry, 1);
 			if (auto codec_private = child<KaxCodecPrivate>(entry))
 				track.codec_private.assign(codec_private->GetBuffer(), codec_private->GetBuffer() + codec_private->GetSize());
+			if (zlib_codec_private && !track.codec_private.empty()) {
+				try {
+					track.codec_private = inflate_packet(track.codec_private, limits.metadata_size);
+				}
+				catch (Error const&) {
+					track.codec = SubtitleCodec::unsupported;
+				}
+			}
 			tracks.push_back(std::move(track));
 		}
 		all_tracks.push_back(std::move(state));
@@ -466,7 +498,7 @@ class Demuxer::Impl {
 				continue;
 
 			Attachment attachment;
-			Location data;
+			std::optional<Location> data;
 			for (uint64_t child_position = file.data; child_position < file.end;) {
 				auto element = ReadElement(child_position, file.end);
 				child_position = element.end;
@@ -474,19 +506,17 @@ class Demuxer::Impl {
 					case id_file_name:        attachment.name = ReadString(element); break;
 					case id_file_description: attachment.description = ReadString(element); break;
 					case id_file_mime_type:   attachment.mime_type = ReadString(element); break;
-					case id_file_uid:         attachment.id.value = ReadUInt(element); break;
-					case id_file_data:        data = {element.data, element.size}; break;
+					case id_file_uid:         attachment.uid = ReadUInt(element); break;
+					case id_file_data:        data = Location{element.data, element.size}; break;
 				}
 			}
-
-			bool duplicate = std::any_of(attachments.begin(), attachments.end(), [&](Attachment const& existing) {
-				return existing.id == attachment.id;
-			});
-			if (duplicate)
+			if (!data)
 				continue;
-			attachment.size = data.size;
+
+			attachment.id.value = attachments.size();
+			attachment.size = data->size;
 			attachments.push_back(std::move(attachment));
-			attachment_data.push_back(data);
+			attachment_data.push_back(*data);
 		}
 	}
 
@@ -652,8 +682,8 @@ class Demuxer::Impl {
 		else
 			sizes[0] = end - cursor;
 
-		if (cluster_time > static_cast<uint64_t>(INT64_MAX))
-			throw InvalidDataError("Matroska cluster timestamp is out of range");
+		if (cluster_time > static_cast<uint64_t>(INT64_MAX) || (relative > 0 && cluster_time > static_cast<uint64_t>(INT64_MAX - relative)))
+			throw InvalidDataError("Matroska timestamp is out of range");
 		int64_t ticks = static_cast<int64_t>(cluster_time) + relative;
 		uint64_t frame_duration = block_duration
 			? checked_multiply(*block_duration, timestamp_scale, "Matroska block duration is out of range") / count
@@ -683,6 +713,8 @@ class Demuxer::Impl {
 		uint64_t cluster_time = 0;
 		uint64_t end = checked_add(cluster.position, cluster.size, "Matroska cluster is out of range");
 		for (uint64_t position = cluster.position; position < end;) {
+			// Clusters have no size limit, so check per element rather than per cluster
+			CheckCancelled();
 			auto element = ReadElement(position, end);
 			position = element.end;
 			if (element.id == id_cluster_timestamp)
@@ -789,12 +821,9 @@ public:
 	}
 
 	std::vector<uint8_t> AttachmentBytes(AttachmentId id) {
-		auto attachment = std::find_if(attachments.begin(), attachments.end(), [&](Attachment const& attachment) {
-			return attachment.id == id;
-		});
-		if (attachment == attachments.end())
+		if (id.value >= attachments.size())
 			throw InvalidDataError("Unknown Matroska attachment");
-		auto const& data = attachment_data[attachment - attachments.begin()];
+		auto const& data = attachment_data[id.value];
 		if (data.size > limits.attachment_size)
 			throw LimitError("Matroska attachment exceeds configured limit");
 		CheckCancelled();

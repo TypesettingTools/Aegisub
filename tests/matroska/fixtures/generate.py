@@ -49,3 +49,21 @@ encrypted_block=element('a3',b'\x82\x00\x00\x80xx')
 cluster=element('1f43b675',uint_element('e7',0)+group+encrypted_block)
 segment_payload=info+element('1654ae6b',stripped+encrypted)+cluster
 (r/'encodings.mkv').write_bytes(header+element('18538067',segment_payload))
+
+# Tracks repeated as live muxers do, a zlib-compressed CodecPrivate with
+# uncompressed frames (scope 2), and attachments without UIDs or data
+import zlib
+entry=element('ae',uint_element('d7',1)+uint_element('73c5',7)+uint_element('83',17)+element('86',b'S_TEXT/UTF8')
+ +element('63a2',zlib.compress(b'private data'))
+ +encoding(uint_element('5032',2)+uint_element('5033',0)+element('5034',uint_element('4254',0))))
+tracks=element('1654ae6b',entry)
+def attached(name,data=None):
+ return element('61a7',element('466e',name)+element('4660',b'text/plain')+(element('465c',data) if data is not None else b''))
+attachments=element('1941a469',attached(b'a.txt',b'aaa')+attached(b'b.txt',b'bb')+attached(b'c.txt'))
+cluster=element('1f43b675',uint_element('e7',0)+element('a3',b'\x81\x00\x00\x80hi'))
+(r/'repeated-tracks.mkv').write_bytes(header+element('18538067',info+tracks+tracks+attachments+cluster))
+
+# A block whose timestamp overflows when added to the cluster's
+entry=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83',17)+element('86',b'S_TEXT/UTF8'))
+cluster=element('1f43b675',uint_element('e7',(1<<63)-1)+element('a3',b'\x81\x00\x01\x80x'))
+(r/'timestamp-overflow.mkv').write_bytes(header+element('18538067',info+element('1654ae6b',entry)+cluster))

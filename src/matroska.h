@@ -50,6 +50,7 @@ struct TrackId {
 };
 
 struct AttachmentId {
+	/// Index of the attachment in Demuxer::Attachments()
 	uint64_t value = 0;
 	friend bool operator==(AttachmentId lhs, AttachmentId rhs) { return lhs.value == rhs.value; }
 };
@@ -71,6 +72,7 @@ struct SubtitleTrack {
 
 struct Attachment {
 	AttachmentId id;
+	uint64_t uid = 0;
 	std::string name;
 	std::string description;
 	std::string mime_type;
