@@ -96,3 +96,14 @@ subtitle=element('ae',uint_element('d7',3)+uint_element('73c5',3)+uint_element('
 early=element('a0',element('a1',b'\x83\xfe\x0c\x00early')+uint_element('9b',1000))
 cluster=element('1f43b675',uint_element('e7',1000)+early+element('a3',b'\x82\x00\x00\x80a')+element('a3',b'\x81\x00\x53\x80v'))
 (r/'start-time.mkv').write_bytes(header+element('18538067',info+element('1654ae6b',video+audio+subtitle)+cluster))
+
+# A partially downloaded file, whose last cluster ends partway through a block
+entry=element('ae',uint_element('d7',1)+uint_element('73c5',1)+uint_element('83',17)+element('86',b'S_TEXT/UTF8'))
+tracks=element('1654ae6b',entry)
+cluster=element('1f43b675',uint_element('e7',0)+element('a3',b'\x81\x00\x00\x80one')+element('a3',b'\x81\x00\x0a\x80two')
+ +element('a3',b'\x81\x00\x14\x80three-is-cut-off'))
+(r/'truncated.mkv').write_bytes((header+element('18538067',info+tracks+cluster))[:-8])
+
+# Info after the clusters with no SeekHead to find it
+clusters=element('1f43b675',uint_element('e7',0)+element('a3',b'\x81\x00\x00\x80a'))+element('1f43b675',uint_element('e7',4)+element('a3',b'\x81\x00\x00\x80b'))
+(r/'late-info.mkv').write_bytes(header+element('18538067',tracks+clusters+element('1549a966',uint_element('2ad7b1',500000))))

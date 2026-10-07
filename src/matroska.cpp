@@ -351,6 +351,8 @@ struct Frame {
 struct Location {
 	uint64_t position = 0;
 	uint64_t size = 0;
+	/// The element was cut off by the end of the file
+	bool truncated = false;
 };
 
 struct Element {
@@ -361,6 +363,7 @@ struct Element {
 	uint64_t size = 0;
 	uint64_t end = 0;
 	bool unknown_size = false;
+	bool truncated = false;
 };
 } // namespace
 
@@ -391,6 +394,7 @@ class Demuxer::Impl {
 	std::set<uint64_t> parsed_elements;
 	/// Positions of the metadata elements listed by SeekHeads
 	std::vector<uint64_t> seek_targets;
+	bool seen_info = false;
 	bool seen_tracks = false;
 	std::vector<TrackState> all_tracks;
 	std::unordered_map<uint64_t, size_t> track_by_number;
@@ -466,7 +470,9 @@ class Demuxer::Impl {
 		return {value, length};
 	}
 
-	Element ReadElement(uint64_t position, uint64_t parent_end) {
+	/// Read an element's header. If allow_truncated is set, an element which
+	/// extends past parent_end is cut off there rather than rejected.
+	Element ReadElement(uint64_t position, uint64_t parent_end, bool allow_truncated = false) {
 		uint8_t first = ReadByte(position);
 		unsigned id_length = 1;
 		for (uint8_t mask = 0x80; id_length <= 4 && !(first & mask); mask >>= 1)
@@ -483,9 +489,15 @@ class Demuxer::Impl {
 		bool unknown_size = size == (uint64_t{1} << (7 * size_length)) - 1;
 		if (unknown_size)
 			size = parent_end - data;
-		if (data > parent_end || size > parent_end - data)
+		if (data > parent_end)
 			throw InvalidDataError("Matroska element exceeds its parent");
-		return {id, position, data, size, data + size, unknown_size};
+		bool truncated = size > parent_end - data;
+		if (truncated) {
+			if (!allow_truncated)
+				throw InvalidDataError("Matroska element exceeds its parent");
+			size = parent_end - data;
+		}
+		return {id, position, data, size, data + size, unknown_size, truncated};
 	}
 
 	uint64_t ReadUInt(Element const& element) {
@@ -602,7 +614,11 @@ class Demuxer::Impl {
 
 	/// Read the top-level element at position, finding where it ends if its size is unknown
 	Element TopLevelElement(uint64_t position) {
-		auto element = ReadElement(position, segment_end);
+		// The last cluster of a partially downloaded file is usually cut off,
+		// and the blocks in it which are complete can still be read
+		auto element = ReadElement(position, segment_end, true);
+		if (element.truncated && element.id != id_cluster)
+			throw TruncatedError("Unexpected end of Matroska input");
 		if (element.unknown_size) {
 			// Only clusters are written with unknown sizes in practice. They
 			// end where the next top-level element starts.
@@ -669,6 +685,7 @@ class Demuxer::Impl {
 		if (element.id == id_info) {
 			auto info = ReadMaster<KaxInfo>(stream, element);
 			ParseInfo(static_cast<KaxInfo&>(*info));
+			seen_info = true;
 		}
 		else if (element.id == id_tracks) {
 			auto track_list = ReadMaster<KaxTracks>(stream, element);
@@ -703,7 +720,7 @@ class Demuxer::Impl {
 			}
 			cluster_scan_position = element.end;
 			if (element.id == id_cluster) {
-				clusters.push_back({element.data, element.size});
+				clusters.push_back({element.data, element.size, element.truncated});
 				return true;
 			}
 			if (stream)
@@ -767,8 +784,8 @@ class Demuxer::Impl {
 			catch (TruncatedError const&) { }
 		}
 
-		// Otherwise the only way to find the tracks is to walk the entire file
-		if (!seen_tracks) {
+		// Otherwise the only way to find them is to walk the entire file
+		if (!seen_info || !seen_tracks) {
 			while (ScanNextCluster(&stream))
 				;
 		}
@@ -946,7 +963,21 @@ class Demuxer::Impl {
 		for (uint64_t position = cluster.position; position < end;) {
 			// Clusters have no size limit, so check per element rather than per cluster
 			CheckCancelled();
-			auto element = ReadElement(position, end);
+			Element element;
+			try {
+				element = ReadElement(position, end);
+			}
+			catch (InvalidDataError const&) {
+				// Everything after the first incomplete element is missing
+				if (cluster.truncated)
+					break;
+				throw;
+			}
+			catch (TruncatedError const&) {
+				if (cluster.truncated)
+					break;
+				throw;
+			}
 			position = element.end;
 			if (element.id == id_cluster_timestamp)
 				cluster_time = ReadUInt(element);
