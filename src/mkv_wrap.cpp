@@ -38,150 +38,66 @@
 #include "ass_parser.h"
 #include "compat.h"
 #include "dialog_progress.h"
-#include "MatroskaParser.h"
+#include "matroska.h"
 #include "options.h"
 #include "subtitle_format_srt.h"
 
 #include <libaegisub/ass/time.h>
-#include <libaegisub/file_mapping.h>
 #include <libaegisub/format.h>
-#include <libaegisub/scoped_ptr.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/range/irange.hpp>
 #include <boost/tokenizer.hpp>
-#include <iterator>
+#include <exception>
+#include <functional>
+#include <limits>
+#include <optional>
 
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
-struct MkvStdIO final : InputStream {
-	agi::read_file_mapping file;
-	std::string error;
+namespace {
+namespace mkv = agi::matroska;
 
-	static int Read(InputStream *st, uint64_t pos, void *buffer, int count) {
-		auto *self = static_cast<MkvStdIO*>(st);
-		if (pos >= self->file.size())
-			return 0;
+/// Limit on the total size of the subtitle data read from a file
+constexpr size_t max_total_subtitle_bytes = 64 * 1024 * 1024;
 
-		auto remaining = self->file.size() - pos;
-		if (remaining < INT_MAX)
-			count = std::min(static_cast<int>(remaining), count);
+/// Get a time in milliseconds relative to origin, which may be negative
+int64_t relative_ms(mkv::Timestamp time, int64_t origin) {
+	if ((origin < 0 && time.nanoseconds > INT64_MAX + origin) || (origin > 0 && time.nanoseconds < INT64_MIN + origin))
+		throw MatroskaException("Matroska subtitle timestamp is out of range");
+	return (time.nanoseconds - origin) / 1000000;
+}
 
-		if (count <= 0)
-			return 0;
+agi::Time to_ass_time(int64_t milliseconds) {
+	if (milliseconds > std::numeric_limits<int>::max())
+		throw MatroskaException("Matroska subtitle timestamp is out of range");
+	return static_cast<int>(milliseconds);
+}
 
-		try {
-			auto data = self->file.read(pos, count);
-			if (buffer)
-				memcpy(buffer, data, count);
-		}
-		catch (agi::Exception const& e) {
-			self->error = e.GetMessage();
-			return -1;
-		}
-
-		return count;
-	}
-
-	static int64_t Scan(InputStream *st, uint64_t start, unsigned signature) {
-		auto *self = static_cast<MkvStdIO*>(st);
-		try {
-			unsigned cmp = 0;
-			for (auto i : boost::irange(start, self->file.size())) {
-				int c = *self->file.read(i, 1);
-				cmp = ((cmp << 8) | c) & 0xffffffff;
-				if (cmp == signature)
-					return i - 4;
-			}
-		}
-		catch (agi::Exception const& e) {
-			self->error = e.GetMessage();
-		}
-
-		return -1;
-	}
-
-	static int64_t Size(InputStream *st) {
-		return static_cast<MkvStdIO*>(st)->file.size();
-	}
-
-	MkvStdIO(agi::fs::path const& filename) : file(filename) {
-		read = &MkvStdIO::Read;
-		scan = &MkvStdIO::Scan;
-		getcachesize = [](InputStream *) -> unsigned int { return 16 * 1024 * 1024; };
-		geterror = [](InputStream *st) -> const char * { return ((MkvStdIO *)st)->error.c_str(); };
-		memalloc = [](InputStream *, size_t size) { return malloc(size); };
-		memrealloc = [](InputStream *, void *mem, size_t size) { return realloc(mem, size); };
-		memfree = [](InputStream *, void *mem) { free(mem); };
-		progress = [](InputStream *, uint64_t, uint64_t) { return 1; };
-		getfilesize = &MkvStdIO::Size;
-	}
-};
-
-static constexpr ptrdiff_t max_decompressed_subtitle_frame_bytes = 16 * 1024 * 1024;
-static constexpr ptrdiff_t max_total_subtitle_bytes = 64 * 1024 * 1024;
-
-static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *input, bool srt, double totalTime, AssParser *parser, CompressedStream *cs) {
+/// Read the selected track's events. origin is the time in the file which
+/// becomes time zero.
+void read_subtitles(agi::ProgressSink *ps, mkv::Demuxer& demuxer, bool srt, int64_t origin, int64_t total_time, AssParser *parser) {
 	std::vector<std::pair<int, std::string>> subList;
-	ptrdiff_t totalSubtitleBytes = 0;
-
-	// Load blocks
-	uint64_t startTime, endTime, filePos;
-	unsigned int rt, frameSize, frameFlags;
-
-	std::vector<char> uncompBuf(cs ? 256 : 0);
-
+	size_t total_bytes = 0;
 	SrtTagParser srtParser;
 
-	while (mkv_ReadFrame(file, 0, &rt, &startTime, &endTime, &filePos, &frameSize, &frameFlags) == 0) {
-		if (ps->IsCancelled()) return true;
-		if (frameSize == 0) continue;
+	while (auto packet = demuxer.ReadPacket()) {
+		if (ps->IsCancelled()) return;
+		if (packet->data.empty()) continue;
 
-		std::string_view readBuf;
+		if (packet->data.size() > max_total_subtitle_bytes - total_bytes)
+			throw MatroskaException(agi::format("Matroska subtitle data exceeds the %d MiB limit", max_total_subtitle_bytes / 1024 / 1024));
+		total_bytes += packet->data.size();
 
-		if (cs) {
-			cs_NextFrame(cs, filePos, frameSize);
-			ptrdiff_t bytesRead = 0;
-
-			while (true) {
-				if (bytesRead >= std::ssize(uncompBuf)) {
-					if (uncompBuf.size() >= max_decompressed_subtitle_frame_bytes) {
-						ps->Log(agi::format("Decompressed subtitle frame exceeds the %d MiB limit", max_decompressed_subtitle_frame_bytes / 1024 / 1024));
-						return false;
-					}
-					uncompBuf.resize(std::min(std::ssize(uncompBuf) * 2, max_decompressed_subtitle_frame_bytes));
-				}
-
-				int res = cs_ReadData(cs, uncompBuf.data() + bytesRead, static_cast<unsigned>(std::ssize(uncompBuf) - bytesRead));
-				if (res < 0) {
-					const char *err = cs_GetLastError(cs);
-					if (!err) err = "Unknown error";
-					ps->Log("Failed to decompress subtitles: " + std::string(err));
-					return false;
-				}
-
-				bytesRead += res;
-				if (res == 0)
-					break;
-			}
-
-			readBuf = std::string_view(uncompBuf.data(), bytesRead);
-		} else {
-			readBuf = std::string_view(input->file.read(filePos, frameSize), frameSize);
-		}
-
-		if (std::ssize(readBuf) > max_total_subtitle_bytes - totalSubtitleBytes) {
-			ps->Log(agi::format("Matroska subtitle data exceeds the %d MiB limit", max_total_subtitle_bytes / 1024 / 1024));
-			return false;
-		}
-		totalSubtitleBytes += std::ssize(readBuf);
-
-		// Get start and end times
-		int64_t timecodeScaleLow = 1000000;
-		agi::Time subStart = startTime / timecodeScaleLow;
-		agi::Time subEnd = endTime / timecodeScaleLow;
+		int64_t start = relative_ms(packet->start, origin);
+		int64_t end = packet->end ? relative_ms(*packet->end, origin) : start;
+		// Lines entirely before the start of the file can't be shown
+		if (end < 0 || (end == 0 && start < 0))
+			continue;
+		agi::Time subStart = to_ass_time(std::max<int64_t>(start, 0));
+		agi::Time subEnd = to_ass_time(end);
+		std::string_view readBuf(reinterpret_cast<const char *>(packet->data.data()), packet->data.size());
 
 		// Process SSA/ASS
 		if (!srt) {
@@ -190,13 +106,18 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 			auto second = readBuf.find(',', first + 1);
 			if (second == readBuf.npos) continue;
 
-			subList.emplace_back(
-				boost::lexical_cast<int>(readBuf.substr(0, first)),
-				agi::format("Dialogue: %d,%s,%s,%s"
-					, boost::lexical_cast<int>(readBuf.substr(first + 1, second - (first + 1)))
-					, subStart.GetAssFormatted()
-					, subEnd.GetAssFormatted()
-					, readBuf.substr(second + 1)));
+			try {
+				subList.emplace_back(
+					boost::lexical_cast<int>(readBuf.substr(0, first)),
+					agi::format("Dialogue: %d,%s,%s,%s"
+						, boost::lexical_cast<int>(readBuf.substr(first + 1, second - (first + 1)))
+						, subStart.GetAssFormatted()
+						, subEnd.GetAssFormatted()
+						, readBuf.substr(second + 1)));
+			}
+			catch (boost::bad_lexical_cast const&) {
+				throw MatroskaException("Malformed ASS packet in Matroska subtitle track");
+			}
 		}
 		// Process SRT
 		else {
@@ -211,41 +132,58 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 			subList.emplace_back(subList.size(), std::move(line));
 		}
 
-		ps->SetProgress(startTime / timecodeScaleLow, totalTime);
+		if (total_time > 0)
+			ps->SetProgress(subStart, total_time);
 	}
 
 	// Insert into file
 	sort(begin(subList), end(subList));
-	for (auto order_value_pair : subList)
+	for (auto const& order_value_pair : subList)
 		parser->AddLine(order_value_pair.second);
-	return true;
+}
+
+/// Run a task in a progress dialog, rethrowing any error it fails with
+/// rather than just logging it to the dialog
+void run_with_progress(wxString const& message, agi::ProgressSink *&active_sink, std::function<void(agi::ProgressSink *)> task) {
+	DialogProgress progress(nullptr, _("Parsing Matroska"), message);
+	std::exception_ptr failure;
+	progress.Run([&](agi::ProgressSink *ps) {
+		active_sink = ps;
+		try {
+			task(ps);
+		}
+		catch (...) {
+			failure = std::current_exception();
+		}
+		// The sink is destroyed when Run returns
+		active_sink = nullptr;
+	});
+	if (failure)
+		std::rethrow_exception(failure);
+}
 }
 
 void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *target) {
-	MkvStdIO input(filename);
-	char err[2048];
-	agi::scoped_holder<MatroskaFile*, decltype(&mkv_Close)> file(mkv_Open(&input, err, sizeof(err)), mkv_Close);
-	if (!file) throw MatroskaException(err);
+	// The demuxer polls for cancellation from whichever progress dialog is
+	// currently running it
+	agi::ProgressSink *active_sink = nullptr;
+	auto cancelled = [&] { return active_sink && active_sink->IsCancelled(); };
 
-	// Get info
-	unsigned tracks = mkv_GetNumTracks(file);
-	std::vector<unsigned> tracksFound;
-	std::vector<std::string> tracksNames;
+	std::optional<mkv::Demuxer> demuxer;
+	run_with_progress(_("Reading Matroska track information."), active_sink, [&](agi::ProgressSink *) {
+		demuxer.emplace(mkv::OpenFile(filename), cancelled);
+	});
 
 	// Find tracks
-	for (auto track : boost::irange(0u, tracks)) {
-		auto trackInfo = mkv_GetTrackInfo(file, track);
-		if (trackInfo->Type != 0x11) continue;
-
-		// Known subtitle format
-		std::string CodecID(trackInfo->CodecID);
-		if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8") {
-			tracksFound.push_back(track);
-			tracksNames.emplace_back(agi::format("%d (%s %s)", track, CodecID, trackInfo->Language));
-			if (trackInfo->Name) {
-				tracksNames.back() += ": ";
-				tracksNames.back() += trackInfo->Name;
-			}
+	std::vector<mkv::SubtitleTrack const *> tracksFound;
+	std::vector<std::string> tracksNames;
+	for (auto const& track : demuxer->SubtitleTracks()) {
+		if (track.codec == mkv::SubtitleCodec::unsupported) continue;
+		tracksFound.push_back(&track);
+		tracksNames.emplace_back(agi::format("%d (%s %s)", track.id.value, track.codec_id, track.language));
+		if (!track.name.empty()) {
+			tracksNames.back() += ": ";
+			tracksNames.back() += track.name;
 		}
 	}
 
@@ -253,7 +191,7 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 	if (tracksFound.empty())
 		throw MatroskaException("File has no recognised subtitle tracks.");
 
-	unsigned trackToRead;
+	mkv::SubtitleTrack const *trackToRead;
 	// Only one track found
 	if (tracksFound.size() == 1)
 		trackToRead = tracksFound[0];
@@ -267,18 +205,18 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 	}
 
 	// Picked track
-	mkv_SetTrackMask(file, ~(1 << trackToRead));
-	auto trackInfo = mkv_GetTrackInfo(file, trackToRead);
-	std::string CodecID(trackInfo->CodecID);
-	bool srt = CodecID == "S_TEXT/UTF8";
-	bool ssa = CodecID == "S_TEXT/SSA";
+	demuxer->SelectTrack(trackToRead->id);
+	bool srt = trackToRead->codec == mkv::SubtitleCodec::srt;
+	bool ssa = trackToRead->codec == mkv::SubtitleCodec::ssa;
 
-	AssParser parser(target, !ssa);
+	// Parse into a temporary file so a failure partway through leaves the target untouched
+	AssFile imported;
+	AssParser parser(&imported, !ssa);
 
 	// Read private data if it's ASS/SSA
 	if (!srt) {
 		// Read raw data
-		std::string priv((const char *)trackInfo->CodecPrivate, trackInfo->CodecPrivateSize);
+		std::string priv(trackToRead->codec_private.begin(), trackToRead->codec_private.end());
 
 		// Load into file
 		boost::char_separator<char> sep("\r\n");
@@ -287,49 +225,37 @@ void MatroskaWrapper::GetSubtitles(agi::fs::path const& filename, AssFile *targe
 	}
 	// Load default if it's SRT
 	else
-		target->LoadDefault(false, OPT_GET("Subtitle Format/SRT/Default Style Catalog")->GetString());
+		imported.LoadDefault(false, OPT_GET("Subtitle Format/SRT/Default Style Catalog")->GetString());
 
 	parser.AddLine("[Events]");
 
-	agi::scoped_holder<CompressedStream *, decltype(&cs_Destroy)> cs(nullptr, cs_Destroy);
-	if (trackInfo->CompEnabled) {
-		cs = cs_Create(file, trackToRead, err, sizeof(err));
-		if (!cs)
-			throw MatroskaException(err);
-	}
+	run_with_progress(_("Reading subtitles from Matroska file."), active_sink, [&](agi::ProgressSink *ps) {
+		// Players such as mpv and MPC-HC treat the earliest audio or video
+		// timestamp as the start of the file, so make that time zero. Files
+		// with only subtitles are never played by themselves, so keep their
+		// timestamps as-is. Aegisub's video timeline instead makes the first
+		// video frame time zero (TypesettingTools/Aegisub#21), so in files
+		// where video starts after audio, imported lines currently appear late
+		// by that delay, but are exported with their original timing.
+		//
+		// These may need to read through the file, so are done in the progress dialog.
+		auto file_start = demuxer->StartTime();
+		int64_t origin = file_start ? file_start->nanoseconds : 0;
+		auto duration = demuxer->Duration();
+		int64_t totalTime = duration ? duration->nanoseconds / 1000000 : 0;
+		read_subtitles(ps, *demuxer, srt, origin, totalTime, &parser);
+	});
 
-	// Read timecode scale
-	auto segInfo = mkv_GetFileInfo(file);
-	int64_t timecodeScale = mkv_TruncFloat(trackInfo->TimecodeScale) * segInfo->TimecodeScale;
-
-	// Progress bar
-	auto totalTime = double(segInfo->Duration) / timecodeScale;
-	DialogProgress progress(nullptr, _("Parsing Matroska"), _("Reading subtitles from Matroska file."));
-	bool result;
-	progress.Run([&](agi::ProgressSink *ps) { result = read_subtitles(ps, file, &input, srt, totalTime, &parser, cs); });
-
-	if (!result)
-		throw MatroskaException("Failed to read subtitles");
+	target->swap(imported);
 }
 
 bool MatroskaWrapper::HasSubtitles(agi::fs::path const& filename) {
-	char err[2048];
 	try {
-		MkvStdIO input(filename);
-		agi::scoped_holder<MatroskaFile*, decltype(&mkv_Close)> file(mkv_Open(&input, err, sizeof(err)), mkv_Close);
-		if (!file) return false;
-
-		// Find tracks
-		auto tracks = mkv_GetNumTracks(file);
-		for (auto track : boost::irange(0u, tracks)) {
-			auto trackInfo = mkv_GetTrackInfo(file, track);
-
-			if (trackInfo->Type == 0x11) {
-				std::string CodecID(trackInfo->CodecID);
-				if (CodecID == "S_TEXT/SSA" || CodecID == "S_TEXT/ASS" || CodecID == "S_TEXT/UTF8")
-					return true;
-			}
-		}
+		mkv::Demuxer demuxer(mkv::OpenFile(filename));
+		auto const& tracks = demuxer.SubtitleTracks();
+		return std::any_of(tracks.begin(), tracks.end(), [](mkv::SubtitleTrack const& track) {
+			return track.codec != mkv::SubtitleCodec::unsupported;
+		});
 	}
 	catch (...) {
 		// We don't care about why we couldn't read subtitles here

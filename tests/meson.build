@@ -35,6 +35,7 @@ tests_src = [
     'tests/line_iterator.cpp',
     'tests/line_wrap.cpp',
     'tests/lua_lfs.cpp',
+    'tests/matroska.cpp',
     'tests/mru.cpp',
     'tests/option.cpp',
     'tests/path.cpp',

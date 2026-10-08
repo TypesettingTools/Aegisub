@@ -1,0 +1,13 @@
+[wrap-file]
+directory = libebml-release-1.4.5
+source_url = https://github.com/Matroska-Org/libebml/archive/refs/tags/release-1.4.5.tar.gz
+source_filename = libebml-release-1.4.5.tar.gz
+source_hash = 86c99573cd0957884f26547d1a8fa0c979e4d6d57484dfd387345846e6720f49
+patch_filename = libebml_1.4.5-3_patch.zip
+patch_url = https://wrapdb.mesonbuild.com/v2/libebml_1.4.5-3/get_patch
+patch_hash = d8a188b12e288c49fe7f738e135cae86b3c09451b4de9ad4ee2ac56478e7640c
+source_fallback_url = https://github.com/mesonbuild/wrapdb/releases/download/libebml_1.4.5-3/libebml-release-1.4.5.tar.gz
+wrapdb_version = 1.4.5-3
+
+[provide]
+libebml = libebml_dep
