@@ -91,6 +91,44 @@ def test_missing_input(aegisub, srcdir, env, tmp):
         return fail("missing input: an output file was written anyway")
     return 0
 
+def test_resample(aegisub, srcdir, env, tmp):
+    # The built-in resampler has no UI in CLI mode and instead resamples to
+    # the video's resolution, which is what muxtools relies on
+    out_file = os.path.join(tmp, "out-resample.ass")
+    proc = run_cli(aegisub, [
+        os.path.join(srcdir, "input.ass"),
+        out_file,
+        "tool/resampleres",
+        "--video", "?dummy:24:48:1920:1080:0:0:0:",
+    ], env)
+    if proc.returncode != 0:
+        return fail(f"resample: aegisub --cli exited with {proc.returncode}")
+
+    with open(out_file, encoding="utf-8-sig") as f:
+        out = f.read()
+
+    if "PlayResX: 1920" not in out or "PlayResY: 1080" not in out:
+        return fail("resample: PlayRes was not changed to the video's resolution", out)
+    # 1280x720 -> 1920x1080 scales sizes by 1.5
+    if "Style: Default,Arial,72," not in out:
+        return fail("resample: the style was not resampled", out)
+    return 0
+
+def test_resample_without_video(aegisub, srcdir, env, tmp):
+    out_file = os.path.join(tmp, "out-resample-novideo.ass")
+    proc = run_cli(aegisub, [
+        os.path.join(srcdir, "input.ass"),
+        out_file,
+        "tool/resampleres",
+    ], env)
+    if proc.returncode != 1:
+        return fail(f"resample without video: expected exit code 1, got {proc.returncode}")
+    if b"requires --video" not in proc.stdout:
+        return fail("resample without video: no diagnostic was printed")
+    if os.path.exists(out_file):
+        return fail("resample without video: an output file was written anyway")
+    return 0
+
 def test_no_user_state(aegisub, srcdir, env, tmp):
     # None of the runs above may have written config, hotkeys, MRU lists,
     # logs etc. into the user's config directory
@@ -140,6 +178,7 @@ def main():
         env["AEGISUB_DATA_DIR"] = os.path.dirname(os.path.dirname(os.path.dirname(srcdir)))
 
         tests = [test_macro_runs, test_empty_file, test_missing_input,
+                 test_resample, test_resample_without_video,
                  test_bad_option_value, test_unknown_option,
                  test_no_user_state]
         for test in tests:
