@@ -563,7 +563,7 @@ if host_machine.system() == 'windows'
     link_depends += manifest_file
 endif
 
-aegisub = executable('aegisub', aegisub_src, version_h, resrc, aegisub_order_dep,
+aegisub = executable('aegisub', aegisub_src, version_h, libresrc_headers, aegisub_order_dep,
                      c_args: aegisub_defines,
                      cpp_args: aegisub_defines,
                      link_with: [libresrc, libaegisub],
