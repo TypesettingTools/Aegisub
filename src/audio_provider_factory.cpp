@@ -27,7 +27,7 @@
 #include <libaegisub/string.h>
 
 #include <algorithm>
-#include <initializer_list>
+#include <vector>
 
 using namespace agi;
 
@@ -42,7 +42,11 @@ struct factory {
 	std::vector<const char *> extensions;
 };
 
-const std::initializer_list<factory> providers = {
+// This can't be a std::initializer_list: GCC (at least 13 to 16.2) zeroes the
+// elements of one that can be constant-initialized (here, the ones with an
+// empty extensions list) when others can't be, leaving a null name.
+// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=126472
+const std::vector<factory> providers = {
 	{"Dummy", CreateDummyAudioProvider, true, {}},
 	{"PCM", CreatePCMAudioProvider, true, {".w64", ".wav"}},
 #ifdef WITH_FFMS2
