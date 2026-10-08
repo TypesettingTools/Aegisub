@@ -23,6 +23,8 @@
 #include <utility>
 #include <boost/range/distance.hpp>
 
+#include <cstdlib>
+
 namespace {
 constexpr std::array<std::string_view, 9> tokens = {
 	"?audio",
@@ -71,6 +73,15 @@ Path::Path() {
 	static_assert(sizeof(paths) / sizeof(paths[0]) == sizeof(tokens) / sizeof(tokens[0]),
 		"Token and path arrays need to be the same size");
 	FillPlatformSpecificPaths();
+
+	// Lets an uninstalled build (e.g. in the test suite) use the bundled
+	// files from the source tree
+#ifdef _WIN32
+	if (const wchar_t *data = _wgetenv(L"AEGISUB_DATA_DIR"); data && *data)
+#else
+	if (const char *data = getenv("AEGISUB_DATA_DIR"); data && *data)
+#endif
+		SetToken("?data", fs::path(data));
 }
 
 fs::path Path::Decode(std::string_view path) const {

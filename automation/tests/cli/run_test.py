@@ -119,14 +119,13 @@ def main():
         env["XDG_CONFIG_HOME"] = os.path.join(tmp, ".config")
         env["XDG_CACHE_HOME"] = os.path.join(tmp, ".cache")
         env["XDG_DATA_HOME"] = os.path.join(tmp, ".local", "share")
+        # macOS looks up ?user through Foundation, which ignores HOME
+        env["CFFIXED_USER_HOME"] = tmp
 
         # ?data points at the install prefix, which doesn't exist for an
-        # uninstalled build, so make ?user/automation point at the source
-        # tree to give scripts access to the include files (moonscript etc.)
-        automation_dir = os.path.dirname(os.path.dirname(srcdir))
-        user_dir = os.path.join(tmp, ".aegisub")
-        os.makedirs(user_dir)
-        os.symlink(automation_dir, os.path.join(user_dir, "automation"))
+        # uninstalled build, so point it at the source tree instead to give
+        # scripts access to the bundled include files (moonscript etc.)
+        env["AEGISUB_DATA_DIR"] = os.path.dirname(os.path.dirname(os.path.dirname(srcdir)))
 
         tests = [test_macro_runs, test_empty_file, test_missing_input,
                  test_bad_option_value, test_unknown_option]
