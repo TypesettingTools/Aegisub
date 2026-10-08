@@ -28,7 +28,7 @@
 #include <wx/translation.h>
 
 #include <algorithm>
-#include <initializer_list>
+#include <vector>
 
 std::unique_ptr<VideoProvider> CreateDummyVideoProvider(agi::fs::path const&, agi::ycbcr::Header, agi::BackgroundRunner *);
 std::unique_ptr<VideoProvider> CreateYUV4MPEGVideoProvider(agi::fs::path const&, agi::ycbcr::Header, agi::BackgroundRunner *);
@@ -45,7 +45,7 @@ namespace {
 		std::vector<const char *> extensions;
 	};
 
-	const std::initializer_list<factory> providers = {
+	const std::vector<factory> providers = {
 		{"Dummy", CreateDummyVideoProvider, true, {}},
 		{"YUV4MPEG", CreateYUV4MPEGVideoProvider, true, {".y4m", ".yuv"}},
 #ifdef WITH_FFMS2

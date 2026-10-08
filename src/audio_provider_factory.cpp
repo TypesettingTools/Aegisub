@@ -27,7 +27,7 @@
 #include <libaegisub/string.h>
 
 #include <algorithm>
-#include <initializer_list>
+#include <vector>
 
 using namespace agi;
 
@@ -42,7 +42,7 @@ struct factory {
 	std::vector<const char *> extensions;
 };
 
-const std::initializer_list<factory> providers = {
+const std::vector<factory> providers = {
 	{"Dummy", CreateDummyAudioProvider, true, {}},
 	{"PCM", CreatePCMAudioProvider, true, {".w64", ".wav"}},
 #ifdef WITH_FFMS2
