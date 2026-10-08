@@ -77,8 +77,10 @@ namespace hotkey {
 
 agi::hotkey::Hotkey *inst = nullptr;
 void init() {
+	// Hotkeys are irrelevant in CLI mode, so don't touch the user's hotkey
+	// file there; an empty path means the defaults are used and never saved
 	inst = new agi::hotkey::Hotkey(
-		config::path->Decode("?user/hotkey.json"),
+		config::hasGui ? config::path->Decode("?user/hotkey.json") : agi::fs::path(),
 		GET_DEFAULT_CONFIG(default_hotkey));
 
 	auto migrations = OPT_GET("App/Hotkey Migrations")->GetListString();

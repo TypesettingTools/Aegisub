@@ -177,11 +177,6 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 #endif
 	crash_writer::Initialize(config::path->Decode("?user"));
 
-	// The config machinery writes to ?user even in CLI mode (e.g. flushing
-	// the hotkey map), and the directory-creating GUI startup steps are
-	// skipped there, so make sure the directory exists
-	agi::fs::CreateDirectory(config::path->Decode("?user"));
-
 	if (config::hasGui) {
 		StartupLog("Create log writer");
 		auto path_log = config::path->Decode("?user/log/");
@@ -193,7 +188,9 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 	StartupLog("Load user configuration");
 	try {
 		if (!config::opt)
-			config::opt = new agi::Options(config::path->Decode("?user/config.json"), GET_DEFAULT_CONFIG(default_config));
+			// CLI mode reads the user's config but never writes it back
+			config::opt = new agi::Options(config::path->Decode("?user/config.json"), GET_DEFAULT_CONFIG(default_config),
+			                               config::hasGui ? agi::Options::NONE : agi::Options::FLUSH_SKIP);
 	} catch (agi::Exception& e) {
 		LOG_E("config/init") << "Caught exception: " << e.GetMessage();
 	}
