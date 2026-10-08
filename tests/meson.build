@@ -35,8 +35,8 @@ tests_src = [
     'tests/line_iterator.cpp',
     'tests/line_wrap.cpp',
     'tests/lua_lfs.cpp',
-    'tests/mru.cpp',
     'tests/matroska.cpp',
+    'tests/mru.cpp',
     'tests/option.cpp',
     'tests/path.cpp',
     'tests/signals.cpp',
@@ -67,8 +67,8 @@ endif
 runner = executable(
     'gtest-main',
     tests_src,
-    include_directories: [tests_inc, libaegisub_inc, aegisub_src_inc],
-    dependencies: [tests_deps, deps, matroska_dep],
+    include_directories: [tests_inc, libaegisub_inc],
+    dependencies: [tests_deps, deps],
     cpp_args: tests_args + conf_defines,
     link_with: libaegisub,
 )

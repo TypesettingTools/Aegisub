@@ -577,5 +577,5 @@ aegisub = executable('aegisub', aegisub_src, version_h, resrc, aegisub_order_dep
                      c_pch: aegisub_c_pch,
                      install: true,
                      install_dir: bindir,
-                    dependencies: [deps, matroska_dep],
+                     dependencies: deps,
                      win_subsystem: 'windows')

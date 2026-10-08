@@ -11,7 +11,7 @@ matroska_lib = static_library('aegisub-matroska',
     override_options: ['unity=off'],
 )
 
-matroska_dep = declare_dependency(
+deps += declare_dependency(
     link_with: matroska_lib,
     include_directories: aegisub_src_inc,
     dependencies: [zlib_dep, libebml, libmatroska],
