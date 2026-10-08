@@ -121,7 +121,9 @@ jobs:
         with:
           python-version: '3.x'
 
+      # Release and manually dispatched (e.g. signing) builds compile from scratch
       - name: Set up sccache
+        if: github.ref_type != 'tag' && github.event_name != 'workflow_dispatch'
         uses: mozilla-actions/sccache-action@v0.0.11
 
       - name: Setup Meson
