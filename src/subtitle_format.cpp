@@ -37,6 +37,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "compat.h"
+#include "gui_wrap.h"
 #include "format.h"
 #include "subtitle_format_ass.h"
 #include "subtitle_format_ebu3264.h"
@@ -123,7 +124,7 @@ agi::vfr::Framerate SubtitleFormat::AskForFPS(bool allow_vfr, bool show_smpte, a
 
 	bool was_busy = wxIsBusy();
 	if (was_busy) wxEndBusyCursor();
-	int choice = wxGetSingleChoiceIndex(_("Please choose the appropriate FPS for the subtitles:"), _("FPS"), choices);
+	int choice = wrapChoiceDialog("subtitle-fps", _("Please choose the appropriate FPS for the subtitles:"), _("FPS"), choices);
 	if (was_busy) wxBeginBusyCursor();
 
 	using agi::vfr::Framerate;

@@ -48,6 +48,10 @@ std::string PickAutosaveFile(wxWindow *parent);
 ///                    new version actually exists.
 void PerformVersionCheck(bool interactive);
 
+/// The resampling settings suggested by default: from the script's resolution
+/// to the video's (if any), converting colors if the matrices differ
+ResampleSettings DefaultResampleSettings(agi::Context *c);
+
 /// Ask the user to pick settings for a script resampling
 /// @return Does the user want to proceed with the resampling?
 bool PromptForResampleSettings(agi::Context *c, ResampleSettings &settings);

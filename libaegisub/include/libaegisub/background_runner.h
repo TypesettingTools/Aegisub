@@ -19,6 +19,7 @@
 #pragma once
 
 #include <cstdint>
+#include <iostream>
 #include <functional>
 #include <string>
 
@@ -52,6 +53,23 @@ namespace agi {
 
 		/// Has the user asked the task to cancel?
 		virtual bool IsCancelled()=0;
+	};
+
+	/// @class CLIProgressSink
+	/// @brief A progress sink that doesn't do anything with its progress updates except print logs
+	class CLIProgressSink : public ProgressSink {
+		std::ostream &stream;
+
+	public:
+		CLIProgressSink(std::ostream &stream = std::cout) : stream(stream) {};
+
+		void SetIndeterminate() {}
+		void SetTitle(std::string const&) {}
+		void SetMessage(std::string const&) {}
+		void SetProgress(int64_t, int64_t) {}
+		void Log(std::string const& str) { stream << str; }
+		void SetStayOpen(bool) {}
+		bool IsCancelled() { return false; }
 	};
 
 	/// @class BackgroundRunner
