@@ -14,6 +14,7 @@ tests_deps = [
 tests_src = [
     'support/main.cpp',
     'support/util.cpp',
+    '../src/lyrics_import.cpp',
 
     'tests/access.cpp',
     'tests/audio.cpp',
@@ -34,6 +35,7 @@ tests_src = [
     'tests/language_match.cpp',
     'tests/line_iterator.cpp',
     'tests/line_wrap.cpp',
+    'tests/lyrics_import_test.cpp',
     'tests/lua_lfs.cpp',
     'tests/mru.cpp',
     'tests/option.cpp',
