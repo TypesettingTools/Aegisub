@@ -65,7 +65,9 @@ jobs:
             sccache-key: macos-x86_64-clang
             cross_args: --cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini --cross-file tools/sccache.ini
             buildtype: release
+            # sccache serves clang PCHs that fail mtime validation on a fresh checkout
             args: &macos_source_args >-
+              -Db_pch=false
               -Ddefault_library=static
               -Dbuild_osx_bundle=true
               -Dfftw3=disabled
@@ -97,6 +99,7 @@ jobs:
             sccache-key: macos-arm64-clang
             buildtype: debugoptimized
             args: >-
+              -Db_pch=false
               -Dmacos_deployment_target=15.0
               -Dbuild_osx_bundle=false
               -Dfftw3=enabled
