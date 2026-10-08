@@ -91,6 +91,18 @@ def test_missing_input(aegisub, srcdir, env, tmp):
         return fail("missing input: an output file was written anyway")
     return 0
 
+def test_no_user_state(aegisub, srcdir, env, tmp):
+    # None of the runs above may have written config, hotkeys, MRU lists,
+    # logs etc. into the user's config directory
+    written = []
+    for user_dir in (os.path.join(tmp, ".aegisub"),
+                     os.path.join(tmp, "Library", "Application Support", "Aegisub")):
+        for root, _, files in os.walk(user_dir):
+            written += [os.path.join(root, f) for f in files]
+    if written:
+        return fail("files were written to the user's config directory:\n" + "\n".join(written))
+    return 0
+
 def test_bad_option_value(aegisub, srcdir, env, tmp):
     # A malformed value must produce a clean error, not an uncaught
     # exception (which would show up here as death by SIGABRT)
@@ -128,7 +140,8 @@ def main():
         env["AEGISUB_DATA_DIR"] = os.path.dirname(os.path.dirname(os.path.dirname(srcdir)))
 
         tests = [test_macro_runs, test_empty_file, test_missing_input,
-                 test_bad_option_value, test_unknown_option]
+                 test_bad_option_value, test_unknown_option,
+                 test_no_user_state]
         for test in tests:
             print(f"== {test.__name__}")
             if test(aegisub, srcdir, env, tmp) != 0:

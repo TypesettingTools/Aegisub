@@ -197,7 +197,8 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 		try {
 			auto conf_local(config::path->Decode("?data/config.json"));
 			std::unique_ptr<std::istream> localConfig(agi::io::Open(conf_local));
-			config::opt = new agi::Options(config_file.value_or(conf_local), GET_DEFAULT_CONFIG(default_config));
+			config::opt = new agi::Options(config_file.value_or(conf_local), GET_DEFAULT_CONFIG(default_config),
+			                               config::hasGui ? agi::Options::NONE : agi::Options::FLUSH_SKIP);
 
 			// Local config, so place all user files in the install dir
 			config::path->SetUserDir(config::path->Decode("?data"));
@@ -208,11 +209,6 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 	}
 #endif
 	crash_writer::Initialize(config::path->Decode("?state"));
-
-	// The config machinery writes to ?user even in CLI mode (e.g. flushing
-	// the hotkey map), and the directory-creating GUI startup steps are
-	// skipped there, so make sure the directory exists
-	agi::fs::CreateDirectory(config::path->Decode("?user"));
 
 	if (config::hasGui) {
 		StartupLog("Create log writer");
@@ -229,7 +225,9 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 	StartupLog("Load user configuration");
 	try {
 		if (!config::opt)
-			config::opt = new agi::Options(config_file.value_or(config::path->Decode("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
+			// CLI mode reads the user's config but never writes it back
+			config::opt = new agi::Options(config_file.value_or(config::path->Decode("?user/config.json")), GET_DEFAULT_CONFIG(default_config),
+			                               config::hasGui ? agi::Options::NONE : agi::Options::FLUSH_SKIP);
 	} catch (agi::Exception& e) {
 		LOG_E("config/init") << "Caught exception: " << e.GetMessage();
 	}
