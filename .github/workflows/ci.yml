@@ -7,6 +7,11 @@ on:
   pull_request:
     branches: [ master ]
   workflow_dispatch:
+    inputs:
+      sccache:
+        description: Use the sccache compilation cache
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -21,6 +26,8 @@ jobs:
       AEGISUB_BUILD_BRANCH: ${{ github.head_ref || github.ref_name }}
       # Same condition as windows-sign-executable
       AEGISUB_SIGN_WINDOWS: ${{ matrix.config.os == 'windows-latest' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/ci/windows-signing') }}
+      SCCACHE_GHA_ENABLED: "true"
+      SCCACHE_C_CUSTOM_CACHE_BUSTER: ${{ matrix.config['sccache-key'] }}
 
     strategy:
       fail-fast: false
@@ -28,6 +35,7 @@ jobs:
         config:
           - name: Windows MSVC Release
             os: windows-latest
+            sccache-key: windows-x86_64-msvc
             msvc: true
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
@@ -49,17 +57,22 @@ jobs:
               -Dlibass:fontconfig=disabled
           - name: Ubuntu Debug
             os: ubuntu-latest
+            sccache-key: linux-x86_64-gcc
             buildtype: debugoptimized
             args: -Db_pch=false
           - name: Ubuntu Release
             os: ubuntu-latest
+            sccache-key: linux-x86_64-gcc
             buildtype: release
             args: -Db_pch=false
           - name: macOS x86_64 Release
             os: macos-15
-            cross_args: --cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini
+            sccache-key: macos-x86_64-clang
+            cross_args: --cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini --cross-file tools/sccache.ini
             buildtype: release
+            # sccache serves clang PCHs that fail mtime validation on a fresh checkout
             args: &macos_source_args >-
+              -Db_pch=false
               -Ddefault_library=static
               -Dbuild_osx_bundle=true
               -Dfftw3=disabled
@@ -88,8 +101,10 @@ jobs:
               --force-fallback-for=boost,wxWidgets,libass,zlib,freetype2,fribidi,harfbuzz,ffms2,libavformat,libavcodec,libswscale,libavutil,libswresample,dav1d,hunspell,uchardet,icu-uc,icu-i18n,libcurl
           - name: macOS arm64 Debug
             os: macos-15
+            sccache-key: macos-arm64-clang
             buildtype: debugoptimized
             args: >-
+              -Db_pch=false
               -Dmacos_deployment_target=15.0
               -Dbuild_osx_bundle=false
               -Dfftw3=enabled
@@ -97,6 +112,7 @@ jobs:
               -Dopenal=enabled
           - name: macOS arm64 Release
             os: macos-15
+            sccache-key: macos-arm64-clang
             native_args: --native-file tools/macos-release.ini
             buildtype: release
             args: *macos_source_args
@@ -109,6 +125,11 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
+
+      # Release builds compile from scratch; manual runs can opt out too
+      - name: Set up sccache
+        if: github.ref_type != 'tag' && (github.event_name != 'workflow_dispatch' || inputs.sccache)
+        uses: mozilla-actions/sccache-action@v0.0.11
 
       - name: Setup Meson
         run: |
