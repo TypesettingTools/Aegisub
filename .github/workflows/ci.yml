@@ -7,6 +7,11 @@ on:
   pull_request:
     branches: [ master ]
   workflow_dispatch:
+    inputs:
+      sccache:
+        description: Use the sccache compilation cache
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -121,9 +126,9 @@ jobs:
         with:
           python-version: '3.x'
 
-      # Release and manually dispatched (e.g. signing) builds compile from scratch
+      # Release builds compile from scratch; manual runs can opt out too
       - name: Set up sccache
-        if: github.ref_type != 'tag' && github.event_name != 'workflow_dispatch'
+        if: github.ref_type != 'tag' && (github.event_name != 'workflow_dispatch' || inputs.sccache)
         uses: mozilla-actions/sccache-action@v0.0.11
 
       - name: Setup Meson
