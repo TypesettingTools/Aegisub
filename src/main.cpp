@@ -266,7 +266,10 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 
 		exception_message = _("Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.");
 
-		agi::xdp_utils::Initialize();
+		// The portal is only used by GUI dialogs, and xdp_portal_new()
+		// aborts the process if there's no D-Bus session to connect to
+		if (config::hasGui)
+			agi::xdp_utils::Initialize();
 
 		// Load plugins
 		Automation4::ScriptFactory::Register(std::make_unique<Automation4::LuaScriptFactory>());
