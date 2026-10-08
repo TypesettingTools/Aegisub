@@ -27,6 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include "../../acconf.h"
 
 #define WIN32_LEAN_AND_MEAN

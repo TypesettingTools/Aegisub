@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <boost/interprocess/streams/vectorstream.hpp>
 #include <boost/io/ios_state.hpp>
 #include <libaegisub/fs.h>

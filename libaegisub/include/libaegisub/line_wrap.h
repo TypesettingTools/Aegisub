@@ -15,6 +15,8 @@
 /// @file line_wrap.h
 /// @brief Generic paragraph formatting logic
 
+#pragma once
+
 #include <algorithm>
 #include <climits>
 #include <numeric>

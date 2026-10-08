@@ -27,6 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include "ass_export_filter.h"
 
 #include <libaegisub/vfr.h>

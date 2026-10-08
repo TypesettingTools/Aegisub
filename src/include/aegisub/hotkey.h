@@ -16,6 +16,8 @@
 /// @brief Hotkey handler
 /// @ingroup hotkey menu event window
 
+#pragma once
+
 #include <string_view>
 #include <vector>
 

@@ -32,6 +32,8 @@
 /// @ingroup main
 ///
 
+#pragma once
+
 /// Version string appended in title bar of main window (quick identification of all elements of a build)
 const char *GetAegisubLongVersionString();
 /// Version string used in About box, looks nicer

@@ -33,6 +33,8 @@
 ///
 /// Calculate and render a frequency-power spectrum for PCM audio data.
 
+#pragma once
+
 #include <cstdint>
 #include <memory>
 #include <vector>

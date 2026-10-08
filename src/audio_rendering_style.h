@@ -27,6 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 /// @brief Styles audio may be rendered in
 ///
 /// The constants are ordered by priority:

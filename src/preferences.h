@@ -17,6 +17,8 @@
 /// @see preferences.cpp
 /// @ingroup configuration_ui
 
+#pragma once
+
 #include <functional>
 #include <map>
 #include <memory>

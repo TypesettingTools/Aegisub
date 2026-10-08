@@ -18,6 +18,8 @@
 /// @see subtitle_format_ebu3264.cpp
 /// @ingroup subtitle_io
 
+#pragma once
+
 #include "subtitle_format.h"
 
 /// @brief Subtitle writer for the EBU tech 3264 (1991) subtitling data exchange format

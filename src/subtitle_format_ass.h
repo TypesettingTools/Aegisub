@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include "subtitle_format.h"
 
 class AssSubtitleFormat final : public SubtitleFormat {

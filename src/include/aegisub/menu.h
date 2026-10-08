@@ -16,6 +16,8 @@
 /// @brief Dynamic menu and toolbar generator.
 /// @ingroup menu toolbar
 
+#pragma once
+
 #include <memory>
 #include <string>
 

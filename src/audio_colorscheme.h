@@ -34,6 +34,8 @@
 /// Manage colour schemes for the audio display
 
 
+#pragma once
+
 #include <vector>
 
 #include <wx/colour.h>

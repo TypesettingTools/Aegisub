@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <boost/range/iterator_range_core.hpp>
 #include <string>
 #include <vector>

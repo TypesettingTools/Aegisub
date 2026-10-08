@@ -32,6 +32,8 @@
 /// @ingroup subtitle_io
 ///
 
+#pragma once
+
 #include <string>
 
 #include "subtitle_format.h"
