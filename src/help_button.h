@@ -27,6 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <wx/button.h>
 
 class HelpButton final : public wxButton {

@@ -19,6 +19,8 @@
 /// @ingroup spelling
 ///
 
+#pragma once
+
 #ifdef WITH_HUNSPELL
 #include <libaegisub/spellchecker.h>
 

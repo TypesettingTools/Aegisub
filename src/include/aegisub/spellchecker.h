@@ -19,6 +19,8 @@
 /// @ingroup main_headers spelling
 ///
 
+#pragma once
+
 #include <memory>
 
 namespace agi { class SpellChecker; }

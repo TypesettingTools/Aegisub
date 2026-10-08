@@ -28,6 +28,8 @@
 /// When linking with this library, be sure to add '-framework CoreFoundation'
 /// to the GCC commandline.
 
+#pragma once
+
 #include <string>
 
 namespace agi {

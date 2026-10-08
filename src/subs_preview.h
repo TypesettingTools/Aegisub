@@ -32,6 +32,8 @@
 /// @ingroup custom_control
 ///
 
+#pragma once
+
 #include <libaegisub/color.h>
 
 #include <memory>

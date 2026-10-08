@@ -38,6 +38,8 @@
 /// @note Make sure that you disable use of precompiled headers on md5.c and
 ///       MatroskaParser.c, as well as any possible future .c files.
 
+#pragma once
+
 #ifdef __cplusplus
 
 // Block msvc from complaining about not using msvc-specific versions for

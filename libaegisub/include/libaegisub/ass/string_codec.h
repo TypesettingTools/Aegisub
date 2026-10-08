@@ -52,6 +52,8 @@
 ///
 /// The encoded string should be usable in any kind of field in an ASS file.
 
+#pragma once
+
 #include <string>
 #include <string_view>
 

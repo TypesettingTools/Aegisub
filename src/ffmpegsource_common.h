@@ -32,6 +32,8 @@
 /// @ingroup video_input audio_input ffms
 ///
 
+#pragma once
+
 #ifdef WITH_FFMS2
 #include <map>
 

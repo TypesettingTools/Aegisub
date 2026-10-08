@@ -32,6 +32,8 @@
 /// @ingroup video main_ui
 ///
 
+#pragma once
+
 #include <libaegisub/signal.h>
 
 #include "vector2d.h"

@@ -32,6 +32,8 @@
 /// @ingroup utility
 ///
 
+#pragma once
+
 /// Convert a HSL color to RGB; all values are expected to be in range 0..255
 void hsl_to_rgb(int H, int S, int L, unsigned char *R, unsigned char *G, unsigned char *B);
 

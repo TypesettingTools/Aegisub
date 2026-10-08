@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <vector>
 
 namespace agi::ass { class Karaoke; struct KaraokeSyllable; }
