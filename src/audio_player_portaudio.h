@@ -40,6 +40,7 @@ extern "C" {
 #include <portaudio.h>
 }
 
+#include <atomic>
 #include <map>
 #include <string>
 #include <vector>
@@ -58,9 +59,10 @@ class PortAudioPlayer final : public AudioPlayer {
 	DeviceVec default_device;
 
 	float volume = 1.f;  ///< Current volume level
-	int64_t current = 0; ///< Current position
-	int64_t start = 0;   ///< Start position
-	int64_t end = 0;     ///< End position
+	// current and end are shared between the main thread and paCallback
+	std::atomic<int64_t> current{0}; ///< Current position
+	int64_t start = 0;               ///< Start position
+	std::atomic<int64_t> end{0};     ///< End position
 	PaTime pa_start;     ///< PortAudio internal start position
 
 	PaStream *stream = nullptr; ///< PortAudio stream
@@ -72,7 +74,7 @@ class PortAudioPlayer final : public AudioPlayer {
 	/// @param timeInfo        PortAudio time information.
 	/// @param statusFlags     Status flags
 	/// @param userData        Local data to hand callback
-	/// @return Whether to stop playback.
+	/// @return Always paContinue; the stream is only ever stopped by Stop().
 	static int paCallback(
 		const void *inputBuffer,
 		void *outputBuffer,
@@ -109,7 +111,8 @@ public:
 	void Stop();
 
 	/// @brief Whether audio is currently being played.
-	/// @return Status
+	/// @return false once the end position has been reached, even though the
+	///         stream keeps running (outputting silence) until Stop() is called.
 	bool IsPlaying();
 
 	/// @brief End position playback will stop at.
