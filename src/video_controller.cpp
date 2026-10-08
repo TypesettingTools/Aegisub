@@ -138,7 +138,8 @@ void VideoController::PrevFrame() {
 }
 
 void VideoController::Play() {
-	assert(config::hasGui);
+	// There's no playback in CLI mode
+	if (!config::hasGui) return;
 	if (IsPlaying()) {
 		Stop();
 		return;
@@ -156,7 +157,7 @@ void VideoController::Play() {
 }
 
 void VideoController::PlayLine() {
-	assert(config::hasGui);
+	if (!config::hasGui) return;
 	Stop();
 
 	AssDialogue *curline = context->selectionController->GetActiveLine();
@@ -176,7 +177,6 @@ void VideoController::PlayLine() {
 }
 
 void VideoController::Stop() {
-	assert(config::hasGui);
 	if (IsPlaying()) {
 		playback->Stop();
 		context->audioController->Stop();

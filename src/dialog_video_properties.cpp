@@ -513,6 +513,10 @@ bool update_layout_res(AssFile *file, const AsyncVideoProvider *new_provider, wx
 }
 
 void UpdateVideoProperties(AssFile *file, const AsyncVideoProvider *new_provider, wxWindow *parent) {
+	// Everything here prompts the user, which can't be done in CLI mode
+	if (!config::hasGui)
+		return;
+
 	if (update_ycbcr_matrix(file, new_provider, parent))
 		file->Commit(_("change ycbcr matrix"), AssFile::COMMIT_SCRIPTINFO);
 
