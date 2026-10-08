@@ -9,6 +9,12 @@ project('Aegisub', ['c', 'cpp'],
 
             'harfbuzz:icu=disabled',
             'ffmpeg:libdav1d=enabled',
+            # ffms2 only demuxes and decodes local files
+            'ffmpeg:avdevice=disabled',
+            'ffmpeg:avfilter=disabled',
+            'ffmpeg:encoders=disabled',
+            'ffmpeg:muxers=disabled',
+            'ffmpeg:network=disabled',
             'luajit:default_library=static',
             'luajit:amalgam=true',
             'luajit:lua52compat=true',
