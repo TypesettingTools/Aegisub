@@ -202,7 +202,7 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 		config::opt->ConfigUser();
 	}
 	catch (agi::Exception const& err) {
-		wxMessageBox(fmt_tl("Configuration file is invalid. Error reported:\n%s", err.GetMessage()), _("Error"));
+		showError(from_wx(fmt_tl("Configuration file is invalid. Error reported:\n%s", err.GetMessage())), from_wx(_("Error")));
 	}
 
 #ifdef _WIN32
@@ -287,16 +287,16 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 		}
 	}
 	catch (agi::Exception const& e) {
-		showError(e.GetMessage(), "Fatal error while initializing");
+		showError(e.GetMessage(), from_wx(_("Fatal error while initializing")));
 		return false;
 	}
 	catch (std::exception const& e) {
-		showError(e.what(), "Fatal error while initializing");
+		showError(e.what(), from_wx(_("Fatal error while initializing")));
 		return false;
 	}
 #ifndef _DEBUG
 	catch (...) {
-		showError("Fatal error while initializing", "Unhandled exception");
+		showError(from_wx(_("Unhandled exception")), from_wx(_("Fatal error while initializing")));
 		return false;
 	}
 #endif
