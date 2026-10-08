@@ -422,7 +422,8 @@ int main(int argc, char *argv[]) {
 
 			if (!video.empty()) {
 				LOG_D("main") << "Loading video...";
-				context.project->LoadVideo(agi::fs::path(std::filesystem::absolute(video)));
+				// Dummy video "filenames" aren't paths, so leave them alone
+				context.project->LoadVideo(video.starts_with("?dummy") ? agi::fs::path(video) : agi::fs::path(std::filesystem::absolute(video)));
 			}
 
 			if (!timecodes.empty()) {
