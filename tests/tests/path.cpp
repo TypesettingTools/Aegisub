@@ -201,3 +201,17 @@ TEST(lagi_path, encode) {
 	EXPECT_EQ("?cache/e", p.Encode("/a/b/c/d/e"));
 }
 #endif
+
+TEST(lagi_path, set_user_dir_sets_all_per_user_tokens) {
+	Path p;
+#ifdef _WIN32
+	agi::fs::path dir("C:\\a\\b");
+#else
+	agi::fs::path dir("/a/b");
+#endif
+	p.SetUserDir(dir);
+	EXPECT_EQ(dir, p.Decode("?user"));
+	EXPECT_EQ(dir, p.Decode("?cache"));
+	EXPECT_EQ(dir, p.Decode("?state"));
+	EXPECT_EQ(dir, p.Decode("?local"));
+}
