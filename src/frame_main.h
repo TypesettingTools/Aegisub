@@ -38,6 +38,7 @@
 class AegisubApp;
 class AsyncVideoProvider;
 class AudioBox;
+class PersistLocation;
 class VideoBox;
 namespace agi { class AudioProvider; }
 namespace agi { struct Context; class OptionValue; }
@@ -46,6 +47,7 @@ class FrameMain : public wxFrame, private agi::signal::ConnectionScope {
 	friend class AegisubApp;
 
 	std::unique_ptr<agi::Context> context;
+	std::unique_ptr<PersistLocation> persist;
 
     // XXX: Make Freeze()/Thaw() noops on GTK, this seems to be buggy
 #ifdef __WXGTK__
