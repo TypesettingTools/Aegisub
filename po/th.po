@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Aegisub v3.4.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-26 14:45+0200\n"
+"POT-Creation-Date: 2026-10-05 14:21+0200\n"
 "PO-Revision-Date: 2026-07-12 13:49+0700\n"
 "Last-Translator: \n"
 "Language-Team: Jibrill\n"
@@ -19,11 +19,11 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 3.9\n"
 
-#: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
+#: ../src/aegisublocale.cpp:118 ../src/command/app.cpp:156
 msgid "Language"
 msgstr "ภาษา"
 
-#: ../src/aegisublocale.cpp:113
+#: ../src/aegisublocale.cpp:118
 msgid "Please choose a language:"
 msgstr "โปรดเลือกภาษา:"
 
@@ -108,17 +108,21 @@ msgstr "ยุโรปตะวันออก"
 msgid "OEM"
 msgstr "OEM"
 
-#: ../src/audio_box.cpp:73
+#: ../src/audio_box.cpp:77
 msgid "Horizontal zoom"
 msgstr "ซูมแนวนอน"
 
-#: ../src/audio_box.cpp:74
+#: ../src/audio_box.cpp:78
 msgid "Vertical zoom"
 msgstr "ซูมแนวตั้ง"
 
-#: ../src/audio_box.cpp:75
+#: ../src/audio_box.cpp:79
 msgid "Audio Volume"
 msgstr "ระดับเสียง"
+
+#: ../src/audio_box.cpp:111
+msgid "Playback rate"
+msgstr ""
 
 #: ../src/audio_display.cpp:719
 #, c-format
@@ -299,14 +303,14 @@ msgstr ""
 msgid "The file was not recognised as an Automation script: %s"
 msgstr "ไฟล์ไม่ได้เป็นรูปเเบบสคริปต์ที่รู้จัก: %s"
 
-#: ../src/auto4_base.cpp:537 ../src/command/audio.cpp:84
+#: ../src/auto4_base.cpp:537 ../src/command/audio.cpp:119
 #: ../src/command/keyframe.cpp:76 ../src/command/timecode.cpp:73
 #: ../src/command/timecode.cpp:93 ../src/command/video.cpp:592
 msgid "All Files"
 msgstr "ไฟล์ทั้งหมด"
 
 #: ../src/auto4_base.cpp:543 ../src/command/keyframe.cpp:74
-#: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
+#: ../src/dialog_attachments.cpp:211 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "ไฟล์ที่รองรับทั้งหมด"
 
@@ -522,7 +526,7 @@ msgstr "&ตัวเลือก..."
 
 #: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:182
 #: ../src/dialog_timing_processor.cpp:169 ../src/preferences.cpp:166
-#: ../src/preferences.cpp:206
+#: ../src/preferences.cpp:207
 msgid "Options"
 msgstr "ตัวเลือก"
 
@@ -586,278 +590,351 @@ msgstr "นำไปไว้ข้างหน้าทั้งหมด"
 msgid "Bring forward all open documents to the front"
 msgstr "นำไฟล์ที่เปิดมาวางไว้ข้างหน้าทั้งหมด"
 
-#: ../src/command/audio.cpp:65
+#: ../src/command/app.cpp:303 ../src/command/app.cpp:304
+#, fuzzy
+#| msgid "Hide Tags"
+msgid "Hide"
+msgstr "ซ่อนเเท็ก"
+
+#: ../src/command/app.cpp:305
+#, fuzzy
+#| msgid "Exit the application"
+msgid "Hide the application"
+msgstr "ออกจากโปรเเกรม"
+
+#: ../src/command/app.cpp:314 ../src/command/app.cpp:315
+#, fuzzy
+#| msgid "Hide Toolbar"
+msgid "Hide others"
+msgstr "ซ่อนเเถบเครื่อมือ"
+
+#: ../src/command/app.cpp:316
+#, fuzzy
+#| msgid "Exit the application"
+msgid "Hide all other applications"
+msgstr "ออกจากโปรเเกรม"
+
+#: ../src/command/app.cpp:325 ../src/command/app.cpp:326
+#: ../src/preferences.cpp:182
+msgid "Show all"
+msgstr "เเสดงทั้งหมด"
+
+#: ../src/command/app.cpp:327
+#, fuzzy
+#| msgid "Exit the application"
+msgid "Show all applications"
+msgstr "ออกจากโปรเเกรม"
+
+#: ../src/command/audio.cpp:100
 msgid "&Close Audio"
 msgstr "&ปิดส่วนเเสดงเสียง"
 
-#: ../src/command/audio.cpp:66
+#: ../src/command/audio.cpp:101
 msgid "Close Audio"
 msgstr "ปิดส่วนเเสดงเสียง"
 
-#: ../src/command/audio.cpp:67
+#: ../src/command/audio.cpp:102
 msgid "Close the currently open audio file"
 msgstr "ปิดส่วนเสียงที่กำลังใช้งาน"
 
-#: ../src/command/audio.cpp:77
+#: ../src/command/audio.cpp:112
 msgid "&Open Audio File..."
 msgstr "&เปิดไฟล์เสียง..."
 
-#: ../src/command/audio.cpp:78
+#: ../src/command/audio.cpp:113
 msgid "Open Audio File"
 msgstr "เปิดไฟล์เสียง"
 
-#: ../src/command/audio.cpp:79
+#: ../src/command/audio.cpp:114
 msgid "Open an audio file"
 msgstr "เปิดไฟล์เสียง"
 
-#: ../src/command/audio.cpp:82
+#: ../src/command/audio.cpp:117
 msgid "Audio Formats"
 msgstr "รูปเเบบเสียง"
 
-#: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
+#: ../src/command/audio.cpp:118 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "รูปเเบบของวิดีโอ"
 
-#: ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:120
 msgctxt "dialog title"
 msgid "Open Audio File"
 msgstr "เปิดไฟล์เสียง"
 
-#: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
+#: ../src/command/audio.cpp:128 ../src/command/audio.cpp:129
 msgid "Open 2h30 Blank Audio"
 msgstr "เปิดเสียงเปล่า 2 h 30"
 
-#: ../src/command/audio.cpp:95
+#: ../src/command/audio.cpp:130
 msgid "Open a 150 minutes blank audio clip, for debugging"
 msgstr "เปิดคลิปเสียงเปล่ายาว 150 นาที เพื่อดีบัค"
 
-#: ../src/command/audio.cpp:104 ../src/command/audio.cpp:105
+#: ../src/command/audio.cpp:139 ../src/command/audio.cpp:140
 msgid "Open 2h30 Noise Audio"
 msgstr "เปิดเสียงเเบบสุ่ม  2 h 30"
 
-#: ../src/command/audio.cpp:106
+#: ../src/command/audio.cpp:141
 msgid "Open a 150 minutes noise-filled audio clip, for debugging"
 msgstr "เปิดคลิปเสียงเเบบสุ่มยาว 150 นาที เพื่อดีบัค"
 
-#: ../src/command/audio.cpp:116
+#: ../src/command/audio.cpp:151
 msgid "Open Audio from &Video"
 msgstr "เรียกเเทร็กเสียงจาก&วิดีโอ"
 
-#: ../src/command/audio.cpp:117
+#: ../src/command/audio.cpp:152
 msgid "Open Audio from Video"
 msgstr "เรียกเเทร็กเสียงจากวิดีโอ"
 
-#: ../src/command/audio.cpp:118
+#: ../src/command/audio.cpp:153
 msgid "Open the audio from the current video file"
 msgstr "เรียกเเทร็กเสียงจากไฟล์วิดีโอปัจจุบัน"
 
-#: ../src/command/audio.cpp:132
+#: ../src/command/audio.cpp:167
 msgid "&Spectrum Display"
 msgstr "&มุมมองสเปกตรัม"
 
-#: ../src/command/audio.cpp:133
+#: ../src/command/audio.cpp:168
 msgid "Spectrum Display"
 msgstr "มุมมองสเปกตรัม"
 
-#: ../src/command/audio.cpp:134
+#: ../src/command/audio.cpp:169
 msgid "Display audio as a frequency-power spectrograph"
 msgstr "เเสดงเสียงเป็นคลื่นความถี่สเปกโตรกราฟ"
 
-#: ../src/command/audio.cpp:148
+#: ../src/command/audio.cpp:183
 msgid "&Waveform Display"
 msgstr "&โหมดคลื่นเสียง"
 
-#: ../src/command/audio.cpp:149
+#: ../src/command/audio.cpp:184
 msgid "Waveform Display"
 msgstr "โหมดคลื่นเสียง"
 
-#: ../src/command/audio.cpp:150
+#: ../src/command/audio.cpp:185
 msgid "Display audio as a linear amplitude graph"
 msgstr "เเสดงเสียงเป็นเส้นกราฟแอมพลิจูด"
 
-#: ../src/command/audio.cpp:164 ../src/command/audio.cpp:165
+#: ../src/command/audio.cpp:199 ../src/command/audio.cpp:200
 msgid "Create audio clip"
 msgstr "สร้างคลิปเสียง"
 
-#: ../src/command/audio.cpp:166
+#: ../src/command/audio.cpp:201
 msgid "Save an audio clip of the selected line"
 msgstr "บันทึกคลิปเสียงของบรรทัดที่เลือก"
 
-#: ../src/command/audio.cpp:177
+#: ../src/command/audio.cpp:212
 msgid "Save Audio Clip"
 msgstr "บันทึกคลิปเสียง"
 
-#: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
+#: ../src/command/audio.cpp:227 ../src/command/audio.cpp:228
 msgid "Play current audio selection"
 msgstr "เล่นเสียงช่วงที่ถูกเลือกอยู่"
 
-#: ../src/command/audio.cpp:194
+#: ../src/command/audio.cpp:229
 msgid "Play the current audio selection, ignoring changes made while playing"
 msgstr "เล่นช่วงเสียงที่เลือกไว้ ระหว่างเล่นค่าจะไม่เปลี่ยน"
 
-#: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
+#: ../src/command/audio.cpp:240 ../src/command/audio.cpp:241
 msgid "Play current line"
 msgstr "เล่นบรรทัดปัจจุบัน"
 
-#: ../src/command/audio.cpp:207
+#: ../src/command/audio.cpp:242
 msgid "Play the audio for the current line"
 msgstr "เล่นเเทร็กเสียงบรรทัดปัจจุบัน"
 
-#: ../src/command/audio.cpp:220 ../src/command/audio.cpp:221
+#: ../src/command/audio.cpp:255 ../src/command/audio.cpp:256
 msgid "Play audio selection"
 msgstr "เล่นเสียงช่วงที่เลือก"
 
-#: ../src/command/audio.cpp:222
+#: ../src/command/audio.cpp:257
 msgid "Play audio until the end of the selection is reached"
 msgstr "เล่นเสียงไปจนถึงเวลาจบของช่วงที่เลือก"
 
-#: ../src/command/audio.cpp:232 ../src/command/audio.cpp:233
+#: ../src/command/audio.cpp:267 ../src/command/audio.cpp:268
 msgid "Play audio selection or stop"
 msgstr "เล่นเสียงช่วงที่เลือกหรือหยุด"
 
-#: ../src/command/audio.cpp:234
+#: ../src/command/audio.cpp:269
 msgid "Play selection, or stop playback if it's already playing"
 msgstr "เล่นที่เลือก, หรือหยุดการเล่นหากกำลังเล่นอยู่"
 
-#: ../src/command/audio.cpp:249 ../src/command/audio.cpp:250
+#: ../src/command/audio.cpp:284 ../src/command/audio.cpp:285
 msgid "Stop playing"
 msgstr "หยุดเล่น"
 
-#: ../src/command/audio.cpp:251
+#: ../src/command/audio.cpp:286
 msgid "Stop audio and video playback"
 msgstr "หยุดเล่นเสียงเเละวิดีโอ"
 
-#: ../src/command/audio.cpp:267 ../src/command/audio.cpp:268
-#: ../src/command/audio.cpp:269
+#: ../src/command/audio.cpp:302 ../src/command/audio.cpp:303
+#: ../src/command/audio.cpp:304
 msgid "Play 500 ms before selection"
 msgstr "เล่น 500 ms ก่อนช่วงที่เลือก"
 
-#: ../src/command/audio.cpp:281 ../src/command/audio.cpp:282
-#: ../src/command/audio.cpp:283
+#: ../src/command/audio.cpp:316 ../src/command/audio.cpp:317
+#: ../src/command/audio.cpp:318
 msgid "Play 500 ms after selection"
 msgstr "เล่น 500 ms หลังช่วงที่เลือก"
 
-#: ../src/command/audio.cpp:295 ../src/command/audio.cpp:296
-#: ../src/command/audio.cpp:297
+#: ../src/command/audio.cpp:330 ../src/command/audio.cpp:331
+#: ../src/command/audio.cpp:332
 msgid "Play last 500 ms of selection"
 msgstr "เล่น 500 ms หลังของช่วงที่เลือก"
 
-#: ../src/command/audio.cpp:309 ../src/command/audio.cpp:310
-#: ../src/command/audio.cpp:311
+#: ../src/command/audio.cpp:344 ../src/command/audio.cpp:345
+#: ../src/command/audio.cpp:346
 msgid "Play first 500 ms of selection"
 msgstr "เล่น 500 ms เเรกของช่วงที่เลือก"
 
-#: ../src/command/audio.cpp:325 ../src/command/audio.cpp:326
-#: ../src/command/audio.cpp:327
+#: ../src/command/audio.cpp:360 ../src/command/audio.cpp:361
+#: ../src/command/audio.cpp:362
 msgid "Play from selection start to end of file"
 msgstr "เล่นตั้งเเต่ช่วงที่เลือกไปจนถึงจุดสิ้นสุดของไฟล์"
 
-#: ../src/command/audio.cpp:338 ../src/command/audio.cpp:339
+#: ../src/command/audio.cpp:376 ../src/command/video.cpp:735
+msgid "50%"
+msgstr "50%"
+
+#: ../src/command/audio.cpp:380
+msgid "Set playback rate to 50%"
+msgstr ""
+
+#: ../src/command/audio.cpp:384
+#, fuzzy
+#| msgid "Stop audio and video playback"
+msgid "Set the shared audio/video playback rate"
+msgstr "หยุดเล่นเสียงเเละวิดีโอ"
+
+#: ../src/command/audio.cpp:398 ../src/command/audio.cpp:399
+msgid "Decrease playback rate"
+msgstr ""
+
+#: ../src/command/audio.cpp:400
+msgid "Select the next lower shared audio/video playback rate preset"
+msgstr ""
+
+#: ../src/command/audio.cpp:409 ../src/command/audio.cpp:410
+msgid "Increase playback rate"
+msgstr ""
+
+#: ../src/command/audio.cpp:411
+msgid "Select the next higher shared audio/video playback rate preset"
+msgstr ""
+
+#: ../src/command/audio.cpp:420 ../src/command/audio.cpp:421
+msgid "Reset playback rate"
+msgstr ""
+
+#: ../src/command/audio.cpp:422
+msgid "Reset the shared audio/video playback rate to normal speed"
+msgstr ""
+
+#: ../src/command/audio.cpp:432 ../src/command/audio.cpp:433
 msgid "Commit"
 msgstr "ทำการเปลี่ยนเเปลง"
 
-#: ../src/command/audio.cpp:340
+#: ../src/command/audio.cpp:434
 msgid "Commit any pending audio timing changes"
 msgstr "ทำการเปลี่ยนเเปลงตามที่ได้กระทำลงไป"
 
-#: ../src/command/audio.cpp:354 ../src/command/audio.cpp:355
+#: ../src/command/audio.cpp:448 ../src/command/audio.cpp:449
 msgid "Commit and use default timing for next line"
 msgstr "ทำการเปลี่ยนเเปลงเเละใช้เวลาตามค่าเริ่มต้นสำหรับบรรทัดถัดไป"
 
-#: ../src/command/audio.cpp:356
+#: ../src/command/audio.cpp:450
 msgid ""
 "Commit any pending audio timing changes and reset the next line's times to "
 "the default"
 msgstr "ทำการเปลี่ยนเเปลงตามการไทม์มิ่งด้วยเสียงที่ได้กระทำไว้เเละตั้งเวลาบรรทัดถัดไปตามค่าเริ่มต้น"
 
-#: ../src/command/audio.cpp:369 ../src/command/audio.cpp:370
+#: ../src/command/audio.cpp:463 ../src/command/audio.cpp:464
 msgid "Commit and move to next line"
 msgstr "ทำการเปลี่ยนเเปลงเเละเลื่อนไปบรรทัดถัดไป"
 
-#: ../src/command/audio.cpp:371
+#: ../src/command/audio.cpp:465
 msgid "Commit any pending audio timing changes and move to the next line"
 msgstr "ทำการเปลี่ยนเเปลงตามการไทม์มิ่งด้วยเสียงที่ได้กระทำไว้เเละไปยังบรรทัดถัดไป"
 
-#: ../src/command/audio.cpp:384 ../src/command/audio.cpp:385
+#: ../src/command/audio.cpp:478 ../src/command/audio.cpp:479
 msgid "Commit and stay on current line"
 msgstr "ทำการเปลี่ยนเเปลงเเละอยู่ในบรรทัดเดิม"
 
-#: ../src/command/audio.cpp:386
+#: ../src/command/audio.cpp:480
 msgid "Commit any pending audio timing changes and stay on the current line"
 msgstr "ทำการเปลี่ยนเเปลงตามการไทม์มิ่งด้วยเสียงที่ได้กระทำไว้เเละอยู่ในบรรทัดเดิม"
 
-#: ../src/command/audio.cpp:397 ../src/command/audio.cpp:398
+#: ../src/command/audio.cpp:491 ../src/command/audio.cpp:492
 msgid "Go to selection"
 msgstr "ไปยังที่เลือก"
 
-#: ../src/command/audio.cpp:399
+#: ../src/command/audio.cpp:493
 msgid "Scroll the audio display to center on the current audio selection"
 msgstr "เลื่อนเเถบเเสดงเสียงไปยังช่วงเสียงที่เลือก"
 
-#: ../src/command/audio.cpp:408 ../src/command/audio.cpp:409
+#: ../src/command/audio.cpp:502 ../src/command/audio.cpp:503
 msgid "Go to selection start"
 msgstr "ไปยังจุดเริ่มของที่เลือก"
 
-#: ../src/command/audio.cpp:410
+#: ../src/command/audio.cpp:504
 msgid ""
 "Scroll the audio display to center on the start of current audio selection"
 msgstr "เลื่อนเเถบเเสดงเสียงไปยังกึ่งกลางของจุดเริ่มในช่วงเสียงที่เลือก"
 
-#: ../src/command/audio.cpp:419 ../src/command/audio.cpp:420
+#: ../src/command/audio.cpp:513 ../src/command/audio.cpp:514
 msgid "Go to selection end"
 msgstr "ไปยังจุดสิ้นสุดของที่เลือก"
 
-#: ../src/command/audio.cpp:421
+#: ../src/command/audio.cpp:515
 msgid ""
 "Scroll the audio display to center on the end of current audio selection"
 msgstr "เลื่อนเเถบเเสดงเสียงไปยังกึ่งกลางของจุดสิ้นสุดในช่วงเสียงที่เลือก"
 
-#: ../src/command/audio.cpp:430 ../src/command/audio.cpp:431
+#: ../src/command/audio.cpp:524 ../src/command/audio.cpp:525
 msgid "Scroll left"
 msgstr "เลื่อนไปซ้าย"
 
-#: ../src/command/audio.cpp:432
+#: ../src/command/audio.cpp:526
 msgid "Scroll the audio display left"
 msgstr "เลื่อนเเถบเเสดงเสียงไปทางซ้าย"
 
-#: ../src/command/audio.cpp:441 ../src/command/audio.cpp:442
+#: ../src/command/audio.cpp:535 ../src/command/audio.cpp:536
 msgid "Scroll right"
 msgstr "เลื่อนไปขวา"
 
-#: ../src/command/audio.cpp:443
+#: ../src/command/audio.cpp:537
 msgid "Scroll the audio display right"
 msgstr "เลื่อนเเถบเเสดงเสียงไปทางขวา"
 
-#: ../src/command/audio.cpp:457 ../src/command/audio.cpp:458
-#: ../src/command/audio.cpp:459
+#: ../src/command/audio.cpp:551 ../src/command/audio.cpp:552
+#: ../src/command/audio.cpp:553
 msgid "Auto scroll audio display to selected line"
 msgstr "เลื่อนไปยังช่วงเสียงที่ตรงกับบรรทัดโดยอัตโนมัติ"
 
-#: ../src/command/audio.cpp:474 ../src/command/audio.cpp:475
-#: ../src/command/audio.cpp:476
+#: ../src/command/audio.cpp:568 ../src/command/audio.cpp:569
+#: ../src/command/audio.cpp:570
 msgid "Automatically commit all changes"
 msgstr "บันทึกการเปลี่ยนเเปลงโดยอัตโนมัติ"
 
-#: ../src/command/audio.cpp:491 ../src/command/audio.cpp:492
+#: ../src/command/audio.cpp:585 ../src/command/audio.cpp:586
 msgid "Auto go to next line on commit"
 msgstr "ไปยังบรรทัดถัดไปหลังยืนยันการเปลี่ยนเเปลง"
 
-#: ../src/command/audio.cpp:493
+#: ../src/command/audio.cpp:587
 msgid "Automatically go to next line on commit"
 msgstr "ไปยังบรรทัดถัดไปหลังยืนยันการเปลี่ยนเเปลงโดยอัตโนมัติ"
 
-#: ../src/command/audio.cpp:508 ../src/command/audio.cpp:509
-#: ../src/command/audio.cpp:510
+#: ../src/command/audio.cpp:602 ../src/command/audio.cpp:603
+#: ../src/command/audio.cpp:604
 msgid "Spectrum analyzer mode"
 msgstr "โหมดวิเคราะห์สเปกตรัม"
 
-#: ../src/command/audio.cpp:525 ../src/command/audio.cpp:526
-#: ../src/command/audio.cpp:527
+#: ../src/command/audio.cpp:619 ../src/command/audio.cpp:620
+#: ../src/command/audio.cpp:621
 msgid "Link vertical zoom and volume sliders"
 msgstr "เชื่อมโยงการซูมแนวตั้งและแถบเลื่อนระดับเสียง"
 
-#: ../src/command/audio.cpp:542 ../src/command/audio.cpp:543
-#: ../src/command/audio.cpp:544
+#: ../src/command/audio.cpp:636 ../src/command/audio.cpp:637
+#: ../src/command/audio.cpp:638
 msgid "Toggle karaoke mode"
 msgstr "เปิด/ปืดโหมดคาราโอเกะ"
 
@@ -898,7 +975,7 @@ msgid "&Automation..."
 msgstr "&สคริปต์ทุ่นเเรง..."
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:400
+#: ../src/preferences.cpp:401
 msgid "Automation"
 msgstr "สคริปต์ทุ่นเเรง"
 
@@ -1329,7 +1406,7 @@ msgid "revert line"
 msgstr "ย้อนบรรทัด"
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:477
+#: ../src/preferences.cpp:478
 msgid "Clear"
 msgstr "เอาออก"
 
@@ -1910,12 +1987,12 @@ msgstr "บันทึกไฟล์คำบรรยาย"
 #: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
 #: ../src/dialog_style_manager.cpp:689 ../src/dialog_style_manager.cpp:695
 #: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:202
-#: ../src/preferences.cpp:333 ../src/preferences.cpp:525
+#: ../src/preferences.cpp:334 ../src/preferences.cpp:526
 msgid "Error"
 msgstr "ข้อผิดพลาด"
 
 #: ../src/command/subtitle.cpp:360 ../src/dialog_export.cpp:211
-#: ../src/dialog_style_manager.cpp:698 ../src/project.cpp:142
+#: ../src/dialog_style_manager.cpp:698 ../src/project.cpp:143
 msgid "Unknown error"
 msgstr "ข้อผิดพลาดที่ไม่สามารถระบุได้"
 
@@ -2258,7 +2335,7 @@ msgid "St&yling Assistant..."
 msgstr "ตัวช่วยจัดการ&สไตล์..."
 
 #: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:54
-#: default_hotkey.json:223
+#: default_hotkey.json:232
 msgid "Styling Assistant"
 msgstr "ตัวช่วยจัดการสไตล์"
 
@@ -2336,7 +2413,7 @@ msgid "&Translation Assistant..."
 msgstr "&ตัวช่วยเเปลภาษา"
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
-#: ../src/preferences.cpp:294 default_hotkey.json:291
+#: ../src/preferences.cpp:295 default_hotkey.json:300
 msgid "Translation Assistant"
 msgstr "ตัวช่วยเเปลภาษา"
 
@@ -2785,10 +2862,6 @@ msgstr "ตั้งซูมเป็น 200 %"
 msgid "&50%"
 msgstr "&50%"
 
-#: ../src/command/video.cpp:735
-msgid "50%"
-msgstr "50%"
-
 #: ../src/command/video.cpp:736
 msgid "Set zoom to 50%"
 msgstr "ตั้งซูมเป็น 50 %"
@@ -2943,73 +3016,95 @@ msgstr ""
 msgid "Built by %s on %s."
 msgstr "สร้างโดย %s เมื่อ %s."
 
-#: ../src/dialog_attachments.cpp:68
+#: ../src/dialog_attachments.cpp:106
 msgid "Attachment List"
 msgstr "รายการสิ่งที่เเนบ"
 
-#: ../src/dialog_attachments.cpp:76
+#: ../src/dialog_attachments.cpp:114
 msgid "Attach &Font"
 msgstr "&เเนบฟอนต์"
 
-#: ../src/dialog_attachments.cpp:77
+#: ../src/dialog_attachments.cpp:115
 msgid "Attach &Graphics"
 msgstr "&เเนบรูปภาพ"
 
-#: ../src/dialog_attachments.cpp:78
+#: ../src/dialog_attachments.cpp:116
 msgid "E&xtract"
 msgstr "นำ&ออก"
 
-#: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:205
-#: ../src/preferences.cpp:692
+#: ../src/dialog_attachments.cpp:117 ../src/dialog_style_manager.cpp:205
+#: ../src/preferences.cpp:693
 msgid "&Delete"
 msgstr "&ลบ"
 
-#: ../src/dialog_attachments.cpp:89 ../src/dialog_automation.cpp:122
+#: ../src/dialog_attachments.cpp:127 ../src/dialog_automation.cpp:122
 #: ../src/dialog_kara_timing_copy.cpp:425 ../src/dialog_version_check.cpp:122
 msgid "&Close"
 msgstr "&ปิด"
 
-#: ../src/dialog_attachments.cpp:110
+#: ../src/dialog_attachments.cpp:148
 msgid "Attachment name"
 msgstr "ชื่อรายการที่เเนบ"
 
-#: ../src/dialog_attachments.cpp:111
+#: ../src/dialog_attachments.cpp:149
 msgid "Size"
 msgstr "ขนาด"
 
-#: ../src/dialog_attachments.cpp:112
+#: ../src/dialog_attachments.cpp:150
 msgid "Group"
 msgstr "กลุ่ม"
 
-#: ../src/dialog_attachments.cpp:138 ../src/dialog_attachments.cpp:147
+#: ../src/dialog_attachments.cpp:176 ../src/dialog_attachments.cpp:185
 msgid "Choose file to be attached"
 msgstr "เลือกไฟล์ที่จะเเนบ"
 
-#: ../src/dialog_attachments.cpp:139 ../src/dialog_attachments.cpp:170
+#: ../src/dialog_attachments.cpp:177 ../src/dialog_attachments.cpp:211
 msgid "Font Files"
 msgstr "ไฟล์ฟอนต์"
 
-#: ../src/dialog_attachments.cpp:142
+#: ../src/dialog_attachments.cpp:180
 msgid "attach font file"
 msgstr "เเนบไฟล์ฟอนต์"
 
-#: ../src/dialog_attachments.cpp:149 ../src/dialog_attachments.cpp:170
+#: ../src/dialog_attachments.cpp:187 ../src/dialog_attachments.cpp:211
 msgid "Graphic Files"
 msgstr "ไฟล์รูปภาพ"
 
-#: ../src/dialog_attachments.cpp:152
+#: ../src/dialog_attachments.cpp:190
 msgid "attach graphics file"
 msgstr "เเนบไฟล์รูปภาพ"
 
-#: ../src/dialog_attachments.cpp:164
+#: ../src/dialog_attachments.cpp:202
 msgid "Select the path to save the files to:"
 msgstr "เลือกเส้นทางที่จะบันทึกไฟล์ลงไป:"
 
-#: ../src/dialog_attachments.cpp:167
+#: ../src/dialog_attachments.cpp:208
 msgid "Select the path to save the file to:"
 msgstr "เลือกเส้นทางที่จะบันทึกไฟล์ลงไป:"
 
-#: ../src/dialog_attachments.cpp:189
+#: ../src/dialog_attachments.cpp:224
+#, c-format
+msgid "The attachment \"%s\" was not extracted because its filename is unsafe."
+msgstr ""
+
+#: ../src/dialog_attachments.cpp:225
+#, fuzzy
+#| msgid "Attachment name"
+msgid "Attachment not extracted"
+msgstr "ชื่อรายการที่เเนบ"
+
+#: ../src/dialog_attachments.cpp:231
+#, c-format
+msgid "The file \"%s\" already exists. Do you want to replace it?"
+msgstr ""
+
+#: ../src/dialog_attachments.cpp:232
+#, fuzzy
+#| msgid "Replace &next"
+msgid "Replace existing file?"
+msgstr "เเทนที่&ตัวถัดไป"
+
+#: ../src/dialog_attachments.cpp:246
 msgid "remove attachment"
 msgstr "ลบไฟล์ที่เเทรกไว้ออก"
 
@@ -3045,7 +3140,7 @@ msgstr "ชื่อ"
 msgid "Filename"
 msgstr "ชื่อไฟล์"
 
-#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:712
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:713
 msgid "Description"
 msgstr "คำอธิบาย"
 
@@ -4320,7 +4415,7 @@ msgstr "กล่องโดยใช้ค่าเงา(libass เท่า�
 msgid "Font"
 msgstr "ฟอนต์"
 
-#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:302
+#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:303
 msgid "Colors"
 msgstr "สี"
 
@@ -4545,11 +4640,11 @@ msgstr "ย้ายสไตล์ไปล่างสุด"
 msgid "Sort styles alphabetically"
 msgstr "จัดเรียงสไตล์ตามชื่อตัวอักษร"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:690
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:691
 msgid "&New"
 msgstr "&ใหม่"
 
-#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:691
+#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:692
 #: default_menu.json:0
 msgid "&Edit"
 msgstr "&เเก้ไข"
@@ -5066,8 +5161,8 @@ msgstr "เกิดข้อผิดพลาดที่ไม่คาดค
 msgid "Video Details"
 msgstr "รายละเอียดวิดีโอ"
 
-#: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:204
-#: ../src/preferences.cpp:505 default_hotkey.json:315
+#: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:205
+#: ../src/preferences.cpp:506 default_hotkey.json:324
 msgid "Video"
 msgstr "วิดีโอ"
 
@@ -5115,7 +5210,7 @@ msgstr "บังคับเรทตัวอย่าง"
 msgid "Decoder:"
 msgstr "ตัวถอดรหัส:"
 
-#: ../src/dialog_video_properties.cpp:135
+#: ../src/dialog_video_properties.cpp:162
 #, c-format
 msgid ""
 "The video you have loaded has no specified color matrix. Aegisub will guess "
@@ -5136,13 +5231,13 @@ msgstr ""
 "\n"
 "โปรดทำการติดแท็กสีเมทริกซ์ลงในไฟล์วิดีโอเพื่อให้มั่นใจว่าทั้งตัวเล่นวิดีโอเเละคำบรรยายใช้ค่าสีเมทริกซ์เดียวกัน"
 
-#: ../src/dialog_video_properties.cpp:140
+#: ../src/dialog_video_properties.cpp:167
 #, fuzzy
 #| msgid "Unload video"
 msgid "Untagged video"
 msgstr "นำวิดีโอออก"
 
-#: ../src/dialog_video_properties.cpp:145
+#: ../src/dialog_video_properties.cpp:172
 msgid ""
 "The video you have loaded has HDR and/or WCG colors. While ordinary dialogue "
 "subtitles will work fine on such videos, matching video colors using "
@@ -5152,13 +5247,13 @@ msgstr ""
 "การปรับสีคำบรรยายให้ตรงกับวิดีโอนั้นจะไม่สามารถทำได้บนวิดีโอ HDR เเละ/หรือ WCG "
 "(สรุป:โทนสีซับอาจไม่ตรงกับของวิดีโอ)"
 
-#: ../src/dialog_video_properties.cpp:148
+#: ../src/dialog_video_properties.cpp:175
 #, fuzzy
 #| msgid "Warn on HDR/WCG video"
 msgid "HDR and/or WCG video"
 msgstr "เเจ้งเตือนสำหรับวิดีโอที่เป็น HDR/WCG"
 
-#: ../src/dialog_video_properties.cpp:161
+#: ../src/dialog_video_properties.cpp:188
 #, c-format
 msgid ""
 "The current subtitle file has no YCbCr Matrix set.\n"
@@ -5182,21 +5277,21 @@ msgstr ""
 "\n"
 "กล่องตอบโต้นี้สามารถกำหนดได้ในการตั้งค่า"
 
-#: ../src/dialog_video_properties.cpp:166
+#: ../src/dialog_video_properties.cpp:193
 msgid "Set script's YCbCr Matrix?"
 msgstr "ตั้งค่าสีเมทริกซ์  YCbCr ให้สคริปต์?"
 
-#: ../src/dialog_video_properties.cpp:167
+#: ../src/dialog_video_properties.cpp:194
 msgid "Leave YCbCr Matrix unset"
 msgstr "ไม่ตั้งค่าสีเมทริกซ์  YCbCr"
 
-#: ../src/dialog_video_properties.cpp:167
-#: ../src/dialog_video_properties.cpp:226
+#: ../src/dialog_video_properties.cpp:194
+#: ../src/dialog_video_properties.cpp:253
 #, c-format
 msgid "Set script's YCbCr Matrix to the video's (\"%s\")"
 msgstr "ตั้งค่าสีเมทริกซ์  YCbCr ของสคริปต์ให้ตรงกับวิดีโอ (\"%s\")"
 
-#: ../src/dialog_video_properties.cpp:221
+#: ../src/dialog_video_properties.cpp:248
 #, c-format
 msgid ""
 "This video's recommended YCbCr Matrix (\"%s\") differs from the subtitle "
@@ -5213,20 +5308,37 @@ msgstr ""
 "ถ้าวิดีโอนี้มีโทนสีที่เหมือนกับวิดีโอเดิมที่สร้างขึ้นกับสคริปต์\n"
 "ค่าสีเมทริกซ์  YCbCr ควรถูกตั้งตามค่าของเมทริกซ์  YCbCr ของตัววิดีโอ"
 
-#: ../src/dialog_video_properties.cpp:225
+#: ../src/dialog_video_properties.cpp:252
 msgid "YCbCr Matrix mismatch"
 msgstr "สีเมทริกซ์ YCbCr ไม่ตรงกัน"
 
-#: ../src/dialog_video_properties.cpp:226
+#: ../src/dialog_video_properties.cpp:253
 #, c-format
 msgid "Leave script's YCbCr Matrix as it is (\"%s\")"
 msgstr "คงค่าสีเมทริกซ์  YCbCr อันเดิมเอาไว้ (\"%s\")"
 
-#: ../src/dialog_video_properties.cpp:257
-msgid "Resolution mismatch"
-msgstr "ความละเอียดไม่ตรงกัน"
+#: ../src/dialog_video_properties.cpp:332
+#: ../src/dialog_video_properties.cpp:339
+msgid "Leave resolution as it is"
+msgstr "คงความละเอียดเดิมของสคริปต์ไว้"
 
-#: ../src/dialog_video_properties.cpp:260
+#: ../src/dialog_video_properties.cpp:333
+msgid "Resample script (stretch to new aspect ratio)"
+msgstr "เปลี่ยนความละเอียดสคริปต์ (ยืดเป็นอัตราส่วนใหม่)"
+
+#: ../src/dialog_video_properties.cpp:334
+msgid "Resample script (add borders)"
+msgstr "เปลี่ยนความละเอียดสคริปต์ (เพิ่มเส้นขอบ)"
+
+#: ../src/dialog_video_properties.cpp:335
+msgid "Resample script (remove borders)"
+msgstr "เปลี่ยนความละเอียดสคริปต์ (ลบเส้นขอบ)"
+
+#: ../src/dialog_video_properties.cpp:340
+msgid "Resample script"
+msgstr "เปลี่ยนความละเอียดสคริปต์"
+
+#: ../src/dialog_video_properties.cpp:346
 #, fuzzy, c-format
 #| msgid ""
 #| "The resolution of the loaded video and the resolution specified for the "
@@ -5252,28 +5364,11 @@ msgstr ""
 "\n"
 "ท่านต้องการเปลี่ยนความละเอียดให้เท่ากับของตัววิดีโอหรือไม่ ?"
 
-#: ../src/dialog_video_properties.cpp:271
-#: ../src/dialog_video_properties.cpp:280
-msgid "Leave resolution as it is"
-msgstr "คงความละเอียดเดิมของสคริปต์ไว้"
+#: ../src/dialog_video_properties.cpp:350
+msgid "Resolution mismatch"
+msgstr "ความละเอียดไม่ตรงกัน"
 
-#: ../src/dialog_video_properties.cpp:272
-msgid "Resample script (stretch to new aspect ratio)"
-msgstr "เปลี่ยนความละเอียดสคริปต์ (ยืดเป็นอัตราส่วนใหม่)"
-
-#: ../src/dialog_video_properties.cpp:273
-msgid "Resample script (add borders)"
-msgstr "เปลี่ยนความละเอียดสคริปต์ (เพิ่มเส้นขอบ)"
-
-#: ../src/dialog_video_properties.cpp:274
-msgid "Resample script (remove borders)"
-msgstr "เปลี่ยนความละเอียดสคริปต์ (ลบเส้นขอบ)"
-
-#: ../src/dialog_video_properties.cpp:281
-msgid "Resample script"
-msgstr "เปลี่ยนความละเอียดสคริปต์"
-
-#: ../src/dialog_video_properties.cpp:389
+#: ../src/dialog_video_properties.cpp:397
 #, c-format
 msgid ""
 "The current subtitle file has no layout resolution set.\n"
@@ -5308,26 +5403,26 @@ msgstr ""
 "\n"
 "กล่องตอบโต้นี้สามารถกำหนดได้ในการตั้งค่า"
 
-#: ../src/dialog_video_properties.cpp:403
+#: ../src/dialog_video_properties.cpp:411
 msgid "Set script's layout resolution?"
 msgstr "ตั้งค่าความละเอียดโครงงานให้สคริปต์ไหม?"
 
-#: ../src/dialog_video_properties.cpp:404
+#: ../src/dialog_video_properties.cpp:412
 msgid "Leave layout resolution unset"
 msgstr "ไม่ต้องตั้งค่าความละเอียดโครงงาน"
 
-#: ../src/dialog_video_properties.cpp:405
-#: ../src/dialog_video_properties.cpp:484
+#: ../src/dialog_video_properties.cpp:413
+#: ../src/dialog_video_properties.cpp:492
 #, c-format
 msgid "Set script's layout resolution to the video's (%d × %d)"
 msgstr "ตั้งค่าความละเอียดโครงงานตามความละเอียดของวิดีโอ (%d × %d)"
 
-#: ../src/dialog_video_properties.cpp:406
+#: ../src/dialog_video_properties.cpp:414
 #, c-format
 msgid "Set script's layout resolution to its script resolution (%d × %d)"
 msgstr "ตั้งค่าความละเอียดของโครงงานตามค่าความละเอียดของสคริปต์ (%d × %d)"
 
-#: ../src/dialog_video_properties.cpp:464
+#: ../src/dialog_video_properties.cpp:472
 #, c-format
 msgid ""
 "The resolution of the loaded video and the layout resolution specified for "
@@ -5354,7 +5449,7 @@ msgstr ""
 "จะจัดรูปเเบบในวิดีโอที่เปิดอยู่นี้พอดี ท่านควรจะตั้งค่าความละเอียดโครงงาน\n"
 "ให้ตรงกับความละเอียดของวิดีโอ"
 
-#: ../src/dialog_video_properties.cpp:475
+#: ../src/dialog_video_properties.cpp:483
 #, c-format
 msgid ""
 "The resolution of the loaded video and the layout resolution specified for "
@@ -5372,24 +5467,24 @@ msgstr ""
 "\n"
 "เปลี่ยนความละเอียดโครงงานให้ตรงกับวิดีโอ?"
 
-#: ../src/dialog_video_properties.cpp:483
+#: ../src/dialog_video_properties.cpp:491
 msgid "Layout resolution mismatch"
 msgstr "ความละเอียดโครงงานไม่ตรงกัน"
 
-#: ../src/dialog_video_properties.cpp:484
+#: ../src/dialog_video_properties.cpp:492
 #, c-format
 msgid "Leave layout resolution as it is (%d × %d)"
 msgstr "ปล่อยความละเอียดโครงงานไว้ตามเดิม (%d × %d)"
 
-#: ../src/dialog_video_properties.cpp:509
+#: ../src/dialog_video_properties.cpp:517
 msgid "change ycbcr matrix"
 msgstr ""
 
-#: ../src/dialog_video_properties.cpp:512
+#: ../src/dialog_video_properties.cpp:520
 msgid "change script resolution"
 msgstr "เปลี่ยนความละเอียดของสคริปต์"
 
-#: ../src/dialog_video_properties.cpp:515
+#: ../src/dialog_video_properties.cpp:523
 #, fuzzy
 #| msgid "change script resolution"
 msgid "change layout resolution"
@@ -5478,58 +5573,58 @@ msgstr "เลือกเเทร็กวิดีโอ"
 msgid "Style '%s' does not exist\n"
 msgstr "สไตล์ '%s' ไม่มีอยู่\n"
 
-#: ../src/font_file_lister.cpp:154
+#: ../src/font_file_lister.cpp:157
 #, c-format
 msgid "Font '%s' is used in a drawing, but not in any text.\n"
 msgstr "ฟอนต์ '%s' ถูกใช้ในการวาดภาพ, เเต่ไม่ได้ใช้ในตัวอักขระใดๆ\n"
 
-#: ../src/font_file_lister.cpp:160
+#: ../src/font_file_lister.cpp:163
 #, c-format
 msgid "Could not find font '%s'\n"
 msgstr "ไม่พบฟอนต์ '%s' \n"
 
-#: ../src/font_file_lister.cpp:168
+#: ../src/font_file_lister.cpp:171
 #, c-format
 msgid "Found '%s' at '%s'\n"
 msgstr "พบ « %s » ที่ « %s »\n"
 
-#: ../src/font_file_lister.cpp:174
+#: ../src/font_file_lister.cpp:177
 #, c-format
 msgid "'%s' does not have a bold variant.\n"
 msgstr "'%s' ไม่มีค่าฟอนต์เเบบตัวหนา \n"
 
-#: ../src/font_file_lister.cpp:176
+#: ../src/font_file_lister.cpp:179
 #, c-format
 msgid "'%s' does not have an italic variant.\n"
 msgstr "'%s' ไม่มีค่าฟอนต์เเบบตัวเอียง\n"
 
-#: ../src/font_file_lister.cpp:180
+#: ../src/font_file_lister.cpp:183
 #, c-format
 msgid "'%s' is missing %d glyphs used.\n"
 msgstr "'%s' ไม่มีอยู่ ตัวอักขระที่ใช้ %d \n"
 
-#: ../src/font_file_lister.cpp:182
+#: ../src/font_file_lister.cpp:185
 #, c-format
 msgid "'%s' is missing the following glyphs used: %s\n"
 msgstr "'%s' ขาดตัวอักขระต่อไปนี้: %s\n"
 
-#: ../src/font_file_lister.cpp:193
+#: ../src/font_file_lister.cpp:197
 msgid "Used in styles:\n"
 msgstr "ใช้ในสไตล์:\n"
 
-#: ../src/font_file_lister.cpp:199
+#: ../src/font_file_lister.cpp:203
 msgid "Used on lines:"
 msgstr "ใช้ในบรรทัดที่:"
 
-#: ../src/font_file_lister.cpp:211
+#: ../src/font_file_lister.cpp:216
 msgid "Parsing file\n"
 msgstr "กำลังอ่านไฟล์\n"
 
-#: ../src/font_file_lister.cpp:225
+#: ../src/font_file_lister.cpp:230
 msgid "Searching for font files\n"
 msgstr "ค้นหาไฟล์ฟอนต์\n"
 
-#: ../src/font_file_lister.cpp:227
+#: ../src/font_file_lister.cpp:232
 msgid ""
 "Done\n"
 "\n"
@@ -5537,17 +5632,17 @@ msgstr ""
 "เสร็จสิ้น\n"
 "\n"
 
-#: ../src/font_file_lister.cpp:234
+#: ../src/font_file_lister.cpp:239
 msgid "All fonts found.\n"
 msgstr "พบทุกฟอนต์\n"
 
-#: ../src/font_file_lister.cpp:236
+#: ../src/font_file_lister.cpp:241
 #, c-format
 msgid "One font could not be found\n"
 msgid_plural "%d fonts could not be found.\n"
 msgstr[0] "มี %d ฟอนต์ที่ไม่พบ\n"
 
-#: ../src/font_file_lister.cpp:239
+#: ../src/font_file_lister.cpp:244
 #, c-format
 msgid "One font was found, but was missing glyphs used in the script.\n"
 msgid_plural ""
@@ -5598,7 +5693,7 @@ msgstr "อักขระต่อวินาที"
 msgid "Characters Per Second"
 msgstr "อักขระต่อวินาที"
 
-#: ../src/hotkey.cpp:261
+#: ../src/hotkey.cpp:273
 msgid "Invalid command name for hotkey"
 msgstr "ชื่อคำสั่งไม่ถูกต้องสำหรับปุ่มลัด"
 
@@ -5693,28 +5788,28 @@ msgstr "ว่าง"
 msgid "&Recent"
 msgstr "&รายการล่าสุด"
 
-#: ../src/menu.cpp:467
+#: ../src/menu.cpp:476
 msgid "No Automation macros loaded"
 msgstr "ไม่มีสคริปต์ทุ่นเเรงถูกโหลด"
 
-#: ../src/mkv_wrap.cpp:246
+#: ../src/mkv_wrap.cpp:262
 msgid "Choose which track to read:"
 msgstr "เลือกเเทร็กวิดีโอที่จะใช้:"
 
-#: ../src/mkv_wrap.cpp:246
+#: ../src/mkv_wrap.cpp:262
 msgid "Multiple subtitle tracks found"
 msgstr "พบหลายคำบรรยาย"
 
-#: ../src/mkv_wrap.cpp:291
+#: ../src/mkv_wrap.cpp:307
 msgid "Parsing Matroska"
 msgstr "กำลังอ่านไฟล์ Matroska"
 
-#: ../src/mkv_wrap.cpp:291
+#: ../src/mkv_wrap.cpp:307
 msgid "Reading subtitles from Matroska file."
 msgstr "อ่านไฟล์คำบรรยายจากเเฟ้ม MKV"
 
 #: ../src/preferences.cpp:98 ../src/preferences.cpp:100
-#: ../src/preferences.cpp:402 ../src/preferences.cpp:423
+#: ../src/preferences.cpp:403 ../src/preferences.cpp:424
 msgid "General"
 msgstr "ทั่วไป"
 
@@ -5734,19 +5829,19 @@ msgstr "บันทึกสถานะ UI ในคำบรรยาย"
 msgid "Toolbar Icon Size"
 msgstr "ขนาดไอคอนแถบเครื่องมือ"
 
-#: ../src/preferences.cpp:107 ../src/preferences.cpp:250 default_hotkey.json:2
+#: ../src/preferences.cpp:107 ../src/preferences.cpp:251 default_hotkey.json:2
 msgid "Always"
 msgstr "ทุกครั้ง"
 
-#: ../src/preferences.cpp:107 ../src/preferences.cpp:240
-#: ../src/preferences.cpp:246 ../src/preferences.cpp:258
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:107 ../src/preferences.cpp:241
+#: ../src/preferences.cpp:247 ../src/preferences.cpp:259
+#: ../src/preferences.cpp:263
 msgid "Ask"
 msgstr "ถาม"
 
-#: ../src/preferences.cpp:107 ../src/preferences.cpp:240
-#: ../src/preferences.cpp:246 ../src/preferences.cpp:250
-#: ../src/preferences.cpp:258 ../src/preferences.cpp:262
+#: ../src/preferences.cpp:107 ../src/preferences.cpp:241
+#: ../src/preferences.cpp:247 ../src/preferences.cpp:251
+#: ../src/preferences.cpp:259 ../src/preferences.cpp:263
 msgid "Never"
 msgstr "ไม่ต้องสน"
 
@@ -5805,7 +5900,7 @@ msgstr "นำเข้า TTXT"
 msgid "Plain text import"
 msgstr "นำเข้า ข้อความดิบ"
 
-#: ../src/preferences.cpp:164 ../src/preferences.cpp:438 default_hotkey.json:37
+#: ../src/preferences.cpp:164 ../src/preferences.cpp:439 default_hotkey.json:37
 msgid "Audio"
 msgstr "เสียง"
 
@@ -5834,580 +5929,580 @@ msgid "Left-click-drag moves end marker"
 msgstr "คลิก-ซ้าย-ลาก จะย้ายจุดมาร์คจบ"
 
 #: ../src/preferences.cpp:173
+msgid "Default playback rate"
+msgstr ""
+
+#: ../src/preferences.cpp:174
 msgid "Default timing length (ms)"
 msgstr "ความยาวเวลาเริ่มต้น (ms)"
 
-#: ../src/preferences.cpp:174
+#: ../src/preferences.cpp:175
 msgid "Default lead-in length (ms)"
 msgstr "ความยาว lead-in เริ่มต้น (ms)"
 
-#: ../src/preferences.cpp:175
+#: ../src/preferences.cpp:176
 msgid "Default lead-out length (ms)"
 msgstr "ความยาว lead-out เริ่มต้น (ms)"
 
-#: ../src/preferences.cpp:177
+#: ../src/preferences.cpp:178
 msgid "Marker drag-start sensitivity (px)"
 msgstr "ความไวในการลากจุดมาร์ค (px)"
 
-#: ../src/preferences.cpp:178
+#: ../src/preferences.cpp:179
 msgid "Line boundary thickness (px)"
 msgstr "ความหนาของขอบเขตบรรทัด (px)"
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:180
 msgid "Maximum snap distance (px)"
 msgstr "ระยะเเทรกเข้าสูงสุด (px)"
 
-#: ../src/preferences.cpp:181
+#: ../src/preferences.cpp:182
 msgid "Don't show"
 msgstr "ไม่เเสดง"
 
-#: ../src/preferences.cpp:181
-msgid "Show all"
-msgstr "เเสดงทั้งหมด"
-
-#: ../src/preferences.cpp:181
+#: ../src/preferences.cpp:182
 msgid "Show previous"
 msgstr "เเสดงก่อนหน้า"
 
-#: ../src/preferences.cpp:181
+#: ../src/preferences.cpp:182
 msgid "Show previous and next"
 msgstr "เเสดงก่อนหน้าเเละถัดไป"
 
-#: ../src/preferences.cpp:183
+#: ../src/preferences.cpp:184
 msgid "Show inactive lines"
 msgstr "เเสดงบรรทัดที่ไม่ได้ใช้งาน"
 
-#: ../src/preferences.cpp:185
+#: ../src/preferences.cpp:186
 msgid "Include commented inactive lines"
 msgstr "รวมบรรทัดที่ไม่ได้ใช้งานเเละความคิดเห็น"
 
-#: ../src/preferences.cpp:187
+#: ../src/preferences.cpp:188
 msgid "Display Visual Options"
 msgstr "เเสดงตัวเลือกมุมมอง"
 
-#: ../src/preferences.cpp:188
+#: ../src/preferences.cpp:189
 msgid "Keyframes in dialogue mode"
 msgstr "คีย์เฟรมในโหมดคำเเปล"
 
-#: ../src/preferences.cpp:189
+#: ../src/preferences.cpp:190
 msgid "Keyframes in karaoke mode"
 msgstr "คีย์เฟรมในโหมดคาราโอเกะ"
 
-#: ../src/preferences.cpp:190
+#: ../src/preferences.cpp:191
 msgid "Cursor time"
 msgstr "เวลาของเคอร์เซอร์"
 
-#: ../src/preferences.cpp:191
+#: ../src/preferences.cpp:192
 msgid "Video position"
 msgstr "ตำเเหน่งของวิดีโอ"
 
-#: ../src/preferences.cpp:192 ../src/preferences.cpp:318
+#: ../src/preferences.cpp:193 ../src/preferences.cpp:319
 msgid "Seconds boundaries"
 msgstr "ขอบเขตรอง"
 
-#: ../src/preferences.cpp:194
+#: ../src/preferences.cpp:195
 msgid "Waveform Style"
 msgstr "สไตล์คลื่นเสียง"
 
-#: ../src/preferences.cpp:196
+#: ../src/preferences.cpp:197
 msgid "Audio labels"
 msgstr "ป้ายกำกับเสียง"
 
-#: ../src/preferences.cpp:207
+#: ../src/preferences.cpp:208
 msgid "Show keyframes in slider"
 msgstr "แสดงคีย์เฟรมในตัวเลื่อน"
 
-#: ../src/preferences.cpp:209
+#: ../src/preferences.cpp:210
 msgid "Only show visual tools when mouse is over video"
 msgstr "เเสดงเครื่องมือจัดเรียงหน้าตาเมื่อเมาส์อยู่บนวิดีโอเท่านั้น"
 
-#: ../src/preferences.cpp:211
+#: ../src/preferences.cpp:212
 msgid "Seek video to line start on selection change"
 msgstr "เลื่อนวิดีโอไปยังบรรทัดเริ่มที่เลือกทำการเปลี่ยนเเปลง"
 
-#: ../src/preferences.cpp:213
+#: ../src/preferences.cpp:214
 msgid "Automatically open audio when opening video"
 msgstr "เปิดไฟล์เสียงหลังจากนำเข้าวิดีโอโดยอัตโนมัติ"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Does nothing"
 msgstr "ไม่ต้องทำอะไร"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Pans the video"
 msgstr "เเพนวิดีโอ"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Pans the video (X/Y swapped)"
 msgstr "เเพนวิดีโอ (สลับ X/Y)"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Resizes the video box"
 msgstr "ปรับขนาดกล่องเเสดงวิดีโอ"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Resizes the video box (reversed)"
 msgstr "ปรับขนาดกล่องเเสดงวิดีโอ (ย้อนกลับ)"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Zooms the video"
 msgstr "ซูมวิดีโอ"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Zooms the video (reversed)"
 msgstr "ซูมวิดีโอ (ย้อนกลับ)"
 
-#: ../src/preferences.cpp:218
+#: ../src/preferences.cpp:219
 msgid "Scrolling on the video display"
 msgstr "เลื่อน(mouse 3)บนเเถบเเสดงวิดีโอ"
 
-#: ../src/preferences.cpp:219
+#: ../src/preferences.cpp:220
 msgid "Ctrl+Scrolling on the video display"
 msgstr "Ctrl+เลื่อน(mouse 3)บนเเถบเเสดงวิดีโอ"
 
-#: ../src/preferences.cpp:220
+#: ../src/preferences.cpp:221
 msgid "Shift+Scrolling on the video display"
 msgstr "Shift+เลื่อน(mouse 3)บนเเถบเเสดงวิดีโอ"
 
-#: ../src/preferences.cpp:224
+#: ../src/preferences.cpp:225
 msgid "Default Zoom"
 msgstr "ค่าซูมเริ่มต้น"
 
-#: ../src/preferences.cpp:226
+#: ../src/preferences.cpp:227
 msgid "Fast jump step in frames"
 msgstr "ข้ามไปข้างหน้าเเบบเฟรมอย่างรวดเร็ว"
 
-#: ../src/preferences.cpp:230
+#: ../src/preferences.cpp:231
 msgid "Screenshot save path"
 msgstr "เส้นทางที่บันทึกภาพหน้าจอ"
 
-#: ../src/preferences.cpp:232
+#: ../src/preferences.cpp:233
 msgid "Script Resolution"
 msgstr "ความละเอียดสคริปต์"
 
-#: ../src/preferences.cpp:233
+#: ../src/preferences.cpp:234
 msgid "Use resolution of first video opened"
 msgstr "ใช้ความละเอียดของวิดีโอเเรกที่นำเข้า"
 
-#: ../src/preferences.cpp:236
+#: ../src/preferences.cpp:237
 msgid "Default width"
 msgstr "ความกว้างเริ่มต้น"
 
-#: ../src/preferences.cpp:238
+#: ../src/preferences.cpp:239
 msgid "Default height"
 msgstr "ความสูงเริ่มต้น"
 
-#: ../src/preferences.cpp:240
+#: ../src/preferences.cpp:241
 msgid "Always resample"
 msgstr "ทำการปรับขนาดให้เสมอ"
 
-#: ../src/preferences.cpp:242
+#: ../src/preferences.cpp:243
 msgid "Match video resolution on open"
 msgstr "ปรับให้ตรงกับความละเอียดวิดีโอเมื่อเปิด"
 
-#: ../src/preferences.cpp:244
+#: ../src/preferences.cpp:245
 msgid "Layout Resolution"
 msgstr "ความละเอียดโครงงาน"
 
-#: ../src/preferences.cpp:246 ../src/preferences.cpp:258
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:247 ../src/preferences.cpp:259
+#: ../src/preferences.cpp:263
 msgid "Always set"
 msgstr "ตามนี้เสมอ"
 
-#: ../src/preferences.cpp:246
+#: ../src/preferences.cpp:247
 msgid "Always set from script resolution"
 msgstr "ตามความละเอียดสคริปต์เสมอ"
 
-#: ../src/preferences.cpp:248
+#: ../src/preferences.cpp:249
 msgid "Set layout resolution from video on open"
 msgstr "ตั้งความละเอียดโครงงานจากวิดีโอเมื่อเปิด"
 
-#: ../src/preferences.cpp:250
+#: ../src/preferences.cpp:251
 msgid "When aspect ratio changes"
 msgstr "เมื่ออัตราส่วนภาพมีการเปลี่ยนเเปลง"
 
-#: ../src/preferences.cpp:252
+#: ../src/preferences.cpp:253
 msgid "Prompt on layout resolution mismatch"
 msgstr "การเเจ้งเรื่องความละเอียดโครงงานไม่ตรง"
 
-#: ../src/preferences.cpp:254
+#: ../src/preferences.cpp:255
 msgid "YCbCr Matrix"
 msgstr "เมทริกซ์ YCbCr"
 
-#: ../src/preferences.cpp:255
+#: ../src/preferences.cpp:256
 msgid "Warn on untagged video color matrix"
 msgstr "เเจ้งเตือนสำหรับวิดีโอที่ไม่มีค่าสีเมทริกซ์ระบุ"
 
-#: ../src/preferences.cpp:256
+#: ../src/preferences.cpp:257
 msgid "Warn on HDR/WCG video"
 msgstr "เเจ้งเตือนสำหรับวิดีโอที่เป็น HDR/WCG"
 
-#: ../src/preferences.cpp:260
+#: ../src/preferences.cpp:261
 msgid "Use video's YCbCr Matrix when script has no matrix set"
 msgstr "ใช้เมทริกซ์ YCbCr กับวิดีโอที่ไม่มีค่าสีเมทริกซ์ระบุ"
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:265
 msgid "Match video's YCbCr Matrix on open"
 msgstr "ปรับเมทริกซ์ YCbCr ให้ตรงกับวิดีโอเมื่อเปิด"
 
-#: ../src/preferences.cpp:271
+#: ../src/preferences.cpp:272
 msgid "Interface"
 msgstr "หน้าเเสดงผล"
 
-#: ../src/preferences.cpp:273
+#: ../src/preferences.cpp:274
 msgid "Edit Box"
 msgstr "กล่องเเก้ไข"
 
-#: ../src/preferences.cpp:274
+#: ../src/preferences.cpp:275
 msgid "Enable call tips"
 msgstr "เปิดใช้คำเเนะนำ[*พังห้ามใช้*]"
 
-#: ../src/preferences.cpp:275
+#: ../src/preferences.cpp:276
 msgid "Overwrite in time boxes"
 msgstr "เขียนทับในกล่องเวลา"
 
-#: ../src/preferences.cpp:276
+#: ../src/preferences.cpp:277
 msgid "Shift+Enter adds \\n"
 msgstr "Shift+Enter เเทรก \\n"
 
-#: ../src/preferences.cpp:277
+#: ../src/preferences.cpp:278
 msgid "Enable syntax highlighting"
 msgstr "เปิดใช้การเน้นไวยากรณ์"
 
-#: ../src/preferences.cpp:278
+#: ../src/preferences.cpp:279
 msgid "Dictionaries path"
 msgstr "เส้นทางของพจนานุกรม"
 
-#: ../src/preferences.cpp:281
+#: ../src/preferences.cpp:282
 msgid "Character Counter"
 msgstr "ตัวนับอักขระ"
 
-#: ../src/preferences.cpp:282
+#: ../src/preferences.cpp:283
 msgid "Maximum characters per line"
 msgstr "อักขระต่อบรรทัดสูงสุด"
 
-#: ../src/preferences.cpp:283
+#: ../src/preferences.cpp:284
 msgid "Characters Per Second Warning Threshold"
 msgstr "เกณฑ์การเเจ้งเตือนอักขระต่อวินาที"
 
-#: ../src/preferences.cpp:284
+#: ../src/preferences.cpp:285
 msgid "Characters Per Second Error Threshold"
 msgstr "เกณฑ์การเเจ้งความผิดพลาดในอักขระต่อวินาที"
 
-#: ../src/preferences.cpp:285
+#: ../src/preferences.cpp:286
 msgid "Ignore whitespace"
 msgstr "ละเว้นช่องว่าง"
 
-#: ../src/preferences.cpp:286
+#: ../src/preferences.cpp:287
 msgid "Ignore punctuation"
 msgstr "ละเว้นเครื่องหมายวรรคตอน"
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:289
 msgid "Grid"
 msgstr "กริด"
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:290
 msgid "Focus grid on click"
 msgstr "โฟกัสตารางเมื่อคลิก"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:291
 msgid "Highlight visible subtitles"
 msgstr "เน้นคำบรรยายที่เเสดง"
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:292
 msgid "Hide overrides symbol"
 msgstr "เครื่องหมายที่ใช้ซ่อนการซ้อนทับ"
 
-#: ../src/preferences.cpp:295
+#: ../src/preferences.cpp:296
 msgid "Skip over whitespace"
 msgstr "ละทิ้งช่องว่าง"
 
-#: ../src/preferences.cpp:310
+#: ../src/preferences.cpp:311
 msgid "Audio Display"
 msgstr "เสียง"
 
-#: ../src/preferences.cpp:311
+#: ../src/preferences.cpp:312
 msgid "Play cursor"
 msgstr "ตัวเล่นเคอร์เซอร์"
 
-#: ../src/preferences.cpp:312
+#: ../src/preferences.cpp:313
 msgid "Current frame range"
 msgstr "ช่วงของเฟรมปัจจุบัน"
 
-#: ../src/preferences.cpp:313
+#: ../src/preferences.cpp:314
 msgid "Previous frame range"
 msgstr "ช่วงของเฟรมก่อนหน้า"
 
-#: ../src/preferences.cpp:314
+#: ../src/preferences.cpp:315
 msgid "Line boundary start"
 msgstr "จุดเริ่มขอบเขตบรรทัด"
 
-#: ../src/preferences.cpp:315
+#: ../src/preferences.cpp:316
 msgid "Line boundary end"
 msgstr "จุดสิ้นสุดขอบเขตบรรทัด"
 
-#: ../src/preferences.cpp:316
+#: ../src/preferences.cpp:317
 msgid "Line boundary inactive line"
 msgstr "ขอบเขตของบรรทัดที่ไม่ได้ใช้งาน"
 
-#: ../src/preferences.cpp:317
+#: ../src/preferences.cpp:318
 msgid "Syllable boundaries"
 msgstr "ขอบเขตพยางค์"
 
-#: ../src/preferences.cpp:320
+#: ../src/preferences.cpp:321
 msgid "Syntax Highlighting"
 msgstr "การเน้นไวยากรณ์"
 
-#: ../src/preferences.cpp:321
+#: ../src/preferences.cpp:322
 msgid "Background"
 msgstr "พื้นหลัง"
 
-#: ../src/preferences.cpp:322
+#: ../src/preferences.cpp:323
 msgid "Normal"
 msgstr "ปกติ"
 
-#: ../src/preferences.cpp:323
+#: ../src/preferences.cpp:324
 msgid "Comments"
 msgstr "ความคิดเห็น"
 
-#: ../src/preferences.cpp:324
+#: ../src/preferences.cpp:325
 msgid "Drawing Commands"
 msgstr "คำสั่งการวาด"
 
-#: ../src/preferences.cpp:325
+#: ../src/preferences.cpp:326
 msgid "Drawing X Coords"
 msgstr "วาด เเกน X"
 
-#: ../src/preferences.cpp:326
+#: ../src/preferences.cpp:327
 msgid "Drawing Y Coords"
 msgstr "วาด เเกน Y"
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:328
 msgid "Underline Spline Endpoints"
 msgstr "ขีดเส้นใต้จุดสิ้นสุดของส่วนเส้นโค้ง"
 
-#: ../src/preferences.cpp:329
+#: ../src/preferences.cpp:330
 msgid "Brackets"
 msgstr "วงเล็บ"
 
-#: ../src/preferences.cpp:330
+#: ../src/preferences.cpp:331
 msgid "Slashes and Parentheses"
 msgstr "เครื่องหมายทับและวงเล็บ"
 
-#: ../src/preferences.cpp:331
+#: ../src/preferences.cpp:332
 msgid "Tags"
 msgstr "เเท็ก"
 
-#: ../src/preferences.cpp:332
+#: ../src/preferences.cpp:333
 msgid "Parameters"
 msgstr "พารามิเตอร์"
 
-#: ../src/preferences.cpp:334
+#: ../src/preferences.cpp:335
 msgid "Error Background"
 msgstr "ข้อผิดพลาดเบื้องหลัง"
 
-#: ../src/preferences.cpp:335
+#: ../src/preferences.cpp:336
 msgid "Line Break"
 msgstr "เว้นบรรทัด"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:337
 msgid "Karaoke templates"
 msgstr "เทมเพลตคาราโอเกะ"
 
-#: ../src/preferences.cpp:337
+#: ../src/preferences.cpp:338
 msgid "Karaoke variables"
 msgstr "ตัวแปรคาราโอเกะ"
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:344
 msgid "Audio Color Schemes"
 msgstr "รูปเเบบสีของเสียง"
 
-#: ../src/preferences.cpp:345 ../src/preferences.cpp:454
+#: ../src/preferences.cpp:346 ../src/preferences.cpp:455
 msgid "Spectrum"
 msgstr "สเปกตรัม"
 
-#: ../src/preferences.cpp:346
+#: ../src/preferences.cpp:347
 msgid "Waveform"
 msgstr "คลื่นเสียง"
 
-#: ../src/preferences.cpp:348 default_hotkey.json:262
+#: ../src/preferences.cpp:349 default_hotkey.json:271
 msgid "Subtitle Grid"
 msgstr "ส่วนคำบรรยาย"
 
-#: ../src/preferences.cpp:349
+#: ../src/preferences.cpp:350
 msgid "Standard foreground"
 msgstr "ส่วนหน้าทั่วไป"
 
-#: ../src/preferences.cpp:350
+#: ../src/preferences.cpp:351
 msgid "Standard background"
 msgstr "ส่วนหลังทั่วไป"
 
-#: ../src/preferences.cpp:351
+#: ../src/preferences.cpp:352
 msgid "Selection foreground"
 msgstr "ส่วนเลือกข้างหน้า"
 
-#: ../src/preferences.cpp:352
+#: ../src/preferences.cpp:353
 msgid "Selection background"
 msgstr "ส่วนเลือกข้างหลัง"
 
-#: ../src/preferences.cpp:353
+#: ../src/preferences.cpp:354
 msgid "Collision foreground"
 msgstr "บรรทัดที่เวลาซ้อนกัน"
 
-#: ../src/preferences.cpp:354
+#: ../src/preferences.cpp:355
 msgid "In frame background"
 msgstr "พื้นหลังในเฟรม"
 
-#: ../src/preferences.cpp:355
+#: ../src/preferences.cpp:356
 msgid "Comment background"
 msgstr "พื้นหลังของความคิดเห็น"
 
-#: ../src/preferences.cpp:356
+#: ../src/preferences.cpp:357
 msgid "Selected comment background"
 msgstr "ความคิดเห็นเบื้องหลังที่เลือก"
 
-#: ../src/preferences.cpp:357
+#: ../src/preferences.cpp:358
 msgid "Header background"
 msgstr "พื้นหลังส่วนหัว"
 
-#: ../src/preferences.cpp:358
+#: ../src/preferences.cpp:359
 msgid "Left Column"
 msgstr "คอลัมน์ซ้าย"
 
-#: ../src/preferences.cpp:359
+#: ../src/preferences.cpp:360
 msgid "Active Line Border"
 msgstr "เส้นขอบที่ใช้งานอยู่"
 
-#: ../src/preferences.cpp:360
+#: ../src/preferences.cpp:361
 msgid "Lines"
 msgstr "บรรทัด"
 
-#: ../src/preferences.cpp:361
+#: ../src/preferences.cpp:362
 msgid "CPS Error"
 msgstr "ข้อผิดพลาดในอักขระต่อวินาที"
 
-#: ../src/preferences.cpp:363
+#: ../src/preferences.cpp:364
 msgid "Visual Typesetting Tools"
 msgstr "เครื่องมือจัดเรียงหน้าตา"
 
-#: ../src/preferences.cpp:364
+#: ../src/preferences.cpp:365
 msgid "Primary Lines"
 msgstr "บรรทัดหลัก"
 
-#: ../src/preferences.cpp:365
+#: ../src/preferences.cpp:366
 msgid "Secondary Lines"
 msgstr "บรรทัดรอง"
 
-#: ../src/preferences.cpp:366
+#: ../src/preferences.cpp:367
 msgid "Primary Highlight"
 msgstr "ตัวหลักที่เน้น"
 
-#: ../src/preferences.cpp:367
+#: ../src/preferences.cpp:368
 msgid "Secondary Highlight"
 msgstr "ตัวรองที่เน้น"
 
-#: ../src/preferences.cpp:370
+#: ../src/preferences.cpp:371
 msgid "Visual Typesetting Tools Alpha"
 msgstr "ความเจือจางเครื่องมือจัดเรียงหน้าตา"
 
-#: ../src/preferences.cpp:371
+#: ../src/preferences.cpp:372
 msgid "Shaded Area"
 msgstr "พื้นที่เเรเงา"
 
-#: ../src/preferences.cpp:380
+#: ../src/preferences.cpp:381
 msgid "Backup"
 msgstr "การสำรอง"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:383
 msgid "Automatic Save"
 msgstr "การบันทึกอัตโนมัติ"
 
-#: ../src/preferences.cpp:383 ../src/preferences.cpp:391
+#: ../src/preferences.cpp:384 ../src/preferences.cpp:392
 msgid "Enable"
 msgstr "เปิดใช้"
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:387
 msgid "Interval in seconds"
 msgstr "ช่วงเวลาเป็นวินาที"
 
-#: ../src/preferences.cpp:387 ../src/preferences.cpp:393
-#: ../src/preferences.cpp:452
+#: ../src/preferences.cpp:388 ../src/preferences.cpp:394
+#: ../src/preferences.cpp:453
 msgid "Path"
 msgstr "เส้นทาง"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:389
 msgid "Autosave after every change"
 msgstr "บันทึกทุกการเปลี่ยนเเปลงอัตโนมัติ"
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:391
 msgid "Automatic Backup"
 msgstr "การสำรองข้อมูลอัตโนมัติ"
 
-#: ../src/preferences.cpp:404
+#: ../src/preferences.cpp:405
 msgid "Base path"
 msgstr "เส้นทางหลัก"
 
-#: ../src/preferences.cpp:405
+#: ../src/preferences.cpp:406
 msgid "Include path"
 msgstr "เส้นทางที่รวมด้วย"
 
-#: ../src/preferences.cpp:406
+#: ../src/preferences.cpp:407
 msgid "Auto-load path"
 msgstr "เส้นทางนำเข้าอัตโนมัติ"
 
-#: ../src/preferences.cpp:408
+#: ../src/preferences.cpp:409
 msgid "0: Fatal"
 msgstr "0 : ล้มเหลว"
 
-#: ../src/preferences.cpp:408
+#: ../src/preferences.cpp:409
 msgid "1: Error"
 msgstr "1 : ผิดพลาด"
 
-#: ../src/preferences.cpp:408
+#: ../src/preferences.cpp:409
 msgid "2: Warning"
 msgstr "2 : คำเตือน"
 
-#: ../src/preferences.cpp:408
+#: ../src/preferences.cpp:409
 msgid "3: Hint"
 msgstr "3 : ข้อเเนะนำ"
 
-#: ../src/preferences.cpp:408
+#: ../src/preferences.cpp:409
 msgid "4: Debug"
 msgstr "4 : ดีบัค"
 
-#: ../src/preferences.cpp:408
+#: ../src/preferences.cpp:409
 msgid "5: Trace"
 msgstr "5 : ทั้งหมด"
 
-#: ../src/preferences.cpp:410
+#: ../src/preferences.cpp:411
 msgid "Trace level"
 msgstr "ระดับการเเจ้งให้ทราบ"
 
-#: ../src/preferences.cpp:412
+#: ../src/preferences.cpp:413
 msgid "All scripts"
 msgstr "สคริปต์ทั้งหมด"
 
-#: ../src/preferences.cpp:412
+#: ../src/preferences.cpp:413
 msgid "Global autoload scripts"
 msgstr "สคริปต์นำเข้าอัตโนมัติหลัก"
 
-#: ../src/preferences.cpp:412
+#: ../src/preferences.cpp:413
 msgid "No scripts"
 msgstr "ไม่มีสคริปต์"
 
-#: ../src/preferences.cpp:412
+#: ../src/preferences.cpp:413
 msgid "Subtitle-local scripts"
 msgstr "คำบรรยาย-สคริปต์ย่อย"
 
-#: ../src/preferences.cpp:414
+#: ../src/preferences.cpp:415
 msgid "Autoreload on Export"
 msgstr "รีโหลดใหม่อัตโนมัติเมื่อส่งออก"
 
-#: ../src/preferences.cpp:421
+#: ../src/preferences.cpp:422
 msgid "Advanced"
 msgstr "ขั้นสูง"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:426
 msgid ""
 "Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
@@ -6415,217 +6510,217 @@ msgstr ""
 "การปรับเปลี่ยนค่าต่อไปนี้อาจทำให้โปรเเกรมทำงานไม่ถูกต้องหรือหยุดทำงานได้ "
 "โปรดกระทำด้วยความระมัดระวัง *อย่างที่สุด*"
 
-#: ../src/preferences.cpp:440 ../src/preferences.cpp:507
+#: ../src/preferences.cpp:441 ../src/preferences.cpp:508
 msgid "Expert"
 msgstr "ขั้นสูง"
 
-#: ../src/preferences.cpp:443
+#: ../src/preferences.cpp:444
 msgid "Audio provider"
 msgstr "ตัวให้เสียง"
 
-#: ../src/preferences.cpp:446
+#: ../src/preferences.cpp:447
 msgid "Audio player"
 msgstr "ตัวเล่นเสียง"
 
-#: ../src/preferences.cpp:448
+#: ../src/preferences.cpp:449
 msgid "Cache"
 msgstr "เเคช"
 
-#: ../src/preferences.cpp:449
+#: ../src/preferences.cpp:450
 msgid "Hard Disk"
 msgstr "ดิส"
 
-#: ../src/preferences.cpp:449
+#: ../src/preferences.cpp:450
 msgid "None (NOT RECOMMENDED)"
 msgstr "ไม่ใช้ (ไม่เเนะนำ)"
 
-#: ../src/preferences.cpp:449
+#: ../src/preferences.cpp:450
 msgid "RAM"
 msgstr "เเรม"
 
-#: ../src/preferences.cpp:451
+#: ../src/preferences.cpp:452
 msgid "Cache type"
 msgstr "ประเภทเเคช"
 
-#: ../src/preferences.cpp:456
+#: ../src/preferences.cpp:457
 msgid "Better quality"
 msgstr "คุณภาพที่ดี"
 
-#: ../src/preferences.cpp:456
+#: ../src/preferences.cpp:457
 msgid "High quality"
 msgstr "คุณภาพสูง"
 
-#: ../src/preferences.cpp:456
+#: ../src/preferences.cpp:457
 msgid "Insane quality"
 msgstr "คุณภาพขั้นเทพ"
 
-#: ../src/preferences.cpp:456
+#: ../src/preferences.cpp:457
 msgid "Regular quality"
 msgstr "คุณภาพทั่วไป"
 
-#: ../src/preferences.cpp:458
+#: ../src/preferences.cpp:459
 msgid "Quality"
 msgstr "คุณภาพ"
 
-#: ../src/preferences.cpp:460
+#: ../src/preferences.cpp:461
 msgid "Compressed"
 msgstr "บีบอัด"
 
-#: ../src/preferences.cpp:460
+#: ../src/preferences.cpp:461
 msgid "Extended"
 msgstr "ขยายออก"
 
-#: ../src/preferences.cpp:460
+#: ../src/preferences.cpp:461
 msgid "Linear"
 msgstr "เป็นแนวยาว"
 
-#: ../src/preferences.cpp:460
+#: ../src/preferences.cpp:461
 msgid "Logarithmic"
 msgstr "ลอการิทึม"
 
-#: ../src/preferences.cpp:460
+#: ../src/preferences.cpp:461
 msgid "Medium"
 msgstr "ปานกลาง"
 
-#: ../src/preferences.cpp:462
+#: ../src/preferences.cpp:463
 msgid "Frequency mapping"
 msgstr "การทำเเผนความถี่"
 
-#: ../src/preferences.cpp:464
+#: ../src/preferences.cpp:465
 msgid "Cache memory max (MB)"
 msgstr "จำนวนหน่วยความจำเเคชสูงสุด (MB)"
 
-#: ../src/preferences.cpp:470
+#: ../src/preferences.cpp:471
 msgid "Avisynth down-mixer"
 msgstr "Avisynth down-mixer"
 
-#: ../src/preferences.cpp:471
+#: ../src/preferences.cpp:472
 msgid "Force sample rate"
 msgstr "บังคับเรทตัวอย่าง"
 
-#: ../src/preferences.cpp:477
+#: ../src/preferences.cpp:478
 msgid "Abort"
 msgstr "เลิกการนำเข้า"
 
-#: ../src/preferences.cpp:477
+#: ../src/preferences.cpp:478
 msgid "Ignore"
 msgstr "ละเว้น"
 
-#: ../src/preferences.cpp:477
+#: ../src/preferences.cpp:478
 msgid "Stop"
 msgstr "หยุด"
 
-#: ../src/preferences.cpp:479
+#: ../src/preferences.cpp:480
 msgid "Audio indexing error handling mode"
 msgstr "โหมดรับมือกับเสียงที่นำเข้าไม่สำเร็จ"
 
-#: ../src/preferences.cpp:481
+#: ../src/preferences.cpp:482
 msgid "Always index all audio tracks"
 msgstr "ทำการนำเข้าเสียงทั้งหมดเสมอ"
 
-#: ../src/preferences.cpp:486
+#: ../src/preferences.cpp:487
 msgid "Portaudio device"
 msgstr "อุปกรณ์ Portaudio"
 
-#: ../src/preferences.cpp:491
+#: ../src/preferences.cpp:492
 msgid "OSS Device"
 msgstr "อุปกรณ์ OSS"
 
-#: ../src/preferences.cpp:496
+#: ../src/preferences.cpp:497
 msgid "Buffer latency"
 msgstr "ความหน่วงบัฟเฟอร์"
 
-#: ../src/preferences.cpp:497
+#: ../src/preferences.cpp:498
 msgid "Buffer length"
 msgstr "ช่วงของบัฟเฟอร์"
 
-#: ../src/preferences.cpp:510
+#: ../src/preferences.cpp:511
 msgid "Video provider"
 msgstr "ตัวถอดรหัสวิดีโอ"
 
-#: ../src/preferences.cpp:513
+#: ../src/preferences.cpp:514
 msgid "Subtitles provider"
 msgstr "ตัวอ่านซับ"
 
-#: ../src/preferences.cpp:517
+#: ../src/preferences.cpp:518
 msgid "Allow pre-2.56a Avisynth"
 msgstr "เปิดใช้ pre-2.56a Avisynth"
 
-#: ../src/preferences.cpp:519
+#: ../src/preferences.cpp:520
 msgid "Avisynth memory limit"
 msgstr "หน่วยความจำที่จำกัดไว้ของ Avisynth"
 
-#: ../src/preferences.cpp:525
+#: ../src/preferences.cpp:526
 msgid "Debug"
 msgstr "ดีบัค"
 
-#: ../src/preferences.cpp:525
+#: ../src/preferences.cpp:526
 msgid "Fatal"
 msgstr "ล้มเหลว"
 
-#: ../src/preferences.cpp:525
+#: ../src/preferences.cpp:526
 msgid "Info"
 msgstr "ข้อมูล"
 
-#: ../src/preferences.cpp:525
+#: ../src/preferences.cpp:526
 msgid "Panic"
 msgstr "ร้ายเเรง"
 
-#: ../src/preferences.cpp:525
+#: ../src/preferences.cpp:526
 msgid "Quiet"
 msgstr "ไม่สนใจ"
 
-#: ../src/preferences.cpp:525
+#: ../src/preferences.cpp:526
 msgid "Verbose"
 msgstr "ละเอียด"
 
-#: ../src/preferences.cpp:525 ../src/project.cpp:330
+#: ../src/preferences.cpp:526 ../src/project.cpp:394
 msgid "Warning"
 msgstr "เเจ้งเตือน"
 
-#: ../src/preferences.cpp:527
+#: ../src/preferences.cpp:528
 msgid "Debug log verbosity"
 msgstr "รายละเอียด Log รายงาน"
 
-#: ../src/preferences.cpp:529
+#: ../src/preferences.cpp:530
 msgid "Decoding threads"
 msgstr "เธรดถอดรหัส"
 
-#: ../src/preferences.cpp:530
+#: ../src/preferences.cpp:531
 msgid "Enable unsafe seeking"
 msgstr "เปิดใช้การสืบค้นเร่งด่วน"
 
-#: ../src/preferences.cpp:684
+#: ../src/preferences.cpp:685
 msgid "Hotkeys"
 msgstr "ปุ่มลัด"
 
-#: ../src/preferences.cpp:688
+#: ../src/preferences.cpp:689
 msgid "Search"
 msgstr "ค้นหา"
 
-#: ../src/preferences.cpp:704 ../src/preferences.cpp:707
+#: ../src/preferences.cpp:705 ../src/preferences.cpp:708
 msgid "Hotkey"
 msgstr "ปุ่มลัด"
 
-#: ../src/preferences.cpp:705 ../src/preferences.cpp:710
+#: ../src/preferences.cpp:706 ../src/preferences.cpp:711
 msgid "Command"
 msgstr "คำสั่ง"
 
-#: ../src/preferences.cpp:784
+#: ../src/preferences.cpp:785
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
 msgstr "คุณเเน่ใจว่าต้องการคืนค่าดั้งเดิมหรือไม่ ? ค่าทั้งหมดจะถูกเขียนทับใหม่ทั้งหมด"
 
-#: ../src/preferences.cpp:784
+#: ../src/preferences.cpp:785
 msgid "Restore defaults?"
 msgstr "คืนค่าเดิม?"
 
-#: ../src/preferences.cpp:802
+#: ../src/preferences.cpp:803
 msgid "Preferences"
 msgstr "การตั้งค่า"
 
-#: ../src/preferences.cpp:830
+#: ../src/preferences.cpp:831
 msgid "&Restore Defaults"
 msgstr "&คืนค่าเดิม"
 
@@ -6645,64 +6740,118 @@ msgstr "เลือก..."
 msgid "Font Size"
 msgstr "ขนาดฟอนต์"
 
-#: ../src/project.cpp:85
+#: ../src/project.cpp:86
 msgid "Error loading file"
 msgstr "การโหลดไฟล์ล้มเหลว"
 
-#: ../src/project.cpp:111 ../src/project.cpp:130
+#: ../src/project.cpp:112 ../src/project.cpp:131
 #, c-format
 msgid "%s not found."
 msgstr "ไม่พบ %s"
 
-#: ../src/project.cpp:199
+#: ../src/project.cpp:213
 msgid "Do you want to load/unload the associated files?"
 msgstr "ท่านต้องการนำเข้าไฟล์ที่เกี่ยวข้องด้วยหรือไม่?"
 
-#: ../src/project.cpp:210
+#: ../src/project.cpp:224
 #, c-format
 msgid "Load audio file: %s"
 msgstr "เปิดไฟล์เสียง: %s"
 
-#: ../src/project.cpp:210
+#: ../src/project.cpp:224
 msgid "Unload audio"
 msgstr "นำเสียงออก"
 
-#: ../src/project.cpp:212
+#: ../src/project.cpp:226
 #, c-format
 msgid "Load video file: %s"
 msgstr "โหลดไฟล์วิดีโอ: %s"
 
-#: ../src/project.cpp:212
+#: ../src/project.cpp:226
 msgid "Unload video"
 msgstr "นำวิดีโอออก"
 
-#: ../src/project.cpp:214
+#: ../src/project.cpp:228
 #, c-format
 msgid "Load timecodes file: %s"
 msgstr "โหลดไฟล์ไทม์โค้ด: %s"
 
-#: ../src/project.cpp:214
+#: ../src/project.cpp:228
 msgid "Unload timecodes"
 msgstr "นำทามโค๊ดออก"
 
-#: ../src/project.cpp:216
+#: ../src/project.cpp:230
 #, c-format
 msgid "Load keyframes file: %s"
 msgstr "โหลดไฟล์คีย์เฟรม: %s"
 
-#: ../src/project.cpp:216
+#: ../src/project.cpp:230
 msgid "Unload keyframes"
 msgstr "นำคีย์เฟรมออก"
 
-#: ../src/project.cpp:218
+#: ../src/project.cpp:232
 msgid "(Un)Load files?"
 msgstr "(นำเข้า)ไฟล์ที่เกี่ยวข้อง?"
 
-#: ../src/project.cpp:267
+#: ../src/project.cpp:254
+msgid ""
+"The subtitle file references AviSynth scripts. AviSynth scripts can execute "
+"arbitrary code with your user permissions. Only load them if you trust the "
+"subtitle's author. You do not need to load these scripts to view or edit "
+"this subtitle file.\n"
+"\n"
+"Scripts:"
+msgstr ""
+
+#: ../src/project.cpp:255
+msgid ""
+"The subtitle file references an AviSynth script. AviSynth scripts can "
+"execute arbitrary code with your user permissions. Only load it if you trust "
+"the subtitle's author. You do not need to load this script to view or edit "
+"this subtitle file.\n"
+"\n"
+"Script:"
+msgstr ""
+
+#: ../src/project.cpp:258
+#, fuzzy
+#| msgid "Do you want to load/unload the associated files?"
+msgid ""
+"\n"
+"\n"
+"Do you want to load these scripts now?"
+msgstr "ท่านต้องการนำเข้าไฟล์ที่เกี่ยวข้องด้วยหรือไม่?"
+
+#: ../src/project.cpp:259
+#, fuzzy
+#| msgid "Do you want to load/unload the associated files?"
+msgid ""
+"\n"
+"\n"
+"Do you want to load this script now?"
+msgstr "ท่านต้องการนำเข้าไฟล์ที่เกี่ยวข้องด้วยหรือไม่?"
+
+#: ../src/project.cpp:262
+#, fuzzy
+#| msgid "Reload autoload Automation scripts"
+msgid "Load linked AviSynth script?"
+msgstr "รีโหลดสคริปต์ทุ่นเเรงในautoload(นำเข้าอัตโนมัติ)"
+
+#: ../src/project.cpp:264
+msgid "Do not load"
+msgstr ""
+
+#: ../src/project.cpp:264
+#, fuzzy
+#| msgid "Global autoload scripts"
+msgid "Trust author && load"
+msgstr "สคริปต์นำเข้าอัตโนมัติหลัก"
+
+#: ../src/project.cpp:331
 msgid "The audio file was not found: "
 msgstr "ไม่พบไฟล์เสียง: "
 
-#: ../src/project.cpp:275
+#: ../src/project.cpp:339
 msgid ""
 "None of the available audio providers recognised the selected file as "
 "containing audio data.\n"
@@ -6713,7 +6862,7 @@ msgstr ""
 "\n"
 "ตัวให้เสียงเหล่านี้ได้ถูกลองใช้:\n"
 
-#: ../src/project.cpp:278
+#: ../src/project.cpp:342
 msgid ""
 "None of the available audio providers have a codec available to handle the "
 "selected file.\n"
@@ -6725,19 +6874,19 @@ msgstr ""
 "ตัวให้เสียงเหล่านี้ได้ถูกลองใช้:\n"
 "\n"
 
-#: ../src/project.cpp:380
+#: ../src/project.cpp:444
 msgid "Failed to parse timecodes file: "
 msgstr "การอ่านไฟล์ไทม์โค้ดล้มเหลว: "
 
-#: ../src/project.cpp:406
+#: ../src/project.cpp:470
 msgid "Failed to parse keyframes file: "
 msgstr "การอ่านไฟล์คีย์เฟรมล้มเหลว: "
 
-#: ../src/project.cpp:410
+#: ../src/project.cpp:474
 msgid "Keyframes file in unknown format: "
 msgstr "ไฟล์คีย์เฟรมอยู่ในรูปเเบบที่ไม่รองรับ: "
 
-#: ../src/resolution_resampler.cpp:241
+#: ../src/resolution_resampler.cpp:284
 msgid "resolution resampling"
 msgstr "การเปลี่ยนความละเอียดของคำบรรยาย"
 
@@ -7066,7 +7215,7 @@ msgstr "ช่วงเวลาเเละเลขของเฟรมปั
 msgid "Time of this frame relative to start and end of current subs"
 msgstr "ค่าเวลาของเฟรมนี้ ที่ห่างจากเวลาเริ่ม เเละ เวลาจบของคำบรรยายปัจจุบัน(เป็น ms)"
 
-#: ../src/video_controller.cpp:228
+#: ../src/video_controller.cpp:289
 #, c-format
 msgid ""
 "Failed seeking video. The video file may be corrupt or incomplete.\n"
@@ -7075,7 +7224,7 @@ msgstr ""
 "กรอ วิดีโอไม่ได้, ไฟล์วิดีโออาจจะเสียหรือไม่สมบูรณ์\n"
 "รายละเอียดข้อผิดพลาด: %s"
 
-#: ../src/video_controller.cpp:234
+#: ../src/video_controller.cpp:295
 #, c-format
 msgid ""
 "Failed rendering subtitles.\n"
@@ -7084,7 +7233,7 @@ msgstr ""
 "ไม่สามารถเรนเดอร์ซับได้\n"
 "รายละเอียดข้อผิดพลาด: %s"
 
-#: ../src/video_display.cpp:203
+#: ../src/video_display.cpp:204
 #, c-format
 msgid ""
 "Failed to initialize video display. Closing other running programs and "
@@ -7094,7 +7243,7 @@ msgstr ""
 "ไม่สามารถเเสดงผลวิดีโอได้ การอัปเดต/ติดตั้งไดรเวอร์การ์ดจอของท่านอาจจะช่วยได้\n"
 "รายละเอียดข้อผิดพลาด: %s"
 
-#: ../src/video_display.cpp:210
+#: ../src/video_display.cpp:211
 #, c-format
 msgid ""
 "Could not upload video frame to graphics card.\n"
@@ -7103,7 +7252,7 @@ msgstr ""
 "ไม่สามารถส่งเฟรมของวิดีโอไปยังการ์ดจอได้\n"
 "รายละเอียดข้อผิดพลาด: %s"
 
-#: ../src/video_display.cpp:252
+#: ../src/video_display.cpp:253
 #, c-format
 msgid ""
 "An error occurred trying to render the video frame on the screen.\n"
@@ -7187,6 +7336,10 @@ msgstr "ตั้ง&ซูม"
 #: default_menu.json:0
 msgid "Override &AR"
 msgstr "เขียนทับ &AR"
+
+#: default_menu.json:0
+msgid "Playback &Rate"
+msgstr ""
 
 #: default_menu.json:0
 #, fuzzy
@@ -7323,7 +7476,7 @@ msgstr "บันทึกเป็น..."
 msgid "Export As..."
 msgstr "ส่งออกเป็น..."
 
-#: default_hotkey.json:244
+#: default_hotkey.json:253
 msgid "Subtitle Edit Box"
 msgstr "กล่องเเก้ไขคำบรรยาย"
 
@@ -7553,6 +7706,26 @@ msgstr "โหมดไทม์มิ่งเสียงที่ปรับ
 msgid "Fully scriptable through the Automation module"
 msgstr "สคริปต์เต็มรูปเเบบผ่านโมดูลสคริปต์ทุ่นเเรง"
 
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:36
+msgid "anime"
+msgstr ""
+
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:37
+msgid "movie"
+msgstr ""
+
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:38
+#, fuzzy
+#| msgid "&Subtitle"
+msgid "subtitle"
+msgstr "&คำบรรยาย"
+
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:39
+#, fuzzy
+#| msgid "Translation"
+msgid "translate"
+msgstr "คำเเปล"
+
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:43
 msgid "Typesetting"
 msgstr "การจัดเรียง"
@@ -7564,3 +7737,9 @@ msgstr "เสียงของวิดีโอ"
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
 msgstr "ไทม์มิ่งของเสียง"
+
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:56
+#, fuzzy
+#| msgid "Aegisub"
+msgid "Aegisub Group"
+msgstr "Aegisub"

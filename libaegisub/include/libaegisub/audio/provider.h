@@ -88,6 +88,7 @@ std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& fil
 std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename, BackgroundRunner *);
 
 std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider> source_provider);
+std::unique_ptr<AudioProvider> CreatePlaybackAudioProvider(AudioProvider *source_provider, double rate);
 std::unique_ptr<AudioProvider> CreateLockAudioProvider(std::unique_ptr<AudioProvider> source_provider);
 std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> source_provider,
                                                      agi::fs::path const& dir);
