@@ -186,6 +186,13 @@ void InitLocale() {
 	// FIXME: Should the ICU locale also be forced to en_US here?
 	if (result != std::codecvt_base::ok)
 		locale = boost::locale::generator().generate("en_US.UTF-8");
+
+	// Use the standard library's number parsing and formatting rather than
+	// Boost.Locale's, which nothing relies on. Boost.Locale's facets fall back
+	// to std::num_get code inlined from the SDK's libc++ headers, and with
+	// newer SDKs that code overflows a stack buffer when it calls into an
+	// older system libc++ (e.g. on macOS 13).
+	locale = std::locale(locale, std::locale::classic(), std::locale::numeric);
 	std::locale::global(locale);
 }
 } // namespace util
