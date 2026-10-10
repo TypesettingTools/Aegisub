@@ -72,7 +72,7 @@ namespace {
 	std::string get_string_field(lua_State *L, const char *name, const char *line_class)
 	{
 		get_field(L, name, line_class, lua_isstring);
-		std::string ret(lua_tostring(L, -1), lua_strlen(L, -1));
+		std::string ret = lua_tostring(L, -1);
 		lua_pop(L, 1);
 		return ret;
 	}
@@ -80,7 +80,7 @@ namespace {
 	agi::Color get_color_field(lua_State *L, const char *name, const char *line_class)
 	{
 		get_field(L, name, line_class, lua_isstring);
-		agi::Color ret(std::string_view(lua_tostring(L, -1), lua_strlen(L, -1)));
+		agi::Color ret = std::string_view(lua_tostring(L, -1));
 		lua_pop(L, 1);
 		return ret;
 	}
