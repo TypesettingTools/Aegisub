@@ -18,6 +18,9 @@
 
 #include <main.h>
 
+#include <locale>
+#include <typeinfo>
+
 class lagi_util : public libagi { };
 
 namespace agi {
@@ -40,6 +43,13 @@ TEST(lagi_util, try_parse_int) {
 
 	EXPECT_FALSE(util::try_parse("2.0", &i));
 	EXPECT_EQ(1.0, i);
+}
+
+TEST(lagi_util, init_locale_uses_std_numeric_facets) {
+	// Boost.Locale's numeric facets crash on older macOS when built with a
+	// newer SDK (#733), so InitLocale must not install them
+	EXPECT_EQ(typeid(std::num_get<char>), typeid(std::use_facet<std::num_get<char>>(std::locale())));
+	EXPECT_EQ(typeid(std::num_put<char>), typeid(std::use_facet<std::num_put<char>>(std::locale())));
 }
 
 }
