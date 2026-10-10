@@ -150,7 +150,7 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 
 	c->videoDisplay = this;
 
-	con->videoController->JumpToFrame(con->videoController->GetFrameN());
+	con->videoController->Refresh();
 
 	SetLayoutDirection(wxLayout_LeftToRight);
 
