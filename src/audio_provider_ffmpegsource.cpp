@@ -148,6 +148,23 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	const FFMS_AudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
 
 	channels	= AudioInfo.Channels;
+	const std::pair<int64_t, agi::AudioChannel> channel_map[] = {
+		{FFMS_CH_FRONT_LEFT, agi::AudioChannel::FrontLeft},
+		{FFMS_CH_FRONT_RIGHT, agi::AudioChannel::FrontRight},
+		{FFMS_CH_FRONT_CENTER, agi::AudioChannel::FrontCenter},
+		{FFMS_CH_LOW_FREQUENCY, agi::AudioChannel::LowFrequency},
+		{FFMS_CH_BACK_LEFT, agi::AudioChannel::BackLeft},
+		{FFMS_CH_BACK_RIGHT, agi::AudioChannel::BackRight},
+		{FFMS_CH_BACK_CENTER, agi::AudioChannel::BackCenter},
+		{FFMS_CH_SIDE_LEFT, agi::AudioChannel::SideLeft},
+		{FFMS_CH_SIDE_RIGHT, agi::AudioChannel::SideRight},
+	};
+	for (auto const& [mask, channel] : channel_map) {
+		if (AudioInfo.ChannelLayout & mask)
+			channel_layout.push_back(channel);
+	}
+	if (channel_layout.size() != static_cast<size_t>(channels))
+		channel_layout.clear();
 	sample_rate	= AudioInfo.SampleRate;
 	num_samples = AudioInfo.NumSamples;
 	decoded_samples = AudioInfo.NumSamples;
@@ -167,12 +184,14 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	if (channels > 1 || bytes_per_sample != 2) {
 		std::unique_ptr<FFMS_ResampleOptions, decltype(&FFMS_DestroyResampleOptions)>
 			opt(FFMS_CreateResampleOptions(AudioSource), FFMS_DestroyResampleOptions);
-		opt->ChannelLayout = FFMS_CH_FRONT_CENTER;
+		// Preserve the decoder's layout here. FFMS2's default multichannel-to-mono
+		// matrix normalizes for all channels and makes center-only dialogue far too
+		// quiet. The common provider converter applies Aegisub's explicit matrix.
+		opt->ChannelLayout = AudioInfo.ChannelLayout;
 		opt->SampleFormat = FFMS_FMT_S16;
 
 		// Might fail if FFMS2 wasn't built with libavresample
 		if (!FFMS_SetOutputFormatA(AudioSource, opt.get(), nullptr)) {
-			channels = 1;
 			bytes_per_sample = 2;
 			float_samples = false;
 		}

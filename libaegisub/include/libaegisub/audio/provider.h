@@ -24,9 +24,15 @@
 #include <vector>
 
 namespace agi {
+enum class AudioChannel {
+	FrontLeft, FrontRight, FrontCenter, LowFrequency,
+	BackLeft, BackRight, BackCenter, SideLeft, SideRight, Unknown
+};
+
 class AudioProvider {
 protected:
 	int channels = 0;
+	std::vector<AudioChannel> channel_layout;
 	/// Total number of samples per channel
 	int64_t num_samples = 0;
 	/// Samples per channel which have been decoded and can be fetched with FillBuffer
@@ -51,6 +57,7 @@ public:
 	int     GetSampleRate()     const { return sample_rate; }
 	int     GetBytesPerSample() const { return bytes_per_sample; }
 	int     GetChannels()       const { return channels; }
+	std::vector<AudioChannel> const& GetChannelLayout() const { return channel_layout; }
 	bool    AreSamplesFloat()   const { return float_samples; }
 
 	/// Does this provider benefit from external caching?
@@ -66,6 +73,7 @@ public:
 	: source(std::move(src))
 	{
 		channels = source->GetChannels();
+		channel_layout = source->GetChannelLayout();
 		num_samples = source->GetNumSamples();
 		decoded_samples = source->GetDecodedSamples();
 		sample_rate = source->GetSampleRate();
