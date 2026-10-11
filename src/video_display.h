@@ -114,6 +114,8 @@ class VideoDisplay final : public wxGLCanvas {
 
 	/// The video renderer
 	std::unique_ptr<VideoOutGL> videoOut;
+	/// Suspend drawing after a GL failure until another video is loaded.
+	bool render_failed = false;
 
 	/// The active visual typesetting tool
 	std::unique_ptr<VisualToolBase> tool;
