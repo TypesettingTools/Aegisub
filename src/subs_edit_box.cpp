@@ -413,6 +413,10 @@ void SubsEditBox::OnActiveLineChanged(AssDialogue *new_line) {
 
 void SubsEditBox::OnSelectedSetChanged() {
 	initial_times.clear();
+	if (c->selectionController->GetSelectedSet().size() > 1) {
+		c->textSelectionController->SetInsertionPoint(0);
+		c->textSelectionController->SetSelection(0, 0);
+	}
 }
 
 void SubsEditBox::OnLineInitialTextChanged(std::string const& new_text) {
