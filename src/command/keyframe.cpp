@@ -39,6 +39,7 @@
 #include "../utils.h"
 
 #include <libaegisub/keyframe.h>
+#include <libaegisub/path.h>
 
 namespace {
 	using cmd::Command;
@@ -74,7 +75,7 @@ struct keyframe_open final : public Command {
 			from_wx(_("All Supported Formats") +
 				" (*.txt, *.pass, *.stats, *.log)|*.txt;*.pass;*.stats;*.log|" +
 				_("All Files") + " (*.*)|*.*"),
-			c->parent);
+			c->parent, c->path->Decode("?script"));
 
 		if (!filename.empty())
 			c->project->LoadKeyframes(filename);

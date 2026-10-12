@@ -50,6 +50,7 @@
 
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/io.h>
+#include <libaegisub/path.h>
 
 namespace {
 	using cmd::Command;
@@ -84,7 +85,7 @@ struct audio_open final : public Command {
 		auto formats = MakeWildcard(GetAudioProviderFileExtensions());
 		auto str = from_wx(_("Audio and Video Formats")) + " (" + formats + ")|" + formats + "|"
 		         + from_wx(_("All Files")) + " (*.*)|*.*";
-		auto filename = OpenFileSelector(wxGETTEXT_IN_CONTEXT("dialog title", "Open Audio File"), "Path/Last/Audio", "", "", str, c->parent);
+		auto filename = OpenFileSelector(wxGETTEXT_IN_CONTEXT("dialog title", "Open Audio File"), "Path/Last/Audio", "", "", str, c->parent, c->path->Decode("?script"));
 		if (!filename.empty())
 			c->project->LoadAudio(filename);
 	}

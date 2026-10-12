@@ -41,6 +41,7 @@
 
 
 #include <wx/msgdlg.h>
+#include <libaegisub/path.h>
 
 namespace {
 	using cmd::Command;
@@ -71,7 +72,7 @@ struct timecode_open final : public Command {
 
 	void operator()(agi::Context *c) override {
 		auto str = from_wx(_("Text Files") + " (*.txt)|*.txt|" + _("All Files") + " (*.*)|*.*");
-		auto filename = OpenFileSelector(wxGETTEXT_IN_CONTEXT("dialog title", "Open Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent);
+		auto filename = OpenFileSelector(wxGETTEXT_IN_CONTEXT("dialog title", "Open Timecodes File"), "Path/Last/Timecodes", "", "", str, c->parent, c->path->Decode("?script"));
 		if (!filename.empty())
 			c->project->LoadTimecodes(filename);
 	}
