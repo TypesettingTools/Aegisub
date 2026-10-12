@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-25 16:15+0200\n"
+"POT-Creation-Date: 2026-10-05 14:21+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Meysam <meysam.ar@gmail.com>\n"
 "Language-Team: \n"
@@ -11,11 +11,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/aegisublocale.cpp:113 ../src/command/app.cpp:156
+#: ../src/aegisublocale.cpp:118 ../src/command/app.cpp:156
 msgid "Language"
 msgstr ""
 
-#: ../src/aegisublocale.cpp:113
+#: ../src/aegisublocale.cpp:118
 #, fuzzy
 #| msgid "Please choose the folder:"
 msgid "Please choose a language:"
@@ -102,19 +102,23 @@ msgstr "East European"
 msgid "OEM"
 msgstr "OEM"
 
-#: ../src/audio_box.cpp:73
+#: ../src/audio_box.cpp:77
 msgid "Horizontal zoom"
 msgstr "زوم افقی"
 
-#: ../src/audio_box.cpp:74
+#: ../src/audio_box.cpp:78
 msgid "Vertical zoom"
 msgstr "زوم عمودی"
 
-#: ../src/audio_box.cpp:75
+#: ../src/audio_box.cpp:79
 msgid "Audio Volume"
 msgstr "مقدار صدا"
 
-#: ../src/audio_display.cpp:718
+#: ../src/audio_box.cpp:111
+msgid "Playback rate"
+msgstr ""
+
+#: ../src/audio_display.cpp:719
 #, c-format
 msgid "%d%%, %d pixel/second"
 msgstr ""
@@ -264,14 +268,14 @@ msgstr "بارگذاری مجدد تمام اسکریپت های عملیات خ
 msgid "The file was not recognised as an Automation script: %s"
 msgstr "%s: فایل به عنوان فایل اتوماسیون شناخته نشد"
 
-#: ../src/auto4_base.cpp:537 ../src/command/audio.cpp:84
+#: ../src/auto4_base.cpp:537 ../src/command/audio.cpp:119
 #: ../src/command/keyframe.cpp:76 ../src/command/timecode.cpp:73
 #: ../src/command/timecode.cpp:93 ../src/command/video.cpp:592
 msgid "All Files"
 msgstr "تمام فایل ها"
 
 #: ../src/auto4_base.cpp:543 ../src/command/keyframe.cpp:74
-#: ../src/dialog_attachments.cpp:170 ../src/subtitle_format.cpp:318
+#: ../src/dialog_attachments.cpp:211 ../src/subtitle_format.cpp:318
 msgid "All Supported Formats"
 msgstr "تمام فرمت های پشتیبانی شده"
 
@@ -475,9 +479,9 @@ msgstr "گشودن یک پنجره جدید از نرم افزار"
 msgid "&Options..."
 msgstr "... تنظیمات"
 
-#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:151
+#: ../src/command/app.cpp:205 ../src/dialog_properties.cpp:182
 #: ../src/dialog_timing_processor.cpp:169 ../src/preferences.cpp:166
-#: ../src/preferences.cpp:206
+#: ../src/preferences.cpp:207
 msgid "Options"
 msgstr "تنظیمات"
 
@@ -541,286 +545,353 @@ msgstr ""
 msgid "Bring forward all open documents to the front"
 msgstr ""
 
-#: ../src/command/audio.cpp:65
+#: ../src/command/app.cpp:303 ../src/command/app.cpp:304
+msgid "Hide"
+msgstr ""
+
+#: ../src/command/app.cpp:305
+#, fuzzy
+#| msgid "Exit the application"
+msgid "Hide the application"
+msgstr "خروج ار برنامه"
+
+#: ../src/command/app.cpp:314 ../src/command/app.cpp:315
+msgid "Hide others"
+msgstr ""
+
+#: ../src/command/app.cpp:316
+#, fuzzy
+#| msgid "Exit the application"
+msgid "Hide all other applications"
+msgstr "خروج ار برنامه"
+
+#: ../src/command/app.cpp:325 ../src/command/app.cpp:326
+#: ../src/preferences.cpp:182
+msgid "Show all"
+msgstr "نمایش همه"
+
+#: ../src/command/app.cpp:327
+#, fuzzy
+#| msgid "Exit the application"
+msgid "Show all applications"
+msgstr "خروج ار برنامه"
+
+#: ../src/command/audio.cpp:100
 msgid "&Close Audio"
 msgstr "بستن صدا"
 
-#: ../src/command/audio.cpp:66
+#: ../src/command/audio.cpp:101
 msgid "Close Audio"
 msgstr ""
 
-#: ../src/command/audio.cpp:67
+#: ../src/command/audio.cpp:102
 msgid "Close the currently open audio file"
 msgstr ""
 
-#: ../src/command/audio.cpp:77
+#: ../src/command/audio.cpp:112
 msgid "&Open Audio File..."
 msgstr "... باز کردن فایل صدا"
 
-#: ../src/command/audio.cpp:78
+#: ../src/command/audio.cpp:113
 msgid "Open Audio File"
 msgstr ""
 
-#: ../src/command/audio.cpp:79
+#: ../src/command/audio.cpp:114
 msgid "Open an audio file"
 msgstr ""
 
-#: ../src/command/audio.cpp:82
+#: ../src/command/audio.cpp:117
 msgid "Audio Formats"
 msgstr "فرمت های صدا"
 
-#: ../src/command/audio.cpp:83 ../src/command/video.cpp:591
+#: ../src/command/audio.cpp:118 ../src/command/video.cpp:591
 msgid "Video Formats"
 msgstr "فرمت های ویدیو"
 
-#: ../src/command/audio.cpp:85
+#: ../src/command/audio.cpp:120
 #, fuzzy
 #| msgid "&Open Audio File..."
 msgctxt "dialog title"
 msgid "Open Audio File"
 msgstr "... باز کردن فایل صدا"
 
-#: ../src/command/audio.cpp:93 ../src/command/audio.cpp:94
+#: ../src/command/audio.cpp:128 ../src/command/audio.cpp:129
 msgid "Open 2h30 Blank Audio"
 msgstr ""
 
-#: ../src/command/audio.cpp:95
+#: ../src/command/audio.cpp:130
 msgid "Open a 150 minutes blank audio clip, for debugging"
 msgstr ""
 
-#: ../src/command/audio.cpp:104 ../src/command/audio.cpp:105
+#: ../src/command/audio.cpp:139 ../src/command/audio.cpp:140
 msgid "Open 2h30 Noise Audio"
 msgstr ""
 
-#: ../src/command/audio.cpp:106
+#: ../src/command/audio.cpp:141
 msgid "Open a 150 minutes noise-filled audio clip, for debugging"
 msgstr ""
 
-#: ../src/command/audio.cpp:116
+#: ../src/command/audio.cpp:151
 msgid "Open Audio from &Video"
 msgstr "باز کردن صدا از ویدیو"
 
-#: ../src/command/audio.cpp:117
+#: ../src/command/audio.cpp:152
 msgid "Open Audio from Video"
 msgstr ""
 
-#: ../src/command/audio.cpp:118
+#: ../src/command/audio.cpp:153
 msgid "Open the audio from the current video file"
 msgstr ""
 
-#: ../src/command/audio.cpp:132
+#: ../src/command/audio.cpp:167
 msgid "&Spectrum Display"
 msgstr ""
 
-#: ../src/command/audio.cpp:133
+#: ../src/command/audio.cpp:168
 msgid "Spectrum Display"
 msgstr ""
 
-#: ../src/command/audio.cpp:134
+#: ../src/command/audio.cpp:169
 msgid "Display audio as a frequency-power spectrograph"
 msgstr ""
 
-#: ../src/command/audio.cpp:148
+#: ../src/command/audio.cpp:183
 msgid "&Waveform Display"
 msgstr ""
 
-#: ../src/command/audio.cpp:149
+#: ../src/command/audio.cpp:184
 msgid "Waveform Display"
 msgstr ""
 
-#: ../src/command/audio.cpp:150
+#: ../src/command/audio.cpp:185
 msgid "Display audio as a linear amplitude graph"
 msgstr ""
 
-#: ../src/command/audio.cpp:164 ../src/command/audio.cpp:165
+#: ../src/command/audio.cpp:199 ../src/command/audio.cpp:200
 msgid "Create audio clip"
 msgstr "ایجاد یک برش از صدا"
 
-#: ../src/command/audio.cpp:166
+#: ../src/command/audio.cpp:201
 msgid "Save an audio clip of the selected line"
 msgstr ""
 
-#: ../src/command/audio.cpp:177
+#: ../src/command/audio.cpp:212
 #, fuzzy
 #| msgid "Save audio clip"
 msgid "Save Audio Clip"
 msgstr "ذخیره برش صدا"
 
-#: ../src/command/audio.cpp:192 ../src/command/audio.cpp:193
+#: ../src/command/audio.cpp:227 ../src/command/audio.cpp:228
 msgid "Play current audio selection"
 msgstr ""
 
-#: ../src/command/audio.cpp:194
+#: ../src/command/audio.cpp:229
 msgid "Play the current audio selection, ignoring changes made while playing"
 msgstr ""
 
-#: ../src/command/audio.cpp:205 ../src/command/audio.cpp:206
+#: ../src/command/audio.cpp:240 ../src/command/audio.cpp:241
 msgid "Play current line"
 msgstr "پخش این خط"
 
-#: ../src/command/audio.cpp:207
+#: ../src/command/audio.cpp:242
 msgid "Play the audio for the current line"
 msgstr ""
 
-#: ../src/command/audio.cpp:220 ../src/command/audio.cpp:221
+#: ../src/command/audio.cpp:255 ../src/command/audio.cpp:256
 msgid "Play audio selection"
 msgstr ""
 
-#: ../src/command/audio.cpp:222
+#: ../src/command/audio.cpp:257
 msgid "Play audio until the end of the selection is reached"
 msgstr ""
 
-#: ../src/command/audio.cpp:232 ../src/command/audio.cpp:233
+#: ../src/command/audio.cpp:267 ../src/command/audio.cpp:268
 msgid "Play audio selection or stop"
 msgstr ""
 
-#: ../src/command/audio.cpp:234
+#: ../src/command/audio.cpp:269
 msgid "Play selection, or stop playback if it's already playing"
 msgstr ""
 
-#: ../src/command/audio.cpp:249 ../src/command/audio.cpp:250
+#: ../src/command/audio.cpp:284 ../src/command/audio.cpp:285
 msgid "Stop playing"
 msgstr ""
 
-#: ../src/command/audio.cpp:251
+#: ../src/command/audio.cpp:286
 msgid "Stop audio and video playback"
 msgstr ""
 
-#: ../src/command/audio.cpp:267 ../src/command/audio.cpp:268
-#: ../src/command/audio.cpp:269
+#: ../src/command/audio.cpp:302 ../src/command/audio.cpp:303
+#: ../src/command/audio.cpp:304
 msgid "Play 500 ms before selection"
 msgstr ""
 
-#: ../src/command/audio.cpp:281 ../src/command/audio.cpp:282
-#: ../src/command/audio.cpp:283
+#: ../src/command/audio.cpp:316 ../src/command/audio.cpp:317
+#: ../src/command/audio.cpp:318
 msgid "Play 500 ms after selection"
 msgstr ""
 
-#: ../src/command/audio.cpp:295 ../src/command/audio.cpp:296
-#: ../src/command/audio.cpp:297
+#: ../src/command/audio.cpp:330 ../src/command/audio.cpp:331
+#: ../src/command/audio.cpp:332
 msgid "Play last 500 ms of selection"
 msgstr ""
 
-#: ../src/command/audio.cpp:309 ../src/command/audio.cpp:310
-#: ../src/command/audio.cpp:311
+#: ../src/command/audio.cpp:344 ../src/command/audio.cpp:345
+#: ../src/command/audio.cpp:346
 msgid "Play first 500 ms of selection"
 msgstr ""
 
-#: ../src/command/audio.cpp:325 ../src/command/audio.cpp:326
-#: ../src/command/audio.cpp:327
+#: ../src/command/audio.cpp:360 ../src/command/audio.cpp:361
+#: ../src/command/audio.cpp:362
 msgid "Play from selection start to end of file"
 msgstr ""
 
-#: ../src/command/audio.cpp:338 ../src/command/audio.cpp:339
+#: ../src/command/audio.cpp:376 ../src/command/video.cpp:735
+msgid "50%"
+msgstr ""
+
+#: ../src/command/audio.cpp:380
+msgid "Set playback rate to 50%"
+msgstr ""
+
+#: ../src/command/audio.cpp:384
+msgid "Set the shared audio/video playback rate"
+msgstr ""
+
+#: ../src/command/audio.cpp:398 ../src/command/audio.cpp:399
+msgid "Decrease playback rate"
+msgstr ""
+
+#: ../src/command/audio.cpp:400
+msgid "Select the next lower shared audio/video playback rate preset"
+msgstr ""
+
+#: ../src/command/audio.cpp:409 ../src/command/audio.cpp:410
+msgid "Increase playback rate"
+msgstr ""
+
+#: ../src/command/audio.cpp:411
+msgid "Select the next higher shared audio/video playback rate preset"
+msgstr ""
+
+#: ../src/command/audio.cpp:420 ../src/command/audio.cpp:421
+msgid "Reset playback rate"
+msgstr ""
+
+#: ../src/command/audio.cpp:422
+msgid "Reset the shared audio/video playback rate to normal speed"
+msgstr ""
+
+#: ../src/command/audio.cpp:432 ../src/command/audio.cpp:433
 msgid "Commit"
 msgstr "اجرا "
 
-#: ../src/command/audio.cpp:340
+#: ../src/command/audio.cpp:434
 msgid "Commit any pending audio timing changes"
 msgstr ""
 
-#: ../src/command/audio.cpp:354 ../src/command/audio.cpp:355
+#: ../src/command/audio.cpp:448 ../src/command/audio.cpp:449
 msgid "Commit and use default timing for next line"
 msgstr ""
 
-#: ../src/command/audio.cpp:356
+#: ../src/command/audio.cpp:450
 msgid ""
 "Commit any pending audio timing changes and reset the next line's times to "
 "the default"
 msgstr ""
 
-#: ../src/command/audio.cpp:369 ../src/command/audio.cpp:370
+#: ../src/command/audio.cpp:463 ../src/command/audio.cpp:464
 msgid "Commit and move to next line"
 msgstr ""
 
-#: ../src/command/audio.cpp:371
+#: ../src/command/audio.cpp:465
 msgid "Commit any pending audio timing changes and move to the next line"
 msgstr ""
 
-#: ../src/command/audio.cpp:384 ../src/command/audio.cpp:385
+#: ../src/command/audio.cpp:478 ../src/command/audio.cpp:479
 msgid "Commit and stay on current line"
 msgstr ""
 
-#: ../src/command/audio.cpp:386
+#: ../src/command/audio.cpp:480
 msgid "Commit any pending audio timing changes and stay on the current line"
 msgstr ""
 
-#: ../src/command/audio.cpp:397 ../src/command/audio.cpp:398
+#: ../src/command/audio.cpp:491 ../src/command/audio.cpp:492
 msgid "Go to selection"
 msgstr "رفتن به محل انتخابی"
 
-#: ../src/command/audio.cpp:399
+#: ../src/command/audio.cpp:493
 msgid "Scroll the audio display to center on the current audio selection"
 msgstr ""
 
-#: ../src/command/audio.cpp:408 ../src/command/audio.cpp:409
+#: ../src/command/audio.cpp:502 ../src/command/audio.cpp:503
 #, fuzzy
 #| msgid "Go to selection"
 msgid "Go to selection start"
 msgstr "رفتن به محل انتخابی"
 
-#: ../src/command/audio.cpp:410
+#: ../src/command/audio.cpp:504
 msgid ""
 "Scroll the audio display to center on the start of current audio selection"
 msgstr ""
 
-#: ../src/command/audio.cpp:419 ../src/command/audio.cpp:420
+#: ../src/command/audio.cpp:513 ../src/command/audio.cpp:514
 #, fuzzy
 #| msgid "Go to selection"
 msgid "Go to selection end"
 msgstr "رفتن به محل انتخابی"
 
-#: ../src/command/audio.cpp:421
+#: ../src/command/audio.cpp:515
 msgid ""
 "Scroll the audio display to center on the end of current audio selection"
 msgstr ""
 
-#: ../src/command/audio.cpp:430 ../src/command/audio.cpp:431
+#: ../src/command/audio.cpp:524 ../src/command/audio.cpp:525
 msgid "Scroll left"
 msgstr ""
 
-#: ../src/command/audio.cpp:432
+#: ../src/command/audio.cpp:526
 msgid "Scroll the audio display left"
 msgstr ""
 
-#: ../src/command/audio.cpp:441 ../src/command/audio.cpp:442
+#: ../src/command/audio.cpp:535 ../src/command/audio.cpp:536
 msgid "Scroll right"
 msgstr ""
 
-#: ../src/command/audio.cpp:443
+#: ../src/command/audio.cpp:537
 msgid "Scroll the audio display right"
 msgstr ""
 
-#: ../src/command/audio.cpp:457 ../src/command/audio.cpp:458
-#: ../src/command/audio.cpp:459
+#: ../src/command/audio.cpp:551 ../src/command/audio.cpp:552
+#: ../src/command/audio.cpp:553
 msgid "Auto scroll audio display to selected line"
 msgstr ""
 
-#: ../src/command/audio.cpp:474 ../src/command/audio.cpp:475
-#: ../src/command/audio.cpp:476
+#: ../src/command/audio.cpp:568 ../src/command/audio.cpp:569
+#: ../src/command/audio.cpp:570
 msgid "Automatically commit all changes"
 msgstr "اعمال تمام تغییرات به صورت خودکار"
 
-#: ../src/command/audio.cpp:491 ../src/command/audio.cpp:492
+#: ../src/command/audio.cpp:585 ../src/command/audio.cpp:586
 msgid "Auto go to next line on commit"
 msgstr ""
 
-#: ../src/command/audio.cpp:493
+#: ../src/command/audio.cpp:587
 msgid "Automatically go to next line on commit"
 msgstr ""
 
-#: ../src/command/audio.cpp:508 ../src/command/audio.cpp:509
-#: ../src/command/audio.cpp:510
+#: ../src/command/audio.cpp:602 ../src/command/audio.cpp:603
+#: ../src/command/audio.cpp:604
 msgid "Spectrum analyzer mode"
 msgstr "حالت بررسی کننده طیف"
 
-#: ../src/command/audio.cpp:525 ../src/command/audio.cpp:526
-#: ../src/command/audio.cpp:527
+#: ../src/command/audio.cpp:619 ../src/command/audio.cpp:620
+#: ../src/command/audio.cpp:621
 msgid "Link vertical zoom and volume sliders"
 msgstr "مرتبط کردن زوم عمودی با کنترل تنظیم صدا"
 
-#: ../src/command/audio.cpp:542 ../src/command/audio.cpp:543
-#: ../src/command/audio.cpp:544
+#: ../src/command/audio.cpp:636 ../src/command/audio.cpp:637
+#: ../src/command/audio.cpp:638
 msgid "Toggle karaoke mode"
 msgstr "برگشت به حالت کاروکه"
 
@@ -861,7 +932,7 @@ msgid "&Automation..."
 msgstr "عملیات خودکار"
 
 #: ../src/command/automation.cpp:74 ../src/command/automation.cpp:86
-#: ../src/preferences.cpp:376
+#: ../src/preferences.cpp:401
 msgid "Automation"
 msgstr "عملیات خودکار"
 
@@ -1290,7 +1361,7 @@ msgid "revert line"
 msgstr ""
 
 #: ../src/command/edit.cpp:1223 ../src/command/edit.cpp:1224
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:478
 msgid "Clear"
 msgstr "پاک کردن"
 
@@ -1882,12 +1953,12 @@ msgstr "ذخیره فایل زیرنویس"
 #: ../src/dialog_spellchecker.cpp:143 ../src/dialog_spellchecker.cpp:149
 #: ../src/dialog_style_manager.cpp:689 ../src/dialog_style_manager.cpp:695
 #: ../src/dialog_style_manager.cpp:698 ../src/main.cpp:202
-#: ../src/preferences.cpp:309 ../src/preferences.cpp:501
+#: ../src/preferences.cpp:334 ../src/preferences.cpp:526
 msgid "Error"
 msgstr "خطا"
 
 #: ../src/command/subtitle.cpp:360 ../src/dialog_export.cpp:211
-#: ../src/dialog_style_manager.cpp:698 ../src/project.cpp:142
+#: ../src/dialog_style_manager.cpp:698 ../src/project.cpp:143
 msgid "Unknown error"
 msgstr ""
 
@@ -2219,7 +2290,7 @@ msgstr ""
 msgid "&Resample Resolution..."
 msgstr ""
 
-#: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:90
+#: ../src/command/tool.cpp:94 ../src/dialog_resample.cpp:114
 msgid "Resample Resolution"
 msgstr ""
 
@@ -2234,7 +2305,7 @@ msgid "St&yling Assistant..."
 msgstr "دستیار استایل ..."
 
 #: ../src/command/tool.cpp:109 ../src/dialog_styling_assistant.cpp:54
-#: default_hotkey.json:223
+#: default_hotkey.json:232
 msgid "Styling Assistant"
 msgstr "دستیار استایل"
 
@@ -2311,7 +2382,7 @@ msgid "&Translation Assistant..."
 msgstr "دستیار ترجمه ..."
 
 #: ../src/command/tool.cpp:187 ../src/dialog_translation.cpp:65
-#: ../src/preferences.cpp:272 default_hotkey.json:291
+#: ../src/preferences.cpp:295 default_hotkey.json:300
 msgid "Translation Assistant"
 msgstr ".دستیار ترجمه"
 
@@ -2764,10 +2835,6 @@ msgstr "تنظیم زوم به %200"
 msgid "&50%"
 msgstr ""
 
-#: ../src/command/video.cpp:735
-msgid "50%"
-msgstr ""
-
 #: ../src/command/video.cpp:736
 msgid "Set zoom to 50%"
 msgstr "تنظیم زوم به %50"
@@ -2937,77 +3004,97 @@ msgstr ""
 msgid "Built by %s on %s."
 msgstr "%s در %s ساخته شده توسط "
 
-#: ../src/dialog_attachments.cpp:68
+#: ../src/dialog_attachments.cpp:106
 msgid "Attachment List"
 msgstr "لیست ضمائم"
 
-#: ../src/dialog_attachments.cpp:76
+#: ../src/dialog_attachments.cpp:114
 msgid "Attach &Font"
 msgstr "ضمیمه کردن فونت"
 
-#: ../src/dialog_attachments.cpp:77
+#: ../src/dialog_attachments.cpp:115
 msgid "Attach &Graphics"
 msgstr "ضمیمه کردن گرافیک"
 
-#: ../src/dialog_attachments.cpp:78
+#: ../src/dialog_attachments.cpp:116
 msgid "E&xtract"
 msgstr "استخراج"
 
-#: ../src/dialog_attachments.cpp:79 ../src/dialog_style_manager.cpp:205
-#: ../src/preferences.cpp:668
+#: ../src/dialog_attachments.cpp:117 ../src/dialog_style_manager.cpp:205
+#: ../src/preferences.cpp:693
 msgid "&Delete"
 msgstr "حذف"
 
-#: ../src/dialog_attachments.cpp:89 ../src/dialog_automation.cpp:122
+#: ../src/dialog_attachments.cpp:127 ../src/dialog_automation.cpp:122
 #: ../src/dialog_kara_timing_copy.cpp:425 ../src/dialog_version_check.cpp:122
 msgid "&Close"
 msgstr "بستن"
 
-#: ../src/dialog_attachments.cpp:110
+#: ../src/dialog_attachments.cpp:148
 msgid "Attachment name"
 msgstr "نام ضمیمه"
 
-#: ../src/dialog_attachments.cpp:111
+#: ../src/dialog_attachments.cpp:149
 msgid "Size"
 msgstr "حجم"
 
-#: ../src/dialog_attachments.cpp:112
+#: ../src/dialog_attachments.cpp:150
 msgid "Group"
 msgstr "گروه"
 
-#: ../src/dialog_attachments.cpp:138 ../src/dialog_attachments.cpp:147
+#: ../src/dialog_attachments.cpp:176 ../src/dialog_attachments.cpp:185
 msgid "Choose file to be attached"
 msgstr "فایل مورد نظر را برای ضمیمه انتخاب کنید"
 
-#: ../src/dialog_attachments.cpp:139 ../src/dialog_attachments.cpp:170
+#: ../src/dialog_attachments.cpp:177 ../src/dialog_attachments.cpp:211
 #, fuzzy
 #| msgid "Font size"
 msgid "Font Files"
 msgstr "اندازه فونت"
 
-#: ../src/dialog_attachments.cpp:142
+#: ../src/dialog_attachments.cpp:180
 msgid "attach font file"
 msgstr " ضمیمه کردن فونت ها به فایل "
 
-#: ../src/dialog_attachments.cpp:149 ../src/dialog_attachments.cpp:170
+#: ../src/dialog_attachments.cpp:187 ../src/dialog_attachments.cpp:211
 #, fuzzy
 #| msgid "attach graphics file"
 msgid "Graphic Files"
 msgstr "ضمیمه کردن فایل گرافیک"
 
-#: ../src/dialog_attachments.cpp:152
+#: ../src/dialog_attachments.cpp:190
 msgid "attach graphics file"
 msgstr "ضمیمه کردن فایل گرافیک"
 
-#: ../src/dialog_attachments.cpp:164
+#: ../src/dialog_attachments.cpp:202
 msgid "Select the path to save the files to:"
 msgstr "مکانی را برای ذخیره فایل ها انتخاب کنید:"
 
-#: ../src/dialog_attachments.cpp:167
+#: ../src/dialog_attachments.cpp:208
 msgid "Select the path to save the file to:"
 msgstr "مکانی را برای ذخیره فایل ها انتخاب کنید:"
 
-#: ../src/dialog_attachments.cpp:189
+#: ../src/dialog_attachments.cpp:224
+#, c-format
+msgid "The attachment \"%s\" was not extracted because its filename is unsafe."
+msgstr ""
+
+#: ../src/dialog_attachments.cpp:225
+#, fuzzy
+#| msgid "Attachment name"
+msgid "Attachment not extracted"
+msgstr "نام ضمیمه"
+
+#: ../src/dialog_attachments.cpp:231
+#, c-format
+msgid "The file \"%s\" already exists. Do you want to replace it?"
+msgstr ""
+
+#: ../src/dialog_attachments.cpp:232
+msgid "Replace existing file?"
+msgstr ""
+
+#: ../src/dialog_attachments.cpp:246
 msgid "remove attachment"
 msgstr "حذف ضمیمه"
 
@@ -3043,7 +3130,7 @@ msgstr "نام"
 msgid "Filename"
 msgstr "اسم فایل"
 
-#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:688
+#: ../src/dialog_automation.cpp:136 ../src/preferences.cpp:713
 msgid "Description"
 msgstr "توضیحات"
 
@@ -3276,8 +3363,9 @@ msgstr ""
 msgid "Dummy video options"
 msgstr "تنظیمات ویدیوی ساختگی"
 
-#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:136
-#: ../src/dialog_resample.cpp:175 ../src/dialog_resample.cpp:188
+#: ../src/dialog_dummy_video.cpp:110 ../src/dialog_properties.cpp:150
+#: ../src/dialog_properties.cpp:162 ../src/dialog_resample.cpp:195
+#: ../src/dialog_resample.cpp:208
 msgid "×"
 msgstr "×"
 
@@ -3780,85 +3868,101 @@ msgstr ""
 msgid "Cancelling..."
 msgstr ""
 
-#: ../src/dialog_properties.cpp:91
+#: ../src/dialog_properties.cpp:98
 msgid "Script Properties"
 msgstr "مشخصات اسکریپت"
 
-#: ../src/dialog_properties.cpp:105
+#: ../src/dialog_properties.cpp:112
 msgid "Script"
 msgstr "اسکریپت"
 
-#: ../src/dialog_properties.cpp:109
+#: ../src/dialog_properties.cpp:116
 msgid "Title:"
 msgstr "عنوان:"
 
-#: ../src/dialog_properties.cpp:110
+#: ../src/dialog_properties.cpp:117
 msgid "Original script:"
 msgstr "اسکریپت اصلی:"
 
-#: ../src/dialog_properties.cpp:111
+#: ../src/dialog_properties.cpp:118
 msgid "Translation:"
 msgstr "ترجمه:"
 
-#: ../src/dialog_properties.cpp:112
+#: ../src/dialog_properties.cpp:119
 msgid "Editing:"
 msgstr "ویرایش:"
 
-#: ../src/dialog_properties.cpp:113
+#: ../src/dialog_properties.cpp:120
 msgid "Timing:"
 msgstr "زمانبندی:"
 
-#: ../src/dialog_properties.cpp:114
+#: ../src/dialog_properties.cpp:121
 msgid "Synch point:"
 msgstr "نقطه همگامی:"
 
-#: ../src/dialog_properties.cpp:115
+#: ../src/dialog_properties.cpp:122
 msgid "Updated by:"
 msgstr "بروز شده توسط:"
 
-#: ../src/dialog_properties.cpp:116
+#: ../src/dialog_properties.cpp:123
 msgid "Update details:"
 msgstr "جزییات بروز کردن:"
 
-#: ../src/dialog_properties.cpp:122
+#: ../src/dialog_properties.cpp:129
 msgid "Resolution"
 msgstr "ابعاد تصویر"
 
-#: ../src/dialog_properties.cpp:128 ../src/dialog_resample.cpp:150
+#: ../src/dialog_properties.cpp:138 ../src/dialog_resample.cpp:170
 #: ../src/export_framerate.cpp:70
 msgid "From &video"
 msgstr ""
 
-#: ../src/dialog_properties.cpp:144 ../src/dialog_resample.cpp:180
-#: ../src/dialog_resample.cpp:193
+#: ../src/dialog_properties.cpp:148
+#, fuzzy
+#| msgid "Script"
+msgid "Script: "
+msgstr "اسکریپت"
+
+#: ../src/dialog_properties.cpp:154 ../src/dialog_properties.cpp:169
+#, fuzzy
+#| msgid "Zoom video in"
+msgid "From video"
+msgstr "زوم کردن  بر ویدیو"
+
+#: ../src/dialog_properties.cpp:160
+msgid "Layout: "
+msgstr ""
+
+#: ../src/dialog_properties.cpp:175 ../src/dialog_resample.cpp:200
+#: ../src/dialog_resample.cpp:213
 msgid "YCbCr Matrix:"
 msgstr ""
 
-#: ../src/dialog_properties.cpp:155
+#: ../src/dialog_properties.cpp:186
 msgid "0: Smart wrapping, top line is wider"
 msgstr "0:تنظیم نمایش خطوط هوشمند, خط بالا عریض تر است "
 
-#: ../src/dialog_properties.cpp:156
+#: ../src/dialog_properties.cpp:187
 msgid "1: End-of-line word wrapping, only \\N breaks"
 msgstr "1: \\Nتنظیم بر اساس پایان خطوط,جداسازی تنها در "
 
-#: ../src/dialog_properties.cpp:157
+#: ../src/dialog_properties.cpp:188
 msgid "2: No word wrapping, both \\n and \\N break"
 msgstr "2:\\N و\\n هیچ تنظیمی انجام نمی شود شکستن خطوط در "
 
-#: ../src/dialog_properties.cpp:158
+#: ../src/dialog_properties.cpp:189
 msgid "3: Smart wrapping, bottom line is wider"
 msgstr "3:تنظیم نمایش خطوط هشمند,خط زیرین عریض تر است"
 
-#: ../src/dialog_properties.cpp:162
+#: ../src/dialog_properties.cpp:193
 msgid "Wrap Style: "
 msgstr "پنهان کردن استایل:"
 
-#: ../src/dialog_properties.cpp:165
+#: ../src/dialog_properties.cpp:196
 msgid "Scale Border and Shadow"
 msgstr "اندازه مرز و سایه"
 
-#: ../src/dialog_properties.cpp:166
+#: ../src/dialog_properties.cpp:197
 msgid ""
 "Scale border and shadow together with script/render resolution. If this is "
 "unchecked, relative border and shadow size will depend on renderer."
@@ -3866,47 +3970,47 @@ msgstr ""
 "اندازه حاشیه و سایه با هم در اسکریت.اگر  انتخاب نشود رندر کننده این مقادیر "
 "را با توجه به اندازه حاشیه و سایه این مقدار را تعیین میکند"
 
-#: ../src/dialog_properties.cpp:202
+#: ../src/dialog_properties.cpp:235
 msgid "property changes"
 msgstr "تغییر مالکیت"
 
-#: ../src/dialog_resample.cpp:114
+#: ../src/dialog_resample.cpp:136
 msgid "Source Resolution"
 msgstr ""
 
-#: ../src/dialog_resample.cpp:115
+#: ../src/dialog_resample.cpp:137
 msgid "Destination Resolution"
 msgstr ""
 
-#: ../src/dialog_resample.cpp:116
+#: ../src/dialog_resample.cpp:138
 msgid "Margin offset"
 msgstr "جایجایی حاشیه"
 
-#: ../src/dialog_resample.cpp:128
+#: ../src/dialog_resample.cpp:150
 msgid "&Symmetrical"
 msgstr ""
 
-#: ../src/dialog_resample.cpp:152
+#: ../src/dialog_resample.cpp:172
 msgid "From s&cript"
 msgstr ""
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Add borders"
 msgstr ""
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Manual"
 msgstr ""
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Remove borders"
 msgstr ""
 
-#: ../src/dialog_resample.cpp:155
+#: ../src/dialog_resample.cpp:175
 msgid "Stretch"
 msgstr ""
 
-#: ../src/dialog_resample.cpp:156
+#: ../src/dialog_resample.cpp:176
 msgid "Aspect Ratio Handling"
 msgstr ""
 
@@ -4300,7 +4404,7 @@ msgstr ""
 msgid "Font"
 msgstr "فونت"
 
-#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:280
+#: ../src/dialog_style_editor.cpp:182 ../src/preferences.cpp:303
 msgid "Colors"
 msgstr "رنگ ها"
 
@@ -4527,11 +4631,11 @@ msgstr "حرکت استایل به انتها"
 msgid "Sort styles alphabetically"
 msgstr "استایل ها را براساس الفبا مرتب کن"
 
-#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:666
+#: ../src/dialog_style_manager.cpp:202 ../src/preferences.cpp:691
 msgid "&New"
 msgstr ""
 
-#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:667
+#: ../src/dialog_style_manager.cpp:203 ../src/preferences.cpp:692
 #: default_menu.json:0
 msgid "&Edit"
 msgstr "ویرایش"
@@ -5047,8 +5151,8 @@ msgstr "خطای ناشناخته در هنگام بررسی برای نسخه �
 msgid "Video Details"
 msgstr "مشخصات ویدیو"
 
-#: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:204
-#: ../src/preferences.cpp:481 default_hotkey.json:315
+#: ../src/dialog_video_details.cpp:55 ../src/preferences.cpp:205
+#: ../src/preferences.cpp:506 default_hotkey.json:324
 msgid "Video"
 msgstr "ویدیو"
 
@@ -5076,14 +5180,126 @@ msgid "Length:"
 msgstr "طول:"
 
 #: ../src/dialog_video_details.cpp:68
+msgid "Actual color matrix:"
+msgstr ""
+
+#: ../src/dialog_video_details.cpp:69
+msgid "Forced color matrix:"
+msgstr ""
+
+#: ../src/dialog_video_details.cpp:70
+msgid "Actual color range:"
+msgstr ""
+
+#: ../src/dialog_video_details.cpp:71
+msgid "Forced color range:"
+msgstr ""
+
+#: ../src/dialog_video_details.cpp:72
 msgid "Decoder:"
 msgstr "دیکودر:"
 
-#: ../src/dialog_video_properties.cpp:44
-msgid "Resolution mismatch"
-msgstr "نا هماهنگ بودن ابعاد تصویر"
+#: ../src/dialog_video_properties.cpp:162
+#, c-format
+msgid ""
+"The video you have loaded has no specified color matrix. Aegisub will guess "
+"the color matrix to be %s, but there is no guarantee that other programs "
+"will guess the same matrix. This may make the video appear with different "
+"colors in different media players and can prevent subtitle colors from "
+"matching video colors.\n"
+" \n"
+"Consider tagging your video with a color matrix to ensure that your video "
+"displays consistently in all players and that subtitle colors can reliably "
+"match video colors."
+msgstr ""
 
-#: ../src/dialog_video_properties.cpp:47
+#: ../src/dialog_video_properties.cpp:167
+msgid "Untagged video"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:172
+msgid ""
+"The video you have loaded has HDR and/or WCG colors. While ordinary dialogue "
+"subtitles will work fine on such videos, matching video colors using "
+"subtitles will not be possible on HDR and/or WCG footage."
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:175
+msgid "HDR and/or WCG video"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:188
+#, c-format
+msgid ""
+"The current subtitle file has no YCbCr Matrix set.\n"
+"\n"
+"If you plan to use this subtitle file on this newly loaded video file,\n"
+"you should set the subtitle file's YCbCr Matrix to the video's color space "
+"(\"%s\").\n"
+"\n"
+"If you plan to use a different video file, you may want to\n"
+"leave the YCbCr Matrix unset until you load the correct video file.\n"
+"\n"
+"This prompt can be configured in the preferences."
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:193
+msgid "Set script's YCbCr Matrix?"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:194
+msgid "Leave YCbCr Matrix unset"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:194
+#: ../src/dialog_video_properties.cpp:253
+#, c-format
+msgid "Set script's YCbCr Matrix to the video's (\"%s\")"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:248
+#, c-format
+msgid ""
+"This video's recommended YCbCr Matrix (\"%s\") differs from the subtitle "
+"file's YCbCr Matrix (\"%s\").\n"
+"\n"
+"If this new video's colors look identical to the video the subtitle file was "
+"originally authored for,\n"
+"then the subtitle file's YCbCr Matrix should be set to the video's YCbCr "
+"Matrix."
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:252
+msgid "YCbCr Matrix mismatch"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:253
+#, c-format
+msgid "Leave script's YCbCr Matrix as it is (\"%s\")"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:332
+#: ../src/dialog_video_properties.cpp:339
+msgid "Leave resolution as it is"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:333
+msgid "Resample script (stretch to new aspect ratio)"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:334
+msgid "Resample script (add borders)"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:335
+msgid "Resample script (remove borders)"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:340
+msgid "Resample script"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:346
 #, c-format
 msgid ""
 "The resolution of the loaded video and the resolution specified for the "
@@ -5101,29 +5317,118 @@ msgstr ""
 "\n"
 "آیا مایلید که ابعاد زیرنویس به تناسب ویدیو تغییر کند؟ "
 
-#: ../src/dialog_video_properties.cpp:58 ../src/dialog_video_properties.cpp:67
-msgid "Set to video resolution"
+#: ../src/dialog_video_properties.cpp:350
+msgid "Resolution mismatch"
+msgstr "نا هماهنگ بودن ابعاد تصویر"
+
+#: ../src/dialog_video_properties.cpp:397
+#, c-format
+msgid ""
+"The current subtitle file has no layout resolution set.\n"
+"\n"
+"If you plan to use this subtitle file on this newly loaded video file,\n"
+"you should set the subtitle file's layout resolution to the video's display "
+"resolution.\n"
+"\n"
+"If you plan to use a different video file, you may want to leave\n"
+"the layout resolution unset until you load the correct video file.\n"
+"\n"
+"If you are adapting an existing old subtitle file that does not yet have\n"
+"a layout resolution set, you should set its layout resolution to the "
+"resolution\n"
+"of the video the subtitle file was intended to be played back on.\n"
+"Often, this is the same as the file's script resolution. (%d × %d)\n"
+"\n"
+"This prompt can be configured in the preferences."
 msgstr ""
 
-#: ../src/dialog_video_properties.cpp:59
-msgid "Resample script (stretch to new aspect ratio)"
+#: ../src/dialog_video_properties.cpp:411
+msgid "Set script's layout resolution?"
 msgstr ""
 
-#: ../src/dialog_video_properties.cpp:60
-msgid "Resample script (add borders)"
+#: ../src/dialog_video_properties.cpp:412
+msgid "Leave layout resolution unset"
 msgstr ""
 
-#: ../src/dialog_video_properties.cpp:61
-msgid "Resample script (remove borders)"
+#: ../src/dialog_video_properties.cpp:413
+#: ../src/dialog_video_properties.cpp:492
+#, c-format
+msgid "Set script's layout resolution to the video's (%d × %d)"
 msgstr ""
 
-#: ../src/dialog_video_properties.cpp:68
-msgid "Resample script"
+#: ../src/dialog_video_properties.cpp:414
+#, c-format
+msgid "Set script's layout resolution to its script resolution (%d × %d)"
 msgstr ""
 
-#: ../src/dialog_video_properties.cpp:168
+#: ../src/dialog_video_properties.cpp:472
+#, c-format
+msgid ""
+"The resolution of the loaded video and the layout resolution specified for "
+"the subtitles don't match.\n"
+"\n"
+"Video resolution:    %d × %d\n"
+"Subtitle layout resolution:    %d × %d\n"
+"\n"
+"Usually, this is not an issue, and you may leave the subtitle file's layout "
+"resolution as it is.\n"
+"If your subtitle file does not contain any significant formatting and you "
+"now intend to perform\n"
+"formatting on the newly loaded video, you may want to set the script's "
+"layout resolution\n"
+"to the video's display resolution."
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:483
+#, fuzzy, c-format
+#| msgid ""
+#| "The resolution of the loaded video and the resolution specified for the "
+#| "subtitles don't match.\n"
+#| "\n"
+#| "Video resolution:\t%d × %d\n"
+#| "Script resolution:\t%d × %d\n"
+#| "\n"
+#| "Change subtitles resolution to match video?"
+msgid ""
+"The resolution of the loaded video and the layout resolution specified for "
+"the subtitles differ in aspect ratios.\n"
+"\n"
+"Video resolution:    %d × %d\n"
+"Subtitle layout resolution:    %d × %d\n"
+"\n"
+"Change layout resolution of subtitles to match video?"
+msgstr ""
+"ابعاد تصویر ویدیو با ابعادی که شما مشخص کرده اید همخوانی ندارد\n"
+"\n"
+"ابعاد ویدیو :\t%d × %d\n"
+"ابعاد اسکرییپت :\t%d × %d\n"
+"\n"
+"آیا مایلید که ابعاد زیرنویس به تناسب ویدیو تغییر کند؟ "
+
+#: ../src/dialog_video_properties.cpp:491
+#, fuzzy
+#| msgid "Resolution mismatch"
+msgid "Layout resolution mismatch"
+msgstr "نا هماهنگ بودن ابعاد تصویر"
+
+#: ../src/dialog_video_properties.cpp:492
+#, c-format
+msgid "Leave layout resolution as it is (%d × %d)"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:517
+msgid "change ycbcr matrix"
+msgstr ""
+
+#: ../src/dialog_video_properties.cpp:520
 msgid "change script resolution"
 msgstr ""
+
+#: ../src/dialog_video_properties.cpp:523
+#, fuzzy
+#| msgid "Video resolution:"
+msgid "change layout resolution"
+msgstr "سایز تصویر :"
 
 #: ../src/export_fixstyle.cpp:46
 msgid "Fix Styles"
@@ -5207,75 +5512,75 @@ msgstr ""
 msgid "Style '%s' does not exist\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:154
+#: ../src/font_file_lister.cpp:157
 #, c-format
 msgid "Font '%s' is used in a drawing, but not in any text.\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:160
+#: ../src/font_file_lister.cpp:163
 #, c-format
 msgid "Could not find font '%s'\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:168
+#: ../src/font_file_lister.cpp:171
 #, c-format
 msgid "Found '%s' at '%s'\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:174
+#: ../src/font_file_lister.cpp:177
 #, c-format
 msgid "'%s' does not have a bold variant.\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:176
+#: ../src/font_file_lister.cpp:179
 #, c-format
 msgid "'%s' does not have an italic variant.\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:180
+#: ../src/font_file_lister.cpp:183
 #, c-format
 msgid "'%s' is missing %d glyphs used.\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:182
+#: ../src/font_file_lister.cpp:185
 #, c-format
 msgid "'%s' is missing the following glyphs used: %s\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:193
+#: ../src/font_file_lister.cpp:197
 msgid "Used in styles:\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:199
+#: ../src/font_file_lister.cpp:203
 msgid "Used on lines:"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:211
+#: ../src/font_file_lister.cpp:216
 msgid "Parsing file\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:225
+#: ../src/font_file_lister.cpp:230
 msgid "Searching for font files\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:227
+#: ../src/font_file_lister.cpp:232
 msgid ""
 "Done\n"
 "\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:234
+#: ../src/font_file_lister.cpp:239
 msgid "All fonts found.\n"
 msgstr ""
 
-#: ../src/font_file_lister.cpp:236
+#: ../src/font_file_lister.cpp:241
 #, c-format
 msgid "One font could not be found\n"
 msgid_plural "%d fonts could not be found.\n"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/font_file_lister.cpp:239
+#: ../src/font_file_lister.cpp:244
 #, c-format
 msgid "One font was found, but was missing glyphs used in the script.\n"
 msgid_plural ""
@@ -5327,7 +5632,7 @@ msgstr ""
 msgid "Characters Per Second"
 msgstr ""
 
-#: ../src/hotkey.cpp:261
+#: ../src/hotkey.cpp:273
 msgid "Invalid command name for hotkey"
 msgstr ""
 
@@ -5413,28 +5718,28 @@ msgstr "خالی"
 msgid "&Recent"
 msgstr ""
 
-#: ../src/menu.cpp:467
+#: ../src/menu.cpp:476
 msgid "No Automation macros loaded"
 msgstr "هیچ ماکروی عملیات خودکاری بارگذاری نشده است"
 
-#: ../src/mkv_wrap.cpp:246
+#: ../src/mkv_wrap.cpp:262
 msgid "Choose which track to read:"
 msgstr ""
 
-#: ../src/mkv_wrap.cpp:246
+#: ../src/mkv_wrap.cpp:262
 msgid "Multiple subtitle tracks found"
 msgstr ""
 
-#: ../src/mkv_wrap.cpp:291
+#: ../src/mkv_wrap.cpp:307
 msgid "Parsing Matroska"
 msgstr "Parsing Matroska"
 
-#: ../src/mkv_wrap.cpp:291
+#: ../src/mkv_wrap.cpp:307
 msgid "Reading subtitles from Matroska file."
 msgstr "Matroska خواندن زیرنویس از فایل"
 
 #: ../src/preferences.cpp:98 ../src/preferences.cpp:100
-#: ../src/preferences.cpp:378 ../src/preferences.cpp:399
+#: ../src/preferences.cpp:403 ../src/preferences.cpp:424
 msgid "General"
 msgstr "عمومی"
 
@@ -5454,15 +5759,19 @@ msgstr ""
 msgid "Toolbar Icon Size"
 msgstr ""
 
-#: ../src/preferences.cpp:107 default_hotkey.json:2
+#: ../src/preferences.cpp:107 ../src/preferences.cpp:251 default_hotkey.json:2
 msgid "Always"
 msgstr "همیشه"
 
-#: ../src/preferences.cpp:107 ../src/preferences.cpp:240
+#: ../src/preferences.cpp:107 ../src/preferences.cpp:241
+#: ../src/preferences.cpp:247 ../src/preferences.cpp:259
+#: ../src/preferences.cpp:263
 msgid "Ask"
 msgstr "با پرسش"
 
-#: ../src/preferences.cpp:107 ../src/preferences.cpp:240
+#: ../src/preferences.cpp:107 ../src/preferences.cpp:241
+#: ../src/preferences.cpp:247 ../src/preferences.cpp:251
+#: ../src/preferences.cpp:259 ../src/preferences.cpp:263
 msgid "Never"
 msgstr "هیچ گاه"
 
@@ -5518,7 +5827,7 @@ msgstr ""
 msgid "Plain text import"
 msgstr ""
 
-#: ../src/preferences.cpp:164 ../src/preferences.cpp:414 default_hotkey.json:37
+#: ../src/preferences.cpp:164 ../src/preferences.cpp:439 default_hotkey.json:37
 msgid "Audio"
 msgstr "صدا"
 
@@ -5547,745 +5856,804 @@ msgid "Left-click-drag moves end marker"
 msgstr ""
 
 #: ../src/preferences.cpp:173
-msgid "Default timing length (ms)"
+msgid "Default playback rate"
 msgstr ""
 
 #: ../src/preferences.cpp:174
-msgid "Default lead-in length (ms)"
+msgid "Default timing length (ms)"
 msgstr ""
 
 #: ../src/preferences.cpp:175
+msgid "Default lead-in length (ms)"
+msgstr ""
+
+#: ../src/preferences.cpp:176
 msgid "Default lead-out length (ms)"
 msgstr ""
 
-#: ../src/preferences.cpp:177
+#: ../src/preferences.cpp:178
 msgid "Marker drag-start sensitivity (px)"
 msgstr ""
 
-#: ../src/preferences.cpp:178
+#: ../src/preferences.cpp:179
 msgid "Line boundary thickness (px)"
 msgstr ""
 
-#: ../src/preferences.cpp:179
+#: ../src/preferences.cpp:180
 msgid "Maximum snap distance (px)"
 msgstr ""
 
-#: ../src/preferences.cpp:181
+#: ../src/preferences.cpp:182
 msgid "Don't show"
 msgstr "عدم نمایش"
 
-#: ../src/preferences.cpp:181
-msgid "Show all"
-msgstr "نمایش همه"
-
-#: ../src/preferences.cpp:181
+#: ../src/preferences.cpp:182
 msgid "Show previous"
 msgstr "نمایش قبلی "
 
-#: ../src/preferences.cpp:181
+#: ../src/preferences.cpp:182
 msgid "Show previous and next"
 msgstr ""
 
-#: ../src/preferences.cpp:183
+#: ../src/preferences.cpp:184
 msgid "Show inactive lines"
 msgstr "نمایش دادن خطوط غیر فعال"
 
-#: ../src/preferences.cpp:185
+#: ../src/preferences.cpp:186
 msgid "Include commented inactive lines"
 msgstr ""
 
-#: ../src/preferences.cpp:187
+#: ../src/preferences.cpp:188
 msgid "Display Visual Options"
 msgstr ""
 
-#: ../src/preferences.cpp:188
+#: ../src/preferences.cpp:189
 msgid "Keyframes in dialogue mode"
 msgstr ""
 
-#: ../src/preferences.cpp:189
+#: ../src/preferences.cpp:190
 msgid "Keyframes in karaoke mode"
 msgstr ""
 
-#: ../src/preferences.cpp:190
+#: ../src/preferences.cpp:191
 msgid "Cursor time"
 msgstr ""
 
-#: ../src/preferences.cpp:191
+#: ../src/preferences.cpp:192
 msgid "Video position"
 msgstr ""
 
-#: ../src/preferences.cpp:192 ../src/preferences.cpp:294
+#: ../src/preferences.cpp:193 ../src/preferences.cpp:319
 msgid "Seconds boundaries"
 msgstr ""
 
-#: ../src/preferences.cpp:194
+#: ../src/preferences.cpp:195
 msgid "Waveform Style"
 msgstr ""
 
-#: ../src/preferences.cpp:196
+#: ../src/preferences.cpp:197
 msgid "Audio labels"
 msgstr ""
 
-#: ../src/preferences.cpp:207
+#: ../src/preferences.cpp:208
 msgid "Show keyframes in slider"
 msgstr "نشان دادنفریم های کلیدی در نوار جستجوی زمانی"
 
-#: ../src/preferences.cpp:209
+#: ../src/preferences.cpp:210
 msgid "Only show visual tools when mouse is over video"
 msgstr ""
 
-#: ../src/preferences.cpp:211
+#: ../src/preferences.cpp:212
 msgid "Seek video to line start on selection change"
 msgstr ""
 
-#: ../src/preferences.cpp:213
+#: ../src/preferences.cpp:214
 msgid "Automatically open audio when opening video"
 msgstr ""
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Does nothing"
 msgstr ""
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Pans the video"
 msgstr ""
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Pans the video (X/Y swapped)"
 msgstr ""
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Resizes the video box"
 msgstr ""
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Resizes the video box (reversed)"
 msgstr ""
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 #, fuzzy
 #| msgid "Zoom video in"
 msgid "Zooms the video"
 msgstr "زوم کردن  بر ویدیو"
 
-#: ../src/preferences.cpp:216
+#: ../src/preferences.cpp:217
 msgid "Zooms the video (reversed)"
 msgstr ""
 
-#: ../src/preferences.cpp:218
+#: ../src/preferences.cpp:219
 msgid "Scrolling on the video display"
 msgstr ""
 
-#: ../src/preferences.cpp:219
+#: ../src/preferences.cpp:220
 msgid "Ctrl+Scrolling on the video display"
 msgstr ""
 
-#: ../src/preferences.cpp:220
+#: ../src/preferences.cpp:221
 msgid "Shift+Scrolling on the video display"
 msgstr ""
 
-#: ../src/preferences.cpp:224
+#: ../src/preferences.cpp:225
 msgid "Default Zoom"
 msgstr ""
 
-#: ../src/preferences.cpp:226
+#: ../src/preferences.cpp:227
 msgid "Fast jump step in frames"
 msgstr "پرش های سریع در فریم ها"
 
-#: ../src/preferences.cpp:230
+#: ../src/preferences.cpp:231
 msgid "Screenshot save path"
 msgstr "مسیر ذخیره اسکرین شات"
 
-#: ../src/preferences.cpp:232
+#: ../src/preferences.cpp:233
 msgid "Script Resolution"
 msgstr ""
 
-#: ../src/preferences.cpp:233
+#: ../src/preferences.cpp:234
 msgid "Use resolution of first video opened"
 msgstr ""
 
-#: ../src/preferences.cpp:236
+#: ../src/preferences.cpp:237
 msgid "Default width"
 msgstr ""
 
-#: ../src/preferences.cpp:238
+#: ../src/preferences.cpp:239
 msgid "Default height"
 msgstr ""
 
-#: ../src/preferences.cpp:240
+#: ../src/preferences.cpp:241
 msgid "Always resample"
 msgstr ""
 
-#: ../src/preferences.cpp:240
-msgid "Always set"
-msgstr ""
-
-#: ../src/preferences.cpp:242
+#: ../src/preferences.cpp:243
 msgid "Match video resolution on open"
 msgstr ""
 
+#: ../src/preferences.cpp:245
+#, fuzzy
+#| msgid "Resolution"
+msgid "Layout Resolution"
+msgstr "ابعاد تصویر"
+
+#: ../src/preferences.cpp:247 ../src/preferences.cpp:259
+#: ../src/preferences.cpp:263
+msgid "Always set"
+msgstr ""
+
+#: ../src/preferences.cpp:247
+msgid "Always set from script resolution"
+msgstr ""
+
 #: ../src/preferences.cpp:249
-msgid "Interface"
+msgid "Set layout resolution from video on open"
 msgstr ""
 
 #: ../src/preferences.cpp:251
-msgid "Edit Box"
-msgstr ""
-
-#: ../src/preferences.cpp:252
-msgid "Enable call tips"
-msgstr "فعال سازی فراخوانی راهنمایی ها"
+#, fuzzy
+#| msgid "Enter aspect ratio"
+msgid "When aspect ratio changes"
+msgstr "وارد کردن نسبت طول به عرض تصویر"
 
 #: ../src/preferences.cpp:253
-msgid "Overwrite in time boxes"
-msgstr ""
-
-#: ../src/preferences.cpp:254
-msgid "Shift+Enter adds \\n"
-msgstr ""
+#, fuzzy
+#| msgid "Resolution mismatch"
+msgid "Prompt on layout resolution mismatch"
+msgstr "نا هماهنگ بودن ابعاد تصویر"
 
 #: ../src/preferences.cpp:255
-msgid "Enable syntax highlighting"
-msgstr "  مشخص کننده روش فعالسازی "
+msgid "YCbCr Matrix"
+msgstr ""
 
 #: ../src/preferences.cpp:256
-msgid "Dictionaries path"
+msgid "Warn on untagged video color matrix"
 msgstr ""
 
-#: ../src/preferences.cpp:259
-msgid "Character Counter"
-msgstr ""
-
-#: ../src/preferences.cpp:260
-msgid "Maximum characters per line"
+#: ../src/preferences.cpp:257
+msgid "Warn on HDR/WCG video"
 msgstr ""
 
 #: ../src/preferences.cpp:261
+msgid "Use video's YCbCr Matrix when script has no matrix set"
+msgstr ""
+
+#: ../src/preferences.cpp:265
+msgid "Match video's YCbCr Matrix on open"
+msgstr ""
+
+#: ../src/preferences.cpp:272
+msgid "Interface"
+msgstr ""
+
+#: ../src/preferences.cpp:274
+msgid "Edit Box"
+msgstr ""
+
+#: ../src/preferences.cpp:275
+msgid "Enable call tips"
+msgstr "فعال سازی فراخوانی راهنمایی ها"
+
+#: ../src/preferences.cpp:276
+msgid "Overwrite in time boxes"
+msgstr ""
+
+#: ../src/preferences.cpp:277
+msgid "Shift+Enter adds \\n"
+msgstr ""
+
+#: ../src/preferences.cpp:278
+msgid "Enable syntax highlighting"
+msgstr "  مشخص کننده روش فعالسازی "
+
+#: ../src/preferences.cpp:279
+msgid "Dictionaries path"
+msgstr ""
+
+#: ../src/preferences.cpp:282
+msgid "Character Counter"
+msgstr ""
+
+#: ../src/preferences.cpp:283
+msgid "Maximum characters per line"
+msgstr ""
+
+#: ../src/preferences.cpp:284
 msgid "Characters Per Second Warning Threshold"
 msgstr ""
 
-#: ../src/preferences.cpp:262
+#: ../src/preferences.cpp:285
 msgid "Characters Per Second Error Threshold"
 msgstr ""
 
-#: ../src/preferences.cpp:263
+#: ../src/preferences.cpp:286
 msgid "Ignore whitespace"
 msgstr ""
 
-#: ../src/preferences.cpp:264
+#: ../src/preferences.cpp:287
 msgid "Ignore punctuation"
 msgstr ""
 
-#: ../src/preferences.cpp:266
+#: ../src/preferences.cpp:289
 msgid "Grid"
 msgstr ""
 
-#: ../src/preferences.cpp:267
+#: ../src/preferences.cpp:290
 msgid "Focus grid on click"
 msgstr ""
 
-#: ../src/preferences.cpp:268
+#: ../src/preferences.cpp:291
 msgid "Highlight visible subtitles"
 msgstr ""
 
-#: ../src/preferences.cpp:269
+#: ../src/preferences.cpp:292
 msgid "Hide overrides symbol"
 msgstr ""
 
-#: ../src/preferences.cpp:273
+#: ../src/preferences.cpp:296
 msgid "Skip over whitespace"
 msgstr ""
 
-#: ../src/preferences.cpp:288
+#: ../src/preferences.cpp:311
 msgid "Audio Display"
 msgstr ""
 
-#: ../src/preferences.cpp:289
+#: ../src/preferences.cpp:312
 msgid "Play cursor"
 msgstr "نشانگر پخش"
 
-#: ../src/preferences.cpp:290
+#: ../src/preferences.cpp:313
+#, fuzzy
+#| msgid "Current frame time and number"
+msgid "Current frame range"
+msgstr "زمان و شماره فریم کنونی"
+
+#: ../src/preferences.cpp:314
+#, fuzzy
+#| msgid "Previous line"
+msgid "Previous frame range"
+msgstr "خط قبل"
+
+#: ../src/preferences.cpp:315
 msgid "Line boundary start"
 msgstr ""
 
-#: ../src/preferences.cpp:291
+#: ../src/preferences.cpp:316
 msgid "Line boundary end"
 msgstr ""
 
-#: ../src/preferences.cpp:292
+#: ../src/preferences.cpp:317
 msgid "Line boundary inactive line"
 msgstr ""
 
-#: ../src/preferences.cpp:293
+#: ../src/preferences.cpp:318
 msgid "Syllable boundaries"
 msgstr ""
 
-#: ../src/preferences.cpp:296
+#: ../src/preferences.cpp:321
 msgid "Syntax Highlighting"
 msgstr ""
 
-#: ../src/preferences.cpp:297
+#: ../src/preferences.cpp:322
 msgid "Background"
 msgstr "پس زمینه"
 
-#: ../src/preferences.cpp:298
+#: ../src/preferences.cpp:323
 msgid "Normal"
 msgstr "معمولی"
 
-#: ../src/preferences.cpp:299
+#: ../src/preferences.cpp:324
 msgid "Comments"
 msgstr "نظرات"
 
-#: ../src/preferences.cpp:300
+#: ../src/preferences.cpp:325
 msgid "Drawing Commands"
 msgstr ""
 
-#: ../src/preferences.cpp:301
+#: ../src/preferences.cpp:326
 msgid "Drawing X Coords"
 msgstr ""
 
-#: ../src/preferences.cpp:302
+#: ../src/preferences.cpp:327
 msgid "Drawing Y Coords"
 msgstr ""
 
-#: ../src/preferences.cpp:303
+#: ../src/preferences.cpp:328
 msgid "Underline Spline Endpoints"
 msgstr ""
 
-#: ../src/preferences.cpp:305
+#: ../src/preferences.cpp:330
 msgid "Brackets"
 msgstr "براکت ها"
 
-#: ../src/preferences.cpp:306
+#: ../src/preferences.cpp:331
 msgid "Slashes and Parentheses"
 msgstr "اسلش ها و پرانتزها"
 
-#: ../src/preferences.cpp:307
+#: ../src/preferences.cpp:332
 msgid "Tags"
 msgstr "تگ ها"
 
-#: ../src/preferences.cpp:308
+#: ../src/preferences.cpp:333
 msgid "Parameters"
 msgstr "پارامتر ها"
 
-#: ../src/preferences.cpp:310
+#: ../src/preferences.cpp:335
 msgid "Error Background"
 msgstr "خطا  در پس زمینه"
 
-#: ../src/preferences.cpp:311
+#: ../src/preferences.cpp:336
 msgid "Line Break"
 msgstr "شکستن خط"
 
-#: ../src/preferences.cpp:312
+#: ../src/preferences.cpp:337
 msgid "Karaoke templates"
 msgstr "قالب های کاراوکه"
 
-#: ../src/preferences.cpp:313
+#: ../src/preferences.cpp:338
 msgid "Karaoke variables"
 msgstr ""
 
-#: ../src/preferences.cpp:319
+#: ../src/preferences.cpp:344
 msgid "Audio Color Schemes"
 msgstr ""
 
-#: ../src/preferences.cpp:321 ../src/preferences.cpp:430
+#: ../src/preferences.cpp:346 ../src/preferences.cpp:455
 msgid "Spectrum"
 msgstr ""
 
-#: ../src/preferences.cpp:322
+#: ../src/preferences.cpp:347
 msgid "Waveform"
 msgstr "شکل موج"
 
-#: ../src/preferences.cpp:324 default_hotkey.json:262
+#: ../src/preferences.cpp:349 default_hotkey.json:271
 msgid "Subtitle Grid"
 msgstr ""
 
-#: ../src/preferences.cpp:325
+#: ../src/preferences.cpp:350
 msgid "Standard foreground"
 msgstr "پیش زمینه استاندارد"
 
-#: ../src/preferences.cpp:326
+#: ../src/preferences.cpp:351
 msgid "Standard background"
 msgstr "پس زمینه استاندارد"
 
-#: ../src/preferences.cpp:327
+#: ../src/preferences.cpp:352
 msgid "Selection foreground"
 msgstr "پیش زمینه انتخاب ها"
 
-#: ../src/preferences.cpp:328
+#: ../src/preferences.cpp:353
 msgid "Selection background"
 msgstr "پس زمینه انتخاب ها"
 
-#: ../src/preferences.cpp:329
+#: ../src/preferences.cpp:354
 msgid "Collision foreground"
 msgstr "پیش زمینه برخورد"
 
-#: ../src/preferences.cpp:330
+#: ../src/preferences.cpp:355
 msgid "In frame background"
 msgstr ""
 
-#: ../src/preferences.cpp:331
+#: ../src/preferences.cpp:356
 msgid "Comment background"
 msgstr "پس زمینه نظرات"
 
-#: ../src/preferences.cpp:332
+#: ../src/preferences.cpp:357
 msgid "Selected comment background"
 msgstr "پس زمینه نظرات انتخاب شده"
 
-#: ../src/preferences.cpp:333
+#: ../src/preferences.cpp:358
 msgid "Header background"
 msgstr ""
 
-#: ../src/preferences.cpp:334
+#: ../src/preferences.cpp:359
 msgid "Left Column"
 msgstr "ستون چپ"
 
-#: ../src/preferences.cpp:335
+#: ../src/preferences.cpp:360
 msgid "Active Line Border"
 msgstr "حاشیه فعال خط"
 
-#: ../src/preferences.cpp:336
+#: ../src/preferences.cpp:361
 msgid "Lines"
 msgstr "خط ها"
 
-#: ../src/preferences.cpp:337
+#: ../src/preferences.cpp:362
 msgid "CPS Error"
 msgstr ""
 
-#: ../src/preferences.cpp:339
+#: ../src/preferences.cpp:364
 msgid "Visual Typesetting Tools"
 msgstr ""
 
-#: ../src/preferences.cpp:340
+#: ../src/preferences.cpp:365
 msgid "Primary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:341
+#: ../src/preferences.cpp:366
 msgid "Secondary Lines"
 msgstr ""
 
-#: ../src/preferences.cpp:342
+#: ../src/preferences.cpp:367
 msgid "Primary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:343
+#: ../src/preferences.cpp:368
 msgid "Secondary Highlight"
 msgstr ""
 
-#: ../src/preferences.cpp:346
+#: ../src/preferences.cpp:371
 msgid "Visual Typesetting Tools Alpha"
 msgstr ""
 
-#: ../src/preferences.cpp:347
+#: ../src/preferences.cpp:372
 msgid "Shaded Area"
 msgstr ""
 
-#: ../src/preferences.cpp:356
+#: ../src/preferences.cpp:381
 msgid "Backup"
 msgstr ""
 
-#: ../src/preferences.cpp:358
+#: ../src/preferences.cpp:383
 msgid "Automatic Save"
 msgstr ""
 
-#: ../src/preferences.cpp:359 ../src/preferences.cpp:367
+#: ../src/preferences.cpp:384 ../src/preferences.cpp:392
 msgid "Enable"
 msgstr "فعال"
 
-#: ../src/preferences.cpp:362
+#: ../src/preferences.cpp:387
 msgid "Interval in seconds"
 msgstr ""
 
-#: ../src/preferences.cpp:363 ../src/preferences.cpp:369
-#: ../src/preferences.cpp:428
+#: ../src/preferences.cpp:388 ../src/preferences.cpp:394
+#: ../src/preferences.cpp:453
 msgid "Path"
 msgstr ""
 
-#: ../src/preferences.cpp:364
+#: ../src/preferences.cpp:389
 msgid "Autosave after every change"
 msgstr ""
 
-#: ../src/preferences.cpp:366
+#: ../src/preferences.cpp:391
 msgid "Automatic Backup"
 msgstr ""
 
-#: ../src/preferences.cpp:380
+#: ../src/preferences.cpp:405
 msgid "Base path"
 msgstr "مسیر اصلی"
 
-#: ../src/preferences.cpp:381
+#: ../src/preferences.cpp:406
 msgid "Include path"
 msgstr "مسیر قرار دادن"
 
-#: ../src/preferences.cpp:382
+#: ../src/preferences.cpp:407
 msgid "Auto-load path"
 msgstr "مسیر بارگذاری خودکار"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:409
 msgid "0: Fatal"
 msgstr "0:کشنده"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:409
 msgid "1: Error"
 msgstr "1:خطا"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:409
 msgid "2: Warning"
 msgstr "2:اخطار"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:409
 msgid "3: Hint"
 msgstr "3:راهنمایی"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:409
 msgid "4: Debug"
 msgstr "4:اشکال زدایی"
 
-#: ../src/preferences.cpp:384
+#: ../src/preferences.cpp:409
 msgid "5: Trace"
 msgstr "5:ردیابی"
 
-#: ../src/preferences.cpp:386
+#: ../src/preferences.cpp:411
 msgid "Trace level"
 msgstr "سطح ردیابی"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:413
 msgid "All scripts"
 msgstr "تمام اسکریپت ها"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:413
 msgid "Global autoload scripts"
 msgstr "محل بارگذاری خودکار اسکریپت ها"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:413
 msgid "No scripts"
 msgstr "اسکریپتی موجود نیست"
 
-#: ../src/preferences.cpp:388
+#: ../src/preferences.cpp:413
 msgid "Subtitle-local scripts"
 msgstr "اسکریپت های زیرنویس محلی"
 
-#: ../src/preferences.cpp:390
+#: ../src/preferences.cpp:415
 msgid "Autoreload on Export"
 msgstr "بارگذاری مجدد خودکار هنگام خروجی گرفتن"
 
-#: ../src/preferences.cpp:397
+#: ../src/preferences.cpp:422
 msgid "Advanced"
 msgstr "پیشرفته"
 
-#: ../src/preferences.cpp:401
+#: ../src/preferences.cpp:426
 msgid ""
 "Changing these settings might result in bugs and/or crashes. Do not touch "
 "these unless you know what you're doing."
 msgstr ""
 
-#: ../src/preferences.cpp:416 ../src/preferences.cpp:483
+#: ../src/preferences.cpp:441 ../src/preferences.cpp:508
 msgid "Expert"
 msgstr ""
 
-#: ../src/preferences.cpp:419
+#: ../src/preferences.cpp:444
 msgid "Audio provider"
 msgstr "منبع صدا"
 
-#: ../src/preferences.cpp:422
+#: ../src/preferences.cpp:447
 msgid "Audio player"
 msgstr "پخش کننده صدا"
 
-#: ../src/preferences.cpp:424
+#: ../src/preferences.cpp:449
 msgid "Cache"
 msgstr ""
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:450
 msgid "Hard Disk"
 msgstr "هارد دیسک"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:450
 msgid "None (NOT RECOMMENDED)"
 msgstr "(هیچ کدام(توصیه نمیشود"
 
-#: ../src/preferences.cpp:425
+#: ../src/preferences.cpp:450
 msgid "RAM"
 msgstr "رَم"
 
-#: ../src/preferences.cpp:427
+#: ../src/preferences.cpp:452
 msgid "Cache type"
 msgstr " نوع کش  "
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:457
 msgid "Better quality"
 msgstr "کیفیت بهتر"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:457
 msgid "High quality"
 msgstr "کیفیت بالا"
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:457
 msgid "Insane quality"
 msgstr ""
 
-#: ../src/preferences.cpp:432
+#: ../src/preferences.cpp:457
 msgid "Regular quality"
 msgstr "کیفیت معمولی "
 
-#: ../src/preferences.cpp:434
+#: ../src/preferences.cpp:459
 msgid "Quality"
 msgstr ""
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:461
 msgid "Compressed"
 msgstr ""
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:461
 msgid "Extended"
 msgstr ""
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:461
 msgid "Linear"
 msgstr ""
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:461
 msgid "Logarithmic"
 msgstr ""
 
-#: ../src/preferences.cpp:436
+#: ../src/preferences.cpp:461
 msgid "Medium"
 msgstr ""
 
-#: ../src/preferences.cpp:438
+#: ../src/preferences.cpp:463
 msgid "Frequency mapping"
 msgstr ""
 
-#: ../src/preferences.cpp:440
+#: ../src/preferences.cpp:465
 msgid "Cache memory max (MB)"
 msgstr ""
 
-#: ../src/preferences.cpp:446
+#: ../src/preferences.cpp:471
 msgid "Avisynth down-mixer"
 msgstr "Avisynth down-mixer"
 
-#: ../src/preferences.cpp:447
+#: ../src/preferences.cpp:472
 msgid "Force sample rate"
 msgstr ""
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:478
 msgid "Abort"
 msgstr ""
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:478
 msgid "Ignore"
 msgstr "نادیده گرفتن"
 
-#: ../src/preferences.cpp:453
+#: ../src/preferences.cpp:478
 msgid "Stop"
 msgstr ""
 
-#: ../src/preferences.cpp:455
+#: ../src/preferences.cpp:480
 msgid "Audio indexing error handling mode"
 msgstr ""
 
-#: ../src/preferences.cpp:457
+#: ../src/preferences.cpp:482
 msgid "Always index all audio tracks"
 msgstr ""
 
-#: ../src/preferences.cpp:462
+#: ../src/preferences.cpp:487
 msgid "Portaudio device"
 msgstr ""
 
-#: ../src/preferences.cpp:467
+#: ../src/preferences.cpp:492
 msgid "OSS Device"
 msgstr ""
 
-#: ../src/preferences.cpp:472
+#: ../src/preferences.cpp:497
 msgid "Buffer latency"
 msgstr ""
 
-#: ../src/preferences.cpp:473
+#: ../src/preferences.cpp:498
 msgid "Buffer length"
 msgstr ""
 
-#: ../src/preferences.cpp:486
+#: ../src/preferences.cpp:511
 msgid "Video provider"
 msgstr ""
 
-#: ../src/preferences.cpp:489
+#: ../src/preferences.cpp:514
 msgid "Subtitles provider"
 msgstr ""
 
-#: ../src/preferences.cpp:493
+#: ../src/preferences.cpp:518
 msgid "Allow pre-2.56a Avisynth"
 msgstr "نسخه های قبل از2.56 Avisynthقبول "
 
-#: ../src/preferences.cpp:495
+#: ../src/preferences.cpp:520
 msgid "Avisynth memory limit"
 msgstr " Avisynth محدودیت حافظه  "
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:526
 #, fuzzy
 #| msgid "4: Debug"
 msgid "Debug"
 msgstr "4:اشکال زدایی"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:526
 #, fuzzy
 #| msgid "0: Fatal"
 msgid "Fatal"
 msgstr "0:کشنده"
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:526
 msgid "Info"
 msgstr ""
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:526
 msgid "Panic"
 msgstr ""
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:526
 msgid "Quiet"
 msgstr ""
 
-#: ../src/preferences.cpp:501
+#: ../src/preferences.cpp:526
 msgid "Verbose"
 msgstr ""
 
-#: ../src/preferences.cpp:501 ../src/project.cpp:331
+#: ../src/preferences.cpp:526 ../src/project.cpp:394
 #, fuzzy
 #| msgid "2: Warning"
 msgid "Warning"
 msgstr "2:اخطار"
 
-#: ../src/preferences.cpp:503
+#: ../src/preferences.cpp:528
 msgid "Debug log verbosity"
 msgstr ""
 
-#: ../src/preferences.cpp:505
+#: ../src/preferences.cpp:530
 msgid "Decoding threads"
 msgstr ""
 
-#: ../src/preferences.cpp:506
+#: ../src/preferences.cpp:531
 msgid "Enable unsafe seeking"
 msgstr ""
 
-#: ../src/preferences.cpp:660
+#: ../src/preferences.cpp:685
 msgid "Hotkeys"
 msgstr "کلید های میانبر"
 
-#: ../src/preferences.cpp:664
+#: ../src/preferences.cpp:689
 msgid "Search"
 msgstr ""
 
-#: ../src/preferences.cpp:680 ../src/preferences.cpp:683
+#: ../src/preferences.cpp:705 ../src/preferences.cpp:708
 #, fuzzy
 #| msgid "Hotkeys"
 msgid "Hotkey"
 msgstr "کلید های میانبر"
 
-#: ../src/preferences.cpp:681 ../src/preferences.cpp:686
+#: ../src/preferences.cpp:706 ../src/preferences.cpp:711
 #, fuzzy
 #| msgid "Commands"
 msgid "Command"
 msgstr "دستورات"
 
-#: ../src/preferences.cpp:760
+#: ../src/preferences.cpp:785
 msgid ""
 "Are you sure that you want to restore the defaults? All your settings will "
 "be overridden."
@@ -6293,15 +6661,15 @@ msgstr ""
 "آیا مطمئنید که میخواهید همه را به پیش فرض برگردانید؟تمام تنظیمات شما از بین "
 "میرود"
 
-#: ../src/preferences.cpp:760
+#: ../src/preferences.cpp:785
 msgid "Restore defaults?"
 msgstr "برگشت به پیشفرض؟"
 
-#: ../src/preferences.cpp:778
+#: ../src/preferences.cpp:803
 msgid "Preferences"
 msgstr ""
 
-#: ../src/preferences.cpp:806
+#: ../src/preferences.cpp:831
 msgid "&Restore Defaults"
 msgstr ""
 
@@ -6321,67 +6689,121 @@ msgstr ""
 msgid "Font Size"
 msgstr ""
 
-#: ../src/project.cpp:85
+#: ../src/project.cpp:86
 #, fuzzy
 #| msgid "Error Importing Styles"
 msgid "Error loading file"
 msgstr "خطا در وارد کردن استایل ها"
 
-#: ../src/project.cpp:111 ../src/project.cpp:130
+#: ../src/project.cpp:112 ../src/project.cpp:131
 #, fuzzy, c-format
 #| msgid "No matches found."
 msgid "%s not found."
 msgstr "هیچ مشابهی یافت نشد "
 
-#: ../src/project.cpp:199
+#: ../src/project.cpp:213
 msgid "Do you want to load/unload the associated files?"
 msgstr "آیا میخواهید فایل مرتبط را بارگذاری/کنید؟"
 
-#: ../src/project.cpp:210
+#: ../src/project.cpp:224
 #, c-format
 msgid "Load audio file: %s"
 msgstr ""
 
-#: ../src/project.cpp:210
+#: ../src/project.cpp:224
 msgid "Unload audio"
 msgstr ""
 
-#: ../src/project.cpp:212
+#: ../src/project.cpp:226
 #, c-format
 msgid "Load video file: %s"
 msgstr ""
 
-#: ../src/project.cpp:212
+#: ../src/project.cpp:226
 msgid "Unload video"
 msgstr ""
 
-#: ../src/project.cpp:214
+#: ../src/project.cpp:228
 #, c-format
 msgid "Load timecodes file: %s"
 msgstr ""
 
-#: ../src/project.cpp:214
+#: ../src/project.cpp:228
 msgid "Unload timecodes"
 msgstr ""
 
-#: ../src/project.cpp:216
+#: ../src/project.cpp:230
 #, c-format
 msgid "Load keyframes file: %s"
 msgstr ""
 
-#: ../src/project.cpp:216
+#: ../src/project.cpp:230
 msgid "Unload keyframes"
 msgstr ""
 
-#: ../src/project.cpp:218
+#: ../src/project.cpp:232
 msgid "(Un)Load files?"
 msgstr "بارگذاری کردن/بستن فایل ها؟"
 
-#: ../src/project.cpp:267
+#: ../src/project.cpp:254
+msgid ""
+"The subtitle file references AviSynth scripts. AviSynth scripts can execute "
+"arbitrary code with your user permissions. Only load them if you trust the "
+"subtitle's author. You do not need to load these scripts to view or edit "
+"this subtitle file.\n"
+"\n"
+"Scripts:"
+msgstr ""
+
+#: ../src/project.cpp:255
+msgid ""
+"The subtitle file references an AviSynth script. AviSynth scripts can "
+"execute arbitrary code with your user permissions. Only load it if you trust "
+"the subtitle's author. You do not need to load this script to view or edit "
+"this subtitle file.\n"
+"\n"
+"Script:"
+msgstr ""
+
+#: ../src/project.cpp:258
+#, fuzzy
+#| msgid "Do you want to load/unload the associated files?"
+msgid ""
+"\n"
+"\n"
+"Do you want to load these scripts now?"
+msgstr "آیا میخواهید فایل مرتبط را بارگذاری/کنید؟"
+
+#: ../src/project.cpp:259
+#, fuzzy
+#| msgid "Do you want to load/unload the associated files?"
+msgid ""
+"\n"
+"\n"
+"Do you want to load this script now?"
+msgstr "آیا میخواهید فایل مرتبط را بارگذاری/کنید؟"
+
+#: ../src/project.cpp:262
+#, fuzzy
+#| msgid "Reloaded autoload Automation scripts"
+msgid "Load linked AviSynth script?"
+msgstr "بارگذاری مجدد تمام اسکریپت های عملیات خودکار "
+
+#: ../src/project.cpp:264
+msgid "Do not load"
+msgstr ""
+
+#: ../src/project.cpp:264
+#, fuzzy
+#| msgid "Global autoload scripts"
+msgid "Trust author && load"
+msgstr "محل بارگذاری خودکار اسکریپت ها"
+
+#: ../src/project.cpp:331
 msgid "The audio file was not found: "
 msgstr ""
 
-#: ../src/project.cpp:275
+#: ../src/project.cpp:339
 msgid ""
 "None of the available audio providers recognised the selected file as "
 "containing audio data.\n"
@@ -6389,7 +6811,7 @@ msgid ""
 "The following providers were tried:\n"
 msgstr ""
 
-#: ../src/project.cpp:278
+#: ../src/project.cpp:342
 msgid ""
 "None of the available audio providers have a codec available to handle the "
 "selected file.\n"
@@ -6397,21 +6819,21 @@ msgid ""
 "The following providers were tried:\n"
 msgstr ""
 
-#: ../src/project.cpp:381
+#: ../src/project.cpp:444
 #, fuzzy
 #| msgid "Close Timecodes File"
 msgid "Failed to parse timecodes file: "
 msgstr "بستن فایل کدهای زمانی"
 
-#: ../src/project.cpp:407
+#: ../src/project.cpp:470
 msgid "Failed to parse keyframes file: "
 msgstr ""
 
-#: ../src/project.cpp:411
+#: ../src/project.cpp:474
 msgid "Keyframes file in unknown format: "
 msgstr ""
 
-#: ../src/resolution_resampler.cpp:301
+#: ../src/resolution_resampler.cpp:284
 msgid "resolution resampling"
 msgstr "تنظیم مجدد ابعاد نصویر"
 
@@ -6739,21 +7161,21 @@ msgstr "زمان و شماره فریم کنونی"
 msgid "Time of this frame relative to start and end of current subs"
 msgstr "زمان این فریم مرتبط با شروع و پایان زیرنویس کنونی است"
 
-#: ../src/video_controller.cpp:228
+#: ../src/video_controller.cpp:289
 #, c-format
 msgid ""
 "Failed seeking video. The video file may be corrupt or incomplete.\n"
 "Error message reported: %s"
 msgstr ""
 
-#: ../src/video_controller.cpp:234
+#: ../src/video_controller.cpp:295
 #, c-format
 msgid ""
 "Failed rendering subtitles.\n"
 "Error message reported: %s"
 msgstr ""
 
-#: ../src/video_display.cpp:203
+#: ../src/video_display.cpp:204
 #, c-format
 msgid ""
 "Failed to initialize video display. Closing other running programs and "
@@ -6761,14 +7183,14 @@ msgid ""
 "Error message reported: %s"
 msgstr ""
 
-#: ../src/video_display.cpp:210
+#: ../src/video_display.cpp:211
 #, c-format
 msgid ""
 "Could not upload video frame to graphics card.\n"
 "Error message reported: %s"
 msgstr ""
 
-#: ../src/video_display.cpp:252
+#: ../src/video_display.cpp:253
 #, c-format
 msgid ""
 "An error occurred trying to render the video frame on the screen.\n"
@@ -6789,7 +7211,7 @@ msgstr ""
 msgid "Could not open "
 msgstr "نرم افزار نمیتواند استایل را  تجزیه کند"
 
-#: ../src/visual_tool.cpp:119
+#: ../src/visual_tool.cpp:123
 msgid "visual typesetting"
 msgstr "حروف چینی دیداری"
 
@@ -6851,6 +7273,10 @@ msgstr ""
 
 #: default_menu.json:0
 msgid "Override &AR"
+msgstr ""
+
+#: default_menu.json:0
+msgid "Playback &Rate"
 msgstr ""
 
 #: default_menu.json:0
@@ -6970,7 +7396,7 @@ msgstr ""
 msgid "Export As..."
 msgstr ""
 
-#: default_hotkey.json:244
+#: default_hotkey.json:253
 msgid "Subtitle Edit Box"
 msgstr ""
 
@@ -7174,6 +7600,27 @@ msgstr ""
 msgid "Fully scriptable through the Automation module"
 msgstr ""
 
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:36
+msgid "anime"
+msgstr ""
+
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:37
+msgid "movie"
+msgstr ""
+
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:38
+#, fuzzy
+#| msgctxt "Menu bar"
+#| msgid "&Subtitle"
+msgid "subtitle"
+msgstr "زیرنویس جدید"
+
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:39
+#, fuzzy
+#| msgid "Translation"
+msgid "translate"
+msgstr "ترجمه"
+
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:43
 msgid "Typesetting"
 msgstr ""
@@ -7185,6 +7632,12 @@ msgstr ""
 #: ../packages/desktop/aegisub.metainfo.xml.in.in:51
 msgid "Audio timing"
 msgstr ""
+
+#: ../packages/desktop/aegisub.metainfo.xml.in.in:56
+#, fuzzy
+#| msgid "Aegisub"
+msgid "Aegisub Group"
+msgstr "Aegisub   "
 
 #~ msgid "Kanji timing"
 #~ msgstr "کانجی زمانبندی"

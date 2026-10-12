@@ -60,6 +60,12 @@ VideoController::VideoController(agi::Context *c)
 	playback.Bind(wxEVT_TIMER, &VideoController::OnPlayTimer, this);
 }
 
+void VideoController::SetAudioController(AudioController *audio_controller) {
+	playback_rate_connection = audio_controller
+		? audio_controller->AddPlaybackRateListener(&VideoController::OnPlaybackRateChanged, this)
+		: agi::signal::Connection();
+}
+
 void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 	Stop();
 	provider = new_provider;
@@ -88,6 +94,49 @@ void VideoController::OnActiveLineChanged(AssDialogue *line) {
 		Stop();
 		JumpToTime(line->Start);
 	}
+}
+
+void VideoController::OnPlaybackRateChanged(double, double, int current_ms) {
+	if (!IsPlaying()) return;
+
+	PlaybackMode mode = playback_mode;
+	int end_ms = playback_end_ms;
+	if (current_ms <= 0)
+		current_ms = TimeAtFrame(frame_n, agi::vfr::EXACT);
+	Stop();
+	playback_mode = mode;
+	playback_end_ms = end_ms;
+	RestartPlaybackFrom(current_ms);
+}
+
+void VideoController::RestartPlaybackFrom(int ms) {
+	using namespace std::chrono;
+
+	if (!provider || playback_mode == PM_NotPlaying) return;
+
+	if (playback_mode == PM_Line) {
+		if (ms >= playback_end_ms) {
+			playback_mode = PM_NotPlaying;
+			return;
+		}
+
+		context->audioController->PlayRange(TimeRange(ms, playback_end_ms));
+		int start_frame = FrameAtTime(ms, agi::vfr::START);
+		start_ms = TimeAtFrame(start_frame);
+		end_frame = FrameAtTime(playback_end_ms, agi::vfr::END) + 1;
+		JumpToFrame(start_frame);
+	}
+	else {
+		int start_frame = FrameAtTime(ms, agi::vfr::START);
+		start_ms = TimeAtFrame(start_frame);
+		end_frame = provider->GetFrameCount() - 1;
+		playback_end_ms = TimeAtFrame(end_frame, agi::vfr::END);
+		JumpToFrame(start_frame);
+		context->audioController->PlayToEnd(start_ms);
+	}
+
+	playback_start_time = steady_clock::now();
+	playback.Start(10);
 }
 
 void VideoController::RequestFrame() {
@@ -142,6 +191,8 @@ void VideoController::Play() {
 
 	start_ms = TimeAtFrame(frame_n);
 	end_frame = provider->GetFrameCount() - 1;
+	playback_end_ms = TimeAtFrame(end_frame, agi::vfr::END);
+	playback_mode = PM_ToEnd;
 
 	context->audioController->PlayToEnd(start_ms);
 
@@ -160,7 +211,9 @@ void VideoController::PlayLine() {
 	// Round-trip conversion to convert start to exact
 	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start, agi::vfr::START);
 	start_ms = TimeAtFrame(startFrame);
+	playback_end_ms = context->selectionController->GetActiveLine()->End;
 	end_frame = FrameAtTime(context->selectionController->GetActiveLine()->End, agi::vfr::END) + 1;
+	playback_mode = PM_Line;
 
 	JumpToFrame(startFrame);
 
@@ -173,11 +226,19 @@ void VideoController::Stop() {
 		playback.Stop();
 		context->audioController->Stop();
 	}
+	playback_mode = PM_NotPlaying;
 }
 
 void VideoController::OnPlayTimer(wxTimerEvent &) {
 	using namespace std::chrono;
-	int next_frame = FrameAtTime(start_ms + duration_cast<milliseconds>(steady_clock::now() - playback_start_time).count());
+	int next_time = 0;
+	if (context->audioController->IsPlaying())
+		next_time = context->audioController->GetPlaybackPosition();
+	else {
+		auto elapsed = duration_cast<milliseconds>(steady_clock::now() - playback_start_time).count();
+		next_time = start_ms + elapsed * context->audioController->GetPlaybackRate();
+	}
+	int next_frame = FrameAtTime(next_time);
 	if (next_frame == frame_n) return;
 
 	if (next_frame >= end_frame)

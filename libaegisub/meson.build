@@ -10,6 +10,7 @@ libaegisub_src = [
     'audio/provider_dummy.cpp',
     'audio/provider_hd.cpp',
     'audio/provider_lock.cpp',
+    'audio/provider_playback.cpp',
     'audio/provider_pcm.cpp',
     'audio/provider_ram.cpp',
 

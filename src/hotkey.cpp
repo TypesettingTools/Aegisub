@@ -47,6 +47,13 @@ namespace {
 		{nullptr}
 	};
 
+	const char *added_hotkeys_playback_rate[][3] = {
+		{"audio/playback/rate/decrease", "Default", "Ctrl-Alt--"},
+		{"audio/playback/rate/increase", "Default", "Ctrl-Alt-="},
+		{"audio/playback/rate/reset", "Default", "Ctrl-Alt-/"},
+		{nullptr}
+	};
+
 #ifdef __WXMAC__
 	const char *added_hotkeys_minimize[][3] = {
 		{"app/minimize", "Default", "Ctrl-M"},
@@ -114,6 +121,11 @@ void init() {
 
 		hotkey::inst->SetHotkeyMap(std::move(hk_map));
 		migrations.emplace_back("duplicate -> split");
+	}
+
+	if (boost::find(migrations, "playback rate hotkeys") == end(migrations)) {
+		migrate_hotkeys(added_hotkeys_playback_rate);
+		migrations.emplace_back("playback rate hotkeys");
 	}
 
 #ifdef __WXMAC__
