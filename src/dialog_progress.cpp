@@ -108,7 +108,7 @@ public:
 };
 
 DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxString const& message)
-: wxDialog(parent, -1, title_text, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED | wxRESIZE_BORDER)
+: wxDialog(parent, -1, title_text, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxRESIZE_BORDER)
 , pulse_timer(GetEventHandler())
 {
 	title = new wxStaticText(this, -1, title_text, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE | wxST_NO_AUTORESIZE);
@@ -197,7 +197,7 @@ void DialogProgress::OnShow(wxShowEvent& evt) {
 	if (sizer->IsShown(log_output)) {
 		sizer->Hide(log_output);
 		Layout();
-		sizer->Fit(this);
+		sizer->SetSizeHints(this);
 		log_output->Clear();
 	}
 }
@@ -226,7 +226,7 @@ void DialogProgress::OnIdle(wxIdleEvent&) {
 		wxSizer *sizer = GetSizer();
 		sizer->Show(log_output);
 		Layout();
-		sizer->Fit(this);
+		sizer->SetSizeHints(this);
 		CenterOnParent();
 	}
 
