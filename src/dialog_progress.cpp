@@ -108,7 +108,7 @@ public:
 };
 
 DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxString const& message)
-: wxDialog(parent, -1, title_text, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED)
+: wxDialog(parent, -1, title_text, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED | wxRESIZE_BORDER)
 , pulse_timer(GetEventHandler())
 {
 	title = new wxStaticText(this, -1, title_text, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE | wxST_NO_AUTORESIZE);
@@ -126,10 +126,10 @@ DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxS
 
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(title, wxSizerFlags().Expand());
-	sizer->Add(gauge, wxSizerFlags(1).Expand().Border());
+	sizer->Add(gauge, wxSizerFlags().Expand().Border());
 	sizer->Add(text, wxSizerFlags().Expand());
 	sizer->Add(cancel_button, wxSizerFlags().Center().Border());
-	sizer->Add(log_output, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	sizer->Add(log_output, wxSizerFlags(1).Expand().Border(wxALL & ~wxTOP));
 	sizer->Hide(log_output);
 
 	SetSizerAndFit(sizer);
