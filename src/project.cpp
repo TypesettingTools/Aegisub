@@ -570,7 +570,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	else if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file)
 		DoLoadAudio(video_file, true);
 
-	// Explicitly selected media takes precedence over the subtitle's linked files.
+	// With explicitly selected media, skip all of the subtitle's linked files.
 	if (!subs.empty() && video.empty() && audio.empty())
 		LoadUnloadFiles(properties);
 }
