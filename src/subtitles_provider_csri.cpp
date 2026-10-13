@@ -78,6 +78,7 @@ public:
 	CSRISubtitlesProvider(std::string renderer);
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
+	void NewDocument() override;
 };
 
 CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer)
@@ -140,6 +141,13 @@ void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {
 		// Add 1e-9 to guard against floating point imprecision errors on int -> float -> *1000 -> int round trips
 		h.Render(dst.data.data(), dst.width, dst.height, dst.pitch, dst.flipped, time + 1e-9);
 	});
+}
+
+void CSRISubtitlesProvider::NewDocument() {
+	// A new host is started when the new file is loaded
+	std::lock_guard<std::mutex> lock(mutex);
+	host.reset();
+	script.clear();
 }
 }
 

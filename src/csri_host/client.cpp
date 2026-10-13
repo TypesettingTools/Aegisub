@@ -5,9 +5,9 @@
 /// @file client.cpp
 /// @brief Launching and talking to a sandboxed aegisub-csri-host process
 ///
-/// The host runs in:
-///  - an AppContainer with no capabilities, so it has no access to the
-///    network or to the user's files and registry
+/// Each host runs in:
+///  - its own AppContainer with no capabilities, so it has no access to the
+///    network, to the user's files and registry, or to other hosts
 ///  - a job object which kills it when Aegisub closes it, stops it from
 ///    creating other processes, limits its memory use and blocks access to
 ///    other processes' windows, the clipboard and system settings
@@ -38,7 +38,10 @@
 #include "protocol.h"
 
 #include <algorithm>
+#include <atomic>
 #include <cstring>
+#include <cwchar>
+#include <iterator>
 #include <random>
 #include <utility>
 
@@ -48,7 +51,13 @@ namespace {
 /// assumed to have hung and is killed
 constexpr DWORD timeout_ms = 30000;
 constexpr SIZE_T memory_limit = SIZE_T(4) * 1024 * 1024 * 1024;
-constexpr wchar_t container_name[] = L"Aegisub.CsriHost";
+/// Each host's AppContainer profile is named
+/// <prefix><Aegisub's pid>.<Aegisub's creation time>.<counter>, so that ones
+/// left behind by a crash can be recognised and deleted. Windows stores the
+/// names in lowercase.
+constexpr wchar_t container_prefix[] = L"aegisub.csrihost.";
+constexpr wchar_t container_mappings_key[] =
+	L"Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\CurrentVersion\\AppContainer\\Mappings";
 constexpr wchar_t host_exe_name[] = L"aegisub-csri-host.exe";
 
 struct handle_closer {
@@ -98,39 +107,88 @@ bool supported_windows_version() {
 	return info.dwMajorVersion > 10 || (info.dwMajorVersion == 10 && info.dwBuildNumber >= 14393);
 }
 
-PSID create_container_sid() {
-	// userenv's AppContainer functions don't exist on Windows 7, so they
-	// can't be linked directly
-	auto userenv = LoadLibraryExW(L"userenv.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-	if (!userenv)
-		throw_win32("Could not load userenv.dll");
-	auto create = reinterpret_cast<decltype(&CreateAppContainerProfile)>(
-		GetProcAddress(userenv, "CreateAppContainerProfile"));
-	auto derive = reinterpret_cast<decltype(&DeriveAppContainerSidFromAppContainerName)>(
-		GetProcAddress(userenv, "DeriveAppContainerSidFromAppContainerName"));
-	if (!create || !derive)
-		throw Error("AppContainers are not supported on this version of Windows");
+struct UserEnv {
+	decltype(&CreateAppContainerProfile) create = nullptr;
+	decltype(&DeleteAppContainerProfile) remove = nullptr;
 
-	PSID sid = nullptr;
-	HRESULT hr = create(container_name, L"Aegisub subtitle renderer",
-		L"Sandbox for the third-party subtitle renderers used by Aegisub", nullptr, 0, &sid);
-	if (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))
-		hr = derive(container_name, &sid);
-	if (FAILED(hr))
-		throw Error("Could not create the AppContainer profile: " + error_string(static_cast<DWORD>(hr)));
-	return sid;
+	UserEnv() {
+		// userenv's AppContainer functions don't exist on Windows 7, so they
+		// can't be linked directly
+		auto userenv = LoadLibraryExW(L"userenv.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+		if (!userenv)
+			throw_win32("Could not load userenv.dll");
+		create = reinterpret_cast<decltype(create)>(GetProcAddress(userenv, "CreateAppContainerProfile"));
+		remove = reinterpret_cast<decltype(remove)>(GetProcAddress(userenv, "DeleteAppContainerProfile"));
+		if (!create || !remove)
+			throw Error("AppContainers are not supported on this version of Windows");
+	}
+};
+
+/// The creation time of a process, which together with its pid identifies it
+ULONGLONG process_creation_time(HANDLE process) {
+	FILETIME created, exited, kernel, user;
+	if (!GetProcessTimes(process, &created, &exited, &kernel, &user))
+		return 0;
+	return (ULONGLONG(created.dwHighDateTime) << 32) | created.dwLowDateTime;
 }
 
-/// Does the DACL let the AppContainer read and execute the file?
-bool container_has_access(PACL dacl, PSID sid) {
+/// Could the Aegisub process which created a container still be using it?
+bool container_owner_running(DWORD pid, ULONGLONG creation_time) {
+	unique_handle process(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid));
+	if (!process)
+		// Any error other than there being no such process means it might
+		// be running
+		return GetLastError() != ERROR_INVALID_PARAMETER;
+	DWORD exit_code = 0;
+	if (GetExitCodeProcess(process.get(), &exit_code) && exit_code != STILL_ACTIVE)
+		return false;
+	auto actual_creation_time = process_creation_time(process.get());
+	return actual_creation_time == 0 || actual_creation_time == creation_time;
+}
+
+/// Delete the AppContainer profiles of hosts belonging to Aegisub processes
+/// which exited without cleaning them up
+void delete_stale_containers(UserEnv const& userenv) {
+	HKEY key;
+	if (RegOpenKeyExW(HKEY_CURRENT_USER, container_mappings_key, 0, KEY_READ, &key) != ERROR_SUCCESS)
+		return;
+
+	std::vector<std::wstring> stale;
+	for (DWORD i = 0; ; ++i) {
+		wchar_t sid[256];
+		DWORD sid_len = static_cast<DWORD>(std::size(sid));
+		LONG err = RegEnumKeyExW(key, i, sid, &sid_len, nullptr, nullptr, nullptr, nullptr);
+		if (err == ERROR_NO_MORE_ITEMS)
+			break;
+		if (err != ERROR_SUCCESS)
+			continue;
+
+		wchar_t moniker[128];
+		DWORD moniker_size = sizeof moniker;
+		if (RegGetValueW(key, sid, L"Moniker", RRF_RT_REG_SZ, nullptr, moniker, &moniker_size) != ERROR_SUCCESS)
+			continue;
+
+		constexpr size_t prefix_len = std::size(container_prefix) - 1;
+		if (wcsncmp(moniker, container_prefix, prefix_len) != 0)
+			continue;
+		unsigned long pid = 0;
+		unsigned long long creation_time = 0;
+		unsigned counter = 0;
+		if (swscanf_s(moniker + prefix_len, L"%lu.%llx.%u", &pid, &creation_time, &counter) != 3)
+			continue;
+		if (!container_owner_running(pid, creation_time))
+			stale.emplace_back(moniker);
+	}
+	RegCloseKey(key);
+
+	for (auto const& name : stale)
+		userenv.remove(name.c_str());
+}
+
+/// Does the DACL let every AppContainer read and execute the file?
+bool containers_have_access(PACL dacl, PSID any_package) {
 	if (!dacl)
 		return true;
-
-	BYTE any_package_buf[SECURITY_MAX_SID_SIZE];
-	DWORD any_package_size = sizeof any_package_buf;
-	PSID any_package = any_package_buf;
-	if (!CreateWellKnownSid(WinBuiltinAnyPackageSid, nullptr, any_package, &any_package_size))
-		return false;
 
 	constexpr ACCESS_MASK needed = FILE_READ_DATA | FILE_EXECUTE;
 	for (DWORD i = 0; i < dacl->AceCount; ++i) {
@@ -141,26 +199,32 @@ bool container_has_access(PACL dacl, PSID sid) {
 		if (header->AceType != ACCESS_ALLOWED_ACE_TYPE || (header->AceFlags & INHERIT_ONLY_ACE))
 			continue;
 		auto ace = static_cast<ACCESS_ALLOWED_ACE *>(ace_ptr);
-		PSID ace_sid = &ace->SidStart;
-		if ((ace->Mask & needed) == needed && (EqualSid(ace_sid, sid) || EqualSid(ace_sid, any_package)))
+		if ((ace->Mask & needed) == needed && EqualSid(&ace->SidStart, any_package))
 			return true;
 	}
 	return false;
 }
 
-/// Let the AppContainer read and execute path if it can't already.
+/// Let AppContainers read and execute path if they can't already.
 ///
 /// Installed copies of Aegisub are readable by every AppContainer, either via
 /// Program Files' permissions or ones added by the installer, but portable
-/// copies usually live somewhere which AppContainers can't read.
-void ensure_container_access(std::wstring const& path, PSID sid, bool directory) {
+/// copies usually live somewhere which AppContainers can't read. Access is
+/// granted to all AppContainers rather than just the host's as each host has
+/// a different one.
+void ensure_container_access(std::wstring const& path, bool directory) {
+	BYTE any_package[SECURITY_MAX_SID_SIZE];
+	DWORD any_package_size = sizeof any_package;
+	if (!CreateWellKnownSid(WinBuiltinAnyPackageSid, nullptr, any_package, &any_package_size))
+		return;
+
 	PACL dacl = nullptr;
 	PSECURITY_DESCRIPTOR sd = nullptr;
 	if (GetNamedSecurityInfoW(path.c_str(), SE_FILE_OBJECT, DACL_SECURITY_INFORMATION,
 	                          nullptr, nullptr, &dacl, nullptr, &sd) != ERROR_SUCCESS)
 		return;
 	std::unique_ptr<void, local_freer> sd_holder(sd);
-	if (container_has_access(dacl, sid))
+	if (containers_have_access(dacl, any_package))
 		return;
 
 	EXPLICIT_ACCESSW access{};
@@ -168,8 +232,8 @@ void ensure_container_access(std::wstring const& path, PSID sid, bool directory)
 	access.grfAccessMode = GRANT_ACCESS;
 	access.grfInheritance = directory ? SUB_CONTAINERS_AND_OBJECTS_INHERIT : NO_INHERITANCE;
 	access.Trustee.TrusteeForm = TRUSTEE_IS_SID;
-	access.Trustee.TrusteeType = TRUSTEE_IS_UNKNOWN;
-	access.Trustee.ptstrName = static_cast<LPWSTR>(sid);
+	access.Trustee.TrusteeType = TRUSTEE_IS_WELL_KNOWN_GROUP;
+	access.Trustee.ptstrName = reinterpret_cast<LPWSTR>(any_package);
 
 	PACL new_dacl = nullptr;
 	if (SetEntriesInAclW(1, &access, dacl, &new_dacl) != ERROR_SUCCESS)
@@ -206,19 +270,27 @@ std::wstring system_directory() {
 
 /// Per-session setup shared by all hosts
 struct Environment {
-	PSID sid = nullptr; // Deliberately never freed
+	UserEnv userenv;
 	std::wstring exe;
 	std::wstring working_directory;
+	/// Prefix for the names of this process's AppContainers
+	std::wstring container_prefix;
+	std::atomic<unsigned> next_container{0};
 
 	Environment() {
 		if (!supported_windows_version())
 			throw Error("Sandboxed CSRI renderers require Windows 10 version 1607 or newer");
-		sid = create_container_sid();
+
+		delete_stale_containers(userenv);
+		wchar_t prefix[64];
+		swprintf_s(prefix, L"%ls%lu.%llx.", csri_host::container_prefix,
+			GetCurrentProcessId(), process_creation_time(GetCurrentProcess()));
+		container_prefix = prefix;
 
 		auto directory = module_directory();
 		exe = directory + host_exe_name;
-		ensure_container_access(exe, sid, false);
-		ensure_container_access(directory + L"csri", sid, true);
+		ensure_container_access(exe, false);
+		ensure_container_access(directory + L"csri", true);
 
 		// The host can't necessarily access Aegisub's directory, but it can
 		// always access System32
@@ -226,11 +298,52 @@ struct Environment {
 	}
 };
 
-Environment const& environment() {
+Environment& environment() {
 	// If this throws it'll be retried on the next call
 	static Environment env;
 	return env;
 }
+
+/// An AppContainer profile used by a single host, so that hosts can't open
+/// each other's processes or share files, registry keys or named objects,
+/// and nothing a host stores persists after it exits
+class Container {
+	std::wstring name;
+	PSID sid = nullptr;
+
+public:
+	Container() {
+		auto& env = environment();
+		name = env.container_prefix + std::to_wstring(env.next_container++);
+		HRESULT hr = env.userenv.create(name.c_str(), L"Aegisub subtitle renderer",
+			L"Sandbox for a third-party subtitle renderer used by Aegisub", nullptr, 0, &sid);
+		if (FAILED(hr))
+			throw Error("Could not create an AppContainer for the subtitle renderer: " + error_string(static_cast<DWORD>(hr)));
+	}
+
+	/// Must not run until the host has exited. If deleting the profile fails
+	/// it's deleted the next time Aegisub starts instead.
+	~Container() {
+		FreeSid(sid);
+		environment().userenv.remove(name.c_str());
+	}
+
+	Container(Container const&) = delete;
+	Container& operator=(Container const&) = delete;
+
+	PSID Sid() const { return sid; }
+};
+
+/// Closes a process handle after terminating the process and waiting for it
+/// to exit
+struct process_killer {
+	void operator()(HANDLE h) const {
+		if (!h) return;
+		TerminateProcess(h, 1);
+		WaitForSingleObject(h, 5000);
+		CloseHandle(h);
+	}
+};
 
 std::pair<unique_handle, unique_handle> create_pipe() {
 	std::random_device rd;
@@ -321,9 +434,11 @@ public:
 }
 
 struct Host::Impl {
-	// Closing the job kills the host, so it's declared first to be destroyed last
+	// Members are destroyed in reverse order, and the process has to be
+	// killed and have exited before its AppContainer is deleted
+	Container container;
 	unique_handle job;
-	unique_handle process;
+	std::unique_ptr<void, process_killer> process;
 	unique_handle pipe;
 	unique_handle event;
 	std::unique_ptr<unsigned char, view_unmapper> frame;
@@ -348,7 +463,7 @@ Host::Impl::Impl() {
 	job = create_job(true);
 
 	SECURITY_CAPABILITIES capabilities{};
-	capabilities.AppContainerSid = env.sid;
+	capabilities.AppContainerSid = container.Sid();
 
 	HANDLE inherited[] = {client.get()};
 
@@ -393,10 +508,8 @@ Host::Impl::Impl() {
 		BOOL in_job = FALSE;
 		if (IsProcessInJob(process.get(), nullptr, &in_job) && in_job)
 			job = create_job(false);
-		if (!in_job || !AssignProcessToJobObject(job.get(), process.get())) {
-			TerminateProcess(process.get(), 1);
+		if (!in_job || !AssignProcessToJobObject(job.get(), process.get()))
 			throw_win32("Could not add the subtitle renderer to its job object");
-		}
 	}
 	ResumeThread(thread.get());
 
