@@ -17,7 +17,7 @@
 #define NOMINMAX
 #endif
 // The process mitigation policy declarations require a Windows 8+ target.
-// Aegisub only launches this on Windows 10 1607 or newer.
+// Aegisub only launches this on Windows 10 1809 or newer.
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0A00
 #undef NTDDI_VERSION
@@ -95,7 +95,7 @@ void lock_down() {
 	// emulated on ARM64 is translated at runtime, so this can't be used there.
 	bool emulated = false;
 #if !defined(_M_ARM64) && !defined(_M_ARM64EC)
-	// Not available before Windows 10 1709, which also didn't run on ARM64
+	// Looked up at runtime so that the helper still loads if it's missing
 	using IsWow64Process2Fn = BOOL (WINAPI *)(HANDLE, USHORT *, USHORT *);
 	auto is_wow64_process2 = reinterpret_cast<IsWow64Process2Fn>(
 		GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "IsWow64Process2"));
