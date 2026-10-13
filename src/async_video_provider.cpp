@@ -73,7 +73,11 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, doub
 			}
 		}
 	}
-	catch (agi::Exception const& err) { throw SubtitlesProviderErrorEvent(err.GetMessage()); }
+	catch (agi::Exception const& err) {
+		// Still show the frame, just without subtitles
+		parent->QueueEvent(new SubtitlesProviderErrorEvent(err.GetMessage()));
+		return frame;
+	}
 
 	try {
 		subs_provider->DrawSubtitles(*frame, time / 1000.);
@@ -98,13 +102,21 @@ VideoFrame AsyncVideoProvider::GetBlankFrame(bool white) {
 }
 
 VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
+	// Run on the worker so that this can't interleave with loading a new
+	// file, which would let a sandboxed renderer see both files
+	VideoFrame ret;
+	worker->Sync([&]{ ret = ProcSubtitles(time); });
+	return ret;
+}
+
+VideoFrame AsyncVideoProvider::ProcSubtitles(double time) {
 	// We are looking for an RGBA image for which blending that image is equivalent
 	// to blending the current frame's subtitles (however the subtitle provider does this,
 	// usually by blending many separate small images with alpha).
 	// To do this, draw the subtitles once on a black frame and once on a white frame
 	// and solve for the color and alpha.
 	VideoFrame frame_black = GetBlankFrame(false);
-	if (!subs) return frame_black;
+	if (!subs || !subs_provider) return frame_black;
 	VideoFrame frame_white = GetBlankFrame(true);
 
 	try {

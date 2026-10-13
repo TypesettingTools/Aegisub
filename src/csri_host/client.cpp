@@ -32,6 +32,8 @@
 #define NTDDI_VERSION 0x0A000002 // NTDDI_WIN10_RS1
 #include <windows.h>
 #include <aclapi.h>
+#include <combaseapi.h>
+#include <sddl.h>
 #include <userenv.h>
 
 #include "client.h"
@@ -39,6 +41,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <cstdint>
 #include <cstring>
 #include <cwchar>
 #include <iterator>
@@ -50,7 +53,8 @@ namespace {
 /// How long the host may take to handle a single operation before it's
 /// assumed to have hung and is killed
 constexpr DWORD timeout_ms = 30000;
-constexpr SIZE_T memory_limit = SIZE_T(4) * 1024 * 1024 * 1024;
+/// 4 GB, or no effective limit for 32-bit builds
+constexpr SIZE_T memory_limit = static_cast<SIZE_T>(std::min<uint64_t>(uint64_t(4) << 30, SIZE_MAX));
 /// Each host's AppContainer profile is named
 /// <prefix><Aegisub's pid>.<Aegisub's creation time>.<counter>, so that ones
 /// left behind by a crash can be recognised and deleted. Windows stores the
@@ -110,6 +114,7 @@ bool supported_windows_version() {
 struct UserEnv {
 	decltype(&CreateAppContainerProfile) create = nullptr;
 	decltype(&DeleteAppContainerProfile) remove = nullptr;
+	decltype(&GetAppContainerFolderPath) folder = nullptr;
 
 	UserEnv() {
 		// userenv's AppContainer functions don't exist on Windows 7, so they
@@ -119,7 +124,8 @@ struct UserEnv {
 			throw_win32("Could not load userenv.dll");
 		create = reinterpret_cast<decltype(create)>(GetProcAddress(userenv, "CreateAppContainerProfile"));
 		remove = reinterpret_cast<decltype(remove)>(GetProcAddress(userenv, "DeleteAppContainerProfile"));
-		if (!create || !remove)
+		folder = reinterpret_cast<decltype(folder)>(GetProcAddress(userenv, "GetAppContainerFolderPath"));
+		if (!create || !remove || !folder)
 			throw Error("AppContainers are not supported on this version of Windows");
 	}
 };
@@ -308,31 +314,81 @@ Environment& environment() {
 /// each other's processes or share files, registry keys or named objects,
 /// and nothing a host stores persists after it exits
 class Container {
-	std::wstring name;
-	PSID sid = nullptr;
+	struct Profile {
+		std::wstring name;
+		PSID sid = nullptr;
+
+		Profile() {
+			auto& env = environment();
+			name = env.container_prefix + std::to_wstring(env.next_container++);
+			HRESULT hr = env.userenv.create(name.c_str(), L"Aegisub subtitle renderer",
+				L"Sandbox for a third-party subtitle renderer used by Aegisub", nullptr, 0, &sid);
+			if (FAILED(hr))
+				throw Error("Could not create an AppContainer for the subtitle renderer: " + error_string(static_cast<DWORD>(hr)));
+		}
+
+		/// If deleting the profile fails it's deleted the next time Aegisub
+		/// starts instead
+		~Profile() {
+			FreeSid(sid);
+			environment().userenv.remove(name.c_str());
+		}
+
+		Profile(Profile const&) = delete;
+		Profile& operator=(Profile const&) = delete;
+	} profile;
+
+	/// The profile's folder, which only this AppContainer can write to
+	std::wstring folder;
 
 public:
+	/// Must not be destroyed until the host has exited
 	Container() {
-		auto& env = environment();
-		name = env.container_prefix + std::to_wstring(env.next_container++);
-		HRESULT hr = env.userenv.create(name.c_str(), L"Aegisub subtitle renderer",
-			L"Sandbox for a third-party subtitle renderer used by Aegisub", nullptr, 0, &sid);
+		wchar_t *sid_string = nullptr;
+		if (!ConvertSidToStringSidW(profile.sid, &sid_string))
+			throw_win32("Could not get the subtitle renderer's AppContainer");
+		std::unique_ptr<void, local_freer> sid_string_holder(sid_string);
+
+		wchar_t *path = nullptr;
+		HRESULT hr = environment().userenv.folder(sid_string, &path);
 		if (FAILED(hr))
-			throw Error("Could not create an AppContainer for the subtitle renderer: " + error_string(static_cast<DWORD>(hr)));
+			throw Error("Could not get the subtitle renderer's AppContainer folder: " + error_string(static_cast<DWORD>(hr)));
+		folder = path;
+		CoTaskMemFree(path);
 	}
 
-	/// Must not run until the host has exited. If deleting the profile fails
-	/// it's deleted the next time Aegisub starts instead.
-	~Container() {
-		FreeSid(sid);
-		environment().userenv.remove(name.c_str());
-	}
-
-	Container(Container const&) = delete;
-	Container& operator=(Container const&) = delete;
-
-	PSID Sid() const { return sid; }
+	PSID Sid() const { return profile.sid; }
+	std::wstring const& Folder() const { return folder; }
 };
+
+/// Build an environment block for the host. It doesn't get Aegisub's, which
+/// could contain things like credentials. TEMP has to be somewhere it can
+/// write to, as VSFilter writes scripts to temporary files to load them.
+std::wstring host_environment(std::wstring const& temp) {
+	std::vector<std::wstring> vars;
+	// Some system DLLs need these
+	for (auto name : {L"SystemDrive", L"SystemRoot", L"windir"}) {
+		wchar_t value[MAX_PATH];
+		DWORD len = GetEnvironmentVariableW(name, value, MAX_PATH);
+		if (len > 0 && len < MAX_PATH)
+			vars.push_back(std::wstring(name) + L"=" + value);
+	}
+	vars.push_back(L"TEMP=" + temp);
+	vars.push_back(L"TMP=" + temp);
+
+	// The block has to be sorted case-insensitively by name
+	std::sort(vars.begin(), vars.end(), [](std::wstring const& a, std::wstring const& b) {
+		return CompareStringOrdinal(a.c_str(), -1, b.c_str(), -1, TRUE) == CSTR_LESS_THAN;
+	});
+
+	std::wstring block;
+	for (auto const& var : vars) {
+		block += var;
+		block += L'\0';
+	}
+	block += L'\0';
+	return block;
+}
 
 /// Closes a process handle after terminating the process and waiting for it
 /// to exit
@@ -492,11 +548,12 @@ Host::Impl::Impl() {
 
 	std::wstring cmdline = L"\"" + env.exe + L"\" --pipe=" +
 		std::to_wstring(reinterpret_cast<uintptr_t>(client.get()));
+	auto environment_block = host_environment(container.Folder());
 
 	PROCESS_INFORMATION pi{};
 	if (!CreateProcessW(env.exe.c_str(), cmdline.data(), nullptr, nullptr, TRUE,
-	                    CREATE_SUSPENDED | EXTENDED_STARTUPINFO_PRESENT, nullptr,
-	                    env.working_directory.c_str(), &si.StartupInfo, &pi))
+	                    CREATE_SUSPENDED | EXTENDED_STARTUPINFO_PRESENT | CREATE_UNICODE_ENVIRONMENT,
+	                    environment_block.data(), env.working_directory.c_str(), &si.StartupInfo, &pi))
 		throw_win32("Could not start aegisub-csri-host.exe");
 	process.reset(pi.hProcess);
 	unique_handle thread(pi.hThread);
@@ -643,14 +700,14 @@ bool Host::OpenRenderer(std::string const& name) {
 	return impl->Call(req, name.data()).status == Status::Ok;
 }
 
-void Host::LoadSubtitles(const char *data, size_t len) {
+bool Host::LoadSubtitles(const char *data, size_t len) {
 	if (len > max_script_size)
 		throw Error("The subtitles are too large to render");
 	Request req{};
 	req.command = Command::LoadSubtitles;
 	req.payload_size = len;
 	impl->StartOperation();
-	impl->Call(req, data);
+	return impl->Call(req, data).status == Status::Ok;
 }
 
 void Host::Render(unsigned char *data, int width, int height, int pitch, bool flipped, double time) {

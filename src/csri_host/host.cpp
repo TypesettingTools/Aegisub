@@ -146,7 +146,7 @@ class Host {
 		if (!renderer)
 			fail();
 		instance.reset(csri_open_mem(renderer, script.data(), script.size(), nullptr));
-		respond(Status::Ok);
+		respond(instance ? Status::Ok : Status::Failed);
 	}
 
 	void SetFrameBuffer(Request const& req) {
