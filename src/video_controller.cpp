@@ -65,7 +65,7 @@ void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 	Stop();
 	provider = new_provider;
 	color_matrix = std::nullopt;
-	subs_filename = context->subsController->Filename();
+	subs_document_id = context->subsController->DocumentId();
 }
 
 void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
@@ -80,9 +80,9 @@ void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 	}
 
 	if (!changed) {
-		auto filename = context->subsController->Filename();
-		bool new_document = type == AssFile::COMMIT_NEW && filename != subs_filename;
-		subs_filename = filename;
+		int document_id = context->subsController->DocumentId();
+		bool new_document = document_id != subs_document_id;
+		subs_document_id = document_id;
 		provider->LoadSubtitles(context->ass.get(), new_document);
 	}
 	else

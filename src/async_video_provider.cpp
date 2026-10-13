@@ -104,6 +104,8 @@ VideoFrame AsyncVideoProvider::GetBlankFrame(bool white) {
 VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
 	// Run on the worker so that this can't interleave with loading a new
 	// file, which would let a sandboxed renderer see both files
+	if (subs_provider)
+		subs_provider->WaitUntilReady();
 	VideoFrame ret;
 	worker->Sync([&]{ ret = ProcSubtitles(time); });
 	return ret;
@@ -295,6 +297,8 @@ void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version, bool check_updated
 }
 
 std::shared_ptr<VideoFrame> AsyncVideoProvider::GetFrame(int frame, double time, bool raw) {
+	if (!raw && subs_provider)
+		subs_provider->WaitUntilReady();
 	std::shared_ptr<VideoFrame> ret;
 	worker->Sync([&]{ ret = ProcFrame(frame, time, raw); });
 	return ret;
