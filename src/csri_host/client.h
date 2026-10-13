@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include "../video_frame.h"
+
 #include <cstddef>
 #include <memory>
 #include <stdexcept>
@@ -20,6 +22,11 @@ namespace csri_host {
 struct Error : std::runtime_error {
 	using std::runtime_error::runtime_error;
 };
+
+/// Allocates frame memory which hosts can draw on without copying it. Hosts
+/// can write to it at any time once they've drawn on it, so it mustn't be
+/// used for anything but frames which subtitles are drawn on.
+FrameAllocator SharedFrameAllocator();
 
 /// A running aegisub-csri-host process. Not thread-safe.
 class Host {
@@ -36,8 +43,9 @@ public:
 	bool OpenRenderer(std::string const& name);
 	/// Load a script, returning false if the renderer couldn't load it
 	bool LoadSubtitles(const char *data, size_t len);
-	/// Render subtitles onto a BGRx frame
-	void Render(unsigned char *data, int width, int height, int pitch, bool flipped, double time);
+	/// Render subtitles onto a BGRx frame. Frames whose memory came from
+	/// SharedFrameAllocator() are drawn on in place, and others are copied.
+	void Render(VideoFrame &frame, double time);
 };
 
 }
