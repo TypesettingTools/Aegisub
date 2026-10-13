@@ -54,10 +54,6 @@ public:
 	/// in a sandbox start a new one, so that a renderer compromised by one
 	/// file can't see or affect the next.
 	virtual void NewDocument() { }
-	/// Block until the provider is ready to draw. Must be called on the main
-	/// thread before waiting for another thread to draw subtitles, as
-	/// providers may need the main thread to finish initializing.
-	virtual void WaitUntilReady() { }
 };
 
 namespace agi { class BackgroundRunner; }
