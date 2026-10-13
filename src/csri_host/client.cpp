@@ -107,8 +107,9 @@ bool supported_windows_version() {
 	info.dwOSVersionInfoSize = sizeof info;
 	if (!get_version || get_version(&info) != 0)
 		return false;
-	// Version 1607 added the child process policy and image load mitigations
-	return info.dwMajorVersion > 10 || (info.dwMajorVersion == 10 && info.dwBuildNumber >= 14393);
+	// Before version 1809, CreateProcess fails when given both an AppContainer
+	// and mitigation policies
+	return info.dwMajorVersion > 10 || (info.dwMajorVersion == 10 && info.dwBuildNumber >= 17763);
 }
 
 struct UserEnv {
@@ -285,7 +286,7 @@ struct Environment {
 
 	Environment() {
 		if (!supported_windows_version())
-			throw Error("Sandboxed CSRI renderers require Windows 10 version 1607 or newer");
+			throw Error("Sandboxed CSRI renderers require Windows 10 version 1809 or newer");
 
 		delete_stale_containers(userenv);
 		wchar_t prefix[64];
