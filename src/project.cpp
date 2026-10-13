@@ -184,7 +184,7 @@ void Project::CloseSubtitles() {
 	context->selectionController->SetSelectionAndActive({line}, line);
 }
 
-void Project::LoadUnloadFiles(ProjectProperties properties) {
+void Project::LoadUnloadFiles(ProjectProperties properties, bool load_audio_from_video) {
 	auto load_linked = OPT_GET("App/Auto/Load Linked Files")->GetInt();
 	if (!load_linked) return;
 
@@ -312,7 +312,7 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 		else
 			DoLoadAudio(audio, false);
 	}
-	else if (loaded_video && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
+	else if (load_audio_from_video && loaded_video && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video, true);
 }
 
@@ -576,21 +576,20 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		if (!video.empty() || !audio.empty()) {
 			// Failed loads retain the existing media, so use its paths too.
 			UpdateRelativePaths();
-			auto const& current = context->ass->Properties;
 			if (!video.empty()) {
-				if (video != context->path->MakeAbsolute(properties.video_file, "?script")) {
-					properties.timecodes_file = current.timecodes_file;
-					properties.keyframes_file = current.keyframes_file;
+				if (video_file.lexically_normal() != context->path->MakeAbsolute(properties.video_file, "?script").lexically_normal()) {
+					properties.timecodes_file = timecodes_file.generic_string();
+					properties.keyframes_file = keyframes_file.generic_string();
 				}
-				properties.video_file = current.video_file;
+				properties.video_file = video_file.generic_string();
 			}
 			if (!audio.empty())
-				properties.audio_file = current.audio_file;
+				properties.audio_file = audio_file.generic_string();
 		}
 		if (!timecodes.empty())
-			properties.timecodes_file = context->path->MakeRelative(timecodes_file, "?script").generic_string();
+			properties.timecodes_file = timecodes_file.generic_string();
 		if (!keyframes.empty())
-			properties.keyframes_file = context->path->MakeRelative(keyframes_file, "?script").generic_string();
-		LoadUnloadFiles(properties);
+			properties.keyframes_file = keyframes_file.generic_string();
+		LoadUnloadFiles(properties, audio.empty());
 	}
 }
