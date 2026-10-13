@@ -35,8 +35,9 @@ enum {
 
 std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, double time, bool raw) {
 	// Find an unused buffer to use or allocate a new one if needed
+	auto& pool = raw ? raw_buffers : buffers;
 	std::shared_ptr<VideoFrame> frame;
-	for (auto& buffer : buffers) {
+	for (auto& buffer : pool) {
 		if (buffer.use_count() == 1) {
 			frame = buffer;
 			break;
@@ -45,7 +46,9 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, doub
 
 	if (!frame) {
 		frame = std::make_shared<VideoFrame>();
-		buffers.push_back(frame);
+		if (!raw && subs_provider)
+			frame->data.SetAllocator(subs_provider->GetFrameAllocator());
+		pool.push_back(frame);
 	}
 
 	try {

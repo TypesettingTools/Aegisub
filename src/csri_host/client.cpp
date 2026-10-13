@@ -401,6 +401,49 @@ struct process_killer {
 	}
 };
 
+/// Frame memory which can be mapped into hosts so that they can draw on it
+class SharedFrameStorage final : public FrameStorage {
+	unique_handle section;
+	std::unique_ptr<unsigned char, view_unmapper> view;
+	size_t capacity;
+	/// Identifies this to hosts. Never reused.
+	uint64_t id;
+	/// Expires when this is destroyed, so that hosts know to unmap it
+	std::shared_ptr<void> alive = std::make_shared<char>();
+
+	static std::atomic<uint64_t> next_id;
+
+public:
+	SharedFrameStorage(unique_handle section, std::unique_ptr<unsigned char, view_unmapper> view, size_t capacity)
+	: section(std::move(section))
+	, view(std::move(view))
+	, capacity(capacity)
+	, id(next_id++)
+	{
+	}
+
+	unsigned char *Data() const override { return view.get(); }
+	size_t Capacity() const override { return capacity; }
+
+	HANDLE Section() const { return section.get(); }
+	uint64_t Id() const { return id; }
+	std::weak_ptr<void> Alive() const { return alive; }
+};
+
+std::atomic<uint64_t> SharedFrameStorage::next_id{1};
+
+std::unique_ptr<SharedFrameStorage> create_shared_storage(size_t size) {
+	unique_handle section(CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE,
+		static_cast<DWORD>(uint64_t(size) >> 32), static_cast<DWORD>(size), nullptr));
+	if (!section)
+		throw_win32("Could not allocate a frame buffer for the subtitle renderer");
+	std::unique_ptr<unsigned char, view_unmapper> view(static_cast<unsigned char *>(
+		MapViewOfFile(section.get(), FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, size)));
+	if (!view)
+		throw_win32("Could not map a frame buffer for the subtitle renderer");
+	return std::make_unique<SharedFrameStorage>(std::move(section), std::move(view), size);
+}
+
 std::pair<unique_handle, unique_handle> create_pipe() {
 	std::random_device rd;
 	std::wstring name = L"\\\\.\\pipe\\aegisub-csri-host-" + std::to_wstring(GetCurrentProcessId());
@@ -492,9 +535,20 @@ struct Host::Impl {
 	std::unique_ptr<void, process_killer> process;
 	unique_handle pipe;
 	unique_handle event;
-	std::unique_ptr<unsigned char, view_unmapper> frame;
-	size_t frame_size = 0;
 	ULONGLONG deadline = 0;
+
+	/// A buffer which frames that weren't allocated by SharedFrameAllocator()
+	/// are copied into and out of
+	std::unique_ptr<SharedFrameStorage> copy_buffer;
+
+	struct MappedBuffer {
+		uint64_t id;
+		std::weak_ptr<void> alive;
+		uint64_t last_used;
+	};
+	/// Buffers mapped into the host
+	std::vector<MappedBuffer> mapped;
+	uint64_t use_count = 0;
 
 	Impl();
 
@@ -505,7 +559,12 @@ struct Host::Impl {
 	void Read(void *data, size_t size) { Transfer(false, static_cast<char *>(data), size); }
 	void Write(const void *data, size_t size) { Transfer(true, static_cast<char *>(const_cast<void *>(data)), size); }
 	Response Call(Request const& req, const void *payload = nullptr);
-	void EnsureFrameBuffer(size_t size);
+
+	/// Make sure buffer is mapped into the host
+	void Map(SharedFrameStorage const& buffer);
+	void Unmap(size_t index);
+	/// Have the host draw on buffer, returning false if it failed to
+	bool Render(SharedFrameStorage const& buffer, uint32_t width, uint32_t height, uint32_t pitch, bool flipped, double time);
 };
 
 Host::Impl::Impl() {
@@ -634,33 +693,62 @@ Response Host::Impl::Call(Request const& req, const void *payload) {
 	return response;
 }
 
-void Host::Impl::EnsureFrameBuffer(size_t size) {
-	if (size <= frame_size)
-		return;
+void Host::Impl::Map(SharedFrameStorage const& buffer) {
+	// Unmap buffers which have been freed, which the host would otherwise
+	// keep alive
+	for (size_t i = mapped.size(); i-- > 0; ) {
+		if (mapped[i].alive.expired())
+			Unmap(i);
+	}
 
-	unique_handle section(CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE,
-		static_cast<DWORD>(uint64_t(size) >> 32), static_cast<DWORD>(size), nullptr));
-	if (!section)
-		throw_win32("Could not allocate a frame buffer for the subtitle renderer");
-	std::unique_ptr<unsigned char, view_unmapper> view(static_cast<unsigned char *>(
-		MapViewOfFile(section.get(), FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, size)));
-	if (!view)
-		throw_win32("Could not map the subtitle renderer's frame buffer");
+	auto it = std::find_if(mapped.begin(), mapped.end(), [&](MappedBuffer const& m) { return m.id == buffer.Id(); });
+	if (it != mapped.end()) {
+		it->last_used = ++use_count;
+		return;
+	}
+
+	if (mapped.size() >= max_buffers) {
+		auto oldest = std::min_element(mapped.begin(), mapped.end(), [](MappedBuffer const& a, MappedBuffer const& b) {
+			return a.last_used < b.last_used;
+		});
+		Unmap(static_cast<size_t>(oldest - mapped.begin()));
+	}
 
 	// Only allow mapping the section, not anything like querying or extending it
 	HANDLE host_section = nullptr;
-	if (!DuplicateHandle(GetCurrentProcess(), section.get(), process.get(), &host_section,
+	if (!DuplicateHandle(GetCurrentProcess(), buffer.Section(), process.get(), &host_section,
 	                     FILE_MAP_READ | FILE_MAP_WRITE, FALSE, 0))
-		throw_win32("Could not share the frame buffer with the subtitle renderer");
-
-	frame = std::move(view);
-	frame_size = size;
+		throw_win32("Could not share a frame buffer with the subtitle renderer");
 
 	Request req{};
-	req.command = Command::SetFrameBuffer;
+	req.command = Command::MapBuffer;
+	req.buffer = buffer.Id();
 	req.section_handle = reinterpret_cast<uintptr_t>(host_section);
-	req.section_size = size;
+	req.section_size = buffer.Capacity();
 	Call(req);
+	mapped.push_back({buffer.Id(), buffer.Alive(), ++use_count});
+}
+
+void Host::Impl::Unmap(size_t index) {
+	Request req{};
+	req.command = Command::UnmapBuffer;
+	req.buffer = mapped[index].id;
+	Call(req);
+	mapped.erase(mapped.begin() + index);
+}
+
+bool Host::Impl::Render(SharedFrameStorage const& buffer, uint32_t width, uint32_t height, uint32_t pitch, bool flipped, double time) {
+	Map(buffer);
+
+	Request req{};
+	req.command = Command::Render;
+	req.buffer = buffer.Id();
+	req.width = width;
+	req.height = height;
+	req.pitch = pitch;
+	req.flipped = flipped;
+	req.time = time;
+	return Call(req).status == Status::Ok;
 }
 
 Host::Host() : impl(std::make_unique<Impl>()) { }
@@ -713,33 +801,53 @@ bool Host::LoadSubtitles(const char *data, size_t len) {
 	return impl->Call(req, data).status == Status::Ok;
 }
 
-void Host::Render(unsigned char *data, int width, int height, int pitch, bool flipped, double time) {
+void Host::Render(VideoFrame &frame, double time) {
+	int width = frame.width, height = frame.height, pitch = frame.pitch;
 	if (width <= 0 || height <= 0 || width > int(max_frame_dimension) || height > int(max_frame_dimension))
 		return;
 	size_t row_size = size_t(width) * 4;
-	if (pitch < 0 || size_t(pitch) < row_size)
+	if (pitch < 0 || size_t(pitch) < row_size || uint64_t(pitch) * height > frame.data.size())
 		return;
 
 	impl->StartOperation();
-	impl->EnsureFrameBuffer(row_size * height);
+
+	if (auto shared = dynamic_cast<SharedFrameStorage *>(frame.data.Storage())) {
+		impl->Render(*shared, static_cast<uint32_t>(width), static_cast<uint32_t>(height), static_cast<uint32_t>(pitch), frame.flipped, time);
+		return;
+	}
+
+	size_t size = row_size * height;
+	if (!impl->copy_buffer || impl->copy_buffer->Capacity() < size) {
+		impl->copy_buffer.reset();
+		impl->copy_buffer = create_shared_storage(size);
+	}
 
 	// The host gets a top-down frame without padding regardless of how the
 	// frame is laid out
-	auto row = [&](int y) { return data + size_t(flipped ? height - 1 - y : y) * pitch; };
-	unsigned char *frame = impl->frame.get();
+	auto row = [&](int y) { return frame.data.data() + size_t(frame.flipped ? height - 1 - y : y) * pitch; };
+	unsigned char *buffer = impl->copy_buffer->Data();
 	for (int y = 0; y < height; ++y)
-		memcpy(frame + y * row_size, row(y), row_size);
+		memcpy(buffer + y * row_size, row(y), row_size);
 
-	Request req{};
-	req.command = Command::Render;
-	req.width = width;
-	req.height = height;
-	req.time = time;
-	if (impl->Call(req).status != Status::Ok)
+	if (!impl->Render(*impl->copy_buffer, static_cast<uint32_t>(width), static_cast<uint32_t>(height), static_cast<uint32_t>(row_size), false, time))
 		return;
 
 	for (int y = 0; y < height; ++y)
-		memcpy(row(y), frame + y * row_size, row_size);
+		memcpy(row(y), buffer + y * row_size, row_size);
+}
+
+FrameAllocator SharedFrameAllocator() {
+	return [](size_t size) -> std::unique_ptr<FrameStorage> {
+		if (size == 0)
+			return nullptr;
+		try {
+			return create_shared_storage(size);
+		}
+		catch (Error const&) {
+			// Use ordinary memory, which is copied when drawing on it
+			return nullptr;
+		}
+	};
 }
 
 }

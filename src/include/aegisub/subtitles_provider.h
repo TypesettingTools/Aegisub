@@ -34,11 +34,13 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
 
 class AssFile;
+class FrameStorage;
 struct VideoFrame;
 
 class SubtitlesProvider {
@@ -59,6 +61,11 @@ public:
 	/// agi::UserCancelException if the provider isn't ready, as they can't
 	/// show progress. Throws agi::UserCancelException if the user cancels.
 	virtual void WaitUntilReady() { }
+	/// Allocator (see FrameBuffer) for the memory of frames which subtitles
+	/// will be drawn on, if the provider can draw on frames more efficiently
+	/// when their memory comes from it. Anything else written to frames which
+	/// subtitles have been drawn on should be treated as untrusted pixels.
+	virtual std::function<std::unique_ptr<FrameStorage>(size_t)> GetFrameAllocator() { return nullptr; }
 };
 
 namespace agi { class BackgroundRunner; }

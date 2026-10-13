@@ -308,7 +308,7 @@ void FFmpegSourceVideoProvider::GetFrame(int n, VideoFrame &out) {
 
 	// Handle rotation
 	if (VideoInfo->Rotation % 360 == 180 || VideoInfo->Rotation % 360 == -180) {
-		std::vector<unsigned char> data(std::move(out.data));
+		auto data = std::move(out.data);
 		out.data.resize(Width * Height * 4);
 		for (int x = 0; x < Height; ++x)
 			for (int y = 0; y < Width; ++y)
@@ -317,7 +317,7 @@ void FFmpegSourceVideoProvider::GetFrame(int n, VideoFrame &out) {
 		out.pitch = 4 * Width;
 	}
 	else if (VideoInfo->Rotation % 180 == 90 || VideoInfo->Rotation % 360 == -270) {
-		std::vector<unsigned char> data(std::move(out.data));
+		auto data = std::move(out.data);
 		out.data.resize(Width * Height * 4);
 		for (int x = 0; x < Width; ++x)
 			for (int y = 0; y < Height; ++y)
@@ -328,7 +328,7 @@ void FFmpegSourceVideoProvider::GetFrame(int n, VideoFrame &out) {
 		out.pitch = 4 * Height;
 	}
 	else if (VideoInfo->Rotation % 180 == 270 || VideoInfo->Rotation % 360 == -90) {
-		std::vector<unsigned char> data(std::move(out.data));
+		auto data = std::move(out.data);
 		out.data.resize(Width * Height * 4);
 		for (int x = 0; x < Width; ++x)
 			for (int y = 0; y < Height; ++y)

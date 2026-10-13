@@ -78,7 +78,11 @@ class AsyncVideoProvider {
 	/// they can be rendered
 	std::atomic<uint_fast32_t> version{ 0 };
 
+	/// Frames which can be reused once nothing else is using them. Raw frames
+	/// are kept separate from the ones subtitles are drawn on, as sandboxed
+	/// subtitle providers can write to the latter at any time.
 	std::vector<std::shared_ptr<VideoFrame>> buffers;
+	std::vector<std::shared_ptr<VideoFrame>> raw_buffers;
 
 	// Returns a monochromatic frame with the current dimensions
 	VideoFrame GetBlankFrame(bool white);

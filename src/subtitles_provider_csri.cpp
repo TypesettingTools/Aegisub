@@ -83,6 +83,7 @@ public:
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
 	void NewDocument() override;
+	FrameAllocator GetFrameAllocator() override { return csri_host::SharedFrameAllocator(); }
 };
 
 CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer)
@@ -158,7 +159,7 @@ void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {
 	std::lock_guard<std::mutex> lock(mutex);
 	WithHost([&](csri_host::Host& h, bool) {
 		// Add 1e-9 to guard against floating point imprecision errors on int -> float -> *1000 -> int round trips
-		h.Render(dst.data.data(), dst.width, dst.height, dst.pitch, dst.flipped, time + 1e-9);
+		h.Render(dst, time + 1e-9);
 	});
 }
 
