@@ -1,0 +1,8 @@
+---
+Checks: '-*,bugprone-unsafe-functions'
+WarningsAsErrors: 'bugprone-unsafe-functions'
+CheckOptions:
+  bugprone-unsafe-functions.ReportDefaultFunctions: 'false'
+  bugprone-unsafe-functions.ReportMoreUnsafeFunctions: 'false'
+  bugprone-unsafe-functions.CustomFunctions: '^::std::filesystem::(absolute|canonical|copy|copy_file|copy_symlink|create_directories|create_directory|create_directory_symlink|create_hard_link|create_symlink|equivalent|exists|file_size|hard_link_count|is_block_file|is_character_file|is_directory|is_empty|is_fifo|is_other|is_regular_file|is_socket|is_symlink|last_write_time|permissions|proximate|read_symlink|relative|remove|remove_all|rename|resize_file|space|status|status_known|symlink_status|weakly_canonical)$,,Path operations must go through agi::fs so UTF-8 paths are decoded consistently'
+...

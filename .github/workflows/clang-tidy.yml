@@ -1,0 +1,43 @@
+name: clang-tidy
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  filesystem-paths:
+    name: Filesystem path policy
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install LLVM 21
+        run: |
+          wget -q https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 21
+          sudo apt-get install -y clang-tidy-21
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools meson
+          sudo apt-get install -y ninja-build build-essential libx11-dev libfreetype6-dev pkg-config libfontconfig1-dev libass-dev libasound2-dev libffms2-dev intltool libboost-all-dev libhunspell-dev libcurl4-openssl-dev libuchardet-dev libgtest-dev libgmock-dev libwxgtk3.2-dev libportal-gtk3-dev
+
+      - name: Configure
+        run: meson setup build -Db_pch=false
+
+      - name: Check filesystem path operations
+        run: |
+          echo "::add-matcher::.github/problem-matchers/clang-tidy.json"
+          run-clang-tidy-21 \
+            -p build \
+            -j 2 \
+            -source-filter '^(?!.*libaegisub/(common/fs\.cpp|unix/access\.cpp)$).*'
