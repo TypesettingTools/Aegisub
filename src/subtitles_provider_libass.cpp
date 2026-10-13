@@ -146,6 +146,8 @@ public:
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
 
+	void WaitUntilReady() override { wait_for_cache(br, *shared); }
+
 	void Reinitialize() override {
 		// No need to reinit if we're not even done with the initial init
 		if (!shared->ready)
