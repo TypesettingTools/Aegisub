@@ -29,6 +29,7 @@
 
 #include "utils.h"
 
+#include "include/aegisub/context.h"
 #include "compat.h"
 #include "format.h"
 #include "options.h"
@@ -36,6 +37,7 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/log.h>
+#include <libaegisub/path.h>
 
 #ifdef __UNIX__
 #include <unistd.h>
@@ -256,22 +258,31 @@ wxString FontFace(std::string opt_prefix) {
 	return to_wx(value);
 }
 
-static agi::fs::path FileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, int flags, wxWindow *parent) {
+static agi::fs::path FileSelector(agi::Context *c, wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, int flags, wxWindow *parent, std::optional<std::string_view> path_anchor) {
 	wxString path;
 	if (!option_name.empty())
-		path = to_wx(OPT_GET(option_name)->GetString());
+		path = to_wx(c->path->Decode(OPT_GET(option_name)->GetString()).string());
+
 	agi::fs::path filename = from_wx(wxFileSelector(message, path, to_wx(default_filename), to_wx(default_extension), to_wx(wildcard), flags, parent));
-	if (!filename.empty() && !option_name.empty())
-		OPT_SET(option_name)->SetString(filename.parent_path().string());
+
+	if (!filename.empty() && !option_name.empty()) {
+		auto dir = filename.parent_path();
+		auto dir_str = dir.string();
+		if (path_anchor.has_value() && c->path->Decode(path_anchor.value()).lexically_normal() == dir.lexically_normal()) {
+			dir_str = path_anchor.value();
+		}
+
+		OPT_SET(option_name)->SetString(dir_str);
+	}
 	return filename;
 }
 
-agi::fs::path OpenFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent) {
-	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST, parent);
+agi::fs::path OpenFileSelector(agi::Context *c, wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent, std::optional<std::string_view> path_anchor) {
+	return FileSelector(c, message, option_name, default_filename, default_extension, wildcard, wxFD_OPEN | wxFD_FILE_MUST_EXIST, parent, path_anchor);
 }
 
-agi::fs::path SaveFileSelector(wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent) {
-	return FileSelector(message, option_name, default_filename, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT, parent);
+agi::fs::path SaveFileSelector(agi::Context *c, wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, wxWindow *parent) {
+	return FileSelector(c, message, option_name, default_filename, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT, parent, std::nullopt);
 }
 
 wxString LocalizedLanguageName(wxString const& lang) {

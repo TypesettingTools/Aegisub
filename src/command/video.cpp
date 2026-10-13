@@ -593,7 +593,7 @@ struct video_open final : public Command {
 		auto formats = MakeWildcard(VideoProviderFactory::GetFileExtensions());
 		auto str = from_wx(_("Video Formats")) + " (" + formats + ")|" + formats + "|"
 		         + from_wx(_("All Files")) + " (*.*)|*.*";
-		auto filename = OpenFileSelector(_("Open Video File"), "Path/Last/Video", "", "", str, c->parent);
+		auto filename = OpenFileSelector(c, _("Open Video File"), "Path/Last/Video", "", "", str, c->parent, "?script");
 		if (!filename.empty())
 			c->project->LoadVideo(filename);
 	}

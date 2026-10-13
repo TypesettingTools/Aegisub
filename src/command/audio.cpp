@@ -84,7 +84,7 @@ struct audio_open final : public Command {
 		auto formats = MakeWildcard(GetAudioProviderFileExtensions());
 		auto str = from_wx(_("Audio and Video Formats")) + " (" + formats + ")|" + formats + "|"
 		         + from_wx(_("All Files")) + " (*.*)|*.*";
-		auto filename = OpenFileSelector(wxGETTEXT_IN_CONTEXT("dialog title", "Open Audio File"), "Path/Last/Audio", "", "", str, c->parent);
+		auto filename = OpenFileSelector(c, wxGETTEXT_IN_CONTEXT("dialog title", "Open Audio File"), "Path/Last/Audio", "", "", str, c->parent, "?script");
 		if (!filename.empty())
 			c->project->LoadAudio(filename);
 	}
@@ -176,7 +176,7 @@ struct audio_save_clip final : public Command {
 		auto const& sel = c->selectionController->GetSelectedSet();
 		if (sel.empty()) return;
 
-		auto filename = SaveFileSelector(_("Save Audio Clip"), "", "", "wav", "", c->parent);
+		auto filename = SaveFileSelector(c, _("Save Audio Clip"), "", "", "wav", "", c->parent);
 		if (filename.empty()) return;
 
 		agi::Time start = INT_MAX, end = 0;
