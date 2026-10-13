@@ -44,8 +44,8 @@
 
 namespace csri_host {
 namespace {
-/// How long the host may take to handle a single request before it's assumed
-/// to have hung and is killed
+/// How long the host may take to handle a single operation before it's
+/// assumed to have hung and is killed
 constexpr DWORD timeout_ms = 30000;
 constexpr SIZE_T memory_limit = SIZE_T(4) * 1024 * 1024 * 1024;
 constexpr wchar_t container_name[] = L"Aegisub.CsriHost";
@@ -258,7 +258,9 @@ std::pair<unique_handle, unique_handle> create_pipe() {
 	return {std::move(server), std::move(client)};
 }
 
-unique_handle create_job() {
+/// UI limits can't be set on a job nested inside another job, so they're
+/// optional for when Aegisub itself is running in one
+unique_handle create_job(bool ui_limits) {
 	unique_handle job(CreateJobObjectW(nullptr, nullptr));
 	if (!job)
 		throw_win32("Could not create a job object for the subtitle renderer");
@@ -273,6 +275,9 @@ unique_handle create_job() {
 	limits.ProcessMemoryLimit = memory_limit;
 	if (!SetInformationJobObject(job.get(), JobObjectExtendedLimitInformation, &limits, sizeof limits))
 		throw_win32("Could not set the subtitle renderer's job limits");
+
+	if (!ui_limits)
+		return job;
 
 	JOBOBJECT_BASIC_UI_RESTRICTIONS ui{};
 	ui.UIRestrictionsClass =
@@ -323,8 +328,12 @@ struct Host::Impl {
 	unique_handle event;
 	std::unique_ptr<unsigned char, view_unmapper> frame;
 	size_t frame_size = 0;
+	ULONGLONG deadline = 0;
 
 	Impl();
+
+	/// Start the timeout for an operation, which may consist of several requests
+	void StartOperation() { deadline = GetTickCount64() + timeout_ms; }
 
 	void Transfer(bool write, char *data, size_t size);
 	void Read(void *data, size_t size) { Transfer(false, static_cast<char *>(data), size); }
@@ -336,7 +345,7 @@ struct Host::Impl {
 Host::Impl::Impl() {
 	auto const& env = environment();
 	auto [server, client] = create_pipe();
-	job = create_job();
+	job = create_job(true);
 
 	SECURITY_CAPABILITIES capabilities{};
 	capabilities.AppContainerSid = env.sid;
@@ -378,8 +387,16 @@ Host::Impl::Impl() {
 	unique_handle thread(pi.hThread);
 
 	if (!AssignProcessToJobObject(job.get(), process.get())) {
-		TerminateProcess(process.get(), 1);
-		throw_win32("Could not add the subtitle renderer to its job object");
+		// If Aegisub is in a job then the host is too, and a job with UI
+		// limits can't be nested inside it. The AppContainer still keeps the
+		// host from sending messages to Aegisub's windows.
+		BOOL in_job = FALSE;
+		if (IsProcessInJob(process.get(), nullptr, &in_job) && in_job)
+			job = create_job(false);
+		if (!in_job || !AssignProcessToJobObject(job.get(), process.get())) {
+			TerminateProcess(process.get(), 1);
+			throw_win32("Could not add the subtitle renderer to its job object");
+		}
 	}
 	ResumeThread(thread.get());
 
@@ -392,6 +409,7 @@ Host::Impl::Impl() {
 	if (!event)
 		throw_win32("Could not create an event");
 
+	StartOperation();
 	Hello hello;
 	Read(&hello, sizeof hello);
 	if (hello.magic != hello_magic || hello.version != protocol_version)
@@ -399,7 +417,6 @@ Host::Impl::Impl() {
 }
 
 void Host::Impl::Transfer(bool write, char *data, size_t size) {
-	ULONGLONG deadline = GetTickCount64() + timeout_ms;
 	while (size) {
 		OVERLAPPED ov{};
 		ov.hEvent = event.get();
@@ -479,6 +496,7 @@ Host::~Host() = default;
 std::vector<std::string> Host::ListRenderers() {
 	Request req{};
 	req.command = Command::ListRenderers;
+	impl->StartOperation();
 	auto response = impl->Call(req);
 	if (response.payload_size > max_renderer_list_size)
 		throw Error("The subtitle renderer sent an invalid response");
@@ -508,6 +526,7 @@ bool Host::OpenRenderer(std::string const& name) {
 	Request req{};
 	req.command = Command::OpenRenderer;
 	req.payload_size = name.size();
+	impl->StartOperation();
 	return impl->Call(req, name.data()).status == Status::Ok;
 }
 
@@ -517,6 +536,7 @@ void Host::LoadSubtitles(const char *data, size_t len) {
 	Request req{};
 	req.command = Command::LoadSubtitles;
 	req.payload_size = len;
+	impl->StartOperation();
 	impl->Call(req, data);
 }
 
@@ -527,6 +547,7 @@ void Host::Render(unsigned char *data, int width, int height, int pitch, bool fl
 	if (pitch < 0 || size_t(pitch) < row_size)
 		return;
 
+	impl->StartOperation();
 	impl->EnsureFrameBuffer(row_size * height);
 
 	// The host gets a top-down frame without padding regardless of how the

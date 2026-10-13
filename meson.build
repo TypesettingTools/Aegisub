@@ -501,8 +501,10 @@ deps += dep_gl
 if not get_option('csri').disabled() and host_machine.system() == 'windows'
     conf.set('WITH_CSRI', 1)
 
-    # Only linked into aegisub-csri-host; Aegisub itself never loads renderers
-    csri_sp = subproject('csri')
+    # Only linked into aegisub-csri-host; Aegisub itself never loads renderers.
+    # Static so that the sandboxed host doesn't need to load csri.dll from a
+    # directory it may not be able to read.
+    csri_sp = subproject('csri', default_options: ['default_library=static'])
 endif
 
 if cc.has_function('alloca', prefix: '#include <stdlib.h>')
@@ -589,7 +591,11 @@ if conf.has('WITH_CSRI')
     csri_host_link_args = []
     if cxx.get_argument_syntax() == 'msvc'
         csri_host_cpp_args += '/guard:cf'
-        csri_host_link_args += ['/guard:cf', '/CETCOMPAT']
+        csri_host_link_args += '/guard:cf'
+        # CET shadow stacks are x86-only
+        if host_machine.cpu_family() in ['x86', 'x86_64']
+            csri_host_link_args += '/CETCOMPAT'
+        endif
     endif
 
     executable('aegisub-csri-host', 'src/csri_host/host.cpp',
