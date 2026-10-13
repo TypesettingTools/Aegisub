@@ -427,9 +427,7 @@ std::pair<unique_handle, unique_handle> create_pipe() {
 	return {std::move(server), std::move(client)};
 }
 
-/// UI limits can't be set on a job nested inside another job, so they're
-/// optional for when Aegisub itself is running in one
-unique_handle create_job(bool ui_limits) {
+unique_handle create_job() {
 	unique_handle job(CreateJobObjectW(nullptr, nullptr));
 	if (!job)
 		throw_win32("Could not create a job object for the subtitle renderer");
@@ -444,9 +442,6 @@ unique_handle create_job(bool ui_limits) {
 	limits.ProcessMemoryLimit = memory_limit;
 	if (!SetInformationJobObject(job.get(), JobObjectExtendedLimitInformation, &limits, sizeof limits))
 		throw_win32("Could not set the subtitle renderer's job limits");
-
-	if (!ui_limits)
-		return job;
 
 	JOBOBJECT_BASIC_UI_RESTRICTIONS ui{};
 	ui.UIRestrictionsClass =
@@ -516,7 +511,7 @@ struct Host::Impl {
 Host::Impl::Impl() {
 	auto const& env = environment();
 	auto [server, client] = create_pipe();
-	job = create_job(true);
+	job = create_job();
 
 	SECURITY_CAPABILITIES capabilities{};
 	capabilities.AppContainerSid = container.Sid();
@@ -550,22 +545,30 @@ Host::Impl::Impl() {
 		std::to_wstring(reinterpret_cast<uintptr_t>(client.get()));
 	auto environment_block = host_environment(container.Folder());
 
-	PROCESS_INFORMATION pi{};
-	if (!CreateProcessW(env.exe.c_str(), cmdline.data(), nullptr, nullptr, TRUE,
-	                    CREATE_SUSPENDED | EXTENDED_STARTUPINFO_PRESENT | CREATE_UNICODE_ENVIRONMENT,
-	                    environment_block.data(), env.working_directory.c_str(), &si.StartupInfo, &pi))
-		throw_win32("Could not start aegisub-csri-host.exe");
-	process.reset(pi.hProcess);
-	unique_handle thread(pi.hThread);
+	unique_handle thread;
+	auto start = [&](DWORD flags) {
+		PROCESS_INFORMATION pi{};
+		if (!CreateProcessW(env.exe.c_str(), cmdline.data(), nullptr, nullptr, TRUE,
+		                    CREATE_SUSPENDED | EXTENDED_STARTUPINFO_PRESENT | CREATE_UNICODE_ENVIRONMENT | flags,
+		                    environment_block.data(), env.working_directory.c_str(), &si.StartupInfo, &pi))
+			return false;
+		process.reset(pi.hProcess);
+		thread.reset(pi.hThread);
+		return true;
+	};
 
+	if (!start(0))
+		throw_win32("Could not start aegisub-csri-host.exe");
 	if (!AssignProcessToJobObject(job.get(), process.get())) {
-		// If Aegisub is in a job then the host is too, and a job with UI
-		// limits can't be nested inside it. The AppContainer still keeps the
-		// host from sending messages to Aegisub's windows.
-		BOOL in_job = FALSE;
-		if (IsProcessInJob(process.get(), nullptr, &in_job) && in_job)
-			job = create_job(false);
-		if (!in_job || !AssignProcessToJobObject(job.get(), process.get()))
+		// If Aegisub is running in a job then the host starts in it too, and
+		// a job with UI restrictions can't be nested inside another. The
+		// host has to break away from Aegisub's job if that's allowed, and
+		// otherwise isn't run at all, as it isn't safe without them.
+		thread.reset();
+		process.reset();
+		if (!start(CREATE_BREAKAWAY_FROM_JOB))
+			throw_win32("Could not start aegisub-csri-host.exe outside of the job object Aegisub is running in");
+		if (!AssignProcessToJobObject(job.get(), process.get()))
 			throw_win32("Could not add the subtitle renderer to its job object");
 	}
 	ResumeThread(thread.get());

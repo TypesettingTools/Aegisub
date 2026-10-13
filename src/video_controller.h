@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <libaegisub/fs.h>
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
 #include <libaegisub/ycbcr.h>
@@ -73,8 +72,8 @@ class VideoController final : public wxEvtHandler {
 	/// Last seen script color matrix
 	std::optional<agi::ycbcr::Header> color_matrix;
 
-	/// Filename of the subtitles last given to the provider
-	agi::fs::path subs_filename;
+	/// SubsController::DocumentId() of the subtitles last given to the provider
+	int subs_document_id = 0;
 
 	/// Playback timer used to periodically check if we should go to the next
 	/// frame while playing video

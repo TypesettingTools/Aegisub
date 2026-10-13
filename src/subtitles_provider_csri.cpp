@@ -106,8 +106,10 @@ void CSRISubtitlesProvider::StartHost() {
 }
 
 void CSRISubtitlesProvider::LoadScript(csri_host::Host& h) {
-	if (h.LoadSubtitles(script.data(), script.size()))
+	if (h.LoadSubtitles(script.data(), script.size())) {
+		load_failure_reported = false;
 		return;
+	}
 
 	// This isn't the host misbehaving, so it isn't restarted
 	constexpr const char *message = "The CSRI subtitle renderer could not load the subtitles";
@@ -165,6 +167,7 @@ void CSRISubtitlesProvider::NewDocument() {
 	std::lock_guard<std::mutex> lock(mutex);
 	host.reset();
 	script.clear();
+	load_failure_reported = false;
 }
 }
 
