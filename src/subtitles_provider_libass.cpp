@@ -80,78 +80,60 @@ void msg_callback(int level, const char *fmt, va_list args, void *) {
 struct cache_thread_shared {
 	ASS_Renderer *renderer = nullptr;
 	std::atomic<bool> ready{false};
-	/// Number of times the user has cancelled waiting for the cache
-	std::atomic<unsigned> cancels{0};
-	/// Is the progress dialog for the cache open? Only used on the main thread.
-	bool waiting = false;
-	/// The provider's progress dialog, or null once the provider has been
-	/// destroyed. Only used on the main thread.
-	agi::BackgroundRunner *br = nullptr;
 	~cache_thread_shared() { if (renderer) ass_renderer_done(renderer); }
 };
 
-/// Wait for the font cache to finish updating, showing a progress dialog if
-/// it's taking a while. Must be called on the main thread. Throws
-/// agi::UserCancelException if the cache isn't ready when it returns, either
-/// because the user cancelled, because it was called while the dialog was
-/// already open, or because the provider no longer exists.
-void wait_for_cache(cache_thread_shared& state) {
-	if (state.ready)
-		return;
-	if (state.waiting || !state.br)
-		throw agi::UserCancelException("Can't wait for the font cache");
-	agi::util::sleep_for(250);
-	if (state.ready)
-		return;
-
-	state.waiting = true;
-	try {
-		state.br->Run([&](agi::ProgressSink *ps) {
-			ps->SetTitle(from_wx(_("Updating font index")));
-			ps->SetMessage(from_wx(_("This may take several minutes")));
-			ps->SetIndeterminate();
-			while (!state.ready && !ps->IsCancelled())
-				agi::util::sleep_for(250);
-		});
-	}
-	catch (agi::UserCancelException const&) { }
-	state.waiting = false;
-
-	if (!state.ready) {
-		++state.cancels;
-		throw agi::UserCancelException("Cancelled waiting for the font cache");
-	}
-}
-
 class LibassSubtitlesProvider final : public SubtitlesProvider {
+	agi::BackgroundRunner *br;
 	std::shared_ptr<cache_thread_shared> shared;
 	ASS_Track* ass_track = nullptr;
+	/// Is the font cache progress dialog open?
+	bool waiting = false;
+
+	/// Wait for the font cache on the main thread, showing progress if it's
+	/// taking a while
+	void WaitForCache() {
+		if (shared->ready)
+			return;
+		// Drawing from inside the progress dialog's event loop
+		if (waiting)
+			throw agi::UserCancelException("Already waiting for the font cache");
+		agi::util::sleep_for(250);
+		if (shared->ready)
+			return;
+
+		waiting = true;
+		try {
+			br->Run([this](agi::ProgressSink *ps) {
+				ps->SetTitle(from_wx(_("Updating font index")));
+				ps->SetMessage(from_wx(_("This may take several minutes")));
+				ps->SetIndeterminate();
+				while (!shared->ready && !ps->IsCancelled())
+					agi::util::sleep_for(250);
+			});
+		}
+		catch (agi::UserCancelException const&) { }
+		waiting = false;
+
+		if (!shared->ready)
+			throw agi::UserCancelException("Cancelled waiting for the font cache");
+	}
 
 	ASS_Renderer *renderer() {
 		if (shared->ready)
 			return shared->renderer;
 
 		if (wxThread::IsMain()) {
-			wait_for_cache(*shared);
+			WaitForCache();
 			return shared->renderer;
 		}
 
-		// The main thread may be blocked waiting for this thread, so wait for
-		// the cache here and only use the main thread to show the progress
-		// dialog when it's free, to let the user cancel. If the dialog is
-		// already open, cancelling that one cancels this too.
-		unsigned cancels = shared->cancels;
-		agi::dispatch::Main().Async([state = shared] {
-			try {
-				wait_for_cache(*state);
-			}
-			catch (agi::UserCancelException const&) { }
-		});
-		while (!shared->ready && shared->cancels == cancels)
-			agi::util::sleep_for(50);
-		if (!shared->ready)
-			throw agi::UserCancelException("Cancelled waiting for the font cache");
-		return shared->renderer;
+		// Other threads can't wait for the main thread to show progress, as
+		// it may be waiting for them, or wait without showing progress, as
+		// that'd leave the main thread unresponsive if it is. The video
+		// provider waits for the cache on the main thread before drawing,
+		// so this only happens if the user cancelled that.
+		throw agi::UserCancelException("The font cache isn't ready");
 	}
 
 public:
@@ -166,7 +148,7 @@ public:
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
 
-	void WaitUntilReady() override { wait_for_cache(*shared); }
+	void WaitUntilReady() override { WaitForCache(); }
 
 	void Reinitialize() override {
 		// No need to reinit if we're not even done with the initial init
@@ -181,9 +163,9 @@ public:
 };
 
 LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br)
-: shared(std::make_shared<cache_thread_shared>())
+: br(br)
+, shared(std::make_shared<cache_thread_shared>())
 {
-	shared->br = br;
 	auto state = shared;
 	cache_queue->Async([state] {
 		auto ass_renderer = ass_renderer_init(library);
@@ -197,10 +179,6 @@ LibassSubtitlesProvider::LibassSubtitlesProvider(agi::BackgroundRunner *br)
 }
 
 LibassSubtitlesProvider::~LibassSubtitlesProvider() {
-	// Stop anything still queued on the main thread from using the progress
-	// dialog, which may be destroyed along with this. Providers are only
-	// destroyed on the main thread.
-	shared->br = nullptr;
 	if (ass_track) ass_free_track(ass_track);
 }
 

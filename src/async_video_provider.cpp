@@ -192,6 +192,15 @@ AsyncVideoProvider::AsyncVideoProvider(agi::fs::path const& video_filename, agi:
 , source_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix, br))
 , parent(parent)
 {
+	// Subtitles are drawn on the worker thread, which can't wait for the
+	// provider to be ready as it can't show progress. If the user cancels,
+	// frames are drawn without subtitles until it's ready.
+	if (subs_provider) {
+		try {
+			subs_provider->WaitUntilReady();
+		}
+		catch (agi::UserCancelException const&) { }
+	}
 }
 
 AsyncVideoProvider::~AsyncVideoProvider() {
