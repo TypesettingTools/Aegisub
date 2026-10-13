@@ -50,6 +50,7 @@
 
 namespace {
 DEFINE_EXCEPTION(CSRIHostError, agi::Exception);
+DEFINE_EXCEPTION(CSRILoadError, agi::Exception);
 
 /// Number of times a renderer host has crashed, hung or misbehaved this
 /// session. Restarts are capped so that an exploit which only works some of
@@ -67,8 +68,11 @@ class CSRISubtitlesProvider final : public SubtitlesProvider {
 	std::vector<char> script;
 	/// Frames are requested from both the video thread and the main thread
 	std::mutex mutex;
+	/// Has the renderer failing to load a script been shown to the user?
+	bool load_failure_reported = false;
 
 	void StartHost();
+	void LoadScript(csri_host::Host& h);
 	/// Call func with the host and whether it was just (re)started, starting
 	/// it if needed
 	template<typename Func> void WithHost(Func&& func);
@@ -96,9 +100,22 @@ void CSRISubtitlesProvider::StartHost() {
 	auto new_host = std::make_unique<csri_host::Host>();
 	if (!new_host->OpenRenderer(renderer))
 		throw csri_host::Error("CSRI renderer " + renderer + " is no longer available");
-	if (!script.empty())
-		new_host->LoadSubtitles(script.data(), script.size());
 	host = std::move(new_host);
+	if (!script.empty())
+		LoadScript(*host);
+}
+
+void CSRISubtitlesProvider::LoadScript(csri_host::Host& h) {
+	if (h.LoadSubtitles(script.data(), script.size()))
+		return;
+
+	// This isn't the host misbehaving, so it isn't restarted
+	constexpr const char *message = "The CSRI subtitle renderer could not load the subtitles";
+	LOG_E("subtitle/provider/csri") << message;
+	if (!load_failure_reported) {
+		load_failure_reported = true;
+		throw CSRILoadError(message);
+	}
 }
 
 template<typename Func>
@@ -129,7 +146,7 @@ void CSRISubtitlesProvider::LoadSubtitles(const char *data, size_t len) {
 	WithHost([&](csri_host::Host& h, bool started) {
 		// A newly started host has already been given the script
 		if (!started)
-			h.LoadSubtitles(script.data(), script.size());
+			LoadScript(h);
 	});
 }
 

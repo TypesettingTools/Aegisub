@@ -59,7 +59,10 @@ if ($LASTEXITCODE -ne 0) { throw "meson install failed (exit $LASTEXITCODE)" }
 
 Write-Step 'Copying executables'
 Copy-ToDirectory $InstallerDir\bin\aegisub.exe  $PortableOutputDir
-Copy-ToDirectory $InstallerDir\bin\aegisub-csri-host.exe  $PortableOutputDir
+# Not built when CSRI is disabled
+if (Test-Path $InstallerDir\bin\aegisub-csri-host.exe) {
+    Copy-ToDirectory $InstallerDir\bin\aegisub-csri-host.exe  $PortableOutputDir
+}
 
 Write-Step 'Copying translations'
 Copy-ToDirectory "$InstallerDir\share\locale\*"  "$PortableOutputDir\locale" -Recurse

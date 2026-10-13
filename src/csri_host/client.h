@@ -34,7 +34,8 @@ public:
 	std::vector<std::string> ListRenderers();
 	/// Select the renderer to use, returning false if it doesn't exist
 	bool OpenRenderer(std::string const& name);
-	void LoadSubtitles(const char *data, size_t len);
+	/// Load a script, returning false if the renderer couldn't load it
+	bool LoadSubtitles(const char *data, size_t len);
 	/// Render subtitles onto a BGRx frame
 	void Render(unsigned char *data, int width, int height, int pitch, bool flipped, double time);
 };

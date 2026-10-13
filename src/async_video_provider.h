@@ -83,6 +83,9 @@ class AsyncVideoProvider {
 	// Returns a monochromatic frame with the current dimensions
 	VideoFrame GetBlankFrame(bool white);
 
+	/// Implementation of GetSubtitles, run on the worker thread
+	VideoFrame ProcSubtitles(double time);
+
 public:
 	/// @brief Load the passed subtitle file
 	/// @param subs File to load
