@@ -91,13 +91,15 @@ std::vector<char> read_payload(Request const& req, uint64_t max_size) {
 void lock_down() {
 	// Arbitrary code guard: no new executable memory. x86 and x64 code
 	// emulated on ARM64 is translated at runtime, so this can't be used there.
-	USHORT process_machine = 0, native_machine = 0;
-	if (!IsWow64Process2(GetCurrentProcess(), &process_machine, &native_machine))
-		fail();
-#if !defined(_M_ARM64) && !defined(_M_ARM64EC)
-	bool emulated = native_machine == IMAGE_FILE_MACHINE_ARM64;
-#else
 	bool emulated = false;
+#if !defined(_M_ARM64) && !defined(_M_ARM64EC)
+	// Not available before Windows 10 1709, which also didn't run on ARM64
+	using IsWow64Process2Fn = BOOL (WINAPI *)(HANDLE, USHORT *, USHORT *);
+	auto is_wow64_process2 = reinterpret_cast<IsWow64Process2Fn>(
+		GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "IsWow64Process2"));
+	USHORT process_machine = 0, native_machine = 0;
+	if (is_wow64_process2 && is_wow64_process2(GetCurrentProcess(), &process_machine, &native_machine))
+		emulated = native_machine == IMAGE_FILE_MACHINE_ARM64;
 #endif
 	if (!emulated) {
 		PROCESS_MITIGATION_DYNAMIC_CODE_POLICY dynamic_code{};

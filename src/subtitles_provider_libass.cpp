@@ -80,24 +80,44 @@ void msg_callback(int level, const char *fmt, va_list args, void *) {
 struct cache_thread_shared {
 	ASS_Renderer *renderer = nullptr;
 	std::atomic<bool> ready{false};
+	/// Number of times the user has cancelled waiting for the cache
+	std::atomic<unsigned> cancels{0};
+	/// Is the progress dialog for the cache open? Only used on the main thread.
+	bool waiting = false;
 	~cache_thread_shared() { if (renderer) ass_renderer_done(renderer); }
 };
 
 /// Wait for the font cache to finish updating, showing a progress dialog if
-/// it's taking a while. Must be called on the main thread.
-void wait_for_cache(agi::BackgroundRunner *br, cache_thread_shared const& state) {
+/// it's taking a while. Must be called on the main thread. Throws
+/// agi::UserCancelException if the cache isn't ready when it returns, either
+/// because the user cancelled or because it was called while the dialog was
+/// already open.
+void wait_for_cache(agi::BackgroundRunner *br, cache_thread_shared& state) {
 	if (state.ready)
 		return;
+	if (state.waiting)
+		throw agi::UserCancelException("Already waiting for the font cache");
 	agi::util::sleep_for(250);
 	if (state.ready)
 		return;
-	br->Run([&](agi::ProgressSink *ps) {
-		ps->SetTitle(from_wx(_("Updating font index")));
-		ps->SetMessage(from_wx(_("This may take several minutes")));
-		ps->SetIndeterminate();
-		while (!state.ready && !ps->IsCancelled())
-			agi::util::sleep_for(250);
-	});
+
+	state.waiting = true;
+	try {
+		br->Run([&](agi::ProgressSink *ps) {
+			ps->SetTitle(from_wx(_("Updating font index")));
+			ps->SetMessage(from_wx(_("This may take several minutes")));
+			ps->SetIndeterminate();
+			while (!state.ready && !ps->IsCancelled())
+				agi::util::sleep_for(250);
+		});
+	}
+	catch (agi::UserCancelException const&) { }
+	state.waiting = false;
+
+	if (!state.ready) {
+		++state.cancels;
+		throw agi::UserCancelException("Cancelled waiting for the font cache");
+	}
 }
 
 class LibassSubtitlesProvider final : public SubtitlesProvider {
@@ -116,18 +136,17 @@ class LibassSubtitlesProvider final : public SubtitlesProvider {
 
 		// The main thread may be blocked waiting for this thread, so wait for
 		// the cache here and only use the main thread to show the progress
-		// dialog when it's free, to let the user cancel. br is owned by the
-		// project, which outlives anything queued on the main thread.
-		auto cancelled = std::make_shared<std::atomic<bool>>(false);
-		agi::dispatch::Main().Async([br = br, state = shared, cancelled] {
+		// dialog when it's free, to let the user cancel. If the dialog is
+		// already open, cancelling that one cancels this too. br is owned by
+		// the project, which outlives anything queued on the main thread.
+		unsigned cancels = shared->cancels;
+		agi::dispatch::Main().Async([br = br, state = shared] {
 			try {
 				wait_for_cache(br, *state);
 			}
 			catch (agi::UserCancelException const&) { }
-			if (!state->ready)
-				*cancelled = true;
 		});
-		while (!shared->ready && !*cancelled)
+		while (!shared->ready && shared->cancels == cancels)
 			agi::util::sleep_for(50);
 		if (!shared->ready)
 			throw agi::UserCancelException("Cancelled waiting for the font cache");
