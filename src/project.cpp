@@ -576,6 +576,15 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		if (!video.empty() || !audio.empty()) {
 			// Failed loads retain the existing media, so use its paths too.
 			UpdateRelativePaths();
+			// Matching links may contain "..", which must not cause a spurious reload.
+			auto use_current_path = [&](std::string& linked, agi::fs::path const& current) {
+				if (context->path->MakeAbsolute(linked, "?script").lexically_normal() == current.lexically_normal())
+					linked = current.generic_string();
+			};
+			use_current_path(properties.video_file, video_file);
+			use_current_path(properties.audio_file, audio_file);
+			use_current_path(properties.timecodes_file, timecodes_file);
+			use_current_path(properties.keyframes_file, keyframes_file);
 			if (!video.empty()) {
 				if (video_file.lexically_normal() != context->path->MakeAbsolute(properties.video_file, "?script").lexically_normal()) {
 					properties.timecodes_file = timecodes_file.generic_string();
