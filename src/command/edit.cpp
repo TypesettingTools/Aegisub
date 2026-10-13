@@ -530,7 +530,7 @@ struct edit_font final : public Command {
 			if (font.GetStyle() != startfont.GetStyle())
 				do_set_tag("\\i", std::to_string(font.GetStyle() == wxFONTSTYLE_ITALIC));
 			if (font.GetUnderlined() != startfont.GetUnderlined())
-				do_set_tag("\\i", std::to_string(font.GetUnderlined()));
+				do_set_tag("\\u", std::to_string(font.GetUnderlined()));
 
 			return shift;
 		});
