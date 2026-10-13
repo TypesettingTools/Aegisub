@@ -95,6 +95,12 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer)
 	}
 	std::lock_guard<std::mutex> lock(mutex);
 	WithHost([](csri_host::Host&, bool) { });
+	// Another provider may have used up the last restart since the check
+	// above, in which case WithHost doesn't start a host
+	if (!host) {
+		LOG_E("subtitle/provider/csri") << disabled_message;
+		throw CSRIHostError(disabled_message);
+	}
 }
 
 void CSRISubtitlesProvider::StartHost() {
