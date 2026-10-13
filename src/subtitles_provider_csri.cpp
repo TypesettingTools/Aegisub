@@ -69,6 +69,8 @@ class CSRISubtitlesProvider final : public SubtitlesProvider {
 	std::mutex mutex;
 
 	void StartHost();
+	/// Call func with the host and whether it was just (re)started, starting
+	/// it if needed
 	template<typename Func> void WithHost(Func&& func);
 	void LoadSubtitles(const char *data, size_t len) override;
 
@@ -86,13 +88,13 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer)
 		throw CSRIHostError(disabled_message);
 	}
 	std::lock_guard<std::mutex> lock(mutex);
-	WithHost([](csri_host::Host&) { });
+	WithHost([](csri_host::Host&, bool) { });
 }
 
 void CSRISubtitlesProvider::StartHost() {
 	auto new_host = std::make_unique<csri_host::Host>();
 	if (!new_host->OpenRenderer(renderer))
-		throw agi::InternalError("CSRI renderer vanished between initial list and creation?");
+		throw csri_host::Error("CSRI renderer " + renderer + " is no longer available");
 	if (!script.empty())
 		new_host->LoadSubtitles(script.data(), script.size());
 	host = std::move(new_host);
@@ -101,13 +103,15 @@ void CSRISubtitlesProvider::StartHost() {
 template<typename Func>
 void CSRISubtitlesProvider::WithHost(Func&& func) {
 	try {
+		bool started = false;
 		if (!host) {
 			// The failure which used up the last restart has already been
 			// reported, so just stop rendering
 			if (host_failures >= max_host_failures) return;
 			StartHost();
+			started = true;
 		}
-		func(*host);
+		func(*host, started);
 	}
 	catch (csri_host::Error const& err) {
 		host.reset();
@@ -121,14 +125,18 @@ void CSRISubtitlesProvider::WithHost(Func&& func) {
 void CSRISubtitlesProvider::LoadSubtitles(const char *data, size_t len) {
 	std::lock_guard<std::mutex> lock(mutex);
 	script.assign(data, data + len);
-	WithHost([&](csri_host::Host& h) { h.LoadSubtitles(script.data(), script.size()); });
+	WithHost([&](csri_host::Host& h, bool started) {
+		// A newly started host has already been given the script
+		if (!started)
+			h.LoadSubtitles(script.data(), script.size());
+	});
 }
 
 void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {
 	if (dst.data.size() < size_t(dst.pitch) * dst.height) return;
 
 	std::lock_guard<std::mutex> lock(mutex);
-	WithHost([&](csri_host::Host& h) {
+	WithHost([&](csri_host::Host& h, bool) {
 		// Add 1e-9 to guard against floating point imprecision errors on int -> float -> *1000 -> int round trips
 		h.Render(dst.data.data(), dst.width, dst.height, dst.pitch, dst.flipped, time + 1e-9);
 	});

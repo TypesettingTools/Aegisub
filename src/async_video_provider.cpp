@@ -107,9 +107,17 @@ VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
 	if (!subs) return frame_black;
 	VideoFrame frame_white = GetBlankFrame(true);
 
-	subs_provider->LoadSubtitles(subs.get());
-	subs_provider->DrawSubtitles(frame_black, time / 1000.);
-	subs_provider->DrawSubtitles(frame_white, time / 1000.);
+	try {
+		subs_provider->LoadSubtitles(subs.get());
+		subs_provider->DrawSubtitles(frame_black, time / 1000.);
+		subs_provider->DrawSubtitles(frame_white, time / 1000.);
+	}
+	catch (agi::UserCancelException const&) { throw; }
+	catch (agi::Exception const& err) {
+		parent->QueueEvent(new SubtitlesProviderErrorEvent(err.GetMessage()));
+		// Fully transparent
+		return GetBlankFrame(false);
+	}
 
 	using namespace boost::gil;
 	auto blackview = interleaved_view(frame_black.width, frame_black.height, (bgra8_pixel_t*) frame_black.data.data(), frame_black.width * 4);
