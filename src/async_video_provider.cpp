@@ -79,6 +79,10 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, doub
 		subs_provider->DrawSubtitles(*frame, time / 1000.);
 	}
 	catch (agi::UserCancelException const&) { }
+	catch (agi::Exception const& err) {
+		// Still show the frame, just without subtitles
+		parent->QueueEvent(new SubtitlesProviderErrorEvent(err.GetMessage()));
+	}
 
 	return frame;
 }

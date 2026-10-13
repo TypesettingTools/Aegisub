@@ -24,6 +24,7 @@ Name: "checkforupdates"; Description: "{cm:CheckForUpdates}"; GroupDescription: 
 [Files]
 ; main
 DestDir: {app}; Source: "{#BUILD_ROOT}\aegisub.exe"; Flags: ignoreversion; Components: main
+DestDir: {app}; Source: "{#BUILD_ROOT}\aegisub-csri-host.exe"; Flags: ignoreversion; Components: main
 DestDir: {app}; Source: "{#INSTALLER_DIR}\license.txt"; Flags: ignoreversion; Components: main
 
 [Icons]
@@ -35,6 +36,11 @@ Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\aegisub
 Root: HKLM; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\aegisub.exe"; ValueType: string; ValueName: ""; ValueData: "{app}\aegisub.exe"; Flags: uninsdeletekey
 
 [Run]
+; aegisub-csri-host runs VSFilter in an AppContainer, which can only load files
+; readable by ALL APPLICATION PACKAGES. Program Files already grants that, but
+; other install locations usually don't.
+Filename: {sys}\icacls.exe; Parameters: """{app}\aegisub-csri-host.exe"" /grant *S-1-15-2-1:(RX)"; Flags: runhidden; Components: main
+Filename: {sys}\icacls.exe; Parameters: """{app}\csri"" /grant *S-1-15-2-1:(OI)(CI)(RX)"; Flags: runhidden; Components: main
 Filename: {app}\aegisub.exe; Description: {cm:LaunchProgram,Aegisub}; Flags: nowait postinstall skipifsilent
 
 [InstallDelete]
