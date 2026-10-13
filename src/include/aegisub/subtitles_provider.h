@@ -55,8 +55,9 @@ public:
 	/// file can't see or affect the next.
 	virtual void NewDocument() { }
 	/// Wait until the provider is ready to draw, showing progress if needed.
-	/// Called on the main thread before it waits for subtitles to be drawn
-	/// on another thread, which would leave it unable to show progress.
+	/// Must be called on the main thread. Drawing on other threads throws
+	/// agi::UserCancelException if the provider isn't ready, as they can't
+	/// show progress. Throws agi::UserCancelException if the user cancels.
 	virtual void WaitUntilReady() { }
 };
 
