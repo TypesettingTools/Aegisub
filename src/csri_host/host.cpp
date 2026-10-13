@@ -89,11 +89,22 @@ std::vector<char> read_payload(Request const& req, uint64_t max_size) {
 /// Apply the mitigations that can't be enabled when the process is created
 /// because they'd stop the renderers themselves from loading
 void lock_down() {
-	// Arbitrary code guard: no new executable memory
-	PROCESS_MITIGATION_DYNAMIC_CODE_POLICY dynamic_code{};
-	dynamic_code.ProhibitDynamicCode = 1;
-	if (!SetProcessMitigationPolicy(ProcessDynamicCodePolicy, &dynamic_code, sizeof dynamic_code))
+	// Arbitrary code guard: no new executable memory. x86 and x64 code
+	// emulated on ARM64 is translated at runtime, so this can't be used there.
+	USHORT process_machine = 0, native_machine = 0;
+	if (!IsWow64Process2(GetCurrentProcess(), &process_machine, &native_machine))
 		fail();
+#if !defined(_M_ARM64) && !defined(_M_ARM64EC)
+	bool emulated = native_machine == IMAGE_FILE_MACHINE_ARM64;
+#else
+	bool emulated = false;
+#endif
+	if (!emulated) {
+		PROCESS_MITIGATION_DYNAMIC_CODE_POLICY dynamic_code{};
+		dynamic_code.ProhibitDynamicCode = 1;
+		if (!SetProcessMitigationPolicy(ProcessDynamicCodePolicy, &dynamic_code, sizeof dynamic_code))
+			fail();
+	}
 
 	// Code integrity guard: no more DLLs which aren't signed by Microsoft
 	PROCESS_MITIGATION_BINARY_SIGNATURE_POLICY signature{};

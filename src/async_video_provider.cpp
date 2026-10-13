@@ -25,6 +25,7 @@
 
 #include <libaegisub/dispatch.h>
 
+#include <algorithm>
 #include <boost/gil.hpp>
 
 enum {
@@ -104,6 +105,8 @@ VideoFrame AsyncVideoProvider::GetBlankFrame(bool white) {
 VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
 	// Run on the worker so that this can't interleave with loading a new
 	// file, which would let a sandboxed renderer see both files
+	if (subs_provider)
+		subs_provider->WaitUntilReady();
 	VideoFrame ret;
 	worker->Sync([&]{ ret = ProcSubtitles(time); });
 	return ret;
@@ -136,7 +139,9 @@ VideoFrame AsyncVideoProvider::ProcSubtitles(double time) {
 	auto whiteview = interleaved_view(frame_white.width, frame_white.height, (bgra8_pixel_t*) frame_white.data.data(), frame_white.width * 4);
 
 	transform_pixels(blackview, whiteview, blackview, [=](const bgra8_pixel_t black, const bgra8_pixel_t white) -> bgra8_pixel_t {
-		int a = 255 - (white[0] - black[0]);
+		// The renderer may not be trustworthy, so the frames may not have
+		// been rendered consistently and these may be out of range
+		int a = std::clamp(255 - (white[0] - black[0]), 0, 255);
 
 		bgra8_pixel_t ret;
 		if (a == 0) {
@@ -145,9 +150,9 @@ VideoFrame AsyncVideoProvider::ProcSubtitles(double time) {
 			ret[2] = 0;
 			ret[3] = 0;
 		} else {
-			ret[0] = black[0] / (a / 255.);
-			ret[1] = black[1] / (a / 255.);
-			ret[2] = black[2] / (a / 255.);
+			ret[0] = std::min(255., black[0] / (a / 255.));
+			ret[1] = std::min(255., black[1] / (a / 255.));
+			ret[2] = std::min(255., black[2] / (a / 255.));
 			ret[3] = a;
 		}
 		return ret;
@@ -295,6 +300,15 @@ void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version, bool check_updated
 }
 
 std::shared_ptr<VideoFrame> AsyncVideoProvider::GetFrame(int frame, double time, bool raw) {
+	if (!raw && subs_provider) {
+		try {
+			subs_provider->WaitUntilReady();
+		}
+		catch (agi::UserCancelException const&) {
+			// As when cancelling while drawing, return the frame without subtitles
+			raw = true;
+		}
+	}
 	std::shared_ptr<VideoFrame> ret;
 	worker->Sync([&]{ ret = ProcFrame(frame, time, raw); });
 	return ret;

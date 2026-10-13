@@ -54,6 +54,10 @@ public:
 	/// in a sandbox start a new one, so that a renderer compromised by one
 	/// file can't see or affect the next.
 	virtual void NewDocument() { }
+	/// Wait until the provider is ready to draw, showing progress if needed.
+	/// Called on the main thread before it waits for subtitles to be drawn
+	/// on another thread, which would leave it unable to show progress.
+	virtual void WaitUntilReady() { }
 };
 
 namespace agi { class BackgroundRunner; }
