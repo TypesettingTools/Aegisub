@@ -570,7 +570,27 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	else if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file)
 		DoLoadAudio(video_file, true);
 
-	// With explicitly selected media, skip all of the subtitle's linked files.
-	if (!subs.empty() && video.empty() && audio.empty())
+	if (!subs.empty()) {
+		// Saved links must not replace dropped media or apply timing data from
+		// another video, but the script's other associations still belong to it.
+		if (!video.empty() || !audio.empty()) {
+			// Failed loads retain the existing media, so use its paths too.
+			UpdateRelativePaths();
+			auto const& current = context->ass->Properties;
+			if (!video.empty()) {
+				if (video != context->path->MakeAbsolute(properties.video_file, "?script")) {
+					properties.timecodes_file = current.timecodes_file;
+					properties.keyframes_file = current.keyframes_file;
+				}
+				properties.video_file = current.video_file;
+			}
+			if (!audio.empty())
+				properties.audio_file = current.audio_file;
+		}
+		if (!timecodes.empty())
+			properties.timecodes_file = context->path->MakeRelative(timecodes_file, "?script").generic_string();
+		if (!keyframes.empty())
+			properties.keyframes_file = context->path->MakeRelative(keyframes_file, "?script").generic_string();
 		LoadUnloadFiles(properties);
+	}
 }
