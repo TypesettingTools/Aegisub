@@ -83,6 +83,23 @@ struct cache_thread_shared {
 	~cache_thread_shared() { if (renderer) ass_renderer_done(renderer); }
 };
 
+/// Wait for the font cache to finish updating, showing a progress dialog if
+/// it's taking a while. Must be called on the main thread.
+void wait_for_cache(agi::BackgroundRunner *br, cache_thread_shared const& state) {
+	if (state.ready)
+		return;
+	agi::util::sleep_for(250);
+	if (state.ready)
+		return;
+	br->Run([&](agi::ProgressSink *ps) {
+		ps->SetTitle(from_wx(_("Updating font index")));
+		ps->SetMessage(from_wx(_("This may take several minutes")));
+		ps->SetIndeterminate();
+		while (!state.ready && !ps->IsCancelled())
+			agi::util::sleep_for(250);
+	});
+}
+
 class LibassSubtitlesProvider final : public SubtitlesProvider {
 	agi::BackgroundRunner *br;
 	std::shared_ptr<cache_thread_shared> shared;
@@ -92,25 +109,28 @@ class LibassSubtitlesProvider final : public SubtitlesProvider {
 		if (shared->ready)
 			return shared->renderer;
 
-		auto block = [&] {
-			if (shared->ready)
-				return;
-			agi::util::sleep_for(250);
-			if (shared->ready)
-				return;
-			br->Run([this](agi::ProgressSink *ps) {
-				ps->SetTitle(from_wx(_("Updating font index")));
-				ps->SetMessage(from_wx(_("This may take several minutes")));
-				ps->SetIndeterminate();
-				while (!shared->ready && !ps->IsCancelled())
-					agi::util::sleep_for(250);
-			});
-		};
+		if (wxThread::IsMain()) {
+			wait_for_cache(br, *shared);
+			return shared->renderer;
+		}
 
-		if (wxThread::IsMain())
-			block();
-		else
-			agi::dispatch::Main().Sync(block);
+		// The main thread may be blocked waiting for this thread, so wait for
+		// the cache here and only use the main thread to show the progress
+		// dialog when it's free, to let the user cancel. br is owned by the
+		// project, which outlives anything queued on the main thread.
+		auto cancelled = std::make_shared<std::atomic<bool>>(false);
+		agi::dispatch::Main().Async([br = br, state = shared, cancelled] {
+			try {
+				wait_for_cache(br, *state);
+			}
+			catch (agi::UserCancelException const&) { }
+			if (!state->ready)
+				*cancelled = true;
+		});
+		while (!shared->ready && !*cancelled)
+			agi::util::sleep_for(50);
+		if (!shared->ready)
+			throw agi::UserCancelException("Cancelled waiting for the font cache");
 		return shared->renderer;
 	}
 
@@ -125,8 +145,6 @@ public:
 	}
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
-
-	void WaitUntilReady() override { renderer(); }
 
 	void Reinitialize() override {
 		// No need to reinit if we're not even done with the initial init
