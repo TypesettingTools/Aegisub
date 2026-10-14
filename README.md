@@ -123,7 +123,6 @@ meson install -C build --skip-subprojects luajit
 
 #### Packaging
 If you are packaging Aegisub for a Linux distribution, here are a few things you may need to know:
-- Aegisub cannot be built with LTO (See: https://github.com/TypesettingTools/Aegisub/issues/290).
 - Aegisub depends on LuaJIT and *requires* LuaJIT to be build with Lua 5.2 compatibility enabled.
   We are aware that most distributions do not compile LuaJIT with this flag, and that this complicates packaging for them, see https://github.com/TypesettingTools/Aegisub/issues/239 for a detailed discussion of the situation.
 
