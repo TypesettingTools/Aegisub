@@ -274,7 +274,11 @@ jobs:
         if: matrix.config.os == 'windows-latest' && env.AEGISUB_SIGN_WINDOWS != 'true'
         with:
           name: ${{ matrix.config.name }} - installer
-          path: build/Aegisub-*.exe
+          # Globs are case-insensitive on Windows, so this would also match
+          # aegisub-csri-host.exe
+          path: |
+            build/Aegisub-*.exe
+            !build/aegisub-csri-host.exe
           if-no-files-found: error
 
       - name: Upload artifacts - portable.zip
@@ -420,7 +424,11 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: Windows signing - unsigned installer
-          path: build/Aegisub-*.exe
+          # Globs are case-insensitive on Windows, so this would also match
+          # aegisub-csri-host.exe
+          path: |
+            build/Aegisub-*.exe
+            !build/aegisub-csri-host.exe
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v7
