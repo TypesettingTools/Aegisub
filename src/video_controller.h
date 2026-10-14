@@ -72,9 +72,6 @@ class VideoController final : public wxEvtHandler {
 	/// Last seen script color matrix
 	std::optional<agi::ycbcr::Header> color_matrix;
 
-	/// SubsController::DocumentId() of the subtitles last given to the provider
-	int subs_document_id = 0;
-
 	/// Playback timer used to periodically check if we should go to the next
 	/// frame while playing video
 	wxTimer playback;

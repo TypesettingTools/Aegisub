@@ -68,9 +68,6 @@ class SubsController : private agi::signal::ConnectionScope {
 	/// The filename of the currently open file, if any
 	agi::fs::path filename;
 
-	/// Changed whenever a file is loaded or closed
-	int document_id = 0;
-
 	/// Set the filename, updating things like the MRU and last used path
 	void SetFileName(agi::fs::path const& file);
 
@@ -94,11 +91,6 @@ public:
 
 	/// The file's path and filename if any, or platform-appropriate "untitled"
 	agi::fs::path Filename() const;
-
-	/// Identifies the current document. Unlike the filename, this changes
-	/// whenever a file is loaded or closed, and not when it's saved under
-	/// a different name.
-	int DocumentId() const { return document_id; }
 
 	/// Does the file have unsaved changes?
 	bool IsModified() const { return commit_id != saved_commit_id; };
