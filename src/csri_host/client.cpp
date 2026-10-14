@@ -752,6 +752,10 @@ bool Host::Impl::Render(SharedFrameStorage const& buffer, uint32_t width, uint32
 	return Call(req).status == Status::Ok;
 }
 
+bool Supported() {
+	return supported_windows_version();
+}
+
 Host::Host() : impl(std::make_unique<Impl>()) { }
 Host::~Host() = default;
 
