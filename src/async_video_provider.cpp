@@ -106,8 +106,7 @@ VideoFrame AsyncVideoProvider::GetBlankFrame(bool white) {
 }
 
 VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
-	// Run on the worker so that this can't interleave with loading a new
-	// file, which would let a sandboxed renderer see both files
+	// Run on the worker, as the subtitles and the provider are used there
 	if (subs_provider)
 		subs_provider->WaitUntilReady();
 	VideoFrame ret;
@@ -211,11 +210,13 @@ AsyncVideoProvider::~AsyncVideoProvider() {
 	worker->Sync([]{});
 }
 
-void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
+void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs, bool replaced) throw() {
 	uint_fast32_t req_version = ++version;
 
 	auto copy = new AssFile(*new_subs);
 	worker->Async([=, this]{
+		if (replaced && subs_provider)
+			subs_provider->ResetReportedErrors();
 		subs.reset(copy);
 		single_frame = NEW_SUBS_FILE;
 		ProcAsync(req_version, false);

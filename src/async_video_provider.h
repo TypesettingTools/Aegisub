@@ -93,10 +93,12 @@ class AsyncVideoProvider {
 public:
 	/// @brief Load the passed subtitle file
 	/// @param subs File to load
+	/// @param replaced Has the whole file been replaced, such as by opening a
+	///                 different one or undoing?
 	///
 	/// This function blocks until is it is safe for the calling thread to
 	/// modify subs
-	void LoadSubtitles(const AssFile *subs) throw();
+	void LoadSubtitles(const AssFile *subs, bool replaced = false) throw();
 
 	/// @brief Update a previously loaded subtitle file
 	/// @param changed Line that has changed
