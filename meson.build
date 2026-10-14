@@ -501,9 +501,11 @@ deps += dep_gl
 if not get_option('csri').disabled() and host_machine.system() == 'windows'
     conf.set('WITH_CSRI', 1)
 
-    # Only linked into aegisub-csri-host; Aegisub itself never loads renderers.
-    # Static so that the sandboxed host doesn't need to load csri.dll from a
-    # directory it may not be able to read.
+    # The CSRI loader library, which finds and loads renderer DLLs such as
+    # VSFilter from the csri directory at runtime. Only linked into
+    # aegisub-csri-host; Aegisub itself never loads renderers. Static because
+    # the sandboxed host can't read the rest of the install directory, so it
+    # couldn't load the loader as csri.dll from there.
     csri_sp = subproject('csri', default_options: ['default_library=static'])
 endif
 
