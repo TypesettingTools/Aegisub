@@ -348,6 +348,14 @@ class Container {
 		return s;
 	}
 
+	/// Delete the profile. If this fails it's reused by the next host, or
+	/// deleted the next time Aegisub starts.
+	static void release(Shared& s) {
+		FreeSid(s.sid);
+		s.sid = nullptr;
+		environment().userenv.remove(environment().container_name.c_str());
+	}
+
 	PSID sid;
 	/// The profile's folder, which only AppContainers using the profile can
 	/// write to
@@ -368,31 +376,26 @@ public:
 				hr = env.userenv.derive(name, &s.sid);
 			if (FAILED(hr))
 				throw Error("Could not create an AppContainer for the subtitle renderer: " + error_string(static_cast<DWORD>(hr)));
-			try {
+		}
+		try {
+			if (s.users == 0)
 				s.folder = container_folder(s.sid);
-			}
-			catch (...) {
-				FreeSid(s.sid);
-				s.sid = nullptr;
-				env.userenv.remove(name);
-				throw;
-			}
+			folder = s.folder;
+		}
+		catch (...) {
+			if (s.users == 0)
+				release(s);
+			throw;
 		}
 		++s.users;
 		sid = s.sid;
-		folder = s.folder;
 	}
 
-	/// If deleting the profile fails it's reused by the next host, or deleted
-	/// the next time Aegisub starts
 	~Container() {
 		auto& s = shared();
 		std::lock_guard<std::mutex> lock(s.mutex);
-		if (--s.users == 0) {
-			FreeSid(s.sid);
-			s.sid = nullptr;
-			environment().userenv.remove(environment().container_name.c_str());
-		}
+		if (--s.users == 0)
+			release(s);
 	}
 
 	Container(Container const&) = delete;
