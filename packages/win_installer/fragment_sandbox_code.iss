@@ -92,6 +92,7 @@ var
   Pid: Integer;
   CreationTime: Int64;
   I: Integer;
+  Res: HResult;
 begin
   // AppContainers don't exist before Windows 8, and neither does the function
   if GetWindowsVersion < $06020000 then
@@ -106,7 +107,9 @@ begin
        not SandboxProfileOwnerRunning(Pid, CreationTime) then
     begin
       Log('Deleting AppContainer profile ' + Moniker);
-      DeleteAppContainerProfile(Moniker);
+      Res := DeleteAppContainerProfile(Moniker);
+      if Res <> 0 then
+        Log('Deleting AppContainer profile ' + Moniker + ' failed: 0x' + IntToHex(Res, 8));
     end;
   end;
 end;

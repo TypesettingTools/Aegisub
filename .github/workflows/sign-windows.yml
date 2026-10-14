@@ -16,6 +16,11 @@ on:
         required: false
         type: number
         default: 1
+      names:
+        description: If set, the exact space-separated names of the .exe files
+        required: false
+        type: string
+        default: ''
       signed-artifact:
         description: Name of the artifact to upload the signed .exe as
         required: true
@@ -38,11 +43,20 @@ jobs:
       - name: Check input
         env:
           EXPECTED_COUNT: ${{ inputs.executables }}
+          EXPECTED_NAMES: ${{ inputs.names }}
         run: |
+          $root = (Resolve-Path -LiteralPath files).Path
           $files = @(Get-ChildItem -LiteralPath files -Recurse -File)
           $expected = [int]$env:EXPECTED_COUNT
-          if ($files.Count -ne $expected -or @($files | Where-Object { $_.Extension -ne '.exe' }).Count -ne 0) {
-            throw "Expected exactly $expected .exe files to sign, got: $($files.Name -join ', ')"
+          if ($files.Count -ne $expected -or @($files | Where-Object { $_.Extension -ne '.exe' -or $_.DirectoryName -ne $root }).Count -ne 0) {
+            throw "Expected exactly $expected .exe files to sign, got: $($files.FullName -join ', ')"
+          }
+          if ($env:EXPECTED_NAMES) {
+            $names = @($files.Name | Sort-Object)
+            $expectedNames = @($env:EXPECTED_NAMES -split ' ' | Where-Object { $_ } | Sort-Object)
+            if (($names -join '|') -ne ($expectedNames -join '|')) {
+              throw "Expected to sign $($expectedNames -join ', '), got: $($names -join ', ')"
+            }
           }
 
       - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0

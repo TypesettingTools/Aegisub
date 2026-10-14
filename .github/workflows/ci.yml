@@ -389,8 +389,8 @@ jobs:
     with:
       artifact: Windows signing - unsigned executable
       signed-artifact: Windows signing - signed executable
-      # aegisub.exe and aegisub-csri-host.exe
       executables: 2
+      names: aegisub.exe aegisub-csri-host.exe
 
   windows-package:
     name: Windows - package signed executable
