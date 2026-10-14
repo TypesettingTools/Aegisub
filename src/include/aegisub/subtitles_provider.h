@@ -47,6 +47,10 @@ class SubtitlesProvider {
 	std::vector<char> buffer;
 	virtual void LoadSubtitles(const char *data, size_t len)=0;
 
+protected:
+	/// The most recently loaded script, as passed to LoadSubtitles
+	std::vector<char> const& Script() const { return buffer; }
+
 public:
 	virtual ~SubtitlesProvider() = default;
 	void LoadSubtitles(AssFile *subs, int time = -1);
