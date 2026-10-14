@@ -108,7 +108,7 @@ public:
 };
 
 DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxString const& message)
-: wxDialog(parent, -1, title_text, wxDefaultPosition, wxDefaultSize, wxBORDER_RAISED)
+: wxDialog(parent, -1, title_text, wxDefaultPosition, wxDefaultSize, wxCAPTION | wxRESIZE_BORDER)
 , pulse_timer(GetEventHandler())
 {
 	title = new wxStaticText(this, -1, title_text, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE | wxST_NO_AUTORESIZE);
@@ -126,10 +126,10 @@ DialogProgress::DialogProgress(wxWindow *parent, wxString const& title_text, wxS
 
 	wxSizer *sizer = new wxBoxSizer(wxVERTICAL);
 	sizer->Add(title, wxSizerFlags().Expand());
-	sizer->Add(gauge, wxSizerFlags(1).Expand().Border());
+	sizer->Add(gauge, wxSizerFlags().Expand().Border());
 	sizer->Add(text, wxSizerFlags().Expand());
 	sizer->Add(cancel_button, wxSizerFlags().Center().Border());
-	sizer->Add(log_output, wxSizerFlags().Expand().Border(wxALL & ~wxTOP));
+	sizer->Add(log_output, wxSizerFlags(1).Expand().Border(wxALL & ~wxTOP));
 	sizer->Hide(log_output);
 
 	SetSizerAndFit(sizer);
@@ -160,6 +160,7 @@ void DialogProgress::Run(std::function<void(agi::ProgressSink*)> task) {
 			// Unbind the cancel handler so that the default behavior happens (i.e. the
 			// dialog is closed) as there's no longer a task to cancel
 			Unbind(wxEVT_BUTTON, &DialogProgress::OnCancel, this, wxID_CANCEL);
+			Unbind(wxEVT_CLOSE_WINDOW, &DialogProgress::OnClose, this);
 
 			// If it ran to completion and there is debug output, leave the window open
 			// so the user can read the debug output and switch the cancel button to a
@@ -189,6 +190,7 @@ void DialogProgress::OnShow(wxShowEvent& evt) {
 	// Restore the cancel button in case it was previously switched to a close
 	// button
 	Bind(wxEVT_BUTTON, &DialogProgress::OnCancel, this, wxID_CANCEL);
+	Bind(wxEVT_CLOSE_WINDOW, &DialogProgress::OnClose, this);
 	Bind(wxEVT_IDLE, &DialogProgress::OnIdle, this);
 	cancel_button->SetLabelText(_("Cancel"));
 	cancel_button->Enable();
@@ -197,7 +199,7 @@ void DialogProgress::OnShow(wxShowEvent& evt) {
 	if (sizer->IsShown(log_output)) {
 		sizer->Hide(log_output);
 		Layout();
-		sizer->Fit(this);
+		sizer->SetSizeHints(this);
 		log_output->Clear();
 	}
 }
@@ -226,7 +228,7 @@ void DialogProgress::OnIdle(wxIdleEvent&) {
 		wxSizer *sizer = GetSizer();
 		sizer->Show(log_output);
 		Layout();
-		sizer->Fit(this);
+		sizer->SetSizeHints(this);
 		CenterOnParent();
 	}
 
@@ -239,6 +241,13 @@ void DialogProgress::OnCancel(wxCommandEvent &) {
 	ps->Cancel();
 	cancel_button->Enable(false);
 	cancel_button->SetLabelText(_("Cancelling..."));
+}
+
+void DialogProgress::OnClose(wxCloseEvent& evt) {
+	// Keep the modal dialog alive until the worker has stopped using its sink.
+	if (evt.CanVeto()) evt.Veto();
+	wxCommandEvent cancel;
+	OnCancel(cancel);
 }
 
 void DialogProgress::SetProgress(int target) {
