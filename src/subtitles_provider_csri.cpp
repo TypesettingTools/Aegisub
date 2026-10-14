@@ -56,7 +56,7 @@ DEFINE_EXCEPTION(CSRILoadError, agi::Exception);
 /// session. Restarts are capped so that an exploit which only works some of
 /// the time can't simply keep retrying.
 std::atomic<int> host_failures{0};
-constexpr int max_host_failures = 3;
+constexpr int max_host_failures = 5;
 
 constexpr const char *disabled_message = "The CSRI subtitle renderer has failed too many times and has been disabled until Aegisub is restarted";
 
