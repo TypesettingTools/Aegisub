@@ -41,6 +41,9 @@ if host_machine.system() == 'darwin'
     endforeach
 endif
 
+cxx = meson.get_compiler('cpp')
+cc = meson.get_compiler('c')
+
 if host_machine.system() == 'windows'
     # The CRT must be linked dynamically (the default): the automation code
     # assumes the app and LuaJIT's ffi.C use the same CRT, which doesn't hold
@@ -56,6 +59,10 @@ if host_machine.system() == 'windows'
         nasm = subproject('nasm').get_variable('nasm')
         meson.override_find_program('nasm', nasm)
     endif
+else
+    # luajit's external frame unwinding requires requires all C code that can be called from lua
+    # to be compiled with -funwind-tables or -fexceptions .
+    add_global_arguments(cc.get_supported_arguments(['-fexceptions']), language: ['c'])
 endif
 
 if host_machine.system() == 'windows'
@@ -128,8 +135,6 @@ elif host_machine.system() != 'windows'
     deps += dependency('fontconfig')
 endif
 
-cxx = meson.get_compiler('cpp')
-cc = meson.get_compiler('c')
 deps += cc.find_library('m', required: false)
 deps += cc.find_library('dl', required: false)
 
