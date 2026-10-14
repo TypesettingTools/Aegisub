@@ -109,7 +109,7 @@ begin
       Log('Deleting AppContainer profile ' + Moniker);
       Res := DeleteAppContainerProfile(Moniker);
       if Res <> 0 then
-        Log('Deleting AppContainer profile ' + Moniker + ' failed: 0x' + IntToHex(Res, 8));
+        Log(Format('Deleting AppContainer profile %s failed: 0x%.8x', [Moniker, Res]));
     end;
   end;
 end;
