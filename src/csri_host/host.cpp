@@ -5,11 +5,9 @@
 /// @file host.cpp
 /// @brief aegisub-csri-host, which runs CSRI renderers in a sandbox
 ///
-/// This is launched by Aegisub inside an AppContainer and a job object (see
-/// client.cpp), so it can't read the user's files, use the network or start
-/// other processes. It loads the renderers, enables the mitigations which
-/// would have prevented loading them, and then serves requests from Aegisub
-/// until the pipe is closed. Any error simply exits the process, which
+/// Aegisub launches this in a sandbox (see client.cpp). It loads the
+/// renderers, enables the mitigations which would have prevented loading
+/// them, and then serves requests from Aegisub until the pipe is closed. Any error simply exits the process, which
 /// Aegisub treats as a crash.
 
 #define WIN32_LEAN_AND_MEAN

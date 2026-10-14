@@ -588,7 +588,6 @@ aegisub = executable('aegisub', aegisub_src, version_h, libresrc_headers, aegisu
                      win_subsystem: 'windows')
 
 if conf.has('WITH_CSRI')
-    # Runs CSRI renderers in a sandbox; see src/csri_host/client.cpp
     csri_host_cpp_args = []
     csri_host_link_args = []
     if cxx.get_argument_syntax() == 'msvc'

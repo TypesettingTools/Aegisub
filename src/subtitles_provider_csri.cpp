@@ -31,9 +31,6 @@
 /// @brief Wrapper for CSRI-based subtitle renderers
 /// @ingroup subtitle_rendering
 ///
-/// CSRI renderers (in practice, VSFilter) aren't trusted with untrusted
-/// subtitle files, so they're run in a sandboxed aegisub-csri-host process
-/// rather than being loaded into Aegisub. See csri_host/client.cpp.
 
 #ifdef WITH_CSRI
 #include "subtitles_provider_csri.h"
