@@ -1,7 +1,8 @@
 #!/usr/bin/env powershell
 
-# Replaces aegisub.exe in a portable zip created by create-portable.ps1, e.g.
-# with a signed copy, leaving all other entries untouched.
+# Replaces an executable in a portable zip created by create-portable.ps1, e.g.
+# with a signed copy, leaving all other entries untouched. The executable to
+# replace is the one with the same name, which must already be in the zip.
 
 param (
     [Parameter(Position = 0, Mandatory = $true)]
@@ -16,7 +17,7 @@ $ErrorActionPreference = 'Stop'
 
 $PortableZip = (Resolve-Path -LiteralPath $PortableZip).Path
 $Executable = (Resolve-Path -LiteralPath $Executable).Path
-$EntryName = 'aegisub-portable/aegisub.exe'
+$EntryName = 'aegisub-portable/' + [System.IO.Path]::GetFileName($Executable)
 
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $zip = [System.IO.Compression.ZipFile]::Open($PortableZip, 'Update')

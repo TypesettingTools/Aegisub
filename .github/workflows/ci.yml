@@ -286,12 +286,14 @@ jobs:
           if-no-files-found: error
 
       # Release builds are signed and packaged by the windows-* jobs below
-      - name: Upload Windows executable for signing
+      - name: Upload Windows executables for signing
         uses: actions/upload-artifact@v7
         if: env.AEGISUB_SIGN_WINDOWS == 'true'
         with:
           name: Windows signing - unsigned executable
-          path: build/aegisub.exe
+          path: |
+            build/aegisub.exe
+            build/aegisub-csri-host.exe
           if-no-files-found: error
 
       - name: Upload Windows packaging inputs
@@ -301,7 +303,6 @@ jobs:
           name: Windows signing - packaging inputs
           path: |
             build/git_version.h
-            build/aegisub-csri-host.exe
             build/po/*/LC_MESSAGES/aegisub.mo
             build/installer-deps/
             build/Aegisub-*-portable.zip
@@ -384,6 +385,8 @@ jobs:
     with:
       artifact: Windows signing - unsigned executable
       signed-artifact: Windows signing - signed executable
+      # aegisub.exe and aegisub-csri-host.exe
+      executables: 2
 
   windows-package:
     name: Windows - package signed executable
@@ -405,11 +408,14 @@ jobs:
           name: Windows signing - signed executable
           path: signed
 
-      - name: Package signed executable
+      - name: Package signed executables
         run: |
           Copy-Item signed\aegisub.exe build\aegisub.exe -Force
+          Copy-Item signed\aegisub-csri-host.exe build\aegisub-csri-host.exe -Force
           tools\win-installer-setup.ps1 "$PWD\build" "$PWD" x64 -NoBuild
-          packages\win_installer\portable\replace-executable.ps1 (Get-Item build\Aegisub-*-portable.zip) build\aegisub.exe
+          $portable = Get-Item build\Aegisub-*-portable.zip
+          packages\win_installer\portable\replace-executable.ps1 $portable build\aegisub.exe
+          packages\win_installer\portable\replace-executable.ps1 $portable build\aegisub-csri-host.exe
 
       - uses: actions/upload-artifact@v7
         with:
