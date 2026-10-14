@@ -148,4 +148,9 @@ void Path::SetToken(std::string_view token_name, fs::path const& token_value) {
 	}
 }
 
+void Path::SetUserDir(fs::path const& dir) {
+	SetToken("?user", dir);
+	SetToken("?local", dir);
+}
+
 }
