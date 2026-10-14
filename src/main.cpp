@@ -322,7 +322,7 @@ bool AegisubApp::OnInit() {
 			catch (agi::fs::FileSystemError const& e) {
 				wxMessageBox(to_wx(e.GetMessage()), _("Error saving config file"), wxOK | wxICON_ERROR | wxCENTER);
 			}
-			wxMessageBox(_("The VSFilter subtitle renderer now requires Windows 10 version 1809 or newer, as it's run in a sandbox to stop malicious subtitle files from being able to take over Aegisub. Aegisub will use libass to render subtitles instead."),
+			wxMessageBox(_("The VSFilter subtitle renderer now requires Windows 10 version 1809 or newer. Aegisub will use libass to render subtitles instead."),
 				_("Subtitles provider changed"), wxOK | wxICON_INFORMATION | wxCENTER);
 		}
 #endif
