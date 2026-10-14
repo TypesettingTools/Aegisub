@@ -99,10 +99,10 @@ ad-hoc CI or development build; such an image cannot be notarized.
 file, and `AEGISUB_NOTARY_TIMEOUT` optionally replaces the default `30m`
 submission timeout.
 
-Hardened-runtime library validation deliberately remains enabled. Bundled and
-third-party native Automation modules must therefore be Apple-signed or signed
-with the same Team ID as Aegisub. Rebuild and sign controlled modules rather
-than disabling library validation for the whole application.
+The default entitlements disable hardened-runtime library validation so that
+Automation scripts can load third-party native modules that are not signed with
+Aegisub's Team ID. Those modules must still carry a valid signature (ad-hoc is
+sufficient) to be loaded on Apple Silicon.
 
 The DMG is the outermost distributed container, so it is the item submitted to
 the notary service and stapled. This follows Apple's nested-container guidance;

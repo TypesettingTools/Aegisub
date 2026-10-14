@@ -5,5 +5,8 @@
 	<!-- LuaJIT generates executable code without using MAP_JIT. -->
 	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
 	<true/>
+	<!-- Automation scripts can load native modules that are not signed by our Team ID. -->
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<true/>
 </dict>
 </plist>
