@@ -845,6 +845,9 @@ bool Host::LoadSubtitles(const char *data, size_t len) {
 	Request req{};
 	req.command = Command::LoadSubtitles;
 	req.payload_size = len;
+	// TODO: the timeout includes VSFilter parsing the script, which hasn't
+	// been timed with very large scripts. If it can take longer than
+	// timeout_ms, scale the deadline with len.
 	impl->StartOperation();
 	return impl->Call(req, data).status == Status::Ok;
 }

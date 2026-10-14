@@ -5,13 +5,11 @@
 /// @file protocol.h
 /// @brief Messages exchanged between Aegisub and aegisub-csri-host
 ///
-/// CSRI renderers (i.e. VSFilter) are run in a separate sandboxed process so
-/// that memory safety bugs in them can't compromise Aegisub. Aegisub sends a
-/// Request over a pipe, optionally followed by payload_size bytes, and the
-/// host replies with a Response. Frames are passed through shared memory
-/// sections rather than the pipe: either the memory of the video frames
-/// themselves, so that they can be drawn on without being copied, or a
-/// buffer which Aegisub copies frames into and out of.
+/// Aegisub sends a Request over a pipe, optionally followed by payload_size
+/// bytes, and the host replies with a Response. Frames are passed through
+/// shared memory sections rather than the pipe: either the memory of the
+/// video frames themselves, so that they can be drawn on without being
+/// copied, or a buffer which Aegisub copies frames into and out of.
 ///
 /// Aegisub must treat everything it receives from the host as hostile: it
 /// only ever reads fixed-size Responses, a bounded renderer list, and pixels.
