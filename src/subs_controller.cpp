@@ -174,7 +174,6 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, const char
 	auto props = context->ass->Properties;
 
 	SetFileName(filename);
-	++document_id;
 
 	// Push the initial state of the file onto the undo stack
 	undo_stack.clear();
@@ -230,7 +229,6 @@ void SubsController::Close() {
 	redo_stack.clear();
 	autosaved_commit_id = saved_commit_id = commit_id + 1;
 	filename.clear();
-	++document_id;
 	AssFile blank;
 	blank.swap(*context->ass);
 	context->ass->LoadDefault(true, OPT_GET("Subtitle Format/ASS/Default Style Catalog")->GetString());

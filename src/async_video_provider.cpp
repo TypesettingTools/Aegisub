@@ -211,19 +211,11 @@ AsyncVideoProvider::~AsyncVideoProvider() {
 	worker->Sync([]{});
 }
 
-void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs, bool new_document) throw() {
+void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
 	uint_fast32_t req_version = ++version;
 
 	auto copy = new AssFile(*new_subs);
 	worker->Async([=, this]{
-		if (new_document && subs_provider) {
-			subs_provider->NewDocument();
-			// The frames may be shared with the previous renderer, which could
-			// have hidden data in them for the next one, such as after the end
-			// of the frame where it isn't overwritten, so new ones are needed.
-			// Ones which are still in use are freed once they're done with.
-			buffers.clear();
-		}
 		subs.reset(copy);
 		single_frame = NEW_SUBS_FILE;
 		ProcAsync(req_version, false);

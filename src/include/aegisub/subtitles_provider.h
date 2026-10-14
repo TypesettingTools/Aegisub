@@ -52,10 +52,6 @@ public:
 	void LoadSubtitles(AssFile *subs, int time = -1);
 	virtual void DrawSubtitles(VideoFrame &dst, double time)=0;
 	virtual void Reinitialize() { }
-	/// A different file has been opened. Providers which run their renderer
-	/// in a sandbox start a new one, so that a renderer compromised by one
-	/// file can't see or affect the next.
-	virtual void NewDocument() { }
 	/// Wait until the provider is ready to draw, showing progress if needed.
 	/// Must be called on the main thread. Drawing on other threads throws
 	/// agi::UserCancelException if the provider isn't ready, as they can't

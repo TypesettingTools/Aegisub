@@ -38,7 +38,6 @@
 #include "options.h"
 #include "project.h"
 #include "selection_controller.h"
-#include "subs_controller.h"
 #include "time_range.h"
 #include "async_video_provider.h"
 #include "utils.h"
@@ -65,7 +64,6 @@ void VideoController::OnNewVideoProvider(AsyncVideoProvider *new_provider) {
 	Stop();
 	provider = new_provider;
 	color_matrix = std::nullopt;
-	subs_document_id = context->subsController->DocumentId();
 }
 
 void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
@@ -79,12 +77,8 @@ void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 		}
 	}
 
-	if (!changed) {
-		int document_id = context->subsController->DocumentId();
-		bool new_document = document_id != subs_document_id;
-		subs_document_id = document_id;
-		provider->LoadSubtitles(context->ass.get(), new_document);
-	}
+	if (!changed)
+		provider->LoadSubtitles(context->ass.get());
 	else
 		provider->UpdateSubtitles(changed);
 }
