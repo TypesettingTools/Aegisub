@@ -93,8 +93,8 @@ class AsyncVideoProvider {
 public:
 	/// @brief Load the passed subtitle file
 	/// @param subs File to load
-	/// @param replaced Has the whole file been replaced, such as by opening a
-	///                 different one or undoing?
+	/// @param replaced Whether the whole file was replaced (opened, closed,
+	/// undone or redone) rather than edited
 	///
 	/// This function blocks until is it is safe for the calling thread to
 	/// modify subs

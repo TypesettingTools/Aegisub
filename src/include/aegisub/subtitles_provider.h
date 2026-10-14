@@ -52,9 +52,9 @@ public:
 	void LoadSubtitles(AssFile *subs, int time = -1);
 	virtual void DrawSubtitles(VideoFrame &dst, double time)=0;
 	virtual void Reinitialize() { }
-	/// The whole file has been replaced, such as by opening a different one
-	/// or undoing, so errors which are only reported once should be reported
-	/// again
+	/// Called when the whole file is replaced (opened, closed, undone or
+	/// redone), so that errors which are only reported once per file are
+	/// reported again
 	virtual void ResetReportedErrors() { }
 	/// Wait until the provider is ready to draw, showing progress if needed.
 	/// Must be called on the main thread. Drawing on other threads throws
