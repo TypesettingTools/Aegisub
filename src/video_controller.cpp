@@ -78,7 +78,7 @@ void VideoController::OnSubtitlesCommit(int type, const AssDialogue *changed) {
 	}
 
 	if (!changed)
-		provider->LoadSubtitles(context->ass.get());
+		provider->LoadSubtitles(context->ass.get(), type == AssFile::COMMIT_NEW);
 	else
 		provider->UpdateSubtitles(changed);
 }
