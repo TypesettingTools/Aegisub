@@ -64,9 +64,7 @@ class CSRISubtitlesProvider final : public SubtitlesProvider {
 	std::string renderer_name;
 	/// Null if the host failed and hasn't been restarted yet
 	std::unique_ptr<csri_host::Host> host;
-	/// The most recently loaded script, to load into a restarted host
-	std::vector<char> script;
-	/// Frames are requested from both the video thread and the main thread
+	/// Guards the host and the state below
 	std::mutex mutex;
 	/// Has the renderer failing to load a script been shown to the user?
 	bool load_failure_reported = false;
@@ -108,12 +106,12 @@ void CSRISubtitlesProvider::StartHost() {
 	if (!new_host->OpenRenderer(renderer_name))
 		throw csri_host::Error("CSRI renderer " + renderer_name + " is no longer available");
 	host = std::move(new_host);
-	if (!script.empty())
+	if (!Script().empty())
 		LoadScript(*host);
 }
 
 void CSRISubtitlesProvider::LoadScript(csri_host::Host& h) {
-	if (h.LoadSubtitles(script.data(), script.size())) {
+	if (h.LoadSubtitles(Script().data(), Script().size())) {
 		load_failure_reported = false;
 		return;
 	}
@@ -149,9 +147,9 @@ void CSRISubtitlesProvider::WithHost(Func&& func) {
 	}
 }
 
-void CSRISubtitlesProvider::LoadSubtitles(const char *data, size_t len) {
+void CSRISubtitlesProvider::LoadSubtitles(const char *, size_t) {
+	// The script is also Script(), which a restarted host is given
 	std::lock_guard<std::mutex> lock(mutex);
-	script.assign(data, data + len);
 	WithHost([&](csri_host::Host& h, bool started) {
 		// A newly started host has already been given the script
 		if (!started)
