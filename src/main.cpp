@@ -52,6 +52,9 @@
 #include "project.h"
 #include "subs_controller.h"
 #include "subtitles_provider_libass.h"
+#ifdef WITH_CSRI
+#include "subtitles_provider_csri.h"
+#endif
 #include "utils.h"
 #include "value_event.h"
 #include "version.h"
@@ -305,6 +308,23 @@ bool AegisubApp::OnInit() {
 
 #ifdef WITH_UPDATE_CHECKER
 		PerformVersionCheck(false);
+#endif
+
+#ifdef WITH_CSRI
+		// VSFilter used to be the default on Windows, but can't be used on
+		// versions which can't run it in a sandbox
+		StartupLog("Check subtitles provider");
+		if (!csri::Supported() && OPT_GET("Subtitle/Provider")->GetString().starts_with("CSRI/")) {
+			OPT_SET("Subtitle/Provider")->SetString("libass");
+			try {
+				config::opt->Flush();
+			}
+			catch (agi::fs::FileSystemError const& e) {
+				wxMessageBox(to_wx(e.GetMessage()), _("Error saving config file"), wxOK | wxICON_ERROR | wxCENTER);
+			}
+			wxMessageBox(_("The VSFilter subtitle renderer now requires Windows 10 version 1809 or newer, as it's run in a sandbox to stop malicious subtitle files from being able to take over Aegisub. Aegisub will use libass to render subtitles instead."),
+				_("Subtitles provider changed"), wxOK | wxICON_INFORMATION | wxCENTER);
+		}
 #endif
 
 		// Get parameter subs

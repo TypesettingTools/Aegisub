@@ -24,6 +24,9 @@ class SubtitlesProvider;
 namespace agi { class BackgroundRunner; }
 
 namespace csri {
+	/// Can CSRI renderers be used on this version of Windows? They're run in
+	/// a sandbox which needs Windows 10 1809 or newer.
+	bool Supported();
 	std::vector<std::string> List();
 	std::unique_ptr<SubtitlesProvider> Create(std::string const& subtype, agi::BackgroundRunner *br);
 }

@@ -179,8 +179,16 @@ void CSRISubtitlesProvider::NewDocument() {
 }
 
 namespace csri {
+bool Supported() {
+	return csri_host::Supported();
+}
+
 std::vector<std::string> List() {
 	std::vector<std::string> final;
+	if (!Supported()) {
+		LOG_I("subtitle/provider/csri") << "CSRI renderers require Windows 10 version 1809 or newer";
+		return final;
+	}
 	try {
 		csri_host::Host host;
 		for (auto const& name : host.ListRenderers()) {
