@@ -34,6 +34,8 @@
 
 #pragma once
 
+#include <array>
+
 /// Version string appended in title bar of main window (quick identification of all elements of a build)
 const char *GetAegisubLongVersionString();
 /// Version string used in About box, looks nicer
@@ -44,6 +46,9 @@ const char *GetAegisubBuildTime();
 const char *GetAegisubBuildCredit();
 /// Is release?
 bool GetIsOfficialRelease();
+/// The version numbers declared in meson.build: those of the latest release
+/// this was built from, or of the release being prepared
+std::array<int, 3> GetVersionNumbers();
 /// Version number
 const char *GetVersionNumber();
 /// Get SVN revision

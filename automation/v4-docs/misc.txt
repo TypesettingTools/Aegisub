@@ -31,6 +31,39 @@ Returns: 4 values, all numbers.
 
 ---
 
+Getting the Aegisub version
+
+aegisub.version (table)
+
+A table describing the version of Aegisub the script is running in, with
+these fields:
+
+@string (string)
+  The full version string, e.g. "3.5.0" for a release or
+  "9900-master-4e440a614" for a development build. Use it for display and
+  logging only; its format may change.
+
+@major, @minor, @patch (numbers)
+  The version numbers of the latest release this version of Aegisub was built
+  from (or of the release being prepared). A development build made after
+  3.5.0 reports 3.5.0, so it is safe to use these to check that the features
+  of a given release are available.
+
+@build (number or nil)
+  The build number, which increases with every commit to Aegisub's main
+  branch. It can be used to check for features which were added after the
+  latest release, but is only meaningful for official builds: other branches
+  and forks may number their builds differently. nil if unknown.
+
+Wherever possible, check for the specific feature you need instead, e.g.
+"if aegisub.some_function then". The version is mainly useful for changes that
+can't be detected that way, such as new optional arguments.
+
+aegisub.version was added after 3.5.0; scripts that need to run in older
+versions should check that it exists first.
+
+---
+
 Getting the audio waveform selection position and duration
 
 function aegisub.get_audio_selection()

@@ -96,6 +96,13 @@ if get_option('debug') and host_machine.system() != 'windows'
 endif
 
 conf = configuration_data()
+# The version declared above is that of the latest release this was built
+# from, or of the release being prepared
+aegisub_version = meson.project_version().split('.')
+assert(aegisub_version.length() == 3, 'The project version must be of the form X.Y.Z')
+conf.set('AEGISUB_VERSION_MAJOR', aegisub_version[0].to_int())
+conf.set('AEGISUB_VERSION_MINOR', aegisub_version[1].to_int())
+conf.set('AEGISUB_VERSION_PATCH', aegisub_version[2].to_int())
 conf.set_quoted('P_DATA', dataroot)
 conf.set_quoted('P_LOCALE', localedir)
 if get_option('credit') != ''
