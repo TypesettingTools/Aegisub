@@ -6,16 +6,28 @@
 const
   AppContainerMappings = 'Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Mappings';
   SandboxProfilePrefix = 'aegisub.csrihost.';
+  PROCESS_QUERY_LIMITED_INFORMATION = $1000;
+  STILL_ACTIVE = 259;
+  ERROR_INVALID_PARAMETER = 87;
 
 function DeleteAppContainerProfile(pszAppContainerName: WideString): HResult;
 external 'DeleteAppContainerProfile@userenv.dll stdcall delayload';
+function OpenProcess(dwDesiredAccess: Cardinal; bInheritHandle: Boolean; dwProcessId: Integer): Integer;
+external 'OpenProcess@kernel32.dll stdcall';
+function GetExitCodeProcess(hProcess: Integer; var lpExitCode: Cardinal): Boolean;
+external 'GetExitCodeProcess@kernel32.dll stdcall';
+function GetProcessTimes(hProcess: Integer; var lpCreationTime, lpExitTime, lpKernelTime, lpUserTime: TFileTime): Boolean;
+external 'GetProcessTimes@kernel32.dll stdcall';
+function CloseHandle(hObject: Integer): Boolean;
+external 'CloseHandle@kernel32.dll stdcall';
 
-// Is Name one which Aegisub generates: the prefix followed by a decimal pid,
-// a hexadecimal creation time and a decimal counter, separated by dots?
-function IsSandboxProfileName(Name: String): Boolean;
+// Parse a profile name which Aegisub generated: the prefix followed by the
+// decimal pid and hexadecimal creation time of the Aegisub process which
+// created it and a decimal counter, separated by dots
+function ParseSandboxProfileName(Name: String; var Pid: Integer; var CreationTime: Int64): Boolean;
 var
+  Parts: array[0..2] of String;
   Part, I: Integer;
-  PartLength: Integer;
   C: Char;
 begin
   Result := False;
@@ -23,29 +35,62 @@ begin
     Exit;
 
   Part := 0;
-  PartLength := 0;
   for I := Length(SandboxProfilePrefix) + 1 to Length(Name) do
   begin
     C := Name[I];
     if C = '.' then
     begin
-      if PartLength = 0 then
+      if (Parts[Part] = '') or (Part = 2) then
         Exit;
       Part := Part + 1;
-      PartLength := 0;
     end
     else if ((C >= '0') and (C <= '9')) or ((Part = 1) and (C >= 'a') and (C <= 'f')) then
-      PartLength := PartLength + 1
+      Parts[Part] := Parts[Part] + C
     else
       Exit;
   end;
-  Result := (Part = 2) and (PartLength > 0);
+  if (Part <> 2) or (Parts[2] = '') then
+    Exit;
+
+  Pid := StrToIntDef(Parts[0], -1);
+  CreationTime := StrToInt64Def('$' + Parts[1], -1);
+  Result := (Pid >= 0) and (CreationTime >= 0);
+end;
+
+// Could the Aegisub process which created a profile still be using it? The
+// same check as Aegisub does when deleting profiles which were left behind.
+function SandboxProfileOwnerRunning(Pid: Integer; CreationTime: Int64): Boolean;
+var
+  Process: Integer;
+  ExitCode: Cardinal;
+  Created, Exited, KernelTime, UserTime: TFileTime;
+begin
+  Process := OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, False, Pid);
+  if Process = 0 then
+  begin
+    // Any error other than there being no such process means it might be
+    Result := DLLGetLastError <> ERROR_INVALID_PARAMETER;
+    Exit;
+  end;
+
+  try
+    if GetExitCodeProcess(Process, ExitCode) and (ExitCode <> STILL_ACTIVE) then
+      Result := False
+    else if GetProcessTimes(Process, Created, Exited, KernelTime, UserTime) then
+      Result := (Int64(Created.dwHighDateTime) * 4294967296 + Created.dwLowDateTime) = CreationTime
+    else
+      Result := True;
+  finally
+    CloseHandle(Process);
+  end;
 end;
 
 procedure DeleteSandboxProfiles;
 var
   Mappings: TArrayOfString;
   Moniker: String;
+  Pid: Integer;
+  CreationTime: Int64;
   I: Integer;
 begin
   // AppContainers don't exist before Windows 8, and neither does the function
@@ -57,7 +102,8 @@ begin
   for I := 0 to GetArrayLength(Mappings) - 1 do
   begin
     if RegQueryStringValue(HKEY_CURRENT_USER, AppContainerMappings + '\' + Mappings[I], 'Moniker', Moniker) and
-       IsSandboxProfileName(Moniker) then
+       ParseSandboxProfileName(Moniker, Pid, CreationTime) and
+       not SandboxProfileOwnerRunning(Pid, CreationTime) then
     begin
       Log('Deleting AppContainer profile ' + Moniker);
       DeleteAppContainerProfile(Moniker);
