@@ -210,12 +210,12 @@ AsyncVideoProvider::~AsyncVideoProvider() {
 	worker->Sync([]{});
 }
 
-void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs, bool replaced) throw() {
+void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs, bool new_document) throw() {
 	uint_fast32_t req_version = ++version;
 
 	auto copy = new AssFile(*new_subs);
 	worker->Async([=, this]{
-		if (replaced && subs_provider)
+		if (new_document && subs_provider)
 			subs_provider->ResetReportedErrors();
 		subs.reset(copy);
 		single_frame = NEW_SUBS_FILE;

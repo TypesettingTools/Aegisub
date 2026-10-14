@@ -93,12 +93,12 @@ class AsyncVideoProvider {
 public:
 	/// @brief Load the passed subtitle file
 	/// @param subs File to load
-	/// @param replaced Whether the whole file was replaced (opened, closed,
-	/// undone or redone) rather than edited
+	/// @param new_document Whether a different file was opened (or the file
+	/// was closed) since the subtitles were last loaded
 	///
 	/// This function blocks until is it is safe for the calling thread to
 	/// modify subs
-	void LoadSubtitles(const AssFile *subs, bool replaced = false) throw();
+	void LoadSubtitles(const AssFile *subs, bool new_document = false) throw();
 
 	/// @brief Update a previously loaded subtitle file
 	/// @param changed Line that has changed
