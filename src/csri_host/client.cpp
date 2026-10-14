@@ -181,7 +181,10 @@ void delete_stale_containers(UserEnv const& userenv) {
 		unsigned long pid = 0;
 		unsigned long long creation_time = 0;
 		unsigned counter = 0;
-		if (swscanf_s(moniker + prefix_len, L"%lu.%llx.%u", &pid, &creation_time, &counter) != 3)
+		int length = 0;
+		auto rest = moniker + prefix_len;
+		// Only names which Aegisub generates, with nothing after them
+		if (swscanf_s(rest, L"%lu.%llx.%u%n", &pid, &creation_time, &counter, &length) != 3 || rest[length] != L'\0')
 			continue;
 		if (!container_owner_running(pid, creation_time))
 			stale.emplace_back(moniker);
