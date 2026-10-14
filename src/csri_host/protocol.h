@@ -28,10 +28,10 @@ constexpr uint32_t hello_magic = 0x49525343; // "CSRI"
 constexpr uint32_t protocol_version = 2;
 
 /// Upper bounds on sizes, checked by whichever side receives them
-constexpr uint32_t max_renderer_list_size = 64 * 1024;
-constexpr uint32_t max_renderer_name_size = 256;
-constexpr uint32_t max_frame_dimension = 16384;
-constexpr uint64_t max_script_size = uint64_t(2) * 1024 * 1024 * 1024;
+constexpr uint32_t max_renderer_list_size = 64 * 1024; // 64 KiB
+constexpr uint32_t max_renderer_name_size = 256; // 256 bytes
+constexpr uint32_t max_frame_dimension = 16384; // 16384 pixels wide or high
+constexpr uint64_t max_script_size = uint64_t(2) * 1024 * 1024 * 1024; // 2 GiB
 /// Maximum number of buffers mapped into the host at once
 constexpr uint32_t max_buffers = 16;
 
