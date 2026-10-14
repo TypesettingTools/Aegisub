@@ -61,7 +61,7 @@ constexpr int max_host_failures = 5;
 constexpr const char *disabled_message = "The CSRI subtitle renderer has failed too many times and has been disabled until Aegisub is restarted";
 
 class CSRISubtitlesProvider final : public SubtitlesProvider {
-	std::string renderer;
+	std::string renderer_name;
 	/// Null if the host failed and hasn't been restarted yet
 	std::unique_ptr<csri_host::Host> host;
 	/// The most recently loaded script, to load into a restarted host
@@ -79,15 +79,15 @@ class CSRISubtitlesProvider final : public SubtitlesProvider {
 	void LoadSubtitles(const char *data, size_t len) override;
 
 public:
-	CSRISubtitlesProvider(std::string renderer);
+	CSRISubtitlesProvider(std::string renderer_name);
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
 	void ResetReportedErrors() override;
 	FrameAllocator GetFrameAllocator() override { return csri_host::SharedFrameAllocator(); }
 };
 
-CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer)
-: renderer(std::move(renderer))
+CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer_name)
+: renderer_name(std::move(renderer_name))
 {
 	if (host_failures >= max_host_failures) {
 		LOG_E("subtitle/provider/csri") << disabled_message;
@@ -105,8 +105,8 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer)
 
 void CSRISubtitlesProvider::StartHost() {
 	auto new_host = std::make_unique<csri_host::Host>();
-	if (!new_host->OpenRenderer(renderer))
-		throw csri_host::Error("CSRI renderer " + renderer + " is no longer available");
+	if (!new_host->OpenRenderer(renderer_name))
+		throw csri_host::Error("CSRI renderer " + renderer_name + " is no longer available");
 	host = std::move(new_host);
 	if (!script.empty())
 		LoadScript(*host);
