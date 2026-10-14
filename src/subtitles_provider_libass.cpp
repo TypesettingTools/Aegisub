@@ -87,7 +87,7 @@ class LibassSubtitlesProvider final : public SubtitlesProvider {
 	agi::BackgroundRunner *br;
 	std::shared_ptr<cache_thread_shared> shared;
 	ASS_Track* ass_track = nullptr;
-	/// Is the font cache progress dialog open?
+	/// Whether the font cache progress dialog is open
 	bool waiting = false;
 
 	/// Wait for the font cache on the main thread, showing progress if it's

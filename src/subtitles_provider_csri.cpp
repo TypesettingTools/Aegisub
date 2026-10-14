@@ -63,7 +63,7 @@ class CSRISubtitlesProvider final : public SubtitlesProvider {
 	std::unique_ptr<csri_host::Host> host;
 	/// Guards the host and the state below
 	std::mutex mutex;
-	/// Has the renderer failing to load a script been shown to the user?
+	/// Whether a script load failure has been shown to the user
 	bool load_failure_reported = false;
 
 	void StartHost();

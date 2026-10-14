@@ -23,7 +23,7 @@ struct Error : std::runtime_error {
 	using std::runtime_error::runtime_error;
 };
 
-/// Can hosts be run on this version of Windows?
+/// Whether hosts can be run on this version of Windows
 bool Supported();
 
 /// Allocates frame memory which hosts can draw on without copying it. Hosts
