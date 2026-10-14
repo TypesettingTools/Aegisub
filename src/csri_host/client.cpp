@@ -143,7 +143,7 @@ ULONGLONG process_creation_time(HANDLE process) {
 	return (ULONGLONG(created.dwHighDateTime) << 32) | created.dwLowDateTime;
 }
 
-/// Could the Aegisub process which created a container still be using it?
+/// Whether the Aegisub process which created a profile might still be running
 bool container_owner_running(DWORD pid, ULONGLONG creation_time) {
 	unique_handle process(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid));
 	if (!process)
@@ -198,7 +198,7 @@ void delete_stale_containers(UserEnv const& userenv) {
 		userenv.remove(name.c_str());
 }
 
-/// Does the DACL let every AppContainer read and execute the file?
+/// Whether the DACL lets every AppContainer read and execute the file
 bool containers_have_access(PACL dacl, PSID any_package) {
 	if (!dacl)
 		return true;

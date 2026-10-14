@@ -58,8 +58,8 @@ begin
   Result := (Pid >= 0) and (CreationTime >= 0);
 end;
 
-// Could the Aegisub process which created a profile still be using it? The
-// same check as Aegisub does when deleting profiles which were left behind.
+// Whether the Aegisub process which created a profile might still be running.
+// Same check as Aegisub's own cleanup.
 function SandboxProfileOwnerRunning(Pid: Integer; CreationTime: Int64): Boolean;
 var
   Process: Integer;
