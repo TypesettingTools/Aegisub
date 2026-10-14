@@ -1,7 +1,8 @@
-// aegisub-csri-host runs each subtitle renderer in its own AppContainer, whose
-// profile Aegisub deletes when the renderer exits or, if Aegisub crashed, the
-// next time it starts. Delete any that are left when uninstalling. This can
-// only see the profiles of the user running the uninstaller.
+// aegisub-csri-host runs subtitle renderers in an AppContainer, one per
+// Aegisub process, whose profile Aegisub deletes when the renderers exit or,
+// if Aegisub crashed, the next time it starts. Delete any that are left when
+// uninstalling. This can only see the profiles of the user running the
+// uninstaller.
 
 const
   AppContainerMappings = 'Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppContainer\Mappings';
@@ -23,10 +24,10 @@ external 'CloseHandle@kernel32.dll stdcall';
 
 // Parse a profile name which Aegisub generated: the prefix followed by the
 // decimal pid and hexadecimal creation time of the Aegisub process which
-// created it and a decimal counter, separated by dots
+// created it, separated by a dot
 function ParseSandboxProfileName(Name: String; var Pid: Integer; var CreationTime: Int64): Boolean;
 var
-  Parts: array[0..2] of String;
+  Parts: array[0..1] of String;
   Part, I: Integer;
   C: Char;
 begin
@@ -40,7 +41,7 @@ begin
     C := Name[I];
     if C = '.' then
     begin
-      if (Parts[Part] = '') or (Part = 2) then
+      if (Parts[Part] = '') or (Part = 1) then
         Exit;
       Part := Part + 1;
     end
@@ -49,7 +50,7 @@ begin
     else
       Exit;
   end;
-  if (Part <> 2) or (Parts[2] = '') then
+  if (Part <> 1) or (Parts[1] = '') then
     Exit;
 
   Pid := StrToIntDef(Parts[0], -1);

@@ -6,8 +6,9 @@
 /// @brief Launching and talking to a sandboxed aegisub-csri-host process
 ///
 /// Each host runs in:
-///  - its own AppContainer with no capabilities, so it has no access to the
-///    network, to the user's files and registry, or to other hosts
+///  - an AppContainer with no capabilities, so it has no access to the
+///    network, to the user's files and registry, or to other Aegisub
+///    processes' hosts
 ///  - a job object which kills it when Aegisub closes it, stops it from
 ///    creating other processes, limits its memory use and blocks access to
 ///    other processes' windows, the clipboard and system settings
@@ -45,6 +46,7 @@
 #include <cstring>
 #include <cwchar>
 #include <iterator>
+#include <mutex>
 #include <random>
 #include <utility>
 
@@ -55,10 +57,10 @@ namespace {
 constexpr DWORD timeout_ms = 30000;
 /// 4 GB, or no effective limit for 32-bit builds
 constexpr SIZE_T memory_limit = static_cast<SIZE_T>(std::min<uint64_t>(uint64_t(4) << 30, SIZE_MAX));
-/// Each host's AppContainer profile is named
-/// <prefix><Aegisub's pid>.<Aegisub's creation time>.<counter>, so that ones
-/// left behind by a crash can be recognised and deleted. Windows stores the
-/// names in lowercase.
+/// The hosts' AppContainer profile is named
+/// <prefix><Aegisub's pid>.<Aegisub's creation time>, so that ones left behind
+/// by a crash can be recognised and deleted. Windows stores the names in
+/// lowercase.
 constexpr wchar_t container_prefix[] = L"aegisub.csrihost.";
 constexpr wchar_t container_mappings_key[] =
 	L"Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\CurrentVersion\\AppContainer\\Mappings";
@@ -116,6 +118,7 @@ struct UserEnv {
 	decltype(&CreateAppContainerProfile) create = nullptr;
 	decltype(&DeleteAppContainerProfile) remove = nullptr;
 	decltype(&GetAppContainerFolderPath) folder = nullptr;
+	decltype(&DeriveAppContainerSidFromAppContainerName) derive = nullptr;
 
 	UserEnv() {
 		// userenv's AppContainer functions don't exist on Windows 7, so they
@@ -126,7 +129,8 @@ struct UserEnv {
 		create = reinterpret_cast<decltype(create)>(GetProcAddress(userenv, "CreateAppContainerProfile"));
 		remove = reinterpret_cast<decltype(remove)>(GetProcAddress(userenv, "DeleteAppContainerProfile"));
 		folder = reinterpret_cast<decltype(folder)>(GetProcAddress(userenv, "GetAppContainerFolderPath"));
-		if (!create || !remove || !folder)
+		derive = reinterpret_cast<decltype(derive)>(GetProcAddress(userenv, "DeriveAppContainerSidFromAppContainerName"));
+		if (!create || !remove || !folder || !derive)
 			throw Error("AppContainers are not supported on this version of Windows");
 	}
 };
@@ -153,8 +157,8 @@ bool container_owner_running(DWORD pid, ULONGLONG creation_time) {
 	return actual_creation_time == 0 || actual_creation_time == creation_time;
 }
 
-/// Delete the AppContainer profiles of hosts belonging to Aegisub processes
-/// which exited without cleaning them up
+/// Delete the AppContainer profiles of Aegisub processes which exited without
+/// cleaning them up
 void delete_stale_containers(UserEnv const& userenv) {
 	HKEY key;
 	if (RegOpenKeyExW(HKEY_CURRENT_USER, container_mappings_key, 0, KEY_READ, &key) != ERROR_SUCCESS)
@@ -180,11 +184,10 @@ void delete_stale_containers(UserEnv const& userenv) {
 			continue;
 		unsigned long pid = 0;
 		unsigned long long creation_time = 0;
-		unsigned counter = 0;
 		int length = 0;
 		auto rest = moniker + prefix_len;
 		// Only names which Aegisub generates, with nothing after them
-		if (swscanf_s(rest, L"%lu.%llx.%u%n", &pid, &creation_time, &counter, &length) != 3 || rest[length] != L'\0')
+		if (swscanf_s(rest, L"%lu.%llx%n", &pid, &creation_time, &length) != 2 || rest[length] != L'\0')
 			continue;
 		if (!container_owner_running(pid, creation_time))
 			stale.emplace_back(moniker);
@@ -220,8 +223,8 @@ bool containers_have_access(PACL dacl, PSID any_package) {
 /// Installed copies of Aegisub are readable by every AppContainer, either via
 /// Program Files' permissions or ones added by the installer, but portable
 /// copies usually live somewhere which AppContainers can't read. Access is
-/// granted to all AppContainers rather than just the host's as each host has
-/// a different one.
+/// granted to all AppContainers rather than just the hosts' as each Aegisub
+/// process has a different one.
 void ensure_container_access(std::wstring const& path, bool directory) {
 	BYTE any_package[SECURITY_MAX_SID_SIZE];
 	DWORD any_package_size = sizeof any_package;
@@ -283,19 +286,18 @@ struct Environment {
 	UserEnv userenv;
 	std::wstring exe;
 	std::wstring working_directory;
-	/// Prefix for the names of this process's AppContainers
-	std::wstring container_prefix;
-	std::atomic<unsigned> next_container{0};
+	/// Name of this process's AppContainer profile
+	std::wstring container_name;
 
 	Environment() {
 		if (!supported_windows_version())
 			throw Error("Sandboxed CSRI renderers require Windows 10 version 1809 or newer");
 
 		delete_stale_containers(userenv);
-		wchar_t prefix[64];
-		swprintf_s(prefix, L"%ls%lu.%llx.", csri_host::container_prefix,
+		wchar_t name[64];
+		swprintf_s(name, L"%ls%lu.%llx", csri_host::container_prefix,
 			GetCurrentProcessId(), process_creation_time(GetCurrentProcess()));
-		container_prefix = prefix;
+		container_name = name;
 
 		auto directory = module_directory();
 		exe = directory + host_exe_name;
@@ -314,54 +316,89 @@ Environment& environment() {
 	return env;
 }
 
-/// An AppContainer profile used by a single host, so that hosts can't open
-/// each other's processes or share files, registry keys or named objects,
-/// and nothing a host stores persists after it exits
+/// The folder of the AppContainer profile with the given SID
+std::wstring container_folder(PSID sid) {
+	wchar_t *sid_string = nullptr;
+	if (!ConvertSidToStringSidW(sid, &sid_string))
+		throw_win32("Could not get the subtitle renderer's AppContainer");
+	std::unique_ptr<void, local_freer> sid_string_holder(sid_string);
+
+	wchar_t *path = nullptr;
+	HRESULT hr = environment().userenv.folder(sid_string, &path);
+	if (FAILED(hr))
+		throw Error("Could not get the subtitle renderer's AppContainer folder: " + error_string(static_cast<DWORD>(hr)));
+	std::wstring folder = path;
+	CoTaskMemFree(path);
+	return folder;
+}
+
+/// A host's use of this process's AppContainer profile, which is shared by
+/// all of its hosts and deleted once none are running, so that nothing they
+/// store persists. Other Aegisub processes have their own, so they can't
+/// interfere with each other's hosts or delete each other's profile.
 class Container {
-	struct Profile {
-		std::wstring name;
+	struct Shared {
+		std::mutex mutex;
+		size_t users = 0;
 		PSID sid = nullptr;
+		std::wstring folder;
+	};
+	static Shared& shared() {
+		static Shared s;
+		return s;
+	}
 
-		Profile() {
-			auto& env = environment();
-			name = env.container_prefix + std::to_wstring(env.next_container++);
-			HRESULT hr = env.userenv.create(name.c_str(), L"Aegisub subtitle renderer",
-				L"Sandbox for a third-party subtitle renderer used by Aegisub", nullptr, 0, &sid);
-			if (FAILED(hr))
-				throw Error("Could not create an AppContainer for the subtitle renderer: " + error_string(static_cast<DWORD>(hr)));
-		}
-
-		/// If deleting the profile fails it's deleted the next time Aegisub
-		/// starts instead
-		~Profile() {
-			FreeSid(sid);
-			environment().userenv.remove(name.c_str());
-		}
-
-		Profile(Profile const&) = delete;
-		Profile& operator=(Profile const&) = delete;
-	} profile;
-
-	/// The profile's folder, which only this AppContainer can write to
+	PSID sid;
+	/// The profile's folder, which only AppContainers using the profile can
+	/// write to
 	std::wstring folder;
 
 public:
 	/// Must not be destroyed until the host has exited
 	Container() {
-		wchar_t *sid_string = nullptr;
-		if (!ConvertSidToStringSidW(profile.sid, &sid_string))
-			throw_win32("Could not get the subtitle renderer's AppContainer");
-		std::unique_ptr<void, local_freer> sid_string_holder(sid_string);
-
-		wchar_t *path = nullptr;
-		HRESULT hr = environment().userenv.folder(sid_string, &path);
-		if (FAILED(hr))
-			throw Error("Could not get the subtitle renderer's AppContainer folder: " + error_string(static_cast<DWORD>(hr)));
-		folder = path;
-		CoTaskMemFree(path);
+		auto& s = shared();
+		std::lock_guard<std::mutex> lock(s.mutex);
+		if (s.users == 0) {
+			auto& env = environment();
+			auto name = env.container_name.c_str();
+			HRESULT hr = env.userenv.create(name, L"Aegisub subtitle renderer",
+				L"Sandbox for a third-party subtitle renderer used by Aegisub", nullptr, 0, &s.sid);
+			// Deleting it failed when the last host exited
+			if (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))
+				hr = env.userenv.derive(name, &s.sid);
+			if (FAILED(hr))
+				throw Error("Could not create an AppContainer for the subtitle renderer: " + error_string(static_cast<DWORD>(hr)));
+			try {
+				s.folder = container_folder(s.sid);
+			}
+			catch (...) {
+				FreeSid(s.sid);
+				s.sid = nullptr;
+				env.userenv.remove(name);
+				throw;
+			}
+		}
+		++s.users;
+		sid = s.sid;
+		folder = s.folder;
 	}
 
-	PSID Sid() const { return profile.sid; }
+	/// If deleting the profile fails it's reused by the next host, or deleted
+	/// the next time Aegisub starts
+	~Container() {
+		auto& s = shared();
+		std::lock_guard<std::mutex> lock(s.mutex);
+		if (--s.users == 0) {
+			FreeSid(s.sid);
+			s.sid = nullptr;
+			environment().userenv.remove(environment().container_name.c_str());
+		}
+	}
+
+	Container(Container const&) = delete;
+	Container& operator=(Container const&) = delete;
+
+	PSID Sid() const { return sid; }
 	std::wstring const& Folder() const { return folder; }
 };
 
