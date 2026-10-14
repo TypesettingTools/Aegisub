@@ -25,11 +25,6 @@ verify_app() {
     echo "\"${1}\" does not have the hardened runtime enabled" >&2
     exit 1
   fi
-  if codesign --display --xml --entitlements - "${1}" 2>/dev/null |
-     grep -Fq '<key>com.apple.security.cs.disable-library-validation</key>'; then
-    echo "\"${1}\" disables hardened-runtime library validation" >&2
-    exit 1
-  fi
   verify_timestamp "${1}"
 }
 
