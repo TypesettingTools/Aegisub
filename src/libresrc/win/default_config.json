@@ -1,8 +1,5 @@
 {
 	"Audio" : {
 		"Player" : "DirectSound"
-	},
-	"Subtitle" : {
-		"Provider" : "CSRI/pf-xy-vsfilter_textsub"
 	}
 }

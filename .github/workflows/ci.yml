@@ -274,7 +274,11 @@ jobs:
         if: matrix.config.os == 'windows-latest' && env.AEGISUB_SIGN_WINDOWS != 'true'
         with:
           name: ${{ matrix.config.name }} - installer
-          path: build/Aegisub-*.exe
+          # Globs are case-insensitive on Windows, so this would also match
+          # aegisub-csri-host.exe
+          path: |
+            build/Aegisub-*.exe
+            !build/aegisub-csri-host.exe
           if-no-files-found: error
 
       - name: Upload artifacts - portable.zip
@@ -286,12 +290,14 @@ jobs:
           if-no-files-found: error
 
       # Release builds are signed and packaged by the windows-* jobs below
-      - name: Upload Windows executable for signing
+      - name: Upload Windows executables for signing
         uses: actions/upload-artifact@v7
         if: env.AEGISUB_SIGN_WINDOWS == 'true'
         with:
           name: Windows signing - unsigned executable
-          path: build/aegisub.exe
+          path: |
+            build/aegisub.exe
+            build/aegisub-csri-host.exe
           if-no-files-found: error
 
       - name: Upload Windows packaging inputs
@@ -383,6 +389,8 @@ jobs:
     with:
       artifact: Windows signing - unsigned executable
       signed-artifact: Windows signing - signed executable
+      executables: 2
+      names: aegisub.exe aegisub-csri-host.exe
 
   windows-package:
     name: Windows - package signed executable
@@ -404,16 +412,23 @@ jobs:
           name: Windows signing - signed executable
           path: signed
 
-      - name: Package signed executable
+      - name: Package signed executables
         run: |
           Copy-Item signed\aegisub.exe build\aegisub.exe -Force
+          Copy-Item signed\aegisub-csri-host.exe build\aegisub-csri-host.exe -Force
           tools\win-installer-setup.ps1 "$PWD\build" "$PWD" x64 -NoBuild
-          packages\win_installer\portable\replace-executable.ps1 (Get-Item build\Aegisub-*-portable.zip) build\aegisub.exe
+          $portable = Get-Item build\Aegisub-*-portable.zip
+          packages\win_installer\portable\replace-executable.ps1 $portable build\aegisub.exe
+          packages\win_installer\portable\replace-executable.ps1 $portable build\aegisub-csri-host.exe
 
       - uses: actions/upload-artifact@v7
         with:
           name: Windows signing - unsigned installer
-          path: build/Aegisub-*.exe
+          # Globs are case-insensitive on Windows, so this would also match
+          # aegisub-csri-host.exe
+          path: |
+            build/Aegisub-*.exe
+            !build/aegisub-csri-host.exe
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v7

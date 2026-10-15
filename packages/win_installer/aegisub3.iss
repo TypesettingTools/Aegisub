@@ -34,6 +34,7 @@ ArchitecturesAllowed=x64compatible
 #include "fragment_shell_code.iss"
 #include "fragment_migrate_code.iss"
 #include "fragment_beautify_code.iss"
+#include "fragment_sandbox_code.iss"
 
 procedure InitializeWizard;
 begin
@@ -43,6 +44,12 @@ end;
 function InitializeSetup: Boolean;
 begin
   Result := InitializeSetupMigration;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+  if CurUninstallStep = usUninstall then
+    DeleteSandboxProfiles;
 end;
 
 procedure CurStepChanged(CurStep: TSetupStep);

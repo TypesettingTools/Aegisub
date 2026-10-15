@@ -35,87 +35,163 @@
 #ifdef WITH_CSRI
 #include "subtitles_provider_csri.h"
 
+#include "csri_host/client.h"
 #include "include/aegisub/subtitles_provider.h"
-#include "subtitle_format_ass.h"
 #include "video_frame.h"
 
+#include <libaegisub/exception.h>
+#include <libaegisub/log.h>
+
+#include <atomic>
 #include <mutex>
 
-#ifdef WIN32
-#define CSRIAPI
-#endif
-
-#include <csri/csri.h>
-
 namespace {
-// CSRI renderers are not required to be thread safe (and VSFilter very much
-// is not)
-std::mutex csri_mutex;
+DEFINE_EXCEPTION(CSRIHostError, agi::Exception);
+DEFINE_EXCEPTION(CSRILoadError, agi::Exception);
 
-struct closer {
-	void operator()(csri_inst *inst) { if (inst) csri_close(inst); }
-};
+/// Number of times a renderer host has crashed, hung or misbehaved this
+/// session. Restarts are capped so that an exploit which only works some of
+/// the time can't simply keep retrying.
+std::atomic<int> host_failures{0};
+constexpr int max_host_failures = 5;
+
+constexpr const char *disabled_message = "The CSRI subtitle renderer has failed too many times and has been disabled until Aegisub is restarted";
 
 class CSRISubtitlesProvider final : public SubtitlesProvider {
-	std::unique_ptr<csri_inst, closer> instance;
-	csri_rend *renderer = nullptr;
+	std::string renderer_name;
+	/// Null if the host failed and hasn't been restarted yet
+	std::unique_ptr<csri_host::Host> host;
+	/// Guards the host and the state below
+	std::mutex mutex;
+	/// Whether a script load failure has been shown to the user
+	bool load_failure_reported = false;
 
-	void LoadSubtitles(const char *data, size_t len) override {
-		std::lock_guard<std::mutex> lock(csri_mutex);
-		instance.reset(csri_open_mem(renderer, data, len, nullptr));
-	}
+	void StartHost();
+	void LoadScript(csri_host::Host& h);
+	/// Call func with the host and whether it was just (re)started, starting
+	/// it if needed
+	template<typename Func> void WithHost(Func&& func);
+	void LoadSubtitles(const char *data, size_t len) override;
 
 public:
-	CSRISubtitlesProvider(std::string subType);
+	CSRISubtitlesProvider(std::string renderer_name);
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
+	void ResetReportedErrors() override;
+	FrameAllocator GetFrameAllocator() override { return csri_host::SharedFrameAllocator(); }
 };
 
-CSRISubtitlesProvider::CSRISubtitlesProvider(std::string type) {
-	std::lock_guard<std::mutex> lock(csri_mutex);
-	for (csri_rend *cur = csri_renderer_default(); cur; cur = csri_renderer_next(cur)) {
-		if (type == csri_renderer_info(cur)->name) {
-			renderer = cur;
-			break;
-		}
+CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer_name)
+: renderer_name(std::move(renderer_name))
+{
+	if (host_failures >= max_host_failures) {
+		LOG_E("subtitle/provider/csri") << disabled_message;
+		throw CSRIHostError(disabled_message);
+	}
+	std::lock_guard<std::mutex> lock(mutex);
+	WithHost([](csri_host::Host&, bool) { });
+	// Another provider may have used up the last restart since the check
+	// above, in which case WithHost doesn't start a host
+	if (!host) {
+		LOG_E("subtitle/provider/csri") << disabled_message;
+		throw CSRIHostError(disabled_message);
+	}
+}
+
+void CSRISubtitlesProvider::StartHost() {
+	auto new_host = std::make_unique<csri_host::Host>();
+	if (!new_host->OpenRenderer(renderer_name))
+		throw csri_host::Error("CSRI renderer " + renderer_name + " is no longer available");
+	host = std::move(new_host);
+	if (!Script().empty())
+		LoadScript(*host);
+}
+
+void CSRISubtitlesProvider::LoadScript(csri_host::Host& h) {
+	if (h.LoadSubtitles(Script().data(), Script().size())) {
+		load_failure_reported = false;
+		return;
 	}
 
-	if (!renderer)
-		throw agi::InternalError("CSRI renderer vanished between initial list and creation?");
+	// This isn't the host misbehaving, so it isn't restarted
+	constexpr const char *message = "The CSRI subtitle renderer could not load the subtitles";
+	LOG_E("subtitle/provider/csri") << message;
+	if (!load_failure_reported) {
+		load_failure_reported = true;
+		throw CSRILoadError(message);
+	}
+}
+
+template<typename Func>
+void CSRISubtitlesProvider::WithHost(Func&& func) {
+	try {
+		bool started = false;
+		if (!host) {
+			// The failure which used up the last restart has already been
+			// reported, so just stop rendering
+			if (host_failures >= max_host_failures) return;
+			StartHost();
+			started = true;
+		}
+		func(*host, started);
+	}
+	catch (csri_host::Error const& err) {
+		host.reset();
+		LOG_E("subtitle/provider/csri") << err.what();
+		if (++host_failures >= max_host_failures)
+			throw CSRIHostError(std::string(err.what()) + ".\n\n" + disabled_message + ".");
+		throw CSRIHostError(std::string(err.what()) + ".\n\nThe CSRI subtitle renderer will be restarted.");
+	}
+}
+
+void CSRISubtitlesProvider::LoadSubtitles(const char *, size_t) {
+	// The script is also Script(), which a restarted host is given
+	std::lock_guard<std::mutex> lock(mutex);
+	WithHost([&](csri_host::Host& h, bool started) {
+		// A newly started host has already been given the script
+		if (!started)
+			LoadScript(h);
+	});
 }
 
 void CSRISubtitlesProvider::DrawSubtitles(VideoFrame &dst, double time) {
-	if (!instance) return;
+	if (dst.data.size() < size_t(dst.pitch) * dst.height) return;
 
-	csri_frame frame;
-	if (dst.flipped) {
-		frame.planes[0] = dst.data.data() + (dst.height-1) * dst.width * 4;
-		frame.strides[0] = -(signed)dst.width * 4;
-	}
-	else {
-		frame.planes[0] = dst.data.data();
-		frame.strides[0] = dst.width * 4;
-	}
-	frame.pixfmt = CSRI_F_BGR_;
-
-	csri_fmt format = { frame.pixfmt, static_cast<unsigned>(dst.width), static_cast<unsigned>(dst.height) };
-
-	std::lock_guard<std::mutex> lock(csri_mutex);
-	if (!csri_request_fmt(instance.get(), &format))
+	std::lock_guard<std::mutex> lock(mutex);
+	WithHost([&](csri_host::Host& h, bool) {
 		// Add 1e-9 to guard against floating point imprecision errors on int -> float -> *1000 -> int round trips
-		csri_render(instance.get(), &frame, time + 1e-9);
+		h.Render(dst, time + 1e-9);
+	});
+}
+
+void CSRISubtitlesProvider::ResetReportedErrors() {
+	std::lock_guard<std::mutex> lock(mutex);
+	load_failure_reported = false;
 }
 }
 
 namespace csri {
+bool Supported() {
+	return csri_host::Supported();
+}
+
 std::vector<std::string> List() {
 	std::vector<std::string> final;
-	for (csri_rend *cur = csri_renderer_default(); cur; cur = csri_renderer_next(cur)) {
-		std::string name(csri_renderer_info(cur)->name);
-		if (name.find("aegisub") != name.npos)
-			final.insert(final.begin(), name);
-		else
-			final.push_back(name);
+	if (!Supported()) {
+		LOG_I("subtitle/provider/csri") << "CSRI renderers require Windows 10 version 1809 or newer";
+		return final;
+	}
+	try {
+		csri_host::Host host;
+		for (auto const& name : host.ListRenderers()) {
+			if (name.find("aegisub") != name.npos)
+				final.insert(final.begin(), name);
+			else
+				final.push_back(name);
+		}
+	}
+	catch (csri_host::Error const& err) {
+		LOG_E("subtitle/provider/csri") << "Could not list CSRI renderers: " << err.what();
 	}
 	return final;
 }
