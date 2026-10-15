@@ -47,9 +47,14 @@ TEST(lagi_util, try_parse_int) {
 
 TEST(lagi_util, init_locale_uses_std_numeric_facets) {
 	// Boost.Locale's numeric facets crash on older macOS when built with a
-	// newer SDK (#733), so InitLocale must not install them
-	EXPECT_EQ(typeid(std::num_get<char>), typeid(std::use_facet<std::num_get<char>>(std::locale())));
-	EXPECT_EQ(typeid(std::num_put<char>), typeid(std::use_facet<std::num_put<char>>(std::locale())));
+	// newer SDK (#733), so InitLocale must not install them.
+
+	// These need to be written into variables first to shut up a compiler warning.
+	decltype(auto) get_facet = std::use_facet<std::num_get<char>>(std::locale());
+	decltype(auto) put_facet = std::use_facet<std::num_put<char>>(std::locale());
+
+	EXPECT_EQ(typeid(std::num_get<char>), typeid(get_facet));
+	EXPECT_EQ(typeid(std::num_put<char>), typeid(put_facet));
 }
 
 }
