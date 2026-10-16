@@ -22,75 +22,91 @@
 
 #include "options.h"
 
-#include <wx/dialog.h>
 #include <wx/display.h>
+#include <wx/toplevel.h>
 
-PersistLocation::PersistLocation(wxDialog *dialog, std::string options_prefix, bool size_too)
+PersistLocation::PersistLocation(wxTopLevelWindow *window, std::string options_prefix, bool size_too)
 : x_opt(OPT_SET(options_prefix + "/Last/X"))
 , y_opt(OPT_SET(options_prefix + "/Last/Y"))
 , w_opt(size_too ? OPT_SET(options_prefix + "/Last/Width") : nullptr)
 , h_opt(size_too ? OPT_SET(options_prefix + "/Last/Height") : nullptr)
 , maximize_opt(OPT_SET(options_prefix + "/Maximized"))
-, dialog(dialog)
+, window(window)
 {
 	int x = x_opt->GetInt();
 	int y = y_opt->GetInt();
 	if (x == -1 && y == -1)
-		dialog->CenterOnParent();
+		window->CenterOnParent();
 	else {
 		// First move to the saved place so that it ends up on the right monitor
-		dialog->Move(x, y);
+		window->Move(x, y);
 
 		if (size_too && w_opt->GetInt() > 0 && h_opt->GetInt() > 0)
-			dialog->SetSize(w_opt->GetInt(), h_opt->GetInt());
+			window->SetSize(w_opt->GetInt(), h_opt->GetInt());
 
-		int display_index = wxDisplay::GetFromWindow(dialog);
+		int display_index = wxDisplay::GetFromWindow(window);
 
 		// If it's moved offscreen center on the parent and try again
 		if (display_index == wxNOT_FOUND) {
-			dialog->CenterOnParent();
-			display_index = wxDisplay::GetFromWindow(dialog);
+			window->CenterOnParent();
+			display_index = wxDisplay::GetFromWindow(window);
 		}
 
-		// If it's still offscreen just give up
-		if (display_index == wxNOT_FOUND) return;
+		// If it's still offscreen just leave it where it is
+		if (display_index != wxNOT_FOUND) {
+			wxRect display_area = wxDisplay(display_index).GetClientArea();
+			wxSize window_size = window->GetSize();
 
-		wxRect display_area = wxDisplay(display_index).GetClientArea();
-		wxSize dialog_size = dialog->GetSize();
+			// Ensure that the top-left corner is onscreen
+			if (x < display_area.x) x = display_area.x;
+			if (y < display_area.y) y = display_area.y;
 
-		// Ensure that the top-left corner is onscreen
-		if (x < display_area.x) x = display_area.x;
-		if (y < display_area.y) y = display_area.y;
+			// Ensure that the bottom-right corner is onscreen as long as doing so
+			// wouldn't force the top-left corner offscreen
+			if (x + window_size.x > display_area.GetRight())
+				x = std::max(display_area.x, display_area.GetRight() - window_size.x);
+			if (y + window_size.y > display_area.GetBottom())
+				y = std::max(display_area.y, display_area.GetBottom() - window_size.y);
 
-		// Ensure that the bottom-right corner is onscreen as long as doing so
-		// wouldn't force the top-left corner offscreen
-		if (x + dialog_size.x > display_area.GetRight())
-			x = std::max(display_area.x, display_area.GetRight() - dialog_size.x);
-		if (y + dialog_size.y > display_area.GetBottom())
-			y = std::max(display_area.y, display_area.GetBottom() - dialog_size.y);
-
-		dialog->Move(x, y);
+			window->Move(x, y);
+		}
 	}
 
-	dialog->Bind(wxEVT_MOVE, &PersistLocation::OnMove, this);
+	window->Bind(wxEVT_MOVE, &PersistLocation::OnMove, this);
+	window->Bind(wxEVT_SIZE, &PersistLocation::OnSize, this);
+	if ((window->GetWindowStyle() & wxMAXIMIZE_BOX) && maximize_opt->GetBool())
+		window->Maximize();
+}
 
-	dialog->Bind(wxEVT_SIZE, &PersistLocation::OnSize, this);
-	if ((dialog->GetWindowStyle() & wxMAXIMIZE_BOX) && maximize_opt->GetBool())
-		dialog->Maximize();
+PersistLocation::~PersistLocation() {
+	window->Unbind(wxEVT_MOVE, &PersistLocation::OnMove, this);
+	window->Unbind(wxEVT_SIZE, &PersistLocation::OnSize, this);
+}
+
+bool PersistLocation::IsTransient() const {
+	return window->IsMaximized() || window->IsFullScreen() || window->IsIconized();
+}
+
+void PersistLocation::SavePosition() {
+	if (IsTransient()) return;
+	wxPoint pos = window->GetPosition();
+	x_opt->SetInt(pos.x);
+	y_opt->SetInt(pos.y);
 }
 
 void PersistLocation::OnMove(wxMoveEvent &e) {
-	wxPoint pos = dialog->GetPosition();
-	x_opt->SetInt(pos.x);
-	y_opt->SetInt(pos.y);
+	SavePosition();
 	e.Skip();
 }
 
 void PersistLocation::OnSize(wxSizeEvent &e) {
-	maximize_opt->SetBool(dialog->IsMaximized());
-	if (w_opt) {
-		w_opt->SetInt(dialog->GetSize().GetWidth());
-		h_opt->SetInt(dialog->GetSize().GetHeight());
+	maximize_opt->SetBool(window->IsMaximized());
+	// Resizing from the bottom-right doesn't send a move event, so save the
+	// position too in case the window is still at its default location
+	SavePosition();
+	if (w_opt && !IsTransient()) {
+		w_opt->SetInt(window->GetSize().GetWidth());
+		h_opt->SetInt(window->GetSize().GetHeight());
 	}
 	e.Skip();
 }
