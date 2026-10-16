@@ -684,7 +684,10 @@ namespace {
 			return error(L, "Error loading Lua include \"%s\":\n%s", filename.c_str(), check_string(L, 1).c_str());
 
 		int pretop = lua_gettop(L) - 1; // don't count the function value itself
-		lua_call(L, 0, LUA_MULTRET);
+
+		if (lua_pcall(L, 0, LUA_MULTRET, 0))
+			return error(L, "Error running Lua include \"%s\":\n%s", filename.c_str(), check_string(L, -1).c_str());
+
 		return lua_gettop(L) - pretop;
 	}
 
