@@ -114,7 +114,7 @@ namespace agi::lua {
 
 			try {
 				if (!LoadFile(L, path))
-					return error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), check_string(L, 1).c_str());
+					return error(L, "Error loading Lua module \"%s\":\n%s", path.string().c_str(), check_string(L, -1).c_str());
 				break;
 			}
 			catch (agi::fs::FileNotFound const&) {

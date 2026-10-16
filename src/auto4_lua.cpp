@@ -681,7 +681,7 @@ namespace {
 			return error(L, "Lua include not found: %s", filename.c_str());
 
 		if (!LoadFile(L, filepath))
-			return error(L, "Error loading Lua include \"%s\":\n%s", filename.c_str(), check_string(L, 1).c_str());
+			return error(L, "Error loading Lua include \"%s\":\n%s", filename.c_str(), check_string(L, -1).c_str());
 
 		int pretop = lua_gettop(L) - 1; // don't count the function value itself
 
