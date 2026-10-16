@@ -75,8 +75,8 @@ namespace agi::lua {
 			return false; // Leaves error message on stack
 
 		// loadstring returns nil, error on error or a function on success
-		if (lua_isnil(L, 1)) {
-			lua_remove(L, 1);
+		if (lua_isnil(L, -2)) {
+			lua_remove(L, -2);
 			return false;
 		}
 
