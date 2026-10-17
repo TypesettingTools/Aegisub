@@ -55,6 +55,8 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
+#include <utility>
 #include <wx/combobox.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
@@ -74,6 +76,24 @@ wxGLAttributes buildGLAttributes() {
 	attrs.PlatformDefaults().RGBA().MinRGBA(8, 8, 8, 0).DoubleBuffer().Stencil(8).EndList();
 	return attrs;
 }
+
+#ifdef __WXMSW__
+bool DisableVSync() {
+	auto address = wglGetProcAddress("wglSwapIntervalEXT");
+	if (address == nullptr)
+		return false;
+
+	// Some drivers return these values when a function is unavailable.
+	auto value = reinterpret_cast<std::intptr_t>(address);
+	if (value == 1 || value == 2 || value == 3 || value == -1)
+		return false;
+
+	using SwapIntervalFunction = BOOL (WINAPI *)(int);
+	auto setSwapInterval = reinterpret_cast<SwapIntervalFunction>(address);
+	BOOL result = setSwapInterval(0);
+	return result != FALSE;
+}
+#endif
 
 }
 
@@ -175,10 +195,20 @@ bool VideoDisplay::InitContext() {
 	if (GetClientSize() == wxSize(0, 0))
 		return false;
 
-	if (!glContext)
-		glContext = std::make_unique<wxGLContext>(this);
+	if (!glContext) {
+		auto context = std::make_unique<wxGLContext>(this);
+		if (!context->IsOK() || !SetCurrent(*context))
+			return false;
+		glContext = std::move(context);
+#ifdef __WXMSW__
+		// Avoid refresh waits during visual tool redraws, which can otherwise delay timer events on Windows.
+		if (!DisableVSync())
+			LOG_W("video/display") << "Could not disable vertical synchronization.";
+#endif
+	}
+	else if (!SetCurrent(*glContext))
+		return false;
 
-	SetCurrent(*glContext);
 	return true;
 }
 
