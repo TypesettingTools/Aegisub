@@ -17,6 +17,17 @@ permissions:
   contents: read
 
 jobs:
+  release-version:
+    name: Check release version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check that the tag, meson.build, and metainfo agree
+        env:
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+        run: tools/check-release-version.sh ${RELEASE_TAG:+"$RELEASE_TAG"}
+
   build:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -375,7 +386,7 @@ jobs:
   # Signing is kept out of the build job; see sign-windows.yml
   windows-sign-executable:
     name: Windows - sign executable
-    needs: build
+    needs: [build, release-version]
     if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/ci/windows-signing'
     permissions:
       id-token: write
