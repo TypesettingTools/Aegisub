@@ -5,13 +5,11 @@ This file collects some miscellaneous information relevant to Aegisub developmen
 ## Releasing a new Version
 Follow the following steps to release a new Aegisub version:
 
-- Bump Aegisub's version number in the following places:
-    - `meson.build`
-    - `packages/win_installer/portable-comment.txt` (two occurrences)
-    - `po/make_pot.sh` (two occurrences)
+- Bump Aegisub's version number in `meson.build`. `po/make_pot.sh` reads it from there, and tagged builds take their version from the tag.
 - Make a release candidate build (including a string/feature freeze) and ping translators with a time interval to update the translations
 - For larger updates: Cut a new version of Aegisub's manual on the website and update the link in `src/help_button.cpp`.
 - Add the new version with its release date to `aegisub.metainfo.xml.in.in`
+- Run `tools/check-release-version.sh vX.Y.Z` to check that the tag, `meson.build`, and the metainfo agree. CI runs the same check and won't sign a tagged build that fails it.
 - Create and push a new version tag
 - Upload the CI builds to a GitHub release
 - Link the new release on Aegisub's website
