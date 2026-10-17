@@ -20,7 +20,7 @@ project('Aegisub', ['c', 'cpp'],
             'luajit:lua52compat=true',
             'luajit:luajit=false',
         ],
-        version: '3.5.0')
+        version: '3.5.1')
 
 cmake = import('cmake')
 fs = import('fs')
