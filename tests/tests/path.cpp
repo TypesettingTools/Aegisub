@@ -143,6 +143,16 @@ TEST(lagi_path, making_empty_relative_gives_empty) {
 	EXPECT_TRUE(p.MakeRelative("", "?data"sv).empty());
 }
 
+TEST(lagi_path, make_absolute_round_trips_parent_dirs) {
+	Path p;
+	auto base = agi::fs::CurrentPath() / "subs" / "ep01";
+	auto video = (agi::fs::CurrentPath() / "raws" / "ep01.mkv").make_preferred();
+	p.SetToken("?script", base);
+
+	auto rel = p.MakeRelative(video, "?script"sv);
+	EXPECT_EQ(video, p.MakeAbsolute(rel, "?script"));
+}
+
 #ifdef _WIN32
 TEST(lagi_path, make_absolute_on_network_path) {
 	Path p;
