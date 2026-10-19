@@ -207,15 +207,8 @@ agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filena
 	// Get the size of the file to be hashed
 	uintmax_t len = agi::fs::Size(filename);
 
-	// Get the hash of the canonical path
-	agi::fs::path key_path;
-	try {
-		key_path = agi::fs::Canonicalize(filename);
-	}
-	catch (agi::fs::FileSystemError const&) {
-		key_path = agi::fs::path(filename.lexically_normal());
-	}
-	auto key = key_path.string();
+	// collapse ../ so the same file reached via different relative paths shares one index
+	auto key = agi::fs::path(filename.lexically_normal()).string();
 
 	boost::crc_32_type hash;
 	hash.process_bytes(key.c_str(), key.size());
