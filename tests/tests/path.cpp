@@ -146,7 +146,8 @@ TEST(lagi_path, making_empty_relative_gives_empty) {
 TEST(lagi_path, make_absolute_round_trips_parent_dirs) {
 	Path p;
 	auto base = agi::fs::CurrentPath() / "subs" / "ep01";
-	auto video = (agi::fs::CurrentPath() / "raws" / "ep01.mkv").make_preferred();
+	agi::fs::path video = agi::fs::CurrentPath() / "raws" / "ep01.mkv";
+	video.make_preferred();
 	p.SetToken("?script", base);
 
 	auto rel = p.MakeRelative(video, "?script"sv);

@@ -213,7 +213,7 @@ agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filena
 		key_path = agi::fs::Canonicalize(filename);
 	}
 	catch (agi::fs::FileSystemError const&) {
-		key_path = filename.lexically_normal();
+		key_path = agi::fs::path(filename.lexically_normal());
 	}
 	auto key = key_path.string();
 
