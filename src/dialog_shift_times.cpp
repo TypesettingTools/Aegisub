@@ -329,6 +329,7 @@ void DialogShiftTimes::SaveHistory(json::Array shifted_blocks) {
 		history.resize(50);
 
 	try {
+		agi::fs::CreateDirectory(history_filename.parent_path());
 		agi::JsonWriter::Write(history, agi::io::Save(history_filename).Get());
 	}
 	catch (agi::fs::FileSystemError const& e) {
