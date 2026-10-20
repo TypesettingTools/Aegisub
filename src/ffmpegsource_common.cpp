@@ -208,7 +208,7 @@ agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filena
 	uintmax_t len = agi::fs::Size(filename);
 
 	// collapse ../ so the same file reached via different relative paths shares one index
-	auto key = agi::fs::path(filename.lexically_normal()).string();
+	auto key = filename.lexically_normal().string();
 
 	boost::crc_32_type hash;
 	hash.process_bytes(key.c_str(), key.size());

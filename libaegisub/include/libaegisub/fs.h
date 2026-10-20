@@ -90,6 +90,7 @@ public:
 	WRAP_SFP(filename);
 	WRAP_SFP(stem);
 	WRAP_SFP(extension);
+	WRAP_SFP(lexically_normal);
 
 	inline path& make_preferred() {
 		std::filesystem::path::make_preferred();
