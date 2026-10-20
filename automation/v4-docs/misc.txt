@@ -76,8 +76,14 @@ Returns: 2 values, all numbers.
 
 Setting the main frame's status bar text
 
-function aegisub.set_status_bar_text(text)
+function aegisub.set_status_text(text)
+
+@text (string)
+  The text to show in the main window's status bar. It is cleared again after
+  ten seconds.
 
 Returns: 0 values
+
+Does nothing if there is no main window to show the text in.
 
 ---
