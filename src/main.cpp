@@ -173,7 +173,7 @@ bool AegisubApp::OnInit() {
 
 		// Local config, make ?user mean ?data so all user settings are placed in install dir
 		config::path->SetToken("?user", config::path->Decode("?data"));
-		config::path->SetToken("?local", config::path->Decode("?data"));
+		config::path->SetToken("?cache", config::path->Decode("?data"));
 		config::path->SetToken("?state", config::path->Decode("?data"));
 	} catch (agi::fs::FileSystemError const&) {
 		// File doesn't exist or we can't read it
