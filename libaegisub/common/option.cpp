@@ -305,6 +305,7 @@ void Options::Flush() const {
 		}
 	}
 
+	agi::fs::CreateDirectory(config_file.parent_path());
 	agi::JsonWriter::Write(obj_out, io::Save(config_file).Get());
 }
 

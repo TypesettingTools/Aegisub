@@ -122,6 +122,7 @@ void MRUManager::Flush() {
 			array.push_back(p.string());
 	}
 
+	agi::fs::CreateDirectory(config_name.parent_path());
 	agi::JsonWriter::Write(out, io::Save(config_name).Get());
 }
 
