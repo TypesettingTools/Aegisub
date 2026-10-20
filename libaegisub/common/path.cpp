@@ -22,15 +22,16 @@
 #include <boost/range/distance.hpp>
 
 namespace {
-constexpr std::array<std::string_view, 8> tokens = {
+constexpr std::array<std::string_view, 9> tokens = {
 	"?audio",
 	"?data",
 	"?dictionary",
 	"?local",
 	"?script",
+	"?state",
 	"?temp",
 	"?user",
-	"?video"
+	"?video",
 };
 
 int find_token(std::string_view str) {
