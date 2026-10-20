@@ -102,13 +102,14 @@ TEST(lagi_path, setting_token_to_file_sets_to_parent_directory_instead) {
 TEST(lagi_path, valid_token_names) {
 	Path p;
 
-	EXPECT_NO_THROW(p.SetToken("?user", ""));
-	EXPECT_NO_THROW(p.SetToken("?local", ""));
-	EXPECT_NO_THROW(p.SetToken("?data", ""));
-	EXPECT_NO_THROW(p.SetToken("?temp", ""));
-	EXPECT_NO_THROW(p.SetToken("?dictionary", ""));
 	EXPECT_NO_THROW(p.SetToken("?audio", ""));
+	EXPECT_NO_THROW(p.SetToken("?data", ""));
+	EXPECT_NO_THROW(p.SetToken("?dictionary", ""));
+	EXPECT_NO_THROW(p.SetToken("?local", ""));
 	EXPECT_NO_THROW(p.SetToken("?script", ""));
+	EXPECT_NO_THROW(p.SetToken("?state", ""));
+	EXPECT_NO_THROW(p.SetToken("?temp", ""));
+	EXPECT_NO_THROW(p.SetToken("?user", ""));
 	EXPECT_NO_THROW(p.SetToken("?video", ""));
 }
 
@@ -126,9 +127,10 @@ TEST(lagi_path, platform_paths_have_values) {
 	// Uses the bundle path so it isn't set when not running in a bundle
 	TEST_PLATFORM_PATH_TOKEN("?data");
 #endif
-	TEST_PLATFORM_PATH_TOKEN("?user");
 	TEST_PLATFORM_PATH_TOKEN("?local");
+	TEST_PLATFORM_PATH_TOKEN("?state");
 	TEST_PLATFORM_PATH_TOKEN("?temp");
+	TEST_PLATFORM_PATH_TOKEN("?user");
 }
 
 TEST(lagi_path, making_empty_absolute_gives_empty) {
