@@ -71,6 +71,7 @@ void Path::FillPlatformSpecificPaths() {
 #ifndef __APPLE__
 	agi::fs::path home = home_dir();
 	SetToken("?user", home/".aegisub");
+	SetToken("?state", home/".aegisub");
 	SetToken("?local", home/".aegisub");
 
 #ifdef APPIMAGE_BUILD
@@ -87,6 +88,7 @@ void Path::FillPlatformSpecificPaths() {
 	agi::fs::path app_support = agi::util::GetApplicationSupportDirectory();
 	SetToken("?user", app_support/"Aegisub");
 	SetToken("?local", app_support/"Aegisub");
+	SetToken("?state", app_support/"Aegisub");
 	SetToken("?data", agi::util::GetBundleSharedSupportDirectory());
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 #endif
