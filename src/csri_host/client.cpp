@@ -419,6 +419,9 @@ std::wstring host_environment(std::wstring const& temp) {
 	}
 	vars.push_back(L"TEMP=" + temp);
 	vars.push_back(L"TMP=" + temp);
+	// Windows 10 fails to create AppContainer processes with
+	// ERROR_ENVVAR_NOT_FOUND if this is missing. Windows replaces the value.
+	vars.push_back(L"LOCALAPPDATA=" + temp);
 
 	// The block has to be sorted case-insensitively by name
 	std::sort(vars.begin(), vars.end(), [](std::wstring const& a, std::wstring const& b) {
