@@ -21,6 +21,7 @@
 #undef NTDDI_VERSION
 #define NTDDI_VERSION 0x0A000002 // NTDDI_WIN10_RS1
 #include <windows.h>
+#include <psapi.h>
 
 #include "protocol.h"
 
@@ -84,6 +85,109 @@ std::vector<char> read_payload(Request const& req, uint64_t max_size) {
 	std::vector<char> payload(static_cast<size_t>(req.payload_size));
 	read_exact(payload.data(), payload.size());
 	return payload;
+}
+
+// AppContainers can't open the root of the drive, so GetVolumeInformation
+// fails on it. MFC's CFile::Open calls that on the file's drive and gives up
+// if it fails, which stops VSFilter from loading the temporary file it writes
+// scripts to. The renderers are given these instead, which report a volume
+// with no particular name or file system when the real call fails. This
+// doesn't give the host access to anything.
+BOOL WINAPI volume_information_w(LPCWSTR root, LPWSTR name, DWORD name_size, LPDWORD serial,
+                                 LPDWORD max_component_length, LPDWORD flags, LPWSTR fs_name, DWORD fs_name_size) {
+	if (GetVolumeInformationW(root, name, name_size, serial, max_component_length, flags, fs_name, fs_name_size))
+		return TRUE;
+	if (name && name_size) *name = L'\0';
+	if (serial) *serial = 0;
+	if (max_component_length) *max_component_length = MAX_PATH;
+	if (flags) *flags = FILE_CASE_PRESERVED_NAMES | FILE_UNICODE_ON_DISK;
+	if (fs_name && fs_name_size) *fs_name = L'\0';
+	return TRUE;
+}
+
+BOOL WINAPI volume_information_a(LPCSTR root, LPSTR name, DWORD name_size, LPDWORD serial,
+                                 LPDWORD max_component_length, LPDWORD flags, LPSTR fs_name, DWORD fs_name_size) {
+	if (GetVolumeInformationA(root, name, name_size, serial, max_component_length, flags, fs_name, fs_name_size))
+		return TRUE;
+	if (name && name_size) *name = '\0';
+	if (serial) *serial = 0;
+	if (max_component_length) *max_component_length = MAX_PATH;
+	if (flags) *flags = FILE_CASE_PRESERVED_NAMES | FILE_UNICODE_ON_DISK;
+	if (fs_name && fs_name_size) *fs_name = '\0';
+	return TRUE;
+}
+
+/// Point module's imports of functions from kernel32 which have a
+/// replacement at the replacement. Only affects imports which are bound at
+/// load time, not ones looked up with GetProcAddress.
+void patch_imports(HMODULE module) {
+	struct Replacement {
+		const char *name;
+		void *function;
+	};
+	static const Replacement replacements[] = {
+		{"GetVolumeInformationW", reinterpret_cast<void *>(&volume_information_w)},
+		{"GetVolumeInformationA", reinterpret_cast<void *>(&volume_information_a)},
+	};
+
+	auto base = reinterpret_cast<unsigned char *>(module);
+	auto dos = reinterpret_cast<IMAGE_DOS_HEADER *>(base);
+	auto nt = reinterpret_cast<IMAGE_NT_HEADERS *>(base + dos->e_lfanew);
+	auto const& dir = nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+	if (!dir.VirtualAddress) return;
+
+	for (auto desc = reinterpret_cast<IMAGE_IMPORT_DESCRIPTOR *>(base + dir.VirtualAddress); desc->Name; ++desc) {
+		if (_stricmp(reinterpret_cast<const char *>(base + desc->Name), "kernel32.dll") != 0 || !desc->OriginalFirstThunk)
+			continue;
+		auto names = reinterpret_cast<IMAGE_THUNK_DATA *>(base + desc->OriginalFirstThunk);
+		auto addresses = reinterpret_cast<IMAGE_THUNK_DATA *>(base + desc->FirstThunk);
+		for (; names->u1.AddressOfData; ++names, ++addresses) {
+			if (IMAGE_SNAP_BY_ORDINAL(names->u1.Ordinal)) continue;
+			auto import = reinterpret_cast<IMAGE_IMPORT_BY_NAME *>(base + names->u1.AddressOfData);
+			for (auto const& r : replacements) {
+				if (strcmp(reinterpret_cast<const char *>(import->Name), r.name) != 0) continue;
+				DWORD old;
+				if (!VirtualProtect(&addresses->u1.Function, sizeof addresses->u1.Function, PAGE_READWRITE, &old))
+					break;
+				addresses->u1.Function = reinterpret_cast<ULONG_PTR>(r.function);
+				VirtualProtect(&addresses->u1.Function, sizeof addresses->u1.Function, old, &old);
+				break;
+			}
+		}
+	}
+}
+
+/// Patch the imports of the renderers, which are the modules loaded from the
+/// csri directory
+void patch_renderers() {
+	std::vector<wchar_t> path(MAX_PATH);
+	for (;;) {
+		DWORD len = GetModuleFileNameW(nullptr, path.data(), static_cast<DWORD>(path.size()));
+		if (len == 0) return;
+		if (len < path.size()) break;
+		path.resize(path.size() * 2);
+	}
+	std::wstring csri_dir(path.data());
+	csri_dir.resize(csri_dir.find_last_of(L'\\') + 1);
+	csri_dir += L"csri\\";
+
+	std::vector<HMODULE> modules(256);
+	DWORD needed = 0;
+	for (;;) {
+		if (!EnumProcessModules(GetCurrentProcess(), modules.data(), static_cast<DWORD>(modules.size() * sizeof(HMODULE)), &needed))
+			return;
+		if (needed <= modules.size() * sizeof(HMODULE)) break;
+		modules.resize(needed / sizeof(HMODULE));
+	}
+	modules.resize(needed / sizeof(HMODULE));
+
+	for (HMODULE module : modules) {
+		DWORD len = GetModuleFileNameW(module, path.data(), static_cast<DWORD>(path.size()));
+		if (len == 0 || len >= path.size()) continue;
+		if (len > csri_dir.size() && CompareStringOrdinal(path.data(), static_cast<int>(csri_dir.size()),
+		                                                  csri_dir.c_str(), static_cast<int>(csri_dir.size()), TRUE) == CSTR_EQUAL)
+			patch_imports(module);
+	}
 }
 
 /// Apply the mitigations that can't be enabled when the process is created
@@ -266,6 +370,7 @@ int WINAPI wWinMain(HINSTANCE, HINSTANCE, PWSTR cmdline, int) {
 	// CSRI loads every renderer in the csri directory on the first call to
 	// csri_renderer_default(), so do that before locking the process down
 	csri_renderer_default();
+	patch_renderers();
 	lock_down();
 
 	Host().Run();
