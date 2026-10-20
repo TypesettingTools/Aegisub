@@ -98,11 +98,11 @@ void Path::FillPlatformSpecificPaths() {
 
 	if (agi::fs::DirectoryExists(old_root)) {
 		SetToken("?user", old_root);
-		SetToken("?local", old_root);
+		SetToken("?cache", old_root);
 		SetToken("?state", old_root);
 	} else {
 		SetToken("?user", xdg_config/"aegisub");
-		SetToken("?local", xdg_cache/"aegisub");
+		SetToken("?cache", xdg_cache/"aegisub");
 		SetToken("?state", xdg_state/"aegisub");
 	}
 
@@ -125,7 +125,7 @@ void Path::FillPlatformSpecificPaths() {
 #else
 	agi::fs::path app_support = agi::util::GetApplicationSupportDirectory();
 	SetToken("?user", app_support/"Aegisub");
-	SetToken("?local", app_support/"Aegisub");
+	SetToken("?cache", app_support/"Aegisub");
 	SetToken("?state", app_support/"Aegisub");
 	SetToken("?data", agi::util::GetBundleSharedSupportDirectory());
 	SetToken("?dictionary", Decode("?data/dictionaries"));

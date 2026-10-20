@@ -19,14 +19,16 @@
 #include "libaegisub/fs.h"
 
 #include <algorithm>
+#include <optional>
+#include <utility>
 #include <boost/range/distance.hpp>
 
 namespace {
 constexpr std::array<std::string_view, 9> tokens = {
 	"?audio",
+	"?cache",		// ?cache also has the legacy alias ?local
 	"?data",
 	"?dictionary",
-	"?local",
 	"?script",
 	"?state",
 	"?temp",
@@ -34,18 +36,33 @@ constexpr std::array<std::string_view, 9> tokens = {
 	"?video",
 };
 
-int find_token(std::string_view str) {
-	if (str.size() < 5 || str[0] != '?') return -1;
+// Returns a pair (token index, remaining string).
+std::optional<std::pair<int, std::string_view>> find_token(std::string_view str) {
+	if (str.size() < 5 || str[0] != '?') return std::nullopt;
+
+	// ?cache used to be called ?local but was renamed for better consistency.
+	// Preserve the alias here for backwards compatibility with older configurations and automation scripts.
+	if (str.starts_with("?local")) {
+		constexpr int idx = 1;
+		static_assert(tokens[idx] == "?cache");
+
+		return std::make_pair(idx, str.substr(std::string_view{"?local"}.size()));
+	}
 
 	auto it = std::ranges::find_if(tokens, [&](auto const& tok) { return str.starts_with(tok); });
 
-	return it == tokens.end() ? -1 : std::distance(tokens.begin(), it);
+	if (it == tokens.end())
+		return std::nullopt;
+
+	return std::make_pair(std::distance(tokens.begin(), it), str.substr(it->size()));
 }
-int checked_find_token(std::string_view str) {
-	int idx = find_token(str);
-	if (idx == -1) throw agi::InternalError("Bad token: " + std::string(str));
-	return idx;
+
+std::pair<int, std::string_view> checked_find_token(std::string_view str) {
+	auto result = find_token(str);
+	if (!result) throw agi::InternalError("Bad token: " + std::string(str));
+	return *result;
 }
+
 }
 
 namespace agi {
@@ -57,13 +74,15 @@ Path::Path() {
 }
 
 fs::path Path::Decode(std::string_view path) const {
-	int idx = find_token(path);
-	if (idx == -1 || paths[idx].empty())
+	auto result = find_token(path);
+	if (!result || paths[result->first].empty())
 		return fs::path(path).make_preferred();
-	path = path.substr(tokens[idx].size());
-	if (path.size() && (path[0] == '/' || path[0] == std::filesystem::path::preferred_separator)) path.remove_prefix(1);
-	if (path.empty()) return paths[idx];
-	return (paths[idx]/path).make_preferred();
+
+	auto [idx, tail] = *result;
+
+	if (tail.size() && (tail[0] == '/' || tail[0] == std::filesystem::path::preferred_separator)) tail.remove_prefix(1);
+	if (tail.empty()) return paths[idx];
+	return (paths[idx]/tail).make_preferred();
 }
 
 bool Path::IsDummyPath(fs::path const& path) {
@@ -72,7 +91,7 @@ bool Path::IsDummyPath(fs::path const& path) {
 }
 
 fs::path Path::MakeRelative(fs::path const& path, std::string_view token) const {
-	return MakeRelative(path, paths[checked_find_token(token)]);
+	return MakeRelative(path, paths[checked_find_token(token).first]);
 }
 
 fs::path Path::MakeRelative(fs::path const& path, fs::path const& base) const {
@@ -100,7 +119,7 @@ fs::path Path::MakeRelative(fs::path const& path, fs::path const& base) const {
 
 fs::path Path::MakeAbsolute(fs::path path, std::string_view token) const {
 	if (path.empty()) return path;
-	int idx = checked_find_token(token);
+	auto [idx, _] = checked_find_token(token);
 
 	path.make_preferred();
 	if (IsDummyPath(path))
@@ -127,7 +146,7 @@ std::string Path::Encode(fs::path const& path) const {
 }
 
 void Path::SetToken(std::string_view token_name, fs::path const& token_value) {
-	int idx = checked_find_token(token_name);
+	auto [idx, _] = checked_find_token(token_name);
 
 	if (token_value.empty())
 		paths[idx] = token_value;
