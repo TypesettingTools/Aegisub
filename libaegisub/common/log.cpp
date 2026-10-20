@@ -98,8 +98,9 @@ Message::~Message() {
 }
 
 JsonEmitter::JsonEmitter(agi::fs::path const& directory)
-: fp(new std::ofstream(directory/util::strftime("%Y-%m-%d-%H-%M-%S.json")))
 {
+	agi::fs::CreateDirectory(directory);
+	fp = std::make_unique<std::ofstream>(directory/util::strftime("%Y-%m-%d-%H-%M-%S.json"));
 }
 
 void JsonEmitter::log(SinkMessage const& sm) {
