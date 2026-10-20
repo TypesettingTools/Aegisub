@@ -187,6 +187,11 @@ bool AegisubApp::OnInit() {
 	agi::log::log->Subscribe(std::make_unique<agi::log::JsonEmitter>(path_log));
 	CleanCache(path_log, "*.json", 10, 100);
 
+	LOG_D("path/init") << "Filled platform paths:";
+	for (auto const token : { "?data", "?user", "?state", "?cache", "?dictionary" }) {
+		LOG_D("path/init") << agi::format("  %s = %s", token, config::path->Decode(token).string());
+	}
+
 	StartupLog("Load user configuration");
 	try {
 		if (!config::opt)
