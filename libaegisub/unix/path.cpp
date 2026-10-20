@@ -41,6 +41,25 @@ std::string home_dir() {
 	throw agi::EnvironmentError("Could not get home directory. Make sure HOME is set.");
 }
 
+agi::fs::path xdg_dir(const char *env_name, agi::fs::path const& fallback) {
+	const char *env_raw = getenv(env_name);
+
+	if (!env_raw)
+		return fallback;
+
+	std::string env_str{env_raw};
+
+	if (env_str.empty())
+		return fallback;
+
+	agi::fs::path path{env_str};
+
+	if (!path.is_absolute())
+		return fallback;
+
+	return path;
+}
+
 #ifdef APPIMAGE_BUILD
 std::string exe_dir() {
 	char *exe, *dir;
@@ -70,13 +89,32 @@ namespace agi {
 void Path::FillPlatformSpecificPaths() {
 #ifndef __APPLE__
 	agi::fs::path home = home_dir();
-	SetToken("?user", home/".aegisub");
-	SetToken("?state", home/".aegisub");
-	SetToken("?local", home/".aegisub");
+	agi::fs::path old_root = home/".aegisub";
+
+	agi::fs::path xdg_config = xdg_dir("XDG_CONFIG_HOME", home/".config");
+	agi::fs::path xdg_cache = xdg_dir("XDG_CACHE_HOME", home/".cache");
+	agi::fs::path xdg_state = xdg_dir("XDG_STATE_HOME", home/".local/state");
+	agi::fs::path xdg_data = xdg_dir("XDG_DATA_HOME", home/".local/share");
+
+	if (agi::fs::DirectoryExists(old_root)) {
+		SetToken("?user", old_root);
+		SetToken("?local", old_root);
+		SetToken("?state", old_root);
+	} else {
+		SetToken("?user", xdg_config/"aegisub");
+		SetToken("?local", xdg_cache/"aegisub");
+		SetToken("?state", xdg_state/"aegisub");
+	}
 
 #ifdef APPIMAGE_BUILD
 	agi::fs::path data = exe_dir();
-	if (data == "") data = home/".aegisub";
+	if (data == "") {
+		if (agi::fs::DirectoryExists(old_root)) {
+			data = old_root;
+		} else {
+			data = xdg_data/"aegisub";
+		}
+	}
 	SetToken("?data", data);
 	SetToken("?dictionary", Decode("?data/dictionaries"));
 #else
