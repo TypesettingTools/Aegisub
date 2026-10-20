@@ -103,6 +103,7 @@ TEST(lagi_path, valid_token_names) {
 	Path p;
 
 	EXPECT_NO_THROW(p.SetToken("?audio", ""));
+	EXPECT_NO_THROW(p.SetToken("?cache", ""));
 	EXPECT_NO_THROW(p.SetToken("?data", ""));
 	EXPECT_NO_THROW(p.SetToken("?dictionary", ""));
 	EXPECT_NO_THROW(p.SetToken("?local", ""));
@@ -123,6 +124,7 @@ TEST(lagi_path, valid_token_names) {
 
 TEST(lagi_path, platform_paths_have_values) {
 	Path p;
+	TEST_PLATFORM_PATH_TOKEN("?cache");
 #ifndef __APPLE__
 	// Uses the bundle path so it isn't set when not running in a bundle
 	TEST_PLATFORM_PATH_TOKEN("?data");
@@ -177,14 +179,14 @@ TEST(lagi_path, make_relative_on_dummy_url) {
 TEST(lagi_path, encode) {
 	Path p;
 	p.SetToken("?user", "C:\\a\\b\\c");
-	p.SetToken("?local", "C:\\a\\b\\c\\d");
-	EXPECT_EQ("?local\\e", p.Encode("C:\\a\\b\\c\\d\\e"));
+	p.SetToken("?cache", "C:\\a\\b\\c\\d");
+	EXPECT_EQ("?cache\\e", p.Encode("C:\\a\\b\\c\\d\\e"));
 }
 #else
 TEST(lagi_path, encode) {
 	Path p;
 	p.SetToken("?user", "/a/b/c");
-	p.SetToken("?local", "/a/b/c/d");
-	EXPECT_EQ("?local/e", p.Encode("/a/b/c/d/e"));
+	p.SetToken("?cache", "/a/b/c/d");
+	EXPECT_EQ("?cache/e", p.Encode("/a/b/c/d/e"));
 }
 #endif

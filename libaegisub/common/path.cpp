@@ -24,9 +24,9 @@
 namespace {
 constexpr std::array<std::string_view, 9> tokens = {
 	"?audio",
+	"?cache",		// ?cache also has the legacy alias ?local
 	"?data",
 	"?dictionary",
-	"?local",
 	"?script",
 	"?state",
 	"?temp",
@@ -36,6 +36,11 @@ constexpr std::array<std::string_view, 9> tokens = {
 
 int find_token(std::string_view str) {
 	if (str.size() < 5 || str[0] != '?') return -1;
+
+	// ?cache used to be called ?local but was renamed for better consistency.
+	// Preserve the alias here for backwards compatibility with older configurations and automation scripts.
+	if (str.starts_with("?local"))
+		str = "?cache";
 
 	auto it = std::ranges::find_if(tokens, [&](auto const& tok) { return str.starts_with(tok); });
 
