@@ -34,22 +34,41 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
 
 class AssFile;
+class FrameStorage;
 struct VideoFrame;
 
 class SubtitlesProvider {
 	std::vector<char> buffer;
 	virtual void LoadSubtitles(const char *data, size_t len)=0;
 
+protected:
+	/// The most recently loaded script, as passed to LoadSubtitles
+	std::vector<char> const& Script() const { return buffer; }
+
 public:
 	virtual ~SubtitlesProvider() = default;
 	void LoadSubtitles(AssFile *subs, int time = -1);
 	virtual void DrawSubtitles(VideoFrame &dst, double time)=0;
 	virtual void Reinitialize() { }
+	/// Called when a different file is opened (or the file is closed), so
+	/// that errors which are only reported once per file are reported again
+	virtual void ResetReportedErrors() { }
+	/// Wait until the provider is ready to draw, showing progress if needed.
+	/// Must be called on the main thread. Drawing on other threads throws
+	/// agi::UserCancelException if the provider isn't ready, as they can't
+	/// show progress. Throws agi::UserCancelException if the user cancels.
+	virtual void WaitUntilReady() { }
+	/// Allocator (see FrameBuffer) for the memory of frames which subtitles
+	/// will be drawn on, if the provider can draw on frames more efficiently
+	/// when their memory comes from it. Anything else written to frames which
+	/// subtitles have been drawn on should be treated as untrusted pixels.
+	virtual std::function<std::unique_ptr<FrameStorage>(size_t)> GetFrameAllocator() { return nullptr; }
 };
 
 namespace agi { class BackgroundRunner; }

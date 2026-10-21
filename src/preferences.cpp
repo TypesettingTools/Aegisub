@@ -28,6 +28,9 @@
 #include "include/aegisub/audio_player.h"
 #include "include/aegisub/hotkey.h"
 #include "include/aegisub/subtitles_provider.h"
+#ifdef WITH_CSRI
+#include "subtitles_provider_csri.h"
+#endif
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "preferences_base.h"
@@ -511,6 +514,16 @@ void Advanced_Video(wxTreebook *book, Preferences *parent) {
 
 	wxArrayString sp_choice = to_wx(SubtitlesProviderFactory::GetClasses());
 	p->OptionChoice(expert, _("Subtitles provider"), sp_choice, "Subtitle/Provider");
+#ifdef WITH_CSRI
+	if (!csri::Supported()) {
+		p->CellSkip(expert);
+		auto note = new wxStaticText(expert.box, -1, _("VSFilter requires Windows 10 version 1809 or newer"));
+		note->Disable();
+		expert.sizer->Add(note);
+	}
+	else
+		p->OptionAdd(expert, _("VSFilter memory limit (MB)"), "Provider/CSRI/Memory Max", {.min = 256});
+#endif
 
 #ifdef WITH_AVISYNTH
 	auto avisynth = p->PageSizer("Avisynth");

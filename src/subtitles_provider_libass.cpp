@@ -87,17 +87,23 @@ class LibassSubtitlesProvider final : public SubtitlesProvider {
 	agi::BackgroundRunner *br;
 	std::shared_ptr<cache_thread_shared> shared;
 	ASS_Track* ass_track = nullptr;
+	/// Whether the font cache progress dialog is open
+	bool waiting = false;
 
-	ASS_Renderer *renderer() {
+	/// Wait for the font cache on the main thread, showing progress if it's
+	/// taking a while
+	void WaitForCache() {
 		if (shared->ready)
-			return shared->renderer;
+			return;
+		// Drawing from inside the progress dialog's event loop
+		if (waiting)
+			throw agi::UserCancelException("Already waiting for the font cache");
+		agi::util::sleep_for(250);
+		if (shared->ready)
+			return;
 
-		auto block = [&] {
-			if (shared->ready)
-				return;
-			agi::util::sleep_for(250);
-			if (shared->ready)
-				return;
+		waiting = true;
+		try {
 			br->Run([this](agi::ProgressSink *ps) {
 				ps->SetTitle(from_wx(_("Updating font index")));
 				ps->SetMessage(from_wx(_("This may take several minutes")));
@@ -105,13 +111,29 @@ class LibassSubtitlesProvider final : public SubtitlesProvider {
 				while (!shared->ready && !ps->IsCancelled())
 					agi::util::sleep_for(250);
 			});
-		};
+		}
+		catch (agi::UserCancelException const&) { }
+		waiting = false;
 
-		if (wxThread::IsMain())
-			block();
-		else
-			agi::dispatch::Main().Sync(block);
-		return shared->renderer;
+		if (!shared->ready)
+			throw agi::UserCancelException("Cancelled waiting for the font cache");
+	}
+
+	ASS_Renderer *renderer() {
+		if (shared->ready)
+			return shared->renderer;
+
+		if (wxThread::IsMain()) {
+			WaitForCache();
+			return shared->renderer;
+		}
+
+		// Other threads can't wait for the main thread to show progress, as
+		// it may be waiting for them, or wait without showing progress, as
+		// that'd leave the main thread unresponsive if it is. The video
+		// provider waits for the cache on the main thread before drawing,
+		// so this only happens if the user cancelled that.
+		throw agi::UserCancelException("The font cache isn't ready");
 	}
 
 public:
@@ -125,6 +147,8 @@ public:
 	}
 
 	void DrawSubtitles(VideoFrame &dst, double time) override;
+
+	void WaitUntilReady() override { WaitForCache(); }
 
 	void Reinitialize() override {
 		// No need to reinit if we're not even done with the initial init
