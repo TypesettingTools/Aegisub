@@ -207,9 +207,11 @@ agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filena
 	// Get the size of the file to be hashed
 	uintmax_t len = agi::fs::Size(filename);
 
-	// Get the hash of the filename
+	// collapse ../ so the same file reached via different relative paths shares one index
+	auto key = filename.lexically_normal().string();
+
 	boost::crc_32_type hash;
-	hash.process_bytes(filename.string().c_str(), filename.string().size());
+	hash.process_bytes(key.c_str(), key.size());
 
 	// Generate the filename
 	auto modified_time = std::chrono::duration_cast<std::chrono::seconds>(agi::fs::ModifiedTime(filename).time_since_epoch()).count();
