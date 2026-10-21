@@ -37,11 +37,13 @@
 
 #include "csri_host/client.h"
 #include "include/aegisub/subtitles_provider.h"
+#include "options.h"
 #include "video_frame.h"
 
 #include <libaegisub/exception.h>
 #include <libaegisub/log.h>
 
+#include <algorithm>
 #include <atomic>
 #include <mutex>
 
@@ -55,10 +57,23 @@ DEFINE_EXCEPTION(CSRILoadError, agi::Exception);
 std::atomic<int> host_failures{0};
 constexpr int max_host_failures = 5;
 
+/// The configured memory limit for hosts in bytes, or 0 for none. Only read
+/// on the main thread, as that's where options are changed.
+uint64_t configured_memory_limit() {
+	// Larger values would overflow when converted to bytes
+	return uint64_t(std::clamp<int64_t>(OPT_GET("Provider/CSRI/Memory Max")->GetInt(), 0, int64_t(1) << 40)) << 20;
+}
+
+/// The memory limit for the host which lists the renderers: 1 GiB
+constexpr uint64_t listing_memory_limit = uint64_t(1) << 30;
+
 constexpr const char *disabled_message = "The CSRI subtitle renderer has failed too many times and has been disabled until Aegisub is restarted";
 
 class CSRISubtitlesProvider final : public SubtitlesProvider {
 	std::string renderer_name;
+	/// Fixed when created, as hosts may be restarted on the worker thread.
+	/// Changing the option reloads the video, which recreates the provider.
+	uint64_t memory_limit;
 	/// Null if the host failed and hasn't been restarted yet
 	std::unique_ptr<csri_host::Host> host;
 	/// Guards the host and the state below
@@ -83,6 +98,7 @@ public:
 
 CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer_name)
 : renderer_name(std::move(renderer_name))
+, memory_limit(configured_memory_limit())
 {
 	if (host_failures >= max_host_failures) {
 		LOG_E("subtitle/provider/csri") << disabled_message;
@@ -99,7 +115,7 @@ CSRISubtitlesProvider::CSRISubtitlesProvider(std::string renderer_name)
 }
 
 void CSRISubtitlesProvider::StartHost() {
-	auto new_host = std::make_unique<csri_host::Host>();
+	auto new_host = std::make_unique<csri_host::Host>(memory_limit);
 	if (!new_host->OpenRenderer(renderer_name))
 		throw csri_host::Error("CSRI renderer " + renderer_name + " is no longer available");
 	host = std::move(new_host);
@@ -182,7 +198,9 @@ std::vector<std::string> List() {
 		return final;
 	}
 	try {
-		csri_host::Host host;
+		// Not the configured limit, as this host is never given a script, and
+		// failing here leaves CSRI unavailable until Aegisub is restarted
+		csri_host::Host host(listing_memory_limit);
 		for (auto const& name : host.ListRenderers()) {
 			if (name.find("aegisub") != name.npos)
 				final.insert(final.begin(), name);

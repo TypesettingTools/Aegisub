@@ -521,6 +521,8 @@ void Advanced_Video(wxTreebook *book, Preferences *parent) {
 		note->Disable();
 		expert.sizer->Add(note);
 	}
+	else
+		p->OptionAdd(expert, _("VSFilter memory limit (MB)"), "Provider/CSRI/Memory Max", {.min = 256});
 #endif
 
 #ifdef WITH_AVISYNTH

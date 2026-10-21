@@ -10,6 +10,7 @@
 #include "../video_frame.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -37,8 +38,9 @@ class Host {
 	std::unique_ptr<Impl> impl;
 
 public:
-	/// Start a new sandboxed host process
-	Host();
+	/// Start a new sandboxed host process which may use up to memory_limit
+	/// bytes, or any amount if it's 0
+	explicit Host(uint64_t memory_limit);
 	~Host();
 
 	std::vector<std::string> ListRenderers();

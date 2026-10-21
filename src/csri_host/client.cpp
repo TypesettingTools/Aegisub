@@ -55,8 +55,6 @@ namespace {
 /// How long the host may take to handle a single operation before it's
 /// assumed to have hung and is killed
 constexpr DWORD timeout_ms = 30000;
-/// 4 GB, or no effective limit for 32-bit builds
-constexpr SIZE_T memory_limit = static_cast<SIZE_T>(std::min<uint64_t>(uint64_t(4) << 30, SIZE_MAX));
 /// The hosts' AppContainer profile is named
 /// <prefix><Aegisub's pid>.<Aegisub's creation time>, so that ones left behind
 /// by a crash can be recognised and deleted. Windows stores the names in
@@ -526,7 +524,7 @@ std::pair<unique_handle, unique_handle> create_pipe() {
 	return {std::move(server), std::move(client)};
 }
 
-unique_handle create_job() {
+unique_handle create_job(uint64_t memory_limit) {
 	unique_handle job(CreateJobObjectW(nullptr, nullptr));
 	if (!job)
 		throw_win32("Could not create a job object for the subtitle renderer");
@@ -535,10 +533,12 @@ unique_handle create_job() {
 	limits.BasicLimitInformation.LimitFlags =
 		JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE |
 		JOB_OBJECT_LIMIT_DIE_ON_UNHANDLED_EXCEPTION |
-		JOB_OBJECT_LIMIT_ACTIVE_PROCESS |
-		JOB_OBJECT_LIMIT_PROCESS_MEMORY;
+		JOB_OBJECT_LIMIT_ACTIVE_PROCESS;
 	limits.BasicLimitInformation.ActiveProcessLimit = 1;
-	limits.ProcessMemoryLimit = memory_limit;
+	if (memory_limit) {
+		limits.BasicLimitInformation.LimitFlags |= JOB_OBJECT_LIMIT_PROCESS_MEMORY;
+		limits.ProcessMemoryLimit = static_cast<SIZE_T>(std::min<uint64_t>(memory_limit, SIZE_MAX));
+	}
 	if (!SetInformationJobObject(job.get(), JobObjectExtendedLimitInformation, &limits, sizeof limits))
 		throw_win32("Could not set the subtitle renderer's job limits");
 
@@ -556,6 +556,20 @@ unique_handle create_job() {
 		throw_win32("Could not set the subtitle renderer's UI restrictions");
 
 	return job;
+}
+
+/// A completion port which the job's notifications are posted to
+unique_handle watch_job(HANDLE job) {
+	// The port is polled from whichever thread is using the host. With a
+	// concurrency limit, a queued notification isn't given to one thread
+	// while others which polled the port before are running.
+	unique_handle port(CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, 0, MAXDWORD));
+	if (!port)
+		throw_win32("Could not create a completion port for the subtitle renderer's job object");
+	JOBOBJECT_ASSOCIATE_COMPLETION_PORT association{nullptr, port.get()};
+	if (!SetInformationJobObject(job, JobObjectAssociateCompletionPortInformation, &association, sizeof association))
+		throw_win32("Could not watch the subtitle renderer's job object");
+	return port;
 }
 
 class AttributeList {
@@ -587,11 +601,16 @@ struct Host::Impl {
 	// Members are destroyed in reverse order, and the process has to be
 	// killed and have exited before its AppContainer is deleted
 	Container container;
+	/// Null if there's no memory limit
+	unique_handle job_port;
 	unique_handle job;
 	std::unique_ptr<void, process_killer> process;
 	unique_handle pipe;
 	unique_handle event;
 	ULONGLONG deadline = 0;
+	/// In bytes, or 0 for none
+	uint64_t memory_limit;
+	bool memory_limit_reached = false;
 
 	/// A buffer which frames that weren't allocated by SharedFrameAllocator()
 	/// are copied into and out of
@@ -606,10 +625,15 @@ struct Host::Impl {
 	std::vector<MappedBuffer> mapped;
 	uint64_t use_count = 0;
 
-	Impl();
+	Impl(uint64_t memory_limit);
 
 	/// Start the timeout for an operation, which may consist of several requests
 	void StartOperation() { deadline = GetTickCount64() + timeout_ms; }
+	/// Throw if the host has reached its memory limit. It may have failed
+	/// to allocate memory without crashing, so is no longer trusted to work.
+	/// Windows doesn't guarantee that the notification is delivered, so
+	/// this can miss it, in which case the host fails some other way.
+	void CheckMemoryLimit();
 
 	void Transfer(bool write, char *data, size_t size);
 	void Read(void *data, size_t size) { Transfer(false, static_cast<char *>(data), size); }
@@ -623,10 +647,12 @@ struct Host::Impl {
 	bool Render(SharedFrameStorage const& buffer, uint32_t width, uint32_t height, uint32_t pitch, bool flipped, double time);
 };
 
-Host::Impl::Impl() {
+Host::Impl::Impl(uint64_t memory_limit) : memory_limit(memory_limit) {
 	auto const& env = environment();
 	auto [server, client] = create_pipe();
-	job = create_job();
+	job = create_job(memory_limit);
+	if (memory_limit)
+		job_port = watch_job(job.get());
 
 	SECURITY_CAPABILITIES capabilities{};
 	capabilities.AppContainerSid = container.Sid();
@@ -705,34 +731,56 @@ Host::Impl::Impl() {
 }
 
 void Host::Impl::Transfer(bool write, char *data, size_t size) {
-	while (size) {
-		OVERLAPPED ov{};
-		ov.hEvent = event.get();
-		DWORD chunk = static_cast<DWORD>(std::min<size_t>(size, 1 << 20));
-		BOOL ok = write
-			? WriteFile(pipe.get(), data, chunk, nullptr, &ov)
-			: ReadFile(pipe.get(), data, chunk, nullptr, &ov);
-		if (!ok && GetLastError() != ERROR_IO_PENDING)
-			throw_win32("Lost the connection to the subtitle renderer");
+	try {
+		while (size) {
+			OVERLAPPED ov{};
+			ov.hEvent = event.get();
+			DWORD chunk = static_cast<DWORD>(std::min<size_t>(size, 1 << 20));
+			BOOL ok = write
+				? WriteFile(pipe.get(), data, chunk, nullptr, &ov)
+				: ReadFile(pipe.get(), data, chunk, nullptr, &ov);
+			if (!ok && GetLastError() != ERROR_IO_PENDING)
+				throw_win32("Lost the connection to the subtitle renderer");
 
-		ULONGLONG now = GetTickCount64();
-		DWORD wait = now < deadline ? static_cast<DWORD>(deadline - now) : 0;
-		if (WaitForSingleObject(event.get(), wait) != WAIT_OBJECT_0) {
-			// The I/O has to be finished before ov goes out of scope
-			CancelIoEx(pipe.get(), &ov);
-			DWORD ignored;
-			GetOverlappedResult(pipe.get(), &ov, &ignored, TRUE);
-			throw Error("The subtitle renderer stopped responding");
+			ULONGLONG now = GetTickCount64();
+			DWORD wait = now < deadline ? static_cast<DWORD>(deadline - now) : 0;
+			if (WaitForSingleObject(event.get(), wait) != WAIT_OBJECT_0) {
+				// The I/O has to be finished before ov goes out of scope
+				CancelIoEx(pipe.get(), &ov);
+				DWORD ignored;
+				GetOverlappedResult(pipe.get(), &ov, &ignored, TRUE);
+				throw Error("The subtitle renderer stopped responding");
+			}
+
+			DWORD transferred = 0;
+			if (!GetOverlappedResult(pipe.get(), &ov, &transferred, FALSE))
+				throw_win32("Lost the connection to the subtitle renderer");
+			if (transferred == 0)
+				throw Error("Lost the connection to the subtitle renderer");
+			data += transferred;
+			size -= transferred;
 		}
-
-		DWORD transferred = 0;
-		if (!GetOverlappedResult(pipe.get(), &ov, &transferred, FALSE))
-			throw_win32("Lost the connection to the subtitle renderer");
-		if (transferred == 0)
-			throw Error("Lost the connection to the subtitle renderer");
-		data += transferred;
-		size -= transferred;
 	}
+	catch (Error const&) {
+		// Running out of memory is the more useful thing to report
+		CheckMemoryLimit();
+		throw;
+	}
+}
+
+void Host::Impl::CheckMemoryLimit() {
+	if (job_port) {
+		DWORD message;
+		ULONG_PTR key;
+		OVERLAPPED *ov;
+		while (GetQueuedCompletionStatus(job_port.get(), &message, &key, &ov, 0)) {
+			if (message == JOB_OBJECT_MSG_PROCESS_MEMORY_LIMIT)
+				memory_limit_reached = true;
+		}
+	}
+	if (memory_limit_reached)
+		throw Error("The subtitle renderer ran out of memory. Its limit of " + std::to_string(memory_limit >> 20) +
+			" MB can be raised in the Advanced > Video preferences");
 }
 
 Response Host::Impl::Call(Request const& req, const void *payload) {
@@ -742,6 +790,8 @@ Response Host::Impl::Call(Request const& req, const void *payload) {
 
 	Response response;
 	Read(&response, sizeof response);
+	CheckMemoryLimit();
+
 	if (response.status != Status::Ok && response.status != Status::Failed)
 		throw Error("The subtitle renderer sent an invalid response");
 	if (response.payload_size && req.command != Command::ListRenderers)
@@ -811,7 +861,7 @@ bool Supported() {
 	return supported_windows_version();
 }
 
-Host::Host() : impl(std::make_unique<Impl>()) { }
+Host::Host(uint64_t memory_limit) : impl(std::make_unique<Impl>(memory_limit)) { }
 Host::~Host() = default;
 
 std::vector<std::string> Host::ListRenderers() {
