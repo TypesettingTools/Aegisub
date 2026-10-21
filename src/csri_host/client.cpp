@@ -406,9 +406,8 @@ public:
 };
 
 /// Build an environment block for the host. It doesn't get Aegisub's, which
-/// could contain things like credentials. TEMP has to be somewhere it can
-/// write to, as VSFilter writes scripts to temporary files to load them.
-std::wstring host_environment(std::wstring const& temp) {
+/// could contain things like credentials.
+std::wstring host_environment(std::wstring const& profile_folder) {
 	std::vector<std::wstring> vars;
 	// Some system DLLs need these
 	for (auto name : {L"SystemDrive", L"SystemRoot", L"windir"}) {
@@ -417,15 +416,20 @@ std::wstring host_environment(std::wstring const& temp) {
 		if (len > 0 && len < MAX_PATH)
 			vars.push_back(std::wstring(name) + L"=" + value);
 	}
-	vars.push_back(L"TEMP=" + temp);
-	vars.push_back(L"TMP=" + temp);
 	// Windows 10 fails to create AppContainer processes with
 	// ERROR_ENVVAR_NOT_FOUND if this is missing. Rather than replacing it,
 	// Windows appends \Packages\<name>\AC to it and then sets TEMP and TMP to
 	// the Temp folder in that, so it has to be what the profile folder is in.
-	auto local_app_data = temp;
-	for (int i = 0; i < 3; ++i)
-		local_app_data.resize(local_app_data.find_last_of(L'\\'));
+	// The suffix is checked from the end, skipping <name>.
+	auto local_app_data = profile_folder;
+	const wchar_t *const suffix[] = {L"AC", nullptr, L"Packages"};
+	for (auto expected : suffix) {
+		auto sep = local_app_data.find_last_of(L'\\');
+		if (sep == local_app_data.npos || (expected &&
+		    CompareStringOrdinal(local_app_data.c_str() + sep + 1, -1, expected, -1, TRUE) != CSTR_EQUAL))
+			throw Error("The subtitle renderer's AppContainer folder is in an unexpected place");
+		local_app_data.resize(sep);
+	}
 	vars.push_back(L"LOCALAPPDATA=" + local_app_data);
 
 	// The block has to be sorted case-insensitively by name
