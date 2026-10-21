@@ -350,6 +350,9 @@
 			"Allow Ancient" : false,
 			"Memory Max" : 64
 		},
+		"CSRI" : {
+			"Memory Max" : 4096
+		},
 		"FFmpegSource" : {
 			"Cache" : {
 				"Files" : 20,
