@@ -149,10 +149,13 @@ SubsController::SubsController(agi::Context *context)
 , text_selection_connection(context->textSelectionController->AddSelectionListener(&SubsController::OnTextSelectionChanged, this))
 , autosave_queue(agi::dispatch::Create())
 {
-	autosave_timer_changed(&autosave_timer);
-	BindConnection(OPT_SUB("App/Auto/Save", [this] { autosave_timer_changed(&autosave_timer); }));
-	BindConnection(OPT_SUB("App/Auto/Save Every Seconds", [this] { autosave_timer_changed(&autosave_timer); }));
-	autosave_timer.Bind(wxEVT_TIMER, [this](wxTimerEvent&) { AutoSave(); });
+	if (config::hasGui) {
+		autosave_timer = std::make_unique<wxTimer>();
+		autosave_timer_changed(autosave_timer.get());
+		BindConnection(OPT_SUB("App/Auto/Save", [this] { autosave_timer_changed(autosave_timer.get()); }));
+		BindConnection(OPT_SUB("App/Auto/Save Every Seconds", [this] { autosave_timer_changed(autosave_timer.get()); }));
+		autosave_timer->Bind(wxEVT_TIMER, [this](wxTimerEvent&) { AutoSave(); });
+	}
 }
 
 SubsController::~SubsController() {
@@ -182,7 +185,7 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, const char
 	context->ass->Commit("", AssFile::COMMIT_NEW);
 
 	// Save backup of file
-	if (CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
+	if (config::hasGui && CanSave() && OPT_GET("App/Auto/Backup")->GetBool()) {
 		auto path_str = OPT_GET("Path/Auto/Backup")->GetString();
 		agi::fs::path path;
 		if (path_str.empty())

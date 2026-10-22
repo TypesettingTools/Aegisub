@@ -41,6 +41,7 @@
 #include <libaegisub/ass/string_codec.h>
 #include <libaegisub/dispatch.h>
 #include <libaegisub/fs.h>
+#include <libaegisub/log.h>
 #include <libaegisub/path.h>
 #include <libaegisub/split.h>
 #include <libaegisub/string.h>
@@ -50,6 +51,7 @@
 #include <ranges>
 
 #include <wx/dcmemory.h>
+#include <wx/init.h>
 #include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <wx/sizer.h>
@@ -121,6 +123,15 @@ namespace Automation4 {
 		DeleteObject(dc);
 
 #else // not WIN32
+		if (!config::hasInitializedWx) {
+			LOG_W("agi") << "Text extents were requested. Initializing wxWidgets. This requires a display server.";
+			if (!wxInitialize()) {
+				LOG_E("agi") << "Initializing wxWidgets failed (no display server?); text extents are unavailable.";
+				return false;
+			}
+			config::hasInitializedWx = true;
+		}
+
 		wxMemoryDC thedc;
 
 		// fix fontsize to be 72 DPI
@@ -224,7 +235,7 @@ namespace Automation4 {
 	}
 
 	BackgroundScriptRunner::BackgroundScriptRunner(wxWindow *parent, std::string const& title)
-	: impl(new DialogProgress(parent, to_wx(title)))
+	: impl(new OptDialogProgress(parent, to_wx(title)))
 	{
 	}
 
@@ -242,12 +253,12 @@ namespace Automation4 {
 
 	wxWindow *BackgroundScriptRunner::GetParentWindow() const
 	{
-		return impl.get();
+		return impl->getImpl();
 	}
 
 	std::string BackgroundScriptRunner::GetTitle() const
 	{
-		return from_wx(impl->GetTitle());
+		return from_wx(impl->getImpl()->GetTitle());
 	}
 
 	// Script

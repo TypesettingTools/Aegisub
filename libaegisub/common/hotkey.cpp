@@ -174,6 +174,9 @@ std::string_view Hotkey::GetHotkey(std::string_view context, std::string_view co
 }
 
 void Hotkey::Flush() {
+	if (config_file.empty())
+		return;
+
 	json::Object root;
 
 	auto get = [](json::Object& obj, std::string_view key) -> json::UnknownElement& {
