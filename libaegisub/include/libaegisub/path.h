@@ -72,6 +72,11 @@ public:
 	/// @param token_value An absolute path to a directory or file
 	/// @throws InternalError if `token` is not a valid token name
 	void SetToken(std::string_view token_name, fs::path const& token_value);
+
+	/// Put all per-user files (settings, scripts, logs, caches, etc.) in a
+	/// single directory, rather than the platform's default locations
+	/// @param dir An absolute path to a directory
+	void SetUserDir(fs::path const& dir);
 };
 
 } // namespace agi
