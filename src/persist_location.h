@@ -21,34 +21,38 @@
 #pragma once
 
 namespace agi { class OptionValue; }
-class wxDialog;
 class wxMoveEvent;
 class wxSizeEvent;
+class wxTopLevelWindow;
 
 #include <string>
 
 /// @class PersistLocation
-/// @brief Automatically save and restore the location of a dialog
+/// @brief Automatically save and restore the location of a window
 ///
-/// This class saves the location of the supplied dialog to the preferences
+/// This class saves the location of the supplied window to the preferences
 /// file with the given prefix, then restores the saved position when it is
-/// recreated in the future. This class should always have lifetime equal to
-/// the associated dialog, as it does not unbind its events.
+/// recreated in the future. This class must not outlive the associated window.
 class PersistLocation {
 	agi::OptionValue *x_opt;
 	agi::OptionValue *y_opt;
 	agi::OptionValue *w_opt;
 	agi::OptionValue *h_opt;
 	agi::OptionValue *maximize_opt;
-	wxDialog *dialog;
+	wxTopLevelWindow *window;
+
+	/// Is the window in a state whose geometry shouldn't be remembered?
+	bool IsTransient() const;
+	void SavePosition();
 
 	void OnMove(wxMoveEvent&);
 	void OnSize(wxSizeEvent&);
 
 public:
-	/// Persist the location of a dialog
-	/// @param dialog The dialog to save and restore the position of
+	/// Persist the location of a window
+	/// @param window The window to save and restore the position of
 	/// @param options_prefix Prefix for the options names to store the location
 	/// @param size_too Save and restore the size in addition to position
-	PersistLocation(wxDialog *dialog, std::string options_prefix, bool size_too = false);
+	PersistLocation(wxTopLevelWindow *window, std::string options_prefix, bool size_too = false);
+	~PersistLocation();
 };
