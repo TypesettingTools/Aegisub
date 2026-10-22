@@ -102,13 +102,15 @@ TEST(lagi_path, setting_token_to_file_sets_to_parent_directory_instead) {
 TEST(lagi_path, valid_token_names) {
 	Path p;
 
-	EXPECT_NO_THROW(p.SetToken("?user", ""));
-	EXPECT_NO_THROW(p.SetToken("?local", ""));
-	EXPECT_NO_THROW(p.SetToken("?data", ""));
-	EXPECT_NO_THROW(p.SetToken("?temp", ""));
-	EXPECT_NO_THROW(p.SetToken("?dictionary", ""));
 	EXPECT_NO_THROW(p.SetToken("?audio", ""));
+	EXPECT_NO_THROW(p.SetToken("?cache", ""));
+	EXPECT_NO_THROW(p.SetToken("?data", ""));
+	EXPECT_NO_THROW(p.SetToken("?dictionary", ""));
+	EXPECT_NO_THROW(p.SetToken("?local", ""));
 	EXPECT_NO_THROW(p.SetToken("?script", ""));
+	EXPECT_NO_THROW(p.SetToken("?state", ""));
+	EXPECT_NO_THROW(p.SetToken("?temp", ""));
+	EXPECT_NO_THROW(p.SetToken("?user", ""));
 	EXPECT_NO_THROW(p.SetToken("?video", ""));
 }
 
@@ -122,13 +124,15 @@ TEST(lagi_path, valid_token_names) {
 
 TEST(lagi_path, platform_paths_have_values) {
 	Path p;
+	TEST_PLATFORM_PATH_TOKEN("?cache");
 #ifndef __APPLE__
 	// Uses the bundle path so it isn't set when not running in a bundle
 	TEST_PLATFORM_PATH_TOKEN("?data");
 #endif
-	TEST_PLATFORM_PATH_TOKEN("?user");
 	TEST_PLATFORM_PATH_TOKEN("?local");
+	TEST_PLATFORM_PATH_TOKEN("?state");
 	TEST_PLATFORM_PATH_TOKEN("?temp");
+	TEST_PLATFORM_PATH_TOKEN("?user");
 }
 
 TEST(lagi_path, making_empty_absolute_gives_empty) {
@@ -186,14 +190,14 @@ TEST(lagi_path, make_relative_on_dummy_url) {
 TEST(lagi_path, encode) {
 	Path p;
 	p.SetToken("?user", "C:\\a\\b\\c");
-	p.SetToken("?local", "C:\\a\\b\\c\\d");
-	EXPECT_EQ("?local\\e", p.Encode("C:\\a\\b\\c\\d\\e"));
+	p.SetToken("?cache", "C:\\a\\b\\c\\d");
+	EXPECT_EQ("?cache\\e", p.Encode("C:\\a\\b\\c\\d\\e"));
 }
 #else
 TEST(lagi_path, encode) {
 	Path p;
 	p.SetToken("?user", "/a/b/c");
-	p.SetToken("?local", "/a/b/c/d");
-	EXPECT_EQ("?local/e", p.Encode("/a/b/c/d/e"));
+	p.SetToken("?cache", "/a/b/c/d");
+	EXPECT_EQ("?cache/e", p.Encode("/a/b/c/d/e"));
 }
 #endif
