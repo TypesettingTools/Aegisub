@@ -76,6 +76,12 @@ jobs:
             sccache-key: linux-x86_64-gcc
             buildtype: release
             args: -Db_pch=false
+          - name: Ubuntu AppImage
+            os: ubuntu-latest
+            sccache-key: linux-x86_64-gcc
+            buildtype: release
+            appimage: true
+            args: -Db_pch=false
           - name: macOS x86_64 Release
             os: macos-15
             sccache-key: macos-x86_64-clang
@@ -215,6 +221,16 @@ jobs:
           sudo apt-get install -y lua5.1 liblua5.1-0-dev luarocks
           sudo luarocks --lua-version=5.1 install busted
 
+      - name: Install AppImage tooling
+        if: matrix.config.appimage
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y desktop-file-utils libfuse2 wget
+          wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage -O /tmp/linuxdeploy.AppImage
+          chmod +x /tmp/linuxdeploy.AppImage
+          wget -q https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /tmp/appimagetool.AppImage
+          chmod +x /tmp/appimagetool.AppImage
+
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
@@ -264,6 +280,64 @@ jobs:
           if not results or any(result['result'] != 'OK' for result in results):
               raise SystemExit('Cross-built tests must pass under Rosetta, not be skipped')
           PY
+
+      - name: Generate Ubuntu AppImage
+        if: matrix.config.appimage
+        run: |
+          set -euo pipefail
+          appdir="$GITHUB_WORKSPACE/appimage"
+          rm -rf "$appdir"
+          mkdir -p "$appdir/usr/bin" "$appdir/usr/share/applications" "$appdir/usr/share/pixmaps"
+
+          cp build/aegisub "$appdir/usr/bin/aegisub"
+          chmod +x "$appdir/usr/bin/aegisub"
+
+          desktop_file=$(find build/packages -maxdepth 1 -name '*.desktop' -print -quit)
+          if [ -z "$desktop_file" ]; then
+            echo "No desktop file found for AppImage packaging" >&2
+            exit 1
+          fi
+          desktop-file-validate "$desktop_file"
+          cp "$desktop_file" "$appdir/usr/share/applications/"
+
+          icon_name=$(sed -n 's/^Icon=//p' "$desktop_file" | head -n 1 | tr -d '\r')
+          if [ -z "$icon_name" ]; then
+            echo "Desktop file does not define an icon" >&2
+            exit 1
+          fi
+
+          for size in 16x16 22x22 24x24 32x32 48x48 64x64; do
+            icon_src="packages/desktop/$size/aegisub.png"
+            if [ -f "$icon_src" ]; then
+              mkdir -p "$appdir/usr/share/icons/hicolor/$size/apps"
+              cp "$icon_src" "$appdir/usr/share/icons/hicolor/$size/apps/$icon_name.png"
+            fi
+          done
+          mkdir -p "$appdir/usr/share/icons/hicolor/scalable/apps"
+          cp packages/desktop/scalable/aegisub.svg "$appdir/usr/share/icons/hicolor/scalable/apps/$icon_name.svg"
+          cp packages/desktop/64x64/aegisub.png "$appdir/usr/share/pixmaps/$icon_name.png"
+
+          /tmp/linuxdeploy.AppImage --appdir "$appdir" \
+            -e "$appdir/usr/bin/aegisub" \
+            -d "$appdir/usr/share/applications"/*.desktop \
+            -i "$appdir/usr/share/icons/hicolor/64x64/apps/$icon_name.png" \
+            --output appimage
+
+          appimage_path=$(find . -maxdepth 1 -name '*.AppImage' -print -quit)
+          if [ -z "$appimage_path" ]; then
+            echo "AppImage was not produced" >&2
+            exit 1
+          fi
+
+          mv "$appimage_path" "Aegisub-Ubuntu.AppImage"
+
+      - name: Upload artifacts - Ubuntu AppImage
+        uses: actions/upload-artifact@v7
+        if: matrix.config.appimage
+        with:
+          name: ${{ matrix.config.name }} - appimage
+          path: Aegisub-Ubuntu.AppImage
+          if-no-files-found: error
 
       # Windows artifacts
       - name: Generate Windows installer
