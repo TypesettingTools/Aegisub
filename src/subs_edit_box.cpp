@@ -200,7 +200,7 @@ SubsEditBox::SubsEditBox(wxWindow *parent, agi::Context *context)
 	main_sizer->Add(middle_right_sizer,0,wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM,3);
 
 	// Text editor
-	long edit_style = OPT_GET("App/Dark Mode")->GetBool() ? wxBORDER_SIMPLE : wxBORDER_SUNKEN;
+	long edit_style = wxBORDER_SUNKEN;
 	if (use_native) {
 		edit_ctrl_native = new SubsNativeTextEditCtrl(this, FromDIP(wxSize(300,50)), edit_style, c);
 		edit_ctrl_native->Bind(wxEVT_CHAR_HOOK, &SubsEditBox::OnKeyDown, this);
