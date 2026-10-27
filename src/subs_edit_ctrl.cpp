@@ -440,9 +440,9 @@ void SubsTextEditCtrl::OnToggleRTL(wxCommandEvent &) {
 }
 
 void SubsTextEditCtrl::OnRawKeyDown(wxKeyEvent &event) {
-	if (event.GetKeyCode() == 'R' && event.ControlDown() && event.ShiftDown()) {
+	if ((event.GetKeyCode() == WXK_SHIFT && event.ControlDown()) ||
+		(event.GetKeyCode() == WXK_CONTROL && event.ShiftDown())) {
 		OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(!OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool());
-		return;
 	}
 	event.Skip();
 }
