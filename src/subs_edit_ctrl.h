@@ -91,6 +91,8 @@ class SubsTextEditCtrl final : public wxStyledTextCtrl, private agi::signal::Con
 	void OnSetThesLanguage(wxCommandEvent &event);
 	void OnLoseFocus(wxFocusEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
+	void OnRawKeyDown(wxKeyEvent &event);
+	void OnToggleRTL(wxCommandEvent &event);
 
 	void SetSyntaxStyle(int id, wxFont &font, std::string const& name, wxColor const& default_background);
 	void Subscribe(std::string const& name);

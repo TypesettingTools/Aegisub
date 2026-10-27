@@ -53,6 +53,8 @@
 #include <wx/menu.h>
 #include <wx/scrolbar.h>
 #include <wx/sizer.h>
+#include <wx/stc/stc.h>
+#include <wx/textctrl.h>
 
 // Check menu.h for id range allocation before editing this enum
 enum {
@@ -77,6 +79,8 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 	SetSizerAndFit(scrollbarpositioner);
 
 	SetBackgroundStyle(wxBG_STYLE_PAINT);
+	SetLayoutDirection(OPT_GET("Subtitle/Grid/RTL Mode")->GetBool() ?
+		wxLayout_RightToLeft : wxLayout_LeftToRight);
 
 	for (size_t i : agi::util::range(std::min(columns_visible.size(), columns.size()))) {
 		if (!columns_visible[i])
@@ -109,6 +113,10 @@ BaseGrid::BaseGrid(wxWindow* parent, agi::Context *context)
 
 		OPT_SUB("Subtitle/Grid/Highlight Subtitles in Frame", &BaseGrid::OnHighlightVisibleChange, this),
 		OPT_SUB("Subtitle/Grid/Hide Overrides", [&](agi::OptionValue const&) { Refresh(false); }),
+		OPT_SUB("Subtitle/Grid/RTL Mode", [&](agi::OptionValue const& opt) {
+			SetLayoutDirection(opt.GetBool() ? wxLayout_RightToLeft : wxLayout_LeftToRight);
+			Refresh(false);
+		}),
 	});
 
 	Bind(wxEVT_CONTEXT_MENU, &BaseGrid::OnContextMenu, this);
@@ -217,6 +225,33 @@ void BaseGrid::OnActiveLineChanged(AssDialogue *new_active) {
 		if (new_active->Row != active_row)
 			MakeRowVisible(new_active->Row);
 		extendRow = active_row = new_active->Row;
+#if defined(__WXGTK__) || defined(__WXMAC__)
+		if (context && context->parent) {
+			auto find_editor = [](auto&& self, wxWindow *window) -> wxWindow* {
+				for (wxWindow *child : window->GetChildren()) {
+					if (dynamic_cast<wxStyledTextCtrl*>(child))
+						return child;
+					if (auto text = dynamic_cast<wxTextCtrl*>(child);
+						text && (text->GetWindowStyleFlag() & wxTE_MULTILINE) &&
+						!(text->GetWindowStyleFlag() & wxTE_READONLY))
+						return text;
+					if (auto editor = self(self, child))
+						return editor;
+				}
+				return nullptr;
+			};
+			wxWindow *editor = find_editor(find_editor, context->parent);
+
+			if (editor) {
+				bool editor_rtl = editor->GetLayoutDirection() == wxLayout_RightToLeft;
+				bool grid_rtl = GetLayoutDirection() == wxLayout_RightToLeft;
+				if (editor_rtl != grid_rtl) {
+					OPT_SET("Subtitle/Grid/RTL Mode")->SetBool(editor_rtl);
+					SetLayoutDirection(editor_rtl ? wxLayout_RightToLeft : wxLayout_LeftToRight);
+				}
+			}
+		}
+#endif
 		Refresh(false);
 	}
 	else

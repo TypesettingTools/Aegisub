@@ -385,8 +385,10 @@
 		"Edit Box" : {
 			"Soft Line Break": false,
 			"Font Face" : "",
-			"Font Size" : 10
+			"Font Size" : 10,
+			"RTL Mode" : false
 		},
+		"Use Native Edit Box" : false,
 		"Grid" : {
 			"Column" : [
 				{"bool" : true}
@@ -394,6 +396,7 @@
 			"Focus Allow" : true,
 			"Font Face" : "",
 			"Font Size" : 9,
+			"RTL Mode" : false,
 			"Hide Overrides" : 1,
 			"Hide Overrides Char" : "☀",
 			"Highlight Subtitles in Frame" : true

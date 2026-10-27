@@ -39,6 +39,7 @@
 #include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/version.h>
 
 void ShowAboutDialog(wxWindow *parent) {
 	wxDialog d(parent, -1, _("About Aegisub"), wxDefaultPosition, wxDefaultSize, wxCAPTION | wxCLOSE_BOX);
@@ -48,8 +49,10 @@ void ShowAboutDialog(wxWindow *parent) {
 		translatorCredit.clear();
 
 	// Generate about string
+	wxString wxVersionString = wxString::Format("wxWidgets %d.%d.%d", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER);
 	wxString aboutString = wxString("Aegisub ") + GetAegisubShortVersionString() + ".\n"
 		"Copyright (c) 2005-2026 Rodrigo Braz Monteiro, Niels Martin Hansen, Thomas Goyne et al.\n\n"
+		"Built with " + wxVersionString + ".\n\n"
 		"Programmers:\n"
 		"    Alysson Souza e Silva\n"
 		"    Amar Takhar\n"

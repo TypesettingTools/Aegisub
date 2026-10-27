@@ -28,6 +28,7 @@ class AssDialogue;
 class AssDialogueBlock;
 class PersistLocation;
 class SubsTextEditCtrl;
+class SubsNativeTextEditCtrl;
 class wxCheckBox;
 class wxStaticText;
 class wxStyledTextCtrl;
@@ -48,13 +49,15 @@ class DialogTranslation final : public wxDialog {
 
 	/// Total number of dialogue lines in the file
 	size_t line_count;
+	const bool use_native;
 
 	/// Should active line change announcements be ignored?
 	bool switching_lines = false;
 
 	wxStaticText *line_number_display;
 	wxStyledTextCtrl *original_text;
-	SubsTextEditCtrl *translated_text;
+	SubsTextEditCtrl *translated_text_stc = nullptr;
+	SubsNativeTextEditCtrl *translated_text_native = nullptr;
 	wxCheckBox *seek_video;
 
 	std::unique_ptr<PersistLocation> persist;

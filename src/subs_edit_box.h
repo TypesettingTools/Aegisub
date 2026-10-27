@@ -35,6 +35,7 @@
 #include <boost/container/map.hpp>
 #include <boost/flyweight/flyweight_fwd.hpp>
 #include <list>
+#include <string>
 #include <vector>
 
 #include <wx/combobox.h>
@@ -49,6 +50,7 @@ namespace agi { class Time; }
 class AssDialogue;
 class AssStyle;
 class SubsTextEditCtrl;
+class SubsNativeTextEditCtrl;
 class TimeEdit;
 class wxButton;
 class wxCheckBox;
@@ -144,6 +146,7 @@ class SubsEditBox final : public wxPanel {
 	wxRadioButton *MakeRadio(wxString const& text, bool start, wxString const& tooltip);
 
 	void OnChange(wxStyledTextEvent &event);
+	void OnChangeNative(wxCommandEvent &event);
 	void OnKeyDown(wxKeyEvent &event);
 
 	void OnActiveLineChanged(AssDialogue *new_line);
@@ -202,7 +205,13 @@ class SubsEditBox final : public wxPanel {
 
 	void SetDurationField();
 
-	SubsTextEditCtrl *edit_ctrl;
+	wxWindow *EditCtrl() const;
+	void SetEditText(std::string const& text);
+	std::string GetEditText() const;
+
+	const bool use_native;
+	SubsTextEditCtrl *edit_ctrl_stc = nullptr;
+	SubsNativeTextEditCtrl *edit_ctrl_native = nullptr;
 	wxTextCtrl *secondary_editor;
 
 public:

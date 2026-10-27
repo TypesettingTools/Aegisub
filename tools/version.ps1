@@ -10,6 +10,7 @@ param (
 $lastSvnRevision = 6962
 $lastSvnHash = '16cd907fe7482cb54a7374cd28b8501f138116be'
 $defineNumberMatch = [regex] '^#define\s+(\w+)\s+(\d+)$'
+$defineResourceBaseVersionMatch = [regex] '^#define\s+RESOURCE_BASE_VERSION\s*\(?\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)?\s*$'
 $defineStringMatch = [regex] "^#define\s+(\w+)\s+[`"']?(.+?)[`"']?$"
 $semVerMatch = [regex] 'v?(\d+)\.(\d+).(\d+)(?:-(\w+))?'
 
@@ -29,15 +30,24 @@ if ([System.IO.Path]::GetFullPath([System.IO.Path]::Combine((pwd).Path, $BuildRo
   }
 $gitVersionHeaderPath = Join-Path $BuildRoot 'git_version.h'
 
-$version = @{}
+$version = @{
+  TAGGED_RELEASE = $false
+  INSTALLER_VERSION = '0.0.0'
+  RESOURCE_BASE_VERSION = @(0, 0, 0)
+}
 if (Test-Path $gitVersionHeaderPath) {
   Get-Content $gitVersionHeaderPath | %{$_.Trim()} | ?{$_} | %{
     switch -regex ($_) {
+      $defineResourceBaseVersionMatch {
+        $version['RESOURCE_BASE_VERSION'] = @([int]$Matches[1], [int]$Matches[2], [int]$Matches[3])
+      }
       $defineNumberMatch {
         $version[$Matches[1]] = [int]$Matches[2];
       }
       $defineStringMatch {
-        $version[$Matches[1]] = $Matches[2];
+        if ($Matches[1] -ne 'RESOURCE_BASE_VERSION') {
+          $version[$Matches[1]] = $Matches[2];
+        }
       }
     }
   }
@@ -56,7 +66,9 @@ $gitHash = git -C $repositoryRootPath rev-parse --short HEAD 2>$null
 $gitVersionString = $gitRevision, $gitBranch, $gitHash -join '-'
 $exactGitTag = git -C $repositoryRootPath describe --exact-match --tags 2>$null
 
-if ($gitVersionString -eq $version['BUILD_GIT_VERSION_STRING']) {
+if ($gitVersionString -eq $version['BUILD_GIT_VERSION_STRING'] -and
+    $version.ContainsKey('RESOURCE_BASE_VERSION') -and
+    $version.ContainsKey('INSTALLER_VERSION')) {
   exit 0
 }
 

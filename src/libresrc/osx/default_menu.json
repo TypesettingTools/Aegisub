@@ -43,7 +43,9 @@
         { "command" : "subtitle/find" },
         { "command" : "subtitle/find/next" },
         { "command" : "edit/find_replace" },
-        { "command" : "subtitle/spellcheck" }
+        { "command" : "subtitle/spellcheck" },
+        {},
+        { "command" : "edit/toggle_rtl_mode" }
     ],
     "main/subtitle" : [
         { "command" : "tool/style/manager" },

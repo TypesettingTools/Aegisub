@@ -78,7 +78,8 @@ enum {
 	EDIT_MENU_DIC_LANGUAGE = (wxID_HIGHEST + 1) + 6000,
 	EDIT_MENU_DIC_LANGS,
 	EDIT_MENU_THES_LANGUAGE = EDIT_MENU_DIC_LANGUAGE + LANGS_MAX,
-	EDIT_MENU_THES_LANGS
+	EDIT_MENU_THES_LANGS,
+	EDIT_MENU_RTL = (wxID_HIGHEST + 1) + 7000
 };
 
 SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, agi::Context *context)
@@ -94,6 +95,8 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	SetMarginWidth(1,0);
 	UsePopUp(wxSTC_POPUP_NEVER);
 	SetStyles();
+	SetLayoutDirection(OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool() ?
+		wxLayout_RightToLeft : wxLayout_LeftToRight);
 
 	// Set hotkeys
 	CmdKeyClear(wxSTC_KEY_RETURN,wxSTC_KEYMOD_CTRL);
@@ -111,6 +114,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	using std::bind;
 
 	Bind(wxEVT_CHAR_HOOK, &SubsTextEditCtrl::OnKeyDown, this);
+	Bind(wxEVT_KEY_DOWN, &SubsTextEditCtrl::OnRawKeyDown, this);
 
 	Bind(wxEVT_MENU, bind(&SubsTextEditCtrl::Cut, this), EDIT_MENU_CUT);
 	Bind(wxEVT_MENU, bind(&SubsTextEditCtrl::Copy, this), EDIT_MENU_COPY);
@@ -124,6 +128,7 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	}
 
 	Bind(wxEVT_CONTEXT_MENU, &SubsTextEditCtrl::OnContextMenu, this);
+	Bind(wxEVT_MENU, &SubsTextEditCtrl::OnToggleRTL, this, EDIT_MENU_RTL);
 	Bind(wxEVT_IDLE, std::bind(&SubsTextEditCtrl::UpdateCallTip, this));
 	Bind(wxEVT_STC_DOUBLECLICK, &SubsTextEditCtrl::OnDoubleClick, this);
 	Bind(wxEVT_STC_STYLENEEDED, [this](wxStyledTextEvent&) {
@@ -156,6 +161,10 @@ SubsTextEditCtrl::SubsTextEditCtrl(wxWindow* parent, wxSize wsize, long style, a
 	BindConnection(OPT_SUB("Colour/Subtitle/Background", &SubsTextEditCtrl::SetStyles, this));
 	BindConnection(OPT_SUB("Subtitle/Highlight/Syntax", &SubsTextEditCtrl::UpdateStyle, this));
 	BindConnection(OPT_SUB("App/Call Tips", &SubsTextEditCtrl::UpdateCallTip, this));
+	BindConnection(OPT_SUB("Subtitle/Edit Box/RTL Mode", [this](agi::OptionValue const& opt) {
+		SetLayoutDirection(opt.GetBool() ? wxLayout_RightToLeft : wxLayout_LeftToRight);
+		Refresh();
+	}));
 
 	Bind(wxEVT_MENU, [this](wxCommandEvent&) {
 		if (spellchecker) spellchecker->AddWord(currentWord);
@@ -419,7 +428,23 @@ void SubsTextEditCtrl::OnContextMenu(wxContextMenuEvent &event) {
 		menu.Append(EDIT_MENU_SPLIT_VIDEO, split_video->StrMenu(context))->Enable(split_video->Validate(context));
 	}
 
+	menu.AppendSeparator();
+	menu.Append(EDIT_MENU_RTL, OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool() ?
+		_("Switch to LTR mode") : _("Switch to RTL mode"));
+
 	PopupMenu(&menu);
+}
+
+void SubsTextEditCtrl::OnToggleRTL(wxCommandEvent &) {
+	OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(!OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool());
+}
+
+void SubsTextEditCtrl::OnRawKeyDown(wxKeyEvent &event) {
+	if (event.GetKeyCode() == 'R' && event.ControlDown() && event.ShiftDown()) {
+		OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(!OPT_GET("Subtitle/Edit Box/RTL Mode")->GetBool());
+		return;
+	}
+	event.Skip();
 }
 
 void SubsTextEditCtrl::OnDoubleClick(wxStyledTextEvent &evt) {

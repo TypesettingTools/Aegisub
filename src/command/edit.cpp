@@ -95,6 +95,32 @@ struct validate_sel_multiple : public Command {
 	}
 };
 
+struct edit_toggle_rtl_mode final : public Command {
+	CMD_NAME("edit/toggle_rtl_mode")
+	STR_HELP("Toggle between right-to-left and left-to-right direction for the subtitle grid and editor")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_DYNAMIC_NAME)
+
+	wxString StrMenu(const agi::Context *) const override {
+		return OPT_GET("Subtitle/Grid/RTL Mode")->GetBool() ?
+			_("Switch to &LTR Mode") : _("Switch to &RTL Mode");
+	}
+
+	bool Validate(const agi::Context *) override {
+		return true;
+	}
+
+	wxString StrDisplay(const agi::Context *) const override {
+		return OPT_GET("Subtitle/Grid/RTL Mode")->GetBool() ?
+			_("Switch to LTR Mode") : _("Switch to RTL Mode");
+	}
+
+	void operator()(agi::Context *) override {
+		bool rtl_mode = !OPT_GET("Subtitle/Grid/RTL Mode")->GetBool();
+		OPT_SET("Subtitle/Grid/RTL Mode")->SetBool(rtl_mode);
+		OPT_SET("Subtitle/Edit Box/RTL Mode")->SetBool(rtl_mode);
+	}
+};
+
 template<typename String>
 std::unique_ptr<AssDialogue> get_dialogue(String data) {
 	boost::trim(data);
@@ -234,6 +260,8 @@ struct parsed_line {
 				break;
 			}
 		}
+
+		orig_pos = std::clamp(orig_pos, 0, static_cast<int>(line->Text.get().size()));
 
 		// If we didn't hit a suitable block for inserting the override just put
 		// it at the beginning of the line
@@ -1302,5 +1330,6 @@ namespace cmd {
 		reg(std::make_unique<edit_insert_original>());
 		reg(std::make_unique<edit_clear>());
 		reg(std::make_unique<edit_clear_text>());
+		reg(std::make_unique<edit_toggle_rtl_mode>());
 	}
 }

@@ -36,6 +36,7 @@
 #include "persist_location.h"
 #include "project.h"
 #include "subs_edit_ctrl.h"
+#include "subs_edit_ctrl_native.h"
 #include "selection_controller.h"
 #include "video_controller.h"
 
@@ -68,6 +69,7 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 , active_line_connection(c->selectionController->AddActiveLineListener(&DialogTranslation::OnActiveLineChanged, this))
 , active_line(c->selectionController->GetActiveLine())
 , line_count(c->ass->Events.size())
+, use_native(OPT_GET("Subtitle/Use Native Edit Box")->GetBool())
 {
 	SetIcons(GETICONS(translation_toolbutton));
 
@@ -93,14 +95,21 @@ DialogTranslation::DialogTranslation(agi::Context *c)
 	{
 		wxStaticBoxSizer *translated_box = new wxStaticBoxSizer(wxVERTICAL, this, _("Translation"));
 
-		translated_text = new SubsTextEditCtrl(translated_box->GetStaticBox(), wxSize(320, 80), 0, nullptr);
-		translated_text->SetWrapMode(wxSTC_WRAP_WORD);
-		translated_text->SetMarginWidth(1, 0);
-		translated_text->SetFocus();
-		translated_text->Bind(wxEVT_CHAR_HOOK, &DialogTranslation::OnKeyDown, this);
-		translated_text->CmdKeyAssign(wxSTC_KEY_RETURN, wxSTC_KEYMOD_SHIFT, wxSTC_CMD_NEWLINE);
+		if (use_native) {
+			translated_text_native = new SubsNativeTextEditCtrl(translated_box->GetStaticBox(), wxSize(320, 80), 0, nullptr);
+			translated_text_native->Bind(wxEVT_CHAR_HOOK, &DialogTranslation::OnKeyDown, this);
+			translated_box->Add(translated_text_native, 1, wxEXPAND, 0);
+			translated_text_native->SetFocus();
+		} else {
+			translated_text_stc = new SubsTextEditCtrl(translated_box->GetStaticBox(), wxSize(320, 80), 0, nullptr);
+			translated_text_stc->SetWrapMode(wxSTC_WRAP_WORD);
+			translated_text_stc->SetMarginWidth(1, 0);
+			translated_text_stc->SetFocus();
+			translated_text_stc->Bind(wxEVT_CHAR_HOOK, &DialogTranslation::OnKeyDown, this);
+			translated_text_stc->CmdKeyAssign(wxSTC_KEY_RETURN, wxSTC_KEYMOD_SHIFT, wxSTC_CMD_NEWLINE);
 
-		translated_box->Add(translated_text, 1, wxEXPAND, 0);
+			translated_box->Add(translated_text_stc, 1, wxEXPAND, 0);
+		}
 		translation_sizer->Add(translated_box, 1, wxTOP|wxEXPAND, 5);
 	}
 	main_sizer->Add(translation_sizer, 1, wxALL | wxEXPAND, 5);
@@ -260,12 +269,24 @@ void DialogTranslation::UpdateDisplay() {
 
 	if (seek_video->IsChecked()) c->videoController->JumpToTime(active_line->Start);
 
-	translated_text->ClearAll();
-	translated_text->SetFocus();
+	if (use_native) {
+		translated_text_native->Clear();
+		translated_text_native->SetFocus();
+	} else {
+		translated_text_stc->ClearAll();
+		translated_text_stc->SetFocus();
+	}
 }
 
 void DialogTranslation::Commit(bool next) {
-	std::string new_value = translated_text->GetTextRaw().data();
+	std::string new_value;
+	if (use_native) {
+		wxCharBuffer text = translated_text_native->GetValue().utf8_str();
+		if (text.data()) new_value.assign(text.data(), text.length());
+	} else {
+		wxCharBuffer text = translated_text_stc->GetTextRaw();
+		if (text.data()) new_value.assign(text.data(), text.length());
+	}
 	boost::replace_all(new_value, "\r\n", "\\N");
 	boost::replace_all(new_value, "\r", "\\N");
 	boost::replace_all(new_value, "\n", "\\N");
@@ -289,7 +310,10 @@ void DialogTranslation::Commit(bool next) {
 
 void DialogTranslation::InsertOriginal() {
 	auto const& text = blocks[cur_block]->GetText();
-	translated_text->AddTextRaw(text.data(), text.size());
+	if (use_native)
+		translated_text_native->WriteText(to_wx(text));
+	else
+		translated_text_stc->AddTextRaw(text.data(), text.size());
 }
 
 void DialogTranslation::OnKeyDown(wxKeyEvent &evt) {
@@ -298,10 +322,16 @@ void DialogTranslation::OnKeyDown(wxKeyEvent &evt) {
 
 void DialogTranslation::OnPlayVideoButton(wxCommandEvent &) {
 	c->videoController->PlayLine();
-	translated_text->SetFocus();
+	if (use_native)
+		translated_text_native->SetFocus();
+	else
+		translated_text_stc->SetFocus();
 }
 
 void DialogTranslation::OnPlayAudioButton(wxCommandEvent &) {
 	cmd::call("audio/play/selection", c);
-	translated_text->SetFocus();
+	if (use_native)
+		translated_text_native->SetFocus();
+	else
+		translated_text_stc->SetFocus();
 }

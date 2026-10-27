@@ -6,11 +6,14 @@
     },
     "Subtitle" : {
         "Edit Box" : {
-            "Font Size" : 13
+            "Font Size" : 13,
+            "RTL Mode" : false
         },
+        "Use Native Edit Box" : false,
         "Grid" : {
             "Font Face" : "",
-            "Font Size" : 12
+            "Font Size" : 12,
+            "RTL Mode" : false
         }
     }
 }
