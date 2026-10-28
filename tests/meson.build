@@ -86,3 +86,16 @@ test_setup = custom_target('setup-test-data',
 
 test('gtest main', runner, env: {'AEGISUB_TEST_DATA_DIR': meson.current_source_dir()}, depends: test_setup)
 test('luajit-52', executable('luajit-52', 'tests/luajit_52.c', dependencies: luajit))
+
+# The application dispatcher needs wxKeyEvent semantics, beyond libaegisub's
+# shortcut lookup tests. The test supplies a command sink instead of media UI.
+hotkey_dispatch_runner = executable(
+    'hotkey-dispatch',
+    ['support/main.cpp', 'tests/hotkey_dispatch.cpp', '../src/hotkey.cpp', '../src/compat.cpp'],
+    libresrc_headers,
+    include_directories: [libaegisub_inc, libresrc_inc, include_directories('../src')],
+    dependencies: [gtest_dep, deps],
+    cpp_args: tests_args + conf_defines,
+    link_with: [libaegisub, libresrc],
+)
+test('hotkey dispatch', hotkey_dispatch_runner)
