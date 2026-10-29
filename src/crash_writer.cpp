@@ -81,6 +81,7 @@ void Write() {
 }
 
 void Write(std::string const& error) {
+	agi::fs::CreateDirectory(crashlog_path.parent_path());
 	std::ofstream file(crashlog_path, std::ios::app);
 	if (file.is_open()) {
 		file << util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");

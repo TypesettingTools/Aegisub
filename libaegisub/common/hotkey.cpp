@@ -188,6 +188,7 @@ void Hotkey::Flush() {
 	if (backup_config_file && fs::FileExists(config_file) && !fs::FileExists(config_file.string() + ".3_1"))
 		fs::Copy(config_file, config_file.string() + ".3_1");
 
+	agi::fs::CreateDirectory(config_file.parent_path());
 	io::Save file(config_file);
 	JsonWriter::Write(root, file.Get());
 }
