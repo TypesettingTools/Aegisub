@@ -38,7 +38,7 @@ std::unique_ptr<std::istream> Open(path const& file, bool binary) {
 
 Save::Save(path const& file, bool binary)
 : file_name(file)
-, tmp_name(file.parent_path()/(file.stem().string() + ".tmp" + file.extension().string()))
+, tmp_name(file.parent_path()/(file.stem().string() + ".tmp." + agi::util::ThreadId() + "." + file.extension().string()))
 {
 	LOG_D("agi/io/save/file") << file;
 
