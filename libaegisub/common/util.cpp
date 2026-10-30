@@ -24,11 +24,17 @@
 #include <boost/locale/util.hpp>
 #include <boost/range/distance.hpp>
 #include <ctime>
+#include <sstream>
+#include <thread>
 #include <unicode/edits.h>
 #include <unicode/casemap.h>
 #include <unicode/ucasemap.h>
 #include <unicode/bytestream.h>
 #include <unicode/locid.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 namespace {
 const size_t bad_pos = (size_t)-1;
@@ -157,6 +163,27 @@ void tagless_find_helper::map_range(size_t &s, size_t &e) {
 		// Note that blocks cannot be partially within the match
 		e += block.second - block.first;
 	}
+}
+
+std::string ThreadId() {
+	auto impl = [&]() {
+		auto id = std::this_thread::get_id();
+
+		std::ostringstream stream;
+
+#ifdef _WIN32
+		stream << GetCurrentProcessId();
+		stream << "-";
+#elif defined(__linux__) || defined(__APPLE__)
+		stream << getpid();
+		stream << "-";
+#endif
+		stream << id;	// For some reason thread ids can only be serialized like this
+		return stream.str();
+	};
+
+	thread_local std::string result = impl();
+	return result;
 }
 
 void InitLocale() {
