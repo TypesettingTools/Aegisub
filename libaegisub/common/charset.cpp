@@ -108,7 +108,7 @@ std::string Detect(agi::fs::path const& file, DetectReason *reason) {
 	return set_reason(DetectReason::Uchardet), uchardet_get_charset(ud);
 #else
 	auto buf = fp.read(0, std::min<uint64_t>(4096, fp.size()));
-	for (size_t i = 0; i < buf.size(); ++i) {
+	for (size_t i = 0; i < read.size(); ++i) {
 		if ((unsigned char)buf[i] < 32 && (buf[i] != '\r' && buf[i] != '\n' && buf[i] != '\t'))
 			++binaryish;
 	}
