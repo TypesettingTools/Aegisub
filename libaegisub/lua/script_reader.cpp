@@ -26,15 +26,17 @@
 
 namespace agi::lua {
 	namespace {
-		bool load_support_file(lua_State *L, fs::path const& filename) {
-			try {
-				return LoadFile(L, filename);
-			}
-			catch (agi::Exception const& e) {
-				lua_pushstring(L, e.GetMessage().c_str());
-				return false;
-			}
+
+	bool load_support_file(lua_State *L, fs::path const& filename) {
+		try {
+			return LoadFile(L, filename);
 		}
+		catch (agi::Exception const& e) {
+			lua_pushstring(L, e.GetMessage().c_str());
+			return false;
+		}
+	}
+
 	}
 
 	bool LoadFile(lua_State *L, agi::fs::path const& raw_filename) {
