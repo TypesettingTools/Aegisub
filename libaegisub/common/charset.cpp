@@ -26,6 +26,8 @@
 #include <unicode/ucnv.h>
 #endif
 
+using namespace std::string_view_literals;
+
 namespace agi::charset {
 std::string Detect(agi::fs::path const& file, DetectReason *reason) {
 	auto set_reason = [reason](DetectReason r) { if (reason) *reason = r; };
@@ -33,18 +35,21 @@ std::string Detect(agi::fs::path const& file, DetectReason *reason) {
 
 	// First check for known magic bytes which identify the file type
 	if (fp.size() >= 4) {
-		const char* header = fp.read(0, 4);
-		if (!strncmp(header, "\xef\xbb\xbf", 3))
+		std::span<const char> header = fp.read(0, 4);
+		std::string_view header_sv{header.data(), header.size()};
+
+		// This needs string view literals since some of these C strings contain null bytes.
+		if (header_sv.starts_with("\xef\xbb\xbf"sv))
 			return set_reason(DetectReason::Signature), "utf-8";
-		if (!strncmp(header, "\x00\x00\xfe\xff", 4))
+		if (header_sv.starts_with("\x00\x00\xfe\xff"sv))
 			return set_reason(DetectReason::Signature), "utf-32be";
-		if (!strncmp(header, "\xff\xfe\x00\x00", 4))
+		if (header_sv.starts_with("\xff\xfe\x00\x00"sv))
 			return set_reason(DetectReason::Signature), "utf-32le";
-		if (!strncmp(header, "\xfe\xff", 2))
+		if (header_sv.starts_with("\xfe\xff"sv))
 			return set_reason(DetectReason::Signature), "utf-16be";
-		if (!strncmp(header, "\xff\xfe", 2))
+		if (header_sv.starts_with("\xff\xfe"sv))
 			return set_reason(DetectReason::Signature), "utf-16le";
-		if (!strncmp(header, "\x1a\x45\xdf\xa3", 4))
+		if (header_sv.starts_with("\x1a\x45\xdf\xa3"sv))
 			return set_reason(DetectReason::Signature), "binary"; // Actually EBML/Matroska
 	}
 
@@ -67,14 +72,13 @@ std::string Detect(agi::fs::path const& file, DetectReason *reason) {
 	std::array<UChar, 2048> convBuffer;
 
 	for (uint64_t offset = 0; offset < fp.size(); ) {
-		auto read = std::min<uint64_t>(4096, fp.size() - offset);
-		auto buf = fp.read(offset, read);
-		uchardet_handle_data(ud, buf, read);
+		auto buf = fp.read(offset, std::min<uint64_t>(4096, fp.size() - offset));
+		uchardet_handle_data(ud, buf.data(), buf.size());
 
-		offset += read;
+		offset += buf.size();
 
-		const char *source = buf;
-		const char *sourceLimit = source + read;
+		const char *source = buf.data();
+		const char *sourceLimit = source + buf.size();
 		bool flush = offset >= fp.size();
 		while (U_SUCCESS(utf8Status)) {
 			UChar *target = convBuffer.data();
@@ -89,7 +93,7 @@ std::string Detect(agi::fs::path const& file, DetectReason *reason) {
 		}
 
 		// A dumb heuristic to detect binary files
-		for (size_t i = 0; i < read; ++i) {
+		for (size_t i = 0; i < buf.size(); ++i) {
 			if ((unsigned char)buf[i] < 32 && (buf[i] != '\r' && buf[i] != '\n' && buf[i] != '\t'))
 				++binaryish;
 		}
@@ -103,14 +107,13 @@ std::string Detect(agi::fs::path const& file, DetectReason *reason) {
 	uchardet_data_end(ud);
 	return set_reason(DetectReason::Uchardet), uchardet_get_charset(ud);
 #else
-	auto read = std::min<uint64_t>(4096, fp.size());
-	auto buf = fp.read(0, read);
-	for (size_t i = 0; i < read; ++i) {
+	auto buf = fp.read(0, std::min<uint64_t>(4096, fp.size()));
+	for (size_t i = 0; i < buf.size(); ++i) {
 		if ((unsigned char)buf[i] < 32 && (buf[i] != '\r' && buf[i] != '\n' && buf[i] != '\t'))
 			++binaryish;
 	}
 
-	if (binaryish > read / 8)
+	if (binaryish > buf.size() / 8)
 		return set_reason(DetectReason::BinaryHeuristic), "binary";
 	return set_reason(DetectReason::Utf8Fallback), "utf-8";
 #endif

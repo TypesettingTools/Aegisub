@@ -21,6 +21,7 @@
 
 #include <iosfwd>
 #include <memory>
+#include <span>
 #include <string>
 
 namespace agi { class read_file_mapping; }
@@ -29,6 +30,7 @@ namespace agi { class read_file_mapping; }
 /// @brief A line-based text file reader
 class TextFileReader {
 	std::unique_ptr<agi::read_file_mapping> file;
+	std::span<const char> filespan;
 	std::unique_ptr<std::istream> stream;
 	bool trim;
 	agi::line_iterator<std::string> iter;
