@@ -75,7 +75,7 @@ struct MkvStdIO final : InputStream {
 		try {
 			auto data = self->file.read(pos, count);
 			if (buffer)
-				memcpy(buffer, data, count);
+				memcpy(buffer, data.data(), data.size());
 		}
 		catch (agi::Exception const& e) {
 			self->error = e.GetMessage();
@@ -90,7 +90,7 @@ struct MkvStdIO final : InputStream {
 		try {
 			unsigned cmp = 0;
 			for (auto i : boost::irange(start, self->file.size())) {
-				int c = *self->file.read(i, 1);
+				int c = self->file.read(i, 1)[0];
 				cmp = ((cmp << 8) | c) & 0xffffffff;
 				if (cmp == signature)
 					return i - 4;
@@ -169,7 +169,8 @@ static bool read_subtitles(agi::ProgressSink *ps, MatroskaFile *file, MkvStdIO *
 
 			readBuf = std::string_view(uncompBuf.data(), bytesRead);
 		} else {
-			readBuf = std::string_view(input->file.read(filePos, frameSize), frameSize);
+			auto readSpan = input->file.read(filePos, frameSize);
+			readBuf = std::string_view(readSpan.data(), readSpan.size());
 		}
 
 		if (std::ssize(readBuf) > max_total_subtitle_bytes - totalSubtitleBytes) {

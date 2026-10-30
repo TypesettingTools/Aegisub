@@ -27,15 +27,14 @@
 
 namespace agi::ass {
 
-std::string UUEncode(const char *begin, const char *end, bool insert_linebreaks) {
-	size_t size = std::distance(begin, end);
+std::string UUEncode(std::span<const char> data, bool insert_linebreaks) {
 	std::string ret;
-	ret.reserve((size * 4 + 2) / 3 + size / 80 * 2);
+	ret.reserve((data.size() * 4 + 2) / 3 + data.size() / 80 * 2);
 
 	size_t written = 0;
-	for (size_t pos = 0; pos < size; pos += 3) {
+	for (size_t pos = 0; pos < data.size(); pos += 3) {
 		unsigned char src[3] = { '\0', '\0', '\0' };
-		memcpy(src, begin + pos, std::min<size_t>(3u, size - pos));
+		memcpy(src, data.data() + pos, std::min<size_t>(3u, data.size() - pos));
 
 		unsigned char dst[4] = {
 			static_cast<unsigned char>(src[0] >> 2),
@@ -44,10 +43,10 @@ std::string UUEncode(const char *begin, const char *end, bool insert_linebreaks)
 			static_cast<unsigned char>(src[2] & 0x3F)
 		};
 
-		for (size_t i = 0; i < std::min<size_t>(size - pos + 1, 4u); ++i) {
+		for (size_t i = 0; i < std::min<size_t>(data.size() - pos + 1, 4u); ++i) {
 			ret += dst[i] + 33;
 
-			if (insert_linebreaks && ++written == 80 && pos + 3 < size) {
+			if (insert_linebreaks && ++written == 80 && pos + 3 < data.size()) {
 				written = 0;
 				ret += "\r\n";
 			}
@@ -57,16 +56,15 @@ std::string UUEncode(const char *begin, const char *end, bool insert_linebreaks)
 	return ret;
 }
 
-std::vector<char> UUDecode(const char *begin, const char *end) {
+std::vector<char> UUDecode(std::span<const char> data) {
 	std::vector<char> ret;
-	size_t len = end - begin;
-	ret.reserve(len * 3 / 4);
+	ret.reserve(data.size() * 3 / 4);
 
-	for (size_t pos = 0; pos + 1 < len; ) {
+	for (size_t pos = 0; pos + 1 < data.size(); ) {
 		size_t bytes = 0;
 		unsigned char src[4] = { '\0', '\0', '\0', '\0' };
-		for (size_t i = 0; i < 4 && pos < len; ++pos) {
-			char c = begin[pos];
+		for (size_t i = 0; i < 4 && pos < data.size(); ++pos) {
+			char c = data[pos];
 			if (c && c != '\n' && c != '\r') {
 				src[i++] = c - 33;
 				++bytes;
