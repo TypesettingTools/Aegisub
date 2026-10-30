@@ -66,6 +66,9 @@ namespace agi::util {
 	/// @param name New name for the thread
 	void SetThreadName(const char *name);
 
+	/// Gets a unique identifier for the current thread
+	std::string ThreadId();
+
 	/// A thin wrapper around this_thread::sleep_for that uses std::thread on
 	/// Windows (to avoid having to compile boost.thread) and boost::thread
 	/// elsewhere (because libstdc++ 4.7 is missing it).
