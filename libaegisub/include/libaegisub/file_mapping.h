@@ -23,6 +23,7 @@
 #endif
 
 #include <cstdint>
+#include <span>
 #include <libaegisub/fs.h>
 
 namespace agi {
@@ -49,8 +50,8 @@ namespace agi {
 		~read_file_mapping();
 
 		uint64_t size() const { return file_size; }
-		const char *read(int64_t offset, uint64_t length);
-		const char *read(); // Map the entire file
+		std::span<const char> read(int64_t offset, uint64_t length);
+		std::span<const char> read(); // Map the entire file
 	};
 
 	class temp_file_mapping {
@@ -66,7 +67,7 @@ namespace agi {
 		temp_file_mapping(agi::fs::path const& filename, uint64_t size);
 		~temp_file_mapping();
 
-		const char *read(int64_t offset, uint64_t length);
+		std::span<const char> read(int64_t offset, uint64_t length);
 		char *write(int64_t offset, uint64_t length);
 	};
 }
