@@ -482,6 +482,7 @@ void SubsEditBox::OnChange(wxStyledTextEvent &event) {
 
 void SubsEditBox::OnChangeNative(wxCommandEvent &event) {
 	if (line && GetEditText() != line->Text.get()) {
+		commit_id = -1;
 		CommitText(_("modify text"));
 		UpdateCharacterCount(line->Text);
 	}

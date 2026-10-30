@@ -162,9 +162,11 @@ void SubsNativeTextEditCtrl::OnContextMenu(wxContextMenuEvent& event) {
 	if (pos == wxDefaultPosition)
 		activePos = GetInsertionPoint();
 	else {
-		long from, to;
-		GetSelection(&from, &to);
-		activePos = to;
+		long hitPos = -1;
+		if (HitTest(ScreenToClient(pos), &hitPos) == wxTE_HT_ON_TEXT)
+			activePos = hitPos;
+		else
+			activePos = -1;
 	}
 
 	currentWordPos = GetBoundsOfWordAtPosition(activePos);
