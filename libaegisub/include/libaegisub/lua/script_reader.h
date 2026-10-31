@@ -28,5 +28,5 @@ namespace agi::lua {
 	/// path of the given lua state. Mandatory runtime support is loaded only
 	/// from support_path.
 	bool Install(lua_State *L, std::vector<agi::fs::path> const& include_path,
-		agi::fs::path const& support_path);
+		agi::fs::path const& support_path, agi::fs::path const& cachepath);
 }

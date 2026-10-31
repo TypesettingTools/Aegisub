@@ -113,7 +113,7 @@ static int moon_line(lua_State *L, int lua_line, std::string const& file) {
 
 	// The moonscript line tables give us a character offset into the file,
 	// so now we need to map that to a line number
-	lua_getfield(L, LUA_REGISTRYINDEX, ("raw moonscript: " + file).c_str());
+	lua_getfield(L, LUA_REGISTRYINDEX, ("lua file source: " + file).c_str());
 	if (!lua_isstring(L, -1)) {
 		lua_pop(L, 1);
 		return lua_line;
