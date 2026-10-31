@@ -26,7 +26,6 @@
 #include <ctime>
 #include <sstream>
 #include <thread>
-#include <unistd.h>
 #include <unicode/edits.h>
 #include <unicode/casemap.h>
 #include <unicode/ucasemap.h>
@@ -35,6 +34,8 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#elif defined(__linux__) || defined(__APPLE__)
+#include <unistd.h>
 #endif
 
 namespace {
