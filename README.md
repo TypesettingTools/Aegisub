@@ -136,8 +136,8 @@ If you are packaging Aegisub for a Linux distribution, here are a few things you
 The following commands are an example for how to build Aegisub with the goal of creating a distribution package:
 
 ```bash
-meson subprojects download luajit              # Or use the tarball
-meson subprojects packagefiles --apply luajit
+meson subprojects download luajit lpeg         # Or use the tarball
+meson subprojects packagefiles --apply luajit lpeg
 
 meson setup builddir --wrap-mode=nodownload --prefix=/usr --buildtype=release -Dsystem_luajit=false -Ddefault_library=static -Dtests=false
 
