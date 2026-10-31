@@ -110,7 +110,7 @@ TEST_F(lagi_lua_lfs, mandatory_support_is_not_loaded_from_script_directory) {
 	auto sibling = util::test_data_dir() / "lua/sibling";
 	auto support = util::test_data_dir().parent_path() / "automation/include";
 
-	ASSERT_TRUE(agi::lua::Install(L, {sibling}, support)) << lua_tostring(L, -1);
+	ASSERT_TRUE(agi::lua::Install(L, {sibling}, support, {})) << lua_tostring(L, -1);
 
 	lua_getglobal(L, "sibling_moonscript_loaded");
 	EXPECT_TRUE(lua_isnil(L, -1));

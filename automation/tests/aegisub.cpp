@@ -19,9 +19,11 @@
 #include <libaegisub/lua/utils.h>
 
 #include <libaegisub/dispatch.h>
+#include <libaegisub/format.h>
 #include <libaegisub/log.h>
 #include <libaegisub/util.h>
 
+#include <chrono>
 #include <cstdio>
 #include <cstdlib>
 
@@ -59,8 +61,11 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	auto cachepath = agi::fs::path(std::filesystem::temp_directory_path())
+		/ agi::format("aegisub-tests-%d", std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count());
+
 	preload_modules(L);
-	Install(L, {"include"}, "include");
+	Install(L, {"include"}, "include", cachepath);
 
 	// Patch os.exit to close the lua state first since busted calls it when
 	// it's done
@@ -92,5 +97,11 @@ int main(int argc, char **argv) {
 	int base = lua_gettop(L) - argc + 1;
 	check(L, lua_pcall(L, argc - 2, LUA_MULTRET, base));
 	lua_close(L);
+
+	try {
+		std::filesystem::remove_all(cachepath);
+	} catch (std::filesystem::filesystem_error) {
+		// Ignore
+	}
 }
 
