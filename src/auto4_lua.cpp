@@ -498,7 +498,7 @@ namespace {
 
 		// Replace the default lua module loader with our unicode compatible
 		// one and set the module search path
-		if (!Install(L, include_path, config::path->Decode("?data/automation/include/"))) {
+		if (!Install(L, include_path, config::path->Decode("?data/automation/include/"), config::path->Decode("?local/auto4cache"))) {
 			description = get_string_or_default(L, 1);
 			lua_pop(L, 1);
 			return;

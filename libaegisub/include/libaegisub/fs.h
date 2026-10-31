@@ -18,6 +18,7 @@
 
 #include <libaegisub/exception.h>
 
+#include <array>
 #include <cstdint>
 #include <ctime>
 #include <filesystem>
@@ -175,6 +176,15 @@ uintmax_t Size(path const& file_path);
 /// @throws agi::fs::NotAFile if path is a directory
 /// @throws agi::fs::ReadDenied if path exists but could not be read
 std::filesystem::file_time_type ModifiedTime(path const& file_path);
+
+/// Get the inode number of the file at path, or something equivalent.
+/// There is no guarantee that different files will have different inode numbers,
+/// but this can be used as an additional component of a cache key.
+///
+/// @throws agi::fs::FileNotFound if path does not exist
+/// @throws agi::fs::ReadDenied if path exists but could not be read
+/// @throws agi::fs::FileSystemError on other errors
+std::array<uint64_t, 2> InodeNumber(path const& path);
 
 /// Create a directory and all required intermediate directories
 /// @throws agi::fs::WriteDenied if the directory could not be created.

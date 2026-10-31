@@ -25,7 +25,7 @@ namespace agi::io {
 DEFINE_EXCEPTION(IOError, Exception);
 DEFINE_EXCEPTION(IOFatal, IOError);
 
-std::unique_ptr<std::istream> Open(agi::fs::path const& file, bool binary = false);
+std::unique_ptr<std::istream> Open(agi::fs::path const& file, bool binary = false, bool log = true);
 
 class Save {
 	std::unique_ptr<std::ostream> fp;
@@ -33,7 +33,7 @@ class Save {
 	const agi::fs::path tmp_name;
 
 public:
-	Save(agi::fs::path const& file, bool binary = false);
+	Save(agi::fs::path const& file, bool binary = false, bool log = true);
 	~Save() noexcept(false);
 	std::ostream& Get() { return *fp; }
 };

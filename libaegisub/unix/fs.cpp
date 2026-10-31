@@ -21,6 +21,7 @@
 #include <fcntl.h>
 #include <fnmatch.h>
 #include <istream>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
 
@@ -47,6 +48,22 @@ void Copy(fs::path const& from, fs::path const& to) {
 
 	auto in = io::Open(from, true);
 	io::Save(to).Get() << in->rdbuf();
+}
+
+std::array<uint64_t, 2> InodeNumber(fs::path const& path) {
+	struct stat result{};
+	if (stat(path.c_str(), &result)) {
+		switch(errno) {
+			case EACCES:
+				throw fs::ReadDenied("Could not stat " + path.string() + ", permission denied");
+			case ENOENT:
+				throw fs::FileNotFound("Could not stat " + path.string() + ", file not found");
+			default:
+				throw fs::FileSystemError("Could not stat " + path.string());
+		}
+	}
+
+	return {0, result.st_ino};
 }
 
 struct DirectoryIterator::PrivData {

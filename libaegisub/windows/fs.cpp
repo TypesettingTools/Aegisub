@@ -16,6 +16,8 @@
 
 #include "libaegisub/fs.h"
 
+#include <bit>
+
 #include "libaegisub/access.h"
 #include "libaegisub/charset_conv_win.h"
 #include "libaegisub/exception.h"
@@ -73,6 +75,37 @@ void Copy(fs::path const& from, fs::path const& to) {
 			throw fs::WriteDenied("Could not copy: " + util::ErrorString(GetLastError()));
 		}
 	}
+}
+
+std::array<uint64_t, 2> InodeNumber(fs::path const& path) {
+	agi::scoped_holder<HANDLE, decltype(&CloseHandle)> h{
+		CreateFileW(
+			path.wstring().c_str(),
+			GENERIC_READ,
+			FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+			nullptr,
+			OPEN_EXISTING,
+			FILE_FLAG_BACKUP_SEMANTICS,
+			nullptr),
+		CloseHandle};
+
+	if (h == INVALID_HANDLE_VALUE) {
+		switch(GetLastError()) {
+			case ERROR_FILE_NOT_FOUND:
+				throw fs::FileNotFound("Could not open " + path.string() + ", file not found");
+			case ERROR_ACCESS_DENIED:
+				throw fs::ReadDenied("Could not open " + path.string() + ", permission denied");
+			default:
+				throw fs::FileSystemError("Could not open " + path.string() + ", " + util::ErrorString(GetLastError()));
+		}
+	}
+
+	FILE_ID_INFO info{};
+
+	if (!GetFileInformationByHandleEx(h, FileIdInfo, &info, sizeof(info)))
+		throw fs::FileSystemError("Could not get file ID of " + path.string() + ", " + util::ErrorString(GetLastError()));
+
+	return std::bit_cast<std::array<uint64_t, 2>>(info.FileId.Identifier);
 }
 
 struct DirectoryIterator::PrivData {
