@@ -24,8 +24,9 @@
 namespace agi::io {
 using namespace agi::fs;
 
-std::unique_ptr<std::istream> Open(path const& file, bool binary) {
-	LOG_D("agi/io/open/file") << file;
+std::unique_ptr<std::istream> Open(path const& file, bool binary, bool log) {
+	if (log)
+		LOG_D("agi/io/open/file") << file;
 
 	auto stream = std::make_unique<std::ifstream>(file, (binary ? std::ios::binary : std::ios::in));
 	if (stream->fail()) {
@@ -36,11 +37,12 @@ std::unique_ptr<std::istream> Open(path const& file, bool binary) {
 	return std::unique_ptr<std::istream>(stream.release());
 }
 
-Save::Save(path const& file, bool binary)
+Save::Save(path const& file, bool binary, bool log)
 : file_name(file)
-, tmp_name(file.parent_path()/(file.stem().string() + ".tmp" + file.extension().string()))
+, tmp_name(file.parent_path()/(file.stem().string() + ".tmp." + agi::util::ThreadId() + "." + file.extension().string()))
 {
-	LOG_D("agi/io/save/file") << file;
+	if (log)
+		LOG_D("agi/io/save/file") << file;
 
 	fp = std::make_unique<std::ofstream>(tmp_name, binary ? std::ios::binary : std::ios::out);
 	if (!fp->good()) {
