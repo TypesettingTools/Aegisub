@@ -1,3 +1,5 @@
+#pragma once
+
 #ifdef __cplusplus
 #include "../acconf.h"
 

@@ -19,6 +19,8 @@
 /// @ingroup visual_ts
 ///
 
+#pragma once
+
 #include "visual_tool.h"
 #include "visual_feature.h"
 

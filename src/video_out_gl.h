@@ -19,6 +19,8 @@
 /// @ingroup video
 ///
 
+#pragma once
+
 #include <libaegisub/exception.h>
 
 #include <vector>

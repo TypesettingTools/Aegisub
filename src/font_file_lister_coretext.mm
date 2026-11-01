@@ -39,6 +39,10 @@ FontMatch process_descriptor(NSFontDescriptor *desc, NSString *name) {
 		return ret;
 
 	NSFont *font = [NSFont fontWithDescriptor:desc size:10];
+	if (!font) {
+		ret.url = nil;
+		return ret;
+	}
 
 	// Ask CoreText if the font is italic, but if it says no double-check
 	// by reading the macStyle field of the 'head' table as CT doesn't honor
@@ -79,27 +83,39 @@ FontMatch process_descriptor(NSFontDescriptor *desc, NSString *name) {
 	// For VSFilter compatibility we want to match based on the Windows name.
 	if (ret.family_match) {
 		auto data = (__bridge_transfer NSData *)CTFontCopyTable((__bridge CTFontRef)font, kCTFontTableName, 0);
+		if (data.length < 6)
+			return ret;
+
 		auto bytes = static_cast<const uint8_t *>(data.bytes);
+		auto table_size = static_cast<size_t>(data.length);
 		uint16_t count = get_16(bytes, 2);
-		auto strings = bytes + get_16(bytes, 4);
+		size_t strings_offset = get_16(bytes, 4);
+		if (count > (table_size - 6) / 12 || strings_offset > table_size)
+			return ret;
+		auto strings = bytes + strings_offset;
+		auto strings_size = table_size - strings_offset;
 
 		for (uint16_t i = 0; i < count; ++i) {
 			auto name_record = bytes + 6 + i * 12;
 			auto platform_id = get_16(name_record, 0);
 			auto encoding_id = get_16(name_record, 2);
 			auto name_id = get_16(name_record, 6);
-			auto length = get_16(name_record, 8);
-			auto offset = get_16(name_record, 10);
+			size_t length = get_16(name_record, 8);
+			size_t offset = get_16(name_record, 10);
 
 			if (name_id != 1) // font family
 				continue;
 			if (platform_id != 3 || encoding_id != 1) // only look at MS Unicode
+				continue;
+			if ((length & 1) || offset > strings_size || length > strings_size - offset)
 				continue;
 
 			NSString *msFamily = [[NSString alloc] initWithBytesNoCopy:(void *)(strings + offset)
 			                                                    length:length
 			                                                  encoding:NSUTF16BigEndianStringEncoding
 			                                              freeWhenDone:NO];
+			if (!msFamily)
+				continue;
 			auto range = [msFamily rangeOfString:font.familyName];
 			// If it's not even a prefix then it's probably for a different language
 			if (range.location != 0)

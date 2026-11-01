@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include "include/aegisub/video_provider.h"
 
 #include <libaegisub/exception.h>

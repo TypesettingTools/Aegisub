@@ -7,11 +7,38 @@ on:
   pull_request:
     branches: [ master ]
   workflow_dispatch:
+    inputs:
+      sccache:
+        description: Use the sccache compilation cache
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
 
 jobs:
+  release-version:
+    name: Check release version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check that the tag, meson.build, and metainfo agree
+        env:
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
+        run: tools/check-release-version.sh ${RELEASE_TAG:+"$RELEASE_TAG"}
+
   build:
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
+    env:
+      # Pull request checkouts use a detached merge commit. Preserve the source
+      # branch in generated non-release version and artifact names.
+      AEGISUB_BUILD_BRANCH: ${{ github.head_ref || github.ref_name }}
+      # Same condition as windows-sign-executable
+      AEGISUB_SIGN_WINDOWS: ${{ matrix.config.os == 'windows-latest' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/ci/windows-signing') }}
+      SCCACHE_GHA_ENABLED: "true"
+      SCCACHE_C_CUSTOM_CACHE_BUSTER: ${{ matrix.config['sccache-key'] }}
 
     strategy:
       fail-fast: false
@@ -19,6 +46,7 @@ jobs:
         config:
           - name: Windows MSVC Release
             os: windows-latest
+            sccache-key: windows-x86_64-msvc
             msvc: true
             devenv: |
               Import-Module "$env:VS\Common7\Tools\Microsoft.VisualStudio.DevShell.dll"
@@ -26,7 +54,7 @@ jobs:
             buildtype: release
             args: >-
               -Ddefault_library=static
-              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi,libpng
+              --force-fallback-for=zlib,harfbuzz,freetype2,fribidi
               -Dfallback_nasm=true
               -Dfreetype2:harfbuzz=disabled
               -Dharfbuzz:freetype=disabled
@@ -38,63 +66,88 @@ jobs:
               -Dfribidi:tests=false
               -Dfribidi:docs=false
               -Dlibass:fontconfig=disabled
-          #- {
-          #  name: Windows MinGW,
-          #  os: windows-latest,
-          #  msvc: false
-          #}
-          - {
-            name: Ubuntu Debug,
-            os: ubuntu-latest,
-            buildtype: debugoptimized,
+          - name: Ubuntu Debug
+            os: ubuntu-latest
+            sccache-key: linux-x86_64-gcc
+            buildtype: debugoptimized
             args: -Db_pch=false
-          }
-          - {
-            name: Ubuntu Release,
-            os: ubuntu-latest,
-            buildtype: release,
+          - name: Ubuntu Release
+            os: ubuntu-latest
+            sccache-key: linux-x86_64-gcc
+            buildtype: release
             args: -Db_pch=false
-          }
-          - {
-            name: macOS x86_64 Debug,
-            os: macos-15-intel,
-            buildtype: debugoptimized,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
-          - {
-            name: macOS x86_64 Release,
-            os: macos-15-intel,
-            buildtype: release,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
-          - {
-            name: macOS arm64 Debug,
-            os: macos-15,
-            buildtype: debugoptimized,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
-          - {
-            name: macOS arm64 Release,
-            os: macos-15,
-            buildtype: release,
-            args: -Ddefault_library=static -Dbuild_osx_bundle=true -Dlocal_boost=true --force-fallback-for=ffms2
-          }
+          - name: macOS x86_64 Release
+            os: macos-15
+            sccache-key: macos-x86_64-clang
+            cross_args: --cross-file tools/macos-release.ini --cross-file tools/macos-x86_64.ini --cross-file tools/sccache.ini
+            buildtype: release
+            # sccache serves clang PCHs that fail mtime validation on a fresh checkout
+            args: &macos_source_args >-
+              -Db_pch=false
+              -Ddefault_library=static
+              -Dbuild_osx_bundle=true
+              -Dfftw3=disabled
+              -Dlibpulse=disabled
+              -Dopenal=enabled
+              -Dlibass:fontconfig=disabled
+              -Dlibass:libunibreak=disabled
+              -Dfreetype2:bzip2=disabled
+              -Dfreetype2:brotli=disabled
+              -Dfribidi:bin=false
+              -Dfribidi:docs=false
+              -Dfribidi:tests=false
+              -Dharfbuzz:gpu=disabled
+              -Dharfbuzz:raster=disabled
+              -Dharfbuzz:subset=disabled
+              -Dharfbuzz:tests=disabled
+              -Dharfbuzz:utilities=disabled
+              -Dharfbuzz:vector=disabled
+              -Dffmpeg:bzlib=disabled
+              -Dffmpeg:lzma=disabled
+              -Dffmpeg:programs=disabled
+              -Dffmpeg:tests=disabled
+              -Ddav1d:enable_tests=false
+              -Ddav1d:enable_tools=false
+              -Dzlib:tests=disabled
+              --force-fallback-for=boost,wxWidgets,libass,zlib,freetype2,fribidi,harfbuzz,ffms2,libavformat,libavcodec,libswscale,libavutil,libswresample,dav1d,hunspell,uchardet,icu-uc,icu-i18n,libcurl
+          - name: macOS arm64 Debug
+            os: macos-15
+            sccache-key: macos-arm64-clang
+            buildtype: debugoptimized
+            args: >-
+              -Db_pch=false
+              -Dmacos_deployment_target=15.0
+              -Dbuild_osx_bundle=false
+              -Dfftw3=enabled
+              -Dlibpulse=disabled
+              -Dopenal=enabled
+          - name: macOS arm64 Release
+            os: macos-15
+            sccache-key: macos-arm64-clang
+            native_args: --native-file tools/macos-release.ini
+            buildtype: release
+            args: *macos_source_args
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: '0'
 
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.x'
+
+      # Release builds compile from scratch; manual runs can opt out too
+      - name: Set up sccache
+        if: github.ref_type != 'tag' && (github.event_name != 'workflow_dispatch' || inputs.sccache)
+        uses: mozilla-actions/sccache-action@v0.0.11
 
       - name: Setup Meson
         run: |
           python -m pip install --upgrade pip setuptools
           pip install meson
 
-        # Taken from https://github.com/libass/libass/blob/0.17.5/.github/workflows/meson.yml#L118-L125
+      # Taken from https://github.com/libass/libass/blob/0.17.5/.github/workflows/meson.yml#L118-L125
       - name: Find Visual Studio
         if: matrix.config.msvc
         run: |
@@ -106,41 +159,51 @@ jobs:
 
       - name: Install dependencies (Windows)
         if: matrix.config.os == 'windows-latest'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           choco install ninja innosetup
 
-          $moonscripturl = "https://github.com/leafo/moonscript/releases/download/v0.6.0/moonscript-v0.6.0-windows-x86_64.zip"
-          mkdir moonscript
-          Invoke-WebRequest -Uri $moonscripturl -OutFile ".\moonscript\moonscript.zip"
-          pushd moonscript
-          7z e moonscript.zip
-          Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          popd
+          # msgfmt, to compile the translations
+          gh release download --repo mlocati/gettext-iconv-windows --pattern 'gettext*-static-64.zip' --output gettext.zip
+          Expand-Archive gettext.zip -DestinationPath gettext
+          "$PWD\gettext\bin" >> $env:GITHUB_PATH
 
-          $gettexturl = "https://github.com/mlocati/gettext-iconv-windows/releases/download/v1.0-v1.18-r3/gettext1.0-iconv1.18-static-64.zip"
-          Invoke-WebRequest -Uri $gettexturl -OutFile ".\gettext.zip"
-          Expand-Archive ".\gettext.zip" -DestinationPath gettext
-          pushd gettext/bin
-          Get-Location | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-          popd
-
-      - name: Install dependencies (MacOS)
-        if: startsWith(matrix.config.os, 'macos-')
+      - name: Install dependencies (macOS Debug)
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'debugoptimized'
         run: |
-          brew update
+          brew install ninja pkg-config libass boost zlib ffms2 fftw hunspell uchardet icu4c wxwidgets
 
-          if [ x"$(uname -m)" = x"x86_64" ]; then
-            # This is a dependency of pulseaudio that does not have a prebuilt x86_64 package.
-            brew install --build-from-source orc
+          echo "PKG_CONFIG_PATH=$(brew --prefix icu4c)/lib/pkgconfig:$(brew --prefix zlib)/lib/pkgconfig" >> "${GITHUB_ENV}"
+
+      - name: Install build tools (macOS source dependencies)
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
+        run: |
+          brew install ninja nasm
+
+      - name: Check Rosetta (macOS cross builds)
+        if: matrix.config.cross_args
+        run: |
+          if ! /usr/bin/arch -x86_64 /usr/bin/true; then
+            sudo softwareupdate --install-rosetta --agree-to-license
           fi
+          /usr/bin/arch -x86_64 /usr/bin/true
 
-          brew install ninja
-          brew install libass zlib ffms2 fftw hunspell
-          brew install pulseaudio  # NO OpenAL in github CI
-
-          # busted for the automation test suite (LuaJIT is Lua 5.1 to luarocks)
+      - name: Install test dependencies (macOS)
+        if: startsWith(matrix.config.os, 'macos-')
+        env:
+          CROSS_ARGS: ${{ matrix.config.cross_args }}
+        run: |
+          # LuaJIT is Lua 5.1 to luarocks.
           brew install luajit luarocks
-          luarocks --lua-dir="$(brew --prefix luajit)" --lua-version=5.1 install busted
+          if test -n "${CROSS_ARGS}"; then
+            # Busted's native modules are loaded by the Intel test executable.
+            luarocks --lua-dir="$(brew --prefix luajit)" --lua-version=5.1 install busted \
+              CC='/usr/bin/clang -arch x86_64' \
+              LD='/usr/bin/clang -arch x86_64'
+          else
+            luarocks --lua-dir="$(brew --prefix luajit)" --lua-version=5.1 install busted
+          fi
 
       - name: Install dependencies (Linux)
         if: startsWith(matrix.config.os, 'ubuntu-')
@@ -155,12 +218,28 @@ jobs:
       - name: Configure
         run: |
           ${{ matrix.config.devenv }}
-          meson setup build ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
+          meson setup build ${{ matrix.config.native_args }} ${{ matrix.config.cross_args }} ${{ matrix.config.args }} -Dbuildtype=${{ matrix.config.buildtype }} ${{ github.ref_type == 'tag' && '-Dofficial_release=true' || '' }}
+
+      - name: Build FFTW (MacOS)
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
+        run: |
+          tools/macos-build-fftw.sh build
+          meson setup --reconfigure --clearcache build \
+            -Dpkg_config_path="$PWD/build/fftw-prefix/lib/pkgconfig" \
+            -Dfftw3=enabled
 
       - name: Build
         run: |
           ${{ matrix.config.devenv }}
           meson compile -C build
+
+      - name: Verify Intel cross-build architecture
+        if: matrix.config.cross_args
+        run: |
+          test "$(lipo -archs build/aegisub)" = x86_64
+          test "$(lipo -archs build/tests/gtest-main)" = x86_64
+          test "$(lipo -archs build/tests/luajit-52)" = x86_64
+          test "$(lipo -archs build/automation/tests/aegisub-lua)" = x86_64
 
       # The automation suite is registered at configure time only if the
       # busted probe succeeds, so make sure it can't silently drop out of CI
@@ -173,6 +252,18 @@ jobs:
         run: |
           ${{ matrix.config.devenv }}
           meson test -C build --verbose --suite Aegisub
+
+      - name: Check cross-built tests executed
+        if: matrix.config.cross_args
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          results = [json.loads(line) for line in Path('build/meson-logs/testlog.json').read_text().splitlines()]
+          if not results or any(result['result'] != 'OK' for result in results):
+              raise SystemExit('Cross-built tests must pass under Rosetta, not be skipped')
+          PY
 
       # Windows artifacts
       - name: Generate Windows installer
@@ -190,23 +281,49 @@ jobs:
           cd build && ninja win-portable
 
       - name: Upload artifacts - win_installer
-        uses: actions/upload-artifact@v6
-        if: matrix.config.os == 'windows-latest'
+        uses: actions/upload-artifact@v7
+        if: matrix.config.os == 'windows-latest' && env.AEGISUB_SIGN_WINDOWS != 'true'
         with:
           name: ${{ matrix.config.name }} - installer
           path: build/Aegisub-*.exe
           if-no-files-found: error
 
       - name: Upload artifacts - portable.zip
-        uses: actions/upload-artifact@v6
-        if: matrix.config.os == 'windows-latest'
+        uses: actions/upload-artifact@v7
+        if: matrix.config.os == 'windows-latest' && env.AEGISUB_SIGN_WINDOWS != 'true'
         with:
           name: ${{ matrix.config.name }} - portable
-          path: build/aegisub-portable-64.zip
+          path: build/Aegisub-*-portable.zip
+          if-no-files-found: error
+
+      # Release builds are signed and packaged by the windows-* jobs below
+      - name: Upload Windows executable for signing
+        uses: actions/upload-artifact@v7
+        if: env.AEGISUB_SIGN_WINDOWS == 'true'
+        with:
+          name: Windows signing - unsigned executable
+          path: build/aegisub.exe
+          if-no-files-found: error
+
+      - name: Upload Windows packaging inputs
+        uses: actions/upload-artifact@v7
+        if: env.AEGISUB_SIGN_WINDOWS == 'true'
+        with:
+          name: Windows signing - packaging inputs
+          path: |
+            build/git_version.h
+            build/po/*/LC_MESSAGES/aegisub.mo
+            build/installer-deps/
+            build/Aegisub-*-portable.zip
+          if-no-files-found: error
 
       # macOS artifacts
       - name: Generate macOS installer
-        if: startsWith(matrix.config.os, 'macos-')
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
+        env:
+          # CI artifacts are intentionally ad-hoc signed. Release managers must
+          # explicitly replace this with a Developer ID signature before release.
+          AEGISUB_BUNDLE_SIGNATURE: '-'
         run: |
           meson compile osx-bundle -C build
 
@@ -222,11 +339,25 @@ jobs:
             i=$((i+1))
           done
 
-      - name: Upload artifacts - macOS dmg
-        uses: actions/upload-artifact@v6
-        if: startsWith(matrix.config.os, 'macos-')
+      - name: Archive macOS app for local signing
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release' && (github.ref_type == 'tag' || github.event_name == 'workflow_dispatch')
+        run: |
+          package_name="$(tools/osx-package-name.sh build/Aegisub.app)"
+          ditto -c -k --sequesterRsrc --keepParent build/Aegisub.app "build/${package_name}-signing-input.zip"
+
+      - name: Upload macOS local-signing input
+        uses: actions/upload-artifact@v7
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release' && (github.ref_type == 'tag' || github.event_name == 'workflow_dispatch')
         with:
-          name: ${{ matrix.config.name }} - installer
+          name: ${{ matrix.config.name }} - local signing input
+          path: build/Aegisub-*-signing-input.zip
+          if-no-files-found: error
+
+      - name: Upload artifacts - macOS dmg
+        uses: actions/upload-artifact@v7
+        if: startsWith(matrix.config.os, 'macos-') && matrix.config.buildtype == 'release'
+        with:
+          name: ${{ matrix.config.name }} - ad-hoc installer
           path: build/Aegisub-*.dmg
           if-no-files-found: error
 
@@ -245,9 +376,69 @@ jobs:
           test -e distcheck/*/subprojects/LuaJIT*/meson.build
 
       - name: Upload artifacts - tarball
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: matrix.config.os == 'ubuntu-latest' && matrix.config.buildtype == 'release'
         with:
           name: Source Tarball
           path: build/meson-dist/*.tar.xz
           if-no-files-found: error
+
+  # Signing is kept out of the build job; see sign-windows.yml
+  windows-sign-executable:
+    name: Windows - sign executable
+    needs: [build, release-version]
+    if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/ci/windows-signing'
+    permissions:
+      id-token: write
+    uses: ./.github/workflows/sign-windows.yml
+    with:
+      artifact: Windows signing - unsigned executable
+      signed-artifact: Windows signing - signed executable
+
+  windows-package:
+    name: Windows - package signed executable
+    needs: windows-sign-executable
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install Inno Setup
+        run: choco install innosetup
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: Windows signing - packaging inputs
+          path: build
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: Windows signing - signed executable
+          path: signed
+
+      - name: Package signed executable
+        run: |
+          Copy-Item signed\aegisub.exe build\aegisub.exe -Force
+          tools\win-installer-setup.ps1 "$PWD\build" "$PWD" x64 -NoBuild
+          packages\win_installer\portable\replace-executable.ps1 (Get-Item build\Aegisub-*-portable.zip) build\aegisub.exe
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Windows signing - unsigned installer
+          path: build/Aegisub-*.exe
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Windows MSVC Release - portable
+          path: build/Aegisub-*-portable.zip
+          if-no-files-found: error
+
+  windows-sign-installer:
+    name: Windows - sign installer
+    needs: windows-package
+    permissions:
+      id-token: write
+    uses: ./.github/workflows/sign-windows.yml
+    with:
+      artifact: Windows signing - unsigned installer
+      signed-artifact: Windows MSVC Release - installer

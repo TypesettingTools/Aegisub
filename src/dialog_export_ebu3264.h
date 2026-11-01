@@ -19,6 +19,8 @@
 /// @see dialog_export_ebu3264.cpp
 /// @ingroup subtitle_io export
 
+#pragma once
+
 #include <libaegisub/vfr.h>
 
 #include <memory>

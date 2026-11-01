@@ -16,6 +16,8 @@
 /// @brief Container for holding an actual option value.
 /// @ingroup libaegisub
 
+#pragma once
+
 #include <cstdint>
 #include <vector>
 

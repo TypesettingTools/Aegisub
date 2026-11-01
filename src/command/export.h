@@ -14,6 +14,8 @@
 //
 // Aegisub Project https://aegisub.org/
 
+#pragma once
+
 namespace agi { struct Context; }
 
 namespace cmd {

@@ -15,9 +15,12 @@
 // Aegisub Project http://www.aegisub.org/
 
 #include <algorithm>
+#include <cstdint>
+#include <limits>
 #include <main.h>
 #include <util.h>
 
+#include <libaegisub/file_mapping.h>
 #include <libaegisub/fs.h>
 
 using namespace agi::fs;
@@ -62,6 +65,15 @@ TEST(lagi_fs, file_size) {
 	EXPECT_EQ(0u, Size("data/file"));
 	EXPECT_EQ(10u, Size("data/ten_bytes"));
 	EXPECT_THROW(Size("data/dir"), NotAFile);
+}
+
+TEST(lagi_fs, file_mapping_rejects_invalid_ranges) {
+	agi::read_file_mapping file("data/ten_bytes");
+	EXPECT_THROW(file.read(-1, 0), agi::InternalError);
+	EXPECT_THROW(file.read(-1, 1), agi::InternalError);
+	EXPECT_THROW(file.read(9, 2), agi::InternalError);
+	EXPECT_THROW(file.read(1, std::numeric_limits<uint64_t>::max()), agi::InternalError);
+	EXPECT_NO_THROW(file.read(10, 0));
 }
 
 TEST(lagi_fs, touch_creates_file) {

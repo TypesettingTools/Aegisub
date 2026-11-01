@@ -74,6 +74,10 @@ bool GetIsOfficialRelease() {
 #endif
 }
 
+std::array<int, 3> GetVersionNumbers() {
+	return {AEGISUB_VERSION_MAJOR, AEGISUB_VERSION_MINOR, AEGISUB_VERSION_PATCH};
+}
+
 const char *GetVersionNumber() {
 	return BUILD_GIT_VERSION_STRING;
 }

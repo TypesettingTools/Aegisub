@@ -54,6 +54,7 @@
 
 
 #include <algorithm>
+#include <cmath>
 #include <wx/combobox.h>
 #include <wx/menu.h>
 #include <wx/textctrl.h>
@@ -113,6 +114,10 @@ VideoDisplay::VideoDisplay(wxToolBar *toolbar, bool freeSize, wxComboBox *zoomBo
 	con->videoController->Bind(EVT_FRAME_READY, &VideoDisplay::UploadFrameData, this);
 	connections = agi::signal::make_vector({
 		con->project->AddVideoProviderListener([this] (AsyncVideoProvider *provider) {
+			if (provider && render_failed) {
+				Unload();
+				render_failed = false;
+			}
 			if (!provider) ResetContentZoom();
 			FitClientSizeToVideo();
 		}),
@@ -183,7 +188,7 @@ void VideoDisplay::UploadFrameData(FrameReadyEvent &evt) {
 }
 
 void VideoDisplay::Render() try {
-	if (!con->project->VideoProvider() || !InitContext() || (!videoOut && !pending_frame))
+	if (render_failed || !con->project->VideoProvider() || !InitContext() || (!videoOut && !pending_frame))
 		return;
 
 	if (!videoOut)
@@ -191,6 +196,8 @@ void VideoDisplay::Render() try {
 
 	if (!tool)
 		cmd::call("video/tool/cross", con);
+	// Tool initialization can synchronously reenter Render through layout.
+	if (render_failed) return;
 
 	try {
 		if (pending_frame) {
@@ -199,13 +206,14 @@ void VideoDisplay::Render() try {
 		}
 	}
 	catch (const VideoOutInitException& err) {
+		render_failed = true;
 		wxLogError(
 			fmt_tl("Failed to initialize video display. Closing other running programs and updating your video card drivers may fix this.\nError message reported: %s",
 			err.GetMessage()));
-		con->project->CloseVideo();
 		return;
 	}
 	catch (const VideoOutRenderException& err) {
+		render_failed = true;
 		wxLogError(
 			fmt_tl("Could not upload video frame to graphics card.\nError message reported: %s",
 			err.GetMessage()));
@@ -214,6 +222,7 @@ void VideoDisplay::Render() try {
 
 	if (!content_height || !content_width)
 		PositionVideo();
+	if (render_failed) return;
 
 	wxSize client_size = GetClientSize();
 	client_size = wxSize(std::max(1, client_size.GetWidth()), std::max(1, client_size.GetHeight()));
@@ -248,10 +257,12 @@ void VideoDisplay::Render() try {
 	SwapBuffers();
 }
 catch (const agi::Exception &err) {
+	// Closing here can reenter rendering or destroy a provider still in use
+	// by the loading operation. Keep the project loaded and stop drawing.
+	render_failed = true;
 	wxLogError(
 		fmt_tl("An error occurred trying to render the video frame on the screen.\nError message reported: %s",
 		err.GetMessage()));
-	con->project->CloseVideo();
 }
 
 void VideoDisplay::DrawOverscanMask(float horizontal_percent, float vertical_percent) const {
@@ -527,8 +538,8 @@ void VideoDisplay::OnKeyDown(wxKeyEvent &event) {
 }
 
 void VideoDisplay::SetWindowZoom(double value) {
-	if (value == 0) return;
-	windowZoomValue = std::max(value, .125);
+	if (!std::isfinite(value) || value <= 0) return;
+	windowZoomValue = std::clamp(value, .125, 10.);
 	size_t selIndex = windowZoomValue / .125 - 1;
 	if (selIndex < zoomBox->GetCount())
 		zoomBox->SetSelection(selIndex);

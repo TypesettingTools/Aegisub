@@ -19,6 +19,8 @@
 /// @ingroup video_output
 ///
 
+#pragma once
+
 #include "vector2d.h"
 
 #include <vector>

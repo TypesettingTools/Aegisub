@@ -17,6 +17,8 @@
 /// @ingroup utility
 ///
 
+#pragma once
+
 #include <chrono>
 #include <wx/dialog.h>
 #include <wx/timer.h>

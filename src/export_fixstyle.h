@@ -32,6 +32,8 @@
 /// @ingroup export
 ///
 
+#pragma once
+
 #include "ass_export_filter.h"
 
 /// @class AssFixStylesFilter

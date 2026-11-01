@@ -27,6 +27,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <memory>
 #include <string>
 #include <wx/dialog.h>

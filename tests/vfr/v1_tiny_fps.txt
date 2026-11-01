@@ -1,0 +1,3 @@
+# timecode format v1
+Assume 24
+0,1,1e-300

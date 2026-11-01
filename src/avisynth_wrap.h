@@ -32,6 +32,8 @@
 /// @ingroup video_input audio_input
 ///
 
+#pragma once
+
 #ifdef WITH_AVISYNTH
 
 #include <libaegisub/exception.h>

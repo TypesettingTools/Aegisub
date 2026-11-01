@@ -31,3 +31,5 @@
 /// @see dialog_paste_over.cpp
 /// @ingroup secondary_ui
 ///
+
+#pragma once

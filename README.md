@@ -22,7 +22,6 @@ There are a few optional dependencies that must be installed and on your PATH:
 1. msgfmt, to build the translations (installing from https://mlocati.github.io/articles/gettext-iconv-windows.html seems to be the easiest option)
 2. InnoSetup, to build the regular installer (iscc.exe on your PATH)
 3. 7zip, to build the regular installer (7z.exe on your PATH)
-4. Moonscript, to build the regular installer (moonc.exe on your PATH)
 
 All other dependencies are either stored in the repository or are included as submodules.
 
@@ -56,12 +55,26 @@ When compiling on Apple Silicon, replace `/usr/local` with `/opt/homebrew`.
 
 Once the dependencies are installed, build Aegisub with `meson build && meson compile -C build`.
 
-#### Build dmg
+#### Build a local DMG
+
+Homebrew bottles target the macOS release they were built for, which may be
+newer than Aegisub's default deployment target. For a local package, target
+the current macOS major release and explicitly request an ad-hoc signature.
+The resulting DMG is for development and personal use on that macOS release;
+release packages use CI's source-built dependencies and the
+[macOS release-signing process](docs/developer_docs.md#macos-release-signing).
 
 ```bash
-meson build_static -Ddefault_library=static -Dbuildtype=debugoptimized -Dbuild_osx_bundle=true -Dlocal_boost=true
+deployment_target="$(sw_vers -productVersion)"
+meson setup build_static \
+  -Ddefault_library=static \
+  -Dbuildtype=debugoptimized \
+  -Dbuild_osx_bundle=true \
+  -Dmacos_deployment_target="${deployment_target}" \
+  --force-fallback-for=boost
 meson compile -C build_static
 meson test -C build_static --verbose
+export AEGISUB_BUNDLE_SIGNATURE=-
 meson compile osx-bundle -C build_static
 meson compile osx-build-dmg -C build_static
 ```
@@ -110,7 +123,6 @@ meson install -C build --skip-subprojects luajit
 
 #### Packaging
 If you are packaging Aegisub for a Linux distribution, here are a few things you may need to know:
-- Aegisub cannot be built with LTO (See: https://github.com/TypesettingTools/Aegisub/issues/290).
 - Aegisub depends on LuaJIT and *requires* LuaJIT to be build with Lua 5.2 compatibility enabled.
   We are aware that most distributions do not compile LuaJIT with this flag, and that this complicates packaging for them, see https://github.com/TypesettingTools/Aegisub/issues/239 for a detailed discussion of the situation.
 

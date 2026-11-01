@@ -31,6 +31,8 @@
 /// @brief Construction-functions for timing controller objects
 /// @ingroup audio_ui
 
+#pragma once
+
 class AssDialogue;
 class AssFile;
 class AudioRenderingStyleRanges;

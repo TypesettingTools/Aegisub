@@ -103,6 +103,11 @@ AssParser::AssParser(AssFile *target, int version)
 
 AssParser::~AssParser() = default;
 
+void AssParser::FinishAttachment() {
+	target->Attachments.emplace_back(std::move(curr_attachment.data), curr_attachment.group);
+	curr_attachment.active = false;
+}
+
 void AssParser::ParseAttachmentLine(std::string const& data) {
 	bool is_filename = data.starts_with("fontname: ") || data.starts_with("filename: ");
 
@@ -116,15 +121,15 @@ void AssParser::ParseAttachmentLine(std::string const& data) {
 
 	// Data is over, add attachment to the file
 	if (!valid_data || is_filename) {
-		target->Attachments.push_back(*attach.release());
+		FinishAttachment();
 		AddLine(data);
 	}
 	else {
-		attach->AddData(data);
+		curr_attachment.data.append(data).append("\r\n");
 
 		// Done building
 		if (data.size() < 80)
-			target->Attachments.push_back(*attach.release());
+			FinishAttachment();
 	}
 }
 
@@ -187,13 +192,23 @@ void AssParser::ParseStyleLine(std::string const& data) {
 }
 
 void AssParser::ParseFontLine(std::string const& data) {
-	if (data.starts_with("fontname: "))
-		attach = std::make_unique<AssAttachment>(data, AssEntryGroup::FONT);
+	if (data.starts_with("fontname: ")) {
+		curr_attachment = {
+			.active = true,
+			.group = AssEntryGroup::FONT,
+			.data = data + "\r\n",
+		};
+	}
 }
 
 void AssParser::ParseGraphicsLine(std::string const& data) {
-	if (data.starts_with("filename: "))
-		attach = std::make_unique<AssAttachment>(data, AssEntryGroup::GRAPHIC);
+	if (data.starts_with("filename: ")) {
+		curr_attachment = {
+			.active = true,
+			.group = AssEntryGroup::GRAPHIC,
+			.data = data + "\r\n",
+		};
+	}
 }
 
 void AssParser::ParseExtradataLine(std::string const &rawdata) {
@@ -235,7 +250,7 @@ void AssParser::AddLine(std::string const& data) {
 	// Special-case for attachments since a line could theoretically be both a
 	// valid attachment data line and a valid section header, and if an
 	// attachment is in progress it needs to be treated as that
-	if (attach.get()) {
+	if (curr_attachment.active) {
 		ParseAttachmentLine(data);
 		return;
 	}

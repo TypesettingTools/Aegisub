@@ -32,6 +32,8 @@
 /// @ingroup custom_control
 ///
 
+#pragma once
+
 #include "tooltip_binding.h"
 
 #include <wx/bmpbndl.h>

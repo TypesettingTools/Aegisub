@@ -30,22 +30,61 @@
 #include "ass_attachment.h"
 #include "ass_file.h"
 #include "compat.h"
+#include "format.h"
 #include "help_button.h"
+#include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
 #include "options.h"
 #include "utils.h"
+
+#include <algorithm>
+#include <optional>
 
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/filedlg.h>
 #include <wx/dirdlg.h>
 #include <wx/listctrl.h>
+#include <wx/msgdlg.h>
 #include <wx/sizer.h>
 
 namespace {
+bool is_safe_attachment_filename(std::string const& filename) {
+	if (filename.empty() || filename == "." || filename == "..")
+		return false;
+	if (filename.find_first_of("/\\:") != std::string::npos)
+		return false;
+	if (std::any_of(filename.begin(), filename.end(), [](unsigned char c) { return c < 0x20; }))
+		return false;
+
+#ifdef _WIN32
+	if (filename.back() == ' ' || filename.back() == '.')
+		return false;
+
+	auto basename = filename.substr(0, filename.find('.'));
+	for (auto& c : basename) {
+		if (c >= 'a' && c <= 'z')
+			c -= 'a' - 'A';
+	}
+	if (basename == "CON" || basename == "PRN" || basename == "AUX" || basename == "NUL" || basename == "CLOCK$")
+		return false;
+	if (basename.size() == 4 && (basename.starts_with("COM") || basename.starts_with("LPT")) && basename[3] >= '1' && basename[3] <= '9')
+		return false;
+#endif
+
+	return true;
+}
+
+std::optional<agi::fs::path> attachment_destination(agi::fs::path const& directory, std::string const& filename) {
+	if (!is_safe_attachment_filename(filename))
+		return {};
+
+	return directory / agi::fs::path(filename);
+}
+
 struct DialogAttachments {
 	wxDialog d;
-	AssFile *ass;
+	agi::Context *c;
 
 	wxListView *listView;
 	wxButton *extractButton;
@@ -61,12 +100,12 @@ struct DialogAttachments {
 	void AttachFile(wxFileDialog &diag, wxString const& commit_msg);
 
 public:
-	DialogAttachments(wxWindow *parent, AssFile *ass);
+	DialogAttachments(agi::Context *c);
 };
 
-DialogAttachments::DialogAttachments(wxWindow *parent, AssFile *ass)
-: d(parent, -1, _("Attachment List"))
-, ass(ass)
+DialogAttachments::DialogAttachments(agi::Context *c)
+: d(c->parent, -1, _("Attachment List"))
+, c(c)
 {
 	d.SetIcons(GETICONS(attach_button));
 
@@ -111,7 +150,7 @@ void DialogAttachments::UpdateList() {
 	listView->InsertColumn(1, _("Size"), wxLIST_FORMAT_LEFT, 100);
 	listView->InsertColumn(2, _("Group"), wxLIST_FORMAT_LEFT, 100);
 
-	for (auto& attach : ass->Attachments) {
+	for (auto& attach : c->ass->Attachments) {
 		int row = listView->GetItemCount();
 		listView->InsertItem(row, to_wx(attach.GetFileName(true)));
 		listView->SetItem(row, 1, PrettySize(attach.GetSize()));
@@ -126,9 +165,9 @@ void DialogAttachments::AttachFile(wxFileDialog &diag, wxString const& commit_ms
 	diag.GetPaths(paths);
 
 	for (auto const& fn : paths)
-		ass->InsertAttachment(agi::fs::path(fn.wx_str()));
+		c->ass->InsertAttachment(agi::fs::path(fn.wx_str()));
 
-	ass->Commit(commit_msg, AssFile::COMMIT_ATTACHMENT);
+	c->ass->Commit(commit_msg, AssFile::COMMIT_ATTACHMENT);
 
 	UpdateList();
 }
@@ -163,10 +202,14 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 	if (listView->GetNextSelected(i) != -1)
 		path = wxDirSelector(_("Select the path to save the files to:"), to_wx(OPT_GET("Path/Fonts Collector Destination")->GetString())).utf8_str().data();
 	else {
+		auto default_filename = c->ass->Attachments[i].GetFileName();
+		if (!is_safe_attachment_filename(default_filename))
+			default_filename = "attachment";
 		path = SaveFileSelector(
+			c,
 			_("Select the path to save the file to:"),
 			"Path/Fonts Collector Destination",
-			ass->Attachments[i].GetFileName(),
+			default_filename,
 			"", from_wx(_("All Supported Formats") + " (*.bmp, *.gif, *.jpg, *.ico, *.ttf, *.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.ttf;*.wmf|" +  _("Font Files") + " (*.ttf)|*.ttf|" + _("Graphic Files") + " (*.bmp, *.gif, *.jpg, *.ico, *.wmf)|*.bmp;*.gif;*.jpg;*.ico;*.wmf"),
 			&d);
 		fullPath = true;
@@ -175,18 +218,34 @@ void DialogAttachments::OnExtract(wxCommandEvent &) {
 
 	// Loop through items in list
 	while (i != -1) {
-		auto& attach = ass->Attachments[i];
-		attach.Extract(fullPath ? path : path/attach.GetFileName());
-		i = listView->GetNextSelected(i);
+		auto& attach = c->ass->Attachments[i];
+		auto next = listView->GetNextSelected(i);
+		auto destination = fullPath ? std::optional<agi::fs::path>(path) : attachment_destination(path, attach.GetFileName());
+		if (!destination) {
+			wxMessageBox(
+				fmt_tl("The attachment \"%s\" was not extracted because its filename is unsafe.", to_wx(attach.GetFileName(true))),
+				_("Attachment not extracted"), wxOK | wxICON_WARNING | wxCENTRE, &d);
+			i = next;
+			continue;
+		}
+		if (!fullPath && agi::fs::Exists(*destination) &&
+			wxMessageBox(
+				fmt_tl("The file \"%s\" already exists. Do you want to replace it?", destination->wstring()),
+				_("Replace existing file?"), wxYES_NO | wxNO_DEFAULT | wxICON_WARNING | wxCENTRE, &d) != wxYES) {
+			i = next;
+			continue;
+		}
+		attach.Extract(*destination);
+		i = next;
 	}
 }
 
 void DialogAttachments::OnDelete(wxCommandEvent &) {
 	size_t removed = 0;
 	for (auto i = listView->GetFirstSelected(); i != -1; i = listView->GetNextSelected(i))
-		ass->Attachments.erase(ass->Attachments.begin() + i - removed++);
+		c->ass->Attachments.erase(c->ass->Attachments.begin() + i - removed++);
 
-	ass->Commit(_("remove attachment"), AssFile::COMMIT_ATTACHMENT);
+	c->ass->Commit(_("remove attachment"), AssFile::COMMIT_ATTACHMENT);
 
 	UpdateList();
 	extractButton->Enable(false);
@@ -200,6 +259,6 @@ void DialogAttachments::OnListClick(wxListEvent &) {
 }
 }
 
-void ShowAttachmentsDialog(wxWindow *parent, AssFile *file) {
-	DialogAttachments(parent, file).d.ShowModal();
+void ShowAttachmentsDialog(agi::Context *c) {
+	DialogAttachments(c).d.ShowModal();
 }

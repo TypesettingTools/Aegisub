@@ -109,8 +109,33 @@ std::map<int, std::string> FFmpegSourceProvider::GetTracksOfType(FFMS_Indexer *I
 
 	for (int i=0; i<NumTracks; i++) {
 		if (FFMS_GetTrackTypeI(Indexer, i) == Type) {
-			if (auto CodecName = FFMS_GetCodecNameI(Indexer, i))
-				TrackList[i] = CodecName;
+			std::string TrackDescription = "";
+
+			bool FirstEntry = true;
+			auto Append = [&](const std::string& part) {
+				if (!FirstEntry)
+					TrackDescription += " - ";
+				TrackDescription += part;
+				FirstEntry = false;
+			};
+
+			const char* CodecName = FFMS_GetCodecNameI(Indexer, i);
+			const char* Language = NULL;
+			const char* Title = NULL;
+
+#if FFMS_VERSION >= 0x5010200
+			Language = FFMS_GetTrackMetadataI(Indexer, i, "language");
+			Title = FFMS_GetTrackMetadataI(Indexer, i, "title");
+#endif
+
+			if (CodecName)
+				Append(CodecName);
+			if (Language)
+				Append("[" + std::string(Language) + "]");
+			if (Title)
+				Append(Title);
+
+			TrackList[i] = TrackDescription;
 		}
 	}
 	return TrackList;
@@ -182,9 +207,11 @@ agi::fs::path FFmpegSourceProvider::GetCacheFilename(agi::fs::path const& filena
 	// Get the size of the file to be hashed
 	uintmax_t len = agi::fs::Size(filename);
 
-	// Get the hash of the filename
+	// collapse ../ so the same file reached via different relative paths shares one index
+	auto key = filename.lexically_normal().string();
+
 	boost::crc_32_type hash;
-	hash.process_bytes(filename.string().c_str(), filename.string().size());
+	hash.process_bytes(key.c_str(), key.size());
 
 	// Generate the filename
 	auto modified_time = std::chrono::duration_cast<std::chrono::seconds>(agi::fs::ModifiedTime(filename).time_since_epoch()).count();

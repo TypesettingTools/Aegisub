@@ -61,6 +61,19 @@ TEST(lagi_line, int) {
 	expect_eq<int>("1.0\n2.0\n3.0\n4.0", 1, 2, 3, 4);
 	expect_eq<int>(" 0x16 \n 09 \n -2", 0, 9, -2);
 }
+TEST(lagi_line, many_invalid_ints) {
+	std::string input;
+	for (int i = 0; i < 100000; ++i)
+		input += "invalid\n";
+	input += "42";
+
+	std::stringstream stream(input);
+	agi::line_iterator<int> iter(stream);
+	ASSERT_FALSE(iter == end(iter));
+	EXPECT_EQ(42, *iter);
+	EXPECT_NO_THROW(++iter);
+	EXPECT_EQ(iter, end(iter));
+}
 TEST(lagi_line, double) {
 	expect_eq<double>("1.0\n2.0", 1.0, 2.0);
 	expect_eq<double>("#1.0\n\t2.5", 2.5);

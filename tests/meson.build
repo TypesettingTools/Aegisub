@@ -32,6 +32,7 @@ tests_src = [
     'tests/inline_string_encoding.cpp',
     'tests/karaoke_matcher.cpp',
     'tests/keyframe.cpp',
+    'tests/language_match.cpp',
     'tests/line_iterator.cpp',
     'tests/line_wrap.cpp',
     'tests/lyrics_import_test.cpp',

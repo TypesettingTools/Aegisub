@@ -6,7 +6,10 @@ param (
     [string]$BuildRoot,
     [Parameter(Position = 1, Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [string]$SourceRoot
+    [string]$SourceRoot,
+    [Parameter(Position = 2)]
+    [ValidateSet('x64', 'arm64')]
+    [string]$Architecture = 'x64'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -38,7 +41,13 @@ Write-Host "SOURCE_ROOT=$SourceRoot"
 $InstallerDir = Join-Path $BuildRoot "install"
 $InstallerDepsDir = Join-Path $BuildRoot "installer-deps"
 $PortableOutputDir = Join-Path $BuildRoot "aegisub-portable"
-$PortableZipPath = Join-Path $BuildRoot "aegisub-portable-64.zip"
+$GitVersionHeader = Join-Path $BuildRoot 'git_version.h'
+$GitVersionMatch = Select-String -Path $GitVersionHeader -Pattern '^#define BUILD_GIT_VERSION_STRING "(.+)"$' | Select-Object -First 1
+if (-not $GitVersionMatch) {
+    throw "Could not read BUILD_GIT_VERSION_STRING from $GitVersionHeader"
+}
+$GitVersion = $GitVersionMatch.Matches[0].Groups[1].Value
+$PortableZipPath = Join-Path $BuildRoot "Aegisub-$GitVersion-$Architecture-portable.zip"
 
 Write-Step 'Removing previous output'
 Remove-Item -LiteralPath $PortableOutputDir -Force -Recurse -ErrorAction SilentlyContinue
@@ -64,10 +73,12 @@ Copy-ToDirectory $InstallerDepsDir\dictionaries\en_US.dic  $PortableOutputDir\di
 # Copy-ToDirectory $InstallerDepsDir\AvisynthPlus64\x64\Output\plugins\DirectShowSource.dll  $PortableOutputDir
 
 Write-Step 'Copying VSFilter'
-Copy-ToDirectory $InstallerDepsDir\VSFilter\x64\VSFilter.dll  $PortableOutputDir\csri
+if ($Architecture -eq 'x64') {
+    Copy-ToDirectory $InstallerDepsDir\VSFilter\x64\VSFilter.dll  $PortableOutputDir\csri
+}
 
 Write-Step 'Copying VC++ runtime'
-Copy-ToDirectory $InstallerDepsDir\VC_redist\VC_redist.x64.exe $PortableOutputDir\Microsoft.CRT
+Copy-ToDirectory "$InstallerDepsDir\VC_redist\VC_redist.$Architecture.exe" $PortableOutputDir\Microsoft.CRT
 
 Write-Step 'Copying automation'
 Copy-ToDirectory "$InstallerDir\share\aegisub\automation\*"  "$PortableOutputDir\automation\"  -Recurse

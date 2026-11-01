@@ -32,6 +32,8 @@
 /// @ingroup scripting
 ///
 
+#pragma once
+
 #include "auto4_base.h"
 
 namespace Automation4 {

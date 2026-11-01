@@ -17,6 +17,8 @@
 /// @see preferences_base.cpp
 /// @ingroup configuration_ui
 
+#pragma once
+
 #include <wx/panel.h>
 #include <wx/scrolwin.h>
 

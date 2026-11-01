@@ -32,6 +32,8 @@
 /// @ingroup audio_output
 ///
 
+#pragma once
+
 #ifdef WITH_PORTAUDIO
 
 #include "include/aegisub/audio_player.h"

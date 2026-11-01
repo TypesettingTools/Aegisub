@@ -53,6 +53,7 @@
 #include "subs_controller.h"
 #include "video_controller.h"
 #include "utils.h"
+#include "version.h"
 
 #include <libaegisub/dispatch.h>
 #include <libaegisub/lua/ffi.h>
@@ -113,6 +114,20 @@ namespace {
 		else
 			lua_pushnil(L);
 		return 1;
+	}
+
+	/// Push the table for aegisub.version
+	void push_version(lua_State *L)
+	{
+		lua_createtable(L, 0, 5);
+		set_field(L, "string", GetVersionNumber());
+		auto numbers = GetVersionNumbers();
+		set_field(L, "major", numbers[0]);
+		set_field(L, "minor", numbers[1]);
+		set_field(L, "patch", numbers[2]);
+		// Unknown when built from a shallow clone
+		if (int build = GetSVNRevision())
+			set_field(L, "build", build);
 	}
 
 	int get_translation(lua_State *L)
@@ -483,7 +498,7 @@ namespace {
 
 		// Replace the default lua module loader with our unicode compatible
 		// one and set the module search path
-		if (!Install(L, include_path)) {
+		if (!Install(L, include_path, config::path->Decode("?data/automation/include/"))) {
 			description = get_string_or_default(L, 1);
 			lua_pop(L, 1);
 			return;
@@ -504,7 +519,7 @@ namespace {
 
 		// make "aegisub" table
 		lua_pushstring(L, "aegisub");
-		lua_createtable(L, 0, 13);
+		lua_createtable(L, 0, 14);
 
 		set_field<LuaCommand::LuaRegister>(L, "register_macro");
 		set_field<LuaExportFilter::LuaRegister>(L, "register_filter");
@@ -516,6 +531,8 @@ namespace {
 		set_field<decode_path>(L, "decode_path");
 		set_field<cancel_script>(L, "cancel");
 		set_field(L, "lua_automation_version", 4);
+		push_version(L);
+		lua_setfield(L, -2, "version");
 		set_field<clipboard_init>(L, "__init_clipboard");
 		set_field<raise_warning_onload>(L, "__raise_warning");
 		set_field<get_file_name>(L, "file_name");
@@ -664,10 +681,13 @@ namespace {
 			return error(L, "Lua include not found: %s", filename.c_str());
 
 		if (!LoadFile(L, filepath))
-			return error(L, "Error loading Lua include \"%s\":\n%s", filename.c_str(), check_string(L, 1).c_str());
+			return error(L, "Error loading Lua include \"%s\":\n%s", filename.c_str(), check_string(L, -1).c_str());
 
 		int pretop = lua_gettop(L) - 1; // don't count the function value itself
-		lua_call(L, 0, LUA_MULTRET);
+
+		if (lua_pcall(L, 0, LUA_MULTRET, 0))
+			return error(L, "Error running Lua include \"%s\":\n%s", filename.c_str(), check_string(L, -1).c_str());
+
 		return lua_gettop(L) - pretop;
 	}
 

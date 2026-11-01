@@ -18,6 +18,8 @@
 /// @see persist_location.cpp
 /// @ingroup utility
 
+#pragma once
+
 namespace agi { class OptionValue; }
 class wxDialog;
 class wxMoveEvent;

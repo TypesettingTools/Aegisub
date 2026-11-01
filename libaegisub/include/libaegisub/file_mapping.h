@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <boost/interprocess/detail/os_file_functions.hpp>
 
 #ifdef _WIN32

@@ -16,6 +16,8 @@
 /// @brief Dynamic toolbar generator.
 /// @ingroup menu toolbar
 
+#pragma once
+
 #include <string>
 
 namespace agi { struct Context; }

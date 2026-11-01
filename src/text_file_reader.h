@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <libaegisub/line_iterator.h>
 #include <libaegisub/fs.h>
 

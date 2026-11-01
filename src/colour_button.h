@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <wx/button.h>
 
 #include <libaegisub/color.h>

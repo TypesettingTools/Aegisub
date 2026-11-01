@@ -47,6 +47,7 @@
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/algorithm.hpp>
+#include <algorithm>
 #include <cfloat>
 #include <unordered_map>
 
@@ -458,9 +459,25 @@ namespace Automation4 {
 		window = new wxPanel(parent);
 
 		auto s = new wxGridBagSizer(4, 4);
-		for (auto& c : controls)
-			s->Add(c->Create(window), wxGBPosition(c->y, c->x),
+		for (auto& c : controls) {
+			auto wxc = c->Create(window);
+			auto minsize = wxc->GetEffectiveMinSize();
+
+			// Older wxWidgets widgets version (v3.2.11 / v3.3.3 and earlier; before their f4a588c01225ad24a0794a7855901b386f1e5e36)
+			// would give (almost) every row/column of a wxGridBagSizer a minimum height/width, even if it was only spanned by some multi-row/column control.
+			// Existing automation scripts rely on this behavior since it it the only reasonable way they can control the on-screen height of dialog controls.
+			//
+			// Newer wxWidgets versions only apply the EmptyCellSize to genuinely empty rows/columns, so we (approximately) emulate the previous behavior
+			// by setting the minimum size of every control based on its row/column count.
+
+			wxc->SetMinSize(wxSize(
+					std::max(minsize.GetWidth(), s->GetEmptyCellSize().GetWidth() * c->width),
+					std::max(minsize.GetHeight(), s->GetEmptyCellSize().GetHeight() * c->height)
+				));
+
+			s->Add(wxc, wxGBPosition(c->y, c->x),
 				wxGBSpan(c->height, c->width), c->GetSizerFlags());
+		}
 
 		if (!use_buttons) {
 			window->SetSizerAndFit(s);

@@ -16,6 +16,8 @@
 /// @brief Windows-specific charset conversion stuff
 /// @ingroup libaegisub windows
 
+#pragma once
+
 #include <libaegisub/charset_conv.h>
 
 #include <string_view>

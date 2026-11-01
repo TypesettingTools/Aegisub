@@ -1,0 +1,89 @@
+name: Sign Windows executable
+
+# Signs the .exe in an artifact using Azure Artifact Signing. This is the only
+# place with access to the signing identity, so it doesn't check out or run any
+# repository code.
+
+on:
+  workflow_call:
+    inputs:
+      artifact:
+        description: Artifact containing the .exe to sign
+        required: true
+        type: string
+      signed-artifact:
+        description: Name of the artifact to upload the signed .exe as
+        required: true
+        type: string
+
+jobs:
+  sign:
+    name: Sign
+    runs-on: windows-latest
+    environment: release
+    permissions:
+      id-token: write
+    steps:
+      # Pinned, as these actions have access to the signing identity
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: ${{ inputs.artifact }}
+          path: files
+
+      - name: Check input
+        run: |
+          $files = @(Get-ChildItem -LiteralPath files -Recurse -File)
+          if ($files.Count -ne 1 -or $files[0].Extension -ne '.exe') {
+            throw "Expected exactly one .exe to sign, got: $($files.Name -join ', ')"
+          }
+
+      - uses: azure/login@a641126d1b8aa4d1fa005f4f92df94a3a4c4c906 # v3.1.0
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          # The signing identity only has a role on the certificate profile
+          allow-no-subscriptions: true
+
+      - uses: azure/artifact-signing-action@c7ab2a863ab5f9a846ddb8265964877ef296ee82 # v2.0.0
+        with:
+          endpoint: ${{ vars.ARTIFACT_SIGNING_ENDPOINT }}
+          signing-account-name: ${{ vars.ARTIFACT_SIGNING_ACCOUNT }}
+          certificate-profile-name: ${{ vars.ARTIFACT_SIGNING_PROFILE }}
+          files-folder: ${{ github.workspace }}\files
+          files-folder-filter: exe
+          files-folder-recurse: true
+          file-digest: SHA256
+          timestamp-rfc3161: http://timestamp.acs.microsoft.com
+          timestamp-digest: SHA256
+          description: Aegisub
+          description-url: https://aegisub.org/
+          cache-dependencies: false
+          # Only use the azure/login session above
+          exclude-environment-credential: true
+          exclude-workload-identity-credential: true
+          exclude-managed-identity-credential: true
+          exclude-shared-token-cache-credential: true
+          exclude-visual-studio-credential: true
+          exclude-visual-studio-code-credential: true
+          exclude-azure-cli-credential: false
+          exclude-azure-powershell-credential: true
+          exclude-azure-developer-cli-credential: true
+          exclude-interactive-browser-credential: true
+
+      - name: Verify signature
+        env:
+          EXPECTED_PUBLISHER: ${{ vars.ARTIFACT_SIGNING_PUBLISHER }}
+        run: |
+          $file = Get-ChildItem -LiteralPath files -Recurse -File
+          $signature = Get-AuthenticodeSignature -LiteralPath $file.FullName
+          Write-Host "$($file.Name): $($signature.Status), signed by $($signature.SignerCertificate.Subject)"
+          if ($signature.Status -ne 'Valid') { throw "$($file.Name) is not validly signed" }
+          if (-not $signature.TimeStamperCertificate) { throw "$($file.Name) is not timestamped" }
+          $publisher = $signature.SignerCertificate.GetNameInfo('SimpleName', $false)
+          if ($publisher -ne $env:EXPECTED_PUBLISHER) { throw "$($file.Name) is signed by '$publisher', expected '$env:EXPECTED_PUBLISHER'" }
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ${{ inputs.signed-artifact }}
+          path: files
+          if-no-files-found: error

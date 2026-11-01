@@ -241,7 +241,7 @@ void ResampleResolution(AssFile *ass, ResampleSettings settings) {
 	ass->GetLayoutResolution(lrx, lry);
 
 	if (lrx != 0 && lry != 0) {
-		new_lry = lry + std::round(lry * (settings.margin[TOP] + settings.margin[BOTTOM]) / double(settings.source_x));
+		new_lry = lry + std::round(lry * (settings.margin[TOP] + settings.margin[BOTTOM]) / double(settings.source_y));
 
 		new_lrx = std::round(lrx * (double(new_lry) / double(lry)) * (double(settings.dest_x) / double(settings.dest_y)) / (double(settings.source_x) / double(settings.source_y)));
 	}

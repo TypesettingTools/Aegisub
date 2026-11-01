@@ -14,6 +14,8 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
+#pragma once
+
 #include <libaegisub/color.h>
 
 #include <functional>
@@ -60,7 +62,7 @@ std::string CreateDummyVideo(wxWindow *parent);
 bool ShowPasteOverDialog(wxWindow *parent);
 bool ShowPlainTextImportDialog();
 void ShowAboutDialog(wxWindow *parent);
-void ShowAttachmentsDialog(wxWindow *parent, AssFile *file);
+void ShowAttachmentsDialog(agi::Context *c);
 void ShowAutomationDialog(agi::Context *c);
 void ShowExportDialog(agi::Context *c);
 void ShowFontsCollectorDialog(agi::Context *c);

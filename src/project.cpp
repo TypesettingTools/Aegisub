@@ -23,6 +23,7 @@
 #include "audio_provider_factory.h"
 #include "base_grid.h"
 #include "charset_detect.h"
+#include "audio_provider_factory.h"
 #include "compat.h"
 #include "dialog_progress.h"
 #include "dialogs.h"
@@ -31,11 +32,13 @@
 #include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"
 #include "options.h"
+#include "provider_file_formats.h"
 #include "selection_controller.h"
 #include "subs_controller.h"
 #include "utils.h"
 #include "video_controller.h"
 #include "video_display.h"
+#include "video_provider_manager.h"
 
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/format_path.h>
@@ -45,6 +48,7 @@
 #include <libaegisub/path.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <cmath>
 #include <wx/msgdlg.h>
 
 Project::Project(agi::Context *c) : context(c) {
@@ -232,6 +236,43 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 			return;
 	}
 
+	auto is_linked_avisynth = [](agi::fs::path const& linked, agi::fs::path const& current) {
+		return linked != current && agi::fs::HasExtension(linked, "avs");
+	};
+	bool avisynth_audio = is_linked_avisynth(audio, audio_file);
+	bool avisynth_video = is_linked_avisynth(video, video_file);
+	if (avisynth_audio || avisynth_video) {
+		wxString script_list;
+		if (avisynth_audio) {
+			script_list += "\n    ";
+			script_list += audio.wstring();
+		}
+		if (avisynth_video && (!avisynth_audio || video != audio)) {
+			script_list += "\n    ";
+			script_list += video.wstring();
+		}
+
+		bool multiple_scripts = avisynth_audio && avisynth_video && audio != video;
+		wxString message = multiple_scripts
+			? _("The subtitle file references AviSynth scripts. AviSynth scripts can execute arbitrary code with your user permissions. Only load them if you trust the subtitle's author. You do not need to load these scripts to view or edit this subtitle file.\n\nScripts:")
+			: _("The subtitle file references an AviSynth script. AviSynth scripts can execute arbitrary code with your user permissions. Only load it if you trust the subtitle's author. You do not need to load this script to view or edit this subtitle file.\n\nScript:");
+		message += script_list;
+		message += multiple_scripts
+			? _("\n\nDo you want to load these scripts now?")
+			: _("\n\nDo you want to load this script now?");
+
+		wxMessageDialog dlg(
+			context->parent, message, _("Load linked AviSynth script?"),
+			wxYES_NO | wxNO_DEFAULT | wxICON_WARNING | wxCENTRE);
+		dlg.SetYesNoLabels(_("Trust author && load"), _("Do not load"));
+		if (dlg.ShowModal() != wxID_YES) {
+			if (avisynth_audio)
+				audio = audio_file;
+			if (avisynth_video)
+				video = video_file;
+		}
+	}
+
 	bool loaded_video = false;
 	if (video != video_file) {
 		if (video.empty())
@@ -241,10 +282,23 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 			vc->JumpToFrame(properties.video_position);
 
 			auto ar_mode = static_cast<AspectRatio>(properties.ar_mode);
-			if (ar_mode == AspectRatio::Custom)
-				vc->SetAspectRatio(properties.ar_value);
-			else
-				vc->SetAspectRatio(ar_mode);
+			switch (ar_mode) {
+				case AspectRatio::Default:
+				case AspectRatio::Fullscreen:
+				case AspectRatio::Widescreen:
+				case AspectRatio::Cinematic:
+					vc->SetAspectRatio(ar_mode);
+					break;
+				case AspectRatio::Custom:
+					if (std::isfinite(properties.ar_value))
+						vc->SetAspectRatio(properties.ar_value);
+					else
+						vc->SetAspectRatio(AspectRatio::Default);
+					break;
+				default:
+					vc->SetAspectRatio(AspectRatio::Default);
+					break;
+			}
 			context->videoDisplay->SetWindowZoom(properties.video_zoom);
 		}
 	}
@@ -434,31 +488,6 @@ void Project::CloseKeyframes() {
 void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	// Keep these lists sorted
 
-	// Video formats
-	const char *videoList[] = {
-		".asf",
-		".avi",
-		".avs",
-		".d2v",
-		".h264",
-		".hevc",
-		".m2ts",
-		".m4v",
-		".mkv",
-		".mov",
-		".mp4",
-		".mpeg",
-		".mpg",
-		".ogm",
-		".rm",
-		".rmvb",
-		".ts",
-		".webm",
-		".wmv",
-		".y4m",
-		".yuv"
-	};
-
 	// Subtitle formats
 	const char *subsList[] = {
 		".ass",
@@ -471,28 +500,10 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 		".ttxt"
 	};
 
-	// Audio formats
-	const char *audioList[] = {
-		".aac",
-		".ac3",
-		".ape",
-		".dts",
-		".eac3",
-		".flac",
-		".m4a",
-		".mka",
-		".mp3",
-		".ogg",
-		".opus",
-		".w64",
-		".wav",
-		".wma"
-	};
-
-	auto search = [](const char **begin, const char **end, std::string const& str) {
-		return std::binary_search(begin, end, str.c_str(), [](const char *a, const char *b) {
-			return strcmp(a, b) < 0;
-		});
+	auto video_formats = VideoProviderFactory::GetFileExtensions();
+	auto audio_formats = GetAudioProviderFileExtensions();
+	auto search = [](auto const& formats, std::string const& str) {
+		return std::binary_search(formats.begin(), formats.end(), str);
 	};
 
 	agi::fs::path audio, video, subs, timecodes, keyframes;
@@ -526,11 +537,11 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 			continue;
 		}
 
-		if (subs.empty() && search(std::begin(subsList), std::end(subsList), ext))
+		if (subs.empty() && std::binary_search(std::begin(subsList), std::end(subsList), ext.c_str(), [](const char *a, const char *b) { return strcmp(a, b) < 0; }))
 			subs = file;
-		if (video.empty() && search(std::begin(videoList), std::end(videoList), ext))
+		if (video.empty() && search(video_formats, ext))
 			video = file;
-		if (audio.empty() && search(std::begin(audioList), std::end(audioList), ext))
+		if (audio.empty() && search(audio_formats, ext))
 			audio = file;
 	}
 

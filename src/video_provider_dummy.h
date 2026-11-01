@@ -32,6 +32,8 @@
 /// @ingroup video_input
 ///
 
+#pragma once
+
 #include "include/aegisub/video_provider.h"
 
 #include <optional>

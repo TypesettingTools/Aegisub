@@ -32,6 +32,8 @@
 /// @ingroup main_ui
 ///
 
+#pragma once
+
 #include <memory>
 #include <wx/dialog.h>
 

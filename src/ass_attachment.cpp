@@ -26,11 +26,16 @@
 // Out-of-line to anchor vtable
 AssEntryGroup AssAttachment::Group() const { return group; }
 
-AssAttachment::AssAttachment(std::string const& header, AssEntryGroup group)
-: entry_data(header + "\r\n")
-, filename(header.substr(10))
+AssAttachment::AssAttachment(std::string const& data, AssEntryGroup group)
+: entry_data(data)
 , group(group)
 {
+	std::string filename_str = data.substr(10);
+	const auto pos = filename_str.find("\r\n");
+	if (pos != std::string::npos)
+		filename_str.resize(pos);
+
+	filename = filename_str;
 }
 
 AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
@@ -49,14 +54,16 @@ AssAttachment::AssAttachment(agi::fs::path const& name, AssEntryGroup group)
 }
 
 size_t AssAttachment::GetSize() const {
-	auto header_end = entry_data.get().find('\n');
-	return entry_data.get().size() - header_end - 1;
+	auto const& data = entry_data.get();
+	auto header_end = data.find('\n');
+	return data.size() - header_end - 1;
 }
 
 void AssAttachment::Extract(agi::fs::path const& filename) const {
-	auto header_end = entry_data.get().find('\n');
-	auto decoded = agi::ass::UUDecode(entry_data.get().c_str() + header_end + 1, &entry_data.get().back() + 1);
-	agi::io::Save(filename, true).Get().write(&decoded[0], decoded.size());
+	auto const& data = entry_data.get();
+	auto header_end = data.find('\n');
+	auto decoded = agi::ass::UUDecode(data.c_str() + header_end + 1, &data.back() + 1);
+	agi::io::Save(filename, true).Get().write(decoded.data(), decoded.size());
 }
 
 std::string AssAttachment::GetFileName(bool raw) const {

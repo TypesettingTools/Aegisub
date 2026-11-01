@@ -16,6 +16,8 @@
 /// @brief A charset converter for ISO-6937-2
 /// @ingroup libaegisub
 
+#pragma once
+
 #include <libaegisub/charset_conv.h>
 #include <memory>
 

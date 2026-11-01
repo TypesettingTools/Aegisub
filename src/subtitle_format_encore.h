@@ -32,6 +32,8 @@
 /// @ingroup subtitle_io
 ///
 
+#pragma once
+
 #include "subtitle_format.h"
 
 class EncoreSubtitleFormat final : public SubtitleFormat {

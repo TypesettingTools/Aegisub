@@ -32,6 +32,8 @@
 /// @ingroup subs_storage
 ///
 
+#pragma once
+
 #include <memory>
 #include <vector>
 

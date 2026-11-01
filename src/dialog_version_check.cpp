@@ -169,9 +169,9 @@ void PostErrorEvent(bool interactive, wxString const& error_text) {
 	}
 }
 
-static const char * GetOSShortName() {
-	int osver_maj, osver_min;
-	wxOperatingSystemId osid = wxGetOsVersion(&osver_maj, &osver_min);
+static std::string GetOSShortName() {
+	int osver_maj, osver_min, osver_micro;
+	wxOperatingSystemId osid = wxGetOsVersion(&osver_maj, &osver_min, &osver_micro);
 
 	if (osid & wxOS_WINDOWS_NT) {
 		if (osver_maj == 5 && osver_min == 0)
@@ -188,22 +188,15 @@ static const char * GetOSShortName() {
 			return "win62"; // 8 and server 2012
 		else if (osver_maj == 6 && osver_min == 3)
 			return "win63"; // 8.1 and server 2012r2
+		else if (osver_maj == 10 && osver_min == 0 && osver_micro >= 22000)
+			return "win11"; // 11 and server 2025; micro is the build number
 		else if (osver_maj == 10 && osver_min == 0)
-			return "win10"; // 10 or 11 and server 2016/2019
+			return "win10"; // 10 and server 2016/2019/2022
 		else
 			return "windows"; // future proofing? I doubt we run on nt4
 	}
-	// CF returns 0x10 for some reason, which wx has recently started
-	// turning into 10
-	else if (osid & wxOS_MAC_OSX_DARWIN && (osver_maj == 0x10 || osver_maj == 10)) {
-		// ugliest hack in the world? nah.
-		static char osxstring[] = "osx00";
-		char minor = osver_min >> 4;
-		char patch = osver_min & 0x0F;
-		osxstring[3] = minor + ((minor<=9) ? '0' : ('a'-1));
-		osxstring[4] = patch + ((patch<=9) ? '0' : ('a'-1));
-		return osxstring;
-	}
+	else if (osid & wxOS_MAC_OSX_DARWIN)
+		return agi::format("osx%d.%d", osver_maj, osver_min); // e.g. osx10.15, osx15.6
 	else if (osid & wxOS_UNIX_LINUX)
 		return "linux";
 	else if (osid & wxOS_UNIX_FREEBSD)

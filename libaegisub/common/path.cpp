@@ -112,7 +112,9 @@ fs::path Path::MakeAbsolute(fs::path path, std::string_view token) const {
 	path.make_preferred();
 	if (IsDummyPath(path))
 		return path;
-	return (paths[idx].empty() || path.is_absolute()) ? path : paths[idx]/path;
+	if (!paths[idx].empty() && !path.is_absolute())
+		path = paths[idx]/path;
+	return path.lexically_normal();
 }
 
 std::string Path::Encode(fs::path const& path) const {
