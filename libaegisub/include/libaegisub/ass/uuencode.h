@@ -17,12 +17,13 @@
 #pragma once
 
 #include <string>
+#include <span>
 #include <vector>
 
 namespace agi::ass {
 /// Encode a blob of data, using ASS's nonstandard variant
-std::string UUEncode(const char *begin, const char *end, bool insert_linebreaks=true);
+std::string UUEncode(std::span<const char> data, bool insert_linebreaks=true);
 
 /// Decode an ASS uuencoded string
-std::vector<char> UUDecode(const char *begin, const char *end);
+std::vector<char> UUDecode(std::span<const char> data);
 }

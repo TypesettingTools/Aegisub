@@ -137,12 +137,12 @@ read_file_mapping::read_file_mapping(agi::fs::path const& filename)
 
 read_file_mapping::~read_file_mapping() = default;
 
-const char *read_file_mapping::read() {
+std::span<const char> read_file_mapping::read() {
 	return read(0, size());
 }
 
-const char *read_file_mapping::read(int64_t offset, uint64_t length) {
-	return map(offset, length, read_only, file_size, file, region, mapping_start);
+std::span<const char> read_file_mapping::read(int64_t offset, uint64_t length) {
+	return {map(offset, length, read_only, file_size, file, region, mapping_start), length};
 }
 
 temp_file_mapping::temp_file_mapping(agi::fs::path const& filename, uint64_t size)
@@ -171,8 +171,8 @@ temp_file_mapping::temp_file_mapping(agi::fs::path const& filename, uint64_t siz
 
 temp_file_mapping::~temp_file_mapping() = default;
 
-const char *temp_file_mapping::read(int64_t offset, uint64_t length) {
-	return map(offset, length, read_only, file_size, file, read_region, read_mapping_start);
+std::span<const char> temp_file_mapping::read(int64_t offset, uint64_t length) {
+	return {map(offset, length, read_only, file_size, file, read_region, read_mapping_start), length};
 }
 
 char *temp_file_mapping::write(int64_t offset, uint64_t length) {

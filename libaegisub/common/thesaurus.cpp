@@ -28,7 +28,8 @@ Thesaurus::Thesaurus(agi::fs::path const& dat_path, agi::fs::path const& idx_pat
 : dat(std::make_unique<read_file_mapping>(dat_path))
 {
 	read_file_mapping idx_file(idx_path);
-	boost::interprocess::ibufferstream idx(idx_file.read(), static_cast<size_t>(idx_file.size()));
+	std::span<const char> idx_span = idx_file.read();
+	boost::interprocess::ibufferstream idx(idx_span.data(), idx_span.size());
 
 	std::string encoding_name;
 	getline(idx, encoding_name);
@@ -55,18 +56,20 @@ std::vector<Thesaurus::Entry> Thesaurus::Lookup(std::string_view word) {
 	if (it == offsets.end()) return out;
 	if (it->second >= dat->size()) return out;
 
-	auto len = dat->size() - it->second;
-	auto buff = dat->read(it->second, len);
-	auto buff_end = buff + len;
+	auto buff = dat->read(it->second, dat->size() - it->second);
 
 	std::string temp;
 	auto read_line = [&]() -> std::string_view {
-		auto start = buff;
-		auto end = std::find(buff, buff_end, '\n');
-		buff = end < buff_end ? end + 1 : buff_end;
-		if (end > start && end[-1] == '\r') --end;
+		auto end = std::ranges::find(buff, '\n');
+		auto newbuff = buff.subspan(std::min(std::ssize(buff), std::distance(buff.begin(), end) + 1));
+
+		if (end > buff.begin() && end[-1] == '\r') --end;
+
 		temp.clear();
-		conv->Convert(std::string_view(start, end - start), temp);
+		conv->Convert(std::string_view(buff.begin(), end), temp);
+
+		buff = newbuff;
+
 		return temp;
 	};
 

@@ -48,16 +48,14 @@ namespace agi::lua {
 
 		agi::read_file_mapping file(filename);
 		auto buff = file.read();
-		auto size = static_cast<size_t>(file.size());
 
 		// Discard the BOM if present
-		if (size >= 3 && buff[0] == '\xef' && buff[1] == '\xbb' && buff[2] == '\xbf') {
-			buff += 3;
-			size -= 3;
+		if (buff.size() >= 3 && buff[0] == '\xef' && buff[1] == '\xbb' && buff[2] == '\xbf') {
+			buff = buff.subspan(3);
 		}
 
 		if (!agi::fs::HasExtension(filename, "moon"))
-			return luaL_loadbuffer(L, buff, size, filename.string().c_str()) == 0;
+			return luaL_loadbuffer(L, buff.data(), buff.size(), filename.string().c_str()) == 0;
 
 		// We have a MoonScript file, so we need to load it with that
 		// It might be nice to have a dedicated lua state for compiling
@@ -66,7 +64,7 @@ namespace agi::lua {
 
 		// Save the text we'll be loading for the line number rewriting in the
 		// error handling
-		lua_pushlstring(L, buff, size);
+		lua_pushlstring(L, buff.data(), buff.size());
 		lua_pushvalue(L, -1);
 		lua_setfield(L, LUA_REGISTRYINDEX, ("raw moonscript: " + filename.string()).c_str());
 

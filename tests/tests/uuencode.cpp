@@ -22,7 +22,7 @@ using namespace agi::ass;
 
 TEST(lagi_uuencode, short_blobs) {
 	std::vector<char> data;
-	auto encode = [&] { return UUEncode(&data[0], &data.back() + 1); };
+	auto encode = [&] { return UUEncode(data); };
 
 	data.push_back(120);
 	EXPECT_STREQ("?!", encode().c_str());
@@ -34,22 +34,21 @@ TEST(lagi_uuencode, short_blobs) {
 
 TEST(lagi_uuencode, short_strings) {
 	std::vector<char> data;
-	auto decode = [](const char *str) { return UUDecode(str, str + strlen(str)); };
 
 	data.push_back(120);
-	EXPECT_EQ(data, decode("?!"));
+	EXPECT_EQ(data, UUDecode("?!"));
 	data.push_back(121);
-	EXPECT_EQ(data, decode("?(E"));
+	EXPECT_EQ(data, UUDecode("?(E"));
 	data.push_back(122);
-	EXPECT_EQ(data, decode("?(F["));
+	EXPECT_EQ(data, UUDecode("?(F["));
 }
 
 TEST(lagi_uuencode, random_blobs_roundtrip) {
 	std::vector<char> data;
 
 	for (size_t len = 0; len < 200; ++len) {
-		auto encoded = UUEncode(data.data(), data.data() + data.size());
-		EXPECT_EQ(data, UUDecode(encoded.data(), encoded.data() + encoded.size()));
+		auto encoded = UUEncode(data);
+		EXPECT_EQ(data, UUDecode(encoded));
 		data.push_back(rand());
 	}
 }
