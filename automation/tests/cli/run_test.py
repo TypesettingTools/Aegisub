@@ -131,9 +131,12 @@ def test_resample_without_video(aegisub, srcdir, env, tmp):
 
 def test_no_user_state(aegisub, srcdir, env, tmp):
     # None of the runs above may have written config, hotkeys, MRU lists,
-    # logs etc. into the user's config directory
+    # logs etc. into any of the user's directories
     written = []
     for user_dir in (os.path.join(tmp, ".aegisub"),
+                     os.path.join(tmp, ".config", "aegisub"),
+                     os.path.join(tmp, ".cache", "aegisub"),
+                     os.path.join(tmp, ".local", "state", "aegisub"),
                      os.path.join(tmp, "Library", "Application Support", "Aegisub")):
         for root, _, files in os.walk(user_dir):
             written += [os.path.join(root, f) for f in files]
@@ -169,6 +172,7 @@ def main():
         env["XDG_CONFIG_HOME"] = os.path.join(tmp, ".config")
         env["XDG_CACHE_HOME"] = os.path.join(tmp, ".cache")
         env["XDG_DATA_HOME"] = os.path.join(tmp, ".local", "share")
+        env["XDG_STATE_HOME"] = os.path.join(tmp, ".local", "state")
         # macOS looks up ?user through Foundation, which ignores HOME
         env["CFFIXED_USER_HOME"] = tmp
 
