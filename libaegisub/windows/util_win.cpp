@@ -16,6 +16,7 @@
 
 #include "libaegisub/charset_conv_win.h"
 
+#include <cstdlib>
 #include <thread>
 
 #define WIN32_LEAN_AND_MEAN
@@ -25,6 +26,13 @@ namespace agi {
 	namespace util {
 
 using agi::charset::ConvertW;
+
+std::optional<std::string> GetEnv(const char *name) {
+	// getenv returns the value in the ANSI code page, which can't represent every path
+	const wchar_t *value = _wgetenv(ConvertW(name).c_str());
+	if (!value) return std::nullopt;
+	return ConvertW(value);
+}
 
 std::string ErrorString(int error) {
 	LPWSTR lpstr = nullptr;

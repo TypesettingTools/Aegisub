@@ -15,9 +15,16 @@
 #include <libaegisub/util.h>
 
 #include <cstddef>
+#include <cstdlib>
 #include <thread>
 
 namespace agi::util {
+std::optional<std::string> GetEnv(const char *name) {
+	const char *value = getenv(name);
+	if (!value) return std::nullopt;
+	return value;
+}
+
 void SetThreadName(const char *) { }
 
 void sleep_for(int ms) {

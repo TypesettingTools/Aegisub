@@ -17,6 +17,7 @@
 #include <libaegisub/path.h>
 
 #include <libaegisub/exception.h>
+#include <libaegisub/util.h>
 #include <libaegisub/util_osx.h>
 
 #include <pwd.h>
@@ -30,11 +31,12 @@
 namespace {
 #ifndef __APPLE__
 std::string home_dir() {
-	const char *env = getenv("HOME");
-	if (env) return env;
+	if (auto home = agi::util::GetEnv("HOME")) return *home;
 
-	if ((env = getenv("USER")) || (env = getenv("LOGNAME"))) {
-		if (passwd *user_info = getpwnam(env))
+	auto user = agi::util::GetEnv("USER");
+	if (!user) user = agi::util::GetEnv("LOGNAME");
+	if (user) {
+		if (passwd *user_info = getpwnam(user->c_str()))
 			return user_info->pw_dir;
 	}
 
@@ -42,17 +44,12 @@ std::string home_dir() {
 }
 
 agi::fs::path xdg_dir(const char *env_name, agi::fs::path const& fallback) {
-	const char *env_raw = getenv(env_name);
+	auto env = agi::util::GetEnv(env_name);
 
-	if (!env_raw)
+	if (!env || env->empty())
 		return fallback;
 
-	std::string env_str{env_raw};
-
-	if (env_str.empty())
-		return fallback;
-
-	agi::fs::path path{env_str};
+	agi::fs::path path{*env};
 
 	if (!path.is_absolute())
 		return fallback;
