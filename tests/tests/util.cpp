@@ -18,12 +18,27 @@
 
 #include <main.h>
 
+#include <cstdlib>
 #include <locale>
 #include <typeinfo>
 
 class lagi_util : public libagi { };
 
 namespace agi {
+TEST(lagi_util, get_env) {
+	EXPECT_FALSE(util::GetEnv("AEGISUB_TEST_UNSET_VARIABLE").has_value());
+
+	// Non-ASCII, to check that the value is converted to UTF-8 on Windows
+#ifdef _WIN32
+	_wputenv_s(L"AEGISUB_TEST_GET_ENV", L"\u00e9\u65e5");
+#else
+	setenv("AEGISUB_TEST_GET_ENV", "\xc3\xa9\xe6\x97\xa5", 1);
+#endif
+	auto value = util::GetEnv("AEGISUB_TEST_GET_ENV");
+	ASSERT_TRUE(value.has_value());
+	EXPECT_EQ("\xc3\xa9\xe6\x97\xa5", *value);
+}
+
 TEST(lagi_util, try_parse_double) {
 	double d = 0.0;
 	EXPECT_TRUE(util::try_parse("1.0", &d));

@@ -100,11 +100,11 @@ AegisubApp::AegisubApp() {
 	// Fallback to X11 if wxGTK implementation is build without Wayland EGL support
 	// Fix https://github.com/TypesettingTools/Aegisub/issues/233
 	#if defined(__WXGTK__) && !wxUSE_GLCANVAS_EGL && !wxHAS_EGL
-		wxString xdg_session_type = wxGetenv("XDG_SESSION_TYPE");
-		wxString wayland_display  = wxGetenv("WAYLAND_DISPLAY");
-		wxString gdk_backend  = wxGetenv("GDK_BACKEND");	// Do not override GDK_BACKEND if it's already manually set
+		std::string xdg_session_type = agi::util::GetEnv("XDG_SESSION_TYPE").value_or("");
+		std::string wayland_display  = agi::util::GetEnv("WAYLAND_DISPLAY").value_or("");
+		std::string gdk_backend  = agi::util::GetEnv("GDK_BACKEND").value_or("");	// Do not override GDK_BACKEND if it's already manually set
 
-		if ((xdg_session_type == "wayland" || wayland_display.Contains("wayland")) && gdk_backend != "x11") {
+		if ((xdg_session_type == "wayland" || wayland_display.find("wayland") != std::string::npos) && gdk_backend != "x11") {
 			printf("Warning: Running on Wayland, but wxWidgets is not compiled with EGL support.");
 			if (gdk_backend.empty()) {
 				printf(" Falling back to X11.");

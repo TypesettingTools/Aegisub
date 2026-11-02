@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <boost/range/irange.hpp>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -76,6 +77,11 @@ namespace agi::util {
 	bool any_of(Range&& r, Predicate&& p) {
 		return std::any_of(std::begin(r), std::end(r), std::forward<Predicate>(p));
 	}
+
+	/// Get the value of an environment variable
+	/// @param name Name of the variable
+	/// @return The value as UTF-8, or nullopt if the variable isn't set
+	std::optional<std::string> GetEnv(const char *name);
 
 	std::string ErrorString(int error);
 	void InitLocale();

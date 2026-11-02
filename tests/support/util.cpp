@@ -16,6 +16,8 @@
 
 #include "util.h"
 
+#include <libaegisub/util.h>
+
 #include <cstdlib>
 #include <fstream>
 #include <sstream>
@@ -45,9 +47,9 @@ int read_written_rand(const char *path) {
 }
 
 agi::fs::path test_data_dir() {
-	const char *path = std::getenv("AEGISUB_TEST_DATA_DIR");
+	auto path = agi::util::GetEnv("AEGISUB_TEST_DATA_DIR");
 	if (!path)
 		throw std::runtime_error("AEGISUB_TEST_DATA_DIR not set in environment");
-	return path;
+	return *path;
 }
 }
