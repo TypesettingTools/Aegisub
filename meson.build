@@ -484,6 +484,7 @@ if luajit.type_name() == 'internal'
     deps += luajit
 endif
 
+deps += subproject('lpeg').get_variable('lpeg_dep')
 deps += subproject('luabins').get_variable('luabins_dep')
 
 dep_gl = dependency('gl', required: false)

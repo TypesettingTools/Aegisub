@@ -51,7 +51,6 @@ libaegisub_src = [
     'lua/modules/lfs.cpp',
     'lua/modules/re.cpp',
     'lua/modules/unicode.cpp',
-    'lua/modules/lpeg.c',
 ]
 
 if host_machine.system() == 'darwin'

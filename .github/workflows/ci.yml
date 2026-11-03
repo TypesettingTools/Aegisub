@@ -373,6 +373,7 @@ jobs:
           mkdir distcheck
           tar -xJf build/meson-dist/*.tar.xz -C distcheck/
           test -e distcheck/*/subprojects/luabins/meson.build
+          test -e distcheck/*/subprojects/lpeg-1.10/meson.build
           test -e distcheck/*/subprojects/LuaJIT*/meson.build
 
       - name: Upload artifacts - tarball

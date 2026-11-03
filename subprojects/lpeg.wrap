@@ -1,0 +1,8 @@
+[wrap-file]
+directory = lpeg-1.1.0
+source_url = https://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.1.0.tar.gz
+source_fallback_url = https://web.archive.org/web/20261016145626/https://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.1.0.tar.gz
+source_filename = lpeg-1.1.0.tar.gz
+source_hash = 4b155d67d2246c1ffa7ad7bc466c1ea899bbc40fef0257cc9c03cecbaed4352a
+patch_directory = lpeg
+diff_files = lpeg/0001-lua51-backports.patch
