@@ -101,11 +101,11 @@ if ((Get-CachedDepCtrlVersion $DepCtrlDir) -ne $DepCtrlVersion) {
 $VSFilterDir = Join-Path $DepsDir "VSFilter"
 if ($Architecture -eq 'x64' -and !(Test-Path $VSFilterDir)) {
 	New-Item -ItemType Directory -Path $VSFilterDir | Out-Null
-	$vsFilterReleases = Invoke-WebRequest "https://api.github.com/repos/pinterf/xy-VSFilter/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
-	$vsFilterUrl = $vsFilterReleases.assets[0].browser_download_url
-	$vsFilterArchive = Join-Path $VSFilterDir "VSFilter.7z"
+	$vsFilterReleases = Invoke-WebRequest "https://api.github.com/repos/TypesettingTools/xy-VSFilter/releases/latest" -Headers $GitHeaders -UseBasicParsing | ConvertFrom-Json
+	$vsFilterUrl = ($vsFilterReleases.assets | Where-Object { $_.name -match '^VSFilter-CSRI-only-\d+\.zip$' })[0].browser_download_url
+	$vsFilterArchive = Join-Path $VSFilterDir "VSFilter.zip"
 	Invoke-WebRequest $vsFilterUrl -OutFile $vsFilterArchive -UseBasicParsing
-	7z x $vsFilterArchive "-o$VSFilterDir"
+	7z x $vsFilterArchive "-o$VSFilterDir\x64"
 	Remove-Item $vsFilterArchive
 }
 
