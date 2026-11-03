@@ -232,6 +232,10 @@ endif
 
 if conf.has('WITH_CSRI')
     aegisub_src += files('subtitles_provider_csri.cpp')
+
+    # Built separately as it needs newer Windows headers than the PCH has
+    csri_host_client = static_library('csri_host_client', 'csri_host/client.cpp')
+    deps += declare_dependency(link_with: csri_host_client)
 endif
 
 opt_src = [

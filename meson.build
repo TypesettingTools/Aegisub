@@ -513,8 +513,12 @@ deps += dep_gl
 if not get_option('csri').disabled() and host_machine.system() == 'windows'
     conf.set('WITH_CSRI', 1)
 
-    csri_sp = subproject('csri')
-    deps += csri_sp.get_variable('csri_dep')
+    # The CSRI loader library, which finds and loads renderer DLLs such as
+    # VSFilter from the csri directory at runtime. Only linked into
+    # aegisub-csri-host; Aegisub itself never loads renderers. Static because
+    # the sandboxed host can't read the rest of the install directory, so it
+    # couldn't load the loader as csri.dll from there.
+    csri_sp = subproject('csri', default_options: ['default_library=static'])
 endif
 
 if cc.has_function('alloca', prefix: '#include <stdlib.h>')
@@ -594,3 +598,24 @@ aegisub = executable('aegisub', aegisub_src, version_h, libresrc_headers, aegisu
                      install_dir: bindir,
                      dependencies: deps,
                      win_subsystem: 'windows')
+
+if conf.has('WITH_CSRI')
+    csri_host_cpp_args = []
+    csri_host_link_args = []
+    if cxx.get_argument_syntax() == 'msvc'
+        csri_host_cpp_args += '/guard:cf'
+        csri_host_link_args += '/guard:cf'
+        # CET shadow stacks are x86-only
+        if host_machine.cpu_family() in ['x86', 'x86_64']
+            csri_host_link_args += '/CETCOMPAT'
+        endif
+    endif
+
+    executable('aegisub-csri-host', 'src/csri_host/host.cpp',
+               cpp_args: csri_host_cpp_args,
+               link_args: csri_host_link_args,
+               dependencies: csri_sp.get_variable('csri_dep'),
+               install: true,
+               install_dir: bindir,
+               win_subsystem: 'windows')
+endif

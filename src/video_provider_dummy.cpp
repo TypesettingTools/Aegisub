@@ -139,7 +139,7 @@ std::string DummyVideoProvider::MakeFilename(std::string fps, int frames, int wi
 }
 
 void DummyVideoProvider::GetFrame(int, VideoFrame &frame) {
-	frame.data    = data;
+	frame.data.assign(data.data(), data.data() + data.size());
 	frame.width   = width;
 	frame.height  = height;
 	frame.pitch   = width * 4;

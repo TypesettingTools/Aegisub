@@ -24,6 +24,8 @@ class SubtitlesProvider;
 namespace agi { class BackgroundRunner; }
 
 namespace csri {
+	/// Whether CSRI renderers can be used. Requires Windows 10 1809 or newer.
+	bool Supported();
 	std::vector<std::string> List();
 	std::unique_ptr<SubtitlesProvider> Create(std::string const& subtype, agi::BackgroundRunner *br);
 }
