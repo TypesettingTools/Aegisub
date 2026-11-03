@@ -66,6 +66,8 @@
 #include <libaegisub/util.h>
 
 #include <boost/interprocess/streams/bufferstream.hpp>
+#include <filesystem>
+#include <optional>
 #include <wx/clipbrd.h>
 #include <wx/msgdlg.h>
 #include <wx/stackwalk.h>
@@ -81,6 +83,22 @@ namespace config {
 wxIMPLEMENT_APP(AegisubApp);
 
 static const char *LastStartupState = nullptr;
+
+/// Get an absolute path from an environment variable, if it's set and non-empty
+/// @param directory Whether the path should be a directory, so that it's
+///                  ignored if it's a file (which agi::Path would treat as
+///                  meaning its parent directory)
+static std::optional<agi::fs::path> PathFromEnv(const char *name, bool directory) {
+	auto value = agi::util::GetEnv(name);
+	if (!value || value->empty())
+		return std::nullopt;
+	agi::fs::path absolute(std::filesystem::absolute(agi::fs::path(*value)));
+	if (directory && agi::fs::FileExists(absolute)) {
+		LOG_W("main") << name << " is set to " << absolute << ", which is a file rather than a directory; ignoring it";
+		return std::nullopt;
+	}
+	return absolute;
+}
 
 #ifdef WITH_STARTUPLOG
 #define StartupLog(a) MessageBox(0, L ## a, L"Aegisub startup log", 0)
@@ -162,24 +180,38 @@ bool AegisubApp::OnInit() {
 	agi::log::log->Subscribe(std::make_unique<agi::log::EmitSTDOUT>());
 #endif
 
+	// Let the environment relocate Aegisub's files, e.g. to run an uninstalled
+	// build against the source tree or to start with a clean profile:
+	// AEGISUB_DATA_DIR replaces ?data (the bundled files), AEGISUB_USER_DIR
+	// is used for all per-user files instead of the platform's default
+	// locations (or the install dir in portable mode), and AEGISUB_CONFIG is
+	// the config file to use instead of the one in the user dir
+	if (auto data_dir = PathFromEnv("AEGISUB_DATA_DIR", true))
+		config::path->SetToken("?data", *data_dir);
+	auto user_dir = PathFromEnv("AEGISUB_USER_DIR", true);
+	auto config_file = PathFromEnv("AEGISUB_CONFIG", false);
+
 	// Set config file
 	StartupLog("Load local configuration");
 #ifdef __WXMSW__
-	// Try loading configuration from the install dir if one exists there
-	try {
-		auto conf_local(config::path->Decode("?data/config.json"));
-		std::unique_ptr<std::istream> localConfig(agi::io::Open(conf_local));
-		config::opt = new agi::Options(conf_local, GET_DEFAULT_CONFIG(default_config));
+	// Try loading configuration from the install dir if one exists there,
+	// unless the user dir has explicitly been put somewhere else
+	if (!user_dir) {
+		try {
+			auto conf_local(config::path->Decode("?data/config.json"));
+			std::unique_ptr<std::istream> localConfig(agi::io::Open(conf_local));
+			config::opt = new agi::Options(config_file.value_or(conf_local), GET_DEFAULT_CONFIG(default_config));
 
-		// Local config, make ?user mean ?data so all user settings are placed in install dir
-		config::path->SetToken("?user", config::path->Decode("?data"));
-		config::path->SetToken("?cache", config::path->Decode("?data"));
-		config::path->SetToken("?state", config::path->Decode("?data"));
-	} catch (agi::fs::FileSystemError const&) {
-		// File doesn't exist or we can't read it
-		// Might be worth displaying an error in the second case
+			// Local config, so place all user files in the install dir
+			config::path->SetUserDir(config::path->Decode("?data"));
+		} catch (agi::fs::FileSystemError const&) {
+			// File doesn't exist or we can't read it
+			// Might be worth displaying an error in the second case
+		}
 	}
 #endif
+	if (user_dir)
+		config::path->SetUserDir(*user_dir);
 	crash_writer::Initialize(config::path->Decode("?state"));
 
 	StartupLog("Create log writer");
@@ -195,7 +227,7 @@ bool AegisubApp::OnInit() {
 	StartupLog("Load user configuration");
 	try {
 		if (!config::opt)
-			config::opt = new agi::Options(config::path->Decode("?user/config.json"), GET_DEFAULT_CONFIG(default_config));
+			config::opt = new agi::Options(config_file.value_or(config::path->Decode("?user/config.json")), GET_DEFAULT_CONFIG(default_config));
 	} catch (agi::Exception& e) {
 		LOG_E("config/init") << "Caught exception: " << e.GetMessage();
 	}
