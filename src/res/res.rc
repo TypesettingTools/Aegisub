@@ -60,4 +60,8 @@ BEGIN
             VALUE "ProductVersion",   BUILD_GIT_VERSION_STRING
         END
     END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
 END
