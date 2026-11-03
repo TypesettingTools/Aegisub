@@ -43,7 +43,7 @@ class HDAudioProvider final : public AudioProviderWrapper {
 		if (count > 0) {
 			start *= bytes_per_sample;
 			count *= bytes_per_sample;
-			memcpy(buf, file.read(start, count), count);
+			memcpy(buf, file.read(start, count).data(), count);
 		}
 	}
 

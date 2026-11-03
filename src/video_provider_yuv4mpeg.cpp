@@ -43,9 +43,13 @@
 #include <libaegisub/ycbcr_conv.h>
 
 #include <boost/algorithm/string/case_conv.hpp>
+#include <algorithm>
 #include <limits>
 #include <memory>
+#include <string_view>
 #include <vector>
+
+using namespace std::string_view_literals;
 
 /// the maximum allowed header length, in bytes
 #define YUV4MPEG_HEADER_MAXLEN 128
@@ -166,7 +170,7 @@ YUV4MPEGVideoProvider::YUV4MPEGVideoProvider(agi::fs::path const& filename)
 {
 	if (file.size() < 10)
 		throw VideoNotSupported("File is not a YUV4MPEG file (too small)");
-	if (strncmp("YUV4MPEG2 ", file.read(0, 10), 10))
+	if (std::ranges::equal("YUV4MPEG2 "sv, file.read(0, 10)))	// compare string_view to exclude null terminator
 		throw VideoNotSupported("File is not a YUV4MPEG file (bad magic)");
 
 	int64_t pos = 0;
@@ -219,7 +223,7 @@ std::vector<std::string> YUV4MPEGVideoProvider::ReadHeader(int64_t &pos) {
 		return tags;
 
 	auto len = std::min<uint64_t>(YUV4MPEG_HEADER_MAXLEN, file.size() - pos);
-	auto buff = file.read(pos, len);
+	auto buff = file.read(pos, len).data();
 
 	// read header until terminating newline (0x0A) is found
 	auto curtag = buff;
@@ -409,7 +413,7 @@ void YUV4MPEGVideoProvider::GetFrame(int n, VideoFrame &frame) {
 
 	int uv_width = w / 2;
 
-	auto src_y = reinterpret_cast<const unsigned char *>(file.read(seek_table[n], frame_sz));
+	auto src_y = reinterpret_cast<const unsigned char *>(file.read(seek_table[n], frame_sz).data());
 	auto src_u = src_y + luma_sz;
 	auto src_v = src_u + chroma_sz;
 	frame.data.resize(decoded_frame_sz);

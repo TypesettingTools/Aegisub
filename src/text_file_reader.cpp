@@ -23,7 +23,8 @@
 
 TextFileReader::TextFileReader(agi::fs::path const& filename, const char *encoding, bool trim)
 : file(std::make_unique<agi::read_file_mapping>(filename))
-, stream(std::make_unique<boost::interprocess::ibufferstream>(file->read(), file->size()))
+, filespan(file->read())
+, stream(std::make_unique<boost::interprocess::ibufferstream>(filespan.data(), filespan.size()))
 , trim(trim)
 , iter(agi::line_iterator<std::string>(*stream, encoding))
 {

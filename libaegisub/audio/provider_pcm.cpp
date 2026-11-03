@@ -54,7 +54,7 @@ class PCMAudioProvider : public AudioProvider {
 			auto read_offset = start - pos;
 			auto read_count = std::min<size_t>(count, ip.num_samples - read_offset);
 			auto bytes = read_count * bps;
-			memcpy(write_buf, file.read(ip.start_byte + read_offset * bps, bytes), bytes);
+			memcpy(write_buf, file.read(ip.start_byte + read_offset * bps, bytes).data(), bytes);
 			if (endian::IsBigEndian && bytes_per_sample > 1) {
 				auto *sample_bytes = reinterpret_cast<uint8_t *>(write_buf);
 				auto total_samples = read_count * channels;
@@ -87,7 +87,7 @@ protected:
 		*data_left -= sizeof(T);
 
 		T ret{};
-		memcpy(&ret, data, sizeof(T));
+		memcpy(&ret, data.data(), sizeof(T));
 		if constexpr (LittleEndian && endian::IsBigEndian) {
 			endian::SwapBytesInPlace(std::as_writable_bytes(std::span(&ret, 1)));
 		}
