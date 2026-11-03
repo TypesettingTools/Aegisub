@@ -2,6 +2,37 @@
 
 This file collects some miscellaneous information relevant to Aegisub development.
 
+## Style Guidelines
+
+Aegisub's codebase has over 20 years of history, so it does not follow any consistent coding style.
+Newly added code should adhere to the following *rough* guidelines, where feasible:
+
+- Regarding purely *cosmetic* aspects (e.g. variable naming, indentation, brace positioning, etc.), there are no concrete rules
+  except that the style should be roughly consistent with the file or area the code is being added to.
+- Regarding code practices, the main guideline is to use modern C++ (up to C++20) features where feasible.
+  Some examples of what this means are:
+  - Use RAII wrappers instead of manual freeing variables. Follow the [Rule of Zero](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c20-if-you-can-avoid-defining-default-operations-do),
+    or the Rule of Five/Three if needed.
+
+    The simplest pattern for a RAII wrapper for some C library's pointer handle is an `std::unique_ptr` with a custom deleter (see e.g. `audio_player_pulse.cpp`).
+    Prefer this over `agi::scoped_holder` where possible, since the latter has some pitfalls with implicit conversions.
+  - Use STL algorithms, including `std::ranges`, over simple manual loops unless it hurts readability.
+  - Prefer `constexpr` over preprocessor defines where possible.
+  - Do not use unsigned integers to indicate that a number will never be negative; use `std::ssize` to get signed sizes of STL containers.
+  - Prefer `std::optional` over raw types with sentinel values. Use `std::variant` for tagged unions.
+  - Prefer `std::span` over raw "data pointer & size" pairs.
+
+    Similarly, you can use `std::string_view` over `std::string const&`, but beware of pitfalls with null terminators:
+    An `std::string const&` is guaranteed to end with a null terminator, but an `std::string_view` is not, so the latter cannot directly be passed to a function expecting a null-terminated C string.
+  - Prefer `std::bit_cast` over type-punning with `reinterpret_cast`.
+  - Restrict new template functions and classes with concepts.
+  - See also: The [C++ Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines).
+    These need not be followed to the letter, but they give a good idea of what "modern C++" means.
+
+  Most of those guidelines *may* be broken when following them to the letter would hurt readability too much.
+- The other main guideline is to use Aegisub's existing utility functions (e.g. for file system access, opening or saving files, splitting, joining, or formatting strings, etc.) where feasible.
+  When in doubt, try to find some other part of the code that needs to perform the same operation you are trying to implement, and see what functions are used there.
+
 ## Releasing a new Version
 Follow the following steps to release a new Aegisub version:
 
