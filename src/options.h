@@ -16,9 +16,16 @@
 
 #pragma once
 
+#include <libaegisub/fs.h>
 #include <libaegisub/mru.h>
 #include <libaegisub/option.h>
 #include <libaegisub/option_value.h>
+
+#include <list>
+#include <map>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace agi { class Path; }
 namespace Automation4 { class AutoloadScriptManager; }
@@ -29,6 +36,12 @@ namespace config {
 	extern agi::MRUManager *mru; ///< Most Recently Used
 	extern agi::Path *path;
 	extern Automation4::AutoloadScriptManager *global_scripts;
+
+	extern bool hasGui;
+	extern bool hasInitializedWx;
+	extern std::map<std::string, std::vector<std::string>> choice_indices;
+	extern std::list<std::pair<int, std::string>> dialog_responses;
+	extern std::list<std::vector<agi::fs::path>> file_responses;
 }
 
 /// Macro to get OptionValue object
