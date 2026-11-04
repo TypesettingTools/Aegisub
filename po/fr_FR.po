@@ -4409,16 +4409,16 @@ msgstr "Éditeur de style"
 
 #: ../src/dialog_style_editor.cpp:173
 msgid "Border boxes"
-msgstr "Texte"
+msgstr "Boîtes avec bordure"
 
 #: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
 #: ../src/dialog_style_editor.cpp:295
 msgid "Outline"
-msgstr "Aucun"
+msgstr "Contour"
 
 #: ../src/dialog_style_editor.cpp:173
 msgid "Shadow box (libass only)"
-msgstr "Entier (libass only)"
+msgstr "Boîte avec ombre (libass seulement)"
 
 #: ../src/dialog_style_editor.cpp:181
 msgid "Font"
@@ -4574,7 +4574,7 @@ msgstr "Ombre :"
 
 #: ../src/dialog_style_editor.cpp:326
 msgid "Border style:"
-msgstr "Tri des styles :"
+msgstr "Style de bordure :"
 
 #: ../src/dialog_style_editor.cpp:330
 msgid "Scale X%:"
