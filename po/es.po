@@ -4418,8 +4418,17 @@ msgstr "Editor de estilos"
 msgid "Border boxes"
 msgstr "Cajas de borde"
 
-#: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:173
+msgctxt "border style"
+msgid "Outline"
+msgstr "Contorno"
+
+#: ../src/dialog_style_editor.cpp:184
+msgid "Outline"
+msgstr "Contorno"
+
 #: ../src/dialog_style_editor.cpp:295
+msgctxt "colour"
 msgid "Outline"
 msgstr "Contorno"
 
