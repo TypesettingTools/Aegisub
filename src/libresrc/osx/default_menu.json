@@ -8,7 +8,7 @@
         { "submenu" : "main/video",    "tlcontext": "Menu bar", "text" : "&Video" },
         { "submenu" : "main/audio",    "tlcontext": "Menu bar", "text" : "&Audio" },
         { "special" : "automation",    "tlcontext": "Menu bar", "text" : "A&utomation" },
-        { "submenu" : "main/window",   "tlcontext": "Menu bar", "text" : "Window" },
+        { "submenu" : "main/window",   "tlcontext": "Menu bar", "text" : "Window", "special" : "window" },
         { "submenu" : "main/help",     "tlcontext": "Menu bar", "text" : "&Help", "special" : "help" }
     ],
     "main/file" : [
