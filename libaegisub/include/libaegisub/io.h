@@ -31,9 +31,19 @@ class Save {
 	std::unique_ptr<std::ostream> fp;
 	const agi::fs::path file_name;
 	const agi::fs::path tmp_name;
+	bool disposable;
 
 public:
-	Save(agi::fs::path const& file, bool binary = false);
+	/// @brief Opens an ostream to a temporary file that is moved to the target path when this object goes out of scope
+	/// @param file The path t
+	/// @param binary Whether to open the ostream in binary mode
+	/// @param disposable Whether the file is a disposable one (usually a cache file).
+	///            If saving a nondisposable file fails, saving will be retried a number of times with sleep intervals in between.
+	///            If saving a disposable file fails, the destructor will throw immediately so that the extra retries will not block execution.
+	///
+	/// Note that Save's destructor can throw, so it must not be stored in an std::unique_ptr or in any other class whose destructor is not marked noexcept(false).
+	/// FIXME: Rewrite this to avoid pitfalls of throwing destructors.
+	Save(agi::fs::path const& file, bool binary = false, bool disposable = false);
 	~Save() noexcept(false);
 	std::ostream& Get() { return *fp; }
 };

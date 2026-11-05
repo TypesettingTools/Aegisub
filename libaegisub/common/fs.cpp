@@ -40,6 +40,10 @@ void check_error(std::error_code ec, const char *exp, path const& src_path, path
 			if (!dst_path.empty())
 				acs::CheckFileWrite(dst_path);
 			throw AccessDenied(src_path);
+		case int(io_error):
+			if (ec.message() == "Access is denied.")
+				throw FileBusy(src_path);
+			[[fallthrough]];
 		default:
 			LOG_D("filesystem") << "Unknown error when calling '" << exp << "': " << ec << ": " << ec.message();
 			throw FileSystemUnknownError(ec.message());

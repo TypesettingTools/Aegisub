@@ -36,11 +36,13 @@ std::unique_ptr<std::istream> Open(path const& file, bool binary) {
 	return std::unique_ptr<std::istream>(stream.release());
 }
 
-Save::Save(path const& file, bool binary)
+Save::Save(path const& file, bool binary, bool disposable)
 : file_name(file)
-, tmp_name(file.parent_path()/(file.stem().string() + ".tmp" + file.extension().string()))
+, tmp_name(file.parent_path()/(file.stem().string() + ".tmp." + agi::util::ThreadId() + "." + file.extension().string()))
+, disposable(disposable)
 {
-	LOG_D("agi/io/save/file") << file;
+	if (!disposable)
+		LOG_D("agi/io/save/file") << file;
 
 	fp = std::make_unique<std::ofstream>(tmp_name, binary ? std::ios::binary : std::ios::out);
 	if (!fp->good()) {
@@ -58,6 +60,11 @@ Save::~Save() noexcept(false) {
 			return;
 		}
 		catch (agi::fs::FileSystemError const&) {
+			if (disposable) {
+				fs::Remove(tmp_name);
+				throw;
+			}
+
 			// Retry up to ten times in case it's just locked by a poorly-written antivirus scanner
 			if (i == 9)
 				throw;
