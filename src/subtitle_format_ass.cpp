@@ -42,18 +42,12 @@ void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 		parser.AddLine(file.ReadLineFromFile());
 }
 
-#ifdef _WIN32
-#define LINEBREAK "\r\n"
-#else
-#define LINEBREAK "\n"
-#endif
-
 namespace {
 const char *format(AssEntryGroup group) {
 	if (group == AssEntryGroup::DIALOGUE)
-		return "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text" LINEBREAK;
+		return "Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text";
 	if (group == AssEntryGroup::STYLE)
-		return "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding" LINEBREAK;
+		return "Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding";
 	return nullptr;
 }
 
@@ -78,7 +72,7 @@ struct Writer {
 
 				file.WriteLineToFile(line.GroupHeader());
 				if (const char *str = format(line.Group()))
-					file.WriteLineToFile(str, false);
+					file.WriteLineToFile(str);
 
 				group = line.Group();
 			}
