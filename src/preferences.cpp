@@ -101,6 +101,7 @@ void General(wxTreebook *book, Preferences *parent) {
 	p->OptionAdd(general, _("Check for updates on startup"), "App/Auto/Check For Updates");
 	p->OptionAdd(general, _("Show main toolbar"), "App/Show Toolbar");
 	p->OptionAdd(general, _("Save UI state in subtitles files"), "App/Save UI State");
+	p->OptionAdd(general, _("Load .aegiconf project settings"), "App/Load Project Config");
 	p->CellSkip(general);
 
 	p->OptionAdd(general, _("Toolbar Icon Size"), "App/Toolbar Icon Size");

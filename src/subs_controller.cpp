@@ -170,6 +170,9 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, const char
 
 	SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
 
+	if (OPT_GET("App/Load Project Config")->GetBool())
+		temp.Properties.LoadConfig(filename);
+
 	context->ass->swap(temp);
 	auto props = context->ass->Properties;
 

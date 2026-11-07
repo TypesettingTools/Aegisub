@@ -14,7 +14,10 @@
 
 #pragma once
 
+#include <libaegisub/fs.h>
+
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -29,6 +32,8 @@ struct ProjectProperties {
 	std::string keyframes_file;
 	std::map<std::string, std::string> automation_settings;
 
+	// Paths selected by config patterns must not be frozen into per-file overrides.
+	std::set<std::string> inferred_files;
 	bool audio_from_video = false;
 
 	// UI State
@@ -38,6 +43,9 @@ struct ProjectProperties {
 	int active_row = 0;
 	int ar_mode = 0;
 	int video_position = 0;
+
 	bool ParseProperty(std::string const& key, std::string const& value);
-	std::vector<std::string> Serialize(bool save_ui) const;
+	std::vector<std::string> Serialize(bool save_ui, bool legacy) const;
+	static agi::fs::path ConfigFilename(agi::fs::path const& subtitle);
+	void LoadConfig(agi::fs::path const& subtitle);
 };

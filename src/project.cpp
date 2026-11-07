@@ -121,8 +121,8 @@ bool Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding, P
 		// distinguish them based on filename alone, and just ignore failures
 		// rather than trying to differentiate between malformed timecodes
 		// files and things that aren't timecodes files at all
-		try { DoLoadTimecodes(path); return false; } catch (...) { }
-		try { DoLoadKeyframes(path); return false; } catch (...) { }
+		try { DoLoadTimecodes(path); context->ass->Properties.inferred_files.erase("Timecodes File"); return false; } catch (...) { }
+		try { DoLoadKeyframes(path); context->ass->Properties.inferred_files.erase("Keyframes File"); return false; } catch (...) { }
 	}
 
 	try {
@@ -303,6 +303,7 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 		}
 	}
 
+	auto inferred_files = properties.inferred_files;
 	if (!timecodes.empty()) LoadTimecodes(timecodes);
 	if (!keyframes.empty()) LoadKeyframes(keyframes);
 
@@ -312,8 +313,11 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 		else
 			DoLoadAudio(audio, false);
 	}
-	else if (loaded_video && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
+	else if (loaded_video && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio()) {
 		DoLoadAudio(video, true);
+		if (inferred_files.count("Video File")) inferred_files.insert("Audio File");
+	}
+	context->ass->Properties.inferred_files = std::move(inferred_files);
 	context->ass->Properties.audio_from_video = properties.audio_file == "?video";
 }
 
@@ -356,11 +360,13 @@ void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 void Project::LoadAudio(agi::fs::path path) {
 	DoLoadAudio(path, false);
 	if (audio_file == path) {
+		context->ass->Properties.inferred_files.erase("Audio File");
 		context->ass->Properties.audio_from_video = false;
 	}
 }
 
 void Project::CloseAudio() {
+	context->ass->Properties.inferred_files.erase("Audio File");
 	context->ass->Properties.audio_from_video = false;
 	AnnounceAudioProviderModified(nullptr);
 	audio_provider.reset();
@@ -413,6 +419,9 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 void Project::LoadVideo(agi::fs::path path) {
 	if (path.empty()) return;
 	if (!DoLoadVideo(path)) return;
+	context->ass->Properties.inferred_files.erase("Video File");
+	context->ass->Properties.inferred_files.erase("Timecodes File");
+	context->ass->Properties.inferred_files.erase("Keyframes File");
 	if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video_file, true);
 
@@ -425,6 +434,7 @@ void Project::LoadVideo(agi::fs::path path) {
 }
 
 void Project::CloseVideo() {
+	context->ass->Properties.inferred_files.erase("Video File");
 	AnnounceVideoProviderModified(nullptr);
 	video_provider.reset();
 	SetPath(video_file, "?video", "", "");
@@ -443,6 +453,7 @@ void Project::DoLoadTimecodes(agi::fs::path const& path) {
 void Project::LoadTimecodes(agi::fs::path path) {
 	try {
 		DoLoadTimecodes(path);
+		context->ass->Properties.inferred_files.erase("Timecodes File");
 	}
 	catch (agi::fs::FileSystemError const& e) {
 		ShowError(e.GetMessage());
@@ -455,6 +466,7 @@ void Project::LoadTimecodes(agi::fs::path path) {
 }
 
 void Project::CloseTimecodes() {
+	context->ass->Properties.inferred_files.erase("Timecodes File");
 	timecodes = video_provider ? video_provider->GetFPS() : agi::vfr::Framerate{};
 	SetPath(timecodes_file, "", "", "");
 	AnnounceTimecodesModified(timecodes);
@@ -469,6 +481,7 @@ void Project::DoLoadKeyframes(agi::fs::path const& path) {
 void Project::LoadKeyframes(agi::fs::path path) {
 	try {
 		DoLoadKeyframes(path);
+		context->ass->Properties.inferred_files.erase("Keyframes File");
 	}
 	catch (agi::fs::FileSystemError const& e) {
 		ShowError(e.GetMessage());
@@ -485,6 +498,7 @@ void Project::LoadKeyframes(agi::fs::path path) {
 }
 
 void Project::CloseKeyframes() {
+	context->ass->Properties.inferred_files.erase("Keyframes File");
 	keyframes = video_provider ? video_provider->GetKeyFrames() : std::vector<int>{};
 	SetPath(keyframes_file, "", "", "");
 	AnnounceKeyframesModified(keyframes);
@@ -521,6 +535,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 			if (timecodes.empty()) {
 				try {
 					DoLoadTimecodes(file);
+					context->ass->Properties.inferred_files.erase("Timecodes File");
 					timecodes = file;
 					continue;
 				} catch (...) { }
@@ -529,6 +544,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 			if (keyframes.empty()) {
 				try {
 					DoLoadKeyframes(file);
+					context->ass->Properties.inferred_files.erase("Keyframes File");
 					keyframes = file;
 					continue;
 				} catch (...) { }
@@ -554,6 +570,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	}
 
 	if (!video.empty() && DoLoadVideo(video)) {
+		context->ass->Properties.inferred_files.erase("Video File");
 		double dar = video_provider->GetDAR();
 		if (dar > 0)
 			context->videoController->SetAspectRatio(dar);

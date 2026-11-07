@@ -91,7 +91,7 @@ struct Writer {
 		file.WriteLineToFile("");
 		file.WriteLineToFile("[Aegisub Project Garbage]");
 
-		for (auto const& line : properties.Serialize(OPT_GET("App/Save UI State")->GetBool()))
+		for (auto const& line : properties.Serialize(OPT_GET("App/Save UI State")->GetBool(), true))
 			file.WriteLineToFile(line);
 	}
 
