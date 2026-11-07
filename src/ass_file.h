@@ -76,6 +76,9 @@ public:
 	std::vector<ExtradataEntry> Extradata;
 	ProjectProperties Properties;
 
+	// Parsed settings captured before sidecars or UI changes.
+	ProjectProperties OriginalProperties;
+
 	uint32_t next_extradata_id = 0;
 
 	AssFile();

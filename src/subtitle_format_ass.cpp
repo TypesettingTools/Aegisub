@@ -40,6 +40,8 @@ void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	AssParser parser(target, version);
 	while (file.HasMoreLines())
 		parser.AddLine(file.ReadLineFromFile());
+
+	target->OriginalProperties = target->Properties;
 }
 
 #ifdef _WIN32
@@ -87,11 +89,15 @@ struct Writer {
 		}
 	}
 
-	void Write(ProjectProperties const& properties) {
+	void Write(ProjectProperties const& properties, bool save_ui) {
+		auto lines = properties.Serialize(save_ui, true);
+		if (lines.empty())
+			return;
+
 		file.WriteLineToFile("");
 		file.WriteLineToFile("[Aegisub Project Garbage]");
 
-		for (auto const& line : properties.Serialize(OPT_GET("App/Save UI State")->GetBool(), true))
+		for (auto const& line : lines)
 			file.WriteLineToFile(line);
 	}
 
@@ -127,7 +133,10 @@ struct Writer {
 void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	Writer writer(filename, encoding);
 	writer.Write(src->Info);
-	writer.Write(src->Properties);
+	if (OPT_GET("App/Save Project Settings in Subtitle File")->GetBool())
+		writer.Write(src->Properties, OPT_GET("App/Save UI State")->GetBool());
+	else
+		writer.Write(src->OriginalProperties, true);
 	writer.Write(src->Styles);
 	writer.Write(src->Attachments);
 	writer.Write(src->Events);
@@ -140,4 +149,14 @@ void AssSubtitleFormat::ExportFile(const AssFile *src, agi::fs::path const& file
 	writer.Write(src->Styles);
 	writer.Write(src->Attachments);
 	writer.Write(src->Events);
+}
+
+void AssSubtitleFormat::WriteRecoveryFile(const AssFile *src, agi::fs::path const& filename) const {
+	Writer writer(filename, "UTF-8");
+	writer.Write(src->Info);
+	writer.Write(src->Properties, OPT_GET("App/Save UI State")->GetBool());
+	writer.Write(src->Styles);
+	writer.Write(src->Attachments);
+	writer.Write(src->Events);
+	writer.WriteExtradata(src->Extradata);
 }

@@ -48,4 +48,5 @@ struct ProjectProperties {
 	std::vector<std::string> Serialize(bool save_ui, bool legacy) const;
 	static agi::fs::path ConfigFilename(agi::fs::path const& subtitle);
 	void LoadConfig(agi::fs::path const& subtitle);
+	void SaveConfig(agi::fs::path const& subtitle, bool save_ui) const;
 };

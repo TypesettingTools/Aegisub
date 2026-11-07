@@ -225,3 +225,46 @@ void ProjectProperties::LoadConfig(agi::fs::path const& subtitle) {
 	*this = std::move(properties);
 	audio_from_video = audio_file == "?video";
 }
+
+void ProjectProperties::SaveConfig(agi::fs::path const& subtitle, bool save_ui) const {
+	auto filename = ConfigFilename(subtitle);
+	std::vector<std::string> preserved;
+
+	if (agi::fs::FileExists(filename)) {
+		TextFileReader file(filename, "utf-8", false);
+
+		while (file.HasMoreLines()) {
+			auto line = file.ReadLineFromFile();
+			// Do not preserve the reader's synthetic empty line at EOF.
+			if (line.empty() && !file.HasMoreLines())
+				break;
+
+			std::string key, value;
+			ProjectProperties dummy;
+
+			if (Split(line, key, value)) {
+				if (key.ends_with(pattern_suffix)) {
+					auto file_key = key.substr(0, key.size() - pattern_suffix.size());
+					if (IsFile(file_key) && !inferred_files.count(file_key))
+						continue;
+				}
+
+				if (dummy.ParseProperty(key, value))
+					continue;
+			}
+
+			preserved.push_back(line);
+		}
+	}
+
+	{
+		agi::io::Save file(filename);
+		for (auto const& line : preserved)
+			file.Get() << line << '\n';
+
+		for (auto const& line : Serialize(save_ui, false))
+			file.Get() << line << '\n';
+	}
+
+	agi::fs::MakeHidden(filename);
+}
