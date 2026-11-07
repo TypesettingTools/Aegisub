@@ -188,7 +188,7 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 	auto load_linked = OPT_GET("App/Auto/Load Linked Files")->GetInt();
 	if (!load_linked) return;
 
-	auto audio     = context->path->MakeAbsolute(properties.audio_file, "?script");
+	auto audio     = context->path->MakeAbsolute(properties.audio_file == "?video" ? properties.video_file : properties.audio_file, "?script");
 	auto video     = context->path->MakeAbsolute(properties.video_file, "?script");
 	auto timecodes = context->path->MakeAbsolute(properties.timecodes_file, "?script");
 	auto keyframes = context->path->MakeAbsolute(properties.keyframes_file, "?script");
@@ -314,6 +314,7 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 	}
 	else if (loaded_video && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video, true);
+	context->ass->Properties.audio_from_video = properties.audio_file == "?video";
 }
 
 void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
@@ -354,9 +355,13 @@ void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 
 void Project::LoadAudio(agi::fs::path path) {
 	DoLoadAudio(path, false);
+	if (audio_file == path) {
+		context->ass->Properties.audio_from_video = false;
+	}
 }
 
 void Project::CloseAudio() {
+	context->ass->Properties.audio_from_video = false;
 	AnnounceAudioProviderModified(nullptr);
 	audio_provider.reset();
 	SetPath(audio_file, "?audio", "", "");
@@ -566,7 +571,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 	}
 
 	if (!audio.empty())
-		DoLoadAudio(audio, false);
+		LoadAudio(audio);
 	else if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file)
 		DoLoadAudio(video_file, true);
 

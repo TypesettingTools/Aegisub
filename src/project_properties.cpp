@@ -66,6 +66,9 @@ bool ProjectProperties::ParseProperty(std::string const& key, std::string const&
 				agi::util::try_parse(value, &(this->*member));
 		}, field);
 
+		if (key == "Audio File" || key == "Audio URI")
+			audio_from_video = value == "?video";
+
 		return true;
 	}
 
@@ -87,6 +90,9 @@ std::vector<std::string> ProjectProperties::Serialize(bool save_ui) const {
 		std::visit([&](auto member) {
 			auto value = this->*member;
 			if constexpr (std::is_same_v<decltype(value), std::string>) {
+				if (key == "Audio File" && audio_from_video)
+					value = "?video";
+
 				if (!value.empty())
 					lines.push_back(key + ": " + value);
 			}

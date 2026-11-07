@@ -29,6 +29,8 @@ struct ProjectProperties {
 	std::string keyframes_file;
 	std::map<std::string, std::string> automation_settings;
 
+	bool audio_from_video = false;
+
 	// UI State
 	double video_zoom = 0.;
 	double ar_value = 0.;
