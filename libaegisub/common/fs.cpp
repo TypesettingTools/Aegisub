@@ -19,6 +19,7 @@
 #include "libaegisub/access.h"
 #include "libaegisub/log.h"
 
+#include <algorithm>
 #include <boost/algorithm/string/predicate.hpp>
 #include <system_error>
 
@@ -119,4 +120,32 @@ void check_error(std::error_code ec, const char *exp, path const& src_path, path
 	void CurrentPath(path const& path) {
 		std::filesystem::current_path(path);
 	}
+	std::vector<path> Glob(path const& pattern) {
+		auto absolute_pattern = Absolute(pattern);
+		std::vector<path> paths{absolute_pattern.root_path()};
+
+		for (auto const& component : absolute_pattern.relative_path()) {
+			std::vector<path> next;
+			auto part = fs::path(component).string();
+
+			for (auto const& directory : paths) {
+				if (part.find_first_of("*?[") == std::string::npos) {
+					auto candidate = directory / fs::path(part);
+					if (Exists(candidate))
+						next.push_back(candidate);
+				}
+				else if (DirectoryExists(directory)) {
+					for (auto const& name : DirectoryIterator(directory, part))
+						next.push_back(directory / name);
+				}
+			}
+
+			paths = std::move(next);
+		}
+
+		std::erase_if(paths, [](auto const& p) { return !FileExists(p); });
+		std::sort(paths.begin(), paths.end());
+		return paths;
+	}
+
 }

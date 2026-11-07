@@ -24,6 +24,7 @@
 #include <iterator>
 #include <memory>
 #include <string>
+#include <vector>
 
 #undef CreateDirectory
 
@@ -209,6 +210,10 @@ bool Remove(path const& file);
 /// @param p Path to check
 /// @param ext Case-insensitive extension, without leading dot
 bool HasExtension(path const& p, std::string const& ext);
+
+/// Expand a filesystem pattern, including wildcards in directory components.
+/// Returns sorted absolute paths to matching regular files.
+std::vector<path> Glob(path const& pattern);
 
 /// Whether a directory is a filesystem root or a mount point.
 /// Returns false if the directory cannot be queried.
