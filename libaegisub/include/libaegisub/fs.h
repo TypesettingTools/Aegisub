@@ -210,6 +210,10 @@ bool Remove(path const& file);
 /// @param ext Case-insensitive extension, without leading dot
 bool HasExtension(path const& p, std::string const& ext);
 
+/// Whether a directory is a filesystem root or a mount point.
+/// Returns false if the directory cannot be queried.
+bool IsMountPoint(path const& directory);
+
 [[nodiscard]] path Canonicalize(path const& path);
 [[nodiscard]] path Absolute(path const& path);
 path CurrentPath();

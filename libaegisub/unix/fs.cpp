@@ -21,11 +21,22 @@
 #include <fcntl.h>
 #include <fnmatch.h>
 #include <istream>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
 
 namespace sfs = std::filesystem;
 namespace agi::fs {
+bool IsMountPoint(path const& directory) {
+	auto full_path = Absolute(directory).lexically_normal();
+	auto parent = (full_path / "..").lexically_normal();
+	struct stat current_stat, parent_stat;
+
+	return stat(full_path.c_str(), &current_stat) == 0 && S_ISDIR(current_stat.st_mode) &&
+	       stat(parent.c_str(), &parent_stat) == 0 &&
+	       (full_path == parent || current_stat.st_dev != parent_stat.st_dev);
+}
+
 std::string ShortName(path const& p) {
 	return p.string();
 }
