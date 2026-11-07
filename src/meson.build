@@ -105,6 +105,7 @@ aegisub_src = files(
     'preferences.cpp',
     'preferences_base.cpp',
     'project.cpp',
+    'project_properties.cpp',
     'provider_file_formats.cpp',
     'resolution_resampler.cpp',
     'search_replace_engine.cpp',

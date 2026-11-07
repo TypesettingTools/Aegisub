@@ -16,6 +16,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 
 struct ProjectProperties {
 	std::string automation_scripts;
@@ -35,4 +36,6 @@ struct ProjectProperties {
 	int active_row = 0;
 	int ar_mode = 0;
 	int video_position = 0;
+	bool ParseProperty(std::string const& key, std::string const& value);
+	std::vector<std::string> Serialize(bool save_ui) const;
 };

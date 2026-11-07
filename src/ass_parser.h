@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include <memory>
 #include <string>
 
 #include "ass_entry.h"
@@ -22,9 +21,6 @@
 class AssFile;
 
 class AssParser {
-	class HeaderToProperty;
-	std::unique_ptr<HeaderToProperty> property_handler;
-
 	AssFile *target;
 	int version;
 

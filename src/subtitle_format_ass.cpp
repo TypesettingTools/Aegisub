@@ -91,35 +91,8 @@ struct Writer {
 		file.WriteLineToFile("");
 		file.WriteLineToFile("[Aegisub Project Garbage]");
 
-		WriteIfNotEmpty("Automation Scripts: ", properties.automation_scripts);
-		WriteIfNotEmpty("Export Filters: ", properties.export_filters);
-		WriteIfNotEmpty("Export Encoding: ", properties.export_encoding);
-		WriteIfNotEmpty("Last Style Storage: ", properties.style_storage);
-		WriteIfNotEmpty("Audio File: ", properties.audio_file);
-		WriteIfNotEmpty("Video File: ", properties.video_file);
-		WriteIfNotEmpty("Timecodes File: ", properties.timecodes_file);
-		WriteIfNotEmpty("Keyframes File: ", properties.keyframes_file);
-
-		WriteIfNotZero("Video AR Mode: ", properties.ar_mode);
-		WriteIfNotZero("Video AR Value: ", properties.ar_value);
-
-		if (OPT_GET("App/Save UI State")->GetBool()) {
-			WriteIfNotZero("Video Zoom Percent: ", properties.video_zoom);
-			WriteIfNotZero("Scroll Position: ", properties.scroll_position);
-			WriteIfNotZero("Active Line: ", properties.active_row);
-			WriteIfNotZero("Video Position: ", properties.video_position);
-		}
-	}
-
-	void WriteIfNotEmpty(const char *key, std::string const& value) {
-		if (!value.empty())
-			file.WriteLineToFile(key + value);
-	}
-
-	template<typename Number>
-	void WriteIfNotZero(const char *key, Number n) {
-		if (n != Number{})
-			file.WriteLineToFile(key + std::to_string(n));
+		for (auto const& line : properties.Serialize(OPT_GET("App/Save UI State")->GetBool()))
+			file.WriteLineToFile(line);
 	}
 
 	void WriteExtradata(std::vector<ExtradataEntry> const& extradata) {
