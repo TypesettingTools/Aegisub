@@ -118,6 +118,7 @@ aegisub_src = files(
     'subs_edit_ctrl.cpp',
     'subs_preview.cpp',
     'subtitle_format.cpp',
+    'subtitle_format_registry.cpp',
     'subtitle_format_ass.cpp',
     'subtitle_format_ebu3264.cpp',
     'subtitle_format_encore.cpp',
