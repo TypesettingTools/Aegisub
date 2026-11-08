@@ -189,6 +189,10 @@ bool CreateDirectory(path const& dir_path);
 /// time if it does
 void Touch(path const& file_path);
 
+/// Set the hidden attribute on Windows. Does nothing on other platforms.
+/// @throws agi::fs::WriteDenied if the attribute cannot be set
+void MakeHidden(path const& file_path);
+
 /// Rename a file or directory
 /// @param from Source path
 /// @param to   Destination path

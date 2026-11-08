@@ -27,6 +27,8 @@
 
 namespace sfs = std::filesystem;
 namespace agi::fs {
+void MakeHidden(path const&) { }
+
 bool IsMountPoint(path const& directory) {
 	auto full_path = Absolute(directory).lexically_normal();
 	auto parent = (full_path / "..").lexically_normal();

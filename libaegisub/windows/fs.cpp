@@ -31,6 +31,13 @@ using agi::charset::ConvertLocal;
 #undef CreateDirectory
 
 namespace agi { namespace fs {
+void MakeHidden(path const& file) {
+	auto attributes = GetFileAttributesW(file.c_str());
+	if (attributes == INVALID_FILE_ATTRIBUTES ||
+	    !SetFileAttributesW(file.c_str(), (attributes & ~FILE_ATTRIBUTE_NORMAL) | FILE_ATTRIBUTE_HIDDEN))
+		throw WriteDenied("Could not hide " + file.string() + ": " + util::ErrorString(GetLastError()));
+}
+
 bool IsMountPoint(path const& directory) {
 	auto full_path = Absolute(directory).lexically_normal();
 	auto attributes = GetFileAttributesW(full_path.c_str());
