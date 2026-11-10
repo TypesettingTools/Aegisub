@@ -22,28 +22,45 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <system_error>
 
+#ifdef _WIN32
+#include <winerror.h>
+#endif
+
 namespace sfs = std::filesystem;
 
 namespace agi::fs {
 namespace {
 void check_error(std::error_code ec, const char *exp, path const& src_path, path const& dst_path) {
 	if (ec == std::error_code{}) return;
-	using enum std::errc;
-	switch (ec.value()) {
-		case int(no_such_file_or_directory): throw FileNotFound(src_path);
-		case int(is_a_directory): throw NotAFile(src_path);
-		case int(not_a_directory): throw NotADirectory(src_path);
-		case int(no_space_on_device): throw DriveFull(dst_path);
-		case int(permission_denied):
-			if (!src_path.empty())
-				acs::CheckFileRead(src_path);
-			if (!dst_path.empty())
-				acs::CheckFileWrite(dst_path);
-			throw AccessDenied(src_path);
-		default:
-			LOG_D("filesystem") << "Unknown error when calling '" << exp << "': " << ec << ": " << ec.message();
-			throw FileSystemUnknownError(ec.message());
+
+	if (ec.category() == std::generic_category()) {
+		switch (ec.value()) {
+			using enum std::errc;
+			case int(no_such_file_or_directory): throw FileNotFound(src_path);
+			case int(is_a_directory): throw NotAFile(src_path);
+			case int(not_a_directory): throw NotADirectory(src_path);
+			case int(no_space_on_device): throw DriveFull(dst_path);
+			case int(permission_denied):
+				if (!src_path.empty())
+					acs::CheckFileRead(src_path);
+				if (!dst_path.empty())
+					acs::CheckFileWrite(dst_path);
+				throw AccessDenied(src_path);
+		}
+	} else if (ec.category() == std::system_category()) {
+		switch (ec.value()) {
+#ifdef _WIN32
+			case ERROR_FILE_NOT_FOUND:
+				throw FileNotFound(src_path);
+			case ERROR_ACCESS_DENIED:
+				// We intentionally do not check for read/write access here as this can break when the file
+				// is locked by another thread or process
+				throw AccessDenied(dst_path);
+#endif
+		}
 	}
+	LOG_D("filesystem") << "Unknown error when calling '" << exp << "': " << ec << ": " << ec.message();
+	throw FileSystemUnknownError(ec.message());
 }
 
 // std::filesystem functions throw a single exception type for all
