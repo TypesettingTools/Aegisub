@@ -250,6 +250,7 @@ static bool check(std::string_view context, agi::Context *c, int key_code, int m
 }
 
 bool check(std::string_view context, agi::Context *c, wxKeyEvent &evt) {
+	evt.Skip(false);
 	try {
 		if (!check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
 			evt.Skip();
