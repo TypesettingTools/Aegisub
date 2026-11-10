@@ -250,17 +250,15 @@ static bool check(std::string_view context, agi::Context *c, int key_code, int m
 }
 
 bool check(std::string_view context, agi::Context *c, wxKeyEvent &evt) {
+	evt.Skip(false);
 	try {
 		if (!check(context, c, evt.GetKeyCode(), evt.GetModifiers())) {
 			evt.Skip();
 			return false;
 		}
-		// A previous context may have skipped this same event before we matched it.
-		evt.Skip(false);
 		return true;
 	}
 	catch (cmd::CommandNotFound const& e) {
-		evt.Skip(false);
 		wxMessageBox(to_wx(e.GetMessage()), _("Invalid command name for hotkey"),
 			wxOK | wxICON_ERROR | wxCENTER | wxSTAY_ON_TOP);
 		return true;
