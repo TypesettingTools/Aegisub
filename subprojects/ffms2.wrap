@@ -1,6 +1,6 @@
 [wrap-git]
-url = https://github.com/FFMS/ffms2.git
-revision = head
+url = https://github.com/moi15moi/ffms2.git
+revision = Add-FFMS_GetContainerFirstTimeI
 patch_directory = ffms2
 
 [provide]
