@@ -48,7 +48,8 @@ if host_machine.system() == 'windows'
     # The CRT must be linked dynamically (the default): the automation code
     # assumes the app and LuaJIT's ffi.C use the same CRT, which doesn't hold
     # when the CRT is statically linked.
-    add_project_arguments('-DUNICODE', '-DNOMINMAX', '-D_WIN32_WINNT=0x0602', language: 'cpp')
+    # The oldest supported Windows is Windows 10 version 1809 (NTDDI_WIN10_RS5).
+    add_project_arguments('-DUNICODE', '-DNOMINMAX', '-D_WIN32_WINNT=0x0A00', '-DNTDDI_VERSION=0x0A000006', language: 'cpp')
 
     if not get_option('csri').disabled()
         add_global_arguments('-DCSRI_NO_EXPORT', language: 'c')
