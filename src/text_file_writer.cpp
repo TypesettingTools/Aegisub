@@ -28,7 +28,8 @@
 namespace {
 /// Get the line endings used by the file being overwritten, if any, so that
 /// they can be preserved when rewriting it. Files written from scratch always
-/// get "\n" regardless of the platform.
+/// get "\n" regardless of the platform. The result is already in the target
+/// encoding.
 std::string DetectExistingNewline(agi::fs::path const& filename, agi::charset::IconvWrapper *conv) {
 	std::string cr("\r"), lf("\n");
 	if (conv) {
@@ -44,14 +45,14 @@ std::string DetectExistingNewline(agi::fs::path const& filename, agi::charset::I
 			std::string_view buff(data.data(), data.size());
 			auto pos = buff.find(lf);
 			if (pos != buff.npos && pos >= cr.size() && buff.substr(pos - cr.size(), cr.size()) == cr)
-				return "\r\n";
+				return cr + lf;
 		}
 	}
 	catch (agi::Exception const&) {
 		// The file doesn't exist or can't be read, so just use the default
 	}
 
-	return "\n";
+	return lf;
 }
 }
 
@@ -64,8 +65,6 @@ TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encodi
 		conv = std::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.data(), true);
 
 	newline = DetectExistingNewline(filename, conv.get());
-	if (conv)
-		newline = conv->Convert(newline);
 
 	try {
 		// Write the BOM
