@@ -129,6 +129,10 @@ def test_resample_without_video(aegisub, srcdir, env, tmp):
         return fail("resample without video: an output file was written anyway")
     return 0
 
+# Caches that CLI mode may write, since they're disposable and only speed up
+# later runs. On some platforms ?cache is the same directory as ?user.
+CACHE_DIRS = {"auto4cache", "ffms2cache"}
+
 def test_no_user_state(aegisub, srcdir, env, tmp):
     # None of the runs above may have written config, hotkeys, MRU lists,
     # logs etc. into any of the user's directories
@@ -138,7 +142,8 @@ def test_no_user_state(aegisub, srcdir, env, tmp):
                      os.path.join(tmp, ".cache", "aegisub"),
                      os.path.join(tmp, ".local", "state", "aegisub"),
                      os.path.join(tmp, "Library", "Application Support", "Aegisub")):
-        for root, _, files in os.walk(user_dir):
+        for root, dirs, files in os.walk(user_dir):
+            dirs[:] = [d for d in dirs if d not in CACHE_DIRS]
             written += [os.path.join(root, f) for f in files]
     if written:
         return fail("files were written to the user's config directory:\n" + "\n".join(written))
