@@ -17,9 +17,25 @@
 #include "video_frame.h"
 
 #include <boost/gil.hpp>
+#include <cstring>
 #include <wx/image.h>
 
 namespace {
+	class HeapStorage final : public FrameStorage {
+		std::unique_ptr<unsigned char[]> memory;
+		size_t capacity;
+
+	public:
+		explicit HeapStorage(size_t capacity)
+		: memory(new unsigned char[capacity])
+		, capacity(capacity)
+		{
+		}
+
+		unsigned char *Data() const override { return memory.get(); }
+		size_t Capacity() const override { return capacity; }
+	};
+
 	// We actually have bgr_, not bgra, so we need a custom converter which ignores the alpha channel
 	struct color_converter {
 		template <typename P1, typename P2>
@@ -31,6 +47,65 @@ namespace {
 				get_color(src, blue_t()));
 		}
 	};
+}
+
+std::unique_ptr<FrameStorage> FrameBuffer::NewStorage(size_t size) const {
+	if (allocator) {
+		if (auto allocated = allocator(size); allocated && allocated->Capacity() >= size)
+			return allocated;
+	}
+	return std::make_unique<HeapStorage>(size);
+}
+
+FrameBuffer::FrameBuffer(FrameBuffer const& other) {
+	assign(other.data(), other.data() + other.size());
+}
+
+FrameBuffer::FrameBuffer(FrameBuffer&& other) noexcept
+: storage(std::move(other.storage))
+, used(other.used)
+{
+	other.used = 0;
+}
+
+FrameBuffer& FrameBuffer::operator=(FrameBuffer const& other) {
+	if (this != &other)
+		assign(other.data(), other.data() + other.size());
+	return *this;
+}
+
+FrameBuffer& FrameBuffer::operator=(FrameBuffer&& other) noexcept {
+	if (this != &other) {
+		storage = std::move(other.storage);
+		used = other.used;
+		other.used = 0;
+	}
+	return *this;
+}
+
+void FrameBuffer::assign(const unsigned char *first, const unsigned char *last) {
+	size_t size = last - first;
+	if (!storage || storage->Capacity() < size) {
+		// Free the old memory first, as frames can be large
+		storage.reset();
+		used = 0;
+		storage = NewStorage(size);
+	}
+	if (size)
+		memcpy(storage->Data(), first, size);
+	used = size;
+}
+
+void FrameBuffer::resize(size_t size, unsigned char value) {
+	if (!storage || storage->Capacity() < size) {
+		auto new_storage = NewStorage(size);
+		if (used)
+			memcpy(new_storage->Data(), storage->Data(), used);
+		storage = std::move(new_storage);
+	}
+	if (size > used)
+		memset(storage->Data() + used, value, size - used);
+	used = size;
 }
 
 wxImage GetImage(VideoFrame const& frame) {

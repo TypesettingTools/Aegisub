@@ -511,6 +511,9 @@ void Advanced_Video(wxTreebook *book, Preferences *parent) {
 
 	wxArrayString sp_choice = to_wx(SubtitlesProviderFactory::GetClasses());
 	p->OptionChoice(expert, _("Subtitles provider"), sp_choice, "Subtitle/Provider");
+#ifdef WITH_CSRI
+	p->OptionAdd(expert, _("VSFilter memory limit (MB)"), "Provider/CSRI/Memory Max", {.min = 256});
+#endif
 
 #ifdef WITH_AVISYNTH
 	auto avisynth = p->PageSizer("Avisynth");
