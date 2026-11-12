@@ -408,10 +408,6 @@ if host_machine.system() == 'windows' and not get_option('directsound').disabled
     endif
 endif
 
-if host_machine.system() == 'windows' and cc.has_header('dwrite_3.h')
-    conf.set('HAVE_DWRITE_3', 1)
-endif
-
 if host_machine.system() == 'darwin'
     deps += dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon', 'IOKit', 'QuartzCore'])
     deps += dependency('appleframeworks', modules : ['ScreenCaptureKit'], required : false)

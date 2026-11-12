@@ -38,7 +38,6 @@
 #include <libaegisub/dispatch.h>
 #include <libaegisub/exception.h>
 #include <libaegisub/line_iterator.h>
-#include <libaegisub/scoped_ptr.h>
 #include <libaegisub/split.h>
 
 #include <ctime>
@@ -174,26 +173,12 @@ static std::string GetOSShortName() {
 	wxOperatingSystemId osid = wxGetOsVersion(&osver_maj, &osver_min, &osver_micro);
 
 	if (osid & wxOS_WINDOWS_NT) {
-		if (osver_maj == 5 && osver_min == 0)
-			return "win2k";
-		else if (osver_maj == 5 && osver_min == 1)
-			return "winxp";
-		else if (osver_maj == 5 && osver_min == 2)
-			return "win2k3"; // this is also xp64
-		else if (osver_maj == 6 && osver_min == 0)
-			return "win60"; // vista and server 2008
-		else if (osver_maj == 6 && osver_min == 1)
-			return "win61"; // 7 and server 2008r2
-		else if (osver_maj == 6 && osver_min == 2)
-			return "win62"; // 8 and server 2012
-		else if (osver_maj == 6 && osver_min == 3)
-			return "win63"; // 8.1 and server 2012r2
-		else if (osver_maj == 10 && osver_min == 0 && osver_micro >= 22000)
+		if (osver_maj == 10 && osver_min == 0 && osver_micro >= 22000)
 			return "win11"; // 11 and server 2025; micro is the build number
 		else if (osver_maj == 10 && osver_min == 0)
 			return "win10"; // 10 and server 2016/2019/2022
 		else
-			return "windows"; // future proofing? I doubt we run on nt4
+			return "windows"; // future proofing
 	}
 	else if (osid & wxOS_MAC_OSX_DARWIN)
 		return agi::format("osx%d.%d", osver_maj, osver_min); // e.g. osx10.15, osx15.6
@@ -222,22 +207,13 @@ static std::string GetOSShortName() {
 }
 
 #ifdef WIN32
-typedef BOOL (WINAPI * PGetUserPreferredUILanguages)(DWORD dwFlags, PULONG pulNumLanguages, wchar_t *pwszLanguagesBuffer, PULONG pcchLanguagesBuffer);
-
-// Try using Win 6+ functions if available
 static wxString GetUILanguage() {
-	agi::scoped_holder<HMODULE, BOOL (__stdcall *)(HMODULE)> kernel32(LoadLibraryW(L"kernel32.dll"), FreeLibrary);
-	if (!kernel32) return "";
-
-	PGetUserPreferredUILanguages gupuil = (PGetUserPreferredUILanguages)GetProcAddress(kernel32, "GetUserPreferredUILanguages");
-	if (!gupuil) return "";
-
 	ULONG numlang = 0, output_len = 0;
-	if (gupuil(MUI_LANGUAGE_NAME, &numlang, 0, &output_len) != TRUE || !output_len)
+	if (!GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numlang, nullptr, &output_len) || !output_len)
 		return "";
 
 	std::vector<wchar_t> output(output_len);
-	if (!gupuil(MUI_LANGUAGE_NAME, &numlang, &output[0], &output_len) || numlang < 1)
+	if (!GetUserPreferredUILanguages(MUI_LANGUAGE_NAME, &numlang, &output[0], &output_len) || numlang < 1)
 		return "";
 
 	// We got at least one language, just treat it as the only, and a null-terminated string
@@ -247,7 +223,7 @@ static wxString GetUILanguage() {
 static wxString GetSystemLanguage() {
 	wxString res = GetUILanguage();
 	if (!res)
-		// On an old version of Windows, let's just return the LANGID as a string
+		// If that failed, just return the LANGID as a string
 		res = fmt_wx("x-win%04x", GetUserDefaultUILanguage());
 
 	return res;

@@ -110,10 +110,10 @@ void RestartAegisub() {
 #endif
 
 bool ForwardMouseWheelEvent([[maybe_unused]] wxWindow *source, [[maybe_unused]] wxMouseEvent &evt) {
-	// ForwardMouseWheelEvent is needed on Windows 8 and earlier because mouse wheel events
-	// are sent to the focused window rather than the window under the cursor on these versions.
-	// However, it breaks scrolling on other platforms, in particular on Wayland.
-	// After the next stable release we will drop support for Windows 8, but for now we just restrict this logic to Windows.
+	// ForwardMouseWheelEvent is needed on Windows when "Scroll inactive windows when I hover
+	// over them" is turned off, as mouse wheel events are then sent to the focused window
+	// rather than the window under the cursor. However, it breaks scrolling on other
+	// platforms, in particular on Wayland, so it's only done on Windows.
 #ifdef __WXMSW__
 	wxWindow *target = wxFindWindowAtPoint(wxGetMousePosition());
 	if (!target || target == source) return true;
