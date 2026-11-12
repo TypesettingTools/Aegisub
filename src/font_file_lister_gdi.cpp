@@ -18,13 +18,9 @@
 
 #include <libaegisub/charset_conv_win.h>
 
-#include <dwrite.h>
+#include <dwrite_3.h>
 #include <wchar.h>
 #include <windowsx.h>
-
-#ifdef HAVE_DWRITE_3
-#include <dwrite_3.h>
-#endif
 
 /// @brief Normalize the case of a file path.
 /// @param path The path to be normalized. It can be a directory or a file.
@@ -65,7 +61,6 @@ std::wstring normalizeFilePathCase(std::wstring const& path) {
 
 GdiFontFileLister::GdiFontFileLister(FontCollectorStatusCallback &)
 : dwrite_factory_sh(nullptr, [](IDWriteFactory* p) { p->Release(); })
-, font_collection_sh(nullptr, [](IDWriteFontCollection* p) { p->Release(); })
 , dc_sh(nullptr, [](HDC dc) { DeleteDC(dc); })
 , gdi_interop_sh(nullptr, [](IDWriteGdiInterop* p) { p->Release(); })
 {
@@ -73,11 +68,6 @@ GdiFontFileLister::GdiFontFileLister(FontCollectorStatusCallback &)
 	if (FAILED(DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory), reinterpret_cast<IUnknown**>(&dwrite_factory))))
 		throw agi::EnvironmentError("Failed to initialize the DirectWrite Factory");
 	dwrite_factory_sh = dwrite_factory;
-
-	IDWriteFontCollection* font_collection;
-	if (FAILED(dwrite_factory_sh->GetSystemFontCollection(&font_collection, true)))
-		throw agi::EnvironmentError("Failed to initialize the system font collection");
-	font_collection_sh = font_collection;
 
 	HDC dc = CreateCompatibleDC(nullptr);
 	if (dc == nullptr)
@@ -133,40 +123,16 @@ CollectionResult GdiFontFileLister::GetFontPaths(std::string const& facename, in
 	ret.fake_italic = font_face_sh->GetSimulations() & DWRITE_FONT_SIMULATIONS_OBLIQUE;
 	ret.fake_bold = font_face_sh->GetSimulations() & DWRITE_FONT_SIMULATIONS_BOLD;
 
-	bool is_query_font_face_3_succeeded = false;
-#ifdef HAVE_DWRITE_3
-	// Fonts added via the AddFontResource API are not included in the IDWriteFontCollection.
-	// This omission causes GetFontFromFontFace to fail.
-	// This issue is unavoidable on Windows 8 or lower.
-	// However, on Windows 10 or higher, we address this by querying IDWriteFontFace to IDWriteFontFace3.
-	// From this new instance, we can verify font character(s) availability.
-
+	// Checked through IDWriteFontFace3 rather than the system font collection,
+	// which doesn't include fonts added with AddFontResource
 	IDWriteFontFace3* font_face_3;
-	if (SUCCEEDED(font_face_sh->QueryInterface(__uuidof(IDWriteFontFace3), (void**)&font_face_3))) {
-		agi::scoped_holder<IDWriteFontFace3*> font_face_3_sh(font_face_3, [](IDWriteFontFace3* p) { p->Release(); });
-		is_query_font_face_3_succeeded = true;
+	if (FAILED(font_face_sh->QueryInterface(__uuidof(IDWriteFontFace3), (void**)&font_face_3)))
+		return ret;
+	agi::scoped_holder<IDWriteFontFace3*> font_face_3_sh(font_face_3, [](IDWriteFontFace3* p) { p->Release(); });
 
-		for (int character : characters) {
-			if (!font_face_3_sh->HasCharacter((UINT32)character)) {
-				ret.missing += character;
-			}
-		}
-	}
-#endif
-
-	if (!is_query_font_face_3_succeeded) {
-		IDWriteFont* font;
-		if (FAILED(font_collection_sh->GetFontFromFontFace(font_face_sh, &font)))
-			return ret;
-		agi::scoped_holder<IDWriteFont*> font_sh(font, [](IDWriteFont* p) { p->Release(); });
-
-		BOOL exists;
-		HRESULT hr;
-		for (int character : characters) {
-			hr = font_sh->HasCharacter((UINT32)character, &exists);
-			if (FAILED(hr) || !exists)
-				ret.missing += character;
-		}
+	for (int character : characters) {
+		if (!font_face_3_sh->HasCharacter((UINT32)character))
+			ret.missing += character;
 	}
 
 	UINT32 file_count = 1;

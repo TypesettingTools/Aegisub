@@ -46,7 +46,6 @@ struct CollectionResult {
 class GdiFontFileLister {
 	agi::scoped_holder<HDC> dc_sh;
 	agi::scoped_holder<IDWriteFactory*> dwrite_factory_sh;
-	agi::scoped_holder<IDWriteFontCollection*> font_collection_sh;
 	agi::scoped_holder<IDWriteGdiInterop*> gdi_interop_sh;
 
 public:

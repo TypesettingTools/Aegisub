@@ -10,6 +10,8 @@ Support is available on [Discord](https://discord.com/invite/AZaVyPr) or [IRC](i
 
 ### Windows
 
+Aegisub requires Windows 10 version 1809 (build 17763) or newer.
+
 Prerequisites:
 
 1. Visual Studio (Community edition of any recent version is fine, needs the Windows SDK included)

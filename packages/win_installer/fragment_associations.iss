@@ -126,8 +126,8 @@ Root: HKLM; Subkey: "SOFTWARE\Aegisub\Capabilities\FileAssociations"; ValueType:
 Root: HKLM; Subkey: "SOFTWARE\Aegisub\Capabilities\FileAssociations"; ValueType: string; ValueName: ".mks"; ValueData: "Aegisub.MKS.1"
 Root: HKLM; Subkey: "SOFTWARE\RegisteredApplications"; ValueType: string; ValueName: "Aegisub"; ValueData: "SOFTWARE\Aegisub\Capabilities"; Flags: uninsdeletevalue
 ; Default handler for .ass
-; Only register us as owner of the type if there isn't one already. Windows XP doesn't cooperate well when a type has no owner,
-; even if everything else exists. If it already has an owner, use some other UI to take over ownership if the user desires.
+; Only register us as owner of the type if there isn't one already. If it already has an owner, use some other UI to take over
+; ownership if the user desires.
 ; Only set perceived types for the main text-based subtitle formats.
 ; We only have a template file for .ass, that's the primary subtitle format.
 ; Register us as a valid ProgID for every type we can reasonably handle, and a few we might not be able to.
