@@ -19,6 +19,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "export_fixstyle.h"
+#include "options.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
 #include "video_provider_manager.h"
@@ -240,6 +241,10 @@ bool AsyncVideoProvider::NeedUpdate(std::vector<AssDialogueBase const*> const& v
 }
 
 void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version, bool check_updated) {
+	// There is no event loop to deliver the rendered frame to in CLI mode,
+	// and queueing wx events without a wxApp crashes
+	if (!config::hasGui) return;
+
 	// Only actually produce the frame if there's no queued changes waiting
 	if (req_version < version || frame_number < 0) return;
 
