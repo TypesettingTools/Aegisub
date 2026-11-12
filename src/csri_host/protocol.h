@@ -45,7 +45,8 @@ enum class Command : uint32_t {
 	LoadSubtitles = 3,
 	/// Map the section_size byte section which Aegisub has duplicated into
 	/// the host process as section_handle, as buffer number `buffer`. Any
-	/// existing buffer with that number is unmapped first.
+	/// existing buffer with that number is unmapped first. The host owns
+	/// section_handle from then on, and closes it when the buffer is unmapped.
 	MapBuffer = 4,
 	/// Unmap buffer number `buffer`
 	UnmapBuffer = 5,
