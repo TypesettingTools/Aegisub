@@ -298,8 +298,10 @@ int normalize_pos(std::string const& text, int pos) {
 template<typename Func>
 void update_lines(const agi::Context *c, wxString const& undo_msg, Func&& f) {
 	const auto active_line = c->selectionController->GetActiveLine();
-	const int sel_start = c->textSelectionController->GetSelectionStart();
-	const int sel_end = c->textSelectionController->GetSelectionEnd();
+	const auto& sel = c->selectionController->GetSelectedSet();
+	// An active line's character offsets may fall inside tags or beyond other lines.
+	const int sel_start = sel.size() > 1 ? 0 : c->textSelectionController->GetSelectionStart();
+	const int sel_end = sel.size() > 1 ? 0 : c->textSelectionController->GetSelectionEnd();
 	const int norm_sel_start = normalize_pos(active_line->Text, sel_start);
 	const int norm_sel_end = normalize_pos(active_line->Text, sel_end);
 	int active_sel_shift = 0;
@@ -310,7 +312,6 @@ void update_lines(const agi::Context *c, wxString const& undo_msg, Func&& f) {
 			active_sel_shift = shift;
 	}
 
-	auto const& sel = c->selectionController->GetSelectedSet();
 	c->ass->Commit(undo_msg, AssFile::COMMIT_DIAG_TEXT, -1, sel.size() == 1 ? *sel.begin() : nullptr);
 	if (active_sel_shift != 0)
 		c->textSelectionController->SetSelection(sel_start + active_sel_shift, sel_end + active_sel_shift);
@@ -336,11 +337,11 @@ void toggle_override_tag(const agi::Context *c, bool (AssStyle::*field), const c
 void show_color_picker(const agi::Context *c, agi::Color (AssStyle::*field), const char *tag, const char *alt, const char *alpha) {
 	agi::Color initial_color;
 	const auto active_line = c->selectionController->GetActiveLine();
-	const int sel_start = c->textSelectionController->GetSelectionStart();
-	const int sel_end = c->textSelectionController->GetSelectionStart();
+	auto const& sel = c->selectionController->GetSelectedSet();
+	const int sel_start = sel.size() > 1 ? 0 : c->textSelectionController->GetSelectionStart();
+	const int sel_end = sel.size() > 1 ? 0 : c->textSelectionController->GetSelectionEnd();
 	const int norm_sel_start = normalize_pos(active_line->Text, sel_start);
 
-	auto const& sel = c->selectionController->GetSelectedSet();
 	using line_info = std::pair<agi::Color, parsed_line>;
 	std::vector<line_info> lines;
 	for (auto line : sel) {
@@ -490,7 +491,8 @@ struct edit_font final : public Command {
 
 	void operator()(agi::Context *c) override {
 		const parsed_line active(c->selectionController->GetActiveLine());
-		const int insertion_point = normalize_pos(active.line->Text, c->textSelectionController->GetInsertionPoint());
+		const int insertion_point = c->selectionController->GetSelectedSet().size() > 1 ? 0 :
+			normalize_pos(active.line->Text, c->textSelectionController->GetInsertionPoint());
 
 		auto font_for_line = [&](parsed_line const& line) -> wxFont {
 			const int blockn = line.block_at_pos(insertion_point);
