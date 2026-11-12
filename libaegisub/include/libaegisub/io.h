@@ -33,6 +33,8 @@ class Save {
 	const agi::fs::path tmp_name;
 	bool disposable;
 
+	int uncaught_exceptions = 0;
+
 public:
 	/// @brief Opens an ostream to a temporary file that is moved to the target path when this object goes out of scope
 	/// @param file The target path
