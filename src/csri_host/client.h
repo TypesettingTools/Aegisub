@@ -24,9 +24,6 @@ struct Error : std::runtime_error {
 	using std::runtime_error::runtime_error;
 };
 
-/// Whether hosts can be run on this version of Windows
-bool Supported();
-
 /// Allocates frame memory which hosts can draw on without copying it. Hosts
 /// can write to it at any time once they've drawn on it, so it mustn't be
 /// used for anything but frames which subtitles are drawn on.

@@ -187,16 +187,8 @@ void CSRISubtitlesProvider::ResetReportedErrors() {
 }
 
 namespace csri {
-bool Supported() {
-	return csri_host::Supported();
-}
-
 std::vector<std::string> List() {
 	std::vector<std::string> final;
-	if (!Supported()) {
-		LOG_I("subtitle/provider/csri") << "CSRI renderers require Windows 10 version 1809 or newer";
-		return final;
-	}
 	try {
 		// Not the configured limit, as this host is never given a script, and
 		// failing here leaves CSRI unavailable until Aegisub is restarted

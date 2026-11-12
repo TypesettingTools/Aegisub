@@ -20,17 +20,6 @@
 /// text, so a kernel bug reachable through GDI remains a way out.
 
 #define WIN32_LEAN_AND_MEAN
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-// AppContainers and most of the mitigation policies are only declared for
-// newer targets. Everything newer than Windows 7 is either loaded at runtime
-// or only used after checking the Windows version, so that Aegisub itself
-// still starts on older versions.
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0A00
-#undef NTDDI_VERSION
-#define NTDDI_VERSION 0x0A000002 // NTDDI_WIN10_RS1
 #include <windows.h>
 #include <aclapi.h>
 #include <combaseapi.h>
@@ -98,41 +87,6 @@ std::string error_string(DWORD err) {
 	throw Error(std::string(what) + ": " + error_string(err));
 }
 
-bool supported_windows_version() {
-	// GetVersionEx lies depending on the manifest, so ask ntdll directly
-	using RtlGetVersionFn = LONG (WINAPI *)(OSVERSIONINFOW *);
-	auto ntdll = GetModuleHandleW(L"ntdll.dll");
-	auto get_version = ntdll ? reinterpret_cast<RtlGetVersionFn>(GetProcAddress(ntdll, "RtlGetVersion")) : nullptr;
-	OSVERSIONINFOW info{};
-	info.dwOSVersionInfoSize = sizeof info;
-	if (!get_version || get_version(&info) != 0)
-		return false;
-	// Before version 1809, CreateProcess fails when given both an AppContainer
-	// and mitigation policies
-	return info.dwMajorVersion > 10 || (info.dwMajorVersion == 10 && info.dwBuildNumber >= 17763);
-}
-
-struct UserEnv {
-	decltype(&CreateAppContainerProfile) create = nullptr;
-	decltype(&DeleteAppContainerProfile) remove = nullptr;
-	decltype(&GetAppContainerFolderPath) folder = nullptr;
-	decltype(&DeriveAppContainerSidFromAppContainerName) derive = nullptr;
-
-	UserEnv() {
-		// userenv's AppContainer functions don't exist on Windows 7, so they
-		// can't be linked directly
-		auto userenv = LoadLibraryExW(L"userenv.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
-		if (!userenv)
-			throw_win32("Could not load userenv.dll");
-		create = reinterpret_cast<decltype(create)>(GetProcAddress(userenv, "CreateAppContainerProfile"));
-		remove = reinterpret_cast<decltype(remove)>(GetProcAddress(userenv, "DeleteAppContainerProfile"));
-		folder = reinterpret_cast<decltype(folder)>(GetProcAddress(userenv, "GetAppContainerFolderPath"));
-		derive = reinterpret_cast<decltype(derive)>(GetProcAddress(userenv, "DeriveAppContainerSidFromAppContainerName"));
-		if (!create || !remove || !folder || !derive)
-			throw Error("AppContainers are not supported on this version of Windows");
-	}
-};
-
 /// The creation time of a process, which together with its pid identifies it
 ULONGLONG process_creation_time(HANDLE process) {
 	FILETIME created, exited, kernel, user;
@@ -157,7 +111,7 @@ bool container_owner_running(DWORD pid, ULONGLONG creation_time) {
 
 /// Delete the AppContainer profiles of Aegisub processes which exited without
 /// cleaning them up
-void delete_stale_containers(UserEnv const& userenv) {
+void delete_stale_containers() {
 	HKEY key;
 	if (RegOpenKeyExW(HKEY_CURRENT_USER, container_mappings_key, 0, KEY_READ, &key) != ERROR_SUCCESS)
 		return;
@@ -193,7 +147,7 @@ void delete_stale_containers(UserEnv const& userenv) {
 	RegCloseKey(key);
 
 	for (auto const& name : stale)
-		userenv.remove(name.c_str());
+		DeleteAppContainerProfile(name.c_str());
 }
 
 /// Whether the DACL lets every AppContainer read and execute the file
@@ -281,17 +235,13 @@ std::wstring system_directory() {
 
 /// Per-session setup shared by all hosts
 struct Environment {
-	UserEnv userenv;
 	std::wstring exe;
 	std::wstring working_directory;
 	/// Name of this process's AppContainer profile
 	std::wstring container_name;
 
 	Environment() {
-		if (!supported_windows_version())
-			throw Error("Sandboxed CSRI renderers require Windows 10 version 1809 or newer");
-
-		delete_stale_containers(userenv);
+		delete_stale_containers();
 		wchar_t name[64];
 		swprintf_s(name, L"%ls%lu.%llx", csri_host::container_prefix,
 			GetCurrentProcessId(), process_creation_time(GetCurrentProcess()));
@@ -322,7 +272,7 @@ std::wstring container_folder(PSID sid) {
 	std::unique_ptr<void, local_freer> sid_string_holder(sid_string);
 
 	wchar_t *path = nullptr;
-	HRESULT hr = environment().userenv.folder(sid_string, &path);
+	HRESULT hr = GetAppContainerFolderPath(sid_string, &path);
 	if (FAILED(hr))
 		throw Error("Could not get the subtitle renderer's AppContainer folder: " + error_string(static_cast<DWORD>(hr)));
 	std::wstring folder = path;
@@ -351,7 +301,7 @@ class Container {
 	static void release(Shared& s) {
 		FreeSid(s.sid);
 		s.sid = nullptr;
-		environment().userenv.remove(environment().container_name.c_str());
+		DeleteAppContainerProfile(environment().container_name.c_str());
 	}
 
 	PSID sid;
@@ -367,11 +317,11 @@ public:
 		if (s.users == 0) {
 			auto& env = environment();
 			auto name = env.container_name.c_str();
-			HRESULT hr = env.userenv.create(name, L"Aegisub subtitle renderer",
+			HRESULT hr = CreateAppContainerProfile(name, L"Aegisub subtitle renderer",
 				L"Sandbox for a third-party subtitle renderer used by Aegisub", nullptr, 0, &s.sid);
 			// Deleting it failed when the last host exited
 			if (hr == HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS))
-				hr = env.userenv.derive(name, &s.sid);
+				hr = DeriveAppContainerSidFromAppContainerName(name, &s.sid);
 			if (FAILED(hr))
 				throw Error("Could not create an AppContainer for the subtitle renderer: " + error_string(static_cast<DWORD>(hr)));
 		}
@@ -855,10 +805,6 @@ bool Host::Impl::Render(SharedFrameStorage const& buffer, uint32_t width, uint32
 	req.flipped = flipped;
 	req.time = time;
 	return Call(req).status == Status::Ok;
-}
-
-bool Supported() {
-	return supported_windows_version();
 }
 
 Host::Host(uint64_t memory_limit) : impl(std::make_unique<Impl>(memory_limit)) { }

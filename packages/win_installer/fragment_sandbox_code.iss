@@ -12,7 +12,7 @@ const
   ERROR_INVALID_PARAMETER = 87;
 
 function DeleteAppContainerProfile(pszAppContainerName: WideString): HResult;
-external 'DeleteAppContainerProfile@userenv.dll stdcall delayload';
+external 'DeleteAppContainerProfile@userenv.dll stdcall';
 function OpenProcess(dwDesiredAccess: Cardinal; bInheritHandle: Boolean; dwProcessId: Integer): Integer;
 external 'OpenProcess@kernel32.dll stdcall';
 function GetExitCodeProcess(hProcess: Integer; var lpExitCode: Cardinal): Boolean;
@@ -95,9 +95,6 @@ var
   I: Integer;
   Res: HResult;
 begin
-  // AppContainers don't exist before Windows 8, and neither does the function
-  if GetWindowsVersion < $06020000 then
-    Exit;
   if not RegGetSubkeyNames(HKEY_CURRENT_USER, AppContainerMappings, Mappings) then
     Exit;
 

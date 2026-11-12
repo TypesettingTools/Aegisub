@@ -11,15 +11,6 @@
 /// Aegisub treats as a crash.
 
 #define WIN32_LEAN_AND_MEAN
-#ifndef NOMINMAX
-#define NOMINMAX
-#endif
-// The process mitigation policy declarations require a Windows 8+ target.
-// Aegisub only launches this on Windows 10 1809 or newer.
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0A00
-#undef NTDDI_VERSION
-#define NTDDI_VERSION 0x0A000002 // NTDDI_WIN10_RS1
 #include <windows.h>
 #include <psapi.h>
 
@@ -197,12 +188,8 @@ void lock_down() {
 	// emulated on ARM64 is translated at runtime, so this can't be used there.
 	bool emulated = false;
 #if !defined(_M_ARM64) && !defined(_M_ARM64EC)
-	// Looked up at runtime so that the helper still loads if it's missing
-	using IsWow64Process2Fn = BOOL (WINAPI *)(HANDLE, USHORT *, USHORT *);
-	auto is_wow64_process2 = reinterpret_cast<IsWow64Process2Fn>(
-		GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "IsWow64Process2"));
 	USHORT process_machine = 0, native_machine = 0;
-	if (is_wow64_process2 && is_wow64_process2(GetCurrentProcess(), &process_machine, &native_machine))
+	if (IsWow64Process2(GetCurrentProcess(), &process_machine, &native_machine))
 		emulated = native_machine == IMAGE_FILE_MACHINE_ARM64;
 #endif
 	if (!emulated) {
