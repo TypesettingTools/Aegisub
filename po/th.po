@@ -4307,8 +4307,17 @@ msgstr "ตัวเเก้ไขสไตล์"
 msgid "Border boxes"
 msgstr "กล่องสี่เหลี่ยม"
 
-#: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:173
+msgctxt "border style"
+msgid "Outline"
+msgstr "เส้นขอบ"
+
+#: ../src/dialog_style_editor.cpp:184
+msgid "Outline"
+msgstr "เส้นขอบ"
+
 #: ../src/dialog_style_editor.cpp:295
+msgctxt "colour"
 msgid "Outline"
 msgstr "เส้นขอบ"
 
