@@ -50,6 +50,7 @@
 #include "libresrc/libresrc.h"
 #include "main.h"
 #include "options.h"
+#include "persist_location.h"
 #include "project.h"
 #include "subs_controller.h"
 #include "subs_edit_box.h"
@@ -121,9 +122,6 @@ FrameMain::FrameMain()
 	context->parent = this;
 	context->frame = this;
 
-	StartupLog("Apply saved Maximized state");
-	if (OPT_GET("App/Maximized")->GetBool()) Maximize(true);
-
 	StartupLog("Initialize toolbar");
 	wxSystemOptions::SetOption("msw.remap", 0);
 	BindConnection(OPT_SUB("App/Show Toolbar", &FrameMain::EnableToolBar, this));
@@ -153,6 +151,9 @@ FrameMain::FrameMain()
 
 	StartupLog("Load default file");
 	context->project->CloseSubtitles();
+
+	StartupLog("Restore saved window location");
+	persist = std::make_unique<PersistLocation>(this, "App", true);
 
 	StartupLog("Display main window");
 	AddFullScreenButton(this);
@@ -322,9 +323,7 @@ void FrameMain::OnCloseWindow(wxCloseEvent &event) {
 	}
 
 	context->dialog.reset();
-
-	// Store maximization state
-	OPT_SET("App/Maximized")->SetBool(IsMaximized());
+	persist.reset();
 
 	Destroy();
 }
