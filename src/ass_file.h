@@ -30,6 +30,7 @@
 #pragma once
 
 #include "ass_entry.h"
+#include "project_properties.h"
 
 #include <libaegisub/fs.h>
 #include <libaegisub/signal.h>
@@ -62,26 +63,6 @@ struct AssFileCommit {
 	AssDialogue *single_line;
 };
 
-struct ProjectProperties {
-	std::string automation_scripts;
-	std::string export_filters;
-	std::string export_encoding;
-	std::string style_storage;
-	std::string audio_file;
-	std::string video_file;
-	std::string timecodes_file;
-	std::string keyframes_file;
-	std::map<std::string, std::string> automation_settings;
-
-	// UI State
-	double video_zoom = 0.;
-	double ar_value = 0.;
-	int scroll_position = 0;
-	int active_row = 0;
-	int ar_mode = 0;
-	int video_position = 0;
-};
-
 class AssFile {
 	/// A set of changes has been committed to the file (AssFile::COMMITType)
 	agi::signal::Signal<int, const AssDialogue*> AnnounceCommit;
@@ -94,6 +75,9 @@ public:
 	std::vector<AssAttachment> Attachments;
 	std::vector<ExtradataEntry> Extradata;
 	ProjectProperties Properties;
+
+	// Parsed settings captured before sidecars or UI changes.
+	ProjectProperties OriginalProperties;
 
 	uint32_t next_extradata_id = 0;
 

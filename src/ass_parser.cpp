@@ -23,7 +23,6 @@
 
 #include <libaegisub/ass/string_codec.h>
 #include <libaegisub/ass/uuencode.h>
-#include <libaegisub/util.h>
 
 #include <algorithm>
 #include <boost/algorithm/string/case_conv.hpp>
@@ -31,71 +30,9 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
-#include <unordered_map>
-#include <variant>
-
-class AssParser::HeaderToProperty {
-	using field = std::variant<
-		std::string ProjectProperties::*,
-		int ProjectProperties::*,
-		double ProjectProperties::*
-	>;
-	std::unordered_map<std::string, field> fields;
-
-public:
-	HeaderToProperty()
-	: fields({
-		{"Automation Scripts", &ProjectProperties::automation_scripts},
-		{"Export Filters", &ProjectProperties::export_filters},
-		{"Export Encoding", &ProjectProperties::export_encoding},
-		{"Last Style Storage", &ProjectProperties::style_storage},
-		{"Audio URI", &ProjectProperties::audio_file},
-		{"Audio File", &ProjectProperties::audio_file},
-		{"Video File", &ProjectProperties::video_file},
-		{"Timecodes File", &ProjectProperties::timecodes_file},
-		{"Keyframes File", &ProjectProperties::keyframes_file},
-		{"Video Zoom Percent", &ProjectProperties::video_zoom},
-		{"Scroll Position", &ProjectProperties::scroll_position},
-		{"Active Line", &ProjectProperties::active_row},
-		{"Video Position", &ProjectProperties::video_position},
-		{"Video AR Mode", &ProjectProperties::ar_mode},
-		{"Video AR Value", &ProjectProperties::ar_value},
-		{"Aegisub Video Zoom Percent", &ProjectProperties::video_zoom},
-		{"Aegisub Scroll Position", &ProjectProperties::scroll_position},
-		{"Aegisub Active Line", &ProjectProperties::active_row},
-		{"Aegisub Video Position", &ProjectProperties::video_position}
-	})
-	{
-	}
-
-	bool ProcessProperty(AssFile *target, std::string const& key, std::string const& value) {
-		auto it = fields.find(key);
-		if (it != end(fields)) {
-			using namespace agi::util;
-			struct {
-				using result_type = void;
-				ProjectProperties &obj;
-				std::string const& value;
-				void operator()(std::string ProjectProperties::*f) const { obj.*f = value; }
-				void operator()(int ProjectProperties::*f)         const { try_parse(value, &(obj.*f)); }
-				void operator()(double ProjectProperties::*f)      const { try_parse(value, &(obj.*f)); }
-			} visitor {target->Properties, value};
-			std::visit(visitor, it->second);
-			return true;
-		}
-
-		if (key.starts_with("Automation Settings ")) {
-			target->Properties.automation_settings[key.substr(strlen("Automation Settings"))] = value;
-			return true;
-		}
-
-		return false;
-	}
-};
 
 AssParser::AssParser(AssFile *target, int version)
-: property_handler(std::make_unique<HeaderToProperty>())
-, target(target)
+: target(target)
 , version(version)
 , state(&AssParser::ParseScriptInfoLine)
 {
@@ -164,7 +101,7 @@ void AssParser::ParseScriptInfoLine(std::string const& data) {
 	auto value = data.substr(pos + 1);
 	boost::trim_left(value);
 
-	if (!property_handler->ProcessProperty(target, key, value))
+	if (!target->Properties.ParseProperty(key, value))
 		target->Info.push_back(*new AssInfo(std::move(key), std::move(value)));
 }
 
@@ -178,7 +115,7 @@ void AssParser::ParseMetadataLine(std::string const& rawdata) {
 	auto value = data.substr(pos + 1);
 	boost::trim_left(value);
 
-	property_handler->ProcessProperty(target, key, value);
+	target->Properties.ParseProperty(key, value);
 }
 
 void AssParser::ParseEventLine(std::string const& data) {

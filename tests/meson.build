@@ -86,3 +86,41 @@ test_setup = custom_target('setup-test-data',
 
 test('gtest main', runner, env: {'AEGISUB_TEST_DATA_DIR': meson.current_source_dir()}, depends: test_setup)
 test('luajit-52', executable('luajit-52', 'tests/luajit_52.c', dependencies: luajit))
+
+test('project config', executable(
+    'project-config-test',
+    'project_config.cpp',
+    '../src/project_properties.cpp',
+    '../src/text_file_reader.cpp',
+    include_directories: libaegisub_inc,
+    dependencies: deps,
+    cpp_args: tests_args + conf_defines,
+    link_with: libaegisub,
+))
+
+# Exercise the ASS parser and writer with their complete dependencies.
+test('ASS project settings', executable(
+    'ass-project-settings-test',
+    'ass_project_settings.cpp',
+    '../src/ass_attachment.cpp',
+    '../src/ass_dialogue.cpp',
+    '../src/ass_entry.cpp',
+    '../src/ass_file.cpp',
+    '../src/ass_override.cpp',
+    '../src/ass_parser.cpp',
+    '../src/ass_style.cpp',
+    '../src/ass_style_storage.cpp',
+    '../src/compat.cpp',
+    '../src/project_properties.cpp',
+    '../src/subtitle_format.cpp',
+    '../src/subtitle_format_ass.cpp',
+    '../src/text_file_reader.cpp',
+    '../src/text_file_writer.cpp',
+    '../src/utils.cpp',
+    '../src/version.cpp',
+    version_h,
+    include_directories: [libaegisub_inc, version_inc],
+    dependencies: deps,
+    cpp_args: tests_args + conf_defines,
+    link_with: libaegisub,
+))

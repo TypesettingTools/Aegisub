@@ -30,6 +30,7 @@
 #include "project.h"
 #include "selection_controller.h"
 #include "subtitle_format.h"
+#include "subtitle_format_ass.h"
 #include "text_selection_controller.h"
 
 #include <libaegisub/dispatch.h>
@@ -170,6 +171,9 @@ ProjectProperties SubsController::Load(agi::fs::path const& filename, const char
 
 	SubtitleFormat::GetReader(filename, charset)->ReadFile(&temp, filename, context->project->Timecodes(), charset);
 
+	if (OPT_GET("App/Load Project Config")->GetBool())
+		temp.Properties.LoadConfig(filename);
+
 	context->ass->swap(temp);
 	auto props = context->ass->Properties;
 
@@ -213,6 +217,8 @@ void SubsController::Save(agi::fs::path const& filename, const char *encoding) {
 
 		context->ass->CleanExtradata();
 		writer->WriteFile(context->ass.get(), filename, 0, encoding);
+		if (!OPT_GET("App/Save Project Settings in Subtitle File")->GetBool())
+			context->ass->Properties.SaveConfig(filename, OPT_GET("App/Save UI State")->GetBool());
 		FileSave();
 	}
 	catch (...) {
@@ -267,6 +273,13 @@ void SubsController::AutoSave() {
 	autosaved_commit_id = commit_id;
 	auto frame = context->frame;
 	auto subs_copy = new AssFile(*context->ass);
+	// Recovery files may be saved outside the script directory.
+	for (auto member : {&ProjectProperties::audio_file, &ProjectProperties::video_file,
+	                    &ProjectProperties::timecodes_file, &ProjectProperties::keyframes_file}) {
+		auto &path = subs_copy->Properties.*member;
+		if (!path.empty() && path[0] != '?')
+			path = context->path->MakeAbsolute(path, "?script").generic_string();
+	}
 	autosave_queue->Async([subs_copy, name, directory, frame] {
 		wxString msg;
 		std::unique_ptr<AssFile> subs(subs_copy);
@@ -275,7 +288,7 @@ void SubsController::AutoSave() {
 			agi::fs::CreateDirectory(directory);
 			auto path = directory /  agi::format("%s.%s.AUTOSAVE.ass", name.string(),
 			                                     agi::util::strftime("%Y-%m-%d-%H-%M-%S"));
-			SubtitleFormat::GetWriter(path)->WriteFile(subs.get(), path, 0);
+			AssSubtitleFormat().WriteRecoveryFile(subs.get(), path);
 			msg = fmt_tl("File backup saved as \"%s\".", path);
 		}
 		catch (const agi::Exception& err) {

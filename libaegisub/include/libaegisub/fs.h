@@ -25,6 +25,7 @@
 #include <iterator>
 #include <memory>
 #include <string>
+#include <vector>
 
 #undef CreateDirectory
 
@@ -198,6 +199,10 @@ bool CreateDirectory(path const& dir_path);
 /// time if it does
 void Touch(path const& file_path);
 
+/// Set the hidden attribute on Windows. Does nothing on other platforms.
+/// @throws agi::fs::WriteDenied if the attribute cannot be set
+void MakeHidden(path const& file_path);
+
 /// Rename a file or directory
 /// @param from Source path
 /// @param to   Destination path
@@ -219,6 +224,14 @@ bool Remove(path const& file);
 /// @param p Path to check
 /// @param ext Case-insensitive extension, without leading dot
 bool HasExtension(path const& p, std::string const& ext);
+
+/// Expand a filesystem pattern, including wildcards in directory components.
+/// Returns sorted absolute paths to matching regular files.
+std::vector<path> Glob(path const& pattern);
+
+/// Whether a directory is a filesystem root or a mount point.
+/// Returns false if the directory cannot be queried.
+bool IsMountPoint(path const& directory);
 
 [[nodiscard]] path Canonicalize(path const& path);
 [[nodiscard]] path Absolute(path const& path);
