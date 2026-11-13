@@ -19,6 +19,8 @@
 #include <libaegisub/endian.h>
 #include <libaegisub/log.h>
 
+#include <algorithm>
+#include <cmath>
 #include <limits>
 #include <numeric>
 #include <ranges>
@@ -117,12 +119,49 @@ public:
 /// Non-mono 16-bit signed machine-endian -> mono 16-bit signed machine endian converter
 class DownmixAudioProvider final : public AudioProviderWrapper {
 	int src_channels;
+	std::vector<double> coefficients;
 	mutable std::vector<int16_t> src_buf;
+
+	static double Coefficient(AudioChannel channel) {
+		switch (channel) {
+			case AudioChannel::FrontLeft:
+			case AudioChannel::FrontRight: return 0.5;
+			case AudioChannel::FrontCenter: return 0.7071067811865476;
+			case AudioChannel::BackCenter: return 0.5;
+			case AudioChannel::BackLeft:
+			case AudioChannel::BackRight:
+			case AudioChannel::SideLeft:
+			case AudioChannel::SideRight: return 0.3535533905932738;
+			case AudioChannel::LowFrequency:
+			case AudioChannel::Unknown: return 0.0;
+		}
+		return 0.0;
+	}
+
+	static std::vector<AudioChannel> ConventionalLayout(int channels) {
+		switch (channels) {
+			case 2: return {AudioChannel::FrontLeft, AudioChannel::FrontRight};
+			case 3: return {AudioChannel::FrontLeft, AudioChannel::FrontRight, AudioChannel::FrontCenter};
+			case 4: return {AudioChannel::FrontLeft, AudioChannel::FrontRight, AudioChannel::BackLeft, AudioChannel::BackRight};
+			case 5: return {AudioChannel::FrontLeft, AudioChannel::FrontRight, AudioChannel::FrontCenter, AudioChannel::BackLeft, AudioChannel::BackRight};
+			case 6: return {AudioChannel::FrontLeft, AudioChannel::FrontRight, AudioChannel::FrontCenter, AudioChannel::LowFrequency, AudioChannel::BackLeft, AudioChannel::BackRight};
+			case 7: return {AudioChannel::FrontLeft, AudioChannel::FrontRight, AudioChannel::FrontCenter, AudioChannel::LowFrequency, AudioChannel::BackCenter, AudioChannel::SideLeft, AudioChannel::SideRight};
+			case 8: return {AudioChannel::FrontLeft, AudioChannel::FrontRight, AudioChannel::FrontCenter, AudioChannel::LowFrequency, AudioChannel::BackLeft, AudioChannel::BackRight, AudioChannel::SideLeft, AudioChannel::SideRight};
+			default: return {};
+		}
+	}
 
 public:
 	DownmixAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		src_channels = channels;
+		auto layout = channel_layout;
+		if (layout.size() != static_cast<size_t>(src_channels)) layout = ConventionalLayout(src_channels);
+		if (layout.empty()) coefficients.assign(src_channels, 1.0 / src_channels);
+		else for (auto channel : layout) coefficients.push_back(Coefficient(channel));
+		if (std::ranges::all_of(coefficients, [](double coefficient) { return coefficient == 0.0; }))
+			coefficients.assign(src_channels, 1.0 / src_channels);
 		channels = 1;
+		channel_layout = {AudioChannel::FrontCenter};
 	}
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
@@ -130,12 +169,14 @@ public:
 		source->GetAudio(&src_buf[0], start, count);
 
 		auto dst = static_cast<int16_t*>(buf);
-		// Just average the channels together
+		// ITU-style coefficients preserve center dialogue and omit LFE.
 		while (count-- > 0) {
-			int sum = 0;
+			double sum = 0.0;
 			for (int c = 0; c < src_channels; ++c)
-				sum += src_buf[count * src_channels + c];
-			dst[count] = static_cast<int16_t>(sum / src_channels);
+				sum += src_buf[count * src_channels + c] * coefficients[c];
+			dst[count] = static_cast<int16_t>(std::clamp(std::lround(sum),
+				static_cast<long>(std::numeric_limits<int16_t>::min()),
+				static_cast<long>(std::numeric_limits<int16_t>::max())));
 		}
 	}
 };
