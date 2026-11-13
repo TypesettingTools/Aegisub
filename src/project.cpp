@@ -548,7 +548,8 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 			subs.clear();
 	}
 
-	if (!video.empty() && DoLoadVideo(video)) {
+	bool loaded_video = false;
+	if (!video.empty() && (loaded_video = DoLoadVideo(video))) {
 		double dar = video_provider->GetDAR();
 		if (dar > 0)
 			context->videoController->SetAspectRatio(dar);
@@ -567,7 +568,7 @@ void Project::LoadList(std::vector<agi::fs::path> const& files) {
 
 	if (!audio.empty())
 		DoLoadAudio(audio, false);
-	else if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file)
+	else if (loaded_video && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video_file, true);
 
 	if (!subs.empty())
