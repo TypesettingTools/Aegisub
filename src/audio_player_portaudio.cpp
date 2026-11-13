@@ -43,6 +43,9 @@
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
 
+#include <algorithm>
+#include <cstring>
+
 // Uncomment to enable extremely spammy debug logging
 //#define PORTAUDIO_DEBUG
 
@@ -177,8 +180,8 @@ void PortAudioPlayer::Play(int64_t start_sample, int64_t count) {
 	start = start_sample;
 	end = start_sample + count;
 
-	// Start playing
-	if (!IsPlaying()) {
+	// Start playing, unless the stream is still running from an earlier range
+	if (!Pa_IsStreamActive(stream)) {
 		PaError err = Pa_SetStreamFinishedCallback(stream, paStreamFinishedCallback);
 		if (err != paNoError) {
 			LOG_D("audio/player/portaudio") << "could not set FinishedCallback";
@@ -218,21 +221,26 @@ int PortAudioPlayer::paCallback(const void *, void *outputBuffer,
 #endif
 
 	// Calculate how much left
-	int64_t lenAvailable = std::min<int64_t>(player->end - player->current, framesPerBuffer);
+	int64_t current = player->current;
+	int64_t lenAvailable = std::clamp<int64_t>(player->end - current, 0, framesPerBuffer);
 
 	// Play something
 	if (lenAvailable > 0) {
-		player->provider->GetAudioWithVolume(outputBuffer, player->current, lenAvailable, player->GetVolume());
+		player->provider->GetAudioWithVolume(outputBuffer, current, lenAvailable, player->GetVolume());
 
-		// Set play position
-		player->current += lenAvailable;
-
-		// Continue as normal
-		return 0;
+		// Set play position, unless Play() moved it in the meantime
+		player->current.compare_exchange_strong(current, current + lenAvailable);
 	}
 
-	// Abort stream and stop the callback.
-	return paAbort;
+	// Pad with silence past the end of the range rather than returning
+	// paComplete/paAbort. Those make PortAudio stop the stream from within the
+	// audio thread, which on macOS can deadlock against a concurrent
+	// Pa_StopStream on the main thread. AudioController stops the stream via
+	// Stop() once IsPlaying() reports that the end has been reached.
+	size_t bytesPerFrame = player->provider->GetChannels() * sizeof(int16_t);
+	memset(static_cast<char *>(outputBuffer) + lenAvailable * bytesPerFrame, 0, (framesPerBuffer - lenAvailable) * bytesPerFrame);
+
+	return paContinue;
 }
 
 int64_t PortAudioPlayer::GetCurrentPosition() {
@@ -276,7 +284,7 @@ wxArrayString PortAudioPlayer::GetOutputDevices() {
 }
 
 bool PortAudioPlayer::IsPlaying() {
-	return !!Pa_IsStreamActive(stream);
+	return Pa_IsStreamActive(stream) == 1 && current < end;
 }
 
 std::unique_ptr<AudioPlayer> CreatePortAudioPlayer(agi::AudioProvider *provider, wxWindow *) {
