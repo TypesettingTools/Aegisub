@@ -47,6 +47,10 @@ FILEOS         	VOS__WINDOWS32
 FILETYPE       	VFT_APP
 FILESUBTYPE    	VFT2_UNKNOWN
 BEGIN
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
     BLOCK "StringFileInfo"
     BEGIN
         BLOCK "040904B0" // 0x0409: en-US, 0x04B0: unicode
