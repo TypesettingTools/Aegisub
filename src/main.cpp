@@ -171,6 +171,12 @@ namespace {
 struct InitOptions {
 	/// The least severe agi::log::Severity to write to stderr in CLI mode
 	int log_level = agi::log::Warning;
+	/// Overrides AEGISUB_USER_DIR
+	std::optional<agi::fs::path> user_dir;
+	/// Overrides AEGISUB_CONFIG
+	std::optional<agi::fs::path> config_file;
+	/// Use the default settings instead of reading a config file
+	bool no_config = false;
 };
 }
 
@@ -193,13 +199,14 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 	// AEGISUB_DATA_DIR replaces ?data (the bundled files), AEGISUB_USER_DIR
 	// is used for all per-user files instead of the platform's default
 	// locations (or the install dir in portable mode), and AEGISUB_CONFIG is
-	// the config file to use instead of the one in the user dir
+	// the config file to use instead of the one in the user dir. The last two
+	// can also be given on the command line in CLI mode.
 	if (auto data_dir = PathFromEnv("AEGISUB_DATA_DIR", true))
 		config::path->SetToken("?data", *data_dir);
-	auto user_dir = PathFromEnv("AEGISUB_USER_DIR", true);
+	auto user_dir = options.user_dir ? options.user_dir : PathFromEnv("AEGISUB_USER_DIR", true);
 	if (user_dir)
 		config::path->SetUserDir(*user_dir);
-	auto config_file = PathFromEnv("AEGISUB_CONFIG", false);
+	auto config_file = options.config_file ? options.config_file : PathFromEnv("AEGISUB_CONFIG", false);
 
 	// Set config file
 	StartupLog("Load local configuration");
@@ -245,16 +252,18 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 		LOG_E("config/init") << "Caught exception: " << e.GetMessage();
 	}
 
-	try {
-		config::opt->ConfigUser();
-	}
-	catch (agi::Exception const& err) {
-		showError(from_wx(fmt_tl("Configuration file is invalid. Error reported:\n%s", err.GetMessage())), from_wx(_("Error")));
+	if (!options.no_config) {
+		try {
+			config::opt->ConfigUser();
+		}
+		catch (agi::Exception const& err) {
+			showError(from_wx(fmt_tl("Configuration file is invalid. Error reported:\n%s", err.GetMessage())), from_wx(_("Error")));
+		}
 	}
 
 #ifdef _WIN32
 	StartupLog("Load installer configuration");
-	if (OPT_GET("App/First Start")->GetBool()) {
+	if (!options.no_config && OPT_GET("App/First Start")->GetBool()) {
 		try {
 			auto installer_config = agi::io::Open(config::path->Decode("?data/installer_config.json"));
 			config::opt->ConfigNext(*installer_config.get());
@@ -408,6 +417,8 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 	int active_index = -1;
 	std::vector<std::string> automation_scripts, dialog_json, file_names;
 	int log_level = agi::log::Warning;
+	std::string config_file, user_dir;
+	bool no_config = false;
 
 	// The positionals can also be passed as named options
 	auto in_file_opt = app.add_option("in-file,--in-file", in_file, "input file");
@@ -427,6 +438,10 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 	app.add_option("--file", file_names, "filename to supply to an open/save call")->allow_extra_args(false);
 	app.add_option("--loglevel", log_level, "how much to log to stderr: 0 = errors, 1 = asserts, 2 = warnings, 3 = info, 4 = debug")
 		->check(CLI::Range(0, 4))->capture_default_str();
+	auto config_opt = app.add_option("--config", config_file, "read settings from this file instead of the user's config.json")->type_name("FILE");
+	auto no_config_opt = app.add_flag("--no-config", no_config, "use the default settings instead of the user's config.json");
+	config_opt->excludes(no_config_opt);
+	auto user_dir_opt = app.add_option("--user-dir", user_dir, "use this folder instead of the user's Aegisub folder, for settings, automation scripts, caches and so on")->type_name("DIR");
 
 	// Extra arguments are collected rather than rejected so that GUI
 	// launches keep working with toolkit arguments (wx parses the original
@@ -475,6 +490,21 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 
 	InitOptions options;
 	options.log_level = log_level;
+	options.no_config = no_config;
+	if (config_opt->count()) {
+		options.config_file = ArgPath(config_file);
+		if (!agi::fs::FileExists(*options.config_file)) {
+			std::cerr << "Error: config file " << *options.config_file << " doesn't exist" << std::endl;
+			return 1;
+		}
+	}
+	if (user_dir_opt->count()) {
+		options.user_dir = ArgPath(user_dir);
+		if (agi::fs::FileExists(*options.user_dir)) {
+			std::cerr << "Error: user folder " << *options.user_dir << " is a file" << std::endl;
+			return 1;
+		}
+	}
 
 	agi::util::InitLocale();
 

@@ -8,6 +8,7 @@ without a display server; DISPLAY/WAYLAND_DISPLAY are stripped from the
 environment to make sure of that.
 """
 
+import json
 import os
 import subprocess
 import sys
@@ -181,6 +182,52 @@ def test_gui_command(aegisub, srcdir, env, tmp):
         return fail("GUI command: an output file was written anyway")
     return 0
 
+def test_config_options(aegisub, srcdir, env, tmp):
+    # --config and --user-dir read the settings from elsewhere, and --no-config
+    # ignores them. The default duration shows up as the length of the line
+    # which subtitle/insert/after adds after the last one.
+    config = json.dumps({"Timing": {"Default Duration": 1234}})
+    config_file = os.path.join(tmp, "custom-config.json")
+    with open(config_file, "w") as f:
+        f.write(config)
+    profile = os.path.join(tmp, "profile")
+    os.makedirs(profile)
+    with open(os.path.join(profile, "config.json"), "w") as f:
+        f.write(config)
+
+    out_file = os.path.join(tmp, "out-config.ass")
+    def inserted_line_end(*args):
+        proc = run_cli(aegisub, [
+            os.path.join(srcdir, "input.ass"),
+            out_file,
+            "subtitle/insert/after",
+            "--active-line", "3",
+            "--selected-lines", "3",
+        ] + list(args), env)
+        if proc.returncode != 0:
+            return None
+        with open(out_file, encoding="utf-8-sig") as f:
+            dialogue = [line for line in f if line.startswith("Dialogue:")]
+        return dialogue[-1].split(",")[2]
+
+    for args, expected in [((), "0:00:23.00"),
+                           (("--config", config_file), "0:00:21.23"),
+                           (("--user-dir", profile), "0:00:21.23"),
+                           (("--user-dir", profile, "--no-config"), "0:00:23.00")]:
+        end = inserted_line_end(*args)
+        if end != expected:
+            return fail(f"config options: with {' '.join(args) or 'no options'}, the new line ends at {end}, expected {expected}")
+
+    proc = run_cli(aegisub, [
+        os.path.join(srcdir, "input.ass"),
+        out_file,
+        "subtitle/insert/after",
+        "--config", os.path.join(tmp, "does-not-exist.json"),
+    ], env)
+    if proc.returncode != 1:
+        return fail(f"config options: a missing --config file gave exit code {proc.returncode}, expected 1")
+    return 0
+
 def test_loglevel(aegisub, srcdir, env, tmp):
     out_file = os.path.join(tmp, "out-loglevel.ass")
     def run(*args):
@@ -261,7 +308,7 @@ def main():
         tests = [test_macro_runs, test_empty_file, test_missing_input,
                  test_resample, test_resample_without_video,
                  test_lua_error, test_builtin_command, test_gui_command,
-                 test_loglevel,
+                 test_config_options, test_loglevel,
                  test_bad_option_value, test_unknown_option,
                  test_no_user_state]
         for test in tests:
