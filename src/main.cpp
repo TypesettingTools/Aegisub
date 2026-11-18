@@ -166,14 +166,26 @@ wxDEFINE_EVENT(EVT_CALL_THUNK, ValueEvent<agi::dispatch::Thunk>);
 /// Message displayed when an exception has occurred.
 static wxString exception_message = "Oops, Aegisub has crashed!\n\nAn attempt has been made to save a copy of your file to:\n\n%s\n\nAegisub will now close.";
 
+namespace {
+/// Startup settings which can be given on the command line in CLI mode
+struct InitOptions {
+	/// The least severe agi::log::Severity to write to stderr in CLI mode
+	int log_level = agi::log::Warning;
+};
+}
+
 /// @brief Non-GUI-specific initialization, shared between the GUI startup
 /// path and CLI mode. @a app is null when running without a wxApp.
-bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::string)> showError) {
+bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::string)> showError, InitOptions const& options = {}) {
 	config::path = new agi::Path;
 
 	agi::log::log = new agi::log::LogSink;
+	// CLI mode doesn't write log files, so the log goes to stderr instead
+	if (!config::hasGui)
+		agi::log::log->Subscribe(std::make_unique<cli::LogEmitter>(options.log_level));
 #ifdef _DEBUG
-	agi::log::log->Subscribe(std::make_unique<agi::log::EmitSTDOUT>());
+	else
+		agi::log::log->Subscribe(std::make_unique<agi::log::EmitSTDOUT>());
 #endif
 
 	// Let the environment relocate Aegisub's files, e.g. to run an uninstalled
@@ -395,6 +407,7 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 	std::string selected_range;
 	int active_index = -1;
 	std::vector<std::string> automation_scripts, dialog_json, file_names;
+	int log_level = agi::log::Warning;
 
 	// The positionals can also be passed as named options
 	auto in_file_opt = app.add_option("in-file,--in-file", in_file, "input file");
@@ -412,6 +425,8 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 	app.add_option("--selected-lines", selected_range, "the selected lines");
 	app.add_option("--dialog", dialog_json, "response to a dialog, in JSON")->allow_extra_args(false);
 	app.add_option("--file", file_names, "filename to supply to an open/save call")->allow_extra_args(false);
+	app.add_option("--loglevel", log_level, "how much to log to stderr: 0 = errors, 1 = asserts, 2 = warnings, 3 = info, 4 = debug")
+		->check(CLI::Range(0, 4))->capture_default_str();
 
 	// Extra arguments are collected rather than rejected so that GUI
 	// launches keep working with toolkit arguments (wx parses the original
@@ -458,6 +473,9 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 		return 1;
 	}
 
+	InitOptions options;
+	options.log_level = log_level;
+
 	agi::util::InitLocale();
 
 	config::hasInitializedWx = false;
@@ -467,9 +485,10 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 	// thunks, mirroring the GUI threading model (see cli::RunWithMainLoop)
 	cli::InitDispatch();
 
-	if (!AegisubInitialize(nullptr, [&](std::string msg, std::string title) { std::cerr << title << ": " << msg << "\n"; })) {
+	if (!AegisubInitialize(nullptr, [&](std::string msg, std::string title) { std::cerr << title << ": " << msg << "\n"; }, options)) {
 		return 1;
 	}
+	cli::InitWxLog();
 
 	// Messages are logged asynchronously, so make sure that they're all out
 	// before reporting how the run went

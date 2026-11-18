@@ -23,8 +23,6 @@
 #include "compat.h"
 #include "options.h"
 
-#include <iostream>
-
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h> // Keep this last so wxUSE_CHOICEDLG is set.
 
@@ -33,16 +31,12 @@ int wrapMessageBox(const wxString &message, const wxString &caption, long style,
 	if (config::hasGui)
 		return wxMessageBox(message, caption, style, parent);
 
+	// In CLI mode the log goes to stderr, filtered by --loglevel
 	agi::log::Severity severity = agi::log::Info;
 	if (style & wxICON_WARNING)
 		severity = agi::log::Warning;
 	if (style & wxICON_ERROR)
 		severity = agi::log::Exception;
-
-	// The log sink isn't visible on the console, so errors and warnings
-	// should also reach the user of the CLI directly
-	if (severity != agi::log::Info)
-		std::cerr << caption.utf8_str() << ": " << message.utf8_str() << std::endl;
 
 	LOG_SINK("agi", severity) << caption << ": " << message;
 	return 0;

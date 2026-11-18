@@ -18,7 +18,10 @@
 /// @file cli.h
 /// @brief Parser and helper functions for Aegisub's CLI interface
 
+#pragma once
+
 #include <libaegisub/fs.h>
+#include <libaegisub/log.h>
 
 #include <list>
 #include <set>
@@ -49,4 +52,19 @@ namespace cli {
 	///
 	/// Exceptions thrown by the work function are rethrown on this thread.
 	void RunWithMainLoop(std::function<void()> work);
+
+	/// Send wxWidgets' log messages to Aegisub's log, so that they're shown
+	/// the same way and filtered by --loglevel like everything else
+	void InitWxLog();
+
+	/// Log emitter which writes messages up to a given severity to stderr,
+	/// since CLI mode doesn't write log files
+	class LogEmitter final : public agi::log::Emitter {
+		int max_severity;
+
+	public:
+		/// @param max_severity The least severe agi::log::Severity to show
+		explicit LogEmitter(int max_severity) : max_severity(max_severity) { }
+		void log(agi::log::SinkMessage const& sm) override;
+	};
 }

@@ -31,9 +31,11 @@
 #include <condition_variable>
 #include <deque>
 #include <filesystem>
+#include <iostream>
 #include <mutex>
 #include <sstream>
 #include <thread>
+#include <wx/log.h>
 
 std::set<int> parse_range(const std::string& s) {
 	std::set<int> lines;
@@ -178,7 +180,7 @@ std::list<std::vector<agi::fs::path>> parse_file_responses(const std::vector<std
 			ss << p << " ";
 			paths.push_back(std::move(p));
 		}
-		LOG_E("main/cli") << "File response: " << ss.str();
+		LOG_D("main/cli") << "File response: " << ss.str();
 		responses.push_back(std::move(paths));
 	}
 	return responses;
@@ -242,4 +244,35 @@ void RunWithMainLoop(std::function<void()> work) {
 	worker.join();
 	if (err) std::rethrow_exception(err);
 }
+}
+
+void cli::LogEmitter::log(agi::log::SinkMessage const& sm) {
+	if (sm.severity > max_severity)
+		return;
+
+	static const char *const names[] = {"Error", "Assert", "Warning", "Info", "Debug"};
+	std::cerr << names[sm.severity] << ": ";
+	// Where a message comes from is mostly interesting when debugging
+	if (max_severity >= agi::log::Debug)
+		std::cerr << "[" << sm.section << "] ";
+	std::cerr << sm.message << std::endl;
+}
+
+namespace {
+class WxLogForwarder final : public wxLog {
+	void DoLogRecord(wxLogLevel level, wxString const& msg, wxLogRecordInfo const&) override {
+		auto severity = agi::log::Debug;
+		if (level <= wxLOG_Error)
+			severity = agi::log::Exception;
+		else if (level == wxLOG_Warning)
+			severity = agi::log::Warning;
+		else if (level <= wxLOG_Info)
+			severity = agi::log::Info;
+		LOG_SINK("wx", severity) << msg.utf8_str().data();
+	}
+};
+}
+
+void cli::InitWxLog() {
+	delete wxLog::SetActiveTarget(new WxLogForwarder);
 }

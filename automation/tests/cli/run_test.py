@@ -181,6 +181,26 @@ def test_gui_command(aegisub, srcdir, env, tmp):
         return fail("GUI command: an output file was written anyway")
     return 0
 
+def test_loglevel(aegisub, srcdir, env, tmp):
+    out_file = os.path.join(tmp, "out-loglevel.ass")
+    def run(*args):
+        return run_cli(aegisub, [
+            os.path.join(srcdir, "input.ass"),
+            out_file,
+            "grid/sort/start",
+        ] + list(args), env)
+
+    proc = run()
+    if proc.returncode != 0 or b"Debug:" in proc.stdout:
+        return fail("loglevel: debug messages were logged by default")
+    proc = run("--loglevel", "4")
+    if proc.returncode != 0 or b"Debug:" not in proc.stdout:
+        return fail("loglevel: --loglevel 4 did not log debug messages")
+    proc = run("--loglevel", "5")
+    if proc.returncode != 1:
+        return fail(f"loglevel: --loglevel 5 gave exit code {proc.returncode}, expected 1")
+    return 0
+
 # Caches that CLI mode may write, since they're disposable and only speed up
 # later runs. On some platforms ?cache is the same directory as ?user.
 CACHE_DIRS = {"auto4cache", "ffms2cache"}
@@ -241,6 +261,7 @@ def main():
         tests = [test_macro_runs, test_empty_file, test_missing_input,
                  test_resample, test_resample_without_video,
                  test_lua_error, test_builtin_command, test_gui_command,
+                 test_loglevel,
                  test_bad_option_value, test_unknown_option,
                  test_no_user_state]
         for test in tests:
