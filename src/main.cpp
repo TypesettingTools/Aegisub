@@ -81,6 +81,15 @@
 #include <wx/stackwalk.h>
 #include <wx/utils.h>
 
+#ifdef _WIN32
+#include <libaegisub/charset_conv_win.h>
+
+#include <cstdio>
+#include <cstdlib>
+#include <wx/msw/wrapwin.h>
+#include <shellapi.h>
+#endif
+
 namespace config {
 	agi::Options *opt = nullptr;
 	agi::MRUManager *mru = nullptr;
@@ -98,13 +107,8 @@ namespace config {
 	std::list<std::vector<agi::fs::path>> file_responses;
 }
 
-#ifdef __WXMSW__
-// A GUI-subsystem application's entry point on Windows is WinMain, which wx
-// provides; --cli mode is not available there yet
-wxIMPLEMENT_APP(AegisubApp);
-#else
+// main() and WinMain() are defined below, so that they can handle CLI mode
 wxIMPLEMENT_APP_NO_MAIN(AegisubApp);
-#endif
 
 static const char *LastStartupState = nullptr;
 
@@ -363,7 +367,6 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 	return true;
 }
 
-#ifndef __WXMSW__
 namespace {
 std::unique_ptr<Automation4::Script> find_script(const std::string& file)
 {
@@ -411,6 +414,35 @@ agi::fs::path ArgPath(std::string const& arg) {
 bool StartedAsCli(std::string const& program) {
 	return boost::iequals(agi::fs::path(program).stem().string(), "aegisub-cli");
 }
+
+#ifdef _WIN32
+/// aegisub.exe is a GUI program, so Windows doesn't give it a console. If the
+/// caller redirected stdout or stderr, e.g. to capture the output, the handles
+/// are inherited anyway; otherwise, write to the console of the program which
+/// started us, if there is one.
+void AttachParentConsole() {
+	auto missing = [](DWORD which) {
+		HANDLE handle = GetStdHandle(which);
+		return handle == nullptr || handle == INVALID_HANDLE_VALUE;
+	};
+	bool need_stdout = missing(STD_OUTPUT_HANDLE);
+	bool need_stderr = missing(STD_ERROR_HANDLE);
+	if ((!need_stdout && !need_stderr) || !AttachConsole(ATTACH_PARENT_PROCESS))
+		return;
+
+	FILE *unused;
+	if (need_stdout)
+		freopen_s(&unused, "CONOUT$", "w", stdout);
+	if (need_stderr)
+		freopen_s(&unused, "CONOUT$", "w", stderr);
+
+	// Everything is written as UTF-8. The code page belongs to the console,
+	// so put it back for the programs that use it after us.
+	static UINT original_code_page = GetConsoleOutputCP();
+	SetConsoleOutputCP(CP_UTF8);
+	std::atexit([] { SetConsoleOutputCP(original_code_page); });
+}
+#endif
 
 /// Run Aegisub, either in CLI mode or by starting the GUI with run_gui
 /// @param args The command line arguments as UTF-8, including the program name
@@ -484,6 +516,10 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 		agi::util::InitLocale();
 		return run_gui();
 	}
+
+#ifdef _WIN32
+	AttachParentConsole();
+#endif
 
 	auto extras = app.remaining();
 	if (!extras.empty()) {
@@ -657,12 +693,27 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 }
 }
 
+#ifdef __WXMSW__
+extern "C" int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, wxCmdLineArgType lpCmdLine, int nCmdShow) {
+	wxDISABLE_DEBUG_SUPPORT();
+
+	// WinMain's command line isn't Unicode, so get the real one
+	int argc = 0;
+	wchar_t **wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
+	std::vector<std::string> args;
+	for (int i = 0; i < argc; ++i)
+		args.push_back(agi::charset::ConvertW(wargv[i]));
+	LocalFree(wargv);
+
+	return AegisubMain(args, [&] { return wxEntry(hInstance, hPrevInstance, lpCmdLine, nCmdShow); });
+}
+#else
 int main(int argc, char *argv[]) {
 	wxDISABLE_DEBUG_SUPPORT();
 
 	return AegisubMain(std::vector<std::string>(argv, argv + argc), [&] { return wxEntry(argc, argv); });
 }
-#endif // !__WXMSW__
+#endif
 
 
 /// @brief wx's initialization function. Called from main() to initialize the GUI-specific stuff and then call Initialize()

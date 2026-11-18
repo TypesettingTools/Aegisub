@@ -30,7 +30,6 @@
 
 #include <condition_variable>
 #include <deque>
-#include <filesystem>
 #include <iostream>
 #include <mutex>
 #include <sstream>
@@ -176,7 +175,7 @@ std::list<std::vector<agi::fs::path>> parse_file_responses(const std::vector<std
 		std::vector<agi::fs::path> paths;
 		std::stringstream ss;
 		for (const auto& tok : agi::Split(s, '|')) {
-			agi::fs::path p(std::filesystem::absolute(std::string(tok)));
+			auto p = agi::fs::Absolute(agi::fs::path(std::string(tok)));
 			ss << p << " ";
 			paths.push_back(std::move(p));
 		}

@@ -250,6 +250,9 @@ def test_loglevel(aegisub, srcdir, env, tmp):
 
 def test_aegisub_cli_name(aegisub, srcdir, env, tmp):
     # Tools which can't pass --cli can run Aegisub as aegisub-cli instead
+    if os.name == "nt":
+        print("skipped: needs a symlink")
+        return 0
     link = os.path.join(tmp, "aegisub-cli")
     os.symlink(os.path.abspath(aegisub), link)
     out_file = os.path.join(tmp, "out-link.ass")
@@ -272,7 +275,8 @@ def test_no_user_state(aegisub, srcdir, env, tmp):
                      os.path.join(tmp, ".config", "aegisub"),
                      os.path.join(tmp, ".cache", "aegisub"),
                      os.path.join(tmp, ".local", "state", "aegisub"),
-                     os.path.join(tmp, "Library", "Application Support", "Aegisub")):
+                     os.path.join(tmp, "Library", "Application Support", "Aegisub"),
+                     os.path.join(tmp, "AppData")):
         for root, dirs, files in os.walk(user_dir):
             dirs[:] = [d for d in dirs if d not in CACHE_DIRS]
             written += [os.path.join(root, f) for f in files]
@@ -311,6 +315,10 @@ def main():
         env["XDG_STATE_HOME"] = os.path.join(tmp, ".local", "state")
         # macOS looks up ?user through Foundation, which ignores HOME
         env["CFFIXED_USER_HOME"] = tmp
+        # So does Windows, through the shell folder APIs, and there's no
+        # equivalent of CFFIXED_USER_HOME
+        if os.name == "nt":
+            env["AEGISUB_USER_DIR"] = os.path.join(tmp, "AppData")
 
         # ?data points at the install prefix, which doesn't exist for an
         # uninstalled build, so point it at the source tree instead to give

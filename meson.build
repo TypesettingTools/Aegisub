@@ -602,11 +602,10 @@ if host_machine.system() != 'windows'
     install_symlink('aegisub-cli', pointing_to: 'aegisub', install_dir: bindir)
 endif
 
-if get_option('tests') and host_machine.system() == 'linux'
-    # End-to-end test of --cli mode: runs an automation macro on a fixture
-    # file without a display server and checks the output. Linux-only for
-    # now: Windows keeps wx's entry point so there is no --cli there, and
-    # the macOS CI builds have not been vetted for running outside a bundle.
+if get_option('tests')
+    # End-to-end test of CLI mode: runs automation macros and built-in
+    # commands on fixture files without a display server and checks the
+    # output and the error handling
     test('automation-cli',
          find_program('python3', 'python'),
          args: [
