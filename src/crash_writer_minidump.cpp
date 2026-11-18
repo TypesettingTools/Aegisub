@@ -133,6 +133,7 @@ void Initialize(agi::fs::path const& path) {
 }
 
 void Cleanup() {
+	if (!dump_thread) return;
 	dump_thread->exit = true;
 	dump_thread->start_cv.notify_all();
 	dump_thread->thread.join();

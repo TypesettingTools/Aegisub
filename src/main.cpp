@@ -560,6 +560,13 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 	// thunks, mirroring the GUI threading model (see cli::RunWithMainLoop)
 	cli::InitDispatch();
 
+	// The GUI cleans up in AegisubApp::OnExit(), which CLI mode doesn't have.
+	// On Windows the crash writer has a thread which has to be stopped before
+	// exiting, or its destructor terminates the process.
+	struct CleanupOnExit {
+		~CleanupOnExit() { crash_writer::Cleanup(); }
+	} cleanup_on_exit;
+
 	if (!AegisubInitialize(nullptr, [&](std::string msg, std::string title) { std::cerr << title << ": " << msg << "\n"; }, options)) {
 		return 1;
 	}
