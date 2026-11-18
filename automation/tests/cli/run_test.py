@@ -129,6 +129,23 @@ def test_resample_without_video(aegisub, srcdir, env, tmp):
         return fail("resample without video: an output file was written anyway")
     return 0
 
+def test_lua_error(aegisub, srcdir, env, tmp):
+    # A script error has to fail the run and say what went wrong
+    out_file = os.path.join(tmp, "out-error.ass")
+    proc = run_cli(aegisub, [
+        os.path.join(srcdir, "input.ass"),
+        out_file,
+        "CLI Test/Fail",
+        "--automation", os.path.join(srcdir, "cli-test-macro.lua"),
+    ], env)
+    if proc.returncode != 1:
+        return fail(f"lua error: expected exit code 1, got {proc.returncode}")
+    if b"cli-test-failure" not in proc.stdout:
+        return fail("lua error: the script's error was not printed")
+    if os.path.exists(out_file):
+        return fail("lua error: an output file was written anyway")
+    return 0
+
 # Caches that CLI mode may write, since they're disposable and only speed up
 # later runs. On some platforms ?cache is the same directory as ?user.
 CACHE_DIRS = {"auto4cache", "ffms2cache"}
@@ -188,6 +205,7 @@ def main():
 
         tests = [test_macro_runs, test_empty_file, test_missing_input,
                  test_resample, test_resample_without_video,
+                 test_lua_error,
                  test_bad_option_value, test_unknown_option,
                  test_no_user_state]
         for test in tests:

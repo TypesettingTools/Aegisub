@@ -81,17 +81,17 @@ public:
 	agi::AudioProvider *AudioProvider() const { return audio_provider.get(); }
 	agi::fs::path const& AudioName() const { return audio_file; }
 
-	void LoadVideo(agi::fs::path path);
+	bool LoadVideo(agi::fs::path path);
 	void CloseVideo();
 	AsyncVideoProvider *VideoProvider() const { return video_provider.get(); }
 	agi::fs::path const& VideoName() const { return video_file; }
 
-	void LoadTimecodes(agi::fs::path path);
+	bool LoadTimecodes(agi::fs::path path);
 	void CloseTimecodes();
 	bool CanCloseTimecodes() const { return !timecodes_file.empty(); }
 	agi::vfr::Framerate const& Timecodes() const { return timecodes; }
 
-	void LoadKeyframes(agi::fs::path path);
+	bool LoadKeyframes(agi::fs::path path);
 	void CloseKeyframes();
 	bool CanCloseKeyframes() const { return !keyframes_file.empty(); }
 	std::vector<int> const& Keyframes() const { return keyframes; }

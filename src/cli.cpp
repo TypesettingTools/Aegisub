@@ -91,18 +91,14 @@ std::string serialize_element(const json::UnknownElement& elem) {
 	} catch (json::Exception const& e) {}
 
 	auto& val_array = static_cast<json::Array const&>(elem);
-	if (val_array.size() != 3 && val_array.size() != 4) {
-		LOG_E("main/cli") << "Wrong array length for color";
+	if (val_array.size() != 3 && val_array.size() != 4)
 		throw json::Exception("Wrong array length for color");
-	}
 
 	agi::Color color;
 	for (int i = 0; i < val_array.size(); i++) {
 		int arrelem_int = static_cast<json::Integer const&>(val_array[i]);
-		if (arrelem_int < 0 || arrelem_int >= 256) {
-			LOG_E("main/cli") << "Color part not within [0,255] bounds";
+		if (arrelem_int < 0 || arrelem_int >= 256)
 			throw json::Exception("Color part not within [0,255] bounds");
-		}
 
 		switch (i) {
 			case 0: color.r = arrelem_int; break;
@@ -155,7 +151,7 @@ std::pair<int, std::string> json_to_lua(const std::string& s) {
 			vals += agi::ass::inline_string_encode(key) + ":" + serialize_element(p.second);
 		}
 		catch (json::Exception const& e) {
-			throw agi::InvalidInputException(agi::format("Could not serialize 'values.%s' in JSON: %s", key, s));
+			throw agi::InvalidInputException(agi::format("Could not serialize 'values.%s' in JSON (%s): %s", key, e.what(), s));
 		}
 	}
 

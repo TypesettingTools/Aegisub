@@ -707,6 +707,7 @@ namespace {
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, std::string const& title, wxWindow *parent, bool can_open_config)
 	{
 		bool failed = false;
+		std::string error;
 		BackgroundScriptRunner bsr(parent, title);
 		try {
 			bsr.Run([&](ProgressSink *ps) {
@@ -718,9 +719,13 @@ namespace {
 
 				if (lua_pcall(L, nargs, nresults, -nargs - 2)) {
 					if (!lua_isnil(L, -1)) {
-						// if the call failed, log the error here
-						ps->Log("\n\nLua reported a runtime error:\n");
-						ps->Log(get_string_or_default(L, -1));
+						error = get_string_or_default(L, -1);
+						// if the call failed, log the error here; CLI mode
+						// reports it when the run fails instead
+						if (config::hasGui) {
+							ps->Log("\n\nLua reported a runtime error:\n");
+							ps->Log(error);
+						}
 					}
 					lua_pop(L, 2);
 					failed = true;
@@ -741,7 +746,7 @@ namespace {
 			throw;
 		}
 		if (failed)
-			throw agi::UserCancelException("Script threw an error");
+			throw agi::UserCancelException(error.empty() ? "The script was cancelled" : "Lua reported a runtime error:\n" + error);
 	}
 
 	// LuaFeature

@@ -372,7 +372,11 @@ std::unique_ptr<Automation4::Script> find_script(const std::string& file)
 		throw agi::InvalidInputException("Could not find script file: " + file);
 	}
 
-	return Automation4::ScriptFactory::CreateFromFile(script, true, false);
+	// The details of why a script couldn't be loaded have already been logged
+	auto loaded = Automation4::ScriptFactory::CreateFromFile(script, true, false);
+	if (!loaded || !loaded->GetLoadedState())
+		throw agi::InvalidInputException("Could not load automation script " + script.string());
+	return loaded;
 }
 
 /// Turn a path given on the command line into an absolute path
@@ -467,29 +471,38 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 		return 1;
 	}
 
+	// Messages are logged asynchronously, so make sure that they're all out
+	// before reporting how the run went
+	auto fail = [](std::string const& message) {
+		agi::log::log->Flush();
+		std::cerr << "Error: " << message << std::endl;
+		return 1;
+	};
+
 	try {
 		agi::Context context;
 
 		LOG_D("main") << "Loading subtitles...";
-		if (!context.project->LoadSubtitles(ArgPath(in_file), "", false)) {
-			std::cerr << "Failed to load " << in_file << std::endl;
-			return 1;
-		}
+		if (!context.project->LoadSubtitles(ArgPath(in_file), "", false))
+			return fail("Failed to load " + in_file);
 
 		if (!video.empty()) {
 			LOG_D("main") << "Loading video...";
 			// Dummy video "filenames" aren't paths, so leave them alone
-			context.project->LoadVideo(video.starts_with("?dummy") ? agi::fs::path(video) : ArgPath(video));
+			if (!context.project->LoadVideo(video.starts_with("?dummy") ? agi::fs::path(video) : ArgPath(video)))
+				return fail("Failed to load video " + video);
 		}
 
 		if (!timecodes.empty()) {
 			LOG_D("main") << "Loading timecodes...";
-			context.project->LoadTimecodes(ArgPath(timecodes));
+			if (!context.project->LoadTimecodes(ArgPath(timecodes)))
+				return fail("Failed to load timecodes " + timecodes);
 		}
 
 		if (!keyframes.empty()) {
 			LOG_D("main") << "Loading keyframes...";
-			context.project->LoadKeyframes(ArgPath(keyframes));
+			if (!context.project->LoadKeyframes(ArgPath(keyframes)))
+				return fail("Failed to load keyframes " + keyframes);
 		}
 
 		AssDialogue* active_line = nullptr;
@@ -534,11 +547,7 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 		std::vector<std::unique_ptr<Automation4::Script>> scripts;
 		for (auto& s : automation_scripts) {
 			LOG_D("main") << "Loading " << s;
-			auto script = find_script(s);
-			if (!script) {
-				return 1;
-			}
-			scripts.emplace_back(std::move(script));
+			scripts.emplace_back(find_script(s));
 		}
 
 		cmd::Command *cmd = nullptr;
@@ -557,16 +566,12 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 			try {
 				cmd = cmd::get(macro);
 			} catch (cmd::CommandNotFound const&) {
-				std::cerr << "Command not found: " << macro << std::endl;
-				LOG_E("main") << "Command not found: " << macro;
-				return 1;
+				return fail("Command not found: " + macro);
 			}
 		}
 
-		if (!cmd->Validate(&context)) {
-			LOG_E("main") << "Skipping automation because validation function returned false";
-			return 1;
-		}
+		if (!cmd->Validate(&context))
+			return fail(agi::format("%s can't be run on this file and selection", cmd->name()));
 
 		LOG_D("main") << "Calling " << cmd->name();
 		(*cmd)(&context);
@@ -578,15 +583,14 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 		if (config::hasInitializedWx) {
 			wxUninitialize();
 		}
+		agi::log::log->Flush();
 		return 0;
 	}
 	catch (agi::Exception const& e) {
-		std::cerr << "Error: " << e.GetMessage() << std::endl;
-		return 1;
+		return fail(e.GetMessage());
 	}
 	catch (std::exception const& e) {
-		std::cerr << "Error: " << e.what() << std::endl;
-		return 1;
+		return fail(e.what());
 	}
 }
 }

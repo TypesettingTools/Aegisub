@@ -40,5 +40,10 @@ local function count_lines(subs, sel, act)
 	aegisub.log(0, "dialogue lines: " .. dialogue .. "\n")
 end
 
+local function fail()
+	error("cli-test-failure")
+end
+
 aegisub.register_macro("CLI Test/Append marker", "Appends a marker to all selected lines", append_marker)
 aegisub.register_macro("CLI Test/Count lines", "Logs the number of dialogue lines", count_lines)
+aegisub.register_macro("CLI Test/Fail", "Throws an error", fail)

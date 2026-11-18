@@ -408,9 +408,9 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 	return true;
 }
 
-void Project::LoadVideo(agi::fs::path path) {
-	if (path.empty()) return;
-	if (!DoLoadVideo(path)) return;
+bool Project::LoadVideo(agi::fs::path path) {
+	if (path.empty()) return false;
+	if (!DoLoadVideo(path)) return false;
 	if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video_file, true);
 
@@ -420,6 +420,7 @@ void Project::LoadVideo(agi::fs::path path) {
 	else
 		context->videoController->SetAspectRatio(AspectRatio::Default);
 	context->videoController->JumpToFrame(0);
+	return true;
 }
 
 void Project::CloseVideo() {
@@ -438,9 +439,10 @@ void Project::DoLoadTimecodes(agi::fs::path const& path) {
 	AnnounceTimecodesModified(timecodes);
 }
 
-void Project::LoadTimecodes(agi::fs::path path) {
+bool Project::LoadTimecodes(agi::fs::path path) {
 	try {
 		DoLoadTimecodes(path);
+		return true;
 	}
 	catch (agi::fs::FileSystemError const& e) {
 		ShowError(e.GetMessage());
@@ -450,6 +452,7 @@ void Project::LoadTimecodes(agi::fs::path path) {
 		ShowError(_("Failed to parse timecodes file: ") + to_wx(e.GetMessage()));
 		config::mru->Remove("Timecodes", path);
 	}
+	return false;
 }
 
 void Project::CloseTimecodes() {
@@ -464,9 +467,10 @@ void Project::DoLoadKeyframes(agi::fs::path const& path) {
 	AnnounceKeyframesModified(keyframes);
 }
 
-void Project::LoadKeyframes(agi::fs::path path) {
+bool Project::LoadKeyframes(agi::fs::path path) {
 	try {
 		DoLoadKeyframes(path);
+		return true;
 	}
 	catch (agi::fs::FileSystemError const& e) {
 		ShowError(e.GetMessage());
@@ -480,6 +484,7 @@ void Project::LoadKeyframes(agi::fs::path path) {
 		ShowError(_("Keyframes file in unknown format: ") + to_wx(e.GetMessage()));
 		config::mru->Remove("Keyframes", path);
 	}
+	return false;
 }
 
 void Project::CloseKeyframes() {
