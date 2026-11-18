@@ -411,7 +411,8 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 bool Project::LoadVideo(agi::fs::path path) {
 	if (path.empty()) return false;
 	if (!DoLoadVideo(path)) return false;
-	if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
+	// Nothing uses audio in CLI mode, so don't spend time indexing it
+	if (config::hasGui && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video_file, true);
 
 	double dar = video_provider->GetDAR();
