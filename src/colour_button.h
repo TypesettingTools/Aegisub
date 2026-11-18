@@ -45,6 +45,12 @@ public:
 
 	/// Get the currently selected color
 	agi::Color GetColor() { return colour; }
+
+	/// Set the currently selected color
+	void SetColor(agi::Color color) { 
+        colour = color;
+        UpdateBitmap();
+    };
 };
 
 struct ColorValidator final : public wxValidator {
