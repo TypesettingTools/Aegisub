@@ -72,6 +72,7 @@
 
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <CLI/CLI.hpp>
+#include <filesystem>
 #include <iostream>
 #include <optional>
 #include <wx/clipbrd.h>
@@ -341,6 +342,7 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 }
 
 #ifndef __WXMSW__
+namespace {
 std::unique_ptr<Automation4::Script> find_script(const std::string& file)
 {
 	auto absolute = agi::fs::path(file);
@@ -373,11 +375,14 @@ std::unique_ptr<Automation4::Script> find_script(const std::string& file)
 	return Automation4::ScriptFactory::CreateFromFile(script, true, false);
 }
 
-/// @brief Gets called when application starts.
-/// @return int
-int main(int argc, char *argv[]) {
-	wxDISABLE_DEBUG_SUPPORT();
+/// Turn a path given on the command line into an absolute path
+agi::fs::path ArgPath(std::string const& arg) {
+	return agi::fs::Absolute(agi::fs::path(arg));
+}
 
+/// Run Aegisub, either in CLI mode or by starting the GUI with run_gui
+/// @param args The command line arguments as UTF-8, including the program name
+int AegisubMain(std::vector<std::string> const& args, std::function<int()> const& run_gui) {
 	CLI::App app("Aegisub - Advanced Subtitle Editor");
 
 	bool cli = false;
@@ -409,172 +414,187 @@ int main(int argc, char *argv[]) {
 	// argv itself); CLI mode rejects them below
 	app.allow_extras();
 
+	std::vector<const char *> argv;
+	for (auto const& arg : args)
+		argv.push_back(arg.c_str());
+
 	try {
-		app.parse(argc, argv);
+		app.parse(static_cast<int>(argv.size()), argv.data());
 	}
 	catch (CLI::Success const& e) {
 		// --help and friends print and exit successfully
 		return app.exit(e);
 	}
 	catch (CLI::ParseError const& e) {
+		// The GUI doesn't use any of these options, so don't let them keep it from starting
+		if (std::find(args.begin(), args.end(), "--cli") == args.end()) {
+			agi::util::InitLocale();
+			return run_gui();
+		}
 		app.exit(e); // prints the error and a --help hint to stderr
 		return 1;
 	}
 
 	config::hasGui = !cli;
 
-	if (cli) {
-		auto extras = app.remaining();
-		if (!extras.empty()) {
-			std::cerr << "Error: unrecognised option '" << extras.front() << "'" << std::endl;
-			return 1;
-		}
+	if (!cli) {
+		agi::util::InitLocale();
+		return run_gui();
+	}
 
-		if (!in_file_opt->count() || !out_file_opt->count() || !macro_opt->count()) {
-			std::cerr << "Too few arguments." << std::endl;
-			std::cerr << app.help() << std::endl;
-			return 1;
-		}
+	auto extras = app.remaining();
+	if (!extras.empty()) {
+		std::cerr << "Error: unrecognised option '" << extras.front() << "'" << std::endl;
+		return 1;
+	}
+
+	if (!in_file_opt->count() || !out_file_opt->count() || !macro_opt->count()) {
+		std::cerr << "Too few arguments." << std::endl;
+		std::cerr << app.help() << std::endl;
+		return 1;
 	}
 
 	agi::util::InitLocale();
 
-	if (cli) {
-		config::hasInitializedWx = false;
-		config::loadGlobalAutomation = false;
+	config::hasInitializedWx = false;
+	config::loadGlobalAutomation = false;
 
-		// Scripts run on a worker thread while this thread pumps main-thread
-		// thunks, mirroring the GUI threading model (see cli::RunWithMainLoop)
-		cli::InitDispatch();
+	// Scripts run on a worker thread while this thread pumps main-thread
+	// thunks, mirroring the GUI threading model (see cli::RunWithMainLoop)
+	cli::InitDispatch();
 
-		if (!AegisubInitialize(nullptr, [&](std::string msg, std::string title) { std::cerr << title << ": " << msg << "\n"; })) {
-			return -1;
+	if (!AegisubInitialize(nullptr, [&](std::string msg, std::string title) { std::cerr << title << ": " << msg << "\n"; })) {
+		return 1;
+	}
+
+	try {
+		agi::Context context;
+
+		LOG_D("main") << "Loading subtitles...";
+		if (!context.project->LoadSubtitles(ArgPath(in_file), "", false)) {
+			std::cerr << "Failed to load " << in_file << std::endl;
+			return 1;
 		}
 
-		try {
-			agi::Context context;
+		if (!video.empty()) {
+			LOG_D("main") << "Loading video...";
+			// Dummy video "filenames" aren't paths, so leave them alone
+			context.project->LoadVideo(video.starts_with("?dummy") ? agi::fs::path(video) : ArgPath(video));
+		}
 
-			LOG_D("main") << "Loading subtitles...";
-			if (!context.project->LoadSubtitles(agi::fs::path(std::filesystem::absolute(in_file)), "", false)) {
-				std::cerr << "Failed to load " << in_file << std::endl;
-				return 1;
+		if (!timecodes.empty()) {
+			LOG_D("main") << "Loading timecodes...";
+			context.project->LoadTimecodes(ArgPath(timecodes));
+		}
+
+		if (!keyframes.empty()) {
+			LOG_D("main") << "Loading keyframes...";
+			context.project->LoadKeyframes(ArgPath(keyframes));
+		}
+
+		AssDialogue* active_line = nullptr;
+
+		auto selected_indices = parse_range(selected_range);
+		Selection selected_lines;
+
+		int i = 0;
+		for (auto& line : context.ass->Events) {
+			if (i == active_index) {
+				active_line = &line;
 			}
 
-			if (!video.empty()) {
-				LOG_D("main") << "Loading video...";
-				// Dummy video "filenames" aren't paths, so leave them alone
-				context.project->LoadVideo(video.starts_with("?dummy") ? agi::fs::path(video) : agi::fs::path(std::filesystem::absolute(video)));
-			}
-
-			if (!timecodes.empty()) {
-				LOG_D("main") << "Loading timecodes...";
-				context.project->LoadTimecodes(agi::fs::path(std::filesystem::absolute(timecodes)));
-			}
-
-			if (!keyframes.empty()) {
-				LOG_D("main") << "Loading keyframes...";
-				context.project->LoadKeyframes(agi::fs::path(std::filesystem::absolute(keyframes)));
-			}
-
-			AssDialogue* active_line = nullptr;
-
-			auto selected_indices = parse_range(selected_range);
-			Selection selected_lines;
-
-			int i = 0;
-			for (auto& line : context.ass->Events) {
-				if (i == active_index) {
+			if (selected_indices.empty() || selected_indices.count(i)) {
+				selected_lines.insert(&line);
+				if (active_line == nullptr) {
+					// assign first line in selection as a fallback
 					active_line = &line;
 				}
-
-				if (selected_indices.empty() || selected_indices.count(i)) {
-					selected_lines.insert(&line);
-					if (active_line == nullptr) {
-						// assign first line in selection as a fallback
-						active_line = &line;
-					}
-				}
-				i++;
 			}
+			i++;
+		}
 
-			if (active_line == nullptr) {
-				// selection was empty
-				active_line = &context.ass->Events.front();
-				selected_lines.insert(active_line);
-			}
+		if (active_line == nullptr) {
+			// selection was empty
+			active_line = &context.ass->Events.front();
+			selected_lines.insert(active_line);
+		}
 
-			context.selectionController->SetSelectionAndActive(
-				std::move(selected_lines), active_line);
+		context.selectionController->SetSelectionAndActive(
+			std::move(selected_lines), active_line);
 
-			if (!dialog_json.empty())
-				config::dialog_responses = parse_dialog_responses(dialog_json);
+		if (!dialog_json.empty())
+			config::dialog_responses = parse_dialog_responses(dialog_json);
 
-			if (!file_names.empty())
-				config::file_responses = parse_file_responses(file_names);
+		if (!file_names.empty())
+			config::file_responses = parse_file_responses(file_names);
 
-			// cache cwd in case automation changes it
-			auto cwd = std::filesystem::current_path();
+		// cache cwd in case automation changes it
+		auto cwd = std::filesystem::current_path();
 
-			std::vector<std::unique_ptr<Automation4::Script>> scripts;
-			for (auto& s : automation_scripts) {
-				LOG_D("main") << "Loading " << s;
-				auto script = find_script(s);
-				if (!script) {
-					return 1;
-				}
-				scripts.emplace_back(std::move(script));
-			}
-
-			cmd::Command *cmd = nullptr;
-
-			// Allow calling automation scripts by their display name
-			for (auto const& script : scripts) {
-				for (auto const& c: script->GetMacros()) {
-					if (c->StrMenu(&context) == to_wx(macro)) {
-						cmd = c;
-					}
-				}
-			}
-
-			// If we don't find one, try the command name instead
-			if (!cmd) {
-				try {
-					cmd = cmd::get(macro);
-				} catch (cmd::CommandNotFound const&) {
-					std::cerr << "Command not found: " << macro << std::endl;
-					LOG_E("main") << "Command not found: " << macro;
-					return 1;
-				}
-			}
-
-			if (!cmd->Validate(&context)) {
-				LOG_E("main") << "Skipping automation because validation function returned false";
+		std::vector<std::unique_ptr<Automation4::Script>> scripts;
+		for (auto& s : automation_scripts) {
+			LOG_D("main") << "Loading " << s;
+			auto script = find_script(s);
+			if (!script) {
 				return 1;
 			}
+			scripts.emplace_back(std::move(script));
+		}
 
-			LOG_D("main") << "Calling " << cmd->name();
-			(*cmd)(&context);
+		cmd::Command *cmd = nullptr;
 
-			// restore cwd for saving
-			std::filesystem::current_path(cwd);
-			context.subsController->Save(agi::fs::path(std::filesystem::absolute(out_file)));
-
-			if (config::hasInitializedWx) {
-				wxUninitialize();
+		// Allow calling automation scripts by their display name
+		for (auto const& script : scripts) {
+			for (auto const& c: script->GetMacros()) {
+				if (c->StrMenu(&context) == to_wx(macro)) {
+					cmd = c;
+				}
 			}
-			return 0;
 		}
-		catch (agi::Exception const& e) {
-			std::cerr << "Error: " << e.GetMessage() << std::endl;
+
+		// If we don't find one, try the command name instead
+		if (!cmd) {
+			try {
+				cmd = cmd::get(macro);
+			} catch (cmd::CommandNotFound const&) {
+				std::cerr << "Command not found: " << macro << std::endl;
+				LOG_E("main") << "Command not found: " << macro;
+				return 1;
+			}
+		}
+
+		if (!cmd->Validate(&context)) {
+			LOG_E("main") << "Skipping automation because validation function returned false";
 			return 1;
 		}
-		catch (std::exception const& e) {
-			std::cerr << "Error: " << e.what() << std::endl;
-			return 1;
+
+		LOG_D("main") << "Calling " << cmd->name();
+		(*cmd)(&context);
+
+		// restore cwd for saving
+		std::filesystem::current_path(cwd);
+		context.subsController->Save(ArgPath(out_file));
+
+		if (config::hasInitializedWx) {
+			wxUninitialize();
 		}
-	} else {
-		return wxEntry(argc, argv);
+		return 0;
 	}
+	catch (agi::Exception const& e) {
+		std::cerr << "Error: " << e.GetMessage() << std::endl;
+		return 1;
+	}
+	catch (std::exception const& e) {
+		std::cerr << "Error: " << e.what() << std::endl;
+		return 1;
+	}
+}
+}
+
+int main(int argc, char *argv[]) {
+	wxDISABLE_DEBUG_SUPPORT();
+
+	return AegisubMain(std::vector<std::string>(argv, argv + argc), [&] { return wxEntry(argc, argv); });
 }
 #endif // !__WXMSW__
 
