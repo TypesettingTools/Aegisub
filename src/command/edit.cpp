@@ -211,7 +211,72 @@ struct parsed_line {
 		return n - in_block;
 	}
 
+	static void set_tag_in_override(AssDialogueBlockOverride *ovr, std::string const& tag,
+	                                std::string const& value) {
+		std::string alt;
+		if (tag == "\\c") alt = "\\1c";
+
+		bool found = false;
+		for (size_t i = 0; i < ovr->Tags.size(); i++) {
+			std::string const& name = ovr->Tags[i].Name;
+			if (tag == name || alt == name) {
+				if (found) {
+					ovr->Tags.erase(ovr->Tags.begin() + i);
+					i--;
+				}
+				else {
+					ovr->Tags[i].Params[0].Set(value);
+					found = true;
+				}
+			}
+		}
+		if (!found)
+			ovr->AddTag(tag + value);
+	}
+
+	// Return the contents of the innermost transform containing pos.
+	static std::pair<size_t, size_t> transform_at_pos(std::string const& text, size_t pos) {
+		std::vector<size_t> parens;
+		bool in_override = false;
+		for (size_t i = 0; i < text.size(); ++i) {
+			if (text[i] == '{') {
+				in_override = true;
+				parens.clear();
+			}
+			else if (text[i] == '}') {
+				in_override = false;
+				parens.clear();
+			}
+			else if (in_override && text.compare(i, 3, "\\t(") == 0) {
+				parens.push_back(i + 3);
+				i += 2;
+			}
+			else if (in_override && text[i] == '(')
+				parens.push_back(std::string::npos);
+			else if (in_override && text[i] == ')' && !parens.empty()) {
+				auto start = parens.back();
+				parens.pop_back();
+				if (start != std::string::npos && start <= pos && pos <= i)
+					return {start, i};
+			}
+		}
+		return {std::string::npos, std::string::npos};
+	}
+
 	int set_tag(std::string const& tag, std::string const& value, int norm_pos, int orig_pos) {
+		std::string text = line->Text.get();
+		auto transform = transform_at_pos(text, orig_pos);
+		if (transform.first != std::string::npos) {
+			AssDialogueBlockOverride nested("{" + text.substr(transform.first, transform.second - transform.first) + "}");
+			nested.ParseTags();
+			set_tag_in_override(&nested, tag, value);
+			std::string replacement = nested.GetText();
+			replacement = replacement.substr(1, replacement.size() - 2);
+			line->Text = text.substr(0, transform.first) + replacement + text.substr(transform.second);
+			blocks = line->ParseTags();
+			return static_cast<int>(replacement.size()) - static_cast<int>(transform.second - transform.first);
+		}
+
 		int blockn = block_at_pos(norm_pos);
 
 		AssDialogueBlockPlain *plain = nullptr;
@@ -249,26 +314,10 @@ struct parsed_line {
 			blocks = line->ParseTags();
 		}
 		else if (ovr) {
-			std::string alt;
-			if (tag == "\\c") alt = "\\1c";
-			// Remove old of same
-			bool found = false;
-			for (size_t i = 0; i < ovr->Tags.size(); i++) {
-				std::string const& name = ovr->Tags[i].Name;
-				if (tag == name || alt == name) {
-					shift -= ((std::string)ovr->Tags[i]).size();
-					if (found) {
-						ovr->Tags.erase(ovr->Tags.begin() + i);
-						i--;
-					}
-					else {
-						ovr->Tags[i].Params[0].Set(value);
-						found = true;
-					}
-				}
-			}
-			if (!found)
-				ovr->AddTag(insert);
+			for (auto const& old_tag : ovr->Tags)
+				if (old_tag.Name == tag || (tag == "\\c" && old_tag.Name == "\\1c"))
+					shift -= ((std::string)old_tag).size();
+			set_tag_in_override(ovr, tag, value);
 
 			line->UpdateText(blocks);
 		}
