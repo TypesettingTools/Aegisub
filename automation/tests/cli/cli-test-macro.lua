@@ -9,6 +9,8 @@ script_version = "1"
 local clipboard = require 'aegisub.clipboard'
 
 local function append_marker(subs, sel, act)
+	assert(aegisub.cli == true, "aegisub.cli should be true in CLI mode")
+
 	aegisub.progress.title("CLI test")
 	aegisub.progress.task("Appending markers")
 

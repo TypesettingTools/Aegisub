@@ -545,6 +545,7 @@ namespace {
 		set_field(L, "lua_automation_version", 4);
 		push_version(L);
 		lua_setfield(L, -2, "version");
+		set_field(L, "cli", !config::hasGui);
 		set_field<clipboard_init>(L, "__init_clipboard");
 		set_field<raise_warning_onload>(L, "__raise_warning");
 		set_field<get_file_name>(L, "file_name");
