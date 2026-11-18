@@ -17,8 +17,15 @@
 /// @file gui_wrap.h
 /// @brief Wrappers around some common wx dialogs that makes them not show in CLI mode
 
+#pragma once
+
+#include <libaegisub/exception.h>
+
 #include <wx/string.h>
 #include <wx/window.h>
+
+/// Thrown when something that needs the GUI, such as a dialog, is used in CLI mode
+DEFINE_EXCEPTION(GuiRequiredError, agi::Exception);
 
 int wrapMessageBox(const wxString &message, const wxString &caption, long style=wxOK | wxCENTRE, wxWindow *parent=nullptr);
 

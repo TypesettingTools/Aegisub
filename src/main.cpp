@@ -570,6 +570,10 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 			}
 		}
 
+		// Built-in commands have to be marked as working without the GUI
+		if (!(cmd->Type() & cmd::COMMAND_CLI))
+			return fail(agi::format("%s can't be run in CLI mode", cmd->name()));
+
 		if (!cmd->Validate(&context))
 			return fail(agi::format("%s can't be run on this file and selection", cmd->name()));
 

@@ -259,6 +259,16 @@ wxString FontFace(std::string opt_prefix) {
 }
 
 static agi::fs::path FileSelector(agi::Context *c, wxString const& message, std::string const& option_name, std::string const& default_filename, std::string const& default_extension, std::string const& wildcard, int flags, wxWindow *parent, std::optional<std::string_view> path_anchor) {
+	if (!config::hasGui) {
+		// There's no one to ask in CLI mode, so use the next --file response,
+		// or act as if the dialog was cancelled if there are none left
+		if (config::file_responses.empty())
+			return {};
+		auto filename = config::file_responses.front().front();
+		config::file_responses.pop_front();
+		return filename;
+	}
+
 	wxString path;
 	if (!option_name.empty())
 		path = to_wx(c->path->Decode(OPT_GET(option_name)->GetString()).string());

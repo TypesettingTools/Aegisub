@@ -102,6 +102,7 @@ void adjoin_lines(agi::Context *c, bool set_start) {
 
 struct time_continuous_end final : public validate_adjoinable {
 	CMD_NAME("time/continuous/end")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("Change &End")
 	STR_DISP("Change End")
 	STR_HELP("Change end times of lines to the next line's start time")
@@ -113,6 +114,7 @@ struct time_continuous_end final : public validate_adjoinable {
 
 struct time_continuous_start final : public validate_adjoinable {
 	CMD_NAME("time/continuous/start")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("Change &Start")
 	STR_DISP("Change Start")
 	STR_HELP("Change start times of lines to the previous line's end time")

@@ -92,6 +92,7 @@ struct tool_line_select final : public Command {
 
 struct tool_resampleres final : public Command {
 	CMD_NAME("tool/resampleres")
+	CMD_TYPE(COMMAND_CLI)
 	CMD_ICON(resample_toolbutton)
 	STR_MENU("&Resample Resolution...")
 	STR_DISP("Resample Resolution")

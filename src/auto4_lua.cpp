@@ -788,7 +788,7 @@ namespace {
 	: LuaFeature(L)
 	, display(check_wxstring(L, 1))
 	, help(get_wxstring(L, 2))
-	, cmd_type(cmd::COMMAND_NORMAL)
+	, cmd_type(cmd::COMMAND_CLI) // Prompts are answered by --dialog and --file in CLI mode
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
 		cmd_name = agi::format("automation/lua/%s/%s", check_string(L, -1), check_string(L, 1));

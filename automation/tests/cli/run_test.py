@@ -146,6 +146,41 @@ def test_lua_error(aegisub, srcdir, env, tmp):
         return fail("lua error: an output file was written anyway")
     return 0
 
+def test_builtin_command(aegisub, srcdir, env, tmp):
+    # Built-in commands which work without the GUI can be run directly
+    out_file = os.path.join(tmp, "out-delete.ass")
+    proc = run_cli(aegisub, [
+        os.path.join(srcdir, "input.ass"),
+        out_file,
+        "edit/line/delete",
+        "--selected-lines", "0",
+    ], env)
+    if proc.returncode != 0:
+        return fail(f"built-in command: aegisub --cli exited with {proc.returncode}")
+
+    with open(out_file, encoding="utf-8-sig") as f:
+        out = f.read()
+
+    if "First line" in out or "Second line" not in out:
+        return fail("built-in command: the selected line was not deleted", out)
+    return 0
+
+def test_gui_command(aegisub, srcdir, env, tmp):
+    # Commands which need the GUI have to fail cleanly rather than hang or crash
+    out_file = os.path.join(tmp, "out-gui.ass")
+    proc = run_cli(aegisub, [
+        os.path.join(srcdir, "input.ass"),
+        out_file,
+        "video/play",
+    ], env)
+    if proc.returncode != 1:
+        return fail(f"GUI command: expected exit code 1, got {proc.returncode}")
+    if b"can't be run in CLI mode" not in proc.stdout:
+        return fail("GUI command: no diagnostic was printed")
+    if os.path.exists(out_file):
+        return fail("GUI command: an output file was written anyway")
+    return 0
+
 # Caches that CLI mode may write, since they're disposable and only speed up
 # later runs. On some platforms ?cache is the same directory as ?user.
 CACHE_DIRS = {"auto4cache", "ffms2cache"}
@@ -205,7 +240,7 @@ def main():
 
         tests = [test_macro_runs, test_empty_file, test_missing_input,
                  test_resample, test_resample_without_video,
-                 test_lua_error,
+                 test_lua_error, test_builtin_command, test_gui_command,
                  test_bad_option_value, test_unknown_option,
                  test_no_user_state]
         for test in tests:
