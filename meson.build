@@ -1,6 +1,6 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.60.0',
+        meson_version: '>=0.61.0',
         default_options: [
             'cpp_std=c++20',
             'warning_level=3',
@@ -594,6 +594,13 @@ aegisub = executable('aegisub', aegisub_src, version_h, libresrc_headers, aegisu
                      install_dir: bindir,
                      dependencies: deps,
                      win_subsystem: 'windows')
+
+# Running Aegisub as aegisub-cli implies --cli, for tools which can't pass
+# extra arguments. Installers and zips can't carry symlinks on Windows, so
+# there it's aegisub.exe --cli.
+if host_machine.system() != 'windows'
+    install_symlink('aegisub-cli', pointing_to: 'aegisub', install_dir: bindir)
+endif
 
 if get_option('tests') and host_machine.system() == 'linux'
     # End-to-end test of --cli mode: runs an automation macro on a fixture

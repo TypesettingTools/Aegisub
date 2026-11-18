@@ -70,6 +70,7 @@
 #include <libaegisub/split.h>
 #include <libaegisub/util.h>
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/interprocess/streams/bufferstream.hpp>
 #include <CLI/CLI.hpp>
 #include <filesystem>
@@ -405,11 +406,18 @@ agi::fs::path ArgPath(std::string const& arg) {
 	return agi::fs::Absolute(agi::fs::path(arg));
 }
 
+/// Whether Aegisub was started under a name that implies --cli, i.e. through
+/// an aegisub-cli link, for tools which can't pass extra arguments
+bool StartedAsCli(std::string const& program) {
+	return boost::iequals(agi::fs::path(program).stem().string(), "aegisub-cli");
+}
+
 /// Run Aegisub, either in CLI mode or by starting the GUI with run_gui
 /// @param args The command line arguments as UTF-8, including the program name
 int AegisubMain(std::vector<std::string> const& args, std::function<int()> const& run_gui) {
 	CLI::App app("Aegisub - Advanced Subtitle Editor");
 
+	bool started_as_cli = !args.empty() && StartedAsCli(args[0]);
 	bool cli = false;
 	std::string in_file, out_file, macro;
 	std::string video, timecodes, keyframes;
@@ -425,7 +433,7 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 	auto out_file_opt = app.add_option("out-file,--out-file", out_file, "output file");
 	auto macro_opt = app.add_option("macro,--macro", macro, "macro to run");
 
-	app.add_flag("--cli", cli, "run in CLI mode, without a GUI window. Enables the other options");
+	app.add_flag("--cli", cli, "run in CLI mode, without a GUI window. Enables the other options. Implied when run as aegisub-cli");
 	app.add_option("--video", video, "video to load");
 	app.add_option("--timecodes", timecodes, "timecodes to load");
 	app.add_option("--keyframes", keyframes, "keyframes to load");
@@ -461,7 +469,7 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 	}
 	catch (CLI::ParseError const& e) {
 		// The GUI doesn't use any of these options, so don't let them keep it from starting
-		if (std::find(args.begin(), args.end(), "--cli") == args.end()) {
+		if (!started_as_cli && std::find(args.begin(), args.end(), "--cli") == args.end()) {
 			agi::util::InitLocale();
 			return run_gui();
 		}
@@ -469,6 +477,7 @@ int AegisubMain(std::vector<std::string> const& args, std::function<int()> const
 		return 1;
 	}
 
+	cli = cli || started_as_cli;
 	config::hasGui = !cli;
 
 	if (!cli) {

@@ -248,6 +248,18 @@ def test_loglevel(aegisub, srcdir, env, tmp):
         return fail(f"loglevel: --loglevel 5 gave exit code {proc.returncode}, expected 1")
     return 0
 
+def test_aegisub_cli_name(aegisub, srcdir, env, tmp):
+    # Tools which can't pass --cli can run Aegisub as aegisub-cli instead
+    link = os.path.join(tmp, "aegisub-cli")
+    os.symlink(os.path.abspath(aegisub), link)
+    out_file = os.path.join(tmp, "out-link.ass")
+    proc = subprocess.run([link, os.path.join(srcdir, "input.ass"), out_file, "grid/sort/start"],
+                          env=env, timeout=240, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    sys.stdout.buffer.write(proc.stdout)
+    if proc.returncode != 0 or not os.path.exists(out_file):
+        return fail(f"aegisub-cli: exited with {proc.returncode} without writing the output file")
+    return 0
+
 # Caches that CLI mode may write, since they're disposable and only speed up
 # later runs. On some platforms ?cache is the same directory as ?user.
 CACHE_DIRS = {"auto4cache", "ffms2cache"}
@@ -308,7 +320,7 @@ def main():
         tests = [test_macro_runs, test_empty_file, test_missing_input,
                  test_resample, test_resample_without_video,
                  test_lua_error, test_builtin_command, test_gui_command,
-                 test_config_options, test_loglevel,
+                 test_config_options, test_loglevel, test_aegisub_cli_name,
                  test_bad_option_value, test_unknown_option,
                  test_no_user_state]
         for test in tests:
