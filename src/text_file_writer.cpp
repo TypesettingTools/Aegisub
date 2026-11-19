@@ -20,18 +20,51 @@
 
 #include <libaegisub/io.h>
 #include <libaegisub/charset_conv.h>
+#include <libaegisub/file_mapping.h>
 
-#include <boost/algorithm/string/case_conv.hpp>
+#include <algorithm>
+#include <string_view>
+
+namespace {
+/// Get the line endings used by the file being overwritten, if any, so that
+/// they can be preserved when rewriting it. Files written from scratch always
+/// get "\n" regardless of the platform. The result is already in the target
+/// encoding.
+std::string DetectExistingNewline(agi::fs::path const& filename, agi::charset::IconvWrapper *conv) {
+	std::string cr("\r"), lf("\n");
+	if (conv) {
+		cr = conv->Convert(cr);
+		lf = conv->Convert(lf);
+	}
+
+	try {
+		agi::read_file_mapping file(filename);
+		auto buff_size = std::min<uint64_t>(file.size(), 1 << 20);
+		if (buff_size >= cr.size() + lf.size()) {
+			auto data = file.read(0, buff_size);
+			std::string_view buff(data.data(), data.size());
+			auto pos = buff.find(lf);
+			if (pos != buff.npos && pos >= cr.size() && buff.substr(pos - cr.size(), cr.size()) == cr)
+				return cr + lf;
+		}
+	}
+	catch (agi::Exception const&) {
+		// The file doesn't exist or can't be read, so just use the default
+	}
+
+	return lf;
+}
+}
 
 TextFileWriter::TextFileWriter(agi::fs::path const& filename, std::string encoding)
 : file(filename, true)
 {
 	if (encoding.empty())
 		encoding = OPT_GET("App/Save Charset")->GetString();
-	if (encoding != "utf-8" && encoding != "UTF-8") {
+	if (encoding != "utf-8" && encoding != "UTF-8")
 		conv = std::make_unique<agi::charset::IconvWrapper>("utf-8", encoding.data(), true);
-		newline = conv->Convert(newline);
-	}
+
+	newline = DetectExistingNewline(filename, conv.get());
 
 	try {
 		// Write the BOM
