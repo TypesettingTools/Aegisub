@@ -596,9 +596,15 @@ aegisub = executable('aegisub', aegisub_src, version_h, libresrc_headers, aegisu
                      win_subsystem: 'windows')
 
 # Running Aegisub as aegisub-cli implies --cli, for tools which can't pass
-# extra arguments. Installers and zips can't carry symlinks on Windows, so
-# there it's aegisub.exe --cli.
-if host_machine.system() != 'windows'
+# extra arguments. On Windows it's a console program which runs aegisub.exe,
+# so that shells wait for it and show its output; elsewhere a symlink.
+cli_deps = [aegisub]
+if host_machine.system() == 'windows'
+    cli_deps += executable('aegisub-cli', 'src/cli_launcher_win.cpp',
+                           install: true,
+                           install_dir: bindir,
+                           win_subsystem: 'console')
+else
     install_symlink('aegisub-cli', pointing_to: 'aegisub', install_dir: bindir)
 endif
 
@@ -614,6 +620,6 @@ if get_option('tests')
              meson.current_source_dir() / 'automation' / 'tests' / 'cli',
          ],
          suite: 'automation',
-         depends: aegisub,
+         depends: cli_deps,
          timeout: 300)
 endif

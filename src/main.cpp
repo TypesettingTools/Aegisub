@@ -423,7 +423,7 @@ bool StartedAsCli(std::string const& program) {
 /// aegisub.exe is a GUI program, so Windows doesn't give it a console. If the
 /// caller redirected stdout or stderr, e.g. to capture the output, the handles
 /// are inherited anyway; otherwise, write to the console of the program which
-/// started us, if there is one.
+/// started us, if there is one. That's aegisub-cli.exe when run through it.
 void AttachParentConsole() {
 	auto missing = [](DWORD which) {
 		HANDLE handle = GetStdHandle(which);

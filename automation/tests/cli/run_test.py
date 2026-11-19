@@ -249,12 +249,13 @@ def test_loglevel(aegisub, srcdir, env, tmp):
     return 0
 
 def test_aegisub_cli_name(aegisub, srcdir, env, tmp):
-    # Tools which can't pass --cli can run Aegisub as aegisub-cli instead
+    # Tools which can't pass --cli can run Aegisub as aegisub-cli instead. On
+    # Windows that's a separate console program which runs aegisub.exe.
     if os.name == "nt":
-        print("skipped: needs a symlink")
-        return 0
-    link = os.path.join(tmp, "aegisub-cli")
-    os.symlink(os.path.abspath(aegisub), link)
+        link = os.path.join(os.path.dirname(os.path.abspath(aegisub)), "aegisub-cli.exe")
+    else:
+        link = os.path.join(tmp, "aegisub-cli")
+        os.symlink(os.path.abspath(aegisub), link)
     out_file = os.path.join(tmp, "out-link.ass")
     proc = subprocess.run([link, os.path.join(srcdir, "input.ass"), out_file, "grid/sort/start"],
                           env=env, timeout=240, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
