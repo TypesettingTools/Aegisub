@@ -337,7 +337,11 @@ bool AegisubInitialize(AegisubApp *app, std::function<void(std::string, std::str
 
 		// Load plugins
 		Automation4::ScriptFactory::Register(std::make_unique<Automation4::LuaScriptFactory>());
-		libass::CacheFonts();
+		// Nothing renders subtitles in CLI mode, so don't spend time scanning
+		// the fonts. On Windows, exiting while the scan is still running also
+		// hangs, as the thread pool waits for it at exit.
+		if (config::hasGui)
+			libass::CacheFonts();
 
 		// Load Automation scripts
 		if (config::loadGlobalAutomation) {

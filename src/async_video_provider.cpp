@@ -101,7 +101,7 @@ VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
 	// To do this, draw the subtitles once on a black frame and once on a white frame
 	// and solve for the color and alpha.
 	VideoFrame frame_black = GetBlankFrame(false);
-	if (!subs) return frame_black;
+	if (!subs || !subs_provider) return frame_black;
 	VideoFrame frame_white = GetBlankFrame(true);
 
 	subs_provider->LoadSubtitles(subs.get());
@@ -149,6 +149,11 @@ std::pair<int, int> AsyncVideoProvider::GetDisplayResolution() const {
 }
 
 static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_handler, agi::BackgroundRunner *br) {
+	// Frames aren't rendered in CLI mode (see ProcAsync), so there's no need
+	// for a subtitles renderer, which libass's isn't set up for there anyway
+	if (!config::hasGui)
+		return nullptr;
+
 	try {
 		return SubtitlesProviderFactory::GetProvider(br);
 	}
