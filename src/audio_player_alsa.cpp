@@ -67,6 +67,8 @@ enum class Message {
 using clock = std::chrono::steady_clock;
 
 class AlsaPlayer final : public AudioPlayer {
+	agi::AudioProvider *provider;
+
 	std::mutex mutex;
 	std::condition_variable cond;
 
@@ -289,7 +291,7 @@ do_setup:
 }
 
 AlsaPlayer::AlsaPlayer(agi::AudioProvider *provider) try
-: AudioPlayer(provider)
+: provider(provider)
 , thread(&AlsaPlayer::PlaybackThread, this)
 {
 }

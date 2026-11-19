@@ -63,6 +63,8 @@ public:
 class DirectSoundPlayer final : public AudioPlayer {
 	friend class DirectSoundPlayerThread;
 
+	agi::AudioProvider *provider;
+
 	volatile bool playing = false;
 	float volume = 1.0f;
 	int offset = 0;
@@ -96,7 +98,7 @@ public:
 };
 
 DirectSoundPlayer::DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *parent)
-: AudioPlayer(provider)
+: provider(provider)
 {
 	// Initialize the DirectSound object
 	HRESULT res;

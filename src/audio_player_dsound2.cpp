@@ -58,6 +58,8 @@ class DirectSoundPlayer2Thread;
 /// and performs all playback operations, and use the player object as a proxy to
 /// send commands to the playback thread.
 class DirectSoundPlayer2 final : public AudioPlayer {
+	agi::AudioProvider *provider;
+
 	/// The playback thread
 	std::unique_ptr<DirectSoundPlayer2Thread> thread;
 
@@ -799,7 +801,7 @@ bool DirectSoundPlayer2Thread::IsDead()
 }
 
 DirectSoundPlayer2::DirectSoundPlayer2(agi::AudioProvider *provider, wxWindow *parent)
-: AudioPlayer(provider)
+: provider(provider)
 {
 	// The buffer will hold BufferLength times WantedLatency milliseconds of audio
 	WantedLatency = OPT_GET("Player/Audio/DirectSound/Buffer Latency")->GetInt();

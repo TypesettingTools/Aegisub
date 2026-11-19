@@ -169,6 +169,8 @@ public:
 };
 
 class PulseAudioPlayer final : public AudioPlayer {
+	agi::AudioProvider *provider;
+
 	float volume = 1.f;
 	bool is_playing = false;
 
@@ -211,7 +213,7 @@ public:
 	void SetVolume(double vol) { volume = vol; }
 };
 
-PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(provider) {
+PulseAudioPlayer::PulseAudioPlayer(agi::AudioProvider *provider) : provider(provider) {
 	// Initialise a mainloop
 	mainloop.reset(pa_threaded_mainloop_new());
 	if (!mainloop)

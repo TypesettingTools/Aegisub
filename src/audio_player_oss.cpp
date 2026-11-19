@@ -58,6 +58,8 @@ class OSSPlayerThread;
 class OSSPlayer final : public AudioPlayer {
     friend class OSSPlayerThread;
 
+	agi::AudioProvider *provider;
+
     /// sample rate of audio
     unsigned int rate = 0;
 
@@ -89,7 +91,7 @@ class OSSPlayer final : public AudioPlayer {
 
 public:
     OSSPlayer(agi::AudioProvider *provider)
-    : AudioPlayer(provider)
+    : provider(provider)
     {
         OpenStream();
     }

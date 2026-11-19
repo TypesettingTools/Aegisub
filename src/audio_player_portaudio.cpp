@@ -63,7 +63,7 @@ static const PaHostApiTypeId pa_host_api_priority[] = {
 };
 static const size_t pa_host_api_priority_count = sizeof(pa_host_api_priority) / sizeof(pa_host_api_priority[0]);
 
-PortAudioPlayer::PortAudioPlayer(agi::AudioProvider *provider) : AudioPlayer(provider) {
+PortAudioPlayer::PortAudioPlayer(agi::AudioProvider *provider) : provider(provider) {
 	PaError err = Pa_Initialize();
 
 	if (err != paNoError)

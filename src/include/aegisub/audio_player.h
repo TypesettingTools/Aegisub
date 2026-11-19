@@ -40,11 +40,7 @@ namespace agi { class AudioProvider; }
 class wxWindow;
 
 class AudioPlayer {
-protected:
-	agi::AudioProvider *provider;
-
 public:
-	AudioPlayer(agi::AudioProvider *provider) : provider(provider) { }
 	virtual ~AudioPlayer() = default;
 
 	virtual void Play(int64_t start,int64_t count)=0;	// Play sample range

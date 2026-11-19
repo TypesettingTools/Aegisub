@@ -62,6 +62,8 @@
 
 namespace {
 class OpenALPlayer final : public AudioPlayer, wxTimer {
+	agi::AudioProvider *provider;
+
 	/// Number of OpenAL buffers to use
 	static const ALsizei num_buffers = 8;
 
@@ -122,7 +124,7 @@ public:
 };
 
 OpenALPlayer::OpenALPlayer(agi::AudioProvider *provider)
-: AudioPlayer(provider)
+: provider(provider)
 , samplerate(provider->GetSampleRate())
 , bpf(provider->GetChannels() * provider->GetBytesPerSample())
 {

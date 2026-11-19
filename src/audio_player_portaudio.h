@@ -52,6 +52,8 @@ class wxArrayString;
 /// @brief PortAudio Player
 ///
 class PortAudioPlayer final : public AudioPlayer {
+	agi::AudioProvider *provider;
+
 	typedef std::vector<PaDeviceIndex> DeviceVec;
 	/// Map of supported output devices from name -> device index
 	std::map<std::string, DeviceVec> devices;
