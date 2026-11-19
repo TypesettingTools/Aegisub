@@ -24,7 +24,7 @@
 #include <vector>
 
 class AsyncVideoProvider;
-class DialogProgress;
+class OptDialogProgress;
 class wxString;
 namespace agi { class AudioProvider; }
 namespace agi { struct Context; }
@@ -47,7 +47,7 @@ class Project : private agi::signal::ConnectionScope {
 	agi::signal::Signal<std::vector<int> const&> AnnounceKeyframesModified;
 
 	bool video_has_subtitles = false;
-	DialogProgress *progress = nullptr;
+	OptDialogProgress *progress = nullptr;
 	agi::Context *context = nullptr;
 
 	void ShowError(wxString const& message);
@@ -70,7 +70,8 @@ public:
 	Project(agi::Context *context);
 	~Project();
 
-	void LoadSubtitles(agi::fs::path path, std::string encoding="", bool load_linked=true);
+	/// @return Whether the file was loaded as subtitles
+	bool LoadSubtitles(agi::fs::path path, std::string encoding="", bool load_linked=true);
 	void SetSubtitlesFilename(agi::fs::path path);
 	void CloseSubtitles();
 	bool CanLoadSubtitlesFromVideo() const { return video_has_subtitles; }
@@ -80,17 +81,17 @@ public:
 	agi::AudioProvider *AudioProvider() const { return audio_provider.get(); }
 	agi::fs::path const& AudioName() const { return audio_file; }
 
-	void LoadVideo(agi::fs::path path);
+	bool LoadVideo(agi::fs::path path);
 	void CloseVideo();
 	AsyncVideoProvider *VideoProvider() const { return video_provider.get(); }
 	agi::fs::path const& VideoName() const { return video_file; }
 
-	void LoadTimecodes(agi::fs::path path);
+	bool LoadTimecodes(agi::fs::path path);
 	void CloseTimecodes();
 	bool CanCloseTimecodes() const { return !timecodes_file.empty(); }
 	agi::vfr::Framerate const& Timecodes() const { return timecodes; }
 
-	void LoadKeyframes(agi::fs::path path);
+	bool LoadKeyframes(agi::fs::path path);
 	void CloseKeyframes();
 	bool CanCloseKeyframes() const { return !keyframes_file.empty(); }
 	std::vector<int> const& Keyframes() const { return keyframes; }

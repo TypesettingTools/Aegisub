@@ -35,6 +35,7 @@ extern EXCEPTION_POINTERS *wxGlobalSEInformation;
 
 namespace {
 wchar_t crash_dump_path[MAX_PATH];
+agi::fs::path crash_dump_dir;
 agi::fs::path crashlog_path;
 
 using MiniDumpWriteDump = BOOL(WINAPI *)(
@@ -77,6 +78,13 @@ struct dump_thread_state {
 	}
 
 	void write_dump(MiniDumpWriteDump fn) {
+		try {
+			agi::fs::CreateDirectory(crash_dump_dir);
+		}
+		catch (agi::fs::FileSystemError const&) {
+			return;
+		}
+
 		auto file = CreateFile(crash_dump_path,
 			GENERIC_WRITE,
 			0,  // no sharing
@@ -104,10 +112,11 @@ namespace crash_writer {
 void Initialize(agi::fs::path const& path) {
 	crashlog_path = path / "crashlog.txt";
 
-	auto dump_path = path / "crashdumps";
-	agi::fs::CreateDirectory(dump_path);
+	// Only create the directory when there's a dump to write, so that
+	// starting up doesn't write anything (CLI mode never does)
+	crash_dump_dir = path / "crashdumps";
 
-	const auto path_str = (dump_path / GetVersionNumber()).wstring();
+	const auto path_str = (crash_dump_dir / GetVersionNumber()).wstring();
 	wcscpy_s(crash_dump_path, path_str.c_str());
 	auto len = path_str.size();
 
@@ -124,6 +133,7 @@ void Initialize(agi::fs::path const& path) {
 }
 
 void Cleanup() {
+	if (!dump_thread) return;
 	dump_thread->exit = true;
 	dump_thread->start_cv.notify_all();
 	dump_thread->thread.join();
@@ -139,6 +149,7 @@ void Write() {
 }
 
 void Write(std::string const& error) {
+	agi::fs::CreateDirectory(crashlog_path.parent_path());
 	std::ofstream file(crashlog_path, std::ios::app);
 	if (file.is_open()) {
 		file << agi::util::strftime("--- %y-%m-%d %H:%M:%S ------------------\n");

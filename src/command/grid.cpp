@@ -97,6 +97,7 @@ struct grid_line_prev final : public Command {
 
 struct grid_sort_actor final : public Command {
 	CMD_NAME("grid/sort/actor")
+	CMD_TYPE(COMMAND_CLI)
 	STR_MENU("&Actor Name")
 	STR_DISP("Actor Name")
 	STR_HELP("Sort all subtitles by their actor names")
@@ -117,6 +118,7 @@ struct validate_sel_multiple : public Command {
 
 struct grid_sort_actor_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/actor/selected")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("&Actor Name")
 	STR_DISP("Actor Name")
 	STR_HELP("Sort selected subtitles by their actor names")
@@ -129,6 +131,7 @@ struct grid_sort_actor_selected final : public validate_sel_multiple {
 
 struct grid_sort_effect final : public Command {
 	CMD_NAME("grid/sort/effect")
+	CMD_TYPE(COMMAND_CLI)
 	STR_MENU("&Effect")
 	STR_DISP("Effect")
 	STR_HELP("Sort all subtitles by their effects")
@@ -141,6 +144,7 @@ struct grid_sort_effect final : public Command {
 
 struct grid_sort_effect_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/effect/selected")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("&Effect")
 	STR_DISP("Effect")
 	STR_HELP("Sort selected subtitles by their effects")
@@ -153,6 +157,7 @@ struct grid_sort_effect_selected final : public validate_sel_multiple {
 
 struct grid_sort_end final : public Command {
 	CMD_NAME("grid/sort/end")
+	CMD_TYPE(COMMAND_CLI)
 	STR_MENU("&End Time")
 	STR_DISP("End Time")
 	STR_HELP("Sort all subtitles by their end times")
@@ -165,6 +170,7 @@ struct grid_sort_end final : public Command {
 
 struct grid_sort_end_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/end/selected")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("&End Time")
 	STR_DISP("End Time")
 	STR_HELP("Sort selected subtitles by their end times")
@@ -177,6 +183,7 @@ struct grid_sort_end_selected final : public validate_sel_multiple {
 
 struct grid_sort_layer final : public Command {
 	CMD_NAME("grid/sort/layer")
+	CMD_TYPE(COMMAND_CLI)
 	STR_MENU("&Layer")
 	STR_DISP("Layer")
 	STR_HELP("Sort all subtitles by their layer number")
@@ -189,6 +196,7 @@ struct grid_sort_layer final : public Command {
 
 struct grid_sort_layer_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/layer/selected")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("&Layer")
 	STR_DISP("Layer")
 	STR_HELP("Sort selected subtitles by their layer number")
@@ -201,6 +209,7 @@ struct grid_sort_layer_selected final : public validate_sel_multiple {
 
 struct grid_sort_start final : public Command {
 	CMD_NAME("grid/sort/start")
+	CMD_TYPE(COMMAND_CLI)
 	STR_MENU("&Start Time")
 	STR_DISP("Start Time")
 	STR_HELP("Sort all subtitles by their start times")
@@ -213,6 +222,7 @@ struct grid_sort_start final : public Command {
 
 struct grid_sort_start_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/start/selected")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("&Start Time")
 	STR_DISP("Start Time")
 	STR_HELP("Sort selected subtitles by their start times")
@@ -225,6 +235,7 @@ struct grid_sort_start_selected final : public validate_sel_multiple {
 
 struct grid_sort_style final : public Command {
 	CMD_NAME("grid/sort/style")
+	CMD_TYPE(COMMAND_CLI)
 	STR_MENU("St&yle Name")
 	STR_DISP("Style Name")
 	STR_HELP("Sort all subtitles by their style names")
@@ -237,6 +248,7 @@ struct grid_sort_style final : public Command {
 
 struct grid_sort_style_selected final : public validate_sel_multiple {
 	CMD_NAME("grid/sort/style/selected")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("St&yle Name")
 	STR_DISP("Style Name")
 	STR_HELP("Sort selected subtitles by their style names")
@@ -347,7 +359,7 @@ struct grid_move_up final : public Command {
 	STR_MENU("Move line up")
 	STR_DISP("Move line up")
 	STR_HELP("Move the selected lines up one row")
-	CMD_TYPE(COMMAND_VALIDATE)
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 
 	bool Validate(const agi::Context *c) override {
 		return c->selectionController->GetSelectedSet().size() != 0;
@@ -364,7 +376,7 @@ struct grid_move_down final : public Command {
 	STR_MENU("Move line down")
 	STR_DISP("Move line down")
 	STR_HELP("Move the selected lines down one row")
-	CMD_TYPE(COMMAND_VALIDATE)
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 
 	bool Validate(const agi::Context *c) override {
 		return c->selectionController->GetSelectedSet().size() != 0;
@@ -382,7 +394,7 @@ struct grid_swap final : public Command {
 	STR_MENU("Swap Lines")
 	STR_DISP("Swap Lines")
 	STR_HELP("Swap the two selected lines")
-	CMD_TYPE(COMMAND_VALIDATE)
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 
 	bool Validate(const agi::Context *c) override {
 		return c->selectionController->GetSelectedSet().size() == 2;

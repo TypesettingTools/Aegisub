@@ -19,6 +19,7 @@
 #include "ass_dialogue.h"
 #include "ass_file.h"
 #include "export_fixstyle.h"
+#include "options.h"
 #include "include/aegisub/subtitles_provider.h"
 #include "video_frame.h"
 #include "video_provider_manager.h"
@@ -100,7 +101,7 @@ VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
 	// To do this, draw the subtitles once on a black frame and once on a white frame
 	// and solve for the color and alpha.
 	VideoFrame frame_black = GetBlankFrame(false);
-	if (!subs) return frame_black;
+	if (!subs || !subs_provider) return frame_black;
 	VideoFrame frame_white = GetBlankFrame(true);
 
 	subs_provider->LoadSubtitles(subs.get());
@@ -148,6 +149,11 @@ std::pair<int, int> AsyncVideoProvider::GetDisplayResolution() const {
 }
 
 static std::unique_ptr<SubtitlesProvider> get_subs_provider(wxEvtHandler *evt_handler, agi::BackgroundRunner *br) {
+	// Frames aren't rendered in CLI mode (see ProcAsync), so there's no need
+	// for a subtitles renderer, which libass's isn't set up for there anyway
+	if (!config::hasGui)
+		return nullptr;
+
 	try {
 		return SubtitlesProviderFactory::GetProvider(br);
 	}
@@ -240,6 +246,10 @@ bool AsyncVideoProvider::NeedUpdate(std::vector<AssDialogueBase const*> const& v
 }
 
 void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version, bool check_updated) {
+	// There is no event loop to deliver the rendered frame to in CLI mode,
+	// and queueing wx events without a wxApp crashes
+	if (!config::hasGui) return;
+
 	// Only actually produce the frame if there's no queued changes waiting
 	if (req_version < version || frame_number < 0) return;
 

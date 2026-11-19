@@ -70,6 +70,10 @@ void LogSink::Unsubscribe(Emitter *em) {
 	LOG_D("agi/log/emitter/unsubscribe") << "Un-Subscribe: " << this;
 }
 
+void LogSink::Flush() {
+	queue->Sync([] { });
+}
+
 decltype(LogSink::messages) LogSink::GetMessages() const {
 	decltype(messages) ret;
 	queue->Sync([&] {

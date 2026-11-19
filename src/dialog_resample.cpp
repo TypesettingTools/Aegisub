@@ -17,6 +17,7 @@
 #include "ass_file.h"
 #include "async_video_provider.h"
 #include "compat.h"
+#include "dialogs.h"
 #include "help_button.h"
 #include "include/aegisub/context.h"
 #include "libresrc/libresrc.h"
@@ -118,18 +119,14 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 {
 	d.SetIcons(GETICONS(resample_toolbutton));
 
-	c->ass->GetResolution(script_w, script_h);
-	settings.source_x = script_w;
-	settings.source_y = script_h;
+	settings = DefaultResampleSettings(c);
+	script_w = settings.source_x;
+	script_h = settings.source_y;
 
 	if (auto provider = c->project->VideoProvider()) {
-		settings.dest_x = video_w = provider->GetWidth();
-		settings.dest_y = video_h = provider->GetHeight();
+		video_w = provider->GetWidth();
+		video_h = provider->GetHeight();
 		video_mat = provider->GetRealColorSpace();
-	}
-	else {
-		settings.dest_x = script_w;
-		settings.dest_y = script_h;
 	}
 
 	// Create static box sizers
@@ -242,23 +239,9 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	source_matrix->Bind(wxEVT_COMBOBOX, [this](wxCommandEvent&) { OnMatrixChange(); });
 	dest_matrix->Bind(wxEVT_COMBOBOX, [this](wxCommandEvent&) { OnMatrixChange(); });
 
-	// Find out if we want to suggest resampling colors.
-	// If the script matrix is None, we do not know what matrix to resample from, so we don't suggest to resample.
-	// If the video matrix is unspecified or does not correspond to a valid YCbCr Header value, we cannot currently resample to it.
-	// -> FIXME: The latter is not a theoretical reason but only due to the fact that resampling is not currently implemented for any other matrices in ycbcr_conv.h:
-	//    We could in theory have a situation where a script with no YCbCr Header (so effectively TV.601) was authored on a BT.2020 video using color matching,
-	//    and the user now wants to adjust the colors so that they can set the matrix to None instead.
-	// Otherwise, i.e. if e.g. the script has a TV.601 header but the video uses TV.709, we suggest to resample.
-	// (The assumption here being that, just like when resampling PlayRes, the user only uses the resample dialog when the script *currently* looks correct on the current video.)
-	agi::ycbcr::Header video_mat_header(video_mat);
-	if (video_mat_header != script_mat
-			&& video_mat_header.valid()		//< (Not necessary in theory, see FIXME above)
-			&& script_mat.valid()			//< (Should always be true since we use to_effective() above)
-			&& std::holds_alternative<agi::ycbcr::header_colorspace>(video_mat_header)
-			&& std::holds_alternative<agi::ycbcr::header_colorspace>(script_mat)
-	) {
+	if (settings.matrix_conversion) {
 		source_matrix->SetSelection(MatrixOptionFromHeader(script_mat));
-		dest_matrix->SetSelection(MatrixOptionFromHeader(video_mat_header));
+		dest_matrix->SetSelection(MatrixOptionFromHeader(agi::ycbcr::Header(video_mat)));
 	}
 	OnMatrixChange();
 }
@@ -321,6 +304,45 @@ void DialogResample::OnMarginChange(wxSpinCtrl *src, wxSpinCtrl *dst) {
 	if (symmetrical->IsChecked())
 		dst->SetValue(src->GetValue());
 }
+}
+
+ResampleSettings DefaultResampleSettings(agi::Context *c) {
+	ResampleSettings settings;
+	c->ass->GetResolution(settings.source_x, settings.source_y);
+
+	auto provider = c->project->VideoProvider();
+	if (!provider) {
+		settings.dest_x = settings.source_x;
+		settings.dest_y = settings.source_y;
+		return settings;
+	}
+
+	settings.dest_x = provider->GetWidth();
+	settings.dest_y = provider->GetHeight();
+
+	// Find out if we want to suggest resampling colors.
+	// If the script matrix is None, we do not know what matrix to resample from, so we don't suggest to resample.
+	// If the video matrix is unspecified or does not correspond to a valid YCbCr Header value, we cannot currently resample to it.
+	// -> FIXME: The latter is not a theoretical reason but only due to the fact that resampling is not currently implemented for any other matrices in ycbcr_conv.h:
+	//    We could in theory have a situation where a script with no YCbCr Header (so effectively TV.601) was authored on a BT.2020 video using color matching,
+	//    and the user now wants to adjust the colors so that they can set the matrix to None instead.
+	// Otherwise, i.e. if e.g. the script has a TV.601 header but the video uses TV.709, we suggest to resample.
+	// (The assumption here being that, just like when resampling PlayRes, the user only uses the resample dialog when the script *currently* looks correct on the current video.)
+	agi::ycbcr::Header script_mat = agi::ycbcr::Header(std::string(c->ass->GetScriptInfo("YCbCr Matrix"))).to_effective();
+	agi::ycbcr::Header video_mat(provider->GetRealColorSpace());
+	if (video_mat != script_mat
+			&& video_mat.valid()		//< (Not necessary in theory, see FIXME above)
+			&& script_mat.valid()		//< (Should always be true since we use to_effective() above)
+			&& std::holds_alternative<agi::ycbcr::header_colorspace>(video_mat)
+			&& std::holds_alternative<agi::ycbcr::header_colorspace>(script_mat)
+			// Only matrices the dialog offers can be resampled
+			&& MatrixOptionFromHeader(video_mat) != 0
+			&& MatrixOptionFromHeader(script_mat) != 0
+	) {
+		settings.matrix_conversion = std::make_pair(std::get<agi::ycbcr::header_colorspace>(script_mat), std::get<agi::ycbcr::header_colorspace>(video_mat));
+	}
+
+	return settings;
 }
 
 bool PromptForResampleSettings(agi::Context *c, ResampleSettings &settings) {
