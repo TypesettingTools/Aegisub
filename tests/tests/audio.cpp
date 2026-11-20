@@ -21,6 +21,7 @@
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
+#include <algorithm>
 #include <fstream>
 
 TEST(lagi_audio, dummy_blank) {
@@ -70,6 +71,96 @@ struct TestAudioProvider : agi::AudioProvider {
 			*out++ = (Sample)(start + bias);
 	}
 };
+
+struct InterleavedAudioProvider final : agi::AudioProvider {
+	std::vector<int16_t> samples;
+
+	InterleavedAudioProvider(std::vector<agi::AudioChannel> layout, std::vector<int16_t> data, int channel_count = 0)
+	: samples(std::move(data)) {
+		channel_layout = std::move(layout);
+		channels = channel_count ? channel_count : static_cast<int>(channel_layout.size());
+		num_samples = decoded_samples = samples.size() / channels;
+		sample_rate = 48000;
+		bytes_per_sample = 2;
+	}
+
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+		std::copy_n(samples.data() + start * channels, count * channels, static_cast<int16_t *>(buf));
+	}
+};
+
+TEST(lagi_audio, downmix_51_preserves_center_and_ignores_lfe) {
+	using C = agi::AudioChannel;
+	auto source = std::make_unique<InterleavedAudioProvider>(
+		std::vector<C>{C::FrontLeft, C::FrontRight, C::FrontCenter, C::LowFrequency, C::SideLeft, C::SideRight},
+		std::vector<int16_t>{0, 0, 10000, 30000, 0, 0});
+	auto provider = agi::CreateConvertAudioProvider(std::move(source));
+	int16_t sample = 0;
+	provider->GetAudio(&sample, 0, 1);
+	EXPECT_NEAR(7071, sample, 1);
+}
+
+TEST(lagi_audio, downmix_stereo_retains_average_behavior) {
+	using C = agi::AudioChannel;
+	auto source = std::make_unique<InterleavedAudioProvider>(
+		std::vector<C>{C::FrontLeft, C::FrontRight}, std::vector<int16_t>{10000, 20000});
+	auto provider = agi::CreateConvertAudioProvider(std::move(source));
+	int16_t sample = 0;
+	provider->GetAudio(&sample, 0, 1);
+	EXPECT_EQ(15000, sample);
+}
+
+TEST(lagi_audio, downmix_40_preserves_center) {
+	using C = agi::AudioChannel;
+	auto source = std::make_unique<InterleavedAudioProvider>(
+		std::vector<C>{C::FrontLeft, C::FrontRight, C::FrontCenter, C::BackCenter},
+		std::vector<int16_t>{0, 0, 10000, 0});
+	auto provider = agi::CreateConvertAudioProvider(std::move(source));
+	int16_t sample = 0;
+	provider->GetAudio(&sample, 0, 1);
+	EXPECT_NEAR(7071, sample, 1);
+}
+
+TEST(lagi_audio, downmix_61_includes_back_center) {
+	using C = agi::AudioChannel;
+	auto source = std::make_unique<InterleavedAudioProvider>(
+		std::vector<C>{C::FrontLeft, C::FrontRight, C::FrontCenter, C::LowFrequency, C::BackCenter, C::SideLeft, C::SideRight},
+		std::vector<int16_t>{0, 0, 0, 0, 10000, 0, 0});
+	auto provider = agi::CreateConvertAudioProvider(std::move(source));
+	int16_t sample = 0;
+	provider->GetAudio(&sample, 0, 1);
+	EXPECT_EQ(5000, sample);
+}
+
+TEST(lagi_audio, downmix_61_without_layout_uses_conventional_layout) {
+	auto source = std::make_unique<InterleavedAudioProvider>(
+		std::vector<agi::AudioChannel>{}, std::vector<int16_t>{0, 0, 10000, 0, 0, 0, 0}, 7);
+	auto provider = agi::CreateConvertAudioProvider(std::move(source));
+	int16_t sample = 0;
+	provider->GetAudio(&sample, 0, 1);
+	EXPECT_NEAR(7071, sample, 1);
+}
+
+TEST(lagi_audio, downmix_all_unknown_falls_back_to_average) {
+	using C = agi::AudioChannel;
+	auto source = std::make_unique<InterleavedAudioProvider>(
+		std::vector<C>{C::Unknown, C::Unknown}, std::vector<int16_t>{10000, 20000});
+	auto provider = agi::CreateConvertAudioProvider(std::move(source));
+	int16_t sample = 0;
+	provider->GetAudio(&sample, 0, 1);
+	EXPECT_EQ(15000, sample);
+}
+
+TEST(lagi_audio, downmix_saturates_correlated_full_scale_input) {
+	using C = agi::AudioChannel;
+	auto source = std::make_unique<InterleavedAudioProvider>(
+		std::vector<C>{C::FrontLeft, C::FrontRight, C::FrontCenter},
+		std::vector<int16_t>{SHRT_MAX, SHRT_MAX, SHRT_MAX});
+	auto provider = agi::CreateConvertAudioProvider(std::move(source));
+	int16_t sample = 0;
+	provider->GetAudio(&sample, 0, 1);
+	EXPECT_EQ(SHRT_MAX, sample);
+}
 
 TEST(lagi_audio, before_sample_zero) {
 	TestAudioProvider<> provider;
