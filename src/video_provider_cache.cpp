@@ -87,15 +87,25 @@ void VideoProviderCache::GetFrame(int n, VideoFrame &out) {
 		total_size += cur->frame.data.size();
 	}
 
-	master->GetFrame(n, out);
-
-	if (total_size >= max_cache_size) {
+	// Decode into the cache and then copy that to out rather than the other
+	// way around, as out may be shared with a sandboxed subtitle renderer
+	// which mustn't be able to modify the cached frames
+	if (total_size >= max_cache_size && !cache.empty()) {
 		cache.splice(cache.begin(), cache, --cache.end()); // Move last to front
-		cache.front().frame_number = n;
-		cache.front().frame = out;
+		cache.front().frame_number = -1;
 	}
 	else
-		cache.emplace_front(out, n);
+		cache.emplace_front(VideoFrame{}, -1);
+
+	try {
+		master->GetFrame(n, cache.front().frame);
+	}
+	catch (...) {
+		cache.pop_front();
+		throw;
+	}
+	cache.front().frame_number = n;
+	out = cache.front().frame;
 }
 }
 

@@ -57,6 +57,7 @@ Project::Project(agi::Context *c) : context(c) {
 	BindConnection(OPT_SUB("Provider/Audio/FFmpegSource/Decode Error Handling", &Project::ReloadAudio, this));
 	BindConnection(OPT_SUB("Provider/Avisynth/Allow Ancient", &Project::ReloadVideo, this));
 	BindConnection(OPT_SUB("Provider/Avisynth/Memory Max", &Project::ReloadVideo, this));
+	BindConnection(OPT_SUB("Provider/CSRI/Memory Max", &Project::ReloadVideo, this));
 	BindConnection(OPT_SUB("Provider/Video/FFmpegSource/Decoding Threads", &Project::ReloadVideo, this));
 	BindConnection(OPT_SUB("Provider/Video/FFmpegSource/Unsafe Seeking", &Project::ReloadVideo, this));
 	BindConnection(OPT_SUB("Subtitle/Provider", &Project::ReloadVideo, this));
