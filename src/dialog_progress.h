@@ -54,6 +54,7 @@ class DialogProgress final : public wxDialog, public agi::BackgroundRunner {
 
 	void OnShow(wxShowEvent&);
 	void OnCancel(wxCommandEvent &);
+	void OnClose(wxCloseEvent&);
 	void OnIdle(wxIdleEvent&);
 
 	void SetProgress(int target);
