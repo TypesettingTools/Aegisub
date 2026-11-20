@@ -15,6 +15,8 @@
 		"Maximized" : false,
 		"Save Charset" : "UTF-8",
 		"Save UI State" : true,
+		"Save Project Settings in Subtitle File" : false,
+		"Load Project Config" : true,
 		"Show Toolbar" : true,
 		"Toolbar Icon Size" : 16
 	},

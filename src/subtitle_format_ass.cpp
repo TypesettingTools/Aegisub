@@ -40,6 +40,8 @@ void AssSubtitleFormat::ReadFile(AssFile *target, agi::fs::path const& filename,
 	AssParser parser(target, version);
 	while (file.HasMoreLines())
 		parser.AddLine(file.ReadLineFromFile());
+
+	target->OriginalProperties = target->Properties;
 }
 
 #ifdef _WIN32
@@ -87,39 +89,16 @@ struct Writer {
 		}
 	}
 
-	void Write(ProjectProperties const& properties) {
+	void Write(ProjectProperties const& properties, bool save_ui) {
+		auto lines = properties.Serialize(save_ui, true);
+		if (lines.empty())
+			return;
+
 		file.WriteLineToFile("");
 		file.WriteLineToFile("[Aegisub Project Garbage]");
 
-		WriteIfNotEmpty("Automation Scripts: ", properties.automation_scripts);
-		WriteIfNotEmpty("Export Filters: ", properties.export_filters);
-		WriteIfNotEmpty("Export Encoding: ", properties.export_encoding);
-		WriteIfNotEmpty("Last Style Storage: ", properties.style_storage);
-		WriteIfNotEmpty("Audio File: ", properties.audio_file);
-		WriteIfNotEmpty("Video File: ", properties.video_file);
-		WriteIfNotEmpty("Timecodes File: ", properties.timecodes_file);
-		WriteIfNotEmpty("Keyframes File: ", properties.keyframes_file);
-
-		WriteIfNotZero("Video AR Mode: ", properties.ar_mode);
-		WriteIfNotZero("Video AR Value: ", properties.ar_value);
-
-		if (OPT_GET("App/Save UI State")->GetBool()) {
-			WriteIfNotZero("Video Zoom Percent: ", properties.video_zoom);
-			WriteIfNotZero("Scroll Position: ", properties.scroll_position);
-			WriteIfNotZero("Active Line: ", properties.active_row);
-			WriteIfNotZero("Video Position: ", properties.video_position);
-		}
-	}
-
-	void WriteIfNotEmpty(const char *key, std::string const& value) {
-		if (!value.empty())
-			file.WriteLineToFile(key + value);
-	}
-
-	template<typename Number>
-	void WriteIfNotZero(const char *key, Number n) {
-		if (n != Number{})
-			file.WriteLineToFile(key + std::to_string(n));
+		for (auto const& line : lines)
+			file.WriteLineToFile(line);
 	}
 
 	void WriteExtradata(std::vector<ExtradataEntry> const& extradata) {
@@ -154,7 +133,10 @@ struct Writer {
 void AssSubtitleFormat::WriteFile(const AssFile *src, agi::fs::path const& filename, agi::vfr::Framerate const&, const char *encoding) const {
 	Writer writer(filename, encoding);
 	writer.Write(src->Info);
-	writer.Write(src->Properties);
+	if (OPT_GET("App/Save Project Settings in Subtitle File")->GetBool())
+		writer.Write(src->Properties, OPT_GET("App/Save UI State")->GetBool());
+	else
+		writer.Write(src->OriginalProperties, true);
 	writer.Write(src->Styles);
 	writer.Write(src->Attachments);
 	writer.Write(src->Events);
@@ -167,4 +149,14 @@ void AssSubtitleFormat::ExportFile(const AssFile *src, agi::fs::path const& file
 	writer.Write(src->Styles);
 	writer.Write(src->Attachments);
 	writer.Write(src->Events);
+}
+
+void AssSubtitleFormat::WriteRecoveryFile(const AssFile *src, agi::fs::path const& filename) const {
+	Writer writer(filename, "UTF-8");
+	writer.Write(src->Info);
+	writer.Write(src->Properties, OPT_GET("App/Save UI State")->GetBool());
+	writer.Write(src->Styles);
+	writer.Write(src->Attachments);
+	writer.Write(src->Events);
+	writer.WriteExtradata(src->Extradata);
 }

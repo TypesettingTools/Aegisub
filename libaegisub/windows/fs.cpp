@@ -33,6 +33,39 @@ using agi::charset::ConvertLocal;
 #undef CreateDirectory
 
 namespace agi { namespace fs {
+void MakeHidden(path const& file) {
+	auto attributes = GetFileAttributesW(file.c_str());
+	if (attributes == INVALID_FILE_ATTRIBUTES ||
+	    !SetFileAttributesW(file.c_str(), (attributes & ~FILE_ATTRIBUTE_NORMAL) | FILE_ATTRIBUTE_HIDDEN))
+		throw WriteDenied("Could not hide " + file.string() + ": " + util::ErrorString(GetLastError()));
+}
+
+bool IsMountPoint(path const& directory) {
+	auto full_path = Absolute(directory).lexically_normal();
+	auto attributes = GetFileAttributesW(full_path.c_str());
+	if (attributes == INVALID_FILE_ATTRIBUTES || !(attributes & FILE_ATTRIBUTE_DIRECTORY))
+		return false;
+
+	if (full_path == full_path.root_path())
+		return true;
+
+	if (!(attributes & FILE_ATTRIBUTE_REPARSE_POINT))
+		return false;
+
+	// FindFirstFileW does not accept a trailing directory separator.
+	if (full_path.filename().empty())
+		full_path = full_path.parent_path();
+
+	// Reparse points also include symlinks; inspect the tag to identify a mount point.
+	WIN32_FIND_DATAW data;
+	auto handle = FindFirstFileW(full_path.c_str(), &data);
+	if (handle == INVALID_HANDLE_VALUE)
+		return false;
+
+	FindClose(handle);
+	return data.dwReserved0 == IO_REPARSE_TAG_MOUNT_POINT;
+}
+
 std::string ShortName(path const& p) {
 	DWORD length = GetShortPathName(p.c_str(), NULL, 0);
 	if (!length)
