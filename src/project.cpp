@@ -28,6 +28,7 @@
 #include "dialog_progress.h"
 #include "dialogs.h"
 #include "format.h"
+#include "gui_wrap.h"
 #include "include/aegisub/context.h"
 #include "include/aegisub/video_provider.h"
 #include "mkv_wrap.h"
@@ -86,7 +87,7 @@ void Project::ReloadVideo() {
 }
 
 void Project::ShowError(wxString const& message) {
-	wxMessageBox(message, _("Error loading file"), wxOK | wxICON_ERROR | wxCENTER, context->parent);
+	wrapMessageBox(message, _("Error loading file"), wxOK | wxICON_ERROR | wxCENTER, context->parent);
 }
 
 void Project::ShowError(std::string const& message) {
@@ -155,20 +156,22 @@ bool Project::DoLoadSubtitles(agi::fs::path const& path, std::string encoding, P
 		sel.insert(active_line);
 	}
 	context->selectionController->SetSelectionAndActive(std::move(sel), active_line);
-	context->subsGrid->ScrollTo(properties.scroll_position);
+	if (config::hasGui)
+		context->subsGrid->ScrollTo(properties.scroll_position);
 
 	return true;
 }
 
-void Project::LoadSubtitles(agi::fs::path path, std::string encoding, bool load_linked) {
+bool Project::LoadSubtitles(agi::fs::path path, std::string encoding, bool load_linked) {
 	ProjectProperties properties;
 	if (!DoLoadSubtitles(path, encoding, properties))
-		return;
+		return false;
 
 	if (load_linked)
 		LoadUnloadFiles(properties);
 	else
 		UpdateRelativePaths();
+	return true;
 }
 
 void Project::SetSubtitlesFilename(agi::fs::path path) {
@@ -318,7 +321,7 @@ void Project::LoadUnloadFiles(ProjectProperties properties) {
 
 void Project::DoLoadAudio(agi::fs::path const& path, bool quiet) {
 	if (!progress)
-		progress = new DialogProgress(context->parent);
+		progress = new OptDialogProgress(context->parent);
 
 	try {
 		try {
@@ -364,7 +367,7 @@ void Project::CloseAudio() {
 
 bool Project::DoLoadVideo(agi::fs::path const& path) {
 	if (!progress)
-		progress = new DialogProgress(context->parent);
+		progress = new OptDialogProgress(context->parent);
 
 	try {
 		video_provider = std::make_unique<AsyncVideoProvider>(path, context->ass->GetYCbCrMatrix(), context->videoController.get(), progress);
@@ -394,7 +397,7 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 
 	std::string warning = video_provider->GetWarning();
 	if (!warning.empty())
-		wxMessageBox(to_wx(warning), _("Warning"), wxICON_WARNING | wxOK);
+		wrapMessageBox(to_wx(warning), _("Warning"), wxICON_WARNING | wxOK);
 
 	video_has_subtitles = false;
 	if (agi::fs::HasExtension(path, "mkv"))
@@ -405,10 +408,11 @@ bool Project::DoLoadVideo(agi::fs::path const& path) {
 	return true;
 }
 
-void Project::LoadVideo(agi::fs::path path) {
-	if (path.empty()) return;
-	if (!DoLoadVideo(path)) return;
-	if (OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
+bool Project::LoadVideo(agi::fs::path path) {
+	if (path.empty()) return false;
+	if (!DoLoadVideo(path)) return false;
+	// Nothing uses audio in CLI mode, so don't spend time indexing it
+	if (config::hasGui && OPT_GET("Video/Open Audio")->GetBool() && audio_file != video_file && video_provider->HasAudio())
 		DoLoadAudio(video_file, true);
 
 	double dar = video_provider->GetDAR();
@@ -417,6 +421,7 @@ void Project::LoadVideo(agi::fs::path path) {
 	else
 		context->videoController->SetAspectRatio(AspectRatio::Default);
 	context->videoController->JumpToFrame(0);
+	return true;
 }
 
 void Project::CloseVideo() {
@@ -435,9 +440,10 @@ void Project::DoLoadTimecodes(agi::fs::path const& path) {
 	AnnounceTimecodesModified(timecodes);
 }
 
-void Project::LoadTimecodes(agi::fs::path path) {
+bool Project::LoadTimecodes(agi::fs::path path) {
 	try {
 		DoLoadTimecodes(path);
+		return true;
 	}
 	catch (agi::fs::FileSystemError const& e) {
 		ShowError(e.GetMessage());
@@ -447,6 +453,7 @@ void Project::LoadTimecodes(agi::fs::path path) {
 		ShowError(_("Failed to parse timecodes file: ") + to_wx(e.GetMessage()));
 		config::mru->Remove("Timecodes", path);
 	}
+	return false;
 }
 
 void Project::CloseTimecodes() {
@@ -461,9 +468,10 @@ void Project::DoLoadKeyframes(agi::fs::path const& path) {
 	AnnounceKeyframesModified(keyframes);
 }
 
-void Project::LoadKeyframes(agi::fs::path path) {
+bool Project::LoadKeyframes(agi::fs::path path) {
 	try {
 		DoLoadKeyframes(path);
+		return true;
 	}
 	catch (agi::fs::FileSystemError const& e) {
 		ShowError(e.GetMessage());
@@ -477,6 +485,7 @@ void Project::LoadKeyframes(agi::fs::path path) {
 		ShowError(_("Keyframes file in unknown format: ") + to_wx(e.GetMessage()));
 		config::mru->Remove("Keyframes", path);
 	}
+	return false;
 }
 
 void Project::CloseKeyframes() {

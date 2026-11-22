@@ -137,10 +137,17 @@ namespace {
 		return 1;
 	}
 
+	// In CLI mode there is no system clipboard to talk to (and doing so would
+	// need a display server), so scripts get a process-local clipboard
+	std::string cli_clipboard;
+
 	char *clipboard_get()
 	{
 		std::string data;
-		agi::dispatch::Main().Sync([&] { data = GetClipboard(); });
+		if (config::hasGui)
+			agi::dispatch::Main().Sync([&] { data = GetClipboard(); });
+		else
+			data = cli_clipboard;
 		if (data.empty())
 			return nullptr;
 		return strndup(data);
@@ -148,6 +155,11 @@ namespace {
 
 	bool clipboard_set(const char *str)
 	{
+		if (!config::hasGui) {
+			cli_clipboard = str;
+			return true;
+		}
+
 		bool succeeded = false;
 
 		agi::dispatch::Main().Sync([&] {
@@ -533,6 +545,7 @@ namespace {
 		set_field(L, "lua_automation_version", 4);
 		push_version(L);
 		lua_setfield(L, -2, "version");
+		set_field(L, "cli", !config::hasGui);
 		set_field<clipboard_init>(L, "__init_clipboard");
 		set_field<raise_warning_onload>(L, "__raise_warning");
 		set_field<get_file_name>(L, "file_name");
@@ -694,6 +707,7 @@ namespace {
 	void LuaThreadedCall(lua_State *L, int nargs, int nresults, std::string const& title, wxWindow *parent, bool can_open_config)
 	{
 		bool failed = false;
+		std::string error;
 		BackgroundScriptRunner bsr(parent, title);
 		try {
 			bsr.Run([&](ProgressSink *ps) {
@@ -705,9 +719,13 @@ namespace {
 
 				if (lua_pcall(L, nargs, nresults, -nargs - 2)) {
 					if (!lua_isnil(L, -1)) {
-						// if the call failed, log the error here
-						ps->Log("\n\nLua reported a runtime error:\n");
-						ps->Log(get_string_or_default(L, -1));
+						error = get_string_or_default(L, -1);
+						// if the call failed, log the error here; CLI mode
+						// reports it when the run fails instead
+						if (config::hasGui) {
+							ps->Log("\n\nLua reported a runtime error:\n");
+							ps->Log(error);
+						}
 					}
 					lua_pop(L, 2);
 					failed = true;
@@ -728,7 +746,7 @@ namespace {
 			throw;
 		}
 		if (failed)
-			throw agi::UserCancelException("Script threw an error");
+			throw agi::UserCancelException(error.empty() ? "The script was cancelled" : "Lua reported a runtime error:\n" + error);
 	}
 
 	// LuaFeature
@@ -770,7 +788,7 @@ namespace {
 	: LuaFeature(L)
 	, display(check_wxstring(L, 1))
 	, help(get_wxstring(L, 2))
-	, cmd_type(cmd::COMMAND_NORMAL)
+	, cmd_type(cmd::COMMAND_CLI) // Prompts are answered by --dialog and --file in CLI mode
 	{
 		lua_getfield(L, LUA_REGISTRYINDEX, "filename");
 		cmd_name = agi::format("automation/lua/%s/%s", check_string(L, -1), check_string(L, 1));
@@ -890,6 +908,11 @@ namespace {
 		catch (agi::UserCancelException const&) {
 			subsobj->Cancel();
 			stackcheck.check_stack(0);
+			// In CLI mode there is no user to cancel the run, so this either
+			// means the script threw an error or a dialog went unanswered;
+			// propagate it so the process can exit with an error
+			if (!config::hasGui)
+				throw;
 			return;
 		}
 

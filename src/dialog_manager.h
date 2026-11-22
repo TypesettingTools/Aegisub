@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include "gui_wrap.h"
+#include "options.h"
 #include "utils.h"
 
 #include <libaegisub/exception.h>
@@ -68,6 +70,9 @@ public:
 	/// @tparam DialogType Type of dialog to show
 	template<class DialogType>
 	void Show(agi::Context *c) {
+		if (!config::hasGui)
+			throw GuiRequiredError("This command needs a dialog, which can't be shown in CLI mode");
+
 		for (auto const& diag : created_dialogs) {
 			if (*diag.first == typeid(DialogType)) {
 				diag.second->Show();
@@ -91,6 +96,9 @@ public:
 	/// @tparam DialogType Type of dialog to show
 	template<class DialogType>
 	void ShowModal(agi::Context *c) {
+		if (!config::hasGui)
+			throw GuiRequiredError("This command needs a dialog, which can't be shown in CLI mode");
+
 		DialogType diag(c);
 		created_dialogs.emplace_back(&typeid(DialogType), &diag);
 		try {

@@ -92,6 +92,9 @@ public:
 	/// @param em Emitter to delete
 	void Unsubscribe(Emitter *em);
 
+	/// Wait until all messages logged so far have been passed to the emitters
+	void Flush();
+
 	/// @brief @get the complete (current) log.
 	/// @return Const pointer to internal sink.
 	std::vector<SinkMessage> GetMessages() const;

@@ -38,9 +38,12 @@
 #include "../dialogs.h"
 #include "../include/aegisub/context.h"
 #include "../libresrc/libresrc.h"
+#include "../options.h"
+#include "../project.h"
 #include "../resolution_resampler.h"
 #include "../video_controller.h"
 
+#include <libaegisub/exception.h>
 #include <libaegisub/fs.h>
 #include <libaegisub/path.h>
 
@@ -89,6 +92,7 @@ struct tool_line_select final : public Command {
 
 struct tool_resampleres final : public Command {
 	CMD_NAME("tool/resampleres")
+	CMD_TYPE(COMMAND_CLI)
 	CMD_ICON(resample_toolbutton)
 	STR_MENU("&Resample Resolution...")
 	STR_DISP("Resample Resolution")
@@ -97,8 +101,16 @@ struct tool_resampleres final : public Command {
 	void operator()(agi::Context *c) override {
 		c->videoController->Stop();
 		ResampleSettings settings;
-		if (PromptForResampleSettings(c, settings))
-			ResampleResolution(c->ass.get(), settings);
+		if (!config::hasGui) {
+			// There's no one to ask in CLI mode, so do what the dialog
+			// suggests, as the standalone aegisub-cli did
+			if (!c->project->VideoProvider())
+				throw agi::InvalidInputException("Resampling in CLI mode requires --video");
+			settings = DefaultResampleSettings(c);
+		}
+		else if (!PromptForResampleSettings(c, settings))
+			return;
+		ResampleResolution(c->ass.get(), settings);
 	}
 };
 

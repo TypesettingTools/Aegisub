@@ -1,6 +1,6 @@
 project('Aegisub', ['c', 'cpp'],
         license: 'BSD-3-Clause',
-        meson_version: '>=0.60.0',
+        meson_version: '>=0.61.0',
         default_options: [
             'cpp_std=c++20',
             'warning_level=3',
@@ -198,6 +198,9 @@ endif
 
 zlib_dep = dependency('zlib')
 deps += zlib_dep
+
+# Header-only; the wrap builds CLI11's own first-party meson support
+deps += dependency('CLI11', version: '>=2.0')
 
 use_bundled_wx = force_all_fallbacks or force_fallback_for.contains('wxWidgets')
 if not use_bundled_wx
@@ -591,3 +594,32 @@ aegisub = executable('aegisub', aegisub_src, version_h, libresrc_headers, aegisu
                      install_dir: bindir,
                      dependencies: deps,
                      win_subsystem: 'windows')
+
+# Running Aegisub as aegisub-cli implies --cli, for tools which can't pass
+# extra arguments. On Windows it's a console program which runs aegisub.exe,
+# so that shells wait for it and show its output; elsewhere a symlink.
+cli_deps = [aegisub]
+if host_machine.system() == 'windows'
+    cli_deps += executable('aegisub-cli', 'src/cli_launcher_win.cpp',
+                           install: true,
+                           install_dir: bindir,
+                           win_subsystem: 'console')
+else
+    install_symlink('aegisub-cli', pointing_to: 'aegisub', install_dir: bindir)
+endif
+
+if get_option('tests')
+    # End-to-end test of CLI mode: runs automation macros and built-in
+    # commands on fixture files without a display server and checks the
+    # output and the error handling
+    test('automation-cli',
+         find_program('python3', 'python'),
+         args: [
+             meson.current_source_dir() / 'automation' / 'tests' / 'cli' / 'run_test.py',
+             aegisub.full_path(),
+             meson.current_source_dir() / 'automation' / 'tests' / 'cli',
+         ],
+         suite: 'automation',
+         depends: cli_deps,
+         timeout: 300)
+endif

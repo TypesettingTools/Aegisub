@@ -84,7 +84,13 @@ DEFINE_EXCEPTION(CommandNotFound, CommandError);
 		COMMAND_DYNAMIC_HELP = 16,
 
 		/// This command's icon may change based on the state of the project
-		COMMAND_DYNAMIC_ICON = 32
+		COMMAND_DYNAMIC_ICON = 32,
+
+		/// This command can be run in CLI mode. It must not need any part of
+		/// the GUI (dialogs, the video or audio display, the edit box, the
+		/// clipboard, etc.), nor depend on state that only the GUI can set,
+		/// such as the current video frame or the cursor position
+		COMMAND_CLI          = 64
 	};
 
 	/// Holds an individual Command

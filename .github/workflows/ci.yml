@@ -297,12 +297,14 @@ jobs:
           if-no-files-found: error
 
       # Release builds are signed and packaged by the windows-* jobs below
-      - name: Upload Windows executable for signing
+      - name: Upload Windows executables for signing
         uses: actions/upload-artifact@v7
         if: env.AEGISUB_SIGN_WINDOWS == 'true'
         with:
           name: Windows signing - unsigned executable
-          path: build/aegisub.exe
+          path: |
+            build/aegisub.exe
+            build/aegisub-cli.exe
           if-no-files-found: error
 
       - name: Upload Windows packaging inputs
@@ -418,8 +420,9 @@ jobs:
       - name: Package signed executable
         run: |
           Copy-Item signed\aegisub.exe build\aegisub.exe -Force
+          Copy-Item signed\aegisub-cli.exe build\aegisub-cli.exe -Force
           tools\win-installer-setup.ps1 "$PWD\build" "$PWD" x64 -NoBuild
-          packages\win_installer\portable\replace-executable.ps1 (Get-Item build\Aegisub-*-portable.zip) build\aegisub.exe
+          packages\win_installer\portable\replace-executable.ps1 (Get-Item build\Aegisub-*-portable.zip) build\aegisub.exe build\aegisub-cli.exe
 
       - uses: actions/upload-artifact@v7
         with:

@@ -642,6 +642,7 @@ struct edit_line_cut: public validate_sel_nonempty {
 
 struct edit_line_delete final : public validate_sel_nonempty {
 	CMD_NAME("edit/line/delete")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	CMD_ICON(delete_button)
 	STR_MENU("De&lete Lines")
 	STR_DISP("Delete Lines")
@@ -720,6 +721,7 @@ static void duplicate_lines(agi::Context *c, int shift) {
 
 struct edit_line_duplicate final : public validate_sel_nonempty {
 	CMD_NAME("edit/line/duplicate")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("&Duplicate Lines")
 	STR_DISP("Duplicate Lines")
 	STR_HELP("Duplicate the selected lines")
@@ -785,6 +787,7 @@ static void combine_drop(AssDialogue *, AssDialogue *) { }
 
 struct edit_line_join_as_karaoke final : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/as_karaoke")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("As &Karaoke")
 	STR_DISP("As Karaoke")
 	STR_HELP("Join selected lines in a single one, as karaoke")
@@ -796,6 +799,7 @@ struct edit_line_join_as_karaoke final : public validate_sel_multiple {
 
 struct edit_line_join_concatenate final : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/concatenate")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("&Concatenate")
 	STR_DISP("Concatenate")
 	STR_HELP("Join selected lines in a single one, concatenating text together")
@@ -807,6 +811,7 @@ struct edit_line_join_concatenate final : public validate_sel_multiple {
 
 struct edit_line_join_keep_first final : public validate_sel_multiple {
 	CMD_NAME("edit/line/join/keep_first")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("Keep &First")
 	STR_DISP("Keep First")
 	STR_HELP("Join selected lines in a single one, keeping text of first and discarding remaining")
@@ -965,6 +970,7 @@ bool check_end(AssDialogue *d1, AssDialogue *d2) {
 
 struct edit_line_recombine final : public validate_sel_multiple {
 	CMD_NAME("edit/line/recombine")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("Recom&bine Lines")
 	STR_DISP("Recombine Lines")
 	STR_HELP("Recombine subtitles which have been split and merged")
@@ -1043,6 +1049,7 @@ struct edit_line_recombine final : public validate_sel_multiple {
 
 struct edit_line_split_by_karaoke final : public validate_sel_nonempty {
 	CMD_NAME("edit/line/split/by_karaoke")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("Split Lines (by karaoke)")
 	STR_DISP("Split Lines (by karaoke)")
 	STR_HELP("Use karaoke timing to split line into multiple smaller lines")
@@ -1220,6 +1227,7 @@ struct edit_revert final : public Command {
 
 struct edit_clear final : public Command {
 	CMD_NAME("edit/clear")
+	CMD_TYPE(COMMAND_CLI)
 	STR_DISP("Clear")
 	STR_MENU("Clear")
 	STR_HELP("Clear the current line's text")
@@ -1234,6 +1242,7 @@ struct edit_clear final : public Command {
 std::string get_text(AssDialogueBlock &d) { return d.GetText(); }
 struct edit_clear_text final : public Command {
 	CMD_NAME("edit/clear/text")
+	CMD_TYPE(COMMAND_CLI)
 	STR_DISP("Clear Text")
 	STR_MENU("Clear Text")
 	STR_HELP("Clear the current line's text, leaving override tags")

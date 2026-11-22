@@ -64,6 +64,21 @@ versions should check that it exists first.
 
 ---
 
+Checking whether Aegisub is running without a GUI
+
+aegisub.cli (boolean)
+
+true when the script is running in Aegisub's command-line mode (aegisub --cli
+or aegisub-cli), and false otherwise. In command-line mode there is no main
+window and nobody to answer prompts: dialogs and file pickers get their
+responses from the command line (--dialog and --file) instead. Scripts can use
+this to skip things that only make sense with a user present, such as checking
+for or installing updates.
+
+aegisub.cli was added after 3.5.1, and is nil in older versions.
+
+---
+
 Getting the audio waveform selection position and duration
 
 function aegisub.get_audio_selection()

@@ -131,6 +131,7 @@ static void insert_subtitle_at_video(agi::Context *c, bool after) {
 
 struct subtitle_insert_after final : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/after")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("&After Current")
 	STR_DISP("After Current")
 	STR_HELP("Insert a new line after the current one")
@@ -176,6 +177,7 @@ struct subtitle_insert_after_videotime final : public validate_nonempty_selectio
 
 struct subtitle_insert_before final : public validate_nonempty_selection {
 	CMD_NAME("subtitle/insert/before")
+	CMD_TYPE(COMMAND_VALIDATE | COMMAND_CLI)
 	STR_MENU("&Before Current")
 	STR_DISP("Before Current")
 	STR_HELP("Insert a new line before the current one")
