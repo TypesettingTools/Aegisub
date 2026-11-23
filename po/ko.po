@@ -4320,8 +4320,17 @@ msgstr "스타일 편집기"
 msgid "Border boxes"
 msgstr "테두리 상자"
 
-#: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:173
+msgctxt "border style"
+msgid "Outline"
+msgstr "외곽선"
+
+#: ../src/dialog_style_editor.cpp:184
+msgid "Outline"
+msgstr "외곽선"
+
 #: ../src/dialog_style_editor.cpp:295
+msgctxt "colour"
 msgid "Outline"
 msgstr "외곽선"
 

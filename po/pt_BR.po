@@ -4391,8 +4391,17 @@ msgstr "Editor de Estilos"
 msgid "Border boxes"
 msgstr "Caixas de borda"
 
-#: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:173
+msgctxt "border style"
+msgid "Outline"
+msgstr "Borda"
+
+#: ../src/dialog_style_editor.cpp:184
+msgid "Outline"
+msgstr "Borda"
+
 #: ../src/dialog_style_editor.cpp:295
+msgctxt "colour"
 msgid "Outline"
 msgstr "Borda"
 

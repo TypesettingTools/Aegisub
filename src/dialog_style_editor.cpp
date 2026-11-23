@@ -170,7 +170,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	// Prepare control values
 	wxString EncodingValue = std::to_wstring(style->encoding);
 	wxString alignValues[9] = { "7", "8", "9", "4", "5", "6", "1", "2", "3" };
-	wxString borderStyleValues[3] = { _("Outline"), _("Border boxes"), _("Shadow box (libass only)") };
+	wxString borderStyleValues[3] = { wxGETTEXT_IN_CONTEXT("border style", "Outline"), _("Border boxes"), _("Shadow box (libass only)") };
 
 	// Encoding options
 	wxArrayString encodingStrings;
@@ -292,7 +292,7 @@ DialogStyleEditor::DialogStyleEditor(wxWindow *parent, AssStyle *style, agi::Con
 	FontSizer->Add(FontSizerBottom, 1, wxTOP | wxEXPAND, 5);
 
 	// Colors sizer
-	wxString colorLabels[] = { _("Primary"), _("Secondary"), _("Outline"), _("Shadow") };
+	wxString colorLabels[] = { _("Primary"), _("Secondary"), wxGETTEXT_IN_CONTEXT("colour", "Outline"), _("Shadow") };
 	ColorsSizer->AddStretchSpacer(1);
 	for (int i = 0; i < 4; ++i) {
 		auto sizer = new wxBoxSizer(wxVERTICAL);

@@ -4390,8 +4390,17 @@ msgstr "Stílusszerkesztő"
 msgid "Border boxes"
 msgstr ""
 
-#: ../src/dialog_style_editor.cpp:173 ../src/dialog_style_editor.cpp:184
+#: ../src/dialog_style_editor.cpp:173
+msgctxt "border style"
+msgid "Outline"
+msgstr "Körvonal"
+
+#: ../src/dialog_style_editor.cpp:184
+msgid "Outline"
+msgstr "Körvonal"
+
 #: ../src/dialog_style_editor.cpp:295
+msgctxt "colour"
 msgid "Outline"
 msgstr "Körvonal"
 
