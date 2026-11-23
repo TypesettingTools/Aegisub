@@ -123,8 +123,10 @@ DialogResample::DialogResample(agi::Context *c, ResampleSettings &settings)
 	settings.source_y = script_h;
 
 	if (auto provider = c->project->VideoProvider()) {
-		settings.dest_x = video_w = provider->GetWidth();
-		settings.dest_y = video_h = provider->GetHeight();
+		auto displayres = provider->GetDisplayResolution();
+
+		settings.dest_x = video_w = displayres.first;
+		settings.dest_y = video_h = displayres.second;
 		video_mat = provider->GetRealColorSpace();
 	}
 	else {
