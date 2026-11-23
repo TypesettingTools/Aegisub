@@ -65,7 +65,7 @@ public:
 		sample_rate = 44100;
 		bytes_per_sample = 2;
 		float_samples = false;
-		decoded_samples = num_samples = (int64_t)5*30*60*1000 * sample_rate / 1000;
+		decoded_sample_frames = num_sample_frames = (int64_t)5*30*60*1000 * sample_rate / 1000;
 	}
 };
 }

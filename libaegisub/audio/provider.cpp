@@ -56,8 +56,8 @@ void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 		start = 0;
 	}
 
-	if (start + count > num_samples) {
-		int64_t zero_count = std::min(count, start + count - num_samples);
+	if (start + count > num_sample_frames) {
+		int64_t zero_count = std::min(count, start + count - num_sample_frames);
 		count -= zero_count;
 		ZeroFill(static_cast<char *>(buf) + count * bytes_per_sample * channels, zero_count);
 	}
@@ -111,7 +111,7 @@ public:
 }
 
 void SaveAudioClip(AudioProvider const& provider, fs::path const& path, int start_time, int end_time) {
-	const auto max_samples = provider.GetNumSamples();
+	const auto max_samples = provider.GetNumSampleFrames();
 	const auto start_sample = std::min(max_samples, ((int64_t)start_time * provider.GetSampleRate() + 999) / 1000);
 	const auto end_sample = util::mid(start_sample, ((int64_t)end_time * provider.GetSampleRate() + 999) / 1000, max_samples);
 

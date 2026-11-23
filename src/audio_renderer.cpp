@@ -146,7 +146,7 @@ void AudioRenderer::ResetBlockCount()
 {
 	if (provider)
 	{
-		const size_t total_blocks = NumBlocks(provider->GetNumSamples());
+		const size_t total_blocks = NumBlocks(provider->GetNumSampleFrames());
 		for (auto& bmp : bitmaps) bmp.SetBlockCount(total_blocks);
 	}
 }
@@ -191,7 +191,7 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, const int start, const int 
 	// And the offset in it to start its use at
 	const int firstbitmapoffset = start % cache_bitmap_width;
 	// The last bitmap required
-	const int lastbitmap = std::min<int>(end / cache_bitmap_width, NumBlocks(provider->GetDecodedSamples()) - 1);
+	const int lastbitmap = std::min<int>(end / cache_bitmap_width, NumBlocks(provider->GetDecodedSampleFrames()) - 1);
 
 	// Set a clipping region so that the first and last bitmaps don't draw
 	// outside the requested range

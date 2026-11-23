@@ -27,12 +27,17 @@ namespace agi {
 class AudioProvider {
 protected:
 	int channels = 0;
-	/// Total number of samples per channel
-	int64_t num_samples = 0;
-	/// Samples per channel which have been decoded and can be fetched with FillBuffer
+	/// Total number of sample frames.
+	///
+	/// In our terminology, a sample is a single (e.g. 16-bit) number,
+	/// while a sample frame is the collection of all samples at a given point in time,
+	/// consisting of one sample per channel.
+	int64_t num_sample_frames = 0;
+
+	/// Sample frames which have been decoded and can be fetched with FillBuffer
 	/// Only applicable for the cache providers
-	std::atomic<int64_t> decoded_samples{0};
-	int sample_rate = 0;
+	std::atomic<int64_t> decoded_sample_frames{0};
+	int sample_rate = 0;		/// sample frames per second
 	int bytes_per_sample = 0;
 	bool float_samples = false;
 
@@ -46,8 +51,8 @@ public:
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
 	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const;
 
-	int64_t GetNumSamples()     const { return num_samples; }
-	int64_t GetDecodedSamples() const { return decoded_samples; }
+	int64_t GetNumSampleFrames()     const { return num_sample_frames; }
+	int64_t GetDecodedSampleFrames() const { return decoded_sample_frames; }
 	int     GetSampleRate()     const { return sample_rate; }
 	int     GetBytesPerSample() const { return bytes_per_sample; }
 	int     GetChannels()       const { return channels; }
@@ -66,8 +71,8 @@ public:
 	: source(std::move(src))
 	{
 		channels = source->GetChannels();
-		num_samples = source->GetNumSamples();
-		decoded_samples = source->GetDecodedSamples();
+		num_sample_frames = source->GetNumSampleFrames();
+		decoded_sample_frames = source->GetDecodedSampleFrames();
 		sample_rate = source->GetSampleRate();
 		bytes_per_sample = source->GetBytesPerSample();
 		float_samples = source->AreSamplesFloat();

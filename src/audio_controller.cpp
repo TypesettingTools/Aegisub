@@ -164,7 +164,7 @@ void AudioController::PlayToEnd(int start_ms)
 	if (!player) return;
 
 	int64_t start_sample = SamplesFromMilliseconds(start_ms);
-	player->Play(start_sample, provider->GetNumSamples()-start_sample);
+	player->Play(start_sample, provider->GetNumSampleFrames()-start_sample);
 	playback_mode = PM_ToEnd;
 	playback_timer.Start(20);
 
@@ -197,7 +197,7 @@ int AudioController::GetPlaybackPosition()
 int AudioController::GetDuration() const
 {
 	if (!provider) return 0;
-	return (provider->GetNumSamples() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
+	return (provider->GetNumSampleFrames() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
 }
 
 TimeRange AudioController::GetPrimaryPlaybackRange() const

@@ -42,10 +42,10 @@ public:
 	RAMAudioProvider(std::unique_ptr<AudioProvider> src)
 	: AudioProviderWrapper(std::move(src))
 	{
-		decoded_samples = 0;
+		decoded_sample_frames = 0;
 
 		try {
-			blockcache.resize((source->GetNumSamples() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
+			blockcache.resize((source->GetNumSampleFrames() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
 		}
 		catch (std::bad_alloc const&) {
 			throw AudioProviderError("Not enough memory available to cache in RAM");
@@ -55,9 +55,9 @@ public:
 			int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
 			for (size_t i = 0; i < blockcache.size(); i++) {
 				if (cancelled) break;
-				auto actual_read = std::min<int64_t>(readsize, num_samples - i * readsize);
+				auto actual_read = std::min<int64_t>(readsize, num_sample_frames - i * readsize);
 				source->GetAudio(&blockcache[i][0], i * readsize, actual_read);
-				decoded_samples += actual_read;
+				decoded_sample_frames += actual_read;
 			}
 		});
 	}
@@ -71,7 +71,7 @@ public:
 void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	auto charbuf = static_cast<char *>(buf);
 	for (int64_t bytes_remaining = count * bytes_per_sample; bytes_remaining; ) {
-		if (start >= decoded_samples) {
+		if (start >= decoded_sample_frames) {
 			memset(charbuf, 0, bytes_remaining);
 			break;
 		}

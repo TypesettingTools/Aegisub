@@ -57,8 +57,8 @@ struct TestAudioProvider : agi::AudioProvider {
 
 	TestAudioProvider(int64_t duration = 90, int rate=48000) {
 		channels = 1;
-		num_samples = duration * 48000;
-		decoded_samples = num_samples;
+		num_sample_frames = duration * 48000;
+		decoded_sample_frames = num_sample_frames;
 		sample_rate = rate;
 		bytes_per_sample = sizeof(Sample);
 		float_samples = false;
@@ -103,7 +103,7 @@ TEST(lagi_audio, after_end) {
 
 	uint16_t buff[16];
 	memset(buff, 1, sizeof(buff));
-	provider.GetAudio(buff, provider.GetNumSamples() - 8, 16);
+	provider.GetAudio(buff, provider.GetNumSampleFrames() - 8, 16);
 
 	for (int i = 0; i < 8; ++i)
 		ASSERT_NE(0, buff[i]);
@@ -200,12 +200,12 @@ TEST(lagi_audio, volume_should_clamp_rather_than_wrap) {
 TEST(lagi_audio, ram_cache) {
 	auto provider = agi::CreateRAMAudioProvider(std::make_unique<TestAudioProvider<>>());
 	EXPECT_EQ(1, provider->GetChannels());
-	EXPECT_EQ(90 * 48000, provider->GetNumSamples());
+	EXPECT_EQ(90 * 48000, provider->GetNumSampleFrames());
 	EXPECT_EQ(48000, provider->GetSampleRate());
 	EXPECT_EQ(2, provider->GetBytesPerSample());
 	EXPECT_EQ(false, provider->AreSamplesFloat());
 	EXPECT_EQ(false, provider->NeedsCache());
-	while (provider->GetDecodedSamples() != provider->GetNumSamples()) agi::util::sleep_for(0);
+	while (provider->GetDecodedSampleFrames() != provider->GetNumSampleFrames()) agi::util::sleep_for(0);
 
 	uint16_t buff[512];
 	provider->GetAudio(buff, (1 << 22) - 256, 512); // Stride two cache blocks
@@ -216,7 +216,7 @@ TEST(lagi_audio, ram_cache) {
 
 TEST(lagi_audio, hd_cache) {
 	auto provider = agi::CreateHDAudioProvider(std::make_unique<TestAudioProvider<>>(), agi::Path().Decode("?temp"));
-	while (provider->GetDecodedSamples() != provider->GetNumSamples()) agi::util::sleep_for(0);
+	while (provider->GetDecodedSampleFrames() != provider->GetNumSampleFrames()) agi::util::sleep_for(0);
 
 	uint16_t buff[512];
 	provider->GetAudio(buff, (1 << 22) - 256, 512);
@@ -254,8 +254,8 @@ TEST(lagi_audio, sample_doubling) {
 	struct AudioProvider : agi::AudioProvider {
 		AudioProvider() {
 			channels = 1;
-			num_samples = 90 * 20000;
-			decoded_samples = num_samples;
+			num_sample_frames = 90 * 20000;
+			decoded_sample_frames = num_sample_frames;
 			sample_rate = 20000;
 			bytes_per_sample = 2;
 			float_samples = false;
@@ -290,8 +290,8 @@ TEST(lagi_audio, stereo_downmix) {
 	struct AudioProvider : agi::AudioProvider {
 		AudioProvider() {
 			channels = 2;
-			num_samples = 90 * 480000;
-			decoded_samples = num_samples;
+			num_sample_frames = 90 * 480000;
+			decoded_sample_frames = num_sample_frames;
 			sample_rate = 480000;
 			bytes_per_sample = 2;
 			float_samples = false;
@@ -319,8 +319,8 @@ template<typename Float>
 struct FloatAudioProvider : agi::AudioProvider {
 	FloatAudioProvider() {
 		channels = 1;
-		num_samples = 90 * 480000;
-		decoded_samples = num_samples;
+		num_sample_frames = 90 * 480000;
+		decoded_sample_frames = num_sample_frames;
 		sample_rate = 480000;
 		bytes_per_sample = sizeof(Float);
 		float_samples = true;
@@ -365,7 +365,7 @@ TEST(lagi_audio, pcm_simple) {
 	{
 		auto provider = agi::CreatePCMAudioProvider(path, nullptr);
 		EXPECT_EQ(1, provider->GetChannels());
-		EXPECT_EQ(48000, provider->GetNumSamples());
+		EXPECT_EQ(48000, provider->GetNumSampleFrames());
 		EXPECT_EQ(48000, provider->GetSampleRate());
 		EXPECT_EQ(2, provider->GetBytesPerSample());
 		EXPECT_EQ(false, provider->AreSamplesFloat());
@@ -397,7 +397,7 @@ TEST(lagi_audio, pcm_truncated) {
 		auto provider = agi::CreatePCMAudioProvider(path, nullptr);
 
 		// Should still report full duration
-		EXPECT_EQ(48000, provider->GetNumSamples());
+		EXPECT_EQ(48000, provider->GetNumSampleFrames());
 
 		// And should zero-pad past the end
 		int64_t sample_count = (1000 - 44) / 2;
@@ -468,7 +468,7 @@ TEST(lagi_audio, multiple_data_chunks) {
 
 	{
 		auto provider = agi::CreatePCMAudioProvider(path, nullptr);
-		ASSERT_EQ(3, provider->GetNumSamples());
+		ASSERT_EQ(3, provider->GetNumSampleFrames());
 
 		uint16_t samples[3];
 
@@ -511,7 +511,7 @@ TEST(lagi_audio, wave64_simple) {
 
 	{
 		auto provider = agi::CreatePCMAudioProvider(path, nullptr);
-		ASSERT_EQ(2, provider->GetNumSamples());
+		ASSERT_EQ(2, provider->GetNumSampleFrames());
 
 		uint16_t samples[2];
 		provider->GetAudio(samples, 0, 2);

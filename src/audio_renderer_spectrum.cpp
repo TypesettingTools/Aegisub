@@ -115,7 +115,7 @@ void AudioSpectrumRenderer::RecreateCache()
 
 	if (provider)
 	{
-		size_t block_count = (size_t)((provider->GetNumSamples() + ((size_t)1<<derivation_dist) - 1) >> derivation_dist);
+		size_t block_count = (size_t)((provider->GetNumSampleFrames() + ((size_t)1<<derivation_dist) - 1) >> derivation_dist);
 		cache = std::make_unique<AudioSpectrumCache>(block_count, this);
 
 #ifdef WITH_FFTW3

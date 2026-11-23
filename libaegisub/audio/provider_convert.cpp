@@ -146,8 +146,8 @@ class SampleDoublingAudioProvider final : public AudioProviderWrapper {
 public:
 	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		sample_rate *= 2;
-		num_samples *= 2;
-		decoded_samples = decoded_samples * 2;
+		num_sample_frames *= 2;
+		decoded_sample_frames = decoded_sample_frames * 2;
 	}
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {

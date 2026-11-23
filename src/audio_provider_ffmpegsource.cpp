@@ -149,9 +149,9 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 
 	channels	= AudioInfo.Channels;
 	sample_rate	= AudioInfo.SampleRate;
-	num_samples = AudioInfo.NumSamples;
-	decoded_samples = AudioInfo.NumSamples;
-	if (channels <= 0 || sample_rate <= 0 || num_samples <= 0)
+	num_sample_frames = AudioInfo.NumSamples;
+	decoded_sample_frames = AudioInfo.NumSamples;
+	if (channels <= 0 || sample_rate <= 0 || num_sample_frames <= 0)
 		throw agi::AudioProviderError("sanity check failed, consult your local psychiatrist");
 
 	switch (AudioInfo.SampleFormat) {

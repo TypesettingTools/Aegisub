@@ -205,9 +205,9 @@ public:
 				else if (chunk_fcc == Impl::data_id()) {
 					if (!channels || !sample_rate || !bytes_per_sample)
 						throw AudioProviderError("Found 'data' chunk without format being set.");
-					num_samples += chunk_size / bytes_per_sample / channels;
+					num_sample_frames += chunk_size / bytes_per_sample / channels;
 					uint64_t chunk_decoded_samples = std::min<uint64_t>(chunk_size, file.size() - file_pos) / bytes_per_sample / channels;
-					decoded_samples += chunk_decoded_samples;
+					decoded_sample_frames += chunk_decoded_samples;
 					index_points.emplace_back(IndexPoint{file_pos, chunk_decoded_samples });
 				}
 				// There's a bunch of other chunk types. They're all dumb.
@@ -223,7 +223,7 @@ public:
 				throw AudioDataNotFound("File ended before reaching format chunk");
 			// Truncated files are fine otherwise
 		}
-		if (decoded_samples == 0)
+		if (decoded_sample_frames == 0)
 			throw AudioDataNotFound("No audio sample can be decoded");
 	}
 };

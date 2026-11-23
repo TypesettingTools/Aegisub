@@ -805,7 +805,7 @@ void AudioDisplay::OnLoadTimer(wxTimerEvent&)
 		const auto elapsed = duration_cast<milliseconds>(now - audio_load_start_time).count();
 		if (elapsed == 0) return;
 
-		const int64_t new_decoded_count = provider->GetDecodedSamples();
+		const int64_t new_decoded_count = provider->GetDecodedSampleFrames();
 		if (new_decoded_count != last_sample_decoded)
 			audio_load_speed = (audio_load_speed + (double)new_decoded_count / elapsed) / 2;
 		if (audio_load_speed == 0) return;
@@ -824,7 +824,7 @@ void AudioDisplay::OnLoadTimer(wxTimerEvent&)
 		last_sample_decoded = new_decoded_count;
 	}
 
-	if (!provider || last_sample_decoded == provider->GetNumSamples()) {
+	if (!provider || last_sample_decoded == provider->GetNumSampleFrames()) {
 		load_timer.Stop();
 		audio_load_position = -1;
 	}
@@ -1227,7 +1227,7 @@ void AudioDisplay::OnFocus(wxFocusEvent &)
 int AudioDisplay::GetDuration() const
 {
 	if (!provider) return 0;
-	return (provider->GetNumSamples() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
+	return (provider->GetNumSampleFrames() * 1000 + provider->GetSampleRate() - 1) / provider->GetSampleRate();
 }
 
 void AudioDisplay::OnAudioOpen(agi::AudioProvider *provider)
@@ -1265,11 +1265,11 @@ void AudioDisplay::OnAudioOpen(agi::AudioProvider *provider)
 			OnTimingController();
 		}
 
-		last_sample_decoded = provider->GetDecodedSamples();
+		last_sample_decoded = provider->GetDecodedSampleFrames();
 		audio_load_position = -1;
 		audio_load_speed = 0;
 		audio_load_start_time = std::chrono::steady_clock::now();
-		if (last_sample_decoded != provider->GetNumSamples())
+		if (last_sample_decoded != provider->GetNumSampleFrames())
 			load_timer.Start(100);
 	}
 	else
