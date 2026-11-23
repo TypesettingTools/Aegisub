@@ -36,27 +36,30 @@ class RAMAudioProvider final : public AudioProviderWrapper {
 	std::atomic<bool> cancelled = {false};
 	std::thread decoder;
 
+	// If the number of channels is not a power of two, sample frames may not cleanly fit into blocks
+	int64_t sample_frames_per_block = 0;
+
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
 public:
 	RAMAudioProvider(std::unique_ptr<AudioProvider> src)
 	: AudioProviderWrapper(std::move(src))
+	, sample_frames_per_block(CacheBlockSize / source->GetChannels() / source->GetBytesPerSample())
 	{
 		decoded_sample_frames = 0;
 
 		try {
-			blockcache.resize((source->GetNumSampleFrames() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
+			blockcache.resize((source->GetNumSampleFrames() + sample_frames_per_block - 1) / sample_frames_per_block);
 		}
 		catch (std::bad_alloc const&) {
 			throw AudioProviderError("Not enough memory available to cache in RAM");
 		}
 
 		decoder = std::thread([&] {
-			int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
 			for (size_t i = 0; i < blockcache.size(); i++) {
 				if (cancelled) break;
-				auto actual_read = std::min<int64_t>(readsize, num_sample_frames - i * readsize);
-				source->GetAudio(&blockcache[i][0], i * readsize, actual_read);
+				auto actual_read = std::min<int64_t>(sample_frames_per_block, num_sample_frames - i * sample_frames_per_block);
+				source->GetAudio(&blockcache[i][0], i * sample_frames_per_block, actual_read);
 				decoded_sample_frames += actual_read;
 			}
 		});
@@ -70,20 +73,21 @@ public:
 
 void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	auto charbuf = static_cast<char *>(buf);
-	for (int64_t bytes_remaining = count * bytes_per_sample; bytes_remaining; ) {
+	for (int64_t sample_frames_remaining = count; sample_frames_remaining; ) {
 		if (start >= decoded_sample_frames) {
-			memset(charbuf, 0, bytes_remaining);
+			memset(charbuf, 0, sample_frames_remaining * channels * bytes_per_sample);
 			break;
 		}
 
-		const int64_t i = (start * bytes_per_sample) >> CacheBits;
-		const int64_t start_offset = (start * bytes_per_sample) & (CacheBlockSize-1);
-		const int64_t read_size = std::min(bytes_remaining, CacheBlockSize - start_offset);
+		const int64_t i = start / sample_frames_per_block;
+		const int64_t start_offset = start % sample_frames_per_block;
+		const int64_t read_count = std::min(sample_frames_remaining, sample_frames_per_block - start_offset);
+		const int64_t read_size = read_count * channels * bytes_per_sample;
 
-		memcpy(charbuf, &blockcache[i][start_offset], read_size);
+		memcpy(charbuf, &blockcache[i][start_offset * channels * bytes_per_sample], read_size);
 		charbuf += read_size;
-		bytes_remaining -= read_size;
-		start += read_size / bytes_per_sample;
+		sample_frames_remaining -= read_count;
+		start += read_count;
 	}
 }
 }
