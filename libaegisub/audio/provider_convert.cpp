@@ -141,7 +141,7 @@ public:
 };
 
 /// Sample doubler with linear interpolation for the samples provider
-/// Requires 16-bit mono input
+/// Requires 16-bit input
 class SampleDoublingAudioProvider final : public AudioProviderWrapper {
 public:
 	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
@@ -154,10 +154,12 @@ public:
 		int16_t *src, *dst = static_cast<int16_t *>(buf);
 
 		// We need to always get at least two samples to be able to interpolate
-		int16_t srcbuf[2];
+		std::vector<int16_t> srcbuf;
 		if (count == 1) {
-			source->GetAudio(srcbuf, start / 2, 2);
-			src = srcbuf;
+			srcbuf.resize(2 * channels);
+
+			source->GetAudio(srcbuf.data(), start / 2, 2);
+			src = srcbuf.data();
 		}
 		else {
 			source->GetAudio(buf, start / 2, (start + count) / 2 - start / 2 + 1);
@@ -168,10 +170,13 @@ public:
 		for (; count > 0; --count) {
 			auto src_index = (start + count - 1) / 2 - start / 2;
 			auto i = count - 1;
-			if ((start + i) & 1)
-				dst[i] = (int16_t)(((int32_t)src[src_index] + src[src_index + 1]) / 2);
-			else
-				dst[i] = src[src_index];
+
+			for (int channel = 0; channel < channels; channel++) {
+				if ((start + i) & 1)
+					dst[i * channels + channel] = (int16_t)(((int32_t)src[src_index * channels + channel] + src[(src_index + 1) * channels + channel]) / 2);
+				else
+					dst[i * channels + channel] = src[src_index * channels + channel];
+			}
 		}
 	}
 };
