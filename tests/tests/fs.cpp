@@ -206,3 +206,31 @@ TEST(lagi_fs, dir_iterator_all_filtered_out) {
 	ASSERT_NO_THROW(DirectoryIterator("data/dir_iterator", "*.c").GetAll(files));
 	EXPECT_TRUE(files.empty());
 }
+
+TEST(lagi_fs, is_mount_point) {
+	auto directory = Absolute("data/dir_iterator");
+	EXPECT_TRUE(IsMountPoint(directory.root_path()));
+	EXPECT_FALSE(IsMountPoint(directory));
+	EXPECT_FALSE(IsMountPoint(directory / "1.a"));
+	EXPECT_FALSE(IsMountPoint(directory / "nonexistent"));
+}
+
+TEST(lagi_fs, glob_relative_and_absolute) {
+	auto directory = Absolute("data/dir_iterator");
+	std::vector<path> expected{directory / "1.a", directory / "2.a"};
+	EXPECT_EQ(expected, Glob("data/dir_iterator/*.a"));
+	EXPECT_EQ(expected, Glob(directory / "*.a"));
+}
+
+TEST(lagi_fs, glob_directory_components) {
+	auto directory = Absolute("data/dir_iterator");
+	std::vector<path> expected{directory / "1.a", directory / "2.a"};
+	EXPECT_EQ(expected, Glob("d?ta/dir_it?rator/?.a"));
+}
+
+TEST(lagi_fs, glob_regular_files_only) {
+	auto file = Absolute("data/dir_iterator/1.a");
+	EXPECT_EQ(std::vector<path>{file}, Glob(file));
+	EXPECT_TRUE(Glob("data/dir_iterator").empty());
+	EXPECT_TRUE(Glob("data/dir_iterator/*.missing").empty());
+}

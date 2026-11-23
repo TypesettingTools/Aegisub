@@ -68,6 +68,8 @@ AssFile::AssFile(const AssFile &from)
 : Info(from.Info)
 , Attachments(from.Attachments)
 , Extradata(from.Extradata)
+, Properties(from.Properties)
+, OriginalProperties(from.OriginalProperties)
 , next_extradata_id(from.next_extradata_id)
 {
 	Styles.clone_from(from.Styles,
@@ -85,6 +87,7 @@ void AssFile::swap(AssFile& from) throw() {
 	Attachments.swap(from.Attachments);
 	Extradata.swap(from.Extradata);
 	std::swap(Properties, from.Properties);
+	std::swap(OriginalProperties, from.OriginalProperties);
 	std::swap(next_extradata_id, from.next_extradata_id);
 }
 
