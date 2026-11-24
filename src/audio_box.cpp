@@ -41,7 +41,10 @@
 #include "toggle_bitmap.h"
 #include "utils.h"
 
+#include <libaegisub/audio/playback.h>
+
 #include <cmath>
+#include <wx/combobox.h>
 #include <wx/panel.h>
 #include <wx/slider.h>
 #include <wx/scrolbar.h>
@@ -63,6 +66,7 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 , audio_open_connection(context->audioController->AddAudioPlayerOpenListener(&AudioBox::OnAudioOpen, this))
 , panel(new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxBORDER_RAISED))
 , audioDisplay(new AudioDisplay(panel, context->audioController.get(), context))
+, PlaybackRateBox(nullptr)
 , HorizontalZoom(new wxSlider(panel, Audio_Horizontal_Zoom, -OPT_GET("Audio/Zoom/Horizontal")->GetInt(), -50, 30, wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL|wxSL_BOTH))
 , VerticalZoom(new wxSlider(panel, Audio_Vertical_Zoom, OPT_GET("Audio/Zoom/Vertical")->GetInt(), 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
 , VolumeBar(new wxSlider(panel, Audio_Volume, OPT_GET("Audio/Volume")->GetInt(), 0, 100, wxDefaultPosition, wxDefaultSize, wxSL_VERTICAL|wxSL_BOTH|wxSL_INVERSE))
@@ -100,10 +104,28 @@ AudioBox::AudioBox(wxWindow *parent, agi::Context *context)
 
 	context->karaoke = new AudioKaraoke(panel, context);
 
+	wxArrayString playback_rate_choices;
+	for (int i = 1; i <= 24; ++i)
+		playback_rate_choices.Add(wxString::Format("%g%%", i * 12.5));
+	PlaybackRateBox = new wxComboBox(panel, -1, "100%", wxDefaultPosition, wxDefaultSize, playback_rate_choices, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+	PlaybackRateBox->SetToolTip(_("Playback rate"));
+	PlaybackRateBox->Bind(wxEVT_COMBOBOX, &AudioBox::SetPlaybackRateFromBox, this);
+	PlaybackRateBox->Bind(wxEVT_TEXT_ENTER, &AudioBox::SetPlaybackRateFromBoxText, this);
+	PlaybackRateBox->Bind(wxEVT_KILL_FOCUS, [this](wxFocusEvent &event) {
+		ApplyPlaybackRateFromBox();
+		event.Skip();
+	});
+	BindConnection(controller->AddPlaybackRateListener([this](double, double, int) { UpdatePlaybackRateBox(); }));
+	UpdatePlaybackRateBox();
+
 	// Main sizer
 	auto MainSizer = new wxBoxSizer(wxVERTICAL);
 	MainSizer->Add(TopSizer,1,wxEXPAND|wxALL,3);
-	MainSizer->Add(toolbar::GetToolbar(panel, "audio", context, "Audio"),0,wxEXPAND|wxLEFT|wxRIGHT,3);
+	auto bottomSizer = new wxBoxSizer(wxHORIZONTAL);
+	bottomSizer->Add(toolbar::GetToolbar(panel, "audio", context, "Audio"), 0, wxEXPAND);
+	bottomSizer->AddStretchSpacer(1);
+	bottomSizer->Add(PlaybackRateBox, 0, wxALIGN_CENTER_VERTICAL | wxLEFT, 3);
+	MainSizer->Add(bottomSizer,0,wxEXPAND|wxLEFT|wxRIGHT,3);
 	MainSizer->Add(context->karaoke,0,wxEXPAND|wxALL,3);
 	MainSizer->Show(context->karaoke, false);
 	panel->SetSizer(MainSizer);
@@ -164,6 +186,43 @@ void AudioBox::OnSashDrag(wxSashEvent &event) {
 		new_height -= context->karaoke->GetSize().GetHeight() + 6;
 
 	OPT_SET("Audio/Display Height")->SetInt(new_height);
+}
+
+void AudioBox::ApplyPlaybackRateFromBox() {
+	if (!PlaybackRateBox) return;
+
+	wxString value = PlaybackRateBox->GetValue();
+	value.Trim(true).Trim(false);
+	bool is_percent = value.EndsWith("%");
+	bool is_multiplier = value.EndsWith("x") || value.EndsWith("X");
+	if (is_percent || is_multiplier)
+		value.RemoveLast();
+
+	double parsed = 0.0;
+	if (!value.ToDouble(&parsed)) {
+		UpdatePlaybackRateBox();
+		return;
+	}
+
+	double rate = parsed;
+	if (is_percent || (!is_multiplier && parsed > 10.0))
+		rate /= 100.0;
+
+	controller->SetPlaybackRate(agi::audio::ClampPlaybackRate(rate));
+	UpdatePlaybackRateBox();
+}
+
+void AudioBox::SetPlaybackRateFromBox(wxCommandEvent &) {
+	ApplyPlaybackRateFromBox();
+}
+
+void AudioBox::SetPlaybackRateFromBoxText(wxCommandEvent &) {
+	ApplyPlaybackRateFromBox();
+}
+
+void AudioBox::UpdatePlaybackRateBox() {
+	if (!PlaybackRateBox) return;
+	PlaybackRateBox->ChangeValue(wxString::Format("%g%%", controller->GetPlaybackRate() * 100.0));
 }
 
 void AudioBox::OnHorizontalZoom(wxScrollEvent &event) {
