@@ -25,6 +25,7 @@
 
 #include <libaegisub/dispatch.h>
 
+#include <algorithm>
 #include <boost/gil.hpp>
 
 enum {
@@ -34,8 +35,9 @@ enum {
 
 std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, double time, bool raw) {
 	// Find an unused buffer to use or allocate a new one if needed
+	auto& pool = raw ? raw_buffers : buffers;
 	std::shared_ptr<VideoFrame> frame;
-	for (auto& buffer : buffers) {
+	for (auto& buffer : pool) {
 		if (buffer.use_count() == 1) {
 			frame = buffer;
 			break;
@@ -44,7 +46,9 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, doub
 
 	if (!frame) {
 		frame = std::make_shared<VideoFrame>();
-		buffers.push_back(frame);
+		if (!raw && subs_provider)
+			frame->data.SetAllocator(subs_provider->GetFrameAllocator());
+		pool.push_back(frame);
 	}
 
 	try {
@@ -73,12 +77,20 @@ std::shared_ptr<VideoFrame> AsyncVideoProvider::ProcFrame(int frame_number, doub
 			}
 		}
 	}
-	catch (agi::Exception const& err) { throw SubtitlesProviderErrorEvent(err.GetMessage()); }
+	catch (agi::Exception const& err) {
+		// Still show the frame, just without subtitles
+		parent->QueueEvent(new SubtitlesProviderErrorEvent(err.GetMessage()));
+		return frame;
+	}
 
 	try {
 		subs_provider->DrawSubtitles(*frame, time / 1000.);
 	}
 	catch (agi::UserCancelException const&) { }
+	catch (agi::Exception const& err) {
+		// Still show the frame, just without subtitles
+		parent->QueueEvent(new SubtitlesProviderErrorEvent(err.GetMessage()));
+	}
 
 	return frame;
 }
@@ -94,25 +106,44 @@ VideoFrame AsyncVideoProvider::GetBlankFrame(bool white) {
 }
 
 VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
+	// Run on the worker, as the subtitles and the provider are used there
+	if (subs_provider)
+		subs_provider->WaitUntilReady();
+	VideoFrame ret;
+	worker->Sync([&]{ ret = ProcSubtitles(time); });
+	return ret;
+}
+
+VideoFrame AsyncVideoProvider::ProcSubtitles(double time) {
 	// We are looking for an RGBA image for which blending that image is equivalent
 	// to blending the current frame's subtitles (however the subtitle provider does this,
 	// usually by blending many separate small images with alpha).
 	// To do this, draw the subtitles once on a black frame and once on a white frame
 	// and solve for the color and alpha.
 	VideoFrame frame_black = GetBlankFrame(false);
-	if (!subs) return frame_black;
+	if (!subs || !subs_provider) return frame_black;
 	VideoFrame frame_white = GetBlankFrame(true);
 
-	subs_provider->LoadSubtitles(subs.get());
-	subs_provider->DrawSubtitles(frame_black, time / 1000.);
-	subs_provider->DrawSubtitles(frame_white, time / 1000.);
+	try {
+		subs_provider->LoadSubtitles(subs.get());
+		subs_provider->DrawSubtitles(frame_black, time / 1000.);
+		subs_provider->DrawSubtitles(frame_white, time / 1000.);
+	}
+	catch (agi::UserCancelException const&) { throw; }
+	catch (agi::Exception const& err) {
+		parent->QueueEvent(new SubtitlesProviderErrorEvent(err.GetMessage()));
+		// Fully transparent
+		return GetBlankFrame(false);
+	}
 
 	using namespace boost::gil;
 	auto blackview = interleaved_view(frame_black.width, frame_black.height, (bgra8_pixel_t*) frame_black.data.data(), frame_black.width * 4);
 	auto whiteview = interleaved_view(frame_white.width, frame_white.height, (bgra8_pixel_t*) frame_white.data.data(), frame_white.width * 4);
 
 	transform_pixels(blackview, whiteview, blackview, [=](const bgra8_pixel_t black, const bgra8_pixel_t white) -> bgra8_pixel_t {
-		int a = 255 - (white[0] - black[0]);
+		// The renderer may not be trustworthy, so the frames may not have
+		// been rendered consistently and these may be out of range
+		int a = std::clamp(255 - (white[0] - black[0]), 0, 255);
 
 		bgra8_pixel_t ret;
 		if (a == 0) {
@@ -121,9 +152,9 @@ VideoFrame AsyncVideoProvider::GetSubtitles(double time) {
 			ret[2] = 0;
 			ret[3] = 0;
 		} else {
-			ret[0] = black[0] / (a / 255.);
-			ret[1] = black[1] / (a / 255.);
-			ret[2] = black[2] / (a / 255.);
+			ret[0] = std::min(255., black[0] / (a / 255.));
+			ret[1] = std::min(255., black[1] / (a / 255.));
+			ret[2] = std::min(255., black[2] / (a / 255.));
 			ret[3] = a;
 		}
 		return ret;
@@ -163,6 +194,15 @@ AsyncVideoProvider::AsyncVideoProvider(agi::fs::path const& video_filename, agi:
 , source_provider(VideoProviderFactory::GetProvider(video_filename, colormatrix, br))
 , parent(parent)
 {
+	// Subtitles are drawn on the worker thread, which can't wait for the
+	// provider to be ready as it can't show progress. If the user cancels,
+	// frames are drawn without subtitles until it's ready.
+	if (subs_provider) {
+		try {
+			subs_provider->WaitUntilReady();
+		}
+		catch (agi::UserCancelException const&) { }
+	}
 }
 
 AsyncVideoProvider::~AsyncVideoProvider() {
@@ -170,11 +210,13 @@ AsyncVideoProvider::~AsyncVideoProvider() {
 	worker->Sync([]{});
 }
 
-void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs) throw() {
+void AsyncVideoProvider::LoadSubtitles(const AssFile *new_subs, bool new_document) throw() {
 	uint_fast32_t req_version = ++version;
 
 	auto copy = new AssFile(*new_subs);
 	worker->Async([=, this]{
+		if (new_document && subs_provider)
+			subs_provider->ResetReportedErrors();
 		subs.reset(copy);
 		single_frame = NEW_SUBS_FILE;
 		ProcAsync(req_version, false);
@@ -269,6 +311,15 @@ void AsyncVideoProvider::ProcAsync(uint_fast32_t req_version, bool check_updated
 }
 
 std::shared_ptr<VideoFrame> AsyncVideoProvider::GetFrame(int frame, double time, bool raw) {
+	if (!raw && subs_provider) {
+		try {
+			subs_provider->WaitUntilReady();
+		}
+		catch (agi::UserCancelException const&) {
+			// As when cancelling while drawing, return the frame without subtitles
+			raw = true;
+		}
+	}
 	std::shared_ptr<VideoFrame> ret;
 	worker->Sync([&]{ ret = ProcFrame(frame, time, raw); });
 	return ret;

@@ -231,7 +231,8 @@ if conf.has('WITH_FONTCONFIG')
 endif
 
 if conf.has('WITH_CSRI')
-    aegisub_src += files('subtitles_provider_csri.cpp')
+    aegisub_src += files('subtitles_provider_csri.cpp', 'csri_host/client.cpp')
+    deps += cc.find_library('userenv', required: true)
 endif
 
 opt_src = [
