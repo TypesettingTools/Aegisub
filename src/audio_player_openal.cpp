@@ -52,6 +52,7 @@
 #endif
 
 #include <algorithm>
+#include <chrono>
 #include <vector>
 #include <wx/timer.h>
 
@@ -92,6 +93,12 @@ class OpenALPlayer final : public AudioPlayer, wxTimer {
 	/// Number of buffers which have been fully played since playback was last started
 	int64_t buffers_played = 0;
 	int64_t last_position = 0;
+	int64_t last_mix_position = 0;
+	std::chrono::steady_clock::time_point last_mix_time;
+
+	// Load the optional extension at runtime for OpenAL 1.1 implementations.
+	using GetSourcedv = void (AL_APIENTRY *)(ALuint, ALenum, ALdouble *);
+	GetSourcedv get_source_latency = nullptr;
 
 	/// Buffer to decode audio into
 	std::vector<char> decode_buffer;
@@ -161,6 +168,9 @@ void OpenALPlayer::InitContext()
 			alDeleteBuffers(num_buffers, buffers);
 			throw AudioPlayerOpenError("Error generating OpenAL source");
 		}
+
+		get_source_latency = alIsExtensionPresent("AL_SOFT_source_latency")
+			? reinterpret_cast<GetSourcedv>(alGetProcAddress("alGetSourcedvSOFT")) : nullptr;
 	}
 	catch (...)
 	{
@@ -210,6 +220,8 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 
 	// And go!
 	alSourcePlay(source);
+	last_mix_position = 0;
+	last_mix_time = std::chrono::steady_clock::now();
 	wxTimer::Start(100);
 }
 
@@ -295,24 +307,53 @@ int64_t OpenALPlayer::GetCurrentPosition()
 	if (!playing) return last_position;
 
 	alcMakeContextCurrent(context);
+	double latency = 0;
+
 	ALint state = AL_INITIAL;
 	alGetSourcei(source, AL_SOURCE_STATE, &state);
 
-	ALint sample_offset = 0;
-	alGetSourcei(source, AL_SAMPLE_OFFSET, &sample_offset);
-	int64_t offset = sample_offset;
+	double offset = 0;
+	if (get_source_latency) {
+		// OpenAL Soft measures latency for the offset returned by this same
+		// call. Read both together on each position query.
+		ALdouble values[2] = {};
+		get_source_latency(source, 0x1201 /* AL_SEC_OFFSET_LATENCY_SOFT */, values);
+		offset = values[0] * samplerate;
+		latency = values[1];
+	}
+	else {
+		ALint samples = 0;
+		alGetSourcei(source, AL_SAMPLE_OFFSET, &samples);
+		offset = samples;
+	}
 
 	const int64_t frames_per_buffer = decode_buffer.size() / bpf;
 	if (state == AL_STOPPED) {
-		// OpenAL resets the offset on underrun, after consuming every queued
-		// buffer. Recover the offset from the number of processed buffers.
+		// OpenAL resets the offset to zero on underrun, but every queued buffer
+		// has been consumed. Preserve that position when restarting the source.
 		ALint processed = 0;
 		alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
 		offset = processed * frames_per_buffer;
 	}
 
-	const int64_t mixed = buffers_played * frames_per_buffer + offset;
-	last_position = std::max(last_position, start_frame + mixed);
+	const int64_t mixed = buffers_played * frames_per_buffer + static_cast<int64_t>(offset);
+	auto now = std::chrono::steady_clock::now();
+	if (state == AL_STOPPED) {
+		// The device continues draining after the mixer runs out of buffers.
+		// Estimate when that happened from the last observed mixer position.
+		double elapsed = std::chrono::duration<double>(now - last_mix_time).count();
+		double mixed_time = static_cast<double>(mixed - last_mix_position) / samplerate;
+		latency = std::max(0., latency - std::max(0., elapsed - mixed_time));
+	}
+	else {
+		last_mix_position = mixed;
+		last_mix_time = now;
+	}
+
+	// Hold at the start while the output pipeline fills and avoid backwards
+	// motion when the reported latency changes.
+	const int64_t position = start_frame + mixed - static_cast<int64_t>(latency * samplerate);
+	last_position = std::max(last_position, position);
 	return last_position;
 }
 }
