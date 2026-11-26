@@ -216,15 +216,13 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 
 void OpenALPlayer::Stop()
 {
-	TeardownContext();
-	if (!playing) return;
-
-	// Reset data
 	wxTimer::Stop();
 	playing = false;
 	start_frame = 0;
 	cur_frame = 0;
 	end_frame = 0;
+
+	TeardownContext();
 }
 
 void OpenALPlayer::FillBuffers(ALsizei count)
