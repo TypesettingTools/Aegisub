@@ -140,12 +140,12 @@ void VideoController::Play() {
 
 	if (!provider) return;
 
-	start_ms = TimeAtFrame(frame_n);
-	end_frame = provider->GetFrameCount() - 1;
+	int start_ms = TimeAtFrame(frame_n);
+	end_frame = provider->GetFrameCount();
 
 	context->audioController->PlayToEnd(start_ms);
 
-	playback_start_time = std::chrono::steady_clock::now();
+	playback_clock.Start(start_ms);
 	playback.Start(10);
 }
 
@@ -159,12 +159,12 @@ void VideoController::PlayLine() {
 
 	// Round-trip conversion to convert start to exact
 	int startFrame = FrameAtTime(context->selectionController->GetActiveLine()->Start, agi::vfr::START);
-	start_ms = TimeAtFrame(startFrame);
+	int start_ms = TimeAtFrame(startFrame);
 	end_frame = FrameAtTime(context->selectionController->GetActiveLine()->End, agi::vfr::END) + 1;
 
 	JumpToFrame(startFrame);
 
-	playback_start_time = std::chrono::steady_clock::now();
+	playback_clock.Start(start_ms);
 	playback.Start(10);
 }
 
@@ -176,8 +176,7 @@ void VideoController::Stop() {
 }
 
 void VideoController::OnPlayTimer(wxTimerEvent &) {
-	using namespace std::chrono;
-	int next_frame = FrameAtTime(start_ms + duration_cast<milliseconds>(steady_clock::now() - playback_start_time).count());
+	int next_frame = FrameAtTime(playback_clock.GetPosition(context->audioController->GetPlaybackPosition()));
 	if (next_frame == frame_n) return;
 
 	if (next_frame >= end_frame)

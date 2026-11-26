@@ -33,6 +33,7 @@
 #include <libaegisub/signal.h>
 
 #include <cstdint>
+#include <optional>
 #include <wx/event.h>
 #include <wx/power.h>
 #include <wx/timer.h>
@@ -169,8 +170,9 @@ public:
 	/// @brief Get the current playback position
 	/// @return Approximate current time in milliseconds being heard by the user
 	///
-	/// Returns 0 if playback is stopped. The return value is only approximate.
-	int GetPlaybackPosition();
+	/// Returns no position if the player has stopped, including before the UI
+	/// playback timer has noticed it. The return value is only approximate.
+	std::optional<int> GetPlaybackPosition();
 
 	/// @brief Get the primary playback range
 	/// @return An immutable TimeRange object

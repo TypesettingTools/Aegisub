@@ -187,9 +187,9 @@ bool AudioController::IsPlaying()
 	return player && playback_mode != PM_NotPlaying;
 }
 
-int AudioController::GetPlaybackPosition()
+std::optional<int> AudioController::GetPlaybackPosition()
 {
-	if (!IsPlaying()) return 0;
+	if (!IsPlaying() || !player->IsPlaying()) return std::nullopt;
 
 	return MillisecondsFromSamples(player->GetCurrentPosition());
 }
