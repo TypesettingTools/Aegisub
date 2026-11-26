@@ -54,6 +54,10 @@ tests_src = [
 
 tests_inc = include_directories('support')
 
+if host_machine.system() == 'darwin' and conf.has('WITH_OPENAL')
+    tests_src += 'tests/audio_player_openal.cpp'
+endif
+
 tests_args = []
 
 # force UTF8 for MSVC
