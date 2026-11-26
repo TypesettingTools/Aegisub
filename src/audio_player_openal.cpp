@@ -252,7 +252,7 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 
 void OpenALPlayer::Notify()
 {
-	InitContext();
+	if (!playing) return;
 	alcMakeContextCurrent(context);
 	ALsizei newplayed;
 	alGetSourcei(source, AL_BUFFERS_PROCESSED, &newplayed);
