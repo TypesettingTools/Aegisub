@@ -128,7 +128,7 @@ class OpenALPlayer final : public AudioPlayer, wxTimer {
 	int bpf; ///< Bytes per frame
 
 	int64_t start_frame = 0; ///< First frame of playback
-	int64_t cur_frame = 0; ///< Next frame to write to playback buffers
+	int64_t cur_frame = 0; ///< End of queued audio, including silence
 	int64_t end_frame = 0; ///< Last frame to play
 
 	ALCdevice *device = nullptr; ///< OpenAL device handle
@@ -308,7 +308,8 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 	InitContext();
 	// Do the actual filling/queueing
 	for (count = std::min(count, buffers_free); count > 0; --count) {
-		ALsizei fill_len = std::clamp<int64_t>(end_frame - cur_frame, 0, decode_buffer.size() / bpf);
+		ALsizei frames = decode_buffer.size() / bpf;
+		ALsizei fill_len = std::clamp<int64_t>(end_frame - cur_frame, 0, frames);
 
 		if (fill_len > 0)
 			// Get fill_len frames of audio
@@ -317,7 +318,7 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 			// And zerofill the rest
 			memset(&decode_buffer[fill_len * bpf], 0, decode_buffer.size() - fill_len * bpf);
 
-		cur_frame += fill_len;
+		cur_frame += frames;
 
 		alBufferData(buffers[buf_first_free], AL_FORMAT_MONO16, &decode_buffer[0], decode_buffer.size(), samplerate);
 		alSourceQueueBuffers(source, 1, &buffers[buf_first_free]); // FIXME: collect buffer handles and queue all at once instead of one at a time?
@@ -366,6 +367,14 @@ void OpenALPlayer::Notify()
 
 void OpenALPlayer::SetEndPosition(int64_t pos)
 {
+	// Queued buffers may already contain samples past a shortened selection, or
+	// silence past an extended one. Replace them from the audible playhead.
+	if (playing && pos != end_frame && cur_frame > std::min(pos, end_frame)) {
+		auto current = GetCurrentPosition();
+		Play(current, std::max<int64_t>(0, pos - current));
+		return;
+	}
+
 	end_frame = pos;
 }
 
