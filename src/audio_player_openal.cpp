@@ -130,7 +130,7 @@ OpenALPlayer::OpenALPlayer(agi::AudioProvider *provider)
 	if (!device) throw AudioPlayerOpenError("Failed opening default OpenAL device");
 
 	// Determine buffer length
-	decode_buffer.resize(samplerate * bpf / num_buffers / 2); // buffers for half a second of audio
+	decode_buffer.resize((samplerate / num_buffers / 2) * bpf); // half a second, in whole sample frames
 }
 
 OpenALPlayer::~OpenALPlayer()
