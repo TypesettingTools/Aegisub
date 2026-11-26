@@ -35,8 +35,6 @@
 #ifdef WITH_OPENAL
 #include "include/aegisub/audio_player.h"
 
-#include "utils.h"
-
 #include <libaegisub/audio/provider.h>
 #include <libaegisub/log.h>
 
@@ -54,6 +52,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstring>
 #include <vector>
 #include <wx/timer.h>
 
@@ -309,7 +308,7 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 	InitContext();
 	// Do the actual filling/queueing
 	for (count = std::min(count, buffers_free); count > 0; --count) {
-		ALsizei fill_len = mid<ALsizei>(0, decode_buffer.size() / bpf, end_frame - cur_frame);
+		ALsizei fill_len = std::clamp<int64_t>(end_frame - cur_frame, 0, decode_buffer.size() / bpf);
 
 		if (fill_len > 0)
 			// Get fill_len frames of audio
