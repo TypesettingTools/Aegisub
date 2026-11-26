@@ -175,6 +175,8 @@ void OpenALPlayer::TeardownContext()
 {
 	if (!context) return;
 	alcMakeContextCurrent(context);
+	alSourceStop(source);
+	alSourcei(source, AL_BUFFER, 0);
 	alDeleteSources(1, &source);
 	alDeleteBuffers(num_buffers, buffers);
 	alcMakeContextCurrent(nullptr);
@@ -223,12 +225,6 @@ void OpenALPlayer::Stop()
 	start_frame = 0;
 	cur_frame = 0;
 	end_frame = 0;
-
-	// Then drop the playback
-	alcMakeContextCurrent(context);
-	alSourceStop(source);
-	alSourcei(source, AL_BUFFER, 0);
-	alcMakeContextCurrent(nullptr);
 }
 
 void OpenALPlayer::FillBuffers(ALsizei count)
