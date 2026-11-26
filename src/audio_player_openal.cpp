@@ -35,7 +35,6 @@
 #ifdef WITH_OPENAL
 #include "include/aegisub/audio_player.h"
 
-#include "audio_controller.h"
 #include "utils.h"
 
 #include <libaegisub/audio/provider.h>
@@ -91,9 +90,8 @@ class OpenALPlayer final : public AudioPlayer, wxTimer {
 	ALsizei buffers_free = 0;
 
 	/// Number of buffers which have been fully played since playback was last started
-	ALsizei buffers_played = 0;
-
-	wxStopWatch playback_segment_timer;
+	int64_t buffers_played = 0;
+	int64_t last_position = 0;
 
 	/// Buffer to decode audio into
 	std::vector<char> decode_buffer;
@@ -200,6 +198,7 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 	start_frame = start;
 	cur_frame = start;
 	end_frame = start + count;
+	last_position = start;
 	playing = true;
 
 	// Prepare buffers
@@ -212,12 +211,12 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 	// And go!
 	alSourcePlay(source);
 	wxTimer::Start(100);
-	playback_segment_timer.Start();
 }
 
 void OpenALPlayer::Stop()
 {
 	wxTimer::Stop();
+	if (playing) GetCurrentPosition();
 	playing = false;
 	start_frame = 0;
 	cur_frame = 0;
@@ -270,7 +269,6 @@ void OpenALPlayer::Notify()
 
 		// Update
 		buffers_played += newplayed;
-		playback_segment_timer.Start();
 
 		// Fill more buffers
 		FillBuffers(newplayed);
@@ -294,10 +292,28 @@ void OpenALPlayer::SetEndPosition(int64_t pos)
 
 int64_t OpenALPlayer::GetCurrentPosition()
 {
-	// FIXME: this should be based on not duration played but actual sample being heard
-	// (during video playback, cur_frame might get changed to resync)
-	long extra = playback_segment_timer.Time();
-	return buffers_played * decode_buffer.size() / bpf + start_frame + extra * samplerate / 1000;
+	if (!playing) return last_position;
+
+	alcMakeContextCurrent(context);
+	ALint state = AL_INITIAL;
+	alGetSourcei(source, AL_SOURCE_STATE, &state);
+
+	ALint sample_offset = 0;
+	alGetSourcei(source, AL_SAMPLE_OFFSET, &sample_offset);
+	int64_t offset = sample_offset;
+
+	const int64_t frames_per_buffer = decode_buffer.size() / bpf;
+	if (state == AL_STOPPED) {
+		// OpenAL resets the offset on underrun, after consuming every queued
+		// buffer. Recover the offset from the number of processed buffers.
+		ALint processed = 0;
+		alGetSourcei(source, AL_BUFFERS_PROCESSED, &processed);
+		offset = processed * frames_per_buffer;
+	}
+
+	const int64_t mixed = buffers_played * frames_per_buffer + offset;
+	last_position = std::max(last_position, start_frame + mixed);
+	return last_position;
 }
 }
 
