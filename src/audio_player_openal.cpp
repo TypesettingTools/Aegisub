@@ -46,6 +46,7 @@
 #elif defined(__APPLE__)
 #include <OpenAL/al.h>
 #include <OpenAL/alc.h>
+#include <CoreAudio/CoreAudio.h>
 #else
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -62,6 +63,61 @@
 #endif
 
 namespace {
+#ifdef __APPLE__
+// Apple's OpenAL framework lacks AL_SOFT_source_latency. Estimate the delay
+// between its mixer and the device output using Core Audio properties.
+double GetOutputLatency()
+{
+	auto get = [](AudioObjectID object, AudioObjectPropertySelector selector,
+	              AudioObjectPropertyScope scope, auto &value) {
+		AudioObjectPropertyAddress address{selector, scope, kAudioObjectPropertyElementMain};
+		UInt32 size = sizeof(value);
+		return AudioObjectGetPropertyData(object, &address, 0, nullptr, &size, &value) == noErr;
+	};
+
+	AudioDeviceID output = kAudioObjectUnknown;
+	if (!get(kAudioObjectSystemObject, kAudioHardwarePropertyDefaultOutputDevice,
+	         kAudioObjectPropertyScopeGlobal, output)) return 0;
+
+	// Core Audio reports delay in device frames, which may run at a different
+	// rate from the OpenAL source.
+	Float64 rate = 0;
+	if (!get(output, kAudioDevicePropertyNominalSampleRate,
+	         kAudioObjectPropertyScopeGlobal, rate) || rate <= 0) return 0;
+
+	// Add the device buffer and safety offset to the reported device latency.
+	uint64_t frames = 0;
+	const AudioObjectPropertySelector selectors[] = {kAudioDevicePropertyLatency,
+		kAudioDevicePropertySafetyOffset, kAudioDevicePropertyBufferFrameSize};
+	for (auto selector : selectors) {
+		UInt32 value = 0;
+		if (get(output, selector, kAudioDevicePropertyScopeOutput, value)) frames += value;
+	}
+
+	// Streams on the same device run in parallel. Use the largest reported
+	// stream latency as a conservative estimate.
+	AudioObjectPropertyAddress address{kAudioDevicePropertyStreams,
+		kAudioDevicePropertyScopeOutput, kAudioObjectPropertyElementMain};
+	UInt32 size = 0;
+
+	if (AudioObjectGetPropertyDataSize(output, &address, 0, nullptr, &size) == noErr && size) {
+		std::vector<AudioStreamID> streams(size / sizeof(AudioStreamID));
+
+		if (AudioObjectGetPropertyData(output, &address, 0, nullptr, &size, streams.data()) == noErr) {
+			UInt32 latency = 0;
+			for (auto stream : streams) {
+				UInt32 value = 0;
+				if (get(stream, kAudioStreamPropertyLatency, kAudioObjectPropertyScopeGlobal, value))
+					latency = std::max(latency, value);
+			}
+			frames += latency;
+		}
+	}
+
+	return frames / rate;
+}
+#endif
+
 class OpenALPlayer final : public AudioPlayer, wxTimer {
 	/// Number of OpenAL buffers to use
 	static const ALsizei num_buffers = 8;
@@ -99,6 +155,13 @@ class OpenALPlayer final : public AudioPlayer, wxTimer {
 	// Load the optional extension at runtime for OpenAL 1.1 implementations.
 	using GetSourcedv = void (AL_APIENTRY *)(ALuint, ALenum, ALdouble *);
 	GetSourcedv get_source_latency = nullptr;
+
+#ifdef __APPLE__
+	double output_latency = 0;
+	std::chrono::steady_clock::time_point next_latency_update;
+
+	double GetCachedOutputLatency();
+#endif
 
 	/// Buffer to decode audio into
 	std::vector<char> decode_buffer;
@@ -211,6 +274,10 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 	last_position = start;
 	playing = true;
 
+#ifdef __APPLE__
+	next_latency_update = {};
+#endif
+
 	// Prepare buffers
 	buffers_free = num_buffers;
 	buffers_played = 0;
@@ -307,12 +374,9 @@ int64_t OpenALPlayer::GetCurrentPosition()
 	if (!playing) return last_position;
 
 	alcMakeContextCurrent(context);
-	double latency = 0;
-
-	ALint state = AL_INITIAL;
-	alGetSourcei(source, AL_SOURCE_STATE, &state);
 
 	double offset = 0;
+	double latency = 0;
 	if (get_source_latency) {
 		// OpenAL Soft measures latency for the offset returned by this same
 		// call. Read both together on each position query.
@@ -322,12 +386,17 @@ int64_t OpenALPlayer::GetCurrentPosition()
 		latency = values[1];
 	}
 	else {
+#ifdef __APPLE__
+		latency = GetCachedOutputLatency();
+#endif
 		ALint samples = 0;
 		alGetSourcei(source, AL_SAMPLE_OFFSET, &samples);
 		offset = samples;
 	}
 
 	const int64_t frames_per_buffer = decode_buffer.size() / bpf;
+	ALint state = AL_INITIAL;
+	alGetSourcei(source, AL_SOURCE_STATE, &state);
 	if (state == AL_STOPPED) {
 		// OpenAL resets the offset to zero on underrun, but every queued buffer
 		// has been consumed. Preserve that position when restarting the source.
@@ -356,6 +425,21 @@ int64_t OpenALPlayer::GetCurrentPosition()
 	last_position = std::max(last_position, position);
 	return last_position;
 }
+
+#ifdef __APPLE__
+double OpenALPlayer::GetCachedOutputLatency()
+{
+	// Core Audio provides a separate device estimate. Cache the property
+	// queries and stream list allocation, but refresh during playback to
+	// pick up changes such as switching to Bluetooth.
+	auto now = std::chrono::steady_clock::now();
+	if (now >= next_latency_update) {
+		output_latency = GetOutputLatency();
+		next_latency_update = now + std::chrono::milliseconds(100);
+	}
+	return output_latency;
+}
+#endif
 }
 
 std::unique_ptr<AudioPlayer> CreateOpenALPlayer(agi::AudioProvider *provider, wxWindow *)
