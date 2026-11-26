@@ -289,7 +289,7 @@ void OpenALPlayer::Play(int64_t start, int64_t count)
 	alSourcePlay(source);
 	last_mix_position = 0;
 	last_mix_time = std::chrono::steady_clock::now();
-	wxTimer::Start(100);
+	wxTimer::Start(20);
 }
 
 void OpenALPlayer::Stop()
@@ -331,6 +331,13 @@ void OpenALPlayer::Notify()
 {
 	if (!playing) return;
 	alcMakeContextCurrent(context);
+
+	// Feed silence until the last requested sample reaches the output.
+	if (GetCurrentPosition() >= end_frame) {
+		Stop();
+		return;
+	}
+
 	ALsizei newplayed;
 	alGetSourcei(source, AL_BUFFERS_PROCESSED, &newplayed);
 
@@ -356,12 +363,6 @@ void OpenALPlayer::Notify()
 	ALint state = AL_INITIAL;
 	alGetSourcei(source, AL_SOURCE_STATE, &state);
 	if (state == AL_STOPPED) alSourcePlay(source); // Recover after an underrun.
-
-	LOG_D("player/audio/openal") << "frames played=" << (buffers_played - num_buffers) * decode_buffer.size() / bpf << " num frames=" << end_frame - start_frame;
-	// Check that all of the selected audio plus one full set of buffers has been queued
-	if ((buffers_played - num_buffers) * (int64_t)decode_buffer.size() > (end_frame - start_frame) * bpf) {
-		Stop();
-	}
 }
 
 void OpenALPlayer::SetEndPosition(int64_t pos)
