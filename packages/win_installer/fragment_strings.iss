@@ -1,6 +1,7 @@
 ﻿[CustomMessages]
 InstallRuntime=Installing runtime libraries...
 pt_PT.InstallRuntime=A instalar livrarias de runtime...
+sv.InstallRuntime=Installerar körningsbibliotek…
 uk_UA.InstallRuntime=Встановлюю бібліотеки реального часу...
 #ifdef UNOFFICIAL_LANGUAGES
 el.InstallRuntime=Εγκατάσταση βιβλιοθηκών...
@@ -12,6 +13,7 @@ zh_TW.InstallRuntime=正在安裝運行庫……
 
 StartMenuIcon=Create a start menu icon
 pt_PT.StartMenuIcon=Criar ícone no menu iniciar
+sv.StartMenuIcon=Skapa en genväg i Start-menyn
 uk_UA.StartMenuIcon=Створити піктограму в меню Запустити
 #ifdef UNOFFICIAL_LANGUAGES
 el.StartMenuIcon=Δημιουργία εικονιδίου στο μενού έναρξης
@@ -23,6 +25,7 @@ zh_TW.StartMenuIcon=創建開始功能表圖示
 
 CheckForUpdates=Automatically check for new versions of Aegisub
 pt_PT.CheckForUpdates=Verifica automaticamente a existência de novas versões do Aegisub
+sv.CheckForUpdates=Sök automatiskt efter nya versioner av Aegisub
 uk_UA.CheckForUpdates=Автоматично перевіряти Aegisub на нові версії
 #ifdef UNOFFICIAL_LANGUAGES
 el.CheckForUpdates=Αυτόματος έλεγχος για καινούριες εκδόσεις του Aegisub
@@ -34,6 +37,7 @@ zh_TW.CheckForUpdates=自動檢查Aegisub的新版本
 
 UpdatesGroup=Update Checker:
 pt_PT.UpdatesGroup=Verificar Actualizações:
+sv.UpdatesGroup=Uppdateringskontroll:
 uk_UA.UpdatesGroup=Модуль Перевірки на Оновлення:
 #ifdef UNOFFICIAL_LANGUAGES
 el.UpdatesGroup=Έλεγχος Ενημερώσεων:
@@ -47,6 +51,7 @@ zh_TW.UpdatesGroup=自動更新：
 [Messages]
 WelcomeLabel2=This will install Aegisub {#BUILD_GIT_VERSION_STRING} on your computer.%n%nAegisub is covered by the GNU General Public License version 2. This means you may use the application for any purpose without charge, but that no warranties of any kind are given either.%n%nSee the Aegisub website for information on obtaining the source code.
 pt_PT.WelcomeLabel2=Irá ser instalado no seu computador a versão {#BUILD_GIT_VERSION_STRING} do Aegisub.%n%nO Aegisub está protegido sob a Licença Pública Geral GNU (GPL version 2). O que significa que poderá fazer uso da aplicação para qualquer propósito, sem que seja cobrado, mas não serão dadas quaisquer tipos de garantias.%n%nVeja a página do Aegisub para mais informações sobre como obter o código-fonte.
+sv.WelcomeLabel2=Aegisub {#BUILD_GIT_VERSION_STRING} kommer att installeras på din dator.%n%nAegisub omfattas av GNU General Public License version 2. Det innebär att du får använda programmet kostnadsfritt för valfritt ändamål. Inga garantier lämnas.%n%nPå Aegisubs webbplats finns information om hur du får tillgång till källkoden.
 uk_UA.WelcomeLabel2=Зараз буде встанвлено Aegisub {#BUILD_GIT_VERSION_STRING} на ваш комп'ютер.%n%nAegisub захищено універсальною громадською ліцензією GNU, версія 2. Це означає, що ви можете використосувати цю програму для будь яких цілей безкоштовно, але, в будь-якому випадку, ми не даємо жодних гарантій.%n%nДивіться сайт Aegisub для інформації щодо отримання вихідного коду.
 #ifdef UNOFFICIAL_LANGUAGES
 el.WelcomeLabel2=Αυτό θα εγκαταστήσει το Aegisub {#BUILD_GIT_VERSION_STRING} στον υπολογιστή σας.%n%nΤο Aegisub καλύπτεται από τον άδεια GNU General Public License version 2. Αυτό σημαίνει ότι μπορείτε να χρησιμοποιήσετε την εφαρμογή για κάθε σκοπό χωρίς χρέωση, αλλά δεν υπάρχουν εγγυήσεις καμίας φύσης.%n%nΔείτε την ιστοσελίδα του Aegisub για πληροφορίες σχετικά με την απόκτηση του πηγαίου κώδικα.
