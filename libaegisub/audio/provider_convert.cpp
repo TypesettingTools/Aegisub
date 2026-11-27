@@ -189,8 +189,9 @@ std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioP
 		provider = std::make_unique<BitdepthConvertAudioProvider<int16_t>>(std::move(provider));
 	}
 
-	// We currently only support mono audio
-	if (provider->GetChannels() != 1) {
+	// Preserve mono/stereo. Keep the legacy fallback for sources without a
+	// channel-aware surround downmixer (FFMS2 handles surround itself).
+	if (provider->GetChannels() > 2) {
 		LOG_D("audio_provider") << "Downmixing to mono from " << provider->GetChannels() << " channels";
 		provider = std::make_unique<DownmixAudioProvider>(std::move(provider));
 	}

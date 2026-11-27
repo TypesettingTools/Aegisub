@@ -164,15 +164,16 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 			throw agi::AudioProviderError("unknown or unsupported sample format");
 	}
 
-	if (channels > 1 || bytes_per_sample != 2) {
+	if (channels > 2 || bytes_per_sample != 2) {
 		std::unique_ptr<FFMS_ResampleOptions, decltype(&FFMS_DestroyResampleOptions)>
 			opt(FFMS_CreateResampleOptions(AudioSource), FFMS_DestroyResampleOptions);
-		opt->ChannelLayout = FFMS_CH_FRONT_CENTER;
+		opt->ChannelLayout = channels == 1 ? FFMS_CH_FRONT_CENTER
+			: FFMS_CH_FRONT_LEFT | FFMS_CH_FRONT_RIGHT;
 		opt->SampleFormat = FFMS_FMT_S16;
 
 		// Might fail if FFMS2 wasn't built with libavresample
 		if (!FFMS_SetOutputFormatA(AudioSource, opt.get(), nullptr)) {
-			channels = 1;
+			if (channels > 2) channels = 2;
 			bytes_per_sample = 2;
 			float_samples = false;
 		}

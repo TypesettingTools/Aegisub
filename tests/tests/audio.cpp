@@ -286,7 +286,7 @@ TEST(lagi_audio, sample_doubling) {
 	}
 }
 
-TEST(lagi_audio, stereo_downmix) {
+TEST(lagi_audio, stereo_preserved) {
 	struct AudioProvider : agi::AudioProvider {
 		AudioProvider() {
 			channels = 2;
@@ -307,12 +307,14 @@ TEST(lagi_audio, stereo_downmix) {
 	};
 
 	auto provider = agi::CreateConvertAudioProvider(std::make_unique<AudioProvider>());
-	EXPECT_EQ(1, provider->GetChannels());
+	EXPECT_EQ(2, provider->GetChannels());
 
-	int16_t samples[100];
+	int16_t samples[200];
 	provider->GetAudio(samples, 0, 100);
-	for (int i = 0; i < 100; ++i)
-		EXPECT_EQ(i, samples[i]);
+	for (int i = 0; i < 100; ++i) {
+		EXPECT_EQ(i * 2, samples[i * 2]);
+		EXPECT_EQ(0, samples[i * 2 + 1]);
+	}
 }
 
 template<typename Float>
