@@ -17,6 +17,11 @@ tests_src = [
 
     'tests/access.cpp',
     'tests/audio.cpp',
+    'tests/audio_spectrum.cpp',
+    '../src/audio_colorscheme.cpp',
+    '../src/audio_renderer.cpp',
+    '../src/colorspace.cpp',
+    '../src/fft.cpp',
     'tests/cajun.cpp',
     'tests/calltip_provider.cpp',
     'tests/character_count.cpp',
@@ -53,6 +58,10 @@ tests_src = [
 ]
 
 tests_inc = include_directories('support')
+
+if host_machine.system() == 'darwin' and conf.has('WITH_OPENAL')
+    tests_src += 'tests/audio_player_openal.cpp'
+endif
 
 tests_args = []
 
