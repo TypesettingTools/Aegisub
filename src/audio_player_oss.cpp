@@ -164,7 +164,7 @@ void OSSPlayer::OpenStream()
 
     // Set number of channels
     int channels = provider->GetChannels();
-    if (ioctl(dspdev, SNDCTL_DSP_CHANNELS, &channels) < 0) {
+    if (ioctl(dspdev, SNDCTL_DSP_CHANNELS, &channels) < 0 || channels != provider->GetChannels()) {
         throw AudioPlayerOpenError("OSS player: setting channels failed");
     }
 
