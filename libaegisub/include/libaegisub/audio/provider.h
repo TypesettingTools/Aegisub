@@ -63,11 +63,14 @@ public:
 };
 
 /// Helper base class for an audio provider which wraps another provider
+/// Has ownership of the inner provider by default, but can also use a non-owning pointer instead.
+template<class Source = std::unique_ptr<AudioProvider>>
+requires requires (Source source) { { *source } -> std::convertible_to<AudioProvider &>; }
 class AudioProviderWrapper : public AudioProvider {
 protected:
-	std::unique_ptr<AudioProvider> source;
+	Source source;
 public:
-	AudioProviderWrapper(std::unique_ptr<AudioProvider> src)
+	AudioProviderWrapper(Source src)
 	: source(std::move(src))
 	{
 		channels = source->GetChannels();
@@ -93,6 +96,7 @@ std::unique_ptr<AudioProvider> CreateDummyAudioProvider(agi::fs::path const& fil
 std::unique_ptr<AudioProvider> CreatePCMAudioProvider(agi::fs::path const& filename, BackgroundRunner *);
 
 std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioProvider> source_provider);
+std::unique_ptr<AudioProvider> CreateMonoDownmixAudioProvider(AudioProvider *source_provider);
 std::unique_ptr<AudioProvider> CreateLockAudioProvider(std::unique_ptr<AudioProvider> source_provider);
 std::unique_ptr<AudioProvider> CreateHDAudioProvider(std::unique_ptr<AudioProvider> source_provider,
                                                      agi::fs::path const& dir);

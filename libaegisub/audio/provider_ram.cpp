@@ -27,7 +27,7 @@ using namespace agi;
 #define CacheBits 22
 #define CacheBlockSize (1 << CacheBits)
 
-class RAMAudioProvider final : public AudioProviderWrapper {
+class RAMAudioProvider final : public AudioProviderWrapper<> {
 #ifdef _MSC_VER
 	boost::container::stable_vector<char[CacheBlockSize]> blockcache;
 #else

@@ -28,7 +28,7 @@
 namespace {
 using namespace agi;
 
-class HDAudioProvider final : public AudioProviderWrapper {
+class HDAudioProvider final : public AudioProviderWrapper<> {
 	mutable temp_file_mapping file;
 	std::atomic<bool> cancelled = {false};
 	std::thread decoder;

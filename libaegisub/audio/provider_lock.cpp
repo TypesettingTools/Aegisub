@@ -20,7 +20,7 @@
 #include <mutex>
 
 namespace {
-class LockAudioProvider final : public agi::AudioProviderWrapper {
+class LockAudioProvider final : public agi::AudioProviderWrapper<> {
 	mutable std::mutex mutex;
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {

@@ -62,7 +62,7 @@
 
 namespace {
 class OpenALPlayer final : public AudioPlayer, wxTimer {
-	agi::AudioProvider *provider;
+	std::unique_ptr<agi::AudioProvider> provider;
 
 	/// Number of OpenAL buffers to use
 	static const ALsizei num_buffers = 8;
@@ -123,8 +123,8 @@ public:
 	void SetVolume(double vol) override { volume = vol; }
 };
 
-OpenALPlayer::OpenALPlayer(agi::AudioProvider *provider)
-: provider(provider)
+OpenALPlayer::OpenALPlayer(agi::AudioProvider *source_provider)
+: provider(agi::CreateMonoDownmixAudioProvider(source_provider))
 , samplerate(provider->GetSampleRate())
 , bpf(provider->GetChannels() * provider->GetBytesPerSample())
 {

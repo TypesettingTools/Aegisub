@@ -43,7 +43,7 @@ int64_t AssembleSample(std::span<uint8_t> data) {
 }
 
 template<class Target>
-class BitdepthConvertAudioProvider final : public AudioProviderWrapper {
+class BitdepthConvertAudioProvider final : public AudioProviderWrapper<> {
 	int src_bytes_per_sample;
 	mutable std::vector<uint8_t> src_buf;
 
@@ -85,7 +85,7 @@ public:
 
 /// Floating point -> 16 bit signed machine-endian audio converter
 template<class Source, class Target>
-class FloatConvertAudioProvider final : public AudioProviderWrapper {
+class FloatConvertAudioProvider final : public AudioProviderWrapper<> {
 	mutable std::vector<Source> src_buf;
 
 public:
@@ -115,12 +115,19 @@ public:
 };
 
 /// Non-mono 16-bit signed machine-endian -> mono 16-bit signed machine endian converter
-class DownmixAudioProvider final : public AudioProviderWrapper {
+///
+/// Unlike the other provider wrappers this wrapper does not take ownership of the inner provider:
+/// The downmix provider is instantiated by consumers (which only get a view of the active provider),
+/// while the other conversion providers are instantiated by the audio provider factory and stored in the Project.
+///
+/// For now we can still keep track of all the ownerships like this; if it gets even more complicated,
+/// we can give up and switch to just using shared_ptrs everywhere.
+class DownmixAudioProvider final : public AudioProviderWrapper<AudioProvider *> {
 	int src_channels;
 	mutable std::vector<int16_t> src_buf;
 
 public:
-	DownmixAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
+	DownmixAudioProvider(AudioProvider *src) : AudioProviderWrapper(src) {
 		src_channels = channels;
 		channels = 1;
 	}
@@ -142,7 +149,7 @@ public:
 
 /// Sample doubler with linear interpolation for the samples provider
 /// Requires 16-bit input
-class SampleDoublingAudioProvider final : public AudioProviderWrapper {
+class SampleDoublingAudioProvider final : public AudioProviderWrapper<> {
 public:
 	SampleDoublingAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
 		sample_rate *= 2;
@@ -197,12 +204,6 @@ std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioP
 		provider = std::make_unique<BitdepthConvertAudioProvider<int16_t>>(std::move(provider));
 	}
 
-	// We currently only support mono audio
-	if (provider->GetChannels() != 1) {
-		LOG_D("audio_provider") << "Downmixing to mono from " << provider->GetChannels() << " channels";
-		provider = std::make_unique<DownmixAudioProvider>(std::move(provider));
-	}
-
 	// Some players don't like low sample rate audio
 	while (provider->GetSampleRate() < 32000) {
 		LOG_D("audio_provider") << "Doubling sample rate";
@@ -211,4 +212,9 @@ std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioP
 
 	return provider;
 }
+
+std::unique_ptr<AudioProvider> CreateMonoDownmixAudioProvider(AudioProvider *provider) {
+	return std::make_unique<DownmixAudioProvider>(provider);
+}
+
 }

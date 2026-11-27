@@ -313,7 +313,8 @@ TEST(lagi_audio, stereo_downmix) {
 		}
 	};
 
-	auto provider = agi::CreateConvertAudioProvider(std::make_unique<AudioProvider>());
+	AudioProvider inner;
+	auto provider = agi::CreateMonoDownmixAudioProvider(&inner);
 	EXPECT_EQ(1, provider->GetChannels());
 
 	int16_t samples[100];

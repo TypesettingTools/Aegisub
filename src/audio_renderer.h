@@ -34,13 +34,14 @@
 
 #include <wx/gdicmn.h>
 
+#include <libaegisub/audio/provider.h>
+
 #include "audio_rendering_style.h"
 #include "block_cache.h"
 
 class AudioRenderer;
 class AudioRendererBitmapProvider;
 class wxDC;
-namespace agi { class AudioProvider; }
 
 /// @class AudioRendererBitmapCacheBitmapFactory
 /// @brief Produces wxBitmap objects for DataBlockCache storage for the audio renderer
@@ -222,8 +223,12 @@ public:
 /// Derive from this class to implement a way to render audio to images.
 class AudioRendererBitmapProvider {
 protected:
-	/// Audio provider to use for rendering
-	agi::AudioProvider *provider;
+	/// Audio provider to use for rendering. May have muliple channels.
+	agi::AudioProvider *source_provider;
+
+	/// Provider used for rendering, downmixed to mono from source_provider
+	std::unique_ptr<agi::AudioProvider> provider;
+
 	/// Horizontal zoom in milliseconds per pixel
 	double pixel_ms;
 	/// Vertical zoom/amplitude scale factor

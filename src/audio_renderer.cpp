@@ -33,8 +33,6 @@
 
 #include "audio_renderer.h"
 
-#include <libaegisub/audio/provider.h>
-
 #include <algorithm>
 #include <wx/dc.h>
 
@@ -224,8 +222,11 @@ void AudioRenderer::Invalidate()
 
 void AudioRendererBitmapProvider::SetProvider(agi::AudioProvider *const _provider)
 {
-	if (compare_and_set(provider, _provider))
+	if (_provider != source_provider) {
+		source_provider = _provider;
+		provider = agi::CreateMonoDownmixAudioProvider(source_provider);
 		OnSetProvider();
+	}
 }
 
 void AudioRendererBitmapProvider::SetMillisecondsPerPixel(const double new_pixel_ms)

@@ -123,8 +123,7 @@ std::unique_ptr<agi::AudioProvider> GetAudioProvider(fs::path const& filename,
 	bool needs_cache = provider->NeedsCache();
 
 	// Give it a converter if needed
-	if (provider->GetBytesPerSample() != 2 || provider->GetSampleRate() < 32000 || provider->GetChannels() != 1)
-		provider = CreateConvertAudioProvider(std::move(provider));
+	provider = CreateConvertAudioProvider(std::move(provider));
 
 	// Change provider to RAM/HD cache if needed
 	auto cache = OPT_GET("Audio/Cache/Type")->GetInt();
