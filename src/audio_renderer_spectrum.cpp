@@ -133,7 +133,7 @@ void AudioSpectrumRenderer::RecreateCache()
 		// 2x for the imaginary part of the output
 		fft_scratch.resize(6 << derivation_size);
 #endif
-		audio_scratch.resize(2 << derivation_size);
+		audio_scratch.resize((2 << derivation_size) * provider->GetChannels());
 	}
 }
 
@@ -168,10 +168,10 @@ void AudioSpectrumRenderer::set_reference_frequency_position (float pos_fref_)
 
 
 template<class T>
-void AudioSpectrumRenderer::ConvertToFloat(size_t count, T *dest) {
+void AudioSpectrumRenderer::ConvertToFloat(size_t count, int channel, T *dest) {
 	for (size_t si = 0; si < count; ++si)
 	{
-		dest[si] = (T)(audio_scratch[si]) / 32768.0;
+		dest[si] = (T)(audio_scratch[si * provider->GetChannels() + channel]) / 32768.0;
 	}
 }
 
@@ -216,40 +216,37 @@ void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 	const float scale_fix =
 		1.f / sqrtf (float (1 << (derivation_size - derivation_size_user)));
 
+	const int channels = provider->GetChannels();
+	const size_t bins = size_t{1} << derivation_size;
+	std::fill_n(block, bins, 0.f);
+
+	// Transform channels separately, then average their powers. Summing the
+	// samples before the FFT would erase sounds in opposite-phase channels.
+	for (int channel = 0; channel < channels; ++channel) {
 #ifdef WITH_FFTW3
-	ConvertToFloat(2 << derivation_size, dft_input);
+		ConvertToFloat(2 << derivation_size, channel, dft_input);
 
-	fftw_execute(dft_plan);
+		fftw_execute(dft_plan);
 
-	double scale_factor = scale_fix * 9 / sqrt(2 << (derivation_size + 1));
-
-	fftw_complex *o = dft_output;
-	for (size_t si = (size_t)1<<derivation_size; si > 0; --si)
-	{
-		*block++ = log10( sqrt(o[0][0] * o[0][0] + o[0][1] * o[0][1]) * scale_factor + 1 );
-		o++;
-	}
+		for (size_t i = 0; i < bins; ++i)
+			block[i] += dft_output[i][0] * dft_output[i][0] + dft_output[i][1] * dft_output[i][1];
 #else
-	ConvertToFloat(2 << derivation_size, &fft_scratch[0]);
+		ConvertToFloat(2 << derivation_size, channel, &fft_scratch[0]);
 
-	float *fft_input = &fft_scratch[0];
-	float *fft_real = &fft_scratch[0] + (2 << derivation_size);
-	float *fft_imag = &fft_scratch[0] + (4 << derivation_size);
+		float *fft_real = &fft_scratch[0] + (2 << derivation_size);
+		float *fft_imag = &fft_scratch[0] + (4 << derivation_size);
 
-	FFT fft;
-	fft.Transform(2<<derivation_size, fft_input, fft_real, fft_imag);
+		FFT fft;
+		fft.Transform(2 << derivation_size, fft_scratch.data(), fft_real, fft_imag);
 
-	float scale_factor = scale_fix * 9 / sqrt(2 * (float)(2<<derivation_size));
-
-	for (size_t si = 1<<derivation_size; si > 0; --si)
-	{
-		// With x in range [0;1], log10(x*9+1) will also be in range [0;1],
-		// although the FFT output can apparently get greater magnitudes than 1
-		// despite the input being limited to [-1;+1).
-		*block++ = log10( sqrt(*fft_real * *fft_real + *fft_imag * *fft_imag) * scale_factor + 1 );
-		fft_real++; fft_imag++;
-	}
+		for (size_t i = 0; i < bins; ++i)
+			block[i] += fft_real[i] * fft_real[i] + fft_imag[i] * fft_imag[i];
 #endif
+	}
+
+	const double scale_factor = scale_fix * 9 / sqrt(2 << (derivation_size + 1));
+	for (size_t i = 0; i < bins; ++i)
+		block[i] = log10(sqrt(block[i] / channels) * scale_factor + 1);
 }
 
 void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle style)
