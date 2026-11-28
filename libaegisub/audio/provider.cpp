@@ -64,25 +64,19 @@ void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 
 	if (count <= 0) return;
 
-	try {
-		FillBuffer(buf, start, count);
-	}
-	catch (AudioDecodeError const& e) {
-		// We don't have any good way to report errors here, so just log the
-		// failure and return silence
-		LOG_E("audio_provider") << e.GetMessage();
-		ZeroFill(buf, count);
-		return;
-	}
-	catch (...) {
-		LOG_E("audio_provider") << "Unknown audio decoding error";
-		ZeroFill(buf, count);
-		return;
-	}
+	FillBuffer(buf, start, count);
 }
 
-void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count, std::nothrow_t) const {
+void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count, std::nothrow_t) const try {
 	GetAudio(buf, start, count);
+}
+catch (AudioDecodeError const& e) {
+	LOG_E("audio_provider") << e.GetMessage();
+	ZeroFill(buf, count);
+}
+catch (...) {
+	LOG_E("audio_provider") << "Unknown audio decoding error";
+	ZeroFill(buf, count);
 }
 
 namespace {
