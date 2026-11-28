@@ -107,12 +107,8 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 
 	IScriptEnvironment *env = avs_wrapper.GetEnv();
 
-	// Preserve stereo; use the configured downmixer for surround input.
-	AVSValue script = vi.AudioChannels() > 2
-		? env->Invoke(OPT_GET("Audio/Downmixer")->GetString().c_str(), clip) : clip;
-
 	// Convert to 16 bits per sample
-	script = env->Invoke("ConvertAudioTo16bit", script);
+	AVSValue script = env->Invoke("ConvertAudioTo16bit", clip);
 	vi = script.AsClip()->GetVideoInfo();
 
 	// Convert sample rate

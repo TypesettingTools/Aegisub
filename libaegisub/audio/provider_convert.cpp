@@ -19,10 +19,14 @@
 #include <libaegisub/endian.h>
 #include <libaegisub/log.h>
 
+#include <algorithm>
+#include <array>
 #include <limits>
+#include <numbers>
 #include <numeric>
 #include <ranges>
 #include <span>
+#include <string_view>
 
 using namespace agi;
 
@@ -114,28 +118,65 @@ public:
 	}
 };
 
-/// Non-mono 16-bit signed machine-endian -> mono 16-bit signed machine endian converter
+/// Downmix interleaved 16-bit surround audio when the decoder cannot do it.
 class DownmixAudioProvider final : public AudioProviderWrapper {
-	int src_channels;
+	std::vector<std::array<double, 2>> gains;
 	mutable std::vector<int16_t> src_buf;
 
 public:
-	DownmixAudioProvider(std::unique_ptr<AudioProvider> src) : AudioProviderWrapper(std::move(src)) {
-		src_channels = channels;
-		channels = 1;
+	DownmixAudioProvider(std::unique_ptr<AudioProvider> src)
+	: AudioProviderWrapper(std::move(src))
+	, gains(channels)
+	{
+		// The generic provider has no speaker metadata. Assume front L/R and
+		// common surround orders, and center extra channels for unknown counts.
+		// The defaults below are 3.0, quad, 5.0, 5.1, 6.1, and 7.1.
+		static constexpr std::string_view extra_channels[] = {
+			"C", "LR", "CLR", "C-LR", "C-CLR", "C-LRLR"
+		};
+		auto layout = channels <= 8 ? extra_channels[channels - 3] : std::string_view{};
+		constexpr double surround_gain = std::numbers::sqrt2 / 2;
+		gains[0] = {1, 0};
+		gains[1] = {0, 1};
+
+		std::array<double, 2> totals{1, 1};
+		for (size_t i = 0; i < gains.size() - 2; ++i) {
+			char speaker = i < layout.size() ? layout[i] : 'C';
+			auto &gain = gains[i + 2];
+			// A dash marks LFE. Leave it out of the stereo mix.
+			gain = {speaker == 'R' || speaker == '-' ? 0. : surround_gain,
+			        speaker == 'L' || speaker == '-' ? 0. : surround_gain};
+			totals[0] += gain[0];
+			totals[1] += gain[1];
+		}
+
+		// Leave enough headroom for all speakers to peak at the same time.
+		double max_gain = std::max(totals[0], totals[1]);
+		for (auto &gain : gains) {
+			gain[0] /= max_gain;
+			gain[1] /= max_gain;
+		}
+
+		channels = 2;
 	}
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+		auto src_channels = gains.size();
 		src_buf.resize(count * src_channels);
-		source->GetAudio(&src_buf[0], start, count);
+		source->GetAudio(src_buf.data(), start, count);
 
-		auto dst = static_cast<int16_t*>(buf);
-		// Just average the channels together
-		while (count-- > 0) {
-			int sum = 0;
-			for (int c = 0; c < src_channels; ++c)
-				sum += src_buf[count * src_channels + c];
-			dst[count] = static_cast<int16_t>(sum / src_channels);
+		auto dst = static_cast<int16_t *>(buf);
+		auto src = src_buf.data();
+		for (int64_t frame = 0; frame < count; ++frame, src += src_channels) {
+			double left = 0;
+			double right = 0;
+			for (size_t channel = 0; channel < src_channels; ++channel) {
+				left += src[channel] * gains[channel][0];
+				right += src[channel] * gains[channel][1];
+			}
+
+			*dst++ = static_cast<int16_t>(left);
+			*dst++ = static_cast<int16_t>(right);
 		}
 	}
 };
@@ -189,10 +230,9 @@ std::unique_ptr<AudioProvider> CreateConvertAudioProvider(std::unique_ptr<AudioP
 		provider = std::make_unique<BitdepthConvertAudioProvider<int16_t>>(std::move(provider));
 	}
 
-	// Preserve mono/stereo. Keep the legacy fallback for sources without a
-	// channel-aware surround downmixer (FFMS2 handles surround itself).
+	// FFMS2 already downmixes with layout information when it can.
 	if (provider->GetChannels() > 2) {
-		LOG_D("audio_provider") << "Downmixing to mono from " << provider->GetChannels() << " channels";
+		LOG_D("audio_provider") << "Downmixing to stereo from " << provider->GetChannels() << " channels";
 		provider = std::make_unique<DownmixAudioProvider>(std::move(provider));
 	}
 
