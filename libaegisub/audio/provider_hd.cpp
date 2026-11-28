@@ -36,20 +36,21 @@ class HDAudioProvider final : public AudioProviderWrapper {
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		auto missing = std::min(count, start + count - decoded_samples);
 		if (missing > 0) {
-			memset(static_cast<int16_t*>(buf) + count - missing, 0, missing * bytes_per_sample);
+			memset(static_cast<char*>(buf) + (count - missing) * bytes_per_sample * channels,
+				0, missing * bytes_per_sample * channels);
 			count -= missing;
 		}
 
 		if (count > 0) {
-			start *= bytes_per_sample;
-			count *= bytes_per_sample;
+			start *= bytes_per_sample * channels;
+			count *= bytes_per_sample * channels;
 			memcpy(buf, file.read(start, count).data(), count);
 		}
 	}
 
   fs::path CacheFilename(fs::path const& dir) {
 		// Check free space
-		if ((uint64_t)num_samples * bytes_per_sample > fs::FreeSpace(dir))
+		if ((uint64_t)num_samples * bytes_per_sample * channels > fs::FreeSpace(dir))
 			throw AudioProviderError("Not enough free disk space in " + dir.string() + " to cache the audio");
 
 		return format("audio-%lld-%lld", time(nullptr),
@@ -59,7 +60,7 @@ class HDAudioProvider final : public AudioProviderWrapper {
 public:
 	HDAudioProvider(std::unique_ptr<AudioProvider> src, fs::path const& dir)
 	: AudioProviderWrapper(std::move(src))
-	, file(dir / CacheFilename(dir), num_samples * bytes_per_sample)
+	, file(dir / CacheFilename(dir), num_samples * bytes_per_sample * channels)
 	{
 		decoded_samples = 0;
 		decoder = std::thread([&] {
@@ -67,7 +68,7 @@ public:
 			for (int64_t i = 0; i < num_samples; i += block) {
 				if (cancelled) break;
 				block = std::min(block, num_samples - i);
-				source->GetAudio(file.write(i * bytes_per_sample, block * bytes_per_sample), i, block);
+				source->GetAudio(file.write(i * bytes_per_sample * channels, block * bytes_per_sample * channels), i, block);
 				decoded_samples += block;
 			}
 		});

@@ -45,14 +45,14 @@ public:
 		decoded_samples = 0;
 
 		try {
-			blockcache.resize((source->GetNumSamples() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
+			blockcache.resize((source->GetNumSamples() * (source->GetBytesPerSample() * channels) + CacheBlockSize - 1) >> CacheBits);
 		}
 		catch (std::bad_alloc const&) {
 			throw AudioProviderError("Not enough memory available to cache in RAM");
 		}
 
 		decoder = std::thread([&] {
-			int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
+			int64_t readsize = CacheBlockSize / (source->GetBytesPerSample() * channels);
 			for (size_t i = 0; i < blockcache.size(); i++) {
 				if (cancelled) break;
 				auto actual_read = std::min<int64_t>(readsize, num_samples - i * readsize);
@@ -70,20 +70,20 @@ public:
 
 void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	auto charbuf = static_cast<char *>(buf);
-	for (int64_t bytes_remaining = count * bytes_per_sample; bytes_remaining; ) {
+	for (int64_t bytes_remaining = count * bytes_per_sample * channels; bytes_remaining; ) {
 		if (start >= decoded_samples) {
 			memset(charbuf, 0, bytes_remaining);
 			break;
 		}
 
-		const int64_t i = (start * bytes_per_sample) >> CacheBits;
-		const int64_t start_offset = (start * bytes_per_sample) & (CacheBlockSize-1);
+		const int64_t i = (start * bytes_per_sample * channels) >> CacheBits;
+		const int64_t start_offset = (start * bytes_per_sample * channels) & (CacheBlockSize-1);
 		const int64_t read_size = std::min(bytes_remaining, CacheBlockSize - start_offset);
 
 		memcpy(charbuf, &blockcache[i][start_offset], read_size);
 		charbuf += read_size;
 		bytes_remaining -= read_size;
-		start += read_size / bytes_per_sample;
+		start += read_size / (bytes_per_sample * channels);
 	}
 }
 }

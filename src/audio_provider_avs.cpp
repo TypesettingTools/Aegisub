@@ -107,11 +107,8 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 
 	IScriptEnvironment *env = avs_wrapper.GetEnv();
 
-	// Convert to one channel
-	AVSValue script = env->Invoke(OPT_GET("Audio/Downmixer")->GetString().c_str(), clip);
-
 	// Convert to 16 bits per sample
-	script = env->Invoke("ConvertAudioTo16bit", script);
+	AVSValue script = env->Invoke("ConvertAudioTo16bit", clip);
 	vi = script.AsClip()->GetVideoInfo();
 
 	// Convert sample rate
@@ -131,7 +128,7 @@ void AvisynthAudioProvider::LoadFromClip(AVSValue clip) {
 	channels = vi.AudioChannels();
 	decoded_samples = num_samples = vi.num_audio_samples;
 	sample_rate = vi.SamplesPerSecond();
-	bytes_per_sample = vi.BytesPerAudioSample();
+	bytes_per_sample = vi.BytesPerChannelSample();
 	float_samples = false;
 
 	this->clip = tempclip;

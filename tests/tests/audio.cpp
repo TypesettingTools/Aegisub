@@ -55,8 +55,8 @@ template<typename Sample=uint16_t>
 struct TestAudioProvider : agi::AudioProvider {
 	int bias = 0;
 
-	TestAudioProvider(int64_t duration = 90, int rate=48000) {
-		channels = 1;
+	TestAudioProvider(int64_t duration = 90, int rate=48000, int channel_count=1) {
+		channels = channel_count;
 		num_samples = duration * 48000;
 		decoded_samples = num_samples;
 		sample_rate = rate;
@@ -67,7 +67,8 @@ struct TestAudioProvider : agi::AudioProvider {
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		auto out = static_cast<Sample *>(buf);
 		for (int64_t end = start + count; start < end; ++start)
-			*out++ = (Sample)(start + bias);
+			for (int channel = 0; channel < channels; ++channel)
+				*out++ = (Sample)(start * channels + channel + bias);
 	}
 };
 
@@ -286,7 +287,7 @@ TEST(lagi_audio, sample_doubling) {
 	}
 }
 
-TEST(lagi_audio, stereo_downmix) {
+TEST(lagi_audio, stereo_preserved) {
 	struct AudioProvider : agi::AudioProvider {
 		AudioProvider() {
 			channels = 2;
@@ -307,12 +308,14 @@ TEST(lagi_audio, stereo_downmix) {
 	};
 
 	auto provider = agi::CreateConvertAudioProvider(std::make_unique<AudioProvider>());
-	EXPECT_EQ(1, provider->GetChannels());
+	EXPECT_EQ(2, provider->GetChannels());
 
-	int16_t samples[100];
+	int16_t samples[200];
 	provider->GetAudio(samples, 0, 100);
-	for (int i = 0; i < 100; ++i)
-		EXPECT_EQ(i, samples[i]);
+	for (int i = 0; i < 100; ++i) {
+		EXPECT_EQ(i * 2, samples[i * 2]);
+		EXPECT_EQ(0, samples[i * 2 + 1]);
+	}
 }
 
 template<typename Float>
@@ -548,4 +551,97 @@ TEST(lagi_audio, wave64_truncated) {
 	}
 
 	agi::fs::Remove(path);
+}
+
+
+TEST(lagi_audio, stereo_volume_applies_to_every_channel) {
+	TestAudioProvider<int16_t> provider(1, 48000, 2);
+	int16_t samples[8];
+	provider.GetAudioWithVolume(samples, 100, 4, 0.);
+	for (auto sample : samples) EXPECT_EQ(0, sample);
+	provider.GetAudioWithVolume(samples, 100, 4, 2.);
+	for (int i = 0; i < 8; ++i) EXPECT_EQ((200 + i) * 2, samples[i]);
+}
+
+TEST(lagi_audio, surround_downmix_routes_5_1_to_stereo) {
+	struct SurroundProvider : agi::AudioProvider {
+		SurroundProvider() {
+			channels = 6;
+			num_samples = decoded_samples = 7;
+			sample_rate = 48000;
+			bytes_per_sample = 2;
+		}
+
+		void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+			auto out = static_cast<int16_t *>(buf);
+			// Isolate each speaker in turn, then peak on all channels together.
+			for (int64_t frame = start; frame < start + count; ++frame)
+				for (int channel = 0; channel < channels; ++channel)
+					*out++ = frame == channel || frame == channels ? 32767 : 0;
+		}
+	};
+
+	auto provider = agi::CreateConvertAudioProvider(std::make_unique<SurroundProvider>());
+	ASSERT_EQ(2, provider->GetChannels());
+	int16_t samples[14];
+	provider->GetAudio(samples, 0, 7);
+	EXPECT_GT(samples[0], 0); // Front left
+	EXPECT_EQ(samples[1], 0);
+	EXPECT_EQ(samples[2], 0); // Front right
+	EXPECT_EQ(samples[3], samples[0]);
+	EXPECT_GT(samples[4], 0); // Front center
+	EXPECT_EQ(samples[4], samples[5]);
+	EXPECT_EQ(samples[6], 0); // LFE
+	EXPECT_EQ(samples[7], 0);
+	EXPECT_EQ(samples[8], samples[4]); // Surround left
+	EXPECT_EQ(samples[9], 0);
+	EXPECT_EQ(samples[10], 0); // Surround right
+	EXPECT_EQ(samples[11], samples[5]);
+	EXPECT_GE(samples[12], 32766); // No clipping or wraparound
+	EXPECT_EQ(samples[12], samples[13]);
+}
+
+TEST(lagi_audio, stereo_padding_and_sample_doubling) {
+	auto provider = agi::CreateConvertAudioProvider(
+		std::make_unique<TestAudioProvider<int16_t>>(1, 24000, 2));
+	ASSERT_EQ(2, provider->GetChannels());
+	ASSERT_EQ(48000, provider->GetSampleRate());
+	for (int64_t start = -1; start < 8; ++start) {
+		for (int count = 1; count <= 7; ++count) {
+			std::vector<int16_t> samples(count * 2 + 2, 12345);
+			provider->GetAudio(samples.data(), start, count);
+			for (int i = 0; i < count; ++i) {
+				int frame = start + i;
+				EXPECT_EQ(frame < 0 ? 0 : frame, samples[i * 2]);
+				EXPECT_EQ(frame < 0 ? 0 : frame + 1, samples[i * 2 + 1]);
+			}
+			EXPECT_EQ(12345, samples[count * 2]);
+			EXPECT_EQ(12345, samples[count * 2 + 1]);
+		}
+	}
+}
+
+static void CheckStereoCache(agi::AudioProvider &provider) {
+	while (provider.GetDecodedSamples() != provider.GetNumSamples())
+		agi::util::sleep_for(0);
+	ASSERT_EQ(2, provider.GetChannels());
+	const int64_t start = (1 << 22) / 4 - 128;
+	uint16_t samples[1024];
+	provider.GetAudio(samples, start, 512); // Cross a 4 MiB cache block boundary.
+	for (int i = 0; i < 1024; ++i)
+		ASSERT_EQ(static_cast<uint16_t>(start * 2 + i), samples[i]);
+	provider.GetAudio(samples, provider.GetNumSamples() - 2, 512);
+	for (int i = 4; i < 1024; ++i) ASSERT_EQ(0, samples[i]);
+}
+
+TEST(lagi_audio, stereo_ram_cache) {
+	auto provider = agi::CreateRAMAudioProvider(
+		std::make_unique<TestAudioProvider<uint16_t>>(90, 48000, 2));
+	CheckStereoCache(*provider);
+}
+
+TEST(lagi_audio, stereo_hd_cache) {
+	auto provider = agi::CreateHDAudioProvider(
+		std::make_unique<TestAudioProvider<uint16_t>>(90, 48000, 2), agi::Path().Decode("?temp"));
+	CheckStereoCache(*provider);
 }

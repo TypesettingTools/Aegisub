@@ -130,7 +130,7 @@ OpenALPlayer::OpenALPlayer(agi::AudioProvider *provider)
 	if (!device) throw AudioPlayerOpenError("Failed opening default OpenAL device");
 
 	// Determine buffer length
-	decode_buffer.resize(samplerate * bpf / num_buffers / 2); // buffers for half a second of audio
+	decode_buffer.resize((samplerate / num_buffers / 2) * bpf); // half a second, in whole sample frames
 }
 
 OpenALPlayer::~OpenALPlayer()
@@ -247,7 +247,8 @@ void OpenALPlayer::FillBuffers(ALsizei count)
 
 		cur_frame += fill_len;
 
-		alBufferData(buffers[buf_first_free], AL_FORMAT_MONO16, &decode_buffer[0], decode_buffer.size(), samplerate);
+		alBufferData(buffers[buf_first_free], provider->GetChannels() == 1 ? AL_FORMAT_MONO16 : AL_FORMAT_STEREO16,
+			decode_buffer.data(), decode_buffer.size(), samplerate);
 		alSourceQueueBuffers(source, 1, &buffers[buf_first_free]); // FIXME: collect buffer handles and queue all at once instead of one at a time?
 		buf_first_free = (buf_first_free + 1) % num_buffers;
 		--buffers_free;

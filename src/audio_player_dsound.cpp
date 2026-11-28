@@ -121,6 +121,7 @@ DirectSoundPlayer::DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *par
 	int min = DSBSIZE_MIN;
 	int max = DSBSIZE_MAX;
 	bufSize = std::min(std::max(min,aim),max);
+	bufSize -= bufSize % waveFormat.nBlockAlign;
 	DSBUFFERDESC desc;
 	desc.dwSize = sizeof(DSBUFFERDESC);
 	desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS;
@@ -159,7 +160,7 @@ bool DirectSoundPlayer::FillBuffer(bool fill) {
 	HRESULT res;
 	void *ptr1, *ptr2;
 	unsigned long int size1, size2;
-	int bytesps = provider->GetBytesPerSample();
+	int bytesps = provider->GetBytesPerSample() * provider->GetChannels();
 
 	// To write length
 	int toWrite = 0;
@@ -253,7 +254,7 @@ void DirectSoundPlayer::Play(int64_t start,int64_t count) {
 	FillBuffer(true);
 
 	DWORD play_flag = 0;
-	if (count*provider->GetBytesPerSample() > bufSize) {
+	if (count*provider->GetBytesPerSample()*provider->GetChannels() > bufSize) {
 		// Start thread
 		thread = new DirectSoundPlayerThread(this);
 		thread->Create();

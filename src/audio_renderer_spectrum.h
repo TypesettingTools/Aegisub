@@ -114,7 +114,7 @@ class AudioSpectrumRenderer final : public AudioRendererBitmapProvider {
 	/// @param count Samples to convert
 	/// @param dest Buffer to fill
 	template<class T>
-	void ConvertToFloat(size_t count, T *dest);
+	void ConvertToFloat(size_t count, int channel, T *dest);
 
 	/// @brief Updates the derivation_* after a derivation_*_user change.
 	void update_derivation_values ();

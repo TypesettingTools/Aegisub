@@ -81,7 +81,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	double cur_sample = start * pixel_samples;
 
 	assert(provider->GetBytesPerSample() == 2);
-	assert(provider->GetChannels() == 1);
+	const int channels = provider->GetChannels();
 
 	wxPen pen_peaks(wxPen(pal->get(0.4f)));
 	wxPen pen_avgs(wxPen(pal->get(0.7f)));
@@ -94,7 +94,7 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 		int peak_min = 0, peak_max = 0;
 		int64_t avg_min_accum = 0, avg_max_accum = 0;
 		auto aud = reinterpret_cast<const int16_t *>(audio_buffer.get());
-		for (int si = pixel_samples; si > 0; --si, ++aud)
+		for (int si = static_cast<int64_t>(pixel_samples) * channels; si > 0; --si, ++aud)
 		{
 			if (*aud > 0)
 			{
@@ -111,8 +111,8 @@ void AudioWaveformRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 		// midpoint is half height
 		peak_min = std::max((int)(peak_min * amplitude_scale * midpoint) / 0x8000, -midpoint);
 		peak_max = std::min((int)(peak_max * amplitude_scale * midpoint) / 0x8000, midpoint);
-		int avg_min = std::max((int)(avg_min_accum * amplitude_scale * midpoint / pixel_samples) / 0x8000, -midpoint);
-		int avg_max = std::min((int)(avg_max_accum * amplitude_scale * midpoint / pixel_samples) / 0x8000, midpoint);
+		int avg_min = std::max((int)(avg_min_accum * amplitude_scale * midpoint / (pixel_samples * channels)) / 0x8000, -midpoint);
+		int avg_max = std::min((int)(avg_max_accum * amplitude_scale * midpoint / (pixel_samples * channels)) / 0x8000, midpoint);
 
 		dc.SetPen(pen_peaks);
 		dc.DrawLine(x, midpoint - peak_max, x, midpoint - peak_min);
