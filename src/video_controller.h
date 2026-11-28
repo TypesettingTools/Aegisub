@@ -32,8 +32,8 @@
 #include <libaegisub/signal.h>
 #include <libaegisub/vfr.h>
 #include <libaegisub/ycbcr.h>
+#include "playback_clock.h"
 
-#include <chrono>
 #include <optional>
 
 #include <wx/timer.h>
@@ -76,12 +76,7 @@ class VideoController final : public wxEvtHandler {
 	/// frame while playing video
 	wxTimer playback;
 
-	/// Time when playback was last started
-	std::chrono::steady_clock::time_point playback_start_time;
-
-	/// The start time of the first frame of the current playback; undefined if
-	/// video is not currently playing
-	int start_ms = 0;
+	PlaybackClock playback_clock;
 
 	/// The last frame to play if video is currently playing
 	int end_frame = 0;
