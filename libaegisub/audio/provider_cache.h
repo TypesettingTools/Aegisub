@@ -18,6 +18,8 @@ protected:
 	void StopDecoder();
 
 private:
+	// Each chunk is written once, then published to concurrent readers.
+	std::vector<std::atomic<bool>> ready;
 	std::atomic<bool> cancelled{false};
 	std::thread decoder;
 
@@ -26,5 +28,8 @@ private:
 
 	virtual void ReadCache(void *buf, int64_t start, int64_t count) const = 0;
 	virtual void *WriteCache(int64_t start, int64_t count) = 0;
+
+public:
+	bool IsAudioReady(int64_t start, int64_t end) const override;
 };
 }
