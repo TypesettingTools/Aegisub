@@ -818,6 +818,8 @@ void AudioDisplay::OnPaint(wxPaintEvent&)
 	wxAutoBufferedPaintDC dc(this);
 
 	wxRect audio_bounds(0, audio_top, GetClientSize().GetWidth(), audio_height);
+	if (GetUpdateRegion().Contains(audio_bounds) != wxOutRegion)
+		audio_renderer->RequestAudio(scroll_left);
 	bool redraw_scrollbar = false;
 	bool redraw_timeline = false;
 

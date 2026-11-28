@@ -35,6 +35,7 @@
 #include <wx/gdicmn.h>
 
 #include <cstdint>
+#include <optional>
 #include <utility>
 
 #include "audio_rendering_style.h"
@@ -108,6 +109,7 @@ class AudioRenderer {
 
 	/// Audio provider to use as source
 	agi::AudioProvider *provider = nullptr;
+	std::optional<int64_t> last_audio_request;
 
 	/// @brief Make sure bitmap index i is in cache
 	/// @param i     Index of bitmap to get into cache
@@ -194,6 +196,9 @@ public:
 	///
 	/// If a renderer is set, this will also set the audio provider for the renderer.
 	void SetAudioProvider(agi::AudioProvider *provider);
+
+	/// Prioritize filling audio from the first visible pixel onward.
+	void RequestAudio(int start);
 
 	/// @brief Render audio to a device context
 	/// @param dc       The device context to draw to

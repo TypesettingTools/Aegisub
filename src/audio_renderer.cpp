@@ -125,6 +125,7 @@ void AudioRenderer::SetAudioProvider(agi::AudioProvider *const _provider)
 	if (compare_and_set(provider, _provider))
 	{
 		Invalidate();
+		last_audio_request.reset();
 
 		if (renderer)
 			renderer->SetProvider(provider);
@@ -153,6 +154,19 @@ void AudioRenderer::ResetBlockCount()
 int AudioRenderer::BitmapWidth(int index) const
 {
 	return std::min(cache_bitmap_width, audio_width - index * cache_bitmap_width);
+}
+
+void AudioRenderer::RequestAudio(int start)
+{
+	if (!renderer || !provider || start >= audio_width || !provider->IsAudioCacheFilling()) return;
+
+	const int first = start / cache_bitmap_width * cache_bitmap_width;
+	const auto sample = renderer->GetRequiredSamples(first, first + 1).first;
+	// Progress repaints should let the current decode run continue.
+	if (last_audio_request == sample) return;
+
+	last_audio_request = sample;
+	provider->RequestAudio(sample);
 }
 
 wxBitmap const& AudioRenderer::GetCachedBitmap(const int i, const AudioRenderingStyle style)
