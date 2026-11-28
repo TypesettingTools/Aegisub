@@ -22,6 +22,7 @@
 #include <atomic>
 #include <memory>
 #include <new>
+#include <utility>
 #include <vector>
 
 namespace agi {
@@ -41,6 +42,8 @@ protected:
 	void ZeroFill(void *buf, int64_t count) const;
 
 public:
+	using SampleRange = std::pair<int64_t, int64_t>;
+
 	virtual ~AudioProvider() = default;
 
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
@@ -57,10 +60,14 @@ public:
 
 	/// Are all in-bounds samples in [start, end) available?
 	virtual bool IsAudioReady(int64_t, int64_t) const { return true; }
+	/// Return the cached half-open sample ranges in order, coalescing adjacent chunks.
+	virtual std::vector<SampleRange> GetCachedSampleRanges() const { return {}; }
 	/// Prioritize filling the first gap at or after the given sample.
 	virtual void RequestAudio(int64_t) const { }
 	/// Is a cache worker still filling samples?
 	virtual bool IsAudioCacheFilling() const { return false; }
+	/// Start sample of the current cache decode, or -1 if there is no active worker.
+	virtual int64_t GetAudioCacheDecodePosition() const { return -1; }
 	/// Restore decoder state for sequential reads from sample zero.
 	virtual void ResetAudioDecoder() { }
 

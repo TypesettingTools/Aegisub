@@ -22,7 +22,7 @@ private:
 	std::vector<std::atomic<bool>> ready;
 	mutable std::atomic<int64_t> requested_chunk{-1};
 	std::atomic<bool> cancelled{false};
-	std::atomic<bool> filling{true};
+	std::atomic<int64_t> decode_position{0};
 	std::thread decoder;
 
 	void Decode();
@@ -35,7 +35,9 @@ private:
 
 public:
 	bool IsAudioReady(int64_t start, int64_t end) const override;
+	std::vector<SampleRange> GetCachedSampleRanges() const override;
 	void RequestAudio(int64_t start) const override;
-	bool IsAudioCacheFilling() const override { return filling; }
+	bool IsAudioCacheFilling() const override { return GetAudioCacheDecodePosition() >= 0; }
+	int64_t GetAudioCacheDecodePosition() const override { return decode_position; }
 };
 }

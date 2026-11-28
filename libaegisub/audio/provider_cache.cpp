@@ -51,12 +51,13 @@ void CacheAudioProvider::Decode() {
 		while (first_missing < chunk_count && ready[first_missing].load(std::memory_order_relaxed))
 			++first_missing;
 	}
-	filling = false;
+	decode_position = -1;
 }
 
 bool CacheAudioProvider::DecodeChunk(int64_t chunk, void *discard) try {
 	const auto start = chunk * chunk_samples;
 	const auto count = std::min(chunk_samples, num_samples - start);
+	decode_position = start;
 	source->GetAudio(discard ? discard : WriteCache(start, count), start, count);
 	if (!discard) {
 		ready[chunk].store(true, std::memory_order_release);
@@ -76,6 +77,7 @@ catch (...) {
 void CacheAudioProvider::RetrySequentially() try {
 	// Reopen the source. Decode through ready chunks to advance the decoder
 	// without rewriting samples already published to cache readers.
+	decode_position = 0;
 	source->ResetAudioDecoder();
 	auto discard = std::make_unique_for_overwrite<char[]>(chunk_samples * sample_bytes);
 	for (int64_t chunk = 0; !cancelled && decoded_samples < num_samples; ++chunk) {
@@ -101,6 +103,27 @@ bool CacheAudioProvider::IsAudioReady(int64_t start, int64_t end) const {
 			return false;
 	}
 	return true;
+}
+
+std::vector<AudioProvider::SampleRange> CacheAudioProvider::GetCachedSampleRanges() const {
+	if (num_samples > 0 && GetDecodedSamples() == num_samples)
+		return {{0, num_samples}};
+
+	std::vector<SampleRange> ranges;
+	const auto chunk_count = std::ssize(ready);
+	for (int64_t first = 0; first < chunk_count; ) {
+		if (!ready[first].load(std::memory_order_acquire)) {
+			++first;
+			continue;
+		}
+
+		auto end = first + 1;
+		while (end < chunk_count && ready[end].load(std::memory_order_acquire))
+			++end;
+		ranges.emplace_back(first * chunk_samples, std::min(num_samples, end * chunk_samples));
+		first = end;
+	}
+	return ranges;
 }
 
 void CacheAudioProvider::RequestAudio(int64_t start) const {
