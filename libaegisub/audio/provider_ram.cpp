@@ -17,6 +17,7 @@
 #include "libaegisub/audio/provider.h"
 
 
+#include <algorithm>
 #include <array>
 #include <boost/container/stable_vector.hpp>
 #include <thread>
@@ -25,9 +26,11 @@ namespace {
 using namespace agi;
 
 constexpr int64_t CacheBlockSize = 4 * 1024 * 1024;
+constexpr int64_t chunk_samples = 65536;
 
 class RAMAudioProvider final : public AudioProviderWrapper {
-	const int64_t block_samples = CacheBlockSize / bytes_per_sample;
+	// Fit whole decode chunks into each 4 MiB block.
+	const int64_t block_samples = CacheBlockSize / bytes_per_sample / chunk_samples * chunk_samples;
 #ifdef _MSC_VER
 	boost::container::stable_vector<char[CacheBlockSize]> blockcache;
 #else
@@ -55,10 +58,10 @@ public:
 		}
 
 		decoder = std::thread([&] {
-			for (size_t i = 0; i < blockcache.size(); i++) {
+			for (int64_t i = 0; i < num_samples; i += chunk_samples) {
 				if (cancelled) break;
-				auto actual_read = std::min<int64_t>(block_samples, num_samples - i * block_samples);
-				source->GetAudio(&blockcache[i][0], i * block_samples, actual_read);
+				auto actual_read = std::min(chunk_samples, num_samples - i);
+				source->GetAudio(&blockcache[i / block_samples][(i % block_samples) * bytes_per_sample], i, actual_read);
 				decoded_samples += actual_read;
 			}
 		});
@@ -73,14 +76,15 @@ public:
 void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
 	auto charbuf = static_cast<char *>(buf);
 	for (int64_t bytes_remaining = count * bytes_per_sample; bytes_remaining; ) {
-		if (start >= decoded_samples) {
+		const int64_t decoded_bytes = (decoded_samples - start) * bytes_per_sample;
+		if (decoded_bytes <= 0) {
 			memset(charbuf, 0, bytes_remaining);
 			break;
 		}
 
 		const int64_t i = start / block_samples;
 		const int64_t start_offset = (start % block_samples) * bytes_per_sample;
-		const int64_t read_size = std::min(bytes_remaining, block_samples * bytes_per_sample - start_offset);
+		const int64_t read_size = std::min({bytes_remaining, decoded_bytes, block_samples * bytes_per_sample - start_offset});
 
 		memcpy(charbuf, &blockcache[i][start_offset], read_size);
 		charbuf += read_size;
