@@ -121,6 +121,7 @@ DirectSoundPlayer::DirectSoundPlayer(agi::AudioProvider *provider, wxWindow *par
 	int min = DSBSIZE_MIN;
 	int max = DSBSIZE_MAX;
 	bufSize = std::min(std::max(min,aim),max);
+	bufSize -= bufSize % waveFormat.nBlockAlign;
 	DSBUFFERDESC desc;
 	desc.dwSize = sizeof(DSBUFFERDESC);
 	desc.dwFlags = DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_GLOBALFOCUS;
