@@ -21,7 +21,12 @@
 #include <libaegisub/path.h>
 #include <libaegisub/util.h>
 
+#include <algorithm>
+#include <chrono>
+#include <condition_variable>
 #include <fstream>
+#include <mutex>
+#include <thread>
 
 TEST(lagi_audio, dummy_blank) {
 	auto provider = agi::CreateDummyAudioProvider("dummy-audio:", nullptr);
@@ -70,6 +75,22 @@ struct TestAudioProvider : agi::AudioProvider {
 			*out++ = (Sample)(start + bias);
 	}
 };
+
+TEST(lagi_audio, audio_read_error_policy) {
+	struct FailingProvider : TestAudioProvider<> {
+		void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+			TestAudioProvider<>::FillBuffer(buf, start, count);
+			throw agi::AudioDecodeError("Injected audio decode error");
+		}
+	} provider;
+
+	provider.bias = 1;
+	uint16_t samples[4];
+	EXPECT_THROW(provider.GetAudio(samples, -1, 4), agi::AudioDecodeError);
+	EXPECT_NO_THROW(provider.GetAudio(samples, -1, 4, std::nothrow));
+	for (auto sample : samples)
+		EXPECT_EQ(0, sample);
+}
 
 TEST(lagi_audio, before_sample_zero) {
 	TestAudioProvider<> provider;
@@ -223,6 +244,239 @@ TEST(lagi_audio, hd_cache) {
 
 	for (size_t i = 0; i < 512; ++i)
 		ASSERT_EQ(static_cast<uint16_t>((1 << 22) - 256 + i), buff[i]);
+}
+
+namespace {
+using namespace std::chrono_literals;
+
+// Allow the test to seek and read the cache while its source decode is blocked.
+class SteppedAudioProvider final : public TestAudioProvider<> {
+	mutable std::mutex mutex;
+	mutable std::condition_variable cv;
+	mutable std::vector<int64_t> reads;
+	size_t allowed_reads = 0;
+	const bool seekable;
+	const std::vector<size_t> failed_reads;
+	mutable bool needs_reset = false;
+
+public:
+	static constexpr int64_t chunk_samples = 65536;
+
+	explicit SteppedAudioProvider(bool seekable = true, std::vector<size_t> failed_reads = {}, int rate = 48000)
+	: seekable(seekable)
+	, failed_reads(std::move(failed_reads))
+	{
+		decoded_samples = num_samples = 8 * chunk_samples + 17;
+		sample_rate = rate;
+		bias = 3;
+	}
+
+	bool SupportsCacheSeeking() const override { return seekable; }
+
+	void ResetAudioDecoder() override {
+		needs_reset = false;
+		bias += 1000;
+	}
+
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
+		size_t read;
+		{
+			std::unique_lock lock(mutex);
+			reads.push_back(start);
+			read = reads.size();
+			cv.notify_all();
+			cv.wait_for(lock, 5s, [&] { return allowed_reads >= read; });
+		}
+		if (needs_reset || std::find(failed_reads.begin(), failed_reads.end(), read) != failed_reads.end()) {
+			// A decoder can write some samples before it reports a failure.
+			static_cast<uint16_t *>(buf)[0] = 0xffff;
+			needs_reset = true;
+			throw agi::AudioDecodeError("Injected audio decode error");
+		}
+		TestAudioProvider<>::FillBuffer(buf, start, count);
+	}
+
+	int64_t WaitForRead(size_t read) const {
+		std::unique_lock lock(mutex);
+		if (!cv.wait_for(lock, 5s, [&] { return reads.size() >= read; }))
+			return -1;
+		return reads[read - 1];
+	}
+
+	void AllowReads(size_t count) {
+		std::lock_guard lock(mutex);
+		allowed_reads = count;
+		cv.notify_all();
+	}
+};
+
+class AudioCacheSeekTest : public testing::TestWithParam<bool> {
+protected:
+	std::unique_ptr<agi::AudioProvider> MakeCache(std::unique_ptr<agi::AudioProvider> src) {
+		if (GetParam())
+			return agi::CreateHDAudioProvider(std::move(src), agi::Path().Decode("?temp"));
+		return agi::CreateRAMAudioProvider(std::move(src));
+	}
+
+	bool WaitForCacheFill(agi::AudioProvider const& cache) {
+		const auto deadline = std::chrono::steady_clock::now() + 5s;
+		while (cache.IsAudioCacheFilling() && std::chrono::steady_clock::now() < deadline)
+			std::this_thread::sleep_for(1ms);
+		return !cache.IsAudioCacheFilling();
+	}
+};
+
+TEST_P(AudioCacheSeekTest, PrioritizesLatestSeekAndFillsGaps) {
+	using SampleRange = agi::AudioProvider::SampleRange;
+	auto src = std::make_unique<SteppedAudioProvider>();
+	auto decoder = src.get();
+	auto cache = MakeCache(std::move(src));
+	const auto chunk = SteppedAudioProvider::chunk_samples;
+
+	ASSERT_EQ(0, decoder->WaitForRead(1));
+	EXPECT_EQ(0, cache->GetAudioCacheDecodePosition());
+	EXPECT_TRUE(cache->GetCachedSampleRanges().empty());
+	cache->RequestAudio(4 * chunk);
+	cache->RequestAudio(7 * chunk + 5);
+	decoder->AllowReads(1);
+
+	ASSERT_EQ(7 * chunk, decoder->WaitForRead(2));
+	EXPECT_EQ(7 * chunk, cache->GetAudioCacheDecodePosition());
+	EXPECT_EQ(chunk, cache->GetDecodedSamples());
+	EXPECT_FALSE(cache->IsAudioReady(7 * chunk, 7 * chunk + 1));
+	uint16_t samples[4];
+	cache->GetAudio(samples, chunk - 1, 2);
+	EXPECT_EQ(static_cast<uint16_t>(chunk + 2), samples[0]);
+	EXPECT_EQ(0, samples[1]);
+	decoder->AllowReads(2);
+
+	ASSERT_EQ(8 * chunk, decoder->WaitForRead(3));
+	EXPECT_EQ(2 * chunk, cache->GetDecodedSamples());
+	EXPECT_EQ((std::vector<SampleRange>{{0, chunk}, {7 * chunk, 8 * chunk}}), cache->GetCachedSampleRanges());
+	EXPECT_TRUE(cache->IsAudioReady(7 * chunk, 8 * chunk));
+	EXPECT_FALSE(cache->IsAudioReady(7 * chunk - 1, 7 * chunk + 2));
+	cache->GetAudio(samples, 7 * chunk - 1, 4);
+	EXPECT_EQ(0, samples[0]);
+	for (int i = 1; i < 4; ++i)
+		EXPECT_EQ(static_cast<uint16_t>(7 * chunk + 2 + i), samples[i]);
+
+	decoder->AllowReads(3);
+	ASSERT_EQ(chunk, decoder->WaitForRead(4));
+	EXPECT_EQ(chunk, cache->GetAudioCacheDecodePosition());
+	cache->RequestAudio(4 * chunk);
+	decoder->AllowReads(4);
+	ASSERT_EQ(4 * chunk, decoder->WaitForRead(5));
+	decoder->AllowReads(7);
+	ASSERT_EQ(2 * chunk, decoder->WaitForRead(8));
+	EXPECT_EQ(6 * chunk + 17, cache->GetDecodedSamples());
+	EXPECT_EQ((std::vector<SampleRange>{{0, 2 * chunk}, {4 * chunk, cache->GetNumSamples()}}), cache->GetCachedSampleRanges());
+	EXPECT_TRUE(cache->IsAudioReady(4 * chunk, cache->GetNumSamples() + 100));
+	EXPECT_FALSE(cache->IsAudioReady(0, cache->GetNumSamples()));
+
+	decoder->AllowReads(9);
+	ASSERT_TRUE(WaitForCacheFill(*cache));
+	EXPECT_EQ(-1, cache->GetAudioCacheDecodePosition());
+	ASSERT_EQ(cache->GetNumSamples(), cache->GetDecodedSamples());
+	EXPECT_EQ((std::vector<SampleRange>{{0, cache->GetNumSamples()}}), cache->GetCachedSampleRanges());
+	EXPECT_TRUE(cache->IsAudioReady(-100, cache->GetNumSamples() + 100));
+	cache->GetAudio(samples, cache->GetNumSamples() - 2, 4);
+	EXPECT_EQ(18, samples[0]);
+	EXPECT_EQ(19, samples[1]);
+	EXPECT_EQ(0, samples[2]);
+	EXPECT_EQ(0, samples[3]);
+}
+
+TEST_P(AudioCacheSeekTest, KeepsNonseekableSourceSequential) {
+	auto src = std::make_unique<SteppedAudioProvider>(false);
+	auto decoder = src.get();
+	auto cache = MakeCache(std::move(src));
+
+	ASSERT_EQ(0, decoder->WaitForRead(1));
+	cache->RequestAudio(cache->GetNumSamples() - 1);
+	decoder->AllowReads(9);
+	EXPECT_EQ(SteppedAudioProvider::chunk_samples, decoder->WaitForRead(2));
+}
+
+TEST_P(AudioCacheSeekTest, SeeksPastCachedChunksToFirstGap) {
+	auto src = std::make_unique<SteppedAudioProvider>();
+	auto decoder = src.get();
+	auto cache = MakeCache(std::move(src));
+	const auto chunk = SteppedAudioProvider::chunk_samples;
+
+	ASSERT_EQ(0, decoder->WaitForRead(1));
+	cache->RequestAudio(4 * chunk);
+	decoder->AllowReads(1);
+	ASSERT_EQ(4 * chunk, decoder->WaitForRead(2));
+	decoder->AllowReads(2);
+	ASSERT_EQ(5 * chunk, decoder->WaitForRead(3));
+	cache->RequestAudio(7 * chunk);
+	decoder->AllowReads(3);
+	ASSERT_EQ(7 * chunk, decoder->WaitForRead(4));
+	EXPECT_TRUE(cache->IsAudioReady(4 * chunk, 6 * chunk));
+
+	cache->RequestAudio(4 * chunk + 1);
+	decoder->AllowReads(4);
+	EXPECT_EQ(6 * chunk, decoder->WaitForRead(5));
+	decoder->AllowReads(9);
+}
+
+TEST_P(AudioCacheSeekTest, RetriesFailedSeekSequentiallyThroughConverter) {
+	auto src = std::make_unique<SteppedAudioProvider>(true, std::vector<size_t>{2}, 24000);
+	auto decoder = src.get();
+	auto cache = MakeCache(agi::CreateConvertAudioProvider(std::move(src)));
+	const auto chunk = SteppedAudioProvider::chunk_samples;
+
+	ASSERT_EQ(0, decoder->WaitForRead(1));
+	cache->RequestAudio(7 * chunk);
+	decoder->AllowReads(1);
+	ASSERT_EQ(7 * chunk / 2, decoder->WaitForRead(2));
+	decoder->AllowReads(2);
+	ASSERT_EQ(0, decoder->WaitForRead(3));
+
+	EXPECT_EQ(0, cache->GetAudioCacheDecodePosition());
+	EXPECT_EQ(chunk, cache->GetDecodedSamples());
+	EXPECT_FALSE(cache->IsAudioReady(7 * chunk, 7 * chunk + 1));
+	uint16_t sample;
+	cache->GetAudio(&sample, 7 * chunk, 1);
+	EXPECT_EQ(0, sample);
+
+	decoder->AllowReads(3);
+	ASSERT_EQ(chunk / 2, decoder->WaitForRead(4));
+	EXPECT_EQ(chunk, cache->GetAudioCacheDecodePosition());
+	cache->GetAudio(&sample, 0, 1);
+	EXPECT_EQ(3, sample); // Replay must preserve samples already published.
+
+	decoder->AllowReads(19);
+	ASSERT_TRUE(WaitForCacheFill(*cache));
+	EXPECT_EQ(cache->GetNumSamples(), cache->GetDecodedSamples());
+	EXPECT_TRUE(cache->IsAudioReady(7 * chunk, 7 * chunk + 1));
+	cache->GetAudio(&sample, 7 * chunk, 1);
+	EXPECT_EQ(static_cast<uint16_t>(7 * chunk / 2 + 1003), sample);
+}
+
+TEST_P(AudioCacheSeekTest, StopsAfterFailedLinearRetry) {
+	auto src = std::make_unique<SteppedAudioProvider>(true, std::vector<size_t>{2, 4});
+	auto decoder = src.get();
+	auto cache = MakeCache(std::move(src));
+	const auto chunk = SteppedAudioProvider::chunk_samples;
+
+	ASSERT_EQ(0, decoder->WaitForRead(1));
+	cache->RequestAudio(4 * chunk);
+	decoder->AllowReads(4);
+	ASSERT_TRUE(WaitForCacheFill(*cache));
+
+	EXPECT_EQ(-1, cache->GetAudioCacheDecodePosition());
+	EXPECT_EQ(chunk, cache->GetDecodedSamples());
+	EXPECT_EQ((std::vector<agi::AudioProvider::SampleRange>{{0, chunk}}), cache->GetCachedSampleRanges());
+	EXPECT_TRUE(cache->IsAudioReady(0, chunk));
+	EXPECT_FALSE(cache->IsAudioReady(chunk, chunk + 1));
+	EXPECT_FALSE(cache->IsAudioReady(4 * chunk, 4 * chunk + 1));
+	uint16_t sample;
+	cache->GetAudio(&sample, chunk, 1);
+	EXPECT_EQ(0, sample);
+}
+
+INSTANTIATE_TEST_SUITE_P(RAMAndDisk, AudioCacheSeekTest, testing::Bool());
 }
 
 TEST(lagi_audio, convert_8bit) {

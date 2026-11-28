@@ -48,6 +48,7 @@
 #include <libaegisub/audio/provider.h>
 
 #include <algorithm>
+#include <cmath>
 
 #include <wx/dcbuffer.h>
 #include <wx/dcgraph.h>
@@ -161,6 +162,52 @@ class AudioDisplayScrollbar final : public AudioDisplayInteractionObject {
 		thumb.y = bounds.y;
 	}
 
+	bool PaintCacheProgress(wxDC &dc, agi::AudioProvider const& provider)
+	{
+		const auto total = provider.GetNumSamples();
+		const wxRect track(bounds.x + 1, bounds.y + 1, bounds.width - 2, bounds.height - 2);
+		if (total <= 0 || provider.GetDecodedSamples() >= total || track.width <= 0) return false;
+
+		const auto position = provider.GetAudioCacheDecodePosition();
+		const auto ranges = provider.GetCachedSampleRanges();
+		if (ranges.empty() && provider.IsAudioReady(0, total)) return false;
+
+		const auto light = colours.Light();
+		const auto dark = colours.Dark();
+		constexpr double pending_tint = 0.33;
+		const wxColour pending(
+			wxColour::AlphaBlend(light.Red(), dark.Red(), pending_tint),
+			wxColour::AlphaBlend(light.Green(), dark.Green(), pending_tint),
+			wxColour::AlphaBlend(light.Blue(), dark.Blue(), pending_tint));
+		dc.SetPen(*wxTRANSPARENT_PEN);
+		dc.SetBrush(wxBrush(pending));
+		dc.DrawRectangle(track);
+
+		dc.SetBrush(wxBrush(dark));
+		const double scale = static_cast<double>(track.width) / total;
+		auto marker_start = position;
+		for (auto [start, end] : ranges)
+		{
+			const int left = start * scale;
+			const int right = std::min(track.width, static_cast<int>(std::ceil(end * scale)));
+			dc.DrawRectangle(track.x + left, track.y, right - left, track.height);
+
+			// Keep the gradient tail in the decoded range leading up to the marker.
+			if (start < position && position <= end)
+				marker_start = start;
+		}
+
+		if (position >= 0 && position < total)
+		{
+			const int right = std::min(track.width, 1 + static_cast<int>(position * scale));
+			const int width = std::clamp(right - static_cast<int>(marker_start * scale), 1, 25);
+			const wxRect marker(track.x + right - width, track.y, width, track.height);
+			const wxColour transparent(light.Red(), light.Green(), light.Blue(), wxALPHA_TRANSPARENT);
+			dc.GradientFillLinear(marker, width > 1 ? transparent : light, light);
+		}
+		return true;
+	}
+
 public:
 	AudioDisplayScrollbar(AudioDisplay *display)
 	: display(display)
@@ -236,7 +283,7 @@ public:
 		return dragging;
 	}
 
-	void Paint(wxDC &dc, bool has_focus, int load_progress)
+	void Paint(wxGCDC &dc, bool has_focus, agi::AudioProvider const& provider)
 	{
 		colours.SetFocused(has_focus);
 
@@ -244,24 +291,19 @@ public:
 		dc.SetBrush(wxBrush(colours.Dark()));
 		dc.DrawRectangle(bounds);
 
+		const bool showing_cache_progress = PaintCacheProgress(dc, provider);
+
+		// Keep cache coverage visible inside the selection.
 		if (sel_length > 0 && sel_start >= 0)
 		{
 			dc.SetPen(wxPen(colours.Selection()));
-			dc.SetBrush(wxBrush(colours.Selection()));
+			dc.SetBrush(showing_cache_progress ? *wxTRANSPARENT_BRUSH : wxBrush(colours.Selection()));
 			dc.DrawRectangle(wxRect(sel_start, bounds.y, sel_length, bounds.height));
 		}
 
 		dc.SetPen(wxPen(colours.Light()));
 		dc.SetBrush(*wxTRANSPARENT_BRUSH);
 		dc.DrawRectangle(bounds);
-
-		if (load_progress > 0 && load_progress < data_length)
-		{
-			wxRect marker(
-				(int64_t)bounds.width * load_progress / data_length - 25, bounds.y + 1,
-				25, bounds.height - 2);
-			dc.GradientFillLinear(marker, colours.Dark(), colours.Light());
-		}
 
 		dc.SetPen(wxPen(colours.Light()));
 		dc.SetBrush(wxBrush(colours.Light()));
@@ -798,36 +840,21 @@ void AudioDisplay::ReloadRenderingSettings()
 
 void AudioDisplay::OnLoadTimer(wxTimerEvent&)
 {
-	using namespace std::chrono;
-	if (provider)
-	{
-		const auto now = steady_clock::now();
-		const auto elapsed = duration_cast<milliseconds>(now - audio_load_start_time).count();
-		if (elapsed == 0) return;
+	if (!provider) return;
 
-		const int64_t new_decoded_count = provider->GetDecodedSamples();
-		if (new_decoded_count != last_sample_decoded)
-			audio_load_speed = (audio_load_speed + (double)new_decoded_count / elapsed) / 2;
-		if (audio_load_speed == 0) return;
-
-		int new_pos = AbsoluteXFromTime(elapsed * audio_load_speed * 1000.0 / provider->GetSampleRate());
-		if (new_pos > audio_load_position)
-			audio_load_position = new_pos;
-
-		const double left = last_sample_decoded * 1000.0 / provider->GetSampleRate() / ms_per_pixel;
-		const double right = new_decoded_count * 1000.0 / provider->GetSampleRate() / ms_per_pixel;
-
-		if (left < scroll_left + pixel_audio_width && right >= scroll_left)
-			Refresh();
-		else
-			RefreshRect(scrollbar->GetBounds());
-		last_sample_decoded = new_decoded_count;
-	}
-
-	if (!provider || last_sample_decoded == provider->GetNumSamples()) {
+	const bool filling = provider->IsAudioCacheFilling();
+	const auto decoded = provider->GetDecodedSamples();
+	const auto decode_position = provider->GetAudioCacheDecodePosition();
+	if (!filling)
 		load_timer.Stop();
-		audio_load_position = -1;
+	if (!filling || decoded != last_sample_decoded)
+	{
+		last_sample_decoded = decoded;
+		Refresh(false);
 	}
+	else if (decode_position != last_decode_position)
+		RefreshRect(scrollbar->GetBounds(), false);
+	last_decode_position = decode_position;
 }
 
 void AudioDisplay::OnPaint(wxPaintEvent&)
@@ -837,6 +864,8 @@ void AudioDisplay::OnPaint(wxPaintEvent&)
 	wxAutoBufferedPaintDC dc(this);
 
 	wxRect audio_bounds(0, audio_top, GetClientSize().GetWidth(), audio_height);
+	if (GetUpdateRegion().Contains(audio_bounds) != wxOutRegion)
+		audio_renderer->RequestAudio(scroll_left);
 	bool redraw_scrollbar = false;
 	bool redraw_timeline = false;
 
@@ -864,7 +893,10 @@ void AudioDisplay::OnPaint(wxPaintEvent&)
 		PaintTrackCursor(dc);
 
 	if (redraw_scrollbar)
-		scrollbar->Paint(dc, HasFocus(), audio_load_position);
+	{
+		wxGCDC gcdc(dc);
+		scrollbar->Paint(gcdc, HasFocus(), *provider);
+	}
 	if (redraw_timeline)
 		timeline->Paint(dc);
 }
@@ -1232,6 +1264,7 @@ int AudioDisplay::GetDuration() const
 
 void AudioDisplay::OnAudioOpen(agi::AudioProvider *provider)
 {
+	load_timer.Stop();
 	this->provider = provider;
 
 	if (!audio_renderer_provider)
@@ -1266,10 +1299,8 @@ void AudioDisplay::OnAudioOpen(agi::AudioProvider *provider)
 		}
 
 		last_sample_decoded = provider->GetDecodedSamples();
-		audio_load_position = -1;
-		audio_load_speed = 0;
-		audio_load_start_time = std::chrono::steady_clock::now();
-		if (last_sample_decoded != provider->GetNumSamples())
+		last_decode_position = provider->GetAudioCacheDecodePosition();
+		if (provider->IsAudioCacheFilling())
 			load_timer.Start(100);
 	}
 	else

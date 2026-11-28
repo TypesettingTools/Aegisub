@@ -29,7 +29,7 @@
 
 namespace agi {
 void AudioProvider::GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const {
-	GetAudio(buf, start, count);
+	GetAudio(buf, start, count, std::nothrow);
 
 	if (volume == 1.0) return;
 	if (bytes_per_sample != 2)
@@ -64,21 +64,19 @@ void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 
 	if (count <= 0) return;
 
-	try {
-		FillBuffer(buf, start, count);
-	}
-	catch (AudioDecodeError const& e) {
-		// We don't have any good way to report errors here, so just log the
-		// failure and return silence
-		LOG_E("audio_provider") << e.GetMessage();
-		ZeroFill(buf, count);
-		return;
-	}
-	catch (...) {
-		LOG_E("audio_provider") << "Unknown audio decoding error";
-		ZeroFill(buf, count);
-		return;
-	}
+	FillBuffer(buf, start, count);
+}
+
+void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count, std::nothrow_t) const try {
+	GetAudio(buf, start, count);
+}
+catch (AudioDecodeError const& e) {
+	LOG_E("audio_provider") << e.GetMessage();
+	ZeroFill(buf, count);
+}
+catch (...) {
+	LOG_E("audio_provider") << "Unknown audio decoding error";
+	ZeroFill(buf, count);
 }
 
 namespace {
@@ -141,7 +139,7 @@ void SaveAudioClip(AudioProvider const& provider, fs::path const& path, int star
 	for (int64_t i = start_sample; i < end_sample; i += spr) {
 		spr = std::min<size_t>(spr, end_sample - i);
 		buf.resize(spr * bytes_per_sample);
-		provider.GetAudio(&buf[0], i, spr);
+		provider.GetAudio(&buf[0], i, spr, std::nothrow);
 		if (endian::IsBigEndian && sample_bytes > 1) {
 			auto total_samples = buf.size() / sample_bytes;
 			for (size_t s = 0; s < total_samples; ++s)

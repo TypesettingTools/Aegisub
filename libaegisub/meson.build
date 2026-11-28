@@ -5,6 +5,7 @@ libaegisub_src = [
     'ass/time.cpp',
     'ass/uuencode.cpp',
 
+    'audio/provider_cache.cpp',
     'audio/provider_convert.cpp',
     'audio/provider.cpp',
     'audio/provider_dummy.cpp',

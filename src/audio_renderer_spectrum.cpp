@@ -201,13 +201,26 @@ void AudioSpectrumRenderer::update_derivation_values ()
 	}
 }
 
+int64_t AudioSpectrumRenderer::BlockIndex(int pixel) const
+{
+	const auto sample = static_cast<int64_t>(pixel * pixel_ms * provider->GetSampleRate() / 1000);
+	return std::min(sample, provider->GetNumSamples() - 1) >> derivation_dist;
+}
+
+std::pair<int64_t, int64_t> AudioSpectrumRenderer::GetRequiredSamples(int start, int end) const
+{
+	const int64_t half_window = int64_t{1} << derivation_size;
+	return {(BlockIndex(start) << derivation_dist) - half_window,
+	        (BlockIndex(end - 1) << derivation_dist) + half_window};
+}
+
 void AudioSpectrumRenderer::FillBlock(size_t block_index, float *block)
 {
 	assert(cache);
 	assert(block);
 
 	int64_t first_sample = (((int64_t)block_index) << derivation_dist) - ((int64_t)1 << derivation_size);
-	provider->GetAudio(&audio_scratch[0], first_sample, 2 << derivation_size);
+	provider->GetAudio(&audio_scratch[0], first_sample, 2 << derivation_size, std::nothrow);
 
 	// Because the FFTs used here are unnormalized DFTs, we have to compensate
 	// the possible length difference between derivation_size used in the
@@ -311,8 +324,7 @@ void AudioSpectrumRenderer::Render(wxBitmap &bmp, int start, AudioRenderingStyle
 	for (int ax = start; ax < end; ++ax)
 	{
 		// Derived audio data
-		size_t block_index = (size_t)(ax * pixel_ms * provider->GetSampleRate() / 1000) >> derivation_dist;
-		float *power = &cache->Get(block_index);
+		float *power = &cache->Get(BlockIndex(ax));
 
 		// Prepare bitmap writing
 		unsigned char *px = imgdata + (imgheight-1) * stride + (ax - start) * 3;

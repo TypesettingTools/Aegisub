@@ -109,6 +109,8 @@ class AudioSpectrumRenderer final : public AudioRendererBitmapProvider {
 	/// @param      block_index Index of the block to fill data for
 	/// @param[out] block       Address to write the data to
 	void FillBlock(size_t block_index, float *block);
+	int64_t BlockIndex(int pixel) const;
+	std::pair<int64_t, int64_t> GetRequiredSamples(int start, int end) const override;
 
 	/// @brief Convert audio data to float range [-1;+1)
 	/// @param count Samples to convert

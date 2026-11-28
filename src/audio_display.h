@@ -33,7 +33,6 @@
 
 #include <libaegisub/signal.h>
 
-#include <chrono>
 #include <cstdint>
 #include <memory>
 
@@ -101,12 +100,7 @@ class AudioDisplay: public wxWindow {
 
 	wxTimer load_timer;
 	int64_t last_sample_decoded = 0;
-	/// Time at which audio loading began, for calculating loading speed
-	std::chrono::steady_clock::time_point audio_load_start_time;
-	/// Estimated speed of audio decoding in samples per ms
-	double audio_load_speed = 0.0;
-	/// Current position of the audio loading progress in absolute pixels
-	int audio_load_position = 0;
+	int64_t last_decode_position = -1;
 
 	/// Leftmost pixel in the virtual audio image being displayed
 	int scroll_left = 0;

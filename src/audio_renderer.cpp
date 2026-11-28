@@ -36,6 +36,7 @@
 #include <libaegisub/audio/provider.h>
 
 #include <algorithm>
+#include <cmath>
 #include <wx/dc.h>
 
 namespace {
@@ -54,9 +55,9 @@ AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(Aud
 	assert(renderer);
 }
 
-std::unique_ptr<wxBitmap> AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int /* i */)
+std::unique_ptr<wxBitmap> AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int i)
 {
-	return std::make_unique<wxBitmap>(renderer->cache_bitmap_width, renderer->pixel_height, 24);
+	return std::make_unique<wxBitmap>(renderer->BitmapWidth(i), renderer->pixel_height, 24);
 }
 
 size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
@@ -124,6 +125,7 @@ void AudioRenderer::SetAudioProvider(agi::AudioProvider *const _provider)
 	if (compare_and_set(provider, _provider))
 	{
 		Invalidate();
+		last_audio_request.reset();
 
 		if (renderer)
 			renderer->SetProvider(provider);
@@ -144,17 +146,27 @@ void AudioRenderer::SetCacheMaxSize(const size_t max_size)
 
 void AudioRenderer::ResetBlockCount()
 {
-	if (provider)
-	{
-		const size_t total_blocks = NumBlocks(provider->GetNumSamples());
-		for (auto& bmp : bitmaps) bmp.SetBlockCount(total_blocks);
-	}
+	audio_width = provider ? std::ceil(provider->GetNumSamples() * 1000.0 / provider->GetSampleRate() / pixel_ms) : 0;
+	const int total_blocks = audio_width / cache_bitmap_width + (audio_width % cache_bitmap_width != 0);
+	for (auto& bmp : bitmaps) bmp.SetBlockCount(total_blocks);
 }
 
-size_t AudioRenderer::NumBlocks(const int64_t samples) const
+int AudioRenderer::BitmapWidth(int index) const
 {
-	const double duration = samples * 1000.0 / provider->GetSampleRate();
-	return static_cast<size_t>(duration / pixel_ms / cache_bitmap_width);
+	return std::min(cache_bitmap_width, audio_width - index * cache_bitmap_width);
+}
+
+void AudioRenderer::RequestAudio(int start)
+{
+	if (!renderer || !provider || start >= audio_width || !provider->IsAudioCacheFilling()) return;
+
+	const int first = start / cache_bitmap_width * cache_bitmap_width;
+	const auto sample = renderer->GetRequiredSamples(first, first + 1).first;
+	// Progress repaints should let the current decode run continue.
+	if (last_audio_request == sample) return;
+
+	last_audio_request = sample;
+	provider->RequestAudio(sample);
 }
 
 wxBitmap const& AudioRenderer::GetCachedBitmap(const int i, const AudioRenderingStyle style)
@@ -191,7 +203,8 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, const int start, const int 
 	// And the offset in it to start its use at
 	const int firstbitmapoffset = start % cache_bitmap_width;
 	// The last bitmap required
-	const int lastbitmap = std::min<int>(end / cache_bitmap_width, NumBlocks(provider->GetDecodedSamples()) - 1);
+	const int audio_end = std::min(end, audio_width);
+	const int lastbitmap = audio_end > start ? (audio_end - 1) / cache_bitmap_width : firstbitmap - 1;
 
 	// Set a clipping region so that the first and last bitmaps don't draw
 	// outside the requested range
@@ -200,13 +213,24 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, const int start, const int 
 
 	for (int i = firstbitmap; i <= lastbitmap; ++i)
 	{
-		dc.DrawBitmap(GetCachedBitmap(i, style), origin);
-		origin.x += cache_bitmap_width;
+		const int pixel = i * cache_bitmap_width;
+		const int width = BitmapWidth(i);
+		const auto [sample_start, sample_end] = renderer->GetRequiredSamples(pixel, pixel + width);
+		// A tile and its derived data can be cached once all input samples are present.
+		if (provider->IsAudioReady(sample_start, sample_end))
+			dc.DrawBitmap(GetCachedBitmap(i, style), origin);
+		else
+		{
+			const wxRect rect(origin, wxSize(width, pixel_height));
+			const wxDCClipper tile_clipper(dc, rect);
+			renderer->RenderBlank(dc, rect, style);
+		}
+		origin.x += width;
 	}
 
 	// Now render blank audio from origin to end
 	if (origin.x < lastx)
-		renderer->RenderBlank(dc, wxRect(origin.x-1, origin.y, lastx-origin.x+1, pixel_height), style);
+		renderer->RenderBlank(dc, wxRect(origin.x, origin.y, lastx-origin.x, pixel_height), style);
 
 	if (needs_age)
 	{
@@ -226,6 +250,12 @@ void AudioRendererBitmapProvider::SetProvider(agi::AudioProvider *const _provide
 {
 	if (compare_and_set(provider, _provider))
 		OnSetProvider();
+}
+
+std::pair<int64_t, int64_t> AudioRendererBitmapProvider::GetRequiredSamples(int start, int end) const
+{
+	const double samples_per_pixel = pixel_ms * provider->GetSampleRate() / 1000.0;
+	return {static_cast<int64_t>(start * samples_per_pixel), static_cast<int64_t>(std::ceil(end * samples_per_pixel))};
 }
 
 void AudioRendererBitmapProvider::SetMillisecondsPerPixel(const double new_pixel_ms)

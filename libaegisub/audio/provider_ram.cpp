@@ -14,78 +14,56 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "libaegisub/audio/provider.h"
+#include "provider_cache.h"
 
 
 #include <array>
 #include <boost/container/stable_vector.hpp>
-#include <thread>
+#include <cstring>
 
 namespace {
 using namespace agi;
 
-#define CacheBits 22
-#define CacheBlockSize (1 << CacheBits)
+constexpr int64_t CacheBlockSize = 4 * 1024 * 1024;
 
-class RAMAudioProvider final : public AudioProviderWrapper {
+class RAMAudioProvider final : public CacheAudioProvider {
+	// Fit whole decode chunks into each 4 MiB block.
+	const int64_t block_samples = CacheBlockSize / sample_bytes / chunk_samples * chunk_samples;
 #ifdef _MSC_VER
 	boost::container::stable_vector<char[CacheBlockSize]> blockcache;
 #else
 	boost::container::stable_vector<std::array<char, CacheBlockSize>> blockcache;
 #endif
-	std::atomic<bool> cancelled = {false};
-	std::thread decoder;
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
+	void *WriteCache(int64_t start, int64_t) override {
+		return &blockcache[start / block_samples][(start % block_samples) * sample_bytes];
+	}
+
+	void ReadCache(void *buf, int64_t start, int64_t count) const override {
+		auto const& block = blockcache[start / block_samples];
+		std::memcpy(buf, &block[(start % block_samples) * sample_bytes], count * sample_bytes);
+	}
 
 public:
 	RAMAudioProvider(std::unique_ptr<AudioProvider> src)
-	: AudioProviderWrapper(std::move(src))
+	: CacheAudioProvider(std::move(src))
 	{
-		decoded_samples = 0;
+		if (block_samples == 0)
+			throw AudioProviderError("Audio format does not fit in a RAM cache block");
 
 		try {
-			blockcache.resize((source->GetNumSamples() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
+			blockcache.resize((num_samples + block_samples - 1) / block_samples);
 		}
 		catch (std::bad_alloc const&) {
 			throw AudioProviderError("Not enough memory available to cache in RAM");
 		}
-
-		decoder = std::thread([&] {
-			int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
-			for (size_t i = 0; i < blockcache.size(); i++) {
-				if (cancelled) break;
-				auto actual_read = std::min<int64_t>(readsize, num_samples - i * readsize);
-				source->GetAudio(&blockcache[i][0], i * readsize, actual_read);
-				decoded_samples += actual_read;
-			}
-		});
+		StartDecoder();
 	}
 
 	~RAMAudioProvider() override {
-		cancelled = true;
-		decoder.join();
+		StopDecoder();
 	}
 };
-
-void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
-	auto charbuf = static_cast<char *>(buf);
-	for (int64_t bytes_remaining = count * bytes_per_sample; bytes_remaining; ) {
-		if (start >= decoded_samples) {
-			memset(charbuf, 0, bytes_remaining);
-			break;
-		}
-
-		const int64_t i = (start * bytes_per_sample) >> CacheBits;
-		const int64_t start_offset = (start * bytes_per_sample) & (CacheBlockSize-1);
-		const int64_t read_size = std::min(bytes_remaining, CacheBlockSize - start_offset);
-
-		memcpy(charbuf, &blockcache[i][start_offset], read_size);
-		charbuf += read_size;
-		bytes_remaining -= read_size;
-		start += read_size / bytes_per_sample;
-	}
-}
 }
 
 namespace agi {

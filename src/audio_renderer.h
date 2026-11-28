@@ -34,6 +34,10 @@
 
 #include <wx/gdicmn.h>
 
+#include <cstdint>
+#include <optional>
+#include <utility>
+
 #include "audio_rendering_style.h"
 #include "block_cache.h"
 
@@ -55,7 +59,7 @@ struct AudioRendererBitmapCacheBitmapFactory {
 	AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer);
 
 	/// @brief Create a new bitmap
-	/// @param i Unused
+	/// @param i Bitmap index
 	/// @return A fresh wxBitmap
 	///
 	/// Produces a wxBitmap with dimensions pulled from our master AudioRenderer.
@@ -88,6 +92,8 @@ class AudioRenderer {
 
 	/// Width of bitmaps to store in cache
 	const int cache_bitmap_width = 32; // Completely arbitrary value
+	int audio_width = 0;
+	int BitmapWidth(int index) const;
 
 	/// Cached bitmaps for audio ranges
 	std::vector<AudioRendererBitmapCache> bitmaps;
@@ -103,6 +109,7 @@ class AudioRenderer {
 
 	/// Audio provider to use as source
 	agi::AudioProvider *provider = nullptr;
+	std::optional<int64_t> last_audio_request;
 
 	/// @brief Make sure bitmap index i is in cache
 	/// @param i     Index of bitmap to get into cache
@@ -119,9 +126,6 @@ class AudioRenderer {
 	/// when the samples-per-pixel resolution or the number of audio samples
 	/// has changed.
 	void ResetBlockCount();
-
-	/// Calculate the number of cache blocks needed for a given number of samples
-	size_t NumBlocks(int64_t samples) const;
 
 public:
 	/// @brief Constructor
@@ -193,6 +197,9 @@ public:
 	/// If a renderer is set, this will also set the audio provider for the renderer.
 	void SetAudioProvider(agi::AudioProvider *provider);
 
+	/// Prioritize filling audio from the first visible pixel onward.
+	void RequestAudio(int start);
+
 	/// @brief Render audio to a device context
 	/// @param dc       The device context to draw to
 	/// @param origin   Top left corner to render at, in the DC's coordinates
@@ -259,6 +266,9 @@ public:
 	/// Deriving classes must implement this method. The bitmap in bmp holds
 	/// the width and height to render.
 	virtual void Render(wxBitmap &bmp, int start, AudioRenderingStyle style) = 0;
+
+	/// Half-open sample range needed to render the half-open pixel range.
+	virtual std::pair<int64_t, int64_t> GetRequiredSamples(int start, int end) const;
 
 	/// @brief Blank audio rendering function
 	/// @param dc    The device context to render to
