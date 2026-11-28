@@ -41,16 +41,22 @@
 #include <libaegisub/fs.h>
 
 #include <map>
+#include <optional>
 
 namespace {
 class FFmpegSourceAudioProvider final : public agi::AudioProvider, FFmpegSourceProvider {
+	agi::scoped_holder<FFMS_Index*, void (FFMS_CC *)(FFMS_Index*)> Index{nullptr, FFMS_DestroyIndex};
 	/// audio source object
 	agi::scoped_holder<FFMS_AudioSource*, void (FFMS_CC *)(FFMS_AudioSource*)> AudioSource;
+	const std::string Filename;
+	int TrackNumber = -1;
+	std::optional<FFMS_ResampleOptions> OutputFormat;
 
 	mutable char FFMSErrMsg[1024];			///< FFMS error message
 	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
 
 	void LoadAudio(agi::fs::path const& filename);
+	void OpenAudioSource();
 	void FillBuffer(void *Buf, int64_t Start, int64_t Count) const override {
 		if (FFMS_GetAudio(AudioSource, Buf, Start, Count, &ErrInfo))
 			throw agi::AudioDecodeError(std::string("Failed to get audio samples: ") + ErrInfo.Buffer);
@@ -60,6 +66,7 @@ public:
 	FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *br);
 
 	bool NeedsCache() const override { return true; }
+	void ResetAudioDecoder() override;
 };
 
 /// @brief Constructor
@@ -67,6 +74,7 @@ public:
 FFmpegSourceAudioProvider::FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *br) try
 : FFmpegSourceProvider(br)
 , AudioSource(nullptr, FFMS_DestroyAudioSource)
+, Filename(filename.string())
 {
 	ErrInfo.Buffer		= FFMSErrMsg;
 	ErrInfo.BufferSize	= sizeof(FFMSErrMsg);
@@ -93,7 +101,6 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 
 	// initialize the track number to an invalid value so we can detect later on
 	// whether the user actually had to choose a track or not
-	int TrackNumber = -1;
 	if (TrackList.size() > 1) {
 		auto Selection = AskForTrackSelection(TrackList, FFMS_TYPE_AUDIO);
 		if (Selection == TrackSelection::None)
@@ -109,8 +116,7 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	agi::fs::path CacheName = GetCacheFilename(filename);
 
 	// try to read index
-	agi::scoped_holder<FFMS_Index*, void (FFMS_CC*)(FFMS_Index*)>
-		Index(FFMS_ReadIndex(CacheName.string().c_str(), &ErrInfo), FFMS_DestroyIndex);
+	Index = FFMS_ReadIndex(CacheName.string().c_str(), &ErrInfo);
 
 	if (Index && FFMS_IndexBelongsToFile(Index, filename.string().c_str(), &ErrInfo))
 		Index = nullptr;
@@ -141,9 +147,7 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	// update access time of index file so it won't get cleaned away
 	agi::fs::Touch(CacheName);
 
-	AudioSource = FFMS_CreateAudioSource(filename.string().c_str(), TrackNumber, Index, FFMS_DELAY_FIRST_VIDEO_TRACK, &ErrInfo);
-	if (!AudioSource)
-		throw agi::AudioProviderError(std::string("Failed to open audio track: ") + ErrInfo.Buffer);
+	OpenAudioSource();
 
 	const FFMS_AudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
 
@@ -172,11 +176,24 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 
 		// Might fail if FFMS2 wasn't built with libavresample
 		if (!FFMS_SetOutputFormatA(AudioSource, opt.get(), nullptr)) {
+			OutputFormat = *opt;
 			channels = 1;
 			bytes_per_sample = 2;
 			float_samples = false;
 		}
 	}
+}
+
+void FFmpegSourceAudioProvider::OpenAudioSource() {
+	AudioSource = FFMS_CreateAudioSource(Filename.c_str(), TrackNumber, Index, FFMS_DELAY_FIRST_VIDEO_TRACK, &ErrInfo);
+	if (!AudioSource)
+		throw agi::AudioProviderError(std::string("Failed to open audio track: ") + ErrInfo.Buffer);
+}
+
+void FFmpegSourceAudioProvider::ResetAudioDecoder() {
+	OpenAudioSource();
+	if (OutputFormat && FFMS_SetOutputFormatA(AudioSource, &*OutputFormat, &ErrInfo))
+		throw agi::AudioDecodeError(std::string("Failed to restore audio output format: ") + ErrInfo.Buffer);
 }
 
 }
