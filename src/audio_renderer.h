@@ -58,7 +58,7 @@ struct AudioRendererBitmapCacheBitmapFactory {
 	AudioRendererBitmapCacheBitmapFactory(AudioRenderer *renderer);
 
 	/// @brief Create a new bitmap
-	/// @param i Unused
+	/// @param i Bitmap index
 	/// @return A fresh wxBitmap
 	///
 	/// Produces a wxBitmap with dimensions pulled from our master AudioRenderer.
@@ -91,6 +91,8 @@ class AudioRenderer {
 
 	/// Width of bitmaps to store in cache
 	const int cache_bitmap_width = 32; // Completely arbitrary value
+	int audio_width = 0;
+	int BitmapWidth(int index) const;
 
 	/// Cached bitmaps for audio ranges
 	std::vector<AudioRendererBitmapCache> bitmaps;
@@ -122,9 +124,6 @@ class AudioRenderer {
 	/// when the samples-per-pixel resolution or the number of audio samples
 	/// has changed.
 	void ResetBlockCount();
-
-	/// Calculate the number of cache blocks needed for a given number of samples
-	size_t NumBlocks(int64_t samples) const;
 
 public:
 	/// @brief Constructor

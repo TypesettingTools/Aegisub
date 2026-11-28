@@ -55,9 +55,9 @@ AudioRendererBitmapCacheBitmapFactory::AudioRendererBitmapCacheBitmapFactory(Aud
 	assert(renderer);
 }
 
-std::unique_ptr<wxBitmap> AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int /* i */)
+std::unique_ptr<wxBitmap> AudioRendererBitmapCacheBitmapFactory::ProduceBlock(int i)
 {
-	return std::make_unique<wxBitmap>(renderer->cache_bitmap_width, renderer->pixel_height, 24);
+	return std::make_unique<wxBitmap>(renderer->BitmapWidth(i), renderer->pixel_height, 24);
 }
 
 size_t AudioRendererBitmapCacheBitmapFactory::GetBlockSize() const
@@ -145,17 +145,14 @@ void AudioRenderer::SetCacheMaxSize(const size_t max_size)
 
 void AudioRenderer::ResetBlockCount()
 {
-	if (provider)
-	{
-		const size_t total_blocks = NumBlocks(provider->GetNumSamples());
-		for (auto& bmp : bitmaps) bmp.SetBlockCount(total_blocks);
-	}
+	audio_width = provider ? std::ceil(provider->GetNumSamples() * 1000.0 / provider->GetSampleRate() / pixel_ms) : 0;
+	const int total_blocks = audio_width / cache_bitmap_width + (audio_width % cache_bitmap_width != 0);
+	for (auto& bmp : bitmaps) bmp.SetBlockCount(total_blocks);
 }
 
-size_t AudioRenderer::NumBlocks(const int64_t samples) const
+int AudioRenderer::BitmapWidth(int index) const
 {
-	const double duration = samples * 1000.0 / provider->GetSampleRate();
-	return static_cast<size_t>(duration / pixel_ms / cache_bitmap_width);
+	return std::min(cache_bitmap_width, audio_width - index * cache_bitmap_width);
 }
 
 wxBitmap const& AudioRenderer::GetCachedBitmap(const int i, const AudioRenderingStyle style)
@@ -192,7 +189,8 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, const int start, const int 
 	// And the offset in it to start its use at
 	const int firstbitmapoffset = start % cache_bitmap_width;
 	// The last bitmap required
-	const int lastbitmap = std::min<int>(end / cache_bitmap_width, NumBlocks(provider->GetNumSamples()) - 1);
+	const int audio_end = std::min(end, audio_width);
+	const int lastbitmap = audio_end > start ? (audio_end - 1) / cache_bitmap_width : firstbitmap - 1;
 
 	// Set a clipping region so that the first and last bitmaps don't draw
 	// outside the requested range
@@ -202,17 +200,18 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, const int start, const int 
 	for (int i = firstbitmap; i <= lastbitmap; ++i)
 	{
 		const int pixel = i * cache_bitmap_width;
-		const auto [sample_start, sample_end] = renderer->GetRequiredSamples(pixel, pixel + cache_bitmap_width);
+		const int width = BitmapWidth(i);
+		const auto [sample_start, sample_end] = renderer->GetRequiredSamples(pixel, pixel + width);
 		// A tile and its derived data can be cached once all input samples are present.
 		if (provider->IsAudioReady(sample_start, sample_end))
 			dc.DrawBitmap(GetCachedBitmap(i, style), origin);
 		else
 		{
-			const wxRect rect(origin, wxSize(cache_bitmap_width, pixel_height));
+			const wxRect rect(origin, wxSize(width, pixel_height));
 			const wxDCClipper tile_clipper(dc, rect);
 			renderer->RenderBlank(dc, rect, style);
 		}
-		origin.x += cache_bitmap_width;
+		origin.x += width;
 	}
 
 	// Now render blank audio from origin to end
