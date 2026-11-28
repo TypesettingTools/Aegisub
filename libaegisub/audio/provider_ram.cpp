@@ -17,9 +17,9 @@
 #include "provider_cache.h"
 
 
-#include <algorithm>
 #include <array>
 #include <boost/container/stable_vector.hpp>
+#include <cstring>
 
 namespace {
 using namespace agi;
@@ -39,7 +39,10 @@ class RAMAudioProvider final : public CacheAudioProvider {
 		return &blockcache[start / block_samples][(start % block_samples) * sample_bytes];
 	}
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
+	void ReadCache(void *buf, int64_t start, int64_t count) const override {
+		auto const& block = blockcache[start / block_samples];
+		std::memcpy(buf, &block[(start % block_samples) * sample_bytes], count * sample_bytes);
+	}
 
 public:
 	RAMAudioProvider(std::unique_ptr<AudioProvider> src)
@@ -61,26 +64,6 @@ public:
 		StopDecoder();
 	}
 };
-
-void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
-	auto charbuf = static_cast<char *>(buf);
-	for (int64_t bytes_remaining = count * sample_bytes; bytes_remaining; ) {
-		const int64_t decoded_bytes = (decoded_samples - start) * sample_bytes;
-		if (decoded_bytes <= 0) {
-			ZeroFill(charbuf, bytes_remaining / sample_bytes);
-			break;
-		}
-
-		const int64_t i = start / block_samples;
-		const int64_t start_offset = (start % block_samples) * sample_bytes;
-		const int64_t read_size = std::min({bytes_remaining, decoded_bytes, block_samples * sample_bytes - start_offset});
-
-		memcpy(charbuf, &blockcache[i][start_offset], read_size);
-		charbuf += read_size;
-		bytes_remaining -= read_size;
-		start += read_size / sample_bytes;
-	}
-}
 }
 
 namespace agi {

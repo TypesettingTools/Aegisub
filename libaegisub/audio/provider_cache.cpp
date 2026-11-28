@@ -27,4 +27,18 @@ void CacheAudioProvider::Decode() {
 		decoded_samples += count;
 	}
 }
+
+void CacheAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
+	auto out = static_cast<char *>(buf);
+	while (count > 0) {
+		const auto size = std::min(count, chunk_samples - start % chunk_samples);
+		if (start < decoded_samples)
+			ReadCache(out, start, size);
+		else
+			ZeroFill(out, size);
+		start += size;
+		count -= size;
+		out += size * sample_bytes;
+	}
+}
 }

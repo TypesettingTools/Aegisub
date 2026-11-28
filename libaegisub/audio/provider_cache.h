@@ -22,6 +22,9 @@ private:
 	std::thread decoder;
 
 	void Decode();
+	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
+
+	virtual void ReadCache(void *buf, int64_t start, int64_t count) const = 0;
 	virtual void *WriteCache(int64_t start, int64_t count) = 0;
 };
 }

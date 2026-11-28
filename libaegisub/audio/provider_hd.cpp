@@ -22,6 +22,7 @@
 #include <libaegisub/path.h>
 
 #include <boost/interprocess/detail/os_thread_functions.hpp>
+#include <cstring>
 #include <ctime>
 #include <mutex>
 
@@ -32,20 +33,10 @@ class HDAudioProvider final : public CacheAudioProvider {
 	mutable temp_file_mapping file;
 	mutable std::mutex read_mutex;
 
-	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
-		auto missing = std::min(count, start + count - decoded_samples);
-		if (missing > 0) {
-			count -= missing;
-			ZeroFill(static_cast<char *>(buf) + count * sample_bytes, missing);
-		}
-
-		if (count > 0) {
-			start *= sample_bytes;
-			count *= sample_bytes;
-			// The read mapping can be remapped on 32-bit systems.
-			std::lock_guard lock(read_mutex);
-			memcpy(buf, file.read(start, count).data(), count);
-		}
+	void ReadCache(void *buf, int64_t start, int64_t count) const override {
+		// The read mapping can be remapped on 32-bit systems.
+		std::lock_guard lock(read_mutex);
+		std::memcpy(buf, file.read(start * sample_bytes, count * sample_bytes).data(), count * sample_bytes);
 	}
 
 	void *WriteCache(int64_t start, int64_t count) override {
