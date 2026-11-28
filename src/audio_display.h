@@ -100,6 +100,7 @@ class AudioDisplay: public wxWindow {
 
 	wxTimer load_timer;
 	int64_t last_sample_decoded = 0;
+	int64_t last_decode_position = -1;
 
 	/// Leftmost pixel in the virtual audio image being displayed
 	int scroll_left = 0;
