@@ -23,7 +23,7 @@ void CacheAudioProvider::StopDecoder() {
 void CacheAudioProvider::Decode() {
 	for (int64_t start = 0; start < num_samples && !cancelled; start += chunk_samples) {
 		const auto count = std::min(chunk_samples, num_samples - start);
-		source->GetAudio(WriteCache(start, count), start, count);
+		source->GetAudio(WriteCache(start, count), start, count, std::nothrow);
 		decoded_samples += count;
 	}
 }
