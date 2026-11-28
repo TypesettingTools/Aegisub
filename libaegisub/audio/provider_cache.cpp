@@ -30,6 +30,7 @@ void CacheAudioProvider::Decode() {
 		ready[chunk].store(true, std::memory_order_release);
 		decoded_samples += count;
 	}
+	filling = false;
 }
 
 bool CacheAudioProvider::IsAudioReady(int64_t start, int64_t end) const {

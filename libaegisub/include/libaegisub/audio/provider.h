@@ -59,6 +59,8 @@ public:
 	virtual bool IsAudioReady(int64_t, int64_t) const { return true; }
 	/// Prioritize filling the first gap at or after the given sample.
 	virtual void RequestAudio(int64_t) const { }
+	/// Is a cache worker still filling samples?
+	virtual bool IsAudioCacheFilling() const { return false; }
 	/// Restore decoder state for sequential reads from sample zero.
 	virtual void ResetAudioDecoder() { }
 
