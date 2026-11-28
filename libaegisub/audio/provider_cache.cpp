@@ -2,6 +2,8 @@
 
 #include "provider_cache.h"
 
+#include <libaegisub/log.h>
+
 #include <algorithm>
 #include <iterator>
 
@@ -24,13 +26,49 @@ void CacheAudioProvider::StopDecoder() {
 
 void CacheAudioProvider::Decode() {
 	for (int64_t chunk = 0; chunk < std::ssize(ready) && !cancelled; ++chunk) {
-		const auto start = chunk * chunk_samples;
-		const auto count = std::min(chunk_samples, num_samples - start);
-		source->GetAudio(WriteCache(start, count), start, count, std::nothrow);
+		if (!DecodeChunk(chunk)) {
+			if (!cancelled)
+				RetrySequentially();
+			break;
+		}
+	}
+	filling = false;
+}
+
+bool CacheAudioProvider::DecodeChunk(int64_t chunk, void *discard) try {
+	const auto start = chunk * chunk_samples;
+	const auto count = std::min(chunk_samples, num_samples - start);
+	source->GetAudio(discard ? discard : WriteCache(start, count), start, count);
+	if (!discard) {
 		ready[chunk].store(true, std::memory_order_release);
 		decoded_samples += count;
 	}
-	filling = false;
+	return true;
+}
+catch (Exception const& e) {
+	LOG_E("audio_provider") << e.GetMessage();
+	return false;
+}
+catch (...) {
+	LOG_E("audio_provider") << "Unknown audio cache fill error";
+	return false;
+}
+
+void CacheAudioProvider::RetrySequentially() try {
+	// Reopen the source. Decode through ready chunks to advance the decoder
+	// without rewriting samples already published to cache readers.
+	source->ResetAudioDecoder();
+	auto discard = std::make_unique_for_overwrite<char[]>(chunk_samples * sample_bytes);
+	for (int64_t chunk = 0; !cancelled && decoded_samples < num_samples; ++chunk) {
+		if (!DecodeChunk(chunk, ready[chunk].load(std::memory_order_relaxed) ? discard.get() : nullptr))
+			break;
+	}
+}
+catch (Exception const& e) {
+	LOG_E("audio_provider") << e.GetMessage();
+}
+catch (...) {
+	LOG_E("audio_provider") << "Unknown error restarting the audio cache";
 }
 
 bool CacheAudioProvider::IsAudioReady(int64_t start, int64_t end) const {

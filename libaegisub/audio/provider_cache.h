@@ -25,6 +25,8 @@ private:
 	std::thread decoder;
 
 	void Decode();
+	bool DecodeChunk(int64_t chunk, void *discard = nullptr);
+	void RetrySequentially();
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
 	virtual void ReadCache(void *buf, int64_t start, int64_t count) const = 0;
