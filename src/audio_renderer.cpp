@@ -192,7 +192,7 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, const int start, const int 
 	// And the offset in it to start its use at
 	const int firstbitmapoffset = start % cache_bitmap_width;
 	// The last bitmap required
-	const int lastbitmap = std::min<int>(end / cache_bitmap_width, NumBlocks(provider->GetDecodedSamples()) - 1);
+	const int lastbitmap = std::min<int>(end / cache_bitmap_width, NumBlocks(provider->GetNumSamples()) - 1);
 
 	// Set a clipping region so that the first and last bitmaps don't draw
 	// outside the requested range
@@ -201,13 +201,23 @@ void AudioRenderer::Render(wxDC &dc, wxPoint origin, const int start, const int 
 
 	for (int i = firstbitmap; i <= lastbitmap; ++i)
 	{
-		dc.DrawBitmap(GetCachedBitmap(i, style), origin);
+		const int pixel = i * cache_bitmap_width;
+		const auto [sample_start, sample_end] = renderer->GetRequiredSamples(pixel, pixel + cache_bitmap_width);
+		// A tile and its derived data can be cached once all input samples are present.
+		if (provider->IsAudioReady(sample_start, sample_end))
+			dc.DrawBitmap(GetCachedBitmap(i, style), origin);
+		else
+		{
+			const wxRect rect(origin, wxSize(cache_bitmap_width, pixel_height));
+			const wxDCClipper tile_clipper(dc, rect);
+			renderer->RenderBlank(dc, rect, style);
+		}
 		origin.x += cache_bitmap_width;
 	}
 
 	// Now render blank audio from origin to end
 	if (origin.x < lastx)
-		renderer->RenderBlank(dc, wxRect(origin.x-1, origin.y, lastx-origin.x+1, pixel_height), style);
+		renderer->RenderBlank(dc, wxRect(origin.x, origin.y, lastx-origin.x, pixel_height), style);
 
 	if (needs_age)
 	{
