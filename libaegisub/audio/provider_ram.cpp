@@ -14,21 +14,19 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "libaegisub/audio/provider.h"
+#include "provider_cache.h"
 
 
 #include <algorithm>
 #include <array>
 #include <boost/container/stable_vector.hpp>
-#include <thread>
 
 namespace {
 using namespace agi;
 
 constexpr int64_t CacheBlockSize = 4 * 1024 * 1024;
-constexpr int64_t chunk_samples = 65536;
 
-class RAMAudioProvider final : public AudioProviderWrapper {
+class RAMAudioProvider final : public CacheAudioProvider {
 	// Fit whole decode chunks into each 4 MiB block.
 	const int64_t block_samples = CacheBlockSize / bytes_per_sample / chunk_samples * chunk_samples;
 #ifdef _MSC_VER
@@ -36,17 +34,17 @@ class RAMAudioProvider final : public AudioProviderWrapper {
 #else
 	boost::container::stable_vector<std::array<char, CacheBlockSize>> blockcache;
 #endif
-	std::atomic<bool> cancelled = {false};
-	std::thread decoder;
+
+	void *WriteCache(int64_t start, int64_t) override {
+		return &blockcache[start / block_samples][(start % block_samples) * bytes_per_sample];
+	}
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override;
 
 public:
 	RAMAudioProvider(std::unique_ptr<AudioProvider> src)
-	: AudioProviderWrapper(std::move(src))
+	: CacheAudioProvider(std::move(src))
 	{
-		decoded_samples = 0;
-
 		if (block_samples == 0)
 			throw AudioProviderError("Audio format does not fit in a RAM cache block");
 
@@ -56,20 +54,11 @@ public:
 		catch (std::bad_alloc const&) {
 			throw AudioProviderError("Not enough memory available to cache in RAM");
 		}
-
-		decoder = std::thread([&] {
-			for (int64_t i = 0; i < num_samples; i += chunk_samples) {
-				if (cancelled) break;
-				auto actual_read = std::min(chunk_samples, num_samples - i);
-				source->GetAudio(&blockcache[i / block_samples][(i % block_samples) * bytes_per_sample], i, actual_read);
-				decoded_samples += actual_read;
-			}
-		});
+		StartDecoder();
 	}
 
 	~RAMAudioProvider() override {
-		cancelled = true;
-		decoder.join();
+		StopDecoder();
 	}
 };
 

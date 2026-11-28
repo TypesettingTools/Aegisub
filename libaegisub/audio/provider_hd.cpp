@@ -14,7 +14,7 @@
 //
 // Aegisub Project http://www.aegisub.org/
 
-#include "libaegisub/audio/provider.h"
+#include "provider_cache.h"
 
 #include <libaegisub/file_mapping.h>
 #include <libaegisub/format.h>
@@ -24,16 +24,13 @@
 #include <boost/interprocess/detail/os_thread_functions.hpp>
 #include <ctime>
 #include <mutex>
-#include <thread>
 
 namespace {
 using namespace agi;
 
-class HDAudioProvider final : public AudioProviderWrapper {
+class HDAudioProvider final : public CacheAudioProvider {
 	mutable temp_file_mapping file;
 	mutable std::mutex read_mutex;
-	std::atomic<bool> cancelled = {false};
-	std::thread decoder;
 
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		auto missing = std::min(count, start + count - decoded_samples);
@@ -51,6 +48,10 @@ class HDAudioProvider final : public AudioProviderWrapper {
 		}
 	}
 
+	void *WriteCache(int64_t start, int64_t count) override {
+		return file.write(start * bytes_per_sample, count * bytes_per_sample);
+	}
+
   fs::path CacheFilename(fs::path const& dir) {
 		// Check free space
 		if ((uint64_t)num_samples * bytes_per_sample > fs::FreeSpace(dir))
@@ -62,24 +63,14 @@ class HDAudioProvider final : public AudioProviderWrapper {
 
 public:
 	HDAudioProvider(std::unique_ptr<AudioProvider> src, fs::path const& dir)
-	: AudioProviderWrapper(std::move(src))
+	: CacheAudioProvider(std::move(src))
 	, file(dir / CacheFilename(dir), num_samples * bytes_per_sample)
 	{
-		decoded_samples = 0;
-		decoder = std::thread([&] {
-			int64_t block = 65536;
-			for (int64_t i = 0; i < num_samples; i += block) {
-				if (cancelled) break;
-				block = std::min(block, num_samples - i);
-				source->GetAudio(file.write(i * bytes_per_sample, block * bytes_per_sample), i, block);
-				decoded_samples += block;
-			}
-		});
+		StartDecoder();
 	}
 
 	~HDAudioProvider() override {
-		cancelled = true;
-		decoder.join();
+		StopDecoder();
 	}
 };
 }
