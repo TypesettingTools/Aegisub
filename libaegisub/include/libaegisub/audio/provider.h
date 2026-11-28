@@ -29,8 +29,7 @@ protected:
 	int channels = 0;
 	/// Total number of samples per channel
 	int64_t num_samples = 0;
-	/// Samples per channel which have been decoded and can be fetched with FillBuffer
-	/// Only applicable for the cache providers
+	/// Total samples per channel available so far, including disjoint cached ranges
 	std::atomic<int64_t> decoded_samples{0};
 	int sample_rate = 0;
 	int bytes_per_sample = 0;
@@ -53,8 +52,15 @@ public:
 	int     GetChannels()       const { return channels; }
 	bool    AreSamplesFloat()   const { return float_samples; }
 
+	/// Are all in-bounds samples in [start, end) available?
+	virtual bool IsAudioReady(int64_t, int64_t) const { return true; }
+	/// Prioritize filling the first gap at or after the given sample.
+	virtual void RequestAudio(int64_t) const { }
+
 	/// Does this provider benefit from external caching?
 	virtual bool NeedsCache() const { return false; }
+	/// Can the cache fill disjoint ranges using random-access reads?
+	virtual bool SupportsCacheSeeking() const { return true; }
 };
 
 /// Helper base class for an audio provider which wraps another provider
@@ -72,6 +78,8 @@ public:
 		bytes_per_sample = source->GetBytesPerSample();
 		float_samples = source->AreSamplesFloat();
 	}
+
+	bool SupportsCacheSeeking() const override { return source->SupportsCacheSeeking(); }
 };
 
 DEFINE_EXCEPTION(AudioProviderError, Exception);
