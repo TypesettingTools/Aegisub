@@ -11,6 +11,7 @@ namespace agi {
 class CacheAudioProvider : public AudioProviderWrapper {
 protected:
 	static constexpr int64_t chunk_samples = 65536;
+	const int sample_bytes = bytes_per_sample * channels;
 
 	explicit CacheAudioProvider(std::unique_ptr<AudioProvider> src);
 	void StartDecoder();

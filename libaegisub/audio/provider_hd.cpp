@@ -35,13 +35,13 @@ class HDAudioProvider final : public CacheAudioProvider {
 	void FillBuffer(void *buf, int64_t start, int64_t count) const override {
 		auto missing = std::min(count, start + count - decoded_samples);
 		if (missing > 0) {
-			memset(static_cast<int16_t*>(buf) + count - missing, 0, missing * bytes_per_sample);
 			count -= missing;
+			ZeroFill(static_cast<char *>(buf) + count * sample_bytes, missing);
 		}
 
 		if (count > 0) {
-			start *= bytes_per_sample;
-			count *= bytes_per_sample;
+			start *= sample_bytes;
+			count *= sample_bytes;
 			// The read mapping can be remapped on 32-bit systems.
 			std::lock_guard lock(read_mutex);
 			memcpy(buf, file.read(start, count).data(), count);
@@ -49,12 +49,12 @@ class HDAudioProvider final : public CacheAudioProvider {
 	}
 
 	void *WriteCache(int64_t start, int64_t count) override {
-		return file.write(start * bytes_per_sample, count * bytes_per_sample);
+		return file.write(start * sample_bytes, count * sample_bytes);
 	}
 
   fs::path CacheFilename(fs::path const& dir) {
 		// Check free space
-		if ((uint64_t)num_samples * bytes_per_sample > fs::FreeSpace(dir))
+		if ((uint64_t)num_samples * sample_bytes > fs::FreeSpace(dir))
 			throw AudioProviderError("Not enough free disk space in " + dir.string() + " to cache the audio");
 
 		return format("audio-%lld-%lld", time(nullptr),
@@ -64,7 +64,7 @@ class HDAudioProvider final : public CacheAudioProvider {
 public:
 	HDAudioProvider(std::unique_ptr<AudioProvider> src, fs::path const& dir)
 	: CacheAudioProvider(std::move(src))
-	, file(dir / CacheFilename(dir), num_samples * bytes_per_sample)
+	, file(dir / CacheFilename(dir), num_samples * sample_bytes)
 	{
 		StartDecoder();
 	}
