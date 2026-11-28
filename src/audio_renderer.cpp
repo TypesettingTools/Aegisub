@@ -36,6 +36,7 @@
 #include <libaegisub/audio/provider.h>
 
 #include <algorithm>
+#include <cmath>
 #include <wx/dc.h>
 
 namespace {
@@ -226,6 +227,12 @@ void AudioRendererBitmapProvider::SetProvider(agi::AudioProvider *const _provide
 {
 	if (compare_and_set(provider, _provider))
 		OnSetProvider();
+}
+
+std::pair<int64_t, int64_t> AudioRendererBitmapProvider::GetRequiredSamples(int start, int end) const
+{
+	const double samples_per_pixel = pixel_ms * provider->GetSampleRate() / 1000.0;
+	return {static_cast<int64_t>(start * samples_per_pixel), static_cast<int64_t>(std::ceil(end * samples_per_pixel))};
 }
 
 void AudioRendererBitmapProvider::SetMillisecondsPerPixel(const double new_pixel_ms)

@@ -34,6 +34,9 @@
 
 #include <wx/gdicmn.h>
 
+#include <cstdint>
+#include <utility>
+
 #include "audio_rendering_style.h"
 #include "block_cache.h"
 
@@ -259,6 +262,9 @@ public:
 	/// Deriving classes must implement this method. The bitmap in bmp holds
 	/// the width and height to render.
 	virtual void Render(wxBitmap &bmp, int start, AudioRenderingStyle style) = 0;
+
+	/// Half-open sample range needed to render the half-open pixel range.
+	virtual std::pair<int64_t, int64_t> GetRequiredSamples(int start, int end) const;
 
 	/// @brief Blank audio rendering function
 	/// @param dc    The device context to render to
