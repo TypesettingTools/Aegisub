@@ -54,6 +54,7 @@ class FFmpegSourceAudioProvider final : public agi::AudioProvider, FFmpegSourceP
 
 	mutable char FFMSErrMsg[1024];			///< FFMS error message
 	mutable FFMS_ErrorInfo ErrInfo;			///< FFMS error codes/messages
+	bool seekable = false;
 
 	void LoadAudio(agi::fs::path const& filename);
 	void OpenAudioSource();
@@ -66,6 +67,7 @@ public:
 	FFmpegSourceAudioProvider(agi::fs::path const& filename, agi::BackgroundRunner *br);
 
 	bool NeedsCache() const override { return true; }
+	bool SupportsCacheSeeking() const override { return seekable; }
 	void ResetAudioDecoder() override;
 };
 
@@ -150,6 +152,8 @@ void FFmpegSourceAudioProvider::LoadAudio(agi::fs::path const& filename) {
 	OpenAudioSource();
 
 	const FFMS_AudioProperties AudioInfo = *FFMS_GetAudioProperties(AudioSource);
+	// FFMS2 cannot seek backwards when the audio timestamps never advance.
+	seekable = AudioInfo.FirstTime < AudioInfo.LastTime;
 
 	channels	= AudioInfo.Channels;
 	sample_rate	= AudioInfo.SampleRate;

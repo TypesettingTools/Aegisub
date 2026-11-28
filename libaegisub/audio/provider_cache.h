@@ -20,6 +20,7 @@ protected:
 private:
 	// Each chunk is written once, then published to concurrent readers.
 	std::vector<std::atomic<bool>> ready;
+	mutable std::atomic<int64_t> requested_chunk{-1};
 	std::atomic<bool> cancelled{false};
 	std::atomic<bool> filling{true};
 	std::thread decoder;
@@ -34,6 +35,7 @@ private:
 
 public:
 	bool IsAudioReady(int64_t start, int64_t end) const override;
+	void RequestAudio(int64_t start) const override;
 	bool IsAudioCacheFilling() const override { return filling; }
 };
 }

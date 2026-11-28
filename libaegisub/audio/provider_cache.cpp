@@ -25,12 +25,31 @@ void CacheAudioProvider::StopDecoder() {
 }
 
 void CacheAudioProvider::Decode() {
-	for (int64_t chunk = 0; chunk < std::ssize(ready) && !cancelled; ++chunk) {
+	const auto chunk_count = std::ssize(ready);
+	int64_t first_missing = 0;
+	int64_t chunk = 0;
+	while (first_missing < chunk_count && !cancelled) {
+		auto target = requested_chunk.exchange(-1, std::memory_order_relaxed);
+		if (target >= 0) {
+			target = std::max(target, first_missing);
+			while (target < chunk_count && ready[target].load(std::memory_order_relaxed))
+				++target;
+			if (target < chunk_count)
+				chunk = target;
+		}
+		// Continue forward until we reach another filled region or EOF.
+		if (chunk == chunk_count || ready[chunk].load(std::memory_order_relaxed))
+			chunk = first_missing;
+
 		if (!DecodeChunk(chunk)) {
 			if (!cancelled)
 				RetrySequentially();
 			break;
 		}
+
+		++chunk;
+		while (first_missing < chunk_count && ready[first_missing].load(std::memory_order_relaxed))
+			++first_missing;
 	}
 	filling = false;
 }
@@ -82,6 +101,13 @@ bool CacheAudioProvider::IsAudioReady(int64_t start, int64_t end) const {
 			return false;
 	}
 	return true;
+}
+
+void CacheAudioProvider::RequestAudio(int64_t start) const {
+	if (!SupportsCacheSeeking()) return;
+
+	const auto chunk = start < num_samples ? std::max<int64_t>(start, 0) / chunk_samples : -1;
+	requested_chunk.store(chunk, std::memory_order_relaxed);
 }
 
 void CacheAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const {
