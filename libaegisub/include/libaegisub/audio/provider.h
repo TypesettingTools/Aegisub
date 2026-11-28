@@ -21,6 +21,7 @@
 
 #include <atomic>
 #include <memory>
+#include <new>
 #include <vector>
 
 namespace agi {
@@ -43,6 +44,8 @@ public:
 	virtual ~AudioProvider() = default;
 
 	void GetAudio(void *buf, int64_t start, int64_t count) const;
+	/// Read audio, logging decoding failures and filling the buffer with silence.
+	void GetAudio(void *buf, int64_t start, int64_t count, std::nothrow_t) const;
 	void GetAudioWithVolume(void *buf, int64_t start, int64_t count, double volume) const;
 
 	int64_t GetNumSamples()     const { return num_samples; }

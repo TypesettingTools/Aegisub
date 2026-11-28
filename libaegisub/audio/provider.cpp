@@ -81,6 +81,10 @@ void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count) const {
 	}
 }
 
+void AudioProvider::GetAudio(void *buf, int64_t start, int64_t count, std::nothrow_t) const {
+	GetAudio(buf, start, count);
+}
+
 namespace {
 class writer {
 	io::Save outfile;
