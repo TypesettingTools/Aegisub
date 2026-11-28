@@ -23,6 +23,7 @@
 
 #include <boost/interprocess/detail/os_thread_functions.hpp>
 #include <ctime>
+#include <mutex>
 #include <thread>
 
 namespace {
@@ -30,6 +31,7 @@ using namespace agi;
 
 class HDAudioProvider final : public AudioProviderWrapper {
 	mutable temp_file_mapping file;
+	mutable std::mutex read_mutex;
 	std::atomic<bool> cancelled = {false};
 	std::thread decoder;
 
@@ -43,6 +45,8 @@ class HDAudioProvider final : public AudioProviderWrapper {
 		if (count > 0) {
 			start *= bytes_per_sample;
 			count *= bytes_per_sample;
+			// The read mapping can be remapped on 32-bit systems.
+			std::lock_guard lock(read_mutex);
 			memcpy(buf, file.read(start, count).data(), count);
 		}
 	}
