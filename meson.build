@@ -409,7 +409,7 @@ if host_machine.system() == 'windows' and not get_option('directsound').disabled
 endif
 
 if host_machine.system() == 'darwin'
-    deps += dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon', 'IOKit', 'QuartzCore'])
+    deps += dependency('appleframeworks', modules : ['CoreText', 'CoreFoundation', 'AppKit', 'Carbon', 'IOKit', 'QuartzCore', 'CoreAudio'])
     deps += dependency('appleframeworks', modules : ['ScreenCaptureKit'], required : false)
 endif
 
