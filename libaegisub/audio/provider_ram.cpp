@@ -24,10 +24,10 @@
 namespace {
 using namespace agi;
 
-#define CacheBits 22
-#define CacheBlockSize (1 << CacheBits)
+constexpr int64_t CacheBlockSize = 4 * 1024 * 1024;
 
 class RAMAudioProvider final : public AudioProviderWrapper {
+	const int64_t block_samples = CacheBlockSize / bytes_per_sample;
 #ifdef _MSC_VER
 	boost::container::stable_vector<char[CacheBlockSize]> blockcache;
 #else
@@ -44,19 +44,21 @@ public:
 	{
 		decoded_samples = 0;
 
+		if (block_samples == 0)
+			throw AudioProviderError("Audio format does not fit in a RAM cache block");
+
 		try {
-			blockcache.resize((source->GetNumSamples() * source->GetBytesPerSample() + CacheBlockSize - 1) >> CacheBits);
+			blockcache.resize((num_samples + block_samples - 1) / block_samples);
 		}
 		catch (std::bad_alloc const&) {
 			throw AudioProviderError("Not enough memory available to cache in RAM");
 		}
 
 		decoder = std::thread([&] {
-			int64_t readsize = CacheBlockSize / source->GetBytesPerSample();
 			for (size_t i = 0; i < blockcache.size(); i++) {
 				if (cancelled) break;
-				auto actual_read = std::min<int64_t>(readsize, num_samples - i * readsize);
-				source->GetAudio(&blockcache[i][0], i * readsize, actual_read);
+				auto actual_read = std::min<int64_t>(block_samples, num_samples - i * block_samples);
+				source->GetAudio(&blockcache[i][0], i * block_samples, actual_read);
 				decoded_samples += actual_read;
 			}
 		});
@@ -76,9 +78,9 @@ void RAMAudioProvider::FillBuffer(void *buf, int64_t start, int64_t count) const
 			break;
 		}
 
-		const int64_t i = (start * bytes_per_sample) >> CacheBits;
-		const int64_t start_offset = (start * bytes_per_sample) & (CacheBlockSize-1);
-		const int64_t read_size = std::min(bytes_remaining, CacheBlockSize - start_offset);
+		const int64_t i = start / block_samples;
+		const int64_t start_offset = (start % block_samples) * bytes_per_sample;
+		const int64_t read_size = std::min(bytes_remaining, block_samples * bytes_per_sample - start_offset);
 
 		memcpy(charbuf, &blockcache[i][start_offset], read_size);
 		charbuf += read_size;
