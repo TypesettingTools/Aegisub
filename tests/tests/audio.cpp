@@ -327,17 +327,21 @@ protected:
 };
 
 TEST_P(AudioCacheSeekTest, PrioritizesLatestSeekAndFillsGaps) {
+	using SampleRange = agi::AudioProvider::SampleRange;
 	auto src = std::make_unique<SteppedAudioProvider>();
 	auto decoder = src.get();
 	auto cache = MakeCache(std::move(src));
 	const auto chunk = SteppedAudioProvider::chunk_samples;
 
 	ASSERT_EQ(0, decoder->WaitForRead(1));
+	EXPECT_EQ(0, cache->GetAudioCacheDecodePosition());
+	EXPECT_TRUE(cache->GetCachedSampleRanges().empty());
 	cache->RequestAudio(4 * chunk);
 	cache->RequestAudio(7 * chunk + 5);
 	decoder->AllowReads(1);
 
 	ASSERT_EQ(7 * chunk, decoder->WaitForRead(2));
+	EXPECT_EQ(7 * chunk, cache->GetAudioCacheDecodePosition());
 	EXPECT_EQ(chunk, cache->GetDecodedSamples());
 	EXPECT_FALSE(cache->IsAudioReady(7 * chunk, 7 * chunk + 1));
 	uint16_t samples[4];
@@ -348,6 +352,7 @@ TEST_P(AudioCacheSeekTest, PrioritizesLatestSeekAndFillsGaps) {
 
 	ASSERT_EQ(8 * chunk, decoder->WaitForRead(3));
 	EXPECT_EQ(2 * chunk, cache->GetDecodedSamples());
+	EXPECT_EQ((std::vector<SampleRange>{{0, chunk}, {7 * chunk, 8 * chunk}}), cache->GetCachedSampleRanges());
 	EXPECT_TRUE(cache->IsAudioReady(7 * chunk, 8 * chunk));
 	EXPECT_FALSE(cache->IsAudioReady(7 * chunk - 1, 7 * chunk + 2));
 	cache->GetAudio(samples, 7 * chunk - 1, 4);
@@ -357,20 +362,22 @@ TEST_P(AudioCacheSeekTest, PrioritizesLatestSeekAndFillsGaps) {
 
 	decoder->AllowReads(3);
 	ASSERT_EQ(chunk, decoder->WaitForRead(4));
+	EXPECT_EQ(chunk, cache->GetAudioCacheDecodePosition());
 	cache->RequestAudio(4 * chunk);
 	decoder->AllowReads(4);
 	ASSERT_EQ(4 * chunk, decoder->WaitForRead(5));
 	decoder->AllowReads(7);
 	ASSERT_EQ(2 * chunk, decoder->WaitForRead(8));
 	EXPECT_EQ(6 * chunk + 17, cache->GetDecodedSamples());
+	EXPECT_EQ((std::vector<SampleRange>{{0, 2 * chunk}, {4 * chunk, cache->GetNumSamples()}}), cache->GetCachedSampleRanges());
 	EXPECT_TRUE(cache->IsAudioReady(4 * chunk, cache->GetNumSamples() + 100));
 	EXPECT_FALSE(cache->IsAudioReady(0, cache->GetNumSamples()));
 
 	decoder->AllowReads(9);
-	const auto deadline = std::chrono::steady_clock::now() + 5s;
-	while (cache->GetDecodedSamples() != cache->GetNumSamples() && std::chrono::steady_clock::now() < deadline)
-		std::this_thread::sleep_for(1ms);
+	ASSERT_TRUE(WaitForCacheFill(*cache));
+	EXPECT_EQ(-1, cache->GetAudioCacheDecodePosition());
 	ASSERT_EQ(cache->GetNumSamples(), cache->GetDecodedSamples());
+	EXPECT_EQ((std::vector<SampleRange>{{0, cache->GetNumSamples()}}), cache->GetCachedSampleRanges());
 	EXPECT_TRUE(cache->IsAudioReady(-100, cache->GetNumSamples() + 100));
 	cache->GetAudio(samples, cache->GetNumSamples() - 2, 4);
 	EXPECT_EQ(18, samples[0]);
@@ -426,6 +433,7 @@ TEST_P(AudioCacheSeekTest, RetriesFailedSeekSequentiallyThroughConverter) {
 	decoder->AllowReads(2);
 	ASSERT_EQ(0, decoder->WaitForRead(3));
 
+	EXPECT_EQ(0, cache->GetAudioCacheDecodePosition());
 	EXPECT_EQ(chunk, cache->GetDecodedSamples());
 	EXPECT_FALSE(cache->IsAudioReady(7 * chunk, 7 * chunk + 1));
 	uint16_t sample;
@@ -434,6 +442,7 @@ TEST_P(AudioCacheSeekTest, RetriesFailedSeekSequentiallyThroughConverter) {
 
 	decoder->AllowReads(3);
 	ASSERT_EQ(chunk / 2, decoder->WaitForRead(4));
+	EXPECT_EQ(chunk, cache->GetAudioCacheDecodePosition());
 	cache->GetAudio(&sample, 0, 1);
 	EXPECT_EQ(3, sample); // Replay must preserve samples already published.
 
@@ -456,7 +465,9 @@ TEST_P(AudioCacheSeekTest, StopsAfterFailedLinearRetry) {
 	decoder->AllowReads(4);
 	ASSERT_TRUE(WaitForCacheFill(*cache));
 
+	EXPECT_EQ(-1, cache->GetAudioCacheDecodePosition());
 	EXPECT_EQ(chunk, cache->GetDecodedSamples());
+	EXPECT_EQ((std::vector<agi::AudioProvider::SampleRange>{{0, chunk}}), cache->GetCachedSampleRanges());
 	EXPECT_TRUE(cache->IsAudioReady(0, chunk));
 	EXPECT_FALSE(cache->IsAudioReady(chunk, chunk + 1));
 	EXPECT_FALSE(cache->IsAudioReady(4 * chunk, 4 * chunk + 1));
