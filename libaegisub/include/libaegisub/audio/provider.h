@@ -59,6 +59,8 @@ public:
 	virtual bool IsAudioReady(int64_t, int64_t) const { return true; }
 	/// Prioritize filling the first gap at or after the given sample.
 	virtual void RequestAudio(int64_t) const { }
+	/// Restore decoder state for sequential reads from sample zero.
+	virtual void ResetAudioDecoder() { }
 
 	/// Does this provider benefit from external caching?
 	virtual bool NeedsCache() const { return false; }
@@ -83,6 +85,7 @@ public:
 	}
 
 	bool SupportsCacheSeeking() const override { return source->SupportsCacheSeeking(); }
+	void ResetAudioDecoder() override { source->ResetAudioDecoder(); }
 };
 
 DEFINE_EXCEPTION(AudioProviderError, Exception);
